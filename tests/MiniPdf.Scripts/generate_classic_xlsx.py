@@ -1,19 +1,49 @@
 """
-Generate 60 classic .xlsx files for testing Excel-to-PDF conversion.
+Generate 90 classic .xlsx files for testing Excel-to-PDF conversion.
 Each file corresponds to a test case in ClassicExcelToPdfTests.cs.
 
+Cases 61-90 include embedded images to exercise MiniPdf image rendering.
+
 Usage:
-    pip install openpyxl
+    pip install openpyxl pillow
     python generate_classic_xlsx.py
 
 Output directory: ./output/
 """
 
+import io
 import os
 import string
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
+
+try:
+    from PIL import Image as PILImage
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+
+
+def _make_jpeg_bytes(width: int, height: int, color: tuple) -> bytes:
+    """Return raw JPEG bytes for a solid-color image (requires Pillow)."""
+    img = PILImage.new("RGB", (width, height), color)
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=85)
+    return buf.getvalue()
+
+
+def _add_image(ws, jpeg_bytes: bytes, anchor: str, width_px: int = 120, height_px: int = 90):
+    """Embed a JPEG image into the worksheet at the given cell anchor."""
+    if not HAS_PIL:
+        return
+    from openpyxl.drawing.image import Image as XLImage
+    buf = io.BytesIO(jpeg_bytes)
+    xl_img = XLImage(buf)
+    xl_img.width = width_px
+    xl_img.height = height_px
+    xl_img.anchor = anchor
+    ws.add_image(xl_img)
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
 
@@ -25,7 +55,7 @@ def ensure_output_dir():
 def save(wb: Workbook, filename: str):
     path = os.path.join(OUTPUT_DIR, filename)
     wb.save(path)
-    print(f"  ✔ {filename}")
+    print(f"  [OK] {filename}")
 
 
 # ── 01. Basic table with headers ────────────────────────────────────────
@@ -1056,10 +1086,728 @@ def classic60_large_wide_table():
     save(wb, "classic60_large_wide_table.xlsx")
 
 
+# ── 61. Product card with image ──────────────────────────────────────────
+def classic61_product_card_with_image():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Product"
+    bold = Font(bold=True)
+    img = _make_jpeg_bytes(120, 120, (220, 80, 80))
+    _add_image(ws, img, "A1", width_px=120, height_px=90)
+    ws.row_dimensions[1].height = 68
+    ws["D1"] = "Product Name"
+    ws["D1"].font = bold
+    ws["D2"] = "Widget Pro 3000"
+    ws["D3"] = "Price"
+    ws["D3"].font = bold
+    ws["D4"] = "$29.99"
+    ws["D5"] = "In Stock"
+    ws["D6"] = 150
+    save(wb, "classic61_product_card_with_image.xlsx")
+
+
+# ── 62. Company logo header ───────────────────────────────────────────────
+def classic62_company_logo_header():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Report"
+    bold = Font(bold=True, size=14)
+    logo = _make_jpeg_bytes(160, 60, (0, 80, 160))
+    _add_image(ws, logo, "A1", width_px=160, height_px=60)
+    ws.row_dimensions[1].height = 45
+    ws["C1"] = "ACME Corporation"
+    ws["C1"].font = bold
+    ws["C2"] = "Annual Report 2025"
+    ws.append([])
+    ws.append(["Department", "Q1", "Q2", "Q3", "Q4"])
+    for dept, q1, q2, q3, q4 in [
+        ("Sales", 120, 135, 142, 160),
+        ("Engineering", 85, 90, 95, 100),
+        ("Marketing", 60, 65, 70, 75),
+    ]:
+        ws.append([dept, q1, q2, q3, q4])
+    save(wb, "classic62_company_logo_header.xlsx")
+
+
+# ── 63. Two products side by side ─────────────────────────────────────────
+def classic63_two_products_side_by_side():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Compare"
+    img_a = _make_jpeg_bytes(100, 100, (255, 140, 0))
+    img_b = _make_jpeg_bytes(100, 100, (0, 160, 100))
+    _add_image(ws, img_a, "A1", width_px=90, height_px=90)
+    _add_image(ws, img_b, "D1", width_px=90, height_px=90)
+    height_rows = 68
+    for r in range(1, 7):
+        ws.row_dimensions[r].height = height_rows // 6
+    ws["A7"] = "Product A"
+    ws["D7"] = "Product B"
+    ws["A8"] = "Price: $19.99"
+    ws["D8"] = "Price: $24.99"
+    ws["A9"] = "Rating: 4.2"
+    ws["D9"] = "Rating: 4.7"
+    save(wb, "classic63_two_products_side_by_side.xlsx")
+
+
+# ── 64. Employee directory with photo ────────────────────────────────────
+def classic64_employee_directory_with_photo():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Directory"
+    bold = Font(bold=True)
+    header_fill = PatternFill(fill_type="solid", fgColor="003366")
+    header_font = Font(bold=True, color="FFFFFF")
+    ws.append(["Photo", "Name", "Title", "Department", "Email"])
+    for cell in ws[1]:
+        cell.font = header_font
+        cell.fill = header_fill
+    employees = [
+        ("Alice Chen", "Engineer", "R&D", "alice@example.com", (100, 149, 237)),
+        ("Bob Smith", "Manager", "Sales", "bob@example.com", (60, 179, 113)),
+        ("Carol Wang", "Designer", "UX", "carol@example.com", (218, 112, 214)),
+    ]
+    for i, (name, title, dept, email, color) in enumerate(employees, start=2):
+        photo = _make_jpeg_bytes(60, 60, color)
+        _add_image(ws, photo, f"A{i}", width_px=50, height_px=45)
+        ws.row_dimensions[i].height = 36
+        ws[f"B{i}"] = name
+        ws[f"C{i}"] = title
+        ws[f"D{i}"] = dept
+        ws[f"E{i}"] = email
+    save(wb, "classic64_employee_directory_with_photo.xlsx")
+
+
+# ── 65. Inventory with product photos ─────────────────────────────────────
+def classic65_inventory_with_product_photos():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Inventory"
+    bold = Font(bold=True)
+    ws.append(["Image", "SKU", "Name", "Qty", "Price"])
+    ws[1][0].font = bold
+    items = [
+        ("SKU-001", "Red Widget", 50, 9.99, (200, 50, 50)),
+        ("SKU-002", "Blue Gadget", 30, 14.99, (50, 80, 200)),
+        ("SKU-003", "Green Tool", 100, 4.49, (50, 160, 50)),
+        ("SKU-004", "Yellow Device", 25, 29.99, (220, 190, 0)),
+        ("SKU-005", "Purple Gear", 75, 7.99, (140, 50, 200)),
+    ]
+    for i, (sku, name, qty, price, color) in enumerate(items, start=2):
+        img = _make_jpeg_bytes(60, 60, color)
+        _add_image(ws, img, f"A{i}", width_px=50, height_px=45)
+        ws.row_dimensions[i].height = 36
+        ws[f"B{i}"] = sku
+        ws[f"C{i}"] = name
+        ws[f"D{i}"] = qty
+        ws[f"E{i}"] = price
+    save(wb, "classic65_inventory_with_product_photos.xlsx")
+
+
+# ── 66. Invoice with company logo ─────────────────────────────────────────
+def classic66_invoice_with_logo():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Invoice"
+    logo = _make_jpeg_bytes(140, 55, (20, 60, 140))
+    _add_image(ws, logo, "A1", width_px=140, height_px=55)
+    ws.row_dimensions[1].height = 42
+    bold = Font(bold=True)
+    ws["D1"] = "INVOICE"
+    ws["D1"].font = Font(bold=True, size=18)
+    ws["D2"] = "Invoice #: INV-20250301"
+    ws["D3"] = "Date: 2025-03-01"
+    ws.append([])
+    ws.append(["Description", "Qty", "Unit Price", "Total"])
+    for cell in ws[5]:
+        cell.font = bold
+    ws.append(["Consulting Services", 8, 150.0, 1200.0])
+    ws.append(["Software License", 1, 299.0, 299.0])
+    ws.append(["Support Package", 1, 99.0, 99.0])
+    ws.append([])
+    ws.append(["", "", "Total", 1598.0])
+    save(wb, "classic66_invoice_with_logo.xlsx")
+
+
+# ── 67. Real-estate listing with photo ────────────────────────────────────
+def classic67_real_estate_listing():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Listing"
+    house_img = _make_jpeg_bytes(200, 130, (180, 160, 130))
+    _add_image(ws, house_img, "A1", width_px=200, height_px=130)
+    for r in range(1, 11):
+        ws.row_dimensions[r].height = 13
+    bold = Font(bold=True)
+    ws["D1"] = "123 Maple Street"
+    ws["D1"].font = Font(bold=True, size=14)
+    ws["D2"] = "Springfield, ST 12345"
+    ws["D3"] = "List Price: $485,000"
+    ws["D3"].font = bold
+    ws.append([])
+    ws.append(["Feature", "Detail"])
+    for feat, detail in [
+        ("Bedrooms", 4), ("Bathrooms", 2.5), ("Sq Ft", 2100),
+        ("Lot Size", "0.25 acres"), ("Year Built", 1998),
+    ]:
+        ws.append([feat, detail])
+    save(wb, "classic67_real_estate_listing.xlsx")
+
+
+# ── 68. Restaurant menu with food photos ──────────────────────────────────
+def classic68_restaurant_menu():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Menu"
+    ws["A1"] = "Today's Menu"
+    ws["A1"].font = Font(bold=True, size=16)
+    ws.row_dimensions[1].height = 20
+    menu_items = [
+        ("Grilled Salmon", "$18.99", "Fresh Atlantic salmon with herbs", (240, 180, 100)),
+        ("Caesar Salad", "$12.99", "Romaine lettuce, croutons, parmesan", (180, 220, 130)),
+        ("Beef Burger", "$14.99", "8oz Angus beef, brioche bun", (190, 130, 80)),
+        ("Pasta Primavera", "$13.99", "Seasonal vegetables, olive oil", (255, 220, 150)),
+    ]
+    row = 2
+    for name, price, description, color in menu_items:
+        # Text in columns A-C (left); image in column E (right)
+        ws[f"A{row}"] = name
+        ws[f"A{row}"].font = Font(bold=True)
+        ws[f"B{row}"] = price
+        ws[f"A{row + 1}"] = description
+        ws.row_dimensions[row].height = 57
+        img = _make_jpeg_bytes(80, 80, color)
+        _add_image(ws, img, f"E{row}", width_px=80, height_px=75)
+        row += 3
+    save(wb, "classic68_restaurant_menu.xlsx")
+
+
+# ── 69. Image-only sheet ──────────────────────────────────────────────────
+def classic69_image_only_sheet():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Cover"
+    cover_img = _make_jpeg_bytes(300, 200, (40, 100, 180))
+    _add_image(ws, cover_img, "A1", width_px=300, height_px=200)
+    for r in range(1, 16):
+        ws.row_dimensions[r].height = 14
+    save(wb, "classic69_image_only_sheet.xlsx")
+
+
+# ── 70. Product catalog with 3 images ─────────────────────────────────────
+def classic70_product_catalog_with_images():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Catalog"
+    bold = Font(bold=True)
+    ws["A1"] = "Product Catalog - Spring 2025"
+    ws["A1"].font = Font(bold=True, size=14)
+    ws.row_dimensions[1].height = 20
+    products = [
+        ("Classic Pen", "$3.99", "A reliable ballpoint pen", (60, 100, 180)),
+        ("Leather Notebook", "$12.99", "Premium A5 notebook", (140, 100, 60)),
+        ("Desk Organizer", "$24.99", "Bamboo desk tidy set", (100, 160, 100)),
+    ]
+    row = 3
+    for name, price, desc, color in products:
+        img = _make_jpeg_bytes(100, 100, color)
+        _add_image(ws, img, f"A{row}", width_px=90, height_px=90)
+        ws.row_dimensions[row].height = 68
+        ws[f"C{row}"] = name
+        ws[f"C{row}"].font = bold
+        ws[f"D{row}"] = price
+        ws[f"C{row + 1}"] = desc
+        row += 4
+    save(wb, "classic70_product_catalog_with_images.xlsx")
+
+
+# ── 71. Multi-sheet workbook, each sheet has an image ─────────────────────
+def classic71_multi_sheet_with_images():
+    wb = Workbook()
+    sheets_data = [
+        ("Overview", (30, 100, 180), [("Metric", "Value"), ("Revenue", 1_200_000), ("Cost", 800_000)]),
+        ("Marketing", (180, 60, 60), [("Channel", "Budget"), ("Digital", 50_000), ("Print", 20_000)]),
+        ("HR", (60, 160, 80), [("Department", "Headcount"), ("Engineering", 45), ("Sales", 30)]),
+    ]
+    for i, (title, color, data) in enumerate(sheets_data):
+        ws = wb.active if i == 0 else wb.create_sheet(title)
+        ws.title = title
+        img = _make_jpeg_bytes(100, 70, color)
+        _add_image(ws, img, "A1", width_px=100, height_px=70)
+        ws.row_dimensions[1].height = 53
+        for j, row_data in enumerate(data, start=2):
+            ws.append(list(row_data))
+    save(wb, "classic71_multi_sheet_with_images.xlsx")
+
+
+# ── 72. Bar chart screenshot + data ───────────────────────────────────────
+def classic72_bar_chart_image_with_data():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sales"
+    bold = Font(bold=True)
+    ws["A1"] = "Monthly Sales Data"
+    ws["A1"].font = Font(bold=True, size=13)
+    ws.append([])
+    ws.append(["Month", "Revenue", "Target"])
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+    revenues = [42000, 48000, 51000, 45000, 56000, 62000]
+    targets = [45000, 47000, 50000, 50000, 54000, 60000]
+    for m, r, t in zip(months, revenues, targets):
+        ws.append([m, r, t])
+    # Embed a simulated chart image
+    chart_img = _make_jpeg_bytes(220, 140, (245, 245, 245))
+    _add_image(ws, chart_img, "E3", width_px=220, height_px=140)
+    save(wb, "classic72_bar_chart_image_with_data.xlsx")
+
+
+# ── 73. Event flyer with banner ───────────────────────────────────────────
+def classic73_event_flyer_with_banner():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Event"
+    banner = _make_jpeg_bytes(300, 100, (80, 30, 140))
+    _add_image(ws, banner, "A1", width_px=300, height_px=100)
+    ws.row_dimensions[1].height = 76
+    bold = Font(bold=True)
+    ws["A8"] = "Tech Summit 2025"
+    ws["A8"].font = Font(bold=True, size=16)
+    ws["A9"] = "Date: April 15, 2025"
+    ws["A10"] = "Venue: Convention Center Hall A"
+    ws["A11"] = "Speakers: 20+ Industry Leaders"
+    ws.append([])
+    ws.append(["Time", "Session", "Speaker"])
+    for row in [
+        ("09:00", "Opening Keynote", "Dr. Jane Kim"),
+        ("10:30", "AI in Practice", "Prof. Mark Liu"),
+        ("13:00", "Cloud Architecture", "Eng. Sara Patel"),
+        ("15:00", "Panel Discussion", "All Speakers"),
+    ]:
+        ws.append(list(row))
+    save(wb, "classic73_event_flyer_with_banner.xlsx")
+
+
+# ── 74. Dashboard with KPIs and screenshot ────────────────────────────────
+def classic74_dashboard_with_kpi_image():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Dashboard"
+    bold = Font(bold=True)
+    ws["A1"] = "Executive Dashboard Q1 2025"
+    ws["A1"].font = Font(bold=True, size=14)
+    ws.append([])
+    ws.append(["KPI", "Target", "Actual", "Status"])
+    for cell in ws[3]:
+        cell.font = bold
+    kpis = [
+        ("Revenue", 500000, 523000, "✓ Above"),
+        ("New Customers", 200, 187, "✗ Below"),
+        ("NPS Score", 70, 74, "✓ Above"),
+        ("Churn Rate", "< 3%", "2.8%", "✓ Above"),
+    ]
+    for kpi in kpis:
+        ws.append(list(kpi))
+    dash_img = _make_jpeg_bytes(180, 120, (240, 248, 255))
+    _add_image(ws, dash_img, "F2", width_px=180, height_px=120)
+    save(wb, "classic74_dashboard_with_kpi_image.xlsx")
+
+
+# ── 75. Certificate with seal image ───────────────────────────────────────
+def classic75_certificate_with_seal():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Certificate"
+    bg_fill = PatternFill(fill_type="solid", fgColor="FEFEFE")
+    bold_large = Font(bold=True, size=20)
+    ws["B2"] = "Certificate of Achievement"
+    ws["B2"].font = bold_large
+    ws["B4"] = "This certifies that"
+    ws["B5"] = "Alice Johnson"
+    ws["B5"].font = Font(bold=True, size=16)
+    ws["B6"] = "has successfully completed the Advanced Python Training"
+    ws["B7"] = "Issued: March 1, 2025"
+    seal = _make_jpeg_bytes(90, 90, (200, 160, 0))
+    _add_image(ws, seal, "F3", width_px=90, height_px=90)
+    save(wb, "classic75_certificate_with_seal.xlsx")
+
+
+# ── 76. Four product images in a grid ─────────────────────────────────────
+def classic76_product_image_grid():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Grid"
+    ws["A1"] = "Best Sellers"
+    ws["A1"].font = Font(bold=True, size=14)
+    # 2x2 grid compact layout: products in cols A-B and D-E to stay within page width
+    products = [
+        ("A3", "B3", (220, 80, 80),  "Red Phone Case",  "$9.99"),
+        ("D3", "E3", (80, 120, 220), "Blue Speakers",   "$49.99"),
+        ("A9", "B9", (80, 180, 80),  "Green Backpack",  "$34.99"),
+        ("D9", "E9", (220, 160, 0),  "Yellow Headset",  "$29.99"),
+    ]
+    for img_anchor, text_anchor, color, name, price in products:
+        img = _make_jpeg_bytes(80, 80, color)
+        _add_image(ws, img, img_anchor, width_px=80, height_px=80)
+        row_num = int("".join(filter(str.isdigit, text_anchor)))
+        ws[text_anchor] = name
+        ws[text_anchor].font = Font(bold=True)
+        next_cell = text_anchor[0] + str(row_num + 1)
+        ws[next_cell] = price
+    save(wb, "classic76_product_image_grid.xlsx")
+
+
+# ── 77. News article layout with hero image ───────────────────────────────
+def classic77_news_article_with_hero_image():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Article"
+    hero = _make_jpeg_bytes(280, 140, (100, 130, 160))
+    _add_image(ws, hero, "A1", width_px=280, height_px=140)
+    ws.row_dimensions[1].height = 107
+    bold = Font(bold=True)
+    ws["A11"] = "AI Transforms Modern Workplaces"
+    ws["A11"].font = Font(bold=True, size=14)
+    ws["A12"] = "By Jane Reporter | March 1, 2025"
+    ws["A12"].font = Font(italic=True, color="808080")
+    paragraphs = [
+        "Artificial intelligence is reshaping how businesses operate globally.",
+        "From automated workflows to intelligent decision support, the impact is clear.",
+        "Companies adopting AI early report 30% productivity gains on average.",
+        "Experts predict continued acceleration through 2030 and beyond.",
+    ]
+    for i, para in enumerate(paragraphs, start=14):
+        ws[f"A{i}"] = para
+    save(wb, "classic77_news_article_with_hero_image.xlsx")
+
+
+# ── 78. Small icon in every row ───────────────────────────────────────────
+def classic78_small_icon_per_row():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Tasks"
+    bold = Font(bold=True)
+    ws.append(["Icon", "Task", "Assignee", "Status"])
+    for cell in ws[1]:
+        cell.font = bold
+    tasks = [
+        ("Fix login bug", "Alice", "Done", (80, 200, 80)),
+        ("Write unit tests", "Bob", "In Progress", (255, 165, 0)),
+        ("Deploy to staging", "Carol", "Pending", (200, 80, 80)),
+        ("Code review PR #42", "Alice", "Done", (80, 200, 80)),
+        ("Update docs", "Dave", "In Progress", (255, 165, 0)),
+    ]
+    for i, (task, assignee, status, color) in enumerate(tasks, start=2):
+        icon = _make_jpeg_bytes(30, 30, color)
+        _add_image(ws, icon, f"A{i}", width_px=25, height_px=25)
+        ws.row_dimensions[i].height = 20
+        ws[f"B{i}"] = task
+        ws[f"C{i}"] = assignee
+        ws[f"D{i}"] = status
+    save(wb, "classic78_small_icon_per_row.xlsx")
+
+
+# ── 79. Wide panoramic banner ─────────────────────────────────────────────
+def classic79_wide_panoramic_banner():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Banner"
+    banner = _make_jpeg_bytes(480, 80, (10, 60, 120))
+    _add_image(ws, banner, "A1", width_px=480, height_px=80)
+    ws.row_dimensions[1].height = 61
+    ws["A9"] = "Product Launch 2025"
+    ws["A9"].font = Font(bold=True, size=18)
+    ws["A10"] = "Introducing the next generation of innovation."
+    ws["A11"] = "Available starting April 1, 2025"
+    ws.append([])
+    ws.append(["Model", "Storage", "RAM", "Price"])
+    for cfg in [("Pro", "256GB", "16GB", "$999"), ("Max", "512GB", "32GB", "$1499")]:
+        ws.append(list(cfg))
+    save(wb, "classic79_wide_panoramic_banner.xlsx")
+
+
+# ── 80. Portrait tall image ───────────────────────────────────────────────
+def classic80_portrait_tall_image():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Portrait"
+    portrait = _make_jpeg_bytes(100, 200, (160, 200, 240))
+    _add_image(ws, portrait, "A1", width_px=90, height_px=180)
+    ws["D1"] = "Profile"
+    ws["D1"].font = Font(bold=True, size=14)
+    ws["D2"] = "Name: Dr. Emily Zhao"
+    ws["D3"] = "Title: Chief Scientist"
+    ws["D4"] = "Dept: Research & Innovation"
+    ws["D5"] = "Location: Singapore Office"
+    ws["D6"] = "Email: emily.zhao@example.com"
+    ws["D7"] = "LinkedIn: linkedin.com/in/ezhao"
+    save(wb, "classic80_portrait_tall_image.xlsx")
+
+
+# ── 81. Step-by-step guide with images ────────────────────────────────────
+def classic81_step_by_step_with_images():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Guide"
+    ws["A1"] = "Quick Start Guide"
+    ws["A1"].font = Font(bold=True, size=14)
+    steps = [
+        ("Step 1: Unbox", "Remove the product from packaging.", (200, 230, 255)),
+        ("Step 2: Charge", "Connect USB-C cable, charge 2 hours.", (200, 255, 210)),
+        ("Step 3: Power On", "Hold power button 3 seconds.", (255, 235, 200)),
+        ("Step 4: Configure", "Follow on-screen setup wizard.", (240, 200, 255)),
+    ]
+    row = 3
+    for title, desc, color in steps:
+        step_img = _make_jpeg_bytes(80, 80, color)
+        _add_image(ws, step_img, f"A{row}", width_px=75, height_px=75)
+        ws.row_dimensions[row].height = 57
+        ws[f"C{row}"] = title
+        ws[f"C{row}"].font = Font(bold=True)
+        ws[f"C{row + 1}"] = desc
+        row += 4
+    save(wb, "classic81_step_by_step_with_images.xlsx")
+
+
+# ── 82. Before/After comparison with images ───────────────────────────────
+def classic82_before_after_images():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Comparison"
+    bold = Font(bold=True)
+    ws["A1"] = "Before"
+    ws["A1"].font = bold
+    ws["D1"] = "After"
+    ws["D1"].font = bold
+    before_img = _make_jpeg_bytes(130, 130, (180, 140, 130))
+    after_img = _make_jpeg_bytes(130, 130, (100, 180, 160))
+    _add_image(ws, before_img, "A2", width_px=130, height_px=130)
+    _add_image(ws, after_img, "D2", width_px=130, height_px=130)
+    for r in range(2, 12):
+        ws.row_dimensions[r].height = 13
+    ws["A12"] = "Old design – legacy UI"
+    ws["D12"] = "New design – modern UI"
+    ws.append([])
+    ws.append(["Metric", "Before", "After", "Delta"])
+    for m, b, a, d in [("Load time", "4.2s", "1.1s", "-74%"), ("Conversion", "2.1%", "4.8%", "+129%")]:
+        ws.append([m, b, a, d])
+    save(wb, "classic82_before_after_images.xlsx")
+
+
+# ── 83. Color swatch palette ──────────────────────────────────────────────
+def classic83_color_swatch_palette():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Palette"
+    ws["A1"] = "Brand Color Palette"
+    ws["A1"].font = Font(bold=True, size=13)
+    colors = [
+        ("Primary Blue", (0, 82, 165)),
+        ("Primary Red", (197, 27, 50)),
+        ("Accent Green", (0, 163, 108)),
+        ("Neutral Grey", (128, 128, 128)),
+        ("Warm Yellow", (255, 193, 7)),
+        ("Dark Navy", (10, 30, 70)),
+    ]
+    row = 3
+    for name, rgb in colors:
+        swatch = _make_jpeg_bytes(60, 40, rgb)
+        _add_image(ws, swatch, f"A{row}", width_px=55, height_px=38)
+        ws.row_dimensions[row].height = 29
+        ws[f"C{row}"] = name
+        ws[f"D{row}"] = f"RGB({rgb[0]}, {rgb[1]}, {rgb[2]})"
+        row += 2
+    save(wb, "classic83_color_swatch_palette.xlsx")
+
+
+# ── 84. Travel destination cards ──────────────────────────────────────────
+def classic84_travel_destination_cards():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Destinations"
+    ws["A1"] = "Top Travel Destinations 2025"
+    ws["A1"].font = Font(bold=True, size=14)
+    destinations = [
+        ("Kyoto, Japan", "Cherry blossoms and ancient temples", (180, 120, 150)),
+        ("Prague, Czech Republic", "Medieval architecture and vibrant culture", (130, 160, 200)),
+        ("Cape Town, South Africa", "Mountains, ocean, and wildlife", (160, 200, 140)),
+    ]
+    row = 3
+    for place, desc, color in destinations:
+        dest_img = _make_jpeg_bytes(140, 90, color)
+        _add_image(ws, dest_img, f"A{row}", width_px=130, height_px=90)
+        ws.row_dimensions[row].height = 68
+        ws[f"D{row}"] = place
+        ws[f"D{row}"].font = Font(bold=True)
+        ws[f"D{row + 1}"] = desc
+        row += 5
+    save(wb, "classic84_travel_destination_cards.xlsx")
+
+
+# ── 85. Science lab results with specimen image ───────────────────────────
+def classic85_lab_results_with_image():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Lab Results"
+    bold = Font(bold=True)
+    ws["A1"] = "Sample Analysis Report"
+    ws["A1"].font = Font(bold=True, size=13)
+    specimen_img = _make_jpeg_bytes(120, 100, (210, 220, 230))
+    _add_image(ws, specimen_img, "E2", width_px=120, height_px=100)
+    ws.append([])
+    ws.append(["Parameter", "Value", "Unit", "Reference Range", "Flag"])
+    for cell in ws[3]:
+        cell.font = bold
+    results = [
+        ("pH", 7.35, "", "7.35 – 7.45", "Normal"),
+        ("Glucose", 5.2, "mmol/L", "3.9 – 5.5", "Normal"),
+        ("Sodium", 142, "mEq/L", "136 – 145", "Normal"),
+        ("Potassium", 5.0, "mEq/L", "3.5 – 5.0", "Normal"),
+        ("Creatinine", 1.4, "mg/dL", "0.6 – 1.2", "High"),
+    ]
+    for r in results:
+        ws.append(list(r))
+    save(wb, "classic85_lab_results_with_image.xlsx")
+
+
+# ── 86. Software screenshot + feature list ────────────────────────────────
+def classic86_software_screenshot_features():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Features"
+    screenshot = _make_jpeg_bytes(200, 150, (230, 240, 250))
+    _add_image(ws, screenshot, "A1", width_px=200, height_px=150)
+    ws["D1"] = "MiniApp v2.0"
+    ws["D1"].font = Font(bold=True, size=15)
+    ws["D2"] = "The fastest lightweight app"
+    for r in range(1, 13):
+        ws.row_dimensions[r].height = 12
+    ws.append([])
+    ws.append(["Feature", "Available"])
+    bold = Font(bold=True)
+    ws[ws.max_row][0].font = bold
+    features = [
+        ("Dark Mode", "Yes"), ("Auto Save", "Yes"), ("Cloud Sync", "Yes"),
+        ("Offline Mode", "Yes"), ("API Access", "Pro only"), ("Export to PDF", "Yes"),
+    ]
+    for f in features:
+        ws.append(list(f))
+    save(wb, "classic86_software_screenshot_features.xlsx")
+
+
+# ── 87. Sports results with team logos ────────────────────────────────────
+def classic87_sports_results_with_logos():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Results"
+    bold = Font(bold=True)
+    ws["A1"] = "League Standings - Season 2025"
+    ws["A1"].font = Font(bold=True, size=13)
+    ws.append([])
+    ws.append(["Logo", "Team", "W", "L", "D", "Pts"])
+    for cell in ws[3]:
+        cell.font = bold
+    teams = [
+        ("Eagles", 18, 4, 2, 56, (0, 80, 180)),
+        ("Tigers", 15, 7, 2, 47, (220, 120, 0)),
+        ("Sharks", 13, 8, 3, 42, (0, 160, 200)),
+        ("Wolves", 10, 10, 4, 34, (120, 30, 30)),
+    ]
+    row = 4
+    for team, w, l, d, pts, color in teams:
+        logo = _make_jpeg_bytes(40, 40, color)
+        _add_image(ws, logo, f"A{row}", width_px=35, height_px=32)
+        ws.row_dimensions[row].height = 26
+        ws[f"B{row}"] = team
+        ws[f"C{row}"] = w
+        ws[f"D{row}"] = l
+        ws[f"E{row}"] = d
+        ws[f"F{row}"] = pts
+        row += 1
+    save(wb, "classic87_sports_results_with_logos.xlsx")
+
+
+# ── 88. Image after data rows ─────────────────────────────────────────────
+def classic88_image_after_data():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Report"
+    bold = Font(bold=True)
+    ws.append(["Quarter", "Revenue", "Expenses", "Profit"])
+    for cell in ws[1]:
+        cell.font = bold
+    for q, r, e in [("Q1", 120000, 80000), ("Q2", 135000, 88000),
+                    ("Q3", 142000, 91000), ("Q4", 160000, 95000)]:
+        ws.append([q, r, e, r - e])
+    ws.append([])
+    footer_img = _make_jpeg_bytes(200, 80, (220, 235, 255))
+    _add_image(ws, footer_img, "A8", width_px=200, height_px=80)
+    ws["D8"] = "Prepared by Finance Team"
+    ws["D9"] = "Confidential - Q4 2025"
+    save(wb, "classic88_image_after_data.xlsx")
+
+
+# ── 89. Nutrition label with product image ────────────────────────────────
+def classic89_nutrition_label_with_image():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Nutrition"
+    bold = Font(bold=True)
+    product_img = _make_jpeg_bytes(100, 130, (230, 200, 160))
+    _add_image(ws, product_img, "A1", width_px=95, height_px=125)
+    ws["C1"] = "Nutrition Facts"
+    ws["C1"].font = Font(bold=True, size=14)
+    ws["C2"] = "Serving Size: 30g (approx. 1 cup)"
+    ws.append([])
+    ws.append(["Nutrient", "Amount per serving", "% Daily Value"])
+    for cell in ws[4]:
+        cell.font = bold
+    nutrients = [
+        ("Calories", "120 kcal", ""),
+        ("Total Fat", "3g", "4%"),
+        ("Saturated Fat", "0.5g", "3%"),
+        ("Sodium", "160mg", "7%"),
+        ("Total Carbohydrate", "22g", "8%"),
+        ("Dietary Fiber", "3g", "11%"),
+        ("Sugars", "4g", ""),
+        ("Protein", "3g", ""),
+    ]
+    for n in nutrients:
+        ws.append(list(n))
+    save(wb, "classic89_nutrition_label_with_image.xlsx")
+
+
+# ── 90. Project status with milestone images ──────────────────────────────
+def classic90_project_status_with_milestones():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Project"
+    bold = Font(bold=True)
+    ws["A1"] = "Project Orion – Status Report"
+    ws["A1"].font = Font(bold=True, size=14)
+    ws["A2"] = "Reporting Period: Q1 2025"
+    ws.append([])
+    ws.append(["Milestone", "Due Date", "Owner", "Status"])
+    for cell in ws[4]:
+        cell.font = bold
+    milestones = [
+        ("Requirements Freeze", "Jan 15", "PM Team", "Complete"),
+        ("Architecture Review", "Feb 1", "Tech Lead", "Complete"),
+        ("Alpha Release", "Feb 28", "Dev Team", "In Progress"),
+        ("Beta Testing", "Mar 31", "QA Team", "Not Started"),
+        ("Production Deploy", "Apr 15", "DevOps", "Not Started"),
+    ]
+    for m in milestones:
+        ws.append(list(m))
+    ws.append([])
+    team_img = _make_jpeg_bytes(160, 100, (200, 220, 200))
+    _add_image(ws, team_img, "F4", width_px=160, height_px=100)
+    save(wb, "classic90_project_status_with_milestones.xlsx")
+
+
 # ── Main ─────────────────────────────────────────────────────────────────
 def main():
     ensure_output_dir()
-    print(f"Generating 60 classic .xlsx files in: {OUTPUT_DIR}\n")
+    print(f"Generating 90 classic .xlsx files in: {OUTPUT_DIR}\n")
 
     generators = [
         classic01_basic_table_with_headers,
@@ -1122,6 +1870,37 @@ def main():
         classic58_mixed_numeric_formats,
         classic59_multi_sheet_summary,
         classic60_large_wide_table,
+        # 61-90: image cases
+        classic61_product_card_with_image,
+        classic62_company_logo_header,
+        classic63_two_products_side_by_side,
+        classic64_employee_directory_with_photo,
+        classic65_inventory_with_product_photos,
+        classic66_invoice_with_logo,
+        classic67_real_estate_listing,
+        classic68_restaurant_menu,
+        classic69_image_only_sheet,
+        classic70_product_catalog_with_images,
+        classic71_multi_sheet_with_images,
+        classic72_bar_chart_image_with_data,
+        classic73_event_flyer_with_banner,
+        classic74_dashboard_with_kpi_image,
+        classic75_certificate_with_seal,
+        classic76_product_image_grid,
+        classic77_news_article_with_hero_image,
+        classic78_small_icon_per_row,
+        classic79_wide_panoramic_banner,
+        classic80_portrait_tall_image,
+        classic81_step_by_step_with_images,
+        classic82_before_after_images,
+        classic83_color_swatch_palette,
+        classic84_travel_destination_cards,
+        classic85_lab_results_with_image,
+        classic86_software_screenshot_features,
+        classic87_sports_results_with_logos,
+        classic88_image_after_data,
+        classic89_nutrition_label_with_image,
+        classic90_project_status_with_milestones,
     ]
 
     for gen in generators:

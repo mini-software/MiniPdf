@@ -26,6 +26,6 @@ dotnet_ai_azure_book/
 tests/MiniPdf.Scripts/output/
 tests/MiniPdf.Scripts/pdf_output/
 
-## Benchmark reports (ignore JSON/MD, keep HTML & images)
-tests/MiniPdf.Benchmark/reports/comparison_report.json
-tests/MiniPdf.Benchmark/reports/comparison_report.md
+## Benchmark
+tests/MiniPdf.Benchmark/reference_pdfs/
+tests/MiniPdf.Benchmark/__pycache__/

@@ -20,6 +20,7 @@ A minimal, zero-dependency .NET library for converting Excel (.xlsx) files to PD
 ## Features
 
 - **Excel-to-PDF** — Convert `.xlsx` files to paginated PDF with automatic column layout
+- **Embedded images** — JPEG and PNG images embedded in Excel sheets are rendered in the PDF output
 - **Zero dependencies** — Uses only built-in .NET APIs (no external packages)
 - **Valid PDF 1.4** output
 - **Word-to-PDF** — In development
@@ -55,19 +56,19 @@ byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 
 ## Benchmark
 
-MiniPdf output is compared against LibreOffice as the reference renderer across **60 classic test cases**.
+MiniPdf output is compared against LibreOffice as the reference renderer across **90 classic test cases** (including 30 image-embedding cases).
 
 | Category | Count | Threshold |
 |---|---|---|
-| 🟢 Excellent | 54 | ≥ 90% |
-| 🟡 Acceptable | 5 | 70% – 90% |
+| 🟢 Excellent | 82 | ≥ 90% |
+| 🟡 Acceptable | 7 | 70% – 90% |
 | 🔴 Needs Improvement | 1 | < 70% |
 
-**Average overall score: 96.2%** (text similarity 40% + visual similarity 40% + page count 20%)
+**Average overall score: 96.4%** (text similarity 40% + visual similarity 40% + page count 20%)
 
 ### Visual Comparison
 
-All 60 test cases comparing MiniPdf output (left) vs LibreOffice reference (right). Page 1 shown for multi-page results.
+All 90 test cases comparing MiniPdf output (left) vs LibreOffice reference (right). Page 1 shown for multi-page results.
 
 <table>
 <tr><th>Test Case</th><th>MiniPdf</th><th>LibreOffice (Reference)</th><th>Score</th></tr>
@@ -123,7 +124,7 @@ All 60 test cases comparing MiniPdf output (left) vs LibreOffice reference (righ
   <td><b>classic09</b><br/>Long text<br/><i>MiniPdf: 1 page<br/>Reference: 12 pages</i></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic09_long_text_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic09_long_text_p1_reference.png" width="320"/></td>
-  <td>🔴 20.3%</td>
+  <td>🔴 21.9%</td>
 </tr>
 <tr>
   <td><b>classic10</b><br/>Special XML characters</td>
@@ -207,7 +208,7 @@ All 60 test cases comparing MiniPdf output (left) vs LibreOffice reference (righ
   <td><b>classic23</b><br/>Unicode text</td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic23_unicode_text_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic23_unicode_text_p1_reference.png" width="320"/></td>
-  <td>🟡 86.1%</td>
+  <td>🟡 87.1%</td>
 </tr>
 <tr>
   <td><b>classic24</b><br/>Red text</td>
@@ -333,7 +334,7 @@ All 60 test cases comparing MiniPdf output (left) vs LibreOffice reference (righ
   <td><b>classic44</b><br/>Employee roster</td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic44_employee_roster_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic44_employee_roster_p1_reference.png" width="320"/></td>
-  <td>🟡 81.6%</td>
+  <td>🟡 87.3%</td>
 </tr>
 <tr>
   <td><b>classic45</b><br/>Sales by region (4 sheets)</td>
@@ -375,7 +376,7 @@ All 60 test cases comparing MiniPdf output (left) vs LibreOffice reference (righ
   <td><b>classic51</b><br/>Product catalog</td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic51_product_catalog_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic51_product_catalog_p1_reference.png" width="320"/></td>
-  <td>🟡 77.2%</td>
+  <td>🟡 81.9%</td>
 </tr>
 <tr>
   <td><b>classic52</b><br/>Pivot summary</td>
@@ -405,13 +406,13 @@ All 60 test cases comparing MiniPdf output (left) vs LibreOffice reference (righ
   <td><b>classic56</b><br/>Alternating row colors</td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic56_alternating_row_colors_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic56_alternating_row_colors_p1_reference.png" width="320"/></td>
-  <td>🟢 98.9%</td>
+  <td>� 75.4%</td>
 </tr>
 <tr>
   <td><b>classic57</b><br/>CJK-only sheet</td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic57_cjk_only_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic57_cjk_only_p1_reference.png" width="320"/></td>
-  <td>🟡 84.0%</td>
+  <td>🟡 85.2%</td>
 </tr>
 <tr>
   <td><b>classic58</b><br/>Mixed numeric formats</td>
@@ -430,6 +431,186 @@ All 60 test cases comparing MiniPdf output (left) vs LibreOffice reference (righ
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic60_large_wide_table_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic60_large_wide_table_p1_reference.png" width="320"/></td>
   <td>🟢 94.9%</td>
+</tr>
+<tr>
+  <td><b>classic61</b><br/>Product card with image</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic61_product_card_with_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic61_product_card_with_image_p1_reference.png" width="320"/></td>
+  <td>🟢 99.3%</td>
+</tr>
+<tr>
+  <td><b>classic62</b><br/>Company logo header</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic62_company_logo_header_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic62_company_logo_header_p1_reference.png" width="320"/></td>
+  <td>🟢 98.8%</td>
+</tr>
+<tr>
+  <td><b>classic63</b><br/>Two products side by side</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic63_two_products_side_by_side_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic63_two_products_side_by_side_p1_reference.png" width="320"/></td>
+  <td>🟢 99.2%</td>
+</tr>
+<tr>
+  <td><b>classic64</b><br/>Employee directory with photo</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic64_employee_directory_with_photo_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic64_employee_directory_with_photo_p1_reference.png" width="320"/></td>
+  <td>🟢 98.1%</td>
+</tr>
+<tr>
+  <td><b>classic65</b><br/>Inventory with product photos</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic65_inventory_with_product_photos_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic65_inventory_with_product_photos_p1_reference.png" width="320"/></td>
+  <td>🟢 98.2%</td>
+</tr>
+<tr>
+  <td><b>classic66</b><br/>Invoice with logo</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic66_invoice_with_logo_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic66_invoice_with_logo_p1_reference.png" width="320"/></td>
+  <td>🟢 96.2%</td>
+</tr>
+<tr>
+  <td><b>classic67</b><br/>Real estate listing</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic67_real_estate_listing_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic67_real_estate_listing_p1_reference.png" width="320"/></td>
+  <td>🟢 98.5%</td>
+</tr>
+<tr>
+  <td><b>classic68</b><br/>Restaurant menu with photos</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic68_restaurant_menu_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic68_restaurant_menu_p1_reference.png" width="320"/></td>
+  <td>🟢 92.3%</td>
+</tr>
+<tr>
+  <td><b>classic69</b><br/>Image-only sheet</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic69_image_only_sheet_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic69_image_only_sheet_p1_reference.png" width="320"/></td>
+  <td>🟢 99.1%</td>
+</tr>
+<tr>
+  <td><b>classic70</b><br/>Product catalog with images</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic70_product_catalog_with_images_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic70_product_catalog_with_images_p1_reference.png" width="320"/></td>
+  <td>🟢 96.3%</td>
+</tr>
+<tr>
+  <td><b>classic71</b><br/>Multi-sheet with images (3 sheets)</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic71_multi_sheet_with_images_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic71_multi_sheet_with_images_p1_reference.png" width="320"/></td>
+  <td>🟢 99.2%</td>
+</tr>
+<tr>
+  <td><b>classic72</b><br/>Bar chart image with data</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic72_bar_chart_image_with_data_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic72_bar_chart_image_with_data_p1_reference.png" width="320"/></td>
+  <td>🟢 97.7%</td>
+</tr>
+<tr>
+  <td><b>classic73</b><br/>Event flyer with banner</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic73_event_flyer_with_banner_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic73_event_flyer_with_banner_p1_reference.png" width="320"/></td>
+  <td>🟢 93.9%</td>
+</tr>
+<tr>
+  <td><b>classic74</b><br/>Dashboard with KPI image</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic74_dashboard_with_kpi_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic74_dashboard_with_kpi_image_p1_reference.png" width="320"/></td>
+  <td>🟢 97.2%</td>
+</tr>
+<tr>
+  <td><b>classic75</b><br/>Certificate with seal</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic75_certificate_with_seal_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic75_certificate_with_seal_p1_reference.png" width="320"/></td>
+  <td>🟢 99.2%</td>
+</tr>
+<tr>
+  <td><b>classic76</b><br/>Product image grid (2×2)</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic76_product_image_grid_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic76_product_image_grid_p1_reference.png" width="320"/></td>
+  <td>🟢 98.5%</td>
+</tr>
+<tr>
+  <td><b>classic77</b><br/>News article with hero image</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic77_news_article_with_hero_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic77_news_article_with_hero_image_p1_reference.png" width="320"/></td>
+  <td>🟢 97.3%</td>
+</tr>
+<tr>
+  <td><b>classic78</b><br/>Small icon per row</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic78_small_icon_per_row_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic78_small_icon_per_row_p1_reference.png" width="320"/></td>
+  <td>🟢 95.9%</td>
+</tr>
+<tr>
+  <td><b>classic79</b><br/>Wide panoramic banner</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic79_wide_panoramic_banner_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic79_wide_panoramic_banner_p1_reference.png" width="320"/></td>
+  <td>🟢 97.7%</td>
+</tr>
+<tr>
+  <td><b>classic80</b><br/>Portrait tall image</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic80_portrait_tall_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic80_portrait_tall_image_p1_reference.png" width="320"/></td>
+  <td>🟢 98.9%</td>
+</tr>
+<tr>
+  <td><b>classic81</b><br/>Step-by-step with images</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic81_step_by_step_with_images_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic81_step_by_step_with_images_p1_reference.png" width="320"/></td>
+  <td>🟢 98.7%</td>
+</tr>
+<tr>
+  <td><b>classic82</b><br/>Before/after images</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic82_before_after_images_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic82_before_after_images_p1_reference.png" width="320"/></td>
+  <td>🟢 97.4%</td>
+</tr>
+<tr>
+  <td><b>classic83</b><br/>Color swatch palette</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic83_color_swatch_palette_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic83_color_swatch_palette_p1_reference.png" width="320"/></td>
+  <td>🟢 97.4%</td>
+</tr>
+<tr>
+  <td><b>classic84</b><br/>Travel destination cards</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic84_travel_destination_cards_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic84_travel_destination_cards_p1_reference.png" width="320"/></td>
+  <td>🟢 97.8%</td>
+</tr>
+<tr>
+  <td><b>classic85</b><br/>Lab results with image</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic85_lab_results_with_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic85_lab_results_with_image_p1_reference.png" width="320"/></td>
+  <td>🟢 97.2%</td>
+</tr>
+<tr>
+  <td><b>classic86</b><br/>Software screenshot features</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic86_software_screenshot_features_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic86_software_screenshot_features_p1_reference.png" width="320"/></td>
+  <td>🟢 97.1%</td>
+</tr>
+<tr>
+  <td><b>classic87</b><br/>Sports results with logos</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic87_sports_results_with_logos_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic87_sports_results_with_logos_p1_reference.png" width="320"/></td>
+  <td>🟢 99.5%</td>
+</tr>
+<tr>
+  <td><b>classic88</b><br/>Image after data</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic88_image_after_data_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic88_image_after_data_p1_reference.png" width="320"/></td>
+  <td>🟢 98.9%</td>
+</tr>
+<tr>
+  <td><b>classic89</b><br/>Nutrition label with image</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic89_nutrition_label_with_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic89_nutrition_label_with_image_p1_reference.png" width="320"/></td>
+  <td>🟢 96.5%</td>
+</tr>
+<tr>
+  <td><b>classic90</b><br/>Project status with milestones</td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic90_project_status_with_milestones_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic90_project_status_with_milestones_p1_reference.png" width="320"/></td>
+  <td>🟡 87.2%</td>
 </tr>
 </table>
 

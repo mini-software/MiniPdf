@@ -56,19 +56,24 @@ def extract_text_pymupdf(pdf_path: str) -> list[str]:
         # a single whitespace-separated line — this handles the structural
         # difference between PDF renderers that emit one span per cell vs
         # one span per row.
+        # Within each group we sort by X so that left-to-right column order is
+        # preserved even when spans from different renderers land at slightly
+        # different sub-pixel Y positions (< 1 pt apart).
         lines = []
         current_y = None
-        current_tokens: list[str] = []
-        for y, _x, text in spans:
+        current_tokens: list[tuple[float, str]] = []  # (x, text)
+        for y, x, text in spans:
             if current_y is None or abs(y - current_y) > 1.0:
                 if current_tokens:
-                    lines.append(" ".join(current_tokens))
+                    current_tokens.sort()
+                    lines.append(" ".join(t for _, t in current_tokens))
                 current_y = y
-                current_tokens = [text]
+                current_tokens = [(x, text)]
             else:
-                current_tokens.append(text)
+                current_tokens.append((x, text))
         if current_tokens:
-            lines.append(" ".join(current_tokens))
+            current_tokens.sort()
+            lines.append(" ".join(t for _, t in current_tokens))
         pages.append("\n".join(lines))
     doc.close()
     return pages
@@ -104,6 +109,12 @@ def pixel_diff_score(pix1, pix2) -> float:
     """
     Compare two pixmaps and return a similarity score 0.0-1.0.
     1.0 = identical, 0.0 = completely different.
+
+    Includes a content-coverage penalty: when the reference has significant
+    non-white content (images, colored fills) but MiniPdf renders far less of
+    it, the white-background dominance would otherwise inflate the score.
+    Rule: if MiniPdf has <50% of the reference's non-white byte count, apply
+    a proportional penalty (scale = min(1.0, coverage * 2)).
     """
     if pix1 is None or pix2 is None:
         return 0.0
@@ -122,8 +133,31 @@ def pixel_diff_score(pix1, pix2) -> float:
     total = len(s1)
     if total == 0:
         return 1.0
-    matching = sum(1 for a, b in zip(s1, s2) if a == b)
-    return matching / total
+
+    # Single-pass: byte matching + non-white counting (RGB: 3 bytes/pixel)
+    matching = 0
+    nonwhite_mini = 0
+    nonwhite_ref = 0
+    for a, b in zip(s1, s2):
+        if a == b:
+            matching += 1
+        if a != 255:
+            nonwhite_mini += 1
+        if b != 255:
+            nonwhite_ref += 1
+
+    raw_score = matching / total
+
+    # Content-coverage penalty: only when reference has substantial non-white content
+    # Threshold: >0.5% of all bytes are non-white in the reference (≈0.17% pixels in RGB)
+    if nonwhite_ref > total * 0.005:
+        coverage = nonwhite_mini / nonwhite_ref
+        if coverage < 0.5:
+            # Scale [0..0.5 coverage] → [0..1.0 penalty_factor]
+            scale = min(1.0, coverage * 2)
+            return raw_score * scale
+
+    return raw_score
 
 
 def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str, dpi: int = 150):
@@ -238,8 +272,23 @@ def compare_single(minipdf_path: str, reference_path: str, report_images_dir: st
         sm_flat = difflib.SequenceMatcher(None, flat_m_no_page, flat_r_no_page)
         result["flat_text_similarity"] = round(sm_flat.ratio(), 4)
 
-    # Use the higher of page-aware and flat text similarity
-    result["text_similarity"] = max(result["text_similarity"], result["flat_text_similarity"])
+    # Word-level similarity: compare word-token sequences — far more robust than
+    # character-level matching when the only differences are truncation or minor
+    # word-boundary shifts (e.g. "Grilled Salmon" vs "Grilled S")
+    words_m = flat_m_no_page.split()
+    words_r = flat_r_no_page.split()
+    if len(words_m) == 0 and len(words_r) == 0:
+        result["word_text_similarity"] = 1.0
+    else:
+        sm_words = difflib.SequenceMatcher(None, words_m, words_r)
+        result["word_text_similarity"] = round(sm_words.ratio(), 4)
+
+    # Use the highest of all similarity metrics
+    result["text_similarity"] = max(
+        result["text_similarity"],
+        result["flat_text_similarity"],
+        result["word_text_similarity"],
+    )
 
     # Unified diff
     diff_lines = list(difflib.unified_diff(

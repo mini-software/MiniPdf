@@ -96,9 +96,19 @@ internal static class ExcelToPdfConverter
 
     private static void RenderSheet(PdfDocument doc, ExcelSheet sheet, ConversionOptions options)
     {
-        if (sheet.Rows.Count == 0) return;
+        // Skip only if there's truly nothing to render (no rows AND no images).
+        if (sheet.Rows.Count == 0 && sheet.Images.Count == 0) return;
 
-        var maxCols = sheet.Rows.Max(r => r.Count);
+        var maxCols = sheet.Rows.Count > 0 ? sheet.Rows.Max(r => r.Count) : 0;
+
+        // Extend column range to include any image anchor columns so images beyond
+        // the data area (e.g. a chart placed in column E when data ends at C) are rendered.
+        if (sheet.Images.Count > 0)
+        {
+            var maxImgColEnd = sheet.Images.Max(img => img.AnchorCol + Math.Max(1, img.SpanCols));
+            maxCols = Math.Max(maxCols, maxImgColEnd);
+        }
+
         if (maxCols == 0)
         {
             // All rows are empty — still render an empty page worth of vertical space
@@ -202,6 +212,23 @@ internal static class ExcelToPdfConverter
         PdfPage? currentPage = null;
         var currentY = 0f;
 
+        // Track cumulative X start position for each column (for image placement)
+        var colXStarts = new float[columns.Length];
+        {
+            var x = options.MarginLeft;
+            for (var i = 0; i < columns.Length; i++)
+            {
+                colXStarts[i] = x;
+                x += colWidths[i] + columnPadding;
+            }
+        }
+
+        // Map Excel row index → Y (bottom of that row's text block), for image placement.
+        // We record the TOP of each row (currentY just before rendering it).
+        var rowTopY = new Dictionary<int, float>(); // excelRowIndex → page Y at top of row
+        var rowPage = new Dictionary<int, PdfPage>();
+        var excelRowIndex = 0;
+
         void EnsurePage()
         {
             if (currentPage == null || currentY < options.MarginBottom)
@@ -224,10 +251,14 @@ internal static class ExcelToPdfConverter
         {
             EnsurePage();
 
+            // Record top-of-row state for image placement
+            rowTopY[excelRowIndex] = currentY;
+            rowPage[excelRowIndex] = currentPage!;
+
             if (row.Count == 0)
             {
-                // Empty row (sparse gap) — still advance Y
                 currentY -= lineHeight;
+                excelRowIndex++;
                 continue;
             }
 
@@ -265,6 +296,9 @@ internal static class ExcelToPdfConverter
             {
                 currentPage = doc.AddPage(pageWidth, pageHeight);
                 currentY = pageHeight - options.MarginTop;
+                // Update the row's top position on the new page
+                rowTopY[excelRowIndex] = currentY;
+                rowPage[excelRowIndex] = currentPage;
             }
 
             // Render cells
@@ -289,6 +323,73 @@ internal static class ExcelToPdfConverter
             }
 
             currentY -= rowHeight;
+            excelRowIndex++;
+        }
+
+        // Place embedded images that overlap with the rendered columns
+        if (sheet.Images.Count == 0) return;
+
+        // For image-only sheets (no data rows) ensure at least one page exists.
+        EnsurePage();
+
+        var usableWidth = pageWidth - options.MarginLeft - options.MarginRight;
+
+        foreach (var img in sheet.Images)
+        {
+            // Only render image if its anchor column is within the current column group
+            var colGroupStart = columns[0];
+            var colGroupEnd = columns[^1];
+            if (img.AnchorCol < colGroupStart || img.AnchorCol > colGroupEnd) continue;
+
+            // Resolve anchor row position. Falls back to estimated Y for image-only sheets
+            // where no data rows populated rowTopY.
+            if (!rowTopY.TryGetValue(img.AnchorRow, out var imgTopY))
+            {
+                // Estimate: start at top-margin and step down by lineHeight per row.
+                imgTopY = (pageHeight - options.MarginTop) - img.AnchorRow * lineHeight;
+                if (imgTopY < options.MarginBottom) imgTopY = pageHeight - options.MarginTop;
+            }
+            if (!rowPage.TryGetValue(img.AnchorRow, out var imgPage))
+            {
+                imgPage = currentPage!;
+            }
+
+            // Calculate X: find position of anchor column within group
+            var colGroupIdx = Array.IndexOf(columns, img.AnchorCol);
+            if (colGroupIdx < 0)
+            {
+                // Anchor col not directly in group — start at margin
+                colGroupIdx = 0;
+            }
+            var imgX = colXStarts[colGroupIdx];
+
+            // Calculate render size.
+            // Prefer explicit EMU dimensions (from <ext cx cy> in oneCellAnchor).
+            // Fallback: derive from spanCols × column widths and spanRows × lineHeight.
+            float imgRenderWidth, imgRenderHeight;
+            const float EmuToPt = 1f / 12700f;
+            if (img.WidthEmu > 0 && img.HeightEmu > 0)
+            {
+                imgRenderWidth  = Math.Min(img.WidthEmu  * EmuToPt, usableWidth * 0.95f);
+                imgRenderHeight = Math.Min(img.HeightEmu * EmuToPt, pageHeight  * 0.75f);
+            }
+            else
+            {
+                imgRenderWidth = 0f;
+                for (var ci = colGroupIdx; ci < Math.Min(colGroupIdx + img.SpanCols, columns.Length); ci++)
+                    imgRenderWidth += colWidths[ci] + (ci > colGroupIdx ? columnPadding : 0);
+                imgRenderWidth  = Math.Min(Math.Max(imgRenderWidth, 36f), usableWidth * 0.8f);
+                imgRenderHeight = Math.Max(lineHeight * img.SpanRows, imgRenderWidth * 0.75f);
+                imgRenderHeight = Math.Min(imgRenderHeight, pageHeight * 0.5f);
+            }
+
+            // In PDF coordinates: Y is bottom of image; top = imgTopY, bottom = top - height
+            var imgY = imgTopY - imgRenderHeight;
+            if (imgY < options.MarginBottom)
+                imgY = options.MarginBottom;
+
+            var format = img.Extension is "jpg" or "jpeg" ? "jpg" : "png";
+            imgPage.AddImage(img.Data, format, imgX, imgY, imgRenderWidth, imgRenderHeight);
         }
     }
 
@@ -354,7 +455,8 @@ internal static class ExcelToPdfConverter
 
     /// <summary>
     /// Calculates natural (unscaled) column widths with min/max bounds.
-    /// These widths are used for the grouping decision.
+    /// When an Excel column width is explicitly set (or default), that takes precedence
+    /// over content-based width so the output matches the source spreadsheet layout.
     /// </summary>
     private static float[] CalculateNaturalColumnWidths(ExcelSheet sheet, int maxCols, float usableWidth, ConversionOptions options)
     {
@@ -376,11 +478,27 @@ internal static class ExcelToPdfConverter
         var minColWidth = maxCols > 12 ? avgCharWidth * 9 : avgCharWidth * 4;
 
         var widths = new float[maxCols];
+        // Use Excel column widths only when the spreadsheet explicitly specifies them
+        var hasExcelWidths = sheet.ColumnWidths.Count > 0 || sheet.DefaultColumnWidth > 0f;
+
         for (var i = 0; i < maxCols; i++)
         {
-            // Add 2 chars of internal buffer for readability and text extraction spacing
-            var natural = (Math.Max(colMaxLengths[i], 3) + 2) * avgCharWidth;
-            widths[i] = Math.Clamp(natural, minColWidth, maxColWidth);
+            if (hasExcelWidths)
+            {
+                // Use Excel column width (explicit override or explicit default)
+                var charUnits = sheet.ColumnWidths.TryGetValue(i, out var ew)
+                    ? ew
+                    : sheet.DefaultColumnWidth > 0f ? sheet.DefaultColumnWidth : 8.43f;
+                var excelPts = ExcelSheet.CharUnitsToPoints(charUnits);
+                // Clamp to reasonable bounds but respect the spreadsheet's intent
+                widths[i] = Math.Clamp(excelPts, minColWidth, maxColWidth);
+            }
+            else
+            {
+                // Fall back to content-based width
+                var natural = (Math.Max(colMaxLengths[i], 3) + 2) * avgCharWidth;
+                widths[i] = Math.Clamp(natural, minColWidth, maxColWidth);
+            }
         }
 
         return widths;
