@@ -1,7 +1,7 @@
 using System.IO.Compression;
 using System.Text;
 
-namespace MiniPdf.Tests;
+namespace MiniSoftware.Tests;
 
 public class ExcelToPdfConverterTests
 {

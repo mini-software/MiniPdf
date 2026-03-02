@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace MiniPdf;
+namespace MiniSoftware;
 
 /// <summary>
 /// Converts Excel (.xlsx) files to PDF documents.

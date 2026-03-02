@@ -1,4 +1,4 @@
-namespace MiniPdf;
+namespace MiniSoftware;
 
 /// <summary>
 /// Main entry point for MiniPdf operations.

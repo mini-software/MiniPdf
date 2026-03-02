@@ -1,7 +1,7 @@
 using System.IO.Compression;
 using System.Xml.Linq;
 
-namespace MiniPdf;
+namespace MiniSoftware;
 
 /// <summary>
 /// Reads basic text data from Excel (.xlsx) files.

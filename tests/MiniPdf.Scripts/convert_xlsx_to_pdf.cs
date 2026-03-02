@@ -1,6 +1,6 @@
 #:project ../../src/MiniPdf/MiniPdf.csproj
 
-using Mp = MiniPdf.MiniPdf;
+using Mp = MiniSoftware.MiniPdf;
 
 // Resolve directories relative to this script file
 var scriptDir = Path.GetDirectoryName(AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar));

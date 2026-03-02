@@ -1,4 +1,4 @@
-namespace MiniPdf;
+namespace MiniSoftware;
 
 /// <summary>
 /// Represents an image to be rendered on a PDF page.
