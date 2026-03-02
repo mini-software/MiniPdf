@@ -1,5 +1,20 @@
 # MiniPdf
 
+<div align="center">
+<p>
+<a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
+<a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/dt/MiniPdf.svg" alt="NuGet Downloads"></a>
+<a href="https://github.com/shps951023/MiniPdf" rel="nofollow"><img src="https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github" alt="GitHub stars"></a>
+<a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/badge/.NET-%3E%3D%209.0-red.svg" alt=".NET 9.0+"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
+</p>
+<p>
+English | <a href="README.zh-TW.md">繁體中文</a>
+</p>
+</div>
+
+---
+
 A minimal, zero-dependency .NET library for converting Excel (.xlsx) files to PDF.
 
 > **Security**: All PRs are automatically reviewed by Copilot AI and Azure AI security scan for vulnerabilities.
@@ -420,4 +435,4 @@ All 60 test cases comparing MiniPdf output (left) vs LibreOffice reference (righ
 
 ## License
 
-MIT
+This project is licensed under the [Apache License 2.0](LICENSE).
