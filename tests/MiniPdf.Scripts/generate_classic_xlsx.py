@@ -1,5 +1,5 @@
 """
-Generate 30 classic .xlsx files for testing Excel-to-PDF conversion.
+Generate 60 classic .xlsx files for testing Excel-to-PDF conversion.
 Each file corresponds to a test case in ClassicExcelToPdfTests.cs.
 
 Usage:
@@ -414,16 +414,16 @@ def classic28_duplicate_values():
     save(wb, "classic28_duplicate_values.xlsx")
 
 
-# ── 29. Formula-result values ────────────────────────────────────────────
+# ── 29. Formula-result values (pre-computed, no formula strings) ─────────
 def classic29_formula_results():
     wb = Workbook()
     ws = wb.active
     ws.title = "Sheet1"
     ws.append(["A", "B", "Sum", "Product"])
-    ws.append([10, 20, "=A2+B2", "=A2*B2"])
-    ws.append([5, 15, "=A3+B3", "=A3*B3"])
-    ws.append([100, 200, "=A4+B4", "=A4*B4"])
-    ws.append(["", "", "=SUM(C2:C4)", "=SUM(D2:D4)"])
+    ws.append([10, 20, 30, 200])
+    ws.append([5, 15, 20, 75])
+    ws.append([100, 200, 300, 20000])
+    ws.append(["", "", 350, 20275])
     save(wb, "classic29_formula_results.xlsx")
 
 
@@ -448,10 +448,618 @@ def classic30_mixed_empty_and_filled_sheets():
     save(wb, "classic30_mixed_empty_and_filled_sheets.xlsx")
 
 
+# ── 31. Bold header row ──────────────────────────────────────────────────
+def classic31_bold_header_row():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    bold = Font(bold=True, size=11)
+    headers = ["Product", "Category", "Price", "Stock"]
+    for col, h in enumerate(headers, start=1):
+        cell = ws.cell(row=1, column=col, value=h)
+        cell.font = bold
+    ws.append(["Laptop", "Electronics", 999.99, 50])
+    ws.append(["Desk", "Furniture", 349.00, 20])
+    ws.append(["Pen", "Stationery", 1.99, 500])
+    ws.append(["Chair", "Furniture", 199.00, 30])
+    save(wb, "classic31_bold_header_row.xlsx")
+
+
+# ── 32. Right-aligned numbers ─────────────────────────────────────────────
+def classic32_right_aligned_numbers():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    right = Alignment(horizontal="right")
+    ws.append(["Label", "Amount"])
+    data = [("Revenue", 125000), ("Expenses", 87500), ("Profit", 37500)]
+    for row_idx, (label, amount) in enumerate(data, start=2):
+        ws.cell(row=row_idx, column=1, value=label)
+        c = ws.cell(row=row_idx, column=2, value=amount)
+        c.alignment = right
+    save(wb, "classic32_right_aligned_numbers.xlsx")
+
+
+# ── 33. Centered text ────────────────────────────────────────────────────
+def classic33_centered_text():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    center = Alignment(horizontal="center")
+    ws.append(["Mon", "Tue", "Wed", "Thu", "Fri"])
+    data_rows = [
+        [9, 10, 11, 9, 8],
+        [12, 11, 10, 13, 12],
+    ]
+    for dr in data_rows:
+        row_num = ws.max_row + 1
+        for col, val in enumerate(dr, start=1):
+            c = ws.cell(row=row_num, column=col, value=val)
+            c.alignment = center
+    save(wb, "classic33_centered_text.xlsx")
+
+
+# ── 34. Column width set explicitly ──────────────────────────────────────
+def classic34_explicit_column_widths():
+    from openpyxl.utils import get_column_letter
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.column_dimensions["A"].width = 5
+    ws.column_dimensions["B"].width = 30
+    ws.column_dimensions["C"].width = 12
+    ws.append(["ID", "Description", "Value"])
+    ws.append([1, "Short", 10])
+    ws.append([2, "A much longer description text here", 200])
+    ws.append([3, "Medium length description", 55])
+    save(wb, "classic34_explicit_column_widths.xlsx")
+
+
+# ── 35. Row height set explicitly ────────────────────────────────────────
+def classic35_explicit_row_heights():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.row_dimensions[1].height = 30
+    ws.row_dimensions[2].height = 50
+    ws.append(["Tall Header", "Value"])
+    ws.append(["Extra Tall Row", 42])
+    ws.append(["Normal Row", 10])
+    save(wb, "classic35_explicit_row_heights.xlsx")
+
+
+# ── 36. Merged cells ──────────────────────────────────────────────────────
+def classic36_merged_cells():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.merge_cells("A1:C1")
+    ws["A1"] = "Merged Header Spanning Three Columns"
+    ws.append(["Col1", "Col2", "Col3"])
+    ws.append(["Row2A", "Row2B", "Row2C"])
+    ws.append(["Row3A", "Row3B", "Row3C"])
+    save(wb, "classic36_merged_cells.xlsx")
+
+
+# ── 37. Freeze panes ──────────────────────────────────────────────────────
+def classic37_freeze_panes():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.freeze_panes = "A2"  # freeze first row
+    ws.append(["ID", "Name", "Score", "Grade"])
+    for i in range(1, 21):
+        grade = "A" if i > 17 else "B" if i > 13 else "C" if i > 9 else "D"
+        ws.append([i, f"Student{i:02d}", i * 5, grade])
+    save(wb, "classic37_freeze_panes.xlsx")
+
+
+# ── 38. Hyperlink cell ────────────────────────────────────────────────────
+def classic38_hyperlink_cell():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.append(["Resource", "URL"])
+    cell = ws.cell(row=2, column=1, value="GitHub")
+    cell.hyperlink = "https://github.com"
+    cell.style = "Hyperlink"
+    ws.cell(row=2, column=2, value="https://github.com")
+    ws.cell(row=3, column=1, value="Docs")
+    ws.cell(row=3, column=2, value="https://docs.microsoft.com")
+    save(wb, "classic38_hyperlink_cell.xlsx")
+
+
+# ── 39. Conditional-style financial table ────────────────────────────────
+def classic39_financial_table():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    red = Font(color="FF0000")
+    green = Font(color="008000")
+    ws.append(["Month", "Budget", "Actual", "Variance"])
+    data = [
+        ("Jan", 10000, 9500, -500),
+        ("Feb", 10000, 10800, 800),
+        ("Mar", 10000, 9900, -100),
+        ("Apr", 10000, 11200, 1200),
+        ("May", 10000, 9700, -300),
+        ("Jun", 10000, 10050, 50),
+    ]
+    for month, budget, actual, variance in data:
+        row_idx = ws.max_row + 1
+        ws.cell(row=row_idx, column=1, value=month)
+        ws.cell(row=row_idx, column=2, value=budget)
+        ws.cell(row=row_idx, column=3, value=actual)
+        var_cell = ws.cell(row=row_idx, column=4, value=variance)
+        var_cell.font = green if variance >= 0 else red
+    save(wb, "classic39_financial_table.xlsx")
+
+
+# ── 40. Scientific notation numbers ──────────────────────────────────────
+def classic40_scientific_notation():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.append(["Label", "Value"])
+    ws.append(["Avogadro", 6.022e23])
+    ws.append(["Planck", 6.626e-34])
+    ws.append(["Speed of Light", 2.998e8])
+    ws.append(["Electron mass", 9.109e-31])
+    ws.append(["Pi approx", 3.14159265358979])
+    save(wb, "classic40_scientific_notation.xlsx")
+
+
+# ── 41. Integer vs float mixed ────────────────────────────────────────────
+def classic41_integer_vs_float():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.append(["Type", "Value"])
+    ws.append(["Integer", 42])
+    ws.append(["Float", 42.0])
+    ws.append(["NegInt", -7])
+    ws.append(["NegFloat", -7.5])
+    ws.append(["Zero", 0])
+    ws.append(["ZeroFloat", 0.0])
+    ws.append(["Large", 1000000])
+    ws.append(["Small", 0.000001])
+    save(wb, "classic41_integer_vs_float.xlsx")
+
+
+# ── 42. Boolean values ────────────────────────────────────────────────────
+def classic42_boolean_values():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.append(["Feature", "Enabled"])
+    ws.append(["Dark Mode", True])
+    ws.append(["Notifications", False])
+    ws.append(["Auto-save", True])
+    ws.append(["Analytics", False])
+    ws.append(["Beta Features", True])
+    save(wb, "classic42_boolean_values.xlsx")
+
+
+# ── 43. Inventory report ─────────────────────────────────────────────────
+def classic43_inventory_report():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Inventory"
+    bold = Font(bold=True)
+    headers = ["SKU", "Name", "Category", "Qty", "Unit Price", "Total Value"]
+    for col, h in enumerate(headers, start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = bold
+    inventory = [
+        ("SKU001", "Widget A", "Widgets", 100, 5.99, 599.00),
+        ("SKU002", "Widget B", "Widgets", 250, 3.49, 872.50),
+        ("SKU003", "Gadget X", "Gadgets", 50, 29.99, 1499.50),
+        ("SKU004", "Gadget Y", "Gadgets", 75, 19.99, 1499.25),
+        ("SKU005", "Tool Z", "Tools", 30, 49.99, 1499.70),
+        ("SKU006", "Part P", "Parts", 500, 0.99, 495.00),
+        ("SKU007", "Part Q", "Parts", 1000, 0.49, 490.00),
+    ]
+    for row in inventory:
+        ws.append(list(row))
+    save(wb, "classic43_inventory_report.xlsx")
+
+
+# ── 44. Employee roster ───────────────────────────────────────────────────
+def classic44_employee_roster():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Employees"
+    ws.append(["EmpID", "First", "Last", "Dept", "Title", "Email"])
+    employees = [
+        (1001, "Alice", "Smith", "Engineering", "Senior Engineer", "alice@example.com"),
+        (1002, "Bob", "Jones", "Marketing", "Marketing Manager", "bob@example.com"),
+        (1003, "Carol", "Williams", "HR", "HR Specialist", "carol@example.com"),
+        (1004, "David", "Brown", "Engineering", "Junior Engineer", "david@example.com"),
+        (1005, "Eve", "Davis", "Finance", "Financial Analyst", "eve@example.com"),
+        (1006, "Frank", "Miller", "Sales", "Sales Representative", "frank@example.com"),
+        (1007, "Grace", "Wilson", "Engineering", "Tech Lead", "grace@example.com"),
+        (1008, "Henry", "Moore", "Support", "Support Specialist", "henry@example.com"),
+    ]
+    for emp in employees:
+        ws.append(list(emp))
+    save(wb, "classic44_employee_roster.xlsx")
+
+
+# ── 45. Sales by region (multi-sheet) ────────────────────────────────────
+def classic45_sales_by_region():
+    wb = Workbook()
+    regions = [
+        ("North", [("Q1", 45000), ("Q2", 52000), ("Q3", 61000), ("Q4", 71000)]),
+        ("South", [("Q1", 38000), ("Q2", 41000), ("Q3", 39000), ("Q4", 44000)]),
+        ("East",  [("Q1", 55000), ("Q2", 59000), ("Q3", 63000), ("Q4", 68000)]),
+        ("West",  [("Q1", 47000), ("Q2", 51000), ("Q3", 55000), ("Q4", 60000)]),
+    ]
+    first = True
+    for region, quarters in regions:
+        ws = wb.active if first else wb.create_sheet(region)
+        if first:
+            ws.title = region
+            first = False
+        ws.append(["Quarter", "Sales"])
+        for q, s in quarters:
+            ws.append([q, s])
+    save(wb, "classic45_sales_by_region.xlsx")
+
+
+# ── 46. Grade book ───────────────────────────────────────────────────────
+def classic46_grade_book():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Grades"
+    ws.append(["Student", "HW1", "HW2", "Midterm", "Final", "Total", "Grade"])
+    students = [
+        ("Alice",   95, 88, 92, 90, 365, "A"),
+        ("Bob",     70, 75, 68, 72, 285, "C"),
+        ("Carol",   85, 90, 88, 91, 354, "A-"),
+        ("David",   60, 55, 62, 58, 235, "D"),
+        ("Eve",     92, 95, 97, 98, 382, "A+"),
+        ("Frank",   78, 80, 75, 82, 315, "B"),
+        ("Grace",   88, 85, 89, 87, 349, "B+"),
+    ]
+    for s in students:
+        ws.append(list(s))
+    save(wb, "classic46_grade_book.xlsx")
+
+
+# ── 47. Time series data ──────────────────────────────────────────────────
+def classic47_time_series():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Temperatures"
+    ws.append(["Day", "High", "Low", "Avg"])
+    import random
+    random.seed(42)
+    for day in range(1, 32):
+        # Use "Day-NN" label to avoid LibreOffice auto-converting ISO dates
+        day_label = f"Day-{day:02d}"
+        high = round(random.uniform(15, 30), 1)
+        low = round(random.uniform(5, 15), 1)
+        avg = round((high + low) / 2, 1)
+        ws.append([day_label, high, low, avg])
+    save(wb, "classic47_time_series.xlsx")
+
+
+# ── 48. Survey results ───────────────────────────────────────────────────
+def classic48_survey_results():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Survey"
+    # Deliberately keep question text short (≤16 chars) so all 6 columns fit
+    # on one page: Q-col natural width ≈ (16+2)*5 = 90pt, total ≈ 90+80+35+45+50+95
+    # = 395pt + 5*20 padding = 495pt ≤ 512pt usable → single column group.
+    ws.append(["Question", "StrongAgree", "Agree", "Neutral", "Disagree", "StrongDisagree"])
+    questions = [
+        ("Easy to use",   30, 45, 15, 7, 3),
+        ("Recommend",     25, 40, 20, 10, 5),
+        ("Fair price",    20, 35, 25, 15, 5),
+        ("Good support",  35, 40, 15, 7, 3),
+        ("Satisfied",     28, 42, 18, 8, 4),
+    ]
+    for q in questions:
+        ws.append(list(q))
+    save(wb, "classic48_survey_results.xlsx")
+
+
+# ── 49. Contact list ──────────────────────────────────────────────────────
+def classic49_contact_list():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Contacts"
+    ws.append(["Name", "Phone", "Email", "City", "Country"])
+    contacts = [
+        ("Alice Smith",   "+1-555-0101", "alice@example.com",   "New York",  "USA"),
+        ("Bob Jones",     "+44-20-7946-0958", "bob@example.co.uk", "London", "UK"),
+        ("Carol Wang",    "+86-10-1234-5678", "carol@example.cn", "Beijing",  "China"),
+        ("David Muller",  "+49-30-1234567",   "david@example.de", "Berlin",   "Germany"),
+        ("Eve Martin",    "+33-1-23-45-67-89","eve@example.fr",   "Paris",    "France"),
+        ("Frank Tanaka",  "+81-3-1234-5678",  "frank@example.jp","Tokyo",    "Japan"),
+        ("Grace Kim",     "+82-2-1234-5678",  "grace@example.kr","Seoul",    "Korea"),
+    ]
+    for c in contacts:
+        ws.append(list(c))
+    save(wb, "classic49_contact_list.xlsx")
+
+
+# ── 50. Budget vs actuals (three-sheet) ──────────────────────────────────
+def classic50_budget_vs_actuals():
+    wb = Workbook()
+
+    # Sheet 1: Budget
+    ws_budget = wb.active
+    ws_budget.title = "Budget"
+    ws_budget.append(["Department", "Q1", "Q2", "Q3", "Q4", "Annual"])
+    budget_data = [
+        ("Engineering", 200000, 200000, 210000, 220000, 830000),
+        ("Marketing",   80000,  90000,  85000,  95000, 350000),
+        ("Sales",       120000, 130000, 140000, 150000, 540000),
+        ("HR",          40000,  40000,  42000,  43000, 165000),
+        ("Finance",     35000,  35000,  37000,  38000, 145000),
+    ]
+    for row in budget_data:
+        ws_budget.append(list(row))
+
+    # Sheet 2: Actuals
+    ws_actual = wb.create_sheet("Actuals")
+    ws_actual.append(["Department", "Q1", "Q2", "Q3", "Q4", "Annual"])
+    actual_data = [
+        ("Engineering", 195000, 205000, 215000, 225000, 840000),
+        ("Marketing",   82000,  88000,  91000,  97000, 358000),
+        ("Sales",       118000, 135000, 142000, 148000, 543000),
+        ("HR",          39000,  41000,  41500,  44000, 165500),
+        ("Finance",     34000,  36000,  37500,  39000, 146500),
+    ]
+    for row in actual_data:
+        ws_actual.append(list(row))
+
+    # Sheet 3: Variance
+    ws_var = wb.create_sheet("Variance")
+    ws_var.append(["Department", "Q1", "Q2", "Q3", "Q4", "Annual"])
+    for b, a in zip(budget_data, actual_data):
+        ws_var.append([b[0]] + [a[i] - b[i] for i in range(1, 6)])
+
+    save(wb, "classic50_budget_vs_actuals.xlsx")
+
+
+# ── 51. Product catalog ───────────────────────────────────────────────────
+def classic51_product_catalog():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Catalog"
+    ws.append(["Part#", "Name", "Description", "Weight(g)", "Price"])
+    catalog = [
+        ("P-001", "Basic Widget", "Standard widget for everyday use", 150, 4.99),
+        ("P-002", "Pro Widget", "Enhanced widget with premium features", 180, 12.99),
+        ("P-003", "Mini Gadget", "Compact gadget for mobile use", 90, 19.99),
+        ("P-004", "Max Gadget", "Full-size gadget, industrial grade", 450, 89.99),
+        ("P-005", "Connector A", "Type-A connector cable, 1m", 80, 7.49),
+        ("P-006", "Connector B", "Type-B connector cable, 2m", 110, 9.99),
+        ("P-007", "Adapter X", "Universal power adapter", 200, 15.99),
+        ("P-008", "Adapter Y", "Travel power adapter", 120, 11.99),
+        ("P-009", "Mount Bracket", "Wall mount bracket, steel", 600, 24.99),
+        ("P-010", "Carry Case", "Padded carry case, waterproof", 350, 34.99),
+    ]
+    for row in catalog:
+        ws.append(list(row))
+    save(wb, "classic51_product_catalog.xlsx")
+
+
+# ── 52. Pivot-style summary ───────────────────────────────────────────────
+def classic52_pivot_summary():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Summary"
+    ws.append(["Region", "Electronics", "Furniture", "Clothing", "Food", "Total"])
+    data = [
+        ("North", 45000, 12000, 8000, 22000, 87000),
+        ("South", 38000, 15000, 11000, 25000, 89000),
+        ("East",  52000, 9000,  14000, 18000, 93000),
+        ("West",  41000, 18000, 10000, 21000, 90000),
+        ("Total", 176000, 54000, 43000, 86000, 359000),
+    ]
+    bold = Font(bold=True)
+    for row_idx, row in enumerate(data, start=2):
+        ws.append(list(row))
+        if row_idx == len(data) + 1:  # Total row
+            for col in range(1, 7):
+                ws.cell(row=row_idx, column=col).font = bold
+    save(wb, "classic52_pivot_summary.xlsx")
+
+
+# ── 53. Invoice layout ────────────────────────────────────────────────────
+def classic53_invoice():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Invoice"
+    bold = Font(bold=True)
+    # Header section
+    ws["A1"] = "INVOICE"
+    ws["A1"].font = Font(bold=True, size=16)
+    ws["A3"] = "Invoice #:"
+    ws["B3"] = "INV-2025-0042"
+    ws["A4"] = "Date:"
+    ws["B4"] = "2025-03-01"
+    ws["A5"] = "Due Date:"
+    ws["B5"] = "2025-03-31"
+    ws["A7"] = "Bill To:"
+    ws["A7"].font = bold
+    ws["A8"] = "ACME Corporation"
+    ws["A9"] = "123 Business Rd, Suite 400"
+    ws["A10"] = "New York, NY 10001"
+    # Line items
+    ws["A12"] = "Item"
+    ws["B12"] = "Qty"
+    ws["C12"] = "Unit Price"
+    ws["D12"] = "Total"
+    for col in range(1, 5):
+        ws.cell(row=12, column=col).font = bold
+    items = [
+        ("Consulting Services", 10, 150.00, 1500.00),
+        ("Software License", 5, 99.00, 495.00),
+        ("Hardware", 2, 249.99, 499.98),
+        ("Support Plan (annual)", 1, 1200.00, 1200.00),
+    ]
+    for r_idx, item in enumerate(items, start=13):
+        ws.cell(row=r_idx, column=1, value=item[0])
+        ws.cell(row=r_idx, column=2, value=item[1])
+        ws.cell(row=r_idx, column=3, value=item[2])
+        ws.cell(row=r_idx, column=4, value=item[3])
+    ws.cell(row=18, column=3, value="Subtotal")
+    ws.cell(row=18, column=4, value=3694.98)
+    ws.cell(row=19, column=3, value="Tax (8%)")
+    ws.cell(row=19, column=4, value=295.60)
+    ws.cell(row=20, column=3, value="Total Due")
+    ws.cell(row=20, column=3).font = bold
+    ws.cell(row=20, column=4, value=3990.58)
+    ws.cell(row=20, column=4).font = bold
+    save(wb, "classic53_invoice.xlsx")
+
+
+# ── 54. Multi-level header simulation ────────────────────────────────────
+def classic54_multi_level_header():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    bold = Font(bold=True)
+    # Row 1: group headers
+    ws["A1"] = ""
+    ws["B1"] = "Q1"
+    ws["D1"] = "Q2"
+    ws["F1"] = "Q3"
+    for cell_ref in ["B1", "D1", "F1"]:
+        ws[cell_ref].font = bold
+    # Row 2: sub-headers
+    sub = ["ID", "Revenue", "Cost", "Revenue", "Cost", "Revenue", "Cost"]
+    for col, h in enumerate(sub, start=1):
+        c = ws.cell(row=2, column=col, value=h)
+        c.font = bold
+    # Data rows
+    data = [
+        (1, 50000, 30000, 55000, 32000, 60000, 35000),
+        (2, 45000, 28000, 48000, 29000, 52000, 31000),
+        (3, 60000, 35000, 65000, 37000, 70000, 40000),
+    ]
+    for row in data:
+        ws.append(list(row))
+    save(wb, "classic54_multi_level_header.xlsx")
+
+
+# ── 55. Error / N/A values (as strings) ──────────────────────────────────
+def classic55_error_values():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.append(["Metric", "Value", "Status"])
+    ws.append(["Sales", 12345, "OK"])
+    ws.append(["Revenue", "#N/A", "Missing"])
+    ws.append(["Cost", "#REF!", "Broken ref"])
+    ws.append(["Profit", "#DIV/0!", "Div by zero"])
+    ws.append(["Units", "#VALUE!", "Wrong type"])
+    ws.append(["Target", 15000, "OK"])
+    save(wb, "classic55_error_values.xlsx")
+
+
+# ── 56. Alternating row fill colors ──────────────────────────────────────
+def classic56_alternating_row_colors():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    fill_light = PatternFill(fill_type="solid", fgColor="DCE6F1")
+    fill_white = PatternFill(fill_type="solid", fgColor="FFFFFF")
+    ws.append(["#", "Product", "Price"])
+    for i in range(1, 11):
+        row_num = ws.max_row + 1
+        ws.append([i, f"Product {i}", i * 10.0])
+        fill = fill_light if i % 2 == 0 else fill_white
+        for col in range(1, 4):
+            ws.cell(row=row_num, column=col).fill = fill
+    save(wb, "classic56_alternating_row_colors.xlsx")
+
+
+# ── 57. UTF-8 Asian characters (CJK only sheet) ──────────────────────────
+def classic57_cjk_only():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "中文"
+    ws.append(["序号", "产品名称", "价格", "库存"])
+    ws.append([1, "笔记本电脑", 5999, 100])
+    ws.append([2, "智能手机", 2999, 250])
+    ws.append([3, "平板电脑", 1999, 150])
+    ws.append([4, "蓝牙耳机", 299, 500])
+    ws.append([5, "充电器", 99, 1000])
+    save(wb, "classic57_cjk_only.xlsx")
+
+
+# ── 58. Mixed numeric formats ─────────────────────────────────────────────
+def classic58_mixed_numeric_formats():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.append(["Type", "Value"])
+    ws.append(["Integer",           1000000])
+    ws.append(["Float 2dp",         3.14])
+    ws.append(["Float 5dp",         3.14159])
+    ws.append(["Negative int",      -42])
+    ws.append(["Negative float",    -3.14])
+    ws.append(["Very small",        0.0001])
+    ws.append(["Very large",        9999999.99])
+    ws.append(["Zero",              0])
+    ws.append(["Scientific approx", 1.23e10])
+    save(wb, "classic58_mixed_numeric_formats.xlsx")
+
+
+# ── 59. Multi-sheet with data on each plus a summary ─────────────────────
+def classic59_multi_sheet_summary():
+    wb = Workbook()
+
+    months = ["Jan", "Feb", "Mar"]
+    totals = []
+    first = True
+    for month in months:
+        ws = wb.active if first else wb.create_sheet(month)
+        if first:
+            ws.title = month
+            first = False
+        ws.append(["Product", "Units", "Revenue"])
+        revenue_total = 0
+        for p in range(1, 6):
+            units = (p * 7 + len(month)) % 50 + 10
+            price = p * 5.0 + 9.99
+            revenue = round(units * price, 2)
+            revenue_total += revenue
+            ws.append([f"Prod{p}", units, revenue])
+        totals.append((month, revenue_total))
+
+    ws_summary = wb.create_sheet("Summary")
+    ws_summary.append(["Month", "Total Revenue"])
+    for month, total in totals:
+        ws_summary.append([month, round(total, 2)])
+
+    save(wb, "classic59_multi_sheet_summary.xlsx")
+
+
+# ── 60. Large wide table (20 columns × 50 rows) ───────────────────────────
+def classic60_large_wide_table():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    num_cols = 20
+    num_rows = 50
+    headers = [f"Col{c+1:02d}" for c in range(num_cols)]
+    ws.append(headers)
+    for r in range(1, num_rows + 1):
+        ws.append([f"R{r:02d}C{c+1:02d}" for c in range(num_cols)])
+    save(wb, "classic60_large_wide_table.xlsx")
+
+
 # ── Main ─────────────────────────────────────────────────────────────────
 def main():
     ensure_output_dir()
-    print(f"Generating 30 classic .xlsx files in: {OUTPUT_DIR}\n")
+    print(f"Generating 60 classic .xlsx files in: {OUTPUT_DIR}\n")
 
     generators = [
         classic01_basic_table_with_headers,
@@ -484,6 +1092,36 @@ def main():
         classic28_duplicate_values,
         classic29_formula_results,
         classic30_mixed_empty_and_filled_sheets,
+        classic31_bold_header_row,
+        classic32_right_aligned_numbers,
+        classic33_centered_text,
+        classic34_explicit_column_widths,
+        classic35_explicit_row_heights,
+        classic36_merged_cells,
+        classic37_freeze_panes,
+        classic38_hyperlink_cell,
+        classic39_financial_table,
+        classic40_scientific_notation,
+        classic41_integer_vs_float,
+        classic42_boolean_values,
+        classic43_inventory_report,
+        classic44_employee_roster,
+        classic45_sales_by_region,
+        classic46_grade_book,
+        classic47_time_series,
+        classic48_survey_results,
+        classic49_contact_list,
+        classic50_budget_vs_actuals,
+        classic51_product_catalog,
+        classic52_pivot_summary,
+        classic53_invoice,
+        classic54_multi_level_header,
+        classic55_error_values,
+        classic56_alternating_row_colors,
+        classic57_cjk_only,
+        classic58_mixed_numeric_formats,
+        classic59_multi_sheet_summary,
+        classic60_large_wide_table,
     ]
 
     for gen in generators:

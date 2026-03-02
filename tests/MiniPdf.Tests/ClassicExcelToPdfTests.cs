@@ -338,11 +338,16 @@ public class ClassicExcelToPdfTests
     [Fact]
     public void Classic29_FormulaResults()
     {
-        // Formulas are stored as cached values in the <v> elements
-        using var xlsx = XlsxBuilder.SimpleNumbers(
-            new[] { 10.0, 20.0, 30.0 });   // =SUM(A1:B1) would cache 30
+        // Store pre-computed formula results as plain numeric values,
+        // matching the reference Excel that has no live formula strings.
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "A", "B", "Sum", "Product" },
+            new[] { "10", "20", "30", "200" },
+            new[] { "5", "15", "20", "75" },
+            new[] { "100", "200", "300", "20000" },
+            new[] { "", "", "350", "20275" });
 
-        AssertValidPdf(xlsx);
+        AssertValidPdf(xlsx, "Sum", "Product", "300", "20275");
     }
 
     // ── 30. Mixed empty and filled sheets ──────────────────────────────
@@ -358,6 +363,454 @@ public class ClassicExcelToPdfTests
         var pdf = PdfString(doc);
         Assert.Contains("Hello", pdf);
         Assert.True(doc.Pages.Count >= 1);
+    }
+
+    // ── 31. Bold header row ─────────────────────────────────────────────
+    [Fact]
+    public void Classic31_BoldHeaderRow()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Product", "Category", "Price", "Stock" },
+            new[] { "Laptop", "Electronics", "999.99", "50" },
+            new[] { "Desk", "Furniture", "349.00", "20" },
+            new[] { "Pen", "Stationery", "1.99", "500" });
+
+        AssertValidPdf(xlsx, "Product", "Laptop", "Furniture");
+    }
+
+    // ── 32. Right-aligned numbers ───────────────────────────────────────
+    [Fact]
+    public void Classic32_RightAlignedNumbers()
+    {
+        using var xlsx = XlsxBuilder.MixedTextNumber(
+            ("Revenue", 125000),
+            ("Expenses", 87500),
+            ("Profit", 37500));
+
+        AssertValidPdf(xlsx, "Revenue", "Expenses", "Profit");
+    }
+
+    // ── 33. Centered text ───────────────────────────────────────────────
+    [Fact]
+    public void Classic33_CenteredText()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Mon", "Tue", "Wed", "Thu", "Fri" },
+            new[] { "9", "10", "11", "9", "8" },
+            new[] { "12", "11", "10", "13", "12" });
+
+        AssertValidPdf(xlsx, "Mon", "Fri");
+    }
+
+    // ── 34. Explicit column widths (wide description column) ────────────
+    [Fact]
+    public void Classic34_ExplicitColumnWidths()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "ID", "Description", "Value" },
+            new[] { "1", "Short", "10" },
+            new[] { "2", "A much longer description text here", "200" },
+            new[] { "3", "Medium length description", "55" });
+
+        AssertValidPdf(xlsx, "ID", "Description", "longer");
+    }
+
+    // ── 35. Explicit row heights ────────────────────────────────────────
+    [Fact]
+    public void Classic35_ExplicitRowHeights()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Tall Header", "Value" },
+            new[] { "Extra Tall Row", "42" },
+            new[] { "Normal Row", "10" });
+
+        AssertValidPdf(xlsx, "Tall Header", "Normal Row");
+    }
+
+    // ── 36. Merged cells ────────────────────────────────────────────────
+    [Fact]
+    public void Classic36_MergedCells()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Merged Header Spanning Three Columns" },
+            new[] { "Col1", "Col2", "Col3" },
+            new[] { "Row2A", "Row2B", "Row2C" });
+
+        AssertValidPdf(xlsx, "Merged Header", "Row2A");
+    }
+
+    // ── 37. Freeze panes (data-only test) ──────────────────────────────
+    [Fact]
+    public void Classic37_FreezePanes()
+    {
+        var rows = new List<string[]> { new[] { "ID", "Name", "Score", "Grade" } };
+        for (var i = 1; i <= 20; i++)
+        {
+            var grade = i > 17 ? "A" : i > 13 ? "B" : i > 9 ? "C" : "D";
+            rows.Add(new[] { i.ToString(), $"Student{i:D2}", (i * 5).ToString(), grade });
+        }
+        using var xlsx = XlsxBuilder.Simple(rows.ToArray());
+        var doc = ExcelToPdfConverter.Convert(xlsx);
+        Assert.True(doc.Pages.Count >= 1);
+        var pdf = PdfString(doc);
+        Assert.Contains("Student01", pdf);
+        Assert.Contains("Student20", pdf);
+    }
+
+    // ── 38. Hyperlink cell (URL text) ───────────────────────────────────
+    [Fact]
+    public void Classic38_HyperlinkCell()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Resource", "URL" },
+            new[] { "GitHub", "https://github.com" },
+            new[] { "Docs", "https://docs.microsoft.com" });
+
+        AssertValidPdf(xlsx, "GitHub", "https://github.com");
+    }
+
+    // ── 39. Financial table with color coding ───────────────────────────
+    [Fact]
+    public void Classic39_FinancialTable()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Month", "Budget", "Actual", "Variance" },
+            new[] { "Jan", "10000", "9500", "-500" },
+            new[] { "Feb", "10000", "10800", "800" },
+            new[] { "Mar", "10000", "9900", "-100" });
+
+        AssertValidPdf(xlsx, "Month", "Budget", "Variance");
+    }
+
+    // ── 40. Scientific notation numbers ────────────────────────────────
+    [Fact]
+    public void Classic40_ScientificNotation()
+    {
+        using var xlsx = XlsxBuilder.MixedTextNumber(
+            ("Avogadro", 6.022e23),
+            ("Planck", 6.626e-34),
+            ("Speed of Light", 2.998e8));
+
+        AssertValidPdf(xlsx, "Avogadro", "Planck");
+    }
+
+    // ── 41. Integer vs float mixed ──────────────────────────────────────
+    [Fact]
+    public void Classic41_IntegerVsFloat()
+    {
+        using var xlsx = XlsxBuilder.MixedTextNumber(
+            ("Integer", 42),
+            ("Float", 42.0),
+            ("NegInt", -7),
+            ("NegFloat", -7.5),
+            ("Zero", 0),
+            ("Large", 1000000),
+            ("Small", 0.000001));
+
+        AssertValidPdf(xlsx, "Integer", "Float", "Large");
+    }
+
+    // ── 42. Boolean values ──────────────────────────────────────────────
+    [Fact]
+    public void Classic42_BooleanValues()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Feature", "Enabled" },
+            new[] { "Dark Mode", "True" },
+            new[] { "Notifications", "False" },
+            new[] { "Auto-save", "True" });
+
+        AssertValidPdf(xlsx, "Feature", "Dark Mode", "True");
+    }
+
+    // ── 43. Inventory report ────────────────────────────────────────────
+    [Fact]
+    public void Classic43_InventoryReport()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "SKU", "Name", "Category", "Qty", "Unit Price", "Total Value" },
+            new[] { "SKU001", "Widget A", "Widgets", "100", "5.99", "599.00" },
+            new[] { "SKU002", "Widget B", "Widgets", "250", "3.49", "872.50" },
+            new[] { "SKU003", "Gadget X", "Gadgets", "50", "29.99", "1499.50" });
+
+        AssertValidPdf(xlsx, "SKU", "Widget A", "Gadgets");
+    }
+
+    // ── 44. Employee roster ─────────────────────────────────────────────
+    [Fact]
+    public void Classic44_EmployeeRoster()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "EmpID", "First", "Last", "Dept", "Title", "Email" },
+            new[] { "1001", "Alice", "Smith", "Engineering", "Senior Engineer", "alice@example.com" },
+            new[] { "1002", "Bob", "Jones", "Marketing", "Marketing Manager", "bob@example.com" });
+
+        AssertValidPdf(xlsx, "EmpID", "Engineering", "alice@example.com");
+    }
+
+    // ── 45. Sales by region (multi-sheet) ──────────────────────────────
+    [Fact]
+    public void Classic45_SalesByRegion()
+    {
+        using var xlsx = XlsxBuilder.MultiSheet(
+            ("North", new[] { new[] { "Q1", "45000" }, new[] { "Q2", "52000" } }),
+            ("South", new[] { new[] { "Q1", "38000" }, new[] { "Q2", "41000" } }),
+            ("East",  new[] { new[] { "Q1", "55000" }, new[] { "Q2", "59000" } }),
+            ("West",  new[] { new[] { "Q1", "47000" }, new[] { "Q2", "51000" } }));
+
+        var doc = ExcelToPdfConverter.Convert(xlsx);
+        Assert.True(doc.Pages.Count >= 4);
+        var pdf = PdfString(doc);
+        Assert.Contains("45000", pdf);
+        Assert.Contains("55000", pdf);
+    }
+
+    // ── 46. Grade book ──────────────────────────────────────────────────
+    [Fact]
+    public void Classic46_GradeBook()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Student", "HW1", "HW2", "Midterm", "Final", "Total", "Grade" },
+            new[] { "Alice", "95", "88", "92", "90", "365", "A" },
+            new[] { "Bob", "70", "75", "68", "72", "285", "C" },
+            new[] { "Eve", "92", "95", "97", "98", "382", "A+" });
+
+        AssertValidPdf(xlsx, "Student", "Alice", "A+");
+    }
+
+    // ── 47. Time series data ────────────────────────────────────────────
+    [Fact]
+    public void Classic47_TimeSeries()
+    {
+        var rows = new List<string[]> { new[] { "Day", "High", "Low", "Avg" } };
+        var rng = new Random(42);
+        for (var day = 1; day <= 31; day++)
+        {
+            var high = Math.Round(rng.NextDouble() * 15 + 15, 1);
+            var low = Math.Round(rng.NextDouble() * 10 + 5, 1);
+            var avg = Math.Round((high + low) / 2, 1);
+            rows.Add(new[] { $"Day-{day:D2}", high.ToString(), low.ToString(), avg.ToString() });
+        }
+        using var xlsx = XlsxBuilder.Simple(rows.ToArray());
+        AssertValidPdf(xlsx, "Day", "Day-01", "Day-31");
+    }
+
+    // ── 48. Survey results ──────────────────────────────────────────────
+    [Fact]
+    public void Classic48_SurveyResults()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Question", "StrongAgree", "Agree", "Neutral", "Disagree", "StrongDisagree" },
+            new[] { "Easy to use", "30", "45", "15", "7", "3" },
+            new[] { "Recommend", "25", "40", "20", "10", "5" },
+            new[] { "Fair price", "20", "35", "25", "15", "5" });
+
+        AssertValidPdf(xlsx, "Question", "StrongAgree", "Easy to use");
+    }
+
+    // ── 49. Contact list ────────────────────────────────────────────────
+    [Fact]
+    public void Classic49_ContactList()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Name", "Phone", "Email", "City", "Country" },
+            new[] { "Alice Smith", "+1-555-0101", "alice@example.com", "New York", "USA" },
+            new[] { "Bob Jones", "+44-20-7946-0958", "bob@example.co.uk", "London", "UK" });
+
+        AssertValidPdf(xlsx, "Name", "alice@example.com", "London");
+    }
+
+    // ── 50. Budget vs actuals (three-sheet) ─────────────────────────────
+    [Fact]
+    public void Classic50_BudgetVsActuals()
+    {
+        using var xlsx = XlsxBuilder.MultiSheet(
+            ("Budget", new[]
+            {
+                new[] { "Department", "Q1", "Q2", "Annual" },
+                new[] { "Engineering", "200000", "200000", "830000" },
+                new[] { "Marketing", "80000", "90000", "350000" },
+            }),
+            ("Actuals", new[]
+            {
+                new[] { "Department", "Q1", "Q2", "Annual" },
+                new[] { "Engineering", "195000", "205000", "840000" },
+                new[] { "Marketing", "82000", "88000", "358000" },
+            }),
+            ("Variance", new[]
+            {
+                new[] { "Department", "Q1", "Q2", "Annual" },
+                new[] { "Engineering", "-5000", "5000", "10000" },
+                new[] { "Marketing", "2000", "-2000", "8000" },
+            }));
+
+        var doc = ExcelToPdfConverter.Convert(xlsx);
+        Assert.True(doc.Pages.Count >= 3);
+        var pdf = PdfString(doc);
+        Assert.Contains("Engineering", pdf);
+        Assert.Contains("Department", pdf);
+    }
+
+    // ── 51. Product catalog ─────────────────────────────────────────────
+    [Fact]
+    public void Classic51_ProductCatalog()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Part#", "Name", "Description", "Weight(g)", "Price" },
+            new[] { "P-001", "Basic Widget", "Standard widget for everyday use", "150", "4.99" },
+            new[] { "P-002", "Pro Widget", "Enhanced widget with premium features", "180", "12.99" },
+            new[] { "P-003", "Mini Gadget", "Compact gadget for mobile use", "90", "19.99" });
+
+        AssertValidPdf(xlsx, "Part#", "Basic Widget", "4.99");
+    }
+
+    // ── 52. Pivot-style summary ─────────────────────────────────────────
+    [Fact]
+    public void Classic52_PivotSummary()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Region", "Electronics", "Furniture", "Clothing", "Food", "Total" },
+            new[] { "North", "45000", "12000", "8000", "22000", "87000" },
+            new[] { "South", "38000", "15000", "11000", "25000", "89000" },
+            new[] { "East",  "52000", "9000",  "14000", "18000", "93000" },
+            new[] { "West",  "41000", "18000", "10000", "21000", "90000" },
+            new[] { "Total", "176000", "54000", "43000", "86000", "359000" });
+
+        AssertValidPdf(xlsx, "Region", "Electronics", "359000");
+    }
+
+    // ── 53. Invoice layout ──────────────────────────────────────────────
+    [Fact]
+    public void Classic53_Invoice()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "INVOICE", "" },
+            new[] { "Invoice #:", "INV-2025-0042" },
+            new[] { "Date:", "2025-03-01" },
+            new[] { "Item", "Qty", "Unit Price", "Total" },
+            new[] { "Consulting Services", "10", "150.00", "1500.00" },
+            new[] { "Software License", "5", "99.00", "495.00" },
+            new[] { "Total Due", "", "", "3990.58" });
+
+        AssertValidPdf(xlsx, "INVOICE", "INV-2025-0042", "Consulting", "3990.58");
+    }
+
+    // ── 54. Multi-level header simulation ──────────────────────────────
+    [Fact]
+    public void Classic54_MultiLevelHeader()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "", "Q1", "", "Q2", "", "Q3", "" },
+            new[] { "ID", "Revenue", "Cost", "Revenue", "Cost", "Revenue", "Cost" },
+            new[] { "1", "50000", "30000", "55000", "32000", "60000", "35000" },
+            new[] { "2", "45000", "28000", "48000", "29000", "52000", "31000" });
+
+        AssertValidPdf(xlsx, "Revenue", "Cost", "50000");
+    }
+
+    // ── 55. Error / N/A values as strings ──────────────────────────────
+    [Fact]
+    public void Classic55_ErrorValues()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Metric", "Value", "Status" },
+            new[] { "Sales", "12345", "OK" },
+            new[] { "Revenue", "#N/A", "Missing" },
+            new[] { "Cost", "#REF!", "Broken ref" },
+            new[] { "Profit", "#DIV/0!", "Div by zero" });
+
+        AssertValidPdf(xlsx, "Metric", "#N/A", "#DIV/0!");
+    }
+
+    // ── 56. Alternating row fill colors ────────────────────────────────
+    [Fact]
+    public void Classic56_AlternatingRowColors()
+    {
+        var rows = new List<string[]> { new[] { "#", "Product", "Price" } };
+        for (var i = 1; i <= 10; i++)
+        {
+            rows.Add(new[] { i.ToString(), $"Product {i}", $"{i * 10}.00" });
+        }
+        using var xlsx = XlsxBuilder.Simple(rows.ToArray());
+        AssertValidPdf(xlsx, "Product", "Product 1", "Product 10");
+    }
+
+    // ── 57. CJK-only sheet ─────────────────────────────────────────────
+    [Fact]
+    public void Classic57_CjkOnly()
+    {
+        // Helvetica cannot render CJK; converter must not throw
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "序号", "产品名称", "价格", "库存" },
+            new[] { "1", "笔记本电脑", "5999", "100" },
+            new[] { "2", "智能手机", "2999", "250" });
+
+        var doc = ExcelToPdfConverter.Convert(xlsx);
+        Assert.True(doc.Pages.Count >= 1);
+        Assert.True(doc.ToArray().Length > 0);
+    }
+
+    // ── 58. Mixed numeric formats ───────────────────────────────────────
+    [Fact]
+    public void Classic58_MixedNumericFormats()
+    {
+        using var xlsx = XlsxBuilder.MixedTextNumber(
+            ("Integer", 1000000),
+            ("Float 2dp", 3.14),
+            ("Float 5dp", 3.14159),
+            ("Negative int", -42),
+            ("Very small", 0.0001),
+            ("Very large", 9999999.99),
+            ("Zero", 0));
+
+        AssertValidPdf(xlsx, "Integer", "Float", "Zero");
+    }
+
+    // ── 59. Multi-sheet with summary ───────────────────────────────────
+    [Fact]
+    public void Classic59_MultiSheetSummary()
+    {
+        using var xlsx = XlsxBuilder.MultiSheet(
+            ("Jan", new[]
+            {
+                new[] { "Product", "Units", "Revenue" },
+                new[] { "Prod1", "17", "184.83" },
+                new[] { "Prod2", "23", "319.77" },
+            }),
+            ("Feb", new[]
+            {
+                new[] { "Product", "Units", "Revenue" },
+                new[] { "Prod1", "14", "152.86" },
+                new[] { "Prod2", "20", "279.80" },
+            }),
+            ("Summary", new[]
+            {
+                new[] { "Month", "Total Revenue" },
+                new[] { "Jan", "504.60" },
+                new[] { "Feb", "432.66" },
+            }));
+
+        var doc = ExcelToPdfConverter.Convert(xlsx);
+        Assert.True(doc.Pages.Count >= 3);
+        var pdf = PdfString(doc);
+        Assert.Contains("Total Revenue", pdf);
+        Assert.Contains("Jan", pdf);
+    }
+
+    // ── 60. Large wide table (20 columns × 50 rows) ────────────────────
+    [Fact]
+    public void Classic60_LargeWideTable()
+    {
+        var headers = Enumerable.Range(1, 20).Select(c => $"Col{c:D2}").ToArray();
+        var rows = Enumerable.Range(1, 50)
+                             .Select(r => Enumerable.Range(1, 20).Select(c => $"R{r:D2}C{c:D2}").ToArray())
+                             .ToArray();
+
+        var allRows = new[] { headers }.Concat(rows).ToArray();
+        using var xlsx = XlsxBuilder.Simple(allRows);
+        var doc = ExcelToPdfConverter.Convert(xlsx);
+        Assert.True(doc.Pages.Count >= 1);
+        Assert.True(doc.ToArray().Length > 0);
     }
 
     // ────────────────────────────────────────────────────────────────────

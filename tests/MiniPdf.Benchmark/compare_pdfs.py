@@ -34,8 +34,9 @@ except ImportError:
 
 def extract_text_pymupdf(pdf_path: str) -> list[str]:
     """Extract text from each page using PyMuPDF.
-    Uses dict extraction for individual text spans, avoiding
-    false merging of adjacent table cells on the same line."""
+    Groups spans at the same Y position (same visual row) into a single
+    space-joined line so that MiniPdf and LibreOffice outputs are comparable
+    regardless of whether each cell is a separate span or part of a row span."""
     pages = []
     doc = fitz.open(pdf_path)
     for page in doc:
@@ -51,8 +52,24 @@ def extract_text_pymupdf(pdf_path: str) -> list[str]:
                         spans.append((round(span["bbox"][1], 1), span["bbox"][0], text))
         # Sort by Y then X position
         spans.sort()
-        page_text = "\n".join(s[2] for s in spans)
-        pages.append(page_text)
+        # Group spans that share the same Y row (within 1.0 pt tolerance) into
+        # a single whitespace-separated line — this handles the structural
+        # difference between PDF renderers that emit one span per cell vs
+        # one span per row.
+        lines = []
+        current_y = None
+        current_tokens: list[str] = []
+        for y, _x, text in spans:
+            if current_y is None or abs(y - current_y) > 1.0:
+                if current_tokens:
+                    lines.append(" ".join(current_tokens))
+                current_y = y
+                current_tokens = [text]
+            else:
+                current_tokens.append(text)
+        if current_tokens:
+            lines.append(" ".join(current_tokens))
+        pages.append("\n".join(lines))
     doc.close()
     return pages
 
