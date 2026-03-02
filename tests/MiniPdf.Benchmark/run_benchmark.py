@@ -79,16 +79,18 @@ def step_generate_reference_pdfs():
     )
 
 
-def step_compare():
+def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 0.90):
     """Step 4: Compare MiniPdf PDFs against reference PDFs."""
     banner("Step 4: Compare MiniPdf vs Reference")
-    return run(
-        [sys.executable, "compare_pdfs.py",
-         "--minipdf-dir", str(MINIPDF_PDF_DIR.resolve()),
-         "--reference-dir", str(REFERENCE_PDF_DIR.resolve()),
-         "--report-dir", str(REPORT_DIR.resolve())],
-        cwd=str(SCRIPT_DIR),
-    )
+    cmd = [
+        sys.executable, "compare_pdfs.py",
+        "--minipdf-dir", str(MINIPDF_PDF_DIR.resolve()),
+        "--reference-dir", str(REFERENCE_PDF_DIR.resolve()),
+        "--report-dir", str(REPORT_DIR.resolve()),
+    ]
+    if ai_compare:
+        cmd += ["--ai-compare", "--ai-max-pages", str(ai_max_pages), "--ai-threshold", str(ai_threshold)]
+    return run(cmd, cwd=str(SCRIPT_DIR))
 
 
 def step_analyze_report():
@@ -136,6 +138,13 @@ def main():
     parser.add_argument("--skip-minipdf", action="store_true", help="Skip MiniPdf PDF conversion")
     parser.add_argument("--skip-reference", action="store_true", help="Skip LibreOffice reference conversion")
     parser.add_argument("--compare-only", action="store_true", help="Only run comparison step")
+    # AI comparison options (forwarded to compare_pdfs.py)
+    parser.add_argument("--ai-compare", action="store_true",
+                        help="Enable AI visual comparison (requires openai package + API key)")
+    parser.add_argument("--ai-max-pages", type=int, default=1, metavar="N",
+                        help="Max pages per PDF to send to AI (default: 1)")
+    parser.add_argument("--ai-threshold", type=float, default=0.90, metavar="T",
+                        help="Skip AI call when pixel score >= threshold (default: 0.90)")
     args = parser.parse_args()
 
     banner("MiniPdf Self-Evolution Benchmark Pipeline")
@@ -144,8 +153,10 @@ def main():
     print(f"  Reference PDFs:{REFERENCE_PDF_DIR.resolve()}")
     print(f"  Reports:       {REPORT_DIR.resolve()}")
 
+    ai_kwargs = dict(ai_compare=args.ai_compare, ai_max_pages=args.ai_max_pages, ai_threshold=args.ai_threshold)
+
     if args.compare_only:
-        step_compare()
+        step_compare(**ai_kwargs)
         step_analyze_report()
         return
 
@@ -158,7 +169,7 @@ def main():
     if not args.skip_reference:
         step_generate_reference_pdfs()
 
-    step_compare()
+    step_compare(**ai_kwargs)
     step_analyze_report()
 
     banner("Pipeline Complete")
