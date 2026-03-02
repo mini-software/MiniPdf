@@ -15,6 +15,7 @@ Usage:
 """
 
 import argparse
+import base64
 import difflib
 import json
 import os
@@ -30,6 +31,146 @@ except ImportError:
     HAS_FITZ = False
     print("WARNING: PyMuPDF not installed. Install with: pip install pymupdf")
     print("         Text extraction and visual comparison will be disabled.\n")
+
+# Try to import openai for AI-based visual comparison
+try:
+    import openai
+    HAS_OPENAI = True
+except ImportError:
+    HAS_OPENAI = False
+
+
+def _make_openai_client():
+    """Create an OpenAI or Azure OpenAI client from environment variables.
+
+    Supports three endpoint flavours:
+      1. Azure AI Foundry / model-router  (endpoint contains /v1 path)
+         → openai.OpenAI(base_url=..., api_key=...)
+      2. Classic Azure OpenAI             (AZURE_OPENAI_ENDPOINT = https://resource.openai.azure.com)
+         → openai.AzureOpenAI(azure_endpoint=..., api_key=...)
+      3. OpenAI                           (OPENAI_API_KEY)
+         → openai.OpenAI(api_key=...)
+
+    Precedence: Azure (AZURE_OPENAI_ENDPOINT) > OpenAI (OPENAI_API_KEY).
+    Returns (client, model_or_deployment) or (None, None) when no credentials found.
+    """
+    if not HAS_OPENAI:
+        return None, None
+
+    import re
+    from urllib.parse import urlparse
+
+    endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT", "").strip().rstrip("/")
+    azure_key = os.environ.get("AZURE_OPENAI_KEY", "").strip()
+
+    if endpoint and azure_key:
+        # ── AI Foundry / model-router style: endpoint contains a path (e.g. /openai/v1) ──
+        parsed = urlparse(endpoint)
+        if parsed.path and parsed.path not in ("", "/"):
+            # Strip down to the deepest meaningful prefix (strip /chat/completions etc.)
+            base = re.sub(r"/chat/completions.*$", "", endpoint)
+            # Ensure it ends at /v1 or similar base path
+            deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT", "gpt-4.1").strip()
+            client = openai.OpenAI(api_key=azure_key, base_url=base)
+            return client, deployment
+        else:
+            # ── Classic Azure OpenAI: only scheme+host, SDK appends /openai/deployments/... ──
+            deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT", "gpt-4o").strip()
+            client = openai.AzureOpenAI(
+                azure_endpoint=endpoint,
+                api_key=azure_key,
+                api_version="2025-01-01-preview",
+            )
+            return client, deployment
+
+    oai_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if oai_key:
+        model = os.environ.get("OPENAI_MODEL", "gpt-4o").strip()
+        client = openai.OpenAI(api_key=oai_key)
+        return client, model
+
+    return None, None
+
+
+AI_CLIENT, AI_MODEL = _make_openai_client()
+
+_AI_SYSTEM_PROMPT = """\
+You are an expert PDF rendering quality analyst.
+You will be given two images of the same spreadsheet page:
+  Image 1 (left/first): rendered by MiniPdf (the candidate)
+  Image 2 (right/second): rendered by LibreOffice (the gold reference)
+
+Analyse the visual differences and return a JSON object with exactly these fields:
+{
+  "differences": [   // list of specific observed differences (strings)
+  ],
+  "severity": "low|medium|high",  // overall severity
+  "ai_visual_score": 0.0,          // float 0.0-1.0 (1.0 = visually identical)
+  "suggestions": [   // actionable code improvement suggestions (strings)
+  ]
+}
+
+Focus on:
+- Cell border rendering (missing, extra, wrong weight/color)
+- Column widths and row heights
+- Font family, size, and weight
+- Text truncation or overflow
+- Background / fill colors
+- Number/date formatting
+- Header row styling
+- Page margins and overall layout
+
+Return ONLY valid JSON. No markdown fences, no extra text.
+"""
+
+
+def ai_compare_pages(img_minipdf: str, img_reference: str) -> dict:
+    """Send two page images to the vision model and return structured AI analysis.
+
+    Returns a dict with keys: differences, severity, ai_visual_score, suggestions.
+    On error returns a dict with an 'error' key.
+    """
+    if AI_CLIENT is None:
+        return {"error": "No OpenAI credentials configured"}
+
+    def _encode(path: str) -> str:
+        with open(path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+
+    try:
+        b64_mini = _encode(img_minipdf)
+        b64_ref = _encode(img_reference)
+    except OSError as e:
+        return {"error": f"Cannot read image: {e}"}
+
+    messages = [
+        {"role": "system", "content": _AI_SYSTEM_PROMPT},
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "Compare these two PDF page renderings and return JSON analysis."},
+                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64_mini}", "detail": "high"}},
+                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64_ref}", "detail": "high"}},
+            ],
+        },
+    ]
+
+    try:
+        response = AI_CLIENT.chat.completions.create(
+            model=AI_MODEL,
+            messages=messages,
+            max_tokens=1024,
+            temperature=0,
+        )
+        raw = response.choices[0].message.content.strip()
+        # Strip optional markdown fences
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+        return json.loads(raw)
+    except json.JSONDecodeError as e:
+        return {"error": f"AI returned non-JSON: {e}", "raw": raw}
+    except Exception as e:
+        return {"error": str(e)}
 
 
 def extract_text_pymupdf(pdf_path: str) -> list[str]:
@@ -203,7 +344,8 @@ def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str,
     return diff_images
 
 
-def compare_single(minipdf_path: str, reference_path: str, report_images_dir: str, name: str) -> dict:
+def compare_single(minipdf_path: str, reference_path: str, report_images_dir: str, name: str,
+                   ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 1.01) -> dict:
     """Compare a single pair of PDFs and return a detailed result."""
     result = {
         "name": name,
@@ -317,10 +459,52 @@ def compare_single(minipdf_path: str, reference_path: str, report_images_dir: st
         os.makedirs(report_images_dir, exist_ok=True)
         result["diff_images"] = save_visual_diff(minipdf_path, reference_path, report_images_dir, name)
 
-    # Overall score: weighted average (text 40%, visual 40%, page-count match 20%)
+        # ── AI visual comparison ──────────────────────────────────────────────
+        if ai_compare and AI_CLIENT is not None:
+            ai_results = []
+            pages_to_analyse = min(ai_max_pages, max(result["minipdf_pages"], result["reference_pages"]))
+            for p_idx in range(pages_to_analyse):
+                pix_score = visual_scores[p_idx] if p_idx < len(visual_scores) else 1.0
+                if pix_score >= ai_threshold:
+                    # Pixel score is already good — skip AI call to save cost
+                    ai_results.append({"page": p_idx + 1, "skipped": True, "reason": "pixel_score_above_threshold"})
+                    continue
+                img_mini = os.path.join(report_images_dir, f"{name}_p{p_idx+1}_minipdf.png")
+                img_ref = os.path.join(report_images_dir, f"{name}_p{p_idx+1}_reference.png")
+                if not os.path.isfile(img_mini) or not os.path.isfile(img_ref):
+                    ai_results.append({"page": p_idx + 1, "error": "image not found"})
+                    continue
+                print(f"    [AI] analysing page {p_idx + 1} of {name} ...", end=" ", flush=True)
+                analysis = ai_compare_pages(img_mini, img_ref)
+                analysis["page"] = p_idx + 1
+                ai_results.append(analysis)
+                if "error" not in analysis:
+                    print(f"severity={analysis.get('severity','?')} score={analysis.get('ai_visual_score','?')}")
+                else:
+                    print(f"error: {analysis['error']}")
+            result["ai_analysis"] = ai_results
+
+            # Override visual avg with AI score when available
+            ai_scores = [
+                a.get("ai_visual_score")
+                for a in ai_results
+                if isinstance(a.get("ai_visual_score"), (int, float))
+            ]
+            if ai_scores:
+                result["ai_visual_avg"] = round(sum(ai_scores) / len(ai_scores), 4)
+        elif ai_compare and AI_CLIENT is None:
+            result["ai_analysis_warning"] = (
+                "AI comparison requested but no credentials found. "
+                "Set OPENAI_API_KEY or AZURE_OPENAI_ENDPOINT + AZURE_OPENAI_KEY."
+            )
+
+    # Overall score: weighted average
+    # When AI scores are available they replace the noisy pixel score for visual dimension
     page_score = 1.0 if result.get("minipdf_pages") == result.get("reference_pages") else 0.5
     text_score = result["text_similarity"]
-    vis_score = result.get("visual_avg", text_score)  # fallback to text if no visual
+    vis_score = result.get("ai_visual_avg",          # prefer AI score
+                 result.get("visual_avg",             # fall back to pixel
+                            text_score))               # last resort: text
 
     result["overall_score"] = round(text_score * 0.4 + vis_score * 0.4 + page_score * 0.2, 4)
 
@@ -369,7 +553,77 @@ def generate_report(results: list[dict], report_dir: str):
         avg_overall = sum(r.get("overall_score", 0) for r in results) / len(results) if results else 0
         f.write(f"\n**Average Overall Score: {avg_overall:.4f}**\n\n")
 
-        # Detailed sections
+        # ── Visual side-by-side table ─────────────────────────────────────────
+        f.write("## Visual Comparison\n\n")
+        f.write("<table>\n")
+        f.write("  <thead>\n")
+        f.write("    <tr>\n")
+        f.write("      <th>Test Case</th>\n")
+        f.write("      <th>MiniPdf</th>\n")
+        f.write("      <th>LibreOffice (Reference)</th>\n")
+        f.write("      <th>Score</th>\n")
+        f.write("    </tr>\n")
+        f.write("  </thead>\n")
+        f.write("  <tbody>\n")
+
+        for r in results:
+            name = r["name"]
+            overall = r.get("overall_score", "N/A")
+            if isinstance(overall, float):
+                if overall >= 0.9:
+                    score_cell = f'<span style="color:#3fb950">⬤</span> {overall}'
+                elif overall >= 0.7:
+                    score_cell = f'<span style="color:#d29922">⬤</span> {overall}'
+                else:
+                    score_cell = f'<span style="color:#f85149">⬤</span> {overall}'
+            else:
+                score_cell = str(overall)
+
+            diff_images = r.get("diff_images", [])
+            if not diff_images:
+                # No images — single merged row
+                f.write("    <tr>\n")
+                f.write(f"      <td><b>{name}</b></td>\n")
+                f.write("      <td colspan=\"2\"><i>No images</i></td>\n")
+                f.write(f"      <td>{score_cell}</td>\n")
+                f.write("    </tr>\n")
+                continue
+
+            for idx, pg in enumerate(diff_images):
+                page_num = pg.get("page", idx + 1)
+                mini_img = pg.get("minipdf_img")
+                ref_img  = pg.get("reference_img")
+                mini_td = (f'<img src="images/{mini_img}" width="340" alt="MiniPdf p{page_num}">'
+                           if mini_img else "<i>missing</i>")
+                ref_td  = (f'<img src="images/{ref_img}" width="340" alt="Reference p{page_num}">'
+                           if ref_img else "<i>missing</i>")
+
+                if idx == 0:
+                    rowspan = len(diff_images)
+                    label_td = (f'      <td rowspan="{rowspan}" valign="top"><b>{name}</b>'
+                                f'<br><small>p{page_num}</small></td>\n'
+                                if rowspan > 1 else
+                                f'      <td valign="top"><b>{name}</b></td>\n')
+                    score_td = (f'      <td rowspan="{rowspan}" valign="top">{score_cell}</td>\n'
+                                if rowspan > 1 else
+                                f'      <td valign="top">{score_cell}</td>\n')
+                    f.write("    <tr>\n")
+                    f.write(label_td)
+                    f.write(f"      <td>{mini_td}</td>\n")
+                    f.write(f"      <td>{ref_td}</td>\n")
+                    f.write(score_td)
+                    f.write("    </tr>\n")
+                else:
+                    f.write("    <tr>\n")
+                    f.write(f"      <td align=\"center\"><small>p{page_num}</small></td>\n")
+                    f.write(f"      <td>{mini_td}</td>\n")
+                    f.write(f"      <td>{ref_td}</td>\n")
+                    f.write("    </tr>\n")
+
+        f.write("  </tbody>\n")
+        f.write("</table>\n\n")
+
+        # ── Detailed sections ──────────────────────────────────────────────────
         f.write("## Detailed Results\n\n")
         for r in results:
             name = r["name"]
@@ -381,6 +635,8 @@ def generate_report(results: list[dict], report_dir: str):
 
             f.write(f"- **Text Similarity:** {r.get('text_similarity', 'N/A')}\n")
             f.write(f"- **Visual Average:** {r.get('visual_avg', 'N/A')}\n")
+            if r.get("ai_visual_avg") is not None:
+                f.write(f"- **AI Visual Score:** {r['ai_visual_avg']}\n")
             f.write(f"- **Overall Score:** {r.get('overall_score', 'N/A')}\n")
             f.write(f"- **Pages:** MiniPdf={r.get('minipdf_pages', '?')}, Reference={r.get('reference_pages', '?')}\n")
             f.write(f"- **File Size:** MiniPdf={r.get('minipdf_size', '?')} bytes, Reference={r.get('reference_size', '?')} bytes\n\n")
@@ -400,15 +656,80 @@ def generate_report(results: list[dict], report_dir: str):
 
         # Improvement suggestions
         f.write("## Improvement Suggestions\n\n")
+
+        # AI-generated suggestions (aggregated across all test cases)
+        all_ai_suggestions: list[tuple[str, str]] = []  # (test_name, suggestion)
+        all_ai_differences: list[tuple[str, str]] = []  # (test_name, difference)
+        for r in results:
+            for ai in r.get("ai_analysis", []):
+                if "error" in ai or ai.get("skipped"):
+                    continue
+                for s in ai.get("suggestions", []):
+                    all_ai_suggestions.append((r["name"], s))
+                for d in ai.get("differences", []):
+                    all_ai_differences.append((r["name"], d))
+
+        if all_ai_differences:
+            f.write("### 🤖 AI Visual Analysis Findings\n\n")
+            # Deduplicate by lowercased text to compress repetitive findings
+            seen: set[str] = set()
+            for test_name, diff in all_ai_differences:
+                key = diff.lower()[:80]
+                if key not in seen:
+                    seen.add(key)
+                    f.write(f"- **[{test_name}]** {diff}\n")
+            f.write("\n")
+
+        if all_ai_suggestions:
+            f.write("### 🤖 AI-Recommended Code Improvements\n\n")
+            seen_s: set[str] = set()
+            for test_name, sug in all_ai_suggestions:
+                key = sug.lower()[:80]
+                if key not in seen_s:
+                    seen_s.add(key)
+                    f.write(f"- **[{test_name}]** {sug}\n")
+            f.write("\n")
+
+        # Per-case AI analysis blocks
+        has_any_ai = any(r.get("ai_analysis") for r in results)
+        if has_any_ai:
+            f.write("### AI Analysis Per Test Case\n\n")
+            for r in results:
+                for ai in r.get("ai_analysis", []):
+                    if ai.get("skipped"):
+                        continue
+                    if "error" in ai:
+                        f.write(f"- **{r['name']} p{ai['page']}**: ⚠ {ai['error']}\n")
+                        continue
+                    severity_icon = {"low": "🟢", "medium": "🟡", "high": "🔴"}.get(ai.get("severity", ""), "⚪")
+                    f.write(f"<details><summary>{severity_icon} {r['name']} — Page {ai['page']} "
+                            f"(AI score: {ai.get('ai_visual_score', 'N/A')}, "
+                            f"severity: {ai.get('severity', 'N/A')})</summary>\n\n")
+                    if ai.get("differences"):
+                        f.write("**Differences:**\n")
+                        for d in ai["differences"]:
+                            f.write(f"- {d}\n")
+                        f.write("\n")
+                    if ai.get("suggestions"):
+                        f.write("**Suggestions:**\n")
+                        for s in ai["suggestions"]:
+                            f.write(f"- {s}\n")
+                        f.write("\n")
+                    f.write("</details>\n\n")
+
+        # Classic score-based suggestions
         low_scores = [(r["name"], r.get("overall_score", 0)) for r in results if r.get("overall_score", 1) < 0.8]
         if low_scores:
             low_scores.sort(key=lambda x: x[1])
-            f.write("The following test cases scored below 0.8 and need attention:\n\n")
+            f.write("### ⚠ Low-Score Test Cases (below 0.8)\n\n")
             for name, score in low_scores:
                 f.write(f"1. **{name}** (score: {score})\n")
-            f.write("\nReview the text diffs and visual comparisons above to identify specific rendering issues.\n")
-        else:
+            if not all_ai_suggestions:
+                f.write("\nReview the text diffs and visual comparisons above to identify specific rendering issues.\n")
+        elif not all_ai_suggestions:
             f.write("All test cases scored 0.8 or above. 🎉\n")
+        elif not low_scores:
+            f.write("\n✅ All test cases scored 0.8 or above.\n")
 
     print(f"\nReports saved:")
     print(f"  Markdown: {md_path}")
@@ -423,7 +744,25 @@ def main():
                         help="Directory containing reference PDFs (from LibreOffice)")
     parser.add_argument("--report-dir", default="reports",
                         help="Output directory for comparison reports")
+    # AI comparison options
+    parser.add_argument("--ai-compare", action="store_true",
+                        help="Enable AI-based visual comparison via OpenAI / Azure OpenAI vision")
+    parser.add_argument("--ai-max-pages", type=int, default=1, metavar="N",
+                        help="Maximum number of pages per PDF to send to the AI (default: 1)")
+    parser.add_argument("--ai-threshold", type=float, default=0.90, metavar="T",
+                        help="Skip AI call when pixel similarity is already above this threshold (default: 0.90)")
     args = parser.parse_args()
+
+    if args.ai_compare:
+        if not HAS_OPENAI:
+            print("WARNING: --ai-compare requested but 'openai' package is not installed.")
+            print("         Install with: pip install openai")
+        elif AI_CLIENT is None:
+            print("WARNING: --ai-compare requested but no API credentials found.")
+            print("         Set OPENAI_API_KEY  OR  AZURE_OPENAI_ENDPOINT + AZURE_OPENAI_KEY.")
+        else:
+            source = "Azure OpenAI" if os.environ.get("AZURE_OPENAI_ENDPOINT") else "OpenAI"
+            print(f"AI comparison enabled  ({source}, model={AI_MODEL})")
 
     minipdf_dir = os.path.abspath(args.minipdf_dir)
     reference_dir = os.path.abspath(args.reference_dir)
@@ -457,7 +796,12 @@ def main():
         mp = os.path.join(minipdf_dir, f"{name}.pdf")
         rp = os.path.join(reference_dir, f"{name}.pdf")
         print(f"Comparing: {name} ...", end=" ")
-        result = compare_single(mp, rp, images_dir, name)
+        result = compare_single(
+            mp, rp, images_dir, name,
+            ai_compare=args.ai_compare,
+            ai_max_pages=args.ai_max_pages,
+            ai_threshold=args.ai_threshold,
+        )
         score = result.get("overall_score", "N/A")
         print(f"score={score}")
         results.append(result)
