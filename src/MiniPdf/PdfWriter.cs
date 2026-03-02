@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace MiniPdf;
+namespace MiniSoftware;
 
 /// <summary>
 /// Low-level PDF writer. Produces valid PDF 1.4 output with Helvetica font.

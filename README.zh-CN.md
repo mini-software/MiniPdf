@@ -40,7 +40,7 @@ dotnet add package MiniPdf
 ## 使用方式
 
 ```csharp
-using MiniPdf;
+using MiniSoftware;
 
 // 文件转文件
 MiniPdf.ConvertToPdf("data.xlsx", "data.pdf");

@@ -1,4 +1,4 @@
-namespace MiniPdf;
+namespace MiniSoftware;
 
 /// <summary>
 /// Represents a PDF document that can contain pages with text content.

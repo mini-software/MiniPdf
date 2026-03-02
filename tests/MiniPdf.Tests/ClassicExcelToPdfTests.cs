@@ -1,7 +1,7 @@
 using System.IO.Compression;
 using System.Text;
 
-namespace MiniPdf.Tests;
+namespace MiniSoftware.Tests;
 
 /// <summary>
 /// 30 classic .xlsx conversion tests for Excel-to-PDF (issue #43).

@@ -1,4 +1,4 @@
-namespace MiniPdf;
+namespace MiniSoftware;
 
 /// <summary>
 /// Represents a text block to be rendered on a PDF page.

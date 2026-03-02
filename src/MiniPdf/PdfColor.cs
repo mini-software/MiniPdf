@@ -1,4 +1,4 @@
-namespace MiniPdf;
+namespace MiniSoftware;
 
 /// <summary>
 /// Represents an RGB color for PDF text rendering.

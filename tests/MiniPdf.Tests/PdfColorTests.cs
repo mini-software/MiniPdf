@@ -1,4 +1,4 @@
-namespace MiniPdf.Tests;
+namespace MiniSoftware.Tests;
 
 public class PdfColorTests
 {
