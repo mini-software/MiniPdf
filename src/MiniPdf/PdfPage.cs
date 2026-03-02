@@ -1,11 +1,24 @@
 namespace MiniPdf;
 
 /// <summary>
+/// Represents an image to be rendered on a PDF page.
+/// </summary>
+internal sealed record PdfImageBlock(
+    byte[] Data,         // raw image bytes (JPEG or PNG)
+    string Format,       // "jpg" or "png"
+    float X,             // left edge in points (PDF origin = bottom-left)
+    float Y,             // bottom edge in points
+    float RenderWidth,   // rendered width in points
+    float RenderHeight   // rendered height in points
+);
+
+/// <summary>
 /// Represents a single page in a PDF document.
 /// </summary>
 internal sealed class PdfPage
 {
     private readonly List<PdfTextBlock> _textBlocks = [];
+    private readonly List<PdfImageBlock> _imageBlocks = [];
 
     /// <summary>
     /// Page width in points.
@@ -21,6 +34,11 @@ internal sealed class PdfPage
     /// Gets the text blocks on this page.
     /// </summary>
     public IReadOnlyList<PdfTextBlock> TextBlocks => _textBlocks;
+
+    /// <summary>
+    /// Gets the image blocks on this page.
+    /// </summary>
+    public IReadOnlyList<PdfImageBlock> ImageBlocks => _imageBlocks;
 
     internal PdfPage(float width, float height)
     {
@@ -40,6 +58,22 @@ internal sealed class PdfPage
     public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null)
     {
         _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color));
+        return this;
+    }
+
+    /// <summary>
+    /// Adds an image at the specified position.
+    /// </summary>
+    /// <param name="data">Raw image bytes (JPEG or PNG).</param>
+    /// <param name="format">Image format string: "jpg" or "png".</param>
+    /// <param name="x">X position in points from the left edge.</param>
+    /// <param name="y">Y position of the bottom edge in points from the bottom of the page.</param>
+    /// <param name="width">Rendered width in points.</param>
+    /// <param name="height">Rendered height in points.</param>
+    /// <returns>The current page for chaining.</returns>
+    public PdfPage AddImage(byte[] data, string format, float x, float y, float width, float height)
+    {
+        _imageBlocks.Add(new PdfImageBlock(data, format, x, y, width, height));
         return this;
     }
 

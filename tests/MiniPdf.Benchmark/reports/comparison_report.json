@@ -1,0 +1,2594 @@
+[
+  {
+    "name": "classic01_basic_table_with_headers",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1267,
+    "reference_size": 30311,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9954
+    ],
+    "visual_avg": 0.9954,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic01_basic_table_with_headers_p1_minipdf.png",
+        "reference_img": "classic01_basic_table_with_headers_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9982
+  },
+  {
+    "name": "classic02_multiple_worksheets",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2234,
+    "reference_size": 36003,
+    "minipdf_pages": 3,
+    "reference_pages": 3,
+    "text_similarity": 0.9914,
+    "flat_text_similarity": 0.9901,
+    "word_text_similarity": 0.9643,
+    "text_diff": "--- minipdf/classic02_multiple_worksheets.pdf\n+++ reference/classic02_multiple_worksheets.pdf\n@@ -10,6 +10,6 @@\n Utilities 200\n\n ---PAGE---\n\n Metric Value\n\n-Total Revenue 1130\n\n+Total Reve 1130\n\n Total Costs 3700\n\n Net -2570",
+    "visual_scores": [
+      0.9971,
+      0.9969,
+      0.9965
+    ],
+    "visual_avg": 0.9968,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic02_multiple_worksheets_p1_minipdf.png",
+        "reference_img": "classic02_multiple_worksheets_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic02_multiple_worksheets_p2_minipdf.png",
+        "reference_img": "classic02_multiple_worksheets_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic02_multiple_worksheets_p3_minipdf.png",
+        "reference_img": "classic02_multiple_worksheets_p3_reference.png"
+      }
+    ],
+    "overall_score": 0.9953
+  },
+  {
+    "name": "classic03_empty_workbook",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 576,
+    "reference_size": 7283,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      1.0
+    ],
+    "visual_avg": 1.0,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic03_empty_workbook_p1_minipdf.png",
+        "reference_img": "classic03_empty_workbook_p1_reference.png"
+      }
+    ],
+    "overall_score": 1.0
+  },
+  {
+    "name": "classic04_single_cell",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 623,
+    "reference_size": 19860,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9996
+    ],
+    "visual_avg": 0.9996,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic04_single_cell_p1_minipdf.png",
+        "reference_img": "classic04_single_cell_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9998
+  },
+  {
+    "name": "classic05_wide_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8636,
+    "reference_size": 62308,
+    "minipdf_pages": 3,
+    "reference_pages": 3,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9909,
+      0.9901,
+      0.9945
+    ],
+    "visual_avg": 0.9918,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic05_wide_table_p1_minipdf.png",
+        "reference_img": "classic05_wide_table_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic05_wide_table_p2_minipdf.png",
+        "reference_img": "classic05_wide_table_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic05_wide_table_p3_minipdf.png",
+        "reference_img": "classic05_wide_table_p3_reference.png"
+      }
+    ],
+    "overall_score": 0.9967
+  },
+  {
+    "name": "classic06_tall_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 37084,
+    "reference_size": 185703,
+    "minipdf_pages": 5,
+    "reference_pages": 5,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8767,
+      0.8722,
+      0.8677,
+      0.865,
+      0.9081
+    ],
+    "visual_avg": 0.8779,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic06_tall_table_p1_minipdf.png",
+        "reference_img": "classic06_tall_table_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic06_tall_table_p2_minipdf.png",
+        "reference_img": "classic06_tall_table_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic06_tall_table_p3_minipdf.png",
+        "reference_img": "classic06_tall_table_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "classic06_tall_table_p4_minipdf.png",
+        "reference_img": "classic06_tall_table_p4_reference.png"
+      },
+      {
+        "page": 5,
+        "minipdf_img": "classic06_tall_table_p5_minipdf.png",
+        "reference_img": "classic06_tall_table_p5_reference.png"
+      }
+    ],
+    "overall_score": 0.9512
+  },
+  {
+    "name": "classic07_numbers_only",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1092,
+    "reference_size": 24806,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9985
+    ],
+    "visual_avg": 0.9985,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic07_numbers_only_p1_minipdf.png",
+        "reference_img": "classic07_numbers_only_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9994
+  },
+  {
+    "name": "classic08_mixed_text_and_numbers",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1132,
+    "reference_size": 27336,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9965
+    ],
+    "visual_avg": 0.9965,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic08_mixed_text_and_numbers_p1_minipdf.png",
+        "reference_img": "classic08_mixed_text_and_numbers_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9986
+  },
+  {
+    "name": "classic09_long_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3667,
+    "reference_size": 29170,
+    "minipdf_pages": 1,
+    "reference_pages": 12,
+    "text_similarity": 0.2222,
+    "flat_text_similarity": 0.1829,
+    "word_text_similarity": 0.2222,
+    "text_diff": "--- minipdf/classic09_long_text.pdf\n+++ reference/classic09_long_text.pdf\n@@ -1,26 +1,26 @@\n Long Text Column\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-XXXXXXXXXXXXXXX\n\n-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n-AAAAAAAAA\n\n-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\n\n-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\n\n-BBBBBB\n\n+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n Short\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---",
+    "visual_scores": [
+      0.909,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "visual_avg": 0.0757,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic09_long_text_p1_minipdf.png",
+        "reference_img": "classic09_long_text_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p4_reference.png"
+      },
+      {
+        "page": 5,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p5_reference.png"
+      },
+      {
+        "page": 6,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p6_reference.png"
+      },
+      {
+        "page": 7,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p7_reference.png"
+      },
+      {
+        "page": 8,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p8_reference.png"
+      },
+      {
+        "page": 9,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p9_reference.png"
+      },
+      {
+        "page": 10,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p10_reference.png"
+      },
+      {
+        "page": 11,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p11_reference.png"
+      },
+      {
+        "page": 12,
+        "minipdf_img": null,
+        "reference_img": "classic09_long_text_p12_reference.png"
+      }
+    ],
+    "overall_score": 0.2192
+  },
+  {
+    "name": "classic10_special_xml_characters",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 968,
+    "reference_size": 27644,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9937
+    ],
+    "visual_avg": 0.9937,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic10_special_xml_characters_p1_minipdf.png",
+        "reference_img": "classic10_special_xml_characters_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9975
+  },
+  {
+    "name": "classic11_sparse_rows",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1037,
+    "reference_size": 23538,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9984,
+      0.9995
+    ],
+    "visual_avg": 0.999,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic11_sparse_rows_p1_minipdf.png",
+        "reference_img": "classic11_sparse_rows_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic11_sparse_rows_p2_minipdf.png",
+        "reference_img": "classic11_sparse_rows_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9996
+  },
+  {
+    "name": "classic12_sparse_columns",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 860,
+    "reference_size": 24923,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9975
+    ],
+    "visual_avg": 0.9975,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic12_sparse_columns_p1_minipdf.png",
+        "reference_img": "classic12_sparse_columns_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.999
+  },
+  {
+    "name": "classic13_date_strings",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1168,
+    "reference_size": 29104,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9751,
+    "flat_text_similarity": 0.9751,
+    "word_text_similarity": 0.6154,
+    "text_diff": "--- minipdf/classic13_date_strings.pdf\n+++ reference/classic13_date_strings.pdf\n@@ -1,6 +1,6 @@\n Date Event\n\n-2025-01-15 Launch\n\n-2025-06-30 Release\n\n-2025-12-25 Holiday\n\n-2026-01-01 New Year\n\n-2026-02-23 Today\n+2025-01-1 Launch\n\n+2025-06-3 Release\n\n+2025-12-2 Holiday\n\n+2026-01-0 New Year\n\n+2026-02-2 Today",
+    "visual_scores": [
+      0.9938
+    ],
+    "visual_avg": 0.9938,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic13_date_strings_p1_minipdf.png",
+        "reference_img": "classic13_date_strings_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9876
+  },
+  {
+    "name": "classic14_decimal_numbers",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1146,
+    "reference_size": 29057,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9956
+    ],
+    "visual_avg": 0.9956,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic14_decimal_numbers_p1_minipdf.png",
+        "reference_img": "classic14_decimal_numbers_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9982
+  },
+  {
+    "name": "classic15_negative_numbers",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1230,
+    "reference_size": 28526,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9953
+    ],
+    "visual_avg": 0.9953,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic15_negative_numbers_p1_minipdf.png",
+        "reference_img": "classic15_negative_numbers_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9981
+  },
+  {
+    "name": "classic16_percentage_strings",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1147,
+    "reference_size": 29888,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9939,
+    "flat_text_similarity": 0.9939,
+    "word_text_similarity": 0.8696,
+    "text_diff": "--- minipdf/classic16_percentage_strings.pdf\n+++ reference/classic16_percentage_strings.pdf\n@@ -1,5 +1,5 @@\n Metric Rate\n\n-Conversion 12.5%\n\n+Conversion12.5%\n\n Bounce 45.3%\n\n Retention 88.7%\n\n Churn 3.2%\n",
+    "visual_scores": [
+      0.9949
+    ],
+    "visual_avg": 0.9949,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic16_percentage_strings_p1_minipdf.png",
+        "reference_img": "classic16_percentage_strings_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9955
+  },
+  {
+    "name": "classic17_currency_strings",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1253,
+    "reference_size": 29862,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9615,
+    "flat_text_similarity": 0.9615,
+    "word_text_similarity": 0.875,
+    "text_diff": "--- minipdf/classic17_currency_strings.pdf\n+++ reference/classic17_currency_strings.pdf\n@@ -3,5 +3,5 @@\n Gadget $149.00\n\n Premium $1,299.99\n\n Budget $4.50\n\n-Euro Item EUR49.99\n\n-Yen Item JPY5000\n+Euro Item €49.99\n\n+Yen Item ¥5000",
+    "visual_scores": [
+      0.9934
+    ],
+    "visual_avg": 0.9934,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic17_currency_strings_p1_minipdf.png",
+        "reference_img": "classic17_currency_strings_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.982
+  },
+  {
+    "name": "classic18_large_dataset",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 483743,
+    "reference_size": 2487195,
+    "minipdf_pages": 24,
+    "reference_pages": 24,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8215,
+      0.8093,
+      0.7964,
+      0.7873,
+      0.7847,
+      0.781,
+      0.7761,
+      0.7781,
+      0.7754,
+      0.7785,
+      0.7786,
+      0.7772,
+      0.7776,
+      0.7728,
+      0.7756,
+      0.7725,
+      0.7818,
+      0.7844,
+      0.7783,
+      0.7708,
+      0.7673,
+      0.775,
+      0.7719,
+      0.9342
+    ],
+    "visual_avg": 0.7878,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic18_large_dataset_p1_minipdf.png",
+        "reference_img": "classic18_large_dataset_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic18_large_dataset_p2_minipdf.png",
+        "reference_img": "classic18_large_dataset_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic18_large_dataset_p3_minipdf.png",
+        "reference_img": "classic18_large_dataset_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "classic18_large_dataset_p4_minipdf.png",
+        "reference_img": "classic18_large_dataset_p4_reference.png"
+      },
+      {
+        "page": 5,
+        "minipdf_img": "classic18_large_dataset_p5_minipdf.png",
+        "reference_img": "classic18_large_dataset_p5_reference.png"
+      },
+      {
+        "page": 6,
+        "minipdf_img": "classic18_large_dataset_p6_minipdf.png",
+        "reference_img": "classic18_large_dataset_p6_reference.png"
+      },
+      {
+        "page": 7,
+        "minipdf_img": "classic18_large_dataset_p7_minipdf.png",
+        "reference_img": "classic18_large_dataset_p7_reference.png"
+      },
+      {
+        "page": 8,
+        "minipdf_img": "classic18_large_dataset_p8_minipdf.png",
+        "reference_img": "classic18_large_dataset_p8_reference.png"
+      },
+      {
+        "page": 9,
+        "minipdf_img": "classic18_large_dataset_p9_minipdf.png",
+        "reference_img": "classic18_large_dataset_p9_reference.png"
+      },
+      {
+        "page": 10,
+        "minipdf_img": "classic18_large_dataset_p10_minipdf.png",
+        "reference_img": "classic18_large_dataset_p10_reference.png"
+      },
+      {
+        "page": 11,
+        "minipdf_img": "classic18_large_dataset_p11_minipdf.png",
+        "reference_img": "classic18_large_dataset_p11_reference.png"
+      },
+      {
+        "page": 12,
+        "minipdf_img": "classic18_large_dataset_p12_minipdf.png",
+        "reference_img": "classic18_large_dataset_p12_reference.png"
+      },
+      {
+        "page": 13,
+        "minipdf_img": "classic18_large_dataset_p13_minipdf.png",
+        "reference_img": "classic18_large_dataset_p13_reference.png"
+      },
+      {
+        "page": 14,
+        "minipdf_img": "classic18_large_dataset_p14_minipdf.png",
+        "reference_img": "classic18_large_dataset_p14_reference.png"
+      },
+      {
+        "page": 15,
+        "minipdf_img": "classic18_large_dataset_p15_minipdf.png",
+        "reference_img": "classic18_large_dataset_p15_reference.png"
+      },
+      {
+        "page": 16,
+        "minipdf_img": "classic18_large_dataset_p16_minipdf.png",
+        "reference_img": "classic18_large_dataset_p16_reference.png"
+      },
+      {
+        "page": 17,
+        "minipdf_img": "classic18_large_dataset_p17_minipdf.png",
+        "reference_img": "classic18_large_dataset_p17_reference.png"
+      },
+      {
+        "page": 18,
+        "minipdf_img": "classic18_large_dataset_p18_minipdf.png",
+        "reference_img": "classic18_large_dataset_p18_reference.png"
+      },
+      {
+        "page": 19,
+        "minipdf_img": "classic18_large_dataset_p19_minipdf.png",
+        "reference_img": "classic18_large_dataset_p19_reference.png"
+      },
+      {
+        "page": 20,
+        "minipdf_img": "classic18_large_dataset_p20_minipdf.png",
+        "reference_img": "classic18_large_dataset_p20_reference.png"
+      },
+      {
+        "page": 21,
+        "minipdf_img": "classic18_large_dataset_p21_minipdf.png",
+        "reference_img": "classic18_large_dataset_p21_reference.png"
+      },
+      {
+        "page": 22,
+        "minipdf_img": "classic18_large_dataset_p22_minipdf.png",
+        "reference_img": "classic18_large_dataset_p22_reference.png"
+      },
+      {
+        "page": 23,
+        "minipdf_img": "classic18_large_dataset_p23_minipdf.png",
+        "reference_img": "classic18_large_dataset_p23_reference.png"
+      },
+      {
+        "page": 24,
+        "minipdf_img": "classic18_large_dataset_p24_minipdf.png",
+        "reference_img": "classic18_large_dataset_p24_reference.png"
+      }
+    ],
+    "overall_score": 0.9151
+  },
+  {
+    "name": "classic19_single_column_list",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1576,
+    "reference_size": 29688,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9921
+    ],
+    "visual_avg": 0.9921,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic19_single_column_list_p1_minipdf.png",
+        "reference_img": "classic19_single_column_list_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9968
+  },
+  {
+    "name": "classic20_all_empty_cells",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 576,
+    "reference_size": 7283,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      1.0
+    ],
+    "visual_avg": 1.0,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic20_all_empty_cells_p1_minipdf.png",
+        "reference_img": "classic20_all_empty_cells_p1_reference.png"
+      }
+    ],
+    "overall_score": 1.0
+  },
+  {
+    "name": "classic21_header_only",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 807,
+    "reference_size": 22034,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9985
+    ],
+    "visual_avg": 0.9985,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic21_header_only_p1_minipdf.png",
+        "reference_img": "classic21_header_only_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9994
+  },
+  {
+    "name": "classic22_long_sheet_name",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 850,
+    "reference_size": 23683,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9981
+    ],
+    "visual_avg": 0.9981,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic22_long_sheet_name_p1_minipdf.png",
+        "reference_img": "classic22_long_sheet_name_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9992
+  },
+  {
+    "name": "classic23_unicode_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1559,
+    "reference_size": 67722,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.6857,
+    "flat_text_similarity": 0.6857,
+    "word_text_similarity": 0.5128,
+    "text_diff": "--- minipdf/classic23_unicode_text.pdf\n+++ reference/classic23_unicode_text.pdf\n@@ -1,7 +1,9 @@\n Language Greeting Extra\n\n English Hello World\n\n-Chinese ?? ??\n\n-Japanese ????? ??\n\n-Korean ????? ??\n\n-Arabic ????? ??????\n\n-Emoji ???? ??\n+你好 世界\n\n+Chinese\n\n+こんにちは世界\n\n+Japanese\n\n+Korean 안녕하세요세계\n\n+Arabicمرحبا العالم\n\n+Emoji 😀🎉 ✅❌",
+    "visual_scores": [
+      0.9914
+    ],
+    "visual_avg": 0.9914,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic23_unicode_text_p1_minipdf.png",
+        "reference_img": "classic23_unicode_text_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8708
+  },
+  {
+    "name": "classic24_red_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1044,
+    "reference_size": 39031,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9952
+    ],
+    "visual_avg": 0.9952,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic24_red_text_p1_minipdf.png",
+        "reference_img": "classic24_red_text_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9981
+  },
+  {
+    "name": "classic25_multiple_colors",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1726,
+    "reference_size": 43116,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9955,
+    "flat_text_similarity": 0.9955,
+    "word_text_similarity": 0.9655,
+    "text_diff": "--- minipdf/classic25_multiple_colors.pdf\n+++ reference/classic25_multiple_colors.pdf\n@@ -1,4 +1,4 @@\n-Color Name Sample Text\n\n+Color NamSample Text\n\n Red This is red text\n\n Green This is green text\n\n Blue This is blue text\n",
+    "visual_scores": [
+      0.992
+    ],
+    "visual_avg": 0.992,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic25_multiple_colors_p1_minipdf.png",
+        "reference_img": "classic25_multiple_colors_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.995
+  },
+  {
+    "name": "classic26_inline_strings",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1007,
+    "reference_size": 25018,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9962
+    ],
+    "visual_avg": 0.9962,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic26_inline_strings_p1_minipdf.png",
+        "reference_img": "classic26_inline_strings_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9985
+  },
+  {
+    "name": "classic27_single_row",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 926,
+    "reference_size": 23681,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9982
+    ],
+    "visual_avg": 0.9982,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic27_single_row_p1_minipdf.png",
+        "reference_img": "classic27_single_row_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9993
+  },
+  {
+    "name": "classic28_duplicate_values",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1459,
+    "reference_size": 24729,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9959
+    ],
+    "visual_avg": 0.9959,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic28_duplicate_values_p1_minipdf.png",
+        "reference_img": "classic28_duplicate_values_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9984
+  },
+  {
+    "name": "classic29_formula_results",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1377,
+    "reference_size": 27548,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9957
+    ],
+    "visual_avg": 0.9957,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic29_formula_results_p1_minipdf.png",
+        "reference_img": "classic29_formula_results_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9983
+  },
+  {
+    "name": "classic30_mixed_empty_and_filled_sheets",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1347,
+    "reference_size": 27418,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9983,
+      0.9981
+    ],
+    "visual_avg": 0.9982,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic30_mixed_empty_and_filled_sheets_p1_minipdf.png",
+        "reference_img": "classic30_mixed_empty_and_filled_sheets_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic30_mixed_empty_and_filled_sheets_p2_minipdf.png",
+        "reference_img": "classic30_mixed_empty_and_filled_sheets_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9993
+  },
+  {
+    "name": "classic31_bold_header_row",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1521,
+    "reference_size": 40714,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9923
+    ],
+    "visual_avg": 0.9923,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic31_bold_header_row_p1_minipdf.png",
+        "reference_img": "classic31_bold_header_row_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9969
+  },
+  {
+    "name": "classic32_right_aligned_numbers",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 958,
+    "reference_size": 27582,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9964
+    ],
+    "visual_avg": 0.9964,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic32_right_aligned_numbers_p1_minipdf.png",
+        "reference_img": "classic32_right_aligned_numbers_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9986
+  },
+  {
+    "name": "classic33_centered_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1235,
+    "reference_size": 26648,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9975
+    ],
+    "visual_avg": 0.9975,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic33_centered_text_p1_minipdf.png",
+        "reference_img": "classic33_centered_text_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.999
+  },
+  {
+    "name": "classic34_explicit_column_widths",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1231,
+    "reference_size": 28834,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9615,
+    "flat_text_similarity": 0.9615,
+    "word_text_similarity": 0.9474,
+    "text_diff": "--- minipdf/classic34_explicit_column_widths.pdf\n+++ reference/classic34_explicit_column_widths.pdf\n@@ -1,5 +1,4 @@\n ID Description Value\n\n 1 Short 10\n\n-2 A much longer description text 200\n\n-here\n\n+2 A much longer description text here 200\n\n 3 Medium length description 55",
+    "visual_scores": [
+      0.9942
+    ],
+    "visual_avg": 0.9942,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic34_explicit_column_widths_p1_minipdf.png",
+        "reference_img": "classic34_explicit_column_widths_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9823
+  },
+  {
+    "name": "classic35_explicit_row_heights",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 871,
+    "reference_size": 25108,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9231,
+    "flat_text_similarity": 0.9231,
+    "word_text_similarity": 0.6667,
+    "text_diff": "--- minipdf/classic35_explicit_row_heights.pdf\n+++ reference/classic35_explicit_row_heights.pdf\n@@ -1,3 +1,3 @@\n-Tall Header Value\n\n-Extra Tall Row 42\n\n-Normal Row 10\n+Tall HeadeValue\n\n+Extra Tall 42\n\n+Normal Ro 10",
+    "visual_scores": [
+      0.9971
+    ],
+    "visual_avg": 0.9971,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic35_explicit_row_heights_p1_minipdf.png",
+        "reference_img": "classic35_explicit_row_heights_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9681
+  },
+  {
+    "name": "classic36_merged_cells",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1072,
+    "reference_size": 27256,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.963,
+    "flat_text_similarity": 0.9518,
+    "word_text_similarity": 0.963,
+    "text_diff": "--- minipdf/classic36_merged_cells.pdf\n+++ reference/classic36_merged_cells.pdf\n@@ -1,4 +1,4 @@\n-Merged Header Spanning Three Columns\n\n+Merged Header Spanning Three\n\n Col1 Col2 Col3\n\n Row2A Row2B Row2C\n\n Row3A Row3B Row3C",
+    "visual_scores": [
+      0.9939
+    ],
+    "visual_avg": 0.9939,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic36_merged_cells_p1_minipdf.png",
+        "reference_img": "classic36_merged_cells_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9828
+  },
+  {
+    "name": "classic37_freeze_panes",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4353,
+    "reference_size": 46420,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9781
+    ],
+    "visual_avg": 0.9781,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic37_freeze_panes_p1_minipdf.png",
+        "reference_img": "classic37_freeze_panes_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9912
+  },
+  {
+    "name": "classic38_hyperlink_cell",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 892,
+    "reference_size": 26279,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9857,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/classic38_hyperlink_cell.pdf\n+++ reference/classic38_hyperlink_cell.pdf\n@@ -1,3 +1,4 @@\n Resource URL\n\n-GitHub https://github.com\n\n+GitHub\n\n+https://github.com\n\n Docs https://docs.microsoft.com",
+    "visual_scores": [
+      0.9954
+    ],
+    "visual_avg": 0.9954,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic38_hyperlink_cell_p1_minipdf.png",
+        "reference_img": "classic38_hyperlink_cell_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9982
+  },
+  {
+    "name": "classic39_financial_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1942,
+    "reference_size": 43383,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.991
+    ],
+    "visual_avg": 0.991,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic39_financial_table_p1_minipdf.png",
+        "reference_img": "classic39_financial_table_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9964
+  },
+  {
+    "name": "classic40_scientific_notation",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1189,
+    "reference_size": 30852,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8711,
+    "flat_text_similarity": 0.8711,
+    "word_text_similarity": 0.6452,
+    "text_diff": "--- minipdf/classic40_scientific_notation.pdf\n+++ reference/classic40_scientific_notation.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n-Avogadro 6.022E+23\n\n+Avogadro 6.02E+23\n\n Planck 6.626E-34\n\n-Speed of Light 299800000\n\n-Electron mass 9.109E-31\n\n-Pi approx 3.14159265358979\n+Speed of L 3E+08\n\n+Electron m9.109E-31\n\n+Pi approx 3.141593",
+    "visual_scores": [
+      0.9928
+    ],
+    "visual_avg": 0.9928,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic40_scientific_notation_p1_minipdf.png",
+        "reference_img": "classic40_scientific_notation_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9456
+  },
+  {
+    "name": "classic41_integer_vs_float",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1408,
+    "reference_size": 29637,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9453,
+    "flat_text_similarity": 0.9453,
+    "word_text_similarity": 0.9444,
+    "text_diff": "--- minipdf/classic41_integer_vs_float.pdf\n+++ reference/classic41_integer_vs_float.pdf\n@@ -6,4 +6,4 @@\n Zero 0\n\n ZeroFloat 0\n\n Large 1000000\n\n-Small 1E-06\n+Small 0.000001",
+    "visual_scores": [
+      0.9941
+    ],
+    "visual_avg": 0.9941,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic41_integer_vs_float_p1_minipdf.png",
+        "reference_img": "classic41_integer_vs_float_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9758
+  },
+  {
+    "name": "classic42_boolean_values",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1148,
+    "reference_size": 28631,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8202,
+    "flat_text_similarity": 0.8202,
+    "word_text_similarity": 0.5,
+    "text_diff": "--- minipdf/classic42_boolean_values.pdf\n+++ reference/classic42_boolean_values.pdf\n@@ -1,6 +1,6 @@\n Feature Enabled\n\n-Dark Mode 1\n\n-Notifications 0\n\n-Auto-save 1\n\n-Analytics 0\n\n-Beta Features 1\n+Dark Mode TRUE\n\n+Notificatio FALSE\n\n+Auto-save TRUE\n\n+Analytics FALSE\n\n+Beta Featu TRUE",
+    "visual_scores": [
+      0.9948
+    ],
+    "visual_avg": 0.9948,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic42_boolean_values_p1_minipdf.png",
+        "reference_img": "classic42_boolean_values_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.926
+  },
+  {
+    "name": "classic43_inventory_report",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2845,
+    "reference_size": 49849,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9984,
+    "flat_text_similarity": 0.9984,
+    "word_text_similarity": 0.9735,
+    "text_diff": "--- minipdf/classic43_inventory_report.pdf\n+++ reference/classic43_inventory_report.pdf\n@@ -1,4 +1,4 @@\n-SKU Name Category Qty Unit Price Total Value\n\n+SKU Name Category Qty Unit PriceTotal Value\n\n SKU001 Widget A Widgets 100 5.99 599\n\n SKU002 Widget B Widgets 250 3.49 872.5\n\n SKU003 Gadget X Gadgets 50 29.99 1499.5\n",
+    "visual_scores": [
+      0.9803
+    ],
+    "visual_avg": 0.9803,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic43_inventory_report_p1_minipdf.png",
+        "reference_img": "classic43_inventory_report_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9915
+  },
+  {
+    "name": "classic44_employee_roster",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3299,
+    "reference_size": 43656,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7143,
+    "flat_text_similarity": 0.5708,
+    "word_text_similarity": 0.7143,
+    "text_diff": "--- minipdf/classic44_employee_roster.pdf\n+++ reference/classic44_employee_roster.pdf\n@@ -1,9 +1,9 @@\n EmpID First Last Dept Title Email\n\n-1001 Alice Smith Engineering Senior Engineer alice@example.com\n\n-1002 Bob Jones Marketing Marketing Manager bob@example.com\n\n-1003 Carol Williams HR HR Specialist carol@example.com\n\n-1004 David Brown Engineering Junior Engineer david@example.com\n\n-1005 Eve Davis Finance Financial Analyst eve@example.com\n\n-1006 Frank Miller Sales Sales Representative frank@example.com\n\n-1007 Grace Wilson Engineering Tech Lead grace@example.com\n\n-1008 Henry Moore Support Support Specialist henry@example.com\n+1001 Alice Smith EngineerinSenior Engalice@example.com\n\n+1002 Bob Jones MarketingMarketingbob@example.com\n\n+1003 Carol Williams HR HR Specialcarol@example.com\n\n+1004 David Brown EngineerinJunior Engdavid@example.com\n\n+1005 Eve Davis Finance Financial Aeve@example.com\n\n+1006 Frank Miller Sales Sales Reprfrank@example.com\n\n+1007 Grace Wilson EngineerinTech Lead grace@example.com\n\n+1008 Henry Moore Support Support Sphenry@example.com",
+    "visual_scores": [
+      0.9684
+    ],
+    "visual_avg": 0.9684,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic44_employee_roster_p1_minipdf.png",
+        "reference_img": "classic44_employee_roster_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8731
+  },
+  {
+    "name": "classic45_sales_by_region",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3074,
+    "reference_size": 37087,
+    "minipdf_pages": 4,
+    "reference_pages": 4,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9968,
+      0.9967,
+      0.9966,
+      0.9967
+    ],
+    "visual_avg": 0.9967,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic45_sales_by_region_p1_minipdf.png",
+        "reference_img": "classic45_sales_by_region_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic45_sales_by_region_p2_minipdf.png",
+        "reference_img": "classic45_sales_by_region_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic45_sales_by_region_p3_minipdf.png",
+        "reference_img": "classic45_sales_by_region_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "classic45_sales_by_region_p4_minipdf.png",
+        "reference_img": "classic45_sales_by_region_p4_reference.png"
+      }
+    ],
+    "overall_score": 0.9987
+  },
+  {
+    "name": "classic46_grade_book",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3349,
+    "reference_size": 40993,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.987
+    ],
+    "visual_avg": 0.987,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic46_grade_book_p1_minipdf.png",
+        "reference_img": "classic46_grade_book_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9948
+  },
+  {
+    "name": "classic47_time_series",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 6461,
+    "reference_size": 55976,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9647
+    ],
+    "visual_avg": 0.9647,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic47_time_series_p1_minipdf.png",
+        "reference_img": "classic47_time_series_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9859
+  },
+  {
+    "name": "classic48_survey_results",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2232,
+    "reference_size": 36069,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9803,
+    "flat_text_similarity": 0.9803,
+    "word_text_similarity": 0.9,
+    "text_diff": "--- minipdf/classic48_survey_results.pdf\n+++ reference/classic48_survey_results.pdf\n@@ -1,6 +1,6 @@\n-Question StrongAgree Agree Neutral Disagree StrongDisagree\n\n-Easy to use 30 45 15 7 3\n\n-Recommend 25 40 20 10 5\n\n+Question StrongAgr Agree Neutral Disagree StrongDisagree\n\n+Easy to us 30 45 15 7 3\n\n+Recommen 25 40 20 10 5\n\n Fair price 20 35 25 15 5\n\n-Good support 35 40 15 7 3\n\n+Good supp 35 40 15 7 3\n\n Satisfied 28 42 18 8 4",
+    "visual_scores": [
+      0.9897
+    ],
+    "visual_avg": 0.9897,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic48_survey_results_p1_minipdf.png",
+        "reference_img": "classic48_survey_results_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.988
+  },
+  {
+    "name": "classic49_contact_list",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2641,
+    "reference_size": 41523,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.6845,
+    "flat_text_similarity": 0.6845,
+    "word_text_similarity": 0.5476,
+    "text_diff": "--- minipdf/classic49_contact_list.pdf\n+++ reference/classic49_contact_list.pdf\n@@ -1,8 +1,8 @@\n Name Phone Email City Country\n\n-Alice Smith +1-555-0101 alice@example.com New York USA\n\n-Bob Jones +44-20-7946-0958 bob@example.co.uk London UK\n\n-Carol Wang +86-10-1234-5678 carol@example.cn Beijing China\n\n-David Muller +49-30-1234567 david@example.de Berlin Germany\n\n-Eve Martin +33-1-23-45-67-89 eve@example.fr Paris France\n\n-Frank Tanaka +81-3-1234-5678 frank@example.jp Tokyo Japan\n\n-Grace Kim +82-2-1234-5678 grace@example.kr Seoul Korea\n+Alice Smith+1-555-01 alice@exa New York USA\n\n+Bob Jones +44-20-79 bob@examLondon UK\n\n+Carol Wan+86-10-12 carol@exaBeijing China\n\n+David Mull+49-30-12 david@exaBerlin Germany\n\n+Eve Martin+33-1-23-4eve@examParis France\n\n+Frank Tana+81-3-123 frank@exaTokyo Japan\n\n+Grace Kim +82-2-123 grace@exaSeoul Korea",
+    "visual_scores": [
+      0.9766
+    ],
+    "visual_avg": 0.9766,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic49_contact_list_p1_minipdf.png",
+        "reference_img": "classic49_contact_list_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8644
+  },
+  {
+    "name": "classic50_budget_vs_actuals",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 6103,
+    "reference_size": 54986,
+    "minipdf_pages": 3,
+    "reference_pages": 3,
+    "text_similarity": 0.9934,
+    "flat_text_similarity": 0.9932,
+    "word_text_similarity": 0.9296,
+    "text_diff": "--- minipdf/classic50_budget_vs_actuals.pdf\n+++ reference/classic50_budget_vs_actuals.pdf\n@@ -1,19 +1,19 @@\n-Department Q1 Q2 Q3 Q4 Annual\n\n-Engineering 200000 200000 210000 220000 830000\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n+Engineerin 200000 200000 210000 220000 830000\n\n Marketing 80000 90000 85000 95000 350000\n\n Sales 120000 130000 140000 150000 540000\n\n HR 40000 40000 42000 43000 165000\n\n Finance 35000 35000 37000 38000 145000\n\n ---PAGE---\n\n-Department Q1 Q2 Q3 Q4 Annual\n\n-Engineering 195000 205000 215000 225000 840000\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n+Engineerin 195000 205000 215000 225000 840000\n\n Marketing 82000 88000 91000 97000 358000\n\n Sales 118000 135000 142000 148000 543000\n\n HR 39000 41000 41500 44000 165500\n\n Finance 34000 36000 37500 39000 146500\n\n ---PAGE---\n\n-Department Q1 Q2 Q3 Q4 Annual\n\n-Engineering -5000 5000 5000 5000 10000\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n+Engineerin -5000 5000 5000 5000 10000\n\n Marketing 2000 -2000 6000 2000 8000\n\n Sales -2000 5000 2000 -2000 3000\n\n HR -1000 1000 -500 1000 500\n",
+    "visual_scores": [
+      0.9838,
+      0.984,
+      0.9868
+    ],
+    "visual_avg": 0.9849,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic50_budget_vs_actuals_p1_minipdf.png",
+        "reference_img": "classic50_budget_vs_actuals_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic50_budget_vs_actuals_p2_minipdf.png",
+        "reference_img": "classic50_budget_vs_actuals_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic50_budget_vs_actuals_p3_minipdf.png",
+        "reference_img": "classic50_budget_vs_actuals_p3_reference.png"
+      }
+    ],
+    "overall_score": 0.9913
+  },
+  {
+    "name": "classic51_product_catalog",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3427,
+    "reference_size": 44297,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.5786,
+    "flat_text_similarity": 0.4617,
+    "word_text_similarity": 0.5786,
+    "text_diff": "--- minipdf/classic51_product_catalog.pdf\n+++ reference/classic51_product_catalog.pdf\n@@ -1,11 +1,11 @@\n-Part# Name Description Weight(g) Price\n\n-P-001 Basic Widget Standard widget for everyday use 150 4.99\n\n-P-002 Pro Widget Enhanced widget with premium features 180 12.99\n\n-P-003 Mini Gadget Compact gadget for mobile use 90 19.99\n\n-P-004 Max Gadget Full-size gadget, industrial grade 450 89.99\n\n-P-005 Connector A Type-A connector cable, 1m 80 7.49\n\n-P-006 Connector B Type-B connector cable, 2m 110 9.99\n\n-P-007 Adapter X Universal power adapter 200 15.99\n\n-P-008 Adapter Y Travel power adapter 120 11.99\n\n-P-009 Mount Bracket Wall mount bracket, steel 600 24.99\n\n-P-010 Carry Case Padded carry case, waterproof 350 34.99\n+Part# Name Descriptio Weight(g) Price\n\n+P-001 Basic WidgStandard w 150 4.99\n\n+P-002 Pro WidgeEnhanced 180 12.99\n\n+P-003 Mini GadgeCompact g 90 19.99\n\n+P-004 Max GadgeFull-size g 450 89.99\n\n+P-005 ConnectorType-A con 80 7.49\n\n+P-006 ConnectorType-B con 110 9.99\n\n+P-007 Adapter X Universal 200 15.99\n\n+P-008 Adapter Y Travel pow 120 11.99\n\n+P-009 Mount BraWall moun 600 24.99\n\n+P-010 Carry CasePadded ca 350 34.99",
+    "visual_scores": [
+      0.9694
+    ],
+    "visual_avg": 0.9694,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic51_product_catalog_p1_minipdf.png",
+        "reference_img": "classic51_product_catalog_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8192
+  },
+  {
+    "name": "classic52_pivot_summary",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2277,
+    "reference_size": 44493,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9978,
+    "flat_text_similarity": 0.9978,
+    "word_text_similarity": 0.9577,
+    "text_diff": "--- minipdf/classic52_pivot_summary.pdf\n+++ reference/classic52_pivot_summary.pdf\n@@ -1,4 +1,4 @@\n-Region Electronics Furniture Clothing Food Total\n\n+Region ElectronicsFurniture Clothing Food Total\n\n North 45000 12000 8000 22000 87000\n\n South 38000 15000 11000 25000 89000\n\n East 52000 9000 14000 18000 93000\n",
+    "visual_scores": [
+      0.9839
+    ],
+    "visual_avg": 0.9839,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic52_pivot_summary_p1_minipdf.png",
+        "reference_img": "classic52_pivot_summary_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9927
+  },
+  {
+    "name": "classic53_invoice",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2424,
+    "reference_size": 53425,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9207,
+    "flat_text_similarity": 0.9207,
+    "word_text_similarity": 0.9159,
+    "text_diff": "--- minipdf/classic53_invoice.pdf\n+++ reference/classic53_invoice.pdf\n@@ -6,11 +6,11 @@\n ACME Corporation\n\n 123 Business Rd, Suite 400\n\n New York, NY 10001\n\n-Item Qty Unit Price Total\n\n-Consulting Services 10 150 1500\n\n-Software License 5 99 495\n\n+Item Qty Unit PriceTotal\n\n+Consulting 10 150 1500\n\n+Software L 5 99 495\n\n Hardware 2 249.99 499.98\n\n-Support Plan (annual) 1 1200 1200\n\n+Support Pl 1 1200 1200\n\n Subtotal 3694.98\n\n Tax (8%) 295.6\n\n Total Due 3990.58",
+    "visual_scores": [
+      0.9789
+    ],
+    "visual_avg": 0.9789,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic53_invoice_p1_minipdf.png",
+        "reference_img": "classic53_invoice_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9598
+  },
+  {
+    "name": "classic54_multi_level_header",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2161,
+    "reference_size": 38782,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.988
+    ],
+    "visual_avg": 0.988,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic54_multi_level_header_p1_minipdf.png",
+        "reference_img": "classic54_multi_level_header_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9952
+  },
+  {
+    "name": "classic55_error_values",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1580,
+    "reference_size": 34677,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9912
+    ],
+    "visual_avg": 0.9912,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic55_error_values_p1_minipdf.png",
+        "reference_img": "classic55_error_values_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9965
+  },
+  {
+    "name": "classic56_alternating_row_colors",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2080,
+    "reference_size": 32363,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.3848
+    ],
+    "visual_avg": 0.3848,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic56_alternating_row_colors_p1_minipdf.png",
+        "reference_img": "classic56_alternating_row_colors_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.7539
+  },
+  {
+    "name": "classic57_cjk_only",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1644,
+    "reference_size": 88207,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.6383,
+    "flat_text_similarity": 0.6077,
+    "word_text_similarity": 0.6383,
+    "text_diff": "--- minipdf/classic57_cjk_only.pdf\n+++ reference/classic57_cjk_only.pdf\n@@ -1,6 +1,11 @@\n-?? ???? ?? ??\n\n-1 ????? 5999 100\n\n-2 ???? 2999 250\n\n-3 ???? 1999 150\n\n-4 ???? 299 500\n\n-5 ??? 99 1000\n+序号 产品名称价格 库存\n\n+笔记本电脑\n\n+1 5999 100\n\n+智能手机\n\n+2 2999 250\n\n+平板电脑\n\n+3 1999 150\n\n+蓝牙耳机\n\n+4 299 500\n\n+充电器\n\n+5 99 1000",
+    "visual_scores": [
+      0.9925
+    ],
+    "visual_avg": 0.9925,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic57_cjk_only_p1_minipdf.png",
+        "reference_img": "classic57_cjk_only_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8523
+  },
+  {
+    "name": "classic58_mixed_numeric_formats",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1564,
+    "reference_size": 32815,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8795,
+    "flat_text_similarity": 0.8795,
+    "word_text_similarity": 0.8302,
+    "text_diff": "--- minipdf/classic58_mixed_numeric_formats.pdf\n+++ reference/classic58_mixed_numeric_formats.pdf\n@@ -2,9 +2,9 @@\n Integer 1000000\n\n Float 2dp 3.14\n\n Float 5dp 3.14159\n\n-Negative int -42\n\n-Negative float -3.14\n\n+Negative in -42\n\n+Negative fl -3.14\n\n Very small 0.0001\n\n-Very large 9999999.99\n\n+Very large 10000000\n\n Zero 0\n\n-Scientific approx 12300000000\n+Scientific 1.23E+10",
+    "visual_scores": [
+      0.9901
+    ],
+    "visual_avg": 0.9901,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic58_mixed_numeric_formats_p1_minipdf.png",
+        "reference_img": "classic58_mixed_numeric_formats_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9478
+  },
+  {
+    "name": "classic59_multi_sheet_summary",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4136,
+    "reference_size": 44781,
+    "minipdf_pages": 4,
+    "reference_pages": 4,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.994,
+      0.994,
+      0.994,
+      0.9967
+    ],
+    "visual_avg": 0.9947,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic59_multi_sheet_summary_p1_minipdf.png",
+        "reference_img": "classic59_multi_sheet_summary_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic59_multi_sheet_summary_p2_minipdf.png",
+        "reference_img": "classic59_multi_sheet_summary_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic59_multi_sheet_summary_p3_minipdf.png",
+        "reference_img": "classic59_multi_sheet_summary_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "classic59_multi_sheet_summary_p4_minipdf.png",
+        "reference_img": "classic59_multi_sheet_summary_p4_reference.png"
+      }
+    ],
+    "overall_score": 0.9979
+  },
+  {
+    "name": "classic60_large_wide_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 50059,
+    "reference_size": 263350,
+    "minipdf_pages": 4,
+    "reference_pages": 4,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.7804,
+      0.9593,
+      0.7933,
+      0.9616
+    ],
+    "visual_avg": 0.8737,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic60_large_wide_table_p1_minipdf.png",
+        "reference_img": "classic60_large_wide_table_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic60_large_wide_table_p2_minipdf.png",
+        "reference_img": "classic60_large_wide_table_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic60_large_wide_table_p3_minipdf.png",
+        "reference_img": "classic60_large_wide_table_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "classic60_large_wide_table_p4_minipdf.png",
+        "reference_img": "classic60_large_wide_table_p4_reference.png"
+      }
+    ],
+    "overall_score": 0.9495
+  },
+  {
+    "name": "classic61_product_card_with_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2026,
+    "reference_size": 36974,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9872
+    ],
+    "visual_avg": 0.9872,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic61_product_card_with_image_p1_minipdf.png",
+        "reference_img": "classic61_product_card_with_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9949
+  },
+  {
+    "name": "classic62_company_logo_header",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2657,
+    "reference_size": 42880,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.988,
+    "flat_text_similarity": 0.988,
+    "word_text_similarity": 0.898,
+    "text_diff": "--- minipdf/classic62_company_logo_header.pdf\n+++ reference/classic62_company_logo_header.pdf\n@@ -1,6 +1,6 @@\n ACME Corporation\n\n Annual Report 2025\n\n-Department Q1 Q2 Q3 Q4\n\n+DepartmenQ1 Q2 Q3 Q4\n\n Sales 120 135 142 160\n\n-Engineering 85 90 95 100\n\n+Engineerin 85 90 95 100\n\n Marketing 60 65 70 75",
+    "visual_scores": [
+      0.9786
+    ],
+    "visual_avg": 0.9786,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic62_company_logo_header_p1_minipdf.png",
+        "reference_img": "classic62_company_logo_header_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9866
+  },
+  {
+    "name": "classic63_two_products_side_by_side",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3052,
+    "reference_size": 28933,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9782
+    ],
+    "visual_avg": 0.9782,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic63_two_products_side_by_side_p1_minipdf.png",
+        "reference_img": "classic63_two_products_side_by_side_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9913
+  },
+  {
+    "name": "classic64_employee_directory_with_photo",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4319,
+    "reference_size": 43408,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.977,
+    "flat_text_similarity": 0.977,
+    "word_text_similarity": 0.6667,
+    "text_diff": "--- minipdf/classic64_employee_directory_with_photo.pdf\n+++ reference/classic64_employee_directory_with_photo.pdf\n@@ -1,4 +1,4 @@\n-Photo Name Title Department Email\n\n-Alice Chen Engineer R&D alice@example.com\n\n-Bob Smith Manager Sales bob@example.com\n\n-Carol Wang Designer UX carol@example.com\n+Photo Name Title DepartmeEmail\n\n+Alice ChenEngineer R&D alice@example.com\n\n+Bob SmithManager Sales bob@example.com\n\n+Carol WanDesigner UX carol@example.com",
+    "visual_scores": [
+      0.9756
+    ],
+    "visual_avg": 0.9756,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic64_employee_directory_with_photo_p1_minipdf.png",
+        "reference_img": "classic64_employee_directory_with_photo_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.981
+  },
+  {
+    "name": "classic65_inventory_with_product_photos",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 6477,
+    "reference_size": 48227,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9786,
+    "flat_text_similarity": 0.9786,
+    "word_text_similarity": 0.8333,
+    "text_diff": "--- minipdf/classic65_inventory_with_product_photos.pdf\n+++ reference/classic65_inventory_with_product_photos.pdf\n@@ -1,6 +1,6 @@\n Image SKU Name Qty Price\n\n-SKU-001 Red Widget 50 9.99\n\n-SKU-002 Blue Gadget 30 14.99\n\n-SKU-003 Green Tool 100 4.49\n\n-SKU-004 Yellow Device 25 29.99\n\n-SKU-005 Purple Gear 75 7.99\n+SKU-001 Red Widge 50 9.99\n\n+SKU-002 Blue Gadge 30 14.99\n\n+SKU-003 Green Too 100 4.49\n\n+SKU-004 Yellow Dev 25 29.99\n\n+SKU-005 Purple Gea 75 7.99",
+    "visual_scores": [
+      0.9744
+    ],
+    "visual_avg": 0.9744,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic65_inventory_with_product_photos_p1_minipdf.png",
+        "reference_img": "classic65_inventory_with_product_photos_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9812
+  },
+  {
+    "name": "classic66_invoice_with_logo",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2646,
+    "reference_size": 45034,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9259,
+    "flat_text_similarity": 0.9259,
+    "word_text_similarity": 0.7925,
+    "text_diff": "--- minipdf/classic66_invoice_with_logo.pdf\n+++ reference/classic66_invoice_with_logo.pdf\n@@ -1,8 +1,8 @@\n INVOICE\n\n Invoice #: INV-20250301\n\n Date: 2025-03-01\n\n-Description Qty Unit Price Total\n\n-Consulting Services 8 150 1200\n\n-Software License 1 299 299\n\n-Support Package 1 99 99\n\n+DescriptiQty Unit PriceTotal\n\n+Consulting 8 150 1200\n\n+Software L 1 299 299\n\n+Support Pa 1 99 99\n\n Total 1598",
+    "visual_scores": [
+      0.9792
+    ],
+    "visual_avg": 0.9792,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic66_invoice_with_logo_p1_minipdf.png",
+        "reference_img": "classic66_invoice_with_logo_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.962
+  },
+  {
+    "name": "classic67_real_estate_listing",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2694,
+    "reference_size": 44030,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9777
+    ],
+    "visual_avg": 0.9777,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic67_real_estate_listing_p1_minipdf.png",
+        "reference_img": "classic67_real_estate_listing_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9911
+  },
+  {
+    "name": "classic68_restaurant_menu",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5242,
+    "reference_size": 47320,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.875,
+    "flat_text_similarity": 0.1667,
+    "word_text_similarity": 0.875,
+    "text_diff": "--- minipdf/classic68_restaurant_menu.pdf\n+++ reference/classic68_restaurant_menu.pdf\n@@ -1,9 +1,9 @@\n Today's Menu\n\n-Grilled Salmon $18.99\n\n+Grilled S $18.99\n\n Fresh Atlantic salmon with herbs\n\n-Caesar Salad $12.99\n\n+Caesar Sa $12.99\n\n Romaine lettuce, croutons, parmesan\n\n-Beef Burger $14.99\n\n+Beef Burg $14.99\n\n 8oz Angus beef, brioche bun\n\n-Pasta Primavera $13.99\n\n+Pasta Pri $13.99\n\n Seasonal vegetables, olive oil",
+    "visual_scores": [
+      0.9327
+    ],
+    "visual_avg": 0.9327,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic68_restaurant_menu_p1_minipdf.png",
+        "reference_img": "classic68_restaurant_menu_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9231
+  },
+  {
+    "name": "classic69_image_only_sheet",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2459,
+    "reference_size": 8905,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9773
+    ],
+    "visual_avg": 0.9773,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic69_image_only_sheet_p1_minipdf.png",
+        "reference_img": "classic69_image_only_sheet_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9909
+  },
+  {
+    "name": "classic70_product_catalog_with_images",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4376,
+    "reference_size": 44156,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.947,
+    "flat_text_similarity": 0.947,
+    "word_text_similarity": 0.898,
+    "text_diff": "--- minipdf/classic70_product_catalog_with_images.pdf\n+++ reference/classic70_product_catalog_with_images.pdf\n@@ -1,7 +1,7 @@\n Product Catalog - Spring 2025\n\n-Classic Pen $3.99\n\n+Classic P $3.99\n\n A reliable ballpoint pen\n\n-Leather Notebook $12.99\n\n+Leather $12.99\n\n Premium A5 notebook\n\n-Desk Organizer $24.99\n\n+Desk Orga $24.99\n\n Bamboo desk tidy set",
+    "visual_scores": [
+      0.9563
+    ],
+    "visual_avg": 0.9563,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic70_product_catalog_with_images_p1_minipdf.png",
+        "reference_img": "classic70_product_catalog_with_images_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9613
+  },
+  {
+    "name": "classic71_multi_sheet_with_images",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4977,
+    "reference_size": 37419,
+    "minipdf_pages": 3,
+    "reference_pages": 3,
+    "text_similarity": 0.9898,
+    "flat_text_similarity": 0.988,
+    "word_text_similarity": 0.8571,
+    "text_diff": "--- minipdf/classic71_multi_sheet_with_images.pdf\n+++ reference/classic71_multi_sheet_with_images.pdf\n@@ -6,6 +6,6 @@\n Digital 50000\n\n Print 20000\n\n ---PAGE---\n\n-Department Headcount\n\n-Engineering 45\n\n+DepartmenHeadcount\n\n+Engineerin 45\n\n Sales 30",
+    "visual_scores": [
+      0.9905,
+      0.9907,
+      0.9907
+    ],
+    "visual_avg": 0.9906,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic71_multi_sheet_with_images_p1_minipdf.png",
+        "reference_img": "classic71_multi_sheet_with_images_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic71_multi_sheet_with_images_p2_minipdf.png",
+        "reference_img": "classic71_multi_sheet_with_images_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic71_multi_sheet_with_images_p3_minipdf.png",
+        "reference_img": "classic71_multi_sheet_with_images_p3_reference.png"
+      }
+    ],
+    "overall_score": 0.9922
+  },
+  {
+    "name": "classic72_bar_chart_image_with_data",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3006,
+    "reference_size": 41342,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.943
+    ],
+    "visual_avg": 0.943,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic72_bar_chart_image_with_data_p1_minipdf.png",
+        "reference_img": "classic72_bar_chart_image_with_data_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9772
+  },
+  {
+    "name": "classic73_event_flyer_with_banner",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3044,
+    "reference_size": 44512,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9006,
+    "flat_text_similarity": 0.9006,
+    "word_text_similarity": 0.881,
+    "text_diff": "--- minipdf/classic73_event_flyer_with_banner.pdf\n+++ reference/classic73_event_flyer_with_banner.pdf\n@@ -3,7 +3,7 @@\n Venue: Convention Center Hall A\n\n Speakers: 20+ Industry Leaders\n\n Time Session Speaker\n\n-09:00 Opening Keynote Dr. Jane Kim\n\n-10:30 AI in Practice Prof. Mark Liu\n\n-13:00 Cloud Architecture Eng. Sara Patel\n\n-15:00 Panel Discussion All Speakers\n+09:00 Opening KDr. Jane Kim\n\n+10:30 AI in Pract Prof. Mark Liu\n\n+13:00 Cloud ArchEng. Sara Patel\n\n+15:00 Panel Disc All Speakers",
+    "visual_scores": [
+      0.9616
+    ],
+    "visual_avg": 0.9616,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic73_event_flyer_with_banner_p1_minipdf.png",
+        "reference_img": "classic73_event_flyer_with_banner_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9449
+  },
+  {
+    "name": "classic74_dashboard_with_kpi_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2877,
+    "reference_size": 48755,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9571,
+    "flat_text_similarity": 0.9571,
+    "word_text_similarity": 0.7937,
+    "text_diff": "--- minipdf/classic74_dashboard_with_kpi_image.pdf\n+++ reference/classic74_dashboard_with_kpi_image.pdf\n@@ -1,6 +1,6 @@\n Executive Dashboard Q1 2025\n\n KPI Target Actual Status\n\n-Revenue 500000 523000 / Above\n\n-New Customers 200 187 x Below\n\n-NPS Score 70 74 / Above\n\n-Churn Rate < 3% 2.8% / Above\n+Revenue 500000 523000 ✓ Above\n\n+New Custo 200 187  Below ✗\n\n+NPS Score 70 74 ✓ Above\n\n+Churn Rate< 3% 2.8% ✓ Above",
+    "visual_scores": [
+      0.9557
+    ],
+    "visual_avg": 0.9557,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic74_dashboard_with_kpi_image_p1_minipdf.png",
+        "reference_img": "classic74_dashboard_with_kpi_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9651
+  },
+  {
+    "name": "classic75_certificate_with_seal",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1951,
+    "reference_size": 39135,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9705
+    ],
+    "visual_avg": 0.9705,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic75_certificate_with_seal_p1_minipdf.png",
+        "reference_img": "classic75_certificate_with_seal_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9882
+  },
+  {
+    "name": "classic76_product_image_grid",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4958,
+    "reference_size": 39017,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9527
+    ],
+    "visual_avg": 0.9527,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic76_product_image_grid_p1_minipdf.png",
+        "reference_img": "classic76_product_image_grid_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9811
+  },
+  {
+    "name": "classic77_news_article_with_hero_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2719,
+    "reference_size": 52664,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9564
+    ],
+    "visual_avg": 0.9564,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic77_news_article_with_hero_image_p1_minipdf.png",
+        "reference_img": "classic77_news_article_with_hero_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9826
+  },
+  {
+    "name": "classic78_small_icon_per_row",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5999,
+    "reference_size": 41646,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9125,
+    "flat_text_similarity": 0.9125,
+    "word_text_similarity": 0.7857,
+    "text_diff": "--- minipdf/classic78_small_icon_per_row.pdf\n+++ reference/classic78_small_icon_per_row.pdf\n@@ -1,6 +1,6 @@\n Icon Task Assignee Status\n\n-Fix login bug Alice Done\n\n-Write unit tests Bob In Progress\n\n-Deploy to staging Carol Pending\n\n-Code review PR #42 Alice Done\n\n-Update docs Dave In Progress\n+Fix login b Alice Done\n\n+Write unit Bob In Progress\n\n+Deploy to Carol Pending\n\n+Code revieAlice Done\n\n+Update doDave In Progress",
+    "visual_scores": [
+      0.9848
+    ],
+    "visual_avg": 0.9848,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic78_small_icon_per_row_p1_minipdf.png",
+        "reference_img": "classic78_small_icon_per_row_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9589
+  },
+  {
+    "name": "classic79_wide_panoramic_banner",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2844,
+    "reference_size": 43015,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9545
+    ],
+    "visual_avg": 0.9545,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic79_wide_panoramic_banner_p1_minipdf.png",
+        "reference_img": "classic79_wide_panoramic_banner_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9818
+  },
+  {
+    "name": "classic80_portrait_tall_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2290,
+    "reference_size": 39079,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9825
+    ],
+    "visual_avg": 0.9825,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic80_portrait_tall_image_p1_minipdf.png",
+        "reference_img": "classic80_portrait_tall_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.993
+  },
+  {
+    "name": "classic81_step_by_step_with_images",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5070,
+    "reference_size": 47175,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9588
+    ],
+    "visual_avg": 0.9588,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic81_step_by_step_with_images_p1_minipdf.png",
+        "reference_img": "classic81_step_by_step_with_images_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9835
+  },
+  {
+    "name": "classic82_before_after_images",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3780,
+    "reference_size": 42486,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9815,
+    "flat_text_similarity": 0.9815,
+    "word_text_similarity": 0.8571,
+    "text_diff": "--- minipdf/classic82_before_after_images.pdf\n+++ reference/classic82_before_after_images.pdf\n@@ -1,5 +1,5 @@\n Before After\n\n-Old design - legacy UI New design - modern UI\n\n+Old design – legacy UI New design – modern UI\n\n Metric Before After Delta\n\n Load time 4.2s 1.1s -74%\n\n-Conversion 2.1% 4.8% +129%\n+Conversion2.1% 4.8% +129%",
+    "visual_scores": [
+      0.9431
+    ],
+    "visual_avg": 0.9431,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic82_before_after_images_p1_minipdf.png",
+        "reference_img": "classic82_before_after_images_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9698
+  },
+  {
+    "name": "classic83_color_swatch_palette",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 6863,
+    "reference_size": 45933,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9626,
+    "flat_text_similarity": 0.9626,
+    "word_text_similarity": 0.7742,
+    "text_diff": "--- minipdf/classic83_color_swatch_palette.pdf\n+++ reference/classic83_color_swatch_palette.pdf\n@@ -1,7 +1,7 @@\n Brand Color Palette\n\n-Primary Blue RGB(0, 82, 165)\n\n-Primary Red RGB(197, 27, 50)\n\n-Accent Green RGB(0, 163, 108)\n\n-Neutral Grey RGB(128, 128, 128)\n\n-Warm Yellow RGB(255, 193, 7)\n\n+Primary BlRGB(0, 82, 165)\n\n+Primary ReRGB(197, 27, 50)\n\n+Accent Gr RGB(0, 163, 108)\n\n+Neutral GrRGB(128, 128, 128)\n\n+Warm YellRGB(255, 193, 7)\n\n Dark Navy RGB(10, 30, 70)",
+    "visual_scores": [
+      0.9665
+    ],
+    "visual_avg": 0.9665,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic83_color_swatch_palette_p1_minipdf.png",
+        "reference_img": "classic83_color_swatch_palette_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9716
+  },
+  {
+    "name": "classic84_travel_destination_cards",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4347,
+    "reference_size": 42524,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9347
+    ],
+    "visual_avg": 0.9347,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic84_travel_destination_cards_p1_minipdf.png",
+        "reference_img": "classic84_travel_destination_cards_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9739
+  },
+  {
+    "name": "classic85_lab_results_with_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3150,
+    "reference_size": 47866,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9559,
+    "flat_text_similarity": 0.9559,
+    "word_text_similarity": 0.7561,
+    "text_diff": "--- minipdf/classic85_lab_results_with_image.pdf\n+++ reference/classic85_lab_results_with_image.pdf\n@@ -1,7 +1,7 @@\n Sample Analysis Report\n\n-Parameter Value Unit Reference Range Flag\n\n-pH 7.35 7.35 - 7.45 Normal\n\n-Glucose 5.2 mmol/L 3.9 - 5.5 Normal\n\n-Sodium 142 mEq/L 136 - 145 Normal\n\n-Potassium 5 mEq/L 3.5 - 5.0 Normal\n\n-Creatinine 1.4 mg/dL 0.6 - 1.2 High\n+ParameteValue Unit ReferenceFlag\n\n+pH 7.35 7.35 – 7.45Normal\n\n+Glucose 5.2 mmol/L 3.9 – 5.5 Normal\n\n+Sodium 142 mEq/L 136 – 145 Normal\n\n+Potassium 5 mEq/L 3.5 – 5.0 Normal\n\n+Creatinine 1.4 mg/dL 0.6 – 1.2 High",
+    "visual_scores": [
+      0.9612
+    ],
+    "visual_avg": 0.9612,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic85_lab_results_with_image_p1_minipdf.png",
+        "reference_img": "classic85_lab_results_with_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9668
+  },
+  {
+    "name": "classic86_software_screenshot_features",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2797,
+    "reference_size": 41961,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9669,
+    "flat_text_similarity": 0.9669,
+    "word_text_similarity": 0.7451,
+    "text_diff": "--- minipdf/classic86_software_screenshot_features.pdf\n+++ reference/classic86_software_screenshot_features.pdf\n@@ -1,9 +1,9 @@\n MiniApp v2.0\n\n The fastest lightweight app\n\n Feature Available\n\n-Dark Mode Yes\n\n+Dark ModeYes\n\n Auto Save Yes\n\n-Cloud Sync Yes\n\n-Offline Mode Yes\n\n-API Access Pro only\n\n-Export to PDF Yes\n+Cloud SyncYes\n\n+Offline MoYes\n\n+API AccessPro only\n\n+Export to Yes",
+    "visual_scores": [
+      0.9786
+    ],
+    "visual_avg": 0.9786,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic86_software_screenshot_features_p1_minipdf.png",
+        "reference_img": "classic86_software_screenshot_features_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9782
+  },
+  {
+    "name": "classic87_sports_results_with_logos",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5459,
+    "reference_size": 47076,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.985
+    ],
+    "visual_avg": 0.985,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic87_sports_results_with_logos_p1_minipdf.png",
+        "reference_img": "classic87_sports_results_with_logos_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.994
+  },
+  {
+    "name": "classic88_image_after_data",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2795,
+    "reference_size": 43273,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.997,
+    "flat_text_similarity": 0.997,
+    "word_text_similarity": 0.9455,
+    "text_diff": "--- minipdf/classic88_image_after_data.pdf\n+++ reference/classic88_image_after_data.pdf\n@@ -1,4 +1,4 @@\n-Quarter Revenue Expenses Profit\n\n+Quarter Revenue ExpensesProfit\n\n Q1 120000 80000 40000\n\n Q2 135000 88000 47000\n\n Q3 142000 91000 51000\n",
+    "visual_scores": [
+      0.9818
+    ],
+    "visual_avg": 0.9818,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic88_image_after_data_p1_minipdf.png",
+        "reference_img": "classic88_image_after_data_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9915
+  },
+  {
+    "name": "classic89_nutrition_label_with_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3013,
+    "reference_size": 47194,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9379,
+    "flat_text_similarity": 0.9379,
+    "word_text_similarity": 0.8571,
+    "text_diff": "--- minipdf/classic89_nutrition_label_with_image.pdf\n+++ reference/classic89_nutrition_label_with_image.pdf\n@@ -1,11 +1,11 @@\n Nutrition Facts\n\n Serving Size: 30g (approx. 1 cup)\n\n-Nutrient Amount per serving % Daily Value\n\n+Nutrient Amount p% Daily Value\n\n Calories 120 kcal\n\n Total Fat 3g 4%\n\n-Saturated Fat 0.5g 3%\n\n+Saturated 0.5g 3%\n\n Sodium 160mg 7%\n\n-Total Carbohydrate 22g 8%\n\n-Dietary Fiber 3g 11%\n\n+Total Carb22g 8%\n\n+Dietary Fib3g 11%\n\n Sugars 4g\n\n Protein 3g",
+    "visual_scores": [
+      0.98
+    ],
+    "visual_avg": 0.98,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic89_nutrition_label_with_image_p1_minipdf.png",
+        "reference_img": "classic89_nutrition_label_with_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9672
+  },
+  {
+    "name": "classic90_project_status_with_milestones",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3112,
+    "reference_size": 47112,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7312,
+    "flat_text_similarity": 0.7055,
+    "word_text_similarity": 0.7312,
+    "text_diff": "--- minipdf/classic90_project_status_with_milestones.pdf\n+++ reference/classic90_project_status_with_milestones.pdf\n@@ -1,8 +1,8 @@\n-Project Orion - Status Report\n\n+Project Orion – Status Report\n\n Reporting Period: Q1 2025\n\n-Milestone Due Date Owner Status\n\n-Requirements Freeze Jan 15 PM Team Complete\n\n-Architecture Review Feb 1 Tech Lead Complete\n\n-Alpha Release Feb 28 Dev Team In Progress\n\n-Beta Testing Mar 31 QA Team Not Started\n\n-Production Deploy Apr 15 DevOps Not Started\n+MilestoneDue DateOwner Status\n\n+RequiremeJan 15 PM Team Complete\n\n+ArchitectuFeb 1 Tech Lead Complete\n\n+Alpha ReleFeb 28 Dev Team In Progress\n\n+Beta Testi Mar 31 QA Team Not Started\n\n+ProductionApr 15 DevOps Not Started",
+    "visual_scores": [
+      0.9475
+    ],
+    "visual_avg": 0.9475,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic90_project_status_with_milestones_p1_minipdf.png",
+        "reference_img": "classic90_project_status_with_milestones_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8715
+  }
+]

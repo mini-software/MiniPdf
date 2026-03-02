@@ -43,7 +43,9 @@ internal static class ExcelReader
             if (entry == null) continue;
 
             var rows = ReadSheet(entry, sharedStrings, fontColors, cellXfFontIndices);
-            sheets.Add(new ExcelSheet(info.Name, rows));
+            var images = ReadSheetImages(archive, info.SheetId);
+            var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth));
         }
 
         // If no sheets found via workbook, try reading sheet1 directly
@@ -53,7 +55,9 @@ internal static class ExcelReader
             if (entry != null)
             {
                 var rows = ReadSheet(entry, sharedStrings, fontColors, cellXfFontIndices);
-                sheets.Add(new ExcelSheet("Sheet1", rows));
+                var images = ReadSheetImages(archive, 1);
+                var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
+                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth));
             }
         }
 
@@ -326,6 +330,206 @@ internal static class ExcelReader
     }
 
     internal record SheetInfo(string Name, int SheetId);
+
+    /// <summary>
+    /// Reads column widths from a worksheet entry.
+    /// Returns (columnWidths dict, defaultColumnWidth) where widths are in Excel character units.
+    /// Only explicitly customised columns (customWidth="1") or an explicit defaultColWidth
+    /// attribute on sheetFormatPr contribute; otherwise the dict/default remain at 0.
+    /// </summary>
+    private static (Dictionary<int, float> widths, float defaultWidth) ReadColumnWidths(ZipArchiveEntry entry)
+    {
+        var widths = new Dictionary<int, float>();
+        var defaultWidth = 0f; // 0 = "not set explicitly"
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        // Only read defaultColWidth when the attribute is EXPLICITLY written by the author
+        var fmtPr = doc.Descendants(ns + "sheetFormatPr").FirstOrDefault();
+        if (fmtPr?.Attribute("defaultColWidth") != null)
+        {
+            var dcw = fmtPr.Attribute("defaultColWidth")!.Value;
+            if (float.TryParse(dcw,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out var parsed) && parsed > 0f)
+            {
+                defaultWidth = parsed;
+            }
+        }
+
+        // Only use column widths that are explicitly customized (customWidth="1")
+        foreach (var col in doc.Descendants(ns + "col"))
+        {
+            // Skip default-width columns (not customised by the spreadsheet author)
+            var customWidth = col.Attribute("customWidth")?.Value;
+            if (customWidth != "1") continue;
+
+            var minAttr = col.Attribute("min")?.Value;
+            var maxAttr = col.Attribute("max")?.Value;
+            var widthAttr = col.Attribute("width")?.Value;
+            if (minAttr == null || widthAttr == null) continue;
+
+            if (!int.TryParse(minAttr, out var minCol)) continue;
+            if (!int.TryParse(maxAttr ?? minAttr, out var maxCol)) continue;
+            if (!float.TryParse(widthAttr,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out var colWidth)) continue;
+
+            for (var c = minCol; c <= maxCol; c++)
+                widths[c - 1] = colWidth; // store as 0-based index
+        }
+
+        return (widths, defaultWidth);
+    }
+
+    /// <summary>
+    /// Reads all images embedded in a given worksheet.
+    /// Returns a list of ExcelEmbeddedImage with anchor positions and raw image bytes.
+    /// </summary>
+    private static List<ExcelEmbeddedImage> ReadSheetImages(ZipArchive archive, int sheetId)
+    {
+        var images = new List<ExcelEmbeddedImage>();
+
+        // Step 1: Find the sheet relationships file to locate the drawing
+        var sheetRelsPath = $"xl/worksheets/_rels/sheet{sheetId}.xml.rels";
+        var relsEntry = archive.GetEntry(sheetRelsPath);
+        if (relsEntry == null) return images;
+
+        string? drawingFileName = null;
+        using (var relsStream = relsEntry.Open())
+        {
+            var relsDoc = XDocument.Load(relsStream);
+            var drawingRel = relsDoc.Descendants()
+                .FirstOrDefault(el =>
+                    el.Attribute("Type")?.Value.EndsWith("/drawing", StringComparison.OrdinalIgnoreCase) == true);
+            if (drawingRel == null) return images;
+            var target = drawingRel.Attribute("Target")?.Value;
+            if (string.IsNullOrEmpty(target)) return images;
+            // Target like "../drawings/drawing1.xml" → filename = "drawing1.xml"
+            drawingFileName = System.IO.Path.GetFileName(target);
+        }
+
+        var drawingPath = $"xl/drawings/{drawingFileName}";
+        var drawingEntry = archive.GetEntry(drawingPath);
+        if (drawingEntry == null) return images;
+
+        // Step 2: Read drawing relationships to map rId → media path
+        var drawingRelsPath = $"xl/drawings/_rels/{drawingFileName}.rels";
+        var drawingRelsEntry = archive.GetEntry(drawingRelsPath);
+        if (drawingRelsEntry == null) return images;
+
+        var rIdToMedia = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        using (var drStream = drawingRelsEntry.Open())
+        {
+            var drDoc = XDocument.Load(drStream);
+            foreach (var rel in drDoc.Descendants())
+            {
+                var id = rel.Attribute("Id")?.Value;
+                var target = rel.Attribute("Target")?.Value;
+                if (id == null || string.IsNullOrEmpty(target)) continue;
+
+                // Target may be an absolute pack URI (leading '/') or relative to xl/drawings/.
+                // Absolute:  "/xl/media/image1.jpeg" → strip '/' → "xl/media/image1.jpeg"
+                // Relative:  "../media/image1.jpg"  → resolve → "xl/media/image1.jpg"
+                string zipPath;
+                if (target.StartsWith('/'))
+                {
+                    zipPath = target.TrimStart('/');
+                }
+                else
+                {
+                    var segments = ("xl/drawings/" + target).Split('/');
+                    var resolved = new System.Collections.Generic.Stack<string>();
+                    foreach (var seg in segments)
+                    {
+                        if (seg == "..") { if (resolved.Count > 0) resolved.Pop(); }
+                        else if (seg != "." && seg != "") resolved.Push(seg);
+                    }
+                    zipPath = string.Join("/", resolved.Reverse());
+                }
+                rIdToMedia[id] = zipPath;
+            }
+        }
+
+        // Step 3: Parse the drawing XML for image anchors
+        using var dStream = drawingEntry.Open();
+        var dDoc = XDocument.Load(dStream);
+
+        var xdr = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing");
+        var a = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/main");
+        var r = XNamespace.Get("http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+
+        var anchors = dDoc.Descendants(xdr + "twoCellAnchor")
+            .Concat(dDoc.Descendants(xdr + "oneCellAnchor"))
+            .Concat(dDoc.Descendants(xdr + "absoluteAnchor"));
+
+        foreach (var anchor in anchors)
+        {
+            var fromEl = anchor.Element(xdr + "from");
+            var toEl = anchor.Element(xdr + "to");
+            var extEl = anchor.Element(xdr + "ext");
+
+            int fromRow = 0, fromCol = 0, toRow = 1, toCol = 1;
+            if (fromEl != null)
+            {
+                int.TryParse(fromEl.Element(xdr + "row")?.Value, out fromRow);
+                int.TryParse(fromEl.Element(xdr + "col")?.Value, out fromCol);
+            }
+            if (toEl != null)
+            {
+                int.TryParse(toEl.Element(xdr + "row")?.Value, out toRow);
+                int.TryParse(toEl.Element(xdr + "col")?.Value, out toCol);
+            }
+
+            // For oneCellAnchor / absoluteAnchor, read EMU size from <ext cx cy>.
+            long widthEmu = 0, heightEmu = 0;
+            if (extEl != null)
+            {
+                long.TryParse(extEl.Attribute("cx")?.Value, out widthEmu);
+                long.TryParse(extEl.Attribute("cy")?.Value, out heightEmu);
+            }
+
+            // Find the blip (image reference)
+            var blip = anchor.Descendants(a + "blip").FirstOrDefault();
+            if (blip == null) continue;
+
+            var rId = blip.Attribute(r + "embed")?.Value;
+            if (string.IsNullOrEmpty(rId)) continue;
+            if (!rIdToMedia.TryGetValue(rId, out var mediaPath)) continue;
+
+            var mediaEntry = archive.GetEntry(mediaPath);
+            if (mediaEntry == null) continue;
+
+            byte[] imageData;
+            using (var ms = new System.IO.MemoryStream())
+            {
+                using var imgStream = mediaEntry.Open();
+                imgStream.CopyTo(ms);
+                imageData = ms.ToArray();
+            }
+
+            var ext = System.IO.Path.GetExtension(mediaPath).TrimStart('.').ToLowerInvariant();
+            // Normalise jpeg/jpg
+            if (ext == "jpeg") ext = "jpg";
+
+            images.Add(new ExcelEmbeddedImage(
+                AnchorRow: fromRow,
+                AnchorCol: fromCol,
+                SpanRows: Math.Max(1, toRow - fromRow),
+                SpanCols: Math.Max(1, toCol - fromCol),
+                Data: imageData,
+                Extension: ext,
+                WidthEmu: widthEmu,
+                HeightEmu: heightEmu
+            ));
+        }
+
+        return images;
+    }
 }
 
 /// <summary>
@@ -334,16 +538,50 @@ internal static class ExcelReader
 internal sealed record ExcelCell(string Text, PdfColor? Color);
 
 /// <summary>
+/// Represents an image embedded in an Excel worksheet.
+/// </summary>
+internal sealed record ExcelEmbeddedImage(
+    int AnchorRow,    // 0-based row index of the top-left anchor
+    int AnchorCol,    // 0-based column index of the top-left anchor
+    int SpanRows,     // number of rows spanned
+    int SpanCols,     // number of columns spanned
+    byte[] Data,      // raw image bytes (JPEG or PNG)
+    string Extension, // file extension without dot, lower-case, e.g. "jpg"
+    long WidthEmu = 0,    // explicit EMU width from <ext>, 0 = not set
+    long HeightEmu = 0    // explicit EMU height from <ext>, 0 = not set
+);
+
+/// <summary>
 /// Represents a sheet read from an Excel file.
 /// </summary>
 internal sealed class ExcelSheet
 {
     public string Name { get; }
     public List<List<ExcelCell>> Rows { get; }
+    public List<ExcelEmbeddedImage> Images { get; }
+    /// <summary>
+    /// Excel column widths keyed by 0-based column index.
+    /// Values are in Excel character units (convert to points via ExcelSheet.CharUnitsToPoints).
+    /// Missing entries mean the default column width applies.
+    /// </summary>
+    public Dictionary<int, float> ColumnWidths { get; }
+    /// <summary>Default column width in Excel character units (typically 8.43).</summary>
+    public float DefaultColumnWidth { get; }
 
-    internal ExcelSheet(string name, List<List<ExcelCell>> rows)
+    /// <summary>Converts Excel character-unit column width to PDF points.</summary>
+    public static float CharUnitsToPoints(float charUnits)
+        // Helvetica 10pt: digit "0" is ~5.5pt wide, plus ~5pt padding
+        => charUnits * 5.5f + 5f;
+
+    internal ExcelSheet(string name, List<List<ExcelCell>> rows,
+        List<ExcelEmbeddedImage>? images = null,
+        Dictionary<int, float>? columnWidths = null,
+        float defaultColumnWidth = 8.43f)
     {
         Name = name;
         Rows = rows;
+        Images = images ?? new List<ExcelEmbeddedImage>();
+        ColumnWidths = columnWidths ?? new Dictionary<int, float>();
+        DefaultColumnWidth = defaultColumnWidth;
     }
 }
