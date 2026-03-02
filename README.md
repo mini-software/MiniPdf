@@ -9,7 +9,7 @@
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
 </p>
 <p>
-English | <a href="README.zh-TW.md">繁體中文</a>
+English | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.it.md">Italiano</a> | <a href="README.fr.md">Français</a>
 </p>
 </div>
 
@@ -17,13 +17,13 @@ English | <a href="README.zh-TW.md">繁體中文</a>
 
 A minimal, zero-dependency .NET library for converting Excel (.xlsx) files to PDF.
 
-> **Security**: All PRs are automatically reviewed by Copilot AI and Azure AI security scan for vulnerabilities.
-
 ## Features
 
 - **Excel-to-PDF** — Convert `.xlsx` files to paginated PDF with automatic column layout
 - **Zero dependencies** — Uses only built-in .NET APIs (no external packages)
 - **Valid PDF 1.4** output
+- **Word-to-PDF** — In development
+- **Chart** — Not currently supported
 
 ## Getting Started
 

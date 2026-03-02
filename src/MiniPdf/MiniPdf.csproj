@@ -13,7 +13,7 @@
     <Authors>shps951023</Authors>
     <Description>A minimal, zero-dependency .NET library for generating PDF documents from text and Excel files.</Description>
     <PackageTags>pdf;excel;xlsx;converter;text;minipdf</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/shps951023/MiniPdf</PackageProjectUrl>
     <RepositoryUrl>https://github.com/shps951023/MiniPdf.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

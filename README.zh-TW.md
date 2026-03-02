@@ -9,7 +9,7 @@
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="授權條款"></a>
 </p>
 <p>
-<a href="README.md">English</a> | 繁體中文
+<a href="README.md">English</a> | <a href="README.zh-CN.md">简体中文</a> | 繁體中文 | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.it.md">Italiano</a> | <a href="README.fr.md">Français</a>
 </p>
 </div>
 
@@ -17,13 +17,13 @@
 
 一個極簡、零相依性的 .NET 函式庫，用於將 Excel (.xlsx) 檔案轉換為 PDF。
 
-> **安全性**：所有 PR 均由 Copilot AI 與 Azure AI 自動進行安全漏洞審查。
-
 ## 功能特色
 
 - **Excel 轉 PDF** — 將 `.xlsx` 檔案轉換為分頁 PDF，自動排版欄位
 - **零相依性** — 僅使用 .NET 內建 API（不需任何外部套件）
 - **標準 PDF 1.4** 格式輸出
+- **Word 轉 PDF** — 開發中
+- **圖表** — 目前不支援
 
 ## 快速開始
 
