@@ -143,8 +143,8 @@ def main():
                         help="Enable AI visual comparison (requires openai package + API key)")
     parser.add_argument("--ai-max-pages", type=int, default=1, metavar="N",
                         help="Max pages per PDF to send to AI (default: 1)")
-    parser.add_argument("--ai-threshold", type=float, default=0.90, metavar="T",
-                        help="Skip AI call when pixel score >= threshold (default: 0.90)")
+    parser.add_argument("--ai-threshold", type=float, default=0.97, metavar="T",
+                        help="Skip AI call when pixel score >= threshold (default: 0.97)")
     args = parser.parse_args()
 
     banner("MiniPdf Self-Evolution Benchmark Pipeline")

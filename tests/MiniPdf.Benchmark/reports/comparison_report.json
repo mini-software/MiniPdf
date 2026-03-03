@@ -3,7 +3,7 @@
     "name": "classic01_basic_table_with_headers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1267,
+    "minipdf_size": 1317,
     "reference_size": 30311,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -12,9 +12,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9954
+      0.9924
     ],
-    "visual_avg": 0.9954,
+    "visual_avg": 0.9924,
     "diff_images": [
       {
         "page": 1,
@@ -22,33 +22,26 @@
         "reference_img": "classic01_basic_table_with_headers_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9982
+    "overall_score": 0.997
   },
   {
     "name": "classic02_multiple_worksheets",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2234,
+    "minipdf_size": 2295,
     "reference_size": 36003,
     "minipdf_pages": 3,
     "reference_pages": 3,
-    "text_similarity": 0.9914,
-    "flat_text_similarity": 0.9901,
+    "text_similarity": 0.9971,
+    "flat_text_similarity": 0.9967,
     "word_text_similarity": 0.9643,
-    "text_diff": "--- minipdf/classic02_multiple_worksheets.pdf\n+++ reference/classic02_multiple_worksheets.pdf\n@@ -10,6 +10,6 @@\n Utilities 200\n\n ---PAGE---\n\n Metric Value\n\n-Total Revenue 1130\n\n+Total Reve 1130\n\n Total Costs 3700\n\n Net -2570",
+    "text_diff": "--- minipdf/classic02_multiple_worksheets.pdf\n+++ reference/classic02_multiple_worksheets.pdf\n@@ -11,5 +11,5 @@\n ---PAGE---\n\n Metric Value\n\n Total Reve 1130\n\n-Total Cost 3700\n\n+Total Costs 3700\n\n Net -2570",
     "visual_scores": [
-      0.9971,
-      0.9969,
-      0.9965
+      0.9955,
+      0.9959,
+      0.9963
     ],
-    "visual_avg": 0.9968,
+    "visual_avg": 0.9959,
     "diff_images": [
       {
         "page": 1,
@@ -66,14 +59,7 @@
         "reference_img": "classic02_multiple_worksheets_p3_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9953
+    "overall_score": 0.9972
   },
   {
     "name": "classic03_empty_workbook",
@@ -98,13 +84,6 @@
         "reference_img": "classic03_empty_workbook_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
     "overall_score": 1.0
   },
   {
@@ -120,9 +99,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9996
+      0.9997
     ],
-    "visual_avg": 0.9996,
+    "visual_avg": 0.9997,
     "diff_images": [
       {
         "page": 1,
@@ -130,20 +109,13 @@
         "reference_img": "classic04_single_cell_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9998
+    "overall_score": 0.9999
   },
   {
     "name": "classic05_wide_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8636,
+    "minipdf_size": 8588,
     "reference_size": 62308,
     "minipdf_pages": 3,
     "reference_pages": 3,
@@ -152,11 +124,11 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9909,
-      0.9901,
-      0.9945
+      0.9851,
+      0.9841,
+      0.9912
     ],
-    "visual_avg": 0.9918,
+    "visual_avg": 0.9868,
     "diff_images": [
       {
         "page": 1,
@@ -174,20 +146,13 @@
         "reference_img": "classic05_wide_table_p3_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9967
+    "overall_score": 0.9947
   },
   {
     "name": "classic06_tall_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 37084,
+    "minipdf_size": 39094,
     "reference_size": 185703,
     "minipdf_pages": 5,
     "reference_pages": 5,
@@ -196,13 +161,13 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.8767,
-      0.8722,
-      0.8677,
-      0.865,
-      0.9081
+      0.9315,
+      0.9283,
+      0.9258,
+      0.9248,
+      0.9439
     ],
-    "visual_avg": 0.8779,
+    "visual_avg": 0.9309,
     "diff_images": [
       {
         "page": 1,
@@ -230,35 +195,13 @@
         "reference_img": "classic06_tall_table_p5_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "differences": [
-          "Column widths are slightly wider in the MiniPdf rendering, resulting in more space between columns.",
-          "Row heights are marginally taller in the MiniPdf rendering, leading to more vertical spacing.",
-          "Font size appears slightly larger in the MiniPdf rendering compared to the LibreOffice reference.",
-          "Text alignment and spacing are subtly different, with MiniPdf showing more padding around cell content.",
-          "Page margins are slightly larger in the MiniPdf rendering, causing the table to be less centered.",
-          "Cell borders are missing in both renderings, but the overall layout is visually more spaced out in MiniPdf."
-        ],
-        "severity": "low",
-        "ai_visual_score": 0.93,
-        "suggestions": [
-          "Adjust column width and row height calculations to match LibreOffice's tighter layout.",
-          "Ensure font size and cell padding are consistent with LibreOffice rendering.",
-          "Review page margin settings to better center the table on the page.",
-          "Verify cell border rendering and add borders if required by the spreadsheet style."
-        ],
-        "page": 1
-      }
-    ],
-    "ai_visual_avg": 0.93,
-    "overall_score": 0.972
+    "overall_score": 0.9724
   },
   {
     "name": "classic07_numbers_only",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1092,
+    "minipdf_size": 1136,
     "reference_size": 24806,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -267,9 +210,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9985
+      0.9972
     ],
-    "visual_avg": 0.9985,
+    "visual_avg": 0.9972,
     "diff_images": [
       {
         "page": 1,
@@ -277,20 +220,13 @@
         "reference_img": "classic07_numbers_only_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9994
+    "overall_score": 0.9989
   },
   {
     "name": "classic08_mixed_text_and_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1132,
+    "minipdf_size": 1162,
     "reference_size": 27336,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -299,9 +235,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9965
+      0.9943
     ],
-    "visual_avg": 0.9965,
+    "visual_avg": 0.9943,
     "diff_images": [
       {
         "page": 1,
@@ -309,29 +245,22 @@
         "reference_img": "classic08_mixed_text_and_numbers_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9986
+    "overall_score": 0.9977
   },
   {
     "name": "classic09_long_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3667,
+    "minipdf_size": 2807,
     "reference_size": 29170,
     "minipdf_pages": 1,
     "reference_pages": 12,
-    "text_similarity": 0.2222,
-    "flat_text_similarity": 0.1829,
-    "word_text_similarity": 0.2222,
-    "text_diff": "--- minipdf/classic09_long_text.pdf\n+++ reference/classic09_long_text.pdf\n@@ -1,26 +1,26 @@\n Long Text Column\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-XXXXXXXXXXXXXXX\n\n-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n-AAAAAAAAA\n\n-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\n\n-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\n\n-BBBBBB\n\n+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n Short\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---",
+    "text_similarity": 0.9319,
+    "flat_text_similarity": 0.9319,
+    "word_text_similarity": 0.5333,
+    "text_diff": "--- minipdf/classic09_long_text.pdf\n+++ reference/classic09_long_text.pdf\n@@ -1,5 +1,26 @@\n Long Text Column\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n Short\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---",
     "visual_scores": [
-      0.909,
+      0.9654,
       0.0,
       0.0,
       0.0,
@@ -344,7 +273,7 @@
       0.0,
       0.0
     ],
-    "visual_avg": 0.0757,
+    "visual_avg": 0.0805,
     "diff_images": [
       {
         "page": 1,
@@ -407,31 +336,7 @@
         "reference_img": "classic09_long_text_p12_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "differences": [
-          "MiniPdf rendering (Image 1) shows significantly more rows of text compared to LibreOffice (Image 2).",
-          "MiniPdf does not truncate or overflow text, while LibreOffice truncates long text entries after a few lines.",
-          "LibreOffice rendering (Image 2) displays only one line for each text block, while MiniPdf (Image 1) shows multiple lines for each block.",
-          "MiniPdf includes additional text blocks (e.g., 'BBBBBB', 'Short', and multiple 'YYYYY...' lines) that are missing or truncated in LibreOffice.",
-          "Column widths and row heights are much larger in MiniPdf, allowing more content to be visible.",
-          "No visible cell borders, background colors, or header row styling in either rendering.",
-          "Page margins and overall layout are similar, but MiniPdf fills more of the page with content."
-        ],
-        "severity": "high",
-        "ai_visual_score": 0.3,
-        "suggestions": [
-          "Ensure text is not truncated and all content is rendered as in the reference.",
-          "Match row heights and column widths to the reference rendering for consistent layout.",
-          "Check for missing or extra content and ensure all rows and columns are rendered.",
-          "Implement proper text wrapping and cell overflow handling.",
-          "Add cell borders, background colors, and header row styling if present in the original spreadsheet."
-        ],
-        "page": 1
-      }
-    ],
-    "ai_visual_avg": 0.3,
-    "overall_score": 0.3089
+    "overall_score": 0.505
   },
   {
     "name": "classic10_special_xml_characters",
@@ -446,9 +351,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9937
+      0.994
     ],
-    "visual_avg": 0.9937,
+    "visual_avg": 0.994,
     "diff_images": [
       {
         "page": 1,
@@ -456,14 +361,7 @@
         "reference_img": "classic10_special_xml_characters_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9975
+    "overall_score": 0.9976
   },
   {
     "name": "classic11_sparse_rows",
@@ -478,10 +376,10 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9984,
-      0.9995
+      0.998,
+      0.9996
     ],
-    "visual_avg": 0.999,
+    "visual_avg": 0.9988,
     "diff_images": [
       {
         "page": 1,
@@ -494,20 +392,13 @@
         "reference_img": "classic11_sparse_rows_p2_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9996
+    "overall_score": 0.9995
   },
   {
     "name": "classic12_sparse_columns",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 860,
+    "minipdf_size": 875,
     "reference_size": 24923,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -516,9 +407,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9975
+      0.9979
     ],
-    "visual_avg": 0.9975,
+    "visual_avg": 0.9979,
     "diff_images": [
       {
         "page": 1,
@@ -526,31 +417,24 @@
         "reference_img": "classic12_sparse_columns_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.999
+    "overall_score": 0.9992
   },
   {
     "name": "classic13_date_strings",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1168,
+    "minipdf_size": 1199,
     "reference_size": 29104,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9751,
-    "flat_text_similarity": 0.9751,
-    "word_text_similarity": 0.6154,
-    "text_diff": "--- minipdf/classic13_date_strings.pdf\n+++ reference/classic13_date_strings.pdf\n@@ -1,6 +1,6 @@\n Date Event\n\n-2025-01-15 Launch\n\n-2025-06-30 Release\n\n-2025-12-25 Holiday\n\n-2026-01-01 New Year\n\n-2026-02-23 Today\n+2025-01-1 Launch\n\n+2025-06-3 Release\n\n+2025-12-2 Holiday\n\n+2026-01-0 New Year\n\n+2026-02-2 Today",
+    "text_similarity": 0.949,
+    "flat_text_similarity": 0.949,
+    "word_text_similarity": 0.2857,
+    "text_diff": "--- minipdf/classic13_date_strings.pdf\n+++ reference/classic13_date_strings.pdf\n@@ -1,6 +1,6 @@\n Date Event\n\n-2025-01-15Launch\n\n-2025-06-30Release\n\n-2025-12-25Holiday\n\n-2026-01-01New Year\n\n-2026-02-23Today\n+2025-01-1 Launch\n\n+2025-06-3 Release\n\n+2025-12-2 Holiday\n\n+2026-01-0 New Year\n\n+2026-02-2 Today",
     "visual_scores": [
-      0.9938
+      0.9901
     ],
-    "visual_avg": 0.9938,
+    "visual_avg": 0.9901,
     "diff_images": [
       {
         "page": 1,
@@ -558,20 +442,13 @@
         "reference_img": "classic13_date_strings_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9876
+    "overall_score": 0.9756
   },
   {
     "name": "classic14_decimal_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1146,
+    "minipdf_size": 1176,
     "reference_size": 29057,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -580,9 +457,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9956
+      0.9937
     ],
-    "visual_avg": 0.9956,
+    "visual_avg": 0.9937,
     "diff_images": [
       {
         "page": 1,
@@ -590,20 +467,13 @@
         "reference_img": "classic14_decimal_numbers_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9982
+    "overall_score": 0.9975
   },
   {
     "name": "classic15_negative_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1230,
+    "minipdf_size": 1265,
     "reference_size": 28526,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -612,9 +482,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9953
+      0.9946
     ],
-    "visual_avg": 0.9953,
+    "visual_avg": 0.9946,
     "diff_images": [
       {
         "page": 1,
@@ -622,31 +492,24 @@
         "reference_img": "classic15_negative_numbers_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9981
+    "overall_score": 0.9978
   },
   {
     "name": "classic16_percentage_strings",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1147,
+    "minipdf_size": 1177,
     "reference_size": 29888,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9939,
-    "flat_text_similarity": 0.9939,
-    "word_text_similarity": 0.8696,
-    "text_diff": "--- minipdf/classic16_percentage_strings.pdf\n+++ reference/classic16_percentage_strings.pdf\n@@ -1,5 +1,5 @@\n Metric Rate\n\n-Conversion 12.5%\n\n+Conversion12.5%\n\n Bounce 45.3%\n\n Retention 88.7%\n\n Churn 3.2%\n",
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.9949
+      0.993
     ],
-    "visual_avg": 0.9949,
+    "visual_avg": 0.993,
     "diff_images": [
       {
         "page": 1,
@@ -654,31 +517,24 @@
         "reference_img": "classic16_percentage_strings_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9955
+    "overall_score": 0.9972
   },
   {
     "name": "classic17_currency_strings",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1253,
+    "minipdf_size": 2292,
     "reference_size": 29862,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9615,
-    "flat_text_similarity": 0.9615,
-    "word_text_similarity": 0.875,
-    "text_diff": "--- minipdf/classic17_currency_strings.pdf\n+++ reference/classic17_currency_strings.pdf\n@@ -3,5 +3,5 @@\n Gadget $149.00\n\n Premium $1,299.99\n\n Budget $4.50\n\n-Euro Item EUR49.99\n\n-Yen Item JPY5000\n+Euro Item €49.99\n\n+Yen Item ¥5000",
+    "text_similarity": 0.9662,
+    "flat_text_similarity": 0.9662,
+    "word_text_similarity": 0.8485,
+    "text_diff": "--- minipdf/classic17_currency_strings.pdf\n+++ reference/classic17_currency_strings.pdf\n@@ -3,6 +3,5 @@\n Gadget $149.00\n\n Premium $1,299.99\n\n Budget $4.50\n\n-Euro Item 49.99\n\n-€\n\n-Yen Item JPY5000\n+Euro Item €49.99\n\n+Yen Item ¥5000",
     "visual_scores": [
-      0.9934
+      0.9917
     ],
-    "visual_avg": 0.9934,
+    "visual_avg": 0.9917,
     "diff_images": [
       {
         "page": 1,
@@ -686,20 +542,13 @@
         "reference_img": "classic17_currency_strings_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.982
+    "overall_score": 0.9832
   },
   {
     "name": "classic18_large_dataset",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 483743,
+    "minipdf_size": 532792,
     "reference_size": 2487195,
     "minipdf_pages": 24,
     "reference_pages": 24,
@@ -708,32 +557,32 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.8215,
-      0.8093,
-      0.7964,
-      0.7873,
-      0.7847,
-      0.781,
-      0.7761,
-      0.7781,
-      0.7754,
-      0.7785,
-      0.7786,
-      0.7772,
-      0.7776,
-      0.7728,
-      0.7756,
-      0.7725,
-      0.7818,
-      0.7844,
-      0.7783,
-      0.7708,
-      0.7673,
-      0.775,
-      0.7719,
-      0.9342
+      0.8875,
+      0.8764,
+      0.8726,
+      0.8716,
+      0.8708,
+      0.8669,
+      0.861,
+      0.8624,
+      0.8612,
+      0.8616,
+      0.8633,
+      0.8634,
+      0.8635,
+      0.8588,
+      0.8603,
+      0.8587,
+      0.8646,
+      0.8678,
+      0.866,
+      0.8591,
+      0.8545,
+      0.8594,
+      0.8573,
+      0.9347
     ],
-    "visual_avg": 0.7878,
+    "visual_avg": 0.8676,
     "diff_images": [
       {
         "page": 1,
@@ -856,30 +705,7 @@
         "reference_img": "classic18_large_dataset_p24_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "differences": [
-          "Column widths are slightly narrower in the MiniPdf rendering, causing the text to appear more tightly packed.",
-          "Row heights are marginally shorter in the MiniPdf rendering, leading to less vertical spacing between rows.",
-          "Font size in the MiniPdf rendering appears slightly smaller compared to the LibreOffice reference.",
-          "Page margins are smaller in the MiniPdf rendering, resulting in less whitespace around the content.",
-          "Cell border rendering is missing in both renderings, so no difference in this aspect.",
-          "Header row styling is identical in both renderings (no bold or background color).",
-          "No text truncation or overflow observed in either rendering.",
-          "Background/fill colors are not present in either rendering."
-        ],
-        "severity": "low",
-        "ai_visual_score": 0.95,
-        "suggestions": [
-          "Increase column widths and row heights to match the spacing of the LibreOffice reference.",
-          "Adjust font size to match the reference rendering for improved readability.",
-          "Add more page margin to match the overall layout of the LibreOffice reference."
-        ],
-        "page": 1
-      }
-    ],
-    "ai_visual_avg": 0.95,
-    "overall_score": 0.98
+    "overall_score": 0.947
   },
   {
     "name": "classic19_single_column_list",
@@ -894,9 +720,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9921
+      0.9939
     ],
-    "visual_avg": 0.9921,
+    "visual_avg": 0.9939,
     "diff_images": [
       {
         "page": 1,
@@ -904,14 +730,7 @@
         "reference_img": "classic19_single_column_list_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9968
+    "overall_score": 0.9976
   },
   {
     "name": "classic20_all_empty_cells",
@@ -936,21 +755,164 @@
         "reference_img": "classic20_all_empty_cells_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
     "overall_score": 1.0
   },
   {
     "name": "classic21_header_only",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 807,
+    "minipdf_size": 828,
     "reference_size": 22034,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9988
+    ],
+    "visual_avg": 0.9988,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic21_header_only_p1_minipdf.png",
+        "reference_img": "classic21_header_only_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9995
+  },
+  {
+    "name": "classic22_long_sheet_name",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 865,
+    "reference_size": 23683,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9984
+    ],
+    "visual_avg": 0.9984,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic22_long_sheet_name_p1_minipdf.png",
+        "reference_img": "classic22_long_sheet_name_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9994
+  },
+  {
+    "name": "classic23_unicode_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3070,
+    "reference_size": 67722,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8017,
+    "flat_text_similarity": 0.8017,
+    "word_text_similarity": 0.7222,
+    "text_diff": "--- minipdf/classic23_unicode_text.pdf\n+++ reference/classic23_unicode_text.pdf\n@@ -1,12 +1,9 @@\n Language Greeting Extra\n\n English Hello World\n\n+你好 世界\n\n Chinese\n\n-你好 世界\n\n+こんにちは世界\n\n Japanese\n\n-こんにちは世界\n\n-Korean\n\n-안녕하세요세계\n\n-Arabic\n\n-ملاعلاابحرم\n\n-Emoji\n\n-���� ✅❌\n+Korean 안녕하세요세계\n\n+Arabicمرحبا العالم\n\n+Emoji 😀🎉 ✅❌",
+    "visual_scores": [
+      0.9928
+    ],
+    "visual_avg": 0.9928,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic23_unicode_text_p1_minipdf.png",
+        "reference_img": "classic23_unicode_text_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9178
+  },
+  {
+    "name": "classic24_red_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1064,
+    "reference_size": 39031,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9924
+    ],
+    "visual_avg": 0.9924,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic24_red_text_p1_minipdf.png",
+        "reference_img": "classic24_red_text_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.997
+  },
+  {
+    "name": "classic25_multiple_colors",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1771,
+    "reference_size": 43116,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9978,
+    "flat_text_similarity": 0.9978,
+    "word_text_similarity": 0.9767,
+    "text_diff": "--- minipdf/classic25_multiple_colors.pdf\n+++ reference/classic25_multiple_colors.pdf\n@@ -1,4 +1,4 @@\n-Color NameSample Text\n\n+Color NamSample Text\n\n Red This is red text\n\n Green This is green text\n\n Blue This is blue text\n",
+    "visual_scores": [
+      0.989
+    ],
+    "visual_avg": 0.989,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic25_multiple_colors_p1_minipdf.png",
+        "reference_img": "classic25_multiple_colors_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9947
+  },
+  {
+    "name": "classic26_inline_strings",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1037,
+    "reference_size": 25018,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9966
+    ],
+    "visual_avg": 0.9966,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic26_inline_strings_p1_minipdf.png",
+        "reference_img": "classic26_inline_strings_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9986
+  },
+  {
+    "name": "classic27_single_row",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 923,
+    "reference_size": 23681,
     "minipdf_pages": 1,
     "reference_pages": 1,
     "text_similarity": 1.0,
@@ -964,216 +926,17 @@
     "diff_images": [
       {
         "page": 1,
-        "minipdf_img": "classic21_header_only_p1_minipdf.png",
-        "reference_img": "classic21_header_only_p1_reference.png"
-      }
-    ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
+        "minipdf_img": "classic27_single_row_p1_minipdf.png",
+        "reference_img": "classic27_single_row_p1_reference.png"
       }
     ],
     "overall_score": 0.9994
   },
   {
-    "name": "classic22_long_sheet_name",
-    "minipdf_exists": true,
-    "reference_exists": true,
-    "minipdf_size": 850,
-    "reference_size": 23683,
-    "minipdf_pages": 1,
-    "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
-    "visual_scores": [
-      0.9981
-    ],
-    "visual_avg": 0.9981,
-    "diff_images": [
-      {
-        "page": 1,
-        "minipdf_img": "classic22_long_sheet_name_p1_minipdf.png",
-        "reference_img": "classic22_long_sheet_name_p1_reference.png"
-      }
-    ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9992
-  },
-  {
-    "name": "classic23_unicode_text",
-    "minipdf_exists": true,
-    "reference_exists": true,
-    "minipdf_size": 1559,
-    "reference_size": 67722,
-    "minipdf_pages": 1,
-    "reference_pages": 1,
-    "text_similarity": 0.6857,
-    "flat_text_similarity": 0.6857,
-    "word_text_similarity": 0.5128,
-    "text_diff": "--- minipdf/classic23_unicode_text.pdf\n+++ reference/classic23_unicode_text.pdf\n@@ -1,7 +1,9 @@\n Language Greeting Extra\n\n English Hello World\n\n-Chinese ?? ??\n\n-Japanese ????? ??\n\n-Korean ????? ??\n\n-Arabic ????? ??????\n\n-Emoji ???? ??\n+你好 世界\n\n+Chinese\n\n+こんにちは世界\n\n+Japanese\n\n+Korean 안녕하세요세계\n\n+Arabicمرحبا العالم\n\n+Emoji 😀🎉 ✅❌",
-    "visual_scores": [
-      0.9914
-    ],
-    "visual_avg": 0.9914,
-    "diff_images": [
-      {
-        "page": 1,
-        "minipdf_img": "classic23_unicode_text_p1_minipdf.png",
-        "reference_img": "classic23_unicode_text_p1_reference.png"
-      }
-    ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.8708
-  },
-  {
-    "name": "classic24_red_text",
-    "minipdf_exists": true,
-    "reference_exists": true,
-    "minipdf_size": 1044,
-    "reference_size": 39031,
-    "minipdf_pages": 1,
-    "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
-    "visual_scores": [
-      0.9952
-    ],
-    "visual_avg": 0.9952,
-    "diff_images": [
-      {
-        "page": 1,
-        "minipdf_img": "classic24_red_text_p1_minipdf.png",
-        "reference_img": "classic24_red_text_p1_reference.png"
-      }
-    ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9981
-  },
-  {
-    "name": "classic25_multiple_colors",
-    "minipdf_exists": true,
-    "reference_exists": true,
-    "minipdf_size": 1726,
-    "reference_size": 43116,
-    "minipdf_pages": 1,
-    "reference_pages": 1,
-    "text_similarity": 0.9955,
-    "flat_text_similarity": 0.9955,
-    "word_text_similarity": 0.9655,
-    "text_diff": "--- minipdf/classic25_multiple_colors.pdf\n+++ reference/classic25_multiple_colors.pdf\n@@ -1,4 +1,4 @@\n-Color Name Sample Text\n\n+Color NamSample Text\n\n Red This is red text\n\n Green This is green text\n\n Blue This is blue text\n",
-    "visual_scores": [
-      0.992
-    ],
-    "visual_avg": 0.992,
-    "diff_images": [
-      {
-        "page": 1,
-        "minipdf_img": "classic25_multiple_colors_p1_minipdf.png",
-        "reference_img": "classic25_multiple_colors_p1_reference.png"
-      }
-    ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.995
-  },
-  {
-    "name": "classic26_inline_strings",
-    "minipdf_exists": true,
-    "reference_exists": true,
-    "minipdf_size": 1007,
-    "reference_size": 25018,
-    "minipdf_pages": 1,
-    "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
-    "visual_scores": [
-      0.9962
-    ],
-    "visual_avg": 0.9962,
-    "diff_images": [
-      {
-        "page": 1,
-        "minipdf_img": "classic26_inline_strings_p1_minipdf.png",
-        "reference_img": "classic26_inline_strings_p1_reference.png"
-      }
-    ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9985
-  },
-  {
-    "name": "classic27_single_row",
-    "minipdf_exists": true,
-    "reference_exists": true,
-    "minipdf_size": 926,
-    "reference_size": 23681,
-    "minipdf_pages": 1,
-    "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
-    "visual_scores": [
-      0.9982
-    ],
-    "visual_avg": 0.9982,
-    "diff_images": [
-      {
-        "page": 1,
-        "minipdf_img": "classic27_single_row_p1_minipdf.png",
-        "reference_img": "classic27_single_row_p1_reference.png"
-      }
-    ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9993
-  },
-  {
     "name": "classic28_duplicate_values",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1459,
+    "minipdf_size": 1539,
     "reference_size": 24729,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1182,9 +945,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9959
+      0.993
     ],
-    "visual_avg": 0.9959,
+    "visual_avg": 0.993,
     "diff_images": [
       {
         "page": 1,
@@ -1192,20 +955,13 @@
         "reference_img": "classic28_duplicate_values_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9984
+    "overall_score": 0.9972
   },
   {
     "name": "classic29_formula_results",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1377,
+    "minipdf_size": 1451,
     "reference_size": 27548,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1214,9 +970,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9957
+      0.9925
     ],
-    "visual_avg": 0.9957,
+    "visual_avg": 0.9925,
     "diff_images": [
       {
         "page": 1,
@@ -1224,20 +980,13 @@
         "reference_img": "classic29_formula_results_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9983
+    "overall_score": 0.997
   },
   {
     "name": "classic30_mixed_empty_and_filled_sheets",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1347,
+    "minipdf_size": 1382,
     "reference_size": 27418,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -1246,10 +995,10 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9983,
-      0.9981
+      0.9985,
+      0.9986
     ],
-    "visual_avg": 0.9982,
+    "visual_avg": 0.9986,
     "diff_images": [
       {
         "page": 1,
@@ -1262,31 +1011,24 @@
         "reference_img": "classic30_mixed_empty_and_filled_sheets_p2_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9993
+    "overall_score": 0.9994
   },
   {
     "name": "classic31_bold_header_row",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1521,
+    "minipdf_size": 1596,
     "reference_size": 40714,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.996,
+    "flat_text_similarity": 0.996,
+    "word_text_similarity": 0.95,
+    "text_diff": "--- minipdf/classic31_bold_header_row.pdf\n+++ reference/classic31_bold_header_row.pdf\n@@ -1,5 +1,5 @@\n Product Category Price Stock\n\n-Laptop Electronic 999.99 50\n\n+Laptop Electronics 999.99 50\n\n Desk Furniture 349 20\n\n Pen Stationery 1.99 500\n\n Chair Furniture 199 30",
     "visual_scores": [
-      0.9923
+      0.9896
     ],
-    "visual_avg": 0.9923,
+    "visual_avg": 0.9896,
     "diff_images": [
       {
         "page": 1,
@@ -1294,20 +1036,13 @@
         "reference_img": "classic31_bold_header_row_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9969
+    "overall_score": 0.9942
   },
   {
     "name": "classic32_right_aligned_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 958,
+    "minipdf_size": 978,
     "reference_size": 27582,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1316,9 +1051,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9964
+      0.9954
     ],
-    "visual_avg": 0.9964,
+    "visual_avg": 0.9954,
     "diff_images": [
       {
         "page": 1,
@@ -1326,20 +1061,13 @@
         "reference_img": "classic32_right_aligned_numbers_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9986
+    "overall_score": 0.9982
   },
   {
     "name": "classic33_centered_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1235,
+    "minipdf_size": 1301,
     "reference_size": 26648,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1348,9 +1076,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9975
+      0.998
     ],
-    "visual_avg": 0.9975,
+    "visual_avg": 0.998,
     "diff_images": [
       {
         "page": 1,
@@ -1358,31 +1086,24 @@
         "reference_img": "classic33_centered_text_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.999
+    "overall_score": 0.9992
   },
   {
     "name": "classic34_explicit_column_widths",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1231,
+    "minipdf_size": 1200,
     "reference_size": 28834,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9615,
-    "flat_text_similarity": 0.9615,
-    "word_text_similarity": 0.9474,
-    "text_diff": "--- minipdf/classic34_explicit_column_widths.pdf\n+++ reference/classic34_explicit_column_widths.pdf\n@@ -1,5 +1,4 @@\n ID Description Value\n\n 1 Short 10\n\n-2 A much longer description text 200\n\n-here\n\n+2 A much longer description text here 200\n\n 3 Medium length description 55",
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.9942
+      0.9913
     ],
-    "visual_avg": 0.9942,
+    "visual_avg": 0.9913,
     "diff_images": [
       {
         "page": 1,
@@ -1390,31 +1111,24 @@
         "reference_img": "classic34_explicit_column_widths_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9823
+    "overall_score": 0.9965
   },
   {
     "name": "classic35_explicit_row_heights",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 871,
+    "minipdf_size": 881,
     "reference_size": 25108,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9231,
-    "flat_text_similarity": 0.9231,
-    "word_text_similarity": 0.6667,
-    "text_diff": "--- minipdf/classic35_explicit_row_heights.pdf\n+++ reference/classic35_explicit_row_heights.pdf\n@@ -1,3 +1,3 @@\n-Tall Header Value\n\n-Extra Tall Row 42\n\n-Normal Row 10\n+Tall HeadeValue\n\n+Extra Tall 42\n\n+Normal Ro 10",
+    "text_similarity": 0.9647,
+    "flat_text_similarity": 0.9647,
+    "word_text_similarity": 0.625,
+    "text_diff": "--- minipdf/classic35_explicit_row_heights.pdf\n+++ reference/classic35_explicit_row_heights.pdf\n@@ -1,3 +1,3 @@\n-Tall Heade Value\n\n+Tall HeadeValue\n\n Extra Tall 42\n\n-Normal Row10\n+Normal Ro 10",
     "visual_scores": [
-      0.9971
+      0.9943
     ],
-    "visual_avg": 0.9971,
+    "visual_avg": 0.9943,
     "diff_images": [
       {
         "page": 1,
@@ -1422,20 +1136,13 @@
         "reference_img": "classic35_explicit_row_heights_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9681
+    "overall_score": 0.9836
   },
   {
     "name": "classic36_merged_cells",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1072,
+    "minipdf_size": 1102,
     "reference_size": 27256,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1444,9 +1151,9 @@
     "word_text_similarity": 0.963,
     "text_diff": "--- minipdf/classic36_merged_cells.pdf\n+++ reference/classic36_merged_cells.pdf\n@@ -1,4 +1,4 @@\n-Merged Header Spanning Three Columns\n\n+Merged Header Spanning Three\n\n Col1 Col2 Col3\n\n Row2A Row2B Row2C\n\n Row3A Row3B Row3C",
     "visual_scores": [
-      0.9939
+      0.9911
     ],
-    "visual_avg": 0.9939,
+    "visual_avg": 0.9911,
     "diff_images": [
       {
         "page": 1,
@@ -1454,20 +1161,13 @@
         "reference_img": "classic36_merged_cells_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9828
+    "overall_score": 0.9816
   },
   {
     "name": "classic37_freeze_panes",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4353,
+    "minipdf_size": 4689,
     "reference_size": 46420,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1476,9 +1176,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9781
+      0.9824
     ],
-    "visual_avg": 0.9781,
+    "visual_avg": 0.9824,
     "diff_images": [
       {
         "page": 1,
@@ -1486,20 +1186,13 @@
         "reference_img": "classic37_freeze_panes_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9912
+    "overall_score": 0.993
   },
   {
     "name": "classic38_hyperlink_cell",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 892,
+    "minipdf_size": 907,
     "reference_size": 26279,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1508,9 +1201,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "--- minipdf/classic38_hyperlink_cell.pdf\n+++ reference/classic38_hyperlink_cell.pdf\n@@ -1,3 +1,4 @@\n Resource URL\n\n-GitHub https://github.com\n\n+GitHub\n\n+https://github.com\n\n Docs https://docs.microsoft.com",
     "visual_scores": [
-      0.9954
+      0.9961
     ],
-    "visual_avg": 0.9954,
+    "visual_avg": 0.9961,
     "diff_images": [
       {
         "page": 1,
@@ -1518,20 +1211,13 @@
         "reference_img": "classic38_hyperlink_cell_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9982
+    "overall_score": 0.9984
   },
   {
     "name": "classic39_financial_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1942,
+    "minipdf_size": 2047,
     "reference_size": 43383,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1540,9 +1226,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.991
+      0.9872
     ],
-    "visual_avg": 0.991,
+    "visual_avg": 0.9872,
     "diff_images": [
       {
         "page": 1,
@@ -1550,31 +1236,24 @@
         "reference_img": "classic39_financial_table_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9964
+    "overall_score": 0.9949
   },
   {
     "name": "classic40_scientific_notation",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1189,
+    "minipdf_size": 1212,
     "reference_size": 30852,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.8711,
-    "flat_text_similarity": 0.8711,
-    "word_text_similarity": 0.6452,
-    "text_diff": "--- minipdf/classic40_scientific_notation.pdf\n+++ reference/classic40_scientific_notation.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n-Avogadro 6.022E+23\n\n+Avogadro 6.02E+23\n\n Planck 6.626E-34\n\n-Speed of Light 299800000\n\n-Electron mass 9.109E-31\n\n-Pi approx 3.14159265358979\n+Speed of L 3E+08\n\n+Electron m9.109E-31\n\n+Pi approx 3.141593",
+    "text_similarity": 0.8991,
+    "flat_text_similarity": 0.8991,
+    "word_text_similarity": 0.7097,
+    "text_diff": "--- minipdf/classic40_scientific_notation.pdf\n+++ reference/classic40_scientific_notation.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n-Avogadro 6.022E+23\n\n+Avogadro 6.02E+23\n\n Planck 6.626E-34\n\n-Speed of L 299800000\n\n-Electron m 9.109E-31\n\n-Pi approx 3.14159265358979\n+Speed of L 3E+08\n\n+Electron m9.109E-31\n\n+Pi approx 3.141593",
     "visual_scores": [
-      0.9928
+      0.9893
     ],
-    "visual_avg": 0.9928,
+    "visual_avg": 0.9893,
     "diff_images": [
       {
         "page": 1,
@@ -1582,20 +1261,13 @@
         "reference_img": "classic40_scientific_notation_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9456
+    "overall_score": 0.9554
   },
   {
     "name": "classic41_integer_vs_float",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1408,
+    "minipdf_size": 1453,
     "reference_size": 29637,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1604,9 +1276,9 @@
     "word_text_similarity": 0.9444,
     "text_diff": "--- minipdf/classic41_integer_vs_float.pdf\n+++ reference/classic41_integer_vs_float.pdf\n@@ -6,4 +6,4 @@\n Zero 0\n\n ZeroFloat 0\n\n Large 1000000\n\n-Small 1E-06\n+Small 0.000001",
     "visual_scores": [
-      0.9941
+      0.9932
     ],
-    "visual_avg": 0.9941,
+    "visual_avg": 0.9932,
     "diff_images": [
       {
         "page": 1,
@@ -1614,31 +1286,24 @@
         "reference_img": "classic41_integer_vs_float_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9758
+    "overall_score": 0.9754
   },
   {
     "name": "classic42_boolean_values",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1148,
+    "minipdf_size": 1190,
     "reference_size": 28631,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.8202,
-    "flat_text_similarity": 0.8202,
-    "word_text_similarity": 0.5,
-    "text_diff": "--- minipdf/classic42_boolean_values.pdf\n+++ reference/classic42_boolean_values.pdf\n@@ -1,6 +1,6 @@\n Feature Enabled\n\n-Dark Mode 1\n\n-Notifications 0\n\n-Auto-save 1\n\n-Analytics 0\n\n-Beta Features 1\n+Dark Mode TRUE\n\n+Notificatio FALSE\n\n+Auto-save TRUE\n\n+Analytics FALSE\n\n+Beta Featu TRUE",
+    "text_similarity": 0.9947,
+    "flat_text_similarity": 0.9947,
+    "word_text_similarity": 0.9286,
+    "text_diff": "--- minipdf/classic42_boolean_values.pdf\n+++ reference/classic42_boolean_values.pdf\n@@ -1,6 +1,6 @@\n Feature Enabled\n\n Dark Mode TRUE\n\n-Notificati FALSE\n\n+Notificatio FALSE\n\n Auto-save TRUE\n\n Analytics FALSE\n\n Beta Featu TRUE",
     "visual_scores": [
-      0.9948
+      0.9913
     ],
-    "visual_avg": 0.9948,
+    "visual_avg": 0.9913,
     "diff_images": [
       {
         "page": 1,
@@ -1646,20 +1311,13 @@
         "reference_img": "classic42_boolean_values_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.926
+    "overall_score": 0.9944
   },
   {
     "name": "classic43_inventory_report",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2845,
+    "minipdf_size": 3045,
     "reference_size": 49849,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1668,9 +1326,9 @@
     "word_text_similarity": 0.9735,
     "text_diff": "--- minipdf/classic43_inventory_report.pdf\n+++ reference/classic43_inventory_report.pdf\n@@ -1,4 +1,4 @@\n-SKU Name Category Qty Unit Price Total Value\n\n+SKU Name Category Qty Unit PriceTotal Value\n\n SKU001 Widget A Widgets 100 5.99 599\n\n SKU002 Widget B Widgets 250 3.49 872.5\n\n SKU003 Gadget X Gadgets 50 29.99 1499.5\n",
     "visual_scores": [
-      0.9803
+      0.9774
     ],
-    "visual_avg": 0.9803,
+    "visual_avg": 0.9774,
     "diff_images": [
       {
         "page": 1,
@@ -1678,31 +1336,24 @@
         "reference_img": "classic43_inventory_report_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9915
+    "overall_score": 0.9903
   },
   {
     "name": "classic44_employee_roster",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3299,
+    "minipdf_size": 3476,
     "reference_size": 43656,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.7143,
-    "flat_text_similarity": 0.5708,
-    "word_text_similarity": 0.7143,
-    "text_diff": "--- minipdf/classic44_employee_roster.pdf\n+++ reference/classic44_employee_roster.pdf\n@@ -1,9 +1,9 @@\n EmpID First Last Dept Title Email\n\n-1001 Alice Smith Engineering Senior Engineer alice@example.com\n\n-1002 Bob Jones Marketing Marketing Manager bob@example.com\n\n-1003 Carol Williams HR HR Specialist carol@example.com\n\n-1004 David Brown Engineering Junior Engineer david@example.com\n\n-1005 Eve Davis Finance Financial Analyst eve@example.com\n\n-1006 Frank Miller Sales Sales Representative frank@example.com\n\n-1007 Grace Wilson Engineering Tech Lead grace@example.com\n\n-1008 Henry Moore Support Support Specialist henry@example.com\n+1001 Alice Smith EngineerinSenior Engalice@example.com\n\n+1002 Bob Jones MarketingMarketingbob@example.com\n\n+1003 Carol Williams HR HR Specialcarol@example.com\n\n+1004 David Brown EngineerinJunior Engdavid@example.com\n\n+1005 Eve Davis Finance Financial Aeve@example.com\n\n+1006 Frank Miller Sales Sales Reprfrank@example.com\n\n+1007 Grace Wilson EngineerinTech Lead grace@example.com\n\n+1008 Henry Moore Support Support Sphenry@example.com",
+    "text_similarity": 0.9683,
+    "flat_text_similarity": 0.9683,
+    "word_text_similarity": 0.7778,
+    "text_diff": "--- minipdf/classic44_employee_roster.pdf\n+++ reference/classic44_employee_roster.pdf\n@@ -1,9 +1,9 @@\n EmpID First Last Dept Title Email\n\n-1001 Alice Smith Engineerin Senior Eng alice@example.com\n\n-1002 Bob Jones Marketing Marketing bob@example.com\n\n+1001 Alice Smith EngineerinSenior Engalice@example.com\n\n+1002 Bob Jones MarketingMarketingbob@example.com\n\n 1003 Carol Williams HR HR Specialcarol@example.com\n\n-1004 David Brown Engineerin Junior Eng david@example.com\n\n-1005 Eve Davis Finance Financial eve@example.com\n\n-1006 Frank Miller Sales Sales Repr frank@example.com\n\n-1007 Grace Wilson Engineerin Tech Lead grace@example.com\n\n+1004 David Brown EngineerinJunior Engdavid@example.com\n\n+1005 Eve Davis Finance Financial Aeve@example.com\n\n+1006 Frank Miller Sales Sales Reprfrank@example.com\n\n+1007 Grace Wilson EngineerinTech Lead grace@example.com\n\n 1008 Henry Moore Support Support Sphenry@example.com",
     "visual_scores": [
-      0.9684
+      0.967
     ],
-    "visual_avg": 0.9684,
+    "visual_avg": 0.967,
     "diff_images": [
       {
         "page": 1,
@@ -1710,20 +1361,13 @@
         "reference_img": "classic44_employee_roster_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.8731
+    "overall_score": 0.9741
   },
   {
     "name": "classic45_sales_by_region",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3074,
+    "minipdf_size": 3174,
     "reference_size": 37087,
     "minipdf_pages": 4,
     "reference_pages": 4,
@@ -1732,12 +1376,12 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9968,
-      0.9967,
-      0.9966,
-      0.9967
+      0.9946,
+      0.9943,
+      0.994,
+      0.9943
     ],
-    "visual_avg": 0.9967,
+    "visual_avg": 0.9943,
     "diff_images": [
       {
         "page": 1,
@@ -1760,20 +1404,13 @@
         "reference_img": "classic45_sales_by_region_p4_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9987
+    "overall_score": 0.9977
   },
   {
     "name": "classic46_grade_book",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3349,
+    "minipdf_size": 3325,
     "reference_size": 40993,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1782,9 +1419,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.987
+      0.9841
     ],
-    "visual_avg": 0.987,
+    "visual_avg": 0.9841,
     "diff_images": [
       {
         "page": 1,
@@ -1792,20 +1429,13 @@
         "reference_img": "classic46_grade_book_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9948
+    "overall_score": 0.9936
   },
   {
     "name": "classic47_time_series",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6461,
+    "minipdf_size": 6941,
     "reference_size": 55976,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1814,9 +1444,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9647
+      0.9728
     ],
-    "visual_avg": 0.9647,
+    "visual_avg": 0.9728,
     "diff_images": [
       {
         "page": 1,
@@ -1824,31 +1454,24 @@
         "reference_img": "classic47_time_series_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9859
+    "overall_score": 0.9891
   },
   {
     "name": "classic48_survey_results",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2232,
+    "minipdf_size": 2378,
     "reference_size": 36069,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9803,
-    "flat_text_similarity": 0.9803,
-    "word_text_similarity": 0.9,
-    "text_diff": "--- minipdf/classic48_survey_results.pdf\n+++ reference/classic48_survey_results.pdf\n@@ -1,6 +1,6 @@\n-Question StrongAgree Agree Neutral Disagree StrongDisagree\n\n-Easy to use 30 45 15 7 3\n\n-Recommend 25 40 20 10 5\n\n+Question StrongAgr Agree Neutral Disagree StrongDisagree\n\n+Easy to us 30 45 15 7 3\n\n+Recommen 25 40 20 10 5\n\n Fair price 20 35 25 15 5\n\n-Good support 35 40 15 7 3\n\n+Good supp 35 40 15 7 3\n\n Satisfied 28 42 18 8 4",
+    "text_similarity": 0.9828,
+    "flat_text_similarity": 0.9828,
+    "word_text_similarity": 0.8831,
+    "text_diff": "--- minipdf/classic48_survey_results.pdf\n+++ reference/classic48_survey_results.pdf\n@@ -1,6 +1,6 @@\n-Question StrongAgreAgree Neutral Disagree StrongDisagree\n\n+Question StrongAgr Agree Neutral Disagree StrongDisagree\n\n Easy to us 30 45 15 7 3\n\n-Recommend25 40 20 10 5\n\n+Recommen 25 40 20 10 5\n\n Fair price 20 35 25 15 5\n\n-Good suppo35 40 15 7 3\n\n+Good supp 35 40 15 7 3\n\n Satisfied 28 42 18 8 4",
     "visual_scores": [
-      0.9897
+      0.9858
     ],
-    "visual_avg": 0.9897,
+    "visual_avg": 0.9858,
     "diff_images": [
       {
         "page": 1,
@@ -1856,31 +1479,24 @@
         "reference_img": "classic48_survey_results_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.988
+    "overall_score": 0.9874
   },
   {
     "name": "classic49_contact_list",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2641,
+    "minipdf_size": 2728,
     "reference_size": 41523,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.6845,
-    "flat_text_similarity": 0.6845,
-    "word_text_similarity": 0.5476,
-    "text_diff": "--- minipdf/classic49_contact_list.pdf\n+++ reference/classic49_contact_list.pdf\n@@ -1,8 +1,8 @@\n Name Phone Email City Country\n\n-Alice Smith +1-555-0101 alice@example.com New York USA\n\n-Bob Jones +44-20-7946-0958 bob@example.co.uk London UK\n\n-Carol Wang +86-10-1234-5678 carol@example.cn Beijing China\n\n-David Muller +49-30-1234567 david@example.de Berlin Germany\n\n-Eve Martin +33-1-23-45-67-89 eve@example.fr Paris France\n\n-Frank Tanaka +81-3-1234-5678 frank@example.jp Tokyo Japan\n\n-Grace Kim +82-2-1234-5678 grace@example.kr Seoul Korea\n+Alice Smith+1-555-01 alice@exa New York USA\n\n+Bob Jones +44-20-79 bob@examLondon UK\n\n+Carol Wan+86-10-12 carol@exaBeijing China\n\n+David Mull+49-30-12 david@exaBerlin Germany\n\n+Eve Martin+33-1-23-4eve@examParis France\n\n+Frank Tana+81-3-123 frank@exaTokyo Japan\n\n+Grace Kim +82-2-123 grace@exaSeoul Korea",
+    "text_similarity": 0.9005,
+    "flat_text_similarity": 0.9005,
+    "word_text_similarity": 0.6286,
+    "text_diff": "--- minipdf/classic49_contact_list.pdf\n+++ reference/classic49_contact_list.pdf\n@@ -1,8 +1,8 @@\n Name Phone Email City Country\n\n-Alice Smit +1-555-010alice@examNew York USA\n\n-Bob Jones +44-20-794bob@examplLondon UK\n\n-Carol Wang+86-10-123carol@examBeijing China\n\n-David Mull +49-30-123david@examBerlin Germany\n\n-Eve Martin +33-1-23-4 eve@examplParis France\n\n-Frank Tana+81-3-1234frank@examTokyo Japan\n\n-Grace Kim +82-2-1234grace@exam Seoul Korea\n+Alice Smith+1-555-01 alice@exa New York USA\n\n+Bob Jones +44-20-79 bob@examLondon UK\n\n+Carol Wan+86-10-12 carol@exaBeijing China\n\n+David Mull+49-30-12 david@exaBerlin Germany\n\n+Eve Martin+33-1-23-4eve@examParis France\n\n+Frank Tana+81-3-123 frank@exaTokyo Japan\n\n+Grace Kim +82-2-123 grace@exaSeoul Korea",
     "visual_scores": [
-      0.9766
+      0.9738
     ],
-    "visual_avg": 0.9766,
+    "visual_avg": 0.9738,
     "diff_images": [
       {
         "page": 1,
@@ -1888,33 +1504,26 @@
         "reference_img": "classic49_contact_list_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.8644
+    "overall_score": 0.9497
   },
   {
     "name": "classic50_budget_vs_actuals",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6103,
+    "minipdf_size": 6550,
     "reference_size": 54986,
     "minipdf_pages": 3,
     "reference_pages": 3,
-    "text_similarity": 0.9934,
-    "flat_text_similarity": 0.9932,
-    "word_text_similarity": 0.9296,
-    "text_diff": "--- minipdf/classic50_budget_vs_actuals.pdf\n+++ reference/classic50_budget_vs_actuals.pdf\n@@ -1,19 +1,19 @@\n-Department Q1 Q2 Q3 Q4 Annual\n\n-Engineering 200000 200000 210000 220000 830000\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n+Engineerin 200000 200000 210000 220000 830000\n\n Marketing 80000 90000 85000 95000 350000\n\n Sales 120000 130000 140000 150000 540000\n\n HR 40000 40000 42000 43000 165000\n\n Finance 35000 35000 37000 38000 145000\n\n ---PAGE---\n\n-Department Q1 Q2 Q3 Q4 Annual\n\n-Engineering 195000 205000 215000 225000 840000\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n+Engineerin 195000 205000 215000 225000 840000\n\n Marketing 82000 88000 91000 97000 358000\n\n Sales 118000 135000 142000 148000 543000\n\n HR 39000 41000 41500 44000 165500\n\n Finance 34000 36000 37500 39000 146500\n\n ---PAGE---\n\n-Department Q1 Q2 Q3 Q4 Annual\n\n-Engineering -5000 5000 5000 5000 10000\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n+Engineerin -5000 5000 5000 5000 10000\n\n Marketing 2000 -2000 6000 2000 8000\n\n Sales -2000 5000 2000 -2000 3000\n\n HR -1000 1000 -500 1000 500\n",
+    "text_similarity": 0.9978,
+    "flat_text_similarity": 0.9977,
+    "word_text_similarity": 0.9714,
+    "text_diff": "--- minipdf/classic50_budget_vs_actuals.pdf\n+++ reference/classic50_budget_vs_actuals.pdf\n@@ -1,18 +1,18 @@\n-DepartmentQ1 Q2 Q3 Q4 Annual\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n Engineerin 200000 200000 210000 220000 830000\n\n Marketing 80000 90000 85000 95000 350000\n\n Sales 120000 130000 140000 150000 540000\n\n HR 40000 40000 42000 43000 165000\n\n Finance 35000 35000 37000 38000 145000\n\n ---PAGE---\n\n-DepartmentQ1 Q2 Q3 Q4 Annual\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n Engineerin 195000 205000 215000 225000 840000\n\n Marketing 82000 88000 91000 97000 358000\n\n Sales 118000 135000 142000 148000 543000\n\n HR 39000 41000 41500 44000 165500\n\n Finance 34000 36000 37500 39000 146500\n\n ---PAGE---\n\n-DepartmentQ1 Q2 Q3 Q4 Annual\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n Engineerin -5000 5000 5000 5000 10000\n\n Marketing 2000 -2000 6000 2000 8000\n\n Sales -2000 5000 2000 -2000 3000\n",
     "visual_scores": [
-      0.9838,
-      0.984,
-      0.9868
+      0.977,
+      0.9774,
+      0.9819
     ],
-    "visual_avg": 0.9849,
+    "visual_avg": 0.9788,
     "diff_images": [
       {
         "page": 1,
@@ -1932,31 +1541,24 @@
         "reference_img": "classic50_budget_vs_actuals_p3_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9913
+    "overall_score": 0.9906
   },
   {
     "name": "classic51_product_catalog",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3427,
+    "minipdf_size": 3468,
     "reference_size": 44297,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.5786,
-    "flat_text_similarity": 0.4617,
-    "word_text_similarity": 0.5786,
-    "text_diff": "--- minipdf/classic51_product_catalog.pdf\n+++ reference/classic51_product_catalog.pdf\n@@ -1,11 +1,11 @@\n-Part# Name Description Weight(g) Price\n\n-P-001 Basic Widget Standard widget for everyday use 150 4.99\n\n-P-002 Pro Widget Enhanced widget with premium features 180 12.99\n\n-P-003 Mini Gadget Compact gadget for mobile use 90 19.99\n\n-P-004 Max Gadget Full-size gadget, industrial grade 450 89.99\n\n-P-005 Connector A Type-A connector cable, 1m 80 7.49\n\n-P-006 Connector B Type-B connector cable, 2m 110 9.99\n\n-P-007 Adapter X Universal power adapter 200 15.99\n\n-P-008 Adapter Y Travel power adapter 120 11.99\n\n-P-009 Mount Bracket Wall mount bracket, steel 600 24.99\n\n-P-010 Carry Case Padded carry case, waterproof 350 34.99\n+Part# Name Descriptio Weight(g) Price\n\n+P-001 Basic WidgStandard w 150 4.99\n\n+P-002 Pro WidgeEnhanced 180 12.99\n\n+P-003 Mini GadgeCompact g 90 19.99\n\n+P-004 Max GadgeFull-size g 450 89.99\n\n+P-005 ConnectorType-A con 80 7.49\n\n+P-006 ConnectorType-B con 110 9.99\n\n+P-007 Adapter X Universal 200 15.99\n\n+P-008 Adapter Y Travel pow 120 11.99\n\n+P-009 Mount BraWall moun 600 24.99\n\n+P-010 Carry CasePadded ca 350 34.99",
+    "text_similarity": 0.9771,
+    "flat_text_similarity": 0.9771,
+    "word_text_similarity": 0.7213,
+    "text_diff": "--- minipdf/classic51_product_catalog.pdf\n+++ reference/classic51_product_catalog.pdf\n@@ -1,11 +1,11 @@\n Part# Name Descriptio Weight(g) Price\n\n-P-001 Basic WidgStandard w150 4.99\n\n-P-002 Pro Widget Enhanced w180 12.99\n\n-P-003 Mini GadgeCompact ga90 19.99\n\n-P-004 Max GadgetFull-size 450 89.99\n\n-P-005 Connector Type-A con80 7.49\n\n-P-006 Connector Type-B con110 9.99\n\n+P-001 Basic WidgStandard w 150 4.99\n\n+P-002 Pro WidgeEnhanced 180 12.99\n\n+P-003 Mini GadgeCompact g 90 19.99\n\n+P-004 Max GadgeFull-size g 450 89.99\n\n+P-005 ConnectorType-A con 80 7.49\n\n+P-006 ConnectorType-B con 110 9.99\n\n P-007 Adapter X Universal 200 15.99\n\n P-008 Adapter Y Travel pow 120 11.99\n\n-P-009 Mount BracWall mount600 24.99\n\n-P-010 Carry CasePadded car350 34.99\n+P-009 Mount BraWall moun 600 24.99\n\n+P-010 Carry CasePadded ca 350 34.99",
     "visual_scores": [
-      0.9694
+      0.9747
     ],
-    "visual_avg": 0.9694,
+    "visual_avg": 0.9747,
     "diff_images": [
       {
         "page": 1,
@@ -1964,31 +1566,24 @@
         "reference_img": "classic51_product_catalog_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.8192
+    "overall_score": 0.9807
   },
   {
     "name": "classic52_pivot_summary",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2277,
+    "minipdf_size": 2426,
     "reference_size": 44493,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9978,
-    "flat_text_similarity": 0.9978,
+    "text_similarity": 0.9956,
+    "flat_text_similarity": 0.9956,
     "word_text_similarity": 0.9577,
-    "text_diff": "--- minipdf/classic52_pivot_summary.pdf\n+++ reference/classic52_pivot_summary.pdf\n@@ -1,4 +1,4 @@\n-Region Electronics Furniture Clothing Food Total\n\n+Region ElectronicsFurniture Clothing Food Total\n\n North 45000 12000 8000 22000 87000\n\n South 38000 15000 11000 25000 89000\n\n East 52000 9000 14000 18000 93000\n",
+    "text_diff": "--- minipdf/classic52_pivot_summary.pdf\n+++ reference/classic52_pivot_summary.pdf\n@@ -1,4 +1,4 @@\n-Region Electronic Furniture Clothing Food Total\n\n+Region ElectronicsFurniture Clothing Food Total\n\n North 45000 12000 8000 22000 87000\n\n South 38000 15000 11000 25000 89000\n\n East 52000 9000 14000 18000 93000\n",
     "visual_scores": [
-      0.9839
+      0.9784
     ],
-    "visual_avg": 0.9839,
+    "visual_avg": 0.9784,
     "diff_images": [
       {
         "page": 1,
@@ -1996,31 +1591,24 @@
         "reference_img": "classic52_pivot_summary_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9927
+    "overall_score": 0.9896
   },
   {
     "name": "classic53_invoice",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2424,
+    "minipdf_size": 2516,
     "reference_size": 53425,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9207,
-    "flat_text_similarity": 0.9207,
-    "word_text_similarity": 0.9159,
-    "text_diff": "--- minipdf/classic53_invoice.pdf\n+++ reference/classic53_invoice.pdf\n@@ -6,11 +6,11 @@\n ACME Corporation\n\n 123 Business Rd, Suite 400\n\n New York, NY 10001\n\n-Item Qty Unit Price Total\n\n-Consulting Services 10 150 1500\n\n-Software License 5 99 495\n\n+Item Qty Unit PriceTotal\n\n+Consulting 10 150 1500\n\n+Software L 5 99 495\n\n Hardware 2 249.99 499.98\n\n-Support Plan (annual) 1 1200 1200\n\n+Support Pl 1 1200 1200\n\n Subtotal 3694.98\n\n Tax (8%) 295.6\n\n Total Due 3990.58",
+    "text_similarity": 0.9984,
+    "flat_text_similarity": 0.9984,
+    "word_text_similarity": 0.9714,
+    "text_diff": "--- minipdf/classic53_invoice.pdf\n+++ reference/classic53_invoice.pdf\n@@ -6,7 +6,7 @@\n ACME Corporation\n\n 123 Business Rd, Suite 400\n\n New York, NY 10001\n\n-Item Qty Unit Price Total\n\n+Item Qty Unit PriceTotal\n\n Consulting 10 150 1500\n\n Software L 5 99 495\n\n Hardware 2 249.99 499.98\n",
     "visual_scores": [
-      0.9789
+      0.9836
     ],
-    "visual_avg": 0.9789,
+    "visual_avg": 0.9836,
     "diff_images": [
       {
         "page": 1,
@@ -2028,20 +1616,13 @@
         "reference_img": "classic53_invoice_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9598
+    "overall_score": 0.9928
   },
   {
     "name": "classic54_multi_level_header",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2161,
+    "minipdf_size": 2150,
     "reference_size": 38782,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2050,9 +1631,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.988
+      0.9812
     ],
-    "visual_avg": 0.988,
+    "visual_avg": 0.9812,
     "diff_images": [
       {
         "page": 1,
@@ -2060,20 +1641,13 @@
         "reference_img": "classic54_multi_level_header_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9952
+    "overall_score": 0.9925
   },
   {
     "name": "classic55_error_values",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1580,
+    "minipdf_size": 1650,
     "reference_size": 34677,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2082,9 +1656,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9912
+      0.9878
     ],
-    "visual_avg": 0.9912,
+    "visual_avg": 0.9878,
     "diff_images": [
       {
         "page": 1,
@@ -2092,20 +1666,13 @@
         "reference_img": "classic55_error_values_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9965
+    "overall_score": 0.9951
   },
   {
     "name": "classic56_alternating_row_colors",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2080,
+    "minipdf_size": 2201,
     "reference_size": 32363,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2114,9 +1681,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.3848
+      0.7141
     ],
-    "visual_avg": 0.3848,
+    "visual_avg": 0.7141,
     "diff_images": [
       {
         "page": 1,
@@ -2124,48 +1691,24 @@
         "reference_img": "classic56_alternating_row_colors_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "differences": [
-          "MiniPdf rendering is missing alternating row background fill colors present in LibreOffice rendering.",
-          "LibreOffice rendering shows text truncation in the last row ('Product 10' is cut off), while MiniPdf displays full text.",
-          "Column widths differ: LibreOffice rendering has narrower columns, causing text to be closer together and truncated.",
-          "Row heights are slightly more compact in LibreOffice rendering.",
-          "No cell borders are present in either rendering.",
-          "Font family and weight appear similar, but LibreOffice rendering may use a slightly bolder font.",
-          "Page margins and overall layout are similar, but the table is slightly more compact in LibreOffice rendering."
-        ],
-        "severity": "medium",
-        "ai_visual_score": 0.75,
-        "suggestions": [
-          "Implement alternating row background fill colors to match LibreOffice rendering.",
-          "Adjust column widths to prevent text truncation and match reference layout.",
-          "Ensure row heights are consistent with reference rendering.",
-          "Check font weight and family to ensure exact match with reference.",
-          "Consider adding cell borders if required by the reference style."
-        ],
-        "page": 1
-      }
-    ],
-    "ai_visual_avg": 0.75,
-    "overall_score": 0.9
+    "overall_score": 0.8856
   },
   {
     "name": "classic57_cjk_only",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1644,
+    "minipdf_size": 3137,
     "reference_size": 88207,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.6383,
-    "flat_text_similarity": 0.6077,
-    "word_text_similarity": 0.6383,
-    "text_diff": "--- minipdf/classic57_cjk_only.pdf\n+++ reference/classic57_cjk_only.pdf\n@@ -1,6 +1,11 @@\n-?? ???? ?? ??\n\n-1 ????? 5999 100\n\n-2 ???? 2999 250\n\n-3 ???? 1999 150\n\n-4 ???? 299 500\n\n-5 ??? 99 1000\n+序号 产品名称价格 库存\n\n+笔记本电脑\n\n+1 5999 100\n\n+智能手机\n\n+2 2999 250\n\n+平板电脑\n\n+3 1999 150\n\n+蓝牙耳机\n\n+4 299 500\n\n+充电器\n\n+5 99 1000",
+    "text_similarity": 0.7624,
+    "flat_text_similarity": 0.7624,
+    "word_text_similarity": 0.7234,
+    "text_diff": "--- minipdf/classic57_cjk_only.pdf\n+++ reference/classic57_cjk_only.pdf\n@@ -1,11 +1,11 @@\n-序号 产品名称 价格 库存\n\n+序号 产品名称价格 库存\n\n+笔记本电脑\n\n 1 5999 100\n\n-笔记本电脑\n\n+智能手机\n\n 2 2999 250\n\n-智能手机\n\n+平板电脑\n\n 3 1999 150\n\n-平板电脑\n\n+蓝牙耳机\n\n 4 299 500\n\n-蓝牙耳机\n\n-5 99 1000\n\n-充电器\n+充电器\n\n+5 99 1000",
     "visual_scores": [
-      0.9925
+      0.8689
     ],
-    "visual_avg": 0.9925,
+    "visual_avg": 0.8689,
     "diff_images": [
       {
         "page": 1,
@@ -2173,31 +1716,24 @@
         "reference_img": "classic57_cjk_only_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.8523
+    "overall_score": 0.8525
   },
   {
     "name": "classic58_mixed_numeric_formats",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1564,
+    "minipdf_size": 1602,
     "reference_size": 32815,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.8795,
-    "flat_text_similarity": 0.8795,
-    "word_text_similarity": 0.8302,
-    "text_diff": "--- minipdf/classic58_mixed_numeric_formats.pdf\n+++ reference/classic58_mixed_numeric_formats.pdf\n@@ -2,9 +2,9 @@\n Integer 1000000\n\n Float 2dp 3.14\n\n Float 5dp 3.14159\n\n-Negative int -42\n\n-Negative float -3.14\n\n+Negative in -42\n\n+Negative fl -3.14\n\n Very small 0.0001\n\n-Very large 9999999.99\n\n+Very large 10000000\n\n Zero 0\n\n-Scientific approx 12300000000\n+Scientific 1.23E+10",
+    "text_similarity": 0.9028,
+    "flat_text_similarity": 0.9028,
+    "word_text_similarity": 0.8462,
+    "text_diff": "--- minipdf/classic58_mixed_numeric_formats.pdf\n+++ reference/classic58_mixed_numeric_formats.pdf\n@@ -2,9 +2,9 @@\n Integer 1000000\n\n Float 2dp 3.14\n\n Float 5dp 3.14159\n\n-Negative i -42\n\n-Negative f -3.14\n\n+Negative in -42\n\n+Negative fl -3.14\n\n Very small 0.0001\n\n-Very large 9999999.99\n\n+Very large 10000000\n\n Zero 0\n\n-Scientific 12300000000\n+Scientific 1.23E+10",
     "visual_scores": [
-      0.9901
+      0.9904
     ],
-    "visual_avg": 0.9901,
+    "visual_avg": 0.9904,
     "diff_images": [
       {
         "page": 1,
@@ -2205,20 +1741,13 @@
         "reference_img": "classic58_mixed_numeric_formats_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9478
+    "overall_score": 0.9573
   },
   {
     "name": "classic59_multi_sheet_summary",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4136,
+    "minipdf_size": 4336,
     "reference_size": 44781,
     "minipdf_pages": 4,
     "reference_pages": 4,
@@ -2227,12 +1756,12 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.994,
-      0.994,
-      0.994,
-      0.9967
+      0.9912,
+      0.9912,
+      0.9912,
+      0.9955
     ],
-    "visual_avg": 0.9947,
+    "visual_avg": 0.9923,
     "diff_images": [
       {
         "page": 1,
@@ -2255,20 +1784,13 @@
         "reference_img": "classic59_multi_sheet_summary_p4_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9979
+    "overall_score": 0.9969
   },
   {
     "name": "classic60_large_wide_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 50059,
+    "minipdf_size": 55057,
     "reference_size": 263350,
     "minipdf_pages": 4,
     "reference_pages": 4,
@@ -2277,12 +1799,12 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.7804,
-      0.9593,
-      0.7933,
-      0.9616
+      0.8652,
+      0.9486,
+      0.871,
+      0.9514
     ],
-    "visual_avg": 0.8737,
+    "visual_avg": 0.9091,
     "diff_images": [
       {
         "page": 1,
@@ -2305,37 +1827,13 @@
         "reference_img": "classic60_large_wide_table_p4_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "differences": [
-          "Column widths are slightly narrower in the MiniPdf rendering, causing the text to appear more compressed horizontally.",
-          "Row heights are slightly shorter in the MiniPdf rendering, making the overall table more compact.",
-          "Font weight appears marginally lighter in the MiniPdf rendering compared to the LibreOffice reference.",
-          "Page margins are smaller in the MiniPdf rendering, resulting in less whitespace around the table.",
-          "Cell border rendering is missing in both renderings, so no difference in this aspect.",
-          "Header row styling is identical in both renderings, with no special background or font treatment.",
-          "Background/fill colors are absent in both renderings.",
-          "Number/date formatting is consistent between both renderings.",
-          "Text truncation or overflow is not observed in either rendering."
-        ],
-        "severity": "low",
-        "ai_visual_score": 0.95,
-        "suggestions": [
-          "Increase column widths and row heights in MiniPdf rendering to match the proportions of the LibreOffice reference.",
-          "Adjust font weight to better match the reference rendering.",
-          "Add more page margin to match the whitespace of the LibreOffice rendering."
-        ],
-        "page": 1
-      }
-    ],
-    "ai_visual_avg": 0.95,
-    "overall_score": 0.98
+    "overall_score": 0.9636
   },
   {
     "name": "classic61_product_card_with_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2026,
+    "minipdf_size": 2056,
     "reference_size": 36974,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2344,9 +1842,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9872
+      0.9624
     ],
-    "visual_avg": 0.9872,
+    "visual_avg": 0.9624,
     "diff_images": [
       {
         "page": 1,
@@ -2354,31 +1852,24 @@
         "reference_img": "classic61_product_card_with_image_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9949
+    "overall_score": 0.985
   },
   {
     "name": "classic62_company_logo_header",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2657,
+    "minipdf_size": 2750,
     "reference_size": 42880,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.988,
-    "flat_text_similarity": 0.988,
-    "word_text_similarity": 0.898,
-    "text_diff": "--- minipdf/classic62_company_logo_header.pdf\n+++ reference/classic62_company_logo_header.pdf\n@@ -1,6 +1,6 @@\n ACME Corporation\n\n Annual Report 2025\n\n-Department Q1 Q2 Q3 Q4\n\n+DepartmenQ1 Q2 Q3 Q4\n\n Sales 120 135 142 160\n\n-Engineering 85 90 95 100\n\n+Engineerin 85 90 95 100\n\n Marketing 60 65 70 75",
+    "text_similarity": 0.996,
+    "flat_text_similarity": 0.996,
+    "word_text_similarity": 0.9583,
+    "text_diff": "--- minipdf/classic62_company_logo_header.pdf\n+++ reference/classic62_company_logo_header.pdf\n@@ -1,6 +1,6 @@\n ACME Corporation\n\n Annual Report 2025\n\n-DepartmentQ1 Q2 Q3 Q4\n\n+DepartmenQ1 Q2 Q3 Q4\n\n Sales 120 135 142 160\n\n Engineerin 85 90 95 100\n\n Marketing 60 65 70 75",
     "visual_scores": [
-      0.9786
+      0.9714
     ],
-    "visual_avg": 0.9786,
+    "visual_avg": 0.9714,
     "diff_images": [
       {
         "page": 1,
@@ -2386,20 +1877,13 @@
         "reference_img": "classic62_company_logo_header_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9866
+    "overall_score": 0.987
   },
   {
     "name": "classic63_two_products_side_by_side",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3052,
+    "minipdf_size": 3067,
     "reference_size": 28933,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2408,9 +1892,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9782
+      0.9569
     ],
-    "visual_avg": 0.9782,
+    "visual_avg": 0.9569,
     "diff_images": [
       {
         "page": 1,
@@ -2418,31 +1902,24 @@
         "reference_img": "classic63_two_products_side_by_side_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9913
+    "overall_score": 0.9828
   },
   {
     "name": "classic64_employee_directory_with_photo",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4319,
+    "minipdf_size": 4403,
     "reference_size": 43408,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.977,
-    "flat_text_similarity": 0.977,
-    "word_text_similarity": 0.6667,
-    "text_diff": "--- minipdf/classic64_employee_directory_with_photo.pdf\n+++ reference/classic64_employee_directory_with_photo.pdf\n@@ -1,4 +1,4 @@\n-Photo Name Title Department Email\n\n-Alice Chen Engineer R&D alice@example.com\n\n-Bob Smith Manager Sales bob@example.com\n\n-Carol Wang Designer UX carol@example.com\n+Photo Name Title DepartmeEmail\n\n+Alice ChenEngineer R&D alice@example.com\n\n+Bob SmithManager Sales bob@example.com\n\n+Carol WanDesigner UX carol@example.com",
+    "text_similarity": 0.9835,
+    "flat_text_similarity": 0.9835,
+    "word_text_similarity": 0.7059,
+    "text_diff": "--- minipdf/classic64_employee_directory_with_photo.pdf\n+++ reference/classic64_employee_directory_with_photo.pdf\n@@ -1,4 +1,4 @@\n-Photo Name Title DepartmentEmail\n\n-Alice Chen Engineer R&D alice@example.com\n\n-Bob Smith Manager Sales bob@example.com\n\n-Carol WangDesigner UX carol@example.com\n+Photo Name Title DepartmeEmail\n\n+Alice ChenEngineer R&D alice@example.com\n\n+Bob SmithManager Sales bob@example.com\n\n+Carol WanDesigner UX carol@example.com",
     "visual_scores": [
-      0.9756
+      0.9698
     ],
-    "visual_avg": 0.9756,
+    "visual_avg": 0.9698,
     "diff_images": [
       {
         "page": 1,
@@ -2450,31 +1927,24 @@
         "reference_img": "classic64_employee_directory_with_photo_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.981
+    "overall_score": 0.9813
   },
   {
     "name": "classic65_inventory_with_product_photos",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6477,
+    "minipdf_size": 6598,
     "reference_size": 48227,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9786,
-    "flat_text_similarity": 0.9786,
-    "word_text_similarity": 0.8333,
-    "text_diff": "--- minipdf/classic65_inventory_with_product_photos.pdf\n+++ reference/classic65_inventory_with_product_photos.pdf\n@@ -1,6 +1,6 @@\n Image SKU Name Qty Price\n\n-SKU-001 Red Widget 50 9.99\n\n-SKU-002 Blue Gadget 30 14.99\n\n-SKU-003 Green Tool 100 4.49\n\n-SKU-004 Yellow Device 25 29.99\n\n-SKU-005 Purple Gear 75 7.99\n+SKU-001 Red Widge 50 9.99\n\n+SKU-002 Blue Gadge 30 14.99\n\n+SKU-003 Green Too 100 4.49\n\n+SKU-004 Yellow Dev 25 29.99\n\n+SKU-005 Purple Gea 75 7.99",
+    "text_similarity": 0.9779,
+    "flat_text_similarity": 0.9779,
+    "word_text_similarity": 0.7273,
+    "text_diff": "--- minipdf/classic65_inventory_with_product_photos.pdf\n+++ reference/classic65_inventory_with_product_photos.pdf\n@@ -1,6 +1,6 @@\n Image SKU Name Qty Price\n\n-SKU-001 Red Widget50 9.99\n\n-SKU-002 Blue Gadge30 14.99\n\n-SKU-003 Green Tool100 4.49\n\n-SKU-004 Yellow Dev25 29.99\n\n-SKU-005 Purple Gea75 7.99\n+SKU-001 Red Widge 50 9.99\n\n+SKU-002 Blue Gadge 30 14.99\n\n+SKU-003 Green Too 100 4.49\n\n+SKU-004 Yellow Dev 25 29.99\n\n+SKU-005 Purple Gea 75 7.99",
     "visual_scores": [
-      0.9744
+      0.9554
     ],
-    "visual_avg": 0.9744,
+    "visual_avg": 0.9554,
     "diff_images": [
       {
         "page": 1,
@@ -2482,31 +1952,24 @@
         "reference_img": "classic65_inventory_with_product_photos_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9812
+    "overall_score": 0.9733
   },
   {
     "name": "classic66_invoice_with_logo",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2646,
+    "minipdf_size": 2710,
     "reference_size": 45034,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9259,
-    "flat_text_similarity": 0.9259,
-    "word_text_similarity": 0.7925,
-    "text_diff": "--- minipdf/classic66_invoice_with_logo.pdf\n+++ reference/classic66_invoice_with_logo.pdf\n@@ -1,8 +1,8 @@\n INVOICE\n\n Invoice #: INV-20250301\n\n Date: 2025-03-01\n\n-Description Qty Unit Price Total\n\n-Consulting Services 8 150 1200\n\n-Software License 1 299 299\n\n-Support Package 1 99 99\n\n+DescriptiQty Unit PriceTotal\n\n+Consulting 8 150 1200\n\n+Software L 1 299 299\n\n+Support Pa 1 99 99\n\n Total 1598",
+    "text_similarity": 0.9868,
+    "flat_text_similarity": 0.9868,
+    "word_text_similarity": 0.8235,
+    "text_diff": "--- minipdf/classic66_invoice_with_logo.pdf\n+++ reference/classic66_invoice_with_logo.pdf\n@@ -1,8 +1,8 @@\n INVOICE\n\n Invoice #: INV-20250301\n\n Date: 2025-03-01\n\n-Descriptio Qty Unit Price Total\n\n+DescriptiQty Unit PriceTotal\n\n Consulting 8 150 1200\n\n Software L 1 299 299\n\n-Support Pa1 99 99\n\n+Support Pa 1 99 99\n\n Total 1598",
     "visual_scores": [
-      0.9792
+      0.9721
     ],
-    "visual_avg": 0.9792,
+    "visual_avg": 0.9721,
     "diff_images": [
       {
         "page": 1,
@@ -2514,20 +1977,13 @@
         "reference_img": "classic66_invoice_with_logo_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.962
+    "overall_score": 0.9836
   },
   {
     "name": "classic67_real_estate_listing",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2694,
+    "minipdf_size": 2739,
     "reference_size": 44030,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2536,9 +1992,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9777
+      0.9508
     ],
-    "visual_avg": 0.9777,
+    "visual_avg": 0.9508,
     "diff_images": [
       {
         "page": 1,
@@ -2546,31 +2002,24 @@
         "reference_img": "classic67_real_estate_listing_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9911
+    "overall_score": 0.9803
   },
   {
     "name": "classic68_restaurant_menu",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5242,
+    "minipdf_size": 5250,
     "reference_size": 47320,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.875,
-    "flat_text_similarity": 0.1667,
-    "word_text_similarity": 0.875,
-    "text_diff": "--- minipdf/classic68_restaurant_menu.pdf\n+++ reference/classic68_restaurant_menu.pdf\n@@ -1,9 +1,9 @@\n Today's Menu\n\n-Grilled Salmon $18.99\n\n+Grilled S $18.99\n\n Fresh Atlantic salmon with herbs\n\n-Caesar Salad $12.99\n\n+Caesar Sa $12.99\n\n Romaine lettuce, croutons, parmesan\n\n-Beef Burger $14.99\n\n+Beef Burg $14.99\n\n 8oz Angus beef, brioche bun\n\n-Pasta Primavera $13.99\n\n+Pasta Pri $13.99\n\n Seasonal vegetables, olive oil",
+    "text_similarity": 0.9881,
+    "flat_text_similarity": 0.9881,
+    "word_text_similarity": 0.8571,
+    "text_diff": "--- minipdf/classic68_restaurant_menu.pdf\n+++ reference/classic68_restaurant_menu.pdf\n@@ -1,9 +1,9 @@\n Today's Menu\n\n-Grilled Sa $18.99\n\n+Grilled S $18.99\n\n Fresh Atlantic salmon with herbs\n\n-Caesar Sal $12.99\n\n+Caesar Sa $12.99\n\n Romaine lettuce, croutons, parmesan\n\n-Beef Burge$14.99\n\n+Beef Burg $14.99\n\n 8oz Angus beef, brioche bun\n\n-Pasta Prim $13.99\n\n+Pasta Pri $13.99\n\n Seasonal vegetables, olive oil",
     "visual_scores": [
-      0.9327
+      0.927
     ],
-    "visual_avg": 0.9327,
+    "visual_avg": 0.927,
     "diff_images": [
       {
         "page": 1,
@@ -2578,35 +2027,7 @@
         "reference_img": "classic68_restaurant_menu_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "differences": [
-          "Header row ('Today's Menu') is missing bold styling and larger font size in MiniPdf rendering.",
-          "Menu item names are not bold in MiniPdf rendering, whereas they are bold in LibreOffice.",
-          "Text truncation occurs in MiniPdf rendering for menu item names (e.g., 'Grilled S', 'Caesar Sa', 'Beef Burg', 'Pasta Pri') in LibreOffice rendering.",
-          "Column widths differ: MiniPdf rendering has more space between text and colored blocks, while LibreOffice rendering is more compact.",
-          "Row heights are larger in LibreOffice rendering, giving more vertical space between items.",
-          "Font family and weight differ: LibreOffice uses a heavier, possibly serif font for headers and item names.",
-          "Colored blocks are visually similar but appear slightly larger in LibreOffice rendering.",
-          "Overall layout is more visually balanced in LibreOffice rendering, with better alignment and spacing.",
-          "Page margins are slightly different, with content positioned lower and more to the right in LibreOffice rendering."
-        ],
-        "severity": "high",
-        "ai_visual_score": 0.65,
-        "suggestions": [
-          "Implement bold and larger font styling for header rows and menu item names.",
-          "Fix text truncation issues to ensure full menu item names are displayed.",
-          "Adjust column widths and row heights to match reference layout and spacing.",
-          "Use correct font family and weight for headers and item names.",
-          "Align colored blocks more closely with text and ensure consistent sizing.",
-          "Improve overall layout and alignment to match reference visual balance.",
-          "Review page margin settings to ensure content placement matches reference."
-        ],
-        "page": 1
-      }
-    ],
-    "ai_visual_avg": 0.65,
-    "overall_score": 0.81
+    "overall_score": 0.966
   },
   {
     "name": "classic69_image_only_sheet",
@@ -2621,9 +2042,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9773
+      0.9321
     ],
-    "visual_avg": 0.9773,
+    "visual_avg": 0.9321,
     "diff_images": [
       {
         "page": 1,
@@ -2631,31 +2052,24 @@
         "reference_img": "classic69_image_only_sheet_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9909
+    "overall_score": 0.9728
   },
   {
     "name": "classic70_product_catalog_with_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4376,
+    "minipdf_size": 4410,
     "reference_size": 44156,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.947,
-    "flat_text_similarity": 0.947,
-    "word_text_similarity": 0.898,
-    "text_diff": "--- minipdf/classic70_product_catalog_with_images.pdf\n+++ reference/classic70_product_catalog_with_images.pdf\n@@ -1,7 +1,7 @@\n Product Catalog - Spring 2025\n\n-Classic Pen $3.99\n\n+Classic P $3.99\n\n A reliable ballpoint pen\n\n-Leather Notebook $12.99\n\n+Leather $12.99\n\n Premium A5 notebook\n\n-Desk Organizer $24.99\n\n+Desk Orga $24.99\n\n Bamboo desk tidy set",
+    "text_similarity": 0.9793,
+    "flat_text_similarity": 0.9793,
+    "word_text_similarity": 0.875,
+    "text_diff": "--- minipdf/classic70_product_catalog_with_images.pdf\n+++ reference/classic70_product_catalog_with_images.pdf\n@@ -1,7 +1,7 @@\n Product Catalog - Spring 2025\n\n-Classic Pe $3.99\n\n+Classic P $3.99\n\n A reliable ballpoint pen\n\n-Leather No $12.99\n\n+Leather $12.99\n\n Premium A5 notebook\n\n-Desk Organ$24.99\n\n+Desk Orga $24.99\n\n Bamboo desk tidy set",
     "visual_scores": [
-      0.9563
+      0.9408
     ],
-    "visual_avg": 0.9563,
+    "visual_avg": 0.9408,
     "diff_images": [
       {
         "page": 1,
@@ -2663,33 +2077,26 @@
         "reference_img": "classic70_product_catalog_with_images_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9613
+    "overall_score": 0.968
   },
   {
     "name": "classic71_multi_sheet_with_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4977,
+    "minipdf_size": 5021,
     "reference_size": 37419,
     "minipdf_pages": 3,
     "reference_pages": 3,
-    "text_similarity": 0.9898,
-    "flat_text_similarity": 0.988,
-    "word_text_similarity": 0.8571,
-    "text_diff": "--- minipdf/classic71_multi_sheet_with_images.pdf\n+++ reference/classic71_multi_sheet_with_images.pdf\n@@ -6,6 +6,6 @@\n Digital 50000\n\n Print 20000\n\n ---PAGE---\n\n-Department Headcount\n\n-Engineering 45\n\n+DepartmenHeadcount\n\n+Engineerin 45\n\n Sales 30",
+    "text_similarity": 0.9966,
+    "flat_text_similarity": 0.996,
+    "word_text_similarity": 0.9412,
+    "text_diff": "--- minipdf/classic71_multi_sheet_with_images.pdf\n+++ reference/classic71_multi_sheet_with_images.pdf\n@@ -6,6 +6,6 @@\n Digital 50000\n\n Print 20000\n\n ---PAGE---\n\n-DepartmentHeadcount\n\n+DepartmenHeadcount\n\n Engineerin 45\n\n Sales 30",
     "visual_scores": [
-      0.9905,
-      0.9907,
-      0.9907
+      0.9818,
+      0.9821,
+      0.9817
     ],
-    "visual_avg": 0.9906,
+    "visual_avg": 0.9819,
     "diff_images": [
       {
         "page": 1,
@@ -2707,20 +2114,13 @@
         "reference_img": "classic71_multi_sheet_with_images_p3_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9922
+    "overall_score": 0.9914
   },
   {
     "name": "classic72_bar_chart_image_with_data",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3006,
+    "minipdf_size": 3076,
     "reference_size": 41342,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2729,9 +2129,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.943
+      0.9358
     ],
-    "visual_avg": 0.943,
+    "visual_avg": 0.9358,
     "diff_images": [
       {
         "page": 1,
@@ -2739,49 +2139,24 @@
         "reference_img": "classic72_bar_chart_image_with_data_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "differences": [
-          "Header 'Monthly Sales Data' is not bold in MiniPdf rendering, but is bold in LibreOffice rendering.",
-          "Header row ('Month', 'Revenue', 'Target') is not bold in MiniPdf rendering, but is bold in LibreOffice rendering.",
-          "The table and content are positioned higher on the page in MiniPdf rendering compared to LibreOffice rendering.",
-          "Font size appears slightly smaller in MiniPdf rendering compared to LibreOffice rendering.",
-          "Page margins are larger at the top in MiniPdf rendering, resulting in more whitespace above the content.",
-          "No cell borders are present in either rendering.",
-          "Column widths and row heights are visually similar in both renderings.",
-          "Background fill for the chart area is present and visually similar in both renderings.",
-          "Text formatting (number alignment, font family) is similar except for weight and size."
-        ],
-        "severity": "medium",
-        "ai_visual_score": 0.85,
-        "suggestions": [
-          "Ensure header text ('Monthly Sales Data') is rendered in bold to match reference.",
-          "Render header row ('Month', 'Revenue', 'Target') in bold font weight.",
-          "Adjust font size to match the reference rendering more closely.",
-          "Align content positioning and page margins to match the reference layout."
-        ],
-        "page": 1
-      }
-    ],
-    "ai_visual_avg": 0.85,
-    "overall_score": 0.94
+    "overall_score": 0.9743
   },
   {
     "name": "classic73_event_flyer_with_banner",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3044,
+    "minipdf_size": 3071,
     "reference_size": 44512,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9006,
-    "flat_text_similarity": 0.9006,
-    "word_text_similarity": 0.881,
-    "text_diff": "--- minipdf/classic73_event_flyer_with_banner.pdf\n+++ reference/classic73_event_flyer_with_banner.pdf\n@@ -3,7 +3,7 @@\n Venue: Convention Center Hall A\n\n Speakers: 20+ Industry Leaders\n\n Time Session Speaker\n\n-09:00 Opening Keynote Dr. Jane Kim\n\n-10:30 AI in Practice Prof. Mark Liu\n\n-13:00 Cloud Architecture Eng. Sara Patel\n\n-15:00 Panel Discussion All Speakers\n+09:00 Opening KDr. Jane Kim\n\n+10:30 AI in Pract Prof. Mark Liu\n\n+13:00 Cloud ArchEng. Sara Patel\n\n+15:00 Panel Disc All Speakers",
+    "text_similarity": 0.9939,
+    "flat_text_similarity": 0.9939,
+    "word_text_similarity": 0.9157,
+    "text_diff": "--- minipdf/classic73_event_flyer_with_banner.pdf\n+++ reference/classic73_event_flyer_with_banner.pdf\n@@ -3,7 +3,7 @@\n Venue: Convention Center Hall A\n\n Speakers: 20+ Industry Leaders\n\n Time Session Speaker\n\n-09:00 Opening KeDr. Jane Kim\n\n-10:30 AI in Prac Prof. Mark Liu\n\n-13:00 Cloud Arch Eng. Sara Patel\n\n+09:00 Opening KDr. Jane Kim\n\n+10:30 AI in Pract Prof. Mark Liu\n\n+13:00 Cloud ArchEng. Sara Patel\n\n 15:00 Panel Disc All Speakers",
     "visual_scores": [
-      0.9616
+      0.92
     ],
-    "visual_avg": 0.9616,
+    "visual_avg": 0.92,
     "diff_images": [
       {
         "page": 1,
@@ -2789,31 +2164,24 @@
         "reference_img": "classic73_event_flyer_with_banner_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9449
+    "overall_score": 0.9656
   },
   {
     "name": "classic74_dashboard_with_kpi_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2877,
+    "minipdf_size": 4121,
     "reference_size": 48755,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9571,
-    "flat_text_similarity": 0.9571,
-    "word_text_similarity": 0.7937,
-    "text_diff": "--- minipdf/classic74_dashboard_with_kpi_image.pdf\n+++ reference/classic74_dashboard_with_kpi_image.pdf\n@@ -1,6 +1,6 @@\n Executive Dashboard Q1 2025\n\n KPI Target Actual Status\n\n-Revenue 500000 523000 / Above\n\n-New Customers 200 187 x Below\n\n-NPS Score 70 74 / Above\n\n-Churn Rate < 3% 2.8% / Above\n+Revenue 500000 523000 ✓ Above\n\n+New Custo 200 187  Below ✗\n\n+NPS Score 70 74 ✓ Above\n\n+Churn Rate< 3% 2.8% ✓ Above",
+    "text_similarity": 0.947,
+    "flat_text_similarity": 0.947,
+    "word_text_similarity": 0.8525,
+    "text_diff": "--- minipdf/classic74_dashboard_with_kpi_image.pdf\n+++ reference/classic74_dashboard_with_kpi_image.pdf\n@@ -1,10 +1,6 @@\n Executive Dashboard Q1 2025\n\n KPI Target Actual Status\n\n-Revenue 500000 523000 Above\n\n-✓\n\n-New Custom200 187 Below\n\n-✗\n\n-NPS Score 70 74 Above\n\n-✓\n\n-Churn Rate< 3% 2.8% Above\n\n-✓\n+Revenue 500000 523000 ✓ Above\n\n+New Custo 200 187  Below ✗\n\n+NPS Score 70 74 ✓ Above\n\n+Churn Rate< 3% 2.8% ✓ Above",
     "visual_scores": [
-      0.9557
+      0.9439
     ],
-    "visual_avg": 0.9557,
+    "visual_avg": 0.9439,
     "diff_images": [
       {
         "page": 1,
@@ -2821,20 +2189,13 @@
         "reference_img": "classic74_dashboard_with_kpi_image_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9651
+    "overall_score": 0.9564
   },
   {
     "name": "classic75_certificate_with_seal",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1951,
+    "minipdf_size": 1981,
     "reference_size": 39135,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2843,9 +2204,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9705
+      0.9686
     ],
-    "visual_avg": 0.9705,
+    "visual_avg": 0.9686,
     "diff_images": [
       {
         "page": 1,
@@ -2853,20 +2214,13 @@
         "reference_img": "classic75_certificate_with_seal_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9882
+    "overall_score": 0.9874
   },
   {
     "name": "classic76_product_image_grid",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4958,
+    "minipdf_size": 5002,
     "reference_size": 39017,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2875,9 +2229,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9527
+      0.9464
     ],
-    "visual_avg": 0.9527,
+    "visual_avg": 0.9464,
     "diff_images": [
       {
         "page": 1,
@@ -2885,14 +2239,7 @@
         "reference_img": "classic76_product_image_grid_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9811
+    "overall_score": 0.9786
   },
   {
     "name": "classic77_news_article_with_hero_image",
@@ -2907,9 +2254,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9564
+      0.9178
     ],
-    "visual_avg": 0.9564,
+    "visual_avg": 0.9178,
     "diff_images": [
       {
         "page": 1,
@@ -2917,31 +2264,24 @@
         "reference_img": "classic77_news_article_with_hero_image_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9826
+    "overall_score": 0.9671
   },
   {
     "name": "classic78_small_icon_per_row",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5999,
+    "minipdf_size": 6064,
     "reference_size": 41646,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9125,
-    "flat_text_similarity": 0.9125,
-    "word_text_similarity": 0.7857,
-    "text_diff": "--- minipdf/classic78_small_icon_per_row.pdf\n+++ reference/classic78_small_icon_per_row.pdf\n@@ -1,6 +1,6 @@\n Icon Task Assignee Status\n\n-Fix login bug Alice Done\n\n-Write unit tests Bob In Progress\n\n-Deploy to staging Carol Pending\n\n-Code review PR #42 Alice Done\n\n-Update docs Dave In Progress\n+Fix login b Alice Done\n\n+Write unit Bob In Progress\n\n+Deploy to Carol Pending\n\n+Code revieAlice Done\n\n+Update doDave In Progress",
+    "text_similarity": 0.9863,
+    "flat_text_similarity": 0.9863,
+    "word_text_similarity": 0.88,
+    "text_diff": "--- minipdf/classic78_small_icon_per_row.pdf\n+++ reference/classic78_small_icon_per_row.pdf\n@@ -1,6 +1,6 @@\n Icon Task Assignee Status\n\n-Fix login Alice Done\n\n+Fix login b Alice Done\n\n Write unit Bob In Progress\n\n Deploy to Carol Pending\n\n-Code revie Alice Done\n\n-Update docDave In Progress\n+Code revieAlice Done\n\n+Update doDave In Progress",
     "visual_scores": [
-      0.9848
+      0.9799
     ],
-    "visual_avg": 0.9848,
+    "visual_avg": 0.9799,
     "diff_images": [
       {
         "page": 1,
@@ -2949,20 +2289,13 @@
         "reference_img": "classic78_small_icon_per_row_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9589
+    "overall_score": 0.9865
   },
   {
     "name": "classic79_wide_panoramic_banner",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2844,
+    "minipdf_size": 2889,
     "reference_size": 43015,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2971,9 +2304,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9545
+      0.9099
     ],
-    "visual_avg": 0.9545,
+    "visual_avg": 0.9099,
     "diff_images": [
       {
         "page": 1,
@@ -2981,20 +2314,13 @@
         "reference_img": "classic79_wide_panoramic_banner_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9818
+    "overall_score": 0.964
   },
   {
     "name": "classic80_portrait_tall_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2290,
+    "minipdf_size": 2325,
     "reference_size": 39079,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3003,9 +2329,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9825
+      0.9646
     ],
-    "visual_avg": 0.9825,
+    "visual_avg": 0.9646,
     "diff_images": [
       {
         "page": 1,
@@ -3013,20 +2339,13 @@
         "reference_img": "classic80_portrait_tall_image_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.993
+    "overall_score": 0.9858
   },
   {
     "name": "classic81_step_by_step_with_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5070,
+    "minipdf_size": 5110,
     "reference_size": 47175,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3035,9 +2354,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9588
+      0.9432
     ],
-    "visual_avg": 0.9588,
+    "visual_avg": 0.9432,
     "diff_images": [
       {
         "page": 1,
@@ -3045,31 +2364,24 @@
         "reference_img": "classic81_step_by_step_with_images_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9835
+    "overall_score": 0.9773
   },
   {
     "name": "classic82_before_after_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3780,
+    "minipdf_size": 4978,
     "reference_size": 42486,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9815,
-    "flat_text_similarity": 0.9815,
-    "word_text_similarity": 0.8571,
-    "text_diff": "--- minipdf/classic82_before_after_images.pdf\n+++ reference/classic82_before_after_images.pdf\n@@ -1,5 +1,5 @@\n Before After\n\n-Old design - legacy UI New design - modern UI\n\n+Old design – legacy UI New design – modern UI\n\n Metric Before After Delta\n\n Load time 4.2s 1.1s -74%\n\n-Conversion 2.1% 4.8% +129%\n+Conversion2.1% 4.8% +129%",
+    "text_similarity": 0.9704,
+    "flat_text_similarity": 0.9704,
+    "word_text_similarity": 0.9167,
+    "text_diff": "--- minipdf/classic82_before_after_images.pdf\n+++ reference/classic82_before_after_images.pdf\n@@ -1,6 +1,5 @@\n Before After\n\n-Old design legacy UI New design modern UI\n\n-– –\n\n+Old design – legacy UI New design – modern UI\n\n Metric Before After Delta\n\n Load time 4.2s 1.1s -74%\n\n Conversion2.1% 4.8% +129%",
     "visual_scores": [
-      0.9431
+      0.9352
     ],
-    "visual_avg": 0.9431,
+    "visual_avg": 0.9352,
     "diff_images": [
       {
         "page": 1,
@@ -3077,52 +2389,24 @@
         "reference_img": "classic82_before_after_images_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "differences": [
-          "Font weight for 'Before' and 'After' headers is lighter in MiniPdf rendering; LibreOffice uses bold.",
-          "Column widths are wider in MiniPdf rendering, resulting in more space between text columns.",
-          "Row heights are taller in MiniPdf rendering, causing more vertical whitespace.",
-          "Text alignment is less compact in MiniPdf rendering; LibreOffice aligns text more closely to the colored squares and between columns.",
-          "Page margins are larger in MiniPdf rendering, pushing content further down and to the right.",
-          "No cell borders are present in either rendering.",
-          "Font family appears similar, but size is slightly larger in MiniPdf rendering.",
-          "Text in MiniPdf rendering is not truncated or overflowing, but is spaced out more.",
-          "Background/fill colors for the colored squares are visually identical.",
-          "Number/date formatting is consistent between both renderings.",
-          "Header row styling (bold) is missing in MiniPdf rendering."
-        ],
-        "severity": "medium",
-        "ai_visual_score": 0.75,
-        "suggestions": [
-          "Increase font weight for header cells to match bold styling in reference rendering.",
-          "Reduce column widths and row heights to match the compact layout of the reference.",
-          "Adjust page margins to bring content closer to the top and left edges.",
-          "Ensure text alignment matches reference, especially for headers and metric columns.",
-          "Match font size exactly to reference rendering."
-        ],
-        "page": 1
-      }
-    ],
-    "ai_visual_avg": 0.75,
-    "overall_score": 0.8926
+    "overall_score": 0.9622
   },
   {
     "name": "classic83_color_swatch_palette",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6863,
+    "minipdf_size": 6915,
     "reference_size": 45933,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9626,
-    "flat_text_similarity": 0.9626,
-    "word_text_similarity": 0.7742,
-    "text_diff": "--- minipdf/classic83_color_swatch_palette.pdf\n+++ reference/classic83_color_swatch_palette.pdf\n@@ -1,7 +1,7 @@\n Brand Color Palette\n\n-Primary Blue RGB(0, 82, 165)\n\n-Primary Red RGB(197, 27, 50)\n\n-Accent Green RGB(0, 163, 108)\n\n-Neutral Grey RGB(128, 128, 128)\n\n-Warm Yellow RGB(255, 193, 7)\n\n+Primary BlRGB(0, 82, 165)\n\n+Primary ReRGB(197, 27, 50)\n\n+Accent Gr RGB(0, 163, 108)\n\n+Neutral GrRGB(128, 128, 128)\n\n+Warm YellRGB(255, 193, 7)\n\n Dark Navy RGB(10, 30, 70)",
+    "text_similarity": 0.9862,
+    "flat_text_similarity": 0.9862,
+    "word_text_similarity": 0.8136,
+    "text_diff": "--- minipdf/classic83_color_swatch_palette.pdf\n+++ reference/classic83_color_swatch_palette.pdf\n@@ -1,7 +1,7 @@\n Brand Color Palette\n\n-Primary Bl RGB(0, 82, 165)\n\n+Primary BlRGB(0, 82, 165)\n\n Primary ReRGB(197, 27, 50)\n\n-Accent GreRGB(0, 163, 108)\n\n-Neutral Gr RGB(128, 128, 128)\n\n-Warm YelloRGB(255, 193, 7)\n\n+Accent Gr RGB(0, 163, 108)\n\n+Neutral GrRGB(128, 128, 128)\n\n+Warm YellRGB(255, 193, 7)\n\n Dark Navy RGB(10, 30, 70)",
     "visual_scores": [
-      0.9665
+      0.9608
     ],
-    "visual_avg": 0.9665,
+    "visual_avg": 0.9608,
     "diff_images": [
       {
         "page": 1,
@@ -3130,20 +2414,13 @@
         "reference_img": "classic83_color_swatch_palette_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9716
+    "overall_score": 0.9788
   },
   {
     "name": "classic84_travel_destination_cards",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4347,
+    "minipdf_size": 4377,
     "reference_size": 42524,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3152,9 +2429,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9347
+      0.912
     ],
-    "visual_avg": 0.9347,
+    "visual_avg": 0.912,
     "diff_images": [
       {
         "page": 1,
@@ -3162,48 +2439,24 @@
         "reference_img": "classic84_travel_destination_cards_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "differences": [
-          "Header text 'Top Travel Destinations 2025' is smaller and not bold in MiniPdf; in LibreOffice it is larger and bold.",
-          "Destination names ('Kyoto, Japan', 'Prague, Czech Republic', 'Cape Town, South Africa') are not bold in MiniPdf; they are bold in LibreOffice.",
-          "Text alignment and spacing between colored squares and text is looser in MiniPdf; LibreOffice has tighter, more visually grouped layout.",
-          "Font size for all text is smaller in MiniPdf compared to LibreOffice.",
-          "Overall page margins are larger in MiniPdf, resulting in more whitespace at the top and left.",
-          "Text color appears slightly lighter in MiniPdf.",
-          "Colored squares are visually similar in both, but their vertical spacing is slightly greater in MiniPdf."
-        ],
-        "severity": "medium",
-        "ai_visual_score": 0.75,
-        "suggestions": [
-          "Increase font size and apply bold styling to header and destination names to match reference.",
-          "Adjust text alignment and spacing to visually group colored squares and corresponding text more tightly.",
-          "Reduce page margins to match the reference layout.",
-          "Ensure text color matches the reference for better readability.",
-          "Fine-tune vertical spacing between colored squares for consistency."
-        ],
-        "page": 1
-      }
-    ],
-    "ai_visual_avg": 0.75,
-    "overall_score": 0.9
+    "overall_score": 0.9648
   },
   {
     "name": "classic85_lab_results_with_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3150,
+    "minipdf_size": 4708,
     "reference_size": 47866,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9559,
-    "flat_text_similarity": 0.9559,
-    "word_text_similarity": 0.7561,
-    "text_diff": "--- minipdf/classic85_lab_results_with_image.pdf\n+++ reference/classic85_lab_results_with_image.pdf\n@@ -1,7 +1,7 @@\n Sample Analysis Report\n\n-Parameter Value Unit Reference Range Flag\n\n-pH 7.35 7.35 - 7.45 Normal\n\n-Glucose 5.2 mmol/L 3.9 - 5.5 Normal\n\n-Sodium 142 mEq/L 136 - 145 Normal\n\n-Potassium 5 mEq/L 3.5 - 5.0 Normal\n\n-Creatinine 1.4 mg/dL 0.6 - 1.2 High\n+ParameteValue Unit ReferenceFlag\n\n+pH 7.35 7.35 – 7.45Normal\n\n+Glucose 5.2 mmol/L 3.9 – 5.5 Normal\n\n+Sodium 142 mEq/L 136 – 145 Normal\n\n+Potassium 5 mEq/L 3.5 – 5.0 Normal\n\n+Creatinine 1.4 mg/dL 0.6 – 1.2 High",
+    "text_similarity": 0.8277,
+    "flat_text_similarity": 0.8277,
+    "word_text_similarity": 0.7901,
+    "text_diff": "--- minipdf/classic85_lab_results_with_image.pdf\n+++ reference/classic85_lab_results_with_image.pdf\n@@ -1,12 +1,7 @@\n Sample Analysis Report\n\n-Parameter Value Unit Reference Flag\n\n-pH 7.35 7.35 7.4 Normal\n\n-–\n\n-Glucose 5.2 mmol/L 3.9 5.5 Normal\n\n-–\n\n-Sodium 142 mEq/L 136 145 Normal\n\n-–\n\n-Potassium 5 mEq/L 3.5 5.0 Normal\n\n-–\n\n-Creatinine 1.4 mg/dL 0.6 1.2 High\n\n-–\n+ParameteValue Unit ReferenceFlag\n\n+pH 7.35 7.35 – 7.45Normal\n\n+Glucose 5.2 mmol/L 3.9 – 5.5 Normal\n\n+Sodium 142 mEq/L 136 – 145 Normal\n\n+Potassium 5 mEq/L 3.5 – 5.0 Normal\n\n+Creatinine 1.4 mg/dL 0.6 – 1.2 High",
     "visual_scores": [
-      0.9612
+      0.9594
     ],
-    "visual_avg": 0.9612,
+    "visual_avg": 0.9594,
     "diff_images": [
       {
         "page": 1,
@@ -3211,31 +2464,24 @@
         "reference_img": "classic85_lab_results_with_image_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9668
+    "overall_score": 0.9148
   },
   {
     "name": "classic86_software_screenshot_features",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2797,
+    "minipdf_size": 2837,
     "reference_size": 41961,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9669,
-    "flat_text_similarity": 0.9669,
-    "word_text_similarity": 0.7451,
-    "text_diff": "--- minipdf/classic86_software_screenshot_features.pdf\n+++ reference/classic86_software_screenshot_features.pdf\n@@ -1,9 +1,9 @@\n MiniApp v2.0\n\n The fastest lightweight app\n\n Feature Available\n\n-Dark Mode Yes\n\n+Dark ModeYes\n\n Auto Save Yes\n\n-Cloud Sync Yes\n\n-Offline Mode Yes\n\n-API Access Pro only\n\n-Export to PDF Yes\n+Cloud SyncYes\n\n+Offline MoYes\n\n+API AccessPro only\n\n+Export to Yes",
+    "text_similarity": 0.9932,
+    "flat_text_similarity": 0.9932,
+    "word_text_similarity": 0.875,
+    "text_diff": "--- minipdf/classic86_software_screenshot_features.pdf\n+++ reference/classic86_software_screenshot_features.pdf\n@@ -1,9 +1,9 @@\n MiniApp v2.0\n\n The fastest lightweight app\n\n Feature Available\n\n-Dark Mode Yes\n\n+Dark ModeYes\n\n Auto Save Yes\n\n Cloud SyncYes\n\n-Offline Mo Yes\n\n+Offline MoYes\n\n API AccessPro only\n\n Export to Yes",
     "visual_scores": [
-      0.9786
+      0.9513
     ],
-    "visual_avg": 0.9786,
+    "visual_avg": 0.9513,
     "diff_images": [
       {
         "page": 1,
@@ -3243,20 +2489,13 @@
         "reference_img": "classic86_software_screenshot_features_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9782
+    "overall_score": 0.9778
   },
   {
     "name": "classic87_sports_results_with_logos",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5459,
+    "minipdf_size": 5584,
     "reference_size": 47076,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3265,9 +2504,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.985
+      0.9834
     ],
-    "visual_avg": 0.985,
+    "visual_avg": 0.9834,
     "diff_images": [
       {
         "page": 1,
@@ -3275,20 +2514,13 @@
         "reference_img": "classic87_sports_results_with_logos_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.994
+    "overall_score": 0.9934
   },
   {
     "name": "classic88_image_after_data",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2795,
+    "minipdf_size": 2880,
     "reference_size": 43273,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3297,9 +2529,9 @@
     "word_text_similarity": 0.9455,
     "text_diff": "--- minipdf/classic88_image_after_data.pdf\n+++ reference/classic88_image_after_data.pdf\n@@ -1,4 +1,4 @@\n-Quarter Revenue Expenses Profit\n\n+Quarter Revenue ExpensesProfit\n\n Q1 120000 80000 40000\n\n Q2 135000 88000 47000\n\n Q3 142000 91000 51000\n",
     "visual_scores": [
-      0.9818
+      0.9714
     ],
-    "visual_avg": 0.9818,
+    "visual_avg": 0.9714,
     "diff_images": [
       {
         "page": 1,
@@ -3307,31 +2539,24 @@
         "reference_img": "classic88_image_after_data_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9915
+    "overall_score": 0.9874
   },
   {
     "name": "classic89_nutrition_label_with_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3013,
+    "minipdf_size": 3076,
     "reference_size": 47194,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9379,
-    "flat_text_similarity": 0.9379,
-    "word_text_similarity": 0.8571,
-    "text_diff": "--- minipdf/classic89_nutrition_label_with_image.pdf\n+++ reference/classic89_nutrition_label_with_image.pdf\n@@ -1,11 +1,11 @@\n Nutrition Facts\n\n Serving Size: 30g (approx. 1 cup)\n\n-Nutrient Amount per serving % Daily Value\n\n+Nutrient Amount p% Daily Value\n\n Calories 120 kcal\n\n Total Fat 3g 4%\n\n-Saturated Fat 0.5g 3%\n\n+Saturated 0.5g 3%\n\n Sodium 160mg 7%\n\n-Total Carbohydrate 22g 8%\n\n-Dietary Fiber 3g 11%\n\n+Total Carb22g 8%\n\n+Dietary Fib3g 11%\n\n Sugars 4g\n\n Protein 3g",
+    "text_similarity": 0.9878,
+    "flat_text_similarity": 0.9878,
+    "word_text_similarity": 0.8919,
+    "text_diff": "--- minipdf/classic89_nutrition_label_with_image.pdf\n+++ reference/classic89_nutrition_label_with_image.pdf\n@@ -1,11 +1,11 @@\n Nutrition Facts\n\n Serving Size: 30g (approx. 1 cup)\n\n-Nutrient Amount per% Daily Value\n\n+Nutrient Amount p% Daily Value\n\n Calories 120 kcal\n\n Total Fat 3g 4%\n\n Saturated 0.5g 3%\n\n Sodium 160mg 7%\n\n-Total Carb 22g 8%\n\n-Dietary Fi 3g 11%\n\n+Total Carb22g 8%\n\n+Dietary Fib3g 11%\n\n Sugars 4g\n\n Protein 3g",
     "visual_scores": [
-      0.98
+      0.9695
     ],
-    "visual_avg": 0.98,
+    "visual_avg": 0.9695,
     "diff_images": [
       {
         "page": 1,
@@ -3339,31 +2564,24 @@
         "reference_img": "classic89_nutrition_label_with_image_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "page": 1,
-        "skipped": true,
-        "reason": "pixel_score_above_threshold"
-      }
-    ],
-    "overall_score": 0.9672
+    "overall_score": 0.9829
   },
   {
     "name": "classic90_project_status_with_milestones",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3112,
+    "minipdf_size": 4215,
     "reference_size": 47112,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.7312,
-    "flat_text_similarity": 0.7055,
-    "word_text_similarity": 0.7312,
-    "text_diff": "--- minipdf/classic90_project_status_with_milestones.pdf\n+++ reference/classic90_project_status_with_milestones.pdf\n@@ -1,8 +1,8 @@\n-Project Orion - Status Report\n\n+Project Orion – Status Report\n\n Reporting Period: Q1 2025\n\n-Milestone Due Date Owner Status\n\n-Requirements Freeze Jan 15 PM Team Complete\n\n-Architecture Review Feb 1 Tech Lead Complete\n\n-Alpha Release Feb 28 Dev Team In Progress\n\n-Beta Testing Mar 31 QA Team Not Started\n\n-Production Deploy Apr 15 DevOps Not Started\n+MilestoneDue DateOwner Status\n\n+RequiremeJan 15 PM Team Complete\n\n+ArchitectuFeb 1 Tech Lead Complete\n\n+Alpha ReleFeb 28 Dev Team In Progress\n\n+Beta Testi Mar 31 QA Team Not Started\n\n+ProductionApr 15 DevOps Not Started",
+    "text_similarity": 0.9067,
+    "flat_text_similarity": 0.9067,
+    "word_text_similarity": 0.7865,
+    "text_diff": "--- minipdf/classic90_project_status_with_milestones.pdf\n+++ reference/classic90_project_status_with_milestones.pdf\n@@ -1,9 +1,8 @@\n-Project Orion Status Report\n\n-–\n\n+Project Orion – Status Report\n\n Reporting Period: Q1 2025\n\n-Milestone Due Date Owner Status\n\n-RequiremenJan 15 PM Team Complete\n\n-Architectu Feb 1 Tech Lead Complete\n\n-Alpha Rele Feb 28 Dev Team In Progress\n\n+MilestoneDue DateOwner Status\n\n+RequiremeJan 15 PM Team Complete\n\n+ArchitectuFeb 1 Tech Lead Complete\n\n+Alpha ReleFeb 28 Dev Team In Progress\n\n Beta Testi Mar 31 QA Team Not Started\n\n-Production Apr 15 DevOps Not Started\n+ProductionApr 15 DevOps Not Started",
     "visual_scores": [
-      0.9475
+      0.9463
     ],
-    "visual_avg": 0.9475,
+    "visual_avg": 0.9463,
     "diff_images": [
       {
         "page": 1,
@@ -3371,35 +2589,6 @@
         "reference_img": "classic90_project_status_with_milestones_p1_reference.png"
       }
     ],
-    "ai_analysis": [
-      {
-        "differences": [
-          "Header text in MiniPdf is regular weight, while in LibreOffice it is bold and larger.",
-          "Header row in LibreOffice is bold, MiniPdf is regular weight.",
-          "Column headers in LibreOffice are not spaced out, causing text to run together (e.g., 'MilestoneDue DateOwnerStatus'), while MiniPdf has proper spacing.",
-          "Row text in LibreOffice is slightly truncated or merged due to narrow column widths (e.g., 'RequiremJan 15', 'ArchitecuFeb 1'), while MiniPdf displays full text.",
-          "Font size in LibreOffice is larger for header and table, MiniPdf uses smaller, consistent font size.",
-          "Table in LibreOffice is more compact, with reduced row heights and column widths compared to MiniPdf.",
-          "Background fill color rectangle is present in both, but size and position are slightly different.",
-          "LibreOffice has less page margin at the top, MiniPdf has more whitespace.",
-          "No cell borders are visible in either rendering.",
-          "Overall layout in LibreOffice is more condensed and visually dense."
-        ],
-        "severity": "high",
-        "ai_visual_score": 0.65,
-        "suggestions": [
-          "Increase font weight and size for header and table header rows to match LibreOffice styling.",
-          "Adjust column widths and row heights to prevent text truncation and merging.",
-          "Ensure proper spacing between column headers to avoid text overlap.",
-          "Reduce top page margin to match LibreOffice layout.",
-          "Match background fill rectangle size and position more closely.",
-          "Consider adding cell borders if required for clarity.",
-          "Review overall layout to ensure visual density and alignment matches reference."
-        ],
-        "page": 1
-      }
-    ],
-    "ai_visual_avg": 0.65,
-    "overall_score": 0.7525
+    "overall_score": 0.9412
   }
 ]

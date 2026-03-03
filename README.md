@@ -1,4 +1,4 @@
-# MiniPdf
+﻿# MiniPdf
 
 <div align="center">
 <p>
@@ -68,33 +68,25 @@ MiniPdf output is compared against LibreOffice as the reference renderer across 
 
 ### Visual Comparison
 
-All 90 test cases comparing MiniPdf output (left) vs LibreOffice reference (right). Page 1 shown for multi-page results.
+Sample output comparing MiniPdf (left) vs LibreOffice reference (right).
 
 <table>
-<tr><th>Test Case</th><th>MiniPdf</th><th>LibreOffice (Reference)</th><th>Score</th></tr>
+<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
-  <td><b>classic01</b><br/>Basic table with headers</td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic01_basic_table_with_headers_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic01_basic_table_with_headers_p1_reference.png" width="320"/></td>
-  <td>🟢 99.8%</td>
 </tr>
 <tr>
-  <td><b>classic02</b><br/>Multiple worksheets</td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic02_multiple_worksheets_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic02_multiple_worksheets_p1_reference.png" width="320"/></td>
-  <td>🟢 99.5%</td>
 </tr>
 <tr>
-  <td><b>classic03</b><br/>Empty workbook</td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic03_empty_workbook_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic03_empty_workbook_p1_reference.png" width="320"/></td>
-  <td>🟢 100.0%</td>
 </tr>
 <tr>
-  <td><b>classic04</b><br/>Single cell</td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic04_single_cell_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic04_single_cell_p1_reference.png" width="320"/></td>
-  <td>🟢 100.0%</td>
 </tr>
 <tr>
   <td><b>classic05</b><br/>Wide table</td>
