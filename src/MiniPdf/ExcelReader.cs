@@ -284,6 +284,11 @@ internal static class ExcelReader
                 {
                     text = string.Concat(cell.Descendants(ns + "t").Select(t => t.Value));
                 }
+                else if (type == "b")
+                {
+                    // Boolean: Excel stores "1"/"0", render as TRUE/FALSE to match LibreOffice
+                    text = value == "1" ? "TRUE" : "FALSE";
+                }
                 else
                 {
                     text = value;
@@ -570,8 +575,8 @@ internal sealed class ExcelSheet
 
     /// <summary>Converts Excel character-unit column width to PDF points.</summary>
     public static float CharUnitsToPoints(float charUnits)
-        // Helvetica 10pt: digit "0" is ~5.5pt wide, plus ~5pt padding
-        => charUnits * 5.5f + 5f;
+        // Calibrated against LibreOffice reference PDFs: 8.43 char-units → 47.4pt
+        => charUnits * 5.62f;
 
     internal ExcelSheet(string name, List<List<ExcelCell>> rows,
         List<ExcelEmbeddedImage>? images = null,

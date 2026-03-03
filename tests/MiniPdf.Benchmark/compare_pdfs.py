@@ -246,16 +246,23 @@ def render_page_to_pixels(pdf_path: str, page_num: int, dpi: int = 150):
     return result
 
 
-def pixel_diff_score(pix1, pix2) -> float:
+def pixel_diff_score(pix1, pix2, grid_n: int = 20) -> float:
     """
-    Compare two pixmaps and return a similarity score 0.0-1.0.
+    Compare two pixmaps and return a structural similarity score 0.0-1.0.
     1.0 = identical, 0.0 = completely different.
 
-    Includes a content-coverage penalty: when the reference has significant
-    non-white content (images, colored fills) but MiniPdf renders far less of
-    it, the white-background dominance would otherwise inflate the score.
-    Rule: if MiniPdf has <50% of the reference's non-white byte count, apply
-    a proportional penalty (scale = min(1.0, coverage * 2)).
+    Uses three components:
+      1. Raw byte-match score with a content-coverage penalty.
+      2. Grid content-density score: divide the page into grid_n×grid_n cells
+         and compare the *fraction of non-white pixels* in each cell.
+         This is sensitive to layout differences (e.g. a header row present in
+         one rendering but missing in the other, or content compressed into a
+         different region) that raw byte-matching misses because white background
+         dominates the byte count.
+      3. Top-strip score: compare the top 15% of the page separately with high
+         weight to catch missing header rows.
+
+    Final score = 0.40 * raw + 0.40 * grid_density + 0.20 * top_strip
     """
     if pix1 is None or pix2 is None:
         return 0.0
@@ -264,7 +271,6 @@ def pixel_diff_score(pix1, pix2) -> float:
     w2, h2, s2 = pix2
 
     if w1 != w2 or h1 != h2:
-        # Different dimensions - compare what we can
         min_len = min(len(s1), len(s2))
         if min_len == 0:
             return 0.0
@@ -275,7 +281,9 @@ def pixel_diff_score(pix1, pix2) -> float:
     if total == 0:
         return 1.0
 
-    # Single-pass: byte matching + non-white counting (RGB: 3 bytes/pixel)
+    channels = len(s1) // (w1 * h1)  # 3 for RGB
+
+    # ── Raw byte score ────────────────────────────────────────────────────────
     matching = 0
     nonwhite_mini = 0
     nonwhite_ref = 0
@@ -288,17 +296,53 @@ def pixel_diff_score(pix1, pix2) -> float:
             nonwhite_ref += 1
 
     raw_score = matching / total
-
-    # Content-coverage penalty: only when reference has substantial non-white content
-    # Threshold: >0.5% of all bytes are non-white in the reference (≈0.17% pixels in RGB)
     if nonwhite_ref > total * 0.005:
         coverage = nonwhite_mini / nonwhite_ref
         if coverage < 0.5:
-            # Scale [0..0.5 coverage] → [0..1.0 penalty_factor]
-            scale = min(1.0, coverage * 2)
-            return raw_score * scale
+            raw_score *= min(1.0, coverage * 2)
 
-    return raw_score
+    # ── Helper: non-white pixel density in a rectangular region ──────────────
+    def region_density(samples, y0, y1, x0, x1):
+        nw = tot = 0
+        for cy in range(y0, y1):
+            row_off = cy * w1 * channels
+            for cx in range(x0, x1):
+                off = row_off + cx * channels
+                r, g, b = samples[off], samples[off+1], samples[off+2]
+                if r != 255 or g != 255 or b != 255:
+                    nw += 1
+                tot += 1
+        return nw / tot if tot else 0.0
+
+    # ── Grid content-density score ────────────────────────────────────────────
+    cell_w = max(1, w1 // grid_n)
+    cell_h = max(1, h1 // grid_n)
+    density_diffs = []
+    for gy in range(grid_n):
+        y0 = gy * cell_h
+        y1 = y0 + cell_h if gy < grid_n - 1 else h1
+        for gx in range(grid_n):
+            x0 = gx * cell_w
+            x1 = x0 + cell_w if gx < grid_n - 1 else w1
+            d1 = region_density(s1, y0, y1, x0, x1)
+            d2 = region_density(s2, y0, y1, x0, x1)
+            # Amplify differences in cells that have content in the reference
+            weight = 1.0 + d2 * 4  # content cells count up to 5× more
+            density_diffs.append((abs(d1 - d2), weight))
+
+    total_w = sum(w for _, w in density_diffs)
+    grid_score = 1.0 - sum(d * w for d, w in density_diffs) / total_w if total_w else 1.0
+    grid_score = max(0.0, grid_score)
+
+    # ── Top-strip score (top 15% of page = header area) ──────────────────────
+    top_h = max(1, int(h1 * 0.15))
+    d1_top = region_density(s1, 0, top_h, 0, w1)
+    d2_top = region_density(s2, 0, top_h, 0, w1)
+    # If reference has a header (non-white) but MiniPdf doesn't → penalise
+    top_score = 1.0 - abs(d1_top - d2_top) * 3  # amplified penalty
+    top_score = max(0.0, min(1.0, top_score))
+
+    return round(0.40 * raw_score + 0.40 * grid_score + 0.20 * top_score, 4)
 
 
 def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str, dpi: int = 150):
@@ -579,9 +623,14 @@ def generate_report(results: list[dict], report_dir: str):
             else:
                 score_cell = str(overall)
 
+            # Collect AI analysis entries for this case, keyed by page
+            ai_by_page: dict[int, dict] = {}
+            for a in r.get("ai_analysis", []):
+                if not a.get("skipped") and "error" not in a:
+                    ai_by_page[a.get("page", 1)] = a
+
             diff_images = r.get("diff_images", [])
             if not diff_images:
-                # No images — single merged row
                 f.write("    <tr>\n")
                 f.write(f"      <td><b>{name}</b></td>\n")
                 f.write("      <td colspan=\"2\"><i>No images</i></td>\n")
@@ -589,6 +638,7 @@ def generate_report(results: list[dict], report_dir: str):
                 f.write("    </tr>\n")
                 continue
 
+            total_rows = len(diff_images)
             for idx, pg in enumerate(diff_images):
                 page_num = pg.get("page", idx + 1)
                 mini_img = pg.get("minipdf_img")
@@ -599,7 +649,7 @@ def generate_report(results: list[dict], report_dir: str):
                            if ref_img else "<i>missing</i>")
 
                 if idx == 0:
-                    rowspan = len(diff_images)
+                    rowspan = total_rows
                     label_td = (f'      <td rowspan="{rowspan}" valign="top"><b>{name}</b>'
                                 f'<br><small>p{page_num}</small></td>\n'
                                 if rowspan > 1 else
@@ -618,6 +668,38 @@ def generate_report(results: list[dict], report_dir: str):
                     f.write(f"      <td align=\"center\"><small>p{page_num}</small></td>\n")
                     f.write(f"      <td>{mini_td}</td>\n")
                     f.write(f"      <td>{ref_td}</td>\n")
+                    f.write("    </tr>\n")
+
+                # ── AI analysis row for this page ──────────────────────────
+                ai = ai_by_page.get(page_num)
+                if ai:
+                    sev = ai.get("severity", "")
+                    ai_score = ai.get("ai_visual_score", "")
+                    sev_color = {"low": "#3fb950", "medium": "#d29922", "high": "#f85149"}.get(sev, "#8b949e")
+                    sev_label = f'<span style="color:{sev_color}"><b>{sev.upper()}</b></span>'
+
+                    diffs = ai.get("differences", [])
+                    sugs  = ai.get("suggestions", [])
+
+                    diff_html = "".join(f"<li>{d}</li>" for d in diffs) if diffs else "<li><i>none</i></li>"
+                    sug_html  = "".join(f"<li>{s}</li>" for s in sugs)  if sugs  else "<li><i>none</i></li>"
+
+                    f.write("    <tr>\n")
+                    f.write(f"      <td></td>\n")
+                    f.write(
+                        f"      <td colspan=\"2\" style=\"background:#0d1117;padding:8px 12px;\">\n"
+                        f"        <details open>\n"
+                        f"          <summary>🤖 AI Analysis &nbsp;·&nbsp; severity: {sev_label} &nbsp;·&nbsp; "
+                        f"AI visual score: <b>{ai_score}</b></summary>\n"
+                        f"          <br>\n"
+                        f"          <b>Differences detected:</b>\n"
+                        f"          <ul style=\"margin:4px 0 8px\">{diff_html}</ul>\n"
+                        f"          <b>Suggestions:</b>\n"
+                        f"          <ul style=\"margin:4px 0 4px\">{sug_html}</ul>\n"
+                        f"        </details>\n"
+                        f"      </td>\n"
+                    )
+                    f.write("      <td></td>\n")
                     f.write("    </tr>\n")
 
         f.write("  </tbody>\n")
@@ -749,8 +831,10 @@ def main():
                         help="Enable AI-based visual comparison via OpenAI / Azure OpenAI vision")
     parser.add_argument("--ai-max-pages", type=int, default=1, metavar="N",
                         help="Maximum number of pages per PDF to send to the AI (default: 1)")
-    parser.add_argument("--ai-threshold", type=float, default=0.90, metavar="T",
-                        help="Skip AI call when pixel similarity is already above this threshold (default: 0.90)")
+    parser.add_argument("--ai-threshold", type=float, default=0.97, metavar="T",
+                        help="Skip AI call when pixel similarity is already above this threshold (default: 0.97)")
+    parser.add_argument("--report-only", action="store_true",
+                        help="Skip comparisons; regenerate report from existing comparison_report.json")
     args = parser.parse_args()
 
     if args.ai_compare:
@@ -770,6 +854,20 @@ def main():
     images_dir = os.path.join(report_dir, "images")
 
     os.makedirs(report_dir, exist_ok=True)
+
+    # ── Report-only mode: regenerate MD from existing JSON ─────────────────
+    if args.report_only:
+        json_path = os.path.join(report_dir, "comparison_report.json")
+        if not os.path.isfile(json_path):
+            print(f"ERROR: {json_path} not found. Run without --report-only first.")
+            sys.exit(1)
+        with open(json_path, encoding="utf-8") as jf:
+            results = json.load(jf)
+        print(f"Loaded {len(results)} results from {json_path}")
+        generate_report(results, report_dir)
+        avg = sum(r.get("overall_score", 0) for r in results) / len(results) if results else 0
+        print(f"Report regenerated. Overall avg score: {avg:.4f}")
+        return
 
     print(f"MiniPdf PDFs:    {minipdf_dir}")
     print(f"Reference PDFs:  {reference_dir}")

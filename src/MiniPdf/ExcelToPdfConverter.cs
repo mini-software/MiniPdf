@@ -28,8 +28,8 @@ internal static class ExcelToPdfConverter
         /// <summary>Page bottom margin in points (default: 50).</summary>
         public float MarginBottom { get; set; } = 50;
 
-        /// <summary>Padding between columns in points (default: 20).</summary>
-        public float ColumnPadding { get; set; } = 20;
+        /// <summary>Padding between columns in points (default: 4).</summary>
+        public float ColumnPadding { get; set; } = 4;
 
         /// <summary>Line spacing multiplier (default: 1.6).</summary>
         public float LineSpacing { get; set; } = 1.6f;
@@ -119,7 +119,7 @@ internal static class ExcelToPdfConverter
         var pageWidth = options.PageWidth;
         var pageHeight = options.PageHeight;
         var usableWidth = pageWidth - options.MarginLeft - options.MarginRight;
-        var avgCharWidth = options.FontSize * 0.5f;
+        var avgCharWidth = options.FontSize * 0.47f;
 
         // Determine column widths first to decide on layout strategy
         var columnPadding = options.ColumnPadding;
@@ -274,10 +274,27 @@ internal static class ExcelToPdfConverter
                     var cellText = row[col].Text;
                     if (!string.IsNullOrEmpty(cellText))
                     {
-                        var maxChars = Math.Max(1, (int)(colWidths[i] / avgCharWidth));
-                        var wrapped = WrapCellText(cellText, maxChars);
-                        cellLines[i] = wrapped;
-                        if (wrapped.Length > maxLinesInRow) maxLinesInRow = wrapped.Length;
+                        // Check if the next column in this row has content.
+                        // LibreOffice behaviour: clip when right-neighbour is non-empty,
+                        // otherwise let text overflow (word-wrap) into the empty space.
+                        var nextCol = col + 1;
+                        var nextHasContent = nextCol < row.Count && !string.IsNullOrEmpty(row[nextCol].Text);
+
+                        if (nextHasContent)
+                        {
+                            // Clip to column width — adjacent cell would be obscured otherwise.
+                            var maxChars = Math.Max(1, (int)(colWidths[i] / avgCharWidth));
+                            var clipped = cellText.Length > maxChars ? cellText[..maxChars] : cellText;
+                            cellLines[i] = new[] { clipped };
+                        }
+                        else
+                        {
+                            // Overflow allowed: render the full text on one line without clipping.
+                            // This matches LibreOffice behaviour where text flows into adjacent empty cells
+                            // (or to the right margin when this is the last column).
+                            cellLines[i] = new[] { cellText };
+                        }
+                        maxLinesInRow = Math.Max(maxLinesInRow, cellLines[i].Length);
                     }
                     else
                     {
@@ -396,6 +413,9 @@ internal static class ExcelToPdfConverter
     /// <summary>
     /// Wrap a single cell text into multiple lines at word boundaries.
     /// </summary>
+    private static string[] WrapCellText(string text, float widthPts, float avgCharWidth)
+        => WrapCellText(text, Math.Max(1, (int)(widthPts / avgCharWidth)));
+
     private static string[] WrapCellText(string text, int maxCharsPerLine)
     {
         if (maxCharsPerLine <= 0) maxCharsPerLine = 1;
@@ -460,7 +480,7 @@ internal static class ExcelToPdfConverter
     /// </summary>
     private static float[] CalculateNaturalColumnWidths(ExcelSheet sheet, int maxCols, float usableWidth, ConversionOptions options)
     {
-        var avgCharWidth = options.FontSize * 0.5f;
+        var avgCharWidth = options.FontSize * 0.47f;
         var colMaxLengths = new int[maxCols];
 
         foreach (var row in sheet.Rows)
@@ -493,9 +513,18 @@ internal static class ExcelToPdfConverter
                 // Clamp to reasonable bounds but respect the spreadsheet's intent
                 widths[i] = Math.Clamp(excelPts, minColWidth, maxColWidth);
             }
+            else if (maxCols >= 2)
+            {
+                // No explicit column widths — use Excel's default column width (8.43 char units).
+                // This matches LibreOffice/Excel behaviour where unset multi-column sheets use the
+                // workbook default, producing text clipping identical to the reference PDF.
+                var defaultPts = ExcelSheet.CharUnitsToPoints(8.43f);
+                widths[i] = Math.Clamp(defaultPts, minColWidth, maxColWidth);
+            }
             else
             {
-                // Fall back to content-based width
+                // Single-column sheet: use content-based width so the column fills the page
+                // (LibreOffice expands 1-column sheets to page width).
                 var natural = (Math.Max(colMaxLengths[i], 3) + 2) * avgCharWidth;
                 widths[i] = Math.Clamp(natural, minColWidth, maxColWidth);
             }
