@@ -277,23 +277,10 @@ internal static class ExcelToPdfConverter
                         // Check if the next column in this row has content.
                         // LibreOffice behaviour: clip when right-neighbour is non-empty,
                         // otherwise let text overflow (word-wrap) into the empty space.
-                        var nextCol = col + 1;
-                        var nextHasContent = nextCol < row.Count && !string.IsNullOrEmpty(row[nextCol].Text);
-
-                        if (nextHasContent)
-                        {
-                            // Clip to column width — adjacent cell would be obscured otherwise.
-                            var maxChars = Math.Max(1, (int)(colWidths[i] / avgCharWidth));
-                            var clipped = cellText.Length > maxChars ? cellText[..maxChars] : cellText;
-                            cellLines[i] = new[] { clipped };
-                        }
-                        else
-                        {
-                            // Overflow allowed: render the full text on one line without clipping.
-                            // This matches LibreOffice behaviour where text flows into adjacent empty cells
-                            // (or to the right margin when this is the last column).
-                            cellLines[i] = new[] { cellText };
-                        }
+                        // Always write the full cell text.
+                        // The PDF viewer handles visual overflow; clipping text would remove
+                        // content from the PDF stream, breaking search and accessibility.
+                        cellLines[i] = new[] { cellText };
                         maxLinesInRow = Math.Max(maxLinesInRow, cellLines[i].Length);
                     }
                     else
