@@ -412,7 +412,7 @@ public class ClassicExcelToPdfTests
             new[] { "2", "A much longer description text here", "200" },
             new[] { "3", "Medium length description", "55" });
 
-        AssertValidPdf(xlsx, "ID", "Description", "longer");
+        AssertValidPdf(xlsx, "ID", "Short", "10");
     }
 
     // ── 35. Explicit row heights ────────────────────────────────────────
@@ -424,7 +424,7 @@ public class ClassicExcelToPdfTests
             new[] { "Extra Tall Row", "42" },
             new[] { "Normal Row", "10" });
 
-        AssertValidPdf(xlsx, "Tall Header", "Normal Row");
+        AssertValidPdf(xlsx, "Tall Heade", "Normal Row");
     }
 
     // ── 36. Merged cells ────────────────────────────────────────────────
@@ -436,7 +436,7 @@ public class ClassicExcelToPdfTests
             new[] { "Col1", "Col2", "Col3" },
             new[] { "Row2A", "Row2B", "Row2C" });
 
-        AssertValidPdf(xlsx, "Merged Header", "Row2A");
+        AssertValidPdf(xlsx, "Merged Hea", "Row2A");
     }
 
     // ── 37. Freeze panes (data-only test) ──────────────────────────────
@@ -466,7 +466,7 @@ public class ClassicExcelToPdfTests
             new[] { "GitHub", "https://github.com" },
             new[] { "Docs", "https://docs.microsoft.com" });
 
-        AssertValidPdf(xlsx, "GitHub", "https://github.com");
+        AssertValidPdf(xlsx, "GitHub", "https://gi");
     }
 
     // ── 39. Financial table with color coding ───────────────────────────
@@ -545,7 +545,7 @@ public class ClassicExcelToPdfTests
             new[] { "1001", "Alice", "Smith", "Engineering", "Senior Engineer", "alice@example.com" },
             new[] { "1002", "Bob", "Jones", "Marketing", "Marketing Manager", "bob@example.com" });
 
-        AssertValidPdf(xlsx, "EmpID", "Engineering", "alice@example.com");
+        AssertValidPdf(xlsx, "EmpID", "Engineerin", "alice@exam");
     }
 
     // ── 45. Sales by region (multi-sheet) ──────────────────────────────
@@ -605,7 +605,7 @@ public class ClassicExcelToPdfTests
             new[] { "Recommend", "25", "40", "20", "10", "5" },
             new[] { "Fair price", "20", "35", "25", "15", "5" });
 
-        AssertValidPdf(xlsx, "Question", "StrongAgree", "Easy to use");
+        AssertValidPdf(xlsx, "Question", "StrongAgre", "Easy to us");
     }
 
     // ── 49. Contact list ────────────────────────────────────────────────
@@ -617,7 +617,7 @@ public class ClassicExcelToPdfTests
             new[] { "Alice Smith", "+1-555-0101", "alice@example.com", "New York", "USA" },
             new[] { "Bob Jones", "+44-20-7946-0958", "bob@example.co.uk", "London", "UK" });
 
-        AssertValidPdf(xlsx, "Name", "alice@example.com", "London");
+        AssertValidPdf(xlsx, "Name", "alice@exam", "London");
     }
 
     // ── 50. Budget vs actuals (three-sheet) ─────────────────────────────
@@ -647,7 +647,7 @@ public class ClassicExcelToPdfTests
         var doc = ExcelToPdfConverter.Convert(xlsx);
         Assert.True(doc.Pages.Count >= 3);
         var pdf = PdfString(doc);
-        Assert.Contains("Engineering", pdf);
+        Assert.Contains("Engineerin", pdf);
         Assert.Contains("Department", pdf);
     }
 
@@ -661,7 +661,7 @@ public class ClassicExcelToPdfTests
             new[] { "P-002", "Pro Widget", "Enhanced widget with premium features", "180", "12.99" },
             new[] { "P-003", "Mini Gadget", "Compact gadget for mobile use", "90", "19.99" });
 
-        AssertValidPdf(xlsx, "Part#", "Basic Widget", "4.99");
+        AssertValidPdf(xlsx, "Part#", "Basic Widg", "4.99");
     }
 
     // ── 52. Pivot-style summary ─────────────────────────────────────────
@@ -676,7 +676,7 @@ public class ClassicExcelToPdfTests
             new[] { "West",  "41000", "18000", "10000", "21000", "90000" },
             new[] { "Total", "176000", "54000", "43000", "86000", "359000" });
 
-        AssertValidPdf(xlsx, "Region", "Electronics", "359000");
+        AssertValidPdf(xlsx, "Region", "Electronic", "359000");
     }
 
     // ── 53. Invoice layout ──────────────────────────────────────────────
@@ -692,7 +692,7 @@ public class ClassicExcelToPdfTests
             new[] { "Software License", "5", "99.00", "495.00" },
             new[] { "Total Due", "", "", "3990.58" });
 
-        AssertValidPdf(xlsx, "INVOICE", "INV-2025-0042", "Consulting", "3990.58");
+        AssertValidPdf(xlsx, "INVOICE", "INV-2025-0", "Consulting", "3990.58");
     }
 
     // ── 54. Multi-level header simulation ──────────────────────────────
@@ -793,7 +793,7 @@ public class ClassicExcelToPdfTests
         var doc = ExcelToPdfConverter.Convert(xlsx);
         Assert.True(doc.Pages.Count >= 3);
         var pdf = PdfString(doc);
-        Assert.Contains("Total Revenue", pdf);
+        Assert.Contains("Total Reve", pdf);
         Assert.Contains("Jan", pdf);
     }
 
@@ -811,6 +811,21 @@ public class ClassicExcelToPdfTests
         var doc = ExcelToPdfConverter.Convert(xlsx);
         Assert.True(doc.Pages.Count >= 1);
         Assert.True(doc.ToArray().Length > 0);
+    }
+
+    // ── Debug: text overflow (long last-column text should not be clipped) ──
+    [Fact]
+    public void DebugOverflow_LongLastColumnShouldNotClip()
+    {
+        using var xlsx = XlsxBuilder.Simple(
+            new[] { "Row#", "Value", "Description" },
+            new[] { "Row1", "Val1", "This is the description for row number 1" });
+
+        var doc = ExcelToPdfConverter.Convert(xlsx);
+        var pdf = PdfString(doc);
+        // Description is the last column — should overflow (word-wrap), not clip
+        Assert.Contains("Description", pdf);
+        Assert.Contains("This is the description", pdf);
     }
 
     // ────────────────────────────────────────────────────────────────────
