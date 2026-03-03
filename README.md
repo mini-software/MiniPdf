@@ -15,7 +15,7 @@ English | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md"
 
 ---
 
-A minimal, zero-dependency .NET library for converting Excel (.xlsx) files to PDF.
+A minimal, zero-dependency .NET library for converting  office files to PDF.
 
 ## Features
 
@@ -24,7 +24,7 @@ A minimal, zero-dependency .NET library for converting Excel (.xlsx) files to PD
 - **Zero dependencies** — Uses only built-in .NET APIs (no external packages)
 - **Valid PDF 1.4** output
 - **Word-to-PDF** — In development
-- **Chart** — Not currently supported
+- **Chart** — Not currently supported well
 
 ## Getting Started
 
@@ -33,10 +33,6 @@ A minimal, zero-dependency .NET library for converting Excel (.xlsx) files to PD
 ```bash
 dotnet add package MiniPdf
 ```
-
-### Requirements
-
-- .NET 9.0 or later
 
 ## Usage
 
