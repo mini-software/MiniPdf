@@ -56,19 +56,19 @@ byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 
 ## Benchmark
 
-MiniPdf output is compared against LibreOffice as the reference renderer across **90 classic test cases** (including 30 image-embedding cases).
+MiniPdf output is compared against LibreOffice as the reference renderer across **120 classic test cases** (including 30 image-embedding cases and 30 chart cases).
 
 | Category | Count | Threshold |
 |---|---|---|
-| 🟢 Excellent | 82 | ≥ 90% |
-| 🟡 Acceptable | 7 | 70% – 90% |
-| 🔴 Needs Improvement | 1 | < 70% |
+| 🟢 Excellent | 97 | ≥ 90% |
+| 🟡 Acceptable | 21 | 70% – 90% |
+| 🔴 Needs Improvement | 2 | < 70% |
 
-**Average overall score: 96.4%** (text similarity 40% + visual similarity 40% + page count 20%)
+**Average overall score: 94.7%** (text similarity 40% + visual similarity 40% + page count 20%)
 
 ### Visual Comparison
 
-All 90 test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown for multi-page results.
+All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown for multi-page results.
 
 <table>
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
@@ -792,7 +792,251 @@ All 90 test cases comparing MiniPdf output vs LibreOffice reference. Page 1 show
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic90_project_status_with_milestones_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic90_project_status_with_milestones_p1_reference.png" width="320"/></td>
 </tr>
+<tr>
+  <td><b>classic91</b></td>
+  <td>Simple bar chart 🟢 96.7%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic91_simple_bar_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic91_simple_bar_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic92</b></td>
+  <td>Horizontal bar chart 🟡 83.1%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic92_horizontal_bar_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic92_horizontal_bar_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic93</b></td>
+  <td>Line chart 🟢 92.9%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic93_line_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic93_line_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic94</b></td>
+  <td>Pie chart 🟡 89.2%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic94_pie_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic94_pie_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic95</b></td>
+  <td>Area chart 🟡 73.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic95_area_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic95_area_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic96</b></td>
+  <td>Scatter chart 🟡 87.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic96_scatter_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic96_scatter_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic97</b></td>
+  <td>Doughnut chart 🟢 91.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic97_doughnut_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic97_doughnut_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic98</b></td>
+  <td>Radar chart 🟡 89.7%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic98_radar_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic98_radar_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic99</b></td>
+  <td>Bubble chart 🟡 83.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic99_bubble_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic99_bubble_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic100</b></td>
+  <td>Stacked bar chart 🟢 91.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic100_stacked_bar_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic100_stacked_bar_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic101</b></td>
+  <td>Percent stacked bar 🟡 87.1%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic101_percent_stacked_bar_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic101_percent_stacked_bar_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic102</b></td>
+  <td>Line chart with markers 🟢 91.4%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic102_line_chart_with_markers_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic102_line_chart_with_markers_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic103</b></td>
+  <td>Pie chart with labels 🟡 82.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic103_pie_chart_with_labels_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic103_pie_chart_with_labels_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic104</b></td>
+  <td>Combo bar line chart 🟡 81.5%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic104_combo_bar_line_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic104_combo_bar_line_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic105</b></td>
+  <td>3d bar chart 🟡 84.2%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic105_3d_bar_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic105_3d_bar_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic106</b></td>
+  <td>3d pie chart 🟢 91.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic106_3d_pie_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic106_3d_pie_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic107</b></td>
+  <td>Multi series line 🟡 80.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic107_multi_series_line_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic107_multi_series_line_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic108</b></td>
+  <td>Stacked area chart 🟡 89.8%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic108_stacked_area_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic108_stacked_area_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic109</b></td>
+  <td>Scatter with trendline 🟡 82.2%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic109_scatter_with_trendline_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic109_scatter_with_trendline_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic110</b></td>
+  <td>Chart with legend 🟡 82.9%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic110_chart_with_legend_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic110_chart_with_legend_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic111</b></td>
+  <td>Chart with axis labels 🟡 83.2%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic111_chart_with_axis_labels_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic111_chart_with_axis_labels_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic112</b></td>
+  <td>Multiple charts 🟡 84.7%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic112_multiple_charts_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic112_multiple_charts_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic113</b></td>
+  <td>Chart sheet 🟡 81.8%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic113_chart_sheet_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic113_chart_sheet_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic114</b></td>
+  <td>Chart large dataset 🟢 91.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic114_chart_large_dataset_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic114_chart_large_dataset_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic115</b></td>
+  <td>Chart negative values 🟢 93.8%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic115_chart_negative_values_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic115_chart_negative_values_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic116</b></td>
+  <td>Percent stacked area 🟡 86.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic116_percent_stacked_area_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic116_percent_stacked_area_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic117</b></td>
+  <td>Stock ohlc chart 🟡 80.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic117_stock_ohlc_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic117_stock_ohlc_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic118</b></td>
+  <td>Bar chart custom colors 🟢 94.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic118_bar_chart_custom_colors_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic118_bar_chart_custom_colors_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic119</b></td>
+  <td>Dashboard multi charts 🟢 92.2%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic119_dashboard_multi_charts_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic119_dashboard_multi_charts_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic120</b></td>
+  <td>Chart with date axis 🔴 64.1%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic120_chart_with_date_axis_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic120_chart_with_date_axis_p1_reference.png" width="320"/></td>
+</tr>
 </table>
+
+
+
+
 
 
 

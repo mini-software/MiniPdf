@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 update_readme_images.py
-Updates the Visual Comparison table in README.md with all 90 classic test cases.
+Updates the Visual Comparison table in README.md with all classic test cases.
 Uses comparison_report.json to get scores and image filenames (page 1 only).
 
 Usage:
@@ -76,12 +76,17 @@ def build_row(entry: dict) -> str:
 # ── build full table ───────────────────────────────────────────────────────────
 def build_table(entries: list) -> str:
     header = (
-        "All 90 test cases comparing MiniPdf output vs LibreOffice reference. "
+        "All test cases comparing MiniPdf output vs LibreOffice reference. "
         "Page 1 shown for multi-page results.\n\n"
         "<table>\n"
         "<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>"
     )
-    rows = "\n".join(build_row(e) for e in entries)
+    # Sort by numeric id so classic100 follows classic99, not classic09
+    def _sort_key(e):
+        m = re.match(r"classic(\d+)", e["name"])
+        return int(m.group(1)) if m else 0
+    sorted_entries = sorted(entries, key=_sort_key)
+    rows = "\n".join(build_row(e) for e in sorted_entries)
     return f"{header}\n{rows}\n</table>"
 
 

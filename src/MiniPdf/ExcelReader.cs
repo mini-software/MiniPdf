@@ -61,6 +61,15 @@ internal static class ExcelReader
             }
         }
 
+        // Second pass: read charts (needs sheet data to resolve cell references)
+        for (var si = 0; si < sheets.Count; si++)
+        {
+            var sheetId = si < sheetInfos.Count ? sheetInfos[si].SheetId : 1;
+            var charts = ReadSheetCharts(archive, sheetId, sheets);
+            foreach (var chart in charts)
+                sheets[si].Charts.Add(chart);
+        }
+
         return sheets;
     }
 
@@ -535,6 +544,324 @@ internal static class ExcelReader
 
         return images;
     }
+
+    /// <summary>
+    /// Reads chart anchors and basic chart metadata from a worksheet's drawing.
+    /// </summary>
+    private static List<ExcelChartInfo> ReadSheetCharts(ZipArchive archive, int sheetId, List<ExcelSheet> allSheets)
+    {
+        var charts = new List<ExcelChartInfo>();
+
+        // Step 1: Find the drawing file from sheet relationships
+        var sheetRelsPath = $"xl/worksheets/_rels/sheet{sheetId}.xml.rels";
+        var relsEntry = archive.GetEntry(sheetRelsPath);
+        if (relsEntry == null) return charts;
+
+        string? drawingFileName = null;
+        using (var relsStream = relsEntry.Open())
+        {
+            var relsDoc = XDocument.Load(relsStream);
+            var drawingRel = relsDoc.Descendants()
+                .FirstOrDefault(el =>
+                    el.Attribute("Type")?.Value.EndsWith("/drawing", StringComparison.OrdinalIgnoreCase) == true);
+            if (drawingRel == null) return charts;
+            var target = drawingRel.Attribute("Target")?.Value;
+            if (string.IsNullOrEmpty(target)) return charts;
+            drawingFileName = System.IO.Path.GetFileName(target);
+        }
+
+        var drawingPath = $"xl/drawings/{drawingFileName}";
+        var drawingEntry = archive.GetEntry(drawingPath);
+        if (drawingEntry == null) return charts;
+
+        // Step 2: Read drawing relationships to map rId → chart path
+        var drawingRelsPath = $"xl/drawings/_rels/{drawingFileName}.rels";
+        var drawingRelsEntry = archive.GetEntry(drawingRelsPath);
+        if (drawingRelsEntry == null) return charts;
+
+        var rIdToChart = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        using (var drStream = drawingRelsEntry.Open())
+        {
+            var drDoc = XDocument.Load(drStream);
+            foreach (var rel in drDoc.Descendants())
+            {
+                var id = rel.Attribute("Id")?.Value;
+                var relTarget = rel.Attribute("Target")?.Value;
+                var type = rel.Attribute("Type")?.Value ?? "";
+                if (id == null || string.IsNullOrEmpty(relTarget)) continue;
+                if (!type.EndsWith("/chart", StringComparison.OrdinalIgnoreCase)) continue;
+
+                // Resolve path
+                string zipPath;
+                if (relTarget.StartsWith('/'))
+                    zipPath = relTarget.TrimStart('/');
+                else
+                {
+                    var segments = ("xl/drawings/" + relTarget).Split('/');
+                    var resolved = new Stack<string>();
+                    foreach (var seg in segments)
+                    {
+                        if (seg == "..") { if (resolved.Count > 0) resolved.Pop(); }
+                        else if (seg != "." && seg != "") resolved.Push(seg);
+                    }
+                    zipPath = string.Join("/", resolved.Reverse());
+                }
+                rIdToChart[id] = zipPath;
+            }
+        }
+
+        if (rIdToChart.Count == 0) return charts;
+
+        // Step 3: Parse drawing XML for chart anchors (graphicFrame elements)
+        using var dStream = drawingEntry.Open();
+        var dDoc = XDocument.Load(dStream);
+
+        var xdr = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing");
+        var a = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/main");
+        var c = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/chart");
+        var r = XNamespace.Get("http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+
+        var anchors = dDoc.Descendants(xdr + "twoCellAnchor")
+            .Concat(dDoc.Descendants(xdr + "oneCellAnchor"))
+            .Concat(dDoc.Descendants(xdr + "absoluteAnchor"));
+
+        foreach (var anchor in anchors)
+        {
+            // Look for graphicFrame → graphic → graphicData containing a chart reference
+            var chartRef = anchor.Descendants(c + "chart").FirstOrDefault();
+            if (chartRef == null) continue;
+
+            var chartRId = chartRef.Attribute(r + "id")?.Value;
+            if (string.IsNullOrEmpty(chartRId) || !rIdToChart.TryGetValue(chartRId, out var chartPath))
+                continue;
+
+            // Read anchor position
+            var fromEl = anchor.Element(xdr + "from");
+            int fromRow = 0, fromCol = 0;
+            if (fromEl != null)
+            {
+                int.TryParse(fromEl.Element(xdr + "row")?.Value, out fromRow);
+                int.TryParse(fromEl.Element(xdr + "col")?.Value, out fromCol);
+            }
+
+            long widthEmu = 0, heightEmu = 0;
+            var extEl = anchor.Element(xdr + "ext");
+            if (extEl != null)
+            {
+                long.TryParse(extEl.Attribute("cx")?.Value, out widthEmu);
+                long.TryParse(extEl.Attribute("cy")?.Value, out heightEmu);
+            }
+            // Fall back to two-cell anchor dimensions
+            if (widthEmu == 0 || heightEmu == 0)
+            {
+                var toEl = anchor.Element(xdr + "to");
+                if (toEl != null)
+                {
+                    int.TryParse(toEl.Element(xdr + "row")?.Value, out var toRow);
+                    int.TryParse(toEl.Element(xdr + "col")?.Value, out var toCol);
+                    // Estimate from row/col span: ~914400 EMU per inch, ~72 pt per inch
+                    if (widthEmu == 0)
+                        widthEmu = Math.Max(1, toCol - fromCol) * 914400;
+                    if (heightEmu == 0)
+                        heightEmu = Math.Max(1, toRow - fromRow) * 304800;
+                }
+            }
+            // Default chart size if still unknown
+            if (widthEmu == 0) widthEmu = 5400000; // ~6 inches
+            if (heightEmu == 0) heightEmu = 3600000; // ~4 inches
+
+            // Step 4: Read chart XML for title, type, series data, axes
+            var chartEntry = archive.GetEntry(chartPath);
+            string title = "";
+            string chartType = "chart";
+            var seriesList = new List<ExcelChartSeries>();
+            string catAxisTitle = "";
+            string valAxisTitle = "";
+
+            if (chartEntry != null)
+            {
+                using var cStream = chartEntry.Open();
+                var cDoc = XDocument.Load(cStream);
+                var cns = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/chart");
+
+                // Extract chart title from <c:chart><c:title><c:tx><c:rich><a:r><a:t>
+                var titleEl = cDoc.Descendants(cns + "title").FirstOrDefault();
+                if (titleEl != null)
+                {
+                    title = string.Concat(titleEl.Descendants(a + "t").Select(t => t.Value));
+                }
+
+                // Detect chart type from plotArea children
+                var plotArea = cDoc.Descendants(cns + "plotArea").FirstOrDefault();
+                XElement? chartTypeEl = null;
+                if (plotArea != null)
+                {
+                    var typeNames = new[] { "barChart", "bar3DChart", "lineChart", "line3DChart",
+                        "pieChart", "pie3DChart", "areaChart", "area3DChart", "scatterChart",
+                        "doughnutChart", "radarChart", "bubbleChart", "stockChart", "surfaceChart" };
+                    foreach (var tn in typeNames)
+                    {
+                        chartTypeEl = plotArea.Element(cns + tn);
+                        if (chartTypeEl != null)
+                        {
+                            chartType = tn;
+                            break;
+                        }
+                    }
+
+                    // Extract axis titles
+                    foreach (var ax in plotArea.Elements().Where(e =>
+                        e.Name.LocalName.EndsWith("Ax", StringComparison.Ordinal)))
+                    {
+                        var axTitle = ax.Element(cns + "title");
+                        if (axTitle == null) continue;
+                        var axTitleText = string.Concat(axTitle.Descendants(a + "t").Select(t => t.Value));
+                        // catAx / dateAx → category axis; valAx → value axis
+                        if (ax.Name.LocalName is "catAx" or "dateAx")
+                            catAxisTitle = axTitleText;
+                        else if (ax.Name.LocalName == "valAx")
+                            valAxisTitle = axTitleText;
+                    }
+                }
+
+                // Extract series data from chart type element
+                if (chartTypeEl != null)
+                {
+                    foreach (var ser in chartTypeEl.Elements(cns + "ser"))
+                    {
+                        // Series name
+                        var serName = "";
+                        var txEl = ser.Element(cns + "tx");
+                        if (txEl != null)
+                        {
+                            var sv = txEl.Element(cns + "v")?.Value;
+                            if (!string.IsNullOrEmpty(sv))
+                                serName = sv;
+                            else
+                            {
+                                // Try strRef → f to resolve from sheet
+                                var strRef = txEl.Element(cns + "strRef");
+                                var formula = strRef?.Element(cns + "f")?.Value;
+                                if (!string.IsNullOrEmpty(formula))
+                                {
+                                    var resolved = ResolveCellReference(formula, allSheets);
+                                    if (resolved.Length > 0) serName = resolved[0];
+                                }
+                            }
+                        }
+
+                        // Categories
+                        string[] cats = Array.Empty<string>();
+                        var catEl = ser.Element(cns + "cat");
+                        if (catEl != null)
+                        {
+                            cats = ResolveRefElement(catEl, cns, allSheets);
+                        }
+
+                        // Values
+                        double[] vals = Array.Empty<double>();
+                        var valEl = ser.Element(cns + "val");
+                        if (valEl != null)
+                        {
+                            var valStrings = ResolveRefElement(valEl, cns, allSheets);
+                            vals = valStrings.Select(v =>
+                                double.TryParse(v, System.Globalization.NumberStyles.Any,
+                                    System.Globalization.CultureInfo.InvariantCulture, out var d) ? d : 0.0)
+                                .ToArray();
+                        }
+
+                        seriesList.Add(new ExcelChartSeries(serName, cats, vals));
+                    }
+                }
+            }
+
+            charts.Add(new ExcelChartInfo(fromRow, fromCol, widthEmu, heightEmu, title, chartType,
+                seriesList, catAxisTitle, valAxisTitle));
+        }
+
+        return charts;
+    }
+
+    /// <summary>
+    /// Resolves a numRef or strRef element to string values by reading the cell reference formula.
+    /// </summary>
+    private static string[] ResolveRefElement(XElement parent, XNamespace cns, List<ExcelSheet> allSheets)
+    {
+        // Try numRef and strRef
+        var refEl = parent.Element(cns + "numRef") ?? parent.Element(cns + "strRef");
+        if (refEl != null)
+        {
+            var formula = refEl.Element(cns + "f")?.Value;
+            if (!string.IsNullOrEmpty(formula))
+                return ResolveCellReference(formula, allSheets);
+        }
+        // Try numLit (inline values)
+        var litEl = parent.Element(cns + "numLit");
+        if (litEl != null)
+        {
+            return litEl.Elements(cns + "pt")
+                .OrderBy(pt => int.TryParse(pt.Attribute("idx")?.Value, out var idx) ? idx : 0)
+                .Select(pt => pt.Element(cns + "v")?.Value ?? "0")
+                .ToArray();
+        }
+        return Array.Empty<string>();
+    }
+
+    /// <summary>
+    /// Resolves an Excel cell reference formula like "'Sheet1'!$A$2:$A$6" or "Sheet1!B1"
+    /// to actual cell values from the sheet data.
+    /// </summary>
+    private static string[] ResolveCellReference(string formula, List<ExcelSheet> allSheets)
+    {
+        // Parse: 'SheetName'!$A$2:$B$6  or  SheetName!A2:A6  or  SheetName!B1
+        var parts = formula.Split('!');
+        if (parts.Length != 2) return Array.Empty<string>();
+
+        var sheetName = parts[0].Trim('\'');
+        var cellRef = parts[1].Replace("$", "");
+
+        var sheet = allSheets.FirstOrDefault(s =>
+            s.Name.Equals(sheetName, StringComparison.OrdinalIgnoreCase));
+        if (sheet == null) return Array.Empty<string>();
+
+        // Parse range: A2:B6 or single cell A2
+        var rangeParts = cellRef.Split(':');
+        var (startCol, startRow) = ParseCellAddress(rangeParts[0]);
+        var (endCol, endRow) = rangeParts.Length > 1
+            ? ParseCellAddress(rangeParts[1])
+            : (startCol, startRow);
+
+        var result = new List<string>();
+        for (var row = startRow; row <= endRow; row++)
+        {
+            for (var col = startCol; col <= endCol; col++)
+            {
+                if (row < sheet.Rows.Count && col < sheet.Rows[row].Count)
+                    result.Add(sheet.Rows[row][col].Text);
+                else
+                    result.Add("");
+            }
+        }
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// Parses a cell address like "A2" or "AB10" into (col, row) 0-based indices.
+    /// </summary>
+    private static (int col, int row) ParseCellAddress(string addr)
+    {
+        var col = 0;
+        var i = 0;
+        while (i < addr.Length && char.IsLetter(addr[i]))
+        {
+            col = col * 26 + (char.ToUpper(addr[i]) - 'A' + 1);
+            i++;
+        }
+        col--; // convert to 0-based
+        int.TryParse(addr.AsSpan(i), out var row);
+        row--; // convert to 0-based
+        return (col, row);
+    }
 }
 
 /// <summary>
@@ -557,6 +884,30 @@ internal sealed record ExcelEmbeddedImage(
 );
 
 /// <summary>
+/// Represents one data series in a chart.
+/// </summary>
+internal sealed record ExcelChartSeries(
+    string Name,           // series name (e.g. column header)
+    string[] Categories,   // category labels (X-axis)
+    double[] Values        // numeric values (Y-axis)
+);
+
+/// <summary>
+/// Represents a chart embedded in an Excel worksheet.
+/// </summary>
+internal sealed record ExcelChartInfo(
+    int AnchorRow,       // 0-based row of top-left anchor
+    int AnchorCol,       // 0-based column of top-left anchor
+    long WidthEmu,       // chart width in EMU
+    long HeightEmu,      // chart height in EMU
+    string Title,        // chart title (may be empty)
+    string ChartType,    // e.g. "barChart", "lineChart", "pieChart"
+    List<ExcelChartSeries> Series,  // data series
+    string CategoryAxisTitle = "",  // X-axis title
+    string ValueAxisTitle = ""      // Y-axis title
+);
+
+/// <summary>
 /// Represents a sheet read from an Excel file.
 /// </summary>
 internal sealed class ExcelSheet
@@ -564,6 +915,7 @@ internal sealed class ExcelSheet
     public string Name { get; }
     public List<List<ExcelCell>> Rows { get; }
     public List<ExcelEmbeddedImage> Images { get; }
+    public List<ExcelChartInfo> Charts { get; }
     /// <summary>
     /// Excel column widths keyed by 0-based column index.
     /// Values are in Excel character units (convert to points via ExcelSheet.CharUnitsToPoints).
@@ -581,11 +933,13 @@ internal sealed class ExcelSheet
     internal ExcelSheet(string name, List<List<ExcelCell>> rows,
         List<ExcelEmbeddedImage>? images = null,
         Dictionary<int, float>? columnWidths = null,
-        float defaultColumnWidth = 8.43f)
+        float defaultColumnWidth = 8.43f,
+        List<ExcelChartInfo>? charts = null)
     {
         Name = name;
         Rows = rows;
         Images = images ?? new List<ExcelEmbeddedImage>();
+        Charts = charts ?? new List<ExcelChartInfo>();
         ColumnWidths = columnWidths ?? new Dictionary<int, float>();
         DefaultColumnWidth = defaultColumnWidth;
     }

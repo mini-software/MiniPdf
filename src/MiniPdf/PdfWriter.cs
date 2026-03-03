@@ -236,7 +236,40 @@ internal sealed class PdfWriter
     {
         var sb = new StringBuilder();
 
-        // Place images first (under text)
+        // Draw filled rectangles first (background)
+        foreach (var rect in page.RectBlocks)
+        {
+            var rx = rect.X.ToString("F3", CultureInfo.InvariantCulture);
+            var ry = rect.Y.ToString("F3", CultureInfo.InvariantCulture);
+            var rw = rect.Width.ToString("F3", CultureInfo.InvariantCulture);
+            var rh = rect.Height.ToString("F3", CultureInfo.InvariantCulture);
+            var rr = rect.FillColor.R.ToString("F3", CultureInfo.InvariantCulture);
+            var rg2 = rect.FillColor.G.ToString("F3", CultureInfo.InvariantCulture);
+            var rb = rect.FillColor.B.ToString("F3", CultureInfo.InvariantCulture);
+            sb.Append($"{rr} {rg2} {rb} rg\n");
+            sb.Append($"{rx} {ry} {rw} {rh} re\n");
+            sb.Append("f\n");
+        }
+
+        // Draw line segments
+        foreach (var line in page.LineBlocks)
+        {
+            var lr = line.Color.R.ToString("F3", CultureInfo.InvariantCulture);
+            var lg = line.Color.G.ToString("F3", CultureInfo.InvariantCulture);
+            var lb = line.Color.B.ToString("F3", CultureInfo.InvariantCulture);
+            var lw = line.LineWidth.ToString("F3", CultureInfo.InvariantCulture);
+            var lx1 = line.X1.ToString("F3", CultureInfo.InvariantCulture);
+            var ly1 = line.Y1.ToString("F3", CultureInfo.InvariantCulture);
+            var lx2 = line.X2.ToString("F3", CultureInfo.InvariantCulture);
+            var ly2 = line.Y2.ToString("F3", CultureInfo.InvariantCulture);
+            sb.Append($"{lr} {lg} {lb} RG\n");
+            sb.Append($"{lw} w\n");
+            sb.Append($"{lx1} {ly1} m\n");
+            sb.Append($"{lx2} {ly2} l\n");
+            sb.Append("S\n");
+        }
+
+        // Place images (under text)
         for (var idx = 0; idx < page.ImageBlocks.Count; idx++)
         {
             var img = page.ImageBlocks[idx];

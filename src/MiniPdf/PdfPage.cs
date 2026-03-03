@@ -13,12 +13,37 @@ internal sealed record PdfImageBlock(
 );
 
 /// <summary>
+/// Represents a filled rectangle on a PDF page.
+/// </summary>
+internal sealed record PdfRectBlock(
+    float X,             // left edge in points
+    float Y,             // bottom edge in points
+    float Width,         // width in points
+    float Height,        // height in points
+    PdfColor FillColor   // fill color
+);
+
+/// <summary>
+/// Represents a line segment on a PDF page.
+/// </summary>
+internal sealed record PdfLineBlock(
+    float X1,            // start X in points
+    float Y1,            // start Y in points
+    float X2,            // end X in points
+    float Y2,            // end Y in points
+    PdfColor Color,      // stroke color
+    float LineWidth = 1f // stroke width in points
+);
+
+/// <summary>
 /// Represents a single page in a PDF document.
 /// </summary>
 internal sealed class PdfPage
 {
     private readonly List<PdfTextBlock> _textBlocks = [];
     private readonly List<PdfImageBlock> _imageBlocks = [];
+    private readonly List<PdfRectBlock> _rectBlocks = [];
+    private readonly List<PdfLineBlock> _lineBlocks = [];
 
     /// <summary>
     /// Page width in points.
@@ -39,6 +64,16 @@ internal sealed class PdfPage
     /// Gets the image blocks on this page.
     /// </summary>
     public IReadOnlyList<PdfImageBlock> ImageBlocks => _imageBlocks;
+
+    /// <summary>
+    /// Gets the rectangle blocks on this page.
+    /// </summary>
+    public IReadOnlyList<PdfRectBlock> RectBlocks => _rectBlocks;
+
+    /// <summary>
+    /// Gets the line blocks on this page.
+    /// </summary>
+    public IReadOnlyList<PdfLineBlock> LineBlocks => _lineBlocks;
 
     internal PdfPage(float width, float height)
     {
@@ -74,6 +109,24 @@ internal sealed class PdfPage
     public PdfPage AddImage(byte[] data, string format, float x, float y, float width, float height)
     {
         _imageBlocks.Add(new PdfImageBlock(data, format, x, y, width, height));
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a filled rectangle at the specified position.
+    /// </summary>
+    public PdfPage AddRectangle(float x, float y, float width, float height, PdfColor? fillColor = null)
+    {
+        _rectBlocks.Add(new PdfRectBlock(x, y, width, height, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f)));
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a line segment at the specified coordinates.
+    /// </summary>
+    public PdfPage AddLine(float x1, float y1, float x2, float y2, PdfColor? color = null, float lineWidth = 1f)
+    {
+        _lineBlocks.Add(new PdfLineBlock(x1, y1, x2, y2, color ?? new PdfColor(0, 0, 0), lineWidth));
         return this;
     }
 

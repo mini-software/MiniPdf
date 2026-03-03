@@ -1,8 +1,9 @@
 """
-Generate 90 classic .xlsx files for testing Excel-to-PDF conversion.
+Generate 120 classic .xlsx files for testing Excel-to-PDF conversion.
 Each file corresponds to a test case in ClassicExcelToPdfTests.cs.
 
 Cases 61-90 include embedded images to exercise MiniPdf image rendering.
+Cases 91-120 include openpyxl chart objects (bar, line, pie, area, etc.).
 
 Usage:
     pip install openpyxl pillow
@@ -17,6 +18,13 @@ import string
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
+from openpyxl.chart import (
+    BarChart, BarChart3D, LineChart, LineChart3D, PieChart, PieChart3D,
+    AreaChart, AreaChart3D, ScatterChart, DoughnutChart, RadarChart,
+    BubbleChart, Reference,
+)
+from openpyxl.chart.label import DataLabelList
+from openpyxl.chart.series import DataPoint
 
 try:
     from PIL import Image as PILImage
@@ -1804,10 +1812,783 @@ def classic90_project_status_with_milestones():
     save(wb, "classic90_project_status_with_milestones.xlsx")
 
 
+# ── 91. Simple vertical bar chart ─────────────────────────────────────────
+def classic91_simple_bar_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sales"
+    ws.append(["Product", "Revenue"])
+    for prod, rev in [("Widget A", 12000), ("Widget B", 18500),
+                      ("Widget C", 9200), ("Widget D", 22000), ("Widget E", 15600)]:
+        ws.append([prod, rev])
+    chart = BarChart()
+    chart.type = "col"
+    chart.title = "Product Revenue"
+    chart.y_axis.title = "Revenue ($)"
+    chart.x_axis.title = "Product"
+    data = Reference(ws, min_col=2, min_row=1, max_row=6)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=6)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 15
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic91_simple_bar_chart.xlsx")
+
+
+# ── 92. Horizontal bar chart ─────────────────────────────────────────────
+def classic92_horizontal_bar_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Departments"
+    ws.append(["Department", "Headcount"])
+    for dept, hc in [("Engineering", 45), ("Sales", 30), ("Marketing", 18),
+                     ("HR", 12), ("Finance", 15), ("Operations", 25)]:
+        ws.append([dept, hc])
+    chart = BarChart()
+    chart.type = "bar"
+    chart.title = "Headcount by Department"
+    data = Reference(ws, min_col=2, min_row=1, max_row=7)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=7)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 15
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic92_horizontal_bar_chart.xlsx")
+
+
+# ── 93. Line chart ──────────────────────────────────────────────────────
+def classic93_line_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Temperature"
+    ws.append(["Month", "Avg Temp (C)"])
+    temps = [3, 5, 10, 15, 20, 25, 28, 27, 22, 15, 8, 4]
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+              "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    for m, t in zip(months, temps):
+        ws.append([m, t])
+    chart = LineChart()
+    chart.title = "Monthly Average Temperature"
+    chart.y_axis.title = "Temperature (C)"
+    data = Reference(ws, min_col=2, min_row=1, max_row=13)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=13)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 16
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic93_line_chart.xlsx")
+
+
+# ── 94. Pie chart ────────────────────────────────────────────────────────
+def classic94_pie_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Market"
+    ws.append(["Segment", "Share (%)"])
+    for seg, sh in [("Enterprise", 35), ("SMB", 28), ("Consumer", 22),
+                    ("Government", 10), ("Education", 5)]:
+        ws.append([seg, sh])
+    chart = PieChart()
+    chart.title = "Market Share by Segment"
+    data = Reference(ws, min_col=2, min_row=1, max_row=6)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=6)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 12
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic94_pie_chart.xlsx")
+
+
+# ── 95. Area chart ──────────────────────────────────────────────────────
+def classic95_area_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Traffic"
+    ws.append(["Hour", "Users"])
+    for h in range(0, 24):
+        users = int(200 + 800 * (1.0 / (1 + abs(h - 14) ** 1.5)))
+        ws.append([f"{h:02d}:00", users])
+    chart = AreaChart()
+    chart.title = "Website Traffic by Hour"
+    chart.y_axis.title = "Users"
+    data = Reference(ws, min_col=2, min_row=1, max_row=25)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=25)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 16
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic95_area_chart.xlsx")
+
+
+# ── 96. Scatter (XY) chart ──────────────────────────────────────────────
+def classic96_scatter_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Correlation"
+    ws.append(["Ad Spend ($K)", "Sales ($K)"])
+    import random
+    random.seed(42)
+    for _ in range(20):
+        spend = random.randint(5, 50)
+        sales = int(spend * 2.3 + random.randint(-10, 10))
+        ws.append([spend, sales])
+    chart = ScatterChart()
+    chart.title = "Ad Spend vs Sales"
+    chart.x_axis.title = "Ad Spend ($K)"
+    chart.y_axis.title = "Sales ($K)"
+    xvalues = Reference(ws, min_col=1, min_row=2, max_row=22)
+    yvalues = Reference(ws, min_col=2, min_row=2, max_row=22)
+    series = chart.series
+    from openpyxl.chart import Series
+    s = Series(yvalues, xvalues, title="Data Points")
+    chart.series.append(s)
+    chart.width = 14
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic96_scatter_chart.xlsx")
+
+
+# ── 97. Doughnut chart ──────────────────────────────────────────────────
+def classic97_doughnut_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Budget"
+    ws.append(["Category", "Amount"])
+    for cat, amt in [("Salaries", 50000), ("Rent", 12000), ("Marketing", 8000),
+                     ("R&D", 15000), ("Other", 5000)]:
+        ws.append([cat, amt])
+    chart = DoughnutChart()
+    chart.title = "Budget Allocation"
+    data = Reference(ws, min_col=2, min_row=1, max_row=6)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=6)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 12
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic97_doughnut_chart.xlsx")
+
+
+# ── 98. Radar chart ─────────────────────────────────────────────────────
+def classic98_radar_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Skills"
+    ws.append(["Skill", "Score"])
+    for skill, score in [("Python", 9), ("SQL", 8), ("Communication", 7),
+                         ("Leadership", 6), ("Design", 5), ("DevOps", 7)]:
+        ws.append([skill, score])
+    chart = RadarChart()
+    chart.title = "Developer Skill Radar"
+    data = Reference(ws, min_col=2, min_row=1, max_row=7)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=7)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 12
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic98_radar_chart.xlsx")
+
+
+# ── 99. Bubble chart ────────────────────────────────────────────────────
+def classic99_bubble_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Products"
+    ws.append(["Price ($)", "Rating", "Units Sold"])
+    for price, rating, units in [(10, 4.2, 500), (25, 4.5, 300),
+                                  (50, 3.8, 150), (15, 4.0, 420),
+                                  (35, 4.7, 200), (8, 3.5, 600)]:
+        ws.append([price, rating, units])
+    chart = BubbleChart()
+    chart.title = "Product Comparison"
+    xvalues = Reference(ws, min_col=1, min_row=2, max_row=7)
+    yvalues = Reference(ws, min_col=2, min_row=2, max_row=7)
+    bubbles = Reference(ws, min_col=3, min_row=2, max_row=7)
+    from openpyxl.chart import Series
+    s = Series(yvalues, xvalues, zvalues=bubbles, title="Products")
+    chart.series.append(s)
+    chart.x_axis.title = "Price ($)"
+    chart.y_axis.title = "Rating"
+    chart.width = 14
+    chart.height = 10
+    ws.add_chart(chart, "E2")
+    save(wb, "classic99_bubble_chart.xlsx")
+
+
+# ── 100. Stacked bar chart ──────────────────────────────────────────────
+def classic100_stacked_bar_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Quarters"
+    ws.append(["Region", "Q1", "Q2", "Q3", "Q4"])
+    for region, q1, q2, q3, q4 in [("North", 30, 40, 35, 50),
+                                     ("South", 25, 30, 45, 40),
+                                     ("East", 40, 35, 30, 45),
+                                     ("West", 20, 25, 40, 35)]:
+        ws.append([region, q1, q2, q3, q4])
+    chart = BarChart()
+    chart.type = "col"
+    chart.grouping = "stacked"
+    chart.title = "Quarterly Revenue by Region"
+    data = Reference(ws, min_col=2, max_col=5, min_row=1, max_row=5)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=5)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 15
+    chart.height = 10
+    ws.add_chart(chart, "A8")
+    save(wb, "classic100_stacked_bar_chart.xlsx")
+
+
+# ── 101. 100% stacked bar chart ─────────────────────────────────────────
+def classic101_percent_stacked_bar():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sources"
+    ws.append(["Year", "Organic", "Paid", "Referral", "Direct"])
+    for yr, org, paid, ref, direct in [(2021, 40, 25, 20, 15),
+                                        (2022, 38, 30, 18, 14),
+                                        (2023, 35, 32, 20, 13),
+                                        (2024, 33, 35, 18, 14),
+                                        (2025, 30, 38, 17, 15)]:
+        ws.append([yr, org, paid, ref, direct])
+    chart = BarChart()
+    chart.type = "col"
+    chart.grouping = "percentStacked"
+    chart.title = "Traffic Source Mix by Year"
+    data = Reference(ws, min_col=2, max_col=5, min_row=1, max_row=6)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=6)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 15
+    chart.height = 10
+    ws.add_chart(chart, "A9")
+    save(wb, "classic101_percent_stacked_bar.xlsx")
+
+
+# ── 102. Line chart with markers ────────────────────────────────────────
+def classic102_line_chart_with_markers():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Growth"
+    ws.append(["Year", "Users (K)", "Revenue (K)"])
+    for yr, users, rev in [(2020, 10, 50), (2021, 25, 120), (2022, 55, 280),
+                            (2023, 90, 500), (2024, 140, 780), (2025, 200, 1100)]:
+        ws.append([yr, users, rev])
+    chart = LineChart()
+    chart.title = "Company Growth"
+    chart.y_axis.title = "Value (K)"
+    chart.style = 10
+    data = Reference(ws, min_col=2, max_col=3, min_row=1, max_row=7)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=7)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    for s in chart.series:
+        s.graphicalProperties.line.width = 25000
+    chart.width = 16
+    chart.height = 10
+    ws.add_chart(chart, "E2")
+    save(wb, "classic102_line_chart_with_markers.xlsx")
+
+
+# ── 103. Pie chart with data labels ─────────────────────────────────────
+def classic103_pie_chart_with_labels():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "OS"
+    ws.append(["OS", "Share (%)"])
+    for os_name, share in [("Windows", 42), ("macOS", 28), ("Linux", 15),
+                            ("ChromeOS", 10), ("Other", 5)]:
+        ws.append([os_name, share])
+    chart = PieChart()
+    chart.title = "Desktop OS Market Share"
+    data = Reference(ws, min_col=2, min_row=1, max_row=6)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=6)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.dataLabels = DataLabelList()
+    chart.dataLabels.showPercent = True
+    chart.dataLabels.showCatName = True
+    chart.width = 13
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic103_pie_chart_with_labels.xlsx")
+
+
+# ── 104. Combo chart (bar + line) ───────────────────────────────────────
+def classic104_combo_bar_line_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Combo"
+    ws.append(["Month", "Sales", "Target"])
+    for m, s, t in [("Jan", 42, 45), ("Feb", 48, 47), ("Mar", 51, 50),
+                     ("Apr", 45, 50), ("May", 56, 54), ("Jun", 62, 60)]:
+        ws.append([m, s, t])
+    bar = BarChart()
+    bar.type = "col"
+    bar.title = "Sales vs Target"
+    bar_data = Reference(ws, min_col=2, min_row=1, max_row=7)
+    bar.add_data(bar_data, titles_from_data=True)
+    bar.set_categories(Reference(ws, min_col=1, min_row=2, max_row=7))
+    line = LineChart()
+    line_data = Reference(ws, min_col=3, min_row=1, max_row=7)
+    line.add_data(line_data, titles_from_data=True)
+    line.y_axis.axId = 200
+    bar += line
+    bar.width = 16
+    bar.height = 10
+    ws.add_chart(bar, "E2")
+    save(wb, "classic104_combo_bar_line_chart.xlsx")
+
+
+# ── 105. 3D bar chart ───────────────────────────────────────────────────
+def classic105_3d_bar_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Regions"
+    ws.append(["Region", "2024", "2025"])
+    for rg, v24, v25 in [("APAC", 120, 145), ("EMEA", 95, 110),
+                          ("Americas", 150, 175), ("LATAM", 40, 55)]:
+        ws.append([rg, v24, v25])
+    chart = BarChart3D()
+    chart.title = "Revenue by Region (3D)"
+    data = Reference(ws, min_col=2, max_col=3, min_row=1, max_row=5)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=5)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 15
+    chart.height = 10
+    ws.add_chart(chart, "E2")
+    save(wb, "classic105_3d_bar_chart.xlsx")
+
+
+# ── 106. 3D pie chart ───────────────────────────────────────────────────
+def classic106_3d_pie_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Expenses"
+    ws.append(["Category", "Amount"])
+    for cat, amt in [("Food", 800), ("Housing", 1500), ("Transport", 400),
+                     ("Entertainment", 300), ("Savings", 700), ("Other", 200)]:
+        ws.append([cat, amt])
+    chart = PieChart3D()
+    chart.title = "Monthly Expense Breakdown (3D)"
+    data = Reference(ws, min_col=2, min_row=1, max_row=7)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=7)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 13
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic106_3d_pie_chart.xlsx")
+
+
+# ── 107. Multi-series line chart ────────────────────────────────────────
+def classic107_multi_series_line():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Stocks"
+    ws.append(["Day", "AAPL", "GOOG", "MSFT"])
+    import random
+    random.seed(107)
+    prices = {"AAPL": 180, "GOOG": 140, "MSFT": 400}
+    for d in range(1, 21):
+        row = [f"Day {d}"]
+        for ticker in ["AAPL", "GOOG", "MSFT"]:
+            prices[ticker] += random.uniform(-3, 3)
+            row.append(round(prices[ticker], 2))
+        ws.append(row)
+    chart = LineChart()
+    chart.title = "Stock Price Trend (20 Days)"
+    chart.y_axis.title = "Price ($)"
+    data = Reference(ws, min_col=2, max_col=4, min_row=1, max_row=21)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=21)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 18
+    chart.height = 10
+    ws.add_chart(chart, "F2")
+    save(wb, "classic107_multi_series_line.xlsx")
+
+
+# ── 108. Stacked area chart ─────────────────────────────────────────────
+def classic108_stacked_area_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Channels"
+    ws.append(["Month", "Email", "Social", "Search", "Direct"])
+    data_rows = [
+        ("Jan", 120, 80, 200, 100), ("Feb", 130, 90, 210, 105),
+        ("Mar", 125, 110, 230, 115), ("Apr", 140, 120, 250, 120),
+        ("May", 150, 130, 240, 125), ("Jun", 160, 140, 260, 130),
+    ]
+    for row in data_rows:
+        ws.append(list(row))
+    chart = AreaChart()
+    chart.grouping = "stacked"
+    chart.title = "Traffic by Channel (Stacked)"
+    data = Reference(ws, min_col=2, max_col=5, min_row=1, max_row=7)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=7)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 16
+    chart.height = 10
+    ws.add_chart(chart, "A10")
+    save(wb, "classic108_stacked_area_chart.xlsx")
+
+
+# ── 109. Scatter with trend line ─────────────────────────────────────────
+def classic109_scatter_with_trendline():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Study"
+    ws.append(["Study Hours", "Exam Score"])
+    import random
+    random.seed(109)
+    for _ in range(15):
+        hrs = random.randint(1, 10)
+        score = min(100, max(30, int(hrs * 8 + 20 + random.randint(-8, 8))))
+        ws.append([hrs, score])
+    chart = ScatterChart()
+    chart.title = "Study Hours vs Exam Score"
+    chart.x_axis.title = "Hours"
+    chart.y_axis.title = "Score"
+    xv = Reference(ws, min_col=1, min_row=2, max_row=16)
+    yv = Reference(ws, min_col=2, min_row=2, max_row=16)
+    from openpyxl.chart import Series
+    s = Series(yv, xv, title="Students")
+    from openpyxl.chart.trendline import Trendline
+    s.trendline = Trendline(trendlineType="linear")
+    chart.series.append(s)
+    chart.width = 14
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic109_scatter_with_trendline.xlsx")
+
+
+# ── 110. Chart with title and legend ─────────────────────────────────────
+def classic110_chart_with_legend():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Browser"
+    ws.append(["Browser", "2024 (%)", "2025 (%)"])
+    for br, v24, v25 in [("Chrome", 65, 62), ("Safari", 18, 20),
+                          ("Firefox", 8, 7), ("Edge", 6, 8), ("Other", 3, 3)]:
+        ws.append([br, v24, v25])
+    chart = BarChart()
+    chart.type = "col"
+    chart.title = "Browser Market Share Comparison"
+    chart.y_axis.title = "Market Share (%)"
+    chart.legend.position = "b"
+    data = Reference(ws, min_col=2, max_col=3, min_row=1, max_row=6)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=6)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 15
+    chart.height = 10
+    ws.add_chart(chart, "E2")
+    save(wb, "classic110_chart_with_legend.xlsx")
+
+
+# ── 111. Chart with axis labels ──────────────────────────────────────────
+def classic111_chart_with_axis_labels():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Emissions"
+    ws.append(["Country", "CO2 (Mt)"])
+    for country, co2 in [("China", 10500), ("USA", 5000), ("India", 2700),
+                          ("Russia", 1700), ("Japan", 1100), ("Germany", 700)]:
+        ws.append([country, co2])
+    chart = BarChart()
+    chart.type = "bar"
+    chart.title = "CO2 Emissions by Country"
+    chart.x_axis.title = "Country"
+    chart.y_axis.title = "CO2 Emissions (Megatons)"
+    chart.y_axis.numFmt = "#,##0"
+    data = Reference(ws, min_col=2, min_row=1, max_row=7)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=7)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 16
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic111_chart_with_axis_labels.xlsx")
+
+
+# ── 112. Multiple charts on one sheet ────────────────────────────────────
+def classic112_multiple_charts():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Dashboard"
+    ws.append(["Month", "Revenue", "Costs", "Profit"])
+    for m, r, c in [("Jan", 50, 30), ("Feb", 55, 32), ("Mar", 60, 35),
+                     ("Apr", 52, 28), ("May", 70, 40), ("Jun", 75, 42)]:
+        ws.append([m, r, c, r - c])
+    # Bar chart for revenue
+    bar = BarChart()
+    bar.type = "col"
+    bar.title = "Revenue & Costs"
+    bar_data = Reference(ws, min_col=2, max_col=3, min_row=1, max_row=7)
+    bar_cats = Reference(ws, min_col=1, min_row=2, max_row=7)
+    bar.add_data(bar_data, titles_from_data=True)
+    bar.set_categories(bar_cats)
+    bar.width = 14
+    bar.height = 9
+    ws.add_chart(bar, "F2")
+    # Line chart for profit
+    line = LineChart()
+    line.title = "Profit Trend"
+    line_data = Reference(ws, min_col=4, min_row=1, max_row=7)
+    line.add_data(line_data, titles_from_data=True)
+    line.set_categories(bar_cats)
+    line.width = 14
+    line.height = 9
+    ws.add_chart(line, "F18")
+    save(wb, "classic112_multiple_charts.xlsx")
+
+
+# ── 113. Chart on separate chart sheet ───────────────────────────────────
+def classic113_chart_sheet():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Data"
+    ws.append(["Quarter", "Revenue"])
+    for q, r in [("Q1", 250), ("Q2", 310), ("Q3", 285), ("Q4", 400)]:
+        ws.append([q, r])
+    chart = BarChart()
+    chart.type = "col"
+    chart.title = "Quarterly Revenue"
+    data = Reference(ws, min_col=2, min_row=1, max_row=5)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=5)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 18
+    chart.height = 12
+    # Place chart on data sheet (openpyxl chartsheet API is limited)
+    ws.add_chart(chart, "D2")
+    save(wb, "classic113_chart_sheet.xlsx")
+
+
+# ── 114. Chart with large dataset ────────────────────────────────────────
+def classic114_chart_large_dataset():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Data"
+    ws.append(["Day", "Value"])
+    import random
+    random.seed(114)
+    val = 100
+    for d in range(1, 101):
+        val += random.uniform(-5, 6)
+        ws.append([d, round(val, 1)])
+    chart = LineChart()
+    chart.title = "100-Day Value Trend"
+    data = Reference(ws, min_col=2, min_row=1, max_row=101)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=101)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 20
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic114_chart_large_dataset.xlsx")
+
+
+# ── 115. Chart with negative values ─────────────────────────────────────
+def classic115_chart_negative_values():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "PnL"
+    ws.append(["Month", "Profit/Loss"])
+    for m, pl in [("Jan", 15), ("Feb", -8), ("Mar", 22), ("Apr", -3),
+                   ("May", 30), ("Jun", -12), ("Jul", 18), ("Aug", 5)]:
+        ws.append([m, pl])
+    chart = BarChart()
+    chart.type = "col"
+    chart.title = "Monthly Profit & Loss"
+    chart.y_axis.title = "Amount ($K)"
+    data = Reference(ws, min_col=2, min_row=1, max_row=9)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=9)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 15
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic115_chart_negative_values.xlsx")
+
+
+# ── 116. 100% stacked area chart ────────────────────────────────────────
+def classic116_percent_stacked_area():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Energy"
+    ws.append(["Year", "Coal", "Gas", "Nuclear", "Renewable"])
+    for yr, coal, gas, nuc, ren in [(2015, 40, 25, 20, 15),
+                                     (2017, 35, 27, 20, 18),
+                                     (2019, 30, 28, 19, 23),
+                                     (2021, 25, 28, 18, 29),
+                                     (2023, 20, 26, 17, 37),
+                                     (2025, 15, 24, 16, 45)]:
+        ws.append([yr, coal, gas, nuc, ren])
+    chart = AreaChart()
+    chart.grouping = "percentStacked"
+    chart.title = "Energy Mix Transition"
+    data = Reference(ws, min_col=2, max_col=5, min_row=1, max_row=7)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=7)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 16
+    chart.height = 10
+    ws.add_chart(chart, "A10")
+    save(wb, "classic116_percent_stacked_area.xlsx")
+
+
+# ── 117. Stock-like OHLC bar chart ──────────────────────────────────────
+def classic117_stock_ohlc_chart():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Stock"
+    ws.append(["Day", "Open", "High", "Low", "Close"])
+    import random
+    random.seed(117)
+    price = 150.0
+    for d in range(1, 11):
+        o = round(price + random.uniform(-2, 2), 2)
+        h = round(o + random.uniform(0, 5), 2)
+        l = round(o - random.uniform(0, 5), 2)
+        c = round(random.uniform(l, h), 2)
+        price = c
+        ws.append([f"Day {d}", o, h, l, c])
+    # Use a bar chart to visualize Open/Close range
+    chart = BarChart()
+    chart.type = "col"
+    chart.title = "Stock OHLC (10 Days)"
+    chart.y_axis.title = "Price ($)"
+    data = Reference(ws, min_col=2, max_col=5, min_row=1, max_row=11)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=11)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 18
+    chart.height = 10
+    ws.add_chart(chart, "G2")
+    save(wb, "classic117_stock_ohlc_chart.xlsx")
+
+
+# ── 118. Bar chart with custom colors ───────────────────────────────────
+def classic118_bar_chart_custom_colors():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Survey"
+    ws.append(["Rating", "Count"])
+    for rating, count in [("Excellent", 45), ("Good", 30), ("Average", 15),
+                           ("Poor", 7), ("Very Poor", 3)]:
+        ws.append([rating, count])
+    chart = BarChart()
+    chart.type = "col"
+    chart.title = "Customer Satisfaction Survey"
+    data = Reference(ws, min_col=2, min_row=1, max_row=6)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=6)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    colors = ["228B22", "32CD32", "FFD700", "FF8C00", "DC143C"]
+    series = chart.series[0]
+    for i, color in enumerate(colors):
+        pt = DataPoint(idx=i)
+        pt.graphicalProperties.solidFill = color
+        series.data_points.append(pt)
+    chart.width = 15
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic118_bar_chart_custom_colors.xlsx")
+
+
+# ── 119. Dashboard with multiple chart types ────────────────────────────
+def classic119_dashboard_multi_charts():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Dashboard"
+    bold = Font(bold=True)
+    # KPI row
+    ws["A1"] = "KPI Dashboard - Q4 2025"
+    ws["A1"].font = Font(bold=True, size=14)
+    # Revenue data (rows 3-8)
+    ws["A3"] = "Month"
+    ws["B3"] = "Revenue"
+    ws["C3"] = "Expenses"
+    for cell in ws[3]:
+        if cell.value:
+            cell.font = bold
+    for m, r, e in [("Oct", 85, 60), ("Nov", 92, 65), ("Dec", 110, 70)]:
+        ws.append([m, r, e])
+    # Segment data (rows 10-14)
+    ws["A10"] = "Segment"
+    ws["B10"] = "Share"
+    ws["A10"].font = bold
+    ws["B10"].font = bold
+    for seg, sh in [("Enterprise", 45), ("SMB", 30), ("Consumer", 25)]:
+        ws.append([seg, sh])
+    # Bar chart
+    bar = BarChart()
+    bar.type = "col"
+    bar.title = "Revenue vs Expenses"
+    bar_data = Reference(ws, min_col=2, max_col=3, min_row=3, max_row=6)
+    bar_cats = Reference(ws, min_col=1, min_row=4, max_row=6)
+    bar.add_data(bar_data, titles_from_data=True)
+    bar.set_categories(bar_cats)
+    bar.width = 12
+    bar.height = 8
+    ws.add_chart(bar, "E2")
+    # Pie chart
+    pie = PieChart()
+    pie.title = "Revenue by Segment"
+    pie_data = Reference(ws, min_col=2, min_row=10, max_row=13)
+    pie_cats = Reference(ws, min_col=1, min_row=11, max_row=13)
+    pie.add_data(pie_data)
+    pie.set_categories(pie_cats)
+    pie.width = 10
+    pie.height = 8
+    ws.add_chart(pie, "E16")
+    save(wb, "classic119_dashboard_multi_charts.xlsx")
+
+
+# ── 120. Chart with date axis ───────────────────────────────────────────
+def classic120_chart_with_date_axis():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Timeline"
+    ws.append(["Date", "Downloads"])
+    from datetime import date, timedelta
+    start = date(2025, 1, 1)
+    import random
+    random.seed(120)
+    downloads = 500
+    for i in range(12):
+        d = start + timedelta(days=i * 30)
+        downloads += random.randint(-50, 100)
+        ws.append([d.strftime("%Y-%m-%d"), downloads])
+    chart = LineChart()
+    chart.title = "Monthly Downloads (2025)"
+    chart.y_axis.title = "Downloads"
+    chart.x_axis.title = "Date"
+    data = Reference(ws, min_col=2, min_row=1, max_row=13)
+    cats = Reference(ws, min_col=1, min_row=2, max_row=13)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.width = 18
+    chart.height = 10
+    ws.add_chart(chart, "D2")
+    save(wb, "classic120_chart_with_date_axis.xlsx")
+
+
 # ── Main ─────────────────────────────────────────────────────────────────
 def main():
     ensure_output_dir()
-    print(f"Generating 90 classic .xlsx files in: {OUTPUT_DIR}\n")
+    print(f"Generating 120 classic .xlsx files in: {OUTPUT_DIR}\n")
 
     generators = [
         classic01_basic_table_with_headers,
@@ -1901,6 +2682,37 @@ def main():
         classic88_image_after_data,
         classic89_nutrition_label_with_image,
         classic90_project_status_with_milestones,
+        # 91-120: chart cases
+        classic91_simple_bar_chart,
+        classic92_horizontal_bar_chart,
+        classic93_line_chart,
+        classic94_pie_chart,
+        classic95_area_chart,
+        classic96_scatter_chart,
+        classic97_doughnut_chart,
+        classic98_radar_chart,
+        classic99_bubble_chart,
+        classic100_stacked_bar_chart,
+        classic101_percent_stacked_bar,
+        classic102_line_chart_with_markers,
+        classic103_pie_chart_with_labels,
+        classic104_combo_bar_line_chart,
+        classic105_3d_bar_chart,
+        classic106_3d_pie_chart,
+        classic107_multi_series_line,
+        classic108_stacked_area_chart,
+        classic109_scatter_with_trendline,
+        classic110_chart_with_legend,
+        classic111_chart_with_axis_labels,
+        classic112_multiple_charts,
+        classic113_chart_sheet,
+        classic114_chart_large_dataset,
+        classic115_chart_negative_values,
+        classic116_percent_stacked_area,
+        classic117_stock_ohlc_chart,
+        classic118_bar_chart_custom_colors,
+        classic119_dashboard_multi_charts,
+        classic120_chart_with_date_axis,
     ]
 
     for gen in generators:

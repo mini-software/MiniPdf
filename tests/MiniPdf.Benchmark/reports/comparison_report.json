@@ -339,6 +339,298 @@
     "overall_score": 0.505
   },
   {
+    "name": "classic100_stacked_bar_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4244,
+    "reference_size": 47565,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8775,
+    "flat_text_similarity": 0.8775,
+    "word_text_similarity": 0.8222,
+    "text_diff": "--- minipdf/classic100_stacked_bar_chart.pdf\n+++ reference/classic100_stacked_bar_chart.pdf\n@@ -4,11 +4,17 @@\n East 40 35 30 45\n\n West 20 25 40 35\n\n Quarterly Revenue by Region\n\n-Q1 Q2 Q3 Q4\n\n-50\n\n+180\n\n+160\n\n+140\n\n+120 Q4\n\n+Q3\n\n+100\n\n+Q2\n\n+Q1\n\n+80\n\n+60\n\n 40\n\n-30\n\n 20\n\n-10\n\n 0\n\n North South East West",
+    "visual_scores": [
+      0.9043
+    ],
+    "visual_avg": 0.9043,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic100_stacked_bar_chart_p1_minipdf.png",
+        "reference_img": "classic100_stacked_bar_chart_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9127
+  },
+  {
+    "name": "classic101_percent_stacked_bar",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4675,
+    "reference_size": 49462,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7885,
+    "flat_text_similarity": 0.6711,
+    "word_text_similarity": 0.7885,
+    "text_diff": "--- minipdf/classic101_percent_stacked_bar.pdf\n+++ reference/classic101_percent_stacked_bar.pdf\n@@ -5,10 +5,18 @@\n 2024 33 35 18 14\n\n 2025 30 38 17 15\n\n Traffic Source Mix by Year\n\n-Organic Paid Referral Direct\n\n-40\n\n-30\n\n-20\n\n-10\n\n-0\n\n+100%\n\n+90%\n\n+80%\n\n+70%\n\n+Direct\n\n+60% Referral\n\n+Paid\n\n+50%\n\n+Organic\n\n+40%\n\n+30%\n\n+20%\n\n+10%\n\n+0%\n\n 2021 2022 2023 2024 2025",
+    "visual_scores": [
+      0.89
+    ],
+    "visual_avg": 0.89,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic101_percent_stacked_bar_p1_minipdf.png",
+        "reference_img": "classic101_percent_stacked_bar_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8714
+  },
+  {
+    "name": "classic102_line_chart_with_markers",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4824,
+    "reference_size": 52236,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8,
+    "flat_text_similarity": 0.7464,
+    "word_text_similarity": 0.8,
+    "text_diff": "--- minipdf/classic102_line_chart_with_markers.pdf\n+++ reference/classic102_line_chart_with_markers.pdf\n@@ -2,17 +2,21 @@\n 2020 10 50\n\n Company Growth\n\n 2021 25 120\n\n-2022 55 280 Users (K) Revenue (K)\n\n+2022 55 280\n\n 1200\n\n 2023 90 500\n\n 2024 140 780\n\n+2025 200 1100\n\n 1000\n\n-2025 200 1100\n\n 800\n\n+Value (K)\n\n 600\n\n-Value (K)\n\n 400\n\n 200\n\n 0\n\n-2020 2021 2022 2023 20\n\n----PAGE---\n+2020 2021 2022 2023 202\n\n+---PAGE---\n\n+h\n\n+Users (K)\n\n+Revenue (K)\n\n+24 2025",
+    "visual_scores": [
+      0.9763,
+      0.9942
+    ],
+    "visual_avg": 0.9852,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic102_line_chart_with_markers_p1_minipdf.png",
+        "reference_img": "classic102_line_chart_with_markers_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic102_line_chart_with_markers_p2_minipdf.png",
+        "reference_img": "classic102_line_chart_with_markers_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9141
+  },
+  {
+    "name": "classic103_pie_chart_with_labels",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 232919,
+    "reference_size": 48488,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.592,
+    "flat_text_similarity": 0.5524,
+    "word_text_similarity": 0.4054,
+    "text_diff": "--- minipdf/classic103_pie_chart_with_labels.pdf\n+++ reference/classic103_pie_chart_with_labels.pdf\n@@ -3,11 +3,26 @@\n Desktop OS Market Share\n\n macOS 28\n\n Linux 15\n\n-ChromeOS10\n\n-Other\n\n+ChromeOS 10\n\n+Other; Share\n\n Other 5\n\n-ChromeOS\n\n-Windows\n\n-Linux\n\n-macOS\n\n----PAGE---\n+(%); 5; 5%\n\n+ChromeOS;\n\n+Share (%);\n\n+10; 10%\n\n+Wind\n\n+mac\n\n+Linux; Share\n\n+Linu\n\n+(%); 15; 15% Windows;\n\n+Share (%); 42; Chro\n\n+42%\n\n+Othe\n\n+macOS; Share\n\n+(%); 28; 28%\n\n+---PAGE---\n\n+dows\n\n+OS\n\n+x\n\n+omeOS\n\n+er",
+    "visual_scores": [
+      0.9337,
+      0.9984
+    ],
+    "visual_avg": 0.966,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic103_pie_chart_with_labels_p1_minipdf.png",
+        "reference_img": "classic103_pie_chart_with_labels_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic103_pie_chart_with_labels_p2_minipdf.png",
+        "reference_img": "classic103_pie_chart_with_labels_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8232
+  },
+  {
+    "name": "classic104_combo_bar_line_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3637,
+    "reference_size": 54330,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.7872,
+    "flat_text_similarity": 0.7479,
+    "word_text_similarity": 0.7872,
+    "text_diff": "--- minipdf/classic104_combo_bar_line_chart.pdf\n+++ reference/classic104_combo_bar_line_chart.pdf\n@@ -3,16 +3,19 @@\n Sales vs Target\n\n Feb 48 47\n\n Mar 51 50\n\n-70\n\n+70 70\n\n Apr 45 50\n\n May 56 54\n\n-60\n\n+60 60\n\n Jun 62 60\n\n-50\n\n-40\n\n-30\n\n-20\n\n-10\n\n-0\n\n-Jan Feb Mar Apr May\n\n----PAGE---\n+50 50\n\n+40 40\n\n+30 30\n\n+20 20\n\n+10 10\n\n+0 0\n\n+Jan Jan Feb Feb Mar Mar Apr Apr M M\n\n+---PAGE---\n\n+Sales\n\n+Target\n\n+May May Jun Jun",
+    "visual_scores": [
+      0.9173,
+      0.5809
+    ],
+    "visual_avg": 0.7491,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic104_combo_bar_line_chart_p1_minipdf.png",
+        "reference_img": "classic104_combo_bar_line_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic104_combo_bar_line_chart_p2_minipdf.png",
+        "reference_img": "classic104_combo_bar_line_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8145
+  },
+  {
+    "name": "classic105_3d_bar_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3847,
+    "reference_size": 138437,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8703,
+    "flat_text_similarity": 0.8631,
+    "word_text_similarity": 0.8611,
+    "text_diff": "--- minipdf/classic105_3d_bar_chart.pdf\n+++ reference/classic105_3d_bar_chart.pdf\n@@ -1,10 +1,10 @@\n Region 2024 2025\n\n APAC 120 145\n\n-Revenue by Region (3D)\n\n+Revenue by Region (3\n\n EMEA 95 110\n\n-Americas 150 175 2024 2025\n\n+Americas 150 175\n\n+LATAM 40 55\n\n 180\n\n-LATAM 40 55\n\n 160\n\n 140\n\n 120\n\n@@ -14,5 +14,9 @@\n 40\n\n 20\n\n 0\n\n-APAC EMEA Americas LATAM\n\n----PAGE---\n+APAC EMEA Americas\n\n+---PAGE---\n\n+D)\n\n+2024\n\n+2025\n\n+LATAM",
+    "visual_scores": [
+      0.8892,
+      0.5829
+    ],
+    "visual_avg": 0.736,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic105_3d_bar_chart_p1_minipdf.png",
+        "reference_img": "classic105_3d_bar_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic105_3d_bar_chart_p2_minipdf.png",
+        "reference_img": "classic105_3d_bar_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8425
+  },
+  {
+    "name": "classic106_3d_pie_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 234128,
+    "reference_size": 76353,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8187,
+    "flat_text_similarity": 0.7819,
+    "word_text_similarity": 0.7308,
+    "text_diff": "--- minipdf/classic106_3d_pie_chart.pdf\n+++ reference/classic106_3d_pie_chart.pdf\n@@ -4,13 +4,14 @@\n Housing 1500\n\n Transport 400\n\n Entertainm 300\n\n+Savings 700\n\n+Other 200\n\n+Food\n\n+Housing\n\n+Transpo\n\n+Entertai\n\n+Savings\n\n Other\n\n-Savings 700\n\n-Food\n\n-Other 200\n\n-Savings\n\n-Entertainme\n\n-…\n\n-Transport\n\n-Housing\n\n----PAGE---\n+---PAGE---\n\n+rt\n\n+nment",
+    "visual_scores": [
+      0.9282,
+      0.9987
+    ],
+    "visual_avg": 0.9635,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic106_3d_pie_chart_p1_minipdf.png",
+        "reference_img": "classic106_3d_pie_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic106_3d_pie_chart_p2_minipdf.png",
+        "reference_img": "classic106_3d_pie_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9129
+  },
+  {
+    "name": "classic107_multi_series_line",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 14053,
+    "reference_size": 82303,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.7291,
+    "flat_text_similarity": 0.1176,
+    "word_text_similarity": 0.7291,
+    "text_diff": "--- minipdf/classic107_multi_series_line.pdf\n+++ reference/classic107_multi_series_line.pdf\n@@ -1,30 +1,41 @@\n Day AAPL GOOG MSFT\n\n Day 1 178.48 140.49 402.83\n\n-Stock Price Trend (20 Days)\n\n+Stock Price\n\n Day 2 179.43 140.38 401.69\n\n-Day 3 177.25 143.38 403.21 AAPL GOOG MSFT\n\n-500\n\n+Day 3 177.25 143.38 403.21\n\n+450\n\n Day 4 175.75 143.94 404.47\n\n Day 5 178.19 142.62 403.35\n\n+400\n\n Day 6 176.32 143.16 405.88\n\n-400\n\n+350\n\n Day 7 177.72 141 405.11\n\n Day 8 175.18 138.97 405.07\n\n 300\n\n Day 9 173.1 137.59 403.53\n\n+250\n\n Day 10 172.64 139.72 401.94\n\n+Price ($)\n\n Day 11 173.32 139.12 400.69\n\n-Price ($)\n\n 200\n\n Day 12 172.11 140.8 402.75\n\n+150\n\n Day 13 173.5 143.13 404.12\n\n-Day 14 172.29 141.53 404.52 100\n\n+Day 14 172.29 141.53 404.52\n\n+100\n\n Day 15 172.95 143.24 406.95\n\n+50\n\n Day 16 174.74 146.1 408\n\n+Day 17 175.83 147.89 407.98\n\n 0\n\n-Day 17 175.83 147.89 407.98\n\n-Day 1 Day 3 Day 5 Day 7 Day 9 Day 11\n\n-Day 18 177.62 150.15 408.05\n\n+Day 18 177.62 150.15 408.05 Day Day Day Day Day Day Day Day Day Da\n\n+1 2 3 4 5 6 7 8 9 1\n\n Day 19 176.68 149.43 408.73\n\n Day 20 177.07 149.4 408.07\n\n----PAGE---\n+---PAGE---\n\n+Trend (20 Days)\n\n+AAPL\n\n+GOOG\n\n+MSFT\n\n+ay Day Day Day Day Day Day Day Day Day Day\n\n+0 11 12 13 14 15 16 17 18 19 20",
+    "visual_scores": [
+      0.9569,
+      0.5855
+    ],
+    "visual_avg": 0.7712,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic107_multi_series_line_p1_minipdf.png",
+        "reference_img": "classic107_multi_series_line_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic107_multi_series_line_p2_minipdf.png",
+        "reference_img": "classic107_multi_series_line_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8001
+  },
+  {
+    "name": "classic108_stacked_area_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 10817,
+    "reference_size": 51253,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8772,
+    "flat_text_similarity": 0.817,
+    "word_text_similarity": 0.8772,
+    "text_diff": "--- minipdf/classic108_stacked_area_chart.pdf\n+++ reference/classic108_stacked_area_chart.pdf\n@@ -6,12 +6,17 @@\n May 150 130 240 125\n\n Jun 160 140 260 130\n\n Traffic by Channel (Stacked)\n\n-Email Social Search Direct\n\n+800\n\n+700\n\n+600\n\n+Direct\n\n+500\n\n+Search\n\n+Social\n\n+400\n\n+Email\n\n 300\n\n-250\n\n 200\n\n-150\n\n 100\n\n-50\n\n 0\n\n Jan Feb Mar Apr May Jun",
+    "visual_scores": [
+      0.8678
+    ],
+    "visual_avg": 0.8678,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic108_stacked_area_chart_p1_minipdf.png",
+        "reference_img": "classic108_stacked_area_chart_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.898
+  },
+  {
+    "name": "classic109_scatter_with_trendline",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2406,
+    "reference_size": 60738,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.6852,
+    "flat_text_similarity": 0.3455,
+    "word_text_similarity": 0.6852,
+    "text_diff": "--- minipdf/classic109_scatter_with_trendline.pdf\n+++ reference/classic109_scatter_with_trendline.pdf\n@@ -1,19 +1,30 @@\n-Study HourExam Score\n\n+Study HouExam Score\n\n 5 59\n\n Study Hours vs Exam Score\n\n 8 90\n\n 9 85\n\n+120\n\n 2 35\n\n 9 99\n\n+100\n\n 5 68\n\n-2 35\n\n-8 92\n\n+f(x) = 8.12719751809721 x + 20.8283350568769\n\n+2 35 R² = 0.958630685218316\n\n+8 92 80\n\n 5 65\n\n-3 45\n\n+Stud\n\n+3 45 Score 60\n\n+Line\n\n 9 100\n\n-Score\n\n 6 62\n\n+40\n\n 9 89\n\n 1 30\n\n+20\n\n 10 98\n\n----PAGE---\n+0\n\n+0 2 4 6 8 10 12\n\n+Hours\n\n+---PAGE---\n\n+dents\n\n+ear (Students)",
+    "visual_scores": [
+      0.7412,
+      0.9981
+    ],
+    "visual_avg": 0.8697,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic109_scatter_with_trendline_p1_minipdf.png",
+        "reference_img": "classic109_scatter_with_trendline_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic109_scatter_with_trendline_p2_minipdf.png",
+        "reference_img": "classic109_scatter_with_trendline_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.822
+  },
+  {
     "name": "classic10_special_xml_characters",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -362,6 +654,322 @@
       }
     ],
     "overall_score": 0.9976
+  },
+  {
+    "name": "classic110_chart_with_legend",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4001,
+    "reference_size": 52253,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8,
+    "flat_text_similarity": 0.763,
+    "word_text_similarity": 0.8,
+    "text_diff": "--- minipdf/classic110_chart_with_legend.pdf\n+++ reference/classic110_chart_with_legend.pdf\n@@ -1,18 +1,21 @@\n Browser 2024 (%) 2025 (%)\n\n Chrome 65 62\n\n-Browser Market Share Comparison\n\n+Browser Market Share Com\n\n Safari 18 20\n\n-Firefox 8 7 2024 (%) 2025 (%)\n\n+Firefox 8 7\n\n 70\n\n Edge 6 8\n\n Other 3 3\n\n 60\n\n 50\n\n+Market Share (%)\n\n 40\n\n 30\n\n-Market Share (%)\n\n 20\n\n 10\n\n 0\n\n-Chrome Safari Firefox Edge Othe\n\n----PAGE---\n+Chrome Safari Firefox\n\n+2024 (%) 2025 (%)\n\n+---PAGE---\n\n+mparison\n\n+Edge Other",
+    "visual_scores": [
+      0.9533,
+      0.5913
+    ],
+    "visual_avg": 0.7723,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic110_chart_with_legend_p1_minipdf.png",
+        "reference_img": "classic110_chart_with_legend_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic110_chart_with_legend_p2_minipdf.png",
+        "reference_img": "classic110_chart_with_legend_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8289
+  },
+  {
+    "name": "classic111_chart_with_axis_labels",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3375,
+    "reference_size": 51007,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.6053,
+    "flat_text_similarity": 0.5664,
+    "word_text_similarity": 0.6053,
+    "text_diff": "--- minipdf/classic111_chart_with_axis_labels.pdf\n+++ reference/classic111_chart_with_axis_labels.pdf\n@@ -3,17 +3,18 @@\n CO2 Emissions by Country\n\n USA 5000\n\n India 2700\n\n-12000\n\n Russia 1700\n\n+Germany\n\n Japan 1100\n\n-10000\n\n Germany 700\n\n-8000\n\n-6000\n\n+Japan\n\n+Russia\n\n+Country\n\n+India\n\n+USA\n\n+China\n\n+0 2,000 4,000 6,000 8,000 10,000\n\n CO2 Emissions (Megatons)\n\n-4000\n\n-2000\n\n-0\n\n-China USA India Russia Japan Germany\n\n-Country\n\n----PAGE---\n+---PAGE---\n\n+CO2 (Mt)\n\n+0 12,000",
+    "visual_scores": [
+      0.9516,
+      0.9965
+    ],
+    "visual_avg": 0.9741,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic111_chart_with_axis_labels_p1_minipdf.png",
+        "reference_img": "classic111_chart_with_axis_labels_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic111_chart_with_axis_labels_p2_minipdf.png",
+        "reference_img": "classic111_chart_with_axis_labels_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8318
+  },
+  {
+    "name": "classic112_multiple_charts",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 6785,
+    "reference_size": 59342,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8682,
+    "flat_text_similarity": 0.8105,
+    "word_text_similarity": 0.8682,
+    "text_diff": "--- minipdf/classic112_multiple_charts.pdf\n+++ reference/classic112_multiple_charts.pdf\n@@ -1,12 +1,12 @@\n Month Revenue Costs Profit\n\n Jan 50 30 20\n\n-Revenue & Costs\n\n+Revenue & Co\n\n Feb 55 32 23\n\n-Mar 60 35 25 Revenue Costs\n\n+Mar 60 35 25\n\n 80\n\n Apr 52 28 24\n\n+May 70 40 30\n\n 70\n\n-May 70 40 30\n\n Jun 75 42 33\n\n 60\n\n 50\n\n@@ -15,7 +15,7 @@\n 20\n\n 10\n\n 0\n\n-Jan Feb Mar Apr May\n\n+Jan Feb Mar Apr\n\n Profit Trend\n\n 35\n\n 30\n\n@@ -26,4 +26,11 @@\n 5\n\n 0\n\n Jan Feb Mar Apr\n\n----PAGE---\n+---PAGE---\n\n+osts\n\n+Revenue\n\n+Costs\n\n+May Jun\n\n+d\n\n+Profit\n\n+May Jun",
+    "visual_scores": [
+      0.9251,
+      0.5749
+    ],
+    "visual_avg": 0.75,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic112_multiple_charts_p1_minipdf.png",
+        "reference_img": "classic112_multiple_charts_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic112_multiple_charts_p2_minipdf.png",
+        "reference_img": "classic112_multiple_charts_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8473
+  },
+  {
+    "name": "classic113_chart_sheet",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2523,
+    "reference_size": 43602,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8225,
+    "flat_text_similarity": 0.7818,
+    "word_text_similarity": 0.8163,
+    "text_diff": "--- minipdf/classic113_chart_sheet.pdf\n+++ reference/classic113_chart_sheet.pdf\n@@ -3,11 +3,17 @@\n Quarterly Revenue\n\n Q2 310\n\n Q3 285\n\n+Q4 400 450\n\n 400\n\n-Q4 400\n\n+350\n\n 300\n\n+250\n\n 200\n\n+150\n\n 100\n\n+50\n\n 0\n\n-Q1 Q2 Q3 Q4\n\n----PAGE---\n+Q1 Q2 Q3\n\n+---PAGE---\n\n+Revenue\n\n+Q4",
+    "visual_scores": [
+      0.8817,
+      0.5657
+    ],
+    "visual_avg": 0.7237,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic113_chart_sheet_p1_minipdf.png",
+        "reference_img": "classic113_chart_sheet_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic113_chart_sheet_p2_minipdf.png",
+        "reference_img": "classic113_chart_sheet_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8185
+  },
+  {
+    "name": "classic114_chart_large_dataset",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 24655,
+    "reference_size": 128765,
+    "minipdf_pages": 4,
+    "reference_pages": 4,
+    "text_similarity": 0.8903,
+    "flat_text_similarity": 0.0384,
+    "word_text_similarity": 0.8903,
+    "text_diff": "--- minipdf/classic114_chart_large_dataset.pdf\n+++ reference/classic114_chart_large_dataset.pdf\n@@ -1,6 +1,6 @@\n Day Value\n\n 1 97.7\n\n-100-Day Value Trend\n\n+100-Day Value Tr\n\n 2 93.7\n\n 3 96.1\n\n 160\n\n@@ -8,24 +8,26 @@\n 5 95.6\n\n 140\n\n 6 92.3\n\n+7 98.1\n\n 120\n\n-7 98.1\n\n 8 100.5\n\n+9 98.7\n\n 100\n\n-9 98.7\n\n-10 94.4 80\n\n+10 94.4\n\n+80\n\n 11 98.6\n\n+12 103.5\n\n 60\n\n-12 103.5\n\n 13 102.2\n\n+14 98.4\n\n 40\n\n-14 98.4\n\n-15 104.2 20\n\n+15 104.2\n\n 16 109\n\n+20\n\n+17 109.1\n\n 0\n\n-17 109.1\n\n-1 11 21 31 41 51 61 71 81\n\n 18 105.3\n\n+1 5 9 13 17 21 25 29 33 37 41 45 49 53 57 61 65\n\n 19 108.6\n\n 20 114.2\n\n 21 112.6\n\n@@ -110,4 +112,7 @@\n 98 133.6\n\n 99 138\n\n 100 142.1\n\n----PAGE---\n+---PAGE---\n\n+rend\n\n+Value\n\n+69 73 77 81 85 89 93 97",
+    "visual_scores": [
+      0.9682,
+      0.9837,
+      0.9927,
+      0.5926
+    ],
+    "visual_avg": 0.8843,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic114_chart_large_dataset_p1_minipdf.png",
+        "reference_img": "classic114_chart_large_dataset_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic114_chart_large_dataset_p2_minipdf.png",
+        "reference_img": "classic114_chart_large_dataset_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic114_chart_large_dataset_p3_minipdf.png",
+        "reference_img": "classic114_chart_large_dataset_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "classic114_chart_large_dataset_p4_minipdf.png",
+        "reference_img": "classic114_chart_large_dataset_p4_reference.png"
+      }
+    ],
+    "overall_score": 0.9098
+  },
+  {
+    "name": "classic115_chart_negative_values",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3538,
+    "reference_size": 51633,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8743,
+    "flat_text_similarity": 0.8676,
+    "word_text_similarity": 0.7619,
+    "text_diff": "--- minipdf/classic115_chart_negative_values.pdf\n+++ reference/classic115_chart_negative_values.pdf\n@@ -3,17 +3,24 @@\n Monthly Profit & Loss\n\n Feb -8\n\n Mar 22\n\n-30\n\n+35\n\n Apr -3\n\n May 30\n\n+30\n\n Jun -12\n\n-20\n\n+25\n\n Jul 18\n\n Aug 5\n\n+20\n\n+15\n\n+Amount ($K)\n\n 10\n\n-Amount ($K)\n\n+5\n\n 0\n\n+Jan Feb Mar Apr May Jun Jul Au\n\n+-5\n\n -10\n\n--20\n\n-Jan Feb Mar Apr May Jun Jul Aug\n\n----PAGE---\n+-15\n\n+---PAGE---\n\n+Profit/Loss\n\n+ug",
+    "visual_scores": [
+      0.9447,
+      0.997
+    ],
+    "visual_avg": 0.9708,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic115_chart_negative_values_p1_minipdf.png",
+        "reference_img": "classic115_chart_negative_values_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic115_chart_negative_values_p2_minipdf.png",
+        "reference_img": "classic115_chart_negative_values_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.938
+  },
+  {
+    "name": "classic116_percent_stacked_area",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 10702,
+    "reference_size": 50765,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7965,
+    "flat_text_similarity": 0.6763,
+    "word_text_similarity": 0.7965,
+    "text_diff": "--- minipdf/classic116_percent_stacked_area.pdf\n+++ reference/classic116_percent_stacked_area.pdf\n@@ -6,11 +6,18 @@\n 2023 20 26 17 37\n\n 2025 15 24 16 45\n\n Energy Mix Transition\n\n-Coal Gas Nuclear Renewable\n\n-50\n\n-40\n\n-30\n\n-20\n\n-10\n\n-0\n\n+100%\n\n+90%\n\n+80%\n\n+70%\n\n+Renewable\n\n+60% Nuclear\n\n+Gas\n\n+50%\n\n+Coal\n\n+40%\n\n+30%\n\n+20%\n\n+10%\n\n+0%\n\n 2015 2017 2019 2021 2023 2025",
+    "visual_scores": [
+      0.8524
+    ],
+    "visual_avg": 0.8524,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic116_percent_stacked_area_p1_minipdf.png",
+        "reference_img": "classic116_percent_stacked_area_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8596
+  },
+  {
+    "name": "classic117_stock_ohlc_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8249,
+    "reference_size": 62401,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.7879,
+    "flat_text_similarity": 0.189,
+    "word_text_similarity": 0.7879,
+    "text_diff": "--- minipdf/classic117_stock_ohlc_chart.pdf\n+++ reference/classic117_stock_ohlc_chart.pdf\n@@ -1,23 +1,27 @@\n Day Open High Low Close\n\n Day 1 148.96 149.78 146.96 147.41\n\n-Stock OHLC (10 Day\n\n+St\n\n Day 2 147.04 147.63 144.4 146.23\n\n-Day 3 145.63 149.68 145.47 149.58 Open High Low Close\n\n+Day 3 145.63 149.68 145.47 149.58\n\n 160\n\n Day 4 149.32 150.14 147.39 148.55\n\n Day 5 146.58 150.1 143.38 147.36\n\n-140\n\n Day 6 147.91 152.44 145.49 149.32\n\n-120\n\n+155\n\n Day 7 151.08 155.51 150.22 150.81\n\n Day 8 152.42 155.53 152.31 152.99\n\n-100\n\n Day 9 152.32 154.36 151.02 152.05\n\n-Day 10 152.27 156.85 148.76 156.35 80\n\n+150\n\n+Day 10 152.27 156.85 148.76 156.35\n\n Price ($)\n\n-60\n\n-40\n\n-20\n\n-0\n\n-Day 1 Day 2 Day 3 Day 4 Day 5\n\n----PAGE---\n+145\n\n+140\n\n+135\n\n+Day 1 Day 2 Day 3 D\n\n+---PAGE---\n\n+tock OHLC (10 Days)\n\n+Open\n\n+High\n\n+Low\n\n+Close\n\n+Day 4 Day 5 Day 6 Day 7 Day 8 Day 9 Day 10",
+    "visual_scores": [
+      0.9018,
+      0.5209
+    ],
+    "visual_avg": 0.7114,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic117_stock_ohlc_chart_p1_minipdf.png",
+        "reference_img": "classic117_stock_ohlc_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic117_stock_ohlc_chart_p2_minipdf.png",
+        "reference_img": "classic117_stock_ohlc_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.7997
+  },
+  {
+    "name": "classic118_bar_chart_custom_colors",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2892,
+    "reference_size": 48780,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.9053,
+    "flat_text_similarity": 0.8991,
+    "word_text_similarity": 0.875,
+    "text_diff": "--- minipdf/classic118_bar_chart_custom_colors.pdf\n+++ reference/classic118_bar_chart_custom_colors.pdf\n@@ -6,10 +6,17 @@\n 50\n\n Poor 7\n\n Very Poor 3\n\n+45\n\n 40\n\n+35\n\n 30\n\n+25\n\n 20\n\n+15\n\n 10\n\n+5\n\n 0\n\n-Excellent Good Average Poor Very Poor\n\n----PAGE---\n+Excellent Good Average Poor Very\n\n+---PAGE---\n\n+Count\n\n+y Poor",
+    "visual_scores": [
+      0.9215,
+      0.9965
+    ],
+    "visual_avg": 0.959,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic118_bar_chart_custom_colors_p1_minipdf.png",
+        "reference_img": "classic118_bar_chart_custom_colors_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic118_bar_chart_custom_colors_p2_minipdf.png",
+        "reference_img": "classic118_bar_chart_custom_colors_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9457
+  },
+  {
+    "name": "classic119_dashboard_multi_charts",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 127522,
+    "reference_size": 65175,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8723,
+    "flat_text_similarity": 0.8097,
+    "word_text_similarity": 0.8723,
+    "text_diff": "--- minipdf/classic119_dashboard_multi_charts.pdf\n+++ reference/classic119_dashboard_multi_charts.pdf\n@@ -1,23 +1,24 @@\n KPI Dashboard - Q4 2025\n\n Revenue vs Expenses\n\n Month Revenue Expenses\n\n-Oct 85 60 Revenue Expenses\n\n+Oct 85 60\n\n 120\n\n Nov 92 65\n\n-Dec 110 70 100\n\n+Dec 110 70\n\n+100\n\n 80\n\n-60\n\n-Segment Share\n\n+Segment Share 60\n\n+Enterprise 45\n\n 40\n\n-Enterprise 45\n\n SMB 30\n\n+Consumer 25\n\n 20\n\n-Consumer 25\n\n 0\n\n Oct Nov Dec\n\n Revenue by Segment\n\n Enterprise\n\n-Slice4\n\n SMB\n\n Consumer\n\n----PAGE---\n+---PAGE---\n\n+Revenue\n\n+Expenses",
+    "visual_scores": [
+      0.8668,
+      0.9981
+    ],
+    "visual_avg": 0.9325,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic119_dashboard_multi_charts_p1_minipdf.png",
+        "reference_img": "classic119_dashboard_multi_charts_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic119_dashboard_multi_charts_p2_minipdf.png",
+        "reference_img": "classic119_dashboard_multi_charts_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9219
   },
   {
     "name": "classic11_sparse_rows",
@@ -393,6 +1001,37 @@
       }
     ],
     "overall_score": 0.9995
+  },
+  {
+    "name": "classic120_chart_with_date_axis",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5299,
+    "reference_size": 56955,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.3194,
+    "flat_text_similarity": 0.2982,
+    "word_text_similarity": 0.2474,
+    "text_diff": "--- minipdf/classic120_chart_with_date_axis.pdf\n+++ reference/classic120_chart_with_date_axis.pdf\n@@ -1,24 +1,32 @@\n Date Downloads\n\n-2025-01-01581\n\n-Monthly Downloads (2025)\n\n-2025-01-31594\n\n-2025-03-02592\n\n+2025-01-0 581\n\n+Monthly Downloads (20\n\n+2025-01-3 594\n\n+2025-03-0 592\n\n 1000\n\n-2025-04-01692\n\n-2025-05-01760\n\n-2025-05-31733\n\n+2025-04-0 692\n\n+2025-05-0 760 900\n\n+2025-05-3 733\n\n 800\n\n-2025-06-30763\n\n-2025-07-30767\n\n+2025-06-3 763\n\n+700\n\n+2025-07-3 767\n\n 600\n\n-2025-08-29774\n\n-2025-09-28788\n\n-2025-10-28820\n\n+2025-08-2 774\n\n Downloads\n\n+500\n\n+2025-09-2 788\n\n 400\n\n-2025-11-27865\n\n+2025-10-2 820\n\n+2025-11-2 865 300\n\n 200\n\n+100\n\n 0\n\n-2025-01-012025-01-312025-03-022025-04-012025-05-012025-05-312025-06-302025-07-302025-08-292025-0\n\n+2025- 2025- 2025- 2025- 2025- 2025- 2025- 2025- 2025- 2\n\n+01-01 01-31 03-02 04-01 05-01 05-31 06-30 07-30 08-29 0\n\n Date\n\n----PAGE---\n+---PAGE---\n\n+025)\n\n+Downloads\n\n+2025- 2025- 2025-\n\n+09-28 10-28 11-27",
+    "visual_scores": [
+      0.9738,
+      0.5939
+    ],
+    "visual_avg": 0.7838,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic120_chart_with_date_axis_p1_minipdf.png",
+        "reference_img": "classic120_chart_with_date_axis_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic120_chart_with_date_axis_p2_minipdf.png",
+        "reference_img": "classic120_chart_with_date_axis_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.6413
   },
   {
     "name": "classic12_sparse_columns",
@@ -2590,5 +3229,284 @@
       }
     ],
     "overall_score": 0.9412
+  },
+  {
+    "name": "classic91_simple_bar_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3052,
+    "reference_size": 46981,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.9585,
+    "flat_text_similarity": 0.9409,
+    "word_text_similarity": 0.9114,
+    "text_diff": "--- minipdf/classic91_simple_bar_chart.pdf\n+++ reference/classic91_simple_bar_chart.pdf\n@@ -12,6 +12,8 @@\n 10000\n\n 5000\n\n 0\n\n-Widget A Widget B Widget C Widget D Widget E\n\n+Widget A Widget B Widget C Widget D Widg\n\n Product\n\n----PAGE---\n+---PAGE---\n\n+Revenue\n\n+get E",
+    "visual_scores": [
+      0.9223,
+      0.995
+    ],
+    "visual_avg": 0.9587,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic91_simple_bar_chart_p1_minipdf.png",
+        "reference_img": "classic91_simple_bar_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic91_simple_bar_chart_p2_minipdf.png",
+        "reference_img": "classic91_simple_bar_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9669
+  },
+  {
+    "name": "classic92_horizontal_bar_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3117,
+    "reference_size": 49903,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.6165,
+    "flat_text_similarity": 0.5773,
+    "word_text_similarity": 0.5079,
+    "text_diff": "--- minipdf/classic92_horizontal_bar_chart.pdf\n+++ reference/classic92_horizontal_bar_chart.pdf\n@@ -1,16 +1,18 @@\n-DepartmentHeadcount\n\n+DepartmenHeadcount\n\n Engineerin 45\n\n Headcount by Department\n\n Sales 30\n\n Marketing 18\n\n-50\n\n HR 12\n\n+Operations\n\n Finance 15\n\n Operations 25\n\n-40\n\n-30\n\n-20\n\n-10\n\n-0\n\n-Engineering Sales Marketing HR Finance Operations\n\n----PAGE---\n+Finance\n\n+HR\n\n+Marketing\n\n+Sales\n\n+Engineering\n\n+0 5 10 15 20 25 30 35 40 45\n\n+---PAGE---\n\n+Headcount\n\n+50",
+    "visual_scores": [
+      0.9253,
+      0.9972
+    ],
+    "visual_avg": 0.9612,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic92_horizontal_bar_chart_p1_minipdf.png",
+        "reference_img": "classic92_horizontal_bar_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic92_horizontal_bar_chart_p2_minipdf.png",
+        "reference_img": "classic92_horizontal_bar_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8311
+  },
+  {
+    "name": "classic93_line_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5194,
+    "reference_size": 58815,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8344,
+    "flat_text_similarity": 0.8054,
+    "word_text_similarity": 0.8257,
+    "text_diff": "--- minipdf/classic93_line_chart.pdf\n+++ reference/classic93_line_chart.pdf\n@@ -1,23 +1,26 @@\n Month Avg Temp (C)\n\n Jan 3\n\n-Monthly Average Temperature\n\n+Monthly Average Temperatur\n\n Feb 5\n\n Mar 10\n\n 30\n\n Apr 15\n\n May 20\n\n+Jun 25\n\n 25\n\n-Jun 25\n\n Jul 28\n\n+Aug 27\n\n 20\n\n-Aug 27\n\n Sep 22\n\n-Oct 15 15\n\n-Nov 8\n\n Temperature (C)\n\n+Oct 15\n\n+Nov 8 15\n\n Dec 4\n\n 10\n\n 5\n\n 0\n\n-Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov\n\n----PAGE---\n+Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov D\n\n+---PAGE---\n\n+re\n\n+Avg Temp (C)\n\n+Dec",
+    "visual_scores": [
+      0.978,
+      0.9961
+    ],
+    "visual_avg": 0.987,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic93_line_chart_p1_minipdf.png",
+        "reference_img": "classic93_line_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic93_line_chart_p2_minipdf.png",
+        "reference_img": "classic93_line_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9286
+  },
+  {
+    "name": "classic94_pie_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 232945,
+    "reference_size": 47211,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8091,
+    "flat_text_similarity": 0.8091,
+    "word_text_similarity": 0.7556,
+    "text_diff": "--- minipdf/classic94_pie_chart.pdf\n+++ reference/classic94_pie_chart.pdf\n@@ -3,11 +3,11 @@\n Market Share by Segment\n\n SMB 28\n\n Consumer 22\n\n-Government10\n\n+Governme 10\n\n+Education 5\n\n+Enterprise\n\n+SMB\n\n+Consumer\n\n+Government\n\n Education\n\n-Education 5\n\n-Government\n\n-Enterprise\n\n-Consumer\n\n-SMB\n\n ---PAGE---",
+    "visual_scores": [
+      0.8444,
+      0.9992
+    ],
+    "visual_avg": 0.9218,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic94_pie_chart_p1_minipdf.png",
+        "reference_img": "classic94_pie_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic94_pie_chart_p2_minipdf.png",
+        "reference_img": "classic94_pie_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8924
+  },
+  {
+    "name": "classic95_area_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 11775,
+    "reference_size": 60817,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.5806,
+    "flat_text_similarity": 0.2465,
+    "word_text_similarity": 0.5806,
+    "text_diff": "--- minipdf/classic95_area_chart.pdf\n+++ reference/classic95_area_chart.pdf\n@@ -3,32 +3,37 @@\n Website Traffic by Hour\n\n 01:00 216\n\n 02:00 218\n\n-1000\n\n+1200\n\n 03:00 221\n\n 04:00 224\n\n 05:00 228\n\n-800\n\n+1000\n\n 06:00 233\n\n 07:00 240\n\n-600\n\n+800\n\n 08:00 250\n\n 09:00 265\n\n+600\n\n+Users\n\n 10:00 288\n\n-Users\n\n+11:00 329\n\n 400\n\n-11:00 329\n\n 12:00 408\n\n-13:00 600 200\n\n+13:00 600\n\n 14:00 1000\n\n+200\n\n 15:00 600\n\n+16:00 408\n\n 0\n\n-16:00 408\n\n-00:00 02:00 04:00 06:00 08:00 10:00 12:00 14:00 16:00 18:00 20:00\n\n-17:00 329\n\n+17:00 329 00: 01: 02: 03: 04: 05: 06: 07: 08: 09: 10: 11: 12: 13: 14: 15: 16: 17: 18: 1\n\n+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0\n\n 18:00 288\n\n 19:00 265\n\n 20:00 250\n\n 21:00 240\n\n 22:00 233\n\n 23:00 228\n\n----PAGE---\n+---PAGE---\n\n+Users\n\n+19: 20: 21: 22: 23:\n\n+00 00 00 00 00",
+    "visual_scores": [
+      0.9123,
+      0.5903
+    ],
+    "visual_avg": 0.7513,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic95_area_chart_p1_minipdf.png",
+        "reference_img": "classic95_area_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic95_area_chart_p2_minipdf.png",
+        "reference_img": "classic95_area_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.7328
+  },
+  {
+    "name": "classic96_scatter_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2879,
+    "reference_size": 62711,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.7934,
+    "flat_text_similarity": 0.3405,
+    "word_text_similarity": 0.7934,
+    "text_diff": "--- minipdf/classic96_scatter_chart.pdf\n+++ reference/classic96_scatter_chart.pdf\n@@ -3,22 +3,32 @@\n Ad Spend vs Sales\n\n 6 11\n\n 20 43\n\n+140\n\n 13 22\n\n 48 117\n\n+120\n\n 10 31\n\n 32 64\n\n+100\n\n 6 5\n\n 18 38\n\n+80\n\n+Sales ($K)\n\n 37 94\n\n+60\n\n 6 20\n\n-Sales ($K)\n\n 17 49\n\n+40\n\n 49 119\n\n 31 68\n\n+20\n\n 33 83\n\n 22 40\n\n+0\n\n+0 10 20 30 40 50 60\n\n 15 37\n\n-26 57\n\n+26 57 Ad Spend ($K)\n\n 14 28\n\n 26 52\n\n----PAGE---\n+---PAGE---\n\n+Data Points",
+    "visual_scores": [
+      0.7639,
+      0.9982
+    ],
+    "visual_avg": 0.881,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic96_scatter_chart_p1_minipdf.png",
+        "reference_img": "classic96_scatter_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic96_scatter_chart_p2_minipdf.png",
+        "reference_img": "classic96_scatter_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8698
+  },
+  {
+    "name": "classic97_doughnut_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 174337,
+    "reference_size": 47227,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8571,
+    "flat_text_similarity": 0.8571,
+    "word_text_similarity": 0.85,
+    "text_diff": "--- minipdf/classic97_doughnut_chart.pdf\n+++ reference/classic97_doughnut_chart.pdf\n@@ -4,10 +4,10 @@\n Rent 12000\n\n Marketing 8000\n\n R&D 15000\n\n-Other\n\n Other 5000\n\n-R&D\n\n-Marketing\n\n Salaries\n\n Rent\n\n+Marketing\n\n+R&D\n\n+Other\n\n ---PAGE---",
+    "visual_scores": [
+      0.8524,
+      0.9992
+    ],
+    "visual_avg": 0.9258,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic97_doughnut_chart_p1_minipdf.png",
+        "reference_img": "classic97_doughnut_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic97_doughnut_chart_p2_minipdf.png",
+        "reference_img": "classic97_doughnut_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9132
+  },
+  {
+    "name": "classic98_radar_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2738,
+    "reference_size": 47620,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.7519,
+    "flat_text_similarity": 0.7519,
+    "word_text_similarity": 0.7111,
+    "text_diff": "--- minipdf/classic98_radar_chart.pdf\n+++ reference/classic98_radar_chart.pdf\n@@ -2,8 +2,16 @@\n Python 9\n\n Developer Skill Radar\n\n SQL 8\n\n-Communicat7\n\n+Communic 7\n\n Leadership 6\n\n+Python\n\n Design 5\n\n+10\n\n DevOps 7\n\n+DevOps SQL\n\n+5\n\n+Score\n\n+0\n\n+Design Communication\n\n+Leadership\n\n ---PAGE---",
+    "visual_scores": [
+      0.9842,
+      0.9992
+    ],
+    "visual_avg": 0.9917,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic98_radar_chart_p1_minipdf.png",
+        "reference_img": "classic98_radar_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic98_radar_chart_p2_minipdf.png",
+        "reference_img": "classic98_radar_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8974
+  },
+  {
+    "name": "classic99_bubble_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1942,
+    "reference_size": 57405,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.7537,
+    "flat_text_similarity": 0.7239,
+    "word_text_similarity": 0.6667,
+    "text_diff": "--- minipdf/classic99_bubble_chart.pdf\n+++ reference/classic99_bubble_chart.pdf\n@@ -3,8 +3,23 @@\n Product Comparison\n\n 25 4.5 300\n\n 50 3.8 150\n\n+5\n\n 15 4 420\n\n 35 4.7 200\n\n+4.5\n\n 8 3.5 600\n\n+4\n\n+3.5\n\n+3\n\n Rating\n\n----PAGE---\n+2.5\n\n+2\n\n+1.5\n\n+1\n\n+0.5\n\n+0\n\n+5 10 15 20 25 30 35 40 45\n\n+Price ($)\n\n+---PAGE---\n\n+Products\n\n+50 55",
+    "visual_scores": [
+      0.6798,
+      0.9948
+    ],
+    "visual_avg": 0.8373,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic99_bubble_chart_p1_minipdf.png",
+        "reference_img": "classic99_bubble_chart_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic99_bubble_chart_p2_minipdf.png",
+        "reference_img": "classic99_bubble_chart_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8364
   }
 ]

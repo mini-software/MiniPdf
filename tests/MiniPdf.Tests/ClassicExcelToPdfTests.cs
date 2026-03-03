@@ -412,7 +412,8 @@ public class ClassicExcelToPdfTests
             new[] { "2", "A much longer description text here", "200" },
             new[] { "3", "Medium length description", "55" });
 
-        AssertValidPdf(xlsx, "ID", "Description", "Short", "10");
+        // "Description" (11 chars) truncated at column boundary → "Descriptio"
+        AssertValidPdf(xlsx, "ID", "Descriptio", "Short", "10");
     }
 
     // ── 35. Explicit row heights ────────────────────────────────────────
@@ -424,7 +425,8 @@ public class ClassicExcelToPdfTests
             new[] { "Extra Tall Row", "42" },
             new[] { "Normal Row", "10" });
 
-        AssertValidPdf(xlsx, "Tall Header", "Normal Row");
+        // "Tall Header" (11 chars) truncated at column boundary → "Tall Heade"
+        AssertValidPdf(xlsx, "Tall Heade", "Normal Row");
     }
 
     // ── 36. Merged cells ────────────────────────────────────────────────
@@ -545,7 +547,8 @@ public class ClassicExcelToPdfTests
             new[] { "1001", "Alice", "Smith", "Engineering", "Senior Engineer", "alice@example.com" },
             new[] { "1002", "Bob", "Jones", "Marketing", "Marketing Manager", "bob@example.com" });
 
-        AssertValidPdf(xlsx, "EmpID", "Engineering", "alice@example.com");
+        // "Engineering" (11 chars) truncated; email is last column so not truncated
+        AssertValidPdf(xlsx, "EmpID", "Engineerin", "alice@example.com");
     }
 
     // ── 45. Sales by region (multi-sheet) ──────────────────────────────
@@ -605,7 +608,8 @@ public class ClassicExcelToPdfTests
             new[] { "Recommend", "25", "40", "20", "10", "5" },
             new[] { "Fair price", "20", "35", "25", "15", "5" });
 
-        AssertValidPdf(xlsx, "Question", "StrongAgree", "Easy to use");
+        // Headers/text >10 chars truncated at column boundary
+        AssertValidPdf(xlsx, "Question", "StrongAgre", "Easy to us");
     }
 
     // ── 49. Contact list ────────────────────────────────────────────────
@@ -617,7 +621,8 @@ public class ClassicExcelToPdfTests
             new[] { "Alice Smith", "+1-555-0101", "alice@example.com", "New York", "USA" },
             new[] { "Bob Jones", "+44-20-7946-0958", "bob@example.co.uk", "London", "UK" });
 
-        AssertValidPdf(xlsx, "Name", "alice@example.com", "London");
+        // "alice@example.com" (17 chars) truncated (next cell non-empty)
+        AssertValidPdf(xlsx, "Name", "alice@exam", "London");
     }
 
     // ── 50. Budget vs actuals (three-sheet) ─────────────────────────────
@@ -647,7 +652,8 @@ public class ClassicExcelToPdfTests
         var doc = ExcelToPdfConverter.Convert(xlsx);
         Assert.True(doc.Pages.Count >= 3);
         var pdf = PdfString(doc);
-        Assert.Contains("Engineering", pdf);
+        // "Engineering" (11 chars) truncated at column boundary; "Department" (10 chars) fits
+        Assert.Contains("Engineerin", pdf);
         Assert.Contains("Department", pdf);
     }
 
@@ -661,7 +667,8 @@ public class ClassicExcelToPdfTests
             new[] { "P-002", "Pro Widget", "Enhanced widget with premium features", "180", "12.99" },
             new[] { "P-003", "Mini Gadget", "Compact gadget for mobile use", "90", "19.99" });
 
-        AssertValidPdf(xlsx, "Part#", "Basic Widget", "4.99");
+        // "Basic Widget" (12 chars) truncated at column boundary
+        AssertValidPdf(xlsx, "Part#", "Basic Widg", "4.99");
     }
 
     // ── 52. Pivot-style summary ─────────────────────────────────────────
@@ -676,7 +683,8 @@ public class ClassicExcelToPdfTests
             new[] { "West",  "41000", "18000", "10000", "21000", "90000" },
             new[] { "Total", "176000", "54000", "43000", "86000", "359000" });
 
-        AssertValidPdf(xlsx, "Region", "Electronics", "359000");
+        // "Electronics" (11 chars) truncated at column boundary
+        AssertValidPdf(xlsx, "Region", "Electronic", "359000");
     }
 
     // ── 53. Invoice layout ──────────────────────────────────────────────
