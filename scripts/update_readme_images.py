@@ -5,14 +5,14 @@ Updates the Visual Comparison table in README.md with all classic test cases.
 Uses comparison_report.json to get scores and image filenames (page 1 only).
 
 Usage:
-    python update_readme_images.py
+    python scripts/update_readme_images.py
 """
 
 import json
 import re
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).parent
+REPO_ROOT = Path(__file__).parent.parent
 README_PATH = REPO_ROOT / "README.md"
 REPORT_JSON = REPO_ROOT / "tests/MiniPdf.Benchmark/reports/comparison_report.json"
 IMAGE_DIR_REL = "tests/MiniPdf.Benchmark/reports/images"

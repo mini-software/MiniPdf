@@ -1037,6 +1037,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 
 
 
+
 ## License
 
 This project is licensed under the [Apache License 2.0](LICENSE).

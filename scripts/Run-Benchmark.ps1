@@ -7,9 +7,9 @@
     It installs Python dependencies, runs all steps, and opens the final report.
 
 .EXAMPLE
-    .\Run-Benchmark.ps1
-    .\Run-Benchmark.ps1 -CompareOnly
-    .\Run-Benchmark.ps1 -SkipReference
+    .\scripts\Run-Benchmark.ps1
+    .\scripts\Run-Benchmark.ps1 -CompareOnly
+    .\scripts\Run-Benchmark.ps1 -SkipReference
 #>
 
 param(
@@ -21,8 +21,8 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
-$ScriptRoot = $PSScriptRoot
-$BenchmarkDir = Join-Path $ScriptRoot "tests" "MiniPdf.Benchmark"
+$ScriptRoot = Split-Path -Parent $PSScriptRoot
+$BenchmarkDir = Join-Path (Join-Path $ScriptRoot "tests") "MiniPdf.Benchmark"
 
 Write-Host "`n============================================================" -ForegroundColor Cyan
 Write-Host "  MiniPdf Self-Evolution Benchmark Pipeline" -ForegroundColor Cyan
@@ -56,7 +56,7 @@ try {
 }
 
 # Open the report if it exists
-$reportPath = Join-Path $BenchmarkDir "reports" "comparison_report.md"
+$reportPath = Join-Path (Join-Path $BenchmarkDir "reports") "comparison_report.md"
 if (Test-Path $reportPath) {
     Write-Host "`n[Done] Report: $reportPath" -ForegroundColor Green
     Write-Host "Opening report..." -ForegroundColor Cyan

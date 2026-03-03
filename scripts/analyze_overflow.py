@@ -3,7 +3,9 @@
 import zipfile, re, os, sys
 sys.stdout.reconfigure(encoding='utf-8')
 
-output_dir = r'd:\git\MiniPdf\tests\MiniPdf.Scripts\output'
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_repo_root = os.path.dirname(_script_dir)
+output_dir = os.path.join(_repo_root, 'tests', 'MiniPdf.Scripts', 'output')
 
 def analyze_xlsx(xlsx_path):
     with zipfile.ZipFile(xlsx_path) as z:

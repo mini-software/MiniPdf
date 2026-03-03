@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Apply targeted fixes to MiniPdf source files."""
-import re
+import os, re
+
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_repo_root = os.path.dirname(_script_dir)
 
 def fix_file(path, old, new, expect_found=True):
     with open(path, encoding='utf-8') as f:
@@ -19,7 +22,7 @@ def fix_file(path, old, new, expect_found=True):
 
 # ── 1. PdfWriter.cs: en/em-dash -> WinAnsiEncoding bytes ─────────────────────
 fix_file(
-    'src/MiniPdf/PdfWriter.cs',
+    os.path.join(_repo_root, 'src/MiniPdf/PdfWriter.cs'),
     r"'\u2013' or '\u2014' or '\u2012' => '-',   // en-dash, em-dash",
     r"'\u2013' or '\u2012' => (char)0x96,  // en-dash -> WinAnsiEncoding 0x96" + "\n" + 
     r"                '\u2014' => (char)0x97,                // em-dash -> WinAnsiEncoding 0x97"
@@ -39,6 +42,6 @@ new_clip = """\
                         var clipped = cellText.Length > maxChars ? cellText[..maxChars] : cellText;
                         cellLines[i] = new[] { clipped };"""
 
-fix_file('src/MiniPdf/ExcelToPdfConverter.cs', old_wrap, new_clip)
+fix_file(os.path.join(_repo_root, 'src/MiniPdf/ExcelToPdfConverter.cs'), old_wrap, new_clip)
 
 print("All done.")

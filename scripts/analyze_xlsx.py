@@ -2,7 +2,9 @@
 """Analyze xlsx files to understand column width requirements."""
 import zipfile, re, os, sys
 
-output_dir = r'd:\git\MiniPdf\tests\MiniPdf.Scripts\output'
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_repo_root = os.path.dirname(_script_dir)
+output_dir = os.path.join(_repo_root, 'tests', 'MiniPdf.Scripts', 'output')
 
 def get_col_content_widths(xlsx_path):
     """Get max content length per column and SheetFormatPr info."""

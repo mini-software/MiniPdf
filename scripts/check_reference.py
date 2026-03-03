@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Extract text from reference PDFs to understand what LibreOffice renders."""
 import os, sys
-sys.path.insert(0, r'd:\git\MiniPdf\tests\MiniPdf.Benchmark')
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_repo_root = os.path.dirname(_script_dir)
+sys.path.insert(0, os.path.join(_repo_root, 'tests', 'MiniPdf.Benchmark'))
 
 try:
     import fitz  # pymupdf
@@ -9,7 +11,7 @@ except ImportError:
     print("pymupdf not installed")
     sys.exit(1)
 
-ref_dir = r'd:\git\MiniPdf\tests\MiniPdf.Benchmark\reference_pdfs'
+ref_dir = os.path.join(_repo_root, 'tests', 'MiniPdf.Benchmark', 'reference_pdfs')
 
 tests = [
     ('classic35_explicit_row_heights', ['Tall Header', 'Tall HeadeValue', 'Tall Heade']),
