@@ -1801,11 +1801,14 @@ internal static class ExcelToPdfConverter
             }
             else if (maxCols >= 2)
             {
-                // No explicit column widths — use Excel's default column width (8.43 char units).
-                // This matches LibreOffice/Excel behaviour where unset multi-column sheets use the
-                // workbook default, producing text clipping identical to the reference PDF.
+                // No explicit column widths — size columns based on content so that
+                // text is not unnecessarily clipped when the page has room.  Use the
+                // Excel default column width (8.43 char units) as a minimum so that
+                // narrow-content columns don't collapse below the standard width.
                 var defaultPts = ExcelSheet.CharUnitsToPoints(8.43f);
-                widths[i] = Math.Clamp(defaultPts, minColWidth, maxColWidth);
+                var natural = colMaxWidthPts[i] + 2 * avgCharWidth;
+                natural = Math.Max(natural, defaultPts);
+                widths[i] = Math.Clamp(natural, minColWidth, maxColWidth);
             }
             else
             {
