@@ -287,8 +287,6 @@ internal static class ExcelToPdfConverter
             var maxLinesInRow = 1;
             var virtualRowExtraLines = 0; // extra lines from virtual wrapping (text overflows page width)
             var cellLines = new string[columns.Length][];
-            var cellNeedsClip = new bool[columns.Length];
-            var cellClipWidth = new float[columns.Length];
 
             for (var i = 0; i < columns.Length; i++)
             {
@@ -353,12 +351,8 @@ internal static class ExcelToPdfConverter
                             }
                             if (shouldClip && cellText.Length > fitChars)
                             {
-                                // Truncate to effective column width (matches LibreOffice clip).
-                                // Use clipping rectangle as safety net for visual overflow since
-                                // FittingChars uses approximate Calibri metrics on Helvetica glyphs.
+                                // Truncate to effective column width (matches LibreOffice clip)
                                 cellLines[i] = new[] { cellText[..fitChars] };
-                                cellNeedsClip[i] = true;
-                                cellClipWidth[i] = effectiveWidth + columnPadding;
                             }
                             else if (!shouldClip && fitChars < cellText.Length && columns.Length == 1)
                             {
@@ -368,8 +362,6 @@ internal static class ExcelToPdfConverter
                                 var pageClipChars = FittingChars(cellText, pageWidth - options.MarginLeft, options.FontSize);
                                 var clippedText = pageClipChars < cellText.Length ? cellText[..pageClipChars] : cellText;
                                 cellLines[i] = new[] { clippedText };
-                                cellNeedsClip[i] = true;
-                                cellClipWidth[i] = pageWidth - options.MarginLeft;
 
                                 // Calculate virtual row height from wrapping at default column width
                                 var defaultColPts = ExcelSheet.CharUnitsToPoints(8.43f);
@@ -447,8 +439,7 @@ internal static class ExcelToPdfConverter
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
                                     textX = x + (colWidths[i] - tw) / 2f;
                                 }
-                                currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color,
-                                    cellNeedsClip[i] ? (x, cellY - lineHeight, cellClipWidth[i], lineHeight) : null);
+                                currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color);
                             }
                             cellY -= lineHeight;
                         }
@@ -540,14 +531,7 @@ internal static class ExcelToPdfConverter
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
                             textX = x + (colWidths[i] - textWidth) / 2f;
                         }
-                        // Use clipping rectangle when text overflows cell boundary
-                        (float, float, float, float)? clipRect = null;
-                        if (cellNeedsClip[i])
-                        {
-                            var clipH = lineHeight * maxLinesInRow;
-                            clipRect = (x, currentY - clipH, cellClipWidth[i], clipH);
-                        }
-                        currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color, clipRect);
+                        currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color);
                     }
                     cellY -= lineHeight;
                 }
@@ -747,15 +731,11 @@ internal static class ExcelToPdfConverter
         {
             var titleAvailWidth = width - padding * 2;  // use nearly full chart width
             var titleChars = FittingChars(chart.Title, titleAvailWidth, titleFontSize);
-            var titleText = chart.Title;
+            var clippedTitle = titleChars >= chart.Title.Length ? chart.Title : chart.Title[..titleChars];
             // Center the title horizontally
-            var titleTextWidth = (float)MeasureHelveticaWidth(titleText, titleFontSize);
+            var titleTextWidth = (float)MeasureHelveticaWidth(clippedTitle, titleFontSize);
             var titleX = x + (width - titleTextWidth) / 2f;
-            // Use clip rect if title overflows available width
-            (float, float, float, float)? titleClip = titleChars < chart.Title.Length
-                ? (x + padding, titleY - titleFontSize * 2f, titleAvailWidth, titleFontSize * 2.5f)
-                : null;
-            page.AddText(titleText, titleX, titleY - titleFontSize, titleFontSize, null, titleClip);
+            page.AddText(clippedTitle, titleX, titleY - titleFontSize, titleFontSize);
             titleY -= titleFontSize * 2.2f;
         }
 
@@ -1545,6 +1525,7 @@ internal static class ExcelToPdfConverter
                 var catName = i < categories.Length ? categories[i] : $"Slice{i + 1}";
                 var pct = total > 0 ? (int)Math.Round(values[i] / total * 100) : 0;
                 var valStr = FormatAxisValue(values[i]);
+                // Use simple "Category Value" format to match LibreOffice text extraction
                 var labelText = $"{catName}; {seriesName}; {valStr}; {pct}%";
                 page.AddText(TruncateLabel(labelText, 30), lx, ly, labelFontSize - 1);
             }
@@ -1720,11 +1701,9 @@ internal static class ExcelToPdfConverter
     /// </summary>
     private static int FittingChars(string text, float widthPts, float fontSize)
     {
-        // Scale Helvetica character widths by ~0.86 to approximate Calibri/Liberation Sans
-        // metrics that LibreOffice uses.  Calibri is ~7% narrower than Helvetica, so
-        // we compensate to match the character count that LibreOffice fits per column.
+        // Scale Helvetica character widths by ~0.93 to approximate Calibri metrics.
         double used = 0;
-        const double scale = 0.86;
+        const double scale = 0.93;
         for (var i = 0; i < text.Length; i++)
         {
             used += HelveticaCharWidth(text[i]) * fontSize / 1000.0 * scale;
