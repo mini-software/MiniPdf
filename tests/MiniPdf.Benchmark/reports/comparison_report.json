@@ -953,10 +953,10 @@
     "word_text_similarity": 0.9149,
     "text_diff": "--- minipdf/classic119_dashboard_multi_charts.pdf\n+++ reference/classic119_dashboard_multi_charts.pdf\n@@ -2,14 +2,12 @@\n Revenue vs Expenses\n\n Month Revenue Expenses\n\n Oct 85 60\n\n-Revenue Expenses\n\n 120\n\n Nov 92 65\n\n Dec 110 70\n\n 100\n\n 80\n\n-60\n\n-Segment Share\n\n+Segment Share 60\n\n Enterprise 45\n\n 40\n\n SMB 30\n\n@@ -21,5 +19,6 @@\n Enterprise\n\n SMB\n\n Consumer\n\n-Slice4\n\n----PAGE---\n+---PAGE---\n\n+Revenue\n\n+Expenses",
     "visual_scores": [
-      0.8702,
+      0.8717,
       0.9981
     ],
-    "visual_avg": 0.9342,
+    "visual_avg": 0.9349,
     "diff_images": [
       {
         "page": 1,
@@ -969,7 +969,7 @@
         "reference_img": "classic119_dashboard_multi_charts_p2_reference.png"
       }
     ],
-    "overall_score": 0.9396
+    "overall_score": 0.9399
   },
   {
     "name": "classic11_sparse_rows",
@@ -1034,6 +1034,231 @@
     "overall_score": 0.7365
   },
   {
+    "name": "classic121_thin_borders",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8185,
+    "reference_size": 39925,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9934
+    ],
+    "visual_avg": 0.9934,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic121_thin_borders_p1_minipdf.png",
+        "reference_img": "classic121_thin_borders_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9974
+  },
+  {
+    "name": "classic122_thick_outer_thin_inner",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8177,
+    "reference_size": 40404,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9924
+    ],
+    "visual_avg": 0.9924,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic122_thick_outer_thin_inner_p1_minipdf.png",
+        "reference_img": "classic122_thick_outer_thin_inner_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.997
+  },
+  {
+    "name": "classic123_dashed_borders",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2562,
+    "reference_size": 35187,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9799,
+    "flat_text_similarity": 0.9799,
+    "word_text_similarity": 0.7273,
+    "text_diff": "--- minipdf/classic123_dashed_borders.pdf\n+++ reference/classic123_dashed_borders.pdf\n@@ -1,6 +1,6 @@\n-Border St Sample\n\n+Border StSample\n\n dashed Bordered cell\n\n dotted Bordered cell\n\n dashDot Bordered cell\n\n-dashDotD Bordered cell\n\n-mediumD Bordered cell\n+dashDotDoBordered cell\n\n+mediumDaBordered cell",
+    "visual_scores": [
+      0.991
+    ],
+    "visual_avg": 0.991,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic123_dashed_borders_p1_minipdf.png",
+        "reference_img": "classic123_dashed_borders_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9884
+  },
+  {
+    "name": "classic124_colored_borders",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3329,
+    "reference_size": 38667,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9872
+    ],
+    "visual_avg": 0.9872,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic124_colored_borders_p1_minipdf.png",
+        "reference_img": "classic124_colored_borders_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9949
+  },
+  {
+    "name": "classic125_solid_fills",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1993,
+    "reference_size": 39001,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9788,
+    "flat_text_similarity": 0.9788,
+    "word_text_similarity": 0.72,
+    "text_diff": "--- minipdf/classic125_solid_fills.pdf\n+++ reference/classic125_solid_fills.pdf\n@@ -1,9 +1,9 @@\n-Fill Name Filled Cell\n\n+Fill NameFilled Cell\n\n Light Blue Background\n\n-Light Gre Background\n\n-Light Yell Background\n\n+Light GreeBackground\n\n+Light YelloBackground\n\n Light Red Background\n\n-Light PurpBackground\n\n-Light Ora Background\n\n+Light PurplBackground\n\n+Light OranBackground\n\n Gray 25% Background\n\n Sky Blue Background",
+    "visual_scores": [
+      0.988
+    ],
+    "visual_avg": 0.988,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic125_solid_fills_p1_minipdf.png",
+        "reference_img": "classic125_solid_fills_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9867
+  },
+  {
+    "name": "classic126_dark_header",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2140,
+    "reference_size": 44287,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9811,
+    "flat_text_similarity": 0.9811,
+    "word_text_similarity": 0.807,
+    "text_diff": "--- minipdf/classic126_dark_header.pdf\n+++ reference/classic126_dark_header.pdf\n@@ -1,6 +1,6 @@\n-Employee Departme Salary Start Date\n\n-Alice Smit Engineeri 95000 2020-03-15\n\n-Bob Jone Marketing 72000 2019-07-01\n\n+EmployeeDepartmen Salary Start Date\n\n+Alice SmithEngineerin 95000 2020-03-15\n\n+Bob Jones Marketing 72000 2019-07-01\n\n Carol Lee Finance 88000 2021-01-10\n\n-David KimEngineeri 102000 2018-11-20\n\n+David Kim Engineerin 102000 2018-11-20\n\n Eva Chen HR 68000 2022-05-03",
+    "visual_scores": [
+      0.988
+    ],
+    "visual_avg": 0.988,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic126_dark_header_p1_minipdf.png",
+        "reference_img": "classic126_dark_header_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9876
+  },
+  {
+    "name": "classic127_font_styles",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1640,
+    "reference_size": 72555,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9945,
+    "flat_text_similarity": 0.9945,
+    "word_text_similarity": 0.9318,
+    "text_diff": "--- minipdf/classic127_font_styles.pdf\n+++ reference/classic127_font_styles.pdf\n@@ -4,6 +4,6 @@\n Underline Sample Underline text\n\n Strikethro Sample Strikethrough text\n\n Bold Italic Sample Bold Italic text\n\n-Bold Und Sample Bold Underline text\n\n-Double U Sample Double Underline text\n\n-Bold + Re Sample Bold + Red text\n+Bold Unde Sample Bold Underline text\n\n+Double Un Sample Double Underline text\n\n+Bold + Red Sample Bold + Red text",
+    "visual_scores": [
+      0.9855
+    ],
+    "visual_avg": 0.9855,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic127_font_styles_p1_minipdf.png",
+        "reference_img": "classic127_font_styles_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.992
+  },
+  {
+    "name": "classic128_font_sizes",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1746,
+    "reference_size": 48278,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9762,
+    "flat_text_similarity": 0.976,
+    "word_text_similarity": 0.9762,
+    "text_diff": "--- minipdf/classic128_font_sizes.pdf\n+++ reference/classic128_font_sizes.pdf\n@@ -5,8 +5,7 @@\n Font size 9\n\n 10 Font size 10\n\n 11 Font size 11\n\n-Font size 12\n\n-12\n\n+12 Font size 12\n\n Font size 14\n\n 14\n\n Font size 16\n\n@@ -14,5 +13,6 @@\n Font size 18\n\n 18\n\n Font size 20\n\n-20 Font size 24\n\n+20\n\n+Font size 24\n\n 24",
+    "visual_scores": [
+      0.9894
+    ],
+    "visual_avg": 0.9894,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic128_font_sizes_p1_minipdf.png",
+        "reference_img": "classic128_font_sizes_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9862
+  },
+  {
+    "name": "classic129_alignment_combos",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1398,
+    "reference_size": 35431,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9301,
+    "flat_text_similarity": 0.9301,
+    "word_text_similarity": 0.8667,
+    "text_diff": "--- minipdf/classic129_alignment_combos.pdf\n+++ reference/classic129_alignment_combos.pdf\n@@ -1,4 +1,6 @@\n left center right\n\n-top left/top center/top right/top\n\n-center left/center center/center right/center\n\n+left/top center/top right/top\n\n+top\n\n+left/center center/center right/center\n\n+center\n\n bottom left/bottom center/bottom right/bottom",
+    "visual_scores": [
+      0.9935
+    ],
+    "visual_avg": 0.9935,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic129_alignment_combos_p1_minipdf.png",
+        "reference_img": "classic129_alignment_combos_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9694
+  },
+  {
     "name": "classic12_sparse_columns",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1057,6 +1282,256 @@
       }
     ],
     "overall_score": 0.999
+  },
+  {
+    "name": "classic130_wrap_and_indent",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1126,
+    "reference_size": 36937,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9892,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/classic130_wrap_and_indent.pdf\n+++ reference/classic130_wrap_and_indent.pdf\n@@ -1,5 +1,7 @@\n Wrapped Text Indented Text\n\n-This is a long text that should wrap within the cell when text wrapping is enabled.\n\n+This is a long text that should wrap\n\n+within the cell when text wrapping\n\n+is enabled.\n\n Indent level 0\n\n Indent level 1\n\n Indent level 2\n",
+    "visual_scores": [
+      0.9885
+    ],
+    "visual_avg": 0.9885,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic130_wrap_and_indent_p1_minipdf.png",
+        "reference_img": "classic130_wrap_and_indent_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9954
+  },
+  {
+    "name": "classic131_number_formats",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2320,
+    "reference_size": 43396,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9982,
+    "flat_text_similarity": 0.9982,
+    "word_text_similarity": 0.9697,
+    "text_diff": "--- minipdf/classic131_number_formats.pdf\n+++ reference/classic131_number_formats.pdf\n@@ -5,7 +5,7 @@\n 0.00% 85.23% 0.8523\n\n 0.00E+00 1.23E+08 123456789\n\n 0000 0042 42\n\n-#,##0;(#,##0) -(5,000) -5000\n\n+#,##0;(#,##0) (5,000) -5000\n\n yyyy-mm-dd 2025-01-01 45658\n\n dd/mm/yyyy 01/01/2025 45658\n\n hh:mm:ss 18:00:00 0.75",
+    "visual_scores": [
+      0.9841
+    ],
+    "visual_avg": 0.9841,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic131_number_formats_p1_minipdf.png",
+        "reference_img": "classic131_number_formats_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9929
+  },
+  {
+    "name": "classic132_striped_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 15999,
+    "reference_size": 47692,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9951,
+    "flat_text_similarity": 0.9951,
+    "word_text_similarity": 0.972,
+    "text_diff": "--- minipdf/classic132_striped_table.pdf\n+++ reference/classic132_striped_table.pdf\n@@ -8,4 +8,4 @@\n Product 7 Sports 399.94 4.5\n\n Product 8 Sports 281.79 2.5\n\n Product 9 Sports 445.84 1.8\n\n-Product 1 Electronic 276.34 3.4\n+Product 10Electronics 276.34 3.4",
+    "visual_scores": [
+      0.9717
+    ],
+    "visual_avg": 0.9717,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic132_striped_table_p1_minipdf.png",
+        "reference_img": "classic132_striped_table_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9867
+  },
+  {
+    "name": "classic133_gradient_rows",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4133,
+    "reference_size": 54544,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9846
+    ],
+    "visual_avg": 0.9846,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic133_gradient_rows_p1_minipdf.png",
+        "reference_img": "classic133_gradient_rows_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9938
+  },
+  {
+    "name": "classic134_heatmap",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5932,
+    "reference_size": 44182,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9629
+    ],
+    "visual_avg": 0.9629,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic134_heatmap_p1_minipdf.png",
+        "reference_img": "classic134_heatmap_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9852
+  },
+  {
+    "name": "classic135_bottom_border_only",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1311,
+    "reference_size": 32996,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9905
+    ],
+    "visual_avg": 0.9905,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic135_bottom_border_only_p1_minipdf.png",
+        "reference_img": "classic135_bottom_border_only_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9962
+  },
+  {
+    "name": "classic136_financial_report_styled",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8655,
+    "reference_size": 46675,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9819
+    ],
+    "visual_avg": 0.9819,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic136_financial_report_styled_p1_minipdf.png",
+        "reference_img": "classic136_financial_report_styled_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9928
+  },
+  {
+    "name": "classic137_checkerboard",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7412,
+    "reference_size": 42995,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.895
+    ],
+    "visual_avg": 0.895,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic137_checkerboard_p1_minipdf.png",
+        "reference_img": "classic137_checkerboard_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.958
+  },
+  {
+    "name": "classic138_color_grid",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1888,
+    "reference_size": 26461,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9319
+    ],
+    "visual_avg": 0.9319,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic138_color_grid_p1_minipdf.png",
+        "reference_img": "classic138_color_grid_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9728
+  },
+  {
+    "name": "classic139_pattern_fills",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2586,
+    "reference_size": 43091,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9765
+    ],
+    "visual_avg": 0.9765,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic139_pattern_fills_p1_minipdf.png",
+        "reference_img": "classic139_pattern_fills_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9906
   },
   {
     "name": "classic13_date_strings",
@@ -1084,6 +1559,286 @@
     "overall_score": 0.9866
   },
   {
+    "name": "classic140_rotated_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1751,
+    "reference_size": 39253,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9583,
+    "flat_text_similarity": 0.8768,
+    "word_text_similarity": 0.9583,
+    "text_diff": "--- minipdf/classic140_rotated_text.pdf\n+++ reference/classic140_rotated_text.pdf\n@@ -1,12 +1,22 @@\n Rotation Text\n\n 0 Rotated\n\n-15 Rotated\n\n-30 Rotated\n\n-45 Rotated\n\n-60 Rotated\n\n-90 Rotated\n\n-105 Rotated\n\n-120 Rotated\n\n-135 Rotated\n\n-150 Rotated\n\n-180 Rotated\n+Rotated\n\n+15\n\n+Rotated\n\n+30\n\n+Rotated\n\n+45\n\n+Rotated\n\n+60\n\n+Rotated\n\n+90\n\n+Rotated\n\n+105\n\n+Rotated\n\n+120\n\n+Rotated\n\n+135\n\n+Rotated\n\n+150\n\n+Rotated\n\n+180",
+    "visual_scores": [
+      0.9929
+    ],
+    "visual_avg": 0.9929,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic140_rotated_text_p1_minipdf.png",
+        "reference_img": "classic140_rotated_text_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9805
+  },
+  {
+    "name": "classic141_mixed_edge_borders",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2225,
+    "reference_size": 36300,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9906
+    ],
+    "visual_avg": 0.9906,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic141_mixed_edge_borders_p1_minipdf.png",
+        "reference_img": "classic141_mixed_edge_borders_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9962
+  },
+  {
+    "name": "classic142_styled_invoice",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 10267,
+    "reference_size": 52625,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8785
+    ],
+    "visual_avg": 0.8785,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic142_styled_invoice_p1_minipdf.png",
+        "reference_img": "classic142_styled_invoice_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9514
+  },
+  {
+    "name": "classic143_colored_tabs",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2437,
+    "reference_size": 43510,
+    "minipdf_pages": 4,
+    "reference_pages": 4,
+    "text_similarity": 0.9944,
+    "flat_text_similarity": 0.9932,
+    "word_text_similarity": 0.9259,
+    "text_diff": "--- minipdf/classic143_colored_tabs.pdf\n+++ reference/classic143_colored_tabs.pdf\n@@ -11,5 +11,5 @@\n Cost 30000\n\n ---PAGE---\n\n Label Value\n\n-Employee 50\n\n-Open Rol 5\n+Employees 50\n\n+Open Role 5",
+    "visual_scores": [
+      0.9983,
+      0.9983,
+      0.9982,
+      0.9985
+    ],
+    "visual_avg": 0.9983,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic143_colored_tabs_p1_minipdf.png",
+        "reference_img": "classic143_colored_tabs_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic143_colored_tabs_p2_minipdf.png",
+        "reference_img": "classic143_colored_tabs_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic143_colored_tabs_p3_minipdf.png",
+        "reference_img": "classic143_colored_tabs_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "classic143_colored_tabs_p4_minipdf.png",
+        "reference_img": "classic143_colored_tabs_p4_reference.png"
+      }
+    ],
+    "overall_score": 0.9971
+  },
+  {
+    "name": "classic144_note_style_cells",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2936,
+    "reference_size": 48027,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9834
+    ],
+    "visual_avg": 0.9834,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic144_note_style_cells_p1_minipdf.png",
+        "reference_img": "classic144_note_style_cells_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9934
+  },
+  {
+    "name": "classic145_status_badges",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 11567,
+    "reference_size": 60432,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9732
+    ],
+    "visual_avg": 0.9732,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic145_status_badges_p1_minipdf.png",
+        "reference_img": "classic145_status_badges_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9893
+  },
+  {
+    "name": "classic146_double_border_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7132,
+    "reference_size": 41798,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9884
+    ],
+    "visual_avg": 0.9884,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic146_double_border_table_p1_minipdf.png",
+        "reference_img": "classic146_double_border_table_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9954
+  },
+  {
+    "name": "classic147_multi_sheet_styled",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 15892,
+    "reference_size": 54487,
+    "minipdf_pages": 3,
+    "reference_pages": 3,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9938,
+      0.9892,
+      0.9922
+    ],
+    "visual_avg": 0.9917,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic147_multi_sheet_styled_p1_minipdf.png",
+        "reference_img": "classic147_multi_sheet_styled_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic147_multi_sheet_styled_p2_minipdf.png",
+        "reference_img": "classic147_multi_sheet_styled_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "classic147_multi_sheet_styled_p3_minipdf.png",
+        "reference_img": "classic147_multi_sheet_styled_p3_reference.png"
+      }
+    ],
+    "overall_score": 0.9967
+  },
+  {
+    "name": "classic148_frozen_styled_grid",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 44782,
+    "reference_size": 67067,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9255
+    ],
+    "visual_avg": 0.9255,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic148_frozen_styled_grid_p1_minipdf.png",
+        "reference_img": "classic148_frozen_styled_grid_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9702
+  },
+  {
+    "name": "classic149_merged_styled_sections",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 11140,
+    "reference_size": 48481,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9983,
+    "flat_text_similarity": 0.9983,
+    "word_text_similarity": 0.9744,
+    "text_diff": "--- minipdf/classic149_merged_styled_sections.pdf\n+++ reference/classic149_merged_styled_sections.pdf\n@@ -1,4 +1,4 @@\n-uarterly Performance Report\n\n+Quarterly Performance Report\n\n Revenue Breakdown\n\n Source Q1 Q2 Total\n\n Online 120,000 140,000 260,000\n",
+    "visual_scores": [
+      0.8795
+    ],
+    "visual_avg": 0.8795,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic149_merged_styled_sections_p1_minipdf.png",
+        "reference_img": "classic149_merged_styled_sections_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9511
+  },
+  {
     "name": "classic14_decimal_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1109,17 +1864,42 @@
     "overall_score": 0.9978
   },
   {
+    "name": "classic150_kitchen_sink_styles",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3179,
+    "reference_size": 74184,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9032,
+    "flat_text_similarity": 0.8273,
+    "word_text_similarity": 0.9032,
+    "text_diff": "--- minipdf/classic150_kitchen_sink_styles.pdf\n+++ reference/classic150_kitchen_sink_styles.pdf\n@@ -1,13 +1,14 @@\n Style Showcase\n\n Feature Example Notes\n\n-Styled Text\n\n-Bold Italic Red Font combo\n\n+Bold Italic Red Styled Text Font combo\n\n Double Underline Important Value Emphasis\n\n Strikethrough Deprecated Item Removed\n\n Dark Fill White on Dark Inverted\n\n Red Border Attention! Alert style\n\n Currency Format $12,345.68 Formatted number\n\n Percentage 87.56% Percent display\n\n-Wrap + Center This text wraps in the cell nicely Multi-line\n\n-Pattern Fill BIG Gray pattern Hatched\n\n+This text wraps in the cell nicely\n\n+Wrap + Center Multi-line\n\n+Pattern Fill Gray pattern Hatched\n\n+BIG\n\n Large Font Size 24",
+    "visual_scores": [
+      0.9089
+    ],
+    "visual_avg": 0.9089,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic150_kitchen_sink_styles_p1_minipdf.png",
+        "reference_img": "classic150_kitchen_sink_styles_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9248
+  },
+  {
     "name": "classic15_negative_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1264,
+    "minipdf_size": 1265,
     "reference_size": 28526,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.908,
-    "flat_text_similarity": 0.908,
-    "word_text_similarity": 0.875,
-    "text_diff": "--- minipdf/classic15_negative_numbers.pdf\n+++ reference/classic15_negative_numbers.pdf\n@@ -1,7 +1,7 @@\n Label Value\n\n Loss -100\n\n-Small Los -0.5\n\n+Small Loss -0.5\n\n Zero 0\n\n Gain 50\n\n-Big Loss -100000\n\n+Big Loss -99999.99\n\n Tiny -0.001",
+    "text_similarity": 0.9939,
+    "flat_text_similarity": 0.9939,
+    "word_text_similarity": 0.9375,
+    "text_diff": "--- minipdf/classic15_negative_numbers.pdf\n+++ reference/classic15_negative_numbers.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n Loss -100\n\n-Small Los -0.5\n\n+Small Loss -0.5\n\n Zero 0\n\n Gain 50\n\n Big Loss -99999.99\n",
     "visual_scores": [
       0.9957
     ],
@@ -1131,7 +1911,7 @@
         "reference_img": "classic15_negative_numbers_p1_reference.png"
       }
     ],
-    "overall_score": 0.9615
+    "overall_score": 0.9958
   },
   {
     "name": "classic16_percentage_strings",
@@ -1836,13 +2616,13 @@
     "minipdf_pages": 1,
     "reference_pages": 1,
     "text_similarity": 1.0,
-    "flat_text_similarity": 0.9857,
+    "flat_text_similarity": 1.0,
     "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/classic38_hyperlink_cell.pdf\n+++ reference/classic38_hyperlink_cell.pdf\n@@ -1,3 +1,4 @@\n Resource URL\n\n-GitHub https://github.com\n\n+GitHub\n\n+https://github.com\n\n Docs https://docs.microsoft.com",
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.9963
+      0.9961
     ],
-    "visual_avg": 0.9963,
+    "visual_avg": 0.9961,
     "diff_images": [
       {
         "page": 1,
@@ -1850,7 +2630,7 @@
         "reference_img": "classic38_hyperlink_cell_p1_reference.png"
       }
     ],
-    "overall_score": 0.9985
+    "overall_score": 0.9984
   },
   {
     "name": "classic39_financial_table",
@@ -1881,18 +2661,18 @@
     "name": "classic40_scientific_notation",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1197,
+    "minipdf_size": 1206,
     "reference_size": 30852,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9388,
-    "flat_text_similarity": 0.9388,
-    "word_text_similarity": 0.7586,
-    "text_diff": "--- minipdf/classic40_scientific_notation.pdf\n+++ reference/classic40_scientific_notation.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n-Avogadro 6E+23\n\n-Planck 6.63E-34\n\n-Speed of 3E+08\n\n-Electron 9.11E-31\n\n+Avogadro 6.02E+23\n\n+Planck 6.626E-34\n\n+Speed of L 3E+08\n\n+Electron m9.109E-31\n\n Pi approx 3.141593",
+    "text_similarity": 0.8942,
+    "flat_text_similarity": 0.8942,
+    "word_text_similarity": 0.6429,
+    "text_diff": "--- minipdf/classic40_scientific_notation.pdf\n+++ reference/classic40_scientific_notation.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n-Avogadro6.022E+23\n\n+Avogadro 6.02E+23\n\n Planck 6.626E-34\n\n-Speed of 299800000\n\n-Electron 9.109E-31\n\n-Pi approx 3.141592654\n+Speed of L 3E+08\n\n+Electron m9.109E-31\n\n+Pi approx 3.141593",
     "visual_scores": [
-      0.9934
+      0.9912
     ],
-    "visual_avg": 0.9934,
+    "visual_avg": 0.9912,
     "diff_images": [
       {
         "page": 1,
@@ -1900,7 +2680,7 @@
         "reference_img": "classic40_scientific_notation_p1_reference.png"
       }
     ],
-    "overall_score": 0.9729
+    "overall_score": 0.9542
   },
   {
     "name": "classic41_integer_vs_float",
@@ -2245,9 +3025,9 @@
     "word_text_similarity": 0.9231,
     "text_diff": "--- minipdf/classic53_invoice.pdf\n+++ reference/classic53_invoice.pdf\n@@ -6,11 +6,11 @@\n ACME Corporation\n\n 123 Business Rd, Suite 400\n\n New York, NY 10001\n\n-Item Qty Unit Price Total\n\n-Consultin 10 150 1500\n\n-Software 5 99 495\n\n+Item Qty Unit PriceTotal\n\n+Consulting 10 150 1500\n\n+Software L 5 99 495\n\n Hardware 2 249.99 499.98\n\n-Support P 1 1200 1200\n\n+Support Pl 1 1200 1200\n\n Subtotal 3694.98\n\n Tax (8%) 295.6\n\n Total Due 3990.58",
     "visual_scores": [
-      0.9868
+      0.9853
     ],
-    "visual_avg": 0.9868,
+    "visual_avg": 0.9853,
     "diff_images": [
       {
         "page": 1,
@@ -2255,7 +3035,7 @@
         "reference_img": "classic53_invoice_p1_reference.png"
       }
     ],
-    "overall_score": 0.9914
+    "overall_score": 0.9908
   },
   {
     "name": "classic54_multi_level_header",
@@ -2361,18 +3141,18 @@
     "name": "classic58_mixed_numeric_formats",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1601,
+    "minipdf_size": 1604,
     "reference_size": 32815,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9579,
-    "flat_text_similarity": 0.9579,
-    "word_text_similarity": 0.8077,
-    "text_diff": "--- minipdf/classic58_mixed_numeric_formats.pdf\n+++ reference/classic58_mixed_numeric_formats.pdf\n@@ -2,9 +2,9 @@\n Integer 1000000\n\n Float 2dp 3.14\n\n Float 5dp 3.14159\n\n-Negative i -42\n\n-Negative f -3.14\n\n-Very smal 0.0001\n\n-Very large 1E+07\n\n+Negative in -42\n\n+Negative fl -3.14\n\n+Very small 0.0001\n\n+Very large 10000000\n\n Zero 0\n\n-Scientific 1.2E+10\n+Scientific 1.23E+10",
+    "text_similarity": 0.9872,
+    "flat_text_similarity": 0.9872,
+    "word_text_similarity": 0.8235,
+    "text_diff": "--- minipdf/classic58_mixed_numeric_formats.pdf\n+++ reference/classic58_mixed_numeric_formats.pdf\n@@ -2,9 +2,9 @@\n Integer 1000000\n\n Float 2dp 3.14\n\n Float 5dp 3.14159\n\n-Negative i -42\n\n-Negative f -3.14\n\n-Very smal 0.0001\n\n-Very large10000000\n\n+Negative in -42\n\n+Negative fl -3.14\n\n+Very small 0.0001\n\n+Very large 10000000\n\n Zero 0\n\n Scientific 1.23E+10",
     "visual_scores": [
-      0.9918
+      0.9919
     ],
-    "visual_avg": 0.9918,
+    "visual_avg": 0.9919,
     "diff_images": [
       {
         "page": 1,
@@ -2380,7 +3160,7 @@
         "reference_img": "classic58_mixed_numeric_formats_p1_reference.png"
       }
     ],
-    "overall_score": 0.9799
+    "overall_score": 0.9916
   },
   {
     "name": "classic59_multi_sheet_summary",
@@ -2506,9 +3286,9 @@
     "word_text_similarity": 0.898,
     "text_diff": "--- minipdf/classic62_company_logo_header.pdf\n+++ reference/classic62_company_logo_header.pdf\n@@ -1,6 +1,6 @@\n ACME Corporation\n\n Annual Report 2025\n\n-Departme Q1 Q2 Q3 Q4\n\n+DepartmenQ1 Q2 Q3 Q4\n\n Sales 120 135 142 160\n\n-Engineeri 85 90 95 100\n\n+Engineerin 85 90 95 100\n\n Marketing 60 65 70 75",
     "visual_scores": [
-      0.9908
+      0.9891
     ],
-    "visual_avg": 0.9908,
+    "visual_avg": 0.9891,
     "diff_images": [
       {
         "page": 1,
@@ -2516,7 +3296,7 @@
         "reference_img": "classic62_company_logo_header_p1_reference.png"
       }
     ],
-    "overall_score": 0.9915
+    "overall_score": 0.9908
   },
   {
     "name": "classic63_two_products_side_by_side",
@@ -2606,9 +3386,9 @@
     "word_text_similarity": 0.7843,
     "text_diff": "--- minipdf/classic66_invoice_with_logo.pdf\n+++ reference/classic66_invoice_with_logo.pdf\n@@ -1,8 +1,8 @@\n INVOICE\n\n Invoice #: INV-20250301\n\n Date: 2025-03-01\n\n-Descriptio Qty Unit Price Total\n\n-Consultin 8 150 1200\n\n-Software 1 299 299\n\n-Support P 1 99 99\n\n+DescriptiQty Unit PriceTotal\n\n+Consulting 8 150 1200\n\n+Software L 1 299 299\n\n+Support Pa 1 99 99\n\n Total 1598",
     "visual_scores": [
-      0.992
+      0.9896
     ],
-    "visual_avg": 0.992,
+    "visual_avg": 0.9896,
     "diff_images": [
       {
         "page": 1,
@@ -2616,7 +3396,7 @@
         "reference_img": "classic66_invoice_with_logo_p1_reference.png"
       }
     ],
-    "overall_score": 0.9874
+    "overall_score": 0.9865
   },
   {
     "name": "classic67_real_estate_listing",
@@ -2631,9 +3411,9 @@
     "word_text_similarity": 0.96,
     "text_diff": "--- minipdf/classic67_real_estate_listing.pdf\n+++ reference/classic67_real_estate_listing.pdf\n@@ -3,7 +3,7 @@\n List Price: $485,000\n\n Feature Detail\n\n Bedrooms 4\n\n-Bathroom 2.5\n\n+Bathrooms 2.5\n\n Sq Ft 2100\n\n Lot Size 0.25 acres\n\n Year Built 1998",
     "visual_scores": [
-      0.9932
+      0.993
     ],
-    "visual_avg": 0.9932,
+    "visual_avg": 0.993,
     "diff_images": [
       {
         "page": 1,
@@ -2641,7 +3421,7 @@
         "reference_img": "classic67_real_estate_listing_p1_reference.png"
       }
     ],
-    "overall_score": 0.9959
+    "overall_score": 0.9958
   },
   {
     "name": "classic68_restaurant_menu",
@@ -2656,9 +3436,9 @@
     "word_text_similarity": 0.9206,
     "text_diff": "--- minipdf/classic68_restaurant_menu.pdf\n+++ reference/classic68_restaurant_menu.pdf\n@@ -1,7 +1,7 @@\n Today's Menu\n\n-Grilled Sal$18.99\n\n+Grilled S $18.99\n\n Fresh Atlantic salmon with herbs\n\n-Caesar S $12.99\n\n+Caesar Sa $12.99\n\n Romaine lettuce, croutons, parmesan\n\n Beef Burg $14.99\n\n 8oz Angus beef, brioche bun\n",
     "visual_scores": [
-      0.9769
+      0.9747
     ],
-    "visual_avg": 0.9769,
+    "visual_avg": 0.9747,
     "diff_images": [
       {
         "page": 1,
@@ -2666,7 +3446,7 @@
         "reference_img": "classic68_restaurant_menu_p1_reference.png"
       }
     ],
-    "overall_score": 0.9869
+    "overall_score": 0.986
   },
   {
     "name": "classic69_image_only_sheet",
@@ -2706,9 +3486,9 @@
     "word_text_similarity": 0.9388,
     "text_diff": "--- minipdf/classic70_product_catalog_with_images.pdf\n+++ reference/classic70_product_catalog_with_images.pdf\n@@ -1,7 +1,7 @@\n Product Catalog - Spring 2025\n\n Classic P $3.99\n\n A reliable ballpoint pen\n\n-Leather N $12.99\n\n+Leather $12.99\n\n Premium A5 notebook\n\n-Desk Org $24.99\n\n+Desk Orga $24.99\n\n Bamboo desk tidy set",
     "visual_scores": [
-      0.9864
+      0.9861
     ],
-    "visual_avg": 0.9864,
+    "visual_avg": 0.9861,
     "diff_images": [
       {
         "page": 1,
@@ -2716,7 +3496,7 @@
         "reference_img": "classic70_product_catalog_with_images_p1_reference.png"
       }
     ],
-    "overall_score": 0.9904
+    "overall_score": 0.9902
   },
   {
     "name": "classic71_multi_sheet_with_images",
@@ -2768,9 +3548,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9826
+      0.9814
     ],
-    "visual_avg": 0.9826,
+    "visual_avg": 0.9814,
     "diff_images": [
       {
         "page": 1,
@@ -2778,7 +3558,7 @@
         "reference_img": "classic72_bar_chart_image_with_data_p1_reference.png"
       }
     ],
-    "overall_score": 0.993
+    "overall_score": 0.9926
   },
   {
     "name": "classic73_event_flyer_with_banner",
@@ -2793,9 +3573,9 @@
     "word_text_similarity": 0.878,
     "text_diff": "--- minipdf/classic73_event_flyer_with_banner.pdf\n+++ reference/classic73_event_flyer_with_banner.pdf\n@@ -3,7 +3,7 @@\n Venue: Convention Center Hall A\n\n Speakers: 20+ Industry Leaders\n\n Time Session Speaker\n\n-09:00 Opening Dr. Jane Kim\n\n-10:30 AI in PractProf. Mark Liu\n\n-13:00 Cloud Arc Eng. Sara Patel\n\n-15:00 Panel Dis All Speakers\n+09:00 Opening KDr. Jane Kim\n\n+10:30 AI in Pract Prof. Mark Liu\n\n+13:00 Cloud ArchEng. Sara Patel\n\n+15:00 Panel Disc All Speakers",
     "visual_scores": [
-      0.9912
+      0.9909
     ],
-    "visual_avg": 0.9912,
+    "visual_avg": 0.9909,
     "diff_images": [
       {
         "page": 1,
@@ -2803,7 +3583,7 @@
         "reference_img": "classic73_event_flyer_with_banner_p1_reference.png"
       }
     ],
-    "overall_score": 0.9709
+    "overall_score": 0.9708
   },
   {
     "name": "classic74_dashboard_with_kpi_image",
@@ -2818,9 +3598,9 @@
     "word_text_similarity": 0.871,
     "text_diff": "--- minipdf/classic74_dashboard_with_kpi_image.pdf\n+++ reference/classic74_dashboard_with_kpi_image.pdf\n@@ -1,10 +1,6 @@\n Executive Dashboard Q1 2025\n\n KPI Target Actual Status\n\n-Revenue 500000 523000\n\n-✓ Above\n\n-New Cust 200 187\n\n-✗ Below\n\n-NPS Scor 70 74\n\n-✓ Above\n\n-Churn Rat< 3% 2.8%\n\n-✓ Above\n+Revenue 500000 523000 ✓ Above\n\n+New Custo 200 187  Below ✗\n\n+NPS Score 70 74 ✓ Above\n\n+Churn Rate< 3% 2.8% ✓ Above",
     "visual_scores": [
-      0.9815
+      0.9789
     ],
-    "visual_avg": 0.9815,
+    "visual_avg": 0.9789,
     "diff_images": [
       {
         "page": 1,
@@ -2828,7 +3608,7 @@
         "reference_img": "classic74_dashboard_with_kpi_image_p1_reference.png"
       }
     ],
-    "overall_score": 0.975
+    "overall_score": 0.974
   },
   {
     "name": "classic75_certificate_with_seal",
@@ -2843,9 +3623,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9855
+      0.9792
     ],
-    "visual_avg": 0.9855,
+    "visual_avg": 0.9792,
     "diff_images": [
       {
         "page": 1,
@@ -2853,7 +3633,7 @@
         "reference_img": "classic75_certificate_with_seal_p1_reference.png"
       }
     ],
-    "overall_score": 0.9942
+    "overall_score": 0.9917
   },
   {
     "name": "classic76_product_image_grid",
@@ -2868,9 +3648,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9834
+      0.9821
     ],
-    "visual_avg": 0.9834,
+    "visual_avg": 0.9821,
     "diff_images": [
       {
         "page": 1,
@@ -2878,7 +3658,7 @@
         "reference_img": "classic76_product_image_grid_p1_reference.png"
       }
     ],
-    "overall_score": 0.9934
+    "overall_score": 0.9928
   },
   {
     "name": "classic77_news_article_with_hero_image",
@@ -2893,9 +3673,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9855
+      0.985
     ],
-    "visual_avg": 0.9855,
+    "visual_avg": 0.985,
     "diff_images": [
       {
         "page": 1,
@@ -2903,7 +3683,7 @@
         "reference_img": "classic77_news_article_with_hero_image_p1_reference.png"
       }
     ],
-    "overall_score": 0.9942
+    "overall_score": 0.994
   },
   {
     "name": "classic78_small_icon_per_row",
@@ -2943,9 +3723,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9928
+      0.9922
     ],
-    "visual_avg": 0.9928,
+    "visual_avg": 0.9922,
     "diff_images": [
       {
         "page": 1,
@@ -2953,7 +3733,7 @@
         "reference_img": "classic79_wide_panoramic_banner_p1_reference.png"
       }
     ],
-    "overall_score": 0.9971
+    "overall_score": 0.9969
   },
   {
     "name": "classic80_portrait_tall_image",
@@ -2968,9 +3748,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9874
+      0.9866
     ],
-    "visual_avg": 0.9874,
+    "visual_avg": 0.9866,
     "diff_images": [
       {
         "page": 1,
@@ -2978,7 +3758,7 @@
         "reference_img": "classic80_portrait_tall_image_p1_reference.png"
       }
     ],
-    "overall_score": 0.995
+    "overall_score": 0.9946
   },
   {
     "name": "classic81_step_by_step_with_images",
@@ -2993,9 +3773,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.984
+      0.9822
     ],
-    "visual_avg": 0.984,
+    "visual_avg": 0.9822,
     "diff_images": [
       {
         "page": 1,
@@ -3003,7 +3783,7 @@
         "reference_img": "classic81_step_by_step_with_images_p1_reference.png"
       }
     ],
-    "overall_score": 0.9936
+    "overall_score": 0.9929
   },
   {
     "name": "classic82_before_after_images",
@@ -3043,9 +3823,9 @@
     "word_text_similarity": 0.9153,
     "text_diff": "--- minipdf/classic83_color_swatch_palette.pdf\n+++ reference/classic83_color_swatch_palette.pdf\n@@ -1,7 +1,7 @@\n Brand Color Palette\n\n Primary BlRGB(0, 82, 165)\n\n-Primary R RGB(197, 27, 50)\n\n+Primary ReRGB(197, 27, 50)\n\n Accent Gr RGB(0, 163, 108)\n\n Neutral GrRGB(128, 128, 128)\n\n Warm YellRGB(255, 193, 7)\n\n-Dark Nav RGB(10, 30, 70)\n+Dark Navy RGB(10, 30, 70)",
     "visual_scores": [
-      0.9871
+      0.986
     ],
-    "visual_avg": 0.9871,
+    "visual_avg": 0.986,
     "diff_images": [
       {
         "page": 1,
@@ -3053,7 +3833,7 @@
         "reference_img": "classic83_color_swatch_palette_p1_reference.png"
       }
     ],
-    "overall_score": 0.9915
+    "overall_score": 0.991
   },
   {
     "name": "classic84_travel_destination_cards",
@@ -3068,9 +3848,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9841
+      0.9816
     ],
-    "visual_avg": 0.9841,
+    "visual_avg": 0.9816,
     "diff_images": [
       {
         "page": 1,
@@ -3078,7 +3858,7 @@
         "reference_img": "classic84_travel_destination_cards_p1_reference.png"
       }
     ],
-    "overall_score": 0.9936
+    "overall_score": 0.9926
   },
   {
     "name": "classic85_lab_results_with_image",
@@ -3093,9 +3873,9 @@
     "word_text_similarity": 0.9,
     "text_diff": "--- minipdf/classic85_lab_results_with_image.pdf\n+++ reference/classic85_lab_results_with_image.pdf\n@@ -1,7 +1,7 @@\n Sample Analysis Report\n\n-Paramete Value Unit ReferenceFlag\n\n-pH 7.35 7.35 – 7.4 Normal\n\n+ParameteValue Unit ReferenceFlag\n\n+pH 7.35 7.35 – 7.45Normal\n\n Glucose 5.2 mmol/L 3.9 – 5.5 Normal\n\n Sodium 142 mEq/L 136 – 145 Normal\n\n-Potassiu 5 mEq/L 3.5 – 5.0 Normal\n\n+Potassium 5 mEq/L 3.5 – 5.0 Normal\n\n Creatinine 1.4 mg/dL 0.6 – 1.2 High",
     "visual_scores": [
-      0.9871
+      0.9856
     ],
-    "visual_avg": 0.9871,
+    "visual_avg": 0.9856,
     "diff_images": [
       {
         "page": 1,
@@ -3103,7 +3883,7 @@
         "reference_img": "classic85_lab_results_with_image_p1_reference.png"
       }
     ],
-    "overall_score": 0.9912
+    "overall_score": 0.9906
   },
   {
     "name": "classic86_software_screenshot_features",
@@ -3118,9 +3898,9 @@
     "word_text_similarity": 0.7826,
     "text_diff": "--- minipdf/classic86_software_screenshot_features.pdf\n+++ reference/classic86_software_screenshot_features.pdf\n@@ -1,9 +1,9 @@\n MiniApp v2.0\n\n The fastest lightweight app\n\n Feature Available\n\n-Dark Mod Yes\n\n-Auto SaveYes\n\n-Cloud SynYes\n\n+Dark ModeYes\n\n+Auto Save Yes\n\n+Cloud SyncYes\n\n Offline MoYes\n\n-API AccesPro only\n\n+API AccessPro only\n\n Export to Yes",
     "visual_scores": [
-      0.9937
+      0.993
     ],
-    "visual_avg": 0.9937,
+    "visual_avg": 0.993,
     "diff_images": [
       {
         "page": 1,
@@ -3128,7 +3908,7 @@
         "reference_img": "classic86_software_screenshot_features_p1_reference.png"
       }
     ],
-    "overall_score": 0.9906
+    "overall_score": 0.9903
   },
   {
     "name": "classic87_sports_results_with_logos",
@@ -3143,9 +3923,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9922
+      0.9903
     ],
-    "visual_avg": 0.9922,
+    "visual_avg": 0.9903,
     "diff_images": [
       {
         "page": 1,
@@ -3153,7 +3933,7 @@
         "reference_img": "classic87_sports_results_with_logos_p1_reference.png"
       }
     ],
-    "overall_score": 0.9969
+    "overall_score": 0.9961
   },
   {
     "name": "classic88_image_after_data",
@@ -3193,9 +3973,9 @@
     "word_text_similarity": 0.88,
     "text_diff": "--- minipdf/classic89_nutrition_label_with_image.pdf\n+++ reference/classic89_nutrition_label_with_image.pdf\n@@ -1,11 +1,11 @@\n Nutrition Facts\n\n Serving Size: 30g (approx. 1 cup)\n\n-Nutrient Amount p % Daily Value\n\n+Nutrient Amount p% Daily Value\n\n Calories 120 kcal\n\n Total Fat 3g 4%\n\n Saturated 0.5g 3%\n\n Sodium 160mg 7%\n\n-Total Car 22g 8%\n\n-Dietary Fi 3g 11%\n\n+Total Carb22g 8%\n\n+Dietary Fib3g 11%\n\n Sugars 4g\n\n Protein 3g",
     "visual_scores": [
-      0.9908
+      0.9895
     ],
-    "visual_avg": 0.9908,
+    "visual_avg": 0.9895,
     "diff_images": [
       {
         "page": 1,
@@ -3203,7 +3983,7 @@
         "reference_img": "classic89_nutrition_label_with_image_p1_reference.png"
       }
     ],
-    "overall_score": 0.9914
+    "overall_score": 0.9909
   },
   {
     "name": "classic90_project_status_with_milestones",
@@ -3218,9 +3998,9 @@
     "word_text_similarity": 0.7416,
     "text_diff": "--- minipdf/classic90_project_status_with_milestones.pdf\n+++ reference/classic90_project_status_with_milestones.pdf\n@@ -1,8 +1,8 @@\n Project Orion – Status Report\n\n Reporting Period: Q1 2025\n\n-Milestone Due Date Owner Status\n\n-Requirem Jan 15 PM Team Complete\n\n-Architectu Feb 1 Tech Lea Complete\n\n-Alpha Rel Feb 28 Dev TeamIn Progress\n\n+MilestoneDue DateOwner Status\n\n+RequiremeJan 15 PM Team Complete\n\n+ArchitectuFeb 1 Tech Lead Complete\n\n+Alpha ReleFeb 28 Dev Team In Progress\n\n Beta Testi Mar 31 QA Team Not Started\n\n-Productio Apr 15 DevOps Not Started\n+ProductionApr 15 DevOps Not Started",
     "visual_scores": [
-      0.9782
+      0.9758
     ],
-    "visual_avg": 0.9782,
+    "visual_avg": 0.9758,
     "diff_images": [
       {
         "page": 1,
@@ -3228,7 +4008,7 @@
         "reference_img": "classic90_project_status_with_milestones_p1_reference.png"
       }
     ],
-    "overall_score": 0.971
+    "overall_score": 0.97
   },
   {
     "name": "classic91_simple_bar_chart",

@@ -295,10 +295,6 @@ internal static class ExcelToPdfConverter
                 {
                     var cellText = row[col].Text;
 
-                    // Match LibreOffice General format: reformat numbers that don't fit column width.
-                    if (!string.IsNullOrEmpty(cellText) && !cellText.Contains('\n'))
-                        cellText = FitNumericText(cellText, colWidths[i], options.FontSize);
-
                     if (!string.IsNullOrEmpty(cellText))
                     {
                         // Handle explicit newlines in cell text (e.g., Alt+Enter in Excel).
@@ -344,6 +340,13 @@ internal static class ExcelToPdfConverter
                             var nextCellHasContent = nextContentCol >= 0;
 
                             var shouldClip = isMerged || (!isLastCol && nextCellHasContent);
+                            if (shouldClip)
+                            {
+                                // Reformat numbers that don't fit the column width
+                                if (!cellText.Contains('\n'))
+                                    cellText = FitNumericText(cellText, effectiveWidth, options.FontSize);
+                                fitChars = FittingChars(cellText, effectiveWidth, options.FontSize);
+                            }
                             if (shouldClip && cellText.Length > fitChars)
                             {
                                 // Truncate to effective column width (matches LibreOffice clip)
@@ -459,9 +462,12 @@ internal static class ExcelToPdfConverter
             {
                 var lines = cellLines[i];
                 var col = columns[i];
-                var color = col < row.Count ? row[col].Color : null;
-                var fillColor = col < row.Count ? row[col].FillColor : null;
-                var alignment = col < row.Count ? row[col].Alignment : "left";
+                var cell = col < row.Count ? row[col] : null;
+                var color = cell?.Color;
+                var fillColor = cell?.FillColor;
+                var alignment = cell?.Alignment ?? "left";
+                var cellFontSize = cell?.FontSize ?? options.FontSize;
+                var border = cell?.Border;
                 var cellY = currentY;
 
                 // Draw fill rectangle behind cell if fill color is set
@@ -471,6 +477,43 @@ internal static class ExcelToPdfConverter
                     currentPage!.AddRectangle(x, currentY - fillHeight, colWidths[i] + columnPadding, fillHeight, fillColor);
                 }
 
+                // Draw cell borders
+                if (border != null)
+                {
+                    var borderHeight = lineHeight * maxLinesInRow;
+                    var bx = x;
+                    var byTop = currentY;
+                    var byBottom = currentY - borderHeight;
+                    var bxRight = x + colWidths[i] + columnPadding;
+                    var borderColor = new PdfColor(0f, 0f, 0f);
+                    var borderWidth = 0.5f;
+
+                    if (border.Left is { Style: not "none" and not "" })
+                    {
+                        var bc = border.Left.Color ?? borderColor;
+                        var bw = border.Left.Style == "thick" ? 1.5f : border.Left.Style == "medium" ? 1f : borderWidth;
+                        currentPage!.AddLine(bx, byTop, bx, byBottom, bc, bw);
+                    }
+                    if (border.Right is { Style: not "none" and not "" })
+                    {
+                        var bc = border.Right.Color ?? borderColor;
+                        var bw = border.Right.Style == "thick" ? 1.5f : border.Right.Style == "medium" ? 1f : borderWidth;
+                        currentPage!.AddLine(bxRight, byTop, bxRight, byBottom, bc, bw);
+                    }
+                    if (border.Top is { Style: not "none" and not "" })
+                    {
+                        var bc = border.Top.Color ?? borderColor;
+                        var bw = border.Top.Style == "thick" ? 1.5f : border.Top.Style == "medium" ? 1f : borderWidth;
+                        currentPage!.AddLine(bx, byTop, bxRight, byTop, bc, bw);
+                    }
+                    if (border.Bottom is { Style: not "none" and not "" })
+                    {
+                        var bc = border.Bottom.Color ?? borderColor;
+                        var bw = border.Bottom.Style == "thick" ? 1.5f : border.Bottom.Style == "medium" ? 1f : borderWidth;
+                        currentPage!.AddLine(bx, byBottom, bxRight, byBottom, bc, bw);
+                    }
+                }
+
                 for (var lineIdx = 0; lineIdx < lines.Length; lineIdx++)
                 {
                     if (!string.IsNullOrEmpty(lines[lineIdx]))
@@ -478,15 +521,15 @@ internal static class ExcelToPdfConverter
                         var textX = x;
                         if (alignment == "right")
                         {
-                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
+                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
                             textX = x + colWidths[i] - textWidth;
                         }
                         else if (alignment == "center")
                         {
-                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
+                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
                             textX = x + (colWidths[i] - textWidth) / 2f;
                         }
-                        currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color);
+                        currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color);
                     }
                     cellY -= lineHeight;
                 }
@@ -1655,9 +1698,9 @@ internal static class ExcelToPdfConverter
     /// </summary>
     private static int FittingChars(string text, float widthPts, float fontSize)
     {
-        // Use Helvetica character widths scaled by ~0.90 to approximate Calibri/LibreOffice
-        // rendering (which uses narrower fonts). This ensures text clipping matches
-        // what LibreOffice shows in reference PDFs.
+        // Use Helvetica character widths scaled by ~0.97 to approximate Calibri/LibreOffice
+        // rendering. A value of 0.97 allows enough text to fit column widths
+        // while still preventing significant overflow.
         double used = 0;
         const double scale = 0.93;
         for (var i = 0; i < text.Length; i++)
@@ -1799,24 +1842,21 @@ internal static class ExcelToPdfConverter
                 // Clamp to reasonable bounds but respect the spreadsheet's intent
                 widths[i] = Math.Clamp(excelPts, minColWidth, maxColWidth);
             }
-            else if (maxCols >= 2)
-            {
-                // No explicit column widths — size columns based on content so that
-                // text is not unnecessarily clipped when the page has room.  Use the
-                // Excel default column width (8.43 char units) as a minimum so that
-                // narrow-content columns don't collapse below the standard width.
-                var defaultPts = ExcelSheet.CharUnitsToPoints(8.43f);
-                var natural = colMaxWidthPts[i] + 2 * avgCharWidth;
-                natural = Math.Max(natural, defaultPts);
-                widths[i] = Math.Clamp(natural, minColWidth, maxColWidth);
-            }
-            else
+            else if (maxCols == 1)
             {
                 // Single-column sheet: use content-based width so the column fills the page
                 // (LibreOffice expands 1-column sheets to page width).
                 var natural = colMaxWidthPts[i] + 2 * avgCharWidth;
                 natural = Math.Max(natural, 5 * avgCharWidth); // minimum 5 chars
                 widths[i] = Math.Clamp(natural, minColWidth, maxColWidth);
+            }
+            else
+            {
+                // No explicit column widths — use Excel's default column width (8.43
+                // char units) like LibreOffice does.  Text that exceeds the column
+                // boundary is clipped in the rendering step (shouldClip logic).
+                var defaultPts = ExcelSheet.CharUnitsToPoints(8.43f);
+                widths[i] = Math.Clamp(defaultPts, minColWidth, maxColWidth);
             }
         }
 
