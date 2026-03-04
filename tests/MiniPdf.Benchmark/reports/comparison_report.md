@@ -1,133 +1,133 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-03T17:04:52.328982
+Generated: 2026-03-04T13:16:11.349881
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🟢 classic01_basic_table_with_headers | 1.0 | 0.9924 | 1/1 | **0.997** |
-| 2 | 🟢 classic02_multiple_worksheets | 0.9971 | 0.9959 | 3/3 | **0.9972** |
+| 1 | 🟢 classic01_basic_table_with_headers | 1.0 | 0.9947 | 1/1 | **0.9979** |
+| 2 | 🟢 classic02_multiple_worksheets | 0.9971 | 0.9963 | 3/3 | **0.9974** |
 | 3 | 🟢 classic03_empty_workbook | 1.0 | 1.0 | 1/1 | **1.0** |
 | 4 | 🟢 classic04_single_cell | 1.0 | 0.9997 | 1/1 | **0.9999** |
-| 5 | 🟢 classic05_wide_table | 1.0 | 0.9868 | 3/3 | **0.9947** |
-| 6 | 🟢 classic06_tall_table | 1.0 | 0.9309 | 5/5 | **0.9724** |
+| 5 | 🟢 classic05_wide_table | 1.0 | 0.9906 | 3/3 | **0.9962** |
+| 6 | 🟢 classic06_tall_table | 1.0 | 0.9384 | 5/5 | **0.9754** |
 | 7 | 🟢 classic07_numbers_only | 1.0 | 0.9972 | 1/1 | **0.9989** |
-| 8 | 🟢 classic08_mixed_text_and_numbers | 1.0 | 0.9943 | 1/1 | **0.9977** |
-| 9 | 🔴 classic09_long_text | 0.9319 | 0.0805 | 1/12 | **0.505** |
-| 10 | 🟢 classic100_stacked_bar_chart | 0.8775 | 0.9043 | 1/1 | **0.9127** |
-| 11 | 🟡 classic101_percent_stacked_bar | 0.7885 | 0.89 | 1/1 | **0.8714** |
-| 12 | 🟢 classic102_line_chart_with_markers | 0.8 | 0.9852 | 2/2 | **0.9141** |
-| 13 | 🟡 classic103_pie_chart_with_labels | 0.592 | 0.966 | 2/2 | **0.8232** |
-| 14 | 🟡 classic104_combo_bar_line_chart | 0.7872 | 0.7491 | 2/2 | **0.8145** |
-| 15 | 🟡 classic105_3d_bar_chart | 0.8703 | 0.736 | 2/2 | **0.8425** |
-| 16 | 🟢 classic106_3d_pie_chart | 0.8187 | 0.9635 | 2/2 | **0.9129** |
-| 17 | 🟡 classic107_multi_series_line | 0.7291 | 0.7712 | 2/2 | **0.8001** |
-| 18 | 🟡 classic108_stacked_area_chart | 0.8772 | 0.8678 | 1/1 | **0.898** |
-| 19 | 🟡 classic109_scatter_with_trendline | 0.6852 | 0.8697 | 2/2 | **0.822** |
-| 20 | 🟢 classic10_special_xml_characters | 1.0 | 0.994 | 1/1 | **0.9976** |
-| 21 | 🟡 classic110_chart_with_legend | 0.8 | 0.7723 | 2/2 | **0.8289** |
-| 22 | 🟡 classic111_chart_with_axis_labels | 0.6053 | 0.9741 | 2/2 | **0.8318** |
-| 23 | 🟡 classic112_multiple_charts | 0.8682 | 0.75 | 2/2 | **0.8473** |
-| 24 | 🟡 classic113_chart_sheet | 0.8225 | 0.7237 | 2/2 | **0.8185** |
-| 25 | 🟢 classic114_chart_large_dataset | 0.8903 | 0.8843 | 4/4 | **0.9098** |
-| 26 | 🟢 classic115_chart_negative_values | 0.8743 | 0.9708 | 2/2 | **0.938** |
-| 27 | 🟡 classic116_percent_stacked_area | 0.7965 | 0.8524 | 1/1 | **0.8596** |
-| 28 | 🟡 classic117_stock_ohlc_chart | 0.7879 | 0.7114 | 2/2 | **0.7997** |
-| 29 | 🟢 classic118_bar_chart_custom_colors | 0.9053 | 0.959 | 2/2 | **0.9457** |
-| 30 | 🟢 classic119_dashboard_multi_charts | 0.8723 | 0.9325 | 2/2 | **0.9219** |
-| 31 | 🟢 classic11_sparse_rows | 1.0 | 0.9988 | 2/2 | **0.9995** |
-| 32 | 🔴 classic120_chart_with_date_axis | 0.3194 | 0.7838 | 2/2 | **0.6413** |
-| 33 | 🟢 classic12_sparse_columns | 1.0 | 0.9979 | 1/1 | **0.9992** |
-| 34 | 🟢 classic13_date_strings | 0.949 | 0.9901 | 1/1 | **0.9756** |
-| 35 | 🟢 classic14_decimal_numbers | 1.0 | 0.9937 | 1/1 | **0.9975** |
-| 36 | 🟢 classic15_negative_numbers | 1.0 | 0.9946 | 1/1 | **0.9978** |
-| 37 | 🟢 classic16_percentage_strings | 1.0 | 0.993 | 1/1 | **0.9972** |
-| 38 | 🟢 classic17_currency_strings | 0.9662 | 0.9917 | 1/1 | **0.9832** |
-| 39 | 🟢 classic18_large_dataset | 1.0 | 0.8676 | 24/24 | **0.947** |
-| 40 | 🟢 classic19_single_column_list | 1.0 | 0.9939 | 1/1 | **0.9976** |
+| 8 | 🟢 classic08_mixed_text_and_numbers | 1.0 | 0.996 | 1/1 | **0.9984** |
+| 9 | 🔴 classic09_long_text | 0.6985 | 0.576 | 7/12 | **0.6098** |
+| 10 | 🟢 classic100_stacked_bar_chart | 0.9348 | 0.9129 | 1/1 | **0.9391** |
+| 11 | 🟢 classic101_percent_stacked_bar | 0.9273 | 0.878 | 1/1 | **0.9221** |
+| 12 | 🟢 classic102_line_chart_with_markers | 0.8485 | 0.9886 | 2/2 | **0.9348** |
+| 13 | 🟡 classic103_pie_chart_with_labels | 0.6667 | 0.9732 | 2/2 | **0.856** |
+| 14 | 🟡 classic104_combo_bar_line_chart | 0.7872 | 0.7528 | 2/2 | **0.816** |
+| 15 | 🟡 classic105_3d_bar_chart | 0.8832 | 0.743 | 2/2 | **0.8505** |
+| 16 | 🟢 classic106_3d_pie_chart | 0.9587 | 0.9666 | 2/2 | **0.9701** |
+| 17 | 🟡 classic107_multi_series_line | 0.7923 | 0.7739 | 2/2 | **0.8265** |
+| 18 | 🟢 classic108_stacked_area_chart | 0.931 | 0.8933 | 1/1 | **0.9297** |
+| 19 | 🟢 classic109_scatter_with_trendline | 0.7903 | 0.9847 | 2/2 | **0.91** |
+| 20 | 🟢 classic10_special_xml_characters | 1.0 | 0.9951 | 1/1 | **0.998** |
+| 21 | 🟡 classic110_chart_with_legend | 0.8 | 0.7793 | 2/2 | **0.8317** |
+| 22 | 🟢 classic111_chart_with_axis_labels | 0.8267 | 0.9759 | 2/2 | **0.921** |
+| 23 | 🟡 classic112_multiple_charts | 0.8837 | 0.7588 | 2/2 | **0.857** |
+| 24 | 🟡 classic113_chart_sheet | 0.9259 | 0.7319 | 2/2 | **0.8631** |
+| 25 | 🟢 classic114_chart_large_dataset | 0.9234 | 0.8835 | 4/4 | **0.9228** |
+| 26 | 🟢 classic115_chart_negative_values | 0.8632 | 0.9713 | 2/2 | **0.9338** |
+| 27 | 🟢 classic116_percent_stacked_area | 0.9322 | 0.8783 | 1/1 | **0.9242** |
+| 28 | 🟡 classic117_stock_ohlc_chart | 0.7739 | 0.7222 | 2/2 | **0.7984** |
+| 29 | 🟢 classic118_bar_chart_custom_colors | 0.9565 | 0.96 | 2/2 | **0.9666** |
+| 30 | 🟢 classic119_dashboard_multi_charts | 0.9149 | 0.9329 | 2/2 | **0.9391** |
+| 31 | 🟢 classic11_sparse_rows | 1.0 | 0.9992 | 2/2 | **0.9997** |
+| 32 | 🟡 classic120_chart_with_date_axis | 0.6195 | 0.7823 | 2/2 | **0.7607** |
+| 33 | 🟢 classic12_sparse_columns | 1.0 | 0.9983 | 1/1 | **0.9993** |
+| 34 | 🟢 classic13_date_strings | 1.0 | 0.9942 | 1/1 | **0.9977** |
+| 35 | 🟢 classic14_decimal_numbers | 1.0 | 0.9954 | 1/1 | **0.9982** |
+| 36 | 🟢 classic15_negative_numbers | 1.0 | 0.996 | 1/1 | **0.9984** |
+| 37 | 🟢 classic16_percentage_strings | 1.0 | 0.9948 | 1/1 | **0.9979** |
+| 38 | 🟢 classic17_currency_strings | 1.0 | 0.9939 | 1/1 | **0.9976** |
+| 39 | 🟢 classic18_large_dataset | 1.0 | 0.8805 | 24/24 | **0.9522** |
+| 40 | 🟢 classic19_single_column_list | 1.0 | 0.9947 | 1/1 | **0.9979** |
 | 41 | 🟢 classic20_all_empty_cells | 1.0 | 1.0 | 1/1 | **1.0** |
 | 42 | 🟢 classic21_header_only | 1.0 | 0.9988 | 1/1 | **0.9995** |
-| 43 | 🟢 classic22_long_sheet_name | 1.0 | 0.9984 | 1/1 | **0.9994** |
-| 44 | 🟢 classic23_unicode_text | 0.8017 | 0.9928 | 1/1 | **0.9178** |
-| 45 | 🟢 classic24_red_text | 1.0 | 0.9924 | 1/1 | **0.997** |
-| 46 | 🟢 classic25_multiple_colors | 0.9978 | 0.989 | 1/1 | **0.9947** |
-| 47 | 🟢 classic26_inline_strings | 1.0 | 0.9966 | 1/1 | **0.9986** |
+| 43 | 🟢 classic22_long_sheet_name | 1.0 | 0.9986 | 1/1 | **0.9994** |
+| 44 | 🟢 classic23_unicode_text | 0.8017 | 0.9943 | 1/1 | **0.9184** |
+| 45 | 🟢 classic24_red_text | 1.0 | 0.993 | 1/1 | **0.9972** |
+| 46 | 🟢 classic25_multiple_colors | 0.9978 | 0.9925 | 1/1 | **0.9961** |
+| 47 | 🟢 classic26_inline_strings | 1.0 | 0.9977 | 1/1 | **0.9991** |
 | 48 | 🟢 classic27_single_row | 1.0 | 0.9985 | 1/1 | **0.9994** |
-| 49 | 🟢 classic28_duplicate_values | 1.0 | 0.993 | 1/1 | **0.9972** |
-| 50 | 🟢 classic29_formula_results | 1.0 | 0.9925 | 1/1 | **0.997** |
-| 51 | 🟢 classic30_mixed_empty_and_filled_sheets | 1.0 | 0.9986 | 2/2 | **0.9994** |
-| 52 | 🟢 classic31_bold_header_row | 0.996 | 0.9896 | 1/1 | **0.9942** |
-| 53 | 🟢 classic32_right_aligned_numbers | 1.0 | 0.9954 | 1/1 | **0.9982** |
-| 54 | 🟢 classic33_centered_text | 1.0 | 0.998 | 1/1 | **0.9992** |
-| 55 | 🟢 classic34_explicit_column_widths | 1.0 | 0.9913 | 1/1 | **0.9965** |
-| 56 | 🟢 classic35_explicit_row_heights | 0.9647 | 0.9943 | 1/1 | **0.9836** |
-| 57 | 🟢 classic36_merged_cells | 0.963 | 0.9911 | 1/1 | **0.9816** |
-| 58 | 🟢 classic37_freeze_panes | 1.0 | 0.9824 | 1/1 | **0.993** |
-| 59 | 🟢 classic38_hyperlink_cell | 1.0 | 0.9961 | 1/1 | **0.9984** |
-| 60 | 🟢 classic39_financial_table | 1.0 | 0.9872 | 1/1 | **0.9949** |
-| 61 | 🟢 classic40_scientific_notation | 0.8991 | 0.9893 | 1/1 | **0.9554** |
-| 62 | 🟢 classic41_integer_vs_float | 0.9453 | 0.9932 | 1/1 | **0.9754** |
-| 63 | 🟢 classic42_boolean_values | 0.9947 | 0.9913 | 1/1 | **0.9944** |
-| 64 | 🟢 classic43_inventory_report | 0.9984 | 0.9774 | 1/1 | **0.9903** |
-| 65 | 🟢 classic44_employee_roster | 0.9683 | 0.967 | 1/1 | **0.9741** |
-| 66 | 🟢 classic45_sales_by_region | 1.0 | 0.9943 | 4/4 | **0.9977** |
-| 67 | 🟢 classic46_grade_book | 1.0 | 0.9841 | 1/1 | **0.9936** |
-| 68 | 🟢 classic47_time_series | 1.0 | 0.9728 | 1/1 | **0.9891** |
-| 69 | 🟢 classic48_survey_results | 0.9828 | 0.9858 | 1/1 | **0.9874** |
-| 70 | 🟢 classic49_contact_list | 0.9005 | 0.9738 | 1/1 | **0.9497** |
-| 71 | 🟢 classic50_budget_vs_actuals | 0.9978 | 0.9788 | 3/3 | **0.9906** |
-| 72 | 🟢 classic51_product_catalog | 0.9771 | 0.9747 | 1/1 | **0.9807** |
-| 73 | 🟢 classic52_pivot_summary | 0.9956 | 0.9784 | 1/1 | **0.9896** |
-| 74 | 🟢 classic53_invoice | 0.9984 | 0.9836 | 1/1 | **0.9928** |
-| 75 | 🟢 classic54_multi_level_header | 1.0 | 0.9812 | 1/1 | **0.9925** |
-| 76 | 🟢 classic55_error_values | 1.0 | 0.9878 | 1/1 | **0.9951** |
-| 77 | 🟡 classic56_alternating_row_colors | 1.0 | 0.7141 | 1/1 | **0.8856** |
-| 78 | 🟡 classic57_cjk_only | 0.7624 | 0.8689 | 1/1 | **0.8525** |
-| 79 | 🟢 classic58_mixed_numeric_formats | 0.9028 | 0.9904 | 1/1 | **0.9573** |
-| 80 | 🟢 classic59_multi_sheet_summary | 1.0 | 0.9923 | 4/4 | **0.9969** |
-| 81 | 🟢 classic60_large_wide_table | 1.0 | 0.9091 | 4/4 | **0.9636** |
-| 82 | 🟢 classic61_product_card_with_image | 1.0 | 0.9624 | 1/1 | **0.985** |
-| 83 | 🟢 classic62_company_logo_header | 0.996 | 0.9714 | 1/1 | **0.987** |
-| 84 | 🟢 classic63_two_products_side_by_side | 1.0 | 0.9569 | 1/1 | **0.9828** |
-| 85 | 🟢 classic64_employee_directory_with_photo | 0.9835 | 0.9698 | 1/1 | **0.9813** |
-| 86 | 🟢 classic65_inventory_with_product_photos | 0.9779 | 0.9554 | 1/1 | **0.9733** |
-| 87 | 🟢 classic66_invoice_with_logo | 0.9868 | 0.9721 | 1/1 | **0.9836** |
-| 88 | 🟢 classic67_real_estate_listing | 1.0 | 0.9508 | 1/1 | **0.9803** |
-| 89 | 🟢 classic68_restaurant_menu | 0.9881 | 0.927 | 1/1 | **0.966** |
-| 90 | 🟢 classic69_image_only_sheet | 1.0 | 0.9321 | 1/1 | **0.9728** |
-| 91 | 🟢 classic70_product_catalog_with_images | 0.9793 | 0.9408 | 1/1 | **0.968** |
-| 92 | 🟢 classic71_multi_sheet_with_images | 0.9966 | 0.9819 | 3/3 | **0.9914** |
-| 93 | 🟢 classic72_bar_chart_image_with_data | 1.0 | 0.9358 | 1/1 | **0.9743** |
-| 94 | 🟢 classic73_event_flyer_with_banner | 0.9939 | 0.92 | 1/1 | **0.9656** |
-| 95 | 🟢 classic74_dashboard_with_kpi_image | 0.947 | 0.9439 | 1/1 | **0.9564** |
-| 96 | 🟢 classic75_certificate_with_seal | 1.0 | 0.9686 | 1/1 | **0.9874** |
-| 97 | 🟢 classic76_product_image_grid | 1.0 | 0.9464 | 1/1 | **0.9786** |
-| 98 | 🟢 classic77_news_article_with_hero_image | 1.0 | 0.9178 | 1/1 | **0.9671** |
-| 99 | 🟢 classic78_small_icon_per_row | 0.9863 | 0.9799 | 1/1 | **0.9865** |
-| 100 | 🟢 classic79_wide_panoramic_banner | 1.0 | 0.9099 | 1/1 | **0.964** |
-| 101 | 🟢 classic80_portrait_tall_image | 1.0 | 0.9646 | 1/1 | **0.9858** |
-| 102 | 🟢 classic81_step_by_step_with_images | 1.0 | 0.9432 | 1/1 | **0.9773** |
-| 103 | 🟢 classic82_before_after_images | 0.9704 | 0.9352 | 1/1 | **0.9622** |
-| 104 | 🟢 classic83_color_swatch_palette | 0.9862 | 0.9608 | 1/1 | **0.9788** |
-| 105 | 🟢 classic84_travel_destination_cards | 1.0 | 0.912 | 1/1 | **0.9648** |
-| 106 | 🟢 classic85_lab_results_with_image | 0.8277 | 0.9594 | 1/1 | **0.9148** |
-| 107 | 🟢 classic86_software_screenshot_features | 0.9932 | 0.9513 | 1/1 | **0.9778** |
-| 108 | 🟢 classic87_sports_results_with_logos | 1.0 | 0.9834 | 1/1 | **0.9934** |
-| 109 | 🟢 classic88_image_after_data | 0.997 | 0.9714 | 1/1 | **0.9874** |
-| 110 | 🟢 classic89_nutrition_label_with_image | 0.9878 | 0.9695 | 1/1 | **0.9829** |
-| 111 | 🟢 classic90_project_status_with_milestones | 0.9067 | 0.9463 | 1/1 | **0.9412** |
-| 112 | 🟢 classic91_simple_bar_chart | 0.9585 | 0.9587 | 2/2 | **0.9669** |
-| 113 | 🟡 classic92_horizontal_bar_chart | 0.6165 | 0.9612 | 2/2 | **0.8311** |
-| 114 | 🟢 classic93_line_chart | 0.8344 | 0.987 | 2/2 | **0.9286** |
-| 115 | 🟡 classic94_pie_chart | 0.8091 | 0.9218 | 2/2 | **0.8924** |
-| 116 | 🟡 classic95_area_chart | 0.5806 | 0.7513 | 2/2 | **0.7328** |
-| 117 | 🟡 classic96_scatter_chart | 0.7934 | 0.881 | 2/2 | **0.8698** |
-| 118 | 🟢 classic97_doughnut_chart | 0.8571 | 0.9258 | 2/2 | **0.9132** |
-| 119 | 🟡 classic98_radar_chart | 0.7519 | 0.9917 | 2/2 | **0.8974** |
-| 120 | 🟡 classic99_bubble_chart | 0.7537 | 0.8373 | 2/2 | **0.8364** |
+| 49 | 🟢 classic28_duplicate_values | 1.0 | 0.9952 | 1/1 | **0.9981** |
+| 50 | 🟢 classic29_formula_results | 1.0 | 0.9943 | 1/1 | **0.9977** |
+| 51 | 🟢 classic30_mixed_empty_and_filled_sheets | 1.0 | 0.9988 | 2/2 | **0.9995** |
+| 52 | 🟢 classic31_bold_header_row | 1.0 | 0.9931 | 1/1 | **0.9972** |
+| 53 | 🟢 classic32_right_aligned_numbers | 1.0 | 0.9959 | 1/1 | **0.9984** |
+| 54 | 🟢 classic33_centered_text | 1.0 | 0.9983 | 1/1 | **0.9993** |
+| 55 | 🟢 classic34_explicit_column_widths | 1.0 | 0.9917 | 1/1 | **0.9967** |
+| 56 | 🟢 classic35_explicit_row_heights | 0.9882 | 0.9948 | 1/1 | **0.9932** |
+| 57 | 🟢 classic36_merged_cells | 1.0 | 0.9931 | 1/1 | **0.9972** |
+| 58 | 🟢 classic37_freeze_panes | 1.0 | 0.9849 | 1/1 | **0.994** |
+| 59 | 🟢 classic38_hyperlink_cell | 1.0 | 0.9975 | 1/1 | **0.999** |
+| 60 | 🟢 classic39_financial_table | 1.0 | 0.9904 | 1/1 | **0.9962** |
+| 61 | 🟢 classic40_scientific_notation | 0.9854 | 0.994 | 1/1 | **0.9918** |
+| 62 | 🟢 classic41_integer_vs_float | 1.0 | 0.9952 | 1/1 | **0.9981** |
+| 63 | 🟢 classic42_boolean_values | 0.9948 | 0.9935 | 1/1 | **0.9953** |
+| 64 | 🟢 classic43_inventory_report | 0.9984 | 0.9846 | 1/1 | **0.9932** |
+| 65 | 🟢 classic44_employee_roster | 0.9684 | 0.9757 | 1/1 | **0.9776** |
+| 66 | 🟢 classic45_sales_by_region | 1.0 | 0.9959 | 4/4 | **0.9984** |
+| 67 | 🟢 classic46_grade_book | 1.0 | 0.9877 | 1/1 | **0.9951** |
+| 68 | 🟢 classic47_time_series | 1.0 | 0.9755 | 1/1 | **0.9902** |
+| 69 | 🟢 classic48_survey_results | 0.9914 | 0.9895 | 1/1 | **0.9924** |
+| 70 | 🟢 classic49_contact_list | 0.9814 | 0.983 | 1/1 | **0.9858** |
+| 71 | 🟢 classic50_budget_vs_actuals | 0.9978 | 0.9849 | 3/3 | **0.9931** |
+| 72 | 🟢 classic51_product_catalog | 0.9784 | 0.9815 | 1/1 | **0.984** |
+| 73 | 🟢 classic52_pivot_summary | 0.9978 | 0.9846 | 1/1 | **0.993** |
+| 74 | 🟢 classic53_invoice | 0.9951 | 0.9885 | 1/1 | **0.9934** |
+| 75 | 🟢 classic54_multi_level_header | 1.0 | 0.9886 | 1/1 | **0.9954** |
+| 76 | 🟢 classic55_error_values | 1.0 | 0.9915 | 1/1 | **0.9966** |
+| 77 | 🟢 classic56_alternating_row_colors | 1.0 | 0.9871 | 1/1 | **0.9948** |
+| 78 | 🟡 classic57_cjk_only | 0.7624 | 0.8675 | 1/1 | **0.852** |
+| 79 | 🟢 classic58_mixed_numeric_formats | 0.9905 | 0.9926 | 1/1 | **0.9932** |
+| 80 | 🟢 classic59_multi_sheet_summary | 1.0 | 0.9942 | 4/4 | **0.9977** |
+| 81 | 🟢 classic60_large_wide_table | 1.0 | 0.9223 | 4/4 | **0.9689** |
+| 82 | 🟢 classic61_product_card_with_image | 1.0 | 0.9894 | 1/1 | **0.9958** |
+| 83 | 🟢 classic62_company_logo_header | 0.996 | 0.9904 | 1/1 | **0.9946** |
+| 84 | 🟢 classic63_two_products_side_by_side | 1.0 | 0.9921 | 1/1 | **0.9968** |
+| 85 | 🟢 classic64_employee_directory_with_photo | 0.9835 | 0.9709 | 1/1 | **0.9818** |
+| 86 | 🟢 classic65_inventory_with_product_photos | 0.9842 | 0.9689 | 1/1 | **0.9812** |
+| 87 | 🟢 classic66_invoice_with_logo | 0.9801 | 0.9896 | 1/1 | **0.9879** |
+| 88 | 🟢 classic67_real_estate_listing | 1.0 | 0.9921 | 1/1 | **0.9968** |
+| 89 | 🟢 classic68_restaurant_menu | 0.9857 | 0.9425 | 1/1 | **0.9713** |
+| 90 | 🟢 classic69_image_only_sheet | 1.0 | 0.9973 | 1/1 | **0.9989** |
+| 91 | 🟢 classic70_product_catalog_with_images | 0.9862 | 0.9567 | 1/1 | **0.9772** |
+| 92 | 🟢 classic71_multi_sheet_with_images | 0.9966 | 0.9949 | 3/3 | **0.9966** |
+| 93 | 🟢 classic72_bar_chart_image_with_data | 1.0 | 0.9826 | 1/1 | **0.993** |
+| 94 | 🟢 classic73_event_flyer_with_banner | 0.9939 | 0.9877 | 1/1 | **0.9926** |
+| 95 | 🟢 classic74_dashboard_with_kpi_image | 0.9595 | 0.9829 | 1/1 | **0.977** |
+| 96 | 🟢 classic75_certificate_with_seal | 1.0 | 0.9849 | 1/1 | **0.994** |
+| 97 | 🟢 classic76_product_image_grid | 1.0 | 0.9845 | 1/1 | **0.9938** |
+| 98 | 🟢 classic77_news_article_with_hero_image | 1.0 | 0.9784 | 1/1 | **0.9914** |
+| 99 | 🟢 classic78_small_icon_per_row | 0.9832 | 0.9873 | 1/1 | **0.9882** |
+| 100 | 🟢 classic79_wide_panoramic_banner | 1.0 | 0.9907 | 1/1 | **0.9963** |
+| 101 | 🟢 classic80_portrait_tall_image | 1.0 | 0.9889 | 1/1 | **0.9956** |
+| 102 | 🟢 classic81_step_by_step_with_images | 1.0 | 0.9568 | 1/1 | **0.9827** |
+| 103 | 🟢 classic82_before_after_images | 1.0 | 0.9878 | 1/1 | **0.9951** |
+| 104 | 🟢 classic83_color_swatch_palette | 0.9862 | 0.9723 | 1/1 | **0.9834** |
+| 105 | 🟢 classic84_travel_destination_cards | 1.0 | 0.9348 | 1/1 | **0.9739** |
+| 106 | 🟢 classic85_lab_results_with_image | 0.9933 | 0.9872 | 1/1 | **0.9922** |
+| 107 | 🟢 classic86_software_screenshot_features | 0.973 | 0.993 | 1/1 | **0.9864** |
+| 108 | 🟢 classic87_sports_results_with_logos | 1.0 | 0.9885 | 1/1 | **0.9954** |
+| 109 | 🟢 classic88_image_after_data | 0.997 | 0.9899 | 1/1 | **0.9948** |
+| 110 | 🟢 classic89_nutrition_label_with_image | 0.9903 | 0.9921 | 1/1 | **0.993** |
+| 111 | 🟢 classic90_project_status_with_milestones | 0.9534 | 0.98 | 1/1 | **0.9734** |
+| 112 | 🟢 classic91_simple_bar_chart | 0.9585 | 0.9605 | 2/2 | **0.9676** |
+| 113 | 🟢 classic92_horizontal_bar_chart | 0.9612 | 0.9659 | 2/2 | **0.9708** |
+| 114 | 🟢 classic93_line_chart | 0.8742 | 0.9851 | 2/2 | **0.9437** |
+| 115 | 🟢 classic94_pie_chart | 1.0 | 0.9316 | 2/2 | **0.9726** |
+| 116 | 🟡 classic95_area_chart | 0.678 | 0.7628 | 2/2 | **0.7763** |
+| 117 | 🟢 classic96_scatter_chart | 0.8085 | 0.9849 | 2/2 | **0.9174** |
+| 118 | 🟢 classic97_doughnut_chart | 1.0 | 0.9377 | 2/2 | **0.9751** |
+| 119 | 🟢 classic98_radar_chart | 0.8935 | 0.9893 | 2/2 | **0.9531** |
+| 120 | 🟢 classic99_bubble_chart | 0.8245 | 0.9631 | 2/2 | **0.915** |
 
-**Average Overall Score: 0.9470**
+**Average Overall Score: 0.9650**
 
 ## Visual Comparison
 
@@ -145,13 +145,13 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic01_basic_table_with_headers</b></td>
       <td><img src="images/classic01_basic_table_with_headers_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic01_basic_table_with_headers_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.997</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9979</td>
     </tr>
     <tr>
       <td rowspan="3" valign="top"><b>classic02_multiple_worksheets</b><br><small>p1</small></td>
       <td><img src="images/classic02_multiple_worksheets_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic02_multiple_worksheets_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="3" valign="top"><span style="color:#3fb950">⬤</span> 0.9972</td>
+      <td rowspan="3" valign="top"><span style="color:#3fb950">⬤</span> 0.9974</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -179,7 +179,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="3" valign="top"><b>classic05_wide_table</b><br><small>p1</small></td>
       <td><img src="images/classic05_wide_table_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic05_wide_table_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="3" valign="top"><span style="color:#3fb950">⬤</span> 0.9947</td>
+      <td rowspan="3" valign="top"><span style="color:#3fb950">⬤</span> 0.9962</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -195,7 +195,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="5" valign="top"><b>classic06_tall_table</b><br><small>p1</small></td>
       <td><img src="images/classic06_tall_table_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic06_tall_table_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="5" valign="top"><span style="color:#3fb950">⬤</span> 0.9724</td>
+      <td rowspan="5" valign="top"><span style="color:#3fb950">⬤</span> 0.9754</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -227,42 +227,42 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic08_mixed_text_and_numbers</b></td>
       <td><img src="images/classic08_mixed_text_and_numbers_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic08_mixed_text_and_numbers_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9977</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9984</td>
     </tr>
     <tr>
       <td rowspan="12" valign="top"><b>classic09_long_text</b><br><small>p1</small></td>
       <td><img src="images/classic09_long_text_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic09_long_text_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="12" valign="top"><span style="color:#f85149">⬤</span> 0.505</td>
+      <td rowspan="12" valign="top"><span style="color:#f85149">⬤</span> 0.6098</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p2_minipdf.png" width="340" alt="MiniPdf p2"></td>
       <td><img src="images/classic09_long_text_p2_reference.png" width="340" alt="Reference p2"></td>
     </tr>
     <tr>
       <td align="center"><small>p3</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p3_minipdf.png" width="340" alt="MiniPdf p3"></td>
       <td><img src="images/classic09_long_text_p3_reference.png" width="340" alt="Reference p3"></td>
     </tr>
     <tr>
       <td align="center"><small>p4</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p4_minipdf.png" width="340" alt="MiniPdf p4"></td>
       <td><img src="images/classic09_long_text_p4_reference.png" width="340" alt="Reference p4"></td>
     </tr>
     <tr>
       <td align="center"><small>p5</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p5_minipdf.png" width="340" alt="MiniPdf p5"></td>
       <td><img src="images/classic09_long_text_p5_reference.png" width="340" alt="Reference p5"></td>
     </tr>
     <tr>
       <td align="center"><small>p6</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p6_minipdf.png" width="340" alt="MiniPdf p6"></td>
       <td><img src="images/classic09_long_text_p6_reference.png" width="340" alt="Reference p6"></td>
     </tr>
     <tr>
       <td align="center"><small>p7</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p7_minipdf.png" width="340" alt="MiniPdf p7"></td>
       <td><img src="images/classic09_long_text_p7_reference.png" width="340" alt="Reference p7"></td>
     </tr>
     <tr>
@@ -294,19 +294,19 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic100_stacked_bar_chart</b></td>
       <td><img src="images/classic100_stacked_bar_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic100_stacked_bar_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9127</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9391</td>
     </tr>
     <tr>
       <td valign="top"><b>classic101_percent_stacked_bar</b></td>
       <td><img src="images/classic101_percent_stacked_bar_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic101_percent_stacked_bar_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#d29922">⬤</span> 0.8714</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9221</td>
     </tr>
     <tr>
       <td rowspan="2" valign="top"><b>classic102_line_chart_with_markers</b><br><small>p1</small></td>
       <td><img src="images/classic102_line_chart_with_markers_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic102_line_chart_with_markers_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9141</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9348</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -317,7 +317,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic103_pie_chart_with_labels</b><br><small>p1</small></td>
       <td><img src="images/classic103_pie_chart_with_labels_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic103_pie_chart_with_labels_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8232</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.856</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -328,7 +328,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic104_combo_bar_line_chart</b><br><small>p1</small></td>
       <td><img src="images/classic104_combo_bar_line_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic104_combo_bar_line_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8145</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.816</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -339,7 +339,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic105_3d_bar_chart</b><br><small>p1</small></td>
       <td><img src="images/classic105_3d_bar_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic105_3d_bar_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8425</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8505</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -350,7 +350,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic106_3d_pie_chart</b><br><small>p1</small></td>
       <td><img src="images/classic106_3d_pie_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic106_3d_pie_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9129</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9701</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -361,7 +361,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic107_multi_series_line</b><br><small>p1</small></td>
       <td><img src="images/classic107_multi_series_line_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic107_multi_series_line_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8001</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8265</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -372,13 +372,13 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic108_stacked_area_chart</b></td>
       <td><img src="images/classic108_stacked_area_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic108_stacked_area_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#d29922">⬤</span> 0.898</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9297</td>
     </tr>
     <tr>
       <td rowspan="2" valign="top"><b>classic109_scatter_with_trendline</b><br><small>p1</small></td>
       <td><img src="images/classic109_scatter_with_trendline_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic109_scatter_with_trendline_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.822</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.91</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -389,13 +389,13 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic10_special_xml_characters</b></td>
       <td><img src="images/classic10_special_xml_characters_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic10_special_xml_characters_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9976</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.998</td>
     </tr>
     <tr>
       <td rowspan="2" valign="top"><b>classic110_chart_with_legend</b><br><small>p1</small></td>
       <td><img src="images/classic110_chart_with_legend_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic110_chart_with_legend_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8289</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8317</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -406,7 +406,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic111_chart_with_axis_labels</b><br><small>p1</small></td>
       <td><img src="images/classic111_chart_with_axis_labels_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic111_chart_with_axis_labels_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8318</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.921</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -417,7 +417,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic112_multiple_charts</b><br><small>p1</small></td>
       <td><img src="images/classic112_multiple_charts_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic112_multiple_charts_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8473</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.857</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -428,7 +428,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic113_chart_sheet</b><br><small>p1</small></td>
       <td><img src="images/classic113_chart_sheet_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic113_chart_sheet_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8185</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8631</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -439,7 +439,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="4" valign="top"><b>classic114_chart_large_dataset</b><br><small>p1</small></td>
       <td><img src="images/classic114_chart_large_dataset_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic114_chart_large_dataset_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="4" valign="top"><span style="color:#3fb950">⬤</span> 0.9098</td>
+      <td rowspan="4" valign="top"><span style="color:#3fb950">⬤</span> 0.9228</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -460,7 +460,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic115_chart_negative_values</b><br><small>p1</small></td>
       <td><img src="images/classic115_chart_negative_values_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic115_chart_negative_values_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.938</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9338</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -471,13 +471,13 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic116_percent_stacked_area</b></td>
       <td><img src="images/classic116_percent_stacked_area_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic116_percent_stacked_area_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#d29922">⬤</span> 0.8596</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9242</td>
     </tr>
     <tr>
       <td rowspan="2" valign="top"><b>classic117_stock_ohlc_chart</b><br><small>p1</small></td>
       <td><img src="images/classic117_stock_ohlc_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic117_stock_ohlc_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.7997</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.7984</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -488,7 +488,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic118_bar_chart_custom_colors</b><br><small>p1</small></td>
       <td><img src="images/classic118_bar_chart_custom_colors_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic118_bar_chart_custom_colors_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9457</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9666</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -499,7 +499,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic119_dashboard_multi_charts</b><br><small>p1</small></td>
       <td><img src="images/classic119_dashboard_multi_charts_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic119_dashboard_multi_charts_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9219</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9391</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -510,7 +510,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic11_sparse_rows</b><br><small>p1</small></td>
       <td><img src="images/classic11_sparse_rows_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic11_sparse_rows_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9995</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9997</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -521,7 +521,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic120_chart_with_date_axis</b><br><small>p1</small></td>
       <td><img src="images/classic120_chart_with_date_axis_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic120_chart_with_date_axis_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#f85149">⬤</span> 0.6413</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.7607</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -532,43 +532,43 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic12_sparse_columns</b></td>
       <td><img src="images/classic12_sparse_columns_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic12_sparse_columns_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9992</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9993</td>
     </tr>
     <tr>
       <td valign="top"><b>classic13_date_strings</b></td>
       <td><img src="images/classic13_date_strings_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic13_date_strings_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9756</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9977</td>
     </tr>
     <tr>
       <td valign="top"><b>classic14_decimal_numbers</b></td>
       <td><img src="images/classic14_decimal_numbers_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic14_decimal_numbers_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9975</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9982</td>
     </tr>
     <tr>
       <td valign="top"><b>classic15_negative_numbers</b></td>
       <td><img src="images/classic15_negative_numbers_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic15_negative_numbers_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9978</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9984</td>
     </tr>
     <tr>
       <td valign="top"><b>classic16_percentage_strings</b></td>
       <td><img src="images/classic16_percentage_strings_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic16_percentage_strings_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9972</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9979</td>
     </tr>
     <tr>
       <td valign="top"><b>classic17_currency_strings</b></td>
       <td><img src="images/classic17_currency_strings_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic17_currency_strings_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9832</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9976</td>
     </tr>
     <tr>
       <td rowspan="24" valign="top"><b>classic18_large_dataset</b><br><small>p1</small></td>
       <td><img src="images/classic18_large_dataset_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic18_large_dataset_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="24" valign="top"><span style="color:#3fb950">⬤</span> 0.947</td>
+      <td rowspan="24" valign="top"><span style="color:#3fb950">⬤</span> 0.9522</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -689,7 +689,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic19_single_column_list</b></td>
       <td><img src="images/classic19_single_column_list_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic19_single_column_list_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9976</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9979</td>
     </tr>
     <tr>
       <td valign="top"><b>classic20_all_empty_cells</b></td>
@@ -713,25 +713,25 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic23_unicode_text</b></td>
       <td><img src="images/classic23_unicode_text_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic23_unicode_text_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9178</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9184</td>
     </tr>
     <tr>
       <td valign="top"><b>classic24_red_text</b></td>
       <td><img src="images/classic24_red_text_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic24_red_text_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.997</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9972</td>
     </tr>
     <tr>
       <td valign="top"><b>classic25_multiple_colors</b></td>
       <td><img src="images/classic25_multiple_colors_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic25_multiple_colors_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9947</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9961</td>
     </tr>
     <tr>
       <td valign="top"><b>classic26_inline_strings</b></td>
       <td><img src="images/classic26_inline_strings_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic26_inline_strings_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9986</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9991</td>
     </tr>
     <tr>
       <td valign="top"><b>classic27_single_row</b></td>
@@ -743,19 +743,19 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic28_duplicate_values</b></td>
       <td><img src="images/classic28_duplicate_values_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic28_duplicate_values_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9972</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9981</td>
     </tr>
     <tr>
       <td valign="top"><b>classic29_formula_results</b></td>
       <td><img src="images/classic29_formula_results_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic29_formula_results_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.997</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9977</td>
     </tr>
     <tr>
       <td rowspan="2" valign="top"><b>classic30_mixed_empty_and_filled_sheets</b><br><small>p1</small></td>
       <td><img src="images/classic30_mixed_empty_and_filled_sheets_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic30_mixed_empty_and_filled_sheets_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9994</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9995</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -766,91 +766,91 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic31_bold_header_row</b></td>
       <td><img src="images/classic31_bold_header_row_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic31_bold_header_row_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9942</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9972</td>
     </tr>
     <tr>
       <td valign="top"><b>classic32_right_aligned_numbers</b></td>
       <td><img src="images/classic32_right_aligned_numbers_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic32_right_aligned_numbers_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9982</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9984</td>
     </tr>
     <tr>
       <td valign="top"><b>classic33_centered_text</b></td>
       <td><img src="images/classic33_centered_text_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic33_centered_text_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9992</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9993</td>
     </tr>
     <tr>
       <td valign="top"><b>classic34_explicit_column_widths</b></td>
       <td><img src="images/classic34_explicit_column_widths_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic34_explicit_column_widths_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9965</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9967</td>
     </tr>
     <tr>
       <td valign="top"><b>classic35_explicit_row_heights</b></td>
       <td><img src="images/classic35_explicit_row_heights_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic35_explicit_row_heights_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9836</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9932</td>
     </tr>
     <tr>
       <td valign="top"><b>classic36_merged_cells</b></td>
       <td><img src="images/classic36_merged_cells_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic36_merged_cells_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9816</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9972</td>
     </tr>
     <tr>
       <td valign="top"><b>classic37_freeze_panes</b></td>
       <td><img src="images/classic37_freeze_panes_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic37_freeze_panes_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.993</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.994</td>
     </tr>
     <tr>
       <td valign="top"><b>classic38_hyperlink_cell</b></td>
       <td><img src="images/classic38_hyperlink_cell_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic38_hyperlink_cell_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9984</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.999</td>
     </tr>
     <tr>
       <td valign="top"><b>classic39_financial_table</b></td>
       <td><img src="images/classic39_financial_table_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic39_financial_table_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9949</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9962</td>
     </tr>
     <tr>
       <td valign="top"><b>classic40_scientific_notation</b></td>
       <td><img src="images/classic40_scientific_notation_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic40_scientific_notation_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9554</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9918</td>
     </tr>
     <tr>
       <td valign="top"><b>classic41_integer_vs_float</b></td>
       <td><img src="images/classic41_integer_vs_float_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic41_integer_vs_float_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9754</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9981</td>
     </tr>
     <tr>
       <td valign="top"><b>classic42_boolean_values</b></td>
       <td><img src="images/classic42_boolean_values_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic42_boolean_values_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9944</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9953</td>
     </tr>
     <tr>
       <td valign="top"><b>classic43_inventory_report</b></td>
       <td><img src="images/classic43_inventory_report_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic43_inventory_report_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9903</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9932</td>
     </tr>
     <tr>
       <td valign="top"><b>classic44_employee_roster</b></td>
       <td><img src="images/classic44_employee_roster_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic44_employee_roster_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9741</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9776</td>
     </tr>
     <tr>
       <td rowspan="4" valign="top"><b>classic45_sales_by_region</b><br><small>p1</small></td>
       <td><img src="images/classic45_sales_by_region_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic45_sales_by_region_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="4" valign="top"><span style="color:#3fb950">⬤</span> 0.9977</td>
+      <td rowspan="4" valign="top"><span style="color:#3fb950">⬤</span> 0.9984</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -871,31 +871,31 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic46_grade_book</b></td>
       <td><img src="images/classic46_grade_book_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic46_grade_book_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9936</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9951</td>
     </tr>
     <tr>
       <td valign="top"><b>classic47_time_series</b></td>
       <td><img src="images/classic47_time_series_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic47_time_series_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9891</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9902</td>
     </tr>
     <tr>
       <td valign="top"><b>classic48_survey_results</b></td>
       <td><img src="images/classic48_survey_results_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic48_survey_results_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9874</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9924</td>
     </tr>
     <tr>
       <td valign="top"><b>classic49_contact_list</b></td>
       <td><img src="images/classic49_contact_list_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic49_contact_list_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9497</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9858</td>
     </tr>
     <tr>
       <td rowspan="3" valign="top"><b>classic50_budget_vs_actuals</b><br><small>p1</small></td>
       <td><img src="images/classic50_budget_vs_actuals_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic50_budget_vs_actuals_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="3" valign="top"><span style="color:#3fb950">⬤</span> 0.9906</td>
+      <td rowspan="3" valign="top"><span style="color:#3fb950">⬤</span> 0.9931</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -911,55 +911,55 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic51_product_catalog</b></td>
       <td><img src="images/classic51_product_catalog_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic51_product_catalog_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9807</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.984</td>
     </tr>
     <tr>
       <td valign="top"><b>classic52_pivot_summary</b></td>
       <td><img src="images/classic52_pivot_summary_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic52_pivot_summary_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9896</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.993</td>
     </tr>
     <tr>
       <td valign="top"><b>classic53_invoice</b></td>
       <td><img src="images/classic53_invoice_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic53_invoice_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9928</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9934</td>
     </tr>
     <tr>
       <td valign="top"><b>classic54_multi_level_header</b></td>
       <td><img src="images/classic54_multi_level_header_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic54_multi_level_header_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9925</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9954</td>
     </tr>
     <tr>
       <td valign="top"><b>classic55_error_values</b></td>
       <td><img src="images/classic55_error_values_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic55_error_values_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9951</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9966</td>
     </tr>
     <tr>
       <td valign="top"><b>classic56_alternating_row_colors</b></td>
       <td><img src="images/classic56_alternating_row_colors_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic56_alternating_row_colors_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#d29922">⬤</span> 0.8856</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9948</td>
     </tr>
     <tr>
       <td valign="top"><b>classic57_cjk_only</b></td>
       <td><img src="images/classic57_cjk_only_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic57_cjk_only_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#d29922">⬤</span> 0.8525</td>
+      <td valign="top"><span style="color:#d29922">⬤</span> 0.852</td>
     </tr>
     <tr>
       <td valign="top"><b>classic58_mixed_numeric_formats</b></td>
       <td><img src="images/classic58_mixed_numeric_formats_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic58_mixed_numeric_formats_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9573</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9932</td>
     </tr>
     <tr>
       <td rowspan="4" valign="top"><b>classic59_multi_sheet_summary</b><br><small>p1</small></td>
       <td><img src="images/classic59_multi_sheet_summary_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic59_multi_sheet_summary_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="4" valign="top"><span style="color:#3fb950">⬤</span> 0.9969</td>
+      <td rowspan="4" valign="top"><span style="color:#3fb950">⬤</span> 0.9977</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -980,7 +980,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="4" valign="top"><b>classic60_large_wide_table</b><br><small>p1</small></td>
       <td><img src="images/classic60_large_wide_table_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic60_large_wide_table_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="4" valign="top"><span style="color:#3fb950">⬤</span> 0.9636</td>
+      <td rowspan="4" valign="top"><span style="color:#3fb950">⬤</span> 0.9689</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1001,67 +1001,67 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic61_product_card_with_image</b></td>
       <td><img src="images/classic61_product_card_with_image_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic61_product_card_with_image_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.985</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9958</td>
     </tr>
     <tr>
       <td valign="top"><b>classic62_company_logo_header</b></td>
       <td><img src="images/classic62_company_logo_header_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic62_company_logo_header_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.987</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9946</td>
     </tr>
     <tr>
       <td valign="top"><b>classic63_two_products_side_by_side</b></td>
       <td><img src="images/classic63_two_products_side_by_side_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic63_two_products_side_by_side_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9828</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9968</td>
     </tr>
     <tr>
       <td valign="top"><b>classic64_employee_directory_with_photo</b></td>
       <td><img src="images/classic64_employee_directory_with_photo_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic64_employee_directory_with_photo_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9813</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9818</td>
     </tr>
     <tr>
       <td valign="top"><b>classic65_inventory_with_product_photos</b></td>
       <td><img src="images/classic65_inventory_with_product_photos_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic65_inventory_with_product_photos_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9733</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9812</td>
     </tr>
     <tr>
       <td valign="top"><b>classic66_invoice_with_logo</b></td>
       <td><img src="images/classic66_invoice_with_logo_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic66_invoice_with_logo_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9836</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9879</td>
     </tr>
     <tr>
       <td valign="top"><b>classic67_real_estate_listing</b></td>
       <td><img src="images/classic67_real_estate_listing_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic67_real_estate_listing_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9803</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9968</td>
     </tr>
     <tr>
       <td valign="top"><b>classic68_restaurant_menu</b></td>
       <td><img src="images/classic68_restaurant_menu_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic68_restaurant_menu_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.966</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9713</td>
     </tr>
     <tr>
       <td valign="top"><b>classic69_image_only_sheet</b></td>
       <td><img src="images/classic69_image_only_sheet_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic69_image_only_sheet_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9728</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9989</td>
     </tr>
     <tr>
       <td valign="top"><b>classic70_product_catalog_with_images</b></td>
       <td><img src="images/classic70_product_catalog_with_images_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic70_product_catalog_with_images_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.968</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9772</td>
     </tr>
     <tr>
       <td rowspan="3" valign="top"><b>classic71_multi_sheet_with_images</b><br><small>p1</small></td>
       <td><img src="images/classic71_multi_sheet_with_images_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic71_multi_sheet_with_images_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="3" valign="top"><span style="color:#3fb950">⬤</span> 0.9914</td>
+      <td rowspan="3" valign="top"><span style="color:#3fb950">⬤</span> 0.9966</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1077,121 +1077,121 @@ Generated: 2026-03-03T17:04:52.328982
       <td valign="top"><b>classic72_bar_chart_image_with_data</b></td>
       <td><img src="images/classic72_bar_chart_image_with_data_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic72_bar_chart_image_with_data_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9743</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.993</td>
     </tr>
     <tr>
       <td valign="top"><b>classic73_event_flyer_with_banner</b></td>
       <td><img src="images/classic73_event_flyer_with_banner_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic73_event_flyer_with_banner_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9656</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9926</td>
     </tr>
     <tr>
       <td valign="top"><b>classic74_dashboard_with_kpi_image</b></td>
       <td><img src="images/classic74_dashboard_with_kpi_image_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic74_dashboard_with_kpi_image_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9564</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.977</td>
     </tr>
     <tr>
       <td valign="top"><b>classic75_certificate_with_seal</b></td>
       <td><img src="images/classic75_certificate_with_seal_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic75_certificate_with_seal_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9874</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.994</td>
     </tr>
     <tr>
       <td valign="top"><b>classic76_product_image_grid</b></td>
       <td><img src="images/classic76_product_image_grid_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic76_product_image_grid_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9786</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9938</td>
     </tr>
     <tr>
       <td valign="top"><b>classic77_news_article_with_hero_image</b></td>
       <td><img src="images/classic77_news_article_with_hero_image_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic77_news_article_with_hero_image_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9671</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9914</td>
     </tr>
     <tr>
       <td valign="top"><b>classic78_small_icon_per_row</b></td>
       <td><img src="images/classic78_small_icon_per_row_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic78_small_icon_per_row_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9865</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9882</td>
     </tr>
     <tr>
       <td valign="top"><b>classic79_wide_panoramic_banner</b></td>
       <td><img src="images/classic79_wide_panoramic_banner_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic79_wide_panoramic_banner_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.964</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9963</td>
     </tr>
     <tr>
       <td valign="top"><b>classic80_portrait_tall_image</b></td>
       <td><img src="images/classic80_portrait_tall_image_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic80_portrait_tall_image_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9858</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9956</td>
     </tr>
     <tr>
       <td valign="top"><b>classic81_step_by_step_with_images</b></td>
       <td><img src="images/classic81_step_by_step_with_images_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic81_step_by_step_with_images_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9773</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9827</td>
     </tr>
     <tr>
       <td valign="top"><b>classic82_before_after_images</b></td>
       <td><img src="images/classic82_before_after_images_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic82_before_after_images_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9622</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9951</td>
     </tr>
     <tr>
       <td valign="top"><b>classic83_color_swatch_palette</b></td>
       <td><img src="images/classic83_color_swatch_palette_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic83_color_swatch_palette_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9788</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9834</td>
     </tr>
     <tr>
       <td valign="top"><b>classic84_travel_destination_cards</b></td>
       <td><img src="images/classic84_travel_destination_cards_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic84_travel_destination_cards_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9648</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9739</td>
     </tr>
     <tr>
       <td valign="top"><b>classic85_lab_results_with_image</b></td>
       <td><img src="images/classic85_lab_results_with_image_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic85_lab_results_with_image_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9148</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9922</td>
     </tr>
     <tr>
       <td valign="top"><b>classic86_software_screenshot_features</b></td>
       <td><img src="images/classic86_software_screenshot_features_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic86_software_screenshot_features_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9778</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9864</td>
     </tr>
     <tr>
       <td valign="top"><b>classic87_sports_results_with_logos</b></td>
       <td><img src="images/classic87_sports_results_with_logos_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic87_sports_results_with_logos_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9934</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9954</td>
     </tr>
     <tr>
       <td valign="top"><b>classic88_image_after_data</b></td>
       <td><img src="images/classic88_image_after_data_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic88_image_after_data_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9874</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9948</td>
     </tr>
     <tr>
       <td valign="top"><b>classic89_nutrition_label_with_image</b></td>
       <td><img src="images/classic89_nutrition_label_with_image_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic89_nutrition_label_with_image_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9829</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.993</td>
     </tr>
     <tr>
       <td valign="top"><b>classic90_project_status_with_milestones</b></td>
       <td><img src="images/classic90_project_status_with_milestones_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic90_project_status_with_milestones_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9412</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9734</td>
     </tr>
     <tr>
       <td rowspan="2" valign="top"><b>classic91_simple_bar_chart</b><br><small>p1</small></td>
       <td><img src="images/classic91_simple_bar_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic91_simple_bar_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9669</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9676</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1202,7 +1202,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic92_horizontal_bar_chart</b><br><small>p1</small></td>
       <td><img src="images/classic92_horizontal_bar_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic92_horizontal_bar_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8311</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9708</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1213,7 +1213,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic93_line_chart</b><br><small>p1</small></td>
       <td><img src="images/classic93_line_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic93_line_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9286</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9437</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1224,7 +1224,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic94_pie_chart</b><br><small>p1</small></td>
       <td><img src="images/classic94_pie_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic94_pie_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8924</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9726</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1235,7 +1235,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic95_area_chart</b><br><small>p1</small></td>
       <td><img src="images/classic95_area_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic95_area_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.7328</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.7763</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1246,7 +1246,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic96_scatter_chart</b><br><small>p1</small></td>
       <td><img src="images/classic96_scatter_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic96_scatter_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8698</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9174</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1257,7 +1257,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic97_doughnut_chart</b><br><small>p1</small></td>
       <td><img src="images/classic97_doughnut_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic97_doughnut_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9132</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9751</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1268,7 +1268,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic98_radar_chart</b><br><small>p1</small></td>
       <td><img src="images/classic98_radar_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic98_radar_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8974</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9531</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1279,7 +1279,7 @@ Generated: 2026-03-03T17:04:52.328982
       <td rowspan="2" valign="top"><b>classic99_bubble_chart</b><br><small>p1</small></td>
       <td><img src="images/classic99_bubble_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic99_bubble_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8364</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.915</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1294,8 +1294,8 @@ Generated: 2026-03-03T17:04:52.328982
 ### classic01_basic_table_with_headers
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9924
-- **Overall Score:** 0.997
+- **Visual Average:** 0.9947
+- **Overall Score:** 0.9979
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1317 bytes, Reference=30311 bytes
 
@@ -1304,10 +1304,10 @@ Text content: ✅ Identical
 ### classic02_multiple_worksheets
 
 - **Text Similarity:** 0.9971
-- **Visual Average:** 0.9959
-- **Overall Score:** 0.9972
+- **Visual Average:** 0.9963
+- **Overall Score:** 0.9974
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=2295 bytes, Reference=36003 bytes
+- **File Size:** MiniPdf=2296 bytes, Reference=36003 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1321,7 +1321,7 @@ Text content: ✅ Identical
 
  Total Reve 1130
 
--Total Cost 3700
+-Total Costs3700
 
 +Total Costs 3700
 
@@ -1352,8 +1352,8 @@ Text content: ✅ Identical
 ### classic05_wide_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9868
-- **Overall Score:** 0.9947
+- **Visual Average:** 0.9906
+- **Overall Score:** 0.9962
 - **Pages:** MiniPdf=3, Reference=3
 - **File Size:** MiniPdf=8588 bytes, Reference=62308 bytes
 
@@ -1362,10 +1362,10 @@ Text content: ✅ Identical
 ### classic06_tall_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9309
-- **Overall Score:** 0.9724
+- **Visual Average:** 0.9384
+- **Overall Score:** 0.9754
 - **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=39094 bytes, Reference=185703 bytes
+- **File Size:** MiniPdf=39106 bytes, Reference=185703 bytes
 
 Text content: ✅ Identical
 
@@ -1382,8 +1382,8 @@ Text content: ✅ Identical
 ### classic08_mixed_text_and_numbers
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9943
-- **Overall Score:** 0.9977
+- **Visual Average:** 0.996
+- **Overall Score:** 0.9984
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1162 bytes, Reference=27336 bytes
 
@@ -1391,21 +1391,23 @@ Text content: ✅ Identical
 
 ### classic09_long_text
 
-- **Text Similarity:** 0.9319
-- **Visual Average:** 0.0805
-- **Overall Score:** 0.505
-- **Pages:** MiniPdf=1, Reference=12
-- **File Size:** MiniPdf=2807 bytes, Reference=29170 bytes
+- **Text Similarity:** 0.6985
+- **Visual Average:** 0.576
+- **Overall Score:** 0.6098
+- **Pages:** MiniPdf=7, Reference=12
+- **File Size:** MiniPdf=2423 bytes, Reference=29170 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic09_long_text.pdf
 +++ reference/classic09_long_text.pdf
-@@ -1,5 +1,26 @@
+@@ -1,12 +1,24 @@
  Long Text Column
 
 -XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+----PAGE---
 
 -AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
@@ -1413,12 +1415,19 @@ Text content: ✅ Identical
 
 +AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
- Short
++Short
 
--YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 +YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
-+---PAGE---
+ ---PAGE---
+
+ 
+
+ ---PAGE---
+
+-Short
+
+-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
 +
 
@@ -1446,119 +1455,95 @@ Text content: ✅ Identical
 
 +
 
-+---PAGE---
+ ---PAGE---
 
-+
+ 
 
-+---PAGE---
+ ---PAGE---
 
-+
-
-+---PAGE---
-
-+
-
-+---PAGE---
 ```
 </details>
 
 ### classic100_stacked_bar_chart
 
-- **Text Similarity:** 0.8775
-- **Visual Average:** 0.9043
-- **Overall Score:** 0.9127
+- **Text Similarity:** 0.9348
+- **Visual Average:** 0.9129
+- **Overall Score:** 0.9391
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4244 bytes, Reference=47565 bytes
+- **File Size:** MiniPdf=4688 bytes, Reference=47565 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic100_stacked_bar_chart.pdf
 +++ reference/classic100_stacked_bar_chart.pdf
-@@ -4,11 +4,17 @@
+@@ -4,12 +4,14 @@
  East 40 35 30 45
 
  West 20 25 40 35
 
  Quarterly Revenue by Region
 
--Q1 Q2 Q3 Q4
+-Q4 Q3 Q2 Q1
 
--50
+ 180
 
-+180
+ 160
 
-+160
+ 140
 
-+140
+-120
 
 +120 Q4
 
 +Q3
 
-+100
+ 100
 
 +Q2
 
 +Q1
 
-+80
+ 80
 
-+60
+ 60
 
  40
 
--30
-
- 20
-
--10
-
- 0
-
- North South East West
 ```
 </details>
 
 ### classic101_percent_stacked_bar
 
-- **Text Similarity:** 0.7885
-- **Visual Average:** 0.89
-- **Overall Score:** 0.8714
+- **Text Similarity:** 0.9273
+- **Visual Average:** 0.878
+- **Overall Score:** 0.9221
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4675 bytes, Reference=49462 bytes
+- **File Size:** MiniPdf=5356 bytes, Reference=49462 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic101_percent_stacked_bar.pdf
 +++ reference/classic101_percent_stacked_bar.pdf
-@@ -5,10 +5,18 @@
+@@ -5,13 +5,15 @@
  2024 33 35 18 14
 
  2025 30 38 17 15
 
  Traffic Source Mix by Year
 
--Organic Paid Referral Direct
+-Direct Referral Paid Organic
 
--40
+ 100%
 
--30
+ 90%
 
--20
+ 80%
 
--10
+ 70%
 
--0
-
-+100%
-
-+90%
-
-+80%
-
-+70%
+-60%
 
 +Direct
 
@@ -1566,47 +1551,40 @@ Text content: ✅ Identical
 
 +Paid
 
-+50%
+ 50%
 
 +Organic
 
-+40%
+ 40%
 
-+30%
+ 30%
 
-+20%
+ 20%
 
-+10%
-
-+0%
-
- 2021 2022 2023 2024 2025
 ```
 </details>
 
 ### classic102_line_chart_with_markers
 
-- **Text Similarity:** 0.8
-- **Visual Average:** 0.9852
-- **Overall Score:** 0.9141
+- **Text Similarity:** 0.8485
+- **Visual Average:** 0.9886
+- **Overall Score:** 0.9348
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=4824 bytes, Reference=52236 bytes
+- **File Size:** MiniPdf=4825 bytes, Reference=52236 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic102_line_chart_with_markers.pdf
 +++ reference/classic102_line_chart_with_markers.pdf
-@@ -2,17 +2,21 @@
- 2020 10 50
-
+@@ -3,16 +3,20 @@
  Company Growth
 
  2021 25 120
 
--2022 55 280 Users (K) Revenue (K)
+ 2022 55 280
 
-+2022 55 280
+-Users (K) Revenue (K)
 
  1200
 
@@ -1614,11 +1592,11 @@ Text content: ✅ Identical
 
  2024 140 780
 
+-2025 200 1100 1000
+
 +2025 200 1100
 
- 1000
-
--2025 200 1100
++1000
 
  800
 
@@ -1653,18 +1631,18 @@ Text content: ✅ Identical
 
 ### classic103_pie_chart_with_labels
 
-- **Text Similarity:** 0.592
-- **Visual Average:** 0.966
-- **Overall Score:** 0.8232
+- **Text Similarity:** 0.6667
+- **Visual Average:** 0.9732
+- **Overall Score:** 0.856
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=232919 bytes, Reference=48488 bytes
+- **File Size:** MiniPdf=414816 bytes, Reference=48488 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic103_pie_chart_with_labels.pdf
 +++ reference/classic103_pie_chart_with_labels.pdf
-@@ -3,11 +3,26 @@
+@@ -3,16 +3,26 @@
  Desktop OS Market Share
 
  macOS 28
@@ -1673,7 +1651,7 @@ Text content: ✅ Identical
 
 -ChromeOS10
 
--Other
+-Other; Share (%); 5; 5%
 
 +ChromeOS 10
 
@@ -1681,13 +1659,23 @@ Text content: ✅ Identical
 
  Other 5
 
--ChromeOS
+-ChromeOS; Share (%); 10; 10%
+
+-Windows; Share (%); 42; 42%
+
+-Linux; Share (%); 15; 15%
+
+-macOS; Share (%); 28; 28%
 
 -Windows
 
+-macOS
+
 -Linux
 
--macOS
+-ChromeOS
+
+-Other
 
 ----PAGE---
 +(%); 5; 5%
@@ -1735,8 +1723,8 @@ Text content: ✅ Identical
 ### classic104_combo_bar_line_chart
 
 - **Text Similarity:** 0.7872
-- **Visual Average:** 0.7491
-- **Overall Score:** 0.8145
+- **Visual Average:** 0.7528
+- **Overall Score:** 0.816
 - **Pages:** MiniPdf=2, Reference=2
 - **File Size:** MiniPdf=3637 bytes, Reference=54330 bytes
 
@@ -1807,18 +1795,18 @@ Text content: ✅ Identical
 
 ### classic105_3d_bar_chart
 
-- **Text Similarity:** 0.8703
-- **Visual Average:** 0.736
-- **Overall Score:** 0.8425
+- **Text Similarity:** 0.8832
+- **Visual Average:** 0.743
+- **Overall Score:** 0.8505
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=3847 bytes, Reference=138437 bytes
+- **File Size:** MiniPdf=3967 bytes, Reference=138437 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic105_3d_bar_chart.pdf
 +++ reference/classic105_3d_bar_chart.pdf
-@@ -1,10 +1,10 @@
+@@ -1,10 +1,8 @@
  Region 2024 2025
 
  APAC 120 145
@@ -1829,23 +1817,19 @@ Text content: ✅ Identical
 
  EMEA 95 110
 
--Americas 150 175 2024 2025
+ Americas 150 175
 
-+Americas 150 175
+-2024 2025
 
-+LATAM 40 55
+-200
+
+ LATAM 40 55
 
  180
 
--LATAM 40 55
-
  160
 
- 140
-
- 120
-
-@@ -14,5 +14,9 @@
+@@ -16,5 +14,9 @@
  40
 
  20
@@ -1871,55 +1855,35 @@ Text content: ✅ Identical
 
 ### classic106_3d_pie_chart
 
-- **Text Similarity:** 0.8187
-- **Visual Average:** 0.9635
-- **Overall Score:** 0.9129
+- **Text Similarity:** 0.9587
+- **Visual Average:** 0.9666
+- **Overall Score:** 0.9701
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=234128 bytes, Reference=76353 bytes
+- **File Size:** MiniPdf=414658 bytes, Reference=76353 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic106_3d_pie_chart.pdf
 +++ reference/classic106_3d_pie_chart.pdf
-@@ -4,13 +4,14 @@
- Housing 1500
+@@ -8,8 +8,10 @@
+ Other 200
 
- Transport 400
+ Food
 
- Entertainm 300
+ Housing
 
-+Savings 700
+-Transport
 
-+Other 200
-
-+Food
-
-+Housing
+-Entertainme…
 
 +Transpo
 
 +Entertai
 
-+Savings
+ Savings
 
  Other
-
--Savings 700
-
--Food
-
--Other 200
-
--Savings
-
--Entertainme
-
--…
-
--Transport
-
--Housing
 
 ----PAGE---
 +---PAGE---
@@ -1932,18 +1896,18 @@ Text content: ✅ Identical
 
 ### classic107_multi_series_line
 
-- **Text Similarity:** 0.7291
-- **Visual Average:** 0.7712
-- **Overall Score:** 0.8001
+- **Text Similarity:** 0.7923
+- **Visual Average:** 0.7739
+- **Overall Score:** 0.8265
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=14053 bytes, Reference=82303 bytes
+- **File Size:** MiniPdf=15118 bytes, Reference=82303 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic107_multi_series_line.pdf
 +++ reference/classic107_multi_series_line.pdf
-@@ -1,30 +1,41 @@
+@@ -1,9 +1,8 @@
  Day AAPL GOOG MSFT
 
  Day 1 178.48 140.49 402.83
@@ -1954,35 +1918,20 @@ Text content: ✅ Identical
 
  Day 2 179.43 140.38 401.69
 
--Day 3 177.25 143.38 403.21 AAPL GOOG MSFT
+ Day 3 177.25 143.38 403.21
 
--500
+-AAPL GOOG MSFT
 
-+Day 3 177.25 143.38 403.21
-
-+450
+ 450
 
  Day 4 175.75 143.94 404.47
 
  Day 5 178.19 142.62 403.35
 
-+400
-
- Day 6 176.32 143.16 405.88
-
--400
-
-+350
-
- Day 7 177.72 141 405.11
-
- Day 8 175.18 138.97 405.07
-
- 300
-
+@@ -16,20 +15,27 @@
  Day 9 173.1 137.59 403.53
 
-+250
+ 250
 
  Day 10 172.64 139.72 401.94
 
@@ -1990,21 +1939,21 @@ Text content: ✅ Identical
 
  Day 11 173.32 139.12 400.69
 
--Price ($)
-
  200
+
+-Price ($)
 
  Day 12 172.11 140.8 402.75
 
+-Day 13 173.5 143.13 404.12 150
+
 +150
 
- Day 13 173.5 143.13 404.12
++Day 13 173.5 143.13 404.12
 
--Day 14 172.29 141.53 404.52 100
+ Day 14 172.29 141.53 404.52
 
-+Day 14 172.29 141.53 404.52
-
-+100
+ 100
 
  Day 15 172.95 143.24 406.95
 
@@ -2012,15 +1961,15 @@ Text content: ✅ Identical
 
  Day 16 174.74 146.1 408
 
-+Day 17 175.83 147.89 407.98
+-50
+
+ Day 17 175.83 147.89 407.98
 
  0
 
--Day 17 175.83 147.89 407.98
-
--Day 1 Day 3 Day 5 Day 7 Day 9 Day 11
-
 -Day 18 177.62 150.15 408.05
+
+-Day 1 Day 2 Day 3 Day 4 Day 5 Day 6 Day 7 Day 8 Day 9 Day 10Day 11Day 12
 
 +Day 18 177.62 150.15 408.05 Day Day Day Day Day Day Day Day Day Da
 
@@ -2049,76 +1998,67 @@ Text content: ✅ Identical
 
 ### classic108_stacked_area_chart
 
-- **Text Similarity:** 0.8772
-- **Visual Average:** 0.8678
-- **Overall Score:** 0.898
+- **Text Similarity:** 0.931
+- **Visual Average:** 0.8933
+- **Overall Score:** 0.9297
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=10817 bytes, Reference=51253 bytes
+- **File Size:** MiniPdf=11016 bytes, Reference=51253 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic108_stacked_area_chart.pdf
 +++ reference/classic108_stacked_area_chart.pdf
-@@ -6,12 +6,17 @@
+@@ -6,12 +6,15 @@
  May 150 130 240 125
 
  Jun 160 140 260 130
 
  Traffic by Channel (Stacked)
 
--Email Social Search Direct
+-Direct Search Social Email
 
-+800
+ 800
 
-+700
+ 700
 
-+600
+ 600
 
 +Direct
 
-+500
+ 500
 
 +Search
 
 +Social
 
-+400
+ 400
 
 +Email
 
  300
 
--250
-
  200
-
--150
 
  100
 
--50
-
- 0
-
- Jan Feb Mar Apr May Jun
 ```
 </details>
 
 ### classic109_scatter_with_trendline
 
-- **Text Similarity:** 0.6852
-- **Visual Average:** 0.8697
-- **Overall Score:** 0.822
+- **Text Similarity:** 0.7903
+- **Visual Average:** 0.9847
+- **Overall Score:** 0.91
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=2406 bytes, Reference=60738 bytes
+- **File Size:** MiniPdf=5210 bytes, Reference=60738 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic109_scatter_with_trendline.pdf
 +++ reference/classic109_scatter_with_trendline.pdf
-@@ -1,19 +1,30 @@
+@@ -1,27 +1,30 @@
 -Study HourExam Score
 
 +Study HouExam Score
@@ -2131,19 +2071,25 @@ Text content: ✅ Identical
 
  9 85
 
-+120
+-Students
+
+ 120
 
  2 35
 
  9 99
 
-+100
-
- 5 68
+-5 68 100
 
 -2 35
 
 -8 92
+
+-80
+
++100
+
++5 68
 
 +f(x) = 8.12719751809721 x + 20.8283350568769
 
@@ -2154,6 +2100,8 @@ Text content: ✅ Identical
  5 65
 
 -3 45
+
+-60
 
 +Stud
 
@@ -2167,9 +2115,11 @@ Text content: ✅ Identical
 
  6 62
 
+-9 89 40
+
 +40
 
- 9 89
++9 89
 
  1 30
 
@@ -2177,13 +2127,15 @@ Text content: ✅ Identical
 
  10 98
 
+-20
+
+ 0
+
+ 0 2 4 6 8 10 12
+
+ Hours
+
 ----PAGE---
-+0
-
-+0 2 4 6 8 10 12
-
-+Hours
-
 +---PAGE---
 
 +dents
@@ -2195,8 +2147,8 @@ Text content: ✅ Identical
 ### classic10_special_xml_characters
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.994
-- **Overall Score:** 0.9976
+- **Visual Average:** 0.9951
+- **Overall Score:** 0.998
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=968 bytes, Reference=27644 bytes
 
@@ -2205,8 +2157,8 @@ Text content: ✅ Identical
 ### classic110_chart_with_legend
 
 - **Text Similarity:** 0.8
-- **Visual Average:** 0.7723
-- **Overall Score:** 0.8289
+- **Visual Average:** 0.7793
+- **Overall Score:** 0.8317
 - **Pages:** MiniPdf=2, Reference=2
 - **File Size:** MiniPdf=4001 bytes, Reference=52253 bytes
 
@@ -2215,7 +2167,7 @@ Text content: ✅ Identical
 ```diff
 --- minipdf/classic110_chart_with_legend.pdf
 +++ reference/classic110_chart_with_legend.pdf
-@@ -1,18 +1,21 @@
+@@ -1,19 +1,21 @@
  Browser 2024 (%) 2025 (%)
 
  Chrome 65 62
@@ -2226,9 +2178,9 @@ Text content: ✅ Identical
 
  Safari 18 20
 
--Firefox 8 7 2024 (%) 2025 (%)
+ Firefox 8 7
 
-+Firefox 8 7
+-2024 (%) 2025 (%)
 
  70
 
@@ -2271,67 +2223,41 @@ Text content: ✅ Identical
 
 ### classic111_chart_with_axis_labels
 
-- **Text Similarity:** 0.6053
-- **Visual Average:** 0.9741
-- **Overall Score:** 0.8318
+- **Text Similarity:** 0.8267
+- **Visual Average:** 0.9759
+- **Overall Score:** 0.921
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=3375 bytes, Reference=51007 bytes
+- **File Size:** MiniPdf=3377 bytes, Reference=51007 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic111_chart_with_axis_labels.pdf
 +++ reference/classic111_chart_with_axis_labels.pdf
-@@ -3,17 +3,18 @@
- CO2 Emissions by Country
-
- USA 5000
-
- India 2700
-
--12000
-
- Russia 1700
-
-+Germany
-
- Japan 1100
-
--10000
-
+@@ -9,10 +9,12 @@
  Germany 700
 
--8000
+ Japan
 
--6000
-
-+Japan
-
-+Russia
+ Russia
 
 +Country
 
-+India
+ India
 
-+USA
+-CO2 Emissions (Megatons)
 
-+China
+ USA
 
-+0 2,000 4,000 6,000 8,000 10,000
+ China
 
- CO2 Emissions (Megatons)
-
--4000
-
--2000
-
--0
-
--China USA India Russia Japan Germany
+ 0 2,000 4,000 6,000 8,000 10,000
 
 -Country
 
 ----PAGE---
++CO2 Emissions (Megatons)
+
 +---PAGE---
 
 +CO2 (Mt)
@@ -2342,9 +2268,9 @@ Text content: ✅ Identical
 
 ### classic112_multiple_charts
 
-- **Text Similarity:** 0.8682
-- **Visual Average:** 0.75
-- **Overall Score:** 0.8473
+- **Text Similarity:** 0.8837
+- **Visual Average:** 0.7588
+- **Overall Score:** 0.857
 - **Pages:** MiniPdf=2, Reference=2
 - **File Size:** MiniPdf=6785 bytes, Reference=59342 bytes
 
@@ -2353,7 +2279,7 @@ Text content: ✅ Identical
 ```diff
 --- minipdf/classic112_multiple_charts.pdf
 +++ reference/classic112_multiple_charts.pdf
-@@ -1,12 +1,12 @@
+@@ -1,9 +1,8 @@
  Month Revenue Costs Profit
 
  Jan 50 30 20
@@ -2364,27 +2290,17 @@ Text content: ✅ Identical
 
  Feb 55 32 23
 
--Mar 60 35 25 Revenue Costs
+ Mar 60 35 25
 
-+Mar 60 35 25
+-Revenue Costs
 
  80
 
  Apr 52 28 24
 
-+May 70 40 30
+ May 70 40 30
 
- 70
-
--May 70 40 30
-
- Jun 75 42 33
-
- 60
-
- 50
-
-@@ -15,7 +15,7 @@
+@@ -16,7 +15,7 @@
  20
 
  10
@@ -2401,7 +2317,7 @@ Text content: ✅ Identical
 
  30
 
-@@ -26,4 +26,11 @@
+@@ -27,4 +26,11 @@
  5
 
  0
@@ -2429,43 +2345,40 @@ Text content: ✅ Identical
 
 ### classic113_chart_sheet
 
-- **Text Similarity:** 0.8225
-- **Visual Average:** 0.7237
-- **Overall Score:** 0.8185
+- **Text Similarity:** 0.9259
+- **Visual Average:** 0.7319
+- **Overall Score:** 0.8631
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=2523 bytes, Reference=43602 bytes
+- **File Size:** MiniPdf=3131 bytes, Reference=43602 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic113_chart_sheet.pdf
 +++ reference/classic113_chart_sheet.pdf
-@@ -3,11 +3,17 @@
+@@ -3,8 +3,7 @@
  Quarterly Revenue
 
  Q2 310
 
  Q3 285
 
+-450
+
+-Q4 400
+
 +Q4 400 450
 
  400
 
--Q4 400
-
-+350
+ 350
 
  300
 
-+250
-
- 200
-
-+150
-
+@@ -14,5 +13,7 @@
  100
 
-+50
+ 50
 
  0
 
@@ -2484,11 +2397,11 @@ Text content: ✅ Identical
 
 ### classic114_chart_large_dataset
 
-- **Text Similarity:** 0.8903
-- **Visual Average:** 0.8843
-- **Overall Score:** 0.9098
+- **Text Similarity:** 0.9234
+- **Visual Average:** 0.8835
+- **Overall Score:** 0.9228
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=24655 bytes, Reference=128765 bytes
+- **File Size:** MiniPdf=29565 bytes, Reference=128765 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2510,18 +2423,10 @@ Text content: ✅ Identical
 
  160
 
-@@ -8,24 +8,26 @@
- 5 95.6
-
- 140
-
- 6 92.3
-
-+7 98.1
+@@ -11,8 +11,8 @@
+ 7 98.1
 
  120
-
--7 98.1
 
  8 100.5
 
@@ -2531,45 +2436,32 @@ Text content: ✅ Identical
 
 -9 98.7
 
--10 94.4 80
+ 10 94.4
 
-+10 94.4
-
-+80
+ 80
 
  11 98.6
 
-+12 103.5
-
- 60
-
--12 103.5
-
- 13 102.2
-
-+14 98.4
+@@ -22,12 +22,12 @@
+ 14 98.4
 
  40
 
--14 98.4
+ 15 104.2
 
--15 104.2 20
++16 109
 
-+15 104.2
+ 20
 
- 16 109
+-16 109
 
-+20
-
-+17 109.1
+ 17 109.1
 
  0
 
--17 109.1
-
--1 11 21 31 41 51 61 71 81
-
  18 105.3
+
+-1234567891011213141516171819202122324252627282930313233435363738394041424344546474849505152535455657585960616263646566768697071727374757677879808182838485868
 
 +1 5 9 13 17 21 25 29 33 37 41 45 49 53 57 61 65
 
@@ -2579,7 +2471,7 @@ Text content: ✅ Identical
 
  21 112.6
 
-@@ -110,4 +112,7 @@
+@@ -112,4 +112,7 @@
  98 133.6
 
  99 138
@@ -2599,47 +2491,43 @@ Text content: ✅ Identical
 
 ### classic115_chart_negative_values
 
-- **Text Similarity:** 0.8743
-- **Visual Average:** 0.9708
-- **Overall Score:** 0.938
+- **Text Similarity:** 0.8632
+- **Visual Average:** 0.9713
+- **Overall Score:** 0.9338
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=3538 bytes, Reference=51633 bytes
+- **File Size:** MiniPdf=4140 bytes, Reference=51633 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic115_chart_negative_values.pdf
 +++ reference/classic115_chart_negative_values.pdf
-@@ -3,17 +3,24 @@
- Monthly Profit & Loss
-
- Feb -8
-
+@@ -5,19 +5,22 @@
  Mar 22
 
--30
-
-+35
+ 35
 
  Apr -3
 
- May 30
+-May 30 30
+
++May 30
 
 +30
 
  Jun -12
 
--20
-
-+25
+ 25
 
  Jul 18
 
- Aug 5
++Aug 5
 
-+20
+ 20
 
-+15
+-Aug 5
+
+ 15
 
 +Amount ($K)
 
@@ -2647,23 +2535,21 @@ Text content: ✅ Identical
 
 -Amount ($K)
 
-+5
+ 5
 
  0
 
 +Jan Feb Mar Apr May Jun Jul Au
 
-+-5
+ -5
 
  -10
 
---20
+ -15
 
 -Jan Feb Mar Apr May Jun Jul Aug
 
 ----PAGE---
-+-15
-
 +---PAGE---
 
 +Profit/Loss
@@ -2674,45 +2560,35 @@ Text content: ✅ Identical
 
 ### classic116_percent_stacked_area
 
-- **Text Similarity:** 0.7965
-- **Visual Average:** 0.8524
-- **Overall Score:** 0.8596
+- **Text Similarity:** 0.9322
+- **Visual Average:** 0.8783
+- **Overall Score:** 0.9242
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=10702 bytes, Reference=50765 bytes
+- **File Size:** MiniPdf=11226 bytes, Reference=50765 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic116_percent_stacked_area.pdf
 +++ reference/classic116_percent_stacked_area.pdf
-@@ -6,11 +6,18 @@
+@@ -6,13 +6,15 @@
  2023 20 26 17 37
 
  2025 15 24 16 45
 
  Energy Mix Transition
 
--Coal Gas Nuclear Renewable
+-Renewable Nuclear Gas Coal
 
--50
+ 100%
 
--40
+ 90%
 
--30
+ 80%
 
--20
+ 70%
 
--10
-
--0
-
-+100%
-
-+90%
-
-+80%
-
-+70%
+-60%
 
 +Renewable
 
@@ -2720,38 +2596,33 @@ Text content: ✅ Identical
 
 +Gas
 
-+50%
+ 50%
 
 +Coal
 
-+40%
+ 40%
 
-+30%
+ 30%
 
-+20%
+ 20%
 
-+10%
-
-+0%
-
- 2015 2017 2019 2021 2023 2025
 ```
 </details>
 
 ### classic117_stock_ohlc_chart
 
-- **Text Similarity:** 0.7879
-- **Visual Average:** 0.7114
-- **Overall Score:** 0.7997
+- **Text Similarity:** 0.7739
+- **Visual Average:** 0.7222
+- **Overall Score:** 0.7984
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=8249 bytes, Reference=62401 bytes
+- **File Size:** MiniPdf=8373 bytes, Reference=62401 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic117_stock_ohlc_chart.pdf
 +++ reference/classic117_stock_ohlc_chart.pdf
-@@ -1,23 +1,27 @@
+@@ -1,26 +1,27 @@
  Day Open High Low Close
 
  Day 1 148.96 149.78 146.96 147.41
@@ -2762,21 +2633,23 @@ Text content: ✅ Identical
 
  Day 2 147.04 147.63 144.4 146.23
 
--Day 3 145.63 149.68 145.47 149.58 Open High Low Close
+ Day 3 145.63 149.68 145.47 149.58
 
-+Day 3 145.63 149.68 145.47 149.58
+-Open High Low Close
 
- 160
+-180
+
++160
 
  Day 4 149.32 150.14 147.39 148.55
 
  Day 5 146.58 150.1 143.38 147.36
 
--140
+-160
 
  Day 6 147.91 152.44 145.49 149.32
 
--120
+-140
 
 +155
 
@@ -2784,15 +2657,17 @@ Text content: ✅ Identical
 
  Day 8 152.42 155.53 152.31 152.99
 
--100
+-120
 
  Day 9 152.32 154.36 151.02 152.05
 
--Day 10 152.27 156.85 148.76 156.35 80
+-100
 
 +150
 
-+Day 10 152.27 156.85 148.76 156.35
+ Day 10 152.27 156.85 148.76 156.35
+
+-80
 
  Price ($)
 
@@ -2833,41 +2708,40 @@ Text content: ✅ Identical
 
 ### classic118_bar_chart_custom_colors
 
-- **Text Similarity:** 0.9053
-- **Visual Average:** 0.959
-- **Overall Score:** 0.9457
+- **Text Similarity:** 0.9565
+- **Visual Average:** 0.96
+- **Overall Score:** 0.9666
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=2892 bytes, Reference=48780 bytes
+- **File Size:** MiniPdf=3494 bytes, Reference=48780 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic118_bar_chart_custom_colors.pdf
 +++ reference/classic118_bar_chart_custom_colors.pdf
-@@ -6,10 +6,17 @@
+@@ -5,7 +5,8 @@
+ Average 15
+
  50
 
  Poor 7
 
- Very Poor 3
+-Very Poor 3 45
+
++Very Poor 3
 
 +45
 
  40
 
-+35
+ 35
 
  30
 
-+25
-
- 20
-
-+15
-
+@@ -15,5 +16,7 @@
  10
 
-+5
+ 5
 
  0
 
@@ -2886,37 +2760,33 @@ Text content: ✅ Identical
 
 ### classic119_dashboard_multi_charts
 
-- **Text Similarity:** 0.8723
-- **Visual Average:** 0.9325
-- **Overall Score:** 0.9219
+- **Text Similarity:** 0.9149
+- **Visual Average:** 0.9329
+- **Overall Score:** 0.9391
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=127522 bytes, Reference=65175 bytes
+- **File Size:** MiniPdf=223422 bytes, Reference=65175 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic119_dashboard_multi_charts.pdf
 +++ reference/classic119_dashboard_multi_charts.pdf
-@@ -1,23 +1,24 @@
- KPI Dashboard - Q4 2025
-
+@@ -2,14 +2,12 @@
  Revenue vs Expenses
 
  Month Revenue Expenses
 
--Oct 85 60 Revenue Expenses
+ Oct 85 60
 
-+Oct 85 60
+-Revenue Expenses
 
  120
 
  Nov 92 65
 
--Dec 110 70 100
+ Dec 110 70
 
-+Dec 110 70
-
-+100
+ 100
 
  80
 
@@ -2926,33 +2796,20 @@ Text content: ✅ Identical
 
 +Segment Share 60
 
-+Enterprise 45
+ Enterprise 45
 
  40
 
--Enterprise 45
-
  SMB 30
 
-+Consumer 25
-
- 20
-
--Consumer 25
-
- 0
-
- Oct Nov Dec
-
- Revenue by Segment
-
+@@ -21,5 +19,6 @@
  Enterprise
-
--Slice4
 
  SMB
 
  Consumer
+
+-Slice4
 
 ----PAGE---
 +---PAGE---
@@ -2966,8 +2823,8 @@ Text content: ✅ Identical
 ### classic11_sparse_rows
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9988
-- **Overall Score:** 0.9995
+- **Visual Average:** 0.9992
+- **Overall Score:** 0.9997
 - **Pages:** MiniPdf=2, Reference=2
 - **File Size:** MiniPdf=1037 bytes, Reference=23538 bytes
 
@@ -2975,45 +2832,37 @@ Text content: ✅ Identical
 
 ### classic120_chart_with_date_axis
 
-- **Text Similarity:** 0.3194
-- **Visual Average:** 0.7838
-- **Overall Score:** 0.6413
+- **Text Similarity:** 0.6195
+- **Visual Average:** 0.7823
+- **Overall Score:** 0.7607
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=5299 bytes, Reference=56955 bytes
+- **File Size:** MiniPdf=5774 bytes, Reference=56955 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic120_chart_with_date_axis.pdf
 +++ reference/classic120_chart_with_date_axis.pdf
-@@ -1,24 +1,32 @@
+@@ -1,28 +1,32 @@
  Date Downloads
 
--2025-01-01581
+ 2025-01-0 581
 
 -Monthly Downloads (2025)
 
--2025-01-31594
-
--2025-03-02592
-
-+2025-01-0 581
-
 +Monthly Downloads (20
 
-+2025-01-3 594
+ 2025-01-3 594
 
-+2025-03-0 592
+ 2025-03-0 592
 
- 1000
+-900
 
--2025-04-01692
++1000
 
--2025-05-01760
+ 2025-04-0 692
 
--2025-05-31733
-
-+2025-04-0 692
+-2025-05-0 760
 
 +2025-05-0 760 900
 
@@ -3021,43 +2870,43 @@ Text content: ✅ Identical
 
  800
 
--2025-06-30763
-
--2025-07-30767
+-2025-05-3 733
 
 +2025-06-3 763
 
-+700
+ 700
 
-+2025-07-3 767
+-2025-06-3 763
+
+ 2025-07-3 767
 
  600
 
--2025-08-29774
+ 2025-08-2 774
 
--2025-09-28788
++Downloads
 
--2025-10-28820
+ 500
 
-+2025-08-2 774
+ 2025-09-2 788
 
- Downloads
++400
 
-+500
+ 2025-10-2 820
 
-+2025-09-2 788
+-400
 
- 400
+-Downloads
 
--2025-11-27865
+-2025-11-2 865
 
-+2025-10-2 820
+-300
 
 +2025-11-2 865 300
 
  200
 
-+100
+ 100
 
  0
 
@@ -3085,8 +2934,8 @@ Text content: ✅ Identical
 ### classic12_sparse_columns
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9979
-- **Overall Score:** 0.9992
+- **Visual Average:** 0.9983
+- **Overall Score:** 0.9993
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=875 bytes, Reference=24923 bytes
 
@@ -3094,46 +2943,19 @@ Text content: ✅ Identical
 
 ### classic13_date_strings
 
-- **Text Similarity:** 0.949
-- **Visual Average:** 0.9901
-- **Overall Score:** 0.9756
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9942
+- **Overall Score:** 0.9977
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1199 bytes, Reference=29104 bytes
+- **File Size:** MiniPdf=1194 bytes, Reference=29104 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/classic13_date_strings.pdf
-+++ reference/classic13_date_strings.pdf
-@@ -1,6 +1,6 @@
- Date Event
-
--2025-01-15Launch
-
--2025-06-30Release
-
--2025-12-25Holiday
-
--2026-01-01New Year
-
--2026-02-23Today
-+2025-01-1 Launch
-
-+2025-06-3 Release
-
-+2025-12-2 Holiday
-
-+2026-01-0 New Year
-
-+2026-02-2 Today
-```
-</details>
+Text content: ✅ Identical
 
 ### classic14_decimal_numbers
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9937
-- **Overall Score:** 0.9975
+- **Visual Average:** 0.9954
+- **Overall Score:** 0.9982
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1176 bytes, Reference=29057 bytes
 
@@ -3142,8 +2964,8 @@ Text content: ✅ Identical
 ### classic15_negative_numbers
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9946
-- **Overall Score:** 0.9978
+- **Visual Average:** 0.996
+- **Overall Score:** 0.9984
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1265 bytes, Reference=28526 bytes
 
@@ -3152,8 +2974,8 @@ Text content: ✅ Identical
 ### classic16_percentage_strings
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.993
-- **Overall Score:** 0.9972
+- **Visual Average:** 0.9948
+- **Overall Score:** 0.9979
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1177 bytes, Reference=29888 bytes
 
@@ -3161,50 +2983,29 @@ Text content: ✅ Identical
 
 ### classic17_currency_strings
 
-- **Text Similarity:** 0.9662
-- **Visual Average:** 0.9917
-- **Overall Score:** 0.9832
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9939
+- **Overall Score:** 0.9976
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2292 bytes, Reference=29862 bytes
+- **File Size:** MiniPdf=1284 bytes, Reference=29862 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/classic17_currency_strings.pdf
-+++ reference/classic17_currency_strings.pdf
-@@ -3,6 +3,5 @@
- Gadget $149.00
-
- Premium $1,299.99
-
- Budget $4.50
-
--Euro Item 49.99
-
--€
-
--Yen Item JPY5000
-+Euro Item €49.99
-
-+Yen Item ¥5000
-```
-</details>
+Text content: ✅ Identical
 
 ### classic18_large_dataset
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8676
-- **Overall Score:** 0.947
+- **Visual Average:** 0.8805
+- **Overall Score:** 0.9522
 - **Pages:** MiniPdf=24, Reference=24
-- **File Size:** MiniPdf=532792 bytes, Reference=2487195 bytes
+- **File Size:** MiniPdf=533022 bytes, Reference=2487195 bytes
 
 Text content: ✅ Identical
 
 ### classic19_single_column_list
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9939
-- **Overall Score:** 0.9976
+- **Visual Average:** 0.9947
+- **Overall Score:** 0.9979
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1576 bytes, Reference=29688 bytes
 
@@ -3233,7 +3034,7 @@ Text content: ✅ Identical
 ### classic22_long_sheet_name
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9984
+- **Visual Average:** 0.9986
 - **Overall Score:** 0.9994
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=865 bytes, Reference=23683 bytes
@@ -3243,8 +3044,8 @@ Text content: ✅ Identical
 ### classic23_unicode_text
 
 - **Text Similarity:** 0.8017
-- **Visual Average:** 0.9928
-- **Overall Score:** 0.9178
+- **Visual Average:** 0.9943
+- **Overall Score:** 0.9184
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=3070 bytes, Reference=67722 bytes
 
@@ -3292,8 +3093,8 @@ Text content: ✅ Identical
 ### classic24_red_text
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9924
-- **Overall Score:** 0.997
+- **Visual Average:** 0.993
+- **Overall Score:** 0.9972
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1064 bytes, Reference=39031 bytes
 
@@ -3302,10 +3103,10 @@ Text content: ✅ Identical
 ### classic25_multiple_colors
 
 - **Text Similarity:** 0.9978
-- **Visual Average:** 0.989
-- **Overall Score:** 0.9947
+- **Visual Average:** 0.9925
+- **Overall Score:** 0.9961
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1771 bytes, Reference=43116 bytes
+- **File Size:** MiniPdf=1770 bytes, Reference=43116 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3313,7 +3114,7 @@ Text content: ✅ Identical
 --- minipdf/classic25_multiple_colors.pdf
 +++ reference/classic25_multiple_colors.pdf
 @@ -1,4 +1,4 @@
--Color NameSample Text
+-Color Nam Sample Text
 
 +Color NamSample Text
 
@@ -3329,8 +3130,8 @@ Text content: ✅ Identical
 ### classic26_inline_strings
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9966
-- **Overall Score:** 0.9986
+- **Visual Average:** 0.9977
+- **Overall Score:** 0.9991
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1037 bytes, Reference=25018 bytes
 
@@ -3349,8 +3150,8 @@ Text content: ✅ Identical
 ### classic28_duplicate_values
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.993
-- **Overall Score:** 0.9972
+- **Visual Average:** 0.9952
+- **Overall Score:** 0.9981
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1539 bytes, Reference=24729 bytes
 
@@ -3359,8 +3160,8 @@ Text content: ✅ Identical
 ### classic29_formula_results
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9925
-- **Overall Score:** 0.997
+- **Visual Average:** 0.9943
+- **Overall Score:** 0.9977
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1451 bytes, Reference=27548 bytes
 
@@ -3369,8 +3170,8 @@ Text content: ✅ Identical
 ### classic30_mixed_empty_and_filled_sheets
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9986
-- **Overall Score:** 0.9994
+- **Visual Average:** 0.9988
+- **Overall Score:** 0.9995
 - **Pages:** MiniPdf=2, Reference=2
 - **File Size:** MiniPdf=1382 bytes, Reference=27418 bytes
 
@@ -3378,37 +3179,19 @@ Text content: ✅ Identical
 
 ### classic31_bold_header_row
 
-- **Text Similarity:** 0.996
-- **Visual Average:** 0.9896
-- **Overall Score:** 0.9942
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9931
+- **Overall Score:** 0.9972
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1596 bytes, Reference=40714 bytes
+- **File Size:** MiniPdf=1597 bytes, Reference=40714 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/classic31_bold_header_row.pdf
-+++ reference/classic31_bold_header_row.pdf
-@@ -1,5 +1,5 @@
- Product Category Price Stock
-
--Laptop Electronic 999.99 50
-
-+Laptop Electronics 999.99 50
-
- Desk Furniture 349 20
-
- Pen Stationery 1.99 500
-
- Chair Furniture 199 30
-```
-</details>
+Text content: ✅ Identical
 
 ### classic32_right_aligned_numbers
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9954
-- **Overall Score:** 0.9982
+- **Visual Average:** 0.9959
+- **Overall Score:** 0.9984
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=978 bytes, Reference=27582 bytes
 
@@ -3417,8 +3200,8 @@ Text content: ✅ Identical
 ### classic33_centered_text
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.998
-- **Overall Score:** 0.9992
+- **Visual Average:** 0.9983
+- **Overall Score:** 0.9993
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1301 bytes, Reference=26648 bytes
 
@@ -3427,8 +3210,8 @@ Text content: ✅ Identical
 ### classic34_explicit_column_widths
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9913
-- **Overall Score:** 0.9965
+- **Visual Average:** 0.9917
+- **Overall Score:** 0.9967
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1200 bytes, Reference=28834 bytes
 
@@ -3436,9 +3219,9 @@ Text content: ✅ Identical
 
 ### classic35_explicit_row_heights
 
-- **Text Similarity:** 0.9647
-- **Visual Average:** 0.9943
-- **Overall Score:** 0.9836
+- **Text Similarity:** 0.9882
+- **Visual Average:** 0.9948
+- **Overall Score:** 0.9932
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=881 bytes, Reference=25108 bytes
 
@@ -3454,42 +3237,25 @@ Text content: ✅ Identical
 
  Extra Tall 42
 
--Normal Row10
-+Normal Ro 10
+ Normal Ro 10
 ```
 </details>
 
 ### classic36_merged_cells
 
-- **Text Similarity:** 0.963
-- **Visual Average:** 0.9911
-- **Overall Score:** 0.9816
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9931
+- **Overall Score:** 0.9972
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1102 bytes, Reference=27256 bytes
+- **File Size:** MiniPdf=1095 bytes, Reference=27256 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/classic36_merged_cells.pdf
-+++ reference/classic36_merged_cells.pdf
-@@ -1,4 +1,4 @@
--Merged Header Spanning Three Columns
-
-+Merged Header Spanning Three
-
- Col1 Col2 Col3
-
- Row2A Row2B Row2C
-
- Row3A Row3B Row3C
-```
-</details>
+Text content: ✅ Identical
 
 ### classic37_freeze_panes
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9824
-- **Overall Score:** 0.993
+- **Visual Average:** 0.9849
+- **Overall Score:** 0.994
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=4689 bytes, Reference=46420 bytes
 
@@ -3498,8 +3264,8 @@ Text content: ✅ Identical
 ### classic38_hyperlink_cell
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9961
-- **Overall Score:** 0.9984
+- **Visual Average:** 0.9975
+- **Overall Score:** 0.999
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=907 bytes, Reference=26279 bytes
 
@@ -3524,8 +3290,8 @@ Text content: ✅ Identical
 ### classic39_financial_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9872
-- **Overall Score:** 0.9949
+- **Visual Average:** 0.9904
+- **Overall Score:** 0.9962
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=2047 bytes, Reference=43383 bytes
 
@@ -3533,11 +3299,11 @@ Text content: ✅ Identical
 
 ### classic40_scientific_notation
 
-- **Text Similarity:** 0.8991
-- **Visual Average:** 0.9893
-- **Overall Score:** 0.9554
+- **Text Similarity:** 0.9854
+- **Visual Average:** 0.994
+- **Overall Score:** 0.9918
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1212 bytes, Reference=30852 bytes
+- **File Size:** MiniPdf=1200 bytes, Reference=30852 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3547,57 +3313,39 @@ Text content: ✅ Identical
 @@ -1,6 +1,6 @@
  Label Value
 
--Avogadro 6.022E+23
-
-+Avogadro 6.02E+23
+ Avogadro 6.02E+23
 
  Planck 6.626E-34
 
--Speed of L 299800000
+-Speed of Li3E+08
 
 -Electron m 9.109E-31
 
--Pi approx 3.14159265358979
 +Speed of L 3E+08
 
 +Electron m9.109E-31
 
-+Pi approx 3.141593
+ Pi approx 3.141593
 ```
 </details>
 
 ### classic41_integer_vs_float
 
-- **Text Similarity:** 0.9453
-- **Visual Average:** 0.9932
-- **Overall Score:** 0.9754
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9952
+- **Overall Score:** 0.9981
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1453 bytes, Reference=29637 bytes
+- **File Size:** MiniPdf=1456 bytes, Reference=29637 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/classic41_integer_vs_float.pdf
-+++ reference/classic41_integer_vs_float.pdf
-@@ -6,4 +6,4 @@
- Zero 0
-
- ZeroFloat 0
-
- Large 1000000
-
--Small 1E-06
-+Small 0.000001
-```
-</details>
+Text content: ✅ Identical
 
 ### classic42_boolean_values
 
-- **Text Similarity:** 0.9947
-- **Visual Average:** 0.9913
-- **Overall Score:** 0.9944
+- **Text Similarity:** 0.9948
+- **Visual Average:** 0.9935
+- **Overall Score:** 0.9953
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1190 bytes, Reference=28631 bytes
+- **File Size:** MiniPdf=1192 bytes, Reference=28631 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3609,7 +3357,7 @@ Text content: ✅ Identical
 
  Dark Mode TRUE
 
--Notificati FALSE
+-Notification FALSE
 
 +Notificatio FALSE
 
@@ -3624,8 +3372,8 @@ Text content: ✅ Identical
 ### classic43_inventory_report
 
 - **Text Similarity:** 0.9984
-- **Visual Average:** 0.9774
-- **Overall Score:** 0.9903
+- **Visual Average:** 0.9846
+- **Overall Score:** 0.9932
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=3045 bytes, Reference=49849 bytes
 
@@ -3650,11 +3398,11 @@ Text content: ✅ Identical
 
 ### classic44_employee_roster
 
-- **Text Similarity:** 0.9683
-- **Visual Average:** 0.967
-- **Overall Score:** 0.9741
+- **Text Similarity:** 0.9684
+- **Visual Average:** 0.9757
+- **Overall Score:** 0.9776
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=3476 bytes, Reference=43656 bytes
+- **File Size:** MiniPdf=3478 bytes, Reference=43656 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3674,9 +3422,9 @@ Text content: ✅ Identical
 
  1003 Carol Williams HR HR Specialcarol@example.com
 
--1004 David Brown Engineerin Junior Eng david@example.com
+-1004 David Brown Engineerin Junior Engidavid@example.com
 
--1005 Eve Davis Finance Financial eve@example.com
+-1005 Eve Davis Finance Financial A eve@example.com
 
 -1006 Frank Miller Sales Sales Repr frank@example.com
 
@@ -3697,8 +3445,8 @@ Text content: ✅ Identical
 ### classic45_sales_by_region
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9943
-- **Overall Score:** 0.9977
+- **Visual Average:** 0.9959
+- **Overall Score:** 0.9984
 - **Pages:** MiniPdf=4, Reference=4
 - **File Size:** MiniPdf=3174 bytes, Reference=37087 bytes
 
@@ -3707,8 +3455,8 @@ Text content: ✅ Identical
 ### classic46_grade_book
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9841
-- **Overall Score:** 0.9936
+- **Visual Average:** 0.9877
+- **Overall Score:** 0.9951
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=3325 bytes, Reference=40993 bytes
 
@@ -3717,8 +3465,8 @@ Text content: ✅ Identical
 ### classic47_time_series
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9728
-- **Overall Score:** 0.9891
+- **Visual Average:** 0.9755
+- **Overall Score:** 0.9902
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=6941 bytes, Reference=55976 bytes
 
@@ -3726,11 +3474,11 @@ Text content: ✅ Identical
 
 ### classic48_survey_results
 
-- **Text Similarity:** 0.9828
-- **Visual Average:** 0.9858
-- **Overall Score:** 0.9874
+- **Text Similarity:** 0.9914
+- **Visual Average:** 0.9895
+- **Overall Score:** 0.9924
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2378 bytes, Reference=36069 bytes
+- **File Size:** MiniPdf=2375 bytes, Reference=36069 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3744,15 +3492,13 @@ Text content: ✅ Identical
 
  Easy to us 30 45 15 7 3
 
--Recommend25 40 20 10 5
+-Recomme 25 40 20 10 5
 
 +Recommen 25 40 20 10 5
 
  Fair price 20 35 25 15 5
 
--Good suppo35 40 15 7 3
-
-+Good supp 35 40 15 7 3
+ Good supp 35 40 15 7 3
 
  Satisfied 28 42 18 8 4
 ```
@@ -3760,11 +3506,11 @@ Text content: ✅ Identical
 
 ### classic49_contact_list
 
-- **Text Similarity:** 0.9005
-- **Visual Average:** 0.9738
-- **Overall Score:** 0.9497
+- **Text Similarity:** 0.9814
+- **Visual Average:** 0.983
+- **Overall Score:** 0.9858
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2728 bytes, Reference=41523 bytes
+- **File Size:** MiniPdf=2710 bytes, Reference=41523 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3774,21 +3520,19 @@ Text content: ✅ Identical
 @@ -1,8 +1,8 @@
  Name Phone Email City Country
 
--Alice Smit +1-555-010alice@examNew York USA
+ Alice Smith+1-555-01 alice@exa New York USA
 
--Bob Jones +44-20-794bob@examplLondon UK
+-Bob Jones +44-20-79 bob@exa London UK
 
--Carol Wang+86-10-123carol@examBeijing China
+-Carol Wan +86-10-12 carol@exa Beijing China
 
--David Mull +49-30-123david@examBerlin Germany
+-David Mull +49-30-12 david@exaBerlin Germany
 
--Eve Martin +33-1-23-4 eve@examplParis France
+-Eve Martin +33-1-23-4 eve@examParis France
 
--Frank Tana+81-3-1234frank@examTokyo Japan
+-Frank Tan +81-3-123 frank@exa Tokyo Japan
 
--Grace Kim +82-2-1234grace@exam Seoul Korea
-+Alice Smith+1-555-01 alice@exa New York USA
-
+-Grace Kim +82-2-123 grace@ex Seoul Korea
 +Bob Jones +44-20-79 bob@examLondon UK
 
 +Carol Wan+86-10-12 carol@exaBeijing China
@@ -3806,10 +3550,10 @@ Text content: ✅ Identical
 ### classic50_budget_vs_actuals
 
 - **Text Similarity:** 0.9978
-- **Visual Average:** 0.9788
-- **Overall Score:** 0.9906
+- **Visual Average:** 0.9849
+- **Overall Score:** 0.9931
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=6550 bytes, Reference=54986 bytes
+- **File Size:** MiniPdf=6547 bytes, Reference=54986 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3817,7 +3561,7 @@ Text content: ✅ Identical
 --- minipdf/classic50_budget_vs_actuals.pdf
 +++ reference/classic50_budget_vs_actuals.pdf
 @@ -1,18 +1,18 @@
--DepartmentQ1 Q2 Q3 Q4 Annual
+-Departmen Q1 Q2 Q3 Q4 Annual
 
 +DepartmenQ1 Q2 Q3 Q4 Annual
 
@@ -3833,7 +3577,7 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--DepartmentQ1 Q2 Q3 Q4 Annual
+-Departmen Q1 Q2 Q3 Q4 Annual
 
 +DepartmenQ1 Q2 Q3 Q4 Annual
 
@@ -3849,7 +3593,7 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--DepartmentQ1 Q2 Q3 Q4 Annual
+-Departmen Q1 Q2 Q3 Q4 Annual
 
 +DepartmenQ1 Q2 Q3 Q4 Annual
 
@@ -3864,11 +3608,11 @@ Text content: ✅ Identical
 
 ### classic51_product_catalog
 
-- **Text Similarity:** 0.9771
-- **Visual Average:** 0.9747
-- **Overall Score:** 0.9807
+- **Text Similarity:** 0.9784
+- **Visual Average:** 0.9815
+- **Overall Score:** 0.984
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=3468 bytes, Reference=44297 bytes
+- **File Size:** MiniPdf=3462 bytes, Reference=44297 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3876,19 +3620,23 @@ Text content: ✅ Identical
 --- minipdf/classic51_product_catalog.pdf
 +++ reference/classic51_product_catalog.pdf
 @@ -1,11 +1,11 @@
- Part# Name Descriptio Weight(g) Price
+-Part# Name DescriptionWeight(g) Price
 
 -P-001 Basic WidgStandard w150 4.99
 
--P-002 Pro Widget Enhanced w180 12.99
+-P-002 Pro Widget Enhanced 180 12.99
 
--P-003 Mini GadgeCompact ga90 19.99
+-P-003 Mini Gadg Compact g 90 19.99
 
--P-004 Max GadgetFull-size 450 89.99
+-P-004 Max Gadg Full-size g 450 89.99
 
--P-005 Connector Type-A con80 7.49
+-P-005 Connector Type-A co 80 7.49
 
--P-006 Connector Type-B con110 9.99
+-P-006 Connector Type-B co 110 9.99
+
+-P-007 Adapter X Universal p200 15.99
+
++Part# Name Descriptio Weight(g) Price
 
 +P-001 Basic WidgStandard w 150 4.99
 
@@ -3902,26 +3650,25 @@ Text content: ✅ Identical
 
 +P-006 ConnectorType-B con 110 9.99
 
- P-007 Adapter X Universal 200 15.99
++P-007 Adapter X Universal 200 15.99
 
  P-008 Adapter Y Travel pow 120 11.99
 
--P-009 Mount BracWall mount600 24.99
+-P-009 Mount Bra Wall mount600 24.99
 
--P-010 Carry CasePadded car350 34.99
 +P-009 Mount BraWall moun 600 24.99
 
-+P-010 Carry CasePadded ca 350 34.99
+ P-010 Carry CasePadded ca 350 34.99
 ```
 </details>
 
 ### classic52_pivot_summary
 
-- **Text Similarity:** 0.9956
-- **Visual Average:** 0.9784
-- **Overall Score:** 0.9896
+- **Text Similarity:** 0.9978
+- **Visual Average:** 0.9846
+- **Overall Score:** 0.993
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2426 bytes, Reference=44493 bytes
+- **File Size:** MiniPdf=2427 bytes, Reference=44493 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3929,7 +3676,7 @@ Text content: ✅ Identical
 --- minipdf/classic52_pivot_summary.pdf
 +++ reference/classic52_pivot_summary.pdf
 @@ -1,4 +1,4 @@
--Region Electronic Furniture Clothing Food Total
+-Region Electronics Furniture Clothing Food Total
 
 +Region ElectronicsFurniture Clothing Food Total
 
@@ -3944,18 +3691,18 @@ Text content: ✅ Identical
 
 ### classic53_invoice
 
-- **Text Similarity:** 0.9984
-- **Visual Average:** 0.9836
-- **Overall Score:** 0.9928
+- **Text Similarity:** 0.9951
+- **Visual Average:** 0.9885
+- **Overall Score:** 0.9934
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2516 bytes, Reference=53425 bytes
+- **File Size:** MiniPdf=2518 bytes, Reference=53425 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic53_invoice.pdf
 +++ reference/classic53_invoice.pdf
-@@ -6,7 +6,7 @@
+@@ -6,9 +6,9 @@
  ACME Corporation
 
  123 Business Rd, Suite 400
@@ -3968,9 +3715,15 @@ Text content: ✅ Identical
 
  Consulting 10 150 1500
 
- Software L 5 99 495
+-Software Li5 99 495
+
++Software L 5 99 495
 
  Hardware 2 249.99 499.98
+
+ Support Pl 1 1200 1200
+
+ Subtotal 3694.98
 
 ```
 </details>
@@ -3978,8 +3731,8 @@ Text content: ✅ Identical
 ### classic54_multi_level_header
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9812
-- **Overall Score:** 0.9925
+- **Visual Average:** 0.9886
+- **Overall Score:** 0.9954
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=2150 bytes, Reference=38782 bytes
 
@@ -3988,8 +3741,8 @@ Text content: ✅ Identical
 ### classic55_error_values
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9878
-- **Overall Score:** 0.9951
+- **Visual Average:** 0.9915
+- **Overall Score:** 0.9966
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1650 bytes, Reference=34677 bytes
 
@@ -3998,18 +3751,18 @@ Text content: ✅ Identical
 ### classic56_alternating_row_colors
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.7141
-- **Overall Score:** 0.8856
+- **Visual Average:** 0.9871
+- **Overall Score:** 0.9948
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2201 bytes, Reference=32363 bytes
+- **File Size:** MiniPdf=3036 bytes, Reference=32363 bytes
 
 Text content: ✅ Identical
 
 ### classic57_cjk_only
 
 - **Text Similarity:** 0.7624
-- **Visual Average:** 0.8689
-- **Overall Score:** 0.8525
+- **Visual Average:** 0.8675
+- **Overall Score:** 0.852
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=3137 bytes, Reference=88207 bytes
 
@@ -4058,11 +3811,11 @@ Text content: ✅ Identical
 
 ### classic58_mixed_numeric_formats
 
-- **Text Similarity:** 0.9028
-- **Visual Average:** 0.9904
-- **Overall Score:** 0.9573
+- **Text Similarity:** 0.9905
+- **Visual Average:** 0.9926
+- **Overall Score:** 0.9932
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1602 bytes, Reference=32815 bytes
+- **File Size:** MiniPdf=1601 bytes, Reference=32815 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4076,23 +3829,19 @@ Text content: ✅ Identical
 
  Float 5dp 3.14159
 
--Negative i -42
-
--Negative f -3.14
+-Negative in-42
 
 +Negative in -42
 
-+Negative fl -3.14
+ Negative fl -3.14
 
  Very small 0.0001
 
--Very large 9999999.99
-
-+Very large 10000000
+ Very large 10000000
 
  Zero 0
 
--Scientific 12300000000
+-Scientific a 1.23E+10
 +Scientific 1.23E+10
 ```
 </details>
@@ -4100,8 +3849,8 @@ Text content: ✅ Identical
 ### classic59_multi_sheet_summary
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9923
-- **Overall Score:** 0.9969
+- **Visual Average:** 0.9942
+- **Overall Score:** 0.9977
 - **Pages:** MiniPdf=4, Reference=4
 - **File Size:** MiniPdf=4336 bytes, Reference=44781 bytes
 
@@ -4110,18 +3859,18 @@ Text content: ✅ Identical
 ### classic60_large_wide_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9091
-- **Overall Score:** 0.9636
+- **Visual Average:** 0.9223
+- **Overall Score:** 0.9689
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=55057 bytes, Reference=263350 bytes
+- **File Size:** MiniPdf=55077 bytes, Reference=263350 bytes
 
 Text content: ✅ Identical
 
 ### classic61_product_card_with_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9624
-- **Overall Score:** 0.985
+- **Visual Average:** 0.9894
+- **Overall Score:** 0.9958
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=2056 bytes, Reference=36974 bytes
 
@@ -4130,10 +3879,10 @@ Text content: ✅ Identical
 ### classic62_company_logo_header
 
 - **Text Similarity:** 0.996
-- **Visual Average:** 0.9714
-- **Overall Score:** 0.987
+- **Visual Average:** 0.9904
+- **Overall Score:** 0.9946
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2750 bytes, Reference=42880 bytes
+- **File Size:** MiniPdf=2749 bytes, Reference=42880 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4145,7 +3894,7 @@ Text content: ✅ Identical
 
  Annual Report 2025
 
--DepartmentQ1 Q2 Q3 Q4
+-Departmen Q1 Q2 Q3 Q4
 
 +DepartmenQ1 Q2 Q3 Q4
 
@@ -4160,8 +3909,8 @@ Text content: ✅ Identical
 ### classic63_two_products_side_by_side
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9569
-- **Overall Score:** 0.9828
+- **Visual Average:** 0.9921
+- **Overall Score:** 0.9968
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=3067 bytes, Reference=28933 bytes
 
@@ -4170,10 +3919,10 @@ Text content: ✅ Identical
 ### classic64_employee_directory_with_photo
 
 - **Text Similarity:** 0.9835
-- **Visual Average:** 0.9698
-- **Overall Score:** 0.9813
+- **Visual Average:** 0.9709
+- **Overall Score:** 0.9818
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4403 bytes, Reference=43408 bytes
+- **File Size:** MiniPdf=4680 bytes, Reference=43408 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4181,13 +3930,13 @@ Text content: ✅ Identical
 --- minipdf/classic64_employee_directory_with_photo.pdf
 +++ reference/classic64_employee_directory_with_photo.pdf
 @@ -1,4 +1,4 @@
--Photo Name Title DepartmentEmail
+-Photo Name Title Departmen Email
 
 -Alice Chen Engineer R&D alice@example.com
 
 -Bob Smith Manager Sales bob@example.com
 
--Carol WangDesigner UX carol@example.com
+-Carol Wan Designer UX carol@example.com
 +Photo Name Title DepartmeEmail
 
 +Alice ChenEngineer R&D alice@example.com
@@ -4200,11 +3949,11 @@ Text content: ✅ Identical
 
 ### classic65_inventory_with_product_photos
 
-- **Text Similarity:** 0.9779
-- **Visual Average:** 0.9554
-- **Overall Score:** 0.9733
+- **Text Similarity:** 0.9842
+- **Visual Average:** 0.9689
+- **Overall Score:** 0.9812
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=6598 bytes, Reference=48227 bytes
+- **File Size:** MiniPdf=6596 bytes, Reference=48227 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4214,17 +3963,15 @@ Text content: ✅ Identical
 @@ -1,6 +1,6 @@
  Image SKU Name Qty Price
 
--SKU-001 Red Widget50 9.99
+ SKU-001 Red Widge 50 9.99
 
--SKU-002 Blue Gadge30 14.99
+-SKU-002 Blue Gadg 30 14.99
 
 -SKU-003 Green Tool100 4.49
 
 -SKU-004 Yellow Dev25 29.99
 
 -SKU-005 Purple Gea75 7.99
-+SKU-001 Red Widge 50 9.99
-
 +SKU-002 Blue Gadge 30 14.99
 
 +SKU-003 Green Too 100 4.49
@@ -4237,11 +3984,11 @@ Text content: ✅ Identical
 
 ### classic66_invoice_with_logo
 
-- **Text Similarity:** 0.9868
-- **Visual Average:** 0.9721
-- **Overall Score:** 0.9836
+- **Text Similarity:** 0.9801
+- **Visual Average:** 0.9896
+- **Overall Score:** 0.9879
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2710 bytes, Reference=45034 bytes
+- **File Size:** MiniPdf=2713 bytes, Reference=45034 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4255,15 +4002,17 @@ Text content: ✅ Identical
 
  Date: 2025-03-01
 
--Descriptio Qty Unit Price Total
+-DescriptionQty Unit Price Total
 
 +DescriptiQty Unit PriceTotal
 
  Consulting 8 150 1200
 
- Software L 1 299 299
+-Software Li1 299 299
 
 -Support Pa1 99 99
+
++Software L 1 299 299
 
 +Support Pa 1 99 99
 
@@ -4274,8 +4023,8 @@ Text content: ✅ Identical
 ### classic67_real_estate_listing
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9508
-- **Overall Score:** 0.9803
+- **Visual Average:** 0.9921
+- **Overall Score:** 0.9968
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=2739 bytes, Reference=44030 bytes
 
@@ -4283,11 +4032,11 @@ Text content: ✅ Identical
 
 ### classic68_restaurant_menu
 
-- **Text Similarity:** 0.9881
-- **Visual Average:** 0.927
-- **Overall Score:** 0.966
+- **Text Similarity:** 0.9857
+- **Visual Average:** 0.9425
+- **Overall Score:** 0.9713
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=5250 bytes, Reference=47320 bytes
+- **File Size:** MiniPdf=5251 bytes, Reference=47320 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4297,7 +4046,7 @@ Text content: ✅ Identical
 @@ -1,9 +1,9 @@
  Today's Menu
 
--Grilled Sa $18.99
+-Grilled Sal $18.99
 
 +Grilled S $18.99
 
@@ -4326,8 +4075,8 @@ Text content: ✅ Identical
 ### classic69_image_only_sheet
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9321
-- **Overall Score:** 0.9728
+- **Visual Average:** 0.9973
+- **Overall Score:** 0.9989
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=2459 bytes, Reference=8905 bytes
 
@@ -4335,11 +4084,11 @@ Text content: ✅ Identical
 
 ### classic70_product_catalog_with_images
 
-- **Text Similarity:** 0.9793
-- **Visual Average:** 0.9408
-- **Overall Score:** 0.968
+- **Text Similarity:** 0.9862
+- **Visual Average:** 0.9567
+- **Overall Score:** 0.9772
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4410 bytes, Reference=44156 bytes
+- **File Size:** MiniPdf=4409 bytes, Reference=44156 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4361,9 +4110,7 @@ Text content: ✅ Identical
 
  Premium A5 notebook
 
--Desk Organ$24.99
-
-+Desk Orga $24.99
+ Desk Orga $24.99
 
  Bamboo desk tidy set
 ```
@@ -4372,10 +4119,10 @@ Text content: ✅ Identical
 ### classic71_multi_sheet_with_images
 
 - **Text Similarity:** 0.9966
-- **Visual Average:** 0.9819
-- **Overall Score:** 0.9914
+- **Visual Average:** 0.9949
+- **Overall Score:** 0.9966
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=5021 bytes, Reference=37419 bytes
+- **File Size:** MiniPdf=5020 bytes, Reference=37419 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4389,7 +4136,7 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--DepartmentHeadcount
+-Departmen Headcount
 
 +DepartmenHeadcount
 
@@ -4402,8 +4149,8 @@ Text content: ✅ Identical
 ### classic72_bar_chart_image_with_data
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9358
-- **Overall Score:** 0.9743
+- **Visual Average:** 0.9826
+- **Overall Score:** 0.993
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=3076 bytes, Reference=41342 bytes
 
@@ -4412,10 +4159,10 @@ Text content: ✅ Identical
 ### classic73_event_flyer_with_banner
 
 - **Text Similarity:** 0.9939
-- **Visual Average:** 0.92
-- **Overall Score:** 0.9656
+- **Visual Average:** 0.9877
+- **Overall Score:** 0.9926
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=3071 bytes, Reference=44512 bytes
+- **File Size:** MiniPdf=3072 bytes, Reference=44512 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4429,9 +4176,9 @@ Text content: ✅ Identical
 
  Time Session Speaker
 
--09:00 Opening KeDr. Jane Kim
+-09:00 Opening K Dr. Jane Kim
 
--10:30 AI in Prac Prof. Mark Liu
+-10:30 AI in Practi Prof. Mark Liu
 
 -13:00 Cloud Arch Eng. Sara Patel
 
@@ -4447,11 +4194,11 @@ Text content: ✅ Identical
 
 ### classic74_dashboard_with_kpi_image
 
-- **Text Similarity:** 0.947
-- **Visual Average:** 0.9439
-- **Overall Score:** 0.9564
+- **Text Similarity:** 0.9595
+- **Visual Average:** 0.9829
+- **Overall Score:** 0.977
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4121 bytes, Reference=48755 bytes
+- **File Size:** MiniPdf=4130 bytes, Reference=48755 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4463,21 +4210,21 @@ Text content: ✅ Identical
 
  KPI Target Actual Status
 
--Revenue 500000 523000 Above
+-Revenue 500000 523000
 
--✓
+-✓ Above
 
--New Custom200 187 Below
+-New Custo 200 187
 
--✗
+-✗ Below
 
--NPS Score 70 74 Above
+-NPS Score 70 74
 
--✓
+-✓ Above
 
--Churn Rate< 3% 2.8% Above
+-Churn Rat < 3% 2.8%
 
--✓
+-✓ Above
 +Revenue 500000 523000 ✓ Above
 
 +New Custo 200 187  Below ✗
@@ -4491,8 +4238,8 @@ Text content: ✅ Identical
 ### classic75_certificate_with_seal
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9686
-- **Overall Score:** 0.9874
+- **Visual Average:** 0.9849
+- **Overall Score:** 0.994
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=1981 bytes, Reference=39135 bytes
 
@@ -4501,8 +4248,8 @@ Text content: ✅ Identical
 ### classic76_product_image_grid
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9464
-- **Overall Score:** 0.9786
+- **Visual Average:** 0.9845
+- **Overall Score:** 0.9938
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=5002 bytes, Reference=39017 bytes
 
@@ -4511,8 +4258,8 @@ Text content: ✅ Identical
 ### classic77_news_article_with_hero_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9178
-- **Overall Score:** 0.9671
+- **Visual Average:** 0.9784
+- **Overall Score:** 0.9914
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=2719 bytes, Reference=52664 bytes
 
@@ -4520,11 +4267,11 @@ Text content: ✅ Identical
 
 ### classic78_small_icon_per_row
 
-- **Text Similarity:** 0.9863
-- **Visual Average:** 0.9799
-- **Overall Score:** 0.9865
+- **Text Similarity:** 0.9832
+- **Visual Average:** 0.9873
+- **Overall Score:** 0.9882
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=6064 bytes, Reference=41646 bytes
+- **File Size:** MiniPdf=6067 bytes, Reference=41646 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4534,17 +4281,19 @@ Text content: ✅ Identical
 @@ -1,6 +1,6 @@
  Icon Task Assignee Status
 
--Fix login Alice Done
+ Fix login b Alice Done
 
-+Fix login b Alice Done
+-Write unit t Bob In Progress
 
- Write unit Bob In Progress
-
- Deploy to Carol Pending
+-Deploy to sCarol Pending
 
 -Code revie Alice Done
 
--Update docDave In Progress
+-Update do Dave In Progress
++Write unit Bob In Progress
+
++Deploy to Carol Pending
+
 +Code revieAlice Done
 
 +Update doDave In Progress
@@ -4554,8 +4303,8 @@ Text content: ✅ Identical
 ### classic79_wide_panoramic_banner
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9099
-- **Overall Score:** 0.964
+- **Visual Average:** 0.9907
+- **Overall Score:** 0.9963
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=2889 bytes, Reference=43015 bytes
 
@@ -4564,8 +4313,8 @@ Text content: ✅ Identical
 ### classic80_portrait_tall_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9646
-- **Overall Score:** 0.9858
+- **Visual Average:** 0.9889
+- **Overall Score:** 0.9956
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=2325 bytes, Reference=39079 bytes
 
@@ -4574,8 +4323,8 @@ Text content: ✅ Identical
 ### classic81_step_by_step_with_images
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9432
-- **Overall Score:** 0.9773
+- **Visual Average:** 0.9568
+- **Overall Score:** 0.9827
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=5110 bytes, Reference=47175 bytes
 
@@ -4583,41 +4332,21 @@ Text content: ✅ Identical
 
 ### classic82_before_after_images
 
-- **Text Similarity:** 0.9704
-- **Visual Average:** 0.9352
-- **Overall Score:** 0.9622
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9878
+- **Overall Score:** 0.9951
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4978 bytes, Reference=42486 bytes
+- **File Size:** MiniPdf=3835 bytes, Reference=42486 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/classic82_before_after_images.pdf
-+++ reference/classic82_before_after_images.pdf
-@@ -1,6 +1,5 @@
- Before After
-
--Old design legacy UI New design modern UI
-
--– –
-
-+Old design – legacy UI New design – modern UI
-
- Metric Before After Delta
-
- Load time 4.2s 1.1s -74%
-
- Conversion2.1% 4.8% +129%
-```
-</details>
+Text content: ✅ Identical
 
 ### classic83_color_swatch_palette
 
 - **Text Similarity:** 0.9862
-- **Visual Average:** 0.9608
-- **Overall Score:** 0.9788
+- **Visual Average:** 0.9723
+- **Overall Score:** 0.9834
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=6915 bytes, Reference=45933 bytes
+- **File Size:** MiniPdf=6914 bytes, Reference=45933 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4637,7 +4366,7 @@ Text content: ✅ Identical
 
 -Neutral Gr RGB(128, 128, 128)
 
--Warm YelloRGB(255, 193, 7)
+-Warm Yell RGB(255, 193, 7)
 
 +Accent Gr RGB(0, 163, 108)
 
@@ -4652,8 +4381,8 @@ Text content: ✅ Identical
 ### classic84_travel_destination_cards
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.912
-- **Overall Score:** 0.9648
+- **Visual Average:** 0.9348
+- **Overall Score:** 0.9739
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=4377 bytes, Reference=42524 bytes
 
@@ -4661,62 +4390,40 @@ Text content: ✅ Identical
 
 ### classic85_lab_results_with_image
 
-- **Text Similarity:** 0.8277
-- **Visual Average:** 0.9594
-- **Overall Score:** 0.9148
+- **Text Similarity:** 0.9933
+- **Visual Average:** 0.9872
+- **Overall Score:** 0.9922
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4708 bytes, Reference=47866 bytes
+- **File Size:** MiniPdf=3266 bytes, Reference=47866 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic85_lab_results_with_image.pdf
 +++ reference/classic85_lab_results_with_image.pdf
-@@ -1,12 +1,7 @@
+@@ -1,5 +1,5 @@
  Sample Analysis Report
 
 -Parameter Value Unit Reference Flag
 
--pH 7.35 7.35 7.4 Normal
-
--–
-
--Glucose 5.2 mmol/L 3.9 5.5 Normal
-
--–
-
--Sodium 142 mEq/L 136 145 Normal
-
--–
-
--Potassium 5 mEq/L 3.5 5.0 Normal
-
--–
-
--Creatinine 1.4 mg/dL 0.6 1.2 High
-
--–
 +ParameteValue Unit ReferenceFlag
 
-+pH 7.35 7.35 – 7.45Normal
+ pH 7.35 7.35 – 7.45Normal
 
-+Glucose 5.2 mmol/L 3.9 – 5.5 Normal
+ Glucose 5.2 mmol/L 3.9 – 5.5 Normal
 
-+Sodium 142 mEq/L 136 – 145 Normal
+ Sodium 142 mEq/L 136 – 145 Normal
 
-+Potassium 5 mEq/L 3.5 – 5.0 Normal
-
-+Creatinine 1.4 mg/dL 0.6 – 1.2 High
 ```
 </details>
 
 ### classic86_software_screenshot_features
 
-- **Text Similarity:** 0.9932
-- **Visual Average:** 0.9513
-- **Overall Score:** 0.9778
+- **Text Similarity:** 0.973
+- **Visual Average:** 0.993
+- **Overall Score:** 0.9864
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2837 bytes, Reference=41961 bytes
+- **File Size:** MiniPdf=2836 bytes, Reference=41961 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4736,23 +4443,28 @@ Text content: ✅ Identical
 
  Auto Save Yes
 
- Cloud SyncYes
+-Cloud Syn Yes
 
 -Offline Mo Yes
 
+-API Acces Pro only
+
+-Export to P Yes
++Cloud SyncYes
+
 +Offline MoYes
 
- API AccessPro only
++API AccessPro only
 
- Export to Yes
++Export to Yes
 ```
 </details>
 
 ### classic87_sports_results_with_logos
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9834
-- **Overall Score:** 0.9934
+- **Visual Average:** 0.9885
+- **Overall Score:** 0.9954
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=5584 bytes, Reference=47076 bytes
 
@@ -4761,8 +4473,8 @@ Text content: ✅ Identical
 ### classic88_image_after_data
 
 - **Text Similarity:** 0.997
-- **Visual Average:** 0.9714
-- **Overall Score:** 0.9874
+- **Visual Average:** 0.9899
+- **Overall Score:** 0.9948
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=2880 bytes, Reference=43273 bytes
 
@@ -4787,9 +4499,9 @@ Text content: ✅ Identical
 
 ### classic89_nutrition_label_with_image
 
-- **Text Similarity:** 0.9878
-- **Visual Average:** 0.9695
-- **Overall Score:** 0.9829
+- **Text Similarity:** 0.9903
+- **Visual Average:** 0.9921
+- **Overall Score:** 0.993
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=3076 bytes, Reference=47194 bytes
 
@@ -4803,7 +4515,7 @@ Text content: ✅ Identical
 
  Serving Size: 30g (approx. 1 cup)
 
--Nutrient Amount per% Daily Value
+-Nutrient Amount pe % Daily Value
 
 +Nutrient Amount p% Daily Value
 
@@ -4817,7 +4529,7 @@ Text content: ✅ Identical
 
 -Total Carb 22g 8%
 
--Dietary Fi 3g 11%
+-Dietary Fib 3g 11%
 
 +Total Carb22g 8%
 
@@ -4831,34 +4543,33 @@ Text content: ✅ Identical
 
 ### classic90_project_status_with_milestones
 
-- **Text Similarity:** 0.9067
-- **Visual Average:** 0.9463
-- **Overall Score:** 0.9412
+- **Text Similarity:** 0.9534
+- **Visual Average:** 0.98
+- **Overall Score:** 0.9734
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4215 bytes, Reference=47112 bytes
+- **File Size:** MiniPdf=3174 bytes, Reference=47112 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic90_project_status_with_milestones.pdf
 +++ reference/classic90_project_status_with_milestones.pdf
-@@ -1,9 +1,8 @@
--Project Orion Status Report
-
--–
-
-+Project Orion – Status Report
+@@ -1,8 +1,8 @@
+ Project Orion – Status Report
 
  Reporting Period: Q1 2025
 
 -Milestone Due Date Owner Status
 
--RequiremenJan 15 PM Team Complete
+-Requireme Jan 15 PM Team Complete
 
--Architectu Feb 1 Tech Lead Complete
+-Architectur Feb 1 Tech Lead Complete
 
 -Alpha Rele Feb 28 Dev Team In Progress
 
+-Beta TestinMar 31 QA Team Not Started
+
+-Production Apr 15 DevOps Not Started
 +MilestoneDue DateOwner Status
 
 +RequiremeJan 15 PM Team Complete
@@ -4867,9 +4578,8 @@ Text content: ✅ Identical
 
 +Alpha ReleFeb 28 Dev Team In Progress
 
- Beta Testi Mar 31 QA Team Not Started
++Beta Testi Mar 31 QA Team Not Started
 
--Production Apr 15 DevOps Not Started
 +ProductionApr 15 DevOps Not Started
 ```
 </details>
@@ -4877,10 +4587,10 @@ Text content: ✅ Identical
 ### classic91_simple_bar_chart
 
 - **Text Similarity:** 0.9585
-- **Visual Average:** 0.9587
-- **Overall Score:** 0.9669
+- **Visual Average:** 0.9605
+- **Overall Score:** 0.9676
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=3052 bytes, Reference=46981 bytes
+- **File Size:** MiniPdf=3053 bytes, Reference=46981 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4911,19 +4621,19 @@ Text content: ✅ Identical
 
 ### classic92_horizontal_bar_chart
 
-- **Text Similarity:** 0.6165
-- **Visual Average:** 0.9612
-- **Overall Score:** 0.8311
+- **Text Similarity:** 0.9612
+- **Visual Average:** 0.9659
+- **Overall Score:** 0.9708
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=3117 bytes, Reference=49903 bytes
+- **File Size:** MiniPdf=3722 bytes, Reference=49903 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic92_horizontal_bar_chart.pdf
 +++ reference/classic92_horizontal_bar_chart.pdf
-@@ -1,16 +1,18 @@
--DepartmentHeadcount
+@@ -1,4 +1,4 @@
+-Departmen Headcount
 
 +DepartmenHeadcount
 
@@ -4933,41 +4643,16 @@ Text content: ✅ Identical
 
  Sales 30
 
- Marketing 18
+@@ -12,5 +12,7 @@
+ Marketing
 
--50
+ Sales
 
- HR 12
+ Engineering
 
-+Operations
-
- Finance 15
-
- Operations 25
-
--40
-
--30
-
--20
-
--10
-
--0
-
--Engineering Sales Marketing HR Finance Operations
+-0 5 10 15 20 25 30 35 40 45 5
 
 ----PAGE---
-+Finance
-
-+HR
-
-+Marketing
-
-+Sales
-
-+Engineering
-
 +0 5 10 15 20 25 30 35 40 45
 
 +---PAGE---
@@ -4980,11 +4665,11 @@ Text content: ✅ Identical
 
 ### classic93_line_chart
 
-- **Text Similarity:** 0.8344
-- **Visual Average:** 0.987
-- **Overall Score:** 0.9286
+- **Text Similarity:** 0.8742
+- **Visual Average:** 0.9851
+- **Overall Score:** 0.9437
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=5194 bytes, Reference=58815 bytes
+- **File Size:** MiniPdf=5195 bytes, Reference=58815 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5010,29 +4695,29 @@ Text content: ✅ Identical
 
  May 20
 
+-Jun 25 25
+
 +Jun 25
 
- 25
-
--Jun 25
++25
 
  Jul 28
 
-+Aug 27
+ Aug 27
 
  20
 
--Aug 27
-
  Sep 22
 
--Oct 15 15
++Temperature (C)
+
+ Oct 15
+
+-15
 
 -Nov 8
 
- Temperature (C)
-
-+Oct 15
+-Temperature (C)
 
 +Nov 8 15
 
@@ -5061,85 +4746,37 @@ Text content: ✅ Identical
 
 ### classic94_pie_chart
 
-- **Text Similarity:** 0.8091
-- **Visual Average:** 0.9218
-- **Overall Score:** 0.8924
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9316
+- **Overall Score:** 0.9726
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=232945 bytes, Reference=47211 bytes
+- **File Size:** MiniPdf=414437 bytes, Reference=47211 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/classic94_pie_chart.pdf
-+++ reference/classic94_pie_chart.pdf
-@@ -3,11 +3,11 @@
- Market Share by Segment
-
- SMB 28
-
- Consumer 22
-
--Government10
-
-+Governme 10
-
-+Education 5
-
-+Enterprise
-
-+SMB
-
-+Consumer
-
-+Government
-
- Education
-
--Education 5
-
--Government
-
--Enterprise
-
--Consumer
-
--SMB
-
- ---PAGE---
-```
-</details>
+Text content: ✅ Identical
 
 ### classic95_area_chart
 
-- **Text Similarity:** 0.5806
-- **Visual Average:** 0.7513
-- **Overall Score:** 0.7328
+- **Text Similarity:** 0.678
+- **Visual Average:** 0.7628
+- **Overall Score:** 0.7763
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=11775 bytes, Reference=60817 bytes
+- **File Size:** MiniPdf=12586 bytes, Reference=60817 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic95_area_chart.pdf
 +++ reference/classic95_area_chart.pdf
-@@ -3,32 +3,37 @@
- Website Traffic by Hour
-
- 01:00 216
-
- 02:00 218
-
--1000
-
-+1200
+@@ -6,29 +6,34 @@
+ 1200
 
  03:00 221
 
  04:00 224
 
- 05:00 228
+-05:00 228 1000
 
--800
++05:00 228
 
 +1000
 
@@ -5147,15 +4784,13 @@ Text content: ✅ Identical
 
  07:00 240
 
--600
-
-+800
+ 800
 
  08:00 250
 
  09:00 265
 
-+600
+ 600
 
 +Users
 
@@ -5163,33 +4798,29 @@ Text content: ✅ Identical
 
 -Users
 
-+11:00 329
+ 11:00 329
 
- 400
+-12:00 408 400
 
--11:00 329
++400
 
- 12:00 408
++12:00 408
 
--13:00 600 200
-
-+13:00 600
+ 13:00 600
 
  14:00 1000
 
-+200
+ 200
 
  15:00 600
 
-+16:00 408
+ 16:00 408
 
  0
 
--16:00 408
-
--00:00 02:00 04:00 06:00 08:00 10:00 12:00 14:00 16:00 18:00 20:00
-
 -17:00 329
+
+-00:0001:0002:0003:0004:0005:0006:0007:0008:0009:0010:0011:0012:0013:0014:0015:0016:0017:0018:0019:0020:0021:0
 
 +17:00 329 00: 01: 02: 03: 04: 05: 06: 07: 08: 09: 10: 11: 12: 13: 14: 15: 16: 17: 18: 1
 
@@ -5220,43 +4851,38 @@ Text content: ✅ Identical
 
 ### classic96_scatter_chart
 
-- **Text Similarity:** 0.7934
-- **Visual Average:** 0.881
-- **Overall Score:** 0.8698
+- **Text Similarity:** 0.8085
+- **Visual Average:** 0.9849
+- **Overall Score:** 0.9174
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=2879 bytes, Reference=62711 bytes
+- **File Size:** MiniPdf=6143 bytes, Reference=62711 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic96_scatter_chart.pdf
 +++ reference/classic96_scatter_chart.pdf
-@@ -3,22 +3,32 @@
+@@ -3,7 +3,6 @@
  Ad Spend vs Sales
 
  6 11
 
  20 43
 
-+140
+-Data Points
+
+ 140
 
  13 22
 
  48 117
 
-+120
-
- 10 31
-
- 32 64
-
-+100
-
+@@ -14,21 +13,22 @@
  6 5
 
  18 38
 
-+80
+ 80
 
 +Sales ($K)
 
@@ -5266,6 +4892,8 @@ Text content: ✅ Identical
 
  6 20
 
+-60
+
 -Sales ($K)
 
  17 49
@@ -5274,11 +4902,15 @@ Text content: ✅ Identical
 
  49 119
 
+-40
+
  31 68
 
 +20
 
  33 83
+
+-20
 
  22 40
 
@@ -5288,11 +4920,17 @@ Text content: ✅ Identical
 
  15 37
 
+-0
+
 -26 57
+
+-0 10 20 30 40 50 60
+
+-14 28 Ad Spend ($K)
 
 +26 57 Ad Spend ($K)
 
- 14 28
++14 28
 
  26 52
 
@@ -5305,67 +4943,35 @@ Text content: ✅ Identical
 
 ### classic97_doughnut_chart
 
-- **Text Similarity:** 0.8571
-- **Visual Average:** 0.9258
-- **Overall Score:** 0.9132
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9377
+- **Overall Score:** 0.9751
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=174337 bytes, Reference=47227 bytes
+- **File Size:** MiniPdf=311767 bytes, Reference=47227 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/classic97_doughnut_chart.pdf
-+++ reference/classic97_doughnut_chart.pdf
-@@ -4,10 +4,10 @@
- Rent 12000
-
- Marketing 8000
-
- R&D 15000
-
--Other
-
- Other 5000
-
--R&D
-
--Marketing
-
- Salaries
-
- Rent
-
-+Marketing
-
-+R&D
-
-+Other
-
- ---PAGE---
-```
-</details>
+Text content: ✅ Identical
 
 ### classic98_radar_chart
 
-- **Text Similarity:** 0.7519
-- **Visual Average:** 0.9917
-- **Overall Score:** 0.8974
+- **Text Similarity:** 0.8935
+- **Visual Average:** 0.9893
+- **Overall Score:** 0.9531
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=2738 bytes, Reference=47620 bytes
+- **File Size:** MiniPdf=4014 bytes, Reference=47620 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic98_radar_chart.pdf
 +++ reference/classic98_radar_chart.pdf
-@@ -2,8 +2,16 @@
+@@ -2,20 +2,15 @@
  Python 9
 
  Developer Skill Radar
 
  SQL 8
 
--Communicat7
+-Communic 7 Python
 
 +Communic 7
 
@@ -5373,47 +4979,68 @@ Text content: ✅ Identical
 
 +Python
 
- Design 5
++Design 5
 
-+10
+ 10
 
- DevOps 7
+-Design 5
 
-+DevOps SQL
+-9
 
-+5
+-DevOps 7 8
+
+-7
+
++DevOps 7
+
+ DevOps SQL
+
+-6
+
+ 5
+
+-4
+
+-3
+
+-2
+
+-1
 
 +Score
 
-+0
+ 0
 
-+Design Communication
+ Design Communication
 
-+Leadership
+ Leadership
 
- ---PAGE---
 ```
 </details>
 
 ### classic99_bubble_chart
 
-- **Text Similarity:** 0.7537
-- **Visual Average:** 0.8373
-- **Overall Score:** 0.8364
+- **Text Similarity:** 0.8245
+- **Visual Average:** 0.9631
+- **Overall Score:** 0.915
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1942 bytes, Reference=57405 bytes
+- **File Size:** MiniPdf=4261 bytes, Reference=57405 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic99_bubble_chart.pdf
 +++ reference/classic99_bubble_chart.pdf
-@@ -3,8 +3,23 @@
+@@ -3,17 +3,23 @@
  Product Comparison
 
  25 4.5 300
 
  50 3.8 150
+
+-Products
+
+-6
 
 +5
 
@@ -5421,35 +5048,39 @@ Text content: ✅ Identical
 
  35 4.7 200
 
+-8 3.5 600 5
+
 +4.5
 
- 8 3.5 600
++8 3.5 600
 
-+4
+ 4
 
 +3.5
 
-+3
+ 3
 
  Rating
 
-----PAGE---
 +2.5
 
-+2
+ 2
 
 +1.5
 
-+1
+ 1
 
 +0.5
 
-+0
+ 0
+
+-0 10 20 30 40 50
 
 +5 10 15 20 25 30 35 40 45
 
-+Price ($)
+ Price ($)
 
+----PAGE---
 +---PAGE---
 
 +Products
@@ -5462,9 +5093,9 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **classic09_long_text** (score: 0.505)
-1. **classic120_chart_with_date_axis** (score: 0.6413)
-1. **classic95_area_chart** (score: 0.7328)
-1. **classic117_stock_ohlc_chart** (score: 0.7997)
+1. **classic09_long_text** (score: 0.6098)
+1. **classic120_chart_with_date_axis** (score: 0.7607)
+1. **classic95_area_chart** (score: 0.7763)
+1. **classic117_stock_ohlc_chart** (score: 0.7984)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

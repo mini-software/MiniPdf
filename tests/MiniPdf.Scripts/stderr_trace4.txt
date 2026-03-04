@@ -1,0 +1,24 @@
+[TRACE] FormatGeneral(3.14159) = 3.14159
+[TRACE] FormatGeneral(3.14159265358979) = 3.141592654
+[FIT] text=6.022E+23 val=6.022E+23 colW=47.4 area=42.4 textW=48.6 fs=10
+[FIT]   sci d=3 fmt=0.###E+00 -> 6.022E+23 w=48.6 fits=False
+[FIT]   sci d=2 fmt=0.##E+00 -> 6.02E+23 w=43.1 fits=False
+[FIT]   sci d=1 fmt=0.#E+00 -> 6E+23 w=29.2 fits=True
+[FIT] text=6.626E-34 val=6.626E-34 colW=47.4 area=42.4 textW=46.1 fs=10
+[FIT]   sci d=3 fmt=0.###E+00 -> 6.626E-34 w=46.1 fits=False
+[FIT]   sci d=2 fmt=0.##E+00 -> 6.63E-34 w=40.6 fits=True
+[FIT] text=299800000 val=299800000 colW=47.4 area=42.4 textW=50.0 fs=10
+[FIT]   sci d=3 fmt=0.###E+00 -> 2.998E+08 w=48.6 fits=False
+[FIT]   sci d=2 fmt=0.##E+00 -> 3E+08 w=29.2 fits=True
+[FIT] text=9.109E-31 val=9.109E-31 colW=47.4 area=42.4 textW=46.1 fs=10
+[FIT]   sci d=3 fmt=0.###E+00 -> 9.109E-31 w=46.1 fits=False
+[FIT]   sci d=2 fmt=0.##E+00 -> 9.11E-31 w=40.6 fits=True
+[FIT] text=3.141592654 val=3.141592654 colW=47.4 area=42.4 textW=58.4 fs=10
+[TRACE] FitNumericText(3.141592654, colW=47.4, fs=10) = 3.141593
+[TRACE] FormatGeneral(3.14159) = 3.14159
+[FIT] text=10000000 val=10000000 colW=47.4 area=42.4 textW=44.5 fs=10
+[FIT]   sci d=3 fmt=0.###E+00 -> 1E+07 w=29.2 fits=True
+[FIT] text=12300000000 val=12300000000 colW=47.4 area=42.4 textW=61.2 fs=10
+[FIT]   sci d=3 fmt=0.###E+00 -> 1.23E+10 w=43.1 fits=False
+[FIT]   sci d=2 fmt=0.##E+00 -> 1.23E+10 w=43.1 fits=False
+[FIT]   sci d=1 fmt=0.#E+00 -> 1.2E+10 w=37.5 fits=True

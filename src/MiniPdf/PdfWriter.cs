@@ -30,11 +30,20 @@ internal sealed class PdfWriter
 
         // Detect whether any page needs non-Latin1 Unicode characters.
         // If so we'll add a second font (F2) using Identity-H CIDFont with ToUnicode CMap.
+        // When a text block contains ANY non-WinAnsi char, the ENTIRE block is rendered
+        // in F2 so all spans share the same bbox Y in text extractors.  Therefore we
+        // collect ALL characters from such blocks (including ASCII) for the ToUnicode CMap.
         var unicodeChars = new SortedSet<int>();
         foreach (var page in pages)
             foreach (var block in page.TextBlocks)
+            {
+                bool blockNeedsUnicode = false;
                 foreach (var ch in block.Text)
-                    if (ch > '\xFF') unicodeChars.Add(ch);
+                    if (!IsWinAnsiHandled(ch)) { blockNeedsUnicode = true; break; }
+                if (blockNeedsUnicode)
+                    foreach (var ch in block.Text)
+                        unicodeChars.Add(ch);
+            }
         var needsUnicodeFont = unicodeChars.Count > 0;
 
         // Pre-build content streams
@@ -96,11 +105,11 @@ internal sealed class PdfWriter
             WriteRaw("<< /Type /FontDescriptor\n");
             WriteRaw("/FontName /Arial\n");
             WriteRaw("/Flags 32\n");
-            WriteRaw("/FontBBox [-665 -210 2000 728]\n");
+            WriteRaw("/FontBBox [-166 -225 1000 931]\n");
             WriteRaw("/ItalicAngle 0\n");
-            WriteRaw("/Ascent 728\n");
-            WriteRaw("/Descent -210\n");
-            WriteRaw("/CapHeight 716\n");
+            WriteRaw("/Ascent 718\n");
+            WriteRaw("/Descent -207\n");
+            WriteRaw("/CapHeight 718\n");
             WriteRaw("/StemV 80\n");
             WriteRaw(">>\n");
             WriteRaw("endobj\n");
@@ -297,7 +306,7 @@ internal sealed class PdfWriter
                   $"{block.Color.G.ToString("F3", CultureInfo.InvariantCulture)} " +
                   $"{block.Color.B.ToString("F3", CultureInfo.InvariantCulture)} rg\n";
 
-            if (!hasUnicodeFont || !block.Text.Any(c => c > '\xFF'))
+            if (!hasUnicodeFont || !block.Text.Any(c => !IsWinAnsiHandled(c)))
             {
                 // Pure Latin-1 text — use F1 (Helvetica) as before
                 var escapedText = EscapePdfString(block.Text);
@@ -310,41 +319,60 @@ internal sealed class PdfWriter
             }
             else
             {
-                // Mixed or non-Latin1 text: split into Latin-1 and Unicode segments.
-                // Each segment emits its own BT...ET block to switch fonts as needed.
-                var segments = SplitTextIntoFontSegments(block.Text);
-                foreach (var (segText, isUnicode) in segments)
+                // Block contains non-WinAnsi characters.  Render the ENTIRE
+                // block in F2 (CID/Unicode font) so that all characters share
+                // the same font descriptor and thus the same bounding-box Y in
+                // text extractors (avoids the ~3 pt offset between Type1 F1
+                // and CIDFontType2 F2 that caused PyMuPDF to put spans on
+                // separate lines).
+                sb.Append("BT\n");
+                sb.Append(colorCmd);
+                sb.Append($"/F2 {fontSize} Tf\n");
+                sb.Append($"{x} {y} Td\n");
+                sb.Append('<');
+                foreach (var ch in block.Text)
                 {
-                    if (string.IsNullOrEmpty(segText)) continue;
-                    sb.Append("BT\n");
-                    sb.Append(colorCmd);
-                    if (isUnicode)
-                    {
-                        sb.Append($"/F2 {fontSize} Tf\n");
-                        sb.Append($"{x} {y} Td\n");
-                        // Encode as UTF-16BE hex string  <FEFF xxxx xxxx ...>
-                        sb.Append('<');
-                        foreach (var ch in segText)
-                        {
-                            sb.Append(((int)ch).ToString("X4"));
-                        }
-                        sb.Append("> Tj\n");
-                    }
-                    else
-                    {
-                        var escapedText = EscapePdfString(segText);
-                        sb.Append($"/F1 {fontSize} Tf\n");
-                        sb.Append($"{x} {y} Td\n");
-                        sb.Append($"({escapedText}) Tj\n");
-                    }
-                    // For mixed splits beyond first, we'd need to advance X, but for
-                    // the simple benchmark case the segments are typically the full text.
-                    sb.Append("ET\n");
+                    sb.Append(((int)ch).ToString("X4"));
                 }
+                sb.Append("> Tj\n");
+                sb.Append("ET\n");
             }
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Returns true for CJK and fullwidth characters that occupy ~1em width.
+    /// </summary>
+    private static bool IsFullWidthCharPdf(char c)
+    {
+        return (c >= 0x1100 && c <= 0x115F)  // Hangul Jamo
+            || (c >= 0x2E80 && c <= 0x9FFF)  // CJK
+            || (c >= 0xAC00 && c <= 0xD7AF)  // Hangul Syllables
+            || (c >= 0xF900 && c <= 0xFAFF)  // CJK Compat
+            || (c >= 0xFE30 && c <= 0xFE4F)  // CJK Compat Forms
+            || (c >= 0xFF01 && c <= 0xFF60)  // Fullwidth Forms
+            || (c >= 0xFFE0 && c <= 0xFFE6); // Fullwidth Signs
+    }
+
+    /// <summary>
+    /// Returns true if a character can be rendered using F1 (Helvetica/WinAnsiEncoding)
+    /// directly—either it's in the Latin-1 range (≤0xFF) or it's a known Unicode
+    /// character that EscapePdfString can map to a WinAnsiEncoding byte or ASCII
+    /// replacement.  Characters returning false need the F2 CID/Unicode font.
+    /// </summary>
+    private static bool IsWinAnsiHandled(char ch)
+    {
+        if (ch <= '\xFF') return true;
+        return ch is '\u2012' or '\u2013' or '\u2014'      // figure/en/em dash
+                  or '\u2018' or '\u2019'                   // smart single quotes
+                  or '\u201C' or '\u201D'                   // smart double quotes
+                  or '\u2026'                               // ellipsis
+                  or '\u2022'                               // bullet
+                  or '\u2264' or '\u2265'                   // ≤ ≥
+                  or '\u2122'                               // trademark
+                  or '\u20AC';                              // euro sign
     }
 
     /// <summary>
@@ -362,7 +390,7 @@ internal sealed class PdfWriter
 
         foreach (var ch in text)
         {
-            var needsUnicode = ch > '\xFF';
+            var needsUnicode = !IsWinAnsiHandled(ch);
             if (currentIsUnicode == null)
             {
                 currentIsUnicode = needsUnicode;
@@ -430,33 +458,46 @@ internal sealed class PdfWriter
 
     private static string EscapePdfString(string text)
     {
-        // Normalise common Unicode characters that fall outside Latin-1 so they
-        // round-trip as readable ASCII rather than displaying as "?".
+        // Map Unicode characters to WinAnsiEncoding byte values where possible.
+        // Characters in 0x80–0x9F range are correctly decoded by PDF readers
+        // when WinAnsiEncoding is declared on the font.
         var normalized = new System.Text.StringBuilder(text.Length);
         foreach (var ch in text)
         {
             normalized.Append(ch switch
             {
-                '\u2013' or '\u2012' => (char)0x96,  // en-dash -> WinAnsiEncoding 0x96
-                '\u2014' => (char)0x97,                // em-dash -> WinAnsiEncoding 0x97
-                '\u2018' or '\u2019' or '\u0060' => '\'',  // smart single quotes
-                '\u201C' or '\u201D' => '"',                // smart double quotes
-                '\u2026' => "...",                          // ellipsis
+                '\u2013' or '\u2012' => (char)0x96,        // en-dash
+                '\u2014' => (char)0x97,                     // em-dash
+                '\u2018' => (char)0x91,                     // left single quote
+                '\u2019' => (char)0x92,                     // right single quote
+                '\u201C' => (char)0x93,                     // left double quote
+                '\u201D' => (char)0x94,                     // right double quote
+                '\u2026' => (char)0x85,                     // ellipsis
+                '\u2022' => (char)0x95,                     // bullet
+                '\u2020' => (char)0x86,                     // dagger
+                '\u2021' => (char)0x87,                     // double dagger
+                '\u2030' => (char)0x89,                     // per mille
+                '\u0160' => (char)0x8A,                     // S-caron
+                '\u0152' => (char)0x8C,                     // OE ligature
+                '\u017D' => (char)0x8E,                     // Z-caron
+                '\u0161' => (char)0x9A,                     // s-caron
+                '\u0153' => (char)0x9C,                     // oe ligature
+                '\u017E' => (char)0x9E,                     // z-caron
+                '\u0178' => (char)0x9F,                     // Y-diaeresis
+                '\u2122' => (char)0x99,                     // trademark
+                '\u20AC' => (char)0x80,                     // euro sign
                 '\u00A0' => ' ',                            // non-breaking space
-                '\u2022' or '\u00B7' => '*',                // bullet / middle dot
-                '\u2713' or '\u2714' => "/",                // check marks
-                '\u2717' or '\u2718' => "x",                // cross marks
+                '\u0060' => '\'',                           // backtick → apostrophe
+                '\u00B7' => '*',                            // middle dot → asterisk
                 '\u00D7' => 'x',                            // multiplication sign
                 '\u00F7' => '/',                            // division sign
                 '\u2264' => "<=",                           // ≤
                 '\u2265' => ">=",                           // ≥
-                '\u00B0' => " deg",                        // degree sign
-                '\u00AE' => "(R)",                          // registered trademark
-                '\u2122' => "(TM)",                         // trademark
-                '\u20AC' => "EUR",                          // euro sign
-                '\u00A3' => "GBP",                          // pound sign
-                '\u00A5' => "JPY",                          // yen sign
-                _ when ch > '\xFF' => "",                  // skip: non-Latin1 chars are handled by F2 font
+                '\u00B0' => " deg",                         // degree sign
+                '\u00AE' => (char)0xAE,                     // registered trademark (already in WinAnsi)
+                '\u00A3' => '\u00A3',                       // pound sign (already in WinAnsi)
+                '\u00A5' => '\u00A5',                       // yen sign (already in WinAnsi)
+                _ when ch > '\xFF' => "",                   // skip: non-Latin1 chars are handled by F2 font
                 _ => ch
             });
         }

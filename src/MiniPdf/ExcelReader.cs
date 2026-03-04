@@ -22,9 +22,11 @@ internal static class ExcelReader
         // Read shared strings table
         var sharedStrings = ReadSharedStrings(archive);
 
-        // Read styles (font colors)
+        // Read styles (font colors, fill colors, number formats)
         var fontColors = ReadFontColors(archive);
-        var cellXfFontIndices = ReadCellXfFontIndices(archive);
+        var fillColors = ReadFillColors(archive);
+        var numberFormats = ReadNumberFormats(archive);
+        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds) = ReadCellXfStyles(archive);
 
         // Read workbook to get sheet names and order
         var sheetInfos = ReadWorkbook(archive);
@@ -42,10 +44,11 @@ internal static class ExcelReader
 
             if (entry == null) continue;
 
-            var rows = ReadSheet(entry, sharedStrings, fontColors, cellXfFontIndices);
+            var rows = ReadSheet(entry, sharedStrings, fontColors, fillColors, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds);
             var images = ReadSheetImages(archive, info.SheetId);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth));
+            var mergedCells = ReadMergedCells(entry);
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells));
         }
 
         // If no sheets found via workbook, try reading sheet1 directly
@@ -54,10 +57,11 @@ internal static class ExcelReader
             var entry = archive.GetEntry("xl/worksheets/sheet1.xml");
             if (entry != null)
             {
-                var rows = ReadSheet(entry, sharedStrings, fontColors, cellXfFontIndices);
+                var rows = ReadSheet(entry, sharedStrings, fontColors, fillColors, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds);
                 var images = ReadSheetImages(archive, 1);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
-                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth));
+                var mergedCells = ReadMergedCells(entry);
+                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells));
             }
         }
 
@@ -160,27 +164,131 @@ internal static class ExcelReader
         return colors;
     }
 
-    private static List<int> ReadCellXfFontIndices(ZipArchive archive)
+    /// <summary>
+    /// Reads cellXf style entries from styles.xml.
+    /// Returns (fontIndices, fillIndices, numFmtIds) parallel lists.
+    /// </summary>
+    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds) ReadCellXfStyles(ZipArchive archive)
     {
-        var indices = new List<int>();
+        var fontIndices = new List<int>();
+        var fillIndices = new List<int>();
+        var numFmtIds = new List<int>();
         var entry = archive.GetEntry("xl/styles.xml");
-        if (entry == null) return indices;
+        if (entry == null) return (fontIndices, fillIndices, numFmtIds);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
         var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
 
-        // Read <cellXfs> -> <xf> elements to map style index -> font index
+        // Read <cellXfs> -> <xf> elements
         var cellXfs = doc.Descendants(ns + "cellXfs").FirstOrDefault();
-        if (cellXfs == null) return indices;
+        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds);
 
         foreach (var xf in cellXfs.Elements(ns + "xf"))
         {
             var fontId = xf.Attribute("fontId")?.Value;
-            indices.Add(int.TryParse(fontId, out var fid) ? fid : 0);
+            fontIndices.Add(int.TryParse(fontId, out var fid) ? fid : 0);
+
+            var fillId = xf.Attribute("fillId")?.Value;
+            fillIndices.Add(int.TryParse(fillId, out var filli) ? filli : 0);
+
+            var numFmtId = xf.Attribute("numFmtId")?.Value;
+            numFmtIds.Add(int.TryParse(numFmtId, out var nid) ? nid : 0);
         }
 
-        return indices;
+        return (fontIndices, fillIndices, numFmtIds);
+    }
+
+    /// <summary>
+    /// Reads fill patterns from styles.xml.
+    /// Returns a list of fill colors indexed by fillId (null for none/gray125).
+    /// </summary>
+    private static List<PdfColor?> ReadFillColors(ZipArchive archive)
+    {
+        var fills = new List<PdfColor?>();
+        var entry = archive.GetEntry("xl/styles.xml");
+        if (entry == null) return fills;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        var fillsEl = doc.Descendants(ns + "fills").FirstOrDefault();
+        if (fillsEl == null) return fills;
+
+        foreach (var fill in fillsEl.Elements(ns + "fill"))
+        {
+            var patternFill = fill.Element(ns + "patternFill");
+            if (patternFill == null)
+            {
+                fills.Add(null);
+                continue;
+            }
+
+            var patternType = patternFill.Attribute("patternType")?.Value;
+            if (patternType != "solid")
+            {
+                fills.Add(null);
+                continue;
+            }
+
+            // Read foreground color (fgColor) for solid fills
+            var fgColor = patternFill.Element(ns + "fgColor");
+            if (fgColor == null)
+            {
+                fills.Add(null);
+                continue;
+            }
+
+            var rgb = fgColor.Attribute("rgb")?.Value;
+            if (!string.IsNullOrEmpty(rgb))
+            {
+                var c = PdfColor.FromHex(rgb);
+                // Skip pure white fills (FFFFFF) as they're invisible
+                if (c.R < 0.99f || c.G < 0.99f || c.B < 0.99f)
+                    fills.Add(c);
+                else
+                    fills.Add(null);
+            }
+            else
+            {
+                var indexed = fgColor.Attribute("indexed")?.Value;
+                if (!string.IsNullOrEmpty(indexed) && int.TryParse(indexed, out var idx))
+                    fills.Add(GetIndexedColor(idx));
+                else
+                    fills.Add(null);
+            }
+        }
+
+        return fills;
+    }
+
+    /// <summary>
+    /// Reads custom number formats from styles.xml.
+    /// Returns a dictionary mapping numFmtId to format code string.
+    /// </summary>
+    private static Dictionary<int, string> ReadNumberFormats(ZipArchive archive)
+    {
+        var formats = new Dictionary<int, string>();
+        var entry = archive.GetEntry("xl/styles.xml");
+        if (entry == null) return formats;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        var numFmts = doc.Descendants(ns + "numFmts").FirstOrDefault();
+        if (numFmts == null) return formats;
+
+        foreach (var fmt in numFmts.Elements(ns + "numFmt"))
+        {
+            var id = fmt.Attribute("numFmtId")?.Value;
+            var code = fmt.Attribute("formatCode")?.Value;
+            if (int.TryParse(id, out var numId) && !string.IsNullOrEmpty(code))
+                formats[numId] = code;
+        }
+
+        return formats;
     }
 
     private static PdfColor? GetIndexedColor(int index)
@@ -216,19 +324,33 @@ internal static class ExcelReader
         };
     }
 
-    private static PdfColor? ResolveCellColor(int styleIndex, List<PdfColor?> fontColors, List<int> cellXfFontIndices)
+    private static PdfColor? ResolveCellColor(int styleIndex, List<PdfColor?> fontColors, List<int> fontIndices)
     {
-        if (styleIndex < 0 || styleIndex >= cellXfFontIndices.Count)
+        if (styleIndex < 0 || styleIndex >= fontIndices.Count)
             return null;
 
-        var fontIndex = cellXfFontIndices[styleIndex];
+        var fontIndex = fontIndices[styleIndex];
         if (fontIndex < 0 || fontIndex >= fontColors.Count)
             return null;
 
         return fontColors[fontIndex];
     }
 
-    private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings, List<PdfColor?> fontColors, List<int> cellXfFontIndices)
+    private static PdfColor? ResolveFillColor(int styleIndex, List<PdfColor?> fillColors, List<int> fillIndices)
+    {
+        if (styleIndex < 0 || styleIndex >= fillIndices.Count)
+            return null;
+
+        var fillIndex = fillIndices[styleIndex];
+        if (fillIndex < 0 || fillIndex >= fillColors.Count)
+            return null;
+
+        return fillColors[fillIndex];
+    }
+
+    private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings,
+        List<PdfColor?> fontColors, List<PdfColor?> fillColors, Dictionary<int, string> numberFormats,
+        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds)
     {
         var rows = new List<List<ExcelCell>>();
 
@@ -269,19 +391,24 @@ internal static class ExcelReader
                 // Fill empty cells for gaps
                 while (lastColIndex < colIndex)
                 {
-                    cells.Add(new ExcelCell(string.Empty, null));
+                    cells.Add(new ExcelCell(string.Empty, null, null));
                     lastColIndex++;
                 }
 
                 var type = cell.Attribute("t")?.Value;
                 var value = cell.Element(ns + "v")?.Value ?? "";
 
-                // Resolve color from style index
+                // Resolve color and fill from style index
                 var styleAttr = cell.Attribute("s")?.Value;
                 PdfColor? color = null;
+                PdfColor? fillColor = null;
+                int numFmtId = 0;
                 if (int.TryParse(styleAttr, out var styleIndex))
                 {
                     color = ResolveCellColor(styleIndex, fontColors, cellXfFontIndices);
+                    fillColor = ResolveFillColor(styleIndex, fillColors, cellXfFillIndices);
+                    if (styleIndex >= 0 && styleIndex < cellXfNumFmtIds.Count)
+                        numFmtId = cellXfNumFmtIds[styleIndex];
                 }
 
                 string text;
@@ -302,21 +429,21 @@ internal static class ExcelReader
                 {
                     text = value;
 
-                    // Normalize floating-point representation for numeric cells
+                    // Format numeric cells using the cell's number format
                     if (string.IsNullOrEmpty(type) || type == "n")
                     {
                         if (!string.IsNullOrEmpty(text) &&
                             double.TryParse(text, System.Globalization.NumberStyles.Any,
                                 System.Globalization.CultureInfo.InvariantCulture, out var numVal))
                         {
-                            text = numVal.ToString("G15", System.Globalization.CultureInfo.InvariantCulture);
+                            text = FormatNumber(numVal, numFmtId, numberFormats);
                         }
                     }
 
 
                 }
 
-                cells.Add(new ExcelCell(text, color));
+                cells.Add(new ExcelCell(text, color, fillColor));
                 lastColIndex = colIndex + 1;
             }
 
@@ -341,6 +468,192 @@ internal static class ExcelReader
             }
         }
         return col > 0 ? col - 1 : 0;
+    }
+
+    /// <summary>
+    /// Formats a numeric value according to its Excel number format.
+    /// Handles built-in formats and common custom patterns.
+    /// </summary>
+    private static string FormatNumber(double value, int numFmtId, Dictionary<int, string> customFormats)
+    {
+        var ci = System.Globalization.CultureInfo.InvariantCulture;
+
+        // Check custom format first
+        if (numFmtId > 0 && customFormats.TryGetValue(numFmtId, out var formatCode))
+        {
+            return ApplyNumberFormat(value, formatCode);
+        }
+
+        // Built-in number formats
+        return numFmtId switch
+        {
+            0 => FormatGeneral(value),          // General
+            1 => value.ToString("F0", ci),      // 0
+            2 => value.ToString("F2", ci),      // 0.00
+            3 => value.ToString("#,##0", ci),   // #,##0
+            4 => value.ToString("#,##0.00", ci),// #,##0.00
+            9 => (value * 100).ToString("F0", ci) + "%",  // 0%
+            10 => (value * 100).ToString("F2", ci) + "%", // 0.00%
+            11 => value.ToString("0.00E+00", ci),         // 0.00E+00
+            // Date formats (14-22): Excel stores dates as serial numbers
+            14 or 15 or 16 or 17 or 22 => FormatExcelDate(value),
+            // More number formats
+            37 => value.ToString("#,##0", ci),
+            38 => value.ToString("#,##0", ci),
+            39 => value.ToString("#,##0.00", ci),
+            40 => value.ToString("#,##0.00", ci),
+            _ => FormatGeneral(value)
+        };
+    }
+
+    /// <summary>
+    /// Applies a custom Excel number format code to a value.
+    /// Handles common patterns like "0.00", "#,##0", "0.00E+00", currency, percentage, etc.
+    /// </summary>
+    private static string ApplyNumberFormat(double value, string formatCode)
+    {
+        var ci = System.Globalization.CultureInfo.InvariantCulture;
+
+        // Handle multi-section formats (positive;negative;zero) - use the appropriate section
+        var sections = formatCode.Split(';');
+        string activeFormat;
+        if (sections.Length >= 3 && value == 0)
+            activeFormat = sections[2];
+        else if (sections.Length >= 2 && value < 0)
+        {
+            activeFormat = sections[1];
+            value = Math.Abs(value); // negative section handles sign display
+        }
+        else
+            activeFormat = sections[0];
+
+        // Strip color codes like [Red], [Blue], etc.
+        activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\[(?:Red|Blue|Green|Yellow|Magenta|Cyan|White|Black|Color\d+)\]", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        // Strip locale/currency codes like [$€-407], [$¥-411], [$-409]
+        activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\[\$([^-\]]*)-[^\]]+\]", "$1");
+        // Also handle [$symbol] without locale
+        activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\[\$([^\]]*)\]", "$1");
+
+        // Handle percentage format
+        if (activeFormat.Contains('%'))
+        {
+            var pctFormat = activeFormat.Replace("%", "").Trim();
+            var decPlaces = pctFormat.Contains('.') ? pctFormat.Length - pctFormat.IndexOf('.') - 1 : 0;
+            return (value * 100).ToString($"F{decPlaces}", ci) + "%";
+        }
+
+        // Handle scientific notation
+        if (activeFormat.Contains("E+") || activeFormat.Contains("E-"))
+        {
+            var decPlaces = activeFormat.Contains('.') ? activeFormat.IndexOf('E') - activeFormat.IndexOf('.') - 1 : 0;
+            if (decPlaces < 0) decPlaces = 0;
+            return value.ToString($"0.{new string('0', decPlaces)}E+00", ci);
+        }
+
+        // Handle date-like formats
+        if (activeFormat.Contains("yy") || activeFormat.Contains("mm") || activeFormat.Contains("dd"))
+        {
+            return FormatExcelDate(value);
+        }
+
+        // Count decimal places from format
+        var hasDecimal = activeFormat.Contains('.');
+        var decimalPlaces = 0;
+        if (hasDecimal)
+        {
+            var dotIdx = activeFormat.IndexOf('.');
+            for (var i = dotIdx + 1; i < activeFormat.Length; i++)
+            {
+                if (activeFormat[i] == '0' || activeFormat[i] == '#')
+                    decimalPlaces++;
+                else
+                    break;
+            }
+        }
+
+        // Check if format has thousand separator
+        var hasThousands = activeFormat.Contains("#,##") || activeFormat.Contains("0,0");
+
+        // Extract prefix/suffix (currency symbols, text, etc.)
+        var prefix = "";
+        var suffix = "";
+        var numPart = activeFormat;
+        // Find where the number pattern starts
+        var numStart = numPart.IndexOfAny(new[] { '0', '#', '.' });
+        if (numStart > 0) { prefix = numPart[..numStart]; numPart = numPart[numStart..]; }
+        // Find where the number pattern ends
+        var numEnd = numPart.LastIndexOfAny(new[] { '0', '#' });
+        if (numEnd >= 0 && numEnd < numPart.Length - 1) { suffix = numPart[(numEnd + 1)..]; numPart = numPart[..(numEnd + 1)]; }
+
+        // Remove literal escape characters
+        prefix = prefix.Replace("\\", "").Replace("\"", "");
+        suffix = suffix.Replace("\\", "").Replace("\"", "");
+
+        string formatted;
+        if (hasThousands)
+            formatted = value.ToString($"N{decimalPlaces}", ci);
+        else if (hasDecimal)
+            formatted = value.ToString($"F{decimalPlaces}", ci);
+        else if (value == Math.Floor(value))
+            formatted = value.ToString("F0", ci);
+        else
+            formatted = FormatGeneral(value);
+
+        return prefix + formatted + suffix;
+    }
+
+    /// <summary>
+    /// Formats a number using Excel's "General" format logic.
+    /// LibreOffice's General format adapts precision to fit approximately 10 characters,
+    /// switching to scientific notation for very large/small values.
+    /// </summary>
+    private static string FormatGeneral(double value)
+    {
+        var ci = System.Globalization.CultureInfo.InvariantCulture;
+        if (value == 0) return "0";
+        var abs = Math.Abs(value);
+
+        // Exact integer: show as integer (doubles that have no fractional part).
+        // FitNumericText handles rounding near-integers to fit column width later.
+        if (value == Math.Floor(value) && abs < 1e15)
+            return value.ToString("F0", ci);
+
+        // Very small numbers → prefer decimal if compact, else scientific
+        if (abs > 0 && abs < 1e-4)
+        {
+            // F6 can represent values like 0.000001 in decimal form
+            var dec = value.ToString("F6", ci).TrimEnd('0');
+            if (dec.EndsWith('.')) dec = dec[..^1];
+            if (dec.Length <= 10 && double.Parse(dec, ci) == value)
+                return dec;
+            // Fall through to G10
+        }
+
+        // Standard range: up to 10 significant digits.
+        // FitNumericText in the converter will shorten if needed for column width.
+        return value.ToString("G10", ci);
+    }
+
+    /// <summary>
+    /// Converts an Excel serial date number to a date string (yyyy-mm-dd).
+    /// Excel epoch: Jan 1, 1900 = serial number 1.
+    /// </summary>
+    private static string FormatExcelDate(double serialDate)
+    {
+        try
+        {
+            // Excel incorrectly considers 1900 as a leap year (Feb 29, 1900 = serial 60).
+            // For dates after Feb 28, 1900, subtract 1 to correct.
+            var days = (int)serialDate;
+            if (days > 60) days--;
+            var date = new DateTime(1900, 1, 1).AddDays(days - 1);
+            return date.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        catch
+        {
+            return serialDate.ToString("G10", System.Globalization.CultureInfo.InvariantCulture);
+        }
     }
 
     internal record SheetInfo(string Name, int SheetId);
@@ -398,6 +711,48 @@ internal static class ExcelReader
         }
 
         return (widths, defaultWidth);
+    }
+
+    /// <summary>
+    /// Reads merged cell regions from the sheet XML.
+    /// Returns a list of (startRow, startCol, endRow, endCol) all 0-based.
+    /// </summary>
+    private static List<(int, int, int, int)> ReadMergedCells(ZipArchiveEntry entry)
+    {
+        var result = new List<(int, int, int, int)>();
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        foreach (var mc in doc.Descendants(ns + "mergeCell"))
+        {
+            var refAttr = mc.Attribute("ref")?.Value;
+            if (string.IsNullOrEmpty(refAttr)) continue;
+            // ref="A1:C1" → parse into (row0, col0, row1, col1)
+            var parts = refAttr.Split(':');
+            if (parts.Length != 2) continue;
+            var (r0, c0) = ParseCellRef(parts[0]);
+            var (r1, c1) = ParseCellRef(parts[1]);
+            if (r0 >= 0 && c0 >= 0 && r1 >= 0 && c1 >= 0)
+                result.Add((r0, c0, r1, c1));
+        }
+        return result;
+    }
+
+    /// <summary>Parses a cell reference like "C5" into (row=4, col=2) 0-based.</summary>
+    private static (int row, int col) ParseCellRef(string cellRef)
+    {
+        var col = 0;
+        var i = 0;
+        while (i < cellRef.Length && char.IsLetter(cellRef[i]))
+        {
+            col = col * 26 + (char.ToUpper(cellRef[i]) - 'A' + 1);
+            i++;
+        }
+        col--; // Convert 1-based to 0-based
+        if (int.TryParse(cellRef[i..], out var row))
+            return (row - 1, col); // 0-based
+        return (-1, -1);
     }
 
     /// <summary>
@@ -677,6 +1032,9 @@ internal static class ExcelReader
             var seriesList = new List<ExcelChartSeries>();
             string catAxisTitle = "";
             string valAxisTitle = "";
+            string valAxisFmtCode = "";
+            bool showDataLabelPercent = false;
+            bool showDataLabelCatName = false;
 
             if (chartEntry != null)
             {
@@ -709,18 +1067,67 @@ internal static class ExcelReader
                         }
                     }
 
+                    // Read bar direction: "bar" = horizontal bars, "col" = vertical columns
+                    if (chartTypeEl != null)
+                    {
+                        var barDirEl = chartTypeEl.Element(cns + "barDir");
+                        var barDirVal = barDirEl?.Attribute("val")?.Value;
+                        if (barDirVal == "bar")
+                            chartType = "horizontal_" + chartType;
+
+                        // Read grouping: "clustered", "stacked", "percentStacked"
+                        var groupingEl = chartTypeEl.Element(cns + "grouping");
+                        var groupingVal = groupingEl?.Attribute("val")?.Value ?? "";
+                        if (groupingVal.Contains("stacked", StringComparison.OrdinalIgnoreCase))
+                            chartType = groupingVal.Contains("percent", StringComparison.OrdinalIgnoreCase)
+                                ? "percentStacked_" + chartType
+                                : "stacked_" + chartType;
+                    }
+
                     // Extract axis titles
+                    // For scatter/bubble charts, two valAx elements exist:
+                    // first = X-axis (category), second = Y-axis (value).
+                    var isScatterLike = chartType.Contains("scatter") || chartType.Contains("bubble");
+                    var valAxCount = 0;
+                    valAxisFmtCode = "";
                     foreach (var ax in plotArea.Elements().Where(e =>
                         e.Name.LocalName.EndsWith("Ax", StringComparison.Ordinal)))
                     {
                         var axTitle = ax.Element(cns + "title");
-                        if (axTitle == null) continue;
-                        var axTitleText = string.Concat(axTitle.Descendants(a + "t").Select(t => t.Value));
+                        var axTitleText = axTitle != null ? string.Concat(axTitle.Descendants(a + "t").Select(t => t.Value)) : "";
+                        var axNumFmt = ax.Element(cns + "numFmt")?.Attribute("formatCode")?.Value ?? "";
+
                         // catAx / dateAx → category axis; valAx → value axis
                         if (ax.Name.LocalName is "catAx" or "dateAx")
-                            catAxisTitle = axTitleText;
+                        {
+                            if (!string.IsNullOrEmpty(axTitleText)) catAxisTitle = axTitleText;
+                        }
                         else if (ax.Name.LocalName == "valAx")
-                            valAxisTitle = axTitleText;
+                        {
+                            if (isScatterLike && valAxCount == 0)
+                            {
+                                if (!string.IsNullOrEmpty(axTitleText)) catAxisTitle = axTitleText;
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrEmpty(axTitleText)) valAxisTitle = axTitleText;
+                                if (!string.IsNullOrEmpty(axNumFmt)) valAxisFmtCode = axNumFmt;
+                            }
+                            valAxCount++;
+                        }
+                    }
+
+                    // Parse data label settings from chart type element
+                    if (chartTypeEl != null)
+                    {
+                        var dLbls = chartTypeEl.Element(cns + "dLbls");
+                        if (dLbls != null)
+                        {
+                            if (dLbls.Element(cns + "showPercent")?.Attribute("val")?.Value == "1")
+                                showDataLabelPercent = true;
+                            if (dLbls.Element(cns + "showCatName")?.Attribute("val")?.Value == "1")
+                                showDataLabelCatName = true;
+                        }
                     }
                 }
 
@@ -750,17 +1157,17 @@ internal static class ExcelReader
                             }
                         }
 
-                        // Categories
+                        // Categories (or xVal for scatter/bubble charts)
                         string[] cats = Array.Empty<string>();
-                        var catEl = ser.Element(cns + "cat");
+                        var catEl = ser.Element(cns + "cat") ?? ser.Element(cns + "xVal");
                         if (catEl != null)
                         {
                             cats = ResolveRefElement(catEl, cns, allSheets);
                         }
 
-                        // Values
+                        // Values (or yVal for scatter/bubble charts)
                         double[] vals = Array.Empty<double>();
-                        var valEl = ser.Element(cns + "val");
+                        var valEl = ser.Element(cns + "val") ?? ser.Element(cns + "yVal");
                         if (valEl != null)
                         {
                             var valStrings = ResolveRefElement(valEl, cns, allSheets);
@@ -776,7 +1183,7 @@ internal static class ExcelReader
             }
 
             charts.Add(new ExcelChartInfo(fromRow, fromCol, widthEmu, heightEmu, title, chartType,
-                seriesList, catAxisTitle, valAxisTitle));
+                seriesList, catAxisTitle, valAxisTitle, showDataLabelPercent, showDataLabelCatName, valAxisFmtCode));
         }
 
         return charts;
@@ -867,7 +1274,7 @@ internal static class ExcelReader
 /// <summary>
 /// Represents a cell read from an Excel file.
 /// </summary>
-internal sealed record ExcelCell(string Text, PdfColor? Color);
+internal sealed record ExcelCell(string Text, PdfColor? Color, PdfColor? FillColor);
 
 /// <summary>
 /// Represents an image embedded in an Excel worksheet.
@@ -904,7 +1311,10 @@ internal sealed record ExcelChartInfo(
     string ChartType,    // e.g. "barChart", "lineChart", "pieChart"
     List<ExcelChartSeries> Series,  // data series
     string CategoryAxisTitle = "",  // X-axis title
-    string ValueAxisTitle = ""      // Y-axis title
+    string ValueAxisTitle = "",     // Y-axis title
+    bool ShowDataLabelPercent = false,  // show percentage data labels
+    bool ShowDataLabelCatName = false,  // show category name data labels
+    string ValueAxisFormatCode = ""    // numFmt formatCode for value axis (e.g. "#,##0")
 );
 
 /// <summary>
@@ -924,6 +1334,8 @@ internal sealed class ExcelSheet
     public Dictionary<int, float> ColumnWidths { get; }
     /// <summary>Default column width in Excel character units (typically 8.43).</summary>
     public float DefaultColumnWidth { get; }
+    /// <summary>Merged cell regions: (startRow, startCol, endRow, endCol) all 0-based.</summary>
+    public List<(int StartRow, int StartCol, int EndRow, int EndCol)> MergedCells { get; }
 
     /// <summary>Converts Excel character-unit column width to PDF points.</summary>
     public static float CharUnitsToPoints(float charUnits)
@@ -934,7 +1346,8 @@ internal sealed class ExcelSheet
         List<ExcelEmbeddedImage>? images = null,
         Dictionary<int, float>? columnWidths = null,
         float defaultColumnWidth = 8.43f,
-        List<ExcelChartInfo>? charts = null)
+        List<ExcelChartInfo>? charts = null,
+        List<(int, int, int, int)>? mergedCells = null)
     {
         Name = name;
         Rows = rows;
@@ -942,5 +1355,6 @@ internal sealed class ExcelSheet
         Charts = charts ?? new List<ExcelChartInfo>();
         ColumnWidths = columnWidths ?? new Dictionary<int, float>();
         DefaultColumnWidth = defaultColumnWidth;
+        MergedCells = mergedCells ?? new List<(int, int, int, int)>();
     }
 }

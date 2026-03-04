@@ -57,12 +57,12 @@ foreach (var xlsxPath in xlsxFiles)
 Console.WriteLine();
 Console.WriteLine($"Done! Passed: {passed}, Failed: {failed}, Total: {xlsxFiles.Length}");
 
-// Open output folder for manual inspection
-if (OperatingSystem.IsWindows())
-{
-    Console.WriteLine($"\nOpening output folder...");
-    System.Diagnostics.Process.Start("explorer.exe", pdfDir);
-}
+// // Open output folder for manual inspection
+// if (OperatingSystem.IsWindows())
+// {
+//     Console.WriteLine($"\nOpening output folder...");
+//     System.Diagnostics.Process.Start("explorer.exe", pdfDir);
+// }
 
 return failed > 0 ? 1 : 0;
 
