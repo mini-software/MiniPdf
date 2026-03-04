@@ -2585,10 +2585,973 @@ def classic120_chart_with_date_axis():
     save(wb, "classic120_chart_with_date_axis.xlsx")
 
 
+# ── 121-150: Style, Border & Background cases ───────────────────────────
+
+# ── 121. Thin borders on all cells ───────────────────────────────────────
+def classic121_thin_borders():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Borders"
+    thin = Side(style="thin", color="000000")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    headers = ["Item", "Qty", "Price", "Total"]
+    for col, h in enumerate(headers, start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = Font(bold=True)
+        c.border = border
+    data = [
+        ("Widget A", 10, 5.00, 50.00),
+        ("Widget B", 25, 3.50, 87.50),
+        ("Widget C", 8, 12.00, 96.00),
+        ("Widget D", 15, 7.25, 108.75),
+        ("Widget E", 30, 2.00, 60.00),
+    ]
+    for r, row_data in enumerate(data, start=2):
+        for col, val in enumerate(row_data, start=1):
+            c = ws.cell(row=r, column=col, value=val)
+            c.border = border
+    save(wb, "classic121_thin_borders.xlsx")
+
+
+# ── 122. Thick outer border with thin inner grid ────────────────────────
+def classic122_thick_outer_thin_inner():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Mixed Borders"
+    thick = Side(style="thick", color="000000")
+    thin = Side(style="thin", color="000000")
+    rows, cols = 6, 4
+    headers = ["Region", "Q1", "Q2", "Q3"]
+    regions = ["North", "South", "East", "West", "Central"]
+    import random
+    random.seed(122)
+    for r in range(1, rows + 1):
+        for c in range(1, cols + 1):
+            if r == 1:
+                cell = ws.cell(row=r, column=c, value=headers[c - 1])
+                cell.font = Font(bold=True)
+            else:
+                if c == 1:
+                    cell = ws.cell(row=r, column=c, value=regions[r - 2])
+                else:
+                    cell = ws.cell(row=r, column=c, value=random.randint(1000, 9999))
+            left = thick if c == 1 else thin
+            right = thick if c == cols else thin
+            top = thick if r == 1 else thin
+            bottom = thick if r == rows else thin
+            cell.border = Border(left=left, right=right, top=top, bottom=bottom)
+    save(wb, "classic122_thick_outer_thin_inner.xlsx")
+
+
+# ── 123. Dashed borders ─────────────────────────────────────────────────
+def classic123_dashed_borders():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Dashed"
+    styles = ["dashed", "dotted", "dashDot", "dashDotDot", "mediumDashed"]
+    ws.cell(row=1, column=1, value="Border Style").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Sample").font = Font(bold=True)
+    for i, style in enumerate(styles, start=2):
+        side = Side(style=style, color="333333")
+        b = Border(left=side, right=side, top=side, bottom=side)
+        ws.cell(row=i, column=1, value=style)
+        c = ws.cell(row=i, column=2, value="Bordered cell")
+        c.border = b
+    save(wb, "classic123_dashed_borders.xlsx")
+
+
+# ── 124. Colored borders ────────────────────────────────────────────────
+def classic124_colored_borders():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Colored Borders"
+    colors = [
+        ("Red", "FF0000"), ("Green", "00AA00"), ("Blue", "0000FF"),
+        ("Orange", "FF8800"), ("Purple", "880088"), ("Teal", "008888"),
+    ]
+    ws.cell(row=1, column=1, value="Color").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Cell").font = Font(bold=True)
+    ws.cell(row=1, column=3, value="Description").font = Font(bold=True)
+    for i, (name, hex_color) in enumerate(colors, start=2):
+        side = Side(style="medium", color=hex_color)
+        b = Border(left=side, right=side, top=side, bottom=side)
+        ws.cell(row=i, column=1, value=name)
+        c = ws.cell(row=i, column=2, value="Sample")
+        c.border = b
+        ws.cell(row=i, column=3, value=f"Medium {name.lower()} border")
+    save(wb, "classic124_colored_borders.xlsx")
+
+
+# ── 125. Solid background fills ─────────────────────────────────────────
+def classic125_solid_fills():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Solid Fills"
+    fills = [
+        ("Light Blue", "DAEEF3"), ("Light Green", "EBF1DE"),
+        ("Light Yellow", "FFFFCC"), ("Light Red", "F2DCDB"),
+        ("Light Purple", "E4DFEC"), ("Light Orange", "FDE9D9"),
+        ("Gray 25%", "D9D9D9"), ("Sky Blue", "B7DEE8"),
+    ]
+    ws.cell(row=1, column=1, value="Fill Name").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Filled Cell").font = Font(bold=True)
+    for i, (name, color) in enumerate(fills, start=2):
+        ws.cell(row=i, column=1, value=name)
+        c = ws.cell(row=i, column=2, value="Background")
+        c.fill = PatternFill(fill_type="solid", fgColor=color)
+    save(wb, "classic125_solid_fills.xlsx")
+
+
+# ── 126. Header with dark background and white text ─────────────────────
+def classic126_dark_header():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Dark Header"
+    dark_fill = PatternFill(fill_type="solid", fgColor="1F4E79")
+    white_bold = Font(bold=True, color="FFFFFF", size=11)
+    headers = ["Employee", "Department", "Salary", "Start Date"]
+    for col, h in enumerate(headers, start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.fill = dark_fill
+        c.font = white_bold
+        c.alignment = Alignment(horizontal="center")
+    data = [
+        ("Alice Smith", "Engineering", 95000, "2020-03-15"),
+        ("Bob Jones", "Marketing", 72000, "2019-07-01"),
+        ("Carol Lee", "Finance", 88000, "2021-01-10"),
+        ("David Kim", "Engineering", 102000, "2018-11-20"),
+        ("Eva Chen", "HR", 68000, "2022-05-03"),
+    ]
+    for row_data in data:
+        ws.append(list(row_data))
+    save(wb, "classic126_dark_header.xlsx")
+
+
+# ── 127. Multiple font styles (bold, italic, underline, strikethrough) ──
+def classic127_font_styles():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Font Styles"
+    ws.cell(row=1, column=1, value="Style").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Example").font = Font(bold=True)
+    styles = [
+        ("Bold", Font(bold=True, size=11)),
+        ("Italic", Font(italic=True, size=11)),
+        ("Underline", Font(underline="single", size=11)),
+        ("Strikethrough", Font(strike=True, size=11)),
+        ("Bold Italic", Font(bold=True, italic=True, size=11)),
+        ("Bold Underline", Font(bold=True, underline="single", size=11)),
+        ("Double Underline", Font(underline="double", size=11)),
+        ("Bold + Red", Font(bold=True, color="FF0000", size=11)),
+    ]
+    for i, (name, font) in enumerate(styles, start=2):
+        ws.cell(row=i, column=1, value=name)
+        c = ws.cell(row=i, column=2, value=f"Sample {name} text")
+        c.font = font
+    save(wb, "classic127_font_styles.xlsx")
+
+
+# ── 128. Font sizes ─────────────────────────────────────────────────────
+def classic128_font_sizes():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Font Sizes"
+    sizes = [8, 9, 10, 11, 12, 14, 16, 18, 20, 24]
+    ws.cell(row=1, column=1, value="Size").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Sample").font = Font(bold=True)
+    for i, sz in enumerate(sizes, start=2):
+        ws.cell(row=i, column=1, value=sz)
+        c = ws.cell(row=i, column=2, value=f"Font size {sz}")
+        c.font = Font(size=sz)
+    ws.row_dimensions[11].height = 30  # space for size 24
+    save(wb, "classic128_font_sizes.xlsx")
+
+
+# ── 129. Cell alignment combinations ────────────────────────────────────
+def classic129_alignment_combos():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Alignment"
+    h_aligns = ["left", "center", "right"]
+    v_aligns = ["top", "center", "bottom"]
+    ws.cell(row=1, column=1, value="").font = Font(bold=True)
+    for ci, ha in enumerate(h_aligns, start=2):
+        ws.cell(row=1, column=ci, value=ha).font = Font(bold=True)
+    for ri, va in enumerate(v_aligns, start=2):
+        ws.cell(row=ri, column=1, value=va).font = Font(bold=True)
+        ws.row_dimensions[ri].height = 40
+        for ci, ha in enumerate(h_aligns, start=2):
+            c = ws.cell(row=ri, column=ci, value=f"{ha}/{va}")
+            c.alignment = Alignment(horizontal=ha, vertical=va)
+    for col in range(2, 5):
+        ws.column_dimensions[get_column_letter(col)].width = 18
+    save(wb, "classic129_alignment_combos.xlsx")
+
+
+# ── 130. Text wrapping and indent ────────────────────────────────────────
+def classic130_wrap_and_indent():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Wrap & Indent"
+    ws.column_dimensions["A"].width = 30
+    ws.column_dimensions["B"].width = 30
+    ws.cell(row=1, column=1, value="Wrapped Text").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Indented Text").font = Font(bold=True)
+    long_text = "This is a long text that should wrap within the cell when text wrapping is enabled."
+    c1 = ws.cell(row=2, column=1, value=long_text)
+    c1.alignment = Alignment(wrap_text=True)
+    ws.row_dimensions[2].height = 50
+    for indent_level in range(5):
+        r = indent_level + 3
+        c = ws.cell(row=r, column=2, value=f"Indent level {indent_level}")
+        c.alignment = Alignment(indent=indent_level)
+    save(wb, "classic130_wrap_and_indent.xlsx")
+
+
+# ── 131. Number format patterns ──────────────────────────────────────────
+def classic131_number_formats():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Number Formats"
+    ws.column_dimensions["A"].width = 22
+    ws.column_dimensions["B"].width = 20
+    ws.column_dimensions["C"].width = 20
+    ws.cell(row=1, column=1, value="Format").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Value").font = Font(bold=True)
+    ws.cell(row=1, column=3, value="Display").font = Font(bold=True)
+    formats = [
+        ("#,##0", 1234567),
+        ("#,##0.00", 1234567.891),
+        ("$#,##0.00", 9876.5),
+        ("0.00%", 0.8523),
+        ("0.00E+00", 123456789),
+        ("0000", 42),
+        ("#,##0;(#,##0)", -5000),
+        ("yyyy-mm-dd", 45658),
+        ("dd/mm/yyyy", 45658),
+        ("hh:mm:ss", 0.75),
+    ]
+    for i, (fmt, val) in enumerate(formats, start=2):
+        ws.cell(row=i, column=1, value=fmt)
+        c = ws.cell(row=i, column=2, value=val)
+        c.number_format = fmt
+        ws.cell(row=i, column=3, value=val)
+    save(wb, "classic131_number_formats.xlsx")
+
+
+# ── 132. Striped table (banded rows with borders) ───────────────────────
+def classic132_striped_table():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Striped"
+    thin = Side(style="thin", color="BFBFBF")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    fill_light = PatternFill(fill_type="solid", fgColor="F2F2F2")
+    fill_white = PatternFill(fill_type="solid", fgColor="FFFFFF")
+    header_fill = PatternFill(fill_type="solid", fgColor="4472C4")
+    header_font = Font(bold=True, color="FFFFFF")
+    headers = ["Product", "Category", "Price", "Rating"]
+    for col, h in enumerate(headers, start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = header_font
+        c.fill = header_fill
+        c.border = border
+        c.alignment = Alignment(horizontal="center")
+    import random
+    random.seed(132)
+    categories = ["Electronics", "Books", "Clothing", "Food", "Sports"]
+    for i in range(1, 11):
+        r = i + 1
+        ws.cell(row=r, column=1, value=f"Product {i}").border = border
+        ws.cell(row=r, column=2, value=random.choice(categories)).border = border
+        ws.cell(row=r, column=3, value=round(random.uniform(5, 500), 2)).border = border
+        ws.cell(row=r, column=4, value=round(random.uniform(1, 5), 1)).border = border
+        fill = fill_light if i % 2 == 0 else fill_white
+        for col in range(1, 5):
+            ws.cell(row=r, column=col).fill = fill
+    save(wb, "classic132_striped_table.xlsx")
+
+
+# ── 133. Color gradient rows (simulated with progressive fills) ──────────
+def classic133_gradient_rows():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Gradient"
+    ws.cell(row=1, column=1, value="Step").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Value").font = Font(bold=True)
+    ws.cell(row=1, column=3, value="Color Intensity").font = Font(bold=True)
+    for i in range(10):
+        r = i + 2
+        intensity = int(255 - (i * 25))
+        hex_color = f"00{intensity:02X}00"  # green gradient
+        ws.cell(row=r, column=1, value=i + 1)
+        ws.cell(row=r, column=2, value=(i + 1) * 10)
+        for col in range(1, 4):
+            c = ws.cell(row=r, column=col) if col > 1 else ws.cell(row=r, column=col)
+            c.fill = PatternFill(fill_type="solid", fgColor=hex_color)
+            if intensity < 128:
+                c.font = Font(color="FFFFFF")
+        ws.cell(row=r, column=3, value=f"Green {hex_color}")
+    save(wb, "classic133_gradient_rows.xlsx")
+
+
+# ── 134. Conditional-style heatmap (manual fills based on value) ─────────
+def classic134_heatmap():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Heatmap"
+    import random
+    random.seed(134)
+    headers = [""] + [f"Col{c}" for c in range(1, 7)]
+    for col, h in enumerate(headers, start=1):
+        ws.cell(row=1, column=col, value=h).font = Font(bold=True)
+    for r in range(2, 9):
+        ws.cell(row=r, column=1, value=f"Row{r - 1}").font = Font(bold=True)
+        for c in range(2, 8):
+            val = random.randint(0, 100)
+            cell = ws.cell(row=r, column=c, value=val)
+            # Map value to red intensity
+            red = int(255 * val / 100)
+            green = int(255 * (100 - val) / 100)
+            hex_color = f"{red:02X}{green:02X}30"
+            cell.fill = PatternFill(fill_type="solid", fgColor=hex_color)
+            if val > 60:
+                cell.font = Font(color="FFFFFF", bold=True)
+            cell.alignment = Alignment(horizontal="center")
+    save(wb, "classic134_heatmap.xlsx")
+
+
+# ── 135. Bottom border only (underline style) ───────────────────────────
+def classic135_bottom_border_only():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Bottom Borders"
+    bottom_thin = Border(bottom=Side(style="thin", color="000000"))
+    bottom_medium = Border(bottom=Side(style="medium", color="000000"))
+    bottom_thick = Border(bottom=Side(style="thick", color="000000"))
+    bottom_double = Border(bottom=Side(style="double", color="000000"))
+    ws.cell(row=1, column=1, value="Section Header").font = Font(bold=True, size=14)
+    ws.cell(row=1, column=1).border = bottom_thick
+    ws.cell(row=1, column=2).border = bottom_thick
+    ws.cell(row=1, column=3).border = bottom_thick
+    ws.cell(row=3, column=1, value="Thin bottom")
+    ws.cell(row=3, column=1).border = bottom_thin
+    ws.cell(row=4, column=1, value="Medium bottom")
+    ws.cell(row=4, column=1).border = bottom_medium
+    ws.cell(row=5, column=1, value="Thick bottom")
+    ws.cell(row=5, column=1).border = bottom_thick
+    ws.cell(row=6, column=1, value="Double bottom")
+    ws.cell(row=6, column=1).border = bottom_double
+    ws.column_dimensions["A"].width = 20
+    save(wb, "classic135_bottom_border_only.xlsx")
+
+
+# ── 136. Financial report with styled cells ──────────────────────────────
+def classic136_financial_report_styled():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "P&L"
+    bold = Font(bold=True)
+    money_fmt = "$#,##0.00"
+    header_fill = PatternFill(fill_type="solid", fgColor="002060")
+    header_font = Font(bold=True, color="FFFFFF", size=12)
+    thin = Side(style="thin", color="999999")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    total_border = Border(top=Side(style="double", color="000000"),
+                          bottom=Side(style="double", color="000000"))
+    ws.column_dimensions["A"].width = 25
+    ws.column_dimensions["B"].width = 15
+    ws.column_dimensions["C"].width = 15
+    # Header
+    for col, h in enumerate(["Category", "2024", "2025"], start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = header_font
+        c.fill = header_fill
+        c.border = border
+        c.alignment = Alignment(horizontal="center")
+    rows = [
+        ("Revenue", 450000, 520000),
+        ("Cost of Goods", -180000, -195000),
+        ("Gross Profit", 270000, 325000),
+        ("", None, None),
+        ("Operating Expenses", -120000, -135000),
+        ("R&D", -45000, -55000),
+        ("Marketing", -30000, -38000),
+        ("", None, None),
+        ("Net Income", 75000, 97000),
+    ]
+    for i, (label, v1, v2) in enumerate(rows, start=2):
+        ws.cell(row=i, column=1, value=label).border = border
+        if label in ("Gross Profit", "Net Income"):
+            ws.cell(row=i, column=1).font = bold
+        if v1 is not None:
+            c1 = ws.cell(row=i, column=2, value=v1)
+            c1.number_format = money_fmt
+            c1.border = border
+            c2 = ws.cell(row=i, column=3, value=v2)
+            c2.number_format = money_fmt
+            c2.border = border
+        if label == "Net Income":
+            for col in range(1, 4):
+                ws.cell(row=i, column=col).border = total_border
+                ws.cell(row=i, column=col).font = Font(bold=True, size=12)
+    save(wb, "classic136_financial_report_styled.xlsx")
+
+
+# ── 137. Checkerboard pattern ────────────────────────────────────────────
+def classic137_checkerboard():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Checkerboard"
+    fill_dark = PatternFill(fill_type="solid", fgColor="333333")
+    fill_light = PatternFill(fill_type="solid", fgColor="EEEEEE")
+    for r in range(1, 9):
+        for c in range(1, 9):
+            cell = ws.cell(row=r, column=c, value=" ")
+            if (r + c) % 2 == 0:
+                cell.fill = fill_dark
+                cell.font = Font(color="FFFFFF")
+            else:
+                cell.fill = fill_light
+            ws.column_dimensions[get_column_letter(c)].width = 5
+        ws.row_dimensions[r].height = 25
+    save(wb, "classic137_checkerboard.xlsx")
+
+
+# ── 138. Multi-color background grid ────────────────────────────────────
+def classic138_color_grid():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Color Grid"
+    colors = [
+        "FF6B6B", "FFD93D", "6BCB77", "4D96FF",
+        "FF8E71", "C780FF", "FFB4B4", "B5DEFF",
+        "E8FFC1", "FFC0D0", "D5AAFF", "A0E7E5",
+    ]
+    for r in range(1, 5):
+        for c in range(1, 4):
+            idx = (r - 1) * 3 + (c - 1)
+            color = colors[idx]
+            cell = ws.cell(row=r, column=c, value=f"#{color}")
+            cell.fill = PatternFill(fill_type="solid", fgColor=color)
+            cell.alignment = Alignment(horizontal="center")
+            ws.column_dimensions[get_column_letter(c)].width = 14
+        ws.row_dimensions[r].height = 30
+    save(wb, "classic138_color_grid.xlsx")
+
+
+# ── 139. Pattern fills (hatches) ─────────────────────────────────────────
+def classic139_pattern_fills():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Patterns"
+    patterns = [
+        ("solid", "4472C4"), ("darkGray", "808080"),
+        ("mediumGray", "808080"), ("lightGray", "808080"),
+        ("gray125", "808080"), ("gray0625", "808080"),
+        ("darkHorizontal", "0000FF"), ("darkVertical", "0000FF"),
+        ("darkDown", "FF0000"), ("darkUp", "FF0000"),
+        ("lightHorizontal", "00AA00"), ("lightVertical", "00AA00"),
+    ]
+    ws.cell(row=1, column=1, value="Pattern Type").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Sample").font = Font(bold=True)
+    ws.column_dimensions["A"].width = 20
+    ws.column_dimensions["B"].width = 20
+    for i, (pat, color) in enumerate(patterns, start=2):
+        ws.cell(row=i, column=1, value=pat)
+        c = ws.cell(row=i, column=2, value="Pattern")
+        c.fill = PatternFill(fill_type=pat, fgColor=color, bgColor="FFFFFF")
+    save(wb, "classic139_pattern_fills.xlsx")
+
+
+# ── 140. Rotated text ───────────────────────────────────────────────────
+def classic140_rotated_text():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Rotated"
+    # openpyxl: 0-90 = counter-clockwise, 91-180 maps to -(180-val) clockwise
+    angles = [0, 15, 30, 45, 60, 90, 105, 120, 135, 150, 180]
+    ws.cell(row=1, column=1, value="Rotation").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Text").font = Font(bold=True)
+    for i, angle in enumerate(angles, start=2):
+        ws.cell(row=i, column=1, value=f"{angle}")
+        c = ws.cell(row=i, column=2, value="Rotated")
+        c.alignment = Alignment(text_rotation=angle)
+        ws.row_dimensions[i].height = 40
+    ws.column_dimensions["B"].width = 18
+    save(wb, "classic140_rotated_text.xlsx")
+
+
+# ── 141. Mixed border styles per edge ───────────────────────────────────
+def classic141_mixed_edge_borders():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Edge Borders"
+    ws.column_dimensions["A"].width = 25
+    ws.column_dimensions["B"].width = 25
+    combos = [
+        ("thick left, thin others",
+         Border(left=Side("thick", "FF0000"), right=Side("thin"),
+                top=Side("thin"), bottom=Side("thin"))),
+        ("double bottom",
+         Border(bottom=Side("double", "0000FF"))),
+        ("medium top + bottom",
+         Border(top=Side("medium", "00AA00"), bottom=Side("medium", "00AA00"))),
+        ("dashed all sides",
+         Border(left=Side("dashed"), right=Side("dashed"),
+                top=Side("dashed"), bottom=Side("dashed"))),
+        ("thick all, red",
+         Border(left=Side("thick", "FF0000"), right=Side("thick", "FF0000"),
+                top=Side("thick", "FF0000"), bottom=Side("thick", "FF0000"))),
+    ]
+    ws.cell(row=1, column=1, value="Description").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Cell").font = Font(bold=True)
+    for i, (desc, b) in enumerate(combos, start=2):
+        ws.cell(row=i, column=1, value=desc)
+        c = ws.cell(row=i, column=2, value="Styled")
+        c.border = b
+        ws.row_dimensions[i].height = 30
+    save(wb, "classic141_mixed_edge_borders.xlsx")
+
+
+# ── 142. Invoice with full styling ──────────────────────────────────────
+def classic142_styled_invoice():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Invoice"
+    # Title
+    ws.merge_cells("A1:E1")
+    title_cell = ws["A1"]
+    title_cell.value = "INVOICE"
+    title_cell.font = Font(bold=True, size=20, color="1F4E79")
+    title_cell.alignment = Alignment(horizontal="center")
+    title_cell.fill = PatternFill(fill_type="solid", fgColor="D6E4F0")
+    # Info section
+    ws["A3"] = "Invoice #:"
+    ws["B3"] = "INV-2025-0099"
+    ws["A4"] = "Date:"
+    ws["B4"] = "2025-06-15"
+    ws["A3"].font = Font(bold=True)
+    ws["A4"].font = Font(bold=True)
+    # Table header
+    thin = Side(style="thin", color="1F4E79")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    header_fill = PatternFill(fill_type="solid", fgColor="1F4E79")
+    header_font = Font(bold=True, color="FFFFFF")
+    h_row = 6
+    for col, h in enumerate(["Item", "Description", "Qty", "Price", "Total"], start=1):
+        c = ws.cell(row=h_row, column=col, value=h)
+        c.font = header_font
+        c.fill = header_fill
+        c.border = border
+        c.alignment = Alignment(horizontal="center")
+    items = [
+        ("SVC-001", "Web Development", 40, 125.00, 5000.00),
+        ("SVC-002", "UI/UX Design", 20, 100.00, 2000.00),
+        ("SVC-003", "Testing & QA", 15, 90.00, 1350.00),
+        ("LIC-001", "Annual License", 1, 2400.00, 2400.00),
+    ]
+    alt_fill = PatternFill(fill_type="solid", fgColor="EDF2F9")
+    for i, item_data in enumerate(items):
+        r = h_row + 1 + i
+        for col, val in enumerate(item_data, start=1):
+            c = ws.cell(row=r, column=col, value=val)
+            c.border = border
+            if i % 2 == 1:
+                c.fill = alt_fill
+            if col >= 4:
+                c.number_format = "$#,##0.00"
+    # Totals
+    total_r = h_row + len(items) + 2
+    ws.cell(row=total_r, column=4, value="Subtotal:").font = Font(bold=True)
+    ws.cell(row=total_r, column=5, value=10750.00).number_format = "$#,##0.00"
+    ws.cell(row=total_r + 1, column=4, value="Tax (10%):").font = Font(bold=True)
+    ws.cell(row=total_r + 1, column=5, value=1075.00).number_format = "$#,##0.00"
+    total_border = Border(top=Side("double", "1F4E79"), bottom=Side("double", "1F4E79"))
+    ws.cell(row=total_r + 2, column=4, value="Total:").font = Font(bold=True, size=13)
+    tc = ws.cell(row=total_r + 2, column=5, value=11825.00)
+    tc.number_format = "$#,##0.00"
+    tc.font = Font(bold=True, size=13)
+    tc.border = total_border
+    ws.column_dimensions["A"].width = 12
+    ws.column_dimensions["B"].width = 22
+    ws.column_dimensions["C"].width = 8
+    ws.column_dimensions["D"].width = 12
+    ws.column_dimensions["E"].width = 14
+    save(wb, "classic142_styled_invoice.xlsx")
+
+
+# ── 143. Colored tabs (multiple sheets with tab colors) ──────────────────
+def classic143_colored_tabs():
+    wb = Workbook()
+    tab_data = [
+        ("Sales", "FF0000", [("Product A", 100), ("Product B", 200)]),
+        ("Inventory", "00AA00", [("Widget", 500), ("Gadget", 300)]),
+        ("Finance", "0000FF", [("Revenue", 50000), ("Cost", 30000)]),
+        ("HR", "FF8800", [("Employees", 50), ("Open Roles", 5)]),
+    ]
+    first = True
+    for name, color, rows in tab_data:
+        if first:
+            ws = wb.active
+            ws.title = name
+            first = False
+        else:
+            ws = wb.create_sheet(title=name)
+        ws.sheet_properties.tabColor = color
+        ws.append(["Label", "Value"])
+        ws.cell(row=1, column=1).font = Font(bold=True)
+        ws.cell(row=1, column=2).font = Font(bold=True)
+        for label, val in rows:
+            ws.append([label, val])
+    save(wb, "classic143_colored_tabs.xlsx")
+
+
+# ── 144. Cell comments / notes style (simulated with styled cells) ───────
+def classic144_note_style_cells():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Notes"
+    note_fill = PatternFill(fill_type="solid", fgColor="FFFFD5")
+    note_border = Border(
+        left=Side("thin", "CCCC00"), right=Side("thin", "CCCC00"),
+        top=Side("thin", "CCCC00"), bottom=Side("thin", "CCCC00"))
+    ws.column_dimensions["A"].width = 15
+    ws.column_dimensions["B"].width = 40
+    ws.cell(row=1, column=1, value="Field").font = Font(bold=True)
+    ws.cell(row=1, column=2, value="Note").font = Font(bold=True)
+    notes = [
+        ("Name", "Must be full legal name"),
+        ("Email", "Use company email only"),
+        ("Phone", "Include country code"),
+        ("Address", "PO boxes not accepted"),
+        ("DOB", "Format: YYYY-MM-DD"),
+    ]
+    for i, (field, note) in enumerate(notes, start=2):
+        ws.cell(row=i, column=1, value=field)
+        c = ws.cell(row=i, column=2, value=note)
+        c.fill = note_fill
+        c.border = note_border
+        c.font = Font(italic=True, color="666600")
+    save(wb, "classic144_note_style_cells.xlsx")
+
+
+# ── 145. Status badge style (colored fills for status labels) ────────────
+def classic145_status_badges():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Project Status"
+    thin = Side(style="thin", color="CCCCCC")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    status_styles = {
+        "Completed": (PatternFill("solid", fgColor="C6EFCE"), Font(color="006100", bold=True)),
+        "In Progress": (PatternFill("solid", fgColor="FFEB9C"), Font(color="9C5700", bold=True)),
+        "Blocked": (PatternFill("solid", fgColor="FFC7CE"), Font(color="9C0006", bold=True)),
+        "Not Started": (PatternFill("solid", fgColor="D9D9D9"), Font(color="333333")),
+        "In Review": (PatternFill("solid", fgColor="B4C6E7"), Font(color="1F3864", bold=True)),
+    }
+    headers = ["Task", "Owner", "Status", "Due Date"]
+    header_fill = PatternFill("solid", fgColor="404040")
+    for col, h in enumerate(headers, start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = Font(bold=True, color="FFFFFF")
+        c.fill = header_fill
+        c.border = border
+    tasks = [
+        ("Backend API", "Alice", "Completed", "2025-02-01"),
+        ("Frontend UI", "Bob", "In Progress", "2025-03-15"),
+        ("Database Migration", "Carol", "Blocked", "2025-02-20"),
+        ("Documentation", "David", "Not Started", "2025-04-01"),
+        ("Code Review", "Eva", "In Review", "2025-03-10"),
+        ("Deployment", "Frank", "Not Started", "2025-04-15"),
+        ("Testing", "Grace", "In Progress", "2025-03-20"),
+    ]
+    for i, (task, owner, status, due) in enumerate(tasks, start=2):
+        ws.cell(row=i, column=1, value=task).border = border
+        ws.cell(row=i, column=2, value=owner).border = border
+        sc = ws.cell(row=i, column=3, value=status)
+        sc.border = border
+        sc.alignment = Alignment(horizontal="center")
+        if status in status_styles:
+            sc.fill, sc.font = status_styles[status]
+        ws.cell(row=i, column=4, value=due).border = border
+    ws.column_dimensions["A"].width = 22
+    ws.column_dimensions["B"].width = 12
+    ws.column_dimensions["C"].width = 15
+    ws.column_dimensions["D"].width = 14
+    save(wb, "classic145_status_badges.xlsx")
+
+
+# ── 146. Double border table ────────────────────────────────────────────
+def classic146_double_border_table():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Double Border"
+    double = Side(style="double", color="000000")
+    thin = Side(style="thin", color="000000")
+    headers = ["Name", "Role", "Years", "Rating"]
+    for col, h in enumerate(headers, start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = Font(bold=True)
+        c.border = Border(left=double, right=double, top=double, bottom=double)
+        c.fill = PatternFill("solid", fgColor="E2EFDA")
+    data = [
+        ("Alice", "Engineer", 5, "Excellent"),
+        ("Bob", "Designer", 3, "Good"),
+        ("Carol", "Manager", 8, "Excellent"),
+        ("David", "Analyst", 2, "Satisfactory"),
+    ]
+    for r, row_data in enumerate(data, start=2):
+        for col, val in enumerate(row_data, start=1):
+            c = ws.cell(row=r, column=col, value=val)
+            c.border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    # Bottom edge double
+    last_r = len(data) + 1
+    for col in range(1, 5):
+        ws.cell(row=last_r, column=col).border = Border(
+            left=thin, right=thin, top=thin, bottom=double)
+    ws.column_dimensions["A"].width = 12
+    ws.column_dimensions["B"].width = 12
+    ws.column_dimensions["C"].width = 10
+    ws.column_dimensions["D"].width = 14
+    save(wb, "classic146_double_border_table.xlsx")
+
+
+# ── 147. Multi-sheet styled report ──────────────────────────────────────
+def classic147_multi_sheet_styled():
+    wb = Workbook()
+    thin = Side(style="thin", color="888888")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    sheets_data = {
+        "Summary": {
+            "header_color": "2F5496",
+            "headers": ["Metric", "Value"],
+            "data": [("Total Revenue", "$1,200,000"), ("Total Costs", "$780,000"),
+                     ("Net Profit", "$420,000"), ("Margin", "35%")],
+        },
+        "Quarterly": {
+            "header_color": "548235",
+            "headers": ["Quarter", "Revenue", "Costs", "Profit"],
+            "data": [("Q1", 280000, 190000, 90000), ("Q2", 310000, 200000, 110000),
+                     ("Q3", 290000, 185000, 105000), ("Q4", 320000, 205000, 115000)],
+        },
+        "Employees": {
+            "header_color": "BF8F00",
+            "headers": ["Name", "Department", "Salary"],
+            "data": [("Alice", "Eng", 110000), ("Bob", "Sales", 85000),
+                     ("Carol", "Eng", 105000), ("David", "HR", 75000)],
+        },
+    }
+    first = True
+    for sheet_name, info in sheets_data.items():
+        if first:
+            ws = wb.active
+            ws.title = sheet_name
+            first = False
+        else:
+            ws = wb.create_sheet(title=sheet_name)
+        h_fill = PatternFill("solid", fgColor=info["header_color"])
+        for col, h in enumerate(info["headers"], start=1):
+            c = ws.cell(row=1, column=col, value=h)
+            c.font = Font(bold=True, color="FFFFFF")
+            c.fill = h_fill
+            c.border = border
+        for r, row_data in enumerate(info["data"], start=2):
+            for col, val in enumerate(row_data, start=1):
+                c = ws.cell(row=r, column=col, value=val)
+                c.border = border
+        for col in range(1, len(info["headers"]) + 1):
+            ws.column_dimensions[get_column_letter(col)].width = 16
+    save(wb, "classic147_multi_sheet_styled.xlsx")
+
+
+# ── 148. Frozen header with styled grid ──────────────────────────────────
+def classic148_frozen_styled_grid():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Data Grid"
+    ws.freeze_panes = "A2"
+    thin = Side(style="thin", color="AAAAAA")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    header_fill = PatternFill("solid", fgColor="305496")
+    header_font = Font(bold=True, color="FFFFFF", size=11)
+    headers = ["ID", "Name", "Category", "Value", "Status", "Date"]
+    for col, h in enumerate(headers, start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = header_font
+        c.fill = header_fill
+        c.border = border
+        c.alignment = Alignment(horizontal="center")
+    import random
+    random.seed(148)
+    categories = ["Alpha", "Beta", "Gamma"]
+    statuses = ["Active", "Inactive", "Pending"]
+    fill_even = PatternFill("solid", fgColor="D9E2F3")
+    for i in range(1, 21):
+        r = i + 1
+        ws.cell(row=r, column=1, value=i).border = border
+        ws.cell(row=r, column=2, value=f"Item-{i:03d}").border = border
+        ws.cell(row=r, column=3, value=random.choice(categories)).border = border
+        ws.cell(row=r, column=4, value=round(random.uniform(10, 999), 2)).border = border
+        ws.cell(row=r, column=5, value=random.choice(statuses)).border = border
+        ws.cell(row=r, column=6, value=f"2025-{random.randint(1,12):02d}-{random.randint(1,28):02d}").border = border
+        if i % 2 == 0:
+            for col in range(1, 7):
+                ws.cell(row=r, column=col).fill = fill_even
+    for col in range(1, 7):
+        ws.column_dimensions[get_column_letter(col)].width = 14
+    save(wb, "classic148_frozen_styled_grid.xlsx")
+
+
+# ── 149. Merged header with styled sub-sections ─────────────────────────
+def classic149_merged_styled_sections():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Report"
+    thin = Side(style="thin", color="888888")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    # Title
+    ws.merge_cells("A1:D1")
+    tc = ws["A1"]
+    tc.value = "Quarterly Performance Report"
+    tc.font = Font(bold=True, size=16, color="FFFFFF")
+    tc.fill = PatternFill("solid", fgColor="1F4E79")
+    tc.alignment = Alignment(horizontal="center")
+    # Section 1
+    ws.merge_cells("A3:D3")
+    s1 = ws["A3"]
+    s1.value = "Revenue Breakdown"
+    s1.font = Font(bold=True, size=12, color="1F4E79")
+    s1.fill = PatternFill("solid", fgColor="D6E4F0")
+    for col, h in enumerate(["Source", "Q1", "Q2", "Total"], start=1):
+        c = ws.cell(row=4, column=col, value=h)
+        c.font = Font(bold=True)
+        c.border = border
+    rev_data = [("Online", 120000, 140000, 260000),
+                ("Retail", 90000, 85000, 175000),
+                ("Wholesale", 60000, 70000, 130000)]
+    for r, row_data in enumerate(rev_data, start=5):
+        for col, val in enumerate(row_data, start=1):
+            c = ws.cell(row=r, column=col, value=val)
+            c.border = border
+            if col >= 2:
+                c.number_format = "#,##0"
+    # Section 2
+    ws.merge_cells("A9:D9")
+    s2 = ws["A9"]
+    s2.value = "Expense Summary"
+    s2.font = Font(bold=True, size=12, color="FFFFFF")
+    s2.fill = PatternFill("solid", fgColor="C00000")
+    for col, h in enumerate(["Category", "Q1", "Q2", "Total"], start=1):
+        c = ws.cell(row=10, column=col, value=h)
+        c.font = Font(bold=True)
+        c.border = border
+    exp_data = [("Salaries", 200000, 210000, 410000),
+                ("Marketing", 30000, 35000, 65000),
+                ("Operations", 50000, 48000, 98000)]
+    for r, row_data in enumerate(exp_data, start=11):
+        for col, val in enumerate(row_data, start=1):
+            c = ws.cell(row=r, column=col, value=val)
+            c.border = border
+            if col >= 2:
+                c.number_format = "#,##0"
+    for col in range(1, 5):
+        ws.column_dimensions[get_column_letter(col)].width = 16
+    save(wb, "classic149_merged_styled_sections.xlsx")
+
+
+# ── 150. Kitchen sink — all style features combined ─────────────────────
+def classic150_kitchen_sink_styles():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "All Styles"
+    ws.column_dimensions["A"].width = 25
+    ws.column_dimensions["B"].width = 30
+    ws.column_dimensions["C"].width = 20
+    # Row 1: merged bold title
+    ws.merge_cells("A1:C1")
+    tc = ws["A1"]
+    tc.value = "Style Showcase"
+    tc.font = Font(bold=True, size=18, color="FFFFFF")
+    tc.fill = PatternFill("solid", fgColor="2F5496")
+    tc.alignment = Alignment(horizontal="center")
+    # Row 2: sub-header with bottom border
+    for col, h in enumerate(["Feature", "Example", "Notes"], start=1):
+        c = ws.cell(row=2, column=col, value=h)
+        c.font = Font(bold=True, size=12)
+        c.border = Border(bottom=Side("medium", "2F5496"))
+    # Rows 3+: various style demos
+    r = 3
+    # Bold + italic + red
+    ws.cell(row=r, column=1, value="Bold Italic Red")
+    c = ws.cell(row=r, column=2, value="Styled Text")
+    c.font = Font(bold=True, italic=True, color="FF0000", size=12)
+    ws.cell(row=r, column=3, value="Font combo")
+    r += 1
+    # Underline double
+    ws.cell(row=r, column=1, value="Double Underline")
+    c = ws.cell(row=r, column=2, value="Important Value")
+    c.font = Font(underline="double", size=11)
+    ws.cell(row=r, column=3, value="Emphasis")
+    r += 1
+    # Strikethrough
+    ws.cell(row=r, column=1, value="Strikethrough")
+    c = ws.cell(row=r, column=2, value="Deprecated Item")
+    c.font = Font(strike=True, color="999999")
+    ws.cell(row=r, column=3, value="Removed")
+    r += 1
+    # Solid fill + white text
+    ws.cell(row=r, column=1, value="Dark Fill")
+    c = ws.cell(row=r, column=2, value="White on Dark")
+    c.fill = PatternFill("solid", fgColor="333333")
+    c.font = Font(color="FFFFFF", bold=True)
+    ws.cell(row=r, column=3, value="Inverted")
+    r += 1
+    # Colored border
+    ws.cell(row=r, column=1, value="Red Border")
+    c = ws.cell(row=r, column=2, value="Attention!")
+    red_side = Side("thick", "FF0000")
+    c.border = Border(left=red_side, right=red_side, top=red_side, bottom=red_side)
+    ws.cell(row=r, column=3, value="Alert style")
+    r += 1
+    # Number format
+    ws.cell(row=r, column=1, value="Currency Format")
+    c = ws.cell(row=r, column=2, value=12345.678)
+    c.number_format = "$#,##0.00"
+    ws.cell(row=r, column=3, value="Formatted number")
+    r += 1
+    # Percentage
+    ws.cell(row=r, column=1, value="Percentage")
+    c = ws.cell(row=r, column=2, value=0.8756)
+    c.number_format = "0.00%"
+    ws.cell(row=r, column=3, value="Percent display")
+    r += 1
+    # Wrapped + centered
+    ws.cell(row=r, column=1, value="Wrap + Center")
+    c = ws.cell(row=r, column=2, value="This text wraps in the cell nicely")
+    c.alignment = Alignment(wrap_text=True, horizontal="center", vertical="center")
+    ws.row_dimensions[r].height = 40
+    ws.cell(row=r, column=3, value="Multi-line")
+    r += 1
+    # Pattern fill
+    ws.cell(row=r, column=1, value="Pattern Fill")
+    c = ws.cell(row=r, column=2, value="Gray pattern")
+    c.fill = PatternFill(fill_type="lightGray", fgColor="4472C4", bgColor="FFFFFF")
+    ws.cell(row=r, column=3, value="Hatched")
+    r += 1
+    # Large font
+    ws.cell(row=r, column=1, value="Large Font")
+    c = ws.cell(row=r, column=2, value="BIG")
+    c.font = Font(size=24, bold=True, color="2F5496")
+    ws.row_dimensions[r].height = 35
+    ws.cell(row=r, column=3, value="Size 24")
+    save(wb, "classic150_kitchen_sink_styles.xlsx")
+
+
 # ── Main ─────────────────────────────────────────────────────────────────
 def main():
     ensure_output_dir()
-    print(f"Generating 120 classic .xlsx files in: {OUTPUT_DIR}\n")
+    print(f"Generating 150 classic .xlsx files in: {OUTPUT_DIR}\n")
 
     generators = [
         classic01_basic_table_with_headers,
@@ -2713,6 +3676,37 @@ def main():
         classic118_bar_chart_custom_colors,
         classic119_dashboard_multi_charts,
         classic120_chart_with_date_axis,
+        # 121-150: style, border & background cases
+        classic121_thin_borders,
+        classic122_thick_outer_thin_inner,
+        classic123_dashed_borders,
+        classic124_colored_borders,
+        classic125_solid_fills,
+        classic126_dark_header,
+        classic127_font_styles,
+        classic128_font_sizes,
+        classic129_alignment_combos,
+        classic130_wrap_and_indent,
+        classic131_number_formats,
+        classic132_striped_table,
+        classic133_gradient_rows,
+        classic134_heatmap,
+        classic135_bottom_border_only,
+        classic136_financial_report_styled,
+        classic137_checkerboard,
+        classic138_color_grid,
+        classic139_pattern_fills,
+        classic140_rotated_text,
+        classic141_mixed_edge_borders,
+        classic142_styled_invoice,
+        classic143_colored_tabs,
+        classic144_note_style_cells,
+        classic145_status_badges,
+        classic146_double_border_table,
+        classic147_multi_sheet_styled,
+        classic148_frozen_styled_grid,
+        classic149_merged_styled_sections,
+        classic150_kitchen_sink_styles,
     ]
 
     for gen in generators:
