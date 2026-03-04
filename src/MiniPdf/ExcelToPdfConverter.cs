@@ -13,8 +13,8 @@ internal static class ExcelToPdfConverter
     /// </summary>
     internal sealed class ConversionOptions
     {
-        /// <summary>Font size in points (default: 10).</summary>
-        public float FontSize { get; set; } = 10;
+        /// <summary>Font size in points (default: 11).</summary>
+        public float FontSize { get; set; } = 11;
 
         /// <summary>Page left margin in points (default: 50).</summary>
         public float MarginLeft { get; set; } = 50;
@@ -215,7 +215,9 @@ internal static class ExcelToPdfConverter
     private static void RenderSheetRows(PdfDocument doc, ExcelSheet sheet, ConversionOptions options,
         float pageWidth, float pageHeight, int[] columns, float columnPadding, float[] colWidths, float avgCharWidth)
     {
-        var lineHeight = options.FontSize * options.LineSpacing;
+        // Use the sheet's default row height if available, otherwise fall back to font-based calculation
+        var defaultLineHeight = sheet.DefaultRowHeight > 0 ? sheet.DefaultRowHeight : options.FontSize * options.LineSpacing;
+        var lineHeight = defaultLineHeight;
         PdfPage? currentPage = null;
         var currentY = 0f;
 
@@ -267,13 +269,16 @@ internal static class ExcelToPdfConverter
         {
             EnsurePage();
 
+            // Determine this row's effective height
+            var hasExplicitHeight = sheet.RowHeights.TryGetValue(excelRowIndex, out var explicitRowHeight);
+
             // Record top-of-row state for image placement
             rowTopY[excelRowIndex] = currentY;
             rowPage[excelRowIndex] = currentPage!;
 
             if (row.Count == 0)
             {
-                currentY -= lineHeight;
+                currentY -= hasExplicitHeight ? explicitRowHeight : lineHeight;
                 excelRowIndex++;
                 continue;
             }
@@ -382,7 +387,8 @@ internal static class ExcelToPdfConverter
             }
 
             // Check space for wrapped lines
-            var rowHeight = lineHeight * maxLinesInRow;
+            var contentHeight = lineHeight * maxLinesInRow;
+            var rowHeight = hasExplicitHeight ? Math.Max(explicitRowHeight, contentHeight) : contentHeight;
             var usablePageHeight = pageHeight - options.MarginTop - options.MarginBottom;
 
             if (currentY - rowHeight < options.MarginBottom && currentPage != null)
@@ -410,12 +416,26 @@ internal static class ExcelToPdfConverter
                         var lines = cellLines[i];
                         var col = columns[i];
                         var color = col < row.Count ? row[col].Color : null;
+                        var mpAlignment = col < row.Count ? row[col].Alignment : "left";
                         var cellY = currentY;
 
                         for (var lineIdx = linesRendered; lineIdx < linesRendered + linesToRender && lineIdx < lines.Length; lineIdx++)
                         {
                             if (!string.IsNullOrEmpty(lines[lineIdx]))
-                                currentPage!.AddText(lines[lineIdx], x, cellY, options.FontSize, color);
+                            {
+                                var textX = x;
+                                if (mpAlignment == "right")
+                                {
+                                    var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
+                                    textX = x + colWidths[i] - tw;
+                                }
+                                else if (mpAlignment == "center")
+                                {
+                                    var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
+                                    textX = x + (colWidths[i] - tw) / 2f;
+                                }
+                                currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color);
+                            }
                             cellY -= lineHeight;
                         }
                         x += colWidths[i] + columnPadding;
@@ -441,6 +461,7 @@ internal static class ExcelToPdfConverter
                 var col = columns[i];
                 var color = col < row.Count ? row[col].Color : null;
                 var fillColor = col < row.Count ? row[col].FillColor : null;
+                var alignment = col < row.Count ? row[col].Alignment : "left";
                 var cellY = currentY;
 
                 // Draw fill rectangle behind cell if fill color is set
@@ -454,7 +475,18 @@ internal static class ExcelToPdfConverter
                 {
                     if (!string.IsNullOrEmpty(lines[lineIdx]))
                     {
-                        currentPage!.AddText(lines[lineIdx], x, cellY, options.FontSize, color);
+                        var textX = x;
+                        if (alignment == "right")
+                        {
+                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
+                            textX = x + colWidths[i] - textWidth;
+                        }
+                        else if (alignment == "center")
+                        {
+                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
+                            textX = x + (colWidths[i] - textWidth) / 2f;
+                        }
+                        currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color);
                     }
                     cellY -= lineHeight;
                 }
@@ -652,10 +684,13 @@ internal static class ExcelToPdfConverter
         var titleY = top;
         if (!string.IsNullOrEmpty(chart.Title))
         {
-            var titleAvailWidth = width * 0.65f;  // title starts at 30%, leave ~5% right margin
+            var titleAvailWidth = width - padding * 2;  // use nearly full chart width
             var titleChars = FittingChars(chart.Title, titleAvailWidth, titleFontSize);
             var clippedTitle = titleChars >= chart.Title.Length ? chart.Title : chart.Title[..titleChars];
-            page.AddText(clippedTitle, x + width * 0.3f, titleY - titleFontSize, titleFontSize);
+            // Center the title horizontally
+            var titleTextWidth = (float)MeasureHelveticaWidth(clippedTitle, titleFontSize);
+            var titleX = x + (width - titleTextWidth) / 2f;
+            page.AddText(clippedTitle, titleX, titleY - titleFontSize, titleFontSize);
             titleY -= titleFontSize * 2.2f;
         }
 
@@ -782,7 +817,9 @@ internal static class ExcelToPdfConverter
         }
         else
         {
-            var allValues = series.SelectMany(s => s.Values).ToArray();
+            var allValues = series.SelectMany(s => s.Values)
+                .Concat(chart.OverlaySeries.SelectMany(s => s.Values))
+                .ToArray();
             if (allValues.Length == 0) return;
             dataMax = allValues.Max();
             dataMin = Math.Min(0, allValues.Min());
@@ -894,8 +931,36 @@ internal static class ExcelToPdfConverter
         page.AddLine(plotLeft, baselineY, plotLeft + plotWidth, baselineY,
             new PdfColor(0, 0, 0), 0.8f);
 
-        // Legend (reversed for stacked charts to match Excel bottom-to-top stacking order)
-        RenderLegend(page, series, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, isStacked);
+        // Draw overlay line series (for combo charts)
+        if (chart.OverlaySeries.Count > 0)
+        {
+            var colorOffset = series.Count; // start colors after bar series
+            for (var si = 0; si < chart.OverlaySeries.Count; si++)
+            {
+                var s = chart.OverlaySeries[si];
+                var color = ChartColors[(colorOffset + si) % ChartColors.Length];
+                for (var pi = 1; pi < s.Values.Length; pi++)
+                {
+                    var x1 = plotLeft + (pi - 1) * plotWidth / Math.Max(1, numCats - 1);
+                    var y1 = plotBottom + (float)((s.Values[pi - 1] - niceMin) / range) * plotHeight;
+                    var x2 = plotLeft + pi * plotWidth / Math.Max(1, numCats - 1);
+                    var y2 = plotBottom + (float)((s.Values[pi] - niceMin) / range) * plotHeight;
+                    page.AddLine(x1, y1, x2, y2, color, 2f);
+                }
+                // Line markers
+                for (var pi = 0; pi < s.Values.Length; pi++)
+                {
+                    var px = plotLeft + pi * plotWidth / Math.Max(1, numCats - 1);
+                    var py = plotBottom + (float)((s.Values[pi] - niceMin) / range) * plotHeight;
+                    page.AddRectangle(px - 2.5f, py - 2.5f, 5, 5, color);
+                }
+            }
+        }
+
+        // Legend (include both bar and overlay series)
+        var allSeries = new List<ExcelChartSeries>(series);
+        allSeries.AddRange(chart.OverlaySeries);
+        RenderLegend(page, allSeries, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, isStacked);
     }
 
     /// <summary>Renders a horizontal bar chart (categories on Y-axis, values on X-axis).</summary>
