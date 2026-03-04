@@ -306,6 +306,19 @@ internal sealed class PdfWriter
                   $"{block.Color.G.ToString("F3", CultureInfo.InvariantCulture)} " +
                   $"{block.Color.B.ToString("F3", CultureInfo.InvariantCulture)} rg\n";
 
+            // If a clip rectangle is specified, save graphics state and set clipping path
+            var hasClip = block.ClipRect.HasValue;
+            if (hasClip)
+            {
+                var cr = block.ClipRect!.Value;
+                var cx = cr.X.ToString("F3", CultureInfo.InvariantCulture);
+                var cy = cr.Y.ToString("F3", CultureInfo.InvariantCulture);
+                var cw = cr.Width.ToString("F3", CultureInfo.InvariantCulture);
+                var ch = cr.Height.ToString("F3", CultureInfo.InvariantCulture);
+                sb.Append("q\n");
+                sb.Append($"{cx} {cy} {cw} {ch} re W n\n");
+            }
+
             if (!hasUnicodeFont || !block.Text.Any(c => !IsWinAnsiHandled(c)))
             {
                 // Pure Latin-1 text — use F1 (Helvetica) as before
@@ -337,6 +350,10 @@ internal sealed class PdfWriter
                 sb.Append("> Tj\n");
                 sb.Append("ET\n");
             }
+
+            // Restore graphics state after clipping
+            if (hasClip)
+                sb.Append("Q\n");
         }
 
         return sb.ToString();
