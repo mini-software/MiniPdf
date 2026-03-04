@@ -287,6 +287,8 @@ internal static class ExcelToPdfConverter
             var maxLinesInRow = 1;
             var virtualRowExtraLines = 0; // extra lines from virtual wrapping (text overflows page width)
             var cellLines = new string[columns.Length][];
+            var cellNeedsClip = new bool[columns.Length];
+            var cellClipWidth = new float[columns.Length];
 
             for (var i = 0; i < columns.Length; i++)
             {
@@ -319,6 +321,11 @@ internal static class ExcelToPdfConverter
                             // next cell to the right contains content.  For the last column
                             // in the group (or when the next cell is empty) the text overflows.
                             // Merged cells are always clipped at the merge boundary.
+                            //
+                            // For General-format numeric cells, LibreOffice always reformats
+                            // the number to fit the column width, even for the last column.
+                            if (!cellText.Contains('\n'))
+                                cellText = FitNumericText(cellText, effectiveWidth, options.FontSize);
                             var fitChars = FittingChars(cellText, effectiveWidth, options.FontSize);
                             var isLastCol = (i == columns.Length - 1);
 
@@ -342,15 +349,16 @@ internal static class ExcelToPdfConverter
                             var shouldClip = isMerged || (!isLastCol && nextCellHasContent);
                             if (shouldClip)
                             {
-                                // Reformat numbers that don't fit the column width
-                                if (!cellText.Contains('\n'))
-                                    cellText = FitNumericText(cellText, effectiveWidth, options.FontSize);
                                 fitChars = FittingChars(cellText, effectiveWidth, options.FontSize);
                             }
                             if (shouldClip && cellText.Length > fitChars)
                             {
-                                // Truncate to effective column width (matches LibreOffice clip)
+                                // Truncate to effective column width (matches LibreOffice clip).
+                                // Use clipping rectangle as safety net for visual overflow since
+                                // FittingChars uses approximate Calibri metrics on Helvetica glyphs.
                                 cellLines[i] = new[] { cellText[..fitChars] };
+                                cellNeedsClip[i] = true;
+                                cellClipWidth[i] = effectiveWidth + columnPadding;
                             }
                             else if (!shouldClip && fitChars < cellText.Length && columns.Length == 1)
                             {
@@ -360,6 +368,8 @@ internal static class ExcelToPdfConverter
                                 var pageClipChars = FittingChars(cellText, pageWidth - options.MarginLeft, options.FontSize);
                                 var clippedText = pageClipChars < cellText.Length ? cellText[..pageClipChars] : cellText;
                                 cellLines[i] = new[] { clippedText };
+                                cellNeedsClip[i] = true;
+                                cellClipWidth[i] = pageWidth - options.MarginLeft;
 
                                 // Calculate virtual row height from wrapping at default column width
                                 var defaultColPts = ExcelSheet.CharUnitsToPoints(8.43f);
@@ -437,7 +447,8 @@ internal static class ExcelToPdfConverter
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
                                     textX = x + (colWidths[i] - tw) / 2f;
                                 }
-                                currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color);
+                                currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color,
+                                    cellNeedsClip[i] ? (x, cellY - lineHeight, cellClipWidth[i], lineHeight) : null);
                             }
                             cellY -= lineHeight;
                         }
@@ -529,7 +540,14 @@ internal static class ExcelToPdfConverter
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
                             textX = x + (colWidths[i] - textWidth) / 2f;
                         }
-                        currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color);
+                        // Use clipping rectangle when text overflows cell boundary
+                        (float, float, float, float)? clipRect = null;
+                        if (cellNeedsClip[i])
+                        {
+                            var clipH = lineHeight * maxLinesInRow;
+                            clipRect = (x, currentY - clipH, cellClipWidth[i], clipH);
+                        }
+                        currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color, clipRect);
                     }
                     cellY -= lineHeight;
                 }
@@ -729,11 +747,15 @@ internal static class ExcelToPdfConverter
         {
             var titleAvailWidth = width - padding * 2;  // use nearly full chart width
             var titleChars = FittingChars(chart.Title, titleAvailWidth, titleFontSize);
-            var clippedTitle = titleChars >= chart.Title.Length ? chart.Title : chart.Title[..titleChars];
+            var titleText = chart.Title;
             // Center the title horizontally
-            var titleTextWidth = (float)MeasureHelveticaWidth(clippedTitle, titleFontSize);
+            var titleTextWidth = (float)MeasureHelveticaWidth(titleText, titleFontSize);
             var titleX = x + (width - titleTextWidth) / 2f;
-            page.AddText(clippedTitle, titleX, titleY - titleFontSize, titleFontSize);
+            // Use clip rect if title overflows available width
+            (float, float, float, float)? titleClip = titleChars < chart.Title.Length
+                ? (x + padding, titleY - titleFontSize * 2f, titleAvailWidth, titleFontSize * 2.5f)
+                : null;
+            page.AddText(titleText, titleX, titleY - titleFontSize, titleFontSize, null, titleClip);
             titleY -= titleFontSize * 2.2f;
         }
 
@@ -1698,11 +1720,11 @@ internal static class ExcelToPdfConverter
     /// </summary>
     private static int FittingChars(string text, float widthPts, float fontSize)
     {
-        // Use Helvetica character widths scaled by ~0.97 to approximate Calibri/LibreOffice
-        // rendering. A value of 0.97 allows enough text to fit column widths
-        // while still preventing significant overflow.
+        // Scale Helvetica character widths by ~0.86 to approximate Calibri/Liberation Sans
+        // metrics that LibreOffice uses.  Calibri is ~7% narrower than Helvetica, so
+        // we compensate to match the character count that LibreOffice fits per column.
         double used = 0;
-        const double scale = 0.93;
+        const double scale = 0.86;
         for (var i = 0; i < text.Length; i++)
         {
             used += HelveticaCharWidth(text[i]) * fontSize / 1000.0 * scale;

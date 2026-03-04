@@ -30,12 +30,21 @@ internal sealed class PdfTextBlock
     /// </summary>
     public PdfColor Color { get; }
 
-    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null)
+    /// <summary>
+    /// Optional clipping rectangle (X, Y, Width, Height) in PDF points.
+    /// When set, text is rendered inside a clipping path so it doesn't
+    /// visually overflow the cell, but the full text remains in the PDF
+    /// for text extraction.
+    /// </summary>
+    public (float X, float Y, float Width, float Height)? ClipRect { get; }
+
+    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null)
     {
         Text = text;
         X = x;
         Y = y;
         FontSize = fontSize;
         Color = color ?? PdfColor.Black;
+        ClipRect = clipRect;
     }
 }
