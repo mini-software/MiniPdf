@@ -26,7 +26,7 @@ internal static class ExcelReader
         var fontColors = ReadFontColors(archive);
         var fillColors = ReadFillColors(archive);
         var numberFormats = ReadNumberFormats(archive);
-        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds) = ReadCellXfStyles(archive);
+        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments) = ReadCellXfStyles(archive);
 
         // Read workbook to get sheet names and order
         var sheetInfos = ReadWorkbook(archive);
@@ -44,11 +44,12 @@ internal static class ExcelReader
 
             if (entry == null) continue;
 
-            var rows = ReadSheet(entry, sharedStrings, fontColors, fillColors, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds);
+            var rows = ReadSheet(entry, sharedStrings, fontColors, fillColors, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments);
             var images = ReadSheetImages(archive, info.SheetId);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells));
+            var (rowHeights, defaultRowHeight) = ReadRowHeights(entry);
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight));
         }
 
         // If no sheets found via workbook, try reading sheet1 directly
@@ -57,11 +58,12 @@ internal static class ExcelReader
             var entry = archive.GetEntry("xl/worksheets/sheet1.xml");
             if (entry != null)
             {
-                var rows = ReadSheet(entry, sharedStrings, fontColors, fillColors, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds);
+                var rows = ReadSheet(entry, sharedStrings, fontColors, fillColors, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments);
                 var images = ReadSheetImages(archive, 1);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
-                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells));
+                var (rowHeights, defaultRowHeight) = ReadRowHeights(entry);
+                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight));
             }
         }
 
@@ -168,13 +170,14 @@ internal static class ExcelReader
     /// Reads cellXf style entries from styles.xml.
     /// Returns (fontIndices, fillIndices, numFmtIds) parallel lists.
     /// </summary>
-    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds) ReadCellXfStyles(ZipArchive archive)
+    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds, List<string> Alignments) ReadCellXfStyles(ZipArchive archive)
     {
         var fontIndices = new List<int>();
         var fillIndices = new List<int>();
         var numFmtIds = new List<int>();
+        var alignments = new List<string>();
         var entry = archive.GetEntry("xl/styles.xml");
-        if (entry == null) return (fontIndices, fillIndices, numFmtIds);
+        if (entry == null) return (fontIndices, fillIndices, numFmtIds, alignments);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -182,7 +185,7 @@ internal static class ExcelReader
 
         // Read <cellXfs> -> <xf> elements
         var cellXfs = doc.Descendants(ns + "cellXfs").FirstOrDefault();
-        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds);
+        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds, alignments);
 
         foreach (var xf in cellXfs.Elements(ns + "xf"))
         {
@@ -194,9 +197,12 @@ internal static class ExcelReader
 
             var numFmtId = xf.Attribute("numFmtId")?.Value;
             numFmtIds.Add(int.TryParse(numFmtId, out var nid) ? nid : 0);
+
+            var alignment = xf.Element(ns + "alignment")?.Attribute("horizontal")?.Value ?? "general";
+            alignments.Add(alignment);
         }
 
-        return (fontIndices, fillIndices, numFmtIds);
+        return (fontIndices, fillIndices, numFmtIds, alignments);
     }
 
     /// <summary>
@@ -350,7 +356,7 @@ internal static class ExcelReader
 
     private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings,
         List<PdfColor?> fontColors, List<PdfColor?> fillColors, Dictionary<int, string> numberFormats,
-        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds)
+        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments)
     {
         var rows = new List<List<ExcelCell>>();
 
@@ -403,12 +409,15 @@ internal static class ExcelReader
                 PdfColor? color = null;
                 PdfColor? fillColor = null;
                 int numFmtId = 0;
+                var cellAlignment = "general";
                 if (int.TryParse(styleAttr, out var styleIndex))
                 {
                     color = ResolveCellColor(styleIndex, fontColors, cellXfFontIndices);
                     fillColor = ResolveFillColor(styleIndex, fillColors, cellXfFillIndices);
                     if (styleIndex >= 0 && styleIndex < cellXfNumFmtIds.Count)
                         numFmtId = cellXfNumFmtIds[styleIndex];
+                    if (styleIndex >= 0 && styleIndex < cellXfAlignments.Count)
+                        cellAlignment = cellXfAlignments[styleIndex];
                 }
 
                 string text;
@@ -443,7 +452,17 @@ internal static class ExcelReader
 
                 }
 
-                cells.Add(new ExcelCell(text, color, fillColor));
+                // Resolve "general" alignment: numbers right-align, text left-aligns
+                if (cellAlignment == "general")
+                {
+                    // Numeric cells (type "" or "n") with numeric values get right-aligned
+                    var isNumericCell = (string.IsNullOrEmpty(type) || type == "n") &&
+                                       double.TryParse(value, System.Globalization.NumberStyles.Any,
+                                           System.Globalization.CultureInfo.InvariantCulture, out _);
+                    cellAlignment = isNumericCell ? "right" : "left";
+                }
+
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment));
                 lastColIndex = colIndex + 1;
             }
 
@@ -711,6 +730,52 @@ internal static class ExcelReader
         }
 
         return (widths, defaultWidth);
+    }
+
+    /// <summary>
+    /// Reads row heights from the sheet XML.
+    /// Returns a dictionary of 0-based row index → height in points, plus the default row height.
+    /// </summary>
+    private static (Dictionary<int, float> heights, float defaultHeight) ReadRowHeights(ZipArchiveEntry entry)
+    {
+        var heights = new Dictionary<int, float>();
+        var defaultHeight = 15f; // Excel default row height in points
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        // Read default row height from sheetFormatPr
+        var fmtPr = doc.Descendants(ns + "sheetFormatPr").FirstOrDefault();
+        if (fmtPr?.Attribute("defaultRowHeight") != null)
+        {
+            var drh = fmtPr.Attribute("defaultRowHeight")!.Value;
+            if (float.TryParse(drh,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out var parsed) && parsed > 0f)
+            {
+                defaultHeight = parsed;
+            }
+        }
+
+        // Read explicit row heights (customHeight="1")
+        foreach (var row in doc.Descendants(ns + "row"))
+        {
+            var rAttr = row.Attribute("r")?.Value;
+            var htAttr = row.Attribute("ht")?.Value;
+            if (rAttr == null || htAttr == null) continue;
+
+            if (!int.TryParse(rAttr, out var rowNum)) continue;
+            if (!float.TryParse(htAttr,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out var ht)) continue;
+
+            heights[rowNum - 1] = ht; // store as 0-based
+        }
+
+        return (heights, defaultHeight);
     }
 
     /// <summary>
@@ -1035,6 +1100,9 @@ internal static class ExcelReader
             string valAxisFmtCode = "";
             bool showDataLabelPercent = false;
             bool showDataLabelCatName = false;
+            XElement? overlayChartTypeEl = null;
+            var overlayChartType = "";
+            var overlaySeries = new List<ExcelChartSeries>();
 
             if (chartEntry != null)
             {
@@ -1131,6 +1199,25 @@ internal static class ExcelReader
                     }
                 }
 
+                // Detect overlay chart type (for combo charts, e.g., bar+line)
+                if (chartTypeEl != null && plotArea != null)
+                {
+                    // Look for a second chart type element different from the primary
+                    var primaryElementName = chartTypeEl.Name.LocalName;
+                    foreach (var tn in new[] { "barChart", "bar3DChart", "lineChart", "line3DChart",
+                        "areaChart", "area3DChart", "scatterChart" })
+                    {
+                        if (tn == primaryElementName) continue; // skip primary
+                        var el = plotArea.Element(cns + tn);
+                        if (el != null)
+                        {
+                            overlayChartTypeEl = el;
+                            overlayChartType = tn;
+                            break;
+                        }
+                    }
+                }
+
                 // Extract series data from chart type element
                 if (chartTypeEl != null)
                 {
@@ -1180,10 +1267,63 @@ internal static class ExcelReader
                         seriesList.Add(new ExcelChartSeries(serName, cats, vals));
                     }
                 }
+
+                // Read overlay series (combo chart)
+                if (overlayChartTypeEl != null)
+                {
+                    foreach (var ser in overlayChartTypeEl.Elements(cns + "ser"))
+                    {
+                        var serName = "";
+                        var txEl = ser.Element(cns + "tx");
+                        if (txEl != null)
+                        {
+                            var sv = txEl.Element(cns + "v")?.Value;
+                            if (!string.IsNullOrEmpty(sv))
+                                serName = sv;
+                            else
+                            {
+                                var strRef = txEl.Element(cns + "strRef");
+                                var formula = strRef?.Element(cns + "f")?.Value;
+                                if (!string.IsNullOrEmpty(formula))
+                                {
+                                    var resolved = ResolveCellReference(formula, allSheets);
+                                    if (resolved.Length > 0) serName = resolved[0];
+                                }
+                            }
+                        }
+
+                        string[] cats = Array.Empty<string>();
+                        var catEl = ser.Element(cns + "cat") ?? ser.Element(cns + "xVal");
+                        if (catEl != null)
+                            cats = ResolveRefElement(catEl, cns, allSheets);
+                        // For overlay series that share the primary category axis,
+                        // inherit categories from the primary series if not specified.
+                        if (cats.Length == 0 && seriesList.Count > 0)
+                            cats = seriesList[0].Categories;
+
+                        double[] vals = Array.Empty<double>();
+                        var valEl = ser.Element(cns + "val") ?? ser.Element(cns + "yVal");
+                        if (valEl != null)
+                        {
+                            var valStrings = ResolveRefElement(valEl, cns, allSheets);
+                            vals = valStrings.Select(v =>
+                                double.TryParse(v, System.Globalization.NumberStyles.Any,
+                                    System.Globalization.CultureInfo.InvariantCulture, out var d) ? d : 0.0)
+                                .ToArray();
+                        }
+
+                        overlaySeries.Add(new ExcelChartSeries(serName, cats, vals));
+                    }
+                }
             }
 
-            charts.Add(new ExcelChartInfo(fromRow, fromCol, widthEmu, heightEmu, title, chartType,
-                seriesList, catAxisTitle, valAxisTitle, showDataLabelPercent, showDataLabelCatName, valAxisFmtCode));
+            var chartInfo = new ExcelChartInfo(fromRow, fromCol, widthEmu, heightEmu, title, chartType,
+                seriesList, catAxisTitle, valAxisTitle, showDataLabelPercent, showDataLabelCatName, valAxisFmtCode)
+            {
+                OverlaySeries = overlaySeries,
+                OverlayChartType = overlayChartType
+            };
+            charts.Add(chartInfo);
         }
 
         return charts;
@@ -1274,7 +1414,7 @@ internal static class ExcelReader
 /// <summary>
 /// Represents a cell read from an Excel file.
 /// </summary>
-internal sealed record ExcelCell(string Text, PdfColor? Color, PdfColor? FillColor);
+internal sealed record ExcelCell(string Text, PdfColor? Color, PdfColor? FillColor, string Alignment = "general");
 
 /// <summary>
 /// Represents an image embedded in an Excel worksheet.
@@ -1315,7 +1455,13 @@ internal sealed record ExcelChartInfo(
     bool ShowDataLabelPercent = false,  // show percentage data labels
     bool ShowDataLabelCatName = false,  // show category name data labels
     string ValueAxisFormatCode = ""    // numFmt formatCode for value axis (e.g. "#,##0")
-);
+)
+{
+    /// <summary>Overlay series for combo charts (e.g., line series over bar chart).</summary>
+    public List<ExcelChartSeries> OverlaySeries { get; init; } = new();
+    /// <summary>Chart type for overlay series (e.g., "lineChart" when primary is "barChart").</summary>
+    public string OverlayChartType { get; init; } = "";
+};
 
 /// <summary>
 /// Represents a sheet read from an Excel file.
@@ -1336,6 +1482,13 @@ internal sealed class ExcelSheet
     public float DefaultColumnWidth { get; }
     /// <summary>Merged cell regions: (startRow, startCol, endRow, endCol) all 0-based.</summary>
     public List<(int StartRow, int StartCol, int EndRow, int EndCol)> MergedCells { get; }
+    /// <summary>
+    /// Excel row heights keyed by 0-based row index (in points).
+    /// Only rows with explicitly customized heights are included.
+    /// </summary>
+    public Dictionary<int, float> RowHeights { get; }
+    /// <summary>Default row height in points (typically 15).</summary>
+    public float DefaultRowHeight { get; }
 
     /// <summary>Converts Excel character-unit column width to PDF points.</summary>
     public static float CharUnitsToPoints(float charUnits)
@@ -1347,7 +1500,9 @@ internal sealed class ExcelSheet
         Dictionary<int, float>? columnWidths = null,
         float defaultColumnWidth = 8.43f,
         List<ExcelChartInfo>? charts = null,
-        List<(int, int, int, int)>? mergedCells = null)
+        List<(int, int, int, int)>? mergedCells = null,
+        Dictionary<int, float>? rowHeights = null,
+        float defaultRowHeight = 15f)
     {
         Name = name;
         Rows = rows;
@@ -1356,5 +1511,7 @@ internal sealed class ExcelSheet
         ColumnWidths = columnWidths ?? new Dictionary<int, float>();
         DefaultColumnWidth = defaultColumnWidth;
         MergedCells = mergedCells ?? new List<(int, int, int, int)>();
+        RowHeights = rowHeights ?? new Dictionary<int, float>();
+        DefaultRowHeight = defaultRowHeight;
     }
 }
