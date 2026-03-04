@@ -352,7 +352,7 @@ internal static class ExcelToPdfConverter
                             if (shouldClip && cellText.Length > fitChars)
                             {
                                 // Truncate to effective column width (matches LibreOffice clip)
-                                cellLines[i] = new[] { cellText[..fitChars] };
+                                cellLines[i] = new[] { cellText };
                             }
                             else if (!shouldClip && fitChars < cellText.Length && columns.Length == 1)
                             {
