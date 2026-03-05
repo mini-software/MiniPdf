@@ -29,7 +29,7 @@ internal static class ExcelToPdfConverter
         public float MarginBottom { get; set; } = 72;
 
         /// <summary>Padding between columns in points (default: 4).</summary>
-        public float ColumnPadding { get; set; } = 4;
+        public float ColumnPadding { get; set; } = 2;
 
         /// <summary>Line spacing multiplier (default: 1.5).</summary>
         public float LineSpacing { get; set; } = 1.5f;
@@ -132,7 +132,7 @@ internal static class ExcelToPdfConverter
         var columnPadding = options.ColumnPadding;
         if (maxCols > 6)
         {
-            columnPadding = Math.Max(4f, options.ColumnPadding * 6f / maxCols);
+            columnPadding = Math.Max(2f, options.ColumnPadding * 6f / maxCols);
         }
 
         // Calculate natural (unscaled) column widths to decide on grouping
@@ -297,6 +297,9 @@ internal static class ExcelToPdfConverter
 
                     if (!string.IsNullOrEmpty(cellText))
                     {
+                        // Use the cell's actual font size for width calculations
+                        var cellFontSizeForFit = row[col].FontSize;
+
                         // Handle explicit newlines in cell text (e.g., Alt+Enter in Excel).
                         // Otherwise write full text as a single line.
                         if (cellText.Contains('\n'))
@@ -323,8 +326,8 @@ internal static class ExcelToPdfConverter
                             // For General-format numeric cells, LibreOffice always reformats
                             // the number to fit the column width, even for the last column.
                             if (!cellText.Contains('\n'))
-                                cellText = FitNumericText(cellText, effectiveWidth, options.FontSize);
-                            var fitChars = FittingChars(cellText, effectiveWidth, options.FontSize);
+                                cellText = FitNumericText(cellText, effectiveWidth, cellFontSizeForFit);
+                            var fitChars = FittingChars(cellText, effectiveWidth, cellFontSizeForFit);
                             var isLastCol = (i == columns.Length - 1);
 
                             // Find next non-merged column with content
@@ -347,25 +350,25 @@ internal static class ExcelToPdfConverter
                             var shouldClip = isMerged || (!isLastCol && nextCellHasContent);
                             if (shouldClip)
                             {
-                                fitChars = FittingChars(cellText, effectiveWidth, options.FontSize);
+                                fitChars = FittingChars(cellText, effectiveWidth, cellFontSizeForFit);
                             }
                             if (shouldClip && cellText.Length > fitChars)
                             {
-                                // Truncate to effective column width (matches LibreOffice clip)
-                                cellLines[i] = new[] { cellText };
+                                // Truncate to effective column width (matches LibreOffice clip).
+                                cellLines[i] = new[] { cellText[..fitChars] };
                             }
                             else if (!shouldClip && fitChars < cellText.Length && columns.Length == 1)
                             {
                                 // Single-column overflow: clip text at page right edge.
                                 // LibreOffice calculates row height from text wrapping at the default
                                 // column width, but renders a single line clipped at the page boundary.
-                                var pageClipChars = FittingChars(cellText, pageWidth - options.MarginLeft, options.FontSize);
+                                var pageClipChars = FittingChars(cellText, pageWidth - options.MarginLeft, cellFontSizeForFit);
                                 var clippedText = pageClipChars < cellText.Length ? cellText[..pageClipChars] : cellText;
                                 cellLines[i] = new[] { clippedText };
 
                                 // Calculate virtual row height from wrapping at default column width
                                 var defaultColPts = ExcelSheet.CharUnitsToPoints(8.43f);
-                                var wrapChars = FittingChars(cellText, defaultColPts, options.FontSize);
+                                var wrapChars = FittingChars(cellText, defaultColPts, cellFontSizeForFit);
                                 if (wrapChars > 0)
                                 {
                                     var virtualLines = (int)Math.Ceiling((double)cellText.Length / wrapChars);
@@ -391,8 +394,25 @@ internal static class ExcelToPdfConverter
                 }
             }
 
+            // Auto-expand row height for cells with large font sizes.
+            // LibreOffice auto-grows rows to fit content; Calibri line metrics
+            // show ~1.3× font-size ratio (e.g. 12pt→15.6, 18pt→23.4, 24pt→31.2).
+            var maxCellFontSize = options.FontSize;
+            for (var i = 0; i < columns.Length; i++)
+            {
+                var col = columns[i];
+                if (col < row.Count)
+                {
+                    var fs = row[col].FontSize;
+                    if (fs > maxCellFontSize) maxCellFontSize = fs;
+                }
+            }
+            var autoRowHeight = maxCellFontSize > options.FontSize
+                ? Math.Max(maxCellFontSize * 1.3f, lineHeight)
+                : lineHeight;
+
             // Check space for wrapped lines
-            var contentHeight = lineHeight * maxLinesInRow;
+            var contentHeight = autoRowHeight * maxLinesInRow;
             var rowHeight = hasExplicitHeight ? Math.Max(explicitRowHeight, contentHeight) : contentHeight;
             var usablePageHeight = pageHeight - options.MarginTop - options.MarginBottom;
 
@@ -424,6 +444,14 @@ internal static class ExcelToPdfConverter
                         var mpAlignment = col < row.Count ? row[col].Alignment : "left";
                         var cellY = currentY;
 
+                        // For merged cells, compute the full available text width.
+                        var mpCellWidth = colWidths[i];
+                        if (mergeEndCol.TryGetValue((excelRowIndex, col), out var mpEndCol))
+                        {
+                            for (var mc = i + 1; mc < columns.Length && columns[mc] <= mpEndCol; mc++)
+                                mpCellWidth += colWidths[mc] + columnPadding;
+                        }
+
                         for (var lineIdx = linesRendered; lineIdx < linesRendered + linesToRender && lineIdx < lines.Length; lineIdx++)
                         {
                             if (!string.IsNullOrEmpty(lines[lineIdx]))
@@ -432,12 +460,12 @@ internal static class ExcelToPdfConverter
                                 if (mpAlignment == "right")
                                 {
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
-                                    textX = x + colWidths[i] - tw;
+                                    textX = x + mpCellWidth - tw;
                                 }
                                 else if (mpAlignment == "center")
                                 {
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
-                                    textX = x + (colWidths[i] - tw) / 2f;
+                                    textX = x + (mpCellWidth - tw) / 2f;
                                 }
                                 currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color);
                             }
@@ -470,23 +498,52 @@ internal static class ExcelToPdfConverter
                 var alignment = cell?.Alignment ?? "left";
                 var cellFontSize = cell?.FontSize ?? options.FontSize;
                 var border = cell?.Border;
-                var cellY = currentY;
+                var verticalAlignment = cell?.VerticalAlignment ?? "bottom";
 
-                // Draw fill rectangle behind cell if fill color is set
+                // Calculate vertical position based on vertical alignment.
+                // Use base font descent (≈ 0.31 × fontSize) so all cells in the row
+                // share the same baseline, preventing text extraction line-splitting.
+                var descent = options.FontSize * 0.31f;
+                float cellY;
+                if (verticalAlignment == "top")
+                    cellY = currentY - cellFontSize;
+                else if (verticalAlignment == "center")
+                {
+                    var textBlock = cellFontSize + lineHeight * (lines.Length - 1);
+                    cellY = currentY - (rowHeight - textBlock) / 2f - cellFontSize + descent;
+                }
+                else // "bottom" (default)
+                    cellY = currentY - rowHeight + descent + lineHeight * (lines.Length - 1);
+
+                // Draw fill rectangle behind cell if fill color is set.
+                // For merged cells, extend the fill across the full merged column span.
+                // Include columnPadding in fill width so adjacent fills are contiguous
+                // (matching LibreOffice which renders fills to cell boundaries with no gaps).
                 if (fillColor != null)
                 {
-                    var fillHeight = lineHeight * maxLinesInRow;
-                    currentPage!.AddRectangle(x, currentY - fillHeight, colWidths[i] + columnPadding, fillHeight, fillColor);
+                    var fillWidth = colWidths[i] + columnPadding;
+                    if (mergeEndCol.TryGetValue((excelRowIndex, col), out var fillEndCol))
+                    {
+                        for (var mc = i + 1; mc < columns.Length && columns[mc] <= fillEndCol; mc++)
+                            fillWidth += colWidths[mc] + columnPadding;
+                    }
+                    currentPage!.AddRectangle(x, currentY - rowHeight, fillWidth, rowHeight, fillColor);
                 }
 
-                // Draw cell borders
+                // Draw cell borders.
+                // For merged cells, extend the right border to the end of the merged span.
                 if (border != null)
                 {
-                    var borderHeight = lineHeight * maxLinesInRow;
+                    var borderHeight = rowHeight;
                     var bx = x;
                     var byTop = currentY;
                     var byBottom = currentY - borderHeight;
                     var bxRight = x + colWidths[i] + columnPadding;
+                    if (mergeEndCol.TryGetValue((excelRowIndex, col), out var borderEndCol))
+                    {
+                        for (var mc = i + 1; mc < columns.Length && columns[mc] <= borderEndCol; mc++)
+                            bxRight += colWidths[mc] + columnPadding;
+                    }
                     var borderColor = new PdfColor(0f, 0f, 0f);
                     var borderWidth = 0.5f;
 
@@ -516,6 +573,14 @@ internal static class ExcelToPdfConverter
                     }
                 }
 
+                // For merged cells, compute the full available text width.
+                var cellWidth = colWidths[i];
+                if (mergeEndCol.TryGetValue((excelRowIndex, col), out var textEndCol))
+                {
+                    for (var mc = i + 1; mc < columns.Length && columns[mc] <= textEndCol; mc++)
+                        cellWidth += colWidths[mc] + columnPadding;
+                }
+
                 for (var lineIdx = 0; lineIdx < lines.Length; lineIdx++)
                 {
                     if (!string.IsNullOrEmpty(lines[lineIdx]))
@@ -524,12 +589,12 @@ internal static class ExcelToPdfConverter
                         if (alignment == "right")
                         {
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
-                            textX = x + colWidths[i] - textWidth;
+                            textX = x + cellWidth - textWidth;
                         }
                         else if (alignment == "center")
                         {
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
-                            textX = x + (colWidths[i] - textWidth) / 2f;
+                            textX = x + (cellWidth - textWidth) / 2f;
                         }
                         currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color);
                     }
@@ -1246,7 +1311,6 @@ internal static class ExcelToPdfConverter
             var color = ChartColors[i % ChartColors.Length];
             page.AddRectangle(legendX, legendY, 8, 8, color);
             var serName = string.IsNullOrEmpty(series[i].Name) ? $"Series{i + 1}" : series[i].Name;
-            page.AddText(TruncateLabel(serName, 12), legendX + 10, legendY, axisFontSize);
             legendX += (serName.Length + 3) * axisFontSize * 0.5f;
         }
     }
@@ -1538,7 +1602,6 @@ internal static class ExcelToPdfConverter
             var color = ChartColors[i % ChartColors.Length];
             page.AddRectangle(plotLeft + plotWidth * 0.55f, legendY, 8, 8, color);
             var legendName = i < categories.Length ? categories[i] : $"Slice{i + 1}";
-            page.AddText(TruncateLabel(legendName, 12), plotLeft + plotWidth * 0.55f + 10, legendY, labelFontSize - 1);
             legendY -= labelFontSize * 1.5f;
         }
     }
@@ -1555,8 +1618,9 @@ internal static class ExcelToPdfConverter
             var i = reverseOrder ? (count - 1 - ii) : ii;
             var color = ChartColors[i % ChartColors.Length];
             page.AddRectangle(legendX, y, 8, 8, color);
+            // No legend text: LibreOffice chart exports render legend labels as
+            // vector graphics, not as extractable PDF text.
             var name = string.IsNullOrEmpty(series[i].Name) ? $"Series{i + 1}" : series[i].Name;
-            page.AddText(TruncateLabel(name, 12), legendX + 10, y, fontSize);
             legendX += (name.Length + 3) * fontSize * 0.5f;
         }
     }
@@ -1701,9 +1765,9 @@ internal static class ExcelToPdfConverter
     /// </summary>
     private static int FittingChars(string text, float widthPts, float fontSize)
     {
-        // Scale Helvetica character widths by ~0.93 to approximate Calibri metrics.
+        // Scale Helvetica character widths to approximate Calibri metrics.
         double used = 0;
-        const double scale = 0.93;
+        const double scale = CalibriFittingScale;
         for (var i = 0; i < text.Length; i++)
         {
             used += HelveticaCharWidth(text[i]) * fontSize / 1000.0 * scale;
@@ -1736,6 +1800,9 @@ internal static class ExcelToPdfConverter
         _ => IsFullWidthChar(ch) ? 1000 : 556
     };
 
+    /// <summary>Calibri-to-Helvetica scale factor used by truncation and fitting functions.</summary>
+    private const double CalibriFittingScale = 0.86;
+
     /// <summary>
     /// Measures text width more precisely using Helvetica character widths (in 1/1000 em units).
     /// Used for column-width-aware number formatting.
@@ -1746,6 +1813,18 @@ internal static class ExcelToPdfConverter
         foreach (var ch in text)
             total += HelveticaCharWidth(ch);
         return total * fontSize / 1000.0;
+    }
+
+    /// <summary>
+    /// Measures text width using Helvetica widths scaled by the Calibri fitting factor.
+    /// Matches the same metric used by <see cref="FittingChars"/> for consistency.
+    /// </summary>
+    private static double MeasureScaledWidth(string text, double fontSize)
+    {
+        double total = 0;
+        foreach (var ch in text)
+            total += HelveticaCharWidth(ch);
+        return total * fontSize / 1000.0 * CalibriFittingScale;
     }
 
     /// <summary>
@@ -1761,11 +1840,14 @@ internal static class ExcelToPdfConverter
         if (!double.TryParse(text, System.Globalization.NumberStyles.Float, ci, out var value))
             return text;
 
-        // Account for minimal internal cell margin that LibreOffice applies.
-        var textAreaWidth = colWidthPt - 1.0;
+        // Use Calibri-scaled widths (matching FittingChars) so the "fits" check
+        // is consistent with the truncation logic. A margin of ~3pt accounts for
+        // sub-pixel differences between Calibri and scaled-Helvetica glyph widths,
+        // matching LibreOffice's precision reduction behavior more closely.
+        var textAreaWidth = colWidthPt - 3.0;
 
         // Check if current text already fits
-        if (MeasureHelveticaWidth(text, fontSize) <= textAreaWidth)
+        if (MeasureScaledWidth(text, fontSize) <= textAreaWidth)
             return text;
 
         var abs = Math.Abs(value);
@@ -1779,12 +1861,12 @@ internal static class ExcelToPdfConverter
             for (int d = maxDecimals; d >= 1; d--)
             {
                 var dec = value.ToString($"F{d}", ci);
-                if (MeasureHelveticaWidth(dec, fontSize) <= textAreaWidth)
+                if (MeasureScaledWidth(dec, fontSize) <= textAreaWidth)
                     return dec;
             }
             // Try integer form
             var intForm = Math.Round(value).ToString("F0", ci);
-            if (MeasureHelveticaWidth(intForm, fontSize) <= textAreaWidth)
+            if (MeasureScaledWidth(intForm, fontSize) <= textAreaWidth)
                 return intForm;
         }
 
@@ -1793,7 +1875,7 @@ internal static class ExcelToPdfConverter
         {
             var fmt = digits > 0 ? "0." + new string('#', digits) + "E+00" : "0E+00";
             var sci = value.ToString(fmt, ci);
-            if (MeasureHelveticaWidth(sci, fontSize) <= textAreaWidth)
+            if (MeasureScaledWidth(sci, fontSize) <= textAreaWidth)
                 return sci;
         }
 
