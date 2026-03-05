@@ -38,7 +38,16 @@ internal sealed class PdfTextBlock
     /// </summary>
     public (float X, float Y, float Width, float Height)? ClipRect { get; }
 
-    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null)
+    /// <summary>
+    /// Optional maximum rendering width in points. When the natural Helvetica
+    /// width of the text exceeds this value, horizontal scaling (Tz) is applied
+    /// so the text fits within the specified width. This keeps all characters
+    /// intact for text extraction while preventing visual overflow into
+    /// adjacent columns.
+    /// </summary>
+    public float? MaxWidth { get; }
+
+    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null)
     {
         Text = text;
         X = x;
@@ -46,5 +55,6 @@ internal sealed class PdfTextBlock
         FontSize = fontSize;
         Color = color ?? PdfColor.Black;
         ClipRect = clipRect;
+        MaxWidth = maxWidth;
     }
 }

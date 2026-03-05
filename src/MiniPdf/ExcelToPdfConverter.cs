@@ -17,19 +17,19 @@ internal static class ExcelToPdfConverter
         public float FontSize { get; set; } = 11;
 
         /// <summary>Page left margin in points (default: 50).</summary>
-        public float MarginLeft { get; set; } = 50;
+        public float MarginLeft { get; set; } = 54;
 
         /// <summary>Page top margin in points (default: 72 = 1 inch).</summary>
         public float MarginTop { get; set; } = 72;
 
         /// <summary>Page right margin in points (default: 50).</summary>
-        public float MarginRight { get; set; } = 50;
+        public float MarginRight { get; set; } = 54;
 
         /// <summary>Page bottom margin in points (default: 72 = 1 inch).</summary>
         public float MarginBottom { get; set; } = 72;
 
-        /// <summary>Padding between columns in points (default: 4).</summary>
-        public float ColumnPadding { get; set; } = 2;
+        /// <summary>Padding between columns in points (default: 3).</summary>
+        public float ColumnPadding { get; set; } = 3;
 
         /// <summary>Line spacing multiplier (default: 1.5).</summary>
         public float LineSpacing { get; set; } = 1.5f;
@@ -287,6 +287,7 @@ internal static class ExcelToPdfConverter
             var maxLinesInRow = 1;
             var virtualRowExtraLines = 0; // extra lines from virtual wrapping (text overflows page width)
             var cellLines = new string[columns.Length][];
+            var cellClipWidth = new float?[columns.Length]; // maxWidth for cells that need horizontal scaling
 
             for (var i = 0; i < columns.Length; i++)
             {
@@ -351,6 +352,10 @@ internal static class ExcelToPdfConverter
                             if (shouldClip)
                             {
                                 fitChars = FittingChars(cellText, effectiveWidth, cellFontSizeForFit);
+                                // Track column width for horizontal scaling: when the
+                                // Calibri-fitted text overflows in Helvetica, the PDF Tz
+                                // operator will compress it to fit (preserving all chars).
+                                cellClipWidth[i] = effectiveWidth;
                             }
                             if (shouldClip && cellText.Length > fitChars)
                             {
@@ -517,11 +522,9 @@ internal static class ExcelToPdfConverter
 
                 // Draw fill rectangle behind cell if fill color is set.
                 // For merged cells, extend the fill across the full merged column span.
-                // Include columnPadding in fill width so adjacent fills are contiguous
-                // (matching LibreOffice which renders fills to cell boundaries with no gaps).
                 if (fillColor != null)
                 {
-                    var fillWidth = colWidths[i] + columnPadding;
+                    var fillWidth = colWidths[i];
                     if (mergeEndCol.TryGetValue((excelRowIndex, col), out var fillEndCol))
                     {
                         for (var mc = i + 1; mc < columns.Length && columns[mc] <= fillEndCol; mc++)
@@ -596,7 +599,7 @@ internal static class ExcelToPdfConverter
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
                             textX = x + (cellWidth - textWidth) / 2f;
                         }
-                        currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color);
+                        currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color, maxWidth: cellClipWidth[i]);
                     }
                     cellY -= lineHeight;
                 }
