@@ -1,9 +1,10 @@
 """
-Generate 120 classic .xlsx files for testing Excel-to-PDF conversion.
+Generate 180 classic .xlsx files for testing Excel-to-PDF conversion.
 Each file corresponds to a test case in ClassicExcelToPdfTests.cs.
 
 Cases 61-90 include embedded images to exercise MiniPdf image rendering.
 Cases 91-120 include openpyxl chart objects (bar, line, pie, area, etc.).
+Cases 151-180 include multilingual text, special marks, and emoji.
 
 Usage:
     pip install openpyxl pillow
@@ -3548,10 +3549,672 @@ def classic150_kitchen_sink_styles():
     save(wb, "classic150_kitchen_sink_styles.xlsx")
 
 
+# ── 151. Multilingual greetings — broad script coverage ─────────────────
+def classic151_multilingual_greetings():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Greetings"
+    ws.column_dimensions["A"].width = 18
+    ws.column_dimensions["B"].width = 28
+    ws.column_dimensions["C"].width = 28
+    ws.append(["Language", "Hello", "Thank you"])
+    ws.append(["English", "Hello", "Thank you"])
+    ws.append(["Chinese", "你好", "谢谢"])
+    ws.append(["Japanese", "こんにちは", "ありがとう"])
+    ws.append(["Korean", "안녕하세요", "감사합니다"])
+    ws.append(["Thai", "สวัสดี", "ขอบคุณ"])
+    ws.append(["Hindi", "नमस्ते", "धन्यवाद"])
+    ws.append(["Arabic", "مرحبا", "شكرا"])
+    ws.append(["Hebrew", "שלום", "תודה"])
+    ws.append(["Greek", "Γεια σου", "Ευχαριστώ"])
+    ws.append(["Russian", "Привет", "Спасибо"])
+    ws.append(["Vietnamese", "Xin chào", "Cảm ơn"])
+    ws.append(["Turkish", "Merhaba", "Teşekkürler"])
+    save(wb, "classic151_multilingual_greetings.xlsx")
+
+
+# ── 152. Emoji sampler — common categories ──────────────────────────────
+def classic152_emoji_sampler():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Emoji"
+    ws.column_dimensions["A"].width = 18
+    ws.column_dimensions["B"].width = 40
+    ws.append(["Category", "Emoji"])
+    ws.append(["Faces", "😀😃😄😁😆"])
+    ws.append(["Hearts", "❤️🧡💛💚💙"])
+    ws.append(["Animals", "🐶🐱🐭🐹🐰"])
+    ws.append(["Food", "🍎🍐🍊🍋🍌"])
+    ws.append(["Travel", "✈️🚗🚌🚂🚀"])
+    ws.append(["Sports", "⚽🏀🏈⚾🎾"])
+    ws.append(["Symbols", "✅❌⚠️🔴🟢"])
+    ws.append(["Hands", "👍👎👏🤝✌️"])
+    save(wb, "classic152_emoji_sampler.xlsx")
+
+
+# ── 153. Currency symbols around the world ──────────────────────────────
+def classic153_currency_symbols():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Currencies"
+    ws.column_dimensions["A"].width = 18
+    ws.column_dimensions["B"].width = 10
+    ws.column_dimensions["C"].width = 16
+    ws.append(["Currency", "Symbol", "Example"])
+    data = [
+        ("US Dollar", "$", "$1,234.56"),
+        ("Euro", "€", "€1.234,56"),
+        ("British Pound", "£", "£1,234.56"),
+        ("Japanese Yen", "¥", "¥123,456"),
+        ("Chinese Yuan", "¥", "¥1,234.56"),
+        ("Korean Won", "₩", "₩1,234,560"),
+        ("Indian Rupee", "₹", "₹1,23,456"),
+        ("Thai Baht", "฿", "฿1,234.56"),
+        ("Russian Ruble", "₽", "₽1 234,56"),
+        ("Turkish Lira", "₺", "₺1.234,56"),
+        ("Bitcoin", "₿", "₿0.05"),
+        ("Swiss Franc", "CHF", "CHF 1'234.56"),
+    ]
+    for row in data:
+        ws.append(list(row))
+    save(wb, "classic153_currency_symbols.xlsx")
+
+
+# ── 154. Mathematical symbols and formulas ──────────────────────────────
+def classic154_math_symbols():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Math"
+    ws.column_dimensions["A"].width = 25
+    ws.column_dimensions["B"].width = 40
+    ws.append(["Category", "Symbols"])
+    ws.append(["Operators", "± × ÷ ≠ ≤ ≥ ≈ ∝ ∓"])
+    ws.append(["Greek Letters", "α β γ δ ε ζ η θ ι κ λ μ"])
+    ws.append(["Set Theory", "∈ ∉ ⊂ ⊃ ∪ ∩ ∅ ℵ"])
+    ws.append(["Logic", "∀ ∃ ¬ ∧ ∨ ⊕ ⟹ ⟺"])
+    ws.append(["Calculus", "∫ ∬ ∮ ∂ ∇ ∑ ∏ √"])
+    ws.append(["Arrows", "→ ← ↑ ↓ ↔ ⇒ ⇐ ⇔"])
+    ws.append(["Misc", "∞ ℏ ℝ ℤ ℚ ℕ ℂ"])
+    ws.append(["Superscripts", "x² y³ aⁿ eⁱ"])
+    ws.append(["Subscripts", "H₂O CO₂ xₙ aᵢ"])
+    save(wb, "classic154_math_symbols.xlsx")
+
+
+# ── 155. Diacritical marks — Latin script with accents ──────────────────
+def classic155_diacritical_marks():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Diacritics"
+    ws.column_dimensions["A"].width = 18
+    ws.column_dimensions["B"].width = 35
+    ws.append(["Type", "Examples"])
+    ws.append(["Acute", "á é í ó ú ý ś ź ć ń"])
+    ws.append(["Grave", "à è ì ò ù ỳ"])
+    ws.append(["Circumflex", "â ê î ô û ŵ ŷ ĉ"])
+    ws.append(["Umlaut", "ä ë ï ö ü ÿ"])
+    ws.append(["Tilde", "ã ñ õ ũ ĩ"])
+    ws.append(["Cedilla", "ç ş ţ ḑ ȩ"])
+    ws.append(["Ring", "å ů"])
+    ws.append(["Caron", "č š ž ř ň ě ď ť"])
+    ws.append(["Stroke", "ø đ ħ ł ŧ"])
+    ws.append(["Ligatures", "æ œ ß ĳ"])
+    save(wb, "classic155_diacritical_marks.xlsx")
+
+
+# ── 156. RTL and BiDi text — Arabic and Hebrew paragraphs ───────────────
+def classic156_rtl_bidi_text():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "RTL"
+    ws.column_dimensions["A"].width = 14
+    ws.column_dimensions["B"].width = 45
+    ws.append(["Script", "Text"])
+    ws.append(["Arabic", "مرحبا بالعالم"])
+    ws.append(["Hebrew", "שלום עולם"])
+    ws.append(["Persian", "سلام دنیا"])
+    ws.append(["Urdu", "ہیلو دنیا"])
+    save(wb, "classic156_rtl_bidi_text.xlsx")
+
+
+# ── 157. CJK extended — Traditional Chinese, rare kanji ─────────────────
+def classic157_cjk_extended():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "CJK"
+    ws.column_dimensions["A"].width = 16
+    ws.column_dimensions["B"].width = 35
+    ws.column_dimensions["C"].width = 35
+    ws.append(["Variant", "Text", "Notes"])
+    ws.append(["Simplified CN", "简体中文测试字符串", "Mainland China"])
+    ws.append(["Traditional CN", "繁體中文測試字串", "Taiwan / HK"])
+    ws.append(["Japanese mixed", "漢字とひらがなとカタカナ", "Kanji + Hiragana + Katakana"])
+    ws.append(["Korean mixed", "한글과 漢字 혼용 텍스트", "Hangul + Hanja"])
+    ws.append(["Rare CJK", "𠀀𠀁𠀂𠀃𠀄", "CJK Ext-B (SMP)"])
+    ws.append(["Full-width", "ＡＢＣＤ１２３４", "Full-width alphanumeric"])
+    ws.append(["Half-width kana", "ｱｲｳｴｵ ｶｷｸｹｺ", "Half-width katakana"])
+    save(wb, "classic157_cjk_extended.xlsx")
+
+
+# ── 158. Emoji skin tone variants ───────────────────────────────────────
+def classic158_emoji_skin_tones():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "SkinTones"
+    ws.column_dimensions["A"].width = 16
+    ws.column_dimensions["B"].width = 35
+    ws.append(["Gesture", "Skin Tones (light → dark)"])
+    ws.append(["Thumbs up", "👍🏻👍🏼👍🏽👍🏾👍🏿"])
+    ws.append(["Waving", "👋🏻👋🏼👋🏽👋🏾👋🏿"])
+    ws.append(["Clapping", "👏🏻👏🏼👏🏽👏🏾👏🏿"])
+    ws.append(["Raised fist", "✊🏻✊🏼✊🏽✊🏾✊🏿"])
+    ws.append(["Person", "🧑🏻🧑🏼🧑🏽🧑🏾🧑🏿"])
+    save(wb, "classic158_emoji_skin_tones.xlsx")
+
+
+# ── 159. ZWJ emoji sequences — compound emoji ──────────────────────────
+def classic159_zwj_emoji():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "ZWJ"
+    ws.column_dimensions["A"].width = 22
+    ws.column_dimensions["B"].width = 12
+    ws.append(["Description", "Emoji"])
+    ws.append(["Family", "👨‍👩‍👧‍👦"])
+    ws.append(["Couple with heart", "👩‍❤️‍👨"])
+    ws.append(["Woman technologist", "👩‍💻"])
+    ws.append(["Man cook", "👨‍🍳"])
+    ws.append(["Rainbow flag", "🏳️‍🌈"])
+    ws.append(["Trans flag", "🏳️‍⚧️"])
+    ws.append(["Firefighter", "🧑‍🚒"])
+    ws.append(["Health worker", "🧑‍⚕️"])
+    ws.append(["Service dog", "🐕‍🦺"])
+    save(wb, "classic159_zwj_emoji.xlsx")
+
+
+# ── 160. Punctuation marks from various scripts ─────────────────────────
+def classic160_punctuation_marks():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Punctuation"
+    ws.column_dimensions["A"].width = 22
+    ws.column_dimensions["B"].width = 40
+    ws.append(["Type", "Characters"])
+    ws.append(["Latin", ". , ; : ! ? … — – ' ' " " « »"])
+    ws.append(["CJK", "。、；：！？「」『』【】（）"])
+    ws.append(["Arabic", "، ؛ ؟ ٪ ﷽"])
+    ws.append(["Devanagari", "। ॥ ꣸ ꣹ ꣺"])
+    ws.append(["Thai", "ฯ ๆ ๏ ๚ ๛"])
+    ws.append(["Misc brackets", "⟨⟩ ⟪⟫ ⌈⌉ ⌊⌋ ‖"])
+    ws.append(["Typographic", "† ‡ § ¶ © ® ™ ℠"])
+    save(wb, "classic160_punctuation_marks.xlsx")
+
+
+# ── 161. Box drawing and block characters ───────────────────────────────
+def classic161_box_drawing():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "BoxDraw"
+    mono = Font(name="Consolas", size=11)
+    ws.column_dimensions["A"].width = 18
+    ws.column_dimensions["B"].width = 40
+    ws.append(["Type", "Characters"])
+    rows = [
+        ("Light box", "┌──┬──┐│  │  │├──┼──┤└──┴──┘"),
+        ("Heavy box", "┏━━┳━━┓┃  ┃  ┃┣━━╋━━┫┗━━┻━━┛"),
+        ("Double box", "╔══╦══╗║  ║  ║╠══╬══╣╚══╩══╝"),
+        ("Blocks", "▀▁▂▃▄▅▆▇█ ░▒▓"),
+        ("Geometric", "■□▪▫▲△▼▽◆◇○●◎"),
+        ("Braille", "⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊"),
+    ]
+    for label, chars in rows:
+        r = ws.append([label, chars])
+    for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):
+        for cell in row:
+            cell.font = mono
+    save(wb, "classic161_box_drawing.xlsx")
+
+
+# ── 162. Mixed CJK + emoji styled table ─────────────────────────────────
+def classic162_cjk_emoji_styled():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Menu"
+    ws.column_dimensions["A"].width = 8
+    ws.column_dimensions["B"].width = 18
+    ws.column_dimensions["C"].width = 12
+    ws.column_dimensions["D"].width = 10
+    header_font = Font(bold=True, size=12, color="FFFFFF")
+    header_fill = PatternFill("solid", fgColor="D35400")
+    headers = ["Icon", "Dish", "Price", "Rating"]
+    for col, h in enumerate(headers, start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = header_font
+        c.fill = header_fill
+    data = [
+        ("🍣", "寿司", "¥1,200", "★★★★★"),
+        ("🍜", "ラーメン", "¥850", "★★★★"),
+        ("🍱", "弁当", "¥1,500", "★★★★★"),
+        ("🍙", "おにぎり", "¥400", "★★★"),
+    ]
+    for r, row_data in enumerate(data, start=2):
+        for col, val in enumerate(row_data, start=1):
+            ws.cell(row=r, column=col, value=val)
+    save(wb, "classic162_cjk_emoji_styled.xlsx")
+
+
+# ── 163. Cyrillic alphabets — Russian, Ukrainian, Serbian ───────────────
+def classic163_cyrillic_alphabets():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Cyrillic"
+    ws.column_dimensions["A"].width = 16
+    ws.column_dimensions["B"].width = 45
+    ws.append(["Language", "Sample Text"])
+    ws.append(["Russian", "Съешь ещё этих мягких французских булок, да выпей чаю."])
+    ws.append(["Ukrainian", "Жебракують філософи при ґанку церкви в Гадячі."])
+    ws.append(["Serbian", "Ђурађ Бранковић је био владар Србије."])
+    ws.append(["Bulgarian", "Щъркел яде бялата жаба."])
+    ws.append(["Mongolian", "Би монгол хэл дээр бичиж байна."])
+    save(wb, "classic163_cyrillic_alphabets.xlsx")
+
+
+# ── 164. Indic scripts — Devanagari, Tamil, Bengali, Telugu ─────────────
+def classic164_indic_scripts():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Indic"
+    ws.column_dimensions["A"].width = 16
+    ws.column_dimensions["B"].width = 40
+    ws.append(["Script", "Sample"])
+    ws.append(["Devanagari", "नमस्ते"])
+    ws.append(["Tamil", "வணக்கம்"])
+    ws.append(["Bengali", "নমস্কার"])
+    ws.append(["Telugu", "నమస్కారం"])
+    ws.append(["Gujarati", "નમસ્તે"])
+    save(wb, "classic164_indic_scripts.xlsx")
+
+
+# ── 165. Southeast Asian scripts — Thai, Lao, Myanmar, Khmer ────────────
+def classic165_southeast_asian():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "SEAsia"
+    ws.column_dimensions["A"].width = 14
+    ws.column_dimensions["B"].width = 45
+    ws.append(["Script", "Sample"])
+    ws.append(["Thai", "ภาษาไทยเป็นภาษาที่มีวรรณยุกต์"])
+    ws.append(["Lao", "ພາສາລາວເປັນພາສາທີ່ສວຍງາມ"])
+    ws.append(["Myanmar", "မြန်မာဘာသာစကားသည် လှပသည်"])
+    ws.append(["Khmer", "ភាសាខ្មែរជាភាសាចំណាស់"])
+    ws.append(["Tibetan", "བོད་ཀྱི་སྐད་ཡིག་ནི་གལ་ཆེན་པོ་ཡིན།"])
+    save(wb, "classic165_southeast_asian.xlsx")
+
+
+# ── 166. Emoji progress bars and status indicators ──────────────────────
+def classic166_emoji_progress():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Progress"
+    ws.column_dimensions["A"].width = 18
+    ws.column_dimensions["B"].width = 10
+    ws.column_dimensions["C"].width = 30
+    ws.append(["Task", "Status", "Progress"])
+    ws.append(["Design", "✅", "🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩 100%"])
+    ws.append(["Frontend", "🔄", "🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜ 70%"])
+    ws.append(["Backend", "🔄", "🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜ 50%"])
+    ws.append(["Testing", "⏳", "🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜ 20%"])
+    ws.append(["Deploy", "❌", "⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%"])
+    ws.append(["Docs", "🔄", "🟩🟩🟩🟩🟩🟩🟩🟩⬜⬜ 80%"])
+    save(wb, "classic166_emoji_progress.xlsx")
+
+
+# ── 167. Musical notation and special Unicode symbols ───────────────────
+def classic167_musical_symbols():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Symbols"
+    ws.column_dimensions["A"].width = 22
+    ws.column_dimensions["B"].width = 40
+    ws.append(["Category", "Symbols"])
+    ws.append(["Music", "♩ ♪ ♫ ♬ 🎵 🎶"])
+    ws.append(["Chess", "♔♕♖♗♘♙"])
+    ws.append(["Zodiac", "♈♉♊♋♌♍♎♏♐♑♒♓"])
+    ws.append(["Dice", "⚀ ⚁ ⚂ ⚃ ⚄ ⚅"])
+    ws.append(["Weather", "☀ ☁ ☂ ☃ ❄ ☔"])
+    save(wb, "classic167_musical_symbols.xlsx")
+
+
+# ── 168. Mixed LTR/RTL in styled table ─────────────────────────────────
+def classic168_mixed_ltr_rtl_styled():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "BiDi Table"
+    ws.column_dimensions["A"].width = 14
+    ws.column_dimensions["B"].width = 30
+    ws.column_dimensions["C"].width = 14
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill("solid", fgColor="2E86C1")
+    thin = Side(style="thin", color="888888")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    for col, h in enumerate(["Code", "Name", "Price"], start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = header_font
+        c.fill = header_fill
+        c.border = border
+    data = [
+        ("EN-001", "Programming Book", "$29.99"),
+        ("FR-002", "Livre de code", "€25.00"),
+        ("AR-003", "كتاب برمجة", "50 SAR"),
+        ("HE-004", "ספר קוד", "₪120"),
+    ]
+    for r, row_data in enumerate(data, start=2):
+        for col, val in enumerate(row_data, start=1):
+            c = ws.cell(row=r, column=col, value=val)
+            c.border = border
+    save(wb, "classic168_mixed_ltr_rtl_styled.xlsx")
+
+
+# ── 169. Korean full document — invoice style ──────────────────────────
+def classic169_korean_invoice():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "거래명세서"
+    ws.column_dimensions["A"].width = 8
+    ws.column_dimensions["B"].width = 22
+    ws.column_dimensions["C"].width = 12
+    ws.column_dimensions["D"].width = 12
+    ws.column_dimensions["E"].width = 14
+    header = Font(bold=True, size=14)
+    ws.merge_cells("A1:E1")
+    c = ws["A1"]
+    c.value = "거래명세서 (Transaction Statement)"
+    c.font = header
+    c.alignment = Alignment(horizontal="center")
+    ws.append([])
+    ws.append(["번호", "상품명", "수량", "단가", "금액"])
+    for col in range(1, 6):
+        ws.cell(row=3, column=col).font = Font(bold=True)
+    data = [
+        (1, "노트북 컴퓨터", 2, "₩1,200,000", "₩2,400,000"),
+        (2, "무선 마우스", 5, "₩25,000", "₩125,000"),
+        (3, "모니터 27인치", 2, "₩350,000", "₩700,000"),
+        (4, "키보드 (기계식)", 3, "₩89,000", "₩267,000"),
+        (5, "USB 허브", 10, "₩15,000", "₩150,000"),
+    ]
+    for row_data in data:
+        ws.append(list(row_data))
+    ws.append([])
+    ws.append(["", "", "", "합계", "₩3,642,000"])
+    ws.cell(row=ws.max_row, column=4).font = Font(bold=True)
+    ws.cell(row=ws.max_row, column=5).font = Font(bold=True)
+    save(wb, "classic169_korean_invoice.xlsx")
+
+
+# ── 170. Emoji + colored backgrounds — dashboard KPIs ──────────────────
+def classic170_emoji_dashboard():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Dashboard"
+    ws.column_dimensions["A"].width = 8
+    ws.column_dimensions["B"].width = 20
+    ws.column_dimensions["C"].width = 14
+    ws.column_dimensions["D"].width = 14
+    green = PatternFill("solid", fgColor="27AE60")
+    yellow = PatternFill("solid", fgColor="F1C40F")
+    red = PatternFill("solid", fgColor="E74C3C")
+    white_font = Font(bold=True, color="FFFFFF")
+    ws.append(["", "Metric", "Value", "Target"])
+    kpis = [
+        ("🟢", "Revenue", "$1.2M", "$1.0M", green),
+        ("🟡", "Pipeline", "$800K", "$900K", yellow),
+        ("🔴", "Churn Rate", "5.2%", "3.0%", red),
+        ("🟢", "NPS Score", "72", "65", green),
+        ("🟡", "Response Time", "2.1s", "1.5s", yellow),
+        ("🟢", "Uptime", "99.95%", "99.9%", green),
+    ]
+    for r, (icon, metric, val, target, fill) in enumerate(kpis, start=2):
+        ws.cell(row=r, column=1, value=icon)
+        c_metric = ws.cell(row=r, column=2, value=metric)
+        c_val = ws.cell(row=r, column=3, value=val)
+        c_val.fill = fill
+        c_val.font = white_font
+        ws.cell(row=r, column=4, value=target)
+    save(wb, "classic170_emoji_dashboard.xlsx")
+
+
+# ── 171. IPA phonetic alphabet ──────────────────────────────────────────
+def classic171_ipa_phonetic():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "IPA"
+    ws.column_dimensions["A"].width = 18
+    ws.column_dimensions["B"].width = 40
+    ws.append(["Category", "IPA Symbols"])
+    ws.append(["Plosives", "p b t d ʈ ɖ c ɟ k ɡ q ɢ ʔ"])
+    ws.append(["Nasals", "m ɱ n ɳ ɲ ŋ ɴ"])
+    ws.append(["Fricatives", "ɸ β f v θ ð s z ʃ ʒ ʂ ʐ ç ʝ x ɣ"])
+    ws.append(["Vowels", "i y ɨ ʉ ɯ u e ø ɘ ɵ ɤ o ɛ œ ɜ ɞ ʌ ɔ æ a ɶ ɑ ɒ"])
+    ws.append(["Tones", "˥ ˦ ˧ ˨ ˩ ˥˩ ˩˥"])
+    ws.append(["Diacritics", "ʰ ʷ ʲ ˠ ˤ ⁿ ˡ"])
+    ws.append(["Example word", "/ˌɪntəˈnæʃənəl/ (international)"])
+    save(wb, "classic171_ipa_phonetic.xlsx")
+
+
+# ── 172. Emoji timeline — project milestones ────────────────────────────
+def classic172_emoji_timeline():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Timeline"
+    ws.column_dimensions["A"].width = 14
+    ws.column_dimensions["B"].width = 6
+    ws.column_dimensions["C"].width = 25
+    ws.column_dimensions["D"].width = 10
+    ws.append(["Date", "Icon", "Milestone", "Status"])
+    data = [
+        ("2025-01-15", "💡", "Idea conceived", "✅"),
+        ("2025-02-01", "📋", "Requirements gathered", "✅"),
+        ("2025-03-10", "🎨", "Design completed", "✅"),
+        ("2025-04-20", "🔨", "Development started", "✅"),
+        ("2025-06-15", "🧪", "Testing phase", "🔄"),
+        ("2025-07-01", "🐛", "Bug fixing", "🔄"),
+        ("2025-08-01", "🚀", "Launch day", "⏳"),
+        ("2025-09-01", "📊", "Post-launch review", "⏳"),
+    ]
+    for row in data:
+        ws.append(list(row))
+    save(wb, "classic172_emoji_timeline.xlsx")
+
+
+# ── 173. African language sampler ───────────────────────────────────────
+def classic173_african_languages():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "African"
+    ws.column_dimensions["A"].width = 16
+    ws.column_dimensions["B"].width = 35
+    ws.column_dimensions["C"].width = 22
+    ws.append(["Language", "Greeting", "Region"])
+    ws.append(["Swahili", "Habari! Karibu sana.", "East Africa"])
+    ws.append(["Amharic", "ሰላም! እንኳን ደህና መጣህ.", "Ethiopia"])
+    ws.append(["Yoruba", "Ẹ kú àárọ̀! Ẹ kú alẹ́!", "Nigeria"])
+    ws.append(["Zulu", "Sawubona! Unjani?", "South Africa"])
+    ws.append(["Hausa", "Sannu! Barka da zuwa.", "West Africa"])
+    ws.append(["Igbo", "Nnọọ! Kedụ?", "Nigeria"])
+    ws.append(["Tigrinya", "ሰላም! ከመይ ኣለኻ?", "Eritrea"])
+    save(wb, "classic173_african_languages.xlsx")
+
+
+# ── 174. Technical symbols and unit notations ───────────────────────────
+def classic174_technical_symbols():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Technical"
+    ws.column_dimensions["A"].width = 20
+    ws.column_dimensions["B"].width = 40
+    ws.append(["Category", "Symbols / Examples"])
+    ws.append(["SI Units", "kg · m · s · A · K · mol · cd"])
+    ws.append(["Derived", "N · Pa · J · W · V · Ω · Hz"])
+    ws.append(["Prefixes", "μ (micro) · m (milli) · k (kilo) · M (mega) · G (giga)"])
+    ws.append(["Electrical", "Ω kΩ MΩ · μF nF pF · mH μH"])
+    ws.append(["Temp", "100°C = 212°F = 373.15 K"])
+    ws.append(["Copyright", "© 2025 Company™ — All Rights Reserved®"])
+    ws.append(["Fractions", "½ ⅓ ¼ ⅕ ⅙ ⅛ ⅔ ¾ ⅘"])
+    ws.append(["Roman nums", "Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ Ⅺ Ⅻ"])
+    save(wb, "classic174_technical_symbols.xlsx")
+
+
+# ── 175. Multi-script product catalog with emoji ────────────────────────
+def classic175_multiscript_catalog():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Catalog"
+    ws.column_dimensions["A"].width = 6
+    ws.column_dimensions["B"].width = 25
+    ws.column_dimensions["C"].width = 25
+    ws.column_dimensions["D"].width = 12
+    ws.column_dimensions["E"].width = 8
+    header_fill = PatternFill("solid", fgColor="1ABC9C")
+    header_font = Font(bold=True, color="FFFFFF")
+    for col, h in enumerate(["#", "Product (EN)", "Product (Local)", "Price", "Icon"], start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = header_font
+        c.fill = header_fill
+    data = [
+        (1, "Green Tea", "緑茶", "¥500", "🍵"),
+        (2, "Kimchi", "김치", "₩3,000", "🥬"),
+        (3, "Samosa", "समोसा", "₹50", "🥟"),
+        (4, "Croissant", "Croissant", "€2.50", "🥐"),
+        (5, "Taco", "Taco", "$3.99", "🌮"),
+        (6, "Borscht", "Борщ", "₽250", "🍲"),
+        (7, "Falafel", "فلافل", "₪15", "🧆"),
+        (8, "Pad Thai", "ผัดไทย", "฿80", "🍜"),
+    ]
+    for row_data in data:
+        ws.append(list(row_data))
+    save(wb, "classic175_multiscript_catalog.xlsx")
+
+
+# ── 176. Combining characters and stacked diacritics ────────────────────
+def classic176_combining_characters():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Combining"
+    ws.column_dimensions["A"].width = 25
+    ws.column_dimensions["B"].width = 40
+    ws.append(["Type", "Examples"])
+    ws.append(["Single combining", "é = e + \u0301   ñ = n + \u0303"])
+    ws.append(["Double combining", "ệ = e + \u0323 + \u0302"])
+    ws.append(["Vietnamese", "ắ ằ ẵ ẳ ặ ố ồ ỗ ổ ộ ứ ừ ữ ử ự"])
+    ws.append(["Zalgo-like", "H\u0335\u0316\u0318e\u0337\u031d\u0323l\u0336\u0324l\u0334\u0325o\u0338\u032e"])
+    ws.append(["Precomposed vs decomposed", "ü (precomposed) vs u\u0308 (decomposed)"])
+    ws.append(["Hangul Jamo", "ㅎ ㅏ ㄴ ㄱ ㅡ ㄹ → 한글"])
+    save(wb, "classic176_combining_characters.xlsx")
+
+
+# ── 177. Emoji calendar — month-by-month events ────────────────────────
+def classic177_emoji_calendar():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Calendar"
+    ws.column_dimensions["A"].width = 14
+    ws.column_dimensions["B"].width = 8
+    ws.column_dimensions["C"].width = 28
+    ws.append(["Month", "Emoji", "Event"])
+    months = [
+        ("January", "🎆", "New Year"),
+        ("February", "💝", "Valentine's Day"),
+        ("March", "🌸", "Spring Equinox"),
+        ("April", "🐣", "Easter"),
+        ("May", "👩", "Mother's Day"),
+        ("June", "☀️", "Summer Solstice"),
+        ("July", "🎆", "Independence Day"),
+        ("August", "🏖️", "Vacation Season"),
+        ("September", "📚", "Back to School"),
+        ("October", "🎃", "Halloween"),
+        ("November", "🦃", "Thanksgiving"),
+        ("December", "🎄", "Christmas"),
+    ]
+    for row in months:
+        ws.append(list(row))
+    save(wb, "classic177_emoji_calendar.xlsx")
+
+
+# ── 178. Georgian, Armenian, Ethiopic scripts ───────────────────────────
+def classic178_caucasus_ethiopic():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Scripts"
+    ws.column_dimensions["A"].width = 14
+    ws.column_dimensions["B"].width = 45
+    ws.append(["Script", "Sample Text"])
+    ws.append(["Georgian", "საქართველო არის ძველი ცივილიზაცია."])
+    ws.append(["Armenian", "Հայաստանը հին քաղաքակրթություն ունի."])
+    ws.append(["Ethiopic", "ኢትዮጵያ የጥንታዊ ሥልጣኔ ምድር ናት።"])
+    ws.append(["Georgian mkhedruli", "ა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ"])
+    ws.append(["Armenian alphabet", "Ա Բ Գ Դ Ե Զ Է Ը Թ Ժ Ի Լ Խ Ծ Կ"])
+    save(wb, "classic178_caucasus_ethiopic.xlsx")
+
+
+# ── 179. All-emoji inventory with quantities ────────────────────────────
+def classic179_emoji_inventory():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Inventory"
+    ws.column_dimensions["A"].width = 8
+    ws.column_dimensions["B"].width = 22
+    ws.column_dimensions["C"].width = 10
+    ws.column_dimensions["D"].width = 10
+    ws.column_dimensions["E"].width = 12
+    header_fill = PatternFill("solid", fgColor="8E44AD")
+    header_font = Font(bold=True, color="FFFFFF")
+    for col, h in enumerate(["Icon", "Item", "Stock", "Min", "Status"], start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = header_font
+        c.fill = header_fill
+    items = [
+        ("📱", "Smartphone", 150, 50, "🟢 OK"),
+        ("💻", "Laptop", 42, 30, "🟡 Low"),
+        ("🖨️", "Printer", 8, 10, "🔴 Reorder"),
+        ("🎧", "Headphones", 200, 40, "🟢 OK"),
+        ("⌨️", "Keyboard", 75, 25, "🟢 OK"),
+        ("🖱️", "Mouse", 18, 20, "🔴 Reorder"),
+        ("📷", "Camera", 12, 10, "🟡 Low"),
+        ("🔌", "Charger", 300, 100, "🟢 OK"),
+        ("💾", "USB Drive", 5, 15, "🔴 Reorder"),
+        ("🖥️", "Monitor", 35, 20, "🟢 OK"),
+    ]
+    for r, (icon, item, stock, min_qty, status) in enumerate(items, start=2):
+        ws.cell(row=r, column=1, value=icon)
+        ws.cell(row=r, column=2, value=item)
+        ws.cell(row=r, column=3, value=stock)
+        ws.cell(row=r, column=4, value=min_qty)
+        ws.cell(row=r, column=5, value=status)
+    save(wb, "classic179_emoji_inventory.xlsx")
+
+
+# ── 180. Polyglot paragraph — long mixed-script text ────────────────────
+def classic180_polyglot_paragraph():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Polyglot"
+    ws.column_dimensions["A"].width = 30
+    ws.column_dimensions["B"].width = 40
+    ws.append(["Language", "Greeting"])
+    ws.append(["English", "The quick brown fox."])
+    ws.append(["Japanese", "速い茶色の狐。"])
+    ws.append(["Korean", "빠른 갈색 여우."])
+    ws.append(["Russian", "Быстрая бурая лиса."])
+    ws.append(["Greek", "Η γρήγορη αλεπού."])
+    ws.append(["Thai", "สุนัขจิ้งจอกสีน้ำตาล"])
+    ws.append(["Hindi", "तेज़ भूरी लोमड़ी"])
+    ws.append(["Emoji", "🦊 ➡️ 🐕"])
+    save(wb, "classic180_polyglot_paragraph.xlsx")
+
+
 # ── Main ─────────────────────────────────────────────────────────────────
 def main():
     ensure_output_dir()
-    print(f"Generating 150 classic .xlsx files in: {OUTPUT_DIR}\n")
+    print(f"Generating 180 classic .xlsx files in: {OUTPUT_DIR}\n")
 
     generators = [
         classic01_basic_table_with_headers,
@@ -3707,6 +4370,37 @@ def main():
         classic148_frozen_styled_grid,
         classic149_merged_styled_sections,
         classic150_kitchen_sink_styles,
+        # 151-180: multilingual, marks & emoji cases
+        classic151_multilingual_greetings,
+        classic152_emoji_sampler,
+        classic153_currency_symbols,
+        classic154_math_symbols,
+        classic155_diacritical_marks,
+        classic156_rtl_bidi_text,
+        classic157_cjk_extended,
+        classic158_emoji_skin_tones,
+        classic159_zwj_emoji,
+        classic160_punctuation_marks,
+        classic161_box_drawing,
+        classic162_cjk_emoji_styled,
+        classic163_cyrillic_alphabets,
+        classic164_indic_scripts,
+        classic165_southeast_asian,
+        classic166_emoji_progress,
+        classic167_musical_symbols,
+        classic168_mixed_ltr_rtl_styled,
+        classic169_korean_invoice,
+        classic170_emoji_dashboard,
+        classic171_ipa_phonetic,
+        classic172_emoji_timeline,
+        classic173_african_languages,
+        classic174_technical_symbols,
+        classic175_multiscript_catalog,
+        classic176_combining_characters,
+        classic177_emoji_calendar,
+        classic178_caucasus_ethiopic,
+        classic179_emoji_inventory,
+        classic180_polyglot_paragraph,
     ]
 
     for gen in generators:

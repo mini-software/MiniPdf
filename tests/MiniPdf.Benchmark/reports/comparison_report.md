@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-05T14:39:56.781495
+Generated: 2026-03-05T18:19:36.050619
 
 ## Summary
 
@@ -71,93 +71,123 @@ Generated: 2026-03-05T14:39:56.781495
 | 63 | 🟢 classic149_merged_styled_sections | 1.0 | 0.9674 | 1/1 | **0.987** |
 | 64 | 🟢 classic14_decimal_numbers | 1.0 | 0.9973 | 1/1 | **0.9989** |
 | 65 | 🟢 classic150_kitchen_sink_styles | 0.9677 | 0.9686 | 1/1 | **0.9745** |
-| 66 | 🟢 classic15_negative_numbers | 1.0 | 0.9976 | 1/1 | **0.999** |
-| 67 | 🟢 classic16_percentage_strings | 0.9877 | 0.9972 | 1/1 | **0.994** |
-| 68 | 🟢 classic17_currency_strings | 1.0 | 0.9962 | 1/1 | **0.9985** |
-| 69 | 🟢 classic18_large_dataset | 1.0 | 0.8931 | 24/24 | **0.9572** |
-| 70 | 🟢 classic19_single_column_list | 1.0 | 0.9967 | 1/1 | **0.9987** |
-| 71 | 🟢 classic20_all_empty_cells | 1.0 | 1.0 | 1/1 | **1.0** |
-| 72 | 🟢 classic21_header_only | 1.0 | 0.9986 | 1/1 | **0.9994** |
-| 73 | 🟢 classic22_long_sheet_name | 1.0 | 0.9985 | 1/1 | **0.9994** |
-| 74 | 🟢 classic23_unicode_text | 0.7984 | 0.9948 | 1/1 | **0.9173** |
-| 75 | 🟢 classic24_red_text | 1.0 | 0.9962 | 1/1 | **0.9985** |
-| 76 | 🟢 classic25_multiple_colors | 0.9978 | 0.9962 | 1/1 | **0.9976** |
-| 77 | 🟢 classic26_inline_strings | 1.0 | 0.9975 | 1/1 | **0.999** |
-| 78 | 🟢 classic27_single_row | 1.0 | 0.9984 | 1/1 | **0.9994** |
-| 79 | 🟢 classic28_duplicate_values | 1.0 | 0.9965 | 1/1 | **0.9986** |
-| 80 | 🟢 classic29_formula_results | 1.0 | 0.9971 | 1/1 | **0.9988** |
-| 81 | 🟢 classic30_mixed_empty_and_filled_sheets | 1.0 | 0.9987 | 2/2 | **0.9995** |
-| 82 | 🟢 classic31_bold_header_row | 1.0 | 0.9965 | 1/1 | **0.9986** |
-| 83 | 🟢 classic32_right_aligned_numbers | 1.0 | 0.9974 | 1/1 | **0.999** |
-| 84 | 🟢 classic33_centered_text | 1.0 | 0.9982 | 1/1 | **0.9993** |
-| 85 | 🟢 classic34_explicit_column_widths | 1.0 | 0.9963 | 1/1 | **0.9985** |
-| 86 | 🟢 classic35_explicit_row_heights | 0.9882 | 0.999 | 1/1 | **0.9949** |
-| 87 | 🟢 classic36_merged_cells | 1.0 | 0.997 | 1/1 | **0.9988** |
-| 88 | 🟢 classic37_freeze_panes | 1.0 | 0.9899 | 1/1 | **0.996** |
-| 89 | 🟢 classic38_hyperlink_cell | 1.0 | 0.9969 | 1/1 | **0.9988** |
-| 90 | 🟢 classic39_financial_table | 1.0 | 0.9939 | 1/1 | **0.9976** |
-| 91 | 🟢 classic40_scientific_notation | 1.0 | 0.9964 | 1/1 | **0.9986** |
-| 92 | 🟢 classic41_integer_vs_float | 1.0 | 0.997 | 1/1 | **0.9988** |
-| 93 | 🟢 classic42_boolean_values | 0.9948 | 0.9963 | 1/1 | **0.9964** |
-| 94 | 🟢 classic43_inventory_report | 0.9984 | 0.9887 | 1/1 | **0.9948** |
-| 95 | 🟢 classic44_employee_roster | 0.9652 | 0.9855 | 1/1 | **0.9803** |
-| 96 | 🟢 classic45_sales_by_region | 1.0 | 0.9976 | 4/4 | **0.999** |
-| 97 | 🟢 classic46_grade_book | 1.0 | 0.9908 | 1/1 | **0.9963** |
-| 98 | 🟢 classic47_time_series | 1.0 | 0.9821 | 1/1 | **0.9928** |
-| 99 | 🟢 classic48_survey_results | 0.9971 | 0.9935 | 1/1 | **0.9962** |
-| 100 | 🟢 classic49_contact_list | 0.9737 | 0.9896 | 1/1 | **0.9853** |
-| 101 | 🟢 classic50_budget_vs_actuals | 0.9978 | 0.9909 | 3/3 | **0.9955** |
-| 102 | 🟢 classic51_product_catalog | 0.9747 | 0.9876 | 1/1 | **0.9849** |
-| 103 | 🟢 classic52_pivot_summary | 0.9978 | 0.9916 | 1/1 | **0.9958** |
-| 104 | 🟢 classic53_invoice | 0.9968 | 0.9912 | 1/1 | **0.9952** |
-| 105 | 🟢 classic54_multi_level_header | 1.0 | 0.994 | 1/1 | **0.9976** |
-| 106 | 🟢 classic55_error_values | 1.0 | 0.9945 | 1/1 | **0.9978** |
-| 107 | 🟢 classic56_alternating_row_colors | 1.0 | 0.9903 | 1/1 | **0.9961** |
-| 108 | 🟢 classic57_cjk_only | 0.7826 | 0.9953 | 1/1 | **0.9112** |
-| 109 | 🟢 classic58_mixed_numeric_formats | 0.9905 | 0.9958 | 1/1 | **0.9945** |
-| 110 | 🟢 classic59_multi_sheet_summary | 1.0 | 0.9962 | 4/4 | **0.9985** |
-| 111 | 🟢 classic60_large_wide_table | 1.0 | 0.9346 | 4/4 | **0.9738** |
-| 112 | 🟢 classic61_product_card_with_image | 1.0 | 0.9982 | 1/1 | **0.9993** |
-| 113 | 🟢 classic62_company_logo_header | 0.996 | 0.9949 | 1/1 | **0.9964** |
-| 114 | 🟢 classic63_two_products_side_by_side | 1.0 | 0.9939 | 1/1 | **0.9976** |
-| 115 | 🟢 classic64_employee_directory_with_photo | 0.9835 | 0.9938 | 1/1 | **0.9909** |
-| 116 | 🟢 classic65_inventory_with_product_photos | 0.9906 | 0.9949 | 1/1 | **0.9942** |
-| 117 | 🟢 classic66_invoice_with_logo | 0.9836 | 0.9956 | 1/1 | **0.9917** |
-| 118 | 🟢 classic67_real_estate_listing | 1.0 | 0.9944 | 1/1 | **0.9978** |
-| 119 | 🟢 classic68_restaurant_menu | 0.9881 | 0.9776 | 1/1 | **0.9863** |
-| 120 | 🟢 classic69_image_only_sheet | 1.0 | 1.0 | 1/1 | **1.0** |
-| 121 | 🟢 classic70_product_catalog_with_images | 0.9862 | 0.9934 | 1/1 | **0.9918** |
-| 122 | 🟢 classic71_multi_sheet_with_images | 0.9966 | 0.999 | 3/3 | **0.9982** |
-| 123 | 🟢 classic72_bar_chart_image_with_data | 1.0 | 0.9856 | 1/1 | **0.9942** |
-| 124 | 🟢 classic73_event_flyer_with_banner | 0.9939 | 0.9936 | 1/1 | **0.995** |
-| 125 | 🟢 classic74_dashboard_with_kpi_image | 0.9595 | 0.9874 | 1/1 | **0.9788** |
-| 126 | 🟢 classic75_certificate_with_seal | 1.0 | 0.9867 | 1/1 | **0.9947** |
-| 127 | 🟢 classic76_product_image_grid | 1.0 | 0.9897 | 1/1 | **0.9959** |
-| 128 | 🟢 classic77_news_article_with_hero_image | 1.0 | 0.9911 | 1/1 | **0.9964** |
-| 129 | 🟢 classic78_small_icon_per_row | 0.9799 | 0.9953 | 1/1 | **0.9901** |
-| 130 | 🟢 classic79_wide_panoramic_banner | 1.0 | 0.9946 | 1/1 | **0.9978** |
-| 131 | 🟢 classic80_portrait_tall_image | 1.0 | 0.9948 | 1/1 | **0.9979** |
-| 132 | 🟢 classic81_step_by_step_with_images | 1.0 | 0.9921 | 1/1 | **0.9968** |
-| 133 | 🟢 classic82_before_after_images | 0.9926 | 0.9906 | 1/1 | **0.9933** |
-| 134 | 🟢 classic83_color_swatch_palette | 0.9863 | 0.9931 | 1/1 | **0.9918** |
-| 135 | 🟢 classic84_travel_destination_cards | 1.0 | 0.9897 | 1/1 | **0.9959** |
-| 136 | 🟢 classic85_lab_results_with_image | 0.9911 | 0.9877 | 1/1 | **0.9915** |
-| 137 | 🟢 classic86_software_screenshot_features | 0.973 | 0.9948 | 1/1 | **0.9871** |
-| 138 | 🟢 classic87_sports_results_with_logos | 1.0 | 0.9948 | 1/1 | **0.9979** |
-| 139 | 🟢 classic88_image_after_data | 0.997 | 0.9948 | 1/1 | **0.9967** |
-| 140 | 🟢 classic89_nutrition_label_with_image | 0.9903 | 0.995 | 1/1 | **0.9941** |
-| 141 | 🟢 classic90_project_status_with_milestones | 0.9572 | 0.9852 | 1/1 | **0.977** |
-| 142 | 🟢 classic91_simple_bar_chart | 0.9493 | 0.9607 | 2/2 | **0.964** |
-| 143 | 🟢 classic92_horizontal_bar_chart | 0.9563 | 0.9665 | 2/2 | **0.9691** |
-| 144 | 🟢 classic93_line_chart | 0.8257 | 0.9861 | 2/2 | **0.9247** |
-| 145 | 🟢 classic94_pie_chart | 0.878 | 0.9249 | 2/2 | **0.9212** |
-| 146 | 🟡 classic95_area_chart | 0.6441 | 0.7651 | 2/2 | **0.7637** |
-| 147 | 🟢 classic96_scatter_chart | 0.8714 | 0.9855 | 2/2 | **0.9428** |
-| 148 | 🟢 classic97_doughnut_chart | 0.8571 | 0.9317 | 2/2 | **0.9155** |
-| 149 | 🟢 classic98_radar_chart | 0.8876 | 0.9892 | 2/2 | **0.9507** |
-| 150 | 🟢 classic99_bubble_chart | 0.8447 | 0.966 | 2/2 | **0.9243** |
+| 66 | 🟢 classic151_multilingual_greetings | 0.8485 | 0.9893 | 1/1 | **0.9351** |
+| 67 | 🟢 classic152_emoji_sampler | 0.7869 | 0.9906 | 1/1 | **0.911** |
+| 68 | 🟢 classic153_currency_symbols | 0.9723 | 0.9897 | 1/1 | **0.9848** |
+| 69 | 🟢 classic154_math_symbols | 0.9012 | 0.9919 | 1/1 | **0.9572** |
+| 70 | 🟢 classic155_diacritical_marks | 1.0 | 0.9937 | 1/1 | **0.9975** |
+| 71 | 🟡 classic156_rtl_bidi_text | 0.6038 | 0.9965 | 1/1 | **0.8401** |
+| 72 | 🟢 classic157_cjk_extended | 0.7957 | 0.9876 | 1/1 | **0.9133** |
+| 73 | 🟢 classic158_emoji_skin_tones | 1.0 | 0.9817 | 1/1 | **0.9927** |
+| 74 | 🟢 classic159_zwj_emoji | 0.7769 | 0.9893 | 1/1 | **0.9065** |
+| 75 | 🟢 classic15_negative_numbers | 1.0 | 0.9976 | 1/1 | **0.999** |
+| 76 | 🟢 classic160_punctuation_marks | 0.8655 | 0.995 | 1/1 | **0.9442** |
+| 77 | 🟢 classic161_box_drawing | 0.8822 | 0.9929 | 1/1 | **0.95** |
+| 78 | 🟡 classic162_cjk_emoji_styled | 0.6703 | 0.9913 | 1/1 | **0.8646** |
+| 79 | 🟢 classic163_cyrillic_alphabets | 1.0 | 0.9911 | 1/1 | **0.9964** |
+| 80 | 🟡 classic164_indic_scripts | 0.6882 | 0.9958 | 1/1 | **0.8736** |
+| 81 | 🟢 classic165_southeast_asian | 0.9127 | 0.987 | 1/1 | **0.9599** |
+| 82 | 🟢 classic166_emoji_progress | 1.0 | 0.9659 | 1/1 | **0.9864** |
+| 83 | 🟢 classic167_musical_symbols | 0.7551 | 0.9957 | 1/1 | **0.9003** |
+| 84 | 🟢 classic168_mixed_ltr_rtl_styled | 0.8718 | 0.9908 | 1/1 | **0.945** |
+| 85 | 🟡 classic169_korean_invoice | 0.7196 | 0.9907 | 1/1 | **0.8841** |
+| 86 | 🟢 classic16_percentage_strings | 0.9877 | 0.9972 | 1/1 | **0.994** |
+| 87 | 🟢 classic170_emoji_dashboard | 0.9216 | 0.9869 | 1/1 | **0.9634** |
+| 88 | 🟢 classic171_ipa_phonetic | 0.9478 | 0.9929 | 1/1 | **0.9763** |
+| 89 | 🟢 classic172_emoji_timeline | 0.8945 | 0.9884 | 1/1 | **0.9532** |
+| 90 | 🟢 classic173_african_languages | 0.7804 | 0.9902 | 1/1 | **0.9082** |
+| 91 | 🟢 classic174_technical_symbols | 0.8705 | 0.9889 | 1/1 | **0.9438** |
+| 92 | 🟢 classic175_multiscript_catalog | 0.8296 | 0.9855 | 1/1 | **0.926** |
+| 93 | 🟢 classic176_combining_characters | 0.8706 | 0.9932 | 1/1 | **0.9455** |
+| 94 | 🟡 classic177_emoji_calendar | 0.72 | 0.9901 | 1/1 | **0.884** |
+| 95 | 🟢 classic178_caucasus_ethiopic | 0.9313 | 0.9913 | 1/1 | **0.969** |
+| 96 | 🟢 classic179_emoji_inventory | 0.7887 | 0.9854 | 1/1 | **0.9096** |
+| 97 | 🟢 classic17_currency_strings | 1.0 | 0.9962 | 1/1 | **0.9985** |
+| 98 | 🟢 classic180_polyglot_paragraph | 0.8468 | 0.9921 | 1/1 | **0.9356** |
+| 99 | 🟢 classic18_large_dataset | 1.0 | 0.8931 | 24/24 | **0.9572** |
+| 100 | 🟢 classic19_single_column_list | 1.0 | 0.9967 | 1/1 | **0.9987** |
+| 101 | 🟢 classic20_all_empty_cells | 1.0 | 1.0 | 1/1 | **1.0** |
+| 102 | 🟢 classic21_header_only | 1.0 | 0.9986 | 1/1 | **0.9994** |
+| 103 | 🟢 classic22_long_sheet_name | 1.0 | 0.9985 | 1/1 | **0.9994** |
+| 104 | 🟢 classic23_unicode_text | 0.7884 | 0.9951 | 1/1 | **0.9134** |
+| 105 | 🟢 classic24_red_text | 1.0 | 0.9962 | 1/1 | **0.9985** |
+| 106 | 🟢 classic25_multiple_colors | 0.9978 | 0.9962 | 1/1 | **0.9976** |
+| 107 | 🟢 classic26_inline_strings | 1.0 | 0.9975 | 1/1 | **0.999** |
+| 108 | 🟢 classic27_single_row | 1.0 | 0.9984 | 1/1 | **0.9994** |
+| 109 | 🟢 classic28_duplicate_values | 1.0 | 0.9965 | 1/1 | **0.9986** |
+| 110 | 🟢 classic29_formula_results | 1.0 | 0.9971 | 1/1 | **0.9988** |
+| 111 | 🟢 classic30_mixed_empty_and_filled_sheets | 1.0 | 0.9987 | 2/2 | **0.9995** |
+| 112 | 🟢 classic31_bold_header_row | 1.0 | 0.9965 | 1/1 | **0.9986** |
+| 113 | 🟢 classic32_right_aligned_numbers | 1.0 | 0.9974 | 1/1 | **0.999** |
+| 114 | 🟢 classic33_centered_text | 1.0 | 0.9982 | 1/1 | **0.9993** |
+| 115 | 🟢 classic34_explicit_column_widths | 1.0 | 0.9963 | 1/1 | **0.9985** |
+| 116 | 🟢 classic35_explicit_row_heights | 0.9882 | 0.999 | 1/1 | **0.9949** |
+| 117 | 🟢 classic36_merged_cells | 1.0 | 0.997 | 1/1 | **0.9988** |
+| 118 | 🟢 classic37_freeze_panes | 1.0 | 0.9899 | 1/1 | **0.996** |
+| 119 | 🟢 classic38_hyperlink_cell | 1.0 | 0.9969 | 1/1 | **0.9988** |
+| 120 | 🟢 classic39_financial_table | 1.0 | 0.9939 | 1/1 | **0.9976** |
+| 121 | 🟢 classic40_scientific_notation | 1.0 | 0.9964 | 1/1 | **0.9986** |
+| 122 | 🟢 classic41_integer_vs_float | 1.0 | 0.997 | 1/1 | **0.9988** |
+| 123 | 🟢 classic42_boolean_values | 0.9948 | 0.9963 | 1/1 | **0.9964** |
+| 124 | 🟢 classic43_inventory_report | 0.9984 | 0.9887 | 1/1 | **0.9948** |
+| 125 | 🟢 classic44_employee_roster | 0.9652 | 0.9855 | 1/1 | **0.9803** |
+| 126 | 🟢 classic45_sales_by_region | 1.0 | 0.9976 | 4/4 | **0.999** |
+| 127 | 🟢 classic46_grade_book | 1.0 | 0.9908 | 1/1 | **0.9963** |
+| 128 | 🟢 classic47_time_series | 1.0 | 0.9821 | 1/1 | **0.9928** |
+| 129 | 🟢 classic48_survey_results | 0.9971 | 0.9935 | 1/1 | **0.9962** |
+| 130 | 🟢 classic49_contact_list | 0.9737 | 0.9896 | 1/1 | **0.9853** |
+| 131 | 🟢 classic50_budget_vs_actuals | 0.9978 | 0.9909 | 3/3 | **0.9955** |
+| 132 | 🟢 classic51_product_catalog | 0.9747 | 0.9876 | 1/1 | **0.9849** |
+| 133 | 🟢 classic52_pivot_summary | 0.9978 | 0.9916 | 1/1 | **0.9958** |
+| 134 | 🟢 classic53_invoice | 0.9968 | 0.9912 | 1/1 | **0.9952** |
+| 135 | 🟢 classic54_multi_level_header | 1.0 | 0.994 | 1/1 | **0.9976** |
+| 136 | 🟢 classic55_error_values | 1.0 | 0.9945 | 1/1 | **0.9978** |
+| 137 | 🟢 classic56_alternating_row_colors | 1.0 | 0.9903 | 1/1 | **0.9961** |
+| 138 | 🟢 classic57_cjk_only | 0.7826 | 0.9953 | 1/1 | **0.9112** |
+| 139 | 🟢 classic58_mixed_numeric_formats | 0.9905 | 0.9958 | 1/1 | **0.9945** |
+| 140 | 🟢 classic59_multi_sheet_summary | 1.0 | 0.9962 | 4/4 | **0.9985** |
+| 141 | 🟢 classic60_large_wide_table | 1.0 | 0.9346 | 4/4 | **0.9738** |
+| 142 | 🟢 classic61_product_card_with_image | 1.0 | 0.9982 | 1/1 | **0.9993** |
+| 143 | 🟢 classic62_company_logo_header | 0.996 | 0.9949 | 1/1 | **0.9964** |
+| 144 | 🟢 classic63_two_products_side_by_side | 1.0 | 0.9939 | 1/1 | **0.9976** |
+| 145 | 🟢 classic64_employee_directory_with_photo | 0.9835 | 0.9938 | 1/1 | **0.9909** |
+| 146 | 🟢 classic65_inventory_with_product_photos | 0.9906 | 0.9949 | 1/1 | **0.9942** |
+| 147 | 🟢 classic66_invoice_with_logo | 0.9836 | 0.9956 | 1/1 | **0.9917** |
+| 148 | 🟢 classic67_real_estate_listing | 1.0 | 0.9944 | 1/1 | **0.9978** |
+| 149 | 🟢 classic68_restaurant_menu | 0.9881 | 0.9776 | 1/1 | **0.9863** |
+| 150 | 🟢 classic69_image_only_sheet | 1.0 | 1.0 | 1/1 | **1.0** |
+| 151 | 🟢 classic70_product_catalog_with_images | 0.9862 | 0.9934 | 1/1 | **0.9918** |
+| 152 | 🟢 classic71_multi_sheet_with_images | 0.9966 | 0.999 | 3/3 | **0.9982** |
+| 153 | 🟢 classic72_bar_chart_image_with_data | 1.0 | 0.9856 | 1/1 | **0.9942** |
+| 154 | 🟢 classic73_event_flyer_with_banner | 0.9939 | 0.9936 | 1/1 | **0.995** |
+| 155 | 🟢 classic74_dashboard_with_kpi_image | 0.9595 | 0.9874 | 1/1 | **0.9788** |
+| 156 | 🟢 classic75_certificate_with_seal | 1.0 | 0.9867 | 1/1 | **0.9947** |
+| 157 | 🟢 classic76_product_image_grid | 1.0 | 0.9897 | 1/1 | **0.9959** |
+| 158 | 🟢 classic77_news_article_with_hero_image | 1.0 | 0.9911 | 1/1 | **0.9964** |
+| 159 | 🟢 classic78_small_icon_per_row | 0.9799 | 0.9953 | 1/1 | **0.9901** |
+| 160 | 🟢 classic79_wide_panoramic_banner | 1.0 | 0.9946 | 1/1 | **0.9978** |
+| 161 | 🟢 classic80_portrait_tall_image | 1.0 | 0.9948 | 1/1 | **0.9979** |
+| 162 | 🟢 classic81_step_by_step_with_images | 1.0 | 0.9921 | 1/1 | **0.9968** |
+| 163 | 🟢 classic82_before_after_images | 0.9926 | 0.9906 | 1/1 | **0.9933** |
+| 164 | 🟢 classic83_color_swatch_palette | 0.9863 | 0.9931 | 1/1 | **0.9918** |
+| 165 | 🟢 classic84_travel_destination_cards | 1.0 | 0.9897 | 1/1 | **0.9959** |
+| 166 | 🟢 classic85_lab_results_with_image | 0.9911 | 0.9877 | 1/1 | **0.9915** |
+| 167 | 🟢 classic86_software_screenshot_features | 0.973 | 0.9948 | 1/1 | **0.9871** |
+| 168 | 🟢 classic87_sports_results_with_logos | 1.0 | 0.9948 | 1/1 | **0.9979** |
+| 169 | 🟢 classic88_image_after_data | 0.997 | 0.9948 | 1/1 | **0.9967** |
+| 170 | 🟢 classic89_nutrition_label_with_image | 0.9903 | 0.995 | 1/1 | **0.9941** |
+| 171 | 🟢 classic90_project_status_with_milestones | 0.9572 | 0.9852 | 1/1 | **0.977** |
+| 172 | 🟢 classic91_simple_bar_chart | 0.9493 | 0.9607 | 2/2 | **0.964** |
+| 173 | 🟢 classic92_horizontal_bar_chart | 0.9563 | 0.9665 | 2/2 | **0.9691** |
+| 174 | 🟢 classic93_line_chart | 0.8257 | 0.9861 | 2/2 | **0.9247** |
+| 175 | 🟢 classic94_pie_chart | 0.878 | 0.9249 | 2/2 | **0.9212** |
+| 176 | 🟡 classic95_area_chart | 0.6441 | 0.7651 | 2/2 | **0.7637** |
+| 177 | 🟢 classic96_scatter_chart | 0.8714 | 0.9855 | 2/2 | **0.9428** |
+| 178 | 🟢 classic97_doughnut_chart | 0.8571 | 0.9317 | 2/2 | **0.9155** |
+| 179 | 🟢 classic98_radar_chart | 0.8876 | 0.9892 | 2/2 | **0.9507** |
+| 180 | 🟢 classic99_bubble_chart | 0.8447 | 0.966 | 2/2 | **0.9243** |
 
-**Average Overall Score: 0.9712**
+**Average Overall Score: 0.9652**
 
 ## Visual Comparison
 
@@ -782,10 +812,124 @@ Generated: 2026-03-05T14:39:56.781495
       <td valign="top"><span style="color:#3fb950">⬤</span> 0.9745</td>
     </tr>
     <tr>
+      <td valign="top"><b>classic151_multilingual_greetings</b></td>
+      <td><img src="images/classic151_multilingual_greetings_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic151_multilingual_greetings_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9351</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic152_emoji_sampler</b></td>
+      <td><img src="images/classic152_emoji_sampler_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic152_emoji_sampler_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.911</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic153_currency_symbols</b></td>
+      <td><img src="images/classic153_currency_symbols_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic153_currency_symbols_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9848</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic154_math_symbols</b></td>
+      <td><img src="images/classic154_math_symbols_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic154_math_symbols_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9572</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic155_diacritical_marks</b></td>
+      <td><img src="images/classic155_diacritical_marks_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic155_diacritical_marks_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9975</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic156_rtl_bidi_text</b></td>
+      <td><img src="images/classic156_rtl_bidi_text_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic156_rtl_bidi_text_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#d29922">⬤</span> 0.8401</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic157_cjk_extended</b></td>
+      <td><img src="images/classic157_cjk_extended_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic157_cjk_extended_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9133</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic158_emoji_skin_tones</b></td>
+      <td><img src="images/classic158_emoji_skin_tones_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic158_emoji_skin_tones_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9927</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic159_zwj_emoji</b></td>
+      <td><img src="images/classic159_zwj_emoji_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic159_zwj_emoji_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9065</td>
+    </tr>
+    <tr>
       <td valign="top"><b>classic15_negative_numbers</b></td>
       <td><img src="images/classic15_negative_numbers_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic15_negative_numbers_p1_reference.png" width="340" alt="Reference p1"></td>
       <td valign="top"><span style="color:#3fb950">⬤</span> 0.999</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic160_punctuation_marks</b></td>
+      <td><img src="images/classic160_punctuation_marks_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic160_punctuation_marks_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9442</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic161_box_drawing</b></td>
+      <td><img src="images/classic161_box_drawing_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic161_box_drawing_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.95</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic162_cjk_emoji_styled</b></td>
+      <td><img src="images/classic162_cjk_emoji_styled_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic162_cjk_emoji_styled_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#d29922">⬤</span> 0.8646</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic163_cyrillic_alphabets</b></td>
+      <td><img src="images/classic163_cyrillic_alphabets_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic163_cyrillic_alphabets_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9964</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic164_indic_scripts</b></td>
+      <td><img src="images/classic164_indic_scripts_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic164_indic_scripts_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#d29922">⬤</span> 0.8736</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic165_southeast_asian</b></td>
+      <td><img src="images/classic165_southeast_asian_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic165_southeast_asian_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9599</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic166_emoji_progress</b></td>
+      <td><img src="images/classic166_emoji_progress_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic166_emoji_progress_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9864</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic167_musical_symbols</b></td>
+      <td><img src="images/classic167_musical_symbols_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic167_musical_symbols_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9003</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic168_mixed_ltr_rtl_styled</b></td>
+      <td><img src="images/classic168_mixed_ltr_rtl_styled_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic168_mixed_ltr_rtl_styled_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.945</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic169_korean_invoice</b></td>
+      <td><img src="images/classic169_korean_invoice_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic169_korean_invoice_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#d29922">⬤</span> 0.8841</td>
     </tr>
     <tr>
       <td valign="top"><b>classic16_percentage_strings</b></td>
@@ -794,10 +938,76 @@ Generated: 2026-03-05T14:39:56.781495
       <td valign="top"><span style="color:#3fb950">⬤</span> 0.994</td>
     </tr>
     <tr>
+      <td valign="top"><b>classic170_emoji_dashboard</b></td>
+      <td><img src="images/classic170_emoji_dashboard_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic170_emoji_dashboard_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9634</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic171_ipa_phonetic</b></td>
+      <td><img src="images/classic171_ipa_phonetic_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic171_ipa_phonetic_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9763</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic172_emoji_timeline</b></td>
+      <td><img src="images/classic172_emoji_timeline_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic172_emoji_timeline_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9532</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic173_african_languages</b></td>
+      <td><img src="images/classic173_african_languages_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic173_african_languages_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9082</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic174_technical_symbols</b></td>
+      <td><img src="images/classic174_technical_symbols_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic174_technical_symbols_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9438</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic175_multiscript_catalog</b></td>
+      <td><img src="images/classic175_multiscript_catalog_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic175_multiscript_catalog_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.926</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic176_combining_characters</b></td>
+      <td><img src="images/classic176_combining_characters_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic176_combining_characters_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9455</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic177_emoji_calendar</b></td>
+      <td><img src="images/classic177_emoji_calendar_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic177_emoji_calendar_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#d29922">⬤</span> 0.884</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic178_caucasus_ethiopic</b></td>
+      <td><img src="images/classic178_caucasus_ethiopic_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic178_caucasus_ethiopic_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.969</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic179_emoji_inventory</b></td>
+      <td><img src="images/classic179_emoji_inventory_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic179_emoji_inventory_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9096</td>
+    </tr>
+    <tr>
       <td valign="top"><b>classic17_currency_strings</b></td>
       <td><img src="images/classic17_currency_strings_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic17_currency_strings_p1_reference.png" width="340" alt="Reference p1"></td>
       <td valign="top"><span style="color:#3fb950">⬤</span> 0.9985</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic180_polyglot_paragraph</b></td>
+      <td><img src="images/classic180_polyglot_paragraph_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic180_polyglot_paragraph_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9356</td>
     </tr>
     <tr>
       <td rowspan="24" valign="top"><b>classic18_large_dataset</b><br><small>p1</small></td>
@@ -948,7 +1158,7 @@ Generated: 2026-03-05T14:39:56.781495
       <td valign="top"><b>classic23_unicode_text</b></td>
       <td><img src="images/classic23_unicode_text_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic23_unicode_text_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9173</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9134</td>
     </tr>
     <tr>
       <td valign="top"><b>classic24_red_text</b></td>
@@ -3848,6 +4058,598 @@ Text content: ✅ Identical
 ```
 </details>
 
+### classic151_multilingual_greetings
+
+- **Text Similarity:** 0.8485
+- **Visual Average:** 0.9893
+- **Overall Score:** 0.9351
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4350454 bytes, Reference=103044 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic151_multilingual_greetings.pdf
++++ reference/classic151_multilingual_greetings.pdf
+@@ -1,24 +1,16 @@
+ Language Hello Thank you
+
+ English Hello Thank you
+
++你好 谢谢
+
+ Chinese
+
+-你好 谢谢
+
++こんにちは ありがとう
+
+ Japanese
+
+-こんにちは ありがとう
+
+-Korean
+
+-안녕하세요 감사합니다
+
+-Thai
+
+-สวัสดี ขอบคุณ
+
++Korean 안녕하세요 감사합니다
+
++Thai สวัสดี ขอบคุณ
+
++नमस्ते धन्यवाद
+
+ Hindi
+
+-नमस्ते धन्यवाद
+
+-Arabic
+
+-ﺎﺒﺣﺮﻣ ﺍﺮﻜﺷ
+
+-Hebrew
+
+-םולש הדות
+
+-Greek
+
+-Γεια σου Ευχαριστώ
+
+-Russian
+
+-Привет Спасибо
+
+-Vietnamese Xin chào
+
+-C ả m ơ n
+
+-Turkish Merhaba
+
+-Teşekkürler
++Arabicمرحبا شكرا
+
++Hebrewשלום תודה
+
++Greek Γεια σου Ευχαριστώ
+
++Russian Привет Спасибо
+
++Vietnamese Xin chào Cảm ơn
+
++Turkish Merhaba Teşekkürler
+```
+</details>
+
+### classic152_emoji_sampler
+
+- **Text Similarity:** 0.7869
+- **Visual Average:** 0.9906
+- **Overall Score:** 0.911
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=438647 bytes, Reference=69423 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic152_emoji_sampler.pdf
++++ reference/classic152_emoji_sampler.pdf
+@@ -1,17 +1,11 @@
+ Category Emoji
+
+-Faces
+
+-😀😃😄😁😆
+
+-Hearts
+
+-❤ ️ 🧡💛💚💙
+
+-Animals
+
+-🐶🐱🐭🐹🐰
+
+-Food
+
+-🍎🍐🍊🍋🍌
+
+-Travel
+
+-✈ ️ 🚗🚌🚂🚀
+
+-Sports
+
+-⚽🏀🏈⚾🎾
+
+-Symbols
+
+-✅❌⚠ ️ 🔴🟢
+
+-Hands
+
+-👍👎👏🤝✌ ️
++Faces 😀😃😄😁😆
+
++Hearts ❤️
+
++Animals 🐶🐱🐭🐹🐰
+
++Food 🍎🍐🍊🍋🍌
+
++Travel 
+
++⚽ ⚾
+
++Sports 🏀🏈 🎾
+
++⚠️ 
+
++Symbols  🔴🟢
+
++Hands  ✌️ 
+```
+</details>
+
+### classic153_currency_symbols
+
+- **Text Similarity:** 0.9723
+- **Visual Average:** 0.9897
+- **Overall Score:** 0.9848
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4128579 bytes, Reference=41642 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic153_currency_symbols.pdf
++++ reference/classic153_currency_symbols.pdf
+@@ -4,16 +4,10 @@
+ British Pound £ £1,234.56
+
+ Japanese Yen ¥ ¥123,456
+
+ Chinese Yuan ¥ ¥1,234.56
+
+-Korean Won
+
+-₩ ₩1,234,560
+
+-Indian Rupee
+
+-₹ ₹ 1,23,456
+
+-Thai Baht
+
+-฿ ฿ 1,234.56
+
+-Russian Ruble
+
+-₽ ₽ 1 234,56
+
+-Turkish Lira
+
+-₺ ₺ 1.234,56
+
+-Bitcoin
+
+-₿ ₿ 0.05
+
++Korean Won ₩ ₩1,234,560
+
++Indian Rupee ₹ ₹1,23,456
+
++Thai Baht ฿ ฿1,234.56
+
++Russian Ruble ₽ ₽1 234,56
+
++Turkish Lira ₺ ₺1.234,56
+
++Bitcoin ₿ ₿0.05
+
+ Swiss Franc CHF CHF 1'234.56
+```
+</details>
+
+### classic154_math_symbols
+
+- **Text Similarity:** 0.9012
+- **Visual Average:** 0.9919
+- **Overall Score:** 0.9572
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4620988 bytes, Reference=61270 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic154_math_symbols.pdf
++++ reference/classic154_math_symbols.pdf
+@@ -1,19 +1,11 @@
+ Category Symbols
+
+-Operators
+
+-± × ÷ ≠ ≤ ≥ ≈ ∝ ∓
+
+-Greek Letters
+
+-α β γ δ ε ζ η θ ι κ λ μ
+
+-Set Theory
+
+-∈ ∉ ⊂ ⊃ ∪ ∩ ∅ ℵ
+
+-Logic
+
+-∀ ∃ ¬ ∧ ∨ ⊕ ⟹ ⟺
+
+-Calculus
+
+-∫ ∬ ∮ ∂ ∇ ∑ ∏ √
+
+-Arrows
+
+-→ ← ↑ ↓ ↔ ⇒ ⇐ ⇔
+
+-Misc
+
+-∞ ℏ ℝ ℤ ℚ ℕ ℂ
+
+-Superscripts
+
+-x² y³ aⁿ e ⁱ
+
+-Subscripts
+
+-H ₂ O CO ₂ x ₙ a ᵢ
++Operators ± × ÷ ≠ ≤ ≥ ≈ ∝∓
+
++Greek Letters α β γ δ ε ζ η θ ι κ λ μ
+
++Set Theory ∈∉⊂⊃∪ ∩ ∅ℵ
+
++Logic ∀∃ ¬ ∧∨⊕ ⟹⟺
+
++Calculus ∫ ∬∮ ∂ ∇ ∑ ∏ √
+
++Arrows → ← ↑ ↓ ↔ ⇒⇐⇔
+
++Misc ∞ ℏℝℤℚℕℂ
+
++Superscripts x² y³ aⁿ eⁱ
+
++ₙ
+
++Subscripts H₂O CO₂ x  aᵢ
+```
+</details>
+
+### classic155_diacritical_marks
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9937
+- **Overall Score:** 0.9975
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4130970 bytes, Reference=37150 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic155_diacritical_marks.pdf
++++ reference/classic155_diacritical_marks.pdf
+@@ -1,20 +1,11 @@
+ Type Examples
+
+-Acute
+
+-á é í ó ú ý ś ź ć ń
+
+-Grave
+
+-à è ì ò ù ỳ
+
+-Circumflex
+
+-â ê î ô û ŵ ŷ ĉ
+
++Acute á é í ó ú ý ś ź ć ń
+
++Grave à è ì ò ù ỳ
+
++Circumflex â ê î ô û ŵ ŷ ĉ
+
+ Umlaut ä ë ï ö ü ÿ
+
+-Tilde
+
+-ã ñ õ ũ ĩ
+
+-Cedilla
+
+-ç ş ţ ḑ ȩ
+
+-Ring
+
+-å ů
+
+-Caron
+
+-č š ž ř ň ě ď ť
+
+-Stroke
+
+-ø đ ħ ł ŧ
+
+-Ligatures
+
+-æ œ ß ĳ
++Tilde ã ñ õ ũ ĩ
+
++Cedilla ç ş ţ ḑ ȩ
+
++Ring å ů
+
++Caron č š ž ř ň ě ď ť
+
++Stroke ø đ ħ ł ŧ
+
++Ligatures æ œ ß ĳ
+```
+</details>
+
+### classic156_rtl_bidi_text
+
+- **Text Similarity:** 0.6038
+- **Visual Average:** 0.9965
+- **Overall Score:** 0.8401
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=3855174 bytes, Reference=30355 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic156_rtl_bidi_text.pdf
++++ reference/classic156_rtl_bidi_text.pdf
+@@ -1,9 +1,5 @@
+ Script Text
+
+-Arabic
+
+-ﺎﺒﺣﺮﻣ ﻢﻟﺎﻌﻟﺎﺑ
+
+-Hebrew
+
+-םולש םלוע
+
+-Persian
+
+-ﻡﻼﺳ ﺍیﻥﺩ
+
+-Urdu
+
+-ﻮﻟیہ ﺍیﻥﺩ
++Arabicمرحبا بالعالم
+
++Hebrewשלום עולם
+
++Persianسالم دنیا
+
++Urduہیلو دنیا
+```
+</details>
+
+### classic157_cjk_extended
+
+- **Text Similarity:** 0.7957
+- **Visual Average:** 0.9876
+- **Overall Score:** 0.9133
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4173419 bytes, Reference=124659 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic157_cjk_extended.pdf
++++ reference/classic157_cjk_extended.pdf
+@@ -1,15 +1,15 @@
+ Variant Text Notes
+
++简体中文测试字符串
+
+ Simplified CN Mainland China
+
+-简体中文测试字符串
+
++繁體中文測試字串
+
+ Traditional CN Taiwan / HK
+
+-繁體中文測試字串
+
++漢字とひらがなとカタカナ
+
+ Japanese mixed Kanji + Hiragana + Katakana
+
+-漢字とひらがなとカタカナ
+
+-Korean mixed Hangul + Hanja
+
+-한글과 漢字 혼용 텍스트
+
++漢字
+
++Korean mixed 한글과 혼용텍스트 Hangul + Hanja
+
+ Rare CJK CJK Ext-B (SMP)
+
+ 𠀀𠀁𠀂𠀃𠀄
+
++ＡＢＣＤ１２３４
+
+ Full-width Full-width alphanumeric
+
+-ＡＢＣＤ１２３４
+
+-Half-width kana Half-width katakana
+
+-ｱｲｳｴｵ ｶｷｸｹｺ
++ｱｲｳｴｵ ｶｷｸｹｺ
+
++Half-width kana Half-width katakana
+```
+</details>
+
+### classic158_emoji_skin_tones
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9817
+- **Overall Score:** 0.9927
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4098674 bytes, Reference=46353 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic158_emoji_skin_tones.pdf
++++ reference/classic158_emoji_skin_tones.pdf
+@@ -1,12 +1,6 @@
+-Gesture
+
+-Skin Tones (light → dark)
+
+-Thumbs up
+
+-👍🏻👍🏼👍🏽👍🏾👍🏿
+
+-Waving
+
+-👋🏻👋🏼👋🏽👋🏾👋🏿
+
+-Clapping
+
+-👏🏻👏🏼👏🏽👏🏾👏🏿
+
+-Raised fist
+
+-✊🏻✊🏼✊🏽✊🏾✊🏿
+
+-Person
+
+-🧑🏻🧑🏼🧑🏽🧑🏾🧑🏿
++Gesture Skin Tones (light → dark)
+
++Thumbs up 👍🏻👍🏼👍🏽👍🏾👍🏿
+
++Waving 👋🏻👋🏼👋🏽👋🏾👋🏿
+
++Clapping 👏🏻👏🏼👏🏽👏🏾👏🏿
+
++Raised fist ✊🏻✊🏼✊🏽✊🏾✊🏿
+
++Person 🧑🏻🧑🏼🧑🏽🧑🏾🧑🏿
+```
+</details>
+
+### classic159_zwj_emoji
+
+- **Text Similarity:** 0.7769
+- **Visual Average:** 0.9893
+- **Overall Score:** 0.9065
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=605144 bytes, Reference=59557 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic159_zwj_emoji.pdf
++++ reference/classic159_zwj_emoji.pdf
+@@ -1,19 +1,15 @@
+ Description Emoji
+
+-Family
+
+-👨 ‍ 👩 ‍ 👧 ‍ 👦
+
+-Couple with heart
+
+-👩 ‍ ❤ ️ ‍ 👨
+
+-Woman technologist
+
+-👩 ‍ 💻
+
+-Man cook
+
+-👨 ‍ 🍳
+
++
+
++Family 👨‍👩‍👧‍👦  
+
++Couple with heart 👩‍❤️‍👨
+
++Woman technologist 👩‍💻
+
++Man cook 👨‍🍳
+
++
+
+ Rainbow flag
+
+-🏳 ️ ‍ 🌈
+
+-Trans flag
+
+-🏳 ️ ‍ ⚧ ️
+
+-Firefighter
+
+-🧑 ‍ 🚒
+
+-Health worker
+
+-🧑 ‍ ⚕ ️
+
+-Service dog
+
+-🐕 ‍ 🦺
++Trans flag 🏳️‍⚧️
+
++ #
+
++Firefighter 🧑‍🚒
+
++⚕
+
++Health worker 🧑‍ ️
+
++
+
++Service dog 🐕‍🦺
+```
+</details>
+
 ### classic15_negative_numbers
 
 - **Text Similarity:** 1.0
@@ -3857,6 +4659,515 @@ Text content: ✅ Identical
 - **File Size:** MiniPdf=1317 bytes, Reference=28526 bytes
 
 Text content: ✅ Identical
+
+### classic160_punctuation_marks
+
+- **Text Similarity:** 0.8655
+- **Visual Average:** 0.995
+- **Overall Score:** 0.9442
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4259789 bytes, Reference=75536 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic160_punctuation_marks.pdf
++++ reference/classic160_punctuation_marks.pdf
+@@ -1,14 +1,10 @@
+ Type Characters
+
+ Latin . , ; : ! ? … — – ' '  « »
+
++。、；：！？「」『』【】（）
+
+ CJK
+
+-。、；：！？「」『』【】（）
+
+-Arabic
+
+-، ؛٪ ؟ ﷽
+
++Arabic ،  ؛ ؟٪ ﷽
+
++।॥꣸꣹꣺
+
+ Devanagari
+
+-। ॥ ꣸ ꣹ ꣺
+
+-Thai
+
+-ฯ ๆ ๏ ๚ ๛
+
+-Misc brackets
+
+-⟨⟩ ⟪⟫ ⌈⌉ ⌊⌋ ‖
+
+-Typographic
+
+-† ‡ § ¶ © ® ™ ℠
++Thai ฯๆ๏๚๛
+
++Misc brackets ⟨⟩ ⟪⟫ ‖ ⌈⌉⌊⌋
+
++Typographic † ‡ § ¶ © ® ™ ℠
+```
+</details>
+
+### classic161_box_drawing
+
+- **Text Similarity:** 0.8822
+- **Visual Average:** 0.9929
+- **Overall Score:** 0.95
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4288530 bytes, Reference=55369 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic161_box_drawing.pdf
++++ reference/classic161_box_drawing.pdf
+@@ -1,13 +1,9 @@
+ Type Characters
+
+-Light box
+
+-┌──┬──┐│ │ │├──┼──┤└──┴──┘
+
+-Heavy box
+
+-┏━━┳━━┓┃ ┃ ┃┣━━╋━━┫┗━━┻━━┛
+
+-Double box
+
+-╔══╦══╗║ ║ ║╠══╬══╣╚══╩══╝
+
+-Blocks
+
+-▀ ▁▂▃▄▅▆▇█ ░ ▒ ▓
+
+-Geometric
+
+-■□▪▫▲△▼▽◆◇○●◎
+
+-Braille
+
+-⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊
++Light box ┌──┬──┐│  │  │├──┼──┤└──┴──┘
+
++Heavy box ┏━━┳━━┓┃  ┃  ┃┣━━╋━━┫┗━━┻━━┛
+
++Double box ╔══╦══╗║  ║  ║╠══╬══╣╚══╩══╝
+
++▁▂▃▅▆▇
+
++Blocks ▀ ▄ █ ░▒▓
+
++◆◇ ◎
+
++Geometric ■□▪▫▲ △▽ ▼ ○●
+
++Braille ⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊
+```
+</details>
+
+### classic162_cjk_emoji_styled
+
+- **Text Similarity:** 0.6703
+- **Visual Average:** 0.9913
+- **Overall Score:** 0.8646
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=430619 bytes, Reference=78504 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic162_cjk_emoji_styled.pdf
++++ reference/classic162_cjk_emoji_styled.pdf
+@@ -1,9 +1,13 @@
+ Icon Dish Price Rating
+
++寿司
+
++🍣 ★★★★★
+
+ ¥1,200
+
+-🍣 寿司 ★★★★★
+
++ラーメン
+
++🍜 ★★★★
+
+ ¥850
+
+-🍜 ラーメン ★★★★
+
+-¥1,500
+
+-🍱 弁当 ★★★★★
+
+-¥400
+
+-🍙 おにぎり ★★★
++弁当
+
++★★★★★
+
++🍱 ¥1,500
+
++おにぎり
+
++★★★
+
++🍙 ¥400
+```
+</details>
+
+### classic163_cyrillic_alphabets
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9911
+- **Overall Score:** 0.9964
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=3953250 bytes, Reference=35137 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic163_cyrillic_alphabets.pdf
++++ reference/classic163_cyrillic_alphabets.pdf
+@@ -1,11 +1,6 @@
+ Language Sample Text
+
+-Russian
+
+-Съешь ещё этих мягких французских булок, да выпей чаю.
+
+-Ukrainian
+
+-Жебракують філософи при ґанку церкви в Гадячі.
+
+-Serbian
+
+-Ђурађ Бранковић је био владар Србије.
+
+-Bulgarian
+
+-Щъркел яде бялата жаба.
+
+-Mongolian
+
+-Би монгол хэл дээр бичиж байна.
++Russian Съешь ещё этих мягких французских булок, да выпей чаю.
+
++Ukrainian Жебракують філософи при ґанку церкви в Гадячі.
+
++Serbian Ђурађ Бранковић је био владар Србије.
+
++Bulgarian Щъркел яде бялата жаба.
+
++Mongolian Би монгол хэл дээр бичиж байна.
+```
+</details>
+
+### classic164_indic_scripts
+
+- **Text Similarity:** 0.6882
+- **Visual Average:** 0.9958
+- **Overall Score:** 0.8736
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=275521 bytes, Reference=38784 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic164_indic_scripts.pdf
++++ reference/classic164_indic_scripts.pdf
+@@ -1,11 +1,11 @@
+ Script Sample
+
++नमस्ते
+
+ Devanagari
+
+-नमस्ते
+
++வணக்கம்
+
+ Tamil
+
+-வணக்கம்
+
++নমস্কার
+
+ Bengali
+
+-নমস্কার
+
++నమస్కారం
+
+ Telugu
+
+-నమస్కారం
+
+-Gujarati
+
+-નમસ્તે
++નમસ્તે
+
++Gujarati
+```
+</details>
+
+### classic165_southeast_asian
+
+- **Text Similarity:** 0.9127
+- **Visual Average:** 0.987
+- **Overall Score:** 0.9599
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=3948239 bytes, Reference=68897 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic165_southeast_asian.pdf
++++ reference/classic165_southeast_asian.pdf
+@@ -1,11 +1,9 @@
+ Script Sample
+
+-Thai
+
+-ภาษาไทยเป็นภาษาที่มีวรรณยุกต์
+
++Thai ภาษาไทยเป็นภาษาที่มีวรรณยุกต์
+
++ພາສາລາວເປັນພາສາທີ່ສວຍງາມ
+
+ Lao
+
+-ພາສາລາວເປັນພາສາທີ່ສວຍງາມ
+
+-Myanmar
+
+-မြန်မာဘာသာစကားသည် လှပသည်
+
++Myanmar မြန်မဘသစကသည်လှပသည်
+
++ភាសាខ្មែ រជាភាសាចំណាស់
+
+ Khmer
+
+-ភាសាខ្មែរជាភាសាចំណាស់
+
+ Tibetan
+
+ བོད་ཀྱི་སྐད་ཡིག་ནི་གལ་ཆེན་པོ་ཡིན།
+```
+</details>
+
+### classic166_emoji_progress
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9659
+- **Overall Score:** 0.9864
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4095991 bytes, Reference=40333 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic166_emoji_progress.pdf
++++ reference/classic166_emoji_progress.pdf
+@@ -1,13 +1,7 @@
+ Task Status Progress
+
+-Design
+
+-✅ 🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩 100%
+
+-Frontend
+
+-🔄 🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜ 70%
+
+-Backend
+
+-🔄 🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜ 50%
+
+-Testing
+
+-⏳ 🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜ 20%
+
+-Deploy
+
+-❌ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%
+
+-Docs
+
+-🔄 🟩🟩🟩🟩🟩🟩🟩🟩⬜⬜ 80%
++Design ✅ 🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩 100%
+
++Frontend 🔄 🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜ 70%
+
++Backend 🔄 🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜ 50%
+
++Testing ⏳ 🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜ 20%
+
++Deploy ❌ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%
+
++Docs 🔄 🟩🟩🟩🟩🟩🟩🟩🟩⬜⬜ 80%
+```
+</details>
+
+### classic167_musical_symbols
+
+- **Text Similarity:** 0.7551
+- **Visual Average:** 0.9957
+- **Overall Score:** 0.9003
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4163889 bytes, Reference=78122 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic167_musical_symbols.pdf
++++ reference/classic167_musical_symbols.pdf
+@@ -1,11 +1,9 @@
+ Category Symbols
+
+-Music
+
+-♩ ♪ ♫ ♬ 🎵 🎶
+
+-Chess
+
+-♔♕♖♗♘♙
+
+-Zodiac
+
+-♈♉♊♋♌♍♎♏♐♑♒♓
+
++♩♪♫♬
+
++Music 🎵🎶
+
++Chess ♔♕♖♗♘♙
+
++Zodiac ♈♉♊♋♌♍♎♏♐♑♒♓
+
++⚀⚁⚂⚃⚄⚅
+
+ Dice
+
+-⚀ ⚁ ⚂ ⚃ ⚄ ⚅
+
+-Weather
+
+-☀ ☁ ☂ ☃ ❄ ☔
++☀☁☂☃
+
++Weather ❄ ☔
+```
+</details>
+
+### classic168_mixed_ltr_rtl_styled
+
+- **Text Similarity:** 0.8718
+- **Visual Average:** 0.9908
+- **Overall Score:** 0.945
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4131663 bytes, Reference=43114 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic168_mixed_ltr_rtl_styled.pdf
++++ reference/classic168_mixed_ltr_rtl_styled.pdf
+@@ -1,7 +1,5 @@
+ Code Name Price
+
+ EN-001 Programming Book $29.99
+
+ FR-002 Livre de code €25.00
+
+-AR-003 50 SAR
+
+-ﺏﺎﺘﻛ ﺔﺠﻣﺮﺑ
+
+-HE-004
+
+-רפס דוק ₪120
++AR-003كتاب برمجة50 SAR
+
++HE-004ספר קוד₪120
+```
+</details>
+
+### classic169_korean_invoice
+
+- **Text Similarity:** 0.7196
+- **Visual Average:** 0.9907
+- **Overall Score:** 0.8841
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4171081 bytes, Reference=55693 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic169_korean_invoice.pdf
++++ reference/classic169_korean_invoice.pdf
+@@ -1,13 +1,13 @@
+-거래명세서 (Transaction Statement)
+
++거래명세서
+
++(Transaction Statement)
+
+ 번호 상품명 수량 단가 금액
+
+-1 2
+
+-노트북 컴퓨터 ₩1,200,000 ₩2,400,000
+
+-2 5
+
+-무선 마우스 ₩25,000 ₩125,000
+
+-3 2
+
+-모니터 27 인치 ₩350,000 ₩700,000
+
+-4 3
+
+-키보드 ( 기계식 ) ₩89,000 ₩267,000
+
+-5 10
+
+-USB 허브 ₩15,000 ₩150,000
+
+-합계 ₩3,642,000
++1 노트북컴퓨터 2 ₩1,200,000 ₩2,400,000
+
++2 무선마우스 5 ₩25,000 ₩125,000
+
++모니터 인치
+
++3 27 2 ₩350,000 ₩700,000
+
++키보드 기계식
+
++4 ( ) 3 ₩89,000 ₩267,000
+
++허브
+
++5 USB 10 ₩15,000 ₩150,000
+
++합계
+
++₩3,642,000
+```
+</details>
 
 ### classic16_percentage_strings
 
@@ -3887,6 +5198,638 @@ Text content: ✅ Identical
 ```
 </details>
 
+### classic170_emoji_dashboard
+
+- **Text Similarity:** 0.9216
+- **Visual Average:** 0.9869
+- **Overall Score:** 0.9634
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=150016 bytes, Reference=50748 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic170_emoji_dashboard.pdf
++++ reference/classic170_emoji_dashboard.pdf
+@@ -1,13 +1,7 @@
+ Metric Value Target
+
+-Revenue $1.2M $1.0M
+
+-🟢
+
+-Pipeline $800K $900K
+
+-🟡
+
+-Churn Rate 5.2% 3.0%
+
+-🔴
+
+-NPS Score 72 65
+
+-🟢
+
+-Response Time 2.1s 1.5s
+
+-🟡
+
+-Uptime 99.95% 99.9%
+
+-🟢
++🟢 Revenue $1.2M $1.0M
+
++🟡 Pipeline $800K $900K
+
++🔴 Churn Rate 5.2% 3.0%
+
++🟢 NPS Score 72 65
+
++🟡 Response Time 2.1s 1.5s
+
++🟢 Uptime 99.95% 99.9%
+```
+</details>
+
+### classic171_ipa_phonetic
+
+- **Text Similarity:** 0.9478
+- **Visual Average:** 0.9929
+- **Overall Score:** 0.9763
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4140233 bytes, Reference=41195 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic171_ipa_phonetic.pdf
++++ reference/classic171_ipa_phonetic.pdf
+@@ -1,15 +1,8 @@
+ Category IPA Symbols
+
+-Plosives
+
+-p b t d ʈ ɖ c ɟ k ɡ q ɢ ʔ
+
+-Nasals
+
+-m ɱ n ɳ ɲ ŋ ɴ
+
+-Fricatives
+
+-ɸ β f v θ ð s z ʃ ʒ ʂ ʐ ç ʝ x ɣ
+
+-Vowels
+
+-i y ɨ ʉ ɯ u e ø ɘ ɵ ɤ o ɛ œ ɜ ɞ ʌ ɔ æ a ɶ ɑ ɒ
+
+-Tones
+
+-˥ ˦ ˧ ˨ ˩ ˥˩ ˩˥
+
+-Diacritics
+
+-ʰ ʷ ʲ ˠ ˤ ⁿ ˡ
+
+-Example word
+
+-/ ˌɪ nt əˈ næ ʃə n ə l/ (international)
++Plosives p b t d ʈ ɖ c ɟ k ɡ q ɢ ʔ
+
++Nasals m ɱ n ɳ ɲ ŋ ɴ
+
++Fricatives ɸ β f v θ ð s z ʃ ʒ ʂ ʐ ç ʝ x ɣ
+
++Vowels i y ɨ ʉ ɯ u e ø ɘ ɵ ɤ o ɛ œ ɜ ɞ ʌ ɔ æ a ɶ ɑ ɒ
+
++Tones ˥ ˦ ˧ ˨ ˩ ˥˩ ˩˥
+
++Diacritics ʰ ʷ ʲ ˠ ˤ ⁿ ˡ
+
++Example word /ˌɪntəˈnæʃənəl/ (international)
+```
+</details>
+
+### classic172_emoji_timeline
+
+- **Text Similarity:** 0.8945
+- **Visual Average:** 0.9884
+- **Overall Score:** 0.9532
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=152556 bytes, Reference=53459 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic172_emoji_timeline.pdf
++++ reference/classic172_emoji_timeline.pdf
+@@ -1,17 +1,9 @@
+ Date Icon Milestone Status
+
+-2025-01-15 Idea conceived
+
+-💡 ✅
+
+-2025-02-01 Requirements gathered
+
+-📋 ✅
+
+-2025-03-10 Design completed
+
+-🎨 ✅
+
+-2025-04-20 Development started
+
+-🔨 ✅
+
+-2025-06-15 Testing phase
+
+-🧪 🔄
+
+-2025-07-01 Bug fixing
+
+-🐛 🔄
+
+-2025-08-01 Launch day
+
+-🚀 ⏳
+
+-2025-09-01 Post-launch review
+
+-📊 ⏳
++2025-01-15 💡 Idea conceived ✅
+
++2025-02-01 📋 Requirements gathered ✅
+
++2025-03-10 🎨 Design completed ✅
+
++2025-04-20 🔨 Development started ✅
+
++2025-06-15 🧪 Testing phase 🔄
+
++2025-07-01 🐛 Bug fixing 🔄
+
++2025-08-01 🚀 Launch day ⏳
+
++2025-09-01 📊 Post-launch review ⏳
+```
+</details>
+
+### classic173_african_languages
+
+- **Text Similarity:** 0.7804
+- **Visual Average:** 0.9902
+- **Overall Score:** 0.9082
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4127821 bytes, Reference=41297 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic173_african_languages.pdf
++++ reference/classic173_african_languages.pdf
+@@ -1,12 +1,10 @@
+ Language Greeting Region
+
+ Swahili Habari! Karibu sana. East Africa
+
+-Amharic Ethiopia
+
+-ሰላም! እንኳን ደህና መጣህ.
+
+-Yoruba Nigeria
+
+-Ẹ kú àár ọ̀ ! Ẹ kú al ẹ́ !
+
++ሰላም እንኳንደህናመጣህ
+
++Amharic ! . Ethiopia
+
++Yoruba Ẹ kú àárọ̀! Ẹ kú alẹ́! Nigeria
+
+ Zulu Sawubona! Unjani? South Africa
+
+ Hausa Sannu! Barka da zuwa. West Africa
+
+-Igbo Nigeria
+
+-Nn ọọ ! Ked ụ ?
+
+-Tigrinya Eritrea
+
+-ሰላም! ከመይ ኣለኻ?
++Igbo Nnọọ! Kedụ? Nigeria
+
++ሰላም ከመይኣለኻ
+
++Tigrinya ! ? Eritrea
+```
+</details>
+
+### classic174_technical_symbols
+
+- **Text Similarity:** 0.8705
+- **Visual Average:** 0.9889
+- **Overall Score:** 0.9438
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4163547 bytes, Reference=45148 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic174_technical_symbols.pdf
++++ reference/classic174_technical_symbols.pdf
+@@ -1,14 +1,10 @@
+ Category Symbols / Examples
+
+-SI Units kg * m * s * A * K * mol * cd
+
+-Derived
+
+-N · Pa · J · W · V · Ω · Hz
+
+-Prefixes
+
+-μ (micro) · m (milli) · k (kilo) · M (mega) · G (giga)
+
+-Electrical
+
+-Ω kΩ MΩ · μF nF pF · mH μH
+
+-Temp 100 degC = 212 degF = 373.15 K
+
++SI Units kg · m · s · A · K · mol · cd
+
++Derived N · Pa · J · W · V · Ω · Hz
+
++Prefixes μ (micro) · m (milli) · k (kilo) · M (mega) · G (giga)
+
++Electrical Ω kΩ MΩ · μF nF pF · mH μH
+
++Temp 100°C = 212°F = 373.15 K
+
+ Copyright © 2025 Company™ — All Rights Reserved®
+
+-Fractions
+
+-½ ⅓ ¼ ⅕ ⅙ ⅛ ⅔ ¾ ⅘
+
+-Roman nums
+
+-Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ Ⅺ Ⅻ
++Fractions ½ ⅓ ¼ ⅕ ⅙ ⅛ ⅔ ¾ ⅘
+
++ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫ
+
++Roman nums
+```
+</details>
+
+### classic175_multiscript_catalog
+
+- **Text Similarity:** 0.8296
+- **Visual Average:** 0.9855
+- **Overall Score:** 0.926
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=819319 bytes, Reference=98125 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic175_multiscript_catalog.pdf
++++ reference/classic175_multiscript_catalog.pdf
+@@ -1,17 +1,11 @@
+ # Product (EN) Product (Local) Price Icon
+
+-1 Green Tea ¥500
+
+-緑茶 🍵
+
+-2 Kimchi
+
+-김치 ₩3,000 🥬
+
+-3 Samosa
+
+-समोसा ₹ 50 🥟
+
+-4 Croissant Croissant €2.50
+
+-🥐
+
+-5 Taco Taco $3.99
+
+-🌮
+
+-6 Borscht
+
+-Борщ ₽ 250 🍲
+
+-7 Falafel
+
+-ﻞﻓﻼﻓ ₪15 🧆
+
+-8 Pad Thai
+
+-ผัดไทย ฿ 80 🍜
++緑茶
+
++1 Green Tea ¥500 🍵
+
++2 Kimchi 김치 ₩3,000 🥬
+
++समोसा
+
++3 Samosa ₹50 🥟
+
++4 Croissant Croissant €2.50 🥐
+
++5 Taco Taco $3.99 🌮
+
++6 Borscht Борщ ₽250 🍲
+
++7 Falafelفالفل₪15 🧆
+
++8 Pad Thai ผัดไทย ฿80 🍜
+```
+</details>
+
+### classic176_combining_characters
+
+- **Text Similarity:** 0.8706
+- **Visual Average:** 0.9932
+- **Overall Score:** 0.9455
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4339243 bytes, Reference=43113 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic176_combining_characters.pdf
++++ reference/classic176_combining_characters.pdf
+@@ -1,13 +1,8 @@
+ Type Examples
+
+-Single combining
+
+-é = e + ́ ñ = n +
+
+-Double combining
+
+-ệ = e + ̣ +
+
+-Vietnamese
+
+-ắ ằ ẵ ẳ ặ ố ồ ỗ ổ ộ ứ ừ ữ ử ự
+
+-Zalgo-like
+
+-H e ̵̖̘ ̷̝̣ l l ̶̤ o ̴̥
+
+-Precomposed vs decomposed
+
+-ü (precomposed) vs u ̈ (decomposed)
+
+-Hangul Jamo
+
+-ㅎ ㅏ ㄴ ㄱ ㅡ ㄹ → 한글
++Single combining é = e + ́   ñ = n + ̃
+
++Double combining ệ = e + ̣ + ̂
+
++Vietnamese ắ ằ ẵ ẳ ặ ố ồ ỗ ổ ộ ứ ừ ữ ử ự
+
++Zalgo-like H̵̖̘e̷̝̣l̶̤l̴̥o̸̮
+
++Precomposed vs decomposed ü (precomposed) vs ü (decomposed)
+
++ㅎ ㅏ ㄴ ㄱ ㅡ ㄹ →
+
++Hangul Jamo 한글
+```
+</details>
+
+### classic177_emoji_calendar
+
+- **Text Similarity:** 0.72
+- **Visual Average:** 0.9901
+- **Overall Score:** 0.884
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=430189 bytes, Reference=68347 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic177_emoji_calendar.pdf
++++ reference/classic177_emoji_calendar.pdf
+@@ -1,25 +1,15 @@
+ Month Emoji Event
+
+-January New Year
+
+-🎆
+
+-February Valentine's Day
+
+-💝
+
+-March Spring Equinox
+
+-🌸
+
+-April Easter
+
+-🐣
+
+-May Mother's Day
+
+-👩
+
++January 🎆 New Year
+
++February 💝 Valentine's Day
+
++March 🌸 Spring Equinox
+
++April 🐣 Easter
+
++May 👩 Mother's Day
+
++☀️
+
+ June Summer Solstice
+
+-☀ ️
+
+-July Independence Day
+
+-🎆
+
+-August Vacation Season
+
+-🏖 ️
+
+-September Back to School
+
+-📚
+
+-October Halloween
+
+-🎃
+
+-November Thanksgiving
+
+-🦃
+
+-December Christmas
+
+-🎄
++July 🎆 Independence Day
+
++%
+
++August  🏖️ Vacation Season
+
++September 📚 Back to School
+
++October 🎃 Halloween
+
++November 🦃 Thanksgiving
+
++December 🎄 Christmas
+```
+</details>
+
+### classic178_caucasus_ethiopic
+
+- **Text Similarity:** 0.9313
+- **Visual Average:** 0.9913
+- **Overall Score:** 0.969
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4138152 bytes, Reference=41776 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic178_caucasus_ethiopic.pdf
++++ reference/classic178_caucasus_ethiopic.pdf
+@@ -1,11 +1,7 @@
+ Script Sample Text
+
+-Georgian
+
+-საქართველო არის ძველი ცივილიზაცია .
+
+-Armenian
+
+-Հայաստանը հին քաղաքակրթություն ունի .
+
++Georgian საქართველო არის ძველი ცივილიზაცია.
+
++Armenian Հայաստանը հին քաղաքակրթություն ունի.
+
++ኢትዮጵያየጥንታዊሥልጣኔምድርናት።
+
+ Ethiopic
+
+-ኢትዮጵያ የጥንታዊ ሥልጣኔ ምድር ናት።
+
+-Georgian mkhedru
+
+-ა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ
+
+-Armenian alphabe
+
+-Ա Բ Գ Դ Ե Զ Է Ը Թ Ժ Ի Լ Խ Ծ Կ
++Georgian mkhedrა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ
+
++Armenian alphabԱ Բ Գ Դ Ե Զ Է Ը Թ Ժ Ի Լ Խ Ծ Կ
+```
+</details>
+
+### classic179_emoji_inventory
+
+- **Text Similarity:** 0.7887
+- **Visual Average:** 0.9854
+- **Overall Score:** 0.9096
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4101485 bytes, Reference=72495 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic179_emoji_inventory.pdf
++++ reference/classic179_emoji_inventory.pdf
+@@ -1,21 +1,14 @@
+ Icon Item Stock Min Status
+
+-Smartphone 150 50
+
+-📱 🟢 OK
+
+-Laptop 42 30
+
+-💻 🟡 Low
+
+-Printer 8 10
+
+-🖨 ️ 🔴 Reorder
+
+-Headphones 200 40
+
+-🎧 🟢 OK
+
+-Keyboard 75 25
+
+-⌨ ️ 🟢 OK
+
+-Mouse 18 20
+
+-🖱 ️ 🔴 Reorder
+
+-Camera 12 10
+
+-📷 🟡 Low
+
+-Charger 300 100
+
+-🔌 🟢 OK
+
+-USB Drive 5 15
+
+-💾 🔴 Reorder
+
+-Monitor 35 20
+
+-🖥 ️ 🟢 OK
++📱 Smartphone 150 50 🟢 OK
+
++💻 Laptop 42 30 🟡 Low
+
++
+
++ 🖨️ Printer 8 10 🔴 Reorder
+
++🎧 Headphones 200 40 🟢 OK
+
++⌨️ Keyboard 75 25 🟢 OK
+
++
+
++ 🖱️ Mouse 18 20 🔴 Reorder
+
++📷 Camera 12 10 🟡 Low
+
++🔌 Charger 300 100 🟢 OK
+
++💾 USB Drive 5 15 🔴 Reorder
+
++
+
++ 🖥️ Monitor 35 20 🟢 OK
+```
+</details>
+
 ### classic17_currency_strings
 
 - **Text Similarity:** 1.0
@@ -3896,6 +5839,71 @@ Text content: ✅ Identical
 - **File Size:** MiniPdf=1334 bytes, Reference=29862 bytes
 
 Text content: ✅ Identical
+
+### classic180_polyglot_paragraph
+
+- **Text Similarity:** 0.8468
+- **Visual Average:** 0.9921
+- **Overall Score:** 0.9356
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4310746 bytes, Reference=79238 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic180_polyglot_paragraph.pdf
++++ reference/classic180_polyglot_paragraph.pdf
+@@ -1,16 +1,13 @@
+ Language Greeting
+
+ English The quick brown fox.
+
++速い茶色の狐。
+
+ Japanese
+
+-速い茶色の狐。
+
+-Korean
+
+-빠른 갈색 여우 .
+
+-Russian
+
+-Быстрая бурая лиса.
+
+-Greek
+
+-Η γρήγορη αλεπού.
+
+-Thai
+
+-สุนัขจิ้งจอกสีน้ำตาล
+
++빠른갈색여우
+
++Korean .
+
++Russian Быстрая бурая лиса.
+
++Greek Η γρήγορη αλεπού.
+
++Thai สุนัขจิ้งจอกสีน้ำตาล
+
++तेज़भूरीलोमड़ी
+
+ Hindi
+
+-तेज़ भूरी लोमड़ी
+
+-Emoji
+
+-🦊 ➡ ️ 🐕
++➡️
+
++Emoji 🐕
+```
+</details>
 
 ### classic18_large_dataset
 
@@ -3949,11 +5957,11 @@ Text content: ✅ Identical
 
 ### classic23_unicode_text
 
-- **Text Similarity:** 0.7984
-- **Visual Average:** 0.9948
-- **Overall Score:** 0.9173
+- **Text Similarity:** 0.7884
+- **Visual Average:** 0.9951
+- **Overall Score:** 0.9134
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=334542 bytes, Reference=67722 bytes
+- **File Size:** MiniPdf=816192 bytes, Reference=67722 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3983,11 +5991,11 @@ Text content: ✅ Identical
 
 -Arabic
 
--ملاعلا ابحرم
+-ﺎﺒﺣﺮﻣ ﻢﻟﺎﻌﻟﺍ
 
 -Emoji
 
--���� ✅❌
+-😀🎉 ✅❌
 +Korean 안녕하세요세계
 
 +Arabicمرحبا العالم
@@ -4636,7 +6644,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9953
 - **Overall Score:** 0.9112
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=345252 bytes, Reference=88207 bytes
+- **File Size:** MiniPdf=291022 bytes, Reference=88207 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5058,7 +7066,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9874
 - **Overall Score:** 0.9788
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=332309 bytes, Reference=48755 bytes
+- **File Size:** MiniPdf=4096595 bytes, Reference=48755 bytes
 
 <details><summary>Text Diff</summary>
 

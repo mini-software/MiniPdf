@@ -49,8 +49,8 @@ FILES = {
         "path": os.path.join(REPO_ROOT, "README.md"),
         "img_prefix": "tests/MiniPdf.Benchmark/reports/images/",
         "summary_patterns": {
-            "count_line": r"\*\*120 classic test cases\*\*.*?30 chart cases\)",
-            "count_replace": f"**{total_count} classic test cases** (including 30 image-embedding cases, 30 chart cases, and 30 styling cases)",
+            "count_line": r"\*\*\d+ classic test cases\*\*.*?30 chart cases.*?\)",
+            "count_replace": f"**{total_count} classic test cases** (including 30 image-embedding cases, 30 chart cases, 30 styling cases, and 30 multilingual/emoji cases)",
             "table_excellent": (r"(\| 🟢 Excellent \| )\d+", f"\\g<1>{excellent_count}"),
             "table_acceptable": (r"(\| 🟡 Acceptable \| )\d+", f"\\g<1>{acceptable_count}"),
             "table_needs": (r"(\| 🔴 Needs Improvement \| )\d+", f"\\g<1>{needs_improve_count}"),
@@ -61,8 +61,8 @@ FILES = {
         "path": os.path.join(REPO_ROOT, "README.zh-CN.md"),
         "img_prefix": "tests/MiniPdf.Benchmark/reports/images/",
         "summary_patterns": {
-            "count_line": r"\*\*120 个经典测试用例\*\*.*?30 个图表测试\）",
-            "count_replace": f"**{total_count} 个经典测试用例**（包含 30 个图片嵌入测试、30 个图表测试和 30 个样式测试）",
+            "count_line": r"\*\*\d+ 个经典测试用例\*\*.*?30 个.*?测试.*?）",
+            "count_replace": f"**{total_count} 个经典测试用例**（包含 30 个图片嵌入测试、30 个图表测试、30 个样式测试和 30 个多语言/表情符号测试）",
             "table_excellent": (r"(\| 🟢 优秀 \| )\d+", f"\\g<1>{excellent_count}"),
             "table_acceptable": (r"(\| 🟡 可接受 \| )\d+", f"\\g<1>{acceptable_count}"),
             "table_needs": (r"(\| 🔴 待改进 \| )\d+", f"\\g<1>{needs_improve_count}"),
@@ -73,8 +73,8 @@ FILES = {
         "path": os.path.join(REPO_ROOT, "documents", "README.zh-TW.md"),
         "img_prefix": "../tests/MiniPdf.Benchmark/reports/images/",
         "summary_patterns": {
-            "count_line": r"\*\*120 個經典測試案例\*\*.*?30 個圖表測試\）",
-            "count_replace": f"**{total_count} 個經典測試案例**（包含 30 個圖片嵌入測試、30 個圖表測試和 30 個樣式測試）",
+            "count_line": r"\*\*\d+ 個經典測試案例\*\*.*?30 個.*?測試.*?）",
+            "count_replace": f"**{total_count} 個經典測試案例**（包含 30 個圖片嵌入測試、30 個圖表測試、30 個樣式測試和 30 個多語言/表情符號測試）",
             "table_excellent": (r"(\| 🟢 優秀 \| )\d+", f"\\g<1>{excellent_count}"),
             "table_acceptable": (r"(\| 🟡 可接受 \| )\d+", f"\\g<1>{acceptable_count}"),
             "table_needs": (r"(\| 🔴 待改進 \| )\d+", f"\\g<1>{needs_improve_count}"),
@@ -85,8 +85,8 @@ FILES = {
         "path": os.path.join(REPO_ROOT, "documents", "README.ja.md"),
         "img_prefix": "../tests/MiniPdf.Benchmark/reports/images/",
         "summary_patterns": {
-            "count_line": r"\*\*120 件のクラシックテストケース\*\*.*?チャート 30 件を含む\）",
-            "count_replace": f"**{total_count} 件のクラシックテストケース**（画像埋め込み 30 件、チャート 30 件、スタイリング 30 件を含む）",
+            "count_line": r"\*\*\d+ 件のクラシックテストケース\*\*.*?チャート 30 件.*?）",
+            "count_replace": f"**{total_count} 件のクラシックテストケース**（画像埋め込み 30 件、チャート 30 件、スタイリング 30 件、多言語/絵文字 30 件を含む）",
             "table_excellent": (r"(\| 🟢 優秀 \| )\d+", f"\\g<1>{excellent_count}"),
             "table_acceptable": (r"(\| 🟡 許容範囲 \| )\d+", f"\\g<1>{acceptable_count}"),
             "table_needs": (r"(\| 🔴 要改善 \| )\d+", f"\\g<1>{needs_improve_count}"),
@@ -97,8 +97,8 @@ FILES = {
         "path": os.path.join(REPO_ROOT, "documents", "README.ko.md"),
         "img_prefix": "../tests/MiniPdf.Benchmark/reports/images/",
         "summary_patterns": {
-            "count_line": r"\*\*120개 클래식 테스트 케이스\*\*.*?차트 30개 포함）",
-            "count_replace": f"**{total_count}개 클래식 테스트 케이스**（이미지 임베딩 30개, 차트 30개, 스타일링 30개 포함）",
+            "count_line": r"\*\*\d+개 클래식 테스트 케이스\*\*.*?차트 30개.*?）",
+            "count_replace": f"**{total_count}개 클래식 테스트 케이스**（이미지 임베딩 30개, 차트 30개, 스타일링 30개, 다국어/이모지 30개 포함）",
             "table_excellent": (r"(\| 🟢 우수 \| )\d+", f"\\g<1>{excellent_count}"),
             "table_acceptable": (r"(\| 🟡 허용 \| )\d+", f"\\g<1>{acceptable_count}"),
             "table_needs": (r"(\| 🔴 개선 필요 \| )\d+", f"\\g<1>{needs_improve_count}"),
@@ -109,8 +109,8 @@ FILES = {
         "path": os.path.join(REPO_ROOT, "documents", "README.it.md"),
         "img_prefix": "../tests/MiniPdf.Benchmark/reports/images/",
         "summary_patterns": {
-            "count_line": r"\*\*120 casi di test classici\*\*.*?30 casi con grafici\)",
-            "count_replace": f"**{total_count} casi di test classici** (inclusi 30 casi con immagini incorporate, 30 casi con grafici e 30 casi di stile)",
+            "count_line": r"\*\*\d+ casi di test classici\*\*.*?30 casi con grafici.*?\)",
+            "count_replace": f"**{total_count} casi di test classici** (inclusi 30 casi con immagini incorporate, 30 casi con grafici, 30 casi di stile e 30 casi multilingue/emoji)",
             "table_excellent": (r"(\| 🟢 Eccellente \| )\d+", f"\\g<1>{excellent_count}"),
             "table_acceptable": (r"(\| 🟡 Accettabile \| )\d+", f"\\g<1>{acceptable_count}"),
             "table_needs": (r"(\| 🔴 Da migliorare \| )\d+", f"\\g<1>{needs_improve_count}"),
@@ -121,8 +121,8 @@ FILES = {
         "path": os.path.join(REPO_ROOT, "documents", "README.fr.md"),
         "img_prefix": "../tests/MiniPdf.Benchmark/reports/images/",
         "summary_patterns": {
-            "count_line": r"\*\*120 cas de test classiques\*\*.*?30 cas de graphiques\)",
-            "count_replace": f"**{total_count} cas de test classiques** (dont 30 cas d'images intégrées, 30 cas de graphiques et 30 cas de style)",
+            "count_line": r"\*\*\d+ cas de test classiques\*\*.*?30 cas de graphiques.*?\)",
+            "count_replace": f"**{total_count} cas de test classiques** (dont 30 cas d'images intégrées, 30 cas de graphiques, 30 cas de style et 30 cas multilingues/emoji)",
             "table_excellent": (r"(\| 🟢 Excellent \| )\d+", f"\\g<1>{excellent_count}"),
             "table_acceptable": (r"(\| 🟡 Acceptable \| )\d+", f"\\g<1>{acceptable_count}"),
             "table_needs": (r"(\| 🔴 À améliorer \| )\d+", f"\\g<1>{needs_improve_count}"),
@@ -228,14 +228,21 @@ def process_file(file_key, file_config):
     # 4. Update individual test case scores
     content = update_scores_in_content(content)
 
-    # 5. Add missing test cases (classic121-150) if not present
-    if "classic121" not in content:
-        # Find the </table> tag and insert new entries before it
-        # Get sorted list of cases from classic121 onwards
-        new_cases = sorted(
-            [item["name"] for item in report_data if item["name"].startswith("classic1") and int(item["name"].split("_")[0][7:]) >= 121],
-            key=lambda x: int(x.split("_")[0][7:])
-        )
+    # 5. Add missing test cases (classic121+) if not present
+    max_classic_in_content = 0
+    for m_num in re.finditer(r'classic(\d+)', content):
+        num = int(m_num.group(1))
+        if num > max_classic_in_content:
+            max_classic_in_content = num
+
+    # Find test cases in report that are beyond what's in the content
+    new_cases = sorted(
+        [item["name"] for item in report_data
+         if item["name"].startswith("classic")
+         and int(item["name"].split("_")[0][7:]) > max_classic_in_content],
+        key=lambda x: int(x.split("_")[0][7:])
+    )
+    if new_cases:
         new_rows = []
         for name in new_cases:
             row = generate_test_case_rows(name, img_prefix)
@@ -245,7 +252,7 @@ def process_file(file_key, file_config):
         if new_rows:
             insert_text = "\n".join(new_rows) + "\n"
             content = content.replace("</table>", insert_text + "</table>")
-            print(f"  Added {len(new_rows)} new test case entries (classic121-150)")
+            print(f"  Added {len(new_rows)} new test case entries (classic{max_classic_in_content+1}+)")
 
     with open(filepath, "w", encoding="utf-8", newline="\n") as f:
         f.write(content)

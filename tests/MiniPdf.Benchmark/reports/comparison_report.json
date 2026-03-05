@@ -1889,6 +1889,231 @@
     "overall_score": 0.9745
   },
   {
+    "name": "classic151_multilingual_greetings",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4350454,
+    "reference_size": 103044,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8485,
+    "flat_text_similarity": 0.8485,
+    "word_text_similarity": 0.7416,
+    "text_diff": "--- minipdf/classic151_multilingual_greetings.pdf\n+++ reference/classic151_multilingual_greetings.pdf\n@@ -1,24 +1,16 @@\n Language Hello Thank you\n\n English Hello Thank you\n\n+你好 谢谢\n\n Chinese\n\n-你好 谢谢\n\n+こんにちは ありがとう\n\n Japanese\n\n-こんにちは ありがとう\n\n-Korean\n\n-안녕하세요 감사합니다\n\n-Thai\n\n-สวัสดี ขอบคุณ\n\n+Korean 안녕하세요 감사합니다\n\n+Thai สวัสดี ขอบคุณ\n\n+नमस्ते धन्यवाद\n\n Hindi\n\n-नमस्ते धन्यवाद\n\n-Arabic\n\n-ﺎﺒﺣﺮﻣ ﺍﺮﻜﺷ\n\n-Hebrew\n\n-םולש הדות\n\n-Greek\n\n-Γεια σου Ευχαριστώ\n\n-Russian\n\n-Привет Спасибо\n\n-Vietnamese Xin chào\n\n-C ả m ơ n\n\n-Turkish Merhaba\n\n-Teşekkürler\n+Arabicمرحبا شكرا\n\n+Hebrewשלום תודה\n\n+Greek Γεια σου Ευχαριστώ\n\n+Russian Привет Спасибо\n\n+Vietnamese Xin chào Cảm ơn\n\n+Turkish Merhaba Teşekkürler",
+    "visual_scores": [
+      0.9893
+    ],
+    "visual_avg": 0.9893,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic151_multilingual_greetings_p1_minipdf.png",
+        "reference_img": "classic151_multilingual_greetings_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9351
+  },
+  {
+    "name": "classic152_emoji_sampler",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 438647,
+    "reference_size": 69423,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7869,
+    "flat_text_similarity": 0.7869,
+    "word_text_similarity": 0.549,
+    "text_diff": "--- minipdf/classic152_emoji_sampler.pdf\n+++ reference/classic152_emoji_sampler.pdf\n@@ -1,17 +1,11 @@\n Category Emoji\n\n-Faces\n\n-😀😃😄😁😆\n\n-Hearts\n\n-❤ ️ 🧡💛💚💙\n\n-Animals\n\n-🐶🐱🐭🐹🐰\n\n-Food\n\n-🍎🍐🍊🍋🍌\n\n-Travel\n\n-✈ ️ 🚗🚌🚂🚀\n\n-Sports\n\n-⚽🏀🏈⚾🎾\n\n-Symbols\n\n-✅❌⚠ ️ 🔴🟢\n\n-Hands\n\n-👍👎👏🤝✌ ️\n+Faces 😀😃😄😁😆\n\n+Hearts ❤️\n\n+Animals 🐶🐱🐭🐹🐰\n\n+Food 🍎🍐🍊🍋🍌\n\n+Travel \u0001\n\n+⚽ ⚾\n\n+Sports 🏀🏈 🎾\n\n+⚠️ \u0004\n\n+Symbols \u0001 🔴🟢\n\n+Hands \u0001 ✌️ \u0002",
+    "visual_scores": [
+      0.9906
+    ],
+    "visual_avg": 0.9906,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic152_emoji_sampler_p1_minipdf.png",
+        "reference_img": "classic152_emoji_sampler_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.911
+  },
+  {
+    "name": "classic153_currency_symbols",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4128579,
+    "reference_size": 41642,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9723,
+    "flat_text_similarity": 0.9723,
+    "word_text_similarity": 0.8598,
+    "text_diff": "--- minipdf/classic153_currency_symbols.pdf\n+++ reference/classic153_currency_symbols.pdf\n@@ -4,16 +4,10 @@\n British Pound £ £1,234.56\n\n Japanese Yen ¥ ¥123,456\n\n Chinese Yuan ¥ ¥1,234.56\n\n-Korean Won\n\n-₩ ₩1,234,560\n\n-Indian Rupee\n\n-₹ ₹ 1,23,456\n\n-Thai Baht\n\n-฿ ฿ 1,234.56\n\n-Russian Ruble\n\n-₽ ₽ 1 234,56\n\n-Turkish Lira\n\n-₺ ₺ 1.234,56\n\n-Bitcoin\n\n-₿ ₿ 0.05\n\n+Korean Won ₩ ₩1,234,560\n\n+Indian Rupee ₹ ₹1,23,456\n\n+Thai Baht ฿ ฿1,234.56\n\n+Russian Ruble ₽ ₽1 234,56\n\n+Turkish Lira ₺ ₺1.234,56\n\n+Bitcoin ₿ ₿0.05\n\n Swiss Franc CHF CHF 1'234.56",
+    "visual_scores": [
+      0.9897
+    ],
+    "visual_avg": 0.9897,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic153_currency_symbols_p1_minipdf.png",
+        "reference_img": "classic153_currency_symbols_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9848
+  },
+  {
+    "name": "classic154_math_symbols",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4620988,
+    "reference_size": 61270,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9012,
+    "flat_text_similarity": 0.9012,
+    "word_text_similarity": 0.6623,
+    "text_diff": "--- minipdf/classic154_math_symbols.pdf\n+++ reference/classic154_math_symbols.pdf\n@@ -1,19 +1,11 @@\n Category Symbols\n\n-Operators\n\n-± × ÷ ≠ ≤ ≥ ≈ ∝ ∓\n\n-Greek Letters\n\n-α β γ δ ε ζ η θ ι κ λ μ\n\n-Set Theory\n\n-∈ ∉ ⊂ ⊃ ∪ ∩ ∅ ℵ\n\n-Logic\n\n-∀ ∃ ¬ ∧ ∨ ⊕ ⟹ ⟺\n\n-Calculus\n\n-∫ ∬ ∮ ∂ ∇ ∑ ∏ √\n\n-Arrows\n\n-→ ← ↑ ↓ ↔ ⇒ ⇐ ⇔\n\n-Misc\n\n-∞ ℏ ℝ ℤ ℚ ℕ ℂ\n\n-Superscripts\n\n-x² y³ aⁿ e ⁱ\n\n-Subscripts\n\n-H ₂ O CO ₂ x ₙ a ᵢ\n+Operators ± × ÷ ≠ ≤ ≥ ≈ ∝∓\n\n+Greek Letters α β γ δ ε ζ η θ ι κ λ μ\n\n+Set Theory ∈∉⊂⊃∪ ∩ ∅ℵ\n\n+Logic ∀∃ ¬ ∧∨⊕ ⟹⟺\n\n+Calculus ∫ ∬∮ ∂ ∇ ∑ ∏ √\n\n+Arrows → ← ↑ ↓ ↔ ⇒⇐⇔\n\n+Misc ∞ ℏℝℤℚℕℂ\n\n+Superscripts x² y³ aⁿ eⁱ\n\n+ₙ\n\n+Subscripts H₂O CO₂ x  aᵢ",
+    "visual_scores": [
+      0.9919
+    ],
+    "visual_avg": 0.9919,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic154_math_symbols_p1_minipdf.png",
+        "reference_img": "classic154_math_symbols_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9572
+  },
+  {
+    "name": "classic155_diacritical_marks",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4130970,
+    "reference_size": 37150,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9557,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/classic155_diacritical_marks.pdf\n+++ reference/classic155_diacritical_marks.pdf\n@@ -1,20 +1,11 @@\n Type Examples\n\n-Acute\n\n-á é í ó ú ý ś ź ć ń\n\n-Grave\n\n-à è ì ò ù ỳ\n\n-Circumflex\n\n-â ê î ô û ŵ ŷ ĉ\n\n+Acute á é í ó ú ý ś ź ć ń\n\n+Grave à è ì ò ù ỳ\n\n+Circumflex â ê î ô û ŵ ŷ ĉ\n\n Umlaut ä ë ï ö ü ÿ\n\n-Tilde\n\n-ã ñ õ ũ ĩ\n\n-Cedilla\n\n-ç ş ţ ḑ ȩ\n\n-Ring\n\n-å ů\n\n-Caron\n\n-č š ž ř ň ě ď ť\n\n-Stroke\n\n-ø đ ħ ł ŧ\n\n-Ligatures\n\n-æ œ ß ĳ\n+Tilde ã ñ õ ũ ĩ\n\n+Cedilla ç ş ţ ḑ ȩ\n\n+Ring å ů\n\n+Caron č š ž ř ň ě ď ť\n\n+Stroke ø đ ħ ł ŧ\n\n+Ligatures æ œ ß ĳ",
+    "visual_scores": [
+      0.9937
+    ],
+    "visual_avg": 0.9937,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic155_diacritical_marks_p1_minipdf.png",
+        "reference_img": "classic155_diacritical_marks_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9975
+  },
+  {
+    "name": "classic156_rtl_bidi_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3855174,
+    "reference_size": 30355,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.6038,
+    "flat_text_similarity": 0.6038,
+    "word_text_similarity": 0.1667,
+    "text_diff": "--- minipdf/classic156_rtl_bidi_text.pdf\n+++ reference/classic156_rtl_bidi_text.pdf\n@@ -1,9 +1,5 @@\n Script Text\n\n-Arabic\n\n-ﺎﺒﺣﺮﻣ ﻢﻟﺎﻌﻟﺎﺑ\n\n-Hebrew\n\n-םולש םלוע\n\n-Persian\n\n-ﻡﻼﺳ ﺍیﻥﺩ\n\n-Urdu\n\n-ﻮﻟیہ ﺍیﻥﺩ\n+Arabicمرحبا بالعالم\n\n+Hebrewשלום עולם\n\n+Persianسالم دنیا\n\n+Urduہیلو دنیا",
+    "visual_scores": [
+      0.9965
+    ],
+    "visual_avg": 0.9965,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic156_rtl_bidi_text_p1_minipdf.png",
+        "reference_img": "classic156_rtl_bidi_text_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8401
+  },
+  {
+    "name": "classic157_cjk_extended",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4173419,
+    "reference_size": 124659,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7957,
+    "flat_text_similarity": 0.4211,
+    "word_text_similarity": 0.7957,
+    "text_diff": "--- minipdf/classic157_cjk_extended.pdf\n+++ reference/classic157_cjk_extended.pdf\n@@ -1,15 +1,15 @@\n Variant Text Notes\n\n+简体中文测试字符串\n\n Simplified CN Mainland China\n\n-简体中文测试字符串\n\n+繁體中文測試字串\n\n Traditional CN Taiwan / HK\n\n-繁體中文測試字串\n\n+漢字とひらがなとカタカナ\n\n Japanese mixed Kanji + Hiragana + Katakana\n\n-漢字とひらがなとカタカナ\n\n-Korean mixed Hangul + Hanja\n\n-한글과 漢字 혼용 텍스트\n\n+漢字\n\n+Korean mixed 한글과 혼용텍스트 Hangul + Hanja\n\n Rare CJK CJK Ext-B (SMP)\n\n 𠀀𠀁𠀂𠀃𠀄\n\n+ＡＢＣＤ１２３４\n\n Full-width Full-width alphanumeric\n\n-ＡＢＣＤ１２３４\n\n-Half-width kana Half-width katakana\n\n-ｱｲｳｴｵ ｶｷｸｹｺ\n+ｱｲｳｴｵ ｶｷｸｹｺ\n\n+Half-width kana Half-width katakana",
+    "visual_scores": [
+      0.9876
+    ],
+    "visual_avg": 0.9876,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic157_cjk_extended_p1_minipdf.png",
+        "reference_img": "classic157_cjk_extended_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9133
+  },
+  {
+    "name": "classic158_emoji_skin_tones",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4098674,
+    "reference_size": 46353,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9549,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/classic158_emoji_skin_tones.pdf\n+++ reference/classic158_emoji_skin_tones.pdf\n@@ -1,12 +1,6 @@\n-Gesture\n\n-Skin Tones (light → dark)\n\n-Thumbs up\n\n-👍🏻👍🏼👍🏽👍🏾👍🏿\n\n-Waving\n\n-👋🏻👋🏼👋🏽👋🏾👋🏿\n\n-Clapping\n\n-👏🏻👏🏼👏🏽👏🏾👏🏿\n\n-Raised fist\n\n-✊🏻✊🏼✊🏽✊🏾✊🏿\n\n-Person\n\n-🧑🏻🧑🏼🧑🏽🧑🏾🧑🏿\n+Gesture Skin Tones (light → dark)\n\n+Thumbs up 👍🏻👍🏼👍🏽👍🏾👍🏿\n\n+Waving 👋🏻👋🏼👋🏽👋🏾👋🏿\n\n+Clapping 👏🏻👏🏼👏🏽👏🏾👏🏿\n\n+Raised fist ✊🏻✊🏼✊🏽✊🏾✊🏿\n\n+Person 🧑🏻🧑🏼🧑🏽🧑🏾🧑🏿",
+    "visual_scores": [
+      0.9817
+    ],
+    "visual_avg": 0.9817,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic158_emoji_skin_tones_p1_minipdf.png",
+        "reference_img": "classic158_emoji_skin_tones_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9927
+  },
+  {
+    "name": "classic159_zwj_emoji",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 605144,
+    "reference_size": 59557,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7769,
+    "flat_text_similarity": 0.7769,
+    "word_text_similarity": 0.4301,
+    "text_diff": "--- minipdf/classic159_zwj_emoji.pdf\n+++ reference/classic159_zwj_emoji.pdf\n@@ -1,19 +1,15 @@\n Description Emoji\n\n-Family\n\n-👨 ‍ 👩 ‍ 👧 ‍ 👦\n\n-Couple with heart\n\n-👩 ‍ ❤ ️ ‍ 👨\n\n-Woman technologist\n\n-👩 ‍ 💻\n\n-Man cook\n\n-👨 ‍ 🍳\n\n+\u0001\n\n+Family 👨‍👩‍👧‍👦 \u0002\u0003 \u0004\n\n+Couple with heart 👩‍❤️‍👨\n\n+Woman technologist 👩‍💻\n\n+Man cook 👨‍🍳\n\n+\u0001\n\n Rainbow flag\n\n-🏳 ️ ‍ 🌈\n\n-Trans flag\n\n-🏳 ️ ‍ ⚧ ️\n\n-Firefighter\n\n-🧑 ‍ 🚒\n\n-Health worker\n\n-🧑 ‍ ⚕ ️\n\n-Service dog\n\n-🐕 ‍ 🦺\n+Trans flag 🏳️‍⚧️\n\n+\u0001 #\n\n+Firefighter 🧑‍🚒\n\n+⚕\n\n+Health worker 🧑‍ ️\n\n+\u0001\n\n+Service dog 🐕‍🦺",
+    "visual_scores": [
+      0.9893
+    ],
+    "visual_avg": 0.9893,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic159_zwj_emoji_p1_minipdf.png",
+        "reference_img": "classic159_zwj_emoji_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9065
+  },
+  {
     "name": "classic15_negative_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1912,6 +2137,256 @@
       }
     ],
     "overall_score": 0.999
+  },
+  {
+    "name": "classic160_punctuation_marks",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4259789,
+    "reference_size": 75536,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8655,
+    "flat_text_similarity": 0.8655,
+    "word_text_similarity": 0.7742,
+    "text_diff": "--- minipdf/classic160_punctuation_marks.pdf\n+++ reference/classic160_punctuation_marks.pdf\n@@ -1,14 +1,10 @@\n Type Characters\n\n Latin . , ; : ! ? … — – ' '  « »\n\n+。、；：！？「」『』【】（）\n\n CJK\n\n-。、；：！？「」『』【】（）\n\n-Arabic\n\n-، ؛٪ ؟ ﷽\n\n+Arabic ،  ؛ ؟٪ ﷽\n\n+।॥꣸꣹꣺\n\n Devanagari\n\n-। ॥ ꣸ ꣹ ꣺\n\n-Thai\n\n-ฯ ๆ ๏ ๚ ๛\n\n-Misc brackets\n\n-⟨⟩ ⟪⟫ ⌈⌉ ⌊⌋ ‖\n\n-Typographic\n\n-† ‡ § ¶ © ® ™ ℠\n+Thai ฯๆ๏๚๛\n\n+Misc brackets ⟨⟩ ⟪⟫ ‖ ⌈⌉⌊⌋\n\n+Typographic † ‡ § ¶ © ® ™ ℠",
+    "visual_scores": [
+      0.995
+    ],
+    "visual_avg": 0.995,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic160_punctuation_marks_p1_minipdf.png",
+        "reference_img": "classic160_punctuation_marks_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9442
+  },
+  {
+    "name": "classic161_box_drawing",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4288530,
+    "reference_size": 55369,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8822,
+    "flat_text_similarity": 0.8822,
+    "word_text_similarity": 0.7458,
+    "text_diff": "--- minipdf/classic161_box_drawing.pdf\n+++ reference/classic161_box_drawing.pdf\n@@ -1,13 +1,9 @@\n Type Characters\n\n-Light box\n\n-┌──┬──┐│ │ │├──┼──┤└──┴──┘\n\n-Heavy box\n\n-┏━━┳━━┓┃ ┃ ┃┣━━╋━━┫┗━━┻━━┛\n\n-Double box\n\n-╔══╦══╗║ ║ ║╠══╬══╣╚══╩══╝\n\n-Blocks\n\n-▀ ▁▂▃▄▅▆▇█ ░ ▒ ▓\n\n-Geometric\n\n-■□▪▫▲△▼▽◆◇○●◎\n\n-Braille\n\n-⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊\n+Light box ┌──┬──┐│  │  │├──┼──┤└──┴──┘\n\n+Heavy box ┏━━┳━━┓┃  ┃  ┃┣━━╋━━┫┗━━┻━━┛\n\n+Double box ╔══╦══╗║  ║  ║╠══╬══╣╚══╩══╝\n\n+▁▂▃▅▆▇\n\n+Blocks ▀ ▄ █ ░▒▓\n\n+◆◇ ◎\n\n+Geometric ■□▪▫▲ △▽ ▼ ○●\n\n+Braille ⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊",
+    "visual_scores": [
+      0.9929
+    ],
+    "visual_avg": 0.9929,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic161_box_drawing_p1_minipdf.png",
+        "reference_img": "classic161_box_drawing_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.95
+  },
+  {
+    "name": "classic162_cjk_emoji_styled",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 430619,
+    "reference_size": 78504,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.6703,
+    "flat_text_similarity": 0.6703,
+    "word_text_similarity": 0.5,
+    "text_diff": "--- minipdf/classic162_cjk_emoji_styled.pdf\n+++ reference/classic162_cjk_emoji_styled.pdf\n@@ -1,9 +1,13 @@\n Icon Dish Price Rating\n\n+寿司\n\n+🍣 ★★★★★\n\n ¥1,200\n\n-🍣 寿司 ★★★★★\n\n+ラーメン\n\n+🍜 ★★★★\n\n ¥850\n\n-🍜 ラーメン ★★★★\n\n-¥1,500\n\n-🍱 弁当 ★★★★★\n\n-¥400\n\n-🍙 おにぎり ★★★\n+弁当\n\n+★★★★★\n\n+🍱 ¥1,500\n\n+おにぎり\n\n+★★★\n\n+🍙 ¥400",
+    "visual_scores": [
+      0.9913
+    ],
+    "visual_avg": 0.9913,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic162_cjk_emoji_styled_p1_minipdf.png",
+        "reference_img": "classic162_cjk_emoji_styled_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8646
+  },
+  {
+    "name": "classic163_cyrillic_alphabets",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3953250,
+    "reference_size": 35137,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9809,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/classic163_cyrillic_alphabets.pdf\n+++ reference/classic163_cyrillic_alphabets.pdf\n@@ -1,11 +1,6 @@\n Language Sample Text\n\n-Russian\n\n-Съешь ещё этих мягких французских булок, да выпей чаю.\n\n-Ukrainian\n\n-Жебракують філософи при ґанку церкви в Гадячі.\n\n-Serbian\n\n-Ђурађ Бранковић је био владар Србије.\n\n-Bulgarian\n\n-Щъркел яде бялата жаба.\n\n-Mongolian\n\n-Би монгол хэл дээр бичиж байна.\n+Russian Съешь ещё этих мягких французских булок, да выпей чаю.\n\n+Ukrainian Жебракують філософи при ґанку церкви в Гадячі.\n\n+Serbian Ђурађ Бранковић је био владар Србије.\n\n+Bulgarian Щъркел яде бялата жаба.\n\n+Mongolian Би монгол хэл дээр бичиж байна.",
+    "visual_scores": [
+      0.9911
+    ],
+    "visual_avg": 0.9911,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic163_cyrillic_alphabets_p1_minipdf.png",
+        "reference_img": "classic163_cyrillic_alphabets_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9964
+  },
+  {
+    "name": "classic164_indic_scripts",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 275521,
+    "reference_size": 38784,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.6882,
+    "flat_text_similarity": 0.6882,
+    "word_text_similarity": 0.5833,
+    "text_diff": "--- minipdf/classic164_indic_scripts.pdf\n+++ reference/classic164_indic_scripts.pdf\n@@ -1,11 +1,11 @@\n Script Sample\n\n+नमस्ते\n\n Devanagari\n\n-नमस्ते\n\n+வணக்கம்\n\n Tamil\n\n-வணக்கம்\n\n+নমস্কার\n\n Bengali\n\n-নমস্কার\n\n+నమస్కారం\n\n Telugu\n\n-నమస్కారం\n\n-Gujarati\n\n-નમસ્તે\n+નમસ્તે\n\n+Gujarati",
+    "visual_scores": [
+      0.9958
+    ],
+    "visual_avg": 0.9958,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic164_indic_scripts_p1_minipdf.png",
+        "reference_img": "classic164_indic_scripts_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8736
+  },
+  {
+    "name": "classic165_southeast_asian",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3948239,
+    "reference_size": 68897,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9127,
+    "flat_text_similarity": 0.9127,
+    "word_text_similarity": 0.6923,
+    "text_diff": "--- minipdf/classic165_southeast_asian.pdf\n+++ reference/classic165_southeast_asian.pdf\n@@ -1,11 +1,9 @@\n Script Sample\n\n-Thai\n\n-ภาษาไทยเป็นภาษาที่มีวรรณยุกต์\n\n+Thai ภาษาไทยเป็นภาษาที่มีวรรณยุกต์\n\n+ພາສາລາວເປັນພາສາທີ່ສວຍງາມ\n\n Lao\n\n-ພາສາລາວເປັນພາສາທີ່ສວຍງາມ\n\n-Myanmar\n\n-မြန်မာဘာသာစကားသည် လှပသည်\n\n+Myanmar မြန်မဘသစကသည်လှပသည်\n\n+ភាសាខ្មែ រជាភាសាចំណាស់\n\n Khmer\n\n-ភាសាខ្មែរជាភាសាចំណាស់\n\n Tibetan\n\n བོད་ཀྱི་སྐད་ཡིག་ནི་གལ་ཆེན་པོ་ཡིན།",
+    "visual_scores": [
+      0.987
+    ],
+    "visual_avg": 0.987,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic165_southeast_asian_p1_minipdf.png",
+        "reference_img": "classic165_southeast_asian_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9599
+  },
+  {
+    "name": "classic166_emoji_progress",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4095991,
+    "reference_size": 40333,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9639,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/classic166_emoji_progress.pdf\n+++ reference/classic166_emoji_progress.pdf\n@@ -1,13 +1,7 @@\n Task Status Progress\n\n-Design\n\n-✅ 🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩 100%\n\n-Frontend\n\n-🔄 🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜ 70%\n\n-Backend\n\n-🔄 🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜ 50%\n\n-Testing\n\n-⏳ 🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜ 20%\n\n-Deploy\n\n-❌ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%\n\n-Docs\n\n-🔄 🟩🟩🟩🟩🟩🟩🟩🟩⬜⬜ 80%\n+Design ✅ 🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩 100%\n\n+Frontend 🔄 🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜ 70%\n\n+Backend 🔄 🟩🟩🟩🟩🟩⬜⬜⬜⬜⬜ 50%\n\n+Testing ⏳ 🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜ 20%\n\n+Deploy ❌ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%\n\n+Docs 🔄 🟩🟩🟩🟩🟩🟩🟩🟩⬜⬜ 80%",
+    "visual_scores": [
+      0.9659
+    ],
+    "visual_avg": 0.9659,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic166_emoji_progress_p1_minipdf.png",
+        "reference_img": "classic166_emoji_progress_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9864
+  },
+  {
+    "name": "classic167_musical_symbols",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4163889,
+    "reference_size": 78122,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7551,
+    "flat_text_similarity": 0.7551,
+    "word_text_similarity": 0.5238,
+    "text_diff": "--- minipdf/classic167_musical_symbols.pdf\n+++ reference/classic167_musical_symbols.pdf\n@@ -1,11 +1,9 @@\n Category Symbols\n\n-Music\n\n-♩ ♪ ♫ ♬ 🎵 🎶\n\n-Chess\n\n-♔♕♖♗♘♙\n\n-Zodiac\n\n-♈♉♊♋♌♍♎♏♐♑♒♓\n\n+♩♪♫♬\n\n+Music 🎵🎶\n\n+Chess ♔♕♖♗♘♙\n\n+Zodiac ♈♉♊♋♌♍♎♏♐♑♒♓\n\n+⚀⚁⚂⚃⚄⚅\n\n Dice\n\n-⚀ ⚁ ⚂ ⚃ ⚄ ⚅\n\n-Weather\n\n-☀ ☁ ☂ ☃ ❄ ☔\n+☀☁☂☃\n\n+Weather ❄ ☔",
+    "visual_scores": [
+      0.9957
+    ],
+    "visual_avg": 0.9957,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic167_musical_symbols_p1_minipdf.png",
+        "reference_img": "classic167_musical_symbols_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9003
+  },
+  {
+    "name": "classic168_mixed_ltr_rtl_styled",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4131663,
+    "reference_size": 43114,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8718,
+    "flat_text_similarity": 0.8718,
+    "word_text_similarity": 0.6842,
+    "text_diff": "--- minipdf/classic168_mixed_ltr_rtl_styled.pdf\n+++ reference/classic168_mixed_ltr_rtl_styled.pdf\n@@ -1,7 +1,5 @@\n Code Name Price\n\n EN-001 Programming Book $29.99\n\n FR-002 Livre de code €25.00\n\n-AR-003 50 SAR\n\n-ﺏﺎﺘﻛ ﺔﺠﻣﺮﺑ\n\n-HE-004\n\n-רפס דוק ₪120\n+AR-003كتاب برمجة50 SAR\n\n+HE-004ספר קוד₪120",
+    "visual_scores": [
+      0.9908
+    ],
+    "visual_avg": 0.9908,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic168_mixed_ltr_rtl_styled_p1_minipdf.png",
+        "reference_img": "classic168_mixed_ltr_rtl_styled_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.945
+  },
+  {
+    "name": "classic169_korean_invoice",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4171081,
+    "reference_size": 55693,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7196,
+    "flat_text_similarity": 0.7196,
+    "word_text_similarity": 0.7143,
+    "text_diff": "--- minipdf/classic169_korean_invoice.pdf\n+++ reference/classic169_korean_invoice.pdf\n@@ -1,13 +1,13 @@\n-거래명세서 (Transaction Statement)\n\n+거래명세서\n\n+(Transaction Statement)\n\n 번호 상품명 수량 단가 금액\n\n-1 2\n\n-노트북 컴퓨터 ₩1,200,000 ₩2,400,000\n\n-2 5\n\n-무선 마우스 ₩25,000 ₩125,000\n\n-3 2\n\n-모니터 27 인치 ₩350,000 ₩700,000\n\n-4 3\n\n-키보드 ( 기계식 ) ₩89,000 ₩267,000\n\n-5 10\n\n-USB 허브 ₩15,000 ₩150,000\n\n-합계 ₩3,642,000\n+1 노트북컴퓨터 2 ₩1,200,000 ₩2,400,000\n\n+2 무선마우스 5 ₩25,000 ₩125,000\n\n+모니터 인치\n\n+3 27 2 ₩350,000 ₩700,000\n\n+키보드 기계식\n\n+4 ( ) 3 ₩89,000 ₩267,000\n\n+허브\n\n+5 USB 10 ₩15,000 ₩150,000\n\n+합계\n\n+₩3,642,000",
+    "visual_scores": [
+      0.9907
+    ],
+    "visual_avg": 0.9907,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic169_korean_invoice_p1_minipdf.png",
+        "reference_img": "classic169_korean_invoice_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8841
   },
   {
     "name": "classic16_percentage_strings",
@@ -1939,6 +2414,256 @@
     "overall_score": 0.994
   },
   {
+    "name": "classic170_emoji_dashboard",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 150016,
+    "reference_size": 50748,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9216,
+    "flat_text_similarity": 0.9216,
+    "word_text_similarity": 0.8,
+    "text_diff": "--- minipdf/classic170_emoji_dashboard.pdf\n+++ reference/classic170_emoji_dashboard.pdf\n@@ -1,13 +1,7 @@\n Metric Value Target\n\n-Revenue $1.2M $1.0M\n\n-🟢\n\n-Pipeline $800K $900K\n\n-🟡\n\n-Churn Rate 5.2% 3.0%\n\n-🔴\n\n-NPS Score 72 65\n\n-🟢\n\n-Response Time 2.1s 1.5s\n\n-🟡\n\n-Uptime 99.95% 99.9%\n\n-🟢\n+🟢 Revenue $1.2M $1.0M\n\n+🟡 Pipeline $800K $900K\n\n+🔴 Churn Rate 5.2% 3.0%\n\n+🟢 NPS Score 72 65\n\n+🟡 Response Time 2.1s 1.5s\n\n+🟢 Uptime 99.95% 99.9%",
+    "visual_scores": [
+      0.9869
+    ],
+    "visual_avg": 0.9869,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic170_emoji_dashboard_p1_minipdf.png",
+        "reference_img": "classic170_emoji_dashboard_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9634
+  },
+  {
+    "name": "classic171_ipa_phonetic",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4140233,
+    "reference_size": 41195,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9478,
+    "flat_text_similarity": 0.9478,
+    "word_text_similarity": 0.9444,
+    "text_diff": "--- minipdf/classic171_ipa_phonetic.pdf\n+++ reference/classic171_ipa_phonetic.pdf\n@@ -1,15 +1,8 @@\n Category IPA Symbols\n\n-Plosives\n\n-p b t d ʈ ɖ c ɟ k ɡ q ɢ ʔ\n\n-Nasals\n\n-m ɱ n ɳ ɲ ŋ ɴ\n\n-Fricatives\n\n-ɸ β f v θ ð s z ʃ ʒ ʂ ʐ ç ʝ x ɣ\n\n-Vowels\n\n-i y ɨ ʉ ɯ u e ø ɘ ɵ ɤ o ɛ œ ɜ ɞ ʌ ɔ æ a ɶ ɑ ɒ\n\n-Tones\n\n-˥ ˦ ˧ ˨ ˩ ˥˩ ˩˥\n\n-Diacritics\n\n-ʰ ʷ ʲ ˠ ˤ ⁿ ˡ\n\n-Example word\n\n-/ ˌɪ nt əˈ næ ʃə n ə l/ (international)\n+Plosives p b t d ʈ ɖ c ɟ k ɡ q ɢ ʔ\n\n+Nasals m ɱ n ɳ ɲ ŋ ɴ\n\n+Fricatives ɸ β f v θ ð s z ʃ ʒ ʂ ʐ ç ʝ x ɣ\n\n+Vowels i y ɨ ʉ ɯ u e ø ɘ ɵ ɤ o ɛ œ ɜ ɞ ʌ ɔ æ a ɶ ɑ ɒ\n\n+Tones ˥ ˦ ˧ ˨ ˩ ˥˩ ˩˥\n\n+Diacritics ʰ ʷ ʲ ˠ ˤ ⁿ ˡ\n\n+Example word /ˌɪntəˈnæʃənəl/ (international)",
+    "visual_scores": [
+      0.9929
+    ],
+    "visual_avg": 0.9929,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic171_ipa_phonetic_p1_minipdf.png",
+        "reference_img": "classic171_ipa_phonetic_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9763
+  },
+  {
+    "name": "classic172_emoji_timeline",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 152556,
+    "reference_size": 53459,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8945,
+    "flat_text_similarity": 0.8945,
+    "word_text_similarity": 0.8182,
+    "text_diff": "--- minipdf/classic172_emoji_timeline.pdf\n+++ reference/classic172_emoji_timeline.pdf\n@@ -1,17 +1,9 @@\n Date Icon Milestone Status\n\n-2025-01-15 Idea conceived\n\n-💡 ✅\n\n-2025-02-01 Requirements gathered\n\n-📋 ✅\n\n-2025-03-10 Design completed\n\n-🎨 ✅\n\n-2025-04-20 Development started\n\n-🔨 ✅\n\n-2025-06-15 Testing phase\n\n-🧪 🔄\n\n-2025-07-01 Bug fixing\n\n-🐛 🔄\n\n-2025-08-01 Launch day\n\n-🚀 ⏳\n\n-2025-09-01 Post-launch review\n\n-📊 ⏳\n+2025-01-15 💡 Idea conceived ✅\n\n+2025-02-01 📋 Requirements gathered ✅\n\n+2025-03-10 🎨 Design completed ✅\n\n+2025-04-20 🔨 Development started ✅\n\n+2025-06-15 🧪 Testing phase 🔄\n\n+2025-07-01 🐛 Bug fixing 🔄\n\n+2025-08-01 🚀 Launch day ⏳\n\n+2025-09-01 📊 Post-launch review ⏳",
+    "visual_scores": [
+      0.9884
+    ],
+    "visual_avg": 0.9884,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic172_emoji_timeline_p1_minipdf.png",
+        "reference_img": "classic172_emoji_timeline_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9532
+  },
+  {
+    "name": "classic173_african_languages",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4127821,
+    "reference_size": 41297,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7804,
+    "flat_text_similarity": 0.7804,
+    "word_text_similarity": 0.6804,
+    "text_diff": "--- minipdf/classic173_african_languages.pdf\n+++ reference/classic173_african_languages.pdf\n@@ -1,12 +1,10 @@\n Language Greeting Region\n\n Swahili Habari! Karibu sana. East Africa\n\n-Amharic Ethiopia\n\n-ሰላም! እንኳን ደህና መጣህ.\n\n-Yoruba Nigeria\n\n-Ẹ kú àár ọ̀ ! Ẹ kú al ẹ́ !\n\n+ሰላም እንኳንደህናመጣህ\n\n+Amharic ! . Ethiopia\n\n+Yoruba Ẹ kú àárọ̀! Ẹ kú alẹ́! Nigeria\n\n Zulu Sawubona! Unjani? South Africa\n\n Hausa Sannu! Barka da zuwa. West Africa\n\n-Igbo Nigeria\n\n-Nn ọọ ! Ked ụ ?\n\n-Tigrinya Eritrea\n\n-ሰላም! ከመይ ኣለኻ?\n+Igbo Nnọọ! Kedụ? Nigeria\n\n+ሰላም ከመይኣለኻ\n\n+Tigrinya ! ? Eritrea",
+    "visual_scores": [
+      0.9902
+    ],
+    "visual_avg": 0.9902,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic173_african_languages_p1_minipdf.png",
+        "reference_img": "classic173_african_languages_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9082
+  },
+  {
+    "name": "classic174_technical_symbols",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4163547,
+    "reference_size": 45148,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8705,
+    "flat_text_similarity": 0.8705,
+    "word_text_similarity": 0.8342,
+    "text_diff": "--- minipdf/classic174_technical_symbols.pdf\n+++ reference/classic174_technical_symbols.pdf\n@@ -1,14 +1,10 @@\n Category Symbols / Examples\n\n-SI Units kg * m * s * A * K * mol * cd\n\n-Derived\n\n-N · Pa · J · W · V · Ω · Hz\n\n-Prefixes\n\n-μ (micro) · m (milli) · k (kilo) · M (mega) · G (giga)\n\n-Electrical\n\n-Ω kΩ MΩ · μF nF pF · mH μH\n\n-Temp 100 degC = 212 degF = 373.15 K\n\n+SI Units kg · m · s · A · K · mol · cd\n\n+Derived N · Pa · J · W · V · Ω · Hz\n\n+Prefixes μ (micro) · m (milli) · k (kilo) · M (mega) · G (giga)\n\n+Electrical Ω kΩ MΩ · μF nF pF · mH μH\n\n+Temp 100°C = 212°F = 373.15 K\n\n Copyright © 2025 Company™ — All Rights Reserved®\n\n-Fractions\n\n-½ ⅓ ¼ ⅕ ⅙ ⅛ ⅔ ¾ ⅘\n\n-Roman nums\n\n-Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ Ⅺ Ⅻ\n+Fractions ½ ⅓ ¼ ⅕ ⅙ ⅛ ⅔ ¾ ⅘\n\n+ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫ\n\n+Roman nums",
+    "visual_scores": [
+      0.9889
+    ],
+    "visual_avg": 0.9889,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic174_technical_symbols_p1_minipdf.png",
+        "reference_img": "classic174_technical_symbols_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9438
+  },
+  {
+    "name": "classic175_multiscript_catalog",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 819319,
+    "reference_size": 98125,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8296,
+    "flat_text_similarity": 0.8296,
+    "word_text_similarity": 0.8283,
+    "text_diff": "--- minipdf/classic175_multiscript_catalog.pdf\n+++ reference/classic175_multiscript_catalog.pdf\n@@ -1,17 +1,11 @@\n # Product (EN) Product (Local) Price Icon\n\n-1 Green Tea ¥500\n\n-緑茶 🍵\n\n-2 Kimchi\n\n-김치 ₩3,000 🥬\n\n-3 Samosa\n\n-समोसा ₹ 50 🥟\n\n-4 Croissant Croissant €2.50\n\n-🥐\n\n-5 Taco Taco $3.99\n\n-🌮\n\n-6 Borscht\n\n-Борщ ₽ 250 🍲\n\n-7 Falafel\n\n-ﻞﻓﻼﻓ ₪15 🧆\n\n-8 Pad Thai\n\n-ผัดไทย ฿ 80 🍜\n+緑茶\n\n+1 Green Tea ¥500 🍵\n\n+2 Kimchi 김치 ₩3,000 🥬\n\n+समोसा\n\n+3 Samosa ₹50 🥟\n\n+4 Croissant Croissant €2.50 🥐\n\n+5 Taco Taco $3.99 🌮\n\n+6 Borscht Борщ ₽250 🍲\n\n+7 Falafelفالفل₪15 🧆\n\n+8 Pad Thai ผัดไทย ฿80 🍜",
+    "visual_scores": [
+      0.9855
+    ],
+    "visual_avg": 0.9855,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic175_multiscript_catalog_p1_minipdf.png",
+        "reference_img": "classic175_multiscript_catalog_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.926
+  },
+  {
+    "name": "classic176_combining_characters",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4339243,
+    "reference_size": 43113,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8706,
+    "flat_text_similarity": 0.8706,
+    "word_text_similarity": 0.848,
+    "text_diff": "--- minipdf/classic176_combining_characters.pdf\n+++ reference/classic176_combining_characters.pdf\n@@ -1,13 +1,8 @@\n Type Examples\n\n-Single combining\n\n-é = e + ́ ñ = n +\n\n-Double combining\n\n-ệ = e + ̣ +\n\n-Vietnamese\n\n-ắ ằ ẵ ẳ ặ ố ồ ỗ ổ ộ ứ ừ ữ ử ự\n\n-Zalgo-like\n\n-H e ̵̖̘ ̷̝̣ l l ̶̤ o ̴̥\n\n-Precomposed vs decomposed\n\n-ü (precomposed) vs u ̈ (decomposed)\n\n-Hangul Jamo\n\n-ㅎ ㅏ ㄴ ㄱ ㅡ ㄹ → 한글\n+Single combining é = e + ́   ñ = n + ̃\n\n+Double combining ệ = e + ̣ + ̂\n\n+Vietnamese ắ ằ ẵ ẳ ặ ố ồ ỗ ổ ộ ứ ừ ữ ử ự\n\n+Zalgo-like H̵̖̘e̷̝̣l̶̤l̴̥o̸̮\n\n+Precomposed vs decomposed ü (precomposed) vs ü (decomposed)\n\n+ㅎ ㅏ ㄴ ㄱ ㅡ ㄹ →\n\n+Hangul Jamo 한글",
+    "visual_scores": [
+      0.9932
+    ],
+    "visual_avg": 0.9932,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic176_combining_characters_p1_minipdf.png",
+        "reference_img": "classic176_combining_characters_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9455
+  },
+  {
+    "name": "classic177_emoji_calendar",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 430189,
+    "reference_size": 68347,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.72,
+    "flat_text_similarity": 0.3633,
+    "word_text_similarity": 0.72,
+    "text_diff": "--- minipdf/classic177_emoji_calendar.pdf\n+++ reference/classic177_emoji_calendar.pdf\n@@ -1,25 +1,15 @@\n Month Emoji Event\n\n-January New Year\n\n-🎆\n\n-February Valentine's Day\n\n-💝\n\n-March Spring Equinox\n\n-🌸\n\n-April Easter\n\n-🐣\n\n-May Mother's Day\n\n-👩\n\n+January 🎆 New Year\n\n+February 💝 Valentine's Day\n\n+March 🌸 Spring Equinox\n\n+April 🐣 Easter\n\n+May 👩 Mother's Day\n\n+☀️\n\n June Summer Solstice\n\n-☀ ️\n\n-July Independence Day\n\n-🎆\n\n-August Vacation Season\n\n-🏖 ️\n\n-September Back to School\n\n-📚\n\n-October Halloween\n\n-🎃\n\n-November Thanksgiving\n\n-🦃\n\n-December Christmas\n\n-🎄\n+July 🎆 Independence Day\n\n+%\n\n+August \u0001 🏖️ Vacation Season\n\n+September 📚 Back to School\n\n+October 🎃 Halloween\n\n+November 🦃 Thanksgiving\n\n+December 🎄 Christmas",
+    "visual_scores": [
+      0.9901
+    ],
+    "visual_avg": 0.9901,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic177_emoji_calendar_p1_minipdf.png",
+        "reference_img": "classic177_emoji_calendar_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.884
+  },
+  {
+    "name": "classic178_caucasus_ethiopic",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4138152,
+    "reference_size": 41776,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9313,
+    "flat_text_similarity": 0.9313,
+    "word_text_similarity": 0.8235,
+    "text_diff": "--- minipdf/classic178_caucasus_ethiopic.pdf\n+++ reference/classic178_caucasus_ethiopic.pdf\n@@ -1,11 +1,7 @@\n Script Sample Text\n\n-Georgian\n\n-საქართველო არის ძველი ცივილიზაცია .\n\n-Armenian\n\n-Հայաստանը հին քաղաքակրթություն ունի .\n\n+Georgian საქართველო არის ძველი ცივილიზაცია.\n\n+Armenian Հայաստանը հին քաղաքակրթություն ունի.\n\n+ኢትዮጵያየጥንታዊሥልጣኔምድርናት።\n\n Ethiopic\n\n-ኢትዮጵያ የጥንታዊ ሥልጣኔ ምድር ናት።\n\n-Georgian mkhedru\n\n-ა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ\n\n-Armenian alphabe\n\n-Ա Բ Գ Դ Ե Զ Է Ը Թ Ժ Ի Լ Խ Ծ Կ\n+Georgian mkhedrა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ\n\n+Armenian alphabԱ Բ Գ Դ Ե Զ Է Ը Թ Ժ Ի Լ Խ Ծ Կ",
+    "visual_scores": [
+      0.9913
+    ],
+    "visual_avg": 0.9913,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic178_caucasus_ethiopic_p1_minipdf.png",
+        "reference_img": "classic178_caucasus_ethiopic_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.969
+  },
+  {
+    "name": "classic179_emoji_inventory",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4101485,
+    "reference_size": 72495,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7887,
+    "flat_text_similarity": 0.7757,
+    "word_text_similarity": 0.7887,
+    "text_diff": "--- minipdf/classic179_emoji_inventory.pdf\n+++ reference/classic179_emoji_inventory.pdf\n@@ -1,21 +1,14 @@\n Icon Item Stock Min Status\n\n-Smartphone 150 50\n\n-📱 🟢 OK\n\n-Laptop 42 30\n\n-💻 🟡 Low\n\n-Printer 8 10\n\n-🖨 ️ 🔴 Reorder\n\n-Headphones 200 40\n\n-🎧 🟢 OK\n\n-Keyboard 75 25\n\n-⌨ ️ 🟢 OK\n\n-Mouse 18 20\n\n-🖱 ️ 🔴 Reorder\n\n-Camera 12 10\n\n-📷 🟡 Low\n\n-Charger 300 100\n\n-🔌 🟢 OK\n\n-USB Drive 5 15\n\n-💾 🔴 Reorder\n\n-Monitor 35 20\n\n-🖥 ️ 🟢 OK\n+📱 Smartphone 150 50 🟢 OK\n\n+💻 Laptop 42 30 🟡 Low\n\n+\u001b\n\n+\u0001 🖨️ Printer 8 10 🔴 Reorder\n\n+🎧 Headphones 200 40 🟢 OK\n\n+⌨️ Keyboard 75 25 🟢 OK\n\n+\u001b\n\n+\u0001 🖱️ Mouse 18 20 🔴 Reorder\n\n+📷 Camera 12 10 🟡 Low\n\n+🔌 Charger 300 100 🟢 OK\n\n+💾 USB Drive 5 15 🔴 Reorder\n\n+\u001b\n\n+\u0001 🖥️ Monitor 35 20 🟢 OK",
+    "visual_scores": [
+      0.9854
+    ],
+    "visual_avg": 0.9854,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic179_emoji_inventory_p1_minipdf.png",
+        "reference_img": "classic179_emoji_inventory_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9096
+  },
+  {
     "name": "classic17_currency_strings",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1962,6 +2687,31 @@
       }
     ],
     "overall_score": 0.9985
+  },
+  {
+    "name": "classic180_polyglot_paragraph",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4310746,
+    "reference_size": 79238,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8468,
+    "flat_text_similarity": 0.8468,
+    "word_text_similarity": 0.7667,
+    "text_diff": "--- minipdf/classic180_polyglot_paragraph.pdf\n+++ reference/classic180_polyglot_paragraph.pdf\n@@ -1,16 +1,13 @@\n Language Greeting\n\n English The quick brown fox.\n\n+速い茶色の狐。\n\n Japanese\n\n-速い茶色の狐。\n\n-Korean\n\n-빠른 갈색 여우 .\n\n-Russian\n\n-Быстрая бурая лиса.\n\n-Greek\n\n-Η γρήγορη αλεπού.\n\n-Thai\n\n-สุนัขจิ้งจอกสีน้ำตาล\n\n+빠른갈색여우\n\n+Korean .\n\n+Russian Быстрая бурая лиса.\n\n+Greek Η γρήγορη αλεπού.\n\n+Thai สุนัขจิ้งจอกสีน้ำตาล\n\n+तेज़भूरीलोमड़ी\n\n Hindi\n\n-तेज़ भूरी लोमड़ी\n\n-Emoji\n\n-🦊 ➡ ️ 🐕\n+➡️\n\n+Emoji 🐕",
+    "visual_scores": [
+      0.9921
+    ],
+    "visual_avg": 0.9921,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic180_polyglot_paragraph_p1_minipdf.png",
+        "reference_img": "classic180_polyglot_paragraph_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9356
   },
   {
     "name": "classic18_large_dataset",
@@ -2230,18 +2980,18 @@
     "name": "classic23_unicode_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 334542,
+    "minipdf_size": 816192,
     "reference_size": 67722,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.7984,
-    "flat_text_similarity": 0.7984,
-    "word_text_similarity": 0.7027,
-    "text_diff": "--- minipdf/classic23_unicode_text.pdf\n+++ reference/classic23_unicode_text.pdf\n@@ -1,12 +1,9 @@\n Language Greeting Extra\n\n English Hello World\n\n+你好 世界\n\n Chinese\n\n-你好 世界\n\n+こんにちは世界\n\n Japanese\n\n-こんにちは世界\n\n-Korean\n\n-안녕하세요세계\n\n-Arabic\n\n-ملاعلا ابحرم\n\n-Emoji\n\n-���� ✅❌\n+Korean 안녕하세요세계\n\n+Arabicمرحبا العالم\n\n+Emoji 😀🎉 ✅❌",
+    "text_similarity": 0.7884,
+    "flat_text_similarity": 0.7884,
+    "word_text_similarity": 0.7568,
+    "text_diff": "--- minipdf/classic23_unicode_text.pdf\n+++ reference/classic23_unicode_text.pdf\n@@ -1,12 +1,9 @@\n Language Greeting Extra\n\n English Hello World\n\n+你好 世界\n\n Chinese\n\n-你好 世界\n\n+こんにちは世界\n\n Japanese\n\n-こんにちは世界\n\n-Korean\n\n-안녕하세요세계\n\n-Arabic\n\n-ﺎﺒﺣﺮﻣ ﻢﻟﺎﻌﻟﺍ\n\n-Emoji\n\n-😀🎉 ✅❌\n+Korean 안녕하세요세계\n\n+Arabicمرحبا العالم\n\n+Emoji 😀🎉 ✅❌",
     "visual_scores": [
-      0.9948
+      0.9951
     ],
-    "visual_avg": 0.9948,
+    "visual_avg": 0.9951,
     "diff_images": [
       {
         "page": 1,
@@ -2249,7 +2999,7 @@
         "reference_img": "classic23_unicode_text_p1_reference.png"
       }
     ],
-    "overall_score": 0.9173
+    "overall_score": 0.9134
   },
   {
     "name": "classic24_red_text",
@@ -3116,7 +3866,7 @@
     "name": "classic57_cjk_only",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 345252,
+    "minipdf_size": 291022,
     "reference_size": 88207,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3589,7 +4339,7 @@
     "name": "classic74_dashboard_with_kpi_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 332309,
+    "minipdf_size": 4096595,
     "reference_size": 48755,
     "minipdf_pages": 1,
     "reference_pages": 1,

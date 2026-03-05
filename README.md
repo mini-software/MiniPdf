@@ -52,15 +52,15 @@ byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 
 ## Benchmark
 
-MiniPdf output is compared against LibreOffice as the reference renderer across **150 classic test cases** (including 30 image-embedding cases, 30 chart cases, and 30 styling cases).
+MiniPdf output is compared against LibreOffice as the reference renderer across **180 classic test cases** (including 30 image-embedding cases, 30 chart cases, 30 styling cases, and 30 multilingual/emoji cases).
 
 | Category | Count | Threshold |
 |---|---|---|
-| 🟢 Excellent | 138 | ≥ 90% |
-| 🟡 Acceptable | 11 | 70% – 90% |
+| 🟢 Excellent | 164 | ≥ 90% |
+| 🟡 Acceptable | 15 | 70% – 90% |
 | 🔴 Needs Improvement | 1 | < 70% |
 
-**Average overall score: 97.1%** (text similarity 40% + visual similarity 40% + page count 20%)
+**Average overall score: 96.5%** (text similarity 40% + visual similarity 40% + page count 20%)
 
 ### Visual Comparison
 
@@ -110,7 +110,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic06</b></td>
-  <td>Tall table 🟢 97.9%</td>
+  <td>Tall table 🟢 97.8%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic06_tall_table_p1_minipdf.png" width="320"/></td>
@@ -166,7 +166,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic13</b></td>
-  <td>Date strings 🟢 98.8%</td>
+  <td>Date strings 🟢 99.9%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic13_date_strings_p1_minipdf.png" width="320"/></td>
@@ -190,7 +190,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic16</b></td>
-  <td>Percentage strings 🟢 99.6%</td>
+  <td>Percentage strings 🟢 99.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic16_percentage_strings_p1_minipdf.png" width="320"/></td>
@@ -206,7 +206,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic18</b></td>
-  <td>Large dataset 🟢 95.9%</td>
+  <td>Large dataset 🟢 95.7%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic18_large_dataset_p1_minipdf.png" width="320"/></td>
@@ -214,7 +214,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic19</b></td>
-  <td>Single column list 🟢 99.8%</td>
+  <td>Single column list 🟢 99.9%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic19_single_column_list_p1_minipdf.png" width="320"/></td>
@@ -230,7 +230,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic21</b></td>
-  <td>Header only 🟢 100.0%</td>
+  <td>Header only 🟢 99.9%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic21_header_only_p1_minipdf.png" width="320"/></td>
@@ -246,7 +246,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic23</b></td>
-  <td>Unicode text 🟢 91.5%</td>
+  <td>Unicode text 🟢 91.3%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic23_unicode_text_p1_minipdf.png" width="320"/></td>
@@ -302,7 +302,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic30</b></td>
-  <td>Mixed empty and filled sheets 🟢 99.9%</td>
+  <td>Mixed empty and filled sheets 🟢 100.0%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic30_mixed_empty_and_filled_sheets_p1_minipdf.png" width="320"/></td>
@@ -310,7 +310,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic31</b></td>
-  <td>Bold header row 🟢 99.8%</td>
+  <td>Bold header row 🟢 99.9%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic31_bold_header_row_p1_minipdf.png" width="320"/></td>
@@ -334,7 +334,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic34</b></td>
-  <td>Explicit column widths 🟢 99.8%</td>
+  <td>Explicit column widths 🟢 99.9%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic34_explicit_column_widths_p1_minipdf.png" width="320"/></td>
@@ -342,7 +342,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic35</b></td>
-  <td>Explicit row heights 🟢 100.0%</td>
+  <td>Explicit row heights 🟢 99.5%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic35_explicit_row_heights_p1_minipdf.png" width="320"/></td>
@@ -350,7 +350,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic36</b></td>
-  <td>Merged cells 🟢 99.8%</td>
+  <td>Merged cells 🟢 99.9%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic36_merged_cells_p1_minipdf.png" width="320"/></td>
@@ -382,7 +382,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic40</b></td>
-  <td>Scientific notation 🟢 99.8%</td>
+  <td>Scientific notation 🟢 99.9%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic40_scientific_notation_p1_minipdf.png" width="320"/></td>
@@ -398,7 +398,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic42</b></td>
-  <td>Boolean values 🟢 99.4%</td>
+  <td>Boolean values 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic42_boolean_values_p1_minipdf.png" width="320"/></td>
@@ -406,7 +406,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic43</b></td>
-  <td>Inventory report 🟢 99.6%</td>
+  <td>Inventory report 🟢 99.5%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic43_inventory_report_p1_minipdf.png" width="320"/></td>
@@ -414,7 +414,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic44</b></td>
-  <td>Employee roster 🟢 99.3%</td>
+  <td>Employee roster 🟢 98.0%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic44_employee_roster_p1_minipdf.png" width="320"/></td>
@@ -430,7 +430,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic46</b></td>
-  <td>Grade book 🟢 99.7%</td>
+  <td>Grade book 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic46_grade_book_p1_minipdf.png" width="320"/></td>
@@ -438,7 +438,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic47</b></td>
-  <td>Time series 🟢 99.4%</td>
+  <td>Time series 🟢 99.3%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic47_time_series_p1_minipdf.png" width="320"/></td>
@@ -446,7 +446,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic48</b></td>
-  <td>Survey results 🟢 99.5%</td>
+  <td>Survey results 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic48_survey_results_p1_minipdf.png" width="320"/></td>
@@ -454,7 +454,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic49</b></td>
-  <td>Contact list 🟢 97.4%</td>
+  <td>Contact list 🟢 98.5%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic49_contact_list_p1_minipdf.png" width="320"/></td>
@@ -470,7 +470,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic51</b></td>
-  <td>Product catalog 🟢 98.6%</td>
+  <td>Product catalog 🟢 98.5%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic51_product_catalog_p1_minipdf.png" width="320"/></td>
@@ -510,7 +510,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic56</b></td>
-  <td>Alternating row colors 🟢 99.7%</td>
+  <td>Alternating row colors 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic56_alternating_row_colors_p1_minipdf.png" width="320"/></td>
@@ -518,7 +518,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic57</b></td>
-  <td>Cjk only 🟡 87.9%</td>
+  <td>Cjk only 🟢 91.1%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic57_cjk_only_p1_minipdf.png" width="320"/></td>
@@ -526,7 +526,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic58</b></td>
-  <td>Mixed numeric formats 🟢 99.6%</td>
+  <td>Mixed numeric formats 🟢 99.5%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic58_mixed_numeric_formats_p1_minipdf.png" width="320"/></td>
@@ -542,7 +542,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic60</b></td>
-  <td>Large wide table 🟢 97.5%</td>
+  <td>Large wide table 🟢 97.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic60_large_wide_table_p1_minipdf.png" width="320"/></td>
@@ -558,7 +558,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic62</b></td>
-  <td>Company logo header 🟢 99.8%</td>
+  <td>Company logo header 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic62_company_logo_header_p1_minipdf.png" width="320"/></td>
@@ -574,7 +574,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic64</b></td>
-  <td>Employee directory with photo 🟢 99.5%</td>
+  <td>Employee directory with photo 🟢 99.1%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic64_employee_directory_with_photo_p1_minipdf.png" width="320"/></td>
@@ -582,7 +582,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic65</b></td>
-  <td>Inventory with product photos 🟢 99.3%</td>
+  <td>Inventory with product photos 🟢 99.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic65_inventory_with_product_photos_p1_minipdf.png" width="320"/></td>
@@ -590,7 +590,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic66</b></td>
-  <td>Invoice with logo 🟢 99.3%</td>
+  <td>Invoice with logo 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic66_invoice_with_logo_p1_minipdf.png" width="320"/></td>
@@ -598,7 +598,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic67</b></td>
-  <td>Real estate listing 🟢 99.7%</td>
+  <td>Real estate listing 🟢 99.8%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic67_real_estate_listing_p1_minipdf.png" width="320"/></td>
@@ -614,7 +614,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic69</b></td>
-  <td>Image only sheet 🟢 99.9%</td>
+  <td>Image only sheet 🟢 100.0%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic69_image_only_sheet_p1_minipdf.png" width="320"/></td>
@@ -622,7 +622,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic70</b></td>
-  <td>Product catalog with images 🟢 98.9%</td>
+  <td>Product catalog with images 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic70_product_catalog_with_images_p1_minipdf.png" width="320"/></td>
@@ -630,7 +630,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic71</b></td>
-  <td>Multi sheet with images 🟢 99.9%</td>
+  <td>Multi sheet with images 🟢 99.8%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic71_multi_sheet_with_images_p1_minipdf.png" width="320"/></td>
@@ -638,7 +638,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic72</b></td>
-  <td>Bar chart image with data 🟢 99.7%</td>
+  <td>Bar chart image with data 🟢 99.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic72_bar_chart_image_with_data_p1_minipdf.png" width="320"/></td>
@@ -646,7 +646,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic73</b></td>
-  <td>Event flyer with banner 🟢 97.5%</td>
+  <td>Event flyer with banner 🟢 99.5%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic73_event_flyer_with_banner_p1_minipdf.png" width="320"/></td>
@@ -654,7 +654,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic74</b></td>
-  <td>Dashboard with kpi image 🟢 98.1%</td>
+  <td>Dashboard with kpi image 🟢 97.9%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic74_dashboard_with_kpi_image_p1_minipdf.png" width="320"/></td>
@@ -662,7 +662,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic75</b></td>
-  <td>Certificate with seal 🟢 99.6%</td>
+  <td>Certificate with seal 🟢 99.5%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic75_certificate_with_seal_p1_minipdf.png" width="320"/></td>
@@ -670,7 +670,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic76</b></td>
-  <td>Product image grid 🟢 99.7%</td>
+  <td>Product image grid 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic76_product_image_grid_p1_minipdf.png" width="320"/></td>
@@ -686,7 +686,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic78</b></td>
-  <td>Small icon per row 🟢 99.4%</td>
+  <td>Small icon per row 🟢 99.0%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic78_small_icon_per_row_p1_minipdf.png" width="320"/></td>
@@ -694,7 +694,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic79</b></td>
-  <td>Wide panoramic banner 🟢 99.7%</td>
+  <td>Wide panoramic banner 🟢 99.8%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic79_wide_panoramic_banner_p1_minipdf.png" width="320"/></td>
@@ -702,7 +702,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic80</b></td>
-  <td>Portrait tall image 🟢 99.7%</td>
+  <td>Portrait tall image 🟢 99.8%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic80_portrait_tall_image_p1_minipdf.png" width="320"/></td>
@@ -710,7 +710,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic81</b></td>
-  <td>Step by step with images 🟢 99.6%</td>
+  <td>Step by step with images 🟢 99.7%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic81_step_by_step_with_images_p1_minipdf.png" width="320"/></td>
@@ -718,7 +718,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic82</b></td>
-  <td>Before after images 🟢 99.4%</td>
+  <td>Before after images 🟢 99.3%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic82_before_after_images_p1_minipdf.png" width="320"/></td>
@@ -726,7 +726,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic83</b></td>
-  <td>Color swatch palette 🟢 99.3%</td>
+  <td>Color swatch palette 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic83_color_swatch_palette_p1_minipdf.png" width="320"/></td>
@@ -734,7 +734,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic84</b></td>
-  <td>Travel destination cards 🟢 99.5%</td>
+  <td>Travel destination cards 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic84_travel_destination_cards_p1_minipdf.png" width="320"/></td>
@@ -742,7 +742,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic85</b></td>
-  <td>Lab results with image 🟢 99.4%</td>
+  <td>Lab results with image 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic85_lab_results_with_image_p1_minipdf.png" width="320"/></td>
@@ -750,7 +750,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic86</b></td>
-  <td>Software screenshot features 🟢 99.2%</td>
+  <td>Software screenshot features 🟢 98.7%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic86_software_screenshot_features_p1_minipdf.png" width="320"/></td>
@@ -758,7 +758,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic87</b></td>
-  <td>Sports results with logos 🟢 99.7%</td>
+  <td>Sports results with logos 🟢 99.8%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic87_sports_results_with_logos_p1_minipdf.png" width="320"/></td>
@@ -766,7 +766,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic88</b></td>
-  <td>Image after data 🟢 99.8%</td>
+  <td>Image after data 🟢 99.7%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic88_image_after_data_p1_minipdf.png" width="320"/></td>
@@ -774,7 +774,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic89</b></td>
-  <td>Nutrition label with image 🟢 99.7%</td>
+  <td>Nutrition label with image 🟢 99.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic89_nutrition_label_with_image_p1_minipdf.png" width="320"/></td>
@@ -782,7 +782,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic90</b></td>
-  <td>Project status with milestones 🟢 97.9%</td>
+  <td>Project status with milestones 🟢 97.7%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic90_project_status_with_milestones_p1_minipdf.png" width="320"/></td>
@@ -790,7 +790,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic91</b></td>
-  <td>Simple bar chart 🟢 96.5%</td>
+  <td>Simple bar chart 🟢 96.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic91_simple_bar_chart_p1_minipdf.png" width="320"/></td>
@@ -798,7 +798,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic92</b></td>
-  <td>Horizontal bar chart 🟢 97.5%</td>
+  <td>Horizontal bar chart 🟢 96.9%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic92_horizontal_bar_chart_p1_minipdf.png" width="320"/></td>
@@ -814,7 +814,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic94</b></td>
-  <td>Pie chart 🟢 92.2%</td>
+  <td>Pie chart 🟢 92.1%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic94_pie_chart_p1_minipdf.png" width="320"/></td>
@@ -830,7 +830,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic96</b></td>
-  <td>Scatter chart 🟢 95.1%</td>
+  <td>Scatter chart 🟢 94.3%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic96_scatter_chart_p1_minipdf.png" width="320"/></td>
@@ -838,7 +838,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic97</b></td>
-  <td>Doughnut chart 🟢 91.6%</td>
+  <td>Doughnut chart 🟢 91.5%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic97_doughnut_chart_p1_minipdf.png" width="320"/></td>
@@ -854,7 +854,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic99</b></td>
-  <td>Bubble chart 🟢 92.5%</td>
+  <td>Bubble chart 🟢 92.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic99_bubble_chart_p1_minipdf.png" width="320"/></td>
@@ -862,7 +862,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic100</b></td>
-  <td>Stacked bar chart 🟢 95.3%</td>
+  <td>Stacked bar chart 🟢 95.0%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic100_stacked_bar_chart_p1_minipdf.png" width="320"/></td>
@@ -870,7 +870,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic101</b></td>
-  <td>Percent stacked bar 🟢 93.8%</td>
+  <td>Percent stacked bar 🟢 93.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic101_percent_stacked_bar_p1_minipdf.png" width="320"/></td>
@@ -886,7 +886,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic103</b></td>
-  <td>Pie chart with labels 🟡 88.5%</td>
+  <td>Pie chart with labels 🟡 88.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic103_pie_chart_with_labels_p1_minipdf.png" width="320"/></td>
@@ -902,7 +902,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic105</b></td>
-  <td>3d bar chart 🟡 86.0%</td>
+  <td>3d bar chart 🟡 85.8%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic105_3d_bar_chart_p1_minipdf.png" width="320"/></td>
@@ -926,7 +926,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic108</b></td>
-  <td>Stacked area chart 🟢 94.5%</td>
+  <td>Stacked area chart 🟢 94.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic108_stacked_area_chart_p1_minipdf.png" width="320"/></td>
@@ -934,7 +934,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic109</b></td>
-  <td>Scatter with trendline 🟢 92.6%</td>
+  <td>Scatter with trendline 🟢 92.3%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic109_scatter_with_trendline_p1_minipdf.png" width="320"/></td>
@@ -942,7 +942,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic110</b></td>
-  <td>Chart with legend 🟡 85.7%</td>
+  <td>Chart with legend 🟡 84.7%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic110_chart_with_legend_p1_minipdf.png" width="320"/></td>
@@ -958,7 +958,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic112</b></td>
-  <td>Multiple charts 🟡 85.3%</td>
+  <td>Multiple charts 🟡 85.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic112_multiple_charts_p1_minipdf.png" width="320"/></td>
@@ -966,7 +966,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic113</b></td>
-  <td>Chart sheet 🟡 86.5%</td>
+  <td>Chart sheet 🟡 86.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic113_chart_sheet_p1_minipdf.png" width="320"/></td>
@@ -974,7 +974,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic114</b></td>
-  <td>Chart large dataset 🟢 91.5%</td>
+  <td>Chart large dataset 🟢 91.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic114_chart_large_dataset_p1_minipdf.png" width="320"/></td>
@@ -982,7 +982,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic115</b></td>
-  <td>Chart negative values 🟢 92.2%</td>
+  <td>Chart negative values 🟢 92.1%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic115_chart_negative_values_p1_minipdf.png" width="320"/></td>
@@ -990,7 +990,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic116</b></td>
-  <td>Percent stacked area 🟢 93.9%</td>
+  <td>Percent stacked area 🟢 93.8%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic116_percent_stacked_area_p1_minipdf.png" width="320"/></td>
@@ -998,7 +998,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic117</b></td>
-  <td>Stock ohlc chart 🟡 80.8%</td>
+  <td>Stock ohlc chart 🟡 80.9%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic117_stock_ohlc_chart_p1_minipdf.png" width="320"/></td>
@@ -1006,7 +1006,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic118</b></td>
-  <td>Bar chart custom colors 🟢 95.6%</td>
+  <td>Bar chart custom colors 🟢 95.5%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic118_bar_chart_custom_colors_p1_minipdf.png" width="320"/></td>
@@ -1022,7 +1022,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic120</b></td>
-  <td>Chart with date axis 🟡 74.3%</td>
+  <td>Chart with date axis 🟡 76.1%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic120_chart_with_date_axis_p1_minipdf.png" width="320"/></td>
@@ -1046,7 +1046,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic123</b></td>
-  <td>Dashed borders 🟢 99.5%</td>
+  <td>Dashed borders 🟢 99.1%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic123_dashed_borders_p1_minipdf.png" width="320"/></td>
@@ -1054,7 +1054,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic124</b></td>
-  <td>Colored borders 🟢 99.8%</td>
+  <td>Colored borders 🟢 99.7%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic124_colored_borders_p1_minipdf.png" width="320"/></td>
@@ -1062,7 +1062,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic125</b></td>
-  <td>Solid fills 🟢 99.4%</td>
+  <td>Solid fills 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic125_solid_fills_p1_minipdf.png" width="320"/></td>
@@ -1070,7 +1070,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic126</b></td>
-  <td>Dark header 🟢 99.3%</td>
+  <td>Dark header 🟢 99.5%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic126_dark_header_p1_minipdf.png" width="320"/></td>
@@ -1078,7 +1078,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic127</b></td>
-  <td>Font styles 🟢 99.3%</td>
+  <td>Font styles 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic127_font_styles_p1_minipdf.png" width="320"/></td>
@@ -1094,7 +1094,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic129</b></td>
-  <td>Alignment combos 🟢 99.9%</td>
+  <td>Alignment combos 🟢 99.8%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic129_alignment_combos_p1_minipdf.png" width="320"/></td>
@@ -1110,7 +1110,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic131</b></td>
-  <td>Number formats 🟢 99.7%</td>
+  <td>Number formats 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic131_number_formats_p1_minipdf.png" width="320"/></td>
@@ -1118,7 +1118,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic132</b></td>
-  <td>Striped table 🟢 99.1%</td>
+  <td>Striped table 🟢 99.0%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic132_striped_table_p1_minipdf.png" width="320"/></td>
@@ -1126,7 +1126,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic133</b></td>
-  <td>Gradient rows 🟢 99.7%</td>
+  <td>Gradient rows 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic133_gradient_rows_p1_minipdf.png" width="320"/></td>
@@ -1134,7 +1134,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic134</b></td>
-  <td>Heatmap 🟢 98.9%</td>
+  <td>Heatmap 🟢 98.8%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic134_heatmap_p1_minipdf.png" width="320"/></td>
@@ -1158,7 +1158,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic137</b></td>
-  <td>Checkerboard 🟢 98.5%</td>
+  <td>Checkerboard 🟢 98.4%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic137_checkerboard_p1_minipdf.png" width="320"/></td>
@@ -1174,7 +1174,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic139</b></td>
-  <td>Pattern fills 🟢 99.3%</td>
+  <td>Pattern fills 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic139_pattern_fills_p1_minipdf.png" width="320"/></td>
@@ -1190,7 +1190,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic141</b></td>
-  <td>Mixed edge borders 🟢 99.8%</td>
+  <td>Mixed edge borders 🟢 99.7%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic141_mixed_edge_borders_p1_minipdf.png" width="320"/></td>
@@ -1198,7 +1198,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic142</b></td>
-  <td>Styled invoice 🟢 98.4%</td>
+  <td>Styled invoice 🟢 98.3%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic142_styled_invoice_p1_minipdf.png" width="320"/></td>
@@ -1206,7 +1206,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic143</b></td>
-  <td>Colored tabs 🟢 99.9%</td>
+  <td>Colored tabs 🟢 100.0%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic143_colored_tabs_p1_minipdf.png" width="320"/></td>
@@ -1222,7 +1222,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic145</b></td>
-  <td>Status badges 🟢 99.2%</td>
+  <td>Status badges 🟢 99.1%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic145_status_badges_p1_minipdf.png" width="320"/></td>
@@ -1246,7 +1246,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic148</b></td>
-  <td>Frozen styled grid 🟢 97.4%</td>
+  <td>Frozen styled grid 🟢 97.3%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic148_frozen_styled_grid_p1_minipdf.png" width="320"/></td>
@@ -1254,7 +1254,7 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
 </tr>
 <tr>
   <td><b>classic149</b></td>
-  <td>Merged styled sections 🟢 98.8%</td>
+  <td>Merged styled sections 🟢 98.7%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic149_merged_styled_sections_p1_minipdf.png" width="320"/></td>
@@ -1268,7 +1268,248 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic150_kitchen_sink_styles_p1_minipdf.png" width="320"/></td>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic150_kitchen_sink_styles_p1_reference.png" width="320"/></td>
 </tr>
+<tr>
+  <td><b>classic151</b></td>
+  <td>Multilingual greetings 🟢 93.5%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic151_multilingual_greetings_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic151_multilingual_greetings_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic152</b></td>
+  <td>Emoji sampler 🟢 91.1%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic152_emoji_sampler_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic152_emoji_sampler_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic153</b></td>
+  <td>Currency symbols 🟢 98.5%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic153_currency_symbols_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic153_currency_symbols_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic154</b></td>
+  <td>Math symbols 🟢 95.7%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic154_math_symbols_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic154_math_symbols_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic155</b></td>
+  <td>Diacritical marks 🟢 99.8%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic155_diacritical_marks_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic155_diacritical_marks_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic156</b></td>
+  <td>Rtl bidi text 🟡 84.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic156_rtl_bidi_text_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic156_rtl_bidi_text_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic157</b></td>
+  <td>Cjk extended 🟢 91.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic157_cjk_extended_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic157_cjk_extended_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic158</b></td>
+  <td>Emoji skin tones 🟢 99.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic158_emoji_skin_tones_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic158_emoji_skin_tones_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic159</b></td>
+  <td>Zwj emoji 🟢 90.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic159_zwj_emoji_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic159_zwj_emoji_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic160</b></td>
+  <td>Punctuation marks 🟢 94.4%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic160_punctuation_marks_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic160_punctuation_marks_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic161</b></td>
+  <td>Box drawing 🟢 95.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic161_box_drawing_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic161_box_drawing_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic162</b></td>
+  <td>Cjk emoji styled 🟡 86.5%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic162_cjk_emoji_styled_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic162_cjk_emoji_styled_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic163</b></td>
+  <td>Cyrillic alphabets 🟢 99.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic163_cyrillic_alphabets_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic163_cyrillic_alphabets_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic164</b></td>
+  <td>Indic scripts 🟡 87.4%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic164_indic_scripts_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic164_indic_scripts_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic165</b></td>
+  <td>Southeast asian 🟢 96.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic165_southeast_asian_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic165_southeast_asian_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic166</b></td>
+  <td>Emoji progress 🟢 98.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic166_emoji_progress_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic166_emoji_progress_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic167</b></td>
+  <td>Musical symbols 🟢 90.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic167_musical_symbols_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic167_musical_symbols_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic168</b></td>
+  <td>Mixed ltr rtl styled 🟢 94.5%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic168_mixed_ltr_rtl_styled_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic168_mixed_ltr_rtl_styled_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic169</b></td>
+  <td>Korean invoice 🟡 88.4%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic169_korean_invoice_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic169_korean_invoice_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic170</b></td>
+  <td>Emoji dashboard 🟢 96.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic170_emoji_dashboard_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic170_emoji_dashboard_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic171</b></td>
+  <td>Ipa phonetic 🟢 97.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic171_ipa_phonetic_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic171_ipa_phonetic_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic172</b></td>
+  <td>Emoji timeline 🟢 95.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic172_emoji_timeline_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic172_emoji_timeline_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic173</b></td>
+  <td>African languages 🟢 90.8%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic173_african_languages_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic173_african_languages_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic174</b></td>
+  <td>Technical symbols 🟢 94.4%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic174_technical_symbols_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic174_technical_symbols_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic175</b></td>
+  <td>Multiscript catalog 🟢 92.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic175_multiscript_catalog_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic175_multiscript_catalog_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic176</b></td>
+  <td>Combining characters 🟢 94.5%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic176_combining_characters_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic176_combining_characters_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic177</b></td>
+  <td>Emoji calendar 🟡 88.4%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic177_emoji_calendar_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic177_emoji_calendar_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic178</b></td>
+  <td>Caucasus ethiopic 🟢 96.9%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic178_caucasus_ethiopic_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic178_caucasus_ethiopic_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic179</b></td>
+  <td>Emoji inventory 🟢 91.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic179_emoji_inventory_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic179_emoji_inventory_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic180</b></td>
+  <td>Polyglot paragraph 🟢 93.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic180_polyglot_paragraph_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports/images/classic180_polyglot_paragraph_p1_reference.png" width="320"/></td>
+</tr>
 </table>
+
 
 
 
