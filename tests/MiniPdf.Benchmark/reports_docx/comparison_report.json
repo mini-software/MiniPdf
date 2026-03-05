@@ -1,0 +1,800 @@
+[
+  {
+    "name": "docx_classic01_single_paragraph",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 776,
+    "reference_size": 24151,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9823,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic01_single_paragraph.pdf\n+++ reference/docx_classic01_single_paragraph.pdf\n@@ -1,2 +1,2 @@\n-Hello, World! This is a simple single paragraph document created for benchmarking\n\n-MiniPdf DOCX-to-PDF conversion.\n+Hello, World! This is a simple single paragraph document created for benchmarking MiniPdf\n\n+DOCX-to-PDF conversion.",
+    "visual_scores": [
+      0.9929
+    ],
+    "visual_avg": 0.9929,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic01_single_paragraph_p1_minipdf.png",
+        "reference_img": "docx_classic01_single_paragraph_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9972
+  },
+  {
+    "name": "docx_classic02_multiple_paragraphs",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1686,
+    "reference_size": 24385,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9241,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic02_multiple_paragraphs.pdf\n+++ reference/docx_classic02_multiple_paragraphs.pdf\n@@ -1,10 +1,10 @@\n-This is paragraph 1. It contains some sample text to test how MiniPdf handles\n\n-multiple consecutive paragraphs with default spacing.\n\n-This is paragraph 2. It contains some sample text to test how MiniPdf handles\n\n-multiple consecutive paragraphs with default spacing.\n\n-This is paragraph 3. It contains some sample text to test how MiniPdf handles\n\n-multiple consecutive paragraphs with default spacing.\n\n-This is paragraph 4. It contains some sample text to test how MiniPdf handles\n\n-multiple consecutive paragraphs with default spacing.\n\n-This is paragraph 5. It contains some sample text to test how MiniPdf handles\n\n-multiple consecutive paragraphs with default spacing.\n+This is paragraph 1. It contains some sample text to test how MiniPdf handles multiple\n\n+consecutive paragraphs with default spacing.\n\n+This is paragraph 2. It contains some sample text to test how MiniPdf handles multiple\n\n+consecutive paragraphs with default spacing.\n\n+This is paragraph 3. It contains some sample text to test how MiniPdf handles multiple\n\n+consecutive paragraphs with default spacing.\n\n+This is paragraph 4. It contains some sample text to test how MiniPdf handles multiple\n\n+consecutive paragraphs with default spacing.\n\n+This is paragraph 5. It contains some sample text to test how MiniPdf handles multiple\n\n+consecutive paragraphs with default spacing.",
+    "visual_scores": [
+      0.9629
+    ],
+    "visual_avg": 0.9629,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic02_multiple_paragraphs_p1_minipdf.png",
+        "reference_img": "docx_classic02_multiple_paragraphs_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9852
+  },
+  {
+    "name": "docx_classic03_headings",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1148,
+    "reference_size": 47298,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9877
+    ],
+    "visual_avg": 0.9877,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic03_headings_p1_minipdf.png",
+        "reference_img": "docx_classic03_headings_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9951
+  },
+  {
+    "name": "docx_classic04_bold_italic",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 676,
+    "reference_size": 45389,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9971
+    ],
+    "visual_avg": 0.9971,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic04_bold_italic_p1_minipdf.png",
+        "reference_img": "docx_classic04_bold_italic_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9988
+  },
+  {
+    "name": "docx_classic05_font_sizes",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1021,
+    "reference_size": 21367,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9831
+    ],
+    "visual_avg": 0.9831,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic05_font_sizes_p1_minipdf.png",
+        "reference_img": "docx_classic05_font_sizes_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9932
+  },
+  {
+    "name": "docx_classic06_font_colors",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 913,
+    "reference_size": 21508,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9965
+    ],
+    "visual_avg": 0.9965,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic06_font_colors_p1_minipdf.png",
+        "reference_img": "docx_classic06_font_colors_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9986
+  },
+  {
+    "name": "docx_classic07_alignment",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1456,
+    "reference_size": 22389,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.903,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic07_alignment.pdf\n+++ reference/docx_classic07_alignment.pdf\n@@ -1,8 +1,8 @@\n-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor\n\n-incididunt ut labore et dolore magna aliqua.\n\n-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor\n\n-incididunt ut labore et dolore magna aliqua.\n\n-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor\n\n-incididunt ut labore et dolore magna aliqua.\n\n-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor\n\n-incididunt ut labore et dolore magna aliqua.\n+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt\n\n+ut labore et dolore magna aliqua.\n\n+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt\n\n+ut labore et dolore magna aliqua.\n\n+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt\n\n+ut labore et dolore magna aliqua.\n\n+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt\n\n+ut labore et dolore magna aliqua.",
+    "visual_scores": [
+      0.9777
+    ],
+    "visual_avg": 0.9777,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic07_alignment_p1_minipdf.png",
+        "reference_img": "docx_classic07_alignment_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9911
+  },
+  {
+    "name": "docx_classic08_bullet_list",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1142,
+    "reference_size": 40793,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9242,
+    "flat_text_similarity": 0.9242,
+    "word_text_similarity": 0.5833,
+    "text_diff": "--- minipdf/docx_classic08_bullet_list.pdf\n+++ reference/docx_classic08_bullet_list.pdf\n@@ -1,6 +1,6 @@\n Shopping List\n\n-• Apples\n\n-• Bananas\n\n-• Cherries\n\n-• Dates\n\n-• Elderberries\n+ Apples\n\n+ Bananas\n\n+ Cherries\n\n+ Dates\n\n+ Elderberries",
+    "visual_scores": [
+      0.9944
+    ],
+    "visual_avg": 0.9944,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic08_bullet_list_p1_minipdf.png",
+        "reference_img": "docx_classic08_bullet_list_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9674
+  },
+  {
+    "name": "docx_classic09_numbered_list",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1189,
+    "reference_size": 37529,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9907
+    ],
+    "visual_avg": 0.9907,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic09_numbered_list_p1_minipdf.png",
+        "reference_img": "docx_classic09_numbered_list_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9963
+  },
+  {
+    "name": "docx_classic10_simple_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4542,
+    "reference_size": 40782,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9753
+    ],
+    "visual_avg": 0.9753,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic10_simple_table_p1_minipdf.png",
+        "reference_img": "docx_classic10_simple_table_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9901
+  },
+  {
+    "name": "docx_classic11_table_with_shading",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7796,
+    "reference_size": 49464,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9218
+    ],
+    "visual_avg": 0.9218,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic11_table_with_shading_p1_minipdf.png",
+        "reference_img": "docx_classic11_table_with_shading_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9687
+  },
+  {
+    "name": "docx_classic12_merged_cells_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4190,
+    "reference_size": 39476,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.981
+    ],
+    "visual_avg": 0.981,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic12_merged_cells_table_p1_minipdf.png",
+        "reference_img": "docx_classic12_merged_cells_table_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9924
+  },
+  {
+    "name": "docx_classic13_long_document",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 15709,
+    "reference_size": 55492,
+    "minipdf_pages": 4,
+    "reference_pages": 4,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.6801,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic13_long_document.pdf\n+++ reference/docx_classic13_long_document.pdf\n@@ -1,125 +1,125 @@\n Project Report\n\n This document is designed to span multiple pages to test pagination in MiniPdf.\n\n Section 1\n\n-This is section 1 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 1 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n+This is section 1 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 1 of the report. It contains detailed analysis of the topic at hand. The\n\n+quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n Section 2\n\n-This is section 2 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 2 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n+This is section 2 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 2 of the report. It contains detailed analysis of the topic at hand. The\n\n+quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n Section 3\n\n-This is section 3 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 3 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n+This is section 3 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 3 of the report. It contains detailed analysis of the topic at hand. The\n\n+quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n Section 4\n\n-This is section 4 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 4 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n+This is section 4 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 4 of the report. It contains detailed analysis of the topic at hand. The\n\n+quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n Section 5\n\n-This is section 5 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n+This is section 5 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n ---PAGE---\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 5 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 5 of the report. It contains detailed analysis of the topic at hand. The\n\n+quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n Section 6\n\n-This is section 6 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 6 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n+This is section 6 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 6 of the report. It contains detailed analysis of the topic at hand. The\n\n+quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n Section 7\n\n-This is section 7 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 7 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n+This is section 7 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 7 of the report. It contains detailed analysis of the topic at hand. The\n\n+quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n Section 8\n\n-This is section 8 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 8 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n+This is section 8 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 8 of the report. It contains detailed analysis of the topic at hand. The\n\n+quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n Section 9\n\n-This is section 9 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 9 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n+This is section 9 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 9 of the report. It contains detailed analysis of the topic at hand. The\n\n+quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n+---PAGE---\n\n Section 10\n\n-This is section 10 of the report. It contains detailed analysis of the topic at\n\n+This is section 10 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 10 of the report. It contains detailed analysis of the topic at hand.\n\n+The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n+Section 11\n\n+This is section 11 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 11 of the report. It contains detailed analysis of the topic at hand.\n\n+The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n+Section 12\n\n+This is section 12 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 12 of the report. It contains detailed analysis of the topic at hand.\n\n+The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n+Section 13\n\n+This is section 13 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 13 of the report. It contains detailed analysis of the topic at hand.\n\n+The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n+Section 14\n\n+This is section 14 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 14 of the report. It contains detailed analysis of the topic at hand.\n\n+The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.\n\n ---PAGE---\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 10 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n-Section 11\n\n-This is section 11 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 11 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n-Section 12\n\n-This is section 12 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 12 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n-Section 13\n\n-This is section 13 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 13 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n-Section 14\n\n-This is section 14 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 14 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n\n Section 15\n\n----PAGE---\n\n-This is section 15 of the report. It contains detailed analysis of the topic at\n\n-hand. The quick brown fox jumps over the lazy dog. Pack my box with five dozen\n\n-liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump\n\n-quickly. Sphinx of black quartz, judge my vow.This is section 15 of the report. It\n\n-contains detailed analysis of the topic at hand. The quick brown fox jumps over the\n\n-lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras\n\n-jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.\n+This is section 15 of the report. It contains detailed analysis of the topic at hand. The quick\n\n+brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly\n\n+quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black quartz, judge\n\n+my vow.This is section 15 of the report. It contains detailed analysis of the topic at hand.\n\n+The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump. The five boxing wizards jump quickly. Sphinx of black\n\n+quartz, judge my vow.",
+    "visual_scores": [
+      0.9115,
+      0.9101,
+      0.8962,
+      0.9637
+    ],
+    "visual_avg": 0.9204,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic13_long_document_p1_minipdf.png",
+        "reference_img": "docx_classic13_long_document_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic13_long_document_p2_minipdf.png",
+        "reference_img": "docx_classic13_long_document_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "docx_classic13_long_document_p3_minipdf.png",
+        "reference_img": "docx_classic13_long_document_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "docx_classic13_long_document_p4_minipdf.png",
+        "reference_img": "docx_classic13_long_document_p4_reference.png"
+      }
+    ],
+    "overall_score": 0.9682
+  },
+  {
+    "name": "docx_classic14_mixed_content",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4117,
+    "reference_size": 53833,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9929,
+    "flat_text_similarity": 0.9929,
+    "word_text_similarity": 0.9516,
+    "text_diff": "--- minipdf/docx_classic14_mixed_content.pdf\n+++ reference/docx_classic14_mixed_content.pdf\n@@ -9,6 +9,6 @@\n Product sales increased by 15% compared to the previous quarter.\n\n Service revenue remained stable with a slight upward trend.\n\n Action Items\n\n-• Expand marketing campaign\n\n-• Hire two additional engineers\n\n-• Launch new subscription tier\n+ Expand marketing campaign\n\n+ Hire two additional engineers\n\n+ Launch new subscription tier",
+    "visual_scores": [
+      0.9651
+    ],
+    "visual_avg": 0.9651,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic14_mixed_content_p1_minipdf.png",
+        "reference_img": "docx_classic14_mixed_content_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9832
+  },
+  {
+    "name": "docx_classic15_indentation",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1438,
+    "reference_size": 37214,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9954,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic15_indentation.pdf\n+++ reference/docx_classic15_indentation.pdf\n@@ -5,5 +5,5 @@\n This paragraph is indented by 108 points from the left margin.\n\n This paragraph is indented by 144 points from the left\n\n margin.\n\n-This paragraph has a first-line indent of 36 points. The remaining lines\n\n-wrap normally back to the left margin.\n+This paragraph has a first-line indent of 36 points. The remaining lines wrap\n\n+normally back to the left margin.",
+    "visual_scores": [
+      0.973
+    ],
+    "visual_avg": 0.973,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic15_indentation_p1_minipdf.png",
+        "reference_img": "docx_classic15_indentation_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9892
+  },
+  {
+    "name": "docx_classic16_line_spacing",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1480,
+    "reference_size": 38636,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.913,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic16_line_spacing.pdf\n+++ reference/docx_classic16_line_spacing.pdf\n@@ -1,10 +1,10 @@\n Line Spacing Test\n\n Single spacing:\n\n-The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor\n\n-jugs. How vexingly quick daft zebras jump.\n\n+The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump.\n\n 1.5 Lines spacing:\n\n-The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor\n\n-jugs. How vexingly quick daft zebras jump.\n\n+The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump.\n\n Double spacing:\n\n-The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor\n\n-jugs. How vexingly quick daft zebras jump.\n+The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How\n\n+vexingly quick daft zebras jump.",
+    "visual_scores": [
+      0.9655
+    ],
+    "visual_avg": 0.9655,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic16_line_spacing_p1_minipdf.png",
+        "reference_img": "docx_classic16_line_spacing_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9862
+  },
+  {
+    "name": "docx_classic17_page_break",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1437,
+    "reference_size": 35350,
+    "minipdf_pages": 3,
+    "reference_pages": 3,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9947,
+      0.9967,
+      0.9981
+    ],
+    "visual_avg": 0.9965,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic17_page_break_p1_minipdf.png",
+        "reference_img": "docx_classic17_page_break_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic17_page_break_p2_minipdf.png",
+        "reference_img": "docx_classic17_page_break_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "docx_classic17_page_break_p3_minipdf.png",
+        "reference_img": "docx_classic17_page_break_p3_reference.png"
+      }
+    ],
+    "overall_score": 0.9986
+  },
+  {
+    "name": "docx_classic18_embedded_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1158,
+    "reference_size": 34812,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.952
+    ],
+    "visual_avg": 0.952,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic18_embedded_image_p1_minipdf.png",
+        "reference_img": "docx_classic18_embedded_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9808
+  },
+  {
+    "name": "docx_classic19_multiple_images",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1766,
+    "reference_size": 35473,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9354
+    ],
+    "visual_avg": 0.9354,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic19_multiple_images_p1_minipdf.png",
+        "reference_img": "docx_classic19_multiple_images_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9742
+  },
+  {
+    "name": "docx_classic20_table_with_many_rows",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 27541,
+    "reference_size": 71071,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9467
+    ],
+    "visual_avg": 0.9467,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic20_table_with_many_rows_p1_minipdf.png",
+        "reference_img": "docx_classic20_table_with_many_rows_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9787
+  },
+  {
+    "name": "docx_classic21_nested_lists",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1697,
+    "reference_size": 46412,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9408,
+    "flat_text_similarity": 0.9408,
+    "word_text_similarity": 0.5455,
+    "text_diff": "--- minipdf/docx_classic21_nested_lists.pdf\n+++ reference/docx_classic21_nested_lists.pdf\n@@ -1,11 +1,11 @@\n Project Structure\n\n-• src/\n\n-• MiniPdf/\n\n-• MiniPdf.cs\n\n-• PdfDocument.cs\n\n-• PdfWriter.cs\n\n-• MiniPdf.Tests/\n\n-• DocxToPdfConverterTests.cs\n\n-• scripts/\n\n-• Run-Benchmark.ps1\n\n-• README.md\n+ src/\n\n+ MiniPdf/\n\n+ MiniPdf.cs\n\n+ PdfDocument.cs\n\n+ PdfWriter.cs\n\n+ MiniPdf.Tests/\n\n+ DocxToPdfConverterTests.cs\n\n+ scripts/\n\n+ Run-Benchmark.ps1\n\n+ README.md",
+    "visual_scores": [
+      0.9901
+    ],
+    "visual_avg": 0.9901,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic21_nested_lists_p1_minipdf.png",
+        "reference_img": "docx_classic21_nested_lists_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9724
+  },
+  {
+    "name": "docx_classic22_horizontal_rule",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1063,
+    "reference_size": 36115,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9909
+    ],
+    "visual_avg": 0.9909,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic22_horizontal_rule_p1_minipdf.png",
+        "reference_img": "docx_classic22_horizontal_rule_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9964
+  },
+  {
+    "name": "docx_classic23_mixed_formatting_runs",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1355,
+    "reference_size": 50622,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.996
+    ],
+    "visual_avg": 0.996,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic23_mixed_formatting_runs_p1_minipdf.png",
+        "reference_img": "docx_classic23_mixed_formatting_runs_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9984
+  },
+  {
+    "name": "docx_classic24_two_column_table_layout",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1742,
+    "reference_size": 37201,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9789,
+    "flat_text_similarity": 0.9789,
+    "word_text_similarity": 0.9647,
+    "text_diff": "--- minipdf/docx_classic24_two_column_table_layout.pdf\n+++ reference/docx_classic24_two_column_table_layout.pdf\n@@ -1,5 +1,5 @@\n Two-Column Layout\n\n Left column content. This is the first Right column content. This is the second\n\n-column of a two-column layout. It column. Both columns should render\n\n-demonstrates how tables can be used for side-by-side in the PDF output.\n\n+column of a two-column layout. It column. Both columns should render side-\n\n+demonstrates how tables can be used for by-side in the PDF output.\n\n text layout purposes.",
+    "visual_scores": [
+      0.9736
+    ],
+    "visual_avg": 0.9736,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic24_two_column_table_layout_p1_minipdf.png",
+        "reference_img": "docx_classic24_two_column_table_layout_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.981
+  },
+  {
+    "name": "docx_classic25_title_and_subtitle",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1304,
+    "reference_size": 65994,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9842,
+      0.9958
+    ],
+    "visual_avg": 0.99,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic25_title_and_subtitle_p1_minipdf.png",
+        "reference_img": "docx_classic25_title_and_subtitle_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic25_title_and_subtitle_p2_minipdf.png",
+        "reference_img": "docx_classic25_title_and_subtitle_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.996
+  },
+  {
+    "name": "docx_classic26_table_alignment",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4488,
+    "reference_size": 49050,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9791
+    ],
+    "visual_avg": 0.9791,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic26_table_alignment_p1_minipdf.png",
+        "reference_img": "docx_classic26_table_alignment_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9916
+  },
+  {
+    "name": "docx_classic27_long_paragraph_wrapping",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3795,
+    "reference_size": 37209,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9558,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic27_long_paragraph_wrapping.pdf\n+++ reference/docx_classic27_long_paragraph_wrapping.pdf\n@@ -1,26 +1,25 @@\n Word Wrapping Test\n\n-This is a very long paragraph designed to test how MiniPdf handles word wrapping\n\n-across line boundaries. The text should flow naturally from one line to the next\n\n-without any awkward breaks or overflow. This is a very long paragraph designed to\n\n-test how MiniPdf handles word wrapping across line boundaries. The text should flow\n\n-naturally from one line to the next without any awkward breaks or overflow. This is\n\n-a very long paragraph designed to test how MiniPdf handles word wrapping across\n\n-line boundaries. The text should flow naturally from one line to the next without\n\n-any awkward breaks or overflow. This is a very long paragraph designed to test how\n\n-MiniPdf handles word wrapping across line boundaries. The text should flow\n\n-naturally from one line to the next without any awkward breaks or overflow. This is\n\n-a very long paragraph designed to test how MiniPdf handles word wrapping across\n\n-line boundaries. The text should flow naturally from one line to the next without\n\n-any awkward breaks or overflow. This is a very long paragraph designed to test how\n\n-MiniPdf handles word wrapping across line boundaries. The text should flow\n\n-naturally from one line to the next without any awkward breaks or overflow. This is\n\n-a very long paragraph designed to test how MiniPdf handles word wrapping across\n\n-line boundaries. The text should flow naturally from one line to the next without\n\n-any awkward breaks or overflow. This is a very long paragraph designed to test how\n\n-MiniPdf handles word wrapping across line boundaries. The text should flow\n\n-naturally from one line to the next without any awkward breaks or overflow. This is\n\n-a very long paragraph designed to test how MiniPdf handles word wrapping across\n\n-line boundaries. The text should flow naturally from one line to the next without\n\n-any awkward breaks or overflow. This is a very long paragraph designed to test how\n\n-MiniPdf handles word wrapping across line boundaries. The text should flow\n\n-naturally from one line to the next without any awkward breaks or overflow.\n+This is a very long paragraph designed to test how MiniPdf handles word wrapping across\n\n+line boundaries. The text should flow naturally from one line to the next without any\n\n+awkward breaks or overflow. This is a very long paragraph designed to test how MiniPdf\n\n+handles word wrapping across line boundaries. The text should flow naturally from one line\n\n+to the next without any awkward breaks or overflow. This is a very long paragraph\n\n+designed to test how MiniPdf handles word wrapping across line boundaries. The text\n\n+should flow naturally from one line to the next without any awkward breaks or overflow.\n\n+This is a very long paragraph designed to test how MiniPdf handles word wrapping across\n\n+line boundaries. The text should flow naturally from one line to the next without any\n\n+awkward breaks or overflow. This is a very long paragraph designed to test how MiniPdf\n\n+handles word wrapping across line boundaries. The text should flow naturally from one line\n\n+to the next without any awkward breaks or overflow. This is a very long paragraph\n\n+designed to test how MiniPdf handles word wrapping across line boundaries. The text\n\n+should flow naturally from one line to the next without any awkward breaks or overflow.\n\n+This is a very long paragraph designed to test how MiniPdf handles word wrapping across\n\n+line boundaries. The text should flow naturally from one line to the next without any\n\n+awkward breaks or overflow. This is a very long paragraph designed to test how MiniPdf\n\n+handles word wrapping across line boundaries. The text should flow naturally from one line\n\n+to the next without any awkward breaks or overflow. This is a very long paragraph\n\n+designed to test how MiniPdf handles word wrapping across line boundaries. The text\n\n+should flow naturally from one line to the next without any awkward breaks or overflow.\n\n+This is a very long paragraph designed to test how MiniPdf handles word wrapping across\n\n+line boundaries. The text should flow naturally from one line to the next without any\n\n+awkward breaks or overflow.",
+    "visual_scores": [
+      0.9205
+    ],
+    "visual_avg": 0.9205,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic27_long_paragraph_wrapping_p1_minipdf.png",
+        "reference_img": "docx_classic27_long_paragraph_wrapping_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9682
+  },
+  {
+    "name": "docx_classic28_special_characters",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3948482,
+    "reference_size": 41113,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9859
+    ],
+    "visual_avg": 0.9859,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic28_special_characters_p1_minipdf.png",
+        "reference_img": "docx_classic28_special_characters_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9944
+  },
+  {
+    "name": "docx_classic29_table_with_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2359,
+    "reference_size": 37772,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9844,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic29_table_with_image.pdf\n+++ reference/docx_classic29_table_with_image.pdf\n@@ -1,5 +1,5 @@\n Product Card\n\n Product Description\n\n-MiniPdf Widget - A compact, efficient\n\n-tool for PDF conversion. Lightweight and\n\n+MiniPdf Widget - A compact, efficient tool\n\n+for PDF conversion. Lightweight and\n\n dependency-free.",
+    "visual_scores": [
+      0.9669
+    ],
+    "visual_avg": 0.9669,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic29_table_with_image_p1_minipdf.png",
+        "reference_img": "docx_classic29_table_with_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9868
+  },
+  {
+    "name": "docx_classic30_comprehensive_report",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 9206,
+    "reference_size": 107009,
+    "minipdf_pages": 3,
+    "reference_pages": 3,
+    "text_similarity": 0.9919,
+    "flat_text_similarity": 0.9917,
+    "word_text_similarity": 0.966,
+    "text_diff": "--- minipdf/docx_classic30_comprehensive_report.pdf\n+++ reference/docx_classic30_comprehensive_report.pdf\n@@ -9,9 +9,9 @@\n 5. Recommendations\n\n ---PAGE---\n\n 1. Executive Summary\n\n-This report provides a comprehensive analysis of the technology landscape in 2026.\n\n-Key findings include continued growth in AI adoption, increased focus on\n\n-sustainability, and emerging trends in quantum computing.\n\n+This report provides a comprehensive analysis of the technology landscape in 2026. Key\n\n+findings include continued growth in AI adoption, increased focus on sustainability, and\n\n+emerging trends in quantum computing.\n\n 2. Market Analysis\n\n The following table summarizes market share across key sectors:\n\n Sector Market Share Growth\n\n@@ -21,11 +21,11 @@\n IoT 16% +8%\n\n 3. Technology Trends\n\n Key trends identified:\n\n-• Generative AI integration in enterprise software\n\n-• Edge computing for real-time processing\n\n-• Green technology and sustainable computing\n\n-• Zero-trust security architectures\n\n-• Low-code/no-code platform expansion\n\n+ Generative AI integration in enterprise software\n\n+ Edge computing for real-time processing\n\n+ Green technology and sustainable computing\n\n+ Zero-trust security architectures\n\n+ Low-code/no-code platform expansion\n\n 4. Visual Summary\n\n Growth indicator chart (placeholder):\n\n 5. Recommendations\n",
+    "visual_scores": [
+      0.987,
+      0.9927,
+      0.9383
+    ],
+    "visual_avg": 0.9727,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic30_comprehensive_report_p1_minipdf.png",
+        "reference_img": "docx_classic30_comprehensive_report_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic30_comprehensive_report_p2_minipdf.png",
+        "reference_img": "docx_classic30_comprehensive_report_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "docx_classic30_comprehensive_report_p3_minipdf.png",
+        "reference_img": "docx_classic30_comprehensive_report_p3_reference.png"
+      }
+    ],
+    "overall_score": 0.9858
+  }
+]

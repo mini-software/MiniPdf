@@ -6,6 +6,9 @@ namespace MiniSoftware;
 /// </summary>
 internal static class DocxToPdfConverter
 {
+    // Single-spaced line height ≈ fontSize × this factor (ascent + descent for typical fonts)
+    private const float FontMetricsFactor = 1.18f;
+
     /// <summary>
     /// Options for controlling DOCX-to-PDF conversion.
     /// </summary>
@@ -52,6 +55,18 @@ internal static class DocxToPdfConverter
     {
         options ??= new ConversionOptions();
         var docxDoc = DocxReader.Read(docxStream);
+
+        // Apply page layout from DOCX if available
+        if (docxDoc.PageLayout is { } layout)
+        {
+            options.PageWidth = layout.PageWidth;
+            options.PageHeight = layout.PageHeight;
+            options.MarginTop = layout.MarginTop;
+            options.MarginBottom = layout.MarginBottom;
+            options.MarginLeft = layout.MarginLeft;
+            options.MarginRight = layout.MarginRight;
+        }
+
         var pdfDoc = new PdfDocument();
 
         var state = new RenderState(pdfDoc, options);
@@ -94,6 +109,7 @@ internal static class DocxToPdfConverter
         public ConversionOptions Options { get; }
         public PdfPage? CurrentPage { get; set; }
         public float CurrentY { get; set; }
+        public bool IsTopOfPage { get; set; } = true;
 
         public float UsableWidth => Options.PageWidth - Options.MarginLeft - Options.MarginRight;
 
@@ -109,12 +125,21 @@ internal static class DocxToPdfConverter
             {
                 CurrentPage = Doc.AddPage(Options.PageWidth, Options.PageHeight);
                 CurrentY = Options.PageHeight - Options.MarginTop;
+                IsTopOfPage = true;
             }
         }
 
         public void AdvanceY(float amount)
         {
             CurrentY -= amount;
+            IsTopOfPage = false;
+        }
+
+        public void ForceNewPage()
+        {
+            CurrentPage = Doc.AddPage(Options.PageWidth, Options.PageHeight);
+            CurrentY = Options.PageHeight - Options.MarginTop;
+            IsTopOfPage = true;
         }
     }
 
@@ -122,14 +147,20 @@ internal static class DocxToPdfConverter
 
     private static void RenderParagraph(RenderState state, DocxParagraph paragraph)
     {
+        // Handle page break before
+        if (paragraph.HasPageBreakBefore)
+            state.ForceNewPage();
+
         var options = state.Options;
         var fontSize = paragraph.FontSize > 0 ? paragraph.FontSize : options.FontSize;
-        var lineHeight = paragraph.LineSpacing > 0 ? paragraph.LineSpacing : fontSize * options.LineSpacing;
+        // Font metrics factor: single-spaced line height ≈ fontSize × FontMetricsFactor
+        var lineSpacingMul = paragraph.LineSpacing > 0 ? paragraph.LineSpacing : options.LineSpacing;
+        var lineHeight = fontSize * FontMetricsFactor * lineSpacingMul;
         var avgCharWidth = fontSize * 0.47f;
 
-        // Apply spacing before
+        // Apply spacing before (skip at top of page to match Word behavior)
         var spacingBefore = paragraph.SpacingBefore > 0 ? paragraph.SpacingBefore : 0;
-        if (spacingBefore > 0)
+        if (spacingBefore > 0 && !state.IsTopOfPage)
             state.AdvanceY(spacingBefore);
 
         state.EnsurePage();
@@ -164,47 +195,118 @@ internal static class DocxToPdfConverter
         {
             state.AdvanceY(lineHeight);
             // Apply spacing after
-            var spacingAfterEmpty = paragraph.SpacingAfter > 0 ? paragraph.SpacingAfter : fontSize * 0.5f;
+            var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : fontSize * 0.35f;
             state.AdvanceY(spacingAfterEmpty);
+
+            // Handle page break after (even for empty paragraphs)
+            if (paragraph.HasPageBreakAfter)
+                state.ForceNewPage();
             return;
         }
 
-        // Concatenate all run texts for word wrapping
-        var fullText = string.Concat(paragraph.Runs.Select(r => r.Text));
+        // Check if runs have varying formatting
+        var hasVaryingFormat = paragraph.Runs.Count > 1 &&
+            paragraph.Runs.Any(r => (r.FontSize > 0 && r.FontSize != fontSize) || r.Color != null);
 
-        // Determine dominant run properties (use first run with content)
-        var dominantRun = paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
-        var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
-        var runColor = dominantRun?.Color ?? paragraph.Color;
-        var runAvgCharWidth = runFontSize * 0.47f;
-
-        // Word wrap the text
-        var lines = WordWrap(fullText, firstLineWidth, availableWidth, runAvgCharWidth);
-
-        for (var i = 0; i < lines.Count; i++)
+        if (hasVaryingFormat)
         {
-            state.EnsurePage();
+            // Render each run individually on the same line
+            RenderMultiFormatRuns(state, paragraph, x, firstLineX, availableWidth, firstLineWidth, fontSize, lineHeight);
+        }
+        else
+        {
+            // Simple path: all runs share the same formatting
+            var fullText = string.Concat(paragraph.Runs.Select(r => r.Text));
+            var dominantRun = paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
+            var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
+            var runColor = dominantRun?.Color ?? paragraph.Color;
+            var runAvgCharWidth = runFontSize * 0.47f;
 
-            var line = lines[i];
-            var lineX = i == 0 ? firstLineX : x;
-            var lineW = i == 0 ? firstLineWidth : availableWidth;
+            var lines = WordWrap(fullText, firstLineWidth, availableWidth, runAvgCharWidth);
 
-            // Apply alignment
-            var textWidth = line.Length * runAvgCharWidth;
-            var renderX = paragraph.Alignment switch
+            for (var i = 0; i < lines.Count; i++)
             {
-                "center" => lineX + (lineW - textWidth) / 2,
-                "right" => lineX + lineW - textWidth,
-                _ => lineX
-            };
+                state.EnsurePage();
 
-            state.CurrentPage!.AddText(line, renderX, state.CurrentY, runFontSize, runColor);
-            state.AdvanceY(lineHeight);
+                var line = lines[i];
+                var lineX = i == 0 ? firstLineX : x;
+                var lineW = i == 0 ? firstLineWidth : availableWidth;
+
+                var textWidth = line.Length * runAvgCharWidth;
+                var renderX = paragraph.Alignment switch
+                {
+                    "center" => lineX + (lineW - textWidth) / 2,
+                    "right" => lineX + lineW - textWidth,
+                    _ => lineX
+                };
+
+                state.CurrentPage!.AddText(line, renderX, state.CurrentY, runFontSize, runColor);
+                state.AdvanceY(lineHeight);
+            }
         }
 
         // Apply spacing after
-        var spacingAfter = paragraph.SpacingAfter > 0 ? paragraph.SpacingAfter : fontSize * 0.5f;
+        var defaultSpacing = (paragraph.IsBulletList || paragraph.IsNumberedList) ? 0f : fontSize * 0.35f;
+        var spacingAfter = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : defaultSpacing;
         state.AdvanceY(spacingAfter);
+
+        // Handle page break after
+        if (paragraph.HasPageBreakAfter)
+            state.ForceNewPage();
+    }
+
+    /// <summary>
+    /// Renders runs with varying font sizes/colors on the same line(s).
+    /// </summary>
+    private static void RenderMultiFormatRuns(RenderState state, DocxParagraph paragraph,
+        float baseX, float firstLineX, float availableWidth, float firstLineWidth,
+        float defaultFontSize, float lineHeight)
+    {
+        state.EnsurePage();
+        var currentX = firstLineX;
+        var maxWidth = firstLineWidth;
+        var isFirstLine = true;
+
+        foreach (var run in paragraph.Runs)
+        {
+            if (string.IsNullOrEmpty(run.Text)) continue;
+
+            var runFs = run.FontSize > 0 ? run.FontSize : defaultFontSize;
+            var runColor = run.Color ?? paragraph.Color;
+            var runCharWidth = runFs * 0.47f;
+
+            // Split run text by spaces for word wrapping
+            var words = run.Text.Split(' ');
+            for (var wi = 0; wi < words.Length; wi++)
+            {
+                var word = words[wi];
+                var wordWidth = word.Length * runCharWidth;
+                var spaceWidth = wi > 0 ? runCharWidth : 0;
+
+                // Check if word fits on current line
+                if (currentX + spaceWidth + wordWidth > baseX + (isFirstLine ? firstLineWidth : availableWidth) + state.Options.MarginLeft)
+                {
+                    // Wrap to next line
+                    state.AdvanceY(lineHeight);
+                    state.EnsurePage();
+                    currentX = baseX;
+                    isFirstLine = false;
+                    spaceWidth = 0;
+                }
+
+                if (wi > 0 && spaceWidth > 0)
+                    currentX += spaceWidth;
+
+                state.CurrentPage!.AddText(word, currentX, state.CurrentY, runFs, runColor);
+                currentX += wordWidth;
+
+                // Add space after word (except last)
+                if (wi < words.Length - 1)
+                    currentX += runCharWidth;
+            }
+        }
+
+        state.AdvanceY(lineHeight);
     }
 
     // ── Image rendering ─────────────────────────────────────────────────
@@ -236,7 +338,7 @@ internal static class DocxToPdfConverter
         var y = state.CurrentY - height;
 
         state.CurrentPage!.AddImage(image.Data, format, x, y, width, height);
-        state.AdvanceY(height + 4f); // 4pt gap after image
+        state.AdvanceY(height + 2f); // 2pt gap after image
     }
 
     // ── Table rendering ─────────────────────────────────────────────────
@@ -245,7 +347,7 @@ internal static class DocxToPdfConverter
     {
         var options = state.Options;
         var usableWidth = state.UsableWidth;
-        var cellPadding = 4f;
+        var cellPadding = 1f;
 
         // Determine column widths
         var colWidths = CalculateTableColumnWidths(table, usableWidth);
@@ -291,10 +393,32 @@ internal static class DocxToPdfConverter
                 state.CurrentPage!.AddLine(cellX, state.CurrentY, cellX, state.CurrentY - rowHeight, PdfColor.FromRgb(200, 200, 200));
                 state.CurrentPage!.AddLine(cellX + cellWidth, state.CurrentY, cellX + cellWidth, state.CurrentY - rowHeight, PdfColor.FromRgb(200, 200, 200));
 
-                // Render cell text
+                // Render cell content (images and text)
                 var textY = state.CurrentY - cellPadding;
                 foreach (var para in cell.Paragraphs)
                 {
+                    // Render images inside table cells
+                    const float emuPerPt = 914400f / 72f;
+                    foreach (var image in para.Images)
+                    {
+                        var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
+                        var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
+                        var maxImgW = cellWidth - cellPadding * 2;
+                        if (imgW > maxImgW)
+                        {
+                            var s = maxImgW / imgW;
+                            imgW *= s;
+                            imgH *= s;
+                        }
+                        var fmt = image.Extension;
+                        if (fmt == "jpg" || fmt == "png")
+                        {
+                            var imgY = textY - imgH;
+                            state.CurrentPage!.AddImage(image.Data, fmt, cellX + cellPadding, imgY, imgW, imgH);
+                            textY -= imgH + 1f;
+                        }
+                    }
+
                     var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
                     var text = string.Concat(para.Runs.Select(r => r.Text));
                     if (string.IsNullOrEmpty(text)) continue;
@@ -327,7 +451,7 @@ internal static class DocxToPdfConverter
         }
 
         // Add some spacing after table
-        state.AdvanceY(8f);
+        state.AdvanceY(4f);
     }
 
     private static float[] CalculateTableColumnWidths(DocxTable table, float usableWidth)
@@ -371,6 +495,18 @@ internal static class DocxToPdfConverter
             var cellHeight = cellPadding * 2;
             foreach (var para in cell.Paragraphs)
             {
+                // Account for images in row height
+                const float emuPerPt = 914400f / 72f;
+                foreach (var image in para.Images)
+                {
+                    var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
+                    var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
+                    var maxImgW = cellWidth - cellPadding * 2;
+                    if (imgW > maxImgW)
+                        imgH *= maxImgW / imgW;
+                    cellHeight += imgH + 1f;
+                }
+
                 var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
                 var runFontSize = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text))?.FontSize;
                 var effectiveFontSize = runFontSize > 0 ? runFontSize.Value : fontSize;

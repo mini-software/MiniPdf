@@ -44,6 +44,7 @@ internal static class DocxReader
             return new DocxDocument([]);
 
         var elements = new List<DocxElement>();
+        var styleListCounter = 0; // counter for style-based numbered lists
 
         foreach (var child in body.Elements())
         {
@@ -51,7 +52,19 @@ internal static class DocxReader
             {
                 var paragraph = ReadParagraph(child, styles, numbering, relationships, archive);
                 if (paragraph != null)
+                {
+                    // Fix up style-based numbered list counter
+                    if (paragraph.IsNumberedList && paragraph.ListText == "1.")
+                    {
+                        styleListCounter++;
+                        paragraph = paragraph with { ListText = styleListCounter + "." };
+                    }
+                    else if (!paragraph.IsNumberedList)
+                    {
+                        styleListCounter = 0;
+                    }
                     elements.Add(paragraph);
+                }
             }
             else if (child.Name == W + "tbl")
             {
@@ -61,7 +74,10 @@ internal static class DocxReader
             }
         }
 
-        return new DocxDocument(elements);
+        // Read page layout from sectPr
+        var pageLayout = ReadPageLayout(body);
+
+        return new DocxDocument(elements, pageLayout);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -74,13 +90,15 @@ internal static class DocxReader
         var pPr = pElement.Element(W + "pPr");
         var alignment = "left";
         float spacingBefore = 0;
-        float spacingAfter = 0;
+        float spacingAfter = -1;
         float lineSpacing = 0;
         float indentLeft = 0;
         float indentRight = 0;
         float indentFirstLine = 0;
         bool isBulletList = false;
         bool isNumberedList = false;
+        bool pageBreakBefore = false;
+        bool pageBreakAfter = false;
         int listLevel = 0;
         string? listText = null;
         string? styleId = null;
@@ -108,7 +126,12 @@ internal static class DocxReader
                 if (int.TryParse(spacing.Attribute(W + "after")?.Value, out var sa))
                     spacingAfter = sa / 20f;
                 if (int.TryParse(spacing.Attribute(W + "line")?.Value, out var sl))
-                    lineSpacing = sl / 20f;
+                {
+                    var lineRule = spacing.Attribute(W + "lineRule")?.Value;
+                    lineSpacing = (lineRule == "exact" || lineRule == "atLeast")
+                        ? sl / 20f   // absolute value in points
+                        : sl / 240f; // multiplier (auto: 240 = single spacing)
+                }
             }
 
             // Indentation (in twips)
@@ -124,6 +147,10 @@ internal static class DocxReader
                 if (int.TryParse(ind.Attribute(W + "hanging")?.Value, out var hg))
                     indentFirstLine = -hg / 20f;
             }
+
+            // Page break before
+            if (pPr.Element(W + "pageBreakBefore") != null)
+                pageBreakBefore = true;
 
             // Numbering (lists)
             var numPr = pPr.Element(W + "numPr");
@@ -149,6 +176,21 @@ internal static class DocxReader
                 }
             }
 
+            // Detect list paragraphs by style name (when numPr is on the style, not the paragraph)
+            if (!isBulletList && !isNumberedList && !string.IsNullOrEmpty(styleId))
+            {
+                if (styleId.StartsWith("ListBullet", StringComparison.OrdinalIgnoreCase))
+                {
+                    isBulletList = true;
+                    listText = "\u2022";
+                }
+                else if (styleId.StartsWith("ListNumber", StringComparison.OrdinalIgnoreCase))
+                {
+                    isNumberedList = true;
+                    listText = "1."; // placeholder; proper counter would require style-level numPr resolution
+                }
+            }
+
             // Paragraph-level run properties
             var rPr = pPr.Element(W + "rPr");
             if (rPr != null)
@@ -162,8 +204,9 @@ internal static class DocxReader
             }
         }
 
-        // Apply style defaults
-        if (!string.IsNullOrEmpty(styleId) && styles.TryGetValue(styleId, out var styleInfo))
+        // Apply style defaults (fall back to Normal style if no explicit style)
+        var effectiveStyleId = !string.IsNullOrEmpty(styleId) ? styleId : "Normal";
+        if (styles.TryGetValue(effectiveStyleId, out var styleInfo))
         {
             if (fontSize == 0) fontSize = styleInfo.FontSize;
             if (!bold) bold = styleInfo.Bold;
@@ -172,7 +215,7 @@ internal static class DocxReader
             if (alignment == "left" && !string.IsNullOrEmpty(styleInfo.Alignment))
                 alignment = styleInfo.Alignment;
             if (spacingBefore == 0) spacingBefore = styleInfo.SpacingBefore;
-            if (spacingAfter == 0) spacingAfter = styleInfo.SpacingAfter;
+            if (spacingAfter < 0) spacingAfter = styleInfo.SpacingAfter;
         }
 
         // Read runs
@@ -182,7 +225,12 @@ internal static class DocxReader
             {
                 var run = ReadRun(child, bold, italic, fontSize, color);
                 if (run != null)
-                    runs.Add(run);
+                {
+                    if (run.IsPageBreak)
+                        pageBreakAfter = true;
+                    else
+                        runs.Add(run);
+                }
 
                 // Check for inline images in the run
                 var drawing = child.Descendants(W + "drawing").FirstOrDefault();
@@ -209,7 +257,7 @@ internal static class DocxReader
         return new DocxParagraph(runs, images, alignment, spacingBefore, spacingAfter,
             lineSpacing, indentLeft, indentRight, indentFirstLine,
             isBulletList, isNumberedList, listLevel, listText, styleId,
-            bold, italic, fontSize, color);
+            bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter);
     }
 
     private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor)
@@ -232,6 +280,7 @@ internal static class DocxReader
         }
 
         // Collect text from <w:t>, <w:tab>, <w:br> elements
+        bool isPageBreak = false;
         var text = "";
         foreach (var child in rElement.Elements())
         {
@@ -240,13 +289,19 @@ internal static class DocxReader
             else if (child.Name == W + "tab")
                 text += "\t";
             else if (child.Name == W + "br")
-                text += "\n";
+            {
+                var brType = child.Attribute(W + "type")?.Value;
+                if (brType == "page")
+                    isPageBreak = true;
+                else
+                    text += "\n";
+            }
         }
 
-        if (string.IsNullOrEmpty(text))
+        if (string.IsNullOrEmpty(text) && !isPageBreak)
             return null;
 
-        return new DocxRun(text, bold, italic, fontSize, color);
+        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak);
     }
 
     private static PdfColor? ReadRunColor(XElement rPr)
@@ -365,6 +420,39 @@ internal static class DocxReader
         return new DocxTable(rows, columnWidths);
     }
 
+    private static DocxPageLayout? ReadPageLayout(XElement body)
+    {
+        var sectPr = body.Element(W + "sectPr");
+        if (sectPr == null) return null;
+
+        const float twipsToPoints = 1f / 20f;
+
+        var pgSz = sectPr.Element(W + "pgSz");
+        var pgMar = sectPr.Element(W + "pgMar");
+
+        var pageWidth = 612f;
+        var pageHeight = 792f;
+        if (pgSz != null)
+        {
+            if (float.TryParse(pgSz.Attribute(W + "w")?.Value, out var pw)) pageWidth = pw * twipsToPoints;
+            if (float.TryParse(pgSz.Attribute(W + "h")?.Value, out var ph)) pageHeight = ph * twipsToPoints;
+        }
+
+        var marginTop = 72f;
+        var marginBottom = 72f;
+        var marginLeft = 72f;
+        var marginRight = 72f;
+        if (pgMar != null)
+        {
+            if (float.TryParse(pgMar.Attribute(W + "top")?.Value, out var mt)) marginTop = mt * twipsToPoints;
+            if (float.TryParse(pgMar.Attribute(W + "bottom")?.Value, out var mb)) marginBottom = mb * twipsToPoints;
+            if (float.TryParse(pgMar.Attribute(W + "left")?.Value, out var ml)) marginLeft = ml * twipsToPoints;
+            if (float.TryParse(pgMar.Attribute(W + "right")?.Value, out var mr)) marginRight = mr * twipsToPoints;
+        }
+
+        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight);
+    }
+
     private static Dictionary<string, string> ReadRelationships(ZipArchive archive)
     {
         var rels = new Dictionary<string, string>();
@@ -408,7 +496,7 @@ internal static class DocxReader
             PdfColor? color = null;
             string alignment = "";
             float spacingBefore = 0;
-            float spacingAfter = 0;
+            float spacingAfter = -1;
 
             if (rPr != null)
             {
@@ -433,15 +521,11 @@ internal static class DocxReader
                 }
             }
 
-            // Heading styles get larger font sizes
+            // Heading styles get bold by default
             if (styleId.StartsWith("Heading", StringComparison.OrdinalIgnoreCase) ||
                 styleId.StartsWith("heading", StringComparison.Ordinal))
             {
                 bold = true;
-                if (styleId.EndsWith("1")) fontSize = Math.Max(fontSize, 24f);
-                else if (styleId.EndsWith("2")) fontSize = Math.Max(fontSize, 18f);
-                else if (styleId.EndsWith("3")) fontSize = Math.Max(fontSize, 14f);
-                else if (styleId.EndsWith("4")) fontSize = Math.Max(fontSize, 12f);
             }
 
             styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter);
@@ -492,7 +576,17 @@ internal static class DocxReader
 // ── Document model ──────────────────────────────────────────────────────
 
 /// <summary>Represents a parsed DOCX document.</summary>
-internal sealed record DocxDocument(List<DocxElement> Elements);
+internal sealed record DocxDocument(List<DocxElement> Elements, DocxPageLayout? PageLayout = null);
+
+/// <summary>Page layout settings from sectPr.</summary>
+internal sealed record DocxPageLayout(
+    float PageWidth = 612,
+    float PageHeight = 792,
+    float MarginTop = 72,
+    float MarginBottom = 72,
+    float MarginLeft = 72,
+    float MarginRight = 72
+);
 
 /// <summary>Base type for document elements (paragraphs, tables).</summary>
 internal abstract record DocxElement;
@@ -503,7 +597,7 @@ internal sealed record DocxParagraph(
     List<DocxImage> Images,
     string Alignment = "left",
     float SpacingBefore = 0,
-    float SpacingAfter = 0,
+    float SpacingAfter = -1,
     float LineSpacing = 0,
     float IndentLeft = 0,
     float IndentRight = 0,
@@ -516,7 +610,9 @@ internal sealed record DocxParagraph(
     bool Bold = false,
     bool Italic = false,
     float FontSize = 0,
-    PdfColor? Color = null
+    PdfColor? Color = null,
+    bool HasPageBreakBefore = false,
+    bool HasPageBreakAfter = false
 ) : DocxElement;
 
 /// <summary>Represents a run of formatted text.</summary>
@@ -525,7 +621,8 @@ internal sealed record DocxRun(
     bool Bold = false,
     bool Italic = false,
     float FontSize = 0,
-    PdfColor? Color = null
+    PdfColor? Color = null,
+    bool IsPageBreak = false
 );
 
 /// <summary>Represents an embedded image.</summary>
@@ -561,7 +658,7 @@ internal sealed record DocxStyleInfo(
     PdfColor? Color = null,
     string Alignment = "",
     float SpacingBefore = 0,
-    float SpacingAfter = 0
+    float SpacingAfter = -1
 );
 
 /// <summary>Numbering definition for lists.</summary>

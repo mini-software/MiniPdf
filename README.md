@@ -19,11 +19,10 @@ A minimal, zero-dependency .NET library for converting  office files to PDF.
 
 ## Features
 
-- **Excel-to-PDF** — Convert `.xlsx` files to paginated PDF with automatic column layout
-- **Embedded images** — JPEG and PNG images embedded in Excel sheets are rendered in the PDF output
+- **Excel-to-PDF** — Convert `.xlsx` files to PDF 
+- **Word-to-PDF** — Convert `.docx` files to PDF 
 - **Zero dependencies** — Uses only built-in .NET APIs (no external packages)
 - **Valid PDF 1.4** output
-- **Word-to-PDF** — In development
 - **Chart** — Not currently supported well
 
 ## Getting Started
@@ -39,8 +38,11 @@ dotnet add package MiniPdf
 ```csharp
 using MiniSoftware;
 
-// File to file
-MiniPdf.ConvertToPdf("data.xlsx", "data.pdf");
+// Excel to PDF
+MiniPdf.ConvertToPdf("data.xlsx", "output.pdf");
+
+// Word to PDF
+MiniPdf.ConvertToPdf("report.docx", "output.pdf");
 
 // File to byte array
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
@@ -50,7 +52,7 @@ using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 ```
 
-## Benchmark
+## Xlsx Benchmark
 
 MiniPdf output is compared against LibreOffice as the reference renderer across **180 classic test cases** (including 30 image-embedding cases, 30 chart cases, 30 styling cases, and 30 multilingual/emoji cases).
 
@@ -1509,6 +1511,270 @@ All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown f
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic180_polyglot_paragraph_p1_reference.png" width="320"/></td>
 </tr>
 </table>
+
+<!-- DOCX_BENCHMARK_START -->
+
+### DOCX Benchmark
+
+MiniPdf DOCX output is compared against LibreOffice as the reference renderer across **30 classic test cases**.
+
+| Category | Count | Threshold |
+|---|---|---|
+| 🟢 Excellent | 30 | ≥ 90% |
+| 🟡 Acceptable | 0 | 70% – 90% |
+| 🔴 Needs Improvement | 0 | < 70% |
+
+**Average overall score: 98.7%** (text similarity 40% + visual similarity 40% + page count 20%)
+
+#### DOCX Visual Comparison
+
+All DOCX test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown for multi-page results.
+
+<table>
+<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
+<tr>
+  <td><b>classic01</b></td>
+  <td>Single paragraph 🟢 99.7%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic01_single_paragraph_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic01_single_paragraph_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic02</b></td>
+  <td>Multiple paragraphs 🟢 98.5%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic02_multiple_paragraphs_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic02_multiple_paragraphs_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic03</b></td>
+  <td>Headings 🟢 99.5%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic03_headings_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic03_headings_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic04</b></td>
+  <td>Bold italic 🟢 99.9%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic04_bold_italic_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic04_bold_italic_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic05</b></td>
+  <td>Font sizes 🟢 99.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic05_font_sizes_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic05_font_sizes_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic06</b></td>
+  <td>Font colors 🟢 99.9%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic06_font_colors_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic06_font_colors_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic07</b></td>
+  <td>Alignment 🟢 99.1%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic07_alignment_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic07_alignment_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic08</b></td>
+  <td>Bullet list 🟢 96.7%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic08_bullet_list_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic08_bullet_list_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic09</b></td>
+  <td>Numbered list 🟢 99.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic09_numbered_list_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic09_numbered_list_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic10</b></td>
+  <td>Simple table 🟢 99.0%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic10_simple_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic10_simple_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic11</b></td>
+  <td>Table with shading 🟢 96.9%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic11_table_with_shading_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic11_table_with_shading_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic12</b></td>
+  <td>Merged cells table 🟢 99.2%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic12_merged_cells_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic12_merged_cells_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic13</b></td>
+  <td>Long document 🟢 96.8%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic13_long_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic13_long_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic14</b></td>
+  <td>Mixed content 🟢 98.3%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic14_mixed_content_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic14_mixed_content_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic15</b></td>
+  <td>Indentation 🟢 98.9%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic15_indentation_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic15_indentation_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic16</b></td>
+  <td>Line spacing 🟢 98.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic16_line_spacing_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic16_line_spacing_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic17</b></td>
+  <td>Page break 🟢 99.9%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic17_page_break_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic17_page_break_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic18</b></td>
+  <td>Embedded image 🟢 98.1%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic18_embedded_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic18_embedded_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic19</b></td>
+  <td>Multiple images 🟢 97.4%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic19_multiple_images_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic19_multiple_images_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic20</b></td>
+  <td>Table with many rows 🟢 97.9%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic20_table_with_many_rows_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic20_table_with_many_rows_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic21</b></td>
+  <td>Nested lists 🟢 97.2%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic21_nested_lists_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic21_nested_lists_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic22</b></td>
+  <td>Horizontal rule 🟢 99.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic22_horizontal_rule_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic22_horizontal_rule_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic23</b></td>
+  <td>Mixed formatting runs 🟢 99.8%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic23_mixed_formatting_runs_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic23_mixed_formatting_runs_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic24</b></td>
+  <td>Two column table layout 🟢 98.1%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic24_two_column_table_layout_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic24_two_column_table_layout_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic25</b></td>
+  <td>Title and subtitle 🟢 99.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic25_title_and_subtitle_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic25_title_and_subtitle_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic26</b></td>
+  <td>Table alignment 🟢 99.2%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic26_table_alignment_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic26_table_alignment_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic27</b></td>
+  <td>Long paragraph wrapping 🟢 96.8%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic27_long_paragraph_wrapping_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic27_long_paragraph_wrapping_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic28</b></td>
+  <td>Special characters 🟢 99.4%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic28_special_characters_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic28_special_characters_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic29</b></td>
+  <td>Table with image 🟢 98.7%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic29_table_with_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic29_table_with_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic30</b></td>
+  <td>Comprehensive report 🟢 98.6%</td>
+</tr>
+<tr>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic30_comprehensive_report_p1_minipdf.png" width="320"/></td>
+  <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic30_comprehensive_report_p1_reference.png" width="320"/></td>
+</tr>
+</table>
+
+<!-- DOCX_BENCHMARK_END -->
 
 
 

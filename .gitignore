@@ -29,3 +29,6 @@ tests/MiniPdf.Scripts/pdf_output/
 ## Benchmark
 tests/MiniPdf.Benchmark/reference_pdfs/
 tests/MiniPdf.Benchmark/__pycache__/
+/tests/MiniPdf.Scripts/output_docx
+/tests/MiniPdf.Scripts/pdf_output_docx
+/tests/MiniPdf.Benchmark/reference_pdfs_docx
