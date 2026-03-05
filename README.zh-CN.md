@@ -5,7 +5,7 @@
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/dt/MiniPdf.svg" alt="NuGet 下载次数"></a>
 <a href="https://github.com/shps951023/MiniPdf" rel="nofollow"><img src="https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github" alt="GitHub stars"></a>
-<a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/badge/.NET-%3E%3D%209.0-red.svg" alt=".NET 9.0+"></a>
+<a href="https://gitee.com/dotnetchina/MiniPdf"><img src="https://img.shields.io/badge/Gitee-red?logo=gitee" alt="Gitee"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="许可证"></a>
 </p>
 <p>
@@ -16,6 +16,20 @@
 ---
 
 一个极简、零依赖的 .NET 库，用于将 Office 文件转换为 PDF。
+
+---
+
+<div align="center">
+<p>
+  QQ群 - 
+  1群 : <a href="https://qm.qq.com/q/33VXm1bMQ8" target="_blank">813100564</a> / 
+  2群 : <a href="https://qm.qq.com/q/TaGjA1sPaq" target="_blank">579033769</a> / 
+  3群 : <a href="https://qm.qq.com/q/QOtWF0fAEq" target="_blank">625362917</a> / 
+  4群 : <a href="https://qm.qq.com/q/iKYWzIZ33y" target="_blank">907750429</a>
+</p>
+</div>
+
+---
 
 ## 功能特性
 
