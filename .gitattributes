@@ -1,0 +1,5 @@
+# Override GitHub Linguist language detection
+# Mark Python helper scripts as non-source so C# is the primary language
+scripts/*.py linguist-vendored
+tests/*.py linguist-vendored
+tests/**/*.py linguist-vendored
