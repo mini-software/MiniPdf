@@ -13,7 +13,15 @@ public static class MiniPdf
     /// <param name="outputPath">Path for the output .pdf file.</param>
     public static void ConvertToPdf(string inputPath, string outputPath)
     {
-        ExcelToPdfConverter.ConvertToFile(inputPath, outputPath);
+        var ext = Path.GetExtension(inputPath);
+        if (ext.Equals(".docx", StringComparison.OrdinalIgnoreCase))
+        {
+            DocxToPdfConverter.ConvertToFile(inputPath, outputPath);
+        }
+        else
+        {
+            ExcelToPdfConverter.ConvertToFile(inputPath, outputPath);
+        }
     }
 
     /// <summary>
@@ -23,8 +31,17 @@ public static class MiniPdf
     /// <returns>A byte array containing the PDF data.</returns>
     public static byte[] ConvertToPdf(string inputPath)
     {
-        var doc = ExcelToPdfConverter.Convert(inputPath);
-        return doc.ToArray();
+        var ext = Path.GetExtension(inputPath);
+        if (ext.Equals(".docx", StringComparison.OrdinalIgnoreCase))
+        {
+            var doc = DocxToPdfConverter.Convert(inputPath);
+            return doc.ToArray();
+        }
+        else
+        {
+            var doc = ExcelToPdfConverter.Convert(inputPath);
+            return doc.ToArray();
+        }
     }
 
     /// <summary>
@@ -35,6 +52,17 @@ public static class MiniPdf
     public static byte[] ConvertToPdf(Stream inputStream)
     {
         var doc = ExcelToPdfConverter.Convert(inputStream);
+        return doc.ToArray();
+    }
+
+    /// <summary>
+    /// Converts a Word (.docx) stream to a PDF byte array.
+    /// </summary>
+    /// <param name="docxStream">Stream containing .docx data.</param>
+    /// <returns>A byte array containing the PDF data.</returns>
+    public static byte[] ConvertDocxToPdf(Stream docxStream)
+    {
+        var doc = DocxToPdfConverter.Convert(docxStream);
         return doc.ToArray();
     }
 }
