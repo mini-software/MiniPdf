@@ -326,6 +326,16 @@ internal sealed class PdfWriter
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
                 sb.Append($"/F1 {fontSize} Tf\n");
+                // Apply horizontal scaling if text overflows MaxWidth
+                if (block.MaxWidth.HasValue)
+                {
+                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize);
+                    if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
+                    {
+                        var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
+                        sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
+                    }
+                }
                 sb.Append($"{x} {y} Td\n");
                 sb.Append($"({escapedText}) Tj\n");
                 sb.Append("ET\n");
@@ -341,6 +351,16 @@ internal sealed class PdfWriter
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
                 sb.Append($"/F2 {fontSize} Tf\n");
+                // Apply horizontal scaling if text overflows MaxWidth
+                if (block.MaxWidth.HasValue)
+                {
+                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize);
+                    if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
+                    {
+                        var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
+                        sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
+                    }
+                }
                 sb.Append($"{x} {y} Td\n");
                 sb.Append('<');
                 foreach (var ch in block.Text)
@@ -357,6 +377,43 @@ internal sealed class PdfWriter
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Measures the natural rendering width of text in Helvetica at the given font size.
+    /// Uses the standard Helvetica character width table.
+    /// </summary>
+    private static double MeasureTextWidth(string text, float fontSize)
+    {
+        double total = 0;
+        foreach (var ch in text)
+        {
+            // Standard Helvetica character widths in 1/1000 em units
+            var w = ch switch
+            {
+                ' ' => 278, '!' => 278, '"' => 355, '#' => 556, '$' => 556, '%' => 889,
+                '&' => 667, '\'' => 191, '(' => 333, ')' => 333, '*' => 389, '+' => 584,
+                ',' => 278, '-' => 333, '.' => 278, '/' => 278,
+                >= '0' and <= '9' => 556,
+                ':' => 278, ';' => 278, '<' => 584, '=' => 584, '>' => 584, '?' => 556,
+                '@' => 1015,
+                'A' => 667, 'B' => 667, 'C' => 722, 'D' => 722, 'E' => 667, 'F' => 611,
+                'G' => 778, 'H' => 722, 'I' => 278, 'J' => 500, 'K' => 667, 'L' => 556,
+                'M' => 833, 'N' => 722, 'O' => 778, 'P' => 667, 'Q' => 778, 'R' => 722,
+                'S' => 667, 'T' => 611, 'U' => 722, 'V' => 667, 'W' => 944, 'X' => 667,
+                'Y' => 667, 'Z' => 611,
+                '[' => 278, '\\' => 278, ']' => 278, '^' => 469, '_' => 556, '`' => 333,
+                'a' => 556, 'b' => 556, 'c' => 500, 'd' => 556, 'e' => 556, 'f' => 278,
+                'g' => 556, 'h' => 556, 'i' => 222, 'j' => 222, 'k' => 500, 'l' => 222,
+                'm' => 833, 'n' => 556, 'o' => 556, 'p' => 556, 'q' => 556, 'r' => 333,
+                's' => 500, 't' => 278, 'u' => 556, 'v' => 500, 'w' => 722, 'x' => 500,
+                'y' => 500, 'z' => 500,
+                '{' => 334, '|' => 260, '}' => 334, '~' => 584,
+                _ => IsFullWidthCharPdf(ch) ? 1000 : 556
+            };
+            total += w;
+        }
+        return total * fontSize / 1000.0;
     }
 
     /// <summary>
