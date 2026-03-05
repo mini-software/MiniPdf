@@ -46,6 +46,62 @@ internal sealed class PdfWriter
             }
         var needsUnicodeFont = unicodeChars.Count > 0;
 
+        // Try to find and embed a system CJK font so Unicode text renders correctly.
+        byte[]? ttfFontData = null;
+        Dictionary<int, ushort>? fontCmap = null;
+        byte[]? compressedFontData = null;
+        byte[]? cidToGidMapData = null;
+        string? wArrayString = null;
+        int fontAscent = 718, fontDescent = -207, fontCapHeight = 718;
+        int[] fontBbox = [-166, -225, 1000, 931];
+        var fontEmbedded = false;
+        var fontUncompressedLength = 0;
+
+        if (needsUnicodeFont)
+        {
+            var fontPath = FindSystemCjkFont();
+            if (fontPath != null)
+            {
+                try
+                {
+                    ttfFontData = LoadTtfFont(fontPath);
+                    fontCmap = ParseCmapTable(ttfFontData);
+                    if (fontCmap.Count > 0)
+                    {
+                        var (advances, upm) = ParseHmtxWidths(ttfFontData);
+                        var (asc, desc, capH, bbox) = ParseFontMetrics(ttfFontData);
+                        var scale = 1000.0 / upm;
+                        fontAscent = (int)(asc * scale);
+                        fontDescent = (int)(desc * scale);
+                        fontCapHeight = (int)(capH * scale);
+                        fontBbox = [.. bbox.Select(v => (int)(v * scale))];
+
+                        cidToGidMapData = BuildCidToGidMap(fontCmap);
+                        wArrayString = BuildWArray(unicodeChars, fontCmap, advances, upm);
+
+                        // Subset the font: zero out unused glyph outlines to reduce size
+                        var neededGlyphs = new HashSet<ushort> { 0 }; // always keep .notdef
+                        foreach (var cp in unicodeChars)
+                            if (fontCmap.TryGetValue(cp, out var gid))
+                                neededGlyphs.Add(gid);
+                        var subsetFont = SubsetTtfFont(ttfFontData, neededGlyphs);
+
+                        using var ms = new System.IO.MemoryStream();
+                        using (var zlib = new System.IO.Compression.ZLibStream(ms, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
+                            zlib.Write(subsetFont, 0, subsetFont.Length);
+                        compressedFontData = ms.ToArray();
+                        fontUncompressedLength = subsetFont.Length;
+                        fontEmbedded = true;
+                    }
+                }
+                catch
+                {
+                    // Font loading/parsing failed – fall back to non-embedded
+                    fontEmbedded = false;
+                }
+            }
+        }
+
         // Pre-build content streams
         var contentStreams = new List<byte[]>(pageCount);
         for (var i = 0; i < pageCount; i++)
@@ -54,8 +110,9 @@ internal sealed class PdfWriter
         // Allocate object numbers.
         //   1 = Catalog, 2 = Pages, 3 = Font F1 (Helvetica/WinAnsi)
         //   When Unicode: 4 = ToUnicode CMap, 5 = FontDescriptor, 6 = CIDFont, 7 = Type0 font F2
+        //   When font embedded: 8 = FontFile2 stream, 9 = CIDToGIDMap stream
         //   Per page: content stream obj, N image XObject objs, page obj
-        var nextObj = needsUnicodeFont ? 8 : 4;
+        var nextObj = needsUnicodeFont ? (fontEmbedded ? 10 : 8) : 4;
         var contentObjNums = new List<int>(pageCount);
         var imageObjNums = new List<List<int>>(pageCount);
         var pageObjNums = new List<int>(pageCount);
@@ -105,16 +162,18 @@ internal sealed class PdfWriter
             WriteRaw("<< /Type /FontDescriptor\n");
             WriteRaw("/FontName /Arial\n");
             WriteRaw("/Flags 32\n");
-            WriteRaw("/FontBBox [-166 -225 1000 931]\n");
+            WriteRaw($"/FontBBox [{fontBbox[0]} {fontBbox[1]} {fontBbox[2]} {fontBbox[3]}]\n");
             WriteRaw("/ItalicAngle 0\n");
-            WriteRaw("/Ascent 718\n");
-            WriteRaw("/Descent -207\n");
-            WriteRaw("/CapHeight 718\n");
+            WriteRaw($"/Ascent {fontAscent}\n");
+            WriteRaw($"/Descent {fontDescent}\n");
+            WriteRaw($"/CapHeight {fontCapHeight}\n");
             WriteRaw("/StemV 80\n");
+            if (fontEmbedded)
+                WriteRaw("/FontFile2 8 0 R\n");
             WriteRaw(">>\n");
             WriteRaw("endobj\n");
 
-            // Object 6: CIDFont dict (Type2, references descriptor – renders as boxes without embedded font)
+            // Object 6: CIDFont dict (Type2, references descriptor)
             _objectOffsets[6] = Position;
             WriteRaw("6 0 obj\n");
             WriteRaw("<< /Type /Font /Subtype /CIDFontType2\n");
@@ -122,6 +181,11 @@ internal sealed class PdfWriter
             WriteRaw("/CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) /Supplement 0 >>\n");
             WriteRaw("/FontDescriptor 5 0 R\n");
             WriteRaw("/DW 1000\n");
+            if (fontEmbedded)
+            {
+                WriteRaw($"/W {wArrayString}\n");
+                WriteRaw("/CIDToGIDMap 9 0 R\n");
+            }
             WriteRaw(">>\n");
             WriteRaw("endobj\n");
 
@@ -135,7 +199,25 @@ internal sealed class PdfWriter
             WriteRaw("/ToUnicode 4 0 R\n");
             WriteRaw(">>\n");
             WriteRaw("endobj\n");
-        }
+            // Objects 8-9: Embedded font data (only when font found)
+            if (fontEmbedded)
+            {
+                // Object 8: FontFile2 (compressed TrueType font program)
+                _objectOffsets[8] = Position;
+                WriteRaw($"8 0 obj\n");
+                WriteRaw($"<< /Length {compressedFontData!.Length} /Length1 {fontUncompressedLength} /Filter /FlateDecode >>\n");
+                WriteRaw("stream\n");
+                _stream.Write(compressedFontData);
+                WriteRaw("\nendstream\nendobj\n");
+
+                // Object 9: CIDToGIDMap stream
+                _objectOffsets[9] = Position;
+                WriteRaw($"9 0 obj\n");
+                WriteRaw($"<< /Length {cidToGidMapData!.Length} /Filter /FlateDecode >>\n");
+                WriteRaw("stream\n");
+                _stream.Write(cidToGidMapData);
+                WriteRaw("\nendstream\nendobj\n");
+            }        }
 
         // ── Per-page objects ───────────────────────────────────────────────
         for (var i = 0; i < pageCount; i++)
@@ -763,5 +845,466 @@ internal sealed class PdfWriter
     {
         var bytes = Encoding.Latin1.GetBytes(text);
         _stream.Write(bytes);
+    }
+
+    // ── System CJK font discovery ──────────────────────────────────────
+
+    /// <summary>
+    /// Searches for a system TrueType/TTC font that supports CJK characters.
+    /// Returns the full path to the first font found, or null.
+    /// </summary>
+    private static string? FindSystemCjkFont()
+    {
+        // Candidate fonts in priority order (file name only, searched in system font dir)
+        string[] candidates;
+        if (OperatingSystem.IsWindows())
+        {
+            candidates = [
+                "msyh.ttc",      // Microsoft YaHei (Win7+)
+                "msyhbd.ttc",    // Microsoft YaHei Bold
+                "simsun.ttc",    // SimSun
+                "simhei.ttf",    // SimHei
+                "msjh.ttc",      // Microsoft JhengHei
+                "malgun.ttf",    // Malgun Gothic (Korean)
+                "NotoSansCJKsc-Regular.otf",
+            ];
+        }
+        else if (OperatingSystem.IsMacOS())
+        {
+            candidates = [
+                "PingFang.ttc",
+                "STHeiti Medium.ttc",
+                "Hiragino Sans GB.ttc",
+            ];
+        }
+        else // Linux and others
+        {
+            // Common paths on Linux for CJK fonts
+            string[] searchDirs = [
+                "/usr/share/fonts/truetype/noto",
+                "/usr/share/fonts/opentype/noto",
+                "/usr/share/fonts/noto-cjk",
+                "/usr/share/fonts/google-noto-cjk",
+                "/usr/share/fonts/truetype",
+                "/usr/share/fonts",
+            ];
+            string[] names = [
+                "NotoSansCJKsc-Regular.ttf",
+                "NotoSansCJK-Regular.ttc",
+                "NotoSansSC-Regular.otf",
+                "wqy-microhei.ttc",
+                "DroidSansFallbackFull.ttf",
+            ];
+            foreach (var dir in searchDirs)
+                if (Directory.Exists(dir))
+                    foreach (var name in names)
+                    {
+                        var p = Path.Combine(dir, name);
+                        if (File.Exists(p)) return p;
+                    }
+            return null;
+        }
+
+        var fontDir = OperatingSystem.IsWindows()
+            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts")
+            : "/System/Library/Fonts";
+
+        foreach (var name in candidates)
+        {
+            var p = Path.Combine(fontDir, name);
+            if (File.Exists(p)) return p;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Loads a TrueType/TTC font file. For TTC collections, extracts the first font.
+    /// </summary>
+    private static byte[] LoadTtfFont(string path)
+    {
+        var raw = File.ReadAllBytes(path);
+        // TTC files start with "ttcf"
+        if (raw.Length > 12 && raw[0] == 't' && raw[1] == 't' && raw[2] == 'c' && raw[3] == 'f')
+        {
+            // TTC header: tag(4) + majorVersion(2) + minorVersion(2) + numFonts(4)
+            // then offsets[numFonts], each 4 bytes
+            var numFonts = ReadU32(raw, 8);
+            if (numFonts == 0) return raw;
+            var offset0 = (int)ReadU32(raw, 12);
+
+            // Extract just the first font by finding its table directory size
+            // and collecting all referenced table data
+            return ExtractTtfFromTtc(raw, offset0);
+        }
+        return raw;
+    }
+
+    private static byte[] ExtractTtfFromTtc(byte[] ttc, int fontOffset)
+    {
+        // Read the offset table at fontOffset
+        var numTables = ReadU16(ttc, fontOffset + 4);
+        // Build list of tables: tag(4) + checksum(4) + offset(4) + length(4) = 16 each
+        var headerSize = 12 + numTables * 16;
+        var tables = new List<(string tag, uint checksum, uint offset, uint length)>();
+        for (var i = 0; i < numTables; i++)
+        {
+            var entryOff = fontOffset + 12 + i * 16;
+            var tag = Encoding.ASCII.GetString(ttc, entryOff, 4);
+            var cs = ReadU32(ttc, entryOff + 4);
+            var off = ReadU32(ttc, entryOff + 8);
+            var len = ReadU32(ttc, entryOff + 12);
+            tables.Add((tag, cs, off, len));
+        }
+
+        // Build a standalone TTF
+        using var ms = new MemoryStream();
+        // Offset table
+        ms.Write(ttc, fontOffset, 12);
+
+        // We'll write table directory first with placeholder offsets, then table data
+        var dirStart = ms.Position;
+        // Write placeholder directory entries
+        for (var i = 0; i < numTables; i++)
+            ms.Write(new byte[16]);
+
+        // Write each table's data, recording new offsets
+        var newOffsets = new uint[numTables];
+        for (var i = 0; i < numTables; i++)
+        {
+            var (tag, checksum, offset, length) = tables[i];
+            // Align to 4 bytes
+            while (ms.Position % 4 != 0) ms.WriteByte(0);
+            newOffsets[i] = (uint)ms.Position;
+            ms.Write(ttc, (int)offset, (int)length);
+        }
+
+        // Go back and fill in the directory
+        var result = ms.ToArray();
+        for (var i = 0; i < numTables; i++)
+        {
+            var entryOff = (int)dirStart + i * 16;
+            var (tag, checksum, _, length) = tables[i];
+            Array.Copy(Encoding.ASCII.GetBytes(tag), 0, result, entryOff, 4);
+            WriteU32(result, entryOff + 4, checksum);
+            WriteU32(result, entryOff + 8, newOffsets[i]);
+            WriteU32(result, entryOff + 12, length);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Subsets a TrueType font by zeroing out glyph outlines not in the needed set.
+    /// Preserves the font structure (all tables, glyph count, loca format) so glyph IDs
+    /// remain stable. Only 'glyf' table entries for unused glyphs are replaced with
+    /// empty glyph records, yielding much better compression.
+    /// </summary>
+    private static byte[] SubsetTtfFont(byte[] ttf, HashSet<ushort> neededGlyphs)
+    {
+        var (glyfOff, glyfLen) = FindTable(ttf, "glyf");
+        var (locaOff, locaLen) = FindTable(ttf, "loca");
+        var (headOff, _) = FindTable(ttf, "head");
+        var (maxpOff, _) = FindTable(ttf, "maxp");
+
+        if (glyfOff == 0 || locaOff == 0 || headOff == 0 || maxpOff == 0)
+            return ttf; // Can't subset without required tables
+
+        var numGlyphs = ReadU16(ttf, (int)maxpOff + 4);
+        var indexToLocFormat = ReadU16(ttf, (int)headOff + 50); // 0=short, 1=long
+        var isLong = indexToLocFormat == 1;
+
+        // Read loca offsets
+        var offsets = new uint[numGlyphs + 1];
+        for (var i = 0; i <= numGlyphs; i++)
+        {
+            offsets[i] = isLong
+                ? ReadU32(ttf, (int)locaOff + i * 4)
+                : (uint)(ReadU16(ttf, (int)locaOff + i * 2) * 2);
+        }
+
+        // Clone the font data
+        var result = (byte[])ttf.Clone();
+
+        // Zero out glyph data for unused glyphs
+        for (ushort gid = 0; gid < numGlyphs; gid++)
+        {
+            if (neededGlyphs.Contains(gid)) continue;
+
+            var glyphStart = (int)(glyfOff + offsets[gid]);
+            var glyphEnd = (int)(glyfOff + offsets[gid + 1]);
+            var glyphSize = glyphEnd - glyphStart;
+            if (glyphSize > 0 && glyphStart >= 0 && glyphEnd <= result.Length)
+                Array.Clear(result, glyphStart, glyphSize);
+        }
+
+        return result;
+    }
+
+    // ── TrueType table parsing ─────────────────────────────────────────
+
+    private static (uint offset, uint length) FindTable(byte[] ttf, string tag)
+    {
+        var numTables = ReadU16(ttf, 4);
+        for (var i = 0; i < numTables; i++)
+        {
+            var entryOff = 12 + i * 16;
+            if (entryOff + 16 > ttf.Length) break;
+            var t = Encoding.ASCII.GetString(ttf, entryOff, 4);
+            if (t == tag)
+                return (ReadU32(ttf, entryOff + 8), ReadU32(ttf, entryOff + 12));
+        }
+        return (0, 0);
+    }
+
+    /// <summary>
+    /// Parses the cmap table to build a Unicode codepoint → glyph ID mapping.
+    /// Supports format 4 (BMP) subtables.
+    /// </summary>
+    private static Dictionary<int, ushort> ParseCmapTable(byte[] ttf)
+    {
+        var map = new Dictionary<int, ushort>();
+        var (tableOff, tableLen) = FindTable(ttf, "cmap");
+        if (tableOff == 0) return map;
+
+        var off = (int)tableOff;
+        var numSubtables = ReadU16(ttf, off + 2);
+
+        // Find a Unicode BMP subtable (platform 3 encoding 1, or platform 0)
+        for (var i = 0; i < numSubtables; i++)
+        {
+            var stOff = off + 4 + i * 8;
+            var platformId = ReadU16(ttf, stOff);
+            var encodingId = ReadU16(ttf, stOff + 2);
+            var subtableOffset = off + (int)ReadU32(ttf, stOff + 4);
+
+            bool isUnicodeBmp = (platformId == 3 && encodingId == 1)
+                             || (platformId == 0 && encodingId <= 4);
+            if (!isUnicodeBmp) continue;
+
+            var format = ReadU16(ttf, subtableOffset);
+            if (format == 4)
+            {
+                ParseCmapFormat4(ttf, subtableOffset, map);
+                if (map.Count > 0) return map;
+            }
+            else if (format == 12)
+            {
+                ParseCmapFormat12(ttf, subtableOffset, map);
+                if (map.Count > 0) return map;
+            }
+        }
+
+        // Try format 12 subtable (platform 3 encoding 10)
+        for (var i = 0; i < numSubtables; i++)
+        {
+            var stOff = off + 4 + i * 8;
+            var platformId = ReadU16(ttf, stOff);
+            var encodingId = ReadU16(ttf, stOff + 2);
+            var subtableOffset = off + (int)ReadU32(ttf, stOff + 4);
+
+            if (platformId == 3 && encodingId == 10)
+            {
+                var format = ReadU16(ttf, subtableOffset);
+                if (format == 12)
+                {
+                    ParseCmapFormat12(ttf, subtableOffset, map);
+                    if (map.Count > 0) return map;
+                }
+            }
+        }
+
+        return map;
+    }
+
+    private static void ParseCmapFormat4(byte[] ttf, int off, Dictionary<int, ushort> map)
+    {
+        var segCount = ReadU16(ttf, off + 6) / 2;
+        var endCodeOff = off + 14;
+        var startCodeOff = endCodeOff + segCount * 2 + 2; // +2 for reservedPad
+        var idDeltaOff = startCodeOff + segCount * 2;
+        var idRangeOff = idDeltaOff + segCount * 2;
+
+        for (var seg = 0; seg < segCount; seg++)
+        {
+            var endCode = ReadU16(ttf, endCodeOff + seg * 2);
+            var startCode = ReadU16(ttf, startCodeOff + seg * 2);
+            var idDelta = (short)ReadU16(ttf, idDeltaOff + seg * 2);
+            var idRangeOffset = ReadU16(ttf, idRangeOff + seg * 2);
+
+            if (startCode == 0xFFFF) break;
+
+            for (var c = startCode; c <= endCode; c++)
+            {
+                ushort gid;
+                if (idRangeOffset == 0)
+                {
+                    gid = (ushort)((c + idDelta) & 0xFFFF);
+                }
+                else
+                {
+                    var glyphOff = idRangeOff + seg * 2 + idRangeOffset + (c - startCode) * 2;
+                    if (glyphOff + 1 >= ttf.Length) continue;
+                    gid = ReadU16(ttf, glyphOff);
+                    if (gid != 0) gid = (ushort)((gid + idDelta) & 0xFFFF);
+                }
+                if (gid != 0) map[c] = gid;
+            }
+        }
+    }
+
+    private static void ParseCmapFormat12(byte[] ttf, int off, Dictionary<int, ushort> map)
+    {
+        var nGroups = (int)ReadU32(ttf, off + 12);
+        var groupOff = off + 16;
+        for (var i = 0; i < nGroups; i++)
+        {
+            var startCode = ReadU32(ttf, groupOff + i * 12);
+            var endCode = ReadU32(ttf, groupOff + i * 12 + 4);
+            var startGlyph = ReadU32(ttf, groupOff + i * 12 + 8);
+            for (uint c = startCode; c <= endCode && c <= 0xFFFF; c++)
+            {
+                var gid = (ushort)(startGlyph + (c - startCode));
+                if (gid != 0) map[(int)c] = gid;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Parses the 'hmtx' table to extract glyph advance widths.
+    /// Returns (advances indexed by glyph id, unitsPerEm).
+    /// </summary>
+    private static (ushort[] advances, int unitsPerEm) ParseHmtxWidths(byte[] ttf)
+    {
+        // head table for unitsPerEm
+        var (headOff, _) = FindTable(ttf, "head");
+        var upm = headOff > 0 ? ReadU16(ttf, (int)headOff + 18) : 1000;
+
+        // hhea table for numOfLongHorMetrics
+        var (hheaOff, _) = FindTable(ttf, "hhea");
+        var numHMetrics = hheaOff > 0 ? ReadU16(ttf, (int)hheaOff + 34) : 0;
+
+        // maxp table for numGlyphs
+        var (maxpOff, _) = FindTable(ttf, "maxp");
+        var numGlyphs = maxpOff > 0 ? ReadU16(ttf, (int)maxpOff + 4) : numHMetrics;
+
+        // hmtx table
+        var (hmtxOff, hmtxLen) = FindTable(ttf, "hmtx");
+        var advances = new ushort[numGlyphs];
+        if (hmtxOff > 0)
+        {
+            var off = (int)hmtxOff;
+            ushort lastWidth = 0;
+            for (var i = 0; i < numHMetrics && off + 3 < ttf.Length; i++)
+            {
+                lastWidth = ReadU16(ttf, off);
+                advances[i] = lastWidth;
+                off += 4; // advanceWidth(2) + lsb(2)
+            }
+            // Remaining glyphs share the last advance width
+            for (var i = numHMetrics; i < numGlyphs; i++)
+                advances[i] = lastWidth;
+        }
+        return (advances, upm);
+    }
+
+    /// <summary>
+    /// Parses font metrics from head, OS/2, and hhea tables.
+    /// </summary>
+    private static (int ascent, int descent, int capHeight, int[] bbox) ParseFontMetrics(byte[] ttf)
+    {
+        var (headOff, _) = FindTable(ttf, "head");
+        int[] bbox = [-166, -225, 1000, 931];
+        if (headOff > 0)
+        {
+            bbox = [
+                (short)ReadU16(ttf, (int)headOff + 36),
+                (short)ReadU16(ttf, (int)headOff + 38),
+                (short)ReadU16(ttf, (int)headOff + 40),
+                (short)ReadU16(ttf, (int)headOff + 42),
+            ];
+        }
+
+        var (os2Off, os2Len) = FindTable(ttf, "OS/2");
+        if (os2Off > 0)
+        {
+            var asc = (short)ReadU16(ttf, (int)os2Off + 68);   // sTypoAscender
+            var desc = (short)ReadU16(ttf, (int)os2Off + 70);  // sTypoDescender
+            var capH = os2Len >= 90 ? (short)ReadU16(ttf, (int)os2Off + 88) : asc; // sCapHeight
+            return (asc, desc, capH, bbox);
+        }
+
+        // Fallback to hhea
+        var (hheaOff, _) = FindTable(ttf, "hhea");
+        if (hheaOff > 0)
+        {
+            var asc = (short)ReadU16(ttf, (int)hheaOff + 4);
+            var desc = (short)ReadU16(ttf, (int)hheaOff + 6);
+            return (asc, desc, asc, bbox);
+        }
+
+        return (718, -207, 718, bbox);
+    }
+
+    /// <summary>
+    /// Builds the /W (widths) array for the CID font, covering only the Unicode chars used.
+    /// Format: [cid1 [w1] cid2 [w2] ...] with widths in 1/1000 em units.
+    /// </summary>
+    private static string BuildWArray(SortedSet<int> unicodeChars, Dictionary<int, ushort> cmap, ushort[] advances, int upm)
+    {
+        var sb = new StringBuilder();
+        sb.Append('[');
+        foreach (var cp in unicodeChars)
+        {
+            if (cmap.TryGetValue(cp, out var gid) && gid < advances.Length)
+            {
+                var w = (int)(advances[gid] * 1000L / upm);
+                sb.Append($"{cp} [{w}] ");
+            }
+        }
+        sb.Append(']');
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Builds a compressed CIDToGIDMap (maps CID → glyph ID for the entire BMP range 0-65535).
+    /// </summary>
+    private static byte[] BuildCidToGidMap(Dictionary<int, ushort> cmap)
+    {
+        // The map is 65536 entries × 2 bytes = 131072 bytes uncompressed
+        var raw = new byte[65536 * 2];
+        foreach (var (cp, gid) in cmap)
+        {
+            if (cp < 65536)
+            {
+                raw[cp * 2] = (byte)(gid >> 8);
+                raw[cp * 2 + 1] = (byte)(gid & 0xFF);
+            }
+        }
+
+        using var ms = new MemoryStream();
+        using (var zlib = new System.IO.Compression.ZLibStream(ms, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
+            zlib.Write(raw, 0, raw.Length);
+        return ms.ToArray();
+    }
+
+    // ── Binary read/write helpers ──────────────────────────────────────
+
+    private static ushort ReadU16(byte[] data, int offset)
+    {
+        return (ushort)((data[offset] << 8) | data[offset + 1]);
+    }
+
+    private static uint ReadU32(byte[] data, int offset)
+    {
+        return ((uint)data[offset] << 24) | ((uint)data[offset + 1] << 16)
+             | ((uint)data[offset + 2] << 8) | data[offset + 3];
+    }
+
+    private static void WriteU32(byte[] data, int offset, uint value)
+    {
+        data[offset] = (byte)(value >> 24);
+        data[offset + 1] = (byte)(value >> 16);
+        data[offset + 2] = (byte)(value >> 8);
+        data[offset + 3] = (byte)(value & 0xFF);
     }
 }
