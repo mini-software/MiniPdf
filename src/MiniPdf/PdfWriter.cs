@@ -18,6 +18,25 @@ internal sealed class PdfWriter
         _stream = stream;
     }
 
+    /// <summary>
+    /// Holds per-font embedding data for a single Unicode font slot (F2, F3, ...).
+    /// </summary>
+    private sealed class EmbeddedFontInfo
+    {
+        public string FontName = "";
+        public byte[] CompressedFontData = [];
+        public byte[] CidToGidMapData = [];
+        public string WArrayString = "";
+        public string ToUnicodeCMap = "";
+        public int FontUncompressedLength;
+        public int Ascent = 718, Descent = -207, CapHeight = 718;
+        public int[] Bbox = [-166, -225, 1000, 931];
+        /// <summary>Maps Unicode code point → CID. BMP chars use identity; non-BMP use PUA slots.</summary>
+        public Dictionary<int, int> CpToCid = new();
+        // PDF object numbers (assigned during Write)
+        public int ToUnicodeObj, DescriptorObj, CidFontObj, Type0Obj, FontFileObj, CidToGidObj;
+    }
+
     internal void Write(PdfDocument document)
     {
         // PDF Header
@@ -28,12 +47,11 @@ internal sealed class PdfWriter
         var pages = document.Pages;
         var pageCount = pages.Count;
 
-        // Detect whether any page needs non-Latin1 Unicode characters.
-        // If so we'll add a second font (F2) using Identity-H CIDFont with ToUnicode CMap.
-        // When a text block contains ANY non-WinAnsi char, the ENTIRE block is rendered
-        // in F2 so all spans share the same bbox Y in text extractors.  Therefore we
-        // collect ALL characters from such blocks (including ASCII) for the ToUnicode CMap.
-        var unicodeChars = new SortedSet<int>();
+        // Collect all Unicode code points (handling surrogate pairs) from text
+        // blocks that contain any non-WinAnsi character.  When a block has ANY
+        // non-WinAnsi char the ENTIRE block is rendered in a Unicode font so all
+        // spans share the same bbox Y in text extractors.
+        var unicodeCodePoints = new SortedSet<int>();
         foreach (var page in pages)
             foreach (var block in page.TextBlocks)
             {
@@ -41,90 +59,190 @@ internal sealed class PdfWriter
                 foreach (var ch in block.Text)
                     if (!IsWinAnsiHandled(ch)) { blockNeedsUnicode = true; break; }
                 if (blockNeedsUnicode)
-                    foreach (var ch in block.Text)
-                        unicodeChars.Add(ch);
+                {
+                    var shaped = ShapeArabicCodePoints(EnumerateCodePoints(block.Text).ToList());
+                    foreach (var cp in shaped)
+                        unicodeCodePoints.Add(cp);
+                }
             }
-        var needsUnicodeFont = unicodeChars.Count > 0;
+        var needsUnicodeFont = unicodeCodePoints.Count > 0;
 
-        // Try to find and embed a system CJK font so Unicode text renders correctly.
-        byte[]? ttfFontData = null;
-        Dictionary<int, ushort>? fontCmap = null;
-        byte[]? compressedFontData = null;
-        byte[]? cidToGidMapData = null;
-        string? wArrayString = null;
-        int fontAscent = 718, fontDescent = -207, fontCapHeight = 718;
-        int[] fontBbox = [-166, -225, 1000, 931];
-        var fontEmbedded = false;
-        var fontUncompressedLength = 0;
+        // ── Multi-font discovery ───────────────────────────────────────────
+        // Find system fonts and assign each Unicode code point to a font that
+        // can render it.  Each font becomes a separate PDF Type0 font (F2, F3, …).
+        var embeddedFonts = new List<EmbeddedFontInfo>();  // index = fontSlot (0→F2, 1→F3, …)
+        var cpToFontSlot = new Dictionary<int, int>();     // code point → fontSlot index
 
         if (needsUnicodeFont)
         {
-            var fontPath = FindSystemCjkFont();
-            if (fontPath != null)
+            var candidatePaths = FindSystemFontCandidates();
+            var loadedFonts = new List<(byte[] ttf, Dictionary<int, ushort> cmap, ushort[] advances, int upm,
+                                        int asc, int desc, int capH, int[] bbox, string name)>();
+
+            foreach (var path in candidatePaths)
             {
                 try
                 {
-                    ttfFontData = LoadTtfFont(fontPath);
-                    fontCmap = ParseCmapTable(ttfFontData);
-                    if (fontCmap.Count > 0)
+                    var ttf = LoadTtfFont(path);
+                    var cmap = ParseCmapTable(ttf);
+                    if (cmap.Count == 0) continue;
+                    var (advances, upm) = ParseHmtxWidths(ttf);
+                    var (asc, desc, capH, bbox) = ParseFontMetrics(ttf);
+                    var name = System.IO.Path.GetFileNameWithoutExtension(path);
+                    loadedFonts.Add((ttf, cmap, advances, upm, asc, desc, capH, bbox, name));
+                }
+                catch { /* skip fonts that fail to parse */ }
+            }
+
+            // Identify a dedicated emoji font slot (by filename)
+            var emojiFontIdx = -1;
+            for (var fi = 0; fi < loadedFonts.Count; fi++)
+            {
+                var n = loadedFonts[fi].name;
+                if (n.Contains("emj", StringComparison.OrdinalIgnoreCase) ||
+                    n.Contains("emoji", StringComparison.OrdinalIgnoreCase))
+                { emojiFontIdx = fi; break; }
+            }
+
+            // Assign each code point to the first font that covers it AND has actual glyph outlines.
+            // For emoji ranges, prefer the dedicated emoji font to avoid CJK placeholder glyphs.
+            var uncovered = new List<int>();
+            foreach (var cp in unicodeCodePoints)
+            {
+                bool found = false;
+
+                // For emoji ranges, try the emoji font first
+                if (!found && emojiFontIdx >= 0 && IsEmojiRange(cp))
+                {
+                    if (loadedFonts[emojiFontIdx].cmap.TryGetValue(cp, out var egid) &&
+                        HasGlyphOutline(loadedFonts[emojiFontIdx].ttf, egid))
                     {
-                        var (advances, upm) = ParseHmtxWidths(ttfFontData);
-                        var (asc, desc, capH, bbox) = ParseFontMetrics(ttfFontData);
-                        var scale = 1000.0 / upm;
-                        fontAscent = (int)(asc * scale);
-                        fontDescent = (int)(desc * scale);
-                        fontCapHeight = (int)(capH * scale);
-                        fontBbox = [.. bbox.Select(v => (int)(v * scale))];
-
-                        cidToGidMapData = BuildCidToGidMap(fontCmap);
-                        wArrayString = BuildWArray(unicodeChars, fontCmap, advances, upm);
-
-                        // Subset the font: zero out unused glyph outlines to reduce size
-                        var neededGlyphs = new HashSet<ushort> { 0 }; // always keep .notdef
-                        foreach (var cp in unicodeChars)
-                            if (fontCmap.TryGetValue(cp, out var gid))
-                                neededGlyphs.Add(gid);
-                        var subsetFont = SubsetTtfFont(ttfFontData, neededGlyphs);
-
-                        using var ms = new System.IO.MemoryStream();
-                        using (var zlib = new System.IO.Compression.ZLibStream(ms, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
-                            zlib.Write(subsetFont, 0, subsetFont.Length);
-                        compressedFontData = ms.ToArray();
-                        fontUncompressedLength = subsetFont.Length;
-                        fontEmbedded = true;
+                        cpToFontSlot[cp] = emojiFontIdx;
+                        found = true;
                     }
                 }
-                catch
+
+                if (!found)
                 {
-                    // Font loading/parsing failed – fall back to non-embedded
-                    fontEmbedded = false;
+                    for (var fi = 0; fi < loadedFonts.Count; fi++)
+                    {
+                        if (loadedFonts[fi].cmap.TryGetValue(cp, out var gid) && HasGlyphOutline(loadedFonts[fi].ttf, gid))
+                        {
+                            cpToFontSlot[cp] = fi;
+                            found = true;
+                            break;
+                        }
+                    }
                 }
+                if (!found) uncovered.Add(cp);
             }
+
+            // For uncovered characters, assign to the first loaded font (best effort)
+            if (uncovered.Count > 0 && loadedFonts.Count > 0)
+                foreach (var cp in uncovered)
+                    cpToFontSlot[cp] = 0;
+
+            // Build EmbeddedFontInfo for each font slot actually used
+            var usedSlots = new SortedSet<int>(cpToFontSlot.Values);
+            var slotRemap = new Dictionary<int, int>(); // old slot → new sequential index
+            foreach (var slot in usedSlots)
+            {
+                var newIdx = embeddedFonts.Count;
+                slotRemap[slot] = newIdx;
+
+                var (ttf, cmap, advances, upm, asc, desc, capH, bbox, name) = loadedFonts[slot];
+                var scale = 1000.0 / upm;
+                var charsForFont = new SortedSet<int>(unicodeCodePoints.Where(cp => cpToFontSlot.TryGetValue(cp, out var s) && s == slot));
+
+                // Build code point → CID mapping. BMP chars use identity mapping;
+                // non-BMP chars (e.g. emoji) get assigned CIDs in the PUA range.
+                var cpToCid = new Dictionary<int, int>();
+                var nextPuaCid = 0xE000;
+                foreach (var cp in charsForFont)
+                {
+                    if (cp <= 0xFFFF)
+                        cpToCid[cp] = cp;
+                    else
+                    {
+                        // Skip PUA slots that are already used by actual text
+                        while (charsForFont.Contains(nextPuaCid) && nextPuaCid < 0xF8FF)
+                            nextPuaCid++;
+                        cpToCid[cp] = nextPuaCid++;
+                    }
+                }
+
+                var cidToGid = BuildCidToGidMap(charsForFont, cmap, cpToCid);
+                var wArray = BuildWArray(charsForFont, cmap, advances, upm, cpToCid);
+                var toUnicode = BuildToUnicodeCMap(charsForFont, cpToCid);
+
+                // Subset: keep only needed glyphs
+                var neededGlyphs = new HashSet<ushort> { 0 };
+                foreach (var cp in charsForFont)
+                    if (cmap.TryGetValue(cp, out var gid))
+                        neededGlyphs.Add(gid);
+                var subsetFont = SubsetTtfFont(ttf, neededGlyphs);
+
+                using var ms = new System.IO.MemoryStream();
+                using (var zlib = new System.IO.Compression.ZLibStream(ms, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
+                    zlib.Write(subsetFont, 0, subsetFont.Length);
+
+                embeddedFonts.Add(new EmbeddedFontInfo
+                {
+                    FontName = name,
+                    CompressedFontData = ms.ToArray(),
+                    CidToGidMapData = cidToGid,
+                    WArrayString = wArray,
+                    ToUnicodeCMap = toUnicode,
+                    FontUncompressedLength = subsetFont.Length,
+                    Ascent = (int)(asc * scale),
+                    Descent = (int)(desc * scale),
+                    CapHeight = (int)(capH * scale),
+                    Bbox = [.. bbox.Select(v => (int)(v * scale))],
+                    CpToCid = cpToCid,
+                });
+            }
+
+            // Remap cpToFontSlot to sequential indices
+            var remapped = new Dictionary<int, int>(cpToFontSlot.Count);
+            foreach (var (cp, slot) in cpToFontSlot)
+                remapped[cp] = slotRemap[slot];
+            cpToFontSlot = remapped;
         }
 
         // Pre-build content streams
         var contentStreams = new List<byte[]>(pageCount);
         for (var i = 0; i < pageCount; i++)
-            contentStreams.Add(Encoding.Latin1.GetBytes(BuildContentStream(pages[i], needsUnicodeFont)));
+            contentStreams.Add(Encoding.Latin1.GetBytes(BuildContentStream(pages[i], embeddedFonts.Count > 0, cpToFontSlot, embeddedFonts)));
 
         // Allocate object numbers.
         //   1 = Catalog, 2 = Pages, 3 = Font F1 (Helvetica/WinAnsi)
-        //   When Unicode: 4 = ToUnicode CMap, 5 = FontDescriptor, 6 = CIDFont, 7 = Type0 font F2
-        //   When font embedded: 8 = FontFile2 stream, 9 = CIDToGIDMap stream
+        //   Per embedded font: 6 objects (ToUnicode, Descriptor, CIDFont, Type0, FontFile2, CIDToGIDMap)
         //   Per page: content stream obj, N image XObject objs, page obj
-        var nextObj = needsUnicodeFont ? (fontEmbedded ? 10 : 8) : 4;
+        var nextObj = 4;
+
+        // Allocate font objects
+        foreach (var ef in embeddedFonts)
+        {
+            ef.ToUnicodeObj = nextObj++;
+            ef.DescriptorObj = nextObj++;
+            ef.CidFontObj = nextObj++;
+            ef.Type0Obj = nextObj++;
+            ef.FontFileObj = nextObj++;
+            ef.CidToGidObj = nextObj++;
+        }
+
         var contentObjNums = new List<int>(pageCount);
         var imageObjNums = new List<List<int>>(pageCount);
         var pageObjNums = new List<int>(pageCount);
 
         for (var i = 0; i < pageCount; i++)
         {
-            contentObjNums.Add(nextObj++);            // content stream
+            contentObjNums.Add(nextObj++);
             var imgNums = new List<int>();
             for (var j = 0; j < pages[i].ImageBlocks.Count; j++)
-                imgNums.Add(nextObj++);               // image XObject
+                imgNums.Add(nextObj++);
             imageObjNums.Add(imgNums);
-            pageObjNums.Add(nextObj++);               // page dict
+            pageObjNums.Add(nextObj++);
         }
 
         _objectCount = nextObj - 1;
@@ -145,79 +263,71 @@ internal sealed class PdfWriter
         _objectOffsets[3] = Position;
         WriteRaw("3 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>\nendobj\n");
 
-        // ── Objects 4-6: Unicode font (only if needed) ─────────────────────
-        if (needsUnicodeFont)
+        // ── Per-font objects (F2, F3, …) ───────────────────────────────────
+        for (var fi = 0; fi < embeddedFonts.Count; fi++)
         {
-            // Object 4: ToUnicode CMap stream
-            _objectOffsets[4] = Position;
-            var toUnicode = BuildToUnicodeCMap(unicodeChars);
-            var toUnicodeBytes = Encoding.ASCII.GetBytes(toUnicode);
-            WriteRaw($"4 0 obj\n<< /Length {toUnicodeBytes.Length} >>\nstream\n");
+            var ef = embeddedFonts[fi];
+
+            // ToUnicode CMap stream
+            _objectOffsets[ef.ToUnicodeObj] = Position;
+            var toUnicodeBytes = Encoding.ASCII.GetBytes(ef.ToUnicodeCMap);
+            WriteRaw($"{ef.ToUnicodeObj} 0 obj\n<< /Length {toUnicodeBytes.Length} >>\nstream\n");
             _stream.Write(toUnicodeBytes);
             WriteRaw("\nendstream\nendobj\n");
 
-            // Object 5: Font descriptor (required by PDF spec for CIDFontType2)
-            _objectOffsets[5] = Position;
-            WriteRaw("5 0 obj\n");
+            // FontDescriptor
+            _objectOffsets[ef.DescriptorObj] = Position;
+            WriteRaw($"{ef.DescriptorObj} 0 obj\n");
             WriteRaw("<< /Type /FontDescriptor\n");
-            WriteRaw("/FontName /Arial\n");
+            WriteRaw($"/FontName /{ef.FontName}\n");
             WriteRaw("/Flags 32\n");
-            WriteRaw($"/FontBBox [{fontBbox[0]} {fontBbox[1]} {fontBbox[2]} {fontBbox[3]}]\n");
+            WriteRaw($"/FontBBox [{ef.Bbox[0]} {ef.Bbox[1]} {ef.Bbox[2]} {ef.Bbox[3]}]\n");
             WriteRaw("/ItalicAngle 0\n");
-            WriteRaw($"/Ascent {fontAscent}\n");
-            WriteRaw($"/Descent {fontDescent}\n");
-            WriteRaw($"/CapHeight {fontCapHeight}\n");
+            WriteRaw($"/Ascent {ef.Ascent}\n");
+            WriteRaw($"/Descent {ef.Descent}\n");
+            WriteRaw($"/CapHeight {ef.CapHeight}\n");
             WriteRaw("/StemV 80\n");
-            if (fontEmbedded)
-                WriteRaw("/FontFile2 8 0 R\n");
-            WriteRaw(">>\n");
-            WriteRaw("endobj\n");
+            WriteRaw($"/FontFile2 {ef.FontFileObj} 0 R\n");
+            WriteRaw(">>\nendobj\n");
 
-            // Object 6: CIDFont dict (Type2, references descriptor)
-            _objectOffsets[6] = Position;
-            WriteRaw("6 0 obj\n");
+            // CIDFont
+            _objectOffsets[ef.CidFontObj] = Position;
+            WriteRaw($"{ef.CidFontObj} 0 obj\n");
             WriteRaw("<< /Type /Font /Subtype /CIDFontType2\n");
-            WriteRaw("/BaseFont /Arial\n");
+            WriteRaw($"/BaseFont /{ef.FontName}\n");
             WriteRaw("/CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) /Supplement 0 >>\n");
-            WriteRaw("/FontDescriptor 5 0 R\n");
+            WriteRaw($"/FontDescriptor {ef.DescriptorObj} 0 R\n");
             WriteRaw("/DW 1000\n");
-            if (fontEmbedded)
-            {
-                WriteRaw($"/W {wArrayString}\n");
-                WriteRaw("/CIDToGIDMap 9 0 R\n");
-            }
-            WriteRaw(">>\n");
-            WriteRaw("endobj\n");
+            WriteRaw($"/W {ef.WArrayString}\n");
+            WriteRaw($"/CIDToGIDMap {ef.CidToGidObj} 0 R\n");
+            WriteRaw(">>\nendobj\n");
 
-            // Object 7: Type0 font F2 (composite Unicode font)
-            _objectOffsets[7] = Position;
-            WriteRaw("7 0 obj\n");
+            // Type0 font wrapper (Fn where n = fi + 2)
+            _objectOffsets[ef.Type0Obj] = Position;
+            WriteRaw($"{ef.Type0Obj} 0 obj\n");
             WriteRaw("<< /Type /Font /Subtype /Type0\n");
-            WriteRaw("/BaseFont /Arial\n");
+            WriteRaw($"/BaseFont /{ef.FontName}\n");
             WriteRaw("/Encoding /Identity-H\n");
-            WriteRaw("/DescendantFonts [6 0 R]\n");
-            WriteRaw("/ToUnicode 4 0 R\n");
-            WriteRaw(">>\n");
-            WriteRaw("endobj\n");
-            // Objects 8-9: Embedded font data (only when font found)
-            if (fontEmbedded)
-            {
-                // Object 8: FontFile2 (compressed TrueType font program)
-                _objectOffsets[8] = Position;
-                WriteRaw($"8 0 obj\n");
-                WriteRaw($"<< /Length {compressedFontData!.Length} /Length1 {fontUncompressedLength} /Filter /FlateDecode >>\n");
-                WriteRaw("stream\n");
-                _stream.Write(compressedFontData);
-                WriteRaw("\nendstream\nendobj\n");
+            WriteRaw($"/DescendantFonts [{ef.CidFontObj} 0 R]\n");
+            WriteRaw($"/ToUnicode {ef.ToUnicodeObj} 0 R\n");
+            WriteRaw(">>\nendobj\n");
 
-                // Object 9: CIDToGIDMap stream
-                _objectOffsets[9] = Position;
-                WriteRaw($"9 0 obj\n");
-                WriteRaw($"<< /Length {cidToGidMapData!.Length} /Filter /FlateDecode >>\n");
-                WriteRaw("stream\n");
-                _stream.Write(cidToGidMapData);
-                WriteRaw("\nendstream\nendobj\n");
-            }        }
+            // FontFile2 (compressed TrueType)
+            _objectOffsets[ef.FontFileObj] = Position;
+            WriteRaw($"{ef.FontFileObj} 0 obj\n");
+            WriteRaw($"<< /Length {ef.CompressedFontData.Length} /Length1 {ef.FontUncompressedLength} /Filter /FlateDecode >>\n");
+            WriteRaw("stream\n");
+            _stream.Write(ef.CompressedFontData);
+            WriteRaw("\nendstream\nendobj\n");
+
+            // CIDToGIDMap stream
+            _objectOffsets[ef.CidToGidObj] = Position;
+            WriteRaw($"{ef.CidToGidObj} 0 obj\n");
+            WriteRaw($"<< /Length {ef.CidToGidMapData.Length} /Filter /FlateDecode >>\n");
+            WriteRaw("stream\n");
+            _stream.Write(ef.CidToGidMapData);
+            WriteRaw("\nendstream\nendobj\n");
+        }
 
         // ── Per-page objects ───────────────────────────────────────────────
         for (var i = 0; i < pageCount; i++)
@@ -246,10 +356,11 @@ internal sealed class PdfWriter
             WriteRaw($"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {w} {h}]\n");
             WriteRaw($"/Contents {contentObjNums[i]} 0 R\n");
             WriteRaw("/Resources <<\n");
-            if (needsUnicodeFont)
-                WriteRaw("/Font << /F1 3 0 R /F2 7 0 R >>\n");
-            else
-                WriteRaw("/Font << /F1 3 0 R >>\n");
+            // Font dictionary: F1 + Fn for each embedded font
+            WriteRaw("/Font << /F1 3 0 R");
+            for (var fi = 0; fi < embeddedFonts.Count; fi++)
+                WriteRaw($" /F{fi + 2} {embeddedFonts[fi].Type0Obj} 0 R");
+            WriteRaw(" >>\n");
             if (imageObjNums[i].Count > 0)
             {
                 WriteRaw("/XObject <<\n");
@@ -323,7 +434,7 @@ internal sealed class PdfWriter
         WriteRaw("\nendstream\nendobj\n");
     }
 
-    private static string BuildContentStream(PdfPage page, bool hasUnicodeFont = false)
+    private static string BuildContentStream(PdfPage page, bool hasUnicodeFont, Dictionary<int, int>? cpToFontSlot, List<EmbeddedFontInfo>? embeddedFonts)
     {
         var sb = new StringBuilder();
 
@@ -425,14 +536,14 @@ internal sealed class PdfWriter
             else
             {
                 // Block contains non-WinAnsi characters.  Render the ENTIRE
-                // block in F2 (CID/Unicode font) so that all characters share
-                // the same font descriptor and thus the same bounding-box Y in
-                // text extractors (avoids the ~3 pt offset between Type1 F1
-                // and CIDFontType2 F2 that caused PyMuPDF to put spans on
-                // separate lines).
+                // block using Unicode fonts so all characters share the same
+                // bounding-box Y in text extractors.
+                //
+                // Characters may span multiple embedded fonts (e.g. CJK in F2,
+                // Korean in F3, emoji in F4).  Split into runs by font slot and
+                // emit each run with the appropriate Fn, using Td to advance.
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
-                sb.Append($"/F2 {fontSize} Tf\n");
                 // Apply horizontal scaling if text overflows MaxWidth
                 if (block.MaxWidth.HasValue)
                 {
@@ -444,12 +555,39 @@ internal sealed class PdfWriter
                     }
                 }
                 sb.Append($"{x} {y} Td\n");
-                sb.Append('<');
-                foreach (var ch in block.Text)
+
+                // Split text into runs by font slot.  Default all chars to slot 0 (F2).
+                var codePoints = ShapeArabicCodePoints(EnumerateCodePoints(block.Text).ToList());
+                var runs = new List<(int fontSlot, List<int> cps)>();
+                foreach (var cp in codePoints)
                 {
-                    sb.Append(((int)ch).ToString("X4"));
+                    var slot = cpToFontSlot != null && cpToFontSlot.TryGetValue(cp, out var s) ? s : 0;
+                    if (runs.Count > 0 && runs[^1].fontSlot == slot)
+                        runs[^1].cps.Add(cp);
+                    else
+                        runs.Add((slot, new List<int> { cp }));
                 }
-                sb.Append("> Tj\n");
+
+                foreach (var run in runs)
+                {
+                    var fontName = $"F{run.fontSlot + 2}";
+                    sb.Append($"/{fontName} {fontSize} Tf\n");
+                    sb.Append('<');
+                    foreach (var cp in run.cps)
+                    {
+                        // Map code point to CID via the font's CpToCid table
+                        var cid = cp;
+                        if (embeddedFonts != null && run.fontSlot < embeddedFonts.Count)
+                        {
+                            var ef = embeddedFonts[run.fontSlot];
+                            if (ef.CpToCid.TryGetValue(cp, out var mapped))
+                                cid = mapped;
+                        }
+                        sb.Append(cid.ToString("X4"));
+                    }
+                    sb.Append("> Tj\n");
+                }
+
                 sb.Append("ET\n");
             }
 
@@ -510,6 +648,19 @@ internal sealed class PdfWriter
             || (c >= 0xFE30 && c <= 0xFE4F)  // CJK Compat Forms
             || (c >= 0xFF01 && c <= 0xFF60)  // Fullwidth Forms
             || (c >= 0xFFE0 && c <= 0xFFE6); // Fullwidth Signs
+    }
+
+    /// <summary>
+    /// Returns true if a code point is in a common emoji range, used to prefer
+    /// the dedicated emoji font over CJK fonts that have placeholder glyphs.
+    /// </summary>
+    private static bool IsEmojiRange(int cp)
+    {
+        return cp >= 0x1F000                          // Supplemental Symbols, Emoticons, etc.
+            || (cp >= 0x2600 && cp <= 0x27BF)         // Misc Symbols + Dingbats
+            || (cp >= 0x2300 && cp <= 0x23FF)         // Misc Technical (⌚ etc.)
+            || (cp >= 0x2B50 && cp <= 0x2B55)         // Stars, circles
+            || (cp >= 0xFE00 && cp <= 0xFE0F);        // Variation Selectors
     }
 
     /// <summary>
@@ -575,7 +726,7 @@ internal sealed class PdfWriter
     /// Builds a ToUnicode CMap stream for Identity-H encoded Unicode text.
     /// Maps each Unicode code point to itself (since Identity-H uses Unicode code points as glyph IDs).
     /// </summary>
-    private static string BuildToUnicodeCMap(IEnumerable<int> codePoints)
+    private static string BuildToUnicodeCMap(IEnumerable<int> codePoints, Dictionary<int, int>? cpToCid = null)
     {
         var chars = codePoints.ToList();
         var sb = new StringBuilder();
@@ -601,7 +752,18 @@ internal sealed class PdfWriter
             sb.Append($"{chunk.Count} beginbfchar\n");
             foreach (var cp in chunk)
             {
-                sb.Append($"<{cp:X4}> <{cp:X4}>\n");
+                var cid = cpToCid != null && cpToCid.TryGetValue(cp, out var mapped) ? mapped : cp;
+                if (cp <= 0xFFFF)
+                {
+                    sb.Append($"<{cid:X4}> <{cp:X4}>\n");
+                }
+                else
+                {
+                    // Non-BMP: CID is a PUA value; Unicode target is UTF-16 surrogate pair
+                    var hi = 0xD800 + ((cp - 0x10000) >> 10);
+                    var lo = 0xDC00 + ((cp - 0x10000) & 0x3FF);
+                    sb.Append($"<{cid:X4}> <{hi:X4}{lo:X4}>\n");
+                }
             }
             sb.Append("endbfchar\n");
         }
@@ -847,39 +1009,56 @@ internal sealed class PdfWriter
         _stream.Write(bytes);
     }
 
-    // ── System CJK font discovery ──────────────────────────────────────
+    // ── System font discovery ──────────────────────────────────────────
 
     /// <summary>
-    /// Searches for a system TrueType/TTC font that supports CJK characters.
-    /// Returns the full path to the first font found, or null.
+    /// Returns a list of candidate system font paths, ordered by priority.
+    /// Multiple fonts are needed to cover different scripts (CJK, Korean, Arabic, emoji).
     /// </summary>
-    private static string? FindSystemCjkFont()
+    private static List<string> FindSystemFontCandidates()
     {
-        // Candidate fonts in priority order (file name only, searched in system font dir)
-        string[] candidates;
+        var results = new List<string>();
+
         if (OperatingSystem.IsWindows())
         {
-            candidates = [
-                "msyh.ttc",      // Microsoft YaHei (Win7+)
-                "msyhbd.ttc",    // Microsoft YaHei Bold
-                "simsun.ttc",    // SimSun
-                "simhei.ttf",    // SimHei
-                "msjh.ttc",      // Microsoft JhengHei
-                "malgun.ttf",    // Malgun Gothic (Korean)
-                "NotoSansCJKsc-Regular.otf",
+            var fontDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
+            // Priority order: CJK first, then Korean, Arabic-capable, emoji, symbols
+            string[] candidates = [
+                "msyh.ttc",       // Microsoft YaHei (CJK + Japanese)
+                "msjh.ttc",       // Microsoft JhengHei (Traditional Chinese)
+                "malgun.ttf",     // Malgun Gothic (Korean)
+                "segoeui.ttf",    // Segoe UI (Arabic, Hebrew, Thai, etc.)
+                "seguiemj.ttf",   // Segoe UI Emoji
+                "seguisym.ttf",   // Segoe UI Symbol
+                "simsun.ttc",     // SimSun (CJK fallback)
+                "simhei.ttf",     // SimHei (CJK fallback)
+                "arial.ttf",      // Arial (broad Latin + some scripts)
+                "msgothic.ttc",   // MS Gothic (Japanese fallback)
             ];
+            foreach (var name in candidates)
+            {
+                var p = Path.Combine(fontDir, name);
+                if (File.Exists(p)) results.Add(p);
+            }
         }
         else if (OperatingSystem.IsMacOS())
         {
-            candidates = [
+            var fontDir = "/System/Library/Fonts";
+            string[] candidates = [
                 "PingFang.ttc",
+                "AppleSDGothicNeo.ttc",
                 "STHeiti Medium.ttc",
                 "Hiragino Sans GB.ttc",
+                "Apple Color Emoji.ttc",
             ];
+            foreach (var name in candidates)
+            {
+                var p = Path.Combine(fontDir, name);
+                if (File.Exists(p)) results.Add(p);
+            }
         }
         else // Linux and others
         {
-            // Common paths on Linux for CJK fonts
             string[] searchDirs = [
                 "/usr/share/fonts/truetype/noto",
                 "/usr/share/fonts/opentype/noto",
@@ -892,6 +1071,7 @@ internal sealed class PdfWriter
                 "NotoSansCJKsc-Regular.ttf",
                 "NotoSansCJK-Regular.ttc",
                 "NotoSansSC-Regular.otf",
+                "NotoColorEmoji.ttf",
                 "wqy-microhei.ttc",
                 "DroidSansFallbackFull.ttf",
             ];
@@ -900,21 +1080,31 @@ internal sealed class PdfWriter
                     foreach (var name in names)
                     {
                         var p = Path.Combine(dir, name);
-                        if (File.Exists(p)) return p;
+                        if (File.Exists(p) && !results.Contains(p))
+                            results.Add(p);
                     }
-            return null;
         }
 
-        var fontDir = OperatingSystem.IsWindows()
-            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts")
-            : "/System/Library/Fonts";
+        return results;
+    }
 
-        foreach (var name in candidates)
+    /// <summary>
+    /// Enumerates Unicode code points from a .NET string, properly handling surrogate pairs.
+    /// </summary>
+    private static IEnumerable<int> EnumerateCodePoints(string text)
+    {
+        for (var i = 0; i < text.Length; i++)
         {
-            var p = Path.Combine(fontDir, name);
-            if (File.Exists(p)) return p;
+            if (char.IsHighSurrogate(text[i]) && i + 1 < text.Length && char.IsLowSurrogate(text[i + 1]))
+            {
+                yield return char.ConvertToUtf32(text[i], text[i + 1]);
+                i++; // skip low surrogate
+            }
+            else
+            {
+                yield return text[i];
+            }
         }
-        return null;
     }
 
     /// <summary>
@@ -1058,7 +1248,7 @@ internal sealed class PdfWriter
 
     /// <summary>
     /// Parses the cmap table to build a Unicode codepoint → glyph ID mapping.
-    /// Supports format 4 (BMP) subtables.
+    /// Prefers format 12 (full Unicode including non-BMP) over format 4 (BMP only).
     /// </summary>
     private static Dictionary<int, ushort> ParseCmapTable(byte[] ttf)
     {
@@ -1069,7 +1259,28 @@ internal sealed class PdfWriter
         var off = (int)tableOff;
         var numSubtables = ReadU16(ttf, off + 2);
 
-        // Find a Unicode BMP subtable (platform 3 encoding 1, or platform 0)
+        // Pass 1: Prefer format 12 subtables (full Unicode including non-BMP emoji).
+        // Check platform 3 encoding 10 first, then platform 0 encoding ≥3.
+        for (var i = 0; i < numSubtables; i++)
+        {
+            var stOff = off + 4 + i * 8;
+            var platformId = ReadU16(ttf, stOff);
+            var encodingId = ReadU16(ttf, stOff + 2);
+            var subtableOffset = off + (int)ReadU32(ttf, stOff + 4);
+
+            bool isFullUnicode = (platformId == 3 && encodingId == 10)
+                              || (platformId == 0 && encodingId >= 3);
+            if (!isFullUnicode) continue;
+
+            var format = ReadU16(ttf, subtableOffset);
+            if (format == 12)
+            {
+                ParseCmapFormat12(ttf, subtableOffset, map);
+                if (map.Count > 0) return map;
+            }
+        }
+
+        // Pass 2: Fall back to format 4 / format 12 in BMP subtables
         for (var i = 0; i < numSubtables; i++)
         {
             var stOff = off + 4 + i * 8;
@@ -1091,25 +1302,6 @@ internal sealed class PdfWriter
             {
                 ParseCmapFormat12(ttf, subtableOffset, map);
                 if (map.Count > 0) return map;
-            }
-        }
-
-        // Try format 12 subtable (platform 3 encoding 10)
-        for (var i = 0; i < numSubtables; i++)
-        {
-            var stOff = off + 4 + i * 8;
-            var platformId = ReadU16(ttf, stOff);
-            var encodingId = ReadU16(ttf, stOff + 2);
-            var subtableOffset = off + (int)ReadU32(ttf, stOff + 4);
-
-            if (platformId == 3 && encodingId == 10)
-            {
-                var format = ReadU16(ttf, subtableOffset);
-                if (format == 12)
-                {
-                    ParseCmapFormat12(ttf, subtableOffset, map);
-                    if (map.Count > 0) return map;
-                }
             }
         }
 
@@ -1161,9 +1353,10 @@ internal sealed class PdfWriter
             var startCode = ReadU32(ttf, groupOff + i * 12);
             var endCode = ReadU32(ttf, groupOff + i * 12 + 4);
             var startGlyph = ReadU32(ttf, groupOff + i * 12 + 8);
-            for (uint c = startCode; c <= endCode && c <= 0xFFFF; c++)
+            // Support non-BMP code points (e.g. emoji at U+1Fxxx) up to 0x10FFFF
+            for (uint c = startCode; c <= endCode && c <= 0x10FFFF; c++)
             {
-                var gid = (ushort)(startGlyph + (c - startCode));
+                var gid = (ushort)((startGlyph + (c - startCode)) & 0xFFFF);
                 if (gid != 0) map[(int)c] = gid;
             }
         }
@@ -1249,7 +1442,7 @@ internal sealed class PdfWriter
     /// Builds the /W (widths) array for the CID font, covering only the Unicode chars used.
     /// Format: [cid1 [w1] cid2 [w2] ...] with widths in 1/1000 em units.
     /// </summary>
-    private static string BuildWArray(SortedSet<int> unicodeChars, Dictionary<int, ushort> cmap, ushort[] advances, int upm)
+    private static string BuildWArray(SortedSet<int> unicodeChars, Dictionary<int, ushort> cmap, ushort[] advances, int upm, Dictionary<int, int>? cpToCid = null)
     {
         var sb = new StringBuilder();
         sb.Append('[');
@@ -1257,8 +1450,9 @@ internal sealed class PdfWriter
         {
             if (cmap.TryGetValue(cp, out var gid) && gid < advances.Length)
             {
+                var cid = cpToCid != null && cpToCid.TryGetValue(cp, out var mapped) ? mapped : cp;
                 var w = (int)(advances[gid] * 1000L / upm);
-                sb.Append($"{cp} [{w}] ");
+                sb.Append($"{cid} [{w}] ");
             }
         }
         sb.Append(']');
@@ -1266,18 +1460,21 @@ internal sealed class PdfWriter
     }
 
     /// <summary>
-    /// Builds a compressed CIDToGIDMap (maps CID → glyph ID for the entire BMP range 0-65535).
+    /// Builds a compressed CIDToGIDMap for the specific code points used in this font.
+    /// Maps CID → glyph ID; BMP chars use identity CID, non-BMP use PUA CID slots.
     /// </summary>
-    private static byte[] BuildCidToGidMap(Dictionary<int, ushort> cmap)
+    private static byte[] BuildCidToGidMap(SortedSet<int> codePoints, Dictionary<int, ushort> cmap, Dictionary<int, int>? cpToCid = null)
     {
         // The map is 65536 entries × 2 bytes = 131072 bytes uncompressed
         var raw = new byte[65536 * 2];
-        foreach (var (cp, gid) in cmap)
+        foreach (var cp in codePoints)
         {
-            if (cp < 65536)
+            if (!cmap.TryGetValue(cp, out var gid)) continue;
+            var cid = cpToCid != null && cpToCid.TryGetValue(cp, out var mapped) ? mapped : cp;
+            if (cid >= 0 && cid < 65536)
             {
-                raw[cp * 2] = (byte)(gid >> 8);
-                raw[cp * 2 + 1] = (byte)(gid & 0xFF);
+                raw[cid * 2] = (byte)(gid >> 8);
+                raw[cid * 2 + 1] = (byte)(gid & 0xFF);
             }
         }
 
@@ -1306,5 +1503,181 @@ internal sealed class PdfWriter
         data[offset + 1] = (byte)(value >> 16);
         data[offset + 2] = (byte)(value >> 8);
         data[offset + 3] = (byte)(value & 0xFF);
+    }
+
+    // ── Arabic text shaping ─────────────────────────────────────────────
+
+    /// <summary>
+    /// Arabic Presentation Forms-B mapping.
+    /// Each tuple: (isolated, final, initial, medial). 0 = form not available.
+    /// </summary>
+    private static readonly Dictionary<int, (int iso, int fin, int ini, int med)> ArabicFormMap = new()
+    {
+        [0x0621] = (0xFE80, 0, 0, 0),                     // HAMZA
+        [0x0622] = (0xFE81, 0xFE82, 0, 0),                // ALEF WITH MADDA ABOVE
+        [0x0623] = (0xFE83, 0xFE84, 0, 0),                // ALEF WITH HAMZA ABOVE
+        [0x0624] = (0xFE85, 0xFE86, 0, 0),                // WAW WITH HAMZA ABOVE
+        [0x0625] = (0xFE87, 0xFE88, 0, 0),                // ALEF WITH HAMZA BELOW
+        [0x0626] = (0xFE89, 0xFE8A, 0xFE8B, 0xFE8C),     // YEH WITH HAMZA ABOVE
+        [0x0627] = (0xFE8D, 0xFE8E, 0, 0),                // ALEF
+        [0x0628] = (0xFE8F, 0xFE90, 0xFE91, 0xFE92),     // BEH
+        [0x0629] = (0xFE93, 0xFE94, 0, 0),                // TEH MARBUTA
+        [0x062A] = (0xFE95, 0xFE96, 0xFE97, 0xFE98),     // TEH
+        [0x062B] = (0xFE99, 0xFE9A, 0xFE9B, 0xFE9C),     // THEH
+        [0x062C] = (0xFE9D, 0xFE9E, 0xFE9F, 0xFEA0),     // JEEM
+        [0x062D] = (0xFEA1, 0xFEA2, 0xFEA3, 0xFEA4),     // HAH
+        [0x062E] = (0xFEA5, 0xFEA6, 0xFEA7, 0xFEA8),     // KHAH
+        [0x062F] = (0xFEA9, 0xFEAA, 0, 0),                // DAL
+        [0x0630] = (0xFEAB, 0xFEAC, 0, 0),                // THAL
+        [0x0631] = (0xFEAD, 0xFEAE, 0, 0),                // REH
+        [0x0632] = (0xFEAF, 0xFEB0, 0, 0),                // ZAIN
+        [0x0633] = (0xFEB1, 0xFEB2, 0xFEB3, 0xFEB4),     // SEEN
+        [0x0634] = (0xFEB5, 0xFEB6, 0xFEB7, 0xFEB8),     // SHEEN
+        [0x0635] = (0xFEB9, 0xFEBA, 0xFEBB, 0xFEBC),     // SAD
+        [0x0636] = (0xFEBD, 0xFEBE, 0xFEBF, 0xFEC0),     // DAD
+        [0x0637] = (0xFEC1, 0xFEC2, 0xFEC3, 0xFEC4),     // TAH
+        [0x0638] = (0xFEC5, 0xFEC6, 0xFEC7, 0xFEC8),     // ZAH
+        [0x0639] = (0xFEC9, 0xFECA, 0xFECB, 0xFECC),     // AIN
+        [0x063A] = (0xFECD, 0xFECE, 0xFECF, 0xFED0),     // GHAIN
+        [0x0641] = (0xFED1, 0xFED2, 0xFED3, 0xFED4),     // FEH
+        [0x0642] = (0xFED5, 0xFED6, 0xFED7, 0xFED8),     // QAF
+        [0x0643] = (0xFED9, 0xFEDA, 0xFEDB, 0xFEDC),     // KAF
+        [0x0644] = (0xFEDD, 0xFEDE, 0xFEDF, 0xFEE0),     // LAM
+        [0x0645] = (0xFEE1, 0xFEE2, 0xFEE3, 0xFEE4),     // MEEM
+        [0x0646] = (0xFEE5, 0xFEE6, 0xFEE7, 0xFEE8),     // NOON
+        [0x0647] = (0xFEE9, 0xFEEA, 0xFEEB, 0xFEEC),     // HEH
+        [0x0648] = (0xFEED, 0xFEEE, 0, 0),                // WAW
+        [0x0649] = (0xFEEF, 0xFEF0, 0, 0),                // ALEF MAKSURA
+        [0x064A] = (0xFEF1, 0xFEF2, 0xFEF3, 0xFEF4),     // YEH
+    };
+
+    /// <summary>
+    /// Returns the Arabic joining type for a code point.
+    /// 0=Non-Joining, 1=Right-Joining, 2=Dual-Joining, 3=Join-Causing, 4=Transparent
+    /// </summary>
+    private static int GetArabicJoiningType(int cp)
+    {
+        if (cp == 0x0640 || cp == 0x200D) return 3; // TATWEEL, ZWJ
+        if ((cp >= 0x064B && cp <= 0x065F) || cp == 0x0670) return 4; // diacritics
+        if (!ArabicFormMap.TryGetValue(cp, out var forms)) return 0;
+        return forms.ini != 0 ? 2 : forms.fin != 0 ? 1 : 0;
+    }
+
+    /// <summary>
+    /// Can character at position i join with the character before it (toward string start)?
+    /// Requires: character i is R or D, and nearest non-transparent predecessor is D or C.
+    /// </summary>
+    private static bool ArabicCanJoinBefore(List<int> cps, int i)
+    {
+        var jt = GetArabicJoiningType(cps[i]);
+        if (jt != 1 && jt != 2) return false; // must be R or D to receive
+        for (var j = i - 1; j >= 0; j--)
+        {
+            var pjt = GetArabicJoiningType(cps[j]);
+            if (pjt == 4) continue; // transparent, skip
+            return pjt == 2 || pjt == 3; // D or C can transmit
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Can character at position i join with the character after it (toward string end)?
+    /// Requires: character i is D, and nearest non-transparent successor is R, D, or C.
+    /// </summary>
+    private static bool ArabicCanJoinAfter(List<int> cps, int i)
+    {
+        var jt = GetArabicJoiningType(cps[i]);
+        if (jt != 2) return false; // must be D to transmit
+        for (var j = i + 1; j < cps.Count; j++)
+        {
+            var njt = GetArabicJoiningType(cps[j]);
+            if (njt == 4) continue; // transparent, skip
+            return njt == 1 || njt == 2 || njt == 3; // R, D, or C can receive
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Shapes Arabic text by replacing base Arabic code points with their
+    /// contextual Presentation Forms-B equivalents. Also handles Lam-Alef ligatures.
+    /// Non-Arabic characters pass through unchanged.
+    /// </summary>
+    private static List<int> ShapeArabicCodePoints(List<int> cps)
+    {
+        var result = new List<int>(cps.Count);
+        for (var i = 0; i < cps.Count; i++)
+        {
+            var cp = cps[i];
+            if (!ArabicFormMap.ContainsKey(cp))
+            {
+                result.Add(cp);
+                continue;
+            }
+
+            // Check for Lam-Alef ligature: Lam (0x0644) followed by an Alef variant
+            if (cp == 0x0644 && i + 1 < cps.Count)
+            {
+                var next = cps[i + 1];
+                int ligIso = 0, ligFin = 0;
+                if (next == 0x0627) { ligIso = 0xFEFB; ligFin = 0xFEFC; }
+                else if (next == 0x0622) { ligIso = 0xFEF5; ligFin = 0xFEF6; }
+                else if (next == 0x0623) { ligIso = 0xFEF7; ligFin = 0xFEF8; }
+                else if (next == 0x0625) { ligIso = 0xFEF9; ligFin = 0xFEFA; }
+                if (ligIso != 0)
+                {
+                    result.Add(ArabicCanJoinBefore(cps, i) ? ligFin : ligIso);
+                    i++; // skip the alef
+                    continue;
+                }
+            }
+
+            var forms = ArabicFormMap[cp];
+            var jb = ArabicCanJoinBefore(cps, i);
+            var ja = ArabicCanJoinAfter(cps, i);
+
+            int shaped;
+            if (jb && ja && forms.med != 0) shaped = forms.med;
+            else if (jb && forms.fin != 0) shaped = forms.fin;
+            else if (ja && forms.ini != 0) shaped = forms.ini;
+            else shaped = forms.iso != 0 ? forms.iso : cp;
+
+            result.Add(shaped);
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Checks if a glyph ID has actual outline data (contours) in the glyf table.
+    /// Returns true for CFF fonts or when tables can't be found (assumes glyph exists).
+    /// Filters out glyphs that have a glyf entry but zero contours (empty placeholders).
+    /// </summary>
+    private static bool HasGlyphOutline(byte[] ttf, ushort gid)
+    {
+        var (glyfOff, _) = FindTable(ttf, "glyf");
+        var (locaOff, _) = FindTable(ttf, "loca");
+        if (glyfOff == 0 || locaOff == 0) return true; // CFF font — assume OK
+        var (headOff, _) = FindTable(ttf, "head");
+        var (maxpOff, _) = FindTable(ttf, "maxp");
+        if (headOff == 0 || maxpOff == 0) return true;
+        var numGlyphs = ReadU16(ttf, (int)maxpOff + 4);
+        if (gid >= numGlyphs) return false;
+        var isLong = ReadU16(ttf, (int)headOff + 50) == 1;
+        uint o1, o2;
+        if (isLong)
+        {
+            o1 = ReadU32(ttf, (int)locaOff + gid * 4);
+            o2 = ReadU32(ttf, (int)locaOff + (gid + 1) * 4);
+        }
+        else
+        {
+            o1 = (uint)(ReadU16(ttf, (int)locaOff + gid * 2) * 2);
+            o2 = (uint)(ReadU16(ttf, (int)locaOff + (gid + 1) * 2) * 2);
+        }
+        if (o1 == o2) return false; // no glyph data at all
+        // Check numberOfContours: >0 = simple glyph, <0 = composite glyph, 0 = empty
+        var glyphDataOff = (int)(glyfOff + o1);
+        if (glyphDataOff + 2 > ttf.Length) return false;
+        var numberOfContours = (short)ReadU16(ttf, glyphDataOff);
+        return numberOfContours != 0;
     }
 }
