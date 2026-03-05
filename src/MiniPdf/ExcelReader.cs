@@ -27,7 +27,7 @@ internal static class ExcelReader
         var fillColors = ReadFillColors(archive);
         var borders = ReadBorders(archive);
         var numberFormats = ReadNumberFormats(archive);
-        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfBorderIndices) = ReadCellXfStyles(archive);
+        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices) = ReadCellXfStyles(archive);
 
         // Read workbook to get sheet names and order
         var sheetInfos = ReadWorkbook(archive);
@@ -45,7 +45,7 @@ internal static class ExcelReader
 
             if (entry == null) continue;
 
-            var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfBorderIndices);
+            var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices);
             var images = ReadSheetImages(archive, info.SheetId);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
@@ -59,7 +59,7 @@ internal static class ExcelReader
             var entry = archive.GetEntry("xl/worksheets/sheet1.xml");
             if (entry != null)
             {
-                var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfBorderIndices);
+                var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices);
                 var images = ReadSheetImages(archive, 1);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
@@ -237,15 +237,16 @@ internal static class ExcelReader
     /// Reads cellXf style entries from styles.xml.
     /// Returns (fontIndices, fillIndices, numFmtIds) parallel lists.
     /// </summary>
-    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds, List<string> Alignments, List<int> BorderIndices) ReadCellXfStyles(ZipArchive archive)
+    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds, List<string> Alignments, List<string> VerticalAlignments, List<int> BorderIndices) ReadCellXfStyles(ZipArchive archive)
     {
         var fontIndices = new List<int>();
         var fillIndices = new List<int>();
         var numFmtIds = new List<int>();
         var alignments = new List<string>();
+        var verticalAlignments = new List<string>();
         var borderIndices = new List<int>();
         var entry = archive.GetEntry("xl/styles.xml");
-        if (entry == null) return (fontIndices, fillIndices, numFmtIds, alignments, borderIndices);
+        if (entry == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -253,7 +254,7 @@ internal static class ExcelReader
 
         // Read <cellXfs> -> <xf> elements
         var cellXfs = doc.Descendants(ns + "cellXfs").FirstOrDefault();
-        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds, alignments, borderIndices);
+        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices);
 
         foreach (var xf in cellXfs.Elements(ns + "xf"))
         {
@@ -269,11 +270,14 @@ internal static class ExcelReader
             var alignment = xf.Element(ns + "alignment")?.Attribute("horizontal")?.Value ?? "general";
             alignments.Add(alignment);
 
+            var verticalAlignment = xf.Element(ns + "alignment")?.Attribute("vertical")?.Value ?? "bottom";
+            verticalAlignments.Add(verticalAlignment);
+
             var borderId = xf.Attribute("borderId")?.Value;
             borderIndices.Add(int.TryParse(borderId, out var bid) ? bid : 0);
         }
 
-        return (fontIndices, fillIndices, numFmtIds, alignments, borderIndices);
+        return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices);
     }
 
     /// <summary>
@@ -491,7 +495,7 @@ internal static class ExcelReader
 
     private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings,
         List<FontStyleInfo> fontStyles, List<PdfColor?> fillColors, List<CellBorderInfo?> borders, Dictionary<int, string> numberFormats,
-        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<int> cellXfBorderIndices)
+        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices)
     {
         var rows = new List<List<ExcelCell>>();
 
@@ -545,6 +549,7 @@ internal static class ExcelReader
                 PdfColor? fillColor = null;
                 int numFmtId = 0;
                 var cellAlignment = "general";
+                var cellVerticalAlignment = "bottom";
                 float fontSize = 11f;
                 bool bold = false;
                 bool italic = false;
@@ -562,6 +567,8 @@ internal static class ExcelReader
                         numFmtId = cellXfNumFmtIds[styleIndex];
                     if (styleIndex >= 0 && styleIndex < cellXfAlignments.Count)
                         cellAlignment = cellXfAlignments[styleIndex];
+                    if (styleIndex >= 0 && styleIndex < cellXfVerticalAlignments.Count)
+                        cellVerticalAlignment = cellXfVerticalAlignments[styleIndex];
                 }
 
                 string text;
@@ -596,17 +603,18 @@ internal static class ExcelReader
 
                 }
 
-                // Resolve "general" alignment: numbers right-align, text left-aligns
+                // Resolve "general" alignment: numbers right-align, booleans center, text left-aligns
                 if (cellAlignment == "general")
                 {
                     // Numeric cells (type "" or "n") with numeric values get right-aligned
                     var isNumericCell = (string.IsNullOrEmpty(type) || type == "n") &&
                                        double.TryParse(value, System.Globalization.NumberStyles.Any,
                                            System.Globalization.CultureInfo.InvariantCulture, out _);
-                    cellAlignment = isNumericCell ? "right" : "left";
+                    // Boolean cells (type "b") center-align by default in Excel
+                    cellAlignment = isNumericCell ? "right" : (type == "b" ? "center" : "left");
                 }
 
-                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, border));
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, border, cellVerticalAlignment));
                 lastColIndex = colIndex + 1;
             }
 
@@ -785,8 +793,10 @@ internal static class ExcelReader
         {
             // The negative section already specifies the formatting for negative values.
             // If it contains a '-', it's already in the prefix/suffix.
-            // If not, we need to add one.
-            if (!prefix.Contains('-') && !suffix.Contains('-') && !activeFormat.Contains('-'))
+            // If the format uses parentheses '(' for negative display, no sign needed.
+            // If neither is present, we need to add a minus sign.
+            if (!prefix.Contains('-') && !suffix.Contains('-') && !activeFormat.Contains('-')
+                && !prefix.Contains('('))
                 negSign = "-";
         }
         else if (value < 0)
@@ -1787,7 +1797,8 @@ internal sealed record ExcelCell(
     float FontSize = 11f,
     bool Bold = false,
     bool Italic = false,
-    CellBorderInfo? Border = null
+    CellBorderInfo? Border = null,
+    string VerticalAlignment = "bottom"
 );
 
 /// <summary>
