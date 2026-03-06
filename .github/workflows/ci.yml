@@ -24,16 +24,16 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore v3/MiniPdf.sln
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build v3/MiniPdf.sln --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test v3/MiniPdf.sln --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
 
       - name: Pack (verify NuGet package)
-        run: dotnet pack src/MiniPdf/MiniPdf.csproj --no-build --configuration Release --output ./nupkg
+        run: dotnet pack v3/src/MiniPdf/MiniPdf.csproj --no-build --configuration Release --output ./nupkg
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

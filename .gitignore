@@ -23,12 +23,12 @@ MiniPdf.wiki/
 dotnet_ai_azure_book/
 
 ## Script outputs
-tests/MiniPdf.Scripts/output/
-tests/MiniPdf.Scripts/pdf_output/
+v3/tests/MiniPdf.Scripts/output/
+v3/tests/MiniPdf.Scripts/pdf_output/
 
 ## Benchmark
-tests/MiniPdf.Benchmark/reference_pdfs/
-tests/MiniPdf.Benchmark/__pycache__/
-/tests/MiniPdf.Scripts/output_docx
-/tests/MiniPdf.Scripts/pdf_output_docx
-/tests/MiniPdf.Benchmark/reference_pdfs_docx
+v3/tests/MiniPdf.Benchmark/reference_pdfs/
+v3/tests/MiniPdf.Benchmark/__pycache__/
+/v3/tests/MiniPdf.Scripts/output_docx
+/v3/tests/MiniPdf.Scripts/pdf_output_docx
+/v3/tests/MiniPdf.Benchmark/reference_pdfs_docx

@@ -18,4 +18,3 @@ for bi, b in enumerate(d.get('blocks', [])):
 
 mp.close()
 
-mp.close()
