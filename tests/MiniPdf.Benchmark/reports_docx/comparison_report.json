@@ -228,7 +228,7 @@
     "name": "docx_classic10_simple_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4542,
+    "minipdf_size": 4554,
     "reference_size": 40782,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -237,9 +237,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9753
+      0.9779
     ],
-    "visual_avg": 0.9753,
+    "visual_avg": 0.9779,
     "diff_images": [
       {
         "page": 1,
@@ -247,13 +247,13 @@
         "reference_img": "docx_classic10_simple_table_p1_reference.png"
       }
     ],
-    "overall_score": 0.9901
+    "overall_score": 0.9912
   },
   {
     "name": "docx_classic11_table_with_shading",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7796,
+    "minipdf_size": 7816,
     "reference_size": 49464,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -262,9 +262,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9218
+      0.9297
     ],
-    "visual_avg": 0.9218,
+    "visual_avg": 0.9297,
     "diff_images": [
       {
         "page": 1,
@@ -272,13 +272,13 @@
         "reference_img": "docx_classic11_table_with_shading_p1_reference.png"
       }
     ],
-    "overall_score": 0.9687
+    "overall_score": 0.9719
   },
   {
     "name": "docx_classic12_merged_cells_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4190,
+    "minipdf_size": 4200,
     "reference_size": 39476,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -287,9 +287,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.981
+      0.9828
     ],
-    "visual_avg": 0.981,
+    "visual_avg": 0.9828,
     "diff_images": [
       {
         "page": 1,
@@ -297,7 +297,7 @@
         "reference_img": "docx_classic12_merged_cells_table_p1_reference.png"
       }
     ],
-    "overall_score": 0.9924
+    "overall_score": 0.9931
   },
   {
     "name": "docx_classic13_long_document",
@@ -346,7 +346,7 @@
     "name": "docx_classic14_mixed_content",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4117,
+    "minipdf_size": 4154,
     "reference_size": 53833,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -355,9 +355,9 @@
     "word_text_similarity": 0.9516,
     "text_diff": "--- minipdf/docx_classic14_mixed_content.pdf\n+++ reference/docx_classic14_mixed_content.pdf\n@@ -9,6 +9,6 @@\n Product sales increased by 15% compared to the previous quarter.\n\n Service revenue remained stable with a slight upward trend.\n\n Action Items\n\n-• Expand marketing campaign\n\n-• Hire two additional engineers\n\n-• Launch new subscription tier\n+ Expand marketing campaign\n\n+ Hire two additional engineers\n\n+ Launch new subscription tier",
     "visual_scores": [
-      0.9651
+      0.9657
     ],
-    "visual_avg": 0.9651,
+    "visual_avg": 0.9657,
     "diff_images": [
       {
         "page": 1,
@@ -365,7 +365,7 @@
         "reference_img": "docx_classic14_mixed_content_p1_reference.png"
       }
     ],
-    "overall_score": 0.9832
+    "overall_score": 0.9834
   },
   {
     "name": "docx_classic15_indentation",
@@ -458,7 +458,7 @@
     "name": "docx_classic18_embedded_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1158,
+    "minipdf_size": 1364,
     "reference_size": 34812,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -467,9 +467,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.952
+      0.9524
     ],
-    "visual_avg": 0.952,
+    "visual_avg": 0.9524,
     "diff_images": [
       {
         "page": 1,
@@ -477,13 +477,13 @@
         "reference_img": "docx_classic18_embedded_image_p1_reference.png"
       }
     ],
-    "overall_score": 0.9808
+    "overall_score": 0.981
   },
   {
     "name": "docx_classic19_multiple_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1766,
+    "minipdf_size": 2159,
     "reference_size": 35473,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -492,9 +492,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9354
+      0.9325
     ],
-    "visual_avg": 0.9354,
+    "visual_avg": 0.9325,
     "diff_images": [
       {
         "page": 1,
@@ -502,13 +502,13 @@
         "reference_img": "docx_classic19_multiple_images_p1_reference.png"
       }
     ],
-    "overall_score": 0.9742
+    "overall_score": 0.973
   },
   {
     "name": "docx_classic20_table_with_many_rows",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 27541,
+    "minipdf_size": 27637,
     "reference_size": 71071,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -517,9 +517,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9467
+      0.9476
     ],
-    "visual_avg": 0.9467,
+    "visual_avg": 0.9476,
     "diff_images": [
       {
         "page": 1,
@@ -527,7 +527,7 @@
         "reference_img": "docx_classic20_table_with_many_rows_p1_reference.png"
       }
     ],
-    "overall_score": 0.9787
+    "overall_score": 0.979
   },
   {
     "name": "docx_classic21_nested_lists",
@@ -608,18 +608,18 @@
     "name": "docx_classic24_two_column_table_layout",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1742,
+    "minipdf_size": 1750,
     "reference_size": 37201,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9789,
-    "flat_text_similarity": 0.9789,
-    "word_text_similarity": 0.9647,
-    "text_diff": "--- minipdf/docx_classic24_two_column_table_layout.pdf\n+++ reference/docx_classic24_two_column_table_layout.pdf\n@@ -1,5 +1,5 @@\n Two-Column Layout\n\n Left column content. This is the first Right column content. This is the second\n\n-column of a two-column layout. It column. Both columns should render\n\n-demonstrates how tables can be used for side-by-side in the PDF output.\n\n+column of a two-column layout. It column. Both columns should render side-\n\n+demonstrates how tables can be used for by-side in the PDF output.\n\n text layout purposes.",
+    "text_similarity": 0.9251,
+    "flat_text_similarity": 0.9251,
+    "word_text_similarity": 0.9176,
+    "text_diff": "--- minipdf/docx_classic24_two_column_table_layout.pdf\n+++ reference/docx_classic24_two_column_table_layout.pdf\n@@ -1,5 +1,5 @@\n Two-Column Layout\n\n-Left column content. This is the first Right column content. This is the\n\n-column of a two-column layout. It second column. Both columns should\n\n-demonstrates how tables can be used for render side-by-side in the PDF output.\n\n+Left column content. This is the first Right column content. This is the second\n\n+column of a two-column layout. It column. Both columns should render side-\n\n+demonstrates how tables can be used for by-side in the PDF output.\n\n text layout purposes.",
     "visual_scores": [
-      0.9736
+      0.9739
     ],
-    "visual_avg": 0.9736,
+    "visual_avg": 0.9739,
     "diff_images": [
       {
         "page": 1,
@@ -627,7 +627,7 @@
         "reference_img": "docx_classic24_two_column_table_layout_p1_reference.png"
       }
     ],
-    "overall_score": 0.981
+    "overall_score": 0.9596
   },
   {
     "name": "docx_classic25_title_and_subtitle",
@@ -664,7 +664,7 @@
     "name": "docx_classic26_table_alignment",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4488,
+    "minipdf_size": 4500,
     "reference_size": 49050,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -673,9 +673,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9791
+      0.9811
     ],
-    "visual_avg": 0.9791,
+    "visual_avg": 0.9811,
     "diff_images": [
       {
         "page": 1,
@@ -683,7 +683,7 @@
         "reference_img": "docx_classic26_table_alignment_p1_reference.png"
       }
     ],
-    "overall_score": 0.9916
+    "overall_score": 0.9924
   },
   {
     "name": "docx_classic27_long_paragraph_wrapping",
@@ -714,7 +714,7 @@
     "name": "docx_classic28_special_characters",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3948482,
+    "minipdf_size": 3948457,
     "reference_size": 41113,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -739,18 +739,18 @@
     "name": "docx_classic29_table_with_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2359,
+    "minipdf_size": 2430,
     "reference_size": 37772,
     "minipdf_pages": 1,
     "reference_pages": 1,
     "text_similarity": 1.0,
-    "flat_text_similarity": 0.9844,
+    "flat_text_similarity": 0.9688,
     "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/docx_classic29_table_with_image.pdf\n+++ reference/docx_classic29_table_with_image.pdf\n@@ -1,5 +1,5 @@\n Product Card\n\n Product Description\n\n-MiniPdf Widget - A compact, efficient\n\n-tool for PDF conversion. Lightweight and\n\n+MiniPdf Widget - A compact, efficient tool\n\n+for PDF conversion. Lightweight and\n\n dependency-free.",
+    "text_diff": "--- minipdf/docx_classic29_table_with_image.pdf\n+++ reference/docx_classic29_table_with_image.pdf\n@@ -1,5 +1,5 @@\n Product Card\n\n Product Description\n\n-MiniPdf Widget - A compact, efficient\n\n-tool for PDF conversion. Lightweight\n\n-and dependency-free.\n+MiniPdf Widget - A compact, efficient tool\n\n+for PDF conversion. Lightweight and\n\n+dependency-free.",
     "visual_scores": [
-      0.9669
+      0.9724
     ],
-    "visual_avg": 0.9669,
+    "visual_avg": 0.9724,
     "diff_images": [
       {
         "page": 1,
@@ -758,26 +758,27 @@
         "reference_img": "docx_classic29_table_with_image_p1_reference.png"
       }
     ],
-    "overall_score": 0.9868
+    "overall_score": 0.989
   },
   {
     "name": "docx_classic30_comprehensive_report",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 9206,
+    "minipdf_size": 9925,
     "reference_size": 107009,
-    "minipdf_pages": 3,
+    "minipdf_pages": 4,
     "reference_pages": 3,
-    "text_similarity": 0.9919,
+    "text_similarity": 0.9917,
     "flat_text_similarity": 0.9917,
     "word_text_similarity": 0.966,
-    "text_diff": "--- minipdf/docx_classic30_comprehensive_report.pdf\n+++ reference/docx_classic30_comprehensive_report.pdf\n@@ -9,9 +9,9 @@\n 5. Recommendations\n\n ---PAGE---\n\n 1. Executive Summary\n\n-This report provides a comprehensive analysis of the technology landscape in 2026.\n\n-Key findings include continued growth in AI adoption, increased focus on\n\n-sustainability, and emerging trends in quantum computing.\n\n+This report provides a comprehensive analysis of the technology landscape in 2026. Key\n\n+findings include continued growth in AI adoption, increased focus on sustainability, and\n\n+emerging trends in quantum computing.\n\n 2. Market Analysis\n\n The following table summarizes market share across key sectors:\n\n Sector Market Share Growth\n\n@@ -21,11 +21,11 @@\n IoT 16% +8%\n\n 3. Technology Trends\n\n Key trends identified:\n\n-• Generative AI integration in enterprise software\n\n-• Edge computing for real-time processing\n\n-• Green technology and sustainable computing\n\n-• Zero-trust security architectures\n\n-• Low-code/no-code platform expansion\n\n+ Generative AI integration in enterprise software\n\n+ Edge computing for real-time processing\n\n+ Green technology and sustainable computing\n\n+ Zero-trust security architectures\n\n+ Low-code/no-code platform expansion\n\n 4. Visual Summary\n\n Growth indicator chart (placeholder):\n\n 5. Recommendations\n",
+    "text_diff": "--- minipdf/docx_classic30_comprehensive_report.pdf\n+++ reference/docx_classic30_comprehensive_report.pdf\n@@ -9,9 +9,9 @@\n 5. Recommendations\n\n ---PAGE---\n\n 1. Executive Summary\n\n-This report provides a comprehensive analysis of the technology landscape in 2026.\n\n-Key findings include continued growth in AI adoption, increased focus on\n\n-sustainability, and emerging trends in quantum computing.\n\n+This report provides a comprehensive analysis of the technology landscape in 2026. Key\n\n+findings include continued growth in AI adoption, increased focus on sustainability, and\n\n+emerging trends in quantum computing.\n\n 2. Market Analysis\n\n The following table summarizes market share across key sectors:\n\n Sector Market Share Growth\n\n@@ -21,16 +21,15 @@\n IoT 16% +8%\n\n 3. Technology Trends\n\n Key trends identified:\n\n-• Generative AI integration in enterprise software\n\n-• Edge computing for real-time processing\n\n-• Green technology and sustainable computing\n\n-• Zero-trust security architectures\n\n-• Low-code/no-code platform expansion\n\n+ Generative AI integration in enterprise software\n\n+ Edge computing for real-time processing\n\n+ Green technology and sustainable computing\n\n+ Zero-trust security architectures\n\n+ Low-code/no-code platform expansion\n\n 4. Visual Summary\n\n Growth indicator chart (placeholder):\n\n 5. Recommendations\n\n 1. Invest in AI-driven automation tools\n\n 2. Prioritize cloud-native architectures\n\n 3. Strengthen cybersecurity posture\n\n----PAGE---\n\n 4. Explore quantum computing partnerships",
     "visual_scores": [
       0.987,
       0.9927,
-      0.9383
+      0.9462,
+      0.0
     ],
-    "visual_avg": 0.9727,
+    "visual_avg": 0.7315,
     "diff_images": [
       {
         "page": 1,
@@ -793,8 +794,829 @@
         "page": 3,
         "minipdf_img": "docx_classic30_comprehensive_report_p3_minipdf.png",
         "reference_img": "docx_classic30_comprehensive_report_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "docx_classic30_comprehensive_report_p4_minipdf.png",
+        "reference_img": null
       }
     ],
-    "overall_score": 0.9858
+    "overall_score": 0.7893
+  },
+  {
+    "name": "docx_classic31_strikethrough_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1125,
+    "reference_size": 38634,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9917
+    ],
+    "visual_avg": 0.9917,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic31_strikethrough_text_p1_minipdf.png",
+        "reference_img": "docx_classic31_strikethrough_text_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9967
+  },
+  {
+    "name": "docx_classic32_superscript_subscript",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 975,
+    "reference_size": 37966,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.959,
+    "flat_text_similarity": 0.959,
+    "word_text_similarity": 0.5417,
+    "text_diff": "--- minipdf/docx_classic32_superscript_subscript.pdf\n+++ reference/docx_classic32_superscript_subscript.pdf\n@@ -1,6 +1,8 @@\n Superscript and Subscript\n\n-Einstein's equation: E = mc2\n\n-Water: H2O\n\n-Carbon dioxide: CO2\n\n-Footnote reference1\n\n-xn + yn = zn\n+Einstein's equation: E = mc 2\n\n+Water: H O\n\n+2\n\n+Carbon dioxide: CO\n\n+2\n\n+Footnote reference 1\n\n+x n + y n = z n",
+    "visual_scores": [
+      0.9922
+    ],
+    "visual_avg": 0.9922,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic32_superscript_subscript_p1_minipdf.png",
+        "reference_img": "docx_classic32_superscript_subscript_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9805
+  },
+  {
+    "name": "docx_classic33_highlighted_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1015,
+    "reference_size": 34745,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9803
+    ],
+    "visual_avg": 0.9803,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic33_highlighted_text_p1_minipdf.png",
+        "reference_img": "docx_classic33_highlighted_text_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9921
+  },
+  {
+    "name": "docx_classic34_paragraph_borders",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 963,
+    "reference_size": 36008,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9813
+    ],
+    "visual_avg": 0.9813,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic34_paragraph_borders_p1_minipdf.png",
+        "reference_img": "docx_classic34_paragraph_borders_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9925
+  },
+  {
+    "name": "docx_classic35_tab_stops",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1562,
+    "reference_size": 37732,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.7619,
+    "flat_text_similarity": 0.6849,
+    "word_text_similarity": 0.7619,
+    "text_diff": "--- minipdf/docx_classic35_tab_stops.pdf\n+++ reference/docx_classic35_tab_stops.pdf\n@@ -1,11 +1,6 @@\n Tab Stop Alignment\n\n-Chapter 1:\n\n-Introduction...................................................................1\n\n-Chapter 2: Getting\n\n-Started................................................................5\n\n-Chapter 3: Advanced\n\n-Topics................................................................15\n\n-Chapter 4: Best\n\n-Practices.................................................................28\n\n-Chapter 5:\n\n-Conclusion.....................................................................35\n+Chapter 1: Introduction............................................................................................................................................................1\n\n+Chapter 2: Getting Started.......................................................................................................................................................5\n\n+Chapter 3: Advanced Topics................................................................................................................................................15\n\n+Chapter 4: Best Practices......................................................................................................................................................28\n\n+Chapter 5: Conclusion............................................................................................................................................................35",
+    "visual_scores": [
+      0.9896
+    ],
+    "visual_avg": 0.9896,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic35_tab_stops_p1_minipdf.png",
+        "reference_img": "docx_classic35_tab_stops_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9006
+  },
+  {
+    "name": "docx_classic36_wide_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 16550,
+    "reference_size": 61972,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9528
+    ],
+    "visual_avg": 0.9528,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic36_wide_table_p1_minipdf.png",
+        "reference_img": "docx_classic36_wide_table_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9811
+  },
+  {
+    "name": "docx_classic37_nested_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2355,
+    "reference_size": 41250,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.963,
+    "flat_text_similarity": 0.96,
+    "word_text_similarity": 0.963,
+    "text_diff": "--- minipdf/docx_classic37_nested_table.pdf\n+++ reference/docx_classic37_nested_table.pdf\n@@ -1,9 +1,6 @@\n Nested Table Layout\n\n Section A Section B\n\n Details: This cell contains plain text while the\n\n-Item adjacent cell has a nested table.\n\n-Qty\n\n-Widget\n\n-10\n\n-Gadget\n\n-5\n+Item Qty adjacent cell has a nested table.\n\n+Widget 10\n\n+Gadget 5",
+    "visual_scores": [
+      0.978
+    ],
+    "visual_avg": 0.978,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic37_nested_table_p1_minipdf.png",
+        "reference_img": "docx_classic37_nested_table_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9764
+  },
+  {
+    "name": "docx_classic38_table_column_widths",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7324,
+    "reference_size": 54912,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9828,
+    "flat_text_similarity": 0.9828,
+    "word_text_similarity": 0.9697,
+    "text_diff": "--- minipdf/docx_classic38_table_column_widths.pdf\n+++ reference/docx_classic38_table_column_widths.pdf\n@@ -1,7 +1,7 @@\n Custom Column Widths\n\n # Description Category Amount\n\n-1 Office supplies Operations $245.00\n\n-and stationery\n\n+1 Office supplies and Operations $245.00\n\n+stationery\n\n 2 Cloud hosting Technology $1,200.00\n\n monthly fee\n\n 3 Team lunch and Meals $380.00\n",
+    "visual_scores": [
+      0.9753
+    ],
+    "visual_avg": 0.9753,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic38_table_column_widths_p1_minipdf.png",
+        "reference_img": "docx_classic38_table_column_widths_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9832
+  },
+  {
+    "name": "docx_classic39_financial_report",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 10177,
+    "reference_size": 60449,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9307
+    ],
+    "visual_avg": 0.9307,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic39_financial_report_p1_minipdf.png",
+        "reference_img": "docx_classic39_financial_report_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9723
+  },
+  {
+    "name": "docx_classic40_resume",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2515,
+    "reference_size": 91552,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9936,
+    "flat_text_similarity": 0.9936,
+    "word_text_similarity": 0.9554,
+    "text_diff": "--- minipdf/docx_classic40_resume.pdf\n+++ reference/docx_classic40_resume.pdf\n@@ -6,13 +6,13 @@\n Experience\n\n Senior Software Engineer - Tech Corp Inc.\n\n January 2020 - Present\n\n-• Led team of 5 engineers on microservices migration\n\n-• Reduced API latency by 40% through caching optimization\n\n-• Implemented CI/CD pipeline using GitHub Actions\n\n+ Led team of 5 engineers on microservices migration\n\n+ Reduced API latency by 40% through caching optimization\n\n+ Implemented CI/CD pipeline using GitHub Actions\n\n Software Engineer - StartupXYZ\n\n June 2016 - December 2019\n\n-• Built RESTful APIs serving 1M+ daily requests\n\n-• Developed real-time notification system using WebSockets\n\n+ Built RESTful APIs serving 1M+ daily requests\n\n+ Developed real-time notification system using WebSockets\n\n Education\n\n B.S. Computer Science - State University, 2016\n\n Skills\n",
+    "visual_scores": [
+      0.9671
+    ],
+    "visual_avg": 0.9671,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic40_resume_p1_minipdf.png",
+        "reference_img": "docx_classic40_resume_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9843
+  },
+  {
+    "name": "docx_classic41_business_letter",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2199,
+    "reference_size": 40712,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9786,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic41_business_letter.pdf\n+++ reference/docx_classic41_business_letter.pdf\n@@ -7,12 +7,11 @@\n 456 Commerce St\n\n San Francisco, CA 94102\n\n Dear Mr. Wilson,\n\n-Thank you for your interest in our products. We are pleased to inform you that your\n\n-order #ORD-2026-0315 has been processed and is scheduled for delivery by March 15,\n\n-2026.\n\n-Please find enclosed the detailed invoice and shipping confirmation. If you have\n\n-any questions regarding your order, please do not hesitate to contact our customer\n\n-service team at support@acme.com or call us at +1-555-0200.\n\n+Thank you for your interest in our products. We are pleased to inform you that your order\n\n+#ORD-2026-0315 has been processed and is scheduled for delivery by March 15, 2026.\n\n+Please find enclosed the detailed invoice and shipping confirmation. If you have any\n\n+questions regarding your order, please do not hesitate to contact our customer service team\n\n+at support@acme.com or call us at +1-555-0200.\n\n We value your business and look forward to a continued partnership.\n\n Sincerely,\n\n Sarah Johnson\n",
+    "visual_scores": [
+      0.9632
+    ],
+    "visual_avg": 0.9632,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic41_business_letter_p1_minipdf.png",
+        "reference_img": "docx_classic41_business_letter_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9853
+  },
+  {
+    "name": "docx_classic42_meeting_minutes",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 9418,
+    "reference_size": 63847,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9903,
+    "flat_text_similarity": 0.9299,
+    "word_text_similarity": 0.9903,
+    "text_diff": "--- minipdf/docx_classic42_meeting_minutes.pdf\n+++ reference/docx_classic42_meeting_minutes.pdf\n@@ -9,9 +9,9 @@\n 3. New Hire Onboarding\n\n 4. Action Items\n\n Discussion Summary\n\n-Alice presented the Q4 results showing a 15% revenue increase. Bob proposed\n\n-reallocating 10% of the marketing budget to R&D. Carol reported that three new\n\n-engineering positions have been approved.\n\n+Alice presented the Q4 results showing a 15% revenue increase. Bob proposed reallocating\n\n+10% of the marketing budget to R&D. Carol reported that three new engineering positions\n\n+have been approved.\n\n Action Items\n\n Owner Action Due Date\n\n Bob Submit revised budget March 10\n\n@@ -20,5 +20,4 @@\n engineering roles\n\n David Prepare onboarding March 14\n\n materials\n\n-Eve Schedule follow-up March 5\n\n-meeting\n+Eve Schedule follow-up meeting March 5",
+    "visual_scores": [
+      0.9078
+    ],
+    "visual_avg": 0.9078,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic42_meeting_minutes_p1_minipdf.png",
+        "reference_img": "docx_classic42_meeting_minutes_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9592
+  },
+  {
+    "name": "docx_classic43_invoice_document",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 15849,
+    "reference_size": 60572,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9305
+    ],
+    "visual_avg": 0.9305,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic43_invoice_document_p1_minipdf.png",
+        "reference_img": "docx_classic43_invoice_document_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9722
+  },
+  {
+    "name": "docx_classic44_memo",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2357,
+    "reference_size": 59338,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.958,
+    "flat_text_similarity": 0.955,
+    "word_text_similarity": 0.958,
+    "text_diff": "--- minipdf/docx_classic44_memo.pdf\n+++ reference/docx_classic44_memo.pdf\n@@ -1,16 +1,16 @@\n MEMORANDUM\n\n-TO:  All Department Heads\n\n-FROM:  Maria Garcia, CEO\n\n-DATE:  March 3, 2026\n\n-RE:  Quarterly Performance Review Process Changes\n\n-Effective immediately, we are implementing several changes to our quarterly\n\n-performance review process. These changes are designed to streamline evaluation\n\n-procedures and provide more actionable feedback to team members.\n\n+TO: All Department Heads\n\n+FROM: Maria Garcia, CEO\n\n+DATE: March 3, 2026\n\n+RE: Quarterly Performance Review Process Changes\n\n+Effective immediately, we are implementing several changes to our quarterly performance\n\n+review process. These changes are designed to streamline evaluation procedures and\n\n+provide more actionable feedback to team members.\n\n Key Changes\n\n-• Reviews will now be conducted bi-monthly instead of quarterly\n\n-• Self-assessment forms must be submitted 5 business days before the review\n\n-• 360-degree feedback will be incorporated for all managerial positions\n\n-• New rating scale: 1-5 (replacing the current A-F system)\n\n-• All reviews must be completed within a 2-week window\n\n+ Reviews will now be conducted bi-monthly instead of quarterly\n\n+ Self-assessment forms must be submitted 5 business days before the review\n\n+ 360-degree feedback will be incorporated for all managerial positions\n\n+ New rating scale: 1-5 (replacing the current A-F system)\n\n+ All reviews must be completed within a 2-week window\n\n Please share this information with your teams and direct any questions to the HR\n\n department at hr@company.com.",
+    "visual_scores": [
+      0.9628
+    ],
+    "visual_avg": 0.9628,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic44_memo_p1_minipdf.png",
+        "reference_img": "docx_classic44_memo_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9683
+  },
+  {
+    "name": "docx_classic45_project_plan",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 18126,
+    "reference_size": 76874,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9945,
+    "flat_text_similarity": 0.9945,
+    "word_text_similarity": 0.9917,
+    "text_diff": "--- minipdf/docx_classic45_project_plan.pdf\n+++ reference/docx_classic45_project_plan.pdf\n@@ -1,12 +1,12 @@\n Project Plan: Website Redesign\n\n Project Manager: Sarah Chen | Start Date: March 2026\n\n Project Overview\n\n-This project aims to redesign the company website to improve user experience,\n\n-modernize the visual design, and optimize for mobile devices.\n\n+This project aims to redesign the company website to improve user experience, modernize\n\n+the visual design, and optimize for mobile devices.\n\n Timeline\n\n Phase Task Owner Start End\n\n-Discovery User research UX Team Mar 1 Mar 14\n\n-& interviews\n\n+Discovery User research & UX Team Mar 1 Mar 14\n\n+interviews\n\n Discovery Competitive Marketing Mar 1 Mar 7\n\n analysis\n\n Design Wireframes Design Team Mar 15 Mar 28\n",
+    "visual_scores": [
+      0.9329
+    ],
+    "visual_avg": 0.9329,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic45_project_plan_p1_minipdf.png",
+        "reference_img": "docx_classic45_project_plan_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.971
+  },
+  {
+    "name": "docx_classic46_comparison_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 12471,
+    "reference_size": 62548,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8991
+    ],
+    "visual_avg": 0.8991,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic46_comparison_table_p1_minipdf.png",
+        "reference_img": "docx_classic46_comparison_table_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9596
+  },
+  {
+    "name": "docx_classic47_data_dictionary",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 17355,
+    "reference_size": 70470,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9923,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic47_data_dictionary.pdf\n+++ reference/docx_classic47_data_dictionary.pdf\n@@ -16,5 +16,4 @@\n customers.id\n\n total DECIMAL(10,2) NOT NULL Order total amount\n\n status VARCHAR(20) DEFAULT 'pending' Order status\n\n-created_at DATETIME DEFAULT NOW() Order creation\n\n-date\n+created_at DATETIME DEFAULT NOW() Order creation date",
+    "visual_scores": [
+      0.9139
+    ],
+    "visual_avg": 0.9139,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic47_data_dictionary_p1_minipdf.png",
+        "reference_img": "docx_classic47_data_dictionary_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9656
+  },
+  {
+    "name": "docx_classic48_multi_level_headings",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7028,
+    "reference_size": 72022,
+    "minipdf_pages": 3,
+    "reference_pages": 3,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic48_multi_level_headings.pdf\n+++ reference/docx_classic48_multi_level_headings.pdf\n@@ -25,8 +25,8 @@\n Module 2 provides core functionality for the system.\n\n 2.1 Component 1\n\n Component 2.1 handles specific operations within Module 2.\n\n+---PAGE---\n\n 2.1.1 Sub-component\n\n----PAGE---\n\n Detailed description of sub-component 2.1.1.\n\n 2.1.1.1 Implementation Notes\n\n Implementation uses factory pattern with dependency injection.\n",
+    "visual_scores": [
+      0.9642,
+      0.9548,
+      0.9845
+    ],
+    "visual_avg": 0.9678,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic48_multi_level_headings_p1_minipdf.png",
+        "reference_img": "docx_classic48_multi_level_headings_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic48_multi_level_headings_p2_minipdf.png",
+        "reference_img": "docx_classic48_multi_level_headings_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "docx_classic48_multi_level_headings_p3_minipdf.png",
+        "reference_img": "docx_classic48_multi_level_headings_p3_reference.png"
+      }
+    ],
+    "overall_score": 0.9871
+  },
+  {
+    "name": "docx_classic49_cjk_document",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4203872,
+    "reference_size": 81507,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9057,
+    "flat_text_similarity": 0.9057,
+    "word_text_similarity": 0.7626,
+    "text_diff": "--- minipdf/docx_classic49_cjk_document.pdf\n+++ reference/docx_classic49_cjk_document.pdf\n@@ -1,19 +1,21 @@\n CJK Text Sample\n\n Chinese (Simplified)\n\n-MiniPdf 是一个轻量级的 .NET 库，用于将 Office 文档转换为 PDF 格式。\n\n-它不依赖 Microsoft Office，可以在任何平台上运行。\n\n+轻 级 库 转换为\n\n+MiniPdf 是一个 量 的 .NET ，用于将 Office 文档 PDF 格式。\n\n+赖\n\n+它不依 Microsoft Office ，可以在任何平台上运行。\n\n Chinese (Traditional)\n\n MiniPdf 是一個輕量級的 .NET 庫，用於將 Office 文檔轉換為 PDF 格式。\n\n Japanese\n\n-MiniPdf は軽量な .NET ライブラリで、Office ドキュメントを PDF に変換します。\n\n+MiniPdf は軽量な .NET ライブラリで、 Office ドキュメントを PDF に変換します。\n\n Korean\n\n-MiniPdf 는 Office 문서를 PDF 로 변환하는 경량 .NET 라이브러리입니다 .\n\n+는 문서를 로변환하는경량 라이브러리입니다\n\n+MiniPdf Office PDF .NET .\n\n Mixed CJK Table\n\n Language Hello Thank You\n\n-Chinese\n\n-你好 谢谢\n\n+Chinese 谢谢\n\n+你好\n\n Japanese\n\n こんにちは ありがとう\n\n-Korean\n\n-안녕하세요 감사합니다\n\n+Korean 안녕하세요 감사합니다\n\n English Hello Thank you",
+    "visual_scores": [
+      0.9525
+    ],
+    "visual_avg": 0.9525,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic49_cjk_document_p1_minipdf.png",
+        "reference_img": "docx_classic49_cjk_document_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9433
+  },
+  {
+    "name": "docx_classic50_long_table_with_formatting",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 57362,
+    "reference_size": 105151,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8032,
+    "flat_text_similarity": 0.8032,
+    "word_text_similarity": 0.7465,
+    "text_diff": "--- minipdf/docx_classic50_long_table_with_formatting.pdf\n+++ reference/docx_classic50_long_table_with_formatting.pdf\n@@ -1,45 +1,63 @@\n Server Inventory Report\n\n Server ID Hostname IP Address OS Status\n\n-SRV-001 server-001.local 10.0.0.1 Ubuntu 22.04 Online\n\n-SRV-002 server-002.local 10.0.0.2 Windows Server Online\n\n-2022\n\n-SRV-003 server-003.local 10.0.0.3 RHEL 9 Online\n\n-SRV-004 server-004.local 10.0.0.4 Debian 12 Maintenance\n\n-SRV-005 server-005.local 10.0.0.5 CentOS Stream Online\n\n-9\n\n-SRV-006 server-006.local 10.0.0.6 Ubuntu 22.04 Online\n\n-SRV-007 server-007.local 10.0.0.7 Windows Server Offline\n\n-2022\n\n-SRV-008 server-008.local 10.0.0.8 RHEL 9 Online\n\n-SRV-009 server-009.local 10.0.0.9 Debian 12 Online\n\n-SRV-010 server-010.local 10.0.0.10 CentOS Stream Online\n\n-9\n\n-SRV-011 server-011.local 10.0.0.11 Ubuntu 22.04 Online\n\n-SRV-012 server-012.local 10.0.0.12 Windows Server Online\n\n-2022\n\n-SRV-013 server-013.local 10.0.0.13 RHEL 9 Online\n\n-SRV-014 server-014.local 10.0.0.14 Debian 12 Maintenance\n\n-SRV-015 server-015.local 10.0.0.15 CentOS Stream Online\n\n-9\n\n-SRV-016 server-016.local 10.0.0.16 Ubuntu 22.04 Online\n\n-SRV-017 server-017.local 10.0.0.17 Windows Server Offline\n\n-2022\n\n-SRV-018 server-018.local 10.0.0.18 RHEL 9 Online\n\n-SRV-019 server-019.local 10.0.0.19 Debian 12 Online\n\n-SRV-020 server-020.local 10.0.0.20 CentOS Stream Online\n\n-9\n\n-SRV-021 server-021.local 10.0.0.21 Ubuntu 22.04 Online\n\n-SRV-022 server-022.local 10.0.0.22 Windows Server Online\n\n-2022\n\n-SRV-023 server-023.local 10.0.0.23 RHEL 9 Online\n\n-SRV-024 server-024.local 10.0.0.24 Debian 12 Maintenance\n\n-SRV-025 server-025.local 10.0.0.25 CentOS Stream Online\n\n-9\n\n-SRV-026 server-026.local 10.0.0.26 Ubuntu 22.04 Online\n\n+SRV-001 server-001.loca 10.0.0.1 Ubuntu 22.04 Online\n\n+l\n\n+SRV-002 server-002.loca 10.0.0.2 Windows Online\n\n+l Server 2022\n\n+SRV-003 server-003.loca 10.0.0.3 RHEL 9 Online\n\n+l\n\n+SRV-004 server-004.loca 10.0.0.4 Debian 12 Maintenance\n\n+l\n\n+SRV-005 server-005.loca 10.0.0.5 CentOS Stream Online\n\n+l 9\n\n+SRV-006 server-006.loca 10.0.0.6 Ubuntu 22.04 Online\n\n+l\n\n+SRV-007 server-007.loca 10.0.0.7 Windows Offline\n\n+l Server 2022\n\n+SRV-008 server-008.loca 10.0.0.8 RHEL 9 Online\n\n+l\n\n+SRV-009 server-009.loca 10.0.0.9 Debian 12 Online\n\n+l\n\n+SRV-010 server-010.loca 10.0.0.10 CentOS Stream Online\n\n+l 9\n\n+SRV-011 server-011.loca 10.0.0.11 Ubuntu 22.04 Online\n\n+l\n\n+SRV-012 server-012.loca 10.0.0.12 Windows Online\n\n+l Server 2022\n\n+SRV-013 server-013.loca 10.0.0.13 RHEL 9 Online\n\n+l\n\n+SRV-014 server-014.loca 10.0.0.14 Debian 12 Maintenance\n\n+l\n\n+SRV-015 server-015.loca 10.0.0.15 CentOS Stream Online\n\n+l 9\n\n+SRV-016 server-016.loca 10.0.0.16 Ubuntu 22.04 Online\n\n+l\n\n+SRV-017 server-017.loca 10.0.0.17 Windows Offline\n\n+l Server 2022\n\n+SRV-018 server-018.loca 10.0.0.18 RHEL 9 Online\n\n+l\n\n+SRV-019 server-019.loca 10.0.0.19 Debian 12 Online\n\n+l\n\n+SRV-020 server-020.loca 10.0.0.20 CentOS Stream Online\n\n+l 9\n\n+SRV-021 server-021.loca 10.0.0.21 Ubuntu 22.04 Online\n\n+l\n\n+SRV-022 server-022.loca 10.0.0.22 Windows Online\n\n+l Server 2022\n\n ---PAGE---\n\n-SRV-027 server-027.local 10.0.0.27 Windows Server Offline\n\n-2022\n\n-SRV-028 server-028.local 10.0.0.28 RHEL 9 Online\n\n-SRV-029 server-029.local 10.0.0.29 Debian 12 Online\n\n-SRV-030 server-030.local 10.0.0.30 CentOS Stream Online\n\n-9\n+SRV-023 server-023.loca 10.0.0.23 RHEL 9 Online\n\n+l\n\n+SRV-024 server-024.loca 10.0.0.24 Debian 12 Maintenance\n\n+l\n\n+SRV-025 server-025.loca 10.0.0.25 CentOS Stream Online\n\n+l 9\n\n+SRV-026 server-026.loca 10.0.0.26 Ubuntu 22.04 Online\n\n+l\n\n+SRV-027 server-027.loca 10.0.0.27 Windows Offline\n\n+l Server 2022\n\n+SRV-028 server-028.loca 10.0.0.28 RHEL 9 Online\n\n+l\n\n+SRV-029 server-029.loca 10.0.0.29 Debian 12 Online\n\n+l\n\n+SRV-030 server-030.loca 10.0.0.30 CentOS Stream Online\n\n+l 9",
+    "visual_scores": [
+      0.686,
+      0.875
+    ],
+    "visual_avg": 0.7805,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic50_long_table_with_formatting_p1_minipdf.png",
+        "reference_img": "docx_classic50_long_table_with_formatting_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic50_long_table_with_formatting_p2_minipdf.png",
+        "reference_img": "docx_classic50_long_table_with_formatting_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8335
+  },
+  {
+    "name": "docx_classic51_underline_styles",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1015,
+    "reference_size": 36131,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9928
+    ],
+    "visual_avg": 0.9928,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic51_underline_styles_p1_minipdf.png",
+        "reference_img": "docx_classic51_underline_styles_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9971
+  },
+  {
+    "name": "docx_classic52_spacing_before_after",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1404,
+    "reference_size": 37454,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9674
+    ],
+    "visual_avg": 0.9674,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic52_spacing_before_after_p1_minipdf.png",
+        "reference_img": "docx_classic52_spacing_before_after_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.987
+  },
+  {
+    "name": "docx_classic53_table_merged_complex",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 10287,
+    "reference_size": 54459,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9888,
+    "flat_text_similarity": 0.9888,
+    "word_text_similarity": 0.9863,
+    "text_diff": "--- minipdf/docx_classic53_table_merged_complex.pdf\n+++ reference/docx_classic53_table_merged_complex.pdf\n@@ -2,6 +2,6 @@\n Period 1 Period 2 Period 3 Period 4\n\n Monday Math English Science Art\n\n Tuesday English Math History PE\n\n-Wednesday Science Lab (Double Period) Music\n\n+Wednesday Science Lab (Double Period) Math Music\n\n Thursday History Art English Lab\n\n Friday PE Music Math English",
+    "visual_scores": [
+      0.8984
+    ],
+    "visual_avg": 0.8984,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic53_table_merged_complex_p1_minipdf.png",
+        "reference_img": "docx_classic53_table_merged_complex_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9549
+  },
+  {
+    "name": "docx_classic54_multi_font_family",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1257,
+    "reference_size": 135294,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9764
+    ],
+    "visual_avg": 0.9764,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic54_multi_font_family_p1_minipdf.png",
+        "reference_img": "docx_classic54_multi_font_family_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9906
+  },
+  {
+    "name": "docx_classic55_background_shading_paragraph",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1482,
+    "reference_size": 35140,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8705
+    ],
+    "visual_avg": 0.8705,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic55_background_shading_paragraph_p1_minipdf.png",
+        "reference_img": "docx_classic55_background_shading_paragraph_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9482
+  },
+  {
+    "name": "docx_classic56_images_and_tables_mixed",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8241,
+    "reference_size": 49793,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9188
+    ],
+    "visual_avg": 0.9188,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic56_images_and_tables_mixed_p1_minipdf.png",
+        "reference_img": "docx_classic56_images_and_tables_mixed_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9675
+  },
+  {
+    "name": "docx_classic57_right_to_left_text",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3853814,
+    "reference_size": 46124,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9289,
+    "flat_text_similarity": 0.9289,
+    "word_text_similarity": 0.8788,
+    "text_diff": "--- minipdf/docx_classic57_right_to_left_text.pdf\n+++ reference/docx_classic57_right_to_left_text.pdf\n@@ -4,6 +4,6 @@\n Right-aligned text (simulating RTL):\n\n This text is right-aligned to simulate right-to-left layout.\n\n Hebrew sample (RTL):\n\n-םולש םלוע\n\n+שלום עולם\n\n Arabic sample (RTL):\n\n-ﺎﺒﺣﺮﻣ ﻢﻟﺎﻌﻟﺎﺑ\n+مرحبا بالعالم",
+    "visual_scores": [
+      0.9843
+    ],
+    "visual_avg": 0.9843,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic57_right_to_left_text_p1_minipdf.png",
+        "reference_img": "docx_classic57_right_to_left_text_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9653
+  },
+  {
+    "name": "docx_classic58_dense_paragraph_document",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 34946,
+    "reference_size": 63605,
+    "minipdf_pages": 7,
+    "reference_pages": 7,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9803,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic58_dense_paragraph_document.pdf\n+++ reference/docx_classic58_dense_paragraph_document.pdf\n@@ -3,286 +3,265 @@\n Abstract\n\n Modern software engineering practices emphasize continuous integration, automated\n\n testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n 1. Introduction\n\n Modern software engineering practices emphasize continuous integration, automated\n\n testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n----PAGE---\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+---PAGE---\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n 2. Literature Review\n\n Modern software engineering practices emphasize continuous integration, automated\n\n testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n----PAGE---\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+---PAGE---\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n 3. Methodology\n\n Modern software engineering practices emphasize continuous integration, automated\n\n----PAGE---\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+---PAGE---\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n 4. Results\n\n Modern software engineering practices emphasize continuous integration, automated\n\n testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n----PAGE---\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n----PAGE---\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+---PAGE---\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+---PAGE---\n\n 5. Discussion\n\n Modern software engineering practices emphasize continuous integration, automated\n\n testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n----PAGE---\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n 6. Conclusion\n\n Modern software engineering practices emphasize continuous integration, automated\n\n testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n\n-Modern software engineering practices emphasize continuous integration, automated\n\n-testing, and agile methodologies. The rapid evolution of cloud computing and\n\n-containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components. Modern software engineering practices emphasize continuous integration,\n\n-automated testing, and agile methodologies. The rapid evolution of cloud computing\n\n-and containerization has transformed how teams build and deploy applications.\n\n-Microservices architecture enables independent scaling and deployment of\n\n-components.\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+---PAGE---\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.\n\n+Modern software engineering practices emphasize continuous integration, automated\n\n+testing, and agile methodologies. The rapid evolution of cloud computing and\n\n+containerization has transformed how teams build and deploy applications. Microservices\n\n+architecture enables independent scaling and deployment of components. Modern software\n\n+engineering practices emphasize continuous integration, automated testing, and agile\n\n+methodologies. The rapid evolution of cloud computing and containerization has\n\n+transformed how teams build and deploy applications. Microservices architecture enables\n\n+independent scaling and deployment of components. Modern software engineering\n\n+practices emphasize continuous integration, automated testing, and agile methodologies.\n\n+The rapid evolution of cloud computing and containerization has transformed how teams\n\n+build and deploy applications. Microservices architecture enables independent scaling and\n\n+deployment of components.",
+    "visual_scores": [
+      0.9046,
+      0.9072,
+      0.9068,
+      0.8909,
+      0.8872,
+      0.8776,
+      0.9227
+    ],
+    "visual_avg": 0.8996,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic58_dense_paragraph_document_p1_minipdf.png",
+        "reference_img": "docx_classic58_dense_paragraph_document_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic58_dense_paragraph_document_p2_minipdf.png",
+        "reference_img": "docx_classic58_dense_paragraph_document_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "docx_classic58_dense_paragraph_document_p3_minipdf.png",
+        "reference_img": "docx_classic58_dense_paragraph_document_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "docx_classic58_dense_paragraph_document_p4_minipdf.png",
+        "reference_img": "docx_classic58_dense_paragraph_document_p4_reference.png"
+      },
+      {
+        "page": 5,
+        "minipdf_img": "docx_classic58_dense_paragraph_document_p5_minipdf.png",
+        "reference_img": "docx_classic58_dense_paragraph_document_p5_reference.png"
+      },
+      {
+        "page": 6,
+        "minipdf_img": "docx_classic58_dense_paragraph_document_p6_minipdf.png",
+        "reference_img": "docx_classic58_dense_paragraph_document_p6_reference.png"
+      },
+      {
+        "page": 7,
+        "minipdf_img": "docx_classic58_dense_paragraph_document_p7_minipdf.png",
+        "reference_img": "docx_classic58_dense_paragraph_document_p7_reference.png"
+      }
+    ],
+    "overall_score": 0.9598
+  },
+  {
+    "name": "docx_classic59_numbered_and_bullet_mixed",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2788,
+    "reference_size": 57571,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9825,
+    "flat_text_similarity": 0.9825,
+    "word_text_similarity": 0.8901,
+    "text_diff": "--- minipdf/docx_classic59_numbered_and_bullet_mixed.pdf\n+++ reference/docx_classic59_numbered_and_bullet_mixed.pdf\n@@ -1,9 +1,9 @@\n Installation Guide\n\n Prerequisites\n\n-• .NET 8.0 SDK or later\n\n-• Visual Studio Code\n\n-• Git\n\n-• Python 3.10+\n\n+ .NET 8.0 SDK or later\n\n+ Visual Studio Code\n\n+ Git\n\n+ Python 3.10+\n\n Installation Steps\n\n 1. Clone the repository from GitHub\n\n 2. Open the project in Visual Studio Code\n\n@@ -11,10 +11,10 @@\n 4. Build the solution\n\n 5. Run the test suite\n\n Configuration Options\n\n-• Set output directory in appsettings.json\n\n-• Configure font embedding preferences\n\n-• Enable or disable image compression\n\n+ Set output directory in appsettings.json\n\n+ Configure font embedding preferences\n\n+ Enable or disable image compression\n\n Troubleshooting\n\n-1. Verify .NET SDK installation with dotnet --version\n\n-2. Clear NuGet cache if packages fail to restore\n\n-3. Check file permissions on output directory\n+6. Verify .NET SDK installation with dotnet --version\n\n+7. Clear NuGet cache if packages fail to restore\n\n+8. Check file permissions on output directory",
+    "visual_scores": [
+      0.9717
+    ],
+    "visual_avg": 0.9717,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic59_numbered_and_bullet_mixed_p1_minipdf.png",
+        "reference_img": "docx_classic59_numbered_and_bullet_mixed_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9817
+  },
+  {
+    "name": "docx_classic60_comprehensive_styled_report",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 13221,
+    "reference_size": 123136,
+    "minipdf_pages": 3,
+    "reference_pages": 3,
+    "text_similarity": 0.9941,
+    "flat_text_similarity": 0.9941,
+    "word_text_similarity": 0.9568,
+    "text_diff": "--- minipdf/docx_classic60_comprehensive_styled_report.pdf\n+++ reference/docx_classic60_comprehensive_styled_report.pdf\n@@ -15,20 +15,20 @@\n Blockchain $12B $11B -8.3%\n\n Key Trends\n\n Artificial Intelligence\n\n-• Large Language Models becoming mainstream\n\n-• AI-assisted coding tools adoption growing\n\n-• Regulation frameworks being established\n\n+ Large Language Models becoming mainstream\n\n+ AI-assisted coding tools adoption growing\n\n+ Regulation frameworks being established\n\n Cloud & Infrastructure\n\n-• Multi-cloud strategies dominating\n\n-• Serverless architecture expanding\n\n-• Edge computing gaining traction\n\n+ Multi-cloud strategies dominating\n\n+ Serverless architecture expanding\n\n+ Edge computing gaining traction\n\n Visual Summary\n\n Growth indicator (placeholder):\n\n Recommendations\n\n 1. Accelerate AI integration strategy\n\n 2. Diversify cloud vendor dependencies\n\n+3. Invest in employee upskilling programs\n\n ---PAGE---\n\n-3. Invest in employee upskilling programs\n\n 4. Strengthen data governance frameworks\n\n 5. Evaluate emerging quantum computing capabilities\n\n --- End of Report ---",
+    "visual_scores": [
+      0.9886,
+      0.9104,
+      0.9875
+    ],
+    "visual_avg": 0.9622,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic60_comprehensive_styled_report_p1_minipdf.png",
+        "reference_img": "docx_classic60_comprehensive_styled_report_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic60_comprehensive_styled_report_p2_minipdf.png",
+        "reference_img": "docx_classic60_comprehensive_styled_report_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "docx_classic60_comprehensive_styled_report_p3_minipdf.png",
+        "reference_img": "docx_classic60_comprehensive_styled_report_p3_reference.png"
+      }
+    ],
+    "overall_score": 0.9825
   }
 ]

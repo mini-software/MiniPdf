@@ -106,6 +106,8 @@ internal static class DocxReader
         bool italic = false;
         float fontSize = 0;
         PdfColor? color = null;
+        PdfColor? paragraphShading = null;
+        List<DocxTabStop>? tabStops = null;
 
         if (pPr != null)
         {
@@ -191,6 +193,28 @@ internal static class DocxReader
                 }
             }
 
+            // Paragraph shading
+            var pShd = pPr.Element(W + "shd");
+            if (pShd != null)
+            {
+                var pFill = pShd.Attribute(W + "fill")?.Value;
+                if (!string.IsNullOrEmpty(pFill) && pFill != "auto")
+                    paragraphShading = PdfColor.FromHex(pFill);
+            }
+
+            // Tab stops
+            var tabsEl = pPr.Element(W + "tabs");
+            if (tabsEl != null)
+            {
+                tabStops = tabsEl.Elements(W + "tab")
+                    .Select(t => new DocxTabStop(
+                        float.TryParse(t.Attribute(W + "pos")?.Value, out var pos) ? pos / 20f : 0f,
+                        t.Attribute(W + "val")?.Value ?? "left",
+                        t.Attribute(W + "leader")?.Value ?? "none"))
+                    .OrderBy(t => t.Position)
+                    .ToList();
+            }
+
             // Paragraph-level run properties
             var rPr = pPr.Element(W + "rPr");
             if (rPr != null)
@@ -257,7 +281,7 @@ internal static class DocxReader
         return new DocxParagraph(runs, images, alignment, spacingBefore, spacingAfter,
             lineSpacing, indentLeft, indentRight, indentFirstLine,
             isBulletList, isNumberedList, listLevel, listText, styleId,
-            bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter);
+            bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops);
     }
 
     private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor)
@@ -380,11 +404,30 @@ internal static class DocxReader
             foreach (var tc in tr.Elements(W + "tc"))
             {
                 var cellParagraphs = new List<DocxParagraph>();
-                foreach (var p in tc.Elements(W + "p"))
+                foreach (var child in tc.Elements())
                 {
-                    var para = ReadParagraph(p, styles, numbering, relationships, archive);
-                    if (para != null)
-                        cellParagraphs.Add(para);
+                    if (child.Name == W + "p")
+                    {
+                        var para = ReadParagraph(child, styles, numbering, relationships, archive);
+                        if (para != null)
+                            cellParagraphs.Add(para);
+                    }
+                    else if (child.Name == W + "tbl")
+                    {
+                        // Flatten nested table: extract text from each cell as paragraphs
+                        foreach (var nestedTr in child.Elements(W + "tr"))
+                        {
+                            foreach (var nestedTc in nestedTr.Elements(W + "tc"))
+                            {
+                                foreach (var nestedP in nestedTc.Elements(W + "p"))
+                                {
+                                    var para = ReadParagraph(nestedP, styles, numbering, relationships, archive);
+                                    if (para != null)
+                                        cellParagraphs.Add(para);
+                                }
+                            }
+                        }
+                    }
                 }
 
                 // Read cell properties
@@ -612,8 +655,17 @@ internal sealed record DocxParagraph(
     float FontSize = 0,
     PdfColor? Color = null,
     bool HasPageBreakBefore = false,
-    bool HasPageBreakAfter = false
+    bool HasPageBreakAfter = false,
+    PdfColor? Shading = null,
+    List<DocxTabStop>? TabStops = null
 ) : DocxElement;
+
+/// <summary>Represents a tab stop definition.</summary>
+internal sealed record DocxTabStop(
+    float Position,
+    string Alignment = "left",
+    string Leader = "none"
+);
 
 /// <summary>Represents a run of formatted text.</summary>
 internal sealed record DocxRun(
