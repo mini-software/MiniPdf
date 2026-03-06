@@ -190,6 +190,20 @@ internal static class DocxToPdfConverter
             RenderImage(state, image);
         }
 
+        // Render paragraph background shading
+        if (paragraph.Shading != null && paragraph.Runs.Count > 0)
+        {
+            var shadingHeight = lineHeight;
+            var fullText = string.Concat(paragraph.Runs.Select(r => r.Text));
+            if (!string.IsNullOrEmpty(fullText))
+            {
+                var shadingAvgCW = fontSize * 0.47f;
+                var shadingLines = WordWrap(fullText, firstLineWidth, availableWidth, shadingAvgCW, paragraph.TabStops);
+                shadingHeight = shadingLines.Count * lineHeight;
+            }
+            state.CurrentPage!.AddRectangle(options.MarginLeft, state.CurrentY - shadingHeight, state.UsableWidth, shadingHeight, paragraph.Shading);
+        }
+
         // If paragraph has no text runs, still account for spacing
         if (paragraph.Runs.Count == 0)
         {
@@ -222,7 +236,7 @@ internal static class DocxToPdfConverter
             var runColor = dominantRun?.Color ?? paragraph.Color;
             var runAvgCharWidth = runFontSize * 0.47f;
 
-            var lines = WordWrap(fullText, firstLineWidth, availableWidth, runAvgCharWidth);
+            var lines = WordWrap(fullText, firstLineWidth, availableWidth, runAvgCharWidth, paragraph.TabStops);
 
             for (var i = 0; i < lines.Count; i++)
             {
@@ -338,7 +352,7 @@ internal static class DocxToPdfConverter
         var y = state.CurrentY - height;
 
         state.CurrentPage!.AddImage(image.Data, format, x, y, width, height);
-        state.AdvanceY(height + 2f); // 2pt gap after image
+        state.AdvanceY(height + 1f); // 1pt gap after image
     }
 
     // ── Table rendering ─────────────────────────────────────────────────
@@ -347,7 +361,8 @@ internal static class DocxToPdfConverter
     {
         var options = state.Options;
         var usableWidth = state.UsableWidth;
-        var cellPadding = 1f;
+        var cellPaddingH = 5.4f;  // horizontal (left/right) cell padding
+        var cellPaddingV = 1f;    // vertical (top/bottom) cell padding
 
         // Determine column widths
         var colWidths = CalculateTableColumnWidths(table, usableWidth);
@@ -358,7 +373,7 @@ internal static class DocxToPdfConverter
             state.EnsurePage();
 
             // Calculate row height based on cell content
-            var rowHeight = CalculateRowHeight(row, colWidths, cellPadding, options);
+            var rowHeight = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options);
 
             // Check if row fits on current page
             if (state.CurrentY - rowHeight < options.MarginBottom)
@@ -394,7 +409,7 @@ internal static class DocxToPdfConverter
                 state.CurrentPage!.AddLine(cellX + cellWidth, state.CurrentY, cellX + cellWidth, state.CurrentY - rowHeight, PdfColor.FromRgb(200, 200, 200));
 
                 // Render cell content (images and text)
-                var textY = state.CurrentY - cellPadding;
+                var textY = state.CurrentY - cellPaddingV;
                 foreach (var para in cell.Paragraphs)
                 {
                     // Render images inside table cells
@@ -403,7 +418,7 @@ internal static class DocxToPdfConverter
                     {
                         var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                         var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
-                        var maxImgW = cellWidth - cellPadding * 2;
+                        var maxImgW = cellWidth - cellPaddingH * 2;
                         if (imgW > maxImgW)
                         {
                             var s = maxImgW / imgW;
@@ -414,7 +429,7 @@ internal static class DocxToPdfConverter
                         if (fmt == "jpg" || fmt == "png")
                         {
                             var imgY = textY - imgH;
-                            state.CurrentPage!.AddImage(image.Data, fmt, cellX + cellPadding, imgY, imgW, imgH);
+                            state.CurrentPage!.AddImage(image.Data, fmt, cellX + cellPaddingH, imgY, imgW, imgH);
                             textY -= imgH + 1f;
                         }
                     }
@@ -426,16 +441,16 @@ internal static class DocxToPdfConverter
                     var runFontSize = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text))?.FontSize;
                     var effectiveFontSize = runFontSize > 0 ? runFontSize.Value : fontSize;
                     var runColor = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text))?.Color ?? para.Color;
-                    var lineHeight = effectiveFontSize * options.LineSpacing;
+                var lineHeight = effectiveFontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
                     var avgCharWidth = effectiveFontSize * 0.47f;
-                    var textWidth = cellWidth - cellPadding * 2;
+                    var textWidth = cellWidth - cellPaddingH * 2;
                     var lines = WordWrap(text, textWidth, textWidth, avgCharWidth);
 
                     foreach (var line in lines)
                     {
                         textY -= effectiveFontSize;
-                        if (textY < state.CurrentY - rowHeight + cellPadding) break; // clip
-                        state.CurrentPage!.AddText(line, cellX + cellPadding, textY, effectiveFontSize, runColor);
+                        if (textY < state.CurrentY - rowHeight + cellPaddingV) break; // clip
+                        state.CurrentPage!.AddText(line, cellX + cellPaddingH, textY, effectiveFontSize, runColor);
                         textY -= lineHeight - effectiveFontSize;
                     }
                 }
@@ -451,7 +466,7 @@ internal static class DocxToPdfConverter
         }
 
         // Add some spacing after table
-        state.AdvanceY(4f);
+        state.AdvanceY(2f);
     }
 
     private static float[] CalculateTableColumnWidths(DocxTable table, float usableWidth)
@@ -478,9 +493,9 @@ internal static class DocxToPdfConverter
         return result;
     }
 
-    private static float CalculateRowHeight(DocxTableRow row, float[] colWidths, float cellPadding, ConversionOptions options)
+    private static float CalculateRowHeight(DocxTableRow row, float[] colWidths, float cellPaddingH, float cellPaddingV, ConversionOptions options)
     {
-        var maxHeight = options.FontSize * options.LineSpacing + cellPadding * 2;
+        var maxHeight = options.FontSize * FontMetricsFactor * options.LineSpacing + cellPaddingV * 2;
 
         for (var ci = 0; ci < row.Cells.Count && ci < colWidths.Length; ci++)
         {
@@ -492,7 +507,7 @@ internal static class DocxToPdfConverter
                     cellWidth += colWidths[ci + s];
             }
 
-            var cellHeight = cellPadding * 2;
+            var cellHeight = cellPaddingV * 2;
             foreach (var para in cell.Paragraphs)
             {
                 // Account for images in row height
@@ -501,7 +516,7 @@ internal static class DocxToPdfConverter
                 {
                     var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                     var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
-                    var maxImgW = cellWidth - cellPadding * 2;
+                    var maxImgW = cellWidth - cellPaddingH * 2;
                     if (imgW > maxImgW)
                         imgH *= maxImgW / imgW;
                     cellHeight += imgH + 1f;
@@ -510,9 +525,9 @@ internal static class DocxToPdfConverter
                 var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
                 var runFontSize = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text))?.FontSize;
                 var effectiveFontSize = runFontSize > 0 ? runFontSize.Value : fontSize;
-                var lineHeight = effectiveFontSize * options.LineSpacing;
+                var lineHeight = effectiveFontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
                 var avgCharWidth = effectiveFontSize * 0.47f;
-                var textWidth = cellWidth - cellPadding * 2;
+                var textWidth = cellWidth - cellPaddingH * 2;
                 var text = string.Concat(para.Runs.Select(r => r.Text));
 
                 if (string.IsNullOrEmpty(text))
@@ -533,10 +548,90 @@ internal static class DocxToPdfConverter
 
     // ── Word wrapping ───────────────────────────────────────────────────
 
-    private static List<string> WordWrap(string text, float firstLineWidth, float subsequentWidth, float avgCharWidth)
+    private static string ExpandTabs(string text, float avgCharWidth, List<DocxTabStop>? tabStops = null)
+    {
+        if (!text.Contains('\t'))
+            return text;
+
+        // If tab stops define dot leaders, use them
+        if (tabStops is { Count: > 0 })
+        {
+            var sb = new System.Text.StringBuilder();
+            var segments = text.Split('\t');
+            var currentCol = 0;
+            for (var i = 0; i < segments.Length; i++)
+            {
+                sb.Append(segments[i]);
+                currentCol += segments[i].Length;
+
+                if (i < segments.Length - 1)
+                {
+                    // Find the next tab stop beyond current position
+                    var currentPos = currentCol * avgCharWidth;
+                    DocxTabStop? matchedStop = null;
+                    foreach (var ts in tabStops)
+                    {
+                        if (ts.Position > currentPos + avgCharWidth)
+                        {
+                            matchedStop = ts;
+                            break;
+                        }
+                    }
+
+                    if (matchedStop != null)
+                    {
+                        var targetCol = (int)(matchedStop.Position / avgCharWidth);
+                        var fillCount = Math.Max(1, targetCol - currentCol);
+                        var leaderChar = matchedStop.Leader switch
+                        {
+                            "dot" => '.',
+                            "hyphen" => '-',
+                            "underscore" => '_',
+                            _ => ' '
+                        };
+                        sb.Append(leaderChar, fillCount);
+                        currentCol = targetCol;
+                    }
+                    else
+                    {
+                        // No matching tab stop; use default spacing
+                        sb.Append(' ', 4);
+                        currentCol += 4;
+                    }
+                }
+            }
+            return sb.ToString();
+        }
+
+        const float defaultTabStopPt = 36f; // 0.5 inch default tab stop in points
+        var tabChars = (int)(defaultTabStopPt / avgCharWidth);
+        if (tabChars < 4) tabChars = 4;
+        var sb2 = new System.Text.StringBuilder();
+        var col = 0;
+        foreach (var ch in text)
+        {
+            if (ch == '\t')
+            {
+                var next = ((col / tabChars) + 1) * tabChars;
+                var spaces = next - col;
+                sb2.Append(' ', spaces);
+                col = next;
+            }
+            else
+            {
+                sb2.Append(ch);
+                col++;
+            }
+        }
+        return sb2.ToString();
+    }
+
+    private static List<string> WordWrap(string text, float firstLineWidth, float subsequentWidth, float avgCharWidth, List<DocxTabStop>? tabStops = null)
     {
         if (string.IsNullOrEmpty(text))
             return [""];
+
+        text = ExpandTabs(text, avgCharWidth, tabStops);
 
         var lines = new List<string>();
         var paragraphLines = text.Split('\n');
