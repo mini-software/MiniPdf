@@ -387,6 +387,22 @@ internal static class DocxReader
         var tblPr = tblElement.Element(W + "tblPr");
         var tblGrid = tblElement.Element(W + "tblGrid");
         var columnWidths = new List<float>();
+
+        // Detect whether the table has visible borders
+        var hasBorders = false;
+        var tblStyleVal = tblPr?.Element(W + "tblStyle")?.Attribute(W + "val")?.Value;
+        if (!string.IsNullOrEmpty(tblStyleVal) && tblStyleVal.Contains("Grid", StringComparison.OrdinalIgnoreCase))
+            hasBorders = true;
+        var tblBorders = tblPr?.Element(W + "tblBorders");
+        if (tblBorders != null)
+        {
+            foreach (var side in new[] { "top", "bottom", "left", "right", "insideH", "insideV" })
+            {
+                var val = tblBorders.Element(W + side)?.Attribute(W + "val")?.Value;
+                if (!string.IsNullOrEmpty(val) && val != "none" && val != "nil")
+                    hasBorders = true;
+            }
+        }
         if (tblGrid != null)
         {
             foreach (var col in tblGrid.Elements(W + "gridCol"))
@@ -460,7 +476,7 @@ internal static class DocxReader
             rows.Add(new DocxTableRow(cells));
         }
 
-        return new DocxTable(rows, columnWidths);
+        return new DocxTable(rows, columnWidths, hasBorders);
     }
 
     private static DocxPageLayout? ReadPageLayout(XElement body)
@@ -525,6 +541,41 @@ internal static class DocxReader
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
 
+        // Read docDefaults for baseline paragraph/run properties
+        float defaultFontSize = 11f;
+        float defaultSpacingAfter = -1;
+        float defaultSpacingBefore = 0;
+        float defaultLineSpacing = 0;
+
+        var docDefaults = doc.Descendants(W + "docDefaults").FirstOrDefault();
+        if (docDefaults != null)
+        {
+            var rPrDefault = docDefaults.Element(W + "rPrDefault")?.Element(W + "rPr");
+            if (rPrDefault != null)
+            {
+                var sz = rPrDefault.Element(W + "sz")?.Attribute(W + "val")?.Value;
+                if (float.TryParse(sz, out var s) && s > 0)
+                    defaultFontSize = s / 2f;
+            }
+
+            var pPrDefault = docDefaults.Element(W + "pPrDefault")?.Element(W + "pPr");
+            if (pPrDefault != null)
+            {
+                var spacing = pPrDefault.Element(W + "spacing");
+                if (spacing != null)
+                {
+                    if (int.TryParse(spacing.Attribute(W + "before")?.Value, out var sb))
+                        defaultSpacingBefore = sb / 20f;
+                    if (int.TryParse(spacing.Attribute(W + "line")?.Value, out var sl))
+                    {
+                        var lineRule = spacing.Attribute(W + "lineRule")?.Value;
+                        defaultLineSpacing = (lineRule == "exact" || lineRule == "atLeast")
+                            ? sl / 20f : sl / 240f;
+                    }
+                }
+            }
+        }
+
         foreach (var style in doc.Descendants(W + "style"))
         {
             var styleId = style.Attribute(W + "styleId")?.Value;
@@ -533,13 +584,13 @@ internal static class DocxReader
             var rPr = style.Element(W + "rPr");
             var pPr = style.Element(W + "pPr");
 
-            float fontSize = 11f;
+            float fontSize = defaultFontSize;
             bool bold = false;
             bool italic = false;
             PdfColor? color = null;
             string alignment = "";
-            float spacingBefore = 0;
-            float spacingAfter = -1;
+            float spacingBefore = defaultSpacingBefore;
+            float spacingAfter = defaultSpacingAfter;
 
             if (rPr != null)
             {
@@ -688,7 +739,8 @@ internal sealed record DocxImage(
 /// <summary>Represents a table.</summary>
 internal sealed record DocxTable(
     List<DocxTableRow> Rows,
-    List<float> ColumnWidths
+    List<float> ColumnWidths,
+    bool HasBorders = true
 ) : DocxElement;
 
 /// <summary>Represents a table row.</summary>

@@ -1510,6 +1510,990 @@ MiniPdf 출력은 LibreOffice를 참조 렌더러로 사용하여 **180개 클�
 </tr>
 </table>
 
+<!-- DOCX_BENCHMARK_START -->
+
+### DOCX 벤치마크
+
+MiniPdf DOCX 출력은 LibreOffice를 참조 렌더러로 사용하여 **60개 클래식 테스트 케이스**에서 비교됩니다.
+
+| 카테고리 | 수량 | 임계값 |
+|---|---|---|
+| 🟢 우수 | 117 | ≥ 90% |
+| 🟡 허용 | 3 | 70% – 90% |
+| 🔴 개선 필요 | 0 | < 70% |
+
+**전체 평균 점수: 97.0%** (텍스트 유사도 40% + 시각 유사도 40% + 페이지 수 20%)
+
+#### DOCX 시각적 비교
+
+모든 DOCX 테스트 케이스에서 MiniPdf 출력과 LibreOffice 참조를 비교합니다. 여러 페이지인 경우 1페이지만 표시합니다.
+
+<table>
+<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
+<tr>
+  <td><b>classic01</b></td>
+  <td>Single paragraph 🟢 99.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic01_single_paragraph_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic01_single_paragraph_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic02</b></td>
+  <td>Multiple paragraphs 🟢 98.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic02_multiple_paragraphs_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic02_multiple_paragraphs_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic03</b></td>
+  <td>Headings 🟢 99.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic03_headings_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic03_headings_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic04</b></td>
+  <td>Bold italic 🟢 99.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic04_bold_italic_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic04_bold_italic_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic05</b></td>
+  <td>Font sizes 🟢 99.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic05_font_sizes_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic05_font_sizes_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic06</b></td>
+  <td>Font colors 🟢 99.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic06_font_colors_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic06_font_colors_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic07</b></td>
+  <td>Alignment 🟢 99.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic07_alignment_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic07_alignment_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic08</b></td>
+  <td>Bullet list 🟢 96.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic08_bullet_list_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic08_bullet_list_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic09</b></td>
+  <td>Numbered list 🟢 99.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic09_numbered_list_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic09_numbered_list_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic10</b></td>
+  <td>Simple table 🟢 99.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic10_simple_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic10_simple_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic11</b></td>
+  <td>Table with shading 🟢 97.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic11_table_with_shading_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic11_table_with_shading_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic12</b></td>
+  <td>Merged cells table 🟢 99.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic12_merged_cells_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic12_merged_cells_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic13</b></td>
+  <td>Long document 🟢 96.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic13_long_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic13_long_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic14</b></td>
+  <td>Mixed content 🟢 98.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic14_mixed_content_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic14_mixed_content_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic15</b></td>
+  <td>Indentation 🟢 98.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic15_indentation_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic15_indentation_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic16</b></td>
+  <td>Line spacing 🟢 98.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic16_line_spacing_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic16_line_spacing_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic17</b></td>
+  <td>Page break 🟢 99.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic17_page_break_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic17_page_break_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic18</b></td>
+  <td>Embedded image 🟢 98.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic18_embedded_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic18_embedded_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic19</b></td>
+  <td>Multiple images 🟢 97.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic19_multiple_images_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic19_multiple_images_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic20</b></td>
+  <td>Table with many rows 🟢 97.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic20_table_with_many_rows_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic20_table_with_many_rows_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic21</b></td>
+  <td>Nested lists 🟢 97.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic21_nested_lists_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic21_nested_lists_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic22</b></td>
+  <td>Horizontal rule 🟢 99.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic22_horizontal_rule_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic22_horizontal_rule_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic23</b></td>
+  <td>Mixed formatting runs 🟢 99.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic23_mixed_formatting_runs_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic23_mixed_formatting_runs_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic24</b></td>
+  <td>Two column table layout 🟢 96.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic24_two_column_table_layout_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic24_two_column_table_layout_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic25</b></td>
+  <td>Title and subtitle 🟢 99.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic25_title_and_subtitle_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic25_title_and_subtitle_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic26</b></td>
+  <td>Table alignment 🟢 99.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic26_table_alignment_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic26_table_alignment_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic27</b></td>
+  <td>Long paragraph wrapping 🟢 96.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic27_long_paragraph_wrapping_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic27_long_paragraph_wrapping_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic28</b></td>
+  <td>Special characters 🟢 99.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic28_special_characters_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic28_special_characters_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic29</b></td>
+  <td>Table with image 🟢 98.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic29_table_with_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic29_table_with_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic30</b></td>
+  <td>Comprehensive report 🟢 90.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic30_comprehensive_report_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic30_comprehensive_report_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic31</b></td>
+  <td>Product card with image 🟢 96.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic31_product_card_with_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic31_product_card_with_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic31</b></td>
+  <td>Strikethrough text 🟢 99.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic31_strikethrough_text_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic31_strikethrough_text_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic32</b></td>
+  <td>Company logo header 🟢 98.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic32_company_logo_header_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic32_company_logo_header_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic32</b></td>
+  <td>Superscript subscript 🟢 98.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic32_superscript_subscript_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic32_superscript_subscript_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic33</b></td>
+  <td>Highlighted text 🟢 99.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic33_highlighted_text_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic33_highlighted_text_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic33</b></td>
+  <td>Two products side by side 🟢 96.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic33_two_products_side_by_side_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic33_two_products_side_by_side_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic34</b></td>
+  <td>Employee directory with photo 🟢 98.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic34_employee_directory_with_photo_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic34_employee_directory_with_photo_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic34</b></td>
+  <td>Paragraph borders 🟢 99.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic34_paragraph_borders_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic34_paragraph_borders_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic35</b></td>
+  <td>Inventory with product photos 🟢 98.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic35_inventory_with_product_photos_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic35_inventory_with_product_photos_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic35</b></td>
+  <td>Tab stops 🟢 90.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic35_tab_stops_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic35_tab_stops_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic36</b></td>
+  <td>Invoice with logo 🟢 98.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic36_invoice_with_logo_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic36_invoice_with_logo_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic36</b></td>
+  <td>Wide table 🟢 98.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic36_wide_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic36_wide_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic37</b></td>
+  <td>Nested table 🟢 97.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic37_nested_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic37_nested_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic37</b></td>
+  <td>Real estate listing 🟢 93.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic37_real_estate_listing_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic37_real_estate_listing_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic38</b></td>
+  <td>Restaurant menu with photos 🟢 96.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic38_restaurant_menu_with_photos_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic38_restaurant_menu_with_photos_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic38</b></td>
+  <td>Table column widths 🟢 98.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic38_table_column_widths_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic38_table_column_widths_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic39</b></td>
+  <td>Cover page with image 🟢 97.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic39_cover_page_with_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic39_cover_page_with_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic39</b></td>
+  <td>Financial report 🟢 97.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic39_financial_report_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic39_financial_report_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic40</b></td>
+  <td>Product catalog with images 🟢 98.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic40_product_catalog_with_images_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic40_product_catalog_with_images_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic40</b></td>
+  <td>Resume 🟢 98.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic40_resume_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic40_resume_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic41</b></td>
+  <td>Business letter 🟢 98.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic41_business_letter_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic41_business_letter_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic41</b></td>
+  <td>Newsletter with hero image 🟢 97.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic41_newsletter_with_hero_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic41_newsletter_with_hero_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic42</b></td>
+  <td>Chart image with data 🟢 96.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic42_chart_image_with_data_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic42_chart_image_with_data_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic42</b></td>
+  <td>Meeting minutes 🟢 95.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic42_meeting_minutes_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic42_meeting_minutes_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic43</b></td>
+  <td>Event flyer with banner 🟢 98.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic43_event_flyer_with_banner_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic43_event_flyer_with_banner_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic43</b></td>
+  <td>Invoice document 🟢 97.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic43_invoice_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic43_invoice_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic44</b></td>
+  <td>Dashboard with kpi image 🟢 97.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic44_dashboard_with_kpi_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic44_dashboard_with_kpi_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic44</b></td>
+  <td>Memo 🟢 96.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic44_memo_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic44_memo_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic45</b></td>
+  <td>Certificate with seal 🟢 96.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic45_certificate_with_seal_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic45_certificate_with_seal_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic45</b></td>
+  <td>Project plan 🟢 97.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic45_project_plan_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic45_project_plan_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic46</b></td>
+  <td>Comparison table 🟢 96.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic46_comparison_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic46_comparison_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic46</b></td>
+  <td>Product image grid 🟢 95.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic46_product_image_grid_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic46_product_image_grid_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic47</b></td>
+  <td>Data dictionary 🟢 96.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic47_data_dictionary_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic47_data_dictionary_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic47</b></td>
+  <td>News article with hero image 🟢 98.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic47_news_article_with_hero_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic47_news_article_with_hero_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic48</b></td>
+  <td>Multi level headings 🟢 98.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic48_multi_level_headings_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic48_multi_level_headings_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic48</b></td>
+  <td>Task list with status icons 🟢 96.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic48_task_list_with_status_icons_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic48_task_list_with_status_icons_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic49</b></td>
+  <td>Cjk document 🟢 94.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic49_cjk_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic49_cjk_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic49</b></td>
+  <td>Wide panoramic banner 🟢 98.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic49_wide_panoramic_banner_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic49_wide_panoramic_banner_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic50</b></td>
+  <td>Long table with formatting 🟡 83.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic50_long_table_with_formatting_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic50_long_table_with_formatting_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic50</b></td>
+  <td>Portrait tall image 🟢 96.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic50_portrait_tall_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic50_portrait_tall_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic51</b></td>
+  <td>Step by step with images 🟢 97.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic51_step_by_step_with_images_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic51_step_by_step_with_images_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic51</b></td>
+  <td>Underline styles 🟢 99.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic51_underline_styles_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic51_underline_styles_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic52</b></td>
+  <td>Before after comparison 🟢 96.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic52_before_after_comparison_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic52_before_after_comparison_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic52</b></td>
+  <td>Spacing before after 🟢 98.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic52_spacing_before_after_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic52_spacing_before_after_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic53</b></td>
+  <td>Color swatch palette 🟢 96.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic53_color_swatch_palette_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic53_color_swatch_palette_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic53</b></td>
+  <td>Table merged complex 🟢 95.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic53_table_merged_complex_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic53_table_merged_complex_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic54</b></td>
+  <td>Multi font family 🟢 99.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic54_multi_font_family_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic54_multi_font_family_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic54</b></td>
+  <td>Travel destination cards 🟢 97.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic54_travel_destination_cards_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic54_travel_destination_cards_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic55</b></td>
+  <td>Background shading paragraph 🟢 94.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic55_background_shading_paragraph_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic55_background_shading_paragraph_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic55</b></td>
+  <td>Lab results with image 🟢 95.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic55_lab_results_with_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic55_lab_results_with_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic56</b></td>
+  <td>Images and tables mixed 🟢 96.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic56_images_and_tables_mixed_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic56_images_and_tables_mixed_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic56</b></td>
+  <td>Software screenshot features 🟢 95.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic56_software_screenshot_features_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic56_software_screenshot_features_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic57</b></td>
+  <td>Right to left text 🟢 96.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic57_right_to_left_text_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic57_right_to_left_text_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic57</b></td>
+  <td>Sports results with logos 🟢 96.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic57_sports_results_with_logos_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic57_sports_results_with_logos_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic58</b></td>
+  <td>Dense paragraph document 🟢 96.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic58_dense_paragraph_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic58_dense_paragraph_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic58</b></td>
+  <td>Report with footer image 🟢 96.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic58_report_with_footer_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic58_report_with_footer_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic59</b></td>
+  <td>Numbered and bullet mixed 🟢 98.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic59_numbered_and_bullet_mixed_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic59_numbered_and_bullet_mixed_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic59</b></td>
+  <td>Nutrition label with image 🟢 96.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic59_nutrition_label_with_image_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic59_nutrition_label_with_image_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic60</b></td>
+  <td>Comprehensive styled report 🟢 98.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic60_comprehensive_styled_report_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic60_comprehensive_styled_report_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic60</b></td>
+  <td>Project status with milestones 🟢 96.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic60_project_status_with_milestones_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic60_project_status_with_milestones_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic61</b></td>
+  <td>Header and footer 🟢 96.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic61_header_and_footer_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic61_header_and_footer_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic62</b></td>
+  <td>Footnote references 🟢 98.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic62_footnote_references_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic62_footnote_references_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic63</b></td>
+  <td>Toc style headings 🟢 99.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic63_toc_style_headings_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic63_toc_style_headings_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic64</b></td>
+  <td>Multi column layout 🟡 90.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic64_multi_column_layout_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic64_multi_column_layout_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic65</b></td>
+  <td>Code block styling 🟢 96.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic65_code_block_styling_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic65_code_block_styling_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic66</b></td>
+  <td>Colored title page 🟢 91.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic66_colored_title_page_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic66_colored_title_page_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic67</b></td>
+  <td>Alternating row table 🟢 91.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic67_alternating_row_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic67_alternating_row_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic68</b></td>
+  <td>Sidebar layout 🟢 93.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic68_sidebar_layout_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic68_sidebar_layout_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic69</b></td>
+  <td>Blockquote styling 🟢 98.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic69_blockquote_styling_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic69_blockquote_styling_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic70</b></td>
+  <td>Academic paper 🟢 96.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic70_academic_paper_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic70_academic_paper_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic71</b></td>
+  <td>Legal document 🟢 97.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic71_legal_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic71_legal_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic72</b></td>
+  <td>Technical specification 🟢 97.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic72_technical_specification_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic72_technical_specification_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic73</b></td>
+  <td>Calendar layout 🟢 96.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic73_calendar_layout_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic73_calendar_layout_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic74</b></td>
+  <td>Org chart 🟢 94.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic74_org_chart_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic74_org_chart_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic75</b></td>
+  <td>Newsletter layout 🟢 97.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic75_newsletter_layout_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic75_newsletter_layout_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic76</b></td>
+  <td>Recipe card 🟢 97.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic76_recipe_card_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic76_recipe_card_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic77</b></td>
+  <td>Timeline layout 🟢 96.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic77_timeline_layout_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic77_timeline_layout_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic78</b></td>
+  <td>Faq document 🟢 98.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic78_faq_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic78_faq_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic79</b></td>
+  <td>Glossary 🟢 98.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic79_glossary_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic79_glossary_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic80</b></td>
+  <td>Matrix grid 🟢 92.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic80_matrix_grid_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic80_matrix_grid_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic81</b></td>
+  <td>Budget table 🟢 92.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic81_budget_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic81_budget_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic82</b></td>
+  <td>Survey questionnaire 🟢 94.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic82_survey_questionnaire_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic82_survey_questionnaire_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic83</b></td>
+  <td>Medical form 🟢 96.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic83_medical_form_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic83_medical_form_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic84</b></td>
+  <td>Shipping label 🟢 96.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic84_shipping_label_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic84_shipping_label_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic85</b></td>
+  <td>Report card 🟢 97.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic85_report_card_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic85_report_card_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic86</b></td>
+  <td>Checklist document 🟢 98.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic86_checklist_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic86_checklist_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic87</b></td>
+  <td>Bibliography 🟢 98.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic87_bibliography_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic87_bibliography_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic88</b></td>
+  <td>Presentation handout 🟡 88.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic88_presentation_handout_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic88_presentation_handout_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic89</b></td>
+  <td>Multi image gallery 🟢 95.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic89_multi_image_gallery_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic89_multi_image_gallery_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic90</b></td>
+  <td>Comprehensive annual report 🟢 96.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic90_comprehensive_annual_report_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic90_comprehensive_annual_report_p1_reference.png" width="320"/></td>
+</tr>
+</table>
+
+<!-- DOCX_BENCHMARK_END -->
+
 
 
 

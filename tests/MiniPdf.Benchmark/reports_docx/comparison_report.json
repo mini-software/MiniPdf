@@ -517,9 +517,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9476
+      0.9477
     ],
-    "visual_avg": 0.9476,
+    "visual_avg": 0.9477,
     "diff_images": [
       {
         "page": 1,
@@ -527,7 +527,7 @@
         "reference_img": "docx_classic20_table_with_many_rows_p1_reference.png"
       }
     ],
-    "overall_score": 0.979
+    "overall_score": 0.9791
   },
   {
     "name": "docx_classic21_nested_lists",
@@ -608,7 +608,7 @@
     "name": "docx_classic24_two_column_table_layout",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1750,
+    "minipdf_size": 1217,
     "reference_size": 37201,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -617,9 +617,9 @@
     "word_text_similarity": 0.9176,
     "text_diff": "--- minipdf/docx_classic24_two_column_table_layout.pdf\n+++ reference/docx_classic24_two_column_table_layout.pdf\n@@ -1,5 +1,5 @@\n Two-Column Layout\n\n-Left column content. This is the first Right column content. This is the\n\n-column of a two-column layout. It second column. Both columns should\n\n-demonstrates how tables can be used for render side-by-side in the PDF output.\n\n+Left column content. This is the first Right column content. This is the second\n\n+column of a two-column layout. It column. Both columns should render side-\n\n+demonstrates how tables can be used for by-side in the PDF output.\n\n text layout purposes.",
     "visual_scores": [
-      0.9739
+      0.9815
     ],
-    "visual_avg": 0.9739,
+    "visual_avg": 0.9815,
     "diff_images": [
       {
         "page": 1,
@@ -627,7 +627,7 @@
         "reference_img": "docx_classic24_two_column_table_layout_p1_reference.png"
       }
     ],
-    "overall_score": 0.9596
+    "overall_score": 0.9626
   },
   {
     "name": "docx_classic25_title_and_subtitle",
@@ -764,21 +764,20 @@
     "name": "docx_classic30_comprehensive_report",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 9925,
-    "reference_size": 107009,
-    "minipdf_pages": 4,
+    "minipdf_size": 9700,
+    "reference_size": 106991,
+    "minipdf_pages": 3,
     "reference_pages": 3,
-    "text_similarity": 0.9917,
+    "text_similarity": 0.9919,
     "flat_text_similarity": 0.9917,
     "word_text_similarity": 0.966,
-    "text_diff": "--- minipdf/docx_classic30_comprehensive_report.pdf\n+++ reference/docx_classic30_comprehensive_report.pdf\n@@ -9,9 +9,9 @@\n 5. Recommendations\n\n ---PAGE---\n\n 1. Executive Summary\n\n-This report provides a comprehensive analysis of the technology landscape in 2026.\n\n-Key findings include continued growth in AI adoption, increased focus on\n\n-sustainability, and emerging trends in quantum computing.\n\n+This report provides a comprehensive analysis of the technology landscape in 2026. Key\n\n+findings include continued growth in AI adoption, increased focus on sustainability, and\n\n+emerging trends in quantum computing.\n\n 2. Market Analysis\n\n The following table summarizes market share across key sectors:\n\n Sector Market Share Growth\n\n@@ -21,16 +21,15 @@\n IoT 16% +8%\n\n 3. Technology Trends\n\n Key trends identified:\n\n-• Generative AI integration in enterprise software\n\n-• Edge computing for real-time processing\n\n-• Green technology and sustainable computing\n\n-• Zero-trust security architectures\n\n-• Low-code/no-code platform expansion\n\n+ Generative AI integration in enterprise software\n\n+ Edge computing for real-time processing\n\n+ Green technology and sustainable computing\n\n+ Zero-trust security architectures\n\n+ Low-code/no-code platform expansion\n\n 4. Visual Summary\n\n Growth indicator chart (placeholder):\n\n 5. Recommendations\n\n 1. Invest in AI-driven automation tools\n\n 2. Prioritize cloud-native architectures\n\n 3. Strengthen cybersecurity posture\n\n----PAGE---\n\n 4. Explore quantum computing partnerships",
+    "text_diff": "--- minipdf/docx_classic30_comprehensive_report.pdf\n+++ reference/docx_classic30_comprehensive_report.pdf\n@@ -8,9 +8,9 @@\n 4. Financial Overview\n\n 5. Recommendations\n\n 1. Executive Summary\n\n-This report provides a comprehensive analysis of the technology landscape in 2026.\n\n-Key findings include continued growth in AI adoption, increased focus on\n\n-sustainability, and emerging trends in quantum computing.\n\n+This report provides a comprehensive analysis of the technology landscape in 2026. Key\n\n+findings include continued growth in AI adoption, increased focus on sustainability, and\n\n+emerging trends in quantum computing.\n\n 2. Market Analysis\n\n The following table summarizes market share across key sectors:\n\n Sector Market Share Growth\n\n@@ -20,11 +20,11 @@\n IoT 16% +8%\n\n 3. Technology Trends\n\n Key trends identified:\n\n-• Generative AI integration in enterprise software\n\n-• Edge computing for real-time processing\n\n-• Green technology and sustainable computing\n\n-• Zero-trust security architectures\n\n-• Low-code/no-code platform expansion\n\n+ Generative AI integration in enterprise software\n\n+ Edge computing for real-time processing\n\n+ Green technology and sustainable computing\n\n+ Zero-trust security architectures\n\n+ Low-code/no-code platform expansion\n\n 4. Visual Summary\n\n Growth indicator chart (placeholder):\n\n ---PAGE---\n",
     "visual_scores": [
       0.987,
-      0.9927,
-      0.9462,
-      0.0
+      0.8775,
+      0.4522
     ],
-    "visual_avg": 0.7315,
+    "visual_avg": 0.7722,
     "diff_images": [
       {
         "page": 1,
@@ -794,14 +793,34 @@
         "page": 3,
         "minipdf_img": "docx_classic30_comprehensive_report_p3_minipdf.png",
         "reference_img": "docx_classic30_comprehensive_report_p3_reference.png"
-      },
-      {
-        "page": 4,
-        "minipdf_img": "docx_classic30_comprehensive_report_p4_minipdf.png",
-        "reference_img": null
       }
     ],
-    "overall_score": 0.7893
+    "overall_score": 0.9056
+  },
+  {
+    "name": "docx_classic31_product_card_with_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4443,
+    "reference_size": 54920,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9927,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic31_product_card_with_image.pdf\n+++ reference/docx_classic31_product_card_with_image.pdf\n@@ -1,8 +1,8 @@\n Product Card\n\n Wireless Bluetooth Speaker\n\n SKU: WBS-2026-PRO | Price: $49.99\n\n-High-fidelity wireless speaker with 12-hour battery life, IPX7 waterproof rating,\n\n-and built-in microphone for hands-free calls.\n\n+High-fidelity wireless speaker with 12-hour battery life, IPX7 waterproof rating, and built-in\n\n+microphone for hands-free calls.\n\n Battery 12 hours\n\n Weight 350g\n\n Connectivity Bluetooth 5.3\n",
+    "visual_scores": [
+      0.9037
+    ],
+    "visual_avg": 0.9037,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic31_product_card_with_image_p1_minipdf.png",
+        "reference_img": "docx_classic31_product_card_with_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9615
   },
   {
     "name": "docx_classic31_strikethrough_text",
@@ -827,6 +846,31 @@
       }
     ],
     "overall_score": 0.9967
+  },
+  {
+    "name": "docx_classic32_company_logo_header",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 6517,
+    "reference_size": 58479,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9725
+    ],
+    "visual_avg": 0.9725,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic32_company_logo_header_p1_minipdf.png",
+        "reference_img": "docx_classic32_company_logo_header_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.989
   },
   {
     "name": "docx_classic32_superscript_subscript",
@@ -879,6 +923,62 @@
     "overall_score": 0.9921
   },
   {
+    "name": "docx_classic33_two_products_side_by_side",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7468,
+    "reference_size": 58681,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9223
+    ],
+    "visual_avg": 0.9223,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic33_two_products_side_by_side_p1_minipdf.png",
+        "reference_img": "docx_classic33_two_products_side_by_side_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9689
+  },
+  {
+    "name": "docx_classic34_employee_directory_with_photo",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2935,
+    "reference_size": 51938,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.9811,
+    "flat_text_similarity": 0.9781,
+    "word_text_similarity": 0.9811,
+    "text_diff": "--- minipdf/docx_classic34_employee_directory_with_photo.pdf\n+++ reference/docx_classic34_employee_directory_with_photo.pdf\n@@ -10,5 +10,5 @@\n Carol Williams\n\n UX Designer\n\n Email: carol@company.com\n\n-Department: Design\n\n----PAGE---\n+---PAGE---\n\n+Department: Design",
+    "visual_scores": [
+      0.9451,
+      0.9906
+    ],
+    "visual_avg": 0.9679,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic34_employee_directory_with_photo_p1_minipdf.png",
+        "reference_img": "docx_classic34_employee_directory_with_photo_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic34_employee_directory_with_photo_p2_minipdf.png",
+        "reference_img": "docx_classic34_employee_directory_with_photo_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9796
+  },
+  {
     "name": "docx_classic34_paragraph_borders",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -904,6 +1004,37 @@
     "overall_score": 0.9925
   },
   {
+    "name": "docx_classic35_inventory_with_product_photos",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8253,
+    "reference_size": 49931,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9307,
+      0.9922
+    ],
+    "visual_avg": 0.9614,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic35_inventory_with_product_photos_p1_minipdf.png",
+        "reference_img": "docx_classic35_inventory_with_product_photos_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic35_inventory_with_product_photos_p2_minipdf.png",
+        "reference_img": "docx_classic35_inventory_with_product_photos_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9846
+  },
+  {
     "name": "docx_classic35_tab_stops",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -927,6 +1058,31 @@
       }
     ],
     "overall_score": 0.9006
+  },
+  {
+    "name": "docx_classic36_invoice_with_logo",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8210,
+    "reference_size": 47377,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9683
+    ],
+    "visual_avg": 0.9683,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic36_invoice_with_logo_p1_minipdf.png",
+        "reference_img": "docx_classic36_invoice_with_logo_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9873
   },
   {
     "name": "docx_classic36_wide_table",
@@ -979,6 +1135,62 @@
     "overall_score": 0.9764
   },
   {
+    "name": "docx_classic37_real_estate_listing",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5482,
+    "reference_size": 55184,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8427
+    ],
+    "visual_avg": 0.8427,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic37_real_estate_listing_p1_minipdf.png",
+        "reference_img": "docx_classic37_real_estate_listing_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9371
+  },
+  {
+    "name": "docx_classic38_restaurant_menu_with_photos",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4017,
+    "reference_size": 55412,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9845,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic38_restaurant_menu_with_photos.pdf\n+++ reference/docx_classic38_restaurant_menu_with_photos.pdf\n@@ -1,12 +1,12 @@\n The Garden Bistro\n\n Fresh ingredients, timeless flavors\n\n Appetizers\n\n-Bruschetta  $8\n\n-Caesar Salad  $10\n\n+Bruschetta $8\n\n+Caesar Salad $10\n\n Main Courses\n\n-Grilled Salmon  $22\n\n-Filet Mignon  $32\n\n+Grilled Salmon $22\n\n+Filet Mignon $32\n\n+---PAGE---\n\n Desserts\n\n----PAGE---\n\n-Tiramisu  $10\n\n-Chocolate Lava Cake  $12\n+Tiramisu $10\n\n+Chocolate Lava Cake $12",
+    "visual_scores": [
+      0.9324,
+      0.9069
+    ],
+    "visual_avg": 0.9197,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic38_restaurant_menu_with_photos_p1_minipdf.png",
+        "reference_img": "docx_classic38_restaurant_menu_with_photos_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic38_restaurant_menu_with_photos_p2_minipdf.png",
+        "reference_img": "docx_classic38_restaurant_menu_with_photos_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9679
+  },
+  {
     "name": "docx_classic38_table_column_widths",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -991,9 +1203,9 @@
     "word_text_similarity": 0.9697,
     "text_diff": "--- minipdf/docx_classic38_table_column_widths.pdf\n+++ reference/docx_classic38_table_column_widths.pdf\n@@ -1,7 +1,7 @@\n Custom Column Widths\n\n # Description Category Amount\n\n-1 Office supplies Operations $245.00\n\n-and stationery\n\n+1 Office supplies and Operations $245.00\n\n+stationery\n\n 2 Cloud hosting Technology $1,200.00\n\n monthly fee\n\n 3 Team lunch and Meals $380.00\n",
     "visual_scores": [
-      0.9753
+      0.9754
     ],
-    "visual_avg": 0.9753,
+    "visual_avg": 0.9754,
     "diff_images": [
       {
         "page": 1,
@@ -1001,7 +1213,38 @@
         "reference_img": "docx_classic38_table_column_widths_p1_reference.png"
       }
     ],
-    "overall_score": 0.9832
+    "overall_score": 0.9833
+  },
+  {
+    "name": "docx_classic39_cover_page_with_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3177,
+    "reference_size": 59909,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9045,
+      0.9927
+    ],
+    "visual_avg": 0.9486,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic39_cover_page_with_image_p1_minipdf.png",
+        "reference_img": "docx_classic39_cover_page_with_image_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic39_cover_page_with_image_p2_minipdf.png",
+        "reference_img": "docx_classic39_cover_page_with_image_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9794
   },
   {
     "name": "docx_classic39_financial_report",
@@ -1027,6 +1270,31 @@
       }
     ],
     "overall_score": 0.9723
+  },
+  {
+    "name": "docx_classic40_product_catalog_with_images",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5701,
+    "reference_size": 59851,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9492
+    ],
+    "visual_avg": 0.9492,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic40_product_catalog_with_images_p1_minipdf.png",
+        "reference_img": "docx_classic40_product_catalog_with_images_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9797
   },
   {
     "name": "docx_classic40_resume",
@@ -1079,6 +1347,56 @@
     "overall_score": 0.9853
   },
   {
+    "name": "docx_classic41_newsletter_with_hero_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3541,
+    "reference_size": 61380,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.986,
+    "flat_text_similarity": 0.986,
+    "word_text_similarity": 0.939,
+    "text_diff": "--- minipdf/docx_classic41_newsletter_with_hero_image.pdf\n+++ reference/docx_classic41_newsletter_with_hero_image.pdf\n@@ -1,14 +1,13 @@\n TECH WEEKLY\n\n Issue #42 | March 2026\n\n AI-Powered Code Review Tools\n\n-New AI-powered code review tools are transforming how development teams\n\n-collaborate. Early adopters report 30% faster review cycles and 25% fewer bugs\n\n-reaching production.\n\n+New AI-powered code review tools are transforming how development teams collaborate.\n\n+Early adopters report 30% faster review cycles and 25% fewer bugs reaching production.\n\n Cloud Migration Best Practices\n\n As organizations accelerate cloud adoption, a structured migration approach becomes\n\n critical. We explore five proven strategies for seamless transitions.\n\n-• Assess workload compatibility\n\n-• Plan data migration carefully\n\n-• Implement security from day one\n\n-• Train your team early\n\n-• Monitor costs continuously\n+ Assess workload compatibility\n\n+ Plan data migration carefully\n\n+ Implement security from day one\n\n+ Train your team early\n\n+ Monitor costs continuously",
+    "visual_scores": [
+      0.9576
+    ],
+    "visual_avg": 0.9576,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic41_newsletter_with_hero_image_p1_minipdf.png",
+        "reference_img": "docx_classic41_newsletter_with_hero_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9774
+  },
+  {
+    "name": "docx_classic42_chart_image_with_data",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 11370,
+    "reference_size": 62503,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9083
+    ],
+    "visual_avg": 0.9083,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic42_chart_image_with_data_p1_minipdf.png",
+        "reference_img": "docx_classic42_chart_image_with_data_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9633
+  },
+  {
     "name": "docx_classic42_meeting_minutes",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1091,9 +1409,9 @@
     "word_text_similarity": 0.9903,
     "text_diff": "--- minipdf/docx_classic42_meeting_minutes.pdf\n+++ reference/docx_classic42_meeting_minutes.pdf\n@@ -9,9 +9,9 @@\n 3. New Hire Onboarding\n\n 4. Action Items\n\n Discussion Summary\n\n-Alice presented the Q4 results showing a 15% revenue increase. Bob proposed\n\n-reallocating 10% of the marketing budget to R&D. Carol reported that three new\n\n-engineering positions have been approved.\n\n+Alice presented the Q4 results showing a 15% revenue increase. Bob proposed reallocating\n\n+10% of the marketing budget to R&D. Carol reported that three new engineering positions\n\n+have been approved.\n\n Action Items\n\n Owner Action Due Date\n\n Bob Submit revised budget March 10\n\n@@ -20,5 +20,4 @@\n engineering roles\n\n David Prepare onboarding March 14\n\n materials\n\n-Eve Schedule follow-up March 5\n\n-meeting\n+Eve Schedule follow-up meeting March 5",
     "visual_scores": [
-      0.9078
+      0.9079
     ],
-    "visual_avg": 0.9078,
+    "visual_avg": 0.9079,
     "diff_images": [
       {
         "page": 1,
@@ -1101,13 +1419,38 @@
         "reference_img": "docx_classic42_meeting_minutes_p1_reference.png"
       }
     ],
-    "overall_score": 0.9592
+    "overall_score": 0.9593
+  },
+  {
+    "name": "docx_classic43_event_flyer_with_banner",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8122,
+    "reference_size": 58707,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9968,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic43_event_flyer_with_banner.pdf\n+++ reference/docx_classic43_event_flyer_with_banner.pdf\n@@ -2,8 +2,7 @@\n April 15-17, 2026 | Convention Center, Austin TX\n\n Schedule\n\n Time Speaker Topic\n\n-9:00 AM Dr. Sarah Lee Future of AI in\n\n-Healthcare\n\n+9:00 AM Dr. Sarah Lee Future of AI in Healthcare\n\n 10:30 AM John Chen Building Scalable Cloud\n\n Systems\n\n 1:00 PM Maria Garcia DevOps Best Practices\n",
+    "visual_scores": [
+      0.9626
+    ],
+    "visual_avg": 0.9626,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic43_event_flyer_with_banner_p1_minipdf.png",
+        "reference_img": "docx_classic43_event_flyer_with_banner_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.985
   },
   {
     "name": "docx_classic43_invoice_document",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 15849,
+    "minipdf_size": 12645,
     "reference_size": 60572,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1116,9 +1459,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9305
+      0.934
     ],
-    "visual_avg": 0.9305,
+    "visual_avg": 0.934,
     "diff_images": [
       {
         "page": 1,
@@ -1126,7 +1469,32 @@
         "reference_img": "docx_classic43_invoice_document_p1_reference.png"
       }
     ],
-    "overall_score": 0.9722
+    "overall_score": 0.9736
+  },
+  {
+    "name": "docx_classic44_dashboard_with_kpi_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 10409,
+    "reference_size": 63302,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9288
+    ],
+    "visual_avg": 0.9288,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic44_dashboard_with_kpi_image_p1_minipdf.png",
+        "reference_img": "docx_classic44_dashboard_with_kpi_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9715
   },
   {
     "name": "docx_classic44_memo",
@@ -1152,6 +1520,31 @@
       }
     ],
     "overall_score": 0.9683
+  },
+  {
+    "name": "docx_classic45_certificate_with_seal",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1554,
+    "reference_size": 35936,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9217
+    ],
+    "visual_avg": 0.9217,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic45_certificate_with_seal_p1_minipdf.png",
+        "reference_img": "docx_classic45_certificate_with_seal_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9687
   },
   {
     "name": "docx_classic45_project_plan",
@@ -1204,6 +1597,31 @@
     "overall_score": 0.9596
   },
   {
+    "name": "docx_classic46_product_image_grid",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2632,
+    "reference_size": 34357,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8968
+    ],
+    "visual_avg": 0.8968,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic46_product_image_grid_p1_minipdf.png",
+        "reference_img": "docx_classic46_product_image_grid_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9587
+  },
+  {
     "name": "docx_classic47_data_dictionary",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1227,6 +1645,31 @@
       }
     ],
     "overall_score": 0.9656
+  },
+  {
+    "name": "docx_classic47_news_article_with_hero_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3064,
+    "reference_size": 64358,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9742,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic47_news_article_with_hero_image.pdf\n+++ reference/docx_classic47_news_article_with_hero_image.pdf\n@@ -1,10 +1,10 @@\n Open Source Software Adoption Hits Record High\n\n By Sarah Mitchell | March 6, 2026 | Technology\n\n-A new survey shows that 92% of enterprise organizations now use open source\n\n-software in their technology stacks, up from 78% in 2024. The trend is driven by\n\n-cost savings, community innovation, and increased security transparency.\n\n+A new survey shows that 92% of enterprise organizations now use open source software in\n\n+their technology stacks, up from 78% in 2024. The trend is driven by cost savings,\n\n+community innovation, and increased security transparency.\n\n Key findings include a 45% increase in open source contributions from corporate\n\n developers, and growing adoption of open source AI frameworks across industries.\n\n Industry Reactions\n\n-\"Open source has become the backbone of modern software development,\" said CTO\n\n-James Walker. \"Organizations that embrace it gain a competitive advantage.\"\n+\"Open source has become the backbone of modern software development,\" said CTO James\n\n+Walker. \"Organizations that embrace it gain a competitive advantage.\"",
+    "visual_scores": [
+      0.9674
+    ],
+    "visual_avg": 0.9674,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic47_news_article_with_hero_image_p1_minipdf.png",
+        "reference_img": "docx_classic47_news_article_with_hero_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.987
   },
   {
     "name": "docx_classic48_multi_level_headings",
@@ -1266,6 +1709,31 @@
     "overall_score": 0.9871
   },
   {
+    "name": "docx_classic48_task_list_with_status_icons",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8823,
+    "reference_size": 60465,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9
+    ],
+    "visual_avg": 0.9,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic48_task_list_with_status_icons_p1_minipdf.png",
+        "reference_img": "docx_classic48_task_list_with_status_icons_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.96
+  },
+  {
     "name": "docx_classic49_cjk_document",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1291,6 +1759,31 @@
     "overall_score": 0.9433
   },
   {
+    "name": "docx_classic49_wide_panoramic_banner",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7014,
+    "reference_size": 56482,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9621
+    ],
+    "visual_avg": 0.9621,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic49_wide_panoramic_banner_p1_minipdf.png",
+        "reference_img": "docx_classic49_wide_panoramic_banner_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9848
+  },
+  {
     "name": "docx_classic50_long_table_with_formatting",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1303,10 +1796,10 @@
     "word_text_similarity": 0.7465,
     "text_diff": "--- minipdf/docx_classic50_long_table_with_formatting.pdf\n+++ reference/docx_classic50_long_table_with_formatting.pdf\n@@ -1,45 +1,63 @@\n Server Inventory Report\n\n Server ID Hostname IP Address OS Status\n\n-SRV-001 server-001.local 10.0.0.1 Ubuntu 22.04 Online\n\n-SRV-002 server-002.local 10.0.0.2 Windows Server Online\n\n-2022\n\n-SRV-003 server-003.local 10.0.0.3 RHEL 9 Online\n\n-SRV-004 server-004.local 10.0.0.4 Debian 12 Maintenance\n\n-SRV-005 server-005.local 10.0.0.5 CentOS Stream Online\n\n-9\n\n-SRV-006 server-006.local 10.0.0.6 Ubuntu 22.04 Online\n\n-SRV-007 server-007.local 10.0.0.7 Windows Server Offline\n\n-2022\n\n-SRV-008 server-008.local 10.0.0.8 RHEL 9 Online\n\n-SRV-009 server-009.local 10.0.0.9 Debian 12 Online\n\n-SRV-010 server-010.local 10.0.0.10 CentOS Stream Online\n\n-9\n\n-SRV-011 server-011.local 10.0.0.11 Ubuntu 22.04 Online\n\n-SRV-012 server-012.local 10.0.0.12 Windows Server Online\n\n-2022\n\n-SRV-013 server-013.local 10.0.0.13 RHEL 9 Online\n\n-SRV-014 server-014.local 10.0.0.14 Debian 12 Maintenance\n\n-SRV-015 server-015.local 10.0.0.15 CentOS Stream Online\n\n-9\n\n-SRV-016 server-016.local 10.0.0.16 Ubuntu 22.04 Online\n\n-SRV-017 server-017.local 10.0.0.17 Windows Server Offline\n\n-2022\n\n-SRV-018 server-018.local 10.0.0.18 RHEL 9 Online\n\n-SRV-019 server-019.local 10.0.0.19 Debian 12 Online\n\n-SRV-020 server-020.local 10.0.0.20 CentOS Stream Online\n\n-9\n\n-SRV-021 server-021.local 10.0.0.21 Ubuntu 22.04 Online\n\n-SRV-022 server-022.local 10.0.0.22 Windows Server Online\n\n-2022\n\n-SRV-023 server-023.local 10.0.0.23 RHEL 9 Online\n\n-SRV-024 server-024.local 10.0.0.24 Debian 12 Maintenance\n\n-SRV-025 server-025.local 10.0.0.25 CentOS Stream Online\n\n-9\n\n-SRV-026 server-026.local 10.0.0.26 Ubuntu 22.04 Online\n\n+SRV-001 server-001.loca 10.0.0.1 Ubuntu 22.04 Online\n\n+l\n\n+SRV-002 server-002.loca 10.0.0.2 Windows Online\n\n+l Server 2022\n\n+SRV-003 server-003.loca 10.0.0.3 RHEL 9 Online\n\n+l\n\n+SRV-004 server-004.loca 10.0.0.4 Debian 12 Maintenance\n\n+l\n\n+SRV-005 server-005.loca 10.0.0.5 CentOS Stream Online\n\n+l 9\n\n+SRV-006 server-006.loca 10.0.0.6 Ubuntu 22.04 Online\n\n+l\n\n+SRV-007 server-007.loca 10.0.0.7 Windows Offline\n\n+l Server 2022\n\n+SRV-008 server-008.loca 10.0.0.8 RHEL 9 Online\n\n+l\n\n+SRV-009 server-009.loca 10.0.0.9 Debian 12 Online\n\n+l\n\n+SRV-010 server-010.loca 10.0.0.10 CentOS Stream Online\n\n+l 9\n\n+SRV-011 server-011.loca 10.0.0.11 Ubuntu 22.04 Online\n\n+l\n\n+SRV-012 server-012.loca 10.0.0.12 Windows Online\n\n+l Server 2022\n\n+SRV-013 server-013.loca 10.0.0.13 RHEL 9 Online\n\n+l\n\n+SRV-014 server-014.loca 10.0.0.14 Debian 12 Maintenance\n\n+l\n\n+SRV-015 server-015.loca 10.0.0.15 CentOS Stream Online\n\n+l 9\n\n+SRV-016 server-016.loca 10.0.0.16 Ubuntu 22.04 Online\n\n+l\n\n+SRV-017 server-017.loca 10.0.0.17 Windows Offline\n\n+l Server 2022\n\n+SRV-018 server-018.loca 10.0.0.18 RHEL 9 Online\n\n+l\n\n+SRV-019 server-019.loca 10.0.0.19 Debian 12 Online\n\n+l\n\n+SRV-020 server-020.loca 10.0.0.20 CentOS Stream Online\n\n+l 9\n\n+SRV-021 server-021.loca 10.0.0.21 Ubuntu 22.04 Online\n\n+l\n\n+SRV-022 server-022.loca 10.0.0.22 Windows Online\n\n+l Server 2022\n\n ---PAGE---\n\n-SRV-027 server-027.local 10.0.0.27 Windows Server Offline\n\n-2022\n\n-SRV-028 server-028.local 10.0.0.28 RHEL 9 Online\n\n-SRV-029 server-029.local 10.0.0.29 Debian 12 Online\n\n-SRV-030 server-030.local 10.0.0.30 CentOS Stream Online\n\n-9\n+SRV-023 server-023.loca 10.0.0.23 RHEL 9 Online\n\n+l\n\n+SRV-024 server-024.loca 10.0.0.24 Debian 12 Maintenance\n\n+l\n\n+SRV-025 server-025.loca 10.0.0.25 CentOS Stream Online\n\n+l 9\n\n+SRV-026 server-026.loca 10.0.0.26 Ubuntu 22.04 Online\n\n+l\n\n+SRV-027 server-027.loca 10.0.0.27 Windows Offline\n\n+l Server 2022\n\n+SRV-028 server-028.loca 10.0.0.28 RHEL 9 Online\n\n+l\n\n+SRV-029 server-029.loca 10.0.0.29 Debian 12 Online\n\n+l\n\n+SRV-030 server-030.loca 10.0.0.30 CentOS Stream Online\n\n+l 9",
     "visual_scores": [
-      0.686,
-      0.875
+      0.6861,
+      0.8752
     ],
-    "visual_avg": 0.7805,
+    "visual_avg": 0.7807,
     "diff_images": [
       {
         "page": 1,
@@ -1319,7 +1812,57 @@
         "reference_img": "docx_classic50_long_table_with_formatting_p2_reference.png"
       }
     ],
-    "overall_score": 0.8335
+    "overall_score": 0.8336
+  },
+  {
+    "name": "docx_classic50_portrait_tall_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2334,
+    "reference_size": 70543,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9817,
+    "flat_text_similarity": 0.9817,
+    "word_text_similarity": 0.9385,
+    "text_diff": "--- minipdf/docx_classic50_portrait_tall_image.pdf\n+++ reference/docx_classic50_portrait_tall_image.pdf\n@@ -2,11 +2,11 @@\n Dr. Emily Zhang\n\n Chief Technology Officer, NovaTech Inc.\n\n Biography\n\n-Dr. Zhang is a recognized leader in distributed systems with over 15 years of\n\n-experience in building large-scale cloud platforms. She holds a Ph.D. in Computer\n\n-Science from MIT and has published 30+ papers on scalable architectures.\n\n+Dr. Zhang is a recognized leader in distributed systems with over 15 years of experience in\n\n+building large-scale cloud platforms. She holds a Ph.D. in Computer Science from MIT and\n\n+has published 30+ papers on scalable architectures.\n\n Speaking Topics\n\n-• Microservices at Scale\n\n-• AI-Driven Infrastructure\n\n-• Building Resilient Systems\n\n-• Cloud Cost Optimization\n+ Microservices at Scale\n\n+ AI-Driven Infrastructure\n\n+ Building Resilient Systems\n\n+ Cloud Cost Optimization",
+    "visual_scores": [
+      0.9404
+    ],
+    "visual_avg": 0.9404,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic50_portrait_tall_image_p1_minipdf.png",
+        "reference_img": "docx_classic50_portrait_tall_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9688
+  },
+  {
+    "name": "docx_classic51_step_by_step_with_images",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2826,
+    "reference_size": 44413,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9431
+    ],
+    "visual_avg": 0.9431,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic51_step_by_step_with_images_p1_minipdf.png",
+        "reference_img": "docx_classic51_step_by_step_with_images_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9772
   },
   {
     "name": "docx_classic51_underline_styles",
@@ -1347,6 +1890,31 @@
     "overall_score": 0.9971
   },
   {
+    "name": "docx_classic52_before_after_comparison",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2763,
+    "reference_size": 37852,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.906
+    ],
+    "visual_avg": 0.906,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic52_before_after_comparison_p1_minipdf.png",
+        "reference_img": "docx_classic52_before_after_comparison_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9624
+  },
+  {
     "name": "docx_classic52_spacing_before_after",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1372,6 +1940,31 @@
     "overall_score": 0.987
   },
   {
+    "name": "docx_classic53_color_swatch_palette",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3290,
+    "reference_size": 54634,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9107
+    ],
+    "visual_avg": 0.9107,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic53_color_swatch_palette_p1_minipdf.png",
+        "reference_img": "docx_classic53_color_swatch_palette_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9643
+  },
+  {
     "name": "docx_classic53_table_merged_complex",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1384,9 +1977,9 @@
     "word_text_similarity": 0.9863,
     "text_diff": "--- minipdf/docx_classic53_table_merged_complex.pdf\n+++ reference/docx_classic53_table_merged_complex.pdf\n@@ -2,6 +2,6 @@\n Period 1 Period 2 Period 3 Period 4\n\n Monday Math English Science Art\n\n Tuesday English Math History PE\n\n-Wednesday Science Lab (Double Period) Music\n\n+Wednesday Science Lab (Double Period) Math Music\n\n Thursday History Art English Lab\n\n Friday PE Music Math English",
     "visual_scores": [
-      0.8984
+      0.8985
     ],
-    "visual_avg": 0.8984,
+    "visual_avg": 0.8985,
     "diff_images": [
       {
         "page": 1,
@@ -1422,6 +2015,31 @@
     "overall_score": 0.9906
   },
   {
+    "name": "docx_classic54_travel_destination_cards",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4644,
+    "reference_size": 53972,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9409
+    ],
+    "visual_avg": 0.9409,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic54_travel_destination_cards_p1_minipdf.png",
+        "reference_img": "docx_classic54_travel_destination_cards_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9764
+  },
+  {
     "name": "docx_classic55_background_shading_paragraph",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1445,6 +2063,31 @@
       }
     ],
     "overall_score": 0.9482
+  },
+  {
+    "name": "docx_classic55_lab_results_with_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 12303,
+    "reference_size": 66356,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8904
+    ],
+    "visual_avg": 0.8904,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic55_lab_results_with_image_p1_minipdf.png",
+        "reference_img": "docx_classic55_lab_results_with_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9562
   },
   {
     "name": "docx_classic56_images_and_tables_mixed",
@@ -1472,6 +2115,31 @@
     "overall_score": 0.9675
   },
   {
+    "name": "docx_classic56_software_screenshot_features",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 6387,
+    "reference_size": 62496,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9982,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic56_software_screenshot_features.pdf\n+++ reference/docx_classic56_software_screenshot_features.pdf\n@@ -11,5 +11,4 @@\n Conversion Speed < 2 sec Average for 10-page\n\n document\n\n Memory Usage < 50 MB Peak during conversion\n\n-Accuracy Score 97.8% Visual similarity\n\n-benchmark\n+Accuracy Score 97.8% Visual similarity benchmark",
+    "visual_scores": [
+      0.8762
+    ],
+    "visual_avg": 0.8762,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic56_software_screenshot_features_p1_minipdf.png",
+        "reference_img": "docx_classic56_software_screenshot_features_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9505
+  },
+  {
     "name": "docx_classic57_right_to_left_text",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1495,6 +2163,31 @@
       }
     ],
     "overall_score": 0.9653
+  },
+  {
+    "name": "docx_classic57_sports_results_with_logos",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 19246,
+    "reference_size": 67245,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.6948,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic57_sports_results_with_logos.pdf\n+++ reference/docx_classic57_sports_results_with_logos.pdf\n@@ -1,12 +1,10 @@\n Premier League Standings\n\n Season 2025-26 | Updated: March 2026\n\n-Arsenal | Points: 72 | W: 22 D: 6 L: 4\n\n-Man City\n\n-| Points: 68 | W: 20 D: 8 L: 4\n\n-Liverpool | Points: 65 | W: 19 D: 8 L: 5\n\n-Chelsea\n\n-| Points: 58 | W: 17 D: 7 L: 8\n\n-Tottenham | Points: 52 | W: 15 D: 7 L: 10\n\n+Arsenal |  Points: 72  |  W: 22  D: 6  L: 4\n\n+Man City |  Points: 68  |  W: 20  D: 8  L: 4\n\n+Liverpool |  Points: 65  |  W: 19  D: 8  L: 5\n\n+Chelsea |  Points: 58  |  W: 17  D: 7  L: 8\n\n+Tottenham |  Points: 52  |  W: 15  D: 7  L: 10\n\n Detailed Table\n\n Pos Team Pts W D L\n\n 1 Arsenal 72 22 6 4\n",
+    "visual_scores": [
+      0.9168
+    ],
+    "visual_avg": 0.9168,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic57_sports_results_with_logos_p1_minipdf.png",
+        "reference_img": "docx_classic57_sports_results_with_logos_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9667
   },
   {
     "name": "docx_classic58_dense_paragraph_document",
@@ -1558,6 +2251,31 @@
     "overall_score": 0.9598
   },
   {
+    "name": "docx_classic58_report_with_footer_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 10671,
+    "reference_size": 73176,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9116
+    ],
+    "visual_avg": 0.9116,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic58_report_with_footer_image_p1_minipdf.png",
+        "reference_img": "docx_classic58_report_with_footer_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9646
+  },
+  {
     "name": "docx_classic59_numbered_and_bullet_mixed",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -1581,6 +2299,31 @@
       }
     ],
     "overall_score": 0.9817
+  },
+  {
+    "name": "docx_classic59_nutrition_label_with_image",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7415,
+    "reference_size": 58393,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9
+    ],
+    "visual_avg": 0.9,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic59_nutrition_label_with_image_p1_minipdf.png",
+        "reference_img": "docx_classic59_nutrition_label_with_image_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.96
   },
   {
     "name": "docx_classic60_comprehensive_styled_report",
@@ -1618,5 +2361,822 @@
       }
     ],
     "overall_score": 0.9825
+  },
+  {
+    "name": "docx_classic60_project_status_with_milestones",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 13139,
+    "reference_size": 73258,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.9689,
+    "flat_text_similarity": 0.9683,
+    "word_text_similarity": 0.9444,
+    "text_diff": "--- minipdf/docx_classic60_project_status_with_milestones.pdf\n+++ reference/docx_classic60_project_status_with_milestones.pdf\n@@ -4,17 +4,15 @@\n Cloud Migration Team - Engineering Division\n\n Milestone Timeline\n\n Milestone Target Actual Status\n\n-Architecture Jan 15 Jan 12 Complete\n\n-Review\n\n+Architecture Review Jan 15 Jan 12 Complete\n\n Data Migration Feb 1 Feb 3 Complete\n\n Service Deployment Feb 28 Mar 1 Complete\n\n-Integration Mar 15 - In Progress\n\n-Testing\n\n+Integration Testing Mar 15 - In Progress\n\n Load Testing Mar 28 - Planned\n\n Go Live Apr 15 - Planned\n\n Key Risks\n\n-• Database migration downtime exceeding 4-hour window\n\n-• Third-party API compatibility issues\n\n-• Team capacity constraints during March\n\n+ Database migration downtime exceeding 4-hour window\n\n+ Third-party API compatibility issues\n\n+ Team capacity constraints during March\n\n ---PAGE---\n\n Figure: Sprint velocity chart",
+    "visual_scores": [
+      0.8782,
+      0.9983
+    ],
+    "visual_avg": 0.9383,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic60_project_status_with_milestones_p1_minipdf.png",
+        "reference_img": "docx_classic60_project_status_with_milestones_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic60_project_status_with_milestones_p2_minipdf.png",
+        "reference_img": "docx_classic60_project_status_with_milestones_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9629
+  },
+  {
+    "name": "docx_classic61_header_and_footer",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1827,
+    "reference_size": 38840,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9702,
+    "flat_text_similarity": 0.9693,
+    "word_text_similarity": 0.9702,
+    "text_diff": "--- minipdf/docx_classic61_header_and_footer.pdf\n+++ reference/docx_classic61_header_and_footer.pdf\n@@ -1,3 +1,4 @@\n+MiniPdf Benchmark Report\n\n Header and Footer Test\n\n Section 1: This content appears between the header and footer. It demonstrates how\n\n MiniPdf handles page headers and footers in DOCX conversion.\n\n@@ -8,4 +9,5 @@\n Section 4: This content appears between the header and footer. It demonstrates how\n\n MiniPdf handles page headers and footers in DOCX conversion.\n\n Section 5: This content appears between the header and footer. It demonstrates how\n\n-MiniPdf handles page headers and footers in DOCX conversion.\n+MiniPdf handles page headers and footers in DOCX conversion.\n\n+Page 1 | Confidential",
+    "visual_scores": [
+      0.9513
+    ],
+    "visual_avg": 0.9513,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic61_header_and_footer_p1_minipdf.png",
+        "reference_img": "docx_classic61_header_and_footer_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9686
+  },
+  {
+    "name": "docx_classic62_footnote_references",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3092,
+    "reference_size": 41730,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9989,
+    "flat_text_similarity": 0.9989,
+    "word_text_similarity": 0.9771,
+    "text_diff": "--- minipdf/docx_classic62_footnote_references.pdf\n+++ reference/docx_classic62_footnote_references.pdf\n@@ -1,7 +1,7 @@\n Research with Footnotes\n\n The theory of relativity fundamentally changed our understanding of space and time.\n\n 1\n\n-Quantummechanics describes the behavior of particles at the atomic level.\n\n+Quantum mechanics describes the behavior of particles at the atomic level.\n\n 2\n\n The Standard Model classifies all known elementary particles.\n\n 3\n",
+    "visual_scores": [
+      0.9602
+    ],
+    "visual_avg": 0.9602,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic62_footnote_references_p1_minipdf.png",
+        "reference_img": "docx_classic62_footnote_references_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9836
+  },
+  {
+    "name": "docx_classic63_toc_style_headings",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2421,
+    "reference_size": 65443,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9777
+    ],
+    "visual_avg": 0.9777,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic63_toc_style_headings_p1_minipdf.png",
+        "reference_img": "docx_classic63_toc_style_headings_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9911
+  },
+  {
+    "name": "docx_classic64_multi_column_layout",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2810,
+    "reference_size": 42970,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8062,
+    "flat_text_similarity": 0.6805,
+    "word_text_similarity": 0.8062,
+    "text_diff": "--- minipdf/docx_classic64_multi_column_layout.pdf\n+++ reference/docx_classic64_multi_column_layout.pdf\n@@ -1,14 +1,12 @@\n Newsletter - March 2026\n\n-Artificial intelligence continues to Cloud computing has become the backbone\n\n-reshape the technology landscape. New of modern enterprise IT. Multi-cloud\n\n-advances in large language models strategies allow organizations to\n\n-enable more natural human-computer leverage the best features of different\n\n-interaction. Companies worldwide are providers while avoiding vendor\n\n-investing heavily in AI research and lock-in. Edge computing supplements\n\n-development, anticipating cloud by processing data closer to its\n\n-transformative impacts across source, reducing latency for critical\n\n-industries from healthcare to applications.\n\n-manufacturing.\n\n+Artificial intelligence continues to reshape Cloud computing has become the backbone\n\n+the technology landscape. New advances in of modern enterprise IT. Multi-cloud\n\n+large language models enable more natural strategies allow organizations to leverage\n\n+human-computer interaction. Companies the best features of different providers\n\n+worldwide are investing heavily in AI while avoiding vendor lock-in. Edge\n\n+research and development, anticipating computing supplements cloud by\n\n+transformative impacts across industries processing data closer to its source,\n\n+from healthcare to manufacturing. reducing latency for critical applications.\n\n Featured Article\n\n Open source software has become the foundation of modern software development.\n\n Projects like Linux, Kubernetes, and .NET have demonstrated how community-driven\n",
+    "visual_scores": [
+      0.9427
+    ],
+    "visual_avg": 0.9427,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic64_multi_column_layout_p1_minipdf.png",
+        "reference_img": "docx_classic64_multi_column_layout_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8996
+  },
+  {
+    "name": "docx_classic65_code_block_styling",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2098,
+    "reference_size": 44484,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9112
+    ],
+    "visual_avg": 0.9112,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic65_code_block_styling_p1_minipdf.png",
+        "reference_img": "docx_classic65_code_block_styling_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9645
+  },
+  {
+    "name": "docx_classic66_colored_title_page",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2246,
+    "reference_size": 44992,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.7961
+    ],
+    "visual_avg": 0.7961,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic66_colored_title_page_p1_minipdf.png",
+        "reference_img": "docx_classic66_colored_title_page_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9184
+  },
+  {
+    "name": "docx_classic67_alternating_row_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 24231,
+    "reference_size": 74211,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.7942
+    ],
+    "visual_avg": 0.7942,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic67_alternating_row_table_p1_minipdf.png",
+        "reference_img": "docx_classic67_alternating_row_table_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9177
+  },
+  {
+    "name": "docx_classic68_sidebar_layout",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2486,
+    "reference_size": 60110,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9366,
+    "flat_text_similarity": 0.9366,
+    "word_text_similarity": 0.8889,
+    "text_diff": "--- minipdf/docx_classic68_sidebar_layout.pdf\n+++ reference/docx_classic68_sidebar_layout.pdf\n@@ -1,18 +1,18 @@\n Project Documentation\n\n Navigation Overview\n\n Overview\n\n-MiniPdf is a lightweight .NET library\n\n+MiniPdf is a lightweight .NET library for\n\n Installation\n\n-for converting Word and Excel documents\n\n+converting Word and Excel documents to\n\n Configuration\n\n-to PDF format without requiring\n\n+PDF format without requiring Microsoft\n\n API Reference\n\n-Microsoft Office.\n\n+Office.\n\n FAQ\n\n Key Features\n\n Changelog\n\n-DOCX to PDF conversion\n\n-XLSX to PDF conversion\n\n-CJK font support\n\n-Image embedding\n\n-Table formatting\n+ DOCX to PDF conversion\n\n+ XLSX to PDF conversion\n\n+ CJK font support\n\n+ Image embedding\n\n+ Table formatting",
+    "visual_scores": [
+      0.8984
+    ],
+    "visual_avg": 0.8984,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic68_sidebar_layout_p1_minipdf.png",
+        "reference_img": "docx_classic68_sidebar_layout_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.934
+  },
+  {
+    "name": "docx_classic69_blockquote_styling",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1560,
+    "reference_size": 46240,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9972,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic69_blockquote_styling.pdf\n+++ reference/docx_classic69_blockquote_styling.pdf\n@@ -5,8 +5,7 @@\n Steve Jobs\n\n \"Stay hungry, stay foolish.\"\n\n Stewart Brand\n\n-\"The future belongs to those who believe in the beauty of their\n\n-dreams.\"\n\n+\"The future belongs to those who believe in the beauty of their dreams.\"\n\n Eleanor Roosevelt\n\n \"In the middle of difficulty lies opportunity.\"\n\n Albert Einstein",
+    "visual_scores": [
+      0.9726
+    ],
+    "visual_avg": 0.9726,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic69_blockquote_styling_p1_minipdf.png",
+        "reference_img": "docx_classic69_blockquote_styling_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.989
+  },
+  {
+    "name": "docx_classic70_academic_paper",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8121,
+    "reference_size": 81018,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9924,
+    "flat_text_similarity": 0.965,
+    "word_text_similarity": 0.9924,
+    "text_diff": "--- minipdf/docx_classic70_academic_paper.pdf\n+++ reference/docx_classic70_academic_paper.pdf\n@@ -2,19 +2,18 @@\n John Smith, Jane Doe, Robert Johnson\n\n Department of Computer Science, University of Technology\n\n Abstract\n\n-This paper surveys modern techniques for generating PDF documents\n\n-from structured office formats. We evaluate the quality and\n\n-performance of conversion tools across a benchmark suite of 90 test\n\n-documents covering diverse formatting features.\n\n+This paper surveys modern techniques for generating PDF documents from\n\n+structured office formats. We evaluate the quality and performance of\n\n+conversion tools across a benchmark suite of 90 test documents covering\n\n+diverse formatting features.\n\n 1. Introduction\n\n PDF (Portable Document Format) remains the standard for sharing documents with\n\n-consistent visual fidelity. Converting from editable office formats such as DOCX\n\n-and XLSX to PDF requires careful handling of fonts, layouts, images, and styling\n\n-attributes.\n\n+consistent visual fidelity. Converting from editable office formats such as DOCX and XLSX to\n\n+PDF requires careful handling of fonts, layouts, images, and styling attributes.\n\n 2. Methodology\n\n-Our benchmark suite consists of 90 DOCX test files and 90 XLSX test files, each\n\n-targeting specific formatting features. We compare output from MiniPdf against\n\n-LibreOffice-generated reference PDFs using pixel-level similarity scoring.\n\n+Our benchmark suite consists of 90 DOCX test files and 90 XLSX test files, each targeting\n\n+specific formatting features. We compare output from MiniPdf against LibreOffice-\n\n+generated reference PDFs using pixel-level similarity scoring.\n\n 3. Results\n\n Feature Category Avg Score Sample Size\n\n Basic Text 98.5% 20\n\n@@ -22,8 +21,8 @@\n Images 94.8% 15\n\n Mixed Content 95.1% 30\n\n 4. Conclusion\n\n-Modern lightweight PDF generation libraries can achieve high fidelity output for\n\n-the majority of common document formatting features.\n\n+Modern lightweight PDF generation libraries can achieve high fidelity output for the\n\n+majority of common document formatting features.\n\n References\n\n [1] ISO 32000-2:2020. Document management - Portable document format.\n\n [2] ECMA-376. Office Open XML File Formats.\n",
+    "visual_scores": [
+      0.9266
+    ],
+    "visual_avg": 0.9266,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic70_academic_paper_p1_minipdf.png",
+        "reference_img": "docx_classic70_academic_paper_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9676
+  },
+  {
+    "name": "docx_classic71_legal_document",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3120,
+    "reference_size": 45613,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9821,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic71_legal_document.pdf\n+++ reference/docx_classic71_legal_document.pdf\n@@ -1,27 +1,23 @@\n SOFTWARE LICENSE AGREEMENT\n\n-This Software License Agreement (the \"Agreement\") is entered into as of March 1,\n\n-2026, by and between MiniPdf Corporation (\"Licensor\") and the End User\n\n-(\"Licensee\").\n\n+This Software License Agreement (the \"Agreement\") is entered into as of March 1, 2026, by\n\n+and between MiniPdf Corporation (\"Licensor\") and the End User (\"Licensee\").\n\n 1. GRANT OF LICENSE\n\n-1.1 Subject to the terms of this Agreement, Licensor grants Licensee a\n\n-non-exclusive, non-transferable license to use the Software.\n\n-1.2 The license granted herein is limited to use on a single computer\n\n-system.\n\n+1.1 Subject to the terms of this Agreement, Licensor grants Licensee a non-exclusive,\n\n+non-transferable license to use the Software.\n\n+1.2 The license granted herein is limited to use on a single computer system.\n\n 1.3 Licensee may make one backup copy of the Software for archival purposes.\n\n 2. RESTRICTIONS\n\n-2.1 Licensee shall not reverse engineer, decompile, or disassemble the\n\n-Software.\n\n-2.2 Licensee shall not sublicense, rent, or lease the Software to third\n\n-parties.\n\n+2.1 Licensee shall not reverse engineer, decompile, or disassemble the Software.\n\n+2.2 Licensee shall not sublicense, rent, or lease the Software to third parties.\n\n 2.3 Licensee shall not remove any proprietary notices from the Software.\n\n 3. INTELLECTUAL PROPERTY\n\n-3.1 The Software is protected by copyright and other intellectual property\n\n-laws.\n\n+3.1 The Software is protected by copyright and other intellectual property laws.\n\n 3.2 Licensor retains all right, title, and interest in and to the Software.\n\n 4. WARRANTY DISCLAIMER\n\n 4.1 THE SOFTWARE IS PROVIDED \"AS IS\" WITHOUT WARRANTY OF ANY KIND.\n\n 4.2 LICENSOR DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED.\n\n 5. LIMITATION OF LIABILITY\n\n-5.1 IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, OR\n\n-CONSEQUENTIAL DAMAGES.\n\n-5.2 LICENSOR'S TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT PAID BY LICENSEE.\n+5.1 IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL,\n\n+OR CONSEQUENTIAL DAMAGES.\n\n+5.2 LICENSOR'S TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT PAID BY\n\n+LICENSEE.",
+    "visual_scores": [
+      0.9372
+    ],
+    "visual_avg": 0.9372,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic71_legal_document_p1_minipdf.png",
+        "reference_img": "docx_classic71_legal_document_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9749
+  },
+  {
+    "name": "docx_classic72_technical_specification",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 13903,
+    "reference_size": 81007,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9954,
+    "flat_text_similarity": 0.9954,
+    "word_text_similarity": 0.9701,
+    "text_diff": "--- minipdf/docx_classic72_technical_specification.pdf\n+++ reference/docx_classic72_technical_specification.pdf\n@@ -18,7 +18,7 @@\n SVG support Planned Low\n\n 3. Performance Targets\n\n The converter shall meet the following performance criteria:\n\n-• Convert a 10-page DOCX in under 2 seconds\n\n-• Convert a 100-row XLSX in under 3 seconds\n\n-• Memory usage shall not exceed 200 MB for standard documents\n\n-• Output PDF size shall be within 2x of reference PDF size\n+ Convert a 10-page DOCX in under 2 seconds\n\n+ Convert a 100-row XLSX in under 3 seconds\n\n+ Memory usage shall not exceed 200 MB for standard documents\n\n+ Output PDF size shall be within 2x of reference PDF size",
+    "visual_scores": [
+      0.9293
+    ],
+    "visual_avg": 0.9293,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic72_technical_specification_p1_minipdf.png",
+        "reference_img": "docx_classic72_technical_specification_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9699
+  },
+  {
+    "name": "docx_classic73_calendar_layout",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 14930,
+    "reference_size": 44242,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8988
+    ],
+    "visual_avg": 0.8988,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic73_calendar_layout_p1_minipdf.png",
+        "reference_img": "docx_classic73_calendar_layout_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9595
+  },
+  {
+    "name": "docx_classic74_org_chart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4888,
+    "reference_size": 53242,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8634
+    ],
+    "visual_avg": 0.8634,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic74_org_chart_p1_minipdf.png",
+        "reference_img": "docx_classic74_org_chart_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9454
+  },
+  {
+    "name": "docx_classic75_newsletter_layout",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2670,
+    "reference_size": 55921,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.996,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic75_newsletter_layout.pdf\n+++ reference/docx_classic75_newsletter_layout.pdf\n@@ -1,8 +1,8 @@\n THE TECH WEEKLY\n\n Issue #42 | March 6, 2026\n\n AI Revolution in Software Development\n\n-The integration of large language models into development workflows is transforming\n\n-how teams write, review, and deploy code. Industry experts predict that AI-assisted\n\n+The integration of large language models into development workflows is transforming how\n\n+teams write, review, and deploy code. Industry experts predict that AI-assisted\n\n development will become standard practice by 2027.\n\n Quick Updates\n\n Cloud Infrastructure Open Source\n",
+    "visual_scores": [
+      0.9386
+    ],
+    "visual_avg": 0.9386,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic75_newsletter_layout_p1_minipdf.png",
+        "reference_img": "docx_classic75_newsletter_layout_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9754
+  },
+  {
+    "name": "docx_classic76_recipe_card",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4286,
+    "reference_size": 67892,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9877,
+    "flat_text_similarity": 0.9877,
+    "word_text_similarity": 0.9408,
+    "text_diff": "--- minipdf/docx_classic76_recipe_card.pdf\n+++ reference/docx_classic76_recipe_card.pdf\n@@ -2,20 +2,19 @@\n Prep Time Cook Time Servings\n\n 15 min 12 min 36 cookies\n\n Ingredients\n\n-• 2 1/4 cups all-purpose flour\n\n-• 1 tsp baking soda\n\n-• 1 tsp salt\n\n-• 1 cup (2 sticks) butter, softened\n\n-• 3/4 cup granulated sugar\n\n-• 3/4 cup packed brown sugar\n\n-• 2 large eggs\n\n-• 2 tsp vanilla extract\n\n-• 2 cups chocolate chips\n\n+ 2 1/4 cups all-purpose flour\n\n+ 1 tsp baking soda\n\n+ 1 tsp salt\n\n+ 1 cup (2 sticks) butter, softened\n\n+ 3/4 cup granulated sugar\n\n+ 3/4 cup packed brown sugar\n\n+ 2 large eggs\n\n+ 2 tsp vanilla extract\n\n+ 2 cups chocolate chips\n\n Instructions\n\n 1. Preheat oven to 375 degrees F.\n\n 2. Combine flour, baking soda, and salt in a small bowl.\n\n-3. Beat butter, granulated sugar, and brown sugar in a large mixer bowl until\n\n-creamy.\n\n+3. Beat butter, granulated sugar, and brown sugar in a large mixer bowl until creamy.\n\n 4. Add eggs and vanilla extract; beat well.\n\n 5. Gradually blend in flour mixture.\n\n 6. Stir in chocolate chips.\n",
+    "visual_scores": [
+      0.9593
+    ],
+    "visual_avg": 0.9593,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic76_recipe_card_p1_minipdf.png",
+        "reference_img": "docx_classic76_recipe_card_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9788
+  },
+  {
+    "name": "docx_classic77_timeline_layout",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7746,
+    "reference_size": 61218,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.966,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic77_timeline_layout.pdf\n+++ reference/docx_classic77_timeline_layout.pdf\n@@ -1,16 +1,15 @@\n Project Timeline: MiniPdf v2.0\n\n Q1 2025 Project Inception Initial requirements\n\n-gathering and\n\n-architecture design.\n\n+gathering and architecture\n\n+design.\n\n Q2 2025 XLSX Support Implemented Excel-to-PDF\n\n conversion with chart\n\n support.\n\n Q3 2025 Benchmark Suite Created automated\n\n-benchmark pipeline with\n\n-60 test cases.\n\n+benchmark pipeline with 60\n\n+test cases.\n\n Q4 2025 CJK Support Added Chinese, Japanese,\n\n-and Korean font\n\n-embedding.\n\n+and Korean font embedding.\n\n Q1 2026 DOCX Support Implemented Word-to-PDF\n\n conversion achieving 97%\n\n quality.\n",
+    "visual_scores": [
+      0.8997
+    ],
+    "visual_avg": 0.8997,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic77_timeline_layout_p1_minipdf.png",
+        "reference_img": "docx_classic77_timeline_layout_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9599
+  },
+  {
+    "name": "docx_classic78_faq_document",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5093,
+    "reference_size": 65984,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9741,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic78_faq_document.pdf\n+++ reference/docx_classic78_faq_document.pdf\n@@ -1,41 +1,40 @@\n Frequently Asked Questions\n\n Find answers to the most common questions about MiniPdf.\n\n Q1: What is MiniPdf?\n\n-A: MiniPdf is a lightweight .NET library for converting DOCX and XLSX files to\n\n-PDF without requiring Microsoft Office installation. It supports both DOCX and\n\n-XLSX formats.\n\n+A: MiniPdf is a lightweight .NET library for converting DOCX and XLSX files to PDF\n\n+without requiring Microsoft Office installation. It supports both DOCX and XLSX\n\n+formats.\n\n Q2: Which .NET versions are supported?\n\n-A: .NET 8.0 and later versions are supported. The library targets .NET Standard\n\n-2.0 for maximum compatibility across different .NET implementations.\n\n+A: .NET 8.0 and later versions are supported. The library targets .NET Standard 2.0 for\n\n+maximum compatibility across different .NET implementations.\n\n Q3: Does MiniPdf support images in documents?\n\n-A: Yes, MiniPdf supports embedded images in both DOCX and XLSX formats. Images\n\n-are converted and embedded in the output PDF with proper scaling.\n\n+A: Yes, MiniPdf supports embedded images in both DOCX and XLSX formats. Images are\n\n+converted and embedded in the output PDF with proper scaling.\n\n Q4: How is the conversion quality measured?\n\n A: Quality is measured by pixel-level comparison against LibreOffice-generated\n\n reference PDFs. Each test case receives a similarity score from 0% to 100%.\n\n Q5: Can MiniPdf handle CJK characters?\n\n-A: Yes, MiniPdf includes CJK font embedding support for Chinese, Japanese, and\n\n-Korean text in both DOCX and XLSX documents.\n\n+A: Yes, MiniPdf includes CJK font embedding support for Chinese, Japanese, and Korean\n\n+text in both DOCX and XLSX documents.\n\n Q6: Is MiniPdf available on NuGet?\n\n-A: Yes, MiniPdf is published as a NuGet package and can be installed via dotnet\n\n-add package MiniPdf.\n\n+A: Yes, MiniPdf is published as a NuGet package and can be installed via dotnet add\n\n+package MiniPdf.\n\n+---PAGE---\n\n Q7: What table features are supported?\n\n-A: MiniPdf supports table borders, cell shading, merged cells, column widths,\n\n-and alternating row colors in both DOCX and XLSX formats.\n\n+A: MiniPdf supports table borders, cell shading, merged cells, column widths, and\n\n+alternating row colors in both DOCX and XLSX formats.\n\n Q8: How do I report a bug?\n\n-A: Please open an issue on the GitHub repository with a minimal reproduction\n\n-case and the expected vs actual output.\n\n+A: Please open an issue on the GitHub repository with a minimal reproduction case and\n\n+the expected vs actual output.\n\n Q9: Does MiniPdf support headers and footers?\n\n----PAGE---\n\n-A: MiniPdf does not currently render headers and footers from DOCX files. The\n\n-content area of each page is fully supported including text, tables, and\n\n-images.\n\n+A: MiniPdf does not currently render headers and footers from DOCX files. The content\n\n+area of each page is fully supported including text, tables, and images.\n\n Q10: What is the maximum file size supported?\n\n-A: There is no hard limit on file size. MiniPdf processes files in a streaming\n\n-fashion and memory usage scales with document complexity rather than file size.\n\n+A: There is no hard limit on file size. MiniPdf processes files in a streaming fashion and\n\n+memory usage scales with document complexity rather than file size.\n\n Q11: Can I use MiniPdf in a web application?\n\n A: Yes, MiniPdf works in any .NET environment including ASP.NET Core web\n\n applications, Azure Functions, and containerized services.\n\n Q12: Does MiniPdf preserve hyperlinks?\n\n-A: Hyperlink text is preserved in the output PDF, but clickable URLs are not\n\n-currently supported. The link text appears as regular styled text.\n+A: Hyperlink text is preserved in the output PDF, but clickable URLs are not currently\n\n+supported. The link text appears as regular styled text.",
+    "visual_scores": [
+      0.943,
+      0.9585
+    ],
+    "visual_avg": 0.9507,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic78_faq_document_p1_minipdf.png",
+        "reference_img": "docx_classic78_faq_document_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic78_faq_document_p2_minipdf.png",
+        "reference_img": "docx_classic78_faq_document_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9803
+  },
+  {
+    "name": "docx_classic79_glossary",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2798,
+    "reference_size": 56406,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9955,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic79_glossary.pdf\n+++ reference/docx_classic79_glossary.pdf\n@@ -6,13 +6,12 @@\n Continuous Integration / Continuous Deployment. Practices for automating\n\n software delivery.\n\n CJK\n\n-Chinese, Japanese, Korean. Refers to the character sets used in these\n\n-languages.\n\n+Chinese, Japanese, Korean. Refers to the character sets used in these languages.\n\n DOCX\n\n The XML-based file format for Microsoft Word documents, defined by ECMA-376.\n\n EMU\n\n-English Metric Unit. The base unit of measurement in OOXML documents (1 inch\n\n-= 914400 EMU).\n\n+English Metric Unit. The base unit of measurement in OOXML documents (1 inch =\n\n+914400 EMU).\n\n NuGet\n\n The package manager for .NET, used to distribute and consume .NET libraries.\n\n OOXML\n\n@@ -22,5 +21,4 @@\n SSIM\n\n Structural Similarity Index Measure. A metric for predicting image quality.\n\n XLSX\n\n-The XML-based file format for Microsoft Excel workbooks, defined by\n\n-ECMA-376.\n+The XML-based file format for Microsoft Excel workbooks, defined by ECMA-376.",
+    "visual_scores": [
+      0.9536
+    ],
+    "visual_avg": 0.9536,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic79_glossary_p1_minipdf.png",
+        "reference_img": "docx_classic79_glossary_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9814
+  },
+  {
+    "name": "docx_classic80_matrix_grid",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 21885,
+    "reference_size": 70445,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8064
+    ],
+    "visual_avg": 0.8064,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic80_matrix_grid_p1_minipdf.png",
+        "reference_img": "docx_classic80_matrix_grid_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9226
+  },
+  {
+    "name": "docx_classic81_budget_table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 19123,
+    "reference_size": 76227,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.801
+    ],
+    "visual_avg": 0.801,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic81_budget_table_p1_minipdf.png",
+        "reference_img": "docx_classic81_budget_table_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9204
+  },
+  {
+    "name": "docx_classic82_survey_questionnaire",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 33181,
+    "reference_size": 88754,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.9747,
+    "flat_text_similarity": 0.9747,
+    "word_text_similarity": 0.9421,
+    "text_diff": "--- minipdf/docx_classic82_survey_questionnaire.pdf\n+++ reference/docx_classic82_survey_questionnaire.pdf\n@@ -6,16 +6,15 @@\n workspace\n\n is\n\n comfortable\n\n-and\n\n-well-equipped.\n\n+and well-\n\n+equipped.\n\n The office\n\n environment\n\n supports\n\n productivity.\n\n I have the\n\n-tools I\n\n-need to do\n\n-my job\n\n+tools I need\n\n+to do my job\n\n effectively.\n\n Management\n\n Statement 1 2 3 4 5\n\n@@ -24,7 +23,8 @@\n clear\n\n direction\n\n and\n\n-expectations.\n\n+expectations\n\n+.\n\n I receive\n\n regular and\n\n constructive\n\n@@ -35,24 +35,24 @@\n about\n\n company\n\n goals.\n\n----PAGE---\n\n Career Development\n\n Statement 1 2 3 4 5\n\n+---PAGE---\n\n I have\n\n-opportunities\n\n-for\n\n+opportunitie\n\n+s for\n\n professional\n\n growth.\n\n Training\n\n programs\n\n-are\n\n-relevant\n\n+are relevant\n\n and\n\n accessible.\n\n There is a\n\n clear path\n\n for career\n\n-advancement.\n\n+advancemen\n\n+t.\n\n Work-Life Balance\n\n Statement 1 2 3 4 5\n\n I can\n\n@@ -62,8 +62,8 @@\n balance.\n\n Flexible\n\n work\n\n-arrangements\n\n-are\n\n+arrangement\n\n+s are\n\n available.\n\n Workload is\n\n reasonable\n",
+    "visual_scores": [
+      0.9121,
+      0.8795
+    ],
+    "visual_avg": 0.8958,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic82_survey_questionnaire_p1_minipdf.png",
+        "reference_img": "docx_classic82_survey_questionnaire_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic82_survey_questionnaire_p2_minipdf.png",
+        "reference_img": "docx_classic82_survey_questionnaire_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9482
+  },
+  {
+    "name": "docx_classic83_medical_form",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 19810,
+    "reference_size": 72015,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9157
+    ],
+    "visual_avg": 0.9157,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic83_medical_form_p1_minipdf.png",
+        "reference_img": "docx_classic83_medical_form_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9663
+  },
+  {
+    "name": "docx_classic84_shipping_label",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 6227,
+    "reference_size": 61919,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9951,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic84_shipping_label.pdf\n+++ reference/docx_classic84_shipping_label.pdf\n@@ -1,6 +1,5 @@\n FROM: TRACKING #:\n\n-MiniPdf Corp\n\n-1Z999AA10123456784\n\n+MiniPdf Corp 1Z999AA10123456784\n\n 123 Tech Ave\n\n Suite 101\n\n San Francisco, CA 94105\n\n@@ -10,8 +9,7 @@\n New York, NY 10001\n\n PRIORITY MAIL | Weight: 2.5 lbs | Ship Date: 03/01/2026\n\n FROM: TRACKING #:\n\n-MiniPdf Corp\n\n-1Z999AA20123456784\n\n+MiniPdf Corp 1Z999AA20123456784\n\n 123 Tech Ave\n\n Suite 102\n\n San Francisco, CA 94105\n\n@@ -21,8 +19,7 @@\n New York, NY 10002\n\n PRIORITY MAIL | Weight: 5.0 lbs | Ship Date: 03/02/2026\n\n FROM: TRACKING #:\n\n-MiniPdf Corp\n\n-1Z999AA30123456784\n\n+MiniPdf Corp 1Z999AA30123456784\n\n 123 Tech Ave\n\n Suite 103\n\n San Francisco, CA 94105\n",
+    "visual_scores": [
+      0.9034
+    ],
+    "visual_avg": 0.9034,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic84_shipping_label_p1_minipdf.png",
+        "reference_img": "docx_classic84_shipping_label_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9614
+  },
+  {
+    "name": "docx_classic85_report_card",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 18772,
+    "reference_size": 59590,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.928
+    ],
+    "visual_avg": 0.928,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic85_report_card_p1_minipdf.png",
+        "reference_img": "docx_classic85_report_card_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9712
+  },
+  {
+    "name": "docx_classic86_checklist_document",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4102669,
+    "reference_size": 50101,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9666
+    ],
+    "visual_avg": 0.9666,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic86_checklist_document_p1_minipdf.png",
+        "reference_img": "docx_classic86_checklist_document_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9866
+  },
+  {
+    "name": "docx_classic87_bibliography",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 2212,
+    "reference_size": 69164,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9867,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic87_bibliography.pdf\n+++ reference/docx_classic87_bibliography.pdf\n@@ -1,15 +1,15 @@\n Bibliography\n\n-[1] Smith, J., & Johnson, R. (2025). Modern Document Processing: A\n\n-Comprehensive Survey. Journal of Software Engineering, 42(3), 125-148.\n\n-[2] Chen, L., Wang, M., & Liu, X. (2024). Benchmarking PDF Generation\n\n-Libraries: Quality and Performance. ACM Computing Surveys, 57(1), 1-35.\n\n-[3] Brown, A. (2025). Office Open XML: Architecture and Implementation. IEEE\n\n-Transactions on Document Analysis, 28(4), 890-905.\n\n-[4] ISO (2020). ISO 32000-2:2020 Document Management - Portable Document\n\n-Format. International Organization for Standardization.\n\n+[1] Smith, J., & Johnson, R. (2025). Modern Document Processing: A Comprehensive Survey.\n\n+Journal of Software Engineering, 42(3), 125-148.\n\n+[2] Chen, L., Wang, M., & Liu, X. (2024). Benchmarking PDF Generation Libraries: Quality and\n\n+Performance. ACM Computing Surveys, 57(1), 1-35.\n\n+[3] Brown, A. (2025). Office Open XML: Architecture and Implementation. IEEE Transactions\n\n+on Document Analysis, 28(4), 890-905.\n\n+[4] ISO (2020). ISO 32000-2:2020 Document Management - Portable Document Format.\n\n+International Organization for Standardization.\n\n [5] ECMA International (2016). ECMA-376: Office Open XML File Formats. ECMA\n\n International, 5th Edition.\n\n-[6] Davis, K., & Martinez, S. (2024). AI-Driven Code Review: Patterns and\n\n-Anti-Patterns. Proceedings of ICSE 2024, pp. 445-460.\n\n-[7] Taylor, P. (2025). CJK Font Embedding in Portable Documents.\n\n-International Journal of Digital Typography, 15(2), 78-92.\n+[6] Davis, K., & Martinez, S. (2024). AI-Driven Code Review: Patterns and Anti-Patterns.\n\n+Proceedings of ICSE 2024, pp. 445-460.\n\n+[7] Taylor, P. (2025). CJK Font Embedding in Portable Documents. International Journal of\n\n+Digital Typography, 15(2), 78-92.",
+    "visual_scores": [
+      0.9556
+    ],
+    "visual_avg": 0.9556,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic87_bibliography_p1_minipdf.png",
+        "reference_img": "docx_classic87_bibliography_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9822
+  },
+  {
+    "name": "docx_classic88_presentation_handout",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 8805,
+    "reference_size": 64135,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic88_presentation_handout.pdf\n+++ reference/docx_classic88_presentation_handout.pdf\n@@ -20,11 +20,11 @@\n ______________________________________________________________________\n\n Slide 4: XLSX Support\n\n Excel workbook processing and chart rendering.\n\n----PAGE---\n\n Notes:\n\n ______________________________________________________________________\n\n ______________________________________________________________________\n\n ______________________________________________________________________\n\n+---PAGE---\n\n Slide 5: Quality Assurance\n\n Benchmark pipeline and self-evolution cycle.\n\n Notes:\n",
+    "visual_scores": [
+      0.7881,
+      0.6154
+    ],
+    "visual_avg": 0.7017,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic88_presentation_handout_p1_minipdf.png",
+        "reference_img": "docx_classic88_presentation_handout_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic88_presentation_handout_p2_minipdf.png",
+        "reference_img": "docx_classic88_presentation_handout_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.8807
+  },
+  {
+    "name": "docx_classic89_multi_image_gallery",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7521,
+    "reference_size": 58802,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9919,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/docx_classic89_multi_image_gallery.pdf\n+++ reference/docx_classic89_multi_image_gallery.pdf\n@@ -3,5 +3,5 @@\n Steel Blue Crimson Lime Green\n\n Orange Purple Turquoise\n\n Gold Rosy Brown Cornflower\n\n-Each image demonstrates a different color channel for testing image encoding\n\n-fidelity in PDF output.\n+Each image demonstrates a different color channel for testing image encoding fidelity in\n\n+PDF output.",
+    "visual_scores": [
+      0.8919
+    ],
+    "visual_avg": 0.8919,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic89_multi_image_gallery_p1_minipdf.png",
+        "reference_img": "docx_classic89_multi_image_gallery_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9568
+  },
+  {
+    "name": "docx_classic90_comprehensive_annual_report",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 17852,
+    "reference_size": 106323,
+    "minipdf_pages": 4,
+    "reference_pages": 4,
+    "text_similarity": 0.9934,
+    "flat_text_similarity": 0.9933,
+    "word_text_similarity": 0.9734,
+    "text_diff": "--- minipdf/docx_classic90_comprehensive_annual_report.pdf\n+++ reference/docx_classic90_comprehensive_annual_report.pdf\n@@ -11,10 +11,9 @@\n Outlook & Strategy................................10\n\n ---PAGE---\n\n Executive Summary\n\n-Dear Stakeholders, We are pleased to present the annual report for MiniPdf\n\n-Corporation. This year marked significant milestones in our product development,\n\n-including the launch of DOCX-to-PDF conversion and expansion of our benchmark suite\n\n-to 180 test cases.\n\n+Dear Stakeholders, We are pleased to present the annual report for MiniPdf Corporation.\n\n+This year marked significant milestones in our product development, including the launch\n\n+of DOCX-to-PDF conversion and expansion of our benchmark suite to 180 test cases.\n\n Key Metrics\n\n Revenue Users Test Cases Quality Score\n\n $2.4M 12,500 180 97.2%\n\n@@ -28,11 +27,11 @@\n Headcount 8 15 25\n\n Product Development\n\n Milestones Achieved\n\n-• XLSX-to-PDF conversion with chart support\n\n-• DOCX-to-PDF conversion achieving 97% quality score\n\n-• CJK font embedding for Chinese, Japanese, and Korean\n\n-• Automated benchmark pipeline with 180 test cases\n\n-• AI-powered code review integration\n\n+ XLSX-to-PDF conversion with chart support\n\n+ DOCX-to-PDF conversion achieving 97% quality score\n\n+ CJK font embedding for Chinese, Japanese, and Korean\n\n+ Automated benchmark pipeline with 180 test cases\n\n+ AI-powered code review integration\n\n Quality Metrics\n\n ---PAGE---\n\n Outlook & Strategy\n",
+    "visual_scores": [
+      0.8782,
+      0.9888,
+      0.8326,
+      0.98
+    ],
+    "visual_avg": 0.9199,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx_classic90_comprehensive_annual_report_p1_minipdf.png",
+        "reference_img": "docx_classic90_comprehensive_annual_report_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "docx_classic90_comprehensive_annual_report_p2_minipdf.png",
+        "reference_img": "docx_classic90_comprehensive_annual_report_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "docx_classic90_comprehensive_annual_report_p3_minipdf.png",
+        "reference_img": "docx_classic90_comprehensive_annual_report_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "docx_classic90_comprehensive_annual_report_p4_minipdf.png",
+        "reference_img": "docx_classic90_comprehensive_annual_report_p4_reference.png"
+      }
+    ],
+    "overall_score": 0.9653
   }
 ]

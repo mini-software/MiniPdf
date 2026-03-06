@@ -76,7 +76,7 @@ def _write_chunk(buf, chunk_type, data):
     buf.write(struct.pack(">I", zlib.crc32(chunk_type + data) & 0xFFFFFFFF))
 
 
-# ── Classic docx generators (1–30) ──────────────────────────────────────
+# ── Classic docx generators (1–60) ──────────────────────────────────────
 
 
 def classic01_single_paragraph(path):
@@ -576,7 +576,6 @@ def classic30_comprehensive_report(path):
     doc.add_heading("Table of Contents", level=1)
     for i, title in enumerate(["Executive Summary", "Market Analysis", "Technology Trends", "Financial Overview", "Recommendations"], 1):
         doc.add_paragraph(f"{i}. {title}")
-    doc.add_page_break()
 
     # Executive Summary
     doc.add_heading("1. Executive Summary", level=1)
@@ -1745,6 +1744,1675 @@ def classic60_comprehensive_styled_report(path):
     doc.save(path)
 
 
+# ── Classic docx generators (61–90) ─────────────────────────────────────
+
+
+def classic61_header_and_footer(path):
+    """Document with header and footer text."""
+    doc = Document()
+    doc.add_heading("Header and Footer Test", level=1)
+
+    section = doc.sections[0]
+    header = section.header
+    header.is_linked_to_previous = False
+    hp = header.paragraphs[0]
+    hp.text = "MiniPdf Benchmark Report"
+    hp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    hr = hp.runs[0]
+    hr.font.size = Pt(9)
+    hr.font.color.rgb = RGBColor(128, 128, 128)
+
+    footer = section.footer
+    footer.is_linked_to_previous = False
+    fp = footer.paragraphs[0]
+    fp.text = "Page 1 | Confidential"
+    fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    fr = fp.runs[0]
+    fr.font.size = Pt(9)
+    fr.font.color.rgb = RGBColor(128, 128, 128)
+
+    for i in range(1, 6):
+        doc.add_paragraph(
+            f"Section {i}: This content appears between the header and footer. "
+            "It demonstrates how MiniPdf handles page headers and footers in DOCX conversion."
+        )
+    doc.save(path)
+
+
+def classic62_footnote_references(path):
+    """Document with superscript footnote references and bottom notes."""
+    doc = Document()
+    doc.add_heading("Research with Footnotes", level=1)
+
+    p1 = doc.add_paragraph()
+    p1.add_run("The theory of relativity")
+    r1 = p1.add_run("1")
+    r1.font.superscript = True
+    r1.font.size = Pt(8)
+    p1.add_run(" fundamentally changed our understanding of space and time.")
+
+    p2 = doc.add_paragraph()
+    p2.add_run("Quantum mechanics")
+    r2 = p2.add_run("2")
+    r2.font.superscript = True
+    r2.font.size = Pt(8)
+    p2.add_run(" describes the behavior of particles at the atomic level.")
+
+    p3 = doc.add_paragraph()
+    p3.add_run("The Standard Model")
+    r3 = p3.add_run("3")
+    r3.font.superscript = True
+    r3.font.size = Pt(8)
+    p3.add_run(" classifies all known elementary particles.")
+
+    doc.add_paragraph()
+    _add_horizontal_rule(doc)
+    notes = [
+        "1. Einstein, A. (1905). On the Electrodynamics of Moving Bodies.",
+        "2. Planck, M. (1900). On the Law of Distribution of Energy.",
+        "3. Glashow, S. (1961). Partial-symmetries of Weak Interactions.",
+    ]
+    for note in notes:
+        p = doc.add_paragraph(note)
+        p.paragraph_format.space_before = Pt(2)
+        p.paragraph_format.space_after = Pt(2)
+        for r in p.runs:
+            r.font.size = Pt(8)
+    doc.save(path)
+
+
+def classic63_toc_style_headings(path):
+    """Document simulating a table of contents with hierarchical headings."""
+    doc = Document()
+    doc.add_paragraph("Table of Contents", style="Title")
+    doc.add_paragraph()
+
+    toc_entries = [
+        (0, "Chapter 1: Introduction", "1"),
+        (1, "1.1 Background", "3"),
+        (1, "1.2 Objectives", "5"),
+        (0, "Chapter 2: Literature Review", "7"),
+        (1, "2.1 Historical Context", "8"),
+        (1, "2.2 Current Research", "12"),
+        (2, "2.2.1 Methodology", "13"),
+        (2, "2.2.2 Findings", "15"),
+        (0, "Chapter 3: Methodology", "18"),
+        (1, "3.1 Data Collection", "19"),
+        (1, "3.2 Analysis Framework", "22"),
+        (0, "Chapter 4: Results", "25"),
+        (0, "Chapter 5: Discussion", "30"),
+        (0, "Chapter 6: Conclusion", "35"),
+        (0, "References", "38"),
+    ]
+
+    table = doc.add_table(rows=len(toc_entries), cols=2)
+    for ri, (level, title, page) in enumerate(toc_entries):
+        indent = "    " * level
+        cell_title = table.rows[ri].cells[0]
+        cell_page = table.rows[ri].cells[1]
+        p_title = cell_title.paragraphs[0]
+        r_title = p_title.add_run(f"{indent}{title}")
+        if level == 0:
+            r_title.bold = True
+        r_title.font.size = Pt(11 - level)
+        p_page = cell_page.paragraphs[0]
+        p_page.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        p_page.add_run(page)
+    doc.save(path)
+
+
+def classic64_multi_column_layout(path):
+    """Simulated two-column text layout using a table."""
+    doc = Document()
+    doc.add_heading("Newsletter - March 2026", level=1)
+
+    table = doc.add_table(rows=1, cols=2)
+    left_text = (
+        "Artificial intelligence continues to reshape the technology landscape. "
+        "New advances in large language models enable more natural human-computer "
+        "interaction. Companies worldwide are investing heavily in AI research "
+        "and development, anticipating transformative impacts across industries "
+        "from healthcare to manufacturing."
+    )
+    right_text = (
+        "Cloud computing has become the backbone of modern enterprise IT. "
+        "Multi-cloud strategies allow organizations to leverage the best "
+        "features of different providers while avoiding vendor lock-in. "
+        "Edge computing supplements cloud by processing data closer to "
+        "its source, reducing latency for critical applications."
+    )
+    table.rows[0].cells[0].text = left_text
+    table.rows[0].cells[1].text = right_text
+
+    doc.add_paragraph()
+    doc.add_heading("Featured Article", level=2)
+    doc.add_paragraph(
+        "Open source software has become the foundation of modern software development. "
+        "Projects like Linux, Kubernetes, and .NET have demonstrated how community-driven "
+        "development can produce enterprise-grade software. The MiniPdf project itself is "
+        "an example of this approach, providing PDF generation capabilities without proprietary "
+        "dependencies."
+    )
+    doc.save(path)
+
+
+def classic65_code_block_styling(path):
+    """Document with styled code blocks using monospace fonts and shading."""
+    doc = Document()
+    doc.add_heading("Code Examples", level=1)
+
+    doc.add_heading("C# Example", level=2)
+    code_cs = (
+        'using MiniPdf;\n\n'
+        'var doc = new PdfDocument();\n'
+        'var page = doc.AddPage();\n'
+        'page.DrawText("Hello, PDF!", 72, 700);\n'
+        'doc.Save("output.pdf");'
+    )
+    p = doc.add_paragraph()
+    r = p.add_run(code_cs)
+    r.font.name = "Courier New"
+    r.font.size = Pt(9)
+    pPr = p._element.get_or_add_pPr()
+    shd = pPr.makeelement(qn("w:shd"), {
+        qn("w:val"): "clear", qn("w:color"): "auto", qn("w:fill"): "F5F5F5",
+    })
+    pPr.append(shd)
+
+    doc.add_heading("Python Example", level=2)
+    code_py = (
+        'import fitz\n\n'
+        'doc = fitz.open("input.pdf")\n'
+        'for page in doc:\n'
+        '    text = page.get_text()\n'
+        '    print(text)'
+    )
+    p2 = doc.add_paragraph()
+    r2 = p2.add_run(code_py)
+    r2.font.name = "Courier New"
+    r2.font.size = Pt(9)
+    pPr2 = p2._element.get_or_add_pPr()
+    shd2 = pPr2.makeelement(qn("w:shd"), {
+        qn("w:val"): "clear", qn("w:color"): "auto", qn("w:fill"): "F5F5F5",
+    })
+    pPr2.append(shd2)
+
+    doc.add_heading("JSON Example", level=2)
+    code_json = (
+        '{\n'
+        '  "name": "MiniPdf",\n'
+        '  "version": "1.0.0",\n'
+        '  "features": ["xlsx", "docx", "pdf"]\n'
+        '}'
+    )
+    p3 = doc.add_paragraph()
+    r3 = p3.add_run(code_json)
+    r3.font.name = "Courier New"
+    r3.font.size = Pt(9)
+    pPr3 = p3._element.get_or_add_pPr()
+    shd3 = pPr3.makeelement(qn("w:shd"), {
+        qn("w:val"): "clear", qn("w:color"): "auto", qn("w:fill"): "F5F5F5",
+    })
+    pPr3.append(shd3)
+    doc.save(path)
+
+
+def classic66_colored_title_page(path):
+    """Title page with large colored text and decorative elements."""
+    doc = Document()
+    doc.add_paragraph()
+    doc.add_paragraph()
+
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("ANNUAL REPORT 2026")
+    r.bold = True
+    r.font.size = Pt(36)
+    r.font.color.rgb = RGBColor(47, 84, 150)
+
+    p_sub = doc.add_paragraph()
+    p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r2 = p_sub.add_run("Innovation Through Technology")
+    r2.font.size = Pt(18)
+    r2.font.color.rgb = RGBColor(89, 89, 89)
+    r2.italic = True
+
+    doc.add_paragraph()
+    img_buf = _create_test_png(400, 200, (47, 84, 150))
+    last_p = doc.add_paragraph()
+    last_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    doc.add_picture(img_buf, width=Inches(5))
+
+    doc.add_paragraph()
+    p_org = doc.add_paragraph()
+    p_org.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r3 = p_org.add_run("MiniPdf Corporation")
+    r3.font.size = Pt(14)
+    r3.bold = True
+
+    p_date = doc.add_paragraph()
+    p_date.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r4 = p_date.add_run("Published: March 2026")
+    r4.font.size = Pt(12)
+    r4.font.color.rgb = RGBColor(128, 128, 128)
+    doc.save(path)
+
+
+def classic67_alternating_row_table(path):
+    """Table with alternating row colors and styled headers."""
+    doc = Document()
+    doc.add_heading("Employee Directory", level=1)
+
+    employees = [
+        ("E001", "Alice Johnson", "Engineering", "Senior Developer", "$120,000"),
+        ("E002", "Bob Williams", "Marketing", "Marketing Manager", "$95,000"),
+        ("E003", "Carol Davis", "Finance", "Financial Analyst", "$88,000"),
+        ("E004", "David Brown", "Engineering", "Tech Lead", "$135,000"),
+        ("E005", "Emily Chen", "Design", "UX Designer", "$92,000"),
+        ("E006", "Frank Miller", "Engineering", "Junior Developer", "$75,000"),
+        ("E007", "Grace Lee", "HR", "HR Specialist", "$82,000"),
+        ("E008", "Henry Wilson", "Engineering", "DevOps Engineer", "$110,000"),
+        ("E009", "Iris Taylor", "Finance", "CFO", "$180,000"),
+        ("E010", "Jack Martin", "Marketing", "Content Writer", "$68,000"),
+        ("E011", "Karen White", "Engineering", "QA Engineer", "$90,000"),
+        ("E012", "Leo Harris", "Design", "Graphic Designer", "$78,000"),
+    ]
+
+    table = doc.add_table(rows=len(employees) + 1, cols=5)
+    table.style = "Table Grid"
+    headers = ["ID", "Name", "Department", "Title", "Salary"]
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+
+    for ri, emp in enumerate(employees):
+        row = table.rows[ri + 1]
+        for ci, val in enumerate(emp):
+            row.cells[ci].text = val
+        if ri % 2 == 0:
+            for ci in range(5):
+                _set_cell_shading(row.cells[ci], "D9E2F3")
+    doc.save(path)
+
+
+def classic68_sidebar_layout(path):
+    """Simulated sidebar layout using a 2-column table."""
+    doc = Document()
+    doc.add_heading("Project Documentation", level=1)
+
+    table = doc.add_table(rows=1, cols=2)
+    table.style = "Table Grid"
+
+    # Sidebar (narrow left column)
+    sidebar = table.rows[0].cells[0]
+    _set_cell_shading(sidebar, "2F5496")
+    sp = sidebar.paragraphs[0]
+    sr = sp.add_run("Navigation")
+    sr.bold = True
+    sr.font.color.rgb = RGBColor(255, 255, 255)
+    sr.font.size = Pt(12)
+    for item in ["Overview", "Installation", "Configuration", "API Reference", "FAQ", "Changelog"]:
+        p = sidebar.add_paragraph()
+        r = p.add_run(item)
+        r.font.color.rgb = RGBColor(200, 210, 230)
+        r.font.size = Pt(10)
+
+    # Main content (wide right column)
+    main = table.rows[0].cells[1]
+    mp = main.paragraphs[0]
+    mr = mp.add_run("Overview")
+    mr.bold = True
+    mr.font.size = Pt(14)
+    main.add_paragraph(
+        "MiniPdf is a lightweight .NET library for converting Word and Excel "
+        "documents to PDF format without requiring Microsoft Office."
+    )
+    mp2 = main.add_paragraph()
+    mr2 = mp2.add_run("Key Features")
+    mr2.bold = True
+    mr2.font.size = Pt(12)
+    for feat in ["DOCX to PDF conversion", "XLSX to PDF conversion",
+                 "CJK font support", "Image embedding", "Table formatting"]:
+        main.add_paragraph(feat, style="List Bullet")
+
+    # Set column widths
+    for row in table.rows:
+        row.cells[0].width = Inches(1.8)
+        row.cells[1].width = Inches(4.7)
+    doc.save(path)
+
+
+def classic69_blockquote_styling(path):
+    """Document with styled blockquotes and callout boxes."""
+    doc = Document()
+    doc.add_heading("Famous Quotes Collection", level=1)
+
+    quotes = [
+        ("The only way to do great work is to love what you do.", "Steve Jobs", "4472C4"),
+        ("Innovation distinguishes between a leader and a follower.", "Steve Jobs", "548235"),
+        ("Stay hungry, stay foolish.", "Stewart Brand", "BF8F00"),
+        ("The future belongs to those who believe in the beauty of their dreams.", "Eleanor Roosevelt", "C00000"),
+        ("In the middle of difficulty lies opportunity.", "Albert Einstein", "7030A0"),
+    ]
+
+    for text, author, color in quotes:
+        p = doc.add_paragraph()
+        pPr = p._element.get_or_add_pPr()
+        # Left border for blockquote effect
+        pBdr = pPr.makeelement(qn("w:pBdr"), {})
+        left = pBdr.makeelement(qn("w:left"), {
+            qn("w:val"): "single",
+            qn("w:sz"): "24",
+            qn("w:space"): "4",
+            qn("w:color"): color,
+        })
+        pBdr.append(left)
+        pPr.append(pBdr)
+        # Indent
+        p.paragraph_format.left_indent = Inches(0.5)
+        r = p.add_run(f'"{text}"')
+        r.italic = True
+        r.font.size = Pt(12)
+        # Author
+        pa = doc.add_paragraph()
+        pa.paragraph_format.left_indent = Inches(0.5)
+        ra = pa.add_run(f"  {author}")
+        ra.bold = True
+        ra.font.color.rgb = RGBColor(128, 128, 128)
+        doc.add_paragraph()
+    doc.save(path)
+
+
+def classic70_academic_paper(path):
+    """Academic paper with abstract, sections, and references."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("A Survey of Modern PDF Generation Techniques")
+    r.bold = True
+    r.font.size = Pt(16)
+
+    p_authors = doc.add_paragraph()
+    p_authors.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_authors.add_run("John Smith, Jane Doe, Robert Johnson")
+    p_inst = doc.add_paragraph()
+    p_inst.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    ri = p_inst.add_run("Department of Computer Science, University of Technology")
+    ri.italic = True
+    ri.font.size = Pt(10)
+
+    doc.add_paragraph()
+    doc.add_heading("Abstract", level=2)
+    p_abs = doc.add_paragraph(
+        "This paper surveys modern techniques for generating PDF documents from structured "
+        "office formats. We evaluate the quality and performance of conversion tools across "
+        "a benchmark suite of 90 test documents covering diverse formatting features."
+    )
+    p_abs.paragraph_format.left_indent = Inches(0.5)
+    p_abs.paragraph_format.right_indent = Inches(0.5)
+
+    doc.add_heading("1. Introduction", level=2)
+    doc.add_paragraph(
+        "PDF (Portable Document Format) remains the standard for sharing documents "
+        "with consistent visual fidelity. Converting from editable office formats such "
+        "as DOCX and XLSX to PDF requires careful handling of fonts, layouts, images, "
+        "and styling attributes."
+    )
+
+    doc.add_heading("2. Methodology", level=2)
+    doc.add_paragraph(
+        "Our benchmark suite consists of 90 DOCX test files and 90 XLSX test files, "
+        "each targeting specific formatting features. We compare output from MiniPdf "
+        "against LibreOffice-generated reference PDFs using pixel-level similarity scoring."
+    )
+
+    doc.add_heading("3. Results", level=2)
+    table = doc.add_table(rows=5, cols=3)
+    table.style = "Table Grid"
+    for ci, h in enumerate(["Feature Category", "Avg Score", "Sample Size"]):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for run in cell.paragraphs[0].runs:
+            run.font.color.rgb = RGBColor(255, 255, 255)
+            run.bold = True
+    data = [
+        ("Basic Text", "98.5%", "20"),
+        ("Tables", "96.2%", "25"),
+        ("Images", "94.8%", "15"),
+        ("Mixed Content", "95.1%", "30"),
+    ]
+    for ri, (cat, score, size) in enumerate(data):
+        table.rows[ri + 1].cells[0].text = cat
+        table.rows[ri + 1].cells[1].text = score
+        table.rows[ri + 1].cells[2].text = size
+
+    doc.add_heading("4. Conclusion", level=2)
+    doc.add_paragraph(
+        "Modern lightweight PDF generation libraries can achieve high fidelity output "
+        "for the majority of common document formatting features."
+    )
+
+    doc.add_heading("References", level=2)
+    refs = [
+        "[1] ISO 32000-2:2020. Document management - Portable document format.",
+        "[2] ECMA-376. Office Open XML File Formats.",
+        "[3] Smith et al. (2025). Benchmark-driven development for document conversion.",
+    ]
+    for ref in refs:
+        p = doc.add_paragraph(ref)
+        p.paragraph_format.left_indent = Inches(0.3)
+        for run in p.runs:
+            run.font.size = Pt(10)
+    doc.save(path)
+
+
+def classic71_legal_document(path):
+    """Legal document with numbered clauses and sub-clauses."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("SOFTWARE LICENSE AGREEMENT")
+    r.bold = True
+    r.font.size = Pt(16)
+
+    doc.add_paragraph()
+    doc.add_paragraph(
+        "This Software License Agreement (the \"Agreement\") is entered into as of "
+        "March 1, 2026, by and between MiniPdf Corporation (\"Licensor\") and the "
+        "End User (\"Licensee\")."
+    )
+    doc.add_paragraph()
+
+    clauses = [
+        ("1. GRANT OF LICENSE", [
+            "1.1 Subject to the terms of this Agreement, Licensor grants Licensee a non-exclusive, "
+            "non-transferable license to use the Software.",
+            "1.2 The license granted herein is limited to use on a single computer system.",
+            "1.3 Licensee may make one backup copy of the Software for archival purposes.",
+        ]),
+        ("2. RESTRICTIONS", [
+            "2.1 Licensee shall not reverse engineer, decompile, or disassemble the Software.",
+            "2.2 Licensee shall not sublicense, rent, or lease the Software to third parties.",
+            "2.3 Licensee shall not remove any proprietary notices from the Software.",
+        ]),
+        ("3. INTELLECTUAL PROPERTY", [
+            "3.1 The Software is protected by copyright and other intellectual property laws.",
+            "3.2 Licensor retains all right, title, and interest in and to the Software.",
+        ]),
+        ("4. WARRANTY DISCLAIMER", [
+            "4.1 THE SOFTWARE IS PROVIDED \"AS IS\" WITHOUT WARRANTY OF ANY KIND.",
+            "4.2 LICENSOR DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED.",
+        ]),
+        ("5. LIMITATION OF LIABILITY", [
+            "5.1 IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, "
+            "OR CONSEQUENTIAL DAMAGES.",
+            "5.2 LICENSOR'S TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT PAID BY LICENSEE.",
+        ]),
+    ]
+
+    for title, subclauses in clauses:
+        p = doc.add_paragraph()
+        r = p.add_run(title)
+        r.bold = True
+        r.font.size = Pt(12)
+        for sub in subclauses:
+            sp = doc.add_paragraph(sub)
+            sp.paragraph_format.left_indent = Inches(0.5)
+            sp.paragraph_format.space_before = Pt(4)
+    doc.save(path)
+
+
+def classic72_technical_specification(path):
+    """Technical specification document with tables and requirements."""
+    doc = Document()
+    doc.add_heading("Technical Specification: PDF Converter v2.0", level=1)
+    doc.add_paragraph("Document Version: 2.0 | Last Updated: March 2026")
+    doc.add_paragraph()
+
+    doc.add_heading("1. System Requirements", level=2)
+    table = doc.add_table(rows=6, cols=2)
+    table.style = "Table Grid"
+    reqs = [
+        ("Operating System", "Windows 10+, Linux, macOS 12+"),
+        ("Runtime", ".NET 8.0 or later"),
+        ("Memory", "Minimum 512 MB RAM"),
+        ("Disk Space", "50 MB for installation"),
+        ("Dependencies", "No external dependencies"),
+    ]
+    table.rows[0].cells[0].text = "Requirement"
+    table.rows[0].cells[1].text = "Specification"
+    _set_cell_shading(table.rows[0].cells[0], "2F5496")
+    _set_cell_shading(table.rows[0].cells[1], "2F5496")
+    for r in table.rows[0].cells[0].paragraphs[0].runs:
+        r.font.color.rgb = RGBColor(255, 255, 255)
+        r.bold = True
+    for r in table.rows[0].cells[1].paragraphs[0].runs:
+        r.font.color.rgb = RGBColor(255, 255, 255)
+        r.bold = True
+    for ri, (req, spec) in enumerate(reqs):
+        table.rows[ri + 1].cells[0].text = req
+        table.rows[ri + 1].cells[1].text = spec
+
+    doc.add_heading("2. Feature Matrix", level=2)
+    features = doc.add_table(rows=8, cols=3)
+    features.style = "Table Grid"
+    fheaders = ["Feature", "Status", "Priority"]
+    for ci, h in enumerate(fheaders):
+        cell = features.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    fdata = [
+        ("DOCX to PDF", "Implemented", "High"),
+        ("XLSX to PDF", "Implemented", "High"),
+        ("Chart rendering", "Implemented", "Medium"),
+        ("CJK font support", "Implemented", "High"),
+        ("Image embedding", "Implemented", "Medium"),
+        ("Hyperlink support", "Planned", "Low"),
+        ("SVG support", "Planned", "Low"),
+    ]
+    for ri, (feat, status, pri) in enumerate(fdata):
+        row = features.rows[ri + 1]
+        row.cells[0].text = feat
+        p = row.cells[1].paragraphs[0]
+        r = p.add_run(status)
+        r.font.color.rgb = RGBColor(0, 128, 0) if status == "Implemented" else RGBColor(255, 165, 0)
+        row.cells[2].text = pri
+
+    doc.add_heading("3. Performance Targets", level=2)
+    doc.add_paragraph("The converter shall meet the following performance criteria:")
+    for item in [
+        "Convert a 10-page DOCX in under 2 seconds",
+        "Convert a 100-row XLSX in under 3 seconds",
+        "Memory usage shall not exceed 200 MB for standard documents",
+        "Output PDF size shall be within 2x of reference PDF size",
+    ]:
+        doc.add_paragraph(item, style="List Bullet")
+    doc.save(path)
+
+
+def classic73_calendar_layout(path):
+    """Monthly calendar layout using a table."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("March 2026")
+    r.bold = True
+    r.font.size = Pt(24)
+    r.font.color.rgb = RGBColor(47, 84, 150)
+
+    table = doc.add_table(rows=6, cols=7)
+    table.style = "Table Grid"
+    days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    for ci, d in enumerate(days):
+        cell = table.rows[0].cells[ci]
+        cell.text = d
+        cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+
+    # March 2026 starts on Sunday
+    cal = [
+        [1, 2, 3, 4, 5, 6, 7],
+        [8, 9, 10, 11, 12, 13, 14],
+        [15, 16, 17, 18, 19, 20, 21],
+        [22, 23, 24, 25, 26, 27, 28],
+        [29, 30, 31, 0, 0, 0, 0],
+    ]
+    for ri, week in enumerate(cal):
+        for ci, day in enumerate(week):
+            cell = table.rows[ri + 1].cells[ci]
+            if day > 0:
+                cell.text = str(day)
+                cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+            if ci == 0 or ci == 6:
+                _set_cell_shading(cell, "F2F2F2")
+    doc.save(path)
+
+
+def classic74_org_chart(path):
+    """Simple organization chart using nested tables."""
+    doc = Document()
+    doc.add_heading("Organization Chart", level=1)
+
+    # CEO level
+    t_top = doc.add_table(rows=1, cols=3)
+    t_top.rows[0].cells[0].text = ""
+    ceo_cell = t_top.rows[0].cells[1]
+    ceo_p = ceo_cell.paragraphs[0]
+    ceo_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    ceo_r = ceo_p.add_run("CEO\nJane Smith")
+    ceo_r.bold = True
+    _set_cell_shading(ceo_cell, "2F5496")
+    ceo_r.font.color.rgb = RGBColor(255, 255, 255)
+    t_top.rows[0].cells[2].text = ""
+
+    doc.add_paragraph()
+
+    # VP level
+    t_vp = doc.add_table(rows=1, cols=3)
+    t_vp.style = "Table Grid"
+    vps = [
+        ("VP Engineering\nBob Williams", "4472C4"),
+        ("VP Marketing\nAlice Johnson", "4472C4"),
+        ("VP Finance\nCarol Davis", "4472C4"),
+    ]
+    for ci, (name, color) in enumerate(vps):
+        cell = t_vp.rows[0].cells[ci]
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        r = p.add_run(name)
+        r.font.color.rgb = RGBColor(255, 255, 255)
+        r.bold = True
+        _set_cell_shading(cell, color)
+
+    doc.add_paragraph()
+
+    # Team level
+    t_team = doc.add_table(rows=2, cols=3)
+    t_team.style = "Table Grid"
+    teams = [
+        [("Frontend\n3 members", "D9E2F3"), ("Brand\n2 members", "D9E2F3"), ("Accounting\n4 members", "D9E2F3")],
+        [("Backend\n5 members", "D9E2F3"), ("Content\n3 members", "D9E2F3"), ("Planning\n2 members", "D9E2F3")],
+    ]
+    for ri, row in enumerate(teams):
+        for ci, (name, color) in enumerate(row):
+            cell = t_team.rows[ri].cells[ci]
+            p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p.add_run(name)
+            _set_cell_shading(cell, color)
+    doc.save(path)
+
+
+def classic75_newsletter_layout(path):
+    """Newsletter with sections, images, and columns."""
+    doc = Document()
+    # Masthead
+    p_mast = doc.add_paragraph()
+    p_mast.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_mast.add_run("THE TECH WEEKLY")
+    r.bold = True
+    r.font.size = Pt(28)
+    r.font.color.rgb = RGBColor(47, 84, 150)
+    p_date = doc.add_paragraph()
+    p_date.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rd = p_date.add_run("Issue #42 | March 6, 2026")
+    rd.font.size = Pt(10)
+    rd.font.color.rgb = RGBColor(128, 128, 128)
+    _add_horizontal_rule(doc)
+
+    # Lead story
+    doc.add_heading("AI Revolution in Software Development", level=2)
+    img_buf = _create_test_png(300, 150, (30, 90, 180))
+    doc.add_picture(img_buf, width=Inches(4))
+    doc.add_paragraph(
+        "The integration of large language models into development workflows is "
+        "transforming how teams write, review, and deploy code. Industry experts "
+        "predict that AI-assisted development will become standard practice by 2027."
+    )
+
+    _add_horizontal_rule(doc)
+
+    # Two-column news
+    doc.add_heading("Quick Updates", level=2)
+    news_table = doc.add_table(rows=1, cols=2)
+    left = news_table.rows[0].cells[0]
+    lp = left.paragraphs[0]
+    lr = lp.add_run("Cloud Infrastructure")
+    lr.bold = True
+    left.add_paragraph(
+        "Major cloud providers announce new edge computing regions in Asia-Pacific."
+    )
+    right = news_table.rows[0].cells[1]
+    rp = right.paragraphs[0]
+    rr = rp.add_run("Open Source")
+    rr.bold = True
+    right.add_paragraph(
+        "The .NET Foundation releases new guidelines for community project governance."
+    )
+    doc.save(path)
+
+
+def classic76_recipe_card(path):
+    """Recipe card document with ingredients and instructions."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("Classic Chocolate Chip Cookies")
+    r.bold = True
+    r.font.size = Pt(20)
+    r.font.color.rgb = RGBColor(139, 69, 19)
+
+    # Info table
+    info = doc.add_table(rows=1, cols=3)
+    info.style = "Table Grid"
+    for ci, (label, val) in enumerate([
+        ("Prep Time", "15 min"),
+        ("Cook Time", "12 min"),
+        ("Servings", "36 cookies"),
+    ]):
+        cell = info.rows[0].cells[ci]
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        rl = p.add_run(f"{label}\n")
+        rl.bold = True
+        rl.font.size = Pt(9)
+        rv = p.add_run(val)
+        rv.font.size = Pt(11)
+
+    doc.add_paragraph()
+    doc.add_heading("Ingredients", level=2)
+    ingredients = [
+        "2 1/4 cups all-purpose flour",
+        "1 tsp baking soda",
+        "1 tsp salt",
+        "1 cup (2 sticks) butter, softened",
+        "3/4 cup granulated sugar",
+        "3/4 cup packed brown sugar",
+        "2 large eggs",
+        "2 tsp vanilla extract",
+        "2 cups chocolate chips",
+    ]
+    for ing in ingredients:
+        doc.add_paragraph(ing, style="List Bullet")
+
+    doc.add_heading("Instructions", level=2)
+    steps = [
+        "Preheat oven to 375 degrees F.",
+        "Combine flour, baking soda, and salt in a small bowl.",
+        "Beat butter, granulated sugar, and brown sugar in a large mixer bowl until creamy.",
+        "Add eggs and vanilla extract; beat well.",
+        "Gradually blend in flour mixture.",
+        "Stir in chocolate chips.",
+        "Drop rounded tablespoon of dough onto ungreased baking sheets.",
+        "Bake for 9 to 11 minutes or until golden brown.",
+        "Cool on baking sheets for 2 minutes; remove to wire racks to cool completely.",
+    ]
+    for step in steps:
+        doc.add_paragraph(step, style="List Number")
+    doc.save(path)
+
+
+def classic77_timeline_layout(path):
+    """Project timeline using a table layout."""
+    doc = Document()
+    doc.add_heading("Project Timeline: MiniPdf v2.0", level=1)
+
+    milestones = [
+        ("Q1 2025", "Project Inception", "Initial requirements gathering and architecture design.", "4472C4"),
+        ("Q2 2025", "XLSX Support", "Implemented Excel-to-PDF conversion with chart support.", "548235"),
+        ("Q3 2025", "Benchmark Suite", "Created automated benchmark pipeline with 60 test cases.", "BF8F00"),
+        ("Q4 2025", "CJK Support", "Added Chinese, Japanese, and Korean font embedding.", "C00000"),
+        ("Q1 2026", "DOCX Support", "Implemented Word-to-PDF conversion achieving 97% quality.", "7030A0"),
+        ("Q2 2026", "v2.0 Release", "Public release with full documentation and NuGet package.", "2F5496"),
+    ]
+
+    table = doc.add_table(rows=len(milestones), cols=3)
+    table.style = "Table Grid"
+    for ri, (date, title, desc, color) in enumerate(milestones):
+        # Date column
+        dc = table.rows[ri].cells[0]
+        dc.width = Inches(1)
+        dp = dc.paragraphs[0]
+        dp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        dr = dp.add_run(date)
+        dr.bold = True
+        dr.font.color.rgb = RGBColor(255, 255, 255)
+        _set_cell_shading(dc, color)
+
+        # Title column
+        tc = table.rows[ri].cells[1]
+        tc.width = Inches(1.5)
+        tp = tc.paragraphs[0]
+        tr = tp.add_run(title)
+        tr.bold = True
+
+        # Description column
+        table.rows[ri].cells[2].text = desc
+    doc.save(path)
+
+
+def classic78_faq_document(path):
+    """FAQ document with questions and answers."""
+    doc = Document()
+    doc.add_heading("Frequently Asked Questions", level=1)
+    doc.add_paragraph("Find answers to the most common questions about MiniPdf.")
+    doc.add_paragraph()
+
+    faqs = [
+        ("What is MiniPdf?",
+         "MiniPdf is a lightweight .NET library for converting DOCX and XLSX files to PDF "
+         "without requiring Microsoft Office installation. It supports both DOCX and XLSX formats."),
+        ("Which .NET versions are supported?",
+         ".NET 8.0 and later versions are supported. The library targets .NET Standard 2.0 "
+         "for maximum compatibility across different .NET implementations."),
+        ("Does MiniPdf support images in documents?",
+         "Yes, MiniPdf supports embedded images in both DOCX and XLSX formats. Images are "
+         "converted and embedded in the output PDF with proper scaling."),
+        ("How is the conversion quality measured?",
+         "Quality is measured by pixel-level comparison against LibreOffice-generated reference "
+         "PDFs. Each test case receives a similarity score from 0% to 100%."),
+        ("Can MiniPdf handle CJK characters?",
+         "Yes, MiniPdf includes CJK font embedding support for Chinese, Japanese, and Korean "
+         "text in both DOCX and XLSX documents."),
+        ("Is MiniPdf available on NuGet?",
+         "Yes, MiniPdf is published as a NuGet package and can be installed via "
+         "dotnet add package MiniPdf."),
+        ("What table features are supported?",
+         "MiniPdf supports table borders, cell shading, merged cells, column widths, and "
+         "alternating row colors in both DOCX and XLSX formats."),
+        ("How do I report a bug?",
+         "Please open an issue on the GitHub repository with a minimal reproduction case "
+         "and the expected vs actual output."),
+        ("Does MiniPdf support headers and footers?",
+         "MiniPdf does not currently render headers and footers from DOCX files. The content "
+         "area of each page is fully supported including text, tables, and images."),
+        ("What is the maximum file size supported?",
+         "There is no hard limit on file size. MiniPdf processes files in a streaming fashion "
+         "and memory usage scales with document complexity rather than file size."),
+        ("Can I use MiniPdf in a web application?",
+         "Yes, MiniPdf works in any .NET environment including ASP.NET Core web applications, "
+         "Azure Functions, and containerized services."),
+        ("Does MiniPdf preserve hyperlinks?",
+         "Hyperlink text is preserved in the output PDF, but clickable URLs are not currently "
+         "supported. The link text appears as regular styled text."),
+    ]
+
+    for i, (q, a) in enumerate(faqs, 1):
+        pq = doc.add_paragraph()
+        rq = pq.add_run(f"Q{i}: {q}")
+        rq.bold = True
+        rq.font.color.rgb = RGBColor(47, 84, 150)
+
+        pa = doc.add_paragraph()
+        pa.paragraph_format.left_indent = Inches(0.3)
+        ra = pa.add_run(f"A: {a}")
+        doc.add_paragraph()
+    doc.save(path)
+
+
+def classic79_glossary(path):
+    """Glossary / definition list document."""
+    doc = Document()
+    doc.add_heading("Glossary of Terms", level=1)
+
+    terms = [
+        ("API", "Application Programming Interface. A set of protocols and tools for building software applications."),
+        ("CI/CD", "Continuous Integration / Continuous Deployment. Practices for automating software delivery."),
+        ("CJK", "Chinese, Japanese, Korean. Refers to the character sets used in these languages."),
+        ("DOCX", "The XML-based file format for Microsoft Word documents, defined by ECMA-376."),
+        ("EMU", "English Metric Unit. The base unit of measurement in OOXML documents (1 inch = 914400 EMU)."),
+        ("NuGet", "The package manager for .NET, used to distribute and consume .NET libraries."),
+        ("OOXML", "Office Open XML. The ISO-standardized format used by Microsoft Office."),
+        ("PDF", "Portable Document Format. An ISO standard for document exchange (ISO 32000)."),
+        ("SSIM", "Structural Similarity Index Measure. A metric for predicting image quality."),
+        ("XLSX", "The XML-based file format for Microsoft Excel workbooks, defined by ECMA-376."),
+    ]
+
+    for term, definition in terms:
+        pt = doc.add_paragraph()
+        rt = pt.add_run(term)
+        rt.bold = True
+        rt.font.size = Pt(12)
+        rt.font.color.rgb = RGBColor(47, 84, 150)
+
+        pd = doc.add_paragraph(definition)
+        pd.paragraph_format.left_indent = Inches(0.5)
+        pd.paragraph_format.space_after = Pt(12)
+    doc.save(path)
+
+
+def classic80_matrix_grid(path):
+    """Responsibility assignment matrix (RACI chart)."""
+    doc = Document()
+    doc.add_heading("RACI Matrix - MiniPdf Project", level=1)
+
+    tasks = [
+        "Requirements gathering",
+        "Architecture design",
+        "DOCX parser implementation",
+        "XLSX parser implementation",
+        "PDF writer implementation",
+        "Benchmark suite creation",
+        "CJK font support",
+        "Code review",
+        "Documentation",
+        "Release management",
+    ]
+    roles = ["Project Lead", "Dev Team", "QA", "DevOps"]
+    raci_data = [
+        ["A", "R", "C", "I"],
+        ["R", "C", "I", "C"],
+        ["A", "R", "C", "I"],
+        ["A", "R", "C", "I"],
+        ["A", "R", "I", "I"],
+        ["C", "R", "A", "I"],
+        ["A", "R", "C", "I"],
+        ["C", "R", "A", "I"],
+        ["A", "R", "C", "C"],
+        ["R", "I", "C", "A"],
+    ]
+    colors_map = {
+        "R": ("0070C0", "DAEEF3"),
+        "A": ("C00000", "FCE4EC"),
+        "C": ("548235", "E2EFDA"),
+        "I": ("7F7F7F", "F2F2F2"),
+    }
+
+    table = doc.add_table(rows=len(tasks) + 1, cols=len(roles) + 1)
+    table.style = "Table Grid"
+    # Header row
+    table.rows[0].cells[0].text = "Task"
+    _set_cell_shading(table.rows[0].cells[0], "2F5496")
+    for r in table.rows[0].cells[0].paragraphs[0].runs:
+        r.font.color.rgb = RGBColor(255, 255, 255)
+        r.bold = True
+    for ci, role in enumerate(roles):
+        cell = table.rows[0].cells[ci + 1]
+        cell.text = role
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+
+    for ri, task in enumerate(tasks):
+        row = table.rows[ri + 1]
+        row.cells[0].text = task
+        for ci, val in enumerate(raci_data[ri]):
+            cell = row.cells[ci + 1]
+            p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            fg, bg = colors_map[val]
+            rr = p.add_run(val)
+            rr.bold = True
+            rr.font.color.rgb = RGBColor(
+                int(fg[0:2], 16), int(fg[2:4], 16), int(fg[4:6], 16)
+            )
+            _set_cell_shading(cell, bg)
+    doc.save(path)
+
+
+def classic81_budget_table(path):
+    """Budget document with financial table and totals."""
+    doc = Document()
+    doc.add_heading("Annual Budget Report - FY2026", level=1)
+
+    categories = [
+        ("Personnel", [("Salaries", 450000), ("Benefits", 135000), ("Training", 25000)]),
+        ("Infrastructure", [("Cloud Services", 120000), ("Hardware", 45000), ("Licenses", 32000)]),
+        ("Operations", [("Office Rent", 96000), ("Utilities", 18000), ("Supplies", 8000)]),
+        ("Marketing", [("Digital Ads", 60000), ("Events", 35000), ("Content", 20000)]),
+    ]
+
+    table = doc.add_table(rows=1, cols=3)
+    table.style = "Table Grid"
+    for ci, h in enumerate(["Category / Item", "Budget ($)", "% of Total"]):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+
+    grand_total = sum(amt for _, items in categories for _, amt in items)
+
+    for cat_name, items in categories:
+        cat_total = sum(amt for _, amt in items)
+        # Category header row
+        row = table.add_row()
+        p = row.cells[0].paragraphs[0]
+        rr = p.add_run(cat_name)
+        rr.bold = True
+        row.cells[1].text = f"{cat_total:,.0f}"
+        for r in row.cells[1].paragraphs[0].runs:
+            r.bold = True
+        row.cells[2].text = f"{cat_total / grand_total * 100:.1f}%"
+        for r in row.cells[2].paragraphs[0].runs:
+            r.bold = True
+        _set_cell_shading(row.cells[0], "D9E2F3")
+        _set_cell_shading(row.cells[1], "D9E2F3")
+        _set_cell_shading(row.cells[2], "D9E2F3")
+
+        for item_name, amt in items:
+            irow = table.add_row()
+            irow.cells[0].text = f"    {item_name}"
+            irow.cells[1].text = f"{amt:,.0f}"
+            irow.cells[2].text = f"{amt / grand_total * 100:.1f}%"
+
+    # Grand total row
+    trow = table.add_row()
+    p = trow.cells[0].paragraphs[0]
+    rr = p.add_run("GRAND TOTAL")
+    rr.bold = True
+    trow.cells[1].text = f"{grand_total:,.0f}"
+    for r in trow.cells[1].paragraphs[0].runs:
+        r.bold = True
+    trow.cells[2].text = "100.0%"
+    for r in trow.cells[2].paragraphs[0].runs:
+        r.bold = True
+    _set_cell_shading(trow.cells[0], "2F5496")
+    _set_cell_shading(trow.cells[1], "2F5496")
+    _set_cell_shading(trow.cells[2], "2F5496")
+    for ci in range(3):
+        for r in trow.cells[ci].paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+    doc.save(path)
+
+
+def classic82_survey_questionnaire(path):
+    """Survey/questionnaire form document."""
+    doc = Document()
+    doc.add_heading("Employee Satisfaction Survey", level=1)
+    doc.add_paragraph("Please rate each item on a scale of 1 (Strongly Disagree) to 5 (Strongly Agree).")
+    doc.add_paragraph()
+
+    sections = [
+        ("Work Environment", [
+            "My workspace is comfortable and well-equipped.",
+            "The office environment supports productivity.",
+            "I have the tools I need to do my job effectively.",
+        ]),
+        ("Management", [
+            "My manager provides clear direction and expectations.",
+            "I receive regular and constructive feedback.",
+            "Management is transparent about company goals.",
+        ]),
+        ("Career Development", [
+            "I have opportunities for professional growth.",
+            "Training programs are relevant and accessible.",
+            "There is a clear path for career advancement.",
+        ]),
+        ("Work-Life Balance", [
+            "I can maintain a healthy work-life balance.",
+            "Flexible work arrangements are available.",
+            "Workload is reasonable and manageable.",
+        ]),
+    ]
+
+    for section_title, questions in sections:
+        doc.add_heading(section_title, level=2)
+        table = doc.add_table(rows=len(questions) + 1, cols=6)
+        table.style = "Table Grid"
+        headers = ["Statement", "1", "2", "3", "4", "5"]
+        for ci, h in enumerate(headers):
+            cell = table.rows[0].cells[ci]
+            cell.text = h
+            cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+            _set_cell_shading(cell, "4472C4")
+            for r in cell.paragraphs[0].runs:
+                r.font.color.rgb = RGBColor(255, 255, 255)
+                r.bold = True
+                r.font.size = Pt(9)
+        for qi, q in enumerate(questions):
+            row = table.rows[qi + 1]
+            row.cells[0].text = q
+            for ci in range(1, 6):
+                row.cells[ci].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        doc.add_paragraph()
+    doc.save(path)
+
+
+def classic83_medical_form(path):
+    """Medical intake form with patient information fields."""
+    doc = Document()
+    doc.add_heading("Patient Intake Form", level=1)
+    doc.add_paragraph("Please complete all sections. All information is kept confidential.")
+    doc.add_paragraph()
+
+    doc.add_heading("Personal Information", level=2)
+    info_table = doc.add_table(rows=4, cols=4)
+    info_table.style = "Table Grid"
+    fields = [
+        [("First Name:", ""), ("Last Name:", "")],
+        [("Date of Birth:", ""), ("Gender:", "")],
+        [("Phone:", ""), ("Email:", "")],
+        [("Address:", ""), ("City/State/ZIP:", "")],
+    ]
+    for ri, row_fields in enumerate(fields):
+        for fi, (label, _) in enumerate(row_fields):
+            label_ci = fi * 2
+            cell = info_table.rows[ri].cells[label_ci]
+            p = cell.paragraphs[0]
+            rr = p.add_run(label)
+            rr.bold = True
+            rr.font.size = Pt(9)
+            _set_cell_shading(cell, "F2F2F2")
+
+    doc.add_paragraph()
+    doc.add_heading("Medical History", level=2)
+    conditions = [
+        "Heart Disease", "Diabetes", "High Blood Pressure", "Asthma",
+        "Allergies", "Cancer", "Thyroid Disorder", "Arthritis",
+    ]
+    med_table = doc.add_table(rows=len(conditions), cols=3)
+    med_table.style = "Table Grid"
+    for ri, cond in enumerate(conditions):
+        med_table.rows[ri].cells[0].text = cond
+        med_table.rows[ri].cells[1].text = "Yes / No"
+        med_table.rows[ri].cells[1].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        med_table.rows[ri].cells[2].text = "Notes:"
+
+    doc.add_paragraph()
+    doc.add_heading("Current Medications", level=2)
+    med_list_table = doc.add_table(rows=5, cols=4)
+    med_list_table.style = "Table Grid"
+    for ci, h in enumerate(["Medication Name", "Dosage", "Frequency", "Purpose"]):
+        cell = med_list_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "4472C4")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+            r.font.size = Pt(9)
+    doc.save(path)
+
+
+def classic84_shipping_label(path):
+    """Shipping label document with sender/receiver info."""
+    doc = Document()
+
+    for label_num in range(1, 4):
+        if label_num > 1:
+            doc.add_paragraph()
+            _add_horizontal_rule(doc)
+            doc.add_paragraph()
+
+        # Outer table for label
+        outer = doc.add_table(rows=3, cols=2)
+        outer.style = "Table Grid"
+
+        # From
+        from_cell = outer.rows[0].cells[0]
+        fp = from_cell.paragraphs[0]
+        fr = fp.add_run("FROM:")
+        fr.bold = True
+        fr.font.size = Pt(8)
+        from_cell.add_paragraph(f"MiniPdf Corp\n123 Tech Ave\nSuite {100 + label_num}\nSan Francisco, CA 94105")
+
+        # Tracking
+        track_cell = outer.rows[0].cells[1]
+        tp = track_cell.paragraphs[0]
+        tp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        tr = tp.add_run(f"TRACKING #:\n1Z999AA{label_num}0123456784")
+        tr.font.name = "Courier New"
+        tr.font.size = Pt(9)
+
+        # To (merged row)
+        to_cell = outer.rows[1].cells[0].merge(outer.rows[1].cells[1])
+        top = to_cell.paragraphs[0]
+        tor = top.add_run("TO:")
+        tor.bold = True
+        tor.font.size = Pt(8)
+        addr = to_cell.add_paragraph()
+        ar = addr.add_run(f"Customer {label_num}\n{456 + label_num * 100} Main Street\nNew York, NY 1000{label_num}")
+        ar.font.size = Pt(14)
+        ar.bold = True
+
+        # Shipping info
+        info_cell = outer.rows[2].cells[0].merge(outer.rows[2].cells[1])
+        ip = info_cell.paragraphs[0]
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ir = ip.add_run(f"PRIORITY MAIL | Weight: {label_num * 2.5:.1f} lbs | Ship Date: 03/0{label_num}/2026")
+        ir.font.size = Pt(9)
+        _set_cell_shading(info_cell, "F2F2F2")
+    doc.save(path)
+
+
+def classic85_report_card(path):
+    """Student report card / transcript document."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("STUDENT REPORT CARD")
+    r.bold = True
+    r.font.size = Pt(18)
+    r.font.color.rgb = RGBColor(47, 84, 150)
+
+    p_sub = doc.add_paragraph()
+    p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_sub.add_run("Academic Year 2025-2026 | Spring Semester")
+
+    doc.add_paragraph()
+
+    # Student info
+    info = doc.add_table(rows=2, cols=4)
+    info.style = "Table Grid"
+    info_data = [
+        [("Student:", "John Smith"), ("Grade:", "10th")],
+        [("Student ID:", "STU-2026-001"), ("Advisor:", "Ms. Johnson")],
+    ]
+    for ri, row in enumerate(info_data):
+        for fi, (label, val) in enumerate(row):
+            lc = info.rows[ri].cells[fi * 2]
+            lp = lc.paragraphs[0]
+            lr = lp.add_run(label)
+            lr.bold = True
+            lr.font.size = Pt(9)
+            _set_cell_shading(lc, "F2F2F2")
+            vc = info.rows[ri].cells[fi * 2 + 1]
+            vc.text = val
+
+    doc.add_paragraph()
+
+    # Grades table
+    grades_table = doc.add_table(rows=9, cols=5)
+    grades_table.style = "Table Grid"
+    g_headers = ["Subject", "Teacher", "Grade", "Score", "Credits"]
+    for ci, h in enumerate(g_headers):
+        cell = grades_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+
+    subjects = [
+        ("Mathematics", "Mr. Thompson", "A", "95", "4"),
+        ("English", "Ms. Williams", "A-", "91", "4"),
+        ("Physics", "Dr. Brown", "B+", "88", "4"),
+        ("History", "Ms. Davis", "A", "94", "3"),
+        ("Computer Science", "Mr. Lee", "A+", "98", "3"),
+        ("Art", "Ms. Garcia", "B+", "87", "2"),
+        ("Physical Education", "Coach Miller", "A", "96", "1"),
+        ("GPA", "", "3.78", "", "21"),
+    ]
+    for ri, vals in enumerate(subjects):
+        row = grades_table.rows[ri + 1]
+        for ci, val in enumerate(vals):
+            row.cells[ci].text = val
+        if ri == len(subjects) - 1:  # GPA row
+            for ci in range(5):
+                _set_cell_shading(row.cells[ci], "D9E2F3")
+                for r in row.cells[ci].paragraphs[0].runs:
+                    r.bold = True
+    doc.save(path)
+
+
+def classic86_checklist_document(path):
+    """Checklist document with checkboxes (using symbols)."""
+    doc = Document()
+    doc.add_heading("Project Launch Checklist", level=1)
+    doc.add_paragraph("Complete all items before the scheduled launch date.")
+    doc.add_paragraph()
+
+    checklists = [
+        ("Pre-Launch", [
+            (True, "Code review completed"),
+            (True, "Unit tests passing"),
+            (True, "Integration tests passing"),
+            (False, "Performance benchmarks met"),
+            (True, "Security audit completed"),
+        ]),
+        ("Documentation", [
+            (True, "API documentation updated"),
+            (True, "README file updated"),
+            (False, "Changelog written"),
+            (False, "Migration guide prepared"),
+        ]),
+        ("Deployment", [
+            (False, "Staging environment tested"),
+            (False, "Production config verified"),
+            (False, "Rollback plan documented"),
+            (False, "Monitoring alerts configured"),
+            (False, "DNS records updated"),
+        ]),
+        ("Post-Launch", [
+            (False, "Announce on social media"),
+            (False, "Send newsletter"),
+            (False, "Update project website"),
+            (False, "Close related GitHub issues"),
+        ]),
+    ]
+
+    for section, items in checklists:
+        doc.add_heading(section, level=2)
+        for checked, text in items:
+            p = doc.add_paragraph()
+            symbol = "\u2611" if checked else "\u2610"  # checked/unchecked box
+            r = p.add_run(f"  {symbol}  {text}")
+            if checked:
+                r.font.color.rgb = RGBColor(0, 128, 0)
+    doc.save(path)
+
+
+def classic87_bibliography(path):
+    """Bibliography / references page with formatted citations."""
+    doc = Document()
+    doc.add_heading("Bibliography", level=1)
+    doc.add_paragraph()
+
+    entries = [
+        {
+            "authors": "Smith, J., & Johnson, R.",
+            "year": "2025",
+            "title": "Modern Document Processing: A Comprehensive Survey",
+            "journal": "Journal of Software Engineering",
+            "volume": "42(3), 125-148",
+        },
+        {
+            "authors": "Chen, L., Wang, M., & Liu, X.",
+            "year": "2024",
+            "title": "Benchmarking PDF Generation Libraries: Quality and Performance",
+            "journal": "ACM Computing Surveys",
+            "volume": "57(1), 1-35",
+        },
+        {
+            "authors": "Brown, A.",
+            "year": "2025",
+            "title": "Office Open XML: Architecture and Implementation",
+            "journal": "IEEE Transactions on Document Analysis",
+            "volume": "28(4), 890-905",
+        },
+        {
+            "authors": "ISO",
+            "year": "2020",
+            "title": "ISO 32000-2:2020 Document Management - Portable Document Format",
+            "journal": "International Organization for Standardization",
+            "volume": "",
+        },
+        {
+            "authors": "ECMA International",
+            "year": "2016",
+            "title": "ECMA-376: Office Open XML File Formats",
+            "journal": "ECMA International",
+            "volume": "5th Edition",
+        },
+        {
+            "authors": "Davis, K., & Martinez, S.",
+            "year": "2024",
+            "title": "AI-Driven Code Review: Patterns and Anti-Patterns",
+            "journal": "Proceedings of ICSE 2024",
+            "volume": "pp. 445-460",
+        },
+        {
+            "authors": "Taylor, P.",
+            "year": "2025",
+            "title": "CJK Font Embedding in Portable Documents",
+            "journal": "International Journal of Digital Typography",
+            "volume": "15(2), 78-92",
+        },
+    ]
+
+    for i, entry in enumerate(entries, 1):
+        p = doc.add_paragraph()
+        p.paragraph_format.left_indent = Inches(0.5)
+        p.paragraph_format.first_line_indent = Inches(-0.5)
+
+        r_num = p.add_run(f"[{i}] ")
+        r_num.bold = True
+        p.add_run(f"{entry['authors']} ({entry['year']}). ")
+        r_title = p.add_run(f"{entry['title']}. ")
+        r_title.italic = True
+        r_journal = p.add_run(entry['journal'])
+        if entry['volume']:
+            p.add_run(f", {entry['volume']}.")
+        else:
+            p.add_run(".")
+    doc.save(path)
+
+
+def classic88_presentation_handout(path):
+    """Presentation handout with slides and notes areas."""
+    doc = Document()
+    doc.add_heading("Presentation Handout", level=1)
+    doc.add_paragraph("MiniPdf: Lightweight Document Conversion for .NET")
+    doc.add_paragraph()
+
+    slides = [
+        ("Slide 1: Introduction", "What is MiniPdf and why does it matter?",
+         (47, 84, 150)),
+        ("Slide 2: Architecture", "Core components and design decisions.",
+         (84, 130, 53)),
+        ("Slide 3: DOCX Support", "How Word documents are parsed and converted.",
+         (191, 144, 0)),
+        ("Slide 4: XLSX Support", "Excel workbook processing and chart rendering.",
+         (192, 0, 0)),
+        ("Slide 5: Quality Assurance", "Benchmark pipeline and self-evolution cycle.",
+         (112, 48, 160)),
+        ("Slide 6: Future Plans", "Roadmap for v2.0 and beyond.",
+         (0, 112, 192)),
+    ]
+
+    for title, description, color in slides:
+        # Slide placeholder
+        table = doc.add_table(rows=2, cols=2)
+        table.style = "Table Grid"
+
+        # Slide image area
+        slide_cell = table.rows[0].cells[0].merge(table.rows[0].cells[1])
+        _set_cell_shading(slide_cell, f"{color[0]:02X}{color[1]:02X}{color[2]:02X}")
+        sp = slide_cell.paragraphs[0]
+        sp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        sr = sp.add_run(f"\n{title}\n")
+        sr.bold = True
+        sr.font.size = Pt(16)
+        sr.font.color.rgb = RGBColor(255, 255, 255)
+        sd = slide_cell.add_paragraph()
+        sd.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        sdr = sd.add_run(description)
+        sdr.font.color.rgb = RGBColor(220, 220, 220)
+
+        # Notes area
+        notes_cell = table.rows[1].cells[0].merge(table.rows[1].cells[1])
+        np = notes_cell.paragraphs[0]
+        nr = np.add_run("Notes:")
+        nr.bold = True
+        nr.font.size = Pt(9)
+        nr.font.color.rgb = RGBColor(128, 128, 128)
+        for _ in range(3):
+            notes_cell.add_paragraph("_" * 70)
+
+        doc.add_paragraph()
+    doc.save(path)
+
+
+def classic89_multi_image_gallery(path):
+    """Gallery layout with multiple images in a grid."""
+    doc = Document()
+    doc.add_heading("Image Gallery", level=1)
+    doc.add_paragraph("Collection of test images for benchmark validation.")
+    doc.add_paragraph()
+
+    colors = [
+        ((70, 130, 180), "Steel Blue"),
+        ((220, 20, 60), "Crimson"),
+        ((50, 205, 50), "Lime Green"),
+        ((255, 165, 0), "Orange"),
+        ((147, 112, 219), "Purple"),
+        ((0, 206, 209), "Turquoise"),
+        ((255, 215, 0), "Gold"),
+        ((188, 143, 143), "Rosy Brown"),
+        ((100, 149, 237), "Cornflower"),
+    ]
+
+    # 3x3 grid
+    table = doc.add_table(rows=3, cols=3)
+    table.style = "Table Grid"
+    idx = 0
+    for ri in range(3):
+        for ci in range(3):
+            color, name = colors[idx]
+            cell = table.rows[ri].cells[ci]
+            img_buf = _create_test_png(120, 80, color)
+            p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            run = p.add_run()
+            run.add_picture(img_buf, width=Inches(1.5))
+            cap = cell.add_paragraph()
+            cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            cr = cap.add_run(name)
+            cr.font.size = Pt(9)
+            cr.italic = True
+            idx += 1
+
+    doc.add_paragraph()
+    doc.add_paragraph("Each image demonstrates a different color channel for testing "
+                      "image encoding fidelity in PDF output.")
+    doc.save(path)
+
+
+def classic90_comprehensive_annual_report(path):
+    """Comprehensive annual report combining many features."""
+    doc = Document()
+
+    # Title page
+    doc.add_paragraph()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("MINIPDF CORPORATION")
+    r.bold = True
+    r.font.size = Pt(28)
+    r.font.color.rgb = RGBColor(47, 84, 150)
+
+    p_sub = doc.add_paragraph()
+    p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r2 = p_sub.add_run("Annual Report 2025-2026")
+    r2.font.size = Pt(18)
+
+    img_buf = _create_test_png(400, 150, (47, 84, 150))
+    doc.add_picture(img_buf, width=Inches(5))
+
+    p_org = doc.add_paragraph()
+    p_org.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    doc.add_paragraph()
+    r3 = p_org.add_run("Published: March 2026")
+    r3.font.color.rgb = RGBColor(128, 128, 128)
+
+    doc.add_page_break()
+
+    # Table of contents
+    doc.add_heading("Table of Contents", level=1)
+    toc_items = [
+        ("Executive Summary", "2"),
+        ("Financial Highlights", "3"),
+        ("Product Development", "5"),
+        ("Market Analysis", "7"),
+        ("Team & Organization", "9"),
+        ("Outlook & Strategy", "10"),
+    ]
+    for title, page in toc_items:
+        p = doc.add_paragraph()
+        p.add_run(title)
+        p.add_run(f"{'.' * (50 - len(title))}{page}")
+
+    doc.add_page_break()
+
+    # Executive Summary
+    doc.add_heading("Executive Summary", level=1)
+    p_exec = doc.add_paragraph()
+    p_exec.add_run("Dear Stakeholders, ").bold = True
+    p_exec.add_run(
+        "We are pleased to present the annual report for MiniPdf Corporation. "
+        "This year marked significant milestones in our product development, "
+        "including the launch of DOCX-to-PDF conversion and expansion of our "
+        "benchmark suite to 180 test cases."
+    )
+
+    # Key Metrics
+    doc.add_heading("Key Metrics", level=2)
+    metrics_table = doc.add_table(rows=2, cols=4)
+    metrics_table.style = "Table Grid"
+    metrics = [
+        ("Revenue", "$2.4M", "+45%", "548235"),
+        ("Users", "12,500", "+120%", "4472C4"),
+        ("Test Cases", "180", "+200%", "BF8F00"),
+        ("Quality Score", "97.2%", "+5.1%", "7030A0"),
+    ]
+    for ci, (label, value, change, color) in enumerate(metrics):
+        top = metrics_table.rows[0].cells[ci]
+        top_p = top.paragraphs[0]
+        top_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_cell_shading(top, color)
+        tr = top_p.add_run(f"{label}\n{value}")
+        tr.bold = True
+        tr.font.color.rgb = RGBColor(255, 255, 255)
+        tr.font.size = Pt(14)
+
+        bot = metrics_table.rows[1].cells[ci]
+        bot_p = bot.paragraphs[0]
+        bot_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        br = bot_p.add_run(change)
+        br.font.color.rgb = RGBColor(0, 128, 0)
+        br.bold = True
+
+    doc.add_paragraph()
+
+    # Financial Highlights
+    doc.add_heading("Financial Highlights", level=1)
+    fin_table = doc.add_table(rows=6, cols=4)
+    fin_table.style = "Table Grid"
+    fin_headers = ["", "FY2024", "FY2025", "FY2026"]
+    for ci, h in enumerate(fin_headers):
+        cell = fin_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+
+    fin_data = [
+        ("Revenue", "$800K", "$1.6M", "$2.4M"),
+        ("Expenses", "$650K", "$1.1M", "$1.5M"),
+        ("Net Income", "$150K", "$500K", "$900K"),
+        ("R&D Investment", "$200K", "$400K", "$600K"),
+        ("Headcount", "8", "15", "25"),
+    ]
+    for ri, row_data in enumerate(fin_data):
+        for ci, val in enumerate(row_data):
+            fin_table.rows[ri + 1].cells[ci].text = val
+        if ri == 2:  # Net income row highlighted
+            for ci in range(4):
+                _set_cell_shading(fin_table.rows[ri + 1].cells[ci], "E2EFDA")
+                for r in fin_table.rows[ri + 1].cells[ci].paragraphs[0].runs:
+                    r.bold = True
+
+    # Product Development
+    doc.add_heading("Product Development", level=1)
+    doc.add_heading("Milestones Achieved", level=2)
+    for item in [
+        "XLSX-to-PDF conversion with chart support",
+        "DOCX-to-PDF conversion achieving 97% quality score",
+        "CJK font embedding for Chinese, Japanese, and Korean",
+        "Automated benchmark pipeline with 180 test cases",
+        "AI-powered code review integration",
+    ]:
+        doc.add_paragraph(item, style="List Bullet")
+
+    doc.add_heading("Quality Metrics", level=2)
+    img_chart = _create_test_png(300, 150, (46, 84, 150))
+    doc.add_picture(img_chart, width=Inches(4))
+    doc.add_paragraph()
+
+    # Recommendations
+    doc.add_heading("Outlook & Strategy", level=1)
+    for rec in [
+        "Expand format support to include PPTX",
+        "Achieve 99% average quality score",
+        "Release v2.0 on NuGet with full documentation",
+        "Build enterprise partnerships",
+        "Establish community contributor program",
+    ]:
+        doc.add_paragraph(rec, style="List Number")
+
+    doc.add_paragraph()
+    p_footer = doc.add_paragraph()
+    p_footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rf = p_footer.add_run("--- End of Annual Report ---")
+    rf.italic = True
+    rf.font.color.rgb = RGBColor(128, 128, 128)
+    doc.save(path)
+
+
 # ── Helpers ──────────────────────────────────────────────────────────────
 
 def _set_cell_shading(cell, hex_color):
@@ -1838,6 +3506,36 @@ ALL_GENERATORS = [
     classic58_dense_paragraph_document,
     classic59_numbered_and_bullet_mixed,
     classic60_comprehensive_styled_report,
+    classic61_header_and_footer,
+    classic62_footnote_references,
+    classic63_toc_style_headings,
+    classic64_multi_column_layout,
+    classic65_code_block_styling,
+    classic66_colored_title_page,
+    classic67_alternating_row_table,
+    classic68_sidebar_layout,
+    classic69_blockquote_styling,
+    classic70_academic_paper,
+    classic71_legal_document,
+    classic72_technical_specification,
+    classic73_calendar_layout,
+    classic74_org_chart,
+    classic75_newsletter_layout,
+    classic76_recipe_card,
+    classic77_timeline_layout,
+    classic78_faq_document,
+    classic79_glossary,
+    classic80_matrix_grid,
+    classic81_budget_table,
+    classic82_survey_questionnaire,
+    classic83_medical_form,
+    classic84_shipping_label,
+    classic85_report_card,
+    classic86_checklist_document,
+    classic87_bibliography,
+    classic88_presentation_handout,
+    classic89_multi_image_gallery,
+    classic90_comprehensive_annual_report,
 ]
 
 

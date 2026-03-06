@@ -403,10 +403,15 @@ internal static class DocxToPdfConverter
                 }
 
                 // Draw cell border
-                state.CurrentPage!.AddLine(cellX, state.CurrentY, cellX + cellWidth, state.CurrentY, PdfColor.FromRgb(200, 200, 200));
-                state.CurrentPage!.AddLine(cellX, state.CurrentY - rowHeight, cellX + cellWidth, state.CurrentY - rowHeight, PdfColor.FromRgb(200, 200, 200));
-                state.CurrentPage!.AddLine(cellX, state.CurrentY, cellX, state.CurrentY - rowHeight, PdfColor.FromRgb(200, 200, 200));
-                state.CurrentPage!.AddLine(cellX + cellWidth, state.CurrentY, cellX + cellWidth, state.CurrentY - rowHeight, PdfColor.FromRgb(200, 200, 200));
+                if (table.HasBorders)
+                {
+                    var borderColor = PdfColor.FromRgb(0, 0, 0);
+                    const float borderWidth = 0.5f;
+                    state.CurrentPage!.AddLine(cellX, state.CurrentY, cellX + cellWidth, state.CurrentY, borderColor, borderWidth);
+                    state.CurrentPage!.AddLine(cellX, state.CurrentY - rowHeight, cellX + cellWidth, state.CurrentY - rowHeight, borderColor, borderWidth);
+                    state.CurrentPage!.AddLine(cellX, state.CurrentY, cellX, state.CurrentY - rowHeight, borderColor, borderWidth);
+                    state.CurrentPage!.AddLine(cellX + cellWidth, state.CurrentY, cellX + cellWidth, state.CurrentY - rowHeight, borderColor, borderWidth);
+                }
 
                 // Render cell content (images and text)
                 var textY = state.CurrentY - cellPaddingV;
