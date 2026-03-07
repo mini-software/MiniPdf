@@ -277,11 +277,18 @@ internal static class DocxReader
             }
         }
 
+        // Detect section break (sectPr inside pPr)
+        DocxPageLayout? sectionBreakLayout = null;
+        var sectPr = pPr?.Element(W + "sectPr");
+        if (sectPr != null)
+            sectionBreakLayout = ParseSectionProperties(sectPr);
+
         // If paragraph has no runs and no images, represent as empty paragraph for spacing
         return new DocxParagraph(runs, images, alignment, spacingBefore, spacingAfter,
             lineSpacing, indentLeft, indentRight, indentFirstLine,
             isBulletList, isNumberedList, listLevel, listText, styleId,
-            bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops);
+            bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops,
+            sectionBreakLayout);
     }
 
     private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor)
@@ -483,7 +490,11 @@ internal static class DocxReader
     {
         var sectPr = body.Element(W + "sectPr");
         if (sectPr == null) return null;
+        return ParseSectionProperties(sectPr);
+    }
 
+    private static DocxPageLayout ParseSectionProperties(XElement sectPr)
+    {
         const float twipsToPoints = 1f / 20f;
 
         var pgSz = sectPr.Element(W + "pgSz");
@@ -708,7 +719,8 @@ internal sealed record DocxParagraph(
     bool HasPageBreakBefore = false,
     bool HasPageBreakAfter = false,
     PdfColor? Shading = null,
-    List<DocxTabStop>? TabStops = null
+    List<DocxTabStop>? TabStops = null,
+    DocxPageLayout? SectionBreak = null
 ) : DocxElement;
 
 /// <summary>Represents a tab stop definition.</summary>

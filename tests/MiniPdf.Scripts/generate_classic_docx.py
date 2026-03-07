@@ -1,5 +1,5 @@
 """
-Generate 30 classic DOCX test files for the MiniPdf benchmark suite.
+Generate 120 classic DOCX test files for the MiniPdf benchmark suite.
 
 Each file tests a different Word document feature, from simple paragraphs
 to tables, images, lists, headings, and mixed content.
@@ -3413,6 +3413,1857 @@ def classic90_comprehensive_annual_report(path):
     doc.save(path)
 
 
+# ── Classic docx generators (91–120) ────────────────────────────────────
+
+
+def classic91_landscape_page(path):
+    """Document with landscape page orientation."""
+    doc = Document()
+    section = doc.sections[0]
+    section.orientation = 1  # WD_ORIENT.LANDSCAPE
+    new_width, new_height = section.page_height, section.page_width
+    section.page_width = new_width
+    section.page_height = new_height
+
+    doc.add_heading("Landscape Page Layout", level=1)
+    doc.add_paragraph(
+        "This document uses landscape orientation, commonly used for wide tables, "
+        "charts, and presentation-style content."
+    )
+
+    table = doc.add_table(rows=4, cols=8)
+    table.style = "Table Grid"
+    headers = ["Q1 Jan", "Q1 Feb", "Q1 Mar", "Q2 Apr", "Q2 May", "Q2 Jun", "Q3 Jul", "Q3 Aug"]
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+            r.font.size = Pt(9)
+    import random
+    random.seed(91)
+    for ri in range(1, 4):
+        for ci in range(8):
+            table.rows[ri].cells[ci].text = f"${random.randint(10, 99)}K"
+
+    doc.add_paragraph()
+    doc.add_paragraph(
+        "Wide tables benefit from landscape orientation as it provides more "
+        "horizontal space for columns."
+    )
+    doc.save(path)
+
+
+def classic92_first_line_indent(path):
+    """Paragraphs with first-line indentation."""
+    doc = Document()
+    doc.add_heading("First-Line Indentation Example", level=1)
+
+    paragraphs = [
+        "The quick brown fox jumps over the lazy dog. This paragraph demonstrates "
+        "first-line indentation, a common typographic convention in printed books and "
+        "formal documents to indicate the start of a new paragraph.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor "
+        "incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis "
+        "nostrud exercitation ullamco laboris.",
+        "In traditional typography, the first paragraph after a heading is often not "
+        "indented, while subsequent paragraphs use a first-line indent of about 0.5 inches "
+        "to visually separate them.",
+        "This style of formatting creates a clean, professional appearance and helps "
+        "readers distinguish between paragraph boundaries without relying on extra spacing.",
+    ]
+    for text in paragraphs:
+        p = doc.add_paragraph(text)
+        p.paragraph_format.first_line_indent = Inches(0.5)
+    doc.save(path)
+
+
+def classic93_hanging_indent(path):
+    """Paragraphs with hanging indentation (bibliography style)."""
+    doc = Document()
+    doc.add_heading("References (Hanging Indent)", level=1)
+    doc.add_paragraph("The following references use hanging indentation, a common format for bibliographies and reference lists.")
+    doc.add_paragraph()
+
+    refs = [
+        'Smith, J. A., & Johnson, B. C. (2024). "Advanced PDF Generation Techniques for Modern Applications." Journal of Document Processing, 15(3), 234-251.',
+        'Williams, D. R. (2023). "Cross-Platform Document Conversion: Challenges and Solutions." In Proceedings of the International Conference on Software Engineering, pp. 89-102.',
+        'Chen, L., & Martinez, R. (2025). "Benchmarking Document Fidelity: A Comprehensive Framework for PDF Quality Assessment." ACM Computing Surveys, 58(1), Article 12.',
+        'Anderson, K. M., Brown, T. P., & Davis, S. (2024). "Open-Source Approaches to Office Document Rendering Without Native Dependencies." Software: Practice and Experience, 54(7), 1120-1145.',
+        'Taylor, E. F. (2025). "CJK Font Embedding Strategies in Cross-Platform PDF Generators." International Journal of Digital Typography, 8(2), 67-84.',
+    ]
+    for ref in refs:
+        p = doc.add_paragraph(ref)
+        p.paragraph_format.left_indent = Inches(0.5)
+        p.paragraph_format.first_line_indent = Inches(-0.5)
+    doc.save(path)
+
+
+def classic94_custom_bullet_characters(path):
+    """Lists with custom bullet characters using symbol fonts."""
+    doc = Document()
+    doc.add_heading("Custom Bullet Characters", level=1)
+
+    doc.add_heading("Standard Bullets", level=2)
+    for item in ["First item with default bullet", "Second item", "Third item"]:
+        doc.add_paragraph(item, style="List Bullet")
+
+    doc.add_heading("Arrow-Style Items", level=2)
+    arrows = ["\u2192 Navigate to the settings page", "\u2192 Click on account preferences",
+              "\u2192 Update your profile information", "\u2192 Save changes"]
+    for a in arrows:
+        doc.add_paragraph(a)
+
+    doc.add_heading("Checkmark Items", level=2)
+    checks = ["\u2713 Requirements analysis completed", "\u2713 Design review passed",
+              "\u2713 Unit tests written", "\u2717 Integration tests pending",
+              "\u2717 Deployment not started"]
+    for c in checks:
+        p = doc.add_paragraph(c)
+        if "\u2713" in c:
+            p.runs[0].font.color.rgb = RGBColor(0, 128, 0)
+        else:
+            p.runs[0].font.color.rgb = RGBColor(200, 0, 0)
+
+    doc.add_heading("Diamond Bullets", level=2)
+    for item in ["\u25C6 Priority One", "\u25C6 Priority Two", "\u25C6 Priority Three"]:
+        p = doc.add_paragraph(item)
+        p.runs[0].font.color.rgb = RGBColor(47, 84, 150)
+    doc.save(path)
+
+
+def classic95_contract_template(path):
+    """Legal contract template with numbered clauses and signatures."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("SERVICE AGREEMENT")
+    r.bold = True
+    r.font.size = Pt(18)
+
+    doc.add_paragraph()
+    doc.add_paragraph(
+        "This Service Agreement (\"Agreement\") is entered into as of March 1, 2026, "
+        "by and between MiniPdf Corporation (\"Provider\") and the undersigned client (\"Client\")."
+    )
+    doc.add_paragraph()
+
+    clauses = [
+        ("1. SCOPE OF SERVICES",
+         "Provider shall deliver document conversion services including DOCX-to-PDF conversion."),
+        ("2. TERM",
+         "This Agreement shall continue for twelve (12) months unless terminated earlier."),
+        ("3. COMPENSATION",
+         "Client shall pay Provider a monthly fee of $5,000 USD, due on the first business day of each month."),
+        ("4. GOVERNING LAW",
+         "This Agreement shall be governed by the laws of the State of California, USA."),
+    ]
+    for title, body in clauses:
+        p_t = doc.add_paragraph()
+        r_t = p_t.add_run(title)
+        r_t.bold = True
+        doc.add_paragraph(body)
+
+    doc.add_paragraph()
+    doc.add_paragraph()
+
+    sig_table = doc.add_table(rows=4, cols=2)
+    sig_table.rows[0].cells[0].text = "PROVIDER:"
+    sig_table.rows[0].cells[1].text = "CLIENT:"
+    for ci in range(2):
+        sig_table.rows[0].cells[ci].paragraphs[0].runs[0].bold = True
+    sig_table.rows[1].cells[0].text = "Signature: ________________________"
+    sig_table.rows[1].cells[1].text = "Signature: ________________________"
+    sig_table.rows[2].cells[0].text = "Name: John Smith"
+    sig_table.rows[2].cells[1].text = "Name: ________________________"
+    sig_table.rows[3].cells[0].text = "Date: March 1, 2026"
+    sig_table.rows[3].cells[1].text = "Date: ________________________"
+    doc.save(path)
+
+
+def classic96_dense_data_table(path):
+    """Dense data table with many rows and narrow columns."""
+    doc = Document()
+    doc.add_heading("Server Performance Log", level=1)
+    doc.add_paragraph("Hourly metrics for the past 24 hours.")
+
+    table = doc.add_table(rows=25, cols=7)
+    table.style = "Table Grid"
+    headers = ["Hour", "CPU %", "Mem %", "Disk I/O", "Net Rx", "Net Tx", "Status"]
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_cell_shading(cell, "333333")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+            r.font.size = Pt(8)
+
+    import random
+    random.seed(96)
+    for ri in range(1, 25):
+        hour = f"{ri - 1:02d}:00"
+        cpu = random.randint(5, 98)
+        mem = random.randint(30, 95)
+        disk = f"{random.randint(1, 500)} MB/s"
+        rx = f"{random.randint(10, 900)} Mbps"
+        tx = f"{random.randint(5, 400)} Mbps"
+        status = "OK" if cpu < 90 and mem < 90 else "WARN"
+        values = [hour, f"{cpu}", f"{mem}", disk, rx, tx, status]
+        for ci, v in enumerate(values):
+            cell = table.rows[ri].cells[ci]
+            cell.text = v
+            cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+            for r in cell.paragraphs[0].runs:
+                r.font.size = Pt(8)
+            if ci == 6 and v == "WARN":
+                for r in cell.paragraphs[0].runs:
+                    r.font.color.rgb = RGBColor(255, 0, 0)
+                    r.bold = True
+            if ri % 2 == 0:
+                _set_cell_shading(cell, "F2F2F2")
+    doc.save(path)
+
+
+def classic97_product_catalog(path):
+    """Product catalog page with images and descriptions."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("PRODUCT CATALOG 2026")
+    r.bold = True
+    r.font.size = Pt(22)
+    r.font.color.rgb = RGBColor(47, 84, 150)
+
+    doc.add_paragraph()
+
+    products = [
+        ("MiniPdf Standard", "$29/mo", "Essential document conversion for small teams. "
+         "Includes XLSX and DOCX to PDF conversion with basic formatting support.",
+         (70, 130, 180)),
+        ("MiniPdf Professional", "$79/mo", "Advanced conversion with full formatting fidelity. "
+         "Includes CJK font support, chart rendering, and batch processing.",
+         (46, 139, 87)),
+        ("MiniPdf Enterprise", "$199/mo", "Complete enterprise solution with API access, "
+         "custom branding, SLA guarantee, and dedicated support.",
+         (150, 75, 0)),
+    ]
+
+    for name, price, desc, color in products:
+        table = doc.add_table(rows=1, cols=2)
+        table.style = "Table Grid"
+        img_cell = table.rows[0].cells[0]
+        img_buf = _create_test_png(120, 80, color)
+        img_cell.paragraphs[0].add_run().add_picture(img_buf, width=Inches(1.5))
+
+        info_cell = table.rows[0].cells[1]
+        p_name = info_cell.paragraphs[0]
+        rn = p_name.add_run(name)
+        rn.bold = True
+        rn.font.size = Pt(14)
+        rn.font.color.rgb = RGBColor(*color)
+
+        p_price = info_cell.add_paragraph()
+        rp = p_price.add_run(price)
+        rp.bold = True
+        rp.font.size = Pt(16)
+
+        info_cell.add_paragraph(desc)
+        doc.add_paragraph()
+    doc.save(path)
+
+
+def classic98_training_manual(path):
+    """Training manual with numbered steps and tips."""
+    doc = Document()
+    doc.add_heading("MiniPdf Getting Started Guide", level=1)
+    doc.add_paragraph("Version 2.0 | Last Updated: March 2026")
+    doc.add_paragraph()
+
+    doc.add_heading("Chapter 1: Installation", level=2)
+    steps = [
+        "Open your terminal or command prompt.",
+        "Run: dotnet add package MiniPdf",
+        "Verify installation by running: dotnet list package",
+        "Import the namespace in your code: using MiniPdf;",
+    ]
+    for i, step in enumerate(steps, 1):
+        doc.add_paragraph(f"{i}. {step}", style="List Number")
+
+    tip = doc.add_paragraph()
+    r_tip = tip.add_run("TIP: ")
+    r_tip.bold = True
+    r_tip.font.color.rgb = RGBColor(0, 128, 0)
+    tip.add_run("Make sure you have .NET 6.0 or later installed before proceeding.")
+
+    doc.add_heading("Chapter 2: Basic Usage", level=2)
+    doc.add_heading("Converting XLSX to PDF", level=3)
+    code_lines = [
+        'using MiniPdf;',
+        '',
+        'var converter = new ExcelToPdfConverter();',
+        'converter.Convert("input.xlsx", "output.pdf");',
+    ]
+    for line in code_lines:
+        p = doc.add_paragraph(line)
+        for r in p.runs:
+            r.font.name = "Courier New"
+            r.font.size = Pt(10)
+
+    doc.add_heading("Converting DOCX to PDF", level=3)
+    code_lines2 = [
+        'using MiniPdf;',
+        '',
+        'var converter = new DocxToPdfConverter();',
+        'converter.Convert("input.docx", "output.pdf");',
+    ]
+    for line in code_lines2:
+        p = doc.add_paragraph(line)
+        for r in p.runs:
+            r.font.name = "Courier New"
+            r.font.size = Pt(10)
+
+    warning = doc.add_paragraph()
+    r_w = warning.add_run("WARNING: ")
+    r_w.bold = True
+    r_w.font.color.rgb = RGBColor(200, 0, 0)
+    warning.add_run("Large files may require additional memory. Set appropriate limits for production use.")
+
+    doc.add_heading("Chapter 3: Advanced Features", level=2)
+    features = [
+        ("CJK Support", "Enable Chinese, Japanese, and Korean font embedding for international documents."),
+        ("Batch Processing", "Convert multiple files at once using the batch API."),
+        ("Custom Page Size", "Set custom page dimensions for non-standard output."),
+        ("Quality Metrics", "Use the built-in benchmark to verify conversion quality."),
+    ]
+    for feat, desc in features:
+        p = doc.add_paragraph()
+        rf = p.add_run(f"{feat}: ")
+        rf.bold = True
+        p.add_run(desc)
+    doc.save(path)
+
+
+def classic99_policy_document(path):
+    """Company policy document with sections and approval block."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("INFORMATION SECURITY POLICY")
+    r.bold = True
+    r.font.size = Pt(18)
+
+    p_sub = doc.add_paragraph()
+    p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rs = p_sub.add_run("Document No: ISP-2026-001 | Version: 3.0 | Classification: Internal")
+    rs.font.size = Pt(10)
+    rs.font.color.rgb = RGBColor(128, 128, 128)
+
+    doc.add_paragraph()
+
+    # Approval table
+    doc.add_heading("Document Approval", level=2)
+    approval = doc.add_table(rows=4, cols=4)
+    approval.style = "Table Grid"
+    approval_headers = ["Role", "Name", "Date", "Signature"]
+    for ci, h in enumerate(approval_headers):
+        cell = approval.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    roles = [
+        ("Author", "J. Smith", "2026-02-15"),
+        ("Reviewer", "A. Chen", "2026-02-20"),
+        ("Approver", "D. Williams", "2026-03-01"),
+    ]
+    for ri, (role, name, date) in enumerate(roles, 1):
+        approval.rows[ri].cells[0].text = role
+        approval.rows[ri].cells[1].text = name
+        approval.rows[ri].cells[2].text = date
+
+    doc.add_paragraph()
+
+    sections = [
+        ("1. PURPOSE",
+         "This policy establishes the information security requirements for all employees, "
+         "contractors, and third-party users of MiniPdf Corporation systems and data."),
+        ("2. SCOPE",
+         "This policy applies to all information assets, IT systems, and personnel who access, "
+         "process, store, or transmit company data regardless of format or location."),
+        ("3. PASSWORD REQUIREMENTS",
+         "All passwords must be at least 12 characters long and include uppercase letters, "
+         "lowercase letters, numbers, and special characters. Passwords must be changed every 90 days."),
+        ("4. DATA CLASSIFICATION",
+         "Data shall be classified as: Public, Internal, Confidential, or Restricted. "
+         "Each classification level has specific handling requirements detailed in Appendix A."),
+        ("5. INCIDENT REPORTING",
+         "All security incidents must be reported within 24 hours to the Information Security Team. "
+         "Failure to report incidents may result in disciplinary action."),
+        ("6. COMPLIANCE",
+         "Violations of this policy may result in disciplinary action up to and including "
+         "termination of employment or contract."),
+    ]
+    for title, body in sections:
+        p = doc.add_paragraph()
+        rt = p.add_run(title)
+        rt.bold = True
+        doc.add_paragraph(body)
+
+    doc.add_paragraph()
+    p_end = doc.add_paragraph()
+    p_end.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    re = p_end.add_run("--- End of Policy ---")
+    re.italic = True
+    re.font.color.rgb = RGBColor(128, 128, 128)
+    doc.save(path)
+
+
+def classic100_multi_page_table(path):
+    """Long table that spans multiple pages with repeated headers."""
+    doc = Document()
+    doc.add_heading("Employee Directory", level=1)
+    doc.add_paragraph("Complete listing of all employees across all departments.")
+    doc.add_paragraph()
+
+    table = doc.add_table(rows=51, cols=5)
+    table.style = "Table Grid"
+    headers = ["ID", "Name", "Department", "Title", "Location"]
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+
+    # Enable header row repeat across pages
+    tbl = table._tbl
+    tr = tbl.tr_lst[0]
+    trPr = tr.get_or_add_trPr()
+    tblHeader = trPr.makeelement(qn("w:tblHeader"), {})
+    trPr.append(tblHeader)
+
+    departments = ["Engineering", "Marketing", "Sales", "Finance", "HR", "Operations"]
+    titles = ["Manager", "Senior Engineer", "Analyst", "Director", "Coordinator", "Specialist"]
+    locations = ["San Francisco", "New York", "London", "Tokyo", "Berlin", "Sydney"]
+    first_names = ["Alice", "Bob", "Carol", "David", "Eva", "Frank", "Grace", "Henry", "Iris", "Jack"]
+    last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Wilson", "Moore"]
+    import random
+    random.seed(100)
+    for ri in range(1, 51):
+        name = f"{random.choice(first_names)} {random.choice(last_names)}"
+        values = [
+            f"EMP-{ri:03d}",
+            name,
+            random.choice(departments),
+            random.choice(titles),
+            random.choice(locations),
+        ]
+        for ci, v in enumerate(values):
+            table.rows[ri].cells[ci].text = v
+        if ri % 2 == 0:
+            for ci in range(5):
+                _set_cell_shading(table.rows[ri].cells[ci], "EBF1F8")
+    doc.save(path)
+
+
+def classic101_warranty_document(path):
+    """Warranty terms and conditions document."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("LIMITED WARRANTY")
+    r.bold = True
+    r.font.size = Pt(20)
+    r.font.color.rgb = RGBColor(128, 0, 0)
+
+    p_sub = doc.add_paragraph()
+    p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_sub.add_run("MiniPdf Software Products")
+
+    doc.add_paragraph()
+    _add_horizontal_rule(doc)
+
+    doc.add_heading("WARRANTY COVERAGE", level=2)
+    doc.add_paragraph(
+        "MiniPdf Corporation (\"Company\") warrants that the Software will perform substantially "
+        "in accordance with the accompanying documentation for a period of one (1) year from "
+        "the date of purchase (\"Warranty Period\")."
+    )
+
+    doc.add_heading("WHAT IS COVERED", level=2)
+    covered = [
+        "Defects in the conversion engine that cause incorrect output",
+        "Font rendering issues for supported font families",
+        "Table layout errors for standard table structures",
+        "Image embedding failures for supported image formats (PNG, JPEG)",
+    ]
+    for item in covered:
+        doc.add_paragraph(item, style="List Bullet")
+
+    doc.add_heading("WHAT IS NOT COVERED", level=2)
+    not_covered = [
+        "Issues caused by unsupported file format features",
+        "Performance degradation due to insufficient system resources",
+        "Third-party integration failures",
+        "Cosmetic differences between source and output documents",
+    ]
+    for item in not_covered:
+        doc.add_paragraph(item, style="List Bullet")
+
+    doc.add_heading("LIMITATION OF LIABILITY", level=2)
+    p_limit = doc.add_paragraph(
+        "IN NO EVENT SHALL THE COMPANY BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, "
+        "CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR IN CONNECTION WITH THIS WARRANTY."
+    )
+    for r in p_limit.runs:
+        r.bold = True
+
+    doc.add_paragraph()
+    doc.add_paragraph("For warranty claims, contact: support@minipdf.example.com")
+    doc.save(path)
+
+
+def classic102_curriculum_syllabus(path):
+    """Course syllabus with schedule table."""
+    doc = Document()
+    doc.add_heading("CS 301: Software Engineering", level=1)
+    doc.add_paragraph("Fall 2026 | MWF 10:00 - 11:15 AM | Room 204")
+    doc.add_paragraph()
+
+    doc.add_heading("Instructor", level=2)
+    doc.add_paragraph("Dr. Jane Smith | jane.smith@university.edu | Office: CS Building 312")
+
+    doc.add_heading("Course Description", level=2)
+    doc.add_paragraph(
+        "This course covers modern software engineering practices including agile methodologies, "
+        "test-driven development, continuous integration, and software architecture patterns. "
+        "Students will work in teams on a semester-long project."
+    )
+
+    doc.add_heading("Learning Objectives", level=2)
+    objectives = [
+        "Apply software design patterns to real-world problems",
+        "Implement CI/CD pipelines for automated testing",
+        "Practice code review and collaborative development",
+    ]
+    for obj in objectives:
+        doc.add_paragraph(obj, style="List Number")
+
+    doc.add_heading("Grading", level=2)
+    grade_table = doc.add_table(rows=6, cols=2)
+    grade_table.style = "Table Grid"
+    grade_table.rows[0].cells[0].text = "Component"
+    grade_table.rows[0].cells[1].text = "Weight"
+    _set_cell_shading(grade_table.rows[0].cells[0], "2F5496")
+    _set_cell_shading(grade_table.rows[0].cells[1], "2F5496")
+    for r in grade_table.rows[0].cells[0].paragraphs[0].runs:
+        r.font.color.rgb = RGBColor(255, 255, 255)
+        r.bold = True
+    for r in grade_table.rows[0].cells[1].paragraphs[0].runs:
+        r.font.color.rgb = RGBColor(255, 255, 255)
+        r.bold = True
+    grades = [("Assignments", "30%"), ("Midterm Exam", "20%"), ("Final Project", "25%"),
+              ("Participation", "10%"), ("Final Exam", "15%")]
+    for ri, (comp, weight) in enumerate(grades, 1):
+        grade_table.rows[ri].cells[0].text = comp
+        grade_table.rows[ri].cells[1].text = weight
+
+    doc.add_heading("Schedule", level=2)
+    sched = doc.add_table(rows=5, cols=3)
+    sched.style = "Table Grid"
+    sched_h = ["Week", "Topic", "Assignment"]
+    for ci, h in enumerate(sched_h):
+        cell = sched.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "4472C4")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    schedule_data = [
+        ("1-3", "Intro & Version Control", "HW1: Git basics"),
+        ("4-7", "Agile & Design Patterns", "HW2: Patterns"),
+        ("8-11", "CI/CD & Architecture", "HW3: Pipeline"),
+        ("12-15", "Security & Final Project", "Final due"),
+    ]
+    for ri, (week, topic, assign) in enumerate(schedule_data, 1):
+        sched.rows[ri].cells[0].text = week
+        sched.rows[ri].cells[1].text = topic
+        sched.rows[ri].cells[2].text = assign
+    doc.save(path)
+
+
+def classic103_event_program(path):
+    """Conference/event program with schedule and speakers."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("DOTNET CONF 2026")
+    r.bold = True
+    r.font.size = Pt(26)
+    r.font.color.rgb = RGBColor(106, 27, 154)
+
+    p_sub = doc.add_paragraph()
+    p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rs = p_sub.add_run("March 15-17, 2026 | San Francisco Convention Center")
+    rs.font.size = Pt(12)
+
+    doc.add_paragraph()
+    img_buf = _create_test_png(300, 100, (106, 27, 154))
+    p_img = doc.add_paragraph()
+    p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_img.add_run().add_picture(img_buf, width=Inches(4))
+
+    doc.add_page_break()
+
+    doc.add_heading("Day 1 - March 15", level=1)
+    day1 = [
+        ("09:00 - 09:30", "Registration & Coffee", "Lobby"),
+        ("09:30 - 10:30", "Keynote: The Future of .NET", "Main Hall"),
+        ("10:45 - 11:30", "Building PDF Libraries in C#", "Room A"),
+        ("11:45 - 12:30", "AI-Powered Code Review", "Room B"),
+        ("12:30 - 14:00", "Lunch Break", "Restaurant"),
+        ("14:00 - 14:45", "Benchmark-Driven Development", "Room A"),
+        ("15:00 - 15:45", "Cross-Platform Document Processing", "Room C"),
+        ("16:00 - 17:00", "Panel: Open Source in Enterprise", "Main Hall"),
+    ]
+    table1 = doc.add_table(rows=len(day1) + 1, cols=3)
+    table1.style = "Table Grid"
+    for ci, h in enumerate(["Time", "Session", "Location"]):
+        cell = table1.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "6A1B9A")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    for ri, (time, session, loc) in enumerate(day1, 1):
+        table1.rows[ri].cells[0].text = time
+        table1.rows[ri].cells[1].text = session
+        table1.rows[ri].cells[2].text = loc
+        if "Break" in session or "Lunch" in session:
+            for ci in range(3):
+                _set_cell_shading(table1.rows[ri].cells[ci], "F3E5F5")
+
+    doc.add_paragraph()
+    doc.add_heading("Speakers", level=1)
+    speakers = [
+        ("Dr. Sarah Chen", "Principal Engineer, Microsoft", "Expert in .NET runtime and compiler optimization."),
+        ("Mark Johnson", "CTO, MiniPdf Corp", "Creator of the MiniPdf open-source PDF library."),
+        ("Lisa Park", "Staff Engineer, Google", "Specializing in document format interoperability."),
+    ]
+    for name, role, bio in speakers:
+        p = doc.add_paragraph()
+        rn = p.add_run(name)
+        rn.bold = True
+        rn.font.size = Pt(12)
+        p2 = doc.add_paragraph()
+        rr = p2.add_run(role)
+        rr.italic = True
+        rr.font.color.rgb = RGBColor(106, 27, 154)
+        doc.add_paragraph(bio)
+        doc.add_paragraph()
+    doc.save(path)
+
+
+def classic104_sop_document(path):
+    """Standard Operating Procedure document."""
+    doc = Document()
+    # Header block
+    header_table = doc.add_table(rows=3, cols=4)
+    header_table.style = "Table Grid"
+    cells = [
+        (0, 0, "MiniPdf Corp"), (0, 1, "SOP-QA-001"), (0, 2, "Rev: 3"), (0, 3, "Page 1 of 1"),
+        (1, 0, "Department: QA"), (1, 1, "Effective: 2026-03-01"), (1, 2, "Author: J. Smith"), (1, 3, "Approved: D. Lee"),
+        (2, 0, "STANDARD OPERATING PROCEDURE"), (2, 1, ""), (2, 2, ""), (2, 3, ""),
+    ]
+    for ri, ci, text in cells:
+        cell = header_table.rows[ri].cells[ci]
+        cell.text = text
+        if ri == 2 and ci == 0:
+            for r in cell.paragraphs[0].runs:
+                r.bold = True
+                r.font.size = Pt(12)
+    # Merge the last row
+    header_table.rows[2].cells[0].merge(header_table.rows[2].cells[3])
+    header_table.rows[2].cells[0].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    doc.add_paragraph()
+    doc.add_heading("Quality Assurance Testing Procedure", level=1)
+
+    doc.add_heading("1. Purpose", level=2)
+    doc.add_paragraph(
+        "This SOP defines the standard process for running quality assurance benchmarks "
+        "on the MiniPdf conversion engine."
+    )
+
+    doc.add_heading("2. Scope", level=2)
+    doc.add_paragraph(
+        "Applies to all QA engineers responsible for validating DOCX-to-PDF and "
+        "XLSX-to-PDF conversion quality."
+    )
+
+    doc.add_heading("3. Procedure", level=2)
+    steps = [
+        ("3.1", "Prepare Test Files", "Generate test documents using the benchmark generator scripts."),
+        ("3.2", "Run Conversion", "Execute the MiniPdf converter on all test files."),
+        ("3.3", "Generate Reference", "Create reference PDFs using LibreOffice for comparison."),
+        ("3.4", "Compare Results", "Run the comparison script to generate quality scores."),
+        ("3.5", "Analyze Report", "Review the benchmark report for any scores below 95%."),
+        ("3.6", "File Issues", "Create GitHub issues for any identified regressions."),
+        ("3.7", "Verify Fixes", "Re-run the benchmark after code changes to confirm improvements."),
+    ]
+    for num, title, desc in steps:
+        p = doc.add_paragraph()
+        rn = p.add_run(f"{num} {title}")
+        rn.bold = True
+        doc.add_paragraph(desc)
+
+    doc.add_heading("4. Acceptance Criteria", level=2)
+    criteria = [
+        "Average quality score must be >= 97%",
+        "No individual test case shall score below 80%",
+        "All new test cases must have reference PDFs",
+        "Regression tests must pass before release",
+    ]
+    for c in criteria:
+        doc.add_paragraph(c, style="List Bullet")
+    doc.save(path)
+
+
+def classic105_certificate(path):
+    """Certificate/diploma style document."""
+    doc = Document()
+    doc.add_paragraph()
+    doc.add_paragraph()
+
+    p_border = doc.add_paragraph()
+    p_border.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rb = p_border.add_run("\u2605 \u2605 \u2605 \u2605 \u2605")
+    rb.font.size = Pt(20)
+    rb.font.color.rgb = RGBColor(184, 134, 11)
+
+    doc.add_paragraph()
+    p_cert = doc.add_paragraph()
+    p_cert.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rc = p_cert.add_run("CERTIFICATE OF COMPLETION")
+    rc.bold = True
+    rc.font.size = Pt(24)
+    rc.font.color.rgb = RGBColor(47, 84, 150)
+
+    doc.add_paragraph()
+    p_present = doc.add_paragraph()
+    p_present.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rp = p_present.add_run("This is to certify that")
+    rp.font.size = Pt(14)
+
+    doc.add_paragraph()
+    p_name = doc.add_paragraph()
+    p_name.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rn = p_name.add_run("JOHN ALEXANDER SMITH")
+    rn.bold = True
+    rn.font.size = Pt(28)
+    rn.font.color.rgb = RGBColor(128, 0, 0)
+
+    doc.add_paragraph()
+    p_desc = doc.add_paragraph()
+    p_desc.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rd = p_desc.add_run(
+        "has successfully completed the requirements for\n"
+        "the MiniPdf Developer Certification Program"
+    )
+    rd.font.size = Pt(14)
+
+    doc.add_paragraph()
+    p_date = doc.add_paragraph()
+    p_date.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rdt = p_date.add_run("Issued: March 1, 2026")
+    rdt.font.size = Pt(12)
+    rdt.font.color.rgb = RGBColor(128, 128, 128)
+
+    doc.add_paragraph()
+    doc.add_paragraph()
+
+    sig_table = doc.add_table(rows=2, cols=3)
+    sig_table.rows[0].cells[0].text = "________________________"
+    sig_table.rows[0].cells[1].text = ""
+    sig_table.rows[0].cells[2].text = "________________________"
+    for ci in [0, 2]:
+        sig_table.rows[0].cells[ci].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+    sig_table.rows[1].cells[0].text = "Program Director"
+    sig_table.rows[1].cells[2].text = "Chief Technology Officer"
+    for ci in [0, 2]:
+        sig_table.rows[1].cells[ci].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        for r in sig_table.rows[1].cells[ci].paragraphs[0].runs:
+            r.italic = True
+
+    doc.add_paragraph()
+    p_border2 = doc.add_paragraph()
+    p_border2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rb2 = p_border2.add_run("\u2605 \u2605 \u2605 \u2605 \u2605")
+    rb2.font.size = Pt(20)
+    rb2.font.color.rgb = RGBColor(184, 134, 11)
+    doc.save(path)
+
+
+def classic106_multi_section_orientation(path):
+    """Document with alternating portrait and landscape sections."""
+    doc = Document()
+
+    # Section 1: Portrait
+    doc.add_heading("Section 1: Executive Summary (Portrait)", level=1)
+    doc.add_paragraph(
+        "This document demonstrates multiple sections with different page orientations. "
+        "The first section uses portrait layout for narrative content."
+    )
+    for i in range(1, 4):
+        doc.add_paragraph(
+            f"Key finding {i}: The analysis shows significant improvement in document conversion "
+            f"quality metrics across all test categories."
+        )
+
+    # Section 2: Landscape
+    doc.add_section()
+    section2 = doc.sections[1]
+    section2.orientation = 1
+    new_w, new_h = section2.page_height, section2.page_width
+    section2.page_width = new_w
+    section2.page_height = new_h
+
+    doc.add_heading("Section 2: Data Analysis (Landscape)", level=1)
+    table = doc.add_table(rows=5, cols=8)
+    table.style = "Table Grid"
+    headers = ["Metric", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Avg"]
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    metrics = ["Quality Score", "Conversion Time", "File Size Ratio", "Error Rate"]
+    import random
+    random.seed(106)
+    for ri, m in enumerate(metrics, 1):
+        table.rows[ri].cells[0].text = m
+        vals = [random.randint(85, 99) for _ in range(6)]
+        for ci, v in enumerate(vals, 1):
+            table.rows[ri].cells[ci].text = f"{v}%"
+        table.rows[ri].cells[7].text = f"{sum(vals) // 6}%"
+
+    # Section 3: Portrait
+    doc.add_section()
+    section3 = doc.sections[2]
+    section3.orientation = 0
+    section3.page_width = doc.sections[0].page_width
+    section3.page_height = doc.sections[0].page_height
+
+    doc.add_heading("Section 3: Conclusions (Portrait)", level=1)
+    doc.add_paragraph(
+        "Based on the data analysis presented in Section 2, we recommend continuing "
+        "the current optimization strategy with focus on edge cases."
+    )
+    doc.save(path)
+
+
+def classic107_order_form(path):
+    """Order form with product list and totals."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("PURCHASE ORDER")
+    r.bold = True
+    r.font.size = Pt(20)
+
+    doc.add_paragraph()
+
+    # Order info
+    info_table = doc.add_table(rows=3, cols=4)
+    info_table.style = "Table Grid"
+    info_data = [
+        ("PO Number:", "PO-2026-0342", "Date:", "March 5, 2026"),
+        ("Vendor:", "MiniPdf Corp", "Ship To:", "Acme Inc"),
+        ("Payment:", "Net 30", "Delivery:", "March 20, 2026"),
+    ]
+    for ri, (l1, v1, l2, v2) in enumerate(info_data):
+        info_table.rows[ri].cells[0].text = l1
+        for r in info_table.rows[ri].cells[0].paragraphs[0].runs:
+            r.bold = True
+        info_table.rows[ri].cells[1].text = v1
+        info_table.rows[ri].cells[2].text = l2
+        for r in info_table.rows[ri].cells[2].paragraphs[0].runs:
+            r.bold = True
+        info_table.rows[ri].cells[3].text = v2
+
+    doc.add_paragraph()
+
+    # Items
+    items_table = doc.add_table(rows=7, cols=5)
+    items_table.style = "Table Grid"
+    headers = ["Item #", "Description", "Qty", "Unit Price", "Total"]
+    for ci, h in enumerate(headers):
+        cell = items_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    items = [
+        ("001", "MiniPdf Standard License", "5", "$29.00", "$145.00"),
+        ("002", "MiniPdf Enterprise License", "2", "$199.00", "$398.00"),
+        ("003", "Premium Support (Annual)", "1", "$500.00", "$500.00"),
+        ("004", "Training Workshop (Per Seat)", "10", "$50.00", "$500.00"),
+        ("005", "Custom Integration Service", "1", "$2,000.00", "$2,000.00"),
+    ]
+    for ri, vals in enumerate(items, 1):
+        for ci, v in enumerate(vals):
+            items_table.rows[ri].cells[ci].text = v
+            if ci >= 2:
+                items_table.rows[ri].cells[ci].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+
+    # Total row
+    total_row = items_table.rows[6]
+    total_row.cells[0].merge(total_row.cells[3])
+    total_row.cells[0].text = "TOTAL"
+    total_row.cells[0].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    for r in total_row.cells[0].paragraphs[0].runs:
+        r.bold = True
+    total_row.cells[4].text = "$3,543.00"
+    total_row.cells[4].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    for r in total_row.cells[4].paragraphs[0].runs:
+        r.bold = True
+    for ci in [0, 4]:
+        _set_cell_shading(total_row.cells[ci], "D6E4F0")
+
+    doc.add_paragraph()
+    doc.add_paragraph("Authorized Signature: ________________________")
+    doc.save(path)
+
+
+def classic108_comparison_matrix(path):
+    """Feature comparison matrix with checkmarks."""
+    doc = Document()
+    doc.add_heading("PDF Library Comparison Matrix", level=1)
+    doc.add_paragraph("Feature comparison across leading PDF generation libraries.")
+    doc.add_paragraph()
+
+    table = doc.add_table(rows=13, cols=4)
+    table.style = "Table Grid"
+    headers = ["Feature", "MiniPdf", "LibreOffice", "Commercial"]
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+            r.font.size = Pt(10)
+
+    features = [
+        ("XLSX to PDF", "\u2713", "\u2713", "\u2713"),
+        ("DOCX to PDF", "\u2713", "\u2713", "\u2713"),
+        ("No Office Dependency", "\u2713", "\u2717", "\u2713"),
+        ("CJK Font Support", "\u2713", "\u2713", "\u2713"),
+        ("Chart Rendering", "\u2713", "\u2713", "\u2713"),
+        ("Cross-Platform", "\u2713", "\u2713", "Varies"),
+        ("Open Source", "\u2713", "\u2713", "\u2717"),
+        ("NuGet Package", "\u2713", "\u2717", "\u2713"),
+        ("Batch Processing", "\u2713", "\u2713", "\u2713"),
+        ("Custom Page Size", "\u2713", "\u2713", "\u2713"),
+        ("Free for Commercial", "\u2713", "\u2713", "\u2717"),
+        ("Active Benchmark Suite", "\u2713", "N/A", "Varies"),
+    ]
+    for ri, (feat, mp, lo, comm) in enumerate(features, 1):
+        table.rows[ri].cells[0].text = feat
+        for r in table.rows[ri].cells[0].paragraphs[0].runs:
+            r.bold = True
+        for ci, val in enumerate([mp, lo, comm], 1):
+            cell = table.rows[ri].cells[ci]
+            p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            rv = p.add_run(val)
+            if val == "\u2713":
+                rv.font.color.rgb = RGBColor(0, 128, 0)
+                rv.bold = True
+            elif val == "\u2717":
+                rv.font.color.rgb = RGBColor(200, 0, 0)
+                rv.bold = True
+        if ri % 2 == 0:
+            for ci in range(4):
+                _set_cell_shading(table.rows[ri].cells[ci], "EBF1F8")
+    doc.save(path)
+
+
+def classic109_release_notes(path):
+    """Software release notes document."""
+    doc = Document()
+    doc.add_heading("MiniPdf Release Notes", level=1)
+    doc.add_paragraph()
+
+    releases = [
+        ("v2.0.0 - March 2026", "Major Release", [
+            ("New Features", [
+                "DOCX-to-PDF conversion engine",
+                "CJK font auto-embedding",
+                "Benchmark suite with 120 test cases",
+                "AI-powered code review integration",
+            ]),
+            ("Improvements", [
+                "40% faster XLSX conversion",
+                "Improved table border rendering",
+                "Better image scaling algorithm",
+                "Enhanced chart axis label positioning",
+            ]),
+            ("Bug Fixes", [
+                "Fixed merged cell alignment in complex tables",
+                "Resolved font fallback issue for special characters",
+                "Corrected page break positioning after images",
+            ]),
+        ]),
+        ("v1.5.0 - January 2026", "Feature Release", [
+            ("New Features", [
+                "Excel chart rendering (bar, line, pie)",
+                "Custom page size support",
+                "Batch conversion API",
+            ]),
+            ("Bug Fixes", [
+                "Fixed number format handling for currency",
+                "Resolved overflow for wide columns",
+            ]),
+        ]),
+    ]
+
+    for version, label, sections in releases:
+        p_ver = doc.add_paragraph()
+        rv = p_ver.add_run(version)
+        rv.bold = True
+        rv.font.size = Pt(16)
+        rv.font.color.rgb = RGBColor(47, 84, 150)
+
+        p_label = doc.add_paragraph()
+        rl = p_label.add_run(label)
+        rl.italic = True
+        rl.font.color.rgb = RGBColor(128, 128, 128)
+
+        for section_title, items in sections:
+            doc.add_heading(section_title, level=3)
+            for item in items:
+                doc.add_paragraph(item, style="List Bullet")
+
+        _add_horizontal_rule(doc)
+        doc.add_paragraph()
+    doc.save(path)
+
+
+def classic110_troubleshooting_guide(path):
+    """Troubleshooting guide with problem-solution pairs."""
+    doc = Document()
+    doc.add_heading("MiniPdf Troubleshooting Guide", level=1)
+    doc.add_paragraph("Common issues and their solutions.")
+    doc.add_paragraph()
+
+    issues = [
+        ("Conversion fails with OutOfMemoryException",
+         "Large files may exceed default memory limits.",
+         "Increase the process memory limit or split the input file into smaller chunks."),
+        ("CJK characters appear as boxes in PDF",
+         "The required CJK fonts are not available on the system.",
+         "Install the NotoSansCJK font family or enable auto-embedding in settings."),
+        ("Table borders are missing in output PDF",
+         "The source document uses theme-based borders not supported by the parser.",
+         "Convert theme borders to explicit borders before processing."),
+    ]
+
+    for i, (problem, cause, solution) in enumerate(issues, 1):
+        doc.add_heading(f"Issue {i}: {problem}", level=2)
+
+        p_cause = doc.add_paragraph()
+        rc_label = p_cause.add_run("Cause: ")
+        rc_label.bold = True
+        rc_label.font.color.rgb = RGBColor(200, 100, 0)
+        p_cause.add_run(cause)
+
+        p_sol = doc.add_paragraph()
+        rs_label = p_sol.add_run("Solution: ")
+        rs_label.bold = True
+        rs_label.font.color.rgb = RGBColor(0, 128, 0)
+        p_sol.add_run(solution)
+
+        doc.add_paragraph()
+    doc.save(path)
+
+
+def classic111_meeting_agenda(path):
+    """Meeting agenda with time slots and action items."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("TEAM MEETING AGENDA")
+    r.bold = True
+    r.font.size = Pt(18)
+    r.font.color.rgb = RGBColor(47, 84, 150)
+
+    doc.add_paragraph()
+    details = [
+        ("Date:", "March 6, 2026"),
+        ("Time:", "10:00 AM - 11:30 AM"),
+        ("Location:", "Conference Room B / Teams"),
+        ("Facilitator:", "Jane Smith"),
+        ("Attendees:", "Engineering Team (8 members)"),
+    ]
+    for label, value in details:
+        p = doc.add_paragraph()
+        rl = p.add_run(label + " ")
+        rl.bold = True
+        p.add_run(value)
+
+    doc.add_paragraph()
+    _add_horizontal_rule(doc)
+
+    doc.add_heading("Agenda Items", level=2)
+    agenda_table = doc.add_table(rows=7, cols=4)
+    agenda_table.style = "Table Grid"
+    for ci, h in enumerate(["Time", "Topic", "Presenter", "Duration"]):
+        cell = agenda_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    items = [
+        ("10:00", "Welcome & Review Action Items", "Jane", "10 min"),
+        ("10:10", "Sprint Progress Update", "Team Leads", "20 min"),
+        ("10:30", "DOCX Benchmark Results Review", "Bob", "15 min"),
+        ("10:45", "Code Quality Metrics Discussion", "Alice", "15 min"),
+        ("11:00", "Upcoming Release Planning", "Jane", "20 min"),
+        ("11:20", "Open Discussion & Next Steps", "All", "10 min"),
+    ]
+    for ri, (time, topic, presenter, dur) in enumerate(items, 1):
+        agenda_table.rows[ri].cells[0].text = time
+        agenda_table.rows[ri].cells[1].text = topic
+        agenda_table.rows[ri].cells[2].text = presenter
+        agenda_table.rows[ri].cells[3].text = dur
+
+    doc.add_paragraph()
+    doc.add_heading("Action Items from Previous Meeting", level=2)
+    actions = [
+        ("\u2713 Complete benchmark expansion to 120 test cases - Bob", True),
+        ("\u2713 Review CJK font embedding PR - Alice", True),
+        ("\u2717 Update deployment documentation - Carol (carry over)", False),
+    ]
+    for action, done in actions:
+        p = doc.add_paragraph(action)
+        color = RGBColor(0, 128, 0) if done else RGBColor(200, 0, 0)
+        for r in p.runs:
+            r.font.color.rgb = color
+    doc.save(path)
+
+
+def classic112_project_status_report(path):
+    """Project status report with RAG indicators."""
+    doc = Document()
+    doc.add_heading("Project Status Report", level=1)
+    doc.add_paragraph("MiniPdf v2.0 Release | Reporting Period: March 1-6, 2026")
+    doc.add_paragraph()
+
+    # Overall status
+    doc.add_heading("Overall Status: ON TRACK", level=2)
+    status_table = doc.add_table(rows=2, cols=4)
+    status_table.style = "Table Grid"
+    statuses = [
+        ("Schedule", "GREEN", "548235"),
+        ("Budget", "GREEN", "548235"),
+        ("Quality", "AMBER", "BF8F00"),
+        ("Risks", "GREEN", "548235"),
+    ]
+    for ci, (label, status, color) in enumerate(statuses):
+        top = status_table.rows[0].cells[ci]
+        top.text = label
+        top.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        for r in top.paragraphs[0].runs:
+            r.bold = True
+        bot = status_table.rows[1].cells[ci]
+        bot.text = status
+        bot.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_cell_shading(bot, color)
+        for r in bot.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+
+    doc.add_paragraph()
+
+    # Milestones
+    doc.add_heading("Key Milestones", level=2)
+    mile_table = doc.add_table(rows=6, cols=4)
+    mile_table.style = "Table Grid"
+    for ci, h in enumerate(["Milestone", "Target Date", "Status", "Notes"]):
+        cell = mile_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    milestones = [
+        ("DOCX Parser Complete", "Feb 28", "\u2713 Done", ""),
+        ("Benchmark 90 Cases", "Mar 1", "\u2713 Done", ""),
+        ("Benchmark 120 Cases", "Mar 6", "In Progress", "On track"),
+        ("Quality Score >= 97%", "Mar 10", "Pending", "Currently 95.8%"),
+        ("NuGet Package Release", "Mar 15", "Pending", "Blocked on quality"),
+    ]
+    for ri, (name, date, status, notes) in enumerate(milestones, 1):
+        mile_table.rows[ri].cells[0].text = name
+        mile_table.rows[ri].cells[1].text = date
+        mile_table.rows[ri].cells[2].text = status
+        mile_table.rows[ri].cells[3].text = notes
+        if "\u2713" in status:
+            for r in mile_table.rows[ri].cells[2].paragraphs[0].runs:
+                r.font.color.rgb = RGBColor(0, 128, 0)
+
+    doc.add_paragraph()
+    doc.add_heading("Risks & Issues", level=2)
+    risks = [
+        ("CJK font licensing review pending", "Medium", "Legal team reviewing by Mar 8"),
+        ("Quality score below 97% target", "High", "Focused optimization sprint planned"),
+    ]
+    for risk, severity, mitigation in risks:
+        p = doc.add_paragraph()
+        rs = p.add_run(f"[{severity}] ")
+        rs.bold = True
+        if severity == "High":
+            rs.font.color.rgb = RGBColor(200, 0, 0)
+        else:
+            rs.font.color.rgb = RGBColor(200, 150, 0)
+        p.add_run(f"{risk} - ")
+        rm = p.add_run(mitigation)
+        rm.italic = True
+    doc.save(path)
+
+
+def classic113_address_labels(path):
+    """Sheet of address labels in table layout."""
+    doc = Document()
+    doc.add_heading("Mailing Labels", level=1)
+    doc.add_paragraph()
+
+    addresses = [
+        ("John Smith", "123 Main Street", "San Francisco, CA 94102"),
+        ("Alice Johnson", "456 Oak Avenue", "New York, NY 10001"),
+        ("Bob Williams", "789 Pine Road", "Chicago, IL 60601"),
+        ("Carol Brown", "321 Elm Drive", "Boston, MA 02101"),
+        ("David Jones", "654 Maple Lane", "Seattle, WA 98101"),
+        ("Eva Garcia", "987 Cedar Court", "Austin, TX 73301"),
+        ("Frank Miller", "147 Birch Way", "Denver, CO 80201"),
+        ("Grace Davis", "258 Spruce Blvd", "Portland, OR 97201"),
+        ("Henry Wilson", "369 Willow Path", "Miami, FL 33101"),
+        ("Iris Moore", "741 Ash Circle", "Phoenix, AZ 85001"),
+        ("Jack Taylor", "852 Poplar St", "Atlanta, GA 30301"),
+        ("Karen Thomas", "963 Hickory Ave", "Dallas, TX 75201"),
+    ]
+
+    table = doc.add_table(rows=6, cols=2)
+    table.style = "Table Grid"
+    idx = 0
+    for ri in range(6):
+        for ci in range(2):
+            if idx < len(addresses):
+                name, street, city = addresses[idx]
+                cell = table.rows[ri].cells[ci]
+                p1 = cell.paragraphs[0]
+                r1 = p1.add_run(name)
+                r1.bold = True
+                r1.font.size = Pt(11)
+                p2 = cell.add_paragraph(street)
+                p3 = cell.add_paragraph(city)
+                for p in [p2, p3]:
+                    for r in p.runs:
+                        r.font.size = Pt(10)
+                idx += 1
+    doc.save(path)
+
+
+def classic114_test_report(path):
+    """Software test execution report with pass/fail results."""
+    doc = Document()
+    doc.add_heading("Test Execution Report", level=1)
+    doc.add_paragraph("MiniPdf v2.0 | Test Run: 2026-03-06 | Environment: CI/CD Pipeline")
+    doc.add_paragraph()
+
+    # Summary
+    doc.add_heading("Summary", level=2)
+    summary_table = doc.add_table(rows=2, cols=5)
+    summary_table.style = "Table Grid"
+    sum_labels = ["Total", "Passed", "Failed", "Skipped", "Pass Rate"]
+    sum_values = ["120", "115", "3", "2", "95.8%"]
+    sum_colors = ["333333", "548235", "C00000", "BF8F00", "2F5496"]
+    for ci, (label, value, color) in enumerate(zip(sum_labels, sum_values, sum_colors)):
+        cell_label = summary_table.rows[0].cells[ci]
+        cell_label.text = label
+        cell_label.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_cell_shading(cell_label, color)
+        for r in cell_label.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+        cell_val = summary_table.rows[1].cells[ci]
+        cell_val.text = value
+        cell_val.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        for r in cell_val.paragraphs[0].runs:
+            r.bold = True
+            r.font.size = Pt(14)
+
+    doc.add_paragraph()
+
+    # Results
+    doc.add_heading("Test Results (Failed & Skipped)", level=2)
+    results_table = doc.add_table(rows=6, cols=4)
+    results_table.style = "Table Grid"
+    for ci, h in enumerate(["Test Case", "Category", "Status", "Notes"]):
+        cell = results_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    test_results = [
+        ("classic49_cjk", "Font", "FAILED", "CJK fallback missing glyph"),
+        ("classic57_rtl", "Layout", "FAILED", "RTL alignment incorrect"),
+        ("classic64_columns", "Layout", "FAILED", "Multi-column not supported"),
+        ("classic61_header", "Structure", "SKIPPED", "Headers not implemented"),
+        ("classic62_footnote", "Structure", "SKIPPED", "Footnotes not implemented"),
+    ]
+    for ri, (tc, cat, status, notes) in enumerate(test_results, 1):
+        results_table.rows[ri].cells[0].text = tc
+        results_table.rows[ri].cells[1].text = cat
+        results_table.rows[ri].cells[2].text = status
+        results_table.rows[ri].cells[3].text = notes
+        status_cell = results_table.rows[ri].cells[2]
+        for r in status_cell.paragraphs[0].runs:
+            r.bold = True
+            r.font.color.rgb = RGBColor(200, 0, 0) if status == "FAILED" else RGBColor(200, 150, 0)
+
+    doc.add_paragraph()
+    doc.add_heading("Recommendations", level=2)
+    recs = [
+        "Implement CJK font fallback chain for missing glyphs",
+        "Add RTL text direction support in paragraph renderer",
+        "Investigate multi-column layout approach for simple cases",
+    ]
+    for rec in recs:
+        doc.add_paragraph(rec, style="List Number")
+    doc.save(path)
+
+
+def classic115_price_list(path):
+    """Product price list with categories and discounts."""
+    doc = Document()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p_title.add_run("PRICE LIST 2026")
+    r.bold = True
+    r.font.size = Pt(20)
+    r.font.color.rgb = RGBColor(47, 84, 150)
+
+    p_eff = doc.add_paragraph()
+    p_eff.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    re = p_eff.add_run("Effective March 1, 2026 | All prices in USD")
+    re.font.color.rgb = RGBColor(128, 128, 128)
+    re.font.size = Pt(10)
+
+    doc.add_paragraph()
+
+    categories = [
+        ("Software Licenses", [
+            ("MiniPdf Community", "Free", "Free", "Free"),
+            ("MiniPdf Standard", "$29/mo", "$24/mo", "$19/mo"),
+            ("MiniPdf Professional", "$79/mo", "$67/mo", "$55/mo"),
+            ("MiniPdf Enterprise", "$199/mo", "$169/mo", "$149/mo"),
+        ]),
+        ("Support Plans", [
+            ("Email Support", "$10/mo", "$8/mo", "$6/mo"),
+            ("Priority Support", "$50/mo", "$42/mo", "$35/mo"),
+            ("Dedicated Support", "$200/mo", "$170/mo", "$140/mo"),
+        ]),
+        ("Professional Services", [
+            ("Integration Consulting", "$150/hr", "$130/hr", "$110/hr"),
+            ("Custom Development", "$200/hr", "$175/hr", "$150/hr"),
+            ("Training Workshop", "$500/day", "$425/day", "$350/day"),
+        ]),
+    ]
+
+    for cat_name, products in categories:
+        doc.add_heading(cat_name, level=2)
+        table = doc.add_table(rows=len(products) + 1, cols=4)
+        table.style = "Table Grid"
+        for ci, h in enumerate(["Product", "1-9 Seats", "10-49 Seats", "50+ Seats"]):
+            cell = table.rows[0].cells[ci]
+            cell.text = h
+            _set_cell_shading(cell, "2F5496")
+            for r in cell.paragraphs[0].runs:
+                r.font.color.rgb = RGBColor(255, 255, 255)
+                r.bold = True
+                r.font.size = Pt(9)
+        for ri, row_data in enumerate(products, 1):
+            for ci, val in enumerate(row_data):
+                table.rows[ri].cells[ci].text = val
+                if ci >= 1:
+                    table.rows[ri].cells[ci].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            if ri % 2 == 0:
+                for ci in range(4):
+                    _set_cell_shading(table.rows[ri].cells[ci], "EBF1F8")
+        doc.add_paragraph()
+
+    p_note = doc.add_paragraph()
+    rn = p_note.add_run("Note: ")
+    rn.bold = True
+    p_note.add_run("Volume discounts are applied automatically. Contact sales for enterprise agreements over 100 seats.")
+    doc.save(path)
+
+
+def classic116_risk_assessment(path):
+    """Risk assessment matrix with probability and impact."""
+    doc = Document()
+    doc.add_heading("Risk Assessment Report", level=1)
+    doc.add_paragraph("Project: MiniPdf v2.0 | Assessment Date: March 6, 2026")
+    doc.add_paragraph()
+
+    # Risk matrix
+    doc.add_heading("Risk Matrix", level=2)
+    matrix = doc.add_table(rows=6, cols=6)
+    matrix.style = "Table Grid"
+    matrix.rows[0].cells[0].text = "Impact \\ Likelihood"
+    for ci, h in enumerate(["Very Low", "Low", "Medium", "High", "Very High"], 1):
+        cell = matrix.rows[0].cells[ci]
+        cell.text = h
+        cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+            r.font.size = Pt(8)
+    _set_cell_shading(matrix.rows[0].cells[0], "2F5496")
+    for r in matrix.rows[0].cells[0].paragraphs[0].runs:
+        r.font.color.rgb = RGBColor(255, 255, 255)
+        r.bold = True
+        r.font.size = Pt(8)
+
+    impact_labels = ["Critical", "High", "Medium", "Low", "Negligible"]
+    # Color coding: green=low, yellow=medium, orange=high, red=critical
+    risk_colors = [
+        ["BF8F00", "C00000", "C00000", "C00000", "C00000"],
+        ["548235", "BF8F00", "C00000", "C00000", "C00000"],
+        ["548235", "548235", "BF8F00", "BF8F00", "C00000"],
+        ["548235", "548235", "548235", "BF8F00", "BF8F00"],
+        ["548235", "548235", "548235", "548235", "BF8F00"],
+    ]
+    for ri, label in enumerate(impact_labels, 1):
+        cell = matrix.rows[ri].cells[0]
+        cell.text = label
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+            r.font.size = Pt(8)
+        for ci in range(5):
+            c = matrix.rows[ri].cells[ci + 1]
+            _set_cell_shading(c, risk_colors[ri - 1][ci])
+
+    doc.add_paragraph()
+
+    # Risk register
+    doc.add_heading("Risk Register", level=2)
+    reg = doc.add_table(rows=6, cols=5)
+    reg.style = "Table Grid"
+    for ci, h in enumerate(["Risk", "Likelihood", "Impact", "Rating", "Mitigation"]):
+        cell = reg.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "333333")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+            r.font.size = Pt(9)
+    risks = [
+        ("Quality below target", "Medium", "High", "HIGH", "Sprint optimization"),
+        ("Font licensing issue", "Low", "Medium", "MEDIUM", "Legal review"),
+        ("Performance regression", "Low", "High", "MEDIUM", "Benchmark monitoring"),
+        ("Team member unavailable", "Low", "Medium", "MEDIUM", "Cross-training"),
+        ("Dependency vulnerability", "Very Low", "High", "LOW", "Automated scanning"),
+    ]
+    for ri, (risk, like, impact, rating, mit) in enumerate(risks, 1):
+        vals = [risk, like, impact, rating, mit]
+        for ci, v in enumerate(vals):
+            reg.rows[ri].cells[ci].text = v
+            if ci == 3:
+                for r in reg.rows[ri].cells[ci].paragraphs[0].runs:
+                    r.bold = True
+                    if v == "HIGH":
+                        r.font.color.rgb = RGBColor(200, 0, 0)
+                    elif v == "MEDIUM":
+                        r.font.color.rgb = RGBColor(200, 150, 0)
+                    else:
+                        r.font.color.rgb = RGBColor(0, 128, 0)
+    doc.save(path)
+
+
+def classic117_employee_handbook_excerpt(path):
+    """Employee handbook excerpt with policies and procedures."""
+    doc = Document()
+    doc.add_heading("Employee Handbook", level=1)
+    p_sub = doc.add_paragraph()
+    rs = p_sub.add_run("MiniPdf Corporation | Revised March 2026")
+    rs.italic = True
+    rs.font.color.rgb = RGBColor(128, 128, 128)
+
+    doc.add_paragraph()
+
+    doc.add_heading("Chapter 5: Leave Policies", level=2)
+
+    doc.add_heading("5.1 Annual Leave", level=3)
+    doc.add_paragraph(
+        "Full-time employees are entitled to 20 days of paid annual leave per calendar year. "
+        "Leave accrues at a rate of 1.67 days per month of service."
+    )
+
+    leave_table = doc.add_table(rows=5, cols=3)
+    leave_table.style = "Table Grid"
+    for ci, h in enumerate(["Years of Service", "Annual Days", "Max Carry Over"]):
+        cell = leave_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "4472C4")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    leave_data = [
+        ("0-2 years", "20 days", "5 days"),
+        ("3-5 years", "23 days", "7 days"),
+        ("6-10 years", "25 days", "10 days"),
+        ("10+ years", "30 days", "15 days"),
+    ]
+    for ri, (years, days, carry) in enumerate(leave_data, 1):
+        leave_table.rows[ri].cells[0].text = years
+        leave_table.rows[ri].cells[1].text = days
+        leave_table.rows[ri].cells[2].text = carry
+
+    doc.add_paragraph()
+    doc.add_heading("5.2 Sick Leave", level=3)
+    doc.add_paragraph(
+        "Employees are entitled to 10 days of paid sick leave per year. A medical certificate "
+        "is required for absences of three or more consecutive days."
+    )
+
+    doc.add_heading("5.3 Parental Leave", level=3)
+    doc.add_paragraph(
+        "Primary caregivers are entitled to 16 weeks of paid parental leave. Secondary caregivers "
+        "receive 4 weeks of paid leave. Leave must be taken within 12 months of the child's birth "
+        "or adoption date."
+    )
+
+    doc.add_heading("Chapter 6: Code of Conduct", level=2)
+    doc.add_heading("6.1 Professional Behavior", level=3)
+    behaviors = [
+        "Treat all colleagues with respect and dignity",
+        "Maintain confidentiality of company information",
+        "Report conflicts of interest promptly",
+        "Comply with all applicable laws and regulations",
+        "Use company resources responsibly",
+    ]
+    for b in behaviors:
+        doc.add_paragraph(b, style="List Bullet")
+
+    doc.add_heading("6.2 Disciplinary Process", level=3)
+    process = [
+        "Verbal warning with documented discussion",
+        "Written warning with improvement plan",
+        "Final written warning with performance review",
+        "Termination of employment",
+    ]
+    for i, step in enumerate(process, 1):
+        doc.add_paragraph(f"Step {i}: {step}")
+    doc.save(path)
+
+
+def classic118_data_report_with_summary(path):
+    """Data analysis report with summary statistics and detailed table."""
+    doc = Document()
+    doc.add_heading("Benchmark Quality Analysis Report", level=1)
+    doc.add_paragraph("Generated: March 6, 2026 | Total Test Cases: 120")
+    doc.add_paragraph()
+
+    # Summary statistics
+    doc.add_heading("Summary Statistics", level=2)
+    stats_table = doc.add_table(rows=2, cols=6)
+    stats_table.style = "Table Grid"
+    stat_labels = ["Mean", "Median", "Std Dev", "Min", "Max", "P95"]
+    stat_values = ["96.2%", "97.5%", "4.1%", "72.3%", "100%", "99.1%"]
+    for ci, (label, value) in enumerate(zip(stat_labels, stat_values)):
+        top = stats_table.rows[0].cells[ci]
+        top.text = label
+        top.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_cell_shading(top, "2F5496")
+        for r in top.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+        bot = stats_table.rows[1].cells[ci]
+        bot.text = value
+        bot.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        for r in bot.paragraphs[0].runs:
+            r.bold = True
+            r.font.size = Pt(14)
+
+    doc.add_paragraph()
+
+    # Category breakdown
+    doc.add_heading("Category Breakdown", level=2)
+    cat_table = doc.add_table(rows=7, cols=4)
+    cat_table.style = "Table Grid"
+    for ci, h in enumerate(["Category", "Count", "Avg Score", "Status"]):
+        cell = cat_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "333333")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    categories = [
+        ("Text & Formatting", "30", "98.1%", "PASS"),
+        ("Tables", "25", "96.7%", "PASS"),
+        ("Images", "15", "95.2%", "PASS"),
+        ("Lists", "15", "97.8%", "PASS"),
+        ("Layout & Structure", "20", "93.5%", "WARN"),
+        ("Mixed Content", "15", "95.0%", "PASS"),
+    ]
+    for ri, (cat, count, avg, status) in enumerate(categories, 1):
+        cat_table.rows[ri].cells[0].text = cat
+        cat_table.rows[ri].cells[1].text = count
+        cat_table.rows[ri].cells[1].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        cat_table.rows[ri].cells[2].text = avg
+        cat_table.rows[ri].cells[2].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        cat_table.rows[ri].cells[3].text = status
+        cat_table.rows[ri].cells[3].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        for r in cat_table.rows[ri].cells[3].paragraphs[0].runs:
+            r.bold = True
+            r.font.color.rgb = RGBColor(0, 128, 0) if status == "PASS" else RGBColor(200, 150, 0)
+
+    doc.add_paragraph()
+
+    # Distribution
+    doc.add_heading("Score Distribution", level=2)
+    dist_table = doc.add_table(rows=6, cols=3)
+    dist_table.style = "Table Grid"
+    for ci, h in enumerate(["Score Range", "Count", "Bar"]):
+        cell = dist_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "4472C4")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    dist_data = [
+        ("98-100%", "45", "\u2588" * 18),
+        ("95-97%", "35", "\u2588" * 14),
+        ("90-94%", "25", "\u2588" * 10),
+        ("80-89%", "10", "\u2588" * 4),
+        ("< 80%", "5", "\u2588" * 2),
+    ]
+    for ri, (range_str, count, bar) in enumerate(dist_data, 1):
+        dist_table.rows[ri].cells[0].text = range_str
+        dist_table.rows[ri].cells[1].text = count
+        dist_table.rows[ri].cells[1].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p = dist_table.rows[ri].cells[2].paragraphs[0]
+        rb = p.add_run(bar)
+        rb.font.color.rgb = RGBColor(47, 84, 150)
+        rb.font.size = Pt(8)
+    doc.save(path)
+
+
+def classic119_multi_language_document(path):
+    """Document with text in multiple languages."""
+    doc = Document()
+    doc.add_heading("Multilingual Document Sample", level=1)
+    doc.add_paragraph("This document demonstrates text rendering in multiple languages and scripts.")
+    doc.add_paragraph()
+
+    languages = [
+        ("English", "The quick brown fox jumps over the lazy dog. MiniPdf converts documents with high fidelity."),
+        ("French", "Le renard brun rapide saute par-dessus le chien paresseux."),
+        ("German", "Der schnelle braune Fuchs springt \u00fcber den faulen Hund."),
+        ("Spanish", "El r\u00e1pido zorro marr\u00f3n salta sobre el perro perezoso."),
+        ("Japanese", "\u3053\u3093\u306b\u3061\u306f\u4e16\u754c\u3002MiniPdf\u306f\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u3092\u9ad8\u54c1\u8cea\u3067\u5909\u63db\u3057\u307e\u3059\u3002"),
+    ]
+
+    for lang, text in languages:
+        p = doc.add_paragraph()
+        rl = p.add_run(f"{lang}: ")
+        rl.bold = True
+        rl.font.color.rgb = RGBColor(47, 84, 150)
+        p.add_run(text)
+        doc.add_paragraph()
+
+    doc.add_heading("Special Characters & Symbols", level=2)
+    symbols = [
+        ("Currency", "\u00a3 \u20ac \u00a5 \u20a9 \u20b9 \u20bd"),
+        ("Math", "\u00b1 \u00d7 \u00f7 \u2248 \u2260 \u2264 \u2265 \u221e \u221a \u03c0"),
+        ("Arrows", "\u2190 \u2191 \u2192 \u2193 \u2194 \u21d2 \u21d4"),
+        ("Misc", "\u00a9 \u00ae \u2122 \u2020 \u2021 \u00a7 \u00b6 \u2022"),
+    ]
+    for category, chars in symbols:
+        p = doc.add_paragraph()
+        rc = p.add_run(f"{category}: ")
+        rc.bold = True
+        p.add_run(chars)
+    doc.save(path)
+
+
+def classic120_comprehensive_business_proposal(path):
+    """Comprehensive business proposal combining many document features."""
+    doc = Document()
+
+    # Cover page
+    doc.add_paragraph()
+    doc.add_paragraph()
+    p_company = doc.add_paragraph()
+    p_company.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rc = p_company.add_run("MINIPDF CORPORATION")
+    rc.font.size = Pt(14)
+    rc.font.color.rgb = RGBColor(128, 128, 128)
+
+    doc.add_paragraph()
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rt = p_title.add_run("Business Proposal")
+    rt.bold = True
+    rt.font.size = Pt(32)
+    rt.font.color.rgb = RGBColor(47, 84, 150)
+
+    p_sub = doc.add_paragraph()
+    p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rs = p_sub.add_run("Enterprise Document Processing Solution")
+    rs.font.size = Pt(16)
+    rs.italic = True
+
+    doc.add_paragraph()
+    img_buf = _create_test_png(400, 120, (47, 84, 150))
+    p_img = doc.add_paragraph()
+    p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_img.add_run().add_picture(img_buf, width=Inches(5))
+
+    doc.add_paragraph()
+    doc.add_paragraph()
+    p_info = doc.add_paragraph()
+    p_info.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    ri = p_info.add_run("Prepared for: Acme Corporation\nDate: March 6, 2026\nConfidential")
+    ri.font.color.rgb = RGBColor(128, 128, 128)
+
+    doc.add_page_break()
+
+    # Table of Contents
+    doc.add_heading("Table of Contents", level=1)
+    toc = [
+        ("1. Executive Summary", "2"), ("2. Problem Statement", "3"),
+        ("3. Proposed Solution", "4"), ("4. Technical Architecture", "5"),
+        ("5. Implementation Plan", "6"), ("6. Pricing", "7"),
+        ("7. Team & Qualifications", "8"), ("8. Terms & Conditions", "9"),
+    ]
+    for title, page in toc:
+        p = doc.add_paragraph()
+        p.add_run(title)
+        dots = "." * (55 - len(title))
+        p.add_run(f"{dots}{page}")
+
+    doc.add_page_break()
+
+    # Executive Summary
+    doc.add_heading("1. Executive Summary", level=1)
+    doc.add_paragraph(
+        "MiniPdf Corporation proposes an enterprise document processing solution that eliminates "
+        "the dependency on Microsoft Office for PDF generation. Our solution provides high-fidelity "
+        "conversion of XLSX and DOCX files to PDF format with an average quality score of 97%."
+    )
+
+    # Key benefits
+    doc.add_heading("Key Benefits", level=2)
+    benefits_table = doc.add_table(rows=2, cols=3)
+    benefits_table.style = "Table Grid"
+    benefit_data = [
+        ("Cost Reduction", "60% lower licensing costs compared to traditional solutions"),
+        ("Performance", "3x faster conversion with no external dependencies"),
+        ("Quality", "97%+ fidelity score verified by automated benchmarks"),
+    ]
+    for ci, (title, desc) in enumerate(benefit_data):
+        top = benefits_table.rows[0].cells[ci]
+        top_p = top.paragraphs[0]
+        top_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_cell_shading(top, "2F5496")
+        rbt = top_p.add_run(title)
+        rbt.bold = True
+        rbt.font.color.rgb = RGBColor(255, 255, 255)
+
+        bot = benefits_table.rows[1].cells[ci]
+        bot.text = desc
+
+    doc.add_paragraph()
+
+    # Problem Statement
+    doc.add_heading("2. Problem Statement", level=1)
+    problems = [
+        "Heavy dependency on Microsoft Office installations for PDF generation",
+        "Inconsistent output across different Office versions and platforms",
+        "High licensing costs for enterprise-scale document processing",
+        "Limited automation capabilities with traditional office suites",
+    ]
+    for p in problems:
+        doc.add_paragraph(p, style="List Bullet")
+
+    # Proposed Solution
+    doc.add_heading("3. Proposed Solution", level=1)
+    doc.add_paragraph(
+        "MiniPdf is a lightweight .NET library that provides native document-to-PDF conversion "
+        "without requiring Microsoft Office installation. Key features include:"
+    )
+    features = [
+        "XLSX to PDF with chart and formula support",
+        "DOCX to PDF with full formatting preservation",
+        "CJK font auto-embedding for international documents",
+        "Automated quality benchmarking suite",
+        "Cross-platform support (.NET 6+)",
+    ]
+    for f in features:
+        doc.add_paragraph(f, style="List Number")
+
+    # Pricing
+    doc.add_heading("4. Pricing", level=1)
+    price_table = doc.add_table(rows=5, cols=3)
+    price_table.style = "Table Grid"
+    for ci, h in enumerate(["Component", "Annual Cost", "Notes"]):
+        cell = price_table.rows[0].cells[ci]
+        cell.text = h
+        _set_cell_shading(cell, "2F5496")
+        for r in cell.paragraphs[0].runs:
+            r.font.color.rgb = RGBColor(255, 255, 255)
+            r.bold = True
+    pricing = [
+        ("Enterprise License (100 seats)", "$18,000", "Unlimited conversions"),
+        ("Premium Support", "$5,000", "24/7 with SLA"),
+        ("Custom Integration", "$15,000", "One-time setup"),
+        ("TOTAL (Year 1)", "$38,000", ""),
+    ]
+    for ri, (comp, cost, notes) in enumerate(pricing, 1):
+        price_table.rows[ri].cells[0].text = comp
+        price_table.rows[ri].cells[1].text = cost
+        price_table.rows[ri].cells[2].text = notes
+        if ri == 4:
+            for ci in range(3):
+                _set_cell_shading(price_table.rows[ri].cells[ci], "E2EFDA")
+                for r in price_table.rows[ri].cells[ci].paragraphs[0].runs:
+                    r.bold = True
+
+    doc.add_paragraph()
+    p_end = doc.add_paragraph()
+    p_end.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    rend = p_end.add_run("We look forward to partnering with Acme Corporation.")
+    rend.italic = True
+    rend.font.color.rgb = RGBColor(128, 128, 128)
+    doc.save(path)
+
+
 # ── Helpers ──────────────────────────────────────────────────────────────
 
 def _set_cell_shading(cell, hex_color):
@@ -3536,6 +5387,36 @@ ALL_GENERATORS = [
     classic88_presentation_handout,
     classic89_multi_image_gallery,
     classic90_comprehensive_annual_report,
+    classic91_landscape_page,
+    classic92_first_line_indent,
+    classic93_hanging_indent,
+    classic94_custom_bullet_characters,
+    classic95_contract_template,
+    classic96_dense_data_table,
+    classic97_product_catalog,
+    classic98_training_manual,
+    classic99_policy_document,
+    classic100_multi_page_table,
+    classic101_warranty_document,
+    classic102_curriculum_syllabus,
+    classic103_event_program,
+    classic104_sop_document,
+    classic105_certificate,
+    classic106_multi_section_orientation,
+    classic107_order_form,
+    classic108_comparison_matrix,
+    classic109_release_notes,
+    classic110_troubleshooting_guide,
+    classic111_meeting_agenda,
+    classic112_project_status_report,
+    classic113_address_labels,
+    classic114_test_report,
+    classic115_price_list,
+    classic116_risk_assessment,
+    classic117_employee_handbook_excerpt,
+    classic118_data_report_with_summary,
+    classic119_multi_language_document,
+    classic120_comprehensive_business_proposal,
 ]
 
 
