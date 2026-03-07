@@ -1514,11 +1514,11 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **18
 
 ### DOCX 基準測試
 
-MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **120 個經典測試案例**。
+MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **150 個經典測試案例**。
 
 | 類別 | 數量 | 閾值 |
 |---|---|---|
-| 🟢 優秀 | 117 | ≥ 90% |
+| 🟢 優秀 | 147 | ≥ 90% |
 | 🟡 可接受 | 3 | 70% – 90% |
 | 🔴 待改進 | 0 | < 70% |
 
@@ -1604,7 +1604,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic10</b></td>
-  <td>Simple table 🟢 99.1%</td>
+  <td>Simple table 🟢 99.3%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic10_simple_table_p1_minipdf.png" width="320"/></td>
@@ -1612,7 +1612,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic11</b></td>
-  <td>Table with shading 🟢 97.2%</td>
+  <td>Table with shading 🟢 97.3%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic11_table_with_shading_p1_minipdf.png" width="320"/></td>
@@ -1620,7 +1620,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic12</b></td>
-  <td>Merged cells table 🟢 99.3%</td>
+  <td>Merged cells table 🟢 99.5%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic12_merged_cells_table_p1_minipdf.png" width="320"/></td>
@@ -1636,7 +1636,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic14</b></td>
-  <td>Mixed content 🟢 98.3%</td>
+  <td>Mixed content 🟢 98.4%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic14_mixed_content_p1_minipdf.png" width="320"/></td>
@@ -1684,7 +1684,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic20</b></td>
-  <td>Table with many rows 🟢 97.9%</td>
+  <td>Table with many rows 🟢 98.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic20_table_with_many_rows_p1_minipdf.png" width="320"/></td>
@@ -1732,7 +1732,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic26</b></td>
-  <td>Table alignment 🟢 99.2%</td>
+  <td>Table alignment 🟢 99.4%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic26_table_alignment_p1_minipdf.png" width="320"/></td>
@@ -1756,7 +1756,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic29</b></td>
-  <td>Table with image 🟢 98.9%</td>
+  <td>Table with image 🟢 99.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic29_table_with_image_p1_minipdf.png" width="320"/></td>
@@ -1788,7 +1788,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic32</b></td>
-  <td>Company logo header 🟢 98.9%</td>
+  <td>Company logo header 🟢 99.0%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic32_company_logo_header_p1_minipdf.png" width="320"/></td>
@@ -1836,7 +1836,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic35</b></td>
-  <td>Inventory with product photos 🟢 98.5%</td>
+  <td>Inventory with product photos 🟢 98.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic35_inventory_with_product_photos_p1_minipdf.png" width="320"/></td>
@@ -1852,7 +1852,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic36</b></td>
-  <td>Invoice with logo 🟢 98.7%</td>
+  <td>Invoice with logo 🟢 98.8%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic36_invoice_with_logo_p1_minipdf.png" width="320"/></td>
@@ -1860,7 +1860,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic36</b></td>
-  <td>Wide table 🟢 98.1%</td>
+  <td>Wide table 🟢 98.3%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic36_wide_table_p1_minipdf.png" width="320"/></td>
@@ -1868,7 +1868,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic37</b></td>
-  <td>Nested table 🟢 97.6%</td>
+  <td>Nested table 🟢 97.8%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic37_nested_table_p1_minipdf.png" width="320"/></td>
@@ -1876,7 +1876,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic37</b></td>
-  <td>Real estate listing 🟢 93.7%</td>
+  <td>Real estate listing 🟢 93.8%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic37_real_estate_listing_p1_minipdf.png" width="320"/></td>
@@ -1892,7 +1892,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic38</b></td>
-  <td>Table column widths 🟢 98.3%</td>
+  <td>Table column widths 🟢 98.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic38_table_column_widths_p1_minipdf.png" width="320"/></td>
@@ -1908,7 +1908,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic39</b></td>
-  <td>Financial report 🟢 97.2%</td>
+  <td>Financial report 🟢 97.3%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic39_financial_report_p1_minipdf.png" width="320"/></td>
@@ -1948,7 +1948,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic42</b></td>
-  <td>Chart image with data 🟢 96.3%</td>
+  <td>Chart image with data 🟢 96.4%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic42_chart_image_with_data_p1_minipdf.png" width="320"/></td>
@@ -1956,7 +1956,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic42</b></td>
-  <td>Meeting minutes 🟢 95.9%</td>
+  <td>Meeting minutes 🟢 96.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic42_meeting_minutes_p1_minipdf.png" width="320"/></td>
@@ -1964,7 +1964,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic43</b></td>
-  <td>Event flyer with banner 🟢 98.5%</td>
+  <td>Event flyer with banner 🟢 98.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic43_event_flyer_with_banner_p1_minipdf.png" width="320"/></td>
@@ -2004,7 +2004,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic45</b></td>
-  <td>Project plan 🟢 97.1%</td>
+  <td>Project plan 🟢 97.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic45_project_plan_p1_minipdf.png" width="320"/></td>
@@ -2012,7 +2012,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic46</b></td>
-  <td>Comparison table 🟢 96.0%</td>
+  <td>Comparison table 🟢 96.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic46_comparison_table_p1_minipdf.png" width="320"/></td>
@@ -2028,7 +2028,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic47</b></td>
-  <td>Data dictionary 🟢 96.6%</td>
+  <td>Data dictionary 🟢 96.7%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic47_data_dictionary_p1_minipdf.png" width="320"/></td>
@@ -2052,7 +2052,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic48</b></td>
-  <td>Task list with status icons 🟢 96.0%</td>
+  <td>Task list with status icons 🟢 96.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic48_task_list_with_status_icons_p1_minipdf.png" width="320"/></td>
@@ -2060,7 +2060,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic49</b></td>
-  <td>Cjk document 🟢 94.3%</td>
+  <td>Cjk document 🟢 94.4%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic49_cjk_document_p1_minipdf.png" width="320"/></td>
@@ -2076,7 +2076,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic50</b></td>
-  <td>Long table with formatting 🟡 83.4%</td>
+  <td>Long table with formatting 🟡 83.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic50_long_table_with_formatting_p1_minipdf.png" width="320"/></td>
@@ -2132,7 +2132,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic53</b></td>
-  <td>Table merged complex 🟢 95.5%</td>
+  <td>Table merged complex 🟢 95.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic53_table_merged_complex_p1_minipdf.png" width="320"/></td>
@@ -2148,7 +2148,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic54</b></td>
-  <td>Travel destination cards 🟢 97.6%</td>
+  <td>Travel destination cards 🟢 97.7%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic54_travel_destination_cards_p1_minipdf.png" width="320"/></td>
@@ -2164,7 +2164,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic55</b></td>
-  <td>Lab results with image 🟢 95.6%</td>
+  <td>Lab results with image 🟢 95.8%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic55_lab_results_with_image_p1_minipdf.png" width="320"/></td>
@@ -2180,7 +2180,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic56</b></td>
-  <td>Software screenshot features 🟢 95.0%</td>
+  <td>Software screenshot features 🟢 95.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic56_software_screenshot_features_p1_minipdf.png" width="320"/></td>
@@ -2212,7 +2212,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic58</b></td>
-  <td>Report with footer image 🟢 96.5%</td>
+  <td>Report with footer image 🟢 96.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic58_report_with_footer_image_p1_minipdf.png" width="320"/></td>
@@ -2236,7 +2236,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic60</b></td>
-  <td>Comprehensive styled report 🟢 98.2%</td>
+  <td>Comprehensive styled report 🟢 98.3%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic60_comprehensive_styled_report_p1_minipdf.png" width="320"/></td>
@@ -2300,7 +2300,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic67</b></td>
-  <td>Alternating row table 🟢 91.8%</td>
+  <td>Alternating row table 🟢 91.9%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic67_alternating_row_table_p1_minipdf.png" width="320"/></td>
@@ -2308,7 +2308,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic68</b></td>
-  <td>Sidebar layout 🟢 93.4%</td>
+  <td>Sidebar layout 🟢 93.5%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic68_sidebar_layout_p1_minipdf.png" width="320"/></td>
@@ -2340,7 +2340,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic72</b></td>
-  <td>Technical specification 🟢 97.0%</td>
+  <td>Technical specification 🟢 97.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic72_technical_specification_p1_minipdf.png" width="320"/></td>
@@ -2356,7 +2356,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic74</b></td>
-  <td>Org chart 🟢 94.5%</td>
+  <td>Org chart 🟢 94.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic74_org_chart_p1_minipdf.png" width="320"/></td>
@@ -2372,7 +2372,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic76</b></td>
-  <td>Recipe card 🟢 97.9%</td>
+  <td>Recipe card 🟢 98.0%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic76_recipe_card_p1_minipdf.png" width="320"/></td>
@@ -2380,7 +2380,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic77</b></td>
-  <td>Timeline layout 🟢 96.0%</td>
+  <td>Timeline layout 🟢 96.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic77_timeline_layout_p1_minipdf.png" width="320"/></td>
@@ -2404,7 +2404,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic80</b></td>
-  <td>Matrix grid 🟢 92.3%</td>
+  <td>Matrix grid 🟢 92.4%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic80_matrix_grid_p1_minipdf.png" width="320"/></td>
@@ -2412,7 +2412,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic81</b></td>
-  <td>Budget table 🟢 92.0%</td>
+  <td>Budget table 🟢 92.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic81_budget_table_p1_minipdf.png" width="320"/></td>
@@ -2420,7 +2420,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic82</b></td>
-  <td>Survey questionnaire 🟢 94.8%</td>
+  <td>Survey questionnaire 🟢 95.0%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic82_survey_questionnaire_p1_minipdf.png" width="320"/></td>
@@ -2428,7 +2428,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic83</b></td>
-  <td>Medical form 🟢 96.6%</td>
+  <td>Medical form 🟢 96.8%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic83_medical_form_p1_minipdf.png" width="320"/></td>
@@ -2436,7 +2436,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic84</b></td>
-  <td>Shipping label 🟢 96.1%</td>
+  <td>Shipping label 🟢 96.3%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic84_shipping_label_p1_minipdf.png" width="320"/></td>
@@ -2489,6 +2489,246 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic90_comprehensive_annual_report_p1_minipdf.png" width="320"/></td>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic90_comprehensive_annual_report_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic91</b></td>
+  <td>Landscape page 🟢 97.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic91_landscape_page_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic91_landscape_page_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic92</b></td>
+  <td>First line indent 🟢 97.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic92_first_line_indent_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic92_first_line_indent_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic93</b></td>
+  <td>Hanging indent 🟢 98.0%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic93_hanging_indent_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic93_hanging_indent_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic94</b></td>
+  <td>Custom bullet characters 🟢 98.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic94_custom_bullet_characters_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic94_custom_bullet_characters_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic95</b></td>
+  <td>Contract template 🟢 98.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic95_contract_template_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic95_contract_template_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic96</b></td>
+  <td>Dense data table 🟢 92.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic96_dense_data_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic96_dense_data_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic97</b></td>
+  <td>Product catalog 🟢 97.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic97_product_catalog_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic97_product_catalog_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic98</b></td>
+  <td>Training manual 🟢 98.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic98_training_manual_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic98_training_manual_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic99</b></td>
+  <td>Policy document 🟢 97.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic99_policy_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic99_policy_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic100</b></td>
+  <td>Multi page table 🟢 91.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic100_multi_page_table_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic100_multi_page_table_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic101</b></td>
+  <td>Warranty document 🟢 97.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic101_warranty_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic101_warranty_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic102</b></td>
+  <td>Curriculum syllabus 🟢 97.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic102_curriculum_syllabus_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic102_curriculum_syllabus_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic103</b></td>
+  <td>Event program 🟢 96.3%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic103_event_program_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic103_event_program_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic104</b></td>
+  <td>Sop document 🟢 93.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic104_sop_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic104_sop_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic105</b></td>
+  <td>Certificate 🟢 97.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic105_certificate_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic105_certificate_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic106</b></td>
+  <td>Multi section orientation 🟢 98.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic106_multi_section_orientation_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic106_multi_section_orientation_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic107</b></td>
+  <td>Order form 🟢 96.5%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic107_order_form_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic107_order_form_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic108</b></td>
+  <td>Comparison matrix 🟢 95.1%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic108_comparison_matrix_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic108_comparison_matrix_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic109</b></td>
+  <td>Release notes 🟢 97.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic109_release_notes_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic109_release_notes_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic110</b></td>
+  <td>Troubleshooting guide 🟢 96.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic110_troubleshooting_guide_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic110_troubleshooting_guide_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic111</b></td>
+  <td>Meeting agenda 🟢 97.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic111_meeting_agenda_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic111_meeting_agenda_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic112</b></td>
+  <td>Project status report 🟢 96.7%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic112_project_status_report_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic112_project_status_report_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic113</b></td>
+  <td>Address labels 🟢 98.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic113_address_labels_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic113_address_labels_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic114</b></td>
+  <td>Test report 🟢 97.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic114_test_report_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic114_test_report_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic115</b></td>
+  <td>Price list 🟢 94.9%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic115_price_list_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic115_price_list_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic116</b></td>
+  <td>Risk assessment 🟢 96.6%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic116_risk_assessment_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic116_risk_assessment_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic117</b></td>
+  <td>Employee handbook excerpt 🟢 96.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic117_employee_handbook_excerpt_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic117_employee_handbook_excerpt_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic118</b></td>
+  <td>Data report with summary 🟢 96.8%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic118_data_report_with_summary_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic118_data_report_with_summary_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic119</b></td>
+  <td>Multi language document 🟢 98.4%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic119_multi_language_document_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic119_multi_language_document_p1_reference.png" width="320"/></td>
+</tr>
+<tr>
+  <td><b>classic120</b></td>
+  <td>Comprehensive business proposal 🟢 95.2%</td>
+</tr>
+<tr>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic120_comprehensive_business_proposal_p1_minipdf.png" width="320"/></td>
+  <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic120_comprehensive_business_proposal_p1_reference.png" width="320"/></td>
 </tr>
 </table>
 

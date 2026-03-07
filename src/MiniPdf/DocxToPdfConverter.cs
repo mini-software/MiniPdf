@@ -69,15 +69,56 @@ internal static class DocxToPdfConverter
 
         var pdfDoc = new PdfDocument();
 
+        // Pre-scan section breaks to build correct section layout mapping.
+        // In OOXML, sectPr in a paragraph defines the layout of the section ENDING at that paragraph.
+        // We collect layouts in order: [section1_layout, section2_layout, ...body_layout]
+        // Then section N uses sectionLayouts[N] and when we hit break N, we switch to sectionLayouts[N+1].
+        var sectionLayouts = new List<DocxPageLayout>();
+        foreach (var element in docxDoc.Elements)
+        {
+            if (element is DocxParagraph p && p.SectionBreak is { } sb)
+                sectionLayouts.Add(sb);
+        }
+        if (docxDoc.PageLayout is { } bodyLayout2)
+            sectionLayouts.Add(bodyLayout2);
+
+        // Apply first section's layout (or body layout as fallback)
+        if (sectionLayouts.Count > 0)
+        {
+            var firstLayout = sectionLayouts[0];
+            options.PageWidth = firstLayout.PageWidth;
+            options.PageHeight = firstLayout.PageHeight;
+            options.MarginTop = firstLayout.MarginTop;
+            options.MarginBottom = firstLayout.MarginBottom;
+            options.MarginLeft = firstLayout.MarginLeft;
+            options.MarginRight = firstLayout.MarginRight;
+        }
+
         var state = new RenderState(pdfDoc, options);
         state.EnsurePage();
 
+        var sectionIndex = 0;
         foreach (var element in docxDoc.Elements)
         {
             switch (element)
             {
                 case DocxParagraph paragraph:
                     RenderParagraph(state, paragraph);
+                    if (paragraph.SectionBreak != null)
+                    {
+                        sectionIndex++;
+                        if (sectionIndex < sectionLayouts.Count)
+                        {
+                            var nextLayout = sectionLayouts[sectionIndex];
+                            state.Options.PageWidth = nextLayout.PageWidth;
+                            state.Options.PageHeight = nextLayout.PageHeight;
+                            state.Options.MarginTop = nextLayout.MarginTop;
+                            state.Options.MarginBottom = nextLayout.MarginBottom;
+                            state.Options.MarginLeft = nextLayout.MarginLeft;
+                            state.Options.MarginRight = nextLayout.MarginRight;
+                        }
+                        state.ForceNewPage();
+                    }
                     break;
                 case DocxTable table:
                     RenderTable(state, table);
@@ -267,6 +308,8 @@ internal static class DocxToPdfConverter
         // Handle page break after
         if (paragraph.HasPageBreakAfter)
             state.ForceNewPage();
+
+
     }
 
     /// <summary>
