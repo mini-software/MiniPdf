@@ -1,0 +1,185 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+
+namespace MiniPdf.Web.Client;
+
+public class I18n
+{
+    public event Action? OnLanguageChanged;
+
+    public string CurrentLanguage { get; private set; } = "en";
+
+    public record LangEntry(string Code, string Label);
+
+    public static IReadOnlyList<LangEntry> SupportedLanguages { get; } = new[]
+    {
+        new LangEntry("en", "English"),
+        new LangEntry("zh-CN", "简体中文"),
+        new LangEntry("zh-TW", "繁體中文"),
+        new LangEntry("ja", "日本語"),
+        new LangEntry("ko", "한국어"),
+        new LangEntry("fr", "Français"),
+        new LangEntry("it", "Italiano"),
+    };
+
+    public void SetLanguage(string lang)
+    {
+        if (CurrentLanguage == lang) return;
+        CurrentLanguage = lang;
+        OnLanguageChanged?.Invoke();
+    }
+
+    public string T(string key)
+    {
+        if (Translations.TryGetValue(CurrentLanguage, out var dict) && dict.TryGetValue(key, out var val))
+            return val;
+        if (Translations["en"].TryGetValue(key, out var fallback))
+            return fallback;
+        return key;
+    }
+
+    private static readonly Dictionary<string, Dictionary<string, string>> Translations = new()
+    {
+        ["en"] = new()
+        {
+            ["PageTitle"] = "MiniPdf Converter",
+            ["Subtitle"] = "Convert .docx / .xlsx to PDF in your browser",
+            ["PoweredBy"] = "powered by",
+            ["DropFile"] = "Drop file here",
+            ["OrClickBrowse"] = "or click to browse",
+            ["ConvertToPdf"] = "Convert to PDF",
+            ["Converting"] = "Converting...",
+            ["AboutTitle"] = "About MiniPdf",
+            ["AboutDesc"] = "A lightweight, zero-dependency .NET library for converting .docx and .xlsx files to PDF. No Office installation required.",
+            ["BugOrSuggestion"] = "Encountered a bug or have a suggestion?",
+            ["OpenIssue"] = "Open an issue on GitHub",
+            ["UnsupportedFile"] = "Unsupported file type. Please select a .docx or .xlsx file.",
+            ["DownloadSuccess"] = "downloaded successfully!",
+            ["ConversionError"] = "Conversion error:",
+            ["PrivacyNote"] = "This app runs entirely in your browser. No files are uploaded to any server.",
+            ["Donate"] = "Donate",
+            ["DonateDesc"] = "If you find this useful, consider supporting us",
+        },
+        ["zh-CN"] = new()
+        {
+            ["PageTitle"] = "MiniPdf 转换器",
+            ["Subtitle"] = "在浏览器中将 .docx / .xlsx 转换为 PDF",
+            ["PoweredBy"] = "技术支持",
+            ["DropFile"] = "将文件拖放到此处",
+            ["OrClickBrowse"] = "或点击浏览文件",
+            ["ConvertToPdf"] = "转换为 PDF",
+            ["Converting"] = "转换中...",
+            ["AboutTitle"] = "关于 MiniPdf",
+            ["AboutDesc"] = "一个轻量级、零依赖的 .NET 库，可将 .docx 和 .xlsx 文件转换为 PDF。无需安装 Office。",
+            ["BugOrSuggestion"] = "发现问题或有建议？",
+            ["OpenIssue"] = "在 GitHub 上提交 Issue",
+            ["UnsupportedFile"] = "不支持的文件类型。请选择 .docx 或 .xlsx 文件。",
+            ["DownloadSuccess"] = "下载成功！",
+            ["ConversionError"] = "转换错误：",
+            ["PrivacyNote"] = "此应用完全在您的浏览器中运行，不会将任何文件上传到服务器。",
+            ["Donate"] = "捐赠",
+            ["DonateDesc"] = "如果您觉得有用，请考虑支持我们",
+        },
+        ["zh-TW"] = new()
+        {
+            ["PageTitle"] = "MiniPdf 轉換器",
+            ["Subtitle"] = "在瀏覽器中將 .docx / .xlsx 轉換為 PDF",
+            ["PoweredBy"] = "技術支援",
+            ["DropFile"] = "將檔案拖放到此處",
+            ["OrClickBrowse"] = "或點擊瀏覽檔案",
+            ["ConvertToPdf"] = "轉換為 PDF",
+            ["Converting"] = "轉換中...",
+            ["AboutTitle"] = "關於 MiniPdf",
+            ["AboutDesc"] = "一個輕量級、零依賴的 .NET 函式庫，可將 .docx 和 .xlsx 檔案轉換為 PDF。無需安裝 Office。",
+            ["BugOrSuggestion"] = "發現問題或有建議？",
+            ["OpenIssue"] = "在 GitHub 上提交 Issue",
+            ["UnsupportedFile"] = "不支援的檔案類型。請選擇 .docx 或 .xlsx 檔案。",
+            ["DownloadSuccess"] = "下載成功！",
+            ["ConversionError"] = "轉換錯誤：",
+            ["PrivacyNote"] = "此應用完全在您的瀏覽器中執行，不會將任何檔案上傳到伺服器。",
+            ["Donate"] = "贊助",
+            ["DonateDesc"] = "如果您覺得有用，請考慮支持我們",
+        },
+        ["ja"] = new()
+        {
+            ["PageTitle"] = "MiniPdf コンバーター",
+            ["Subtitle"] = "ブラウザで .docx / .xlsx を PDF に変換",
+            ["PoweredBy"] = "powered by",
+            ["DropFile"] = "ファイルをここにドロップ",
+            ["OrClickBrowse"] = "またはクリックして参照",
+            ["ConvertToPdf"] = "PDF に変換",
+            ["Converting"] = "変換中...",
+            ["AboutTitle"] = "MiniPdf について",
+            ["AboutDesc"] = ".docx および .xlsx ファイルを PDF に変換する軽量でゼロ依存の .NET ライブラリです。Office のインストールは不要です。",
+            ["BugOrSuggestion"] = "バグを発見しましたか？提案がありますか？",
+            ["OpenIssue"] = "GitHub で Issue を作成",
+            ["UnsupportedFile"] = "サポートされていないファイル形式です。.docx または .xlsx ファイルを選択してください。",
+            ["DownloadSuccess"] = "のダウンロードが完了しました！",
+            ["ConversionError"] = "変換エラー：",
+            ["PrivacyNote"] = "このアプリはブラウザ内で完全に動作します。ファイルはサーバーにアップロードされません。",
+            ["Donate"] = "寄付",
+            ["DonateDesc"] = "便利だと思ったら、ぜひご支援ください",
+        },
+        ["ko"] = new()
+        {
+            ["PageTitle"] = "MiniPdf 변환기",
+            ["Subtitle"] = "브라우저에서 .docx / .xlsx를 PDF로 변환",
+            ["PoweredBy"] = "powered by",
+            ["DropFile"] = "파일을 여기에 놓으세요",
+            ["OrClickBrowse"] = "또는 클릭하여 찾아보기",
+            ["ConvertToPdf"] = "PDF로 변환",
+            ["Converting"] = "변환 중...",
+            ["AboutTitle"] = "MiniPdf 소개",
+            ["AboutDesc"] = ".docx 및 .xlsx 파일을 PDF로 변환하는 경량 무의존성 .NET 라이브러리입니다. Office 설치가 필요하지 않습니다.",
+            ["BugOrSuggestion"] = "버그를 발견했거나 제안이 있으신가요?",
+            ["OpenIssue"] = "GitHub에서 Issue 열기",
+            ["UnsupportedFile"] = "지원되지 않는 파일 형식입니다. .docx 또는 .xlsx 파일을 선택하세요.",
+            ["DownloadSuccess"] = "다운로드 완료!",
+            ["ConversionError"] = "변환 오류:",
+            ["PrivacyNote"] = "이 앱은 브라우저에서 완전히 실행됩니다. 파일이 서버에 업로드되지 않습니다.",
+            ["Donate"] = "후원",
+            ["DonateDesc"] = "유용하다고 생각하시면 후원을 고려해 주세요",
+        },
+        ["fr"] = new()
+        {
+            ["PageTitle"] = "MiniPdf Convertisseur",
+            ["Subtitle"] = "Convertir .docx / .xlsx en PDF dans votre navigateur",
+            ["PoweredBy"] = "propulsé par",
+            ["DropFile"] = "Déposez le fichier ici",
+            ["OrClickBrowse"] = "ou cliquez pour parcourir",
+            ["ConvertToPdf"] = "Convertir en PDF",
+            ["Converting"] = "Conversion...",
+            ["AboutTitle"] = "À propos de MiniPdf",
+            ["AboutDesc"] = "Une bibliothèque .NET légère et sans dépendance pour convertir les fichiers .docx et .xlsx en PDF. Aucune installation d'Office requise.",
+            ["BugOrSuggestion"] = "Vous avez trouvé un bug ou une suggestion ?",
+            ["OpenIssue"] = "Ouvrir une issue sur GitHub",
+            ["UnsupportedFile"] = "Type de fichier non pris en charge. Veuillez sélectionner un fichier .docx ou .xlsx.",
+            ["DownloadSuccess"] = "téléchargé avec succès !",
+            ["ConversionError"] = "Erreur de conversion :",
+            ["PrivacyNote"] = "Cette application s'exécute entièrement dans votre navigateur. Aucun fichier n'est envoyé à un serveur.",
+            ["Donate"] = "Faire un don",
+            ["DonateDesc"] = "Si vous trouvez cela utile, pensez à nous soutenir",
+        },
+        ["it"] = new()
+        {
+            ["PageTitle"] = "MiniPdf Convertitore",
+            ["Subtitle"] = "Converti .docx / .xlsx in PDF nel tuo browser",
+            ["PoweredBy"] = "powered by",
+            ["DropFile"] = "Trascina il file qui",
+            ["OrClickBrowse"] = "o clicca per sfogliare",
+            ["ConvertToPdf"] = "Converti in PDF",
+            ["Converting"] = "Conversione...",
+            ["AboutTitle"] = "Informazioni su MiniPdf",
+            ["AboutDesc"] = "Una libreria .NET leggera e senza dipendenze per convertire file .docx e .xlsx in PDF. Nessuna installazione di Office richiesta.",
+            ["BugOrSuggestion"] = "Hai trovato un bug o hai un suggerimento?",
+            ["OpenIssue"] = "Apri un issue su GitHub",
+            ["UnsupportedFile"] = "Tipo di file non supportato. Seleziona un file .docx o .xlsx.",
+            ["DownloadSuccess"] = "scaricato con successo!",
+            ["ConversionError"] = "Errore di conversione:",
+            ["PrivacyNote"] = "Questa app viene eseguita interamente nel tuo browser. Nessun file viene caricato su alcun server.",
+            ["Donate"] = "Dona",
+            ["DonateDesc"] = "Se lo trovi utile, considera di supportarci",
+        },
+    };
+}
