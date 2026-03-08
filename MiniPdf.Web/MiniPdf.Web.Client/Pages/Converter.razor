@@ -1,0 +1,173 @@
+@page "/"
+@inject IJSRuntime JS
+
+<PageTitle>MiniPdf Converter</PageTitle>
+
+<div class="card">
+    <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+        </svg>
+        <h1>MiniPdf</h1>
+    </div>
+    <p class="subtitle">Convert .docx / .xlsx to PDF in your browser &mdash; powered by <a href="https://github.com/mini-software/MiniPdf" target="_blank">MiniPdf</a></p>
+
+    <div class="drop-zone @(isDragOver ? "drag-over" : "")"
+         @ondragenter="HandleDragEnter"
+         @ondragleave="HandleDragLeave"
+         @ondragover:preventDefault>
+
+        <InputFile OnChange="HandleFileSelected" accept=".docx,.xlsx" />
+
+        @if (selectedFile is null)
+        {
+            <div class="drop-zone-content">
+                <svg class="upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p><strong>Drop file here</strong> or click to browse</p>
+                <div class="badges">
+                    <span class="badge badge-docx">.docx</span>
+                    <span class="badge badge-xlsx">.xlsx</span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="drop-zone-content">
+                <div class="file-info">
+                    <div class="file-icon-wrap @FileExt">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                    </div>
+                    <div class="file-meta">
+                        <div class="file-name">@selectedFile.Name</div>
+                        <div class="file-size">@FormatSize(selectedFile.Size)</div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button class="convert-btn" @onclick="ConvertFile" disabled="@(!CanConvert)">
+        @if (isConverting)
+        {
+            <span class="spinner"></span>
+            <span>Converting...</span>
+        }
+        else
+        {
+            <span>Convert to PDF</span>
+        }
+    </button>
+
+    @if (errorMessage is not null)
+    {
+        <div class="alert alert-error">@errorMessage</div>
+    }
+
+    @if (successMessage is not null)
+    {
+        <div class="alert alert-success">@successMessage</div>
+    }
+</div>
+
+<div class="intro">
+    <h2>About MiniPdf</h2>
+    <p>A lightweight, zero-dependency .NET library for converting <strong>.docx</strong> and <strong>.xlsx</strong> files to PDF. No Office installation required.</p>
+    <div class="intro-links">
+        <a href="https://github.com/mini-software/MiniPdf" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 20.86c-3.37.74-4.08-1.63-4.08-1.63-.55-1.4-1.34-1.77-1.34-1.77-1.1-.75.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.08 1.84 2.83 1.31 3.52 1 .1-.78.42-1.31.76-1.61-2.69-.31-5.52-1.35-5.52-6a4.68 4.68 0 0 1 1.25-3.25 4.35 4.35 0 0 1 .12-3.21s1.02-.33 3.34 1.24a11.5 11.5 0 0 1 6.08 0c2.32-1.57 3.33-1.24 3.33-1.24a4.35 4.35 0 0 1 .12 3.21 4.68 4.68 0 0 1 1.25 3.25c0 4.66-2.84 5.69-5.54 5.99.43.37.82 1.1.82 2.22l-.01 3.29c0 .31.22.7.84.57A12 12 0 0 0 12 .3"/></svg>
+            GitHub
+        </a>
+        <a href="https://www.nuget.org/packages/MiniPdf" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            NuGet
+        </a>
+    </div>
+    <div class="feedback">
+        <p>Encountered a bug or have a suggestion? <a href="https://github.com/mini-software/MiniPdf/issues" target="_blank">Open an issue on GitHub</a></p>
+    </div>
+</div>
+
+@code {
+    private IBrowserFile? selectedFile;
+    private bool isConverting;
+    private bool isDragOver;
+    private string? errorMessage;
+    private string? successMessage;
+
+    private bool CanConvert => selectedFile is not null && !isConverting;
+    private string FileExt => selectedFile is not null
+        ? Path.GetExtension(selectedFile.Name).ToLowerInvariant().TrimStart('.')
+        : "";
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        errorMessage = null;
+        successMessage = null;
+        selectedFile = e.File;
+
+        var ext = Path.GetExtension(selectedFile.Name).ToLowerInvariant();
+        if (ext is not ".docx" and not ".xlsx")
+        {
+            errorMessage = "Unsupported file type. Please select a .docx or .xlsx file.";
+            selectedFile = null;
+        }
+    }
+
+    private void HandleDragEnter() => isDragOver = true;
+    private void HandleDragLeave() => isDragOver = false;
+
+    private async Task ConvertFile()
+    {
+        if (selectedFile is null) return;
+
+        isConverting = true;
+        errorMessage = null;
+        successMessage = null;
+        StateHasChanged();
+        await Task.Yield();
+
+        try
+        {
+            using var stream = selectedFile.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            ms.Position = 0;
+
+            var ext = Path.GetExtension(selectedFile.Name).ToLowerInvariant();
+            byte[] pdfBytes = ext == ".docx"
+                ? MiniSoftware.MiniPdf.ConvertDocxToPdf(ms)
+                : MiniSoftware.MiniPdf.ConvertToPdf(ms);
+
+            var outputName = Path.GetFileNameWithoutExtension(selectedFile.Name) + ".pdf";
+            await JS.InvokeVoidAsync("downloadFile", outputName, "application/pdf", pdfBytes);
+            successMessage = $"{outputName} downloaded successfully!";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Conversion error: {ex.Message}";
+        }
+        finally
+        {
+            isConverting = false;
+        }
+    }
+
+    private static string FormatSize(long bytes)
+    {
+        if (bytes >= 1024 * 1024)
+            return $"{bytes / (1024.0 * 1024.0):F1} MB";
+        if (bytes >= 1024)
+            return $"{bytes / 1024.0:F1} KB";
+        return $"{bytes} B";
+    }
+}

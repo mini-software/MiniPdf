@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script>
+        // SPA redirect for GitHub Pages
+        var path = window.location.pathname;
+        var repo = '/MiniPdf';
+        if (path.startsWith(repo)) {
+            path = path.substring(repo.length) || '/';
+        }
+        sessionStorage.setItem('redirect', path + window.location.search);
+        window.location.replace(repo + '/');
+    </script>
+</head>
+<body></body>
+</html>
