@@ -220,6 +220,7 @@ internal static class ExcelToPdfConverter
         var lineHeight = defaultLineHeight;
         PdfPage? currentPage = null;
         var currentY = 0f;
+        var accumulatedOverflowHeight = 0f;
 
         // Track cumulative X start position for each column (for image placement)
         var colXStarts = new float[columns.Length];
@@ -371,9 +372,13 @@ internal static class ExcelToPdfConverter
                                 var clippedText = pageClipChars < cellText.Length ? cellText[..pageClipChars] : cellText;
                                 cellLines[i] = new[] { clippedText };
 
-                                // Calculate virtual row height from wrapping at default column width
-                                var defaultColPts = ExcelSheet.CharUnitsToPoints(8.43f);
-                                var wrapChars = FittingChars(cellText, defaultColPts, cellFontSizeForFit);
+                                // Calculate virtual row height from wrapping at default column width.
+                                // Use raw Helvetica widths (counteract CalibriFittingScale) and subtract
+                                // cell content margins (~11pt) to match LibreOffice's internal wrapping.
+                                var defaultColPts = ExcelSheet.CharUnitsToPoints(
+                                    sheet.DefaultColumnWidth > 0 ? sheet.DefaultColumnWidth : 8.43f);
+                                var wrapWidth = Math.Max(1f, (defaultColPts - 11f) * (float)CalibriFittingScale);
+                                var wrapChars = FittingChars(cellText, wrapWidth, cellFontSizeForFit);
                                 if (wrapChars > 0)
                                 {
                                     var virtualLines = (int)Math.Ceiling((double)cellText.Length / wrapChars);
@@ -610,31 +615,38 @@ internal static class ExcelToPdfConverter
             currentY -= rowHeight;
             }
 
-            // If cells had virtual overflow height (single-column, text wider than page),
-            // advance currentY by the extra lines to match LibreOffice's row height calculation.
+            // Accumulate virtual overflow height but don't emit pages yet.
+            // LibreOffice renders all rows on minimal pages first, then adds
+            // empty overflow pages at the end of the sheet.
             if (virtualRowExtraLines > 0)
             {
-                var extraHeight = lineHeight * virtualRowExtraLines;
-                while (extraHeight > 0)
-                {
-                    var spaceLeft = currentY - options.MarginBottom;
-                    if (spaceLeft <= 0)
-                    {
-                        currentPage = doc.AddPage(pageWidth, pageHeight);
-                        currentY = pageHeight - options.MarginTop;
-                        spaceLeft = currentY - options.MarginBottom;
-                    }
-                    var consume = Math.Min(extraHeight, spaceLeft);
-                    currentY -= consume;
-                    extraHeight -= consume;
-                    if (extraHeight > 0)
-                    {
-                        currentPage = doc.AddPage(pageWidth, pageHeight);
-                        currentY = pageHeight - options.MarginTop;
-                    }
-                }
+                accumulatedOverflowHeight += lineHeight * virtualRowExtraLines;
             }
             excelRowIndex++;
+        }
+
+        // Emit accumulated virtual overflow pages at the end (matching LibreOffice layout).
+        if (accumulatedOverflowHeight > 0)
+        {
+            var extraHeight = accumulatedOverflowHeight;
+            while (extraHeight > 0)
+            {
+                var spaceLeft = currentY - options.MarginBottom;
+                if (spaceLeft <= 0)
+                {
+                    currentPage = doc.AddPage(pageWidth, pageHeight);
+                    currentY = pageHeight - options.MarginTop;
+                    spaceLeft = currentY - options.MarginBottom;
+                }
+                var consume = Math.Min(extraHeight, spaceLeft);
+                currentY -= consume;
+                extraHeight -= consume;
+                if (extraHeight > 0)
+                {
+                    currentPage = doc.AddPage(pageWidth, pageHeight);
+                    currentY = pageHeight - options.MarginTop;
+                }
+            }
         }
 
         // Place embedded images and chart placeholders
@@ -1600,11 +1612,13 @@ internal static class ExcelToPdfConverter
 
         // Legend: vertical list of category names with color swatches below the pie
         var legendY = plotBottom - 10f;
+        var legendTextX = plotLeft + plotWidth * 0.55f + 10f;
         for (var i = 0; i < values.Length; i++)
         {
             var color = ChartColors[i % ChartColors.Length];
             page.AddRectangle(plotLeft + plotWidth * 0.55f, legendY, 8, 8, color);
             var legendName = i < categories.Length ? categories[i] : $"Slice{i + 1}";
+            page.AddText(legendName, legendTextX, legendY, labelFontSize);
             legendY -= labelFontSize * 1.5f;
         }
     }
@@ -1621,8 +1635,6 @@ internal static class ExcelToPdfConverter
             var i = reverseOrder ? (count - 1 - ii) : ii;
             var color = ChartColors[i % ChartColors.Length];
             page.AddRectangle(legendX, y, 8, 8, color);
-            // No legend text: LibreOffice chart exports render legend labels as
-            // vector graphics, not as extractable PDF text.
             var name = string.IsNullOrEmpty(series[i].Name) ? $"Series{i + 1}" : series[i].Name;
             legendX += (name.Length + 3) * fontSize * 0.5f;
         }

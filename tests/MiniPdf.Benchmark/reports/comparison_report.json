@@ -251,29 +251,29 @@
     "name": "classic09_long_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2432,
+    "minipdf_size": 3554,
     "reference_size": 29170,
-    "minipdf_pages": 7,
+    "minipdf_pages": 12,
     "reference_pages": 12,
-    "text_similarity": 0.6785,
-    "flat_text_similarity": 0.6785,
+    "text_similarity": 0.9614,
+    "flat_text_similarity": 0.9614,
     "word_text_similarity": 0.625,
-    "text_diff": "--- minipdf/classic09_long_text.pdf\n+++ reference/classic09_long_text.pdf\n@@ -1,12 +1,24 @@\n Long Text Column\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n----PAGE---\n\n-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n+Short\n\n+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n ---PAGE---\n\n \n\n ---PAGE---\n\n-Short\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n+---PAGE---\n\n+\n\n ---PAGE---\n\n \n\n ---PAGE---\n",
+    "text_diff": "--- minipdf/classic09_long_text.pdf\n+++ reference/classic09_long_text.pdf\n@@ -1,8 +1,8 @@\n Long Text Column\n\n-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n Short\n\n-YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n ---PAGE---\n\n \n\n ---PAGE---\n",
     "visual_scores": [
-      0.93,
-      0.9965,
-      1.0,
-      0.997,
+      0.9866,
       1.0,
       1.0,
       1.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
     ],
-    "visual_avg": 0.577,
+    "visual_avg": 0.9989,
     "diff_images": [
       {
         "page": 1,
@@ -312,31 +312,31 @@
       },
       {
         "page": 8,
-        "minipdf_img": null,
+        "minipdf_img": "classic09_long_text_p8_minipdf.png",
         "reference_img": "classic09_long_text_p8_reference.png"
       },
       {
         "page": 9,
-        "minipdf_img": null,
+        "minipdf_img": "classic09_long_text_p9_minipdf.png",
         "reference_img": "classic09_long_text_p9_reference.png"
       },
       {
         "page": 10,
-        "minipdf_img": null,
+        "minipdf_img": "classic09_long_text_p10_minipdf.png",
         "reference_img": "classic09_long_text_p10_reference.png"
       },
       {
         "page": 11,
-        "minipdf_img": null,
+        "minipdf_img": "classic09_long_text_p11_minipdf.png",
         "reference_img": "classic09_long_text_p11_reference.png"
       },
       {
         "page": 12,
-        "minipdf_img": null,
+        "minipdf_img": "classic09_long_text_p12_minipdf.png",
         "reference_img": "classic09_long_text_p12_reference.png"
       }
     ],
-    "overall_score": 0.6022
+    "overall_score": 0.9841
   },
   {
     "name": "classic100_stacked_bar_chart",
@@ -423,19 +423,19 @@
     "name": "classic103_pie_chart_with_labels",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 403985,
+    "minipdf_size": 404285,
     "reference_size": 48488,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.7368,
-    "flat_text_similarity": 0.5551,
-    "word_text_similarity": 0.7368,
-    "text_diff": "--- minipdf/classic103_pie_chart_with_labels.pdf\n+++ reference/classic103_pie_chart_with_labels.pdf\n@@ -1,10 +1,28 @@\n OS Share (%)\n\n-Windows 42 Desktop OS Market Share\n\n+Windows 42\n\n+Desktop OS Market Share\n\n macOS 28\n\n Linux 15\n\n-ChromeOS 10 Other; Share (%); 5; 5%\n\n-Other 5 ChromeOS; Share (%); 10; 10%\n\n-Windows; Share (%); 42; 42%\n\n-Linux; Share (%); 15; 15%\n\n-macOS; Share (%); 28; 28%\n\n----PAGE---\n+ChromeOS 10\n\n+Other; Share\n\n+Other 5\n\n+(%); 5; 5%\n\n+ChromeOS;\n\n+Share (%);\n\n+10; 10%\n\n+Wind\n\n+mac\n\n+Linux; Share\n\n+Linu\n\n+(%); 15; 15% Windows;\n\n+Share (%); 42; Chro\n\n+42%\n\n+Othe\n\n+macOS; Share\n\n+(%); 28; 28%\n\n+---PAGE---\n\n+dows\n\n+OS\n\n+x\n\n+omeOS\n\n+er",
+    "text_similarity": 0.7,
+    "flat_text_similarity": 0.5448,
+    "word_text_similarity": 0.7,
+    "text_diff": "--- minipdf/classic103_pie_chart_with_labels.pdf\n+++ reference/classic103_pie_chart_with_labels.pdf\n@@ -1,15 +1,28 @@\n OS Share (%)\n\n-Windows 42 Desktop OS Market Share\n\n+Windows 42\n\n+Desktop OS Market Share\n\n macOS 28\n\n Linux 15\n\n-ChromeOS 10 Other; Share (%); 5; 5%\n\n-Other 5 ChromeOS; Share (%); 10; 10%\n\n-Windows; Share (%); 42; 42%\n\n-Linux; Share (%); 15; 15%\n\n-macOS; Share (%); 28; 28%\n\n-Windows\n\n-macOS\n\n-Linux\n\n-ChromeOS\n\n-Other\n\n----PAGE---\n+ChromeOS 10\n\n+Other; Share\n\n+Other 5\n\n+(%); 5; 5%\n\n+ChromeOS;\n\n+Share (%);\n\n+10; 10%\n\n+Wind\n\n+mac\n\n+Linux; Share\n\n+Linu\n\n+(%); 15; 15% Windows;\n\n+Share (%); 42; Chro\n\n+42%\n\n+Othe\n\n+macOS; Share\n\n+(%); 28; 28%\n\n+---PAGE---\n\n+dows\n\n+OS\n\n+x\n\n+omeOS\n\n+er",
     "visual_scores": [
-      0.9494,
+      0.9485,
       0.9984
     ],
-    "visual_avg": 0.9739,
+    "visual_avg": 0.9734,
     "diff_images": [
       {
         "page": 1,
@@ -448,7 +448,7 @@
         "reference_img": "classic103_pie_chart_with_labels_p2_reference.png"
       }
     ],
-    "overall_score": 0.8843
+    "overall_score": 0.8694
   },
   {
     "name": "classic104_combo_bar_line_chart",
@@ -516,19 +516,19 @@
     "name": "classic106_3d_pie_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 403768,
+    "minipdf_size": 404137,
     "reference_size": 76353,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8243,
-    "flat_text_similarity": 0.7947,
-    "word_text_similarity": 0.8,
-    "text_diff": "--- minipdf/classic106_3d_pie_chart.pdf\n+++ reference/classic106_3d_pie_chart.pdf\n@@ -1,8 +1,17 @@\n Category Amount\n\n-Food 800 Monthly Expense Breakdown (3D)\n\n+Food 800\n\n+Monthly Expense Breakdown (3D)\n\n Housing 1500\n\n Transport 400\n\n Entertainm 300\n\n Savings 700\n\n Other 200\n\n----PAGE---\n+Food\n\n+Housing\n\n+Transpo\n\n+Entertai\n\n+Savings\n\n+Other\n\n+---PAGE---\n\n+rt\n\n+nment",
+    "text_similarity": 0.9505,
+    "flat_text_similarity": 0.9235,
+    "word_text_similarity": 0.8627,
+    "text_diff": "--- minipdf/classic106_3d_pie_chart.pdf\n+++ reference/classic106_3d_pie_chart.pdf\n@@ -1,5 +1,6 @@\n Category Amount\n\n-Food 800 Monthly Expense Breakdown (3D)\n\n+Food 800\n\n+Monthly Expense Breakdown (3D)\n\n Housing 1500\n\n Transport 400\n\n Entertainm 300\n\n@@ -7,8 +8,10 @@\n Other 200\n\n Food\n\n Housing\n\n-Transport\n\n-Entertainment\n\n+Transpo\n\n+Entertai\n\n Savings\n\n Other\n\n----PAGE---\n+---PAGE---\n\n+rt\n\n+nment",
     "visual_scores": [
-      0.9362,
+      0.935,
       0.9987
     ],
-    "visual_avg": 0.9675,
+    "visual_avg": 0.9668,
     "diff_images": [
       {
         "page": 1,
@@ -541,7 +541,7 @@
         "reference_img": "classic106_3d_pie_chart_p2_reference.png"
       }
     ],
-    "overall_score": 0.9167
+    "overall_score": 0.9669
   },
   {
     "name": "classic107_multi_series_line",
@@ -944,19 +944,19 @@
     "name": "classic119_dashboard_multi_charts",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 218257,
+    "minipdf_size": 218496,
     "reference_size": 65175,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8409,
-    "flat_text_similarity": 0.7713,
-    "word_text_similarity": 0.8409,
-    "text_diff": "--- minipdf/classic119_dashboard_multi_charts.pdf\n+++ reference/classic119_dashboard_multi_charts.pdf\n@@ -1,19 +1,24 @@\n KPI Dashboard - Q4 2025\n\n Revenue vs Expenses\n\n Month Revenue Expenses\n\n-Oct 85 60 120\n\n+Oct 85 60\n\n+120\n\n Nov 92 65\n\n+Dec 110 70\n\n 100\n\n-Dec 110 70\n\n 80\n\n-60\n\n-Segment Share\n\n+Segment Share 60\n\n+Enterprise 45\n\n 40\n\n-Enterprise 45\n\n SMB 30\n\n+Consumer 25\n\n 20\n\n-Consumer 25\n\n 0\n\n Oct Nov Dec\n\n Revenue by Segment\n\n----PAGE---\n+Enterprise\n\n+SMB\n\n+Consumer\n\n+---PAGE---\n\n+Revenue\n\n+Expenses",
+    "text_similarity": 0.8696,
+    "flat_text_similarity": 0.8218,
+    "word_text_similarity": 0.8696,
+    "text_diff": "--- minipdf/classic119_dashboard_multi_charts.pdf\n+++ reference/classic119_dashboard_multi_charts.pdf\n@@ -1,23 +1,24 @@\n KPI Dashboard - Q4 2025\n\n Revenue vs Expenses\n\n Month Revenue Expenses\n\n-Oct 85 60 120\n\n+Oct 85 60\n\n+120\n\n Nov 92 65\n\n+Dec 110 70\n\n 100\n\n-Dec 110 70\n\n 80\n\n-60\n\n-Segment Share\n\n+Segment Share 60\n\n+Enterprise 45\n\n 40\n\n-Enterprise 45\n\n SMB 30\n\n+Consumer 25\n\n 20\n\n-Consumer 25\n\n 0\n\n Oct Nov Dec\n\n Revenue by Segment\n\n Enterprise\n\n SMB\n\n Consumer\n\n-Slice4\n\n----PAGE---\n+---PAGE---\n\n+Revenue\n\n+Expenses",
     "visual_scores": [
-      0.8701,
+      0.8694,
       0.9981
     ],
-    "visual_avg": 0.9341,
+    "visual_avg": 0.9337,
     "diff_images": [
       {
         "page": 1,
@@ -969,7 +969,7 @@
         "reference_img": "classic119_dashboard_multi_charts_p2_reference.png"
       }
     ],
-    "overall_score": 0.91
+    "overall_score": 0.9213
   },
   {
     "name": "classic11_sparse_rows",
@@ -4857,19 +4857,19 @@
     "name": "classic94_pie_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 403625,
+    "minipdf_size": 403930,
     "reference_size": 47211,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.878,
-    "flat_text_similarity": 0.8213,
-    "word_text_similarity": 0.878,
-    "text_diff": "--- minipdf/classic94_pie_chart.pdf\n+++ reference/classic94_pie_chart.pdf\n@@ -1,7 +1,13 @@\n Segment Share (%)\n\n-Enterprise 35 Market Share by Segment\n\n+Enterprise 35\n\n+Market Share by Segment\n\n SMB 28\n\n Consumer 22\n\n Governme 10\n\n Education 5\n\n+Enterprise\n\n+SMB\n\n+Consumer\n\n+Government\n\n+Education\n\n ---PAGE---",
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9935,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/classic94_pie_chart.pdf\n+++ reference/classic94_pie_chart.pdf\n@@ -1,5 +1,6 @@\n Segment Share (%)\n\n-Enterprise 35 Market Share by Segment\n\n+Enterprise 35\n\n+Market Share by Segment\n\n SMB 28\n\n Consumer 22\n\n Governme 10\n",
     "visual_scores": [
-      0.8506,
+      0.8624,
       0.9992
     ],
-    "visual_avg": 0.9249,
+    "visual_avg": 0.9308,
     "diff_images": [
       {
         "page": 1,
@@ -4882,7 +4882,7 @@
         "reference_img": "classic94_pie_chart_p2_reference.png"
       }
     ],
-    "overall_score": 0.9212
+    "overall_score": 0.9723
   },
   {
     "name": "classic95_area_chart",
@@ -4950,19 +4950,19 @@
     "name": "classic97_doughnut_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 302234,
+    "minipdf_size": 302528,
     "reference_size": 47227,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8571,
-    "flat_text_similarity": 0.8537,
-    "word_text_similarity": 0.8571,
-    "text_diff": "--- minipdf/classic97_doughnut_chart.pdf\n+++ reference/classic97_doughnut_chart.pdf\n@@ -1,7 +1,13 @@\n Category Amount\n\n-Salaries 50000 Budget Allocation\n\n+Salaries 50000\n\n+Budget Allocation\n\n Rent 12000\n\n Marketing 8000\n\n R&D 15000\n\n Other 5000\n\n+Salaries\n\n+Rent\n\n+Marketing\n\n+R&D\n\n+Other\n\n ---PAGE---",
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9929,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/classic97_doughnut_chart.pdf\n+++ reference/classic97_doughnut_chart.pdf\n@@ -1,5 +1,6 @@\n Category Amount\n\n-Salaries 50000 Budget Allocation\n\n+Salaries 50000\n\n+Budget Allocation\n\n Rent 12000\n\n Marketing 8000\n\n R&D 15000\n",
     "visual_scores": [
-      0.8643,
+      0.8763,
       0.9992
     ],
-    "visual_avg": 0.9317,
+    "visual_avg": 0.9377,
     "diff_images": [
       {
         "page": 1,
@@ -4975,7 +4975,7 @@
         "reference_img": "classic97_doughnut_chart_p2_reference.png"
       }
     ],
-    "overall_score": 0.9155
+    "overall_score": 0.9751
   },
   {
     "name": "classic98_radar_chart",

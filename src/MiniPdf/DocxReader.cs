@@ -77,7 +77,11 @@ internal static class DocxReader
         // Read page layout from sectPr
         var pageLayout = ReadPageLayout(body);
 
-        return new DocxDocument(elements, pageLayout);
+        // Read header/footer content
+        var headerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "headerReference");
+        var footerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "footerReference");
+
+        return new DocxDocument(elements, pageLayout, headerText, footerText);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -108,6 +112,7 @@ internal static class DocxReader
         PdfColor? color = null;
         PdfColor? paragraphShading = null;
         List<DocxTabStop>? tabStops = null;
+        DocxBorders? borders = null;
 
         if (pPr != null)
         {
@@ -202,6 +207,18 @@ internal static class DocxReader
                     paragraphShading = PdfColor.FromHex(pFill);
             }
 
+            // Paragraph borders
+            var pBdr = pPr.Element(W + "pBdr");
+            if (pBdr != null)
+            {
+                borders = new DocxBorders(
+                    Top: ReadBorderEdge(pBdr.Element(W + "top")),
+                    Bottom: ReadBorderEdge(pBdr.Element(W + "bottom")),
+                    Left: ReadBorderEdge(pBdr.Element(W + "left")),
+                    Right: ReadBorderEdge(pBdr.Element(W + "right"))
+                );
+            }
+
             // Tab stops
             var tabsEl = pPr.Element(W + "tabs");
             if (tabsEl != null)
@@ -288,7 +305,23 @@ internal static class DocxReader
             lineSpacing, indentLeft, indentRight, indentFirstLine,
             isBulletList, isNumberedList, listLevel, listText, styleId,
             bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops,
-            sectionBreakLayout);
+            sectionBreakLayout, borders);
+    }
+
+    private static DocxBorderEdge? ReadBorderEdge(XElement? el)
+    {
+        if (el == null) return null;
+        var val = el.Attribute(W + "val")?.Value;
+        if (string.IsNullOrEmpty(val) || val == "none" || val == "nil") return null;
+        // sz is in eighths of a point
+        float width = 1f;
+        if (int.TryParse(el.Attribute(W + "sz")?.Value, out var sz))
+            width = sz / 8f;
+        var colorHex = el.Attribute(W + "color")?.Value;
+        var color = !string.IsNullOrEmpty(colorHex) && colorHex != "auto"
+            ? PdfColor.FromHex(colorHex)
+            : new PdfColor(0, 0, 0);
+        return new DocxBorderEdge(Math.Max(0.5f, width), color);
     }
 
     private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor)
@@ -437,18 +470,25 @@ internal static class DocxReader
                     }
                     else if (child.Name == W + "tbl")
                     {
-                        // Flatten nested table: extract text from each cell as paragraphs
+                        // Flatten nested table: join each row's cell text into a single paragraph
                         foreach (var nestedTr in child.Elements(W + "tr"))
                         {
+                            var rowRuns = new List<DocxRun>();
                             foreach (var nestedTc in nestedTr.Elements(W + "tc"))
                             {
                                 foreach (var nestedP in nestedTc.Elements(W + "p"))
                                 {
                                     var para = ReadParagraph(nestedP, styles, numbering, relationships, archive);
                                     if (para != null)
-                                        cellParagraphs.Add(para);
+                                    {
+                                        if (rowRuns.Count > 0)
+                                            rowRuns.Add(new DocxRun(" "));
+                                        rowRuns.AddRange(para.Runs);
+                                    }
                                 }
                             }
+                            if (rowRuns.Count > 0)
+                                cellParagraphs.Add(new DocxParagraph(rowRuns, []));
                         }
                     }
                 }
@@ -491,6 +531,42 @@ internal static class DocxReader
         var sectPr = body.Element(W + "sectPr");
         if (sectPr == null) return null;
         return ParseSectionProperties(sectPr);
+    }
+
+    private static string? ReadHeaderFooter(XElement body, Dictionary<string, string> relationships,
+        ZipArchive archive, Dictionary<string, DocxStyleInfo> styles, Dictionary<string, DocxNumberingDef> numbering,
+        string refElementName)
+    {
+        var sectPr = body.Element(W + "sectPr");
+        if (sectPr == null) return null;
+
+        var hfRef = sectPr.Element(W + refElementName);
+        if (hfRef == null) return null;
+
+        var rId = hfRef.Attribute(R + "id")?.Value;
+        if (string.IsNullOrEmpty(rId) || !relationships.TryGetValue(rId, out var target))
+            return null;
+
+        var path = target.StartsWith("/") ? target.TrimStart('/') : "word/" + target;
+        var entry = archive.GetEntry(path);
+        if (entry == null) return null;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+
+        var texts = new List<string>();
+        foreach (var p in doc.Descendants(W + "p"))
+        {
+            var para = ReadParagraph(p, styles, numbering, relationships, archive);
+            if (para != null)
+            {
+                var text = string.Concat(para.Runs.Select(r => r.Text));
+                if (!string.IsNullOrEmpty(text))
+                    texts.Add(text);
+            }
+        }
+
+        return texts.Count > 0 ? string.Join("\n", texts) : null;
     }
 
     private static DocxPageLayout ParseSectionProperties(XElement sectPr)
@@ -681,7 +757,7 @@ internal static class DocxReader
 // ── Document model ──────────────────────────────────────────────────────
 
 /// <summary>Represents a parsed DOCX document.</summary>
-internal sealed record DocxDocument(List<DocxElement> Elements, DocxPageLayout? PageLayout = null);
+internal sealed record DocxDocument(List<DocxElement> Elements, DocxPageLayout? PageLayout = null, string? HeaderText = null, string? FooterText = null);
 
 /// <summary>Page layout settings from sectPr.</summary>
 internal sealed record DocxPageLayout(
@@ -720,8 +796,23 @@ internal sealed record DocxParagraph(
     bool HasPageBreakAfter = false,
     PdfColor? Shading = null,
     List<DocxTabStop>? TabStops = null,
-    DocxPageLayout? SectionBreak = null
+    DocxPageLayout? SectionBreak = null,
+    DocxBorders? Borders = null
 ) : DocxElement;
+
+/// <summary>Represents a single border edge.</summary>
+internal sealed record DocxBorderEdge(
+    float Width,        // in points
+    PdfColor Color
+);
+
+/// <summary>Represents paragraph borders (top, bottom, left, right).</summary>
+internal sealed record DocxBorders(
+    DocxBorderEdge? Top = null,
+    DocxBorderEdge? Bottom = null,
+    DocxBorderEdge? Left = null,
+    DocxBorderEdge? Right = null
+);
 
 /// <summary>Represents a tab stop definition.</summary>
 internal sealed record DocxTabStop(
