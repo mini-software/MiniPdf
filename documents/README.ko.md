@@ -17,6 +17,8 @@
 
 Office 파일을 PDF로 변환하는 최소한의 의존성 없는 .NET 라이브러리입니다.
 
+👉 **[온라인 데모](https://mini-software.github.io/MiniPdf/)** — 설치 없이 브라우저에서 바로 체험하세요.
+
 ## 기능
 
 - **Excel → PDF 변환** — `.xlsx` 파일을 자동 열 레이아웃으로 페이지 나눔 PDF로 변환

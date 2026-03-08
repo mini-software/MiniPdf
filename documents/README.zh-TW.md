@@ -17,6 +17,8 @@
 
 一個極簡、零相依性的 .NET 函式庫，用於將 Office 檔案轉換為 PDF。
 
+👉 **[線上示範](https://mini-software.github.io/MiniPdf/)** — 在瀏覽器中快速體驗，無需安裝。
+
 ## 功能特色
 
 - **Excel 轉 PDF** — 將 `.xlsx` 檔案轉換為分頁 PDF，自動排版欄位
