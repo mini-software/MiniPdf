@@ -3,8 +3,22 @@ name: CI
 on:
   push:
     branches: [ main, master ]
+    paths-ignore:
+      - '**.md'
+      - 'documents/**'
+      - 'dotnet_ai_azure_book/**'
+      - 'book/**'
+      - 'MiniPdf.wiki/**'
+      - 'LICENSE'
   pull_request:
     branches: [ main, master ]
+    paths-ignore:
+      - '**.md'
+      - 'documents/**'
+      - 'dotnet_ai_azure_book/**'
+      - 'book/**'
+      - 'MiniPdf.wiki/**'
+      - 'LICENSE'
 
 permissions:
   contents: read
