@@ -1,5 +1,5 @@
 """
-Generate 120 classic DOCX test files for the MiniPdf benchmark suite.
+Generate 150 classic DOCX test files for the MiniPdf benchmark suite.
 
 Each file tests a different Word document feature, from simple paragraphs
 to tables, images, lists, headings, and mixed content.
@@ -5264,6 +5264,1238 @@ def classic120_comprehensive_business_proposal(path):
     doc.save(path)
 
 
+# ── Classic docx generators (121–150) ───────────────────────────────────
+
+
+def classic121_thin_border_table(path):
+    """Table with thin borders on every cell."""
+    doc = Document()
+    doc.add_heading("Thin Border Table", level=1)
+
+    table = doc.add_table(rows=6, cols=4)
+    table.style = "Table Grid"
+    headers = ["Item", "Qty", "Price", "Total"]
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+    data = [
+        ("Widget A", "10", "$5.00", "$50.00"),
+        ("Widget B", "25", "$3.50", "$87.50"),
+        ("Widget C", "8", "$12.00", "$96.00"),
+        ("Widget D", "15", "$7.25", "$108.75"),
+        ("Widget E", "30", "$2.00", "$60.00"),
+    ]
+    for ri, row_data in enumerate(data, 1):
+        for ci, val in enumerate(row_data):
+            table.rows[ri].cells[ci].text = val
+    doc.save(path)
+
+
+def classic122_thick_outer_border_table(path):
+    """Table with thick outer border and thin inner borders."""
+    doc = Document()
+    doc.add_heading("Thick Outer Border Table", level=1)
+
+    table = doc.add_table(rows=6, cols=4)
+    table.style = "Table Grid"
+    headers = ["Region", "Q1", "Q2", "Q3"]
+    regions = ["North", "South", "East", "West", "Central"]
+    import random
+    random.seed(122)
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+    for ri, region in enumerate(regions, 1):
+        table.rows[ri].cells[0].text = region
+        for ci in range(1, 4):
+            table.rows[ri].cells[ci].text = str(random.randint(1000, 9999))
+
+    # Apply thick outer borders via XML
+    tbl = table._tbl
+    tblPr = tbl.tblPr if tbl.tblPr is not None else tbl._add_tblPr()
+    borders = tblPr.makeelement(qn("w:tblBorders"), {})
+    for edge in ("top", "left", "bottom", "right"):
+        b = borders.makeelement(qn(f"w:{edge}"), {
+            qn("w:val"): "thick",
+            qn("w:sz"): "18",
+            qn("w:space"): "0",
+            qn("w:color"): "000000",
+        })
+        borders.append(b)
+    for edge in ("insideH", "insideV"):
+        b = borders.makeelement(qn(f"w:{edge}"), {
+            qn("w:val"): "single",
+            qn("w:sz"): "4",
+            qn("w:space"): "0",
+            qn("w:color"): "000000",
+        })
+        borders.append(b)
+    tblPr.append(borders)
+    doc.save(path)
+
+
+def classic123_dashed_border_table(path):
+    """Table cells with dashed borders."""
+    doc = Document()
+    doc.add_heading("Dashed Border Styles", level=1)
+
+    styles = [
+        ("Dashed", "dashed"),
+        ("Dotted", "dotted"),
+        ("Dash-Dot", "dashDotStroked"),
+        ("Double", "double"),
+        ("Wave", "wave"),
+    ]
+    table = doc.add_table(rows=len(styles) + 1, cols=2)
+    table.rows[0].cells[0].text = "Border Style"
+    table.rows[0].cells[1].text = "Sample"
+    for r in table.rows[0].cells[0].paragraphs[0].runs:
+        r.bold = True
+    for r in table.rows[0].cells[1].paragraphs[0].runs:
+        r.bold = True
+
+    for ri, (name, bstyle) in enumerate(styles, 1):
+        table.rows[ri].cells[0].text = name
+        cell = table.rows[ri].cells[1]
+        cell.text = "Bordered cell"
+        tc = cell._element
+        tcPr = tc.get_or_add_tcPr()
+        tcBorders = tcPr.makeelement(qn("w:tcBorders"), {})
+        for edge in ("top", "left", "bottom", "right"):
+            b = tcBorders.makeelement(qn(f"w:{edge}"), {
+                qn("w:val"): bstyle,
+                qn("w:sz"): "6",
+                qn("w:space"): "0",
+                qn("w:color"): "333333",
+            })
+            tcBorders.append(b)
+        tcPr.append(tcBorders)
+    doc.save(path)
+
+
+def classic124_colored_border_table(path):
+    """Table with colored borders on cells."""
+    doc = Document()
+    doc.add_heading("Colored Borders", level=1)
+
+    colors = [
+        ("Red", "FF0000"), ("Green", "00AA00"), ("Blue", "0000FF"),
+        ("Orange", "FF8800"), ("Purple", "880088"), ("Teal", "008888"),
+    ]
+    table = doc.add_table(rows=len(colors) + 1, cols=3)
+    table.style = "Table Grid"
+    for ci, h in enumerate(["Color", "Cell", "Description"]):
+        table.rows[0].cells[ci].text = h
+        for r in table.rows[0].cells[ci].paragraphs[0].runs:
+            r.bold = True
+
+    for ri, (name, hex_color) in enumerate(colors, 1):
+        table.rows[ri].cells[0].text = name
+        cell = table.rows[ri].cells[1]
+        cell.text = "Sample"
+        tc = cell._element
+        tcPr = tc.get_or_add_tcPr()
+        tcBorders = tcPr.makeelement(qn("w:tcBorders"), {})
+        for edge in ("top", "left", "bottom", "right"):
+            b = tcBorders.makeelement(qn(f"w:{edge}"), {
+                qn("w:val"): "single",
+                qn("w:sz"): "12",
+                qn("w:space"): "0",
+                qn("w:color"): hex_color,
+            })
+            tcBorders.append(b)
+        tcPr.append(tcBorders)
+        table.rows[ri].cells[2].text = f"Medium {name.lower()} border"
+    doc.save(path)
+
+
+def classic125_solid_cell_fills(path):
+    """Table cells with various solid background fills."""
+    doc = Document()
+    doc.add_heading("Solid Cell Fills", level=1)
+
+    fills = [
+        ("Light Blue", "DAEEF3"), ("Light Green", "EBF1DE"),
+        ("Light Yellow", "FFFFCC"), ("Light Red", "F2DCDB"),
+        ("Light Purple", "E4DFEC"), ("Light Orange", "FDE9D9"),
+        ("Gray 25%", "D9D9D9"), ("Sky Blue", "B7DEE8"),
+    ]
+    table = doc.add_table(rows=len(fills) + 1, cols=2)
+    table.style = "Table Grid"
+    table.rows[0].cells[0].text = "Fill Name"
+    table.rows[0].cells[1].text = "Filled Cell"
+    for r in table.rows[0].cells[0].paragraphs[0].runs:
+        r.bold = True
+    for r in table.rows[0].cells[1].paragraphs[0].runs:
+        r.bold = True
+
+    for ri, (name, color) in enumerate(fills, 1):
+        table.rows[ri].cells[0].text = name
+        cell = table.rows[ri].cells[1]
+        cell.text = "Background"
+        _set_cell_shading(cell, color)
+    doc.save(path)
+
+
+def classic126_dark_header_table(path):
+    """Table with dark header row and white text."""
+    doc = Document()
+    doc.add_heading("Dark Header Table", level=1)
+
+    table = doc.add_table(rows=6, cols=4)
+    table.style = "Table Grid"
+    headers = ["Employee", "Department", "Salary", "Start Date"]
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        _set_cell_shading(cell, "1F4E79")
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run(h)
+        run.bold = True
+        run.font.color.rgb = RGBColor(255, 255, 255)
+    data = [
+        ("Alice Smith", "Engineering", "$95,000", "2020-03-15"),
+        ("Bob Jones", "Marketing", "$72,000", "2019-07-01"),
+        ("Carol Lee", "Finance", "$88,000", "2021-01-10"),
+        ("David Kim", "Engineering", "$102,000", "2018-11-20"),
+        ("Eva Chen", "HR", "$68,000", "2022-05-03"),
+    ]
+    for ri, row_data in enumerate(data, 1):
+        for ci, val in enumerate(row_data):
+            table.rows[ri].cells[ci].text = val
+    doc.save(path)
+
+
+def classic127_font_styles_showcase(path):
+    """Showcase of various font styles in paragraphs."""
+    doc = Document()
+    doc.add_heading("Font Styles Showcase", level=1)
+
+    styles = [
+        ("Bold", True, False, False, False, None),
+        ("Italic", False, True, False, False, None),
+        ("Underline", False, False, True, False, None),
+        ("Strikethrough", False, False, False, True, None),
+        ("Bold Italic", True, True, False, False, None),
+        ("Bold Underline", True, False, True, False, None),
+        ("Bold + Red", True, False, False, False, RGBColor(255, 0, 0)),
+    ]
+    table = doc.add_table(rows=len(styles) + 1, cols=2)
+    table.style = "Table Grid"
+    table.rows[0].cells[0].text = "Style"
+    table.rows[0].cells[1].text = "Example"
+    for r in table.rows[0].cells[0].paragraphs[0].runs:
+        r.bold = True
+    for r in table.rows[0].cells[1].paragraphs[0].runs:
+        r.bold = True
+
+    for ri, (name, bold, italic, underline, strike, color) in enumerate(styles, 1):
+        table.rows[ri].cells[0].text = name
+        p = table.rows[ri].cells[1].paragraphs[0]
+        run = p.add_run(f"Sample {name} text")
+        run.bold = bold
+        run.italic = italic
+        run.underline = underline
+        run.font.strike = strike
+        if color:
+            run.font.color.rgb = color
+    doc.save(path)
+
+
+def classic128_font_sizes_showcase(path):
+    """Showcase of multiple font sizes."""
+    doc = Document()
+    doc.add_heading("Font Sizes", level=1)
+
+    sizes = [8, 9, 10, 11, 12, 14, 16, 18, 20, 24]
+    for sz in sizes:
+        p = doc.add_paragraph()
+        run = p.add_run(f"Font size {sz}pt — The quick brown fox jumps over the lazy dog.")
+        run.font.size = Pt(sz)
+    doc.save(path)
+
+
+def classic129_alignment_combinations(path):
+    """Table showing horizontal and vertical alignment combinations."""
+    doc = Document()
+    doc.add_heading("Alignment Combinations", level=1)
+
+    from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
+    h_aligns = [
+        ("Left", WD_ALIGN_PARAGRAPH.LEFT),
+        ("Center", WD_ALIGN_PARAGRAPH.CENTER),
+        ("Right", WD_ALIGN_PARAGRAPH.RIGHT),
+    ]
+    v_aligns = [
+        ("Top", WD_CELL_VERTICAL_ALIGNMENT.TOP),
+        ("Center", WD_CELL_VERTICAL_ALIGNMENT.CENTER),
+        ("Bottom", WD_CELL_VERTICAL_ALIGNMENT.BOTTOM),
+    ]
+    table = doc.add_table(rows=len(v_aligns) + 1, cols=len(h_aligns) + 1)
+    table.style = "Table Grid"
+    # Header row
+    table.rows[0].cells[0].text = ""
+    for ci, (hname, _) in enumerate(h_aligns, 1):
+        cell = table.rows[0].cells[ci]
+        cell.text = hname
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+    # Data rows
+    for ri, (vname, valign) in enumerate(v_aligns, 1):
+        row = table.rows[ri]
+        row.height = Cm(2)
+        row.cells[0].text = vname
+        for r in row.cells[0].paragraphs[0].runs:
+            r.bold = True
+        for ci, (hname, halign) in enumerate(h_aligns, 1):
+            cell = row.cells[ci]
+            cell.vertical_alignment = valign
+            p = cell.paragraphs[0]
+            p.alignment = halign
+            p.add_run(f"{hname}/{vname}")
+    doc.save(path)
+
+
+def classic130_wrap_and_indent(path):
+    """Long wrapping paragraph and indented paragraphs."""
+    doc = Document()
+    doc.add_heading("Text Wrapping and Indentation", level=1)
+
+    doc.add_heading("Long Wrapping Text", level=2)
+    long_text = (
+        "This is a long text that should wrap within the page margins when rendered to PDF. "
+        "It tests the ability of the converter to handle text that flows across multiple lines "
+        "without explicit line breaks. The paragraph continues with additional sentences to ensure "
+        "sufficient length for wrapping. Modern document processing must handle variable-width fonts, "
+        "kerning, and proper hyphenation to produce high-quality output."
+    )
+    doc.add_paragraph(long_text)
+
+    doc.add_heading("Indented Paragraphs", level=2)
+    for level in range(5):
+        p = doc.add_paragraph(f"Indent level {level}")
+        p.paragraph_format.left_indent = Cm(level * 1.27)
+    doc.save(path)
+
+
+def classic131_number_format_table(path):
+    """Table displaying numbers with descriptions of their formats."""
+    doc = Document()
+    doc.add_heading("Number Formats", level=1)
+
+    table = doc.add_table(rows=11, cols=3)
+    table.style = "Table Grid"
+    for ci, h in enumerate(["Format", "Value", "Display"]):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+    formats = [
+        ("#,##0", "1234567", "1,234,567"),
+        ("#,##0.00", "1234567.891", "1,234,567.89"),
+        ("$#,##0.00", "9876.5", "$9,876.50"),
+        ("0.00%", "0.8523", "85.23%"),
+        ("0.00E+00", "123456789", "1.23E+08"),
+        ("0000", "42", "0042"),
+        ("#,##0;(#,##0)", "-5000", "(5,000)"),
+        ("yyyy-mm-dd", "45658", "2025-01-01"),
+        ("dd/mm/yyyy", "45658", "01/01/2025"),
+        ("hh:mm:ss", "0.75", "18:00:00"),
+    ]
+    for ri, (fmt, val, display) in enumerate(formats, 1):
+        table.rows[ri].cells[0].text = fmt
+        table.rows[ri].cells[1].text = val
+        table.rows[ri].cells[2].text = display
+    doc.save(path)
+
+
+def classic132_striped_table(path):
+    """Table with alternating row shading (striped)."""
+    doc = Document()
+    doc.add_heading("Striped Table", level=1)
+
+    import random
+    random.seed(132)
+    categories = ["Electronics", "Books", "Clothing", "Food", "Sports"]
+    headers = ["Product", "Category", "Price", "Rating"]
+    data = []
+    for i in range(1, 11):
+        data.append((
+            f"Product {i}",
+            random.choice(categories),
+            f"${round(random.uniform(5, 500), 2):.2f}",
+            f"{round(random.uniform(1, 5), 1):.1f}",
+        ))
+
+    table = doc.add_table(rows=len(data) + 1, cols=4)
+    table.style = "Table Grid"
+    # Header
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        _set_cell_shading(cell, "4472C4")
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run(h)
+        run.bold = True
+        run.font.color.rgb = RGBColor(255, 255, 255)
+    # Data rows
+    for ri, row_data in enumerate(data, 1):
+        for ci, val in enumerate(row_data):
+            cell = table.rows[ri].cells[ci]
+            cell.text = val
+            if ri % 2 == 0:
+                _set_cell_shading(cell, "F2F2F2")
+    doc.save(path)
+
+
+def classic133_gradient_rows_table(path):
+    """Table with gradient-colored rows (green intensity increasing)."""
+    doc = Document()
+    doc.add_heading("Gradient Rows", level=1)
+
+    table = doc.add_table(rows=11, cols=3)
+    table.style = "Table Grid"
+    for ci, h in enumerate(["Step", "Value", "Color Intensity"]):
+        cell = table.rows[0].cells[ci]
+        cell.text = h
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+    for i in range(10):
+        ri = i + 1
+        intensity = int(255 - (i * 25))
+        hex_color = f"00{intensity:02X}00"
+        table.rows[ri].cells[0].text = str(i + 1)
+        table.rows[ri].cells[1].text = str((i + 1) * 10)
+        table.rows[ri].cells[2].text = f"Green {hex_color}"
+        for ci in range(3):
+            cell = table.rows[ri].cells[ci]
+            _set_cell_shading(cell, hex_color)
+            if intensity < 128:
+                for r in cell.paragraphs[0].runs:
+                    r.font.color.rgb = RGBColor(255, 255, 255)
+    doc.save(path)
+
+
+def classic134_heatmap_table(path):
+    """Table styled as a heatmap with color-coded values."""
+    doc = Document()
+    doc.add_heading("Heatmap Table", level=1)
+
+    import random
+    random.seed(134)
+    rows_count = 7
+    cols_count = 6
+    table = doc.add_table(rows=rows_count + 1, cols=cols_count + 1)
+    table.style = "Table Grid"
+
+    # Header row
+    table.rows[0].cells[0].text = ""
+    for c in range(1, cols_count + 1):
+        cell = table.rows[0].cells[c]
+        cell.text = f"Col{c}"
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+    # Data rows
+    for ri in range(1, rows_count + 1):
+        cell0 = table.rows[ri].cells[0]
+        cell0.text = f"Row{ri}"
+        for r in cell0.paragraphs[0].runs:
+            r.bold = True
+        for ci in range(1, cols_count + 1):
+            val = random.randint(0, 100)
+            cell = table.rows[ri].cells[ci]
+            p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            red = int(255 * val / 100)
+            green = int(255 * (100 - val) / 100)
+            hex_color = f"{red:02X}{green:02X}30"
+            run = p.add_run(str(val))
+            if val > 60:
+                run.font.color.rgb = RGBColor(255, 255, 255)
+                run.bold = True
+            _set_cell_shading(cell, hex_color)
+    doc.save(path)
+
+
+def classic135_bottom_border_paragraphs(path):
+    """Paragraphs with bottom border only (section separators)."""
+    doc = Document()
+    doc.add_heading("Bottom Border Paragraphs", level=1)
+
+    p = doc.add_paragraph()
+    run = p.add_run("Section Header")
+    run.bold = True
+    run.font.size = Pt(14)
+    pPr = p._element.get_or_add_pPr()
+    pBdr = pPr.makeelement(qn("w:pBdr"), {})
+    bottom = pBdr.makeelement(qn("w:bottom"), {
+        qn("w:val"): "thick",
+        qn("w:sz"): "18",
+        qn("w:space"): "1",
+        qn("w:color"): "000000",
+    })
+    pBdr.append(bottom)
+    pPr.append(pBdr)
+
+    doc.add_paragraph("Content under the thick-bordered section header.")
+
+    border_styles = [
+        ("Thin bottom", "single", "4"),
+        ("Medium bottom", "single", "12"),
+        ("Thick bottom", "thick", "18"),
+        ("Double bottom", "double", "6"),
+    ]
+    for label, bval, bsz in border_styles:
+        p = doc.add_paragraph()
+        p.add_run(label)
+        pPr = p._element.get_or_add_pPr()
+        pBdr = pPr.makeelement(qn("w:pBdr"), {})
+        b = pBdr.makeelement(qn("w:bottom"), {
+            qn("w:val"): bval,
+            qn("w:sz"): bsz,
+            qn("w:space"): "1",
+            qn("w:color"): "000000",
+        })
+        pBdr.append(b)
+        pPr.append(pBdr)
+    doc.save(path)
+
+
+def classic136_financial_statement(path):
+    """Styled financial P&L statement table."""
+    doc = Document()
+    doc.add_heading("Profit & Loss Statement", level=1)
+
+    table = doc.add_table(rows=11, cols=3)
+    table.style = "Table Grid"
+    # Header
+    for ci, h in enumerate(["Category", "2024", "2025"]):
+        cell = table.rows[0].cells[ci]
+        _set_cell_shading(cell, "002060")
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run(h)
+        run.bold = True
+        run.font.color.rgb = RGBColor(255, 255, 255)
+        run.font.size = Pt(12)
+    rows = [
+        ("Revenue", "$450,000", "$520,000"),
+        ("Cost of Goods", "($180,000)", "($195,000)"),
+        ("Gross Profit", "$270,000", "$325,000"),
+        ("", "", ""),
+        ("Operating Expenses", "($120,000)", "($135,000)"),
+        ("R&D", "($45,000)", "($55,000)"),
+        ("Marketing", "($30,000)", "($38,000)"),
+        ("", "", ""),
+        ("Net Income", "$75,000", "$97,000"),
+    ]
+    for ri, (label, v1, v2) in enumerate(rows, 1):
+        if ri > 10:
+            break
+        table.rows[ri].cells[0].text = label
+        table.rows[ri].cells[1].text = v1
+        table.rows[ri].cells[2].text = v2
+        if label in ("Gross Profit", "Net Income"):
+            for ci in range(3):
+                for r in table.rows[ri].cells[ci].paragraphs[0].runs:
+                    r.bold = True
+                    r.font.size = Pt(12)
+    # Last row highlight
+    for ci in range(3):
+        _set_cell_shading(table.rows[9].cells[ci], "E2EFDA")
+    doc.save(path)
+
+
+def classic137_checkerboard_table(path):
+    """8x8 checkerboard pattern using table cell shading."""
+    doc = Document()
+    doc.add_heading("Checkerboard", level=1)
+
+    table = doc.add_table(rows=8, cols=8)
+    table.style = "Table Grid"
+    for ri in range(8):
+        for ci in range(8):
+            cell = table.rows[ri].cells[ci]
+            if (ri + ci) % 2 == 0:
+                _set_cell_shading(cell, "333333")
+                p = cell.paragraphs[0]
+                run = p.add_run(" ")
+                run.font.color.rgb = RGBColor(255, 255, 255)
+            else:
+                _set_cell_shading(cell, "EEEEEE")
+                cell.text = " "
+    doc.save(path)
+
+
+def classic138_color_grid_table(path):
+    """Grid of colored cells with hex color labels."""
+    doc = Document()
+    doc.add_heading("Color Grid", level=1)
+
+    colors = [
+        "FF6B6B", "FFD93D", "6BCB77", "4D96FF",
+        "FF8E71", "C780FF", "FFB4B4", "B5DEFF",
+        "E8FFC1", "FFC0D0", "D5AAFF", "A0E7E5",
+    ]
+    table = doc.add_table(rows=4, cols=3)
+    table.style = "Table Grid"
+    for ri in range(4):
+        for ci in range(3):
+            idx = ri * 3 + ci
+            color = colors[idx]
+            cell = table.rows[ri].cells[ci]
+            p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p.add_run(f"#{color}")
+            _set_cell_shading(cell, color)
+    doc.save(path)
+
+
+def classic139_paragraph_shading_patterns(path):
+    """Paragraphs with various background shading colors."""
+    doc = Document()
+    doc.add_heading("Paragraph Shading Patterns", level=1)
+
+    shading_colors = [
+        ("Solid Blue", "4472C4"),
+        ("Dark Gray", "808080"),
+        ("Medium Gray", "A0A0A0"),
+        ("Light Gray", "D0D0D0"),
+        ("Light Blue", "BDD7EE"),
+        ("Light Green", "C6EFCE"),
+        ("Red Accent", "FF6666"),
+        ("Yellow Accent", "FFFF99"),
+    ]
+    for name, color in shading_colors:
+        p = doc.add_paragraph()
+        run = p.add_run(f"{name} background paragraph")
+        pPr = p._element.get_or_add_pPr()
+        shd = pPr.makeelement(qn("w:shd"), {
+            qn("w:val"): "clear",
+            qn("w:color"): "auto",
+            qn("w:fill"): color,
+        })
+        pPr.append(shd)
+        # White text for dark backgrounds
+        if color in ("4472C4", "808080"):
+            run.font.color.rgb = RGBColor(255, 255, 255)
+    doc.save(path)
+
+
+def classic140_rotated_text_table(path):
+    """Table cells with rotated text."""
+    doc = Document()
+    doc.add_heading("Rotated Text in Table", level=1)
+
+    doc.add_paragraph(
+        "Note: Text rotation in table cells uses vertical text direction via the textDirection element."
+    )
+    table = doc.add_table(rows=2, cols=5)
+    table.style = "Table Grid"
+    directions = [
+        ("Normal", None),
+        ("Bottom-to-Top", "btLr"),
+        ("Top-to-Bottom", "tbRl"),
+        ("TB-LR-V", "tbLrV"),
+        ("TB-RL", "tbRl"),
+    ]
+    for ci, (label, direction) in enumerate(directions):
+        cell = table.rows[0].cells[ci]
+        cell.text = label
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+        cell2 = table.rows[1].cells[ci]
+        cell2.text = "Rotated text sample"
+        if direction:
+            tc = cell2._element
+            tcPr = tc.get_or_add_tcPr()
+            td = tcPr.makeelement(qn("w:textDirection"), {qn("w:val"): direction})
+            tcPr.append(td)
+    # Set row height for visibility
+    table.rows[1].height = Cm(4)
+    doc.save(path)
+
+
+def classic141_mixed_border_styles(path):
+    """Table with mixed border styles per cell."""
+    doc = Document()
+    doc.add_heading("Mixed Border Styles", level=1)
+
+    combos = [
+        ("Thick left, thin others", [("left", "thick", "18", "FF0000"), ("right", "single", "4", "000000"), ("top", "single", "4", "000000"), ("bottom", "single", "4", "000000")]),
+        ("Double bottom", [("bottom", "double", "6", "0000FF")]),
+        ("Medium top & bottom", [("top", "single", "12", "00AA00"), ("bottom", "single", "12", "00AA00")]),
+        ("Dashed all sides", [("left", "dashed", "6", "000000"), ("right", "dashed", "6", "000000"), ("top", "dashed", "6", "000000"), ("bottom", "dashed", "6", "000000")]),
+        ("Thick all, red", [("left", "thick", "18", "FF0000"), ("right", "thick", "18", "FF0000"), ("top", "thick", "18", "FF0000"), ("bottom", "thick", "18", "FF0000")]),
+    ]
+    table = doc.add_table(rows=len(combos) + 1, cols=2)
+    table.rows[0].cells[0].text = "Description"
+    table.rows[0].cells[1].text = "Cell"
+    for r in table.rows[0].cells[0].paragraphs[0].runs:
+        r.bold = True
+    for r in table.rows[0].cells[1].paragraphs[0].runs:
+        r.bold = True
+
+    for ri, (desc, borders) in enumerate(combos, 1):
+        table.rows[ri].cells[0].text = desc
+        cell = table.rows[ri].cells[1]
+        cell.text = "Styled"
+        tc = cell._element
+        tcPr = tc.get_or_add_tcPr()
+        tcBorders = tcPr.makeelement(qn("w:tcBorders"), {})
+        for edge, bval, bsz, bcolor in borders:
+            b = tcBorders.makeelement(qn(f"w:{edge}"), {
+                qn("w:val"): bval,
+                qn("w:sz"): bsz,
+                qn("w:space"): "0",
+                qn("w:color"): bcolor,
+            })
+            tcBorders.append(b)
+        tcPr.append(tcBorders)
+        table.rows[ri].height = Cm(1.2)
+    doc.save(path)
+
+
+def classic142_styled_invoice_document(path):
+    """Fully styled invoice document with header, items, and totals."""
+    doc = Document()
+
+    # Title
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p_title.add_run("INVOICE")
+    run.bold = True
+    run.font.size = Pt(24)
+    run.font.color.rgb = RGBColor(31, 78, 121)
+
+    # Shaded title background
+    pPr = p_title._element.get_or_add_pPr()
+    shd = pPr.makeelement(qn("w:shd"), {
+        qn("w:val"): "clear", qn("w:color"): "auto", qn("w:fill"): "D6E4F0",
+    })
+    pPr.append(shd)
+
+    doc.add_paragraph()
+    # Info
+    p = doc.add_paragraph()
+    r1 = p.add_run("Invoice #: ")
+    r1.bold = True
+    p.add_run("INV-2025-0099")
+    p2 = doc.add_paragraph()
+    r2 = p2.add_run("Date: ")
+    r2.bold = True
+    p2.add_run("2025-06-15")
+
+    doc.add_paragraph()
+    # Items table
+    headers = ["Item", "Description", "Qty", "Price", "Total"]
+    items = [
+        ("SVC-001", "Web Development", "40", "$125.00", "$5,000.00"),
+        ("SVC-002", "UI/UX Design", "20", "$100.00", "$2,000.00"),
+        ("SVC-003", "Testing & QA", "15", "$90.00", "$1,350.00"),
+        ("LIC-001", "Annual License", "1", "$2,400.00", "$2,400.00"),
+    ]
+    table = doc.add_table(rows=len(items) + 1, cols=5)
+    table.style = "Table Grid"
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        _set_cell_shading(cell, "1F4E79")
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run(h)
+        run.bold = True
+        run.font.color.rgb = RGBColor(255, 255, 255)
+    for ri, item_data in enumerate(items, 1):
+        for ci, val in enumerate(item_data):
+            table.rows[ri].cells[ci].text = val
+        if ri % 2 == 0:
+            for ci in range(5):
+                _set_cell_shading(table.rows[ri].cells[ci], "EDF2F9")
+
+    doc.add_paragraph()
+    # Totals
+    p_sub = doc.add_paragraph()
+    p_sub.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    r_sub = p_sub.add_run("Subtotal: $10,750.00")
+    r_sub.bold = True
+    p_tax = doc.add_paragraph()
+    p_tax.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    r_tax = p_tax.add_run("Tax (10%): $1,075.00")
+    r_tax.bold = True
+
+    p_total = doc.add_paragraph()
+    p_total.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    r_total = p_total.add_run("Total: $11,825.00")
+    r_total.bold = True
+    r_total.font.size = Pt(14)
+    # Double line above total
+    pPr = p_total._element.get_or_add_pPr()
+    pBdr = pPr.makeelement(qn("w:pBdr"), {})
+    top = pBdr.makeelement(qn("w:top"), {
+        qn("w:val"): "double", qn("w:sz"): "6", qn("w:space"): "1", qn("w:color"): "1F4E79",
+    })
+    pBdr.append(top)
+    pPr.append(pBdr)
+    doc.save(path)
+
+
+def classic143_multi_section_document(path):
+    """Document with multiple colored section headers (analogous to colored tabs)."""
+    doc = Document()
+
+    sections_data = [
+        ("Sales", "FF0000", [("Product A", "100 units"), ("Product B", "200 units")]),
+        ("Inventory", "00AA00", [("Widget", "500 in stock"), ("Gadget", "300 in stock")]),
+        ("Finance", "0000FF", [("Revenue", "$50,000"), ("Cost", "$30,000")]),
+        ("HR", "FF8800", [("Employees", "50"), ("Open Roles", "5")]),
+    ]
+    for section_name, color, rows in sections_data:
+        p = doc.add_paragraph()
+        run = p.add_run(section_name)
+        run.bold = True
+        run.font.size = Pt(16)
+        r_int = int(color[0:2], 16)
+        g_int = int(color[2:4], 16)
+        b_int = int(color[4:6], 16)
+        run.font.color.rgb = RGBColor(255, 255, 255)
+        pPr = p._element.get_or_add_pPr()
+        shd = pPr.makeelement(qn("w:shd"), {
+            qn("w:val"): "clear", qn("w:color"): "auto", qn("w:fill"): color,
+        })
+        pPr.append(shd)
+
+        table = doc.add_table(rows=len(rows) + 1, cols=2)
+        table.style = "Table Grid"
+        table.rows[0].cells[0].text = "Label"
+        table.rows[0].cells[1].text = "Value"
+        for r in table.rows[0].cells[0].paragraphs[0].runs:
+            r.bold = True
+        for r in table.rows[0].cells[1].paragraphs[0].runs:
+            r.bold = True
+        for ri, (label, val) in enumerate(rows, 1):
+            table.rows[ri].cells[0].text = label
+            table.rows[ri].cells[1].text = val
+        doc.add_paragraph()
+    doc.save(path)
+
+
+def classic144_note_style_paragraphs(path):
+    """Paragraphs styled as notes with yellow background and italic text."""
+    doc = Document()
+    doc.add_heading("Notes", level=1)
+
+    table = doc.add_table(rows=6, cols=2)
+    table.style = "Table Grid"
+    table.rows[0].cells[0].text = "Field"
+    table.rows[0].cells[1].text = "Note"
+    for r in table.rows[0].cells[0].paragraphs[0].runs:
+        r.bold = True
+    for r in table.rows[0].cells[1].paragraphs[0].runs:
+        r.bold = True
+    notes = [
+        ("Name", "Must be full legal name"),
+        ("Email", "Use company email only"),
+        ("Phone", "Include country code"),
+        ("Address", "PO boxes not accepted"),
+        ("DOB", "Format: YYYY-MM-DD"),
+    ]
+    for ri, (field, note) in enumerate(notes, 1):
+        table.rows[ri].cells[0].text = field
+        cell = table.rows[ri].cells[1]
+        _set_cell_shading(cell, "FFFFD5")
+        p = cell.paragraphs[0]
+        run = p.add_run(note)
+        run.italic = True
+        run.font.color.rgb = RGBColor(102, 102, 0)
+    doc.save(path)
+
+
+def classic145_status_badge_table(path):
+    """Table with status badges using colored cell backgrounds."""
+    doc = Document()
+    doc.add_heading("Project Status", level=1)
+
+    status_styles = {
+        "Completed": ("C6EFCE", RGBColor(0, 97, 0)),
+        "In Progress": ("FFEB9C", RGBColor(156, 87, 0)),
+        "Blocked": ("FFC7CE", RGBColor(156, 0, 6)),
+        "Not Started": ("D9D9D9", RGBColor(51, 51, 51)),
+        "In Review": ("B4C6E7", RGBColor(31, 56, 100)),
+    }
+    headers = ["Task", "Owner", "Status", "Due Date"]
+    tasks = [
+        ("Backend API", "Alice", "Completed", "2025-02-01"),
+        ("Frontend UI", "Bob", "In Progress", "2025-03-15"),
+        ("Database Migration", "Carol", "Blocked", "2025-02-20"),
+        ("Documentation", "David", "Not Started", "2025-04-01"),
+        ("Code Review", "Eva", "In Review", "2025-03-10"),
+        ("Deployment", "Frank", "Not Started", "2025-04-15"),
+        ("Testing", "Grace", "In Progress", "2025-03-20"),
+    ]
+    table = doc.add_table(rows=len(tasks) + 1, cols=4)
+    table.style = "Table Grid"
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        _set_cell_shading(cell, "404040")
+        p = cell.paragraphs[0]
+        run = p.add_run(h)
+        run.bold = True
+        run.font.color.rgb = RGBColor(255, 255, 255)
+    for ri, (task, owner, status, due) in enumerate(tasks, 1):
+        table.rows[ri].cells[0].text = task
+        table.rows[ri].cells[1].text = owner
+        cell_status = table.rows[ri].cells[2]
+        p = cell_status.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        if status in status_styles:
+            fill_color, font_color = status_styles[status]
+            _set_cell_shading(cell_status, fill_color)
+            run = p.add_run(status)
+            run.bold = True
+            run.font.color.rgb = font_color
+        else:
+            cell_status.text = status
+        table.rows[ri].cells[3].text = due
+    doc.save(path)
+
+
+def classic146_double_border_table(path):
+    """Table with double borders on header and bottom edge."""
+    doc = Document()
+    doc.add_heading("Double Border Table", level=1)
+
+    headers = ["Name", "Role", "Years", "Rating"]
+    data = [
+        ("Alice", "Engineer", "5", "Excellent"),
+        ("Bob", "Designer", "3", "Good"),
+        ("Carol", "Manager", "8", "Excellent"),
+        ("David", "Analyst", "2", "Satisfactory"),
+    ]
+    table = doc.add_table(rows=len(data) + 1, cols=4)
+    table.style = "Table Grid"
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        _set_cell_shading(cell, "E2EFDA")
+        cell.text = h
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+        # Double border on header
+        tc = cell._element
+        tcPr = tc.get_or_add_tcPr()
+        tcBorders = tcPr.makeelement(qn("w:tcBorders"), {})
+        for edge in ("top", "left", "bottom", "right"):
+            b = tcBorders.makeelement(qn(f"w:{edge}"), {
+                qn("w:val"): "double",
+                qn("w:sz"): "6",
+                qn("w:space"): "0",
+                qn("w:color"): "000000",
+            })
+            tcBorders.append(b)
+        tcPr.append(tcBorders)
+    for ri, row_data in enumerate(data, 1):
+        for ci, val in enumerate(row_data):
+            table.rows[ri].cells[ci].text = val
+    # Bottom edge double border on last row
+    last_ri = len(data)
+    for ci in range(4):
+        cell = table.rows[last_ri].cells[ci]
+        tc = cell._element
+        tcPr = tc.get_or_add_tcPr()
+        tcBorders = tcPr.makeelement(qn("w:tcBorders"), {})
+        b = tcBorders.makeelement(qn("w:bottom"), {
+            qn("w:val"): "double",
+            qn("w:sz"): "6",
+            qn("w:space"): "0",
+            qn("w:color"): "000000",
+        })
+        tcBorders.append(b)
+        tcPr.append(tcBorders)
+    doc.save(path)
+
+
+def classic147_multi_section_styled_report(path):
+    """Multi-section styled report with different header colors per section."""
+    doc = Document()
+    doc.add_heading("Multi-Section Styled Report", level=1)
+
+    sections = {
+        "Summary": {
+            "header_color": "2F5496",
+            "headers": ["Metric", "Value"],
+            "data": [("Total Revenue", "$1,200,000"), ("Total Costs", "$780,000"),
+                     ("Net Profit", "$420,000"), ("Margin", "35%")],
+        },
+        "Quarterly": {
+            "header_color": "548235",
+            "headers": ["Quarter", "Revenue", "Costs", "Profit"],
+            "data": [("Q1", "$280,000", "$190,000", "$90,000"),
+                     ("Q2", "$310,000", "$200,000", "$110,000"),
+                     ("Q3", "$290,000", "$185,000", "$105,000"),
+                     ("Q4", "$320,000", "$205,000", "$115,000")],
+        },
+        "Employees": {
+            "header_color": "BF8F00",
+            "headers": ["Name", "Department", "Salary"],
+            "data": [("Alice", "Engineering", "$110,000"), ("Bob", "Sales", "$85,000"),
+                     ("Carol", "Engineering", "$105,000"), ("David", "HR", "$75,000")],
+        },
+    }
+    for section_name, info in sections.items():
+        doc.add_heading(section_name, level=2)
+        num_cols = len(info["headers"])
+        table = doc.add_table(rows=len(info["data"]) + 1, cols=num_cols)
+        table.style = "Table Grid"
+        for ci, h in enumerate(info["headers"]):
+            cell = table.rows[0].cells[ci]
+            _set_cell_shading(cell, info["header_color"])
+            p = cell.paragraphs[0]
+            run = p.add_run(h)
+            run.bold = True
+            run.font.color.rgb = RGBColor(255, 255, 255)
+        for ri, row_data in enumerate(info["data"], 1):
+            for ci, val in enumerate(row_data):
+                table.rows[ri].cells[ci].text = val
+        doc.add_paragraph()
+    doc.save(path)
+
+
+def classic148_data_grid_document(path):
+    """Data grid table with alternating row colors and centered header."""
+    doc = Document()
+    doc.add_heading("Data Grid", level=1)
+
+    import random
+    random.seed(148)
+    categories = ["Alpha", "Beta", "Gamma"]
+    statuses = ["Active", "Inactive", "Pending"]
+    headers = ["ID", "Name", "Category", "Value", "Status", "Date"]
+
+    table = doc.add_table(rows=21, cols=6)
+    table.style = "Table Grid"
+    for ci, h in enumerate(headers):
+        cell = table.rows[0].cells[ci]
+        _set_cell_shading(cell, "305496")
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run(h)
+        run.bold = True
+        run.font.color.rgb = RGBColor(255, 255, 255)
+
+    for i in range(1, 21):
+        table.rows[i].cells[0].text = str(i)
+        table.rows[i].cells[1].text = f"Item-{i:03d}"
+        table.rows[i].cells[2].text = random.choice(categories)
+        table.rows[i].cells[3].text = f"{round(random.uniform(10, 999), 2):.2f}"
+        table.rows[i].cells[4].text = random.choice(statuses)
+        table.rows[i].cells[5].text = f"2025-{random.randint(1,12):02d}-{random.randint(1,28):02d}"
+        if i % 2 == 0:
+            for ci in range(6):
+                _set_cell_shading(table.rows[i].cells[ci], "D9E2F3")
+    doc.save(path)
+
+
+def classic149_merged_section_report(path):
+    """Report with merged header cells and styled sections."""
+    doc = Document()
+
+    # Title
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p_title.add_run("Quarterly Performance Report")
+    run.bold = True
+    run.font.size = Pt(18)
+    run.font.color.rgb = RGBColor(255, 255, 255)
+    pPr = p_title._element.get_or_add_pPr()
+    shd = pPr.makeelement(qn("w:shd"), {
+        qn("w:val"): "clear", qn("w:color"): "auto", qn("w:fill"): "1F4E79",
+    })
+    pPr.append(shd)
+
+    doc.add_paragraph()
+
+    # Revenue Section
+    p_rev = doc.add_paragraph()
+    run = p_rev.add_run("Revenue Breakdown")
+    run.bold = True
+    run.font.size = Pt(14)
+    run.font.color.rgb = RGBColor(31, 78, 121)
+    pPr = p_rev._element.get_or_add_pPr()
+    shd = pPr.makeelement(qn("w:shd"), {
+        qn("w:val"): "clear", qn("w:color"): "auto", qn("w:fill"): "D6E4F0",
+    })
+    pPr.append(shd)
+
+    rev_table = doc.add_table(rows=4, cols=4)
+    rev_table.style = "Table Grid"
+    for ci, h in enumerate(["Source", "Q1", "Q2", "Total"]):
+        cell = rev_table.rows[0].cells[ci]
+        cell.text = h
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+    rev_data = [
+        ("Online", "120,000", "140,000", "260,000"),
+        ("Retail", "90,000", "85,000", "175,000"),
+        ("Wholesale", "60,000", "70,000", "130,000"),
+    ]
+    for ri, row_data in enumerate(rev_data, 1):
+        for ci, val in enumerate(row_data):
+            rev_table.rows[ri].cells[ci].text = val
+
+    doc.add_paragraph()
+
+    # Expense Section
+    p_exp = doc.add_paragraph()
+    run = p_exp.add_run("Expense Summary")
+    run.bold = True
+    run.font.size = Pt(14)
+    run.font.color.rgb = RGBColor(255, 255, 255)
+    pPr = p_exp._element.get_or_add_pPr()
+    shd = pPr.makeelement(qn("w:shd"), {
+        qn("w:val"): "clear", qn("w:color"): "auto", qn("w:fill"): "C00000",
+    })
+    pPr.append(shd)
+
+    exp_table = doc.add_table(rows=4, cols=4)
+    exp_table.style = "Table Grid"
+    for ci, h in enumerate(["Category", "Q1", "Q2", "Total"]):
+        cell = exp_table.rows[0].cells[ci]
+        cell.text = h
+        for r in cell.paragraphs[0].runs:
+            r.bold = True
+    exp_data = [
+        ("Salaries", "200,000", "210,000", "410,000"),
+        ("Marketing", "30,000", "35,000", "65,000"),
+        ("Operations", "50,000", "48,000", "98,000"),
+    ]
+    for ri, row_data in enumerate(exp_data, 1):
+        for ci, val in enumerate(row_data):
+            exp_table.rows[ri].cells[ci].text = val
+    doc.save(path)
+
+
+def classic150_kitchen_sink_styles(path):
+    """Comprehensive style showcase combining many formatting features."""
+    doc = Document()
+
+    # Merged bold title with dark background
+    p_title = doc.add_paragraph()
+    p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p_title.add_run("Style Showcase")
+    run.bold = True
+    run.font.size = Pt(22)
+    run.font.color.rgb = RGBColor(255, 255, 255)
+    pPr = p_title._element.get_or_add_pPr()
+    shd = pPr.makeelement(qn("w:shd"), {
+        qn("w:val"): "clear", qn("w:color"): "auto", qn("w:fill"): "2F5496",
+    })
+    pPr.append(shd)
+
+    doc.add_paragraph()
+
+    # Font showcase
+    doc.add_heading("Font Features", level=2)
+    styles_list = [
+        ("Bold text", True, False, False),
+        ("Italic text", False, True, False),
+        ("Underlined text", False, False, True),
+        ("Bold + Italic", True, True, False),
+    ]
+    for text, bold, italic, underline in styles_list:
+        p = doc.add_paragraph()
+        run = p.add_run(text)
+        run.bold = bold
+        run.italic = italic
+        run.underline = underline
+
+    doc.add_paragraph()
+
+    # Colored table
+    doc.add_heading("Colored Data Table", level=2)
+    table = doc.add_table(rows=6, cols=4)
+    table.style = "Table Grid"
+    table_headers = ["Feature", "Status", "Score", "Notes"]
+    for ci, h in enumerate(table_headers):
+        cell = table.rows[0].cells[ci]
+        _set_cell_shading(cell, "2F5496")
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run(h)
+        run.bold = True
+        run.font.color.rgb = RGBColor(255, 255, 255)
+
+    table_data = [
+        ("Font rendering", "Pass", "98%", "Excellent fidelity"),
+        ("Table borders", "Pass", "95%", "Minor thick-border gap"),
+        ("Cell shading", "Pass", "97%", "All fill types supported"),
+        ("Image embedding", "Pass", "96%", "PNG and JPEG tested"),
+        ("Page layout", "Pass", "94%", "Landscape needs work"),
+    ]
+    for ri, (feature, status, score, notes) in enumerate(table_data, 1):
+        table.rows[ri].cells[0].text = feature
+        cell_s = table.rows[ri].cells[1]
+        _set_cell_shading(cell_s, "C6EFCE")
+        p = cell_s.paragraphs[0]
+        run = p.add_run(status)
+        run.bold = True
+        run.font.color.rgb = RGBColor(0, 128, 0)
+
+        table.rows[ri].cells[2].text = score
+        table.rows[ri].cells[3].text = notes
+        if ri % 2 == 0:
+            _set_cell_shading(table.rows[ri].cells[0], "F2F2F2")
+            _set_cell_shading(table.rows[ri].cells[2], "F2F2F2")
+            _set_cell_shading(table.rows[ri].cells[3], "F2F2F2")
+
+    doc.add_paragraph()
+
+    # Bottom border demo
+    p = doc.add_paragraph()
+    run = p.add_run("Double border below this paragraph")
+    run.bold = True
+    run.font.size = Pt(12)
+    pPr = p._element.get_or_add_pPr()
+    pBdr = pPr.makeelement(qn("w:pBdr"), {})
+    bottom = pBdr.makeelement(qn("w:bottom"), {
+        qn("w:val"): "double",
+        qn("w:sz"): "6",
+        qn("w:space"): "1",
+        qn("w:color"): "2F5496",
+    })
+    pBdr.append(bottom)
+    pPr.append(pBdr)
+
+    doc.add_paragraph()
+
+    # Indented list
+    doc.add_heading("Indented Items", level=2)
+    for i in range(4):
+        p = doc.add_paragraph(f"Level {i} indented item with some descriptive text")
+        p.paragraph_format.left_indent = Cm(i * 1.27)
+
+    doc.add_paragraph()
+
+    # Multiple font sizes
+    doc.add_heading("Size Comparison", level=2)
+    for sz in [10, 14, 18, 24]:
+        p = doc.add_paragraph()
+        run = p.add_run(f"{sz}pt text sample")
+        run.font.size = Pt(sz)
+
+    doc.add_paragraph()
+
+    # Closing with colored paragraph
+    p_end = doc.add_paragraph()
+    p_end.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p_end.add_run("End of Style Showcase")
+    run.italic = True
+    run.font.color.rgb = RGBColor(128, 128, 128)
+    doc.save(path)
+
+
 # ── Helpers ──────────────────────────────────────────────────────────────
 
 def _set_cell_shading(cell, hex_color):
@@ -5417,6 +6649,36 @@ ALL_GENERATORS = [
     classic118_data_report_with_summary,
     classic119_multi_language_document,
     classic120_comprehensive_business_proposal,
+    classic121_thin_border_table,
+    classic122_thick_outer_border_table,
+    classic123_dashed_border_table,
+    classic124_colored_border_table,
+    classic125_solid_cell_fills,
+    classic126_dark_header_table,
+    classic127_font_styles_showcase,
+    classic128_font_sizes_showcase,
+    classic129_alignment_combinations,
+    classic130_wrap_and_indent,
+    classic131_number_format_table,
+    classic132_striped_table,
+    classic133_gradient_rows_table,
+    classic134_heatmap_table,
+    classic135_bottom_border_paragraphs,
+    classic136_financial_statement,
+    classic137_checkerboard_table,
+    classic138_color_grid_table,
+    classic139_paragraph_shading_patterns,
+    classic140_rotated_text_table,
+    classic141_mixed_border_styles,
+    classic142_styled_invoice_document,
+    classic143_multi_section_document,
+    classic144_note_style_paragraphs,
+    classic145_status_badge_table,
+    classic146_double_border_table,
+    classic147_multi_section_styled_report,
+    classic148_data_grid_document,
+    classic149_merged_section_report,
+    classic150_kitchen_sink_styles,
 ]
 
 

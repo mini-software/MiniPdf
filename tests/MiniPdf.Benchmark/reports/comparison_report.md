@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-05T18:19:36.050619
+Generated: 2026-03-08T10:26:49.944564
 
 ## Summary
 
@@ -14,14 +14,14 @@ Generated: 2026-03-05T18:19:36.050619
 | 6 | 🟢 classic06_tall_table | 1.0 | 0.9447 | 5/5 | **0.9779** |
 | 7 | 🟢 classic07_numbers_only | 1.0 | 0.999 | 1/1 | **0.9996** |
 | 8 | 🟢 classic08_mixed_text_and_numbers | 1.0 | 0.9979 | 1/1 | **0.9992** |
-| 9 | 🔴 classic09_long_text | 0.6785 | 0.577 | 7/12 | **0.6022** |
+| 9 | 🟢 classic09_long_text | 0.9614 | 0.9989 | 12/12 | **0.9841** |
 | 10 | 🟢 classic100_stacked_bar_chart | 0.9663 | 0.9075 | 1/1 | **0.9495** |
 | 11 | 🟢 classic101_percent_stacked_bar | 0.9623 | 0.8783 | 1/1 | **0.9362** |
 | 12 | 🟢 classic102_line_chart_with_markers | 0.8372 | 0.9884 | 2/2 | **0.9302** |
-| 13 | 🟡 classic103_pie_chart_with_labels | 0.7368 | 0.9739 | 2/2 | **0.8843** |
+| 13 | 🟡 classic103_pie_chart_with_labels | 0.7 | 0.9734 | 2/2 | **0.8694** |
 | 14 | 🟡 classic104_combo_bar_line_chart | 0.7872 | 0.7538 | 2/2 | **0.8164** |
 | 15 | 🟡 classic105_3d_bar_chart | 0.9032 | 0.7426 | 2/2 | **0.8583** |
-| 16 | 🟢 classic106_3d_pie_chart | 0.8243 | 0.9675 | 2/2 | **0.9167** |
+| 16 | 🟢 classic106_3d_pie_chart | 0.9505 | 0.9668 | 2/2 | **0.9669** |
 | 17 | 🟡 classic107_multi_series_line | 0.7375 | 0.7766 | 2/2 | **0.8056** |
 | 18 | 🟢 classic108_stacked_area_chart | 0.9643 | 0.896 | 1/1 | **0.9441** |
 | 19 | 🟢 classic109_scatter_with_trendline | 0.8226 | 0.985 | 2/2 | **0.923** |
@@ -35,7 +35,7 @@ Generated: 2026-03-05T18:19:36.050619
 | 27 | 🟢 classic116_percent_stacked_area | 0.9649 | 0.8802 | 1/1 | **0.938** |
 | 28 | 🟡 classic117_stock_ohlc_chart | 0.7938 | 0.7282 | 2/2 | **0.8088** |
 | 29 | 🟢 classic118_bar_chart_custom_colors | 0.9275 | 0.9601 | 2/2 | **0.955** |
-| 30 | 🟢 classic119_dashboard_multi_charts | 0.8409 | 0.9341 | 2/2 | **0.91** |
+| 30 | 🟢 classic119_dashboard_multi_charts | 0.8696 | 0.9337 | 2/2 | **0.9213** |
 | 31 | 🟢 classic11_sparse_rows | 1.0 | 0.9995 | 2/2 | **0.9998** |
 | 32 | 🟡 classic120_chart_with_date_axis | 0.6195 | 0.7833 | 2/2 | **0.7611** |
 | 33 | 🟢 classic121_thin_borders | 1.0 | 0.9934 | 1/1 | **0.9974** |
@@ -180,14 +180,14 @@ Generated: 2026-03-05T18:19:36.050619
 | 172 | 🟢 classic91_simple_bar_chart | 0.9493 | 0.9607 | 2/2 | **0.964** |
 | 173 | 🟢 classic92_horizontal_bar_chart | 0.9563 | 0.9665 | 2/2 | **0.9691** |
 | 174 | 🟢 classic93_line_chart | 0.8257 | 0.9861 | 2/2 | **0.9247** |
-| 175 | 🟢 classic94_pie_chart | 0.878 | 0.9249 | 2/2 | **0.9212** |
+| 175 | 🟢 classic94_pie_chart | 1.0 | 0.9308 | 2/2 | **0.9723** |
 | 176 | 🟡 classic95_area_chart | 0.6441 | 0.7651 | 2/2 | **0.7637** |
 | 177 | 🟢 classic96_scatter_chart | 0.8714 | 0.9855 | 2/2 | **0.9428** |
-| 178 | 🟢 classic97_doughnut_chart | 0.8571 | 0.9317 | 2/2 | **0.9155** |
+| 178 | 🟢 classic97_doughnut_chart | 1.0 | 0.9377 | 2/2 | **0.9751** |
 | 179 | 🟢 classic98_radar_chart | 0.8876 | 0.9892 | 2/2 | **0.9507** |
 | 180 | 🟢 classic99_bubble_chart | 0.8447 | 0.966 | 2/2 | **0.9243** |
 
-**Average Overall Score: 0.9652**
+**Average Overall Score: 0.9682**
 
 ## Visual Comparison
 
@@ -293,7 +293,7 @@ Generated: 2026-03-05T18:19:36.050619
       <td rowspan="12" valign="top"><b>classic09_long_text</b><br><small>p1</small></td>
       <td><img src="images/classic09_long_text_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic09_long_text_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="12" valign="top"><span style="color:#f85149">⬤</span> 0.6022</td>
+      <td rowspan="12" valign="top"><span style="color:#3fb950">⬤</span> 0.9841</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -327,27 +327,27 @@ Generated: 2026-03-05T18:19:36.050619
     </tr>
     <tr>
       <td align="center"><small>p8</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p8_minipdf.png" width="340" alt="MiniPdf p8"></td>
       <td><img src="images/classic09_long_text_p8_reference.png" width="340" alt="Reference p8"></td>
     </tr>
     <tr>
       <td align="center"><small>p9</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p9_minipdf.png" width="340" alt="MiniPdf p9"></td>
       <td><img src="images/classic09_long_text_p9_reference.png" width="340" alt="Reference p9"></td>
     </tr>
     <tr>
       <td align="center"><small>p10</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p10_minipdf.png" width="340" alt="MiniPdf p10"></td>
       <td><img src="images/classic09_long_text_p10_reference.png" width="340" alt="Reference p10"></td>
     </tr>
     <tr>
       <td align="center"><small>p11</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p11_minipdf.png" width="340" alt="MiniPdf p11"></td>
       <td><img src="images/classic09_long_text_p11_reference.png" width="340" alt="Reference p11"></td>
     </tr>
     <tr>
       <td align="center"><small>p12</small></td>
-      <td><i>missing</i></td>
+      <td><img src="images/classic09_long_text_p12_minipdf.png" width="340" alt="MiniPdf p12"></td>
       <td><img src="images/classic09_long_text_p12_reference.png" width="340" alt="Reference p12"></td>
     </tr>
     <tr>
@@ -377,7 +377,7 @@ Generated: 2026-03-05T18:19:36.050619
       <td rowspan="2" valign="top"><b>classic103_pie_chart_with_labels</b><br><small>p1</small></td>
       <td><img src="images/classic103_pie_chart_with_labels_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic103_pie_chart_with_labels_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8843</td>
+      <td rowspan="2" valign="top"><span style="color:#d29922">⬤</span> 0.8694</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -410,7 +410,7 @@ Generated: 2026-03-05T18:19:36.050619
       <td rowspan="2" valign="top"><b>classic106_3d_pie_chart</b><br><small>p1</small></td>
       <td><img src="images/classic106_3d_pie_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic106_3d_pie_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9167</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9669</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -559,7 +559,7 @@ Generated: 2026-03-05T18:19:36.050619
       <td rowspan="2" valign="top"><b>classic119_dashboard_multi_charts</b><br><small>p1</small></td>
       <td><img src="images/classic119_dashboard_multi_charts_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic119_dashboard_multi_charts_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.91</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9213</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1669,7 +1669,7 @@ Generated: 2026-03-05T18:19:36.050619
       <td rowspan="2" valign="top"><b>classic94_pie_chart</b><br><small>p1</small></td>
       <td><img src="images/classic94_pie_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic94_pie_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9212</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9723</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1702,7 +1702,7 @@ Generated: 2026-03-05T18:19:36.050619
       <td rowspan="2" valign="top"><b>classic97_doughnut_chart</b><br><small>p1</small></td>
       <td><img src="images/classic97_doughnut_chart_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic97_doughnut_chart_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9155</td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9751</td>
     </tr>
     <tr>
       <td align="center"><small>p2</small></td>
@@ -1836,23 +1836,21 @@ Text content: ✅ Identical
 
 ### classic09_long_text
 
-- **Text Similarity:** 0.6785
-- **Visual Average:** 0.577
-- **Overall Score:** 0.6022
-- **Pages:** MiniPdf=7, Reference=12
-- **File Size:** MiniPdf=2432 bytes, Reference=29170 bytes
+- **Text Similarity:** 0.9614
+- **Visual Average:** 0.9989
+- **Overall Score:** 0.9841
+- **Pages:** MiniPdf=12, Reference=12
+- **File Size:** MiniPdf=3554 bytes, Reference=29170 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic09_long_text.pdf
 +++ reference/classic09_long_text.pdf
-@@ -1,12 +1,24 @@
+@@ -1,8 +1,8 @@
  Long Text Column
 
 -XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-----PAGE---
 
 -AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
@@ -1860,45 +1858,11 @@ Text content: ✅ Identical
 
 +AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-+Short
-
-+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-
- ---PAGE---
-
- 
-
- ---PAGE---
-
--Short
+ Short
 
 -YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
-+
-
-+---PAGE---
-
-+
-
-+---PAGE---
-
-+
-
-+---PAGE---
-
-+
-
-+---PAGE---
-
-+
-
-+---PAGE---
-
-+
-
-+---PAGE---
-
-+
++YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
  ---PAGE---
 
@@ -2064,18 +2028,18 @@ Text content: ✅ Identical
 
 ### classic103_pie_chart_with_labels
 
-- **Text Similarity:** 0.7368
-- **Visual Average:** 0.9739
-- **Overall Score:** 0.8843
+- **Text Similarity:** 0.7
+- **Visual Average:** 0.9734
+- **Overall Score:** 0.8694
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=403985 bytes, Reference=48488 bytes
+- **File Size:** MiniPdf=404285 bytes, Reference=48488 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic103_pie_chart_with_labels.pdf
 +++ reference/classic103_pie_chart_with_labels.pdf
-@@ -1,10 +1,28 @@
+@@ -1,15 +1,28 @@
  OS Share (%)
 
 -Windows 42 Desktop OS Market Share
@@ -2097,6 +2061,16 @@ Text content: ✅ Identical
 -Linux; Share (%); 15; 15%
 
 -macOS; Share (%); 28; 28%
+
+-Windows
+
+-macOS
+
+-Linux
+
+-ChromeOS
+
+-Other
 
 ----PAGE---
 +ChromeOS 10
@@ -2286,18 +2260,18 @@ Text content: ✅ Identical
 
 ### classic106_3d_pie_chart
 
-- **Text Similarity:** 0.8243
-- **Visual Average:** 0.9675
-- **Overall Score:** 0.9167
+- **Text Similarity:** 0.9505
+- **Visual Average:** 0.9668
+- **Overall Score:** 0.9669
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=403768 bytes, Reference=76353 bytes
+- **File Size:** MiniPdf=404137 bytes, Reference=76353 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic106_3d_pie_chart.pdf
 +++ reference/classic106_3d_pie_chart.pdf
-@@ -1,8 +1,17 @@
+@@ -1,5 +1,6 @@
  Category Amount
 
 -Food 800 Monthly Expense Breakdown (3D)
@@ -2312,23 +2286,26 @@ Text content: ✅ Identical
 
  Entertainm 300
 
- Savings 700
-
+@@ -7,8 +8,10 @@
  Other 200
 
-----PAGE---
-+Food
+ Food
 
-+Housing
+ Housing
+
+-Transport
+
+-Entertainment
 
 +Transpo
 
 +Entertai
 
-+Savings
+ Savings
 
-+Other
+ Other
 
+----PAGE---
 +---PAGE---
 
 +rt
@@ -3283,18 +3260,18 @@ Text content: ✅ Identical
 
 ### classic119_dashboard_multi_charts
 
-- **Text Similarity:** 0.8409
-- **Visual Average:** 0.9341
-- **Overall Score:** 0.91
+- **Text Similarity:** 0.8696
+- **Visual Average:** 0.9337
+- **Overall Score:** 0.9213
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=218257 bytes, Reference=65175 bytes
+- **File Size:** MiniPdf=218496 bytes, Reference=65175 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic119_dashboard_multi_charts.pdf
 +++ reference/classic119_dashboard_multi_charts.pdf
-@@ -1,19 +1,24 @@
+@@ -1,23 +1,24 @@
  KPI Dashboard - Q4 2025
 
  Revenue vs Expenses
@@ -3343,13 +3320,15 @@ Text content: ✅ Identical
 
  Revenue by Segment
 
+ Enterprise
+
+ SMB
+
+ Consumer
+
+-Slice4
+
 ----PAGE---
-+Enterprise
-
-+SMB
-
-+Consumer
-
 +---PAGE---
 
 +Revenue
@@ -7664,18 +7643,18 @@ Text content: ✅ Identical
 
 ### classic94_pie_chart
 
-- **Text Similarity:** 0.878
-- **Visual Average:** 0.9249
-- **Overall Score:** 0.9212
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9308
+- **Overall Score:** 0.9723
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=403625 bytes, Reference=47211 bytes
+- **File Size:** MiniPdf=403930 bytes, Reference=47211 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic94_pie_chart.pdf
 +++ reference/classic94_pie_chart.pdf
-@@ -1,7 +1,13 @@
+@@ -1,5 +1,6 @@
  Segment Share (%)
 
 -Enterprise 35 Market Share by Segment
@@ -7690,19 +7669,6 @@ Text content: ✅ Identical
 
  Governme 10
 
- Education 5
-
-+Enterprise
-
-+SMB
-
-+Consumer
-
-+Government
-
-+Education
-
- ---PAGE---
 ```
 </details>
 
@@ -7932,18 +7898,18 @@ Text content: ✅ Identical
 
 ### classic97_doughnut_chart
 
-- **Text Similarity:** 0.8571
-- **Visual Average:** 0.9317
-- **Overall Score:** 0.9155
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9377
+- **Overall Score:** 0.9751
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=302234 bytes, Reference=47227 bytes
+- **File Size:** MiniPdf=302528 bytes, Reference=47227 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic97_doughnut_chart.pdf
 +++ reference/classic97_doughnut_chart.pdf
-@@ -1,7 +1,13 @@
+@@ -1,5 +1,6 @@
  Category Amount
 
 -Salaries 50000 Budget Allocation
@@ -7958,19 +7924,6 @@ Text content: ✅ Identical
 
  R&D 15000
 
- Other 5000
-
-+Salaries
-
-+Rent
-
-+Marketing
-
-+R&D
-
-+Other
-
- ---PAGE---
 ```
 </details>
 
@@ -8124,7 +8077,6 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **classic09_long_text** (score: 0.6022)
 1. **classic120_chart_with_date_axis** (score: 0.7611)
 1. **classic95_area_chart** (score: 0.7637)
 
