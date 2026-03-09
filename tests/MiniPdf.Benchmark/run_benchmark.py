@@ -57,19 +57,19 @@ def step_generate_xlsx():
 
 def step_generate_minipdf_pdfs():
     """Step 2: Convert Excel files to PDF using MiniPdf."""
-    banner("Step 2: Convert Excel → PDF (MiniPdf)")
+    banner("Step 2: Convert Excel -> PDF (MiniPdf)")
     scripts_dir = SCRIPT_DIR / ".." / "MiniPdf.Scripts"
 
     # Use dotnet run with the .cs script
     return run(
-        ["dotnet", "run", "convert_xlsx_to_pdf.cs"],
+        ["dotnet", "run", "--no-cache", "convert_xlsx_to_pdf.cs"],
         cwd=str(scripts_dir),
     )
 
 
 def step_generate_reference_pdfs():
     """Step 3: Convert Excel files to PDF using LibreOffice (reference)."""
-    banner("Step 3: Convert Excel → PDF (LibreOffice Reference)")
+    banner("Step 3: Convert Excel -> PDF (LibreOffice Reference)")
     return run(
         [sys.executable, "generate_reference_pdfs.py",
          "--xlsx-dir", str(XLSX_DIR.resolve()),
@@ -113,13 +113,13 @@ def step_analyze_report():
 
         print(f"  Total test cases: {total}")
         print(f"  Average score:    {avg:.4f}")
-        print(f"  Excellent (≥0.9): {excellent}")
+        print(f"  Excellent (>=0.9): {excellent}")
         print(f"  Good (0.7-0.9):   {good}")
         print(f"  Poor (<0.7):      {poor}")
         print()
 
         if poor > 0:
-            print("  ⚠ Cases needing improvement:")
+            print(f"  [!] Cases needing improvement:")
             for r in sorted(results, key=lambda x: x.get("overall_score", 0)):
                 score = r.get("overall_score", 0)
                 if score < 0.7:

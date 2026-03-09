@@ -4619,10 +4619,212 @@ def classic190_dashboard_kpi_images():
     save(wb, "classic190_dashboard_kpi_images.xlsx")
 
 
+# ── 191. Payroll calculator (multi-sheet, merged headers, wide) ────────────
+def classic191_payroll_calculator():
+    """Multi-sheet payroll workbook: Employee Register, Payroll Calculator, Paystubs."""
+    wb = Workbook()
+    lt_blue = PatternFill(start_color="DCE6F1", end_color="DCE6F1", fill_type="solid")
+    dk_blue = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+    white_font = Font(bold=True, color="FFFFFF", size=11)
+    hdr_font = Font(bold=True, size=10)
+    data_font = Font(size=10)
+    thin = Side(style="thin", color="999999")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    date_fmt = "YYYY-MM-DD"
+    cur_fmt = '#,##0.00'
+
+    # ── Sheet 1: Employee Register ──
+    ws1 = wb.active
+    ws1.title = "Employee Register"
+    ws1.merge_cells("A1:N1")
+    title = ws1.cell(row=1, column=1, value="Employee Register")
+    title.font = Font(bold=True, size=16)
+    title.fill = dk_blue
+    title.font = white_font
+    ws1.row_dimensions[1].height = 28
+    ws1.merge_cells("A3:N3")
+    ws1.cell(row=3, column=1, value="Information contained in this employee register is highly confidential").font = Font(bold=True, size=9, italic=True)
+
+    reg_headers_r4 = ["ID", "Employee's Name", "M/F", "Hire Date", "Occupation",
+                      "Annual Salary ($)", "Regular Hourly Rate ($)",
+                      "Overtime Hourly Rate ($)", "Exempt from Overtime",
+                      "Pay Frequency", "W-4 Form", "Filing Status",
+                      "Federal Allowance", "Additional Withhold ($)"]
+    for c, h in enumerate(reg_headers_r4, 1):
+        cell = ws1.cell(row=4, column=c, value=h)
+        cell.font = hdr_font
+        cell.fill = lt_blue
+        cell.border = border
+        cell.alignment = Alignment(wrap_text=True, horizontal="center", vertical="center")
+    ws1.row_dimensions[4].height = 40
+    for c in range(1, 15):
+        ws1.column_dimensions[get_column_letter(c)].width = 15
+    ws1.column_dimensions["B"].width = 20
+    ws1.column_dimensions["E"].width = 22
+
+    employees = [
+        (1, "Adam Jones", "M", "2013-02-15", "Senior Accountant", 42000, 20.19, 30.29, "Yes", "Monthly", "W-4 (2020+)", "Exempt", 2, 50),
+        (2, "Nichola Brown", "F", "2011-09-28", "CR Manager", 54481, 26.19, 39.29, "Yes", "Monthly", "W-4 (2020+)", "Married", 4, 0),
+        (3, "Benny Erwin", "M", "2011-05-11", "Applications PM", 48785, 23.45, 35.18, "No", "Monthly", "W-4 (pre-2020)", "Married", 4, 0),
+        (4, "Rachel Kim", "F", "2016-08-03", "HR Specialist", 39500, 19.00, 28.50, "Yes", "Bi-Weekly", "W-4 (2020+)", "Single", 1, 25),
+        (5, "Carlos Ruiz", "M", "2019-11-20", "Sales Rep", 51200, 24.62, 36.92, "No", "Monthly", "W-4 (2020+)", "Single", 0, 0),
+    ]
+    for i, emp in enumerate(employees):
+        r = 5 + i
+        for c, val in enumerate(emp, 1):
+            cell = ws1.cell(row=r, column=c, value=val)
+            cell.font = data_font
+            cell.border = border
+            if c == 4:
+                cell.number_format = date_fmt
+            elif c in (6, 7, 8, 14):
+                cell.number_format = cur_fmt
+            cell.fill = PatternFill(start_color="F2F2F2", end_color="F2F2F2", fill_type="solid") if i % 2 == 0 else PatternFill()
+
+    # ── Sheet 2: Payroll Calculator ──
+    ws2 = wb.create_sheet("Payroll Calculator")
+    ws2.merge_cells("A1:S1")
+    t2 = ws2.cell(row=1, column=1, value="Payroll Calculator")
+    t2.font = Font(bold=True, size=16)
+    t2.fill = dk_blue
+    t2.font = white_font
+    ws2.row_dimensions[1].height = 28
+
+    ws2.merge_cells("C4:D4")  # Pay Period
+    ws2.cell(row=4, column=3, value="Pay Period").font = hdr_font
+    ws2.merge_cells("E4:I4")  # Hours
+    ws2.cell(row=4, column=5, value="Hours").font = hdr_font
+    ws2.merge_cells("N4:P4")  # Pre-Tax Adjustments
+    ws2.cell(row=4, column=14, value="Pre-Tax Adjustments").font = hdr_font
+    ws2.merge_cells("Q4:S4")  # Withholdings
+    ws2.cell(row=4, column=17, value="Withholdings").font = hdr_font
+    for c in range(1, 20):
+        ws2.cell(row=4, column=c).fill = lt_blue
+        ws2.cell(row=4, column=c).border = border
+        ws2.cell(row=4, column=c).alignment = Alignment(horizontal="center")
+
+    pay_headers = ["ID", "Employee Name", "From", "To",
+                   "Regular Hours", "Holiday Hours", "Vacation Hours",
+                   "Sick Hours", "Overtime Hours",
+                   "Taxable Compensation", "Pre-Tax Deductions",
+                   "Post-Tax Reimbursements", "Gross Pay",
+                   "Tax Deferral Plan (401k)", "Health Insurance", "Other",
+                   "Federal Tax", "State Tax", "Local Tax"]
+    for c, h in enumerate(pay_headers, 1):
+        cell = ws2.cell(row=5, column=c, value=h)
+        cell.font = hdr_font
+        cell.fill = lt_blue
+        cell.border = border
+        cell.alignment = Alignment(wrap_text=True, horizontal="center", vertical="center")
+    ws2.row_dimensions[5].height = 40
+    for c in range(1, 20):
+        ws2.column_dimensions[get_column_letter(c)].width = 14
+    ws2.column_dimensions["B"].width = 18
+
+    payroll = [
+        (1, "Adam Jones", "2020-12-01", "2020-12-31", 173.33, 0, 0, 0, 0, 500, 0, 500, 3999.60, 139.98, 0, 0, 319.49, 178.70, 0),
+        (2, "Nichola Brown", "2020-12-01", "2020-12-31", 173.33, 0, 0, 0, 0, 0, 0, 0, 4539.60, 136.19, 0, 0, 346.74, 203.88, 0),
+        (3, "Benny Erwin", "2020-12-01", "2020-12-31", 173.33, 0, 0, 0, 8, 0, 0, 0, 4346.11, 195.57, 0, 0, 110.89, 192.17, 0),
+        (4, "Rachel Kim", "2020-12-01", "2020-12-31", 80.00, 8, 0, 0, 0, 0, 0, 0, 1685.58, 50.57, 120.00, 0, 142.30, 78.50, 0),
+        (5, "Carlos Ruiz", "2020-12-01", "2020-12-31", 173.33, 0, 16, 0, 4, 200, 0, 200, 4613.00, 138.39, 0, 0, 360.20, 210.45, 0),
+    ]
+    for i, row in enumerate(payroll):
+        r = 6 + i
+        for c, val in enumerate(row, 1):
+            cell = ws2.cell(row=r, column=c, value=val)
+            cell.font = data_font
+            cell.border = border
+            if c in (3, 4):
+                cell.number_format = date_fmt
+            elif c >= 5:
+                cell.number_format = cur_fmt
+            cell.fill = PatternFill(start_color="F2F2F2", end_color="F2F2F2", fill_type="solid") if i % 2 == 0 else PatternFill()
+
+    # ── Sheet 3: Paystubs ──
+    ws3 = wb.create_sheet("Paystubs")
+    ws3.merge_cells("I1:L1")
+    ws3.cell(row=1, column=9, value="Earning Statement").font = Font(bold=True, size=14)
+    ws3.cell(row=4, column=1, value="ABC Company").font = Font(bold=True, size=11)
+    ws3.cell(row=5, column=1, value="111 Street Name").font = data_font
+    ws3.cell(row=6, column=1, value="City, St, 00000").font = data_font
+    ws3.merge_cells("A8:B8")
+    ws3.cell(row=8, column=1, value="EMPLOYEE NAME / ADDRESS").font = hdr_font
+    ws3.cell(row=8, column=1).fill = lt_blue
+    ws3.cell(row=8, column=1).border = border
+    ws3.merge_cells("C8:D8")
+    ws3.cell(row=8, column=3, value="SSN").font = hdr_font
+    ws3.cell(row=8, column=3).fill = lt_blue
+    ws3.cell(row=8, column=3).border = border
+    ws3.merge_cells("E8:G8")
+    ws3.cell(row=8, column=5, value="PAY PERIOD").font = hdr_font
+    ws3.cell(row=8, column=5).fill = lt_blue
+    ws3.cell(row=8, column=5).border = border
+    ws3.merge_cells("H8:I8")
+    ws3.cell(row=8, column=8, value="PAY SCHED.").font = hdr_font
+    ws3.cell(row=8, column=8).fill = lt_blue
+    ws3.cell(row=8, column=8).border = border
+    ws3.cell(row=8, column=10, value="EMPLOYEE #").font = hdr_font
+    ws3.cell(row=8, column=10).fill = lt_blue
+    ws3.cell(row=8, column=10).border = border
+
+    ws3.cell(row=9, column=1, value="Adam Jones").font = data_font
+    ws3.cell(row=9, column=3, value="***-**-6789").font = data_font
+    ws3.cell(row=9, column=5, value="2020-12-01").font = data_font
+    ws3.cell(row=9, column=7, value="2020-12-31").font = data_font
+    ws3.cell(row=9, column=8, value="Monthly").font = data_font
+    ws3.cell(row=9, column=10, value="1").font = data_font
+    ws3.cell(row=10, column=1, value="111 Street, Town/City, ST, 00000").font = data_font
+
+    # Earnings / deductions table
+    stub_headers = ["EARNINGS", "RATE", "HOURS", "CURRENT", "YTD",
+                    "", "DEDUCTIONS", "CURRENT", "YTD"]
+    for c, h in enumerate(stub_headers, 1):
+        cell = ws3.cell(row=12, column=c, value=h)
+        cell.font = hdr_font
+        cell.fill = lt_blue
+        cell.border = border
+    ws3.column_dimensions["A"].width = 16
+    for col in "BCDEFGHI":
+        ws3.column_dimensions[col].width = 14
+    ws3.column_dimensions["J"].width = 12
+    ws3.column_dimensions["K"].width = 12
+    ws3.column_dimensions["L"].width = 12
+
+    stub_rows = [
+        ("Regular", 20.19, 173.33, 3499.60, 41995.20, "", "Federal Tax", 319.49, 3833.88),
+        ("Overtime", 30.29, 0, 0, 0, "", "State Tax", 178.70, 2144.40),
+        ("Holiday", 20.19, 0, 0, 0, "", "Local Tax", 0, 0),
+        ("Taxable Comp", "", "", 500.00, 6000.00, "", "401k", 139.98, 1679.76),
+        ("Reimbursement", "", "", 500.00, 6000.00, "", "Health Ins.", 0, 0),
+    ]
+    for i, row in enumerate(stub_rows):
+        r = 13 + i
+        for c, val in enumerate(row, 1):
+            cell = ws3.cell(row=r, column=c, value=val)
+            cell.font = data_font
+            cell.border = border
+            if isinstance(val, (int, float)):
+                cell.number_format = cur_fmt
+
+    # Net pay row
+    r_net = 13 + len(stub_rows) + 1
+    ws3.cell(row=r_net, column=1, value="GROSS PAY").font = hdr_font
+    ws3.cell(row=r_net, column=4, value=3999.60).font = hdr_font
+    ws3.cell(row=r_net, column=4).number_format = cur_fmt
+    ws3.cell(row=r_net, column=7, value="NET PAY").font = Font(bold=True, size=12)
+    ws3.cell(row=r_net, column=8, value=3361.43).font = Font(bold=True, size=12)
+    ws3.cell(row=r_net, column=8).number_format = cur_fmt
+    for c in range(1, 10):
+        ws3.cell(row=r_net, column=c).border = border
+        ws3.cell(row=r_net, column=c).fill = PatternFill(start_color="E2EFDA", end_color="E2EFDA", fill_type="solid")
+
+    save(wb, "classic191_payroll_calculator.xlsx")
+
+
 # ── Main ─────────────────────────────────────────────────────────────────
 def main():
     ensure_output_dir()
-    print(f"Generating 190 classic .xlsx files in: {OUTPUT_DIR}\n")
+    print(f"Generating 191 classic .xlsx files in: {OUTPUT_DIR}\n")
 
     generators = [
         classic01_basic_table_with_headers,
@@ -4820,6 +5022,8 @@ def main():
         classic188_merged_header_with_images,
         classic189_alternating_image_text_rows,
         classic190_dashboard_kpi_images,
+        # 191: real-world payroll calculator (multi-sheet, wide, merged headers)
+        classic191_payroll_calculator,
     ]
 
     for gen in generators:
