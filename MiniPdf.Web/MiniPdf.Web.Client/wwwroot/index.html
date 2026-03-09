@@ -23,8 +23,16 @@
         <span class="dismiss">🗙</span>
     </div>
 
-    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
     <script src="js/download.js"></script>
+    <script>
+      Blazor.start({
+        loadBootResource: function (type, name, defaultUri, integrity) {
+          if (type === 'dotnetjs') return defaultUri;
+          return fetch(defaultUri, { cache: 'no-cache' });
+        }
+      });
+    </script>
     <!-- Default Statcounter code for MiniPdf
     https://mini-software.github.io/MiniPdf/ -->
     <script type="text/javascript">
