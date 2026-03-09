@@ -6,6 +6,7 @@ on:
     paths:
       - 'MiniPdf.Web/**'
       - 'src/MiniPdf/**'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -33,6 +34,9 @@ jobs:
 
       - name: Publish Blazor WASM
         run: dotnet publish MiniPdf.Web/MiniPdf.Web.Client/MiniPdf.Web.Client.csproj -c Release -o publish
+
+      - name: Remove pre-compressed files (GitHub Pages does not support content negotiation)
+        run: find publish/wwwroot -name '*.br' -o -name '*.gz' | xargs rm -f
 
       - name: Set base href for GitHub Pages
         run: sed -i 's|<base href="/" />|<base href="/MiniPdf/" />|g' publish/wwwroot/index.html
