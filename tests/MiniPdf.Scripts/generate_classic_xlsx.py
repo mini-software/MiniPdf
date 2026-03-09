@@ -1,10 +1,11 @@
 """
-Generate 180 classic .xlsx files for testing Excel-to-PDF conversion.
+Generate 190 classic .xlsx files for testing Excel-to-PDF conversion.
 Each file corresponds to a test case in ClassicExcelToPdfTests.cs.
 
 Cases 61-90 include embedded images to exercise MiniPdf image rendering.
 Cases 91-120 include openpyxl chart objects (bar, line, pie, area, etc.).
 Cases 151-180 include multilingual text, special marks, and emoji.
+Cases 181-190 include feedback trackers, dense tables, and image grids.
 
 Usage:
     pip install openpyxl pillow
@@ -4211,10 +4212,417 @@ def classic180_polyglot_paragraph():
     save(wb, "classic180_polyglot_paragraph.xlsx")
 
 
+# ── 181. Feedback tracker with per-row images ─────────────────────────────
+def classic181_feedback_tracker_with_images():
+    """Simulates a QA feedback spreadsheet: Date | Reviewer | Description | Screenshot."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Feedback"
+    bold = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill("solid", fgColor="2C3E50")
+    ws.column_dimensions["A"].width = 14
+    ws.column_dimensions["B"].width = 16
+    ws.column_dimensions["C"].width = 40
+    ws.column_dimensions["D"].width = 22
+    for col, h in enumerate(["Date", "Reviewer", "Description", "Screenshot"], start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = bold
+        c.fill = header_fill
+    entries = [
+        ("2026-03-01", "Alice",   "Cover letter spacing is off"),
+        ("2026-03-01", "Bob",     "Place of Birth not pulling through"),
+        ("2026-03-02", "Carol",   "Privacy policy text is cut off at the bottom"),
+        ("2026-03-02", "Dave",    "Paragraph does not make sense in section 3"),
+        ("2026-03-03", "Eve",     "Wrong checklist used for application"),
+        ("2026-03-03", "Frank",   "Name and contact details missing on cover letter"),
+        ("2026-03-04", "Grace",   "Unable to scroll and read the privacy policy"),
+        ("2026-03-04", "Hank",    "Applicant has three children, only one birth cert uploaded"),
+    ]
+    colors = [
+        (180, 60, 60), (60, 120, 180), (60, 160, 80), (200, 140, 40),
+        (140, 60, 180), (60, 180, 160), (200, 80, 120), (100, 100, 180),
+    ]
+    for i, (date, reviewer, desc) in enumerate(entries):
+        row = i + 2
+        ws.cell(row=row, column=1, value=date)
+        ws.cell(row=row, column=2, value=reviewer)
+        ws.cell(row=row, column=3, value=desc)
+        ws.row_dimensions[row].height = 72
+        img = _make_jpeg_bytes(160, 90, colors[i])
+        _add_image(ws, img, f"D{row}", width_px=150, height_px=85)
+    save(wb, "classic181_feedback_tracker_with_images.xlsx")
+
+
+# ── 182. Dense multi-column table with long text ──────────────────────────
+def classic182_dense_long_text_columns():
+    """Narrow columns with long text to stress text clipping and overflow."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Dense"
+    bold = Font(bold=True)
+    cols = ["ID", "First Name", "Last Name", "Department", "Position Title", "Email Address", "Phone", "Notes"]
+    widths = [5, 12, 12, 14, 22, 28, 14, 30]
+    for i, (h, w) in enumerate(zip(cols, widths)):
+        c = ws.cell(row=1, column=i + 1, value=h)
+        c.font = bold
+        ws.column_dimensions[get_column_letter(i + 1)].width = w
+    data = [
+        (1001, "Alexander",  "Papadopoulos", "Engineering",    "Senior Software Engineer",            "alexander.papadopoulos@example.com", "+1-555-0101", "Transferred from Athens office in Q2"),
+        (1002, "Magdalena",  "Kowalczyk",    "Human Resources","HR Business Partner Lead",            "magdalena.kowalczyk@example.com",    "+1-555-0102", "Fluent in Polish, German, and English"),
+        (1003, "Christopher","O'Sullivan",    "Finance",        "Chief Financial Analyst",             "christopher.osullivan@example.com",  "+1-555-0103", "CPA certified, MBA from Wharton"),
+        (1004, "Priyanka",   "Ramasubramanian","Marketing",    "Digital Marketing Strategist",        "priyanka.r@example.com",             "+1-555-0104", "Led rebranding campaign for APAC region"),
+        (1005, "Jean-Pierre","Beaumont",      "Sales",          "Regional Sales Director (EMEA)",      "jean-pierre.beaumont@example.com",   "+1-555-0105", "15+ years experience in B2B SaaS"),
+        (1006, "Anastasia",  "Volkov",        "Engineering",    "Principal Data Scientist",            "anastasia.volkov@example.com",       "+1-555-0106", "PhD in Machine Learning, Stanford"),
+        (1007, "Mohammed",   "Al-Rashidi",    "Operations",     "Supply Chain Optimization Manager",   "mohammed.alrashidi@example.com",     "+1-555-0107", "Six Sigma Black Belt certified"),
+        (1008, "Guadalupe",  "Hernandez",     "Legal",          "Senior Corporate Counsel",            "guadalupe.hernandez@example.com",    "+1-555-0108", "Bar admitted in CA, NY, TX"),
+    ]
+    for row_data in data:
+        ws.append(list(row_data))
+    save(wb, "classic182_dense_long_text_columns.xlsx")
+
+
+# ── 183. Mixed content grid with images and wrapped text ──────────────────
+def classic183_mixed_content_grid():
+    """Two-column product listing with images and short descriptions."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Mixed"
+    ws.column_dimensions["A"].width = 20
+    ws.column_dimensions["B"].width = 40
+    ws.column_dimensions["C"].width = 20
+    bold = Font(bold=True)
+    ws.cell(row=1, column=1, value="Product").font = bold
+    ws.cell(row=1, column=2, value="Description").font = bold
+    ws.cell(row=1, column=3, value="Photo").font = bold
+    items = [
+        ("Widget Alpha", "Stainless steel widget, rated for 500+ cycles.",  (200, 80, 80)),
+        ("Widget Beta",  "Compact plastic widget, IP67 waterproof.",        (80, 140, 200)),
+        ("Widget Gamma", "Titanium alloy, aerospace-grade finish.",         (80, 180, 80)),
+        ("Widget Delta", "Biodegradable, plant-based polymer.",             (200, 160, 40)),
+    ]
+    for i, (name, desc, color) in enumerate(items):
+        row = i + 2
+        ws.cell(row=row, column=1, value=name)
+        ws.cell(row=row, column=2, value=desc)
+        ws.row_dimensions[row].height = 54
+        img = _make_jpeg_bytes(120, 60, color)
+        _add_image(ws, img, f"C{row}", width_px=110, height_px=50)
+    save(wb, "classic183_mixed_content_grid.xlsx")
+
+
+# ── 184. Wide table with many narrow columns ──────────────────────────────
+def classic184_wide_narrow_columns():
+    """10-column table with tight widths to test column scaling."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Wide"
+    headers = [
+        "ID", "Date", "Src", "Dst", "Type",
+        "Qty", "Price", "Tax", "Total", "Status",
+    ]
+    col_widths = [5, 10, 6, 6, 8, 5, 8, 6, 8, 8]
+    bold = Font(bold=True)
+    fill = PatternFill("solid", fgColor="34495E")
+    font_w = Font(bold=True, color="FFFFFF")
+    for i, (h, w) in enumerate(zip(headers, col_widths)):
+        c = ws.cell(row=1, column=i + 1, value=h)
+        c.font = font_w
+        c.fill = fill
+        ws.column_dimensions[get_column_letter(i + 1)].width = w
+    import random
+    random.seed(184)
+    statuses = ["OK", "Pending", "Shipped", "Cancel", "Return"]
+    for r in range(2, 22):
+        qty = random.randint(1, 100)
+        price = round(random.uniform(5, 500), 2)
+        tax = round(price * 0.1, 2)
+        ws.append([
+            r - 1,
+            f"2026-03-{random.randint(1, 28):02d}",
+            f"W{random.randint(1, 9)}",
+            f"D{random.randint(1, 9)}",
+            random.choice(["Sale", "Return", "Transfer"]),
+            qty,
+            price, tax, round(price + tax, 2),
+            random.choice(statuses),
+        ])
+    save(wb, "classic184_wide_narrow_columns.xlsx")
+
+
+# ── 185. Tall rows with vertical alignment ────────────────────────────────
+def classic185_tall_rows_vertical_align():
+    """Rows with explicit large heights and top/center/bottom alignment."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "VertAlign"
+    ws.column_dimensions["A"].width = 20
+    ws.column_dimensions["B"].width = 30
+    ws.column_dimensions["C"].width = 30
+    header_font = Font(bold=True, size=12)
+    for col, h in enumerate(["Alignment", "Short Text", "Longer Description"], start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = header_font
+    alignments = [
+        ("Top",    Alignment(vertical="top")),
+        ("Center", Alignment(vertical="center")),
+        ("Bottom", Alignment(vertical="bottom")),
+        ("Top + Wrap", Alignment(vertical="top", wrap_text=True)),
+        ("Center + Wrap", Alignment(vertical="center", wrap_text=True)),
+    ]
+    for i, (label, align) in enumerate(alignments):
+        row = i + 2
+        ws.row_dimensions[row].height = 45
+        ws.cell(row=row, column=1, value=label).alignment = align
+        ws.cell(row=row, column=2, value="Hello World").alignment = align
+        ws.cell(row=row, column=3, value="A longer description for this row.").alignment = align
+    save(wb, "classic185_tall_rows_vertical_align.xlsx")
+
+
+# ── 186. Multi-sheet report with images ───────────────────────────────────
+def classic186_multi_sheet_image_report():
+    """Two sheets: a data summary sheet and an image gallery sheet."""
+    wb = Workbook()
+    ws1 = wb.active
+    ws1.title = "Summary"
+    bold = Font(bold=True)
+    ws1.column_dimensions["A"].width = 20
+    ws1.column_dimensions["B"].width = 14
+    ws1.column_dimensions["C"].width = 14
+    ws1.append(["Category", "Count", "Status"])
+    ws1["A1"].font = bold
+    ws1["B1"].font = bold
+    ws1["C1"].font = bold
+    categories = [
+        ("Critical Bugs", 3, "Open"),
+        ("Major Bugs", 7, "In Progress"),
+        ("Minor Bugs", 12, "Triaged"),
+        ("Enhancements", 5, "Planned"),
+        ("Documentation", 8, "Done"),
+    ]
+    for cat in categories:
+        ws1.append(list(cat))
+
+    ws2 = wb.create_sheet("Screenshots")
+    ws2.column_dimensions["A"].width = 6
+    ws2.column_dimensions["B"].width = 30
+    ws2.column_dimensions["C"].width = 24
+    ws2.append(["#", "Description", "Screenshot"])
+    ws2["A1"].font = bold
+    ws2["B1"].font = bold
+    ws2["C1"].font = bold
+    screenshots = [
+        ("Login page layout broken on mobile",  (220, 60, 60)),
+        ("Dashboard chart not rendering",        (60, 60, 220)),
+        ("Export button overlaps footer",        (60, 180, 60)),
+        ("Search results pagination error",      (220, 180, 60)),
+    ]
+    for i, (desc, color) in enumerate(screenshots):
+        row = i + 2
+        ws2.cell(row=row, column=1, value=i + 1)
+        ws2.cell(row=row, column=2, value=desc)
+        ws2.row_dimensions[row].height = 72
+        img = _make_jpeg_bytes(180, 90, color)
+        _add_image(ws2, img, f"C{row}", width_px=170, height_px=85)
+    save(wb, "classic186_multi_sheet_image_report.xlsx")
+
+
+# ── 187. Bug report log with status colors and screenshots ────────────────
+def classic187_bug_report_with_screenshots():
+    """Colored status cells + embedded screenshot per bug — simulates real QA logs."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Bugs"
+    bold_white = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill("solid", fgColor="1A1A2E")
+    ws.column_dimensions["A"].width = 10
+    ws.column_dimensions["B"].width = 10
+    ws.column_dimensions["C"].width = 12
+    ws.column_dimensions["D"].width = 34
+    ws.column_dimensions["E"].width = 18
+    for col, h in enumerate(["Bug ID", "Priority", "Status", "Description", "Evidence"], start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = bold_white
+        c.fill = header_fill
+    status_colors = {
+        "Open":     PatternFill("solid", fgColor="E74C3C"),
+        "Fixed":    PatternFill("solid", fgColor="2ECC71"),
+        "Verified": PatternFill("solid", fgColor="3498DB"),
+        "Deferred": PatternFill("solid", fgColor="F39C12"),
+    }
+    bugs = [
+        ("BUG-001", "P1", "Open",     "App crashes on SSO token expired"),
+        ("BUG-002", "P2", "Fixed",    "Date picker shows wrong month"),
+        ("BUG-003", "P1", "Open",     "File upload fails for >25MB"),
+        ("BUG-004", "P3", "Verified", "Tooltip text truncated on narrow screen"),
+        ("BUG-005", "P2", "Deferred", "Chart legend overlaps data labels"),
+    ]
+    img_colors = [
+        (200, 50, 50), (50, 180, 50), (200, 100, 50),
+        (50, 100, 200), (180, 180, 50),
+    ]
+    for i, (bug_id, prio, status, desc) in enumerate(bugs):
+        row = i + 2
+        ws.cell(row=row, column=1, value=bug_id)
+        ws.cell(row=row, column=2, value=prio)
+        sc = ws.cell(row=row, column=3, value=status)
+        sc.fill = status_colors[status]
+        sc.font = Font(bold=True, color="FFFFFF") if status in ("Open", "Fixed") else Font(bold=True)
+        ws.cell(row=row, column=4, value=desc)
+        ws.row_dimensions[row].height = 54
+        img = _make_jpeg_bytes(120, 60, img_colors[i])
+        _add_image(ws, img, f"E{row}", width_px=110, height_px=50)
+    save(wb, "classic187_bug_report_with_screenshots.xlsx")
+
+
+# ── 188. Merged header spanning image columns ─────────────────────────────
+def classic188_merged_header_with_images():
+    """Merged cells in header row spanning across columns that contain images below."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Products"
+    bold14 = Font(bold=True, size=14)
+    bold = Font(bold=True)
+    center = Alignment(horizontal="center", vertical="center")
+    ws.column_dimensions["A"].width = 6
+    ws.column_dimensions["B"].width = 18
+    ws.column_dimensions["C"].width = 18
+    ws.column_dimensions["D"].width = 18
+    ws.column_dimensions["E"].width = 18
+    # Merged title
+    ws.merge_cells("A1:E1")
+    title_cell = ws.cell(row=1, column=1, value="Product Catalog 2026")
+    title_cell.font = bold14
+    title_cell.alignment = center
+    ws.row_dimensions[1].height = 30
+    # Merged sub-headers
+    ws.merge_cells("B2:C2")
+    ws.cell(row=2, column=2, value="Category A").font = bold
+    ws.cell(row=2, column=2).alignment = center
+    ws.merge_cells("D2:E2")
+    ws.cell(row=2, column=4, value="Category B").font = bold
+    ws.cell(row=2, column=4).alignment = center
+    # Column sub-headers
+    ws.cell(row=3, column=1, value="#").font = bold
+    ws.cell(row=3, column=2, value="Photo").font = bold
+    ws.cell(row=3, column=3, value="Name").font = bold
+    ws.cell(row=3, column=4, value="Photo").font = bold
+    ws.cell(row=3, column=5, value="Name").font = bold
+    # Data with images
+    pairs = [
+        (("Alpha",   (200, 80, 80)),  ("Echo",    (80, 80, 200))),
+        (("Bravo",   (80, 200, 80)),  ("Foxtrot", (200, 200, 80))),
+        (("Charlie", (200, 80, 200)), ("Golf",    (80, 200, 200))),
+    ]
+    for i, ((n1, c1), (n2, c2)) in enumerate(pairs):
+        row = i + 4
+        ws.cell(row=row, column=1, value=i + 1)
+        ws.cell(row=row, column=3, value=n1)
+        ws.cell(row=row, column=5, value=n2)
+        ws.row_dimensions[row].height = 54
+        img1 = _make_jpeg_bytes(90, 55, c1)
+        _add_image(ws, img1, f"B{row}", width_px=85, height_px=45)
+        img2 = _make_jpeg_bytes(90, 55, c2)
+        _add_image(ws, img2, f"D{row}", width_px=85, height_px=45)
+    save(wb, "classic188_merged_header_with_images.xlsx")
+
+
+# ── 189. Alternating image rows and text rows ─────────────────────────────
+def classic189_alternating_image_text_rows():
+    """Pattern: text row → image row → text row, testing row height transitions."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Alternating"
+    ws.column_dimensions["A"].width = 8
+    ws.column_dimensions["B"].width = 24
+    ws.column_dimensions["C"].width = 24
+    ws.column_dimensions["D"].width = 12
+    bold = Font(bold=True)
+    for col, h in enumerate(["Step", "Action", "Expected Result", "Evidence"], start=1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = bold
+    steps = [
+        ("Open login page",     "Login form is displayed with email and password fields"),
+        ("Enter valid credentials", "Dashboard loads within 3 seconds"),
+        ("Click export button", "CSV file downloads with all visible data"),
+        ("Apply date filter",   "Table updates to show only matching records"),
+        ("Resize browser window","Layout remains responsive at 768px width"),
+        ("Toggle dark mode",    "All components switch to dark theme colors"),
+    ]
+    colors = [
+        (200, 60, 60), (60, 120, 200), (60, 180, 60),
+        (200, 160, 40), (160, 60, 180), (60, 180, 180),
+    ]
+    row = 2
+    for i, (action, expected) in enumerate(steps):
+        # Text row
+        ws.cell(row=row, column=1, value=f"Step {i + 1}")
+        ws.cell(row=row, column=2, value=action)
+        ws.cell(row=row, column=3, value=expected)
+        ws.cell(row=row, column=4, value="See below")
+        row += 1
+        # Image row
+        ws.row_dimensions[row].height = 60
+        img = _make_jpeg_bytes(180, 70, colors[i])
+        _add_image(ws, img, f"B{row}", width_px=170, height_px=55)
+        row += 1
+    save(wb, "classic189_alternating_image_text_rows.xlsx")
+
+
+# ── 190. Dashboard layout with large fonts and KPI images ─────────────────
+def classic190_dashboard_kpi_images():
+    """KPI-style dashboard with large font numbers, labels, and small chart images."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Dashboard"
+    ws.column_dimensions["A"].width = 18
+    ws.column_dimensions["B"].width = 18
+    ws.column_dimensions["C"].width = 18
+    ws.column_dimensions["D"].width = 18
+    # Title row
+    ws.merge_cells("A1:D1")
+    title = ws.cell(row=1, column=1, value="Q1 2026 KPI Dashboard")
+    title.font = Font(bold=True, size=18)
+    title.alignment = Alignment(horizontal="center")
+    ws.row_dimensions[1].height = 36
+    # KPI labels
+    kpis = [
+        ("Revenue", "$2.4M", (46, 134, 193)),
+        ("Users",   "12,450", (39, 174, 96)),
+        ("NPS",     "72",     (230, 126, 34)),
+        ("Churn",   "3.2%",   (192, 57, 43)),
+    ]
+    large_font = Font(bold=True, size=24)
+    label_font = Font(size=11, color="666666")
+    for i, (label, value, color) in enumerate(kpis):
+        col = i + 1
+        ws.cell(row=2, column=col, value=label).font = label_font
+        ws.cell(row=3, column=col, value=value).font = large_font
+        ws.row_dimensions[3].height = 36
+    # Sparkline-like images for each KPI
+    ws.row_dimensions[4].height = 60
+    for i, (_, _, color) in enumerate(kpis):
+        img = _make_jpeg_bytes(120, 50, color)
+        _add_image(ws, img, f"{get_column_letter(i + 1)}4", width_px=110, height_px=45)
+    # Summary table below
+    ws.cell(row=6, column=1, value="Metric").font = Font(bold=True)
+    ws.cell(row=6, column=2, value="Target").font = Font(bold=True)
+    ws.cell(row=6, column=3, value="Actual").font = Font(bold=True)
+    ws.cell(row=6, column=4, value="Variance").font = Font(bold=True)
+    summary = [
+        ("Revenue",  "$2.0M",  "$2.4M",  "+20%"),
+        ("Users",    "10,000", "12,450", "+24.5%"),
+        ("NPS",      "65",     "72",     "+10.8%"),
+        ("Churn",    "4.0%",   "3.2%",   "-20%"),
+    ]
+    for s in summary:
+        ws.append(list(s))
+    save(wb, "classic190_dashboard_kpi_images.xlsx")
+
+
 # ── Main ─────────────────────────────────────────────────────────────────
 def main():
     ensure_output_dir()
-    print(f"Generating 180 classic .xlsx files in: {OUTPUT_DIR}\n")
+    print(f"Generating 190 classic .xlsx files in: {OUTPUT_DIR}\n")
 
     generators = [
         classic01_basic_table_with_headers,
@@ -4401,6 +4809,17 @@ def main():
         classic178_caucasus_ethiopic,
         classic179_emoji_inventory,
         classic180_polyglot_paragraph,
+        # 181-190: feedback trackers, dense tables, image grids
+        classic181_feedback_tracker_with_images,
+        classic182_dense_long_text_columns,
+        classic183_mixed_content_grid,
+        classic184_wide_narrow_columns,
+        classic185_tall_rows_vertical_align,
+        classic186_multi_sheet_image_report,
+        classic187_bug_report_with_screenshots,
+        classic188_merged_header_with_images,
+        classic189_alternating_image_text_rows,
+        classic190_dashboard_kpi_images,
     ]
 
     for gen in generators:

@@ -2714,6 +2714,249 @@
     "overall_score": 0.9356
   },
   {
+    "name": "classic181_feedback_tracker_with_images",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 11834,
+    "reference_size": 57534,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.9932,
+    "flat_text_similarity": 0.993,
+    "word_text_similarity": 0.9872,
+    "text_diff": "--- minipdf/classic181_feedback_tracker_with_images.pdf\n+++ reference/classic181_feedback_tracker_with_images.pdf\n@@ -6,6 +6,6 @@\n 2026-03-03 Eve Wrong checklist used for application\n\n 2026-03-03 Frank Name and contact details missing on cover letter\n\n 2026-03-04 Grace Unable to scroll and read the privacy policy\n\n-2026-03-04 Hank Applicant has three children, only one birth cert uploaded\n\n+2026-03-04 Hank Applicant has three children, only one birth cert u\n\n ---PAGE---\n\n Screenshot",
+    "visual_scores": [
+      0.9848,
+      0.9974
+    ],
+    "visual_avg": 0.9911,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic181_feedback_tracker_with_images_p1_minipdf.png",
+        "reference_img": "classic181_feedback_tracker_with_images_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic181_feedback_tracker_with_images_p2_minipdf.png",
+        "reference_img": "classic181_feedback_tracker_with_images_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9937
+  },
+  {
+    "name": "classic182_dense_long_text_columns",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5494,
+    "reference_size": 64015,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.9283,
+    "flat_text_similarity": 0.8311,
+    "word_text_similarity": 0.9202,
+    "text_diff": "--- minipdf/classic182_dense_long_text_columns.pdf\n+++ reference/classic182_dense_long_text_columns.pdf\n@@ -1,19 +1,19 @@\n ID First Name Last Name Department Position Title\n\n 1001 Alexander Papadopoulos Engineering Senior Software Engineer\n\n-1002 Magdalena Kowalczyk Human Resources HR Business Partner Lead\n\n+1002 Magdalena Kowalczyk Human ResourcesHR Business Partner Lead\n\n 1003 Christopher O'Sullivan Finance Chief Financial Analyst\n\n-1004 Priyanka Ramasubraman Marketing Digital Marketing Strategist\n\n-1005 Jean-Pierre Beaumont Sales Regional Sales Director (EMEA)\n\n+1004 Priyanka RamasubramanMarketing Digital Marketing Strategist\n\n+1005 Jean-Pierre Beaumont Sales Regional Sales Director (EM\n\n 1006 Anastasia Volkov Engineering Principal Data Scientist\n\n-1007 Mohammed Al-Rashidi Operations Supply Chain Optimization Manager\n\n+1007 Mohammed Al-Rashidi Operations Supply Chain Optimization\n\n 1008 Guadalupe Hernandez Legal Senior Corporate Counsel\n\n ---PAGE---\n\n Email Address Phone Notes\n\n-alexander.papadopoulos@example.c +1-555-0101 Transferred from Athens office in Q2\n\n-magdalena.kowalczyk@example.co +1-555-0102 Fluent in Polish, German, and English\n\n-christopher.osullivan@example.com +1-555-0103 CPA certified, MBA from Wharton\n\n+alexander.papadopoulos@exampl +1-555-0101 Transferred from Athens office in Q2\n\n+magdalena.kowalczyk@example.c +1-555-0102 Fluent in Polish, German, and English\n\n+christopher.osullivan@example.c +1-555-0103 CPA certified, MBA from Wharton\n\n priyanka.r@example.com +1-555-0104 Led rebranding campaign for APAC region\n\n-jean-pierre.beaumont@example.com +1-555-0105 15+ years experience in B2B SaaS\n\n+jean-pierre.beaumont@example.c +1-555-0105 15+ years experience in B2B SaaS\n\n anastasia.volkov@example.com +1-555-0106 PhD in Machine Learning, Stanford\n\n-mohammed.alrashidi@example.com +1-555-0107 Six Sigma Black Belt certified\n\n-guadalupe.hernandez@example.com +1-555-0108 Bar admitted in CA, NY, TX\n+mohammed.alrashidi@example.c +1-555-0107 Six Sigma Black Belt certified\n\n+guadalupe.hernandez@example.c +1-555-0108 Bar admitted in CA, NY, TX",
+    "visual_scores": [
+      0.9851,
+      0.9829
+    ],
+    "visual_avg": 0.984,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic182_dense_long_text_columns_p1_minipdf.png",
+        "reference_img": "classic182_dense_long_text_columns_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic182_dense_long_text_columns_p2_minipdf.png",
+        "reference_img": "classic182_dense_long_text_columns_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9649
+  },
+  {
+    "name": "classic183_mixed_content_grid",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 5344,
+    "reference_size": 45038,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9854
+    ],
+    "visual_avg": 0.9854,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic183_mixed_content_grid_p1_minipdf.png",
+        "reference_img": "classic183_mixed_content_grid_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9942
+  },
+  {
+    "name": "classic184_wide_narrow_columns",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 12854,
+    "reference_size": 85967,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9599
+    ],
+    "visual_avg": 0.9599,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic184_wide_narrow_columns_p1_minipdf.png",
+        "reference_img": "classic184_wide_narrow_columns_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.984
+  },
+  {
+    "name": "classic185_tall_rows_vertical_align",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1699,
+    "reference_size": 40244,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9916
+    ],
+    "visual_avg": 0.9916,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic185_tall_rows_vertical_align_p1_minipdf.png",
+        "reference_img": "classic185_tall_rows_vertical_align_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9966
+  },
+  {
+    "name": "classic186_multi_sheet_image_report",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7147,
+    "reference_size": 52179,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9956,
+      0.9826
+    ],
+    "visual_avg": 0.9891,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic186_multi_sheet_image_report_p1_minipdf.png",
+        "reference_img": "classic186_multi_sheet_image_report_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "classic186_multi_sheet_image_report_p2_minipdf.png",
+        "reference_img": "classic186_multi_sheet_image_report_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9956
+  },
+  {
+    "name": "classic187_bug_report_with_screenshots",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7711,
+    "reference_size": 53176,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9542
+    ],
+    "visual_avg": 0.9542,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic187_bug_report_with_screenshots_p1_minipdf.png",
+        "reference_img": "classic187_bug_report_with_screenshots_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9817
+  },
+  {
+    "name": "classic188_merged_header_with_images",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7335,
+    "reference_size": 46660,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9872
+    ],
+    "visual_avg": 0.9872,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic188_merged_header_with_images_p1_minipdf.png",
+        "reference_img": "classic188_merged_header_with_images_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9949
+  },
+  {
+    "name": "classic189_alternating_image_text_rows",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 9079,
+    "reference_size": 52587,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.8974,
+    "flat_text_similarity": 0.3562,
+    "word_text_similarity": 0.8974,
+    "text_diff": "--- minipdf/classic189_alternating_image_text_rows.pdf\n+++ reference/classic189_alternating_image_text_rows.pdf\n@@ -1,7 +1,7 @@\n Step Action Expected Result Evidence\n\n-Step 1 Open login page Login form is displayed with em See below\n\n-Step 2 Enter valid credentials Dashboard loads within 3 secon See below\n\n-Step 3 Click export button CSV file downloads with all visi See below\n\n-Step 4 Apply date filter Table updates to show only mat See below\n\n-Step 5 Resize browser window Layout remains responsive at 7 See below\n\n-Step 6 Toggle dark mode All components switch to dark t See below\n+Step 1 Open login page Login form is displayed with eSee below\n\n+Step 2 Enter valid credentials Dashboard loads within 3 sec See below\n\n+Step 3 Click export button CSV file downloads with all visSee below\n\n+Step 4 Apply date filter Table updates to show only mSee below\n\n+Step 5 Resize browser window Layout remains responsive at See below\n\n+Step 6 Toggle dark mode All components switch to darkSee below",
+    "visual_scores": [
+      0.9853
+    ],
+    "visual_avg": 0.9853,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic189_alternating_image_text_rows_p1_minipdf.png",
+        "reference_img": "classic189_alternating_image_text_rows_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9531
+  },
+  {
     "name": "classic18_large_dataset",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -2875,6 +3118,31 @@
       }
     ],
     "overall_score": 0.9572
+  },
+  {
+    "name": "classic190_dashboard_kpi_images",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 6180,
+    "reference_size": 64050,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9871
+    ],
+    "visual_avg": 0.9871,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "classic190_dashboard_kpi_images_p1_minipdf.png",
+        "reference_img": "classic190_dashboard_kpi_images_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9948
   },
   {
     "name": "classic19_single_column_list",

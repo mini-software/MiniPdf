@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-08T10:26:49.944564
+Generated: 2026-03-09T02:18:56.611722
 
 ## Summary
 
@@ -104,90 +104,100 @@ Generated: 2026-03-08T10:26:49.944564
 | 96 | 🟢 classic179_emoji_inventory | 0.7887 | 0.9854 | 1/1 | **0.9096** |
 | 97 | 🟢 classic17_currency_strings | 1.0 | 0.9962 | 1/1 | **0.9985** |
 | 98 | 🟢 classic180_polyglot_paragraph | 0.8468 | 0.9921 | 1/1 | **0.9356** |
-| 99 | 🟢 classic18_large_dataset | 1.0 | 0.8931 | 24/24 | **0.9572** |
-| 100 | 🟢 classic19_single_column_list | 1.0 | 0.9967 | 1/1 | **0.9987** |
-| 101 | 🟢 classic20_all_empty_cells | 1.0 | 1.0 | 1/1 | **1.0** |
-| 102 | 🟢 classic21_header_only | 1.0 | 0.9986 | 1/1 | **0.9994** |
-| 103 | 🟢 classic22_long_sheet_name | 1.0 | 0.9985 | 1/1 | **0.9994** |
-| 104 | 🟢 classic23_unicode_text | 0.7884 | 0.9951 | 1/1 | **0.9134** |
-| 105 | 🟢 classic24_red_text | 1.0 | 0.9962 | 1/1 | **0.9985** |
-| 106 | 🟢 classic25_multiple_colors | 0.9978 | 0.9962 | 1/1 | **0.9976** |
-| 107 | 🟢 classic26_inline_strings | 1.0 | 0.9975 | 1/1 | **0.999** |
-| 108 | 🟢 classic27_single_row | 1.0 | 0.9984 | 1/1 | **0.9994** |
-| 109 | 🟢 classic28_duplicate_values | 1.0 | 0.9965 | 1/1 | **0.9986** |
-| 110 | 🟢 classic29_formula_results | 1.0 | 0.9971 | 1/1 | **0.9988** |
-| 111 | 🟢 classic30_mixed_empty_and_filled_sheets | 1.0 | 0.9987 | 2/2 | **0.9995** |
-| 112 | 🟢 classic31_bold_header_row | 1.0 | 0.9965 | 1/1 | **0.9986** |
-| 113 | 🟢 classic32_right_aligned_numbers | 1.0 | 0.9974 | 1/1 | **0.999** |
-| 114 | 🟢 classic33_centered_text | 1.0 | 0.9982 | 1/1 | **0.9993** |
-| 115 | 🟢 classic34_explicit_column_widths | 1.0 | 0.9963 | 1/1 | **0.9985** |
-| 116 | 🟢 classic35_explicit_row_heights | 0.9882 | 0.999 | 1/1 | **0.9949** |
-| 117 | 🟢 classic36_merged_cells | 1.0 | 0.997 | 1/1 | **0.9988** |
-| 118 | 🟢 classic37_freeze_panes | 1.0 | 0.9899 | 1/1 | **0.996** |
-| 119 | 🟢 classic38_hyperlink_cell | 1.0 | 0.9969 | 1/1 | **0.9988** |
-| 120 | 🟢 classic39_financial_table | 1.0 | 0.9939 | 1/1 | **0.9976** |
-| 121 | 🟢 classic40_scientific_notation | 1.0 | 0.9964 | 1/1 | **0.9986** |
-| 122 | 🟢 classic41_integer_vs_float | 1.0 | 0.997 | 1/1 | **0.9988** |
-| 123 | 🟢 classic42_boolean_values | 0.9948 | 0.9963 | 1/1 | **0.9964** |
-| 124 | 🟢 classic43_inventory_report | 0.9984 | 0.9887 | 1/1 | **0.9948** |
-| 125 | 🟢 classic44_employee_roster | 0.9652 | 0.9855 | 1/1 | **0.9803** |
-| 126 | 🟢 classic45_sales_by_region | 1.0 | 0.9976 | 4/4 | **0.999** |
-| 127 | 🟢 classic46_grade_book | 1.0 | 0.9908 | 1/1 | **0.9963** |
-| 128 | 🟢 classic47_time_series | 1.0 | 0.9821 | 1/1 | **0.9928** |
-| 129 | 🟢 classic48_survey_results | 0.9971 | 0.9935 | 1/1 | **0.9962** |
-| 130 | 🟢 classic49_contact_list | 0.9737 | 0.9896 | 1/1 | **0.9853** |
-| 131 | 🟢 classic50_budget_vs_actuals | 0.9978 | 0.9909 | 3/3 | **0.9955** |
-| 132 | 🟢 classic51_product_catalog | 0.9747 | 0.9876 | 1/1 | **0.9849** |
-| 133 | 🟢 classic52_pivot_summary | 0.9978 | 0.9916 | 1/1 | **0.9958** |
-| 134 | 🟢 classic53_invoice | 0.9968 | 0.9912 | 1/1 | **0.9952** |
-| 135 | 🟢 classic54_multi_level_header | 1.0 | 0.994 | 1/1 | **0.9976** |
-| 136 | 🟢 classic55_error_values | 1.0 | 0.9945 | 1/1 | **0.9978** |
-| 137 | 🟢 classic56_alternating_row_colors | 1.0 | 0.9903 | 1/1 | **0.9961** |
-| 138 | 🟢 classic57_cjk_only | 0.7826 | 0.9953 | 1/1 | **0.9112** |
-| 139 | 🟢 classic58_mixed_numeric_formats | 0.9905 | 0.9958 | 1/1 | **0.9945** |
-| 140 | 🟢 classic59_multi_sheet_summary | 1.0 | 0.9962 | 4/4 | **0.9985** |
-| 141 | 🟢 classic60_large_wide_table | 1.0 | 0.9346 | 4/4 | **0.9738** |
-| 142 | 🟢 classic61_product_card_with_image | 1.0 | 0.9982 | 1/1 | **0.9993** |
-| 143 | 🟢 classic62_company_logo_header | 0.996 | 0.9949 | 1/1 | **0.9964** |
-| 144 | 🟢 classic63_two_products_side_by_side | 1.0 | 0.9939 | 1/1 | **0.9976** |
-| 145 | 🟢 classic64_employee_directory_with_photo | 0.9835 | 0.9938 | 1/1 | **0.9909** |
-| 146 | 🟢 classic65_inventory_with_product_photos | 0.9906 | 0.9949 | 1/1 | **0.9942** |
-| 147 | 🟢 classic66_invoice_with_logo | 0.9836 | 0.9956 | 1/1 | **0.9917** |
-| 148 | 🟢 classic67_real_estate_listing | 1.0 | 0.9944 | 1/1 | **0.9978** |
-| 149 | 🟢 classic68_restaurant_menu | 0.9881 | 0.9776 | 1/1 | **0.9863** |
-| 150 | 🟢 classic69_image_only_sheet | 1.0 | 1.0 | 1/1 | **1.0** |
-| 151 | 🟢 classic70_product_catalog_with_images | 0.9862 | 0.9934 | 1/1 | **0.9918** |
-| 152 | 🟢 classic71_multi_sheet_with_images | 0.9966 | 0.999 | 3/3 | **0.9982** |
-| 153 | 🟢 classic72_bar_chart_image_with_data | 1.0 | 0.9856 | 1/1 | **0.9942** |
-| 154 | 🟢 classic73_event_flyer_with_banner | 0.9939 | 0.9936 | 1/1 | **0.995** |
-| 155 | 🟢 classic74_dashboard_with_kpi_image | 0.9595 | 0.9874 | 1/1 | **0.9788** |
-| 156 | 🟢 classic75_certificate_with_seal | 1.0 | 0.9867 | 1/1 | **0.9947** |
-| 157 | 🟢 classic76_product_image_grid | 1.0 | 0.9897 | 1/1 | **0.9959** |
-| 158 | 🟢 classic77_news_article_with_hero_image | 1.0 | 0.9911 | 1/1 | **0.9964** |
-| 159 | 🟢 classic78_small_icon_per_row | 0.9799 | 0.9953 | 1/1 | **0.9901** |
-| 160 | 🟢 classic79_wide_panoramic_banner | 1.0 | 0.9946 | 1/1 | **0.9978** |
-| 161 | 🟢 classic80_portrait_tall_image | 1.0 | 0.9948 | 1/1 | **0.9979** |
-| 162 | 🟢 classic81_step_by_step_with_images | 1.0 | 0.9921 | 1/1 | **0.9968** |
-| 163 | 🟢 classic82_before_after_images | 0.9926 | 0.9906 | 1/1 | **0.9933** |
-| 164 | 🟢 classic83_color_swatch_palette | 0.9863 | 0.9931 | 1/1 | **0.9918** |
-| 165 | 🟢 classic84_travel_destination_cards | 1.0 | 0.9897 | 1/1 | **0.9959** |
-| 166 | 🟢 classic85_lab_results_with_image | 0.9911 | 0.9877 | 1/1 | **0.9915** |
-| 167 | 🟢 classic86_software_screenshot_features | 0.973 | 0.9948 | 1/1 | **0.9871** |
-| 168 | 🟢 classic87_sports_results_with_logos | 1.0 | 0.9948 | 1/1 | **0.9979** |
-| 169 | 🟢 classic88_image_after_data | 0.997 | 0.9948 | 1/1 | **0.9967** |
-| 170 | 🟢 classic89_nutrition_label_with_image | 0.9903 | 0.995 | 1/1 | **0.9941** |
-| 171 | 🟢 classic90_project_status_with_milestones | 0.9572 | 0.9852 | 1/1 | **0.977** |
-| 172 | 🟢 classic91_simple_bar_chart | 0.9493 | 0.9607 | 2/2 | **0.964** |
-| 173 | 🟢 classic92_horizontal_bar_chart | 0.9563 | 0.9665 | 2/2 | **0.9691** |
-| 174 | 🟢 classic93_line_chart | 0.8257 | 0.9861 | 2/2 | **0.9247** |
-| 175 | 🟢 classic94_pie_chart | 1.0 | 0.9308 | 2/2 | **0.9723** |
-| 176 | 🟡 classic95_area_chart | 0.6441 | 0.7651 | 2/2 | **0.7637** |
-| 177 | 🟢 classic96_scatter_chart | 0.8714 | 0.9855 | 2/2 | **0.9428** |
-| 178 | 🟢 classic97_doughnut_chart | 1.0 | 0.9377 | 2/2 | **0.9751** |
-| 179 | 🟢 classic98_radar_chart | 0.8876 | 0.9892 | 2/2 | **0.9507** |
-| 180 | 🟢 classic99_bubble_chart | 0.8447 | 0.966 | 2/2 | **0.9243** |
+| 99 | 🟢 classic181_feedback_tracker_with_images | 0.9932 | 0.9911 | 2/2 | **0.9937** |
+| 100 | 🟢 classic182_dense_long_text_columns | 0.9283 | 0.984 | 2/2 | **0.9649** |
+| 101 | 🟢 classic183_mixed_content_grid | 1.0 | 0.9854 | 1/1 | **0.9942** |
+| 102 | 🟢 classic184_wide_narrow_columns | 1.0 | 0.9599 | 1/1 | **0.984** |
+| 103 | 🟢 classic185_tall_rows_vertical_align | 1.0 | 0.9916 | 1/1 | **0.9966** |
+| 104 | 🟢 classic186_multi_sheet_image_report | 1.0 | 0.9891 | 2/2 | **0.9956** |
+| 105 | 🟢 classic187_bug_report_with_screenshots | 1.0 | 0.9542 | 1/1 | **0.9817** |
+| 106 | 🟢 classic188_merged_header_with_images | 1.0 | 0.9872 | 1/1 | **0.9949** |
+| 107 | 🟢 classic189_alternating_image_text_rows | 0.8974 | 0.9853 | 1/1 | **0.9531** |
+| 108 | 🟢 classic18_large_dataset | 1.0 | 0.8931 | 24/24 | **0.9572** |
+| 109 | 🟢 classic190_dashboard_kpi_images | 1.0 | 0.9871 | 1/1 | **0.9948** |
+| 110 | 🟢 classic19_single_column_list | 1.0 | 0.9967 | 1/1 | **0.9987** |
+| 111 | 🟢 classic20_all_empty_cells | 1.0 | 1.0 | 1/1 | **1.0** |
+| 112 | 🟢 classic21_header_only | 1.0 | 0.9986 | 1/1 | **0.9994** |
+| 113 | 🟢 classic22_long_sheet_name | 1.0 | 0.9985 | 1/1 | **0.9994** |
+| 114 | 🟢 classic23_unicode_text | 0.7884 | 0.9951 | 1/1 | **0.9134** |
+| 115 | 🟢 classic24_red_text | 1.0 | 0.9962 | 1/1 | **0.9985** |
+| 116 | 🟢 classic25_multiple_colors | 0.9978 | 0.9962 | 1/1 | **0.9976** |
+| 117 | 🟢 classic26_inline_strings | 1.0 | 0.9975 | 1/1 | **0.999** |
+| 118 | 🟢 classic27_single_row | 1.0 | 0.9984 | 1/1 | **0.9994** |
+| 119 | 🟢 classic28_duplicate_values | 1.0 | 0.9965 | 1/1 | **0.9986** |
+| 120 | 🟢 classic29_formula_results | 1.0 | 0.9971 | 1/1 | **0.9988** |
+| 121 | 🟢 classic30_mixed_empty_and_filled_sheets | 1.0 | 0.9987 | 2/2 | **0.9995** |
+| 122 | 🟢 classic31_bold_header_row | 1.0 | 0.9965 | 1/1 | **0.9986** |
+| 123 | 🟢 classic32_right_aligned_numbers | 1.0 | 0.9974 | 1/1 | **0.999** |
+| 124 | 🟢 classic33_centered_text | 1.0 | 0.9982 | 1/1 | **0.9993** |
+| 125 | 🟢 classic34_explicit_column_widths | 1.0 | 0.9963 | 1/1 | **0.9985** |
+| 126 | 🟢 classic35_explicit_row_heights | 0.9882 | 0.999 | 1/1 | **0.9949** |
+| 127 | 🟢 classic36_merged_cells | 1.0 | 0.997 | 1/1 | **0.9988** |
+| 128 | 🟢 classic37_freeze_panes | 1.0 | 0.9899 | 1/1 | **0.996** |
+| 129 | 🟢 classic38_hyperlink_cell | 1.0 | 0.9969 | 1/1 | **0.9988** |
+| 130 | 🟢 classic39_financial_table | 1.0 | 0.9939 | 1/1 | **0.9976** |
+| 131 | 🟢 classic40_scientific_notation | 1.0 | 0.9964 | 1/1 | **0.9986** |
+| 132 | 🟢 classic41_integer_vs_float | 1.0 | 0.997 | 1/1 | **0.9988** |
+| 133 | 🟢 classic42_boolean_values | 0.9948 | 0.9963 | 1/1 | **0.9964** |
+| 134 | 🟢 classic43_inventory_report | 0.9984 | 0.9887 | 1/1 | **0.9948** |
+| 135 | 🟢 classic44_employee_roster | 0.9652 | 0.9855 | 1/1 | **0.9803** |
+| 136 | 🟢 classic45_sales_by_region | 1.0 | 0.9976 | 4/4 | **0.999** |
+| 137 | 🟢 classic46_grade_book | 1.0 | 0.9908 | 1/1 | **0.9963** |
+| 138 | 🟢 classic47_time_series | 1.0 | 0.9821 | 1/1 | **0.9928** |
+| 139 | 🟢 classic48_survey_results | 0.9971 | 0.9935 | 1/1 | **0.9962** |
+| 140 | 🟢 classic49_contact_list | 0.9737 | 0.9896 | 1/1 | **0.9853** |
+| 141 | 🟢 classic50_budget_vs_actuals | 0.9978 | 0.9909 | 3/3 | **0.9955** |
+| 142 | 🟢 classic51_product_catalog | 0.9747 | 0.9876 | 1/1 | **0.9849** |
+| 143 | 🟢 classic52_pivot_summary | 0.9978 | 0.9916 | 1/1 | **0.9958** |
+| 144 | 🟢 classic53_invoice | 0.9968 | 0.9912 | 1/1 | **0.9952** |
+| 145 | 🟢 classic54_multi_level_header | 1.0 | 0.994 | 1/1 | **0.9976** |
+| 146 | 🟢 classic55_error_values | 1.0 | 0.9945 | 1/1 | **0.9978** |
+| 147 | 🟢 classic56_alternating_row_colors | 1.0 | 0.9903 | 1/1 | **0.9961** |
+| 148 | 🟢 classic57_cjk_only | 0.7826 | 0.9953 | 1/1 | **0.9112** |
+| 149 | 🟢 classic58_mixed_numeric_formats | 0.9905 | 0.9958 | 1/1 | **0.9945** |
+| 150 | 🟢 classic59_multi_sheet_summary | 1.0 | 0.9962 | 4/4 | **0.9985** |
+| 151 | 🟢 classic60_large_wide_table | 1.0 | 0.9346 | 4/4 | **0.9738** |
+| 152 | 🟢 classic61_product_card_with_image | 1.0 | 0.9982 | 1/1 | **0.9993** |
+| 153 | 🟢 classic62_company_logo_header | 0.996 | 0.9949 | 1/1 | **0.9964** |
+| 154 | 🟢 classic63_two_products_side_by_side | 1.0 | 0.9939 | 1/1 | **0.9976** |
+| 155 | 🟢 classic64_employee_directory_with_photo | 0.9835 | 0.9938 | 1/1 | **0.9909** |
+| 156 | 🟢 classic65_inventory_with_product_photos | 0.9906 | 0.9949 | 1/1 | **0.9942** |
+| 157 | 🟢 classic66_invoice_with_logo | 0.9836 | 0.9956 | 1/1 | **0.9917** |
+| 158 | 🟢 classic67_real_estate_listing | 1.0 | 0.9944 | 1/1 | **0.9978** |
+| 159 | 🟢 classic68_restaurant_menu | 0.9881 | 0.9776 | 1/1 | **0.9863** |
+| 160 | 🟢 classic69_image_only_sheet | 1.0 | 1.0 | 1/1 | **1.0** |
+| 161 | 🟢 classic70_product_catalog_with_images | 0.9862 | 0.9934 | 1/1 | **0.9918** |
+| 162 | 🟢 classic71_multi_sheet_with_images | 0.9966 | 0.999 | 3/3 | **0.9982** |
+| 163 | 🟢 classic72_bar_chart_image_with_data | 1.0 | 0.9856 | 1/1 | **0.9942** |
+| 164 | 🟢 classic73_event_flyer_with_banner | 0.9939 | 0.9936 | 1/1 | **0.995** |
+| 165 | 🟢 classic74_dashboard_with_kpi_image | 0.9595 | 0.9874 | 1/1 | **0.9788** |
+| 166 | 🟢 classic75_certificate_with_seal | 1.0 | 0.9867 | 1/1 | **0.9947** |
+| 167 | 🟢 classic76_product_image_grid | 1.0 | 0.9897 | 1/1 | **0.9959** |
+| 168 | 🟢 classic77_news_article_with_hero_image | 1.0 | 0.9911 | 1/1 | **0.9964** |
+| 169 | 🟢 classic78_small_icon_per_row | 0.9799 | 0.9953 | 1/1 | **0.9901** |
+| 170 | 🟢 classic79_wide_panoramic_banner | 1.0 | 0.9946 | 1/1 | **0.9978** |
+| 171 | 🟢 classic80_portrait_tall_image | 1.0 | 0.9948 | 1/1 | **0.9979** |
+| 172 | 🟢 classic81_step_by_step_with_images | 1.0 | 0.9921 | 1/1 | **0.9968** |
+| 173 | 🟢 classic82_before_after_images | 0.9926 | 0.9906 | 1/1 | **0.9933** |
+| 174 | 🟢 classic83_color_swatch_palette | 0.9863 | 0.9931 | 1/1 | **0.9918** |
+| 175 | 🟢 classic84_travel_destination_cards | 1.0 | 0.9897 | 1/1 | **0.9959** |
+| 176 | 🟢 classic85_lab_results_with_image | 0.9911 | 0.9877 | 1/1 | **0.9915** |
+| 177 | 🟢 classic86_software_screenshot_features | 0.973 | 0.9948 | 1/1 | **0.9871** |
+| 178 | 🟢 classic87_sports_results_with_logos | 1.0 | 0.9948 | 1/1 | **0.9979** |
+| 179 | 🟢 classic88_image_after_data | 0.997 | 0.9948 | 1/1 | **0.9967** |
+| 180 | 🟢 classic89_nutrition_label_with_image | 0.9903 | 0.995 | 1/1 | **0.9941** |
+| 181 | 🟢 classic90_project_status_with_milestones | 0.9572 | 0.9852 | 1/1 | **0.977** |
+| 182 | 🟢 classic91_simple_bar_chart | 0.9493 | 0.9607 | 2/2 | **0.964** |
+| 183 | 🟢 classic92_horizontal_bar_chart | 0.9563 | 0.9665 | 2/2 | **0.9691** |
+| 184 | 🟢 classic93_line_chart | 0.8257 | 0.9861 | 2/2 | **0.9247** |
+| 185 | 🟢 classic94_pie_chart | 1.0 | 0.9308 | 2/2 | **0.9723** |
+| 186 | 🟡 classic95_area_chart | 0.6441 | 0.7651 | 2/2 | **0.7637** |
+| 187 | 🟢 classic96_scatter_chart | 0.8714 | 0.9855 | 2/2 | **0.9428** |
+| 188 | 🟢 classic97_doughnut_chart | 1.0 | 0.9377 | 2/2 | **0.9751** |
+| 189 | 🟢 classic98_radar_chart | 0.8876 | 0.9892 | 2/2 | **0.9507** |
+| 190 | 🟢 classic99_bubble_chart | 0.8447 | 0.966 | 2/2 | **0.9243** |
 
-**Average Overall Score: 0.9682**
+**Average Overall Score: 0.9691**
 
 ## Visual Comparison
 
@@ -1010,6 +1020,75 @@ Generated: 2026-03-08T10:26:49.944564
       <td valign="top"><span style="color:#3fb950">⬤</span> 0.9356</td>
     </tr>
     <tr>
+      <td rowspan="2" valign="top"><b>classic181_feedback_tracker_with_images</b><br><small>p1</small></td>
+      <td><img src="images/classic181_feedback_tracker_with_images_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic181_feedback_tracker_with_images_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9937</td>
+    </tr>
+    <tr>
+      <td align="center"><small>p2</small></td>
+      <td><img src="images/classic181_feedback_tracker_with_images_p2_minipdf.png" width="340" alt="MiniPdf p2"></td>
+      <td><img src="images/classic181_feedback_tracker_with_images_p2_reference.png" width="340" alt="Reference p2"></td>
+    </tr>
+    <tr>
+      <td rowspan="2" valign="top"><b>classic182_dense_long_text_columns</b><br><small>p1</small></td>
+      <td><img src="images/classic182_dense_long_text_columns_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic182_dense_long_text_columns_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9649</td>
+    </tr>
+    <tr>
+      <td align="center"><small>p2</small></td>
+      <td><img src="images/classic182_dense_long_text_columns_p2_minipdf.png" width="340" alt="MiniPdf p2"></td>
+      <td><img src="images/classic182_dense_long_text_columns_p2_reference.png" width="340" alt="Reference p2"></td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic183_mixed_content_grid</b></td>
+      <td><img src="images/classic183_mixed_content_grid_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic183_mixed_content_grid_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9942</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic184_wide_narrow_columns</b></td>
+      <td><img src="images/classic184_wide_narrow_columns_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic184_wide_narrow_columns_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.984</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic185_tall_rows_vertical_align</b></td>
+      <td><img src="images/classic185_tall_rows_vertical_align_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic185_tall_rows_vertical_align_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9966</td>
+    </tr>
+    <tr>
+      <td rowspan="2" valign="top"><b>classic186_multi_sheet_image_report</b><br><small>p1</small></td>
+      <td><img src="images/classic186_multi_sheet_image_report_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic186_multi_sheet_image_report_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td rowspan="2" valign="top"><span style="color:#3fb950">⬤</span> 0.9956</td>
+    </tr>
+    <tr>
+      <td align="center"><small>p2</small></td>
+      <td><img src="images/classic186_multi_sheet_image_report_p2_minipdf.png" width="340" alt="MiniPdf p2"></td>
+      <td><img src="images/classic186_multi_sheet_image_report_p2_reference.png" width="340" alt="Reference p2"></td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic187_bug_report_with_screenshots</b></td>
+      <td><img src="images/classic187_bug_report_with_screenshots_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic187_bug_report_with_screenshots_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9817</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic188_merged_header_with_images</b></td>
+      <td><img src="images/classic188_merged_header_with_images_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic188_merged_header_with_images_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9949</td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic189_alternating_image_text_rows</b></td>
+      <td><img src="images/classic189_alternating_image_text_rows_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic189_alternating_image_text_rows_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9531</td>
+    </tr>
+    <tr>
       <td rowspan="24" valign="top"><b>classic18_large_dataset</b><br><small>p1</small></td>
       <td><img src="images/classic18_large_dataset_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic18_large_dataset_p1_reference.png" width="340" alt="Reference p1"></td>
@@ -1129,6 +1208,12 @@ Generated: 2026-03-08T10:26:49.944564
       <td align="center"><small>p24</small></td>
       <td><img src="images/classic18_large_dataset_p24_minipdf.png" width="340" alt="MiniPdf p24"></td>
       <td><img src="images/classic18_large_dataset_p24_reference.png" width="340" alt="Reference p24"></td>
+    </tr>
+    <tr>
+      <td valign="top"><b>classic190_dashboard_kpi_images</b></td>
+      <td><img src="images/classic190_dashboard_kpi_images_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
+      <td><img src="images/classic190_dashboard_kpi_images_p1_reference.png" width="340" alt="Reference p1"></td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9948</td>
     </tr>
     <tr>
       <td valign="top"><b>classic19_single_column_list</b></td>
@@ -5884,6 +5969,210 @@ Text content: ✅ Identical
 ```
 </details>
 
+### classic181_feedback_tracker_with_images
+
+- **Text Similarity:** 0.9932
+- **Visual Average:** 0.9911
+- **Overall Score:** 0.9937
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=11834 bytes, Reference=57534 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic181_feedback_tracker_with_images.pdf
++++ reference/classic181_feedback_tracker_with_images.pdf
+@@ -6,6 +6,6 @@
+ 2026-03-03 Eve Wrong checklist used for application
+
+ 2026-03-03 Frank Name and contact details missing on cover letter
+
+ 2026-03-04 Grace Unable to scroll and read the privacy policy
+
+-2026-03-04 Hank Applicant has three children, only one birth cert uploaded
+
++2026-03-04 Hank Applicant has three children, only one birth cert u
+
+ ---PAGE---
+
+ Screenshot
+```
+</details>
+
+### classic182_dense_long_text_columns
+
+- **Text Similarity:** 0.9283
+- **Visual Average:** 0.984
+- **Overall Score:** 0.9649
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=5494 bytes, Reference=64015 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic182_dense_long_text_columns.pdf
++++ reference/classic182_dense_long_text_columns.pdf
+@@ -1,19 +1,19 @@
+ ID First Name Last Name Department Position Title
+
+ 1001 Alexander Papadopoulos Engineering Senior Software Engineer
+
+-1002 Magdalena Kowalczyk Human Resources HR Business Partner Lead
+
++1002 Magdalena Kowalczyk Human ResourcesHR Business Partner Lead
+
+ 1003 Christopher O'Sullivan Finance Chief Financial Analyst
+
+-1004 Priyanka Ramasubraman Marketing Digital Marketing Strategist
+
+-1005 Jean-Pierre Beaumont Sales Regional Sales Director (EMEA)
+
++1004 Priyanka RamasubramanMarketing Digital Marketing Strategist
+
++1005 Jean-Pierre Beaumont Sales Regional Sales Director (EM
+
+ 1006 Anastasia Volkov Engineering Principal Data Scientist
+
+-1007 Mohammed Al-Rashidi Operations Supply Chain Optimization Manager
+
++1007 Mohammed Al-Rashidi Operations Supply Chain Optimization
+
+ 1008 Guadalupe Hernandez Legal Senior Corporate Counsel
+
+ ---PAGE---
+
+ Email Address Phone Notes
+
+-alexander.papadopoulos@example.c +1-555-0101 Transferred from Athens office in Q2
+
+-magdalena.kowalczyk@example.co +1-555-0102 Fluent in Polish, German, and English
+
+-christopher.osullivan@example.com +1-555-0103 CPA certified, MBA from Wharton
+
++alexander.papadopoulos@exampl +1-555-0101 Transferred from Athens office in Q2
+
++magdalena.kowalczyk@example.c +1-555-0102 Fluent in Polish, German, and English
+
++christopher.osullivan@example.c +1-555-0103 CPA certified, MBA from Wharton
+
+ priyanka.r@example.com +1-555-0104 Led rebranding campaign for APAC region
+
+-jean-pierre.beaumont@example.com +1-555-0105 15+ years experience in B2B SaaS
+
++jean-pierre.beaumont@example.c +1-555-0105 15+ years experience in B2B SaaS
+
+ anastasia.volkov@example.com +1-555-0106 PhD in Machine Learning, Stanford
+
+-mohammed.alrashidi@example.com +1-555-0107 Six Sigma Black Belt certified
+
+-guadalupe.hernandez@example.com +1-555-0108 Bar admitted in CA, NY, TX
++mohammed.alrashidi@example.c +1-555-0107 Six Sigma Black Belt certified
+
++guadalupe.hernandez@example.c +1-555-0108 Bar admitted in CA, NY, TX
+```
+</details>
+
+### classic183_mixed_content_grid
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9854
+- **Overall Score:** 0.9942
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=5344 bytes, Reference=45038 bytes
+
+Text content: ✅ Identical
+
+### classic184_wide_narrow_columns
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9599
+- **Overall Score:** 0.984
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=12854 bytes, Reference=85967 bytes
+
+Text content: ✅ Identical
+
+### classic185_tall_rows_vertical_align
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9916
+- **Overall Score:** 0.9966
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=1699 bytes, Reference=40244 bytes
+
+Text content: ✅ Identical
+
+### classic186_multi_sheet_image_report
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9891
+- **Overall Score:** 0.9956
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=7147 bytes, Reference=52179 bytes
+
+Text content: ✅ Identical
+
+### classic187_bug_report_with_screenshots
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9542
+- **Overall Score:** 0.9817
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=7711 bytes, Reference=53176 bytes
+
+Text content: ✅ Identical
+
+### classic188_merged_header_with_images
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9872
+- **Overall Score:** 0.9949
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=7335 bytes, Reference=46660 bytes
+
+Text content: ✅ Identical
+
+### classic189_alternating_image_text_rows
+
+- **Text Similarity:** 0.8974
+- **Visual Average:** 0.9853
+- **Overall Score:** 0.9531
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=9079 bytes, Reference=52587 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic189_alternating_image_text_rows.pdf
++++ reference/classic189_alternating_image_text_rows.pdf
+@@ -1,7 +1,7 @@
+ Step Action Expected Result Evidence
+
+-Step 1 Open login page Login form is displayed with em See below
+
+-Step 2 Enter valid credentials Dashboard loads within 3 secon See below
+
+-Step 3 Click export button CSV file downloads with all visi See below
+
+-Step 4 Apply date filter Table updates to show only mat See below
+
+-Step 5 Resize browser window Layout remains responsive at 7 See below
+
+-Step 6 Toggle dark mode All components switch to dark t See below
++Step 1 Open login page Login form is displayed with eSee below
+
++Step 2 Enter valid credentials Dashboard loads within 3 sec See below
+
++Step 3 Click export button CSV file downloads with all visSee below
+
++Step 4 Apply date filter Table updates to show only mSee below
+
++Step 5 Resize browser window Layout remains responsive at See below
+
++Step 6 Toggle dark mode All components switch to darkSee below
+```
+</details>
+
 ### classic18_large_dataset
 
 - **Text Similarity:** 1.0
@@ -5891,6 +6180,16 @@ Text content: ✅ Identical
 - **Overall Score:** 0.9572
 - **Pages:** MiniPdf=24, Reference=24
 - **File Size:** MiniPdf=562822 bytes, Reference=2487195 bytes
+
+Text content: ✅ Identical
+
+### classic190_dashboard_kpi_images
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9871
+- **Overall Score:** 0.9948
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=6180 bytes, Reference=64050 bytes
 
 Text content: ✅ Identical
 
