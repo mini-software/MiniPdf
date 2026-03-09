@@ -2,6 +2,7 @@ using MiniPdf.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<MiniPdf.Web.Client.I18n>();
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
