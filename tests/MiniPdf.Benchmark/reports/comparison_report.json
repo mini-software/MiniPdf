@@ -1412,7 +1412,7 @@
     "name": "classic135_bottom_border_only",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1341,
+    "minipdf_size": 1207,
     "reference_size": 32996,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1421,9 +1421,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9958
+      0.9955
     ],
-    "visual_avg": 0.9958,
+    "visual_avg": 0.9955,
     "diff_images": [
       {
         "page": 1,
@@ -1431,7 +1431,7 @@
         "reference_img": "classic135_bottom_border_only_p1_reference.png"
       }
     ],
-    "overall_score": 0.9983
+    "overall_score": 0.9982
   },
   {
     "name": "classic136_financial_report_styled",

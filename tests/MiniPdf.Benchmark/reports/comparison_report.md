@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-09T10:45:26.125210
+Generated: 2026-03-09T16:27:28.605206
 
 ## Summary
 
@@ -53,7 +53,7 @@ Generated: 2026-03-09T10:45:26.125210
 | 45 | 🟢 classic132_striped_table | 0.9984 | 0.9784 | 1/1 | **0.9907** |
 | 46 | 🟢 classic133_gradient_rows | 1.0 | 0.9909 | 1/1 | **0.9964** |
 | 47 | 🟢 classic134_heatmap | 1.0 | 0.9724 | 1/1 | **0.989** |
-| 48 | 🟢 classic135_bottom_border_only | 1.0 | 0.9958 | 1/1 | **0.9983** |
+| 48 | 🟢 classic135_bottom_border_only | 1.0 | 0.9955 | 1/1 | **0.9982** |
 | 49 | 🟢 classic136_financial_report_styled | 1.0 | 0.9824 | 1/1 | **0.993** |
 | 50 | 🟢 classic137_checkerboard | 1.0 | 0.9593 | 1/1 | **0.9837** |
 | 51 | 🟢 classic138_color_grid | 1.0 | 0.9853 | 1/1 | **0.9941** |
@@ -693,7 +693,7 @@ Generated: 2026-03-09T10:45:26.125210
       <td valign="top"><b>classic135_bottom_border_only</b></td>
       <td><img src="images/classic135_bottom_border_only_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
       <td><img src="images/classic135_bottom_border_only_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9983</td>
+      <td valign="top"><span style="color:#3fb950">⬤</span> 0.9982</td>
     </tr>
     <tr>
       <td valign="top"><b>classic136_financial_report_styled</b></td>
@@ -3884,10 +3884,10 @@ Text content: ✅ Identical
 ### classic135_bottom_border_only
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9958
-- **Overall Score:** 0.9983
+- **Visual Average:** 0.9955
+- **Overall Score:** 0.9982
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1341 bytes, Reference=32996 bytes
+- **File Size:** MiniPdf=1207 bytes, Reference=32996 bytes
 
 Text content: ✅ Identical
 

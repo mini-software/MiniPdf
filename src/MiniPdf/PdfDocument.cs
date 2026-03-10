@@ -26,6 +26,23 @@ internal sealed class PdfDocument
     }
 
     /// <summary>
+    /// Removes pages that have no visible content (no text, images, rectangles, or lines).
+    /// </summary>
+    internal void RemoveEmptyPages()
+    {
+        _pages.RemoveAll(p => p.TextBlocks.Count == 0 && p.ImageBlocks.Count == 0 && p.RectBlocks.Count == 0 && p.LineBlocks.Count == 0);
+    }
+
+    /// <summary>
+    /// Removes the last page from the document.
+    /// </summary>
+    internal void RemoveLastPage()
+    {
+        if (_pages.Count > 0)
+            _pages.RemoveAt(_pages.Count - 1);
+    }
+
+    /// <summary>
     /// Saves the PDF document to a file.
     /// </summary>
     public void Save(string filePath)

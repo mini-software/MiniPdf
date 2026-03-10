@@ -99,6 +99,102 @@ internal static class ExcelToPdfConverter
         // Skip only if there's truly nothing to render (no rows AND no images).
         if (sheet.Rows.Count == 0 && sheet.Images.Count == 0 && sheet.Charts.Count == 0) return;
 
+        // Apply sheet page setup: paper size, orientation, margins, and print scale
+        // Determine base page dimensions from paper size
+        var (baseW, baseH) = sheet.PaperSize switch
+        {
+            9 => (595f, 842f),  // A4: 210×297mm
+            8 => (842f, 1191f), // A3: 297×420mm
+            _ => (options.PageWidth, options.PageHeight), // Default (Letter 612×792)
+        };
+        if (sheet.IsLandscape)
+        {
+            (baseW, baseH) = (baseH, baseW);
+        }
+        // Apply XLSX margins if specified (> 0), otherwise keep defaults
+        var mL = sheet.MarginLeftPt > 0 ? sheet.MarginLeftPt : options.MarginLeft;
+        var mR = sheet.MarginRightPt > 0 ? sheet.MarginRightPt : options.MarginRight;
+        var mT = sheet.MarginTopPt > 0 ? sheet.MarginTopPt : options.MarginTop;
+        var mB = sheet.MarginBottomPt > 0 ? sheet.MarginBottomPt : options.MarginBottom;
+        var fontSize = options.FontSize;
+        var colPadding = options.ColumnPadding;
+        if (sheet.PrintScale != 100 && sheet.PrintScale > 0)
+        {
+            var scale = sheet.PrintScale / 100f;
+            fontSize *= scale;
+            colPadding *= scale;
+        }
+        options = new ConversionOptions
+        {
+            FontSize = fontSize,
+            MarginLeft = mL,
+            MarginTop = mT,
+            MarginRight = mR,
+            MarginBottom = mB,
+            ColumnPadding = colPadding,
+            LineSpacing = options.LineSpacing,
+            PageWidth = baseW,
+            PageHeight = baseH,
+            IncludeSheetName = options.IncludeSheetName,
+        };
+
+        // Apply print area: limit rows and columns to the defined range
+        if (sheet.PrintArea.HasValue)
+        {
+            var pa = sheet.PrintArea.Value;
+            // Trim rows to print area range
+            var trimmedRows = new List<List<ExcelCell>>();
+            for (var r = pa.StartRow; r <= pa.EndRow && r < sheet.Rows.Count; r++)
+            {
+                var srcRow = sheet.Rows[r];
+                var newRow = new List<ExcelCell>();
+                for (var c = pa.StartCol; c <= pa.EndCol; c++)
+                {
+                    newRow.Add(c < srcRow.Count ? srcRow[c] : new ExcelCell("", null, null));
+                }
+                trimmedRows.Add(newRow);
+            }
+            // Build trimmed column widths
+            var trimmedColWidths = new Dictionary<int, float>();
+            for (var c = pa.StartCol; c <= pa.EndCol; c++)
+            {
+                if (sheet.ColumnWidths.TryGetValue(c, out var w))
+                    trimmedColWidths[c - pa.StartCol] = w;
+            }
+            // Build trimmed row heights
+            var trimmedRowHeights = new Dictionary<int, float>();
+            for (var r = pa.StartRow; r <= pa.EndRow; r++)
+            {
+                if (sheet.RowHeights.TryGetValue(r, out var h))
+                    trimmedRowHeights[r - pa.StartRow] = h;
+            }
+            // Build trimmed merged cells
+            var trimmedMerged = new List<(int, int, int, int)>();
+            foreach (var mc in sheet.MergedCells)
+            {
+                if (mc.StartRow >= pa.StartRow && mc.EndRow <= pa.EndRow &&
+                    mc.StartCol >= pa.StartCol && mc.EndCol <= pa.EndCol)
+                {
+                    trimmedMerged.Add((mc.StartRow - pa.StartRow, mc.StartCol - pa.StartCol,
+                                       mc.EndRow - pa.StartRow, mc.EndCol - pa.StartCol));
+                }
+            }
+            sheet = new ExcelSheet(sheet.Name, trimmedRows,
+                columnWidths: trimmedColWidths,
+                defaultColumnWidth: sheet.DefaultColumnWidth,
+                mergedCells: trimmedMerged,
+                rowHeights: trimmedRowHeights,
+                defaultRowHeight: sheet.DefaultRowHeight,
+                isLandscape: sheet.IsLandscape,
+                printScale: sheet.PrintScale,
+                paperSize: sheet.PaperSize,
+                marginLeftPt: sheet.MarginLeftPt,
+                marginRightPt: sheet.MarginRightPt,
+                marginTopPt: sheet.MarginTopPt,
+                marginBottomPt: sheet.MarginBottomPt,
+                fitToPage: sheet.FitToPage);
+        }
+
         var maxCols = sheet.Rows.Count > 0 ? sheet.Rows.Max(r => r.Count) : 0;
 
         // Extend column range to include any image anchor columns so images beyond
@@ -116,10 +212,35 @@ internal static class ExcelToPdfConverter
             maxCols = Math.Max(maxCols, maxChartCol);
         }
 
+        // Trim trailing columns that have no text content across any row.
+        // Spreadsheets often include style-only cells (e.g. background, borders)
+        // in columns beyond the data range — these inflate the column count and
+        // cause excessive column-group page splits.
+        // Preserve the minimum column range needed for image/chart anchors.
+        var minColsForAnchors = 0;
+        if (sheet.Images.Count > 0)
+            minColsForAnchors = Math.Max(minColsForAnchors, sheet.Images.Max(img => img.AnchorCol + Math.Max(1, img.SpanCols)));
+        if (sheet.Charts.Count > 0)
+            minColsForAnchors = Math.Max(minColsForAnchors, sheet.Charts.Max(c => c.AnchorCol + 1));
+
+        while (maxCols > minColsForAnchors)
+        {
+            var col = maxCols - 1;
+            var hasContent = false;
+            foreach (var row in sheet.Rows)
+            {
+                if (col < row.Count && !string.IsNullOrEmpty(row[col].Text))
+                {
+                    hasContent = true;
+                    break;
+                }
+            }
+            if (hasContent) break;
+            maxCols--;
+        }
+
         if (maxCols == 0)
         {
-            // All rows are empty — still render an empty page worth of vertical space
-            doc.AddPage(options.PageWidth, options.PageHeight);
             return;
         }
 
@@ -137,7 +258,28 @@ internal static class ExcelToPdfConverter
 
         // Calculate natural (unscaled) column widths to decide on grouping
         var naturalWidths = CalculateNaturalColumnWidths(sheet, maxCols, usableWidth, options);
+
+        // Apply print scale to column widths so more columns fit per page.
+        // Font size is already scaled in options, but Excel explicit column widths
+        // from CharUnitsToPoints are at full size and need scaling too.
+        if (sheet.PrintScale != 100 && sheet.PrintScale > 0)
+        {
+            var scale = sheet.PrintScale / 100f;
+            for (var i = 0; i < naturalWidths.Length; i++)
+                naturalWidths[i] *= scale;
+        }
+
         var totalNatural = naturalWidths.Sum() + columnPadding * (maxCols - 1);
+
+        // fitToPage: auto-scale column widths to fit in one page width
+        if (sheet.FitToPage && totalNatural > usableWidth && maxCols > 1)
+        {
+            var fitScale = usableWidth / totalNatural;
+            for (var i = 0; i < naturalWidths.Length; i++)
+                naturalWidths[i] *= fitScale;
+            columnPadding *= fitScale;
+            totalNatural = usableWidth;
+        }
 
         if (totalNatural > usableWidth && maxCols > 1)
         {
@@ -186,6 +328,25 @@ internal static class ExcelToPdfConverter
         // Render each column group
         foreach (var group in groups)
         {
+            // Skip column groups where no row has any text in these columns.
+            // This avoids generating blank pages for style-only column ranges.
+            var groupHasContent = false;
+            foreach (var row in sheet.Rows)
+            {
+                foreach (var col in group)
+                {
+                    if (col < row.Count && !string.IsNullOrEmpty(row[col].Text))
+                    {
+                        groupHasContent = true;
+                        break;
+                    }
+                }
+                if (groupHasContent) break;
+            }
+            if (!groupHasContent) continue;
+
+            var pageCountBefore = doc.Pages.Count;
+
             // Extract column widths for this group
             var groupWidths = new float[group.Length];
             for (var i = 0; i < group.Length; i++)
@@ -206,6 +367,18 @@ internal static class ExcelToPdfConverter
             }
 
             RenderSheetRows(doc, sheet, options, pageWidth, pageHeight, group, columnPadding, groupWidths, avgCharWidth);
+
+            // Remove trailing empty pages created by this column group.
+            // When most rows have no text in this group's columns, the vertical
+            // pagination produces pages with only background fills and borders.
+            while (doc.Pages.Count > pageCountBefore)
+            {
+                var last = doc.Pages[doc.Pages.Count - 1];
+                if (last.TextBlocks.Count == 0 && last.ImageBlocks.Count == 0)
+                    doc.RemoveLastPage();
+                else
+                    break;
+            }
         }
     }
 
@@ -217,6 +390,9 @@ internal static class ExcelToPdfConverter
     {
         // Use the sheet's default row height if available, otherwise fall back to font-based calculation
         var defaultLineHeight = sheet.DefaultRowHeight > 0 ? sheet.DefaultRowHeight : options.FontSize * options.LineSpacing;
+        // Apply print scale to row heights (like column widths, these define content size)
+        if (sheet.PrintScale != 100 && sheet.PrintScale > 0)
+            defaultLineHeight *= sheet.PrintScale / 100f;
         var lineHeight = defaultLineHeight;
         PdfPage? currentPage = null;
         var currentY = 0f;
@@ -272,6 +448,9 @@ internal static class ExcelToPdfConverter
 
             // Determine this row's effective height
             var hasExplicitHeight = sheet.RowHeights.TryGetValue(excelRowIndex, out var explicitRowHeight);
+            // Apply print scale to explicit row heights
+            if (hasExplicitHeight && sheet.PrintScale != 100 && sheet.PrintScale > 0)
+                explicitRowHeight *= sheet.PrintScale / 100f;
 
             // Record top-of-row state for image placement
             rowTopY[excelRowIndex] = currentY;

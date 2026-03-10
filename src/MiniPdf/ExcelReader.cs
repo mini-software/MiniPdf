@@ -30,11 +30,15 @@ internal static class ExcelReader
         var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices) = ReadCellXfStyles(archive);
 
         // Read workbook to get sheet names and order
-        var sheetInfos = ReadWorkbook(archive);
+        var (sheetInfos, printAreas) = ReadWorkbook(archive);
 
         // Read each sheet
+        var sheetIndex = 0;
         foreach (var info in sheetInfos)
         {
+            var currentIndex = sheetIndex++;
+            if (info.IsHidden) continue;
+
             var entry = archive.GetEntry($"xl/worksheets/sheet{info.SheetId}.xml")
                         ?? archive.GetEntry($"xl/worksheets/{info.Name}.xml");
 
@@ -50,7 +54,9 @@ internal static class ExcelReader
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
             var (rowHeights, defaultRowHeight) = ReadRowHeights(entry);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight));
+            var pageSetup = ReadPageSetup(entry);
+            printAreas.TryGetValue(currentIndex, out var printArea);
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage));
         }
 
         // If no sheets found via workbook, try reading sheet1 directly
@@ -64,7 +70,8 @@ internal static class ExcelReader
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
                 var (rowHeights, defaultRowHeight) = ReadRowHeights(entry);
-                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight));
+                var pageSetup = ReadPageSetup(entry);
+                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage));
             }
         }
 
@@ -100,11 +107,12 @@ internal static class ExcelReader
         return strings;
     }
 
-    private static List<SheetInfo> ReadWorkbook(ZipArchive archive)
+    private static (List<SheetInfo> Sheets, Dictionary<int, (int StartCol, int StartRow, int EndCol, int EndRow)> PrintAreas) ReadWorkbook(ZipArchive archive)
     {
         var result = new List<SheetInfo>();
+        var printAreas = new Dictionary<int, (int, int, int, int)>();
         var entry = archive.GetEntry("xl/workbook.xml");
-        if (entry == null) return result;
+        if (entry == null) return (result, printAreas);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -114,11 +122,37 @@ internal static class ExcelReader
         foreach (var sheet in doc.Descendants(ns + "sheet"))
         {
             var name = sheet.Attribute("name")?.Value ?? $"Sheet{sheetId}";
-            result.Add(new SheetInfo(name, sheetId));
+            var state = sheet.Attribute("state")?.Value;
+            var isHidden = string.Equals(state, "hidden", StringComparison.OrdinalIgnoreCase)
+                       || string.Equals(state, "veryHidden", StringComparison.OrdinalIgnoreCase);
+            result.Add(new SheetInfo(name, sheetId, isHidden));
             sheetId++;
         }
 
-        return result;
+        // Read print areas from defined names
+        foreach (var dn in doc.Descendants(ns + "definedName"))
+        {
+            var dnName = dn.Attribute("name")?.Value;
+            if (!string.Equals(dnName, "_xlnm.Print_Area", StringComparison.OrdinalIgnoreCase)) continue;
+            var localIdStr = dn.Attribute("localSheetId")?.Value;
+            if (localIdStr == null || !int.TryParse(localIdStr, out var localId)) continue;
+            var val = dn.Value; // e.g. "Paystubs!$A$1:$J$37"
+            if (string.IsNullOrEmpty(val)) continue;
+            // Remove sheet name prefix
+            var bangIdx = val.IndexOf('!');
+            if (bangIdx >= 0) val = val.Substring(bangIdx + 1);
+            // Parse range like $A$1:$J$37 — strip $ and use ParseCellRef which returns (row, col)
+            var parts = val.Replace("$", "").Split(':');
+            if (parts.Length == 2)
+            {
+                var (sr, sc) = ParseCellRef(parts[0]);
+                var (er, ec) = ParseCellRef(parts[1]);
+                if (sc >= 0 && sr >= 0 && ec >= 0 && er >= 0)
+                    printAreas[localId] = (sc, sr, ec, er);
+            }
+        }
+
+        return (result, printAreas);
     }
 
     private static List<FontStyleInfo> ReadFontStyles(ZipArchive archive)
@@ -716,6 +750,14 @@ internal static class ExcelReader
         // Also handle [$symbol] without locale
         activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\[\$([^\]]*)\]", "$1");
 
+        // Strip _X (spacing: add space the width of char X) → replace with space
+        // Strip *X (fill: repeat char X to fill column) → remove entirely
+        activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"_.", " ");
+        activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\*.", "");
+
+        // Handle escaped literal characters: \( → (, \) → ), etc.
+        activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\\(.)", "$1");
+
         // Handle percentage format
         if (activeFormat.Contains('%'))
         {
@@ -1035,7 +1077,7 @@ internal static class ExcelReader
         return string.IsNullOrEmpty(result) ? "yyyy-MM-dd" : result;
     }
 
-    internal record SheetInfo(string Name, int SheetId);
+    internal record SheetInfo(string Name, int SheetId, bool IsHidden = false);
 
     /// <summary>
     /// Reads column widths from a worksheet entry.
@@ -1091,6 +1133,70 @@ internal static class ExcelReader
 
         return (widths, defaultWidth);
     }
+
+    /// <summary>
+    /// Reads page setup (orientation, scale, paper size, margins, fitToPage) from the sheet XML.
+    /// </summary>
+    private static PageSetupInfo ReadPageSetup(ZipArchiveEntry entry)
+    {
+        var isLandscape = false;
+        var scale = 100;
+        var paperSize = 1; // 1 = US Letter (default)
+        float marginLeft = -1, marginRight = -1, marginTop = -1, marginBottom = -1;
+        var fitToPage = false;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        var pageSetup = doc.Descendants(ns + "pageSetup").FirstOrDefault();
+        if (pageSetup != null)
+        {
+            var orient = pageSetup.Attribute("orientation")?.Value;
+            if (string.Equals(orient, "landscape", StringComparison.OrdinalIgnoreCase))
+                isLandscape = true;
+
+            var scaleAttr = pageSetup.Attribute("scale")?.Value;
+            if (int.TryParse(scaleAttr, out var s) && s > 0 && s <= 400)
+                scale = s;
+
+            var paperAttr = pageSetup.Attribute("paperSize")?.Value;
+            if (int.TryParse(paperAttr, out var p) && p > 0)
+                paperSize = p;
+        }
+
+        // Read page margins (in inches)
+        var pageMargins = doc.Descendants(ns + "pageMargins").FirstOrDefault();
+        if (pageMargins != null)
+        {
+            static float ParseInchesAttr(XElement el, string attr)
+            {
+                var val = el.Attribute(attr)?.Value;
+                if (val != null && float.TryParse(val, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out var inches))
+                    return inches * 72f; // convert inches to points
+                return -1;
+            }
+            marginLeft = ParseInchesAttr(pageMargins, "left");
+            marginRight = ParseInchesAttr(pageMargins, "right");
+            marginTop = ParseInchesAttr(pageMargins, "top");
+            marginBottom = ParseInchesAttr(pageMargins, "bottom");
+        }
+
+        // Read fitToPage from sheetPr/pageSetUpPr
+        var pageSetUpPr = doc.Descendants(ns + "pageSetUpPr").FirstOrDefault();
+        if (pageSetUpPr != null)
+        {
+            fitToPage = pageSetUpPr.Attribute("fitToPage")?.Value == "1";
+        }
+
+        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage);
+    }
+
+    internal record PageSetupInfo(
+        bool IsLandscape, int Scale, int PaperSize,
+        float MarginLeftPt, float MarginRightPt, float MarginTopPt, float MarginBottomPt,
+        bool FitToPage);
 
     /// <summary>
     /// Reads row heights from the sheet XML.
@@ -1874,6 +1980,21 @@ internal sealed class ExcelSheet
     public Dictionary<int, float> RowHeights { get; }
     /// <summary>Default row height in points (typically 15).</summary>
     public float DefaultRowHeight { get; }
+    /// <summary>Whether the sheet uses landscape orientation.</summary>
+    public bool IsLandscape { get; }
+    /// <summary>Print scale percentage (10-400, default 100).</summary>
+    public int PrintScale { get; }
+    /// <summary>Paper size code (1=Letter, 9=A4, etc). See ECMA-376 §18.8.22.</summary>
+    public int PaperSize { get; }
+    /// <summary>Print area range (startCol, startRow, endCol, endRow) 0-based, or null if not set.</summary>
+    public (int StartCol, int StartRow, int EndCol, int EndRow)? PrintArea { get; }
+    /// <summary>Page margins in points (-1 = use default).</summary>
+    public float MarginLeftPt { get; }
+    public float MarginRightPt { get; }
+    public float MarginTopPt { get; }
+    public float MarginBottomPt { get; }
+    /// <summary>Whether fitToPage is enabled (auto-scale to fit page width).</summary>
+    public bool FitToPage { get; }
 
     /// <summary>Converts Excel character-unit column width to PDF points.</summary>
     public static float CharUnitsToPoints(float charUnits)
@@ -1887,7 +2008,14 @@ internal sealed class ExcelSheet
         List<ExcelChartInfo>? charts = null,
         List<(int, int, int, int)>? mergedCells = null,
         Dictionary<int, float>? rowHeights = null,
-        float defaultRowHeight = 15f)
+        float defaultRowHeight = 15f,
+        bool isLandscape = false,
+        int printScale = 100,
+        int paperSize = 1,
+        (int, int, int, int)? printArea = null,
+        float marginLeftPt = -1, float marginRightPt = -1,
+        float marginTopPt = -1, float marginBottomPt = -1,
+        bool fitToPage = false)
     {
         Name = name;
         Rows = rows;
@@ -1898,5 +2026,14 @@ internal sealed class ExcelSheet
         MergedCells = mergedCells ?? new List<(int, int, int, int)>();
         RowHeights = rowHeights ?? new Dictionary<int, float>();
         DefaultRowHeight = defaultRowHeight;
+        IsLandscape = isLandscape;
+        PrintScale = printScale;
+        PaperSize = paperSize;
+        PrintArea = printArea;
+        MarginLeftPt = marginLeftPt;
+        MarginRightPt = marginRightPt;
+        MarginTopPt = marginTopPt;
+        MarginBottomPt = marginBottomPt;
+        FitToPage = fitToPage;
     }
 }
