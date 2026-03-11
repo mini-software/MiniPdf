@@ -597,29 +597,21 @@ def generate_report(results: list[dict], report_dir: str):
         avg_overall = sum(r.get("overall_score", 0) for r in results) / len(results) if results else 0
         f.write(f"\n**Average Overall Score: {avg_overall:.4f}**\n\n")
 
-        # ── Visual side-by-side table ─────────────────────────────────────────
+        # ── Visual side-by-side table (2-column layout) ─────────────────────
         f.write("## Visual Comparison\n\n")
         f.write("<table>\n")
-        f.write("  <thead>\n")
-        f.write("    <tr>\n")
-        f.write("      <th>Test Case</th>\n")
-        f.write("      <th>MiniPdf</th>\n")
-        f.write("      <th>LibreOffice (Reference)</th>\n")
-        f.write("      <th>Score</th>\n")
-        f.write("    </tr>\n")
-        f.write("  </thead>\n")
-        f.write("  <tbody>\n")
+        f.write("<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>\n")
 
         for r in results:
             name = r["name"]
             overall = r.get("overall_score", "N/A")
             if isinstance(overall, float):
                 if overall >= 0.9:
-                    score_cell = f'<span style="color:#3fb950">⬤</span> {overall}'
+                    score_cell = f'<span style="color:#3fb950">⬤</span> {overall * 100:.1f}%'
                 elif overall >= 0.7:
-                    score_cell = f'<span style="color:#d29922">⬤</span> {overall}'
+                    score_cell = f'<span style="color:#d29922">⬤</span> {overall * 100:.1f}%'
                 else:
-                    score_cell = f'<span style="color:#f85149">⬤</span> {overall}'
+                    score_cell = f'<span style="color:#f85149">⬤</span> {overall * 100:.1f}%'
             else:
                 score_cell = str(overall)
 
@@ -630,45 +622,32 @@ def generate_report(results: list[dict], report_dir: str):
                     ai_by_page[a.get("page", 1)] = a
 
             diff_images = r.get("diff_images", [])
+
+            # Header row: test case name + score
+            f.write(f"<tr>\n")
+            f.write(f"  <td><b>{name}</b></td>\n")
+            f.write(f"  <td>{name} {score_cell}</td>\n")
+            f.write(f"</tr>\n")
+
             if not diff_images:
-                f.write("    <tr>\n")
-                f.write(f"      <td><b>{name}</b></td>\n")
-                f.write("      <td colspan=\"2\"><i>No images</i></td>\n")
-                f.write(f"      <td>{score_cell}</td>\n")
-                f.write("    </tr>\n")
+                f.write(f"<tr>\n")
+                f.write(f"  <td colspan=\"2\"><i>No images</i></td>\n")
+                f.write(f"</tr>\n")
                 continue
 
-            total_rows = len(diff_images)
             for idx, pg in enumerate(diff_images):
                 page_num = pg.get("page", idx + 1)
                 mini_img = pg.get("minipdf_img")
                 ref_img  = pg.get("reference_img")
-                mini_td = (f'<img src="images/{mini_img}" width="340" alt="MiniPdf p{page_num}">'
+                mini_td = (f'<img src="images/{mini_img}" width="340" alt="MiniPdf">'
                            if mini_img else "<i>missing</i>")
-                ref_td  = (f'<img src="images/{ref_img}" width="340" alt="Reference p{page_num}">'
+                ref_td  = (f'<img src="images/{ref_img}" width="340" alt="Reference">'
                            if ref_img else "<i>missing</i>")
 
-                if idx == 0:
-                    rowspan = total_rows
-                    label_td = (f'      <td rowspan="{rowspan}" valign="top"><b>{name}</b>'
-                                f'<br><small>p{page_num}</small></td>\n'
-                                if rowspan > 1 else
-                                f'      <td valign="top"><b>{name}</b></td>\n')
-                    score_td = (f'      <td rowspan="{rowspan}" valign="top">{score_cell}</td>\n'
-                                if rowspan > 1 else
-                                f'      <td valign="top">{score_cell}</td>\n')
-                    f.write("    <tr>\n")
-                    f.write(label_td)
-                    f.write(f"      <td>{mini_td}</td>\n")
-                    f.write(f"      <td>{ref_td}</td>\n")
-                    f.write(score_td)
-                    f.write("    </tr>\n")
-                else:
-                    f.write("    <tr>\n")
-                    f.write(f"      <td align=\"center\"><small>p{page_num}</small></td>\n")
-                    f.write(f"      <td>{mini_td}</td>\n")
-                    f.write(f"      <td>{ref_td}</td>\n")
-                    f.write("    </tr>\n")
+                f.write(f"<tr>\n")
+                f.write(f"  <td>{mini_td}</td>\n")
+                f.write(f"  <td>{ref_td}</td>\n")
+                f.write(f"</tr>\n")
 
                 # ── AI analysis row for this page ──────────────────────────
                 ai = ai_by_page.get(page_num)
@@ -684,25 +663,22 @@ def generate_report(results: list[dict], report_dir: str):
                     diff_html = "".join(f"<li>{d}</li>" for d in diffs) if diffs else "<li><i>none</i></li>"
                     sug_html  = "".join(f"<li>{s}</li>" for s in sugs)  if sugs  else "<li><i>none</i></li>"
 
-                    f.write("    <tr>\n")
-                    f.write(f"      <td></td>\n")
+                    f.write("<tr>\n")
                     f.write(
-                        f"      <td colspan=\"2\" style=\"background:#0d1117;padding:8px 12px;\">\n"
-                        f"        <details open>\n"
-                        f"          <summary>🤖 AI Analysis &nbsp;·&nbsp; severity: {sev_label} &nbsp;·&nbsp; "
+                        f"  <td colspan=\"2\" style=\"background:#0d1117;padding:8px 12px;\">\n"
+                        f"    <details open>\n"
+                        f"      <summary>🤖 AI Analysis &nbsp;·&nbsp; severity: {sev_label} &nbsp;·&nbsp; "
                         f"AI visual score: <b>{ai_score}</b></summary>\n"
-                        f"          <br>\n"
-                        f"          <b>Differences detected:</b>\n"
-                        f"          <ul style=\"margin:4px 0 8px\">{diff_html}</ul>\n"
-                        f"          <b>Suggestions:</b>\n"
-                        f"          <ul style=\"margin:4px 0 4px\">{sug_html}</ul>\n"
-                        f"        </details>\n"
-                        f"      </td>\n"
+                        f"      <br>\n"
+                        f"      <b>Differences detected:</b>\n"
+                        f"      <ul style=\"margin:4px 0 8px\">{diff_html}</ul>\n"
+                        f"      <b>Suggestions:</b>\n"
+                        f"      <ul style=\"margin:4px 0 4px\">{sug_html}</ul>\n"
+                        f"    </details>\n"
+                        f"  </td>\n"
                     )
-                    f.write("      <td></td>\n")
-                    f.write("    </tr>\n")
+                    f.write("</tr>\n")
 
-        f.write("  </tbody>\n")
         f.write("</table>\n\n")
 
         # ── Detailed sections ──────────────────────────────────────────────────

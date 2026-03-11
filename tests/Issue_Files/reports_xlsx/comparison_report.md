@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-11T21:53:53.617111
+Generated: 2026-03-11T22:46:50.069814
 
 ## Summary
 
@@ -14,178 +14,143 @@ Generated: 2026-03-11T21:53:53.617111
 ## Visual Comparison
 
 <table>
-  <thead>
-    <tr>
-      <th>Test Case</th>
-      <th>MiniPdf</th>
-      <th>LibreOffice (Reference)</th>
-      <th>Score</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td rowspan="5" valign="top"><b>Small business cash flow forecast1</b><br><small>p1</small></td>
-      <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
-      <td><img src="images/Small business cash flow forecast1_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="5" valign="top"><span style="color:#f85149">⬤</span> 0.6469</td>
-    </tr>
-    <tr>
-      <td align="center"><small>p2</small></td>
-      <td><img src="images/Small business cash flow forecast1_p2_minipdf.png" width="340" alt="MiniPdf p2"></td>
-      <td><img src="images/Small business cash flow forecast1_p2_reference.png" width="340" alt="Reference p2"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p3</small></td>
-      <td><img src="images/Small business cash flow forecast1_p3_minipdf.png" width="340" alt="MiniPdf p3"></td>
-      <td><img src="images/Small business cash flow forecast1_p3_reference.png" width="340" alt="Reference p3"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p4</small></td>
-      <td><i>missing</i></td>
-      <td><img src="images/Small business cash flow forecast1_p4_reference.png" width="340" alt="Reference p4"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p5</small></td>
-      <td><i>missing</i></td>
-      <td><img src="images/Small business cash flow forecast1_p5_reference.png" width="340" alt="Reference p5"></td>
-    </tr>
-    <tr>
-      <td rowspan="27" valign="top"><b>payroll-calculator_f</b><br><small>p1</small></td>
-      <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf p1"></td>
-      <td><img src="images/payroll-calculator_f_p1_reference.png" width="340" alt="Reference p1"></td>
-      <td rowspan="27" valign="top"><span style="color:#d29922">⬤</span> 0.7674</td>
-    </tr>
-    <tr>
-      <td align="center"><small>p2</small></td>
-      <td><img src="images/payroll-calculator_f_p2_minipdf.png" width="340" alt="MiniPdf p2"></td>
-      <td><img src="images/payroll-calculator_f_p2_reference.png" width="340" alt="Reference p2"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p3</small></td>
-      <td><img src="images/payroll-calculator_f_p3_minipdf.png" width="340" alt="MiniPdf p3"></td>
-      <td><img src="images/payroll-calculator_f_p3_reference.png" width="340" alt="Reference p3"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p4</small></td>
-      <td><img src="images/payroll-calculator_f_p4_minipdf.png" width="340" alt="MiniPdf p4"></td>
-      <td><img src="images/payroll-calculator_f_p4_reference.png" width="340" alt="Reference p4"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p5</small></td>
-      <td><img src="images/payroll-calculator_f_p5_minipdf.png" width="340" alt="MiniPdf p5"></td>
-      <td><img src="images/payroll-calculator_f_p5_reference.png" width="340" alt="Reference p5"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p6</small></td>
-      <td><img src="images/payroll-calculator_f_p6_minipdf.png" width="340" alt="MiniPdf p6"></td>
-      <td><img src="images/payroll-calculator_f_p6_reference.png" width="340" alt="Reference p6"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p7</small></td>
-      <td><img src="images/payroll-calculator_f_p7_minipdf.png" width="340" alt="MiniPdf p7"></td>
-      <td><img src="images/payroll-calculator_f_p7_reference.png" width="340" alt="Reference p7"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p8</small></td>
-      <td><img src="images/payroll-calculator_f_p8_minipdf.png" width="340" alt="MiniPdf p8"></td>
-      <td><img src="images/payroll-calculator_f_p8_reference.png" width="340" alt="Reference p8"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p9</small></td>
-      <td><img src="images/payroll-calculator_f_p9_minipdf.png" width="340" alt="MiniPdf p9"></td>
-      <td><img src="images/payroll-calculator_f_p9_reference.png" width="340" alt="Reference p9"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p10</small></td>
-      <td><img src="images/payroll-calculator_f_p10_minipdf.png" width="340" alt="MiniPdf p10"></td>
-      <td><img src="images/payroll-calculator_f_p10_reference.png" width="340" alt="Reference p10"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p11</small></td>
-      <td><img src="images/payroll-calculator_f_p11_minipdf.png" width="340" alt="MiniPdf p11"></td>
-      <td><img src="images/payroll-calculator_f_p11_reference.png" width="340" alt="Reference p11"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p12</small></td>
-      <td><img src="images/payroll-calculator_f_p12_minipdf.png" width="340" alt="MiniPdf p12"></td>
-      <td><img src="images/payroll-calculator_f_p12_reference.png" width="340" alt="Reference p12"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p13</small></td>
-      <td><img src="images/payroll-calculator_f_p13_minipdf.png" width="340" alt="MiniPdf p13"></td>
-      <td><img src="images/payroll-calculator_f_p13_reference.png" width="340" alt="Reference p13"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p14</small></td>
-      <td><img src="images/payroll-calculator_f_p14_minipdf.png" width="340" alt="MiniPdf p14"></td>
-      <td><img src="images/payroll-calculator_f_p14_reference.png" width="340" alt="Reference p14"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p15</small></td>
-      <td><img src="images/payroll-calculator_f_p15_minipdf.png" width="340" alt="MiniPdf p15"></td>
-      <td><img src="images/payroll-calculator_f_p15_reference.png" width="340" alt="Reference p15"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p16</small></td>
-      <td><img src="images/payroll-calculator_f_p16_minipdf.png" width="340" alt="MiniPdf p16"></td>
-      <td><img src="images/payroll-calculator_f_p16_reference.png" width="340" alt="Reference p16"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p17</small></td>
-      <td><img src="images/payroll-calculator_f_p17_minipdf.png" width="340" alt="MiniPdf p17"></td>
-      <td><img src="images/payroll-calculator_f_p17_reference.png" width="340" alt="Reference p17"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p18</small></td>
-      <td><img src="images/payroll-calculator_f_p18_minipdf.png" width="340" alt="MiniPdf p18"></td>
-      <td><img src="images/payroll-calculator_f_p18_reference.png" width="340" alt="Reference p18"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p19</small></td>
-      <td><img src="images/payroll-calculator_f_p19_minipdf.png" width="340" alt="MiniPdf p19"></td>
-      <td><img src="images/payroll-calculator_f_p19_reference.png" width="340" alt="Reference p19"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p20</small></td>
-      <td><img src="images/payroll-calculator_f_p20_minipdf.png" width="340" alt="MiniPdf p20"></td>
-      <td><img src="images/payroll-calculator_f_p20_reference.png" width="340" alt="Reference p20"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p21</small></td>
-      <td><img src="images/payroll-calculator_f_p21_minipdf.png" width="340" alt="MiniPdf p21"></td>
-      <td><img src="images/payroll-calculator_f_p21_reference.png" width="340" alt="Reference p21"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p22</small></td>
-      <td><img src="images/payroll-calculator_f_p22_minipdf.png" width="340" alt="MiniPdf p22"></td>
-      <td><img src="images/payroll-calculator_f_p22_reference.png" width="340" alt="Reference p22"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p23</small></td>
-      <td><img src="images/payroll-calculator_f_p23_minipdf.png" width="340" alt="MiniPdf p23"></td>
-      <td><img src="images/payroll-calculator_f_p23_reference.png" width="340" alt="Reference p23"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p24</small></td>
-      <td><img src="images/payroll-calculator_f_p24_minipdf.png" width="340" alt="MiniPdf p24"></td>
-      <td><img src="images/payroll-calculator_f_p24_reference.png" width="340" alt="Reference p24"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p25</small></td>
-      <td><img src="images/payroll-calculator_f_p25_minipdf.png" width="340" alt="MiniPdf p25"></td>
-      <td><img src="images/payroll-calculator_f_p25_reference.png" width="340" alt="Reference p25"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p26</small></td>
-      <td><img src="images/payroll-calculator_f_p26_minipdf.png" width="340" alt="MiniPdf p26"></td>
-      <td><img src="images/payroll-calculator_f_p26_reference.png" width="340" alt="Reference p26"></td>
-    </tr>
-    <tr>
-      <td align="center"><small>p27</small></td>
-      <td><img src="images/payroll-calculator_f_p27_minipdf.png" width="340" alt="MiniPdf p27"></td>
-      <td><img src="images/payroll-calculator_f_p27_reference.png" width="340" alt="Reference p27"></td>
-    </tr>
-  </tbody>
+<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
+<tr>
+  <td><b>Small business cash flow forecast1</b></td>
+  <td>Small business cash flow forecast1 <span style="color:#f85149">⬤</span> 64.7%</td>
+</tr>
+<tr>
+  <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Small business cash flow forecast1_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Small business cash flow forecast1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Small business cash flow forecast1_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Small business cash flow forecast1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Small business cash flow forecast1_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/Small business cash flow forecast1_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/Small business cash flow forecast1_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>payroll-calculator_f</b></td>
+  <td>payroll-calculator_f <span style="color:#d29922">⬤</span> 76.7%</td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p8_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p8_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p9_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p9_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p10_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p10_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p11_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p11_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p12_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p12_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p13_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p13_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p14_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p14_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p15_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p15_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p16_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p16_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p17_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p17_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p18_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p18_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p19_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p19_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p20_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p20_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p21_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p21_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p22_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p22_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p23_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p23_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p24_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p24_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p25_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p25_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p26_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p26_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p27_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p27_reference.png" width="340" alt="Reference"></td>
+</tr>
 </table>
 
 ## Detailed Results
