@@ -22,9 +22,10 @@ internal static class ExcelReader
         // Read shared strings table
         var sharedStrings = ReadSharedStrings(archive);
 
-        // Read styles (font styles, fill colors, borders, number formats)
-        var fontStyles = ReadFontStyles(archive);
-        var fillColors = ReadFillColors(archive);
+        // Read theme colors and styles
+        var themeColors = ReadThemeColors(archive);
+        var fontStyles = ReadFontStyles(archive, themeColors);
+        var fillColors = ReadFillColors(archive, themeColors);
         var borders = ReadBorders(archive);
         var numberFormats = ReadNumberFormats(archive);
         var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices) = ReadCellXfStyles(archive);
@@ -159,7 +160,7 @@ internal static class ExcelReader
         return (result, printAreas);
     }
 
-    private static List<FontStyleInfo> ReadFontStyles(ZipArchive archive)
+    private static List<FontStyleInfo> ReadFontStyles(ZipArchive archive, List<PdfColor> themeColors)
     {
         var styles = new List<FontStyleInfo>();
         var entry = archive.GetEntry("xl/styles.xml");
@@ -175,20 +176,8 @@ internal static class ExcelReader
 
         foreach (var font in fontsElement.Elements(ns + "font"))
         {
-            PdfColor? color = null;
             var colorEl = font.Element(ns + "color");
-            if (colorEl != null)
-            {
-                var rgb = colorEl.Attribute("rgb")?.Value;
-                if (!string.IsNullOrEmpty(rgb))
-                    color = PdfColor.FromHex(rgb);
-                else
-                {
-                    var indexed = colorEl.Attribute("indexed")?.Value;
-                    if (!string.IsNullOrEmpty(indexed) && int.TryParse(indexed, out var idx))
-                        color = GetIndexedColor(idx);
-                }
-            }
+            PdfColor? color = ResolveColorElement(colorEl, themeColors);
 
             // Read font size
             float fontSize = 11f;
@@ -322,7 +311,7 @@ internal static class ExcelReader
     /// Reads fill patterns from styles.xml.
     /// Returns a list of fill colors indexed by fillId (null for none/gray125).
     /// </summary>
-    private static List<PdfColor?> ReadFillColors(ZipArchive archive)
+    private static List<PdfColor?> ReadFillColors(ZipArchive archive, List<PdfColor> themeColors)
     {
         var fills = new List<PdfColor?>();
         var entry = archive.GetEntry("xl/styles.xml");
@@ -355,8 +344,8 @@ internal static class ExcelReader
             var fgColor = patternFill.Element(ns + "fgColor");
             var bgColor = patternFill.Element(ns + "bgColor");
 
-            PdfColor? fgPdf = ResolveColorElement(fgColor);
-            PdfColor? bgPdf = ResolveColorElement(bgColor);
+            PdfColor? fgPdf = ResolveColorElement(fgColor, themeColors);
+            PdfColor? bgPdf = ResolveColorElement(bgColor, themeColors);
 
             if (patternType == "solid")
             {
@@ -411,7 +400,7 @@ internal static class ExcelReader
     }
 
     /// <summary>Resolves a color element (rgb or indexed) to a PdfColor.</summary>
-    private static PdfColor? ResolveColorElement(XElement? el)
+    private static PdfColor? ResolveColorElement(XElement? el, List<PdfColor> themeColors)
     {
         if (el == null) return null;
         var rgb = el.Attribute("rgb")?.Value;
@@ -419,7 +408,110 @@ internal static class ExcelReader
         var indexed = el.Attribute("indexed")?.Value;
         if (!string.IsNullOrEmpty(indexed) && int.TryParse(indexed, out var idx))
             return GetIndexedColor(idx);
+        var themeAttr = el.Attribute("theme")?.Value;
+        if (!string.IsNullOrEmpty(themeAttr) && int.TryParse(themeAttr, out var themeIdx)
+            && themeIdx >= 0 && themeIdx < themeColors.Count)
+        {
+            var c = themeColors[themeIdx];
+            var tintAttr = el.Attribute("tint")?.Value;
+            if (!string.IsNullOrEmpty(tintAttr) && double.TryParse(tintAttr,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var tint))
+            {
+                c = ApplyTint(c, tint);
+            }
+            return c;
+        }
         return null;
+    }
+
+    private static PdfColor ApplyTint(PdfColor color, double tint)
+    {
+        // ECMA-376 §18.8.19: Apply tint via HSL luminance adjustment.
+        // Convert RGB → HSL, adjust L, convert back.
+        float r = color.R, g = color.G, b = color.B;
+        float max = Math.Max(r, Math.Max(g, b));
+        float min = Math.Min(r, Math.Min(g, b));
+        float h = 0, s = 0, l = (max + min) / 2f;
+
+        if (max != min)
+        {
+            float d = max - min;
+            s = l > 0.5f ? d / (2f - max - min) : d / (max + min);
+            if (max == r) h = (g - b) / d + (g < b ? 6 : 0);
+            else if (max == g) h = (b - r) / d + 2;
+            else h = (r - g) / d + 4;
+            h /= 6f;
+        }
+
+        // Apply tint to luminance
+        if (tint < 0)
+            l = (float)(l * (1.0 + tint));
+        else
+            l = (float)(l * (1.0 - tint) + tint);
+
+        // HSL → RGB
+        if (s == 0)
+        {
+            r = g = b = l;
+        }
+        else
+        {
+            float q = l < 0.5f ? l * (1 + s) : l + s - l * s;
+            float p = 2 * l - q;
+            r = HueToRgb(p, q, h + 1f / 3f);
+            g = HueToRgb(p, q, h);
+            b = HueToRgb(p, q, h - 1f / 3f);
+        }
+
+        return new PdfColor(
+            Math.Clamp(r, 0f, 1f),
+            Math.Clamp(g, 0f, 1f),
+            Math.Clamp(b, 0f, 1f));
+    }
+
+    private static float HueToRgb(float p, float q, float t)
+    {
+        if (t < 0) t += 1f;
+        if (t > 1) t -= 1f;
+        if (t < 1f / 6f) return p + (q - p) * 6f * t;
+        if (t < 1f / 2f) return q;
+        if (t < 2f / 3f) return p + (q - p) * (2f / 3f - t) * 6f;
+        return p;
+    }
+
+    private static List<PdfColor> ReadThemeColors(ZipArchive archive)
+    {
+        var colors = new List<PdfColor>();
+        var entry = archive.GetEntry("xl/theme/theme1.xml");
+        if (entry == null) return colors;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/main");
+        var scheme = doc.Descendants(ns + "clrScheme").FirstOrDefault();
+        if (scheme == null) return colors;
+
+        // Excel theme index order: 0=lt1, 1=dk1, 2=lt2, 3=dk2, 4-9=accent1-6, 10=hlink, 11=folHlink
+        var names = new[] { "lt1", "dk1", "lt2", "dk2", "accent1", "accent2",
+                            "accent3", "accent4", "accent5", "accent6", "hlink", "folHlink" };
+        foreach (var name in names)
+        {
+            var el = scheme.Element(ns + name);
+            if (el != null)
+            {
+                var srgb = el.Element(ns + "srgbClr");
+                var sys = el.Element(ns + "sysClr");
+                string? hex = srgb?.Attribute("val")?.Value ?? sys?.Attribute("lastClr")?.Value;
+                if (!string.IsNullOrEmpty(hex))
+                    colors.Add(PdfColor.FromHex(hex));
+                else
+                    colors.Add(new PdfColor(0, 0, 0));
+            }
+            else
+                colors.Add(new PdfColor(0, 0, 0));
+        }
+        return colors;
     }
 
     /// <summary>
