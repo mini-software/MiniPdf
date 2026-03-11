@@ -56,7 +56,7 @@ internal static class ExcelReader
             var (rowHeights, defaultRowHeight) = ReadRowHeights(entry);
             var pageSetup = ReadPageSetup(entry);
             printAreas.TryGetValue(currentIndex, out var printArea);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage));
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight));
         }
 
         // If no sheets found via workbook, try reading sheet1 directly
@@ -71,7 +71,7 @@ internal static class ExcelReader
                 var mergedCells = ReadMergedCells(entry);
                 var (rowHeights, defaultRowHeight) = ReadRowHeights(entry);
                 var pageSetup = ReadPageSetup(entry);
-                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage));
+                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight));
             }
         }
 
@@ -142,11 +142,15 @@ internal static class ExcelReader
             var bangIdx = val.IndexOf('!');
             if (bangIdx >= 0) val = val.Substring(bangIdx + 1);
             // Parse range like $A$1:$J$37 — strip $ and use ParseCellRef which returns (row, col)
+            // Also handle column-only ranges like $A:$L (entire columns)
             var parts = val.Replace("$", "").Split(':');
             if (parts.Length == 2)
             {
                 var (sr, sc) = ParseCellRef(parts[0]);
                 var (er, ec) = ParseCellRef(parts[1]);
+                // Handle column-only ranges (e.g. A:L) where ParseCellRef returns row=-1
+                if (sc >= 0 && sr < 0) sr = 0;
+                if (ec >= 0 && er < 0) er = 1_048_575; // max Excel row index
                 if (sc >= 0 && sr >= 0 && ec >= 0 && er >= 0)
                     printAreas[localId] = (sc, sr, ec, er);
             }
@@ -742,6 +746,10 @@ internal static class ExcelReader
         else
             activeFormat = sections[0];
 
+        // Empty section means "suppress output" (e.g., format ";;" hides all values)
+        if (string.IsNullOrWhiteSpace(activeFormat))
+            return "";
+
         // Strip color codes like [Red], [Blue], etc.
         activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\[(?:Red|Blue|Green|Yellow|Magenta|Cyan|White|Black|Color\d+)\]", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
@@ -750,13 +758,75 @@ internal static class ExcelReader
         // Also handle [$symbol] without locale
         activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\[\$([^\]]*)\]", "$1");
 
-        // Strip _X (spacing: add space the width of char X) → replace with space
-        // Strip *X (fill: repeat char X to fill column) → remove entirely
-        activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"_.", " ");
-        activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\*.", "");
+        // Single-pass parse to handle _X, *X, \X, "text", and ? correctly
+        // This avoids regex interference between quoted text and escape sequences.
+        var parsedFormat = new System.Text.StringBuilder();
+        var literals = new System.Text.StringBuilder(); // accumulated literal text outside number pattern
+        for (var pi = 0; pi < activeFormat.Length; pi++)
+        {
+            var ch = activeFormat[pi];
+            if (ch == '_' && pi + 1 < activeFormat.Length)
+            {
+                parsedFormat.Append(' '); // spacing placeholder
+                pi++; // skip the width character
+            }
+            else if (ch == '*' && pi + 1 < activeFormat.Length)
+            {
+                // Repeat-fill character: insert padding spaces to approximate
+                // accounting-format alignment ($ left, number right).
+                var fillChar = activeFormat[pi + 1];
+                parsedFormat.Append(fillChar == ' ' ? "      " : new string(fillChar, 6));
+                pi++; // skip fill character
+            }
+            else if (ch == '\\' && pi + 1 < activeFormat.Length)
+            {
+                parsedFormat.Append(activeFormat[pi + 1]); // literal escaped char
+                pi++;
+            }
+            else if (ch == '"')
+            {
+                // Quoted literal text
+                pi++;
+                while (pi < activeFormat.Length && activeFormat[pi] != '"')
+                {
+                    parsedFormat.Append(activeFormat[pi]);
+                    pi++;
+                }
+            }
+            else
+            {
+                parsedFormat.Append(ch);
+            }
+        }
+        activeFormat = parsedFormat.ToString();
 
-        // Handle escaped literal characters: \( → (, \) → ), etc.
-        activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\\(.)", "$1");
+        // Handle date/time-like formats early (before numeric placeholder check,
+        // since date formats like d-mmm-yy have no 0/# placeholders)
+        var lowerFmt = activeFormat.ToLowerInvariant();
+        if (lowerFmt.Contains("yy") || lowerFmt.Contains("dd") ||
+            (lowerFmt.Contains("mm") && (lowerFmt.Contains("dd") || lowerFmt.Contains("yy") || lowerFmt.Contains("hh") || lowerFmt.Contains("ss"))) ||
+            lowerFmt.Contains("mmm") ||
+            lowerFmt.Contains("hh") || lowerFmt.Contains("h:") || lowerFmt.Contains("am/pm") || lowerFmt.Contains("a/p"))
+        {
+            return FormatExcelDate(value, activeFormat);
+        }
+
+        // Check if format has any numeric placeholders (0, #, .)
+        // If not, it's a pure literal format (e.g., accounting zero section like: $ -  )
+        var hasNumericPlaceholder = false;
+        foreach (var ch in activeFormat)
+        {
+            if (ch == '0' || ch == '#' || ch == '.')
+            {
+                hasNumericPlaceholder = true;
+                break;
+            }
+        }
+        if (!hasNumericPlaceholder)
+        {
+            // Replace ? with space (digit placeholder shows space for absent digits)
+            return activeFormat.Replace('?', ' ').Trim();
+        }
 
         // Handle percentage format
         if (activeFormat.Contains('%'))
@@ -774,15 +844,6 @@ internal static class ExcelReader
             return value.ToString($"0.{new string('0', decPlaces)}E+00", ci);
         }
 
-        // Handle date/time-like formats (must check before number handling)
-        var lowerFmt = activeFormat.ToLowerInvariant();
-        if (lowerFmt.Contains("yy") || lowerFmt.Contains("dd") ||
-            (lowerFmt.Contains("mm") && (lowerFmt.Contains("dd") || lowerFmt.Contains("yy") || lowerFmt.Contains("hh") || lowerFmt.Contains("ss"))) ||
-            lowerFmt.Contains("hh") || lowerFmt.Contains("h:") || lowerFmt.Contains("am/pm") || lowerFmt.Contains("a/p"))
-        {
-            return FormatExcelDate(value, activeFormat);
-        }
-
         // Count decimal places from format
         var hasDecimal = activeFormat.Contains('.');
         var decimalPlaces = 0;
@@ -791,7 +852,7 @@ internal static class ExcelReader
             var dotIdx = activeFormat.IndexOf('.');
             for (var i = dotIdx + 1; i < activeFormat.Length; i++)
             {
-                if (activeFormat[i] == '0' || activeFormat[i] == '#')
+                if (activeFormat[i] == '0' || activeFormat[i] == '#' || activeFormat[i] == '?')
                     decimalPlaces++;
                 else
                     break;
@@ -1055,7 +1116,7 @@ internal static class ExcelReader
                 if (isMinute)
                     sb.Append(count >= 2 ? "mm" : "m");
                 else
-                    sb.Append(count >= 2 ? "MM" : "M");
+                    sb.Append(count switch { 1 => "M", 2 => "MM", 3 => "MMM", _ => "MMMM" });
             }
             else if (c == 'a' && i + 4 < fmt.Length && lower.Substring(i, 5) == "am/pm")
             {
@@ -1109,11 +1170,14 @@ internal static class ExcelReader
         }
 
         // Only use column widths that are explicitly customized (customWidth="1")
+        // or explicitly hidden (hidden="1").
         foreach (var col in doc.Descendants(ns + "col"))
         {
+            var isHidden = col.Attribute("hidden")?.Value == "1";
+
             // Skip default-width columns (not customised by the spreadsheet author)
             var customWidth = col.Attribute("customWidth")?.Value;
-            if (customWidth != "1") continue;
+            if (customWidth != "1" && !isHidden) continue;
 
             var minAttr = col.Attribute("min")?.Value;
             var maxAttr = col.Attribute("max")?.Value;
@@ -1128,7 +1192,7 @@ internal static class ExcelReader
                 out var colWidth)) continue;
 
             for (var c = minCol; c <= maxCol; c++)
-                widths[c - 1] = colWidth; // store as 0-based index
+                widths[c - 1] = isHidden ? 0f : colWidth; // hidden columns get 0 width
         }
 
         return (widths, defaultWidth);
@@ -1165,6 +1229,23 @@ internal static class ExcelReader
                 paperSize = p;
         }
 
+        // Read fitToWidth / fitToHeight from pageSetup.
+        // ECMA-376 defaults both to 1, but in practice when these attributes are
+        // absent the stored 'scale' already encodes the horizontal fit and rows
+        // paginate naturally.  Use 0 (unlimited) as default so fitToHeight
+        // compression only triggers when the attribute is explicitly present.
+        var fitToWidth = 1;
+        var fitToHeight = 0;
+        if (pageSetup != null)
+        {
+            var ftwAttr = pageSetup.Attribute("fitToWidth")?.Value;
+            if (int.TryParse(ftwAttr, out var ftw) && ftw >= 0)
+                fitToWidth = ftw;
+            var fthAttr = pageSetup.Attribute("fitToHeight")?.Value;
+            if (int.TryParse(fthAttr, out var fth) && fth >= 0)
+                fitToHeight = fth;
+        }
+
         // Read page margins (in inches)
         var pageMargins = doc.Descendants(ns + "pageMargins").FirstOrDefault();
         if (pageMargins != null)
@@ -1190,13 +1271,13 @@ internal static class ExcelReader
             fitToPage = pageSetUpPr.Attribute("fitToPage")?.Value == "1";
         }
 
-        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage);
+        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage, fitToWidth, fitToHeight);
     }
 
     internal record PageSetupInfo(
         bool IsLandscape, int Scale, int PaperSize,
         float MarginLeftPt, float MarginRightPt, float MarginTopPt, float MarginBottomPt,
-        bool FitToPage);
+        bool FitToPage, int FitToWidth, int FitToHeight);
 
     /// <summary>
     /// Reads row heights from the sheet XML.
@@ -1270,7 +1351,8 @@ internal static class ExcelReader
         return result;
     }
 
-    /// <summary>Parses a cell reference like "C5" into (row=4, col=2) 0-based.</summary>
+    /// <summary>Parses a cell reference like "C5" into (row=4, col=2) 0-based.
+    /// For column-only references like "C", returns (row=-1, col=2).</summary>
     private static (int row, int col) ParseCellRef(string cellRef)
     {
         var col = 0;
@@ -1281,9 +1363,9 @@ internal static class ExcelReader
             i++;
         }
         col--; // Convert 1-based to 0-based
-        if (int.TryParse(cellRef[i..], out var row))
+        if (i < cellRef.Length && int.TryParse(cellRef[i..], out var row))
             return (row - 1, col); // 0-based
-        return (-1, -1);
+        return (-1, col); // Column-only: valid col, row=-1
     }
 
     /// <summary>
@@ -1995,6 +2077,10 @@ internal sealed class ExcelSheet
     public float MarginBottomPt { get; }
     /// <summary>Whether fitToPage is enabled (auto-scale to fit page width).</summary>
     public bool FitToPage { get; }
+    /// <summary>Number of horizontal pages to fit to (ECMA-376 default: 1). 0 = unlimited.</summary>
+    public int FitToWidth { get; }
+    /// <summary>Number of vertical pages to fit to (ECMA-376 default: 1). 0 = unlimited.</summary>
+    public int FitToHeight { get; }
 
     /// <summary>Converts Excel character-unit column width to PDF points.</summary>
     public static float CharUnitsToPoints(float charUnits)
@@ -2015,7 +2101,8 @@ internal sealed class ExcelSheet
         (int, int, int, int)? printArea = null,
         float marginLeftPt = -1, float marginRightPt = -1,
         float marginTopPt = -1, float marginBottomPt = -1,
-        bool fitToPage = false)
+        bool fitToPage = false,
+        int fitToWidth = 1, int fitToHeight = 1)
     {
         Name = name;
         Rows = rows;
@@ -2035,5 +2122,7 @@ internal sealed class ExcelSheet
         MarginTopPt = marginTopPt;
         MarginBottomPt = marginBottomPt;
         FitToPage = fitToPage;
+        FitToWidth = fitToWidth;
+        FitToHeight = fitToHeight;
     }
 }
