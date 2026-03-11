@@ -57,7 +57,7 @@ internal static class ExcelReader
             var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
             var pageSetup = ReadPageSetup(entry);
             printAreas.TryGetValue(currentIndex, out var printArea);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight));
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered));
         }
 
         // If no sheets found via workbook, try reading sheet1 directly
@@ -72,7 +72,7 @@ internal static class ExcelReader
                 var mergedCells = ReadMergedCells(entry);
                 var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
                 var pageSetup = ReadPageSetup(entry);
-                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight));
+                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered));
             }
         }
 
@@ -1363,13 +1363,21 @@ internal static class ExcelReader
             fitToPage = pageSetUpPr.Attribute("fitToPage")?.Value == "1";
         }
 
-        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage, fitToWidth, fitToHeight);
+        // Read printOptions (horizontalCentered)
+        var horizontalCentered = false;
+        var printOptions = doc.Descendants(ns + "printOptions").FirstOrDefault();
+        if (printOptions != null)
+        {
+            horizontalCentered = printOptions.Attribute("horizontalCentered")?.Value == "1";
+        }
+
+        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage, fitToWidth, fitToHeight, horizontalCentered);
     }
 
     internal record PageSetupInfo(
         bool IsLandscape, int Scale, int PaperSize,
         float MarginLeftPt, float MarginRightPt, float MarginTopPt, float MarginBottomPt,
-        bool FitToPage, int FitToWidth, int FitToHeight);
+        bool FitToPage, int FitToWidth, int FitToHeight, bool HorizontalCentered = false);
 
     /// <summary>
     /// Reads row heights from the sheet XML.
@@ -2178,6 +2186,8 @@ internal sealed class ExcelSheet
     public int FitToWidth { get; }
     /// <summary>Number of vertical pages to fit to (ECMA-376 default: 1). 0 = unlimited.</summary>
     public int FitToHeight { get; }
+    /// <summary>Whether to center content horizontally on the page.</summary>
+    public bool HorizontalCentered { get; }
 
     /// <summary>Converts Excel character-unit column width to PDF points.</summary>
     public static float CharUnitsToPoints(float charUnits)
@@ -2200,7 +2210,8 @@ internal sealed class ExcelSheet
         float marginLeftPt = -1, float marginRightPt = -1,
         float marginTopPt = -1, float marginBottomPt = -1,
         bool fitToPage = false,
-        int fitToWidth = 1, int fitToHeight = 1)
+        int fitToWidth = 1, int fitToHeight = 1,
+        bool horizontalCentered = false)
     {
         Name = name;
         Rows = rows;
@@ -2223,5 +2234,6 @@ internal sealed class ExcelSheet
         FitToPage = fitToPage;
         FitToWidth = fitToWidth;
         FitToHeight = fitToHeight;
+        HorizontalCentered = horizontalCentered;
     }
 }
