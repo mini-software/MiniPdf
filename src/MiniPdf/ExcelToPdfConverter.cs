@@ -157,7 +157,8 @@ internal static class ExcelToPdfConverter
                     marginBottomPt: sheet.MarginBottomPt,
                     fitToPage: sheet.FitToPage,
                     fitToWidth: sheet.FitToWidth,
-                    fitToHeight: sheet.FitToHeight);
+                    fitToHeight: sheet.FitToHeight,
+                    horizontalCentered: sheet.HorizontalCentered);
                 scaleCellFonts = true;
             }
         }
@@ -272,7 +273,8 @@ internal static class ExcelToPdfConverter
                 marginBottomPt: sheet.MarginBottomPt,
                 fitToPage: sheet.FitToPage,
                 fitToWidth: sheet.FitToWidth,
-                fitToHeight: sheet.FitToHeight);
+                fitToHeight: sheet.FitToHeight,
+                horizontalCentered: sheet.HorizontalCentered);
         }
 
         var maxCols = sheet.Rows.Count > 0 ? sheet.Rows.Max(r => r.Count) : 0;
@@ -370,6 +372,16 @@ internal static class ExcelToPdfConverter
         {
             // Single group — scale to fit if needed
             var colWidths = ScaleColumnWidths(naturalWidths, usableWidth, columnPadding, avgCharWidth);
+
+            // horizontalCentered: shift content right so it is centered in usable width
+            if (sheet.HorizontalCentered)
+            {
+                var contentWidth = colWidths.Sum() + columnPadding * (maxCols - 1);
+                var centerOffset = (usableWidth - contentWidth) / 2f;
+                if (centerOffset > 0)
+                    options.MarginLeft += centerOffset;
+            }
+
             RenderSheetRows(doc, sheet, options, pageWidth, pageHeight, Enumerable.Range(0, maxCols).ToArray(), columnPadding, colWidths, avgCharWidth);
         }
     }
