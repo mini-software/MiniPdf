@@ -777,7 +777,7 @@ internal static class ExcelToPdfConverter
                 var fillColor = cell?.FillColor;
                 var alignment = cell?.Alignment ?? "left";
                 var cellFontSize = cell != null
-                    ? (options.ScaleCellFonts ? cell.FontSize * printScaleFactor : cell.FontSize)
+                    ? cell.FontSize * printScaleFactor
                     : options.FontSize;
                 var border = cell?.Border;
                 var verticalAlignment = cell?.VerticalAlignment ?? "bottom";
