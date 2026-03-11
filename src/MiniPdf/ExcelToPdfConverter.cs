@@ -353,7 +353,10 @@ internal static class ExcelToPdfConverter
 
         var totalNatural = naturalWidths.Sum() + columnPadding * (maxCols - 1);
 
-        // fitToPage: auto-scale column widths to fit in one page width
+        // fitToPage: auto-scale column widths to fit in one page width.
+        // The same scale factor is applied to row heights so rows are proportionally
+        // smaller and pagination matches the real spreadsheet output.
+        var fitToPageScale = 1f;
         if (sheet.FitToPage && totalNatural > usableWidth && maxCols > 1)
         {
             var fitScale = usableWidth / totalNatural;
@@ -361,6 +364,7 @@ internal static class ExcelToPdfConverter
                 naturalWidths[i] *= fitScale;
             columnPadding *= fitScale;
             totalNatural = usableWidth;
+            fitToPageScale = fitScale;
         }
 
         if (totalNatural > usableWidth && maxCols > 1)
@@ -382,7 +386,7 @@ internal static class ExcelToPdfConverter
                     options.MarginLeft += centerOffset;
             }
 
-            RenderSheetRows(doc, sheet, options, pageWidth, pageHeight, Enumerable.Range(0, maxCols).ToArray(), columnPadding, colWidths, avgCharWidth);
+            RenderSheetRows(doc, sheet, options, pageWidth, pageHeight, Enumerable.Range(0, maxCols).ToArray(), columnPadding, colWidths, avgCharWidth, fitToPageScale);
         }
     }
 
@@ -481,7 +485,8 @@ internal static class ExcelToPdfConverter
     /// Render rows for a specific set of columns.
     /// </summary>
     private static void RenderSheetRows(PdfDocument doc, ExcelSheet sheet, ConversionOptions options,
-        float pageWidth, float pageHeight, int[] columns, float columnPadding, float[] colWidths, float avgCharWidth)
+        float pageWidth, float pageHeight, int[] columns, float columnPadding, float[] colWidths, float avgCharWidth,
+        float fitToPageScale = 1f)
     {
         // Print scale factor for cell-level font sizes (column widths are already print-scaled by caller)
         var printScaleFactor = (sheet.PrintScale != 100 && sheet.PrintScale > 0) ? sheet.PrintScale / 100f : 1f;
@@ -491,6 +496,9 @@ internal static class ExcelToPdfConverter
         // Apply print scale to row heights (like column widths, these define content size)
         if (printScaleFactor != 1f)
             defaultLineHeight *= printScaleFactor;
+        // Apply fitToPage additional scale so rows shrink proportionally to columns
+        if (fitToPageScale < 1f)
+            defaultLineHeight *= fitToPageScale;
         var lineHeight = defaultLineHeight;
         PdfPage? currentPage = null;
         var currentY = 0f;
@@ -549,6 +557,9 @@ internal static class ExcelToPdfConverter
             // Apply print scale to explicit row heights
             if (hasExplicitHeight && sheet.PrintScale != 100 && sheet.PrintScale > 0)
                 explicitRowHeight *= sheet.PrintScale / 100f;
+            // Apply fitToPage additional scale
+            if (hasExplicitHeight && fitToPageScale < 1f)
+                explicitRowHeight *= fitToPageScale;
 
             // Record top-of-row state for image placement
             rowTopY[excelRowIndex] = currentY;
@@ -556,7 +567,8 @@ internal static class ExcelToPdfConverter
 
             if (row.Count == 0)
             {
-                currentY -= hasExplicitHeight ? explicitRowHeight : lineHeight;
+                var emptyH = hasExplicitHeight ? explicitRowHeight : lineHeight;
+                currentY -= emptyH;
                 excelRowIndex++;
                 continue;
             }
@@ -1031,24 +1043,53 @@ internal static class ExcelToPdfConverter
             if (chartColIdx < 0) chartColIdx = 0;
             var chartX = colXStarts[chartColIdx];
 
-            // Calculate chart render size from EMU (allow natural size for page overflow)
+            // Calculate chart render size from EMU (cap to page like original)
             const float EmuToPt2 = 1f / 12700f;
             var chartWidth = Math.Min(chart.WidthEmu * EmuToPt2, usableWidth * 0.95f);
             var chartHeight = chart.HeightEmu * EmuToPt2;
             if (chartWidth < 72) chartWidth = usableWidth * 0.6f;
             if (chartHeight < 72) chartHeight = chartWidth * 0.65f;
-            // Cap height to avoid absurdly tall charts but allow page overflow
-            chartHeight = Math.Min(chartHeight, pageHeight * 0.85f);
+
+            // Scale dominant charts (twoCellAnchor spanning >50% of sheet rows) to
+            // fill usable page width, matching LibreOffice's full-page output.
+            var estRowSpan = chart.HeightEmu / 304800f; // rough rows from EMU
+            var isChartDominant = chart.IsTwoCellAnchor
+                && sheet.Rows.Count > 0 && estRowSpan / sheet.Rows.Count > 0.5f;
+            if (isChartDominant && chartWidth > 0 && chartWidth < usableWidth * 0.9f)
+            {
+                var scaleUp = usableWidth * 0.95f / chartWidth;
+                chartHeight *= scaleUp;
+                chartWidth = usableWidth * 0.95f;
+            }
+            // Cap height for inline (non-dominant) charts to avoid page overflow
+            if (!isChartDominant)
+                chartHeight = Math.Min(chartHeight, pageHeight * 0.85f);
 
             // Ensure chart fits on page, start new page if needed
             var chartTop = chartTopY;
             if (chartTop - chartHeight < options.MarginBottom)
             {
+                // If chart doesn't fit in remaining space, start a new page
                 chartPage = doc.AddPage(pageWidth, pageHeight);
                 chartTop = pageHeight - options.MarginTop;
             }
 
-            RenderChart(chartPage, chart, chartX, chartTop, chartWidth, chartHeight, options.FontSize);
+            // Render the chart on the current page
+            var renderHeight = isChartDominant
+                ? Math.Min(chartHeight, chartTop - options.MarginBottom)
+                : chartHeight;
+            RenderChart(chartPage, chart, chartX, chartTop, chartWidth, renderHeight, options.FontSize);
+
+            // Add overflow pages for dominant charts taller than 1 page
+            if (isChartDominant)
+            {
+                var overflowHeight = chartHeight - renderHeight;
+                while (overflowHeight > 1f)
+                {
+                    chartPage = doc.AddPage(pageWidth, pageHeight);
+                    overflowHeight -= (pageHeight - options.MarginTop - options.MarginBottom);
+                }
+            }
 
             // Charts anchored to the right of data columns cause LibreOffice to
             // produce an overflow page (the chart extends beyond the print area).

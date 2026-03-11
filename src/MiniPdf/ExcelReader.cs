@@ -1698,6 +1698,7 @@ internal static class ExcelReader
 
         foreach (var anchor in anchors)
         {
+            var isTwoCellAnchor = anchor.Name == xdr + "twoCellAnchor";
             // Look for graphicFrame → graphic → graphicData containing a chart reference
             var chartRef = anchor.Descendants(c + "chart").FirstOrDefault();
             if (chartRef == null) continue;
@@ -1969,7 +1970,8 @@ internal static class ExcelReader
             }
 
             var chartInfo = new ExcelChartInfo(fromRow, fromCol, widthEmu, heightEmu, title, chartType,
-                seriesList, catAxisTitle, valAxisTitle, showDataLabelPercent, showDataLabelCatName, valAxisFmtCode)
+                seriesList, catAxisTitle, valAxisTitle, showDataLabelPercent, showDataLabelCatName, valAxisFmtCode,
+                isTwoCellAnchor)
             {
                 OverlaySeries = overlaySeries,
                 OverlayChartType = overlayChartType
@@ -2130,7 +2132,8 @@ internal sealed record ExcelChartInfo(
     string ValueAxisTitle = "",     // Y-axis title
     bool ShowDataLabelPercent = false,  // show percentage data labels
     bool ShowDataLabelCatName = false,  // show category name data labels
-    string ValueAxisFormatCode = ""    // numFmt formatCode for value axis (e.g. "#,##0")
+    string ValueAxisFormatCode = "",    // numFmt formatCode for value axis (e.g. "#,##0")
+    bool IsTwoCellAnchor = false         // true when chart uses twoCellAnchor (cell-relative sizing)
 )
 {
     /// <summary>Overlay series for combo charts (e.g., line series over bar chart).</summary>
