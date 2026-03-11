@@ -54,10 +54,10 @@ internal static class ExcelReader
             var images = ReadSheetImages(archive, info.SheetId);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
-            var (rowHeights, defaultRowHeight) = ReadRowHeights(entry);
+            var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
             var pageSetup = ReadPageSetup(entry);
             printAreas.TryGetValue(currentIndex, out var printArea);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight));
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight));
         }
 
         // If no sheets found via workbook, try reading sheet1 directly
@@ -70,9 +70,9 @@ internal static class ExcelReader
                 var images = ReadSheetImages(archive, 1);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
-                var (rowHeights, defaultRowHeight) = ReadRowHeights(entry);
+                var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
                 var pageSetup = ReadPageSetup(entry);
-                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight));
+                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight));
             }
         }
 
@@ -1375,9 +1375,10 @@ internal static class ExcelReader
     /// Reads row heights from the sheet XML.
     /// Returns a dictionary of 0-based row index → height in points, plus the default row height.
     /// </summary>
-    private static (Dictionary<int, float> heights, float defaultHeight) ReadRowHeights(ZipArchiveEntry entry)
+    private static (Dictionary<int, float> heights, float defaultHeight, HashSet<int> customHeightRows) ReadRowHeights(ZipArchiveEntry entry)
     {
         var heights = new Dictionary<int, float>();
+        var customHeightRows = new HashSet<int>();
         var defaultHeight = 15f; // Excel default row height in points
 
         using var stream = entry.Open();
@@ -1398,7 +1399,7 @@ internal static class ExcelReader
             }
         }
 
-        // Read explicit row heights (customHeight="1")
+        // Read explicit row heights
         foreach (var row in doc.Descendants(ns + "row"))
         {
             var rAttr = row.Attribute("r")?.Value;
@@ -1412,9 +1413,11 @@ internal static class ExcelReader
                 out var ht)) continue;
 
             heights[rowNum - 1] = ht; // store as 0-based
+            if (row.Attribute("customHeight")?.Value == "1")
+                customHeightRows.Add(rowNum - 1);
         }
 
-        return (heights, defaultHeight);
+        return (heights, defaultHeight, customHeightRows);
     }
 
     /// <summary>
@@ -2152,6 +2155,8 @@ internal sealed class ExcelSheet
     /// Only rows with explicitly customized heights are included.
     /// </summary>
     public Dictionary<int, float> RowHeights { get; }
+    /// <summary>Set of 0-based row indices that have customHeight="1" (fixed height, no auto-expand).</summary>
+    public HashSet<int> CustomHeightRows { get; }
     /// <summary>Default row height in points (typically 15).</summary>
     public float DefaultRowHeight { get; }
     /// <summary>Whether the sheet uses landscape orientation.</summary>
@@ -2187,6 +2192,7 @@ internal sealed class ExcelSheet
         List<(int, int, int, int)>? mergedCells = null,
         Dictionary<int, float>? rowHeights = null,
         float defaultRowHeight = 15f,
+        HashSet<int>? customHeightRows = null,
         bool isLandscape = false,
         int printScale = 100,
         int paperSize = 1,
@@ -2205,6 +2211,7 @@ internal sealed class ExcelSheet
         MergedCells = mergedCells ?? new List<(int, int, int, int)>();
         RowHeights = rowHeights ?? new Dictionary<int, float>();
         DefaultRowHeight = defaultRowHeight;
+        CustomHeightRows = customHeightRows ?? new HashSet<int>();
         IsLandscape = isLandscape;
         PrintScale = printScale;
         PaperSize = paperSize;

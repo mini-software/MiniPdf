@@ -147,6 +147,7 @@ internal static class ExcelToPdfConverter
                     mergedCells: sheet.MergedCells,
                     rowHeights: sheet.RowHeights,
                     defaultRowHeight: sheet.DefaultRowHeight,
+                    customHeightRows: sheet.CustomHeightRows,
                     isLandscape: sheet.IsLandscape,
                     printScale: combined,
                     paperSize: sheet.PaperSize,
@@ -261,6 +262,7 @@ internal static class ExcelToPdfConverter
                 mergedCells: trimmedMerged,
                 rowHeights: trimmedRowHeights,
                 defaultRowHeight: sheet.DefaultRowHeight,
+                customHeightRows: sheet.CustomHeightRows,
                 isLandscape: sheet.IsLandscape,
                 printScale: sheet.PrintScale,
                 paperSize: sheet.PaperSize,
@@ -677,7 +679,11 @@ internal static class ExcelToPdfConverter
                 var col = columns[i];
                 if (col < row.Count)
                 {
-                    var fs = options.ScaleCellFonts ? row[col].FontSize * printScaleFactor : row[col].FontSize;
+                    // When fitToPage is active, always compare scaled cell fonts so
+                    // unscaled 11pt doesn't falsely exceed scaled fontSize (e.g. 5.28pt
+                    // at 48%) and inflate every row.  Non-fitToPage sheets keep existing
+                    // auto-expand behaviour to preserve proven page counts.
+                    var fs = (sheet.FitToPage || options.ScaleCellFonts) ? row[col].FontSize * printScaleFactor : row[col].FontSize;
                     if (fs > maxCellFontSize) maxCellFontSize = fs;
                 }
             }
