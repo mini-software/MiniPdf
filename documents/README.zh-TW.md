@@ -54,15 +54,22 @@ byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 
 ## 基準測試
 
-MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **191 個經典測試案例**（包含 30 個圖片嵌入測試、30 個圖表測試、30 個樣式測試和 30 個多語言/表情符號測試）。
+MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，共 **373 個測試案例**。
 
-| 類別 | 數量 | 閾值 |
-|---|---|---|
-| 🟢 優秀 | 175 | ≥ 90% |
-| 🟡 可接受 | 16 | 70% – 90% |
-| 🔴 待改進 | 0 | < 70% |
+| 報告 | 案例數 | 🟢 優秀 (≥90%) | 🟡 可接受 (70%–90%) | 🔴 待改進 (<70%) | 平均分 |
+|---|---|---|---|---|---|
+| XLSX 轉 PDF | 191 | 175 | 16 | 0 | 96.9% |
+| DOCX 轉 PDF | 180 | 178 | 2 | 0 | 97.6% |
+| Issue XLSX 檔案 | 2 | 1 | 1 | 0 | 83.8% |
+| **合計** | **373** | **354** | **19** | **0** | **97.2%** |
 
-**整體平均分: 96.9%**（文字相似度 40% + 視覺相似度 40% + 頁數 20%）
+評分方式：文字相似度 40% + 視覺相似度 40% + 頁數 20%
+
+### 詳細對比報告
+
+- [XLSX 基準測試報告](../tests/MiniPdf.Benchmark/reports/comparison_report.md) — XLSX 轉換測試案例
+- [DOCX 基準測試報告](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — DOCX 轉換測試案例
+- [Issue XLSX 檔案報告](../tests/Issue_Files/reports_xlsx/comparison_report.md) — 實際 Issue 檔案測試案例
 
 ### 視覺對比
 
@@ -208,7 +215,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic18</b></td>
-  <td>Large dataset 🟢 95.8%</td>
+  <td>Large dataset 🟢 95.7%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic18_large_dataset_p1_minipdf.png" width="320"/></td>
@@ -384,7 +391,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic40</b></td>
-  <td>Scientific notation 🟢 99.7%</td>
+  <td>Scientific notation 🟢 99.9%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic40_scientific_notation_p1_minipdf.png" width="320"/></td>
@@ -416,7 +423,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic44</b></td>
-  <td>Employee roster 🟢 98.2%</td>
+  <td>Employee roster 🟢 98.0%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic44_employee_roster_p1_minipdf.png" width="320"/></td>
@@ -432,7 +439,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic46</b></td>
-  <td>Grade book 🟢 99.7%</td>
+  <td>Grade book 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic46_grade_book_p1_minipdf.png" width="320"/></td>
@@ -448,7 +455,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic48</b></td>
-  <td>Survey results 🟢 99.3%</td>
+  <td>Survey results 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic48_survey_results_p1_minipdf.png" width="320"/></td>
@@ -472,7 +479,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic51</b></td>
-  <td>Product catalog 🟢 97.6%</td>
+  <td>Product catalog 🟢 98.5%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic51_product_catalog_p1_minipdf.png" width="320"/></td>
@@ -576,7 +583,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic64</b></td>
-  <td>Employee directory with photo 🟢 99.2%</td>
+  <td>Employee directory with photo 🟢 99.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic64_employee_directory_with_photo_p1_minipdf.png" width="320"/></td>
@@ -592,7 +599,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic66</b></td>
-  <td>Invoice with logo 🟢 99.3%</td>
+  <td>Invoice with logo 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic66_invoice_with_logo_p1_minipdf.png" width="320"/></td>
@@ -608,7 +615,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic68</b></td>
-  <td>Restaurant menu 🟢 98.8%</td>
+  <td>Restaurant menu 🟢 98.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic68_restaurant_menu_p1_minipdf.png" width="320"/></td>
@@ -624,7 +631,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic70</b></td>
-  <td>Product catalog with images 🟢 99.6%</td>
+  <td>Product catalog with images 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic70_product_catalog_with_images_p1_minipdf.png" width="320"/></td>
@@ -888,7 +895,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic103</b></td>
-  <td>Pie chart with labels 🟡 88.3%</td>
+  <td>Pie chart with labels 🟡 86.9%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic103_pie_chart_with_labels_p1_minipdf.png" width="320"/></td>
@@ -896,7 +903,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic104</b></td>
-  <td>Combo bar line chart 🟡 81.7%</td>
+  <td>Combo bar line chart 🟡 81.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic104_combo_bar_line_chart_p1_minipdf.png" width="320"/></td>
@@ -904,7 +911,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic105</b></td>
-  <td>3d bar chart 🟡 86.0%</td>
+  <td>3d bar chart 🟡 85.8%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic105_3d_bar_chart_p1_minipdf.png" width="320"/></td>
@@ -912,7 +919,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic106</b></td>
-  <td>3d pie chart 🟢 97.2%</td>
+  <td>3d pie chart 🟢 96.7%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic106_3d_pie_chart_p1_minipdf.png" width="320"/></td>
@@ -920,7 +927,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic107</b></td>
-  <td>Multi series line 🟡 80.2%</td>
+  <td>Multi series line 🟡 80.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic107_multi_series_line_p1_minipdf.png" width="320"/></td>
@@ -952,7 +959,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic111</b></td>
-  <td>Chart with axis labels 🟢 92.6%</td>
+  <td>Chart with axis labels 🟢 92.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic111_chart_with_axis_labels_p1_minipdf.png" width="320"/></td>
@@ -968,7 +975,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic113</b></td>
-  <td>Chart sheet 🟡 87.9%</td>
+  <td>Chart sheet 🟡 86.4%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic113_chart_sheet_p1_minipdf.png" width="320"/></td>
@@ -976,7 +983,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic114</b></td>
-  <td>Chart large dataset 🟢 91.0%</td>
+  <td>Chart large dataset 🟢 91.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic114_chart_large_dataset_p1_minipdf.png" width="320"/></td>
@@ -984,7 +991,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic115</b></td>
-  <td>Chart negative values 🟢 92.4%</td>
+  <td>Chart negative values 🟢 92.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic115_chart_negative_values_p1_minipdf.png" width="320"/></td>
@@ -1000,7 +1007,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic117</b></td>
-  <td>Stock ohlc chart 🟡 80.5%</td>
+  <td>Stock ohlc chart 🟡 80.9%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic117_stock_ohlc_chart_p1_minipdf.png" width="320"/></td>
@@ -1008,7 +1015,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic118</b></td>
-  <td>Bar chart custom colors 🟢 96.0%</td>
+  <td>Bar chart custom colors 🟢 95.5%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic118_bar_chart_custom_colors_p1_minipdf.png" width="320"/></td>
@@ -1016,7 +1023,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic119</b></td>
-  <td>Dashboard multi charts 🟢 92.2%</td>
+  <td>Dashboard multi charts 🟢 92.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic119_dashboard_multi_charts_p1_minipdf.png" width="320"/></td>
@@ -1064,7 +1071,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic125</b></td>
-  <td>Solid fills 🟢 99.5%</td>
+  <td>Solid fills 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic125_solid_fills_p1_minipdf.png" width="320"/></td>
@@ -1120,7 +1127,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic132</b></td>
-  <td>Striped table 🟢 99.1%</td>
+  <td>Striped table 🟢 99.0%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic132_striped_table_p1_minipdf.png" width="320"/></td>
@@ -1136,7 +1143,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic134</b></td>
-  <td>Heatmap 🟢 98.9%</td>
+  <td>Heatmap 🟢 98.8%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic134_heatmap_p1_minipdf.png" width="320"/></td>
@@ -1208,7 +1215,7 @@ MiniPdf 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋 **19
 </tr>
 <tr>
   <td><b>classic143</b></td>
-  <td>Colored tabs 🟢 99.8%</td>
+  <td>Colored tabs 🟢 100.0%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports/images/classic143_colored_tabs_p1_minipdf.png" width="320"/></td>
@@ -1758,7 +1765,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic18</b></td>
-  <td>Large dataset 🟢 95.8%</td>
+  <td>Large dataset 🟢 95.7%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic18_embedded_image_p1_minipdf.png" width="320"/></td>
@@ -2006,7 +2013,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic40</b></td>
-  <td>Scientific notation 🟢 99.7%</td>
+  <td>Scientific notation 🟢 99.9%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic40_product_catalog_with_images_p1_minipdf.png" width="320"/></td>
@@ -2014,7 +2021,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic40</b></td>
-  <td>Scientific notation 🟢 99.7%</td>
+  <td>Scientific notation 🟢 99.9%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic40_resume_p1_minipdf.png" width="320"/></td>
@@ -2070,7 +2077,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic44</b></td>
-  <td>Employee roster 🟢 98.2%</td>
+  <td>Employee roster 🟢 98.0%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic44_dashboard_with_kpi_image_p1_minipdf.png" width="320"/></td>
@@ -2078,7 +2085,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic44</b></td>
-  <td>Employee roster 🟢 98.2%</td>
+  <td>Employee roster 🟢 98.0%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic44_memo_p1_minipdf.png" width="320"/></td>
@@ -2102,7 +2109,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic46</b></td>
-  <td>Grade book 🟢 99.7%</td>
+  <td>Grade book 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic46_comparison_table_p1_minipdf.png" width="320"/></td>
@@ -2110,7 +2117,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic46</b></td>
-  <td>Grade book 🟢 99.7%</td>
+  <td>Grade book 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic46_product_image_grid_p1_minipdf.png" width="320"/></td>
@@ -2134,7 +2141,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic48</b></td>
-  <td>Survey results 🟢 99.3%</td>
+  <td>Survey results 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic48_multi_level_headings_p1_minipdf.png" width="320"/></td>
@@ -2142,7 +2149,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic48</b></td>
-  <td>Survey results 🟢 99.3%</td>
+  <td>Survey results 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic48_task_list_with_status_icons_p1_minipdf.png" width="320"/></td>
@@ -2182,7 +2189,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic51</b></td>
-  <td>Product catalog 🟢 97.6%</td>
+  <td>Product catalog 🟢 98.5%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic51_step_by_step_with_images_p1_minipdf.png" width="320"/></td>
@@ -2190,7 +2197,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic51</b></td>
-  <td>Product catalog 🟢 97.6%</td>
+  <td>Product catalog 🟢 98.5%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic51_underline_styles_p1_minipdf.png" width="320"/></td>
@@ -2366,7 +2373,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic64</b></td>
-  <td>Employee directory with photo 🟢 99.2%</td>
+  <td>Employee directory with photo 🟢 99.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic64_multi_column_layout_p1_minipdf.png" width="320"/></td>
@@ -2382,7 +2389,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic66</b></td>
-  <td>Invoice with logo 🟢 99.3%</td>
+  <td>Invoice with logo 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic66_colored_title_page_p1_minipdf.png" width="320"/></td>
@@ -2398,7 +2405,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic68</b></td>
-  <td>Restaurant menu 🟢 98.8%</td>
+  <td>Restaurant menu 🟢 98.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic68_sidebar_layout_p1_minipdf.png" width="320"/></td>
@@ -2414,7 +2421,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic70</b></td>
-  <td>Product catalog with images 🟢 99.6%</td>
+  <td>Product catalog with images 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic70_academic_paper_p1_minipdf.png" width="320"/></td>
@@ -2678,7 +2685,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic103</b></td>
-  <td>Pie chart with labels 🟡 88.3%</td>
+  <td>Pie chart with labels 🟡 86.9%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic103_event_program_p1_minipdf.png" width="320"/></td>
@@ -2686,7 +2693,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic104</b></td>
-  <td>Combo bar line chart 🟡 81.7%</td>
+  <td>Combo bar line chart 🟡 81.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic104_sop_document_p1_minipdf.png" width="320"/></td>
@@ -2694,7 +2701,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic105</b></td>
-  <td>3d bar chart 🟡 86.0%</td>
+  <td>3d bar chart 🟡 85.8%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic105_certificate_p1_minipdf.png" width="320"/></td>
@@ -2702,7 +2709,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic106</b></td>
-  <td>3d pie chart 🟢 97.2%</td>
+  <td>3d pie chart 🟢 96.7%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic106_multi_section_orientation_p1_minipdf.png" width="320"/></td>
@@ -2710,7 +2717,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic107</b></td>
-  <td>Multi series line 🟡 80.2%</td>
+  <td>Multi series line 🟡 80.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic107_order_form_p1_minipdf.png" width="320"/></td>
@@ -2742,7 +2749,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic111</b></td>
-  <td>Chart with axis labels 🟢 92.6%</td>
+  <td>Chart with axis labels 🟢 92.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic111_meeting_agenda_p1_minipdf.png" width="320"/></td>
@@ -2758,7 +2765,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic113</b></td>
-  <td>Chart sheet 🟡 87.9%</td>
+  <td>Chart sheet 🟡 86.4%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic113_address_labels_p1_minipdf.png" width="320"/></td>
@@ -2766,7 +2773,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic114</b></td>
-  <td>Chart large dataset 🟢 91.0%</td>
+  <td>Chart large dataset 🟢 91.6%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic114_test_report_p1_minipdf.png" width="320"/></td>
@@ -2774,7 +2781,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic115</b></td>
-  <td>Chart negative values 🟢 92.4%</td>
+  <td>Chart negative values 🟢 92.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic115_price_list_p1_minipdf.png" width="320"/></td>
@@ -2790,7 +2797,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic117</b></td>
-  <td>Stock ohlc chart 🟡 80.5%</td>
+  <td>Stock ohlc chart 🟡 80.9%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic117_employee_handbook_excerpt_p1_minipdf.png" width="320"/></td>
@@ -2798,7 +2805,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic118</b></td>
-  <td>Bar chart custom colors 🟢 96.0%</td>
+  <td>Bar chart custom colors 🟢 95.5%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic118_data_report_with_summary_p1_minipdf.png" width="320"/></td>
@@ -2806,7 +2813,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic119</b></td>
-  <td>Dashboard multi charts 🟢 92.2%</td>
+  <td>Dashboard multi charts 🟢 92.1%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic119_multi_language_document_p1_minipdf.png" width="320"/></td>
@@ -2854,7 +2861,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic125</b></td>
-  <td>Solid fills 🟢 99.5%</td>
+  <td>Solid fills 🟢 99.2%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic125_solid_cell_fills_p1_minipdf.png" width="320"/></td>
@@ -2910,7 +2917,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic132</b></td>
-  <td>Striped table 🟢 99.1%</td>
+  <td>Striped table 🟢 99.0%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic132_striped_table_p1_minipdf.png" width="320"/></td>
@@ -2926,7 +2933,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic134</b></td>
-  <td>Heatmap 🟢 98.9%</td>
+  <td>Heatmap 🟢 98.8%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic134_heatmap_table_p1_minipdf.png" width="320"/></td>
@@ -2998,7 +3005,7 @@ MiniPdf DOCX 的輸出與 LibreOffice 作為參考渲染器進行對比，涵蓋
 </tr>
 <tr>
   <td><b>classic143</b></td>
-  <td>Colored tabs 🟢 99.8%</td>
+  <td>Colored tabs 🟢 100.0%</td>
 </tr>
 <tr>
   <td><img src="../tests/MiniPdf.Benchmark/reports_docx/images/docx_classic143_multi_section_document_p1_minipdf.png" width="320"/></td>
