@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 using MiniPdf.Web.Client;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
 
 builder.Services.AddSingleton<I18n>();
 
