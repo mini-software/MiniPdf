@@ -849,7 +849,7 @@ internal static class ExcelToPdfConverter
                             bxRight += colWidths[mc] + columnPadding;
                     }
                     var borderColor = new PdfColor(0f, 0f, 0f);
-                    var borderWidth = 0.5f;
+                    var borderWidth = 0.3f;
 
                     if (border.Left is { Style: not "none" and not "" })
                     {

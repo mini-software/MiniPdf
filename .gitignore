@@ -11,6 +11,7 @@
 Thumbs.db
 Desktop.ini
 .DS_Store
+~$*
 
 ## NuGet
 *.nupkg

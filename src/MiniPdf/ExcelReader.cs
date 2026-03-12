@@ -26,8 +26,9 @@ internal static class ExcelReader
         var themeColors = ReadThemeColors(archive);
         var fontStyles = ReadFontStyles(archive, themeColors);
         var fillColors = ReadFillColors(archive, themeColors);
-        var borders = ReadBorders(archive);
+        var borders = ReadBorders(archive, themeColors);
         var numberFormats = ReadNumberFormats(archive);
+        var dxfStyles = ReadDxfStyles(archive);
         var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices) = ReadCellXfStyles(archive);
 
         // Read workbook to get sheet names and order
@@ -35,6 +36,7 @@ internal static class ExcelReader
 
         // Read each sheet
         var sheetIndex = 0;
+        var sheetEntries = new List<ZipArchiveEntry>(); // track entries for conditional formatting pass
         foreach (var info in sheetInfos)
         {
             var currentIndex = sheetIndex++;
@@ -58,6 +60,7 @@ internal static class ExcelReader
             var pageSetup = ReadPageSetup(entry);
             printAreas.TryGetValue(currentIndex, out var printArea);
             sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered));
+            sheetEntries.Add(entry);
         }
 
         // If no sheets found via workbook, try reading sheet1 directly
@@ -83,6 +86,18 @@ internal static class ExcelReader
             var charts = ReadSheetCharts(archive, sheetId, sheets);
             foreach (var chart in charts)
                 sheets[si].Charts.Add(chart);
+        }
+
+        // Third pass: apply conditional formatting (needs all sheet data for defined name resolution)
+        if (dxfStyles.Count > 0)
+        {
+            var definedNames = ReadDefinedNameValues(archive, sheets);
+            for (var si = 0; si < sheets.Count && si < sheetEntries.Count; si++)
+            {
+                var cfRules = ReadConditionalFormatting(sheetEntries[si]);
+                if (cfRules.Count > 0)
+                    ApplyConditionalFormatting(sheets[si].Rows, cfRules, dxfStyles, definedNames);
+            }
         }
 
         return sheets;
@@ -206,7 +221,7 @@ internal static class ExcelReader
     /// Reads border definitions from styles.xml.
     /// Returns a list of CellBorderInfo indexed by borderId.
     /// </summary>
-    private static List<CellBorderInfo?> ReadBorders(ZipArchive archive)
+    private static List<CellBorderInfo?> ReadBorders(ZipArchive archive, List<PdfColor> themeColors)
     {
         var borders = new List<CellBorderInfo?>();
         var entry = archive.GetEntry("xl/styles.xml");
@@ -221,10 +236,10 @@ internal static class ExcelReader
 
         foreach (var border in bordersEl.Elements(ns + "border"))
         {
-            var left = ReadBorderSide(border.Element(ns + "left"), ns);
-            var right = ReadBorderSide(border.Element(ns + "right"), ns);
-            var top = ReadBorderSide(border.Element(ns + "top"), ns);
-            var bottom = ReadBorderSide(border.Element(ns + "bottom"), ns);
+            var left = ReadBorderSide(border.Element(ns + "left"), ns, themeColors);
+            var right = ReadBorderSide(border.Element(ns + "right"), ns, themeColors);
+            var top = ReadBorderSide(border.Element(ns + "top"), ns, themeColors);
+            var bottom = ReadBorderSide(border.Element(ns + "bottom"), ns, themeColors);
 
             if (left == null && right == null && top == null && bottom == null)
                 borders.Add(null);
@@ -235,26 +250,13 @@ internal static class ExcelReader
         return borders;
     }
 
-    private static BorderSide? ReadBorderSide(XElement? el, XNamespace ns)
+    private static BorderSide? ReadBorderSide(XElement? el, XNamespace ns, List<PdfColor> themeColors)
     {
         if (el == null) return null;
         var style = el.Attribute("style")?.Value;
         if (string.IsNullOrEmpty(style) || style == "none") return null;
 
-        PdfColor? color = null;
-        var colorEl = el.Element(ns + "color");
-        if (colorEl != null)
-        {
-            var rgb = colorEl.Attribute("rgb")?.Value;
-            if (!string.IsNullOrEmpty(rgb))
-                color = PdfColor.FromHex(rgb);
-            else
-            {
-                var indexed = colorEl.Attribute("indexed")?.Value;
-                if (!string.IsNullOrEmpty(indexed) && int.TryParse(indexed, out var idx))
-                    color = GetIndexedColor(idx);
-            }
-        }
+        var color = ResolveColorElement(el.Element(ns + "color"), themeColors);
         // Default border color is black
         color ??= PdfColor.FromRgb(0, 0, 0);
         return new BorderSide(style, color);
@@ -542,6 +544,271 @@ internal static class ExcelReader
         return formats;
     }
 
+    /// <summary>
+    /// Reads differential formatting (dxf) styles from styles.xml.
+    /// These are used by conditional formatting rules to override cell appearance.
+    /// </summary>
+    private static List<(PdfColor? FontColor, PdfColor? FillColor)> ReadDxfStyles(ZipArchive archive)
+    {
+        var result = new List<(PdfColor? FontColor, PdfColor? FillColor)>();
+        var entry = archive.GetEntry("xl/styles.xml");
+        if (entry == null) return result;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        var dxfs = doc.Descendants(ns + "dxfs").FirstOrDefault();
+        if (dxfs == null) return result;
+
+        foreach (var dxf in dxfs.Elements(ns + "dxf"))
+        {
+            PdfColor? fontColor = null;
+            PdfColor? fillColor = null;
+
+            var fontEl = dxf.Element(ns + "font");
+            if (fontEl != null)
+            {
+                var colorEl = fontEl.Element(ns + "color");
+                if (colorEl != null)
+                {
+                    var rgb = colorEl.Attribute("rgb")?.Value;
+                    if (!string.IsNullOrEmpty(rgb))
+                        fontColor = PdfColor.FromHex(rgb);
+                }
+            }
+
+            var fillEl = dxf.Element(ns + "fill");
+            if (fillEl != null)
+            {
+                var bgEl = fillEl.Descendants(ns + "bgColor").FirstOrDefault()
+                        ?? fillEl.Descendants(ns + "fgColor").FirstOrDefault();
+                if (bgEl != null)
+                {
+                    var rgb = bgEl.Attribute("rgb")?.Value;
+                    if (!string.IsNullOrEmpty(rgb))
+                        fillColor = PdfColor.FromHex(rgb);
+                }
+            }
+
+            result.Add((fontColor, fillColor));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Reads conditional formatting rules from a worksheet entry.
+    /// </summary>
+    private static List<(string Sqref, string Type, string Operator, string Formula, int DxfId)> ReadConditionalFormatting(ZipArchiveEntry entry)
+    {
+        var rules = new List<(string, string, string, string, int)>();
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        foreach (var cf in doc.Descendants(ns + "conditionalFormatting"))
+        {
+            var sqref = cf.Attribute("sqref")?.Value ?? "";
+            foreach (var rule in cf.Elements(ns + "cfRule"))
+            {
+                var type = rule.Attribute("type")?.Value ?? "";
+                var op = rule.Attribute("operator")?.Value ?? "";
+                var formula = rule.Element(ns + "formula")?.Value ?? "";
+                var dxfIdStr = rule.Attribute("dxfId")?.Value;
+                if (int.TryParse(dxfIdStr, out var dxfId))
+                    rules.Add((sqref, type, op, formula, dxfId));
+            }
+        }
+
+        return rules;
+    }
+
+    /// <summary>
+    /// Reads defined name values from workbook.xml, resolving simple cell references to their values
+    /// from the given sheets data.
+    /// </summary>
+    private static Dictionary<string, double> ReadDefinedNameValues(ZipArchive archive, List<ExcelSheet> sheets)
+    {
+        var values = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+        var entry = archive.GetEntry("xl/workbook.xml");
+        if (entry == null) return values;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        foreach (var dn in doc.Descendants(ns + "definedName"))
+        {
+            var name = dn.Attribute("name")?.Value;
+            if (string.IsNullOrEmpty(name) || name.StartsWith("_xlnm.")) continue;
+
+            var val = dn.Value; // e.g. "'Cash flow forecast'!$J$4"
+            if (string.IsNullOrEmpty(val)) continue;
+
+            // Parse sheet reference: 'Sheet Name'!$COL$ROW or SheetName!$COL$ROW
+            var bangIdx = val.IndexOf('!');
+            if (bangIdx < 0) continue;
+
+            var sheetRef = val[..bangIdx].Trim('\'');
+            var cellRef = val[(bangIdx + 1)..].Replace("$", "");
+
+            // Find the sheet by name
+            var sheet = sheets.FirstOrDefault(s => string.Equals(s.Name, sheetRef, StringComparison.OrdinalIgnoreCase));
+            if (sheet == null) continue;
+
+            // Parse cell reference
+            var (row, col) = ParseCellRef(cellRef);
+            if (row < 0 || col < 0 || row >= sheet.Rows.Count) continue;
+            var rowData = sheet.Rows[row];
+            if (col >= rowData.Count) continue;
+
+            // Try to parse the cell's text as a number (stripping currency formatting)
+            var cellText = rowData[col].Text;
+            if (TryGetCellNumericValue(rowData[col], out var numVal))
+            {
+                values[name] = numVal;
+            }
+        }
+
+        return values;
+    }
+
+    /// <summary>
+    /// Applies conditional formatting rules to cell data, overriding font/fill colors where rules match.
+    /// </summary>
+    private static void ApplyConditionalFormatting(
+        List<List<ExcelCell>> rows,
+        List<(string Sqref, string Type, string Operator, string Formula, int DxfId)> cfRules,
+        List<(PdfColor? FontColor, PdfColor? FillColor)> dxfStyles,
+        Dictionary<string, double> definedNames)
+    {
+        foreach (var (sqref, type, op, formula, dxfId) in cfRules)
+        {
+            if (dxfId < 0 || dxfId >= dxfStyles.Count) continue;
+            var (fontColor, fillColor) = dxfStyles[dxfId];
+            if (fontColor == null && fillColor == null) continue;
+
+            // Parse sqref (may contain multiple space-separated ranges)
+            foreach (var rangeStr in sqref.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var rangeParts = rangeStr.Split(':');
+                var (startRow, startCol) = ParseCellRef(rangeParts[0]);
+                var (endRow, endCol) = rangeParts.Length > 1 ? ParseCellRef(rangeParts[1]) : (startRow, startCol);
+                if (startRow < 0) startRow = 0;
+                if (endRow < 0) endRow = rows.Count - 1;
+
+
+
+                for (var r = startRow; r <= endRow && r < rows.Count; r++)
+                {
+                    var row = rows[r];
+                    for (var c = startCol; c <= endCol && c < row.Count; c++)
+                    {
+                        var cell = row[c];
+                        if (string.IsNullOrEmpty(cell.Text)) continue;
+
+                        var matches = EvaluateCondition(cell, type, op, formula, definedNames);
+
+                        if (matches)
+                        {
+                            row[c] = cell with
+                            {
+                                Color = fontColor ?? cell.Color,
+                                FillColor = fillColor ?? cell.FillColor
+                            };
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static bool EvaluateCondition(ExcelCell cell, string type, string op, string formula,
+        Dictionary<string, double> definedNames)
+    {
+        if (type == "cellIs")
+        {
+            // Try to parse cell value and formula value as numbers
+            if (!TryGetCellNumericValue(cell, out var cellVal)) return false;
+            if (!double.TryParse(formula, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var threshold))
+                return false;
+
+            return op switch
+            {
+                "lessThan" => cellVal < threshold,
+                "greaterThan" => cellVal > threshold,
+                "equal" => Math.Abs(cellVal - threshold) < 1e-10,
+                "notEqual" => Math.Abs(cellVal - threshold) >= 1e-10,
+                "lessThanOrEqual" => cellVal <= threshold,
+                "greaterThanOrEqual" => cellVal >= threshold,
+                "between" => cellVal >= threshold, // simplified
+                _ => false
+            };
+        }
+
+        if (type == "expression")
+        {
+            // Support simple patterns like "C8<Cash_Minimum" → current cell value < defined name
+            // The formula references the first cell in the range, but semantically means "this cell"
+            if (!TryGetCellNumericValue(cell, out var cellVal)) return false;
+
+            // Try to match pattern: CELLREF < NAME or CELLREF > NAME etc.
+            var m = System.Text.RegularExpressions.Regex.Match(formula, @"^[A-Z]+\d+\s*(<|>|<=|>=|=)\s*(.+)$",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (m.Success)
+            {
+                var compOp = m.Groups[1].Value;
+                var rhs = m.Groups[2].Value.Trim();
+
+                double rhsVal;
+                if (!double.TryParse(rhs, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out rhsVal))
+                {
+                    // Try defined name
+                    if (!definedNames.TryGetValue(rhs, out rhsVal))
+                        return false;
+                }
+
+                return compOp switch
+                {
+                    "<" => cellVal < rhsVal,
+                    ">" => cellVal > rhsVal,
+                    "<=" => cellVal <= rhsVal,
+                    ">=" => cellVal >= rhsVal,
+                    "=" => Math.Abs(cellVal - rhsVal) < 1e-10,
+                    _ => false
+                };
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Tries to extract a numeric value from a cell, stripping currency symbols and formatting.
+    /// </summary>
+    private static bool TryGetCellNumericValue(ExcelCell cell, out double value)
+    {
+        value = 0;
+        if (string.IsNullOrWhiteSpace(cell.Text)) return false;
+
+        // Strip common currency/accounting formatting: $, parentheses (negative), spaces
+        var text = cell.Text.Replace("$", "").Replace(",", "").Trim();
+        // Handle accounting negative: (1,234.56) → -1234.56
+        if (text.StartsWith('(') && text.EndsWith(')'))
+            text = "-" + text[1..^1];
+        // Handle accounting zero: "- " or "-"
+        if (text.Trim() == "-") { value = 0; return true; }
+
+        return double.TryParse(text.Trim(), System.Globalization.NumberStyles.Any,
+            System.Globalization.CultureInfo.InvariantCulture, out value);
+    }
+
     private static PdfColor? GetIndexedColor(int index)
     {
         // Standard Excel indexed colors (subset of the 64 built-in colors)
@@ -726,7 +993,10 @@ internal static class ExcelReader
                             double.TryParse(text, System.Globalization.NumberStyles.Any,
                                 System.Globalization.CultureInfo.InvariantCulture, out var numVal))
                         {
-                            text = FormatNumber(numVal, numFmtId, numberFormats);
+                            text = FormatNumber(numVal, numFmtId, numberFormats, out var fmtColor);
+                            // Number format color overrides font color (e.g., [Red] for negatives)
+                            if (fmtColor != null)
+                                color = fmtColor;
                         }
                     }
 
@@ -775,14 +1045,15 @@ internal static class ExcelReader
     /// Formats a numeric value according to its Excel number format.
     /// Handles built-in formats and common custom patterns.
     /// </summary>
-    private static string FormatNumber(double value, int numFmtId, Dictionary<int, string> customFormats)
+    private static string FormatNumber(double value, int numFmtId, Dictionary<int, string> customFormats, out PdfColor? formatColor)
     {
+        formatColor = null;
         var ci = System.Globalization.CultureInfo.InvariantCulture;
 
         // Check custom format first
         if (numFmtId > 0 && customFormats.TryGetValue(numFmtId, out var formatCode))
         {
-            return ApplyNumberFormat(value, formatCode);
+            return ApplyNumberFormat(value, formatCode, out formatColor);
         }
 
         // Built-in number formats
@@ -819,8 +1090,9 @@ internal static class ExcelReader
     /// Applies a custom Excel number format code to a value.
     /// Handles common patterns like "0.00", "#,##0", "0.00E+00", currency, percentage, etc.
     /// </summary>
-    private static string ApplyNumberFormat(double value, string formatCode)
+    private static string ApplyNumberFormat(double value, string formatCode, out PdfColor? formatColor)
     {
+        formatColor = null;
         var ci = System.Globalization.CultureInfo.InvariantCulture;
 
         // Handle multi-section formats (positive;negative;zero) - use the appropriate section
@@ -842,7 +1114,27 @@ internal static class ExcelReader
         if (string.IsNullOrWhiteSpace(activeFormat))
             return "";
 
-        // Strip color codes like [Red], [Blue], etc.
+        // Extract color codes like [Red], [Blue], etc. before stripping
+        var colorMatch = System.Text.RegularExpressions.Regex.Match(activeFormat,
+            @"\[(Red|Blue|Green|Yellow|Magenta|Cyan|White|Black|Color\d+)\]",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (colorMatch.Success)
+        {
+            formatColor = colorMatch.Groups[1].Value.ToLowerInvariant() switch
+            {
+                "red" => PdfColor.FromRgb(255, 0, 0),
+                "blue" => PdfColor.FromRgb(0, 0, 255),
+                "green" => PdfColor.FromRgb(0, 128, 0),
+                "yellow" => PdfColor.FromRgb(255, 255, 0),
+                "magenta" => PdfColor.FromRgb(255, 0, 255),
+                "cyan" => PdfColor.FromRgb(0, 255, 255),
+                "white" => PdfColor.FromRgb(255, 255, 255),
+                "black" => PdfColor.FromRgb(0, 0, 0),
+                _ => null
+            };
+        }
+
+        // Strip color codes
         activeFormat = System.Text.RegularExpressions.Regex.Replace(activeFormat, @"\[(?:Red|Blue|Green|Yellow|Magenta|Cyan|White|Black|Color\d+)\]", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
         // Strip locale/currency codes like [$€-407], [$¥-411], [$-409]

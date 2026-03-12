@@ -1046,9 +1046,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9934
+      0.9906
     ],
-    "visual_avg": 0.9934,
+    "visual_avg": 0.9906,
     "diff_images": [
       {
         "page": 1,
@@ -1056,7 +1056,7 @@
         "reference_img": "classic121_thin_borders_p1_reference.png"
       }
     ],
-    "overall_score": 0.9974
+    "overall_score": 0.9962
   },
   {
     "name": "classic122_thick_outer_thin_inner",
@@ -1071,9 +1071,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9911
+      0.9887
     ],
-    "visual_avg": 0.9911,
+    "visual_avg": 0.9887,
     "diff_images": [
       {
         "page": 1,
@@ -1081,7 +1081,7 @@
         "reference_img": "classic122_thick_outer_thin_inner_p1_reference.png"
       }
     ],
-    "overall_score": 0.9964
+    "overall_score": 0.9955
   },
   {
     "name": "classic123_dashed_borders",
@@ -1096,9 +1096,9 @@
     "word_text_similarity": 0.7273,
     "text_diff": "--- minipdf/classic123_dashed_borders.pdf\n+++ reference/classic123_dashed_borders.pdf\n@@ -1,6 +1,6 @@\n-Border Styl Sample\n\n+Border StSample\n\n dashed Bordered cell\n\n dotted Bordered cell\n\n dashDot Bordered cell\n\n-dashDotDo Bordered cell\n\n-mediumDa Bordered cell\n+dashDotDoBordered cell\n\n+mediumDaBordered cell",
     "visual_scores": [
-      0.9964
+      0.9961
     ],
-    "visual_avg": 0.9964,
+    "visual_avg": 0.9961,
     "diff_images": [
       {
         "page": 1,
@@ -1106,7 +1106,7 @@
         "reference_img": "classic123_dashed_borders_p1_reference.png"
       }
     ],
-    "overall_score": 0.9906
+    "overall_score": 0.9905
   },
   {
     "name": "classic124_colored_borders",
@@ -1346,9 +1346,9 @@
     "word_text_similarity": 0.972,
     "text_diff": "--- minipdf/classic132_striped_table.pdf\n+++ reference/classic132_striped_table.pdf\n@@ -8,4 +8,4 @@\n Product 7 Sports 399.94 4.5\n\n Product 8 Sports 281.79 2.5\n\n Product 9 Sports 445.84 1.8\n\n-Product 10 Electronics 276.34 3.4\n+Product 10Electronics 276.34 3.4",
     "visual_scores": [
-      0.9772
+      0.9781
     ],
-    "visual_avg": 0.9772,
+    "visual_avg": 0.9781,
     "diff_images": [
       {
         "page": 1,
@@ -1356,7 +1356,7 @@
         "reference_img": "classic132_striped_table_p1_reference.png"
       }
     ],
-    "overall_score": 0.9902
+    "overall_score": 0.9906
   },
   {
     "name": "classic133_gradient_rows",
@@ -1421,9 +1421,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9955
+      0.9954
     ],
-    "visual_avg": 0.9955,
+    "visual_avg": 0.9954,
     "diff_images": [
       {
         "page": 1,
@@ -1446,9 +1446,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9824
+      0.9839
     ],
-    "visual_avg": 0.9824,
+    "visual_avg": 0.9839,
     "diff_images": [
       {
         "page": 1,
@@ -1456,7 +1456,7 @@
         "reference_img": "classic136_financial_report_styled_p1_reference.png"
       }
     ],
-    "overall_score": 0.993
+    "overall_score": 0.9936
   },
   {
     "name": "classic137_checkerboard",
@@ -1596,9 +1596,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9934
+      0.9927
     ],
-    "visual_avg": 0.9934,
+    "visual_avg": 0.9927,
     "diff_images": [
       {
         "page": 1,
@@ -1606,7 +1606,7 @@
         "reference_img": "classic141_mixed_edge_borders_p1_reference.png"
       }
     ],
-    "overall_score": 0.9974
+    "overall_score": 0.9971
   },
   {
     "name": "classic142_styled_invoice",
@@ -1689,9 +1689,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9891
+      0.989
     ],
-    "visual_avg": 0.9891,
+    "visual_avg": 0.989,
     "diff_images": [
       {
         "page": 1,
@@ -1714,9 +1714,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9762
+      0.9759
     ],
-    "visual_avg": 0.9762,
+    "visual_avg": 0.9759,
     "diff_images": [
       {
         "page": 1,
@@ -1724,7 +1724,7 @@
         "reference_img": "classic145_status_badges_p1_reference.png"
       }
     ],
-    "overall_score": 0.9905
+    "overall_score": 0.9904
   },
   {
     "name": "classic146_double_border_table",
@@ -1739,9 +1739,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9891
+      0.986
     ],
-    "visual_avg": 0.9891,
+    "visual_avg": 0.986,
     "diff_images": [
       {
         "page": 1,
@@ -1749,7 +1749,7 @@
         "reference_img": "classic146_double_border_table_p1_reference.png"
       }
     ],
-    "overall_score": 0.9956
+    "overall_score": 0.9944
   },
   {
     "name": "classic147_multi_sheet_styled",
@@ -1764,11 +1764,11 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9938,
-      0.9908,
-      0.9936
+      0.993,
+      0.9872,
+      0.9908
     ],
-    "visual_avg": 0.9927,
+    "visual_avg": 0.9903,
     "diff_images": [
       {
         "page": 1,
@@ -1786,7 +1786,7 @@
         "reference_img": "classic147_multi_sheet_styled_p3_reference.png"
       }
     ],
-    "overall_score": 0.9971
+    "overall_score": 0.9961
   },
   {
     "name": "classic148_frozen_styled_grid",
@@ -1801,9 +1801,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9314
+      0.9332
     ],
-    "visual_avg": 0.9314,
+    "visual_avg": 0.9332,
     "diff_images": [
       {
         "page": 1,
@@ -1811,7 +1811,7 @@
         "reference_img": "classic148_frozen_styled_grid_p1_reference.png"
       }
     ],
-    "overall_score": 0.9726
+    "overall_score": 0.9733
   },
   {
     "name": "classic149_merged_styled_sections",
@@ -1826,9 +1826,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9674
+      0.9679
     ],
-    "visual_avg": 0.9674,
+    "visual_avg": 0.9679,
     "diff_images": [
       {
         "page": 1,
@@ -1836,7 +1836,7 @@
         "reference_img": "classic149_merged_styled_sections_p1_reference.png"
       }
     ],
-    "overall_score": 0.987
+    "overall_score": 0.9872
   },
   {
     "name": "classic14_decimal_numbers",
@@ -2351,9 +2351,9 @@
     "word_text_similarity": 0.6842,
     "text_diff": "--- minipdf/classic168_mixed_ltr_rtl_styled.pdf\n+++ reference/classic168_mixed_ltr_rtl_styled.pdf\n@@ -1,7 +1,5 @@\n Code Name Price\n\n EN-001 Programming Book $29.99\n\n FR-002 Livre de code €25.00\n\n-AR-003 50 SAR\n\n-ﺏﺎﺘﻛ ﺔﺠﻣﺮﺑ\n\n-HE-004\n\n-רפס דוק ₪120\n+AR-003كتاب برمجة50 SAR\n\n+HE-004ספר קוד₪120",
     "visual_scores": [
-      0.9908
+      0.988
     ],
-    "visual_avg": 0.9908,
+    "visual_avg": 0.988,
     "diff_images": [
       {
         "page": 1,
@@ -2361,7 +2361,7 @@
         "reference_img": "classic168_mixed_ltr_rtl_styled_p1_reference.png"
       }
     ],
-    "overall_score": 0.945
+    "overall_score": 0.9439
   },
   {
     "name": "classic169_korean_invoice",
@@ -3157,17 +3157,17 @@
     "word_text_similarity": 0.8401,
     "text_diff": "--- minipdf/classic191_payroll_calculator.pdf\n+++ reference/classic191_payroll_calculator.pdf\n@@ -7,50 +7,61 @@\n 4 Rachel Kim F 2016-08-03 HR Specialist\n\n 5 Carlos Ruiz M 2019-11-20 Sales Rep\n\n ---PAGE---\n\n-Annual Salary ($) Regular Hourly Rate ( Overtime Hourly Rate Exempt from Overtim Pay Frequency\n\n-42,000.00 20.19 30.29 Yes Monthly\n\n-54,481.00 26.19 39.29 Yes Monthly\n\n-48,785.00 23.45 35.18 No Monthly\n\n-39,500.00 19.00 28.50 Yes Bi-Weekly\n\n-51,200.00 24.62 36.92 No Monthly\n\n+Regular Hourly Overtime Hourly Exempt from\n\n+Annual Salary ($) Pay Frequency W-4 Form\n\n+Rate ($) Rate ($) Overtime\n\n+42,000.00 20.19 30.29 Yes Monthly W-4 (2020+)\n\n+54,481.00 26.19 39.29 Yes Monthly W-4 (2020+)\n\n+48,785.00 23.45 35.18 No Monthly W-4 (pre-2020)\n\n+39,500.00 19.00 28.50 Yes Bi-Weekly W-4 (2020+)\n\n+51,200.00 24.62 36.92 No Monthly W-4 (2020+)\n\n ---PAGE---\n\n-W-4 Form Filing Status Federal AllowanceAdditional Withhold ($)\n\n-W-4 (2020+) Exempt 2 50.00\n\n-W-4 (2020+) Married 4 0.00\n\n-W-4 (pre-2020) Married 4 0.00\n\n-W-4 (2020+) Single 1 25.00\n\n-W-4 (2020+) Single 0 0.00\n\n+Federal Additional\n\n+Filing Status\n\n+Allowance Withhold ($)\n\n+Exempt 2 50.00\n\n+Married 4 0.00\n\n+Married 4 0.00\n\n+Single 1 25.00\n\n+Single 0 0.00\n\n ---PAGE---\n\n Payroll Calculator\n\n-Pay Period Hours\n\n-ID Employee Name From To Regular Hours\n\n-1 Adam Jones 2020-12-01 2020-12-31 173.33\n\n-2 Nichola Brown 2020-12-01 2020-12-31 173.33\n\n-3 Benny Erwin 2020-12-01 2020-12-31 173.33\n\n-4 Rachel Kim 2020-12-01 2020-12-31 80.00\n\n-5 Carlos Ruiz 2020-12-01 2020-12-31 173.33\n\n+Pay Period\n\n+ID Employee Name From To Regular Hours Holiday Hours\n\n+1 Adam Jones 2020-12-01 2020-12-31 173.33 0.00\n\n+2 Nichola Brown 2020-12-01 2020-12-31 173.33 0.00\n\n+3 Benny Erwin 2020-12-01 2020-12-31 173.33 0.00\n\n+4 Rachel Kim 2020-12-01 2020-12-31 80.00 8.00\n\n+5 Carlos Ruiz 2020-12-01 2020-12-31 173.33 0.00\n\n ---PAGE---\n\n-Holiday Hours Vacation Hours Sick Hours Overtime Hours Taxable Compensat Pre-Tax Deductions\n\n-0.00 0.00 0.00 0.00 500.00 0.00\n\n+Hours\n\n+Post-Tax\n\n+Taxable Pre-Tax\n\n+Vacation Hours Sick Hours Overtime Hours Reimbursement\n\n+Compensation Deductions\n\n+s\n\n+0.00 0.00 0.00 500.00 0.00 500.00\n\n 0.00 0.00 0.00 0.00 0.00 0.00\n\n-0.00 0.00 0.00 8.00 0.00 0.00\n\n-8.00 0.00 0.00 0.00 0.00 0.00\n\n-0.00 16.00 0.00 4.00 200.00 0.00\n\n+0.00 0.00 8.00 0.00 0.00 0.00\n\n+0.00 0.00 0.00 0.00 0.00 0.00\n\n+16.00 0.00 4.00 200.00 0.00 200.00\n\n ---PAGE---\n\n Pre-Tax Adjustments Withholdings\n\n-Post-Tax Reimburse Gross Pay Tax Deferral Plan (4 Health Insurance Other Federal Tax\n\n-500.00 3,999.60 139.98 0.00 0.00 319.49\n\n-0.00 4,539.60 136.19 0.00 0.00 346.74\n\n-0.00 4,346.11 195.57 0.00 0.00 110.89\n\n-0.00 1,685.58 50.57 120.00 0.00 142.30\n\n-200.00 4,613.00 138.39 0.00 0.00 360.20\n\n+Tax Deferral Health\n\n+Gross Pay Other Federal Tax State Tax\n\n+Plan (401k) Insurance\n\n+3,999.60 139.98 0.00 0.00 319.49 178.70\n\n+4,539.60 136.19 0.00 0.00 346.74 203.88\n\n+4,346.11 195.57 0.00 0.00 110.89 192.17\n\n+1,685.58 50.57 120.00 0.00 142.30 78.50\n\n+4,613.00 138.39 0.00 0.00 360.20 210.45\n\n ---PAGE---\n\n-State Tax Local Tax\n\n-178.70 0.00\n\n-203.88 0.00\n\n-192.17 0.00\n\n-78.50 0.00\n\n-210.45 0.00\n\n+Local Tax\n\n+0.00\n\n+0.00\n\n+0.00\n\n+0.00\n\n+0.00\n\n ---PAGE---\n\n ABC Company\n\n 111 Street Name\n",
     "visual_scores": [
-      0.9446,
-      0.8036,
+      0.9444,
+      0.8034,
       0.8923,
-      0.8989,
-      0.8238,
-      0.8169,
-      0.955,
-      0.9648,
-      0.9807
+      0.8985,
+      0.8232,
+      0.8165,
+      0.9552,
+      0.9652,
+      0.9804
     ],
-    "visual_avg": 0.8978,
+    "visual_avg": 0.8977,
     "diff_images": [
       {
         "page": 1,
@@ -3215,7 +3215,7 @@
         "reference_img": "classic191_payroll_calculator_p9_reference.png"
       }
     ],
-    "overall_score": 0.8952
+    "overall_score": 0.8951
   },
   {
     "name": "classic19_single_column_list",
