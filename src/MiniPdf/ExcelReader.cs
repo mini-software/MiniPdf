@@ -1103,6 +1103,17 @@ internal static class ExcelReader
     }
 
     /// <summary>
+    /// Checks whether the given format code is a date/time format.
+    /// </summary>
+    private static bool IsDateFormat(string formatCode)
+    {
+        var lower = formatCode.ToLowerInvariant();
+        return lower.Contains("yy") || lower.Contains("dd") || lower.Contains("mmm") ||
+               (lower.Contains("mm") && (lower.Contains("dd") || lower.Contains("yy") || lower.Contains("hh") || lower.Contains("ss"))) ||
+               lower.Contains("hh") || lower.Contains("h:") || lower.Contains("am/pm");
+    }
+
+    /// <summary>
     /// Converts an Excel date/time format code to a .NET DateTime format string.
     /// </summary>
     private static string ConvertExcelDateFormat(string excelFormat)
@@ -1362,6 +1373,11 @@ internal static class ExcelReader
         {
             fitToPage = pageSetUpPr.Attribute("fitToPage")?.Value == "1";
         }
+
+        // Per ECMA-376 §18.3.1.65, fitToHeight defaults to 1 when not specified.
+        // Apply this default when fitToPage is enabled and the attribute is absent.
+        if (fitToPage && fitToHeight == 0 && pageSetup?.Attribute("fitToHeight") == null)
+            fitToHeight = 1;
 
         // Read printOptions (horizontalCentered)
         var horizontalCentered = false;
@@ -1983,17 +1999,69 @@ internal static class ExcelReader
     }
 
     /// <summary>
-    /// Resolves a numRef or strRef element to string values by reading the cell reference formula.
+    /// Resolves a numRef or strRef element to string values.
+    /// For numRef: prefers embedded numCache (raw values) over formatted cell text.
+    /// For strRef: prefers cell resolution, falls back to strCache.
     /// </summary>
     private static string[] ResolveRefElement(XElement parent, XNamespace cns, List<ExcelSheet> allSheets)
     {
-        // Try numRef and strRef
-        var refEl = parent.Element(cns + "numRef") ?? parent.Element(cns + "strRef");
-        if (refEl != null)
+        // numRef: prefer cache (raw numeric values) over formatted cell text
+        var numRefEl = parent.Element(cns + "numRef");
+        if (numRefEl != null)
         {
-            var formula = refEl.Element(cns + "f")?.Value;
+            var cacheEl = numRefEl.Element(cns + "numCache");
+            if (cacheEl != null)
+            {
+                var formatCode = cacheEl.Element(cns + "formatCode")?.Value;
+                var cached = cacheEl.Elements(cns + "pt")
+                    .OrderBy(pt => int.TryParse(pt.Attribute("idx")?.Value, out var idx) ? idx : 0)
+                    .Select(pt => pt.Element(cns + "v")?.Value ?? "0")
+                    .ToArray();
+                if (cached.Length > 0)
+                {
+                    // If the cache has a date format code, convert serial numbers to date strings
+                    if (!string.IsNullOrEmpty(formatCode) && IsDateFormat(formatCode))
+                    {
+                        for (var i = 0; i < cached.Length; i++)
+                        {
+                            if (double.TryParse(cached[i], System.Globalization.NumberStyles.Any,
+                                System.Globalization.CultureInfo.InvariantCulture, out var serial) && serial > 1)
+                                cached[i] = FormatExcelDate(serial, formatCode);
+                        }
+                    }
+                    return cached;
+                }
+            }
+            // Fall back to cell resolution
+            var formula = numRefEl.Element(cns + "f")?.Value;
             if (!string.IsNullOrEmpty(formula))
-                return ResolveCellReference(formula, allSheets);
+            {
+                var resolved = ResolveCellReference(formula, allSheets);
+                if (resolved.Length > 0)
+                    return resolved;
+            }
+        }
+        // strRef: prefer cell resolution, fall back to strCache
+        var strRefEl = parent.Element(cns + "strRef");
+        if (strRefEl != null)
+        {
+            var formula = strRefEl.Element(cns + "f")?.Value;
+            if (!string.IsNullOrEmpty(formula))
+            {
+                var resolved = ResolveCellReference(formula, allSheets);
+                if (resolved.Length > 0)
+                    return resolved;
+            }
+            var cacheEl = strRefEl.Element(cns + "strCache");
+            if (cacheEl != null)
+            {
+                var cached = cacheEl.Elements(cns + "pt")
+                    .OrderBy(pt => int.TryParse(pt.Attribute("idx")?.Value, out var idx) ? idx : 0)
+                    .Select(pt => pt.Element(cns + "v")?.Value ?? "")
+                    .ToArray();
+                if (cached.Length > 0)
+                    return cached;
+            }
         }
         // Try numLit (inline values)
         var litEl = parent.Element(cns + "numLit");

@@ -11,10 +11,8 @@
 <p>
 English | <a href="README.zh-CN.md">简体中文</a> | <a href="documents/README.zh-TW.md">繁體中文</a> | <a href="documents/README.ja.md">日本語</a> | <a href="documents/README.ko.md">한국어</a> | <a href="documents/README.it.md">Italiano</a> | <a href="documents/README.fr.md">Français</a>
 </p>
-<p>
-<a href="#xlsx-benchmark">Xlsx Visual Comparison</a> | <a href="#docx-benchmark">DOCX Visual Comparison</a>
-</p>
 </div>
+
 
 ---
 
@@ -57,17 +55,13 @@ using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 ```
 
-## Xlsx Benchmark
 
-MiniPdf output is compared against LibreOffice as the reference renderer across **191 classic test cases** (including 30 image-embedding cases, 30 chart cases, 30 styling cases, and 30 multilingual/emoji cases).
 
-| Category | Count | Threshold |
-|---|---|---|
-| 🟢 Excellent | 175 | ≥ 90% |
-| 🟡 Acceptable | 16 | 70% – 90% |
-| 🔴 Needs Improvement | 0 | < 70% |
+### Detailed Comparison Reports
 
-**Average overall score: 96.9%** (text similarity 40% + visual similarity 40% + page count 20%)
+- [XLSX Benchmark Report](tests/MiniPdf.Benchmark/reports/comparison_report.md) — XLSX conversion test cases
+- [DOCX Benchmark Report](tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — DOCX conversion test cases
+- [Issue Files Xlsx Report](tests/Issue_Files/reports_xlsx/comparison_report.md) — Real-world issue file test cases
 
 ### Visual Comparison
 
