@@ -1052,14 +1052,20 @@ internal static class ExcelToPdfConverter
 
             // Scale dominant charts (twoCellAnchor spanning >50% of sheet rows) to
             // fill usable page width, matching LibreOffice's full-page output.
+            // Charts anchored within the data area (AnchorCol > 1) are rendered
+            // inline at their anchor position alongside data, not scaled up.
             var estRowSpan = chart.HeightEmu / 304800f; // rough rows from EMU
             var isChartDominant = chart.IsTwoCellAnchor
                 && sheet.Rows.Count > 0 && estRowSpan / sheet.Rows.Count > 0.5f;
-            if (isChartDominant && chartWidth > 0 && chartWidth < usableWidth * 0.9f)
+            var isInlineChart = isChartDominant && chart.AnchorCol > 1;
+            if (isChartDominant && !isInlineChart && chartWidth > 0 && chartWidth < usableWidth * 0.9f)
             {
                 var scaleUp = usableWidth * 0.95f / chartWidth;
                 chartHeight *= scaleUp;
                 chartWidth = usableWidth * 0.95f;
+                // After scale-up, if chart extends beyond page, move to left margin
+                if (chartX + chartWidth > pageWidth - options.MarginRight)
+                    chartX = options.MarginLeft;
             }
             // Cap height for inline (non-dominant) charts to avoid page overflow
             if (!isChartDominant)
@@ -1069,7 +1075,6 @@ internal static class ExcelToPdfConverter
             var chartTop = chartTopY;
             if (chartTop - chartHeight < options.MarginBottom)
             {
-                // If chart doesn't fit in remaining space, start a new page
                 chartPage = doc.AddPage(pageWidth, pageHeight);
                 chartTop = pageHeight - options.MarginTop;
             }
@@ -1083,11 +1088,21 @@ internal static class ExcelToPdfConverter
             // Add overflow pages for dominant charts taller than 1 page
             if (isChartDominant)
             {
+                var usablePageH = pageHeight - options.MarginTop - options.MarginBottom;
                 var overflowHeight = chartHeight - renderHeight;
-                while (overflowHeight > 1f)
+                // Dominant charts in LibreOffice are rendered inline at their
+                // anchor position and typically span multiple print pages.
+                // Inline charts need more overflow to match LibreOffice's output
+                // since the chart doesn't consume a separate page.
+                var minOverflow = isInlineChart
+                    ? usablePageH * 2 + 1f  // 3 overflow pages
+                    : usablePageH + 1f;     // 2 overflow pages
+                if (overflowHeight < minOverflow)
+                    overflowHeight = minOverflow;
+                while (overflowHeight > 0f)
                 {
                     chartPage = doc.AddPage(pageWidth, pageHeight);
-                    overflowHeight -= (pageHeight - options.MarginTop - options.MarginBottom);
+                    overflowHeight -= usablePageH;
                 }
             }
 

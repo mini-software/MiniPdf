@@ -1,15 +1,15 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-11T22:46:50.069814
+Generated: 2026-03-12T14:03:07.579369
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🔴 Small business cash flow forecast1 | 0.9839 | 0.3834 | 3/5 | **0.6469** |
-| 2 | 🟡 payroll-calculator_f | 0.853 | 0.5656 | 27/27 | **0.7674** |
+| 1 | 🟢 Small business cash flow forecast1 | 0.9815 | 0.8118 | 5/5 | **0.9173** |
+| 2 | 🟡 payroll-calculator_f | 0.8378 | 0.5565 | 27/27 | **0.7577** |
 
-**Average Overall Score: 0.7071**
+**Average Overall Score: 0.8375**
 
 ## Visual Comparison
 
@@ -17,7 +17,7 @@ Generated: 2026-03-11T22:46:50.069814
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>Small business cash flow forecast1</b></td>
-  <td>Small business cash flow forecast1 <span style="color:#f85149">⬤</span> 64.7%</td>
+  <td>Small business cash flow forecast1 <span style="color:#3fb950">⬤</span> 91.7%</td>
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -32,16 +32,16 @@ Generated: 2026-03-11T22:46:50.069814
   <td><img src="images/Small business cash flow forecast1_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/Small business cash flow forecast1_p4_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Small business cash flow forecast1_p4_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/Small business cash flow forecast1_p5_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Small business cash flow forecast1_p5_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>payroll-calculator_f</b></td>
-  <td>payroll-calculator_f <span style="color:#d29922">⬤</span> 76.7%</td>
+  <td>payroll-calculator_f <span style="color:#d29922">⬤</span> 75.8%</td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -157,18 +157,18 @@ Generated: 2026-03-11T22:46:50.069814
 
 ### Small business cash flow forecast1
 
-- **Text Similarity:** 0.9839
-- **Visual Average:** 0.3834
-- **Overall Score:** 0.6469
-- **Pages:** MiniPdf=3, Reference=5
-- **File Size:** MiniPdf=226158 bytes, Reference=126373 bytes
+- **Text Similarity:** 0.9815
+- **Visual Average:** 0.8118
+- **Overall Score:** 0.9173
+- **Pages:** MiniPdf=5, Reference=5
+- **File Size:** MiniPdf=225280 bytes, Reference=126373 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Small business cash flow forecast1.pdf
 +++ reference/Small business cash flow forecast1.pdf
-@@ -1,53 +1,53 @@
+@@ -1,52 +1,53 @@
  ELBIDE REALTY
 
  Cash flow forecast
@@ -224,25 +224,25 @@ Generated: 2026-03-11T22:46:50.069814
 +Total cash receipts $        2,500.00  $        3,000.00  $        3,400.00  $        3,000.00  $     14,000.00  $        6,000.00  $        3,000.00  $        2,800.00  $        3,500.00  $        4,000.00  $        3,800.00  $        4,200.00  $         53,600.00
 
 +Total cash available $     12,500.00  $     11,050.00  $     12,750.00  $        3,890.00  $     16,190.00  $     19,590.00  $   
-... (6532 more characters)
+... (6575 more characters)
 
 ```
 </details>
 
 ### payroll-calculator_f
 
-- **Text Similarity:** 0.853
-- **Visual Average:** 0.5656
-- **Overall Score:** 0.7674
+- **Text Similarity:** 0.8378
+- **Visual Average:** 0.5565
+- **Overall Score:** 0.7577
 - **Pages:** MiniPdf=27, Reference=27
-- **File Size:** MiniPdf=6215837 bytes, Reference=540676 bytes
+- **File Size:** MiniPdf=6266064 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/payroll-calculator_f.pdf
 +++ reference/payroll-calculator_f.pdf
-@@ -1,191 +1,284 @@
+@@ -1,206 +1,284 @@
  Employee Register
 
 -Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 20
@@ -354,7 +354,7 @@ Generated: 2026-03-11T22:46:50.069814
 +4.50% - - Not Exempt 4.63% 0.00% 14.00 30.00 111 Street, Town/City, ST, 00000 ***-**-0000
 
 +Page 2 of 27
-... (31102 more characters)
+... (31719 more characters)
 
 ```
 </details>
@@ -363,7 +363,6 @@ Generated: 2026-03-11T22:46:50.069814
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **Small business cash flow forecast1** (score: 0.6469)
-1. **payroll-calculator_f** (score: 0.7674)
+1. **payroll-calculator_f** (score: 0.7577)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
