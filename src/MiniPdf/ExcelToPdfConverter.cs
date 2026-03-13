@@ -332,6 +332,7 @@ internal static class ExcelToPdfConverter
         var avgCharWidth = options.FontSize * 0.47f;
 
         // Determine column widths first to decide on layout strategy
+        var hasExcelWidths = sheet.ColumnWidths.Count > 0 || sheet.DefaultColumnWidth > 0f;
         var columnPadding = options.ColumnPadding;
         if (maxCols > 6)
         {
@@ -367,7 +368,7 @@ internal static class ExcelToPdfConverter
             fitToPageScale = fitScale;
         }
 
-        if (totalNatural > usableWidth && maxCols > 1)
+        if (naturalWidths.Sum() > usableWidth && maxCols > 1)
         {
             // Columns don't fit — split into groups that fit on a page each
             RenderSheetColumnGroups(doc, sheet, options, pageWidth, pageHeight, usableWidth, columnPadding, avgCharWidth, naturalWidths);
@@ -547,6 +548,194 @@ internal static class ExcelToPdfConverter
                 mergeEndCol[(r, sc)] = ec;
         }
 
+        // Print title rows support: detect the row range to repeat on each page
+        var printTitleStart = -1;
+        var printTitleEnd = -1;
+        if (sheet.PrintTitleRows.HasValue)
+        {
+            printTitleStart = sheet.PrintTitleRows.Value.StartRow;
+            printTitleEnd = sheet.PrintTitleRows.Value.EndRow;
+        }
+
+        // Helper: render print title rows at the current page position.
+        // Returns the total height consumed by the title rows.
+        float RenderPrintTitleRows()
+        {
+            if (printTitleStart < 0 || currentPage == null) return 0f;
+            var totalHeight = 0f;
+            var titleRowTopY = new Dictionary<int, float>();
+            var titleRowTopYPos = currentY;
+            for (var titleRowIdx = printTitleStart; titleRowIdx <= printTitleEnd && titleRowIdx < sheet.Rows.Count; titleRowIdx++)
+            {
+                titleRowTopYPos = currentY;
+                var titleRow = sheet.Rows[titleRowIdx];
+
+                // Calculate row height
+                var hasTitleExplicitH = sheet.RowHeights.TryGetValue(titleRowIdx, out var titleExplicitH);
+                if (hasTitleExplicitH && printScaleFactor != 1f) titleExplicitH *= printScaleFactor;
+                if (hasTitleExplicitH && fitToPageScale < 1f) titleExplicitH *= fitToPageScale;
+
+                // Compute cell lines and max lines
+                var titleMaxLines = 1;
+                var titleCellLines = new string[columns.Length][];
+                var titleClipWidths = new float?[columns.Length];
+                for (var i = 0; i < columns.Length; i++)
+                {
+                    var col = columns[i];
+                    if (col < titleRow.Count && !string.IsNullOrEmpty(titleRow[col].Text))
+                    {
+                        var cellText = titleRow[col].Text;
+                        var cellFs = titleRow[col].FontSize * printScaleFactor;
+                        if (fitToPageScale < 1f) cellFs *= fitToPageScale;
+
+                        var isMerged = mergeEndCol.TryGetValue((titleRowIdx, col), out var endCol);
+                        var effectiveW = colWidths[i];
+                        if (isMerged)
+                            for (var mc = i + 1; mc < columns.Length && columns[mc] <= endCol; mc++)
+                                effectiveW += colWidths[mc] + columnPadding;
+
+                        var fitChars = FittingChars(cellText, effectiveW, cellFs);
+                        if (titleRow[col].WrapText && fitChars < cellText.Length)
+                        {
+                            titleCellLines[i] = WrapCellText(cellText, effectiveW, cellFs);
+                            titleClipWidths[i] = effectiveW;
+                        }
+                        else
+                        {
+                            var shouldClip = isMerged || (i < columns.Length - 1);
+                            if (shouldClip || printScaleFactor != 1f) titleClipWidths[i] = effectiveW;
+                            if (shouldClip && cellText.Length > fitChars)
+                                titleCellLines[i] = new[] { cellText[..fitChars] };
+                            else
+                                titleCellLines[i] = new[] { cellText };
+                        }
+                        titleMaxLines = Math.Max(titleMaxLines, titleCellLines[i].Length);
+                    }
+                    else
+                    {
+                        titleCellLines[i] = Array.Empty<string>();
+                    }
+                }
+
+                // Calculate row height
+                var maxTitleFontSize = options.FontSize;
+                for (var i = 0; i < columns.Length; i++)
+                {
+                    var col = columns[i];
+                    if (col < titleRow.Count)
+                    {
+                        var fs = (sheet.FitToPage || options.ScaleCellFonts) ? titleRow[col].FontSize * printScaleFactor : titleRow[col].FontSize;
+                        if (fs > maxTitleFontSize) maxTitleFontSize = fs;
+                    }
+                }
+                var autoTitleH = maxTitleFontSize > options.FontSize
+                    ? Math.Max(maxTitleFontSize * 1.3f, lineHeight) : lineHeight;
+                var titleContentH = autoTitleH * titleMaxLines;
+                var titleRowH = hasTitleExplicitH ? Math.Max(titleExplicitH, titleContentH) : titleContentH;
+
+                // Render cells
+                var x = options.MarginLeft;
+                for (var i = 0; i < columns.Length; i++)
+                {
+                    var col = columns[i];
+                    var cell = col < titleRow.Count ? titleRow[col] : null;
+                    var fillColor = cell?.FillColor;
+                    var cellFs = cell != null ? cell.FontSize * printScaleFactor : options.FontSize;
+                    if (fitToPageScale < 1f) cellFs *= fitToPageScale;
+                    var alignment = cell?.Alignment ?? "left";
+                    var vertAlign = cell?.VerticalAlignment ?? "bottom";
+
+                    var cellWidth = colWidths[i];
+                    if (mergeEndCol.TryGetValue((titleRowIdx, col), out var mergeEnd))
+                        for (var mc = i + 1; mc < columns.Length && columns[mc] <= mergeEnd; mc++)
+                            cellWidth += colWidths[mc] + columnPadding;
+
+                    // Fill
+                    if (fillColor != null)
+                        currentPage!.AddRectangle(x, currentY - titleRowH, cellWidth, titleRowH, fillColor);
+
+                    // Text
+                    var descent = options.FontSize * 0.31f;
+                    float cellY;
+                    if (vertAlign == "top")
+                        cellY = currentY - cellFs;
+                    else if (vertAlign == "center")
+                    {
+                        var textBlock = cellFs + lineHeight * (titleCellLines[i].Length - 1);
+                        cellY = currentY - (titleRowH - textBlock) / 2f - cellFs + descent;
+                    }
+                    else
+                        cellY = currentY - titleRowH + descent + lineHeight * (titleCellLines[i].Length - 1);
+
+                    for (var lineIdx = 0; lineIdx < titleCellLines[i].Length; lineIdx++)
+                    {
+                        if (!string.IsNullOrEmpty(titleCellLines[i][lineIdx]))
+                        {
+                            var textX = x;
+                            if (alignment == "right")
+                            {
+                                var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs);
+                                textX = x + cellWidth - tw;
+                            }
+                            else if (alignment == "center")
+                            {
+                                var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs);
+                                textX = x + (cellWidth - tw) / 2f;
+                            }
+                            currentPage!.AddText(titleCellLines[i][lineIdx], textX, cellY, cellFs, cell?.Color, maxWidth: titleClipWidths[i]);
+                        }
+                        cellY -= lineHeight;
+                    }
+
+                    x += colWidths[i] + columnPadding;
+                }
+
+                currentY -= titleRowH;
+                totalHeight += titleRowH;
+                // Track row positions for image placement within title rows
+                titleRowTopY[titleRowIdx] = titleRowTopYPos;
+                titleRowTopYPos = currentY;
+            }
+
+            // Render images anchored within print title rows
+            var titleUsableWidth = pageWidth - options.MarginLeft - options.MarginRight;
+            const float EmuToPtTitle = 1f / 12700f;
+            foreach (var img in sheet.Images)
+            {
+                if (img.AnchorRow < printTitleStart || img.AnchorRow > printTitleEnd) continue;
+                var colGroupStart = columns[0];
+                var colGroupEnd = columns[^1];
+                if (img.AnchorCol < colGroupStart || img.AnchorCol > colGroupEnd) continue;
+
+                if (!titleRowTopY.TryGetValue(img.AnchorRow, out var imgTopY)) continue;
+                var colGroupIdx = Array.IndexOf(columns, img.AnchorCol);
+                if (colGroupIdx < 0) colGroupIdx = 0;
+                var imgX = colXStarts[colGroupIdx];
+
+                float imgW, imgH;
+                if (img.WidthEmu > 0 && img.HeightEmu > 0)
+                {
+                    imgW = Math.Min(img.WidthEmu * EmuToPtTitle, titleUsableWidth * 0.95f);
+                    imgH = Math.Min(img.HeightEmu * EmuToPtTitle, pageHeight * 0.75f);
+                }
+                else
+                {
+                    imgW = 0f;
+                    for (var ci = colGroupIdx; ci < Math.Min(colGroupIdx + img.SpanCols, columns.Length); ci++)
+                        imgW += colWidths[ci] + (ci > colGroupIdx ? columnPadding : 0);
+                    imgW = Math.Min(Math.Max(imgW, 36f), titleUsableWidth * 0.8f);
+                    imgH = Math.Max(lineHeight * img.SpanRows, imgW * 0.75f);
+                    imgH = Math.Min(imgH, pageHeight * 0.5f);
+                }
+                var imgY = imgTopY - imgH;
+                if (imgY < options.MarginBottom) imgY = options.MarginBottom;
+                var format = img.Extension is "jpg" or "jpeg" ? "jpg" : "png";
+                currentPage!.AddImage(img.Data, format, imgX, imgY, imgW, imgH);
+            }
+
+            return totalHeight;
+        }
+
         // Render rows
         foreach (var row in sheet.Rows)
         {
@@ -639,45 +828,54 @@ internal static class ExcelToPdfConverter
                             }
                             var nextCellHasContent = nextContentCol >= 0;
 
-                            var shouldClip = isMerged || (!isLastCol && nextCellHasContent);
-                            // Set maxWidth to prevent text overflow: always needed when
-                            // print scale shrinks columns, or when the next cell has content.
-                            if (shouldClip || printScaleFactor != 1f)
+                            // When wrapText is set, wrap text within the cell width instead of clipping
+                            if (row[col].WrapText && fitChars < cellText.Length)
+                            {
+                                cellLines[i] = WrapCellText(cellText, effectiveWidth, cellFontSizeForFit);
                                 cellClipWidth[i] = effectiveWidth;
-                            if (shouldClip)
-                            {
-                                fitChars = FittingChars(cellText, effectiveWidth, cellFontSizeForFit);
-                            }
-                            if (shouldClip && cellText.Length > fitChars)
-                            {
-                                // Truncate to effective column width (matches LibreOffice clip).
-                                cellLines[i] = new[] { cellText[..fitChars] };
-                            }
-                            else if (!shouldClip && fitChars < cellText.Length && columns.Length == 1)
-                            {
-                                // Single-column overflow: clip text at page right edge.
-                                // LibreOffice calculates row height from text wrapping at the default
-                                // column width, but renders a single line clipped at the page boundary.
-                                var pageClipChars = FittingChars(cellText, pageWidth - options.MarginLeft, cellFontSizeForFit);
-                                var clippedText = pageClipChars < cellText.Length ? cellText[..pageClipChars] : cellText;
-                                cellLines[i] = new[] { clippedText };
-
-                                // Calculate virtual row height from wrapping at default column width.
-                                // Use raw Helvetica widths (counteract CalibriFittingScale) and subtract
-                                // cell content margins (~11pt) to match LibreOffice's internal wrapping.
-                                var defaultColPts = ExcelSheet.CharUnitsToPoints(
-                                    sheet.DefaultColumnWidth > 0 ? sheet.DefaultColumnWidth : 8.43f);
-                                var wrapWidth = Math.Max(1f, (defaultColPts - 11f) * (float)CalibriFittingScale);
-                                var wrapChars = FittingChars(cellText, wrapWidth, cellFontSizeForFit);
-                                if (wrapChars > 0)
-                                {
-                                    var virtualLines = (int)Math.Ceiling((double)cellText.Length / wrapChars);
-                                    virtualRowExtraLines = Math.Max(virtualRowExtraLines, virtualLines - 1);
-                                }
                             }
                             else
                             {
-                                cellLines[i] = new[] { cellText };
+                                var shouldClip = isMerged || (!isLastCol && nextCellHasContent);
+                                // Set maxWidth to prevent text overflow: always needed when
+                                // print scale shrinks columns, or when the next cell has content.
+                                if (shouldClip || printScaleFactor != 1f)
+                                    cellClipWidth[i] = effectiveWidth;
+                                if (shouldClip)
+                                {
+                                    fitChars = FittingChars(cellText, effectiveWidth, cellFontSizeForFit);
+                                }
+                                if (shouldClip && cellText.Length > fitChars)
+                                {
+                                    // Truncate to effective column width (matches LibreOffice clip).
+                                    cellLines[i] = new[] { cellText[..fitChars] };
+                                }
+                                else if (!shouldClip && fitChars < cellText.Length && columns.Length == 1)
+                                {
+                                    // Single-column overflow: clip text at page right edge.
+                                    // LibreOffice calculates row height from text wrapping at the default
+                                    // column width, but renders a single line clipped at the page boundary.
+                                    var pageClipChars = FittingChars(cellText, pageWidth - options.MarginLeft, cellFontSizeForFit);
+                                    var clippedText = pageClipChars < cellText.Length ? cellText[..pageClipChars] : cellText;
+                                    cellLines[i] = new[] { clippedText };
+
+                                    // Calculate virtual row height from wrapping at default column width.
+                                    // Use raw Helvetica widths (counteract CalibriFittingScale) and subtract
+                                    // cell content margins (~11pt) to match LibreOffice's internal wrapping.
+                                    var defaultColPts = ExcelSheet.CharUnitsToPoints(
+                                        sheet.DefaultColumnWidth > 0 ? sheet.DefaultColumnWidth : 8.43f);
+                                    var wrapWidth = Math.Max(1f, (defaultColPts - 11f) * (float)CalibriFittingScale);
+                                    var wrapChars = FittingChars(cellText, wrapWidth, cellFontSizeForFit);
+                                    if (wrapChars > 0)
+                                    {
+                                        var virtualLines = (int)Math.Ceiling((double)cellText.Length / wrapChars);
+                                        virtualRowExtraLines = Math.Max(virtualRowExtraLines, virtualLines - 1);
+                                    }
+                                }
+                                else
+                                {
+                                    cellLines[i] = new[] { cellText };
+                                }
                             }
                         }
 
@@ -717,6 +915,23 @@ internal static class ExcelToPdfConverter
 
             // Check space for wrapped lines
             var contentHeight = autoRowHeight * maxLinesInRow;
+            // When the XLSX specifies explicit row heights, honour them.  For rows
+            // where some cells have wrapText the wrapped content was calculated
+            // above; the explicit height already accommodates the expected number
+            // of wrapped lines (set by the spreadsheet author / LibreOffice).
+            // Only auto-expand when content exceeds the explicit height AND none
+            // of the cells use wrapText (i.e. it is an auto-sized row with large
+            // fonts, not a deliberately sized row with wrapping).
+            var anyWrapText = false;
+            for (var i = 0; i < columns.Length; i++)
+            {
+                var col = columns[i];
+                if (col < row.Count && row[col].WrapText && cellLines[i].Length > 1)
+                {
+                    anyWrapText = true;
+                    break;
+                }
+            }
             var rowHeight = hasExplicitHeight ? Math.Max(explicitRowHeight, contentHeight) : contentHeight;
             var usablePageHeight = pageHeight - options.MarginTop - options.MarginBottom;
 
@@ -724,6 +939,9 @@ internal static class ExcelToPdfConverter
             {
                 currentPage = doc.AddPage(pageWidth, pageHeight);
                 currentY = pageHeight - options.MarginTop;
+                // Render print title rows on the new page (skip if current row is within the title range)
+                if (printTitleStart >= 0 && (excelRowIndex < printTitleStart || excelRowIndex > printTitleEnd))
+                    RenderPrintTitleRows();
                 // Update the row's top position on the new page
                 rowTopY[excelRowIndex] = currentY;
                 rowPage[excelRowIndex] = currentPage;
@@ -942,6 +1160,19 @@ internal static class ExcelToPdfConverter
                     currentPage = doc.AddPage(pageWidth, pageHeight);
                     currentY = pageHeight - options.MarginTop;
                 }
+            }
+        }
+
+        // LibreOffice emits a trailing empty page when print title rows are active
+        // and the sheet spans multiple pages.  Replicate this to match page counts.
+        if (printTitleStart >= 0 && doc.Pages.Count > 1)
+        {
+            var usedPages = doc.Pages.Count;
+            var lastPage = doc.Pages[usedPages - 1];
+            // Only add if the last page has content (not already empty)
+            if (lastPage.TextBlocks.Count > 0 || lastPage.ImageBlocks.Count > 0)
+            {
+                doc.AddPage(pageWidth, pageHeight);
             }
         }
 
@@ -2273,7 +2504,8 @@ internal static class ExcelToPdfConverter
             if (hasExcelWidths)
             {
                 // Use Excel column width (explicit override or explicit default)
-                var charUnits = sheet.ColumnWidths.TryGetValue(i, out var ew)
+                var hasExplicitWidth = sheet.ColumnWidths.TryGetValue(i, out var ew);
+                var charUnits = hasExplicitWidth
                     ? ew
                     : sheet.DefaultColumnWidth > 0f ? sheet.DefaultColumnWidth : 8.43f;
                 // Hidden columns (width 0): skip entirely
@@ -2283,8 +2515,11 @@ internal static class ExcelToPdfConverter
                     continue;
                 }
                 var excelPts = ExcelSheet.CharUnitsToPoints(charUnits);
-                // Clamp to reasonable bounds but respect the spreadsheet's intent
-                widths[i] = Math.Clamp(excelPts, minColWidth, maxColWidth);
+                // When the spreadsheet explicitly sets a narrow column width,
+                // honour it (spacer columns etc.).  Only apply minColWidth for
+                // columns using the default/fallback width.
+                var floor = hasExplicitWidth ? 0f : minColWidth;
+                widths[i] = Math.Clamp(excelPts, floor, maxColWidth);
             }
             else if (maxCols == 1)
             {

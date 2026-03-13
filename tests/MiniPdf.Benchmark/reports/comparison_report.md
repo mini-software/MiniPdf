@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-12T17:16:54.377415
+Generated: 2026-03-13T09:15:08.289685
 
 ## Summary
 
@@ -48,7 +48,7 @@ Generated: 2026-03-12T17:16:54.377415
 | 40 | 🟢 classic128_font_sizes | 0.982 | 0.9937 | 1/1 | **0.9903** |
 | 41 | 🟢 classic129_alignment_combos | 1.0 | 0.996 | 1/1 | **0.9984** |
 | 42 | 🟢 classic12_sparse_columns | 1.0 | 0.998 | 1/1 | **0.9992** |
-| 43 | 🟢 classic130_wrap_and_indent | 1.0 | 0.9867 | 1/1 | **0.9947** |
+| 43 | 🟢 classic130_wrap_and_indent | 1.0 | 0.9925 | 1/1 | **0.997** |
 | 44 | 🟢 classic131_number_formats | 1.0 | 0.9911 | 1/1 | **0.9964** |
 | 45 | 🟢 classic132_striped_table | 0.9984 | 0.9781 | 1/1 | **0.9906** |
 | 46 | 🟢 classic133_gradient_rows | 1.0 | 0.9898 | 1/1 | **0.9959** |
@@ -115,7 +115,7 @@ Generated: 2026-03-12T17:16:54.377415
 | 107 | 🟢 classic189_alternating_image_text_rows | 0.8974 | 0.9853 | 1/1 | **0.9531** |
 | 108 | 🟢 classic18_large_dataset | 1.0 | 0.8931 | 24/24 | **0.9572** |
 | 109 | 🟢 classic190_dashboard_kpi_images | 1.0 | 0.9871 | 1/1 | **0.9948** |
-| 110 | 🟡 classic191_payroll_calculator | 0.8401 | 0.8977 | 9/9 | **0.8951** |
+| 110 | 🟢 classic191_payroll_calculator | 0.8741 | 0.8977 | 9/9 | **0.9087** |
 | 111 | 🟢 classic19_single_column_list | 1.0 | 0.9967 | 1/1 | **0.9987** |
 | 112 | 🟢 classic20_all_empty_cells | 1.0 | 1.0 | 1/1 | **1.0** |
 | 113 | 🟢 classic21_header_only | 1.0 | 0.9986 | 1/1 | **0.9994** |
@@ -198,7 +198,7 @@ Generated: 2026-03-12T17:16:54.377415
 | 190 | 🟢 classic98_radar_chart | 0.8876 | 0.9894 | 2/2 | **0.9508** |
 | 191 | 🟢 classic99_bubble_chart | 0.8392 | 0.9597 | 2/2 | **0.9196** |
 
-**Average Overall Score: 0.9688**
+**Average Overall Score: 0.9689**
 
 ## Visual Comparison
 
@@ -698,7 +698,7 @@ Generated: 2026-03-12T17:16:54.377415
 </tr>
 <tr>
   <td><b>classic130_wrap_and_indent</b></td>
-  <td>classic130_wrap_and_indent <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td>classic130_wrap_and_indent <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
   <td><img src="images/classic130_wrap_and_indent_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1358,7 +1358,7 @@ Generated: 2026-03-12T17:16:54.377415
 </tr>
 <tr>
   <td><b>classic191_payroll_calculator</b></td>
-  <td>classic191_payroll_calculator <span style="color:#d29922">⬤</span> 89.5%</td>
+  <td>classic191_payroll_calculator <span style="color:#3fb950">⬤</span> 90.9%</td>
 </tr>
 <tr>
   <td><img src="images/classic191_payroll_calculator_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -4084,22 +4084,24 @@ Text content: ✅ Identical
 ### classic130_wrap_and_indent
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9867
-- **Overall Score:** 0.9947
+- **Visual Average:** 0.9925
+- **Overall Score:** 0.997
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1150 bytes, Reference=36937 bytes
+- **File Size:** MiniPdf=1253 bytes, Reference=36937 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic130_wrap_and_indent.pdf
 +++ reference/classic130_wrap_and_indent.pdf
-@@ -1,5 +1,7 @@
+@@ -1,7 +1,7 @@
  Wrapped Text Indented Text
 
--This is a long text that should wrap within the cell when text wrapping is enabled.
+ This is a long text that should wrap
 
-+This is a long text that should wrap
+-within the cell when text wrapping is
+
+-enabled.
 
 +within the cell when text wrapping
 
@@ -6514,25 +6516,29 @@ Text content: ✅ Identical
 
 ### classic191_payroll_calculator
 
-- **Text Similarity:** 0.8401
+- **Text Similarity:** 0.8741
 - **Visual Average:** 0.8977
-- **Overall Score:** 0.8951
+- **Overall Score:** 0.9087
 - **Pages:** MiniPdf=9, Reference=9
-- **File Size:** MiniPdf=103798 bytes, Reference=136710 bytes
+- **File Size:** MiniPdf=104154 bytes, Reference=136710 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic191_payroll_calculator.pdf
 +++ reference/classic191_payroll_calculator.pdf
-@@ -7,50 +7,61 @@
+@@ -7,58 +7,61 @@
  4 Rachel Kim F 2016-08-03 HR Specialist
 
  5 Carlos Ruiz M 2019-11-20 Sales Rep
 
  ---PAGE---
 
--Annual Salary ($) Regular Hourly Rate ( Overtime Hourly Rate Exempt from Overtim Pay Frequency
+-Regular Hourly Rate Overtime Hourly Exempt from
+
+-Annual Salary ($) Pay Frequency
+
+-($) Rate ($) Overtime
 
 -42,000.00 20.19 30.29 Yes Monthly
 
@@ -6562,7 +6568,11 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--W-4 Form Filing Status Federal AllowanceAdditional Withhold ($)
+-Additional Withhold
+
+-W-4 Form Filing Status Federal Allowance
+
+-($)
 
 -W-4 (2020+) Exempt 2 50.00
 
@@ -6624,7 +6634,11 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--Holiday Hours Vacation Hours Sick Hours Overtime Hours Taxable Compensat Pre-Tax Deductions
+-Taxable Compensat
+
+-Holiday Hours Vacation Hours Sick Hours Overtime Hours Pre-Tax Deductions
+
+-ion
 
 -0.00 0.00 0.00 0.00 500.00 0.00
 
@@ -6660,7 +6674,11 @@ Text content: ✅ Identical
 
  Pre-Tax Adjustments Withholdings
 
--Post-Tax Reimburse Gross Pay Tax Deferral Plan (4 Health Insurance Other Federal Tax
+-Post-Tax Reimburse Tax Deferral Plan
+
+-Gross Pay Health Insurance Other Federal Tax
+
+-ments (401k)
 
 -500.00 3,999.60 139.98 0.00 0.00 319.49
 
@@ -6684,10 +6702,8 @@ Text content: ✅ Identical
 
 +4,346.11 195.57 0.00 0.00 110.89 192.17
 
-+1,685.58 50.57 120.00 0.00 142.30 78.50
-
-+4,613.00 138.39 0.00 0
-... (214 more characters)
++1,685.58 50.57 120.00 0.00
+... (252 more characters)
 
 ```
 </details>
