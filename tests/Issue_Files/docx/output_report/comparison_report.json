@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Invoice",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 22765,
+    "reference_size": 65867,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.957,
+    "flat_text_similarity": 0.9486,
+    "word_text_similarity": 0.957,
+    "text_diff": "--- minipdf/Invoice.pdf\n+++ reference/Invoice.pdf\n@@ -1,9 +1,13 @@\n INVOICE\n\n DATE: TO: Anjali Chaturvedi\n\n-Date Extra Frame Photography\n\n-INVOICE # 89 Pacific Ave\n\n-100 San Francisco, CA\n\n-CUSTOMER ID: 123-456-7890\n\n+Date\n\n+Extra Frame Photography\n\n+89 Pacific Ave\n\n+INVOICE #\n\n+San Francisco, CA\n\n+100\n\n+123-456-7890\n\n+CUSTOMER ID:\n\n ABC12345\n\n SALESPERSON JOB PAYMENT TERMS DUE DATE\n\n Oscar Ward Sales Due on receipt 1/30/23\n",
+    "visual_scores": [
+      0.9139
+    ],
+    "visual_avg": 0.9139,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Invoice_p1_minipdf.png",
+        "reference_img": "Invoice_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9484
+  }
+]
