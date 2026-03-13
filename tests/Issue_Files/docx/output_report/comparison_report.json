@@ -23,5 +23,30 @@
       }
     ],
     "overall_score": 0.9484
+  },
+  {
+    "name": "Support_Letter",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4174,
+    "reference_size": 61824,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9844,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/Support_Letter.pdf\n+++ reference/Support_Letter.pdf\n@@ -6,18 +6,18 @@\n 0002\n\n 12 March 2026\n\n To whom it may concern,\n\n-RE: LETTER OF SUPPORT IN RESPECT OF THE APPLICATION FOR A RENEWAL OF A RELATIVE’S VISA IN TERMS\n\n-OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA VERBITCKAIA PASSPORT\n\n-NUMBER 770752777\n\n-1. I, Pascale Donaldson, a South African national born on 09 February 2006 with South African\n\n+RE: LETTER OF SUPPORT IN RESPECT OF THE APPLICATION FOR A RENEWAL OF A RELATIVE’S VISA IN\n\n+TERMS OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA VERBITCKAIA\n\n+PASSPORT NUMBER 770752777\n\n+1. I,  Pascale Donaldson, a South African national born on 09 February 2006 with South African\n\n Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of\n\n South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a\n\n national born on 21 December 1999, and support her application for a renewal of his Relatives Visa in\n\n terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with the relevant\n\n Immigration Regulations made under section 7 of the Act.\n\n-2. I accept full responsibility of any financial costs and subsistence, including but not limited to,\n\n-housing, food, medical, physical and emotional needs he may require whilst residing with me in\n\n-South Africa at the following address during his entire sojourn:\n\n+2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,\n\n+food, medical, physical and emotional needs he may require whilst residing with me in South Africa at\n\n+the following address during his entire sojourn:\n\n Dicta modi aut labor\n\n Voluptates alias exc\n\n Ut temporibus aliqui\n",
+    "visual_scores": [
+      0.9555
+    ],
+    "visual_avg": 0.9555,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Support_Letter_p1_minipdf.png",
+        "reference_img": "Support_Letter_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9822
   }
 ]

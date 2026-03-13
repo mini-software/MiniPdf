@@ -372,12 +372,20 @@ internal static class DocxReader
         var fontSize = parentFontSize;
         var color = parentColor;
         var caps = parentCaps;
+        var underline = false;
 
         if (rPr != null)
         {
             if (rPr.Element(W + "b") != null) bold = true;
             if (rPr.Element(W + "i") != null) italic = true;
             if (rPr.Element(W + "caps") != null) caps = true;
+            var uEl = rPr.Element(W + "u");
+            if (uEl != null)
+            {
+                var uVal = uEl.Attribute(W + "val")?.Value;
+                if (!string.IsNullOrEmpty(uVal) && uVal != "none")
+                    underline = true;
+            }
             var sz = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
             if (float.TryParse(sz, out var s) && s > 0)
                 fontSize = s / 2f; // half-points to points
@@ -410,7 +418,7 @@ internal static class DocxReader
         if (caps && !string.IsNullOrEmpty(text))
             text = text.ToUpperInvariant();
 
-        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak);
+        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline);
     }
 
     private static PdfColor? ReadRunColor(XElement rPr)
@@ -926,7 +934,8 @@ internal sealed record DocxRun(
     bool Italic = false,
     float FontSize = 0,
     PdfColor? Color = null,
-    bool IsPageBreak = false
+    bool IsPageBreak = false,
+    bool Underline = false
 );
 
 /// <summary>Represents an embedded image.</summary>

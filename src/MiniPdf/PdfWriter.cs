@@ -215,10 +215,10 @@ internal sealed class PdfWriter
             contentStreams.Add(Encoding.Latin1.GetBytes(BuildContentStream(pages[i], embeddedFonts.Count > 0, cpToFontSlot, embeddedFonts)));
 
         // Allocate object numbers.
-        //   1 = Catalog, 2 = Pages, 3 = Font F1 (Helvetica/WinAnsi)
+        //   1 = Catalog, 2 = Pages, 3 = Font F1 (Helvetica/WinAnsi), 4 = Font F1B (Helvetica-Bold/WinAnsi)
         //   Per embedded font: 6 objects (ToUnicode, Descriptor, CIDFont, Type0, FontFile2, CIDToGIDMap)
         //   Per page: content stream obj, N image XObject objs, page obj
-        var nextObj = 4;
+        var nextObj = 5;
 
         // Allocate font objects
         foreach (var ef in embeddedFonts)
@@ -262,6 +262,10 @@ internal sealed class PdfWriter
         // ── Object 3: Font F1 (Helvetica, built-in WinAnsiEncoding) ────────
         _objectOffsets[3] = Position;
         WriteRaw("3 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>\nendobj\n");
+
+        // ── Object 4: Font F1B (Helvetica-Bold, built-in WinAnsiEncoding) ──
+        _objectOffsets[4] = Position;
+        WriteRaw("4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>\nendobj\n");
 
         // ── Per-font objects (F2, F3, …) ───────────────────────────────────
         for (var fi = 0; fi < embeddedFonts.Count; fi++)
@@ -356,8 +360,8 @@ internal sealed class PdfWriter
             WriteRaw($"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {w} {h}]\n");
             WriteRaw($"/Contents {contentObjNums[i]} 0 R\n");
             WriteRaw("/Resources <<\n");
-            // Font dictionary: F1 + Fn for each embedded font
-            WriteRaw("/Font << /F1 3 0 R");
+            // Font dictionary: F1, F1B + Fn for each embedded font
+            WriteRaw("/Font << /F1 3 0 R /F1B 4 0 R");
             for (var fi = 0; fi < embeddedFonts.Count; fi++)
                 WriteRaw($" /F{fi + 2} {embeddedFonts[fi].Type0Obj} 0 R");
             WriteRaw(" >>\n");
@@ -514,11 +518,12 @@ internal sealed class PdfWriter
 
             if (!hasUnicodeFont || !block.Text.Any(c => !IsWinAnsiHandled(c)))
             {
-                // Pure Latin-1 text — use F1 (Helvetica) as before
+                // Pure Latin-1 text — use F1 (Helvetica) or F1B (Helvetica-Bold)
+                var fontName = block.Bold ? "F1B" : "F1";
                 var escapedText = EscapePdfString(block.Text);
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
-                sb.Append($"/F1 {fontSize} Tf\n");
+                sb.Append($"/{fontName} {fontSize} Tf\n");
                 // Apply horizontal scaling if text overflows MaxWidth
                 if (block.MaxWidth.HasValue)
                 {
@@ -594,6 +599,25 @@ internal sealed class PdfWriter
             // Restore graphics state after clipping
             if (hasClip)
                 sb.Append("Q\n");
+
+            // Render underline as a line below the text
+            if (block.Underline)
+            {
+                var textWidth = MeasureTextWidth(block.Text, block.FontSize);
+                if (block.MaxWidth.HasValue && textWidth > block.MaxWidth.Value)
+                    textWidth = block.MaxWidth.Value;
+                var ulY = block.Y - block.FontSize * 0.15f; // position below baseline
+                var ulThickness = Math.Max(0.5f, block.FontSize * 0.05f);
+                var x1 = block.X.ToString("F3", CultureInfo.InvariantCulture);
+                var y1 = ulY.ToString("F3", CultureInfo.InvariantCulture);
+                var x2 = (block.X + textWidth).ToString("F3", CultureInfo.InvariantCulture);
+                var lw = ulThickness.ToString("F3", CultureInfo.InvariantCulture);
+                sb.Append($"{block.Color.R.ToString("F3", CultureInfo.InvariantCulture)} " +
+                          $"{block.Color.G.ToString("F3", CultureInfo.InvariantCulture)} " +
+                          $"{block.Color.B.ToString("F3", CultureInfo.InvariantCulture)} RG\n");
+                sb.Append($"{lw} w\n");
+                sb.Append($"{x1} {y1} m {x2} {y1} l S\n");
+            }
         }
 
         return sb.ToString();

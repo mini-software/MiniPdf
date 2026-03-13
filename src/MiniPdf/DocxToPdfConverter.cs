@@ -10,6 +10,9 @@ internal static class DocxToPdfConverter
     private const float FontMetricsFactor = 1.17f;
     // Helvetica ascent ratio: visual top of text is baseline + fontSize × AscentRatio
     private const float AscentRatio = 1.075f;
+    // Calibri-to-Helvetica width ratio: most DOCX documents use Calibri (default since Word 2007).
+    // Used only as a fallback; per-character Calibri widths are used when available.
+    private const float CalibriWidthScale = 0.87f;
 
     /// <summary>
     /// Options for controlling DOCX-to-PDF conversion.
@@ -305,7 +308,8 @@ internal static class DocxToPdfConverter
 
         // Check if runs have varying formatting
         var hasVaryingFormat = paragraph.Runs.Count > 1 &&
-            paragraph.Runs.Any(r => (r.FontSize > 0 && r.FontSize != fontSize) || r.Color != null);
+            paragraph.Runs.Any(r => (r.FontSize > 0 && r.FontSize != fontSize) || r.Color != null
+                || r.Bold != paragraph.Runs[0].Bold || r.Underline != paragraph.Runs[0].Underline);
 
         if (hasVaryingFormat)
         {
@@ -319,8 +323,10 @@ internal static class DocxToPdfConverter
             var dominantRun = paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
             var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
             var runColor = dominantRun?.Color ?? paragraph.Color;
+            var runBold = dominantRun?.Bold ?? false;
+            var runUnderline = dominantRun?.Underline ?? false;
 
-            var lines = WordWrap(fullText, firstLineWidth, availableWidth, runFontSize, paragraph.TabStops);
+            var lines = WordWrap(fullText, firstLineWidth, availableWidth, runFontSize, paragraph.TabStops, runBold);
 
             // If paragraph has leader tab stops, apply maxWidth so the Tz operator
             // compresses the extra-dot text to fit the intended tab position.
@@ -340,15 +346,21 @@ internal static class DocxToPdfConverter
                 var lineX = i == 0 ? firstLineX : x;
                 var lineW = i == 0 ? firstLineWidth : availableWidth;
 
+                // Use Tz compression to fit Helvetica text into Calibri-width lines\n only when text actually exceeds available width
+                var renderMaxWidth = tabLeaderMaxWidth;
                 var textWidth = EstimateTextWidth(line, runFontSize);
+                // Only apply Tz for non-tab-leader lines when text significantly overflows
+                if (renderMaxWidth == null && textWidth > lineW)
+                    renderMaxWidth = lineW;
+                var effectiveWidth = renderMaxWidth.HasValue ? Math.Min(textWidth, renderMaxWidth.Value) : textWidth;
                 var renderX = paragraph.Alignment switch
                 {
-                    "center" => lineX + (lineW - textWidth) / 2,
-                    "right" => lineX + lineW - textWidth,
+                    "center" => lineX + (lineW - effectiveWidth) / 2,
+                    "right" => lineX + lineW - effectiveWidth,
                     _ => lineX
                 };
 
-                state.CurrentPage!.AddText(line, renderX, state.CurrentY, runFontSize, runColor, maxWidth: tabLeaderMaxWidth);
+                state.CurrentPage!.AddText(line, renderX, state.CurrentY, runFontSize, runColor, maxWidth: renderMaxWidth, bold: runBold, underline: runUnderline);
                 state.AdvanceY(lineHeight);
             }
         }
@@ -405,36 +417,55 @@ internal static class DocxToPdfConverter
             var runFs = run.FontSize > 0 ? run.FontSize : defaultFontSize;
             var runColor = run.Color ?? paragraph.Color;
 
-            // Split run text by spaces for word wrapping
-            var words = run.Text.Split(' ');
-            for (var wi = 0; wi < words.Length; wi++)
+            // Split run text by hard line breaks first (from <w:br/>)
+            var hardLines = run.Text.Split('\n');
+            for (var hi = 0; hi < hardLines.Length; hi++)
             {
-                var word = words[wi];
-                var wordWidth = EstimateTextWidth(word, runFs);
-                var spaceWidth = wi > 0 ? runFs * GetHelveticaCharWidth(' ') / 1000f : 0;
-
-                // Check if word fits on current line
-                if (currentX + spaceWidth + wordWidth > baseX + (isFirstLine ? firstLineWidth : availableWidth) + state.Options.MarginLeft)
+                // Force line break for each \n (except before the first segment)
+                if (hi > 0)
                 {
-                    // Wrap to next line
                     state.AdvanceY(lineHeight);
                     state.EnsurePage();
                     if (state.IsTopOfPage)
                         state.AdvanceY(runFs * AscentRatio);
                     currentX = baseX;
                     isFirstLine = false;
-                    spaceWidth = 0;
                 }
 
-                if (wi > 0 && spaceWidth > 0)
-                    currentX += spaceWidth;
+                var segment = hardLines[hi];
+                if (string.IsNullOrEmpty(segment)) continue;
 
-                state.CurrentPage!.AddText(word, currentX, state.CurrentY, runFs, runColor);
-                currentX += wordWidth;
+                // Split segment by spaces for word wrapping
+                var words = segment.Split(' ');
+                for (var wi = 0; wi < words.Length; wi++)
+                {
+                    var word = words[wi];
+                    var wordWidth = EstimateTextWidth(word, runFs);
+                    var spaceWidth = wi > 0 ? runFs * GetHelveticaCharWidth(' ') / 1000f : 0;
 
-                // Add space after word (except last)
-                if (wi < words.Length - 1)
-                    currentX += runFs * GetHelveticaCharWidth(' ') / 1000f;
+                    // Check if word fits on current line
+                    if (currentX + spaceWidth + wordWidth > baseX + (isFirstLine ? firstLineWidth : availableWidth) + state.Options.MarginLeft)
+                    {
+                        // Wrap to next line
+                        state.AdvanceY(lineHeight);
+                        state.EnsurePage();
+                        if (state.IsTopOfPage)
+                            state.AdvanceY(runFs * AscentRatio);
+                        currentX = baseX;
+                        isFirstLine = false;
+                        spaceWidth = 0;
+                    }
+
+                    if (wi > 0 && spaceWidth > 0)
+                        currentX += spaceWidth;
+
+                    state.CurrentPage!.AddText(word, currentX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline);
+                    currentX += wordWidth;
+
+                    // Add space after word (except last)
+                    if (wi < words.Length - 1)
+                        currentX += runFs * GetHelveticaCharWidth(' ') / 1000f;
+                }
             }
         }
 
@@ -555,6 +586,8 @@ internal static class DocxToPdfConverter
                     var runFontSize = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text))?.FontSize;
                     var effectiveFontSize = runFontSize > 0 ? runFontSize.Value : fontSize;
                     var runColor = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text))?.Color ?? para.Color;
+                    var cellRunBold = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text))?.Bold ?? false;
+                    var cellRunUnderline = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text))?.Underline ?? false;
                 var lineHeight = effectiveFontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
                     var textWidth = cellWidth - cellPaddingH * 2;
                     var lines = WordWrap(text, textWidth, textWidth, effectiveFontSize);
@@ -570,7 +603,7 @@ internal static class DocxToPdfConverter
                             "right" => cellX + cellPaddingH + textWidth - lineTextWidth,
                             _ => cellX + cellPaddingH
                         };
-                        state.CurrentPage!.AddText(line, lineRenderX, textY, effectiveFontSize, runColor);
+                        state.CurrentPage!.AddText(line, lineRenderX, textY, effectiveFontSize, runColor, bold: cellRunBold, underline: cellRunUnderline);
                         textY -= lineHeight - effectiveFontSize;
                     }
                 }
@@ -807,7 +840,7 @@ internal static class DocxToPdfConverter
         return sb2.ToString();
     }
 
-    private static List<string> WordWrap(string text, float firstLineWidth, float subsequentWidth, float fontSize, List<DocxTabStop>? tabStops = null)
+    private static List<string> WordWrap(string text, float firstLineWidth, float subsequentWidth, float fontSize, List<DocxTabStop>? tabStops = null, bool bold = false)
     {
         if (string.IsNullOrEmpty(text))
             return [""];
@@ -849,7 +882,7 @@ internal static class DocxToPdfConverter
                 {
                     currentLine = word;
                 }
-                else if (EstimateTextWidth(currentLine + " " + word, fontSize) <= maxWidth)
+                else if (EstimateCalibrTextWidth(currentLine + " " + word, fontSize, bold) <= maxWidth)
                 {
                     currentLine += " " + word;
                 }
@@ -861,13 +894,13 @@ internal static class DocxToPdfConverter
                 }
 
                 // Break oversized words only at CJK character boundaries
-                while (EstimateTextWidth(currentLine, fontSize) > maxWidth && currentLine.Length > 1)
+                while (EstimateCalibrTextWidth(currentLine, fontSize, bold) > maxWidth && currentLine.Length > 1)
                 {
                     // Find the latest CJK break point that fits
                     var breakAt = -1;
                     for (var ci = 1; ci < currentLine.Length; ci++)
                     {
-                        if (EstimateTextWidth(currentLine[..ci], fontSize) > maxWidth)
+                        if (EstimateCalibrTextWidth(currentLine[..ci], fontSize, bold) > maxWidth)
                             break;
                         // Allow breaking before or after a CJK character
                         if (GetHelveticaCharWidth(currentLine[ci]) == 1000 || GetHelveticaCharWidth(currentLine[ci - 1]) == 1000)
@@ -901,8 +934,22 @@ internal static class DocxToPdfConverter
         return fontSize * totalUnits / 1000f;
     }
 
+    /// <summary>
+    /// Estimates text width using Calibri font metrics (for word-wrap layout matching Word/LibreOffice).
+    /// </summary>
+    private static float EstimateCalibrTextWidth(string text, float fontSize, bool bold = false)
+    {
+        float totalUnits = 0;
+        foreach (var ch in text)
+            totalUnits += GetCalibrCharWidth(ch);
+        // Calibri Bold is ~5% wider than Calibri Regular on average
+        if (bold) totalUnits *= 1.05f;
+        return fontSize * totalUnits / 1000f;
+    }
+
     private static int GetHelveticaCharWidth(char ch)
     {
+        if (ch < ' ') return 0; // control characters (\n, \r, \t, etc.)
         if (ch >= ' ' && ch <= '~')
             return HelveticaWidths[ch - ' '];
         if (ch >= '\u4E00' && ch <= '\u9FFF'    // CJK Unified Ideographs
@@ -914,6 +961,22 @@ internal static class DocxToPdfConverter
             || ch >= '\uFF00' && ch <= '\uFFEF') // Halfwidth and Fullwidth Forms
             return 1000;
         return 500; // fallback for other Unicode chars
+    }
+
+    private static int GetCalibrCharWidth(char ch)
+    {
+        if (ch < ' ') return 0;
+        if (ch >= ' ' && ch <= '~')
+            return CalibrWidths[ch - ' '];
+        if (ch >= '\u4E00' && ch <= '\u9FFF'
+            || ch >= '\u3400' && ch <= '\u4DBF'
+            || ch >= '\u3000' && ch <= '\u303F'
+            || ch >= '\u3040' && ch <= '\u309F'
+            || ch >= '\u30A0' && ch <= '\u30FF'
+            || ch >= '\uF900' && ch <= '\uFAFF'
+            || ch >= '\uFF00' && ch <= '\uFFEF')
+            return 1000;
+        return (int)(GetHelveticaCharWidth(ch) * CalibriWidthScale);
     }
 
     // Helvetica character widths for ASCII 32..126 (in thousandths of a unit)
@@ -959,5 +1022,50 @@ internal static class DocxToPdfConverter
         260, // |
         334, // }
         584, // ~
+    ];
+
+    // Calibri Regular character widths for ASCII 32..126 (in thousandths of a unit)
+    private static readonly int[] CalibrWidths =
+    [
+        226, // ' ' (32)
+        247, // !
+        340, // "
+        510, // #
+        460, // $
+        668, // %
+        592, // &
+        183, // '
+        309, // (
+        309, // )
+        363, // *
+        510, // +
+        228, // ,
+        306, // -
+        228, // .
+        321, // /
+        507, 507, 507, 507, 507, 507, 507, 507, 507, 507, // 0-9
+        228, // :
+        228, // ;
+        510, // <
+        510, // =
+        510, // >
+        417, // ?
+        813, // @
+        536, 533, 488, 574, 459, 432, 539, 580, 252, // A-I
+        317, 516, 447, 698, 586, 570, 507, 570, 534, 488, // J-S
+        479, 564, 508, 730, 492, 475, 468, // T-Z
+        268, // [
+        321, // backslash
+        268, // ]
+        510, // ^
+        327, // _
+        500, // `
+        494, 537, 418, 537, 478, 274, 506, 538, 228, // a-i
+        228, 460, 228, 832, 538, 510, 537, 537, 327, 393, // j-s
+        312, 538, 428, 656, 449, 428, 408, // t-z
+        334, // {
+        256, // |
+        334, // }
+        510, // ~
     ];
 }
