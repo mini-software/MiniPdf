@@ -119,6 +119,7 @@ internal static class DocxReader
         float spacingBefore = 0;
         float spacingAfter = -1;
         float lineSpacing = 0;
+        bool lineSpacingAbsolute = false;
         float indentLeft = 0;
         float indentRight = 0;
         float indentFirstLine = 0;
@@ -159,7 +160,8 @@ internal static class DocxReader
                 if (int.TryParse(spacing.Attribute(W + "line")?.Value, out var sl))
                 {
                     var lineRule = spacing.Attribute(W + "lineRule")?.Value;
-                    lineSpacing = (lineRule == "exact" || lineRule == "atLeast")
+                    lineSpacingAbsolute = lineRule == "exact" || lineRule == "atLeast";
+                    lineSpacing = lineSpacingAbsolute
                         ? sl / 20f   // absolute value in points
                         : sl / 240f; // multiplier (auto: 240 = single spacing)
                 }
@@ -202,7 +204,7 @@ internal static class DocxReader
                     {
                         isNumberedList = true;
                         numDef.Counter++;
-                        listText = numDef.Counter + ".";
+                        listText = numDef.FormatListText(listLevel);
                     }
                 }
             }
@@ -342,7 +344,7 @@ internal static class DocxReader
 
         // If paragraph has no runs and no images, represent as empty paragraph for spacing
         return new DocxParagraph(runs, images, alignment, spacingBefore, spacingAfter,
-            lineSpacing, indentLeft, indentRight, indentFirstLine,
+            lineSpacing, lineSpacingAbsolute, indentLeft, indentRight, indentFirstLine,
             isBulletList, isNumberedList, listLevel, listText, styleId,
             bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops,
             sectionBreakLayout, borders);
@@ -830,16 +832,23 @@ internal static class DocxReader
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
 
-        // Read abstract numbering definitions
-        var abstractDefs = new Dictionary<string, string>(); // abstractNumId → format
+        // Read abstract numbering definitions: abstractNumId → list of level defs
+        var abstractDefs = new Dictionary<string, List<DocxNumberingLevelDef>>();
         foreach (var absNum in doc.Descendants(W + "abstractNum"))
         {
             var absId = absNum.Attribute(W + "abstractNumId")?.Value;
             if (string.IsNullOrEmpty(absId)) continue;
 
-            var lvl = absNum.Elements(W + "lvl").FirstOrDefault();
-            var numFmt = lvl?.Element(W + "numFmt")?.Attribute(W + "val")?.Value ?? "decimal";
-            abstractDefs[absId] = numFmt;
+            var levels = new List<DocxNumberingLevelDef>();
+            foreach (var lvl in absNum.Elements(W + "lvl"))
+            {
+                var ilvl = int.TryParse(lvl.Attribute(W + "ilvl")?.Value, out var iv) ? iv : 0;
+                var numFmt = lvl.Element(W + "numFmt")?.Attribute(W + "val")?.Value ?? "decimal";
+                var lvlText = lvl.Element(W + "lvlText")?.Attribute(W + "val")?.Value ?? "%1.";
+                var startVal = int.TryParse(lvl.Element(W + "start")?.Attribute(W + "val")?.Value, out var sv) ? sv : 1;
+                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal));
+            }
+            abstractDefs[absId] = levels;
         }
 
         // Map num IDs to abstract definitions
@@ -849,11 +858,12 @@ internal static class DocxReader
             if (string.IsNullOrEmpty(numId)) continue;
 
             var absRef = num.Element(W + "abstractNumId")?.Attribute(W + "val")?.Value;
-            var format = "decimal";
-            if (!string.IsNullOrEmpty(absRef) && abstractDefs.TryGetValue(absRef, out var f))
-                format = f;
+            var levels = new List<DocxNumberingLevelDef>();
+            if (!string.IsNullOrEmpty(absRef) && abstractDefs.TryGetValue(absRef, out var abLevels))
+                levels = abLevels;
 
-            result[numId] = new DocxNumberingDef(format);
+            var format = levels.Count > 0 ? levels[0].NumFmt : "decimal";
+            result[numId] = new DocxNumberingDef(format, levels);
         }
 
         return result;
@@ -886,6 +896,7 @@ internal sealed record DocxParagraph(
     float SpacingBefore = 0,
     float SpacingAfter = -1,
     float LineSpacing = 0,
+    bool LineSpacingAbsolute = false,
     float IndentLeft = 0,
     float IndentRight = 0,
     float IndentFirstLine = 0,
@@ -982,10 +993,52 @@ internal sealed class DocxNumberingDef
 {
     public string Format { get; }
     public int Counter { get; set; }
+    public List<DocxNumberingLevelDef> Levels { get; }
 
-    public DocxNumberingDef(string format)
+    public DocxNumberingDef(string format, List<DocxNumberingLevelDef>? levels = null)
     {
         Format = format;
         Counter = 0;
+        Levels = levels ?? [];
+    }
+
+    public string FormatListText(int ilvl)
+    {
+        var level = Levels.FirstOrDefault(l => l.Ilvl == ilvl) ?? Levels.FirstOrDefault();
+        if (level == null)
+            return Counter + ".";
+
+        var formatted = FormatNumber(Counter, level.NumFmt);
+        // Replace %1, %2 etc. placeholders in lvlText with formatted number
+        var text = level.LvlText;
+        text = text.Replace("%" + (ilvl + 1), formatted);
+        // Also replace other level placeholders with empty if they exist
+        for (var i = 1; i <= 9; i++)
+            text = text.Replace("%" + i, "");
+        return text;
+    }
+
+    private static string FormatNumber(int num, string fmt) => fmt switch
+    {
+        "decimal" => num.ToString(),
+        "upperLetter" => num >= 1 && num <= 26 ? ((char)('A' + num - 1)).ToString() : num.ToString(),
+        "lowerLetter" => num >= 1 && num <= 26 ? ((char)('a' + num - 1)).ToString() : num.ToString(),
+        "upperRoman" => ToRoman(num),
+        "lowerRoman" => ToRoman(num).ToLowerInvariant(),
+        "japaneseCounting" or "chineseCounting" or "ideographTraditional" =>
+            num >= 1 && num <= 10 ? "\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341"[num - 1].ToString() : num.ToString(),
+        _ => num.ToString()
+    };
+
+    private static string ToRoman(int num)
+    {
+        if (num <= 0 || num > 3999) return num.ToString();
+        string[] thousands = ["", "M", "MM", "MMM"];
+        string[] hundreds = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"];
+        string[] tens = ["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"];
+        string[] ones = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
+        return thousands[num / 1000] + hundreds[num % 1000 / 100] + tens[num % 100 / 10] + ones[num % 10];
     }
 }
+
+internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start);

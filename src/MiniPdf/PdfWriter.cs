@@ -830,12 +830,12 @@ internal sealed class PdfWriter
                 '\u20AC' => (char)0x80,                     // euro sign
                 '\u00A0' => ' ',                            // non-breaking space
                 '\u0060' => '\'',                           // backtick → apostrophe
-                '\u00B7' => '*',                            // middle dot → asterisk
-                '\u00D7' => 'x',                            // multiplication sign
-                '\u00F7' => '/',                            // division sign
+                '\u00B7' => '\u00B7',                       // middle dot (already in WinAnsi)
+                '\u00D7' => '\u00D7',                       // multiplication sign (already in WinAnsi)
+                '\u00F7' => '\u00F7',                       // division sign (already in WinAnsi)
                 '\u2264' => "<=",                           // ≤
                 '\u2265' => ">=",                           // ≥
-                '\u00B0' => " deg",                         // degree sign
+                '\u00B0' => '\u00B0',                       // degree sign (already in WinAnsi)
                 '\u00AE' => (char)0xAE,                     // registered trademark (already in WinAnsi)
                 '\u00A3' => '\u00A3',                       // pound sign (already in WinAnsi)
                 '\u00A5' => '\u00A5',                       // yen sign (already in WinAnsi)

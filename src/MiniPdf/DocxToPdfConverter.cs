@@ -225,8 +225,14 @@ internal static class DocxToPdfConverter
         var options = state.Options;
         var fontSize = paragraph.FontSize > 0 ? paragraph.FontSize : options.FontSize;
         // Font metrics factor: single-spaced line height ≈ fontSize × FontMetricsFactor
-        var lineSpacingMul = paragraph.LineSpacing > 0 ? paragraph.LineSpacing : options.LineSpacing;
-        var lineHeight = fontSize * FontMetricsFactor * lineSpacingMul;
+        float lineHeight;
+        if (paragraph.LineSpacingAbsolute && paragraph.LineSpacing > 0)
+            lineHeight = paragraph.LineSpacing; // exact/atLeast: absolute points
+        else
+        {
+            var lineSpacingMul = paragraph.LineSpacing > 0 ? paragraph.LineSpacing : options.LineSpacing;
+            lineHeight = fontSize * FontMetricsFactor * lineSpacingMul;
+        }
 
         // Apply spacing before (skip at top of page to match Word behavior)
         var spacingBefore = paragraph.SpacingBefore > 0 ? paragraph.SpacingBefore : 0;
@@ -307,19 +313,29 @@ internal static class DocxToPdfConverter
         }
 
         // Check if runs have varying formatting
-        var hasVaryingFormat = paragraph.Runs.Count > 1 &&
-            paragraph.Runs.Any(r => (r.FontSize > 0 && r.FontSize != fontSize) || r.Color != null
-                || r.Bold != paragraph.Runs[0].Bold || r.Underline != paragraph.Runs[0].Underline);
+        // Merge consecutive runs with identical formatting to reduce text extraction artifacts
+        var mergedRuns = MergeConsecutiveRuns(paragraph.Runs, fontSize);
+
+        var hasVaryingFormat = mergedRuns.Count > 1 &&
+            mergedRuns.Any(r => (r.FontSize > 0 && r.FontSize != fontSize) || r.Color != null
+                || r.Bold != mergedRuns[0].Bold || r.Underline != mergedRuns[0].Underline);
 
         if (hasVaryingFormat)
         {
             // Render each run individually on the same line
-            RenderMultiFormatRuns(state, paragraph, x, firstLineX, availableWidth, firstLineWidth, fontSize, lineHeight);
+            RenderMultiFormatRuns(state, new DocxParagraph(mergedRuns, paragraph.Images, paragraph.Alignment,
+                paragraph.SpacingBefore, paragraph.SpacingAfter, paragraph.LineSpacing, paragraph.LineSpacingAbsolute,
+                paragraph.IndentLeft, paragraph.IndentRight, paragraph.IndentFirstLine,
+                paragraph.IsBulletList, paragraph.IsNumberedList, paragraph.ListLevel, paragraph.ListText,
+                paragraph.StyleId, paragraph.Bold, paragraph.Italic, paragraph.FontSize, paragraph.Color,
+                paragraph.HasPageBreakBefore, paragraph.HasPageBreakAfter, paragraph.Shading, paragraph.TabStops,
+                paragraph.SectionBreak, paragraph.Borders),
+                x, firstLineX, availableWidth, firstLineWidth, fontSize, lineHeight);
         }
         else
         {
             // Simple path: all runs share the same formatting
-            var fullText = string.Concat(paragraph.Runs.Select(r => r.Text));
+            var fullText = AddInterScriptSpacing(string.Concat(mergedRuns.Select(r => r.Text)));
             var dominantRun = paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
             var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
             var runColor = dominantRun?.Color ?? paragraph.Color;
@@ -385,7 +401,7 @@ internal static class DocxToPdfConverter
         }
 
         // Apply spacing after
-        var defaultSpacing = (paragraph.IsBulletList || paragraph.IsNumberedList) ? 0f : 8f;
+        var defaultSpacing = (paragraph.LineSpacingAbsolute || paragraph.IsBulletList || paragraph.IsNumberedList) ? 0f : 8f;
         var spacingAfter = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : defaultSpacing;
         state.AdvanceY(spacingAfter);
 
@@ -394,6 +410,42 @@ internal static class DocxToPdfConverter
             state.ForceNewPage();
 
 
+    }
+
+    /// <summary>
+    /// Merges consecutive runs that have identical formatting (font size, color, bold, underline)
+    /// to reduce separate AddText calls and improve text extraction quality.
+    /// </summary>
+    private static List<DocxRun> MergeConsecutiveRuns(List<DocxRun> runs, float defaultFontSize)
+    {
+        if (runs.Count <= 1) return runs;
+        var result = new List<DocxRun>(runs.Count);
+        var current = runs[0];
+        for (var i = 1; i < runs.Count; i++)
+        {
+            var next = runs[i];
+            var curFs = current.FontSize > 0 ? current.FontSize : defaultFontSize;
+            var nextFs = next.FontSize > 0 ? next.FontSize : defaultFontSize;
+            // Whitespace-only runs are format-agnostic (invisible characters have no visible color/bold)
+            var isWhitespaceOnly = string.IsNullOrWhiteSpace(next.Text);
+            var isCurWhitespace = string.IsNullOrWhiteSpace(current.Text);
+            var colorMatch = current.Color == next.Color || isWhitespaceOnly || isCurWhitespace;
+            var boldMatch = current.Bold == next.Bold || isWhitespaceOnly || isCurWhitespace;
+            var underlineMatch = current.Underline == next.Underline || isWhitespaceOnly || isCurWhitespace;
+            if (Math.Abs(curFs - nextFs) < 0.01f && colorMatch && boldMatch && underlineMatch
+                && !current.IsPageBreak && !next.IsPageBreak)
+            {
+                current = new DocxRun(current.Text + next.Text, current.Bold, current.Italic || next.Italic,
+                    current.FontSize, current.Color, false, current.Underline);
+            }
+            else
+            {
+                result.Add(current);
+                current = next;
+            }
+        }
+        result.Add(current);
+        return result;
     }
 
     /// <summary>
@@ -407,8 +459,8 @@ internal static class DocxToPdfConverter
         if (state.IsTopOfPage)
             state.AdvanceY(defaultFontSize * AscentRatio);
         var currentX = firstLineX;
-        var maxWidth = firstLineWidth;
         var isFirstLine = true;
+        var rightEdge = state.Options.MarginLeft + state.UsableWidth - paragraph.IndentRight;
 
         foreach (var run in paragraph.Runs)
         {
@@ -432,11 +484,15 @@ internal static class DocxToPdfConverter
                     isFirstLine = false;
                 }
 
-                var segment = hardLines[hi];
+                var segment = AddInterScriptSpacing(hardLines[hi]);
                 if (string.IsNullOrEmpty(segment)) continue;
 
-                // Split segment by spaces for word wrapping
+                // Split segment by spaces for word wrapping, but accumulate text
+                // per line to produce fewer AddText calls (improves text extraction).
                 var words = segment.Split(' ');
+                var pendingText = "";
+                var pendingX = currentX;
+
                 for (var wi = 0; wi < words.Length; wi++)
                 {
                     var word = words[wi];
@@ -444,27 +500,67 @@ internal static class DocxToPdfConverter
                     var spaceWidth = wi > 0 ? runFs * GetHelveticaCharWidth(' ') / 1000f : 0;
 
                     // Check if word fits on current line
-                    if (currentX + spaceWidth + wordWidth > baseX + (isFirstLine ? firstLineWidth : availableWidth) + state.Options.MarginLeft)
+                    if (currentX + spaceWidth + wordWidth > rightEdge && (pendingText.Length > 0 || currentX > baseX + 1))
                     {
+                        // Flush pending text before wrapping
+                        if (pendingText.Length > 0)
+                        {
+                            state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline);
+                            pendingText = "";
+                        }
                         // Wrap to next line
                         state.AdvanceY(lineHeight);
                         state.EnsurePage();
                         if (state.IsTopOfPage)
                             state.AdvanceY(runFs * AscentRatio);
                         currentX = baseX;
+                        pendingX = currentX;
                         isFirstLine = false;
                         spaceWidth = 0;
                     }
 
-                    if (wi > 0 && spaceWidth > 0)
+                    if (wi > 0)
+                    {
+                        pendingText += " ";
                         currentX += spaceWidth;
+                    }
 
-                    state.CurrentPage!.AddText(word, currentX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline);
+                    pendingText += word;
                     currentX += wordWidth;
 
-                    // Add space after word (except last)
-                    if (wi < words.Length - 1)
-                        currentX += runFs * GetHelveticaCharWidth(' ') / 1000f;
+                    // Break oversized CJK words at character boundaries (kinsoku)
+                    while (currentX > rightEdge && pendingText.Length > 1)
+                    {
+                        var breakAt = -1;
+                        float accWidth = 0;
+                        for (var ci = 0; ci < pendingText.Length; ci++)
+                        {
+                            accWidth += runFs * GetHelveticaCharWidth(pendingText[ci]) / 1000f;
+                            if (pendingX + accWidth > rightEdge && breakAt >= 0)
+                                break;
+                            if (ci > 0 && (GetHelveticaCharWidth(pendingText[ci]) == 1000 || GetHelveticaCharWidth(pendingText[ci - 1]) == 1000))
+                            {
+                                if (!IsNoStartChar(pendingText[ci]))
+                                    breakAt = ci;
+                            }
+                        }
+                        if (breakAt <= 0) break;
+                        state.CurrentPage!.AddText(pendingText[..breakAt], pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline);
+                        pendingText = pendingText[breakAt..];
+                        state.AdvanceY(lineHeight);
+                        state.EnsurePage();
+                        if (state.IsTopOfPage)
+                            state.AdvanceY(runFs * AscentRatio);
+                        currentX = baseX + runFs * pendingText.Sum(c => GetHelveticaCharWidth(c)) / 1000f;
+                        pendingX = baseX;
+                        isFirstLine = false;
+                    }
+                }
+
+                // Flush remaining text for this segment
+                if (pendingText.Length > 0)
+                {
+                    state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline);
                 }
             }
         }
@@ -896,7 +992,7 @@ internal static class DocxToPdfConverter
                 // Break oversized words only at CJK character boundaries
                 while (EstimateCalibrTextWidth(currentLine, fontSize, bold) > maxWidth && currentLine.Length > 1)
                 {
-                    // Find the latest CJK break point that fits
+                    // Find the latest CJK break point that fits, respecting kinsoku rules
                     var breakAt = -1;
                     for (var ci = 1; ci < currentLine.Length; ci++)
                     {
@@ -904,7 +1000,11 @@ internal static class DocxToPdfConverter
                             break;
                         // Allow breaking before or after a CJK character
                         if (GetHelveticaCharWidth(currentLine[ci]) == 1000 || GetHelveticaCharWidth(currentLine[ci - 1]) == 1000)
-                            breakAt = ci;
+                        {
+                            // Kinsoku: don't break before closing/trailing punctuation
+                            if (!IsNoStartChar(currentLine[ci]))
+                                breakAt = ci;
+                        }
                     }
                     if (breakAt <= 0) break; // No CJK break point found
                     lines.Add(currentLine[..breakAt]);
@@ -977,6 +1077,46 @@ internal static class DocxToPdfConverter
             || ch >= '\uFF00' && ch <= '\uFFEF')
             return 1000;
         return (int)(GetHelveticaCharWidth(ch) * CalibriWidthScale);
+    }
+
+    /// <summary>
+    /// CJK kinsoku: characters that must not start a line (closing/trailing punctuation).
+    /// </summary>
+    private static bool IsNoStartChar(char ch) =>
+        ch is '\u3001' or '\u3002'   // 、。
+            or '\uFF0C' or '\uFF0E'  // ，．
+            or '\uFF01' or '\uFF1F'  // ！？
+            or '\uFF1B' or '\uFF1A'  // ；：
+            or '\uFF09' or '\u3009'  // ）〉
+            or '\u300B' or '\u300D'  // 》」
+            or '\u300F' or '\u3011'  // 』】
+            or '\uFF3D' or '\uFF5D'; // ］｝
+
+    /// <summary>
+    /// Inserts a space between Latin-script/digit characters and CJK characters
+    /// to match Word/LibreOffice's automatic inter-script spacing behavior.
+    /// LibreOffice only adds space at Latin→CJK boundaries (not CJK→Latin).
+    /// </summary>
+    private static string AddInterScriptSpacing(string text)
+    {
+        if (string.IsNullOrEmpty(text) || text.Length < 2) return text;
+        var sb = new System.Text.StringBuilder(text.Length + 8);
+        sb.Append(text[0]);
+        for (var i = 1; i < text.Length; i++)
+        {
+            var prev = text[i - 1];
+            var curr = text[i];
+            // Insert space at Latin→CJK boundary only
+            if (IsLatinOrDigit(prev) && IsCjkIdeograph(curr))
+            {
+                sb.Append(' ');
+            }
+            sb.Append(curr);
+        }
+        return sb.ToString();
+
+        static bool IsLatinOrDigit(char c) => c is >= '0' and <= '9' or >= 'A' and <= 'Z' or >= 'a' and <= 'z';
+        static bool IsCjkIdeograph(char c) => c is >= '\u4E00' and <= '\u9FFF' or >= '\u3400' and <= '\u4DBF';
     }
 
     // Helvetica character widths for ASCII 32..126 (in thousandths of a unit)
