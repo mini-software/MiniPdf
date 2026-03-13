@@ -29,10 +29,10 @@ internal static class ExcelReader
         var borders = ReadBorders(archive, themeColors);
         var numberFormats = ReadNumberFormats(archive);
         var dxfStyles = ReadDxfStyles(archive);
-        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices) = ReadCellXfStyles(archive);
+        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts) = ReadCellXfStyles(archive);
 
         // Read workbook to get sheet names and order
-        var (sheetInfos, printAreas) = ReadWorkbook(archive);
+        var (sheetInfos, printAreas, printTitleRows) = ReadWorkbook(archive);
 
         // Read each sheet
         var sheetIndex = 0;
@@ -52,14 +52,15 @@ internal static class ExcelReader
 
             if (entry == null) continue;
 
-            var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices);
+            var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts);
             var images = ReadSheetImages(archive, info.SheetId);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
             var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
             var pageSetup = ReadPageSetup(entry);
             printAreas.TryGetValue(currentIndex, out var printArea);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered));
+            printTitleRows.TryGetValue(currentIndex, out var printTitleRow);
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: printTitleRow != default ? printTitleRow : null));
             sheetEntries.Add(entry);
         }
 
@@ -69,7 +70,7 @@ internal static class ExcelReader
             var entry = archive.GetEntry("xl/worksheets/sheet1.xml");
             if (entry != null)
             {
-                var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices);
+                var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts);
                 var images = ReadSheetImages(archive, 1);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
@@ -123,12 +124,13 @@ internal static class ExcelReader
         return strings;
     }
 
-    private static (List<SheetInfo> Sheets, Dictionary<int, (int StartCol, int StartRow, int EndCol, int EndRow)> PrintAreas) ReadWorkbook(ZipArchive archive)
+    private static (List<SheetInfo> Sheets, Dictionary<int, (int StartCol, int StartRow, int EndCol, int EndRow)> PrintAreas, Dictionary<int, (int StartRow, int EndRow)> PrintTitleRows) ReadWorkbook(ZipArchive archive)
     {
         var result = new List<SheetInfo>();
         var printAreas = new Dictionary<int, (int, int, int, int)>();
+        var printTitleRows = new Dictionary<int, (int, int)>();
         var entry = archive.GetEntry("xl/workbook.xml");
-        if (entry == null) return (result, printAreas);
+        if (entry == null) return (result, printAreas, printTitleRows);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -149,30 +151,47 @@ internal static class ExcelReader
         foreach (var dn in doc.Descendants(ns + "definedName"))
         {
             var dnName = dn.Attribute("name")?.Value;
-            if (!string.Equals(dnName, "_xlnm.Print_Area", StringComparison.OrdinalIgnoreCase)) continue;
             var localIdStr = dn.Attribute("localSheetId")?.Value;
             if (localIdStr == null || !int.TryParse(localIdStr, out var localId)) continue;
-            var val = dn.Value; // e.g. "Paystubs!$A$1:$J$37"
+            var val = dn.Value;
             if (string.IsNullOrEmpty(val)) continue;
-            // Remove sheet name prefix
-            var bangIdx = val.IndexOf('!');
-            if (bangIdx >= 0) val = val.Substring(bangIdx + 1);
-            // Parse range like $A$1:$J$37 — strip $ and use ParseCellRef which returns (row, col)
-            // Also handle column-only ranges like $A:$L (entire columns)
-            var parts = val.Replace("$", "").Split(':');
-            if (parts.Length == 2)
+
+            if (string.Equals(dnName, "_xlnm.Print_Area", StringComparison.OrdinalIgnoreCase))
             {
-                var (sr, sc) = ParseCellRef(parts[0]);
-                var (er, ec) = ParseCellRef(parts[1]);
-                // Handle column-only ranges (e.g. A:L) where ParseCellRef returns row=-1
-                if (sc >= 0 && sr < 0) sr = 0;
-                if (ec >= 0 && er < 0) er = 1_048_575; // max Excel row index
-                if (sc >= 0 && sr >= 0 && ec >= 0 && er >= 0)
-                    printAreas[localId] = (sc, sr, ec, er);
+                // e.g. "Paystubs!$A$1:$J$37"
+                // Remove sheet name prefix
+                var bangIdx = val.IndexOf('!');
+                if (bangIdx >= 0) val = val.Substring(bangIdx + 1);
+                // Parse range like $A$1:$J$37 — strip $ and use ParseCellRef which returns (row, col)
+                // Also handle column-only ranges like $A:$L (entire columns)
+                var parts = val.Replace("$", "").Split(':');
+                if (parts.Length == 2)
+                {
+                    var (sr, sc) = ParseCellRef(parts[0]);
+                    var (er, ec) = ParseCellRef(parts[1]);
+                    // Handle column-only ranges (e.g. A:L) where ParseCellRef returns row=-1
+                    if (sc >= 0 && sr < 0) sr = 0;
+                    if (ec >= 0 && er < 0) er = 1_048_575; // max Excel row index
+                    if (sc >= 0 && sr >= 0 && ec >= 0 && er >= 0)
+                        printAreas[localId] = (sc, sr, ec, er);
+                }
+            }
+            else if (string.Equals(dnName, "_xlnm.Print_Titles", StringComparison.OrdinalIgnoreCase))
+            {
+                // e.g. "'Sheet'!$1:$4" — row-only range for repeating header rows
+                var bangIdx = val.IndexOf('!');
+                if (bangIdx >= 0) val = val.Substring(bangIdx + 1);
+                var parts = val.Replace("$", "").Split(':');
+                if (parts.Length == 2)
+                {
+                    // Try row-only range (e.g. "1:4")
+                    if (int.TryParse(parts[0], out var startRow) && int.TryParse(parts[1], out var endRow))
+                        printTitleRows[localId] = (startRow - 1, endRow - 1); // convert to 0-based
+                }
             }
         }
 
-        return (result, printAreas);
+        return (result, printAreas, printTitleRows);
     }
 
     private static List<FontStyleInfo> ReadFontStyles(ZipArchive archive, List<PdfColor> themeColors)
@@ -266,7 +285,7 @@ internal static class ExcelReader
     /// Reads cellXf style entries from styles.xml.
     /// Returns (fontIndices, fillIndices, numFmtIds) parallel lists.
     /// </summary>
-    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds, List<string> Alignments, List<string> VerticalAlignments, List<int> BorderIndices) ReadCellXfStyles(ZipArchive archive)
+    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds, List<string> Alignments, List<string> VerticalAlignments, List<int> BorderIndices, List<bool> WrapTexts) ReadCellXfStyles(ZipArchive archive)
     {
         var fontIndices = new List<int>();
         var fillIndices = new List<int>();
@@ -274,8 +293,9 @@ internal static class ExcelReader
         var alignments = new List<string>();
         var verticalAlignments = new List<string>();
         var borderIndices = new List<int>();
+        var wrapTexts = new List<bool>();
         var entry = archive.GetEntry("xl/styles.xml");
-        if (entry == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices);
+        if (entry == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -283,7 +303,7 @@ internal static class ExcelReader
 
         // Read <cellXfs> -> <xf> elements
         var cellXfs = doc.Descendants(ns + "cellXfs").FirstOrDefault();
-        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices);
+        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts);
 
         foreach (var xf in cellXfs.Elements(ns + "xf"))
         {
@@ -304,9 +324,12 @@ internal static class ExcelReader
 
             var borderId = xf.Attribute("borderId")?.Value;
             borderIndices.Add(int.TryParse(borderId, out var bid) ? bid : 0);
+
+            var wrapTextAttr = xf.Element(ns + "alignment")?.Attribute("wrapText")?.Value;
+            wrapTexts.Add(wrapTextAttr == "1" || string.Equals(wrapTextAttr, "true", StringComparison.OrdinalIgnoreCase));
         }
 
-        return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices);
+        return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts);
     }
 
     /// <summary>
@@ -892,7 +915,7 @@ internal static class ExcelReader
 
     private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings,
         List<FontStyleInfo> fontStyles, List<PdfColor?> fillColors, List<CellBorderInfo?> borders, Dictionary<int, string> numberFormats,
-        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices)
+        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts)
     {
         var rows = new List<List<ExcelCell>>();
 
@@ -951,6 +974,7 @@ internal static class ExcelReader
                 bool bold = false;
                 bool italic = false;
                 CellBorderInfo? border = null;
+                bool wrapText = false;
                 if (int.TryParse(styleAttr, out var styleIndex))
                 {
                     var fontStyle = ResolveFontStyle(styleIndex, fontStyles, cellXfFontIndices);
@@ -966,6 +990,8 @@ internal static class ExcelReader
                         cellAlignment = cellXfAlignments[styleIndex];
                     if (styleIndex >= 0 && styleIndex < cellXfVerticalAlignments.Count)
                         cellVerticalAlignment = cellXfVerticalAlignments[styleIndex];
+                    if (styleIndex >= 0 && styleIndex < cellXfWrapTexts.Count)
+                        wrapText = cellXfWrapTexts[styleIndex];
                 }
 
                 string text;
@@ -1014,7 +1040,7 @@ internal static class ExcelReader
                     cellAlignment = isNumericCell ? "right" : (type == "b" ? "center" : "left");
                 }
 
-                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, border, cellVerticalAlignment));
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, border, cellVerticalAlignment, wrapText));
                 lastColIndex = colIndex + 1;
             }
 
@@ -2451,7 +2477,8 @@ internal sealed record ExcelCell(
     bool Bold = false,
     bool Italic = false,
     CellBorderInfo? Border = null,
-    string VerticalAlignment = "bottom"
+    string VerticalAlignment = "bottom",
+    bool WrapText = false
 );
 
 /// <summary>
@@ -2551,6 +2578,8 @@ internal sealed class ExcelSheet
     public int FitToHeight { get; }
     /// <summary>Whether to center content horizontally on the page.</summary>
     public bool HorizontalCentered { get; }
+    /// <summary>Row range to repeat at the top of each printed page (startRow, endRow) 0-based, or null.</summary>
+    public (int StartRow, int EndRow)? PrintTitleRows { get; }
 
     /// <summary>Converts Excel character-unit column width to PDF points.</summary>
     public static float CharUnitsToPoints(float charUnits)
@@ -2574,7 +2603,8 @@ internal sealed class ExcelSheet
         float marginTopPt = -1, float marginBottomPt = -1,
         bool fitToPage = false,
         int fitToWidth = 1, int fitToHeight = 1,
-        bool horizontalCentered = false)
+        bool horizontalCentered = false,
+        (int StartRow, int EndRow)? printTitleRows = null)
     {
         Name = name;
         Rows = rows;
@@ -2598,5 +2628,6 @@ internal sealed class ExcelSheet
         FitToWidth = fitToWidth;
         FitToHeight = fitToHeight;
         HorizontalCentered = horizontalCentered;
+        PrintTitleRows = printTitleRows;
     }
 }

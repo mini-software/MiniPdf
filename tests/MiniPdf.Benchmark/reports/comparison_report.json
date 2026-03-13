@@ -1287,18 +1287,18 @@
     "name": "classic130_wrap_and_indent",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1150,
+    "minipdf_size": 1253,
     "reference_size": 36937,
     "minipdf_pages": 1,
     "reference_pages": 1,
     "text_similarity": 1.0,
     "flat_text_similarity": 0.9892,
     "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/classic130_wrap_and_indent.pdf\n+++ reference/classic130_wrap_and_indent.pdf\n@@ -1,5 +1,7 @@\n Wrapped Text Indented Text\n\n-This is a long text that should wrap within the cell when text wrapping is enabled.\n\n+This is a long text that should wrap\n\n+within the cell when text wrapping\n\n+is enabled.\n\n Indent level 0\n\n Indent level 1\n\n Indent level 2\n",
+    "text_diff": "--- minipdf/classic130_wrap_and_indent.pdf\n+++ reference/classic130_wrap_and_indent.pdf\n@@ -1,7 +1,7 @@\n Wrapped Text Indented Text\n\n This is a long text that should wrap\n\n-within the cell when text wrapping is\n\n-enabled.\n\n+within the cell when text wrapping\n\n+is enabled.\n\n Indent level 0\n\n Indent level 1\n\n Indent level 2\n",
     "visual_scores": [
-      0.9867
+      0.9925
     ],
-    "visual_avg": 0.9867,
+    "visual_avg": 0.9925,
     "diff_images": [
       {
         "page": 1,
@@ -1306,7 +1306,7 @@
         "reference_img": "classic130_wrap_and_indent_p1_reference.png"
       }
     ],
-    "overall_score": 0.9947
+    "overall_score": 0.997
   },
   {
     "name": "classic131_number_formats",
@@ -3148,21 +3148,21 @@
     "name": "classic191_payroll_calculator",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 103798,
+    "minipdf_size": 104154,
     "reference_size": 136710,
     "minipdf_pages": 9,
     "reference_pages": 9,
-    "text_similarity": 0.8401,
-    "flat_text_similarity": 0.7853,
-    "word_text_similarity": 0.8401,
-    "text_diff": "--- minipdf/classic191_payroll_calculator.pdf\n+++ reference/classic191_payroll_calculator.pdf\n@@ -7,50 +7,61 @@\n 4 Rachel Kim F 2016-08-03 HR Specialist\n\n 5 Carlos Ruiz M 2019-11-20 Sales Rep\n\n ---PAGE---\n\n-Annual Salary ($) Regular Hourly Rate ( Overtime Hourly Rate Exempt from Overtim Pay Frequency\n\n-42,000.00 20.19 30.29 Yes Monthly\n\n-54,481.00 26.19 39.29 Yes Monthly\n\n-48,785.00 23.45 35.18 No Monthly\n\n-39,500.00 19.00 28.50 Yes Bi-Weekly\n\n-51,200.00 24.62 36.92 No Monthly\n\n+Regular Hourly Overtime Hourly Exempt from\n\n+Annual Salary ($) Pay Frequency W-4 Form\n\n+Rate ($) Rate ($) Overtime\n\n+42,000.00 20.19 30.29 Yes Monthly W-4 (2020+)\n\n+54,481.00 26.19 39.29 Yes Monthly W-4 (2020+)\n\n+48,785.00 23.45 35.18 No Monthly W-4 (pre-2020)\n\n+39,500.00 19.00 28.50 Yes Bi-Weekly W-4 (2020+)\n\n+51,200.00 24.62 36.92 No Monthly W-4 (2020+)\n\n ---PAGE---\n\n-W-4 Form Filing Status Federal AllowanceAdditional Withhold ($)\n\n-W-4 (2020+) Exempt 2 50.00\n\n-W-4 (2020+) Married 4 0.00\n\n-W-4 (pre-2020) Married 4 0.00\n\n-W-4 (2020+) Single 1 25.00\n\n-W-4 (2020+) Single 0 0.00\n\n+Federal Additional\n\n+Filing Status\n\n+Allowance Withhold ($)\n\n+Exempt 2 50.00\n\n+Married 4 0.00\n\n+Married 4 0.00\n\n+Single 1 25.00\n\n+Single 0 0.00\n\n ---PAGE---\n\n Payroll Calculator\n\n-Pay Period Hours\n\n-ID Employee Name From To Regular Hours\n\n-1 Adam Jones 2020-12-01 2020-12-31 173.33\n\n-2 Nichola Brown 2020-12-01 2020-12-31 173.33\n\n-3 Benny Erwin 2020-12-01 2020-12-31 173.33\n\n-4 Rachel Kim 2020-12-01 2020-12-31 80.00\n\n-5 Carlos Ruiz 2020-12-01 2020-12-31 173.33\n\n+Pay Period\n\n+ID Employee Name From To Regular Hours Holiday Hours\n\n+1 Adam Jones 2020-12-01 2020-12-31 173.33 0.00\n\n+2 Nichola Brown 2020-12-01 2020-12-31 173.33 0.00\n\n+3 Benny Erwin 2020-12-01 2020-12-31 173.33 0.00\n\n+4 Rachel Kim 2020-12-01 2020-12-31 80.00 8.00\n\n+5 Carlos Ruiz 2020-12-01 2020-12-31 173.33 0.00\n\n ---PAGE---\n\n-Holiday Hours Vacation Hours Sick Hours Overtime Hours Taxable Compensat Pre-Tax Deductions\n\n-0.00 0.00 0.00 0.00 500.00 0.00\n\n+Hours\n\n+Post-Tax\n\n+Taxable Pre-Tax\n\n+Vacation Hours Sick Hours Overtime Hours Reimbursement\n\n+Compensation Deductions\n\n+s\n\n+0.00 0.00 0.00 500.00 0.00 500.00\n\n 0.00 0.00 0.00 0.00 0.00 0.00\n\n-0.00 0.00 0.00 8.00 0.00 0.00\n\n-8.00 0.00 0.00 0.00 0.00 0.00\n\n-0.00 16.00 0.00 4.00 200.00 0.00\n\n+0.00 0.00 8.00 0.00 0.00 0.00\n\n+0.00 0.00 0.00 0.00 0.00 0.00\n\n+16.00 0.00 4.00 200.00 0.00 200.00\n\n ---PAGE---\n\n Pre-Tax Adjustments Withholdings\n\n-Post-Tax Reimburse Gross Pay Tax Deferral Plan (4 Health Insurance Other Federal Tax\n\n-500.00 3,999.60 139.98 0.00 0.00 319.49\n\n-0.00 4,539.60 136.19 0.00 0.00 346.74\n\n-0.00 4,346.11 195.57 0.00 0.00 110.89\n\n-0.00 1,685.58 50.57 120.00 0.00 142.30\n\n-200.00 4,613.00 138.39 0.00 0.00 360.20\n\n+Tax Deferral Health\n\n+Gross Pay Other Federal Tax State Tax\n\n+Plan (401k) Insurance\n\n+3,999.60 139.98 0.00 0.00 319.49 178.70\n\n+4,539.60 136.19 0.00 0.00 346.74 203.88\n\n+4,346.11 195.57 0.00 0.00 110.89 192.17\n\n+1,685.58 50.57 120.00 0.00 142.30 78.50\n\n+4,613.00 138.39 0.00 0.00 360.20 210.45\n\n ---PAGE---\n\n-State Tax Local Tax\n\n-178.70 0.00\n\n-203.88 0.00\n\n-192.17 0.00\n\n-78.50 0.00\n\n-210.45 0.00\n\n+Local Tax\n\n+0.00\n\n+0.00\n\n+0.00\n\n+0.00\n\n+0.00\n\n ---PAGE---\n\n ABC Company\n\n 111 Street Name\n",
+    "text_similarity": 0.8741,
+    "flat_text_similarity": 0.8031,
+    "word_text_similarity": 0.8741,
+    "text_diff": "--- minipdf/classic191_payroll_calculator.pdf\n+++ reference/classic191_payroll_calculator.pdf\n@@ -7,58 +7,61 @@\n 4 Rachel Kim F 2016-08-03 HR Specialist\n\n 5 Carlos Ruiz M 2019-11-20 Sales Rep\n\n ---PAGE---\n\n-Regular Hourly Rate Overtime Hourly Exempt from\n\n-Annual Salary ($) Pay Frequency\n\n-($) Rate ($) Overtime\n\n-42,000.00 20.19 30.29 Yes Monthly\n\n-54,481.00 26.19 39.29 Yes Monthly\n\n-48,785.00 23.45 35.18 No Monthly\n\n-39,500.00 19.00 28.50 Yes Bi-Weekly\n\n-51,200.00 24.62 36.92 No Monthly\n\n+Regular Hourly Overtime Hourly Exempt from\n\n+Annual Salary ($) Pay Frequency W-4 Form\n\n+Rate ($) Rate ($) Overtime\n\n+42,000.00 20.19 30.29 Yes Monthly W-4 (2020+)\n\n+54,481.00 26.19 39.29 Yes Monthly W-4 (2020+)\n\n+48,785.00 23.45 35.18 No Monthly W-4 (pre-2020)\n\n+39,500.00 19.00 28.50 Yes Bi-Weekly W-4 (2020+)\n\n+51,200.00 24.62 36.92 No Monthly W-4 (2020+)\n\n ---PAGE---\n\n-Additional Withhold\n\n-W-4 Form Filing Status Federal Allowance\n\n-($)\n\n-W-4 (2020+) Exempt 2 50.00\n\n-W-4 (2020+) Married 4 0.00\n\n-W-4 (pre-2020) Married 4 0.00\n\n-W-4 (2020+) Single 1 25.00\n\n-W-4 (2020+) Single 0 0.00\n\n+Federal Additional\n\n+Filing Status\n\n+Allowance Withhold ($)\n\n+Exempt 2 50.00\n\n+Married 4 0.00\n\n+Married 4 0.00\n\n+Single 1 25.00\n\n+Single 0 0.00\n\n ---PAGE---\n\n Payroll Calculator\n\n-Pay Period Hours\n\n-ID Employee Name From To Regular Hours\n\n-1 Adam Jones 2020-12-01 2020-12-31 173.33\n\n-2 Nichola Brown 2020-12-01 2020-12-31 173.33\n\n-3 Benny Erwin 2020-12-01 2020-12-31 173.33\n\n-4 Rachel Kim 2020-12-01 2020-12-31 80.00\n\n-5 Carlos Ruiz 2020-12-01 2020-12-31 173.33\n\n+Pay Period\n\n+ID Employee Name From To Regular Hours Holiday Hours\n\n+1 Adam Jones 2020-12-01 2020-12-31 173.33 0.00\n\n+2 Nichola Brown 2020-12-01 2020-12-31 173.33 0.00\n\n+3 Benny Erwin 2020-12-01 2020-12-31 173.33 0.00\n\n+4 Rachel Kim 2020-12-01 2020-12-31 80.00 8.00\n\n+5 Carlos Ruiz 2020-12-01 2020-12-31 173.33 0.00\n\n ---PAGE---\n\n-Taxable Compensat\n\n-Holiday Hours Vacation Hours Sick Hours Overtime Hours Pre-Tax Deductions\n\n-ion\n\n-0.00 0.00 0.00 0.00 500.00 0.00\n\n+Hours\n\n+Post-Tax\n\n+Taxable Pre-Tax\n\n+Vacation Hours Sick Hours Overtime Hours Reimbursement\n\n+Compensation Deductions\n\n+s\n\n+0.00 0.00 0.00 500.00 0.00 500.00\n\n 0.00 0.00 0.00 0.00 0.00 0.00\n\n-0.00 0.00 0.00 8.00 0.00 0.00\n\n-8.00 0.00 0.00 0.00 0.00 0.00\n\n-0.00 16.00 0.00 4.00 200.00 0.00\n\n+0.00 0.00 8.00 0.00 0.00 0.00\n\n+0.00 0.00 0.00 0.00 0.00 0.00\n\n+16.00 0.00 4.00 200.00 0.00 200.00\n\n ---PAGE---\n\n Pre-Tax Adjustments Withholdings\n\n-Post-Tax Reimburse Tax Deferral Plan\n\n-Gross Pay Health Insurance Other Federal Tax\n\n-ments (401k)\n\n-500.00 3,999.60 139.98 0.00 0.00 319.49\n\n-0.00 4,539.60 136.19 0.00 0.00 346.74\n\n-0.00 4,346.11 195.57 0.00 0.00 110.89\n\n-0.00 1,685.58 50.57 120.00 0.00 142.30\n\n-200.00 4,613.00 138.39 0.00 0.00 360.20\n\n+Tax Deferral Health\n\n+Gross Pay Other Federal Tax State Tax\n\n+Plan (401k) Insurance\n\n+3,999.60 139.98 0.00 0.00 319.49 178.70\n\n+4,539.60 136.19 0.00 0.00 346.74 203.88\n\n+4,346.11 195.57 0.00 0.00 110.89 192.17\n\n+1,685.58 50.57 120.00 0.00 142.30 78.50\n\n+4,613.00 138.39 0.00 0.00 360.20 210.45\n\n ---PAGE---\n\n-State Tax Local Tax\n\n-178.70 0.00\n\n-203.88 0.00\n\n-192.17 0.00\n\n-78.50 0.00\n\n-210.45 0.00\n\n+Local Tax\n\n+0.00\n\n+0.00\n\n+0.00\n\n+0.00\n\n+0.00\n\n ---PAGE---\n\n ABC Company\n\n 111 Street Name\n",
     "visual_scores": [
       0.9444,
       0.8034,
-      0.8923,
+      0.8924,
       0.8985,
       0.8232,
-      0.8165,
+      0.8164,
       0.9552,
       0.9652,
       0.9804
@@ -3215,7 +3215,7 @@
         "reference_img": "classic191_payroll_calculator_p9_reference.png"
       }
     ],
-    "overall_score": 0.8951
+    "overall_score": 0.9087
   },
   {
     "name": "classic19_single_column_list",
