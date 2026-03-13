@@ -17,6 +17,29 @@ internal static class DocxReader
     private static readonly XNamespace REL = "http://schemas.openxmlformats.org/package/2006/relationships";
 
     /// <summary>
+    /// Unwraps SDT (Structured Document Tag) elements by replacing them with their sdtContent children.
+    /// </summary>
+    private static IEnumerable<XElement> UnwrapSdt(IEnumerable<XElement> elements)
+    {
+        foreach (var el in elements)
+        {
+            if (el.Name == W + "sdt")
+            {
+                var content = el.Element(W + "sdtContent");
+                if (content != null)
+                {
+                    foreach (var inner in UnwrapSdt(content.Elements()))
+                        yield return inner;
+                }
+            }
+            else
+            {
+                yield return el;
+            }
+        }
+    }
+
+    /// <summary>
     /// Reads a DOCX file and returns a structured document model.
     /// </summary>
     internal static DocxDocument Read(Stream stream)
@@ -46,7 +69,7 @@ internal static class DocxReader
         var elements = new List<DocxElement>();
         var styleListCounter = 0; // counter for style-based numbered lists
 
-        foreach (var child in body.Elements())
+        foreach (var child in UnwrapSdt(body.Elements()))
         {
             if (child.Name == W + "p")
             {
@@ -108,6 +131,7 @@ internal static class DocxReader
         string? styleId = null;
         bool bold = false;
         bool italic = false;
+        bool caps = false;
         float fontSize = 0;
         PdfColor? color = null;
         PdfColor? paragraphShading = null;
@@ -238,6 +262,7 @@ internal static class DocxReader
             {
                 bold = rPr.Element(W + "b") != null;
                 italic = rPr.Element(W + "i") != null;
+                if (rPr.Element(W + "caps") != null) caps = true;
                 var sz = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
                 if (float.TryParse(sz, out var s))
                     fontSize = s / 2f; // half-points to points
@@ -252,6 +277,7 @@ internal static class DocxReader
             if (fontSize == 0) fontSize = styleInfo.FontSize;
             if (!bold) bold = styleInfo.Bold;
             if (!italic) italic = styleInfo.Italic;
+            if (!caps) caps = styleInfo.Caps;
             if (color == null) color = styleInfo.Color;
             if (alignment == "left" && !string.IsNullOrEmpty(styleInfo.Alignment))
                 alignment = styleInfo.Alignment;
@@ -259,12 +285,26 @@ internal static class DocxReader
             if (spacingAfter < 0) spacingAfter = styleInfo.SpacingAfter;
         }
 
-        // Read runs
-        foreach (var child in pElement.Elements())
+        // Read runs (with field code tracking)
+        int fieldDepth = 0;
+        bool inFieldInstr = false; // between begin and separate
+        foreach (var child in UnwrapSdt(pElement.Elements()))
         {
             if (child.Name == W + "r")
             {
-                var run = ReadRun(child, bold, italic, fontSize, color);
+                // Track field codes: skip instrText and PAGE field display values
+                var fldChar = child.Element(W + "fldChar");
+                if (fldChar != null)
+                {
+                    var fldType = fldChar.Attribute(W + "fldCharType")?.Value;
+                    if (fldType == "begin") { fieldDepth++; inFieldInstr = true; continue; }
+                    if (fldType == "separate") { inFieldInstr = false; continue; }
+                    if (fldType == "end") { fieldDepth--; if (fieldDepth <= 0) { fieldDepth = 0; inFieldInstr = false; } continue; }
+                }
+                if (child.Element(W + "instrText") != null) continue; // skip field instruction text
+                if (fieldDepth > 0 && !inFieldInstr) continue; // skip cached display value of field codes
+
+                var run = ReadRun(child, bold, italic, fontSize, color, caps);
                 if (run != null)
                 {
                     if (run.IsPageBreak)
@@ -287,7 +327,7 @@ internal static class DocxReader
                 // Extract text from hyperlink runs
                 foreach (var r in child.Elements(W + "r"))
                 {
-                    var run = ReadRun(r, bold, italic, fontSize, color);
+                    var run = ReadRun(r, bold, italic, fontSize, color, caps);
                     if (run != null)
                         runs.Add(run);
                 }
@@ -324,18 +364,20 @@ internal static class DocxReader
         return new DocxBorderEdge(Math.Max(0.5f, width), color);
     }
 
-    private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor)
+    private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor, bool parentCaps = false)
     {
         var rPr = rElement.Element(W + "rPr");
         var bold = parentBold;
         var italic = parentItalic;
         var fontSize = parentFontSize;
         var color = parentColor;
+        var caps = parentCaps;
 
         if (rPr != null)
         {
             if (rPr.Element(W + "b") != null) bold = true;
             if (rPr.Element(W + "i") != null) italic = true;
+            if (rPr.Element(W + "caps") != null) caps = true;
             var sz = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
             if (float.TryParse(sz, out var s) && s > 0)
                 fontSize = s / 2f; // half-points to points
@@ -364,6 +406,9 @@ internal static class DocxReader
 
         if (string.IsNullOrEmpty(text) && !isPageBreak)
             return null;
+
+        if (caps && !string.IsNullOrEmpty(text))
+            text = text.ToUpperInvariant();
 
         return new DocxRun(text, bold, italic, fontSize, color, isPageBreak);
     }
@@ -436,6 +481,8 @@ internal static class DocxReader
         var tblBorders = tblPr?.Element(W + "tblBorders");
         if (tblBorders != null)
         {
+            // Explicit tblBorders overrides style-level default
+            hasBorders = false;
             foreach (var side in new[] { "top", "bottom", "left", "right", "insideH", "insideV" })
             {
                 var val = tblBorders.Element(W + side)?.Attribute(W + "val")?.Value;
@@ -460,7 +507,7 @@ internal static class DocxReader
             foreach (var tc in tr.Elements(W + "tc"))
             {
                 var cellParagraphs = new List<DocxParagraph>();
-                foreach (var child in tc.Elements())
+                foreach (var child in UnwrapSdt(tc.Elements()))
                 {
                     if (child.Name == W + "p")
                     {
@@ -498,6 +545,7 @@ internal static class DocxReader
                 float cellWidth = 0;
                 int gridSpan = 1;
                 PdfColor? shading = null;
+                DocxBorders? cellBorders = null;
 
                 if (tcPr != null)
                 {
@@ -516,9 +564,20 @@ internal static class DocxReader
                         if (!string.IsNullOrEmpty(fill) && fill != "auto")
                             shading = PdfColor.FromHex(fill);
                     }
+
+                    var tcBorders = tcPr.Element(W + "tcBorders");
+                    if (tcBorders != null)
+                    {
+                        cellBorders = new DocxBorders(
+                            Top: ReadBorderEdge(tcBorders.Element(W + "top")),
+                            Bottom: ReadBorderEdge(tcBorders.Element(W + "bottom")),
+                            Left: ReadBorderEdge(tcBorders.Element(W + "left")),
+                            Right: ReadBorderEdge(tcBorders.Element(W + "right"))
+                        );
+                    }
                 }
 
-                cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading));
+                cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading, cellBorders));
             }
             rows.Add(new DocxTableRow(cells));
         }
@@ -663,10 +722,19 @@ internal static class DocxReader
             }
         }
 
-        foreach (var style in doc.Descendants(W + "style"))
+        // Two-pass style reading: first pass populates all styles, second pass resolves basedOn inheritance
+        var styleElements = doc.Descendants(W + "style").ToList();
+        var basedOnMap = new Dictionary<string, string>(); // styleId -> basedOn styleId
+
+        // First pass: read all styles without inheritance
+        foreach (var style in styleElements)
         {
             var styleId = style.Attribute(W + "styleId")?.Value;
             if (string.IsNullOrEmpty(styleId)) continue;
+
+            var basedOn = style.Element(W + "basedOn")?.Attribute(W + "val")?.Value;
+            if (!string.IsNullOrEmpty(basedOn))
+                basedOnMap[styleId] = basedOn;
 
             var rPr = style.Element(W + "rPr");
             var pPr = style.Element(W + "pPr");
@@ -678,11 +746,13 @@ internal static class DocxReader
             string alignment = "";
             float spacingBefore = defaultSpacingBefore;
             float spacingAfter = defaultSpacingAfter;
+            bool caps = false;
 
             if (rPr != null)
             {
-                bold = rPr.Element(W + "b") != null;
-                italic = rPr.Element(W + "i") != null;
+                if (rPr.Element(W + "b") != null) bold = true;
+                if (rPr.Element(W + "i") != null) italic = true;
+                if (rPr.Element(W + "caps") != null) caps = true;
                 var sz = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
                 if (float.TryParse(sz, out var s) && s > 0)
                     fontSize = s / 2f;
@@ -691,7 +761,9 @@ internal static class DocxReader
 
             if (pPr != null)
             {
-                alignment = pPr.Element(W + "jc")?.Attribute(W + "val")?.Value ?? "";
+                var jc = pPr.Element(W + "jc")?.Attribute(W + "val")?.Value;
+                if (!string.IsNullOrEmpty(jc))
+                    alignment = jc;
                 var spacing = pPr.Element(W + "spacing");
                 if (spacing != null)
                 {
@@ -709,7 +781,33 @@ internal static class DocxReader
                 bold = true;
             }
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps);
+        }
+
+        // Second pass: resolve basedOn inheritance
+        foreach (var style in styleElements)
+        {
+            var styleId = style.Attribute(W + "styleId")?.Value;
+            if (string.IsNullOrEmpty(styleId)) continue;
+            if (!basedOnMap.TryGetValue(styleId, out var basedOnId)) continue;
+            if (!styles.TryGetValue(basedOnId, out var baseStyle)) continue;
+            if (!styles.TryGetValue(styleId, out var current)) continue;
+
+            var rPr = style.Element(W + "rPr");
+            var pPr = style.Element(W + "pPr");
+
+            // Merge: base values overridden by explicitly set values
+            var fontSize = current.FontSize;
+            if (rPr?.Element(W + "sz") == null) fontSize = baseStyle.FontSize;
+            var bold = current.Bold || baseStyle.Bold;
+            var italic = current.Italic || baseStyle.Italic;
+            var caps2 = current.Caps || baseStyle.Caps;
+            var color2 = current.Color ?? baseStyle.Color;
+            var alignment = !string.IsNullOrEmpty(current.Alignment) ? current.Alignment : baseStyle.Alignment;
+            var spacingBefore = current.SpacingBefore > 0 ? current.SpacingBefore : baseStyle.SpacingBefore;
+            var spacingAfter = current.SpacingAfter >= 0 ? current.SpacingAfter : baseStyle.SpacingAfter;
+
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2);
         }
 
         return styles;
@@ -854,7 +952,8 @@ internal sealed record DocxTableCell(
     List<DocxParagraph> Paragraphs,
     float Width = 0,
     int GridSpan = 1,
-    PdfColor? Shading = null
+    PdfColor? Shading = null,
+    DocxBorders? Borders = null
 );
 
 /// <summary>Style definition from styles.xml.</summary>
@@ -865,7 +964,8 @@ internal sealed record DocxStyleInfo(
     PdfColor? Color = null,
     string Alignment = "",
     float SpacingBefore = 0,
-    float SpacingAfter = -1
+    float SpacingAfter = -1,
+    bool Caps = false
 );
 
 /// <summary>Numbering definition for lists.</summary>
