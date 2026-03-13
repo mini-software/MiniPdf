@@ -582,28 +582,60 @@ internal static class DocxToPdfConverter
                     ci += cell.GridSpan - 1;
             }
 
-            // Draw table borders as grid lines (once per boundary, not per cell)
-            if (table.HasBorders)
+            // Draw per-cell borders (or fall back to table-level grid)
             {
-                var borderColor = PdfColor.FromRgb(0, 0, 0);
-                const float borderWidth = 0.5f;
-                var tableLeft = options.MarginLeft;
-                var tableRight = options.MarginLeft + colWidths.Sum();
                 var rowTop = state.CurrentY;
                 var rowBottom = state.CurrentY - rowHeight;
+                var bx = options.MarginLeft;
+                var bci = 0;
+                var hasAnyCellBorder = row.Cells.Any(c => c.Borders != null);
 
-                // Top horizontal line (only for first row on this page)
-                if (isFirstRow)
-                    state.CurrentPage!.AddLine(tableLeft, rowTop, tableRight, rowTop, borderColor, borderWidth);
-                // Bottom horizontal line
-                state.CurrentPage!.AddLine(tableLeft, rowBottom, tableRight, rowBottom, borderColor, borderWidth);
-
-                // Vertical lines for column boundaries
-                var vx = tableLeft;
-                for (var c = 0; c <= colCount; c++)
+                if (hasAnyCellBorder)
                 {
-                    state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, borderColor, borderWidth);
-                    if (c < colCount) vx += colWidths[c];
+                    // Per-cell borders
+                    foreach (var cell in row.Cells)
+                    {
+                        if (bci >= colWidths.Length) break;
+                        var bCellWidth = colWidths[bci];
+                        if (cell.GridSpan > 1)
+                            for (var g = 1; g < cell.GridSpan && bci + g < colWidths.Length; g++)
+                                bCellWidth += colWidths[bci + g];
+
+                        var borders = cell.Borders;
+                        if (borders != null)
+                        {
+                            if (borders.Top != null)
+                                state.CurrentPage!.AddLine(bx, rowTop, bx + bCellWidth, rowTop, borders.Top.Color, borders.Top.Width);
+                            if (borders.Bottom != null)
+                                state.CurrentPage!.AddLine(bx, rowBottom, bx + bCellWidth, rowBottom, borders.Bottom.Color, borders.Bottom.Width);
+                            if (borders.Left != null)
+                                state.CurrentPage!.AddLine(bx, rowTop, bx, rowBottom, borders.Left.Color, borders.Left.Width);
+                            if (borders.Right != null)
+                                state.CurrentPage!.AddLine(bx + bCellWidth, rowTop, bx + bCellWidth, rowBottom, borders.Right.Color, borders.Right.Width);
+                        }
+
+                        bx += bCellWidth;
+                        bci += cell.GridSpan > 1 ? cell.GridSpan : 1;
+                    }
+                }
+                else if (table.HasBorders)
+                {
+                    // Fall back to table-level grid
+                    var borderColor = PdfColor.FromRgb(0, 0, 0);
+                    const float borderWidth = 0.5f;
+                    var tableLeft = options.MarginLeft;
+                    var tableRight = options.MarginLeft + colWidths.Sum();
+
+                    if (isFirstRow)
+                        state.CurrentPage!.AddLine(tableLeft, rowTop, tableRight, rowTop, borderColor, borderWidth);
+                    state.CurrentPage!.AddLine(tableLeft, rowBottom, tableRight, rowBottom, borderColor, borderWidth);
+
+                    var vx = tableLeft;
+                    for (var c = 0; c <= colCount; c++)
+                    {
+                        state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, borderColor, borderWidth);
+                        if (c < colCount) vx += colWidths[c];
+                    }
                 }
             }
 
