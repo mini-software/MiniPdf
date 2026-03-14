@@ -2455,7 +2455,7 @@ internal static class ExcelToPdfConverter
     };
 
     /// <summary>Calibri-to-Helvetica scale factor used by truncation and fitting functions.</summary>
-    private const double CalibriFittingScale = 0.86;
+    private const double CalibriFittingScale = 0.84;
 
     /// <summary>
     /// Measures text width more precisely using Helvetica character widths (in 1/1000 em units).
