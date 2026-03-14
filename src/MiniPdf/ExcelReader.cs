@@ -1893,15 +1893,20 @@ internal static class ExcelReader
             var extEl = anchor.Element(xdr + "ext");
 
             int fromRow = 0, fromCol = 0, toRow = 1, toCol = 1;
+            long fromColOff = 0, fromRowOff = 0, toColOff = 0, toRowOff = 0;
             if (fromEl != null)
             {
                 int.TryParse(fromEl.Element(xdr + "row")?.Value, out fromRow);
                 int.TryParse(fromEl.Element(xdr + "col")?.Value, out fromCol);
+                long.TryParse(fromEl.Element(xdr + "colOff")?.Value, out fromColOff);
+                long.TryParse(fromEl.Element(xdr + "rowOff")?.Value, out fromRowOff);
             }
             if (toEl != null)
             {
                 int.TryParse(toEl.Element(xdr + "row")?.Value, out toRow);
                 int.TryParse(toEl.Element(xdr + "col")?.Value, out toCol);
+                long.TryParse(toEl.Element(xdr + "colOff")?.Value, out toColOff);
+                long.TryParse(toEl.Element(xdr + "rowOff")?.Value, out toRowOff);
             }
 
             // For oneCellAnchor / absoluteAnchor, read EMU size from <ext cx cy>.
@@ -1943,7 +1948,11 @@ internal static class ExcelReader
                 Data: imageData,
                 Extension: ext,
                 WidthEmu: widthEmu,
-                HeightEmu: heightEmu
+                HeightEmu: heightEmu,
+                FromColOffEmu: fromColOff,
+                FromRowOffEmu: fromRowOff,
+                ToColOffEmu: toColOff,
+                ToRowOffEmu: toRowOff
             ));
         }
 
@@ -2492,7 +2501,11 @@ internal sealed record ExcelEmbeddedImage(
     byte[] Data,      // raw image bytes (JPEG or PNG)
     string Extension, // file extension without dot, lower-case, e.g. "jpg"
     long WidthEmu = 0,    // explicit EMU width from <ext>, 0 = not set
-    long HeightEmu = 0    // explicit EMU height from <ext>, 0 = not set
+    long HeightEmu = 0,   // explicit EMU height from <ext>, 0 = not set
+    long FromColOffEmu = 0,  // sub-cell X offset from left edge of AnchorCol (EMU)
+    long FromRowOffEmu = 0,  // sub-cell Y offset from top edge of AnchorRow (EMU)
+    long ToColOffEmu = 0,    // sub-cell X offset within the "to" column (EMU)
+    long ToRowOffEmu = 0     // sub-cell Y offset within the "to" row (EMU)
 );
 
 /// <summary>
