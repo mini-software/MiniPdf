@@ -19,6 +19,8 @@ Una libreria .NET minimale e senza dipendenze per convertire file Office in PDF.
 
 👉 **[Demo online](https://mini-software.github.io/MiniPdf/)** — Provalo nel browser, nessuna installazione richiesta.
 
+> ⚠️ A causa dei font limitati disponibili nel browser, i risultati del rendering potrebbero non essere ottimali. Per la migliore esperienza, si consiglia di testare localmente sul proprio computer.
+
 ## Funzionalità
 
 - **Excel → PDF** — Converte file `.xlsx` in PDF paginati con layout automatico delle colonne

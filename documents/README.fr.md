@@ -19,6 +19,8 @@ Une bibliothèque .NET minimale et sans dépendance pour convertir des fichiers 
 
 👉 **[Démo en ligne](https://mini-software.github.io/MiniPdf/)** — Essayez directement dans votre navigateur, aucune installation requise.
 
+> ⚠️ En raison des polices limitées disponibles dans le navigateur, le rendu peut ne pas être optimal. Pour de meilleurs résultats, veuillez tester localement sur votre machine.
+
 ## Fonctionnalités
 
 - **Excel → PDF** — Convertit les fichiers `.xlsx` en PDF paginés avec mise en page automatique des colonnes

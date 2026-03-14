@@ -19,6 +19,8 @@
 
 👉 **[在线演示](https://mini-software.github.io/MiniPdf/)** — 在浏览器中快速体验，无需安装。
 
+> ⚠️ 由于浏览器可用字体有限，渲染效果可能不够理想。建议在本地电脑上测试以获得最佳效果。
+
 ---
 
 <div align="center">
