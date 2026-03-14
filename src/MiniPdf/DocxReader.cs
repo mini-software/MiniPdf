@@ -1,4 +1,7 @@
 using System.IO.Compression;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Xml.Linq;
 
 namespace MiniSoftware;
@@ -155,8 +158,10 @@ internal static class DocxReader
         // Read header/footer content
         var headerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "headerReference");
         var footerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "footerReference");
+        var headerShapes = ReadHeaderFooterShapes(body, relationships, archive, "headerReference", themeColors);
+        var footerShapes = ReadHeaderFooterShapes(body, relationships, archive, "footerReference", themeColors);
 
-        return new DocxDocument(elements, pageLayout, headerText, footerText);
+        return new DocxDocument(elements, pageLayout, headerText, footerText, headerShapes, footerShapes);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -571,6 +576,21 @@ internal static class DocxReader
         var ext = Path.GetExtension(target).TrimStart('.').ToLowerInvariant();
         if (ext == "jpeg") ext = "jpg";
 
+        // Convert vector signatures (EMF/WMF) to PNG so they can be embedded in PDF.
+        if (ext is "emf" or "wmf")
+        {
+            var converted = TryConvertMetafileToPng(data, widthEmu, heightEmu);
+            if (converted != null)
+            {
+                data = converted;
+                ext = "png";
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         // Read anchor position offsets
         long offsetXEmu = 0, offsetYEmu = 0;
         if (isAnchor)
@@ -590,6 +610,47 @@ internal static class DocxReader
         }
 
         return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu);
+    }
+
+    private static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu)
+    {
+        if (!OperatingSystem.IsWindows())
+            return null;
+
+        try
+        {
+            // Keep source stream alive for Metafile lifetime.
+            using var srcStream = new MemoryStream(sourceBytes, writable: false);
+            using var meta = new Metafile(srcStream);
+
+            var aspect = widthEmu > 0 && heightEmu > 0
+                ? (double)widthEmu / heightEmu
+                : (meta.Width > 0 && meta.Height > 0 ? (double)meta.Width / meta.Height : 1.0);
+
+            var targetHeight = 256;
+            var targetWidth = (int)Math.Round(targetHeight * aspect);
+            targetWidth = Math.Clamp(targetWidth, 32, 4096);
+            targetHeight = Math.Clamp(targetHeight, 32, 4096);
+
+            using var bmp = new Bitmap(targetWidth, targetHeight, PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(bmp))
+            {
+                g.Clear(Color.Transparent);
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                g.DrawImage(meta, new Rectangle(0, 0, targetWidth, targetHeight));
+            }
+
+            using var outStream = new MemoryStream();
+            bmp.Save(outStream, ImageFormat.Png);
+            return outStream.ToArray();
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     /// <summary>
@@ -924,6 +985,41 @@ internal static class DocxReader
         return texts.Count > 0 ? string.Join("\n", texts) : null;
     }
 
+    private static List<DocxShape> ReadHeaderFooterShapes(
+        XElement body,
+        Dictionary<string, string> relationships,
+        ZipArchive archive,
+        string refElementName,
+        Dictionary<string, string>? themeColors = null)
+    {
+        var sectPr = body.Element(W + "sectPr");
+        if (sectPr == null) return [];
+
+        var hfRef = sectPr.Element(W + refElementName);
+        if (hfRef == null) return [];
+
+        var rId = hfRef.Attribute(R + "id")?.Value;
+        if (string.IsNullOrEmpty(rId) || !relationships.TryGetValue(rId, out var target))
+            return [];
+
+        var path = target.StartsWith("/") ? target.TrimStart('/') : "word/" + target;
+        var entry = archive.GetEntry(path);
+        if (entry == null) return [];
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var shapes = new List<DocxShape>();
+
+        foreach (var drawing in doc.Descendants(W + "drawing"))
+        {
+            var shape = ReadAnchorShape(drawing, themeColors);
+            if (shape != null)
+                shapes.Add(shape);
+        }
+
+        return shapes;
+    }
+
     private static DocxPageLayout ParseSectionProperties(XElement sectPr)
     {
         const float twipsToPoints = 1f / 20f;
@@ -1161,7 +1257,14 @@ internal static class DocxReader
 // ── Document model ──────────────────────────────────────────────────────
 
 /// <summary>Represents a parsed DOCX document.</summary>
-internal sealed record DocxDocument(List<DocxElement> Elements, DocxPageLayout? PageLayout = null, string? HeaderText = null, string? FooterText = null);
+internal sealed record DocxDocument(
+    List<DocxElement> Elements,
+    DocxPageLayout? PageLayout = null,
+    string? HeaderText = null,
+    string? FooterText = null,
+    List<DocxShape>? HeaderShapes = null,
+    List<DocxShape>? FooterShapes = null
+);
 
 /// <summary>Page layout settings from sectPr.</summary>
 internal sealed record DocxPageLayout(
