@@ -55,6 +55,9 @@ internal static class DocxReader
         // Read numbering definitions (for list bullets/numbers)
         var numbering = ReadNumbering(archive);
 
+        // Read theme colors for resolving schemeClr references
+        var themeColors = ReadThemeColors(archive);
+
         // Read main document
         var entry = archive.GetEntry("word/document.xml");
         if (entry == null)
@@ -73,7 +76,7 @@ internal static class DocxReader
         {
             if (child.Name == W + "p")
             {
-                var paragraph = ReadParagraph(child, styles, numbering, relationships, archive);
+                var paragraph = ReadParagraph(child, styles, numbering, relationships, archive, themeColors);
                 if (paragraph != null)
                 {
                     // Fix up style-based numbered list counter
@@ -108,10 +111,12 @@ internal static class DocxReader
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
-        Dictionary<string, DocxNumberingDef> numbering, Dictionary<string, string> relationships, ZipArchive archive)
+        Dictionary<string, DocxNumberingDef> numbering, Dictionary<string, string> relationships, ZipArchive archive,
+        Dictionary<string, string>? themeColors = null)
     {
         var runs = new List<DocxRun>();
         var images = new List<DocxImage>();
+        var shapes = new List<DocxShape>();
 
         // Read paragraph properties
         var pPr = pElement.Element(W + "pPr");
@@ -119,6 +124,7 @@ internal static class DocxReader
         float spacingBefore = 0;
         float spacingAfter = -1;
         float lineSpacing = 0;
+        bool lineSpacingAbsolute = false;
         float indentLeft = 0;
         float indentRight = 0;
         float indentFirstLine = 0;
@@ -137,6 +143,7 @@ internal static class DocxReader
         PdfColor? paragraphShading = null;
         List<DocxTabStop>? tabStops = null;
         DocxBorders? borders = null;
+        float charSpacing = 0;
 
         if (pPr != null)
         {
@@ -159,7 +166,8 @@ internal static class DocxReader
                 if (int.TryParse(spacing.Attribute(W + "line")?.Value, out var sl))
                 {
                     var lineRule = spacing.Attribute(W + "lineRule")?.Value;
-                    lineSpacing = (lineRule == "exact" || lineRule == "atLeast")
+                    lineSpacingAbsolute = lineRule == "exact" || lineRule == "atLeast";
+                    lineSpacing = lineSpacingAbsolute
                         ? sl / 20f   // absolute value in points
                         : sl / 240f; // multiplier (auto: 240 = single spacing)
                 }
@@ -202,7 +210,7 @@ internal static class DocxReader
                     {
                         isNumberedList = true;
                         numDef.Counter++;
-                        listText = numDef.Counter + ".";
+                        listText = numDef.FormatListText(listLevel);
                     }
                 }
             }
@@ -267,6 +275,10 @@ internal static class DocxReader
                 if (float.TryParse(sz, out var s))
                     fontSize = s / 2f; // half-points to points
                 color = ReadRunColor(rPr);
+                // Paragraph-level character spacing
+                var spacingEl2 = rPr.Element(W + "spacing");
+                if (spacingEl2 != null && int.TryParse(spacingEl2.Attribute(W + "val")?.Value, out var pcs))
+                    charSpacing = pcs / 20f;
             }
         }
 
@@ -304,7 +316,7 @@ internal static class DocxReader
                 if (child.Element(W + "instrText") != null) continue; // skip field instruction text
                 if (fieldDepth > 0 && !inFieldInstr) continue; // skip cached display value of field codes
 
-                var run = ReadRun(child, bold, italic, fontSize, color, caps);
+                var run = ReadRun(child, bold, italic, fontSize, color, caps, charSpacing);
                 if (run != null)
                 {
                     if (run.IsPageBreak)
@@ -320,6 +332,11 @@ internal static class DocxReader
                     var image = ReadImage(drawing, relationships, archive);
                     if (image != null)
                         images.Add(image);
+
+                    // Check for anchor shapes (filled rectangles without image blip)
+                    var shape = ReadAnchorShape(drawing, themeColors);
+                    if (shape != null)
+                        shapes.Add(shape);
                 }
             }
             else if (child.Name == W + "hyperlink")
@@ -327,7 +344,7 @@ internal static class DocxReader
                 // Extract text from hyperlink runs
                 foreach (var r in child.Elements(W + "r"))
                 {
-                    var run = ReadRun(r, bold, italic, fontSize, color, caps);
+                    var run = ReadRun(r, bold, italic, fontSize, color, caps, charSpacing);
                     if (run != null)
                         runs.Add(run);
                 }
@@ -342,10 +359,10 @@ internal static class DocxReader
 
         // If paragraph has no runs and no images, represent as empty paragraph for spacing
         return new DocxParagraph(runs, images, alignment, spacingBefore, spacingAfter,
-            lineSpacing, indentLeft, indentRight, indentFirstLine,
+            lineSpacing, lineSpacingAbsolute, indentLeft, indentRight, indentFirstLine,
             isBulletList, isNumberedList, listLevel, listText, styleId,
             bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops,
-            sectionBreakLayout, borders);
+            sectionBreakLayout, borders, shapes.Count > 0 ? shapes : null);
     }
 
     private static DocxBorderEdge? ReadBorderEdge(XElement? el)
@@ -364,7 +381,7 @@ internal static class DocxReader
         return new DocxBorderEdge(Math.Max(0.5f, width), color);
     }
 
-    private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor, bool parentCaps = false)
+    private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor, bool parentCaps = false, float parentCharSpacing = 0)
     {
         var rPr = rElement.Element(W + "rPr");
         var bold = parentBold;
@@ -372,17 +389,30 @@ internal static class DocxReader
         var fontSize = parentFontSize;
         var color = parentColor;
         var caps = parentCaps;
+        var underline = false;
+        var charSpacing = parentCharSpacing;
 
         if (rPr != null)
         {
             if (rPr.Element(W + "b") != null) bold = true;
             if (rPr.Element(W + "i") != null) italic = true;
             if (rPr.Element(W + "caps") != null) caps = true;
+            var uEl = rPr.Element(W + "u");
+            if (uEl != null)
+            {
+                var uVal = uEl.Attribute(W + "val")?.Value;
+                if (!string.IsNullOrEmpty(uVal) && uVal != "none")
+                    underline = true;
+            }
             var sz = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
             if (float.TryParse(sz, out var s) && s > 0)
                 fontSize = s / 2f; // half-points to points
             var runColor = ReadRunColor(rPr);
             if (runColor != null) color = runColor;
+            // Character spacing (w:spacing w:val in twips)
+            var spacingEl = rPr.Element(W + "spacing");
+            if (spacingEl != null && int.TryParse(spacingEl.Attribute(W + "val")?.Value, out var cs))
+                charSpacing = cs / 20f; // twips to points
         }
 
         // Collect text from <w:t>, <w:tab>, <w:br> elements
@@ -410,7 +440,7 @@ internal static class DocxReader
         if (caps && !string.IsNullOrEmpty(text))
             text = text.ToUpperInvariant();
 
-        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak);
+        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing);
     }
 
     private static PdfColor? ReadRunColor(XElement rPr)
@@ -424,10 +454,21 @@ internal static class DocxReader
 
     private static DocxImage? ReadImage(XElement drawing, Dictionary<string, string> relationships, ZipArchive archive)
     {
-        // Try inline image first, then anchor
-        var inline = drawing.Descendants(WP + "inline").FirstOrDefault();
-        var anchor = drawing.Descendants(WP + "anchor").FirstOrDefault();
-        var container = inline ?? anchor;
+        // Try inline images first, then fall back to anchor images
+        var container = drawing.Descendants(WP + "inline").FirstOrDefault();
+        var isAnchor = false;
+        if (container == null)
+        {
+            // Fall back to anchor (floating) images
+            // Only include anchors that are in front of text (behindDoc!=1) and have an actual image blip
+            var anchor = drawing.Descendants(WP + "anchor").FirstOrDefault();
+            if (anchor != null && anchor.Attribute("behindDoc")?.Value != "1"
+                               && anchor.Descendants(A + "blip").Any())
+            {
+                container = anchor;
+                isAnchor = true;
+            }
+        }
         if (container == null) return null;
 
         // Get extent (size in EMUs)
@@ -460,7 +501,166 @@ internal static class DocxReader
         var ext = Path.GetExtension(target).TrimStart('.').ToLowerInvariant();
         if (ext == "jpeg") ext = "jpg";
 
-        return new DocxImage(data, ext, widthEmu, heightEmu);
+        // Read anchor position offsets
+        long offsetXEmu = 0, offsetYEmu = 0;
+        if (isAnchor)
+        {
+            var posH = container.Element(WP + "positionH");
+            var posV = container.Element(WP + "positionV");
+            if (posH != null)
+            {
+                var off = posH.Element(WP + "posOffset");
+                if (off != null) long.TryParse(off.Value, out offsetXEmu);
+            }
+            if (posV != null)
+            {
+                var off = posV.Element(WP + "posOffset");
+                if (off != null) long.TryParse(off.Value, out offsetYEmu);
+            }
+        }
+
+        return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu);
+    }
+
+    /// <summary>
+    /// Reads anchor shapes (filled rectangles) from drawing elements.
+    /// </summary>
+    private static DocxShape? ReadAnchorShape(XElement drawing, Dictionary<string, string>? themeColors)
+    {
+        var anchor = drawing.Descendants(WP + "anchor").FirstOrDefault();
+        if (anchor == null) return null;
+
+        // Only interested in behind-doc shapes (background fills)
+        if (anchor.Attribute("behindDoc")?.Value != "1") return null;
+
+        // Skip if it has a blip (it's an image, not a shape)
+        if (anchor.Descendants(A + "blip").Any()) return null;
+
+        // Find solidFill in shape properties
+        var solidFill = anchor.Descendants(A + "solidFill").FirstOrDefault();
+        if (solidFill == null) return null;
+
+        // Resolve fill color
+        PdfColor? fillColor = null;
+        float alpha = 1f;
+
+        var srgbClr = solidFill.Element(A + "srgbClr");
+        if (srgbClr != null)
+        {
+            fillColor = PdfColor.FromHex(srgbClr.Attribute("val")?.Value ?? "000000");
+            var alphaEl = srgbClr.Element(A + "alpha");
+            if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var a))
+                alpha = a / 100000f;
+        }
+
+        var schemeClr = solidFill.Element(A + "schemeClr");
+        if (schemeClr != null && themeColors != null)
+        {
+            var schemeVal = schemeClr.Attribute("val")?.Value;
+            // Map scheme names to theme color keys
+            var themeKey = schemeVal switch
+            {
+                "tx2" or "dk2" => "dk2",
+                "tx1" or "dk1" => "dk1",
+                "bg1" or "lt1" => "lt1",
+                "bg2" or "lt2" => "lt2",
+                "accent1" => "accent1",
+                "accent2" => "accent2",
+                "accent3" => "accent3",
+                "accent4" => "accent4",
+                "accent5" => "accent5",
+                "accent6" => "accent6",
+                _ => schemeVal
+            };
+            if (themeKey != null && themeColors.TryGetValue(themeKey, out var hex))
+            {
+                fillColor = PdfColor.FromHex(hex);
+                // Apply lumMod (luminance modification)
+                var lumMod = schemeClr.Element(A + "lumMod");
+                if (lumMod != null && int.TryParse(lumMod.Attribute("val")?.Value, out var lm))
+                {
+                    var factor = lm / 100000f;
+                    var fc = fillColor.Value;
+                    fillColor = new PdfColor(fc.R * factor, fc.G * factor, fc.B * factor);
+                }
+                // Apply lumOff (luminance offset)
+                var lumOff = schemeClr.Element(A + "lumOff");
+                if (lumOff != null && int.TryParse(lumOff.Attribute("val")?.Value, out var lo))
+                {
+                    var offset = lo / 100000f;
+                    var fc = fillColor.Value;
+                    fillColor = new PdfColor(
+                        Math.Min(1f, fc.R + offset),
+                        Math.Min(1f, fc.G + offset),
+                        Math.Min(1f, fc.B + offset));
+                }
+            }
+            var alphaEl = schemeClr.Element(A + "alpha");
+            if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var a))
+                alpha = a / 100000f;
+        }
+
+        if (fillColor == null) return null;
+
+        // Get extent (size)
+        var extent = anchor.Element(WP + "extent");
+        long widthEmu = 0, heightEmu = 0;
+        if (extent != null)
+        {
+            long.TryParse(extent.Attribute("cx")?.Value, out widthEmu);
+            long.TryParse(extent.Attribute("cy")?.Value, out heightEmu);
+        }
+
+        // Get position
+        long offsetXEmu = 0, offsetYEmu = 0;
+        var posH = anchor.Element(WP + "positionH");
+        var posV = anchor.Element(WP + "positionV");
+        if (posH != null)
+        {
+            var off = posH.Element(WP + "posOffset");
+            if (off != null) long.TryParse(off.Value, out offsetXEmu);
+        }
+        if (posV != null)
+        {
+            var off = posV.Element(WP + "posOffset");
+            if (off != null) long.TryParse(off.Value, out offsetYEmu);
+        }
+
+        return new DocxShape(widthEmu, heightEmu, offsetXEmu, offsetYEmu, fillColor.Value, alpha);
+    }
+
+    /// <summary>
+    /// Reads theme colors from theme1.xml.
+    /// </summary>
+    private static Dictionary<string, string> ReadThemeColors(ZipArchive archive)
+    {
+        var colors = new Dictionary<string, string>();
+        var entry = archive.GetEntry("word/theme/theme1.xml");
+        if (entry == null) return colors;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+
+        var colorScheme = doc.Descendants(A + "clrScheme").FirstOrDefault();
+        if (colorScheme == null) return colors;
+
+        foreach (var el in colorScheme.Elements())
+        {
+            var name = el.Name.LocalName; // dk1, lt1, dk2, lt2, accent1..6, hlink, folHlink
+            var srgb = el.Element(A + "srgbClr");
+            if (srgb != null)
+            {
+                colors[name] = srgb.Attribute("val")?.Value ?? "";
+            }
+            else
+            {
+                var sysClr = el.Element(A + "sysClr");
+                if (sysClr != null)
+                    colors[name] = sysClr.Attribute("lastClr")?.Value ?? "000000";
+            }
+        }
+
+        return colors;
     }
 
     private static DocxTable? ReadTable(XElement tblElement, Dictionary<string, DocxStyleInfo> styles,
@@ -504,6 +704,14 @@ internal static class DocxReader
         foreach (var tr in tblElement.Elements(W + "tr"))
         {
             var cells = new List<DocxTableCell>();
+
+            // Read row height from trPr
+            float rowHeight = 0;
+            var trPr = tr.Element(W + "trPr");
+            var trHeightEl = trPr?.Element(W + "trHeight");
+            if (trHeightEl != null && int.TryParse(trHeightEl.Attribute(W + "val")?.Value, out var rh))
+                rowHeight = rh / 20f; // twips to points
+
             foreach (var tc in tr.Elements(W + "tc"))
             {
                 var cellParagraphs = new List<DocxParagraph>();
@@ -546,9 +754,22 @@ internal static class DocxReader
                 int gridSpan = 1;
                 PdfColor? shading = null;
                 DocxBorders? cellBorders = null;
+                bool isVMergeContinue = false;
+                bool isVMergeRestart = false;
 
                 if (tcPr != null)
                 {
+                    // Detect vertical merge continuation
+                    var vMergeEl = tcPr.Element(W + "vMerge");
+                    if (vMergeEl != null)
+                    {
+                        var vMergeVal = vMergeEl.Attribute(W + "val")?.Value;
+                        // vMerge with no val or val!="restart" means continuation
+                        if (string.IsNullOrEmpty(vMergeVal) || vMergeVal != "restart")
+                            isVMergeContinue = true;
+                        else
+                            isVMergeRestart = true;
+                    }
                     var wEl = tcPr.Element(W + "tcW");
                     if (wEl != null && int.TryParse(wEl.Attribute(W + "w")?.Value, out var cw))
                         cellWidth = cw / 20f;
@@ -577,9 +798,9 @@ internal static class DocxReader
                     }
                 }
 
-                cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading, cellBorders));
+                cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading, cellBorders, isVMergeContinue, isVMergeRestart));
             }
-            rows.Add(new DocxTableRow(cells));
+            rows.Add(new DocxTableRow(cells, rowHeight));
         }
 
         return new DocxTable(rows, columnWidths, hasBorders);
@@ -822,16 +1043,23 @@ internal static class DocxReader
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
 
-        // Read abstract numbering definitions
-        var abstractDefs = new Dictionary<string, string>(); // abstractNumId → format
+        // Read abstract numbering definitions: abstractNumId → list of level defs
+        var abstractDefs = new Dictionary<string, List<DocxNumberingLevelDef>>();
         foreach (var absNum in doc.Descendants(W + "abstractNum"))
         {
             var absId = absNum.Attribute(W + "abstractNumId")?.Value;
             if (string.IsNullOrEmpty(absId)) continue;
 
-            var lvl = absNum.Elements(W + "lvl").FirstOrDefault();
-            var numFmt = lvl?.Element(W + "numFmt")?.Attribute(W + "val")?.Value ?? "decimal";
-            abstractDefs[absId] = numFmt;
+            var levels = new List<DocxNumberingLevelDef>();
+            foreach (var lvl in absNum.Elements(W + "lvl"))
+            {
+                var ilvl = int.TryParse(lvl.Attribute(W + "ilvl")?.Value, out var iv) ? iv : 0;
+                var numFmt = lvl.Element(W + "numFmt")?.Attribute(W + "val")?.Value ?? "decimal";
+                var lvlText = lvl.Element(W + "lvlText")?.Attribute(W + "val")?.Value ?? "%1.";
+                var startVal = int.TryParse(lvl.Element(W + "start")?.Attribute(W + "val")?.Value, out var sv) ? sv : 1;
+                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal));
+            }
+            abstractDefs[absId] = levels;
         }
 
         // Map num IDs to abstract definitions
@@ -841,11 +1069,12 @@ internal static class DocxReader
             if (string.IsNullOrEmpty(numId)) continue;
 
             var absRef = num.Element(W + "abstractNumId")?.Attribute(W + "val")?.Value;
-            var format = "decimal";
-            if (!string.IsNullOrEmpty(absRef) && abstractDefs.TryGetValue(absRef, out var f))
-                format = f;
+            var levels = new List<DocxNumberingLevelDef>();
+            if (!string.IsNullOrEmpty(absRef) && abstractDefs.TryGetValue(absRef, out var abLevels))
+                levels = abLevels;
 
-            result[numId] = new DocxNumberingDef(format);
+            var format = levels.Count > 0 ? levels[0].NumFmt : "decimal";
+            result[numId] = new DocxNumberingDef(format, levels);
         }
 
         return result;
@@ -878,6 +1107,7 @@ internal sealed record DocxParagraph(
     float SpacingBefore = 0,
     float SpacingAfter = -1,
     float LineSpacing = 0,
+    bool LineSpacingAbsolute = false,
     float IndentLeft = 0,
     float IndentRight = 0,
     float IndentFirstLine = 0,
@@ -895,7 +1125,8 @@ internal sealed record DocxParagraph(
     PdfColor? Shading = null,
     List<DocxTabStop>? TabStops = null,
     DocxPageLayout? SectionBreak = null,
-    DocxBorders? Borders = null
+    DocxBorders? Borders = null,
+    List<DocxShape>? Shapes = null
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>
@@ -926,7 +1157,9 @@ internal sealed record DocxRun(
     bool Italic = false,
     float FontSize = 0,
     PdfColor? Color = null,
-    bool IsPageBreak = false
+    bool IsPageBreak = false,
+    bool Underline = false,
+    float CharSpacing = 0
 );
 
 /// <summary>Represents an embedded image.</summary>
@@ -934,7 +1167,20 @@ internal sealed record DocxImage(
     byte[] Data,
     string Extension,
     long WidthEmu = 0,
-    long HeightEmu = 0
+    long HeightEmu = 0,
+    bool IsAnchor = false,
+    long OffsetXEmu = 0,
+    long OffsetYEmu = 0
+);
+
+/// <summary>Represents an anchor shape (filled rectangle).</summary>
+internal sealed record DocxShape(
+    long WidthEmu,
+    long HeightEmu,
+    long OffsetXEmu,
+    long OffsetYEmu,
+    PdfColor FillColor,
+    float Alpha = 1f
 );
 
 /// <summary>Represents a table.</summary>
@@ -945,7 +1191,7 @@ internal sealed record DocxTable(
 ) : DocxElement;
 
 /// <summary>Represents a table row.</summary>
-internal sealed record DocxTableRow(List<DocxTableCell> Cells);
+internal sealed record DocxTableRow(List<DocxTableCell> Cells, float Height = 0);
 
 /// <summary>Represents a table cell.</summary>
 internal sealed record DocxTableCell(
@@ -953,7 +1199,9 @@ internal sealed record DocxTableCell(
     float Width = 0,
     int GridSpan = 1,
     PdfColor? Shading = null,
-    DocxBorders? Borders = null
+    DocxBorders? Borders = null,
+    bool IsVMergeContinue = false,
+    bool IsVMergeRestart = false
 );
 
 /// <summary>Style definition from styles.xml.</summary>
@@ -973,10 +1221,52 @@ internal sealed class DocxNumberingDef
 {
     public string Format { get; }
     public int Counter { get; set; }
+    public List<DocxNumberingLevelDef> Levels { get; }
 
-    public DocxNumberingDef(string format)
+    public DocxNumberingDef(string format, List<DocxNumberingLevelDef>? levels = null)
     {
         Format = format;
         Counter = 0;
+        Levels = levels ?? [];
+    }
+
+    public string FormatListText(int ilvl)
+    {
+        var level = Levels.FirstOrDefault(l => l.Ilvl == ilvl) ?? Levels.FirstOrDefault();
+        if (level == null)
+            return Counter + ".";
+
+        var formatted = FormatNumber(Counter, level.NumFmt);
+        // Replace %1, %2 etc. placeholders in lvlText with formatted number
+        var text = level.LvlText;
+        text = text.Replace("%" + (ilvl + 1), formatted);
+        // Also replace other level placeholders with empty if they exist
+        for (var i = 1; i <= 9; i++)
+            text = text.Replace("%" + i, "");
+        return text;
+    }
+
+    private static string FormatNumber(int num, string fmt) => fmt switch
+    {
+        "decimal" => num.ToString(),
+        "upperLetter" => num >= 1 && num <= 26 ? ((char)('A' + num - 1)).ToString() : num.ToString(),
+        "lowerLetter" => num >= 1 && num <= 26 ? ((char)('a' + num - 1)).ToString() : num.ToString(),
+        "upperRoman" => ToRoman(num),
+        "lowerRoman" => ToRoman(num).ToLowerInvariant(),
+        "japaneseCounting" or "chineseCounting" or "ideographTraditional" =>
+            num >= 1 && num <= 10 ? "\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341"[num - 1].ToString() : num.ToString(),
+        _ => num.ToString()
+    };
+
+    private static string ToRoman(int num)
+    {
+        if (num <= 0 || num > 3999) return num.ToString();
+        string[] thousands = ["", "M", "MM", "MMM"];
+        string[] hundreds = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"];
+        string[] tens = ["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"];
+        string[] ones = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
+        return thousands[num / 1000] + hundreds[num % 1000 / 100] + tens[num % 100 / 10] + ones[num % 10];
     }
 }
+
+internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start);

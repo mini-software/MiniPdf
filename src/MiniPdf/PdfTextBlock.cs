@@ -47,7 +47,22 @@ internal sealed class PdfTextBlock
     /// </summary>
     public float? MaxWidth { get; }
 
-    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null)
+    /// <summary>
+    /// Whether to render text using the bold font variant.
+    /// </summary>
+    public bool Bold { get; }
+
+    /// <summary>
+    /// Whether to render an underline below the text.
+    /// </summary>
+    public bool Underline { get; }
+
+    /// <summary>
+    /// Character spacing in points (PDF Tc operator). 0 means default.
+    /// </summary>
+    public float CharSpacing { get; }
+
+    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0)
     {
         Text = text;
         X = x;
@@ -56,5 +71,8 @@ internal sealed class PdfTextBlock
         Color = color ?? PdfColor.Black;
         ClipRect = clipRect;
         MaxWidth = maxWidth;
+        Bold = bold;
+        Underline = underline;
+        CharSpacing = charSpacing;
     }
 }
