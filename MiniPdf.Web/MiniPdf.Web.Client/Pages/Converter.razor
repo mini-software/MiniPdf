@@ -2,6 +2,7 @@
 @rendermode InteractiveWebAssembly
 @inject IJSRuntime JS
 @inject I18n L
+@inject HttpClient Http
 @implements IDisposable
 
 <PageTitle>@L.T("PageTitle")</PageTitle>
@@ -123,6 +124,7 @@
     private bool isDragOver;
     private string? errorMessage;
     private string? successMessage;
+    private static bool _fontLoaded;
 
     private bool CanConvert => selectedFile is not null && !isConverting;
     private string FileExt => selectedFile is not null
@@ -178,6 +180,18 @@
 
         try
         {
+            // Lazy-load CJK font on first conversion (for WASM where system fonts are unavailable)
+            if (!_fontLoaded)
+            {
+                try
+                {
+                    var fontBytes = await Http.GetByteArrayAsync("fonts/NotoSansSC-Regular.ttf");
+                    MiniSoftware.MiniPdf.RegisterFont("NotoSansSC", fontBytes);
+                }
+                catch { /* font not available — CJK text will fall back to Helvetica */ }
+                _fontLoaded = true;
+            }
+
             using var stream = selectedFile.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024);
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms);

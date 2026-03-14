@@ -31,6 +31,12 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Download CJK font for WASM
+        run: |
+          mkdir -p MiniPdf.Web/MiniPdf.Web.Client/wwwroot/fonts
+          curl -L -o MiniPdf.Web/MiniPdf.Web.Client/wwwroot/fonts/NotoSansSC-Regular.ttf \
+            "https://github.com/google/fonts/raw/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf"
+
       - name: Publish Blazor WASM
         run: dotnet publish MiniPdf.Web/MiniPdf.Web.Client/MiniPdf.Web.Client.csproj -c Release -o publish
 

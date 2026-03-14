@@ -6,6 +6,31 @@ namespace MiniSoftware;
 /// </summary>
 public static class MiniPdf
 {
+    private static readonly List<(string Name, byte[] Data)> _registeredFonts = new();
+
+    /// <summary>
+    /// Registers a TrueType (.ttf) or TrueType Collection (.ttc) font for use in PDF generation.
+    /// This is required for environments where system fonts are unavailable (e.g. Blazor WASM).
+    /// </summary>
+    /// <param name="name">A descriptive name for the font (e.g. "NotoSansSC").</param>
+    /// <param name="fontData">The raw bytes of the .ttf or .ttc font file.</param>
+    public static void RegisterFont(string name, byte[] fontData)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(fontData);
+        lock (_registeredFonts)
+            _registeredFonts.Add((name, fontData));
+    }
+
+    /// <summary>
+    /// Returns a snapshot of all registered fonts.
+    /// </summary>
+    internal static List<(string Name, byte[] Data)> GetRegisteredFonts()
+    {
+        lock (_registeredFonts)
+            return new List<(string, byte[])>(_registeredFonts);
+    }
+
     /// <summary>
     /// Converts an Excel (.xlsx) file to a PDF file.
     /// </summary>

@@ -75,9 +75,26 @@ internal sealed class PdfWriter
 
         if (needsUnicodeFont)
         {
-            var candidatePaths = FindSystemFontCandidates();
             var loadedFonts = new List<(byte[] ttf, Dictionary<int, ushort> cmap, ushort[] advances, int upm,
                                         int asc, int desc, int capH, int[] bbox, string name)>();
+
+            // 1) Load registered fonts first (for WASM / environments without system fonts)
+            foreach (var (regName, regData) in MiniPdf.GetRegisteredFonts())
+            {
+                try
+                {
+                    var ttf = LoadTtfFontFromBytes(regData);
+                    var cmap = ParseCmapTable(ttf);
+                    if (cmap.Count == 0) continue;
+                    var (advances, upm) = ParseHmtxWidths(ttf);
+                    var (asc, desc, capH, bbox) = ParseFontMetrics(ttf);
+                    loadedFonts.Add((ttf, cmap, advances, upm, asc, desc, capH, bbox, regName));
+                }
+                catch { /* skip fonts that fail to parse */ }
+            }
+
+            // 2) Then load system fonts
+            var candidatePaths = FindSystemFontCandidates();
 
             foreach (var path in candidatePaths)
             {
@@ -1147,6 +1164,14 @@ internal sealed class PdfWriter
     private static byte[] LoadTtfFont(string path)
     {
         var raw = File.ReadAllBytes(path);
+        return LoadTtfFontFromBytes(raw);
+    }
+
+    /// <summary>
+    /// Processes raw TrueType/TTC font bytes. For TTC collections, extracts the first font.
+    /// </summary>
+    private static byte[] LoadTtfFontFromBytes(byte[] raw)
+    {
         // TTC files start with "ttcf"
         if (raw.Length > 12 && raw[0] == 't' && raw[1] == 't' && raw[2] == 'c' && raw[3] == 'f')
         {
