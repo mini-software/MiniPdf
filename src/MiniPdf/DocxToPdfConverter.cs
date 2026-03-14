@@ -135,7 +135,29 @@ internal static class DocxToPdfConverter
         if (pdfDoc.Pages.Count == 0)
             pdfDoc.AddPage(options.PageWidth, options.PageHeight);
 
-        // Render headers and footers on all pages
+        // Render header/footer background shapes on all pages.
+        if (docxDoc.HeaderShapes is { Count: > 0 } || docxDoc.FooterShapes is { Count: > 0 })
+        {
+            var totalPages = pdfDoc.Pages.Count;
+            for (int pi = 0; pi < totalPages; pi++)
+            {
+                var page = pdfDoc.Pages[pi];
+
+                if (docxDoc.HeaderShapes is { Count: > 0 })
+                {
+                    foreach (var shape in docxDoc.HeaderShapes)
+                        RenderHeaderFooterShape(page, options, shape);
+                }
+
+                if (docxDoc.FooterShapes is { Count: > 0 })
+                {
+                    foreach (var shape in docxDoc.FooterShapes)
+                        RenderHeaderFooterShape(page, options, shape);
+                }
+            }
+        }
+
+        // Render headers and footers text on all pages
         if (docxDoc.HeaderText != null || docxDoc.FooterText != null)
         {
             const float headerFooterFontSize = 9f;
@@ -606,6 +628,26 @@ internal static class DocxToPdfConverter
             1f + (fc.B - 1f) * a);
 
         state.CurrentPage!.AddRectangle(x, y, width, height, blended);
+    }
+
+    private static void RenderHeaderFooterShape(PdfPage page, ConversionOptions options, DocxShape shape)
+    {
+        const float emuPerPoint = 914400f / 72f;
+
+        var width = shape.WidthEmu / emuPerPoint;
+        var height = shape.HeightEmu / emuPerPoint;
+        var x = options.MarginLeft + shape.OffsetXEmu / emuPerPoint;
+        // Header/footer anchors are typically page-relative; don't subtract page top margin.
+        var y = options.PageHeight - shape.OffsetYEmu / emuPerPoint - height;
+
+        var fc = shape.FillColor;
+        var a = shape.Alpha;
+        var blended = new PdfColor(
+            1f + (fc.R - 1f) * a,
+            1f + (fc.G - 1f) * a,
+            1f + (fc.B - 1f) * a);
+
+        page.AddRectangle(x, y, width, height, blended);
     }
 
     // ── Image rendering ─────────────────────────────────────────────────
