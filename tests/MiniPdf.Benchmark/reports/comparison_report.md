@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-14T13:25:01.725180
+Generated: 2026-03-14T23:52:23.462329
 
 ## Summary
 
@@ -203,1938 +203,2345 @@ Generated: 2026-03-14T13:25:01.725180
 ## Visual Comparison
 
 <table>
-<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
+<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th><th>Office (Excel)</th></tr>
 <tr>
   <td><b>classic01_basic_table_with_headers</b></td>
-  <td>classic01_basic_table_with_headers <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic01_basic_table_with_headers <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic01_basic_table_with_headers_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic01_basic_table_with_headers_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic01_basic_table_with_headers_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic01_basic_table_with_headers_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic01_basic_table_with_headers_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic02_multiple_worksheets</b></td>
-  <td>classic02_multiple_worksheets <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic02_multiple_worksheets <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic02_multiple_worksheets_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic02_multiple_worksheets_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic02_multiple_worksheets_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic02_multiple_worksheets_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic02_multiple_worksheets_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic02_multiple_worksheets_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic02_multiple_worksheets_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic02_multiple_worksheets_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic02_multiple_worksheets_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic02_multiple_worksheets_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic02_multiple_worksheets_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic02_multiple_worksheets_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic02_multiple_worksheets_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic02_multiple_worksheets_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic02_multiple_worksheets_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic03_empty_workbook</b></td>
-  <td>classic03_empty_workbook <span style="color:#3fb950">⬤</span> 100.0%</td>
+  <td colspan="2">classic03_empty_workbook <span style="color:#3fb950">⬤</span> 100.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic03_empty_workbook_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic03_empty_workbook_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic03_empty_workbook_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic03_empty_workbook_p1_reference.png" width="260" alt="Reference"></td>
+  <td><i>missing</i></td>
 </tr>
 <tr>
   <td><b>classic04_single_cell</b></td>
-  <td>classic04_single_cell <span style="color:#3fb950">⬤</span> 100.0%</td>
+  <td colspan="2">classic04_single_cell <span style="color:#3fb950">⬤</span> 100.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic04_single_cell_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic04_single_cell_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic04_single_cell_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic04_single_cell_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic04_single_cell_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic05_wide_table</b></td>
-  <td>classic05_wide_table <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic05_wide_table <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic05_wide_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic05_wide_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic05_wide_table_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic05_wide_table_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic05_wide_table_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic05_wide_table_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic05_wide_table_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic05_wide_table_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic05_wide_table_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic05_wide_table_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic05_wide_table_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic05_wide_table_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic05_wide_table_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic05_wide_table_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic05_wide_table_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic06_tall_table</b></td>
-  <td>classic06_tall_table <span style="color:#3fb950">⬤</span> 97.8%</td>
+  <td colspan="2">classic06_tall_table <span style="color:#3fb950">⬤</span> 97.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic06_tall_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic06_tall_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic06_tall_table_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic06_tall_table_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic06_tall_table_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic06_tall_table_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic06_tall_table_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic06_tall_table_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic06_tall_table_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic06_tall_table_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic06_tall_table_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic06_tall_table_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic06_tall_table_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic06_tall_table_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic06_tall_table_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic06_tall_table_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic06_tall_table_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic06_tall_table_p4_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic06_tall_table_p4_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic06_tall_table_p4_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic06_tall_table_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic06_tall_table_p5_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic06_tall_table_p5_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic06_tall_table_p5_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic06_tall_table_p5_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic07_numbers_only</b></td>
-  <td>classic07_numbers_only <span style="color:#3fb950">⬤</span> 100.0%</td>
+  <td colspan="2">classic07_numbers_only <span style="color:#3fb950">⬤</span> 100.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic07_numbers_only_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic07_numbers_only_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic07_numbers_only_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic07_numbers_only_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic07_numbers_only_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic08_mixed_text_and_numbers</b></td>
-  <td>classic08_mixed_text_and_numbers <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic08_mixed_text_and_numbers <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic08_mixed_text_and_numbers_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic08_mixed_text_and_numbers_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic08_mixed_text_and_numbers_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic08_mixed_text_and_numbers_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic08_mixed_text_and_numbers_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic09_long_text</b></td>
-  <td>classic09_long_text <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="2">classic09_long_text <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p4_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p4_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p4_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p5_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p5_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p5_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p5_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p6_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p6_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p6_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p6_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p7_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p7_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p7_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p7_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p8_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p8_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p8_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p8_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p8_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p9_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p9_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p9_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p9_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p9_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p10_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p10_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p10_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p10_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p10_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p11_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p11_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p11_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p11_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p11_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic09_long_text_p12_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic09_long_text_p12_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p12_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic09_long_text_p12_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic09_long_text_p12_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic100_stacked_bar_chart</b></td>
-  <td>classic100_stacked_bar_chart <span style="color:#3fb950">⬤</span> 95.0%</td>
+  <td colspan="2">classic100_stacked_bar_chart <span style="color:#3fb950">⬤</span> 95.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic100_stacked_bar_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic100_stacked_bar_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic100_stacked_bar_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic100_stacked_bar_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic100_stacked_bar_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic101_percent_stacked_bar</b></td>
-  <td>classic101_percent_stacked_bar <span style="color:#3fb950">⬤</span> 93.6%</td>
+  <td colspan="2">classic101_percent_stacked_bar <span style="color:#3fb950">⬤</span> 93.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic101_percent_stacked_bar_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic101_percent_stacked_bar_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic101_percent_stacked_bar_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic101_percent_stacked_bar_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic101_percent_stacked_bar_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic102_line_chart_with_markers</b></td>
-  <td>classic102_line_chart_with_markers <span style="color:#3fb950">⬤</span> 93.0%</td>
+  <td colspan="2">classic102_line_chart_with_markers <span style="color:#3fb950">⬤</span> 93.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic102_line_chart_with_markers_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic102_line_chart_with_markers_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic102_line_chart_with_markers_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic102_line_chart_with_markers_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic102_line_chart_with_markers_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic102_line_chart_with_markers_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic102_line_chart_with_markers_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic102_line_chart_with_markers_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic102_line_chart_with_markers_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic102_line_chart_with_markers_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic103_pie_chart_with_labels</b></td>
-  <td>classic103_pie_chart_with_labels <span style="color:#d29922">⬤</span> 86.9%</td>
+  <td colspan="2">classic103_pie_chart_with_labels <span style="color:#d29922">⬤</span> 86.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic103_pie_chart_with_labels_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic103_pie_chart_with_labels_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic103_pie_chart_with_labels_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic103_pie_chart_with_labels_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic103_pie_chart_with_labels_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic103_pie_chart_with_labels_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic103_pie_chart_with_labels_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic103_pie_chart_with_labels_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic103_pie_chart_with_labels_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic103_pie_chart_with_labels_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic104_combo_bar_line_chart</b></td>
-  <td>classic104_combo_bar_line_chart <span style="color:#d29922">⬤</span> 81.6%</td>
+  <td colspan="2">classic104_combo_bar_line_chart <span style="color:#d29922">⬤</span> 81.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic104_combo_bar_line_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic104_combo_bar_line_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic104_combo_bar_line_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic104_combo_bar_line_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic104_combo_bar_line_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic104_combo_bar_line_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic104_combo_bar_line_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic104_combo_bar_line_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic104_combo_bar_line_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic104_combo_bar_line_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic105_3d_bar_chart</b></td>
-  <td>classic105_3d_bar_chart <span style="color:#d29922">⬤</span> 85.8%</td>
+  <td colspan="2">classic105_3d_bar_chart <span style="color:#d29922">⬤</span> 85.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic105_3d_bar_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic105_3d_bar_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic105_3d_bar_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic105_3d_bar_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic105_3d_bar_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic105_3d_bar_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic105_3d_bar_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic105_3d_bar_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic105_3d_bar_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic105_3d_bar_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic106_3d_pie_chart</b></td>
-  <td>classic106_3d_pie_chart <span style="color:#3fb950">⬤</span> 96.7%</td>
+  <td colspan="2">classic106_3d_pie_chart <span style="color:#3fb950">⬤</span> 96.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic106_3d_pie_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic106_3d_pie_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic106_3d_pie_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic106_3d_pie_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic106_3d_pie_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic106_3d_pie_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic106_3d_pie_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic106_3d_pie_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic106_3d_pie_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic106_3d_pie_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic107_multi_series_line</b></td>
-  <td>classic107_multi_series_line <span style="color:#d29922">⬤</span> 80.6%</td>
+  <td colspan="2">classic107_multi_series_line <span style="color:#d29922">⬤</span> 80.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic107_multi_series_line_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic107_multi_series_line_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic107_multi_series_line_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic107_multi_series_line_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic107_multi_series_line_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic107_multi_series_line_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic107_multi_series_line_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic107_multi_series_line_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic107_multi_series_line_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic107_multi_series_line_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic108_stacked_area_chart</b></td>
-  <td>classic108_stacked_area_chart <span style="color:#3fb950">⬤</span> 94.4%</td>
+  <td colspan="2">classic108_stacked_area_chart <span style="color:#3fb950">⬤</span> 94.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic108_stacked_area_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic108_stacked_area_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic108_stacked_area_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic108_stacked_area_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic108_stacked_area_chart_p1_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic108_stacked_area_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic109_scatter_with_trendline</b></td>
-  <td>classic109_scatter_with_trendline <span style="color:#3fb950">⬤</span> 92.3%</td>
+  <td colspan="2">classic109_scatter_with_trendline <span style="color:#3fb950">⬤</span> 92.3%</td>
 </tr>
 <tr>
-  <td><img src="images/classic109_scatter_with_trendline_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic109_scatter_with_trendline_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic109_scatter_with_trendline_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic109_scatter_with_trendline_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic109_scatter_with_trendline_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic109_scatter_with_trendline_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic109_scatter_with_trendline_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic109_scatter_with_trendline_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic109_scatter_with_trendline_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic109_scatter_with_trendline_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic10_special_xml_characters</b></td>
-  <td>classic10_special_xml_characters <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic10_special_xml_characters <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic10_special_xml_characters_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic10_special_xml_characters_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic10_special_xml_characters_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic10_special_xml_characters_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic10_special_xml_characters_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic110_chart_with_legend</b></td>
-  <td>classic110_chart_with_legend <span style="color:#d29922">⬤</span> 84.7%</td>
+  <td colspan="2">classic110_chart_with_legend <span style="color:#d29922">⬤</span> 84.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic110_chart_with_legend_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic110_chart_with_legend_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic110_chart_with_legend_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic110_chart_with_legend_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic110_chart_with_legend_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic110_chart_with_legend_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic110_chart_with_legend_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic110_chart_with_legend_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic110_chart_with_legend_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic110_chart_with_legend_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic111_chart_with_axis_labels</b></td>
-  <td>classic111_chart_with_axis_labels <span style="color:#3fb950">⬤</span> 92.1%</td>
+  <td colspan="2">classic111_chart_with_axis_labels <span style="color:#3fb950">⬤</span> 92.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic111_chart_with_axis_labels_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic111_chart_with_axis_labels_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic111_chart_with_axis_labels_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic111_chart_with_axis_labels_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic111_chart_with_axis_labels_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic111_chart_with_axis_labels_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic111_chart_with_axis_labels_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic111_chart_with_axis_labels_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic111_chart_with_axis_labels_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic111_chart_with_axis_labels_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic112_multiple_charts</b></td>
-  <td>classic112_multiple_charts <span style="color:#d29922">⬤</span> 85.4%</td>
+  <td colspan="2">classic112_multiple_charts <span style="color:#d29922">⬤</span> 85.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic112_multiple_charts_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic112_multiple_charts_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic112_multiple_charts_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic112_multiple_charts_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic112_multiple_charts_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic112_multiple_charts_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic112_multiple_charts_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic112_multiple_charts_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic112_multiple_charts_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic112_multiple_charts_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic113_chart_sheet</b></td>
-  <td>classic113_chart_sheet <span style="color:#d29922">⬤</span> 86.4%</td>
+  <td colspan="2">classic113_chart_sheet <span style="color:#d29922">⬤</span> 86.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic113_chart_sheet_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic113_chart_sheet_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic113_chart_sheet_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic113_chart_sheet_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic113_chart_sheet_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic113_chart_sheet_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic113_chart_sheet_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic113_chart_sheet_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic113_chart_sheet_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic113_chart_sheet_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic114_chart_large_dataset</b></td>
-  <td>classic114_chart_large_dataset <span style="color:#3fb950">⬤</span> 91.6%</td>
+  <td colspan="2">classic114_chart_large_dataset <span style="color:#3fb950">⬤</span> 91.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic114_chart_large_dataset_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic114_chart_large_dataset_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic114_chart_large_dataset_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic114_chart_large_dataset_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic114_chart_large_dataset_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic114_chart_large_dataset_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic114_chart_large_dataset_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic114_chart_large_dataset_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic114_chart_large_dataset_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic114_chart_large_dataset_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic114_chart_large_dataset_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic114_chart_large_dataset_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic114_chart_large_dataset_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic114_chart_large_dataset_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic114_chart_large_dataset_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic114_chart_large_dataset_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic114_chart_large_dataset_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic114_chart_large_dataset_p4_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic114_chart_large_dataset_p4_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic114_chart_large_dataset_p4_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic115_chart_negative_values</b></td>
-  <td>classic115_chart_negative_values <span style="color:#3fb950">⬤</span> 92.1%</td>
+  <td colspan="2">classic115_chart_negative_values <span style="color:#3fb950">⬤</span> 92.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic115_chart_negative_values_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic115_chart_negative_values_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic115_chart_negative_values_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic115_chart_negative_values_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic115_chart_negative_values_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic115_chart_negative_values_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic115_chart_negative_values_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic115_chart_negative_values_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic115_chart_negative_values_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic115_chart_negative_values_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic116_percent_stacked_area</b></td>
-  <td>classic116_percent_stacked_area <span style="color:#3fb950">⬤</span> 93.8%</td>
+  <td colspan="2">classic116_percent_stacked_area <span style="color:#3fb950">⬤</span> 93.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic116_percent_stacked_area_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic116_percent_stacked_area_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic116_percent_stacked_area_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic116_percent_stacked_area_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic116_percent_stacked_area_p1_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic116_percent_stacked_area_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic117_stock_ohlc_chart</b></td>
-  <td>classic117_stock_ohlc_chart <span style="color:#d29922">⬤</span> 80.9%</td>
+  <td colspan="2">classic117_stock_ohlc_chart <span style="color:#d29922">⬤</span> 80.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic117_stock_ohlc_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic117_stock_ohlc_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic117_stock_ohlc_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic117_stock_ohlc_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic117_stock_ohlc_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic117_stock_ohlc_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic117_stock_ohlc_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic117_stock_ohlc_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic117_stock_ohlc_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic117_stock_ohlc_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic118_bar_chart_custom_colors</b></td>
-  <td>classic118_bar_chart_custom_colors <span style="color:#3fb950">⬤</span> 95.5%</td>
+  <td colspan="2">classic118_bar_chart_custom_colors <span style="color:#3fb950">⬤</span> 95.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic118_bar_chart_custom_colors_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic118_bar_chart_custom_colors_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic118_bar_chart_custom_colors_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic118_bar_chart_custom_colors_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic118_bar_chart_custom_colors_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic118_bar_chart_custom_colors_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic118_bar_chart_custom_colors_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic118_bar_chart_custom_colors_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic118_bar_chart_custom_colors_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic118_bar_chart_custom_colors_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic119_dashboard_multi_charts</b></td>
-  <td>classic119_dashboard_multi_charts <span style="color:#3fb950">⬤</span> 92.1%</td>
+  <td colspan="2">classic119_dashboard_multi_charts <span style="color:#3fb950">⬤</span> 92.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic119_dashboard_multi_charts_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic119_dashboard_multi_charts_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic119_dashboard_multi_charts_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic119_dashboard_multi_charts_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic119_dashboard_multi_charts_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic119_dashboard_multi_charts_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic119_dashboard_multi_charts_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic119_dashboard_multi_charts_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic119_dashboard_multi_charts_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic119_dashboard_multi_charts_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic11_sparse_rows</b></td>
-  <td>classic11_sparse_rows <span style="color:#3fb950">⬤</span> 100.0%</td>
+  <td colspan="2">classic11_sparse_rows <span style="color:#3fb950">⬤</span> 100.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic11_sparse_rows_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic11_sparse_rows_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic11_sparse_rows_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic11_sparse_rows_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic11_sparse_rows_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic11_sparse_rows_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic11_sparse_rows_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic11_sparse_rows_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic11_sparse_rows_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic11_sparse_rows_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic120_chart_with_date_axis</b></td>
-  <td>classic120_chart_with_date_axis <span style="color:#f85149">⬤</span> 66.9%</td>
+  <td colspan="2">classic120_chart_with_date_axis <span style="color:#f85149">⬤</span> 66.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic120_chart_with_date_axis_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic120_chart_with_date_axis_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic120_chart_with_date_axis_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic120_chart_with_date_axis_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic120_chart_with_date_axis_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic120_chart_with_date_axis_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic120_chart_with_date_axis_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic120_chart_with_date_axis_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic120_chart_with_date_axis_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic120_chart_with_date_axis_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic121_thin_borders</b></td>
-  <td>classic121_thin_borders <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic121_thin_borders <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic121_thin_borders_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic121_thin_borders_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic121_thin_borders_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic121_thin_borders_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic121_thin_borders_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic122_thick_outer_thin_inner</b></td>
-  <td>classic122_thick_outer_thin_inner <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic122_thick_outer_thin_inner <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic122_thick_outer_thin_inner_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic122_thick_outer_thin_inner_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic122_thick_outer_thin_inner_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic122_thick_outer_thin_inner_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic122_thick_outer_thin_inner_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic123_dashed_borders</b></td>
-  <td>classic123_dashed_borders <span style="color:#3fb950">⬤</span> 99.1%</td>
+  <td colspan="2">classic123_dashed_borders <span style="color:#3fb950">⬤</span> 99.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic123_dashed_borders_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic123_dashed_borders_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic123_dashed_borders_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic123_dashed_borders_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic123_dashed_borders_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic124_colored_borders</b></td>
-  <td>classic124_colored_borders <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic124_colored_borders <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic124_colored_borders_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic124_colored_borders_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic124_colored_borders_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic124_colored_borders_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic124_colored_borders_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic125_solid_fills</b></td>
-  <td>classic125_solid_fills <span style="color:#3fb950">⬤</span> 99.2%</td>
+  <td colspan="2">classic125_solid_fills <span style="color:#3fb950">⬤</span> 99.2%</td>
 </tr>
 <tr>
-  <td><img src="images/classic125_solid_fills_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic125_solid_fills_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic125_solid_fills_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic125_solid_fills_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic125_solid_fills_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic126_dark_header</b></td>
-  <td>classic126_dark_header <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="2">classic126_dark_header <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic126_dark_header_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic126_dark_header_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic126_dark_header_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic126_dark_header_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic126_dark_header_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic127_font_styles</b></td>
-  <td>classic127_font_styles <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic127_font_styles <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic127_font_styles_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic127_font_styles_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic127_font_styles_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic127_font_styles_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic127_font_styles_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic128_font_sizes</b></td>
-  <td>classic128_font_sizes <span style="color:#3fb950">⬤</span> 99.0%</td>
+  <td colspan="2">classic128_font_sizes <span style="color:#3fb950">⬤</span> 99.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic128_font_sizes_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic128_font_sizes_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic128_font_sizes_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic128_font_sizes_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic128_font_sizes_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic129_alignment_combos</b></td>
-  <td>classic129_alignment_combos <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic129_alignment_combos <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic129_alignment_combos_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic129_alignment_combos_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic129_alignment_combos_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic129_alignment_combos_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic129_alignment_combos_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic12_sparse_columns</b></td>
-  <td>classic12_sparse_columns <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic12_sparse_columns <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic12_sparse_columns_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic12_sparse_columns_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic12_sparse_columns_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic12_sparse_columns_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic12_sparse_columns_p1_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic12_sparse_columns_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic130_wrap_and_indent</b></td>
-  <td>classic130_wrap_and_indent <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic130_wrap_and_indent <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic130_wrap_and_indent_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic130_wrap_and_indent_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic130_wrap_and_indent_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic130_wrap_and_indent_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic130_wrap_and_indent_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic131_number_formats</b></td>
-  <td>classic131_number_formats <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic131_number_formats <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic131_number_formats_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic131_number_formats_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic131_number_formats_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic131_number_formats_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic131_number_formats_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic132_striped_table</b></td>
-  <td>classic132_striped_table <span style="color:#3fb950">⬤</span> 99.1%</td>
+  <td colspan="2">classic132_striped_table <span style="color:#3fb950">⬤</span> 99.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic132_striped_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic132_striped_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic132_striped_table_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic132_striped_table_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic132_striped_table_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic133_gradient_rows</b></td>
-  <td>classic133_gradient_rows <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic133_gradient_rows <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic133_gradient_rows_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic133_gradient_rows_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic133_gradient_rows_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic133_gradient_rows_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic133_gradient_rows_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic134_heatmap</b></td>
-  <td>classic134_heatmap <span style="color:#3fb950">⬤</span> 98.8%</td>
+  <td colspan="2">classic134_heatmap <span style="color:#3fb950">⬤</span> 98.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic134_heatmap_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic134_heatmap_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic134_heatmap_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic134_heatmap_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic134_heatmap_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic135_bottom_border_only</b></td>
-  <td>classic135_bottom_border_only <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic135_bottom_border_only <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic135_bottom_border_only_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic135_bottom_border_only_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic135_bottom_border_only_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic135_bottom_border_only_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic135_bottom_border_only_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic136_financial_report_styled</b></td>
-  <td>classic136_financial_report_styled <span style="color:#3fb950">⬤</span> 99.4%</td>
+  <td colspan="2">classic136_financial_report_styled <span style="color:#3fb950">⬤</span> 99.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic136_financial_report_styled_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic136_financial_report_styled_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic136_financial_report_styled_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic136_financial_report_styled_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic136_financial_report_styled_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic137_checkerboard</b></td>
-  <td>classic137_checkerboard <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="2">classic137_checkerboard <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic137_checkerboard_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic137_checkerboard_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic137_checkerboard_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic137_checkerboard_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic137_checkerboard_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic138_color_grid</b></td>
-  <td>classic138_color_grid <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="2">classic138_color_grid <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic138_color_grid_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic138_color_grid_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic138_color_grid_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic138_color_grid_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic138_color_grid_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic139_pattern_fills</b></td>
-  <td>classic139_pattern_fills <span style="color:#3fb950">⬤</span> 99.3%</td>
+  <td colspan="2">classic139_pattern_fills <span style="color:#3fb950">⬤</span> 99.3%</td>
 </tr>
 <tr>
-  <td><img src="images/classic139_pattern_fills_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic139_pattern_fills_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic139_pattern_fills_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic139_pattern_fills_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic139_pattern_fills_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic13_date_strings</b></td>
-  <td>classic13_date_strings <span style="color:#3fb950">⬤</span> 98.9%</td>
+  <td colspan="2">classic13_date_strings <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic13_date_strings_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic13_date_strings_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic13_date_strings_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic13_date_strings_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic13_date_strings_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic140_rotated_text</b></td>
-  <td>classic140_rotated_text <span style="color:#3fb950">⬤</span> 98.1%</td>
+  <td colspan="2">classic140_rotated_text <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic140_rotated_text_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic140_rotated_text_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic140_rotated_text_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic140_rotated_text_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic140_rotated_text_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic141_mixed_edge_borders</b></td>
-  <td>classic141_mixed_edge_borders <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic141_mixed_edge_borders <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic141_mixed_edge_borders_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic141_mixed_edge_borders_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic141_mixed_edge_borders_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic141_mixed_edge_borders_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic141_mixed_edge_borders_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic142_styled_invoice</b></td>
-  <td>classic142_styled_invoice <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="2">classic142_styled_invoice <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic142_styled_invoice_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic142_styled_invoice_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic142_styled_invoice_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic142_styled_invoice_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic142_styled_invoice_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic143_colored_tabs</b></td>
-  <td>classic143_colored_tabs <span style="color:#3fb950">⬤</span> 100.0%</td>
+  <td colspan="2">classic143_colored_tabs <span style="color:#3fb950">⬤</span> 100.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic143_colored_tabs_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic143_colored_tabs_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic143_colored_tabs_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic143_colored_tabs_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic143_colored_tabs_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic143_colored_tabs_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic143_colored_tabs_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic143_colored_tabs_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic143_colored_tabs_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic143_colored_tabs_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic143_colored_tabs_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic143_colored_tabs_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic143_colored_tabs_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic143_colored_tabs_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic143_colored_tabs_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic143_colored_tabs_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic143_colored_tabs_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic143_colored_tabs_p4_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic143_colored_tabs_p4_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic143_colored_tabs_p4_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic144_note_style_cells</b></td>
-  <td>classic144_note_style_cells <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic144_note_style_cells <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic144_note_style_cells_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic144_note_style_cells_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic144_note_style_cells_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic144_note_style_cells_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic144_note_style_cells_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic145_status_badges</b></td>
-  <td>classic145_status_badges <span style="color:#3fb950">⬤</span> 99.1%</td>
+  <td colspan="2">classic145_status_badges <span style="color:#3fb950">⬤</span> 99.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic145_status_badges_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic145_status_badges_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic145_status_badges_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic145_status_badges_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic145_status_badges_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic146_double_border_table</b></td>
-  <td>classic146_double_border_table <span style="color:#3fb950">⬤</span> 99.4%</td>
+  <td colspan="2">classic146_double_border_table <span style="color:#3fb950">⬤</span> 99.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic146_double_border_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic146_double_border_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic146_double_border_table_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic146_double_border_table_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic146_double_border_table_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic147_multi_sheet_styled</b></td>
-  <td>classic147_multi_sheet_styled <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic147_multi_sheet_styled <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic147_multi_sheet_styled_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic147_multi_sheet_styled_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic147_multi_sheet_styled_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic147_multi_sheet_styled_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic147_multi_sheet_styled_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic147_multi_sheet_styled_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic147_multi_sheet_styled_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic147_multi_sheet_styled_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic147_multi_sheet_styled_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic147_multi_sheet_styled_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic147_multi_sheet_styled_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic147_multi_sheet_styled_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic147_multi_sheet_styled_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic147_multi_sheet_styled_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic147_multi_sheet_styled_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic148_frozen_styled_grid</b></td>
-  <td>classic148_frozen_styled_grid <span style="color:#3fb950">⬤</span> 97.4%</td>
+  <td colspan="2">classic148_frozen_styled_grid <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic148_frozen_styled_grid_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic148_frozen_styled_grid_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic148_frozen_styled_grid_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic148_frozen_styled_grid_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic148_frozen_styled_grid_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic149_merged_styled_sections</b></td>
-  <td>classic149_merged_styled_sections <span style="color:#3fb950">⬤</span> 98.8%</td>
+  <td colspan="2">classic149_merged_styled_sections <span style="color:#3fb950">⬤</span> 98.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic149_merged_styled_sections_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic149_merged_styled_sections_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic149_merged_styled_sections_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic149_merged_styled_sections_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic149_merged_styled_sections_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic14_decimal_numbers</b></td>
-  <td>classic14_decimal_numbers <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic14_decimal_numbers <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic14_decimal_numbers_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic14_decimal_numbers_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic14_decimal_numbers_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic14_decimal_numbers_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic14_decimal_numbers_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic150_kitchen_sink_styles</b></td>
-  <td>classic150_kitchen_sink_styles <span style="color:#3fb950">⬤</span> 98.8%</td>
+  <td colspan="2">classic150_kitchen_sink_styles <span style="color:#3fb950">⬤</span> 98.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic150_kitchen_sink_styles_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic150_kitchen_sink_styles_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic150_kitchen_sink_styles_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic150_kitchen_sink_styles_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic150_kitchen_sink_styles_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic151_multilingual_greetings</b></td>
-  <td>classic151_multilingual_greetings <span style="color:#3fb950">⬤</span> 93.5%</td>
+  <td colspan="2">classic151_multilingual_greetings <span style="color:#3fb950">⬤</span> 93.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic151_multilingual_greetings_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic151_multilingual_greetings_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic151_multilingual_greetings_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic151_multilingual_greetings_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic151_multilingual_greetings_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic152_emoji_sampler</b></td>
-  <td>classic152_emoji_sampler <span style="color:#3fb950">⬤</span> 91.1%</td>
+  <td colspan="2">classic152_emoji_sampler <span style="color:#3fb950">⬤</span> 91.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic152_emoji_sampler_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic152_emoji_sampler_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic152_emoji_sampler_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic152_emoji_sampler_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic152_emoji_sampler_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic153_currency_symbols</b></td>
-  <td>classic153_currency_symbols <span style="color:#3fb950">⬤</span> 98.5%</td>
+  <td colspan="2">classic153_currency_symbols <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic153_currency_symbols_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic153_currency_symbols_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic153_currency_symbols_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic153_currency_symbols_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic153_currency_symbols_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic154_math_symbols</b></td>
-  <td>classic154_math_symbols <span style="color:#3fb950">⬤</span> 95.7%</td>
+  <td colspan="2">classic154_math_symbols <span style="color:#3fb950">⬤</span> 95.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic154_math_symbols_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic154_math_symbols_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic154_math_symbols_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic154_math_symbols_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic154_math_symbols_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic155_diacritical_marks</b></td>
-  <td>classic155_diacritical_marks <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic155_diacritical_marks <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic155_diacritical_marks_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic155_diacritical_marks_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic155_diacritical_marks_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic155_diacritical_marks_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic155_diacritical_marks_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic156_rtl_bidi_text</b></td>
-  <td>classic156_rtl_bidi_text <span style="color:#d29922">⬤</span> 84.0%</td>
+  <td colspan="2">classic156_rtl_bidi_text <span style="color:#d29922">⬤</span> 84.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic156_rtl_bidi_text_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic156_rtl_bidi_text_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic156_rtl_bidi_text_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic156_rtl_bidi_text_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic156_rtl_bidi_text_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic157_cjk_extended</b></td>
-  <td>classic157_cjk_extended <span style="color:#3fb950">⬤</span> 91.3%</td>
+  <td colspan="2">classic157_cjk_extended <span style="color:#3fb950">⬤</span> 91.3%</td>
 </tr>
 <tr>
-  <td><img src="images/classic157_cjk_extended_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic157_cjk_extended_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic157_cjk_extended_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic157_cjk_extended_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic157_cjk_extended_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic158_emoji_skin_tones</b></td>
-  <td>classic158_emoji_skin_tones <span style="color:#3fb950">⬤</span> 99.3%</td>
+  <td colspan="2">classic158_emoji_skin_tones <span style="color:#3fb950">⬤</span> 99.3%</td>
 </tr>
 <tr>
-  <td><img src="images/classic158_emoji_skin_tones_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic158_emoji_skin_tones_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic158_emoji_skin_tones_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic158_emoji_skin_tones_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic158_emoji_skin_tones_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic159_zwj_emoji</b></td>
-  <td>classic159_zwj_emoji <span style="color:#3fb950">⬤</span> 90.7%</td>
+  <td colspan="2">classic159_zwj_emoji <span style="color:#3fb950">⬤</span> 90.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic159_zwj_emoji_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic159_zwj_emoji_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic159_zwj_emoji_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic159_zwj_emoji_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic159_zwj_emoji_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic15_negative_numbers</b></td>
-  <td>classic15_negative_numbers <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic15_negative_numbers <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic15_negative_numbers_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic15_negative_numbers_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic15_negative_numbers_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic15_negative_numbers_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic15_negative_numbers_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic160_punctuation_marks</b></td>
-  <td>classic160_punctuation_marks <span style="color:#3fb950">⬤</span> 94.4%</td>
+  <td colspan="2">classic160_punctuation_marks <span style="color:#3fb950">⬤</span> 94.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic160_punctuation_marks_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic160_punctuation_marks_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic160_punctuation_marks_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic160_punctuation_marks_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic160_punctuation_marks_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic161_box_drawing</b></td>
-  <td>classic161_box_drawing <span style="color:#3fb950">⬤</span> 95.0%</td>
+  <td colspan="2">classic161_box_drawing <span style="color:#3fb950">⬤</span> 95.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic161_box_drawing_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic161_box_drawing_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic161_box_drawing_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic161_box_drawing_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic161_box_drawing_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic162_cjk_emoji_styled</b></td>
-  <td>classic162_cjk_emoji_styled <span style="color:#d29922">⬤</span> 86.5%</td>
+  <td colspan="2">classic162_cjk_emoji_styled <span style="color:#d29922">⬤</span> 86.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic162_cjk_emoji_styled_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic162_cjk_emoji_styled_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic162_cjk_emoji_styled_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic162_cjk_emoji_styled_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic162_cjk_emoji_styled_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic163_cyrillic_alphabets</b></td>
-  <td>classic163_cyrillic_alphabets <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic163_cyrillic_alphabets <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic163_cyrillic_alphabets_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic163_cyrillic_alphabets_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic163_cyrillic_alphabets_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic163_cyrillic_alphabets_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic163_cyrillic_alphabets_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic164_indic_scripts</b></td>
-  <td>classic164_indic_scripts <span style="color:#d29922">⬤</span> 87.4%</td>
+  <td colspan="2">classic164_indic_scripts <span style="color:#d29922">⬤</span> 87.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic164_indic_scripts_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic164_indic_scripts_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic164_indic_scripts_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic164_indic_scripts_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic164_indic_scripts_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic165_southeast_asian</b></td>
-  <td>classic165_southeast_asian <span style="color:#3fb950">⬤</span> 96.0%</td>
+  <td colspan="2">classic165_southeast_asian <span style="color:#3fb950">⬤</span> 96.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic165_southeast_asian_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic165_southeast_asian_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic165_southeast_asian_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic165_southeast_asian_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic165_southeast_asian_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic166_emoji_progress</b></td>
-  <td>classic166_emoji_progress <span style="color:#3fb950">⬤</span> 98.7%</td>
+  <td colspan="2">classic166_emoji_progress <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic166_emoji_progress_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic166_emoji_progress_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic166_emoji_progress_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic166_emoji_progress_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic166_emoji_progress_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic167_musical_symbols</b></td>
-  <td>classic167_musical_symbols <span style="color:#3fb950">⬤</span> 90.0%</td>
+  <td colspan="2">classic167_musical_symbols <span style="color:#3fb950">⬤</span> 90.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic167_musical_symbols_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic167_musical_symbols_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic167_musical_symbols_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic167_musical_symbols_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic167_musical_symbols_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic168_mixed_ltr_rtl_styled</b></td>
-  <td>classic168_mixed_ltr_rtl_styled <span style="color:#3fb950">⬤</span> 94.4%</td>
+  <td colspan="2">classic168_mixed_ltr_rtl_styled <span style="color:#3fb950">⬤</span> 94.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic168_mixed_ltr_rtl_styled_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic168_mixed_ltr_rtl_styled_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic168_mixed_ltr_rtl_styled_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic168_mixed_ltr_rtl_styled_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic168_mixed_ltr_rtl_styled_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic169_korean_invoice</b></td>
-  <td>classic169_korean_invoice <span style="color:#d29922">⬤</span> 88.4%</td>
+  <td colspan="2">classic169_korean_invoice <span style="color:#d29922">⬤</span> 88.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic169_korean_invoice_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic169_korean_invoice_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic169_korean_invoice_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic169_korean_invoice_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic169_korean_invoice_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic16_percentage_strings</b></td>
-  <td>classic16_percentage_strings <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic16_percentage_strings <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic16_percentage_strings_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic16_percentage_strings_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic16_percentage_strings_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic16_percentage_strings_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic16_percentage_strings_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic170_emoji_dashboard</b></td>
-  <td>classic170_emoji_dashboard <span style="color:#3fb950">⬤</span> 96.4%</td>
+  <td colspan="2">classic170_emoji_dashboard <span style="color:#3fb950">⬤</span> 96.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic170_emoji_dashboard_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic170_emoji_dashboard_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic170_emoji_dashboard_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic170_emoji_dashboard_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic170_emoji_dashboard_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic171_ipa_phonetic</b></td>
-  <td>classic171_ipa_phonetic <span style="color:#3fb950">⬤</span> 97.6%</td>
+  <td colspan="2">classic171_ipa_phonetic <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic171_ipa_phonetic_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic171_ipa_phonetic_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic171_ipa_phonetic_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic171_ipa_phonetic_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic171_ipa_phonetic_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic172_emoji_timeline</b></td>
-  <td>classic172_emoji_timeline <span style="color:#3fb950">⬤</span> 95.3%</td>
+  <td colspan="2">classic172_emoji_timeline <span style="color:#3fb950">⬤</span> 95.3%</td>
 </tr>
 <tr>
-  <td><img src="images/classic172_emoji_timeline_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic172_emoji_timeline_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic172_emoji_timeline_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic172_emoji_timeline_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic172_emoji_timeline_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic173_african_languages</b></td>
-  <td>classic173_african_languages <span style="color:#3fb950">⬤</span> 90.8%</td>
+  <td colspan="2">classic173_african_languages <span style="color:#3fb950">⬤</span> 90.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic173_african_languages_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic173_african_languages_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic173_african_languages_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic173_african_languages_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic173_african_languages_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic174_technical_symbols</b></td>
-  <td>classic174_technical_symbols <span style="color:#3fb950">⬤</span> 94.4%</td>
+  <td colspan="2">classic174_technical_symbols <span style="color:#3fb950">⬤</span> 94.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic174_technical_symbols_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic174_technical_symbols_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic174_technical_symbols_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic174_technical_symbols_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic174_technical_symbols_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic175_multiscript_catalog</b></td>
-  <td>classic175_multiscript_catalog <span style="color:#3fb950">⬤</span> 92.7%</td>
+  <td colspan="2">classic175_multiscript_catalog <span style="color:#3fb950">⬤</span> 92.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic175_multiscript_catalog_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic175_multiscript_catalog_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic175_multiscript_catalog_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic175_multiscript_catalog_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic175_multiscript_catalog_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic176_combining_characters</b></td>
-  <td>classic176_combining_characters <span style="color:#3fb950">⬤</span> 94.6%</td>
+  <td colspan="2">classic176_combining_characters <span style="color:#3fb950">⬤</span> 94.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic176_combining_characters_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic176_combining_characters_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic176_combining_characters_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic176_combining_characters_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic176_combining_characters_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic177_emoji_calendar</b></td>
-  <td>classic177_emoji_calendar <span style="color:#d29922">⬤</span> 88.4%</td>
+  <td colspan="2">classic177_emoji_calendar <span style="color:#d29922">⬤</span> 88.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic177_emoji_calendar_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic177_emoji_calendar_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic177_emoji_calendar_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic177_emoji_calendar_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic177_emoji_calendar_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic178_caucasus_ethiopic</b></td>
-  <td>classic178_caucasus_ethiopic <span style="color:#3fb950">⬤</span> 96.8%</td>
+  <td colspan="2">classic178_caucasus_ethiopic <span style="color:#3fb950">⬤</span> 96.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic178_caucasus_ethiopic_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic178_caucasus_ethiopic_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic178_caucasus_ethiopic_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic178_caucasus_ethiopic_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic178_caucasus_ethiopic_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic179_emoji_inventory</b></td>
-  <td>classic179_emoji_inventory <span style="color:#3fb950">⬤</span> 91.0%</td>
+  <td colspan="2">classic179_emoji_inventory <span style="color:#3fb950">⬤</span> 91.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic179_emoji_inventory_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic179_emoji_inventory_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic179_emoji_inventory_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic179_emoji_inventory_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic179_emoji_inventory_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic17_currency_strings</b></td>
-  <td>classic17_currency_strings <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic17_currency_strings <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic17_currency_strings_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic17_currency_strings_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic17_currency_strings_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic17_currency_strings_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic17_currency_strings_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic180_polyglot_paragraph</b></td>
-  <td>classic180_polyglot_paragraph <span style="color:#3fb950">⬤</span> 93.6%</td>
+  <td colspan="2">classic180_polyglot_paragraph <span style="color:#3fb950">⬤</span> 93.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic180_polyglot_paragraph_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic180_polyglot_paragraph_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic180_polyglot_paragraph_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic180_polyglot_paragraph_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic180_polyglot_paragraph_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic181_feedback_tracker_with_images</b></td>
-  <td>classic181_feedback_tracker_with_images <span style="color:#3fb950">⬤</span> 99.4%</td>
+  <td colspan="2">classic181_feedback_tracker_with_images <span style="color:#3fb950">⬤</span> 99.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic181_feedback_tracker_with_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic181_feedback_tracker_with_images_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic181_feedback_tracker_with_images_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic181_feedback_tracker_with_images_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic181_feedback_tracker_with_images_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic181_feedback_tracker_with_images_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic181_feedback_tracker_with_images_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic181_feedback_tracker_with_images_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic181_feedback_tracker_with_images_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic181_feedback_tracker_with_images_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic182_dense_long_text_columns</b></td>
-  <td>classic182_dense_long_text_columns <span style="color:#3fb950">⬤</span> 96.5%</td>
+  <td colspan="2">classic182_dense_long_text_columns <span style="color:#3fb950">⬤</span> 96.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic182_dense_long_text_columns_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic182_dense_long_text_columns_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic182_dense_long_text_columns_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic182_dense_long_text_columns_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic182_dense_long_text_columns_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic182_dense_long_text_columns_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic182_dense_long_text_columns_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic182_dense_long_text_columns_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic182_dense_long_text_columns_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic182_dense_long_text_columns_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic183_mixed_content_grid</b></td>
-  <td>classic183_mixed_content_grid <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic183_mixed_content_grid <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic183_mixed_content_grid_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic183_mixed_content_grid_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic183_mixed_content_grid_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic183_mixed_content_grid_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic183_mixed_content_grid_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic184_wide_narrow_columns</b></td>
-  <td>classic184_wide_narrow_columns <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="2">classic184_wide_narrow_columns <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic184_wide_narrow_columns_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic184_wide_narrow_columns_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic184_wide_narrow_columns_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic184_wide_narrow_columns_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic184_wide_narrow_columns_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic185_tall_rows_vertical_align</b></td>
-  <td>classic185_tall_rows_vertical_align <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic185_tall_rows_vertical_align <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic185_tall_rows_vertical_align_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic185_tall_rows_vertical_align_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic185_tall_rows_vertical_align_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic185_tall_rows_vertical_align_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic185_tall_rows_vertical_align_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic186_multi_sheet_image_report</b></td>
-  <td>classic186_multi_sheet_image_report <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic186_multi_sheet_image_report <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic186_multi_sheet_image_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic186_multi_sheet_image_report_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic186_multi_sheet_image_report_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic186_multi_sheet_image_report_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic186_multi_sheet_image_report_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic186_multi_sheet_image_report_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic186_multi_sheet_image_report_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic186_multi_sheet_image_report_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic186_multi_sheet_image_report_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic186_multi_sheet_image_report_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic187_bug_report_with_screenshots</b></td>
-  <td>classic187_bug_report_with_screenshots <span style="color:#3fb950">⬤</span> 98.5%</td>
+  <td colspan="2">classic187_bug_report_with_screenshots <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic187_bug_report_with_screenshots_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic187_bug_report_with_screenshots_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic187_bug_report_with_screenshots_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic187_bug_report_with_screenshots_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic187_bug_report_with_screenshots_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic188_merged_header_with_images</b></td>
-  <td>classic188_merged_header_with_images <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic188_merged_header_with_images <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic188_merged_header_with_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic188_merged_header_with_images_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic188_merged_header_with_images_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic188_merged_header_with_images_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic188_merged_header_with_images_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic189_alternating_image_text_rows</b></td>
-  <td>classic189_alternating_image_text_rows <span style="color:#3fb950">⬤</span> 95.3%</td>
+  <td colspan="2">classic189_alternating_image_text_rows <span style="color:#3fb950">⬤</span> 95.3%</td>
 </tr>
 <tr>
-  <td><img src="images/classic189_alternating_image_text_rows_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic189_alternating_image_text_rows_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic189_alternating_image_text_rows_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic189_alternating_image_text_rows_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic189_alternating_image_text_rows_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic18_large_dataset</b></td>
-  <td>classic18_large_dataset <span style="color:#3fb950">⬤</span> 95.7%</td>
+  <td colspan="2">classic18_large_dataset <span style="color:#3fb950">⬤</span> 95.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p4_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p4_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p4_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p5_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p5_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p5_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p5_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p6_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p6_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p6_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p6_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p7_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p7_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p7_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p7_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p8_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p8_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p8_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p8_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p8_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p9_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p9_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p9_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p9_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p9_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p10_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p10_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p10_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p10_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p10_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p11_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p11_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p11_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p11_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p11_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p12_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p12_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p12_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p12_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p12_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p13_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p13_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p13_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p13_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p13_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p14_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p14_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p14_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p14_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p14_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p15_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p15_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p15_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p15_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p15_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p16_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p16_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p16_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p16_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p16_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p17_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p17_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p17_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p17_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p17_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p18_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p18_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p18_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p18_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p18_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p19_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p19_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p19_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p19_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p19_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p20_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p20_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p20_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p20_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p20_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p21_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p21_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p21_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p21_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p21_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p22_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p22_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p22_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p22_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p22_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p23_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p23_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p23_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p23_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p23_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic18_large_dataset_p24_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic18_large_dataset_p24_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p24_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic18_large_dataset_p24_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic18_large_dataset_p24_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p25_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p26_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p27_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p28_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p29_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p30_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p31_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p32_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p33_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p34_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p35_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p36_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p37_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p38_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p39_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p40_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p41_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p42_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic190_dashboard_kpi_images</b></td>
-  <td>classic190_dashboard_kpi_images <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic190_dashboard_kpi_images <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic190_dashboard_kpi_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic190_dashboard_kpi_images_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic190_dashboard_kpi_images_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic190_dashboard_kpi_images_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic190_dashboard_kpi_images_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic191_payroll_calculator</b></td>
-  <td>classic191_payroll_calculator <span style="color:#3fb950">⬤</span> 91.9%</td>
+  <td colspan="2">classic191_payroll_calculator <span style="color:#3fb950">⬤</span> 91.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic191_payroll_calculator_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic191_payroll_calculator_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic191_payroll_calculator_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic191_payroll_calculator_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic191_payroll_calculator_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic191_payroll_calculator_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic191_payroll_calculator_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic191_payroll_calculator_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic191_payroll_calculator_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic191_payroll_calculator_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic191_payroll_calculator_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p4_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic191_payroll_calculator_p4_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p4_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic191_payroll_calculator_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic191_payroll_calculator_p5_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p5_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic191_payroll_calculator_p5_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p5_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic191_payroll_calculator_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic191_payroll_calculator_p6_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p6_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic191_payroll_calculator_p6_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p6_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic191_payroll_calculator_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic191_payroll_calculator_p7_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p7_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic191_payroll_calculator_p7_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p7_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic191_payroll_calculator_p8_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic191_payroll_calculator_p8_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p8_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic191_payroll_calculator_p8_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p8_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic191_payroll_calculator_p9_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic191_payroll_calculator_p9_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p9_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic191_payroll_calculator_p9_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic191_payroll_calculator_p9_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic19_single_column_list</b></td>
-  <td>classic19_single_column_list <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic19_single_column_list <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic19_single_column_list_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic19_single_column_list_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic19_single_column_list_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic19_single_column_list_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic19_single_column_list_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic20_all_empty_cells</b></td>
-  <td>classic20_all_empty_cells <span style="color:#3fb950">⬤</span> 100.0%</td>
+  <td colspan="2">classic20_all_empty_cells <span style="color:#3fb950">⬤</span> 100.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic20_all_empty_cells_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic20_all_empty_cells_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic20_all_empty_cells_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic20_all_empty_cells_p1_reference.png" width="260" alt="Reference"></td>
+  <td><i>missing</i></td>
 </tr>
 <tr>
   <td><b>classic21_header_only</b></td>
-  <td>classic21_header_only <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic21_header_only <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic21_header_only_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic21_header_only_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic21_header_only_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic21_header_only_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic21_header_only_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic22_long_sheet_name</b></td>
-  <td>classic22_long_sheet_name <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic22_long_sheet_name <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic22_long_sheet_name_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic22_long_sheet_name_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic22_long_sheet_name_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic22_long_sheet_name_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic22_long_sheet_name_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic23_unicode_text</b></td>
-  <td>classic23_unicode_text <span style="color:#3fb950">⬤</span> 91.3%</td>
+  <td colspan="2">classic23_unicode_text <span style="color:#3fb950">⬤</span> 91.3%</td>
 </tr>
 <tr>
-  <td><img src="images/classic23_unicode_text_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic23_unicode_text_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic23_unicode_text_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic23_unicode_text_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic23_unicode_text_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic24_red_text</b></td>
-  <td>classic24_red_text <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic24_red_text <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic24_red_text_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic24_red_text_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic24_red_text_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic24_red_text_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic24_red_text_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic25_multiple_colors</b></td>
-  <td>classic25_multiple_colors <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic25_multiple_colors <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic25_multiple_colors_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic25_multiple_colors_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic25_multiple_colors_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic25_multiple_colors_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic25_multiple_colors_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic26_inline_strings</b></td>
-  <td>classic26_inline_strings <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic26_inline_strings <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic26_inline_strings_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic26_inline_strings_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic26_inline_strings_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic26_inline_strings_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic26_inline_strings_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic27_single_row</b></td>
-  <td>classic27_single_row <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic27_single_row <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic27_single_row_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic27_single_row_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic27_single_row_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic27_single_row_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic27_single_row_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic28_duplicate_values</b></td>
-  <td>classic28_duplicate_values <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic28_duplicate_values <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic28_duplicate_values_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic28_duplicate_values_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic28_duplicate_values_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic28_duplicate_values_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic28_duplicate_values_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic29_formula_results</b></td>
-  <td>classic29_formula_results <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic29_formula_results <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic29_formula_results_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic29_formula_results_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic29_formula_results_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic29_formula_results_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic29_formula_results_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic30_mixed_empty_and_filled_sheets</b></td>
-  <td>classic30_mixed_empty_and_filled_sheets <span style="color:#3fb950">⬤</span> 100.0%</td>
+  <td colspan="2">classic30_mixed_empty_and_filled_sheets <span style="color:#3fb950">⬤</span> 100.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic31_bold_header_row</b></td>
-  <td>classic31_bold_header_row <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic31_bold_header_row <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic31_bold_header_row_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic31_bold_header_row_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic31_bold_header_row_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic31_bold_header_row_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic31_bold_header_row_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic32_right_aligned_numbers</b></td>
-  <td>classic32_right_aligned_numbers <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic32_right_aligned_numbers <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic32_right_aligned_numbers_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic32_right_aligned_numbers_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic32_right_aligned_numbers_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic32_right_aligned_numbers_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic32_right_aligned_numbers_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic33_centered_text</b></td>
-  <td>classic33_centered_text <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic33_centered_text <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic33_centered_text_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic33_centered_text_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic33_centered_text_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic33_centered_text_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic33_centered_text_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic34_explicit_column_widths</b></td>
-  <td>classic34_explicit_column_widths <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic34_explicit_column_widths <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic34_explicit_column_widths_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic34_explicit_column_widths_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic34_explicit_column_widths_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic34_explicit_column_widths_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic34_explicit_column_widths_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic35_explicit_row_heights</b></td>
-  <td>classic35_explicit_row_heights <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="2">classic35_explicit_row_heights <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic35_explicit_row_heights_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic35_explicit_row_heights_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic35_explicit_row_heights_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic35_explicit_row_heights_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic35_explicit_row_heights_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic36_merged_cells</b></td>
-  <td>classic36_merged_cells <span style="color:#3fb950">⬤</span> 99.4%</td>
+  <td colspan="2">classic36_merged_cells <span style="color:#3fb950">⬤</span> 99.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic36_merged_cells_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic36_merged_cells_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic36_merged_cells_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic36_merged_cells_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic36_merged_cells_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic37_freeze_panes</b></td>
-  <td>classic37_freeze_panes <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic37_freeze_panes <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic37_freeze_panes_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic37_freeze_panes_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic37_freeze_panes_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic37_freeze_panes_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic37_freeze_panes_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic38_hyperlink_cell</b></td>
-  <td>classic38_hyperlink_cell <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic38_hyperlink_cell <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic38_hyperlink_cell_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic38_hyperlink_cell_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic38_hyperlink_cell_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic38_hyperlink_cell_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic38_hyperlink_cell_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic39_financial_table</b></td>
-  <td>classic39_financial_table <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic39_financial_table <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic39_financial_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic39_financial_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic39_financial_table_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic39_financial_table_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic39_financial_table_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic40_scientific_notation</b></td>
-  <td>classic40_scientific_notation <span style="color:#3fb950">⬤</span> 99.1%</td>
+  <td colspan="2">classic40_scientific_notation <span style="color:#3fb950">⬤</span> 99.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic40_scientific_notation_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic40_scientific_notation_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic40_scientific_notation_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic40_scientific_notation_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic40_scientific_notation_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic41_integer_vs_float</b></td>
-  <td>classic41_integer_vs_float <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic41_integer_vs_float <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic41_integer_vs_float_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic41_integer_vs_float_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic41_integer_vs_float_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic41_integer_vs_float_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic41_integer_vs_float_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic42_boolean_values</b></td>
-  <td>classic42_boolean_values <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic42_boolean_values <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic42_boolean_values_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic42_boolean_values_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic42_boolean_values_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic42_boolean_values_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic42_boolean_values_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic43_inventory_report</b></td>
-  <td>classic43_inventory_report <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="2">classic43_inventory_report <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic43_inventory_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic43_inventory_report_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic43_inventory_report_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic43_inventory_report_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic43_inventory_report_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic44_employee_roster</b></td>
-  <td>classic44_employee_roster <span style="color:#3fb950">⬤</span> 98.0%</td>
+  <td colspan="2">classic44_employee_roster <span style="color:#3fb950">⬤</span> 98.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic44_employee_roster_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic44_employee_roster_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic44_employee_roster_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic44_employee_roster_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic44_employee_roster_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic45_sales_by_region</b></td>
-  <td>classic45_sales_by_region <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic45_sales_by_region <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic45_sales_by_region_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic45_sales_by_region_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic45_sales_by_region_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic45_sales_by_region_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic45_sales_by_region_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic45_sales_by_region_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic45_sales_by_region_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic45_sales_by_region_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic45_sales_by_region_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic45_sales_by_region_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic45_sales_by_region_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic45_sales_by_region_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic45_sales_by_region_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic45_sales_by_region_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic45_sales_by_region_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic45_sales_by_region_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic45_sales_by_region_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic45_sales_by_region_p4_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic45_sales_by_region_p4_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic45_sales_by_region_p4_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic46_grade_book</b></td>
-  <td>classic46_grade_book <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic46_grade_book <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic46_grade_book_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic46_grade_book_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic46_grade_book_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic46_grade_book_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic46_grade_book_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic47_time_series</b></td>
-  <td>classic47_time_series <span style="color:#3fb950">⬤</span> 99.3%</td>
+  <td colspan="2">classic47_time_series <span style="color:#3fb950">⬤</span> 99.3%</td>
 </tr>
 <tr>
-  <td><img src="images/classic47_time_series_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic47_time_series_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic47_time_series_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic47_time_series_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic47_time_series_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic48_survey_results</b></td>
-  <td>classic48_survey_results <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic48_survey_results <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic48_survey_results_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic48_survey_results_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic48_survey_results_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic48_survey_results_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic48_survey_results_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic49_contact_list</b></td>
-  <td>classic49_contact_list <span style="color:#3fb950">⬤</span> 98.7%</td>
+  <td colspan="2">classic49_contact_list <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic49_contact_list_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic49_contact_list_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic49_contact_list_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic49_contact_list_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic49_contact_list_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic50_budget_vs_actuals</b></td>
-  <td>classic50_budget_vs_actuals <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic50_budget_vs_actuals <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic50_budget_vs_actuals_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic50_budget_vs_actuals_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic50_budget_vs_actuals_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic50_budget_vs_actuals_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic50_budget_vs_actuals_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic50_budget_vs_actuals_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic50_budget_vs_actuals_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic50_budget_vs_actuals_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic50_budget_vs_actuals_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic50_budget_vs_actuals_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic50_budget_vs_actuals_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic50_budget_vs_actuals_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic50_budget_vs_actuals_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic50_budget_vs_actuals_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic50_budget_vs_actuals_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic51_product_catalog</b></td>
-  <td>classic51_product_catalog <span style="color:#3fb950">⬤</span> 97.8%</td>
+  <td colspan="2">classic51_product_catalog <span style="color:#3fb950">⬤</span> 97.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic51_product_catalog_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic51_product_catalog_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic51_product_catalog_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic51_product_catalog_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic51_product_catalog_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic52_pivot_summary</b></td>
-  <td>classic52_pivot_summary <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic52_pivot_summary <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic52_pivot_summary_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic52_pivot_summary_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic52_pivot_summary_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic52_pivot_summary_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic52_pivot_summary_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic53_invoice</b></td>
-  <td>classic53_invoice <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="2">classic53_invoice <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic53_invoice_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic53_invoice_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic53_invoice_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic53_invoice_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic53_invoice_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic54_multi_level_header</b></td>
-  <td>classic54_multi_level_header <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic54_multi_level_header <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic54_multi_level_header_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic54_multi_level_header_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic54_multi_level_header_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic54_multi_level_header_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic54_multi_level_header_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic55_error_values</b></td>
-  <td>classic55_error_values <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic55_error_values <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic55_error_values_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic55_error_values_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic55_error_values_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic55_error_values_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic55_error_values_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic56_alternating_row_colors</b></td>
-  <td>classic56_alternating_row_colors <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic56_alternating_row_colors <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic56_alternating_row_colors_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic56_alternating_row_colors_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic56_alternating_row_colors_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic56_alternating_row_colors_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic56_alternating_row_colors_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic57_cjk_only</b></td>
-  <td>classic57_cjk_only <span style="color:#3fb950">⬤</span> 91.1%</td>
+  <td colspan="2">classic57_cjk_only <span style="color:#3fb950">⬤</span> 91.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic57_cjk_only_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic57_cjk_only_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic57_cjk_only_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic57_cjk_only_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic57_cjk_only_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic58_mixed_numeric_formats</b></td>
-  <td>classic58_mixed_numeric_formats <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="2">classic58_mixed_numeric_formats <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic58_mixed_numeric_formats_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic58_mixed_numeric_formats_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic58_mixed_numeric_formats_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic58_mixed_numeric_formats_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic58_mixed_numeric_formats_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic59_multi_sheet_summary</b></td>
-  <td>classic59_multi_sheet_summary <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic59_multi_sheet_summary <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic59_multi_sheet_summary_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic59_multi_sheet_summary_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic59_multi_sheet_summary_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic59_multi_sheet_summary_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic59_multi_sheet_summary_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic59_multi_sheet_summary_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic59_multi_sheet_summary_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic59_multi_sheet_summary_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p4_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p4_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic59_multi_sheet_summary_p4_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic60_large_wide_table</b></td>
-  <td>classic60_large_wide_table <span style="color:#3fb950">⬤</span> 97.5%</td>
+  <td colspan="2">classic60_large_wide_table <span style="color:#3fb950">⬤</span> 97.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic60_large_wide_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic60_large_wide_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic60_large_wide_table_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic60_large_wide_table_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic60_large_wide_table_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic60_large_wide_table_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic60_large_wide_table_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic60_large_wide_table_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic60_large_wide_table_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic60_large_wide_table_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic60_large_wide_table_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic60_large_wide_table_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic60_large_wide_table_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic60_large_wide_table_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic60_large_wide_table_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic60_large_wide_table_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic60_large_wide_table_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic60_large_wide_table_p4_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic60_large_wide_table_p4_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic60_large_wide_table_p4_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic60_large_wide_table_p5_office.png" width="260" alt="Office"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><i>missing</i></td>
+  <td><img src="images/classic60_large_wide_table_p6_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic61_product_card_with_image</b></td>
-  <td>classic61_product_card_with_image <span style="color:#3fb950">⬤</span> 99.9%</td>
+  <td colspan="2">classic61_product_card_with_image <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic61_product_card_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic61_product_card_with_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic61_product_card_with_image_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic61_product_card_with_image_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic61_product_card_with_image_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic62_company_logo_header</b></td>
-  <td>classic62_company_logo_header <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic62_company_logo_header <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic62_company_logo_header_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic62_company_logo_header_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic62_company_logo_header_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic62_company_logo_header_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic62_company_logo_header_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic63_two_products_side_by_side</b></td>
-  <td>classic63_two_products_side_by_side <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic63_two_products_side_by_side <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic63_two_products_side_by_side_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic63_two_products_side_by_side_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic63_two_products_side_by_side_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic63_two_products_side_by_side_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic63_two_products_side_by_side_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic64_employee_directory_with_photo</b></td>
-  <td>classic64_employee_directory_with_photo <span style="color:#3fb950">⬤</span> 99.1%</td>
+  <td colspan="2">classic64_employee_directory_with_photo <span style="color:#3fb950">⬤</span> 99.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic64_employee_directory_with_photo_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic64_employee_directory_with_photo_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic64_employee_directory_with_photo_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic64_employee_directory_with_photo_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic64_employee_directory_with_photo_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic65_inventory_with_product_photos</b></td>
-  <td>classic65_inventory_with_product_photos <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic65_inventory_with_product_photos <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic65_inventory_with_product_photos_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic65_inventory_with_product_photos_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic65_inventory_with_product_photos_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic65_inventory_with_product_photos_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic65_inventory_with_product_photos_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic66_invoice_with_logo</b></td>
-  <td>classic66_invoice_with_logo <span style="color:#3fb950">⬤</span> 99.2%</td>
+  <td colspan="2">classic66_invoice_with_logo <span style="color:#3fb950">⬤</span> 99.2%</td>
 </tr>
 <tr>
-  <td><img src="images/classic66_invoice_with_logo_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic66_invoice_with_logo_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic66_invoice_with_logo_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic66_invoice_with_logo_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic66_invoice_with_logo_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic67_real_estate_listing</b></td>
-  <td>classic67_real_estate_listing <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic67_real_estate_listing <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic67_real_estate_listing_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic67_real_estate_listing_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic67_real_estate_listing_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic67_real_estate_listing_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic67_real_estate_listing_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic68_restaurant_menu</b></td>
-  <td>classic68_restaurant_menu <span style="color:#3fb950">⬤</span> 98.7%</td>
+  <td colspan="2">classic68_restaurant_menu <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic68_restaurant_menu_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic68_restaurant_menu_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic68_restaurant_menu_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic68_restaurant_menu_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic68_restaurant_menu_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic69_image_only_sheet</b></td>
-  <td>classic69_image_only_sheet <span style="color:#3fb950">⬤</span> 100.0%</td>
+  <td colspan="2">classic69_image_only_sheet <span style="color:#3fb950">⬤</span> 100.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic69_image_only_sheet_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic69_image_only_sheet_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic69_image_only_sheet_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic69_image_only_sheet_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic69_image_only_sheet_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic70_product_catalog_with_images</b></td>
-  <td>classic70_product_catalog_with_images <span style="color:#3fb950">⬤</span> 99.2%</td>
+  <td colspan="2">classic70_product_catalog_with_images <span style="color:#3fb950">⬤</span> 99.2%</td>
 </tr>
 <tr>
-  <td><img src="images/classic70_product_catalog_with_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic70_product_catalog_with_images_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic70_product_catalog_with_images_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic70_product_catalog_with_images_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic70_product_catalog_with_images_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic71_multi_sheet_with_images</b></td>
-  <td>classic71_multi_sheet_with_images <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic71_multi_sheet_with_images <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic71_multi_sheet_with_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic71_multi_sheet_with_images_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic71_multi_sheet_with_images_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic71_multi_sheet_with_images_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic71_multi_sheet_with_images_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic71_multi_sheet_with_images_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic71_multi_sheet_with_images_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic71_multi_sheet_with_images_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic71_multi_sheet_with_images_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic71_multi_sheet_with_images_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic71_multi_sheet_with_images_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic71_multi_sheet_with_images_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic71_multi_sheet_with_images_p3_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic71_multi_sheet_with_images_p3_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic71_multi_sheet_with_images_p3_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic72_bar_chart_image_with_data</b></td>
-  <td>classic72_bar_chart_image_with_data <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="2">classic72_bar_chart_image_with_data <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic72_bar_chart_image_with_data_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic72_bar_chart_image_with_data_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic72_bar_chart_image_with_data_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic72_bar_chart_image_with_data_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic72_bar_chart_image_with_data_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic73_event_flyer_with_banner</b></td>
-  <td>classic73_event_flyer_with_banner <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic73_event_flyer_with_banner <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic73_event_flyer_with_banner_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic73_event_flyer_with_banner_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic73_event_flyer_with_banner_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic73_event_flyer_with_banner_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic73_event_flyer_with_banner_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic74_dashboard_with_kpi_image</b></td>
-  <td>classic74_dashboard_with_kpi_image <span style="color:#3fb950">⬤</span> 97.6%</td>
+  <td colspan="2">classic74_dashboard_with_kpi_image <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic74_dashboard_with_kpi_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic74_dashboard_with_kpi_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic74_dashboard_with_kpi_image_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic74_dashboard_with_kpi_image_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic74_dashboard_with_kpi_image_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic75_certificate_with_seal</b></td>
-  <td>classic75_certificate_with_seal <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="2">classic75_certificate_with_seal <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic75_certificate_with_seal_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic75_certificate_with_seal_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic75_certificate_with_seal_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic75_certificate_with_seal_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic75_certificate_with_seal_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic76_product_image_grid</b></td>
-  <td>classic76_product_image_grid <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic76_product_image_grid <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic76_product_image_grid_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic76_product_image_grid_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic76_product_image_grid_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic76_product_image_grid_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic76_product_image_grid_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic77_news_article_with_hero_image</b></td>
-  <td>classic77_news_article_with_hero_image <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic77_news_article_with_hero_image <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic77_news_article_with_hero_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic77_news_article_with_hero_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic77_news_article_with_hero_image_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic77_news_article_with_hero_image_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic77_news_article_with_hero_image_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic78_small_icon_per_row</b></td>
-  <td>classic78_small_icon_per_row <span style="color:#3fb950">⬤</span> 98.9%</td>
+  <td colspan="2">classic78_small_icon_per_row <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic78_small_icon_per_row_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic78_small_icon_per_row_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic78_small_icon_per_row_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic78_small_icon_per_row_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic78_small_icon_per_row_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic79_wide_panoramic_banner</b></td>
-  <td>classic79_wide_panoramic_banner <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic79_wide_panoramic_banner <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic79_wide_panoramic_banner_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic79_wide_panoramic_banner_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic79_wide_panoramic_banner_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic79_wide_panoramic_banner_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic79_wide_panoramic_banner_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic80_portrait_tall_image</b></td>
-  <td>classic80_portrait_tall_image <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic80_portrait_tall_image <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic80_portrait_tall_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic80_portrait_tall_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic80_portrait_tall_image_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic80_portrait_tall_image_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic80_portrait_tall_image_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic81_step_by_step_with_images</b></td>
-  <td>classic81_step_by_step_with_images <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic81_step_by_step_with_images <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic81_step_by_step_with_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic81_step_by_step_with_images_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic81_step_by_step_with_images_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic81_step_by_step_with_images_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic81_step_by_step_with_images_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic82_before_after_images</b></td>
-  <td>classic82_before_after_images <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="2">classic82_before_after_images <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic82_before_after_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic82_before_after_images_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic82_before_after_images_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic82_before_after_images_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic82_before_after_images_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic83_color_swatch_palette</b></td>
-  <td>classic83_color_swatch_palette <span style="color:#3fb950">⬤</span> 99.4%</td>
+  <td colspan="2">classic83_color_swatch_palette <span style="color:#3fb950">⬤</span> 99.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic83_color_swatch_palette_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic83_color_swatch_palette_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic83_color_swatch_palette_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic83_color_swatch_palette_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic83_color_swatch_palette_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic84_travel_destination_cards</b></td>
-  <td>classic84_travel_destination_cards <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="2">classic84_travel_destination_cards <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic84_travel_destination_cards_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic84_travel_destination_cards_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic84_travel_destination_cards_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic84_travel_destination_cards_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic84_travel_destination_cards_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic85_lab_results_with_image</b></td>
-  <td>classic85_lab_results_with_image <span style="color:#3fb950">⬤</span> 99.2%</td>
+  <td colspan="2">classic85_lab_results_with_image <span style="color:#3fb950">⬤</span> 99.2%</td>
 </tr>
 <tr>
-  <td><img src="images/classic85_lab_results_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic85_lab_results_with_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic85_lab_results_with_image_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic85_lab_results_with_image_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic85_lab_results_with_image_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic86_software_screenshot_features</b></td>
-  <td>classic86_software_screenshot_features <span style="color:#3fb950">⬤</span> 98.9%</td>
+  <td colspan="2">classic86_software_screenshot_features <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic86_software_screenshot_features_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic86_software_screenshot_features_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic86_software_screenshot_features_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic86_software_screenshot_features_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic86_software_screenshot_features_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic87_sports_results_with_logos</b></td>
-  <td>classic87_sports_results_with_logos <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="2">classic87_sports_results_with_logos <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic87_sports_results_with_logos_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic87_sports_results_with_logos_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic87_sports_results_with_logos_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic87_sports_results_with_logos_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic87_sports_results_with_logos_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic88_image_after_data</b></td>
-  <td>classic88_image_after_data <span style="color:#3fb950">⬤</span> 99.7%</td>
+  <td colspan="2">classic88_image_after_data <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
-  <td><img src="images/classic88_image_after_data_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic88_image_after_data_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic88_image_after_data_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic88_image_after_data_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic88_image_after_data_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic89_nutrition_label_with_image</b></td>
-  <td>classic89_nutrition_label_with_image <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="2">classic89_nutrition_label_with_image <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic89_nutrition_label_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic89_nutrition_label_with_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic89_nutrition_label_with_image_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic89_nutrition_label_with_image_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic89_nutrition_label_with_image_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic90_project_status_with_milestones</b></td>
-  <td>classic90_project_status_with_milestones <span style="color:#3fb950">⬤</span> 99.0%</td>
+  <td colspan="2">classic90_project_status_with_milestones <span style="color:#3fb950">⬤</span> 99.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic90_project_status_with_milestones_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic90_project_status_with_milestones_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic90_project_status_with_milestones_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic90_project_status_with_milestones_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic90_project_status_with_milestones_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic91_simple_bar_chart</b></td>
-  <td>classic91_simple_bar_chart <span style="color:#3fb950">⬤</span> 96.6%</td>
+  <td colspan="2">classic91_simple_bar_chart <span style="color:#3fb950">⬤</span> 96.6%</td>
 </tr>
 <tr>
-  <td><img src="images/classic91_simple_bar_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic91_simple_bar_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic91_simple_bar_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic91_simple_bar_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic91_simple_bar_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic91_simple_bar_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic91_simple_bar_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic91_simple_bar_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic91_simple_bar_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic91_simple_bar_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic92_horizontal_bar_chart</b></td>
-  <td>classic92_horizontal_bar_chart <span style="color:#3fb950">⬤</span> 96.9%</td>
+  <td colspan="2">classic92_horizontal_bar_chart <span style="color:#3fb950">⬤</span> 96.9%</td>
 </tr>
 <tr>
-  <td><img src="images/classic92_horizontal_bar_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic92_horizontal_bar_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic92_horizontal_bar_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic92_horizontal_bar_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic92_horizontal_bar_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic92_horizontal_bar_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic92_horizontal_bar_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic92_horizontal_bar_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic92_horizontal_bar_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic92_horizontal_bar_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic93_line_chart</b></td>
-  <td>classic93_line_chart <span style="color:#3fb950">⬤</span> 93.2%</td>
+  <td colspan="2">classic93_line_chart <span style="color:#3fb950">⬤</span> 93.2%</td>
 </tr>
 <tr>
-  <td><img src="images/classic93_line_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic93_line_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic93_line_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic93_line_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic93_line_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic93_line_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic93_line_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic93_line_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic93_line_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic93_line_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic94_pie_chart</b></td>
-  <td>classic94_pie_chart <span style="color:#3fb950">⬤</span> 97.2%</td>
+  <td colspan="2">classic94_pie_chart <span style="color:#3fb950">⬤</span> 97.2%</td>
 </tr>
 <tr>
-  <td><img src="images/classic94_pie_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic94_pie_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic94_pie_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic94_pie_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic94_pie_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic94_pie_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic94_pie_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic94_pie_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic94_pie_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic94_pie_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic95_area_chart</b></td>
-  <td>classic95_area_chart <span style="color:#d29922">⬤</span> 76.4%</td>
+  <td colspan="2">classic95_area_chart <span style="color:#d29922">⬤</span> 76.4%</td>
 </tr>
 <tr>
-  <td><img src="images/classic95_area_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic95_area_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic95_area_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic95_area_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic95_area_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic95_area_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic95_area_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic95_area_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic95_area_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic95_area_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic96_scatter_chart</b></td>
-  <td>classic96_scatter_chart <span style="color:#3fb950">⬤</span> 94.8%</td>
+  <td colspan="2">classic96_scatter_chart <span style="color:#3fb950">⬤</span> 94.8%</td>
 </tr>
 <tr>
-  <td><img src="images/classic96_scatter_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic96_scatter_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic96_scatter_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic96_scatter_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic96_scatter_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic96_scatter_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic96_scatter_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic96_scatter_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic96_scatter_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic96_scatter_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic97_doughnut_chart</b></td>
-  <td>classic97_doughnut_chart <span style="color:#3fb950">⬤</span> 97.5%</td>
+  <td colspan="2">classic97_doughnut_chart <span style="color:#3fb950">⬤</span> 97.5%</td>
 </tr>
 <tr>
-  <td><img src="images/classic97_doughnut_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic97_doughnut_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic97_doughnut_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic97_doughnut_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic97_doughnut_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic97_doughnut_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic97_doughnut_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic97_doughnut_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic97_doughnut_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic97_doughnut_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic98_radar_chart</b></td>
-  <td>classic98_radar_chart <span style="color:#3fb950">⬤</span> 95.1%</td>
+  <td colspan="2">classic98_radar_chart <span style="color:#3fb950">⬤</span> 95.1%</td>
 </tr>
 <tr>
-  <td><img src="images/classic98_radar_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic98_radar_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic98_radar_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic98_radar_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic98_radar_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic98_radar_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic98_radar_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic98_radar_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic98_radar_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic98_radar_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
   <td><b>classic99_bubble_chart</b></td>
-  <td>classic99_bubble_chart <span style="color:#3fb950">⬤</span> 92.0%</td>
+  <td colspan="2">classic99_bubble_chart <span style="color:#3fb950">⬤</span> 92.0%</td>
 </tr>
 <tr>
-  <td><img src="images/classic99_bubble_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic99_bubble_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic99_bubble_chart_p1_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic99_bubble_chart_p1_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic99_bubble_chart_p1_office.png" width="260" alt="Office"></td>
 </tr>
 <tr>
-  <td><img src="images/classic99_bubble_chart_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/classic99_bubble_chart_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/classic99_bubble_chart_p2_minipdf.png" width="260" alt="MiniPdf"></td>
+  <td><img src="images/classic99_bubble_chart_p2_reference.png" width="260" alt="Reference"></td>
+  <td><img src="images/classic99_bubble_chart_p2_office.png" width="260" alt="Office"></td>
 </tr>
 </table>
 

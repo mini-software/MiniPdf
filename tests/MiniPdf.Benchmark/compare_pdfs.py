@@ -345,7 +345,8 @@ def pixel_diff_score(pix1, pix2, grid_n: int = 20) -> float:
     return round(0.40 * raw_score + 0.40 * grid_score + 0.20 * top_score, 4)
 
 
-def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str, dpi: int = 150):
+def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str, dpi: int = 150,
+                     office_pdf_path=None):
     """Save visual diff images for each page."""
     if not HAS_FITZ:
         return []
@@ -353,7 +354,8 @@ def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str,
     diff_images = []
     doc1 = fitz.open(pdf1_path)
     doc2 = fitz.open(pdf2_path)
-    max_pages = max(len(doc1), len(doc2))
+    doc3 = fitz.open(office_pdf_path) if office_pdf_path and os.path.isfile(office_pdf_path) else None
+    max_pages = max(len(doc1), len(doc2), len(doc3) if doc3 else 0)
 
     for i in range(max_pages):
         mat = fitz.Matrix(dpi / 72, dpi / 72)
@@ -368,6 +370,10 @@ def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str,
         else:
             pix2 = None
 
+        pix3 = None
+        if doc3 and i < len(doc3):
+            pix3 = doc3[i].get_pixmap(matrix=mat, alpha=False)
+
         # Save individual renderings
         if pix1:
             path1 = os.path.join(output_dir, f"{name}_p{i+1}_minipdf.png")
@@ -377,19 +383,29 @@ def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str,
             path2 = os.path.join(output_dir, f"{name}_p{i+1}_reference.png")
             pix2.save(path2)
 
-        diff_images.append({
+        if pix3:
+            path3 = os.path.join(output_dir, f"{name}_p{i+1}_office.png")
+            pix3.save(path3)
+
+        entry = {
             "page": i + 1,
             "minipdf_img": f"{name}_p{i+1}_minipdf.png" if pix1 else None,
             "reference_img": f"{name}_p{i+1}_reference.png" if pix2 else None,
-        })
+        }
+        if doc3 is not None:
+            entry["office_img"] = f"{name}_p{i+1}_office.png" if pix3 else None
+        diff_images.append(entry)
 
     doc1.close()
     doc2.close()
+    if doc3:
+        doc3.close()
     return diff_images
 
 
 def compare_single(minipdf_path: str, reference_path: str, report_images_dir: str, name: str,
-                   ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 1.01) -> dict:
+                   ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 1.01,
+                   office_path=None) -> dict:
     """Compare a single pair of PDFs and return a detailed result."""
     result = {
         "name": name,
@@ -501,7 +517,8 @@ def compare_single(minipdf_path: str, reference_path: str, report_images_dir: st
 
         # Save diff images
         os.makedirs(report_images_dir, exist_ok=True)
-        result["diff_images"] = save_visual_diff(minipdf_path, reference_path, report_images_dir, name)
+        result["diff_images"] = save_visual_diff(minipdf_path, reference_path, report_images_dir, name,
+                                                   office_pdf_path=office_path)
 
         # ── AI visual comparison ──────────────────────────────────────────────
         if ai_compare and AI_CLIENT is not None:
@@ -597,10 +614,22 @@ def generate_report(results: list[dict], report_dir: str):
         avg_overall = sum(r.get("overall_score", 0) for r in results) / len(results) if results else 0
         f.write(f"\n**Average Overall Score: {avg_overall:.4f}**\n\n")
 
-        # ── Visual side-by-side table (2-column layout) ─────────────────────
+        # ── Detect whether any result has office images ──────────────────
+        has_office = any(
+            pg.get("office_img")
+            for r in results
+            for pg in r.get("diff_images", [])
+        )
+        num_cols = 3 if has_office else 2
+        img_width = 260 if has_office else 340
+
+        # ── Visual side-by-side table ──────────────────────────────────────
         f.write("## Visual Comparison\n\n")
         f.write("<table>\n")
-        f.write("<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>\n")
+        if has_office:
+            f.write("<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th><th>Office (Excel)</th></tr>\n")
+        else:
+            f.write("<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>\n")
 
         for r in results:
             name = r["name"]
@@ -626,12 +655,12 @@ def generate_report(results: list[dict], report_dir: str):
             # Header row: test case name + score
             f.write(f"<tr>\n")
             f.write(f"  <td><b>{name}</b></td>\n")
-            f.write(f"  <td>{name} {score_cell}</td>\n")
+            f.write(f"  <td colspan=\"{num_cols - 1}\">{name} {score_cell}</td>\n")
             f.write(f"</tr>\n")
 
             if not diff_images:
                 f.write(f"<tr>\n")
-                f.write(f"  <td colspan=\"2\"><i>No images</i></td>\n")
+                f.write(f"  <td colspan=\"{num_cols}\"><i>No images</i></td>\n")
                 f.write(f"</tr>\n")
                 continue
 
@@ -639,14 +668,19 @@ def generate_report(results: list[dict], report_dir: str):
                 page_num = pg.get("page", idx + 1)
                 mini_img = pg.get("minipdf_img")
                 ref_img  = pg.get("reference_img")
-                mini_td = (f'<img src="images/{mini_img}" width="340" alt="MiniPdf">'
+                office_img = pg.get("office_img")
+                mini_td = (f'<img src="images/{mini_img}" width="{img_width}" alt="MiniPdf">'
                            if mini_img else "<i>missing</i>")
-                ref_td  = (f'<img src="images/{ref_img}" width="340" alt="Reference">'
+                ref_td  = (f'<img src="images/{ref_img}" width="{img_width}" alt="Reference">'
                            if ref_img else "<i>missing</i>")
 
                 f.write(f"<tr>\n")
                 f.write(f"  <td>{mini_td}</td>\n")
                 f.write(f"  <td>{ref_td}</td>\n")
+                if has_office:
+                    office_td = (f'<img src="images/{office_img}" width="{img_width}" alt="Office">'
+                                 if office_img else "<i>missing</i>")
+                    f.write(f"  <td>{office_td}</td>\n")
                 f.write(f"</tr>\n")
 
                 # ── AI analysis row for this page ──────────────────────────
@@ -665,7 +699,7 @@ def generate_report(results: list[dict], report_dir: str):
 
                     f.write("<tr>\n")
                     f.write(
-                        f"  <td colspan=\"2\" style=\"background:#0d1117;padding:8px 12px;\">\n"
+                        f"  <td colspan=\"{num_cols}\" style=\"background:#0d1117;padding:8px 12px;\">\n"
                         f"    <details open>\n"
                         f"      <summary>🤖 AI Analysis &nbsp;·&nbsp; severity: {sev_label} &nbsp;·&nbsp; "
                         f"AI visual score: <b>{ai_score}</b></summary>\n"
@@ -800,6 +834,8 @@ def main():
                         help="Directory containing MiniPdf-generated PDFs")
     parser.add_argument("--reference-dir", default="reference_pdfs",
                         help="Directory containing reference PDFs (from LibreOffice)")
+    parser.add_argument("--office-dir", default=None,
+                        help="Directory containing Office (Excel COM) generated PDFs (optional)")
     parser.add_argument("--report-dir", default="reports",
                         help="Output directory for comparison reports")
     # AI comparison options
@@ -826,6 +862,7 @@ def main():
 
     minipdf_dir = os.path.abspath(args.minipdf_dir)
     reference_dir = os.path.abspath(args.reference_dir)
+    office_dir = os.path.abspath(args.office_dir) if args.office_dir else None
     report_dir = os.path.abspath(args.report_dir)
     images_dir = os.path.join(report_dir, "images")
 
@@ -847,6 +884,8 @@ def main():
 
     print(f"MiniPdf PDFs:    {minipdf_dir}")
     print(f"Reference PDFs:  {reference_dir}")
+    if office_dir:
+        print(f"Office PDFs:     {office_dir}")
     print(f"Report output:   {report_dir}")
     print()
 
@@ -856,6 +895,9 @@ def main():
         if os.path.isdir(d):
             for f in Path(d).glob("*.pdf"):
                 names.add(f.stem)
+    if office_dir and os.path.isdir(office_dir):
+        for f in Path(office_dir).glob("*.pdf"):
+            names.add(f.stem)
 
     if not names:
         print("No PDF files found in either directory.")
@@ -869,12 +911,14 @@ def main():
     for name in sorted(names):
         mp = os.path.join(minipdf_dir, f"{name}.pdf")
         rp = os.path.join(reference_dir, f"{name}.pdf")
+        op = os.path.join(office_dir, f"{name}.pdf") if office_dir else None
         print(f"Comparing: {name} ...", end=" ")
         result = compare_single(
             mp, rp, images_dir, name,
             ai_compare=args.ai_compare,
             ai_max_pages=args.ai_max_pages,
             ai_threshold=args.ai_threshold,
+            office_path=op,
         )
         score = result.get("overall_score", "N/A")
         print(f"score={score}")

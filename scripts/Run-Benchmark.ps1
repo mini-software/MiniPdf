@@ -17,7 +17,9 @@ param(
     [switch]$SkipGenerate,
     [switch]$SkipMiniPdf,
     [switch]$SkipReference,
-    [switch]$SkipInstall
+    [switch]$SkipInstall,
+    [switch]$WithOffice,
+    [switch]$SkipOffice
 )
 
 $ErrorActionPreference = "Continue"
@@ -45,6 +47,8 @@ if ($CompareOnly) { $pyArgs += "--compare-only" }
 if ($SkipGenerate) { $pyArgs += "--skip-generate" }
 if ($SkipMiniPdf) { $pyArgs += "--skip-minipdf" }
 if ($SkipReference) { $pyArgs += "--skip-reference" }
+if ($WithOffice) { $pyArgs += "--with-office" }
+if ($SkipOffice) { $pyArgs += "--skip-office" }
 
 # Run the benchmark pipeline
 Write-Host "`n[Running] python run_benchmark.py $($pyArgs -join ' ')`n" -ForegroundColor Yellow
