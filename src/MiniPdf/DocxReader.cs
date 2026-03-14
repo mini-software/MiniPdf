@@ -15,6 +15,7 @@ internal static class DocxReader
     private static readonly XNamespace A = "http://schemas.openxmlformats.org/drawingml/2006/main";
     private static readonly XNamespace PIC = "http://schemas.openxmlformats.org/drawingml/2006/picture";
     private static readonly XNamespace REL = "http://schemas.openxmlformats.org/package/2006/relationships";
+    private static readonly XNamespace WPS = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape";
 
     /// <summary>
     /// Unwraps SDT (Structured Document Tag) elements by replacing them with their sdtContent children.
@@ -76,9 +77,57 @@ internal static class DocxReader
         {
             if (child.Name == W + "p")
             {
+                // Extract text box paragraphs from anchor drawings (before the containing paragraph)
+                float textBoxSpacing = 0;
+                foreach (var anchor in child.Descendants(WP + "anchor"))
+                {
+                    var txbx = anchor.Descendants(WPS + "txbx").FirstOrDefault();
+                    if (txbx == null) continue;
+                    var txbxContent = txbx.Element(W + "txbxContent");
+                    if (txbxContent == null) continue;
+
+                    // Check for wrapTopAndBottom (text box displaces content vertically)
+                    bool isWrapTopBottom = anchor.Element(WP + "wrapTopAndBottom") != null;
+
+                    // Read anchor vertical offset and extent height for spacing
+                    float anchorOffsetPt = 0;
+                    var posV = anchor.Element(WP + "positionV");
+                    if (posV != null)
+                    {
+                        var off = posV.Element(WP + "posOffset");
+                        if (off != null && long.TryParse(off.Value, out var emu))
+                            anchorOffsetPt = emu / 914400f * 72f;
+                    }
+                    float extentHeightPt = 0;
+                    var extent = anchor.Element(WP + "extent");
+                    if (extent != null && long.TryParse(extent.Attribute("cy")?.Value, out var cy))
+                        extentHeightPt = cy / 914400f * 72f;
+
+                    bool firstContent = true;
+                    foreach (var tp in txbxContent.Elements(W + "p"))
+                    {
+                        var tbPara = ReadParagraph(tp, styles, numbering, relationships, archive, themeColors);
+                        if (tbPara != null && tbPara.Runs.Count > 0)
+                        {
+                            if (firstContent && anchorOffsetPt > 0)
+                                tbPara = tbPara with { SpacingBefore = tbPara.SpacingBefore + anchorOffsetPt, ForceSpacingBefore = true };
+                            elements.Add(tbPara);
+                            firstContent = false;
+                        }
+                    }
+                    // For wrapTopAndBottom, the text box height displaces subsequent content
+                    if (isWrapTopBottom)
+                        textBoxSpacing += anchorOffsetPt;
+                }
+
                 var paragraph = ReadParagraph(child, styles, numbering, relationships, archive, themeColors);
                 if (paragraph != null)
                 {
+                    // Add text box displacement as SpacingBefore on the containing paragraph
+                    if (textBoxSpacing > 0)
+                    {
+                        paragraph = paragraph with { SpacingBefore = paragraph.SpacingBefore + textBoxSpacing };
+                    }
                     // Fix up style-based numbered list counter
                     if (paragraph.IsNumberedList && paragraph.ListText == "1.")
                     {
@@ -264,17 +313,14 @@ internal static class DocxReader
                     .ToList();
             }
 
-            // Paragraph-level run properties
+            // Paragraph-level run properties (pPr > rPr is for the paragraph mark character,
+            // NOT default run formatting; only read font size and charSpacing from it)
             var rPr = pPr.Element(W + "rPr");
             if (rPr != null)
             {
-                bold = rPr.Element(W + "b") != null;
-                italic = rPr.Element(W + "i") != null;
-                if (rPr.Element(W + "caps") != null) caps = true;
                 var sz = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
                 if (float.TryParse(sz, out var s))
                     fontSize = s / 2f; // half-points to points
-                color = ReadRunColor(rPr);
                 // Paragraph-level character spacing
                 var spacingEl2 = rPr.Element(W + "spacing");
                 if (spacingEl2 != null && int.TryParse(spacingEl2.Attribute(W + "val")?.Value, out var pcs))
@@ -300,21 +346,45 @@ internal static class DocxReader
         // Read runs (with field code tracking)
         int fieldDepth = 0;
         bool inFieldInstr = false; // between begin and separate
+        string currentFieldInstr = ""; // accumulated field instruction text
         foreach (var child in UnwrapSdt(pElement.Elements()))
         {
             if (child.Name == W + "r")
             {
-                // Track field codes: skip instrText and PAGE field display values
+                // Track field codes
                 var fldChar = child.Element(W + "fldChar");
                 if (fldChar != null)
                 {
                     var fldType = fldChar.Attribute(W + "fldCharType")?.Value;
-                    if (fldType == "begin") { fieldDepth++; inFieldInstr = true; continue; }
+                    if (fldType == "begin") { fieldDepth++; inFieldInstr = true; currentFieldInstr = ""; continue; }
                     if (fldType == "separate") { inFieldInstr = false; continue; }
-                    if (fldType == "end") { fieldDepth--; if (fieldDepth <= 0) { fieldDepth = 0; inFieldInstr = false; } continue; }
+                    if (fldType == "end") { fieldDepth--; if (fieldDepth <= 0) { fieldDepth = 0; inFieldInstr = false; } currentFieldInstr = ""; continue; }
                 }
-                if (child.Element(W + "instrText") != null) continue; // skip field instruction text
-                if (fieldDepth > 0 && !inFieldInstr) continue; // skip cached display value of field codes
+                if (child.Element(W + "instrText") != null)
+                {
+                    if (inFieldInstr)
+                        currentFieldInstr += child.Element(W + "instrText")!.Value;
+                    continue;
+                }
+                // For PAGE/NUMPAGES fields, emit placeholder instead of skipping
+                if (fieldDepth > 0 && !inFieldInstr)
+                {
+                    var instr = currentFieldInstr.Trim().ToUpperInvariant();
+                    if (instr == "PAGE" || instr == "NUMPAGES")
+                    {
+                        var placeholder = instr == "PAGE" ? "{PAGE}" : "{NUMPAGES}";
+                        var rPr = child.Element(W + "rPr");
+                        var fBold = bold; var fItalic = italic; var fSize = fontSize; var fColor = color;
+                        if (rPr != null)
+                        {
+                            if (rPr.Element(W + "b") != null) fBold = true;
+                            var sz = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
+                            if (float.TryParse(sz, out var s) && s > 0) fSize = s / 2f;
+                        }
+                        runs.Add(new DocxRun(placeholder, fBold, fItalic, fSize, fColor));
+                    }
+                    continue;
+                }
 
                 var run = ReadRun(child, bold, italic, fontSize, color, caps, charSpacing);
                 if (run != null)
@@ -536,8 +606,13 @@ internal static class DocxReader
         // Skip if it has a blip (it's an image, not a shape)
         if (anchor.Descendants(A + "blip").Any()) return null;
 
-        // Find solidFill in shape properties
-        var solidFill = anchor.Descendants(A + "solidFill").FirstOrDefault();
+        // Find solidFill in shape properties (spPr direct fill, not from line stroke)
+        var spPr = anchor.Descendants(WPS + "spPr").FirstOrDefault()
+              ?? anchor.Descendants(A + "spPr").FirstOrDefault();
+        if (spPr == null) return null;
+        // Skip shapes with noFill
+        if (spPr.Element(A + "noFill") != null) return null;
+        var solidFill = spPr.Element(A + "solidFill");
         if (solidFill == null) return null;
 
         // Resolve fill color
@@ -933,6 +1008,8 @@ internal static class DocxReader
                 {
                     if (int.TryParse(spacing.Attribute(W + "before")?.Value, out var sb))
                         defaultSpacingBefore = sb / 20f;
+                    if (int.TryParse(spacing.Attribute(W + "after")?.Value, out var sa))
+                        defaultSpacingAfter = sa / 20f;
                     if (int.TryParse(spacing.Attribute(W + "line")?.Value, out var sl))
                     {
                         var lineRule = spacing.Attribute(W + "lineRule")?.Value;
@@ -1126,7 +1203,8 @@ internal sealed record DocxParagraph(
     List<DocxTabStop>? TabStops = null,
     DocxPageLayout? SectionBreak = null,
     DocxBorders? Borders = null,
-    List<DocxShape>? Shapes = null
+    List<DocxShape>? Shapes = null,
+    bool ForceSpacingBefore = false
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>

@@ -140,22 +140,30 @@ internal static class DocxToPdfConverter
         {
             const float headerFooterFontSize = 9f;
             var headerColor = PdfColor.FromRgb(128, 128, 128);
-            foreach (var page in pdfDoc.Pages)
+            var totalPages = pdfDoc.Pages.Count;
+            for (int pi = 0; pi < totalPages; pi++)
             {
+                var page = pdfDoc.Pages[pi];
                 var usableW = page.Width - options.MarginLeft - options.MarginRight;
                 if (docxDoc.HeaderText != null)
                 {
-                    var headerTextWidth = EstimateTextWidth(docxDoc.HeaderText, headerFooterFontSize);
+                    var headerResolved = docxDoc.HeaderText
+                        .Replace("{PAGE}", (pi + 1).ToString())
+                        .Replace("{NUMPAGES}", totalPages.ToString());
+                    var headerTextWidth = EstimateTextWidth(headerResolved, headerFooterFontSize);
                     var headerX = options.MarginLeft + (usableW - headerTextWidth) / 2;
                     var headerY = page.Height - options.MarginTop / 2;
-                    page.AddText(docxDoc.HeaderText, headerX, headerY, headerFooterFontSize, headerColor);
+                    page.AddText(headerResolved, headerX, headerY, headerFooterFontSize, headerColor);
                 }
                 if (docxDoc.FooterText != null)
                 {
-                    var footerTextWidth = EstimateTextWidth(docxDoc.FooterText, headerFooterFontSize);
+                    var footerResolved = docxDoc.FooterText
+                        .Replace("{PAGE}", (pi + 1).ToString())
+                        .Replace("{NUMPAGES}", totalPages.ToString());
+                    var footerTextWidth = EstimateTextWidth(footerResolved, headerFooterFontSize);
                     var footerX = options.MarginLeft + (usableW - footerTextWidth) / 2;
                     var footerY = options.MarginBottom / 2;
-                    page.AddText(docxDoc.FooterText, footerX, footerY, headerFooterFontSize, headerColor);
+                    page.AddText(footerResolved, footerX, footerY, headerFooterFontSize, headerColor);
                 }
             }
         }
@@ -234,9 +242,9 @@ internal static class DocxToPdfConverter
             lineHeight = fontSize * FontMetricsFactor * lineSpacingMul;
         }
 
-        // Apply spacing before (skip at top of page to match Word behavior)
+        // Apply spacing before (skip at top of page to match Word behavior, unless forced)
         var spacingBefore = paragraph.SpacingBefore > 0 ? paragraph.SpacingBefore : 0;
-        if (spacingBefore > 0 && !state.IsTopOfPage)
+        if (spacingBefore > 0 && (!state.IsTopOfPage || paragraph.ForceSpacingBefore))
             state.AdvanceY(spacingBefore);
 
         state.EnsurePage();
@@ -312,7 +320,7 @@ internal static class DocxToPdfConverter
         {
             state.AdvanceY(lineHeight);
             // Apply spacing after
-            var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : fontSize * 0.35f;
+            var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             state.AdvanceY(spacingAfterEmpty);
 
             // Handle page break after (even for empty paragraphs)
@@ -411,8 +419,7 @@ internal static class DocxToPdfConverter
         }
 
         // Apply spacing after
-        var defaultSpacing = (paragraph.LineSpacingAbsolute || paragraph.IsBulletList || paragraph.IsNumberedList) ? 0f : 8f;
-        var spacingAfter = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : defaultSpacing;
+        var spacingAfter = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
         state.AdvanceY(spacingAfter);
 
         // Handle page break after
@@ -442,7 +449,7 @@ internal static class DocxToPdfConverter
             var colorMatch = current.Color == next.Color || isWhitespaceOnly || isCurWhitespace;
             var boldMatch = current.Bold == next.Bold || isWhitespaceOnly || isCurWhitespace;
             var underlineMatch = current.Underline == next.Underline || isWhitespaceOnly || isCurWhitespace;
-            var charSpacingMatch = Math.Abs(current.CharSpacing - next.CharSpacing) < 0.01f;
+            var charSpacingMatch = Math.Abs(current.CharSpacing - next.CharSpacing) < 0.01f || isWhitespaceOnly || isCurWhitespace;
             if (Math.Abs(curFs - nextFs) < 0.01f && colorMatch && boldMatch && underlineMatch && charSpacingMatch
                 && !current.IsPageBreak && !next.IsPageBreak)
             {
