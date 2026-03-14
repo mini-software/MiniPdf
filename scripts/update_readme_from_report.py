@@ -306,43 +306,50 @@ def replace_benchmark_section(content, lang, file_key):
             "### Detailed Comparison Reports\n\n"
             f"- [XLSX Benchmark Report]({link_prefix}tests/MiniPdf.Benchmark/reports/comparison_report.md) — XLSX conversion test cases\n"
             f"- [DOCX Benchmark Report]({link_prefix}tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — DOCX conversion test cases\n"
-            f"- [Issue Files Xlsx Report]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — Real-world issue file test cases"
+            f"- [Issue Files Xlsx Report]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — Real-world issue file test cases\n"
+            f"- [Issue Files Docx Report]({link_prefix}tests/Issue_Files/reports_docx/comparison_report.md) — Real-world issue file test cases"
         ),
         "zh-CN": (
             "### 详细对比报告\n\n"
             f"- [XLSX 基准测试报告]({link_prefix}tests/MiniPdf.Benchmark/reports/comparison_report.md) — XLSX 转换测试用例\n"
             f"- [DOCX 基准测试报告]({link_prefix}tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — DOCX 转换测试用例\n"
-            f"- [Issue XLSX 文件报告]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — 实际 Issue 文件测试用例"
+            f"- [Issue XLSX 文件报告]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — 实际 Issue 文件测试用例\n"
+            f"- [Issue DOCX 文件报告]({link_prefix}tests/Issue_Files/reports_docx/comparison_report.md) — 实际 Issue 文件测试用例"
         ),
         "zh-TW": (
             "### 詳細對比報告\n\n"
             f"- [XLSX 基準測試報告]({link_prefix}tests/MiniPdf.Benchmark/reports/comparison_report.md) — XLSX 轉換測試案例\n"
             f"- [DOCX 基準測試報告]({link_prefix}tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — DOCX 轉換測試案例\n"
-            f"- [Issue XLSX 檔案報告]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — 實際 Issue 檔案測試案例"
+            f"- [Issue XLSX 檔案報告]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — 實際 Issue 檔案測試案例\n"
+            f"- [Issue DOCX 檔案報告]({link_prefix}tests/Issue_Files/reports_docx/comparison_report.md) — 實際 Issue 檔案測試案例"
         ),
         "ja": (
             "### 詳細比較レポート\n\n"
             f"- [XLSX ベンチマークレポート]({link_prefix}tests/MiniPdf.Benchmark/reports/comparison_report.md) — XLSX 変換テストケース\n"
             f"- [DOCX ベンチマークレポート]({link_prefix}tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — DOCX 変換テストケース\n"
-            f"- [Issue XLSX ファイルレポート]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — 実際の Issue ファイルテストケース"
+            f"- [Issue XLSX ファイルレポート]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — 実際の Issue ファイルテストケース\n"
+            f"- [Issue DOCX ファイルレポート]({link_prefix}tests/Issue_Files/reports_docx/comparison_report.md) — 実際の Issue ファイルテストケース"
         ),
         "ko": (
             "### 상세 비교 보고서\n\n"
             f"- [XLSX 벤치마크 보고서]({link_prefix}tests/MiniPdf.Benchmark/reports/comparison_report.md) — XLSX 변환 테스트 케이스\n"
             f"- [DOCX 벤치마크 보고서]({link_prefix}tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — DOCX 변환 테스트 케이스\n"
-            f"- [Issue XLSX 파일 보고서]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — 실제 Issue 파일 테스트 케이스"
+            f"- [Issue XLSX 파일 보고서]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — 실제 Issue 파일 테스트 케이스\n"
+            f"- [Issue DOCX 파일 보고서]({link_prefix}tests/Issue_Files/reports_docx/comparison_report.md) — 실제 Issue 파일 테스트 케이스"
         ),
         "it": (
             "### Rapporti di confronto dettagliati\n\n"
             f"- [Report Benchmark XLSX]({link_prefix}tests/MiniPdf.Benchmark/reports/comparison_report.md) — Casi di test conversione XLSX\n"
             f"- [Report Benchmark DOCX]({link_prefix}tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — Casi di test conversione DOCX\n"
-            f"- [Report File Issue XLSX]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — Casi di test con file Issue reali"
+            f"- [Report File Issue XLSX]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — Casi di test con file Issue reali\n"
+            f"- [Report File Issue DOCX]({link_prefix}tests/Issue_Files/reports_docx/comparison_report.md) — Casi di test con file Issue reali"
         ),
         "fr": (
             "### Rapports de comparaison détaillés\n\n"
             f"- [Rapport Benchmark XLSX]({link_prefix}tests/MiniPdf.Benchmark/reports/comparison_report.md) — Cas de test conversion XLSX\n"
             f"- [Rapport Benchmark DOCX]({link_prefix}tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — Cas de test conversion DOCX\n"
-            f"- [Rapport Fichiers Issue XLSX]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — Cas de test avec fichiers Issue réels"
+            f"- [Rapport Fichiers Issue XLSX]({link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md) — Cas de test avec fichiers Issue réels\n"
+            f"- [Rapport Fichiers Issue DOCX]({link_prefix}tests/Issue_Files/reports_docx/comparison_report.md) — Cas de test avec fichiers Issue réels"
         ),
     }
 

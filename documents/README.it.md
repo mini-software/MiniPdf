@@ -72,6 +72,7 @@ Punteggio: similarità testo 40% + similarità visiva 40% + conteggio pagine 20%
 - [Report Benchmark XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md) — Casi di test conversione XLSX
 - [Report Benchmark DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — Casi di test conversione DOCX
 - [Report File Issue XLSX](../tests/Issue_Files/reports_xlsx/comparison_report.md) — Casi di test con file Issue reali
+- [Report File Issue DOCX](../tests/Issue_Files/reports_docx/comparison_report.md) — Casi di test con file Issue reali
 
 ### Confronto visivo
 

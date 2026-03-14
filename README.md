@@ -77,6 +77,7 @@ Scoring: text similarity 40% + visual similarity 40% + page count 20%
 - [XLSX Benchmark Report](tests/MiniPdf.Benchmark/reports/comparison_report.md) — XLSX conversion test cases
 - [DOCX Benchmark Report](tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — DOCX conversion test cases
 - [Issue Files Xlsx Report](tests/Issue_Files/reports_xlsx/comparison_report.md) — Real-world issue file test cases
+- [Issue Files Docx Report](tests/Issue_Files/reports_docx/comparison_report.md) — Real-world issue file test cases
 
 ### Visual Comparison
 
