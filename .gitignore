@@ -36,3 +36,4 @@ tests/MiniPdf.Benchmark/__pycache__/
 /tests/MiniPdf.Benchmark/reference_pdfs
 tests/MiniPdf.Scripts/pdf_test_single/docx_classic01_single_paragraph.pdf
 MiniPdf.Web/publish.zip
+/tests/MiniPdf.Benchmark/minipdf_docx

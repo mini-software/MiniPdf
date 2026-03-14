@@ -524,10 +524,13 @@ internal sealed class PdfWriter
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
                 sb.Append($"/{fontName} {fontSize} Tf\n");
+                // Apply character spacing (Tc)
+                if (block.CharSpacing != 0)
+                    sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
                 // Apply horizontal scaling if text overflows MaxWidth
                 if (block.MaxWidth.HasValue)
                 {
-                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize);
+                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing);
                     if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
                     {
                         var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
@@ -549,10 +552,13 @@ internal sealed class PdfWriter
                 // emit each run with the appropriate Fn, using Td to advance.
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
+                // Apply character spacing (Tc)
+                if (block.CharSpacing != 0)
+                    sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
                 // Apply horizontal scaling if text overflows MaxWidth
                 if (block.MaxWidth.HasValue)
                 {
-                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize);
+                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing);
                     if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
                     {
                         var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
@@ -603,7 +609,7 @@ internal sealed class PdfWriter
             // Render underline as a line below the text
             if (block.Underline)
             {
-                var textWidth = MeasureTextWidth(block.Text, block.FontSize);
+                var textWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing);
                 if (block.MaxWidth.HasValue && textWidth > block.MaxWidth.Value)
                     textWidth = block.MaxWidth.Value;
                 var ulY = block.Y - block.FontSize * 0.15f; // position below baseline
@@ -627,7 +633,7 @@ internal sealed class PdfWriter
     /// Measures the natural rendering width of text in Helvetica at the given font size.
     /// Uses the standard Helvetica character width table.
     /// </summary>
-    private static double MeasureTextWidth(string text, float fontSize)
+    private static double MeasureTextWidth(string text, float fontSize, float charSpacing = 0)
     {
         double total = 0;
         foreach (var ch in text)
@@ -657,7 +663,11 @@ internal sealed class PdfWriter
             };
             total += w;
         }
-        return total * fontSize / 1000.0;
+        var result = total * fontSize / 1000.0;
+        // Tc adds charSpacing points per character (except after the last)
+        if (charSpacing != 0 && text.Length > 1)
+            result += charSpacing * (text.Length - 1);
+        return result;
     }
 
     /// <summary>

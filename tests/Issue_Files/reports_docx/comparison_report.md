@@ -1,16 +1,17 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-13T20:35:11.765869
+Generated: 2026-03-14T10:10:14.746128
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🟢 Invoice | 0.957 | 0.9127 | 1/1 | **0.9479** |
-| 2 | 🟢 SA8000 ch sample | 0.9362 | 0.9194 | 3/3 | **0.9422** |
-| 3 | 🟢 Support_Letter | 1.0 | 0.956 | 1/1 | **0.9824** |
+| 1 | 🟢 Invoice | 1.0 | 0.9518 | 1/1 | **0.9807** |
+| 2 | 🟡 MODERN LIVING | 0.8326 | 0.7903 | 2/2 | **0.8492** |
+| 3 | 🟢 SA8000 ch sample | 0.9362 | 0.9194 | 3/3 | **0.9422** |
+| 4 | 🟢 Support_Letter | 1.0 | 0.9545 | 1/1 | **0.9818** |
 
-**Average Overall Score: 0.9575**
+**Average Overall Score: 0.9385**
 
 ## Visual Comparison
 
@@ -18,11 +19,23 @@ Generated: 2026-03-13T20:35:11.765869
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>Invoice</b></td>
-  <td>Invoice <span style="color:#3fb950">⬤</span> 94.8%</td>
+  <td>Invoice <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/Invoice_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Invoice_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>MODERN LIVING</b></td>
+  <td>MODERN LIVING <span style="color:#d29922">⬤</span> 84.9%</td>
+</tr>
+<tr>
+  <td><img src="images/MODERN LIVING_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/MODERN LIVING_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/MODERN LIVING_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/MODERN LIVING_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>SA8000 ch sample</b></td>
@@ -54,35 +67,33 @@ Generated: 2026-03-13T20:35:11.765869
 
 ### Invoice
 
-- **Text Similarity:** 0.957
-- **Visual Average:** 0.9127
-- **Overall Score:** 0.9479
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9518
+- **Overall Score:** 0.9807
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=20060 bytes, Reference=65867 bytes
+- **File Size:** MiniPdf=20079 bytes, Reference=65867 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Invoice.pdf
 +++ reference/Invoice.pdf
-@@ -1,9 +1,13 @@
+@@ -1,9 +1,12 @@
  INVOICE
 
  DATE: TO: Anjali Chaturvedi
 
 -Date Extra Frame Photography
 
--INVOICE # 89 Pacific Ave
-
--100 San Francisco, CA
-
--CUSTOMER ID: 123-456-7890
-
 +Date
 
 +Extra Frame Photography
 
-+89 Pacific Ave
+ 89 Pacific Ave
+
+-INVOICE # San Francisco, CA
+
+-100 123-456-7890
 
 +INVOICE #
 
@@ -92,13 +103,146 @@ Generated: 2026-03-13T20:35:11.765869
 
 +123-456-7890
 
-+CUSTOMER ID:
+ CUSTOMER ID:
 
  ABC12345
 
  SALESPERSON JOB PAYMENT TERMS DUE DATE
 
- Oscar Ward Sales Due on receipt 1/30/23
+```
+</details>
+
+### MODERN LIVING
+
+- **Text Similarity:** 0.8326
+- **Visual Average:** 0.7903
+- **Overall Score:** 0.8492
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=321328 bytes, Reference=220316 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/MODERN LIVING.pdf
++++ reference/MODERN LIVING.pdf
+@@ -1,22 +1,30 @@
+-MODERN LIVING
+
+ OCTOBER / 20XX / ISSUE #10
+
++M O D E R N  L I V I N G
+
+ Your guide to buy or rent
+
+ Ready to settle? WHAT’S NEW
+
+ By Peyton Davis
+
+-TAKE A LOOK INSIDE
+
++Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE
+
++information about your product or blog. They can be printed or emailed and
+
++Add description text here to get your
+
++are an excellent way to maintain regular contact with your subscribers and
+
++subscribers interested in your topic
+
++drive traffic to your site. Type the content of your newsletter here.
+
++PROPERTY TRENDS
+
+ Newsletters are periodicals used to advertise or update your subscribers with
+
+ Add description text here to get your
+
+-information about your product or blog. They can be printed or emailed and
+
++information about your product or blog. They are an excellent way to
+
+ subscribers interested in your topic
+
+-are an excellent way to maintain regular contact with your subscribers and
+
+-drive traffic to your site. Type the content of your newsletter here.
+
+-PROPERTY TRENDS
+
+-Newsletters are periodicals used to advertise or update your subscribers with Add description text here to get your
+
++maintain regular contact with your subscribers. Type the content of your
+
++newsletter here.
+
++ARE YOU READY TO
+
++Newsletters are periodicals used to advertise or update your subscribers with LIST?
+
++information about your product or blog. Type the content of your newsletter
+
++Add description text here to get your
+
++here.
+
+ subscribers interested in your topic
+
+-information about your product or blog. They are an excellent way to
+
+-maintain regular contact with your subscribers. Type the content of your
+
+ ---PAGE---
+
+-Take a look inside Property trends
+
++Take a look inside
+
++Property trends
+
+ By Vanja Jovanovic
+
+ By Kemen Ikaztegieta
+
+ Newsletters are periodicals used to advertise or update your
+
+@@ -27,15 +35,15 @@
+ Newsletters are periodicals use to advertise or update your
+
+ subscribers with information about your product or blog. They
+
+ can be printed or emailed and are an excellent way to maintain
+
+-regular contact with your subscribers and drive traffic to your Newsletters are periodicals used to
+
+-site. Type your content here. advertise or update your subscribers with
+
++Newsletters are periodicals used to
+
++regular contact with your subscribers and drive traffic to your
+
++advertise or update your subscribers with
+
++site. Type your content here.
+
+ information about your product or blog.
+
+-Newsletters are periodicals use to advertise or update your
+
+-They can be printed or emailed and are an
+
++Newsletters are periodicals use to advertise or update your They can be printed or emailed and are an
+
++excellent way to maintain regular contact
+
+ subscribers with information about your product or blog. Type
+
+-excellent way to maintain regular contact
+
+-the content of your newsletter here.
+
+-with your subscriber
+... (871 more characters)
 
 ```
 </details>
@@ -109,7 +253,7 @@ Generated: 2026-03-13T20:35:11.765869
 - **Visual Average:** 0.9194
 - **Overall Score:** 0.9422
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=4178781 bytes, Reference=178936 bytes
+- **File Size:** MiniPdf=4178933 bytes, Reference=159484 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -298,10 +442,10 @@ Generated: 2026-03-13T20:35:11.765869
 ### Support_Letter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.956
-- **Overall Score:** 0.9824
+- **Visual Average:** 0.9545
+- **Overall Score:** 0.9818
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4136 bytes, Reference=62207 bytes
+- **File Size:** MiniPdf=4145 bytes, Reference=61824 bytes
 
 <details><summary>Text Diff</summary>
 

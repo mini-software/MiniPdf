@@ -57,7 +57,12 @@ internal sealed class PdfTextBlock
     /// </summary>
     public bool Underline { get; }
 
-    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false)
+    /// <summary>
+    /// Character spacing in points (PDF Tc operator). 0 means default.
+    /// </summary>
+    public float CharSpacing { get; }
+
+    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0)
     {
         Text = text;
         X = x;
@@ -68,5 +73,6 @@ internal sealed class PdfTextBlock
         MaxWidth = maxWidth;
         Bold = bold;
         Underline = underline;
+        CharSpacing = charSpacing;
     }
 }

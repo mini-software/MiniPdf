@@ -90,9 +90,9 @@ internal sealed class PdfPage
     /// <param name="fontSize">Font size in points (default: 12).</param>
     /// <param name="color">Text color (default: black).</param>
     /// <returns>The current page for chaining.</returns>
-    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false)
+    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0)
     {
-        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, underline));
+        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, underline, charSpacing));
         return this;
     }
 

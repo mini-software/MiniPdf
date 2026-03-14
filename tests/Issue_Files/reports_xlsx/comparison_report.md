@@ -1,17 +1,17 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-13T18:13:53.288136
+Generated: 2026-03-13T23:05:50.590293
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🟡 Small business cash flow forecast1 | 0.8854 | 0.812 | 5/5 | **0.879** |
+| 1 | 🟢 Small business cash flow forecast1 | 0.9815 | 0.812 | 5/5 | **0.9174** |
 | 2 | ⚪ Wedding timeline planner1 | N/A | N/A | ?/? | **N/A** |
-| 3 | 🟢 Wedding_timeline_planner1_copy | 0.9738 | 0.7865 | 5/5 | **0.9041** |
-| 4 | 🔴 payroll-calculator_f | 0.8761 | 0.5618 | 27/29 | **0.6752** |
+| 3 | 🟡 Wedding_timeline_planner1_copy | 0.9489 | 0.7865 | 5/5 | **0.8942** |
+| 4 | 🟡 payroll-calculator_f | 0.878 | 0.5586 | 27/27 | **0.7746** |
 
-**Average Overall Score: 0.6146**
+**Average Overall Score: 0.6465**
 
 ## Visual Comparison
 
@@ -19,7 +19,7 @@ Generated: 2026-03-13T18:13:53.288136
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>Small business cash flow forecast1</b></td>
-  <td>Small business cash flow forecast1 <span style="color:#d29922">⬤</span> 87.9%</td>
+  <td>Small business cash flow forecast1 <span style="color:#3fb950">⬤</span> 91.7%</td>
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -50,7 +50,7 @@ Generated: 2026-03-13T18:13:53.288136
 </tr>
 <tr>
   <td><b>Wedding_timeline_planner1_copy</b></td>
-  <td>Wedding_timeline_planner1_copy <span style="color:#3fb950">⬤</span> 90.4%</td>
+  <td>Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 89.4%</td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -74,7 +74,7 @@ Generated: 2026-03-13T18:13:53.288136
 </tr>
 <tr>
   <td><b>payroll-calculator_f</b></td>
-  <td>payroll-calculator_f <span style="color:#f85149">⬤</span> 67.5%</td>
+  <td>payroll-calculator_f <span style="color:#d29922">⬤</span> 77.5%</td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -184,32 +184,24 @@ Generated: 2026-03-13T18:13:53.288136
   <td><img src="images/payroll-calculator_f_p27_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/payroll-calculator_f_p27_reference.png" width="340" alt="Reference"></td>
 </tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/payroll-calculator_f_p28_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/payroll-calculator_f_p29_reference.png" width="340" alt="Reference"></td>
-</tr>
 </table>
 
 ## Detailed Results
 
 ### Small business cash flow forecast1
 
-- **Text Similarity:** 0.8854
+- **Text Similarity:** 0.9815
 - **Visual Average:** 0.812
-- **Overall Score:** 0.879
+- **Overall Score:** 0.9174
 - **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=225453 bytes, Reference=143258 bytes
+- **File Size:** MiniPdf=225453 bytes, Reference=126373 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Small business cash flow forecast1.pdf
 +++ reference/Small business cash flow forecast1.pdf
-@@ -1,52 +1,55 @@
+@@ -1,52 +1,53 @@
  ELBIDE REALTY
 
  Cash flow forecast
@@ -220,13 +212,9 @@ Generated: 2026-03-13T18:13:53.288136
 
 -Cash on hand (beginning of month) $      10,000.00 $      8,050.00  $      9,350.00 $      890.00 $      2,190.00 $      13,590.00  $      13,790.00  $      15,290.00  $      16,410.00  $      14,360.00  $      16,560.00  $      18,780.00
 
-+月
++Starting cash on hand $     10,000.00 Starting date Apr 2026 Cash minimum balance alert $        2,000.00
 
-+Starting cash on hand $     10,000.00 Starting date 4 2026 Cash minimum balance alert $        2,000.00
-
-+月 月 月 月 月 月 月 月 月 月 月 月
-
-+4 2026 5 2026 6 2026 7 2026 8 2026 9 2026 10 2026 11 2026 12 2026 1 2027 2 2027 3 2027
++Apr 2026 May 2026 Jun 2026 Jul 2026 Aug 2026 Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027
 
 +Total
 
@@ -268,8 +256,8 @@ Generated: 2026-03-13T18:13:53.288136
 
 +Total cash receipts $        2,500.00  $        3,000.00  $        3,400.00  $        3,000.00  $     14,000.00  $        6,000.00  $        3,000.00  $        2,800.00  $        3,500.00  $        4,000.00  $        3,800.00  $        4,200.00  $         53,600.00
 
-+Total cash available $     12,500.00  $     11,050.00  $     12,750.00  $        3,890.00  $     16,190.00  $     19,590.0
-... (6565 more characters)
++Total cash available $     12,500.00  $     11,050.00  $     12,750.00  $        3,890.00  $     16,190.00  $     19,590.00  $   
+... (6575 more characters)
 
 ```
 </details>
@@ -280,18 +268,18 @@ Generated: 2026-03-13T18:13:53.288136
 
 ### Wedding_timeline_planner1_copy
 
-- **Text Similarity:** 0.9738
+- **Text Similarity:** 0.9489
 - **Visual Average:** 0.7865
-- **Overall Score:** 0.9041
+- **Overall Score:** 0.8942
 - **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=541197 bytes, Reference=127655 bytes
+- **File Size:** MiniPdf=541197 bytes, Reference=126603 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Wedding_timeline_planner1_copy.pdf
 +++ reference/Wedding_timeline_planner1_copy.pdf
-@@ -1,16 +1,15 @@
+@@ -1,16 +1,13 @@
  Wedding timeline planner
 
  DONE?
@@ -304,21 +292,27 @@ Generated: 2026-03-13T18:13:53.288136
 
  ☐
 
- Determine budget and how expenses will be shared.
+-Determine budget and how expenses will be shared.
 
- ☐
++☐ Determine budget and how expenses will be shared.
 
- MONTHS TO GO
++MONTHS TO GO
 
- Discuss the size, style, location, and scope of the wedding you want.
-
- ☐
-
--Choose a target wedding date and time. (The actual date will depend on
++☐ Discuss the size, style, location, and scope of the wedding you want.
 
 +Choose a target wedding date and time. (The actual date will depend
 
  ☐
+
+-MONTHS TO GO
+
+-Discuss the size, style, location, and scope of the wedding you want.
+
+-☐
+
+-Choose a target wedding date and time. (The actual date will depend on
+
+-☐
 
 -venue availability.)
 
@@ -330,7 +324,7 @@ Generated: 2026-03-13T18:13:53.288136
 
  brochures, etc.
 
-@@ -18,17 +17,17 @@
+@@ -18,34 +15,25 @@
  ☐
 
  Meet with your officiant.
@@ -345,48 +339,67 @@ Generated: 2026-03-13T18:13:53.288136
 
 -when thinking about “must-invites” versus “nice-to-invites.”
 
-+budget when thinking about “must-invites” versus “nice-to-invites.”
+-Begin shopping for the wedding gown.
 
- Begin shopping for the wedding gown.
-
- ☐
+-☐
 
 -6 - 9
 
 -Choose the members of your wedding party.
 
-+6 - 9 Choose the members of your wedding party.
+-☐
 
- ☐
+-Enroll in wedding/shower gift registries.
 
- Enroll in wedding/shower gift registries.
-
- ☐
+-☐
 
 -MONTHS TO GO Hire a photographer and a videographer.
 
+-☐
+
++budget when thinking about “must-invites” versus “nice-to-invites.”
+
++☐ Begin shopping for the wedding gown.
+
++6 - 9 ☐ Choose the members of your wedding party.
+
++☐ Enroll in wedding/shower gift registries.
+
 +MONTHS TO GO
 
-+Hire a photographer and a videographer.
-
- ☐
++☐ Hire a photographer and a videographer.
 
  Book an engagement photo session, especially if you plan to include a
 
  ☐
 
-@@ -38,14 +37,12 @@
- Hire a florist.
+ professional engagement picture with Save-the-Date cards.
+
+-Hire a caterer.
+
++☐ Hire a caterer.
+
++☐ Hire a florist.
+
++Make arrangements for music to be played at the ceremony and
+
++☐ reception. (Tasks might include booking a band or solo musician,
+
++hiring a DJ, choosing significant musical selections, and so on.).
+
++Reserve a block of hotel rooms for out-of-town guests. (Ask about
 
  ☐
 
- Make arrangements for music to be played at the ceremony and
+-Hire a florist.
+
+-☐
+
+-Make arrangements for music to be played at the ceremony and
 
 -reception. (Tasks might include booking a band or solo musician, hiring
 
-+reception. (Tasks might include booking a band or solo musician,
-
- ☐
+-☐
 
 -a DJ, choosing significant musical selections, and so on.).
 
@@ -396,11 +409,7 @@ Generated: 2026-03-13T18:13:53.288136
 
 -Reserve a block of hotel rooms for out-of-town guests. (Ask about group
 
-+hiring a DJ, choosing significant musical selections, and so on.).
-
-+Reserve a block of hotel rooms for out-of-town guests. (Ask about
-
- ☐
+-☐
 
 -rates.)
 
@@ -412,83 +421,63 @@ Generated: 2026-03-13T18:13:53.288136
 
  possible.)
 
-@@ -54,61 +51,66 @@
+@@ -54,120 +42,92 @@
  Select and order wedding gown, leaving ample time for delivery and
 
  ☐
 
  alterations.
 
+-Shop for bridesmaids dresses.
+
 +---PAGE---
 
 +Wedding timeline planner
 
- Shop for bridesmaids dresses.
++☐ Shop for bridesmaids dresses.
 
- ☐
++☐ Schedule wedding cake design appointments and tastings.
 
- Schedule wedding cake design appointments and tastings.
-
- ☐
-
- Start planning your honeymoon.
-
- ☐
-
--4 - 6
-
--Finalize the guest list.
++☐ Start planning your honeymoon.
 
 +4 - 6 Finalize the guest list.
 
  ☐
 
- Order invitations and other wedding stationery.
+-Schedule wedding cake design appointments and tastings.
 
- ☐
+-☐
 
--MONTHS TO GO Plan wedding-day beauty preparations; ask your stylist how far in
+-Start planning your honeymoon.
 
--advance they book wedding parties, and whether they are willing to work
+-☐
 
-+MONTHS TO GO
+-4 - 6
 
-+Plan wedding-day beauty preparations; ask your stylist how far in
+-Finalize the guest list.
 
-+advance they book wedding parties, and whether they are willing to
+-☐
 
- ☐
-
--on the wedding site.
-
-+work on the wedding site.
-
- Finalize all honeymoon plans. If traveling outside the country, arrange
-
- ☐
-
- for visas, passports and inoculations.
-
--Hire your 
-... (3197 more characters)
+-Order invitati
+... (5584 more characters)
 
 ```
 </details>
 
 ### payroll-calculator_f
 
-- **Text Similarity:** 0.8761
-- **Visual Average:** 0.5618
-- **Overall Score:** 0.6752
-- **Pages:** MiniPdf=27, Reference=29
-- **File Size:** MiniPdf=6268861 bytes, Reference=546772 bytes
+- **Text Similarity:** 0.878
+- **Visual Average:** 0.5586
+- **Overall Score:** 0.7746
+- **Pages:** MiniPdf=27, Reference=27
+- **File Size:** MiniPdf=6268861 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/payroll-calculator_f.pdf
 +++ reference/payroll-calculator_f.pdf
-@@ -1,207 +1,290 @@
+@@ -1,207 +1,284 @@
  Employee Register
 
 -Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 20
@@ -555,7 +544,7 @@ Generated: 2026-03-13T18:13:53.288136
 
 -Box in (c)
 
-+Page 1 of 29
++Page 1 of 27
 
 +---PAGE---
 
@@ -599,8 +588,8 @@ Generated: 2026-03-13T18:13:53.288136
 
 +4.50% - - Not Exempt 4.63% 0.00% 14.00 30.00 111 Street, Town/City, ST, 00000 ***-**-0000
 
-+Page 2 of 29
-... (31143 more characters)
++Page 2 of 27
+... (31107 more characters)
 
 ```
 </details>
@@ -609,6 +598,6 @@ Generated: 2026-03-13T18:13:53.288136
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **payroll-calculator_f** (score: 0.6752)
+1. **payroll-calculator_f** (score: 0.7746)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
