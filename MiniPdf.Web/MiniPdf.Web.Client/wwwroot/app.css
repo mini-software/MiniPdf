@@ -362,6 +362,25 @@ h1:focus { outline: none; }
     color: #be185d !important;
 }
 
+/* ===== Font Warning ===== */
+.font-warning {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    margin-bottom: .5rem;
+    padding: .5rem .75rem;
+    font-size: .78rem;
+    color: #92400e;
+    background: #fef3c7;
+    border-radius: 8px;
+}
+
+.font-warning svg {
+    flex-shrink: 0;
+    color: #d97706;
+}
+
 /* ===== Privacy Note ===== */
 .privacy-note {
     display: flex;
