@@ -135,27 +135,57 @@ internal static class DocxToPdfConverter
         if (pdfDoc.Pages.Count == 0)
             pdfDoc.AddPage(options.PageWidth, options.PageHeight);
 
-        // Render headers and footers on all pages
+        // Render header/footer background shapes on all pages.
+        if (docxDoc.HeaderShapes is { Count: > 0 } || docxDoc.FooterShapes is { Count: > 0 })
+        {
+            var totalPages = pdfDoc.Pages.Count;
+            for (int pi = 0; pi < totalPages; pi++)
+            {
+                var page = pdfDoc.Pages[pi];
+
+                if (docxDoc.HeaderShapes is { Count: > 0 })
+                {
+                    foreach (var shape in docxDoc.HeaderShapes)
+                        RenderHeaderFooterShape(page, options, shape);
+                }
+
+                if (docxDoc.FooterShapes is { Count: > 0 })
+                {
+                    foreach (var shape in docxDoc.FooterShapes)
+                        RenderHeaderFooterShape(page, options, shape);
+                }
+            }
+        }
+
+        // Render headers and footers text on all pages
         if (docxDoc.HeaderText != null || docxDoc.FooterText != null)
         {
             const float headerFooterFontSize = 9f;
             var headerColor = PdfColor.FromRgb(128, 128, 128);
-            foreach (var page in pdfDoc.Pages)
+            var totalPages = pdfDoc.Pages.Count;
+            for (int pi = 0; pi < totalPages; pi++)
             {
+                var page = pdfDoc.Pages[pi];
                 var usableW = page.Width - options.MarginLeft - options.MarginRight;
                 if (docxDoc.HeaderText != null)
                 {
-                    var headerTextWidth = EstimateTextWidth(docxDoc.HeaderText, headerFooterFontSize);
+                    var headerResolved = docxDoc.HeaderText
+                        .Replace("{PAGE}", (pi + 1).ToString())
+                        .Replace("{NUMPAGES}", totalPages.ToString());
+                    var headerTextWidth = EstimateTextWidth(headerResolved, headerFooterFontSize);
                     var headerX = options.MarginLeft + (usableW - headerTextWidth) / 2;
                     var headerY = page.Height - options.MarginTop / 2;
-                    page.AddText(docxDoc.HeaderText, headerX, headerY, headerFooterFontSize, headerColor);
+                    page.AddText(headerResolved, headerX, headerY, headerFooterFontSize, headerColor);
                 }
                 if (docxDoc.FooterText != null)
                 {
-                    var footerTextWidth = EstimateTextWidth(docxDoc.FooterText, headerFooterFontSize);
+                    var footerResolved = docxDoc.FooterText
+                        .Replace("{PAGE}", (pi + 1).ToString())
+                        .Replace("{NUMPAGES}", totalPages.ToString());
+                    var footerTextWidth = EstimateTextWidth(footerResolved, headerFooterFontSize);
                     var footerX = options.MarginLeft + (usableW - footerTextWidth) / 2;
                     var footerY = options.MarginBottom / 2;
-                    page.AddText(docxDoc.FooterText, footerX, footerY, headerFooterFontSize, headerColor);
+                    page.AddText(footerResolved, footerX, footerY, headerFooterFontSize, headerColor);
                 }
             }
         }
@@ -234,9 +264,9 @@ internal static class DocxToPdfConverter
             lineHeight = fontSize * FontMetricsFactor * lineSpacingMul;
         }
 
-        // Apply spacing before (skip at top of page to match Word behavior)
+        // Apply spacing before (skip at top of page to match Word behavior, unless forced)
         var spacingBefore = paragraph.SpacingBefore > 0 ? paragraph.SpacingBefore : 0;
-        if (spacingBefore > 0 && !state.IsTopOfPage)
+        if (spacingBefore > 0 && (!state.IsTopOfPage || paragraph.ForceSpacingBefore))
             state.AdvanceY(spacingBefore);
 
         state.EnsurePage();
@@ -312,7 +342,7 @@ internal static class DocxToPdfConverter
         {
             state.AdvanceY(lineHeight);
             // Apply spacing after
-            var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : fontSize * 0.35f;
+            var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             state.AdvanceY(spacingAfterEmpty);
 
             // Handle page break after (even for empty paragraphs)
@@ -411,8 +441,7 @@ internal static class DocxToPdfConverter
         }
 
         // Apply spacing after
-        var defaultSpacing = (paragraph.LineSpacingAbsolute || paragraph.IsBulletList || paragraph.IsNumberedList) ? 0f : 8f;
-        var spacingAfter = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : defaultSpacing;
+        var spacingAfter = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
         state.AdvanceY(spacingAfter);
 
         // Handle page break after
@@ -442,7 +471,7 @@ internal static class DocxToPdfConverter
             var colorMatch = current.Color == next.Color || isWhitespaceOnly || isCurWhitespace;
             var boldMatch = current.Bold == next.Bold || isWhitespaceOnly || isCurWhitespace;
             var underlineMatch = current.Underline == next.Underline || isWhitespaceOnly || isCurWhitespace;
-            var charSpacingMatch = Math.Abs(current.CharSpacing - next.CharSpacing) < 0.01f;
+            var charSpacingMatch = Math.Abs(current.CharSpacing - next.CharSpacing) < 0.01f || isWhitespaceOnly || isCurWhitespace;
             if (Math.Abs(curFs - nextFs) < 0.01f && colorMatch && boldMatch && underlineMatch && charSpacingMatch
                 && !current.IsPageBreak && !next.IsPageBreak)
             {
@@ -599,6 +628,26 @@ internal static class DocxToPdfConverter
             1f + (fc.B - 1f) * a);
 
         state.CurrentPage!.AddRectangle(x, y, width, height, blended);
+    }
+
+    private static void RenderHeaderFooterShape(PdfPage page, ConversionOptions options, DocxShape shape)
+    {
+        const float emuPerPoint = 914400f / 72f;
+
+        var width = shape.WidthEmu / emuPerPoint;
+        var height = shape.HeightEmu / emuPerPoint;
+        var x = options.MarginLeft + shape.OffsetXEmu / emuPerPoint;
+        // Header/footer anchors are typically page-relative; don't subtract page top margin.
+        var y = options.PageHeight - shape.OffsetYEmu / emuPerPoint - height;
+
+        var fc = shape.FillColor;
+        var a = shape.Alpha;
+        var blended = new PdfColor(
+            1f + (fc.R - 1f) * a,
+            1f + (fc.G - 1f) * a,
+            1f + (fc.B - 1f) * a);
+
+        page.AddRectangle(x, y, width, height, blended);
     }
 
     // ── Image rendering ─────────────────────────────────────────────────

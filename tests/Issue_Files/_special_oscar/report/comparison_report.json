@@ -1,0 +1,27 @@
+[
+  {
+    "name": "OSCAR WARD",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 3014,
+    "reference_size": 49023,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9941,
+    "flat_text_similarity": 0.9912,
+    "word_text_similarity": 0.9941,
+    "text_diff": "--- minipdf/OSCAR WARD.pdf\n+++ reference/OSCAR WARD.pdf\n@@ -6,8 +6,8 @@\n 123 45th Ave Chicago, IL\n\n Dear Chanchal,\n\n I sincerely appreciate the opportunity to interview and learn more about the role. Our\n\n-conversation reinforced my enthusiasm for contributing to the team and bringing my expertise\n\n-to the company’s ongoing initiatives. I found our discussion about future goals particularly\n\n+conversation reinforced my enthusiasm for contributing to the team and bringing my expertise to\n\n+the company’s ongoing initiatives. I found our discussion about future goals particularly\n\n inspiring, and it further solidified my excitement about this opportunity.\n\n The role’s focus on impactful work aligns with my professional background, and I look forward\n\n to the possibility of applying my skills to support the company’s growth. I am eager to bring my\n\n@@ -16,4 +16,5 @@\n Thank you again for your time and thoughtful discussion. I appreciate the chance to be\n\n considered and look forward to next steps. Please let me know if I can provide any additional\n\n details to assist in the decision-making process.\n\n-Warm regards,\n+Warm regards,\n\n+Oscar Ward",
+    "visual_scores": [
+      0.3906
+    ],
+    "visual_avg": 0.3906,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "OSCAR WARD_p1_minipdf.png",
+        "reference_img": "OSCAR WARD_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.7539
+  }
+]

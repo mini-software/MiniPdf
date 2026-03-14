@@ -1,0 +1,33 @@
+[
+  {
+    "name": "Confirmatory_Affidavit",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4217,
+    "reference_size": 91848,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9824,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/Confirmatory_Affidavit.pdf\n+++ reference/Confirmatory_Affidavit.pdf\n@@ -4,12 +4,12 @@\n hereby state under oath,\n\n 1. I am an adult female with full legal capacity and currently reside at Fuga Qui\n\n minima aut, Sunt magni praesenti.\n\n-2. I am a Russian national, born in Omck / Russia, on 21 December 1999. I have been\n\n-issued with a Russian passport, with passport number 770752777. A copy of my\n\n-passport is attached hereto marked as Annexure \"A1\".\n\n+2. I am a Russian national, born in Omck / Russia, on 21 December 1999. I have\n\n+been issued with a Russian passport, with passport number 770752777. A copy of\n\n+my passport is attached hereto marked as Annexure \"A1\".\n\n 3. I confirm the content of the Affidavit in terms of regulation 3(2)(d) of the\n\n-Immigration Regulations, 2014, deposed to by my spouse Jada Randolph, in as\n\n-far it relates to me.\n\n+Immigration Regulations, 2014, deposed to by my spouse Jada Randolph, in\n\n+as far it relates to me.\n\n __________________________________\n\n SOFIA VERBITCKAIA\n\n SIGNED AT __________________ ON THIS THE ____ DAY OF __________ 2026.\n\n@@ -19,10 +19,10 @@\n Page 1 of 2\n\n ---PAGE---\n\n c. She regards the prescribed oath as binding on her conscience.\n\n-I certify that the deponent has confirmed aforesaid (a) to (c) before me, that the contents of\n\n-this affidavit is sworn to duly and that the Regulations as contained in Government Notice No.\n\n-R.1258 of 21 July 1972 (as amended) and Government Notice No. R.1648 dated 19 August\n\n-1977 (as amended) have been complied with.\n\n+I certify that the deponent has confirmed aforesaid (a) to (c) before me, that the\n\n+contents of this affidavit is sworn to duly and that the Regulations as contained in\n\n+Government Notice No. R.1258 of 21 July 1972 (as amended) and Government Notice\n\n+No. R.1648 dated 19 August 1977 (as amended) have been complied with.\n\n ________________________\n\n COMMISSIONER OF OATHS\n\n Name:\n",
+    "visual_scores": [
+      0.9584,
+      0.9835
+    ],
+    "visual_avg": 0.9709,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Confirmatory_Affidavit_p1_minipdf.png",
+        "reference_img": "Confirmatory_Affidavit_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "Confirmatory_Affidavit_p2_minipdf.png",
+        "reference_img": "Confirmatory_Affidavit_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9884
+  }
+]
