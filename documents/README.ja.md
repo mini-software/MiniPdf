@@ -72,6 +72,7 @@ MiniPdf の出力は LibreOffice をリファレンスレンダラーとして *
 - [XLSX ベンチマークレポート](../tests/MiniPdf.Benchmark/reports/comparison_report.md) — XLSX 変換テストケース
 - [DOCX ベンチマークレポート](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — DOCX 変換テストケース
 - [Issue XLSX ファイルレポート](../tests/Issue_Files/reports_xlsx/comparison_report.md) — 実際の Issue ファイルテストケース
+- [Issue DOCX ファイルレポート](../tests/Issue_Files/reports_docx/comparison_report.md) — 実際の Issue ファイルテストケース
 
 ### ビジュアル比較
 

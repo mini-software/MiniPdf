@@ -72,6 +72,7 @@ Notation : similarité texte 40% + similarité visuelle 40% + nombre de pages 20
 - [Rapport Benchmark XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md) — Cas de test conversion XLSX
 - [Rapport Benchmark DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) — Cas de test conversion DOCX
 - [Rapport Fichiers Issue XLSX](../tests/Issue_Files/reports_xlsx/comparison_report.md) — Cas de test avec fichiers Issue réels
+- [Rapport Fichiers Issue DOCX](../tests/Issue_Files/reports_docx/comparison_report.md) — Cas de test avec fichiers Issue réels
 
 ### Comparaison visuelle
 
