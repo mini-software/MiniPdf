@@ -1,19 +1,25 @@
-"""Generate comparison_report.md and comparison_report.json for docx Invoice."""
+"""Generate comparison_report.md and comparison_report.json for docx files."""
 import sys, os, json, datetime
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'MiniPdf.Benchmark'))
 
 from compare_pdfs import compare_single
 
-MINIPDF_PDF = os.path.join(os.path.dirname(__file__), 'output', 'Invoice.pdf')
-REFERENCE_PDF = os.path.join(os.path.dirname(__file__), 'output_reference', 'Invoice.pdf')
-REPORT_DIR = os.path.join(os.path.dirname(__file__), 'output_report')
+BASE_DIR = os.path.dirname(__file__)
+REPORT_DIR = os.path.join(BASE_DIR, 'output_report')
 IMAGES_DIR = os.path.join(REPORT_DIR, 'images')
-
 os.makedirs(IMAGES_DIR, exist_ok=True)
 
-# Run comparison
-result = compare_single(MINIPDF_PDF, REFERENCE_PDF, IMAGES_DIR, 'Invoice')
-results = [result]
+# Test cases to compare
+test_cases = ['Invoice', 'Support_Letter']
+results = []
+
+for name in test_cases:
+    minipdf_pdf = os.path.join(BASE_DIR, 'output', f'{name}.pdf')
+    reference_pdf = os.path.join(BASE_DIR, 'output_reference', f'{name}.pdf')
+    if os.path.exists(minipdf_pdf) and os.path.exists(reference_pdf):
+        result = compare_single(minipdf_pdf, reference_pdf, IMAGES_DIR, name)
+        results.append(result)
+        print(f"  {name}: overall={result.get('overall_score', 'N/A'):.4f}")
 
 # ── Write JSON ───────────────────────────────────────────────────────────
 json_path = os.path.join(REPORT_DIR, 'comparison_report.json')
