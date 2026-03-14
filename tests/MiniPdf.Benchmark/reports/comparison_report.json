@@ -19,7 +19,8 @@
       {
         "page": 1,
         "minipdf_img": "classic01_basic_table_with_headers_p1_minipdf.png",
-        "reference_img": "classic01_basic_table_with_headers_p1_reference.png"
+        "reference_img": "classic01_basic_table_with_headers_p1_reference.png",
+        "office_img": "classic01_basic_table_with_headers_p1_office.png"
       }
     ],
     "overall_score": 0.9988
@@ -46,17 +47,20 @@
       {
         "page": 1,
         "minipdf_img": "classic02_multiple_worksheets_p1_minipdf.png",
-        "reference_img": "classic02_multiple_worksheets_p1_reference.png"
+        "reference_img": "classic02_multiple_worksheets_p1_reference.png",
+        "office_img": "classic02_multiple_worksheets_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic02_multiple_worksheets_p2_minipdf.png",
-        "reference_img": "classic02_multiple_worksheets_p2_reference.png"
+        "reference_img": "classic02_multiple_worksheets_p2_reference.png",
+        "office_img": "classic02_multiple_worksheets_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic02_multiple_worksheets_p3_minipdf.png",
-        "reference_img": "classic02_multiple_worksheets_p3_reference.png"
+        "reference_img": "classic02_multiple_worksheets_p3_reference.png",
+        "office_img": "classic02_multiple_worksheets_p3_office.png"
       }
     ],
     "overall_score": 0.9992
@@ -106,7 +110,8 @@
       {
         "page": 1,
         "minipdf_img": "classic04_single_cell_p1_minipdf.png",
-        "reference_img": "classic04_single_cell_p1_reference.png"
+        "reference_img": "classic04_single_cell_p1_reference.png",
+        "office_img": "classic04_single_cell_p1_office.png"
       }
     ],
     "overall_score": 0.9999
@@ -133,17 +138,20 @@
       {
         "page": 1,
         "minipdf_img": "classic05_wide_table_p1_minipdf.png",
-        "reference_img": "classic05_wide_table_p1_reference.png"
+        "reference_img": "classic05_wide_table_p1_reference.png",
+        "office_img": "classic05_wide_table_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic05_wide_table_p2_minipdf.png",
-        "reference_img": "classic05_wide_table_p2_reference.png"
+        "reference_img": "classic05_wide_table_p2_reference.png",
+        "office_img": "classic05_wide_table_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic05_wide_table_p3_minipdf.png",
-        "reference_img": "classic05_wide_table_p3_reference.png"
+        "reference_img": "classic05_wide_table_p3_reference.png",
+        "office_img": "classic05_wide_table_p3_office.png"
       }
     ],
     "overall_score": 0.9978
@@ -172,27 +180,32 @@
       {
         "page": 1,
         "minipdf_img": "classic06_tall_table_p1_minipdf.png",
-        "reference_img": "classic06_tall_table_p1_reference.png"
+        "reference_img": "classic06_tall_table_p1_reference.png",
+        "office_img": "classic06_tall_table_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic06_tall_table_p2_minipdf.png",
-        "reference_img": "classic06_tall_table_p2_reference.png"
+        "reference_img": "classic06_tall_table_p2_reference.png",
+        "office_img": "classic06_tall_table_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic06_tall_table_p3_minipdf.png",
-        "reference_img": "classic06_tall_table_p3_reference.png"
+        "reference_img": "classic06_tall_table_p3_reference.png",
+        "office_img": "classic06_tall_table_p3_office.png"
       },
       {
         "page": 4,
         "minipdf_img": "classic06_tall_table_p4_minipdf.png",
-        "reference_img": "classic06_tall_table_p4_reference.png"
+        "reference_img": "classic06_tall_table_p4_reference.png",
+        "office_img": "classic06_tall_table_p4_office.png"
       },
       {
         "page": 5,
         "minipdf_img": "classic06_tall_table_p5_minipdf.png",
-        "reference_img": "classic06_tall_table_p5_reference.png"
+        "reference_img": "classic06_tall_table_p5_reference.png",
+        "office_img": "classic06_tall_table_p5_office.png"
       }
     ],
     "overall_score": 0.9779
@@ -217,7 +230,8 @@
       {
         "page": 1,
         "minipdf_img": "classic07_numbers_only_p1_minipdf.png",
-        "reference_img": "classic07_numbers_only_p1_reference.png"
+        "reference_img": "classic07_numbers_only_p1_reference.png",
+        "office_img": "classic07_numbers_only_p1_office.png"
       }
     ],
     "overall_score": 0.9996
@@ -242,7 +256,8 @@
       {
         "page": 1,
         "minipdf_img": "classic08_mixed_text_and_numbers_p1_minipdf.png",
-        "reference_img": "classic08_mixed_text_and_numbers_p1_reference.png"
+        "reference_img": "classic08_mixed_text_and_numbers_p1_reference.png",
+        "office_img": "classic08_mixed_text_and_numbers_p1_office.png"
       }
     ],
     "overall_score": 0.9992
@@ -278,62 +293,74 @@
       {
         "page": 1,
         "minipdf_img": "classic09_long_text_p1_minipdf.png",
-        "reference_img": "classic09_long_text_p1_reference.png"
+        "reference_img": "classic09_long_text_p1_reference.png",
+        "office_img": "classic09_long_text_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic09_long_text_p2_minipdf.png",
-        "reference_img": "classic09_long_text_p2_reference.png"
+        "reference_img": "classic09_long_text_p2_reference.png",
+        "office_img": "classic09_long_text_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic09_long_text_p3_minipdf.png",
-        "reference_img": "classic09_long_text_p3_reference.png"
+        "reference_img": "classic09_long_text_p3_reference.png",
+        "office_img": "classic09_long_text_p3_office.png"
       },
       {
         "page": 4,
         "minipdf_img": "classic09_long_text_p4_minipdf.png",
-        "reference_img": "classic09_long_text_p4_reference.png"
+        "reference_img": "classic09_long_text_p4_reference.png",
+        "office_img": "classic09_long_text_p4_office.png"
       },
       {
         "page": 5,
         "minipdf_img": "classic09_long_text_p5_minipdf.png",
-        "reference_img": "classic09_long_text_p5_reference.png"
+        "reference_img": "classic09_long_text_p5_reference.png",
+        "office_img": "classic09_long_text_p5_office.png"
       },
       {
         "page": 6,
         "minipdf_img": "classic09_long_text_p6_minipdf.png",
-        "reference_img": "classic09_long_text_p6_reference.png"
+        "reference_img": "classic09_long_text_p6_reference.png",
+        "office_img": "classic09_long_text_p6_office.png"
       },
       {
         "page": 7,
         "minipdf_img": "classic09_long_text_p7_minipdf.png",
-        "reference_img": "classic09_long_text_p7_reference.png"
+        "reference_img": "classic09_long_text_p7_reference.png",
+        "office_img": "classic09_long_text_p7_office.png"
       },
       {
         "page": 8,
         "minipdf_img": "classic09_long_text_p8_minipdf.png",
-        "reference_img": "classic09_long_text_p8_reference.png"
+        "reference_img": "classic09_long_text_p8_reference.png",
+        "office_img": "classic09_long_text_p8_office.png"
       },
       {
         "page": 9,
         "minipdf_img": "classic09_long_text_p9_minipdf.png",
-        "reference_img": "classic09_long_text_p9_reference.png"
+        "reference_img": "classic09_long_text_p9_reference.png",
+        "office_img": "classic09_long_text_p9_office.png"
       },
       {
         "page": 10,
         "minipdf_img": "classic09_long_text_p10_minipdf.png",
-        "reference_img": "classic09_long_text_p10_reference.png"
+        "reference_img": "classic09_long_text_p10_reference.png",
+        "office_img": "classic09_long_text_p10_office.png"
       },
       {
         "page": 11,
         "minipdf_img": "classic09_long_text_p11_minipdf.png",
-        "reference_img": "classic09_long_text_p11_reference.png"
+        "reference_img": "classic09_long_text_p11_reference.png",
+        "office_img": "classic09_long_text_p11_office.png"
       },
       {
         "page": 12,
         "minipdf_img": "classic09_long_text_p12_minipdf.png",
-        "reference_img": "classic09_long_text_p12_reference.png"
+        "reference_img": "classic09_long_text_p12_reference.png",
+        "office_img": "classic09_long_text_p12_office.png"
       }
     ],
     "overall_score": 0.9841
@@ -358,7 +385,8 @@
       {
         "page": 1,
         "minipdf_img": "classic100_stacked_bar_chart_p1_minipdf.png",
-        "reference_img": "classic100_stacked_bar_chart_p1_reference.png"
+        "reference_img": "classic100_stacked_bar_chart_p1_reference.png",
+        "office_img": "classic100_stacked_bar_chart_p1_office.png"
       }
     ],
     "overall_score": 0.9495
@@ -383,7 +411,8 @@
       {
         "page": 1,
         "minipdf_img": "classic101_percent_stacked_bar_p1_minipdf.png",
-        "reference_img": "classic101_percent_stacked_bar_p1_reference.png"
+        "reference_img": "classic101_percent_stacked_bar_p1_reference.png",
+        "office_img": "classic101_percent_stacked_bar_p1_office.png"
       }
     ],
     "overall_score": 0.9362
@@ -409,12 +438,14 @@
       {
         "page": 1,
         "minipdf_img": "classic102_line_chart_with_markers_p1_minipdf.png",
-        "reference_img": "classic102_line_chart_with_markers_p1_reference.png"
+        "reference_img": "classic102_line_chart_with_markers_p1_reference.png",
+        "office_img": "classic102_line_chart_with_markers_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic102_line_chart_with_markers_p2_minipdf.png",
-        "reference_img": "classic102_line_chart_with_markers_p2_reference.png"
+        "reference_img": "classic102_line_chart_with_markers_p2_reference.png",
+        "office_img": "classic102_line_chart_with_markers_p2_office.png"
       }
     ],
     "overall_score": 0.9302
@@ -440,12 +471,14 @@
       {
         "page": 1,
         "minipdf_img": "classic103_pie_chart_with_labels_p1_minipdf.png",
-        "reference_img": "classic103_pie_chart_with_labels_p1_reference.png"
+        "reference_img": "classic103_pie_chart_with_labels_p1_reference.png",
+        "office_img": "classic103_pie_chart_with_labels_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic103_pie_chart_with_labels_p2_minipdf.png",
-        "reference_img": "classic103_pie_chart_with_labels_p2_reference.png"
+        "reference_img": "classic103_pie_chart_with_labels_p2_reference.png",
+        "office_img": "classic103_pie_chart_with_labels_p2_office.png"
       }
     ],
     "overall_score": 0.8694
@@ -471,12 +504,14 @@
       {
         "page": 1,
         "minipdf_img": "classic104_combo_bar_line_chart_p1_minipdf.png",
-        "reference_img": "classic104_combo_bar_line_chart_p1_reference.png"
+        "reference_img": "classic104_combo_bar_line_chart_p1_reference.png",
+        "office_img": "classic104_combo_bar_line_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic104_combo_bar_line_chart_p2_minipdf.png",
-        "reference_img": "classic104_combo_bar_line_chart_p2_reference.png"
+        "reference_img": "classic104_combo_bar_line_chart_p2_reference.png",
+        "office_img": "classic104_combo_bar_line_chart_p2_office.png"
       }
     ],
     "overall_score": 0.8164
@@ -502,12 +537,14 @@
       {
         "page": 1,
         "minipdf_img": "classic105_3d_bar_chart_p1_minipdf.png",
-        "reference_img": "classic105_3d_bar_chart_p1_reference.png"
+        "reference_img": "classic105_3d_bar_chart_p1_reference.png",
+        "office_img": "classic105_3d_bar_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic105_3d_bar_chart_p2_minipdf.png",
-        "reference_img": "classic105_3d_bar_chart_p2_reference.png"
+        "reference_img": "classic105_3d_bar_chart_p2_reference.png",
+        "office_img": "classic105_3d_bar_chart_p2_office.png"
       }
     ],
     "overall_score": 0.8583
@@ -533,12 +570,14 @@
       {
         "page": 1,
         "minipdf_img": "classic106_3d_pie_chart_p1_minipdf.png",
-        "reference_img": "classic106_3d_pie_chart_p1_reference.png"
+        "reference_img": "classic106_3d_pie_chart_p1_reference.png",
+        "office_img": "classic106_3d_pie_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic106_3d_pie_chart_p2_minipdf.png",
-        "reference_img": "classic106_3d_pie_chart_p2_reference.png"
+        "reference_img": "classic106_3d_pie_chart_p2_reference.png",
+        "office_img": "classic106_3d_pie_chart_p2_office.png"
       }
     ],
     "overall_score": 0.9669
@@ -564,12 +603,14 @@
       {
         "page": 1,
         "minipdf_img": "classic107_multi_series_line_p1_minipdf.png",
-        "reference_img": "classic107_multi_series_line_p1_reference.png"
+        "reference_img": "classic107_multi_series_line_p1_reference.png",
+        "office_img": "classic107_multi_series_line_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic107_multi_series_line_p2_minipdf.png",
-        "reference_img": "classic107_multi_series_line_p2_reference.png"
+        "reference_img": "classic107_multi_series_line_p2_reference.png",
+        "office_img": "classic107_multi_series_line_p2_office.png"
       }
     ],
     "overall_score": 0.8056
@@ -594,7 +635,14 @@
       {
         "page": 1,
         "minipdf_img": "classic108_stacked_area_chart_p1_minipdf.png",
-        "reference_img": "classic108_stacked_area_chart_p1_reference.png"
+        "reference_img": "classic108_stacked_area_chart_p1_reference.png",
+        "office_img": "classic108_stacked_area_chart_p1_office.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic108_stacked_area_chart_p2_office.png"
       }
     ],
     "overall_score": 0.9441
@@ -620,12 +668,14 @@
       {
         "page": 1,
         "minipdf_img": "classic109_scatter_with_trendline_p1_minipdf.png",
-        "reference_img": "classic109_scatter_with_trendline_p1_reference.png"
+        "reference_img": "classic109_scatter_with_trendline_p1_reference.png",
+        "office_img": "classic109_scatter_with_trendline_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic109_scatter_with_trendline_p2_minipdf.png",
-        "reference_img": "classic109_scatter_with_trendline_p2_reference.png"
+        "reference_img": "classic109_scatter_with_trendline_p2_reference.png",
+        "office_img": "classic109_scatter_with_trendline_p2_office.png"
       }
     ],
     "overall_score": 0.923
@@ -650,7 +700,8 @@
       {
         "page": 1,
         "minipdf_img": "classic10_special_xml_characters_p1_minipdf.png",
-        "reference_img": "classic10_special_xml_characters_p1_reference.png"
+        "reference_img": "classic10_special_xml_characters_p1_reference.png",
+        "office_img": "classic10_special_xml_characters_p1_office.png"
       }
     ],
     "overall_score": 0.9987
@@ -676,12 +727,14 @@
       {
         "page": 1,
         "minipdf_img": "classic110_chart_with_legend_p1_minipdf.png",
-        "reference_img": "classic110_chart_with_legend_p1_reference.png"
+        "reference_img": "classic110_chart_with_legend_p1_reference.png",
+        "office_img": "classic110_chart_with_legend_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic110_chart_with_legend_p2_minipdf.png",
-        "reference_img": "classic110_chart_with_legend_p2_reference.png"
+        "reference_img": "classic110_chart_with_legend_p2_reference.png",
+        "office_img": "classic110_chart_with_legend_p2_office.png"
       }
     ],
     "overall_score": 0.8466
@@ -707,12 +760,14 @@
       {
         "page": 1,
         "minipdf_img": "classic111_chart_with_axis_labels_p1_minipdf.png",
-        "reference_img": "classic111_chart_with_axis_labels_p1_reference.png"
+        "reference_img": "classic111_chart_with_axis_labels_p1_reference.png",
+        "office_img": "classic111_chart_with_axis_labels_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic111_chart_with_axis_labels_p2_minipdf.png",
-        "reference_img": "classic111_chart_with_axis_labels_p2_reference.png"
+        "reference_img": "classic111_chart_with_axis_labels_p2_reference.png",
+        "office_img": "classic111_chart_with_axis_labels_p2_office.png"
       }
     ],
     "overall_score": 0.9213
@@ -738,12 +793,14 @@
       {
         "page": 1,
         "minipdf_img": "classic112_multiple_charts_p1_minipdf.png",
-        "reference_img": "classic112_multiple_charts_p1_reference.png"
+        "reference_img": "classic112_multiple_charts_p1_reference.png",
+        "office_img": "classic112_multiple_charts_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic112_multiple_charts_p2_minipdf.png",
-        "reference_img": "classic112_multiple_charts_p2_reference.png"
+        "reference_img": "classic112_multiple_charts_p2_reference.png",
+        "office_img": "classic112_multiple_charts_p2_office.png"
       }
     ],
     "overall_score": 0.8538
@@ -769,12 +826,14 @@
       {
         "page": 1,
         "minipdf_img": "classic113_chart_sheet_p1_minipdf.png",
-        "reference_img": "classic113_chart_sheet_p1_reference.png"
+        "reference_img": "classic113_chart_sheet_p1_reference.png",
+        "office_img": "classic113_chart_sheet_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic113_chart_sheet_p2_minipdf.png",
-        "reference_img": "classic113_chart_sheet_p2_reference.png"
+        "reference_img": "classic113_chart_sheet_p2_reference.png",
+        "office_img": "classic113_chart_sheet_p2_office.png"
       }
     ],
     "overall_score": 0.8639
@@ -802,22 +861,26 @@
       {
         "page": 1,
         "minipdf_img": "classic114_chart_large_dataset_p1_minipdf.png",
-        "reference_img": "classic114_chart_large_dataset_p1_reference.png"
+        "reference_img": "classic114_chart_large_dataset_p1_reference.png",
+        "office_img": "classic114_chart_large_dataset_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic114_chart_large_dataset_p2_minipdf.png",
-        "reference_img": "classic114_chart_large_dataset_p2_reference.png"
+        "reference_img": "classic114_chart_large_dataset_p2_reference.png",
+        "office_img": "classic114_chart_large_dataset_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic114_chart_large_dataset_p3_minipdf.png",
-        "reference_img": "classic114_chart_large_dataset_p3_reference.png"
+        "reference_img": "classic114_chart_large_dataset_p3_reference.png",
+        "office_img": "classic114_chart_large_dataset_p3_office.png"
       },
       {
         "page": 4,
         "minipdf_img": "classic114_chart_large_dataset_p4_minipdf.png",
-        "reference_img": "classic114_chart_large_dataset_p4_reference.png"
+        "reference_img": "classic114_chart_large_dataset_p4_reference.png",
+        "office_img": "classic114_chart_large_dataset_p4_office.png"
       }
     ],
     "overall_score": 0.9156
@@ -843,12 +906,14 @@
       {
         "page": 1,
         "minipdf_img": "classic115_chart_negative_values_p1_minipdf.png",
-        "reference_img": "classic115_chart_negative_values_p1_reference.png"
+        "reference_img": "classic115_chart_negative_values_p1_reference.png",
+        "office_img": "classic115_chart_negative_values_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic115_chart_negative_values_p2_minipdf.png",
-        "reference_img": "classic115_chart_negative_values_p2_reference.png"
+        "reference_img": "classic115_chart_negative_values_p2_reference.png",
+        "office_img": "classic115_chart_negative_values_p2_office.png"
       }
     ],
     "overall_score": 0.9213
@@ -873,7 +938,14 @@
       {
         "page": 1,
         "minipdf_img": "classic116_percent_stacked_area_p1_minipdf.png",
-        "reference_img": "classic116_percent_stacked_area_p1_reference.png"
+        "reference_img": "classic116_percent_stacked_area_p1_reference.png",
+        "office_img": "classic116_percent_stacked_area_p1_office.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic116_percent_stacked_area_p2_office.png"
       }
     ],
     "overall_score": 0.938
@@ -899,12 +971,14 @@
       {
         "page": 1,
         "minipdf_img": "classic117_stock_ohlc_chart_p1_minipdf.png",
-        "reference_img": "classic117_stock_ohlc_chart_p1_reference.png"
+        "reference_img": "classic117_stock_ohlc_chart_p1_reference.png",
+        "office_img": "classic117_stock_ohlc_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic117_stock_ohlc_chart_p2_minipdf.png",
-        "reference_img": "classic117_stock_ohlc_chart_p2_reference.png"
+        "reference_img": "classic117_stock_ohlc_chart_p2_reference.png",
+        "office_img": "classic117_stock_ohlc_chart_p2_office.png"
       }
     ],
     "overall_score": 0.8088
@@ -930,12 +1004,14 @@
       {
         "page": 1,
         "minipdf_img": "classic118_bar_chart_custom_colors_p1_minipdf.png",
-        "reference_img": "classic118_bar_chart_custom_colors_p1_reference.png"
+        "reference_img": "classic118_bar_chart_custom_colors_p1_reference.png",
+        "office_img": "classic118_bar_chart_custom_colors_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic118_bar_chart_custom_colors_p2_minipdf.png",
-        "reference_img": "classic118_bar_chart_custom_colors_p2_reference.png"
+        "reference_img": "classic118_bar_chart_custom_colors_p2_reference.png",
+        "office_img": "classic118_bar_chart_custom_colors_p2_office.png"
       }
     ],
     "overall_score": 0.955
@@ -961,12 +1037,14 @@
       {
         "page": 1,
         "minipdf_img": "classic119_dashboard_multi_charts_p1_minipdf.png",
-        "reference_img": "classic119_dashboard_multi_charts_p1_reference.png"
+        "reference_img": "classic119_dashboard_multi_charts_p1_reference.png",
+        "office_img": "classic119_dashboard_multi_charts_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic119_dashboard_multi_charts_p2_minipdf.png",
-        "reference_img": "classic119_dashboard_multi_charts_p2_reference.png"
+        "reference_img": "classic119_dashboard_multi_charts_p2_reference.png",
+        "office_img": "classic119_dashboard_multi_charts_p2_office.png"
       }
     ],
     "overall_score": 0.9213
@@ -992,12 +1070,14 @@
       {
         "page": 1,
         "minipdf_img": "classic11_sparse_rows_p1_minipdf.png",
-        "reference_img": "classic11_sparse_rows_p1_reference.png"
+        "reference_img": "classic11_sparse_rows_p1_reference.png",
+        "office_img": "classic11_sparse_rows_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic11_sparse_rows_p2_minipdf.png",
-        "reference_img": "classic11_sparse_rows_p2_reference.png"
+        "reference_img": "classic11_sparse_rows_p2_reference.png",
+        "office_img": "classic11_sparse_rows_p2_office.png"
       }
     ],
     "overall_score": 0.9998
@@ -1023,12 +1103,14 @@
       {
         "page": 1,
         "minipdf_img": "classic120_chart_with_date_axis_p1_minipdf.png",
-        "reference_img": "classic120_chart_with_date_axis_p1_reference.png"
+        "reference_img": "classic120_chart_with_date_axis_p1_reference.png",
+        "office_img": "classic120_chart_with_date_axis_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic120_chart_with_date_axis_p2_minipdf.png",
-        "reference_img": "classic120_chart_with_date_axis_p2_reference.png"
+        "reference_img": "classic120_chart_with_date_axis_p2_reference.png",
+        "office_img": "classic120_chart_with_date_axis_p2_office.png"
       }
     ],
     "overall_score": 0.6688
@@ -1053,7 +1135,8 @@
       {
         "page": 1,
         "minipdf_img": "classic121_thin_borders_p1_minipdf.png",
-        "reference_img": "classic121_thin_borders_p1_reference.png"
+        "reference_img": "classic121_thin_borders_p1_reference.png",
+        "office_img": "classic121_thin_borders_p1_office.png"
       }
     ],
     "overall_score": 0.9962
@@ -1078,7 +1161,8 @@
       {
         "page": 1,
         "minipdf_img": "classic122_thick_outer_thin_inner_p1_minipdf.png",
-        "reference_img": "classic122_thick_outer_thin_inner_p1_reference.png"
+        "reference_img": "classic122_thick_outer_thin_inner_p1_reference.png",
+        "office_img": "classic122_thick_outer_thin_inner_p1_office.png"
       }
     ],
     "overall_score": 0.9955
@@ -1103,7 +1187,8 @@
       {
         "page": 1,
         "minipdf_img": "classic123_dashed_borders_p1_minipdf.png",
-        "reference_img": "classic123_dashed_borders_p1_reference.png"
+        "reference_img": "classic123_dashed_borders_p1_reference.png",
+        "office_img": "classic123_dashed_borders_p1_office.png"
       }
     ],
     "overall_score": 0.9905
@@ -1128,7 +1213,8 @@
       {
         "page": 1,
         "minipdf_img": "classic124_colored_borders_p1_minipdf.png",
-        "reference_img": "classic124_colored_borders_p1_reference.png"
+        "reference_img": "classic124_colored_borders_p1_reference.png",
+        "office_img": "classic124_colored_borders_p1_office.png"
       }
     ],
     "overall_score": 0.9972
@@ -1153,7 +1239,8 @@
       {
         "page": 1,
         "minipdf_img": "classic125_solid_fills_p1_minipdf.png",
-        "reference_img": "classic125_solid_fills_p1_reference.png"
+        "reference_img": "classic125_solid_fills_p1_reference.png",
+        "office_img": "classic125_solid_fills_p1_office.png"
       }
     ],
     "overall_score": 0.9918
@@ -1178,7 +1265,8 @@
       {
         "page": 1,
         "minipdf_img": "classic126_dark_header_p1_minipdf.png",
-        "reference_img": "classic126_dark_header_p1_reference.png"
+        "reference_img": "classic126_dark_header_p1_reference.png",
+        "office_img": "classic126_dark_header_p1_office.png"
       }
     ],
     "overall_score": 0.9947
@@ -1203,7 +1291,8 @@
       {
         "page": 1,
         "minipdf_img": "classic127_font_styles_p1_minipdf.png",
-        "reference_img": "classic127_font_styles_p1_reference.png"
+        "reference_img": "classic127_font_styles_p1_reference.png",
+        "office_img": "classic127_font_styles_p1_office.png"
       }
     ],
     "overall_score": 0.9955
@@ -1228,7 +1317,8 @@
       {
         "page": 1,
         "minipdf_img": "classic128_font_sizes_p1_minipdf.png",
-        "reference_img": "classic128_font_sizes_p1_reference.png"
+        "reference_img": "classic128_font_sizes_p1_reference.png",
+        "office_img": "classic128_font_sizes_p1_office.png"
       }
     ],
     "overall_score": 0.9902
@@ -1253,7 +1343,8 @@
       {
         "page": 1,
         "minipdf_img": "classic129_alignment_combos_p1_minipdf.png",
-        "reference_img": "classic129_alignment_combos_p1_reference.png"
+        "reference_img": "classic129_alignment_combos_p1_reference.png",
+        "office_img": "classic129_alignment_combos_p1_office.png"
       }
     ],
     "overall_score": 0.9986
@@ -1278,7 +1369,14 @@
       {
         "page": 1,
         "minipdf_img": "classic12_sparse_columns_p1_minipdf.png",
-        "reference_img": "classic12_sparse_columns_p1_reference.png"
+        "reference_img": "classic12_sparse_columns_p1_reference.png",
+        "office_img": "classic12_sparse_columns_p1_office.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic12_sparse_columns_p2_office.png"
       }
     ],
     "overall_score": 0.9992
@@ -1303,7 +1401,8 @@
       {
         "page": 1,
         "minipdf_img": "classic130_wrap_and_indent_p1_minipdf.png",
-        "reference_img": "classic130_wrap_and_indent_p1_reference.png"
+        "reference_img": "classic130_wrap_and_indent_p1_reference.png",
+        "office_img": "classic130_wrap_and_indent_p1_office.png"
       }
     ],
     "overall_score": 0.9972
@@ -1328,7 +1427,8 @@
       {
         "page": 1,
         "minipdf_img": "classic131_number_formats_p1_minipdf.png",
-        "reference_img": "classic131_number_formats_p1_reference.png"
+        "reference_img": "classic131_number_formats_p1_reference.png",
+        "office_img": "classic131_number_formats_p1_office.png"
       }
     ],
     "overall_score": 0.9967
@@ -1353,7 +1453,8 @@
       {
         "page": 1,
         "minipdf_img": "classic132_striped_table_p1_minipdf.png",
-        "reference_img": "classic132_striped_table_p1_reference.png"
+        "reference_img": "classic132_striped_table_p1_reference.png",
+        "office_img": "classic132_striped_table_p1_office.png"
       }
     ],
     "overall_score": 0.9906
@@ -1378,7 +1479,8 @@
       {
         "page": 1,
         "minipdf_img": "classic133_gradient_rows_p1_minipdf.png",
-        "reference_img": "classic133_gradient_rows_p1_reference.png"
+        "reference_img": "classic133_gradient_rows_p1_reference.png",
+        "office_img": "classic133_gradient_rows_p1_office.png"
       }
     ],
     "overall_score": 0.9959
@@ -1403,7 +1505,8 @@
       {
         "page": 1,
         "minipdf_img": "classic134_heatmap_p1_minipdf.png",
-        "reference_img": "classic134_heatmap_p1_reference.png"
+        "reference_img": "classic134_heatmap_p1_reference.png",
+        "office_img": "classic134_heatmap_p1_office.png"
       }
     ],
     "overall_score": 0.988
@@ -1428,7 +1531,8 @@
       {
         "page": 1,
         "minipdf_img": "classic135_bottom_border_only_p1_minipdf.png",
-        "reference_img": "classic135_bottom_border_only_p1_reference.png"
+        "reference_img": "classic135_bottom_border_only_p1_reference.png",
+        "office_img": "classic135_bottom_border_only_p1_office.png"
       }
     ],
     "overall_score": 0.9982
@@ -1453,7 +1557,8 @@
       {
         "page": 1,
         "minipdf_img": "classic136_financial_report_styled_p1_minipdf.png",
-        "reference_img": "classic136_financial_report_styled_p1_reference.png"
+        "reference_img": "classic136_financial_report_styled_p1_reference.png",
+        "office_img": "classic136_financial_report_styled_p1_office.png"
       }
     ],
     "overall_score": 0.9938
@@ -1478,7 +1583,8 @@
       {
         "page": 1,
         "minipdf_img": "classic137_checkerboard_p1_minipdf.png",
-        "reference_img": "classic137_checkerboard_p1_reference.png"
+        "reference_img": "classic137_checkerboard_p1_reference.png",
+        "office_img": "classic137_checkerboard_p1_office.png"
       }
     ],
     "overall_score": 0.984
@@ -1503,7 +1609,8 @@
       {
         "page": 1,
         "minipdf_img": "classic138_color_grid_p1_minipdf.png",
-        "reference_img": "classic138_color_grid_p1_reference.png"
+        "reference_img": "classic138_color_grid_p1_reference.png",
+        "office_img": "classic138_color_grid_p1_office.png"
       }
     ],
     "overall_score": 0.9949
@@ -1528,7 +1635,8 @@
       {
         "page": 1,
         "minipdf_img": "classic139_pattern_fills_p1_minipdf.png",
-        "reference_img": "classic139_pattern_fills_p1_reference.png"
+        "reference_img": "classic139_pattern_fills_p1_reference.png",
+        "office_img": "classic139_pattern_fills_p1_office.png"
       }
     ],
     "overall_score": 0.9932
@@ -1553,7 +1661,8 @@
       {
         "page": 1,
         "minipdf_img": "classic13_date_strings_p1_minipdf.png",
-        "reference_img": "classic13_date_strings_p1_reference.png"
+        "reference_img": "classic13_date_strings_p1_reference.png",
+        "office_img": "classic13_date_strings_p1_office.png"
       }
     ],
     "overall_score": 0.9887
@@ -1578,7 +1687,8 @@
       {
         "page": 1,
         "minipdf_img": "classic140_rotated_text_p1_minipdf.png",
-        "reference_img": "classic140_rotated_text_p1_reference.png"
+        "reference_img": "classic140_rotated_text_p1_reference.png",
+        "office_img": "classic140_rotated_text_p1_office.png"
       }
     ],
     "overall_score": 0.981
@@ -1603,7 +1713,8 @@
       {
         "page": 1,
         "minipdf_img": "classic141_mixed_edge_borders_p1_minipdf.png",
-        "reference_img": "classic141_mixed_edge_borders_p1_reference.png"
+        "reference_img": "classic141_mixed_edge_borders_p1_reference.png",
+        "office_img": "classic141_mixed_edge_borders_p1_office.png"
       }
     ],
     "overall_score": 0.9971
@@ -1628,7 +1739,8 @@
       {
         "page": 1,
         "minipdf_img": "classic142_styled_invoice_p1_minipdf.png",
-        "reference_img": "classic142_styled_invoice_p1_reference.png"
+        "reference_img": "classic142_styled_invoice_p1_reference.png",
+        "office_img": "classic142_styled_invoice_p1_office.png"
       }
     ],
     "overall_score": 0.9836
@@ -1656,22 +1768,26 @@
       {
         "page": 1,
         "minipdf_img": "classic143_colored_tabs_p1_minipdf.png",
-        "reference_img": "classic143_colored_tabs_p1_reference.png"
+        "reference_img": "classic143_colored_tabs_p1_reference.png",
+        "office_img": "classic143_colored_tabs_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic143_colored_tabs_p2_minipdf.png",
-        "reference_img": "classic143_colored_tabs_p2_reference.png"
+        "reference_img": "classic143_colored_tabs_p2_reference.png",
+        "office_img": "classic143_colored_tabs_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic143_colored_tabs_p3_minipdf.png",
-        "reference_img": "classic143_colored_tabs_p3_reference.png"
+        "reference_img": "classic143_colored_tabs_p3_reference.png",
+        "office_img": "classic143_colored_tabs_p3_office.png"
       },
       {
         "page": 4,
         "minipdf_img": "classic143_colored_tabs_p4_minipdf.png",
-        "reference_img": "classic143_colored_tabs_p4_reference.png"
+        "reference_img": "classic143_colored_tabs_p4_reference.png",
+        "office_img": "classic143_colored_tabs_p4_office.png"
       }
     ],
     "overall_score": 0.9996
@@ -1696,7 +1812,8 @@
       {
         "page": 1,
         "minipdf_img": "classic144_note_style_cells_p1_minipdf.png",
-        "reference_img": "classic144_note_style_cells_p1_reference.png"
+        "reference_img": "classic144_note_style_cells_p1_reference.png",
+        "office_img": "classic144_note_style_cells_p1_office.png"
       }
     ],
     "overall_score": 0.9962
@@ -1721,7 +1838,8 @@
       {
         "page": 1,
         "minipdf_img": "classic145_status_badges_p1_minipdf.png",
-        "reference_img": "classic145_status_badges_p1_reference.png"
+        "reference_img": "classic145_status_badges_p1_reference.png",
+        "office_img": "classic145_status_badges_p1_office.png"
       }
     ],
     "overall_score": 0.9908
@@ -1746,7 +1864,8 @@
       {
         "page": 1,
         "minipdf_img": "classic146_double_border_table_p1_minipdf.png",
-        "reference_img": "classic146_double_border_table_p1_reference.png"
+        "reference_img": "classic146_double_border_table_p1_reference.png",
+        "office_img": "classic146_double_border_table_p1_office.png"
       }
     ],
     "overall_score": 0.9943
@@ -1773,17 +1892,20 @@
       {
         "page": 1,
         "minipdf_img": "classic147_multi_sheet_styled_p1_minipdf.png",
-        "reference_img": "classic147_multi_sheet_styled_p1_reference.png"
+        "reference_img": "classic147_multi_sheet_styled_p1_reference.png",
+        "office_img": "classic147_multi_sheet_styled_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic147_multi_sheet_styled_p2_minipdf.png",
-        "reference_img": "classic147_multi_sheet_styled_p2_reference.png"
+        "reference_img": "classic147_multi_sheet_styled_p2_reference.png",
+        "office_img": "classic147_multi_sheet_styled_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic147_multi_sheet_styled_p3_minipdf.png",
-        "reference_img": "classic147_multi_sheet_styled_p3_reference.png"
+        "reference_img": "classic147_multi_sheet_styled_p3_reference.png",
+        "office_img": "classic147_multi_sheet_styled_p3_office.png"
       }
     ],
     "overall_score": 0.9961
@@ -1808,7 +1930,8 @@
       {
         "page": 1,
         "minipdf_img": "classic148_frozen_styled_grid_p1_minipdf.png",
-        "reference_img": "classic148_frozen_styled_grid_p1_reference.png"
+        "reference_img": "classic148_frozen_styled_grid_p1_reference.png",
+        "office_img": "classic148_frozen_styled_grid_p1_office.png"
       }
     ],
     "overall_score": 0.9739
@@ -1833,7 +1956,8 @@
       {
         "page": 1,
         "minipdf_img": "classic149_merged_styled_sections_p1_minipdf.png",
-        "reference_img": "classic149_merged_styled_sections_p1_reference.png"
+        "reference_img": "classic149_merged_styled_sections_p1_reference.png",
+        "office_img": "classic149_merged_styled_sections_p1_office.png"
       }
     ],
     "overall_score": 0.9881
@@ -1858,7 +1982,8 @@
       {
         "page": 1,
         "minipdf_img": "classic14_decimal_numbers_p1_minipdf.png",
-        "reference_img": "classic14_decimal_numbers_p1_reference.png"
+        "reference_img": "classic14_decimal_numbers_p1_reference.png",
+        "office_img": "classic14_decimal_numbers_p1_office.png"
       }
     ],
     "overall_score": 0.9989
@@ -1883,7 +2008,8 @@
       {
         "page": 1,
         "minipdf_img": "classic150_kitchen_sink_styles_p1_minipdf.png",
-        "reference_img": "classic150_kitchen_sink_styles_p1_reference.png"
+        "reference_img": "classic150_kitchen_sink_styles_p1_reference.png",
+        "office_img": "classic150_kitchen_sink_styles_p1_office.png"
       }
     ],
     "overall_score": 0.9883
@@ -1908,7 +2034,8 @@
       {
         "page": 1,
         "minipdf_img": "classic151_multilingual_greetings_p1_minipdf.png",
-        "reference_img": "classic151_multilingual_greetings_p1_reference.png"
+        "reference_img": "classic151_multilingual_greetings_p1_reference.png",
+        "office_img": "classic151_multilingual_greetings_p1_office.png"
       }
     ],
     "overall_score": 0.9354
@@ -1933,7 +2060,8 @@
       {
         "page": 1,
         "minipdf_img": "classic152_emoji_sampler_p1_minipdf.png",
-        "reference_img": "classic152_emoji_sampler_p1_reference.png"
+        "reference_img": "classic152_emoji_sampler_p1_reference.png",
+        "office_img": "classic152_emoji_sampler_p1_office.png"
       }
     ],
     "overall_score": 0.911
@@ -1958,7 +2086,8 @@
       {
         "page": 1,
         "minipdf_img": "classic153_currency_symbols_p1_minipdf.png",
-        "reference_img": "classic153_currency_symbols_p1_reference.png"
+        "reference_img": "classic153_currency_symbols_p1_reference.png",
+        "office_img": "classic153_currency_symbols_p1_office.png"
       }
     ],
     "overall_score": 0.985
@@ -1983,7 +2112,8 @@
       {
         "page": 1,
         "minipdf_img": "classic154_math_symbols_p1_minipdf.png",
-        "reference_img": "classic154_math_symbols_p1_reference.png"
+        "reference_img": "classic154_math_symbols_p1_reference.png",
+        "office_img": "classic154_math_symbols_p1_office.png"
       }
     ],
     "overall_score": 0.9573
@@ -2008,7 +2138,8 @@
       {
         "page": 1,
         "minipdf_img": "classic155_diacritical_marks_p1_minipdf.png",
-        "reference_img": "classic155_diacritical_marks_p1_reference.png"
+        "reference_img": "classic155_diacritical_marks_p1_reference.png",
+        "office_img": "classic155_diacritical_marks_p1_office.png"
       }
     ],
     "overall_score": 0.9975
@@ -2033,7 +2164,8 @@
       {
         "page": 1,
         "minipdf_img": "classic156_rtl_bidi_text_p1_minipdf.png",
-        "reference_img": "classic156_rtl_bidi_text_p1_reference.png"
+        "reference_img": "classic156_rtl_bidi_text_p1_reference.png",
+        "office_img": "classic156_rtl_bidi_text_p1_office.png"
       }
     ],
     "overall_score": 0.8401
@@ -2058,7 +2190,8 @@
       {
         "page": 1,
         "minipdf_img": "classic157_cjk_extended_p1_minipdf.png",
-        "reference_img": "classic157_cjk_extended_p1_reference.png"
+        "reference_img": "classic157_cjk_extended_p1_reference.png",
+        "office_img": "classic157_cjk_extended_p1_office.png"
       }
     ],
     "overall_score": 0.9135
@@ -2083,7 +2216,8 @@
       {
         "page": 1,
         "minipdf_img": "classic158_emoji_skin_tones_p1_minipdf.png",
-        "reference_img": "classic158_emoji_skin_tones_p1_reference.png"
+        "reference_img": "classic158_emoji_skin_tones_p1_reference.png",
+        "office_img": "classic158_emoji_skin_tones_p1_office.png"
       }
     ],
     "overall_score": 0.9928
@@ -2108,7 +2242,8 @@
       {
         "page": 1,
         "minipdf_img": "classic159_zwj_emoji_p1_minipdf.png",
-        "reference_img": "classic159_zwj_emoji_p1_reference.png"
+        "reference_img": "classic159_zwj_emoji_p1_reference.png",
+        "office_img": "classic159_zwj_emoji_p1_office.png"
       }
     ],
     "overall_score": 0.9066
@@ -2133,7 +2268,8 @@
       {
         "page": 1,
         "minipdf_img": "classic15_negative_numbers_p1_minipdf.png",
-        "reference_img": "classic15_negative_numbers_p1_reference.png"
+        "reference_img": "classic15_negative_numbers_p1_reference.png",
+        "office_img": "classic15_negative_numbers_p1_office.png"
       }
     ],
     "overall_score": 0.999
@@ -2158,7 +2294,8 @@
       {
         "page": 1,
         "minipdf_img": "classic160_punctuation_marks_p1_minipdf.png",
-        "reference_img": "classic160_punctuation_marks_p1_reference.png"
+        "reference_img": "classic160_punctuation_marks_p1_reference.png",
+        "office_img": "classic160_punctuation_marks_p1_office.png"
       }
     ],
     "overall_score": 0.9442
@@ -2183,7 +2320,8 @@
       {
         "page": 1,
         "minipdf_img": "classic161_box_drawing_p1_minipdf.png",
-        "reference_img": "classic161_box_drawing_p1_reference.png"
+        "reference_img": "classic161_box_drawing_p1_reference.png",
+        "office_img": "classic161_box_drawing_p1_office.png"
       }
     ],
     "overall_score": 0.9501
@@ -2208,7 +2346,8 @@
       {
         "page": 1,
         "minipdf_img": "classic162_cjk_emoji_styled_p1_minipdf.png",
-        "reference_img": "classic162_cjk_emoji_styled_p1_reference.png"
+        "reference_img": "classic162_cjk_emoji_styled_p1_reference.png",
+        "office_img": "classic162_cjk_emoji_styled_p1_office.png"
       }
     ],
     "overall_score": 0.8649
@@ -2233,7 +2372,8 @@
       {
         "page": 1,
         "minipdf_img": "classic163_cyrillic_alphabets_p1_minipdf.png",
-        "reference_img": "classic163_cyrillic_alphabets_p1_reference.png"
+        "reference_img": "classic163_cyrillic_alphabets_p1_reference.png",
+        "office_img": "classic163_cyrillic_alphabets_p1_office.png"
       }
     ],
     "overall_score": 0.9965
@@ -2258,7 +2398,8 @@
       {
         "page": 1,
         "minipdf_img": "classic164_indic_scripts_p1_minipdf.png",
-        "reference_img": "classic164_indic_scripts_p1_reference.png"
+        "reference_img": "classic164_indic_scripts_p1_reference.png",
+        "office_img": "classic164_indic_scripts_p1_office.png"
       }
     ],
     "overall_score": 0.8735
@@ -2283,7 +2424,8 @@
       {
         "page": 1,
         "minipdf_img": "classic165_southeast_asian_p1_minipdf.png",
-        "reference_img": "classic165_southeast_asian_p1_reference.png"
+        "reference_img": "classic165_southeast_asian_p1_reference.png",
+        "office_img": "classic165_southeast_asian_p1_office.png"
       }
     ],
     "overall_score": 0.96
@@ -2308,7 +2450,8 @@
       {
         "page": 1,
         "minipdf_img": "classic166_emoji_progress_p1_minipdf.png",
-        "reference_img": "classic166_emoji_progress_p1_reference.png"
+        "reference_img": "classic166_emoji_progress_p1_reference.png",
+        "office_img": "classic166_emoji_progress_p1_office.png"
       }
     ],
     "overall_score": 0.9866
@@ -2333,7 +2476,8 @@
       {
         "page": 1,
         "minipdf_img": "classic167_musical_symbols_p1_minipdf.png",
-        "reference_img": "classic167_musical_symbols_p1_reference.png"
+        "reference_img": "classic167_musical_symbols_p1_reference.png",
+        "office_img": "classic167_musical_symbols_p1_office.png"
       }
     ],
     "overall_score": 0.9004
@@ -2358,7 +2502,8 @@
       {
         "page": 1,
         "minipdf_img": "classic168_mixed_ltr_rtl_styled_p1_minipdf.png",
-        "reference_img": "classic168_mixed_ltr_rtl_styled_p1_reference.png"
+        "reference_img": "classic168_mixed_ltr_rtl_styled_p1_reference.png",
+        "office_img": "classic168_mixed_ltr_rtl_styled_p1_office.png"
       }
     ],
     "overall_score": 0.9439
@@ -2383,7 +2528,8 @@
       {
         "page": 1,
         "minipdf_img": "classic169_korean_invoice_p1_minipdf.png",
-        "reference_img": "classic169_korean_invoice_p1_reference.png"
+        "reference_img": "classic169_korean_invoice_p1_reference.png",
+        "office_img": "classic169_korean_invoice_p1_office.png"
       }
     ],
     "overall_score": 0.8843
@@ -2408,7 +2554,8 @@
       {
         "page": 1,
         "minipdf_img": "classic16_percentage_strings_p1_minipdf.png",
-        "reference_img": "classic16_percentage_strings_p1_reference.png"
+        "reference_img": "classic16_percentage_strings_p1_reference.png",
+        "office_img": "classic16_percentage_strings_p1_office.png"
       }
     ],
     "overall_score": 0.9966
@@ -2433,7 +2580,8 @@
       {
         "page": 1,
         "minipdf_img": "classic170_emoji_dashboard_p1_minipdf.png",
-        "reference_img": "classic170_emoji_dashboard_p1_reference.png"
+        "reference_img": "classic170_emoji_dashboard_p1_reference.png",
+        "office_img": "classic170_emoji_dashboard_p1_office.png"
       }
     ],
     "overall_score": 0.964
@@ -2458,7 +2606,8 @@
       {
         "page": 1,
         "minipdf_img": "classic171_ipa_phonetic_p1_minipdf.png",
-        "reference_img": "classic171_ipa_phonetic_p1_reference.png"
+        "reference_img": "classic171_ipa_phonetic_p1_reference.png",
+        "office_img": "classic171_ipa_phonetic_p1_office.png"
       }
     ],
     "overall_score": 0.9762
@@ -2483,7 +2632,8 @@
       {
         "page": 1,
         "minipdf_img": "classic172_emoji_timeline_p1_minipdf.png",
-        "reference_img": "classic172_emoji_timeline_p1_reference.png"
+        "reference_img": "classic172_emoji_timeline_p1_reference.png",
+        "office_img": "classic172_emoji_timeline_p1_office.png"
       }
     ],
     "overall_score": 0.9533
@@ -2508,7 +2658,8 @@
       {
         "page": 1,
         "minipdf_img": "classic173_african_languages_p1_minipdf.png",
-        "reference_img": "classic173_african_languages_p1_reference.png"
+        "reference_img": "classic173_african_languages_p1_reference.png",
+        "office_img": "classic173_african_languages_p1_office.png"
       }
     ],
     "overall_score": 0.9084
@@ -2533,7 +2684,8 @@
       {
         "page": 1,
         "minipdf_img": "classic174_technical_symbols_p1_minipdf.png",
-        "reference_img": "classic174_technical_symbols_p1_reference.png"
+        "reference_img": "classic174_technical_symbols_p1_reference.png",
+        "office_img": "classic174_technical_symbols_p1_office.png"
       }
     ],
     "overall_score": 0.9438
@@ -2558,7 +2710,8 @@
       {
         "page": 1,
         "minipdf_img": "classic175_multiscript_catalog_p1_minipdf.png",
-        "reference_img": "classic175_multiscript_catalog_p1_reference.png"
+        "reference_img": "classic175_multiscript_catalog_p1_reference.png",
+        "office_img": "classic175_multiscript_catalog_p1_office.png"
       }
     ],
     "overall_score": 0.9269
@@ -2583,7 +2736,8 @@
       {
         "page": 1,
         "minipdf_img": "classic176_combining_characters_p1_minipdf.png",
-        "reference_img": "classic176_combining_characters_p1_reference.png"
+        "reference_img": "classic176_combining_characters_p1_reference.png",
+        "office_img": "classic176_combining_characters_p1_office.png"
       }
     ],
     "overall_score": 0.9456
@@ -2608,7 +2762,8 @@
       {
         "page": 1,
         "minipdf_img": "classic177_emoji_calendar_p1_minipdf.png",
-        "reference_img": "classic177_emoji_calendar_p1_reference.png"
+        "reference_img": "classic177_emoji_calendar_p1_reference.png",
+        "office_img": "classic177_emoji_calendar_p1_office.png"
       }
     ],
     "overall_score": 0.884
@@ -2633,7 +2788,8 @@
       {
         "page": 1,
         "minipdf_img": "classic178_caucasus_ethiopic_p1_minipdf.png",
-        "reference_img": "classic178_caucasus_ethiopic_p1_reference.png"
+        "reference_img": "classic178_caucasus_ethiopic_p1_reference.png",
+        "office_img": "classic178_caucasus_ethiopic_p1_office.png"
       }
     ],
     "overall_score": 0.9683
@@ -2658,7 +2814,8 @@
       {
         "page": 1,
         "minipdf_img": "classic179_emoji_inventory_p1_minipdf.png",
-        "reference_img": "classic179_emoji_inventory_p1_reference.png"
+        "reference_img": "classic179_emoji_inventory_p1_reference.png",
+        "office_img": "classic179_emoji_inventory_p1_office.png"
       }
     ],
     "overall_score": 0.9099
@@ -2683,7 +2840,8 @@
       {
         "page": 1,
         "minipdf_img": "classic17_currency_strings_p1_minipdf.png",
-        "reference_img": "classic17_currency_strings_p1_reference.png"
+        "reference_img": "classic17_currency_strings_p1_reference.png",
+        "office_img": "classic17_currency_strings_p1_office.png"
       }
     ],
     "overall_score": 0.9985
@@ -2708,7 +2866,8 @@
       {
         "page": 1,
         "minipdf_img": "classic180_polyglot_paragraph_p1_minipdf.png",
-        "reference_img": "classic180_polyglot_paragraph_p1_reference.png"
+        "reference_img": "classic180_polyglot_paragraph_p1_reference.png",
+        "office_img": "classic180_polyglot_paragraph_p1_office.png"
       }
     ],
     "overall_score": 0.9356
@@ -2734,12 +2893,14 @@
       {
         "page": 1,
         "minipdf_img": "classic181_feedback_tracker_with_images_p1_minipdf.png",
-        "reference_img": "classic181_feedback_tracker_with_images_p1_reference.png"
+        "reference_img": "classic181_feedback_tracker_with_images_p1_reference.png",
+        "office_img": "classic181_feedback_tracker_with_images_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic181_feedback_tracker_with_images_p2_minipdf.png",
-        "reference_img": "classic181_feedback_tracker_with_images_p2_reference.png"
+        "reference_img": "classic181_feedback_tracker_with_images_p2_reference.png",
+        "office_img": "classic181_feedback_tracker_with_images_p2_office.png"
       }
     ],
     "overall_score": 0.994
@@ -2765,12 +2926,14 @@
       {
         "page": 1,
         "minipdf_img": "classic182_dense_long_text_columns_p1_minipdf.png",
-        "reference_img": "classic182_dense_long_text_columns_p1_reference.png"
+        "reference_img": "classic182_dense_long_text_columns_p1_reference.png",
+        "office_img": "classic182_dense_long_text_columns_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic182_dense_long_text_columns_p2_minipdf.png",
-        "reference_img": "classic182_dense_long_text_columns_p2_reference.png"
+        "reference_img": "classic182_dense_long_text_columns_p2_reference.png",
+        "office_img": "classic182_dense_long_text_columns_p2_office.png"
       }
     ],
     "overall_score": 0.9651
@@ -2795,7 +2958,8 @@
       {
         "page": 1,
         "minipdf_img": "classic183_mixed_content_grid_p1_minipdf.png",
-        "reference_img": "classic183_mixed_content_grid_p1_reference.png"
+        "reference_img": "classic183_mixed_content_grid_p1_reference.png",
+        "office_img": "classic183_mixed_content_grid_p1_office.png"
       }
     ],
     "overall_score": 0.9958
@@ -2820,7 +2984,8 @@
       {
         "page": 1,
         "minipdf_img": "classic184_wide_narrow_columns_p1_minipdf.png",
-        "reference_img": "classic184_wide_narrow_columns_p1_reference.png"
+        "reference_img": "classic184_wide_narrow_columns_p1_reference.png",
+        "office_img": "classic184_wide_narrow_columns_p1_office.png"
       }
     ],
     "overall_score": 0.9844
@@ -2845,7 +3010,8 @@
       {
         "page": 1,
         "minipdf_img": "classic185_tall_rows_vertical_align_p1_minipdf.png",
-        "reference_img": "classic185_tall_rows_vertical_align_p1_reference.png"
+        "reference_img": "classic185_tall_rows_vertical_align_p1_reference.png",
+        "office_img": "classic185_tall_rows_vertical_align_p1_office.png"
       }
     ],
     "overall_score": 0.9967
@@ -2871,12 +3037,14 @@
       {
         "page": 1,
         "minipdf_img": "classic186_multi_sheet_image_report_p1_minipdf.png",
-        "reference_img": "classic186_multi_sheet_image_report_p1_reference.png"
+        "reference_img": "classic186_multi_sheet_image_report_p1_reference.png",
+        "office_img": "classic186_multi_sheet_image_report_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic186_multi_sheet_image_report_p2_minipdf.png",
-        "reference_img": "classic186_multi_sheet_image_report_p2_reference.png"
+        "reference_img": "classic186_multi_sheet_image_report_p2_reference.png",
+        "office_img": "classic186_multi_sheet_image_report_p2_office.png"
       }
     ],
     "overall_score": 0.9964
@@ -2901,7 +3069,8 @@
       {
         "page": 1,
         "minipdf_img": "classic187_bug_report_with_screenshots_p1_minipdf.png",
-        "reference_img": "classic187_bug_report_with_screenshots_p1_reference.png"
+        "reference_img": "classic187_bug_report_with_screenshots_p1_reference.png",
+        "office_img": "classic187_bug_report_with_screenshots_p1_office.png"
       }
     ],
     "overall_score": 0.9847
@@ -2926,7 +3095,8 @@
       {
         "page": 1,
         "minipdf_img": "classic188_merged_header_with_images_p1_minipdf.png",
-        "reference_img": "classic188_merged_header_with_images_p1_reference.png"
+        "reference_img": "classic188_merged_header_with_images_p1_reference.png",
+        "office_img": "classic188_merged_header_with_images_p1_office.png"
       }
     ],
     "overall_score": 0.9956
@@ -2951,7 +3121,8 @@
       {
         "page": 1,
         "minipdf_img": "classic189_alternating_image_text_rows_p1_minipdf.png",
-        "reference_img": "classic189_alternating_image_text_rows_p1_reference.png"
+        "reference_img": "classic189_alternating_image_text_rows_p1_reference.png",
+        "office_img": "classic189_alternating_image_text_rows_p1_office.png"
       }
     ],
     "overall_score": 0.9534
@@ -2999,122 +3170,254 @@
       {
         "page": 1,
         "minipdf_img": "classic18_large_dataset_p1_minipdf.png",
-        "reference_img": "classic18_large_dataset_p1_reference.png"
+        "reference_img": "classic18_large_dataset_p1_reference.png",
+        "office_img": "classic18_large_dataset_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic18_large_dataset_p2_minipdf.png",
-        "reference_img": "classic18_large_dataset_p2_reference.png"
+        "reference_img": "classic18_large_dataset_p2_reference.png",
+        "office_img": "classic18_large_dataset_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic18_large_dataset_p3_minipdf.png",
-        "reference_img": "classic18_large_dataset_p3_reference.png"
+        "reference_img": "classic18_large_dataset_p3_reference.png",
+        "office_img": "classic18_large_dataset_p3_office.png"
       },
       {
         "page": 4,
         "minipdf_img": "classic18_large_dataset_p4_minipdf.png",
-        "reference_img": "classic18_large_dataset_p4_reference.png"
+        "reference_img": "classic18_large_dataset_p4_reference.png",
+        "office_img": "classic18_large_dataset_p4_office.png"
       },
       {
         "page": 5,
         "minipdf_img": "classic18_large_dataset_p5_minipdf.png",
-        "reference_img": "classic18_large_dataset_p5_reference.png"
+        "reference_img": "classic18_large_dataset_p5_reference.png",
+        "office_img": "classic18_large_dataset_p5_office.png"
       },
       {
         "page": 6,
         "minipdf_img": "classic18_large_dataset_p6_minipdf.png",
-        "reference_img": "classic18_large_dataset_p6_reference.png"
+        "reference_img": "classic18_large_dataset_p6_reference.png",
+        "office_img": "classic18_large_dataset_p6_office.png"
       },
       {
         "page": 7,
         "minipdf_img": "classic18_large_dataset_p7_minipdf.png",
-        "reference_img": "classic18_large_dataset_p7_reference.png"
+        "reference_img": "classic18_large_dataset_p7_reference.png",
+        "office_img": "classic18_large_dataset_p7_office.png"
       },
       {
         "page": 8,
         "minipdf_img": "classic18_large_dataset_p8_minipdf.png",
-        "reference_img": "classic18_large_dataset_p8_reference.png"
+        "reference_img": "classic18_large_dataset_p8_reference.png",
+        "office_img": "classic18_large_dataset_p8_office.png"
       },
       {
         "page": 9,
         "minipdf_img": "classic18_large_dataset_p9_minipdf.png",
-        "reference_img": "classic18_large_dataset_p9_reference.png"
+        "reference_img": "classic18_large_dataset_p9_reference.png",
+        "office_img": "classic18_large_dataset_p9_office.png"
       },
       {
         "page": 10,
         "minipdf_img": "classic18_large_dataset_p10_minipdf.png",
-        "reference_img": "classic18_large_dataset_p10_reference.png"
+        "reference_img": "classic18_large_dataset_p10_reference.png",
+        "office_img": "classic18_large_dataset_p10_office.png"
       },
       {
         "page": 11,
         "minipdf_img": "classic18_large_dataset_p11_minipdf.png",
-        "reference_img": "classic18_large_dataset_p11_reference.png"
+        "reference_img": "classic18_large_dataset_p11_reference.png",
+        "office_img": "classic18_large_dataset_p11_office.png"
       },
       {
         "page": 12,
         "minipdf_img": "classic18_large_dataset_p12_minipdf.png",
-        "reference_img": "classic18_large_dataset_p12_reference.png"
+        "reference_img": "classic18_large_dataset_p12_reference.png",
+        "office_img": "classic18_large_dataset_p12_office.png"
       },
       {
         "page": 13,
         "minipdf_img": "classic18_large_dataset_p13_minipdf.png",
-        "reference_img": "classic18_large_dataset_p13_reference.png"
+        "reference_img": "classic18_large_dataset_p13_reference.png",
+        "office_img": "classic18_large_dataset_p13_office.png"
       },
       {
         "page": 14,
         "minipdf_img": "classic18_large_dataset_p14_minipdf.png",
-        "reference_img": "classic18_large_dataset_p14_reference.png"
+        "reference_img": "classic18_large_dataset_p14_reference.png",
+        "office_img": "classic18_large_dataset_p14_office.png"
       },
       {
         "page": 15,
         "minipdf_img": "classic18_large_dataset_p15_minipdf.png",
-        "reference_img": "classic18_large_dataset_p15_reference.png"
+        "reference_img": "classic18_large_dataset_p15_reference.png",
+        "office_img": "classic18_large_dataset_p15_office.png"
       },
       {
         "page": 16,
         "minipdf_img": "classic18_large_dataset_p16_minipdf.png",
-        "reference_img": "classic18_large_dataset_p16_reference.png"
+        "reference_img": "classic18_large_dataset_p16_reference.png",
+        "office_img": "classic18_large_dataset_p16_office.png"
       },
       {
         "page": 17,
         "minipdf_img": "classic18_large_dataset_p17_minipdf.png",
-        "reference_img": "classic18_large_dataset_p17_reference.png"
+        "reference_img": "classic18_large_dataset_p17_reference.png",
+        "office_img": "classic18_large_dataset_p17_office.png"
       },
       {
         "page": 18,
         "minipdf_img": "classic18_large_dataset_p18_minipdf.png",
-        "reference_img": "classic18_large_dataset_p18_reference.png"
+        "reference_img": "classic18_large_dataset_p18_reference.png",
+        "office_img": "classic18_large_dataset_p18_office.png"
       },
       {
         "page": 19,
         "minipdf_img": "classic18_large_dataset_p19_minipdf.png",
-        "reference_img": "classic18_large_dataset_p19_reference.png"
+        "reference_img": "classic18_large_dataset_p19_reference.png",
+        "office_img": "classic18_large_dataset_p19_office.png"
       },
       {
         "page": 20,
         "minipdf_img": "classic18_large_dataset_p20_minipdf.png",
-        "reference_img": "classic18_large_dataset_p20_reference.png"
+        "reference_img": "classic18_large_dataset_p20_reference.png",
+        "office_img": "classic18_large_dataset_p20_office.png"
       },
       {
         "page": 21,
         "minipdf_img": "classic18_large_dataset_p21_minipdf.png",
-        "reference_img": "classic18_large_dataset_p21_reference.png"
+        "reference_img": "classic18_large_dataset_p21_reference.png",
+        "office_img": "classic18_large_dataset_p21_office.png"
       },
       {
         "page": 22,
         "minipdf_img": "classic18_large_dataset_p22_minipdf.png",
-        "reference_img": "classic18_large_dataset_p22_reference.png"
+        "reference_img": "classic18_large_dataset_p22_reference.png",
+        "office_img": "classic18_large_dataset_p22_office.png"
       },
       {
         "page": 23,
         "minipdf_img": "classic18_large_dataset_p23_minipdf.png",
-        "reference_img": "classic18_large_dataset_p23_reference.png"
+        "reference_img": "classic18_large_dataset_p23_reference.png",
+        "office_img": "classic18_large_dataset_p23_office.png"
       },
       {
         "page": 24,
         "minipdf_img": "classic18_large_dataset_p24_minipdf.png",
-        "reference_img": "classic18_large_dataset_p24_reference.png"
+        "reference_img": "classic18_large_dataset_p24_reference.png",
+        "office_img": "classic18_large_dataset_p24_office.png"
+      },
+      {
+        "page": 25,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p25_office.png"
+      },
+      {
+        "page": 26,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p26_office.png"
+      },
+      {
+        "page": 27,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p27_office.png"
+      },
+      {
+        "page": 28,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p28_office.png"
+      },
+      {
+        "page": 29,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p29_office.png"
+      },
+      {
+        "page": 30,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p30_office.png"
+      },
+      {
+        "page": 31,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p31_office.png"
+      },
+      {
+        "page": 32,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p32_office.png"
+      },
+      {
+        "page": 33,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p33_office.png"
+      },
+      {
+        "page": 34,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p34_office.png"
+      },
+      {
+        "page": 35,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p35_office.png"
+      },
+      {
+        "page": 36,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p36_office.png"
+      },
+      {
+        "page": 37,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p37_office.png"
+      },
+      {
+        "page": 38,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p38_office.png"
+      },
+      {
+        "page": 39,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p39_office.png"
+      },
+      {
+        "page": 40,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p40_office.png"
+      },
+      {
+        "page": 41,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p41_office.png"
+      },
+      {
+        "page": 42,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic18_large_dataset_p42_office.png"
       }
     ],
     "overall_score": 0.9574
@@ -3139,7 +3442,8 @@
       {
         "page": 1,
         "minipdf_img": "classic190_dashboard_kpi_images_p1_minipdf.png",
-        "reference_img": "classic190_dashboard_kpi_images_p1_reference.png"
+        "reference_img": "classic190_dashboard_kpi_images_p1_reference.png",
+        "office_img": "classic190_dashboard_kpi_images_p1_office.png"
       }
     ],
     "overall_score": 0.9956
@@ -3172,47 +3476,56 @@
       {
         "page": 1,
         "minipdf_img": "classic191_payroll_calculator_p1_minipdf.png",
-        "reference_img": "classic191_payroll_calculator_p1_reference.png"
+        "reference_img": "classic191_payroll_calculator_p1_reference.png",
+        "office_img": "classic191_payroll_calculator_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic191_payroll_calculator_p2_minipdf.png",
-        "reference_img": "classic191_payroll_calculator_p2_reference.png"
+        "reference_img": "classic191_payroll_calculator_p2_reference.png",
+        "office_img": "classic191_payroll_calculator_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic191_payroll_calculator_p3_minipdf.png",
-        "reference_img": "classic191_payroll_calculator_p3_reference.png"
+        "reference_img": "classic191_payroll_calculator_p3_reference.png",
+        "office_img": "classic191_payroll_calculator_p3_office.png"
       },
       {
         "page": 4,
         "minipdf_img": "classic191_payroll_calculator_p4_minipdf.png",
-        "reference_img": "classic191_payroll_calculator_p4_reference.png"
+        "reference_img": "classic191_payroll_calculator_p4_reference.png",
+        "office_img": "classic191_payroll_calculator_p4_office.png"
       },
       {
         "page": 5,
         "minipdf_img": "classic191_payroll_calculator_p5_minipdf.png",
-        "reference_img": "classic191_payroll_calculator_p5_reference.png"
+        "reference_img": "classic191_payroll_calculator_p5_reference.png",
+        "office_img": "classic191_payroll_calculator_p5_office.png"
       },
       {
         "page": 6,
         "minipdf_img": "classic191_payroll_calculator_p6_minipdf.png",
-        "reference_img": "classic191_payroll_calculator_p6_reference.png"
+        "reference_img": "classic191_payroll_calculator_p6_reference.png",
+        "office_img": "classic191_payroll_calculator_p6_office.png"
       },
       {
         "page": 7,
         "minipdf_img": "classic191_payroll_calculator_p7_minipdf.png",
-        "reference_img": "classic191_payroll_calculator_p7_reference.png"
+        "reference_img": "classic191_payroll_calculator_p7_reference.png",
+        "office_img": "classic191_payroll_calculator_p7_office.png"
       },
       {
         "page": 8,
         "minipdf_img": "classic191_payroll_calculator_p8_minipdf.png",
-        "reference_img": "classic191_payroll_calculator_p8_reference.png"
+        "reference_img": "classic191_payroll_calculator_p8_reference.png",
+        "office_img": "classic191_payroll_calculator_p8_office.png"
       },
       {
         "page": 9,
         "minipdf_img": "classic191_payroll_calculator_p9_minipdf.png",
-        "reference_img": "classic191_payroll_calculator_p9_reference.png"
+        "reference_img": "classic191_payroll_calculator_p9_reference.png",
+        "office_img": "classic191_payroll_calculator_p9_office.png"
       }
     ],
     "overall_score": 0.9194
@@ -3237,7 +3550,8 @@
       {
         "page": 1,
         "minipdf_img": "classic19_single_column_list_p1_minipdf.png",
-        "reference_img": "classic19_single_column_list_p1_reference.png"
+        "reference_img": "classic19_single_column_list_p1_reference.png",
+        "office_img": "classic19_single_column_list_p1_office.png"
       }
     ],
     "overall_score": 0.9987
@@ -3287,7 +3601,8 @@
       {
         "page": 1,
         "minipdf_img": "classic21_header_only_p1_minipdf.png",
-        "reference_img": "classic21_header_only_p1_reference.png"
+        "reference_img": "classic21_header_only_p1_reference.png",
+        "office_img": "classic21_header_only_p1_office.png"
       }
     ],
     "overall_score": 0.9994
@@ -3312,7 +3627,8 @@
       {
         "page": 1,
         "minipdf_img": "classic22_long_sheet_name_p1_minipdf.png",
-        "reference_img": "classic22_long_sheet_name_p1_reference.png"
+        "reference_img": "classic22_long_sheet_name_p1_reference.png",
+        "office_img": "classic22_long_sheet_name_p1_office.png"
       }
     ],
     "overall_score": 0.9994
@@ -3337,7 +3653,8 @@
       {
         "page": 1,
         "minipdf_img": "classic23_unicode_text_p1_minipdf.png",
-        "reference_img": "classic23_unicode_text_p1_reference.png"
+        "reference_img": "classic23_unicode_text_p1_reference.png",
+        "office_img": "classic23_unicode_text_p1_office.png"
       }
     ],
     "overall_score": 0.9134
@@ -3362,7 +3679,8 @@
       {
         "page": 1,
         "minipdf_img": "classic24_red_text_p1_minipdf.png",
-        "reference_img": "classic24_red_text_p1_reference.png"
+        "reference_img": "classic24_red_text_p1_reference.png",
+        "office_img": "classic24_red_text_p1_office.png"
       }
     ],
     "overall_score": 0.9985
@@ -3387,7 +3705,8 @@
       {
         "page": 1,
         "minipdf_img": "classic25_multiple_colors_p1_minipdf.png",
-        "reference_img": "classic25_multiple_colors_p1_reference.png"
+        "reference_img": "classic25_multiple_colors_p1_reference.png",
+        "office_img": "classic25_multiple_colors_p1_office.png"
       }
     ],
     "overall_score": 0.9976
@@ -3412,7 +3731,8 @@
       {
         "page": 1,
         "minipdf_img": "classic26_inline_strings_p1_minipdf.png",
-        "reference_img": "classic26_inline_strings_p1_reference.png"
+        "reference_img": "classic26_inline_strings_p1_reference.png",
+        "office_img": "classic26_inline_strings_p1_office.png"
       }
     ],
     "overall_score": 0.999
@@ -3437,7 +3757,8 @@
       {
         "page": 1,
         "minipdf_img": "classic27_single_row_p1_minipdf.png",
-        "reference_img": "classic27_single_row_p1_reference.png"
+        "reference_img": "classic27_single_row_p1_reference.png",
+        "office_img": "classic27_single_row_p1_office.png"
       }
     ],
     "overall_score": 0.9994
@@ -3462,7 +3783,8 @@
       {
         "page": 1,
         "minipdf_img": "classic28_duplicate_values_p1_minipdf.png",
-        "reference_img": "classic28_duplicate_values_p1_reference.png"
+        "reference_img": "classic28_duplicate_values_p1_reference.png",
+        "office_img": "classic28_duplicate_values_p1_office.png"
       }
     ],
     "overall_score": 0.9986
@@ -3487,7 +3809,8 @@
       {
         "page": 1,
         "minipdf_img": "classic29_formula_results_p1_minipdf.png",
-        "reference_img": "classic29_formula_results_p1_reference.png"
+        "reference_img": "classic29_formula_results_p1_reference.png",
+        "office_img": "classic29_formula_results_p1_office.png"
       }
     ],
     "overall_score": 0.9988
@@ -3513,12 +3836,14 @@
       {
         "page": 1,
         "minipdf_img": "classic30_mixed_empty_and_filled_sheets_p1_minipdf.png",
-        "reference_img": "classic30_mixed_empty_and_filled_sheets_p1_reference.png"
+        "reference_img": "classic30_mixed_empty_and_filled_sheets_p1_reference.png",
+        "office_img": "classic30_mixed_empty_and_filled_sheets_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic30_mixed_empty_and_filled_sheets_p2_minipdf.png",
-        "reference_img": "classic30_mixed_empty_and_filled_sheets_p2_reference.png"
+        "reference_img": "classic30_mixed_empty_and_filled_sheets_p2_reference.png",
+        "office_img": "classic30_mixed_empty_and_filled_sheets_p2_office.png"
       }
     ],
     "overall_score": 0.9995
@@ -3543,7 +3868,8 @@
       {
         "page": 1,
         "minipdf_img": "classic31_bold_header_row_p1_minipdf.png",
-        "reference_img": "classic31_bold_header_row_p1_reference.png"
+        "reference_img": "classic31_bold_header_row_p1_reference.png",
+        "office_img": "classic31_bold_header_row_p1_office.png"
       }
     ],
     "overall_score": 0.9986
@@ -3568,7 +3894,8 @@
       {
         "page": 1,
         "minipdf_img": "classic32_right_aligned_numbers_p1_minipdf.png",
-        "reference_img": "classic32_right_aligned_numbers_p1_reference.png"
+        "reference_img": "classic32_right_aligned_numbers_p1_reference.png",
+        "office_img": "classic32_right_aligned_numbers_p1_office.png"
       }
     ],
     "overall_score": 0.999
@@ -3593,7 +3920,8 @@
       {
         "page": 1,
         "minipdf_img": "classic33_centered_text_p1_minipdf.png",
-        "reference_img": "classic33_centered_text_p1_reference.png"
+        "reference_img": "classic33_centered_text_p1_reference.png",
+        "office_img": "classic33_centered_text_p1_office.png"
       }
     ],
     "overall_score": 0.9993
@@ -3618,7 +3946,8 @@
       {
         "page": 1,
         "minipdf_img": "classic34_explicit_column_widths_p1_minipdf.png",
-        "reference_img": "classic34_explicit_column_widths_p1_reference.png"
+        "reference_img": "classic34_explicit_column_widths_p1_reference.png",
+        "office_img": "classic34_explicit_column_widths_p1_office.png"
       }
     ],
     "overall_score": 0.9985
@@ -3643,7 +3972,8 @@
       {
         "page": 1,
         "minipdf_img": "classic35_explicit_row_heights_p1_minipdf.png",
-        "reference_img": "classic35_explicit_row_heights_p1_reference.png"
+        "reference_img": "classic35_explicit_row_heights_p1_reference.png",
+        "office_img": "classic35_explicit_row_heights_p1_office.png"
       }
     ],
     "overall_score": 0.9949
@@ -3668,7 +3998,8 @@
       {
         "page": 1,
         "minipdf_img": "classic36_merged_cells_p1_minipdf.png",
-        "reference_img": "classic36_merged_cells_p1_reference.png"
+        "reference_img": "classic36_merged_cells_p1_reference.png",
+        "office_img": "classic36_merged_cells_p1_office.png"
       }
     ],
     "overall_score": 0.9938
@@ -3693,7 +4024,8 @@
       {
         "page": 1,
         "minipdf_img": "classic37_freeze_panes_p1_minipdf.png",
-        "reference_img": "classic37_freeze_panes_p1_reference.png"
+        "reference_img": "classic37_freeze_panes_p1_reference.png",
+        "office_img": "classic37_freeze_panes_p1_office.png"
       }
     ],
     "overall_score": 0.996
@@ -3718,7 +4050,8 @@
       {
         "page": 1,
         "minipdf_img": "classic38_hyperlink_cell_p1_minipdf.png",
-        "reference_img": "classic38_hyperlink_cell_p1_reference.png"
+        "reference_img": "classic38_hyperlink_cell_p1_reference.png",
+        "office_img": "classic38_hyperlink_cell_p1_office.png"
       }
     ],
     "overall_score": 0.9988
@@ -3743,7 +4076,8 @@
       {
         "page": 1,
         "minipdf_img": "classic39_financial_table_p1_minipdf.png",
-        "reference_img": "classic39_financial_table_p1_reference.png"
+        "reference_img": "classic39_financial_table_p1_reference.png",
+        "office_img": "classic39_financial_table_p1_office.png"
       }
     ],
     "overall_score": 0.9976
@@ -3768,7 +4102,8 @@
       {
         "page": 1,
         "minipdf_img": "classic40_scientific_notation_p1_minipdf.png",
-        "reference_img": "classic40_scientific_notation_p1_reference.png"
+        "reference_img": "classic40_scientific_notation_p1_reference.png",
+        "office_img": "classic40_scientific_notation_p1_office.png"
       }
     ],
     "overall_score": 0.9908
@@ -3793,7 +4128,8 @@
       {
         "page": 1,
         "minipdf_img": "classic41_integer_vs_float_p1_minipdf.png",
-        "reference_img": "classic41_integer_vs_float_p1_reference.png"
+        "reference_img": "classic41_integer_vs_float_p1_reference.png",
+        "office_img": "classic41_integer_vs_float_p1_office.png"
       }
     ],
     "overall_score": 0.9988
@@ -3818,7 +4154,8 @@
       {
         "page": 1,
         "minipdf_img": "classic42_boolean_values_p1_minipdf.png",
-        "reference_img": "classic42_boolean_values_p1_reference.png"
+        "reference_img": "classic42_boolean_values_p1_reference.png",
+        "office_img": "classic42_boolean_values_p1_office.png"
       }
     ],
     "overall_score": 0.9964
@@ -3843,7 +4180,8 @@
       {
         "page": 1,
         "minipdf_img": "classic43_inventory_report_p1_minipdf.png",
-        "reference_img": "classic43_inventory_report_p1_reference.png"
+        "reference_img": "classic43_inventory_report_p1_reference.png",
+        "office_img": "classic43_inventory_report_p1_office.png"
       }
     ],
     "overall_score": 0.9948
@@ -3868,7 +4206,8 @@
       {
         "page": 1,
         "minipdf_img": "classic44_employee_roster_p1_minipdf.png",
-        "reference_img": "classic44_employee_roster_p1_reference.png"
+        "reference_img": "classic44_employee_roster_p1_reference.png",
+        "office_img": "classic44_employee_roster_p1_office.png"
       }
     ],
     "overall_score": 0.9803
@@ -3896,22 +4235,26 @@
       {
         "page": 1,
         "minipdf_img": "classic45_sales_by_region_p1_minipdf.png",
-        "reference_img": "classic45_sales_by_region_p1_reference.png"
+        "reference_img": "classic45_sales_by_region_p1_reference.png",
+        "office_img": "classic45_sales_by_region_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic45_sales_by_region_p2_minipdf.png",
-        "reference_img": "classic45_sales_by_region_p2_reference.png"
+        "reference_img": "classic45_sales_by_region_p2_reference.png",
+        "office_img": "classic45_sales_by_region_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic45_sales_by_region_p3_minipdf.png",
-        "reference_img": "classic45_sales_by_region_p3_reference.png"
+        "reference_img": "classic45_sales_by_region_p3_reference.png",
+        "office_img": "classic45_sales_by_region_p3_office.png"
       },
       {
         "page": 4,
         "minipdf_img": "classic45_sales_by_region_p4_minipdf.png",
-        "reference_img": "classic45_sales_by_region_p4_reference.png"
+        "reference_img": "classic45_sales_by_region_p4_reference.png",
+        "office_img": "classic45_sales_by_region_p4_office.png"
       }
     ],
     "overall_score": 0.999
@@ -3936,7 +4279,8 @@
       {
         "page": 1,
         "minipdf_img": "classic46_grade_book_p1_minipdf.png",
-        "reference_img": "classic46_grade_book_p1_reference.png"
+        "reference_img": "classic46_grade_book_p1_reference.png",
+        "office_img": "classic46_grade_book_p1_office.png"
       }
     ],
     "overall_score": 0.9963
@@ -3961,7 +4305,8 @@
       {
         "page": 1,
         "minipdf_img": "classic47_time_series_p1_minipdf.png",
-        "reference_img": "classic47_time_series_p1_reference.png"
+        "reference_img": "classic47_time_series_p1_reference.png",
+        "office_img": "classic47_time_series_p1_office.png"
       }
     ],
     "overall_score": 0.9928
@@ -3986,7 +4331,8 @@
       {
         "page": 1,
         "minipdf_img": "classic48_survey_results_p1_minipdf.png",
-        "reference_img": "classic48_survey_results_p1_reference.png"
+        "reference_img": "classic48_survey_results_p1_reference.png",
+        "office_img": "classic48_survey_results_p1_office.png"
       }
     ],
     "overall_score": 0.9966
@@ -4011,7 +4357,8 @@
       {
         "page": 1,
         "minipdf_img": "classic49_contact_list_p1_minipdf.png",
-        "reference_img": "classic49_contact_list_p1_reference.png"
+        "reference_img": "classic49_contact_list_p1_reference.png",
+        "office_img": "classic49_contact_list_p1_office.png"
       }
     ],
     "overall_score": 0.9872
@@ -4038,17 +4385,20 @@
       {
         "page": 1,
         "minipdf_img": "classic50_budget_vs_actuals_p1_minipdf.png",
-        "reference_img": "classic50_budget_vs_actuals_p1_reference.png"
+        "reference_img": "classic50_budget_vs_actuals_p1_reference.png",
+        "office_img": "classic50_budget_vs_actuals_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic50_budget_vs_actuals_p2_minipdf.png",
-        "reference_img": "classic50_budget_vs_actuals_p2_reference.png"
+        "reference_img": "classic50_budget_vs_actuals_p2_reference.png",
+        "office_img": "classic50_budget_vs_actuals_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic50_budget_vs_actuals_p3_minipdf.png",
-        "reference_img": "classic50_budget_vs_actuals_p3_reference.png"
+        "reference_img": "classic50_budget_vs_actuals_p3_reference.png",
+        "office_img": "classic50_budget_vs_actuals_p3_office.png"
       }
     ],
     "overall_score": 0.9955
@@ -4073,7 +4423,8 @@
       {
         "page": 1,
         "minipdf_img": "classic51_product_catalog_p1_minipdf.png",
-        "reference_img": "classic51_product_catalog_p1_reference.png"
+        "reference_img": "classic51_product_catalog_p1_reference.png",
+        "office_img": "classic51_product_catalog_p1_office.png"
       }
     ],
     "overall_score": 0.9776
@@ -4098,7 +4449,8 @@
       {
         "page": 1,
         "minipdf_img": "classic52_pivot_summary_p1_minipdf.png",
-        "reference_img": "classic52_pivot_summary_p1_reference.png"
+        "reference_img": "classic52_pivot_summary_p1_reference.png",
+        "office_img": "classic52_pivot_summary_p1_office.png"
       }
     ],
     "overall_score": 0.9958
@@ -4123,7 +4475,8 @@
       {
         "page": 1,
         "minipdf_img": "classic53_invoice_p1_minipdf.png",
-        "reference_img": "classic53_invoice_p1_reference.png"
+        "reference_img": "classic53_invoice_p1_reference.png",
+        "office_img": "classic53_invoice_p1_office.png"
       }
     ],
     "overall_score": 0.9952
@@ -4148,7 +4501,8 @@
       {
         "page": 1,
         "minipdf_img": "classic54_multi_level_header_p1_minipdf.png",
-        "reference_img": "classic54_multi_level_header_p1_reference.png"
+        "reference_img": "classic54_multi_level_header_p1_reference.png",
+        "office_img": "classic54_multi_level_header_p1_office.png"
       }
     ],
     "overall_score": 0.9976
@@ -4173,7 +4527,8 @@
       {
         "page": 1,
         "minipdf_img": "classic55_error_values_p1_minipdf.png",
-        "reference_img": "classic55_error_values_p1_reference.png"
+        "reference_img": "classic55_error_values_p1_reference.png",
+        "office_img": "classic55_error_values_p1_office.png"
       }
     ],
     "overall_score": 0.9978
@@ -4198,7 +4553,8 @@
       {
         "page": 1,
         "minipdf_img": "classic56_alternating_row_colors_p1_minipdf.png",
-        "reference_img": "classic56_alternating_row_colors_p1_reference.png"
+        "reference_img": "classic56_alternating_row_colors_p1_reference.png",
+        "office_img": "classic56_alternating_row_colors_p1_office.png"
       }
     ],
     "overall_score": 0.9961
@@ -4223,7 +4579,8 @@
       {
         "page": 1,
         "minipdf_img": "classic57_cjk_only_p1_minipdf.png",
-        "reference_img": "classic57_cjk_only_p1_reference.png"
+        "reference_img": "classic57_cjk_only_p1_reference.png",
+        "office_img": "classic57_cjk_only_p1_office.png"
       }
     ],
     "overall_score": 0.9112
@@ -4248,7 +4605,8 @@
       {
         "page": 1,
         "minipdf_img": "classic58_mixed_numeric_formats_p1_minipdf.png",
-        "reference_img": "classic58_mixed_numeric_formats_p1_reference.png"
+        "reference_img": "classic58_mixed_numeric_formats_p1_reference.png",
+        "office_img": "classic58_mixed_numeric_formats_p1_office.png"
       }
     ],
     "overall_score": 0.9945
@@ -4276,22 +4634,26 @@
       {
         "page": 1,
         "minipdf_img": "classic59_multi_sheet_summary_p1_minipdf.png",
-        "reference_img": "classic59_multi_sheet_summary_p1_reference.png"
+        "reference_img": "classic59_multi_sheet_summary_p1_reference.png",
+        "office_img": "classic59_multi_sheet_summary_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic59_multi_sheet_summary_p2_minipdf.png",
-        "reference_img": "classic59_multi_sheet_summary_p2_reference.png"
+        "reference_img": "classic59_multi_sheet_summary_p2_reference.png",
+        "office_img": "classic59_multi_sheet_summary_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic59_multi_sheet_summary_p3_minipdf.png",
-        "reference_img": "classic59_multi_sheet_summary_p3_reference.png"
+        "reference_img": "classic59_multi_sheet_summary_p3_reference.png",
+        "office_img": "classic59_multi_sheet_summary_p3_office.png"
       },
       {
         "page": 4,
         "minipdf_img": "classic59_multi_sheet_summary_p4_minipdf.png",
-        "reference_img": "classic59_multi_sheet_summary_p4_reference.png"
+        "reference_img": "classic59_multi_sheet_summary_p4_reference.png",
+        "office_img": "classic59_multi_sheet_summary_p4_office.png"
       }
     ],
     "overall_score": 0.9985
@@ -4319,22 +4681,38 @@
       {
         "page": 1,
         "minipdf_img": "classic60_large_wide_table_p1_minipdf.png",
-        "reference_img": "classic60_large_wide_table_p1_reference.png"
+        "reference_img": "classic60_large_wide_table_p1_reference.png",
+        "office_img": "classic60_large_wide_table_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic60_large_wide_table_p2_minipdf.png",
-        "reference_img": "classic60_large_wide_table_p2_reference.png"
+        "reference_img": "classic60_large_wide_table_p2_reference.png",
+        "office_img": "classic60_large_wide_table_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic60_large_wide_table_p3_minipdf.png",
-        "reference_img": "classic60_large_wide_table_p3_reference.png"
+        "reference_img": "classic60_large_wide_table_p3_reference.png",
+        "office_img": "classic60_large_wide_table_p3_office.png"
       },
       {
         "page": 4,
         "minipdf_img": "classic60_large_wide_table_p4_minipdf.png",
-        "reference_img": "classic60_large_wide_table_p4_reference.png"
+        "reference_img": "classic60_large_wide_table_p4_reference.png",
+        "office_img": "classic60_large_wide_table_p4_office.png"
+      },
+      {
+        "page": 5,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic60_large_wide_table_p5_office.png"
+      },
+      {
+        "page": 6,
+        "minipdf_img": null,
+        "reference_img": null,
+        "office_img": "classic60_large_wide_table_p6_office.png"
       }
     ],
     "overall_score": 0.9748
@@ -4359,7 +4737,8 @@
       {
         "page": 1,
         "minipdf_img": "classic61_product_card_with_image_p1_minipdf.png",
-        "reference_img": "classic61_product_card_with_image_p1_reference.png"
+        "reference_img": "classic61_product_card_with_image_p1_reference.png",
+        "office_img": "classic61_product_card_with_image_p1_office.png"
       }
     ],
     "overall_score": 0.9993
@@ -4384,7 +4763,8 @@
       {
         "page": 1,
         "minipdf_img": "classic62_company_logo_header_p1_minipdf.png",
-        "reference_img": "classic62_company_logo_header_p1_reference.png"
+        "reference_img": "classic62_company_logo_header_p1_reference.png",
+        "office_img": "classic62_company_logo_header_p1_office.png"
       }
     ],
     "overall_score": 0.9964
@@ -4409,7 +4789,8 @@
       {
         "page": 1,
         "minipdf_img": "classic63_two_products_side_by_side_p1_minipdf.png",
-        "reference_img": "classic63_two_products_side_by_side_p1_reference.png"
+        "reference_img": "classic63_two_products_side_by_side_p1_reference.png",
+        "office_img": "classic63_two_products_side_by_side_p1_office.png"
       }
     ],
     "overall_score": 0.9976
@@ -4434,7 +4815,8 @@
       {
         "page": 1,
         "minipdf_img": "classic64_employee_directory_with_photo_p1_minipdf.png",
-        "reference_img": "classic64_employee_directory_with_photo_p1_reference.png"
+        "reference_img": "classic64_employee_directory_with_photo_p1_reference.png",
+        "office_img": "classic64_employee_directory_with_photo_p1_office.png"
       }
     ],
     "overall_score": 0.9909
@@ -4459,7 +4841,8 @@
       {
         "page": 1,
         "minipdf_img": "classic65_inventory_with_product_photos_p1_minipdf.png",
-        "reference_img": "classic65_inventory_with_product_photos_p1_reference.png"
+        "reference_img": "classic65_inventory_with_product_photos_p1_reference.png",
+        "office_img": "classic65_inventory_with_product_photos_p1_office.png"
       }
     ],
     "overall_score": 0.9955
@@ -4484,7 +4867,8 @@
       {
         "page": 1,
         "minipdf_img": "classic66_invoice_with_logo_p1_minipdf.png",
-        "reference_img": "classic66_invoice_with_logo_p1_reference.png"
+        "reference_img": "classic66_invoice_with_logo_p1_reference.png",
+        "office_img": "classic66_invoice_with_logo_p1_office.png"
       }
     ],
     "overall_score": 0.9917
@@ -4509,7 +4893,8 @@
       {
         "page": 1,
         "minipdf_img": "classic67_real_estate_listing_p1_minipdf.png",
-        "reference_img": "classic67_real_estate_listing_p1_reference.png"
+        "reference_img": "classic67_real_estate_listing_p1_reference.png",
+        "office_img": "classic67_real_estate_listing_p1_office.png"
       }
     ],
     "overall_score": 0.9982
@@ -4534,7 +4919,8 @@
       {
         "page": 1,
         "minipdf_img": "classic68_restaurant_menu_p1_minipdf.png",
-        "reference_img": "classic68_restaurant_menu_p1_reference.png"
+        "reference_img": "classic68_restaurant_menu_p1_reference.png",
+        "office_img": "classic68_restaurant_menu_p1_office.png"
       }
     ],
     "overall_score": 0.9868
@@ -4559,7 +4945,8 @@
       {
         "page": 1,
         "minipdf_img": "classic69_image_only_sheet_p1_minipdf.png",
-        "reference_img": "classic69_image_only_sheet_p1_reference.png"
+        "reference_img": "classic69_image_only_sheet_p1_reference.png",
+        "office_img": "classic69_image_only_sheet_p1_office.png"
       }
     ],
     "overall_score": 1.0
@@ -4584,7 +4971,8 @@
       {
         "page": 1,
         "minipdf_img": "classic70_product_catalog_with_images_p1_minipdf.png",
-        "reference_img": "classic70_product_catalog_with_images_p1_reference.png"
+        "reference_img": "classic70_product_catalog_with_images_p1_reference.png",
+        "office_img": "classic70_product_catalog_with_images_p1_office.png"
       }
     ],
     "overall_score": 0.9918
@@ -4611,17 +4999,20 @@
       {
         "page": 1,
         "minipdf_img": "classic71_multi_sheet_with_images_p1_minipdf.png",
-        "reference_img": "classic71_multi_sheet_with_images_p1_reference.png"
+        "reference_img": "classic71_multi_sheet_with_images_p1_reference.png",
+        "office_img": "classic71_multi_sheet_with_images_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic71_multi_sheet_with_images_p2_minipdf.png",
-        "reference_img": "classic71_multi_sheet_with_images_p2_reference.png"
+        "reference_img": "classic71_multi_sheet_with_images_p2_reference.png",
+        "office_img": "classic71_multi_sheet_with_images_p2_office.png"
       },
       {
         "page": 3,
         "minipdf_img": "classic71_multi_sheet_with_images_p3_minipdf.png",
-        "reference_img": "classic71_multi_sheet_with_images_p3_reference.png"
+        "reference_img": "classic71_multi_sheet_with_images_p3_reference.png",
+        "office_img": "classic71_multi_sheet_with_images_p3_office.png"
       }
     ],
     "overall_score": 0.9982
@@ -4646,7 +5037,8 @@
       {
         "page": 1,
         "minipdf_img": "classic72_bar_chart_image_with_data_p1_minipdf.png",
-        "reference_img": "classic72_bar_chart_image_with_data_p1_reference.png"
+        "reference_img": "classic72_bar_chart_image_with_data_p1_reference.png",
+        "office_img": "classic72_bar_chart_image_with_data_p1_office.png"
       }
     ],
     "overall_score": 0.9951
@@ -4671,7 +5063,8 @@
       {
         "page": 1,
         "minipdf_img": "classic73_event_flyer_with_banner_p1_minipdf.png",
-        "reference_img": "classic73_event_flyer_with_banner_p1_reference.png"
+        "reference_img": "classic73_event_flyer_with_banner_p1_reference.png",
+        "office_img": "classic73_event_flyer_with_banner_p1_office.png"
       }
     ],
     "overall_score": 0.9958
@@ -4696,7 +5089,8 @@
       {
         "page": 1,
         "minipdf_img": "classic74_dashboard_with_kpi_image_p1_minipdf.png",
-        "reference_img": "classic74_dashboard_with_kpi_image_p1_reference.png"
+        "reference_img": "classic74_dashboard_with_kpi_image_p1_reference.png",
+        "office_img": "classic74_dashboard_with_kpi_image_p1_office.png"
       }
     ],
     "overall_score": 0.9756
@@ -4721,7 +5115,8 @@
       {
         "page": 1,
         "minipdf_img": "classic75_certificate_with_seal_p1_minipdf.png",
-        "reference_img": "classic75_certificate_with_seal_p1_reference.png"
+        "reference_img": "classic75_certificate_with_seal_p1_reference.png",
+        "office_img": "classic75_certificate_with_seal_p1_office.png"
       }
     ],
     "overall_score": 0.9953
@@ -4746,7 +5141,8 @@
       {
         "page": 1,
         "minipdf_img": "classic76_product_image_grid_p1_minipdf.png",
-        "reference_img": "classic76_product_image_grid_p1_reference.png"
+        "reference_img": "classic76_product_image_grid_p1_reference.png",
+        "office_img": "classic76_product_image_grid_p1_office.png"
       }
     ],
     "overall_score": 0.9965
@@ -4771,7 +5167,8 @@
       {
         "page": 1,
         "minipdf_img": "classic77_news_article_with_hero_image_p1_minipdf.png",
-        "reference_img": "classic77_news_article_with_hero_image_p1_reference.png"
+        "reference_img": "classic77_news_article_with_hero_image_p1_reference.png",
+        "office_img": "classic77_news_article_with_hero_image_p1_office.png"
       }
     ],
     "overall_score": 0.9964
@@ -4796,7 +5193,8 @@
       {
         "page": 1,
         "minipdf_img": "classic78_small_icon_per_row_p1_minipdf.png",
-        "reference_img": "classic78_small_icon_per_row_p1_reference.png"
+        "reference_img": "classic78_small_icon_per_row_p1_reference.png",
+        "office_img": "classic78_small_icon_per_row_p1_office.png"
       }
     ],
     "overall_score": 0.9889
@@ -4821,7 +5219,8 @@
       {
         "page": 1,
         "minipdf_img": "classic79_wide_panoramic_banner_p1_minipdf.png",
-        "reference_img": "classic79_wide_panoramic_banner_p1_reference.png"
+        "reference_img": "classic79_wide_panoramic_banner_p1_reference.png",
+        "office_img": "classic79_wide_panoramic_banner_p1_office.png"
       }
     ],
     "overall_score": 0.9978
@@ -4846,7 +5245,8 @@
       {
         "page": 1,
         "minipdf_img": "classic80_portrait_tall_image_p1_minipdf.png",
-        "reference_img": "classic80_portrait_tall_image_p1_reference.png"
+        "reference_img": "classic80_portrait_tall_image_p1_reference.png",
+        "office_img": "classic80_portrait_tall_image_p1_office.png"
       }
     ],
     "overall_score": 0.998
@@ -4871,7 +5271,8 @@
       {
         "page": 1,
         "minipdf_img": "classic81_step_by_step_with_images_p1_minipdf.png",
-        "reference_img": "classic81_step_by_step_with_images_p1_reference.png"
+        "reference_img": "classic81_step_by_step_with_images_p1_reference.png",
+        "office_img": "classic81_step_by_step_with_images_p1_office.png"
       }
     ],
     "overall_score": 0.9969
@@ -4896,7 +5297,8 @@
       {
         "page": 1,
         "minipdf_img": "classic82_before_after_images_p1_minipdf.png",
-        "reference_img": "classic82_before_after_images_p1_reference.png"
+        "reference_img": "classic82_before_after_images_p1_reference.png",
+        "office_img": "classic82_before_after_images_p1_office.png"
       }
     ],
     "overall_score": 0.9954
@@ -4921,7 +5323,8 @@
       {
         "page": 1,
         "minipdf_img": "classic83_color_swatch_palette_p1_minipdf.png",
-        "reference_img": "classic83_color_swatch_palette_p1_reference.png"
+        "reference_img": "classic83_color_swatch_palette_p1_reference.png",
+        "office_img": "classic83_color_swatch_palette_p1_office.png"
       }
     ],
     "overall_score": 0.994
@@ -4946,7 +5349,8 @@
       {
         "page": 1,
         "minipdf_img": "classic84_travel_destination_cards_p1_minipdf.png",
-        "reference_img": "classic84_travel_destination_cards_p1_reference.png"
+        "reference_img": "classic84_travel_destination_cards_p1_reference.png",
+        "office_img": "classic84_travel_destination_cards_p1_office.png"
       }
     ],
     "overall_score": 0.9959
@@ -4971,7 +5375,8 @@
       {
         "page": 1,
         "minipdf_img": "classic85_lab_results_with_image_p1_minipdf.png",
-        "reference_img": "classic85_lab_results_with_image_p1_reference.png"
+        "reference_img": "classic85_lab_results_with_image_p1_reference.png",
+        "office_img": "classic85_lab_results_with_image_p1_office.png"
       }
     ],
     "overall_score": 0.992
@@ -4996,7 +5401,8 @@
       {
         "page": 1,
         "minipdf_img": "classic86_software_screenshot_features_p1_minipdf.png",
-        "reference_img": "classic86_software_screenshot_features_p1_reference.png"
+        "reference_img": "classic86_software_screenshot_features_p1_reference.png",
+        "office_img": "classic86_software_screenshot_features_p1_office.png"
       }
     ],
     "overall_score": 0.989
@@ -5021,7 +5427,8 @@
       {
         "page": 1,
         "minipdf_img": "classic87_sports_results_with_logos_p1_minipdf.png",
-        "reference_img": "classic87_sports_results_with_logos_p1_reference.png"
+        "reference_img": "classic87_sports_results_with_logos_p1_reference.png",
+        "office_img": "classic87_sports_results_with_logos_p1_office.png"
       }
     ],
     "overall_score": 0.998
@@ -5046,7 +5453,8 @@
       {
         "page": 1,
         "minipdf_img": "classic88_image_after_data_p1_minipdf.png",
-        "reference_img": "classic88_image_after_data_p1_reference.png"
+        "reference_img": "classic88_image_after_data_p1_reference.png",
+        "office_img": "classic88_image_after_data_p1_office.png"
       }
     ],
     "overall_score": 0.9969
@@ -5071,7 +5479,8 @@
       {
         "page": 1,
         "minipdf_img": "classic89_nutrition_label_with_image_p1_minipdf.png",
-        "reference_img": "classic89_nutrition_label_with_image_p1_reference.png"
+        "reference_img": "classic89_nutrition_label_with_image_p1_reference.png",
+        "office_img": "classic89_nutrition_label_with_image_p1_office.png"
       }
     ],
     "overall_score": 0.9951
@@ -5096,7 +5505,8 @@
       {
         "page": 1,
         "minipdf_img": "classic90_project_status_with_milestones_p1_minipdf.png",
-        "reference_img": "classic90_project_status_with_milestones_p1_reference.png"
+        "reference_img": "classic90_project_status_with_milestones_p1_reference.png",
+        "office_img": "classic90_project_status_with_milestones_p1_office.png"
       }
     ],
     "overall_score": 0.9904
@@ -5122,12 +5532,14 @@
       {
         "page": 1,
         "minipdf_img": "classic91_simple_bar_chart_p1_minipdf.png",
-        "reference_img": "classic91_simple_bar_chart_p1_reference.png"
+        "reference_img": "classic91_simple_bar_chart_p1_reference.png",
+        "office_img": "classic91_simple_bar_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic91_simple_bar_chart_p2_minipdf.png",
-        "reference_img": "classic91_simple_bar_chart_p2_reference.png"
+        "reference_img": "classic91_simple_bar_chart_p2_reference.png",
+        "office_img": "classic91_simple_bar_chart_p2_office.png"
       }
     ],
     "overall_score": 0.9658
@@ -5153,12 +5565,14 @@
       {
         "page": 1,
         "minipdf_img": "classic92_horizontal_bar_chart_p1_minipdf.png",
-        "reference_img": "classic92_horizontal_bar_chart_p1_reference.png"
+        "reference_img": "classic92_horizontal_bar_chart_p1_reference.png",
+        "office_img": "classic92_horizontal_bar_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic92_horizontal_bar_chart_p2_minipdf.png",
-        "reference_img": "classic92_horizontal_bar_chart_p2_reference.png"
+        "reference_img": "classic92_horizontal_bar_chart_p2_reference.png",
+        "office_img": "classic92_horizontal_bar_chart_p2_office.png"
       }
     ],
     "overall_score": 0.9691
@@ -5184,12 +5598,14 @@
       {
         "page": 1,
         "minipdf_img": "classic93_line_chart_p1_minipdf.png",
-        "reference_img": "classic93_line_chart_p1_reference.png"
+        "reference_img": "classic93_line_chart_p1_reference.png",
+        "office_img": "classic93_line_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic93_line_chart_p2_minipdf.png",
-        "reference_img": "classic93_line_chart_p2_reference.png"
+        "reference_img": "classic93_line_chart_p2_reference.png",
+        "office_img": "classic93_line_chart_p2_office.png"
       }
     ],
     "overall_score": 0.9321
@@ -5215,12 +5631,14 @@
       {
         "page": 1,
         "minipdf_img": "classic94_pie_chart_p1_minipdf.png",
-        "reference_img": "classic94_pie_chart_p1_reference.png"
+        "reference_img": "classic94_pie_chart_p1_reference.png",
+        "office_img": "classic94_pie_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic94_pie_chart_p2_minipdf.png",
-        "reference_img": "classic94_pie_chart_p2_reference.png"
+        "reference_img": "classic94_pie_chart_p2_reference.png",
+        "office_img": "classic94_pie_chart_p2_office.png"
       }
     ],
     "overall_score": 0.9723
@@ -5246,12 +5664,14 @@
       {
         "page": 1,
         "minipdf_img": "classic95_area_chart_p1_minipdf.png",
-        "reference_img": "classic95_area_chart_p1_reference.png"
+        "reference_img": "classic95_area_chart_p1_reference.png",
+        "office_img": "classic95_area_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic95_area_chart_p2_minipdf.png",
-        "reference_img": "classic95_area_chart_p2_reference.png"
+        "reference_img": "classic95_area_chart_p2_reference.png",
+        "office_img": "classic95_area_chart_p2_office.png"
       }
     ],
     "overall_score": 0.7636
@@ -5277,12 +5697,14 @@
       {
         "page": 1,
         "minipdf_img": "classic96_scatter_chart_p1_minipdf.png",
-        "reference_img": "classic96_scatter_chart_p1_reference.png"
+        "reference_img": "classic96_scatter_chart_p1_reference.png",
+        "office_img": "classic96_scatter_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic96_scatter_chart_p2_minipdf.png",
-        "reference_img": "classic96_scatter_chart_p2_reference.png"
+        "reference_img": "classic96_scatter_chart_p2_reference.png",
+        "office_img": "classic96_scatter_chart_p2_office.png"
       }
     ],
     "overall_score": 0.9484
@@ -5308,12 +5730,14 @@
       {
         "page": 1,
         "minipdf_img": "classic97_doughnut_chart_p1_minipdf.png",
-        "reference_img": "classic97_doughnut_chart_p1_reference.png"
+        "reference_img": "classic97_doughnut_chart_p1_reference.png",
+        "office_img": "classic97_doughnut_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic97_doughnut_chart_p2_minipdf.png",
-        "reference_img": "classic97_doughnut_chart_p2_reference.png"
+        "reference_img": "classic97_doughnut_chart_p2_reference.png",
+        "office_img": "classic97_doughnut_chart_p2_office.png"
       }
     ],
     "overall_score": 0.9748
@@ -5339,12 +5763,14 @@
       {
         "page": 1,
         "minipdf_img": "classic98_radar_chart_p1_minipdf.png",
-        "reference_img": "classic98_radar_chart_p1_reference.png"
+        "reference_img": "classic98_radar_chart_p1_reference.png",
+        "office_img": "classic98_radar_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic98_radar_chart_p2_minipdf.png",
-        "reference_img": "classic98_radar_chart_p2_reference.png"
+        "reference_img": "classic98_radar_chart_p2_reference.png",
+        "office_img": "classic98_radar_chart_p2_office.png"
       }
     ],
     "overall_score": 0.9508
@@ -5370,12 +5796,14 @@
       {
         "page": 1,
         "minipdf_img": "classic99_bubble_chart_p1_minipdf.png",
-        "reference_img": "classic99_bubble_chart_p1_reference.png"
+        "reference_img": "classic99_bubble_chart_p1_reference.png",
+        "office_img": "classic99_bubble_chart_p1_office.png"
       },
       {
         "page": 2,
         "minipdf_img": "classic99_bubble_chart_p2_minipdf.png",
-        "reference_img": "classic99_bubble_chart_p2_reference.png"
+        "reference_img": "classic99_bubble_chart_p2_reference.png",
+        "office_img": "classic99_bubble_chart_p2_office.png"
       }
     ],
     "overall_score": 0.9196

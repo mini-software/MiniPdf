@@ -34,6 +34,8 @@ tests/MiniPdf.Benchmark/__pycache__/
 /tests/MiniPdf.Scripts/pdf_output_docx
 /tests/MiniPdf.Benchmark/reference_pdfs_docx
 /tests/MiniPdf.Benchmark/reference_pdfs
+/tests/MiniPdf.Benchmark/office_pdfs
+/tests/MiniPdf.Benchmark/office_pdfs_docx
 tests/MiniPdf.Scripts/pdf_test_single/docx_classic01_single_paragraph.pdf
 MiniPdf.Web/publish.zip
 MiniPdf.Web/MiniPdf.Web.Client/wwwroot/fonts/

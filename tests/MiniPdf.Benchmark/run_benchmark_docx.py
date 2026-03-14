@@ -27,6 +27,7 @@ SCRIPT_DIR = Path(__file__).parent.resolve()
 DOCX_DIR = SCRIPT_DIR / ".." / "MiniPdf.Scripts" / "output_docx"
 MINIPDF_PDF_DIR = SCRIPT_DIR / ".." / "MiniPdf.Scripts" / "pdf_output_docx"
 REFERENCE_PDF_DIR = SCRIPT_DIR / "reference_pdfs_docx"
+OFFICE_PDF_DIR = SCRIPT_DIR / "office_pdfs_docx"
 REPORT_DIR = SCRIPT_DIR / "reports_docx"
 
 
@@ -77,7 +78,20 @@ def step_generate_reference_pdfs():
     )
 
 
-def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 0.90):
+def step_generate_office_pdfs():
+    """Step 3b: Convert DOCX files to PDF using Office (Word COM)."""
+    banner("Step 3b: Convert DOCX -> PDF (Office / Word COM)")
+    return run(
+        [sys.executable, "generate_office_pdfs_docx.py",
+         "--docx-dir", str(DOCX_DIR.resolve()),
+         "--pdf-dir", str(OFFICE_PDF_DIR.resolve())],
+        cwd=str(SCRIPT_DIR),
+        check=False,
+    )
+
+
+def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 0.90,
+                 use_office: bool = False):
     """Step 4: Compare MiniPdf PDFs against reference PDFs."""
     banner("Step 4: Compare MiniPdf vs Reference")
     cmd = [
@@ -86,6 +100,8 @@ def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: 
         "--reference-dir", str(REFERENCE_PDF_DIR.resolve()),
         "--report-dir", str(REPORT_DIR.resolve()),
     ]
+    if use_office and OFFICE_PDF_DIR.is_dir():
+        cmd += ["--office-dir", str(OFFICE_PDF_DIR.resolve())]
     if ai_compare:
         cmd += ["--ai-compare", "--ai-max-pages", str(ai_max_pages), "--ai-threshold", str(ai_threshold)]
     return run(cmd, cwd=str(SCRIPT_DIR))
@@ -135,6 +151,9 @@ def main():
     parser.add_argument("--skip-generate", action="store_true", help="Skip DOCX generation")
     parser.add_argument("--skip-minipdf", action="store_true", help="Skip MiniPdf PDF conversion")
     parser.add_argument("--skip-reference", action="store_true", help="Skip LibreOffice reference conversion")
+    parser.add_argument("--with-office", action="store_true",
+                        help="Also convert via Office (Word COM) and include in comparison")
+    parser.add_argument("--skip-office", action="store_true", help="Skip Office conversion (when --with-office)")
     parser.add_argument("--compare-only", action="store_true", help="Only run comparison step")
     parser.add_argument("--ai-compare", action="store_true",
                         help="Enable AI visual comparison (requires openai package + API key)")
@@ -148,12 +167,15 @@ def main():
     print(f"  DOCX dir:       {DOCX_DIR.resolve()}")
     print(f"  MiniPdf PDFs:   {MINIPDF_PDF_DIR.resolve()}")
     print(f"  Reference PDFs: {REFERENCE_PDF_DIR.resolve()}")
+    if args.with_office:
+        print(f"  Office PDFs:    {OFFICE_PDF_DIR.resolve()}")
     print(f"  Reports:        {REPORT_DIR.resolve()}")
 
     ai_kwargs = dict(ai_compare=args.ai_compare, ai_max_pages=args.ai_max_pages, ai_threshold=args.ai_threshold)
+    compare_kwargs = dict(**ai_kwargs, use_office=args.with_office)
 
     if args.compare_only:
-        step_compare(**ai_kwargs)
+        step_compare(**compare_kwargs)
         step_analyze_report()
         return
 
@@ -166,7 +188,10 @@ def main():
     if not args.skip_reference:
         step_generate_reference_pdfs()
 
-    step_compare(**ai_kwargs)
+    if args.with_office and not args.skip_office:
+        step_generate_office_pdfs()
+
+    step_compare(**compare_kwargs)
     step_analyze_report()
 
     banner("DOCX Pipeline Complete")
