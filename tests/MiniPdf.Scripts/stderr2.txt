@@ -1,4 +1,0 @@
-[SCRIPT-TRACE] convert script running v2
-[DEBUG] col=0 isLast=True nextHas=False maxChars=103 textLen=500 lines=1 firstLineLen=500
-[DEBUG] col=0 isLast=True nextHas=False maxChars=103 textLen=501 lines=1 firstLineLen=501
-[DEBUG] col=0 isLast=True nextHas=False maxChars=103 textLen=1000 lines=1 firstLineLen=1000

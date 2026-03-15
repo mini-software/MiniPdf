@@ -1,3 +1,0 @@
-[TRACE] FormatGeneral(3.14159) = 3.14159
-[TRACE] FormatGeneral(3.14159265358979) = 3.141592654
-[TRACE] FormatGeneral(3.14159) = 3.14159
