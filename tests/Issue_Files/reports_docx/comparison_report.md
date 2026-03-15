@@ -1,25 +1,34 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-14T10:10:14.746128
+Generated: 2026-03-15T17:29:33.963958
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🟢 Invoice | 1.0 | 0.9518 | 1/1 | **0.9807** |
-| 2 | 🟡 MODERN LIVING | 0.8326 | 0.7903 | 2/2 | **0.8492** |
-| 3 | 🟢 SA8000 ch sample | 0.9362 | 0.9194 | 3/3 | **0.9422** |
-| 4 | 🟢 Support_Letter | 1.0 | 0.9545 | 1/1 | **0.9818** |
+| 1 | ⚪ Confirmatory_Affidavit | N/A | N/A | ?/? | **N/A** |
+| 2 | 🟢 Invoice | 1.0 | 0.939 | 1/1 | **0.9756** |
+| 3 | 🟡 MODERN LIVING | 0.831 | 0.7808 | 2/2 | **0.8447** |
+| 4 | 🟢 OSCAR WARD | 0.9941 | 0.842 | 1/1 | **0.9344** |
+| 5 | 🟡 SA8000 ch sample | 0.9362 | 0.5684 | 2/3 | **0.7018** |
+| 6 | 🔴 Support_Letter | 1.0 | 0.4758 | 2/1 | **0.6903** |
 
-**Average Overall Score: 0.9385**
+**Average Overall Score: 0.6911**
 
 ## Visual Comparison
 
 <table>
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
+  <td><b>Confirmatory_Affidavit</b></td>
+  <td colspan="1">Confirmatory_Affidavit N/A</td>
+</tr>
+<tr>
+  <td colspan="2"><i>No images</i></td>
+</tr>
+<tr>
   <td><b>Invoice</b></td>
-  <td>Invoice <span style="color:#3fb950">⬤</span> 98.1%</td>
+  <td colspan="1">Invoice <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
   <td><img src="images/Invoice_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -27,7 +36,7 @@ Generated: 2026-03-14T10:10:14.746128
 </tr>
 <tr>
   <td><b>MODERN LIVING</b></td>
-  <td>MODERN LIVING <span style="color:#d29922">⬤</span> 84.9%</td>
+  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 84.5%</td>
 </tr>
 <tr>
   <td><img src="images/MODERN LIVING_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -38,8 +47,16 @@ Generated: 2026-03-14T10:10:14.746128
   <td><img src="images/MODERN LIVING_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
+  <td><b>OSCAR WARD</b></td>
+  <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 93.4%</td>
+</tr>
+<tr>
+  <td><img src="images/OSCAR WARD_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/OSCAR WARD_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><b>SA8000 ch sample</b></td>
-  <td>SA8000 ch sample <span style="color:#3fb950">⬤</span> 94.2%</td>
+  <td colspan="1">SA8000 ch sample <span style="color:#d29922">⬤</span> 70.2%</td>
 </tr>
 <tr>
   <td><img src="images/SA8000 ch sample_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -50,28 +67,36 @@ Generated: 2026-03-14T10:10:14.746128
   <td><img src="images/SA8000 ch sample_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/SA8000 ch sample_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
   <td><img src="images/SA8000 ch sample_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>Support_Letter</b></td>
-  <td>Support_Letter <span style="color:#3fb950">⬤</span> 98.2%</td>
+  <td colspan="1">Support_Letter <span style="color:#f85149">⬤</span> 69.0%</td>
 </tr>
 <tr>
   <td><img src="images/Support_Letter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Support_Letter_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
+<tr>
+  <td><img src="images/Support_Letter_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
 </table>
 
 ## Detailed Results
 
+### Confirmatory_Affidavit
+
+**Error:** Reference PDF not found
+
 ### Invoice
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9518
-- **Overall Score:** 0.9807
+- **Visual Average:** 0.939
+- **Overall Score:** 0.9756
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=20079 bytes, Reference=65867 bytes
+- **File Size:** MiniPdf=20080 bytes, Reference=65867 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -114,18 +139,18 @@ Generated: 2026-03-14T10:10:14.746128
 
 ### MODERN LIVING
 
-- **Text Similarity:** 0.8326
-- **Visual Average:** 0.7903
-- **Overall Score:** 0.8492
+- **Text Similarity:** 0.831
+- **Visual Average:** 0.7808
+- **Overall Score:** 0.8447
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=321328 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=321763 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/MODERN LIVING.pdf
 +++ reference/MODERN LIVING.pdf
-@@ -1,22 +1,30 @@
+@@ -1,21 +1,30 @@
 -MODERN LIVING
 
  OCTOBER / 20XX / ISSUE #10
@@ -140,6 +165,8 @@ Generated: 2026-03-14T10:10:14.746128
 
 -TAKE A LOOK INSIDE
 
+-Newsletters are periodicals used to advertise or update your subscribers with Add description text here to get your
+
 +Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE
 
 +information about your product or blog. They can be printed or emailed and
@@ -148,29 +175,23 @@ Generated: 2026-03-14T10:10:14.746128
 
 +are an excellent way to maintain regular contact with your subscribers and
 
-+subscribers interested in your topic
+ subscribers interested in your topic
 
-+drive traffic to your site. Type the content of your newsletter here.
+-information about your product or blog. They can be printed or emailed and
 
-+PROPERTY TRENDS
+-are an excellent way to maintain regular contact with your subscribers and
+
+ drive traffic to your site. Type the content of your newsletter here.
+
+ PROPERTY TRENDS
 
  Newsletters are periodicals used to advertise or update your subscribers with
 
  Add description text here to get your
 
--information about your product or blog. They can be printed or emailed and
-
-+information about your product or blog. They are an excellent way to
+ information about your product or blog. They are an excellent way to
 
  subscribers interested in your topic
-
--are an excellent way to maintain regular contact with your subscribers and
-
--drive traffic to your site. Type the content of your newsletter here.
-
--PROPERTY TRENDS
-
--Newsletters are periodicals used to advertise or update your subscribers with Add description text here to get your
 
 +maintain regular contact with your subscribers. Type the content of your
 
@@ -186,11 +207,7 @@ Generated: 2026-03-14T10:10:14.746128
 
 +here.
 
- subscribers interested in your topic
-
--information about your product or blog. They are an excellent way to
-
--maintain regular contact with your subscribers. Type the content of your
++subscribers interested in your topic
 
  ---PAGE---
 
@@ -206,7 +223,7 @@ Generated: 2026-03-14T10:10:14.746128
 
  Newsletters are periodicals used to advertise or update your
 
-@@ -27,15 +35,15 @@
+@@ -26,15 +35,15 @@
  Newsletters are periodicals use to advertise or update your
 
  subscribers with information about your product or blog. They
@@ -241,19 +258,75 @@ Generated: 2026-03-14T10:10:14.746128
 
 -the content of your newsletter here.
 
--with your subscriber
-... (871 more characters)
+-with your subscribers and drive traffic to
 
++the content of your newsletter here. with your subscribers and drive traffic to
+
+ your site. Type the content of your
+
+ newsletter here.
+
+ Newsletters are periodicals used to
+
+@@ -48,8 +57,8 @@
+ Are you Newslett
+... (635 more characters)
+
+```
+</details>
+
+### OSCAR WARD
+
+- **Text Similarity:** 0.9941
+- **Visual Average:** 0.842
+- **Overall Score:** 0.9344
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=13864 bytes, Reference=49023 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/OSCAR WARD.pdf
++++ reference/OSCAR WARD.pdf
+@@ -9,11 +9,12 @@
+ conversation reinforced my enthusiasm for contributing to the team and bringing my expertise to
+
+ the company’s ongoing initiatives. I found our discussion about future goals particularly
+
+ inspiring, and it further solidified my excitement about this opportunity.
+
+-The role’s focus on impactful work aligns with my professional background, and I look forward to
+
+-the possibility of applying my skills to support the company’s growth. I am eager to bring my
+
++The role’s focus on impactful work aligns with my professional background, and I look forward
+
++to the possibility of applying my skills to support the company’s growth. I am eager to bring my
+
+ experience in driving efficiency and innovation to the team while continuing to develop and
+
+ refine my abilities in a fast-paced environment.
+
+ Thank you again for your time and thoughtful discussion. I appreciate the chance to be
+
+ considered and look forward to next steps. Please let me know if I can provide any additional
+
+ details to assist in the decision-making process.
+
+-Warm regards,
++Warm regards,
+
++Oscar Ward
 ```
 </details>
 
 ### SA8000 ch sample
 
 - **Text Similarity:** 0.9362
-- **Visual Average:** 0.9194
-- **Overall Score:** 0.9422
-- **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=4178933 bytes, Reference=159484 bytes
+- **Visual Average:** 0.5684
+- **Overall Score:** 0.7018
+- **Pages:** MiniPdf=2, Reference=3
+- **File Size:** MiniPdf=4178505 bytes, Reference=159484 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -427,14 +500,16 @@ Generated: 2026-03-14T10:10:14.746128
 
  STP 小组的含义是什么？
 
- ---PAGE---
++---PAGE---
 
  ISO45001 基础知识培训考试题
 
+----PAGE---
+
  一、 判断题（共20 分，每题2 分）
 
--1、一个管理十分严谨、设备精良并经消防主管部门审批合格的油库，在加强日常管理
-... (2036 more characters)
+-1、一个管理十分严谨、设备精良并经消防主管部门审批
+... (2049 more characters)
 
 ```
 </details>
@@ -442,17 +517,17 @@ Generated: 2026-03-14T10:10:14.746128
 ### Support_Letter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9545
-- **Overall Score:** 0.9818
-- **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4145 bytes, Reference=61824 bytes
+- **Visual Average:** 0.4758
+- **Overall Score:** 0.6903
+- **Pages:** MiniPdf=2, Reference=1
+- **File Size:** MiniPdf=4383 bytes, Reference=61824 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Support_Letter.pdf
 +++ reference/Support_Letter.pdf
-@@ -9,15 +9,15 @@
+@@ -9,7 +9,7 @@
  RE: LETTER OF SUPPORT IN RESPECT OF THE APPLICATION FOR A RENEWAL OF A RELATIVE’S VISA IN
 
  TERMS OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA VERBITCKAIA
@@ -469,31 +544,40 @@ Generated: 2026-03-14T10:10:14.746128
 
  national born on 21 December 1999, and support her application for a renewal of his Relatives Visa in
 
- terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with the relevant
-
- Immigration Regulations made under section 7 of the Act.
-
--2. I accept full responsibility of any financial costs and subsistence, including but not limited to,
-
--housing, food, medical, physical and emotional needs he may require whilst residing with me in
-
--South Africa at the following address during his entire sojourn:
-
-+2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,
-
-+food, medical, physical and emotional needs he may require whilst residing with me in South Africa at
-
-+the following address during his entire sojourn:
-
- Dicta modi aut labor
-
+@@ -22,11 +22,10 @@
  Voluptates alias exc
 
  Ut temporibus aliqui
 
+ Qui magna fugiat cor
+
+-3. I trust that this is in order, but should you require any additional information, please do not hesitate to
+
+-contact me.
+
++3. I trust that this is in order, but should you require any additional information, please do not hesitate
+
++to contact me.
+
+ Yours sincerely,
+
+ ___________________________
+
+ Pascale Donaldson
+
+ Contact Number: +1 (453) 727-4253
+
+----PAGE---
+
+ E-Mail: wekygywis@mailinator.com
 ```
 </details>
 
 ## Improvement Suggestions
 
-All test cases scored 0.8 or above. 🎉
+### ⚠ Low-Score Test Cases (below 0.8)
+
+1. **Support_Letter** (score: 0.6903)
+1. **SA8000 ch sample** (score: 0.7018)
+
+Review the text diffs and visual comparisons above to identify specific rendering issues.

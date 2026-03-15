@@ -1,18 +1,18 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-15T01:01:15.462446
+Generated: 2026-03-15T17:11:19.081181
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
 | 1 | 🔴 PO_anonymized | 0.8453 | 0.4958 | 11/8 | **0.6364** |
-| 2 | 🟢 Small business cash flow forecast1 | 0.9815 | 0.806 | 5/5 | **0.915** |
+| 2 | 🟢 Small business cash flow forecast1 | 0.9815 | 0.812 | 5/5 | **0.9174** |
 | 3 | ⚪ Wedding timeline planner1 | N/A | N/A | ?/? | **N/A** |
-| 4 | 🟢 Wedding_timeline_planner1_copy | 0.9515 | 0.8997 | 5/5 | **0.9405** |
-| 5 | 🔴 payroll-calculator_f | 0.8984 | 0.5569 | 24/27 | **0.6821** |
+| 4 | 🟡 Wedding_timeline_planner1_copy | 0.9489 | 0.7865 | 5/5 | **0.8942** |
+| 5 | 🟡 payroll-calculator_f | 0.878 | 0.5586 | 27/27 | **0.7746** |
 
-**Average Overall Score: 0.6348**
+**Average Overall Score: 0.6445**
 
 ## Visual Comparison
 
@@ -68,7 +68,7 @@ Generated: 2026-03-15T01:01:15.462446
 </tr>
 <tr>
   <td><b>Small business cash flow forecast1</b></td>
-  <td colspan="1">Small business cash flow forecast1 <span style="color:#3fb950">⬤</span> 91.5%</td>
+  <td colspan="1">Small business cash flow forecast1 <span style="color:#3fb950">⬤</span> 91.7%</td>
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -99,7 +99,7 @@ Generated: 2026-03-15T01:01:15.462446
 </tr>
 <tr>
   <td><b>Wedding_timeline_planner1_copy</b></td>
-  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#3fb950">⬤</span> 94.0%</td>
+  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 89.4%</td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -123,7 +123,7 @@ Generated: 2026-03-15T01:01:15.462446
 </tr>
 <tr>
   <td><b>payroll-calculator_f</b></td>
-  <td colspan="1">payroll-calculator_f <span style="color:#f85149">⬤</span> 68.2%</td>
+  <td colspan="1">payroll-calculator_f <span style="color:#d29922">⬤</span> 77.5%</td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -222,15 +222,15 @@ Generated: 2026-03-15T01:01:15.462446
   <td><img src="images/payroll-calculator_f_p24_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/payroll-calculator_f_p25_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/payroll-calculator_f_p25_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/payroll-calculator_f_p26_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/payroll-calculator_f_p26_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/payroll-calculator_f_p27_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/payroll-calculator_f_p27_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
@@ -428,10 +428,10 @@ Generated: 2026-03-15T01:01:15.462446
 ### Small business cash flow forecast1
 
 - **Text Similarity:** 0.9815
-- **Visual Average:** 0.806
-- **Overall Score:** 0.915
+- **Visual Average:** 0.812
+- **Overall Score:** 0.9174
 - **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=225548 bytes, Reference=126373 bytes
+- **File Size:** MiniPdf=225453 bytes, Reference=126373 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -494,7 +494,7 @@ Generated: 2026-03-15T01:01:15.462446
 +Total cash receipts $        2,500.00  $        3,000.00  $        3,400.00  $        3,000.00  $     14,000.00  $        6,000.00  $        3,000.00  $        2,800.00  $        3,500.00  $        4,000.00  $        3,800.00  $        4,200.00  $         53,600.00
 
 +Total cash available $     12,500.00  $     11,050.00  $     12,750.00  $        3,890.00  $     16,190.00  $     19,590.00  $   
-... (6579 more characters)
+... (6575 more characters)
 
 ```
 </details>
@@ -505,11 +505,11 @@ Generated: 2026-03-15T01:01:15.462446
 
 ### Wedding_timeline_planner1_copy
 
-- **Text Similarity:** 0.9515
-- **Visual Average:** 0.8997
-- **Overall Score:** 0.9405
+- **Text Similarity:** 0.9489
+- **Visual Average:** 0.7865
+- **Overall Score:** 0.8942
 - **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=541184 bytes, Reference=126603 bytes
+- **File Size:** MiniPdf=541197 bytes, Reference=126603 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -561,7 +561,7 @@ Generated: 2026-03-15T01:01:15.462446
 
  brochures, etc.
 
-@@ -18,32 +15,25 @@
+@@ -18,34 +15,25 @@
  ☐
 
  Meet with your officiant.
@@ -634,11 +634,15 @@ Generated: 2026-03-15T01:01:15.462446
 
 -Make arrangements for music to be played at the ceremony and
 
--reception. (Tasks might include booking a band or solo musician, hiring a
+-reception. (Tasks might include booking a band or solo musician, hiring
 
 -☐
 
--DJ, choosing significant musical selections, and so on.).
+-a DJ, choosing significant musical selections, and so on.).
+
+----PAGE---
+
+-Wedding timeline planner
 
 -Reserve a block of hotel rooms for out-of-town guests. (Ask about group
 
@@ -654,14 +658,18 @@ Generated: 2026-03-15T01:01:15.462446
 
  possible.)
 
-@@ -54,121 +44,90 @@
+@@ -54,120 +42,92 @@
+ Select and order wedding gown, leaving ample time for delivery and
+
+ ☐
+
  alterations.
 
- ---PAGE---
-
- Wedding timeline planner
-
 -Shop for bridesmaids dresses.
+
++---PAGE---
+
++Wedding timeline planner
 
 +☐ Shop for bridesmaids dresses.
 
@@ -675,45 +683,55 @@ Generated: 2026-03-15T01:01:15.462446
 
 -Schedule wedding cake design appointments and tastings.
 
-+☐ Order invitations and other wedding stationery.
+-☐
 
-+MONTHS TO GO
+-Start planning your honeymoon.
 
-+Plan wedding-day beauty preparations; ask your stylist how far in
+-☐
 
-+☐ advance they book wedding parties, and whether they are willing to
+-4 - 6
 
-+w
-... (5548 more characters)
+-Finalize the guest list.
+
+-☐
+
+-Order invitati
+... (5584 more characters)
 
 ```
 </details>
 
 ### payroll-calculator_f
 
-- **Text Similarity:** 0.8984
-- **Visual Average:** 0.5569
-- **Overall Score:** 0.6821
-- **Pages:** MiniPdf=24, Reference=27
-- **File Size:** MiniPdf=6364181 bytes, Reference=540676 bytes
+- **Text Similarity:** 0.878
+- **Visual Average:** 0.5586
+- **Overall Score:** 0.7746
+- **Pages:** MiniPdf=27, Reference=27
+- **File Size:** MiniPdf=6268861 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/payroll-calculator_f.pdf
 +++ reference/payroll-calculator_f.pdf
-@@ -1,122 +1,170 @@
+@@ -1,207 +1,284 @@
  Employee Register
 
--Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
+-Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 20
 
--ID Employee's Name M/F Hire Date Occupation Annual Regular Overtime Exempt Pay W-4 Form Filing Status Federal Additional Amount to Withhold Filing Status Step 2
+-Annual Regular Overtime Exempt Additional Amount to Withhold
 
--Salary Hourly Hourly from Frequency Alowance (With every paycheck)
+-Pay Federal
+
+-ID Employee's Name M/F Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status (With every paycheck) Filing Status
+
+-Frequency Allowance
 
 -($) Rate ($) Rate ($) Overtime ($)
 
--Box in (c)
+-1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single
+
+-2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single
 
 +Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing St
 
@@ -733,15 +751,13 @@ Generated: 2026-03-15T01:01:15.462446
 
 +($)
 
- 1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
-
--2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Maried 4 Single Not Checked
-
--3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Maried 4
++1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
 
 +2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
 
-+3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4
+ 3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4
+
+----PAGE---
 
  When adding more rows, insert new rows above this one
 
@@ -749,15 +765,21 @@ Generated: 2026-03-15T01:01:15.462446
 
 -Pre-Tax Adjustments Post-Tax Adjustments Post-Tax Deductions
 
--Step 3 Step 4 Tax Deferral Plan (401k) Health Insurance Premiums Other Withholdings Exempt from State Local Insurance Other Deductions Address Social
+-State Local Social
 
--(%) ($) ($) FICA Tax Tax ($) ($) Security
+-Tax Deferral Plan (401k) Health Insurance Premiums Other Withholdings Exempt from Insurance Other Deductions
 
--(b) (c)
+-Step 2 Step 3 Step 4 Tax Tax Address Security
+
+-(%) ($) ($) FICA ($) ($)
 
 -(%) (%) #
 
+-(b) (c)
+
 -Dependents Other Deductions Extra
+
+-Box in (c)
 
 +Page 1 of 27
 
@@ -781,11 +803,11 @@ Generated: 2026-03-15T01:01:15.462446
 
  ($)
 
--100 50 4.00% - - Not Exempt 4.63% 0.00% 45.00 -
+-Not Checked 100 50 4.00% - - Not Exempt 4.63% 0.00% 45.00 -
 
 -111 Street, Town/City, ST, 00000 ***-**-6789
 
--3.00% - - Not Exempt 4.63% 0.00% 42.00 -
+-Not Checked 3.00% - - Not Exempt 4.63% 0.00% 42.00 -
 
 -111 Street, Town/City, ST, 00000 ***-**-4321
 
@@ -804,11 +826,7 @@ Generated: 2026-03-15T01:01:15.462446
 +4.50% - - Not Exempt 4.63% 0.00% 14.00 30.00 111 Street, Town/City, ST, 00000 ***-**-0000
 
 +Page 2 of 27
-
-+---PAGE---
-
-+© 2013 - 2026 Spreads
-... (30395 more characters)
+... (31107 more characters)
 
 ```
 </details>
@@ -818,6 +836,6 @@ Generated: 2026-03-15T01:01:15.462446
 ### ⚠ Low-Score Test Cases (below 0.8)
 
 1. **PO_anonymized** (score: 0.6364)
-1. **payroll-calculator_f** (score: 0.6821)
+1. **payroll-calculator_f** (score: 0.7746)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

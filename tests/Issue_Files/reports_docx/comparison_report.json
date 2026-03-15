@@ -1,9 +1,16 @@
 [
   {
+    "name": "Confirmatory_Affidavit",
+    "minipdf_exists": true,
+    "reference_exists": false,
+    "error": "Reference PDF not found",
+    "score": 0.0
+  },
+  {
     "name": "Invoice",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 20079,
+    "minipdf_size": 20080,
     "reference_size": 65867,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -12,9 +19,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "--- minipdf/Invoice.pdf\n+++ reference/Invoice.pdf\n@@ -1,9 +1,12 @@\n INVOICE\n\n DATE: TO: Anjali Chaturvedi\n\n-Date Extra Frame Photography\n\n+Date\n\n+Extra Frame Photography\n\n 89 Pacific Ave\n\n-INVOICE # San Francisco, CA\n\n-100 123-456-7890\n\n+INVOICE #\n\n+San Francisco, CA\n\n+100\n\n+123-456-7890\n\n CUSTOMER ID:\n\n ABC12345\n\n SALESPERSON JOB PAYMENT TERMS DUE DATE\n",
     "visual_scores": [
-      0.9518
+      0.939
     ],
-    "visual_avg": 0.9518,
+    "visual_avg": 0.939,
     "diff_images": [
       {
         "page": 1,
@@ -22,25 +29,25 @@
         "reference_img": "Invoice_p1_reference.png"
       }
     ],
-    "overall_score": 0.9807
+    "overall_score": 0.9756
   },
   {
     "name": "MODERN LIVING",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 321328,
+    "minipdf_size": 321763,
     "reference_size": 220316,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8326,
-    "flat_text_similarity": 0.832,
-    "word_text_similarity": 0.782,
-    "text_diff": "--- minipdf/MODERN LIVING.pdf\n+++ reference/MODERN LIVING.pdf\n@@ -1,22 +1,30 @@\n-MODERN LIVING\n\n OCTOBER / 20XX / ISSUE #10\n\n+M O D E R N  L I V I N G\n\n Your guide to buy or rent\n\n Ready to settle? WHAT’S NEW\n\n By Peyton Davis\n\n-TAKE A LOOK INSIDE\n\n+Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE\n\n+information about your product or blog. They can be printed or emailed and\n\n+Add description text here to get your\n\n+are an excellent way to maintain regular contact with your subscribers and\n\n+subscribers interested in your topic\n\n+drive traffic to your site. Type the content of your newsletter here.\n\n+PROPERTY TRENDS\n\n Newsletters are periodicals used to advertise or update your subscribers with\n\n Add description text here to get your\n\n-information about your product or blog. They can be printed or emailed and\n\n+information about your product or blog. They are an excellent way to\n\n subscribers interested in your topic\n\n-are an excellent way to maintain regular contact with your subscribers and\n\n-drive traffic to your site. Type the content of your newsletter here.\n\n-PROPERTY TRENDS\n\n-Newsletters are periodicals used to advertise or update your subscribers with Add description text here to get your\n\n+maintain regular contact with your subscribers. Type the content of your\n\n+newsletter here.\n\n+ARE YOU READY TO\n\n+Newsletters are periodicals used to advertise or update your subscribers with LIST?\n\n+information about your product or blog. Type the content of your newsletter\n\n+Add description text here to get your\n\n+here.\n\n subscribers interested in your topic\n\n-information about your product or blog. They are an excellent way to\n\n-maintain regular contact with your subscribers. Type the content of your\n\n ---PAGE---\n\n-Take a look inside Property trends\n\n+Take a look inside\n\n+Property trends\n\n By Vanja Jovanovic\n\n By Kemen Ikaztegieta\n\n Newsletters are periodicals used to advertise or update your\n\n@@ -27,15 +35,15 @@\n Newsletters are periodicals use to advertise or update your\n\n subscribers with information about your product or blog. They\n\n can be printed or emailed and are an excellent way to maintain\n\n-regular contact with your subscribers and drive traffic to your Newsletters are periodicals used to\n\n-site. Type your content here. advertise or update your subscribers with\n\n+Newsletters are periodicals used to\n\n+regular contact with your subscribers and drive traffic to your\n\n+advertise or update your subscribers with\n\n+site. Type your content here.\n\n information about your product or blog.\n\n-Newsletters are periodicals use to advertise or update your\n\n-They can be printed or emailed and are an\n\n+Newsletters are periodicals use to advertise or update your They can be printed or emailed and are an\n\n+excellent way to maintain regular contact\n\n subscribers with information about your product or blog. Type\n\n-excellent way to maintain regular contact\n\n-the content of your newsletter here.\n\n-with your subscribers and drive traffic to\n\n+the content of your newsletter here. with your subscribers and drive traffic to\n\n your site. Type the content of your\n\n newsletter here.\n\n Newsletters are periodicals used to\n\n@@ -49,8 +57,8 @@\n Are you Newsletters are periodicals used to advertise or update your subscribers with\n\n information about your product or blog. They can be printed or emailed and are an\n\n ready to list?\n\n-excellent way to maintain regular contact with your subscribers and drive traffic to your\n\n-site. Type the content of your newsletter here.\n\n+excellent way to maintain regular contact with your subscribers and drive traffic to\n\n+your site. Type the content of your newsletter here.\n\n By Adrian King\n\n Newsletters are periodicals used to advertise or update your subscribers with\n\n information about your product or blog. Type the content of your newsletter here.",
+    "text_similarity": 0.831,
+    "flat_text_similarity": 0.8304,
+    "word_text_similarity": 0.7913,
+    "text_diff": "--- minipdf/MODERN LIVING.pdf\n+++ reference/MODERN LIVING.pdf\n@@ -1,21 +1,30 @@\n-MODERN LIVING\n\n OCTOBER / 20XX / ISSUE #10\n\n+M O D E R N  L I V I N G\n\n Your guide to buy or rent\n\n Ready to settle? WHAT’S NEW\n\n By Peyton Davis\n\n-TAKE A LOOK INSIDE\n\n-Newsletters are periodicals used to advertise or update your subscribers with Add description text here to get your\n\n+Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE\n\n+information about your product or blog. They can be printed or emailed and\n\n+Add description text here to get your\n\n+are an excellent way to maintain regular contact with your subscribers and\n\n subscribers interested in your topic\n\n-information about your product or blog. They can be printed or emailed and\n\n-are an excellent way to maintain regular contact with your subscribers and\n\n drive traffic to your site. Type the content of your newsletter here.\n\n PROPERTY TRENDS\n\n Newsletters are periodicals used to advertise or update your subscribers with\n\n Add description text here to get your\n\n information about your product or blog. They are an excellent way to\n\n subscribers interested in your topic\n\n+maintain regular contact with your subscribers. Type the content of your\n\n+newsletter here.\n\n+ARE YOU READY TO\n\n+Newsletters are periodicals used to advertise or update your subscribers with LIST?\n\n+information about your product or blog. Type the content of your newsletter\n\n+Add description text here to get your\n\n+here.\n\n+subscribers interested in your topic\n\n ---PAGE---\n\n-Take a look inside Property trends\n\n+Take a look inside\n\n+Property trends\n\n By Vanja Jovanovic\n\n By Kemen Ikaztegieta\n\n Newsletters are periodicals used to advertise or update your\n\n@@ -26,15 +35,15 @@\n Newsletters are periodicals use to advertise or update your\n\n subscribers with information about your product or blog. They\n\n can be printed or emailed and are an excellent way to maintain\n\n-regular contact with your subscribers and drive traffic to your Newsletters are periodicals used to\n\n-site. Type your content here. advertise or update your subscribers with\n\n+Newsletters are periodicals used to\n\n+regular contact with your subscribers and drive traffic to your\n\n+advertise or update your subscribers with\n\n+site. Type your content here.\n\n information about your product or blog.\n\n-Newsletters are periodicals use to advertise or update your\n\n-They can be printed or emailed and are an\n\n+Newsletters are periodicals use to advertise or update your They can be printed or emailed and are an\n\n+excellent way to maintain regular contact\n\n subscribers with information about your product or blog. Type\n\n-excellent way to maintain regular contact\n\n-the content of your newsletter here.\n\n-with your subscribers and drive traffic to\n\n+the content of your newsletter here. with your subscribers and drive traffic to\n\n your site. Type the content of your\n\n newsletter here.\n\n Newsletters are periodicals used to\n\n@@ -48,8 +57,8 @@\n Are you Newsletters are periodicals used to advertise or update your subscribers with\n\n information about your product or blog. They can be printed or emailed and are an\n\n ready to list?\n\n-excellent way to maintain regular contact with your subscribers and drive traffic to your\n\n-site. Type the content of your newsletter here.\n\n+excellent way to maintain regular contact with your subscribers and drive traffic to\n\n+your site. Type the content of your newsletter here.\n\n By Adrian King\n\n Newsletters are periodicals used to advertise or update your subscribers with\n\n information about your product or blog. Type the content of your newsletter here.",
     "visual_scores": [
-      0.8178,
-      0.7629
+      0.8179,
+      0.7436
     ],
-    "visual_avg": 0.7903,
+    "visual_avg": 0.7808,
     "diff_images": [
       {
         "page": 1,
@@ -53,26 +60,51 @@
         "reference_img": "MODERN LIVING_p2_reference.png"
       }
     ],
-    "overall_score": 0.8492
+    "overall_score": 0.8447
+  },
+  {
+    "name": "OSCAR WARD",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 13864,
+    "reference_size": 49023,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9941,
+    "flat_text_similarity": 0.9912,
+    "word_text_similarity": 0.9941,
+    "text_diff": "--- minipdf/OSCAR WARD.pdf\n+++ reference/OSCAR WARD.pdf\n@@ -9,11 +9,12 @@\n conversation reinforced my enthusiasm for contributing to the team and bringing my expertise to\n\n the company’s ongoing initiatives. I found our discussion about future goals particularly\n\n inspiring, and it further solidified my excitement about this opportunity.\n\n-The role’s focus on impactful work aligns with my professional background, and I look forward to\n\n-the possibility of applying my skills to support the company’s growth. I am eager to bring my\n\n+The role’s focus on impactful work aligns with my professional background, and I look forward\n\n+to the possibility of applying my skills to support the company’s growth. I am eager to bring my\n\n experience in driving efficiency and innovation to the team while continuing to develop and\n\n refine my abilities in a fast-paced environment.\n\n Thank you again for your time and thoughtful discussion. I appreciate the chance to be\n\n considered and look forward to next steps. Please let me know if I can provide any additional\n\n details to assist in the decision-making process.\n\n-Warm regards,\n+Warm regards,\n\n+Oscar Ward",
+    "visual_scores": [
+      0.842
+    ],
+    "visual_avg": 0.842,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "OSCAR WARD_p1_minipdf.png",
+        "reference_img": "OSCAR WARD_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9344
   },
   {
     "name": "SA8000 ch sample",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4178933,
+    "minipdf_size": 4178505,
     "reference_size": 159484,
-    "minipdf_pages": 3,
+    "minipdf_pages": 2,
     "reference_pages": 3,
     "text_similarity": 0.9362,
     "flat_text_similarity": 0.9362,
     "word_text_similarity": 0.9205,
-    "text_diff": "--- minipdf/SA8000 ch sample.pdf\n+++ reference/SA8000 ch sample.pdf\n@@ -1,55 +1,55 @@\n SA8000 基础知识培训考试题\n\n-部门： 工号： 姓名： 得分：\n\n+部门：                工号：           姓名：            得分：\n\n 一、判断题（共20 分，每题2 分）\n\n-1、公司应在新员工入厂后一个月内与之签定劳动合同。（ √ ）\n\n-2、劳动合同签订后如果员工需要则发给其一份，否公司可代为保管。（ × ）\n\n-3、一般地说，公司的招聘广告不可有性别限制，法规允许的情形除外。（ √ ）\n\n-4、公司员工每周至少要有一天休息。（ √ ）\n\n-5、童工是指年龄在16 周岁以下的人（按照我国法律规定）。（ √ ）\n\n-6、公司在员工辞职或解雇时应一次性把工资结算并支付。（ √ ）\n\n-7、公司法定节假日安排上班的话，可以在其他时间安排调休。（ × ）\n\n-8、当不同的法规、规章与SA8000 标准同一议题时，公司应遵守最严格的要求。（ √ ）\n\n-9、根据劳动法规定，员工每月加班时间最多不超过36 小时。（ √ ）\n\n-10、 某公司将职工食堂的饭票作为工资支付给职工。（ × ）\n\n+1、公司应在新员工入厂后一个月内与之签定劳动合同。（ √  ）\n\n+2、劳动合同签订后如果员工需要则发给其一份，否公司可代为保管。（  × ）\n\n+3、一般地说，公司的招聘广告不可有性别限制，法规允许的情形除外。（  √   ）\n\n+4、公司员工每周至少要有一天休息。（  √   ）\n\n+5、 童工是指年龄在16 周岁以下的人（按照我国法律规定）。（  √   ）\n\n+6、 公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）\n\n+7、 公司法定节假日安排上班的话，可以在其他时间安排调休。（  ×   ）\n\n+8、 当不同的法规、规章与SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）\n\n+9、 根据劳动法规定，员工每月加班时间最多不超过36 小时。（  √    ）\n\n+10、某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）\n\n 二、不定项选择题（共20 分，每题2 分）\n\n-1、以下哪些形式属于强迫劳工（ ABD ）\n\n-A、工厂对新员工要求扣押身份证一星期 B、工厂使用监狱劳工\n\n-C、工厂只给1.2 倍的加班费 D、工厂要求员工晚上都加班，如果不加班就要罚款\n\n-2、以下哪些属于特种作业，需要操作人员具有特种设备作业证（ ABCD ）\n\n-A、电工作业 B、叉车 C、锅炉 D、电梯 E、冲床操作\n\n-3、公司推行社会责任的好处（ ABC ）\n\n-A、保护公司品牌形象 B、改善公司守法表现\n\n-C、提高生产效率 D、避免股价上涨\n\n-4、劳工标准包括（ ABCDE ）\n\n-A、结社自由与集体谈判权 B、就业的自由选择权、禁止强迫劳动\n\n-C、男女同工同酬的权利 D、禁止童工 E、合理的工作条件的权利\n\n+1、以下哪些形式属于强迫劳工（ ABD  ）\n\n+A、工厂对新员工要求扣押身份证一星期       B、工厂使用监狱劳工\n\n+C、工厂只给1.2 倍的加班费                 D、工厂要求员工晚上都加班，如果不加班就要罚款\n\n+2、以下哪些属于特种作业，需要操作人员具有特种设备作业证（ ABCD  ）\n\n+A、电工作业      B、叉车    C、锅炉      D、电梯     E、冲床操作\n\n+3、公司推行社会责任的好处（  ABC  ）\n\n+A、保护公司品牌形象              B、改善公司守法表现\n\n+C、提高生产效率                  D、避免股价上涨\n\n+4、劳工标准包括（ ABCDE  ）\n\n+A、结社自由与集体谈判权           B、就业的自由选择权、禁止强迫劳动\n\n+C、男女同工同酬的权利      D、禁止童工      E、合理的工作条件的权利\n\n 5、以下属于SA8000 标准要素的是（ ABCD ）\n\n-A、童工 B、强迫性劳动 C、歧视 D、工作时间\n\n-6、中国规定，未成年工是指任何年满 周岁但不满 周岁的工人（ B ）。\n\n-A、14 , 16 B、16 , 18 C、16 ， 17 D、17 ， 18\n\n-7、SA8000 标准中，强迫劳动说法正确的是（ B ）\n\n-A、监狱劳动 B、标准禁止一切形式的强迫劳动\n\n-C、契约劳动合法 D、抵债劳动\n\n-8、社会责任管理体系审核的准则包括（ ABCD ）\n\n-A、SA8000 社会责任国际标准； B、客户提供的供应商社会责任守则；\n\n+A、童工     B、强迫性劳动        C、歧视          D、工作时间\n\n+6、中国规定，未成年工是指任何年满     周岁但不满    周岁的工人（ B ）。\n\n+A、14 , 16       B、16 , 18        C、16 ， 17      D、17 ， 18\n\n+7、SA8000 标准中，强迫劳动说法正确的是（  B  ）\n\n+A、监狱劳动                 B、标准禁止一切形式的强迫劳动\n\n+C、契约劳动合法             D、抵债劳动\n\n+8、社会责任管理体系审核的准则包括（  ABCD  ）\n\n+A、SA8000 社会责任国际标准；    B、客户提供的供应商社会责任守则；\n\n C、适用的劳动保护及职业安全卫生法律法规和其他要求；\n\n D、公司社会责任管理手册，程序文件及其他社会责任管理体系文件。\n\n-9、SA8000 现场审核包括（ ABCDE ）\n\n-A、首次会议； B、收集审核证据； C、确定不符合项并编写不符合项报告；\n\n-D、召开末次会议； E、宣布审核结果。\n\n-10、公司应在新员工入厂后 ( A )个月内与之签定合同\n\n-A、1 个月 B、二个月 C、3 个月 D、6 个月\n\n+9、SA8000 现场审核包括（  ABCDE  ）\n\n+A、首次会议；    B、收集审核证据； C、确定不符合项并编写不符合项报告；\n\n+D、召开末次会议；  E、宣布审核结果。\n\n+10、公司应在新员工入厂后 (  A  )个月内与之签定合同\n\n+A、1 个月   B、二个月  C、3 个月   D、6 个月\n\n 三、案例分析题（共10 分，每题5 分）\n\n 针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出SA8000 的哪一条款。\n\n-1、公司在运行SA8000 社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施是将2\n\n-名童工立即开除。\n\n+1、公司在运行SA8000 社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施\n\n+是将2 名童工立即开除。\n\n STP 小组的含义是什么？\n\n ---PAGE---\n\n ISO45001 基础知识培训考试题\n\n 一、 判断题（共20 分，每题2 分）\n\n-1、一个管理十分严谨、设备精良并经消防主管部门审批合格的油库，在加强日常管理的情况下，可以不列入危险\n\n+1、一个管理十分严谨、设备精良并经消防主管部门审批合格的油库，在加强日常管理的情况下，可以不列入危险源。\n\n ×\n\n-源。（ ）\n\n+（ ）\n\n √\n\n 2、对危险源进行风险评价时，应考虑事故发生的可能性和事故可能的后果。（ ）\n\n √\n\n@@ -69,34 +69,35 @@\n ×\n\n 10、我国《劳动法》规定，任何组织不得招收未成年工进行生产和服务作业。（ ）\n\n 二、单项选择题（共20 分，每题2 分）\n\n-1.建立和实施职业健康安全管理体系的根本目的是（ A ）\n\n+1.建立和实施职业健康安全管理体系的根本目的是（ A  ）\n\n A、使组织能够控制职业健康安全风险，并持续改进其绩效。B、使组织的所有风险彻底消灭，作到绝对安全。\n\n C、制定健康安全方针和目标，并依照执行。D、将所有与职业健康安全有关的过程形成文件\n\n-2.制定职业健康安全管理方案的目的是（ B ）\n\n-A、辨识和评价组织的危险源。 B、实现组织的职业健康安全目标。\n\n-C、便于组织实施纠正措施。 D、满足相关方的要求\n\n-3.组织的职业健康安全管理体系文件应包含（ D ）\n\n-A、提供查询相关文件的途径。 B、对管理体系核心要素及相互作用的描述。\n\n-C、至少对11 个要素的描述。 D、A+B。\n\n-4.特种作业种类应包括（ D ）\n\n+2.制定职业健康安全管理方案的目的是（ B  ）\n\n+A、辨识和评价组织的危险源。     B、实现组织的职业健康安全目标。\n\n+C、便于组织实施纠正措施。        D、满足相关方的要求\n\n+3.组织的职业健康安全管理体系文件应包含（ D  ）\n\n+A、提供查询相关文件的途径。       B、对管理体系核心要素及相互作用的描述。\n\n+C、至少对11 个要素的描述。         D、A+B。\n\n+4.特种作业种类应包括（ D  ）\n\n A、电工。B、金属焊接切割。C、矿山通风。D、A+B+C。\n\n-5.危险源辨识没有包括的内容有（ D ）\n\n-A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在其自身工作场所的\n\n-活动。\n\n-6.中国职业健康安全基本方针是（ C ）\n\n-A、百年大计，质量第一。 B、水火无情，安全第一。 C、安全第一，预防为主。 D、安全重于泰山。\n\n-7.职业健康安全“三同时”是指新建、改建、扩建工程的健康安全设施必须与主体工程（ B ）\n\n-A、同时规划、同时建设、同时安装。 B、同时设计、同时施工、同时投入使用。\n\n-C、同时计划、同时购买、同时使用。 D、同时设计、同时制造、同时安装。\n\n-8．职业健康安全管理体系关注的主要对象是（ D ）\n\n-A、相关方。 B、员工。 C、顾客。 D、以上全部。\n\n-9. “三级安全教育”是指（ B ）\n\n+5.危险源辨识没有包括的内容有（ D  ）\n\n+A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在其自身工作场所\n\n+的活动。\n\n+6.中国职业健康安全基本方针是（ C  ）\n\n+A、百年大计，质量第一。  B、水火无情，安全第一。  C、安全第一，预防为主。  D、安全重于泰山。\n\n+7.职业健康安全“三同时”是指新建、改建、扩建工程的健康安全设施必须与主体工程（ B  ）\n\n+A、同时规划、同时建设、同时安装。        B、同时设计、同时施工、同时投入使用。\n\n+C、同时计划、同时购买、同时使用。         D、同时设计、同时制造、同时安装。\n\n+8．职业健康安全管理体系关注的主要对象是（ D  ）\n\n+A、相关方。      B、员工。     C、顾客。     D、以上全部。\n\n+9. “三级安全教育”是指（ B  ）\n\n A、厂部对车间进行安全教育、车间对班组进行安全教育、班组对员工进行安全教育。\n\n-B、新员工进行厂级、车间级、班组级安全教育。 C、A+B。 D、以上均不是\n\n-10.“将收集到的审核证据与审核准则进行比较所得到的评价结果”是（ C ）\n\n-A、审核证据。 B、审核发现。 C、审核结论。 D、观察结果。\n\n+B、新员工进行厂级、车间级、班组级安全教育。        C、A+B。        D、以上均不是\n\n+10.“将收集到的审核证据与审核准则进行比较所得到的评价结果”是（ C  ）\n\n+A、审核证据。    B、审核发现。    C、审核结论。    D、观察结果。\n\n 二、问答题（共10 分，每题5 分）\n\n-1、请列举公司特种设备有哪些？\n\n ---PAGE---\n\n+1、\n\n+请列举公司特种设备有哪些？\n\n 2、请识别本部门在作业活动中的危险源，识别方式:作业活动+危险源+可能导致的事故（至少五项）。\n\n 备注：本试题60 分及格，不及格需重新培训后补考！",
+    "text_diff": "--- minipdf/SA8000 ch sample.pdf\n+++ reference/SA8000 ch sample.pdf\n@@ -1,55 +1,55 @@\n SA8000 基础知识培训考试题\n\n-部门： 工号： 姓名： 得分：\n\n+部门：                工号：           姓名：            得分：\n\n 一、判断题（共20 分，每题2 分）\n\n-1、公司应在新员工入厂后一个月内与之签定劳动合同。（ √ ）\n\n-2、劳动合同签订后如果员工需要则发给其一份，否公司可代为保管。（ × ）\n\n-3、一般地说，公司的招聘广告不可有性别限制，法规允许的情形除外。（ √ ）\n\n-4、公司员工每周至少要有一天休息。（ √ ）\n\n-5、童工是指年龄在16 周岁以下的人（按照我国法律规定）。（ √ ）\n\n-6、公司在员工辞职或解雇时应一次性把工资结算并支付。（ √ ）\n\n-7、公司法定节假日安排上班的话，可以在其他时间安排调休。（ × ）\n\n-8、当不同的法规、规章与SA8000 标准同一议题时，公司应遵守最严格的要求。（ √ ）\n\n-9、根据劳动法规定，员工每月加班时间最多不超过36 小时。（ √ ）\n\n-10、 某公司将职工食堂的饭票作为工资支付给职工。（ × ）\n\n+1、公司应在新员工入厂后一个月内与之签定劳动合同。（ √  ）\n\n+2、劳动合同签订后如果员工需要则发给其一份，否公司可代为保管。（  × ）\n\n+3、一般地说，公司的招聘广告不可有性别限制，法规允许的情形除外。（  √   ）\n\n+4、公司员工每周至少要有一天休息。（  √   ）\n\n+5、 童工是指年龄在16 周岁以下的人（按照我国法律规定）。（  √   ）\n\n+6、 公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）\n\n+7、 公司法定节假日安排上班的话，可以在其他时间安排调休。（  ×   ）\n\n+8、 当不同的法规、规章与SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）\n\n+9、 根据劳动法规定，员工每月加班时间最多不超过36 小时。（  √    ）\n\n+10、某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）\n\n 二、不定项选择题（共20 分，每题2 分）\n\n-1、以下哪些形式属于强迫劳工（ ABD ）\n\n-A、工厂对新员工要求扣押身份证一星期 B、工厂使用监狱劳工\n\n-C、工厂只给1.2 倍的加班费 D、工厂要求员工晚上都加班，如果不加班就要罚款\n\n-2、以下哪些属于特种作业，需要操作人员具有特种设备作业证（ ABCD ）\n\n-A、电工作业 B、叉车 C、锅炉 D、电梯 E、冲床操作\n\n-3、公司推行社会责任的好处（ ABC ）\n\n-A、保护公司品牌形象 B、改善公司守法表现\n\n-C、提高生产效率 D、避免股价上涨\n\n-4、劳工标准包括（ ABCDE ）\n\n-A、结社自由与集体谈判权 B、就业的自由选择权、禁止强迫劳动\n\n-C、男女同工同酬的权利 D、禁止童工 E、合理的工作条件的权利\n\n+1、以下哪些形式属于强迫劳工（ ABD  ）\n\n+A、工厂对新员工要求扣押身份证一星期       B、工厂使用监狱劳工\n\n+C、工厂只给1.2 倍的加班费                 D、工厂要求员工晚上都加班，如果不加班就要罚款\n\n+2、以下哪些属于特种作业，需要操作人员具有特种设备作业证（ ABCD  ）\n\n+A、电工作业      B、叉车    C、锅炉      D、电梯     E、冲床操作\n\n+3、公司推行社会责任的好处（  ABC  ）\n\n+A、保护公司品牌形象              B、改善公司守法表现\n\n+C、提高生产效率                  D、避免股价上涨\n\n+4、劳工标准包括（ ABCDE  ）\n\n+A、结社自由与集体谈判权           B、就业的自由选择权、禁止强迫劳动\n\n+C、男女同工同酬的权利      D、禁止童工      E、合理的工作条件的权利\n\n 5、以下属于SA8000 标准要素的是（ ABCD ）\n\n-A、童工 B、强迫性劳动 C、歧视 D、工作时间\n\n-6、中国规定，未成年工是指任何年满 周岁但不满 周岁的工人（ B ）。\n\n-A、14 , 16 B、16 , 18 C、16 ， 17 D、17 ， 18\n\n-7、SA8000 标准中，强迫劳动说法正确的是（ B ）\n\n-A、监狱劳动 B、标准禁止一切形式的强迫劳动\n\n-C、契约劳动合法 D、抵债劳动\n\n-8、社会责任管理体系审核的准则包括（ ABCD ）\n\n-A、SA8000 社会责任国际标准； B、客户提供的供应商社会责任守则；\n\n+A、童工     B、强迫性劳动        C、歧视          D、工作时间\n\n+6、中国规定，未成年工是指任何年满     周岁但不满    周岁的工人（ B ）。\n\n+A、14 , 16       B、16 , 18        C、16 ， 17      D、17 ， 18\n\n+7、SA8000 标准中，强迫劳动说法正确的是（  B  ）\n\n+A、监狱劳动                 B、标准禁止一切形式的强迫劳动\n\n+C、契约劳动合法             D、抵债劳动\n\n+8、社会责任管理体系审核的准则包括（  ABCD  ）\n\n+A、SA8000 社会责任国际标准；    B、客户提供的供应商社会责任守则；\n\n C、适用的劳动保护及职业安全卫生法律法规和其他要求；\n\n D、公司社会责任管理手册，程序文件及其他社会责任管理体系文件。\n\n-9、SA8000 现场审核包括（ ABCDE ）\n\n-A、首次会议； B、收集审核证据； C、确定不符合项并编写不符合项报告；\n\n-D、召开末次会议； E、宣布审核结果。\n\n-10、公司应在新员工入厂后 ( A )个月内与之签定合同\n\n-A、1 个月 B、二个月 C、3 个月 D、6 个月\n\n+9、SA8000 现场审核包括（  ABCDE  ）\n\n+A、首次会议；    B、收集审核证据； C、确定不符合项并编写不符合项报告；\n\n+D、召开末次会议；  E、宣布审核结果。\n\n+10、公司应在新员工入厂后 (  A  )个月内与之签定合同\n\n+A、1 个月   B、二个月  C、3 个月   D、6 个月\n\n 三、案例分析题（共10 分，每题5 分）\n\n 针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出SA8000 的哪一条款。\n\n-1、公司在运行SA8000 社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施是将2\n\n-名童工立即开除。\n\n+1、公司在运行SA8000 社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施\n\n+是将2 名童工立即开除。\n\n STP 小组的含义是什么？\n\n+---PAGE---\n\n ISO45001 基础知识培训考试题\n\n----PAGE---\n\n 一、 判断题（共20 分，每题2 分）\n\n-1、一个管理十分严谨、设备精良并经消防主管部门审批合格的油库，在加强日常管理的情况下，可以不列入危险\n\n+1、一个管理十分严谨、设备精良并经消防主管部门审批合格的油库，在加强日常管理的情况下，可以不列入危险源。\n\n ×\n\n-源。（ ）\n\n+（ ）\n\n √\n\n 2、对危险源进行风险评价时，应考虑事故发生的可能性和事故可能的后果。（ ）\n\n √\n\n@@ -69,33 +69,35 @@\n ×\n\n 10、我国《劳动法》规定，任何组织不得招收未成年工进行生产和服务作业。（ ）\n\n 二、单项选择题（共20 分，每题2 分）\n\n-1.建立和实施职业健康安全管理体系的根本目的是（ A ）\n\n+1.建立和实施职业健康安全管理体系的根本目的是（ A  ）\n\n A、使组织能够控制职业健康安全风险，并持续改进其绩效。B、使组织的所有风险彻底消灭，作到绝对安全。\n\n C、制定健康安全方针和目标，并依照执行。D、将所有与职业健康安全有关的过程形成文件\n\n-2.制定职业健康安全管理方案的目的是（ B ）\n\n-A、辨识和评价组织的危险源。 B、实现组织的职业健康安全目标。\n\n-C、便于组织实施纠正措施。 D、满足相关方的要求\n\n-3.组织的职业健康安全管理体系文件应包含（ D ）\n\n-A、提供查询相关文件的途径。 B、对管理体系核心要素及相互作用的描述。\n\n-C、至少对11 个要素的描述。 D、A+B。\n\n-4.特种作业种类应包括（ D ）\n\n+2.制定职业健康安全管理方案的目的是（ B  ）\n\n+A、辨识和评价组织的危险源。     B、实现组织的职业健康安全目标。\n\n+C、便于组织实施纠正措施。        D、满足相关方的要求\n\n+3.组织的职业健康安全管理体系文件应包含（ D  ）\n\n+A、提供查询相关文件的途径。       B、对管理体系核心要素及相互作用的描述。\n\n+C、至少对11 个要素的描述。         D、A+B。\n\n+4.特种作业种类应包括（ D  ）\n\n A、电工。B、金属焊接切割。C、矿山通风。D、A+B+C。\n\n-5.危险源辨识没有包括的内容有（ D ）\n\n-A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在其自身工作场所的\n\n-活动。\n\n-6.中国职业健康安全基本方针是（ C ）\n\n-A、百年大计，质量第一。 B、水火无情，安全第一。 C、安全第一，预防为主。 D、安全重于泰山。\n\n-7.职业健康安全“三同时”是指新建、改建、扩建工程的健康安全设施必须与主体工程（ B ）\n\n-A、同时规划、同时建设、同时安装。 B、同时设计、同时施工、同时投入使用。\n\n-C、同时计划、同时购买、同时使用。 D、同时设计、同时制造、同时安装。\n\n-8．职业健康安全管理体系关注的主要对象是（ D ）\n\n-A、相关方。 B、员工。 C、顾客。 D、以上全部。\n\n-9. “三级安全教育”是指（ B ）\n\n+5.危险源辨识没有包括的内容有（ D  ）\n\n+A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在其自身工作场所\n\n+的活动。\n\n+6.中国职业健康安全基本方针是（ C  ）\n\n+A、百年大计，质量第一。  B、水火无情，安全第一。  C、安全第一，预防为主。  D、安全重于泰山。\n\n+7.职业健康安全“三同时”是指新建、改建、扩建工程的健康安全设施必须与主体工程（ B  ）\n\n+A、同时规划、同时建设、同时安装。        B、同时设计、同时施工、同时投入使用。\n\n+C、同时计划、同时购买、同时使用。         D、同时设计、同时制造、同时安装。\n\n+8．职业健康安全管理体系关注的主要对象是（ D  ）\n\n+A、相关方。      B、员工。     C、顾客。     D、以上全部。\n\n+9. “三级安全教育”是指（ B  ）\n\n A、厂部对车间进行安全教育、车间对班组进行安全教育、班组对员工进行安全教育。\n\n-B、新员工进行厂级、车间级、班组级安全教育。 C、A+B。 D、以上均不是\n\n-10.“将收集到的审核证据与审核准则进行比较所得到的评价结果”是（ C ）\n\n-A、审核证据。 B、审核发现。 C、审核结论。 D、观察结果。\n\n+B、新员工进行厂级、车间级、班组级安全教育。        C、A+B。        D、以上均不是\n\n+10.“将收集到的审核证据与审核准则进行比较所得到的评价结果”是（ C  ）\n\n+A、审核证据。    B、审核发现。    C、审核结论。    D、观察结果。\n\n 二、问答题（共10 分，每题5 分）\n\n-1、请列举公司特种设备有哪些？\n\n+---PAGE---\n\n+1、\n\n+请列举公司特种设备有哪些？\n\n 2、请识别本部门在作业活动中的危险源，识别方式:作业活动+危险源+可能导致的事故（至少五项）。\n\n 备注：本试题60 分及格，不及格需重新培训后补考！",
     "visual_scores": [
-      0.8874,
-      0.8827,
-      0.9881
+      0.8685,
+      0.8367,
+      0.0
     ],
-    "visual_avg": 0.9194,
+    "visual_avg": 0.5684,
     "diff_images": [
       {
         "page": 1,
@@ -86,35 +118,41 @@
       },
       {
         "page": 3,
-        "minipdf_img": "SA8000 ch sample_p3_minipdf.png",
+        "minipdf_img": null,
         "reference_img": "SA8000 ch sample_p3_reference.png"
       }
     ],
-    "overall_score": 0.9422
+    "overall_score": 0.7018
   },
   {
     "name": "Support_Letter",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4145,
+    "minipdf_size": 4383,
     "reference_size": 61824,
-    "minipdf_pages": 1,
+    "minipdf_pages": 2,
     "reference_pages": 1,
     "text_similarity": 1.0,
-    "flat_text_similarity": 0.9871,
+    "flat_text_similarity": 0.997,
     "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/Support_Letter.pdf\n+++ reference/Support_Letter.pdf\n@@ -9,15 +9,15 @@\n RE: LETTER OF SUPPORT IN RESPECT OF THE APPLICATION FOR A RENEWAL OF A RELATIVE’S VISA IN\n\n TERMS OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA VERBITCKAIA\n\n PASSPORT NUMBER 770752777\n\n-1. I, Pascale Donaldson, a South African national born on 09 February 2006 with South African\n\n+1. I,  Pascale Donaldson, a South African national born on 09 February 2006 with South African\n\n Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of\n\n South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a\n\n national born on 21 December 1999, and support her application for a renewal of his Relatives Visa in\n\n terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with the relevant\n\n Immigration Regulations made under section 7 of the Act.\n\n-2. I accept full responsibility of any financial costs and subsistence, including but not limited to,\n\n-housing, food, medical, physical and emotional needs he may require whilst residing with me in\n\n-South Africa at the following address during his entire sojourn:\n\n+2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,\n\n+food, medical, physical and emotional needs he may require whilst residing with me in South Africa at\n\n+the following address during his entire sojourn:\n\n Dicta modi aut labor\n\n Voluptates alias exc\n\n Ut temporibus aliqui\n",
+    "text_diff": "--- minipdf/Support_Letter.pdf\n+++ reference/Support_Letter.pdf\n@@ -9,7 +9,7 @@\n RE: LETTER OF SUPPORT IN RESPECT OF THE APPLICATION FOR A RENEWAL OF A RELATIVE’S VISA IN\n\n TERMS OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA VERBITCKAIA\n\n PASSPORT NUMBER 770752777\n\n-1. I, Pascale Donaldson, a South African national born on 09 February 2006 with South African\n\n+1. I,  Pascale Donaldson, a South African national born on 09 February 2006 with South African\n\n Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of\n\n South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a\n\n national born on 21 December 1999, and support her application for a renewal of his Relatives Visa in\n\n@@ -22,11 +22,10 @@\n Voluptates alias exc\n\n Ut temporibus aliqui\n\n Qui magna fugiat cor\n\n-3. I trust that this is in order, but should you require any additional information, please do not hesitate to\n\n-contact me.\n\n+3. I trust that this is in order, but should you require any additional information, please do not hesitate\n\n+to contact me.\n\n Yours sincerely,\n\n ___________________________\n\n Pascale Donaldson\n\n Contact Number: +1 (453) 727-4253\n\n----PAGE---\n\n E-Mail: wekygywis@mailinator.com",
     "visual_scores": [
-      0.9545
+      0.9515,
+      0.0
     ],
-    "visual_avg": 0.9545,
+    "visual_avg": 0.4758,
     "diff_images": [
       {
         "page": 1,
         "minipdf_img": "Support_Letter_p1_minipdf.png",
         "reference_img": "Support_Letter_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "Support_Letter_p2_minipdf.png",
+        "reference_img": null
       }
     ],
-    "overall_score": 0.9818
+    "overall_score": 0.6903
   }
 ]

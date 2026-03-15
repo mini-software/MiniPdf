@@ -576,10 +576,24 @@ internal static class DocxReader
         var ext = Path.GetExtension(target).TrimStart('.').ToLowerInvariant();
         if (ext == "jpeg") ext = "jpg";
 
+        // Parse source rectangle crop (percentages in 1/1000ths of percent)
+        var srcRectEl = container.Descendants(A + "srcRect").FirstOrDefault();
+        float cropL = 0, cropT = 0, cropR = 0, cropB = 0;
+        if (srcRectEl != null)
+        {
+            float.TryParse(srcRectEl.Attribute("l")?.Value, out cropL);
+            float.TryParse(srcRectEl.Attribute("t")?.Value, out cropT);
+            float.TryParse(srcRectEl.Attribute("r")?.Value, out cropR);
+            float.TryParse(srcRectEl.Attribute("b")?.Value, out cropB);
+            // Convert from 1/1000ths of percent to fraction (0..1)
+            cropL /= 100000f; cropT /= 100000f; cropR /= 100000f; cropB /= 100000f;
+        }
+        var hasCrop = cropL > 0 || cropT > 0 || cropR > 0 || cropB > 0;
+
         // Convert vector signatures (EMF/WMF) to PNG so they can be embedded in PDF.
         if (ext is "emf" or "wmf")
         {
-            var converted = TryConvertMetafileToPng(data, widthEmu, heightEmu);
+            var converted = TryConvertMetafileToPng(data, widthEmu, heightEmu, cropL, cropT, cropR, cropB);
             if (converted != null)
             {
                 data = converted;
@@ -588,6 +602,15 @@ internal static class DocxReader
             else
             {
                 return null;
+            }
+        }
+        else if (hasCrop && OperatingSystem.IsWindows())
+        {
+            var cropped = TryCropImagePng(data, cropL, cropT, cropR, cropB);
+            if (cropped != null)
+            {
+                data = cropped;
+                ext = "png";
             }
         }
 
@@ -612,7 +635,8 @@ internal static class DocxReader
         return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu);
     }
 
-    private static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu)
+    private static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu,
+        float cropL = 0, float cropT = 0, float cropR = 0, float cropB = 0)
     {
         if (!OperatingSystem.IsWindows())
             return null;
@@ -623,11 +647,19 @@ internal static class DocxReader
             using var srcStream = new MemoryStream(sourceBytes, writable: false);
             using var meta = new Metafile(srcStream);
 
-            var aspect = widthEmu > 0 && heightEmu > 0
-                ? (double)widthEmu / heightEmu
-                : (meta.Width > 0 && meta.Height > 0 ? (double)meta.Width / meta.Height : 1.0);
+            var hasCrop = cropL > 0 || cropT > 0 || cropR > 0 || cropB > 0;
 
-            var targetHeight = 256;
+            // When srcRect crop is present, rasterize at the EMF's native aspect ratio
+            // then crop to the specified region.
+            double aspect;
+            if (hasCrop && meta.Width > 0 && meta.Height > 0)
+                aspect = (double)meta.Width / meta.Height;
+            else
+                aspect = widthEmu > 0 && heightEmu > 0
+                    ? (double)widthEmu / heightEmu
+                    : (meta.Width > 0 && meta.Height > 0 ? (double)meta.Width / meta.Height : 1.0);
+
+            var targetHeight = 512;
             var targetWidth = (int)Math.Round(targetHeight * aspect);
             targetWidth = Math.Clamp(targetWidth, 32, 4096);
             targetHeight = Math.Clamp(targetHeight, 32, 4096);
@@ -643,8 +675,59 @@ internal static class DocxReader
                 g.DrawImage(meta, new Rectangle(0, 0, targetWidth, targetHeight));
             }
 
+            // Apply srcRect crop if specified
+            if (hasCrop)
+            {
+                var cx = (int)Math.Round(targetWidth * cropL);
+                var cy = (int)Math.Round(targetHeight * cropT);
+                var cw = (int)Math.Round(targetWidth * (1 - cropL - cropR));
+                var ch = (int)Math.Round(targetHeight * (1 - cropT - cropB));
+                cw = Math.Max(1, cw); ch = Math.Max(1, ch);
+                using var cropped = new Bitmap(cw, ch, PixelFormat.Format32bppArgb);
+                using (var g2 = Graphics.FromImage(cropped))
+                {
+                    g2.Clear(Color.White);
+                    g2.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g2.DrawImage(bmp, new Rectangle(0, 0, cw, ch), new Rectangle(cx, cy, cw, ch), GraphicsUnit.Pixel);
+                }
+                using var outStream = new MemoryStream();
+                cropped.Save(outStream, ImageFormat.Png);
+                return outStream.ToArray();
+            }
+
+            using var outStream2 = new MemoryStream();
+            bmp.Save(outStream2, ImageFormat.Png);
+            return outStream2.ToArray();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Crops a raster image (JPEG/PNG) according to srcRect percentages and returns PNG bytes.
+    /// </summary>
+    private static byte[]? TryCropImagePng(byte[] imageBytes, float cropL, float cropT, float cropR, float cropB)
+    {
+        try
+        {
+            using var ms = new MemoryStream(imageBytes, writable: false);
+            using var img = Image.FromStream(ms);
+            var cx = (int)Math.Round(img.Width * cropL);
+            var cy = (int)Math.Round(img.Height * cropT);
+            var cw = (int)Math.Round(img.Width * (1 - cropL - cropR));
+            var ch = (int)Math.Round(img.Height * (1 - cropT - cropB));
+            cw = Math.Max(1, cw); ch = Math.Max(1, ch);
+            using var cropped = new Bitmap(cw, ch, PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(cropped))
+            {
+                g.Clear(Color.White);
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(img, new Rectangle(0, 0, cw, ch), new Rectangle(cx, cy, cw, ch), GraphicsUnit.Pixel);
+            }
             using var outStream = new MemoryStream();
-            bmp.Save(outStream, ImageFormat.Png);
+            cropped.Save(outStream, ImageFormat.Png);
             return outStream.ToArray();
         }
         catch
