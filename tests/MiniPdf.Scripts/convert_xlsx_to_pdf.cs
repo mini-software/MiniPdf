@@ -15,11 +15,17 @@ var pdfDir = args.Length > 1
     ? Path.GetFullPath(args[1])
     : Path.Combine(baseDir, "pdf_output");
 
+var filterPattern = args.Length > 2 ? args[2] : null;
+
 Directory.CreateDirectory(pdfDir);
 
 var xlsxFiles = Directory.GetFiles(xlsxDir, "*.xlsx")
                          .OrderBy(f => f)
                          .ToArray();
+
+if (!string.IsNullOrEmpty(filterPattern))
+    xlsxFiles = xlsxFiles.Where(f => Path.GetFileNameWithoutExtension(f)
+        .Contains(filterPattern, StringComparison.OrdinalIgnoreCase)).ToArray();
 
 if (xlsxFiles.Length == 0)
 {

@@ -19,7 +19,8 @@ param(
     [switch]$SkipReference,
     [switch]$SkipInstall,
     [switch]$WithOffice,
-    [switch]$SkipOffice
+    [switch]$SkipOffice,
+    [string]$Filter
 )
 
 $ErrorActionPreference = "Continue"
@@ -49,6 +50,7 @@ if ($SkipMiniPdf) { $pyArgs += "--skip-minipdf" }
 if ($SkipReference) { $pyArgs += "--skip-reference" }
 if ($WithOffice) { $pyArgs += "--with-office" }
 if ($SkipOffice) { $pyArgs += "--skip-office" }
+if ($Filter) { $pyArgs += "--filter"; $pyArgs += $Filter }
 
 # Run the benchmark pipeline
 Write-Host "`n[Running] python run_benchmark_docx.py $($pyArgs -join ' ')`n" -ForegroundColor Yellow

@@ -847,6 +847,8 @@ def main():
                         help="Skip AI call when pixel similarity is already above this threshold (default: 0.97)")
     parser.add_argument("--report-only", action="store_true",
                         help="Skip comparisons; regenerate report from existing comparison_report.json")
+    parser.add_argument("--filter", default=None, metavar="PATTERN",
+                        help="Only compare files whose name contains this substring")
     args = parser.parse_args()
 
     if args.ai_compare:
@@ -898,6 +900,10 @@ def main():
     if office_dir and os.path.isdir(office_dir):
         for f in Path(office_dir).glob("*.pdf"):
             names.add(f.stem)
+
+    # Apply filter
+    if args.filter:
+        names = {n for n in names if args.filter.lower() in n.lower()}
 
     if not names:
         print("No PDF files found in either directory.")

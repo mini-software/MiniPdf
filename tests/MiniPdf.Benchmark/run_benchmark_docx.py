@@ -56,42 +56,40 @@ def step_generate_docx():
     )
 
 
-def step_generate_minipdf_pdfs():
+def step_generate_minipdf_pdfs(filter_pattern: str = None):
     """Step 2: Convert DOCX files to PDF using MiniPdf."""
     banner("Step 2: Convert DOCX -> PDF (MiniPdf)")
     scripts_dir = SCRIPT_DIR / ".." / "MiniPdf.Scripts"
-    return run(
-        ["dotnet", "run", "convert_docx_to_pdf.cs"],
-        cwd=str(scripts_dir),
-    )
+    cmd = ["dotnet", "run", "convert_docx_to_pdf.cs"]
+    if filter_pattern:
+        cmd += ["--", str(DOCX_DIR.resolve()), str(MINIPDF_PDF_DIR.resolve()), filter_pattern]
+    return run(cmd, cwd=str(scripts_dir))
 
 
-def step_generate_reference_pdfs():
+def step_generate_reference_pdfs(filter_pattern: str = None):
     """Step 3: Convert DOCX files to PDF using LibreOffice (reference)."""
     banner("Step 3: Convert DOCX -> PDF (LibreOffice Reference)")
-    return run(
-        [sys.executable, "generate_reference_pdfs_docx.py",
-         "--docx-dir", str(DOCX_DIR.resolve()),
-         "--pdf-dir", str(REFERENCE_PDF_DIR.resolve())],
-        cwd=str(SCRIPT_DIR),
-        check=False,
-    )
+    cmd = [sys.executable, "generate_reference_pdfs_docx.py",
+           "--docx-dir", str(DOCX_DIR.resolve()),
+           "--pdf-dir", str(REFERENCE_PDF_DIR.resolve())]
+    if filter_pattern:
+        cmd += ["--filter", filter_pattern]
+    return run(cmd, cwd=str(SCRIPT_DIR), check=False)
 
 
-def step_generate_office_pdfs():
+def step_generate_office_pdfs(filter_pattern: str = None):
     """Step 3b: Convert DOCX files to PDF using Office (Word COM)."""
     banner("Step 3b: Convert DOCX -> PDF (Office / Word COM)")
-    return run(
-        [sys.executable, "generate_office_pdfs_docx.py",
-         "--docx-dir", str(DOCX_DIR.resolve()),
-         "--pdf-dir", str(OFFICE_PDF_DIR.resolve())],
-        cwd=str(SCRIPT_DIR),
-        check=False,
-    )
+    cmd = [sys.executable, "generate_office_pdfs_docx.py",
+           "--docx-dir", str(DOCX_DIR.resolve()),
+           "--pdf-dir", str(OFFICE_PDF_DIR.resolve())]
+    if filter_pattern:
+        cmd += ["--filter", filter_pattern]
+    return run(cmd, cwd=str(SCRIPT_DIR), check=False)
 
 
 def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 0.90,
-                 use_office: bool = False):
+                 use_office: bool = False, filter_pattern: str = None):
     """Step 4: Compare MiniPdf PDFs against reference PDFs."""
     banner("Step 4: Compare MiniPdf vs Reference")
     cmd = [
@@ -104,6 +102,8 @@ def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: 
         cmd += ["--office-dir", str(OFFICE_PDF_DIR.resolve())]
     if ai_compare:
         cmd += ["--ai-compare", "--ai-max-pages", str(ai_max_pages), "--ai-threshold", str(ai_threshold)]
+    if filter_pattern:
+        cmd += ["--filter", filter_pattern]
     return run(cmd, cwd=str(SCRIPT_DIR))
 
 
@@ -148,6 +148,8 @@ def step_analyze_report():
 
 def main():
     parser = argparse.ArgumentParser(description="MiniPdf DOCX Benchmark Pipeline")
+    parser.add_argument("--filter", default=None, metavar="PATTERN",
+                        help="Only process files matching this substring (e.g. 'heading' or 'table_border')")
     parser.add_argument("--skip-generate", action="store_true", help="Skip DOCX generation")
     parser.add_argument("--skip-minipdf", action="store_true", help="Skip MiniPdf PDF conversion")
     parser.add_argument("--skip-reference", action="store_true", help="Skip LibreOffice reference conversion")
@@ -173,25 +175,26 @@ def main():
 
     ai_kwargs = dict(ai_compare=args.ai_compare, ai_max_pages=args.ai_max_pages, ai_threshold=args.ai_threshold)
     compare_kwargs = dict(**ai_kwargs, use_office=args.with_office)
+    filt = args.filter
 
     if args.compare_only:
-        step_compare(**compare_kwargs)
+        step_compare(**compare_kwargs, filter_pattern=filt)
         step_analyze_report()
         return
 
-    if not args.skip_generate:
+    if not args.skip_generate and not filt:
         step_generate_docx()
 
     if not args.skip_minipdf:
-        step_generate_minipdf_pdfs()
+        step_generate_minipdf_pdfs(filter_pattern=filt)
 
     if not args.skip_reference:
-        step_generate_reference_pdfs()
+        step_generate_reference_pdfs(filter_pattern=filt)
 
     if args.with_office and not args.skip_office:
-        step_generate_office_pdfs()
+        step_generate_office_pdfs(filter_pattern=filt)
 
-    step_compare(**compare_kwargs)
+    step_compare(**compare_kwargs, filter_pattern=filt)
     step_analyze_report()
 
     banner("DOCX Pipeline Complete")

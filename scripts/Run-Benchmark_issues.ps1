@@ -18,7 +18,8 @@ param(
     [switch]$SkipReference,
     [switch]$SkipInstall,
     [switch]$WithOffice,
-    [switch]$SkipOffice
+    [switch]$SkipOffice,
+    [string]$Filter
 )
 
 $ErrorActionPreference = "Continue"
@@ -65,6 +66,9 @@ foreach ($d in @($MiniPdfXlsx, $MiniPdfDocx, $RefXlsx, $RefDocx, $OfficeXlsx, $O
 
 # ── XLSX ──
 $xlsxFiles = Get-ChildItem -Path $XlsxIssueDir -Filter "*.xlsx" -ErrorAction SilentlyContinue
+if ($Filter) {
+    $xlsxFiles = $xlsxFiles | Where-Object { $_.BaseName -like "*$Filter*" }
+}
 if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
     $cnt = $xlsxFiles.Count
     Write-Host "`n--- XLSX Issue Files: $cnt files ---" -ForegroundColor Cyan
@@ -73,7 +77,9 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
         Write-Host "[Step 1] Converting XLSX -> PDF (MiniPdf)..." -ForegroundColor Yellow
         Push-Location $ScriptsDir
         try {
-            dotnet run convert_xlsx_to_pdf.cs -- $XlsxIssueDir $MiniPdfXlsx
+            $convertArgs = @("convert_xlsx_to_pdf.cs", "--", $XlsxIssueDir, $MiniPdfXlsx)
+            if ($Filter) { $convertArgs += $Filter }
+            dotnet run @convertArgs
         } finally {
             Pop-Location
         }
@@ -83,7 +89,9 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
         Write-Host "[Step 2] Converting XLSX -> PDF (LibreOffice)..." -ForegroundColor Yellow
         Push-Location $BenchmarkDir
         try {
-            python generate_reference_pdfs.py --xlsx-dir $XlsxIssueDir --pdf-dir $RefXlsx
+            $refArgs = @("generate_reference_pdfs.py", "--xlsx-dir", $XlsxIssueDir, "--pdf-dir", $RefXlsx)
+            if ($Filter) { $refArgs += @("--filter", $Filter) }
+            python @refArgs
         } finally {
             Pop-Location
         }
@@ -104,6 +112,7 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
     if ($WithOffice -and (Test-Path $OfficeXlsx)) {
         $compareArgs += @("--office-dir", $OfficeXlsx)
     }
+    if ($Filter) { $compareArgs += @("--filter", $Filter) }
     Push-Location $BenchmarkDir
     try {
         python @compareArgs
@@ -116,6 +125,9 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
 
 # ── DOCX ──
 $docxFiles = Get-ChildItem -Path $DocxIssueDir -Filter "*.docx" -ErrorAction SilentlyContinue
+if ($Filter) {
+    $docxFiles = $docxFiles | Where-Object { $_.BaseName -like "*$Filter*" }
+}
 if ($docxFiles -and $docxFiles.Count -gt 0) {
     $cnt = $docxFiles.Count
     Write-Host "`n--- DOCX Issue Files: $cnt files ---" -ForegroundColor Cyan
@@ -124,7 +136,9 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
         Write-Host "[Step 1] Converting DOCX -> PDF (MiniPdf)..." -ForegroundColor Yellow
         Push-Location $ScriptsDir
         try {
-            dotnet run convert_docx_to_pdf.cs -- $DocxIssueDir $MiniPdfDocx
+            $convertArgs = @("convert_docx_to_pdf.cs", "--", $DocxIssueDir, $MiniPdfDocx)
+            if ($Filter) { $convertArgs += $Filter }
+            dotnet run @convertArgs
         } finally {
             Pop-Location
         }
@@ -134,7 +148,9 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
         Write-Host "[Step 2] Converting DOCX -> PDF (LibreOffice)..." -ForegroundColor Yellow
         Push-Location $BenchmarkDir
         try {
-            python generate_reference_pdfs_docx.py --docx-dir $DocxIssueDir --pdf-dir $RefDocx
+            $refArgs = @("generate_reference_pdfs_docx.py", "--docx-dir", $DocxIssueDir, "--pdf-dir", $RefDocx)
+            if ($Filter) { $refArgs += @("--filter", $Filter) }
+            python @refArgs
         } finally {
             Pop-Location
         }
@@ -155,6 +171,7 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
     if ($WithOffice -and (Test-Path $OfficeDocx)) {
         $compareArgs += @("--office-dir", $OfficeDocx)
     }
+    if ($Filter) { $compareArgs += @("--filter", $Filter) }
     Push-Location $BenchmarkDir
     try {
         python @compareArgs
