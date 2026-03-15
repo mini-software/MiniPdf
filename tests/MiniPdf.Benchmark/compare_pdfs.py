@@ -930,6 +930,17 @@ def main():
         print(f"score={score}")
         results.append(result)
 
+    # When filtering, merge new results into existing report to avoid data loss
+    if args.filter:
+        json_path = os.path.join(report_dir, "comparison_report.json")
+        if os.path.isfile(json_path):
+            with open(json_path, encoding="utf-8") as jf:
+                existing = json.load(jf)
+            updated_names = {r["name"] for r in results}
+            merged = [r for r in existing if r["name"] not in updated_names]
+            merged.extend(results)
+            results = sorted(merged, key=lambda r: r["name"])
+
     generate_report(results, report_dir)
 
     # Print summary

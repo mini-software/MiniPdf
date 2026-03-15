@@ -1,18 +1,17 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-15T01:01:15.462446
+Generated: 2026-03-15T19:05:34.271533
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🔴 PO_anonymized | 0.8453 | 0.4958 | 11/8 | **0.6364** |
-| 2 | 🟢 Small business cash flow forecast1 | 0.9815 | 0.806 | 5/5 | **0.915** |
-| 3 | ⚪ Wedding timeline planner1 | N/A | N/A | ?/? | **N/A** |
-| 4 | 🟢 Wedding_timeline_planner1_copy | 0.9515 | 0.8997 | 5/5 | **0.9405** |
-| 5 | 🔴 payroll-calculator_f | 0.8984 | 0.5569 | 24/27 | **0.6821** |
+| 1 | 🟢 PO_anonymized | 0.9515 | 0.8202 | 8/8 | **0.9087** |
+| 2 | 🟡 Small business cash flow forecast1 | 0.9166 | 0.806 | 5/5 | **0.889** |
+| 3 | 🟡 Wedding_timeline_planner1_copy | 0.9258 | 0.6991 | 4/5 | **0.75** |
+| 4 | 🔴 payroll-calculator_f | 0.8989 | 0.5567 | 24/27 | **0.6822** |
 
-**Average Overall Score: 0.6348**
+**Average Overall Score: 0.8075**
 
 ## Visual Comparison
 
@@ -20,7 +19,7 @@ Generated: 2026-03-15T01:01:15.462446
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>PO_anonymized</b></td>
-  <td colspan="1">PO_anonymized <span style="color:#f85149">⬤</span> 63.6%</td>
+  <td colspan="1">PO_anonymized <span style="color:#3fb950">⬤</span> 90.9%</td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -55,20 +54,8 @@ Generated: 2026-03-15T01:01:15.462446
   <td><img src="images/PO_anonymized_p8_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/PO_anonymized_p9_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
-  <td><img src="images/PO_anonymized_p10_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
-  <td><img src="images/PO_anonymized_p11_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>Small business cash flow forecast1</b></td>
-  <td colspan="1">Small business cash flow forecast1 <span style="color:#3fb950">⬤</span> 91.5%</td>
+  <td colspan="1">Small business cash flow forecast1 <span style="color:#d29922">⬤</span> 88.9%</td>
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -91,15 +78,8 @@ Generated: 2026-03-15T01:01:15.462446
   <td><img src="images/Small business cash flow forecast1_p5_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Wedding timeline planner1</b></td>
-  <td colspan="1">Wedding timeline planner1 N/A</td>
-</tr>
-<tr>
-  <td colspan="2"><i>No images</i></td>
-</tr>
-<tr>
   <td><b>Wedding_timeline_planner1_copy</b></td>
-  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#3fb950">⬤</span> 94.0%</td>
+  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 75.0%</td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -118,7 +98,7 @@ Generated: 2026-03-15T01:01:15.462446
   <td><img src="images/Wedding_timeline_planner1_copy_p4_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/Wedding_timeline_planner1_copy_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
   <td><img src="images/Wedding_timeline_planner1_copy_p5_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
@@ -239,35 +219,25 @@ Generated: 2026-03-15T01:01:15.462446
 
 ### PO_anonymized
 
-- **Text Similarity:** 0.8453
-- **Visual Average:** 0.4958
-- **Overall Score:** 0.6364
-- **Pages:** MiniPdf=11, Reference=8
-- **File Size:** MiniPdf=1493911 bytes, Reference=338357 bytes
+- **Text Similarity:** 0.9515
+- **Visual Average:** 0.8202
+- **Overall Score:** 0.9087
+- **Pages:** MiniPdf=8, Reference=8
+- **File Size:** MiniPdf=394949 bytes, Reference=338357 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/PO_anonymized.pdf
 +++ reference/PO_anonymized.pdf
-@@ -1,15 +1,15 @@
- Final Inspection Report
+@@ -3,13 +3,13 @@
+ XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
 
- Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
+ PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
 
--XXX ofice: TX Inspector: Sam Davis XXX PO#: 21668732
+ Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
 
--PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
-
--Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
-
--Date of Manufacture: 1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)
-
-+XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
-
-+PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
-
-+Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
+-Date of Manufacture:  1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)
 
 +Date of Manufacture:    1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)
 
@@ -279,9 +249,11 @@ Generated: 2026-03-15T01:01:15.462446
 
  Ship mark Yes Approved ranges Yes Ship to TBA
 
- Inspection Result: Accept
+-Inspection Result Accept
 
--Re-in
+-ction:
+
++Inspection Result: Accept
 
 +Re-inspection:
 
@@ -291,44 +263,20 @@ Generated: 2026-03-15T01:01:15.462446
 
  Inspection Result Summary
 
-@@ -38,153 +38,175 @@
+@@ -38,15 +38,17 @@
  5
 
  6
 
  7
 
--8
+-Total Defectiv 1 4
 
--9
+-Maximum Defectiv 0 7 14 21
 
--10
++Total Defectives 1 4
 
--11
-
--12
-
--13
-
--14
-
--15
-
--16
-
--17
-
--18
-
--19
-
--20
-
- Total Defectives 1 4
-
- Maximum Defectives 0 7 14 21
-
-----PAGE---
++Maximum Defectives 0 7 14 21
 
  Inspection qty: >80%
 
@@ -344,73 +292,36 @@ Generated: 2026-03-15T01:01:15.462446
 
  Total: 41,466 8,462 61 16
 
-+Doc#: FIR-003.5
+ Doc#: FIR-003.5
+
+-Effective: 20171109 Page 1 of 8
 
 +Page 1 of 8
 
 +Effective: 20171109
 
-+---PAGE---
+ ---PAGE---
 
-+Final Inspection Report
+ Final Inspection Report
 
-+Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
+ Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
 
-+XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
-
-+PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
-
-+Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
-
-+Date of Manufacture:    1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)
-
-+Item#: XX-ABC-68878-C
-
-+Description: Standard Component Assembly with Seal Insert
+@@ -58,125 +60,153 @@
+ Description: Standard Component Assembly with Seal Insert
 
  Carton Check
 
  Check point Inner carton Outer carton
 
- Quantity per carton: Part C & Insert 619
+-Quantity per carton: Part C & Inser 619
+
++Quantity per carton: Part C & Insert 619
 
  Dimension of carton (cm): L x W X H x x 47 x 32 x 43
 
  Weight of carton (Kg): Gross/Net / 15.3 / 14
 
--Scan the barcode number: (Resul N/A )
-
--Quantity per carton:
-
--Dimension of carton (cm): L x W X H x x x x
-
--Weight of carton (Kg): Gross/Net / /
-
--Scan the barcode number: (Resul N/A )
-
--Quantity per carton: liner 14,056
-
--Dimension of carton (cm): L x W X H x x 47 x 33 x 33
-
--Weight of carton (Kg): Gross/Net / 5.2 / 4.45
-
--Scan the barcode number: (Resul N/A )
-
--Quantity per carton:
-
--Dimension of carton (cm): L x W X H x x x x
-
--Weight of carton (Kg): Gross/Net / /
-
--Scan the barcode number: (Result: )
-
--Quantity per carton:
-
--Dimension of carton (cm): L x W X H x x x x
-
--Weight of carton (Kg): Gross/Net / /
-
--Scan the barcode number: (Result: )
+-Scan the barcode number: Result: N/A )
 
 +Scan the barcode number: (Result: N/A )
 
@@ -420,18 +331,55 @@ Generated: 2026-03-15T01:01:15.462446
 
  Dimension chart
 
-... (9886 more characters)
+-Measure 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+
++Measure
+
++1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+
+ Standard
+
+-Part A Length 26.66 25.73 25.55 25.29 26.17 26.19 26.71 26.5 26.51 25.78 25.85 26.53 25 25.78 25.59 25.52 26.62 27 25.28 26.25
+
++Part A Length
+
++26.66 25.73 25.55 25.29 26.17 26.19 26.71 26.5 26.51 25.78 25.85 26.53 25 25.78 25.59 25.52 26.62 27 25.28 26.25
+
+ 35.38±0.16(mm)
+
+-Part A Width 25.66 25.13 25.61 25.23 26.19 26.04 25.13 25.38 25.9 25.05 26.06 25.84 25.41 25.04 26.4 25.75 26.06 25.29 25.74 26.23
+
++Part A Width
+
++25.66 25.13 25.61 25.23 26.19 26.04 25.13 25.38 25.9 25.05 26.06 25.84 25.41 25.04 26.4 25.75 26.06 25.29 25.74 26.23
+
+ 47.37±0.31(in)
+
+-Part B Thick 12.93 12.6 12.63 13.07 12.82 12.94 12.74 12.89 12.76 13.27 12.65 12.84 13.02 13.22 12.62 12.6 12.97 12.9 12.82 12.99
+
++Part B Thick
+
++12.93 12.6 12.63 13.07 12.82 12.94 12.74 12.89 12.76 13.27 12.65 12.84 13.02 13.22 12.62 12.6 12.97 12.9 12.82 12.99
+
+ 31.75±0.33(cm)
+
+-Part B Diam 11.08 10.93 11.18 11.46 11.23 10.84 11.34 11.26 11.29 10.99 11.03 10.9 10.76 11.25 11.24 11.41 11.28 11.13 10.84 11.21
+
++Part B Diam
+
++11.0
+... (9061 more characters)
 
 ```
 </details>
 
 ### Small business cash flow forecast1
 
-- **Text Similarity:** 0.9815
+- **Text Similarity:** 0.9166
 - **Visual Average:** 0.806
-- **Overall Score:** 0.915
+- **Overall Score:** 0.889
 - **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=225548 bytes, Reference=126373 bytes
+- **File Size:** MiniPdf=228799 bytes, Reference=126373 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -447,7 +395,7 @@ Generated: 2026-03-15T01:01:15.462446
 
 -Apr 2026 May 2026 Jun 2026 Jul 2026 Aug 2026 Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027 Total
 
--Cash on hand (beginning of month) $      10,000.00 $      8,050.00  $      9,350.00 $      890.00 $      2,190.00 $      13,590.00  $      13,790.00  $      15,290.00  $      16,410.00  $      14,360.00  $      16,560.00  $      18,780.00
+-Cash on hand (beginning of month) $      10,000.00$      8,050.00 $      9,350.00 $      890.00 $      2,190.00 $      13,590.00$      13,790.00$      15,290.00$      16,410.00$      14,360.00$      16,560.00 $      18,780.00
 
 +Starting cash on hand $     10,000.00 Starting date Apr 2026 Cash minimum balance alert $        2,000.00
 
@@ -459,7 +407,7 @@ Generated: 2026-03-15T01:01:15.462446
 
  Cash receipts
 
--Cash sales $      2,500.00  $      3,000.00  $      3,600.00  $      3,000.00 $      14,000.00 $      6,000.00  $      3,000.00  $      2,800.00  $      3,500.00  $      4,000.00  $      3,800.00  $      4,200.00 $      53,400.00
+-Cash sales $      2,500.00 $      3,000.00 $      3,600.00 $      3,000.00 $      14,000.00$      6,000.00 $      3,000.00 $      2,800.00 $      3,500.00 $      4,000.00 $      3,800.00 $      4,200.00  $      53,400.00
 
 -Returns and allowances $      200.00 $      200.00
 
@@ -473,9 +421,9 @@ Generated: 2026-03-15T01:01:15.462446
 
 -Other receipts $      -
 
--Total cash receipts $      2,500.00  $      3,000.00  $      3,400.00  $      3,000.00 $      14,000.00 $      6,000.00  $      3,000.00  $      2,800.00  $      3,500.00  $      4,000.00  $      3,800.00  $      4,200.00 $      53,600.00
+-Total cash receipts $      2,500.00 $      3,000.00 $      3,400.00 $      3,000.00 $      14,000.00$      6,000.00 $      3,000.00 $      2,800.00 $      3,500.00 $      4,000.00 $      3,800.00 $      4,200.00  $      53,600.00
 
--Total cash available $      12,500.00  $      11,050.00  $      12,750.00 $      3,890.00 $      16,190.00  $      19,590.00  $      16,790.00  $      18,090.00  $      19,910.00  $      18,360.00  $      20,360.00  $      22,980.00
+-Total cash available $      12,500.00$      11,050.00$      12,750.00$      3,890.00 $      16,190.00$      19,590.00$      16,790.00$      18,090.00$      19,910.00$      18,360.00$      20,360.00 $      22,980.00
 
 +Cash sales $        2,500.00  $        3,000.00  $        3,600.00  $        3,000.00  $     14,000.00  $        6,000.00  $        3,000.00  $        2,800.00  $        3,500.00  $        4,000.00  $        3,800.00  $        4,200.00  $         53,400.00
 
@@ -493,30 +441,26 @@ Generated: 2026-03-15T01:01:15.462446
 
 +Total cash receipts $        2,500.00  $        3,000.00  $        3,400.00  $        3,000.00  $     14,000.00  $        6,000.00  $        3,000.00  $        2,800.00  $        3,500.00  $        4,000.00  $        3,800.00  $        4,200.00  $         53,600.00
 
-+Total cash available $     12,500.00  $     11,050.00  $     12,750.00  $        3,890.00  $     16,190.00  $     19,590.00  $   
-... (6579 more characters)
++Total cash available $     12,500.00  $     11,050.00  $     12,750.00  $        3,890.00  $     16,190.00  $     19,590.00  $     16,790.00  $     18,090.00  $     19,910.00  $ 
+... (6498 more characters)
 
 ```
 </details>
 
-### Wedding timeline planner1
-
-**Error:** MiniPdf PDF not found
-
 ### Wedding_timeline_planner1_copy
 
-- **Text Similarity:** 0.9515
-- **Visual Average:** 0.8997
-- **Overall Score:** 0.9405
-- **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=541184 bytes, Reference=126603 bytes
+- **Text Similarity:** 0.9258
+- **Visual Average:** 0.6991
+- **Overall Score:** 0.75
+- **Pages:** MiniPdf=4, Reference=5
+- **File Size:** MiniPdf=544280 bytes, Reference=126603 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Wedding_timeline_planner1_copy.pdf
 +++ reference/Wedding_timeline_planner1_copy.pdf
-@@ -1,16 +1,13 @@
+@@ -1,17 +1,14 @@
  Wedding timeline planner
 
  DONE?
@@ -547,30 +491,28 @@ Generated: 2026-03-15T01:01:15.462446
 
 -☐
 
--Choose a target wedding date and time. (The actual date will depend on
+-Choose a target wedding date and time. (The actual date will de
 
 -☐
 
 -venue availability.)
 
+-Create a binder to store and organize ideas, worksheets, receip
+
 +on venue availability.)
 
- Create a binder to store and organize ideas, worksheets, receipts,
++Create a binder to store and organize ideas, worksheets, receipts,
 
  ☐
 
  brochures, etc.
 
-@@ -18,32 +15,25 @@
+ Visit and reserve wedding and reception sites.
+
+@@ -20,154 +17,117 @@
  ☐
 
- Meet with your officiant.
-
- ☐
-
--Start compiling your guest list to estimate head count. Consider budget
-
-+Start compiling your guest list to estimate head count. Consider
+ Start compiling your guest list to estimate head count. Consider
 
  ☐
 
@@ -594,6 +536,8 @@ Generated: 2026-03-15T01:01:15.462446
 
 -☐
 
+-Book an engagement photo session, especially if you plan to in
+
 +budget when thinking about “must-invites” versus “nice-to-invites.”
 
 +☐ Begin shopping for the wedding gown.
@@ -606,7 +550,7 @@ Generated: 2026-03-15T01:01:15.462446
 
 +☐ Hire a photographer and a videographer.
 
- Book an engagement photo session, especially if you plan to include a
++Book an engagement photo session, especially if you plan to include a
 
  ☐
 
@@ -634,27 +578,38 @@ Generated: 2026-03-15T01:01:15.462446
 
 -Make arrangements for music to be played at the ceremony and
 
--reception. (Tasks might include booking a band or solo musician, hiring a
+-reception. (Tasks might include booking a band or solo musicia
 
 -☐
 
 -DJ, choosing significant musical selections, and so on.).
 
--Reserve a block of hotel rooms for out-of-town guests. (Ask about group
+-Reserve a block of hotel rooms for out-of-town guests. (Ask abo
 
 -☐
 
 -rates.)
 
+-Send out Save-the-Date cards. (Include lodging info and maps,
+
 +group rates.)
 
- Send out Save-the-Date cards. (Include lodging info and maps, as
++Send out Save-the-Date cards. (Include lodging info and maps, as
 
  ☐
 
  possible.)
 
-@@ -54,121 +44,90 @@
+ Shop for wedding rings.
+
+ ☐
+
+-Select and order wedding gown, leaving ample time for delivery
+
++Select and order wedding gown, leaving ample time for delivery and
+
+ ☐
+
  alterations.
 
  ---PAGE---
@@ -673,43 +628,33 @@ Generated: 2026-03-15T01:01:15.462446
 
  ☐
 
--Schedule wedding cake design appointments and tastings.
-
-+☐ Order invitations and other wedding stationery.
-
-+MONTHS TO GO
-
-+Plan wedding-day beauty preparations; ask your stylist how far in
-
-+☐ advance they book wedding parties, and whether they are willing to
-
-+w
-... (5548 more characters)
+-Sche
+... (6073 more characters)
 
 ```
 </details>
 
 ### payroll-calculator_f
 
-- **Text Similarity:** 0.8984
-- **Visual Average:** 0.5569
-- **Overall Score:** 0.6821
+- **Text Similarity:** 0.8989
+- **Visual Average:** 0.5567
+- **Overall Score:** 0.6822
 - **Pages:** MiniPdf=24, Reference=27
-- **File Size:** MiniPdf=6364181 bytes, Reference=540676 bytes
+- **File Size:** MiniPdf=6380866 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/payroll-calculator_f.pdf
 +++ reference/payroll-calculator_f.pdf
-@@ -1,122 +1,170 @@
+@@ -1,127 +1,170 @@
  Employee Register
 
 -Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
 
 -ID Employee's Name M/F Hire Date Occupation Annual Regular Overtime Exempt Pay W-4 Form Filing Status Federal Additional Amount to Withhold Filing Status Step 2
 
--Salary Hourly Hourly from Frequency Alowance (With every paycheck)
+-Salary Hourly Hourly from Frequency Allowance (With every paycheck)
 
 -($) Rate ($) Rate ($) Overtime ($)
 
@@ -735,13 +680,9 @@ Generated: 2026-03-15T01:01:15.462446
 
  1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
 
--2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Maried 4 Single Not Checked
+ 2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
 
--3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Maried 4
-
-+2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
-
-+3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4
+ 3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4
 
  When adding more rows, insert new rows above this one
 
@@ -807,8 +748,14 @@ Generated: 2026-03-15T01:01:15.462446
 
 +---PAGE---
 
-+© 2013 - 2026 Spreads
-... (30395 more characters)
++© 2013 - 2026 Spreadsheet123 LTD
+
+ Payroll Calculator
+
+ Disclaimer:
+
+-This template is provided as-is for informational, illustrative, or/and educational purposes only and under no circumstances should be construed as financial, legal, or tax advi
+... (30226 more characters)
 
 ```
 </details>
@@ -817,7 +764,7 @@ Generated: 2026-03-15T01:01:15.462446
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **PO_anonymized** (score: 0.6364)
-1. **payroll-calculator_f** (score: 0.6821)
+1. **payroll-calculator_f** (score: 0.6822)
+1. **Wedding_timeline_planner1_copy** (score: 0.75)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

@@ -3,7 +3,7 @@
     "name": "classic01_basic_table_with_headers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1499,
+    "minipdf_size": 1905,
     "reference_size": 30311,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -28,14 +28,14 @@
     "name": "classic02_multiple_worksheets",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2555,
+    "minipdf_size": 3062,
     "reference_size": 36003,
     "minipdf_pages": 3,
     "reference_pages": 3,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.9942,
+    "flat_text_similarity": 0.9933,
+    "word_text_similarity": 0.9286,
+    "text_diff": "--- minipdf/classic02_multiple_worksheets.pdf\n+++ reference/classic02_multiple_worksheets.pdf\n@@ -10,6 +10,6 @@\n Utilities 200\n\n ---PAGE---\n\n Metric Value\n\n-Total Rev 1130\n\n-Total Cost 3700\n\n+Total Reve 1130\n\n+Total Costs 3700\n\n Net -2570",
     "visual_scores": [
       0.9981,
       0.9977,
@@ -59,7 +59,7 @@
         "reference_img": "classic02_multiple_worksheets_p3_reference.png"
       }
     ],
-    "overall_score": 0.9992
+    "overall_score": 0.9969
   },
   {
     "name": "classic03_empty_workbook",
@@ -115,7 +115,7 @@
     "name": "classic05_wide_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 9303,
+    "minipdf_size": 14944,
     "reference_size": 62308,
     "minipdf_pages": 3,
     "reference_pages": 3,
@@ -152,7 +152,7 @@
     "name": "classic06_tall_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 41082,
+    "minipdf_size": 57343,
     "reference_size": 185703,
     "minipdf_pages": 5,
     "reference_pages": 5,
@@ -201,7 +201,7 @@
     "name": "classic07_numbers_only",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1336,
+    "minipdf_size": 1660,
     "reference_size": 24806,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -226,7 +226,7 @@
     "name": "classic08_mixed_text_and_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1332,
+    "minipdf_size": 1572,
     "reference_size": 27336,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -342,7 +342,7 @@
     "name": "classic100_stacked_bar_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4715,
+    "minipdf_size": 5530,
     "reference_size": 47565,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -367,7 +367,7 @@
     "name": "classic101_percent_stacked_bar",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5418,
+    "minipdf_size": 6396,
     "reference_size": 49462,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -392,7 +392,7 @@
     "name": "classic102_line_chart_with_markers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4940,
+    "minipdf_size": 5507,
     "reference_size": 52236,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -423,19 +423,19 @@
     "name": "classic103_pie_chart_with_labels",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 404429,
+    "minipdf_size": 404661,
     "reference_size": 48488,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.7,
-    "flat_text_similarity": 0.5448,
-    "word_text_similarity": 0.7,
-    "text_diff": "--- minipdf/classic103_pie_chart_with_labels.pdf\n+++ reference/classic103_pie_chart_with_labels.pdf\n@@ -1,15 +1,28 @@\n OS Share (%)\n\n-Windows 42 Desktop OS Market Share\n\n+Windows 42\n\n+Desktop OS Market Share\n\n macOS 28\n\n Linux 15\n\n-ChromeOS 10 Other; Share (%); 5; 5%\n\n-Other 5 ChromeOS; Share (%); 10; 10%\n\n-Windows; Share (%); 42; 42%\n\n-Linux; Share (%); 15; 15%\n\n-macOS; Share (%); 28; 28%\n\n-Windows\n\n-macOS\n\n-Linux\n\n-ChromeOS\n\n-Other\n\n----PAGE---\n+ChromeOS 10\n\n+Other; Share\n\n+Other 5\n\n+(%); 5; 5%\n\n+ChromeOS;\n\n+Share (%);\n\n+10; 10%\n\n+Wind\n\n+mac\n\n+Linux; Share\n\n+Linu\n\n+(%); 15; 15% Windows;\n\n+Share (%); 42; Chro\n\n+42%\n\n+Othe\n\n+macOS; Share\n\n+(%); 28; 28%\n\n+---PAGE---\n\n+dows\n\n+OS\n\n+x\n\n+omeOS\n\n+er",
+    "text_similarity": 0.68,
+    "flat_text_similarity": 0.542,
+    "word_text_similarity": 0.68,
+    "text_diff": "--- minipdf/classic103_pie_chart_with_labels.pdf\n+++ reference/classic103_pie_chart_with_labels.pdf\n@@ -1,15 +1,28 @@\n OS Share (%)\n\n-Windows 42 Desktop OS Market Share\n\n+Windows 42\n\n+Desktop OS Market Share\n\n macOS 28\n\n Linux 15\n\n-ChromeO 10 Other; Share (%); 5; 5%\n\n-Other 5 ChromeOS; Share (%); 10; 10%\n\n-Windows; Share (%); 42; 42%\n\n-Linux; Share (%); 15; 15%\n\n-macOS; Share (%); 28; 28%\n\n-Windows\n\n-macOS\n\n-Linux\n\n-ChromeOS\n\n-Other\n\n----PAGE---\n+ChromeOS 10\n\n+Other; Share\n\n+Other 5\n\n+(%); 5; 5%\n\n+ChromeOS;\n\n+Share (%);\n\n+10; 10%\n\n+Wind\n\n+mac\n\n+Linux; Share\n\n+Linu\n\n+(%); 15; 15% Windows;\n\n+Share (%); 42; Chro\n\n+42%\n\n+Othe\n\n+macOS; Share\n\n+(%); 28; 28%\n\n+---PAGE---\n\n+dows\n\n+OS\n\n+x\n\n+omeOS\n\n+er",
     "visual_scores": [
-      0.9485,
+      0.9489,
       0.9984
     ],
-    "visual_avg": 0.9734,
+    "visual_avg": 0.9736,
     "diff_images": [
       {
         "page": 1,
@@ -448,13 +448,13 @@
         "reference_img": "classic103_pie_chart_with_labels_p2_reference.png"
       }
     ],
-    "overall_score": 0.8694
+    "overall_score": 0.8614
   },
   {
     "name": "classic104_combo_bar_line_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4623,
+    "minipdf_size": 5190,
     "reference_size": 54330,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -485,7 +485,7 @@
     "name": "classic105_3d_bar_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4052,
+    "minipdf_size": 4457,
     "reference_size": 138437,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -516,7 +516,7 @@
     "name": "classic106_3d_pie_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 404281,
+    "minipdf_size": 404556,
     "reference_size": 76353,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -525,10 +525,10 @@
     "word_text_similarity": 0.8627,
     "text_diff": "--- minipdf/classic106_3d_pie_chart.pdf\n+++ reference/classic106_3d_pie_chart.pdf\n@@ -1,5 +1,6 @@\n Category Amount\n\n-Food 800 Monthly Expense Breakdown (3D)\n\n+Food 800\n\n+Monthly Expense Breakdown (3D)\n\n Housing 1500\n\n Transport 400\n\n Entertainm 300\n\n@@ -7,8 +8,10 @@\n Other 200\n\n Food\n\n Housing\n\n-Transport\n\n-Entertainment\n\n+Transpo\n\n+Entertai\n\n Savings\n\n Other\n\n----PAGE---\n+---PAGE---\n\n+rt\n\n+nment",
     "visual_scores": [
-      0.935,
+      0.9356,
       0.9987
     ],
-    "visual_avg": 0.9668,
+    "visual_avg": 0.9671,
     "diff_images": [
       {
         "page": 1,
@@ -541,13 +541,13 @@
         "reference_img": "classic106_3d_pie_chart_p2_reference.png"
       }
     ],
-    "overall_score": 0.9669
+    "overall_score": 0.967
   },
   {
     "name": "classic107_multi_series_line",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 15397,
+    "minipdf_size": 17959,
     "reference_size": 82303,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -578,7 +578,7 @@
     "name": "classic108_stacked_area_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 11073,
+    "minipdf_size": 12214,
     "reference_size": 51253,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -603,19 +603,19 @@
     "name": "classic109_scatter_with_trendline",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5509,
+    "minipdf_size": 6142,
     "reference_size": 60738,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8226,
-    "flat_text_similarity": 0.5351,
-    "word_text_similarity": 0.8226,
-    "text_diff": "--- minipdf/classic109_scatter_with_trendline.pdf\n+++ reference/classic109_scatter_with_trendline.pdf\n@@ -1,18 +1,21 @@\n-Study Hour Exam Score\n\n-5 59 Study Hours vs Exam Score\n\n+Study HouExam Score\n\n+5 59\n\n+Study Hours vs Exam Score\n\n 8 90\n\n-9 85 120\n\n+9 85\n\n+120\n\n 2 35\n\n 9 99\n\n 100\n\n 5 68\n\n-2 35\n\n-80\n\n-8 92\n\n+f(x) = 8.12719751809721 x + 20.8283350568769\n\n+2 35 R² = 0.958630685218316\n\n+8 92 80\n\n 5 65\n\n-3 45 60\n\n+Stud\n\n+3 45 Score 60\n\n+Line\n\n 9 100\n\n-Score\n\n 6 62\n\n 40\n\n 9 89\n\n@@ -22,4 +25,6 @@\n 0\n\n 0 2 4 6 8 10 12\n\n Hours\n\n----PAGE---\n+---PAGE---\n\n+dents\n\n+ear (Students)",
+    "text_similarity": 0.8455,
+    "flat_text_similarity": 0.5374,
+    "word_text_similarity": 0.8455,
+    "text_diff": "--- minipdf/classic109_scatter_with_trendline.pdf\n+++ reference/classic109_scatter_with_trendline.pdf\n@@ -1,18 +1,21 @@\n Study HouExam Score\n\n-5 59 Study Hours vs Exam Score\n\n+5 59\n\n+Study Hours vs Exam Score\n\n 8 90\n\n-9 85 120\n\n+9 85\n\n+120\n\n 2 35\n\n 9 99\n\n 100\n\n 5 68\n\n-2 35\n\n-80\n\n-8 92\n\n+f(x) = 8.12719751809721 x + 20.8283350568769\n\n+2 35 R² = 0.958630685218316\n\n+8 92 80\n\n 5 65\n\n-3 45 60\n\n+Stud\n\n+3 45 Score 60\n\n+Line\n\n 9 100\n\n-Score\n\n 6 62\n\n 40\n\n 9 89\n\n@@ -22,4 +25,6 @@\n 0\n\n 0 2 4 6 8 10 12\n\n Hours\n\n----PAGE---\n+---PAGE---\n\n+dents\n\n+ear (Students)",
     "visual_scores": [
-      0.9719,
+      0.9726,
       0.9981
     ],
-    "visual_avg": 0.985,
+    "visual_avg": 0.9853,
     "diff_images": [
       {
         "page": 1,
@@ -628,7 +628,7 @@
         "reference_img": "classic109_scatter_with_trendline_p2_reference.png"
       }
     ],
-    "overall_score": 0.923
+    "overall_score": 0.9323
   },
   {
     "name": "classic10_special_xml_characters",
@@ -659,7 +659,7 @@
     "name": "classic110_chart_with_legend",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4087,
+    "minipdf_size": 4573,
     "reference_size": 52253,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -690,7 +690,7 @@
     "name": "classic111_chart_with_axis_labels",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3562,
+    "minipdf_size": 3842,
     "reference_size": 51007,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -721,7 +721,7 @@
     "name": "classic112_multiple_charts",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6921,
+    "minipdf_size": 7775,
     "reference_size": 59342,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -752,7 +752,7 @@
     "name": "classic113_chart_sheet",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3303,
+    "minipdf_size": 3503,
     "reference_size": 43602,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -783,7 +783,7 @@
     "name": "classic114_chart_large_dataset",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 30865,
+    "minipdf_size": 34899,
     "reference_size": 128765,
     "minipdf_pages": 4,
     "reference_pages": 4,
@@ -826,7 +826,7 @@
     "name": "classic115_chart_negative_values",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4338,
+    "minipdf_size": 4698,
     "reference_size": 51633,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -857,7 +857,7 @@
     "name": "classic116_percent_stacked_area",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 11321,
+    "minipdf_size": 12462,
     "reference_size": 50765,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -882,7 +882,7 @@
     "name": "classic117_stock_ohlc_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8483,
+    "minipdf_size": 10277,
     "reference_size": 62401,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -913,7 +913,7 @@
     "name": "classic118_bar_chart_custom_colors",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3682,
+    "minipdf_size": 3914,
     "reference_size": 48780,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -922,10 +922,10 @@
     "word_text_similarity": 0.9275,
     "text_diff": "--- minipdf/classic118_bar_chart_custom_colors.pdf\n+++ reference/classic118_bar_chart_custom_colors.pdf\n@@ -1,10 +1,12 @@\n Rating Count\n\n-Excellent 45 Customer Satisfaction Survey\n\n+Excellent 45\n\n+Customer Satisfaction Survey\n\n Good 30\n\n-Average 15 50\n\n+Average 15\n\n+50\n\n Poor 7\n\n+Very Poor 3\n\n 45\n\n-Very Poor 3\n\n 40\n\n 35\n\n 30\n\n@@ -14,5 +16,7 @@\n 10\n\n 5\n\n 0\n\n-Excellent Good Average Poor Very Poor\n\n----PAGE---\n+Excellent Good Average Poor Very\n\n+---PAGE---\n\n+Count\n\n+y Poor",
     "visual_scores": [
-      0.9237,
+      0.9238,
       0.9965
     ],
-    "visual_avg": 0.9601,
+    "visual_avg": 0.9602,
     "diff_images": [
       {
         "page": 1,
@@ -938,25 +938,25 @@
         "reference_img": "classic118_bar_chart_custom_colors_p2_reference.png"
       }
     ],
-    "overall_score": 0.955
+    "overall_score": 0.9551
   },
   {
     "name": "classic119_dashboard_multi_charts",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 218637,
+    "minipdf_size": 219105,
     "reference_size": 65175,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8696,
-    "flat_text_similarity": 0.8218,
-    "word_text_similarity": 0.8696,
-    "text_diff": "--- minipdf/classic119_dashboard_multi_charts.pdf\n+++ reference/classic119_dashboard_multi_charts.pdf\n@@ -1,23 +1,24 @@\n KPI Dashboard - Q4 2025\n\n Revenue vs Expenses\n\n Month Revenue Expenses\n\n-Oct 85 60 120\n\n+Oct 85 60\n\n+120\n\n Nov 92 65\n\n+Dec 110 70\n\n 100\n\n-Dec 110 70\n\n 80\n\n-60\n\n-Segment Share\n\n+Segment Share 60\n\n+Enterprise 45\n\n 40\n\n-Enterprise 45\n\n SMB 30\n\n+Consumer 25\n\n 20\n\n-Consumer 25\n\n 0\n\n Oct Nov Dec\n\n Revenue by Segment\n\n Enterprise\n\n SMB\n\n Consumer\n\n-Slice4\n\n----PAGE---\n+---PAGE---\n\n+Revenue\n\n+Expenses",
+    "text_similarity": 0.8478,
+    "flat_text_similarity": 0.8067,
+    "word_text_similarity": 0.8478,
+    "text_diff": "--- minipdf/classic119_dashboard_multi_charts.pdf\n+++ reference/classic119_dashboard_multi_charts.pdf\n@@ -1,23 +1,24 @@\n KPI Dashboard - Q4 2025\n\n Revenue vs Expenses\n\n Month Revenue Expenses\n\n-Oct 85 60 120\n\n+Oct 85 60\n\n+120\n\n Nov 92 65\n\n+Dec 110 70\n\n 100\n\n-Dec 110 70\n\n 80\n\n-60\n\n-Segment Share\n\n+Segment Share 60\n\n+Enterprise 45\n\n 40\n\n-Enterprise 45\n\n SMB 30\n\n+Consumer 25\n\n 20\n\n-Consume 25\n\n 0\n\n Oct Nov Dec\n\n Revenue by Segment\n\n Enterprise\n\n SMB\n\n Consumer\n\n-Slice4\n\n----PAGE---\n+---PAGE---\n\n+Revenue\n\n+Expenses",
     "visual_scores": [
-      0.8694,
+      0.8696,
       0.9981
     ],
-    "visual_avg": 0.9337,
+    "visual_avg": 0.9339,
     "diff_images": [
       {
         "page": 1,
@@ -969,7 +969,7 @@
         "reference_img": "classic119_dashboard_multi_charts_p2_reference.png"
       }
     ],
-    "overall_score": 0.9213
+    "overall_score": 0.9127
   },
   {
     "name": "classic11_sparse_rows",
@@ -1006,16 +1006,16 @@
     "name": "classic120_chart_with_date_axis",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6099,
+    "minipdf_size": 6535,
     "reference_size": 56955,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.6195,
-    "flat_text_similarity": 0.3174,
-    "word_text_similarity": 0.6195,
-    "text_diff": "--- minipdf/classic120_chart_with_date_axis.pdf\n+++ reference/classic120_chart_with_date_axis.pdf\n@@ -1,26 +1,32 @@\n Date Downloads\n\n-2025-01-0 581 Monthly Downloads (2025)\n\n+2025-01-0 581\n\n+Monthly Downloads (20\n\n 2025-01-3 594\n\n-2025-03-0 592 900\n\n+2025-03-0 592\n\n+1000\n\n 2025-04-0 692\n\n+2025-05-0 760 900\n\n+2025-05-3 733\n\n 800\n\n-2025-05-0 760\n\n-2025-05-3 733\n\n+2025-06-3 763\n\n 700\n\n-2025-06-3 763\n\n+2025-07-3 767\n\n 600\n\n-2025-07-3 767\n\n 2025-08-2 774\n\n+Downloads\n\n 500\n\n 2025-09-2 788\n\n 400\n\n 2025-10-2 820\n\n-Downloads\n\n-2025-11-2 865\n\n-300\n\n+2025-11-2 865 300\n\n 200\n\n 100\n\n 0\n\n-2025-01-012025-01-312025-03-022025-04-012025-05-012025-05-312025-06-302025-07-302025-08-292025-09\n\n+2025- 2025- 2025- 2025- 2025- 2025- 2025- 2025- 2025- 2\n\n+01-01 01-31 03-02 04-01 05-01 05-31 06-30 07-30 08-29 0\n\n Date\n\n----PAGE---\n+---PAGE---\n\n+025)\n\n+Downloads\n\n+2025- 2025- 2025-\n\n+09-28 10-28 11-27",
+    "text_similarity": 0.5738,
+    "flat_text_similarity": 0.3138,
+    "word_text_similarity": 0.5738,
+    "text_diff": "--- minipdf/classic120_chart_with_date_axis.pdf\n+++ reference/classic120_chart_with_date_axis.pdf\n@@ -1,26 +1,32 @@\n Date Downloads\n\n-2025-01-0 581 Monthly Downloads (2025)\n\n+2025-01-0 581\n\n+Monthly Downloads (20\n\n 2025-01-3 594\n\n-2025-03-0 592 900\n\n+2025-03-0 592\n\n+1000\n\n 2025-04-0 692\n\n+2025-05-0 760 900\n\n+2025-05-3 733\n\n 800\n\n-2025-05-0 760\n\n-2025-05-3 733\n\n+2025-06-3 763\n\n 700\n\n-2025-06-3 763\n\n+2025-07-3 767\n\n 600\n\n-2025-07-3 767\n\n 2025-08-2 774\n\n+Downloads\n\n 500\n\n 2025-09-2 788\n\n 400\n\n 2025-10-2 820\n\n-Downloads\n\n-2025-11-2 865\n\n-300\n\n+2025-11-2 865 300\n\n 200\n\n 100\n\n 0\n\n-2025-01-01 2025-01-31 2025-03-02 2025-04-01 2025-05-01 2025-05-31 2025-06-30 2025-07-30 2025-08-29 2025-09\n\n+2025- 2025- 2025- 2025- 2025- 2025- 2025- 2025- 2025- 2\n\n+01-01 01-31 03-02 04-01 05-01 05-31 06-30 07-30 08-29 0\n\n Date\n\n----PAGE---\n+---PAGE---\n\n+025)\n\n+Downloads\n\n+2025- 2025- 2025-\n\n+09-28 10-28 11-27",
     "visual_scores": [
-      0.9727,
+      0.9726,
       0.5939
     ],
     "visual_avg": 0.7833,
@@ -1031,13 +1031,13 @@
         "reference_img": "classic120_chart_with_date_axis_p2_reference.png"
       }
     ],
-    "overall_score": 0.7611
+    "overall_score": 0.7428
   },
   {
     "name": "classic121_thin_borders",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8390,
+    "minipdf_size": 9122,
     "reference_size": 39925,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1062,7 +1062,7 @@
     "name": "classic122_thick_outer_thin_inner",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8382,
+    "minipdf_size": 9114,
     "reference_size": 40404,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1087,18 +1087,18 @@
     "name": "classic123_dashed_borders",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2759,
+    "minipdf_size": 2981,
     "reference_size": 35187,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9802,
-    "flat_text_similarity": 0.9802,
-    "word_text_similarity": 0.7273,
-    "text_diff": "--- minipdf/classic123_dashed_borders.pdf\n+++ reference/classic123_dashed_borders.pdf\n@@ -1,6 +1,6 @@\n-Border Styl Sample\n\n+Border StSample\n\n dashed Bordered cell\n\n dotted Bordered cell\n\n dashDot Bordered cell\n\n-dashDotDo Bordered cell\n\n-mediumDa Bordered cell\n+dashDotDoBordered cell\n\n+mediumDaBordered cell",
+    "text_similarity": 0.9839,
+    "flat_text_similarity": 0.9839,
+    "word_text_similarity": 0.7742,
+    "text_diff": "--- minipdf/classic123_dashed_borders.pdf\n+++ reference/classic123_dashed_borders.pdf\n@@ -1,6 +1,6 @@\n-Border StySample\n\n+Border StSample\n\n dashed Bordered cell\n\n dotted Bordered cell\n\n dashDot Bordered cell\n\n-dashDotDBordered cell\n\n-mediumD Bordered cell\n+dashDotDoBordered cell\n\n+mediumDaBordered cell",
     "visual_scores": [
-      0.9961
+      0.9959
     ],
-    "visual_avg": 0.9961,
+    "visual_avg": 0.9959,
     "diff_images": [
       {
         "page": 1,
@@ -1106,13 +1106,13 @@
         "reference_img": "classic123_dashed_borders_p1_reference.png"
       }
     ],
-    "overall_score": 0.9905
+    "overall_score": 0.9919
   },
   {
     "name": "classic124_colored_borders",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3525,
+    "minipdf_size": 4092,
     "reference_size": 38667,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1137,18 +1137,18 @@
     "name": "classic125_solid_fills",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2232,
+    "minipdf_size": 2549,
     "reference_size": 39001,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9869,
-    "flat_text_similarity": 0.9869,
-    "word_text_similarity": 0.7059,
-    "text_diff": "--- minipdf/classic125_solid_fills.pdf\n+++ reference/classic125_solid_fills.pdf\n@@ -1,9 +1,9 @@\n-Fill Name Filled Cell\n\n+Fill NameFilled Cell\n\n Light Blue Background\n\n-Light Gree Background\n\n-Light Yello Background\n\n+Light GreeBackground\n\n+Light YelloBackground\n\n Light Red Background\n\n-Light Purpl Background\n\n-Light Oran Background\n\n+Light PurplBackground\n\n+Light OranBackground\n\n Gray 25% Background\n\n Sky Blue Background",
+    "text_similarity": 0.9894,
+    "flat_text_similarity": 0.9894,
+    "word_text_similarity": 0.7556,
+    "text_diff": "--- minipdf/classic125_solid_fills.pdf\n+++ reference/classic125_solid_fills.pdf\n@@ -1,9 +1,9 @@\n-Fill Name Filled Cell\n\n-Light BlueBackground\n\n+Fill NameFilled Cell\n\n+Light Blue Background\n\n Light GreeBackground\n\n Light YelloBackground\n\n Light Red Background\n\n-Light PurpBackground\n\n+Light PurplBackground\n\n Light OranBackground\n\n-Gray 25%Background\n\n+Gray 25% Background\n\n Sky Blue Background",
     "visual_scores": [
-      0.9927
+      0.9924
     ],
-    "visual_avg": 0.9927,
+    "visual_avg": 0.9924,
     "diff_images": [
       {
         "page": 1,
@@ -1156,24 +1156,24 @@
         "reference_img": "classic125_solid_fills_p1_reference.png"
       }
     ],
-    "overall_score": 0.9918
+    "overall_score": 0.9927
   },
   {
     "name": "classic126_dark_header",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2430,
+    "minipdf_size": 3083,
     "reference_size": 44287,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9953,
-    "flat_text_similarity": 0.9953,
-    "word_text_similarity": 0.8966,
-    "text_diff": "--- minipdf/classic126_dark_header.pdf\n+++ reference/classic126_dark_header.pdf\n@@ -1,5 +1,5 @@\n-Employee Departmen Salary Start Date\n\n-Alice Smith Engineerin 95000 2020-03-15\n\n+EmployeeDepartmen Salary Start Date\n\n+Alice SmithEngineerin 95000 2020-03-15\n\n Bob Jones Marketing 72000 2019-07-01\n\n Carol Lee Finance 88000 2021-01-10\n\n David Kim Engineerin 102000 2018-11-20\n",
+    "text_similarity": 0.9929,
+    "flat_text_similarity": 0.9929,
+    "word_text_similarity": 0.8519,
+    "text_diff": "--- minipdf/classic126_dark_header.pdf\n+++ reference/classic126_dark_header.pdf\n@@ -1,6 +1,6 @@\n EmployeeDepartmen Salary Start Date\n\n-Alice SmitEngineerin 95000 2020-03-15\n\n-Bob JonesMarketing 72000 2019-07-01\n\n+Alice SmithEngineerin 95000 2020-03-15\n\n+Bob Jones Marketing 72000 2019-07-01\n\n Carol Lee Finance 88000 2021-01-10\n\n-David KimEngineerin 102000 2018-11-20\n\n+David Kim Engineerin 102000 2018-11-20\n\n Eva Chen HR 68000 2022-05-03",
     "visual_scores": [
-      0.9915
+      0.9917
     ],
-    "visual_avg": 0.9915,
+    "visual_avg": 0.9917,
     "diff_images": [
       {
         "page": 1,
@@ -1181,20 +1181,20 @@
         "reference_img": "classic126_dark_header_p1_reference.png"
       }
     ],
-    "overall_score": 0.9947
+    "overall_score": 0.9938
   },
   {
     "name": "classic127_font_styles",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1872,
+    "minipdf_size": 2205,
     "reference_size": 72555,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9964,
-    "flat_text_similarity": 0.9964,
-    "word_text_similarity": 0.9545,
-    "text_diff": "--- minipdf/classic127_font_styles.pdf\n+++ reference/classic127_font_styles.pdf\n@@ -2,8 +2,8 @@\n Bold Sample Bold text\n\n Italic Sample Italic text\n\n Underline Sample Underline text\n\n-Strikethrou Sample Strikethrough text\n\n+Strikethro Sample Strikethrough text\n\n Bold Italic Sample Bold Italic text\n\n-Bold Under Sample Bold Underline text\n\n+Bold Unde Sample Bold Underline text\n\n Double Un Sample Double Underline text\n\n Bold + Red Sample Bold + Red text",
+    "text_similarity": 0.9945,
+    "flat_text_similarity": 0.9945,
+    "word_text_similarity": 0.907,
+    "text_diff": "--- minipdf/classic127_font_styles.pdf\n+++ reference/classic127_font_styles.pdf\n@@ -4,6 +4,6 @@\n Underline Sample Underline text\n\n Strikethro Sample Strikethrough text\n\n Bold Italic Sample Bold Italic text\n\n-Bold UndeSample Bold Underline text\n\n-Double UnSample Double Underline text\n\n-Bold + Re Sample Bold + Red text\n+Bold Unde Sample Bold Underline text\n\n+Double Un Sample Double Underline text\n\n+Bold + Red Sample Bold + Red text",
     "visual_scores": [
       0.9924
     ],
@@ -1206,13 +1206,13 @@
         "reference_img": "classic127_font_styles_p1_reference.png"
       }
     ],
-    "overall_score": 0.9955
+    "overall_score": 0.9948
   },
   {
     "name": "classic128_font_sizes",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1957,
+    "minipdf_size": 2397,
     "reference_size": 48278,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1237,7 +1237,7 @@
     "name": "classic129_alignment_combos",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1566,
+    "minipdf_size": 2015,
     "reference_size": 35431,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1287,14 +1287,14 @@
     "name": "classic130_wrap_and_indent",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1380,
+    "minipdf_size": 1528,
     "reference_size": 36937,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 0.9892,
-    "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/classic130_wrap_and_indent.pdf\n+++ reference/classic130_wrap_and_indent.pdf\n@@ -1,7 +1,7 @@\n Wrapped Text Indented Text\n\n This is a long text that should wrap\n\n-within the cell when text wrapping is\n\n-enabled.\n\n+within the cell when text wrapping\n\n+is enabled.\n\n Indent level 0\n\n Indent level 1\n\n Indent level 2\n",
+    "text_similarity": 0.9918,
+    "flat_text_similarity": 0.9918,
+    "word_text_similarity": 0.9855,
+    "text_diff": "--- minipdf/classic130_wrap_and_indent.pdf\n+++ reference/classic130_wrap_and_indent.pdf\n@@ -1,7 +1,7 @@\n Wrapped Text Indented Text\n\n This is a long text that should wrap\n\n within the cell when text wrapping\n\n-enabled.\n\n+is enabled.\n\n Indent level 0\n\n Indent level 1\n\n Indent level 2\n",
     "visual_scores": [
       0.9929
     ],
@@ -1306,13 +1306,13 @@
         "reference_img": "classic130_wrap_and_indent_p1_reference.png"
       }
     ],
-    "overall_score": 0.9972
+    "overall_score": 0.9939
   },
   {
     "name": "classic131_number_formats",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2548,
+    "minipdf_size": 3461,
     "reference_size": 43396,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1337,14 +1337,14 @@
     "name": "classic132_striped_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 16282,
+    "minipdf_size": 17608,
     "reference_size": 47692,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9984,
-    "flat_text_similarity": 0.9984,
+    "text_similarity": 0.9951,
+    "flat_text_similarity": 0.9951,
     "word_text_similarity": 0.972,
-    "text_diff": "--- minipdf/classic132_striped_table.pdf\n+++ reference/classic132_striped_table.pdf\n@@ -8,4 +8,4 @@\n Product 7 Sports 399.94 4.5\n\n Product 8 Sports 281.79 2.5\n\n Product 9 Sports 445.84 1.8\n\n-Product 10 Electronics 276.34 3.4\n+Product 10Electronics 276.34 3.4",
+    "text_diff": "--- minipdf/classic132_striped_table.pdf\n+++ reference/classic132_striped_table.pdf\n@@ -8,4 +8,4 @@\n Product 7 Sports 399.94 4.5\n\n Product 8 Sports 281.79 2.5\n\n Product 9 Sports 445.84 1.8\n\n-Product 1 Electronic 276.34 3.4\n+Product 10Electronics 276.34 3.4",
     "visual_scores": [
       0.9781
     ],
@@ -1356,13 +1356,13 @@
         "reference_img": "classic132_striped_table_p1_reference.png"
       }
     ],
-    "overall_score": 0.9906
+    "overall_score": 0.9893
   },
   {
     "name": "classic133_gradient_rows",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4365,
+    "minipdf_size": 5256,
     "reference_size": 54544,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1387,7 +1387,7 @@
     "name": "classic134_heatmap",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6267,
+    "minipdf_size": 8187,
     "reference_size": 44182,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1437,7 +1437,7 @@
     "name": "classic136_financial_report_styled",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8869,
+    "minipdf_size": 9525,
     "reference_size": 46675,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1462,7 +1462,7 @@
     "name": "classic137_checkerboard",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7937,
+    "minipdf_size": 10218,
     "reference_size": 42995,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1487,7 +1487,7 @@
     "name": "classic138_color_grid",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2063,
+    "minipdf_size": 2387,
     "reference_size": 26461,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1512,7 +1512,7 @@
     "name": "classic139_pattern_fills",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2836,
+    "minipdf_size": 3369,
     "reference_size": 43091,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1537,18 +1537,18 @@
     "name": "classic13_date_strings",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1403,
+    "minipdf_size": 1608,
     "reference_size": 29104,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.9738,
+    "flat_text_similarity": 0.9738,
+    "word_text_similarity": 0.2857,
+    "text_diff": "--- minipdf/classic13_date_strings.pdf\n+++ reference/classic13_date_strings.pdf\n@@ -1,6 +1,6 @@\n Date Event\n\n-2025-01-1Launch\n\n-2025-06-3Release\n\n-2025-12-2Holiday\n\n-2026-01-0New Year\n\n-2026-02-2Today\n+2025-01-1 Launch\n\n+2025-06-3 Release\n\n+2025-12-2 Holiday\n\n+2026-01-0 New Year\n\n+2026-02-2 Today",
     "visual_scores": [
-      0.9967
+      0.9964
     ],
-    "visual_avg": 0.9967,
+    "visual_avg": 0.9964,
     "diff_images": [
       {
         "page": 1,
@@ -1556,13 +1556,13 @@
         "reference_img": "classic13_date_strings_p1_reference.png"
       }
     ],
-    "overall_score": 0.9987
+    "overall_score": 0.9881
   },
   {
     "name": "classic140_rotated_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1956,
+    "minipdf_size": 2436,
     "reference_size": 39253,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1587,7 +1587,7 @@
     "name": "classic141_mixed_edge_borders",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2412,
+    "minipdf_size": 2658,
     "reference_size": 36300,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1612,7 +1612,7 @@
     "name": "classic142_styled_invoice",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 10539,
+    "minipdf_size": 11604,
     "reference_size": 52625,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1637,21 +1637,21 @@
     "name": "classic143_colored_tabs",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2711,
+    "minipdf_size": 3160,
     "reference_size": 43510,
     "minipdf_pages": 4,
     "reference_pages": 4,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.9972,
+    "flat_text_similarity": 0.9966,
+    "word_text_similarity": 0.963,
+    "text_diff": "--- minipdf/classic143_colored_tabs.pdf\n+++ reference/classic143_colored_tabs.pdf\n@@ -11,5 +11,5 @@\n Cost 30000\n\n ---PAGE---\n\n Label Value\n\n-Employee 50\n\n+Employees 50\n\n Open Role 5",
     "visual_scores": [
-      0.9989,
+      0.9988,
       0.9988,
       0.9986,
       0.9991
     ],
-    "visual_avg": 0.9989,
+    "visual_avg": 0.9988,
     "diff_images": [
       {
         "page": 1,
@@ -1674,13 +1674,13 @@
         "reference_img": "classic143_colored_tabs_p4_reference.png"
       }
     ],
-    "overall_score": 0.9996
+    "overall_score": 0.9984
   },
   {
     "name": "classic144_note_style_cells",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3105,
+    "minipdf_size": 3345,
     "reference_size": 48027,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1705,7 +1705,7 @@
     "name": "classic145_status_badges",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 11825,
+    "minipdf_size": 12809,
     "reference_size": 60432,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1730,7 +1730,7 @@
     "name": "classic146_double_border_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7345,
+    "minipdf_size": 7955,
     "reference_size": 41798,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1755,7 +1755,7 @@
     "name": "classic147_multi_sheet_styled",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 16232,
+    "minipdf_size": 17447,
     "reference_size": 54487,
     "minipdf_pages": 3,
     "reference_pages": 3,
@@ -1792,7 +1792,7 @@
     "name": "classic148_frozen_styled_grid",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 45220,
+    "minipdf_size": 49504,
     "reference_size": 67067,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1817,7 +1817,7 @@
     "name": "classic149_merged_styled_sections",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 11479,
+    "minipdf_size": 12578,
     "reference_size": 48481,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1842,7 +1842,7 @@
     "name": "classic14_decimal_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1351,
+    "minipdf_size": 1591,
     "reference_size": 29057,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1867,7 +1867,7 @@
     "name": "classic150_kitchen_sink_styles",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3441,
+    "minipdf_size": 4395,
     "reference_size": 74184,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1892,7 +1892,7 @@
     "name": "classic151_multilingual_greetings",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4350615,
+    "minipdf_size": 4351681,
     "reference_size": 103044,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1917,7 +1917,7 @@
     "name": "classic152_emoji_sampler",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 438809,
+    "minipdf_size": 439169,
     "reference_size": 69423,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1942,7 +1942,7 @@
     "name": "classic153_currency_symbols",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4128779,
+    "minipdf_size": 4129832,
     "reference_size": 41642,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1967,7 +1967,7 @@
     "name": "classic154_math_symbols",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4621153,
+    "minipdf_size": 4621563,
     "reference_size": 61270,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1992,7 +1992,7 @@
     "name": "classic155_diacritical_marks",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4131138,
+    "minipdf_size": 4131578,
     "reference_size": 37150,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2017,7 +2017,7 @@
     "name": "classic156_rtl_bidi_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3855319,
+    "minipdf_size": 3855519,
     "reference_size": 30355,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2042,7 +2042,7 @@
     "name": "classic157_cjk_extended",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4173586,
+    "minipdf_size": 4174242,
     "reference_size": 124659,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2067,7 +2067,7 @@
     "name": "classic158_emoji_skin_tones",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4098821,
+    "minipdf_size": 4099061,
     "reference_size": 46353,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2092,7 +2092,7 @@
     "name": "classic159_zwj_emoji",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 605289,
+    "minipdf_size": 605699,
     "reference_size": 59557,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2117,18 +2117,18 @@
     "name": "classic15_negative_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1450,
+    "minipdf_size": 1723,
     "reference_size": 28526,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.9939,
+    "flat_text_similarity": 0.9939,
+    "word_text_similarity": 0.9375,
+    "text_diff": "--- minipdf/classic15_negative_numbers.pdf\n+++ reference/classic15_negative_numbers.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n Loss -100\n\n-Small Los -0.5\n\n+Small Loss -0.5\n\n Zero 0\n\n Gain 50\n\n Big Loss -99999.99\n",
     "visual_scores": [
-      0.9976
+      0.9974
     ],
-    "visual_avg": 0.9976,
+    "visual_avg": 0.9974,
     "diff_images": [
       {
         "page": 1,
@@ -2136,13 +2136,13 @@
         "reference_img": "classic15_negative_numbers_p1_reference.png"
       }
     ],
-    "overall_score": 0.999
+    "overall_score": 0.9965
   },
   {
     "name": "classic160_punctuation_marks",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4259932,
+    "minipdf_size": 4260260,
     "reference_size": 75536,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2167,7 +2167,7 @@
     "name": "classic161_box_drawing",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4288686,
+    "minipdf_size": 4288966,
     "reference_size": 55369,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2192,7 +2192,7 @@
     "name": "classic162_cjk_emoji_styled",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 430783,
+    "minipdf_size": 431393,
     "reference_size": 78504,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2217,7 +2217,7 @@
     "name": "classic163_cyrillic_alphabets",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3953397,
+    "minipdf_size": 3953637,
     "reference_size": 35137,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2242,7 +2242,7 @@
     "name": "classic164_indic_scripts",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 275668,
+    "minipdf_size": 275908,
     "reference_size": 38784,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2267,7 +2267,7 @@
     "name": "classic165_southeast_asian",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3948386,
+    "minipdf_size": 3948626,
     "reference_size": 68897,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2292,7 +2292,7 @@
     "name": "classic166_emoji_progress",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4096161,
+    "minipdf_size": 4096728,
     "reference_size": 40333,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2317,7 +2317,7 @@
     "name": "classic167_musical_symbols",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4164030,
+    "minipdf_size": 4164276,
     "reference_size": 78122,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2342,7 +2342,7 @@
     "name": "classic168_mixed_ltr_rtl_styled",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4131798,
+    "minipdf_size": 4132208,
     "reference_size": 43114,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2367,7 +2367,7 @@
     "name": "classic169_korean_invoice",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4171267,
+    "minipdf_size": 4172333,
     "reference_size": 55693,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2392,18 +2392,18 @@
     "name": "classic16_percentage_strings",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1355,
+    "minipdf_size": 1587,
     "reference_size": 29888,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9939,
-    "flat_text_similarity": 0.9939,
-    "word_text_similarity": 0.8696,
-    "text_diff": "--- minipdf/classic16_percentage_strings.pdf\n+++ reference/classic16_percentage_strings.pdf\n@@ -1,5 +1,5 @@\n Metric Rate\n\n-Conversion 12.5%\n\n+Conversion12.5%\n\n Bounce 45.3%\n\n Retention 88.7%\n\n Churn 3.2%\n",
+    "text_similarity": 0.9938,
+    "flat_text_similarity": 0.9938,
+    "word_text_similarity": 0.9091,
+    "text_diff": "--- minipdf/classic16_percentage_strings.pdf\n+++ reference/classic16_percentage_strings.pdf\n@@ -1,5 +1,5 @@\n Metric Rate\n\n-Conversio12.5%\n\n+Conversion12.5%\n\n Bounce 45.3%\n\n Retention 88.7%\n\n Churn 3.2%\n",
     "visual_scores": [
-      0.9975
+      0.9969
     ],
-    "visual_avg": 0.9975,
+    "visual_avg": 0.9969,
     "diff_images": [
       {
         "page": 1,
@@ -2411,13 +2411,13 @@
         "reference_img": "classic16_percentage_strings_p1_reference.png"
       }
     ],
-    "overall_score": 0.9966
+    "overall_score": 0.9963
   },
   {
     "name": "classic170_emoji_dashboard",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 150151,
+    "minipdf_size": 150972,
     "reference_size": 50748,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2442,7 +2442,7 @@
     "name": "classic171_ipa_phonetic",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4140392,
+    "minipdf_size": 4140712,
     "reference_size": 41195,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2467,7 +2467,7 @@
     "name": "classic172_emoji_timeline",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 152763,
+    "minipdf_size": 153870,
     "reference_size": 53459,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2492,14 +2492,14 @@
     "name": "classic173_african_languages",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4127988,
+    "minipdf_size": 4128644,
     "reference_size": 41297,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.7804,
-    "flat_text_similarity": 0.7804,
-    "word_text_similarity": 0.6804,
-    "text_diff": "--- minipdf/classic173_african_languages.pdf\n+++ reference/classic173_african_languages.pdf\n@@ -1,12 +1,10 @@\n Language Greeting Region\n\n Swahili Habari! Karibu sana. East Africa\n\n-Amharic Ethiopia\n\n-ሰላም! እንኳን ደህና መጣህ.\n\n-Yoruba Nigeria\n\n-Ẹ kú àár ọ̀ ! Ẹ kú al ẹ́ !\n\n+ሰላም እንኳንደህናመጣህ\n\n+Amharic ! . Ethiopia\n\n+Yoruba Ẹ kú àárọ̀! Ẹ kú alẹ́! Nigeria\n\n Zulu Sawubona! Unjani? South Africa\n\n Hausa Sannu! Barka da zuwa. West Africa\n\n-Igbo Nigeria\n\n-Nn ọọ ! Ked ụ ?\n\n-Tigrinya Eritrea\n\n-ሰላም! ከመይ ኣለኻ?\n+Igbo Nnọọ! Kedụ? Nigeria\n\n+ሰላም ከመይኣለኻ\n\n+Tigrinya ! ? Eritrea",
+    "text_similarity": 0.776,
+    "flat_text_similarity": 0.776,
+    "word_text_similarity": 0.6458,
+    "text_diff": "--- minipdf/classic173_african_languages.pdf\n+++ reference/classic173_african_languages.pdf\n@@ -1,12 +1,10 @@\n Language Greeting Region\n\n Swahili Habari! Karibu sana. East Africa\n\n-Amharic Ethiopia\n\n-ሰላም! እንኳን ደህና መጣህ.\n\n-Yoruba Nigeria\n\n-kú àár ọ̀ ! Ẹ kú al ẹ́ !\n\n+ሰላም እንኳንደህናመጣህ\n\n+Amharic ! . Ethiopia\n\n+Yoruba Ẹ kú àárọ̀! Ẹ kú alẹ́! Nigeria\n\n Zulu Sawubona! Unjani? South Africa\n\n Hausa Sannu! Barka da zuwa. West Africa\n\n-Igbo Nigeria\n\n-Nn ọọ ! Ked ụ ?\n\n-Tigrinya Eritrea\n\n-ሰላም! ከመይ ኣለኻ?\n+Igbo Nnọọ! Kedụ? Nigeria\n\n+ሰላም ከመይኣለኻ\n\n+Tigrinya ! ? Eritrea",
     "visual_scores": [
       0.9905
     ],
@@ -2511,13 +2511,13 @@
         "reference_img": "classic173_african_languages_p1_reference.png"
       }
     ],
-    "overall_score": 0.9084
+    "overall_score": 0.9066
   },
   {
     "name": "classic174_technical_symbols",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4163703,
+    "minipdf_size": 4164072,
     "reference_size": 45148,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2542,14 +2542,14 @@
     "name": "classic175_multiscript_catalog",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 819563,
+    "minipdf_size": 821039,
     "reference_size": 98125,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.8296,
-    "flat_text_similarity": 0.8296,
+    "text_similarity": 0.8315,
+    "flat_text_similarity": 0.8315,
     "word_text_similarity": 0.8283,
-    "text_diff": "--- minipdf/classic175_multiscript_catalog.pdf\n+++ reference/classic175_multiscript_catalog.pdf\n@@ -1,17 +1,11 @@\n # Product (EN) Product (Local) Price Icon\n\n-1 Green Tea ¥500\n\n-緑茶 🍵\n\n-2 Kimchi\n\n-김치 ₩3,000 🥬\n\n-3 Samosa\n\n-समोसा ₹ 50 🥟\n\n-4 Croissant Croissant €2.50\n\n-🥐\n\n-5 Taco Taco $3.99\n\n-🌮\n\n-6 Borscht\n\n-Борщ ₽ 250 🍲\n\n-7 Falafel\n\n-ﻞﻓﻼﻓ ₪15 🧆\n\n-8 Pad Thai\n\n-ผัดไทย ฿ 80 🍜\n+緑茶\n\n+1 Green Tea ¥500 🍵\n\n+2 Kimchi 김치 ₩3,000 🥬\n\n+समोसा\n\n+3 Samosa ₹50 🥟\n\n+4 Croissant Croissant €2.50 🥐\n\n+5 Taco Taco $3.99 🌮\n\n+6 Borscht Борщ ₽250 🍲\n\n+7 Falafelفالفل₪15 🧆\n\n+8 Pad Thai ผัดไทย ฿80 🍜",
+    "text_diff": "--- minipdf/classic175_multiscript_catalog.pdf\n+++ reference/classic175_multiscript_catalog.pdf\n@@ -1,17 +1,11 @@\n # Product (EN) Product (Local) Price Icon\n\n-1 Green Tea ¥500\n\n-緑茶 🍵\n\n-2 Kimchi\n\n-김치 ₩3,000 🥬\n\n-3 Samosa\n\n-समोसा ₹ 50 🥟\n\n-4 Croissant Croissant €2.50\n\n-🥐\n\n-5 Taco Taco $3.99\n\n-🌮\n\n-6 Borscht\n\n-Борщ ₽ 250 🍲\n\n-7 Falafel\n\n-ﻞﻓﻼ ₪15 🧆\n\n-8 Pad Thai\n\n-ผัดไทย ฿ 80 🍜\n+緑茶\n\n+1 Green Tea ¥500 🍵\n\n+2 Kimchi 김치 ₩3,000 🥬\n\n+समोसा\n\n+3 Samosa ₹50 🥟\n\n+4 Croissant Croissant €2.50 🥐\n\n+5 Taco Taco $3.99 🌮\n\n+6 Borscht Борщ ₽250 🍲\n\n+7 Falafelفالفل₪15 🧆\n\n+8 Pad Thai ผัดไทย ฿80 🍜",
     "visual_scores": [
       0.9877
     ],
@@ -2561,24 +2561,24 @@
         "reference_img": "classic175_multiscript_catalog_p1_reference.png"
       }
     ],
-    "overall_score": 0.9269
+    "overall_score": 0.9277
   },
   {
     "name": "classic176_combining_characters",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4339399,
+    "minipdf_size": 4339678,
     "reference_size": 43113,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.8706,
-    "flat_text_similarity": 0.8706,
-    "word_text_similarity": 0.848,
-    "text_diff": "--- minipdf/classic176_combining_characters.pdf\n+++ reference/classic176_combining_characters.pdf\n@@ -1,13 +1,8 @@\n Type Examples\n\n-Single combining\n\n-é = e + ́ ñ = n +\n\n-Double combining\n\n-ệ = e + ̣ +\n\n-Vietnamese\n\n-ắ ằ ẵ ẳ ặ ố ồ ỗ ổ ộ ứ ừ ữ ử ự\n\n-Zalgo-like\n\n-H e ̵̖̘ ̷̝̣ l l ̶̤ o ̴̥\n\n-Precomposed vs decomposed\n\n-ü (precomposed) vs u ̈ (decomposed)\n\n-Hangul Jamo\n\n-ㅎ ㅏ ㄴ ㄱ ㅡ ㄹ → 한글\n+Single combining é = e + ́   ñ = n + ̃\n\n+Double combining ệ = e + ̣ + ̂\n\n+Vietnamese ắ ằ ẵ ẳ ặ ố ồ ỗ ổ ộ ứ ừ ữ ử ự\n\n+Zalgo-like H̵̖̘e̷̝̣l̶̤l̴̥o̸̮\n\n+Precomposed vs decomposed ü (precomposed) vs ü (decomposed)\n\n+ㅎ ㅏ ㄴ ㄱ ㅡ ㄹ →\n\n+Hangul Jamo 한글",
+    "text_similarity": 0.8683,
+    "flat_text_similarity": 0.8683,
+    "word_text_similarity": 0.832,
+    "text_diff": "--- minipdf/classic176_combining_characters.pdf\n+++ reference/classic176_combining_characters.pdf\n@@ -1,13 +1,8 @@\n Type Examples\n\n-Single combining\n\n-é = e + ́ ñ = n +\n\n-Double combining\n\n-ệ = e + ̣ +\n\n-Vietnamese\n\n-ắ ằ ẵ ẳ ặ ố ồ ỗ ổ ộ ứ ừ ữ ử ự\n\n-Zalgo-like\n\n-H e ̵̖̘ ̷̝̣ l l ̶̤ o ̴̥\n\n-Precomposed vs decompose\n\n-ü (precomposed) vs u ̈ (decomposed)\n\n-Hangul Jamo\n\n-ㅎ ㅏ ㄴ ㄱ ㅡ ㄹ → 한글\n+Single combining é = e + ́   ñ = n + ̃\n\n+Double combining ệ = e + ̣ + ̂\n\n+Vietnamese ắ ằ ẵ ẳ ặ ố ồ ỗ ổ ộ ứ ừ ữ ử ự\n\n+Zalgo-like H̵̖̘e̷̝̣l̶̤l̴̥o̸̮\n\n+Precomposed vs decomposed ü (precomposed) vs ü (decomposed)\n\n+ㅎ ㅏ ㄴ ㄱ ㅡ ㄹ →\n\n+Hangul Jamo 한글",
     "visual_scores": [
-      0.9933
+      0.9931
     ],
-    "visual_avg": 0.9933,
+    "visual_avg": 0.9931,
     "diff_images": [
       {
         "page": 1,
@@ -2586,13 +2586,13 @@
         "reference_img": "classic176_combining_characters_p1_reference.png"
       }
     ],
-    "overall_score": 0.9456
+    "overall_score": 0.9446
   },
   {
     "name": "classic177_emoji_calendar",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 430337,
+    "minipdf_size": 431390,
     "reference_size": 68347,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2617,18 +2617,18 @@
     "name": "classic178_caucasus_ethiopic",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4138299,
+    "minipdf_size": 4138526,
     "reference_size": 41776,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9313,
-    "flat_text_similarity": 0.9313,
+    "text_similarity": 0.933,
+    "flat_text_similarity": 0.933,
     "word_text_similarity": 0.8235,
-    "text_diff": "--- minipdf/classic178_caucasus_ethiopic.pdf\n+++ reference/classic178_caucasus_ethiopic.pdf\n@@ -1,11 +1,7 @@\n Script Sample Text\n\n-Georgian\n\n-საქართველო არის ძველი ცივილიზაცია .\n\n-Armenian\n\n-Հայաստանը հին քաղաքակրթություն ունի .\n\n+Georgian საქართველო არის ძველი ცივილიზაცია.\n\n+Armenian Հայաստանը հին քաղաքակրթություն ունի.\n\n+ኢትዮጵያየጥንታዊሥልጣኔምድርናት።\n\n Ethiopic\n\n-ኢትዮጵያ የጥንታዊ ሥልጣኔ ምድር ናት።\n\n-Georgian mkhedru\n\n-ა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ\n\n-Armenian alphabe\n\n-Ա Բ Գ Դ Ե Զ Է Ը Թ Ժ Ի Լ Խ Ծ Կ\n+Georgian mkhedrა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ\n\n+Armenian alphabԱ Բ Գ Դ Ե Զ Է Ը Թ Ժ Ի Լ Խ Ծ Կ",
+    "text_diff": "--- minipdf/classic178_caucasus_ethiopic.pdf\n+++ reference/classic178_caucasus_ethiopic.pdf\n@@ -1,11 +1,7 @@\n Script Sample Text\n\n-Georgian\n\n-საქართველო არის ძველი ცივილიზაცია .\n\n-Armenian\n\n-Հայաստանը հին քաղաքակրթություն ունի .\n\n+Georgian საქართველო არის ძველი ცივილიზაცია.\n\n+Armenian Հայաստանը հին քաղաքակրթություն ունի.\n\n+ኢትዮጵያየጥንታዊሥልጣኔምድርናት።\n\n Ethiopic\n\n-ኢትዮጵያ የጥንታዊ ሥልጣኔ ምድር ናት።\n\n-Georgian mkhed\n\n-ა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ\n\n-Armenian alphab\n\n-Ա Բ Գ Դ Ե Զ Է Ը Թ Ժ Ի Լ Խ Ծ Կ\n+Georgian mkhedrა ბ გ დ ე ვ ზ თ ი კ ლ მ ნ ო პ\n\n+Armenian alphabԱ Բ Գ Դ Ե Զ Է Ը Թ Ժ Ի Լ Խ Ծ Կ",
     "visual_scores": [
-      0.9914
+      0.9913
     ],
-    "visual_avg": 0.9914,
+    "visual_avg": 0.9913,
     "diff_images": [
       {
         "page": 1,
@@ -2636,13 +2636,13 @@
         "reference_img": "classic178_caucasus_ethiopic_p1_reference.png"
       }
     ],
-    "overall_score": 0.9691
+    "overall_score": 0.9697
   },
   {
     "name": "classic179_emoji_inventory",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4101723,
+    "minipdf_size": 4103527,
     "reference_size": 72495,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2667,7 +2667,7 @@
     "name": "classic17_currency_strings",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1467,
+    "minipdf_size": 1740,
     "reference_size": 29862,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2692,7 +2692,7 @@
     "name": "classic180_polyglot_paragraph",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4310872,
+    "minipdf_size": 4311241,
     "reference_size": 79238,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2717,7 +2717,7 @@
     "name": "classic181_feedback_tracker_with_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 11989,
+    "minipdf_size": 12718,
     "reference_size": 57534,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -2748,19 +2748,19 @@
     "name": "classic182_dense_long_text_columns",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5709,
+    "minipdf_size": 7832,
     "reference_size": 64015,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.9287,
-    "flat_text_similarity": 0.8315,
-    "word_text_similarity": 0.9202,
-    "text_diff": "--- minipdf/classic182_dense_long_text_columns.pdf\n+++ reference/classic182_dense_long_text_columns.pdf\n@@ -1,19 +1,19 @@\n ID First Name Last Name Department Position Title\n\n 1001 Alexander Papadopoulos Engineering Senior Software Engineer\n\n-1002 Magdalena Kowalczyk Human Resources HR Business Partner Lead\n\n+1002 Magdalena Kowalczyk Human ResourcesHR Business Partner Lead\n\n 1003 Christopher O'Sullivan Finance Chief Financial Analyst\n\n-1004 Priyanka Ramasubraman Marketing Digital Marketing Strategist\n\n-1005 Jean-Pierre Beaumont Sales Regional Sales Director (EMEA)\n\n+1004 Priyanka RamasubramanMarketing Digital Marketing Strategist\n\n+1005 Jean-Pierre Beaumont Sales Regional Sales Director (EM\n\n 1006 Anastasia Volkov Engineering Principal Data Scientist\n\n-1007 Mohammed Al-Rashidi Operations Supply Chain Optimization Manager\n\n+1007 Mohammed Al-Rashidi Operations Supply Chain Optimization\n\n 1008 Guadalupe Hernandez Legal Senior Corporate Counsel\n\n ---PAGE---\n\n Email Address Phone Notes\n\n-alexander.papadopoulos@example.c +1-555-0101 Transferred from Athens office in Q2\n\n-magdalena.kowalczyk@example.co +1-555-0102 Fluent in Polish, German, and English\n\n-christopher.osullivan@example.com +1-555-0103 CPA certified, MBA from Wharton\n\n+alexander.papadopoulos@exampl +1-555-0101 Transferred from Athens office in Q2\n\n+magdalena.kowalczyk@example.c +1-555-0102 Fluent in Polish, German, and English\n\n+christopher.osullivan@example.c +1-555-0103 CPA certified, MBA from Wharton\n\n priyanka.r@example.com +1-555-0104 Led rebranding campaign for APAC region\n\n-jean-pierre.beaumont@example.com +1-555-0105 15+ years experience in B2B SaaS\n\n+jean-pierre.beaumont@example.c +1-555-0105 15+ years experience in B2B SaaS\n\n anastasia.volkov@example.com +1-555-0106 PhD in Machine Learning, Stanford\n\n-mohammed.alrashidi@example.com +1-555-0107 Six Sigma Black Belt certified\n\n-guadalupe.hernandez@example.co +1-555-0108 Bar admitted in CA, NY, TX\n+mohammed.alrashidi@example.c +1-555-0107 Six Sigma Black Belt certified\n\n+guadalupe.hernandez@example.c +1-555-0108 Bar admitted in CA, NY, TX",
+    "text_similarity": 0.9243,
+    "flat_text_similarity": 0.8256,
+    "word_text_similarity": 0.8819,
+    "text_diff": "--- minipdf/classic182_dense_long_text_columns.pdf\n+++ reference/classic182_dense_long_text_columns.pdf\n@@ -1,19 +1,19 @@\n ID First Name Last Name Department Position Title\n\n-1001 Alexander PapadopoulosEngineering Senior Software Engineer\n\n-1002 Magdalena Kowalczyk Human ResourcHR Business Partner Lead\n\n+1001 Alexander Papadopoulos Engineering Senior Software Engineer\n\n+1002 Magdalena Kowalczyk Human ResourcesHR Business Partner Lead\n\n 1003 Christopher O'Sullivan Finance Chief Financial Analyst\n\n-1004 Priyanka RamasubramaMarketing Digital Marketing Strategist\n\n-1005 Jean-Pierre Beaumont Sales Regional Sales Director (EMEA)\n\n+1004 Priyanka RamasubramanMarketing Digital Marketing Strategist\n\n+1005 Jean-Pierre Beaumont Sales Regional Sales Director (EM\n\n 1006 Anastasia Volkov Engineering Principal Data Scientist\n\n-1007 Mohammed Al-Rashidi Operations Supply Chain Optimization Manager\n\n+1007 Mohammed Al-Rashidi Operations Supply Chain Optimization\n\n 1008 Guadalupe Hernandez Legal Senior Corporate Counsel\n\n ---PAGE---\n\n Email Address Phone Notes\n\n-alexander.papadopoulos@exam+1-555-0101 Transferred from Athens office in Q2\n\n-magdalena.kowalczyk@example+1-555-0102 Fluent in Polish, German, and English\n\n-christopher.osullivan@example.+1-555-0103 CPA certified, MBA from Wharton\n\n+alexander.papadopoulos@exampl +1-555-0101 Transferred from Athens office in Q2\n\n+magdalena.kowalczyk@example.c +1-555-0102 Fluent in Polish, German, and English\n\n+christopher.osullivan@example.c +1-555-0103 CPA certified, MBA from Wharton\n\n priyanka.r@example.com +1-555-0104 Led rebranding campaign for APAC region\n\n-jean-pierre.beaumont@example+1-555-0105 15+ years experience in B2B SaaS\n\n-anastasia.volkov@example.com+1-555-0106 PhD in Machine Learning, Stanford\n\n-mohammed.alrashidi@example +1-555-0107 Six Sigma Black Belt certified\n\n-guadalupe.hernandez@example+1-555-0108 Bar admitted in CA, NY, TX\n+jean-pierre.beaumont@example.c +1-555-0105 15+ years experience in B2B SaaS\n\n+anastasia.volkov@example.com +1-555-0106 PhD in Machine Learning, Stanford\n\n+mohammed.alrashidi@example.c +1-555-0107 Six Sigma Black Belt certified\n\n+guadalupe.hernandez@example.c +1-555-0108 Bar admitted in CA, NY, TX",
     "visual_scores": [
-      0.9854,
-      0.984
+      0.9838,
+      0.9816
     ],
-    "visual_avg": 0.9847,
+    "visual_avg": 0.9827,
     "diff_images": [
       {
         "page": 1,
@@ -2773,13 +2773,13 @@
         "reference_img": "classic182_dense_long_text_columns_p2_reference.png"
       }
     ],
-    "overall_score": 0.9654
+    "overall_score": 0.9628
   },
   {
     "name": "classic183_mixed_content_grid",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5493,
+    "minipdf_size": 5741,
     "reference_size": 45038,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2804,18 +2804,18 @@
     "name": "classic184_wide_narrow_columns",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 13100,
+    "minipdf_size": 20647,
     "reference_size": 85967,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.9912,
+    "flat_text_similarity": 0.9912,
+    "word_text_similarity": 0.85,
+    "text_diff": "--- minipdf/classic184_wide_narrow_columns.pdf\n+++ reference/classic184_wide_narrow_columns.pdf\n@@ -1,21 +1,21 @@\n ID Date Src Dst Type Qty Price Tax Total Status\n\n-1 2026-03-23W6 D6 Return 36 8.86 0.89 9.75 Return\n\n-2 2026-03-28W8 D1 Sale 69 463.93 46.39 510.32 Return\n\n-3 2026-03-12W4 D2 Transfer 36 170.83 17.08 187.91 Shipped\n\n-4 2026-03-04W9 D2 Transfer 20 325.16 32.52 357.68 Shipped\n\n-5 2026-03-26W7 D2 Transfer 2 486.72 48.67 535.39 Shipped\n\n-6 2026-03-25W6 D9 Return 69 19.84 1.98 21.82 Return\n\n-7 2026-03-22W6 D4 Transfer 13 346.48 34.65 381.13 Pending\n\n-8 2026-03-05W2 D4 Return 15 393.73 39.37 433.1 Cancel\n\n-9 2026-03-19W5 D4 Sale 39 489.68 48.97 538.65 Cancel\n\n-10 2026-03-13W7 D7 Transfer 17 361.77 36.18 397.95 Cancel\n\n-11 2026-03-11W6 D7 Sale 85 445.67 44.57 490.24 OK\n\n-12 2026-03-11W9 D1 Transfer 57 132.95 13.29 146.24 Shipped\n\n-13 2026-03-01W8 D8 Sale 32 13.27 1.33 14.6 OK\n\n-14 2026-03-14W3 D1 Sale 21 236.06 23.61 259.67 Shipped\n\n-15 2026-03-04W2 D5 Sale 85 398.54 39.85 438.39 Cancel\n\n-16 2026-03-28W4 D6 Return 24 335.86 33.59 369.45 Cancel\n\n-17 2026-03-15W9 D2 Transfer 41 209.21 20.92 230.13 OK\n\n-18 2026-03-14W1 D5 Return 57 8.95 0.9 9.85 OK\n\n-19 2026-03-12W8 D6 Transfer 51 404.15 40.41 444.56 Pending\n\n-20 2026-03-03W8 D4 Return 79 320.74 32.07 352.81 OK\n+1 2026-03-23 W6 D6 Return 36 8.86 0.89 9.75 Return\n\n+2 2026-03-28 W8 D1 Sale 69 463.93 46.39 510.32 Return\n\n+3 2026-03-12 W4 D2 Transfer 36 170.83 17.08 187.91 Shipped\n\n+4 2026-03-04 W9 D2 Transfer 20 325.16 32.52 357.68 Shipped\n\n+5 2026-03-26 W7 D2 Transfer 2 486.72 48.67 535.39 Shipped\n\n+6 2026-03-25 W6 D9 Return 69 19.84 1.98 21.82 Return\n\n+7 2026-03-22 W6 D4 Transfer 13 346.48 34.65 381.13 Pending\n\n+8 2026-03-05 W2 D4 Return 15 393.73 39.37 433.1 Cancel\n\n+9 2026-03-19 W5 D4 Sale 39 489.68 48.97 538.65 Cancel\n\n+10 2026-03-13 W7 D7 Transfer 17 361.77 36.18 397.95 Cancel\n\n+11 2026-03-11 W6 D7 Sale 85 445.67 44.57 490.24 OK\n\n+12 2026-03-11 W9 D1 Transfer 57 132.95 13.29 146.24 Shipped\n\n+13 2026-03-01 W8 D8 Sale 32 13.27 1.33 14.6 OK\n\n+14 2026-03-14 W3 D1 Sale 21 236.06 23.61 259.67 Shipped\n\n+15 2026-03-04 W2 D5 Sale 85 398.54 39.85 438.39 Cancel\n\n+16 2026-03-28 W4 D6 Return 24 335.86 33.59 369.45 Cancel\n\n+17 2026-03-15 W9 D2 Transfer 41 209.21 20.92 230.13 OK\n\n+18 2026-03-14 W1 D5 Return 57 8.95 0.9 9.85 OK\n\n+19 2026-03-12 W8 D6 Transfer 51 404.15 40.41 444.56 Pending\n\n+20 2026-03-03 W8 D4 Return 79 320.74 32.07 352.81 OK",
     "visual_scores": [
-      0.9611
+      0.9609
     ],
-    "visual_avg": 0.9611,
+    "visual_avg": 0.9609,
     "diff_images": [
       {
         "page": 1,
@@ -2823,13 +2823,13 @@
         "reference_img": "classic184_wide_narrow_columns_p1_reference.png"
       }
     ],
-    "overall_score": 0.9844
+    "overall_score": 0.9808
   },
   {
     "name": "classic185_tall_rows_vertical_align",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1880,
+    "minipdf_size": 2378,
     "reference_size": 40244,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2854,7 +2854,7 @@
     "name": "classic186_multi_sheet_image_report",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7315,
+    "minipdf_size": 8050,
     "reference_size": 52179,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -2885,7 +2885,7 @@
     "name": "classic187_bug_report_with_screenshots",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7916,
+    "minipdf_size": 8690,
     "reference_size": 53176,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2910,7 +2910,7 @@
     "name": "classic188_merged_header_with_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7490,
+    "minipdf_size": 7776,
     "reference_size": 46660,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -2935,18 +2935,18 @@
     "name": "classic189_alternating_image_text_rows",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 9270,
+    "minipdf_size": 10157,
     "reference_size": 52587,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.8974,
-    "flat_text_similarity": 0.3562,
-    "word_text_similarity": 0.8974,
-    "text_diff": "--- minipdf/classic189_alternating_image_text_rows.pdf\n+++ reference/classic189_alternating_image_text_rows.pdf\n@@ -1,7 +1,7 @@\n Step Action Expected Result Evidence\n\n-Step 1 Open login page Login form is displayed with em See below\n\n-Step 2 Enter valid credentials Dashboard loads within 3 secon See below\n\n-Step 3 Click export button CSV file downloads with all visi See below\n\n-Step 4 Apply date filter Table updates to show only mat See below\n\n-Step 5 Resize browser window Layout remains responsive at 7 See below\n\n-Step 6 Toggle dark mode All components switch to dark t See below\n+Step 1 Open login page Login form is displayed with eSee below\n\n+Step 2 Enter valid credentials Dashboard loads within 3 sec See below\n\n+Step 3 Click export button CSV file downloads with all visSee below\n\n+Step 4 Apply date filter Table updates to show only mSee below\n\n+Step 5 Resize browser window Layout remains responsive at See below\n\n+Step 6 Toggle dark mode All components switch to darkSee below",
+    "text_similarity": 0.9635,
+    "flat_text_similarity": 0.9635,
+    "word_text_similarity": 0.9116,
+    "text_diff": "--- minipdf/classic189_alternating_image_text_rows.pdf\n+++ reference/classic189_alternating_image_text_rows.pdf\n@@ -1,7 +1,7 @@\n Step Action Expected Result Evidence\n\n-Step 1 Open login page Login form is displayed withSee below\n\n-Step 2 Enter valid credentials Dashboard loads within 3 seSee below\n\n-Step 3 Click export button CSV file downloads with all See below\n\n-Step 4 Apply date filter Table updates to show only See below\n\n-Step 5 Resize browser window Layout remains responsive See below\n\n-Step 6 Toggle dark mode All components switch to daSee below\n+Step 1 Open login page Login form is displayed with eSee below\n\n+Step 2 Enter valid credentials Dashboard loads within 3 sec See below\n\n+Step 3 Click export button CSV file downloads with all visSee below\n\n+Step 4 Apply date filter Table updates to show only mSee below\n\n+Step 5 Resize browser window Layout remains responsive at See below\n\n+Step 6 Toggle dark mode All components switch to darkSee below",
     "visual_scores": [
-      0.9862
+      0.9853
     ],
-    "visual_avg": 0.9862,
+    "visual_avg": 0.9853,
     "diff_images": [
       {
         "page": 1,
@@ -2954,13 +2954,13 @@
         "reference_img": "classic189_alternating_image_text_rows_p1_reference.png"
       }
     ],
-    "overall_score": 0.9534
+    "overall_score": 0.9795
   },
   {
     "name": "classic18_large_dataset",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 569216,
+    "minipdf_size": 936964,
     "reference_size": 2487195,
     "minipdf_pages": 24,
     "reference_pages": 24,
@@ -3123,7 +3123,7 @@
     "name": "classic190_dashboard_kpi_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6380,
+    "minipdf_size": 7275,
     "reference_size": 64050,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3148,17 +3148,17 @@
     "name": "classic191_payroll_calculator",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 102370,
+    "minipdf_size": 110856,
     "reference_size": 136710,
     "minipdf_pages": 9,
     "reference_pages": 9,
-    "text_similarity": 0.8965,
-    "flat_text_similarity": 0.8922,
-    "word_text_similarity": 0.8892,
-    "text_diff": "--- minipdf/classic191_payroll_calculator.pdf\n+++ reference/classic191_payroll_calculator.pdf\n@@ -1,42 +1,45 @@\n Employee Register\n\n Information contained in this employee register is highly confidential\n\n ID Employee's Name M/F Hire Date Occupation\n\n-1Adam Jones M 2013-02-15 Senior Accountant\n\n-2Nichola Brown F 2011-09-28 CR Manager\n\n-3Benny Erwin M 2011-05-11 Applications PM\n\n-4Rachel Kim F 2016-08-03 HR Specialist\n\n-5Carlos Ruiz M 2019-11-20 Sales Rep\n\n+1 Adam Jones M 2013-02-15 Senior Accountant\n\n+2 Nichola Brown F 2011-09-28 CR Manager\n\n+3 Benny Erwin M 2011-05-11 Applications PM\n\n+4 Rachel Kim F 2016-08-03 HR Specialist\n\n+5 Carlos Ruiz M 2019-11-20 Sales Rep\n\n ---PAGE---\n\n-Regular Hourly Rate Overtime Hourly Exempt from\n\n-Annual Salary ($) Pay Frequency\n\n-($) Rate ($) Overtime\n\n-42,000.00 20.19 30.29 Yes Monthly\n\n-54,481.00 26.19 39.29 Yes Monthly\n\n-48,785.00 23.45 35.18 No Monthly\n\n-39,500.00 19.00 28.50 Yes Bi-Weekly\n\n-51,200.00 24.62 36.92 No Monthly\n\n+Regular Hourly Overtime Hourly Exempt from\n\n+Annual Salary ($) Pay Frequency W-4 Form\n\n+Rate ($) Rate ($) Overtime\n\n+42,000.00 20.19 30.29 Yes Monthly W-4 (2020+)\n\n+54,481.00 26.19 39.29 Yes Monthly W-4 (2020+)\n\n+48,785.00 23.45 35.18 No Monthly W-4 (pre-2020)\n\n+39,500.00 19.00 28.50 Yes Bi-Weekly W-4 (2020+)\n\n+51,200.00 24.62 36.92 No Monthly W-4 (2020+)\n\n ---PAGE---\n\n-Additional Withhold\n\n-W-4 Form Filing Status Federal Allowance\n\n-($)\n\n-W-4 (2020+) Exempt 2 50.00\n\n-W-4 (2020+) Married 4 0.00\n\n-W-4 (pre-2020) Married 4 0.00\n\n-W-4 (2020+) Single 1 25.00\n\n-W-4 (2020+) Single 0 0.00\n\n+Federal Additional\n\n+Filing Status\n\n+Allowance Withhold ($)\n\n+Exempt 2 50.00\n\n+Married 4 0.00\n\n+Married 4 0.00\n\n+Single 1 25.00\n\n+Single 0 0.00\n\n ---PAGE---\n\n Payroll Calculator\n\n-Pay Period Hours\n\n+Pay Period\n\n ID Employee Name From To Regular Hours Holiday Hours\n\n-1Adam Jones 2020-12-01 2020-12-31 173.33 0.00\n\n-2Nichola Brown 2020-12-01 2020-12-31 173.33 0.00\n\n-3Benny Erwin 2020-12-01 2020-12-31 173.33 0.00\n\n-4Rachel Kim 2020-12-01 2020-12-31 80.00 8.00\n\n-5Carlos Ruiz 2020-12-01 2020-12-31 173.33 0.00\n\n+1 Adam Jones 2020-12-01 2020-12-31 173.33 0.00\n\n+2 Nichola Brown 2020-12-01 2020-12-31 173.33 0.00\n\n+3 Benny Erwin 2020-12-01 2020-12-31 173.33 0.00\n\n+4 Rachel Kim 2020-12-01 2020-12-31 80.00 8.00\n\n+5 Carlos Ruiz 2020-12-01 2020-12-31 173.33 0.00\n\n ---PAGE---\n\n-Taxable Compensat Post-Tax Reimburse\n\n-Vacation Hours Sick Hours Overtime Hours Pre-Tax Deductions\n\n-ion ments\n\n+Hours\n\n+Post-Tax\n\n+Taxable Pre-Tax\n\n+Vacation Hours Sick Hours Overtime Hours Reimbursement\n\n+Compensation Deductions\n\n+s\n\n 0.00 0.00 0.00 500.00 0.00 500.00\n\n 0.00 0.00 0.00 0.00 0.00 0.00\n\n 0.00 0.00 8.00 0.00 0.00 0.00\n\n@@ -44,9 +47,9 @@\n 16.00 0.00 4.00 200.00 0.00 200.00\n\n ---PAGE---\n\n Pre-Tax Adjustments Withholdings\n\n-Tax Deferral Plan\n\n-Gross Pay Health Insurance Other Federal Tax State Tax\n\n-(401k)\n\n+Tax Deferral Health\n\n+Gross Pay Other Federal Tax State Tax\n\n+Plan (401k) Insurance\n\n 3,999.60 139.98 0.00 0.00 319.49 178.70\n\n 4,539.60 136.19 0.00 0.00 346.74 203.88\n\n 4,346.11 195.57 0.00 0.00 110.89 192.17\n",
+    "text_similarity": 0.8945,
+    "flat_text_similarity": 0.89,
+    "word_text_similarity": 0.8531,
+    "text_diff": "--- minipdf/classic191_payroll_calculator.pdf\n+++ reference/classic191_payroll_calculator.pdf\n@@ -1,42 +1,45 @@\n Employee Register\n\n Information contained in this employee register is highly confidential\n\n ID Employee's Name M/F Hire Date Occupation\n\n-1Adam Jones M 2013-02-15 Senior Accountant\n\n-2Nichola Brown F 2011-09-28 CR Manager\n\n-3Benny Erwin M 2011-05-11 Applications PM\n\n-4Rachel Kim F 2016-08-03 HR Specialist\n\n-5Carlos Ruiz M 2019-11-20 Sales Rep\n\n+1 Adam Jones M 2013-02-15 Senior Accountant\n\n+2 Nichola Brown F 2011-09-28 CR Manager\n\n+3 Benny Erwin M 2011-05-11 Applications PM\n\n+4 Rachel Kim F 2016-08-03 HR Specialist\n\n+5 Carlos Ruiz M 2019-11-20 Sales Rep\n\n ---PAGE---\n\n-Regular Hourly Rate Overtime Hourly Exempt from\n\n-Annual Salary ($) Pay Frequency\n\n-($) Rate ($) Overtime\n\n-42,000.00 20.19 30.29Yes Monthly\n\n-54,481.00 26.19 39.29Yes Monthly\n\n-48,785.00 23.45 35.18No Monthly\n\n-39,500.00 19.00 28.50Yes Bi-Weekly\n\n-51,200.00 24.62 36.92No Monthly\n\n+Regular Hourly Overtime Hourly Exempt from\n\n+Annual Salary ($) Pay Frequency W-4 Form\n\n+Rate ($) Rate ($) Overtime\n\n+42,000.00 20.19 30.29 Yes Monthly W-4 (2020+)\n\n+54,481.00 26.19 39.29 Yes Monthly W-4 (2020+)\n\n+48,785.00 23.45 35.18 No Monthly W-4 (pre-2020)\n\n+39,500.00 19.00 28.50 Yes Bi-Weekly W-4 (2020+)\n\n+51,200.00 24.62 36.92 No Monthly W-4 (2020+)\n\n ---PAGE---\n\n-Additional Withhold\n\n-W-4 Form Filing Status Federal Allowance\n\n-($)\n\n-W-4 (2020+) Exempt 2 50.00\n\n-W-4 (2020+) Married 4 0.00\n\n-W-4 (pre-2020) Married 4 0.00\n\n-W-4 (2020+) Single 1 25.00\n\n-W-4 (2020+) Single 0 0.00\n\n+Federal Additional\n\n+Filing Status\n\n+Allowance Withhold ($)\n\n+Exempt 2 50.00\n\n+Married 4 0.00\n\n+Married 4 0.00\n\n+Single 1 25.00\n\n+Single 0 0.00\n\n ---PAGE---\n\n Payroll Calculator\n\n-Pay Period Hours\n\n+Pay Period\n\n ID Employee Name From To Regular Hours Holiday Hours\n\n-1Adam Jones 2020-12-01 2020-12-31 173.33 0.00\n\n-2Nichola Brown 2020-12-01 2020-12-31 173.33 0.00\n\n-3Benny Erwin 2020-12-01 2020-12-31 173.33 0.00\n\n-4Rachel Kim 2020-12-01 2020-12-31 80.00 8.00\n\n-5Carlos Ruiz 2020-12-01 2020-12-31 173.33 0.00\n\n+1 Adam Jones 2020-12-01 2020-12-31 173.33 0.00\n\n+2 Nichola Brown 2020-12-01 2020-12-31 173.33 0.00\n\n+3 Benny Erwin 2020-12-01 2020-12-31 173.33 0.00\n\n+4 Rachel Kim 2020-12-01 2020-12-31 80.00 8.00\n\n+5 Carlos Ruiz 2020-12-01 2020-12-31 173.33 0.00\n\n ---PAGE---\n\n-Taxable Compensa ost-Tax Reimburs\n\n-Vacation Hours Sick Hours Overtime Hours Pre-Tax Deduction\n\n-ion ments\n\n+Hours\n\n+Post-Tax\n\n+Taxable Pre-Tax\n\n+Vacation Hours Sick Hours Overtime Hours Reimbursement\n\n+Compensation Deductions\n\n+s\n\n 0.00 0.00 0.00 500.00 0.00 500.00\n\n 0.00 0.00 0.00 0.00 0.00 0.00\n\n 0.00 0.00 8.00 0.00 0.00 0.00\n\n@@ -44,9 +47,9 @@\n 16.00 0.00 4.00 200.00 0.00 200.00\n\n ---PAGE---\n\n Pre-Tax Adjustments Withholdings\n\n-Tax Deferral Plan\n\n-Gross Pay Health Insurance Other Federal Tax State Tax\n\n-(401k)\n\n+Tax Deferral Health\n\n+Gross Pay Other Federal Tax State Tax\n\n+Plan (401k) Insurance\n\n 3,999.60 139.98 0.00 0.00 319.49 178.70\n\n 4,539.60 136.19 0.00 0.00 346.74 203.88\n\n 4,346.11 195.57 0.00 0.00 110.89 192.17\n",
     "visual_scores": [
       0.9436,
-      0.8023,
+      0.8022,
       0.8933,
       0.9357,
       0.8175,
@@ -3215,7 +3215,7 @@
         "reference_img": "classic191_payroll_calculator_p9_reference.png"
       }
     ],
-    "overall_score": 0.9196
+    "overall_score": 0.9188
   },
   {
     "name": "classic19_single_column_list",
@@ -3271,7 +3271,7 @@
     "name": "classic21_header_only",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 976,
+    "minipdf_size": 1139,
     "reference_size": 22034,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3296,7 +3296,7 @@
     "name": "classic22_long_sheet_name",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1018,
+    "minipdf_size": 1138,
     "reference_size": 23683,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3321,18 +3321,18 @@
     "name": "classic23_unicode_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 816327,
+    "minipdf_size": 816862,
     "reference_size": 67722,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.7884,
-    "flat_text_similarity": 0.7884,
-    "word_text_similarity": 0.7568,
-    "text_diff": "--- minipdf/classic23_unicode_text.pdf\n+++ reference/classic23_unicode_text.pdf\n@@ -1,12 +1,9 @@\n Language Greeting Extra\n\n English Hello World\n\n+你好 世界\n\n Chinese\n\n-你好 世界\n\n+こんにちは世界\n\n Japanese\n\n-こんにちは世界\n\n-Korean\n\n-안녕하세요세계\n\n-Arabic\n\n-ﺎﺒﺣﺮﻣ ﻢﻟﺎﻌﻟﺍ\n\n-Emoji\n\n-😀🎉 ✅❌\n+Korean 안녕하세요세계\n\n+Arabicمرحبا العالم\n\n+Emoji 😀🎉 ✅❌",
+    "text_similarity": 0.7833,
+    "flat_text_similarity": 0.7833,
+    "word_text_similarity": 0.6667,
+    "text_diff": "--- minipdf/classic23_unicode_text.pdf\n+++ reference/classic23_unicode_text.pdf\n@@ -1,12 +1,9 @@\n-LanguageGreeting Extra\n\n+Language Greeting Extra\n\n English Hello World\n\n+你好 世界\n\n Chinese\n\n-你好 世界\n\n+こんにちは世界\n\n Japanese\n\n-こんにちは世界\n\n-Korean\n\n-안녕하세요세계\n\n-Arabic\n\n-ﺎﺒﺣﺮﻣ ﻢﻟﺎﻌﻟﺍ\n\n-Emoji\n\n-😀🎉 ✅❌\n+Korean 안녕하세요세계\n\n+Arabicمرحبا العالم\n\n+Emoji 😀🎉 ✅❌",
     "visual_scores": [
-      0.9951
+      0.9947
     ],
-    "visual_avg": 0.9951,
+    "visual_avg": 0.9947,
     "diff_images": [
       {
         "page": 1,
@@ -3340,13 +3340,13 @@
         "reference_img": "classic23_unicode_text_p1_reference.png"
       }
     ],
-    "overall_score": 0.9134
+    "overall_score": 0.9112
   },
   {
     "name": "classic24_red_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1222,
+    "minipdf_size": 1382,
     "reference_size": 39031,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3371,18 +3371,18 @@
     "name": "classic25_multiple_colors",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1965,
+    "minipdf_size": 2318,
     "reference_size": 43116,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9978,
-    "flat_text_similarity": 0.9978,
-    "word_text_similarity": 0.9655,
-    "text_diff": "--- minipdf/classic25_multiple_colors.pdf\n+++ reference/classic25_multiple_colors.pdf\n@@ -1,4 +1,4 @@\n-Color Nam Sample Text\n\n+Color NamSample Text\n\n Red This is red text\n\n Green This is green text\n\n Blue This is blue text\n",
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.9962
+      0.9952
     ],
-    "visual_avg": 0.9962,
+    "visual_avg": 0.9952,
     "diff_images": [
       {
         "page": 1,
@@ -3390,13 +3390,13 @@
         "reference_img": "classic25_multiple_colors_p1_reference.png"
       }
     ],
-    "overall_score": 0.9976
+    "overall_score": 0.9981
   },
   {
     "name": "classic26_inline_strings",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1197,
+    "minipdf_size": 1441,
     "reference_size": 25018,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3421,7 +3421,7 @@
     "name": "classic27_single_row",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1082,
+    "minipdf_size": 1328,
     "reference_size": 23681,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3446,7 +3446,7 @@
     "name": "classic28_duplicate_values",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1733,
+    "minipdf_size": 2343,
     "reference_size": 24729,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3471,7 +3471,7 @@
     "name": "classic29_formula_results",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1662,
+    "minipdf_size": 2192,
     "reference_size": 27548,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3496,7 +3496,7 @@
     "name": "classic30_mixed_empty_and_filled_sheets",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1570,
+    "minipdf_size": 1852,
     "reference_size": 27418,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -3527,18 +3527,18 @@
     "name": "classic31_bold_header_row",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1810,
+    "minipdf_size": 2404,
     "reference_size": 40714,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.996,
+    "flat_text_similarity": 0.996,
+    "word_text_similarity": 0.95,
+    "text_diff": "--- minipdf/classic31_bold_header_row.pdf\n+++ reference/classic31_bold_header_row.pdf\n@@ -1,5 +1,5 @@\n Product Category Price Stock\n\n-Laptop Electronic 999.99 50\n\n+Laptop Electronics 999.99 50\n\n Desk Furniture 349 20\n\n Pen Stationery 1.99 500\n\n Chair Furniture 199 30",
     "visual_scores": [
-      0.9965
+      0.996
     ],
-    "visual_avg": 0.9965,
+    "visual_avg": 0.996,
     "diff_images": [
       {
         "page": 1,
@@ -3546,13 +3546,13 @@
         "reference_img": "classic31_bold_header_row_p1_reference.png"
       }
     ],
-    "overall_score": 0.9986
+    "overall_score": 0.9968
   },
   {
     "name": "classic32_right_aligned_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1145,
+    "minipdf_size": 1298,
     "reference_size": 27582,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3561,9 +3561,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9974
+      0.9973
     ],
-    "visual_avg": 0.9974,
+    "visual_avg": 0.9973,
     "diff_images": [
       {
         "page": 1,
@@ -3571,13 +3571,13 @@
         "reference_img": "classic32_right_aligned_numbers_p1_reference.png"
       }
     ],
-    "overall_score": 0.999
+    "overall_score": 0.9989
   },
   {
     "name": "classic33_centered_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1490,
+    "minipdf_size": 1980,
     "reference_size": 26648,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3602,18 +3602,18 @@
     "name": "classic34_explicit_column_widths",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1411,
+    "minipdf_size": 1728,
     "reference_size": 28834,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.9952,
+    "flat_text_similarity": 0.9952,
+    "word_text_similarity": 0.9474,
+    "text_diff": "--- minipdf/classic34_explicit_column_widths.pdf\n+++ reference/classic34_explicit_column_widths.pdf\n@@ -1,4 +1,4 @@\n ID Description Value\n\n 1 Short 10\n\n-2 A much longer description text her 200\n\n+2 A much longer description text here 200\n\n 3 Medium length description 55",
     "visual_scores": [
-      0.9963
+      0.9962
     ],
-    "visual_avg": 0.9963,
+    "visual_avg": 0.9962,
     "diff_images": [
       {
         "page": 1,
@@ -3621,24 +3621,24 @@
         "reference_img": "classic34_explicit_column_widths_p1_reference.png"
       }
     ],
-    "overall_score": 0.9985
+    "overall_score": 0.9966
   },
   {
     "name": "classic35_explicit_row_heights",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1058,
+    "minipdf_size": 1159,
     "reference_size": 25108,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9882,
-    "flat_text_similarity": 0.9882,
+    "text_similarity": 0.9762,
+    "flat_text_similarity": 0.9762,
     "word_text_similarity": 0.8235,
-    "text_diff": "--- minipdf/classic35_explicit_row_heights.pdf\n+++ reference/classic35_explicit_row_heights.pdf\n@@ -1,3 +1,3 @@\n-Tall Heade Value\n\n+Tall HeadeValue\n\n Extra Tall 42\n\n Normal Ro 10",
+    "text_diff": "--- minipdf/classic35_explicit_row_heights.pdf\n+++ reference/classic35_explicit_row_heights.pdf\n@@ -1,3 +1,3 @@\n-Tall Head Value\n\n+Tall HeadeValue\n\n Extra Tall 42\n\n Normal Ro 10",
     "visual_scores": [
-      0.999
+      0.9989
     ],
-    "visual_avg": 0.999,
+    "visual_avg": 0.9989,
     "diff_images": [
       {
         "page": 1,
@@ -3646,24 +3646,24 @@
         "reference_img": "classic35_explicit_row_heights_p1_reference.png"
       }
     ],
-    "overall_score": 0.9949
+    "overall_score": 0.99
   },
   {
     "name": "classic36_merged_cells",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1267,
+    "minipdf_size": 1550,
     "reference_size": 27256,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.9806,
+    "flat_text_similarity": 0.9806,
+    "word_text_similarity": 0.9231,
+    "text_diff": "--- minipdf/classic36_merged_cells.pdf\n+++ reference/classic36_merged_cells.pdf\n@@ -1,4 +1,4 @@\n-Merged Header Spanning Th\n\n+Merged Header Spanning Three\n\n Col1 Col2 Col3\n\n Row2A Row2B Row2C\n\n Row3A Row3B Row3C",
     "visual_scores": [
-      0.997
+      0.9962
     ],
-    "visual_avg": 0.997,
+    "visual_avg": 0.9962,
     "diff_images": [
       {
         "page": 1,
@@ -3671,13 +3671,13 @@
         "reference_img": "classic36_merged_cells_p1_reference.png"
       }
     ],
-    "overall_score": 0.9988
+    "overall_score": 0.9907
   },
   {
     "name": "classic37_freeze_panes",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5371,
+    "minipdf_size": 7773,
     "reference_size": 46420,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3686,9 +3686,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9899
+      0.9894
     ],
-    "visual_avg": 0.9899,
+    "visual_avg": 0.9894,
     "diff_images": [
       {
         "page": 1,
@@ -3696,13 +3696,13 @@
         "reference_img": "classic37_freeze_panes_p1_reference.png"
       }
     ],
-    "overall_score": 0.996
+    "overall_score": 0.9958
   },
   {
     "name": "classic38_hyperlink_cell",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1070,
+    "minipdf_size": 1190,
     "reference_size": 26279,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3727,7 +3727,7 @@
     "name": "classic39_financial_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2266,
+    "minipdf_size": 3120,
     "reference_size": 43383,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3752,18 +3752,18 @@
     "name": "classic40_scientific_notation",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1389,
+    "minipdf_size": 1619,
     "reference_size": 30852,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9806,
-    "flat_text_similarity": 0.9806,
-    "word_text_similarity": 0.8667,
-    "text_diff": "--- minipdf/classic40_scientific_notation.pdf\n+++ reference/classic40_scientific_notation.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n Avogadro 6.02E+23\n\n Planck 6.626E-34\n\n-Speed of Li 3E+08\n\n+Speed of L 3E+08\n\n Electron m9.109E-31\n\n-Pi approx 3.1415927\n+Pi approx 3.141593",
+    "text_similarity": 0.9703,
+    "flat_text_similarity": 0.9703,
+    "word_text_similarity": 0.8571,
+    "text_diff": "--- minipdf/classic40_scientific_notation.pdf\n+++ reference/classic40_scientific_notation.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n Avogadro 6.02E+23\n\n Planck 6.626E-34\n\n-Speed of 3E+08\n\n+Speed of L 3E+08\n\n Electron m9.109E-31\n\n-Pi approx3.1415927\n+Pi approx 3.141593",
     "visual_scores": [
-      0.9963
+      0.9962
     ],
-    "visual_avg": 0.9963,
+    "visual_avg": 0.9962,
     "diff_images": [
       {
         "page": 1,
@@ -3771,13 +3771,13 @@
         "reference_img": "classic40_scientific_notation_p1_reference.png"
       }
     ],
-    "overall_score": 0.9908
+    "overall_score": 0.9866
   },
   {
     "name": "classic41_integer_vs_float",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1647,
+    "minipdf_size": 2008,
     "reference_size": 29637,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3802,18 +3802,18 @@
     "name": "classic42_boolean_values",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1393,
+    "minipdf_size": 1605,
     "reference_size": 28631,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9948,
-    "flat_text_similarity": 0.9948,
-    "word_text_similarity": 0.9286,
-    "text_diff": "--- minipdf/classic42_boolean_values.pdf\n+++ reference/classic42_boolean_values.pdf\n@@ -1,6 +1,6 @@\n Feature Enabled\n\n Dark Mode TRUE\n\n-Notification FALSE\n\n+Notificatio FALSE\n\n Auto-save TRUE\n\n Analytics FALSE\n\n Beta Featu TRUE",
+    "text_similarity": 0.9894,
+    "flat_text_similarity": 0.9894,
+    "word_text_similarity": 0.8571,
+    "text_diff": "--- minipdf/classic42_boolean_values.pdf\n+++ reference/classic42_boolean_values.pdf\n@@ -1,6 +1,6 @@\n Feature Enabled\n\n-Dark Mod TRUE\n\n+Dark Mode TRUE\n\n Notificatio FALSE\n\n Auto-save TRUE\n\n Analytics FALSE\n\n-Beta Feat TRUE\n+Beta Featu TRUE",
     "visual_scores": [
-      0.9963
+      0.9962
     ],
-    "visual_avg": 0.9963,
+    "visual_avg": 0.9962,
     "diff_images": [
       {
         "page": 1,
@@ -3821,13 +3821,13 @@
         "reference_img": "classic42_boolean_values_p1_reference.png"
       }
     ],
-    "overall_score": 0.9964
+    "overall_score": 0.9942
   },
   {
     "name": "classic43_inventory_report",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3333,
+    "minipdf_size": 4957,
     "reference_size": 49849,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3836,9 +3836,9 @@
     "word_text_similarity": 0.9735,
     "text_diff": "--- minipdf/classic43_inventory_report.pdf\n+++ reference/classic43_inventory_report.pdf\n@@ -1,4 +1,4 @@\n-SKU Name Category Qty Unit Price Total Value\n\n+SKU Name Category Qty Unit PriceTotal Value\n\n SKU001 Widget A Widgets 100 5.99 599\n\n SKU002 Widget B Widgets 250 3.49 872.5\n\n SKU003 Gadget X Gadgets 50 29.99 1499.5\n",
     "visual_scores": [
-      0.9887
+      0.9886
     ],
-    "visual_avg": 0.9887,
+    "visual_avg": 0.9886,
     "diff_images": [
       {
         "page": 1,
@@ -3852,18 +3852,18 @@
     "name": "classic44_employee_roster",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3909,
+    "minipdf_size": 5695,
     "reference_size": 43656,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9652,
-    "flat_text_similarity": 0.9652,
-    "word_text_similarity": 0.7207,
-    "text_diff": "--- minipdf/classic44_employee_roster.pdf\n+++ reference/classic44_employee_roster.pdf\n@@ -1,9 +1,9 @@\n EmpID First Last Dept Title Email\n\n-1001 Alice Smith Engineerin Senior Eng alice@example.com\n\n-1002 Bob Jones Marketing Marketing bob@example.com\n\n-1003 Carol Williams HR HR Special carol@example.com\n\n-1004 David Brown Engineerin Junior Engi david@example.com\n\n-1005 Eve Davis Finance Financial A eve@example.com\n\n-1006 Frank Miller Sales Sales Repr frank@example.com\n\n-1007 Grace Wilson Engineerin Tech Lead grace@example.com\n\n-1008 Henry Moore Support Support Sp henry@example.com\n+1001 Alice Smith EngineerinSenior Engalice@example.com\n\n+1002 Bob Jones MarketingMarketingbob@example.com\n\n+1003 Carol Williams HR HR Specialcarol@example.com\n\n+1004 David Brown EngineerinJunior Engdavid@example.com\n\n+1005 Eve Davis Finance Financial Aeve@example.com\n\n+1006 Frank Miller Sales Sales Reprfrank@example.com\n\n+1007 Grace Wilson EngineerinTech Lead grace@example.com\n\n+1008 Henry Moore Support Support Sphenry@example.com",
+    "text_similarity": 0.9912,
+    "flat_text_similarity": 0.9912,
+    "word_text_similarity": 0.8431,
+    "text_diff": "--- minipdf/classic44_employee_roster.pdf\n+++ reference/classic44_employee_roster.pdf\n@@ -1,9 +1,9 @@\n EmpID First Last Dept Title Email\n\n-1001 Alice Smith EngineerinSenior En alice@example.com\n\n-1002 Bob Jones Marketing Marketing bob@example.com\n\n-1003 Carol Williams HR HR Speciacarol@example.com\n\n+1001 Alice Smith EngineerinSenior Engalice@example.com\n\n+1002 Bob Jones MarketingMarketingbob@example.com\n\n+1003 Carol Williams HR HR Specialcarol@example.com\n\n 1004 David Brown EngineerinJunior Engdavid@example.com\n\n 1005 Eve Davis Finance Financial Aeve@example.com\n\n-1006 Frank Miller Sales Sales Repfrank@example.com\n\n-1007 Grace Wilson EngineerinTech Leadgrace@example.com\n\n-1008 Henry Moore Support Support Shenry@example.com\n+1006 Frank Miller Sales Sales Reprfrank@example.com\n\n+1007 Grace Wilson EngineerinTech Lead grace@example.com\n\n+1008 Henry Moore Support Support Sphenry@example.com",
     "visual_scores": [
-      0.9855
+      0.9843
     ],
-    "visual_avg": 0.9855,
+    "visual_avg": 0.9843,
     "diff_images": [
       {
         "page": 1,
@@ -3871,13 +3871,13 @@
         "reference_img": "classic44_employee_roster_p1_reference.png"
       }
     ],
-    "overall_score": 0.9803
+    "overall_score": 0.9902
   },
   {
     "name": "classic45_sales_by_region",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3462,
+    "minipdf_size": 4262,
     "reference_size": 37087,
     "minipdf_pages": 4,
     "reference_pages": 4,
@@ -3920,7 +3920,7 @@
     "name": "classic46_grade_book",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3652,
+    "minipdf_size": 5612,
     "reference_size": 40993,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3945,7 +3945,7 @@
     "name": "classic47_time_series",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7481,
+    "minipdf_size": 11387,
     "reference_size": 55976,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3970,18 +3970,18 @@
     "name": "classic48_survey_results",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2658,
+    "minipdf_size": 3857,
     "reference_size": 36069,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9943,
-    "flat_text_similarity": 0.9943,
-    "word_text_similarity": 0.95,
-    "text_diff": "--- minipdf/classic48_survey_results.pdf\n+++ reference/classic48_survey_results.pdf\n@@ -1,6 +1,6 @@\n-Question StrongAgre Agree Neutral Disagree StrongDisagree\n\n+Question StrongAgr Agree Neutral Disagree StrongDisagree\n\n Easy to us 30 45 15 7 3\n\n-Recomme 25 40 20 10 5\n\n+Recommen 25 40 20 10 5\n\n Fair price 20 35 25 15 5\n\n Good supp 35 40 15 7 3\n\n Satisfied 28 42 18 8 4",
+    "text_similarity": 0.9913,
+    "flat_text_similarity": 0.9913,
+    "word_text_similarity": 0.9114,
+    "text_diff": "--- minipdf/classic48_survey_results.pdf\n+++ reference/classic48_survey_results.pdf\n@@ -1,6 +1,6 @@\n-Question StrongAgrAgree Neutral Disagree StrongDisagree\n\n+Question StrongAgr Agree Neutral Disagree StrongDisagree\n\n Easy to us 30 45 15 7 3\n\n-Recomme 25 40 20 10 5\n\n+Recommen 25 40 20 10 5\n\n Fair price 20 35 25 15 5\n\n-Good sup 35 40 15 7 3\n\n+Good supp 35 40 15 7 3\n\n Satisfied 28 42 18 8 4",
     "visual_scores": [
-      0.9941
+      0.9929
     ],
-    "visual_avg": 0.9941,
+    "visual_avg": 0.9929,
     "diff_images": [
       {
         "page": 1,
@@ -3989,24 +3989,24 @@
         "reference_img": "classic48_survey_results_p1_reference.png"
       }
     ],
-    "overall_score": 0.9954
+    "overall_score": 0.9937
   },
   {
     "name": "classic49_contact_list",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3122,
+    "minipdf_size": 4366,
     "reference_size": 41523,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9753,
-    "flat_text_similarity": 0.9753,
-    "word_text_similarity": 0.619,
-    "text_diff": "--- minipdf/classic49_contact_list.pdf\n+++ reference/classic49_contact_list.pdf\n@@ -1,8 +1,8 @@\n Name Phone Email City Country\n\n-Alice Smith +1-555-01 alice@exa New York USA\n\n-Bob Jones +44-20-79 bob@exa London UK\n\n-Carol Wan +86-10-12 carol@exa Beijing China\n\n-David Mull +49-30-12 david@exa Berlin Germany\n\n-Eve Martin +33-1-23-4 eve@exa Paris France\n\n-Frank Tan +81-3-123 frank@exa Tokyo Japan\n\n-Grace Kim +82-2-123 grace@ex Seoul Korea\n+Alice Smith+1-555-01 alice@exa New York USA\n\n+Bob Jones +44-20-79 bob@examLondon UK\n\n+Carol Wan+86-10-12 carol@exaBeijing China\n\n+David Mull+49-30-12 david@exaBerlin Germany\n\n+Eve Martin+33-1-23-4eve@examParis France\n\n+Frank Tana+81-3-123 frank@exaTokyo Japan\n\n+Grace Kim +82-2-123 grace@exaSeoul Korea",
+    "text_similarity": 0.9361,
+    "flat_text_similarity": 0.9361,
+    "word_text_similarity": 0.597,
+    "text_diff": "--- minipdf/classic49_contact_list.pdf\n+++ reference/classic49_contact_list.pdf\n@@ -1,8 +1,8 @@\n Name Phone Email City Country\n\n-Alice Smit+1-555-01alice@exaNew York USA\n\n-Bob Jones+44-20-79bob@exa London UK\n\n-Carol Wan+86-10-12carol@exaBeijing China\n\n-David Mul+49-30-12david@exBerlin Germany\n\n-Eve Martin+33-1-23- eve@exa Paris France\n\n-Frank Tan+81-3-123frank@ex Tokyo Japan\n\n-Grace Kim+82-2-123grace@exSeoul Korea\n+Alice Smith+1-555-01 alice@exa New York USA\n\n+Bob Jones +44-20-79 bob@examLondon UK\n\n+Carol Wan+86-10-12 carol@exaBeijing China\n\n+David Mull+49-30-12 david@exaBerlin Germany\n\n+Eve Martin+33-1-23-4eve@examParis France\n\n+Frank Tana+81-3-123 frank@exaTokyo Japan\n\n+Grace Kim +82-2-123 grace@exaSeoul Korea",
     "visual_scores": [
-      0.9897
+      0.9892
     ],
-    "visual_avg": 0.9897,
+    "visual_avg": 0.9892,
     "diff_images": [
       {
         "page": 1,
@@ -4014,26 +4014,26 @@
         "reference_img": "classic49_contact_list_p1_reference.png"
       }
     ],
-    "overall_score": 0.986
+    "overall_score": 0.9701
   },
   {
     "name": "classic50_budget_vs_actuals",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7108,
+    "minipdf_size": 10715,
     "reference_size": 54986,
     "minipdf_pages": 3,
     "reference_pages": 3,
-    "text_similarity": 0.9978,
-    "flat_text_similarity": 0.9977,
+    "text_similarity": 0.9956,
+    "flat_text_similarity": 0.9954,
     "word_text_similarity": 0.9577,
-    "text_diff": "--- minipdf/classic50_budget_vs_actuals.pdf\n+++ reference/classic50_budget_vs_actuals.pdf\n@@ -1,18 +1,18 @@\n-Departmen Q1 Q2 Q3 Q4 Annual\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n Engineerin 200000 200000 210000 220000 830000\n\n Marketing 80000 90000 85000 95000 350000\n\n Sales 120000 130000 140000 150000 540000\n\n HR 40000 40000 42000 43000 165000\n\n Finance 35000 35000 37000 38000 145000\n\n ---PAGE---\n\n-Departmen Q1 Q2 Q3 Q4 Annual\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n Engineerin 195000 205000 215000 225000 840000\n\n Marketing 82000 88000 91000 97000 358000\n\n Sales 118000 135000 142000 148000 543000\n\n HR 39000 41000 41500 44000 165500\n\n Finance 34000 36000 37500 39000 146500\n\n ---PAGE---\n\n-Departmen Q1 Q2 Q3 Q4 Annual\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n Engineerin -5000 5000 5000 5000 10000\n\n Marketing 2000 -2000 6000 2000 8000\n\n Sales -2000 5000 2000 -2000 3000\n",
+    "text_diff": "--- minipdf/classic50_budget_vs_actuals.pdf\n+++ reference/classic50_budget_vs_actuals.pdf\n@@ -1,18 +1,18 @@\n-Departme Q1 Q2 Q3 Q4 Annual\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n Engineerin 200000 200000 210000 220000 830000\n\n Marketing 80000 90000 85000 95000 350000\n\n Sales 120000 130000 140000 150000 540000\n\n HR 40000 40000 42000 43000 165000\n\n Finance 35000 35000 37000 38000 145000\n\n ---PAGE---\n\n-Departme Q1 Q2 Q3 Q4 Annual\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n Engineerin 195000 205000 215000 225000 840000\n\n Marketing 82000 88000 91000 97000 358000\n\n Sales 118000 135000 142000 148000 543000\n\n HR 39000 41000 41500 44000 165500\n\n Finance 34000 36000 37500 39000 146500\n\n ---PAGE---\n\n-Departme Q1 Q2 Q3 Q4 Annual\n\n+DepartmenQ1 Q2 Q3 Q4 Annual\n\n Engineerin -5000 5000 5000 5000 10000\n\n Marketing 2000 -2000 6000 2000 8000\n\n Sales -2000 5000 2000 -2000 3000\n",
     "visual_scores": [
-      0.9903,
-      0.9905,
-      0.992
+      0.9892,
+      0.9893,
+      0.991
     ],
-    "visual_avg": 0.9909,
+    "visual_avg": 0.9898,
     "diff_images": [
       {
         "page": 1,
@@ -4051,24 +4051,24 @@
         "reference_img": "classic50_budget_vs_actuals_p3_reference.png"
       }
     ],
-    "overall_score": 0.9955
+    "overall_score": 0.9942
   },
   {
     "name": "classic51_product_catalog",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3926,
+    "minipdf_size": 5739,
     "reference_size": 44297,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9786,
-    "flat_text_similarity": 0.9786,
-    "word_text_similarity": 0.7556,
-    "text_diff": "--- minipdf/classic51_product_catalog.pdf\n+++ reference/classic51_product_catalog.pdf\n@@ -1,11 +1,11 @@\n-Part# Name Description Weight(g) Price\n\n-P-001 Basic Widg Standard w 150 4.99\n\n-P-002 Pro Widget Enhanced 180 12.99\n\n-P-003 Mini Gadg Compact g 90 19.99\n\n-P-004 Max Gadg Full-size g 450 89.99\n\n-P-005 Connector Type-A co 80 7.49\n\n-P-006 Connector Type-B co 110 9.99\n\n-P-007 Adapter X Universal p 200 15.99\n\n+Part# Name Descriptio Weight(g) Price\n\n+P-001 Basic WidgStandard w 150 4.99\n\n+P-002 Pro WidgeEnhanced 180 12.99\n\n+P-003 Mini GadgeCompact g 90 19.99\n\n+P-004 Max GadgeFull-size g 450 89.99\n\n+P-005 ConnectorType-A con 80 7.49\n\n+P-006 ConnectorType-B con 110 9.99\n\n+P-007 Adapter X Universal 200 15.99\n\n P-008 Adapter Y Travel pow 120 11.99\n\n-P-009 Mount Bra Wall mount 600 24.99\n\n-P-010 Carry Case Padded ca 350 34.99\n+P-009 Mount BraWall moun 600 24.99\n\n+P-010 Carry CasePadded ca 350 34.99",
+    "text_similarity": 0.978,
+    "flat_text_similarity": 0.978,
+    "word_text_similarity": 0.7642,
+    "text_diff": "--- minipdf/classic51_product_catalog.pdf\n+++ reference/classic51_product_catalog.pdf\n@@ -1,11 +1,11 @@\n-Part# Name DescriptioWeight(g) Price\n\n-P-001 Basic WidStandard 150 4.99\n\n+Part# Name Descriptio Weight(g) Price\n\n+P-001 Basic WidgStandard w 150 4.99\n\n P-002 Pro WidgeEnhanced 180 12.99\n\n-P-003 Mini GadgCompact 90 19.99\n\n-P-004 Max GadgFull-size g 450 89.99\n\n-P-005 Connecto Type-A co 80 7.49\n\n-P-006 Connecto Type-B co 110 9.99\n\n-P-007 Adapter XUniversal 200 15.99\n\n-P-008 Adapter YTravel pow 120 11.99\n\n+P-003 Mini GadgeCompact g 90 19.99\n\n+P-004 Max GadgeFull-size g 450 89.99\n\n+P-005 ConnectorType-A con 80 7.49\n\n+P-006 ConnectorType-B con 110 9.99\n\n+P-007 Adapter X Universal 200 15.99\n\n+P-008 Adapter Y Travel pow 120 11.99\n\n P-009 Mount BraWall moun 600 24.99\n\n-P-010 Carry CasPadded ca 350 34.99\n+P-010 Carry CasePadded ca 350 34.99",
     "visual_scores": [
-      0.9879
+      0.9872
     ],
-    "visual_avg": 0.9879,
+    "visual_avg": 0.9872,
     "diff_images": [
       {
         "page": 1,
@@ -4076,24 +4076,24 @@
         "reference_img": "classic51_product_catalog_p1_reference.png"
       }
     ],
-    "overall_score": 0.9866
+    "overall_score": 0.9861
   },
   {
     "name": "classic52_pivot_summary",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2673,
+    "minipdf_size": 3889,
     "reference_size": 44493,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9978,
-    "flat_text_similarity": 0.9978,
+    "text_similarity": 0.9956,
+    "flat_text_similarity": 0.9956,
     "word_text_similarity": 0.9577,
-    "text_diff": "--- minipdf/classic52_pivot_summary.pdf\n+++ reference/classic52_pivot_summary.pdf\n@@ -1,4 +1,4 @@\n-Region Electronics Furniture Clothing Food Total\n\n+Region ElectronicsFurniture Clothing Food Total\n\n North 45000 12000 8000 22000 87000\n\n South 38000 15000 11000 25000 89000\n\n East 52000 9000 14000 18000 93000\n",
+    "text_diff": "--- minipdf/classic52_pivot_summary.pdf\n+++ reference/classic52_pivot_summary.pdf\n@@ -1,4 +1,4 @@\n-Region Electronic Furniture Clothing Food Total\n\n+Region ElectronicsFurniture Clothing Food Total\n\n North 45000 12000 8000 22000 87000\n\n South 38000 15000 11000 25000 89000\n\n East 52000 9000 14000 18000 93000\n",
     "visual_scores": [
-      0.9916
+      0.9894
     ],
-    "visual_avg": 0.9916,
+    "visual_avg": 0.9894,
     "diff_images": [
       {
         "page": 1,
@@ -4101,24 +4101,24 @@
         "reference_img": "classic52_pivot_summary_p1_reference.png"
       }
     ],
-    "overall_score": 0.9958
+    "overall_score": 0.994
   },
   {
     "name": "classic53_invoice",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2878,
+    "minipdf_size": 3701,
     "reference_size": 53425,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9968,
-    "flat_text_similarity": 0.9968,
-    "word_text_similarity": 0.9524,
-    "text_diff": "--- minipdf/classic53_invoice.pdf\n+++ reference/classic53_invoice.pdf\n@@ -6,9 +6,9 @@\n ACME Corporation\n\n 123 Business Rd, Suite 400\n\n New York, NY 10001\n\n-Item Qty Unit Price Total\n\n+Item Qty Unit PriceTotal\n\n Consulting 10 150 1500\n\n-Software Li 5 99 495\n\n+Software L 5 99 495\n\n Hardware 2 249.99 499.98\n\n Support Pl 1 1200 1200\n\n Subtotal 3694.98\n",
+    "text_similarity": 0.9951,
+    "flat_text_similarity": 0.9951,
+    "word_text_similarity": 0.9333,
+    "text_diff": "--- minipdf/classic53_invoice.pdf\n+++ reference/classic53_invoice.pdf\n@@ -1,16 +1,16 @@\n INVOICE\n\n Invoice #: INV-2025-0042\n\n Date: 2025-03-01\n\n-Due Date 2025-03-31\n\n+Due Date: 2025-03-31\n\n Bill To:\n\n ACME Corporation\n\n 123 Business Rd, Suite 400\n\n New York, NY 10001\n\n-Item Qty Unit Price Total\n\n+Item Qty Unit PriceTotal\n\n Consulting 10 150 1500\n\n Software L 5 99 495\n\n Hardware 2 249.99 499.98\n\n-Support P 1 1200 1200\n\n+Support Pl 1 1200 1200\n\n Subtotal 3694.98\n\n Tax (8%) 295.6\n\n Total Due 3990.58",
     "visual_scores": [
-      0.9912
+      0.991
     ],
-    "visual_avg": 0.9912,
+    "visual_avg": 0.991,
     "diff_images": [
       {
         "page": 1,
@@ -4126,13 +4126,13 @@
         "reference_img": "classic53_invoice_p1_reference.png"
       }
     ],
-    "overall_score": 0.9952
+    "overall_score": 0.9944
   },
   {
     "name": "classic54_multi_level_header",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2418,
+    "minipdf_size": 3398,
     "reference_size": 38782,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4157,7 +4157,7 @@
     "name": "classic55_error_values",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1846,
+    "minipdf_size": 2413,
     "reference_size": 34677,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4182,14 +4182,14 @@
     "name": "classic56_alternating_row_colors",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3353,
+    "minipdf_size": 4236,
     "reference_size": 32363,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.997,
+    "flat_text_similarity": 0.997,
+    "word_text_similarity": 0.9767,
+    "text_diff": "--- minipdf/classic56_alternating_row_colors.pdf\n+++ reference/classic56_alternating_row_colors.pdf\n@@ -8,4 +8,4 @@\n 7 Product 7 70\n\n 8 Product 8 80\n\n 9 Product 9 90\n\n-10 Product 1 100\n+10 Product 10 100",
     "visual_scores": [
       0.9903
     ],
@@ -4201,13 +4201,13 @@
         "reference_img": "classic56_alternating_row_colors_p1_reference.png"
       }
     ],
-    "overall_score": 0.9961
+    "overall_score": 0.9949
   },
   {
     "name": "classic57_cjk_only",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 291157,
+    "minipdf_size": 291881,
     "reference_size": 88207,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4216,9 +4216,9 @@
     "word_text_similarity": 0.7826,
     "text_diff": "--- minipdf/classic57_cjk_only.pdf\n+++ reference/classic57_cjk_only.pdf\n@@ -1,11 +1,11 @@\n 序号 产品名称价格 库存\n\n+笔记本电脑\n\n 1 5999 100\n\n-笔记本电脑\n\n+智能手机\n\n 2 2999 250\n\n-智能手机\n\n+平板电脑\n\n 3 1999 150\n\n-平板电脑\n\n+蓝牙耳机\n\n 4 299 500\n\n-蓝牙耳机\n\n-5 99 1000\n\n-充电器\n+充电器\n\n+5 99 1000",
     "visual_scores": [
-      0.9953
+      0.9943
     ],
-    "visual_avg": 0.9953,
+    "visual_avg": 0.9943,
     "diff_images": [
       {
         "page": 1,
@@ -4226,24 +4226,24 @@
         "reference_img": "classic57_cjk_only_p1_reference.png"
       }
     ],
-    "overall_score": 0.9112
+    "overall_score": 0.9108
   },
   {
     "name": "classic58_mixed_numeric_formats",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1840,
+    "minipdf_size": 2209,
     "reference_size": 32815,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9905,
-    "flat_text_similarity": 0.9905,
-    "word_text_similarity": 0.9231,
-    "text_diff": "--- minipdf/classic58_mixed_numeric_formats.pdf\n+++ reference/classic58_mixed_numeric_formats.pdf\n@@ -5,6 +5,6 @@\n Negative in -42\n\n Negative fl -3.14\n\n Very small 0.0001\n\n-Very large10000000\n\n+Very large 10000000\n\n Zero 0\n\n-Scientific a 1.23E+10\n+Scientific 1.23E+10",
+    "text_similarity": 0.9872,
+    "flat_text_similarity": 0.9872,
+    "word_text_similarity": 0.8235,
+    "text_diff": "--- minipdf/classic58_mixed_numeric_formats.pdf\n+++ reference/classic58_mixed_numeric_formats.pdf\n@@ -2,9 +2,9 @@\n Integer 1000000\n\n Float 2dp 3.14\n\n Float 5dp 3.14159\n\n-Negative i -42\n\n-Negative f -3.14\n\n-Very smal 0.0001\n\n-Very large10000000\n\n+Negative in -42\n\n+Negative fl -3.14\n\n+Very small 0.0001\n\n+Very large 10000000\n\n Zero 0\n\n Scientific 1.23E+10",
     "visual_scores": [
-      0.9958
+      0.9957
     ],
-    "visual_avg": 0.9958,
+    "visual_avg": 0.9957,
     "diff_images": [
       {
         "page": 1,
@@ -4251,13 +4251,13 @@
         "reference_img": "classic58_mixed_numeric_formats_p1_reference.png"
       }
     ],
-    "overall_score": 0.9945
+    "overall_score": 0.9932
   },
   {
     "name": "classic59_multi_sheet_summary",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4717,
+    "minipdf_size": 6338,
     "reference_size": 44781,
     "minipdf_pages": 4,
     "reference_pages": 4,
@@ -4300,7 +4300,7 @@
     "name": "classic60_large_wide_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 58489,
+    "minipdf_size": 95971,
     "reference_size": 263350,
     "minipdf_pages": 4,
     "reference_pages": 4,
@@ -4368,18 +4368,18 @@
     "name": "classic62_company_logo_header",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2974,
+    "minipdf_size": 3604,
     "reference_size": 42880,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.996,
-    "flat_text_similarity": 0.996,
+    "text_similarity": 0.9919,
+    "flat_text_similarity": 0.9919,
     "word_text_similarity": 0.9388,
-    "text_diff": "--- minipdf/classic62_company_logo_header.pdf\n+++ reference/classic62_company_logo_header.pdf\n@@ -1,6 +1,6 @@\n ACME Corporation\n\n Annual Report 2025\n\n-Departmen Q1 Q2 Q3 Q4\n\n+DepartmenQ1 Q2 Q3 Q4\n\n Sales 120 135 142 160\n\n Engineerin 85 90 95 100\n\n Marketing 60 65 70 75",
+    "text_diff": "--- minipdf/classic62_company_logo_header.pdf\n+++ reference/classic62_company_logo_header.pdf\n@@ -1,6 +1,6 @@\n ACME Corporation\n\n Annual Report 2025\n\n-Departme Q1 Q2 Q3 Q4\n\n+DepartmenQ1 Q2 Q3 Q4\n\n Sales 120 135 142 160\n\n Engineerin 85 90 95 100\n\n Marketing 60 65 70 75",
     "visual_scores": [
-      0.9949
+      0.9947
     ],
-    "visual_avg": 0.9949,
+    "visual_avg": 0.9947,
     "diff_images": [
       {
         "page": 1,
@@ -4387,7 +4387,7 @@
         "reference_img": "classic62_company_logo_header_p1_reference.png"
       }
     ],
-    "overall_score": 0.9964
+    "overall_score": 0.9946
   },
   {
     "name": "classic63_two_products_side_by_side",
@@ -4418,18 +4418,18 @@
     "name": "classic64_employee_directory_with_photo",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4898,
+    "minipdf_size": 5400,
     "reference_size": 43408,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9835,
-    "flat_text_similarity": 0.9835,
-    "word_text_similarity": 0.6667,
-    "text_diff": "--- minipdf/classic64_employee_directory_with_photo.pdf\n+++ reference/classic64_employee_directory_with_photo.pdf\n@@ -1,4 +1,4 @@\n-Photo Name Title Departmen Email\n\n-Alice Chen Engineer R&D alice@example.com\n\n-Bob Smith Manager Sales bob@example.com\n\n-Carol Wan Designer UX carol@example.com\n+Photo Name Title DepartmeEmail\n\n+Alice ChenEngineer R&D alice@example.com\n\n+Bob SmithManager Sales bob@example.com\n\n+Carol WanDesigner UX carol@example.com",
+    "text_similarity": 0.99,
+    "flat_text_similarity": 0.99,
+    "word_text_similarity": 0.8235,
+    "text_diff": "--- minipdf/classic64_employee_directory_with_photo.pdf\n+++ reference/classic64_employee_directory_with_photo.pdf\n@@ -1,4 +1,4 @@\n-Photo Name Title Departme Email\n\n-Alice Che Engineer R&D alice@example.com\n\n+Photo Name Title DepartmeEmail\n\n+Alice ChenEngineer R&D alice@example.com\n\n Bob SmithManager Sales bob@example.com\n\n Carol WanDesigner UX carol@example.com",
     "visual_scores": [
-      0.9938
+      0.9933
     ],
-    "visual_avg": 0.9938,
+    "visual_avg": 0.9933,
     "diff_images": [
       {
         "page": 1,
@@ -4437,24 +4437,24 @@
         "reference_img": "classic64_employee_directory_with_photo_p1_reference.png"
       }
     ],
-    "overall_score": 0.9909
+    "overall_score": 0.9933
   },
   {
     "name": "classic65_inventory_with_product_photos",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6841,
+    "minipdf_size": 7586,
     "reference_size": 48227,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9938,
-    "flat_text_similarity": 0.9938,
-    "word_text_similarity": 0.9333,
-    "text_diff": "--- minipdf/classic65_inventory_with_product_photos.pdf\n+++ reference/classic65_inventory_with_product_photos.pdf\n@@ -1,6 +1,6 @@\n Image SKU Name Qty Price\n\n SKU-001 Red Widge 50 9.99\n\n-SKU-002 Blue Gadg 30 14.99\n\n-SKU-003 Green Tool 100 4.49\n\n+SKU-002 Blue Gadge 30 14.99\n\n+SKU-003 Green Too 100 4.49\n\n SKU-004 Yellow Dev 25 29.99\n\n SKU-005 Purple Gea 75 7.99",
+    "text_similarity": 0.9873,
+    "flat_text_similarity": 0.9873,
+    "word_text_similarity": 0.8667,
+    "text_diff": "--- minipdf/classic65_inventory_with_product_photos.pdf\n+++ reference/classic65_inventory_with_product_photos.pdf\n@@ -1,6 +1,6 @@\n Image SKU Name Qty Price\n\n-SKU-001 Red Widg 50 9.99\n\n-SKU-002 Blue Gadg 30 14.99\n\n+SKU-001 Red Widge 50 9.99\n\n+SKU-002 Blue Gadge 30 14.99\n\n SKU-003 Green Too 100 4.49\n\n-SKU-004 Yellow De 25 29.99\n\n-SKU-005 Purple Ge 75 7.99\n+SKU-004 Yellow Dev 25 29.99\n\n+SKU-005 Purple Gea 75 7.99",
     "visual_scores": [
-      0.9949
+      0.9945
     ],
-    "visual_avg": 0.9949,
+    "visual_avg": 0.9945,
     "diff_images": [
       {
         "page": 1,
@@ -4462,24 +4462,24 @@
         "reference_img": "classic65_inventory_with_product_photos_p1_reference.png"
       }
     ],
-    "overall_score": 0.9955
+    "overall_score": 0.9927
   },
   {
     "name": "classic66_invoice_with_logo",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2955,
+    "minipdf_size": 3462,
     "reference_size": 45034,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9836,
-    "flat_text_similarity": 0.9836,
-    "word_text_similarity": 0.8462,
-    "text_diff": "--- minipdf/classic66_invoice_with_logo.pdf\n+++ reference/classic66_invoice_with_logo.pdf\n@@ -1,8 +1,8 @@\n INVOICE\n\n Invoice #: INV-20250301\n\n Date: 2025-03-01\n\n-Description Qty Unit Price Total\n\n+DescriptiQty Unit PriceTotal\n\n Consulting 8 150 1200\n\n-Software Li 1 299 299\n\n+Software L 1 299 299\n\n Support Pa 1 99 99\n\n Total 1598",
+    "text_similarity": 0.99,
+    "flat_text_similarity": 0.99,
+    "word_text_similarity": 0.8627,
+    "text_diff": "--- minipdf/classic66_invoice_with_logo.pdf\n+++ reference/classic66_invoice_with_logo.pdf\n@@ -1,8 +1,8 @@\n INVOICE\n\n Invoice #: INV-20250301\n\n Date: 2025-03-01\n\n-DescriptioQty Unit Price Total\n\n+DescriptiQty Unit PriceTotal\n\n Consulting 8 150 1200\n\n Software L 1 299 299\n\n-Support P 1 99 99\n\n+Support Pa 1 99 99\n\n Total 1598",
     "visual_scores": [
-      0.9956
+      0.9955
     ],
-    "visual_avg": 0.9956,
+    "visual_avg": 0.9955,
     "diff_images": [
       {
         "page": 1,
@@ -4487,24 +4487,24 @@
         "reference_img": "classic66_invoice_with_logo_p1_reference.png"
       }
     ],
-    "overall_score": 0.9917
+    "overall_score": 0.9942
   },
   {
     "name": "classic67_real_estate_listing",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2939,
+    "minipdf_size": 3156,
     "reference_size": 44030,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.9966,
+    "flat_text_similarity": 0.9966,
+    "word_text_similarity": 0.96,
+    "text_diff": "--- minipdf/classic67_real_estate_listing.pdf\n+++ reference/classic67_real_estate_listing.pdf\n@@ -3,7 +3,7 @@\n List Price: $485,000\n\n Feature Detail\n\n Bedrooms 4\n\n-Bathroom 2.5\n\n+Bathrooms 2.5\n\n Sq Ft 2100\n\n Lot Size 0.25 acres\n\n Year Built 1998",
     "visual_scores": [
-      0.9954
+      0.9953
     ],
-    "visual_avg": 0.9954,
+    "visual_avg": 0.9953,
     "diff_images": [
       {
         "page": 1,
@@ -4512,24 +4512,24 @@
         "reference_img": "classic67_real_estate_listing_p1_reference.png"
       }
     ],
-    "overall_score": 0.9982
+    "overall_score": 0.9968
   },
   {
     "name": "classic68_restaurant_menu",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5458,
+    "minipdf_size": 5597,
     "reference_size": 47320,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9881,
-    "flat_text_similarity": 0.9881,
-    "word_text_similarity": 0.875,
-    "text_diff": "--- minipdf/classic68_restaurant_menu.pdf\n+++ reference/classic68_restaurant_menu.pdf\n@@ -1,9 +1,9 @@\n Today's Menu\n\n-Grilled Sal $18.99\n\n+Grilled S $18.99\n\n Fresh Atlantic salmon with herbs\n\n-Caesar Sal $12.99\n\n+Caesar Sa $12.99\n\n Romaine lettuce, croutons, parmesan\n\n-Beef Burge $14.99\n\n+Beef Burg $14.99\n\n 8oz Angus beef, brioche bun\n\n-Pasta Prim $13.99\n\n+Pasta Pri $13.99\n\n Seasonal vegetables, olive oil",
+    "text_similarity": 0.988,
+    "flat_text_similarity": 0.988,
+    "word_text_similarity": 0.8197,
+    "text_diff": "--- minipdf/classic68_restaurant_menu.pdf\n+++ reference/classic68_restaurant_menu.pdf\n@@ -1,9 +1,9 @@\n Today's Menu\n\n-Grilled Sa $18.99\n\n+Grilled S $18.99\n\n Fresh Atlantic salmon with herbs\n\n-Caesar Sa$12.99\n\n+Caesar Sa $12.99\n\n Romaine lettuce, croutons, parmesan\n\n-Beef Burg$14.99\n\n+Beef Burg $14.99\n\n 8oz Angus beef, brioche bun\n\n-Pasta Prim$13.99\n\n+Pasta Pri $13.99\n\n Seasonal vegetables, olive oil",
     "visual_scores": [
-      0.979
+      0.9787
     ],
-    "visual_avg": 0.979,
+    "visual_avg": 0.9787,
     "diff_images": [
       {
         "page": 1,
@@ -4537,7 +4537,7 @@
         "reference_img": "classic68_restaurant_menu_p1_reference.png"
       }
     ],
-    "overall_score": 0.9868
+    "overall_score": 0.9867
   },
   {
     "name": "classic69_image_only_sheet",
@@ -4568,18 +4568,18 @@
     "name": "classic70_product_catalog_with_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4598,
+    "minipdf_size": 4709,
     "reference_size": 44156,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9862,
-    "flat_text_similarity": 0.9862,
-    "word_text_similarity": 0.9388,
-    "text_diff": "--- minipdf/classic70_product_catalog_with_images.pdf\n+++ reference/classic70_product_catalog_with_images.pdf\n@@ -1,7 +1,7 @@\n Product Catalog - Spring 2025\n\n-Classic Pe $3.99\n\n+Classic P $3.99\n\n A reliable ballpoint pen\n\n-Leather No $12.99\n\n+Leather $12.99\n\n Premium A5 notebook\n\n Desk Orga $24.99\n\n Bamboo desk tidy set",
+    "text_similarity": 0.9826,
+    "flat_text_similarity": 0.9826,
+    "word_text_similarity": 0.8511,
+    "text_diff": "--- minipdf/classic70_product_catalog_with_images.pdf\n+++ reference/classic70_product_catalog_with_images.pdf\n@@ -1,7 +1,7 @@\n Product Catalog - Spring 2025\n\n-Classic Pe$3.99\n\n+Classic P $3.99\n\n A reliable ballpoint pen\n\n-Leather N $12.99\n\n+Leather $12.99\n\n Premium A5 notebook\n\n-Desk Orga$24.99\n\n+Desk Orga $24.99\n\n Bamboo desk tidy set",
     "visual_scores": [
-      0.9934
+      0.9931
     ],
-    "visual_avg": 0.9934,
+    "visual_avg": 0.9931,
     "diff_images": [
       {
         "page": 1,
@@ -4587,24 +4587,24 @@
         "reference_img": "classic70_product_catalog_with_images_p1_reference.png"
       }
     ],
-    "overall_score": 0.9918
+    "overall_score": 0.9903
   },
   {
     "name": "classic71_multi_sheet_with_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5252,
+    "minipdf_size": 5598,
     "reference_size": 37417,
     "minipdf_pages": 3,
     "reference_pages": 3,
-    "text_similarity": 0.9966,
-    "flat_text_similarity": 0.996,
+    "text_similarity": 0.9931,
+    "flat_text_similarity": 0.9919,
     "word_text_similarity": 0.9143,
-    "text_diff": "--- minipdf/classic71_multi_sheet_with_images.pdf\n+++ reference/classic71_multi_sheet_with_images.pdf\n@@ -6,6 +6,6 @@\n Digital 50000\n\n Print 20000\n\n ---PAGE---\n\n-Departmen Headcount\n\n+DepartmenHeadcount\n\n Engineerin 45\n\n Sales 30",
+    "text_diff": "--- minipdf/classic71_multi_sheet_with_images.pdf\n+++ reference/classic71_multi_sheet_with_images.pdf\n@@ -6,6 +6,6 @@\n Digital 50000\n\n Print 20000\n\n ---PAGE---\n\n-Departme Headcount\n\n+DepartmenHeadcount\n\n Engineerin 45\n\n Sales 30",
     "visual_scores": [
       0.9989,
       0.999,
-      0.9991
+      0.999
     ],
     "visual_avg": 0.999,
     "diff_images": [
@@ -4624,13 +4624,13 @@
         "reference_img": "classic71_multi_sheet_with_images_p3_reference.png"
       }
     ],
-    "overall_score": 0.9982
+    "overall_score": 0.9968
   },
   {
     "name": "classic72_bar_chart_image_with_data",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3341,
+    "minipdf_size": 3908,
     "reference_size": 41339,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4655,18 +4655,18 @@
     "name": "classic73_event_flyer_with_banner",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3345,
+    "minipdf_size": 3740,
     "reference_size": 44510,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9959,
-    "flat_text_similarity": 0.9959,
-    "word_text_similarity": 0.9286,
-    "text_diff": "--- minipdf/classic73_event_flyer_with_banner.pdf\n+++ reference/classic73_event_flyer_with_banner.pdf\n@@ -4,6 +4,6 @@\n Speakers: 20+ Industry Leaders\n\n Time Session Speaker\n\n 09:00 Opening K Dr. Jane Kim\n\n-10:30 AI in Practi Prof. Mark Liu\n\n-13:00 Cloud Arch Eng. Sara Patel\n\n+10:30 AI in PractiProf. Mark Liu\n\n+13:00 Cloud ArchEng. Sara Patel\n\n 15:00 Panel Disc All Speakers",
+    "text_similarity": 0.9322,
+    "flat_text_similarity": 0.9322,
+    "word_text_similarity": 0.8675,
+    "text_diff": "--- minipdf/classic73_event_flyer_with_banner.pdf\n+++ reference/classic73_event_flyer_with_banner.pdf\n@@ -3,7 +3,7 @@\n Venue: Convention Center Hall A\n\n Speakers: 20+ Industry Leaders\n\n Time Session Speaker\n\n-09:00 Opening KDr. Jane Kim\n\n-10:30 AI in Prac Prof. Mark Liu\n\n-13:00 Cloud Arc Eng. Sara Patel\n\n-15:00 Panel Dis All Speakers\n+09:00 Opening K Dr. Jane Kim\n\n+10:30 AI in PractiProf. Mark Liu\n\n+13:00 Cloud ArchEng. Sara Patel\n\n+15:00 Panel Disc All Speakers",
     "visual_scores": [
-      0.9936
+      0.9935
     ],
-    "visual_avg": 0.9936,
+    "visual_avg": 0.9935,
     "diff_images": [
       {
         "page": 1,
@@ -4674,24 +4674,24 @@
         "reference_img": "classic73_event_flyer_with_banner_p1_reference.png"
       }
     ],
-    "overall_score": 0.9958
+    "overall_score": 0.9703
   },
   {
     "name": "classic74_dashboard_with_kpi_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4096727,
+    "minipdf_size": 4097318,
     "reference_size": 48749,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9595,
-    "flat_text_similarity": 0.9595,
-    "word_text_similarity": 0.9206,
-    "text_diff": "--- minipdf/classic74_dashboard_with_kpi_image.pdf\n+++ reference/classic74_dashboard_with_kpi_image.pdf\n@@ -1,10 +1,6 @@\n Executive Dashboard Q1 2025\n\n KPI Target Actual Status\n\n-Revenue 500000 523000\n\n-✓ Above\n\n-New Custo 200 187\n\n-✗ Below\n\n-NPS Score 70 74\n\n-✓ Above\n\n-Churn Rat < 3% 2.8%\n\n-✓ Above\n+Revenue 500000 523000 ✓ Above\n\n+New Custo 200 187  Below ✗\n\n+NPS Score 70 74 ✓ Above\n\n+Churn Rate< 3% 2.8% ✓ Above",
+    "text_similarity": 0.956,
+    "flat_text_similarity": 0.956,
+    "word_text_similarity": 0.871,
+    "text_diff": "--- minipdf/classic74_dashboard_with_kpi_image.pdf\n+++ reference/classic74_dashboard_with_kpi_image.pdf\n@@ -1,10 +1,6 @@\n Executive Dashboard Q1 2025\n\n KPI Target Actual Status\n\n-Revenue 500000 523000\n\n-✓ Above\n\n-New Cust 200 187\n\n-✗ Below\n\n-NPS Scor 70 74\n\n-✓ Above\n\n-Churn Rat< 3% 2.8%\n\n-✓ Above\n+Revenue 500000 523000 ✓ Above\n\n+New Custo 200 187  Below ✗\n\n+NPS Score 70 74 ✓ Above\n\n+Churn Rate< 3% 2.8% ✓ Above",
     "visual_scores": [
-      0.9888
+      0.9887
     ],
-    "visual_avg": 0.9888,
+    "visual_avg": 0.9887,
     "diff_images": [
       {
         "page": 1,
@@ -4699,7 +4699,7 @@
         "reference_img": "classic74_dashboard_with_kpi_image_p1_reference.png"
       }
     ],
-    "overall_score": 0.9793
+    "overall_score": 0.9779
   },
   {
     "name": "classic75_certificate_with_seal",
@@ -4780,14 +4780,14 @@
     "name": "classic78_small_icon_per_row",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6299,
+    "minipdf_size": 6813,
     "reference_size": 41646,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9833,
-    "flat_text_similarity": 0.9833,
-    "word_text_similarity": 0.8148,
-    "text_diff": "--- minipdf/classic78_small_icon_per_row.pdf\n+++ reference/classic78_small_icon_per_row.pdf\n@@ -1,6 +1,6 @@\n Icon Task Assignee Status\n\n Fix login b Alice Done\n\n-Write unit t Bob In Progress\n\n-Deploy to s Carol Pending\n\n-Code revie Alice Done\n\n-Update do Dave In Progress\n+Write unit Bob In Progress\n\n+Deploy to sCarol Pending\n\n+Code revieAlice Done\n\n+Update doDave In Progress",
+    "text_similarity": 0.9863,
+    "flat_text_similarity": 0.9863,
+    "word_text_similarity": 0.84,
+    "text_diff": "--- minipdf/classic78_small_icon_per_row.pdf\n+++ reference/classic78_small_icon_per_row.pdf\n@@ -1,6 +1,6 @@\n Icon Task Assignee Status\n\n-Fix login bAlice Done\n\n+Fix login b Alice Done\n\n Write unit Bob In Progress\n\n-Deploy to Carol Pending\n\n-Code revi Alice Done\n\n+Deploy to sCarol Pending\n\n+Code revieAlice Done\n\n Update doDave In Progress",
     "visual_scores": [
       0.9954
     ],
@@ -4799,13 +4799,13 @@
         "reference_img": "classic78_small_icon_per_row_p1_reference.png"
       }
     ],
-    "overall_score": 0.9915
+    "overall_score": 0.9927
   },
   {
     "name": "classic79_wide_panoramic_banner",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3112,
+    "minipdf_size": 3479,
     "reference_size": 43014,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4880,14 +4880,14 @@
     "name": "classic82_before_after_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4033,
+    "minipdf_size": 4383,
     "reference_size": 42486,
     "minipdf_pages": 1,
     "reference_pages": 1,
     "text_similarity": 0.9963,
     "flat_text_similarity": 0.9963,
-    "word_text_similarity": 0.9388,
-    "text_diff": "--- minipdf/classic82_before_after_images.pdf\n+++ reference/classic82_before_after_images.pdf\n@@ -2,4 +2,4 @@\n Old design – legacy UI New design – modern UI\n\n Metric Before After Delta\n\n Load time 4.2s 1.1s -74%\n\n-Conversion 2.1% 4.8% +129%\n+Conversion2.1% 4.8% +129%",
+    "word_text_similarity": 0.9583,
+    "text_diff": "--- minipdf/classic82_before_after_images.pdf\n+++ reference/classic82_before_after_images.pdf\n@@ -2,4 +2,4 @@\n Old design – legacy UI New design – modern UI\n\n Metric Before After Delta\n\n Load time 4.2s 1.1s -74%\n\n-Conversio2.1% 4.8% +129%\n+Conversion2.1% 4.8% +129%",
     "visual_scores": [
       0.9923
     ],
@@ -4905,18 +4905,18 @@
     "name": "classic83_color_swatch_palette",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7175,
+    "minipdf_size": 7382,
     "reference_size": 45937,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9918,
-    "flat_text_similarity": 0.9918,
-    "word_text_similarity": 0.8571,
-    "text_diff": "--- minipdf/classic83_color_swatch_palette.pdf\n+++ reference/classic83_color_swatch_palette.pdf\n@@ -1,7 +1,7 @@\n Brand Color Palette\n\n Primary Bl RGB(0, 82, 165)\n\n-Primary Re RGB(197, 27, 50)\n\n-Accent Gre RGB(0, 163, 108)\n\n-Neutral Gr RGB(128, 128, 128)\n\n+Primary ReRGB(197, 27, 50)\n\n+Accent GreRGB(0, 163, 108)\n\n+Neutral GrRGB(128, 128, 128)\n\n Warm Yell RGB(255, 193, 7)\n\n Dark Navy RGB(10, 30, 70)",
+    "text_similarity": 0.9805,
+    "flat_text_similarity": 0.9805,
+    "word_text_similarity": 0.7667,
+    "text_diff": "--- minipdf/classic83_color_swatch_palette.pdf\n+++ reference/classic83_color_swatch_palette.pdf\n@@ -1,7 +1,7 @@\n Brand Color Palette\n\n-Primary B RGB(0, 82, 165)\n\n-Primary RRGB(197, 27, 50)\n\n-Accent GrRGB(0, 163, 108)\n\n-Neutral G RGB(128, 128, 128)\n\n-Warm Yel RGB(255, 193, 7)\n\n-Dark NavyRGB(10, 30, 70)\n+Primary Bl RGB(0, 82, 165)\n\n+Primary ReRGB(197, 27, 50)\n\n+Accent GreRGB(0, 163, 108)\n\n+Neutral GrRGB(128, 128, 128)\n\n+Warm Yell RGB(255, 193, 7)\n\n+Dark Navy RGB(10, 30, 70)",
     "visual_scores": [
-      0.9931
+      0.9928
     ],
-    "visual_avg": 0.9931,
+    "visual_avg": 0.9928,
     "diff_images": [
       {
         "page": 1,
@@ -4924,7 +4924,7 @@
         "reference_img": "classic83_color_swatch_palette_p1_reference.png"
       }
     ],
-    "overall_score": 0.994
+    "overall_score": 0.9893
   },
   {
     "name": "classic84_travel_destination_cards",
@@ -4955,14 +4955,14 @@
     "name": "classic85_lab_results_with_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3630,
+    "minipdf_size": 4483,
     "reference_size": 47861,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9911,
-    "flat_text_similarity": 0.9911,
-    "word_text_similarity": 0.8889,
-    "text_diff": "--- minipdf/classic85_lab_results_with_image.pdf\n+++ reference/classic85_lab_results_with_image.pdf\n@@ -1,6 +1,6 @@\n Sample Analysis Report\n\n-Parameter Value Unit Reference Flag\n\n-pH 7.35 7.35 – 7.45 Normal\n\n+ParameteValue Unit ReferenceFlag\n\n+pH 7.35 7.35 – 7.45Normal\n\n Glucose 5.2 mmol/L 3.9 – 5.5 Normal\n\n Sodium 142 mEq/L 136 – 145 Normal\n\n Potassium 5 mEq/L 3.5 – 5.0 Normal\n",
+    "text_similarity": 0.9932,
+    "flat_text_similarity": 0.9932,
+    "word_text_similarity": 0.8974,
+    "text_diff": "--- minipdf/classic85_lab_results_with_image.pdf\n+++ reference/classic85_lab_results_with_image.pdf\n@@ -1,7 +1,7 @@\n Sample Analysis Report\n\n-Paramete Value Unit ReferenceFlag\n\n-pH 7.35 7.35 – 7.4Normal\n\n+ParameteValue Unit ReferenceFlag\n\n+pH 7.35 7.35 – 7.45Normal\n\n Glucose 5.2 mmol/L 3.9 – 5.5 Normal\n\n-Sodium 142 mEq/L 136 – 145Normal\n\n+Sodium 142 mEq/L 136 – 145 Normal\n\n Potassium 5 mEq/L 3.5 – 5.0 Normal\n\n Creatinine 1.4 mg/dL 0.6 – 1.2 High",
     "visual_scores": [
       0.9889
     ],
@@ -4974,24 +4974,24 @@
         "reference_img": "classic85_lab_results_with_image_p1_reference.png"
       }
     ],
-    "overall_score": 0.992
+    "overall_score": 0.9928
   },
   {
     "name": "classic86_software_screenshot_features",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3062,
+    "minipdf_size": 3301,
     "reference_size": 41960,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.973,
-    "flat_text_similarity": 0.973,
-    "word_text_similarity": 0.7451,
-    "text_diff": "--- minipdf/classic86_software_screenshot_features.pdf\n+++ reference/classic86_software_screenshot_features.pdf\n@@ -1,9 +1,9 @@\n MiniApp v2.0\n\n The fastest lightweight app\n\n Feature Available\n\n-Dark Mode Yes\n\n+Dark ModeYes\n\n Auto Save Yes\n\n-Cloud Syn Yes\n\n-Offline Mo Yes\n\n-API Acces Pro only\n\n-Export to P Yes\n+Cloud SyncYes\n\n+Offline MoYes\n\n+API AccessPro only\n\n+Export to Yes",
+    "text_similarity": 0.9827,
+    "flat_text_similarity": 0.9827,
+    "word_text_similarity": 0.7826,
+    "text_diff": "--- minipdf/classic86_software_screenshot_features.pdf\n+++ reference/classic86_software_screenshot_features.pdf\n@@ -1,9 +1,9 @@\n MiniApp v2.0\n\n The fastest lightweight app\n\n Feature Available\n\n-Dark Mod Yes\n\n-Auto SaveYes\n\n-Cloud SynYes\n\n+Dark ModeYes\n\n+Auto Save Yes\n\n+Cloud SyncYes\n\n Offline MoYes\n\n-API AccesPro only\n\n+API AccessPro only\n\n Export to Yes",
     "visual_scores": [
-      0.996
+      0.9959
     ],
-    "visual_avg": 0.996,
+    "visual_avg": 0.9959,
     "diff_images": [
       {
         "page": 1,
@@ -4999,13 +4999,13 @@
         "reference_img": "classic86_software_screenshot_features_p1_reference.png"
       }
     ],
-    "overall_score": 0.9876
+    "overall_score": 0.9914
   },
   {
     "name": "classic87_sports_results_with_logos",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5885,
+    "minipdf_size": 6745,
     "reference_size": 47075,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -5030,7 +5030,7 @@
     "name": "classic88_image_after_data",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3095,
+    "minipdf_size": 3697,
     "reference_size": 43275,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -5039,9 +5039,9 @@
     "word_text_similarity": 0.9455,
     "text_diff": "--- minipdf/classic88_image_after_data.pdf\n+++ reference/classic88_image_after_data.pdf\n@@ -1,4 +1,4 @@\n-Quarter Revenue Expenses Profit\n\n+Quarter Revenue ExpensesProfit\n\n Q1 120000 80000 40000\n\n Q2 135000 88000 47000\n\n Q3 142000 91000 51000\n",
     "visual_scores": [
-      0.9952
+      0.995
     ],
-    "visual_avg": 0.9952,
+    "visual_avg": 0.995,
     "diff_images": [
       {
         "page": 1,
@@ -5049,24 +5049,24 @@
         "reference_img": "classic88_image_after_data_p1_reference.png"
       }
     ],
-    "overall_score": 0.9969
+    "overall_score": 0.9968
   },
   {
     "name": "classic89_nutrition_label_with_image",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3394,
+    "minipdf_size": 3990,
     "reference_size": 47195,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9927,
-    "flat_text_similarity": 0.9927,
-    "word_text_similarity": 0.9211,
-    "text_diff": "--- minipdf/classic89_nutrition_label_with_image.pdf\n+++ reference/classic89_nutrition_label_with_image.pdf\n@@ -1,11 +1,11 @@\n Nutrition Facts\n\n Serving Size: 30g (approx. 1 cup)\n\n-Nutrient Amount pe % Daily Value\n\n+Nutrient Amount p% Daily Value\n\n Calories 120 kcal\n\n Total Fat 3g 4%\n\n Saturated 0.5g 3%\n\n Sodium 160mg 7%\n\n Total Carb 22g 8%\n\n-Dietary Fib 3g 11%\n\n+Dietary Fib3g 11%\n\n Sugars 4g\n\n Protein 3g",
+    "text_similarity": 0.9902,
+    "flat_text_similarity": 0.9902,
+    "word_text_similarity": 0.88,
+    "text_diff": "--- minipdf/classic89_nutrition_label_with_image.pdf\n+++ reference/classic89_nutrition_label_with_image.pdf\n@@ -1,11 +1,11 @@\n Nutrition Facts\n\n Serving Size: 30g (approx. 1 cup)\n\n-Nutrient Amount p % Daily Value\n\n+Nutrient Amount p% Daily Value\n\n Calories 120 kcal\n\n Total Fat 3g 4%\n\n Saturated 0.5g 3%\n\n Sodium 160mg 7%\n\n-Total Carb22g 8%\n\n-Dietary Fi 3g 11%\n\n+Total Carb 22g 8%\n\n+Dietary Fib3g 11%\n\n Sugars 4g\n\n Protein 3g",
     "visual_scores": [
-      0.9951
+      0.9949
     ],
-    "visual_avg": 0.9951,
+    "visual_avg": 0.9949,
     "diff_images": [
       {
         "page": 1,
@@ -5074,24 +5074,24 @@
         "reference_img": "classic89_nutrition_label_with_image_p1_reference.png"
       }
     ],
-    "overall_score": 0.9951
+    "overall_score": 0.994
   },
   {
     "name": "classic90_project_status_with_milestones",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3524,
+    "minipdf_size": 4220,
     "reference_size": 47096,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9889,
-    "flat_text_similarity": 0.9889,
-    "word_text_similarity": 0.8132,
-    "text_diff": "--- minipdf/classic90_project_status_with_milestones.pdf\n+++ reference/classic90_project_status_with_milestones.pdf\n@@ -1,8 +1,8 @@\n Project Orion – Status Report\n\n Reporting Period: Q1 2025\n\n-Milestone Due Date Owner Status\n\n-Requireme Jan 15 PM Team Complete\n\n-Architectur Feb 1 Tech Lead Complete\n\n-Alpha Rele Feb 28 Dev Team In Progress\n\n-Beta Testin Mar 31 QA Team Not Started\n\n-Production Apr 15 DevOps Not Started\n+MilestoneDue Date Owner Status\n\n+RequiremeJan 15 PM Team Complete\n\n+Architectu Feb 1 Tech Lead Complete\n\n+Alpha ReleFeb 28 Dev Team In Progress\n\n+Beta TestinMar 31 QA Team Not Started\n\n+ProductionApr 15 DevOps Not Started",
+    "text_similarity": 0.9793,
+    "flat_text_similarity": 0.9793,
+    "word_text_similarity": 0.7586,
+    "text_diff": "--- minipdf/classic90_project_status_with_milestones.pdf\n+++ reference/classic90_project_status_with_milestones.pdf\n@@ -1,8 +1,8 @@\n Project Orion – Status Report\n\n Reporting Period: Q1 2025\n\n-Milestone Due Date Owner Status\n\n-Requirem Jan 15 PM Team Complete\n\n-ArchitectuFeb 1 Tech LeadComplete\n\n-Alpha Rel Feb 28 Dev TeamIn Progress\n\n-Beta Test Mar 31 QA Team Not Started\n\n+MilestoneDue Date Owner Status\n\n+RequiremeJan 15 PM Team Complete\n\n+Architectu Feb 1 Tech Lead Complete\n\n+Alpha ReleFeb 28 Dev Team In Progress\n\n+Beta TestinMar 31 QA Team Not Started\n\n ProductionApr 15 DevOps Not Started",
     "visual_scores": [
-      0.987
+      0.9867
     ],
-    "visual_avg": 0.987,
+    "visual_avg": 0.9867,
     "diff_images": [
       {
         "page": 1,
@@ -5099,13 +5099,13 @@
         "reference_img": "classic90_project_status_with_milestones_p1_reference.png"
       }
     ],
-    "overall_score": 0.9904
+    "overall_score": 0.9864
   },
   {
     "name": "classic91_simple_bar_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3228,
+    "minipdf_size": 3468,
     "reference_size": 46964,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -5136,19 +5136,19 @@
     "name": "classic92_horizontal_bar_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3944,
+    "minipdf_size": 4194,
     "reference_size": 49891,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.9563,
-    "flat_text_similarity": 0.9277,
-    "word_text_similarity": 0.8986,
-    "text_diff": "--- minipdf/classic92_horizontal_bar_chart.pdf\n+++ reference/classic92_horizontal_bar_chart.pdf\n@@ -1,5 +1,6 @@\n-Departmen Headcount\n\n-Engineerin 45 Headcount by Department\n\n+DepartmenHeadcount\n\n+Engineerin 45\n\n+Headcount by Department\n\n Sales 30\n\n Marketing 18\n\n HR 12\n\n@@ -11,5 +12,7 @@\n Marketing\n\n Sales\n\n Engineering\n\n-0 5 10 15 20 25 30 35 40 45 5\n\n----PAGE---\n+0 5 10 15 20 25 30 35 40 45\n\n+---PAGE---\n\n+Headcount\n\n+50",
+    "text_similarity": 0.9512,
+    "flat_text_similarity": 0.9223,
+    "word_text_similarity": 0.8696,
+    "text_diff": "--- minipdf/classic92_horizontal_bar_chart.pdf\n+++ reference/classic92_horizontal_bar_chart.pdf\n@@ -1,15 +1,18 @@\n-Departme Headcount\n\n-Engineerin 45 Headcount by Department\n\n+DepartmenHeadcount\n\n+Engineerin 45\n\n+Headcount by Department\n\n Sales 30\n\n Marketing 18\n\n HR 12\n\n Operations\n\n Finance 15\n\n-Operation 25\n\n+Operations 25\n\n Finance\n\n HR\n\n Marketing\n\n Sales\n\n Engineering\n\n-0 5 10 15 20 25 30 35 40 45 5\n\n----PAGE---\n+0 5 10 15 20 25 30 35 40 45\n\n+---PAGE---\n\n+Headcount\n\n+50",
     "visual_scores": [
-      0.9361,
+      0.9369,
       0.9969
     ],
-    "visual_avg": 0.9665,
+    "visual_avg": 0.9669,
     "diff_images": [
       {
         "page": 1,
@@ -5161,13 +5161,13 @@
         "reference_img": "classic92_horizontal_bar_chart_p2_reference.png"
       }
     ],
-    "overall_score": 0.9691
+    "overall_score": 0.9672
   },
   {
     "name": "classic93_line_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 5418,
+    "minipdf_size": 5938,
     "reference_size": 58852,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -5198,19 +5198,19 @@
     "name": "classic94_pie_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 404074,
+    "minipdf_size": 404284,
     "reference_size": 47223,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 0.9935,
-    "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/classic94_pie_chart.pdf\n+++ reference/classic94_pie_chart.pdf\n@@ -1,5 +1,6 @@\n Segment Share (%)\n\n-Enterprise 35 Market Share by Segment\n\n+Enterprise 35\n\n+Market Share by Segment\n\n SMB 28\n\n Consumer 22\n\n Governme 10\n",
+    "text_similarity": 0.9902,
+    "flat_text_similarity": 0.9902,
+    "word_text_similarity": 0.9565,
+    "text_diff": "--- minipdf/classic94_pie_chart.pdf\n+++ reference/classic94_pie_chart.pdf\n@@ -1,7 +1,8 @@\n Segment Share (%)\n\n-Enterprise 35 Market Share by Segment\n\n+Enterprise 35\n\n+Market Share by Segment\n\n SMB 28\n\n-Consume 22\n\n+Consumer 22\n\n Governme 10\n\n Education 5\n\n Enterprise\n",
     "visual_scores": [
-      0.8624,
+      0.8635,
       0.9992
     ],
-    "visual_avg": 0.9308,
+    "visual_avg": 0.9314,
     "diff_images": [
       {
         "page": 1,
@@ -5223,13 +5223,13 @@
         "reference_img": "classic94_pie_chart_p2_reference.png"
       }
     ],
-    "overall_score": 0.9723
+    "overall_score": 0.9686
   },
   {
     "name": "classic95_area_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 12896,
+    "minipdf_size": 13896,
     "reference_size": 60857,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -5260,19 +5260,19 @@
     "name": "classic96_scatter_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6483,
+    "minipdf_size": 7319,
     "reference_size": 62636,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8857,
-    "flat_text_similarity": 0.3933,
-    "word_text_similarity": 0.8857,
-    "text_diff": "--- minipdf/classic96_scatter_chart.pdf\n+++ reference/classic96_scatter_chart.pdf\n@@ -1,27 +1,33 @@\n-Ad Spend ( Sales ($K)\n\n-45 96 Ad Spend vs Sales\n\n+Ad Spend (Sales ($K)\n\n+45 96\n\n+Ad Spend vs Sales\n\n 6 11\n\n-20 43 140\n\n+20 43\n\n+140\n\n 13 22\n\n-48 117 120\n\n+48 117\n\n+120\n\n 10 31\n\n-32 64 100\n\n+32 64\n\n+100\n\n 6 5\n\n-18 38 80\n\n+18 38\n\n+80\n\n+Sales ($K)\n\n 37 94\n\n 6 20 60\n\n-Sales ($K)\n\n 17 49\n\n-49 119 40\n\n+40\n\n+49 119\n\n 31 68\n\n 20\n\n 33 83\n\n 22 40\n\n 0\n\n+0 10 20 30 40 50 60\n\n 15 37\n\n-0 10 20 30 40 50 60\n\n-26 57\n\n-Ad Spend ($K)\n\n+26 57 Ad Spend ($K)\n\n 14 28\n\n 26 52\n\n----PAGE---\n+---PAGE---\n\n+Data Points",
+    "text_similarity": 0.8921,
+    "flat_text_similarity": 0.3908,
+    "word_text_similarity": 0.8921,
+    "text_diff": "--- minipdf/classic96_scatter_chart.pdf\n+++ reference/classic96_scatter_chart.pdf\n@@ -1,27 +1,33 @@\n-Ad Spend Sales ($K)\n\n-45 96 Ad Spend vs Sales\n\n+Ad Spend (Sales ($K)\n\n+45 96\n\n+Ad Spend vs Sales\n\n 6 11\n\n-20 43 140\n\n+20 43\n\n+140\n\n 13 22\n\n-48 117 120\n\n+48 117\n\n+120\n\n 10 31\n\n-32 64 100\n\n+32 64\n\n+100\n\n 6 5\n\n-18 38 80\n\n+18 38\n\n+80\n\n+Sales ($K)\n\n 37 94\n\n 6 20 60\n\n-Sales ($K)\n\n 17 49\n\n-49 119 40\n\n+40\n\n+49 119\n\n 31 68\n\n 20\n\n 33 83\n\n 22 40\n\n 0\n\n+0 10 20 30 40 50 60\n\n 15 37\n\n-0 10 20 30 40 50 60\n\n-26 57\n\n-Ad Spend ($K)\n\n+26 57 Ad Spend ($K)\n\n 14 28\n\n 26 52\n\n----PAGE---\n+---PAGE---\n\n+Data Points",
     "visual_scores": [
-      0.9726,
+      0.9729,
       0.9983
     ],
-    "visual_avg": 0.9854,
+    "visual_avg": 0.9856,
     "diff_images": [
       {
         "page": 1,
@@ -5285,13 +5285,13 @@
         "reference_img": "classic96_scatter_chart_p2_reference.png"
       }
     ],
-    "overall_score": 0.9484
+    "overall_score": 0.9511
   },
   {
     "name": "classic97_doughnut_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 302672,
+    "minipdf_size": 302904,
     "reference_size": 47208,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -5300,10 +5300,10 @@
     "word_text_similarity": 1.0,
     "text_diff": "--- minipdf/classic97_doughnut_chart.pdf\n+++ reference/classic97_doughnut_chart.pdf\n@@ -1,5 +1,6 @@\n Category Amount\n\n-Salaries 50000 Budget Allocation\n\n+Salaries 50000\n\n+Budget Allocation\n\n Rent 12000\n\n Marketing 8000\n\n R&D 15000\n",
     "visual_scores": [
-      0.8747,
+      0.8754,
       0.9992
     ],
-    "visual_avg": 0.9369,
+    "visual_avg": 0.9373,
     "diff_images": [
       {
         "page": 1,
@@ -5316,25 +5316,25 @@
         "reference_img": "classic97_doughnut_chart_p2_reference.png"
       }
     ],
-    "overall_score": 0.9748
+    "overall_score": 0.9749
   },
   {
     "name": "classic98_radar_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4214,
+    "minipdf_size": 4483,
     "reference_size": 47592,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8876,
-    "flat_text_similarity": 0.8876,
-    "word_text_similarity": 0.7937,
-    "text_diff": "--- minipdf/classic98_radar_chart.pdf\n+++ reference/classic98_radar_chart.pdf\n@@ -1,22 +1,16 @@\n Skill Score\n\n-Python 9 Developer Skill Radar\n\n+Python 9\n\n+Developer Skill Radar\n\n SQL 8\n\n-Python\n\n Communic 7\n\n Leadership 6\n\n+Python\n\n+Design 5\n\n 10\n\n-9\n\n-Design 5\n\n-8\n\n-7\n\n DevOps 7\n\n DevOps SQL\n\n-6\n\n 5\n\n-4\n\n-3\n\n-2\n\n-1\n\n+Score\n\n 0\n\n Design Communication\n\n Leadership\n",
+    "text_similarity": 0.881,
+    "flat_text_similarity": 0.881,
+    "word_text_similarity": 0.6984,
+    "text_diff": "--- minipdf/classic98_radar_chart.pdf\n+++ reference/classic98_radar_chart.pdf\n@@ -1,22 +1,16 @@\n Skill Score\n\n-Python 9 Developer Skill Radar\n\n+Python 9\n\n+Developer Skill Radar\n\n SQL 8\n\n+Communic 7\n\n+Leadership 6\n\n Python\n\n-Communi 7\n\n-Leadershi 6\n\n+Design 5\n\n 10\n\n-9\n\n-Design 5\n\n-8\n\n-7\n\n DevOps 7\n\n DevOps SQL\n\n-6\n\n 5\n\n-4\n\n-3\n\n-2\n\n-1\n\n+Score\n\n 0\n\n Design Communication\n\n Leadership\n",
     "visual_scores": [
-      0.9797,
+      0.9801,
       0.9992
     ],
-    "visual_avg": 0.9894,
+    "visual_avg": 0.9896,
     "diff_images": [
       {
         "page": 1,
@@ -5347,13 +5347,13 @@
         "reference_img": "classic98_radar_chart_p2_reference.png"
       }
     ],
-    "overall_score": 0.9508
+    "overall_score": 0.9482
   },
   {
     "name": "classic99_bubble_chart",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4439,
+    "minipdf_size": 5006,
     "reference_size": 57418,
     "minipdf_pages": 2,
     "reference_pages": 2,

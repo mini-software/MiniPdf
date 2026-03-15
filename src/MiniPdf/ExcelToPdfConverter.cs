@@ -890,7 +890,7 @@ internal static class ExcelToPdfConverter
                                 titleClipWidths[i] = effectiveW;
                             }
                             if (shouldClip && cellText.Length > fitChars)
-                                titleCellLines[i] = new[] { cellText[..fitChars] };
+                                titleCellLines[i] = new[] { cellText };
                             else
                                 titleCellLines[i] = new[] { cellText };
                         }
@@ -970,8 +970,11 @@ internal static class ExcelToPdfConverter
                                 var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs);
                                 textX = x + (cellWidth - tw) / 2f;
                             }
+                            var titleClip = titleClipWidths[i].HasValue
+                                ? ((float, float, float, float)?)(x, cellY - cellFs, titleClipWidths[i]!.Value, cellFs * 3)
+                                : null;
                             currentPage!.AddText(titleCellLines[i][lineIdx], textX, cellY, cellFs, cell?.Color,
-                                maxWidth: titleClipWidths[i]);
+                                clipRect: titleClip);
                         }
                         cellY -= lineHeight;
                     }
@@ -1176,14 +1179,10 @@ internal static class ExcelToPdfConverter
                                 {
                                     cellClipWidth[i] = effectiveWidth;
                                 }
-                                if (shouldClip)
-                                {
-                                    fitChars = FittingChars(cellText, effectiveWidth, cellFontSizeForFit);
-                                }
                                 if (shouldClip && cellText.Length > fitChars)
                                 {
-                                    // Truncate to effective column width (matches LibreOffice clip).
-                                    cellLines[i] = new[] { cellText[..fitChars] };
+                                    // Keep full text; AddText maxWidth will compress via Tz scaling.
+                                    cellLines[i] = new[] { cellText };
                                 }
                                 else if (!shouldClip && fitChars < cellText.Length && columns.Length == 1)
                                 {
@@ -1464,8 +1463,11 @@ internal static class ExcelToPdfConverter
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
                             textX = x + (cellWidth - textWidth) / 2f;
                         }
+                        var cellClip = cellClipWidth[i].HasValue
+                            ? ((float, float, float, float)?)(x, cellY - cellFontSize, cellClipWidth[i]!.Value, cellFontSize * 3)
+                            : null;
                         currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color,
-                            maxWidth: cellClipWidth[i]);
+                            clipRect: cellClip);
                     }
                     cellY -= lineHeight;
                 }

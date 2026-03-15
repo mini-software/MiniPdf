@@ -28,7 +28,7 @@ internal static class ExcelReader
         var fillColors = ReadFillColors(archive, themeColors);
         var borders = ReadBorders(archive, themeColors);
         var numberFormats = ReadNumberFormats(archive);
-        var dxfStyles = ReadDxfStyles(archive);
+        var dxfStyles = ReadDxfStyles(archive, themeColors);
         var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts) = ReadCellXfStyles(archive);
 
         // Read workbook to get sheet names and order
@@ -572,7 +572,7 @@ internal static class ExcelReader
     /// Reads differential formatting (dxf) styles from styles.xml.
     /// These are used by conditional formatting rules to override cell appearance.
     /// </summary>
-    private static List<(PdfColor? FontColor, PdfColor? FillColor)> ReadDxfStyles(ZipArchive archive)
+    private static List<(PdfColor? FontColor, PdfColor? FillColor)> ReadDxfStyles(ZipArchive archive, List<PdfColor> themeColors)
     {
         var result = new List<(PdfColor? FontColor, PdfColor? FillColor)>();
         var entry = archive.GetEntry("xl/styles.xml");
@@ -595,11 +595,7 @@ internal static class ExcelReader
             {
                 var colorEl = fontEl.Element(ns + "color");
                 if (colorEl != null)
-                {
-                    var rgb = colorEl.Attribute("rgb")?.Value;
-                    if (!string.IsNullOrEmpty(rgb))
-                        fontColor = PdfColor.FromHex(rgb);
-                }
+                    fontColor = ResolveColorElement(colorEl, themeColors);
             }
 
             var fillEl = dxf.Element(ns + "fill");
@@ -608,11 +604,7 @@ internal static class ExcelReader
                 var bgEl = fillEl.Descendants(ns + "bgColor").FirstOrDefault()
                         ?? fillEl.Descendants(ns + "fgColor").FirstOrDefault();
                 if (bgEl != null)
-                {
-                    var rgb = bgEl.Attribute("rgb")?.Value;
-                    if (!string.IsNullOrEmpty(rgb))
-                        fillColor = PdfColor.FromHex(rgb);
-                }
+                    fillColor = ResolveColorElement(bgEl, themeColors);
             }
 
             result.Add((fontColor, fillColor));
@@ -624,9 +616,9 @@ internal static class ExcelReader
     /// <summary>
     /// Reads conditional formatting rules from a worksheet entry.
     /// </summary>
-    private static List<(string Sqref, string Type, string Operator, string Formula, int DxfId)> ReadConditionalFormatting(ZipArchiveEntry entry)
+    private static List<(string Sqref, string Type, string Operator, string Formula, string Formula2, int DxfId)> ReadConditionalFormatting(ZipArchiveEntry entry)
     {
-        var rules = new List<(string, string, string, string, int)>();
+        var rules = new List<(string, string, string, string, string, int)>();
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
         var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
@@ -638,10 +630,12 @@ internal static class ExcelReader
             {
                 var type = rule.Attribute("type")?.Value ?? "";
                 var op = rule.Attribute("operator")?.Value ?? "";
-                var formula = rule.Element(ns + "formula")?.Value ?? "";
+                var formulas = rule.Elements(ns + "formula").ToArray();
+                var formula = formulas.Length > 0 ? formulas[0].Value ?? "" : "";
+                var formula2 = formulas.Length > 1 ? formulas[1].Value ?? "" : "";
                 var dxfIdStr = rule.Attribute("dxfId")?.Value;
                 if (int.TryParse(dxfIdStr, out var dxfId))
-                    rules.Add((sqref, type, op, formula, dxfId));
+                    rules.Add((sqref, type, op, formula, formula2, dxfId));
             }
         }
 
@@ -703,11 +697,11 @@ internal static class ExcelReader
     /// </summary>
     private static void ApplyConditionalFormatting(
         List<List<ExcelCell>> rows,
-        List<(string Sqref, string Type, string Operator, string Formula, int DxfId)> cfRules,
+        List<(string Sqref, string Type, string Operator, string Formula, string Formula2, int DxfId)> cfRules,
         List<(PdfColor? FontColor, PdfColor? FillColor)> dxfStyles,
         Dictionary<string, double> definedNames)
     {
-        foreach (var (sqref, type, op, formula, dxfId) in cfRules)
+        foreach (var (sqref, type, op, formula, formula2, dxfId) in cfRules)
         {
             if (dxfId < 0 || dxfId >= dxfStyles.Count) continue;
             var (fontColor, fillColor) = dxfStyles[dxfId];
@@ -730,9 +724,11 @@ internal static class ExcelReader
                     for (var c = startCol; c <= endCol && c < row.Count; c++)
                     {
                         var cell = row[c];
-                        if (string.IsNullOrEmpty(cell.Text)) continue;
+                        // Skip empty cells for cell-dependent conditions (containsText, cellIs)
+                        // but allow expression type which may reference other cells
+                        if (string.IsNullOrEmpty(cell.Text) && type != "expression") continue;
 
-                        var matches = EvaluateCondition(cell, type, op, formula, definedNames);
+                        var matches = EvaluateCondition(cell, type, op, formula, formula2, definedNames, rows);
 
                         if (matches)
                         {
@@ -741,7 +737,6 @@ internal static class ExcelReader
                                 Color = fontColor ?? cell.Color,
                                 FillColor = fillColor ?? cell.FillColor
                             };
-
                         }
                     }
                 }
@@ -749,8 +744,8 @@ internal static class ExcelReader
         }
     }
 
-    private static bool EvaluateCondition(ExcelCell cell, string type, string op, string formula,
-        Dictionary<string, double> definedNames)
+    private static bool EvaluateCondition(ExcelCell cell, string type, string op, string formula, string formula2,
+        Dictionary<string, double> definedNames, List<List<ExcelCell>> rows)
     {
         if (type == "cellIs")
         {
@@ -760,6 +755,10 @@ internal static class ExcelReader
                 System.Globalization.CultureInfo.InvariantCulture, out var threshold))
                 return false;
 
+            // For between/notBetween, parse the second formula as upper bound
+            double.TryParse(formula2, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var threshold2);
+
             return op switch
             {
                 "lessThan" => cellVal < threshold,
@@ -768,19 +767,51 @@ internal static class ExcelReader
                 "notEqual" => Math.Abs(cellVal - threshold) >= 1e-10,
                 "lessThanOrEqual" => cellVal <= threshold,
                 "greaterThanOrEqual" => cellVal >= threshold,
-                "between" => cellVal >= threshold, // simplified
+                "between" => cellVal >= threshold && cellVal <= threshold2,
+                "notBetween" => cellVal < threshold || cellVal > threshold2,
                 _ => false
             };
         }
 
+        // containsText: check if cell text contains the search string from SEARCH("text",REF)
+        if (type == "containsText")
+        {
+            var sm = System.Text.RegularExpressions.Regex.Match(formula,
+                @"SEARCH\(""([^""]*)""",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (sm.Success)
+            {
+                var searchText = sm.Groups[1].Value;
+                return cell.Text.Contains(searchText, StringComparison.OrdinalIgnoreCase);
+            }
+            return false;
+        }
+
         if (type == "expression")
         {
+            // Support ISNUMBER(SEARCH("text",$CELL$REF))=TRUE patterns
+            // These check if a specific cell contains a given text string
+            var isNumSearch = System.Text.RegularExpressions.Regex.Match(formula,
+                @"ISNUMBER\(SEARCH\(""([^""]*)"",\s*\$?([A-Z]+)\$?(\d+)\)\)",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (isNumSearch.Success)
+            {
+                var searchText = isNumSearch.Groups[1].Value;
+                var (refRow, refCol) = ParseCellRef(isNumSearch.Groups[2].Value + isNumSearch.Groups[3].Value);
+                if (refRow >= 0 && refRow < rows.Count && refCol >= 0 && refCol < rows[refRow].Count)
+                {
+                    var refCellText = rows[refRow][refCol].Text;
+                    return refCellText.Contains(searchText, StringComparison.OrdinalIgnoreCase);
+                }
+                return false;
+            }
+
             // Support simple patterns like "C8<Cash_Minimum" → current cell value < defined name
             // The formula references the first cell in the range, but semantically means "this cell"
             if (!TryGetCellNumericValue(cell, out var cellVal)) return false;
 
             // Try to match pattern: CELLREF < NAME or CELLREF > NAME etc.
-            var m = System.Text.RegularExpressions.Regex.Match(formula, @"^[A-Z]+\d+\s*(<|>|<=|>=|=)\s*(.+)$",
+            var m = System.Text.RegularExpressions.Regex.Match(formula, @"^\$?[A-Z]+\$?\d+\s*(<|>|<=|>=|=)\s*(.+)$",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             if (m.Success)
             {
