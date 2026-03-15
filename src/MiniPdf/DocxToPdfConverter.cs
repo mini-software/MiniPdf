@@ -627,7 +627,7 @@ internal static class DocxToPdfConverter
             1f + (fc.G - 1f) * a,
             1f + (fc.B - 1f) * a);
 
-        state.CurrentPage!.AddRectangle(x, y, width, height, blended);
+        RenderShapeGeometry(state.CurrentPage!, x, y, width, height, blended, shape);
     }
 
     private static void RenderHeaderFooterShape(PdfPage page, ConversionOptions options, DocxShape shape)
@@ -647,7 +647,33 @@ internal static class DocxToPdfConverter
             1f + (fc.G - 1f) * a,
             1f + (fc.B - 1f) * a);
 
-        page.AddRectangle(x, y, width, height, blended);
+        RenderShapeGeometry(page, x, y, width, height, blended, shape);
+    }
+
+    /// <summary>
+    /// Renders shape geometry. For "frame" shapes, draws only the border area.
+    /// For all other shapes, draws a filled rectangle.
+    /// </summary>
+    private static void RenderShapeGeometry(PdfPage page, float x, float y, float width, float height,
+        PdfColor color, DocxShape shape)
+    {
+        if (shape.PresetGeometry == "frame")
+        {
+            // Frame shape: draw 4 border rectangles, leaving center empty
+            var t = shape.FrameThicknessRatio * Math.Min(width, height);
+            // Top border
+            page.AddRectangle(x, y + height - t, width, t, color);
+            // Bottom border
+            page.AddRectangle(x, y, width, t, color);
+            // Left border (between top and bottom)
+            page.AddRectangle(x, y + t, t, height - 2 * t, color);
+            // Right border (between top and bottom)
+            page.AddRectangle(x + width - t, y + t, t, height - 2 * t, color);
+        }
+        else
+        {
+            page.AddRectangle(x, y, width, height, color);
+        }
     }
 
     // ── Image rendering ─────────────────────────────────────────────────

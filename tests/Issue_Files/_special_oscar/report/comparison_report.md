@@ -1,14 +1,14 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-15T00:02:07.035062
+Generated: 2026-03-15T01:15:07.447698
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🟡 OSCAR WARD | 0.9941 | 0.3906 | 1/1 | **0.7539** |
+| 1 | 🟢 OSCAR WARD | 0.9941 | 0.844 | 1/1 | **0.9352** |
 
-**Average Overall Score: 0.7539**
+**Average Overall Score: 0.9352**
 
 ## Visual Comparison
 
@@ -16,7 +16,7 @@ Generated: 2026-03-15T00:02:07.035062
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>OSCAR WARD</b></td>
-  <td>OSCAR WARD <span style="color:#d29922">⬤</span> 75.4%</td>
+  <td>OSCAR WARD <span style="color:#3fb950">⬤</span> 93.5%</td>
 </tr>
 <tr>
   <td><img src="images/OSCAR WARD_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -29,10 +29,10 @@ Generated: 2026-03-15T00:02:07.035062
 ### OSCAR WARD
 
 - **Text Similarity:** 0.9941
-- **Visual Average:** 0.3906
-- **Overall Score:** 0.7539
+- **Visual Average:** 0.844
+- **Overall Score:** 0.9352
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=3014 bytes, Reference=49023 bytes
+- **File Size:** MiniPdf=9440 bytes, Reference=49023 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -76,8 +76,4 @@ Generated: 2026-03-15T00:02:07.035062
 
 ## Improvement Suggestions
 
-### ⚠ Low-Score Test Cases (below 0.8)
-
-1. **OSCAR WARD** (score: 0.7539)
-
-Review the text diffs and visual comparisons above to identify specific rendering issues.
+All test cases scored 0.8 or above. 🎉

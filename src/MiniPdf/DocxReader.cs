@@ -635,7 +635,7 @@ internal static class DocxReader
             using var bmp = new Bitmap(targetWidth, targetHeight, PixelFormat.Format32bppArgb);
             using (var g = Graphics.FromImage(bmp))
             {
-                g.Clear(Color.Transparent);
+                g.Clear(Color.White);
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
@@ -762,7 +762,30 @@ internal static class DocxReader
             if (off != null) long.TryParse(off.Value, out offsetYEmu);
         }
 
-        return new DocxShape(widthEmu, heightEmu, offsetXEmu, offsetYEmu, fillColor.Value, alpha);
+        // Read preset geometry (e.g., "frame") and adjustment values
+        string? presetGeom = null;
+        float frameThicknessRatio = 0.125f; // default adj1 for frame = 12.5%
+        var prstGeom = spPr.Element(A + "prstGeom");
+        if (prstGeom != null)
+        {
+            presetGeom = prstGeom.Attribute("prst")?.Value;
+            if (presetGeom == "frame")
+            {
+                var avLst = prstGeom.Element(A + "avLst");
+                var gd = avLst?.Elements(A + "gd")
+                    .FirstOrDefault(g => g.Attribute("name")?.Value == "adj1");
+                if (gd != null)
+                {
+                    var fmla = gd.Attribute("fmla")?.Value;
+                    if (fmla != null && fmla.StartsWith("val ") &&
+                        int.TryParse(fmla.AsSpan(4), out var v))
+                        frameThicknessRatio = v / 100000f;
+                }
+            }
+        }
+
+        return new DocxShape(widthEmu, heightEmu, offsetXEmu, offsetYEmu, fillColor.Value, alpha,
+            presetGeom, frameThicknessRatio);
     }
 
     /// <summary>
@@ -1354,14 +1377,16 @@ internal sealed record DocxImage(
     long OffsetYEmu = 0
 );
 
-/// <summary>Represents an anchor shape (filled rectangle).</summary>
+/// <summary>Represents an anchor shape (filled rectangle or frame).</summary>
 internal sealed record DocxShape(
     long WidthEmu,
     long HeightEmu,
     long OffsetXEmu,
     long OffsetYEmu,
     PdfColor FillColor,
-    float Alpha = 1f
+    float Alpha = 1f,
+    string? PresetGeometry = null,
+    float FrameThicknessRatio = 0.125f
 );
 
 /// <summary>Represents a table.</summary>
