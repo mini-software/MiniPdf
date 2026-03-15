@@ -16,7 +16,9 @@ param(
     [switch]$CompareOnly,
     [switch]$SkipMiniPdf,
     [switch]$SkipReference,
-    [switch]$SkipInstall
+    [switch]$SkipInstall,
+    [switch]$WithOffice,
+    [switch]$SkipOffice
 )
 
 $ErrorActionPreference = "Continue"
@@ -37,6 +39,10 @@ $MiniPdfDocx = Join-Path $IssueDir "minipdf_docx"
 $RefXlsx = Join-Path $IssueDir "reference_xlsx"
 $RefDocx = Join-Path $IssueDir "reference_docx"
 
+# Office output dirs
+$OfficeXlsx = Join-Path $IssueDir "office_xlsx"
+$OfficeDocx = Join-Path $IssueDir "office_docx"
+
 # Report dirs
 $ReportXlsx = Join-Path $IssueDir "reports_xlsx"
 $ReportDocx = Join-Path $IssueDir "reports_docx"
@@ -53,7 +59,7 @@ if (-not $SkipInstall) {
 }
 
 # Ensure output dirs
-foreach ($d in @($MiniPdfXlsx, $MiniPdfDocx, $RefXlsx, $RefDocx, $ReportXlsx, $ReportDocx)) {
+foreach ($d in @($MiniPdfXlsx, $MiniPdfDocx, $RefXlsx, $RefDocx, $OfficeXlsx, $OfficeDocx, $ReportXlsx, $ReportDocx)) {
     if (-not (Test-Path $d)) { New-Item -ItemType Directory -Path $d -Force | Out-Null }
 }
 
@@ -83,10 +89,24 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
         }
     }
 
+    if ($WithOffice -and -not $CompareOnly -and -not $SkipOffice) {
+        Write-Host "[Step 2b] Converting XLSX -> PDF (Office / Excel COM)..." -ForegroundColor Yellow
+        Push-Location $BenchmarkDir
+        try {
+            python generate_office_pdfs.py --xlsx-dir $XlsxIssueDir --pdf-dir $OfficeXlsx
+        } finally {
+            Pop-Location
+        }
+    }
+
     Write-Host "[Step 3] Comparing XLSX PDFs..." -ForegroundColor Yellow
+    $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfXlsx, "--reference-dir", $RefXlsx, "--report-dir", $ReportXlsx)
+    if ($WithOffice -and (Test-Path $OfficeXlsx)) {
+        $compareArgs += @("--office-dir", $OfficeXlsx)
+    }
     Push-Location $BenchmarkDir
     try {
-        python compare_pdfs.py --minipdf-dir $MiniPdfXlsx --reference-dir $RefXlsx --report-dir $ReportXlsx
+        python @compareArgs
     } finally {
         Pop-Location
     }
@@ -120,10 +140,24 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
         }
     }
 
+    if ($WithOffice -and -not $CompareOnly -and -not $SkipOffice) {
+        Write-Host "[Step 2b] Converting DOCX -> PDF (Office / Word COM)..." -ForegroundColor Yellow
+        Push-Location $BenchmarkDir
+        try {
+            python generate_office_pdfs_docx.py --docx-dir $DocxIssueDir --pdf-dir $OfficeDocx
+        } finally {
+            Pop-Location
+        }
+    }
+
     Write-Host "[Step 3] Comparing DOCX PDFs..." -ForegroundColor Yellow
+    $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfDocx, "--reference-dir", $RefDocx, "--report-dir", $ReportDocx)
+    if ($WithOffice -and (Test-Path $OfficeDocx)) {
+        $compareArgs += @("--office-dir", $OfficeDocx)
+    }
     Push-Location $BenchmarkDir
     try {
-        python compare_pdfs.py --minipdf-dir $MiniPdfDocx --reference-dir $RefDocx --report-dir $ReportDocx
+        python @compareArgs
     } finally {
         Pop-Location
     }

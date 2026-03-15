@@ -35,8 +35,8 @@ def pretty_name(name: str) -> str:
         return m.group(1).replace("_", " ").capitalize()
     return name
 
-# ── build one test-case block (2 rows, 2 columns) ─────────────────────────────
-def build_row(entry: dict) -> str:
+# ── build one test-case block ──────────────────────────────────────────────────
+def build_row(entry: dict, has_office: bool = False) -> str:
     case_name = entry["name"]
     score     = entry.get("overall_score", 0.0)
     diff_imgs = entry.get("diff_images", [])
@@ -48,45 +48,65 @@ def build_row(entry: dict) -> str:
     num_code = case_name.split("_")[0]          # e.g. classic01
     emoji    = score_emoji(score)
     pct      = f"{score * 100:.1f}%"
+    img_w    = 220 if has_office else IMG_WIDTH
+    num_cols = 3 if has_office else 2
 
     if p1:
         mini_src = f"{IMAGE_DIR_REL}/{p1['minipdf_img']}"
         ref_src  = f"{IMAGE_DIR_REL}/{p1['reference_img']}"
-        td_mini = f'  <td><img src="{mini_src}" width="{IMG_WIDTH}"/></td>'
-        td_ref  = f'  <td><img src="{ref_src}" width="{IMG_WIDTH}"/></td>'
+        td_mini = f'  <td><img src="{mini_src}" width="{img_w}"/></td>'
+        td_ref  = f'  <td><img src="{ref_src}" width="{img_w}"/></td>'
+        if has_office:
+            office_img = p1.get('office_img')
+            td_office = (f'  <td><img src="{IMAGE_DIR_REL}/{office_img}" width="{img_w}"/></td>'
+                         if office_img else '  <td><i>no image</i></td>')
     else:
         td_mini = "  <td><i>no image</i></td>"
         td_ref  = "  <td><i>no image</i></td>"
+        td_office = "  <td><i>no image</i></td>"
 
-    # Row 1: ID (left) | Name + Score (right)
-    # Row 2: MiniPdf image (left) | Reference image (right)
     lines = [
         "<tr>",
         f"  <td><b>{num_code}</b></td>",
-        f"  <td>{display} {emoji} {pct}</td>",
+        f"  <td colspan=\"{num_cols - 1}\">{display} {emoji} {pct}</td>",
         "</tr>",
         "<tr>",
         td_mini,
         td_ref,
-        "</tr>",
     ]
+    if has_office:
+        lines.append(td_office)
+    lines.append("</tr>")
     return "\n".join(lines)
 
 
 # ── build full table ───────────────────────────────────────────────────────────
 def build_table(entries: list) -> str:
-    header = (
-        "All test cases comparing MiniPdf output vs LibreOffice reference. "
-        "Page 1 shown for multi-page results.\n\n"
-        "<table>\n"
-        "<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>"
+    # Detect if any entry has office images
+    has_office = any(
+        pg.get("office_img")
+        for e in entries
+        for pg in e.get("diff_images", [])
     )
+    if has_office:
+        desc = ("All test cases comparing MiniPdf output vs LibreOffice reference vs Office (Excel). "
+                "Page 1 shown for multi-page results.\n\n")
+        header = (desc +
+                  "<table>\n"
+                  "<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th><th>Office (Excel)</th></tr>")
+    else:
+        header = (
+            "All test cases comparing MiniPdf output vs LibreOffice reference. "
+            "Page 1 shown for multi-page results.\n\n"
+            "<table>\n"
+            "<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>"
+        )
     # Sort by numeric id so classic100 follows classic99, not classic09
     def _sort_key(e):
         m = re.match(r"classic(\d+)", e["name"])
         return int(m.group(1)) if m else 0
     sorted_entries = sorted(entries, key=_sort_key)
-    rows = "\n".join(build_row(e) for e in sorted_entries)
+    rows = "\n".join(build_row(e, has_office=has_office) for e in sorted_entries)
     return f"{header}\n{rows}\n</table>"
 
 

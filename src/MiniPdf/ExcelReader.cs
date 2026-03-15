@@ -57,10 +57,11 @@ internal static class ExcelReader
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
             var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
+            var rowBreaks = ReadRowBreaks(entry);
             var pageSetup = ReadPageSetup(entry);
             printAreas.TryGetValue(currentIndex, out var printArea);
             printTitleRows.TryGetValue(currentIndex, out var printTitleRow);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: printTitleRow != default ? printTitleRow : null));
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: printTitleRow != default ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt));
             sheetEntries.Add(entry);
         }
 
@@ -1627,7 +1628,7 @@ internal static class ExcelReader
         var isLandscape = false;
         var scale = 100;
         var paperSize = 1; // 1 = US Letter (default)
-        float marginLeft = -1, marginRight = -1, marginTop = -1, marginBottom = -1;
+        float marginLeft = -1, marginRight = -1, marginTop = -1, marginBottom = -1, footerMargin = -1;
         var fitToPage = false;
 
         using var stream = entry.Open();
@@ -1683,6 +1684,7 @@ internal static class ExcelReader
             marginRight = ParseInchesAttr(pageMargins, "right");
             marginTop = ParseInchesAttr(pageMargins, "top");
             marginBottom = ParseInchesAttr(pageMargins, "bottom");
+            footerMargin = ParseInchesAttr(pageMargins, "footer");
         }
 
         // Read fitToPage from sheetPr/pageSetUpPr
@@ -1697,6 +1699,13 @@ internal static class ExcelReader
         if (fitToPage && fitToHeight == 0 && pageSetup?.Attribute("fitToHeight") == null)
             fitToHeight = 1;
 
+        // Infer fitToPage when fitToHeight is explicitly set in <pageSetup> but
+        // <pageSetUpPr fitToPage="1"/> is absent.  Many real-world files omit the
+        // sheetPr flag while still relying on fitToHeight/fitToWidth; LibreOffice
+        // and Excel both honour the pageSetup attributes in this scenario.
+        if (!fitToPage && fitToHeight > 0)
+            fitToPage = true;
+
         // Read printOptions (horizontalCentered)
         var horizontalCentered = false;
         var printOptions = doc.Descendants(ns + "printOptions").FirstOrDefault();
@@ -1705,13 +1714,24 @@ internal static class ExcelReader
             horizontalCentered = printOptions.Attribute("horizontalCentered")?.Value == "1";
         }
 
-        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage, fitToWidth, fitToHeight, horizontalCentered);
+        // Read headerFooter — oddFooter / oddHeader
+        string? oddFooter = null;
+        string? oddHeader = null;
+        var headerFooter = doc.Descendants(ns + "headerFooter").FirstOrDefault();
+        if (headerFooter != null)
+        {
+            oddFooter = headerFooter.Element(ns + "oddFooter")?.Value;
+            oddHeader = headerFooter.Element(ns + "oddHeader")?.Value;
+        }
+
+        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage, fitToWidth, fitToHeight, horizontalCentered, oddFooter, oddHeader, footerMargin);
     }
 
     internal record PageSetupInfo(
         bool IsLandscape, int Scale, int PaperSize,
         float MarginLeftPt, float MarginRightPt, float MarginTopPt, float MarginBottomPt,
-        bool FitToPage, int FitToWidth, int FitToHeight, bool HorizontalCentered = false);
+        bool FitToPage, int FitToWidth, int FitToHeight, bool HorizontalCentered = false,
+        string? OddFooter = null, string? OddHeader = null, float FooterMarginPt = -1);
 
     /// <summary>
     /// Reads row heights from the sheet XML.
@@ -1741,14 +1761,22 @@ internal static class ExcelReader
             }
         }
 
-        // Read explicit row heights
+        // Read explicit row heights (hidden rows get height 0)
         foreach (var row in doc.Descendants(ns + "row"))
         {
             var rAttr = row.Attribute("r")?.Value;
-            var htAttr = row.Attribute("ht")?.Value;
-            if (rAttr == null || htAttr == null) continue;
-
+            if (rAttr == null) continue;
             if (!int.TryParse(rAttr, out var rowNum)) continue;
+
+            var isHidden = row.Attribute("hidden")?.Value == "1";
+            if (isHidden)
+            {
+                heights[rowNum - 1] = 0f;
+                continue;
+            }
+
+            var htAttr = row.Attribute("ht")?.Value;
+            if (htAttr == null) continue;
             if (!float.TryParse(htAttr,
                 System.Globalization.NumberStyles.Any,
                 System.Globalization.CultureInfo.InvariantCulture,
@@ -1760,6 +1788,25 @@ internal static class ExcelReader
         }
 
         return (heights, defaultHeight, customHeightRows);
+    }
+
+    private static HashSet<int> ReadRowBreaks(ZipArchiveEntry entry)
+    {
+        var breaks = new HashSet<int>();
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        foreach (var brk in doc.Descendants(ns + "rowBreaks").SelectMany(rb => rb.Elements(ns + "brk")))
+        {
+            var idAttr = brk.Attribute("id")?.Value;
+            // ECMA-376 §18.3.1.2: id is the zero-based row index of the break.
+            // Break occurs BEFORE this row (this row starts a new page).
+            if (idAttr != null && int.TryParse(idAttr, out var rowId) && rowId > 0)
+                breaks.Add(rowId);
+        }
+
+        return breaks;
     }
 
     /// <summary>
@@ -2593,6 +2640,12 @@ internal sealed class ExcelSheet
     public bool HorizontalCentered { get; }
     /// <summary>Row range to repeat at the top of each printed page (startRow, endRow) 0-based, or null.</summary>
     public (int StartRow, int EndRow)? PrintTitleRows { get; }
+    /// <summary>Set of 0-based row indices where a manual page break occurs (break BEFORE this row).</summary>
+    public HashSet<int> RowBreaks { get; }
+    /// <summary>Raw oddFooter string from XLSX headerFooter element (e.g. "&amp;L&amp;6 text&amp;C&amp;6 Page &amp;P of &amp;N").</summary>
+    public string? OddFooter { get; }
+    /// <summary>Footer margin in points (distance from page bottom edge to footer text).</summary>
+    public float FooterMarginPt { get; }
 
     /// <summary>Converts Excel character-unit column width to PDF points.</summary>
     public static float CharUnitsToPoints(float charUnits)
@@ -2617,7 +2670,10 @@ internal sealed class ExcelSheet
         bool fitToPage = false,
         int fitToWidth = 1, int fitToHeight = 1,
         bool horizontalCentered = false,
-        (int StartRow, int EndRow)? printTitleRows = null)
+        (int StartRow, int EndRow)? printTitleRows = null,
+        HashSet<int>? rowBreaks = null,
+        string? oddFooter = null,
+        float footerMarginPt = -1)
     {
         Name = name;
         Rows = rows;
@@ -2642,5 +2698,8 @@ internal sealed class ExcelSheet
         FitToHeight = fitToHeight;
         HorizontalCentered = horizontalCentered;
         PrintTitleRows = printTitleRows;
+        RowBreaks = rowBreaks ?? new HashSet<int>();
+        OddFooter = oddFooter;
+        FooterMarginPt = footerMarginPt;
     }
 }

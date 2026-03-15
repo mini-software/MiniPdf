@@ -73,15 +73,32 @@ internal static class ExcelToPdfConverter
         var sheets = ExcelReader.ReadSheets(excelStream);
         var doc = new PdfDocument();
 
+        // Track page ranges per sheet for footer rendering
+        var sheetPageRanges = new List<(ExcelSheet sheet, int startPage, int endPage)>();
         foreach (var sheet in sheets)
         {
+            var startPage = doc.Pages.Count;
             RenderSheet(doc, sheet, options);
+            var endPage = doc.Pages.Count - 1;
+            if (startPage <= endPage)
+                sheetPageRanges.Add((sheet, startPage, endPage));
         }
 
         // If no sheets found, create at least one empty page
         if (doc.Pages.Count == 0)
         {
             doc.AddPage(options.PageWidth, options.PageHeight);
+        }
+
+        // Render print footers on each page
+        var totalPages = doc.Pages.Count;
+        foreach (var (sheet, startPage, endPage) in sheetPageRanges)
+        {
+            if (string.IsNullOrEmpty(sheet.OddFooter)) continue;
+            var footerY = sheet.FooterMarginPt > 0 ? sheet.FooterMarginPt : 18f;
+            var marginL = sheet.MarginLeftPt > 0 ? sheet.MarginLeftPt : options.MarginLeft;
+            var marginR = sheet.MarginRightPt > 0 ? sheet.MarginRightPt : options.MarginRight;
+            RenderPageFooter(doc.Pages, sheet.OddFooter, startPage, endPage, totalPages, footerY, marginL, marginR);
         }
 
         return doc;
@@ -97,6 +114,132 @@ internal static class ExcelToPdfConverter
     {
         var doc = Convert(excelPath, options);
         doc.Save(pdfPath);
+    }
+
+    /// <summary>
+    /// Render print footer on pages. Parses XLSX header/footer format codes
+    /// (&amp;L, &amp;C, &amp;R sections; &amp;P page number; &amp;N total pages; &amp;nn font size).
+    /// </summary>
+    private static void RenderPageFooter(IReadOnlyList<PdfPage> pages, string footerFormat,
+        int startPage, int endPage, int totalPages, float footerY, float marginL, float marginR)
+    {
+        // Parse footer into left/center/right sections
+        var (left, center, right) = ParseHeaderFooterSections(footerFormat);
+
+        for (var p = startPage; p <= endPage && p < pages.Count; p++)
+        {
+            var pageNum = p + 1;
+            var page = pages[p];
+            var pageWidth = page.Width;
+
+            void RenderSection(string section, string align)
+            {
+                if (string.IsNullOrEmpty(section)) return;
+                var fontSize = 6f; // default footer font size
+                var text = new System.Text.StringBuilder();
+                var i = 0;
+                while (i < section.Length)
+                {
+                    if (section[i] == '&' && i + 1 < section.Length)
+                    {
+                        var next = section[i + 1];
+                        if (next == 'P') { text.Append(pageNum); i += 2; continue; }
+                        if (next == 'N') { text.Append(totalPages); i += 2; continue; }
+                        if (next == 'A') { text.Append(""); i += 2; continue; } // sheet name - skip
+                        if (next == 'D') { text.Append(""); i += 2; continue; } // date - skip
+                        if (next == '"')
+                        {
+                            // Skip font specification: &"FontName,Style"
+                            var closeQuote = section.IndexOf('"', i + 2);
+                            if (closeQuote > 0) { i = closeQuote + 1; continue; }
+                        }
+                        if (char.IsDigit(next) && i + 2 < section.Length && char.IsDigit(section[i + 2]))
+                        {
+                            fontSize = (next - '0') * 10 + (section[i + 2] - '0');
+                            i += 3; continue;
+                        }
+                        if (char.IsDigit(next))
+                        {
+                            fontSize = next - '0';
+                            i += 2; continue;
+                        }
+                        // Unknown code - skip
+                        i += 2; continue;
+                    }
+                    text.Append(section[i]);
+                    i++;
+                }
+
+                var lines = text.ToString().Split('\n');
+                // Render each line from bottom up (last line at footerY, previous lines above)
+                for (var li = lines.Length - 1; li >= 0; li--)
+                {
+                    var line = lines[li].Trim();
+                    if (string.IsNullOrEmpty(line)) continue;
+                    var lineY = footerY + (lines.Length - 1 - li) * (fontSize * 1.3f);
+                    float x;
+                    if (align == "left")
+                        x = marginL;
+                    else if (align == "right")
+                    {
+                        var textWidth = (float)MeasureHelveticaWidth(line, fontSize);
+                        x = pageWidth - marginR - textWidth;
+                    }
+                    else // center
+                    {
+                        var textWidth = (float)MeasureHelveticaWidth(line, fontSize);
+                        x = (pageWidth - textWidth) / 2f;
+                    }
+                    page.AddText(line, x, lineY, fontSize);
+                }
+            }
+
+            RenderSection(left, "left");
+            RenderSection(center, "center");
+            RenderSection(right, "right");
+        }
+    }
+
+    /// <summary>
+    /// Parse an XLSX header/footer string into left, center, and right sections.
+    /// Sections are delimited by &amp;L, &amp;C, &amp;R markers.
+    /// </summary>
+    private static (string left, string center, string right) ParseHeaderFooterSections(string format)
+    {
+        var left = "";
+        var center = "";
+        var right = "";
+        string? current = null;
+        var sb = new System.Text.StringBuilder();
+
+        void Flush()
+        {
+            var text = sb.ToString();
+            sb.Clear();
+            if (current == "L") left = text;
+            else if (current == "C") center = text;
+            else if (current == "R") right = text;
+        }
+
+        var i = 0;
+        while (i < format.Length)
+        {
+            if (format[i] == '&' && i + 1 < format.Length)
+            {
+                var next = format[i + 1];
+                if (next == 'L' || next == 'C' || next == 'R')
+                {
+                    Flush();
+                    current = next.ToString();
+                    i += 2;
+                    continue;
+                }
+            }
+            sb.Append(format[i]);
+            i++;
+        }
+        Flush();
+        return (left, center, right);
     }
 
     private static void RenderSheet(PdfDocument doc, ExcelSheet sheet, ConversionOptions options)
@@ -124,19 +267,45 @@ internal static class ExcelToPdfConverter
 
         // fitToHeight: when fitToPage is active and fitToHeight is explicitly set
         // in the XML (> 0), recalculate printScale so all rows fit within the
-        // target number of pages.
+        // target number of pages.  Use print area bounds when available so the
+        // calculation matches the rows that will actually be rendered.
+        // When fitToPage width scaling will also compress columns (and therefore
+        // row heights proportionally), factor that into the calculation to avoid
+        // double-compression.
         var scaleCellFonts = false;
         if (sheet.FitToPage && sheet.FitToHeight > 0 && sheet.PrintScale > 0)
         {
             var usableH = baseH - mT - mB;
+            var usableW = baseW - mL - mR;
             var targetH = usableH * sheet.FitToHeight;
             var defRH = sheet.DefaultRowHeight > 0 ? sheet.DefaultRowHeight : options.FontSize * options.LineSpacing;
             var rawTotal = 0f;
-            for (var r = 0; r < sheet.Rows.Count; r++)
-                rawTotal += sheet.RowHeights.TryGetValue(r, out var rh) ? rh : defRH;
+            var startRow = sheet.PrintArea.HasValue ? sheet.PrintArea.Value.StartRow : 0;
+            var endRow = sheet.PrintArea.HasValue ? Math.Min(sheet.PrintArea.Value.EndRow, sheet.Rows.Count - 1) : sheet.Rows.Count - 1;
+            for (var r = startRow; r <= endRow; r++)
+                rawTotal += sheet.RowHeights.TryGetValue(r, out var rh) ? rh : defRH;  // hidden rows have rh=0
+
+            // Account for print title rows repeated on pages after manual row breaks.
+            // Each break creates a new page that repeats the title rows at the top.
+            if (sheet.RowBreaks.Count > 0 && sheet.PrintTitleRows.HasValue)
+            {
+                var titleStart = sheet.PrintTitleRows.Value.StartRow;
+                var titleEnd = sheet.PrintTitleRows.Value.EndRow;
+                var titleH = 0f;
+                for (var tr = titleStart; tr <= titleEnd; tr++)
+                    titleH += sheet.RowHeights.TryGetValue(tr, out var th) ? th : defRH;
+                rawTotal += titleH * sheet.RowBreaks.Count;
+            }
+
+            // Estimate the fitToPage width compression that will also shrink rows.
+            var printScaleF = sheet.PrintScale / 100f;
+            var estColTotal = EstimateColumnWidthTotal(sheet, options) * printScaleF;
+            var estFitToPageScale = estColTotal > usableW ? usableW / estColTotal : 1f;
+            // Effective row scale = PrintScale × fitToPage width-compression
+            var effectiveScale = printScaleF * estFitToPageScale;
+
             var requiredScale = rawTotal > 0 ? targetH / rawTotal : 1f;
-            var currentScale = sheet.PrintScale / 100f;
-            if (requiredScale < currentScale)
+            if (requiredScale < effectiveScale)
             {
                 var combined = (int)Math.Max(10, Math.Floor(requiredScale * 100));
                 sheet = new ExcelSheet(sheet.Name, sheet.Rows,
@@ -158,8 +327,63 @@ internal static class ExcelToPdfConverter
                     fitToPage: sheet.FitToPage,
                     fitToWidth: sheet.FitToWidth,
                     fitToHeight: sheet.FitToHeight,
-                    horizontalCentered: sheet.HorizontalCentered);
+                    horizontalCentered: sheet.HorizontalCentered,
+                    printArea: sheet.PrintArea,
+                    printTitleRows: sheet.PrintTitleRows,
+                    rowBreaks: sheet.RowBreaks,
+                    oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt);
                 scaleCellFonts = true;
+            }
+
+            // Per-segment check: when manual row breaks + print title rows exist,
+            // verify each page segment (including repeated title rows) fits within
+            // a single page.  If any segment overflows, compress the scale further.
+            if (sheet.RowBreaks.Count > 0 && sheet.PrintTitleRows.HasValue)
+            {
+                var segPrintScaleF = sheet.PrintScale / 100f;
+                var segColTotal = EstimateColumnWidthTotal(sheet, options) * segPrintScaleF;
+                var segFitToPageScale = segColTotal > usableW ? usableW / segColTotal : 1f;
+                var segScale = segPrintScaleF * segFitToPageScale;
+                var titleStart2 = sheet.PrintTitleRows.Value.StartRow;
+                var titleEnd2 = sheet.PrintTitleRows.Value.EndRow;
+                var titleH2 = 0f;
+                for (var tr = titleStart2; tr <= titleEnd2; tr++)
+                    titleH2 += sheet.RowHeights.TryGetValue(tr, out var th) ? th : defRH;
+                var breakRows = sheet.RowBreaks.Where(b => b >= startRow && b <= endRow).OrderBy(b => b).ToList();
+                var segStarts = new List<int> { startRow };
+                segStarts.AddRange(breakRows);
+                for (var s = 0; s < segStarts.Count; s++)
+                {
+                    var segStart = segStarts[s];
+                    var segEnd = s + 1 < segStarts.Count ? segStarts[s + 1] - 1 : endRow;
+                    var segH = 0f;
+                    for (var r = segStart; r <= segEnd; r++)
+                        segH += sheet.RowHeights.TryGetValue(r, out var srh) ? srh : defRH;
+                    if (s > 0) segH += titleH2;
+                    if (segH * segScale > usableH)
+                    {
+                        var newScale = usableH / segH;
+                        var combined2 = (int)Math.Max(10, Math.Floor(newScale * 100));
+                        if (combined2 < sheet.PrintScale)
+                        {
+                            sheet = new ExcelSheet(sheet.Name, sheet.Rows,
+                                images: sheet.Images.Count > 0 ? sheet.Images : null,
+                                columnWidths: sheet.ColumnWidths, defaultColumnWidth: sheet.DefaultColumnWidth,
+                                charts: sheet.Charts.Count > 0 ? sheet.Charts : null,
+                                mergedCells: sheet.MergedCells, rowHeights: sheet.RowHeights,
+                                defaultRowHeight: sheet.DefaultRowHeight, customHeightRows: sheet.CustomHeightRows,
+                                isLandscape: sheet.IsLandscape, printScale: combined2, paperSize: sheet.PaperSize,
+                                marginLeftPt: sheet.MarginLeftPt, marginRightPt: sheet.MarginRightPt,
+                                marginTopPt: sheet.MarginTopPt, marginBottomPt: sheet.MarginBottomPt,
+                                fitToPage: sheet.FitToPage, fitToWidth: sheet.FitToWidth, fitToHeight: sheet.FitToHeight,
+                                horizontalCentered: sheet.HorizontalCentered, printArea: sheet.PrintArea,
+                                printTitleRows: sheet.PrintTitleRows, rowBreaks: sheet.RowBreaks,
+                                oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt);
+                            scaleCellFonts = true;
+                        }
+                        break;
+                    }
+                }
             }
         }
 
@@ -229,15 +453,21 @@ internal static class ExcelToPdfConverter
             }
             // Build trimmed images: keep images within print area and adjust anchors
             var trimmedImages = new List<ExcelEmbeddedImage>();
+            var paCols = pa.EndCol - pa.StartCol + 1;
+            var paRows = pa.EndRow - pa.StartRow + 1;
             foreach (var img in sheet.Images)
             {
                 if (img.AnchorCol >= pa.StartCol && img.AnchorCol <= pa.EndCol &&
                     img.AnchorRow >= pa.StartRow && img.AnchorRow <= pa.EndRow)
                 {
+                    var newAnchorCol = img.AnchorCol - pa.StartCol;
+                    var newAnchorRow = img.AnchorRow - pa.StartRow;
                     trimmedImages.Add(img with
                     {
-                        AnchorRow = img.AnchorRow - pa.StartRow,
-                        AnchorCol = img.AnchorCol - pa.StartCol
+                        AnchorRow = newAnchorRow,
+                        AnchorCol = newAnchorCol,
+                        SpanCols = Math.Min(img.SpanCols, paCols - newAnchorCol),
+                        SpanRows = Math.Min(img.SpanRows, paRows - newAnchorRow),
                     });
                 }
             }
@@ -255,6 +485,31 @@ internal static class ExcelToPdfConverter
                     });
                 }
             }
+            // Build trimmed row breaks (re-index to print area offsets)
+            var trimmedRowBreaks = new HashSet<int>();
+            foreach (var rb in sheet.RowBreaks)
+            {
+                if (rb >= pa.StartRow && rb <= pa.EndRow)
+                    trimmedRowBreaks.Add(rb - pa.StartRow);
+            }
+            // Re-index print title rows
+            (int StartRow, int EndRow)? trimmedPrintTitleRows = null;
+            if (sheet.PrintTitleRows.HasValue)
+            {
+                var pt = sheet.PrintTitleRows.Value;
+                // Only include if the title rows overlap with the print area
+                var tStart = Math.Max(pt.StartRow, pa.StartRow);
+                var tEnd = Math.Min(pt.EndRow, pa.EndRow);
+                if (tStart <= tEnd)
+                    trimmedPrintTitleRows = (tStart - pa.StartRow, tEnd - pa.StartRow);
+            }
+            // Re-index custom height rows
+            var trimmedCustomHeightRows = new HashSet<int>();
+            foreach (var chr in sheet.CustomHeightRows)
+            {
+                if (chr >= pa.StartRow && chr <= pa.EndRow)
+                    trimmedCustomHeightRows.Add(chr - pa.StartRow);
+            }
             sheet = new ExcelSheet(sheet.Name, trimmedRows,
                 images: trimmedImages.Count > 0 ? trimmedImages : null,
                 columnWidths: trimmedColWidths,
@@ -263,7 +518,7 @@ internal static class ExcelToPdfConverter
                 mergedCells: trimmedMerged,
                 rowHeights: trimmedRowHeights,
                 defaultRowHeight: sheet.DefaultRowHeight,
-                customHeightRows: sheet.CustomHeightRows,
+                customHeightRows: trimmedCustomHeightRows,
                 isLandscape: sheet.IsLandscape,
                 printScale: sheet.PrintScale,
                 paperSize: sheet.PaperSize,
@@ -274,16 +529,21 @@ internal static class ExcelToPdfConverter
                 fitToPage: sheet.FitToPage,
                 fitToWidth: sheet.FitToWidth,
                 fitToHeight: sheet.FitToHeight,
-                horizontalCentered: sheet.HorizontalCentered);
+                horizontalCentered: sheet.HorizontalCentered,
+                rowBreaks: trimmedRowBreaks,
+                printTitleRows: trimmedPrintTitleRows,
+                oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt);
         }
 
         var maxCols = sheet.Rows.Count > 0 ? sheet.Rows.Max(r => r.Count) : 0;
+        var maxColsFromRows = maxCols;
 
         // Extend column range to include any image anchor columns so images beyond
         // the data area (e.g. a chart placed in column E when data ends at C) are rendered.
         if (sheet.Images.Count > 0)
         {
             var maxImgColEnd = sheet.Images.Max(img => img.AnchorCol + Math.Max(1, img.SpanCols));
+
             maxCols = Math.Max(maxCols, maxImgColEnd);
         }
 
@@ -357,6 +617,7 @@ internal static class ExcelToPdfConverter
         // The same scale factor is applied to row heights so rows are proportionally
         // smaller and pagination matches the real spreadsheet output.
         var fitToPageScale = 1f;
+
         if (sheet.FitToPage && totalNatural > usableWidth && maxCols > 1)
         {
             var fitScale = usableWidth / totalNatural;
@@ -388,6 +649,9 @@ internal static class ExcelToPdfConverter
 
             RenderSheetRows(doc, sheet, options, pageWidth, pageHeight, Enumerable.Range(0, maxCols).ToArray(), columnPadding, colWidths, avgCharWidth, fitToPageScale);
         }
+
+        // Note: trailing empty page logic disabled — it was previously intended to
+        // match LibreOffice behavior but caused extra pages in multi-sheet workbooks.
     }
 
     /// <summary>
@@ -540,11 +804,17 @@ internal static class ExcelToPdfConverter
 
         // Build a merge lookup: for each (row, col) that is the start of a merge,
         // store the end column. Used to calculate effective text width for merged cells.
+        // Also track interior cells of merge ranges so we can skip their fill/border.
         var mergeEndCol = new Dictionary<(int, int), int>(); // (row, col) → endCol
+        var mergeInterior = new HashSet<(int, int)>(); // cells inside merge (not start col)
         foreach (var (sr, sc, er, ec) in sheet.MergedCells)
         {
             for (var r = sr; r <= er; r++)
+            {
                 mergeEndCol[(r, sc)] = ec;
+                for (var c = sc + 1; c <= ec; c++)
+                    mergeInterior.Add((r, c));
+            }
         }
 
         // Print title rows support: detect the row range to repeat on each page
@@ -601,8 +871,21 @@ internal static class ExcelToPdfConverter
                         }
                         else
                         {
-                            var shouldClip = isMerged || (i < columns.Length - 1);
-                            if (shouldClip || printScaleFactor != 1f)
+                            // Check if next column has content (consistent with regular row logic)
+                            var checkStart = isMerged ? endCol + 1 : col + 1;
+                            var nextHasContent = false;
+                            for (var mi = i + 1; mi < columns.Length; mi++)
+                            {
+                                if (columns[mi] >= checkStart)
+                                {
+                                    var nc = columns[mi];
+                                    if (nc < titleRow.Count && !string.IsNullOrEmpty(titleRow[nc].Text))
+                                        nextHasContent = true;
+                                    break;
+                                }
+                            }
+                            var shouldClip = isMerged || (i < columns.Length - 1 && nextHasContent);
+                            if (shouldClip)
                             {
                                 titleClipWidths[i] = effectiveW;
                             }
@@ -655,8 +938,8 @@ internal static class ExcelToPdfConverter
                         for (var mc = i + 1; mc < columns.Length && columns[mc] <= mergeEnd; mc++)
                             cellWidth += colWidths[mc] + columnPadding;
 
-                    // Fill
-                    if (fillColor != null)
+                    // Fill — skip for cells inside a merge range
+                    if (fillColor != null && !mergeInterior.Contains((titleRowIdx, col)))
                         currentPage!.AddRectangle(x, currentY - titleRowH, cellWidth, titleRowH, fillColor);
 
                     // Text
@@ -769,8 +1052,28 @@ internal static class ExcelToPdfConverter
         {
             EnsurePage();
 
+            // Manual row break: force a new page before this row
+            if (sheet.RowBreaks.Contains(excelRowIndex) && currentPage != null && currentY < pageHeight - options.MarginTop)
+            {
+                currentPage = doc.AddPage(pageWidth, pageHeight);
+                currentY = pageHeight - options.MarginTop;
+                // Render print title rows on the new page
+                if (printTitleStart >= 0 && (excelRowIndex < printTitleStart || excelRowIndex > printTitleEnd))
+                    RenderPrintTitleRows();
+            }
+
             // Determine this row's effective height
             var hasExplicitHeight = sheet.RowHeights.TryGetValue(excelRowIndex, out var explicitRowHeight);
+
+            // Skip hidden rows (height 0 in the RowHeights dictionary)
+            if (hasExplicitHeight && explicitRowHeight <= 0f)
+            {
+                rowTopY[excelRowIndex] = currentY;
+                rowPage[excelRowIndex] = currentPage!;
+                excelRowIndex++;
+                continue;
+            }
+
             // Apply print scale to explicit row heights
             if (hasExplicitHeight && sheet.PrintScale != 100 && sheet.PrintScale > 0)
                 explicitRowHeight *= sheet.PrintScale / 100f;
@@ -865,9 +1168,11 @@ internal static class ExcelToPdfConverter
                             else
                             {
                                 var shouldClip = isMerged || (!isLastCol && nextCellHasContent);
-                                // Set maxWidth to prevent text overflow: always needed when
-                                // print scale shrinks columns, or when the next cell has content.
-                                if (shouldClip || printScaleFactor != 1f)
+                                // Set maxWidth only when the cell actually needs clipping
+                                // (next cell has content or this is a merged cell).
+                                // LibreOffice lets text overflow into adjacent empty cells
+                                // rather than compressing horizontally with Tz scaling.
+                                if (shouldClip)
                                 {
                                     cellClipWidth[i] = effectiveWidth;
                                 }
@@ -1077,9 +1382,13 @@ internal static class ExcelToPdfConverter
                 else // "bottom" (default)
                     cellY = currentY - rowHeight + descent - ascentCompensation + lineHeight * (lines.Length - 1);
 
+                // Skip fill/border for cells inside a merge range (not the start column).
+                // Only the merge origin cell renders the fill covering the full merged area.
+                var isInsideMerge = mergeInterior.Contains((excelRowIndex, col));
+
                 // Draw fill rectangle behind cell if fill color is set.
                 // For merged cells, extend the fill across the full merged column span.
-                if (fillColor != null)
+                if (fillColor != null && !isInsideMerge)
                 {
                     var fillWidth = colWidths[i];
                     if (mergeEndCol.TryGetValue((excelRowIndex, col), out var fillEndCol))
@@ -1092,7 +1401,7 @@ internal static class ExcelToPdfConverter
 
                 // Draw cell borders.
                 // For merged cells, extend the right border to the end of the merged span.
-                if (border != null)
+                if (border != null && !isInsideMerge)
                 {
                     var borderHeight = rowHeight;
                     var bx = x;
@@ -1105,30 +1414,29 @@ internal static class ExcelToPdfConverter
                             bxRight += colWidths[mc] + columnPadding;
                     }
                     var borderColor = new PdfColor(0f, 0f, 0f);
-                    var borderWidth = 0.3f;
 
                     if (border.Left is { Style: not "none" and not "" })
                     {
                         var bc = border.Left.Color ?? borderColor;
-                        var bw = border.Left.Style == "thick" ? 1.5f : border.Left.Style == "medium" ? 1f : borderWidth;
+                        var bw = BorderStyleWidth(border.Left.Style);
                         currentPage!.AddLine(bx, byTop, bx, byBottom, bc, bw);
                     }
                     if (border.Right is { Style: not "none" and not "" })
                     {
                         var bc = border.Right.Color ?? borderColor;
-                        var bw = border.Right.Style == "thick" ? 1.5f : border.Right.Style == "medium" ? 1f : borderWidth;
+                        var bw = BorderStyleWidth(border.Right.Style);
                         currentPage!.AddLine(bxRight, byTop, bxRight, byBottom, bc, bw);
                     }
                     if (border.Top is { Style: not "none" and not "" })
                     {
                         var bc = border.Top.Color ?? borderColor;
-                        var bw = border.Top.Style == "thick" ? 1.5f : border.Top.Style == "medium" ? 1f : borderWidth;
+                        var bw = BorderStyleWidth(border.Top.Style);
                         currentPage!.AddLine(bx, byTop, bxRight, byTop, bc, bw);
                     }
                     if (border.Bottom is { Style: not "none" and not "" })
                     {
                         var bc = border.Bottom.Color ?? borderColor;
-                        var bw = border.Bottom.Style == "thick" ? 1.5f : border.Bottom.Style == "medium" ? 1f : borderWidth;
+                        var bw = BorderStyleWidth(border.Bottom.Style);
                         currentPage!.AddLine(bx, byBottom, bxRight, byBottom, bc, bw);
                     }
                 }
@@ -1202,18 +1510,7 @@ internal static class ExcelToPdfConverter
             }
         }
 
-        // LibreOffice emits a trailing empty page when print title rows are active
-        // and the sheet spans multiple pages.  Replicate this to match page counts.
-        if (printTitleStart >= 0 && doc.Pages.Count > 1)
-        {
-            var usedPages = doc.Pages.Count;
-            var lastPage = doc.Pages[usedPages - 1];
-            // Only add if the last page has content (not already empty)
-            if (lastPage.TextBlocks.Count > 0 || lastPage.ImageBlocks.Count > 0)
-            {
-                doc.AddPage(pageWidth, pageHeight);
-            }
-        }
+        // (Trailing empty page logic moved to RenderSheet for proper per-sheet page tracking)
 
         // Place embedded images and chart placeholders
         if (sheet.Images.Count == 0 && sheet.Charts.Count == 0) return;
@@ -2458,6 +2755,16 @@ internal static class ExcelToPdfConverter
     private const double CalibriFittingScale = 0.85;
 
     /// <summary>
+    /// Maps OOXML border style names to PDF line widths (in points).
+    private static float BorderStyleWidth(string style) => style switch
+    {
+        "thick" => 1.5f,
+        "medium" or "mediumDashed" or "mediumDashDot" or "mediumDashDotDot" => 1f,
+        "hair" => 0.1f,
+        _ => 0.3f // thin, dashed, dotted, dashDot, dashDotDot, double, slantDashDot
+    };
+
+    /// <summary>
     /// Measures text width more precisely using Helvetica character widths (in 1/1000 em units).
     /// Used for column-width-aware number formatting.
     /// </summary>
@@ -2538,6 +2845,30 @@ internal static class ExcelToPdfConverter
 
     /// <summary>
     /// Calculates natural (unscaled) column widths with min/max bounds.
+    /// Quickly estimate the total unscaled column width in points for fitToHeight
+    /// interaction with fitToPage.  Uses print area column bounds when available.
+    /// </summary>
+    private static float EstimateColumnWidthTotal(ExcelSheet sheet, ConversionOptions options)
+    {
+        var startCol = sheet.PrintArea.HasValue ? sheet.PrintArea.Value.StartCol : 0;
+        var endCol = sheet.PrintArea.HasValue
+            ? sheet.PrintArea.Value.EndCol
+            : (sheet.Rows.Count > 0 ? sheet.Rows.Max(r => r.Count) - 1 : 0);
+        var total = 0f;
+        for (var c = startCol; c <= endCol; c++)
+        {
+            if (sheet.ColumnWidths.TryGetValue(c, out var ew))
+                total += ew > 0 ? ew * 5.5334f + 0.3232f : 0f;
+            else
+            {
+                var charUnits = sheet.DefaultColumnWidth > 0f ? sheet.DefaultColumnWidth : 8.43f;
+                total += ExcelSheet.CharUnitsToPoints(charUnits);
+            }
+        }
+        return total;
+    }
+
+    /// <summary>
     /// When an Excel column width is explicitly set (or default), that takes precedence
     /// over content-based width so the output matches the source spreadsheet layout.
     /// </summary>
