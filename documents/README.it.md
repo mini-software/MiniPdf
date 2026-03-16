@@ -23,11 +23,10 @@ Una libreria .NET minimale e senza dipendenze per convertire file Office in PDF.
 
 ## Funzionalità
 
-- **Excel → PDF** — Converte file `.xlsx` in PDF paginati con layout automatico delle colonne
-- **Immagini incorporate** — Le immagini JPEG e PNG incorporate nei fogli Excel vengono rese nell'output PDF
+- **Excel → PDF** — Converte file `.xlsx` in PDF
+- **Word → PDF** — Converte file `.docx` in PDF
 - **Zero dipendenze** — Utilizza solo le API .NET integrate (nessun pacchetto esterno)
 - **Output PDF 1.4** valido
-- **Word → PDF** — In sviluppo
 - **Grafici** — Attualmente non ben supportati
 
 ## Iniziare
@@ -43,8 +42,11 @@ dotnet add package MiniPdf
 ```csharp
 using MiniSoftware;
 
-// Da file a file
-MiniPdf.ConvertToPdf("data.xlsx", "data.pdf");
+// Excel in PDF
+MiniPdf.ConvertToPdf("data.xlsx", "output.pdf");
+
+// Word in PDF
+MiniPdf.ConvertToPdf("report.docx", "output.pdf");
 
 // Da file a array di byte
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");

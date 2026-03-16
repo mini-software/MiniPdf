@@ -37,11 +37,10 @@
 
 ## 功能特性
 
-- **Excel 转 PDF** — 将 `.xlsx` 文件转换为分页 PDF，自动进行列布局
-- **嵌入图片** — Excel 工作表中嵌入的 JPEG 和 PNG 图片会渲染到 PDF 输出中
+- **Excel 转 PDF** — 将 `.xlsx` 文件转换为 PDF
+- **Word 转 PDF** — 将 `.docx` 文件转换为 PDF
 - **零依赖** — 仅使用 .NET 内置 API（无需任何外部包）
 - **标准 PDF 1.4** 格式输出
-- **Word 转 PDF** — 开发中
 - **图表** — 目前支持尚不完善
 
 ## 快速开始
@@ -57,8 +56,11 @@ dotnet add package MiniPdf
 ```csharp
 using MiniSoftware;
 
-// 文件转文件
-MiniPdf.ConvertToPdf("data.xlsx", "data.pdf");
+// Excel 转 PDF
+MiniPdf.ConvertToPdf("data.xlsx", "output.pdf");
+
+// Word 转 PDF
+MiniPdf.ConvertToPdf("report.docx", "output.pdf");
 
 // 文件转字节数组
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
