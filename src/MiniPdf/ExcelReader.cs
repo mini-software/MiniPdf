@@ -1126,7 +1126,7 @@ internal static class ExcelReader
             10 => (value * 100).ToString("F2", ci) + "%", // 0.00%
             11 => value.ToString("0.00E+00", ci),         // 0.00E+00
             // Date formats (14-22): Excel stores dates as serial numbers
-            14 => FormatExcelDate(value, "MM/dd/yyyy"),
+            14 => FormatExcelDate(value, "M/d/yyyy"),
             15 => FormatExcelDate(value, "d-MMM-yy"),
             16 => FormatExcelDate(value, "d-MMM"),
             17 => FormatExcelDate(value, "MMM-yy"),
@@ -1687,7 +1687,7 @@ internal static class ExcelReader
         // absent the stored 'scale' already encodes the horizontal fit and rows
         // paginate naturally.  Use 0 (unlimited) as default so fitToHeight
         // compression only triggers when the attribute is explicitly present.
-        var fitToWidth = 1;
+        var fitToWidth = 0;
         var fitToHeight = 0;
         if (pageSetup != null)
         {
@@ -1729,6 +1729,11 @@ internal static class ExcelReader
         // Apply this default when fitToPage is enabled and the attribute is absent.
         if (fitToPage && fitToHeight == 0 && pageSetup?.Attribute("fitToHeight") == null)
             fitToHeight = 1;
+
+        // Per ECMA-376, fitToWidth also defaults to 1 when fitToPage is explicitly
+        // enabled and the attribute is absent.
+        if (fitToPage && fitToWidth == 0 && pageSetup?.Attribute("fitToWidth") == null)
+            fitToWidth = 1;
 
         // Infer fitToPage when fitToHeight is explicitly set in <pageSetup> but
         // <pageSetUpPr fitToPage="1"/> is absent.  Many real-world files omit the

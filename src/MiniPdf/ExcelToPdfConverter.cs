@@ -282,6 +282,30 @@ internal static class ExcelToPdfConverter
             var rawTotal = 0f;
             var startRow = sheet.PrintArea.HasValue ? sheet.PrintArea.Value.StartRow : 0;
             var endRow = sheet.PrintArea.HasValue ? Math.Min(sheet.PrintArea.Value.EndRow, sheet.Rows.Count - 1) : sheet.Rows.Count - 1;
+
+            // When no print area is set, limit endRow to the last row with text
+            // content. Spreadsheets often have styling-only rows beyond the data
+            // area that inflate the height total and cause over-compression.
+            if (!sheet.PrintArea.HasValue)
+            {
+                var lastContentRow = -1;
+                for (var r = sheet.Rows.Count - 1; r >= 0; r--)
+                {
+                    var row = sheet.Rows[r];
+                    for (var c = 0; c < row.Count; c++)
+                    {
+                        if (!string.IsNullOrEmpty(row[c].Text))
+                        {
+                            lastContentRow = r;
+                            break;
+                        }
+                    }
+                    if (lastContentRow >= 0) break;
+                }
+                if (lastContentRow >= 0)
+                    endRow = lastContentRow;
+            }
+
             for (var r = startRow; r <= endRow; r++)
                 rawTotal += sheet.RowHeights.TryGetValue(r, out var rh) ? rh : defRH;  // hidden rows have rh=0
 
@@ -352,36 +376,77 @@ internal static class ExcelToPdfConverter
                 var breakRows = sheet.RowBreaks.Where(b => b >= startRow && b <= endRow).OrderBy(b => b).ToList();
                 var segStarts = new List<int> { startRow };
                 segStarts.AddRange(breakRows);
+
+                // Calculate total pages needed across all segments at current scale.
+                // Segments after the first row break repeat print title rows on every page,
+                // and each segment is allowed to flow across multiple pages.
+                var totalPagesNeeded = 0;
+                var scaledTitleH = titleH2 * segScale;
                 for (var s = 0; s < segStarts.Count; s++)
                 {
                     var segStart = segStarts[s];
                     var segEnd = s + 1 < segStarts.Count ? segStarts[s + 1] - 1 : endRow;
-                    var segH = 0f;
+                    var segDataH = 0f;
                     for (var r = segStart; r <= segEnd; r++)
-                        segH += sheet.RowHeights.TryGetValue(r, out var srh) ? srh : defRH;
-                    if (s > 0) segH += titleH2;
-                    if (segH * segScale > usableH)
+                        segDataH += sheet.RowHeights.TryGetValue(r, out var srh) ? srh : defRH;
+                    var scaledDataH = segDataH * segScale;
+
+                    if (s == 0)
                     {
-                        var newScale = usableH / segH;
-                        var combined2 = (int)Math.Max(10, Math.Floor(newScale * 100));
-                        if (combined2 < sheet.PrintScale)
+                        // First segment: no extra title rows
+                        totalPagesNeeded += Math.Max(1, (int)Math.Ceiling(scaledDataH / usableH));
+                    }
+                    else
+                    {
+                        // Subsequent segments: title rows are prepended on every page
+                        var availablePerPage = usableH - scaledTitleH;
+                        if (availablePerPage <= 0)
                         {
-                            sheet = new ExcelSheet(sheet.Name, sheet.Rows,
-                                images: sheet.Images.Count > 0 ? sheet.Images : null,
-                                columnWidths: sheet.ColumnWidths, defaultColumnWidth: sheet.DefaultColumnWidth,
-                                charts: sheet.Charts.Count > 0 ? sheet.Charts : null,
-                                mergedCells: sheet.MergedCells, rowHeights: sheet.RowHeights,
-                                defaultRowHeight: sheet.DefaultRowHeight, customHeightRows: sheet.CustomHeightRows,
-                                isLandscape: sheet.IsLandscape, printScale: combined2, paperSize: sheet.PaperSize,
-                                marginLeftPt: sheet.MarginLeftPt, marginRightPt: sheet.MarginRightPt,
-                                marginTopPt: sheet.MarginTopPt, marginBottomPt: sheet.MarginBottomPt,
-                                fitToPage: sheet.FitToPage, fitToWidth: sheet.FitToWidth, fitToHeight: sheet.FitToHeight,
-                                horizontalCentered: sheet.HorizontalCentered, printArea: sheet.PrintArea,
-                                printTitleRows: sheet.PrintTitleRows, rowBreaks: sheet.RowBreaks,
-                                oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt);
-                            scaleCellFonts = true;
+                            totalPagesNeeded += 999; // Title rows alone exceed page
                         }
-                        break;
+                        else
+                        {
+                            totalPagesNeeded += Math.Max(1, (int)Math.Ceiling(scaledDataH / availablePerPage));
+                        }
+                    }
+                }
+
+                // Only compress if total pages across all segments exceed fitToHeight
+                if (sheet.FitToHeight > 0 && totalPagesNeeded > sheet.FitToHeight)
+                {
+                    // Find the largest overflowing segment and compute required scale
+                    var worstNewScale = 1f;
+                    for (var s = 0; s < segStarts.Count; s++)
+                    {
+                        var segStart = segStarts[s];
+                        var segEnd = s + 1 < segStarts.Count ? segStarts[s + 1] - 1 : endRow;
+                        var segH = 0f;
+                        for (var r = segStart; r <= segEnd; r++)
+                            segH += sheet.RowHeights.TryGetValue(r, out var srh) ? srh : defRH;
+                        if (s > 0) segH += titleH2;
+                        if (segH > 0)
+                        {
+                            var ns = usableH / segH;
+                            if (ns < worstNewScale) worstNewScale = ns;
+                        }
+                    }
+                    var combined2 = (int)Math.Max(10, Math.Floor(worstNewScale * 100));
+                    if (combined2 < sheet.PrintScale)
+                    {
+                        sheet = new ExcelSheet(sheet.Name, sheet.Rows,
+                            images: sheet.Images.Count > 0 ? sheet.Images : null,
+                            columnWidths: sheet.ColumnWidths, defaultColumnWidth: sheet.DefaultColumnWidth,
+                            charts: sheet.Charts.Count > 0 ? sheet.Charts : null,
+                            mergedCells: sheet.MergedCells, rowHeights: sheet.RowHeights,
+                            defaultRowHeight: sheet.DefaultRowHeight, customHeightRows: sheet.CustomHeightRows,
+                            isLandscape: sheet.IsLandscape, printScale: combined2, paperSize: sheet.PaperSize,
+                            marginLeftPt: sheet.MarginLeftPt, marginRightPt: sheet.MarginRightPt,
+                            marginTopPt: sheet.MarginTopPt, marginBottomPt: sheet.MarginBottomPt,
+                            fitToPage: sheet.FitToPage, fitToWidth: sheet.FitToWidth, fitToHeight: sheet.FitToHeight,
+                            horizontalCentered: sheet.HorizontalCentered, printArea: sheet.PrintArea,
+                            printTitleRows: sheet.PrintTitleRows, rowBreaks: sheet.RowBreaks,
+                            oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt);
+                        scaleCellFonts = true;
                     }
                 }
             }
@@ -618,14 +683,32 @@ internal static class ExcelToPdfConverter
         // smaller and pagination matches the real spreadsheet output.
         var fitToPageScale = 1f;
 
-        if (sheet.FitToPage && totalNatural > usableWidth && maxCols > 1)
+        if (sheet.FitToPage && sheet.FitToWidth > 0 && totalNatural > usableWidth && maxCols > 1)
         {
             var fitScale = usableWidth / totalNatural;
             for (var i = 0; i < naturalWidths.Length; i++)
                 naturalWidths[i] *= fitScale;
             columnPadding *= fitScale;
             totalNatural = usableWidth;
-            fitToPageScale = fitScale;
+            // Only propagate to row heights / font sizes when the compression is
+            // significant.  Small overshoots (< 2%) are absorbed by column-only
+            // adjustment to avoid cascading row-height changes that break pagination.
+            if (fitScale < 0.98f)
+                fitToPageScale = fitScale;
+        }
+
+        // When horizontalCentered is active and columns slightly overflow the
+        // usable width (< 5%), absorb the overflow by zeroing inter-column
+        // padding so centering can shift the content inward.  The small padding
+        // loss is invisible but the centering offset matches LibreOffice output.
+        if (sheet.HorizontalCentered)
+        {
+            var natTotal = naturalWidths.Sum() + columnPadding * (maxCols - 1);
+            if (natTotal > usableWidth && natTotal < usableWidth * 1.05f)
+            {
+                columnPadding = 0f;
+                totalNatural = naturalWidths.Sum();
+            }
         }
 
         if (naturalWidths.Sum() > usableWidth && maxCols > 1)
@@ -785,9 +868,20 @@ internal static class ExcelToPdfConverter
         var rowPage = new Dictionary<int, PdfPage>();
         var excelRowIndex = 0;
 
+        // When fitToHeight is set, allow a small extension into the bottom
+        // margin to absorb borderline overflow from row-height rounding
+        // differences between rendering engines. The tolerance is limited
+        // by the gap between the bottom margin and the footer area.
+        var pageBreakBottom = options.MarginBottom;
+        if (sheet.FitToPage && sheet.FitToHeight > 0 && sheet.FooterMarginPt > 0)
+        {
+            var tolerance = Math.Max(0f, options.MarginBottom - sheet.FooterMarginPt - 6f);
+            pageBreakBottom -= Math.Min(tolerance, 15f);
+        }
+
         void EnsurePage()
         {
-            if (currentPage == null || currentY < options.MarginBottom)
+            if (currentPage == null || currentY < pageBreakBottom)
             {
                 currentPage = doc.AddPage(pageWidth, pageHeight);
                 currentY = pageHeight - options.MarginTop;
@@ -807,8 +901,12 @@ internal static class ExcelToPdfConverter
         // Also track interior cells of merge ranges so we can skip their fill/border.
         var mergeEndCol = new Dictionary<(int, int), int>(); // (row, col) → endCol
         var mergeInterior = new HashSet<(int, int)>(); // cells inside merge (not start col)
+        // Track vertical merge end rows for text positioning in multi-row merges.
+        var mergeEndRow = new Dictionary<(int, int), int>(); // (startRow, startCol) → endRow
         foreach (var (sr, sc, er, ec) in sheet.MergedCells)
         {
+            if (er > sr)
+                mergeEndRow[(sr, sc)] = er;
             for (var r = sr; r <= er; r++)
             {
                 mergeEndCol[(r, sc)] = ec;
@@ -884,7 +982,27 @@ internal static class ExcelToPdfConverter
                                     break;
                                 }
                             }
-                            var shouldClip = isMerged || (i < columns.Length - 1 && nextHasContent);
+                            var titleCellAlignment = titleRow[col].Alignment;
+                            bool shouldClip;
+                            if (isMerged)
+                            {
+                                shouldClip = true;
+                            }
+                            else if (titleCellAlignment == "right" && fitChars < cellText.Length)
+                            {
+                                var prevHasContent = false;
+                                if (i > 0)
+                                {
+                                    var pc = columns[i - 1];
+                                    if (pc < titleRow.Count && !string.IsNullOrEmpty(titleRow[pc].Text))
+                                        prevHasContent = true;
+                                }
+                                shouldClip = prevHasContent;
+                            }
+                            else
+                            {
+                                shouldClip = i < columns.Length - 1 && nextHasContent;
+                            }
                             if (shouldClip)
                             {
                                 titleClipWidths[i] = effectiveW;
@@ -1128,9 +1246,9 @@ internal static class ExcelToPdfConverter
                             var isMerged = mergeEndCol.TryGetValue((excelRowIndex, col), out var endCol);
                             if (isMerged)
                             {
-                                // Sum widths of merged columns — no extra padding within merged span
+                                // Sum widths of merged columns including inter-column padding
                                 for (var mc = i + 1; mc < columns.Length && columns[mc] <= endCol; mc++)
-                                    effectiveWidth += colWidths[mc];
+                                    effectiveWidth += colWidths[mc] + columnPadding;
                             }
 
                             // Excel/LibreOffice clip text at the column boundary when the
@@ -1170,7 +1288,29 @@ internal static class ExcelToPdfConverter
                             }
                             else
                             {
-                                var shouldClip = isMerged || (!isLastCol && nextCellHasContent);
+                                var cellAlignment = row[col].Alignment;
+                                bool shouldClip;
+                                if (isMerged)
+                                {
+                                    shouldClip = true;
+                                }
+                                else if (cellAlignment == "right" && fitChars < cellText.Length)
+                                {
+                                    // Right-aligned text overflows LEFT into previous cells.
+                                    // Only clip when the previous visible cell has content.
+                                    var prevCellHasContent = false;
+                                    if (i > 0)
+                                    {
+                                        var pc = columns[i - 1];
+                                        if (pc < row.Count && !string.IsNullOrEmpty(row[pc].Text))
+                                            prevCellHasContent = true;
+                                    }
+                                    shouldClip = prevCellHasContent;
+                                }
+                                else
+                                {
+                                    shouldClip = !isLastCol && nextCellHasContent;
+                                }
                                 // Set maxWidth only when the cell actually needs clipping
                                 // (next cell has content or this is a merged cell).
                                 // LibreOffice lets text overflow into adjacent empty cells
@@ -1181,8 +1321,13 @@ internal static class ExcelToPdfConverter
                                 }
                                 if (shouldClip && cellText.Length > fitChars)
                                 {
-                                    // Keep full text; AddText maxWidth will compress via Tz scaling.
-                                    cellLines[i] = new[] { cellText };
+                                    // For right-aligned cells, keep full text and rely on the
+                                    // PDF clipping rectangle for visual clipping.  This
+                                    // preserves accurate text extraction from the PDF.
+                                    if (cellAlignment == "right")
+                                        cellLines[i] = new[] { cellText };
+                                    else
+                                        cellLines[i] = new[] { cellText[..fitChars] };
                                 }
                                 else if (!shouldClip && fitChars < cellText.Length && columns.Length == 1)
                                 {
@@ -1274,7 +1419,7 @@ internal static class ExcelToPdfConverter
                 : contentHeight;
             var usablePageHeight = pageHeight - options.MarginTop - options.MarginBottom;
 
-            if (currentY - rowHeight < options.MarginBottom && currentPage != null)
+            if (currentY - rowHeight < pageBreakBottom && currentPage != null)
             {
                 currentPage = doc.AddPage(pageWidth, pageHeight);
                 currentY = pageHeight - options.MarginTop;
@@ -1372,21 +1517,41 @@ internal static class ExcelToPdfConverter
                 // so that text extraction (which groups spans by bbox-top Y within 1pt)
                 // keeps mixed-size cells on the same logical row.
                 var ascentCompensation = (cellFontSize - options.FontSize) * 0.1f;
+
+                // For vertically merged cells, compute the total merge height so text
+                // centering considers the full merged area (not just the start row).
+                var effectiveRowHeight = rowHeight;
+                if (mergeEndRow.TryGetValue((excelRowIndex, col), out var vMergeEndRow))
+                {
+                    for (var mr = excelRowIndex + 1; mr <= vMergeEndRow; mr++)
+                    {
+                        if (sheet.RowHeights.TryGetValue(mr, out var mrH))
+                        {
+                            if (printScaleFactor != 1f) mrH *= printScaleFactor;
+                            if (fitToPageScale < 1f) mrH *= fitToPageScale;
+                            effectiveRowHeight += mrH;
+                        }
+                        else
+                            effectiveRowHeight += lineHeight;
+                    }
+                }
+
                 float cellY;
                 var textBlock = cellFontSize + lineHeight * (lines.Length - 1);
-                if (verticalAlignment == "top" || textBlock > rowHeight)
+                if (verticalAlignment == "top" || textBlock > effectiveRowHeight)
                     cellY = currentY - cellFontSize;
                 else if (verticalAlignment == "center")
-                    cellY = currentY - (rowHeight - textBlock) / 2f - cellFontSize + descent - ascentCompensation;
+                    cellY = currentY - (effectiveRowHeight - textBlock) / 2f - cellFontSize + descent - ascentCompensation;
                 else // "bottom" (default)
-                    cellY = currentY - rowHeight + descent - ascentCompensation + lineHeight * (lines.Length - 1);
+                    cellY = currentY - effectiveRowHeight + descent - ascentCompensation + lineHeight * (lines.Length - 1);
 
                 // Skip fill/border for cells inside a merge range (not the start column).
                 // Only the merge origin cell renders the fill covering the full merged area.
                 var isInsideMerge = mergeInterior.Contains((excelRowIndex, col));
 
                 // Draw fill rectangle behind cell if fill color is set.
-                // For merged cells, extend the fill across the full merged column span.
+                // For merged cells, extend the fill across the full merged column span
+                // and the full vertical merge height for the start row.
                 if (fillColor != null && !isInsideMerge)
                 {
                     var fillWidth = colWidths[i];
@@ -1395,14 +1560,44 @@ internal static class ExcelToPdfConverter
                         for (var mc = i + 1; mc < columns.Length && columns[mc] <= fillEndCol; mc++)
                             fillWidth += colWidths[mc] + columnPadding;
                     }
-                    currentPage!.AddRectangle(x, currentY - rowHeight, fillWidth, rowHeight, fillColor);
+                    var fillHeight = rowHeight;
+                    if (mergeEndRow.TryGetValue((excelRowIndex, col), out var fillMergeEndRow))
+                    {
+                        for (var mr = excelRowIndex + 1; mr <= fillMergeEndRow; mr++)
+                        {
+                            if (sheet.RowHeights.TryGetValue(mr, out var mrH))
+                            {
+                                if (printScaleFactor != 1f) mrH *= printScaleFactor;
+                                if (fitToPageScale < 1f) mrH *= fitToPageScale;
+                                fillHeight += mrH;
+                            }
+                            else
+                                fillHeight += lineHeight;
+                        }
+                    }
+                    currentPage!.AddRectangle(x, currentY - fillHeight, fillWidth, fillHeight, fillColor);
                 }
 
                 // Draw cell borders.
-                // For merged cells, extend the right border to the end of the merged span.
+                // For merged cells, extend the right border to the end of the merged span
+                // and extend vertically for multi-row merges.
                 if (border != null && !isInsideMerge)
                 {
                     var borderHeight = rowHeight;
+                    if (mergeEndRow.TryGetValue((excelRowIndex, col), out var borderMergeEndRow))
+                    {
+                        for (var mr = excelRowIndex + 1; mr <= borderMergeEndRow; mr++)
+                        {
+                            if (sheet.RowHeights.TryGetValue(mr, out var mrH))
+                            {
+                                if (printScaleFactor != 1f) mrH *= printScaleFactor;
+                                if (fitToPageScale < 1f) mrH *= fitToPageScale;
+                                borderHeight += mrH;
+                            }
+                            else
+                                borderHeight += lineHeight;
+                        }
+                    }
                     var bx = x;
                     var byTop = currentY;
                     var byBottom = currentY - borderHeight;
@@ -1618,6 +1813,8 @@ internal static class ExcelToPdfConverter
         // to determine if we need an overflow page (matching LibreOffice behavior)
         var maxDataCols = sheet.Rows.Count > 0 ? sheet.Rows.Max(r => r.Count) : 0;
         var needsOverflowPage = false;
+        PdfPage? dominantChartPage = null;
+        float dominantChartPageY = 0;
 
         foreach (var chart in sheet.Charts)
         {
@@ -1648,15 +1845,16 @@ internal static class ExcelToPdfConverter
             if (chartWidth < 72) chartWidth = usableWidth * 0.6f;
             if (chartHeight < 72) chartHeight = chartWidth * 0.65f;
 
-            // Scale dominant charts (twoCellAnchor spanning >50% of sheet rows) to
-            // fill usable page width, matching LibreOffice's full-page output.
-            // Charts anchored within the data area (AnchorCol > 1) are rendered
-            // inline at their anchor position alongside data, not scaled up.
+            // Detect "dominant" charts: large charts spanning >35% of sheet rows.
             var estRowSpan = chart.HeightEmu / 304800f; // rough rows from EMU
-            var isChartDominant = chart.IsTwoCellAnchor
-                && sheet.Rows.Count > 0 && estRowSpan / sheet.Rows.Count > 0.5f;
-            var isInlineChart = isChartDominant && chart.AnchorCol > 1;
-            if (isChartDominant && !isInlineChart && chartWidth > 0 && chartWidth < usableWidth * 0.9f)
+            var isChartDominant = sheet.Rows.Count > 0 && estRowSpan / sheet.Rows.Count > 0.35f;
+
+            // Charts anchored to the right of data columns overflow horizontally
+            // in LibreOffice, producing a separate page for the chart.
+            // Charts anchored within the data area stay inline on the same page.
+            var chartOverflowsRight = chart.AnchorCol >= maxDataCols && maxDataCols > 0;
+
+            if (isChartDominant && chartOverflowsRight && chartWidth > 0 && chartWidth < usableWidth * 0.9f)
             {
                 var scaleUp = usableWidth * 0.95f / chartWidth;
                 chartHeight *= scaleUp;
@@ -1665,48 +1863,53 @@ internal static class ExcelToPdfConverter
                 if (chartX + chartWidth > pageWidth - options.MarginRight)
                     chartX = options.MarginLeft;
             }
-            // Cap height for inline (non-dominant) charts to avoid page overflow
-            if (!isChartDominant)
+            // Cap height for inline charts to avoid page overflow
+            if (!chartOverflowsRight)
                 chartHeight = Math.Min(chartHeight, pageHeight * 0.85f);
 
-            // Ensure chart fits on page, start new page if needed
+            // Charts that overflow right go to a dedicated chart page
+            // (matching LibreOffice: data on page 1, right-overflow chart on page 2).
+            // Multiple charts sharing same overflow share the chart page, stacking vertically.
             var chartTop = chartTopY;
-            if (chartTop - chartHeight < options.MarginBottom)
+            if (chartOverflowsRight && sheet.Rows.Count > 0)
+            {
+                if (dominantChartPage == null)
+                {
+                    dominantChartPage = doc.AddPage(pageWidth, pageHeight);
+                    dominantChartPageY = pageHeight - options.MarginTop;
+                }
+                chartPage = dominantChartPage;
+                chartTop = dominantChartPageY;
+                chartX = options.MarginLeft;
+                // For multiple charts sharing a page, split available height
+                var numOverflowCharts = sheet.Charts.Count(c2 =>
+                    c2.AnchorCol >= maxDataCols);
+                if (numOverflowCharts > 1)
+                {
+                    var usableH = pageHeight - options.MarginTop - options.MarginBottom;
+                    chartHeight = Math.Min(chartHeight, usableH / numOverflowCharts - 10f);
+                }
+            }
+            else if (chartTop - chartHeight < options.MarginBottom)
             {
                 chartPage = doc.AddPage(pageWidth, pageHeight);
                 chartTop = pageHeight - options.MarginTop;
             }
 
-            // Render the chart on the current page
-            var renderHeight = isChartDominant
-                ? Math.Min(chartHeight, chartTop - options.MarginBottom)
+            // Render the chart using full available height on its page
+            var usableChartH = chartTop - options.MarginBottom;
+            var renderHeight = chartOverflowsRight
+                ? Math.Min(chartHeight, usableChartH)
                 : chartHeight;
             RenderChart(chartPage, chart, chartX, chartTop, chartWidth, renderHeight, options.FontSize);
 
-            // Add overflow pages for dominant charts taller than 1 page
-            if (isChartDominant)
-            {
-                var usablePageH = pageHeight - options.MarginTop - options.MarginBottom;
-                var overflowHeight = chartHeight - renderHeight;
-                // Dominant charts in LibreOffice are rendered inline at their
-                // anchor position and typically span multiple print pages.
-                // Inline charts need more overflow to match LibreOffice's output
-                // since the chart doesn't consume a separate page.
-                var minOverflow = isInlineChart
-                    ? usablePageH * 2 + 1f  // 3 overflow pages
-                    : usablePageH + 1f;     // 2 overflow pages
-                if (overflowHeight < minOverflow)
-                    overflowHeight = minOverflow;
-                while (overflowHeight > 0f)
-                {
-                    chartPage = doc.AddPage(pageWidth, pageHeight);
-                    overflowHeight -= usablePageH;
-                }
-            }
+            // Update the shared chart page Y position so next chart stacks below
+            if (isChartDominant && dominantChartPage != null)
+                dominantChartPageY = chartTop - renderHeight - 10f;
 
-            // Charts anchored to the right of data columns cause LibreOffice to
-            // produce an overflow page (the chart extends beyond the print area).
-            if (chart.AnchorCol >= maxDataCols && maxDataCols > 0)
+            // Non-dominant charts anchored to the right of data columns that
+            // weren't placed on the chart page still need an overflow page.
+            if (!chartOverflowsRight && chart.AnchorCol >= maxDataCols && maxDataCols > 0)
             {
                 needsOverflowPage = true;
             }
@@ -2804,10 +3007,11 @@ internal static class ExcelToPdfConverter
             return text;
 
         // Use Calibri-scaled widths (matching FittingChars) so the "fits" check
-        // is consistent with the truncation logic. A margin of ~3pt accounts for
-        // sub-pixel differences between Calibri and scaled-Helvetica glyph widths,
-        // matching LibreOffice's precision reduction behavior more closely.
-        var textAreaWidth = colWidthPt - 3.0;
+        // is consistent with the truncation logic.  CalibriFittingScale already
+        // accounts for Calibri-vs-Helvetica width differences, so no additional
+        // margin is needed.  A fixed margin penalises narrow columns heavily and
+        // causes premature precision reduction.
+        var textAreaWidth = colWidthPt;
 
         // Check if current text already fits
         if (MeasureScaledWidth(text, fontSize) <= textAreaWidth)
@@ -2833,13 +3037,20 @@ internal static class ExcelToPdfConverter
                 return intForm;
         }
 
-        // Try scientific notation with decreasing precision until it fits
-        for (int digits = 3; digits >= 0; digits--)
+        // Try scientific notation with decreasing precision until it fits.
+        // Skip scientific notation for values that were originally integers
+        // (no decimal point or 'E' in the source text).  Truncation by
+        // FittingChars produces more readable output for ID-like values
+        // (e.g. PO numbers) than "2E+07".
+        if (text.Contains('.') || text.Contains('E', StringComparison.OrdinalIgnoreCase))
         {
-            var fmt = digits > 0 ? "0." + new string('#', digits) + "E+00" : "0E+00";
-            var sci = value.ToString(fmt, ci);
-            if (MeasureScaledWidth(sci, fontSize) <= textAreaWidth)
-                return sci;
+            for (int digits = 3; digits >= 0; digits--)
+            {
+                var fmt = digits > 0 ? "0." + new string('#', digits) + "E+00" : "0E+00";
+                var sci = value.ToString(fmt, ci);
+                if (MeasureScaledWidth(sci, fontSize) <= textAreaWidth)
+                    return sci;
+            }
         }
 
         return text; // Can't fit, return as-is
