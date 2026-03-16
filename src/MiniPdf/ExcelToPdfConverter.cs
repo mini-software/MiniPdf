@@ -996,10 +996,15 @@ internal static class ExcelToPdfConverter
                             bool shouldClip;
                             if (isMerged)
                             {
-                                shouldClip = true;
+                                shouldClip = false;
                             }
                             else if (titleCellAlignment == "right" && clipFitChars < cellText.Length)
                             {
+                                var rightAlignedNumeric = double.TryParse(
+                                    cellText,
+                                    System.Globalization.NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture,
+                                    out _);
                                 var prevHasContent = false;
                                 if (i > 0)
                                 {
@@ -1007,7 +1012,16 @@ internal static class ExcelToPdfConverter
                                     if (pc < titleRow.Count && !string.IsNullOrEmpty(titleRow[pc].Text))
                                         prevHasContent = true;
                                 }
-                                shouldClip = prevHasContent;
+                                if (!rightAlignedNumeric)
+                                {
+                                    shouldClip = false;
+                                }
+                                else
+                                {
+                                // Right-aligned value cells at section edges should be allowed
+                                // to breathe leftward; only clip when sandwiched by content.
+                                shouldClip = prevHasContent && nextHasContent;
+                                }
                             }
                             else
                             {
@@ -1091,7 +1105,7 @@ internal static class ExcelToPdfConverter
                             if (alignment == "right")
                             {
                                 var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs);
-                                textX = Math.Max(x, x + cellWidth - tw - 0.75f);
+                                textX = Math.Max(x, x + cellWidth - tw - 2.5f);
                             }
                             else if (alignment == "center")
                             {
@@ -1348,12 +1362,17 @@ internal static class ExcelToPdfConverter
                                 bool shouldClip;
                                 if (isMerged)
                                 {
-                                    shouldClip = true;
+                                    shouldClip = false;
                                 }
                                 else if (cellAlignment == "right" && clipFitChars < cellText.Length)
                                 {
+                                    var rightAlignedNumeric = double.TryParse(
+                                        cellText,
+                                        System.Globalization.NumberStyles.Float,
+                                        System.Globalization.CultureInfo.InvariantCulture,
+                                        out _);
                                     // Right-aligned text overflows LEFT into previous cells.
-                                    // Only clip when the previous visible cell has content.
+                                    // Clip only when sandwiched by content on both sides.
                                     var prevCellHasContent = false;
                                     if (i > 0)
                                     {
@@ -1361,7 +1380,10 @@ internal static class ExcelToPdfConverter
                                         if (pc < row.Count && !string.IsNullOrEmpty(row[pc].Text))
                                             prevCellHasContent = true;
                                     }
-                                    shouldClip = prevCellHasContent;
+                                    if (!rightAlignedNumeric)
+                                        shouldClip = false;
+                                    else
+                                        shouldClip = prevCellHasContent && nextCellHasContent;
                                 }
                                 else
                                 {
@@ -1524,7 +1546,7 @@ internal static class ExcelToPdfConverter
                                 if (mpAlignment == "right")
                                 {
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
-                                    textX = Math.Max(x, x + mpCellWidth - tw - 0.75f);
+                                    textX = Math.Max(x, x + mpCellWidth - tw - 2.5f);
                                 }
                                 else if (mpAlignment == "center")
                                 {
@@ -1710,7 +1732,7 @@ internal static class ExcelToPdfConverter
                         if (alignment == "right")
                         {
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
-                            textX = Math.Max(x, x + cellWidth - textWidth - 0.75f);
+                            textX = Math.Max(x, x + cellWidth - textWidth - 2.5f);
                         }
                         else if (alignment == "center")
                         {

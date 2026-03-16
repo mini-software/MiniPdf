@@ -1,17 +1,17 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-16T12:06:10.614672
+Generated: 2026-03-16T13:10:37.744170
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🟢 PO_anonymized | 0.9614 | 0.8355 | 8/8 | **0.9188** |
+| 1 | 🟢 PO_anonymized | 0.9707 | 0.8351 | 8/8 | **0.9223** |
 | 2 | 🔴 Small business cash flow forecast1 | 0.9157 | 0.3119 | 2/5 | **0.591** |
 | 3 | 🟡 Wedding_timeline_planner1_copy | 0.9305 | 0.6843 | 4/5 | **0.7459** |
 | 4 | 🔴 payroll-calculator_f | 0.9082 | 0.5545 | 24/27 | **0.6851** |
 
-**Average Overall Score: 0.7352**
+**Average Overall Score: 0.7361**
 
 ## Visual Comparison
 
@@ -19,7 +19,7 @@ Generated: 2026-03-16T12:06:10.614672
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>PO_anonymized</b></td>
-  <td colspan="1">PO_anonymized <span style="color:#3fb950">⬤</span> 91.9%</td>
+  <td colspan="1">PO_anonymized <span style="color:#3fb950">⬤</span> 92.2%</td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -219,34 +219,17 @@ Generated: 2026-03-16T12:06:10.614672
 
 ### PO_anonymized
 
-- **Text Similarity:** 0.9614
-- **Visual Average:** 0.8355
-- **Overall Score:** 0.9188
+- **Text Similarity:** 0.9707
+- **Visual Average:** 0.8351
+- **Overall Score:** 0.9223
 - **Pages:** MiniPdf=8, Reference=8
-- **File Size:** MiniPdf=394689 bytes, Reference=338357 bytes
+- **File Size:** MiniPdf=362968 bytes, Reference=338357 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/PO_anonymized.pdf
 +++ reference/PO_anonymized.pdf
-@@ -8,7 +8,7 @@
- Description: Standard Component Assembly with Seal Insert
-
- Sign-off sample: Yes Approved drawings Yes (Drawing#: K1VRJNVG REV: C )
-
- Ship mark Yes Approved ranges Yes Ship to TBA
-
--Inspection Result Accept
-
-+Inspection Result: Accept
-
- Re-inspection:
-
- No
-
- ( Comment: )
-
 @@ -47,7 +47,8 @@
  XX-ABC-57052-C 71662963 61,859 41,466 8,462 61 16
 
@@ -265,6 +248,23 @@ Generated: 2026-03-16T12:06:10.614672
  Final Inspection Report
 
  Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
+
+@@ -62,7 +63,7 @@
+ Quantity per carton: Part C & Insert 619
+
+ Dimension of carton (cm): L x W X H x x 47 x 32 x 43
+
+ Weight of carton (Kg): Gross/Net / 15.3 / 14
+
+-Scan the barcode number: (Result:N/A )
+
++Scan the barcode number: (Result: N/A )
+
+ Dimension and Function check - Sampling level: S-2
+
+ Sample size: 13+7
+
+ Dimension chart
 
 @@ -85,10 +86,12 @@
  21.49 21.04 20.84 20.86 20 21.08 21.4 21.08 20.41 20.89 20.43 21.64 21.52 21.44 20.8 20.45 21.49 21.62 20.53 21.01
@@ -308,15 +308,15 @@ Generated: 2026-03-16T12:06:10.614672
 
 -Final Inspection Report
 
--Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX
+-Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
 
--XXX office: TX Inspector: Sam Davis XXX PO#: 216687
+-XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
 
 -PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
 
--Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907
+-Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
 
--Lot ID: 9928-5
+-Lot ID: 9928-539898(1st lot)
 
 -Item#: XX-ABC-68878-C
 
@@ -332,15 +332,15 @@ Generated: 2026-03-16T12:06:10.614672
 
 -Final Inspection Report
 
--Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX
+-Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
 
--XXX office: TX Inspector: Sam Davis XXX PO#: 216687
+-XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
 
 -PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
 
--Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907
+-Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
 
--Lot ID: 9928-5
+-Lot ID: 9928-539898(1st lot)
 
 -Item#: XX-ABC-68878-C
 
@@ -356,15 +356,15 @@ Generated: 2026-03-16T12:06:10.614672
 
 -Final Inspection Report
 
--Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX
+-Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
 
--XXX office: TX Inspector: Sam Davis XXX PO#: 216687
+-XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
 
 -PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
 
--Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907
+-Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
 
--Lot ID: 9928-5
+-Lot ID: 9928-539898(1st lot)
 
 -Item#: XX-ABC-68878-C
 
@@ -380,12 +380,8 @@ Generated: 2026-03-16T12:06:10.614672
 
 -Final Inspection Report
 
--Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX
-
--XXX office: TX Inspector: Sam Davis XXX PO#: 216687
-
--PM: Avery Wilson Inspection Site: 
-... (4218 more characters)
+-Client: Global Tech Supplier: Alpha 
+... (4397 more characters)
 
 ```
 </details>
