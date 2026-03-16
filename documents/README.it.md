@@ -54,6 +54,26 @@ using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 ```
 
+## Font personalizzati
+
+Se l'ambiente ha pochi font di sistema (ad esempio container o Blazor WASM), registra i font prima della conversione.
+
+```csharp
+using MiniSoftware;
+
+// Si consiglia di registrare uno o piu font all'avvio dell'app
+MiniPdf.RegisterFont("NotoSansSC", File.ReadAllBytes("Fonts/NotoSansSC-Regular.ttf"));
+MiniPdf.RegisterFont("NotoColorEmoji", File.ReadAllBytes("Fonts/NotoColorEmoji.ttf"));
+
+MiniPdf.ConvertToPdf("report.docx", "report.pdf");
+```
+
+Note:
+
+- I byte supportati sono TrueType `.ttf` e TrueType Collection `.ttc`.
+- Registra i font una sola volta all'avvio per evitare registrazioni duplicate.
+- I font registrati hanno priorita rispetto ai font di sistema.
+
 ## Benchmark
 
 L'output di MiniPdf viene confrontato con LibreOffice come renderer di riferimento su **373 casi di test**.

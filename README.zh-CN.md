@@ -68,6 +68,26 @@ using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 ```
 
+## 自定义字体
+
+如果运行环境系统字体有限（例如容器或 Blazor WASM），请在转换前先注册字体。
+
+```csharp
+using MiniSoftware;
+
+// 建议在应用启动时注册一个或多个字体
+MiniPdf.RegisterFont("NotoSansSC", File.ReadAllBytes("Fonts/NotoSansSC-Regular.ttf"));
+MiniPdf.RegisterFont("NotoColorEmoji", File.ReadAllBytes("Fonts/NotoColorEmoji.ttf"));
+
+MiniPdf.ConvertToPdf("report.docx", "report.pdf");
+```
+
+说明：
+
+- 支持传入 TrueType `.ttf` 和 TrueType Collection `.ttc` 字体字节。
+- 建议仅在启动阶段注册一次，避免重复注册。
+- 已注册字体会优先于系统字体参与匹配。
+
 ## 基准测试
 
 MiniPdf 的输出与 LibreOffice 作为参考渲染器进行对比，共 **373 个测试用例**。

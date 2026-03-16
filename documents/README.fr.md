@@ -54,6 +54,26 @@ using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 ```
 
+## Polices personnalisees
+
+Si votre environnement dispose de peu de polices systeme (par exemple conteneurs ou Blazor WASM), enregistrez les polices avant la conversion.
+
+```csharp
+using MiniSoftware;
+
+// Il est recommande d'enregistrer une ou plusieurs polices au demarrage
+MiniPdf.RegisterFont("NotoSansSC", File.ReadAllBytes("Fonts/NotoSansSC-Regular.ttf"));
+MiniPdf.RegisterFont("NotoColorEmoji", File.ReadAllBytes("Fonts/NotoColorEmoji.ttf"));
+
+MiniPdf.ConvertToPdf("report.docx", "report.pdf");
+```
+
+Notes:
+
+- Les donnees de police supportees sont TrueType `.ttf` et TrueType Collection `.ttc`.
+- Enregistrez les polices une seule fois au demarrage pour eviter les doublons.
+- Les polices enregistrees sont prioritaires sur les polices systeme.
+
 ## Benchmark
 
 La sortie de MiniPdf est comparée à LibreOffice comme moteur de rendu de référence sur **373 cas de test**.
