@@ -1,17 +1,17 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-16T09:52:20.126033
+Generated: 2026-03-16T12:06:10.614672
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🟢 PO_anonymized | 0.961 | 0.8272 | 8/8 | **0.9153** |
-| 2 | 🟡 Small business cash flow forecast1 | 0.9166 | 0.806 | 5/5 | **0.889** |
-| 3 | 🟡 Wedding_timeline_planner1_copy | 0.9305 | 0.6991 | 4/5 | **0.7518** |
-| 4 | 🔴 payroll-calculator_f | 0.9082 | 0.5568 | 24/27 | **0.686** |
+| 1 | 🟢 PO_anonymized | 0.9614 | 0.8355 | 8/8 | **0.9188** |
+| 2 | 🔴 Small business cash flow forecast1 | 0.9157 | 0.3119 | 2/5 | **0.591** |
+| 3 | 🟡 Wedding_timeline_planner1_copy | 0.9305 | 0.6843 | 4/5 | **0.7459** |
+| 4 | 🔴 payroll-calculator_f | 0.9082 | 0.5545 | 24/27 | **0.6851** |
 
-**Average Overall Score: 0.8105**
+**Average Overall Score: 0.7352**
 
 ## Visual Comparison
 
@@ -19,7 +19,7 @@ Generated: 2026-03-16T09:52:20.126033
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>PO_anonymized</b></td>
-  <td colspan="1">PO_anonymized <span style="color:#3fb950">⬤</span> 91.5%</td>
+  <td colspan="1">PO_anonymized <span style="color:#3fb950">⬤</span> 91.9%</td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -55,7 +55,7 @@ Generated: 2026-03-16T09:52:20.126033
 </tr>
 <tr>
   <td><b>Small business cash flow forecast1</b></td>
-  <td colspan="1">Small business cash flow forecast1 <span style="color:#d29922">⬤</span> 88.9%</td>
+  <td colspan="1">Small business cash flow forecast1 <span style="color:#f85149">⬤</span> 59.1%</td>
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -66,20 +66,20 @@ Generated: 2026-03-16T09:52:20.126033
   <td><img src="images/Small business cash flow forecast1_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/Small business cash flow forecast1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
   <td><img src="images/Small business cash flow forecast1_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/Small business cash flow forecast1_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
   <td><img src="images/Small business cash flow forecast1_p4_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/Small business cash flow forecast1_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
   <td><img src="images/Small business cash flow forecast1_p5_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>Wedding_timeline_planner1_copy</b></td>
-  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 75.2%</td>
+  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 74.6%</td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -103,7 +103,7 @@ Generated: 2026-03-16T09:52:20.126033
 </tr>
 <tr>
   <td><b>payroll-calculator_f</b></td>
-  <td colspan="1">payroll-calculator_f <span style="color:#f85149">⬤</span> 68.6%</td>
+  <td colspan="1">payroll-calculator_f <span style="color:#f85149">⬤</span> 68.5%</td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -219,17 +219,34 @@ Generated: 2026-03-16T09:52:20.126033
 
 ### PO_anonymized
 
-- **Text Similarity:** 0.961
-- **Visual Average:** 0.8272
-- **Overall Score:** 0.9153
+- **Text Similarity:** 0.9614
+- **Visual Average:** 0.8355
+- **Overall Score:** 0.9188
 - **Pages:** MiniPdf=8, Reference=8
-- **File Size:** MiniPdf=394319 bytes, Reference=338357 bytes
+- **File Size:** MiniPdf=394689 bytes, Reference=338357 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/PO_anonymized.pdf
 +++ reference/PO_anonymized.pdf
+@@ -8,7 +8,7 @@
+ Description: Standard Component Assembly with Seal Insert
+
+ Sign-off sample: Yes Approved drawings Yes (Drawing#: K1VRJNVG REV: C )
+
+ Ship mark Yes Approved ranges Yes Ship to TBA
+
+-Inspection Result Accept
+
++Inspection Result: Accept
+
+ Re-inspection:
+
+ No
+
+ ( Comment: )
+
 @@ -47,7 +47,8 @@
  XX-ABC-57052-C 71662963 61,859 41,466 8,462 61 16
 
@@ -266,7 +283,7 @@ Generated: 2026-03-16T09:52:20.126033
 
  Part D Height
 
--checked by ø4.56 and ø4.64 pin gauge , all within spec.
+-checked by ø4.56 and ø4.64 pin gauges , all within spec.
 
 +checked by and ø4.64 pin gauges , all within spec.
 
@@ -293,7 +310,7 @@ Generated: 2026-03-16T09:52:20.126033
 
 -Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX
 
--XXX office: TX Inspector: Sam Davis XXX PO#: 21668
+-XXX office: TX Inspector: Sam Davis XXX PO#: 216687
 
 -PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
 
@@ -317,7 +334,7 @@ Generated: 2026-03-16T09:52:20.126033
 
 -Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX
 
--XXX office: TX Inspector: Sam Davis XXX PO#: 21668
+-XXX office: TX Inspector: Sam Davis XXX PO#: 216687
 
 -PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
 
@@ -341,7 +358,7 @@ Generated: 2026-03-16T09:52:20.126033
 
 -Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX
 
--XXX office: TX Inspector: Sam Davis XXX PO#: 21668
+-XXX office: TX Inspector: Sam Davis XXX PO#: 216687
 
 -PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
 
@@ -365,39 +382,21 @@ Generated: 2026-03-16T09:52:20.126033
 
 -Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX
 
--XXX office: TX Inspector: Sam Davis XXX PO#: 21668
+-XXX office: TX Inspector: Sam Davis XXX PO#: 216687
 
--PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
-
--Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907
-
--Lot ID: 9928-5
-
--Item#: XX-ABC-68878-C
-
--Description: Standard Component Assembly with Seal Insert
-
--Photos
-
--Doc#: FIR-003.5
-
--Effective: 20171109 Page 6 of 8
-
-----PAGE---
-
--
-... (3921 more characters)
+-PM: Avery Wilson Inspection Site: 
+... (4218 more characters)
 
 ```
 </details>
 
 ### Small business cash flow forecast1
 
-- **Text Similarity:** 0.9166
-- **Visual Average:** 0.806
-- **Overall Score:** 0.889
-- **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=228799 bytes, Reference=126373 bytes
+- **Text Similarity:** 0.9157
+- **Visual Average:** 0.3119
+- **Overall Score:** 0.591
+- **Pages:** MiniPdf=2, Reference=5
+- **File Size:** MiniPdf=228091 bytes, Reference=126373 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -464,7 +463,7 @@ Generated: 2026-03-16T09:52:20.126033
 -Advertising $      3,000.00 $      3,000.00
 
 -Comm
-... (6382 more characters)
+... (6378 more characters)
 
 ```
 </details>
@@ -472,8 +471,8 @@ Generated: 2026-03-16T09:52:20.126033
 ### Wedding_timeline_planner1_copy
 
 - **Text Similarity:** 0.9305
-- **Visual Average:** 0.6991
-- **Overall Score:** 0.7518
+- **Visual Average:** 0.6843
+- **Overall Score:** 0.7459
 - **Pages:** MiniPdf=4, Reference=5
 - **File Size:** MiniPdf=544276 bytes, Reference=126603 bytes
 
@@ -659,10 +658,10 @@ Generated: 2026-03-16T09:52:20.126033
 ### payroll-calculator_f
 
 - **Text Similarity:** 0.9082
-- **Visual Average:** 0.5568
-- **Overall Score:** 0.686
+- **Visual Average:** 0.5545
+- **Overall Score:** 0.6851
 - **Pages:** MiniPdf=24, Reference=27
-- **File Size:** MiniPdf=6380875 bytes, Reference=540676 bytes
+- **File Size:** MiniPdf=6380881 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -796,7 +795,8 @@ Generated: 2026-03-16T09:52:20.126033
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **payroll-calculator_f** (score: 0.686)
-1. **Wedding_timeline_planner1_copy** (score: 0.7518)
+1. **Small business cash flow forecast1** (score: 0.591)
+1. **payroll-calculator_f** (score: 0.6851)
+1. **Wedding_timeline_planner1_copy** (score: 0.7459)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

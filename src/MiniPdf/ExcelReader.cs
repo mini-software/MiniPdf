@@ -1992,17 +1992,40 @@ internal static class ExcelReader
                 long.TryParse(toEl.Element(xdr + "rowOff")?.Value, out toRowOff);
             }
 
-            // For oneCellAnchor / absoluteAnchor, read EMU size from <ext cx cy>.
+            // Read EMU size from anchor <xdr:ext> or, when absent (common in
+            // twoCellAnchor pictures), from nested DrawingML transform
+            // <a:xfrm><a:ext cx cy>.
             long widthEmu = 0, heightEmu = 0;
             if (extEl != null)
             {
                 long.TryParse(extEl.Attribute("cx")?.Value, out widthEmu);
                 long.TryParse(extEl.Attribute("cy")?.Value, out heightEmu);
             }
+            if (widthEmu <= 0 || heightEmu <= 0)
+            {
+                var xfrmExt = anchor.Descendants(a + "ext")
+                    .FirstOrDefault(e => e.Attribute("cx") != null && e.Attribute("cy") != null);
+                if (xfrmExt != null)
+                {
+                    long.TryParse(xfrmExt.Attribute("cx")?.Value, out widthEmu);
+                    long.TryParse(xfrmExt.Attribute("cy")?.Value, out heightEmu);
+                }
+            }
 
             // Find the blip (image reference)
             var blip = anchor.Descendants(a + "blip").FirstOrDefault();
             if (blip == null) continue;
+
+            // Read optional source crop from <a:srcRect> (0..100000 per side).
+            var srcRect = anchor.Descendants(a + "srcRect").FirstOrDefault();
+            long cropLeft = 0, cropTop = 0, cropRight = 0, cropBottom = 0;
+            if (srcRect != null)
+            {
+                long.TryParse(srcRect.Attribute("l")?.Value, out cropLeft);
+                long.TryParse(srcRect.Attribute("t")?.Value, out cropTop);
+                long.TryParse(srcRect.Attribute("r")?.Value, out cropRight);
+                long.TryParse(srcRect.Attribute("b")?.Value, out cropBottom);
+            }
 
             var rId = blip.Attribute(r + "embed")?.Value;
             if (string.IsNullOrEmpty(rId)) continue;
@@ -2028,6 +2051,8 @@ internal static class ExcelReader
                 AnchorCol: fromCol,
                 SpanRows: Math.Max(1, toRow - fromRow),
                 SpanCols: Math.Max(1, toCol - fromCol),
+                ToRow: toRow,
+                ToCol: toCol,
                 Data: imageData,
                 Extension: ext,
                 WidthEmu: widthEmu,
@@ -2035,7 +2060,11 @@ internal static class ExcelReader
                 FromColOffEmu: fromColOff,
                 FromRowOffEmu: fromRowOff,
                 ToColOffEmu: toColOff,
-                ToRowOffEmu: toRowOff
+                ToRowOffEmu: toRowOff,
+                CropLeft: cropLeft / 100000f,
+                CropTop: cropTop / 100000f,
+                CropRight: cropRight / 100000f,
+                CropBottom: cropBottom / 100000f
             ));
         }
 
@@ -2581,6 +2610,8 @@ internal sealed record ExcelEmbeddedImage(
     int AnchorCol,    // 0-based column index of the top-left anchor
     int SpanRows,     // number of rows spanned
     int SpanCols,     // number of columns spanned
+    int ToRow,        // exact to-row anchor (0-based)
+    int ToCol,        // exact to-col anchor (0-based)
     byte[] Data,      // raw image bytes (JPEG or PNG)
     string Extension, // file extension without dot, lower-case, e.g. "jpg"
     long WidthEmu = 0,    // explicit EMU width from <ext>, 0 = not set
@@ -2588,7 +2619,11 @@ internal sealed record ExcelEmbeddedImage(
     long FromColOffEmu = 0,  // sub-cell X offset from left edge of AnchorCol (EMU)
     long FromRowOffEmu = 0,  // sub-cell Y offset from top edge of AnchorRow (EMU)
     long ToColOffEmu = 0,    // sub-cell X offset within the "to" column (EMU)
-    long ToRowOffEmu = 0     // sub-cell Y offset within the "to" row (EMU)
+    long ToRowOffEmu = 0,    // sub-cell Y offset within the "to" row (EMU)
+    float CropLeft = 0f,     // source crop from left  (0..1)
+    float CropTop = 0f,      // source crop from top   (0..1)
+    float CropRight = 0f,    // source crop from right (0..1)
+    float CropBottom = 0f    // source crop from bottom(0..1)
 );
 
 /// <summary>

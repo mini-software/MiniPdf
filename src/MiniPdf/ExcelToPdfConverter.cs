@@ -430,9 +430,18 @@ internal static class ExcelToPdfConverter
                             if (ns < worstNewScale) worstNewScale = ns;
                         }
                     }
-                    var combined2 = (int)Math.Max(10, Math.Floor(worstNewScale * 100));
-                    if (combined2 < sheet.PrintScale)
+                    // Tiny overflows can be caused by estimation drift (row metrics/title repeats)
+                    // and compressing for <2% scale delta hurts visual parity more than it helps.
+                    // Keep current scale when the suggested reduction is marginal.
+                    const float tinyScaleDelta = 0.02f;
+                    if (segScale - worstNewScale > tinyScaleDelta)
                     {
+                        var combined2 = (int)Math.Max(10, Math.Floor(worstNewScale * 100));
+                        if (combined2 >= sheet.PrintScale)
+                            combined2 = sheet.PrintScale - 1;
+                        if (combined2 < 10)
+                            combined2 = 10;
+
                         sheet = new ExcelSheet(sheet.Name, sheet.Rows,
                             images: sheet.Images.Count > 0 ? sheet.Images : null,
                             columnWidths: sheet.ColumnWidths, defaultColumnWidth: sheet.DefaultColumnWidth,
@@ -962,6 +971,7 @@ internal static class ExcelToPdfConverter
                                 effectiveW += colWidths[mc] + columnPadding;
 
                         var fitChars = FittingChars(cellText, effectiveW, cellFs);
+                        var clipFitChars = FittingChars(cellText, effectiveW + 2f, cellFs);
                         if (titleRow[col].WrapText && fitChars < cellText.Length)
                         {
                             titleCellLines[i] = WrapCellText(cellText, effectiveW, cellFs);
@@ -988,7 +998,7 @@ internal static class ExcelToPdfConverter
                             {
                                 shouldClip = true;
                             }
-                            else if (titleCellAlignment == "right" && fitChars < cellText.Length)
+                            else if (titleCellAlignment == "right" && clipFitChars < cellText.Length)
                             {
                                 var prevHasContent = false;
                                 if (i > 0)
@@ -1007,7 +1017,7 @@ internal static class ExcelToPdfConverter
                             {
                                 titleClipWidths[i] = effectiveW;
                             }
-                            if (shouldClip && cellText.Length > fitChars)
+                            if (shouldClip && cellText.Length > clipFitChars)
                                 titleCellLines[i] = new[] { cellText };
                             else
                                 titleCellLines[i] = new[] { cellText };
@@ -1081,7 +1091,7 @@ internal static class ExcelToPdfConverter
                             if (alignment == "right")
                             {
                                 var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs);
-                                textX = x + cellWidth - tw;
+                                textX = Math.Max(x, x + cellWidth - tw - 0.75f);
                             }
                             else if (alignment == "center")
                             {
@@ -1089,10 +1099,11 @@ internal static class ExcelToPdfConverter
                                 textX = x + (cellWidth - tw) / 2f;
                             }
                             var titleClip = titleClipWidths[i].HasValue
-                                ? ((float, float, float, float)?)(x, cellY - cellFs, titleClipWidths[i]!.Value, cellFs * 3)
+                                ? ((float, float, float, float)?)(x, cellY - cellFs, titleClipWidths[i]!.Value + 1.5f, cellFs * 3)
                                 : null;
                             currentPage!.AddText(titleCellLines[i][lineIdx], textX, cellY, cellFs, cell?.Color,
-                                clipRect: titleClip);
+                                clipRect: titleClip,
+                                bold: cell?.Bold ?? false);
                         }
                         cellY -= lineHeight;
                     }
@@ -1129,40 +1140,84 @@ internal static class ExcelToPdfConverter
                 imgTopY -= img.FromRowOffEmu * EmuToPtTitle;
 
                 float imgW, imgH;
-                if (img.WidthEmu > 0 && img.HeightEmu > 0)
+                var hasCrop = img.CropLeft > 0f || img.CropTop > 0f || img.CropRight > 0f || img.CropBottom > 0f;
+                if (hasCrop && img.WidthEmu > 0 && img.HeightEmu > 0)
                 {
                     imgW = Math.Min(img.WidthEmu * EmuToPtTitle, titleUsableWidth * 0.95f);
                     imgH = Math.Min(img.HeightEmu * EmuToPtTitle, pageHeight * 0.75f);
                 }
                 else
                 {
-                    imgW = Math.Max(0, colWidths[colGroupIdx] - fromColOffPt);
-                    for (var ci = colGroupIdx + 1; ci < Math.Min(colGroupIdx + img.SpanCols, columns.Length); ci++)
-                        imgW += colWidths[ci] + columnPadding;
-                    var toColGroupIdx = colGroupIdx + img.SpanCols;
-                    if (toColGroupIdx < columns.Length && img.ToColOffEmu > 0)
+                    if (hasCrop)
                     {
-                        var toColOffPt = Math.Min(img.ToColOffEmu * EmuToPtTitle, colWidths[toColGroupIdx]);
-                        imgW += toColOffPt + columnPadding;
+                        var toCol = img.ToCol >= img.AnchorCol ? img.ToCol : img.AnchorCol + img.SpanCols;
+                        var toColGroupIdx = Array.IndexOf(columns, toCol);
+                        if (toCol == img.AnchorCol && img.ToColOffEmu > img.FromColOffEmu)
+                        {
+                            imgW = Math.Max(0f, (img.ToColOffEmu - img.FromColOffEmu) * EmuToPtTitle);
+                        }
+                        else
+                        {
+                            imgW = Math.Max(0, colWidths[colGroupIdx] - fromColOffPt);
+                            for (var ci = colGroupIdx + 1; ci < columns.Length && columns[ci] < toCol; ci++)
+                                imgW += colWidths[ci] + columnPadding;
+                            if (toColGroupIdx >= 0)
+                                imgW += Math.Min(img.ToColOffEmu * EmuToPtTitle, colWidths[toColGroupIdx]);
+                        }
+                    }
+                    else
+                    {
+                        imgW = Math.Max(0, colWidths[colGroupIdx] - fromColOffPt);
+                        for (var ci = colGroupIdx + 1; ci < Math.Min(colGroupIdx + img.SpanCols, columns.Length); ci++)
+                            imgW += colWidths[ci] + columnPadding;
+                        var toColGroupIdx = colGroupIdx + img.SpanCols;
+                        if (toColGroupIdx < columns.Length && img.ToColOffEmu > 0)
+                        {
+                            var toColOffPt = Math.Min(img.ToColOffEmu * EmuToPtTitle, colWidths[toColGroupIdx]);
+                            imgW += toColOffPt + columnPadding;
+                        }
                     }
                     imgW = Math.Min(Math.Max(imgW, 36f), titleUsableWidth * 0.8f);
 
-                    // Height: sum actual row heights for the spanned rows
-                    imgH = 0;
                     var tPrintScale = (sheet.PrintScale > 0 && sheet.PrintScale != 100) ? sheet.PrintScale / 100f : 1f;
                     var tRowScale = tPrintScale * fitToPageScale;
-                    for (var ri = img.AnchorRow; ri < img.AnchorRow + img.SpanRows; ri++)
+                    if (hasCrop)
                     {
-                        imgH += (sheet.RowHeights.TryGetValue(ri, out var rh) ? rh : lineHeight / tRowScale) * tRowScale;
+                        var toRow = img.ToRow >= img.AnchorRow ? img.ToRow : img.AnchorRow + img.SpanRows;
+                        float GetScaledRowH(int ri)
+                        {
+                            var baseRh = sheet.RowHeights.TryGetValue(ri, out var rh) ? rh : lineHeight / Math.Max(tRowScale, 0.0001f);
+                            return baseRh * tRowScale;
+                        }
+                        if (toRow == img.AnchorRow && img.ToRowOffEmu > img.FromRowOffEmu)
+                        {
+                            imgH = Math.Max(0f, (img.ToRowOffEmu - img.FromRowOffEmu) * EmuToPtTitle);
+                        }
+                        else
+                        {
+                            imgH = Math.Max(0f, GetScaledRowH(img.AnchorRow) - img.FromRowOffEmu * EmuToPtTitle);
+                            for (var ri = img.AnchorRow + 1; ri < toRow; ri++)
+                                imgH += GetScaledRowH(ri);
+                            imgH += img.ToRowOffEmu * EmuToPtTitle;
+                        }
                     }
-                    imgH -= img.FromRowOffEmu * EmuToPtTitle;
-                    imgH += img.ToRowOffEmu * EmuToPtTitle;
+                    else
+                    {
+                        imgH = 0;
+                        for (var ri = img.AnchorRow; ri < img.AnchorRow + img.SpanRows; ri++)
+                        {
+                            imgH += (sheet.RowHeights.TryGetValue(ri, out var rh) ? rh : lineHeight / tRowScale) * tRowScale;
+                        }
+                        imgH -= img.FromRowOffEmu * EmuToPtTitle;
+                        imgH += img.ToRowOffEmu * EmuToPtTitle;
+                    }
                     imgH = Math.Min(Math.Max(imgH, 36f), pageHeight * 0.5f);
                 }
                 var imgY = imgTopY - imgH;
                 if (imgY < options.MarginBottom) imgY = options.MarginBottom;
                 var format = img.Extension is "jpg" or "jpeg" ? "jpg" : "png";
-                currentPage!.AddImage(img.Data, format, imgX, imgY, imgW, imgH);
+                var (drawX, drawY, drawW, drawH, clipRect) = ApplyImageCrop(img, imgX, imgY, imgW, imgH);
+                currentPage!.AddImage(img.Data, format, drawX, drawY, drawW, drawH, clipRect);
             }
 
             return totalHeight;
@@ -1261,6 +1316,7 @@ internal static class ExcelToPdfConverter
                             if (!cellText.Contains('\n'))
                                 cellText = FitNumericText(cellText, effectiveWidth, cellFontSizeForFit);
                             var fitChars = FittingChars(cellText, effectiveWidth, cellFontSizeForFit);
+                            var clipFitChars = FittingChars(cellText, effectiveWidth + 2f, cellFontSizeForFit);
                             var isLastCol = (i == columns.Length - 1);
 
                             // Find next non-merged column with content
@@ -1294,7 +1350,7 @@ internal static class ExcelToPdfConverter
                                 {
                                     shouldClip = true;
                                 }
-                                else if (cellAlignment == "right" && fitChars < cellText.Length)
+                                else if (cellAlignment == "right" && clipFitChars < cellText.Length)
                                 {
                                     // Right-aligned text overflows LEFT into previous cells.
                                     // Only clip when the previous visible cell has content.
@@ -1319,7 +1375,7 @@ internal static class ExcelToPdfConverter
                                 {
                                     cellClipWidth[i] = effectiveWidth;
                                 }
-                                if (shouldClip && cellText.Length > fitChars)
+                                if (shouldClip && cellText.Length > clipFitChars)
                                 {
                                     // For right-aligned cells, keep full text and rely on the
                                     // PDF clipping rectangle for visual clipping.  This
@@ -1327,9 +1383,9 @@ internal static class ExcelToPdfConverter
                                     if (cellAlignment == "right")
                                         cellLines[i] = new[] { cellText };
                                     else
-                                        cellLines[i] = new[] { cellText[..fitChars] };
+                                        cellLines[i] = new[] { cellText[..clipFitChars] };
                                 }
-                                else if (!shouldClip && fitChars < cellText.Length && columns.Length == 1)
+                                else if (!shouldClip && clipFitChars < cellText.Length && columns.Length == 1)
                                 {
                                     // Single-column overflow: clip text at page right edge.
                                     // LibreOffice calculates row height from text wrapping at the default
@@ -1415,7 +1471,9 @@ internal static class ExcelToPdfConverter
             // do not expand it even when content (large fonts / wrap) would exceed it.
             var isCustomHeight = hasExplicitHeight && sheet.CustomHeightRows.Contains(excelRowIndex);
             var rowHeight = hasExplicitHeight
-                ? (isCustomHeight ? explicitRowHeight : Math.Max(explicitRowHeight, contentHeight))
+                ? (isCustomHeight
+                    ? explicitRowHeight
+                    : (anyWrapText ? explicitRowHeight : Math.Max(explicitRowHeight, contentHeight)))
                 : contentHeight;
             var usablePageHeight = pageHeight - options.MarginTop - options.MarginBottom;
 
@@ -1466,14 +1524,15 @@ internal static class ExcelToPdfConverter
                                 if (mpAlignment == "right")
                                 {
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
-                                    textX = x + mpCellWidth - tw;
+                                    textX = Math.Max(x, x + mpCellWidth - tw - 0.75f);
                                 }
                                 else if (mpAlignment == "center")
                                 {
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
                                     textX = x + (mpCellWidth - tw) / 2f;
                                 }
-                                currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color);
+                                currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color,
+                                    bold: col < row.Count && row[col].Bold);
                             }
                             cellY -= lineHeight;
                         }
@@ -1651,7 +1710,7 @@ internal static class ExcelToPdfConverter
                         if (alignment == "right")
                         {
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
-                            textX = x + cellWidth - textWidth;
+                            textX = Math.Max(x, x + cellWidth - textWidth - 0.75f);
                         }
                         else if (alignment == "center")
                         {
@@ -1659,10 +1718,11 @@ internal static class ExcelToPdfConverter
                             textX = x + (cellWidth - textWidth) / 2f;
                         }
                         var cellClip = cellClipWidth[i].HasValue
-                            ? ((float, float, float, float)?)(x, cellY - cellFontSize, cellClipWidth[i]!.Value, cellFontSize * 3)
+                            ? ((float, float, float, float)?)(x, cellY - cellFontSize, cellClipWidth[i]!.Value + 1.5f, cellFontSize * 3)
                             : null;
                         currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color,
-                            clipRect: cellClip);
+                            clipRect: cellClip,
+                            bold: cell?.Bold ?? false);
                     }
                     cellY -= lineHeight;
                 }
@@ -1760,38 +1820,78 @@ internal static class ExcelToPdfConverter
             // Fallback: derive from spanCols × column widths and spanRows × lineHeight,
             // adjusting for sub-cell offsets (fromColOff / toColOff) in twoCellAnchor.
             float imgRenderWidth, imgRenderHeight;
-            if (img.WidthEmu > 0 && img.HeightEmu > 0)
+            var hasCrop = img.CropLeft > 0f || img.CropTop > 0f || img.CropRight > 0f || img.CropBottom > 0f;
+            if (hasCrop && img.WidthEmu > 0 && img.HeightEmu > 0)
             {
                 imgRenderWidth  = Math.Min(img.WidthEmu  * EmuToPt, usableWidth * 0.95f);
                 imgRenderHeight = Math.Min(img.HeightEmu * EmuToPt, pageHeight  * 0.75f);
             }
             else
             {
-                // First column: only the portion after fromColOff
-                imgRenderWidth = Math.Max(0, colWidths[colGroupIdx] - fromColOffPt);
-                // Middle columns (full width + padding)
-                for (var ci = colGroupIdx + 1; ci < Math.Min(colGroupIdx + img.SpanCols, columns.Length); ci++)
-                    imgRenderWidth += colWidths[ci] + columnPadding;
-                // "To" column: add toColOff portion if the to-column is within the group
-                var toColGroupIdx = colGroupIdx + img.SpanCols;
-                if (toColGroupIdx < columns.Length && img.ToColOffEmu > 0)
+                if (hasCrop)
                 {
-                    var toColOffPt = Math.Min(img.ToColOffEmu * EmuToPt, colWidths[toColGroupIdx]);
-                    imgRenderWidth += toColOffPt + columnPadding;
+                    var toCol = img.ToCol >= img.AnchorCol ? img.ToCol : img.AnchorCol + img.SpanCols;
+                    var toColGroupIdx = Array.IndexOf(columns, toCol);
+                    if (toCol == img.AnchorCol && img.ToColOffEmu > img.FromColOffEmu)
+                    {
+                        imgRenderWidth = Math.Max(0f, (img.ToColOffEmu - img.FromColOffEmu) * EmuToPt);
+                    }
+                    else
+                    {
+                        imgRenderWidth = Math.Max(0, colWidths[colGroupIdx] - fromColOffPt);
+                        for (var ci = colGroupIdx + 1; ci < columns.Length && columns[ci] < toCol; ci++)
+                            imgRenderWidth += colWidths[ci] + columnPadding;
+                        if (toColGroupIdx >= 0)
+                            imgRenderWidth += Math.Min(img.ToColOffEmu * EmuToPt, colWidths[toColGroupIdx]);
+                    }
+                }
+                else
+                {
+                    imgRenderWidth = Math.Max(0, colWidths[colGroupIdx] - fromColOffPt);
+                    for (var ci = colGroupIdx + 1; ci < Math.Min(colGroupIdx + img.SpanCols, columns.Length); ci++)
+                        imgRenderWidth += colWidths[ci] + columnPadding;
+                    var toColGroupIdx = colGroupIdx + img.SpanCols;
+                    if (toColGroupIdx < columns.Length && img.ToColOffEmu > 0)
+                    {
+                        var toColOffPt = Math.Min(img.ToColOffEmu * EmuToPt, colWidths[toColGroupIdx]);
+                        imgRenderWidth += toColOffPt + columnPadding;
+                    }
                 }
                 imgRenderWidth  = Math.Min(Math.Max(imgRenderWidth, 36f), usableWidth * 0.8f);
 
-                // Height: sum actual row heights for the spanned rows
-                imgRenderHeight = 0;
+                // Height: exact from/to anchor geometry (handles same-row anchors correctly)
                 var printScale = (sheet.PrintScale > 0 && sheet.PrintScale != 100) ? sheet.PrintScale / 100f : 1f;
                 var rowScale = printScale * fitToPageScale;
-                for (var ri = img.AnchorRow; ri < img.AnchorRow + img.SpanRows; ri++)
+                if (hasCrop)
                 {
-                    imgRenderHeight += (sheet.RowHeights.TryGetValue(ri, out var rh) ? rh : lineHeight / rowScale) * rowScale;
+                    var toRow = img.ToRow >= img.AnchorRow ? img.ToRow : img.AnchorRow + img.SpanRows;
+                    float GetScaledRowH(int ri)
+                    {
+                        var baseRh = sheet.RowHeights.TryGetValue(ri, out var rh) ? rh : lineHeight / Math.Max(rowScale, 0.0001f);
+                        return baseRh * rowScale;
+                    }
+                    if (toRow == img.AnchorRow && img.ToRowOffEmu > img.FromRowOffEmu)
+                    {
+                        imgRenderHeight = Math.Max(0f, (img.ToRowOffEmu - img.FromRowOffEmu) * EmuToPt);
+                    }
+                    else
+                    {
+                        imgRenderHeight = Math.Max(0f, GetScaledRowH(img.AnchorRow) - fromRowOffPt);
+                        for (var ri = img.AnchorRow + 1; ri < toRow; ri++)
+                            imgRenderHeight += GetScaledRowH(ri);
+                        imgRenderHeight += img.ToRowOffEmu * EmuToPt;
+                    }
                 }
-                // Adjust for sub-cell row offsets
-                imgRenderHeight -= fromRowOffPt;
-                imgRenderHeight += img.ToRowOffEmu * EmuToPt;
+                else
+                {
+                    imgRenderHeight = 0;
+                    for (var ri = img.AnchorRow; ri < img.AnchorRow + img.SpanRows; ri++)
+                    {
+                        imgRenderHeight += (sheet.RowHeights.TryGetValue(ri, out var rh) ? rh : lineHeight / rowScale) * rowScale;
+                    }
+                    imgRenderHeight -= fromRowOffPt;
+                    imgRenderHeight += img.ToRowOffEmu * EmuToPt;
+                }
                 imgRenderHeight = Math.Min(Math.Max(imgRenderHeight, 36f), pageHeight * 0.5f);
             }
 
@@ -1801,7 +1901,8 @@ internal static class ExcelToPdfConverter
                 imgY = options.MarginBottom;
 
             var format = img.Extension is "jpg" or "jpeg" ? "jpg" : "png";
-            imgPage.AddImage(img.Data, format, imgX, imgY, imgRenderWidth, imgRenderHeight);
+            var (drawX, drawY, drawW, drawH, clipRect) = ApplyImageCrop(img, imgX, imgY, imgRenderWidth, imgRenderHeight);
+            imgPage.AddImage(img.Data, format, drawX, drawY, drawW, drawH, clipRect);
         }
 
         // Render charts as actual visual elements
@@ -1920,6 +2021,30 @@ internal static class ExcelToPdfConverter
         {
             doc.AddPage(pageWidth, pageHeight);
         }
+    }
+
+    private static (float drawX, float drawY, float drawW, float drawH, (float X, float Y, float Width, float Height)? clipRect)
+        ApplyImageCrop(ExcelEmbeddedImage img, float x, float y, float width, float height)
+    {
+        var l = Math.Clamp(img.CropLeft, 0f, 0.99f);
+        var t = Math.Clamp(img.CropTop, 0f, 0.99f);
+        var r = Math.Clamp(img.CropRight, 0f, 0.99f);
+        var b = Math.Clamp(img.CropBottom, 0f, 0.99f);
+        var croppedW = 1f - l - r;
+        var croppedH = 1f - t - b;
+
+        if (croppedW <= 0.001f || croppedH <= 0.001f)
+            return (x, y, width, height, null);
+
+        if (l == 0f && t == 0f && r == 0f && b == 0f)
+            return (x, y, width, height, null);
+
+        var drawW = width / croppedW;
+        var drawH = height / croppedH;
+        var drawX = x - l * drawW;
+        var drawY = y - b * drawH;
+        var clipRect = (x, y, width, height);
+        return (drawX, drawY, drawW, drawH, clipRect);
     }
 
     /// <summary>Standard chart color palette (matches common spreadsheet defaults).</summary>
@@ -2961,6 +3086,7 @@ internal static class ExcelToPdfConverter
 
     /// <summary>
     /// Maps OOXML border style names to PDF line widths (in points).
+    /// </summary>
     private static float BorderStyleWidth(string style) => style switch
     {
         "thick" => 1.5f,

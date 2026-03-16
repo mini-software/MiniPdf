@@ -501,6 +501,15 @@ internal sealed class PdfWriter
             var w = img.RenderWidth.ToString("F3", CultureInfo.InvariantCulture);
             var h = img.RenderHeight.ToString("F3", CultureInfo.InvariantCulture);
             sb.Append("q\n");
+            if (img.ClipRect.HasValue)
+            {
+                var cr = img.ClipRect.Value;
+                var cx = cr.X.ToString("F3", CultureInfo.InvariantCulture);
+                var cy = cr.Y.ToString("F3", CultureInfo.InvariantCulture);
+                var cw = cr.Width.ToString("F3", CultureInfo.InvariantCulture);
+                var ch = cr.Height.ToString("F3", CultureInfo.InvariantCulture);
+                sb.Append($"{cx} {cy} {cw} {ch} re W n\n");
+            }
             sb.Append($"{w} 0 0 {h} {x} {y} cm\n");
             sb.Append($"/Im{idx} Do\n");
             sb.Append("Q\n");
