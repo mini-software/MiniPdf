@@ -550,6 +550,9 @@ internal sealed class PdfWriter
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
                 sb.Append($"/{fontName} {fontSize} Tf\n");
+                // Apply word spacing (Tw) for justified text
+                if (block.WordSpacing != 0)
+                    sb.Append($"{block.WordSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tw\n");
                 // Apply character spacing (Tc)
                 if (block.CharSpacing != 0)
                     sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
@@ -578,6 +581,9 @@ internal sealed class PdfWriter
                 // emit each run with the appropriate Fn, using Td to advance.
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
+                // Apply word spacing (Tw) for justified text
+                if (block.WordSpacing != 0)
+                    sb.Append($"{block.WordSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tw\n");
                 // Apply character spacing (Tc)
                 if (block.CharSpacing != 0)
                     sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");

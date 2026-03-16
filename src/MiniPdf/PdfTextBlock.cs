@@ -62,7 +62,13 @@ internal sealed class PdfTextBlock
     /// </summary>
     public float CharSpacing { get; }
 
-    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0)
+    /// <summary>
+    /// Word spacing in points (PDF Tw operator). 0 means default.
+    /// Used for justified text to distribute extra space between words.
+    /// </summary>
+    public float WordSpacing { get; }
+
+    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0)
     {
         Text = text;
         X = x;
@@ -74,5 +80,6 @@ internal sealed class PdfTextBlock
         Bold = bold;
         Underline = underline;
         CharSpacing = charSpacing;
+        WordSpacing = wordSpacing;
     }
 }
