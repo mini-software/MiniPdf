@@ -54,7 +54,7 @@ internal static class DocxReader
         var relationships = ReadRelationships(archive);
 
         // Read styles
-        var styles = ReadStyles(archive);
+        var (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName) = ReadStyles(archive);
 
         // Read numbering definitions (for list bullets/numbers)
         var numbering = ReadNumbering(archive);
@@ -80,8 +80,13 @@ internal static class DocxReader
         {
             if (child.Name == W + "p")
             {
+                var runNodes = child.Elements(W + "r").ToList();
+                var allRunsHostTextBox = runNodes.Count > 0
+                    && runNodes.All(r => r.Descendants(W + "txbxContent").Any());
+
                 // Extract text box paragraphs from anchor drawings (before the containing paragraph)
                 float textBoxSpacing = 0;
+                bool emittedVisibleTextBoxParagraph = false;
                 foreach (var anchor in child.Descendants(WP + "anchor"))
                 {
                     var txbx = anchor.Descendants(WPS + "txbx").FirstOrDefault();
@@ -106,16 +111,67 @@ internal static class DocxReader
                     if (extent != null && long.TryParse(extent.Attribute("cy")?.Value, out var cy))
                         extentHeightPt = cy / 914400f * 72f;
 
+                    // Read text box outline (border) from shape properties
+                    DocxTextBoxBorder? textBoxBorder = null;
+                    var wsp = anchor.Descendants(WPS + "wsp").FirstOrDefault();
+                    if (wsp != null)
+                    {
+                        var spPr = wsp.Element(WPS + "spPr") ?? wsp.Element(A + "spPr");
+                        var ln = spPr?.Element(A + "ln");
+                        if (ln != null)
+                        {
+                            var lnFill = ln.Element(A + "solidFill");
+                            if (lnFill != null)
+                            {
+                                var lnSrgb = lnFill.Element(A + "srgbClr")?.Attribute("val")?.Value;
+                                var lnColor = !string.IsNullOrEmpty(lnSrgb) ? PdfColor.FromHex(lnSrgb) : new PdfColor(0, 0, 0);
+                                float lnWidth = 0.5f; // default
+                                if (int.TryParse(ln.Attribute("w")?.Value, out var lnW))
+                                    lnWidth = lnW / 914400f * 72f;
+                                if (lnWidth < 0.25f) lnWidth = 0.5f;
+
+                                // Box position and size
+                                float boxXPt = 0;
+                                var posH = anchor.Element(WP + "positionH");
+                                if (posH != null)
+                                {
+                                    var off = posH.Element(WP + "posOffset");
+                                    if (off != null && long.TryParse(off.Value, out var hEmu))
+                                        boxXPt = hEmu / 914400f * 72f;
+                                }
+                                float boxWidthPt = extent != null && long.TryParse(extent.Attribute("cx")?.Value, out var cxEmu)
+                                    ? cxEmu / 914400f * 72f : 0;
+                                float boxHeightPt = extentHeightPt;
+
+                                textBoxBorder = new DocxTextBoxBorder(lnWidth, lnColor, boxXPt, boxWidthPt, boxHeightPt, anchorOffsetPt);
+                            }
+                        }
+                    }
+
                     bool firstContent = true;
                     foreach (var tp in txbxContent.Elements(W + "p"))
                     {
                         var tbPara = ReadParagraph(tp, styles, numbering, relationships, archive, themeColors);
-                        if (tbPara != null && tbPara.Runs.Count > 0)
+                        if (tbPara != null)
                         {
-                            if (firstContent && anchorOffsetPt > 0)
+                            var hasVisibleContent = tbPara.Images.Count > 0
+                                || tbPara.Shading != null
+                                || tbPara.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text));
+
+                            // Word textbox content often carries large paragraph indents that
+                            // behave like internal margins, not flow indents. Keeping them as
+                            // normal paragraph indents can over-constrain wrap width.
+                            tbPara = tbPara with { IndentLeft = 0, IndentRight = 0, IndentFirstLine = 0 };
+
+                            if (firstContent && hasVisibleContent && anchorOffsetPt > 0)
                                 tbPara = tbPara with { SpacingBefore = tbPara.SpacingBefore + anchorOffsetPt, ForceSpacingBefore = true };
+                            if (firstContent && hasVisibleContent && textBoxBorder != null)
+                                tbPara = tbPara with { TextBoxBorder = textBoxBorder };
                             elements.Add(tbPara);
-                            firstContent = false;
+                            if (hasVisibleContent)
+                                emittedVisibleTextBoxParagraph = true;
+                            if (hasVisibleContent)
+                                firstContent = false;
                         }
                     }
                     // For wrapTopAndBottom, the text box height displaces subsequent content
@@ -126,6 +182,12 @@ internal static class DocxReader
                 var paragraph = ReadParagraph(child, styles, numbering, relationships, archive, themeColors);
                 if (paragraph != null)
                 {
+                    // Host paragraphs for anchored textboxes may contain synthetic fallback
+                    // runs that duplicate textbox text; skip these when textbox content
+                    // was already emitted as standalone paragraphs.
+                    if (emittedVisibleTextBoxParagraph && allRunsHostTextBox)
+                        continue;
+
                     // Add text box displacement as SpacingBefore on the containing paragraph
                     if (textBoxSpacing > 0)
                     {
@@ -160,8 +222,11 @@ internal static class DocxReader
         var footerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "footerReference");
         var headerShapes = ReadHeaderFooterShapes(body, relationships, archive, "headerReference", themeColors);
         var footerShapes = ReadHeaderFooterShapes(body, relationships, archive, "footerReference", themeColors);
+        var headerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "headerReference");
+        var footerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "footerReference");
 
-        return new DocxDocument(elements, pageLayout, headerText, footerText, headerShapes, footerShapes);
+        return new DocxDocument(elements, pageLayout, headerText, footerText, headerShapes, footerShapes, headerRuns, footerRuns,
+            defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -265,6 +330,17 @@ internal static class DocxReader
                         isNumberedList = true;
                         numDef.Counter++;
                         listText = numDef.FormatListText(listLevel);
+                    }
+
+                    // Apply numbering level indentation as fallback per-property
+                    // (paragraph ind may specify hanging but not left, or vice versa)
+                    var lvlDef = numDef.Levels.FirstOrDefault(l => l.Ilvl == listLevel) ?? numDef.Levels.FirstOrDefault();
+                    if (lvlDef != null)
+                    {
+                        if (indentLeft == 0 && lvlDef.IndentLeft > 0)
+                            indentLeft = lvlDef.IndentLeft;
+                        if (indentFirstLine == 0 && lvlDef.Hanging > 0)
+                            indentFirstLine = -lvlDef.Hanging;
                     }
                 }
             }
@@ -458,6 +534,11 @@ internal static class DocxReader
 
     private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor, bool parentCaps = false, float parentCharSpacing = 0)
     {
+        // Textbox content is parsed separately from w:txbxContent paragraphs.
+        // Skip host runs that carry textbox payload to avoid duplicate/garbled flow text.
+        if (rElement.Descendants(W + "txbxContent").Any())
+            return null;
+
         var rPr = rElement.Element(W + "rPr");
         var bold = parentBold;
         var italic = parentItalic;
@@ -1091,6 +1172,42 @@ internal static class DocxReader
         return texts.Count > 0 ? string.Join("\n", texts) : null;
     }
 
+    private static List<DocxRun>? ReadHeaderFooterRuns(XElement body, Dictionary<string, string> relationships,
+        ZipArchive archive, Dictionary<string, DocxStyleInfo> styles, Dictionary<string, DocxNumberingDef> numbering,
+        string refElementName)
+    {
+        var sectPr = body.Element(W + "sectPr");
+        if (sectPr == null) return null;
+
+        var hfRef = sectPr.Element(W + refElementName);
+        if (hfRef == null) return null;
+
+        var rId = hfRef.Attribute(R + "id")?.Value;
+        if (string.IsNullOrEmpty(rId) || !relationships.TryGetValue(rId, out var target))
+            return null;
+
+        var path = target.StartsWith("/") ? target.TrimStart('/') : "word/" + target;
+        var entry = archive.GetEntry(path);
+        if (entry == null) return null;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+
+        var allRuns = new List<DocxRun>();
+        foreach (var p in doc.Descendants(W + "p"))
+        {
+            var para = ReadParagraph(p, styles, numbering, relationships, archive);
+            if (para != null && para.Runs.Count > 0)
+            {
+                if (allRuns.Count > 0)
+                    allRuns.Add(new DocxRun("\n", false, false, 0, null));
+                allRuns.AddRange(para.Runs);
+            }
+        }
+
+        return allRuns.Count > 0 ? allRuns : null;
+    }
+
     private static List<DocxShape> ReadHeaderFooterShapes(
         XElement body,
         Dictionary<string, string> relationships,
@@ -1153,8 +1270,22 @@ internal static class DocxReader
             if (float.TryParse(pgMar.Attribute(W + "right")?.Value, out var mr)) marginRight = mr * twipsToPoints;
         }
 
-        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight);
+        // Parse document grid for CJK line snapping
+        float gridLinePitch = 0;
+        var docGrid = sectPr.Element(W + "docGrid");
+        if (docGrid != null)
+        {
+            var gridType = docGrid.Attribute(W + "type")?.Value;
+            if (gridType is "lines" or "linesAndChars" or "snapToChars")
+            {
+                if (float.TryParse(docGrid.Attribute(W + "linePitch")?.Value, out var lp) && lp > 0)
+                    gridLinePitch = lp * twipsToPoints;
+            }
+        }
+
+        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch);
     }
+
 
     private static Dictionary<string, string> ReadRelationships(ZipArchive archive)
     {
@@ -1176,11 +1307,11 @@ internal static class DocxReader
         return rels;
     }
 
-    private static Dictionary<string, DocxStyleInfo> ReadStyles(ZipArchive archive)
+    private static (Dictionary<string, DocxStyleInfo> Styles, float DefaultLineSpacing, bool DefaultLineSpacingAbsolute, string? DefaultFontName) ReadStyles(ZipArchive archive)
     {
         var styles = new Dictionary<string, DocxStyleInfo>();
         var entry = archive.GetEntry("word/styles.xml");
-        if (entry == null) return styles;
+        if (entry == null) return (styles, 0, false, null);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -1190,6 +1321,7 @@ internal static class DocxReader
         float defaultSpacingAfter = -1;
         float defaultSpacingBefore = 0;
         float defaultLineSpacing = 0;
+        bool defaultLineSpacingAbsolute = false;
 
         var docDefaults = doc.Descendants(W + "docDefaults").FirstOrDefault();
         if (docDefaults != null)
@@ -1215,7 +1347,8 @@ internal static class DocxReader
                     if (int.TryParse(spacing.Attribute(W + "line")?.Value, out var sl))
                     {
                         var lineRule = spacing.Attribute(W + "lineRule")?.Value;
-                        defaultLineSpacing = (lineRule == "exact" || lineRule == "atLeast")
+                        defaultLineSpacingAbsolute = lineRule == "exact" || lineRule == "atLeast";
+                        defaultLineSpacing = defaultLineSpacingAbsolute
                             ? sl / 20f : sl / 240f;
                     }
                 }
@@ -1310,7 +1443,27 @@ internal static class DocxReader
             styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2);
         }
 
-        return styles;
+        // Extract default font name from Normal style or docDefaults
+        string? defaultFontName = null;
+        foreach (var style in styleElements)
+        {
+            var sid = style.Attribute(W + "styleId")?.Value;
+            if (sid == "Normal" || style.Attribute(W + "default")?.Value == "1")
+            {
+                var rFonts = style.Element(W + "rPr")?.Element(W + "rFonts");
+                if (rFonts != null)
+                    defaultFontName = rFonts.Attribute(W + "ascii")?.Value;
+                break;
+            }
+        }
+        if (defaultFontName == null && docDefaults != null)
+        {
+            var rFonts = docDefaults.Element(W + "rPrDefault")?.Element(W + "rPr")?.Element(W + "rFonts");
+            if (rFonts != null)
+                defaultFontName = rFonts.Attribute(W + "ascii")?.Value;
+        }
+
+        return (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName);
     }
 
     private static Dictionary<string, DocxNumberingDef> ReadNumbering(ZipArchive archive)
@@ -1336,7 +1489,17 @@ internal static class DocxReader
                 var numFmt = lvl.Element(W + "numFmt")?.Attribute(W + "val")?.Value ?? "decimal";
                 var lvlText = lvl.Element(W + "lvlText")?.Attribute(W + "val")?.Value ?? "%1.";
                 var startVal = int.TryParse(lvl.Element(W + "start")?.Attribute(W + "val")?.Value, out var sv) ? sv : 1;
-                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal));
+                // Read level indentation (pPr/ind) for hanging indent support
+                float lvlIndentLeft = 0, lvlHanging = 0;
+                var lvlInd = lvl.Element(W + "pPr")?.Element(W + "ind");
+                if (lvlInd != null)
+                {
+                    if (int.TryParse(lvlInd.Attribute(W + "left")?.Value, out var li))
+                        lvlIndentLeft = li / 20f;
+                    if (int.TryParse(lvlInd.Attribute(W + "hanging")?.Value, out var lh))
+                        lvlHanging = lh / 20f;
+                }
+                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal, lvlIndentLeft, lvlHanging));
             }
             abstractDefs[absId] = levels;
         }
@@ -1369,7 +1532,12 @@ internal sealed record DocxDocument(
     string? HeaderText = null,
     string? FooterText = null,
     List<DocxShape>? HeaderShapes = null,
-    List<DocxShape>? FooterShapes = null
+    List<DocxShape>? FooterShapes = null,
+    List<DocxRun>? HeaderRuns = null,
+    List<DocxRun>? FooterRuns = null,
+    float DefaultLineSpacing = 0,
+    bool DefaultLineSpacingAbsolute = false,
+    string? DefaultFontName = null
 );
 
 /// <summary>Page layout settings from sectPr.</summary>
@@ -1379,7 +1547,8 @@ internal sealed record DocxPageLayout(
     float MarginTop = 72,
     float MarginBottom = 72,
     float MarginLeft = 72,
-    float MarginRight = 72
+    float MarginRight = 72,
+    float GridLinePitch = 0
 );
 
 /// <summary>Base type for document elements (paragraphs, tables).</summary>
@@ -1413,7 +1582,8 @@ internal sealed record DocxParagraph(
     DocxPageLayout? SectionBreak = null,
     DocxBorders? Borders = null,
     List<DocxShape>? Shapes = null,
-    bool ForceSpacingBefore = false
+    bool ForceSpacingBefore = false,
+    DocxTextBoxBorder? TextBoxBorder = null
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>
@@ -1458,6 +1628,16 @@ internal sealed record DocxImage(
     bool IsAnchor = false,
     long OffsetXEmu = 0,
     long OffsetYEmu = 0
+);
+
+/// <summary>Represents a text box outline border (rectangle drawn around text box content).</summary>
+internal sealed record DocxTextBoxBorder(
+    float LineWidth,
+    PdfColor Color,
+    float BoxXPt,
+    float BoxWidthPt,
+    float BoxHeightPt,
+    float VerticalOffsetPt
 );
 
 /// <summary>Represents an anchor shape (filled rectangle or frame).</summary>
@@ -1558,4 +1738,4 @@ internal sealed class DocxNumberingDef
     }
 }
 
-internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start);
+internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start, float IndentLeft = 0, float Hanging = 0);
