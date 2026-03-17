@@ -19,6 +19,7 @@ import base64
 import difflib
 import json
 import os
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -93,6 +94,11 @@ def _make_openai_client():
 
 
 AI_CLIENT, AI_MODEL = _make_openai_client()
+
+
+def natural_sort_key(text: str):
+    """Sort strings in human order, e.g. case2 < case10."""
+    return [int(part) if part.isdigit() else part.lower() for part in re.split(r"(\d+)", text)]
 
 _AI_SYSTEM_PROMPT = """\
 You are an expert PDF rendering quality analyst.
@@ -869,6 +875,7 @@ def main():
     images_dir = os.path.join(report_dir, "images")
 
     os.makedirs(report_dir, exist_ok=True)
+    json_path = os.path.join(report_dir, "comparison_report.json")
 
     # ── Report-only mode: regenerate MD from existing JSON ─────────────────
     if args.report_only:
@@ -913,8 +920,22 @@ def main():
         print("  3. python generate_reference_pdfs.py      (generate reference PDFs)")
         sys.exit(1)
 
+    filtered_mode = bool(args.filter)
+    existing_results_by_name = {}
+    if filtered_mode and os.path.isfile(json_path):
+        try:
+            with open(json_path, encoding="utf-8") as jf:
+                existing_results = json.load(jf)
+            if isinstance(existing_results, list):
+                for r in existing_results:
+                    if isinstance(r, dict) and r.get("name"):
+                        existing_results_by_name[r["name"]] = r
+            print(f"Filtered comparison mode: loaded {len(existing_results_by_name)} existing results to preserve.")
+        except Exception as e:
+            print(f"WARNING: Failed to load existing report for merge: {e}")
+
     results = []
-    for name in sorted(names):
+    for name in sorted(names, key=natural_sort_key):
         mp = os.path.join(minipdf_dir, f"{name}.pdf")
         rp = os.path.join(reference_dir, f"{name}.pdf")
         op = os.path.join(office_dir, f"{name}.pdf") if office_dir else None
@@ -930,12 +951,46 @@ def main():
         print(f"score={score}")
         results.append(result)
 
-    generate_report(results, report_dir)
+    final_results = results
+    if filtered_mode and existing_results_by_name:
+        for r in results:
+            existing_results_by_name[r["name"]] = r
+        # Keep historical order from existing report; only update touched cases.
+        existing_order = []
+        try:
+            with open(json_path, encoding="utf-8") as jf:
+                existing_results = json.load(jf)
+            if isinstance(existing_results, list):
+                existing_order = [r.get("name") for r in existing_results if isinstance(r, dict) and r.get("name")]
+        except Exception:
+            existing_order = []
+
+        final_results = []
+        seen = set()
+        for name in existing_order:
+            if name in existing_results_by_name and name not in seen:
+                final_results.append(existing_results_by_name[name])
+                seen.add(name)
+
+        # Append newly introduced names (if any) using natural order.
+        for name in sorted(existing_results_by_name.keys(), key=natural_sort_key):
+            if name not in seen:
+                final_results.append(existing_results_by_name[name])
+                seen.add(name)
+        print(
+            f"Merged filtered results: updated {len(results)} case(s), "
+            f"preserved {len(final_results) - len(results)} existing case(s)."
+        )
+    else:
+        final_results = sorted(final_results, key=lambda r: natural_sort_key(r.get("name", "")))
+
+    generate_report(final_results, report_dir)
 
     # Print summary
-    avg = sum(r.get("overall_score", 0) for r in results) / len(results) if results else 0
+    avg = sum(r.get("overall_score", 0) for r in final_results) / len(final_results) if final_results else 0
     print(f"\n{'='*60}")
     print(f"Overall Average Score: {avg:.4f}")
+    print(f"Total Cases In Report: {len(final_results)}")
     print(f"{'='*60}")
 
     if avg < 0.7:

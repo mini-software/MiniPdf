@@ -474,6 +474,105 @@ internal sealed class PdfWriter
             sb.Append("f\n");
         }
 
+        // Draw filled ellipses
+        foreach (var ellipse in page.EllipseBlocks)
+        {
+            // Cubic Bezier approximation constant for a quarter circle.
+            const double k = 0.5522847498307936;
+
+            var ex = ellipse.X;
+            var ey = ellipse.Y;
+            var ew = ellipse.Width;
+            var eh = ellipse.Height;
+            var cx = ex + ew / 2f;
+            var cy = ey + eh / 2f;
+            var rx = ew / 2f;
+            var ry = eh / 2f;
+
+            var rr = ellipse.FillColor.R.ToString("F3", CultureInfo.InvariantCulture);
+            var rg2 = ellipse.FillColor.G.ToString("F3", CultureInfo.InvariantCulture);
+            var rb = ellipse.FillColor.B.ToString("F3", CultureInfo.InvariantCulture);
+            sb.Append($"{rr} {rg2} {rb} rg\n");
+
+            var p0x = (cx + rx).ToString("F3", CultureInfo.InvariantCulture);
+            var p0y = cy.ToString("F3", CultureInfo.InvariantCulture);
+            var c1x = (cx + rx).ToString("F3", CultureInfo.InvariantCulture);
+            var c1y = (cy + ry * k).ToString("F3", CultureInfo.InvariantCulture);
+            var c2x = (cx + rx * k).ToString("F3", CultureInfo.InvariantCulture);
+            var c2y = (cy + ry).ToString("F3", CultureInfo.InvariantCulture);
+            var p1x = cx.ToString("F3", CultureInfo.InvariantCulture);
+            var p1y = (cy + ry).ToString("F3", CultureInfo.InvariantCulture);
+
+            var c3x = (cx - rx * k).ToString("F3", CultureInfo.InvariantCulture);
+            var c3y = (cy + ry).ToString("F3", CultureInfo.InvariantCulture);
+            var c4x = (cx - rx).ToString("F3", CultureInfo.InvariantCulture);
+            var c4y = (cy + ry * k).ToString("F3", CultureInfo.InvariantCulture);
+            var p2x = (cx - rx).ToString("F3", CultureInfo.InvariantCulture);
+            var p2y = cy.ToString("F3", CultureInfo.InvariantCulture);
+
+            var c5x = (cx - rx).ToString("F3", CultureInfo.InvariantCulture);
+            var c5y = (cy - ry * k).ToString("F3", CultureInfo.InvariantCulture);
+            var c6x = (cx - rx * k).ToString("F3", CultureInfo.InvariantCulture);
+            var c6y = (cy - ry).ToString("F3", CultureInfo.InvariantCulture);
+            var p3x = cx.ToString("F3", CultureInfo.InvariantCulture);
+            var p3y = (cy - ry).ToString("F3", CultureInfo.InvariantCulture);
+
+            var c7x = (cx + rx * k).ToString("F3", CultureInfo.InvariantCulture);
+            var c7y = (cy - ry).ToString("F3", CultureInfo.InvariantCulture);
+            var c8x = (cx + rx).ToString("F3", CultureInfo.InvariantCulture);
+            var c8y = (cy - ry * k).ToString("F3", CultureInfo.InvariantCulture);
+
+            sb.Append($"{p0x} {p0y} m\n");
+            sb.Append($"{c1x} {c1y} {c2x} {c2y} {p1x} {p1y} c\n");
+            sb.Append($"{c3x} {c3y} {c4x} {c4y} {p2x} {p2y} c\n");
+            sb.Append($"{c5x} {c5y} {c6x} {c6y} {p3x} {p3y} c\n");
+            sb.Append($"{c7x} {c7y} {c8x} {c8y} {p0x} {p0y} c\n");
+            sb.Append("f\n");
+        }
+
+        // Draw filled polygons
+        foreach (var polygon in page.PolygonBlocks)
+        {
+            var rr = polygon.FillColor.R.ToString("F3", CultureInfo.InvariantCulture);
+            var rg2 = polygon.FillColor.G.ToString("F3", CultureInfo.InvariantCulture);
+            var rb = polygon.FillColor.B.ToString("F3", CultureInfo.InvariantCulture);
+            sb.Append($"{rr} {rg2} {rb} rg\n");
+
+            if (polygon.Subpaths is { Count: > 0 })
+            {
+                foreach (var subpath in polygon.Subpaths)
+                {
+                    if (subpath.Count < 3)
+                        continue;
+
+                    var first = subpath[0];
+                    sb.Append($"{first.X.ToString("F3", CultureInfo.InvariantCulture)} {first.Y.ToString("F3", CultureInfo.InvariantCulture)} m\n");
+                    for (var i = 1; i < subpath.Count; i++)
+                    {
+                        var p = subpath[i];
+                        sb.Append($"{p.X.ToString("F3", CultureInfo.InvariantCulture)} {p.Y.ToString("F3", CultureInfo.InvariantCulture)} l\n");
+                    }
+                    sb.Append("h\n");
+                }
+
+                sb.Append(polygon.EvenOddFill ? "f*\n" : "f\n");
+                continue;
+            }
+
+            if (polygon.Points.Count < 3)
+                continue;
+
+            var firstPt = polygon.Points[0];
+            sb.Append($"{firstPt.X.ToString("F3", CultureInfo.InvariantCulture)} {firstPt.Y.ToString("F3", CultureInfo.InvariantCulture)} m\n");
+            for (var i = 1; i < polygon.Points.Count; i++)
+            {
+                var p = polygon.Points[i];
+                sb.Append($"{p.X.ToString("F3", CultureInfo.InvariantCulture)} {p.Y.ToString("F3", CultureInfo.InvariantCulture)} l\n");
+            }
+            sb.Append("h\n");
+            sb.Append("f\n");
+        }
+
         // Draw line segments
         foreach (var line in page.LineBlocks)
         {

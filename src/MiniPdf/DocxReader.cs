@@ -19,6 +19,7 @@ internal static class DocxReader
     private static readonly XNamespace PIC = "http://schemas.openxmlformats.org/drawingml/2006/picture";
     private static readonly XNamespace REL = "http://schemas.openxmlformats.org/package/2006/relationships";
     private static readonly XNamespace WPS = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape";
+    private static readonly XNamespace WPG = "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup";
 
     /// <summary>
     /// Unwraps SDT (Structured Document Tag) elements by replacing them with their sdtContent children.
@@ -240,7 +241,7 @@ internal static class DocxReader
         // Read paragraph properties
         var pPr = pElement.Element(W + "pPr");
         var alignment = "left";
-        float spacingBefore = 0;
+        float spacingBefore = -1;
         float spacingAfter = -1;
         float lineSpacing = 0;
         bool lineSpacingAbsolute = false;
@@ -411,6 +412,7 @@ internal static class DocxReader
 
         // Apply style defaults (fall back to Normal style if no explicit style)
         var effectiveStyleId = !string.IsNullOrEmpty(styleId) ? styleId : "Normal";
+        bool contextualSpacing = false;
         if (styles.TryGetValue(effectiveStyleId, out var styleInfo))
         {
             if (fontSize == 0) fontSize = styleInfo.FontSize;
@@ -420,9 +422,15 @@ internal static class DocxReader
             if (color == null) color = styleInfo.Color;
             if (alignment == "left" && !string.IsNullOrEmpty(styleInfo.Alignment))
                 alignment = styleInfo.Alignment;
-            if (spacingBefore == 0) spacingBefore = styleInfo.SpacingBefore;
+            if (spacingBefore < 0) spacingBefore = styleInfo.SpacingBefore;
             if (spacingAfter < 0) spacingAfter = styleInfo.SpacingAfter;
+            contextualSpacing = styleInfo.ContextualSpacing;
         }
+        // Paragraph-level contextualSpacing overrides style
+        if (pPr?.Element(W + "contextualSpacing") != null)
+            contextualSpacing = true;
+        if (spacingBefore < 0) spacingBefore = 0;
+        if (spacingAfter < 0) spacingAfter = 0;
 
         // Read runs (with field code tracking)
         int fieldDepth = 0;
@@ -485,9 +493,7 @@ internal static class DocxReader
                         images.Add(image);
 
                     // Check for anchor shapes (filled rectangles without image blip)
-                    var shape = ReadAnchorShape(drawing, themeColors);
-                    if (shape != null)
-                        shapes.Add(shape);
+                    shapes.AddRange(ReadAnchorShapes(drawing, themeColors));
                 }
             }
             else if (child.Name == W + "hyperlink")
@@ -513,7 +519,8 @@ internal static class DocxReader
             lineSpacing, lineSpacingAbsolute, indentLeft, indentRight, indentFirstLine,
             isBulletList, isNumberedList, listLevel, listText, styleId,
             bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops,
-            sectionBreakLayout, borders, shapes.Count > 0 ? shapes : null);
+            sectionBreakLayout, borders, shapes.Count > 0 ? shapes : null,
+            ContextualSpacing: contextualSpacing);
     }
 
     private static DocxBorderEdge? ReadBorderEdge(XElement? el)
@@ -819,88 +826,143 @@ internal static class DocxReader
 
     /// <summary>
     /// Reads anchor shapes (filled rectangles) from drawing elements.
+    /// Handles both simple shapes and group shapes (wpg:wgp).
     /// </summary>
-    private static DocxShape? ReadAnchorShape(XElement drawing, Dictionary<string, string>? themeColors)
+    private static List<DocxShape> ReadAnchorShapes(XElement drawing, Dictionary<string, string>? themeColors)
     {
+        var result = new List<DocxShape>();
         var anchor = drawing.Descendants(WP + "anchor").FirstOrDefault();
-        if (anchor == null) return null;
+        if (anchor == null) return result;
 
         // Only interested in behind-doc shapes (background fills)
-        if (anchor.Attribute("behindDoc")?.Value != "1") return null;
+        if (anchor.Attribute("behindDoc")?.Value != "1") return result;
 
         // Skip if it has a blip (it's an image, not a shape)
-        if (anchor.Descendants(A + "blip").Any()) return null;
+        if (anchor.Descendants(A + "blip").Any()) return result;
 
-        // Find solidFill in shape properties (spPr direct fill, not from line stroke)
-        var spPr = anchor.Descendants(WPS + "spPr").FirstOrDefault()
-              ?? anchor.Descendants(A + "spPr").FirstOrDefault();
-        if (spPr == null) return null;
-        // Skip shapes with noFill
-        if (spPr.Element(A + "noFill") != null) return null;
-        var solidFill = spPr.Element(A + "solidFill");
-        if (solidFill == null) return null;
-
-        // Resolve fill color
-        PdfColor? fillColor = null;
-        float alpha = 1f;
-
-        var srgbClr = solidFill.Element(A + "srgbClr");
-        if (srgbClr != null)
+        // Get anchor position
+        long anchorOffsetX = 0, anchorOffsetY = 0;
+        var posH = anchor.Element(WP + "positionH");
+        var posV = anchor.Element(WP + "positionV");
+        if (posH != null)
         {
-            fillColor = PdfColor.FromHex(srgbClr.Attribute("val")?.Value ?? "000000");
-            var alphaEl = srgbClr.Element(A + "alpha");
-            if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var a))
-                alpha = a / 100000f;
+            var off = posH.Element(WP + "posOffset");
+            if (off != null) long.TryParse(off.Value, out anchorOffsetX);
+        }
+        if (posV != null)
+        {
+            var off = posV.Element(WP + "posOffset");
+            if (off != null) long.TryParse(off.Value, out anchorOffsetY);
         }
 
-        var schemeClr = solidFill.Element(A + "schemeClr");
-        if (schemeClr != null && themeColors != null)
+        // Check for group shape (wpg:wgp)
+        var grpSp = anchor.Descendants(WPG + "wgp").FirstOrDefault();
+        if (grpSp != null)
         {
-            var schemeVal = schemeClr.Attribute("val")?.Value;
-            // Map scheme names to theme color keys
-            var themeKey = schemeVal switch
+            // Read group coordinate mapping
+            var grpSpPr = grpSp.Element(WPG + "grpSpPr");
+            var grpXfrm = grpSpPr?.Element(A + "xfrm");
+            long grpExtCx = 1, grpExtCy = 1, chOffX = 0, chOffY = 0, chExtCx = 1, chExtCy = 1;
+            if (grpXfrm != null)
             {
-                "tx2" or "dk2" => "dk2",
-                "tx1" or "dk1" => "dk1",
-                "bg1" or "lt1" => "lt1",
-                "bg2" or "lt2" => "lt2",
-                "accent1" => "accent1",
-                "accent2" => "accent2",
-                "accent3" => "accent3",
-                "accent4" => "accent4",
-                "accent5" => "accent5",
-                "accent6" => "accent6",
-                _ => schemeVal
-            };
-            if (themeKey != null && themeColors.TryGetValue(themeKey, out var hex))
-            {
-                fillColor = PdfColor.FromHex(hex);
-                // Apply lumMod (luminance modification)
-                var lumMod = schemeClr.Element(A + "lumMod");
-                if (lumMod != null && int.TryParse(lumMod.Attribute("val")?.Value, out var lm))
+                var ext = grpXfrm.Element(A + "ext");
+                if (ext != null)
                 {
-                    var factor = lm / 100000f;
-                    var fc = fillColor.Value;
-                    fillColor = new PdfColor(fc.R * factor, fc.G * factor, fc.B * factor);
+                    long.TryParse(ext.Attribute("cx")?.Value, out grpExtCx);
+                    long.TryParse(ext.Attribute("cy")?.Value, out grpExtCy);
                 }
-                // Apply lumOff (luminance offset)
-                var lumOff = schemeClr.Element(A + "lumOff");
-                if (lumOff != null && int.TryParse(lumOff.Attribute("val")?.Value, out var lo))
+                var chOff = grpXfrm.Element(A + "chOff");
+                if (chOff != null)
                 {
-                    var offset = lo / 100000f;
-                    var fc = fillColor.Value;
-                    fillColor = new PdfColor(
-                        Math.Min(1f, fc.R + offset),
-                        Math.Min(1f, fc.G + offset),
-                        Math.Min(1f, fc.B + offset));
+                    long.TryParse(chOff.Attribute("x")?.Value, out chOffX);
+                    long.TryParse(chOff.Attribute("y")?.Value, out chOffY);
+                }
+                var chExt = grpXfrm.Element(A + "chExt");
+                if (chExt != null)
+                {
+                    long.TryParse(chExt.Attribute("cx")?.Value, out chExtCx);
+                    long.TryParse(chExt.Attribute("cy")?.Value, out chExtCy);
                 }
             }
-            var alphaEl = schemeClr.Element(A + "alpha");
-            if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var a))
-                alpha = a / 100000f;
+            if (chExtCx == 0) chExtCx = 1;
+            if (chExtCy == 0) chExtCy = 1;
+
+            // Read group-level fill for grpFill inheritance
+            PdfColor? grpFillColor = null;
+            float grpFillAlpha = 1f;
+            var grpSolidFill = grpSpPr?.Element(A + "solidFill");
+            if (grpSolidFill != null)
+            {
+                (grpFillColor, grpFillAlpha) = ResolveSolidFill(grpSolidFill, themeColors);
+            }
+
+            // Process each child shape in the group
+            foreach (var childWsp in grpSp.Elements(WPS + "wsp"))
+            {
+                var childSpPr = childWsp.Element(WPS + "spPr") ?? childWsp.Element(A + "spPr");
+                if (childSpPr == null) continue;
+                if (childSpPr.Element(A + "noFill") != null) continue;
+
+                PdfColor? fillColor;
+                float alpha;
+                var childFill = childSpPr.Element(A + "solidFill");
+                if (childFill != null)
+                {
+                    (fillColor, alpha) = ResolveSolidFill(childFill, themeColors);
+                }
+                else if (childSpPr.Element(A + "grpFill") != null && grpFillColor != null)
+                {
+                    fillColor = grpFillColor;
+                    alpha = grpFillAlpha;
+                }
+                else
+                {
+                    continue;
+                }
+                if (fillColor == null) continue;
+
+                // Get child shape position/size in child coordinate space
+                var childXfrm = childSpPr.Element(A + "xfrm");
+                if (childXfrm == null) continue;
+                long childOffX = 0, childOffY = 0, childCx = 0, childCy = 0;
+                var cOff = childXfrm.Element(A + "off");
+                if (cOff != null)
+                {
+                    long.TryParse(cOff.Attribute("x")?.Value, out childOffX);
+                    long.TryParse(cOff.Attribute("y")?.Value, out childOffY);
+                }
+                var cExt = childXfrm.Element(A + "ext");
+                if (cExt != null)
+                {
+                    long.TryParse(cExt.Attribute("cx")?.Value, out childCx);
+                    long.TryParse(cExt.Attribute("cy")?.Value, out childCy);
+                }
+
+                var (childPresetGeom, childFrameThicknessRatio, childCustomPaths) =
+                    ReadShapeGeometry(childSpPr, childCx, childCy);
+
+                // Map child coordinates to page-relative EMU
+                var pageX = anchorOffsetX + (childOffX - chOffX) * grpExtCx / chExtCx;
+                var pageY = anchorOffsetY + (childOffY - chOffY) * grpExtCy / chExtCy;
+                var pageW = childCx * grpExtCx / chExtCx;
+                var pageH = childCy * grpExtCy / chExtCy;
+
+                result.Add(new DocxShape(pageW, pageH, pageX, pageY, fillColor.Value, alpha,
+                    childPresetGeom, childFrameThicknessRatio, childCustomPaths));
+            }
+            return result;
         }
 
-        if (fillColor == null) return null;
+        // Fall back to single-shape handling (non-group)
+        var spPr = anchor.Descendants(WPS + "spPr").FirstOrDefault()
+              ?? anchor.Descendants(A + "spPr").FirstOrDefault();
+        if (spPr == null) return result;
+        if (spPr.Element(A + "noFill") != null) return result;
+        var solidFill = spPr.Element(A + "solidFill");
+        if (solidFill == null) return result;
+
+        var (singleColor, singleAlpha) = ResolveSolidFill(solidFill, themeColors);
+        if (singleColor == null) return result;
 
         // Get extent (size)
         var extent = anchor.Element(WP + "extent");
@@ -911,24 +973,21 @@ internal static class DocxReader
             long.TryParse(extent.Attribute("cy")?.Value, out heightEmu);
         }
 
-        // Get position
-        long offsetXEmu = 0, offsetYEmu = 0;
-        var posH = anchor.Element(WP + "positionH");
-        var posV = anchor.Element(WP + "positionV");
-        if (posH != null)
-        {
-            var off = posH.Element(WP + "posOffset");
-            if (off != null) long.TryParse(off.Value, out offsetXEmu);
-        }
-        if (posV != null)
-        {
-            var off = posV.Element(WP + "posOffset");
-            if (off != null) long.TryParse(off.Value, out offsetYEmu);
-        }
+        var (presetGeom, frameThicknessRatio, customPaths) =
+            ReadShapeGeometry(spPr, widthEmu, heightEmu);
 
-        // Read preset geometry (e.g., "frame") and adjustment values
+        result.Add(new DocxShape(widthEmu, heightEmu, anchorOffsetX, anchorOffsetY, singleColor.Value, singleAlpha,
+            presetGeom, frameThicknessRatio, customPaths));
+        return result;
+    }
+
+    private static (string? PresetGeometry, float FrameThicknessRatio, List<DocxCustomPath>? CustomPaths)
+        ReadShapeGeometry(XElement spPr, long widthEmu, long heightEmu)
+    {
         string? presetGeom = null;
-        float frameThicknessRatio = 0.125f; // default adj1 for frame = 12.5%
+        float frameThicknessRatio = 0.125f;
+        List<DocxCustomPath>? customPaths = null;
+
         var prstGeom = spPr.Element(A + "prstGeom");
         if (prstGeom != null)
         {
@@ -946,10 +1005,358 @@ internal static class DocxReader
                         frameThicknessRatio = v / 100000f;
                 }
             }
+            return (presetGeom, frameThicknessRatio, customPaths);
         }
 
-        return new DocxShape(widthEmu, heightEmu, offsetXEmu, offsetYEmu, fillColor.Value, alpha,
-            presetGeom, frameThicknessRatio);
+        var custGeom = spPr.Element(A + "custGeom");
+        if (custGeom != null)
+        {
+            customPaths = ParseCustomGeometryPaths(custGeom, widthEmu, heightEmu);
+            if (customPaths is { Count: > 0 })
+                presetGeom = "custom";
+        }
+
+        return (presetGeom, frameThicknessRatio, customPaths);
+    }
+
+    private static List<DocxCustomPath>? ParseCustomGeometryPaths(XElement custGeom, long widthEmu, long heightEmu)
+    {
+        var pathList = custGeom.Element(A + "pathLst");
+        if (pathList == null) return null;
+
+        var result = new List<DocxCustomPath>();
+        foreach (var path in pathList.Elements(A + "path"))
+        {
+            long pathW = widthEmu > 0 ? widthEmu : 1;
+            long pathH = heightEmu > 0 ? heightEmu : 1;
+            if (long.TryParse(path.Attribute("w")?.Value, out var parsedW) && parsedW > 0)
+                pathW = parsedW;
+            if (long.TryParse(path.Attribute("h")?.Value, out var parsedH) && parsedH > 0)
+                pathH = parsedH;
+
+            var vars = new Dictionary<string, double>(StringComparer.Ordinal)
+            {
+                ["w"] = pathW,
+                ["h"] = pathH,
+            };
+
+            var gdList = custGeom.Element(A + "gdLst");
+            if (gdList != null)
+            {
+                foreach (var gd in gdList.Elements(A + "gd"))
+                {
+                    var name = gd.Attribute("name")?.Value;
+                    var fmla = gd.Attribute("fmla")?.Value;
+                    if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fmla))
+                        continue;
+                    vars[name] = EvaluateGuideFormula(fmla, vars);
+                }
+            }
+
+            var subpaths = new List<List<DocxPolygonPoint>>();
+            var current = new List<DocxPolygonPoint>();
+            foreach (var cmd in path.Elements())
+            {
+                if (cmd.Name == A + "moveTo")
+                {
+                    if (current.Count >= 3)
+                        subpaths.Add(current);
+                    current = new List<DocxPolygonPoint>();
+                    var pt = cmd.Element(A + "pt");
+                    if (TryReadPathPoint(pt, vars, pathW, pathH, out var p))
+                        current.Add(p);
+                }
+                else if (cmd.Name == A + "lnTo")
+                {
+                    var pt = cmd.Element(A + "pt");
+                    if (TryReadPathPoint(pt, vars, pathW, pathH, out var p))
+                        current.Add(p);
+                }
+                else if (cmd.Name == A + "arcTo")
+                {
+                    // Approximate arcTo segments into polyline points.
+                    AppendArcToPoints(current, cmd, vars, pathW, pathH);
+                }
+                else if (cmd.Name == A + "quadBezTo")
+                {
+                    // Approximate quadratic Bezier segments into polyline points.
+                    AppendQuadraticBezierPoints(current, cmd, vars, pathW, pathH);
+                }
+                else if (cmd.Name == A + "cubicBezTo")
+                {
+                    // Approximate cubic Bezier segments into polyline points.
+                    AppendCubicBezierPoints(current, cmd, vars, pathW, pathH);
+                }
+                else if (cmd.Name == A + "close")
+                {
+                    if (current.Count >= 3)
+                    {
+                        subpaths.Add(current);
+                        current = new List<DocxPolygonPoint>();
+                    }
+                }
+            }
+
+            if (current.Count >= 3)
+                subpaths.Add(current);
+
+            if (subpaths.Count > 0)
+            {
+                // Always use even-odd fill for custGeom paths. Complex single-subpath
+                // polygons that self-intersect (e.g. decorative arcs) require even-odd
+                // to render correctly instead of filling the entire bounding area solid.
+                result.Add(new DocxCustomPath(subpaths, UseEvenOddFill: true));
+            }
+        }
+
+        return result.Count > 0 ? result : null;
+    }
+
+    private static bool TryReadPathPoint(XElement? pt, Dictionary<string, double> vars, long pathW, long pathH,
+        out DocxPolygonPoint point)
+    {
+        point = new DocxPolygonPoint(0, 0);
+        if (pt == null) return false;
+
+        var xToken = pt.Attribute("x")?.Value;
+        var yToken = pt.Attribute("y")?.Value;
+        if (string.IsNullOrEmpty(xToken) || string.IsNullOrEmpty(yToken))
+            return false;
+
+        var x = ResolveGuideToken(xToken, vars);
+        var y = ResolveGuideToken(yToken, vars);
+        if (pathW <= 0 || pathH <= 0) return false;
+
+        var xNorm = (float)(x / pathW);
+        var yNorm = (float)(y / pathH);
+        point = new DocxPolygonPoint(
+            Math.Clamp(xNorm, -0.25f, 1.25f),
+            Math.Clamp(yNorm, -0.25f, 1.25f));
+        return true;
+    }
+
+    private static void AppendArcToPoints(List<DocxPolygonPoint> current, XElement arcTo,
+        Dictionary<string, double> vars, long pathW, long pathH)
+    {
+        if (current.Count == 0 || pathW <= 0 || pathH <= 0)
+            return;
+
+        var wR = ResolveGuideToken(arcTo.Attribute("wR")?.Value ?? "0", vars);
+        var hR = ResolveGuideToken(arcTo.Attribute("hR")?.Value ?? "0", vars);
+        var stAng = ResolveGuideToken(arcTo.Attribute("stAng")?.Value ?? "0", vars);
+        var swAng = ResolveGuideToken(arcTo.Attribute("swAng")?.Value ?? "0", vars);
+
+        if (Math.Abs(wR) < 0.0001 || Math.Abs(hR) < 0.0001 || Math.Abs(swAng) < 0.0001)
+            return;
+
+        var startRad = stAng / 60000d * Math.PI / 180d;
+        var sweepRad = swAng / 60000d * Math.PI / 180d;
+
+        // In DrawingML arcTo, the current point is on the ellipse at start angle.
+        var startX = current[^1].X * pathW;
+        var startY = current[^1].Y * pathH;
+        var centerX = startX - wR * Math.Cos(startRad);
+        var centerY = startY - hR * Math.Sin(startRad);
+
+        var steps = Math.Clamp((int)Math.Ceiling(Math.Abs(sweepRad) / (Math.PI / 16d)), 4, 96);
+        for (var i = 1; i <= steps; i++)
+        {
+            var t = startRad + sweepRad * i / steps;
+            var x = centerX + wR * Math.Cos(t);
+            var y = centerY + hR * Math.Sin(t);
+            AppendNormalizedPoint(current, x, y, pathW, pathH);
+        }
+    }
+
+    private static void AppendQuadraticBezierPoints(List<DocxPolygonPoint> current, XElement quadBezTo,
+        Dictionary<string, double> vars, long pathW, long pathH)
+    {
+        if (current.Count == 0 || pathW <= 0 || pathH <= 0)
+            return;
+
+        var pts = quadBezTo.Elements(A + "pt").ToList();
+        if (pts.Count < 2)
+            return;
+
+        if (!TryReadPathPoint(pts[0], vars, pathW, pathH, out var c1) ||
+            !TryReadPathPoint(pts[1], vars, pathW, pathH, out var p2))
+            return;
+
+        var p0x = current[^1].X * pathW;
+        var p0y = current[^1].Y * pathH;
+        var p1x = c1.X * pathW;
+        var p1y = c1.Y * pathH;
+        var p2x = p2.X * pathW;
+        var p2y = p2.Y * pathH;
+
+        const int steps = 12;
+        for (var i = 1; i <= steps; i++)
+        {
+            var t = i / (double)steps;
+            var mt = 1d - t;
+            var x = mt * mt * p0x + 2d * mt * t * p1x + t * t * p2x;
+            var y = mt * mt * p0y + 2d * mt * t * p1y + t * t * p2y;
+            AppendNormalizedPoint(current, x, y, pathW, pathH);
+        }
+    }
+
+    private static void AppendCubicBezierPoints(List<DocxPolygonPoint> current, XElement cubicBezTo,
+        Dictionary<string, double> vars, long pathW, long pathH)
+    {
+        if (current.Count == 0 || pathW <= 0 || pathH <= 0)
+            return;
+
+        var pts = cubicBezTo.Elements(A + "pt").ToList();
+        if (pts.Count < 3)
+            return;
+
+        if (!TryReadPathPoint(pts[0], vars, pathW, pathH, out var c1) ||
+            !TryReadPathPoint(pts[1], vars, pathW, pathH, out var c2) ||
+            !TryReadPathPoint(pts[2], vars, pathW, pathH, out var p3))
+            return;
+
+        var p0x = current[^1].X * pathW;
+        var p0y = current[^1].Y * pathH;
+        var p1x = c1.X * pathW;
+        var p1y = c1.Y * pathH;
+        var p2x = c2.X * pathW;
+        var p2y = c2.Y * pathH;
+        var p3x = p3.X * pathW;
+        var p3y = p3.Y * pathH;
+
+        const int steps = 16;
+        for (var i = 1; i <= steps; i++)
+        {
+            var t = i / (double)steps;
+            var mt = 1d - t;
+            var x = mt * mt * mt * p0x
+                + 3d * mt * mt * t * p1x
+                + 3d * mt * t * t * p2x
+                + t * t * t * p3x;
+            var y = mt * mt * mt * p0y
+                + 3d * mt * mt * t * p1y
+                + 3d * mt * t * t * p2y
+                + t * t * t * p3y;
+            AppendNormalizedPoint(current, x, y, pathW, pathH);
+        }
+    }
+
+    private static void AppendNormalizedPoint(List<DocxPolygonPoint> current, double x, double y, long pathW, long pathH)
+    {
+        if (pathW <= 0 || pathH <= 0)
+            return;
+
+        var nx = (float)(x / pathW);
+        var ny = (float)(y / pathH);
+        nx = Math.Clamp(nx, -0.25f, 1.25f);
+        ny = Math.Clamp(ny, -0.25f, 1.25f);
+
+        if (current.Count > 0)
+        {
+            var last = current[^1];
+            if (Math.Abs(last.X - nx) < 0.0001f && Math.Abs(last.Y - ny) < 0.0001f)
+                return;
+        }
+
+        current.Add(new DocxPolygonPoint(nx, ny));
+    }
+
+    private static double EvaluateGuideFormula(string formula, Dictionary<string, double> vars)
+    {
+        var tokens = formula.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (tokens.Length == 0) return 0;
+
+        if (tokens[0] == "val" && tokens.Length >= 2)
+            return ResolveGuideToken(tokens[1], vars);
+
+        if (tokens[0] == "*/" && tokens.Length >= 4)
+        {
+            var a = ResolveGuideToken(tokens[1], vars);
+            var b = ResolveGuideToken(tokens[2], vars);
+            var c = ResolveGuideToken(tokens[3], vars);
+            return Math.Abs(c) < 0.0001 ? 0 : (a * b / c);
+        }
+
+        if (tokens[0] == "+-" && tokens.Length >= 4)
+        {
+            var a = ResolveGuideToken(tokens[1], vars);
+            var b = ResolveGuideToken(tokens[2], vars);
+            var c = ResolveGuideToken(tokens[3], vars);
+            return a + b - c;
+        }
+
+        return tokens.Length == 1 ? ResolveGuideToken(tokens[0], vars) : 0;
+    }
+
+    private static double ResolveGuideToken(string token, Dictionary<string, double> vars)
+    {
+        if (double.TryParse(token, out var num)) return num;
+        if (vars.TryGetValue(token, out var value)) return value;
+        return 0;
+    }
+
+    /// <summary>
+    /// Resolves a solidFill element to a PdfColor and alpha value.
+    /// </summary>
+    private static (PdfColor? Color, float Alpha) ResolveSolidFill(XElement solidFill, Dictionary<string, string>? themeColors)
+    {
+        PdfColor? fillColor = null;
+        float alpha = 1f;
+
+        var srgbClr = solidFill.Element(A + "srgbClr");
+        if (srgbClr != null)
+        {
+            fillColor = PdfColor.FromHex(srgbClr.Attribute("val")?.Value ?? "000000");
+            var alphaEl = srgbClr.Element(A + "alpha");
+            if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var a))
+                alpha = a / 100000f;
+        }
+
+        var schemeClr = solidFill.Element(A + "schemeClr");
+        if (schemeClr != null && themeColors != null)
+        {
+            var schemeVal = schemeClr.Attribute("val")?.Value;
+            var themeKey = schemeVal switch
+            {
+                "tx2" or "dk2" => "dk2",
+                "tx1" or "dk1" => "dk1",
+                "bg1" or "lt1" => "lt1",
+                "bg2" or "lt2" => "lt2",
+                "accent1" => "accent1",
+                "accent2" => "accent2",
+                "accent3" => "accent3",
+                "accent4" => "accent4",
+                "accent5" => "accent5",
+                "accent6" => "accent6",
+                _ => schemeVal
+            };
+            if (themeKey != null && themeColors.TryGetValue(themeKey, out var hex))
+            {
+                fillColor = PdfColor.FromHex(hex);
+                var lumMod = schemeClr.Element(A + "lumMod");
+                if (lumMod != null && int.TryParse(lumMod.Attribute("val")?.Value, out var lm))
+                {
+                    var factor = lm / 100000f;
+                    var fc = fillColor.Value;
+                    fillColor = new PdfColor(fc.R * factor, fc.G * factor, fc.B * factor);
+                }
+                var lumOff = schemeClr.Element(A + "lumOff");
+                if (lumOff != null && int.TryParse(lumOff.Attribute("val")?.Value, out var lo))
+                {
+                    var offset = lo / 100000f;
+                    var fc = fillColor.Value;
+                    fillColor = new PdfColor(
+                        Math.Min(1f, fc.R + offset),
+                        Math.Min(1f, fc.G + offset),
+                        Math.Min(1f, fc.B + offset));
+                }
+            }
+            var alphaEl = schemeClr.Element(A + "alpha");
+            if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var a))
+                alpha = a / 100000f;
+        }
+
+        return (fillColor, alpha);
     }
 
     /// <summary>
@@ -995,6 +1402,21 @@ internal static class DocxReader
         var tblPr = tblElement.Element(W + "tblPr");
         var tblGrid = tblElement.Element(W + "tblGrid");
         var columnWidths = new List<float>();
+
+        // Read table-level cell margins
+        float cellMarginLeft = 5.4f, cellMarginRight = 5.4f, cellMarginTop = 0f, cellMarginBottom = 0f;
+        var tblCellMar = tblPr?.Element(W + "tblCellMar");
+        if (tblCellMar != null)
+        {
+            if (int.TryParse(tblCellMar.Element(W + "left")?.Attribute(W + "w")?.Value, out var ml))
+                cellMarginLeft = ml / 20f;
+            if (int.TryParse(tblCellMar.Element(W + "right")?.Attribute(W + "w")?.Value, out var mr))
+                cellMarginRight = mr / 20f;
+            if (int.TryParse(tblCellMar.Element(W + "top")?.Attribute(W + "w")?.Value, out var mt))
+                cellMarginTop = mt / 20f;
+            if (int.TryParse(tblCellMar.Element(W + "bottom")?.Attribute(W + "w")?.Value, out var mb))
+                cellMarginBottom = mb / 20f;
+        }
 
         // Detect whether the table has visible borders
         var hasBorders = false;
@@ -1079,6 +1501,7 @@ internal static class DocxReader
                 DocxBorders? cellBorders = null;
                 bool isVMergeContinue = false;
                 bool isVMergeRestart = false;
+                string verticalAlignment = "top";
 
                 if (tcPr != null)
                 {
@@ -1119,14 +1542,22 @@ internal static class DocxReader
                             Right: ReadBorderEdge(tcBorders.Element(W + "right"))
                         );
                     }
+
+                    var vAlignEl = tcPr.Element(W + "vAlign");
+                    if (vAlignEl != null)
+                    {
+                        var va = vAlignEl.Attribute(W + "val")?.Value;
+                        if (!string.IsNullOrEmpty(va))
+                            verticalAlignment = va;
+                    }
                 }
 
-                cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading, cellBorders, isVMergeContinue, isVMergeRestart));
+                cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading, cellBorders, isVMergeContinue, isVMergeRestart, verticalAlignment));
             }
             rows.Add(new DocxTableRow(cells, rowHeight));
         }
 
-        return new DocxTable(rows, columnWidths, hasBorders);
+        return new DocxTable(rows, columnWidths, hasBorders, cellMarginLeft, cellMarginRight, cellMarginTop, cellMarginBottom);
     }
 
     private static DocxPageLayout? ReadPageLayout(XElement body)
@@ -1235,9 +1666,7 @@ internal static class DocxReader
 
         foreach (var drawing in doc.Descendants(W + "drawing"))
         {
-            var shape = ReadAnchorShape(drawing, themeColors);
-            if (shape != null)
-                shapes.Add(shape);
+            shapes.AddRange(ReadAnchorShapes(drawing, themeColors));
         }
 
         return shapes;
@@ -1310,6 +1739,7 @@ internal static class DocxReader
     private static (Dictionary<string, DocxStyleInfo> Styles, float DefaultLineSpacing, bool DefaultLineSpacingAbsolute, string? DefaultFontName) ReadStyles(ZipArchive archive)
     {
         var styles = new Dictionary<string, DocxStyleInfo>();
+        var (majorThemeLatinFont, minorThemeLatinFont) = ReadThemeLatinFonts(archive);
         var entry = archive.GetEntry("word/styles.xml");
         if (entry == null) return (styles, 0, false, null);
 
@@ -1380,6 +1810,9 @@ internal static class DocxReader
             float spacingBefore = defaultSpacingBefore;
             float spacingAfter = defaultSpacingAfter;
             bool caps = false;
+            float styleLineSpacing = 0;
+            bool styleLineSpacingAbsolute = false;
+            bool contextualSpacing = false;
 
             if (rPr != null)
             {
@@ -1404,7 +1837,15 @@ internal static class DocxReader
                         spacingBefore = sb / 20f;
                     if (int.TryParse(spacing.Attribute(W + "after")?.Value, out var sa))
                         spacingAfter = sa / 20f;
+                    if (int.TryParse(spacing.Attribute(W + "line")?.Value, out var sl))
+                    {
+                        var lineRule = spacing.Attribute(W + "lineRule")?.Value;
+                        styleLineSpacingAbsolute = lineRule == "exact" || lineRule == "atLeast";
+                        styleLineSpacing = styleLineSpacingAbsolute ? sl / 20f : sl / 240f;
+                    }
                 }
+                if (pPr.Element(W + "contextualSpacing") != null)
+                    contextualSpacing = true;
             }
 
             // Heading styles get bold by default
@@ -1414,7 +1855,7 @@ internal static class DocxReader
                 bold = true;
             }
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, contextualSpacing);
         }
 
         // Second pass: resolve basedOn inheritance
@@ -1437,10 +1878,12 @@ internal static class DocxReader
             var caps2 = current.Caps || baseStyle.Caps;
             var color2 = current.Color ?? baseStyle.Color;
             var alignment = !string.IsNullOrEmpty(current.Alignment) ? current.Alignment : baseStyle.Alignment;
-            var spacingBefore = current.SpacingBefore > 0 ? current.SpacingBefore : baseStyle.SpacingBefore;
-            var spacingAfter = current.SpacingAfter >= 0 ? current.SpacingAfter : baseStyle.SpacingAfter;
+            var spacingEl = pPr?.Element(W + "spacing");
+            var spacingBefore = spacingEl?.Attribute(W + "before") != null ? current.SpacingBefore : baseStyle.SpacingBefore;
+            var spacingAfter = spacingEl?.Attribute(W + "after") != null ? current.SpacingAfter : baseStyle.SpacingAfter;
+            var contextualSpacing2 = current.ContextualSpacing || baseStyle.ContextualSpacing;
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, ContextualSpacing: contextualSpacing2);
         }
 
         // Extract default font name from Normal style or docDefaults
@@ -1452,7 +1895,7 @@ internal static class DocxReader
             {
                 var rFonts = style.Element(W + "rPr")?.Element(W + "rFonts");
                 if (rFonts != null)
-                    defaultFontName = rFonts.Attribute(W + "ascii")?.Value;
+                    defaultFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont);
                 break;
             }
         }
@@ -1460,10 +1903,53 @@ internal static class DocxReader
         {
             var rFonts = docDefaults.Element(W + "rPrDefault")?.Element(W + "rPr")?.Element(W + "rFonts");
             if (rFonts != null)
-                defaultFontName = rFonts.Attribute(W + "ascii")?.Value;
+                defaultFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont);
         }
 
         return (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName);
+    }
+
+    /// <summary>
+    /// Reads major/minor Latin theme fonts from theme1.xml.
+    /// </summary>
+    private static (string? MajorLatinFont, string? MinorLatinFont) ReadThemeLatinFonts(ZipArchive archive)
+    {
+        var entry = archive.GetEntry("word/theme/theme1.xml");
+        if (entry == null) return (null, null);
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+
+        var fontScheme = doc.Descendants(A + "fontScheme").FirstOrDefault();
+        if (fontScheme == null) return (null, null);
+
+        var majorLatin = fontScheme.Element(A + "majorFont")?.Element(A + "latin")?.Attribute("typeface")?.Value;
+        var minorLatin = fontScheme.Element(A + "minorFont")?.Element(A + "latin")?.Attribute("typeface")?.Value;
+        return (string.IsNullOrWhiteSpace(majorLatin) ? null : majorLatin,
+            string.IsNullOrWhiteSpace(minorLatin) ? null : minorLatin);
+    }
+
+    /// <summary>
+    /// Resolves effective Latin font name from w:rFonts, including theme references.
+    /// </summary>
+    private static string? ResolveFontNameFromRFonts(XElement rFonts, string? majorThemeLatinFont, string? minorThemeLatinFont)
+    {
+        var explicitFont = rFonts.Attribute(W + "ascii")?.Value
+            ?? rFonts.Attribute(W + "hAnsi")?.Value;
+        if (!string.IsNullOrWhiteSpace(explicitFont))
+            return explicitFont;
+
+        var themeFont = rFonts.Attribute(W + "asciiTheme")?.Value
+            ?? rFonts.Attribute(W + "hAnsiTheme")?.Value;
+        if (string.IsNullOrWhiteSpace(themeFont))
+            return null;
+
+        if (themeFont.StartsWith("major", StringComparison.OrdinalIgnoreCase))
+            return majorThemeLatinFont;
+        if (themeFont.StartsWith("minor", StringComparison.OrdinalIgnoreCase))
+            return minorThemeLatinFont;
+
+        return null;
     }
 
     private static Dictionary<string, DocxNumberingDef> ReadNumbering(ZipArchive archive)
@@ -1583,7 +2069,8 @@ internal sealed record DocxParagraph(
     DocxBorders? Borders = null,
     List<DocxShape>? Shapes = null,
     bool ForceSpacingBefore = false,
-    DocxTextBoxBorder? TextBoxBorder = null
+    DocxTextBoxBorder? TextBoxBorder = null,
+    bool ContextualSpacing = false
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>
@@ -1640,6 +2127,18 @@ internal sealed record DocxTextBoxBorder(
     float VerticalOffsetPt
 );
 
+/// <summary>Represents a normalized point in a custom shape path.</summary>
+internal sealed record DocxPolygonPoint(
+    float X,
+    float Y
+);
+
+/// <summary>Represents one custom geometry path composed of one or more subpaths.</summary>
+internal sealed record DocxCustomPath(
+    List<List<DocxPolygonPoint>> Subpaths,
+    bool UseEvenOddFill = false
+);
+
 /// <summary>Represents an anchor shape (filled rectangle or frame).</summary>
 internal sealed record DocxShape(
     long WidthEmu,
@@ -1649,14 +2148,19 @@ internal sealed record DocxShape(
     PdfColor FillColor,
     float Alpha = 1f,
     string? PresetGeometry = null,
-    float FrameThicknessRatio = 0.125f
+    float FrameThicknessRatio = 0.125f,
+    List<DocxCustomPath>? CustomPaths = null
 );
 
 /// <summary>Represents a table.</summary>
 internal sealed record DocxTable(
     List<DocxTableRow> Rows,
     List<float> ColumnWidths,
-    bool HasBorders = true
+    bool HasBorders = true,
+    float CellMarginLeft = 5.4f,
+    float CellMarginRight = 5.4f,
+    float CellMarginTop = 0f,
+    float CellMarginBottom = 0f
 ) : DocxElement;
 
 /// <summary>Represents a table row.</summary>
@@ -1670,7 +2174,8 @@ internal sealed record DocxTableCell(
     PdfColor? Shading = null,
     DocxBorders? Borders = null,
     bool IsVMergeContinue = false,
-    bool IsVMergeRestart = false
+    bool IsVMergeRestart = false,
+    string VerticalAlignment = "top"
 );
 
 /// <summary>Style definition from styles.xml.</summary>
@@ -1682,7 +2187,10 @@ internal sealed record DocxStyleInfo(
     string Alignment = "",
     float SpacingBefore = 0,
     float SpacingAfter = -1,
-    bool Caps = false
+    bool Caps = false,
+    float LineSpacing = 0,
+    bool LineSpacingAbsolute = false,
+    bool ContextualSpacing = false
 );
 
 /// <summary>Numbering definition for lists.</summary>

@@ -24,6 +24,35 @@ internal sealed record PdfRectBlock(
 );
 
 /// <summary>
+/// Represents a filled ellipse on a PDF page.
+/// </summary>
+internal sealed record PdfEllipseBlock(
+    float X,
+    float Y,
+    float Width,
+    float Height,
+    PdfColor FillColor
+);
+
+/// <summary>
+/// Represents a point in a polygon path.
+/// </summary>
+internal sealed record PdfPoint(
+    float X,
+    float Y
+);
+
+/// <summary>
+/// Represents a filled polygon on a PDF page.
+/// </summary>
+internal sealed record PdfPolygonBlock(
+    List<PdfPoint> Points,
+    PdfColor FillColor,
+    List<List<PdfPoint>>? Subpaths = null,
+    bool EvenOddFill = false
+);
+
+/// <summary>
 /// Represents a line segment on a PDF page.
 /// </summary>
 internal sealed record PdfLineBlock(
@@ -43,6 +72,8 @@ internal sealed class PdfPage
     private readonly List<PdfTextBlock> _textBlocks = [];
     private readonly List<PdfImageBlock> _imageBlocks = [];
     private readonly List<PdfRectBlock> _rectBlocks = [];
+    private readonly List<PdfEllipseBlock> _ellipseBlocks = [];
+    private readonly List<PdfPolygonBlock> _polygonBlocks = [];
     private readonly List<PdfLineBlock> _lineBlocks = [];
 
     /// <summary>
@@ -69,6 +100,16 @@ internal sealed class PdfPage
     /// Gets the rectangle blocks on this page.
     /// </summary>
     public IReadOnlyList<PdfRectBlock> RectBlocks => _rectBlocks;
+
+    /// <summary>
+    /// Gets the ellipse blocks on this page.
+    /// </summary>
+    public IReadOnlyList<PdfEllipseBlock> EllipseBlocks => _ellipseBlocks;
+
+    /// <summary>
+    /// Gets the polygon blocks on this page.
+    /// </summary>
+    public IReadOnlyList<PdfPolygonBlock> PolygonBlocks => _polygonBlocks;
 
     /// <summary>
     /// Gets the line blocks on this page.
@@ -118,6 +159,42 @@ internal sealed class PdfPage
     public PdfPage AddRectangle(float x, float y, float width, float height, PdfColor? fillColor = null)
     {
         _rectBlocks.Add(new PdfRectBlock(x, y, width, height, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f)));
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a filled ellipse at the specified position.
+    /// </summary>
+    public PdfPage AddEllipse(float x, float y, float width, float height, PdfColor? fillColor = null)
+    {
+        _ellipseBlocks.Add(new PdfEllipseBlock(x, y, width, height, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f)));
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a filled polygon from the provided points.
+    /// </summary>
+    public PdfPage AddPolygon(List<PdfPoint> points, PdfColor? fillColor = null)
+    {
+        if (points.Count >= 3)
+            _polygonBlocks.Add(new PdfPolygonBlock(points, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f)));
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a filled compound polygon composed of multiple closed subpaths.
+    /// </summary>
+    public PdfPage AddCompoundPolygon(List<List<PdfPoint>> subpaths, PdfColor? fillColor = null, bool evenOddFill = true)
+    {
+        if (subpaths.Count == 0)
+            return this;
+
+        var valid = subpaths.Where(p => p.Count >= 3).ToList();
+        if (valid.Count == 0)
+            return this;
+
+        _polygonBlocks.Add(new PdfPolygonBlock(valid[0],
+            fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f), valid, evenOddFill));
         return this;
     }
 
