@@ -418,6 +418,126 @@ h1:focus { outline: none; }
 
 .feedback a:hover { text-decoration: underline; }
 
+/* ===== Font Status ===== */
+.font-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    margin-top: 1rem;
+    padding: .6rem 1rem;
+    border-radius: 10px;
+    font-size: .85rem;
+    animation: fadeUp .3s ease-out;
+}
+
+.font-status.loading {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.font-status.success {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.font-status.warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.font-progress-bar {
+    margin-top: .5rem;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.font-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5, #818cf8);
+    border-radius: 3px;
+    transition: width .3s ease;
+}
+
+/* ===== Custom Font Upload ===== */
+.custom-font-section {
+    margin-bottom: .75rem;
+    padding: .75rem 1rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px dashed var(--border);
+}
+
+.custom-font-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: .35rem;
+}
+
+.custom-font-hint {
+    font-size: .78rem;
+    color: var(--text-secondary);
+    margin-bottom: .6rem;
+}
+
+.font-upload-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .9rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: .8rem;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition), color var(--transition);
+}
+
+.font-upload-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+.font-upload-btn input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.custom-font-loaded {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .35rem;
+    margin-top: .5rem;
+    font-size: .8rem;
+    color: #15803d;
+    font-weight: 500;
+}
+
+.custom-font-loaded svg {
+    color: #16a34a;
+}
+
 /* ===== Blazor infra ===== */
 .blazor-error-boundary {
     background: #b32121;
