@@ -16,8 +16,13 @@ public static class MiniPdf
     /// <param name="fontData">The raw bytes of the .ttf or .ttc font file.</param>
     public static void RegisterFont(string name, byte[] fontData)
     {
+#if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(fontData);
+#else
+        if (name is null) throw new ArgumentNullException(nameof(name));
+        if (fontData is null) throw new ArgumentNullException(nameof(fontData));
+#endif
         lock (_registeredFonts)
             _registeredFonts.Add((name, fontData));
     }

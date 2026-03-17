@@ -685,7 +685,7 @@ internal static class DocxReader
                 return null;
             }
         }
-        else if (hasCrop && OperatingSystem.IsWindows())
+        else if (hasCrop && Compat.IsWindows())
         {
             var cropped = TryCropImagePng(data, cropL, cropT, cropR, cropB);
             if (cropped != null)
@@ -719,7 +719,7 @@ internal static class DocxReader
     private static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu,
         float cropL = 0, float cropT = 0, float cropR = 0, float cropB = 0)
     {
-        if (!OperatingSystem.IsWindows())
+        if (!Compat.IsWindows())
             return null;
 
         try
@@ -742,8 +742,8 @@ internal static class DocxReader
 
             var targetHeight = 512;
             var targetWidth = (int)Math.Round(targetHeight * aspect);
-            targetWidth = Math.Clamp(targetWidth, 32, 4096);
-            targetHeight = Math.Clamp(targetHeight, 32, 4096);
+            targetWidth = Compat.Clamp(targetWidth, 32, 4096);
+            targetHeight = Compat.Clamp(targetHeight, 32, 4096);
 
             using var bmp = new Bitmap(targetWidth, targetHeight, PixelFormat.Format32bppArgb);
             using (var g = Graphics.FromImage(bmp))
@@ -942,7 +942,7 @@ internal static class DocxReader
                 {
                     var fmla = gd.Attribute("fmla")?.Value;
                     if (fmla != null && fmla.StartsWith("val ") &&
-                        int.TryParse(fmla.AsSpan(4), out var v))
+                        int.TryParse(fmla.Substring(4), out var v))
                         frameThicknessRatio = v / 100000f;
                 }
             }

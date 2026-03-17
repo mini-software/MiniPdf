@@ -199,14 +199,12 @@ internal sealed class PdfWriter
                         neededGlyphs.Add(gid);
                 var subsetFont = SubsetTtfFont(ttf, neededGlyphs);
 
-                using var ms = new System.IO.MemoryStream();
-                using (var zlib = new System.IO.Compression.ZLibStream(ms, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
-                    zlib.Write(subsetFont, 0, subsetFont.Length);
+                var compressedFont = CompressToZlib(subsetFont);
 
                 embeddedFonts.Add(new EmbeddedFontInfo
                 {
                     FontName = name,
-                    CompressedFontData = ms.ToArray(),
+                    CompressedFontData = compressedFont,
                     CidToGidMapData = cidToGid,
                     WArrayString = wArray,
                     ToUnicodeCMap = toUnicode,
@@ -229,7 +227,7 @@ internal sealed class PdfWriter
         // Pre-build content streams
         var contentStreams = new List<byte[]>(pageCount);
         for (var i = 0; i < pageCount; i++)
-            contentStreams.Add(Encoding.Latin1.GetBytes(BuildContentStream(pages[i], embeddedFonts.Count > 0, cpToFontSlot, embeddedFonts)));
+            contentStreams.Add(Compat.Latin1.GetBytes(BuildContentStream(pages[i], embeddedFonts.Count > 0, cpToFontSlot, embeddedFonts)));
 
         // Allocate object numbers.
         //   1 = Catalog, 2 = Pages, 3 = Font F1 (Helvetica/WinAnsi), 4 = Font F1B (Helvetica-Bold/WinAnsi)
@@ -446,7 +444,7 @@ internal sealed class PdfWriter
             if (!TryDecodePngToRgb(img.Data, out width, out height, out var rgb, out var alpha))
             {
                 // Fallback: treat bytes as raw 1×1 white pixel
-                width = 1; height = 1; rgb = [255, 255, 255]; alpha = null;
+                width = 1; height = 1; rgb = new byte[] { 255, 255, 255 }; alpha = null;
             }
 
             // Write SMask (alpha channel) object if this is an RGBA PNG
@@ -940,23 +938,23 @@ internal sealed class PdfWriter
     /// then applies the row filters to produce 8-bit-per-channel RGB pixel data.
     /// Supports color type 2 (RGB) and color type 6 (RGBA, alpha stripped).
     /// </summary>
+    private static readonly byte[] PngSignature = new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
+
     /// <summary>Checks if a PNG image has an alpha channel (color type 6 = RGBA).</summary>
     private static bool IsRgbaPng(byte[] data)
     {
         if (data.Length < 26) return false;
-        ReadOnlySpan<byte> sig = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
-        if (!data.AsSpan(0, 8).SequenceEqual(sig)) return false;
+        if (!data.AsSpan(0, 8).SequenceEqual(PngSignature.AsSpan())) return false;
         return data[24] == 8 && data[25] == 6; // 8-bit RGBA
     }
 
     private static bool TryDecodePngToRgb(byte[] data, out int width, out int height, out byte[] rgb, out byte[]? alpha)
     {
-        width = 1; height = 1; rgb = [255, 255, 255]; alpha = null;
+        width = 1; height = 1; rgb = new byte[] { 255, 255, 255 }; alpha = null;
         if (data.Length < 33) return false;
 
         // Validate PNG signature
-        ReadOnlySpan<byte> sig = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
-        if (!data.AsSpan(0, 8).SequenceEqual(sig)) return false;
+        if (!data.AsSpan(0, 8).SequenceEqual(PngSignature.AsSpan())) return false;
 
         // Parse IHDR (always first chunk, at offset 8)
         width  = (data[16] << 24) | (data[17] << 16) | (data[18] << 8) | data[19];
@@ -1082,16 +1080,39 @@ internal sealed class PdfWriter
     private static byte[] CompressToZlib(byte[] rawBytes)
     {
         using var ms = new System.IO.MemoryStream();
+#if NET6_0_OR_GREATER
         using (var zlib = new System.IO.Compression.ZLibStream(ms, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
             zlib.Write(rawBytes, 0, rawBytes.Length);
+#else
+        // Manually produce zlib framing: 2-byte header + Deflate + 4-byte Adler-32
+        ms.WriteByte(0x78); ms.WriteByte(0x9C);
+        using (var deflate = new System.IO.Compression.DeflateStream(ms, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
+            deflate.Write(rawBytes, 0, rawBytes.Length);
+        var adler = ComputeAdler32(rawBytes);
+        ms.WriteByte((byte)(adler >> 24)); ms.WriteByte((byte)(adler >> 16));
+        ms.WriteByte((byte)(adler >> 8));  ms.WriteByte((byte)(adler));
+#endif
         return ms.ToArray();
     }
+
+#if !NET6_0_OR_GREATER
+    private static uint ComputeAdler32(byte[] data)
+    {
+        uint a = 1, b = 0;
+        for (int i = 0; i < data.Length; i++)
+        {
+            a = (a + data[i]) % 65521;
+            b = (b + a) % 65521;
+        }
+        return (b << 16) | a;
+    }
+#endif
 
     private long Position => _stream.Position;
 
     private void WriteRaw(string text)
     {
-        var bytes = Encoding.Latin1.GetBytes(text);
+        var bytes = Compat.Latin1.GetBytes(text);
         _stream.Write(bytes);
     }
 
@@ -1105,7 +1126,7 @@ internal sealed class PdfWriter
     {
         var results = new List<string>();
 
-        if (OperatingSystem.IsWindows())
+        if (Compat.IsWindows())
         {
             var fontDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
             // Priority order: CJK first, then Korean, Arabic-capable, emoji, symbols
@@ -1127,7 +1148,7 @@ internal sealed class PdfWriter
                 if (File.Exists(p)) results.Add(p);
             }
         }
-        else if (OperatingSystem.IsMacOS())
+        else if (Compat.IsMacOS())
         {
             var fontDir = "/System/Library/Fonts";
             string[] candidates = [
@@ -1572,10 +1593,7 @@ internal sealed class PdfWriter
             }
         }
 
-        using var ms = new MemoryStream();
-        using (var zlib = new System.IO.Compression.ZLibStream(ms, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
-            zlib.Write(raw, 0, raw.Length);
-        return ms.ToArray();
+        return CompressToZlib(raw);
     }
 
     // ── Binary read/write helpers ──────────────────────────────────────

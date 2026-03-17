@@ -2859,7 +2859,7 @@ internal static class ExcelToPdfConverter
     {
         if (name.StartsWith("Sheet", StringComparison.OrdinalIgnoreCase) && name.Length <= 8)
         {
-            return int.TryParse(name.AsSpan(5), out _);
+            return int.TryParse(name.Substring(5), out _);
         }
         return false;
     }
@@ -3137,7 +3137,7 @@ internal static class ExcelToPdfConverter
                 // honour it (spacer columns etc.).  Only apply minColWidth for
                 // columns using the default/fallback width.
                 var floor = hasExplicitWidth ? 0f : minColWidth;
-                widths[i] = Math.Clamp(excelPts, floor, maxColWidth);
+                widths[i] = Compat.Clamp(excelPts, floor, maxColWidth);
             }
             else if (maxCols == 1)
             {
@@ -3145,7 +3145,7 @@ internal static class ExcelToPdfConverter
                 // (LibreOffice expands 1-column sheets to page width).
                 var natural = colMaxWidthPts[i] + 2 * avgCharWidth;
                 natural = Math.Max(natural, 5 * avgCharWidth); // minimum 5 chars
-                widths[i] = Math.Clamp(natural, minColWidth, maxColWidth);
+                widths[i] = Compat.Clamp(natural, minColWidth, maxColWidth);
             }
             else
             {
@@ -3153,7 +3153,7 @@ internal static class ExcelToPdfConverter
                 // char units) like LibreOffice does.  Text that exceeds the column
                 // boundary is clipped in the rendering step (shouldClip logic).
                 var defaultPts = ExcelSheet.CharUnitsToPoints(8.43f);
-                widths[i] = Math.Clamp(defaultPts, minColWidth, maxColWidth);
+                widths[i] = Compat.Clamp(defaultPts, minColWidth, maxColWidth);
             }
         }
 

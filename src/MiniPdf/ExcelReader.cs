@@ -620,9 +620,9 @@ internal static class ExcelReader
         }
 
         return new PdfColor(
-            Math.Clamp(r, 0f, 1f),
-            Math.Clamp(g, 0f, 1f),
-            Math.Clamp(b, 0f, 1f));
+            Compat.Clamp(r, 0f, 1f),
+            Compat.Clamp(g, 0f, 1f),
+            Compat.Clamp(b, 0f, 1f));
     }
 
     private static float HueToRgb(float p, float q, float t)
@@ -2741,7 +2741,7 @@ internal static class ExcelReader
             i++;
         }
         col--; // convert to 0-based
-        int.TryParse(addr.AsSpan(i), out var row);
+        int.TryParse(addr.Substring(i), out var row);
         row--; // convert to 0-based
         return (col, row);
     }

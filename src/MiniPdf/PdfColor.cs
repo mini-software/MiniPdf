@@ -20,9 +20,9 @@ internal readonly struct PdfColor : IEquatable<PdfColor>
     /// </summary>
     public PdfColor(float r, float g, float b)
     {
-        R = Math.Clamp(r, 0f, 1f);
-        G = Math.Clamp(g, 0f, 1f);
-        B = Math.Clamp(b, 0f, 1f);
+        R = Compat.Clamp(r, 0f, 1f);
+        G = Compat.Clamp(g, 0f, 1f);
+        B = Compat.Clamp(b, 0f, 1f);
     }
 
     /// <summary>
@@ -84,7 +84,7 @@ internal readonly struct PdfColor : IEquatable<PdfColor>
     /// <inheritdoc />
     public override bool Equals(object? obj) => obj is PdfColor c && Equals(c);
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(R, G, B);
+    public override int GetHashCode() => Compat.HashCombine(R, G, B);
     /// <summary>Equality operator.</summary>
     public static bool operator ==(PdfColor left, PdfColor right) => left.Equals(right);
     /// <summary>Inequality operator.</summary>

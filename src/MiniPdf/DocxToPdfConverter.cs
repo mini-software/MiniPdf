@@ -330,12 +330,12 @@ internal static class DocxToPdfConverter
                     if (runFs > maxFs) maxFs = runFs;
                 }
                 var autoHeight = maxFs * FontMetricsFactor * options.LineSpacing;
-                lineHeight = MathF.Ceiling(autoHeight / gridPitch) * gridPitch;
+                lineHeight = Compat.Ceiling(autoHeight / gridPitch) * gridPitch;
             }
             else if (paragraph.LineSpacingAbsolute && paragraph.LineSpacing > 0)
             {
                 // Exact spacing: snap the exact value up to nearest grid line
-                lineHeight = MathF.Ceiling(lineHeight / gridPitch) * gridPitch;
+                lineHeight = Compat.Ceiling(lineHeight / gridPitch) * gridPitch;
             }
         }
 
@@ -1185,7 +1185,7 @@ internal static class DocxToPdfConverter
         var maxCols = table.Rows.Count > 0 ? table.Rows.Max(r => r.Cells.Count) : 1;
         var colWidth = usableWidth / maxCols;
         var result = new float[maxCols];
-        Array.Fill(result, colWidth);
+        Compat.ArrayFill(result, colWidth);
         return result;
     }
 
@@ -1463,7 +1463,7 @@ internal static class DocxToPdfConverter
             scale -= 0.003f;
 
         // Keep the adjustment bounded to avoid regressions in other numbered paragraphs.
-        return Math.Clamp(scale, 0.972f, 0.986f);
+        return Compat.Clamp(scale, 0.972f, 0.986f);
     }
 
     /// <summary>
