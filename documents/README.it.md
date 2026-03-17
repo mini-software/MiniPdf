@@ -28,6 +28,7 @@ Una libreria .NET minimale e leggera per convertire file Office in PDF.
 - **Dipendenze minime** — Design leggero, utilizza quasi esclusivamente le API .NET integrate
 - **Pronto per il serverless** — Nessun COM, nessuna installazione di Office, nessun Adobe Acrobat — funziona ovunque .NET funzioni
 - **Output PDF 1.4** valido
+- **100% open-source e gratuito** — Licenza Apache 2.0, uso commerciale libero; basta mantenere l'attribuzione. PR e contributi sono benvenuti!
 - **Grafici** — Attualmente non ben supportati
 
 ## Iniziare

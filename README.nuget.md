@@ -18,6 +18,7 @@ Online Demo: https://mini-software.github.io/MiniPdf/
 - Minimal dependencies — lightweight; relies almost entirely on built-in .NET APIs
 - Serverless-ready — no COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
 - Valid PDF 1.4 output
+- 100% open-source & free — Apache 2.0 licensed, commercial use welcome; just keep the attribution. PRs & contributions are even better!
 
 ## Install
 

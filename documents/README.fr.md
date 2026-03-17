@@ -28,6 +28,7 @@ Une bibliothèque .NET minimale et légère pour convertir des fichiers Office e
 - **Dépendances minimales** — Conception légère, repose presque entièrement sur les API .NET intégrées
 - **Prêt pour le serverless** — Pas de COM, pas d'installation d'Office, pas d'Adobe Acrobat — fonctionne partout où .NET fonctionne
 - **Sortie PDF 1.4** valide
+- **100 % open-source & gratuit** — Licence Apache 2.0, usage commercial bienvenu ; il suffit de conserver l'attribution. Les PR et contributions sont les bienvenues !
 - **Graphiques** — Pas encore bien pris en charge
 
 ## Démarrage
