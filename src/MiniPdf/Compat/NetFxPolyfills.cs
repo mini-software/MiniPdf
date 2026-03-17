@@ -1,5 +1,5 @@
-#if NETFRAMEWORK
-// Polyfill types and extension methods for .NET Framework 4.6.2 compatibility.
+#if NETFRAMEWORK || NETSTANDARD2_0
+// Polyfill types and extension methods for .NET Framework 4.6.2 / .NET Standard 2.0 compatibility.
 // These are automatically available on .NET 6+ and are excluded via #if.
 
 using System.Collections.Generic;

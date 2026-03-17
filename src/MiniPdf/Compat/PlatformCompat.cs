@@ -23,6 +23,9 @@ internal static class Compat
     {
 #if NETFRAMEWORK
         return true; // .NET Framework only runs on Windows
+#elif NETSTANDARD2_0
+        return System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
+            System.Runtime.InteropServices.OSPlatform.Windows);
 #else
         return OperatingSystem.IsWindows();
 #endif
@@ -32,6 +35,9 @@ internal static class Compat
     {
 #if NETFRAMEWORK
         return false;
+#elif NETSTANDARD2_0
+        return System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
+            System.Runtime.InteropServices.OSPlatform.OSX);
 #else
         return OperatingSystem.IsMacOS();
 #endif
