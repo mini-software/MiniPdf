@@ -83,8 +83,11 @@ internal static class DocxToPdfConverter
         if (docxDoc.DefaultLineSpacing > 0 && !docxDoc.DefaultLineSpacingAbsolute)
             options.LineSpacing = docxDoc.DefaultLineSpacing;
 
-        // Keep Calibri-based wrap metrics as default. The renderer uses Helvetica,
-        // but wrap calibration is tuned against reference output across issue files.
+        // Choose wrap metrics from the effective document default font.
+        // Many Word docs use theme fonts (e.g., minorHAnsi -> Cambria), so always using
+        // Calibri widths can under-wrap and reduce page count.
+        if (!string.IsNullOrWhiteSpace(docxDoc.DefaultFontName))
+            options.UseCalibriWidths = docxDoc.DefaultFontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase);
 
         var pdfDoc = new PdfDocument();
 
@@ -113,11 +116,30 @@ internal static class DocxToPdfConverter
             options.MarginRight = firstLayout.MarginRight;
         }
 
+        // Pre-process: apply contextualSpacing rules — suppress spacing between
+        // same-style consecutive paragraphs when either has contextualSpacing set.
+        var processedElements = new List<DocxElement>(docxDoc.Elements.Count);
+        for (int i = 0; i < docxDoc.Elements.Count; i++)
+        {
+            var element = docxDoc.Elements[i];
+            if (element is DocxParagraph currPara
+                && i + 1 < docxDoc.Elements.Count
+                && docxDoc.Elements[i + 1] is DocxParagraph nextPara
+                && (currPara.ContextualSpacing || nextPara.ContextualSpacing)
+                && !string.IsNullOrEmpty(currPara.StyleId)
+                && currPara.StyleId == nextPara.StyleId
+                && currPara.SpacingAfter > 0)
+            {
+                element = currPara with { SpacingAfter = 0 };
+            }
+            processedElements.Add(element);
+        }
+
         var state = new RenderState(pdfDoc, options);
         state.EnsurePage();
 
         var sectionIndex = 0;
-        foreach (var element in docxDoc.Elements)
+        foreach (var element in processedElements)
         {
             switch (element)
             {
@@ -346,7 +368,8 @@ internal static class DocxToPdfConverter
 
         // Handle empty paragraphs before EnsurePage — they don't produce visible content
         // and should not force a new page (avoids spurious trailing pages).
-        if (paragraph.Runs.Count == 0 && paragraph.Images.Count == 0 && paragraph.Shading == null)
+        if (paragraph.Runs.Count == 0 && paragraph.Images.Count == 0 && paragraph.Shading == null
+            && (paragraph.Shapes == null || paragraph.Shapes.Count == 0))
         {
             // Only advance Y on current page — don't trigger a page break
             if (state.CurrentPage != null)
@@ -488,7 +511,10 @@ internal static class DocxToPdfConverter
         // If paragraph has no text runs, still account for spacing
         if (paragraph.Runs.Count == 0)
         {
-            state.AdvanceY(lineHeight);
+            // Only add line height when no inline images were rendered
+            // (inline images advance Y themselves via RenderImage)
+            if (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor))
+                state.AdvanceY(lineHeight);
             // Apply spacing after
             var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             state.AdvanceY(spacingAfterEmpty);
@@ -846,7 +872,7 @@ internal static class DocxToPdfConverter
 
     /// <summary>
     /// Renders shape geometry. For "frame" shapes, draws only the border area.
-    /// For all other shapes, draws a filled rectangle.
+    /// Supports frame, ellipse and custom polygon paths; defaults to rectangle.
     /// </summary>
     private static void RenderShapeGeometry(PdfPage page, float x, float y, float width, float height,
         PdfColor color, DocxShape shape)
@@ -863,6 +889,35 @@ internal static class DocxToPdfConverter
             page.AddRectangle(x, y + t, t, height - 2 * t, color);
             // Right border (between top and bottom)
             page.AddRectangle(x + width - t, y + t, t, height - 2 * t, color);
+        }
+        else if (shape.PresetGeometry == "ellipse")
+        {
+            page.AddEllipse(x, y, width, height, color);
+        }
+        else if (shape.PresetGeometry == "custom" && shape.CustomPaths is { Count: > 0 })
+        {
+            foreach (var path in shape.CustomPaths)
+            {
+                if (path.Subpaths.Count == 0)
+                    continue;
+
+                var mappedSubpaths = path.Subpaths
+                    .Where(subpath => subpath.Count >= 3)
+                    .Select(subpath => subpath
+                        .Select(p => new PdfPoint(
+                            x + p.X * width,
+                            y + height - p.Y * height))
+                        .ToList())
+                    .Where(subpath => subpath.Count >= 3)
+                    .ToList();
+
+                if (mappedSubpaths.Count == 0)
+                    continue;
+
+                // Always use AddCompoundPolygon so the even-odd fill rule
+                // (path.UseEvenOddFill) is honoured for single-subpath shapes too.
+                page.AddCompoundPolygon(mappedSubpaths, color, path.UseEvenOddFill);
+            }
         }
         else
         {
@@ -926,8 +981,8 @@ internal static class DocxToPdfConverter
     {
         var options = state.Options;
         var usableWidth = state.UsableWidth;
-        var cellPaddingH = 5.4f;  // horizontal (left/right) cell padding
-        var cellPaddingV = 1f;    // vertical (top/bottom) cell padding
+        var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
+        var cellPaddingV = Math.Max(table.CellMarginTop, table.CellMarginBottom);
 
         // Determine column widths
         var colWidths = CalculateTableColumnWidths(table, usableWidth);
@@ -956,6 +1011,10 @@ internal static class DocxToPdfConverter
         {
             var row = table.Rows[rowIndex];
             var rowHeight = rowHeights[rowIndex];
+
+            // Defensive floor for image-heavy rows: ensure inline image extents
+            // are always respected, even when upstream row-height hints are small.
+            rowHeight = Math.Max(rowHeight, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
 
             state.EnsurePage();
 
@@ -1022,11 +1081,24 @@ internal static class DocxToPdfConverter
                     state.CurrentPage!.AddRectangle(cellX, state.CurrentY - cellRenderHeight, cellWidth, cellRenderHeight, cell.Shading);
                 }
 
-                // Render cell content (images and text)
-                var textY = state.CurrentY - cellPaddingV;
-                var isFirstCellPara = true;
-                foreach (var para in cell.Paragraphs)
+                // Apply vertical alignment offset
+                float vAlignOffset = 0;
+                if (cell.VerticalAlignment != "top")
                 {
+                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options);
+                    var space = cellRenderHeight - contentHeight;
+                    if (space > 0)
+                        vAlignOffset = cell.VerticalAlignment == "bottom" ? space : space / 2;
+                }
+
+                // Render cell content (images and text)
+                var textY = state.CurrentY - cellPaddingV - vAlignOffset;
+                var cellParaList = cell.Paragraphs;
+                for (var cellParaIdx = 0; cellParaIdx < cellParaList.Count; cellParaIdx++)
+                {
+                    var para = cellParaList[cellParaIdx];
+                    var isFirstCellPara = cellParaIdx == 0;
+                    var isLastCellPara = cellParaIdx == cellParaList.Count - 1;
                     // Apply spacing before (skip for first paragraph in cell)
                     if (!isFirstCellPara && para.SpacingBefore > 0)
                         textY -= para.SpacingBefore;
@@ -1061,8 +1133,7 @@ internal static class DocxToPdfConverter
                         // Empty paragraph still takes up space
                         var emptyLineH = fontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
                         textY -= emptyLineH;
-                        if (para.SpacingAfter >= 0) textY -= para.SpacingAfter;
-                        isFirstCellPara = false;
+                        // Suppress SpacingAfter for all paragraphs in table cells (TableGrid after=0)
                         continue;
                     }
 
@@ -1092,9 +1163,8 @@ internal static class DocxToPdfConverter
                         textY -= lineHeight - effectiveFontSize;
                     }
 
-                    // Apply spacing after
-                    if (para.SpacingAfter > 0) textY -= para.SpacingAfter;
-                    isFirstCellPara = false;
+                    // Suppress SpacingAfter for all paragraphs in table cells (TableGrid after=0)
+                    _ = isLastCellPara; // variable kept for potential future use
                 }
 
                 cellX += cellWidth;
@@ -1171,22 +1241,75 @@ internal static class DocxToPdfConverter
         {
             var widths = table.ColumnWidths.ToArray();
             var total = widths.Sum();
-            if (total > 0)
+            if (total <= 0)
             {
-                // Scale to fit usable width
-                var scale = usableWidth / total;
-                for (var i = 0; i < widths.Length; i++)
-                    widths[i] *= scale;
+                // No valid widths, distribute evenly
+                var maxCols = table.Rows.Count > 0 ? table.Rows.Max(r => r.Cells.Count) : 1;
+                var cw = usableWidth / maxCols;
+                var res = new float[maxCols];
+                Compat.ArrayFill(res, cw);
+                return res;
             }
+            // Use actual DOCX widths (don't scale to usable width)
             return widths;
         }
 
         // Determine from cell count
-        var maxCols = table.Rows.Count > 0 ? table.Rows.Max(r => r.Cells.Count) : 1;
-        var colWidth = usableWidth / maxCols;
-        var result = new float[maxCols];
+        var maxCols2 = table.Rows.Count > 0 ? table.Rows.Max(r => r.Cells.Count) : 1;
+        var colWidth = usableWidth / maxCols2;
+        var result = new float[maxCols2];
         Compat.ArrayFill(result, colWidth);
         return result;
+    }
+
+    private static float CalculateCellContentHeight(DocxTableCell cell, float cellWidth, float cellPaddingH, float cellPaddingV, ConversionOptions options)
+    {
+        var cellHeight = cellPaddingV * 2;
+        var cellParas = cell.Paragraphs;
+        for (var pi = 0; pi < cellParas.Count; pi++)
+        {
+            var para = cellParas[pi];
+            var isFirstPara = pi == 0;
+            var isLastPara = pi == cellParas.Count - 1;
+
+            if (!isFirstPara && para.SpacingBefore > 0)
+                cellHeight += para.SpacingBefore;
+
+            const float emuPerPt = 914400f / 72f;
+            foreach (var image in para.Images)
+            {
+                if (image.IsAnchor) continue;
+                var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
+                var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
+                var maxImgW = cellWidth - cellPaddingH * 2;
+                if (imgW > maxImgW)
+                    imgH *= maxImgW / imgW;
+                cellHeight += imgH + 1f;
+            }
+
+            var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
+            var dominantRun = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
+            var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
+            var runCharSpacing = dominantRun?.CharSpacing ?? 0f;
+            var runBold = dominantRun?.Bold ?? false;
+            var lineHeight = runFontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+            var textWidth = cellWidth - cellPaddingH * 2;
+            var text = string.Concat(para.Runs.Select(r => r.Text));
+
+            if (string.IsNullOrEmpty(text))
+            {
+                cellHeight += lineHeight;
+                // Suppress SpacingAfter for all paragraphs in table cells (TableGrid after=0)
+                continue;
+            }
+
+            var lines = WordWrap(text, textWidth, textWidth, runFontSize, null, runBold, runCharSpacing, options.UseCalibriWidths);
+            cellHeight += lines.Count * lineHeight;
+            // Suppress SpacingAfter for all paragraphs in table cells
+            // (TableGrid style sets after=0, matching Word/LibreOffice compact cell behavior)
+        }
+
+        return cellHeight;
     }
 
     private static float CalculateRowHeight(DocxTableRow row, float[] colWidths, float cellPaddingH, float cellPaddingV, ConversionOptions options)
@@ -1199,64 +1322,62 @@ internal static class DocxToPdfConverter
             var cell = row.Cells[cellIdx];
             var span = cell.GridSpan;
 
-            // Calculate cell width from column widths
             var cellWidth = colWidths[colIdx];
             for (var s = 1; s < span && colIdx + s < colWidths.Length; s++)
                 cellWidth += colWidths[colIdx + s];
 
-            // Advance column index past spanned columns
             colIdx += span;
 
-            // Skip vertically merged continuation cells in height calculation
             if (cell.IsVMergeContinue)
                 continue;
 
-            var cellHeight = cellPaddingV * 2;
-            var isFirstPara = true;
+            var cellHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options);
+            maxHeight = Math.Max(maxHeight, cellHeight);
+        }
+
+        return maxHeight;
+    }
+
+    private static float CalculateRowInlineImageFloorHeight(DocxTableRow row, float[] colWidths, float cellPaddingH, float cellPaddingV)
+    {
+        const float emuPerPt = 914400f / 72f;
+        var maxHeight = 0f;
+        var colIdx = 0;
+
+        for (var cellIdx = 0; cellIdx < row.Cells.Count && colIdx < colWidths.Length; cellIdx++)
+        {
+            var cell = row.Cells[cellIdx];
+            var span = Math.Max(1, cell.GridSpan);
+
+            var cellWidth = colWidths[colIdx];
+            for (var s = 1; s < span && colIdx + s < colWidths.Length; s++)
+                cellWidth += colWidths[colIdx + s];
+
+            colIdx += span;
+
+            if (cell.IsVMergeContinue)
+                continue;
+
+            var cellImageHeight = 0f;
             foreach (var para in cell.Paragraphs)
             {
-                // Account for paragraph spacing
-                if (!isFirstPara && para.SpacingBefore > 0)
-                    cellHeight += para.SpacingBefore;
-
-                // Account for images in row height
-                const float emuPerPt = 914400f / 72f;
                 foreach (var image in para.Images)
                 {
-                    if (image.IsAnchor) continue; // Anchor images don't consume cell space
+                    if (image.IsAnchor)
+                        continue;
+
                     var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                     var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
-                    var maxImgW = cellWidth - cellPaddingH * 2;
+                    var maxImgW = Math.Max(1f, cellWidth - cellPaddingH * 2);
                     if (imgW > maxImgW)
                         imgH *= maxImgW / imgW;
-                    cellHeight += imgH + 1f;
+
+                    cellImageHeight += imgH + 1f;
                 }
-
-                var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
-                var dominantRun = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
-                var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
-                var effectiveFontSize = runFontSize;
-                var runCharSpacing = dominantRun?.CharSpacing ?? 0f;
-                var runBold = dominantRun?.Bold ?? false;
-                var lineHeight = effectiveFontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
-                var textWidth = cellWidth - cellPaddingH * 2;
-                var text = string.Concat(para.Runs.Select(r => r.Text));
-
-                if (string.IsNullOrEmpty(text))
-                {
-                    cellHeight += lineHeight;
-                    if (para.SpacingAfter > 0) cellHeight += para.SpacingAfter;
-                    isFirstPara = false;
-                    continue;
-                }
-
-                var lines = WordWrap(text, textWidth, textWidth, effectiveFontSize, null, runBold, runCharSpacing, options.UseCalibriWidths);
-                cellHeight += lines.Count * lineHeight;
-                if (para.SpacingAfter > 0) cellHeight += para.SpacingAfter;
-                isFirstPara = false;
             }
 
-            maxHeight = Math.Max(maxHeight, cellHeight);
+            if (cellImageHeight > 0)
+                maxHeight = Math.Max(maxHeight, cellImageHeight + cellPaddingV * 2);
         }
 
         return maxHeight;
