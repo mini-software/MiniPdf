@@ -16,7 +16,7 @@ English | <a href="README.zh-CN.md">简体中文</a> | <a href="documents/README
 
 ---
 
-A minimal, zero-dependency .NET library for converting  office files to PDF.
+A minimal, lightweight .NET library for converting office files to PDF.
 
 👉 **[Online Demo](https://mini-software.github.io/MiniPdf/)** — Try it in your browser, no install required.
 
@@ -26,7 +26,8 @@ A minimal, zero-dependency .NET library for converting  office files to PDF.
 
 - **Excel-to-PDF** — Convert `.xlsx` files to PDF 
 - **Word-to-PDF** — Convert `.docx` files to PDF 
-- **Zero dependencies** — Uses only built-in .NET APIs (no external packages)
+- **Minimal dependencies** — Lightweight; relies almost entirely on built-in .NET APIs
+- **Serverless-ready** — No COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
 - **Valid PDF 1.4** output
 - **Chart** — Not currently supported well
 

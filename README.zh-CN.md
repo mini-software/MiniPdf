@@ -15,7 +15,7 @@
 
 ---
 
-一个极简、零依赖的 .NET 库，用于将 Office 文件转换为 PDF。
+一个极简、轻量化的 .NET 库，用于将 Office 文件转换为 PDF。
 
 👉 **[在线演示](https://mini-software.github.io/MiniPdf/)** — 在浏览器中快速体验，无需安装。
 
@@ -39,7 +39,8 @@
 
 - **Excel 转 PDF** — 将 `.xlsx` 文件转换为 PDF
 - **Word 转 PDF** — 将 `.docx` 文件转换为 PDF
-- **零依赖** — 仅使用 .NET 内置 API（无需任何外部包）
+- **极少依赖** — 轻量化设计，几乎仅使用 .NET 内置 API
+- **Serverless 就绪** — 无需 COM、无需安装 Office、无需 Adobe Acrobat — 有 .NET 即可运行
 - **标准 PDF 1.4** 格式输出
 - **图表** — 目前支持尚不完善
 
