@@ -351,6 +351,12 @@ def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str,
     if not HAS_FITZ:
         return []
 
+    # Remove stale images from previous runs with different page counts
+    import glob
+    for suffix in ("minipdf", "reference", "office"):
+        for old in glob.glob(os.path.join(output_dir, f"{glob.escape(name)}_p*_{suffix}.png")):
+            os.remove(old)
+
     diff_images = []
     doc1 = fitz.open(pdf1_path)
     doc2 = fitz.open(pdf2_path)

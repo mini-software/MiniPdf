@@ -79,7 +79,7 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
         try {
             $convertArgs = @("convert_xlsx_to_pdf.cs", "--", $XlsxIssueDir, $MiniPdfXlsx)
             if ($Filter) { $convertArgs += $Filter }
-            dotnet run @convertArgs
+            dotnet run --no-cache @convertArgs
         } finally {
             Pop-Location
         }
@@ -138,7 +138,7 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
         try {
             $convertArgs = @("convert_docx_to_pdf.cs", "--", $DocxIssueDir, $MiniPdfDocx)
             if ($Filter) { $convertArgs += $Filter }
-            dotnet run @convertArgs
+            dotnet run --no-cache @convertArgs
         } finally {
             Pop-Location
         }

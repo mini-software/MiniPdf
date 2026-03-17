@@ -117,7 +117,6 @@ internal static class ExcelReader
 
         foreach (var si in doc.Descendants(ns + "si"))
         {
-            // Handle both simple <t> and rich text <r><t> patterns
             var text = string.Concat(si.Descendants(ns + "t").Select(t => t.Value));
             strings.Add(text);
         }
@@ -225,13 +224,12 @@ internal static class ExcelReader
                     fontSize = sz;
             }
 
-            // Read bold
+            // Read bold / italic / underline
             var bold = font.Element(ns + "b") != null;
-
-            // Read italic
             var italic = font.Element(ns + "i") != null;
+            var underline = font.Element(ns + "u") != null;
 
-            styles.Add(new FontStyleInfo(color, fontSize, bold, italic));
+            styles.Add(new FontStyleInfo(color, fontSize, bold, italic, underline));
         }
 
         return styles;
@@ -280,6 +278,137 @@ internal static class ExcelReader
         // Default border color is black
         color ??= PdfColor.FromRgb(0, 0, 0);
         return new BorderSide(style, color);
+    }
+
+    /// <summary>
+    /// Reads table style definitions from styles.xml and maps each table style name
+    /// to the border info defined by the wholeTable DXF element.
+    /// </summary>
+    private static Dictionary<string, CellBorderInfo> ReadTableStyleBorders(ZipArchive archive, List<PdfColor> themeColors)
+    {
+        var result = new Dictionary<string, CellBorderInfo>(StringComparer.OrdinalIgnoreCase);
+        var entry = archive.GetEntry("xl/styles.xml");
+        if (entry == null) return result;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        // Read all DXF border entries
+        var dxfBorders = new List<CellBorderInfo?>();
+        var dxfs = doc.Descendants(ns + "dxfs").FirstOrDefault();
+        if (dxfs != null)
+        {
+            foreach (var dxf in dxfs.Elements(ns + "dxf"))
+            {
+                var borderEl = dxf.Element(ns + "border");
+                if (borderEl != null)
+                {
+                    var left = ReadBorderSide(borderEl.Element(ns + "left"), ns, themeColors);
+                    var right = ReadBorderSide(borderEl.Element(ns + "right"), ns, themeColors);
+                    var top = ReadBorderSide(borderEl.Element(ns + "top"), ns, themeColors);
+                    var bottom = ReadBorderSide(borderEl.Element(ns + "bottom"), ns, themeColors);
+                    dxfBorders.Add(left != null || right != null || top != null || bottom != null
+                        ? new CellBorderInfo(left, right, top, bottom)
+                        : null);
+                }
+                else
+                {
+                    dxfBorders.Add(null);
+                }
+            }
+        }
+
+        // Map table style names to their wholeTable border
+        foreach (var ts in doc.Descendants(ns + "tableStyle"))
+        {
+            var name = ts.Attribute("name")?.Value;
+            if (string.IsNullOrEmpty(name)) continue;
+
+            var wholeTable = ts.Elements(ns + "tableStyleElement")
+                .FirstOrDefault(e => e.Attribute("type")?.Value == "wholeTable");
+            if (wholeTable == null) continue;
+
+            if (int.TryParse(wholeTable.Attribute("dxfId")?.Value, out var dxfId) &&
+                dxfId >= 0 && dxfId < dxfBorders.Count && dxfBorders[dxfId] != null)
+            {
+                result[name] = dxfBorders[dxfId]!;
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Reads table definitions for a worksheet and applies table-style borders
+    /// to cells within each table range that don't already have explicit borders.
+    /// </summary>
+    private static void ApplyTableBorders(ZipArchive archive, int sheetId,
+        List<List<ExcelCell>> rows, Dictionary<string, CellBorderInfo> tableStyleBorders)
+    {
+        if (tableStyleBorders.Count == 0) return;
+
+        var relsPath = $"xl/worksheets/_rels/sheet{sheetId}.xml.rels";
+        var relsEntry = archive.GetEntry(relsPath);
+        if (relsEntry == null) return;
+
+        var tableFiles = new List<string>();
+        using (var relsStream = relsEntry.Open())
+        {
+            var relsDoc = XDocument.Load(relsStream);
+            foreach (var rel in relsDoc.Descendants())
+            {
+                if (rel.Attribute("Type")?.Value?.EndsWith("/table", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    var target = rel.Attribute("Target")?.Value;
+                    if (!string.IsNullOrEmpty(target))
+                        tableFiles.Add(System.IO.Path.GetFileName(target));
+                }
+            }
+        }
+
+        foreach (var tableFile in tableFiles)
+        {
+            var tableEntry = archive.GetEntry($"xl/tables/{tableFile}");
+            if (tableEntry == null) continue;
+
+            string? refAttr, styleName;
+            using (var tableStream = tableEntry.Open())
+            {
+                var tableDoc = XDocument.Load(tableStream);
+                refAttr = tableDoc.Root?.Attribute("ref")?.Value;
+                var styleInfo = tableDoc.Root?.Descendants().FirstOrDefault(e => e.Name.LocalName == "tableStyleInfo");
+                styleName = styleInfo?.Attribute("name")?.Value;
+            }
+
+            if (string.IsNullOrEmpty(refAttr) || string.IsNullOrEmpty(styleName)) continue;
+            if (!tableStyleBorders.TryGetValue(styleName, out var tableBorder)) continue;
+
+            var rangeParts = refAttr.Split(':');
+            if (rangeParts.Length != 2) continue;
+
+            var (startRow, startCol) = ParseCellRef(rangeParts[0]);
+            var (endRow, endCol) = ParseCellRef(rangeParts[1]);
+
+            for (var r = startRow; r <= endRow && r < rows.Count; r++)
+            {
+                var row = rows[r];
+                // Ensure row has enough cells to cover table columns
+                while (row.Count <= endCol)
+                    row.Add(new ExcelCell(string.Empty, null, null));
+
+                for (var c = startCol; c <= endCol; c++)
+                {
+                    var cell = row[c];
+                    // Do not synthesize borders into empty cells.
+                    // Empty-table grid lines are not rendered by reference output.
+                    if (cell.Border == null && !string.IsNullOrEmpty(cell.Text))
+                    {
+                        row[c] = cell with { Border = tableBorder };
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -924,6 +1053,24 @@ internal static class ExcelReader
         var doc = XDocument.Load(stream);
         var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
 
+        // Hyperlink cells often rely on workbook defaults for visual style.
+        // Track refs so we can apply the expected blue + underline appearance.
+        var hyperlinkRefs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var hyperlink in doc.Descendants(ns + "hyperlink"))
+        {
+            var href = hyperlink.Attribute("ref")?.Value;
+            if (string.IsNullOrEmpty(href))
+                continue;
+
+            foreach (var part in href.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var rangePart = part.Split(':', StringSplitOptions.RemoveEmptyEntries)[0];
+                var normalized = rangePart.Replace("$", "");
+                if (!string.IsNullOrEmpty(normalized))
+                    hyperlinkRefs.Add(normalized);
+            }
+        }
+
         var lastRowNumber = 0;
 
         foreach (var row in doc.Descendants(ns + "row"))
@@ -963,6 +1110,23 @@ internal static class ExcelReader
 
                 var type = cell.Attribute("t")?.Value;
                 var value = cell.Element(ns + "v")?.Value ?? "";
+                var formula = cell.Element(ns + "f")?.Value ?? "";
+
+                // Recalculate simple volatile formulas so output matches reference renderers
+                // that evaluate formulas at conversion time.
+                if (!string.IsNullOrEmpty(formula))
+                {
+                    if (IsTodayFormula(formula))
+                    {
+                        value = DateTimeToExcelSerial(DateTime.Today)
+                            .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                    else if (IsNowFormula(formula))
+                    {
+                        value = DateTimeToExcelSerial(DateTime.Now)
+                            .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                }
 
                 // Resolve color and fill from style index
                 var styleAttr = cell.Attribute("s")?.Value;
@@ -974,6 +1138,7 @@ internal static class ExcelReader
                 float fontSize = 11f;
                 bool bold = false;
                 bool italic = false;
+                bool underline = false;
                 CellBorderInfo? border = null;
                 bool wrapText = false;
                 if (int.TryParse(styleAttr, out var styleIndex))
@@ -983,6 +1148,7 @@ internal static class ExcelReader
                     fontSize = fontStyle.Size;
                     bold = fontStyle.Bold;
                     italic = fontStyle.Italic;
+                    underline = fontStyle.Underline;
                     fillColor = ResolveFillColor(styleIndex, fillColors, cellXfFillIndices);
                     border = ResolveBorder(styleIndex, borders, cellXfBorderIndices);
                     if (styleIndex >= 0 && styleIndex < cellXfNumFmtIds.Count)
@@ -1041,7 +1207,15 @@ internal static class ExcelReader
                     cellAlignment = isNumericCell ? "right" : (type == "b" ? "center" : "left");
                 }
 
-                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, border, cellVerticalAlignment, wrapText));
+                // Apply common hyperlink visual style for linked cells.
+                var normalizedRef = reference.Replace("$", "");
+                if (!string.IsNullOrEmpty(normalizedRef) && hyperlinkRefs.Contains(normalizedRef))
+                {
+                    color = PdfColor.FromRgb(5, 99, 193);
+                    underline = true;
+                }
+
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, border, cellVerticalAlignment, wrapText));
                 lastColIndex = colIndex + 1;
             }
 
@@ -1066,6 +1240,37 @@ internal static class ExcelReader
             }
         }
         return col > 0 ? col - 1 : 0;
+    }
+
+    private static bool IsTodayFormula(string formula)
+    {
+        var normalized = NormalizeFormula(formula);
+        return string.Equals(normalized, "today()", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsNowFormula(string formula)
+    {
+        var normalized = NormalizeFormula(formula);
+        return string.Equals(normalized, "now()", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string NormalizeFormula(string formula)
+    {
+        if (string.IsNullOrWhiteSpace(formula))
+            return string.Empty;
+
+        var normalized = formula.Trim();
+        if (normalized.StartsWith("=", StringComparison.Ordinal))
+            normalized = normalized[1..];
+
+        if (normalized.StartsWith("@", StringComparison.Ordinal))
+            normalized = normalized[1..];
+
+        if (normalized.StartsWith("_xlfn.", StringComparison.OrdinalIgnoreCase))
+            normalized = normalized[6..];
+
+        // Ignore spaces often inserted by some generators (e.g., "TODAY( )").
+        return normalized.Replace(" ", string.Empty);
     }
 
     /// <summary>
@@ -1095,7 +1300,7 @@ internal static class ExcelReader
             10 => (value * 100).ToString("F2", ci) + "%", // 0.00%
             11 => value.ToString("0.00E+00", ci),         // 0.00E+00
             // Date formats (14-22): Excel stores dates as serial numbers
-            14 => FormatExcelDate(value, "MM/dd/yyyy"),
+            14 => FormatExcelDate(value, "M/d/yyyy"),
             15 => FormatExcelDate(value, "d-MMM-yy"),
             16 => FormatExcelDate(value, "d-MMM"),
             17 => FormatExcelDate(value, "MMM-yy"),
@@ -1321,6 +1526,17 @@ internal static class ExcelReader
             negSign = "-";
         }
 
+        // Pre-round through 15-significant-digit decimal to fix floating-point
+        // midpoint rounding (e.g. 127.25*0.06 = 7.6349999999999998 → 7.635 → 7.64).
+        // This matches Excel/LibreOffice rounding behavior.
+        if (hasDecimal && decimalPlaces >= 0)
+        {
+            var decValue = decimal.Parse(value.ToString("G15", ci),
+                System.Globalization.NumberStyles.Float, ci);
+            decValue = Math.Round(decValue, decimalPlaces, MidpointRounding.AwayFromZero);
+            value = (double)decValue;
+        }
+
         string formatted;
         if (hasThousands)
         {
@@ -1419,6 +1635,20 @@ internal static class ExcelReader
         {
             return serialDate.ToString("G10", System.Globalization.CultureInfo.InvariantCulture);
         }
+    }
+
+    /// <summary>
+    /// Converts a DateTime to Excel's serial date value (1900 date system with leap-year bug).
+    /// </summary>
+    private static double DateTimeToExcelSerial(DateTime dt)
+    {
+        var date = dt.Date;
+        var days = (date - new DateTime(1900, 1, 1)).TotalDays + 1;
+        if (days >= 60)
+            days += 1; // Excel's fictitious 1900-02-29
+
+        var frac = (dt - date).TotalDays;
+        return days + frac;
     }
 
     /// <summary>
@@ -1964,13 +2194,24 @@ internal static class ExcelReader
                 long.TryParse(extEl.Attribute("cy")?.Value, out heightEmu);
             }
 
-            // Find the blip (image reference)
-            var blip = anchor.Descendants(a + "blip").FirstOrDefault();
-            if (blip == null) continue;
+            // Find image reference IDs and prefer raster (png/jpg/jpeg) targets.
+            var embedIds = anchor.Descendants(a + "blip")
+                .Select(b => b.Attribute(r + "embed")?.Value)
+                .Where(id => !string.IsNullOrEmpty(id))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Cast<string>()
+                .ToList();
+            if (embedIds.Count == 0) continue;
 
-            var rId = blip.Attribute(r + "embed")?.Value;
-            if (string.IsNullOrEmpty(rId)) continue;
-            if (!rIdToMedia.TryGetValue(rId, out var mediaPath)) continue;
+            static bool IsRasterImagePath(string path)
+            {
+                var e = System.IO.Path.GetExtension(path).TrimStart('.').ToLowerInvariant();
+                return e is "png" or "jpg" or "jpeg";
+            }
+
+            var chosenRid = embedIds.FirstOrDefault(id => rIdToMedia.TryGetValue(id, out var p) && IsRasterImagePath(p))
+                ?? embedIds.First();
+            if (!rIdToMedia.TryGetValue(chosenRid, out var mediaPath)) continue;
 
             var mediaEntry = archive.GetEntry(mediaPath);
             if (mediaEntry == null) continue;
@@ -2509,7 +2750,7 @@ internal static class ExcelReader
 /// <summary>
 /// Represents font styling information for a cell.
 /// </summary>
-internal sealed record FontStyleInfo(PdfColor? Color, float Size = 11f, bool Bold = false, bool Italic = false);
+internal sealed record FontStyleInfo(PdfColor? Color, float Size = 11f, bool Bold = false, bool Italic = false, bool Underline = false);
 
 /// <summary>
 /// Represents border styling for one side of a cell.
@@ -2532,6 +2773,7 @@ internal sealed record ExcelCell(
     float FontSize = 11f,
     bool Bold = false,
     bool Italic = false,
+    bool Underline = false,
     CellBorderInfo? Border = null,
     string VerticalAlignment = "bottom",
     bool WrapText = false

@@ -250,15 +250,26 @@ internal sealed class PdfWriter
 
         var contentObjNums = new List<int>(pageCount);
         var imageObjNums = new List<List<int>>(pageCount);
+        var imageMaskObjNums = new List<List<int>>(pageCount); // SMask objects for RGBA PNGs
         var pageObjNums = new List<int>(pageCount);
 
         for (var i = 0; i < pageCount; i++)
         {
             contentObjNums.Add(nextObj++);
             var imgNums = new List<int>();
+            var maskNums = new List<int>();
             for (var j = 0; j < pages[i].ImageBlocks.Count; j++)
+            {
                 imgNums.Add(nextObj++);
+                var imgBlock = pages[i].ImageBlocks[j];
+                // Allocate extra object for SMask if the image is RGBA PNG
+                if (imgBlock.Format is not ("jpg" or "jpeg") && IsRgbaPng(imgBlock.Data))
+                    maskNums.Add(nextObj++);
+                else
+                    maskNums.Add(0); // no mask needed
+            }
             imageObjNums.Add(imgNums);
+            imageMaskObjNums.Add(maskNums);
             pageObjNums.Add(nextObj++);
         }
 
@@ -366,7 +377,7 @@ internal sealed class PdfWriter
             for (var j = 0; j < page.ImageBlocks.Count; j++)
             {
                 _objectOffsets[imageObjNums[i][j]] = Position;
-                WriteImageXObject(imageObjNums[i][j], page.ImageBlocks[j]);
+                WriteImageXObject(imageObjNums[i][j], page.ImageBlocks[j], imageMaskObjNums[i][j]);
             }
 
             // Page dictionary
@@ -415,7 +426,7 @@ internal sealed class PdfWriter
     /// Writes a PDF Image XObject stream for a JPEG or PNG image.
     /// JPEG uses native /DCTDecode; PNG raw-RGB bytes use /FlateDecode.
     /// </summary>
-    private void WriteImageXObject(int objNum, PdfImageBlock img)
+    private void WriteImageXObject(int objNum, PdfImageBlock img, int maskObjNum)
     {
         byte[] pixelData;
         int width, height;
@@ -432,15 +443,30 @@ internal sealed class PdfWriter
         else
         {
             // PNG: decode to raw RGB scanlines and compress with Deflate
-            if (!TryDecodePngToRgb(img.Data, out width, out height, out var rgb))
+            if (!TryDecodePngToRgb(img.Data, out width, out height, out var rgb, out var alpha))
             {
                 // Fallback: treat bytes as raw 1×1 white pixel
-                width = 1; height = 1; rgb = [255, 255, 255];
+                width = 1; height = 1; rgb = [255, 255, 255]; alpha = null;
             }
-            using var deflated = new System.IO.MemoryStream();
-            using (var deflate = new System.IO.Compression.DeflateStream(deflated, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
-                deflate.Write(rgb, 0, rgb.Length);
-            pixelData = WrapDeflateInZlib(deflated.ToArray());
+
+            // Write SMask (alpha channel) object if this is an RGBA PNG
+            if (alpha != null && maskObjNum > 0)
+            {
+                var maskData = CompressToZlib(alpha);
+
+                _objectOffsets[maskObjNum] = Position;
+                WriteRaw($"{maskObjNum} 0 obj\n");
+                WriteRaw("<< /Type /XObject /Subtype /Image\n");
+                WriteRaw($"/Width {width} /Height {height}\n");
+                WriteRaw("/ColorSpace /DeviceGray\n/BitsPerComponent 8\n");
+                WriteRaw("/Filter /FlateDecode\n");
+                WriteRaw($"/Length {maskData.Length}\n");
+                WriteRaw(">>\nstream\n");
+                _stream.Write(maskData);
+                WriteRaw("\nendstream\nendobj\n");
+            }
+
+            pixelData = CompressToZlib(rgb);
             dictExtras = "/Filter /FlateDecode\n";
         }
 
@@ -448,6 +474,8 @@ internal sealed class PdfWriter
         WriteRaw("<< /Type /XObject /Subtype /Image\n");
         WriteRaw($"/Width {width} /Height {height}\n");
         WriteRaw("/ColorSpace /DeviceRGB\n/BitsPerComponent 8\n");
+        if (maskObjNum > 0 && !isJpeg)
+            WriteRaw($"/SMask {maskObjNum} 0 R\n");
         WriteRaw(dictExtras);
         WriteRaw($"/Length {pixelData.Length}\n");
         WriteRaw(">>\nstream\n");
@@ -912,9 +940,18 @@ internal sealed class PdfWriter
     /// then applies the row filters to produce 8-bit-per-channel RGB pixel data.
     /// Supports color type 2 (RGB) and color type 6 (RGBA, alpha stripped).
     /// </summary>
-    private static bool TryDecodePngToRgb(byte[] data, out int width, out int height, out byte[] rgb)
+    /// <summary>Checks if a PNG image has an alpha channel (color type 6 = RGBA).</summary>
+    private static bool IsRgbaPng(byte[] data)
     {
-        width = 1; height = 1; rgb = [255, 255, 255];
+        if (data.Length < 26) return false;
+        ReadOnlySpan<byte> sig = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+        if (!data.AsSpan(0, 8).SequenceEqual(sig)) return false;
+        return data[24] == 8 && data[25] == 6; // 8-bit RGBA
+    }
+
+    private static bool TryDecodePngToRgb(byte[] data, out int width, out int height, out byte[] rgb, out byte[]? alpha)
+    {
+        width = 1; height = 1; rgb = [255, 255, 255]; alpha = null;
         if (data.Length < 33) return false;
 
         // Validate PNG signature
@@ -967,6 +1004,7 @@ internal sealed class PdfWriter
         // Apply PNG row filters to get raw RGB data
         var stride = width * channels;
         var outputRgb = new byte[width * height * 3];
+        byte[]? outputAlpha = channels == 4 ? new byte[width * height] : null;
         var prevRow = new byte[stride];
 
         for (var row = 0; row < height; row++)
@@ -1010,19 +1048,22 @@ internal sealed class PdfWriter
                     break;
             }
 
-            // Convert to RGB (drop alpha if RGBA)
+            // Convert to RGB; extract alpha channel separately if RGBA
             var outBase = row * width * 3;
             for (var px = 0; px < width; px++)
             {
                 outputRgb[outBase + px * 3]     = cur[px * channels];
                 outputRgb[outBase + px * 3 + 1] = cur[px * channels + 1];
                 outputRgb[outBase + px * 3 + 2] = cur[px * channels + 2];
+                if (channels == 4)
+                    outputAlpha![row * width + px] = cur[px * channels + 3];
             }
 
             cur.CopyTo(prevRow, 0);
         }
 
         rgb = outputRgb;
+        alpha = outputAlpha;
         return true;
     }
 
@@ -1036,26 +1077,14 @@ internal sealed class PdfWriter
     }
 
     /// <summary>
-    /// Wraps raw Deflate-compressed bytes in a zlib wrapper (CMF + FLG + data + Adler-32)
-    /// required by the PDF /FlateDecode filter.
+    /// Compresses raw bytes using zlib framing (RFC 1950) for PDF FlateDecode streams.
     /// </summary>
-    private static byte[] WrapDeflateInZlib(byte[] deflateData)
+    private static byte[] CompressToZlib(byte[] rawBytes)
     {
-        // zlib header: CMF=0x78 (deflate, window 32KB), FLG computed so (CMF*256+FLG) % 31 == 0
-        var cmf = 0x78;
-        var flg = (byte)(31 - (cmf * 256) % 31);
-
-        // Compute Adler-32 checksum (we don't have the original data here, use a placeholder)
-        // A correct implementation would require the original uncompressed bytes.
-        // For brevity, write 0 adler (PDF readers tolerate it for standard deflate).
-        var adler = new byte[4]; // zeros
-
-        var result = new byte[2 + deflateData.Length + 4];
-        result[0] = (byte)cmf;
-        result[1] = flg;
-        Array.Copy(deflateData, 0, result, 2, deflateData.Length);
-        Array.Copy(adler, 0, result, 2 + deflateData.Length, 4);
-        return result;
+        using var ms = new System.IO.MemoryStream();
+        using (var zlib = new System.IO.Compression.ZLibStream(ms, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
+            zlib.Write(rawBytes, 0, rawBytes.Length);
+        return ms.ToArray();
     }
 
     private long Position => _stream.Position;

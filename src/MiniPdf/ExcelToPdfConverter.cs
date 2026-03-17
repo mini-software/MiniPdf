@@ -571,7 +571,7 @@ internal static class ExcelToPdfConverter
             var hasContent = false;
             foreach (var row in sheet.Rows)
             {
-                if (col < row.Count && !string.IsNullOrEmpty(row[col].Text))
+                if (col < row.Count && CellHasContentOrStyle(row[col]))
                 {
                     hasContent = true;
                     break;
@@ -584,6 +584,30 @@ internal static class ExcelToPdfConverter
         if (maxCols == 0)
         {
             return;
+        }
+
+        // Trim trailing rows that have no text content or styling.
+        // Preserve rows needed for image/chart anchors.
+        var minRowsForAnchors = 0;
+        if (sheet.Images.Count > 0)
+            minRowsForAnchors = Math.Max(minRowsForAnchors, sheet.Images.Max(img => img.AnchorRow + Math.Max(1, img.SpanRows)));
+        if (sheet.Charts.Count > 0)
+            minRowsForAnchors = Math.Max(minRowsForAnchors, sheet.Charts.Max(c => c.AnchorRow + 1));
+
+        while (sheet.Rows.Count > minRowsForAnchors)
+        {
+            var lastRow = sheet.Rows[^1];
+            var rowHasContent = false;
+            for (var ci = 0; ci < Math.Min(lastRow.Count, maxCols); ci++)
+            {
+                if (CellHasContentOrStyle(lastRow[ci]))
+                {
+                    rowHasContent = true;
+                    break;
+                }
+            }
+            if (rowHasContent) break;
+            sheet.Rows.RemoveAt(sheet.Rows.Count - 1);
         }
 
         var pageWidth = options.PageWidth;
@@ -737,7 +761,10 @@ internal static class ExcelToPdfConverter
             while (doc.Pages.Count > pageCountBefore)
             {
                 var last = doc.Pages[doc.Pages.Count - 1];
-                if (last.TextBlocks.Count == 0 && last.ImageBlocks.Count == 0)
+                if (last.TextBlocks.Count == 0 &&
+                    last.ImageBlocks.Count == 0 &&
+                    last.RectBlocks.Count == 0 &&
+                    last.LineBlocks.Count == 0)
                     doc.RemoveLastPage();
                 else
                     break;
@@ -754,6 +781,7 @@ internal static class ExcelToPdfConverter
     {
         // Print scale factor for cell-level font sizes (column widths are already print-scaled by caller)
         var printScaleFactor = (sheet.PrintScale != 100 && sheet.PrintScale > 0) ? sheet.PrintScale / 100f : 1f;
+        var borderScaleFactor = printScaleFactor * (fitToPageScale < 1f ? fitToPageScale : 1f);
 
         // Use the sheet's default row height if available, otherwise fall back to font-based calculation
         var defaultLineHeight = sheet.DefaultRowHeight > 0 ? sheet.DefaultRowHeight : options.FontSize * options.LineSpacing;
@@ -921,6 +949,35 @@ internal static class ExcelToPdfConverter
                     ? (isTitleCustomHeight ? titleExplicitH : Math.Max(titleExplicitH, titleContentH))
                     : titleContentH;
 
+                // If the title row uses one uniform fill and no borders, render one full-width
+                // background rectangle to avoid seams between adjacent cells.
+                PdfColor? titleUniformFill = null;
+                var titleHasUniformFill = true;
+                for (var i = 0; i < columns.Length; i++)
+                {
+                    var col = columns[i];
+                    var c = col < titleRow.Count ? titleRow[col] : null;
+                    if (c?.FillColor is not { } fc || c.Border != null || mergeInterior.Contains((titleRowIdx, col)))
+                    {
+                        titleHasUniformFill = false;
+                        break;
+                    }
+
+                    if (titleUniformFill == null)
+                        titleUniformFill = fc;
+                    else if (titleUniformFill.Value != fc)
+                    {
+                        titleHasUniformFill = false;
+                        break;
+                    }
+                }
+
+                if (titleHasUniformFill && titleUniformFill != null)
+                {
+                    var rowWidth = colWidths.Sum() + columnPadding * (columns.Length - 1);
+                    currentPage!.AddRectangle(options.MarginLeft, currentY - titleRowH, rowWidth, titleRowH, titleUniformFill.Value);
+                }
+
                 // Render cells
                 var x = options.MarginLeft;
                 for (var i = 0; i < columns.Length; i++)
@@ -938,9 +995,27 @@ internal static class ExcelToPdfConverter
                         for (var mc = i + 1; mc < columns.Length && columns[mc] <= mergeEnd; mc++)
                             cellWidth += colWidths[mc] + columnPadding;
 
-                    // Fill — skip for cells inside a merge range
-                    if (fillColor != null && !mergeInterior.Contains((titleRowIdx, col)))
-                        currentPage!.AddRectangle(x, currentY - titleRowH, cellWidth, titleRowH, fillColor);
+                    // Fill — skip for cells inside a merge range.
+                    // Extend into column padding only when the next visible cell shares
+                    // the same fill and neither side has explicit borders.
+                    if (fillColor != null && !titleHasUniformFill && !mergeInterior.Contains((titleRowIdx, col)))
+                    {
+                        var fillWidth = cellWidth;
+                        if (i + 1 < columns.Length && columns[i + 1] == col + 1)
+                        {
+                            var rightCol = columns[i + 1];
+                            var rightCell = rightCol < titleRow.Count ? titleRow[rightCol] : null;
+                            var hasSameFillRight = rightCell?.FillColor is { } rightFill
+                                && rightFill == fillColor.Value
+                                && cell?.Border == null
+                                && rightCell.Border == null
+                                && !mergeInterior.Contains((titleRowIdx, rightCol))
+                                && !mergeEndCol.ContainsKey((titleRowIdx, rightCol));
+                            if (hasSameFillRight)
+                                fillWidth += columnPadding;
+                        }
+                        currentPage!.AddRectangle(x, currentY - titleRowH, fillWidth, titleRowH, fillColor);
+                    }
 
                     // Text
                     var descent = options.FontSize * 0.31f;
@@ -949,8 +1024,18 @@ internal static class ExcelToPdfConverter
                         cellY = currentY - cellFs;
                     else if (vertAlign == "center")
                     {
-                        var textBlock = cellFs + lineHeight * (titleCellLines[i].Length - 1);
-                        cellY = currentY - (titleRowH - textBlock) / 2f - cellFs + descent;
+                        // LibreOffice keeps short, single-line center-aligned text
+                        // slightly closer to the row baseline than strict geometric centering.
+                        if (titleCellLines[i].Length <= 1)
+                        {
+                            var slack = Math.Max(0f, titleRowH - cellFs);
+                            cellY = currentY - titleRowH + descent + slack * 0.35f;
+                        }
+                        else
+                        {
+                            var textBlock = cellFs + lineHeight * (titleCellLines[i].Length - 1);
+                            cellY = currentY - (titleRowH - textBlock) / 2f - cellFs + descent;
+                        }
                     }
                     else
                         cellY = currentY - titleRowH + descent + lineHeight * (titleCellLines[i].Length - 1);
@@ -971,7 +1056,9 @@ internal static class ExcelToPdfConverter
                                 textX = x + (cellWidth - tw) / 2f;
                             }
                             currentPage!.AddText(titleCellLines[i][lineIdx], textX, cellY, cellFs, cell?.Color,
-                                maxWidth: titleClipWidths[i]);
+                                maxWidth: titleClipWidths[i],
+                                bold: ShouldUsePdfBold(cell?.Bold ?? false, cellFs),
+                                underline: cell?.Underline ?? false);
                         }
                         cellY -= lineHeight;
                     }
@@ -1302,6 +1389,7 @@ internal static class ExcelToPdfConverter
                     {
                         var lines = cellLines[i];
                         var col = columns[i];
+                        var cell = col < row.Count ? row[col] : null;
                         var color = col < row.Count ? row[col].Color : null;
                         var mpAlignment = col < row.Count ? row[col].Alignment : "left";
                         var cellY = currentY;
@@ -1329,7 +1417,9 @@ internal static class ExcelToPdfConverter
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
                                     textX = x + (mpCellWidth - tw) / 2f;
                                 }
-                                currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color);
+                                currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color,
+                                    bold: ShouldUsePdfBold(cell?.Bold ?? false, options.FontSize),
+                                    underline: cell?.Underline ?? false);
                             }
                             cellY -= lineHeight;
                         }
@@ -1350,6 +1440,35 @@ internal static class ExcelToPdfConverter
             {
             // Render cells (normal path — row fits on one page)
 
+            // Detect rows that are effectively a single background band (same fill, no borders)
+            // and paint them in one rectangle to prevent vertical seams.
+            PdfColor? rowUniformFill = null;
+            var rowHasUniformFill = true;
+            for (var i = 0; i < columns.Length; i++)
+            {
+                var col = columns[i];
+                var c = col < row.Count ? row[col] : null;
+                if (c?.FillColor is not { } fc || c.Border != null || mergeInterior.Contains((excelRowIndex, col)))
+                {
+                    rowHasUniformFill = false;
+                    break;
+                }
+
+                if (rowUniformFill == null)
+                    rowUniformFill = fc;
+                else if (rowUniformFill.Value != fc)
+                {
+                    rowHasUniformFill = false;
+                    break;
+                }
+            }
+
+            if (rowHasUniformFill && rowUniformFill != null)
+            {
+                var rowWidth = colWidths.Sum() + columnPadding * (columns.Length - 1);
+                currentPage!.AddRectangle(options.MarginLeft, currentY - rowHeight, rowWidth, rowHeight, rowUniformFill.Value);
+            }
+
             var x = options.MarginLeft;
             for (var i = 0; i < columns.Length; i++)
             {
@@ -1369,16 +1488,30 @@ internal static class ExcelToPdfConverter
                 // Use base font descent (≈ 0.31 × fontSize) so all cells in the row
                 // share the same baseline, preventing text extraction line-splitting.
                 var descent = options.FontSize * 0.31f;
-                // Compensate for ascender difference when cell font differs from base,
-                // so that text extraction (which groups spans by bbox-top Y within 1pt)
-                // keeps mixed-size cells on the same logical row.
-                var ascentCompensation = (cellFontSize - options.FontSize) * 0.1f;
+                // Compensate ascender differences only for larger fonts.
+                // Applying this to smaller fonts shifts them upward and can merge
+                // neighboring logical rows in extracted text and visual alignment.
+                var ascentCompensation = cellFontSize > options.FontSize
+                    ? (cellFontSize - options.FontSize) * 0.1f
+                    : 0f;
                 float cellY;
                 var textBlock = cellFontSize + lineHeight * (lines.Length - 1);
                 if (verticalAlignment == "top" || textBlock > rowHeight)
                     cellY = currentY - cellFontSize;
                 else if (verticalAlignment == "center")
-                    cellY = currentY - (rowHeight - textBlock) / 2f - cellFontSize + descent - ascentCompensation;
+                {
+                    // Keep single-line centered cells closer to the baseline so
+                    // cross-column text rows stay aligned with reference output.
+                    if (lines.Length <= 1)
+                    {
+                        var slack = Math.Max(0f, rowHeight - cellFontSize);
+                        cellY = currentY - rowHeight + descent - ascentCompensation + slack * 0.35f;
+                    }
+                    else
+                    {
+                        cellY = currentY - (rowHeight - textBlock) / 2f - cellFontSize + descent - ascentCompensation;
+                    }
+                }
                 else // "bottom" (default)
                     cellY = currentY - rowHeight + descent - ascentCompensation + lineHeight * (lines.Length - 1);
 
@@ -1388,7 +1521,7 @@ internal static class ExcelToPdfConverter
 
                 // Draw fill rectangle behind cell if fill color is set.
                 // For merged cells, extend the fill across the full merged column span.
-                if (fillColor != null && !isInsideMerge)
+                if (fillColor != null && !rowHasUniformFill && !isInsideMerge)
                 {
                     var fillWidth = colWidths[i];
                     if (mergeEndCol.TryGetValue((excelRowIndex, col), out var fillEndCol))
@@ -1396,7 +1529,54 @@ internal static class ExcelToPdfConverter
                         for (var mc = i + 1; mc < columns.Length && columns[mc] <= fillEndCol; mc++)
                             fillWidth += colWidths[mc] + columnPadding;
                     }
-                    currentPage!.AddRectangle(x, currentY - rowHeight, fillWidth, rowHeight, fillColor);
+
+                    // Avoid hairline seams only where neighboring cells share the same fill
+                    // and have no explicit borders (do not bleed across styled boundaries).
+                    var fillSeamOverlap = Math.Max(0.2f, columnPadding);
+                    var fillY = currentY - rowHeight;
+                    var fillHeight = rowHeight;
+                    if (border == null)
+                    {
+                        var mergedHere = mergeEndCol.ContainsKey((excelRowIndex, col));
+
+                        var hasSameFillRight = false;
+                        if (!mergedHere && i + 1 < columns.Length && columns[i + 1] == col + 1)
+                        {
+                            var rightCol = columns[i + 1];
+                            var rightCell = rightCol < row.Count ? row[rightCol] : null;
+                            var rightInsideMerge = mergeInterior.Contains((excelRowIndex, rightCol));
+                            var rightMerged = mergeEndCol.ContainsKey((excelRowIndex, rightCol));
+                            hasSameFillRight = rightCell?.FillColor is { } rightFill
+                                && rightFill == fillColor.Value
+                                && rightCell.Border == null
+                                && !rightInsideMerge
+                                && !rightMerged;
+                        }
+
+                        var hasSameFillBelow = false;
+                        if (!mergedHere && excelRowIndex + 1 < sheet.Rows.Count)
+                        {
+                            var belowRow = sheet.Rows[excelRowIndex + 1];
+                            var belowCell = col < belowRow.Count ? belowRow[col] : null;
+                            var belowInsideMerge = mergeInterior.Contains((excelRowIndex + 1, col));
+                            var belowMerged = mergeEndCol.ContainsKey((excelRowIndex + 1, col));
+                            hasSameFillBelow = belowCell?.FillColor is { } belowFill
+                                && belowFill == fillColor.Value
+                                && belowCell.Border == null
+                                && !belowInsideMerge
+                                && !belowMerged;
+                        }
+
+                        if (hasSameFillRight)
+                            fillWidth += fillSeamOverlap;
+                        if (hasSameFillBelow)
+                        {
+                            fillHeight += fillSeamOverlap;
+                            fillY -= fillSeamOverlap;
+                        }
+                    }
+
+                    currentPage!.AddRectangle(x, fillY, fillWidth, fillHeight, fillColor);
                 }
 
                 // Draw cell borders.
@@ -1418,25 +1598,25 @@ internal static class ExcelToPdfConverter
                     if (border.Left is { Style: not "none" and not "" })
                     {
                         var bc = border.Left.Color ?? borderColor;
-                        var bw = BorderStyleWidth(border.Left.Style);
+                        var bw = Math.Max(0.08f, BorderStyleWidth(border.Left.Style) * borderScaleFactor);
                         currentPage!.AddLine(bx, byTop, bx, byBottom, bc, bw);
                     }
                     if (border.Right is { Style: not "none" and not "" })
                     {
                         var bc = border.Right.Color ?? borderColor;
-                        var bw = BorderStyleWidth(border.Right.Style);
+                        var bw = Math.Max(0.08f, BorderStyleWidth(border.Right.Style) * borderScaleFactor);
                         currentPage!.AddLine(bxRight, byTop, bxRight, byBottom, bc, bw);
                     }
                     if (border.Top is { Style: not "none" and not "" })
                     {
                         var bc = border.Top.Color ?? borderColor;
-                        var bw = BorderStyleWidth(border.Top.Style);
+                        var bw = Math.Max(0.08f, BorderStyleWidth(border.Top.Style) * borderScaleFactor);
                         currentPage!.AddLine(bx, byTop, bxRight, byTop, bc, bw);
                     }
                     if (border.Bottom is { Style: not "none" and not "" })
                     {
                         var bc = border.Bottom.Color ?? borderColor;
-                        var bw = BorderStyleWidth(border.Bottom.Style);
+                        var bw = Math.Max(0.08f, BorderStyleWidth(border.Bottom.Style) * borderScaleFactor);
                         currentPage!.AddLine(bx, byBottom, bxRight, byBottom, bc, bw);
                     }
                 }
@@ -1465,7 +1645,9 @@ internal static class ExcelToPdfConverter
                             textX = x + (cellWidth - textWidth) / 2f;
                         }
                         currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color,
-                            maxWidth: cellClipWidth[i]);
+                            maxWidth: cellClipWidth[i],
+                            bold: ShouldUsePdfBold(cell?.Bold ?? false, cellFontSize),
+                            underline: cell?.Underline ?? false);
                     }
                     cellY -= lineHeight;
                 }
@@ -2755,7 +2937,42 @@ internal static class ExcelToPdfConverter
     private const double CalibriFittingScale = 0.85;
 
     /// <summary>
+    /// Returns true when a cell carries visible text or borders.
+    /// Used to decide whether a row/column should be preserved
+    /// rather than trimmed as empty trailing space.
+    /// Fills are excluded because many sheets apply a background fill to all cells.
+    /// </summary>
+    private static bool CellHasContentOrStyle(ExcelCell cell)
+    {
+        if (!string.IsNullOrEmpty(cell.Text))
+            return true;
+        if (cell.Border is { } b)
+        {
+            if (b.Left is { Style: not "none" and not "" })
+                return true;
+            if (b.Right is { Style: not "none" and not "" })
+                return true;
+            if (b.Top is { Style: not "none" and not "" })
+                return true;
+            if (b.Bottom is { Style: not "none" and not "" })
+                return true;
+        }
+        return false;
+    }
+
+    private static bool ShouldUsePdfBold(bool requestedBold, float fontSize)
+    {
+        if (!requestedBold)
+            return false;
+
+        // Built-in Helvetica-Bold appears heavier than spreadsheet renderer output
+        // for very large headings, so keep large titles in regular weight.
+        return fontSize <= 20f;
+    }
+
+    /// <summary>
     /// Maps OOXML border style names to PDF line widths (in points).
+    /// </summary>
     private static float BorderStyleWidth(string style) => style switch
     {
         "thick" => 1.5f,

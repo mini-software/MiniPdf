@@ -1,5 +1,4 @@
 #:project ../../src/MiniPdf/MiniPdf.csproj
-
 using Mp = MiniSoftware.MiniPdf;
 
 // Resolve directories relative to this script file
