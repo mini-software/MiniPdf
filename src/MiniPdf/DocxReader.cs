@@ -248,7 +248,7 @@ internal static class DocxReader
         var footerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
 
         return new DocxDocument(elements, pageLayout, headerText, footerText, headerShapes, footerShapes, headerRuns, footerRuns,
-            defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName);
+            defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -2052,6 +2052,7 @@ internal static class DocxReader
 
         // Extract default font name from Normal style or docDefaults
         string? defaultFontName = null;
+        string? defaultEastAsiaFontName = null;
         foreach (var style in styleElements)
         {
             var sid = style.Attribute(W + "styleId")?.Value;
@@ -2059,12 +2060,15 @@ internal static class DocxReader
             {
                 var rFonts = style.Element(W + "rPr")?.Element(W + "rFonts");
                 if (rFonts != null)
+                {
                     defaultFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont,
                         effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont);
+                    defaultEastAsiaFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont,
+                        effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont, preferEastAsiaTheme: true);
+                }
                 break;
             }
         }
-        string? defaultEastAsiaFontName = null;
         if (defaultFontName == null && docDefaults != null)
         {
             var rFonts = docDefaults.Element(W + "rPrDefault")?.Element(W + "rPr")?.Element(W + "rFonts");
@@ -2076,7 +2080,6 @@ internal static class DocxReader
                     effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont, preferEastAsiaTheme: true);
             }
         }
-
         if (defaultEastAsiaFontName == null)
             defaultEastAsiaFontName = effectiveThemeEastAsiaFont;
 
@@ -2297,7 +2300,8 @@ internal sealed record DocxDocument(
     List<DocxRun>? FooterRuns = null,
     float DefaultLineSpacing = 0,
     bool DefaultLineSpacingAbsolute = false,
-    string? DefaultFontName = null
+    string? DefaultFontName = null,
+    string? DefaultEastAsiaFontName = null
 );
 
 /// <summary>Page layout settings from sectPr.</summary>

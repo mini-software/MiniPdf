@@ -15,7 +15,7 @@
 
 ---
 
-一個極簡、零相依性的 .NET 函式庫，用於將 Office 檔案轉換為 PDF。
+一個極簡、輕量化的 .NET 函式庫，用於將 Office 檔案轉換為 PDF。
 
 👉 **[線上示範](https://mini-software.github.io/MiniPdf/)** — 在瀏覽器中快速體驗，無需安裝。
 
@@ -25,8 +25,10 @@
 
 - **Excel 轉 PDF** — 將 `.xlsx` 檔案轉換為 PDF
 - **Word 轉 PDF** — 將 `.docx` 檔案轉換為 PDF
-- **零相依性** — 僅使用 .NET 內建 API（不需任何外部套件）
+- **極少相依性** — 輕量化設計，幾乎僅使用 .NET 內建 API
+- **Serverless 就緒** — 無需 COM、無需安裝 Office、無需 Adobe Acrobat — 有 .NET 即可運行
 - **標準 PDF 1.4** 格式輸出
+- **完全開源免費** — 基於 Apache 2.0 授權，可自由商用，無任何限制，註明出處即可。歡迎提交 PR 一起貢獻！
 - **圖表** — 目前支援尚不完善
 
 ## 快速開始

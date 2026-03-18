@@ -13,6 +13,12 @@ internal sealed class PdfDocument
     public IReadOnlyList<PdfPage> Pages => _pages;
 
     /// <summary>
+    /// Preferred CJK (Chinese/Japanese/Korean) font name from the source document.
+    /// Used to prioritize the matching system font when rendering Unicode text.
+    /// </summary>
+    internal string? PreferredCjkFontName { get; set; }
+
+    /// <summary>
     /// Adds a new page to the document.
     /// </summary>
     /// <param name="width">Page width in points (default: 612 = US Letter).</param>
