@@ -1,0 +1,48 @@
+name: NuGet Publish CLI
+
+on:
+  release:
+    types: [ published ]
+
+permissions:
+  contents: read
+
+jobs:
+  publish-cli:
+    runs-on: ubuntu-latest
+    # Only run when tag starts with 'cli-v' (e.g. cli-v0.1.0)
+    if: startsWith(github.ref_name, 'cli-v')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#cli-v}"
+          if [ -z "$VERSION" ]; then
+            echo "::error::Could not extract version from GITHUB_REF_NAME='$GITHUB_REF_NAME'"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Pack CLI
+        run: dotnet pack src/MiniPdf.Cli/MiniPdf.Cli.csproj --no-build --configuration Release -p:PackageVersion="${{ steps.version.outputs.VERSION }}" --output ./nupkg
+
+      - name: Push to NuGet.org
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
