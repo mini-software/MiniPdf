@@ -2862,7 +2862,9 @@ internal sealed class ExcelSheet
     /// <summary>Whether the sheet uses landscape orientation.</summary>
     public bool IsLandscape { get; }
     /// <summary>Print scale percentage (10-400, default 100).</summary>
-    public int PrintScale { get; }
+    public int PrintScale { get; internal set; }
+    /// <summary>Precise effective print scale factor (overrides PrintScale/100 when set).</summary>
+    internal float? EffectivePrintScaleF { get; set; }
     /// <summary>Paper size code (1=Letter, 9=A4, etc). See ECMA-376 §18.8.22.</summary>
     public int PaperSize { get; }
     /// <summary>Print area range (startCol, startRow, endCol, endRow) 0-based, or null if not set.</summary>

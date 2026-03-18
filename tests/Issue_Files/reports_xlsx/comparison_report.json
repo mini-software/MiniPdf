@@ -179,5 +179,67 @@
       }
     ],
     "overall_score": 0.872
+  },
+  {
+    "name": "Academic Achievement Summary Table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4107334,
+    "reference_size": 168612,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8703,
+    "flat_text_similarity": 0.8681,
+    "word_text_similarity": 0.5617,
+    "text_diff": "--- minipdf/Academic Achievement Summary Table.pdf\n+++ reference/Academic Achievement Summary Table.pdf\n@@ -1,11 +1,13 @@\n 附件3\n\n-学术业绩汇总表\n\n+术业绩汇总\n\n+学 表\n\n 报考岗位： 报考岗位代码： 考生姓名：\n\n 博士论文题目： 博士论文研究方向：\n\n-公开发表的主要论文情况\n\n-角色 转载刊物、转载字数及转载 是否为代表作\n\n+发 论\n\n+公开 表的主要 文情况\n\n+角色 转载刊物、转载字数及 是否为代表作\n\n 序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n-（排名） 时间等 （指定1篇）\n\n+（排名） 转载时间等 （指定1篇）\n\n 1\n\n 2\n\n 3\n\n@@ -19,19 +21,22 @@\n 11\n\n 12\n\n ---PAGE---\n\n-公开出版的主要专（译）著、教材情况\n\n-角色 全书文字 本人写作 转载刊物、转载字数及转载\n\n+专译\n\n+公开出版的主要 （ ）著、教材情况\n\n+角色 全书文 本人写 转载刊物、转载字数及\n\n 序号 题目 出版社名称 出版号 出版时间 备注\n\n-（排名） 数 量 时间等\n\n+（排名） 字数 作量 转载时间等\n\n 1\n\n 2\n\n-获批的决策咨询报告情况\n\n+获 询报\n\n+批的决策咨 告情况\n\n 序号 题目 批示领导级别 获批时间 角色（排名） 备注\n\n 1\n\n 2\n\n 3\n\n 4\n\n-承担的主要科研课题情况\n\n+课题\n\n+承担的主要科研 情况\n\n 项目\n\n 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注\n\n 级别\n\n@@ -39,9 +44,12 @@\n 2\n\n 3\n\n 4\n\n-本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。\n\n-报名人员签名：\n\n-日期： 年 月 日\n\n-填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。\n\n-2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所\n\n-“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。\n+诺 实 应证 实 处 应责\n\n+本人承 以上情况属 ，并有相 明。如有不 之 ，愿意承担相 任。\n\n+报 员签\n\n+名人 名：\n\n+日期：    年   月   日\n\n+说 请 类 术 级层 顺 页 页\n\n+填表 明： 1. 将各 学 成果按等 图书馆 、 次及水平自高到低 序填写。不加行、减行，不加 、减 ，本表采用 A4正反面打印。 扩 术\n\n+2.核心期刊是指北京大学 论 统计 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 录 展版、集刊）、中国科学技 进 领 信息研究所\n\n+“中国科技 文 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 的期刊要求 入所在学科 域 Q1、Q2。",
+    "visual_scores": [
+      0.9228,
+      0.8722
+    ],
+    "visual_avg": 0.8975,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Academic Achievement Summary Table_p1_minipdf.png",
+        "reference_img": "Academic Achievement Summary Table_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "Academic Achievement Summary Table_p2_minipdf.png",
+        "reference_img": "Academic Achievement Summary Table_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9071
+  },
+  {
+    "name": "AcademicAchievement_temp",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 4106897,
+    "reference_size": 168612,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8703,
+    "flat_text_similarity": 0.8681,
+    "word_text_similarity": 0.5617,
+    "text_diff": "--- minipdf/AcademicAchievement_temp.pdf\n+++ reference/AcademicAchievement_temp.pdf\n@@ -1,11 +1,13 @@\n 附件3\n\n-学术业绩汇总表\n\n+术业绩汇总\n\n+学 表\n\n 报考岗位： 报考岗位代码： 考生姓名：\n\n 博士论文题目： 博士论文研究方向：\n\n-公开发表的主要论文情况\n\n-角色 转载刊物、转载字数及转载 是否为代表作\n\n+发 论\n\n+公开 表的主要 文情况\n\n+角色 转载刊物、转载字数及 是否为代表作\n\n 序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n-（排名） 时间等 （指定1篇）\n\n+（排名） 转载时间等 （指定1篇）\n\n 1\n\n 2\n\n 3\n\n@@ -19,19 +21,22 @@\n 11\n\n 12\n\n ---PAGE---\n\n-公开出版的主要专（译）著、教材情况\n\n-角色 全书文字 本人写作 转载刊物、转载字数及转载\n\n+专译\n\n+公开出版的主要 （ ）著、教材情况\n\n+角色 全书文 本人写 转载刊物、转载字数及\n\n 序号 题目 出版社名称 出版号 出版时间 备注\n\n-（排名） 数 量 时间等\n\n+（排名） 字数 作量 转载时间等\n\n 1\n\n 2\n\n-获批的决策咨询报告情况\n\n+获 询报\n\n+批的决策咨 告情况\n\n 序号 题目 批示领导级别 获批时间 角色（排名） 备注\n\n 1\n\n 2\n\n 3\n\n 4\n\n-承担的主要科研课题情况\n\n+课题\n\n+承担的主要科研 情况\n\n 项目\n\n 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注\n\n 级别\n\n@@ -39,9 +44,12 @@\n 2\n\n 3\n\n 4\n\n-本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。\n\n-报名人员签名：\n\n-日期： 年 月 日\n\n-填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。\n\n-2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所\n\n-“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。\n+诺 实 应证 实 处 应责\n\n+本人承 以上情况属 ，并有相 明。如有不 之 ，愿意承担相 任。\n\n+报 员签\n\n+名人 名：\n\n+日期：    年   月   日\n\n+说 请 类 术 级层 顺 页 页\n\n+填表 明： 1. 将各 学 成果按等 图书馆 、 次及水平自高到低 序填写。不加行、减行，不加 、减 ，本表采用 A4正反面打印。 扩 术\n\n+2.核心期刊是指北京大学 论 统计 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 录 展版、集刊）、中国科学技 进 领 信息研究所\n\n+“中国科技 文 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 的期刊要求 入所在学科 域 Q1、Q2。",
+    "visual_scores": [
+      0.9624,
+      0.9406
+    ],
+    "visual_avg": 0.9515,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "AcademicAchievement_temp_p1_minipdf.png",
+        "reference_img": "AcademicAchievement_temp_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "AcademicAchievement_temp_p2_minipdf.png",
+        "reference_img": "AcademicAchievement_temp_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9287
   }
 ]

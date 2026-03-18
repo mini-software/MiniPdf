@@ -251,8 +251,9 @@ internal static class ExcelToPdfConverter
         // Determine base page dimensions from paper size
         var (baseW, baseH) = sheet.PaperSize switch
         {
-            9 => (595f, 842f),  // A4: 210×297mm
-            8 => (842f, 1191f), // A3: 297×420mm
+            // Use precise point sizes converted from millimeters to match office renderers.
+            9 => (595.2756f, 841.8898f),   // A4: 210×297mm
+            8 => (841.8898f, 1190.5512f),  // A3: 297×420mm
             _ => (options.PageWidth, options.PageHeight), // Default (Letter 612×792)
         };
         if (sheet.IsLandscape)
@@ -384,6 +385,31 @@ internal static class ExcelToPdfConverter
                         break;
                     }
                 }
+            }
+        }
+
+        // When fitToPage is active for width fitting only (fitToHeight=0),
+        // recalculate the PrintScale from actual column widths. LibreOffice
+        // ignores the stored scale attribute and computes the minimum scale
+        // needed to fit all columns within one page width.
+        if (sheet.FitToPage && sheet.FitToWidth >= 1 && sheet.FitToHeight == 0
+            && sheet.PrintScale > 0 && sheet.PrintScale < 100)
+        {
+            var usableW = baseW - mL - mR;
+            var estTotal = EstimateColumnWidthTotal(sheet, options);
+            if (estTotal > usableW && estTotal > 0)
+            {
+                var fitScaleF = usableW / estTotal;
+                var fitPct = (int)Math.Max(10, Math.Floor(fitScaleF * 100));
+                sheet.PrintScale = fitPct;
+                // Store precise float scale to avoid integer rounding loss
+                sheet.EffectivePrintScaleF = fitScaleF;
+            }
+            else if (estTotal > 0 && sheet.PrintScale < 100)
+            {
+                // Columns already fit at 100% — no scaling needed
+                sheet.PrintScale = 100;
+                sheet.EffectivePrintScaleF = 1f;
             }
         }
 
@@ -617,7 +643,13 @@ internal static class ExcelToPdfConverter
 
         // Determine column widths first to decide on layout strategy
         var columnPadding = options.ColumnPadding;
-        if (maxCols > 6)
+        if (sheet.FitToPage && sheet.FitToWidth >= 1)
+        {
+            // When fitToPage is active, use zero inter-column padding to match
+            // LibreOffice's layout model (columns are adjacent, separated by borders).
+            columnPadding = 0f;
+        }
+        else if (maxCols > 6)
         {
             columnPadding = options.ColumnPadding * 6f / maxCols;
         }
@@ -1214,7 +1246,7 @@ internal static class ExcelToPdfConverter
                             {
                                 // Sum widths of merged columns — no extra padding within merged span
                                 for (var mc = i + 1; mc < columns.Length && columns[mc] <= endCol; mc++)
-                                    effectiveWidth += colWidths[mc];
+                                    effectiveWidth += colWidths[mc] + columnPadding;
                             }
 
                             // Excel/LibreOffice clip text at the column boundary when the

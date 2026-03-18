@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Benchmark Issue_Files: convert user-reported xlsx/docx to PDF (MiniPdf + LibreOffice) → compare → report.
 
@@ -56,7 +56,11 @@ Write-Host "============================================================`n" -For
 if (-not $SkipInstall) {
     Write-Host "[Step 0] Installing Python dependencies..." -ForegroundColor Yellow
     pip install openpyxl pymupdf python-docx Pillow --quiet 2>$null
-    Write-Host "  OK" -ForegroundColor Green
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "  WARNING: pip install had issues. Continuing anyway..." -ForegroundColor DarkYellow
+    } else {
+        Write-Host "  OK" -ForegroundColor Green
+    }
 }
 
 # Ensure output dirs
@@ -74,7 +78,7 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
     Write-Host "`n--- XLSX Issue Files: $cnt files ---" -ForegroundColor Cyan
 
     if (-not $CompareOnly -and -not $SkipMiniPdf) {
-        Write-Host "[Step 1] Converting XLSX -> PDF (MiniPdf)..." -ForegroundColor Yellow
+        Write-Host '[Step 1] Converting XLSX -> PDF (MiniPdf)...' -ForegroundColor Yellow
         Push-Location $ScriptsDir
         try {
             $convertArgs = @("convert_xlsx_to_pdf.cs", "--", $XlsxIssueDir, $MiniPdfXlsx)
@@ -86,7 +90,7 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
     }
 
     if (-not $CompareOnly -and -not $SkipReference) {
-        Write-Host "[Step 2] Converting XLSX -> PDF (LibreOffice)..." -ForegroundColor Yellow
+        Write-Host '[Step 2] Converting XLSX -> PDF (LibreOffice)...' -ForegroundColor Yellow
         Push-Location $BenchmarkDir
         try {
             $refArgs = @("generate_reference_pdfs.py", "--xlsx-dir", $XlsxIssueDir, "--pdf-dir", $RefXlsx)
@@ -98,10 +102,11 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
     }
 
     if ($WithOffice -and -not $CompareOnly -and -not $SkipOffice) {
-        Write-Host "[Step 2b] Converting XLSX -> PDF (Office / Excel COM)..." -ForegroundColor Yellow
+        Write-Host '[Step 2b] Converting XLSX -> PDF (Office / Excel COM)...' -ForegroundColor Yellow
         Push-Location $BenchmarkDir
         try {
-            python generate_office_pdfs.py --xlsx-dir $XlsxIssueDir --pdf-dir $OfficeXlsx
+            $officeArgs = @("generate_office_pdfs.py", "--xlsx-dir", $XlsxIssueDir, "--pdf-dir", $OfficeXlsx)
+            python @officeArgs
         } finally {
             Pop-Location
         }
@@ -133,7 +138,7 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
     Write-Host "`n--- DOCX Issue Files: $cnt files ---" -ForegroundColor Cyan
 
     if (-not $CompareOnly -and -not $SkipMiniPdf) {
-        Write-Host "[Step 1] Converting DOCX -> PDF (MiniPdf)..." -ForegroundColor Yellow
+        Write-Host '[Step 1] Converting DOCX -> PDF (MiniPdf)...' -ForegroundColor Yellow
         Push-Location $ScriptsDir
         try {
             $convertArgs = @("convert_docx_to_pdf.cs", "--", $DocxIssueDir, $MiniPdfDocx)
@@ -145,7 +150,7 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
     }
 
     if (-not $CompareOnly -and -not $SkipReference) {
-        Write-Host "[Step 2] Converting DOCX -> PDF (LibreOffice)..." -ForegroundColor Yellow
+        Write-Host '[Step 2] Converting DOCX -> PDF (LibreOffice)...' -ForegroundColor Yellow
         Push-Location $BenchmarkDir
         try {
             $refArgs = @("generate_reference_pdfs_docx.py", "--docx-dir", $DocxIssueDir, "--pdf-dir", $RefDocx)
@@ -157,10 +162,11 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
     }
 
     if ($WithOffice -and -not $CompareOnly -and -not $SkipOffice) {
-        Write-Host "[Step 2b] Converting DOCX -> PDF (Office / Word COM)..." -ForegroundColor Yellow
+        Write-Host '[Step 2b] Converting DOCX -> PDF (Office / Word COM)...' -ForegroundColor Yellow
         Push-Location $BenchmarkDir
         try {
-            python generate_office_pdfs_docx.py --docx-dir $DocxIssueDir --pdf-dir $OfficeDocx
+            $officeArgs = @("generate_office_pdfs_docx.py", "--docx-dir", $DocxIssueDir, "--pdf-dir", $OfficeDocx)
+            python @officeArgs
         } finally {
             Pop-Location
         }

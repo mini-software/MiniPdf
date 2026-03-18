@@ -91,6 +91,10 @@ internal static class DocxToPdfConverter
 
         var pdfDoc = new PdfDocument();
 
+        // Pass preferred CJK font from DOCX to PDF writer for correct font selection
+        if (!string.IsNullOrWhiteSpace(docxDoc.DefaultEastAsiaFontName))
+            pdfDoc.PreferredCjkFontName = docxDoc.DefaultEastAsiaFontName;
+
         // Pre-scan section breaks to build correct section layout mapping.
         // In OOXML, sectPr in a paragraph defines the layout of the section ENDING at that paragraph.
         // We collect layouts in order: [section1_layout, section2_layout, ...body_layout]

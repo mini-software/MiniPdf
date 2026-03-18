@@ -1,14 +1,16 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-17T11:56:22.538538
+Generated: 2026-03-18T09:31:54.083298
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
 | 1 | 🟡 payroll-calculator_f | 0.9149 | 0.765 | 27/27 | **0.872** |
+| 2 | 🟢 Academic Achievement Summary Table | 0.8703 | 0.8975 | 2/2 | **0.9071** |
+| 3 | 🟢 AcademicAchievement_temp | 0.8703 | 0.9515 | 2/2 | **0.9287** |
 
-**Average Overall Score: 0.8720**
+**Average Overall Score: 0.9026**
 
 ## Visual Comparison
 
@@ -125,6 +127,30 @@ Generated: 2026-03-17T11:56:22.538538
 <tr>
   <td><img src="images/payroll-calculator_f_p27_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/payroll-calculator_f_p27_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Academic Achievement Summary Table</b></td>
+  <td colspan="1">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 90.7%</td>
+</tr>
+<tr>
+  <td><img src="images/Academic Achievement Summary Table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Academic Achievement Summary Table_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Academic Achievement Summary Table_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Academic Achievement Summary Table_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>AcademicAchievement_temp</b></td>
+  <td colspan="1">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 92.9%</td>
+</tr>
+<tr>
+  <td><img src="images/AcademicAchievement_temp_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/AcademicAchievement_temp_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/AcademicAchievement_temp_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/AcademicAchievement_temp_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -251,6 +277,288 @@ Generated: 2026-03-17T11:56:22.538538
 -Spreadsheet123 LTD reserves the right t
 ... (29641 more characters)
 
+```
+</details>
+
+### Academic Achievement Summary Table
+
+- **Text Similarity:** 0.8703
+- **Visual Average:** 0.8975
+- **Overall Score:** 0.9071
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=4107334 bytes, Reference=168612 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Academic Achievement Summary Table.pdf
++++ reference/Academic Achievement Summary Table.pdf
+@@ -1,11 +1,13 @@
+ 附件3
+
+-学术业绩汇总表
+
++术业绩汇总
+
++学 表
+
+ 报考岗位： 报考岗位代码： 考生姓名：
+
+ 博士论文题目： 博士论文研究方向：
+
+-公开发表的主要论文情况
+
+-角色 转载刊物、转载字数及转载 是否为代表作
+
++发 论
+
++公开 表的主要 文情况
+
++角色 转载刊物、转载字数及 是否为代表作
+
+ 序号 题目 刊物名称 核心期刊情况 刊号 发表时间
+
+-（排名） 时间等 （指定1篇）
+
++（排名） 转载时间等 （指定1篇）
+
+ 1
+
+ 2
+
+ 3
+
+@@ -19,19 +21,22 @@
+ 11
+
+ 12
+
+ ---PAGE---
+
+-公开出版的主要专（译）著、教材情况
+
+-角色 全书文字 本人写作 转载刊物、转载字数及转载
+
++专译
+
++公开出版的主要 （ ）著、教材情况
+
++角色 全书文 本人写 转载刊物、转载字数及
+
+ 序号 题目 出版社名称 出版号 出版时间 备注
+
+-（排名） 数 量 时间等
+
++（排名） 字数 作量 转载时间等
+
+ 1
+
+ 2
+
+-获批的决策咨询报告情况
+
++获 询报
+
++批的决策咨 告情况
+
+ 序号 题目 批示领导级别 获批时间 角色（排名） 备注
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+-承担的主要科研课题情况
+
++课题
+
++承担的主要科研 情况
+
+ 项目
+
+ 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注
+
+ 级别
+
+@@ -39,9 +44,12 @@
+ 2
+
+ 3
+
+ 4
+
+-本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
+
+-报名人员签名：
+
+-日期： 年 月 日
+
+-填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。
+
+-2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所
+
+-“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。
++诺 实 应证 实 处 应责
+
++本人承 以上情况属 ，并有相 明。如有不 之 ，愿意承担相 任。
+
++报 员签
+
++名人 名：
+
++日期：    年   月   日
+
++说 请 类 术 级层 顺 页 页
+
++填表 明： 1. 将各 学 成果按等 图书馆 、 次及水平自高到低 序填写。不加行、减行，不加 、减 ，本表采用 A4正反面打印。 扩 术
+
++2.核心期刊是指北京大学 论 统计 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 录 展版、集刊）、中国科学技 进 领 信息研究所
+
++“中国科技 文 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 的期刊要求 入所在学科 域 Q1、Q2。
+```
+</details>
+
+### AcademicAchievement_temp
+
+- **Text Similarity:** 0.8703
+- **Visual Average:** 0.9515
+- **Overall Score:** 0.9287
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=4106897 bytes, Reference=168612 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/AcademicAchievement_temp.pdf
++++ reference/AcademicAchievement_temp.pdf
+@@ -1,11 +1,13 @@
+ 附件3
+
+-学术业绩汇总表
+
++术业绩汇总
+
++学 表
+
+ 报考岗位： 报考岗位代码： 考生姓名：
+
+ 博士论文题目： 博士论文研究方向：
+
+-公开发表的主要论文情况
+
+-角色 转载刊物、转载字数及转载 是否为代表作
+
++发 论
+
++公开 表的主要 文情况
+
++角色 转载刊物、转载字数及 是否为代表作
+
+ 序号 题目 刊物名称 核心期刊情况 刊号 发表时间
+
+-（排名） 时间等 （指定1篇）
+
++（排名） 转载时间等 （指定1篇）
+
+ 1
+
+ 2
+
+ 3
+
+@@ -19,19 +21,22 @@
+ 11
+
+ 12
+
+ ---PAGE---
+
+-公开出版的主要专（译）著、教材情况
+
+-角色 全书文字 本人写作 转载刊物、转载字数及转载
+
++专译
+
++公开出版的主要 （ ）著、教材情况
+
++角色 全书文 本人写 转载刊物、转载字数及
+
+ 序号 题目 出版社名称 出版号 出版时间 备注
+
+-（排名） 数 量 时间等
+
++（排名） 字数 作量 转载时间等
+
+ 1
+
+ 2
+
+-获批的决策咨询报告情况
+
++获 询报
+
++批的决策咨 告情况
+
+ 序号 题目 批示领导级别 获批时间 角色（排名） 备注
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+-承担的主要科研课题情况
+
++课题
+
++承担的主要科研 情况
+
+ 项目
+
+ 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注
+
+ 级别
+
+@@ -39,9 +44,12 @@
+ 2
+
+ 3
+
+ 4
+
+-本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
+
+-报名人员签名：
+
+-日期： 年 月 日
+
+-填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。
+
+-2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所
+
+-“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。
++诺 实 应证 实 处 应责
+
++本人承 以上情况属 ，并有相 明。如有不 之 ，愿意承担相 任。
+
++报 员签
+
++名人 名：
+
++日期：    年   月   日
+
++说 请 类 术 级层 顺 页 页
+
++填表 明： 1. 将各 学 成果按等 图书馆 、 次及水平自高到低 序填写。不加行、减行，不加 、减 ，本表采用 A4正反面打印。 扩 术
+
++2.核心期刊是指北京大学 论 统计 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 录 展版、集刊）、中国科学技 进 领 信息研究所
+
++“中国科技 文 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 的期刊要求 入所在学科 域 Q1、Q2。
 ```
 </details>
 

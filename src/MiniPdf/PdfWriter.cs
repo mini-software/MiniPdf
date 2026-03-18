@@ -96,6 +96,10 @@ internal sealed class PdfWriter
             // 2) Then load system fonts
             var candidatePaths = FindSystemFontCandidates();
 
+            // Reorder candidates to prioritize the document's preferred CJK font
+            if (!string.IsNullOrWhiteSpace(document.PreferredCjkFontName))
+                PrioritizePreferredCjkFont(candidatePaths, document.PreferredCjkFontName);
+
             foreach (var path in candidatePaths)
             {
                 try
@@ -1292,6 +1296,101 @@ internal sealed class PdfWriter
         }
 
         return results;
+    }
+
+    /// <summary>
+    /// Maps well-known CJK font names (Chinese, Japanese, Korean) to their
+    /// system font file names (case-insensitive matching).
+    /// </summary>
+    private static readonly Dictionary<string, string[]> CjkFontFileMap = new(StringComparer.OrdinalIgnoreCase)
+    {
+        // Simplified Chinese
+        ["宋体"] = ["simsun.ttc"],
+        ["SimSun"] = ["simsun.ttc"],
+        ["新宋体"] = ["simsun.ttc"],
+        ["NSimSun"] = ["simsun.ttc"],
+        ["黑体"] = ["simhei.ttf"],
+        ["SimHei"] = ["simhei.ttf"],
+        ["微软雅黑"] = ["msyh.ttc"],
+        ["Microsoft YaHei"] = ["msyh.ttc"],
+        ["楷体"] = ["simkai.ttf"],
+        ["KaiTi"] = ["simkai.ttf"],
+        ["仿宋"] = ["simfang.ttf"],
+        ["FangSong"] = ["simfang.ttf"],
+        ["等线"] = ["Deng.ttf", "Dengl.ttf"],
+        ["DengXian"] = ["Deng.ttf", "Dengl.ttf"],
+        ["华文中宋"] = ["STZHONGS.TTF"],
+        ["STZhongsong"] = ["STZHONGS.TTF"],
+        ["华文宋体"] = ["STSONG.TTF"],
+        ["STSong"] = ["STSONG.TTF"],
+        ["华文楷体"] = ["STKAITI.TTF"],
+        ["STKaiti"] = ["STKAITI.TTF"],
+        ["华文仿宋"] = ["STFANGSO.TTF"],
+        ["STFangsong"] = ["STFANGSO.TTF"],
+        // Traditional Chinese
+        ["微軟正黑體"] = ["msjh.ttc"],
+        ["Microsoft JhengHei"] = ["msjh.ttc"],
+        ["細明體"] = ["mingliu.ttc"],
+        ["MingLiU"] = ["mingliu.ttc"],
+        ["新細明體"] = ["mingliu.ttc"],
+        ["PMingLiU"] = ["mingliu.ttc"],
+        // Japanese
+        ["ＭＳ 明朝"] = ["msmincho.ttc"],
+        ["MS Mincho"] = ["msmincho.ttc"],
+        ["ＭＳ ゴシック"] = ["msgothic.ttc"],
+        ["MS Gothic"] = ["msgothic.ttc"],
+        ["游明朝"] = ["YuMincho.ttf"],
+        ["Yu Mincho"] = ["YuMincho.ttf"],
+        ["游ゴシック"] = ["YuGothR.ttc", "YuGothic.ttf"],
+        ["Yu Gothic"] = ["YuGothR.ttc", "YuGothic.ttf"],
+        // Korean
+        ["맑은 고딕"] = ["malgun.ttf"],
+        ["Malgun Gothic"] = ["malgun.ttf"],
+        ["바탕"] = ["batang.ttc"],
+        ["Batang"] = ["batang.ttc"],
+    };
+
+    /// <summary>
+    /// Reorders the font candidate list to prioritize the document's preferred CJK font.
+    /// Moves matching font file(s) to the front of the list.
+    /// </summary>
+    private static void PrioritizePreferredCjkFont(List<string> candidatePaths, string preferredFontName)
+    {
+        if (!CjkFontFileMap.TryGetValue(preferredFontName, out var preferredFiles))
+            return;
+
+        // Find matching candidates and move them to the front
+        for (var fi = 0; fi < preferredFiles.Length; fi++)
+        {
+            var preferred = preferredFiles[fi];
+            for (var i = 0; i < candidatePaths.Count; i++)
+            {
+                var fileName = Path.GetFileName(candidatePaths[i]);
+                if (string.Equals(fileName, preferred, StringComparison.OrdinalIgnoreCase))
+                {
+                    // Move to front
+                    var path = candidatePaths[i];
+                    candidatePaths.RemoveAt(i);
+                    candidatePaths.Insert(0, path);
+                    return; // first match is enough
+                }
+            }
+        }
+
+        // Font not in candidate list: try to find it on the system and insert at front
+        if (Compat.IsWindows())
+        {
+            var fontDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
+            foreach (var preferred in preferredFiles)
+            {
+                var p = Path.Combine(fontDir, preferred);
+                if (File.Exists(p))
+                {
+                    candidatePaths.Insert(0, p);
+                    return;
+                }
+            }
+        }
     }
 
     /// <summary>

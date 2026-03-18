@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-17T14:14:00.080688
+Generated: 2026-03-18T17:05:07.844088
 
 ## Summary
 
