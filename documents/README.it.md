@@ -4,6 +4,7 @@
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/dt/MiniPdf.svg" alt="Download NuGet"></a>
+<a href="https://www.nuget.org/packages/MiniPdf.Cli"><img src="https://img.shields.io/nuget/v/MiniPdf.Cli.svg?label=MiniPdf.Cli" alt="MiniPdf.Cli NuGet"></a>
 <a href="https://github.com/shps951023/MiniPdf" rel="nofollow"><img src="https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github" alt="GitHub stars"></a>
 <a href="https://gitee.com/dotnetchina/MiniPdf"><img src="https://img.shields.io/badge/Gitee-red?logo=gitee" alt="Gitee"></a>
 <a href="../LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="Licenza"></a>
@@ -77,6 +78,41 @@ Note:
 - I byte supportati sono TrueType `.ttf` e TrueType Collection `.ttc`.
 - Registra i font una sola volta all'avvio per evitare registrazioni duplicate.
 - I font registrati hanno priorita rispetto ai font di sistema.
+
+## Strumento CLI
+
+MiniPdf fornisce anche uno strumento da riga di comando — **MiniPdf.Cli** — per convertire rapidamente i file senza scrivere codice.
+
+### Installazione
+
+```bash
+dotnet tool install --global MiniPdf.Cli
+```
+
+### Utilizzo
+
+```bash
+# Converti Excel in PDF (output: data.pdf)
+minipdf data.xlsx
+
+# Converti Word in PDF
+minipdf report.docx
+
+# Specifica il percorso di output
+minipdf report.docx -o /path/to/output.pdf
+
+# Registra font personalizzati (per container / ambienti headless)
+minipdf report.docx --fonts ./Fonts
+```
+
+### Comandi
+
+| Comando | Descrizione |
+|---------|-------------|
+| `minipdf <file>` | Converti `.xlsx` / `.docx` in PDF |
+| `minipdf convert <file> -o <out>` | Converti con percorso di output esplicito |
+| `minipdf --version` | Mostra la versione |
+| `minipdf --help` | Mostra l'aiuto |
 
 ## Benchmark
 

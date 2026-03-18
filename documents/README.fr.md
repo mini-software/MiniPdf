@@ -4,6 +4,7 @@
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/dt/MiniPdf.svg" alt="Téléchargements NuGet"></a>
+<a href="https://www.nuget.org/packages/MiniPdf.Cli"><img src="https://img.shields.io/nuget/v/MiniPdf.Cli.svg?label=MiniPdf.Cli" alt="MiniPdf.Cli NuGet"></a>
 <a href="https://github.com/shps951023/MiniPdf" rel="nofollow"><img src="https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github" alt="GitHub stars"></a>
 <a href="https://gitee.com/dotnetchina/MiniPdf"><img src="https://img.shields.io/badge/Gitee-red?logo=gitee" alt="Gitee"></a>
 <a href="../LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="Licence"></a>
@@ -77,6 +78,41 @@ Notes:
 - Les donnees de police supportees sont TrueType `.ttf` et TrueType Collection `.ttc`.
 - Enregistrez les polices une seule fois au demarrage pour eviter les doublons.
 - Les polices enregistrees sont prioritaires sur les polices systeme.
+
+## Outil CLI
+
+MiniPdf fournit également un outil en ligne de commande — **MiniPdf.Cli** — pour convertir rapidement des fichiers sans écrire de code.
+
+### Installation
+
+```bash
+dotnet tool install --global MiniPdf.Cli
+```
+
+### Utilisation
+
+```bash
+# Convertir Excel en PDF (sortie : data.pdf)
+minipdf data.xlsx
+
+# Convertir Word en PDF
+minipdf report.docx
+
+# Spécifier le chemin de sortie
+minipdf report.docx -o /path/to/output.pdf
+
+# Enregistrer des polices personnalisées (pour conteneurs / environnements headless)
+minipdf report.docx --fonts ./Fonts
+```
+
+### Commandes
+
+| Commande | Description |
+|---------|-------------|
+| `minipdf <file>` | Convertir `.xlsx` / `.docx` en PDF |
+| `minipdf convert <file> -o <out>` | Convertir avec chemin de sortie explicite |
+| `minipdf --version` | Afficher la version |
+| `minipdf --help` | Afficher l'aide |
 
 ## Benchmark
 
