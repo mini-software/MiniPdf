@@ -55,7 +55,7 @@ internal static class DocxReader
         var relationships = ReadRelationships(archive);
 
         // Read styles
-        var (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName) = ReadStyles(archive);
+        var (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName) = ReadStyles(archive);
 
         // Read numbering definitions (for list bullets/numbers)
         var numbering = ReadNumbering(archive);
@@ -88,6 +88,7 @@ internal static class DocxReader
                 // Extract text box paragraphs from anchor drawings (before the containing paragraph)
                 float textBoxSpacing = 0;
                 bool emittedVisibleTextBoxParagraph = false;
+                var seenTextBoxPositions = new HashSet<(int, int)>(); // dedup by position
                 foreach (var anchor in child.Descendants(WP + "anchor"))
                 {
                     var txbx = anchor.Descendants(WPS + "txbx").FirstOrDefault();
@@ -97,6 +98,26 @@ internal static class DocxReader
 
                     // Check for wrapTopAndBottom (text box displaces content vertically)
                     bool isWrapTopBottom = anchor.Element(WP + "wrapTopAndBottom") != null;
+
+                    // Deduplicate text boxes at the same position (e.g. multiple identical anchors)
+                    {
+                        var dedupPosH = anchor.Element(WP + "positionH");
+                        var dedupPosV = anchor.Element(WP + "positionV");
+                        int hVal = 0, vVal = 0;
+                        if (dedupPosH != null)
+                        {
+                            var off = dedupPosH.Element(WP + "posOffset");
+                            if (off != null && int.TryParse(off.Value, out var h)) hVal = h;
+                        }
+                        if (dedupPosV != null)
+                        {
+                            var off = dedupPosV.Element(WP + "posOffset");
+                            if (off != null && int.TryParse(off.Value, out var v)) vVal = v;
+                        }
+                        var posKey = (hVal / 1000, vVal / 1000); // round to avoid floating-point differences
+                        if (!seenTextBoxPositions.Add(posKey))
+                            continue; // skip duplicate text box at same position
+                    }
 
                     // Read anchor vertical offset and extent height for spacing
                     float anchorOffsetPt = 0;
@@ -180,7 +201,7 @@ internal static class DocxReader
                         textBoxSpacing += anchorOffsetPt;
                 }
 
-                var paragraph = ReadParagraph(child, styles, numbering, relationships, archive, themeColors);
+                var paragraph = ReadParagraph(child, styles, numbering, relationships, archive, themeColors, defaultFontName, defaultEastAsiaFontName);
                 if (paragraph != null)
                 {
                     // Host paragraphs for anchored textboxes may contain synthetic fallback
@@ -209,7 +230,7 @@ internal static class DocxReader
             }
             else if (child.Name == W + "tbl")
             {
-                var table = ReadTable(child, styles, numbering, relationships, archive);
+                var table = ReadTable(child, styles, numbering, relationships, archive, defaultFontName, defaultEastAsiaFontName);
                 if (table != null)
                     elements.Add(table);
             }
@@ -219,12 +240,12 @@ internal static class DocxReader
         var pageLayout = ReadPageLayout(body);
 
         // Read header/footer content
-        var headerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "headerReference");
-        var footerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "footerReference");
+        var headerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName);
+        var footerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
         var headerShapes = ReadHeaderFooterShapes(body, relationships, archive, "headerReference", themeColors);
         var footerShapes = ReadHeaderFooterShapes(body, relationships, archive, "footerReference", themeColors);
-        var headerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "headerReference");
-        var footerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "footerReference");
+        var headerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName);
+        var footerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
 
         return new DocxDocument(elements, pageLayout, headerText, footerText, headerShapes, footerShapes, headerRuns, footerRuns,
             defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName);
@@ -232,7 +253,7 @@ internal static class DocxReader
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
         Dictionary<string, DocxNumberingDef> numbering, Dictionary<string, string> relationships, ZipArchive archive,
-        Dictionary<string, string>? themeColors = null)
+        Dictionary<string, string>? themeColors = null, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
     {
         var runs = new List<DocxRun>();
         var images = new List<DocxImage>();
@@ -329,7 +350,6 @@ internal static class DocxReader
                     else
                     {
                         isNumberedList = true;
-                        numDef.Counter++;
                         listText = numDef.FormatListText(listLevel);
                     }
 
@@ -413,6 +433,7 @@ internal static class DocxReader
         // Apply style defaults (fall back to Normal style if no explicit style)
         var effectiveStyleId = !string.IsNullOrEmpty(styleId) ? styleId : "Normal";
         bool contextualSpacing = false;
+        string? paragraphFontName = null;
         if (styles.TryGetValue(effectiveStyleId, out var styleInfo))
         {
             if (fontSize == 0) fontSize = styleInfo.FontSize;
@@ -425,6 +446,7 @@ internal static class DocxReader
             if (spacingBefore < 0) spacingBefore = styleInfo.SpacingBefore;
             if (spacingAfter < 0) spacingAfter = styleInfo.SpacingAfter;
             contextualSpacing = styleInfo.ContextualSpacing;
+            paragraphFontName = styleInfo.FontName;
         }
         // Paragraph-level contextualSpacing overrides style
         if (pPr?.Element(W + "contextualSpacing") != null)
@@ -458,10 +480,10 @@ internal static class DocxReader
                 // For PAGE/NUMPAGES fields, emit placeholder instead of skipping
                 if (fieldDepth > 0 && !inFieldInstr)
                 {
-                    var instr = currentFieldInstr.Trim().ToUpperInvariant();
-                    if (instr == "PAGE" || instr == "NUMPAGES")
+                    var fieldType = GetFieldInstructionType(currentFieldInstr);
+                    if (fieldType == "PAGE" || fieldType == "NUMPAGES")
                     {
-                        var placeholder = instr == "PAGE" ? "{PAGE}" : "{NUMPAGES}";
+                        var placeholder = fieldType == "PAGE" ? "{PAGE}" : "{NUMPAGES}";
                         var rPr = child.Element(W + "rPr");
                         var fBold = bold; var fItalic = italic; var fSize = fontSize; var fColor = color;
                         if (rPr != null)
@@ -475,7 +497,7 @@ internal static class DocxReader
                     continue;
                 }
 
-                var run = ReadRun(child, bold, italic, fontSize, color, caps, charSpacing);
+                var run = ReadRun(child, bold, italic, fontSize, color, caps, charSpacing, paragraphFontName, defaultLatinFontName, defaultEastAsiaFontName);
                 if (run != null)
                 {
                     if (run.IsPageBreak)
@@ -501,7 +523,7 @@ internal static class DocxReader
                 // Extract text from hyperlink runs
                 foreach (var r in child.Elements(W + "r"))
                 {
-                    var run = ReadRun(r, bold, italic, fontSize, color, caps, charSpacing);
+                    var run = ReadRun(r, bold, italic, fontSize, color, caps, charSpacing, paragraphFontName, defaultLatinFontName, defaultEastAsiaFontName);
                     if (run != null)
                         runs.Add(run);
                 }
@@ -539,7 +561,7 @@ internal static class DocxReader
         return new DocxBorderEdge(Math.Max(0.5f, width), color);
     }
 
-    private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor, bool parentCaps = false, float parentCharSpacing = 0)
+    private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor, bool parentCaps = false, float parentCharSpacing = 0, string? parentFontName = null, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
     {
         // Textbox content is parsed separately from w:txbxContent paragraphs.
         // Skip host runs that carry textbox payload to avoid duplicate/garbled flow text.
@@ -554,6 +576,7 @@ internal static class DocxReader
         var caps = parentCaps;
         var underline = false;
         var charSpacing = parentCharSpacing;
+        var fontName = parentFontName;
 
         if (rPr != null)
         {
@@ -576,6 +599,8 @@ internal static class DocxReader
             var spacingEl = rPr.Element(W + "spacing");
             if (spacingEl != null && int.TryParse(spacingEl.Attribute(W + "val")?.Value, out var cs))
                 charSpacing = cs / 20f; // twips to points
+
+            fontName = ResolveRunFontName(rPr, parentFontName, defaultLatinFontName, defaultEastAsiaFontName);
         }
 
         // Collect text from <w:t>, <w:tab>, <w:br> elements
@@ -603,7 +628,125 @@ internal static class DocxReader
         if (caps && !string.IsNullOrEmpty(text))
             text = text.ToUpperInvariant();
 
-        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing);
+        // Guard against glyph drop: if run contains CJK text but the resolved run font
+        // looks like a Latin-only family, use EastAsia default font instead.
+        if (!string.IsNullOrEmpty(text)
+            && ContainsCjkText(text)
+            && !IsKnownEastAsianFont(fontName)
+            && !string.IsNullOrWhiteSpace(defaultEastAsiaFontName))
+        {
+            fontName = defaultEastAsiaFontName;
+        }
+
+        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName);
+    }
+
+    private static string? GetFieldInstructionType(string? instruction)
+    {
+        if (string.IsNullOrWhiteSpace(instruction))
+            return null;
+
+        // Field instructions may include switches, e.g. "PAGE \\* MERGEFORMAT".
+        // We only need the first token to determine the field type.
+        var normalized = instruction.Trim();
+        var firstToken = normalized.Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+            .FirstOrDefault();
+        if (string.IsNullOrEmpty(firstToken))
+            return null;
+
+        firstToken = firstToken.ToUpperInvariant();
+        return firstToken is "PAGE" or "NUMPAGES" ? firstToken : null;
+    }
+
+    private static bool ContainsCjkText(string text)
+    {
+        foreach (var ch in text)
+        {
+            if ((ch >= '\u4E00' && ch <= '\u9FFF')    // CJK Unified Ideographs
+                || (ch >= '\u3400' && ch <= '\u4DBF') // CJK Extension A
+                || (ch >= '\u3040' && ch <= '\u30FF') // Hiragana / Katakana
+                || (ch >= '\uAC00' && ch <= '\uD7AF')) // Hangul syllables
+                return true;
+        }
+        return false;
+    }
+
+    private static bool IsKnownEastAsianFont(string? fontName)
+    {
+        if (string.IsNullOrWhiteSpace(fontName))
+            return false;
+
+        var n = fontName.ToLowerInvariant();
+        return n.Contains("mingliu")
+            || n.Contains("pmingliu")
+            || n.Contains("kai")
+            || n.Contains("dfkai")
+            || n.Contains("bkai")
+            || n.Contains("jhenghei")
+            || n.Contains("yahei")
+            || n.Contains("msjh")
+            || n.Contains("msyh")
+            || n.Contains("simsun")
+            || n.Contains("simhei")
+            || n.Contains("pingfang")
+            || n.Contains("heiti")
+            || n.Contains("song")
+            || n.Contains("noto sans cjk")
+            || n.Contains("新細明體")
+            || n.Contains("新细明体")
+            || n.Contains("細明體")
+            || n.Contains("细明体")
+            || n.Contains("標楷體")
+            || n.Contains("标楷体")
+            || n.Contains("微軟正黑體")
+            || n.Contains("微软正黑体")
+            || n.Contains("微軟雅黑")
+            || n.Contains("微软雅黑");
+    }
+
+    private static string? ResolveRunFontName(XElement rPr, string? parentFontName = null, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
+    {
+        var rFonts = rPr.Element(W + "rFonts");
+        if (rFonts == null)
+            return parentFontName;
+
+        // For CJK runs, eastAsia should win (Word commonly sets hint=eastAsia).
+        var hint = rFonts.Attribute(W + "hint")?.Value;
+        if (string.Equals(hint, "eastAsia", StringComparison.OrdinalIgnoreCase))
+        {
+            var eastHint = rFonts.Attribute(W + "eastAsia")?.Value;
+            if (!string.IsNullOrWhiteSpace(eastHint))
+                return eastHint;
+
+            var eastTheme = rFonts.Attribute(W + "eastAsiaTheme")?.Value;
+            if (!string.IsNullOrWhiteSpace(eastTheme))
+                return defaultEastAsiaFontName ?? parentFontName ?? defaultLatinFontName;
+        }
+
+        var explicitFont = rFonts.Attribute(W + "eastAsia")?.Value
+            ?? rFonts.Attribute(W + "ascii")?.Value
+            ?? rFonts.Attribute(W + "hAnsi")?.Value
+            ?? rFonts.Attribute(W + "cs")?.Value;
+        if (!string.IsNullOrWhiteSpace(explicitFont))
+            return explicitFont;
+
+        var hasEastAsiaTheme = !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "eastAsiaTheme")?.Value)
+            || (string.Equals(rFonts.Attribute(W + "asciiTheme")?.Value, "minorEastAsia", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(rFonts.Attribute(W + "asciiTheme")?.Value, "majorEastAsia", StringComparison.OrdinalIgnoreCase))
+            || (string.Equals(rFonts.Attribute(W + "hAnsiTheme")?.Value, "minorEastAsia", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(rFonts.Attribute(W + "hAnsiTheme")?.Value, "majorEastAsia", StringComparison.OrdinalIgnoreCase));
+
+        if (hasEastAsiaTheme)
+            return defaultEastAsiaFontName ?? parentFontName ?? defaultLatinFontName;
+
+        var hasLatinTheme = !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "asciiTheme")?.Value)
+            || !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "hAnsiTheme")?.Value)
+            || !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "cstheme")?.Value);
+
+        if (hasLatinTheme)
+            return defaultLatinFontName ?? parentFontName ?? defaultEastAsiaFontName;
+
+        return parentFontName;
     }
 
     private static PdfColor? ReadRunColor(XElement rPr)
@@ -1394,7 +1537,8 @@ internal static class DocxReader
     }
 
     private static DocxTable? ReadTable(XElement tblElement, Dictionary<string, DocxStyleInfo> styles,
-        Dictionary<string, DocxNumberingDef> numbering, Dictionary<string, string> relationships, ZipArchive archive)
+        Dictionary<string, DocxNumberingDef> numbering, Dictionary<string, string> relationships, ZipArchive archive,
+        string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
     {
         var rows = new List<DocxTableRow>();
 
@@ -1464,7 +1608,7 @@ internal static class DocxReader
                 {
                     if (child.Name == W + "p")
                     {
-                        var para = ReadParagraph(child, styles, numbering, relationships, archive);
+                        var para = ReadParagraph(child, styles, numbering, relationships, archive, null, defaultLatinFontName, defaultEastAsiaFontName);
                         if (para != null)
                             cellParagraphs.Add(para);
                     }
@@ -1478,7 +1622,7 @@ internal static class DocxReader
                             {
                                 foreach (var nestedP in nestedTc.Elements(W + "p"))
                                 {
-                                    var para = ReadParagraph(nestedP, styles, numbering, relationships, archive);
+                                    var para = ReadParagraph(nestedP, styles, numbering, relationships, archive, null, defaultLatinFontName, defaultEastAsiaFontName);
                                     if (para != null)
                                     {
                                         if (rowRuns.Count > 0)
@@ -1569,7 +1713,7 @@ internal static class DocxReader
 
     private static string? ReadHeaderFooter(XElement body, Dictionary<string, string> relationships,
         ZipArchive archive, Dictionary<string, DocxStyleInfo> styles, Dictionary<string, DocxNumberingDef> numbering,
-        string refElementName)
+        string refElementName, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
     {
         var sectPr = body.Element(W + "sectPr");
         if (sectPr == null) return null;
@@ -1591,7 +1735,7 @@ internal static class DocxReader
         var texts = new List<string>();
         foreach (var p in doc.Descendants(W + "p"))
         {
-            var para = ReadParagraph(p, styles, numbering, relationships, archive);
+            var para = ReadParagraph(p, styles, numbering, relationships, archive, null, defaultLatinFontName, defaultEastAsiaFontName);
             if (para != null)
             {
                 var text = string.Concat(para.Runs.Select(r => r.Text));
@@ -1605,7 +1749,7 @@ internal static class DocxReader
 
     private static List<DocxRun>? ReadHeaderFooterRuns(XElement body, Dictionary<string, string> relationships,
         ZipArchive archive, Dictionary<string, DocxStyleInfo> styles, Dictionary<string, DocxNumberingDef> numbering,
-        string refElementName)
+        string refElementName, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
     {
         var sectPr = body.Element(W + "sectPr");
         if (sectPr == null) return null;
@@ -1627,7 +1771,7 @@ internal static class DocxReader
         var allRuns = new List<DocxRun>();
         foreach (var p in doc.Descendants(W + "p"))
         {
-            var para = ReadParagraph(p, styles, numbering, relationships, archive);
+            var para = ReadParagraph(p, styles, numbering, relationships, archive, null, defaultLatinFontName, defaultEastAsiaFontName);
             if (para != null && para.Runs.Count > 0)
             {
                 if (allRuns.Count > 0)
@@ -1712,7 +1856,16 @@ internal static class DocxReader
             }
         }
 
-        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch);
+        // Parse header/footer margins
+        float headerMargin = marginTop / 2;
+        float footerMargin = marginBottom / 2;
+        if (pgMar != null)
+        {
+            if (float.TryParse(pgMar.Attribute(W + "header")?.Value, out var hm)) headerMargin = hm * twipsToPoints;
+            if (float.TryParse(pgMar.Attribute(W + "footer")?.Value, out var fm)) footerMargin = fm * twipsToPoints;
+        }
+
+        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch, headerMargin, footerMargin);
     }
 
 
@@ -1736,12 +1889,12 @@ internal static class DocxReader
         return rels;
     }
 
-    private static (Dictionary<string, DocxStyleInfo> Styles, float DefaultLineSpacing, bool DefaultLineSpacingAbsolute, string? DefaultFontName) ReadStyles(ZipArchive archive)
+    private static (Dictionary<string, DocxStyleInfo> Styles, float DefaultLineSpacing, bool DefaultLineSpacingAbsolute, string? DefaultFontName, string? DefaultEastAsiaFontName) ReadStyles(ZipArchive archive)
     {
         var styles = new Dictionary<string, DocxStyleInfo>();
-        var (majorThemeLatinFont, minorThemeLatinFont) = ReadThemeLatinFonts(archive);
+        var (majorThemeLatinFont, minorThemeLatinFont, majorThemeEastAsiaFont, minorThemeEastAsiaFont) = ReadThemeFonts(archive);
         var entry = archive.GetEntry("word/styles.xml");
-        if (entry == null) return (styles, 0, false, null);
+        if (entry == null) return (styles, 0, false, null, null);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -1752,6 +1905,7 @@ internal static class DocxReader
         float defaultSpacingBefore = 0;
         float defaultLineSpacing = 0;
         bool defaultLineSpacingAbsolute = false;
+        string? defaultEastAsiaLang = null;
 
         var docDefaults = doc.Descendants(W + "docDefaults").FirstOrDefault();
         if (docDefaults != null)
@@ -1762,6 +1916,8 @@ internal static class DocxReader
                 var sz = rPrDefault.Element(W + "sz")?.Attribute(W + "val")?.Value;
                 if (float.TryParse(sz, out var s) && s > 0)
                     defaultFontSize = s / 2f;
+
+                defaultEastAsiaLang = rPrDefault.Element(W + "lang")?.Attribute(W + "eastAsia")?.Value;
             }
 
             var pPrDefault = docDefaults.Element(W + "pPrDefault")?.Element(W + "pPr");
@@ -1784,6 +1940,8 @@ internal static class DocxReader
                 }
             }
         }
+
+        var effectiveThemeEastAsiaFont = ResolveThemeEastAsiaFont(defaultEastAsiaLang, majorThemeEastAsiaFont, minorThemeEastAsiaFont);
 
         // Two-pass style reading: first pass populates all styles, second pass resolves basedOn inheritance
         var styleElements = doc.Descendants(W + "style").ToList();
@@ -1813,6 +1971,7 @@ internal static class DocxReader
             float styleLineSpacing = 0;
             bool styleLineSpacingAbsolute = false;
             bool contextualSpacing = false;
+            string? styleFontName = null;
 
             if (rPr != null)
             {
@@ -1823,6 +1982,10 @@ internal static class DocxReader
                 if (float.TryParse(sz, out var s) && s > 0)
                     fontSize = s / 2f;
                 color = ReadRunColor(rPr);
+                var rFonts = rPr.Element(W + "rFonts");
+                if (rFonts != null)
+                    styleFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont,
+                        effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont);
             }
 
             if (pPr != null)
@@ -1855,7 +2018,7 @@ internal static class DocxReader
                 bold = true;
             }
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, contextualSpacing);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, contextualSpacing, styleFontName);
         }
 
         // Second pass: resolve basedOn inheritance
@@ -1878,12 +2041,13 @@ internal static class DocxReader
             var caps2 = current.Caps || baseStyle.Caps;
             var color2 = current.Color ?? baseStyle.Color;
             var alignment = !string.IsNullOrEmpty(current.Alignment) ? current.Alignment : baseStyle.Alignment;
+            var styleFontName = !string.IsNullOrWhiteSpace(current.FontName) ? current.FontName : baseStyle.FontName;
             var spacingEl = pPr?.Element(W + "spacing");
             var spacingBefore = spacingEl?.Attribute(W + "before") != null ? current.SpacingBefore : baseStyle.SpacingBefore;
             var spacingAfter = spacingEl?.Attribute(W + "after") != null ? current.SpacingAfter : baseStyle.SpacingAfter;
             var contextualSpacing2 = current.ContextualSpacing || baseStyle.ContextualSpacing;
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, ContextualSpacing: contextualSpacing2);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, ContextualSpacing: contextualSpacing2, FontName: styleFontName);
         }
 
         // Extract default font name from Normal style or docDefaults
@@ -1895,60 +2059,170 @@ internal static class DocxReader
             {
                 var rFonts = style.Element(W + "rPr")?.Element(W + "rFonts");
                 if (rFonts != null)
-                    defaultFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont);
+                    defaultFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont,
+                        effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont);
                 break;
             }
         }
+        string? defaultEastAsiaFontName = null;
         if (defaultFontName == null && docDefaults != null)
         {
             var rFonts = docDefaults.Element(W + "rPrDefault")?.Element(W + "rPr")?.Element(W + "rFonts");
             if (rFonts != null)
-                defaultFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont);
+            {
+                defaultFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont,
+                    effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont);
+                defaultEastAsiaFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont,
+                    effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont, preferEastAsiaTheme: true);
+            }
         }
 
-        return (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName);
+        if (defaultEastAsiaFontName == null)
+            defaultEastAsiaFontName = effectiveThemeEastAsiaFont;
+
+        return (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName);
     }
 
     /// <summary>
-    /// Reads major/minor Latin theme fonts from theme1.xml.
+    /// Reads major/minor Latin and East-Asia script theme fonts from theme1.xml.
     /// </summary>
-    private static (string? MajorLatinFont, string? MinorLatinFont) ReadThemeLatinFonts(ZipArchive archive)
+    private static (string? MajorLatinFont, string? MinorLatinFont, Dictionary<string, string> MajorEastAsiaFonts, Dictionary<string, string> MinorEastAsiaFonts) ReadThemeFonts(ZipArchive archive)
     {
         var entry = archive.GetEntry("word/theme/theme1.xml");
-        if (entry == null) return (null, null);
+        if (entry == null) return (null, null, new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase), new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
 
         var fontScheme = doc.Descendants(A + "fontScheme").FirstOrDefault();
-        if (fontScheme == null) return (null, null);
+        if (fontScheme == null) return (null, null, new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase), new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
 
         var majorLatin = fontScheme.Element(A + "majorFont")?.Element(A + "latin")?.Attribute("typeface")?.Value;
         var minorLatin = fontScheme.Element(A + "minorFont")?.Element(A + "latin")?.Attribute("typeface")?.Value;
+
+        var majorEastAsia = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var minorEastAsia = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        var majorFont = fontScheme.Element(A + "majorFont");
+        var minorFont = fontScheme.Element(A + "minorFont");
+        if (majorFont != null)
+        {
+            foreach (var f in majorFont.Elements(A + "font"))
+            {
+                var script = f.Attribute("script")?.Value;
+                var typeface = f.Attribute("typeface")?.Value;
+                if (!string.IsNullOrWhiteSpace(script) && !string.IsNullOrWhiteSpace(typeface))
+                    majorEastAsia[script] = typeface;
+            }
+        }
+        if (minorFont != null)
+        {
+            foreach (var f in minorFont.Elements(A + "font"))
+            {
+                var script = f.Attribute("script")?.Value;
+                var typeface = f.Attribute("typeface")?.Value;
+                if (!string.IsNullOrWhiteSpace(script) && !string.IsNullOrWhiteSpace(typeface))
+                    minorEastAsia[script] = typeface;
+            }
+        }
+
         return (string.IsNullOrWhiteSpace(majorLatin) ? null : majorLatin,
-            string.IsNullOrWhiteSpace(minorLatin) ? null : minorLatin);
+            string.IsNullOrWhiteSpace(minorLatin) ? null : minorLatin,
+            majorEastAsia, minorEastAsia);
     }
 
     /// <summary>
-    /// Resolves effective Latin font name from w:rFonts, including theme references.
+    /// Resolves effective font name from w:rFonts, including Latin and EastAsia theme references.
     /// </summary>
-    private static string? ResolveFontNameFromRFonts(XElement rFonts, string? majorThemeLatinFont, string? minorThemeLatinFont)
+    private static string? ResolveFontNameFromRFonts(XElement rFonts, string? majorThemeLatinFont, string? minorThemeLatinFont,
+        string? majorThemeEastAsiaFont, string? minorThemeEastAsiaFont, bool preferEastAsiaTheme = false)
     {
-        var explicitFont = rFonts.Attribute(W + "ascii")?.Value
-            ?? rFonts.Attribute(W + "hAnsi")?.Value;
+        string? explicitFont;
+        if (preferEastAsiaTheme)
+        {
+            explicitFont = rFonts.Attribute(W + "eastAsia")?.Value
+                ?? rFonts.Attribute(W + "ascii")?.Value
+                ?? rFonts.Attribute(W + "hAnsi")?.Value
+                ?? rFonts.Attribute(W + "cs")?.Value;
+        }
+        else
+        {
+            explicitFont = rFonts.Attribute(W + "ascii")?.Value
+                ?? rFonts.Attribute(W + "hAnsi")?.Value
+                ?? rFonts.Attribute(W + "cs")?.Value
+                ?? rFonts.Attribute(W + "eastAsia")?.Value;
+        }
         if (!string.IsNullOrWhiteSpace(explicitFont))
             return explicitFont;
 
-        var themeFont = rFonts.Attribute(W + "asciiTheme")?.Value
-            ?? rFonts.Attribute(W + "hAnsiTheme")?.Value;
+        string? themeFont = null;
+        if (preferEastAsiaTheme)
+            themeFont = rFonts.Attribute(W + "eastAsiaTheme")?.Value
+                ?? rFonts.Attribute(W + "asciiTheme")?.Value
+                ?? rFonts.Attribute(W + "hAnsiTheme")?.Value;
+        else
+            themeFont = rFonts.Attribute(W + "asciiTheme")?.Value
+                ?? rFonts.Attribute(W + "hAnsiTheme")?.Value
+                ?? rFonts.Attribute(W + "eastAsiaTheme")?.Value;
+
         if (string.IsNullOrWhiteSpace(themeFont))
             return null;
+
+        if (themeFont.EndsWith("EastAsia", StringComparison.OrdinalIgnoreCase))
+        {
+            if (themeFont.StartsWith("major", StringComparison.OrdinalIgnoreCase))
+                return majorThemeEastAsiaFont ?? majorThemeLatinFont;
+            if (themeFont.StartsWith("minor", StringComparison.OrdinalIgnoreCase))
+                return minorThemeEastAsiaFont ?? minorThemeLatinFont;
+        }
 
         if (themeFont.StartsWith("major", StringComparison.OrdinalIgnoreCase))
             return majorThemeLatinFont;
         if (themeFont.StartsWith("minor", StringComparison.OrdinalIgnoreCase))
             return minorThemeLatinFont;
 
+        return null;
+    }
+
+    private static string? ResolveThemeEastAsiaFont(string? eastAsiaLang,
+        Dictionary<string, string> majorThemeEastAsiaFonts,
+        Dictionary<string, string> minorThemeEastAsiaFonts)
+    {
+        var script = GetThemeScriptFromEastAsiaLang(eastAsiaLang);
+        if (script != null)
+        {
+            if (minorThemeEastAsiaFonts.TryGetValue(script, out var minor) && !string.IsNullOrWhiteSpace(minor))
+                return minor;
+            if (majorThemeEastAsiaFonts.TryGetValue(script, out var major) && !string.IsNullOrWhiteSpace(major))
+                return major;
+        }
+
+        // Fallback to Traditional Chinese first because many zh-TW docs use it.
+        if (minorThemeEastAsiaFonts.TryGetValue("Hant", out var hantMinor) && !string.IsNullOrWhiteSpace(hantMinor))
+            return hantMinor;
+        if (majorThemeEastAsiaFonts.TryGetValue("Hant", out var hantMajor) && !string.IsNullOrWhiteSpace(hantMajor))
+            return hantMajor;
+
+        return minorThemeEastAsiaFonts.Values.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v))
+            ?? majorThemeEastAsiaFonts.Values.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v));
+    }
+
+    private static string? GetThemeScriptFromEastAsiaLang(string? eastAsiaLang)
+    {
+        if (string.IsNullOrWhiteSpace(eastAsiaLang)) return null;
+        var lang = eastAsiaLang.Trim().ToLowerInvariant();
+        if (lang.StartsWith("zh-tw", StringComparison.Ordinal)
+            || lang.StartsWith("zh-hk", StringComparison.Ordinal)
+            || lang.StartsWith("zh-mo", StringComparison.Ordinal)
+            || lang.Contains("hant", StringComparison.Ordinal))
+            return "Hant";
+        if (lang.StartsWith("zh", StringComparison.Ordinal)
+            || lang.Contains("hans", StringComparison.Ordinal))
+            return "Hans";
+        if (lang.StartsWith("ja", StringComparison.Ordinal))
+            return "Jpan";
+        if (lang.StartsWith("ko", StringComparison.Ordinal))
+            return "Hang";
         return null;
     }
 
@@ -2034,7 +2308,9 @@ internal sealed record DocxPageLayout(
     float MarginBottom = 72,
     float MarginLeft = 72,
     float MarginRight = 72,
-    float GridLinePitch = 0
+    float GridLinePitch = 0,
+    float HeaderMargin = 36,
+    float FooterMargin = 36
 );
 
 /// <summary>Base type for document elements (paragraphs, tables).</summary>
@@ -2070,7 +2346,8 @@ internal sealed record DocxParagraph(
     List<DocxShape>? Shapes = null,
     bool ForceSpacingBefore = false,
     DocxTextBoxBorder? TextBoxBorder = null,
-    bool ContextualSpacing = false
+    bool ContextualSpacing = false,
+    List<DocxFloatingTextBox>? FloatingTextBoxes = null
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>
@@ -2103,7 +2380,8 @@ internal sealed record DocxRun(
     PdfColor? Color = null,
     bool IsPageBreak = false,
     bool Underline = false,
-    float CharSpacing = 0
+    float CharSpacing = 0,
+    string? FontName = null
 );
 
 /// <summary>Represents an embedded image.</summary>
@@ -2115,6 +2393,16 @@ internal sealed record DocxImage(
     bool IsAnchor = false,
     long OffsetXEmu = 0,
     long OffsetYEmu = 0
+);
+
+/// <summary>Represents a floating text box (wrapNone) with absolute position.</summary>
+internal sealed record DocxFloatingTextBox(
+    float XPt,
+    float YPt,
+    float WidthPt,
+    float HeightPt,
+    List<DocxParagraph> Paragraphs,
+    DocxTextBoxBorder? Border = null
 );
 
 /// <summary>Represents a text box outline border (rectangle drawn around text box content).</summary>
@@ -2190,20 +2478,20 @@ internal sealed record DocxStyleInfo(
     bool Caps = false,
     float LineSpacing = 0,
     bool LineSpacingAbsolute = false,
-    bool ContextualSpacing = false
+    bool ContextualSpacing = false,
+    string? FontName = null
 );
 
 /// <summary>Numbering definition for lists.</summary>
 internal sealed class DocxNumberingDef
 {
     public string Format { get; }
-    public int Counter { get; set; }
     public List<DocxNumberingLevelDef> Levels { get; }
+    private readonly Dictionary<int, int> _counters = new();
 
     public DocxNumberingDef(string format, List<DocxNumberingLevelDef>? levels = null)
     {
         Format = format;
-        Counter = 0;
         Levels = levels ?? [];
     }
 
@@ -2211,9 +2499,13 @@ internal sealed class DocxNumberingDef
     {
         var level = Levels.FirstOrDefault(l => l.Ilvl == ilvl) ?? Levels.FirstOrDefault();
         if (level == null)
-            return Counter + ".";
+        {
+            var c = IncrementCounter(ilvl, 1);
+            return c + ".";
+        }
 
-        var formatted = FormatNumber(Counter, level.NumFmt);
+        var counter = IncrementCounter(ilvl, level.Start);
+        var formatted = FormatNumber(counter, level.NumFmt);
         // Replace %1, %2 etc. placeholders in lvlText with formatted number
         var text = level.LvlText;
         text = text.Replace("%" + (ilvl + 1), formatted);
@@ -2223,6 +2515,21 @@ internal sealed class DocxNumberingDef
         return text;
     }
 
+    private int IncrementCounter(int ilvl, int startVal)
+    {
+        // Word restarts deeper list levels when a parent level advances.
+        foreach (var level in _counters.Keys.Where(k => k > ilvl).ToList())
+            _counters.Remove(level);
+
+        if (!_counters.TryGetValue(ilvl, out var current))
+        {
+            _counters[ilvl] = startVal;
+            return startVal;
+        }
+        _counters[ilvl] = current + 1;
+        return current + 1;
+    }
+
     private static string FormatNumber(int num, string fmt) => fmt switch
     {
         "decimal" => num.ToString(),
@@ -2230,10 +2537,38 @@ internal sealed class DocxNumberingDef
         "lowerLetter" => num >= 1 && num <= 26 ? ((char)('a' + num - 1)).ToString() : num.ToString(),
         "upperRoman" => ToRoman(num),
         "lowerRoman" => ToRoman(num).ToLowerInvariant(),
-        "japaneseCounting" or "chineseCounting" or "ideographTraditional" =>
-            num >= 1 && num <= 10 ? "\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341"[num - 1].ToString() : num.ToString(),
+        "japaneseCounting" or "chineseCounting" or "taiwaneseCountingThousand" or "taiwaneseCounting" =>
+            FormatChineseCounting(num),
+        "ideographTraditional" =>
+            num >= 1 && num <= 10 ? "\u7532\u4e59\u4e19\u4e01\u620a\u5df1\u5e9a\u8f9b\u58ec\u7678"[num - 1].ToString() : num.ToString(),
         _ => num.ToString()
     };
+
+    private static string FormatChineseCounting(int num)
+    {
+        if (num <= 0 || num > 9999) return num.ToString();
+        string[] d = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+        if (num <= 10) return num == 10 ? "十" : d[num];
+        if (num < 20) return "十" + d[num - 10];
+        if (num < 100)
+        {
+            var t = num / 10; var o = num % 10;
+            return d[t] + "十" + (o > 0 ? d[o] : "");
+        }
+        if (num < 1000)
+        {
+            var h = num / 100; var rem = num % 100;
+            var s = d[h] + "百";
+            if (rem == 0) return s;
+            if (rem < 10) return s + "零" + d[rem];
+            return s + FormatChineseCounting(rem);
+        }
+        var th = num / 1000; var r = num % 1000;
+        var str = d[th] + "千";
+        if (r == 0) return str;
+        if (r < 100) return str + "零" + FormatChineseCounting(r);
+        return str + FormatChineseCounting(r);
+    }
 
     private static string ToRoman(int num)
     {

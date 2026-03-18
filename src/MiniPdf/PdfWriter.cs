@@ -52,6 +52,10 @@ internal sealed class PdfWriter
         // non-WinAnsi char the ENTIRE block is rendered in a Unicode font so all
         // spans share the same bbox Y in text extractors.
         var unicodeCodePoints = new SortedSet<int>();
+        var preferredFontsByCodePoint = new Dictionary<int, string>(unicodeCodePoints.Count);
+        // Track ALL codepoints per preferred font name (not just first-wins) so that
+        // each embedded font slot includes every glyph any block might need.
+        var cpsByPreferredFont = new Dictionary<string, HashSet<int>>(StringComparer.OrdinalIgnoreCase);
         foreach (var page in pages)
             foreach (var block in page.TextBlocks)
             {
@@ -62,7 +66,17 @@ internal sealed class PdfWriter
                 {
                     var shaped = ShapeArabicCodePoints(EnumerateCodePoints(block.Text).ToList());
                     foreach (var cp in shaped)
+                    {
                         unicodeCodePoints.Add(cp);
+                        if (!string.IsNullOrWhiteSpace(block.PreferredFontName))
+                        {
+                            if (!preferredFontsByCodePoint.ContainsKey(cp))
+                                preferredFontsByCodePoint[cp] = block.PreferredFontName!;
+                            if (!cpsByPreferredFont.TryGetValue(block.PreferredFontName!, out var set))
+                                cpsByPreferredFont[block.PreferredFontName!] = set = new HashSet<int>();
+                            set.Add(cp);
+                        }
+                    }
                 }
             }
         var needsUnicodeFont = unicodeCodePoints.Count > 0;
@@ -72,6 +86,7 @@ internal sealed class PdfWriter
         // can render it.  Each font becomes a separate PDF Type0 font (F2, F3, …).
         var embeddedFonts = new List<EmbeddedFontInfo>();  // index = fontSlot (0→F2, 1→F3, …)
         var cpToFontSlot = new Dictionary<int, int>();     // code point → fontSlot index
+        var fontNameToSlot = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase); // preferred font name → embedded slot
 
         if (needsUnicodeFont)
         {
@@ -128,6 +143,19 @@ internal sealed class PdfWriter
             {
                 bool found = false;
 
+                // If source content provided a preferred font (e.g. DOCX run font),
+                // try that family first before generic fallback selection.
+                if (!found && preferredFontsByCodePoint.TryGetValue(cp, out var preferredName))
+                {
+                    var preferredIdx = FindPreferredFontIndex(loadedFonts, preferredName);
+                    if (preferredIdx >= 0
+                        && loadedFonts[preferredIdx].cmap.ContainsKey(cp))
+                    {
+                        cpToFontSlot[cp] = preferredIdx;
+                        found = true;
+                    }
+                }
+
                 // For emoji ranges, try the emoji font first
                 if (!found && emojiFontIdx >= 0 && IsEmojiRange(cp))
                 {
@@ -143,7 +171,7 @@ internal sealed class PdfWriter
                 {
                     for (var fi = 0; fi < loadedFonts.Count; fi++)
                     {
-                        if (loadedFonts[fi].cmap.TryGetValue(cp, out var gid) && HasGlyphOutline(loadedFonts[fi].ttf, gid))
+                        if (loadedFonts[fi].cmap.ContainsKey(cp))
                         {
                             cpToFontSlot[cp] = fi;
                             found = true;
@@ -159,8 +187,21 @@ internal sealed class PdfWriter
                 foreach (var cp in uncovered)
                     cpToFontSlot[cp] = 0;
 
+            // Resolve preferred font names → loaded font indices so we can ensure
+            // those font slots exist even if they didn't win any global assignment.
+            var preferredNameToLoadedIdx = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            foreach (var prefName in cpsByPreferredFont.Keys)
+            {
+                var idx = FindPreferredFontIndex(loadedFonts, prefName);
+                if (idx >= 0)
+                    preferredNameToLoadedIdx[prefName] = idx;
+            }
+
             // Build EmbeddedFontInfo for each font slot actually used
             var usedSlots = new SortedSet<int>(cpToFontSlot.Values);
+            // Also include font slots requested by per-block preferred fonts
+            foreach (var idx in preferredNameToLoadedIdx.Values)
+                usedSlots.Add(idx);
             var slotRemap = new Dictionary<int, int>(); // old slot → new sequential index
             foreach (var slot in usedSlots)
             {
@@ -170,6 +211,18 @@ internal sealed class PdfWriter
                 var (ttf, cmap, advances, upm, asc, desc, capH, bbox, name) = loadedFonts[slot];
                 var scale = 1000.0 / upm;
                 var charsForFont = new SortedSet<int>(unicodeCodePoints.Where(cp => cpToFontSlot.TryGetValue(cp, out var s) && s == slot));
+
+                // Expand with codepoints from blocks that prefer this font slot,
+                // so per-block rendering can use the correct font for each character.
+                foreach (var (prefName, prefCps) in cpsByPreferredFont)
+                {
+                    if (preferredNameToLoadedIdx.TryGetValue(prefName, out var prefIdx) && prefIdx == slot)
+                    {
+                        foreach (var cp in prefCps)
+                            if (cmap.ContainsKey(cp))
+                                charsForFont.Add(cp);
+                    }
+                }
 
                 // Build code point → CID mapping. BMP chars use identity mapping;
                 // non-BMP chars (e.g. emoji) get assigned CIDs in the PUA range.
@@ -222,12 +275,17 @@ internal sealed class PdfWriter
             foreach (var (cp, slot) in cpToFontSlot)
                 remapped[cp] = slotRemap[slot];
             cpToFontSlot = remapped;
+
+            // Build preferred font name → embedded slot index mapping for per-block rendering
+            foreach (var (prefName, loadedIdx) in preferredNameToLoadedIdx)
+                if (slotRemap.TryGetValue(loadedIdx, out var embIdx))
+                    fontNameToSlot[prefName] = embIdx;
         }
 
         // Pre-build content streams
         var contentStreams = new List<byte[]>(pageCount);
         for (var i = 0; i < pageCount; i++)
-            contentStreams.Add(Compat.Latin1.GetBytes(BuildContentStream(pages[i], embeddedFonts.Count > 0, cpToFontSlot, embeddedFonts)));
+            contentStreams.Add(Compat.Latin1.GetBytes(BuildContentStream(pages[i], embeddedFonts.Count > 0, cpToFontSlot, embeddedFonts, fontNameToSlot)));
 
         // Allocate object numbers.
         //   1 = Catalog, 2 = Pages, 3 = Font F1 (Helvetica/WinAnsi), 4 = Font F1B (Helvetica-Bold/WinAnsi)
@@ -481,7 +539,7 @@ internal sealed class PdfWriter
         WriteRaw("\nendstream\nendobj\n");
     }
 
-    private static string BuildContentStream(PdfPage page, bool hasUnicodeFont, Dictionary<int, int>? cpToFontSlot, List<EmbeddedFontInfo>? embeddedFonts)
+    private static string BuildContentStream(PdfPage page, bool hasUnicodeFont, Dictionary<int, int>? cpToFontSlot, List<EmbeddedFontInfo>? embeddedFonts, Dictionary<string, int>? fontNameToSlot = null)
     {
         var sb = new StringBuilder();
 
@@ -697,6 +755,18 @@ internal sealed class PdfWriter
                 // emit each run with the appropriate Fn, using Td to advance.
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
+                // Simulate bold for Unicode/CJK text using fill+stroke rendering.
+                // PDF text rendering mode 2 = fill and stroke; a thin stroke width
+                // makes the glyphs appear bolder, matching how PDF viewers handle
+                // bold CJK text when no dedicated bold font file is embedded.
+                if (block.Bold)
+                {
+                    var strokeW = (block.FontSize * 0.03f).ToString("F2", CultureInfo.InvariantCulture);
+                    sb.Append($"{strokeW} w\n");       // stroke width
+                    sb.Append(colorCmd.TrimEnd('\n').Replace(" rg", " RG"));
+                    sb.Append("\n");
+                    sb.Append("2 Tr\n");               // rendering mode: fill + stroke
+                }
                 // Apply word spacing (Tw) for justified text
                 if (block.WordSpacing != 0)
                     sb.Append($"{block.WordSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tw\n");
@@ -717,10 +787,25 @@ internal sealed class PdfWriter
 
                 // Split text into runs by font slot.  Default all chars to slot 0 (F2).
                 var codePoints = ShapeArabicCodePoints(EnumerateCodePoints(block.Text).ToList());
+                // Per-block font preference: if the block specifies a preferred font,
+                // try to use that font's slot for each codepoint (if the font includes it).
+                var blockPrefSlot = -1;
+                if (fontNameToSlot != null && !string.IsNullOrWhiteSpace(block.PreferredFontName))
+                    fontNameToSlot.TryGetValue(block.PreferredFontName!, out blockPrefSlot);
                 var runs = new List<(int fontSlot, List<int> cps)>();
                 foreach (var cp in codePoints)
                 {
                     var slot = cpToFontSlot != null && cpToFontSlot.TryGetValue(cp, out var s) ? s : 0;
+                    if (blockPrefSlot >= 0 && embeddedFonts != null && blockPrefSlot < embeddedFonts.Count
+                        && embeddedFonts[blockPrefSlot].CpToCid.ContainsKey(cp))
+                        slot = blockPrefSlot;
+                    // Prefer staying in the previous font slot when possible to avoid
+                    // font-switch Y-offset artefacts in text extractors (different fonts
+                    // report different ascent values, causing bbox Y splits).
+                    if (runs.Count > 0 && runs[^1].fontSlot != slot
+                        && embeddedFonts != null && runs[^1].fontSlot < embeddedFonts.Count
+                        && embeddedFonts[runs[^1].fontSlot].CpToCid.ContainsKey(cp))
+                        slot = runs[^1].fontSlot;
                     if (runs.Count > 0 && runs[^1].fontSlot == slot)
                         runs[^1].cps.Add(cp);
                     else
@@ -747,6 +832,8 @@ internal sealed class PdfWriter
                     sb.Append("> Tj\n");
                 }
 
+                if (block.Bold)
+                    sb.Append("0 Tr\n"); // reset rendering mode
                 sb.Append("ET\n");
             }
 
@@ -1215,6 +1302,89 @@ internal sealed class PdfWriter
         _stream.Write(bytes);
     }
 
+    private static int FindPreferredFontIndex(
+        List<(byte[] ttf, Dictionary<int, ushort> cmap, ushort[] advances, int upm, int asc, int desc, int capH, int[] bbox, string name)> loadedFonts,
+        string preferredFontName)
+    {
+        var preferred = NormalizeFontName(preferredFontName);
+        if (string.IsNullOrEmpty(preferred)) return -1;
+
+        for (var i = 0; i < loadedFonts.Count; i++)
+        {
+            var candidate = NormalizeFontName(loadedFonts[i].name);
+            if (candidate == preferred || candidate.Contains(preferred, StringComparison.Ordinal))
+                return i;
+
+            if (IsFontAliasMatch(preferred, candidate))
+                return i;
+        }
+
+        return -1;
+    }
+
+    private static string NormalizeFontName(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return string.Empty;
+
+        // Normalize common localized CJK family names to canonical aliases used by
+        // Windows font files so preferred DOCX run fonts can be matched reliably.
+        if (name.Contains("新細明體", StringComparison.Ordinal)
+            || name.Contains("新细明体", StringComparison.Ordinal)
+            || name.Contains("pmingliu", StringComparison.OrdinalIgnoreCase))
+            return "pmingliu";
+        if (name.Contains("細明體", StringComparison.Ordinal)
+            || name.Contains("细明体", StringComparison.Ordinal)
+            || name.Contains("mingliu", StringComparison.OrdinalIgnoreCase))
+            return "mingliu";
+        if (name.Contains("標楷體", StringComparison.Ordinal)
+            || name.Contains("标楷体", StringComparison.Ordinal)
+            || name.Contains("dfkai", StringComparison.OrdinalIgnoreCase)
+            || name.Contains("biaukai", StringComparison.OrdinalIgnoreCase))
+            return "dfkai";
+        if (name.Contains("微軟正黑體", StringComparison.Ordinal)
+            || name.Contains("微软正黑体", StringComparison.Ordinal)
+            || name.Contains("microsoft jhenghei", StringComparison.OrdinalIgnoreCase)
+            || name.Contains("jhenghei", StringComparison.OrdinalIgnoreCase))
+            return "microsoftjhenghei";
+        if (name.Contains("微軟雅黑", StringComparison.Ordinal)
+            || name.Contains("微软雅黑", StringComparison.Ordinal)
+            || name.Contains("microsoft yahei", StringComparison.OrdinalIgnoreCase)
+            || name.Contains("yahei", StringComparison.OrdinalIgnoreCase))
+            return "microsoftyahei";
+
+        var sb = new StringBuilder(name.Length);
+        foreach (var ch in name)
+            if (char.IsLetterOrDigit(ch))
+                sb.Append(char.ToLowerInvariant(ch));
+        return sb.ToString();
+    }
+
+    private static bool IsFontAliasMatch(string preferred, string candidate)
+    {
+        // MingLiU / PMingLiU aliases (Traditional Chinese serif)
+        if (preferred.Contains("mingliu", StringComparison.Ordinal) || preferred.Contains("pmingliu", StringComparison.Ordinal))
+            return candidate.Contains("mingliu", StringComparison.Ordinal)
+                || candidate.Contains("pmingliu", StringComparison.Ordinal);
+
+        // DFKai-SB / BiauKai aliases (Traditional Chinese standard Kai font)
+        if (preferred.Contains("dfkai", StringComparison.Ordinal) || preferred.Contains("biaukai", StringComparison.Ordinal))
+            return candidate.Contains("kaiu", StringComparison.Ordinal)
+                || candidate.Contains("dfkai", StringComparison.Ordinal)
+                || candidate.Contains("bkai", StringComparison.Ordinal);
+
+        // Microsoft YaHei aliases
+        if (preferred.Contains("microsoftyahei", StringComparison.Ordinal) || preferred.Contains("yahei", StringComparison.Ordinal))
+            return candidate.Contains("msyh", StringComparison.Ordinal)
+                || candidate.Contains("yahei", StringComparison.Ordinal);
+
+        // Microsoft JhengHei aliases
+        if (preferred.Contains("microsoftjhenghei", StringComparison.Ordinal) || preferred.Contains("jhenghei", StringComparison.Ordinal))
+            return candidate.Contains("msjh", StringComparison.Ordinal)
+                || candidate.Contains("jhenghei", StringComparison.Ordinal);
+
+        return false;
+    }
+
     // ── System font discovery ──────────────────────────────────────────
 
     /// <summary>
@@ -1230,8 +1400,12 @@ internal sealed class PdfWriter
             var fontDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
             // Priority order: CJK first, then Korean, Arabic-capable, emoji, symbols
             string[] candidates = [
-                "msyh.ttc",       // Microsoft YaHei (CJK + Japanese)
+                "kaiu.ttf",       // DFKai-SB / BiauKai (Traditional Chinese)
+                "bkai00mp.ttf",   // BiauKai fallback on some Windows installs
+                "mingliu.ttc",    // MingLiU / PMingLiU (Traditional Chinese serif)
+                "pmingliu.ttc",   // PMingLiU on some Windows installs
                 "msjh.ttc",       // Microsoft JhengHei (Traditional Chinese)
+                "msyh.ttc",       // Microsoft YaHei (CJK + Japanese)
                 "malgun.ttf",     // Malgun Gothic (Korean)
                 "segoeui.ttf",    // Segoe UI (Arabic, Hebrew, Thai, etc.)
                 "seguiemj.ttf",   // Segoe UI Emoji
@@ -1426,13 +1600,54 @@ internal sealed class PdfWriter
                 : (uint)(ReadU16(ttf, (int)locaOff + i * 2) * 2);
         }
 
+        // Recursively collect component glyph IDs referenced by composite glyphs.
+        // Without this, fonts that build CJK characters from stroke components
+        // (e.g. kaiu.ttf / DFKai-SB) would have their components zeroed out,
+        // causing the composite glyphs to render as blank.
+        var allNeeded = new HashSet<ushort>(neededGlyphs);
+        var queue = new Queue<ushort>(neededGlyphs);
+        while (queue.Count > 0)
+        {
+            var gid = queue.Dequeue();
+            if (gid >= numGlyphs) continue;
+            var glyphStart = (int)(glyfOff + offsets[gid]);
+            var glyphEnd = (int)(glyfOff + offsets[gid + 1]);
+            if (glyphEnd - glyphStart < 12 || glyphStart < 0 || glyphEnd > ttf.Length)
+                continue;
+            var numberOfContours = (short)ReadU16(ttf, glyphStart);
+            if (numberOfContours >= 0) continue; // simple glyph
+
+            // Composite glyph — walk component records
+            var ptr = glyphStart + 10; // skip glyph header (numberOfContours + bbox)
+            const ushort ARG_1_AND_2_ARE_WORDS = 0x0001;
+            const ushort WE_HAVE_A_SCALE = 0x0008;
+            const ushort MORE_COMPONENTS = 0x0020;
+            const ushort WE_HAVE_AN_XY_SCALE = 0x0040;
+            const ushort WE_HAVE_A_TWO_BY_TWO = 0x0080;
+            while (ptr + 4 <= ttf.Length)
+            {
+                var flags = ReadU16(ttf, ptr);
+                var compGid = ReadU16(ttf, ptr + 2);
+                ptr += 4;
+                if ((flags & ARG_1_AND_2_ARE_WORDS) != 0) ptr += 4; else ptr += 2;
+                if ((flags & WE_HAVE_A_SCALE) != 0) ptr += 2;
+                else if ((flags & WE_HAVE_AN_XY_SCALE) != 0) ptr += 4;
+                else if ((flags & WE_HAVE_A_TWO_BY_TWO) != 0) ptr += 8;
+
+                if (compGid < numGlyphs && allNeeded.Add(compGid))
+                    queue.Enqueue(compGid);
+
+                if ((flags & MORE_COMPONENTS) == 0) break;
+            }
+        }
+
         // Clone the font data
         var result = (byte[])ttf.Clone();
 
         // Zero out glyph data for unused glyphs
         for (ushort gid = 0; gid < numGlyphs; gid++)
         {
-            if (neededGlyphs.Contains(gid)) continue;
+            if (allNeeded.Contains(gid)) continue;
 
             var glyphStart = (int)(glyfOff + offsets[gid]);
             var glyphEnd = (int)(glyfOff + offsets[gid + 1]);

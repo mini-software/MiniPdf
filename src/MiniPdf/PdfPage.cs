@@ -130,10 +130,17 @@ internal sealed class PdfPage
     /// <param name="y">Y position in points from the bottom edge.</param>
     /// <param name="fontSize">Font size in points (default: 12).</param>
     /// <param name="color">Text color (default: black).</param>
+    /// <param name="clipRect">Optional clipping rectangle for visual overflow control.</param>
+    /// <param name="maxWidth">Optional max render width; applies horizontal scaling when needed.</param>
+    /// <param name="bold">Whether to use the bold variant for WinAnsi text.</param>
+    /// <param name="underline">Whether to draw an underline under the text.</param>
+    /// <param name="charSpacing">Character spacing in points (PDF Tc).</param>
+    /// <param name="wordSpacing">Word spacing in points (PDF Tw).</param>
+    /// <param name="preferredFontName">Optional preferred Unicode font family hint.</param>
     /// <returns>The current page for chaining.</returns>
-    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0)
+    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null)
     {
-        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, underline, charSpacing, wordSpacing));
+        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, underline, charSpacing, wordSpacing, preferredFontName));
         return this;
     }
 

@@ -158,6 +158,17 @@ public class DocxToPdfConverterTests
         Assert.Contains("Stream API Test", content);
     }
 
+      [Fact]
+      public void Convert_FooterPageFieldWithSwitch_RendersPageNumber()
+      {
+        using var docxStream = CreateDocxWithFooterPageField("PAGE   \\* MERGEFORMAT");
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+
+        Assert.True(doc.Pages.Count >= 1);
+        Assert.Contains(doc.Pages[0].TextBlocks, b => b.Text == "1");
+      }
+
     // ── Helper: Create minimal DOCX ─────────────────────────────────────
 
     private static MemoryStream CreateSimpleDocx(params string[] paragraphs)
@@ -310,6 +321,76 @@ public class DocxToPdfConverterTests
                     </w:p>
                   </w:body>
                 </w:document>
+                """);
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
+    private static MemoryStream CreateDocxWithFooterPageField(string fieldInstruction)
+    {
+        var ms = new MemoryStream();
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+                  <Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/_rels/document.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId10" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/document.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                  <w:body>
+                    <w:p>
+                      <w:r><w:t>Body text</w:t></w:r>
+                    </w:p>
+                    <w:sectPr>
+                      <w:footerReference w:type="default" r:id="rId10"/>
+                    </w:sectPr>
+                  </w:body>
+                </w:document>
+                """);
+
+            AddEntry(archive, "word/footer1.xml",
+                $"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:p>
+                    <w:pPr>
+                      <w:jc w:val="center"/>
+                    </w:pPr>
+                    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+                    <w:r><w:instrText>{EscapeXml(fieldInstruction)}</w:instrText></w:r>
+                    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+                    <w:r><w:t>9</w:t></w:r>
+                    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+                  </w:p>
+                </w:ftr>
                 """);
         }
 

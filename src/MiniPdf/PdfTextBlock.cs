@@ -68,7 +68,13 @@ internal sealed class PdfTextBlock
     /// </summary>
     public float WordSpacing { get; }
 
-    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0)
+    /// <summary>
+    /// Optional preferred font family name carried from source formats
+    /// (for example DOCX w:rFonts). Used as a hint during Unicode font slot assignment.
+    /// </summary>
+    public string? PreferredFontName { get; }
+
+    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null)
     {
         Text = text;
         X = x;
@@ -81,5 +87,6 @@ internal sealed class PdfTextBlock
         Underline = underline;
         CharSpacing = charSpacing;
         WordSpacing = wordSpacing;
+        PreferredFontName = preferredFontName;
     }
 }

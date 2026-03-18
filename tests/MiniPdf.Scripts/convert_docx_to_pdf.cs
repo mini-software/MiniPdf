@@ -1,3 +1,4 @@
+// force-rebuild: 2026-03-18T16:56:49.4304986+08:00
 #:project ../../src/MiniPdf/MiniPdf.csproj
 
 using Mp = MiniSoftware.MiniPdf;
@@ -62,3 +63,4 @@ Console.WriteLine();
 Console.WriteLine($"Done! Passed: {passed}, Failed: {failed}, Total: {docxFiles.Length}");
 
 return failed > 0 ? 1 : 0;
+
