@@ -10,6 +10,8 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Only run for v* tags, skip cli-v* tags
+    if: startsWith(github.ref_name, 'v') && !startsWith(github.ref_name, 'cli-v')
 
     steps:
       - name: Checkout
@@ -39,8 +41,11 @@ jobs:
           fi
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Pack
+      - name: Pack MiniPdf
         run: dotnet pack src/MiniPdf/MiniPdf.csproj --no-build --configuration Release -p:PackageVersion="${{ steps.version.outputs.VERSION }}" --output ./nupkg
+
+      - name: Pack MiniPdf.Cli
+        run: dotnet pack src/MiniPdf.Cli/MiniPdf.Cli.csproj --no-build --configuration Release -p:PackageVersion="${{ steps.version.outputs.VERSION }}" --output ./nupkg
 
       - name: Push to NuGet.org
         run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
