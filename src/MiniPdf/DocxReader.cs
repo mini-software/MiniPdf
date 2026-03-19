@@ -89,6 +89,7 @@ internal static class DocxReader
                 float textBoxSpacing = 0;
                 bool emittedVisibleTextBoxParagraph = false;
                 var seenTextBoxPositions = new HashSet<(int, int)>(); // dedup by position
+                List<DocxFloatingTextBox>? floatingTextBoxes = null;
                 foreach (var anchor in child.Descendants(WP + "anchor"))
                 {
                     var txbx = anchor.Descendants(WPS + "txbx").FirstOrDefault();
@@ -96,8 +97,12 @@ internal static class DocxReader
                     var txbxContent = txbx.Element(W + "txbxContent");
                     if (txbxContent == null) continue;
 
-                    // Check for wrapTopAndBottom (text box displaces content vertically)
+                    // Check wrap mode
                     bool isWrapTopBottom = anchor.Element(WP + "wrapTopAndBottom") != null;
+                    bool isWrapNone = !isWrapTopBottom
+                        && anchor.Element(WP + "wrapSquare") == null
+                        && anchor.Element(WP + "wrapTight") == null
+                        && anchor.Element(WP + "wrapThrough") == null;
 
                     // Deduplicate text boxes at the same position (e.g. multiple identical anchors)
                     {
@@ -119,19 +124,37 @@ internal static class DocxReader
                             continue; // skip duplicate text box at same position
                     }
 
-                    // Read anchor vertical offset and extent height for spacing
+                    // Read anchor position
                     float anchorOffsetPt = 0;
+                    string vRelativeFrom = "paragraph";
                     var posV = anchor.Element(WP + "positionV");
                     if (posV != null)
                     {
+                        vRelativeFrom = posV.Attribute("relativeFrom")?.Value ?? "paragraph";
                         var off = posV.Element(WP + "posOffset");
                         if (off != null && long.TryParse(off.Value, out var emu))
                             anchorOffsetPt = emu / 914400f * 72f;
                     }
+                    float anchorXPt = 0;
+                    string hRelativeFrom = "column";
+                    var posH = anchor.Element(WP + "positionH");
+                    if (posH != null)
+                    {
+                        hRelativeFrom = posH.Attribute("relativeFrom")?.Value ?? "column";
+                        var off = posH.Element(WP + "posOffset");
+                        if (off != null && long.TryParse(off.Value, out var hEmu))
+                            anchorXPt = hEmu / 914400f * 72f;
+                    }
                     float extentHeightPt = 0;
+                    float extentWidthPt = 0;
                     var extent = anchor.Element(WP + "extent");
-                    if (extent != null && long.TryParse(extent.Attribute("cy")?.Value, out var cy))
-                        extentHeightPt = cy / 914400f * 72f;
+                    if (extent != null)
+                    {
+                        if (long.TryParse(extent.Attribute("cy")?.Value, out var cy))
+                            extentHeightPt = cy / 914400f * 72f;
+                        if (long.TryParse(extent.Attribute("cx")?.Value, out var cx))
+                            extentWidthPt = cx / 914400f * 72f;
+                    }
 
                     // Read text box outline (border) from shape properties
                     DocxTextBoxBorder? textBoxBorder = null;
@@ -152,53 +175,78 @@ internal static class DocxReader
                                     lnWidth = lnW / 914400f * 72f;
                                 if (lnWidth < 0.25f) lnWidth = 0.5f;
 
-                                // Box position and size
-                                float boxXPt = 0;
-                                var posH = anchor.Element(WP + "positionH");
-                                if (posH != null)
-                                {
-                                    var off = posH.Element(WP + "posOffset");
-                                    if (off != null && long.TryParse(off.Value, out var hEmu))
-                                        boxXPt = hEmu / 914400f * 72f;
-                                }
-                                float boxWidthPt = extent != null && long.TryParse(extent.Attribute("cx")?.Value, out var cxEmu)
-                                    ? cxEmu / 914400f * 72f : 0;
-                                float boxHeightPt = extentHeightPt;
-
-                                textBoxBorder = new DocxTextBoxBorder(lnWidth, lnColor, boxXPt, boxWidthPt, boxHeightPt, anchorOffsetPt);
+                                textBoxBorder = new DocxTextBoxBorder(lnWidth, lnColor, anchorXPt, extentWidthPt, extentHeightPt, anchorOffsetPt);
                             }
                         }
                     }
 
-                    bool firstContent = true;
-                    foreach (var tp in txbxContent.Elements(W + "p"))
+                    if (isWrapNone)
                     {
-                        var tbPara = ReadParagraph(tp, styles, numbering, relationships, archive, themeColors);
-                        if (tbPara != null)
+                        // wrapNone dual-render: emit content as ghost flow paragraphs for layout
+                        // (advance Y but don't render text), AND create floating textbox for
+                        // visual overlay at the absolute position.
+                        var floatingParas = new List<DocxParagraph>();
+                        bool firstContent = true;
+                        foreach (var tp in txbxContent.Elements(W + "p"))
                         {
-                            var hasVisibleContent = tbPara.Images.Count > 0
-                                || tbPara.Shading != null
-                                || tbPara.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text));
+                            var tbPara = ReadParagraph(tp, styles, numbering, relationships, archive, themeColors);
+                            if (tbPara != null)
+                            {
+                                var hasVisibleContent = tbPara.Images.Count > 0
+                                    || tbPara.Shading != null
+                                    || tbPara.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text));
 
-                            // Word textbox content often carries large paragraph indents that
-                            // behave like internal margins, not flow indents. Keeping them as
-                            // normal paragraph indents can over-constrain wrap width.
-                            tbPara = tbPara with { IndentLeft = 0, IndentRight = 0, IndentFirstLine = 0 };
+                                tbPara = tbPara with { IndentLeft = 0, IndentRight = 0, IndentFirstLine = 0, IsTextBoxFlow = true, TextBoxWidth = extentWidthPt };
 
-                            if (firstContent && hasVisibleContent && anchorOffsetPt > 0)
-                                tbPara = tbPara with { SpacingBefore = tbPara.SpacingBefore + anchorOffsetPt, ForceSpacingBefore = true };
-                            if (firstContent && hasVisibleContent && textBoxBorder != null)
-                                tbPara = tbPara with { TextBoxBorder = textBoxBorder };
-                            elements.Add(tbPara);
-                            if (hasVisibleContent)
-                                emittedVisibleTextBoxParagraph = true;
-                            if (hasVisibleContent)
-                                firstContent = false;
+                                if (firstContent && hasVisibleContent && anchorOffsetPt > 0)
+                                    tbPara = tbPara with { SpacingBefore = tbPara.SpacingBefore + anchorOffsetPt, ForceSpacingBefore = true };
+                                if (firstContent && hasVisibleContent && textBoxBorder != null)
+                                    tbPara = tbPara with { TextBoxBorder = textBoxBorder };
+                                elements.Add(tbPara);
+                                if (hasVisibleContent)
+                                    emittedVisibleTextBoxParagraph = true;
+                                if (hasVisibleContent)
+                                    firstContent = false;
+
+                                // Also collect for floating overlay
+                                floatingParas.Add(tbPara with { IsTextBoxFlow = false });
+                            }
+                        }
+                        if (floatingParas.Count > 0)
+                        {
+                            floatingTextBoxes ??= new List<DocxFloatingTextBox>();
+                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom));
                         }
                     }
-                    // For wrapTopAndBottom, the text box height displaces subsequent content
-                    if (isWrapTopBottom)
-                        textBoxSpacing += anchorOffsetPt;
+                    else
+                    {
+                        // wrapTopAndBottom / wrapSquare / etc.: emit as flow paragraphs
+                        bool firstContent = true;
+                        foreach (var tp in txbxContent.Elements(W + "p"))
+                        {
+                            var tbPara = ReadParagraph(tp, styles, numbering, relationships, archive, themeColors);
+                            if (tbPara != null)
+                            {
+                                var hasVisibleContent = tbPara.Images.Count > 0
+                                    || tbPara.Shading != null
+                                    || tbPara.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text));
+
+                                tbPara = tbPara with { IndentLeft = 0, IndentRight = 0, IndentFirstLine = 0 };
+
+                                if (firstContent && hasVisibleContent && anchorOffsetPt > 0)
+                                    tbPara = tbPara with { SpacingBefore = tbPara.SpacingBefore + anchorOffsetPt, ForceSpacingBefore = true };
+                                if (firstContent && hasVisibleContent && textBoxBorder != null)
+                                    tbPara = tbPara with { TextBoxBorder = textBoxBorder };
+                                elements.Add(tbPara);
+                                if (hasVisibleContent)
+                                    emittedVisibleTextBoxParagraph = true;
+                                if (hasVisibleContent)
+                                    firstContent = false;
+                            }
+                        }
+                        if (isWrapTopBottom)
+                            textBoxSpacing += anchorOffsetPt;
+                    }
                 }
 
                 var paragraph = ReadParagraph(child, styles, numbering, relationships, archive, themeColors, defaultFontName, defaultEastAsiaFontName);
@@ -207,6 +255,8 @@ internal static class DocxReader
                     // Host paragraphs for anchored textboxes may contain synthetic fallback
                     // runs that duplicate textbox text; skip these when textbox content
                     // was already emitted as standalone paragraphs.
+                    // For floating textboxes (wrapNone), still emit the host paragraph
+                    // (with its spacing) to preserve vertical layout.
                     if (emittedVisibleTextBoxParagraph && allRunsHostTextBox)
                         continue;
 
@@ -214,6 +264,11 @@ internal static class DocxReader
                     if (textBoxSpacing > 0)
                     {
                         paragraph = paragraph with { SpacingBefore = paragraph.SpacingBefore + textBoxSpacing };
+                    }
+                    // Attach floating textboxes to the host paragraph for rendering at absolute positions
+                    if (floatingTextBoxes != null)
+                    {
+                        paragraph = paragraph with { FloatingTextBoxes = floatingTextBoxes };
                     }
                     // Fix up style-based numbered list counter
                     if (paragraph.IsNumberedList && paragraph.ListText == "1.")
@@ -273,6 +328,7 @@ internal static class DocxReader
         bool isNumberedList = false;
         bool pageBreakBefore = false;
         bool pageBreakAfter = false;
+        bool snapToGrid = true;
         int listLevel = 0;
         string? listText = null;
         string? styleId = null;
@@ -331,6 +387,10 @@ internal static class DocxReader
             // Page break before
             if (pPr.Element(W + "pageBreakBefore") != null)
                 pageBreakBefore = true;
+
+            // Snap to grid (defaults to true; false opts out of document grid)
+            if (pPr.Element(W + "snapToGrid")?.Attribute(W + "val")?.Value == "0")
+                snapToGrid = false;
 
             // Numbering (lists)
             var numPr = pPr.Element(W + "numPr");
@@ -447,6 +507,7 @@ internal static class DocxReader
             if (spacingAfter < 0) spacingAfter = styleInfo.SpacingAfter;
             contextualSpacing = styleInfo.ContextualSpacing;
             paragraphFontName = styleInfo.FontName;
+            if (charSpacing == 0) charSpacing = styleInfo.CharSpacing;
         }
         // Paragraph-level contextualSpacing overrides style
         if (pPr?.Element(W + "contextualSpacing") != null)
@@ -458,6 +519,7 @@ internal static class DocxReader
         int fieldDepth = 0;
         bool inFieldInstr = false; // between begin and separate
         string currentFieldInstr = ""; // accumulated field instruction text
+        bool pendingMidParaBreak = false; // page break found with no content runs before it
         foreach (var child in UnwrapSdt(pElement.Elements()))
         {
             if (child.Name == W + "r")
@@ -501,7 +563,12 @@ internal static class DocxReader
                 if (run != null)
                 {
                     if (run.IsPageBreak)
-                        pageBreakAfter = true;
+                    {
+                        if (runs.Count == 0 && images.Count == 0)
+                            pendingMidParaBreak = true; // defer: might become pageBreakBefore
+                        else
+                            pageBreakAfter = true;
+                    }
                     else
                         runs.Add(run);
                 }
@@ -530,6 +597,18 @@ internal static class DocxReader
             }
         }
 
+        // Resolve deferred mid-paragraph page break: if content runs followed the
+        // break, treat as page-break-before so the content starts on a new page.
+        // If no content followed (empty paragraph with only a break run), fall back
+        // to page-break-after to preserve the original page transition semantics.
+        if (pendingMidParaBreak)
+        {
+            if (runs.Count > 0 || images.Count > 0)
+                pageBreakBefore = true;
+            else
+                pageBreakAfter = true;
+        }
+
         // Detect section break (sectPr inside pPr)
         DocxPageLayout? sectionBreakLayout = null;
         var sectPr = pPr?.Element(W + "sectPr");
@@ -542,7 +621,7 @@ internal static class DocxReader
             isBulletList, isNumberedList, listLevel, listText, styleId,
             bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops,
             sectionBreakLayout, borders, shapes.Count > 0 ? shapes : null,
-            ContextualSpacing: contextualSpacing);
+            ContextualSpacing: contextualSpacing, SnapToGrid: snapToGrid);
     }
 
     private static DocxBorderEdge? ReadBorderEdge(XElement? el)
@@ -1972,6 +2051,7 @@ internal static class DocxReader
             bool styleLineSpacingAbsolute = false;
             bool contextualSpacing = false;
             string? styleFontName = null;
+            float styleCharSpacing = 0;
 
             if (rPr != null)
             {
@@ -1986,6 +2066,9 @@ internal static class DocxReader
                 if (rFonts != null)
                     styleFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont,
                         effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont);
+                var spacingEl = rPr.Element(W + "spacing");
+                if (spacingEl != null && int.TryParse(spacingEl.Attribute(W + "val")?.Value, out var scs))
+                    styleCharSpacing = scs / 20f;
             }
 
             if (pPr != null)
@@ -2018,7 +2101,7 @@ internal static class DocxReader
                 bold = true;
             }
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, contextualSpacing, styleFontName);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, contextualSpacing, styleFontName, styleCharSpacing);
         }
 
         // Second pass: resolve basedOn inheritance
@@ -2046,8 +2129,9 @@ internal static class DocxReader
             var spacingBefore = spacingEl?.Attribute(W + "before") != null ? current.SpacingBefore : baseStyle.SpacingBefore;
             var spacingAfter = spacingEl?.Attribute(W + "after") != null ? current.SpacingAfter : baseStyle.SpacingAfter;
             var contextualSpacing2 = current.ContextualSpacing || baseStyle.ContextualSpacing;
+            var charSpacing2 = rPr?.Element(W + "spacing") != null ? current.CharSpacing : baseStyle.CharSpacing;
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, ContextualSpacing: contextualSpacing2, FontName: styleFontName);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, ContextualSpacing: contextualSpacing2, FontName: styleFontName, CharSpacing: charSpacing2);
         }
 
         // Extract default font name from Normal style or docDefaults
@@ -2351,7 +2435,10 @@ internal sealed record DocxParagraph(
     bool ForceSpacingBefore = false,
     DocxTextBoxBorder? TextBoxBorder = null,
     bool ContextualSpacing = false,
-    List<DocxFloatingTextBox>? FloatingTextBoxes = null
+    bool SnapToGrid = true,
+    List<DocxFloatingTextBox>? FloatingTextBoxes = null,
+    bool IsTextBoxFlow = false,
+    float TextBoxWidth = 0
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>
@@ -2406,7 +2493,9 @@ internal sealed record DocxFloatingTextBox(
     float WidthPt,
     float HeightPt,
     List<DocxParagraph> Paragraphs,
-    DocxTextBoxBorder? Border = null
+    DocxTextBoxBorder? Border = null,
+    string HRelativeFrom = "column",
+    string VRelativeFrom = "paragraph"
 );
 
 /// <summary>Represents a text box outline border (rectangle drawn around text box content).</summary>
@@ -2483,7 +2572,8 @@ internal sealed record DocxStyleInfo(
     float LineSpacing = 0,
     bool LineSpacingAbsolute = false,
     bool ContextualSpacing = false,
-    string? FontName = null
+    string? FontName = null,
+    float CharSpacing = 0
 );
 
 /// <summary>Numbering definition for lists.</summary>

@@ -1,4 +1,4 @@
-// force-rebuild: 2026-03-18T16:56:49.4304986+08:00
+// force-rebuild: 2026-03-18T21:42:32.9917130+08:00
 #:project ../../src/MiniPdf/MiniPdf.csproj
 
 using Mp = MiniSoftware.MiniPdf;

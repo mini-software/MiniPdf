@@ -1,21 +1,21 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-18T19:10:48.125878
+Generated: 2026-03-19T02:47:08.297750
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🟢 Class News | 0.9919 | 0.87 | 4/4 | **0.9448** |
+| 1 | 🟢 Class News | 0.9919 | 0.8703 | 4/4 | **0.9449** |
 | 2 | 🟢 Confirmatory_Affidavit | 0.9852 | 0.9709 | 2/2 | **0.9824** |
-| 3 | 🟢 Invoice | 0.9947 | 0.913 | 1/1 | **0.9631** |
-| 4 | 🟡 MODERN LIVING | 0.7738 | 0.789 | 2/2 | **0.8251** |
-| 5 | 🟡 nthu_article | 0.8345 | 0.8771 | 20/20 | **0.8846** |
+| 3 | 🟢 Invoice | 0.9947 | 0.9129 | 1/1 | **0.963** |
+| 4 | 🟡 MODERN LIVING | 0.7723 | 0.7889 | 2/2 | **0.8245** |
+| 5 | 🟡 nthu_article | 0.8563 | 0.7842 | 22/20 | **0.7562** |
 | 6 | 🟢 OSCAR WARD | 0.9941 | 0.8535 | 1/1 | **0.939** |
-| 7 | 🟢 SA8000 ch sample | 0.9934 | 0.8726 | 3/3 | **0.9464** |
-| 8 | 🟢 Support_Letter | 1.0 | 0.9535 | 1/1 | **0.9814** |
+| 7 | 🟢 SA8000 ch sample | 0.9928 | 0.8739 | 3/3 | **0.9467** |
+| 8 | 🟢 Support_Letter | 0.9917 | 0.9529 | 1/1 | **0.9778** |
 
-**Average Overall Score: 0.9333**
+**Average Overall Score: 0.9168**
 
 ## Visual Comparison
 
@@ -75,7 +75,7 @@ Generated: 2026-03-18T19:10:48.125878
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 88.5%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 75.6%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -158,6 +158,14 @@ Generated: 2026-03-18T19:10:48.125878
   <td><img src="images/nthu_article_p20_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
+  <td><img src="images/nthu_article_p21_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p22_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
   <td><b>OSCAR WARD</b></td>
   <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 93.9%</td>
 </tr>
@@ -167,7 +175,7 @@ Generated: 2026-03-18T19:10:48.125878
 </tr>
 <tr>
   <td><b>SA8000 ch sample</b></td>
-  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 94.6%</td>
+  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 94.7%</td>
 </tr>
 <tr>
   <td><img src="images/SA8000 ch sample_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -183,7 +191,7 @@ Generated: 2026-03-18T19:10:48.125878
 </tr>
 <tr>
   <td><b>Support_Letter</b></td>
-  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 98.1%</td>
+  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 97.8%</td>
 </tr>
 <tr>
   <td><img src="images/Support_Letter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -196,10 +204,10 @@ Generated: 2026-03-18T19:10:48.125878
 ### Class News
 
 - **Text Similarity:** 0.9919
-- **Visual Average:** 0.87
-- **Overall Score:** 0.9448
+- **Visual Average:** 0.8703
+- **Overall Score:** 0.9449
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=241901 bytes, Reference=147827 bytes
+- **File Size:** MiniPdf=243005 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -331,7 +339,7 @@ Generated: 2026-03-18T19:10:48.125878
 - **Visual Average:** 0.9709
 - **Overall Score:** 0.9824
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=4896 bytes, Reference=91848 bytes
+- **File Size:** MiniPdf=5248 bytes, Reference=91848 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -411,10 +419,10 @@ Generated: 2026-03-18T19:10:48.125878
 ### Invoice
 
 - **Text Similarity:** 0.9947
-- **Visual Average:** 0.913
-- **Overall Score:** 0.9631
+- **Visual Average:** 0.9129
+- **Overall Score:** 0.963
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=20089 bytes, Reference=65867 bytes
+- **File Size:** MiniPdf=20433 bytes, Reference=65867 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -468,11 +476,11 @@ Generated: 2026-03-18T19:10:48.125878
 
 ### MODERN LIVING
 
-- **Text Similarity:** 0.7738
-- **Visual Average:** 0.789
-- **Overall Score:** 0.8251
+- **Text Similarity:** 0.7723
+- **Visual Average:** 0.7889
+- **Overall Score:** 0.8245
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=322588 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=323132 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -480,11 +488,11 @@ Generated: 2026-03-18T19:10:48.125878
 --- minipdf/MODERN LIVING.pdf
 +++ reference/MODERN LIVING.pdf
 @@ -1,67 +1,64 @@
--MODERN LIVING
++OCTOBER / 20XX / ISSUE #10
 
- OCTOBER / 20XX / ISSUE #10
+ M O D E R N  L I V I N G
 
-+M O D E R N  L I V I N G
+-OCTOBER / 20XX / ISSUE #10
 
  Your guide to buy or rent
 
@@ -606,19 +614,19 @@ Generated: 2026-03-18T19:10:48.125878
 
 +Newsletters are periodicals use to advertise or update your
 
-+subscribers with information about you
-... (2658 more characters)
++subscribers with informat
+... (2671 more characters)
 
 ```
 </details>
 
 ### nthu_article
 
-- **Text Similarity:** 0.8345
-- **Visual Average:** 0.8771
-- **Overall Score:** 0.8846
-- **Pages:** MiniPdf=20, Reference=20
-- **File Size:** MiniPdf=4493287 bytes, Reference=798510 bytes
+- **Text Similarity:** 0.8563
+- **Visual Average:** 0.7842
+- **Overall Score:** 0.7562
+- **Pages:** MiniPdf=22, Reference=20
+- **File Size:** MiniPdf=4499306 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -628,7 +636,7 @@ Generated: 2026-03-18T19:10:48.125878
 @@ -1,11 +1,11 @@
  國立清華大學中國文學系碩博士學位論文格式規範
 
--經 111 年 11 月 09 日 111 學年度第一學期第 3 次系務會議通過
+-經111年11月09日111學年度第一學期第3次系務會議通過
 
 -一、論文編印項目次序與頁碼編排
 
@@ -658,7 +666,7 @@ Generated: 2026-03-18T19:10:48.125878
 
  誌謝辭 Acknowledgements (可免)
 
-@@ -21,568 +21,514 @@
+@@ -21,367 +21,318 @@
  名詞附錄 Glossary of Terms (可免)
 
  索引 Index (可免)
@@ -673,17 +681,13 @@ Generated: 2026-03-18T19:10:48.125878
 
 -（三）頁碼編排
 
--1，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼 （i, ii, iii…）。
+-1，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i , ii , iii …）。
 
--2，論文本文開始至最末，用阿拉伯數字標示頁碼 。
+-2，論文本文開始至最末，用阿拉伯數字標示頁碼。
 
 -3，頁碼標於頁面底端，置中。
 
 -（四）版面配置
-
--2.9
-
--包括 封面 ，全書 版面配置 邊界設 定 為下上 2.54 公分，左右 公分
 
 +（三） 頁碼編排
 
@@ -705,29 +709,25 @@ Generated: 2026-03-18T19:10:48.125878
 
 +包括封面，全書版面配置邊界設定為下上 公分，左右 公分
 
-+1
+ 1
 
-+---PAGE---
+ ---PAGE---
+
+-2.9
+
+-包括封面，全書版面配置邊界設定為下上2.54 公分，左右 公分
 
  二、封面（與書名頁）、書背格式
 
--1
-
-----PAGE---
-
  封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝
 
--（
+-https //registra site nthu edu tw/var/file/ / /img/ / df）
 
--ttps tra te thu du tw/var/file/ df）
-
--h ://regis .si .n .e . 211/1211/img/75/203558730.p 。
+-（ : . . . . 211 1211 75 2 03558730.p 。
 
 -A
 
--B（
-
--論文封面建議採用亮面雲彩紙。如下範例 、範例
+-論文封面建議採用亮面雲彩紙。如下範例 、範例B（
 
 -可直接下載套用。此為教務處公布之格式）。
 
@@ -769,23 +769,27 @@ Generated: 2026-03-18T19:10:48.125878
 
 -1.2
 
--d
+-word
 
--字為原則，至多不超過二頁，橫式書寫，行距建議設定為 行 （wor
+-字為原則，至多不超過二頁，橫式書寫，行距建議設定為 行（
 
 -1.2 0.5
 
--中選「多行」，設定 ），段距 行 。 標題「摘要」二字或「
+-Abstract
 
--bstract y words
+-中選「多行」，設定 ），段距 行。標題「摘要」二字或「 」16
 
--A 」16 級字，置中，可加黑。「關鍵詞：」或「 Ke :」12
+-ey words
 
--級，可加黑；與摘要主文間，空一行。英文與數字用 Times New Roman。
+-級字，置中，可加黑。「關鍵詞：」或「K :」12
+
+-Times ew Roman
+
+-級，可加黑；與摘要主文間，空一行。英文與數字用 N 。
 
 -C（
 
--如範例 中文 ） 與範例 D（ 英文 ）。
+-如範例 中文）與範例D（英文）。
 
 -五、目次
 
@@ -801,15 +805,15 @@ Generated: 2026-03-18T19:10:48.125878
 
 -（或「圖目次」）二字 級標楷體，其下各表（或各圖）用
 
--E
+-E F
 
--級字。英文與數字用 Times New Roman。 目次格式如範例
+-Times ew Roman
 
--F
+-級字。英文與數字用 N 目次格式如範例 。 ，表次格式如範例
 
 -G
 
--，表次格式如範例 ，圖次格式如範例 。
+-，圖次格式如範例 。
 
 +摘要應裝訂於論文內。內容應說明研究目的、論述重點、研究方法或程序、
 
@@ -849,15 +853,11 @@ Generated: 2026-03-18T19:10:48.125878
 
 -節　研究動機」。
 
--級，標楷體，置中。章節以下小節所使用符號，依 「 一 、」、「
+-級，標楷體，置中。章節以下小節所使用符號，依「一、」、「
 
 -14 12
 
--（一） 」、「1、」、「（1）」…… 等順序表示， 級（或
-
--級），左齊。
-
--（二）
+-（一）」、「1、」、「（1）」…… 等順序表示， 級（或
 
 +（一） 章節標題
 
@@ -875,8 +875,18 @@ Generated: 2026-03-18T19:10:48.125878
 
 +書名和篇名連用時，省略篇名號，如《莊子‧天下》。若為英文，
 
-+書名請用斜體，篇名請用“ ”。日文翻譯
-... (20082 more characters)
++書名請用斜體，篇名請用“ ”。日文翻譯成中文，行文時亦請一
+
+ 2
+
+ ---PAGE---
+
+-級），左齊。
+
+-（二）內文
+
+-1，請用新
+... (19449 more characters)
 
 ```
 </details>
@@ -887,7 +897,7 @@ Generated: 2026-03-18T19:10:48.125878
 - **Visual Average:** 0.8535
 - **Overall Score:** 0.939
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=14437 bytes, Reference=49023 bytes
+- **File Size:** MiniPdf=14597 bytes, Reference=49023 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -948,11 +958,11 @@ Generated: 2026-03-18T19:10:48.125878
 
 ### SA8000 ch sample
 
-- **Text Similarity:** 0.9934
-- **Visual Average:** 0.8726
-- **Overall Score:** 0.9464
+- **Text Similarity:** 0.9928
+- **Visual Average:** 0.8739
+- **Overall Score:** 0.9467
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=240330 bytes, Reference=159484 bytes
+- **File Size:** MiniPdf=3798304 bytes, Reference=159484 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -964,7 +974,7 @@ Generated: 2026-03-18T19:10:48.125878
 
  部门：                工号：           姓名：            得分：
 
--一、判断题（共 20 分，每题 2 分）
+-一、判断题（共20分，每题2分）
 
 -1、公司应在新员工入厂后一个月内与之签定劳动合同。（  √  ）
 
@@ -978,7 +988,7 @@ Generated: 2026-03-18T19:10:48.125878
 
  4、公司员工每周至少要有一天休息。（  √   ）
 
--5、童工是指年龄在 16 周岁以下的人（按照我国法律规定）。（  √   ）
+-5、童工是指年龄在16周岁以下的人（按照我国法律规定）。（  √   ）
 
 -6、公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）
 
@@ -986,7 +996,7 @@ Generated: 2026-03-18T19:10:48.125878
 
 -8、当不同的法规、规章与 SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）
 
--9、根据劳动法规定，员工每月加班时间最多不超过 36 小时。（  √    ）
+-9、根据劳动法规定，员工每月加班时间最多不超过36小时。（  √    ）
 
 +5、 童工是指年龄在16 周岁以下的人（按照我国法律规定）。（  √   ）
 
@@ -1000,7 +1010,7 @@ Generated: 2026-03-18T19:10:48.125878
 
  10、某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）
 
--二、不定项选择题（共 20 分，每题 2 分）
+-二、不定项选择题（共20分，每题2分）
 
 +二、不定项选择题（共20 分，每题2 分）
 
@@ -1008,7 +1018,7 @@ Generated: 2026-03-18T19:10:48.125878
 
  A、工厂对新员工要求扣押身份证一星期       B、工厂使用监狱劳工
 
--C、工厂只给 1.2 倍的加班费                 D、工厂要求员工晚上都加班，如果不加班就要罚款
+-C、工厂只给1.2倍的加班费                 D、工厂要求员工晚上都加班，如果不加班就要罚款
 
 +C、工厂只给1.2 倍的加班费                 D、工厂要求员工晚上都加班，如果不加班就要罚款
 
@@ -1035,20 +1045,24 @@ Generated: 2026-03-18T19:10:48.125878
 
  A、14 , 16       B、16 , 18        C、16 ， 17      D、17 ， 18
 
-@@ -39,17 +39,17 @@
+@@ -38,18 +38,18 @@
+ A、首次会议；    B、收集审核证据； C、确定不符合项并编写不符合项报告；
+
  D、召开末次会议；  E、宣布审核结果。
 
  10、公司应在新员工入厂后 (  A  )个月内与之签定合同
 
- A、1 个月   B、二个月  C、3 个月   D、6 个月
+-A、1个月   B、二个月  C、3个月   D、6个月
 
--三、案例分析题（共 10 分，每题 5 分）
+-三、案例分析题（共10分，每题5分）
 
 -针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出 SA8000 的哪一条款。
 
--1、公司在运行 SA8000 社会责任管理体系过程中，内审发现使用了 2 名童工，公司的纠正措施是将 2
+-1、公司在运行 SA8000
 
--名童工立即开除。
+-社会责任管理体系过程中，内审发现使用了2名童工，公司的纠正措施是将2名童工立即开除。
+
++A、1 个月   B、二个月  C、3 个月   D、6 个月
 
 +三、案例分析题（共10 分，每题5 分）
 
@@ -1064,7 +1078,7 @@ Generated: 2026-03-18T19:10:48.125878
 
  ISO45001 基础知识培训考试题
 
--一、判断题（共 20 分，每题 2 分）
+-一、判断题（共20分，每题2分）
 
 -1、一个管理十分严谨、设备精良并经消防主管部门审批合格的油库，在加强日常管理的情况下，可以不列入危险
 
@@ -1091,7 +1105,7 @@ Generated: 2026-03-18T19:10:48.125878
 
  10、我国《劳动法》规定，任何组织不得招收未成年工进行生产和服务作业。（ ）
 
--二、单项选择题（共 20 分，每题 2 分）
+-二、单项选择题（共20分，每题2分）
 
 +二、单项选择题（共20 分，每题2 分）
 
@@ -1108,7 +1122,7 @@ Generated: 2026-03-18T19:10:48.125878
 
  A、提供查询相关文件的途径。       B、对管理体系核心要素及相互作用的描述。
 
--C、至少对 11 个要素的描述。         D、A+B。
+-C、至少对11个要素的描述。         D、A+B。
 
 +C、至少对11 个要素的描述。         D、A+B。
 
@@ -1132,64 +1146,57 @@ Generated: 2026-03-18T19:10:48.125878
 
  7.职业健康安全“三同时”是指新建、改建、扩建工程的健康安全设施必须与主体工程（ B  ）
 
-@@ -95,8 +95,9 @@
- B、新员工进行厂级、车间级、班组级安全教育。
-... (328 more characters)
+
+... (363 more characters)
 
 ```
 </details>
 
 ### Support_Letter
 
-- **Text Similarity:** 1.0
-- **Visual Average:** 0.9535
-- **Overall Score:** 0.9814
+- **Text Similarity:** 0.9917
+- **Visual Average:** 0.9529
+- **Overall Score:** 0.9778
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4356 bytes, Reference=61824 bytes
+- **File Size:** MiniPdf=4658 bytes, Reference=61824 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Support_Letter.pdf
 +++ reference/Support_Letter.pdf
-@@ -7,23 +7,23 @@
+@@ -6,16 +6,16 @@
+ 0002
+
  12 March 2026
 
  To whom it may concern,
 
- RE: LETTER OF SUPPORT IN RESPECT OF THE APPLICATION FOR A RENEWAL OF A RELATIVE’S VISA IN
+-RE: LETTER OF SUPPORT IN RESPECT OF THE APPLICATION FOR A RENEWAL OF A RELATIVE’S
 
--TERMS OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA
+-TERMS OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA VERBITCK
 
--VERBITCKAIA PASSPORT NUMBER 770752777
-
--1. I, Pascale Donaldson, a South African national born on 09 February 2006 with South African
-
--Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident
-
--of South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a
-
--national born on 21 December 1999, and support her application for a renewal of his Relatives
-
--Visa in terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with
-
--the relevant Immigration Regulations made under section 7 of the Act.
-
--2. I accept full responsibility of any financial costs and subsistence, including but not limited to,
-
--housing, food, medical, physical and emotional needs he may require whilst residing with me in
-
--South Africa at the following address during his entire sojourn:
++RE: LETTER OF SUPPORT IN RESPECT OF THE APPLICATION FOR A RENEWAL OF A RELATIVE’S VISA IN
 
 +TERMS OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA VERBITCKAIA
 
-+PASSPORT NUMBER 770752777
+ PASSPORT NUMBER 770752777
+
+-1. I, Pascale Donaldson, a South African national born on 09 February 2006 with South African
 
 +1. I,  Pascale Donaldson, a South African national born on 09 February 2006 with South African
 
-+Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of
+ Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of
 
-+South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a
+ South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a
+
+-national born on 21 December 1999, and support her application for a renewal of his Relatives Visa
+
+-in terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with the
+
+-relevant Immigration Regulations made under section 7 of the Act.
+
+-2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing
 
 +national born on 21 December 1999, and support her application for a renewal of his Relatives Visa in
 
@@ -1199,35 +1206,19 @@ Generated: 2026-03-18T19:10:48.125878
 
 +2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,
 
-+food, medical, physical and emotional needs he may require whilst residing with me in South Africa at
+ food, medical, physical and emotional needs he may require whilst residing with me in South Africa at
 
-+the following address during his entire sojourn:
+ the following address during his entire sojourn:
 
  Dicta modi aut labor
-
- Voluptates alias exc
-
- Ut temporibus aliqui
-
- Qui magna fugiat cor
-
--3. I trust that this is in order, but should you require any additional information, please do not
-
--hesitate to contact me.
-
-+3. I trust that this is in order, but should you require any additional information, please do not hesitate
-
-+to contact me.
-
- Yours sincerely,
-
- ___________________________
-
- Pascale Donaldson
 
 ```
 </details>
 
 ## Improvement Suggestions
 
-All test cases scored 0.8 or above. 🎉
+### ⚠ Low-Score Test Cases (below 0.8)
+
+1. **nthu_article** (score: 0.7562)
+
+Review the text diffs and visual comparisons above to identify specific rendering issues.
