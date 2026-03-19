@@ -1072,6 +1072,15 @@ internal static class ExcelToPdfConverter
                     else
                         cellY = currentY - titleRowH + descent + lineHeight * (titleCellLines[i].Length - 1);
 
+                    // Render accounting prefix left-aligned in title rows.
+                    if (cell?.AccountingPrefix != null && titleCellLines[i].Length > 0 && !string.IsNullOrEmpty(titleCellLines[i][0]))
+                    {
+                        currentPage!.AddText(cell.AccountingPrefix, x, cellY, cellFs, cell?.Color,
+                            maxWidth: titleClipWidths[i],
+                            bold: ShouldUsePdfBold(cell?.Bold ?? false, cellFs),
+                            underline: false);
+                    }
+
                     for (var lineIdx = 0; lineIdx < titleCellLines[i].Length; lineIdx++)
                     {
                         if (!string.IsNullOrEmpty(titleCellLines[i][lineIdx]))
@@ -1106,7 +1115,6 @@ internal static class ExcelToPdfConverter
             }
 
             // Render images anchored within print title rows
-            var titleUsableWidth = pageWidth - options.MarginLeft - options.MarginRight;
             const float EmuToPtTitle = 1f / 12700f;
             foreach (var img in sheet.Images)
             {
@@ -1129,8 +1137,8 @@ internal static class ExcelToPdfConverter
                 float imgW, imgH;
                 if (img.WidthEmu > 0 && img.HeightEmu > 0)
                 {
-                    imgW = Math.Min(img.WidthEmu * EmuToPtTitle, titleUsableWidth * 0.95f);
-                    imgH = Math.Min(img.HeightEmu * EmuToPtTitle, pageHeight * 0.75f);
+                    imgW = img.WidthEmu * EmuToPtTitle;
+                    imgH = img.HeightEmu * EmuToPtTitle;
                 }
                 else
                 {
@@ -1143,7 +1151,7 @@ internal static class ExcelToPdfConverter
                         var toColOffPt = Math.Min(img.ToColOffEmu * EmuToPtTitle, colWidths[toColGroupIdx]);
                         imgW += toColOffPt + columnPadding;
                     }
-                    imgW = Math.Min(Math.Max(imgW, 36f), titleUsableWidth * 0.8f);
+                    imgW = Math.Max(imgW, 1f);
 
                     // Height: sum actual row heights for the spanned rows
                     imgH = 0;
@@ -1155,8 +1163,15 @@ internal static class ExcelToPdfConverter
                     }
                     imgH -= img.FromRowOffEmu * EmuToPtTitle;
                     imgH += img.ToRowOffEmu * EmuToPtTitle;
-                    imgH = Math.Min(Math.Max(imgH, 36f), pageHeight * 0.5f);
+                    imgH = Math.Max(imgH, 1f);
                 }
+
+                // Clamp image by remaining drawable space from its top-left anchor.
+                var maxImgW = Math.Max(1f, pageWidth - options.MarginRight - imgX);
+                var maxImgH = Math.Max(1f, imgTopY - options.MarginBottom);
+                imgW = Math.Max(1f, Math.Min(imgW, maxImgW));
+                imgH = Math.Max(1f, Math.Min(imgH, maxImgH));
+
                 var imgY = imgTopY - imgH;
                 if (imgY < options.MarginBottom) imgY = options.MarginBottom;
                 var format = img.Extension is "jpg" or "jpeg" ? "jpg" : "png";
@@ -1434,6 +1449,14 @@ internal static class ExcelToPdfConverter
                                 mpCellWidth += colWidths[mc] + columnPadding;
                         }
 
+                        // Render accounting prefix left-aligned in overflow rows.
+                        if (cell?.AccountingPrefix != null && linesRendered == 0 && lines.Length > 0 && !string.IsNullOrEmpty(lines[0]))
+                        {
+                            currentPage!.AddText(cell.AccountingPrefix, x, cellY, options.FontSize, color,
+                                bold: ShouldUsePdfBold(cell?.Bold ?? false, options.FontSize),
+                                underline: false);
+                        }
+
                         for (var lineIdx = linesRendered; lineIdx < linesRendered + linesToRender && lineIdx < lines.Length; lineIdx++)
                         {
                             if (!string.IsNullOrEmpty(lines[lineIdx]))
@@ -1661,6 +1684,15 @@ internal static class ExcelToPdfConverter
                         cellWidth += colWidths[mc] + columnPadding;
                 }
 
+                // Render accounting prefix (e.g., " $") left-aligned for accounting format cells.
+                if (cell?.AccountingPrefix != null && lines.Length > 0 && !string.IsNullOrEmpty(lines[0]))
+                {
+                    currentPage!.AddText(cell.AccountingPrefix, x, cellY, cellFontSize, color,
+                        maxWidth: cellClipWidth[i],
+                        bold: ShouldUsePdfBold(cell.Bold, cellFontSize),
+                        underline: false);
+                }
+
                 for (var lineIdx = 0; lineIdx < lines.Length; lineIdx++)
                 {
                     if (!string.IsNullOrEmpty(lines[lineIdx]))
@@ -1731,9 +1763,6 @@ internal static class ExcelToPdfConverter
 
         // For image/chart-only sheets (no data rows) ensure at least one page exists.
         EnsurePage();
-
-        var usableWidth = pageWidth - options.MarginLeft - options.MarginRight;
-
         foreach (var img in sheet.Images)
         {
             // Only render image if its anchor column is within the current column group
@@ -1779,8 +1808,8 @@ internal static class ExcelToPdfConverter
             float imgRenderWidth, imgRenderHeight;
             if (img.WidthEmu > 0 && img.HeightEmu > 0)
             {
-                imgRenderWidth  = Math.Min(img.WidthEmu  * EmuToPt, usableWidth * 0.95f);
-                imgRenderHeight = Math.Min(img.HeightEmu * EmuToPt, pageHeight  * 0.75f);
+                imgRenderWidth  = img.WidthEmu  * EmuToPt;
+                imgRenderHeight = img.HeightEmu * EmuToPt;
             }
             else
             {
@@ -1796,7 +1825,7 @@ internal static class ExcelToPdfConverter
                     var toColOffPt = Math.Min(img.ToColOffEmu * EmuToPt, colWidths[toColGroupIdx]);
                     imgRenderWidth += toColOffPt + columnPadding;
                 }
-                imgRenderWidth  = Math.Min(Math.Max(imgRenderWidth, 36f), usableWidth * 0.8f);
+                imgRenderWidth  = Math.Max(imgRenderWidth, 1f);
 
                 // Height: sum actual row heights for the spanned rows
                 imgRenderHeight = 0;
@@ -1809,8 +1838,14 @@ internal static class ExcelToPdfConverter
                 // Adjust for sub-cell row offsets
                 imgRenderHeight -= fromRowOffPt;
                 imgRenderHeight += img.ToRowOffEmu * EmuToPt;
-                imgRenderHeight = Math.Min(Math.Max(imgRenderHeight, 36f), pageHeight * 0.5f);
+                imgRenderHeight = Math.Max(imgRenderHeight, 1f);
             }
+
+            // Clamp image by remaining drawable space from its top-left anchor.
+            var maxRenderW = Math.Max(1f, pageWidth - options.MarginRight - imgX);
+            var maxRenderH = Math.Max(1f, imgTopY - options.MarginBottom);
+            imgRenderWidth = Math.Max(1f, Math.Min(imgRenderWidth, maxRenderW));
+            imgRenderHeight = Math.Max(1f, Math.Min(imgRenderHeight, maxRenderH));
 
             // In PDF coordinates: Y is bottom of image; top = imgTopY, bottom = top - height
             var imgY = imgTopY - imgRenderHeight;
@@ -1825,6 +1860,8 @@ internal static class ExcelToPdfConverter
         if (sheet.Charts.Count == 0) return;
 
         EnsurePage();
+
+        var usableWidth = pageWidth - options.MarginLeft - options.MarginRight;
 
         // Track whether any chart is anchored to the right of data (not below)
         // to determine if we need an overflow page (matching LibreOffice behavior)
@@ -3168,8 +3205,12 @@ internal static class ExcelToPdfConverter
                 // When the spreadsheet explicitly sets a narrow column width,
                 // honour it (spacer columns etc.).  Only apply minColWidth for
                 // columns using the default/fallback width.
+                // Do not cap explicit widths — LibreOffice honours the author's
+                // column widths as-is, so the column-grouping boundary matches.
                 var floor = hasExplicitWidth ? 0f : minColWidth;
-                widths[i] = Compat.Clamp(excelPts, floor, maxColWidth);
+                widths[i] = hasExplicitWidth
+                    ? Math.Max(excelPts, 0f)
+                    : Compat.Clamp(excelPts, floor, maxColWidth);
             }
             else if (maxCols == 1)
             {

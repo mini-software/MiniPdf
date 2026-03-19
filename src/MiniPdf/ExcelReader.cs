@@ -1126,6 +1126,14 @@ internal static class ExcelReader
                         value = DateTimeToExcelSerial(DateTime.Now)
                             .ToString(System.Globalization.CultureInfo.InvariantCulture);
                     }
+                    else if (TryEvaluateSimpleConcatFormula(formula, out var concatValue))
+                    {
+                        value = concatValue;
+                    }
+                    else if (TryEvaluateDatePartFormula(formula, out var datePartValue))
+                    {
+                        value = datePartValue;
+                    }
                 }
 
                 // Resolve color and fill from style index
@@ -1162,6 +1170,7 @@ internal static class ExcelReader
                 }
 
                 string text;
+                string? acctPrefix = null;
                 if (type == "s" && int.TryParse(value, out var idx) && idx < sharedStrings.Count)
                 {
                     text = sharedStrings[idx];
@@ -1186,7 +1195,7 @@ internal static class ExcelReader
                             double.TryParse(text, System.Globalization.NumberStyles.Any,
                                 System.Globalization.CultureInfo.InvariantCulture, out var numVal))
                         {
-                            text = FormatNumber(numVal, numFmtId, numberFormats, out var fmtColor);
+                            text = FormatNumber(numVal, numFmtId, numberFormats, out var fmtColor, out acctPrefix);
                             // Number format color overrides font color (e.g., [Red] for negatives)
                             if (fmtColor != null)
                                 color = fmtColor;
@@ -1215,7 +1224,7 @@ internal static class ExcelReader
                     underline = true;
                 }
 
-                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, border, cellVerticalAlignment, wrapText));
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, border, cellVerticalAlignment, wrapText, acctPrefix));
                 lastColIndex = colIndex + 1;
             }
 
@@ -1274,18 +1283,221 @@ internal static class ExcelReader
     }
 
     /// <summary>
+    /// Tries to evaluate simple date-part formulas that wrap TODAY() or NOW(),
+    /// such as YEAR(TODAY()), MONTH(NOW()), DAY(TODAY()).
+    /// </summary>
+    private static bool TryEvaluateDatePartFormula(string formula, out string value)
+    {
+        value = string.Empty;
+        var normalized = NormalizeFormula(formula);
+
+        // Check for YEAR(TODAY()), YEAR(NOW()), MONTH(...), DAY(...)
+        bool isToday, isNow;
+        DateTime dt;
+        int result;
+
+        if (IsWrappedVolatile(normalized, "year(", out isToday, out isNow))
+        {
+            dt = isToday ? DateTime.Today : DateTime.Now;
+            result = dt.Year;
+        }
+        else if (IsWrappedVolatile(normalized, "month(", out isToday, out isNow))
+        {
+            dt = isToday ? DateTime.Today : DateTime.Now;
+            result = dt.Month;
+        }
+        else if (IsWrappedVolatile(normalized, "day(", out isToday, out isNow))
+        {
+            dt = isToday ? DateTime.Today : DateTime.Now;
+            result = dt.Day;
+        }
+        else
+        {
+            return false;
+        }
+
+        value = result.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        return true;
+    }
+
+    /// <summary>
+    /// Tries to evaluate simple concatenation formulas where each token is either
+    /// a quoted literal or a supported volatile date expression.
+    /// </summary>
+    private static bool TryEvaluateSimpleConcatFormula(string formula, out string value)
+    {
+        value = string.Empty;
+        if (string.IsNullOrWhiteSpace(formula) || formula.IndexOf('&') < 0)
+            return false;
+
+        var expr = formula.Trim();
+        if (expr.StartsWith("=", StringComparison.Ordinal))
+            expr = expr[1..];
+
+        var tokens = SplitConcatTokens(expr);
+        if (tokens.Count == 0)
+            return false;
+
+        var sb = new System.Text.StringBuilder();
+        foreach (var rawToken in tokens)
+        {
+            var token = rawToken.Trim();
+            if (token.Length == 0)
+                continue;
+
+            if (TryParseQuotedLiteral(token, out var literal))
+            {
+                sb.Append(literal);
+                continue;
+            }
+
+            if (TryEvaluateDateToken(token, out var evaluated))
+            {
+                sb.Append(evaluated);
+                continue;
+            }
+
+            return false;
+        }
+
+        value = sb.ToString();
+        return true;
+    }
+
+    private static List<string> SplitConcatTokens(string expr)
+    {
+        var tokens = new List<string>();
+        if (string.IsNullOrEmpty(expr))
+            return tokens;
+
+        var sb = new System.Text.StringBuilder();
+        var inQuotes = false;
+        for (var i = 0; i < expr.Length; i++)
+        {
+            var ch = expr[i];
+            if (ch == '"')
+            {
+                sb.Append(ch);
+                if (inQuotes && i + 1 < expr.Length && expr[i + 1] == '"')
+                {
+                    // Escaped quote "" inside literal.
+                    sb.Append(expr[i + 1]);
+                    i++;
+                }
+                else
+                {
+                    inQuotes = !inQuotes;
+                }
+                continue;
+            }
+
+            if (!inQuotes && ch == '&')
+            {
+                tokens.Add(sb.ToString());
+                sb.Clear();
+                continue;
+            }
+
+            sb.Append(ch);
+        }
+
+        if (sb.Length > 0)
+            tokens.Add(sb.ToString());
+
+        return tokens;
+    }
+
+    private static bool TryParseQuotedLiteral(string token, out string literal)
+    {
+        literal = string.Empty;
+        if (token.Length < 2 || token[0] != '"' || token[^1] != '"')
+            return false;
+
+        literal = token[1..^1].Replace("\"\"", "\"");
+        return true;
+    }
+
+    private static bool TryEvaluateDateToken(string token, out string value)
+    {
+        value = string.Empty;
+        var normalized = NormalizeFormula(token);
+        var ci = System.Globalization.CultureInfo.InvariantCulture;
+
+        if (string.Equals(normalized, "today()", StringComparison.OrdinalIgnoreCase))
+        {
+            value = DateTimeToExcelSerial(DateTime.Today).ToString(ci);
+            return true;
+        }
+        if (string.Equals(normalized, "now()", StringComparison.OrdinalIgnoreCase))
+        {
+            value = DateTimeToExcelSerial(DateTime.Now).ToString(ci);
+            return true;
+        }
+
+        bool isToday, isNow;
+        DateTime dt;
+        if (IsWrappedVolatile(normalized, "year(", out isToday, out isNow))
+        {
+            dt = isToday ? DateTime.Today : DateTime.Now;
+            value = dt.Year.ToString(ci);
+            return true;
+        }
+        if (IsWrappedVolatile(normalized, "month(", out isToday, out isNow))
+        {
+            dt = isToday ? DateTime.Today : DateTime.Now;
+            value = dt.Month.ToString(ci);
+            return true;
+        }
+        if (IsWrappedVolatile(normalized, "day(", out isToday, out isNow))
+        {
+            dt = isToday ? DateTime.Today : DateTime.Now;
+            value = dt.Day.ToString(ci);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks whether the normalized formula is outerFunc + TODAY()/NOW() + closing paren.
+    /// e.g. "year(today())" or "year(now())".
+    /// </summary>
+    private static bool IsWrappedVolatile(string normalized, string outerPrefix,
+        out bool isToday, out bool isNow)
+    {
+        isToday = false;
+        isNow = false;
+        if (!normalized.StartsWith(outerPrefix, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var inner = normalized[outerPrefix.Length..];
+        if (inner.Equals("today())", StringComparison.OrdinalIgnoreCase))
+        {
+            isToday = true;
+            return true;
+        }
+        if (inner.Equals("now())", StringComparison.OrdinalIgnoreCase))
+        {
+            isNow = true;
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Formats a numeric value according to its Excel number format.
     /// Handles built-in formats and common custom patterns.
     /// </summary>
-    private static string FormatNumber(double value, int numFmtId, Dictionary<int, string> customFormats, out PdfColor? formatColor)
+    private static string FormatNumber(double value, int numFmtId, Dictionary<int, string> customFormats, out PdfColor? formatColor, out string? accountingPrefix)
     {
         formatColor = null;
+        accountingPrefix = null;
         var ci = System.Globalization.CultureInfo.InvariantCulture;
 
         // Check custom format first
         if (numFmtId > 0 && customFormats.TryGetValue(numFmtId, out var formatCode))
         {
-            return ApplyNumberFormat(value, formatCode, out formatColor);
+            return ApplyNumberFormat(value, formatCode, out formatColor, out accountingPrefix);
         }
 
         // Built-in number formats
@@ -1322,9 +1534,10 @@ internal static class ExcelReader
     /// Applies a custom Excel number format code to a value.
     /// Handles common patterns like "0.00", "#,##0", "0.00E+00", currency, percentage, etc.
     /// </summary>
-    private static string ApplyNumberFormat(double value, string formatCode, out PdfColor? formatColor)
+    private static string ApplyNumberFormat(double value, string formatCode, out PdfColor? formatColor, out string? accountingPrefix)
     {
         formatColor = null;
+        accountingPrefix = null;
         var ci = System.Globalization.CultureInfo.InvariantCulture;
 
         // Handle multi-section formats (positive;negative;zero) - use the appropriate section
@@ -1388,10 +1601,13 @@ internal static class ExcelReader
             }
             else if (ch == '*' && pi + 1 < activeFormat.Length)
             {
-                // Repeat-fill character: insert padding spaces to approximate
-                // accounting-format alignment ($ left, number right).
-                var fillChar = activeFormat[pi + 1];
-                parsedFormat.Append(fillChar == ' ' ? "      " : new string(fillChar, 6));
+                // Repeat-fill character: split into accounting prefix (left-aligned)
+                // and number part (right-aligned) for proper accounting format rendering.
+                if (accountingPrefix == null)
+                {
+                    accountingPrefix = parsedFormat.ToString();
+                    parsedFormat.Clear();
+                }
                 pi++; // skip fill character
             }
             else if (ch == '\\' && pi + 1 < activeFormat.Length)
@@ -1441,7 +1657,9 @@ internal static class ExcelReader
         if (!hasNumericPlaceholder)
         {
             // Replace ? with space (digit placeholder shows space for absent digits)
-            return activeFormat.Replace('?', ' ').Trim();
+            var literal = activeFormat.Replace('?', ' ');
+            // When accounting prefix is set, preserve trailing spaces for right-indent alignment
+            return accountingPrefix != null ? literal : literal.Trim();
         }
 
         // Handle percentage format
@@ -2193,6 +2411,21 @@ internal static class ExcelReader
                 long.TryParse(extEl.Attribute("cx")?.Value, out widthEmu);
                 long.TryParse(extEl.Attribute("cy")?.Value, out heightEmu);
             }
+            // Some twoCellAnchor images (e.g. template logos) omit xdr:ext and only
+            // store size under a:xfrm/a:ext on the picture shape.
+            if (widthEmu <= 0 || heightEmu <= 0)
+            {
+                var xfrmExtEl = anchor.Descendants(a + "xfrm")
+                    .Elements(a + "ext")
+                    .FirstOrDefault();
+                if (xfrmExtEl != null)
+                {
+                    if (widthEmu <= 0)
+                        long.TryParse(xfrmExtEl.Attribute("cx")?.Value, out widthEmu);
+                    if (heightEmu <= 0)
+                        long.TryParse(xfrmExtEl.Attribute("cy")?.Value, out heightEmu);
+                }
+            }
 
             // Find image reference IDs and prefer raster (png/jpg/jpeg) targets.
             var embedIds = anchor.Descendants(a + "blip")
@@ -2776,7 +3009,8 @@ internal sealed record ExcelCell(
     bool Underline = false,
     CellBorderInfo? Border = null,
     string VerticalAlignment = "bottom",
-    bool WrapText = false
+    bool WrapText = false,
+    string? AccountingPrefix = null
 );
 
 /// <summary>
