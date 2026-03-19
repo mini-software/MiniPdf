@@ -31,6 +31,8 @@ Une bibliothèque .NET minimale et légère pour convertir des fichiers Office e
 - **100 % open-source & gratuit** — Licence Apache 2.0, usage commercial bienvenu ; il suffit de conserver l'attribution. Les PR et contributions sont les bienvenues !
 - **Graphiques** — Pas encore bien pris en charge
 
+> **Remarque :** MiniPdf ne gère actuellement que les conversions de base. Les documents Office complexes ou très personnalisés peuvent ne pas être convertis parfaitement. Si vous rencontrez des problèmes de compatibilité, n'hésitez pas à [ouvrir une Issue](https://github.com/shps951023/MiniPdf/issues) ou à soumettre une Pull Request — les contributions sont les bienvenues !
+
 ## Démarrage
 
 ### Installation via NuGet

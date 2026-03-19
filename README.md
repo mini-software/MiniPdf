@@ -32,6 +32,8 @@ A minimal, lightweight .NET library for converting office files to PDF.
 - **100% open-source & free** — Apache 2.0 licensed, commercial use welcome; just keep the attribution. PRs & contributions are even better!
 - **Chart** — Not currently supported well
 
+> **Note:** MiniPdf currently only handles basic conversions. Complex or highly customized Office documents may not convert perfectly. If you encounter compatibility issues, please [open an Issue](https://github.com/shps951023/MiniPdf/issues) or submit a Pull Request — contributions are very welcome!
+
 ## Getting Started
 
 ### Install via NuGet
