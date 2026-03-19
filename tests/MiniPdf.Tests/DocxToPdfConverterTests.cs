@@ -166,7 +166,8 @@ public class DocxToPdfConverterTests
         var doc = DocxToPdfConverter.Convert(docxStream);
 
         Assert.True(doc.Pages.Count >= 1);
-        Assert.Contains(doc.Pages[0].TextBlocks, b => b.Text == "1");
+        var texts = doc.Pages[0].TextBlocks.Select(b => b.Text).ToList();
+        Assert.Contains("1", texts, StringComparer.Ordinal);
       }
 
     // ── Helper: Create minimal DOCX ─────────────────────────────────────

@@ -68,8 +68,9 @@ internal static class DocxReader
         if (entry == null)
             return new DocxDocument([]);
 
-        using var docStream = entry.Open();
-        var doc = XDocument.Load(docStream);
+        XDocument doc;
+        using (var docStream = entry.Open())
+            doc = XDocument.Load(docStream);
         var body = doc.Descendants(W + "body").FirstOrDefault();
         if (body == null)
             return new DocxDocument([]);
