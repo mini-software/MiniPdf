@@ -233,72 +233,43 @@
             if (!_fontLoaded)
             {
                 isFontLoading = true;
-                fontStatus = L.T("CheckingLocalFont");
+                fontStatus = L.T("LoadingFont");
                 StateHasChanged();
                 await Task.Yield();
 
                 try
                 {
-                    // Try Local Font Access API first (Chrome 103+, requires user permission)
-                    string? localFontFamily = null;
-                    try { localFontFamily = await JS.InvokeAsync<string?>("tryLoadLocalFontMeta"); } catch { }
+                    var request = new HttpRequestMessage(HttpMethod.Get, "fonts/NotoSansSC-Regular.ttf");
+                    request.SetBrowserResponseStreamingEnabled(true);
+                    using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    response.EnsureSuccessStatusCode();
 
-                    if (localFontFamily is not null)
+                    var totalBytes = response.Content.Headers.ContentLength ?? -1;
+                    using var contentStream = await response.Content.ReadAsStreamAsync();
+                    using var fontMs = new MemoryStream();
+                    var buffer = new byte[81920];
+                    long totalRead = 0;
+                    int read;
+
+                    while ((read = await contentStream.ReadAsync(buffer)) > 0)
                     {
-                        var jsStreamRef = await JS.InvokeAsync<IJSStreamReference?>("getLocalFontStream");
-                        if (jsStreamRef is not null)
+                        fontMs.Write(buffer, 0, read);
+                        totalRead += read;
+                        if (totalBytes > 0)
                         {
-                            await using var fontStream = await jsStreamRef.OpenReadStreamAsync(maxAllowedSize: 50 * 1024 * 1024);
-                            using var fontMs = new MemoryStream();
-                            await fontStream.CopyToAsync(fontMs);
-                            MiniSoftware.MiniPdf.RegisterFont(localFontFamily, fontMs.ToArray());
-                            fontLoadSuccess = true;
-                            fontStatus = "✓ " + string.Format(L.T("LocalFontUsed"), localFontFamily);
+                            fontProgress = (int)(totalRead * 100 / totalBytes);
+                            fontStatus = string.Format(L.T("FontDownloadProgress"), fontProgress, FormatSize(totalRead), FormatSize(totalBytes));
                         }
                         else
                         {
-                            localFontFamily = null; // stream unexpectedly null, fall through to download
+                            fontStatus = $"{L.T("LoadingFont")} ({FormatSize(totalRead)})";
                         }
-                    }
-
-                    if (localFontFamily is null)
-                    {
-                        // Fall back to downloading NotoSansSC
-                        fontStatus = L.T("LoadingFont");
                         StateHasChanged();
-
-                        var request = new HttpRequestMessage(HttpMethod.Get, "fonts/NotoSansSC-Regular.ttf");
-                        request.SetBrowserResponseStreamingEnabled(true);
-                        using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-                        response.EnsureSuccessStatusCode();
-
-                        var totalBytes = response.Content.Headers.ContentLength ?? -1;
-                        using var contentStream = await response.Content.ReadAsStreamAsync();
-                        using var fontMs = new MemoryStream();
-                        var buffer = new byte[81920];
-                        long totalRead = 0;
-                        int read;
-
-                        while ((read = await contentStream.ReadAsync(buffer)) > 0)
-                        {
-                            fontMs.Write(buffer, 0, read);
-                            totalRead += read;
-                            if (totalBytes > 0)
-                            {
-                                fontProgress = (int)(totalRead * 100 / totalBytes);
-                                fontStatus = string.Format(L.T("FontDownloadProgress"), fontProgress, FormatSize(totalRead), FormatSize(totalBytes));
-                            }
-                            else
-                            {
-                                fontStatus = $"{L.T("LoadingFont")} ({FormatSize(totalRead)})";
-                            }
-                            StateHasChanged();
-                        }
-
-                        MiniSoftware.MiniPdf.RegisterFont("NotoSansSC", fontMs.ToArray());
-                        fontLoadSuccess = true;
-                        fontStatus = "✓ " + L.T("FontLoaded");
                     }
+
+                    MiniSoftware.MiniPdf.RegisterFont("NotoSansSC", fontMs.ToArray());
+                    fontLoadSuccess = true;
+                    fontStatus = "✓ " + L.T("FontLoaded");
                 }
                 catch
                 {
