@@ -731,9 +731,9 @@ internal sealed class PdfWriter
                 // Apply word spacing (Tw) for justified text
                 if (block.WordSpacing != 0)
                     sb.Append($"{block.WordSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tw\n");
-                // Apply character spacing (Tc)
-                if (block.CharSpacing != 0)
-                    sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
+                // Always set character spacing to prevent Tc from previous
+                // text blocks leaking through the graphics state.
+                sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
                 // Apply horizontal scaling if text overflows MaxWidth
                 if (block.MaxWidth.HasValue)
                 {
@@ -774,9 +774,9 @@ internal sealed class PdfWriter
                 // Apply word spacing (Tw) for justified text
                 if (block.WordSpacing != 0)
                     sb.Append($"{block.WordSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tw\n");
-                // Apply character spacing (Tc)
-                if (block.CharSpacing != 0)
-                    sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
+                // Always set character spacing to prevent Tc from previous
+                // text blocks leaking through the graphics state.
+                sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
                 // Apply horizontal scaling if text overflows MaxWidth
                 if (block.MaxWidth.HasValue)
                 {

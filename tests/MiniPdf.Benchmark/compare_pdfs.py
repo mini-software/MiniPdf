@@ -196,7 +196,12 @@ def extract_text_pymupdf(pdf_path: str) -> list[str]:
                 for span in line.get("spans", []):
                     text = span.get("text", "").strip()
                     if text:
-                        spans.append((round(span["bbox"][1], 1), span["bbox"][0], text))
+                        # Use the text origin (baseline) Y instead of bbox top Y.
+                        # Different fonts (e.g. CJK vs Latin) report different
+                        # ascent metrics, making bbox Y inconsistent even when
+                        # the actual baseline is identical.
+                        y_key = span.get("origin", (span["bbox"][0], span["bbox"][1]))[1]
+                        spans.append((round(y_key, 1), span["bbox"][0], text))
         # Sort by Y then X position
         spans.sort()
         # Group spans that share the same Y row (within 1.0 pt tolerance) into

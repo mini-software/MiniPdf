@@ -4,6 +4,7 @@
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/dt/MiniPdf.svg" alt="NuGet ダウンロード数"></a>
+<a href="https://www.nuget.org/packages/MiniPdf.Cli"><img src="https://img.shields.io/nuget/v/MiniPdf.Cli.svg?label=MiniPdf.Cli" alt="MiniPdf.Cli NuGet"></a>
 <a href="https://github.com/shps951023/MiniPdf" rel="nofollow"><img src="https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github" alt="GitHub stars"></a>
 <a href="https://gitee.com/dotnetchina/MiniPdf"><img src="https://img.shields.io/badge/Gitee-red?logo=gitee" alt="Gitee"></a>
 <a href="../LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="ライセンス"></a>
@@ -79,6 +80,41 @@ MiniPdf.ConvertToPdf("report.docx", "report.pdf");
 - 入力できるフォントバイトは TrueType `.ttf` と TrueType Collection `.ttc` です。
 - 重複登録を避けるため、起動時に一度だけ登録することを推奨します。
 - 登録したフォントはシステムフォントより優先して使用されます。
+
+## CLI ツール
+
+MiniPdf はコマンドラインツール **MiniPdf.Cli** も提供しています。コードを書かずにファイルを素早く変換できます。
+
+### インストール
+
+```bash
+dotnet tool install --global MiniPdf.Cli
+```
+
+### 使い方
+
+```bash
+# Excel を PDF に変換（出力: data.pdf）
+minipdf data.xlsx
+
+# Word を PDF に変換
+minipdf report.docx
+
+# 出力パスを指定
+minipdf report.docx -o /path/to/output.pdf
+
+# カスタムフォントを登録（コンテナ/ヘッドレス環境向け）
+minipdf report.docx --fonts ./Fonts
+```
+
+### コマンド一覧
+
+| コマンド | 説明 |
+|---------|-------------|
+| `minipdf <file>` | `.xlsx` / `.docx` を PDF に変換 |
+| `minipdf convert <file> -o <out>` | 出力パスを指定して変換 |
+| `minipdf --version` | バージョンを表示 |
+| `minipdf --help` | ヘルプを表示 |
 
 ## ベンチマーク
 
