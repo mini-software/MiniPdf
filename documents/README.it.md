@@ -7,6 +7,7 @@
 <a href="https://www.nuget.org/packages/MiniPdf.Cli"><img src="https://img.shields.io/nuget/v/MiniPdf.Cli.svg?label=MiniPdf.Cli" alt="MiniPdf.Cli NuGet"></a>
 <a href="https://github.com/shps951023/MiniPdf" rel="nofollow"><img src="https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github" alt="GitHub stars"></a>
 <a href="https://gitee.com/dotnetchina/MiniPdf"><img src="https://img.shields.io/badge/Gitee-red?logo=gitee" alt="Gitee"></a>
+<a href="https://discord.gg/BUGRRthp"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
 <a href="../LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="Licenza"></a>
 </p>
 <p>
@@ -21,16 +22,6 @@ Una libreria .NET minimale e leggera per convertire file Office in PDF.
 👉 **[Demo online](https://mini-software.github.io/MiniPdf/)** — Provalo nel browser, nessuna installazione richiesta.
 
 > ⚠️ A causa dei font limitati disponibili nel browser, i risultati del rendering potrebbero non essere ottimali. Per la migliore esperienza, si consiglia di testare localmente sul proprio computer.
-
----
-
-<div align="center">
-<p>
-  Discord : <a href="https://discord.gg/BUGRRthp" target="_blank">https://discord.gg/BUGRRthp</a>
-</p>
-</div>
-
----
 
 ## Funzionalità
 

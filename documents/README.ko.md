@@ -7,6 +7,7 @@
 <a href="https://www.nuget.org/packages/MiniPdf.Cli"><img src="https://img.shields.io/nuget/v/MiniPdf.Cli.svg?label=MiniPdf.Cli" alt="MiniPdf.Cli NuGet"></a>
 <a href="https://github.com/shps951023/MiniPdf" rel="nofollow"><img src="https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github" alt="GitHub stars"></a>
 <a href="https://gitee.com/dotnetchina/MiniPdf"><img src="https://img.shields.io/badge/Gitee-red?logo=gitee" alt="Gitee"></a>
+<a href="https://discord.gg/BUGRRthp"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
 <a href="../LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="라이선스"></a>
 </p>
 <p>
@@ -21,16 +22,6 @@ Office 파일을 PDF로 변환하는 최소한의 경량 .NET 라이브러리입
 👉 **[온라인 데모](https://mini-software.github.io/MiniPdf/)** — 설치 없이 브라우저에서 바로 체험하세요.
 
 > ⚠️ 브라우저에서 사용할 수 있는 글꼴이 제한되어 있어 렌더링 결과가 최적이 아닐 수 있습니다. 최상의 결과를 위해 로컬 환경에서 테스트해 주세요.
-
----
-
-<div align="center">
-<p>
-  Discord : <a href="https://discord.gg/BUGRRthp" target="_blank">https://discord.gg/BUGRRthp</a>
-</p>
-</div>
-
----
 
 ## 기능
 
