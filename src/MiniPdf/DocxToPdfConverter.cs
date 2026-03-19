@@ -246,13 +246,13 @@ internal static class DocxToPdfConverter
                 if (hasHeaderElements)
                 {
                     var headerStartY = page.Height - options.HeaderMargin;
-                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.HeaderElements!, headerStartY);
+                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.HeaderElements!, headerStartY, pi, totalPages);
                 }
                 if (hasFooterElements)
                 {
                     var footerContentHeight = EstimateElementsHeight(docxDoc.FooterElements!, options);
                     var footerStartY = options.FooterMargin + footerContentHeight;
-                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.FooterElements!, footerStartY);
+                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.FooterElements!, footerStartY, pi, totalPages);
                 }
             }
         }
@@ -1318,7 +1318,7 @@ internal static class DocxToPdfConverter
     /// at the specified starting Y position, flowing downward.
     /// </summary>
     private static void RenderHeaderFooterElementsOnPage(PdfPage page, ConversionOptions options,
-        List<DocxElement> elements, float startY)
+        List<DocxElement> elements, float startY, int pageIndex = 0, int totalPages = 1)
     {
         const float emuPerPt = 914400f / 72f;
         var y = startY;
@@ -1350,8 +1350,10 @@ internal static class DocxToPdfConverter
                             y -= imgH + 1f;
                         }
                     }
-                    // Render text runs
-                    var text = string.Concat(para.Runs.Select(r => r.Text));
+                    // Render text runs (resolve page-number placeholders)
+                    var text = string.Concat(para.Runs.Select(r => r.Text))
+                        .Replace("{PAGE}", (pageIndex + 1).ToString())
+                        .Replace("{NUMPAGES}", totalPages.ToString());
                     if (!string.IsNullOrEmpty(text))
                     {
                         var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
