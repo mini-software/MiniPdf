@@ -301,9 +301,12 @@ internal static class DocxReader
         var footerShapes = ReadHeaderFooterShapes(body, relationships, archive, "footerReference", themeColors);
         var headerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName);
         var footerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
+        var headerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName);
+        var footerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
 
         return new DocxDocument(elements, pageLayout, headerText, footerText, headerShapes, footerShapes, headerRuns, footerRuns,
-            defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName);
+            defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName,
+            headerElements.Count > 0 ? headerElements : null, footerElements.Count > 0 ? footerElements : null);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -1628,6 +1631,10 @@ internal static class DocxReader
 
         // Read table-level cell margins
         float cellMarginLeft = 5.4f, cellMarginRight = 5.4f, cellMarginTop = 0f, cellMarginBottom = 0f;
+        var tableAlignment = "left";
+        var tblJc = tblPr?.Element(W + "jc")?.Attribute(W + "val")?.Value;
+        if (!string.IsNullOrEmpty(tblJc))
+            tableAlignment = tblJc;
         var tblCellMar = tblPr?.Element(W + "tblCellMar");
         if (tblCellMar != null)
         {
@@ -1780,7 +1787,7 @@ internal static class DocxReader
             rows.Add(new DocxTableRow(cells, rowHeight));
         }
 
-        return new DocxTable(rows, columnWidths, hasBorders, cellMarginLeft, cellMarginRight, cellMarginTop, cellMarginBottom);
+        return new DocxTable(rows, columnWidths, hasBorders, cellMarginLeft, cellMarginRight, cellMarginTop, cellMarginBottom, tableAlignment);
     }
 
     private static DocxPageLayout? ReadPageLayout(XElement body)
@@ -1895,6 +1902,58 @@ internal static class DocxReader
         return shapes;
     }
 
+    /// <summary>
+    /// Reads header/footer content as full document elements (paragraphs + tables)
+    /// using the header/footer-specific relationships for image resolution.
+    /// </summary>
+    private static List<DocxElement> ReadHeaderFooterElements(
+        XElement body, Dictionary<string, string> relationships, ZipArchive archive,
+        Dictionary<string, DocxStyleInfo> styles, Dictionary<string, DocxNumberingDef> numbering,
+        string refElementName, string? defaultFontName, string? defaultEastAsiaFontName)
+    {
+        var sectPr = body.Element(W + "sectPr");
+        if (sectPr == null) return [];
+
+        var hfRef = sectPr.Element(W + refElementName);
+        if (hfRef == null) return [];
+
+        var rId = hfRef.Attribute(R + "id")?.Value;
+        if (string.IsNullOrEmpty(rId) || !relationships.TryGetValue(rId, out var target))
+            return [];
+
+        var path = target.StartsWith("/") ? target.TrimStart('/') : "word/" + target;
+        var entry = archive.GetEntry(path);
+        if (entry == null) return [];
+
+        // Read header/footer-specific relationships for image resolution
+        var hfRelsPath = $"word/_rels/{target}.rels";
+        var hfRels = ReadPartRelationships(archive, hfRelsPath);
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var root = doc.Root;
+        if (root == null) return [];
+
+        var elements = new List<DocxElement>();
+        foreach (var child in UnwrapSdt(root.Elements()))
+        {
+            if (child.Name == W + "p")
+            {
+                var paragraph = ReadParagraph(child, styles, numbering, hfRels, archive, null, defaultFontName, defaultEastAsiaFontName);
+                if (paragraph != null)
+                    elements.Add(paragraph);
+            }
+            else if (child.Name == W + "tbl")
+            {
+                var table = ReadTable(child, styles, numbering, hfRels, archive, defaultFontName, defaultEastAsiaFontName);
+                if (table != null)
+                    elements.Add(table);
+            }
+        }
+
+        return elements;
+    }
+
     private static DocxPageLayout ParseSectionProperties(XElement sectPr)
     {
         const float twipsToPoints = 1f / 20f;
@@ -1950,8 +2009,13 @@ internal static class DocxReader
 
     private static Dictionary<string, string> ReadRelationships(ZipArchive archive)
     {
+        return ReadPartRelationships(archive, "word/_rels/document.xml.rels");
+    }
+
+    private static Dictionary<string, string> ReadPartRelationships(ZipArchive archive, string relsPath)
+    {
         var rels = new Dictionary<string, string>();
-        var entry = archive.GetEntry("word/_rels/document.xml.rels");
+        var entry = archive.GetEntry(relsPath);
         if (entry == null) return rels;
 
         using var stream = entry.Open();
@@ -2385,7 +2449,9 @@ internal sealed record DocxDocument(
     float DefaultLineSpacing = 0,
     bool DefaultLineSpacingAbsolute = false,
     string? DefaultFontName = null,
-    string? DefaultEastAsiaFontName = null
+    string? DefaultEastAsiaFontName = null,
+    List<DocxElement>? HeaderElements = null,
+    List<DocxElement>? FooterElements = null
 );
 
 /// <summary>Page layout settings from sectPr.</summary>
@@ -2541,7 +2607,8 @@ internal sealed record DocxTable(
     float CellMarginLeft = 5.4f,
     float CellMarginRight = 5.4f,
     float CellMarginTop = 0f,
-    float CellMarginBottom = 0f
+    float CellMarginBottom = 0f,
+    string Alignment = "left"
 ) : DocxElement;
 
 /// <summary>Represents a table row.</summary>

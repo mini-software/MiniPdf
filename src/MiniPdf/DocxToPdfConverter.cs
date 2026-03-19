@@ -150,6 +150,27 @@ internal static class DocxToPdfConverter
         }
 
         var state = new RenderState(pdfDoc, options);
+
+        // Adjust top margin when header content is taller than the default header area
+        if (docxDoc.HeaderElements is { Count: > 0 })
+        {
+            var headerContentHeight = EstimateElementsHeight(docxDoc.HeaderElements, options);
+            var headerAreaHeight = options.MarginTop - options.HeaderMargin;
+            if (headerContentHeight > headerAreaHeight)
+            {
+                // Preserve the original gap between header area and body content
+                options.MarginTop = options.HeaderMargin + headerContentHeight + headerAreaHeight;
+            }
+        }
+        // Adjust bottom margin when footer content is taller than the default footer area
+        if (docxDoc.FooterElements is { Count: > 0 })
+        {
+            var footerContentHeight = EstimateElementsHeight(docxDoc.FooterElements, options);
+            var footerTopFromBottom = options.FooterMargin + footerContentHeight;
+            if (footerTopFromBottom > options.MarginBottom)
+                options.MarginBottom = footerTopFromBottom;
+        }
+
         state.EnsurePage();
 
         var sectionIndex = 0;
@@ -213,7 +234,29 @@ internal static class DocxToPdfConverter
         }
 
         // Render headers and footers text on all pages
-        if (docxDoc.HeaderText != null || docxDoc.FooterText != null)
+        // When full elements are available, use them; otherwise fall back to text-only rendering.
+        var hasHeaderElements = docxDoc.HeaderElements is { Count: > 0 };
+        var hasFooterElements = docxDoc.FooterElements is { Count: > 0 };
+        if (hasHeaderElements || hasFooterElements)
+        {
+            var totalPages = pdfDoc.Pages.Count;
+            for (int pi = 0; pi < totalPages; pi++)
+            {
+                var page = pdfDoc.Pages[pi];
+                if (hasHeaderElements)
+                {
+                    var headerStartY = page.Height - options.HeaderMargin;
+                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.HeaderElements!, headerStartY);
+                }
+                if (hasFooterElements)
+                {
+                    var footerContentHeight = EstimateElementsHeight(docxDoc.FooterElements!, options);
+                    var footerStartY = options.FooterMargin + footerContentHeight;
+                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.FooterElements!, footerStartY);
+                }
+            }
+        }
+        if ((!hasHeaderElements && docxDoc.HeaderText != null) || (!hasFooterElements && docxDoc.FooterText != null))
         {
             const float headerFooterFontSize = 9f;
             var headerColor = PdfColor.FromRgb(128, 128, 128);
@@ -222,13 +265,13 @@ internal static class DocxToPdfConverter
             {
                 var page = pdfDoc.Pages[pi];
                 var usableW = page.Width - options.MarginLeft - options.MarginRight;
-                if (docxDoc.HeaderText != null)
+                if (!hasHeaderElements && docxDoc.HeaderText != null)
                 {
                     RenderHeaderFooterRuns(page, options, docxDoc.HeaderRuns, docxDoc.HeaderText,
                         pi, totalPages, headerFooterFontSize, headerColor, usableW,
                         page.Height - options.HeaderMargin);
                 }
-                if (docxDoc.FooterText != null)
+                if (!hasFooterElements && docxDoc.FooterText != null)
                 {
                     RenderHeaderFooterRuns(page, options, docxDoc.FooterRuns, docxDoc.FooterText,
                         pi, totalPages, headerFooterFontSize, headerColor, usableW,
@@ -1214,6 +1257,243 @@ internal static class DocxToPdfConverter
 
         state.CurrentPage!.AddImage(image.Data, format, x, y, width, height);
         state.AdvanceY(height + 1f); // 1pt gap after image
+    }
+
+    // ── Header/footer element rendering ─────────────────────────────────
+
+    /// <summary>
+    /// Estimates the total height of a list of elements (paragraphs + tables)
+    /// for header/footer sizing calculations.
+    /// </summary>
+    private static float EstimateElementsHeight(List<DocxElement> elements, ConversionOptions options)
+    {
+        const float emuPerPt = 914400f / 72f;
+        float totalHeight = 0;
+        foreach (var element in elements)
+        {
+            switch (element)
+            {
+                case DocxParagraph para:
+                {
+                    var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
+                    var lineHeight = fontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+                    var usableW = options.PageWidth - options.MarginLeft - options.MarginRight;
+                    foreach (var image in para.Images)
+                    {
+                        if (image.IsAnchor) continue;
+                        var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
+                        var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
+                        if (imgW > usableW) imgH *= usableW / imgW;
+                        totalHeight += imgH + 1f;
+                    }
+                    var text = string.Concat(para.Runs.Select(r => r.Text));
+                    if (!string.IsNullOrEmpty(text))
+                        totalHeight += lineHeight;
+                    else if (para.Images.Count == 0)
+                        totalHeight += lineHeight;
+                    break;
+                }
+                case DocxTable table:
+                {
+                    var usableWidth = options.PageWidth - options.MarginLeft - options.MarginRight;
+                    var colWidths = CalculateTableColumnWidths(table, usableWidth);
+                    var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
+                    var cellPaddingV = Math.Max(table.CellMarginTop, table.CellMarginBottom);
+                    foreach (var row in table.Rows)
+                    {
+                        var rowH = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options);
+                        if (row.Height > 0) rowH = Math.Max(rowH, row.Height);
+                        rowH = Math.Max(rowH, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
+                        totalHeight += rowH;
+                    }
+                    break;
+                }
+            }
+        }
+        return totalHeight;
+    }
+
+    /// <summary>
+    /// Renders header/footer elements (paragraphs + tables) directly on a page
+    /// at the specified starting Y position, flowing downward.
+    /// </summary>
+    private static void RenderHeaderFooterElementsOnPage(PdfPage page, ConversionOptions options,
+        List<DocxElement> elements, float startY)
+    {
+        const float emuPerPt = 914400f / 72f;
+        var y = startY;
+
+        foreach (var element in elements)
+        {
+            switch (element)
+            {
+                case DocxParagraph para:
+                {
+                    var usableW = options.PageWidth - options.MarginLeft - options.MarginRight;
+                    // Render inline images
+                    foreach (var image in para.Images)
+                    {
+                        if (image.IsAnchor) continue;
+                        var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
+                        var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
+                        if (imgW > usableW) { var s = usableW / imgW; imgW *= s; imgH *= s; }
+                        var imgX = para.Alignment switch
+                        {
+                            "center" => options.MarginLeft + (usableW - imgW) / 2,
+                            "right" => options.MarginLeft + usableW - imgW,
+                            _ => options.MarginLeft
+                        };
+                        var fmt = image.Extension;
+                        if (fmt == "jpg" || fmt == "png")
+                        {
+                            page.AddImage(image.Data, fmt, imgX, y - imgH, imgW, imgH);
+                            y -= imgH + 1f;
+                        }
+                    }
+                    // Render text runs
+                    var text = string.Concat(para.Runs.Select(r => r.Text));
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
+                        var firstRun = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
+                        var runFontSize = firstRun?.FontSize > 0 ? firstRun.FontSize : fontSize;
+                        var lineHeight = runFontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+                        var textWidth = EstimateTextWidth(text, runFontSize);
+                        var textX = para.Alignment switch
+                        {
+                            "center" => options.MarginLeft + (usableW - textWidth) / 2,
+                            "right" => options.MarginLeft + usableW - textWidth,
+                            _ => options.MarginLeft
+                        };
+                        y -= runFontSize;
+                        page.AddText(text, textX, y, runFontSize, firstRun?.Color ?? para.Color,
+                            bold: firstRun?.Bold ?? false, preferredFontName: firstRun?.FontName);
+                        y -= lineHeight - runFontSize;
+                    }
+                    break;
+                }
+                case DocxTable table:
+                {
+                    y = RenderHeaderFooterTable(page, options, table, y);
+                    break;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Renders a table in header/footer area directly on the page.
+    /// </summary>
+    private static float RenderHeaderFooterTable(PdfPage page, ConversionOptions options,
+        DocxTable table, float startY)
+    {
+        const float emuPerPt = 914400f / 72f;
+        var usableWidth = options.PageWidth - options.MarginLeft - options.MarginRight;
+        var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
+        var cellPaddingV = Math.Max(table.CellMarginTop, table.CellMarginBottom);
+        var colWidths = CalculateTableColumnWidths(table, usableWidth);
+        var colCount = colWidths.Length;
+
+        // Calculate table total width and center offset
+        var tableWidth = colWidths.Sum();
+        var tableOffsetX = table.Alignment switch
+        {
+            "center" => options.MarginLeft + (usableWidth - tableWidth) / 2,
+            "right" => options.MarginLeft + usableWidth - tableWidth,
+            _ => options.MarginLeft
+        };
+
+        var y = startY;
+        foreach (var row in table.Rows)
+        {
+            var rowHeight = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options);
+            if (row.Height > 0) rowHeight = Math.Max(rowHeight, row.Height);
+            rowHeight = Math.Max(rowHeight, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
+
+            var cellX = tableOffsetX;
+            var colIdx = 0;
+
+            for (var ci = 0; ci < row.Cells.Count && colIdx < colCount; ci++)
+            {
+                var cell = row.Cells[ci];
+                var cellWidth = colWidths[colIdx];
+                if (cell.GridSpan > 1)
+                    for (var s = 1; s < cell.GridSpan && colIdx + s < colCount; s++)
+                        cellWidth += colWidths[colIdx + s];
+                colIdx += cell.GridSpan;
+                if (cell.IsVMergeContinue) { cellX += cellWidth; continue; }
+
+                // Vertical alignment
+                float vAlignOffset = 0;
+                if (cell.VerticalAlignment != "top")
+                {
+                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options);
+                    var space = rowHeight - contentHeight;
+                    if (space > 0)
+                        vAlignOffset = cell.VerticalAlignment == "bottom" ? space : space / 2;
+                }
+
+                var textY = y - cellPaddingV - vAlignOffset;
+                foreach (var para in cell.Paragraphs)
+                {
+                    // Render inline images
+                    foreach (var image in para.Images)
+                    {
+                        if (image.IsAnchor) continue;
+                        var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
+                        var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
+                        var maxW = cellWidth - cellPaddingH * 2;
+                        if (imgW > maxW) { var s = maxW / imgW; imgW *= s; imgH *= s; }
+                        var fmt = image.Extension;
+                        if (fmt == "jpg" || fmt == "png")
+                        {
+                            page.AddImage(image.Data, fmt, cellX + cellPaddingH, textY - imgH, imgW, imgH);
+                            textY -= imgH + 1f;
+                        }
+                    }
+
+                    // Render text
+                    var text = string.Concat(para.Runs.Select(r => r.Text));
+                    if (string.IsNullOrEmpty(text)) continue;
+
+                    var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
+                    var firstRun = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
+                    var runFontSize = firstRun?.FontSize > 0 ? firstRun.FontSize : fontSize;
+                    var lineHeight = runFontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+                    var textWidth = cellWidth - cellPaddingH * 2;
+                    var lines = WordWrap(text, textWidth, textWidth, runFontSize, null,
+                        firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, options.UseCalibriWidths);
+
+                    foreach (var line in lines)
+                    {
+                        textY -= runFontSize;
+                        var lineTextWidth = EstimateWrapTextWidth(line, runFontSize,
+                            firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, options.UseCalibriWidths);
+                        var lineX = para.Alignment switch
+                        {
+                            "center" => cellX + cellPaddingH + (textWidth - lineTextWidth) / 2,
+                            "right" => cellX + cellPaddingH + textWidth - lineTextWidth,
+                            _ => cellX + cellPaddingH
+                        };
+
+                        float? cellMaxWidth = null;
+                        var helveticaWidth = EstimateTextWidth(line, runFontSize, firstRun?.CharSpacing ?? 0f);
+                        if (helveticaWidth > textWidth)
+                            cellMaxWidth = textWidth;
+
+                        page.AddText(line, lineX, textY, runFontSize, firstRun?.Color ?? para.Color,
+                            maxWidth: cellMaxWidth, bold: firstRun?.Bold ?? false,
+                            preferredFontName: firstRun?.FontName);
+                        textY -= lineHeight - runFontSize;
+                    }
+                }
+
+                cellX += cellWidth;
+            }
+
+            y -= rowHeight;
+        }
+        return y;
     }
 
     // ── Table rendering ─────────────────────────────────────────────────
