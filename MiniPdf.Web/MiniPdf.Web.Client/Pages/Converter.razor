@@ -257,7 +257,7 @@
                         totalRead += read;
                         if (totalBytes > 0)
                         {
-                            fontProgress = (int)(totalRead * 100 / totalBytes);
+                            fontProgress = (int)Math.Min(99, totalRead * 100 / totalBytes);
                             fontStatus = string.Format(L.T("FontDownloadProgress"), fontProgress, FormatSize(totalRead), FormatSize(totalBytes));
                         }
                         else
@@ -267,6 +267,7 @@
                         StateHasChanged();
                     }
 
+                    fontProgress = 100;
                     MiniSoftware.MiniPdf.RegisterFont("NotoSansSC", fontMs.ToArray());
                     fontLoadSuccess = true;
                     fontStatus = "✓ " + L.T("FontLoaded");
