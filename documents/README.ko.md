@@ -22,6 +22,16 @@ Office 파일을 PDF로 변환하는 최소한의 경량 .NET 라이브러리입
 
 > ⚠️ 브라우저에서 사용할 수 있는 글꼴이 제한되어 있어 렌더링 결과가 최적이 아닐 수 있습니다. 최상의 결과를 위해 로컬 환경에서 테스트해 주세요.
 
+---
+
+<div align="center">
+<p>
+  Discord : <a href="https://discord.gg/BUGRRthp" target="_blank">https://discord.gg/BUGRRthp</a>
+</p>
+</div>
+
+---
+
 ## 기능
 
 - **Excel → PDF 변환** — `.xlsx` 파일을 PDF로 변환

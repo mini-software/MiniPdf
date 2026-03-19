@@ -22,6 +22,16 @@ Office ファイルを PDF に変換するための、ミニマルで軽量な .
 
 > ⚠️ ブラウザで利用可能なフォントが限られているため、レンダリング結果が最適でない場合があります。最良の結果を得るには、ローカル環境でテストしてください。
 
+---
+
+<div align="center">
+<p>
+  Discord : <a href="https://discord.gg/BUGRRthp" target="_blank">https://discord.gg/BUGRRthp</a>
+</p>
+</div>
+
+---
+
 ## 機能
 
 - **Excel → PDF 変換** — `.xlsx` ファイルを PDF に変換

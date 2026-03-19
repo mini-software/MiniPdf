@@ -23,6 +23,16 @@ A minimal, lightweight .NET library for converting office files to PDF.
 
 > ⚠️ Due to limited fonts available in the browser, the rendering results may not be optimal. For the best experience, please test locally on your machine.
 
+---
+
+<div align="center">
+<p>
+  Discord : <a href="https://discord.gg/BUGRRthp" target="_blank">https://discord.gg/BUGRRthp</a>
+</p>
+</div>
+
+---
+
 ## Features
 
 - **Excel-to-PDF** — Convert `.xlsx` files to PDF 

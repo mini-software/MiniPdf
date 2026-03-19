@@ -22,6 +22,16 @@
 
 > ⚠️ 由於瀏覽器可用字體有限，渲染效果可能不夠理想。建議在本地電腦上測試以獲得最佳效果。
 
+---
+
+<div align="center">
+<p>
+  Discord : <a href="https://discord.gg/BUGRRthp" target="_blank">https://discord.gg/BUGRRthp</a>
+</p>
+</div>
+
+---
+
 ## 功能特色
 
 - **Excel 轉 PDF** — 將 `.xlsx` 檔案轉換為 PDF

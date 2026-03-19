@@ -22,6 +22,16 @@ Une bibliothèque .NET minimale et légère pour convertir des fichiers Office e
 
 > ⚠️ En raison des polices limitées disponibles dans le navigateur, le rendu peut ne pas être optimal. Pour de meilleurs résultats, veuillez tester localement sur votre machine.
 
+---
+
+<div align="center">
+<p>
+  Discord : <a href="https://discord.gg/BUGRRthp" target="_blank">https://discord.gg/BUGRRthp</a>
+</p>
+</div>
+
+---
+
 ## Fonctionnalités
 
 - **Excel → PDF** — Convertit les fichiers `.xlsx` en PDF
