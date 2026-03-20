@@ -1,19 +1,23 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - minipdf-api
+name: Deploy MiniPdf API to Azure
 
 on:
   push:
     branches:
       - main
+    paths:
+      - 'MiniPdf.Api/**'
+      - 'src/MiniPdf/**'
+      - '.github/workflows/main_minipdf-api.yml'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -23,11 +27,14 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      - name: Restore
+        run: dotnet restore MiniPdf.Api/MiniPdf.Api.csproj
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      - name: Build
+        run: dotnet build MiniPdf.Api/MiniPdf.Api.csproj -c Release --no-restore
+
+      - name: Publish
+        run: dotnet publish MiniPdf.Api/MiniPdf.Api.csproj -c Release --no-build -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
