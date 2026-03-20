@@ -6,6 +6,7 @@ on:
     paths:
       - 'MiniPdf.Api/**'
       - 'src/MiniPdf/**'
+      - '.github/workflows/deploy-api.yml'
   workflow_dispatch:
 
 env:
