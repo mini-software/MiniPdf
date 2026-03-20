@@ -332,7 +332,8 @@ internal static class ExcelToPdfConverter
                     printArea: sheet.PrintArea,
                     printTitleRows: sheet.PrintTitleRows,
                     rowBreaks: sheet.RowBreaks,
-                    oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt);
+                    oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt,
+                    maxDigitWidthPx: sheet.MaxDigitWidthPx);
                 scaleCellFonts = true;
             }
 
@@ -379,7 +380,8 @@ internal static class ExcelToPdfConverter
                                 fitToPage: sheet.FitToPage, fitToWidth: sheet.FitToWidth, fitToHeight: sheet.FitToHeight,
                                 horizontalCentered: sheet.HorizontalCentered, printArea: sheet.PrintArea,
                                 printTitleRows: sheet.PrintTitleRows, rowBreaks: sheet.RowBreaks,
-                                oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt);
+                                oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt,
+                                maxDigitWidthPx: sheet.MaxDigitWidthPx);
                             scaleCellFonts = true;
                         }
                         break;
@@ -558,7 +560,8 @@ internal static class ExcelToPdfConverter
                 horizontalCentered: sheet.HorizontalCentered,
                 rowBreaks: trimmedRowBreaks,
                 printTitleRows: trimmedPrintTitleRows,
-                oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt);
+                oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt,
+                maxDigitWidthPx: sheet.MaxDigitWidthPx);
         }
 
         var maxCols = sheet.Rows.Count > 0 ? sheet.Rows.Max(r => r.Count) : 0;
@@ -1077,29 +1080,33 @@ internal static class ExcelToPdfConverter
                     {
                         currentPage!.AddText(cell.AccountingPrefix, x, cellY, cellFs, cell?.Color,
                             maxWidth: titleClipWidths[i],
-                            bold: ShouldUsePdfBold(cell?.Bold ?? false, cellFs),
-                            underline: false);
+                            bold: ShouldUsePdfBold(cell?.Bold ?? false, cellFs, cell?.FontName),
+                            underline: false,
+                            preferredFontName: cell?.FontName);
                     }
 
+                    var titleIsBold = ShouldUsePdfBold(cell?.Bold ?? false, cellFs, cell?.FontName);
+                    var titleIndentOff = (cell?.Indent ?? 0) * avgCharWidth;
                     for (var lineIdx = 0; lineIdx < titleCellLines[i].Length; lineIdx++)
                     {
                         if (!string.IsNullOrEmpty(titleCellLines[i][lineIdx]))
                         {
-                            var textX = x;
+                            var textX = x + titleIndentOff;
                             if (alignment == "right")
                             {
-                                var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs);
-                                textX = x + cellWidth - tw;
+                                var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs, bold: titleIsBold);
+                                textX = x + cellWidth - tw - titleIndentOff;
                             }
                             else if (alignment == "center")
                             {
-                                var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs);
+                                var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs, bold: titleIsBold);
                                 textX = x + (cellWidth - tw) / 2f;
                             }
                             currentPage!.AddText(titleCellLines[i][lineIdx], textX, cellY, cellFs, cell?.Color,
                                 maxWidth: titleClipWidths[i],
-                                bold: ShouldUsePdfBold(cell?.Bold ?? false, cellFs),
-                                underline: cell?.Underline ?? false);
+                                bold: titleIsBold,
+                                underline: cell?.Underline ?? false,
+                                preferredFontName: cell?.FontName);
                         }
                         cellY -= lineHeight;
                     }
@@ -1453,28 +1460,32 @@ internal static class ExcelToPdfConverter
                         if (cell?.AccountingPrefix != null && linesRendered == 0 && lines.Length > 0 && !string.IsNullOrEmpty(lines[0]))
                         {
                             currentPage!.AddText(cell.AccountingPrefix, x, cellY, options.FontSize, color,
-                                bold: ShouldUsePdfBold(cell?.Bold ?? false, options.FontSize),
-                                underline: false);
+                                bold: ShouldUsePdfBold(cell?.Bold ?? false, options.FontSize, cell?.FontName),
+                                underline: false,
+                                preferredFontName: cell?.FontName);
                         }
 
+                        var mpIsBold = ShouldUsePdfBold(cell?.Bold ?? false, options.FontSize, cell?.FontName);
+                        var mpIndentOff = (cell?.Indent ?? 0) * avgCharWidth;
                         for (var lineIdx = linesRendered; lineIdx < linesRendered + linesToRender && lineIdx < lines.Length; lineIdx++)
                         {
                             if (!string.IsNullOrEmpty(lines[lineIdx]))
                             {
-                                var textX = x;
+                                var textX = x + mpIndentOff;
                                 if (mpAlignment == "right")
                                 {
-                                    var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
-                                    textX = x + mpCellWidth - tw;
+                                    var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize, bold: mpIsBold);
+                                    textX = x + mpCellWidth - tw - mpIndentOff;
                                 }
                                 else if (mpAlignment == "center")
                                 {
-                                    var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize);
+                                    var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize, bold: mpIsBold);
                                     textX = x + (mpCellWidth - tw) / 2f;
                                 }
                                 currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color,
-                                    bold: ShouldUsePdfBold(cell?.Bold ?? false, options.FontSize),
-                                    underline: cell?.Underline ?? false);
+                                    bold: mpIsBold,
+                                    underline: cell?.Underline ?? false,
+                                    preferredFontName: cell?.FontName);
                             }
                             cellY -= lineHeight;
                         }
@@ -1689,29 +1700,33 @@ internal static class ExcelToPdfConverter
                 {
                     currentPage!.AddText(cell.AccountingPrefix, x, cellY, cellFontSize, color,
                         maxWidth: cellClipWidth[i],
-                        bold: ShouldUsePdfBold(cell.Bold, cellFontSize),
-                        underline: false);
+                        bold: ShouldUsePdfBold(cell.Bold, cellFontSize, cell.FontName),
+                        underline: false,
+                        preferredFontName: cell.FontName);
                 }
 
+                var isBold = ShouldUsePdfBold(cell?.Bold ?? false, cellFontSize, cell?.FontName);
+                var indentOff = (cell?.Indent ?? 0) * avgCharWidth;
                 for (var lineIdx = 0; lineIdx < lines.Length; lineIdx++)
                 {
                     if (!string.IsNullOrEmpty(lines[lineIdx]))
                     {
-                        var textX = x;
+                        var textX = x + indentOff;
                         if (alignment == "right")
                         {
-                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
-                            textX = x + cellWidth - textWidth;
+                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize, bold: isBold);
+                            textX = x + cellWidth - textWidth - indentOff;
                         }
                         else if (alignment == "center")
                         {
-                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize);
+                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize, bold: isBold);
                             textX = x + (cellWidth - textWidth) / 2f;
                         }
                         currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color,
                             maxWidth: cellClipWidth[i],
-                            bold: ShouldUsePdfBold(cell?.Bold ?? false, cellFontSize),
-                            underline: cell?.Underline ?? false);
+                            bold: isBold,
+                            underline: cell?.Underline ?? false,
+                            preferredFontName: cell?.FontName);
                     }
                     cellY -= lineHeight;
                 }
@@ -3002,6 +3017,30 @@ internal static class ExcelToPdfConverter
         _ => IsFullWidthChar(ch) ? 1000 : 556
     };
 
+    /// <summary>Returns Helvetica-Bold character width in 1/1000 em units.</summary>
+    private static int HelveticaBoldCharWidth(char ch) => ch switch
+    {
+        ' ' => 278, '!' => 333, '"' => 474, '#' => 556, '$' => 556, '%' => 889,
+        '&' => 722, '\'' => 238, '(' => 333, ')' => 333, '*' => 389, '+' => 584,
+        ',' => 278, '-' => 333, '.' => 278, '/' => 278,
+        >= '0' and <= '9' => 556,
+        ':' => 333, ';' => 333, '<' => 584, '=' => 584, '>' => 584, '?' => 611,
+        '@' => 975,
+        'A' => 722, 'B' => 722, 'C' => 722, 'D' => 722, 'E' => 667, 'F' => 611,
+        'G' => 778, 'H' => 722, 'I' => 278, 'J' => 556, 'K' => 722, 'L' => 611,
+        'M' => 833, 'N' => 722, 'O' => 778, 'P' => 667, 'Q' => 778, 'R' => 722,
+        'S' => 667, 'T' => 611, 'U' => 722, 'V' => 667, 'W' => 944, 'X' => 667,
+        'Y' => 667, 'Z' => 611,
+        '[' => 333, '\\' => 278, ']' => 333, '^' => 584, '_' => 556, '`' => 333,
+        'a' => 556, 'b' => 611, 'c' => 556, 'd' => 611, 'e' => 556, 'f' => 333,
+        'g' => 611, 'h' => 611, 'i' => 278, 'j' => 278, 'k' => 556, 'l' => 278,
+        'm' => 889, 'n' => 611, 'o' => 611, 'p' => 611, 'q' => 611, 'r' => 389,
+        's' => 556, 't' => 333, 'u' => 611, 'v' => 556, 'w' => 778, 'x' => 556,
+        'y' => 556, 'z' => 500,
+        '{' => 389, '|' => 280, '}' => 389, '~' => 584,
+        _ => IsFullWidthChar(ch) ? 1000 : 556
+    };
+
     /// <summary>Calibri-to-Helvetica scale factor used by truncation and fitting functions.</summary>
     private const double CalibriFittingScale = 0.85;
 
@@ -3029,10 +3068,24 @@ internal static class ExcelToPdfConverter
         return false;
     }
 
-    private static bool ShouldUsePdfBold(bool requestedBold, float fontSize)
+    private static bool ShouldUsePdfBold(bool requestedBold, float fontSize, string? fontName = null)
     {
         if (!requestedBold)
             return false;
+
+        // When the original font name already contains a weight keyword
+        // (e.g. "Franklin Gothic Medium", "Arial Black"), the bold attribute
+        // in the spreadsheet merely selects that weight – it does not mean
+        // the text should be rendered with Helvetica-Bold.  Suppress PDF bold
+        // so that the fallback Helvetica matches the visual weight of the
+        // original font more closely.
+        if (!string.IsNullOrEmpty(fontName))
+        {
+            var fn = fontName.ToUpperInvariant();
+            if (fn.Contains("MEDIUM") || fn.Contains("SEMIBOLD") || fn.Contains("DEMIBOLD") ||
+                fn.Contains("BLACK") || fn.Contains("HEAVY") || fn.Contains("LIGHT") || fn.Contains("THIN"))
+                return false;
+        }
 
         // Built-in Helvetica-Bold appears heavier than spreadsheet renderer output
         // for very large headings, so keep large titles in regular weight.
@@ -3054,11 +3107,11 @@ internal static class ExcelToPdfConverter
     /// Measures text width more precisely using Helvetica character widths (in 1/1000 em units).
     /// Used for column-width-aware number formatting.
     /// </summary>
-    private static double MeasureHelveticaWidth(string text, double fontSize)
+    private static double MeasureHelveticaWidth(string text, double fontSize, bool bold = false)
     {
         double total = 0;
         foreach (var ch in text)
-            total += HelveticaCharWidth(ch);
+            total += bold ? HelveticaBoldCharWidth(ch) : HelveticaCharWidth(ch);
         return total * fontSize / 1000.0;
     }
 
@@ -3144,11 +3197,11 @@ internal static class ExcelToPdfConverter
         for (var c = startCol; c <= endCol; c++)
         {
             if (sheet.ColumnWidths.TryGetValue(c, out var ew))
-                total += ew > 0 ? ew * 5.5334f + 0.3232f : 0f;
+                total += ew > 0 ? sheet.CharUnitsToPointsScaled(ew) : 0f;
             else
             {
                 var charUnits = sheet.DefaultColumnWidth > 0f ? sheet.DefaultColumnWidth : 8.43f;
-                total += ExcelSheet.CharUnitsToPoints(charUnits);
+                total += sheet.CharUnitsToPointsDefaultScaled(charUnits);
             }
         }
         return total;
@@ -3200,8 +3253,8 @@ internal static class ExcelToPdfConverter
                     continue;
                 }
                 var excelPts = hasExplicitWidth
-                    ? charUnits * 5.5334f + 0.3232f  // affine model for explicit widths
-                    : ExcelSheet.CharUnitsToPoints(charUnits);
+                    ? sheet.CharUnitsToPointsScaled(charUnits)
+                    : sheet.CharUnitsToPointsDefaultScaled(charUnits);
                 // When the spreadsheet explicitly sets a narrow column width,
                 // honour it (spacer columns etc.).  Only apply minColWidth for
                 // columns using the default/fallback width.

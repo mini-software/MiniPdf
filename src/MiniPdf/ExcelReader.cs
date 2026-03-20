@@ -24,12 +24,14 @@ internal static class ExcelReader
 
         // Read theme colors and styles
         var themeColors = ReadThemeColors(archive);
+        var normalFontFamily = ReadNormalFontFamily(archive);
+        var maxDigitWidthPx = ExcelSheet.LookupMaxDigitWidthPx(normalFontFamily);
         var fontStyles = ReadFontStyles(archive, themeColors);
         var fillColors = ReadFillColors(archive, themeColors);
         var borders = ReadBorders(archive, themeColors);
         var numberFormats = ReadNumberFormats(archive);
         var dxfStyles = ReadDxfStyles(archive);
-        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts) = ReadCellXfStyles(archive);
+        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents) = ReadCellXfStyles(archive);
 
         // Read workbook to get sheet names and order
         var (sheetInfos, printAreas, printTitleRows) = ReadWorkbook(archive);
@@ -52,7 +54,7 @@ internal static class ExcelReader
 
             if (entry == null) continue;
 
-            var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts);
+            var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
             var images = ReadSheetImages(archive, info.SheetId);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
@@ -61,7 +63,7 @@ internal static class ExcelReader
             var pageSetup = ReadPageSetup(entry);
             printAreas.TryGetValue(currentIndex, out var printArea);
             printTitleRows.TryGetValue(currentIndex, out var printTitleRow);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: printTitleRow != default ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt));
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: printTitleRow != default ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt, maxDigitWidthPx: maxDigitWidthPx));
             sheetEntries.Add(entry);
         }
 
@@ -71,13 +73,13 @@ internal static class ExcelReader
             var entry = archive.GetEntry("xl/worksheets/sheet1.xml");
             if (entry != null)
             {
-                var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts);
+                var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
                 var images = ReadSheetImages(archive, 1);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
                 var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
                 var pageSetup = ReadPageSetup(entry);
-                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered));
+                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, maxDigitWidthPx: maxDigitWidthPx));
             }
         }
 
@@ -224,12 +226,18 @@ internal static class ExcelReader
                     fontSize = sz;
             }
 
+            // Read font name
+            string? fontName = null;
+            var nameEl = font.Element(ns + "name");
+            if (nameEl != null)
+                fontName = nameEl.Attribute("val")?.Value;
+
             // Read bold / italic / underline
             var bold = font.Element(ns + "b") != null;
             var italic = font.Element(ns + "i") != null;
             var underline = font.Element(ns + "u") != null;
 
-            styles.Add(new FontStyleInfo(color, fontSize, bold, italic, underline));
+            styles.Add(new FontStyleInfo(color, fontSize, bold, italic, underline, fontName));
         }
 
         return styles;
@@ -415,7 +423,7 @@ internal static class ExcelReader
     /// Reads cellXf style entries from styles.xml.
     /// Returns (fontIndices, fillIndices, numFmtIds) parallel lists.
     /// </summary>
-    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds, List<string> Alignments, List<string> VerticalAlignments, List<int> BorderIndices, List<bool> WrapTexts) ReadCellXfStyles(ZipArchive archive)
+    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds, List<string> Alignments, List<string> VerticalAlignments, List<int> BorderIndices, List<bool> WrapTexts, List<int> Indents) ReadCellXfStyles(ZipArchive archive)
     {
         var fontIndices = new List<int>();
         var fillIndices = new List<int>();
@@ -424,8 +432,9 @@ internal static class ExcelReader
         var verticalAlignments = new List<string>();
         var borderIndices = new List<int>();
         var wrapTexts = new List<bool>();
+        var indents = new List<int>();
         var entry = archive.GetEntry("xl/styles.xml");
-        if (entry == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts);
+        if (entry == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts, indents);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -433,7 +442,7 @@ internal static class ExcelReader
 
         // Read <cellXfs> -> <xf> elements
         var cellXfs = doc.Descendants(ns + "cellXfs").FirstOrDefault();
-        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts);
+        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts, indents);
 
         foreach (var xf in cellXfs.Elements(ns + "xf"))
         {
@@ -457,9 +466,12 @@ internal static class ExcelReader
 
             var wrapTextAttr = xf.Element(ns + "alignment")?.Attribute("wrapText")?.Value;
             wrapTexts.Add(wrapTextAttr == "1" || string.Equals(wrapTextAttr, "true", StringComparison.OrdinalIgnoreCase));
+
+            var indentAttr = xf.Element(ns + "alignment")?.Attribute("indent")?.Value;
+            indents.Add(int.TryParse(indentAttr, out var ind) ? ind : 0);
         }
 
-        return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts);
+        return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts, indents);
     }
 
     /// <summary>
@@ -633,6 +645,42 @@ internal static class ExcelReader
         if (t < 1f / 2f) return q;
         if (t < 2f / 3f) return p + (q - p) * (2f / 3f - t) * 6f;
         return p;
+    }
+
+    /// <summary>
+    /// Reads the minor (body/normal) font family name from the workbook theme.
+    /// Falls back to the first font in styles.xml if the theme is unavailable.
+    /// </summary>
+    private static string? ReadNormalFontFamily(ZipArchive archive)
+    {
+        // Try theme first — the minor font is the "body" / normal style font
+        var themeEntry = archive.GetEntry("xl/theme/theme1.xml");
+        if (themeEntry != null)
+        {
+            using var ts = themeEntry.Open();
+            var tdoc = XDocument.Load(ts);
+            var ans = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/main");
+            var minorFont = tdoc.Descendants(ans + "minorFont").FirstOrDefault();
+            var latin = minorFont?.Element(ans + "latin");
+            var typeface = latin?.Attribute("typeface")?.Value;
+            if (!string.IsNullOrWhiteSpace(typeface))
+                return typeface;
+        }
+
+        // Fallback: first <font> in styles.xml (index 0 = normal style in most workbooks)
+        var stylesEntry = archive.GetEntry("xl/styles.xml");
+        if (stylesEntry != null)
+        {
+            using var ss = stylesEntry.Open();
+            var sdoc = XDocument.Load(ss);
+            var sNs = sdoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+            var firstFont = sdoc.Descendants(sNs + "font").FirstOrDefault();
+            var name = firstFont?.Element(sNs + "name")?.Attribute("val")?.Value;
+            if (!string.IsNullOrWhiteSpace(name))
+                return name;
+        }
+
+        return null;
     }
 
     private static List<PdfColor> ReadThemeColors(ZipArchive archive)
@@ -1045,7 +1093,7 @@ internal static class ExcelReader
 
     private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings,
         List<FontStyleInfo> fontStyles, List<PdfColor?> fillColors, List<CellBorderInfo?> borders, Dictionary<int, string> numberFormats,
-        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts)
+        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts, List<int> cellXfIndents)
     {
         var rows = new List<List<ExcelCell>>();
 
@@ -1073,6 +1121,25 @@ internal static class ExcelReader
 
         var lastRowNumber = 0;
 
+        // Build column-level default fill map (1-based column index → fillColor)
+        // Cells without an explicit 's' attribute inherit the fill from their column's default style.
+        var colDefaultFill = new Dictionary<int, PdfColor?>(); // 1-based column
+        var colsEl = doc.Descendants(ns + "cols").FirstOrDefault();
+        if (colsEl != null)
+        {
+            foreach (var col in colsEl.Elements(ns + "col"))
+            {
+                var colStyleAttr = col.Attribute("style")?.Value;
+                if (!int.TryParse(colStyleAttr, out var colStyleIdx) || colStyleIdx <= 0) continue;
+                var colFill = ResolveFillColor(colStyleIdx, fillColors, cellXfFillIndices);
+                if (colFill == null) continue;
+                if (!int.TryParse(col.Attribute("min")?.Value, out var minCol)) continue;
+                if (!int.TryParse(col.Attribute("max")?.Value, out var maxCol)) continue;
+                for (int ci = minCol; ci <= maxCol && ci <= 16384; ci++)
+                    colDefaultFill[ci] = colFill;
+            }
+        }
+
         foreach (var row in doc.Descendants(ns + "row"))
         {
             // Parse the row number to detect gaps (sparse rows)
@@ -1092,6 +1159,16 @@ internal static class ExcelReader
                 lastRowNumber++;
             }
 
+            // Row-level default fill: applied to cells without an explicit style.
+            PdfColor? rowDefaultFill = null;
+            var rowCustomFormat = row.Attribute("customFormat")?.Value;
+            if (rowCustomFormat == "1")
+            {
+                var rowStyleAttr = row.Attribute("s")?.Value;
+                if (int.TryParse(rowStyleAttr, out var rowStyleIdx) && rowStyleIdx > 0)
+                    rowDefaultFill = ResolveFillColor(rowStyleIdx, fillColors, cellXfFillIndices);
+            }
+
             var cells = new List<ExcelCell>();
             var lastColIndex = 0;
 
@@ -1101,10 +1178,13 @@ internal static class ExcelReader
                 var reference = cell.Attribute("r")?.Value ?? "";
                 var colIndex = ParseColumnIndex(reference);
 
-                // Fill empty cells for gaps
+                // Fill empty cells for gaps, applying row/column default fills if applicable.
                 while (lastColIndex < colIndex)
                 {
-                    cells.Add(new ExcelCell(string.Empty, null, null));
+                    PdfColor? gapFill = rowDefaultFill;
+                    if (gapFill == null && colDefaultFill.TryGetValue(lastColIndex + 1, out var gapColFill))
+                        gapFill = gapColFill;
+                    cells.Add(new ExcelCell(string.Empty, null, gapFill));
                     lastColIndex++;
                 }
 
@@ -1149,6 +1229,8 @@ internal static class ExcelReader
                 bool underline = false;
                 CellBorderInfo? border = null;
                 bool wrapText = false;
+                string? fontName = null;
+                int cellIndent = 0;
                 if (int.TryParse(styleAttr, out var styleIndex))
                 {
                     var fontStyle = ResolveFontStyle(styleIndex, fontStyles, cellXfFontIndices);
@@ -1157,6 +1239,7 @@ internal static class ExcelReader
                     bold = fontStyle.Bold;
                     italic = fontStyle.Italic;
                     underline = fontStyle.Underline;
+                    fontName = fontStyle.FontName;
                     fillColor = ResolveFillColor(styleIndex, fillColors, cellXfFillIndices);
                     border = ResolveBorder(styleIndex, borders, cellXfBorderIndices);
                     if (styleIndex >= 0 && styleIndex < cellXfNumFmtIds.Count)
@@ -1167,6 +1250,17 @@ internal static class ExcelReader
                         cellVerticalAlignment = cellXfVerticalAlignments[styleIndex];
                     if (styleIndex >= 0 && styleIndex < cellXfWrapTexts.Count)
                         wrapText = cellXfWrapTexts[styleIndex];
+                    if (styleIndex >= 0 && styleIndex < cellXfIndents.Count)
+                        cellIndent = cellXfIndents[styleIndex];
+                }
+                else
+                {
+                    // Apply fill from row-level or column-level default style when cell has no explicit style.
+                    // Priority: row default > column default.
+                    if (rowDefaultFill != null)
+                        fillColor = rowDefaultFill;
+                    else if (colDefaultFill.TryGetValue(colIndex, out var colFill))
+                        fillColor = colFill;
                 }
 
                 string text;
@@ -1224,7 +1318,7 @@ internal static class ExcelReader
                     underline = true;
                 }
 
-                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, border, cellVerticalAlignment, wrapText, acctPrefix));
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent));
                 lastColIndex = colIndex + 1;
             }
 
@@ -2983,7 +3077,7 @@ internal static class ExcelReader
 /// <summary>
 /// Represents font styling information for a cell.
 /// </summary>
-internal sealed record FontStyleInfo(PdfColor? Color, float Size = 11f, bool Bold = false, bool Italic = false, bool Underline = false);
+internal sealed record FontStyleInfo(PdfColor? Color, float Size = 11f, bool Bold = false, bool Italic = false, bool Underline = false, string? FontName = null);
 
 /// <summary>
 /// Represents border styling for one side of a cell.
@@ -3010,7 +3104,9 @@ internal sealed record ExcelCell(
     CellBorderInfo? Border = null,
     string VerticalAlignment = "bottom",
     bool WrapText = false,
-    string? AccountingPrefix = null
+    string? AccountingPrefix = null,
+    string? FontName = null,
+    int Indent = 0
 );
 
 /// <summary>
@@ -3125,10 +3221,31 @@ internal sealed class ExcelSheet
     /// <summary>Footer margin in points (distance from page bottom edge to footer text).</summary>
     public float FooterMarginPt { get; }
 
+    /// <summary>Maximum digit width in pixels (96 DPI) for the workbook's normal font.
+    /// Used by the ECMA-376-based column width conversion. Default matches Calibri.</summary>
+    public float MaxDigitWidthPx { get; }
+
     /// <summary>Converts Excel character-unit column width to PDF points.</summary>
     public static float CharUnitsToPoints(float charUnits)
         // Calibrated against LibreOffice reference PDFs: 8.43 char-units → 47.4pt
         => charUnits * 5.62f;
+
+    /// <summary>Font-aware char-to-point conversion that scales the calibrated
+    /// factor by the ratio of the workbook font's max digit width to Calibri's.</summary>
+    public float CharUnitsToPointsScaled(float charUnits)
+    {
+        const float calibrationMdw = 7.378f; // mdw implied by the 5.5334 calibration factor
+        var ratio = MaxDigitWidthPx / calibrationMdw;
+        return charUnits * 5.5334f * ratio + 0.3232f * ratio;
+    }
+
+    /// <summary>Font-aware default column width conversion.</summary>
+    public float CharUnitsToPointsDefaultScaled(float charUnits)
+    {
+        const float calibrationMdw = 7.378f;
+        var ratio = MaxDigitWidthPx / calibrationMdw;
+        return charUnits * 5.62f * ratio;
+    }
 
     internal ExcelSheet(string name, List<List<ExcelCell>> rows,
         List<ExcelEmbeddedImage>? images = null,
@@ -3151,7 +3268,8 @@ internal sealed class ExcelSheet
         (int StartRow, int EndRow)? printTitleRows = null,
         HashSet<int>? rowBreaks = null,
         string? oddFooter = null,
-        float footerMarginPt = -1)
+        float footerMarginPt = -1,
+        float maxDigitWidthPx = 7.378f)
     {
         Name = name;
         Rows = rows;
@@ -3179,5 +3297,29 @@ internal sealed class ExcelSheet
         RowBreaks = rowBreaks ?? new HashSet<int>();
         OddFooter = oddFooter;
         FooterMarginPt = footerMarginPt;
+        MaxDigitWidthPx = maxDigitWidthPx;
+    }
+
+    /// <summary>
+    /// Looks up the max digit width (pixels at 96 DPI, 11pt) for common fonts.
+    /// Returns the calibration default for unknown fonts so existing behaviour is preserved.
+    /// </summary>
+    internal static float LookupMaxDigitWidthPx(string? fontName)
+    {
+        if (string.IsNullOrWhiteSpace(fontName)) return 7.378f;
+        return fontName.Trim().ToLowerInvariant() switch
+        {
+            "franklin gothic medium" => 8.5f,
+            "franklin gothic book" => 8.2f,
+            "georgia" => 7.8f,
+            "verdana" => 8.3f,
+            "trebuchet ms" => 7.6f,
+            "tahoma" => 8.0f,
+            "garamond" => 6.8f,
+            "corbel" => 7.6f,
+            "times new roman" => 6.8f,
+            "consolas" or "courier new" => 7.3f,
+            _ => 7.378f, // Calibri / Arial / Aptos and other common fonts
+        };
     }
 }
