@@ -1,24 +1,61 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-18T09:31:54.083298
+Generated: 2026-03-20T01:16:49.587590
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
-| 1 | 🟡 payroll-calculator_f | 0.9149 | 0.765 | 27/27 | **0.872** |
-| 2 | 🟢 Academic Achievement Summary Table | 0.8703 | 0.8975 | 2/2 | **0.9071** |
-| 3 | 🟢 AcademicAchievement_temp | 0.8703 | 0.9515 | 2/2 | **0.9287** |
+| 1 | 🟢 Academic Achievement Summary Table | 0.9347 | 0.9436 | 2/2 | **0.9513** |
+| 2 | 🟢 AcademicAchievement_temp | 0.9347 | 0.9436 | 2/2 | **0.9513** |
+| 3 | 🟢 Expense report basic1 | 0.9889 | 0.893 | 1/1 | **0.9528** |
+| 4 | 🟡 payroll-calculator_f | 0.6588 | 0.8848 | 27/27 | **0.8174** |
+| 5 | 🟢 PO_anonymized | 0.9625 | 0.9154 | 8/8 | **0.9512** |
+| 6 | 🟢 Simple invoice1 | 0.9535 | 0.8331 | 1/1 | **0.9146** |
+| 7 | 🟢 Small business cash flow forecast1 | 0.9473 | 0.8185 | 5/5 | **0.9063** |
+| 8 | 🔴 Wedding_timeline_planner1_copy | 0.2616 | 0.7194 | 4/5 | **0.4924** |
 
-**Average Overall Score: 0.9026**
+**Average Overall Score: 0.8672**
 
 ## Visual Comparison
 
 <table>
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
+  <td><b>Academic Achievement Summary Table</b></td>
+  <td colspan="1">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 95.1%</td>
+</tr>
+<tr>
+  <td><img src="images/Academic Achievement Summary Table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Academic Achievement Summary Table_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Academic Achievement Summary Table_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Academic Achievement Summary Table_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>AcademicAchievement_temp</b></td>
+  <td colspan="1">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 95.1%</td>
+</tr>
+<tr>
+  <td><img src="images/AcademicAchievement_temp_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/AcademicAchievement_temp_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/AcademicAchievement_temp_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/AcademicAchievement_temp_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Expense report basic1</b></td>
+  <td colspan="1">Expense report basic1 <span style="color:#3fb950">⬤</span> 95.3%</td>
+</tr>
+<tr>
+  <td><img src="images/Expense report basic1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Expense report basic1_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><b>payroll-calculator_f</b></td>
-  <td colspan="1">payroll-calculator_f <span style="color:#d29922">⬤</span> 87.2%</td>
+  <td colspan="1">payroll-calculator_f <span style="color:#d29922">⬤</span> 81.7%</td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -129,60 +166,412 @@ Generated: 2026-03-18T09:31:54.083298
   <td><img src="images/payroll-calculator_f_p27_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Academic Achievement Summary Table</b></td>
-  <td colspan="1">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 90.7%</td>
+  <td><b>PO_anonymized</b></td>
+  <td colspan="1">PO_anonymized <span style="color:#3fb950">⬤</span> 95.1%</td>
 </tr>
 <tr>
-  <td><img src="images/Academic Achievement Summary Table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Academic Achievement Summary Table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/PO_anonymized_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/PO_anonymized_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/Academic Achievement Summary Table_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Academic Achievement Summary Table_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/PO_anonymized_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/PO_anonymized_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>AcademicAchievement_temp</b></td>
-  <td colspan="1">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 92.9%</td>
+  <td><img src="images/PO_anonymized_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/PO_anonymized_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/AcademicAchievement_temp_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/AcademicAchievement_temp_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/PO_anonymized_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/PO_anonymized_p4_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/AcademicAchievement_temp_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/AcademicAchievement_temp_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/PO_anonymized_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/PO_anonymized_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/PO_anonymized_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/PO_anonymized_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/PO_anonymized_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/PO_anonymized_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/PO_anonymized_p8_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/PO_anonymized_p8_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Simple invoice1</b></td>
+  <td colspan="1">Simple invoice1 <span style="color:#3fb950">⬤</span> 91.5%</td>
+</tr>
+<tr>
+  <td><img src="images/Simple invoice1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Simple invoice1_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Small business cash flow forecast1</b></td>
+  <td colspan="1">Small business cash flow forecast1 <span style="color:#3fb950">⬤</span> 90.6%</td>
+</tr>
+<tr>
+  <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Small business cash flow forecast1_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Small business cash flow forecast1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Small business cash flow forecast1_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Small business cash flow forecast1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Small business cash flow forecast1_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Small business cash flow forecast1_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Small business cash flow forecast1_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Small business cash flow forecast1_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Small business cash flow forecast1_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Wedding_timeline_planner1_copy</b></td>
+  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#f85149">⬤</span> 49.2%</td>
+</tr>
+<tr>
+  <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Wedding_timeline_planner1_copy_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Wedding_timeline_planner1_copy_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Wedding_timeline_planner1_copy_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p5_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
 ## Detailed Results
 
+### Academic Achievement Summary Table
+
+- **Text Similarity:** 0.9347
+- **Visual Average:** 0.9436
+- **Overall Score:** 0.9513
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=252001 bytes, Reference=168612 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Academic Achievement Summary Table.pdf
++++ reference/Academic Achievement Summary Table.pdf
+@@ -1,11 +1,11 @@
+ 附件3
+
+-学术业绩汇总表
+
++学 术业绩汇总 表
+
+ 报考岗位： 报考岗位代码： 考生姓名：
+
+ 博士论文题目： 博士论文研究方向：
+
+-公开发表的主要论文情况
+
+-角色 转载刊物、转载字数及转载 是否为代表作
+
++公开 发 表的主要 论 文情况
+
++角色 转载刊物、转载字数及 是否为代表作
+
+ 序号 题目 刊物名称 核心期刊情况 刊号 发表时间
+
+-（排名） 时间等 （指定1篇）
+
++（排名） 转载时间等 （指定1篇）
+
+ 1
+
+ 2
+
+ 3
+
+@@ -19,19 +19,19 @@
+ 11
+
+ 12
+
+ ---PAGE---
+
+-公开出版的主要专（译）著、教材情况
+
+-角色 全书文字 本人写作 转载刊物、转载字数及转载
+
++公开出版的主要 专译 （ ）著、教材情况
+
++角色 全书文 本人写 转载刊物、转载字数及
+
+ 序号 题目 出版社名称 出版号 出版时间 备注
+
+-（排名） 数 量 时间等
+
++（排名） 字数 作量 转载时间等
+
+ 1
+
+ 2
+
+-获批的决策咨询报告情况
+
++获 批的决策咨 询报 告情况
+
+ 序号 题目 批示领导级别 获批时间 角色（排名） 备注
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+-承担的主要科研课题情况
+
++承担的主要科研 课题 情况
+
+ 项目
+
+ 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注
+
+ 级别
+
+@@ -39,9 +39,9 @@
+ 2
+
+ 3
+
+ 4
+
+-本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
+
+-报名人员签名：
+
++本人承 诺 以上情况属 实 ，并有相 应证 明。如有不 实 之 处 ，愿意承担相 应责 任。
+
++报 名人 员签 名：
+
+ 日期：    年   月   日
+
+-填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。
+
+-2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所
+
+-“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。
++填表 说 明： 1. 请 将各 类 学 术 成果按等 级层 、 次及水平自高到低 顺 序填写。不加行、减行，不加 页 、减 页 ，本表采用 A4正反面打印。
+
++2.核心期刊是指北京大学 图书馆 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 扩 展版、集刊）、中国科学技 术 信息研究所
+
++“中国科技 论 文 统计 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 录 的期刊要求 进 入所在学科 领 域 Q1、Q2。
+```
+</details>
+
+### AcademicAchievement_temp
+
+- **Text Similarity:** 0.9347
+- **Visual Average:** 0.9436
+- **Overall Score:** 0.9513
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=252001 bytes, Reference=168612 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/AcademicAchievement_temp.pdf
++++ reference/AcademicAchievement_temp.pdf
+@@ -1,11 +1,11 @@
+ 附件3
+
+-学术业绩汇总表
+
++学 术业绩汇总 表
+
+ 报考岗位： 报考岗位代码： 考生姓名：
+
+ 博士论文题目： 博士论文研究方向：
+
+-公开发表的主要论文情况
+
+-角色 转载刊物、转载字数及转载 是否为代表作
+
++公开 发 表的主要 论 文情况
+
++角色 转载刊物、转载字数及 是否为代表作
+
+ 序号 题目 刊物名称 核心期刊情况 刊号 发表时间
+
+-（排名） 时间等 （指定1篇）
+
++（排名） 转载时间等 （指定1篇）
+
+ 1
+
+ 2
+
+ 3
+
+@@ -19,19 +19,19 @@
+ 11
+
+ 12
+
+ ---PAGE---
+
+-公开出版的主要专（译）著、教材情况
+
+-角色 全书文字 本人写作 转载刊物、转载字数及转载
+
++公开出版的主要 专译 （ ）著、教材情况
+
++角色 全书文 本人写 转载刊物、转载字数及
+
+ 序号 题目 出版社名称 出版号 出版时间 备注
+
+-（排名） 数 量 时间等
+
++（排名） 字数 作量 转载时间等
+
+ 1
+
+ 2
+
+-获批的决策咨询报告情况
+
++获 批的决策咨 询报 告情况
+
+ 序号 题目 批示领导级别 获批时间 角色（排名） 备注
+
+ 1
+
+ 2
+
+ 3
+
+ 4
+
+-承担的主要科研课题情况
+
++承担的主要科研 课题 情况
+
+ 项目
+
+ 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注
+
+ 级别
+
+@@ -39,9 +39,9 @@
+ 2
+
+ 3
+
+ 4
+
+-本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
+
+-报名人员签名：
+
++本人承 诺 以上情况属 实 ，并有相 应证 明。如有不 实 之 处 ，愿意承担相 应责 任。
+
++报 名人 员签 名：
+
+ 日期：    年   月   日
+
+-填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。
+
+-2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所
+
+-“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。
++填表 说 明： 1. 请 将各 类 学 术 成果按等 级层 、 次及水平自高到低 顺 序填写。不加行、减行，不加 页 、减 页 ，本表采用 A4正反面打印。
+
++2.核心期刊是指北京大学 图书馆 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 扩 展版、集刊）、中国科学技 术 信息研究所
+
++“中国科技 论 文 统计 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 录 的期刊要求 进 入所在学科 领 域 Q1、Q2。
+```
+</details>
+
+### Expense report basic1
+
+- **Text Similarity:** 0.9889
+- **Visual Average:** 0.893
+- **Overall Score:** 0.9528
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=62053 bytes, Reference=40991 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Expense report basic1.pdf
++++ reference/Expense report basic1.pdf
+@@ -17,7 +17,6 @@
+ $0.00
+
+ Total $111.00 $250.00 $60.00 $50.00 $0.00 $300.00 $25.00 $796.00
+
+ Subtotal $796.00
+
+-Advances $0.00
+
+-APPROVED
+
++APPROVED Advances $0.00
+
+ NOTES
+
+ Total $796.00
+```
+</details>
+
 ### payroll-calculator_f
 
-- **Text Similarity:** 0.9149
-- **Visual Average:** 0.765
-- **Overall Score:** 0.872
+- **Text Similarity:** 0.6588
+- **Visual Average:** 0.8848
+- **Overall Score:** 0.8174
 - **Pages:** MiniPdf=27, Reference=27
-- **File Size:** MiniPdf=6468787 bytes, Reference=540676 bytes
+- **File Size:** MiniPdf=2749496 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/payroll-calculator_f.pdf
 +++ reference/payroll-calculator_f.pdf
-@@ -1,61 +1,87 @@
+@@ -1,119 +1,155 @@
  Employee Register
 
--Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
+-Info rmation contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
 
--Annual Regular Overtime Exempt Pay Federal Additional Amount to Withhold Step 2
+-Annual Regula r Overtime Exempt Pa y Federal Additional Amount to Withhold
 
--ID Employee's Name M/F Hire Date Occupation W-4 Form Filing Status Filing Status
+-I D Employee's Name M/F Hire Date Occupation W-4 Form Filing Status Filing Status Ste p 2
 
--Salary Hourly Hourly from Frequency Allowance (With every paycheck)
+-Sala ry Hourly Hourly f rom Frequency Allowance ( With every paycheck)
 
--($) Rate ($) Rate ($) Overtime ($)
+-( $) Rate ( $) Rate ( $) Overtime ( $)
 
 -Box in (c)
+
+-1 Adam Jones M 15- Feb-13 Senio r Accountant 42,000.00 20 .19 30 .29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
+
+-2 Nichola Brown F 2 8-Sep-11CR Manager 5 4,481.00 26 .19 3 9.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
+
+-3 Benny Erwin M 11- May-11 Applications PM 48,785.00 23 .45 35 .18 No Monthly W-4 (before 2020) Married 4
 
 +Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing St
 
@@ -202,29 +591,51 @@ Generated: 2026-03-18T09:31:54.083298
 
 +($)
 
- 1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
++1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
 
- 2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
++2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
 
- 3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4
++3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4
 
  When adding more rows, insert new rows above this one
 
 ----PAGE---
 
--Pre-Tax Adjustments Post-Tax Adjustments Post-Tax Deductions
+-P re-Tax Adjustments Po st-Tax Adjustments Po st-Tax Deductions
 
--Step 3 Step 4 Tax Deferral Plan (401k) Health Insurance Premiums Other Withholdings Exempt from State Local Insurance Other Deductions Social
+-Ta x Deferral Plan (401k) Health Insurance Premiums Other Withholdings Exempt from State Local In surance Other Deductions Social
 
--Address
+-Ste p 3 Ste p 4 Address
 
--(%) ($) ($) FICA Tax Tax ($) ($) Security
+-( %) ( $) ( $) FICA Ta x Ta x ( $) ( $) Secu rity
 
 -(b) (c)
 
--(%) (%) #
+-( %) ( %) #
 
 -Dependents Other Deductions Extra
+
+-Under Age 17 Dependents ( $) withholding
+
+-( $)
+
+-100 50 4.00% - - Not Exempt 4.63% 0 .00% 45.00 -
+
+-111 St reet, Town/City, ST, 00000 ***-**-6789
+
+-3 .00% - - Not Exempt 4.63% 0 .00% 42.00 -
+
+-111 St reet, Town/City, ST, 00000 ***-**-4321
+
+-4.50% - - Not Exempt 4.63% 0 .00% 1 4.00 30 .00
+
+-111 St reet, Town/City, ST, 00000 ***-**-0000
+
+----PAGE---
+
+-© 2013 - 2026 Spreadsheet123 LTD
+
+-Pa yroll Calculator
 
 +Page 1 of 27
 
@@ -244,324 +655,435 @@ Generated: 2026-03-18T09:31:54.083298
 
 +(%) ($) ($) (%) (%) ($) #
 
- Under Age 17 Dependents ($) withholding
++Under Age 17 Dependents ($) withholding
 
- ($)
++($)
 
- 100 50 4.00% - - Not Exempt 4.63% 0.00% 45.00 - 111 Street, Town/City, ST, 00000 ***-**-6789
-
- 3.00% - - Not Exempt 4.63% 0.00% 42.00 - 111 Street, Town/City, ST, 00000 ***-**-4321
-
- 4.50% - - Not Exempt 4.63% 0.00% 14.00 30.00 111 Street, Town/City, ST, 00000 ***-**-0000
-
-----PAGE---
-
--© 2013 - 2025 Spreadsheet123 LTD
-
-+Page 2 of 27
-
-+---PAGE---
-
-+© 2013 - 2026 Spreadsheet123 LTD
-
- Payroll Calculator
-
- Disclaimer:
-
--This template is provided as-is for informational, illustrative, or/and educational purposes only and under no circumstances should be construed as financial, legal, or tax advice.
-
--The results provided by this calculator are only estimates and may not apply to your specific situation.
-
--Spreadsheet123 LTD strongly recommends seeking the advice of qualified professionals regarding financial or legal decisions.
-
--Spreadsheet123 LTD reserves the right t
-... (29641 more characters)
++100 50 4.00% - - Not Exempt 4.63% 0.00% 45.00 - 111 Street, Town/Ci
+... (31605 more characters)
 
 ```
 </details>
 
-### Academic Achievement Summary Table
+### PO_anonymized
 
-- **Text Similarity:** 0.8703
-- **Visual Average:** 0.8975
-- **Overall Score:** 0.9071
-- **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=4107334 bytes, Reference=168612 bytes
+- **Text Similarity:** 0.9625
+- **Visual Average:** 0.9154
+- **Overall Score:** 0.9512
+- **Pages:** MiniPdf=8, Reference=8
+- **File Size:** MiniPdf=362010 bytes, Reference=338357 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
---- minipdf/Academic Achievement Summary Table.pdf
-+++ reference/Academic Achievement Summary Table.pdf
-@@ -1,11 +1,13 @@
- 附件3
+--- minipdf/PO_anonymized.pdf
++++ reference/PO_anonymized.pdf
+@@ -9,7 +9,7 @@
+ Sign-off sample: Yes Approved drawings Yes (Drawing#: K1VRJNVG REV: C )
 
--学术业绩汇总表
+ Ship mark Yes Approved ranges Yes Ship to TBA
 
-+术业绩汇总
+ Inspection Result: Accept
 
-+学 表
+-Re-in No
 
- 报考岗位： 报考岗位代码： 考生姓名：
++Re-inspection: No
 
- 博士论文题目： 博士论文研究方向：
+ ( Comment: )
 
--公开发表的主要论文情况
+ Inspection Result Summary
 
--角色 转载刊物、转载字数及转载 是否为代表作
+ Check points Sample size Comment Remark
 
-+发 论
+@@ -40,12 +40,14 @@
+ Total Defectives 1 4
 
-+公开 表的主要 文情况
+ Maximum Defectives 0 7 14 21
 
-+角色 转载刊物、转载字数及 是否为代表作
+ Inspection qty: >80%
 
- 序号 题目 刊物名称 核心期刊情况 刊号 发表时间
+-Item# XXX PO No. Batch qty. Inspection quantity No. of carton
 
--（排名） 时间等 （指定1篇）
++Inspection quantity No. of carton
 
-+（排名） 转载时间等 （指定1篇）
++Item# XXX PO No. Batch qty.
 
- 1
+ Packed Unpacked Packed Unpacked
 
- 2
+ XX-ABC-57052-C 71662963 61,859 41,466 8,462 61 16
 
- 3
+ Total: 41,466 8,462 61 16
 
-@@ -19,19 +21,22 @@
- 11
+ Doc#: FIR-003.5
 
- 12
+-Effective: 20171109 Page 1 of 8
+
++Page 1 of 8
+
++Effective: 20171109
 
  ---PAGE---
 
--公开出版的主要专（译）著、教材情况
+ Final Inspection Report
 
--角色 全书文字 本人写作 转载刊物、转载字数及转载
+ Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
 
-+专译
+@@ -60,122 +62,148 @@
+ Quantity per carton: Part C & Insert 619
 
-+公开出版的主要 （ ）著、教材情况
+ Dimension of carton (cm): L x W X H x x 47 x 32 x 43
 
-+角色 全书文 本人写 转载刊物、转载字数及
+ Weight of carton (Kg): Gross/Net / 15.3 / 14
 
- 序号 题目 出版社名称 出版号 出版时间 备注
+-Scan the barcode number: (Resul N/A )
 
--（排名） 数 量 时间等
++Scan the barcode number: (Result: N/A )
 
-+（排名） 字数 作量 转载时间等
+ Dimension and Function check - Sampling level: S-2
 
- 1
+ Sample size: 13+7
 
- 2
+ Dimension chart
 
--获批的决策咨询报告情况
+-Measure 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 
-+获 询报
++Measure
 
-+批的决策咨 告情况
++1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 
- 序号 题目 批示领导级别 获批时间 角色（排名） 备注
+ Standard
 
- 1
+-Part A Length 26.66 25.73 25.55 25.29 26.17 26.19 26.71 26.5 26.51 25.78 25.85 26.53 25 25.78 25.59 25.52 26.62 27 25.28 26.25
 
- 2
++Part A Length
 
- 3
++26.66 25.73 25.55 25.29 26.17 26.19 26.71 26.5 26.51 25.78 25.85 26.53 25 25.78 25.59 25.52 26.62 27 25.28 26.25
 
- 4
+ 35.38±0.16(mm)
 
--承担的主要科研课题情况
+-Part A Width 25.66 25.13 25.61 25.23 26.19 26.04 25.13 25.38 25.9 25.05 26.06 25.84 25.41 25.04 26.4 25.75 26.06 25.29 25.74 26.23
 
-+课题
++Part A Width
 
-+承担的主要科研 情况
++25.66 25.13 25.61 25.23 26.19 26.04 25.13 25.38 25.9 25.05 26.06 25.84 25.41 25.04 26.4 25.75 26.06 25.29 25.74 26.23
 
- 项目
+ 47.37±0.31(in)
 
- 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注
+-Part B Thick 12.93 12.6 12.63 13.07 12.82 12.94 12.74 12.89 12.76 13.27 12.65 12.84 13.02 13.22 12.62 12.6 12.97 12.9 12.82 12.99
 
- 级别
++Part B Thick
 
-@@ -39,9 +44,12 @@
- 2
++12.93 12.6 12.63 13.07 12.82 12.94 12.74 12.89 12.76 13.27 12.65 12.84 13.02 13.22 12.62 12.6 12.97 12.9 12.82 12.99
 
- 3
+ 31.75±0.33(cm)
 
- 4
+-Part B Diam 11.08 10.93 11.18 11.46 11.23 10.84 11.34 11.26 11.29 10.99 11.03 10.9 10.76 11.25 11.24 11.41 11.28 11.13 10.84 11.21
 
--本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
++Part B Diam
 
--报名人员签名：
++11.08 10.93 11.18 11.46 11.23 10.84 11.34 11.26 11.29 10.99 11.03 10.9 10.76 11.25 11.24 11.41 11.28 11.13 10.84 11.21
 
--日期： 年 月 日
+ 34.58±0.3(cm)
 
--填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。
+-Part C OD 21.49 21.04 20.84 20.86 20 21.08 21.4 21.08 20.41 20.89 20.43 21.64 21.52 21.44 20.8 20.45 21.49 21.62 20.53 21.01
 
--2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所
++Part C OD
 
--“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。
-+诺 实 应证 实 处 应责
++21.49 21.04 20.84 20.86 20 21.08 21.4 21.08 20.41 20.89 20.43 21.64 21.52 21.44 20.8 20.45 21.49 21.62 20.53 21.01
 
-+本人承 以上情况属 ，并有相 明。如有不 之 ，愿意承担相 任。
+ 47.06±0.14(in)
 
-+报 员签
+-Part C ID 126.15 131.5 131.5 126.6 129.3 129.91 127.6 132.2 128.9 127.2 129.8 131.3 127.2 128.0 133.2 130.6 129.0 129.7 126.6 127.4
 
-+名人 名：
++Part C ID
 
-+日期：    年   月   日
++126.15 131.51 131.49 126.58 129.29 129.91 127.64 132.23 128.91 127.19 129.78 131.35 127.22 128.01 13
+... (8523 more characters)
 
-+说 请 类 术 级层 顺 页 页
-
-+填表 明： 1. 将各 学 成果按等 图书馆 、 次及水平自高到低 序填写。不加行、减行，不加 、减 ，本表采用 A4正反面打印。 扩 术
-
-+2.核心期刊是指北京大学 论 统计 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 录 展版、集刊）、中国科学技 进 领 信息研究所
-
-+“中国科技 文 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 的期刊要求 入所在学科 域 Q1、Q2。
 ```
 </details>
 
-### AcademicAchievement_temp
+### Simple invoice1
 
-- **Text Similarity:** 0.8703
-- **Visual Average:** 0.9515
-- **Overall Score:** 0.9287
-- **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=4106897 bytes, Reference=168612 bytes
+- **Text Similarity:** 0.9535
+- **Visual Average:** 0.8331
+- **Overall Score:** 0.9146
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=40395 bytes, Reference=78350 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
---- minipdf/AcademicAchievement_temp.pdf
-+++ reference/AcademicAchievement_temp.pdf
-@@ -1,11 +1,13 @@
- 附件3
+--- minipdf/Simple invoice1.pdf
++++ reference/Simple invoice1.pdf
+@@ -1,15 +1,13 @@
+-Elegant INVOICE
 
--学术业绩汇总表
++INVOICE
 
-+术业绩汇总
++Elegant
 
-+学 表
+ Invoice #: 10654
 
- 报考岗位： 报考岗位代码： 考生姓名：
+-Invoice date: 3/20/2026
 
- 博士论文题目： 博士论文研究方向：
+-Embrace
 
--公开发表的主要论文情况
++Embrace Invoice date: 3/18/2026
 
--角色 转载刊物、转载字数及转载 是否为代表作
+ Job: Wedding florals
 
-+发 论
+-345 W Main Hailey Clark
 
-+公开 表的主要 文情况
+-Bill to:
 
-+角色 转载刊物、转载字数及 是否为代表作
++345 W Main Bill to: Hailey Clark
 
- 序号 题目 刊物名称 核心期刊情况 刊号 发表时间
+ Los Angeles, CA 14151 Address: 123 Avenue A,
 
--（排名） 时间等 （指定1篇）
+ P: 915-555-0195 Burbank, CA 56789
 
-+（排名） 转载时间等 （指定1篇）
+ F: 915-555-0105 Phone: 805-555-0185
 
- 1
+-elegantembrace@example.com NA
 
- 2
+-Fax:
 
- 3
++elegantembrace@example.com Fax: NA
 
-@@ -19,19 +21,22 @@
- 11
+ Item # Description Qty Unit price Discount Price
 
- 12
+ A875 Peonies 35 $1.05 $36.75
 
- ---PAGE---
+ K245 Tulips 25 $2.00 $50.00
 
--公开出版的主要专（译）著、教材情况
+```
+</details>
 
--角色 全书文字 本人写作 转载刊物、转载字数及转载
+### Small business cash flow forecast1
 
-+专译
+- **Text Similarity:** 0.9473
+- **Visual Average:** 0.8185
+- **Overall Score:** 0.9063
+- **Pages:** MiniPdf=5, Reference=5
+- **File Size:** MiniPdf=363561 bytes, Reference=126373 bytes
 
-+公开出版的主要 （ ）著、教材情况
+<details><summary>Text Diff</summary>
 
-+角色 全书文 本人写 转载刊物、转载字数及
+```diff
+--- minipdf/Small business cash flow forecast1.pdf
++++ reference/Small business cash flow forecast1.pdf
+@@ -1,52 +1,53 @@
+ ELBIDE REALTY
 
- 序号 题目 出版社名称 出版号 出版时间 备注
+ Cash flow forecast
 
--（排名） 数 量 时间等
+-Starting cash on hand $ 10,000.00 Starting date Apr 2026 Cash minimum balance alert $ 2,000.00
 
-+（排名） 字数 作量 转载时间等
+-Apr 2026 May 2026 Jun 2026 Jul 2026 Aug 2026 Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027 Total
 
- 1
+-Cash on hand (beginning of month) $ 10,000.00 $ 8,050.00 $ 9,350.00 $ 890.00 $ 2,190.00 $ 13,590.00 $ 13,790.00 $ 15,290.00 $ 16,410.00 $ 14,360.00 $ 16,560.00 $ 18,780.00
 
- 2
++Starting cash on hand $     10,000.00 Starting date Apr 2026 Cash minimum balance alert $        2,000.00
 
--获批的决策咨询报告情况
++Apr 2026 May 2026 Jun 2026 Jul 2026 Aug 2026 Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027
 
-+获 询报
++Total
 
-+批的决策咨 告情况
++Cash on hand (beginning of month) $     10,000.00  $        8,050.00  $        9,350.00 $           890.00 $        2,190.00  $     13,590.00  $     13,790.00  $     15,290.00  $     16,410.00  $     14,360.00  $     16,560.00  $     18,780.00
 
- 序号 题目 批示领导级别 获批时间 角色（排名） 备注
+ Cash receipts
 
- 1
+-Cash sales $ 2,500.00 $ 3,000.00 $ 3,600.00 $ 3,000.00 $ 14,000.00 $ 6,000.00 $ 3,000.00 $ 2,800.00 $ 3,500.00 $ 4,000.00 $ 3,800.00 $ 4,200.00 $ 53,400.00
 
- 2
+-Returns and allowances $ 200.00 $ 200.00
 
- 3
+-Collections on accounts receivable $ -
 
- 4
+-Interest, other income $ -
 
--承担的主要科研课题情况
+-Loan proceeds $ -
 
-+课题
+-Owner contributions $ -
 
-+承担的主要科研 情况
+-Other receipts $ -
 
- 项目
+-Total cash receipts $ 2,500.00 $ 3,000.00 $ 3,400.00 $ 3,000.00 $ 14,000.00 $ 6,000.00 $ 3,000.00 $ 2,800.00 $ 3,500.00 $ 4,000.00 $ 3,800.00 $ 4,200.00 $ 53,600.00
 
- 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注
+-Total cash available $ 12,500.00 $ 11,050.00 $ 12,750.00 $ 3,890.00 $ 16,190.00 $ 19,590.00 $ 16,790.00 $ 18,090.00 $ 19,910.00 $ 18,360.00 $ 20,360.00 $ 22,980.00
 
- 级别
++Cash sales $        2,500.00  $        3,000.00  $        3,600.00  $        3,000.00  $     14,000.00  $        6,000.00  $        3,000.00  $        2,800.00  $        3,500.00  $        4,000.00  $        3,800.00  $        4,200.00  $         53,400.00
 
-@@ -39,9 +44,12 @@
- 2
++Returns and allowances $           200.00 $               200.00
 
- 3
++Collections on accounts receivable $                      -
 
- 4
++Interest, other income $                      -
 
--本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
++Loan proceeds $                      -
 
--报名人员签名：
++Owner contributions $                      -
 
--日期： 年 月 日
++Other receipts $                      -
 
--填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。
++Total cash receipts $        2,500.00  $        3,000.00  $        3,400.00  $        3,000.00  $     14,000.00  $        6,000.00  $        3,000.00  $        2,800.00  $        3,500.00  $        4,000.00  $        3,800.00  $        4,200.00  $         53,600.00
 
--2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所
++Total cash available $     12,500.00  $     11,050.00  $     12,750.00  $        3,890.00  $     16,190.00  $     19,590.00  $     16,790.00  $     18,090.00  $     19,910.00  $     18,360.00  $     20,360.00  $     22,980.00
 
--“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。
-+诺 实 应证 实 处 应责
+ Cash paid out
 
-+本人承 以上情况属 ，并有相 明。如有不 之 ，愿意承担相 任。
+-Advertising $ 3,000.00 $ 3,000.00
 
-+报 员签
+-Commissions and fees $ 250.00 $ 300.00 $ 360.00 $ 300.00 $ 1,400.00 $ 400.00 $ 300.00 $ 280.00 $ 350.00 $ 400.00 $ 380.00 $ 420.00 $ 5,140.00
 
-+名人 名：
+-Contract labor $ 200.00 $ 200.00 $
+... (5618 more characters)
 
-+日期：    年   月   日
+```
+</details>
 
-+说 请 类 术 级层 顺 页 页
+### Wedding_timeline_planner1_copy
 
-+填表 明： 1. 将各 学 成果按等 图书馆 、 次及水平自高到低 序填写。不加行、减行，不加 、减 ，本表采用 A4正反面打印。 扩 术
+- **Text Similarity:** 0.2616
+- **Visual Average:** 0.7194
+- **Overall Score:** 0.4924
+- **Pages:** MiniPdf=4, Reference=5
+- **File Size:** MiniPdf=757269 bytes, Reference=126603 bytes
 
-+2.核心期刊是指北京大学 论 统计 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 录 展版、集刊）、中国科学技 进 领 信息研究所
+<details><summary>Text Diff</summary>
 
-+“中国科技 文 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 的期刊要求 入所在学科 域 Q1、Q2。
+```diff
+--- minipdf/Wedding_timeline_planner1_copy.pdf
++++ reference/Wedding_timeline_planner1_copy.pdf
+@@ -1,124 +1,131 @@
+ Wedding timeline planner
+
+ DONE?
+
+-☐ A rrange a gat h ering fo r you and you r parent s.
+
++☐ Arrange a gathering for you and your parents.
+
+ 9 - 12
+
+-☐ D etermine bu dget and how e x pen s e s w ill b e sh ared .
+
+-MONTHS TO GO ☐
+
+-D i scuss t h e s i z e , s t y le , l oc ati o n , and sco pe of t h e w edding yo
+
+-Choos e a target w edding date and time . (Th e a c t u al date w ill depend o n
+
++☐ Determine budget and how expenses will be shared.
+
++MONTHS TO GO
+
++☐ Discuss the size, style, location, and scope of the wedding you want.
+
++Choose a target wedding date and time. (The actual date will depend
+
+ ☐
+
+-v en u e a v aila b ilit y.)
+
+-C reate a b inder t o s t o re and o rgani z e idea s, wo r ksh eet s, re c eipt s,
+
++on venue availability.)
+
++Create a binder to store and organize ideas, worksheets, receipts,
+
+ ☐
+
+-b r ochu re s, et c.
+
+-☐ V i s it and re s er v e w edding and re c epti o n s ite s.
+
+-☐ M eet w it h you r off i c iant .
+
+-S tart co mpiling you r g u e s t li s t t o e s timate h ead cou nt . Co n s ider bu dget
+
++brochures, etc.
+
++☐ Visit and reserve wedding and reception sites.
+
++☐ Meet with your officiant.
+
++Start compiling your guest list to estimate head count. Consider
+
+ ☐
+
+-wh en t h in k ing a bou t “ m us t - in v ite s” v er sus “ ni c e - t o- in v ite s.”
+
+-☐ B egin sho pping fo r t h e w edding g ow n .
+
+-☐ Choos e t h e mem b er s of you r w edding part y.
+
++budget when thinking about “must-invites” versus “nice-to-invites.”
+
++☐ Begin shopping for the wedding gown.
+
++☐ Choose the members of your wedding party.
+
+ 6 - 9
+
+-☐ E nr o ll in w edding /show er gi f t regi s trie s.
+
++☐ Enroll in wedding/shower gift registries.
+
+ MONTHS TO GO
+
+-☐ H ire a p ho t o grap h er and a v ide o grap h er .
+
+-Book an engagement p ho t o s e ss i o n , e s pe c iall y i f you plan t o in c l u de a
+
++☐ Hire a photographer and a videographer.
+
++Book an engagement photo session, especially if you plan to include a
+
+ ☐
+
+-pr of e ss i o nal engagement pi c t u re w it h S a v e - t h e -D ate c ard s.
+
+-☐ H ire a c aterer .
+
+-☐ H ire a f l o ri s t .
+
+-M a k e arrangement s fo r m us i c t o b e pla y ed at t h e c erem o n y and re c epti o n .
+
+-(T a sks mig h t in c l u de book ing a b and o r so l o m us i c ian , h iring a DJ,
+
++professional engagement picture with Save-the-Date cards.
+
++☐ Hire a caterer.
+
++☐ Hire a florist.
+
++Make arrangements for music to be played at the ceremony and
+
++☐ reception. (Tasks might include booking a band or solo musician,
+
++hiring a DJ, choosing significant musical selections, and so on.).
+
++Reserve a block of hotel rooms for out-of-town guests. (Ask about
+
+ ☐
+
+-choos ing s igni f i c ant m us i c al s ele c ti o n s, and so o n .).
+
+-R e s er v e a b l ock of ho tel r oo m s fo r ou t -of- t ow n g u e s t s. (Ask a b
+
++group rates.)
+
++Send out Save-the-Date cards. (Include lodgi
+... (7743 more characters)
+
 ```
 </details>
 
 ## Improvement Suggestions
 
-All test cases scored 0.8 or above. 🎉
+### ⚠ Low-Score Test Cases (below 0.8)
+
+1. **Wedding_timeline_planner1_copy** (score: 0.4924)
+
+Review the text diffs and visual comparisons above to identify specific rendering issues.

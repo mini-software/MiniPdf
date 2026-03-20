@@ -62,6 +62,16 @@ internal sealed class PdfWriter
                 bool blockNeedsUnicode = false;
                 foreach (var ch in block.Text)
                     if (!IsWinAnsiHandled(ch)) { blockNeedsUnicode = true; break; }
+                // Also force embedding when a preferred font is explicitly requested,
+                // even for blocks containing only WinAnsi (Latin) characters, so
+                // system fonts like "Franklin Gothic Medium" are used instead of Helvetica.
+                // Exclude common Latin fonts (Calibri, Arial, etc.) that are adequately
+                // substituted by the built-in Helvetica — keeping those in the WinAnsi
+                // (direct ASCII) encoding path so text content remains inspectable.
+                if (!blockNeedsUnicode && !string.IsNullOrWhiteSpace(block.PreferredFontName)
+                    && !_latinFontSubstitutes.Contains(block.PreferredFontName!)
+                    && FindSystemFontByPreferredName(block.PreferredFontName!) != null)
+                    blockNeedsUnicode = true;
                 if (blockNeedsUnicode)
                 {
                     var shaped = ShapeArabicCodePoints(EnumerateCodePoints(block.Text).ToList());
@@ -115,19 +125,43 @@ internal sealed class PdfWriter
             if (!string.IsNullOrWhiteSpace(document.PreferredCjkFontName))
                 PrioritizePreferredCjkFont(candidatePaths, document.PreferredCjkFontName);
 
-            foreach (var path in candidatePaths)
+            // Helper to load one font file and add to loadedFonts using the parsed TTF name.
+            void LoadFontFile(string path)
             {
                 try
                 {
                     var ttf = LoadTtfFont(path);
                     var cmap = ParseCmapTable(ttf);
-                    if (cmap.Count == 0) continue;
+                    if (cmap.Count == 0) return;
                     var (advances, upm) = ParseHmtxWidths(ttf);
                     var (asc, desc, capH, bbox) = ParseFontMetrics(ttf);
-                    var name = System.IO.Path.GetFileNameWithoutExtension(path);
+                    var (parsedFamily, parsedFullName) = ReadFontNames(ttf);
+                    var name = !string.IsNullOrEmpty(parsedFullName) ? parsedFullName
+                             : !string.IsNullOrEmpty(parsedFamily)   ? parsedFamily
+                             : Path.GetFileNameWithoutExtension(path);
                     loadedFonts.Add((ttf, cmap, advances, upm, asc, desc, capH, bbox, name));
                 }
                 catch { /* skip fonts that fail to parse */ }
+            }
+
+            foreach (var path in candidatePaths)
+                LoadFontFile(path);
+
+            // 3) Also look up any preferred font names (e.g. "Franklin Gothic Medium") that
+            //    were not covered by the standard CJK/symbol candidate list, and try to
+            //    find matching system font files so those fonts can be embedded.
+            if (cpsByPreferredFont.Count > 0)
+            {
+                var loadedPaths = new HashSet<string>(candidatePaths, StringComparer.OrdinalIgnoreCase);
+                foreach (var prefName in cpsByPreferredFont.Keys)
+                {
+                    var extraPath = FindSystemFontByPreferredName(prefName);
+                    if (extraPath != null && !loadedPaths.Contains(extraPath))
+                    {
+                        LoadFontFile(extraPath);
+                        loadedPaths.Add(extraPath);
+                    }
+                }
             }
 
             // Identify a dedicated emoji font slot (by filename)
@@ -260,7 +294,8 @@ internal sealed class PdfWriter
 
                 embeddedFonts.Add(new EmbeddedFontInfo
                 {
-                    FontName = name,
+                    // PDF names cannot contain spaces; replace with hyphens for a valid name token.
+                    FontName = name.Replace(' ', '-'),
                     CompressedFontData = compressedFont,
                     CidToGidMapData = cidToGid,
                     WArrayString = wArray,
@@ -720,9 +755,15 @@ internal sealed class PdfWriter
                 sb.Append($"{cx} {cy} {cw} {ch} re W n\n");
             }
 
-            if (!hasUnicodeFont || !block.Text.Any(c => !IsWinAnsiHandled(c)))
+            // Use embedded Unicode font when the block references a preferred system font
+            // that was successfully loaded (even if all characters are WinAnsi-compatible).
+            var hasPrefEmbeddedSlot = hasUnicodeFont
+                && fontNameToSlot != null
+                && !string.IsNullOrWhiteSpace(block.PreferredFontName)
+                && fontNameToSlot.ContainsKey(block.PreferredFontName!);
+            if (!hasUnicodeFont || (!block.Text.Any(c => !IsWinAnsiHandled(c)) && !hasPrefEmbeddedSlot))
             {
-                // Pure Latin-1 text — use F1 (Helvetica) or F1B (Helvetica-Bold)
+                // Pure Latin-1 text (or preferred font not found) — use F1 (Helvetica) or F1B (Helvetica-Bold)
                 var fontName = block.Bold ? "F1B" : "F1";
                 var escapedText = EscapePdfString(block.Text);
                 sb.Append("BT\n");
@@ -737,7 +778,7 @@ internal sealed class PdfWriter
                 // Apply horizontal scaling if text overflows MaxWidth
                 if (block.MaxWidth.HasValue)
                 {
-                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing);
+                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
                     if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
                     {
                         var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
@@ -780,7 +821,7 @@ internal sealed class PdfWriter
                 // Apply horizontal scaling if text overflows MaxWidth
                 if (block.MaxWidth.HasValue)
                 {
-                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing);
+                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
                     if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
                     {
                         var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
@@ -848,7 +889,7 @@ internal sealed class PdfWriter
             // Render underline as a line below the text
             if (block.Underline)
             {
-                var textWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing);
+                var textWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
                 if (block.MaxWidth.HasValue && textWidth > block.MaxWidth.Value)
                     textWidth = block.MaxWidth.Value;
                 var ulY = block.Y - block.FontSize * 0.15f; // position below baseline
@@ -872,34 +913,12 @@ internal sealed class PdfWriter
     /// Measures the natural rendering width of text in Helvetica at the given font size.
     /// Uses the standard Helvetica character width table.
     /// </summary>
-    private static double MeasureTextWidth(string text, float fontSize, float charSpacing = 0)
+    private static double MeasureTextWidth(string text, float fontSize, float charSpacing = 0, bool bold = false)
     {
         double total = 0;
         foreach (var ch in text)
         {
-            // Standard Helvetica character widths in 1/1000 em units
-            var w = ch switch
-            {
-                ' ' => 278, '!' => 278, '"' => 355, '#' => 556, '$' => 556, '%' => 889,
-                '&' => 667, '\'' => 191, '(' => 333, ')' => 333, '*' => 389, '+' => 584,
-                ',' => 278, '-' => 333, '.' => 278, '/' => 278,
-                >= '0' and <= '9' => 556,
-                ':' => 278, ';' => 278, '<' => 584, '=' => 584, '>' => 584, '?' => 556,
-                '@' => 1015,
-                'A' => 667, 'B' => 667, 'C' => 722, 'D' => 722, 'E' => 667, 'F' => 611,
-                'G' => 778, 'H' => 722, 'I' => 278, 'J' => 500, 'K' => 667, 'L' => 556,
-                'M' => 833, 'N' => 722, 'O' => 778, 'P' => 667, 'Q' => 778, 'R' => 722,
-                'S' => 667, 'T' => 611, 'U' => 722, 'V' => 667, 'W' => 944, 'X' => 667,
-                'Y' => 667, 'Z' => 611,
-                '[' => 278, '\\' => 278, ']' => 278, '^' => 469, '_' => 556, '`' => 333,
-                'a' => 556, 'b' => 556, 'c' => 500, 'd' => 556, 'e' => 556, 'f' => 278,
-                'g' => 556, 'h' => 556, 'i' => 222, 'j' => 222, 'k' => 500, 'l' => 222,
-                'm' => 833, 'n' => 556, 'o' => 556, 'p' => 556, 'q' => 556, 'r' => 333,
-                's' => 500, 't' => 278, 'u' => 556, 'v' => 500, 'w' => 722, 'x' => 500,
-                'y' => 500, 'z' => 500,
-                '{' => 334, '|' => 260, '}' => 334, '~' => 584,
-                _ => IsFullWidthCharPdf(ch) ? 1000 : 556
-            };
+            var w = bold ? HelveticaBoldCharWidth(ch) : HelveticaCharWidth(ch);
             total += w;
         }
         var result = total * fontSize / 1000.0;
@@ -908,6 +927,54 @@ internal sealed class PdfWriter
             result += charSpacing * (text.Length - 1);
         return result;
     }
+
+    /// <summary>Returns Helvetica (regular) character width in 1/1000 em units.</summary>
+    private static int HelveticaCharWidth(char ch) => ch switch
+    {
+        ' ' => 278, '!' => 278, '"' => 355, '#' => 556, '$' => 556, '%' => 889,
+        '&' => 667, '\'' => 191, '(' => 333, ')' => 333, '*' => 389, '+' => 584,
+        ',' => 278, '-' => 333, '.' => 278, '/' => 278,
+        >= '0' and <= '9' => 556,
+        ':' => 278, ';' => 278, '<' => 584, '=' => 584, '>' => 584, '?' => 556,
+        '@' => 1015,
+        'A' => 667, 'B' => 667, 'C' => 722, 'D' => 722, 'E' => 667, 'F' => 611,
+        'G' => 778, 'H' => 722, 'I' => 278, 'J' => 500, 'K' => 667, 'L' => 556,
+        'M' => 833, 'N' => 722, 'O' => 778, 'P' => 667, 'Q' => 778, 'R' => 722,
+        'S' => 667, 'T' => 611, 'U' => 722, 'V' => 667, 'W' => 944, 'X' => 667,
+        'Y' => 667, 'Z' => 611,
+        '[' => 278, '\\' => 278, ']' => 278, '^' => 469, '_' => 556, '`' => 333,
+        'a' => 556, 'b' => 556, 'c' => 500, 'd' => 556, 'e' => 556, 'f' => 278,
+        'g' => 556, 'h' => 556, 'i' => 222, 'j' => 222, 'k' => 500, 'l' => 222,
+        'm' => 833, 'n' => 556, 'o' => 556, 'p' => 556, 'q' => 556, 'r' => 333,
+        's' => 500, 't' => 278, 'u' => 556, 'v' => 500, 'w' => 722, 'x' => 500,
+        'y' => 500, 'z' => 500,
+        '{' => 334, '|' => 260, '}' => 334, '~' => 584,
+        _ => IsFullWidthCharPdf(ch) ? 1000 : 556
+    };
+
+    /// <summary>Returns Helvetica-Bold character width in 1/1000 em units.</summary>
+    private static int HelveticaBoldCharWidth(char ch) => ch switch
+    {
+        ' ' => 278, '!' => 333, '"' => 474, '#' => 556, '$' => 556, '%' => 889,
+        '&' => 722, '\'' => 238, '(' => 333, ')' => 333, '*' => 389, '+' => 584,
+        ',' => 278, '-' => 333, '.' => 278, '/' => 278,
+        >= '0' and <= '9' => 556,
+        ':' => 333, ';' => 333, '<' => 584, '=' => 584, '>' => 584, '?' => 611,
+        '@' => 975,
+        'A' => 722, 'B' => 722, 'C' => 722, 'D' => 722, 'E' => 667, 'F' => 611,
+        'G' => 778, 'H' => 722, 'I' => 278, 'J' => 556, 'K' => 722, 'L' => 611,
+        'M' => 833, 'N' => 722, 'O' => 778, 'P' => 667, 'Q' => 778, 'R' => 722,
+        'S' => 667, 'T' => 611, 'U' => 722, 'V' => 667, 'W' => 944, 'X' => 667,
+        'Y' => 667, 'Z' => 611,
+        '[' => 333, '\\' => 278, ']' => 333, '^' => 584, '_' => 556, '`' => 333,
+        'a' => 556, 'b' => 611, 'c' => 556, 'd' => 611, 'e' => 556, 'f' => 333,
+        'g' => 611, 'h' => 611, 'i' => 278, 'j' => 278, 'k' => 556, 'l' => 278,
+        'm' => 889, 'n' => 611, 'o' => 611, 'p' => 611, 'q' => 611, 'r' => 389,
+        's' => 556, 't' => 333, 'u' => 611, 'v' => 556, 'w' => 778, 'x' => 556,
+        'y' => 556, 'z' => 500,
+        '{' => 389, '|' => 280, '}' => 389, '~' => 584,
+        _ => IsFullWidthCharPdf(ch) ? 1000 : 556
+    };
 
     /// <summary>
     /// Returns true for CJK and fullwidth characters that occupy ~1em width.
@@ -1470,6 +1537,142 @@ internal sealed class PdfWriter
         }
 
         return results;
+    }
+
+    /// <summary>
+    /// Common Latin fonts that are adequately substituted by the built-in Helvetica/Times
+    /// Type1 fonts.  These are intentionally excluded from the Type0 system-font-embedding
+    /// path so that text using these fonts stays in WinAnsi encoding (direct ASCII in the
+    /// PDF content stream), which is important for tests that inspect raw PDF bytes.
+    /// Non-standard specialty fonts such as "Franklin Gothic Medium" are NOT in this set
+    /// and therefore trigger proper system-font embedding.
+    /// </summary>
+    private static readonly HashSet<string> _latinFontSubstitutes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "Calibri", "Calibri Light", "Calibri Body",
+        "Cambria", "Cambria Math",
+        "Consolas", "Corbel", "Candara", "Constantia",
+        "Arial", "Arial Narrow", "Arial Black",
+        "Times New Roman",
+        "Verdana", "Tahoma", "Trebuchet MS",
+        "Georgia", "Garamond", "Book Antiqua",
+        "Courier New",
+        "Helvetica", "Helvetica Neue",
+        "Segoe UI", "Segoe UI Light", "Segoe UI Semibold",
+    };
+
+    /// <summary>
+    /// Lazily-built cache: normalized font name → system font file path.
+    /// Built on first access by scanning the system fonts directory and reading
+    /// each font file's name table.  Used to locate fonts like "Franklin Gothic Medium"
+    /// that are not in the default CJK/symbol candidate list.
+    /// </summary>
+    private static readonly Lazy<Dictionary<string, string>> _systemFontNameCache
+        = new(BuildSystemFontNameCache, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+
+    private static Dictionary<string, string> BuildSystemFontNameCache()
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        string fontDir;
+        if (Compat.IsWindows())
+            fontDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
+        else if (Compat.IsMacOS())
+            fontDir = "/System/Library/Fonts";
+        else
+            fontDir = "/usr/share/fonts";
+
+        if (!Directory.Exists(fontDir)) return result;
+
+        foreach (var file in Directory.GetFiles(fontDir))
+        {
+            var ext = Path.GetExtension(file).ToLowerInvariant();
+            if (ext is not (".ttf" or ".otf")) continue;
+            try
+            {
+                var ttf = File.ReadAllBytes(file);
+                var (family, fullName) = ReadFontNames(ttf);
+                if (!string.IsNullOrEmpty(fullName))
+                    { var k = NormalizeFontName(fullName);   if (!result.ContainsKey(k)) result[k] = file; }
+                if (!string.IsNullOrEmpty(family))
+                    { var k = NormalizeFontName(family);     if (!result.ContainsKey(k)) result[k] = file; }
+            }
+            catch { }
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Tries to find a system font file whose family or full name matches <paramref name="fontName"/>.
+    /// Returns the full file path, or null if not found.
+    /// </summary>
+    private static string? FindSystemFontByPreferredName(string fontName)
+    {
+        if (string.IsNullOrWhiteSpace(fontName)) return null;
+        var cache = _systemFontNameCache.Value;
+        var normalized = NormalizeFontName(fontName);
+        return cache.TryGetValue(normalized, out var path) ? path : null;
+    }
+
+    /// <summary>
+    /// Reads the font family name (name ID 1) and full name (name ID 4) from a TrueType/OpenType font binary.
+    /// Returns empty strings if the name table cannot be read.
+    /// </summary>
+    private static (string family, string fullName) ReadFontNames(byte[] ttf)
+    {
+        try
+        {
+            if (ttf.Length < 12) return ("", "");
+            int numTables = (ttf[4] << 8) | ttf[5];
+
+            // Find the 'name' table record
+            int nameTableOffset = -1;
+            for (var i = 0; i < numTables; i++)
+            {
+                var pos = 12 + i * 16;
+                if (pos + 16 > ttf.Length) break;
+                if (ttf[pos] == 'n' && ttf[pos+1] == 'a' && ttf[pos+2] == 'm' && ttf[pos+3] == 'e')
+                {
+                    nameTableOffset = (ttf[pos+8] << 24) | (ttf[pos+9] << 16) | (ttf[pos+10] << 8) | ttf[pos+11];
+                    break;
+                }
+            }
+            if (nameTableOffset < 0 || nameTableOffset + 6 > ttf.Length) return ("", "");
+
+            int nameCount      = (ttf[nameTableOffset+2] << 8) | ttf[nameTableOffset+3];
+            int stringAreaBase = nameTableOffset + ((ttf[nameTableOffset+4] << 8) | ttf[nameTableOffset+5]);
+
+            string family = "", fullName = "";
+            for (var i = 0; i < nameCount; i++)
+            {
+                var p = nameTableOffset + 6 + i * 12;
+                if (p + 12 > ttf.Length) break;
+                var platformID = (ttf[p]   << 8) | ttf[p+1];
+                var encodingID = (ttf[p+2] << 8) | ttf[p+3];
+                var nameID     = (ttf[p+6] << 8) | ttf[p+7];
+                var length     = (ttf[p+8] << 8) | ttf[p+9];
+                var offset     = (ttf[p+10] << 8) | ttf[p+11];
+
+                if (nameID != 1 && nameID != 4) continue;
+
+                var strStart = stringAreaBase + offset;
+                if (strStart + length > ttf.Length) continue;
+
+                string value;
+                if (platformID == 3 && encodingID == 1)
+                    value = System.Text.Encoding.BigEndianUnicode.GetString(ttf, strStart, length);
+                else if (platformID == 1)
+                    value = System.Text.Encoding.ASCII.GetString(ttf, strStart, length);
+                else
+                    continue;
+
+                if (nameID == 1 && string.IsNullOrEmpty(family))
+                    family = value;
+                else if (nameID == 4 && string.IsNullOrEmpty(fullName))
+                    fullName = value;
+            }
+            return (family, fullName);
+        }
+        catch { return ("", ""); }
     }
 
     /// <summary>
