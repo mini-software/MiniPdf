@@ -18,6 +18,6 @@ app.MapPost("/api/convert", async (IFormFile file) =>
         : MiniPdf.ConvertToPdf(stream);
 
     return Results.File(pdfBytes, "application/pdf", "output.pdf");
-});
+}).DisableAntiforgery();
 
 app.Run();
