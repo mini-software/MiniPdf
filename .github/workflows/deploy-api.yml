@@ -34,9 +34,28 @@ jobs:
       - name: Publish
         run: dotnet publish MiniPdf.Api/MiniPdf.Api.csproj -c Release --no-build -o ${{ github.workspace }}/publish
 
-      - name: Deploy to Azure App Service
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_API }}
-          package: ${{ github.workspace }}/publish
+      - name: Zip publish output
+        run: cd ${{ github.workspace }}/publish && zip -r ${{ github.workspace }}/deploy.zip .
+
+      - name: Deploy via Kudu ZipDeploy
+        env:
+          PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_API }}
+        run: |
+          KUDU_USER=$(python3 -c "
+          import os, xml.etree.ElementTree as ET
+          root = ET.fromstring(os.environ['PUBLISH_PROFILE'])
+          p = next(x for x in root.findall('publishProfile') if x.get('publishMethod') == 'ZipDeploy')
+          print(p.get('userName'))
+          ")
+          KUDU_PWD=$(python3 -c "
+          import os, xml.etree.ElementTree as ET
+          root = ET.fromstring(os.environ['PUBLISH_PROFILE'])
+          p = next(x for x in root.findall('publishProfile') if x.get('publishMethod') == 'ZipDeploy')
+          print(p.get('userPWD'))
+          ")
+          curl -X POST \
+            "https://${{ env.AZURE_WEBAPP_NAME }}.scm.azurewebsites.net/api/zipdeploy" \
+            -u "${KUDU_USER}:${KUDU_PWD}" \
+            --data-binary @"${{ github.workspace }}/deploy.zip" \
+            -H "Content-Type: application/zip" \
+            --fail --show-error
