@@ -20,6 +20,7 @@ internal static class DocxReader
     private static readonly XNamespace REL = "http://schemas.openxmlformats.org/package/2006/relationships";
     private static readonly XNamespace WPS = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape";
     private static readonly XNamespace WPG = "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup";
+    private static readonly XNamespace MC = "http://schemas.openxmlformats.org/markup-compatibility/2006";
 
     /// <summary>
     /// Unwraps SDT (Structured Document Tag) elements by replacing them with their sdtContent children.
@@ -325,6 +326,7 @@ internal static class DocxReader
         float spacingAfter = -1;
         float lineSpacing = 0;
         bool lineSpacingAbsolute = false;
+        bool lineSpacingExact = false;
         float indentLeft = 0;
         float indentRight = 0;
         float indentFirstLine = 0;
@@ -345,6 +347,8 @@ internal static class DocxReader
         List<DocxTabStop>? tabStops = null;
         DocxBorders? borders = null;
         float charSpacing = 0;
+        int firstLineChars = 0;
+        bool paragraphMarkUnderline = false;
 
         if (pPr != null)
         {
@@ -368,29 +372,37 @@ internal static class DocxReader
                 {
                     var lineRule = spacing.Attribute(W + "lineRule")?.Value;
                     lineSpacingAbsolute = lineRule == "exact" || lineRule == "atLeast";
+                    lineSpacingExact = lineRule == "exact";
                     lineSpacing = lineSpacingAbsolute
                         ? sl / 20f   // absolute value in points
                         : sl / 240f; // multiplier (auto: 240 = single spacing)
                 }
             }
 
-            // Indentation (in twips)
+            // Indentation (in twips); w:start/w:end are bidi-aware equivalents of w:left/w:right
             var ind = pPr.Element(W + "ind");
             if (ind != null)
             {
-                if (int.TryParse(ind.Attribute(W + "left")?.Value, out var il))
+                if (int.TryParse(ind.Attribute(W + "left")?.Value ?? ind.Attribute(W + "start")?.Value, out var il))
                     indentLeft = il / 20f;
-                if (int.TryParse(ind.Attribute(W + "right")?.Value, out var ir))
+                if (int.TryParse(ind.Attribute(W + "right")?.Value ?? ind.Attribute(W + "end")?.Value, out var ir))
                     indentRight = ir / 20f;
                 if (int.TryParse(ind.Attribute(W + "firstLine")?.Value, out var fl))
                     indentFirstLine = fl / 20f;
                 if (int.TryParse(ind.Attribute(W + "hanging")?.Value, out var hg))
                     indentFirstLine = -hg / 20f;
+                if (int.TryParse(ind.Attribute(W + "firstLineChars")?.Value, out var flc))
+                    firstLineChars = flc;
             }
 
-            // Page break before
-            if (pPr.Element(W + "pageBreakBefore") != null)
-                pageBreakBefore = true;
+            // Page break before (respect w:val="false" / w:val="0" to disable)
+            var pbBefore = pPr.Element(W + "pageBreakBefore");
+            if (pbBefore != null)
+            {
+                var pbVal = pbBefore.Attribute(W + "val")?.Value;
+                if (pbVal is null or not ("0" or "false"))
+                    pageBreakBefore = true;
+            }
 
             // Snap to grid (defaults to true; false opts out of document grid)
             if (pPr.Element(W + "snapToGrid")?.Attribute(W + "val")?.Value == "0")
@@ -491,6 +503,14 @@ internal static class DocxReader
                 var spacingEl2 = rPr.Element(W + "spacing");
                 if (spacingEl2 != null && int.TryParse(spacingEl2.Attribute(W + "val")?.Value, out var pcs))
                     charSpacing = pcs / 20f;
+                // Paragraph mark underline
+                var pMarkU = rPr.Element(W + "u");
+                if (pMarkU != null)
+                {
+                    var pMarkUVal = pMarkU.Attribute(W + "val")?.Value;
+                    if (!string.IsNullOrEmpty(pMarkUVal) && pMarkUVal != "none")
+                        paragraphMarkUnderline = true;
+                }
             }
         }
 
@@ -518,6 +538,13 @@ internal static class DocxReader
             contextualSpacing = true;
         if (spacingBefore < 0) spacingBefore = 0;
         if (spacingAfter < 0) spacingAfter = 0;
+
+        // Convert character-based first-line indent now that fontSize is resolved
+        if (firstLineChars != 0 && indentFirstLine == 0)
+        {
+            var charSize = fontSize > 0 ? fontSize : 10.5f;
+            indentFirstLine = firstLineChars / 100f * charSize;
+        }
 
         // Read runs (with field code tracking)
         int fieldDepth = 0;
@@ -621,11 +648,12 @@ internal static class DocxReader
 
         // If paragraph has no runs and no images, represent as empty paragraph for spacing
         return new DocxParagraph(runs, images, alignment, spacingBefore, spacingAfter,
-            lineSpacing, lineSpacingAbsolute, indentLeft, indentRight, indentFirstLine,
+            lineSpacing, lineSpacingAbsolute, lineSpacingExact, indentLeft, indentRight, indentFirstLine,
             isBulletList, isNumberedList, listLevel, listText, styleId,
             bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops,
             sectionBreakLayout, borders, shapes.Count > 0 ? shapes : null,
-            ContextualSpacing: contextualSpacing, SnapToGrid: snapToGrid);
+            ContextualSpacing: contextualSpacing, SnapToGrid: snapToGrid,
+            ParagraphMarkUnderline: paragraphMarkUnderline);
     }
 
     private static DocxBorderEdge? ReadBorderEdge(XElement? el)
@@ -658,6 +686,7 @@ internal static class DocxReader
         var color = parentColor;
         var caps = parentCaps;
         var underline = false;
+        var hasExplicitUnderlineDecl = false;
         var charSpacing = parentCharSpacing;
         var fontName = parentFontName;
 
@@ -669,6 +698,7 @@ internal static class DocxReader
             var uEl = rPr.Element(W + "u");
             if (uEl != null)
             {
+                hasExplicitUnderlineDecl = true;
                 var uVal = uEl.Attribute(W + "val")?.Value;
                 if (!string.IsNullOrEmpty(uVal) && uVal != "none")
                     underline = true;
@@ -721,7 +751,7 @@ internal static class DocxReader
             fontName = defaultEastAsiaFontName;
         }
 
-        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName);
+        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl);
     }
 
     private static string? GetFieldInstructionType(string? instruction)
@@ -771,6 +801,7 @@ internal static class DocxReader
             || n.Contains("msyh")
             || n.Contains("simsun")
             || n.Contains("simhei")
+            || n.Contains("黑体")
             || n.Contains("pingfang")
             || n.Contains("heiti")
             || n.Contains("song")
@@ -1822,6 +1853,9 @@ internal static class DocxReader
         var texts = new List<string>();
         foreach (var p in doc.Descendants(W + "p"))
         {
+            // Skip paragraphs inside mc:Fallback to avoid duplicate text box content
+            if (p.Ancestors(MC + "Fallback").Any()) continue;
+
             var para = ReadParagraph(p, styles, numbering, relationships, archive, null, defaultLatinFontName, defaultEastAsiaFontName);
             if (para != null)
             {
@@ -1858,6 +1892,9 @@ internal static class DocxReader
         var allRuns = new List<DocxRun>();
         foreach (var p in doc.Descendants(W + "p"))
         {
+            // Skip paragraphs inside mc:Fallback to avoid duplicate text box content
+            if (p.Ancestors(MC + "Fallback").Any()) continue;
+
             var para = ReadParagraph(p, styles, numbering, relationships, archive, null, defaultLatinFontName, defaultEastAsiaFontName);
             if (para != null && para.Runs.Count > 0)
             {
@@ -1949,6 +1986,37 @@ internal static class DocxReader
                 var table = ReadTable(child, styles, numbering, hfRels, archive, defaultFontName, defaultEastAsiaFontName);
                 if (table != null)
                     elements.Add(table);
+            }
+        }
+
+        // Extract text box content from anchor drawings (e.g., page numbers in positioned text boxes)
+        foreach (var anchor in root.Descendants(WP + "anchor"))
+        {
+            // Skip anchors inside mc:Fallback to avoid duplicate content
+            if (anchor.Ancestors(MC + "Fallback").Any()) continue;
+
+            var txbx = anchor.Descendants(WPS + "txbx").FirstOrDefault();
+            var txbxContent = txbx?.Element(W + "txbxContent");
+            if (txbxContent == null) continue;
+
+            // Determine alignment from anchor horizontal positioning
+            var posH = anchor.Element(WP + "positionH");
+            var hAlign = posH?.Element(WP + "align")?.Value;
+            string? alignment = hAlign switch
+            {
+                "right" or "outside" => "right",
+                "center" => "center",
+                "left" or "inside" => "left",
+                _ => null
+            };
+
+            foreach (var txbxP in txbxContent.Elements(W + "p"))
+            {
+                var txbxPara = ReadParagraph(txbxP, styles, numbering, hfRels, archive, null, defaultFontName, defaultEastAsiaFontName);
+                if (txbxPara == null) continue;
+                if (alignment != null)
+                    txbxPara = txbxPara with { Alignment = alignment };
+                elements.Add(txbxPara);
             }
         }
 
@@ -2480,6 +2548,7 @@ internal sealed record DocxParagraph(
     float SpacingAfter = -1,
     float LineSpacing = 0,
     bool LineSpacingAbsolute = false,
+    bool LineSpacingExact = false,
     float IndentLeft = 0,
     float IndentRight = 0,
     float IndentFirstLine = 0,
@@ -2505,7 +2574,8 @@ internal sealed record DocxParagraph(
     bool SnapToGrid = true,
     List<DocxFloatingTextBox>? FloatingTextBoxes = null,
     bool IsTextBoxFlow = false,
-    float TextBoxWidth = 0
+    float TextBoxWidth = 0,
+    bool ParagraphMarkUnderline = false
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>
@@ -2539,7 +2609,8 @@ internal sealed record DocxRun(
     bool IsPageBreak = false,
     bool Underline = false,
     float CharSpacing = 0,
-    string? FontName = null
+    string? FontName = null,
+    bool HasExplicitUnderlineDecl = false
 );
 
 /// <summary>Represents an embedded image.</summary>
@@ -2699,7 +2770,7 @@ internal sealed class DocxNumberingDef
         "lowerLetter" => num >= 1 && num <= 26 ? ((char)('a' + num - 1)).ToString() : num.ToString(),
         "upperRoman" => ToRoman(num),
         "lowerRoman" => ToRoman(num).ToLowerInvariant(),
-        "japaneseCounting" or "chineseCounting" or "taiwaneseCountingThousand" or "taiwaneseCounting" =>
+        "japaneseCounting" or "chineseCounting" or "chineseCountingThousand" or "taiwaneseCountingThousand" or "taiwaneseCounting" =>
             FormatChineseCounting(num),
         "ideographTraditional" =>
             num >= 1 && num <= 10 ? "\u7532\u4e59\u4e19\u4e01\u620a\u5df1\u5e9a\u8f9b\u58ec\u7678"[num - 1].ToString() : num.ToString(),
