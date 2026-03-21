@@ -49,6 +49,8 @@ def main():
                         help="Directory containing .docx files")
     parser.add_argument("--pdf-dir", default="office_pdfs_docx",
                         help="Output directory for Office-generated PDFs")
+    parser.add_argument("--filter", default=None, metavar="PATTERN",
+                        help="Only convert files whose name contains this substring")
     args = parser.parse_args()
 
     docx_dir = os.path.abspath(args.docx_dir)
@@ -66,6 +68,8 @@ def main():
     print()
 
     docx_files = sorted(Path(docx_dir).glob("*.docx"))
+    if args.filter:
+        docx_files = [f for f in docx_files if args.filter.lower() in f.stem.lower()]
     if not docx_files:
         print("No .docx files found.")
         sys.exit(1)

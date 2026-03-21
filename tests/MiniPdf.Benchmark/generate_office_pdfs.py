@@ -52,6 +52,8 @@ def main():
                         help="Directory containing .xlsx files")
     parser.add_argument("--pdf-dir", default="office_pdfs",
                         help="Output directory for Office-generated PDFs")
+    parser.add_argument("--filter", default=None, metavar="PATTERN",
+                        help="Only convert files whose name contains this substring")
     args = parser.parse_args()
 
     xlsx_dir = os.path.abspath(args.xlsx_dir)
@@ -69,6 +71,8 @@ def main():
     print()
 
     xlsx_files = sorted(Path(xlsx_dir).glob("*.xlsx"))
+    if args.filter:
+        xlsx_files = [f for f in xlsx_files if args.filter.lower() in f.stem.lower()]
     if not xlsx_files:
         print("No .xlsx files found.")
         sys.exit(1)

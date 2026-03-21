@@ -67,12 +67,18 @@ def step_generate_minipdf_pdfs(filter_pattern: str = None):
     return run(cmd, cwd=str(scripts_dir))
 
 
-def step_generate_reference_pdfs(filter_pattern: str = None):
-    """Step 3: Convert Excel files to PDF using LibreOffice (reference)."""
-    banner("Step 3: Convert Excel -> PDF (LibreOffice Reference)")
-    cmd = [sys.executable, "generate_reference_pdfs.py",
-           "--xlsx-dir", str(XLSX_DIR.resolve()),
-           "--pdf-dir", str(REFERENCE_PDF_DIR.resolve())]
+def step_generate_reference_pdfs(filter_pattern: str = None, engine: str = "libre"):
+    """Step 3: Convert Excel files to PDF using the chosen reference engine."""
+    if engine == "office":
+        banner("Step 3: Convert Excel -> PDF (Office / Excel COM Reference)")
+        cmd = [sys.executable, "generate_office_pdfs.py",
+               "--xlsx-dir", str(XLSX_DIR.resolve()),
+               "--pdf-dir", str(REFERENCE_PDF_DIR.resolve())]
+    else:
+        banner("Step 3: Convert Excel -> PDF (LibreOffice Reference)")
+        cmd = [sys.executable, "generate_reference_pdfs.py",
+               "--xlsx-dir", str(XLSX_DIR.resolve()),
+               "--pdf-dir", str(REFERENCE_PDF_DIR.resolve())]
     if filter_pattern:
         cmd += ["--filter", filter_pattern]
     return run(cmd, cwd=str(SCRIPT_DIR), check=False)
@@ -153,7 +159,9 @@ def main():
                         help="Only process files matching this substring (e.g. 'border' or 'chart_bar')")
     parser.add_argument("--skip-generate", action="store_true", help="Skip Excel generation")
     parser.add_argument("--skip-minipdf", action="store_true", help="Skip MiniPdf PDF conversion")
-    parser.add_argument("--skip-reference", action="store_true", help="Skip LibreOffice reference conversion")
+    parser.add_argument("--skip-reference", action="store_true", help="Skip reference conversion")
+    parser.add_argument("--engine", choices=["libre", "office"], default="office",
+                        help="Reference engine: office (MS Office COM, default) or libre (LibreOffice)")
     parser.add_argument("--with-office", action="store_true",
                         help="Also convert via Office (Excel COM) and include in comparison")
     parser.add_argument("--skip-office", action="store_true", help="Skip Office conversion (when --with-office)")
@@ -171,6 +179,7 @@ def main():
     print(f"  XLSX dir:      {XLSX_DIR.resolve()}")
     print(f"  MiniPdf PDFs:  {MINIPDF_PDF_DIR.resolve()}")
     print(f"  Reference PDFs:{REFERENCE_PDF_DIR.resolve()}")
+    print(f"  Ref engine:    {args.engine}")
     if args.with_office:
         print(f"  Office PDFs:   {OFFICE_PDF_DIR.resolve()}")
     print(f"  Reports:       {REPORT_DIR.resolve()}")
@@ -191,7 +200,7 @@ def main():
         step_generate_minipdf_pdfs(filter_pattern=filt)
 
     if not args.skip_reference:
-        step_generate_reference_pdfs(filter_pattern=filt)
+        step_generate_reference_pdfs(filter_pattern=filt, engine=args.engine)
 
     if args.with_office and not args.skip_office:
         step_generate_office_pdfs(filter_pattern=filt)

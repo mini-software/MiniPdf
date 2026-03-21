@@ -22,7 +22,9 @@ param(
     [switch]$SkipReference,
     [switch]$SkipInstall,
     [switch]$WithOffice,
-    [switch]$SkipOffice
+    [switch]$SkipOffice,
+    [ValidateSet("libre", "office")]
+    [string]$Engine = "office"
 )
 
 $ErrorActionPreference = "Continue"
@@ -93,14 +95,26 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
     }
 
     if (-not $CompareOnly -and -not $SkipReference) {
-        Write-Host '[Step 2] Converting XLSX -> PDF (LibreOffice)...' -ForegroundColor Yellow
-        Push-Location $BenchmarkDir
-        try {
-            $refArgs = @("generate_reference_pdfs.py", "--xlsx-dir", $XlsxIssueDir, "--pdf-dir", $RefXlsx)
-            if ($Filter) { $refArgs += @("--filter", $Filter) }
-            python @refArgs
-        } finally {
-            Pop-Location
+        if ($Engine -eq 'office') {
+            Write-Host '[Step 2] Converting XLSX -> PDF (Office / Excel COM)...' -ForegroundColor Yellow
+            Push-Location $BenchmarkDir
+            try {
+                $refArgs = @("generate_office_pdfs.py", "--xlsx-dir", $XlsxIssueDir, "--pdf-dir", $RefXlsx)
+                if ($Filter) { $refArgs += @("--filter", $Filter) }
+                python @refArgs
+            } finally {
+                Pop-Location
+            }
+        } else {
+            Write-Host '[Step 2] Converting XLSX -> PDF (LibreOffice)...' -ForegroundColor Yellow
+            Push-Location $BenchmarkDir
+            try {
+                $refArgs = @("generate_reference_pdfs.py", "--xlsx-dir", $XlsxIssueDir, "--pdf-dir", $RefXlsx)
+                if ($Filter) { $refArgs += @("--filter", $Filter) }
+                python @refArgs
+            } finally {
+                Pop-Location
+            }
         }
     }
 
@@ -153,14 +167,26 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
     }
 
     if (-not $CompareOnly -and -not $SkipReference) {
-        Write-Host '[Step 2] Converting DOCX -> PDF (LibreOffice)...' -ForegroundColor Yellow
-        Push-Location $BenchmarkDir
-        try {
-            $refArgs = @("generate_reference_pdfs_docx.py", "--docx-dir", $DocxIssueDir, "--pdf-dir", $RefDocx)
-            if ($Filter) { $refArgs += @("--filter", $Filter) }
-            python @refArgs
-        } finally {
-            Pop-Location
+        if ($Engine -eq 'office') {
+            Write-Host '[Step 2] Converting DOCX -> PDF (Office / Word COM)...' -ForegroundColor Yellow
+            Push-Location $BenchmarkDir
+            try {
+                $refArgs = @("generate_office_pdfs_docx.py", "--docx-dir", $DocxIssueDir, "--pdf-dir", $RefDocx)
+                if ($Filter) { $refArgs += @("--filter", $Filter) }
+                python @refArgs
+            } finally {
+                Pop-Location
+            }
+        } else {
+            Write-Host '[Step 2] Converting DOCX -> PDF (LibreOffice)...' -ForegroundColor Yellow
+            Push-Location $BenchmarkDir
+            try {
+                $refArgs = @("generate_reference_pdfs_docx.py", "--docx-dir", $DocxIssueDir, "--pdf-dir", $RefDocx)
+                if ($Filter) { $refArgs += @("--filter", $Filter) }
+                python @refArgs
+            } finally {
+                Pop-Location
+            }
         }
     }
 

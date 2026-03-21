@@ -20,6 +20,8 @@ param(
     [switch]$SkipInstall,
     [switch]$WithOffice,
     [switch]$SkipOffice,
+    [ValidateSet("libre", "office")]
+    [string]$Engine = "office",
     [string]$Filter
 )
 
@@ -50,6 +52,7 @@ if ($SkipMiniPdf) { $pyArgs += "--skip-minipdf" }
 if ($SkipReference) { $pyArgs += "--skip-reference" }
 if ($WithOffice) { $pyArgs += "--with-office" }
 if ($SkipOffice) { $pyArgs += "--skip-office" }
+if ($Engine -ne "office") { $pyArgs += "--engine"; $pyArgs += $Engine }
 if ($Filter) { $pyArgs += "--filter"; $pyArgs += $Filter }
 
 # Run the benchmark pipeline
