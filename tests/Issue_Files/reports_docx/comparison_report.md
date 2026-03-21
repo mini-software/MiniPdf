@@ -1,22 +1,25 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-19T09:07:31.956235
+Generated: 2026-03-21T00:22:33.238192
 
 ## Summary
 
 | # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|----------|------------|-------------|--------|
 | 1 | 🟢 20260317_sample_CN | 0.982 | 0.954 | 2/2 | **0.9744** |
-| 2 | 🟢 Class News | 0.9959 | 0.8703 | 4/4 | **0.9465** |
-| 3 | 🟢 Confirmatory_Affidavit | 0.9852 | 0.9709 | 2/2 | **0.9824** |
-| 4 | 🟢 Invoice | 0.9947 | 0.9129 | 1/1 | **0.963** |
-| 5 | 🟡 MODERN LIVING | 0.7952 | 0.7889 | 2/2 | **0.8336** |
-| 6 | 🟡 nthu_article | 0.91 | 0.7842 | 22/20 | **0.7777** |
-| 7 | 🟢 OSCAR WARD | 0.9941 | 0.8535 | 1/1 | **0.939** |
-| 8 | 🟢 SA8000 ch sample | 0.9932 | 0.8739 | 3/3 | **0.9468** |
-| 9 | 🟢 Support_Letter | 0.9917 | 0.9529 | 1/1 | **0.9778** |
+| 2 | 🔴 20260318_issue | 0.9786 | 0.4884 | 20/11 | **0.6868** |
+| 3 | 🟢 Class News | 0.9959 | 0.8703 | 4/4 | **0.9465** |
+| 4 | 🟢 Confirmatory_Affidavit | 0.9852 | 0.9691 | 2/2 | **0.9817** |
+| 5 | ⚪ cooperation | N/A | N/A | ?/? | **N/A** |
+| 6 | 🟢 Cooperation Agreement Template | 0.9831 | 0.984 | 7/7 | **0.9868** |
+| 7 | 🟢 Invoice | 0.9947 | 0.9129 | 1/1 | **0.963** |
+| 8 | 🟡 MODERN LIVING | 0.7952 | 0.7889 | 2/2 | **0.8336** |
+| 9 | 🟡 nthu_article | 0.9074 | 0.8182 | 21/20 | **0.7902** |
+| 10 | 🟢 OSCAR WARD | 0.9941 | 0.8535 | 1/1 | **0.939** |
+| 11 | 🟢 SA8000 ch sample | 0.992 | 0.875 | 3/3 | **0.9468** |
+| 12 | 🟢 Support_Letter | 0.9917 | 0.9544 | 1/1 | **0.9784** |
 
-**Average Overall Score: 0.9268**
+**Average Overall Score: 0.8356**
 
 ## Visual Comparison
 
@@ -33,6 +36,90 @@ Generated: 2026-03-19T09:07:31.956235
 <tr>
   <td><img src="images/20260317_sample_CN_p2_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/20260317_sample_CN_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>20260318_issue</b></td>
+  <td colspan="1">20260318_issue <span style="color:#f85149">⬤</span> 68.7%</td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p8_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p8_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p9_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p9_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p10_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p10_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p11_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/20260318_issue_p11_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p12_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p13_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p14_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p15_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p16_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p17_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p18_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p19_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><img src="images/20260318_issue_p20_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
 </tr>
 <tr>
   <td><b>Class News</b></td>
@@ -67,6 +154,45 @@ Generated: 2026-03-19T09:07:31.956235
   <td><img src="images/Confirmatory_Affidavit_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
+  <td><b>cooperation</b></td>
+  <td colspan="1">cooperation N/A</td>
+</tr>
+<tr>
+  <td colspan="2"><i>No images</i></td>
+</tr>
+<tr>
+  <td><b>Cooperation Agreement Template</b></td>
+  <td colspan="1">Cooperation Agreement Template <span style="color:#3fb950">⬤</span> 98.7%</td>
+</tr>
+<tr>
+  <td><img src="images/Cooperation Agreement Template_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Cooperation Agreement Template_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Cooperation Agreement Template_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Cooperation Agreement Template_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Cooperation Agreement Template_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Cooperation Agreement Template_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Cooperation Agreement Template_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Cooperation Agreement Template_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Cooperation Agreement Template_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Cooperation Agreement Template_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Cooperation Agreement Template_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Cooperation Agreement Template_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Cooperation Agreement Template_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Cooperation Agreement Template_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><b>Invoice</b></td>
   <td colspan="1">Invoice <span style="color:#3fb950">⬤</span> 96.3%</td>
 </tr>
@@ -88,7 +214,7 @@ Generated: 2026-03-19T09:07:31.956235
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 77.8%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.0%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -175,10 +301,6 @@ Generated: 2026-03-19T09:07:31.956235
   <td><i>missing</i></td>
 </tr>
 <tr>
-  <td><img src="images/nthu_article_p22_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>OSCAR WARD</b></td>
   <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 93.9%</td>
 </tr>
@@ -220,7 +342,7 @@ Generated: 2026-03-19T09:07:31.956235
 - **Visual Average:** 0.954
 - **Overall Score:** 0.9744
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=3610200 bytes, Reference=167047 bytes
+- **File Size:** MiniPdf=7281772 bytes, Reference=167047 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -266,6 +388,300 @@ Generated: 2026-03-19T09:07:31.956235
  分析物 保留时间 峰面积 峰高 内标名称 内标峰面积 信噪比 离子比 计算浓度 单位
 
  lxp-1 0.50 1.573e5 2.520e4 lxp-is 3.310e4 1.0 0.084 1.08032
+```
+</details>
+
+### 20260318_issue
+
+- **Text Similarity:** 0.9786
+- **Visual Average:** 0.4884
+- **Overall Score:** 0.6868
+- **Pages:** MiniPdf=20, Reference=11
+- **File Size:** MiniPdf=4079366 bytes, Reference=530444 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/20260318_issue.pdf
++++ reference/20260318_issue.pdf
+@@ -27,207 +27,203 @@
+ 会只鸥硒绥枚既镍舜针延尤穷科农奋丘讯矽银碎氖沥俺课幢五虫险虽夷抠乞侍坪舵峻川彼衷胁唉注茵为链寒部决幼空
+
+ 色寄需伞塘黔脏玖扔办颂漾玫贞汰婆豆契唾藩搁括涩古证宦亲野好于佯贾铣洲刺娶锦趋茶悸仔堰汛凶壳擅套好嘛簧地
+
+ 幌粱搬佐囱庇杉败拓科衡逊肩啥露卖概嚎拐番撬极急
+
+-xxxxxxxxxxx Pro 程序集使用授权合同
+
+----PAGE---
+
+-甲方：南昌 xxxxxxxxx 软件研发工作室
+
++xxxxxxxxxxxPro 程序集使用授权合同
+
++甲方：南昌xxxxxxxxx 软件研发工作室
+
+ 乙方： 123
+
++1 / 11
+
++---PAGE---
+
+ 根据《中华人民共和国合同法》等相关国家及地方有关法律、法
+
+-规，甲方为乙方提供 xxxxxxxPro
+
+-程序集使用授权。在遵循平等、公平、诚实守信原则，经双方协
+
+-商一致，订立本合同。
+
++规，甲方为乙方提供xxxxxxxPro 程序集使用授权。在遵循平等、公
+
++平、诚实守信原则，经双方协商一致，订立本合同。
+
+ 一、定义
+
+ 1.1“合同”系本合同，包括所有的附件和构成本合同的其它文
+
+ 件；合同附件与主合同均具有法律效力。
+
+-1.2“产品”指甲方所提供的 xxxxxxxPro
+
+-程序集、授权密钥或源码。
+
+-1.3“软硬件环境”系指本产品上线运行所需要的场地、计算机硬
+
+-件、配套软件、数据库、网络设备等相关条件的配置及建立。
+
++1.2“产品”指甲方所提供的xxxxxxxPro 程序集、授权密钥或源
+
++码。
+
++1.3“软硬件环境”系指本产品上线运行所需要的场地、计算机
+
++硬件、配套软件、数据库、网络设备等相关条件的配置及建立。
+
+ 二、授权产品的名称：
+
+-个人独立授权 三、授权产品的使用场景
+
+----PAGE---
+
+-请详细描述授权产品的使用场景及产品工作模式，不得少于
+
+-100字。
+
++个人独立授权
+
++2 / 11
+
++---PAGE---
+
++三、授权产品的使用场景
+
++请详细描述授权产品的使用场景及产品工作模式，不得少于100
+
++字。
+
+ 123
+
++3 / 11
+
+ ---PAGE---
+
+ 四、授权内容
+
+-4.1个人版授权
+
+-1.在协议有效期内，甲方授权乙方可将产品只能应用于所属乙
+
+-方（仅指个人）的任何软件（产品）上，可以以此盈利。
+
+-2.在协议有效期内，甲方有义务向乙方提供最新版本的程序
+
+-集。
+
+-4.2企业版授权
+
+-1.在协议有效期内，甲方授权乙方可将产品应用于乙方企业的
+
+-任何软件（产品）上，不限盈利模式。
+
+-2.在协议有效期内，甲方有义务向乙方提供最新版本的程序集
+
+-以及程序集源代码。
+
+-3.在协议有效期内，乙方可以对程序集源码进行修改，但必须
+
+-保留源程序集所有者信息及版权信息。
+
++4.1 个人版授权
+
++1.在协议有效期内，甲方授权乙方可将产品只能应用于所属乙方
+
++（仅指个人）的任何软件（产品）上，可以以此盈利。
+
++2.在协议有效期内，甲方有义务向乙方提供最新版本的程序集。
+
++4.2 企业版授权
+
++1.在协议有效期内，甲方授权乙方可将产品应用于乙方企业的任
+
++何软件（产品）上，不限盈利模式。
+
++2.在协议有效期内，甲方有义务向乙方提供最新版本的程序集以
+
++及程序集源代码。
+
++3.在协议有效期内，乙方可以对程序集源码进行修改，但必须保
+
++留源程序集所有者信息及版权信息。
+
+ 五、授权方式
+
+-5.1个人版授权方式
+
+-可通过 Nuget 下载安装、或者直接下载 dll
+
+-引用，然后使用密钥字符串激活使用。
+
+-5.2企业版授权方式
+
+-可通过 Nuget 下载安装、或者直接下载 dll
+
+-引用，然后使用密钥字符串激活使用。或者直接编译源码使用。
+
++5.1 个人版授权方式
+
++可通过Nuget 下载安装、或者直接下载dll 引用，然后使用密钥
+
++字符串激活使用。
+
++5.2 企业版授权方式
+
++可通过Nuget 下载安装、或者直接下载dll 引用，然后使用密钥
+
++字符串激活使用。或者直接编译源码使用。
+
+ 六、授权范围
+
+-6.1个人版授权范围
+
++6.1 个人版授权范围
+
+ 个人版授权范围包括但不限于：
+
+ 1. 无任何盈利的个人产品。
+
+ 2. 获利方仅是个人的产品。
+
+-3.
+
+----PAGE---
+
+-不包含任何第三方元素（包括但不限于：名称，logo
+
+-等）的个人产品。
+
++4 / 11
+
++---PAGE---
+
++3. 不包含任何第三方元素（包括但不限于：名称，logo 等）的个
+
++人产品。
+
+ 个人版授权范围不包括但不限于：
+
+ 1. 软件产品属于三个人及以上。
+
+ 2. 软件产品为第三方添加了定制元素（包括但不限于：名称，
+
+ logo 等）。
+
+ 3.软件产品属于公司、个体工商户等。
+
+-6.2企业版授权范围
+
++6.2 企业版授权范围
+
+ 甲方授权乙方，可将所购产品应用于属于乙方企业的任意软件
+
+ （产品）上。不限盈利方式。
+
+ 七、授权相关
+
+ 7.1 接受授权名称
+
+-1123   （姓名、昵称或企业全名）
+
+-7.2授权期限
+
++1123 （姓名、昵称或企业全名）
+
++7.2 授权期限
+
+ 自 2026.03.18 到 2099 年 12 月 31 日授权。
+
+-7.3授权费用
+
++7.3 授权费用
+
+ 123 元，大写：壹佰贰拾叁元整 圆，支付至甲方指定账户。
+
+ 账户类型：
+
+ 账户名：
+
+ 订单号： 123
+
+ 备  注：
+
+-7.4授权秘钥
+
+-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
++7.4 授权秘钥
+
++xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxx
+
+ 八、知识产权条款
+
+-8.1甲方保证对所提供的软件产品具有合法版权等知识产权。软
+
++5 / 11
+
++---PAGE---
+
++8.1 甲方保证对所提供的软件产品具有合法版权等知识产权。软
+
+ 件受著作权法及中国和国际著作权条约和其它知识产权法及条约的
+
+ 保护，其所有知识产权归甲方所有。
+
+-8.2本软件产品（包括但不限于本软件产品中所含的任何图象、
+
+----PAGE---
+
++8.2 本软件产品（包括但不限于本软件产品中所含的任何图象、
+
+ 照片、动画、录像、录音、音乐、文字和附加程序（dll））、随附
+
+ 的帮助材料、及本软件产品的任何副本的一切所有权和知识产权，
+
+ 均由甲方拥有。未经甲方另行书面授权，乙方不得超越本合作及软
+
+ 件授权协议复制、使用、传播、转让、修改等。
+
+ 九、乙方及用户使用须知
+
+-9.1为保护用户权益和隐私，本"产品"不含有任何旨在破坏用户
+
++9.1 为保护用户权益和隐私，本"产品"不含有任何旨在破坏用户
+
+ 计算机数据和获取用户隐私信息的
+... (5309 more characters)
+
 ```
 </details>
 
@@ -406,10 +822,10 @@ Generated: 2026-03-19T09:07:31.956235
 ### Confirmatory_Affidavit
 
 - **Text Similarity:** 0.9852
-- **Visual Average:** 0.9709
-- **Overall Score:** 0.9824
+- **Visual Average:** 0.9691
+- **Overall Score:** 0.9817
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=5248 bytes, Reference=91848 bytes
+- **File Size:** MiniPdf=4819 bytes, Reference=91848 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -449,8 +865,6 @@ Generated: 2026-03-19T09:07:31.956235
 
  I hereby certify that the deponent to this affidavit has acknowledged to me that:
 
--a. She knows and understands the contents hereof and that it is true and
-
 +a. She knows and understands the contents hereof and that it is true and correct;
 
 +b. She has no objection to taking the prescribed oath; and
@@ -458,6 +872,8 @@ Generated: 2026-03-19T09:07:31.956235
  Page 1 of 2
 
  ---PAGE---
+
+-a. She knows and understands the contents hereof and that it is true and
 
 -correct;
 
@@ -486,13 +902,172 @@ Generated: 2026-03-19T09:07:31.956235
 ```
 </details>
 
+### cooperation
+
+**Error:** Reference PDF not found
+
+### Cooperation Agreement Template
+
+- **Text Similarity:** 0.9831
+- **Visual Average:** 0.984
+- **Overall Score:** 0.9868
+- **Pages:** MiniPdf=7, Reference=7
+- **File Size:** MiniPdf=4360679 bytes, Reference=139728 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Cooperation Agreement Template.pdf
++++ reference/Cooperation Agreement Template.pdf
+@@ -1,4 +1,4 @@
+-附件1
+
++附件 1
+
+ XXXXXXX 项目
+
+ 合作协议
+
+ （模板）
+
+@@ -15,10 +15,10 @@
+ 电    话：                  地  址：
+
+ 丙    方：
+
+ 电    话：                  地  址：
+
+-经各主体单位友好协商，各主体单位本着互相合作的精神，自愿组成联合体，就《XXXXX项
+
+-目》（以下简称本项目）申报和执行中涉及的内容一致同意签订本协议如下：
+
++经各主体单位友好协商，各主体单位本着互相合作的精神，自愿组成联合体，就《 XXXXX
+
++项目》（以下简称本项目）申报和执行中涉及的内容一致同意签订本协议如下：
+
+ 一、合作模式
+
+-由 （甲方）      作为承担单位， （乙方、丙方） 作为合作单位，组成
+
++由 （甲方） 作为承担单位， （乙方、丙方） 作为合作单位，组成
+
+ 联合体进行联合申报本项目。承担单位负责本项目的一切组织、协调、申报工作，合作单位授权
+
+ 承担单位牵头申报本项目并协助提供申报所需的相关材料。承担单位在申报和执行本项目过程
+
+ 中，与本项目主办单位签署的一切文件和处理本项目有关的一切事务，联合体各方均予以承认并
+
+@@ -27,9 +27,9 @@
+ 二、任务分工
+
+ 联合体各方同意本项目按照如下分工：
+
+ （一）甲方负责：
+
++1.
+
+ — 2 —
+
+ ---PAGE---
+
+-1.
+
+ 2.
+
+ 3.
+
+ ......
+
+@@ -38,7 +38,7 @@
+ 2.
+
+ 3.
+
+ ......
+
+-（三） 丙方负责
+
++（三）丙方负责
+
+ 1.
+
+ 2.
+
+ 3.
+
+@@ -51,9 +51,9 @@
+ 1.
+
+ 2.
+
+ 3.
+
++......
+
+ — 3 —
+
+ ---PAGE---
+
+-......
+
+ （二）乙方的权利和义务
+
+ 1.
+
+ 2.
+
+@@ -75,9 +75,9 @@
+ （三）丙方指定以下账号为唯一收款账号：
+
+ 户    名：
+
+ 账    号：
+
++开户银行：
+
+ — 4 —
+
+ ---PAGE---
+
+-开户银行：
+
+ 甲方向上述账号汇出款项即视为甲方已履行付款义务，在协议履行过程中，因乙方、丙方账
+
+ 户的原因（包括但不限于账号被注销、被冻结等）导致乙方、丙方无法收取款项的，由乙方、丙
+
+ 方承担相应后果。
+
+@@ -98,9 +98,9 @@
+ 1 ）本合同在甲、乙、丙方法人代表或其授权代表签字盖章后生效。
+
+ 2 ）合同一式 陆 份，其中甲方 贰 份，乙方 贰 份，丙方 贰 份。
+
+ 甲方（盖章）：                          乙方（盖章）：
+
++法定代表 / 授权代表（签字）：             法定代表 / 授权代表（签字）：
+
+ — 5 —
+
+ ---PAGE---
+
+-法定代表 / 授权代表（签字）：             法定代表 / 授权代表（签字）：
+
+ 日期：                                  日期：
+
+ 丙方（盖章）：
+
+ 法定代表 / 授权代表（签字）：
+
+```
+</details>
+
 ### Invoice
 
 - **Text Similarity:** 0.9947
 - **Visual Average:** 0.9129
 - **Overall Score:** 0.963
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=20433 bytes, Reference=65867 bytes
+- **File Size:** MiniPdf=20435 bytes, Reference=65867 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -676,11 +1251,11 @@ Generated: 2026-03-19T09:07:31.956235
 
 ### nthu_article
 
-- **Text Similarity:** 0.91
-- **Visual Average:** 0.7842
-- **Overall Score:** 0.7777
-- **Pages:** MiniPdf=22, Reference=20
-- **File Size:** MiniPdf=4499306 bytes, Reference=798510 bytes
+- **Text Similarity:** 0.9074
+- **Visual Average:** 0.8182
+- **Overall Score:** 0.7902
+- **Pages:** MiniPdf=21, Reference=20
+- **File Size:** MiniPdf=4498839 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -716,7 +1291,7 @@ Generated: 2026-03-19T09:07:31.956235
 
  誌謝辭 Acknowledgements (可免)
 
-@@ -20,291 +20,288 @@
+@@ -20,294 +20,288 @@
  名詞附錄 Glossary of Terms (可免)
 
  索引 Index (可免)
@@ -739,6 +1314,10 @@ Generated: 2026-03-19T09:07:31.956235
 
 -（四）版面配置
 
+-包括封面，全書版面配置邊界設定為下上2.54公分，左右 2.9 公分
+
+-二、
+
 +（三） 頁碼編排
 
 +1 ，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i, ii, iii… ）。
@@ -755,9 +1334,9 @@ Generated: 2026-03-19T09:07:31.956235
 
  ---PAGE---
 
--包括封面，全書版面配置邊界設定為下上2.54 公分，左右 2.9 公分
+-封面（與書名頁）、書背格式
 
- 二、封面（與書名頁）、書背格式
++二、封面（與書名頁）、書背格式
 
  封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝
 
@@ -819,9 +1398,9 @@ Generated: 2026-03-19T09:07:31.956235
 
 -（或「圖目次」）二字 16 級標楷體，其下各表（或各圖）用 12
 
--級字。英文與數字用 Times N ew Roman 目次格式如範例 。 E ，表次格式如範例 F
+-級字。英文與數字用 Times N ew Roman 。目次格式如範例 E
 
--，圖次格式如範例 G 。
+-，表次格式如範例 F ，圖次格式如範例 G 。
 
 +摘要應裝訂於論文內。內容應說明研究目的、論述重點、研究方法或程序、
 
@@ -861,6 +1440,8 @@ Generated: 2026-03-19T09:07:31.956235
 
 -（一）」、「1、」、「（1）」…… 等順序表示， 14 級（或 12
 
+-級），左齊。
+
 +（一） 章節標題
 
 +章次與章名間空一格，如「第一章　緒論」。 18 級，標楷體，置中。
@@ -883,16 +1464,12 @@ Generated: 2026-03-19T09:07:31.956235
 
  ---PAGE---
 
--級），左齊。
-
 -（二）內文
 
 -1，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文
 
--中，書名和篇名連用時，省略篇名號，如《莊子‧
-
--
-... (18851 more characters)
+-中，書名和篇
+... (18878 more characters)
 
 ```
 </details>
@@ -964,11 +1541,11 @@ Generated: 2026-03-19T09:07:31.956235
 
 ### SA8000 ch sample
 
-- **Text Similarity:** 0.9932
-- **Visual Average:** 0.8739
+- **Text Similarity:** 0.992
+- **Visual Average:** 0.875
 - **Overall Score:** 0.9468
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=3798304 bytes, Reference=159484 bytes
+- **File Size:** MiniPdf=3798620 bytes, Reference=159484 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1034,7 +1611,7 @@ Generated: 2026-03-19T09:07:31.956235
 
  3、公司推行社会责任的好处（  ABC  ）
 
-@@ -23,7 +23,7 @@
+@@ -23,9 +23,9 @@
  4、劳工标准包括（ ABCDE  ）
 
  A、结社自由与集体谈判权           B、就业的自由选择权、禁止强迫劳动
@@ -1047,9 +1624,15 @@ Generated: 2026-03-19T09:07:31.956235
 
  A、童工     B、强迫性劳动        C、歧视          D、工作时间
 
- 6、中国规定，未成年工是指任何年满     周岁但不满    周岁的工人（ B ）。
+-6、中国规定，未成年工是指任何年满 周岁但不满 周岁的工人（ B ）。
+
++6、中国规定，未成年工是指任何年满     周岁但不满    周岁的工人（ B ）。
 
  A、14 , 16       B、16 , 18        C、16 ， 17      D、17 ， 18
+
+ 7、SA8000 标准中，强迫劳动说法正确的是（  B  ）
+
+ A、监狱劳动                 B、标准禁止一切形式的强迫劳动
 
 @@ -38,17 +38,17 @@
  A、首次会议；    B、收集审核证据； C、确定不符合项并编写不符合项报告；
@@ -1136,18 +1719,8 @@ Generated: 2026-03-19T09:07:31.956235
 
  5.危险源辨识没有包括的内容有（ D  ）
 
--A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在其自身工作场
-
--所的活动。
-
-+A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在其自身工作场所
-
-+的活动。
-
- 6.中国职业健康安全基本方针是（ C  ）
-
- A、百年大计，质量第
-... (452 more characters)
+-A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在
+... (564 more characters)
 
 ```
 </details>
@@ -1155,10 +1728,10 @@ Generated: 2026-03-19T09:07:31.956235
 ### Support_Letter
 
 - **Text Similarity:** 0.9917
-- **Visual Average:** 0.9529
-- **Overall Score:** 0.9778
+- **Visual Average:** 0.9544
+- **Overall Score:** 0.9784
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4658 bytes, Reference=61824 bytes
+- **File Size:** MiniPdf=4663 bytes, Reference=61824 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1219,6 +1792,7 @@ Generated: 2026-03-19T09:07:31.956235
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.7777)
+1. **20260318_issue** (score: 0.6868)
+1. **nthu_article** (score: 0.7902)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

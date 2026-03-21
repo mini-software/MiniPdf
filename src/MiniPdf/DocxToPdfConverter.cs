@@ -126,6 +126,7 @@ internal static class DocxToPdfConverter
             options.MarginBottom = firstLayout.MarginBottom;
             options.MarginLeft = firstLayout.MarginLeft;
             options.MarginRight = firstLayout.MarginRight;
+            options.GridLinePitch = firstLayout.GridLinePitch;
             options.HeaderMargin = firstLayout.HeaderMargin;
             options.FooterMargin = firstLayout.FooterMargin;
         }
@@ -235,8 +236,13 @@ internal static class DocxToPdfConverter
 
         // Render headers and footers text on all pages
         // When full elements are available, use them; otherwise fall back to text-only rendering.
-        var hasHeaderElements = docxDoc.HeaderElements is { Count: > 0 };
-        var hasFooterElements = docxDoc.FooterElements is { Count: > 0 };
+        // Footer/header elements that are all empty (e.g., content is in text boxes) are treated as absent.
+        var hasHeaderElements = docxDoc.HeaderElements is { Count: > 0 }
+            && docxDoc.HeaderElements.Any(e => e is DocxTable
+                || (e is DocxParagraph p && (p.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text)) || p.Images.Count > 0)));
+        var hasFooterElements = docxDoc.FooterElements is { Count: > 0 }
+            && docxDoc.FooterElements.Any(e => e is DocxTable
+                || (e is DocxParagraph p && (p.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text)) || p.Images.Count > 0)));
         if (hasHeaderElements || hasFooterElements)
         {
             var totalPages = pdfDoc.Pages.Count;
@@ -246,13 +252,13 @@ internal static class DocxToPdfConverter
                 if (hasHeaderElements)
                 {
                     var headerStartY = page.Height - options.HeaderMargin;
-                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.HeaderElements!, headerStartY);
+                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.HeaderElements!, headerStartY, pi, totalPages);
                 }
                 if (hasFooterElements)
                 {
                     var footerContentHeight = EstimateElementsHeight(docxDoc.FooterElements!, options);
                     var footerStartY = options.FooterMargin + footerContentHeight;
-                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.FooterElements!, footerStartY);
+                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.FooterElements!, footerStartY, pi, totalPages);
                 }
             }
         }
@@ -347,6 +353,13 @@ internal static class DocxToPdfConverter
         public float CurrentY { get; set; }
         public bool IsTopOfPage { get; set; } = true;
         public float LastParagraphStartY { get; set; }
+        public float LastLineHeight { get; set; }
+        /// <summary>
+        /// Accumulated vertical space from empty paragraphs that overflowed past
+        /// the bottom margin.  Applied at the top of the next page so that spacing
+        /// from empty paragraphs is preserved across page breaks.
+        /// </summary>
+        public float PendingVerticalSpace { get; set; }
 
         public float UsableWidth => Options.PageWidth - Options.MarginLeft - Options.MarginRight;
 
@@ -362,7 +375,15 @@ internal static class DocxToPdfConverter
             {
                 CurrentPage = Doc.AddPage(Options.PageWidth, Options.PageHeight);
                 CurrentY = Options.PageHeight - Options.MarginTop;
+                // Apply accumulated vertical space from empty paragraphs that
+                // overflowed the previous page.
+                if (PendingVerticalSpace > 0)
+                {
+                    CurrentY -= PendingVerticalSpace;
+                    PendingVerticalSpace = 0;
+                }
                 IsTopOfPage = true;
+                LastLineHeight = 0;
             }
         }
 
@@ -376,7 +397,13 @@ internal static class DocxToPdfConverter
         {
             CurrentPage = Doc.AddPage(Options.PageWidth, Options.PageHeight);
             CurrentY = Options.PageHeight - Options.MarginTop;
+            if (PendingVerticalSpace > 0)
+            {
+                CurrentY -= PendingVerticalSpace;
+                PendingVerticalSpace = 0;
+            }
             IsTopOfPage = true;
+            LastLineHeight = 0;
         }
     }
 
@@ -415,10 +442,10 @@ internal static class DocxToPdfConverter
                 }
                 lineHeight = Math.Max(gridPitch, Compat.Ceiling(maxFs / gridPitch) * gridPitch);
             }
-            else if (paragraph.LineSpacingAbsolute)
+            else if (paragraph.LineSpacingAbsolute && !paragraph.LineSpacingExact)
             {
-                // Snap exact/atLeast line spacing to the nearest grid line.
-                // LibreOffice aligns even explicit spacing to the document grid.
+                // Snap atLeast line spacing to the nearest grid line.
+                // Exact line spacing (lineRule="exact") is honoured as-is.
                 lineHeight = Math.Max(gridPitch, Compat.Ceiling(lineHeight / gridPitch) * gridPitch);
             }
         }
@@ -433,12 +460,29 @@ internal static class DocxToPdfConverter
         if (paragraph.Runs.Count == 0 && paragraph.Images.Count == 0 && paragraph.Shading == null
             && (paragraph.Shapes == null || paragraph.Shapes.Count == 0))
         {
-            // Only advance Y on current page — don't trigger a page break
-            if (state.CurrentPage != null)
-                state.AdvanceY(lineHeight);
+            var totalEmptyAdvance = lineHeight;
             var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
+            totalEmptyAdvance += spacingAfterEmpty;
+
             if (state.CurrentPage != null)
-                state.AdvanceY(spacingAfterEmpty);
+            {
+                state.AdvanceY(totalEmptyAdvance);
+                // If the empty paragraph pushed past the bottom margin, accumulate
+                // the overflow as pending vertical space for the next page so that
+                // spacing from empty paragraphs is preserved across page breaks.
+                if (state.CurrentY < state.Options.MarginBottom)
+                {
+                    var overflow = state.Options.MarginBottom - state.CurrentY;
+                    state.PendingVerticalSpace += overflow;
+                    state.CurrentY = state.Options.MarginBottom;
+                }
+            }
+            else
+            {
+                // No page yet — accumulate as pending space
+                state.PendingVerticalSpace += totalEmptyAdvance;
+            }
+            state.LastLineHeight = lineHeight;
             if (paragraph.HasPageBreakAfter)
                 state.ForceNewPage();
             return;
@@ -481,12 +525,22 @@ internal static class DocxToPdfConverter
         // At top of page, offset by font ascent so text visual top aligns with margin.
         // When a document grid is active, center the text within the first grid cell
         // so the baseline position matches LibreOffice's CJK line grid placement.
+        var wasTopOfPage = state.IsTopOfPage;
         if (state.IsTopOfPage)
         {
             var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                 ? (lineHeight + fontSize) / 2f
                 : fontSize * AscentRatio;
             state.AdvanceY(ascentOffset);
+        }
+
+        // When a paragraph's auto line height exceeds the previous paragraph's line
+        // height, the baseline distance must match the larger value to prevent text
+        // overlap (e.g., 36pt text following a 16pt paragraph).
+        if (!wasTopOfPage && !paragraph.LineSpacingAbsolute && state.LastLineHeight > 0
+            && lineHeight > state.LastLineHeight)
+        {
+            state.AdvanceY(lineHeight - state.LastLineHeight);
         }
 
         // Track paragraph start position for borders and floating textboxes
@@ -636,6 +690,25 @@ internal static class DocxToPdfConverter
         // Merge consecutive runs with identical formatting to reduce text extraction artifacts
         var mergedRuns = MergeConsecutiveRuns(paragraph.Runs, fontSize);
 
+        // Suppress underline on trailing whitespace-only runs when the paragraph
+        // already has underline context (paragraph mark underline or any preceding
+        // run with explicit <w:u> declaration). In such cases the underlined spaces
+        // are paragraph mark formatting artifacts, not intentional form-fill lines.
+        if (mergedRuns.Count >= 2)
+        {
+            var lastRun = mergedRuns[^1];
+            if (lastRun.Underline && !string.IsNullOrEmpty(lastRun.Text) && string.IsNullOrWhiteSpace(lastRun.Text))
+            {
+                var hasUnderlineContext = paragraph.ParagraphMarkUnderline
+                    || mergedRuns.Take(mergedRuns.Count - 1).Any(r =>
+                        !string.IsNullOrWhiteSpace(r.Text) && r.HasExplicitUnderlineDecl);
+                if (hasUnderlineContext)
+                {
+                    mergedRuns[^1] = lastRun with { Underline = false };
+                }
+            }
+        }
+
         var hasVaryingFormat = false;
         if (mergedRuns.Count > 1)
         {
@@ -664,7 +737,7 @@ internal static class DocxToPdfConverter
             // Render each run individually on the same line
             RenderMultiFormatRuns(state, new DocxParagraph(mergedRuns, paragraph.Images, paragraph.Alignment,
                 paragraph.SpacingBefore, paragraph.SpacingAfter, paragraph.LineSpacing, paragraph.LineSpacingAbsolute,
-                paragraph.IndentLeft, paragraph.IndentRight, paragraph.IndentFirstLine,
+                paragraph.LineSpacingExact, paragraph.IndentLeft, paragraph.IndentRight, paragraph.IndentFirstLine,
                 paragraph.IsBulletList, paragraph.IsNumberedList, paragraph.ListLevel, paragraph.ListText,
                 paragraph.StyleId, paragraph.Bold, paragraph.Italic, paragraph.FontSize, paragraph.Color,
                 paragraph.HasPageBreakBefore, paragraph.HasPageBreakAfter, paragraph.Shading, paragraph.TabStops,
@@ -783,6 +856,8 @@ internal static class DocxToPdfConverter
         // Apply spacing after
         var spacingAfter = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
         state.AdvanceY(spacingAfter);
+
+        state.LastLineHeight = lineHeight;
 
         // Handle page break after
         if (paragraph.HasPageBreakAfter)
@@ -927,11 +1002,14 @@ internal static class DocxToPdfConverter
             var curFs = current.FontSize > 0 ? current.FontSize : defaultFontSize;
             var nextFs = next.FontSize > 0 ? next.FontSize : defaultFontSize;
             // Whitespace-only runs are format-agnostic (invisible characters have no visible color/bold)
+            // EXCEPT for underline: underlined spaces create a visible line and must be preserved.
             var isWhitespaceOnly = string.IsNullOrWhiteSpace(next.Text);
             var isCurWhitespace = string.IsNullOrWhiteSpace(current.Text);
             var colorMatch = current.Color == next.Color || isWhitespaceOnly || isCurWhitespace;
             var boldMatch = current.Bold == next.Bold || isWhitespaceOnly || isCurWhitespace;
-            var underlineMatch = current.Underline == next.Underline || isWhitespaceOnly || isCurWhitespace;
+            var underlineMatch = current.Underline == next.Underline
+                || (isWhitespaceOnly && !next.Underline)
+                || (isCurWhitespace && !current.Underline);
             var charSpacingMatch = Math.Abs(current.CharSpacing - next.CharSpacing) < 0.01f || isWhitespaceOnly || isCurWhitespace;
             var fontNameMatch = string.Equals(current.FontName, next.FontName, StringComparison.OrdinalIgnoreCase) || isWhitespaceOnly || isCurWhitespace;
             if (Math.Abs(curFs - nextFs) < 0.01f && colorMatch && boldMatch && underlineMatch && charSpacingMatch && fontNameMatch
@@ -975,6 +1053,46 @@ internal static class DocxToPdfConverter
         var isFirstLine = true;
         var rightEdge = state.Options.MarginLeft + state.UsableWidth - paragraph.IndentRight;
 
+        // For center/right alignment, pre-calculate total line width of all runs
+        // and offset the starting X position.
+        // Use Helvetica widths (useCalibri=false) because the multi-format path
+        // renders each run individually without Tz compression, so positioning
+        // must match the actual rendered (Helvetica) glyph widths.
+        if (paragraph.Alignment is "center" or "right")
+        {
+            var totalWidth = 0f;
+            string? prevRunTextPre = null;
+            foreach (var r in paragraph.Runs)
+            {
+                if (string.IsNullOrEmpty(r.Text)) continue;
+                var rFs = r.FontSize > 0 ? r.FontSize : defaultFontSize;
+                // Remove hard line breaks for width estimation (only first line matters for single-line case)
+                var rText = r.Text.Replace("\n", "");
+                rText = ExpandTabs(rText, rFs, paragraph.TabStops, false);
+                rText = AddInterScriptSpacing(rText);
+                // Add inter-script gap at run boundaries (Latin↔CJK)
+                if (prevRunTextPre != null && rText.Length > 0
+                    && NeedInterRunScriptGap(prevRunTextPre, rText))
+                {
+                    totalWidth += rFs * 500f / 1000f;
+                }
+                totalWidth += EstimateWrapTextWidth(rText, rFs, r.Bold, r.CharSpacing, false);
+                prevRunTextPre = rText;
+            }
+            var lineW = isFirstLine ? firstLineWidth : availableWidth;
+            var offset = paragraph.Alignment == "center"
+                ? (lineW - totalWidth) / 2
+                : lineW - totalWidth;
+            currentX += offset;
+        }
+
+        // Detect CJK context: if any run contains CJK text, whitespace-only
+        // underlined runs should use CJK half-width (500/1000) for space metrics
+        // to match Word/LibreOffice rendering of form-fill underline lines.
+        var hasCjkContext = paragraph.Runs.Any(r =>
+            !string.IsNullOrEmpty(r.Text) && r.Text.Any(c => c >= '\u2E80'));
+
+        string? prevRenderedSegment = null;
         foreach (var run in paragraph.Runs)
         {
             if (string.IsNullOrEmpty(run.Text)) continue;
@@ -1005,14 +1123,33 @@ internal static class DocxToPdfConverter
                     isFirstLine = false;
                 }
 
-                var useCalibri = state.Options.UseCalibriWidths;
+                // For centered/right text, use Helvetica widths for positioning
+                // (matches actual rendering; multi-format runs have no Tz compression).
+                // For left-aligned text, keep Calibri widths to preserve layout matching.
+                var isCenterRight = paragraph.Alignment is "center" or "right";
+                var useCalibri = isCenterRight ? false : state.Options.UseCalibriWidths;
                 var segment = ExpandTabs(hardLines[hi], runFs, paragraph.TabStops, useCalibri);
                 segment = AddInterScriptSpacing(segment);
                 if (string.IsNullOrEmpty(segment)) continue;
 
-                // Avoid adding extra space across run boundaries. We only apply
-                // inter-script spacing inside each segment via AddInterScriptSpacing,
-                // which has stricter trigger conditions.
+                // Add inter-script gap at run boundaries (Latin↔CJK) for centered/right text
+                if (isCenterRight && prevRenderedSegment != null && NeedInterRunScriptGap(prevRenderedSegment, segment))
+                {
+                    currentX += runFs * 500f / 1000f;
+                }
+                prevRenderedSegment = segment;
+
+                // For whitespace-only underlined runs in CJK context, use CJK half-width
+                // space metric (500/1000) for layout and underline width calculation.
+                var isWhitespaceUnderline = run.Underline && string.IsNullOrWhiteSpace(segment) && hasCjkContext;
+                var cjkSpaceWidth = isWhitespaceUnderline ? runFs * 500f / 1000f : 0f;
+
+                // When segment contains CJK characters, the PDF renderer uses CJK fonts
+                // for the entire text block, so ASCII spaces use CJK half-width (500/1000).
+                var segmentHasCjk = hasCjkContext && segment.Any(c => c >= '\u2E80');
+                var effectiveSpaceWidth = (isWhitespaceUnderline || segmentHasCjk)
+                    ? runFs * 500f / 1000f
+                    : runFs * GetWrapCharWidth(' ', useCalibri) / 1000f;
 
                 // Split segment by spaces for word wrapping, but accumulate text
                 // per line to produce fewer AddText calls (improves text extraction).
@@ -1024,34 +1161,48 @@ internal static class DocxToPdfConverter
                 {
                     var word = words[wi];
                     var wordWidth = EstimateWrapTextWidth(word, runFs, run.Bold, run.CharSpacing, useCalibri);
-                    var spaceWidth = wi > 0 ? runFs * GetWrapCharWidth(' ', useCalibri) / 1000f + run.CharSpacing : 0;
+                    var spaceWidth = wi > 0
+                        ? effectiveSpaceWidth + run.CharSpacing
+                        : 0;
 
                     // Check if word fits on current line
                     if (currentX + spaceWidth + wordWidth > rightEdge && (pendingText.Length > 0 || currentX > baseX + 1))
                     {
-                        // Flush pending text before wrapping
-                        if (pendingText.Length > 0)
+                        // When pendingText is empty and the word contains CJK characters,
+                        // skip wrapping to fill remaining space on the current line.
+                        // The CJK break loop below will split the text at character boundaries.
+                        var remainingWidth = rightEdge - currentX - spaceWidth;
+                        var canCjkBreak = pendingText.Length == 0
+                            && word.Length > 1
+                            && remainingWidth >= runFs * 0.9f
+                            && word.Any(c => c >= '\u2E80');
+
+                        if (!canCjkBreak)
                         {
-                            state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName);
-                            pendingText = "";
+                            // Flush pending text before wrapping
+                            if (pendingText.Length > 0)
+                            {
+                                state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName);
+                                pendingText = "";
+                            }
+                            // Wrap to next line
+                            if (!state.IsTopOfPage && state.CurrentY - lineHeight < state.Options.MarginBottom)
+                                state.ForceNewPage();
+                            else
+                                state.AdvanceY(lineHeight);
+                            state.EnsurePage();
+                            if (state.IsTopOfPage)
+                            {
+                                var wrapAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
+                                    ? (lineHeight + runFs) / 2f
+                                    : runFs * AscentRatio;
+                                state.AdvanceY(wrapAscentOffset);
+                            }
+                            currentX = baseX;
+                            pendingX = currentX;
+                            isFirstLine = false;
+                            spaceWidth = 0;
                         }
-                        // Wrap to next line
-                        if (!state.IsTopOfPage && state.CurrentY - lineHeight < state.Options.MarginBottom)
-                            state.ForceNewPage();
-                        else
-                            state.AdvanceY(lineHeight);
-                        state.EnsurePage();
-                        if (state.IsTopOfPage)
-                        {
-                            var wrapAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
-                                ? (lineHeight + runFs) / 2f
-                                : runFs * AscentRatio;
-                            state.AdvanceY(wrapAscentOffset);
-                        }
-                        currentX = baseX;
-                        pendingX = currentX;
-                        isFirstLine = false;
-                        spaceWidth = 0;
                     }
 
                     if (wi > 0)
@@ -1071,13 +1222,15 @@ internal static class DocxToPdfConverter
                         for (var ci = 0; ci < pendingText.Length; ci++)
                         {
                             accWidth += runFs * GetWrapCharWidth(pendingText[ci], useCalibri) / 1000f;
-                            if (pendingX + accWidth > rightEdge && breakAt >= 0)
-                                break;
+                            // Update break point before overflow check so the last
+                            // fitting character is included on the current line.
                             if (ci > 0 && (GetWrapCharWidth(pendingText[ci], useCalibri) == 1000 || GetWrapCharWidth(pendingText[ci - 1], useCalibri) == 1000))
                             {
                                 if (!IsNoStartChar(pendingText[ci]))
                                     breakAt = ci;
                             }
+                            if (pendingX + accWidth > rightEdge && breakAt >= 0)
+                                break;
                         }
                         if (breakAt <= 0) break;
                         state.CurrentPage!.AddText(pendingText[..breakAt], pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName);
@@ -1103,7 +1256,13 @@ internal static class DocxToPdfConverter
                 // Flush remaining text for this segment
                 if (pendingText.Length > 0)
                 {
-                    state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName);
+                    // For whitespace-only underlined runs in CJK context, pass explicit
+                    // underline width based on CJK space metric so the form-fill line
+                    // matches Word/LibreOffice rendering width.
+                    float? ulWidth = isWhitespaceUnderline
+                        ? pendingText.Length * cjkSpaceWidth
+                        : null;
+                    state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName, underlineWidth: ulWidth);
                 }
 
             }
@@ -1276,7 +1435,11 @@ internal static class DocxToPdfConverter
                 case DocxParagraph para:
                 {
                     var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
-                    var lineHeight = fontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+                    float lineHeight;
+                    if (para.LineSpacingAbsolute && para.LineSpacing > 0)
+                        lineHeight = para.LineSpacing; // exact/atLeast: absolute points
+                    else
+                        lineHeight = fontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
                     var usableW = options.PageWidth - options.MarginLeft - options.MarginRight;
                     foreach (var image in para.Images)
                     {
@@ -1318,7 +1481,7 @@ internal static class DocxToPdfConverter
     /// at the specified starting Y position, flowing downward.
     /// </summary>
     private static void RenderHeaderFooterElementsOnPage(PdfPage page, ConversionOptions options,
-        List<DocxElement> elements, float startY)
+        List<DocxElement> elements, float startY, int pageIndex = 0, int totalPages = 1)
     {
         const float emuPerPt = 914400f / 72f;
         var y = startY;
@@ -1350,14 +1513,20 @@ internal static class DocxToPdfConverter
                             y -= imgH + 1f;
                         }
                     }
-                    // Render text runs
-                    var text = string.Concat(para.Runs.Select(r => r.Text));
+                    // Render text runs (substitute page number placeholders)
+                    var text = string.Concat(para.Runs.Select(r => r.Text))
+                        .Replace("{PAGE}", (pageIndex + 1).ToString())
+                        .Replace("{NUMPAGES}", totalPages.ToString());
                     if (!string.IsNullOrEmpty(text))
                     {
                         var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
                         var firstRun = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
                         var runFontSize = firstRun?.FontSize > 0 ? firstRun.FontSize : fontSize;
-                        var lineHeight = runFontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+                        float lineHeight;
+                        if (para.LineSpacingAbsolute && para.LineSpacing > 0)
+                            lineHeight = para.LineSpacing;
+                        else
+                            lineHeight = runFontSize * FontMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
                         var textWidth = EstimateTextWidth(text, runFontSize);
                         var textX = para.Alignment switch
                         {
@@ -2157,8 +2326,11 @@ internal static class DocxToPdfConverter
     private static float EstimateTextWidth(string text, float fontSize, float charSpacing = 0)
     {
         float totalUnits = 0;
+        bool hasCjk = false;
+        foreach (var c in text)
+            if (c >= '\u2E80') { hasCjk = true; break; }
         foreach (var ch in text)
-            totalUnits += GetHelveticaCharWidth(ch);
+            totalUnits += (hasCjk && ch == ' ') ? 500 : GetHelveticaCharWidth(ch);
         var width = fontSize * totalUnits / 1000f;
         if (charSpacing != 0 && text.Length > 1)
             width += charSpacing * (text.Length - 1);
@@ -2172,11 +2344,19 @@ internal static class DocxToPdfConverter
     {
         float latinUnits = 0;
         float cjkUnits = 0;
+        // When text contains CJK characters, the PDF renderer uses CJK fonts for the
+        // entire text block (including ASCII spaces). CJK fonts render space at 500/1000,
+        // not at the Calibri width (226/1000). Detect CJK context to use correct metrics.
+        bool hasCjk = false;
+        foreach (var c in text)
+            if (c >= '\u2E80') { hasCjk = true; break; }
         foreach (var ch in text)
         {
             var w = GetCalibrCharWidth(ch);
             if (w == 1000 && ch >= '\u2E80') // CJK full-width characters
                 cjkUnits += w;
+            else if (hasCjk && ch == ' ')
+                cjkUnits += 500; // CJK font renders space at half-width
             else
                 latinUnits += w;
         }
@@ -2295,6 +2475,37 @@ internal static class DocxToPdfConverter
         var leftHasLetter = leftLatinLen > 0 && ContainsAsciiLetter(text, boundaryIndex - leftLatinLen, leftLatinLen);
         var rightHasLetter = rightLatinLen > 0 && ContainsAsciiLetter(text, boundaryIndex, rightLatinLen);
         return leftHasLetter || rightHasLetter;
+    }
+
+    /// <summary>
+    /// Checks whether a CJK half-width space gap should be inserted between two
+    /// consecutive runs at a Latin↔CJK script boundary. Mirrors the conditions
+    /// in <see cref="ShouldInsertInterScriptSpace"/> but operates across runs.
+    /// </summary>
+    private static bool NeedInterRunScriptGap(string prevText, string nextText)
+    {
+        if (string.IsNullOrEmpty(prevText) || string.IsNullOrEmpty(nextText)) return false;
+        var left = prevText[^1];
+        var right = nextText[0];
+        var hasBoundary = (IsLatinOrDigit(left) && IsCjkIdeograph(right))
+            || (IsCjkIdeograph(left) && IsLatinOrDigit(right));
+        if (!hasBoundary) return false;
+
+        if (IsLatinOrDigit(left))
+        {
+            var len = CountContiguousLatinOrDigitLeft(prevText, prevText.Length - 1);
+            if (len < 2) return false;
+            if (IsAsciiDigitsOnly(prevText, prevText.Length - len, len)) return false;
+            if (!ContainsAsciiLetter(prevText, prevText.Length - len, len)) return false;
+        }
+        if (IsLatinOrDigit(right))
+        {
+            var len = CountContiguousLatinOrDigitRight(nextText, 0);
+            if (len < 2) return false;
+            if (IsAsciiDigitsOnly(nextText, 0, len)) return false;
+            if (!ContainsAsciiLetter(nextText, 0, len)) return false;
+        }
+        return true;
     }
 
     private static int CountContiguousLatinOrDigitLeft(string text, int start)

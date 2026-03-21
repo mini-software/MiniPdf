@@ -79,6 +79,31 @@ internal sealed class PdfWriter
                     }
                 }
             }
+
+        // Also collect WinAnsi code points from blocks that specify a preferred
+        // font name.  Without this, pure-Latin blocks (e.g. "1.", "— 2 —")
+        // would fall back to the built-in Helvetica instead of the document's
+        // intended font (e.g. Times New Roman).
+        foreach (var page in pages)
+            foreach (var block in page.TextBlocks)
+            {
+                if (string.IsNullOrWhiteSpace(block.PreferredFontName)) continue;
+                bool allWinAnsi = true;
+                foreach (var ch in block.Text)
+                    if (!IsWinAnsiHandled(ch)) { allWinAnsi = false; break; }
+                if (!allWinAnsi) continue; // already handled above
+                var cps = EnumerateCodePoints(block.Text).ToList();
+                foreach (var cp in cps)
+                {
+                    unicodeCodePoints.Add(cp);
+                    if (!preferredFontsByCodePoint.ContainsKey(cp))
+                        preferredFontsByCodePoint[cp] = block.PreferredFontName!;
+                    if (!cpsByPreferredFont.TryGetValue(block.PreferredFontName!, out var set))
+                        cpsByPreferredFont[block.PreferredFontName!] = set = new HashSet<int>();
+                    set.Add(cp);
+                }
+            }
+
         var needsUnicodeFont = unicodeCodePoints.Count > 0;
 
         // ── Multi-font discovery ───────────────────────────────────────────
@@ -115,6 +140,10 @@ internal sealed class PdfWriter
             if (!string.IsNullOrWhiteSpace(document.PreferredCjkFontName))
                 PrioritizePreferredCjkFont(candidatePaths, document.PreferredCjkFontName);
 
+            // Dynamically add font files for non-CJK fonts referenced by text blocks
+            // (e.g. "Times New Roman" from DOCX runs) so they can be embedded.
+            AddPreferredFontCandidates(candidatePaths, cpsByPreferredFont.Keys);
+
             foreach (var path in candidatePaths)
             {
                 try
@@ -124,7 +153,7 @@ internal sealed class PdfWriter
                     if (cmap.Count == 0) continue;
                     var (advances, upm) = ParseHmtxWidths(ttf);
                     var (asc, desc, capH, bbox) = ParseFontMetrics(ttf);
-                    var name = System.IO.Path.GetFileNameWithoutExtension(path);
+                    var name = ReadFontFamilyName(ttf) ?? System.IO.Path.GetFileNameWithoutExtension(path);
                     loadedFonts.Add((ttf, cmap, advances, upm, asc, desc, capH, bbox, name));
                 }
                 catch { /* skip fonts that fail to parse */ }
@@ -260,7 +289,9 @@ internal sealed class PdfWriter
 
                 embeddedFonts.Add(new EmbeddedFontInfo
                 {
-                    FontName = name,
+                    // PDF name objects cannot contain unescaped spaces; sanitize
+                    // by replacing spaces with hyphens (e.g. "Times New Roman" → "Times-New-Roman").
+                    FontName = name.Replace(' ', '-'),
                     CompressedFontData = compressedFont,
                     CidToGidMapData = cidToGid,
                     WArrayString = wArray,
@@ -720,7 +751,15 @@ internal sealed class PdfWriter
                 sb.Append($"{cx} {cy} {cw} {ch} re W n\n");
             }
 
-            if (!hasUnicodeFont || !block.Text.Any(c => !IsWinAnsiHandled(c)))
+            // When the block specifies a preferred font that is available as an
+            // embedded font, route even pure-WinAnsi text through the Unicode path
+            // so it renders with the correct typeface (e.g. Times New Roman, not Helvetica).
+            var blockHasEmbeddedPref = hasUnicodeFont
+                && fontNameToSlot != null
+                && !string.IsNullOrWhiteSpace(block.PreferredFontName)
+                && fontNameToSlot.ContainsKey(block.PreferredFontName!);
+
+            if (!hasUnicodeFont || (!block.Text.Any(c => !IsWinAnsiHandled(c)) && !blockHasEmbeddedPref))
             {
                 // Pure Latin-1 text — use F1 (Helvetica) or F1B (Helvetica-Bold)
                 var fontName = block.Bold ? "F1B" : "F1";
@@ -848,8 +887,8 @@ internal sealed class PdfWriter
             // Render underline as a line below the text
             if (block.Underline)
             {
-                var textWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing);
-                if (block.MaxWidth.HasValue && textWidth > block.MaxWidth.Value)
+                var textWidth = block.UnderlineWidth ?? MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing);
+                if (!block.UnderlineWidth.HasValue && block.MaxWidth.HasValue && textWidth > block.MaxWidth.Value)
                     textWidth = block.MaxWidth.Value;
                 var ulY = block.Y - block.FontSize * 0.15f; // position below baseline
                 var ulThickness = Math.Max(0.5f, block.FontSize * 0.05f);
@@ -1355,6 +1394,12 @@ internal sealed class PdfWriter
             || name.Contains("microsoft yahei", StringComparison.OrdinalIgnoreCase)
             || name.Contains("yahei", StringComparison.OrdinalIgnoreCase))
             return "microsoftyahei";
+        if (name.Contains("黑体", StringComparison.Ordinal)
+            || name.Contains("simhei", StringComparison.OrdinalIgnoreCase))
+            return "simhei";
+        if (name.Contains("宋体", StringComparison.Ordinal)
+            || name.Contains("simsun", StringComparison.OrdinalIgnoreCase))
+            return "simsun";
 
         var sb = new StringBuilder(name.Length);
         foreach (var ch in name)
@@ -1525,6 +1570,28 @@ internal sealed class PdfWriter
     };
 
     /// <summary>
+    /// Maps common Latin / non-CJK font names to their Windows font file names.
+    /// Used to dynamically load fonts referenced by DOCX runs.
+    /// </summary>
+    private static readonly Dictionary<string, string[]> LatinFontFileMap = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Times New Roman"] = ["times.ttf"],
+        ["Calibri"] = ["calibri.ttf"],
+        ["Cambria"] = ["cambria.ttc"],
+        ["Courier New"] = ["cour.ttf"],
+        ["Verdana"] = ["verdana.ttf"],
+        ["Georgia"] = ["georgia.ttf"],
+        ["Trebuchet MS"] = ["trebuc.ttf"],
+        ["Tahoma"] = ["tahoma.ttf"],
+        ["Garamond"] = ["GARA.TTF"],
+        ["Book Antiqua"] = ["BKANT.TTF"],
+        ["Palatino Linotype"] = ["pala.ttf"],
+        ["Century"] = ["CENTUR.TTF", "CENTURY.TTF"],
+        ["Liberation Serif"] = ["LiberationSerif-Regular.ttf"],
+        ["Liberation Sans"] = ["LiberationSans-Regular.ttf"],
+    };
+
+    /// <summary>
     /// Reorders the font candidate list to prioritize the document's preferred CJK font.
     /// Moves matching font file(s) to the front of the list.
     /// </summary>
@@ -1562,6 +1629,38 @@ internal sealed class PdfWriter
                 {
                     candidatePaths.Insert(0, p);
                     return;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Adds font file paths for preferred font names that are not already
+    /// covered by the candidate list.  Checks both CjkFontFileMap and
+    /// LatinFontFileMap to resolve font names to system font files.
+    /// </summary>
+    private static void AddPreferredFontCandidates(List<string> candidatePaths, IEnumerable<string> preferredFontNames)
+    {
+        if (!Compat.IsWindows()) return; // Linux/macOS handled separately
+
+        var fontDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
+        var existingFiles = new HashSet<string>(candidatePaths.Select(p => Path.GetFileName(p)), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var fontName in preferredFontNames)
+        {
+            string[]? files = null;
+            if (!CjkFontFileMap.TryGetValue(fontName, out files))
+                LatinFontFileMap.TryGetValue(fontName, out files);
+            if (files == null) continue;
+
+            foreach (var file in files)
+            {
+                if (existingFiles.Contains(file)) continue;
+                var p = Path.Combine(fontDir, file);
+                if (File.Exists(p))
+                {
+                    candidatePaths.Add(p);
+                    existingFiles.Add(file);
                 }
             }
         }
@@ -1772,6 +1871,55 @@ internal sealed class PdfWriter
                 return (ReadU32(ttf, entryOff + 8), ReadU32(ttf, entryOff + 12));
         }
         return (0, 0);
+    }
+
+    /// <summary>
+    /// Reads the font family name (nameID=1) from the TTF 'name' table.
+    /// Prefers Windows platform (platformID=3) with Unicode BMP (encodingID=1).
+    /// Falls back to Mac Roman (platformID=1).
+    /// </summary>
+    private static string? ReadFontFamilyName(byte[] ttf)
+    {
+        var (off, len) = FindTable(ttf, "name");
+        if (off == 0 || len == 0) return null;
+
+        var tableOff = (int)off;
+        // Format 0/1 header: UInt16 format, UInt16 count, UInt16 stringOffset
+        if (tableOff + 6 > ttf.Length) return null;
+        var count = ReadU16(ttf, tableOff + 2);
+        var stringOffset = tableOff + ReadU16(ttf, tableOff + 4);
+
+        string? windowsName = null;
+        string? macName = null;
+
+        for (var i = 0; i < count; i++)
+        {
+            var recOff = tableOff + 6 + i * 12;
+            if (recOff + 12 > ttf.Length) break;
+
+            var platformId = ReadU16(ttf, recOff);
+            var encodingId = ReadU16(ttf, recOff + 2);
+            var nameId = ReadU16(ttf, recOff + 6);
+            var length = ReadU16(ttf, recOff + 8);
+            var offset = ReadU16(ttf, recOff + 10);
+
+            if (nameId != 1) continue; // nameID 1 = Font Family name
+
+            var strOff = stringOffset + (int)offset;
+            if (strOff + length > ttf.Length) continue;
+
+            if (platformId == 3 && encodingId == 1) // Windows Unicode BMP
+            {
+                windowsName = Encoding.BigEndianUnicode.GetString(ttf, strOff, length);
+            }
+            else if (platformId == 1 && encodingId == 0 && macName == null) // Mac Roman
+            {
+                macName = Encoding.ASCII.GetString(ttf, strOff, length);
+            }
+        }
+
+        var result = windowsName ?? macName;
+        return string.IsNullOrWhiteSpace(result) ? null : result;
     }
 
     /// <summary>

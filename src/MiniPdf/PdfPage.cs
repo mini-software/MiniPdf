@@ -137,10 +137,11 @@ internal sealed class PdfPage
     /// <param name="charSpacing">Character spacing in points (PDF Tc).</param>
     /// <param name="wordSpacing">Word spacing in points (PDF Tw).</param>
     /// <param name="preferredFontName">Optional preferred Unicode font family hint.</param>
+    /// <param name="underlineWidth">Optional explicit underline width override in points.</param>
     /// <returns>The current page for chaining.</returns>
-    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null)
+    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null)
     {
-        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, underline, charSpacing, wordSpacing, preferredFontName));
+        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, underline, charSpacing, wordSpacing, preferredFontName, underlineWidth));
         return this;
     }
 

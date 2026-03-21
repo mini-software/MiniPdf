@@ -74,7 +74,14 @@ internal sealed class PdfTextBlock
     /// </summary>
     public string? PreferredFontName { get; }
 
-    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null)
+    /// <summary>
+    /// Optional explicit underline width in points. When set, overrides the
+    /// auto-calculated Helvetica-based width for the underline line.
+    /// Used for CJK form-fill lines where space characters are wider than Helvetica metrics.
+    /// </summary>
+    public float? UnderlineWidth { get; }
+
+    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null)
     {
         Text = text;
         X = x;
@@ -88,5 +95,6 @@ internal sealed class PdfTextBlock
         CharSpacing = charSpacing;
         WordSpacing = wordSpacing;
         PreferredFontName = preferredFontName;
+        UnderlineWidth = underlineWidth;
     }
 }
