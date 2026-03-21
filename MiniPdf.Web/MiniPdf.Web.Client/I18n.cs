@@ -70,6 +70,8 @@ public class I18n
             ["CustomFontLoaded"] = "Custom font loaded: {0}",
             ["SelectFontFile"] = "Select Font File",
             ["UnsupportedFontFile"] = "Unsupported font format. Please select a .ttf or .otf file.",
+            ["ModeBrowser"] = "Browser",
+            ["ModeApi"] = "Cloud API",
         },
         ["zh-CN"] = new()
         {
@@ -100,6 +102,8 @@ public class I18n
             ["CustomFontLoaded"] = "已加载自定义字体：{0}",
             ["SelectFontFile"] = "选择字体文件",
             ["UnsupportedFontFile"] = "不支持的字体格式。请选择 .ttf 或 .otf 文件。",
+            ["ModeBrowser"] = "浏览器",
+            ["ModeApi"] = "云端 API",
         },
         ["zh-TW"] = new()
         {
@@ -130,6 +134,8 @@ public class I18n
             ["CustomFontLoaded"] = "已載入自訂字型：{0}",
             ["SelectFontFile"] = "選擇字型檔案",
             ["UnsupportedFontFile"] = "不支援的字型格式。請選擇 .ttf 或 .otf 檔案。",
+            ["ModeBrowser"] = "瀏覽器",
+            ["ModeApi"] = "雲端 API",
         },
         ["ja"] = new()
         {
@@ -160,6 +166,8 @@ public class I18n
             ["CustomFontLoaded"] = "カスタムフォントを読み込みました：{0}",
             ["SelectFontFile"] = "フォントファイルを選択",
             ["UnsupportedFontFile"] = "サポートされていないフォント形式です。.ttf または .otf ファイルを選択してください。",
+            ["ModeBrowser"] = "ブラウザ",
+            ["ModeApi"] = "クラウド API",
         },
         ["ko"] = new()
         {
@@ -190,6 +198,8 @@ public class I18n
             ["CustomFontLoaded"] = "사용자 정의 글꼴 로드됨: {0}",
             ["SelectFontFile"] = "글꼴 파일 선택",
             ["UnsupportedFontFile"] = "지원되지 않는 글꼴 형식입니다. .ttf 또는 .otf 파일을 선택하세요.",
+            ["ModeBrowser"] = "브라우저",
+            ["ModeApi"] = "클라우드 API",
         },
         ["fr"] = new()
         {
@@ -220,6 +230,8 @@ public class I18n
             ["CustomFontLoaded"] = "Police personnalisée chargée : {0}",
             ["SelectFontFile"] = "Sélectionner un fichier de police",
             ["UnsupportedFontFile"] = "Format de police non pris en charge. Veuillez sélectionner un fichier .ttf ou .otf.",
+            ["ModeBrowser"] = "Navigateur",
+            ["ModeApi"] = "API Cloud",
         },
         ["it"] = new()
         {
@@ -250,6 +262,8 @@ public class I18n
             ["CustomFontLoaded"] = "Font personalizzato caricato: {0}",
             ["SelectFontFile"] = "Seleziona file font",
             ["UnsupportedFontFile"] = "Formato font non supportato. Seleziona un file .ttf o .otf.",
+            ["ModeBrowser"] = "Browser",
+            ["ModeApi"] = "API Cloud",
         },
     };
 }

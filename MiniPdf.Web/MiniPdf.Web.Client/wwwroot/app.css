@@ -115,6 +115,40 @@ h1:focus { outline: none; }
 
 .subtitle a:hover { text-decoration: underline; }
 
+/* ===== Mode Toggle ===== */
+.mode-toggle {
+    display: flex;
+    gap: .5rem;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+}
+
+.mode-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .45rem 1rem;
+    font-size: .85rem;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.mode-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.mode-btn.active {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
 /* ===== Drop Zone ===== */
 .drop-zone {
     position: relative;

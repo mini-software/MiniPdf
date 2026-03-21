@@ -28,6 +28,17 @@
     </div>
     <p class="subtitle">@L.T("Subtitle") &mdash; @L.T("PoweredBy") <a href="https://github.com/mini-software/MiniPdf" target="_blank">MiniPdf</a></p>
 
+    <div class="mode-toggle">
+        <button class="mode-btn @(useApi ? "" : "active")" @onclick="() => SetMode(false)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            @L.T("ModeBrowser")
+        </button>
+        <button class="mode-btn @(useApi ? "active" : "")" @onclick="() => SetMode(true)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            @L.T("ModeApi")
+        </button>
+    </div>
+
     <div class="drop-zone @(isDragOver ? "drag-over" : "")"
          @ondragenter="HandleDragEnter"
          @ondragleave="HandleDragLeave"
@@ -81,7 +92,7 @@
         }
     </button>
 
-    @if (fontStatus is not null)
+    @if (!useApi && fontStatus is not null)
     {
         <div class="font-status @(isFontLoading ? "loading" : fontLoadSuccess ? "success" : "warning")">
             @if (isFontLoading)
@@ -126,46 +137,52 @@
             @L.T("Donate")
         </a>
     </div>
-    <div class="custom-font-section">
-        <div class="custom-font-header">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
-            <span>@L.T("UploadCustomFont")</span>
-        </div>
-        <p class="custom-font-hint">@L.T("CustomFontHint")</p>
-        <label class="font-upload-btn">
-            <InputFile OnChange="HandleFontUpload" accept=".ttf,.otf" />
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17 8 12 3 7 8"/>
-                <line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
-            <span>@L.T("SelectFontFile")</span>
-        </label>
-        @if (customFontName is not null)
-        {
-            <div class="custom-font-loaded">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span>@string.Format(L.T("CustomFontLoaded"), customFontName)</span>
+    @if (!useApi)
+    {
+        <div class="custom-font-section">
+            <div class="custom-font-header">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+                <span>@L.T("UploadCustomFont")</span>
             </div>
-        }
-    </div>
-    <div class="font-warning">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <span>@L.T("FontWarning")</span>
-    </div>
-    <div class="privacy-note">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <span>@L.T("PrivacyNote")</span>
-    </div>
+            <p class="custom-font-hint">@L.T("CustomFontHint")</p>
+            <label class="font-upload-btn">
+                <InputFile OnChange="HandleFontUpload" accept=".ttf,.otf" />
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>@L.T("SelectFontFile")</span>
+            </label>
+            @if (customFontName is not null)
+            {
+                <div class="custom-font-loaded">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <span>@string.Format(L.T("CustomFontLoaded"), customFontName)</span>
+                </div>
+            }
+        </div>
+        <div class="font-warning">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>@L.T("FontWarning")</span>
+        </div>
+        <div class="privacy-note">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>@L.T("PrivacyNote")</span>
+        </div>
+    }
     <div class="feedback">
         <p>@L.T("BugOrSuggestion") <a href="https://github.com/mini-software/MiniPdf/issues" target="_blank">@L.T("OpenIssue")</a></p>
     </div>
 </div>
 
 @code {
+    private const string ApiUrl = "https://minipdf-api.azurewebsites.net/api/convert";
+
     private IBrowserFile? selectedFile;
     private bool isConverting;
     private bool isDragOver;
+    private bool useApi;
     private string? errorMessage;
     private string? successMessage;
     private static bool _fontLoaded;
@@ -217,6 +234,13 @@
     private void HandleDragEnter() => isDragOver = true;
     private void HandleDragLeave() => isDragOver = false;
 
+    private void SetMode(bool api)
+    {
+        useApi = api;
+        errorMessage = null;
+        successMessage = null;
+    }
+
     private async Task ConvertFile()
     {
         if (selectedFile is null) return;
@@ -229,72 +253,10 @@
 
         try
         {
-            // Lazy-load CJK font on first conversion
-            if (!_fontLoaded)
-            {
-                isFontLoading = true;
-                fontStatus = L.T("LoadingFont");
-                StateHasChanged();
-                await Task.Yield();
-
-                try
-                {
-                    var request = new HttpRequestMessage(HttpMethod.Get, "fonts/NotoSansSC-Regular.ttf");
-                    request.SetBrowserResponseStreamingEnabled(true);
-                    using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-                    response.EnsureSuccessStatusCode();
-
-                    var totalBytes = response.Content.Headers.ContentLength ?? -1;
-                    using var contentStream = await response.Content.ReadAsStreamAsync();
-                    using var fontMs = new MemoryStream();
-                    var buffer = new byte[81920];
-                    long totalRead = 0;
-                    int read;
-
-                    while ((read = await contentStream.ReadAsync(buffer)) > 0)
-                    {
-                        fontMs.Write(buffer, 0, read);
-                        totalRead += read;
-                        if (totalBytes > 0)
-                        {
-                            fontProgress = (int)Math.Min(99, totalRead * 100 / totalBytes);
-                            fontStatus = string.Format(L.T("FontDownloadProgress"), fontProgress, FormatSize(totalRead), FormatSize(totalBytes));
-                        }
-                        else
-                        {
-                            fontStatus = $"{L.T("LoadingFont")} ({FormatSize(totalRead)})";
-                        }
-                        StateHasChanged();
-                    }
-
-                    fontProgress = 100;
-                    MiniSoftware.MiniPdf.RegisterFont("NotoSansSC", fontMs.ToArray());
-                    fontLoadSuccess = true;
-                    fontStatus = "✓ " + L.T("FontLoaded");
-                }
-                catch
-                {
-                    fontStatus = "⚠ " + L.T("FontLoadFailed");
-                }
-                _fontLoaded = true;
-                isFontLoading = false;
-                fontProgress = 0;
-                StateHasChanged();
-            }
-
-            using var stream = selectedFile.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024);
-            using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            ms.Position = 0;
-
-            var ext = Path.GetExtension(selectedFile.Name).ToLowerInvariant();
-            byte[] pdfBytes = ext == ".docx"
-                ? MiniSoftware.MiniPdf.ConvertDocxToPdf(ms)
-                : MiniSoftware.MiniPdf.ConvertToPdf(ms);
-
-            var outputName = Path.GetFileNameWithoutExtension(selectedFile.Name) + ".pdf";
-            await JS.InvokeVoidAsync("downloadFile", outputName, "application/pdf", pdfBytes);
-            successMessage = $"{outputName} {L.T("DownloadSuccess")}";
+            if (useApi)
+                await ConvertViaApi();
+            else
+                await ConvertLocal();
         }
         catch (Exception ex)
         {
@@ -304,6 +266,100 @@
         {
             isConverting = false;
         }
+    }
+
+    private async Task ConvertViaApi()
+    {
+        using var content = new MultipartFormDataContent();
+        using var fileStream = selectedFile!.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024);
+        using var ms = new MemoryStream();
+        await fileStream.CopyToAsync(ms);
+        ms.Position = 0;
+        content.Add(new StreamContent(ms), "file", selectedFile.Name);
+
+        using var apiClient = new HttpClient();
+        var response = await apiClient.PostAsync(ApiUrl, content);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new Exception(errorText);
+        }
+
+        var pdfBytes = await response.Content.ReadAsByteArrayAsync();
+        var outputName = Path.GetFileNameWithoutExtension(selectedFile.Name) + ".pdf";
+        await JS.InvokeVoidAsync("downloadFile", outputName, "application/pdf", pdfBytes);
+        successMessage = $"{outputName} {L.T("DownloadSuccess")}";
+    }
+
+    private async Task ConvertLocal()
+    {
+        // Lazy-load CJK font on first conversion
+        if (!_fontLoaded)
+        {
+            isFontLoading = true;
+            fontStatus = L.T("LoadingFont");
+            StateHasChanged();
+            await Task.Yield();
+
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "fonts/NotoSansSC-Regular.ttf");
+                request.SetBrowserResponseStreamingEnabled(true);
+                using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
+
+                var totalBytes = response.Content.Headers.ContentLength ?? -1;
+                using var contentStream = await response.Content.ReadAsStreamAsync();
+                using var fontMs = new MemoryStream();
+                var buffer = new byte[81920];
+                long totalRead = 0;
+                int read;
+
+                while ((read = await contentStream.ReadAsync(buffer)) > 0)
+                {
+                    fontMs.Write(buffer, 0, read);
+                    totalRead += read;
+                    if (totalBytes > 0)
+                    {
+                        fontProgress = (int)Math.Min(99, totalRead * 100 / totalBytes);
+                        fontStatus = string.Format(L.T("FontDownloadProgress"), fontProgress, FormatSize(totalRead), FormatSize(totalBytes));
+                    }
+                    else
+                    {
+                        fontStatus = $"{L.T("LoadingFont")} ({FormatSize(totalRead)})";
+                    }
+                    StateHasChanged();
+                }
+
+                fontProgress = 100;
+                MiniSoftware.MiniPdf.RegisterFont("NotoSansSC", fontMs.ToArray());
+                fontLoadSuccess = true;
+                fontStatus = "✓ " + L.T("FontLoaded");
+            }
+            catch
+            {
+                fontStatus = "⚠ " + L.T("FontLoadFailed");
+            }
+            _fontLoaded = true;
+            isFontLoading = false;
+            fontProgress = 0;
+            StateHasChanged();
+        }
+
+        using var stream = selectedFile!.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024);
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        ms.Position = 0;
+
+        var ext = Path.GetExtension(selectedFile.Name).ToLowerInvariant();
+        byte[] pdfBytes = ext == ".docx"
+            ? MiniSoftware.MiniPdf.ConvertDocxToPdf(ms)
+            : MiniSoftware.MiniPdf.ConvertToPdf(ms);
+
+        var outputName = Path.GetFileNameWithoutExtension(selectedFile.Name) + ".pdf";
+        await JS.InvokeVoidAsync("downloadFile", outputName, "application/pdf", pdfBytes);
+        successMessage = $"{outputName} {L.T("DownloadSuccess")}";
     }
 
     private async Task HandleFontUpload(InputFileChangeEventArgs e)
