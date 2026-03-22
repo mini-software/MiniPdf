@@ -1156,7 +1156,7 @@
     "name": "classic32_right_aligned_numbers",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1210,
+    "minipdf_size": 310877,
     "reference_size": 50644,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1165,9 +1165,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9959
+      0.996
     ],
-    "visual_avg": 0.9959,
+    "visual_avg": 0.996,
     "diff_images": [
       {
         "page": 1,
@@ -1181,7 +1181,7 @@
     "name": "classic33_centered_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1610,
+    "minipdf_size": 311021,
     "reference_size": 41368,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1306,7 +1306,7 @@
     "name": "classic38_hyperlink_cell",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1183,
+    "minipdf_size": 309729,
     "reference_size": 41405,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1786,7 +1786,7 @@
     "name": "classic56_alternating_row_colors",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3062,
+    "minipdf_size": 316890,
     "reference_size": 50296,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -1795,9 +1795,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.954
+      0.9544
     ],
-    "visual_avg": 0.954,
+    "visual_avg": 0.9544,
     "diff_images": [
       {
         "page": 1,
@@ -1805,7 +1805,7 @@
         "reference_img": "classic56_alternating_row_colors_p1_reference.png"
       }
     ],
-    "overall_score": 0.9816
+    "overall_score": 0.9818
   },
   {
     "name": "classic57_cjk_only",
@@ -3651,7 +3651,7 @@
     "name": "classic121_thin_borders",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8586,
+    "minipdf_size": 323546,
     "reference_size": 74465,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3660,9 +3660,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9843
+      0.9848
     ],
-    "visual_avg": 0.9843,
+    "visual_avg": 0.9848,
     "diff_images": [
       {
         "page": 1,
@@ -3670,13 +3670,13 @@
         "reference_img": "classic121_thin_borders_p1_reference.png"
       }
     ],
-    "overall_score": 0.9937
+    "overall_score": 0.9939
   },
   {
     "name": "classic122_thick_outer_thin_inner",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8578,
+    "minipdf_size": 324335,
     "reference_size": 78822,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3685,9 +3685,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9801
+      0.9808
     ],
-    "visual_avg": 0.9801,
+    "visual_avg": 0.9808,
     "diff_images": [
       {
         "page": 1,
@@ -3695,13 +3695,13 @@
         "reference_img": "classic122_thick_outer_thin_inner_p1_reference.png"
       }
     ],
-    "overall_score": 0.992
+    "overall_score": 0.9923
   },
   {
     "name": "classic123_dashed_borders",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2857,
+    "minipdf_size": 311939,
     "reference_size": 61720,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3710,9 +3710,9 @@
     "word_text_similarity": 0.7647,
     "text_diff": "--- minipdf/classic123_dashed_borders.pdf\n+++ reference/classic123_dashed_borders.pdf\n@@ -1,6 +1,6 @@\n-Border Styl Sample\n\n+Border Sty Sample\n\n dashed Bordered cell\n\n dotted Bordered cell\n\n dashDot Bordered cell\n\n-dashDotDo Bordered cell\n\n-mediumDa Bordered cell\n+dashDotDoBordered cell\n\n+mediumDaBordered cell",
     "visual_scores": [
-      0.9895
+      0.9899
     ],
-    "visual_avg": 0.9895,
+    "visual_avg": 0.9899,
     "diff_images": [
       {
         "page": 1,
@@ -3720,13 +3720,13 @@
         "reference_img": "classic123_dashed_borders_p1_reference.png"
       }
     ],
-    "overall_score": 0.9911
+    "overall_score": 0.9912
   },
   {
     "name": "classic124_colored_borders",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3696,
+    "minipdf_size": 312708,
     "reference_size": 63553,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3735,9 +3735,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9807
+      0.981
     ],
-    "visual_avg": 0.9807,
+    "visual_avg": 0.981,
     "diff_images": [
       {
         "page": 1,
@@ -3745,13 +3745,13 @@
         "reference_img": "classic124_colored_borders_p1_reference.png"
       }
     ],
-    "overall_score": 0.9923
+    "overall_score": 0.9924
   },
   {
     "name": "classic125_solid_fills",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2386,
+    "minipdf_size": 312982,
     "reference_size": 69321,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3760,9 +3760,9 @@
     "word_text_similarity": 0.8302,
     "text_diff": "--- minipdf/classic125_solid_fills.pdf\n+++ reference/classic125_solid_fills.pdf\n@@ -1,9 +1,9 @@\n Fill Name Filled Cell\n\n Light Blue Background\n\n-Light Gree Background\n\n-Light Yello Background\n\n+Light GreenBackground\n\n+Light YellowBackground\n\n Light Red Background\n\n Light Purpl Background\n\n-Light Oran Background\n\n+Light OrangBackground\n\n Gray 25% Background\n\n Sky Blue Background",
     "visual_scores": [
-      0.971
+      0.9713
     ],
-    "visual_avg": 0.971,
+    "visual_avg": 0.9713,
     "diff_images": [
       {
         "page": 1,
@@ -3770,7 +3770,7 @@
         "reference_img": "classic125_solid_fills_p1_reference.png"
       }
     ],
-    "overall_score": 0.9822
+    "overall_score": 0.9823
   },
   {
     "name": "classic126_dark_header",
@@ -3851,7 +3851,7 @@
     "name": "classic129_alignment_combos",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1692,
+    "minipdf_size": 313155,
     "reference_size": 65763,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3860,9 +3860,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9902
+      0.9906
     ],
-    "visual_avg": 0.9902,
+    "visual_avg": 0.9906,
     "diff_images": [
       {
         "page": 1,
@@ -3870,13 +3870,13 @@
         "reference_img": "classic129_alignment_combos_p1_reference.png"
       }
     ],
-    "overall_score": 0.9961
+    "overall_score": 0.9962
   },
   {
     "name": "classic130_wrap_and_indent",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1465,
+    "minipdf_size": 317273,
     "reference_size": 70816,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3885,9 +3885,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9881
+      0.9887
     ],
-    "visual_avg": 0.9881,
+    "visual_avg": 0.9887,
     "diff_images": [
       {
         "page": 1,
@@ -3895,13 +3895,13 @@
         "reference_img": "classic130_wrap_and_indent_p1_reference.png"
       }
     ],
-    "overall_score": 0.9952
+    "overall_score": 0.9955
   },
   {
     "name": "classic131_number_formats",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2815,
+    "minipdf_size": 316622,
     "reference_size": 77127,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3910,9 +3910,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9794
+      0.98
     ],
-    "visual_avg": 0.9794,
+    "visual_avg": 0.98,
     "diff_images": [
       {
         "page": 1,
@@ -3920,13 +3920,13 @@
         "reference_img": "classic131_number_formats_p1_reference.png"
       }
     ],
-    "overall_score": 0.9918
+    "overall_score": 0.992
   },
   {
     "name": "classic132_striped_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 16647,
+    "minipdf_size": 334054,
     "reference_size": 84504,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3935,9 +3935,9 @@
     "word_text_similarity": 0.972,
     "text_diff": "--- minipdf/classic132_striped_table.pdf\n+++ reference/classic132_striped_table.pdf\n@@ -8,4 +8,4 @@\n Product 7 Sports 399.94 4.5\n\n Product 8 Sports 281.79 2.5\n\n Product 9 Sports 445.84 1.8\n\n-Product 10 Electronics 276.34 3.4\n+Product 10Electronics 276.34 3.4",
     "visual_scores": [
-      0.926
+      0.9267
     ],
-    "visual_avg": 0.926,
+    "visual_avg": 0.9267,
     "diff_images": [
       {
         "page": 1,
@@ -3945,13 +3945,13 @@
         "reference_img": "classic132_striped_table_p1_reference.png"
       }
     ],
-    "overall_score": 0.9698
+    "overall_score": 0.97
   },
   {
     "name": "classic133_gradient_rows",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3522,
+    "minipdf_size": 317578,
     "reference_size": 75810,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -3960,9 +3960,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9266
+      0.927
     ],
-    "visual_avg": 0.9266,
+    "visual_avg": 0.927,
     "diff_images": [
       {
         "page": 1,
@@ -3970,13 +3970,13 @@
         "reference_img": "classic133_gradient_rows_p1_reference.png"
       }
     ],
-    "overall_score": 0.9706
+    "overall_score": 0.9708
   },
   {
     "name": "classic134_heatmap",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6746,
+    "minipdf_size": 317157,
     "reference_size": 78105,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4001,7 +4001,7 @@
     "name": "classic135_bottom_border_only",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1512,
+    "minipdf_size": 313103,
     "reference_size": 58955,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4010,9 +4010,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9889
+      0.9891
     ],
-    "visual_avg": 0.9889,
+    "visual_avg": 0.9891,
     "diff_images": [
       {
         "page": 1,
@@ -4026,7 +4026,7 @@
     "name": "classic136_financial_report_styled",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 9067,
+    "minipdf_size": 327352,
     "reference_size": 100226,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4035,9 +4035,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.952
+      0.9532
     ],
-    "visual_avg": 0.952,
+    "visual_avg": 0.9532,
     "diff_images": [
       {
         "page": 1,
@@ -4045,13 +4045,13 @@
         "reference_img": "classic136_financial_report_styled_p1_reference.png"
       }
     ],
-    "overall_score": 0.9808
+    "overall_score": 0.9813
   },
   {
     "name": "classic137_checkerboard",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8449,
+    "minipdf_size": 314970,
     "reference_size": 31191,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4076,7 +4076,7 @@
     "name": "classic138_color_grid",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2159,
+    "minipdf_size": 315561,
     "reference_size": 45006,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4085,9 +4085,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9295
+      0.9296
     ],
-    "visual_avg": 0.9295,
+    "visual_avg": 0.9296,
     "diff_images": [
       {
         "page": 1,
@@ -4101,7 +4101,7 @@
     "name": "classic139_pattern_fills",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3046,
+    "minipdf_size": 311870,
     "reference_size": 80842,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4110,9 +4110,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.931
+      0.9311
     ],
-    "visual_avg": 0.931,
+    "visual_avg": 0.9311,
     "diff_images": [
       {
         "page": 1,
@@ -4126,7 +4126,7 @@
     "name": "classic140_rotated_text",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2150,
+    "minipdf_size": 311201,
     "reference_size": 68994,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4135,9 +4135,9 @@
     "word_text_similarity": 0.9583,
     "text_diff": "--- minipdf/classic140_rotated_text.pdf\n+++ reference/classic140_rotated_text.pdf\n@@ -1,12 +1,22 @@\n Rotation Text\n\n 0 Rotated\n\n-15 Rotated\n\n-30 Rotated\n\n-45 Rotated\n\n-60 Rotated\n\n-90 Rotated\n\n-105 Rotated\n\n-120 Rotated\n\n-135 Rotated\n\n-150 Rotated\n\n-180 Rotated\n+15\n\n+Rotated\n\n+30\n\n+Rotated\n\n+45\n\n+Rotated\n\n+60\n\n+Rotated\n\n+90\n\n+Rotated\n\n+Rotated\n\n+105\n\n+Rotated\n\n+120\n\n+Rotated\n\n+135\n\n+Rotated\n\n+150\n\n+Rotated\n\n+180",
     "visual_scores": [
-      0.9896
+      0.9902
     ],
-    "visual_avg": 0.9896,
+    "visual_avg": 0.9902,
     "diff_images": [
       {
         "page": 1,
@@ -4145,13 +4145,13 @@
         "reference_img": "classic140_rotated_text_p1_reference.png"
       }
     ],
-    "overall_score": 0.9792
+    "overall_score": 0.9794
   },
   {
     "name": "classic141_mixed_edge_borders",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2510,
+    "minipdf_size": 311161,
     "reference_size": 66621,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4160,9 +4160,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9844
+      0.9846
     ],
-    "visual_avg": 0.9844,
+    "visual_avg": 0.9846,
     "diff_images": [
       {
         "page": 1,
@@ -4176,7 +4176,7 @@
     "name": "classic142_styled_invoice",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 10839,
+    "minipdf_size": 329316,
     "reference_size": 105680,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4185,9 +4185,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9117
+      0.9125
     ],
-    "visual_avg": 0.9117,
+    "visual_avg": 0.9125,
     "diff_images": [
       {
         "page": 1,
@@ -4195,7 +4195,7 @@
         "reference_img": "classic142_styled_invoice_p1_reference.png"
       }
     ],
-    "overall_score": 0.9647
+    "overall_score": 0.965
   },
   {
     "name": "classic143_colored_tabs",
@@ -4269,7 +4269,7 @@
     "name": "classic145_status_badges",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 12089,
+    "minipdf_size": 330495,
     "reference_size": 89140,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4278,9 +4278,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9364
+      0.9374
     ],
-    "visual_avg": 0.9364,
+    "visual_avg": 0.9374,
     "diff_images": [
       {
         "page": 1,
@@ -4288,13 +4288,13 @@
         "reference_img": "classic145_status_badges_p1_reference.png"
       }
     ],
-    "overall_score": 0.9746
+    "overall_score": 0.975
   },
   {
     "name": "classic146_double_border_table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7509,
+    "minipdf_size": 323950,
     "reference_size": 77024,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4303,9 +4303,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9726
+      0.9731
     ],
-    "visual_avg": 0.9726,
+    "visual_avg": 0.9731,
     "diff_images": [
       {
         "page": 1,
@@ -4313,13 +4313,13 @@
         "reference_img": "classic146_double_border_table_p1_reference.png"
       }
     ],
-    "overall_score": 0.989
+    "overall_score": 0.9892
   },
   {
     "name": "classic147_multi_sheet_styled",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 16601,
+    "minipdf_size": 336481,
     "reference_size": 97561,
     "minipdf_pages": 3,
     "reference_pages": 3,
@@ -4328,11 +4328,11 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9806,
-      0.9708,
-      0.977
+      0.981,
+      0.9713,
+      0.9774
     ],
-    "visual_avg": 0.9761,
+    "visual_avg": 0.9766,
     "diff_images": [
       {
         "page": 1,
@@ -4350,13 +4350,13 @@
         "reference_img": "classic147_multi_sheet_styled_p3_reference.png"
       }
     ],
-    "overall_score": 0.9904
+    "overall_score": 0.9906
   },
   {
     "name": "classic148_frozen_styled_grid",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 46232,
+    "minipdf_size": 364660,
     "reference_size": 90882,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4365,9 +4365,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.73
+      0.7318
     ],
-    "visual_avg": 0.73,
+    "visual_avg": 0.7318,
     "diff_images": [
       {
         "page": 1,
@@ -4375,13 +4375,13 @@
         "reference_img": "classic148_frozen_styled_grid_p1_reference.png"
       }
     ],
-    "overall_score": 0.892
+    "overall_score": 0.8927
   },
   {
     "name": "classic149_merged_styled_sections",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 11772,
+    "minipdf_size": 328457,
     "reference_size": 93062,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4390,9 +4390,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9192
+      0.9201
     ],
-    "visual_avg": 0.9192,
+    "visual_avg": 0.9201,
     "diff_images": [
       {
         "page": 1,
@@ -4400,13 +4400,13 @@
         "reference_img": "classic149_merged_styled_sections_p1_reference.png"
       }
     ],
-    "overall_score": 0.9677
+    "overall_score": 0.968
   },
   {
     "name": "classic150_kitchen_sink_styles",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3786,
+    "minipdf_size": 320247,
     "reference_size": 121318,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -4415,9 +4415,9 @@
     "word_text_similarity": 0.9839,
     "text_diff": "--- minipdf/classic150_kitchen_sink_styles.pdf\n+++ reference/classic150_kitchen_sink_styles.pdf\n@@ -10,5 +10,4 @@\n This text wraps in the cell nicely\n\n Wrap + Center Multi-line\n\n Pattern Fill Gray pattern Hatched\n\n-Large Font Size 24\n\n-BIG\n+Large Font BIG Size 24",
     "visual_scores": [
-      0.9353
+      0.9354
     ],
-    "visual_avg": 0.9353,
+    "visual_avg": 0.9354,
     "diff_images": [
       {
         "page": 1,
@@ -4856,18 +4856,18 @@
     "name": "classic168_mixed_ltr_rtl_styled",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 318467,
+    "minipdf_size": 326691,
     "reference_size": 83592,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.867,
-    "flat_text_similarity": 0.867,
-    "word_text_similarity": 0.7027,
-    "text_diff": "--- minipdf/classic168_mixed_ltr_rtl_styled.pdf\n+++ reference/classic168_mixed_ltr_rtl_styled.pdf\n@@ -1,5 +1,5 @@\n Code Name Price\n\n EN-001 Programming Book $29.99\n\n FR-002 Livre de code €25.00\n\n-AR-003 ﺔﺠﻣﺮﺑ ﺏﺎﺘﻛ 50 SAR\n\n-HE-004 דוק רפס₪120\n+AR-003كتاب برمجة50 SAR\n\n+HE-004ספר קוד₪120",
+    "text_similarity": 0.8696,
+    "flat_text_similarity": 0.8696,
+    "word_text_similarity": 0.7647,
+    "text_diff": "--- minipdf/classic168_mixed_ltr_rtl_styled.pdf\n+++ reference/classic168_mixed_ltr_rtl_styled.pdf\n@@ -1,5 +1,5 @@\n Code Name Price\n\n EN-001 Programming Book $29.99\n\n FR-002 Livre de code €25.00\n\n-AR-003ﺔﺠﻣﺮﺑ ﺏﺎﺘﻛ50 SAR\n\n-HE-004דוק רפס₪120\n+AR-003كتاب برمجة50 SAR\n\n+HE-004ספר קוד₪120",
     "visual_scores": [
-      0.9724
+      0.9732
     ],
-    "visual_avg": 0.9724,
+    "visual_avg": 0.9732,
     "diff_images": [
       {
         "page": 1,
@@ -4875,7 +4875,7 @@
         "reference_img": "classic168_mixed_ltr_rtl_styled_p1_reference.png"
       }
     ],
-    "overall_score": 0.9358
+    "overall_score": 0.9371
   },
   {
     "name": "classic169_korean_invoice",
@@ -5293,7 +5293,7 @@
     "name": "classic185_tall_rows_vertical_align",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2027,
+    "minipdf_size": 317713,
     "reference_size": 72408,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -5302,9 +5302,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9794
+      0.9805
     ],
-    "visual_avg": 0.9794,
+    "visual_avg": 0.9805,
     "diff_images": [
       {
         "page": 1,
@@ -5312,7 +5312,7 @@
         "reference_img": "classic185_tall_rows_vertical_align_p1_reference.png"
       }
     ],
-    "overall_score": 0.9918
+    "overall_score": 0.9922
   },
   {
     "name": "classic186_multi_sheet_image_report",
@@ -5424,7 +5424,7 @@
     "name": "classic190_dashboard_kpi_images",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6618,
+    "minipdf_size": 6622,
     "reference_size": 96601,
     "minipdf_pages": 1,
     "reference_pages": 1,
@@ -5433,9 +5433,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9444
+      0.9437
     ],
-    "visual_avg": 0.9444,
+    "visual_avg": 0.9437,
     "diff_images": [
       {
         "page": 1,
@@ -5443,7 +5443,7 @@
         "reference_img": "classic190_dashboard_kpi_images_p1_reference.png"
       }
     ],
-    "overall_score": 0.9778
+    "overall_score": 0.9775
   },
   {
     "name": "classic191_payroll_calculator",

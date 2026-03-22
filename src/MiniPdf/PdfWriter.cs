@@ -56,6 +56,8 @@ internal sealed class PdfWriter
         // Track ALL codepoints per preferred font name (not just first-wins) so that
         // each embedded font slot includes every glyph any block might need.
         var cpsByPreferredFont = new Dictionary<string, HashSet<int>>(StringComparer.OrdinalIgnoreCase);
+        // Track preferred font names that also need a bold variant embedded.
+        var boldPreferredFontNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var page in pages)
             foreach (var block in page.TextBlocks)
             {
@@ -85,6 +87,8 @@ internal sealed class PdfWriter
                             if (!cpsByPreferredFont.TryGetValue(block.PreferredFontName!, out var set))
                                 cpsByPreferredFont[block.PreferredFontName!] = set = new HashSet<int>();
                             set.Add(cp);
+                            if (block.Bold)
+                                boldPreferredFontNames.Add(block.PreferredFontName!);
                         }
                     }
                 }
@@ -111,6 +115,8 @@ internal sealed class PdfWriter
                     if (!cpsByPreferredFont.TryGetValue(block.PreferredFontName!, out var set))
                         cpsByPreferredFont[block.PreferredFontName!] = set = new HashSet<int>();
                     set.Add(cp);
+                    if (block.Bold)
+                        boldPreferredFontNames.Add(block.PreferredFontName!);
                 }
             }
 
@@ -185,6 +191,23 @@ internal sealed class PdfWriter
                     {
                         LoadFontFile(extraPath);
                         loadedPaths.Add(extraPath);
+                    }
+                }
+
+                // 4) Load bold variants for preferred fonts that have bold text blocks.
+                // This enables using the actual bold font file (e.g. GOTHICB.TTF) instead
+                // of simulating bold via stroke rendering.
+                foreach (var prefName in boldPreferredFontNames)
+                {
+                    var boldName = prefName + " Bold";
+                    var boldPath = FindSystemFontByPreferredName(boldName);
+                    if (boldPath != null && !loadedPaths.Contains(boldPath))
+                    {
+                        LoadFontFile(boldPath);
+                        loadedPaths.Add(boldPath);
+                        // Register the bold font with the same codepoints as the regular font
+                        if (cpsByPreferredFont.TryGetValue(prefName, out var regularCps))
+                            cpsByPreferredFont[boldName] = new HashSet<int>(regularCps);
                     }
                 }
             }
@@ -789,6 +812,15 @@ internal sealed class PdfWriter
                 && !string.IsNullOrWhiteSpace(block.PreferredFontName)
                 && fontNameToSlot.ContainsKey(block.PreferredFontName!);
 
+            // Check if a dedicated bold font variant is available for this block.
+            // When available, use the bold font file instead of stroke-based simulation.
+            var boldFontKey = block.Bold && !string.IsNullOrWhiteSpace(block.PreferredFontName)
+                ? block.PreferredFontName + " Bold" : null;
+            var hasBoldFontVariant = boldFontKey != null && fontNameToSlot != null
+                && fontNameToSlot.ContainsKey(boldFontKey);
+            if (hasBoldFontVariant && !blockHasEmbeddedPref)
+                blockHasEmbeddedPref = true; // Route through embedded path for bold font
+
             if (!hasUnicodeFont || (!block.Text.Any(c => !IsWinAnsiHandled(c)) && !blockHasEmbeddedPref))
             {
                 // Pure Latin-1 text (or preferred font not found) — use F1 (Helvetica) or F1B (Helvetica-Bold)
@@ -832,7 +864,8 @@ internal sealed class PdfWriter
                 // PDF text rendering mode 2 = fill and stroke; a thin stroke width
                 // makes the glyphs appear bolder, matching how PDF viewers handle
                 // bold CJK text when no dedicated bold font file is embedded.
-                if (block.Bold)
+                // Skip stroke simulation when a dedicated bold font variant is available.
+                if (block.Bold && !hasBoldFontVariant)
                 {
                     var strokeW = (block.FontSize * 0.03f).ToString("F2", CultureInfo.InvariantCulture);
                     sb.Append($"{strokeW} w\n");       // stroke width
@@ -864,7 +897,13 @@ internal sealed class PdfWriter
                 // try to use that font's slot for each codepoint (if the font includes it).
                 var blockPrefSlot = -1;
                 if (fontNameToSlot != null && !string.IsNullOrWhiteSpace(block.PreferredFontName))
-                    fontNameToSlot.TryGetValue(block.PreferredFontName!, out blockPrefSlot);
+                {
+                    // Use the bold font variant slot if available; otherwise fall back to regular.
+                    if (hasBoldFontVariant)
+                        fontNameToSlot.TryGetValue(boldFontKey!, out blockPrefSlot);
+                    if (blockPrefSlot < 0)
+                        fontNameToSlot.TryGetValue(block.PreferredFontName!, out blockPrefSlot);
+                }
                 var runs = new List<(int fontSlot, List<int> cps)>();
                 foreach (var cp in codePoints)
                 {

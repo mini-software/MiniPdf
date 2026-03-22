@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-20T01:16:49.587590
+Generated: 2026-03-22T13:52:29.599870
 
 ## Summary
 
@@ -14,8 +14,10 @@ Generated: 2026-03-20T01:16:49.587590
 | 6 | 🟢 Simple invoice1 | 0.9535 | 0.8331 | 1/1 | **0.9146** |
 | 7 | 🟢 Small business cash flow forecast1 | 0.9473 | 0.8185 | 5/5 | **0.9063** |
 | 8 | 🔴 Wedding_timeline_planner1_copy | 0.2616 | 0.7194 | 4/5 | **0.4924** |
+| 9 | 🟢 Event budget1 | 0.9517 | 0.8466 | 5/5 | **0.9193** |
+| 10 | ⚪ Event budget1_dbg | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8672**
+**Average Overall Score: 0.7857**
 
 ## Visual Comparison
 
@@ -256,6 +258,37 @@ Generated: 2026-03-20T01:16:49.587590
 <tr>
   <td><i>missing</i></td>
   <td><img src="images/Wedding_timeline_planner1_copy_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Event budget1</b></td>
+  <td colspan="1">Event budget1 <span style="color:#3fb950">⬤</span> 91.9%</td>
+</tr>
+<tr>
+  <td><img src="images/Event budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Event budget1_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Event budget1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Event budget1_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Event budget1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Event budget1_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Event budget1_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Event budget1_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Event budget1_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Event budget1_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Event budget1_dbg</b></td>
+  <td colspan="1">Event budget1_dbg N/A</td>
+</tr>
+<tr>
+  <td colspan="2"><i>No images</i></td>
 </tr>
 </table>
 
@@ -1079,6 +1112,143 @@ Generated: 2026-03-20T01:16:49.587590
 
 ```
 </details>
+
+### Event budget1
+
+- **Text Similarity:** 0.9517
+- **Visual Average:** 0.8466
+- **Overall Score:** 0.9193
+- **Pages:** MiniPdf=5, Reference=5
+- **File Size:** MiniPdf=105295 bytes, Reference=121226 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Event budget1.pdf
++++ reference/Event budget1.pdf
+@@ -1,16 +1,16 @@
+ ABOUT THIS TEMPLATE
+
+-Use this event budget workbook to track expenses incurred on and income earned from an event.
+
++Use this event budget workbook to track expenses incurred on and income earned from an
+
++event.
+
+ Enter details in tables in expenses worksheet and income worksheet.
+
+ Total expenses and total income are auto-calculated.
+
+ Profit & loss summary and chart are auto-updated in profit-loss summary worksheet.
+
+ Note:
+
+-Additional instructions have been provided in column A in each worksheet. This text has been intentionally hidden. To remo
+
+-text, select column A, then select DELETE.
+
+-To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and then select
+
+-ALTERNATIVE TEXT
+
++Additional instructions have been provided in column A in each worksheet. This text has been
+
++intentionally hidden. To remove text, select column A, then select DELETE.
+
++To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and
+
++then select ALTERNATIVE TEXT
+
+ ---PAGE---
+
+-EXPENSES
+
+-Event budget
+
++Event budget EXPENSES
+
+ Estimated Actual
+
+ TOTAL EXPENSES
+
+ $882.00 $333.00
+
+@@ -36,12 +36,12 @@
+ Telephone $13.00
+
+ Transportation $12.00
+
+ Stationery supplies
+
+----PAGE---
+
+ Fax services
+
+ Total $12.00 $13.00
+
+ ---PAGE---
+
+-INCOME
+
+-Event budget
+
++
+
++---PAGE---
+
++Event budget INCOME
+
+ Estimated Actual
+
+ TOTAL INCOME
+
+ $1,936.00 $1,831.00
+
+@@ -71,12 +71,15 @@
+ Items @ $0.00 $0.00
+
+ Total $0.00 $0.00
+
+ ---PAGE---
+
+-PROFIT
+
+-Event budget
+
++Event budget PROFIT
+
++Total income
+
+ LOSS SUMMARY
+
++Total expenses
+
++Estimated Actual
+
+ $1,831 $333
+
+-Total Estimated Actual
+
++ACT U AL
+
+ Total income $1,936.00 $1,831.00
+
++Total expenses $882.00 $333.00
+
+ $1,936 $882
+
+-Total expenses $882.00 $333.00
+
+-Total profit (or loss) $1,054.00 $1,498.00
++Total profit (or loss) $1,054.00 $1,498.00
+
++E ST I M AT E D
+```
+</details>
+
+### Event budget1_dbg
+
+**Error:** Reference PDF not found
 
 ## Improvement Suggestions
 

@@ -456,5 +456,61 @@
       }
     ],
     "overall_score": 0.4924
+  },
+  {
+    "name": "Event budget1",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 105295,
+    "reference_size": 121226,
+    "minipdf_pages": 5,
+    "reference_pages": 5,
+    "text_similarity": 0.9517,
+    "flat_text_similarity": 0.9457,
+    "word_text_similarity": 0.9517,
+    "text_diff": "--- minipdf/Event budget1.pdf\n+++ reference/Event budget1.pdf\n@@ -1,16 +1,16 @@\n ABOUT THIS TEMPLATE\n\n-Use this event budget workbook to track expenses incurred on and income earned from an event.\n\n+Use this event budget workbook to track expenses incurred on and income earned from an\n\n+event.\n\n Enter details in tables in expenses worksheet and income worksheet.\n\n Total expenses and total income are auto-calculated.\n\n Profit & loss summary and chart are auto-updated in profit-loss summary worksheet.\n\n Note:\n\n-Additional instructions have been provided in column A in each worksheet. This text has been intentionally hidden. To remo\n\n-text, select column A, then select DELETE.\n\n-To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and then select\n\n-ALTERNATIVE TEXT\n\n+Additional instructions have been provided in column A in each worksheet. This text has been\n\n+intentionally hidden. To remove text, select column A, then select DELETE.\n\n+To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and\n\n+then select ALTERNATIVE TEXT\n\n ---PAGE---\n\n-EXPENSES\n\n-Event budget\n\n+Event budget EXPENSES\n\n Estimated Actual\n\n TOTAL EXPENSES\n\n $882.00 $333.00\n\n@@ -36,12 +36,12 @@\n Telephone $13.00\n\n Transportation $12.00\n\n Stationery supplies\n\n----PAGE---\n\n Fax services\n\n Total $12.00 $13.00\n\n ---PAGE---\n\n-INCOME\n\n-Event budget\n\n+\n\n+---PAGE---\n\n+Event budget INCOME\n\n Estimated Actual\n\n TOTAL INCOME\n\n $1,936.00 $1,831.00\n\n@@ -71,12 +71,15 @@\n Items @ $0.00 $0.00\n\n Total $0.00 $0.00\n\n ---PAGE---\n\n-PROFIT\n\n-Event budget\n\n+Event budget PROFIT\n\n+Total income\n\n LOSS SUMMARY\n\n+Total expenses\n\n+Estimated Actual\n\n $1,831 $333\n\n-Total Estimated Actual\n\n+ACT U AL\n\n Total income $1,936.00 $1,831.00\n\n+Total expenses $882.00 $333.00\n\n $1,936 $882\n\n-Total expenses $882.00 $333.00\n\n-Total profit (or loss) $1,054.00 $1,498.00\n+Total profit (or loss) $1,054.00 $1,498.00\n\n+E ST I M AT E D",
+    "visual_scores": [
+      0.9676,
+      0.757,
+      0.862,
+      0.7578,
+      0.8887
+    ],
+    "visual_avg": 0.8466,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Event budget1_p1_minipdf.png",
+        "reference_img": "Event budget1_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "Event budget1_p2_minipdf.png",
+        "reference_img": "Event budget1_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "Event budget1_p3_minipdf.png",
+        "reference_img": "Event budget1_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "Event budget1_p4_minipdf.png",
+        "reference_img": "Event budget1_p4_reference.png"
+      },
+      {
+        "page": 5,
+        "minipdf_img": "Event budget1_p5_minipdf.png",
+        "reference_img": "Event budget1_p5_reference.png"
+      }
+    ],
+    "overall_score": 0.9193
+  },
+  {
+    "name": "Event budget1_dbg",
+    "minipdf_exists": true,
+    "reference_exists": false,
+    "error": "Reference PDF not found",
+    "score": 0.0
   }
 ]

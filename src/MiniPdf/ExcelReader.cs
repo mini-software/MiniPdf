@@ -63,6 +63,7 @@ internal static class ExcelReader
             var pageSetup = ReadPageSetup(entry);
             printAreas.TryGetValue(currentIndex, out var printArea);
             printTitleRows.TryGetValue(currentIndex, out var printTitleRow);
+            ApplyTableStyleFormatting(archive, info.SheetId, rows, themeColors);
             sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: printTitleRow != default ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt, maxDigitWidthPx: maxDigitWidthPx));
             sheetEntries.Add(entry);
         }
@@ -81,6 +82,14 @@ internal static class ExcelReader
                 var pageSetup = ReadPageSetup(entry);
                 sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, maxDigitWidthPx: maxDigitWidthPx));
             }
+        }
+
+        // Propagate paper size: sheets without explicit paperSize inherit from the first sheet that specifies one
+        var firstExplicitPaperSize = sheets.FirstOrDefault(s => s.PaperSize > 0)?.PaperSize ?? 1;
+        foreach (var sheet in sheets)
+        {
+            if (sheet.PaperSize == 0)
+                sheet.PaperSize = firstExplicitPaperSize;
         }
 
         // Second pass: read charts (needs sheet data to resolve cell references)
@@ -414,6 +423,210 @@ internal static class ExcelReader
                     {
                         row[c] = cell with { Border = tableBorder };
                     }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reads table definitions for a worksheet and applies table-style formatting
+    /// (bold, fill) to header rows, total rows, and first-column cells.
+    /// Resolves dxf-based style info including theme colors for fills.
+    /// </summary>
+    private static void ApplyTableStyleFormatting(ZipArchive archive, int sheetId,
+        List<List<ExcelCell>> rows, List<PdfColor> themeColors)
+    {
+        var relsPath = $"xl/worksheets/_rels/sheet{sheetId}.xml.rels";
+        var relsEntry = archive.GetEntry(relsPath);
+        if (relsEntry == null) return;
+
+        var tableFiles = new List<string>();
+        using (var relsStream = relsEntry.Open())
+        {
+            var relsDoc = XDocument.Load(relsStream);
+            foreach (var rel in relsDoc.Descendants())
+            {
+                if (rel.Attribute("Type")?.Value?.EndsWith("/table", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    var target = rel.Attribute("Target")?.Value;
+                    if (!string.IsNullOrEmpty(target))
+                        tableFiles.Add(System.IO.Path.GetFileName(target));
+                }
+            }
+        }
+
+        if (tableFiles.Count == 0) return;
+
+        // Read dxf entries and table style mappings from styles.xml
+        var stylesEntry = archive.GetEntry("xl/styles.xml");
+        if (stylesEntry == null) return;
+
+        List<(bool? Bold, PdfColor? FillColor)> dxfInfos;
+        Dictionary<string, (int HeaderDxf, int TotalDxf, int WholeDxf)> tableStyleMap;
+        using (var stylesStream = stylesEntry.Open())
+        {
+            var stylesDoc = XDocument.Load(stylesStream);
+            var ns = stylesDoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+            // Parse dxf entries
+            dxfInfos = new List<(bool?, PdfColor?)>();
+            var dxfs = stylesDoc.Descendants(ns + "dxfs").FirstOrDefault();
+            if (dxfs != null)
+            {
+                foreach (var dxf in dxfs.Elements(ns + "dxf"))
+                {
+                    bool? bold = null;
+                    PdfColor? fillColor = null;
+
+                    var fontEl = dxf.Element(ns + "font");
+                    if (fontEl != null)
+                    {
+                        var bEl = fontEl.Element(ns + "b");
+                        if (bEl != null)
+                        {
+                            var val = bEl.Attribute("val")?.Value;
+                            bold = val == null || val == "1" || string.Equals(val, "true", StringComparison.OrdinalIgnoreCase);
+                        }
+                    }
+
+                    var fillEl = dxf.Element(ns + "fill");
+                    if (fillEl != null)
+                    {
+                        var bgEl = fillEl.Descendants(ns + "bgColor").FirstOrDefault();
+                        if (bgEl != null)
+                            fillColor = ResolveColorElement(bgEl, themeColors);
+                        if (fillColor == null)
+                        {
+                            var fgEl = fillEl.Descendants(ns + "fgColor").FirstOrDefault();
+                            if (fgEl != null)
+                                fillColor = ResolveColorElement(fgEl, themeColors);
+                        }
+                    }
+
+                    dxfInfos.Add((bold, fillColor));
+                }
+            }
+
+            // Parse table styles: map style name → (headerRow dxfId, totalRow dxfId, wholeTable dxfId)
+            tableStyleMap = new Dictionary<string, (int, int, int)>(StringComparer.OrdinalIgnoreCase);
+            foreach (var ts in stylesDoc.Descendants(ns + "tableStyle"))
+            {
+                var name = ts.Attribute("name")?.Value;
+                if (string.IsNullOrEmpty(name)) continue;
+
+                int headerDxf = -1, totalDxf = -1, wholeDxf = -1;
+                foreach (var tse in ts.Elements(ns + "tableStyleElement"))
+                {
+                    var type = tse.Attribute("type")?.Value;
+                    if (int.TryParse(tse.Attribute("dxfId")?.Value, out var dxfId))
+                    {
+                        if (type == "headerRow") headerDxf = dxfId;
+                        else if (type == "totalRow") totalDxf = dxfId;
+                        else if (type == "wholeTable") wholeDxf = dxfId;
+                    }
+                }
+                tableStyleMap[name] = (headerDxf, totalDxf, wholeDxf);
+            }
+        }
+
+        foreach (var tableFile in tableFiles)
+        {
+            var tableEntry = archive.GetEntry($"xl/tables/{tableFile}");
+            if (tableEntry == null) continue;
+
+            string? refAttr, styleName;
+            int headerRowCount = 1;
+            int totalsRowCount = 0;
+            bool showFirstColumn = false;
+            using (var tableStream = tableEntry.Open())
+            {
+                var tableDoc = XDocument.Load(tableStream);
+                refAttr = tableDoc.Root?.Attribute("ref")?.Value;
+
+                if (int.TryParse(tableDoc.Root?.Attribute("headerRowCount")?.Value, out var hrc))
+                    headerRowCount = hrc;
+                if (int.TryParse(tableDoc.Root?.Attribute("totalsRowCount")?.Value, out var trc))
+                    totalsRowCount = trc;
+
+                var styleInfo = tableDoc.Root?.Descendants().FirstOrDefault(e => e.Name.LocalName == "tableStyleInfo");
+                styleName = styleInfo?.Attribute("name")?.Value;
+                if (styleInfo != null)
+                    showFirstColumn = styleInfo.Attribute("showFirstColumn")?.Value == "1";
+            }
+
+            if (string.IsNullOrEmpty(refAttr)) continue;
+            var rangeParts = refAttr.Split(':');
+            if (rangeParts.Length != 2) continue;
+
+            var (startRow, startCol) = ParseCellRef(rangeParts[0]);
+            var (endRow, endCol) = ParseCellRef(rangeParts[1]);
+
+
+            // Resolve table style dxf entries
+            (bool? Bold, PdfColor? FillColor) headerStyle = (true, null);
+            (bool? Bold, PdfColor? FillColor) totalStyle = (true, null);
+            (bool? Bold, PdfColor? FillColor) wholeStyle = (null, null);
+
+            if (!string.IsNullOrEmpty(styleName) && tableStyleMap.TryGetValue(styleName, out var dxfIds))
+            {
+                if (dxfIds.HeaderDxf >= 0 && dxfIds.HeaderDxf < dxfInfos.Count)
+                {
+                    var dxf = dxfInfos[dxfIds.HeaderDxf];
+                    // Preserve default bold=true for header rows when DXF doesn't override it
+                    headerStyle = (dxf.Bold ?? headerStyle.Bold, dxf.FillColor ?? headerStyle.FillColor);
+                }
+                if (dxfIds.TotalDxf >= 0 && dxfIds.TotalDxf < dxfInfos.Count)
+                {
+                    var dxf = dxfInfos[dxfIds.TotalDxf];
+                    totalStyle = (dxf.Bold ?? totalStyle.Bold, dxf.FillColor ?? totalStyle.FillColor);
+                }
+                if (dxfIds.WholeDxf >= 0 && dxfIds.WholeDxf < dxfInfos.Count)
+                    wholeStyle = dxfInfos[dxfIds.WholeDxf];
+            }
+
+            void ApplyStyle(List<ExcelCell> row, int c, bool? bold, PdfColor? fill)
+            {
+                if (c >= row.Count) return;
+                var cell = row[c];
+                var newBold = bold == true && !cell.Bold ? true : cell.Bold;
+                var newFill = fill != null && cell.FillColor == null ? fill : cell.FillColor;
+                if (newBold != cell.Bold || newFill != cell.FillColor)
+                    row[c] = cell with { Bold = newBold, FillColor = newFill };
+            }
+
+            // Header rows
+            for (var r = startRow; r < startRow + headerRowCount && r <= endRow && r < rows.Count; r++)
+            {
+                for (var c = startCol; c <= endCol; c++)
+                    ApplyStyle(rows[r], c, headerStyle.Bold, headerStyle.FillColor);
+            }
+
+            // Totals rows
+            if (totalsRowCount > 0)
+            {
+                for (var r = endRow - totalsRowCount + 1; r <= endRow && r < rows.Count; r++)
+                {
+                    for (var c = startCol; c <= endCol; c++)
+                        ApplyStyle(rows[r], c, totalStyle.Bold, totalStyle.FillColor);
+                }
+            }
+
+            // Data rows: apply wholeTable fill (if the cell doesn't already have fill)
+            var dataStart = startRow + headerRowCount;
+            var dataEnd = totalsRowCount > 0 ? endRow - totalsRowCount : endRow;
+            for (var r = dataStart; r <= dataEnd && r < rows.Count; r++)
+            {
+                for (var c = startCol; c <= endCol; c++)
+                    ApplyStyle(rows[r], c, wholeStyle.Bold, wholeStyle.FillColor);
+            }
+
+            // First column: all data rows get bold (when showFirstColumn)
+            if (showFirstColumn)
+            {
+                for (var r = dataStart; r <= dataEnd && r < rows.Count; r++)
+                {
+                    if (startCol < rows[r].Count && !rows[r][startCol].Bold)
+                        rows[r][startCol] = rows[r][startCol] with { Bold = true };
                 }
             }
         }
@@ -2169,7 +2382,7 @@ internal static class ExcelReader
     {
         var isLandscape = false;
         var scale = 100;
-        var paperSize = 1; // 1 = US Letter (default)
+        var paperSize = 0; // 0 = not specified (will inherit from first sheet or default to US Letter)
         float marginLeft = -1, marginRight = -1, marginTop = -1, marginBottom = -1, footerMargin = -1;
         var fitToPage = false;
 
@@ -2710,6 +2923,8 @@ internal static class ExcelReader
             string valAxisFmtCode = "";
             bool showDataLabelPercent = false;
             bool showDataLabelCatName = false;
+            bool showDataLabelVal = false;
+            string dataLabelFmtCode = "";
             XElement? overlayChartTypeEl = null;
             var overlayChartType = "";
             var overlaySeries = new List<ExcelChartSeries>();
@@ -2805,6 +3020,29 @@ internal static class ExcelReader
                                 showDataLabelPercent = true;
                             if (dLbls.Element(cns + "showCatName")?.Attribute("val")?.Value == "1")
                                 showDataLabelCatName = true;
+                            if (dLbls.Element(cns + "showVal")?.Attribute("val")?.Value == "1")
+                                showDataLabelVal = true;
+                            var dlNumFmt = dLbls.Element(cns + "numFmt");
+                            if (dlNumFmt != null)
+                                dataLabelFmtCode = dlNumFmt.Attribute("formatCode")?.Value ?? "";
+                        }
+                        // Also check per-series dLbls for showVal and format code
+                        foreach (var ser in chartTypeEl.Elements(cns + "ser"))
+                        {
+                            var serDLbls = ser.Element(cns + "dLbls");
+                            if (serDLbls != null)
+                            {
+                                if (serDLbls.Element(cns + "showVal")?.Attribute("val")?.Value == "1")
+                                    showDataLabelVal = true;
+                                if (string.IsNullOrEmpty(dataLabelFmtCode))
+                                {
+                                    var serNumFmt = serDLbls.Element(cns + "numFmt");
+                                    if (serNumFmt != null)
+                                        dataLabelFmtCode = serNumFmt.Attribute("formatCode")?.Value ?? "";
+                                }
+                                if (showDataLabelVal && !string.IsNullOrEmpty(dataLabelFmtCode))
+                                    break;
+                            }
                         }
                     }
                 }
@@ -2928,8 +3166,8 @@ internal static class ExcelReader
             }
 
             var chartInfo = new ExcelChartInfo(fromRow, fromCol, widthEmu, heightEmu, title, chartType,
-                seriesList, catAxisTitle, valAxisTitle, showDataLabelPercent, showDataLabelCatName, valAxisFmtCode,
-                isTwoCellAnchor)
+                seriesList, catAxisTitle, valAxisTitle, showDataLabelPercent, showDataLabelCatName,
+                showDataLabelVal, dataLabelFmtCode, valAxisFmtCode, isTwoCellAnchor)
             {
                 OverlaySeries = overlaySeries,
                 OverlayChartType = overlayChartType
@@ -3151,6 +3389,8 @@ internal sealed record ExcelChartInfo(
     string ValueAxisTitle = "",     // Y-axis title
     bool ShowDataLabelPercent = false,  // show percentage data labels
     bool ShowDataLabelCatName = false,  // show category name data labels
+    bool ShowDataLabelVal = false,       // show value data labels
+    string DataLabelFormatCode = "",     // numFmt formatCode for data labels (e.g. "$#,##0")
     string ValueAxisFormatCode = "",    // numFmt formatCode for value axis (e.g. "#,##0")
     bool IsTwoCellAnchor = false         // true when chart uses twoCellAnchor (cell-relative sizing)
 )
@@ -3196,7 +3436,7 @@ internal sealed class ExcelSheet
     /// <summary>Precise effective print scale factor (overrides PrintScale/100 when set).</summary>
     internal float? EffectivePrintScaleF { get; set; }
     /// <summary>Paper size code (1=Letter, 9=A4, etc). See ECMA-376 §18.8.22.</summary>
-    public int PaperSize { get; }
+    public int PaperSize { get; internal set; }
     /// <summary>Print area range (startCol, startRow, endCol, endRow) 0-based, or null if not set.</summary>
     public (int StartCol, int StartRow, int EndCol, int EndRow)? PrintArea { get; }
     /// <summary>Page margins in points (-1 = use default).</summary>

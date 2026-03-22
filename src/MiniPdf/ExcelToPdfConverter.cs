@@ -399,13 +399,40 @@ internal static class ExcelToPdfConverter
         {
             var usableW = baseW - mL - mR;
             var estTotal = EstimateColumnWidthTotal(sheet, options);
+            System.Console.Error.WriteLine($"[SCALE_DEBUG] sheet={sheet.Name} usableW={usableW:F1} estTotal={estTotal:F1} fitToPage={sheet.FitToPage} fitToWidth={sheet.FitToWidth} fitToHeight={sheet.FitToHeight} origScale={sheet.PrintScale} mdw={sheet.MaxDigitWidthPx:F2}");
             if (estTotal > usableW && estTotal > 0)
             {
                 var fitScaleF = usableW / estTotal;
                 var fitPct = (int)Math.Max(10, Math.Floor(fitScaleF * 100));
+                System.Console.Error.WriteLine($"[SCALE_DEBUG] fitScaleF={fitScaleF:F4} fitPct={fitPct}");
+
+                // Check if the width-based scale causes rows to barely overflow
+                // one page height.  When the overflow is small (< 5%), reduce
+                // the scale so content fits on a single page.  Larger overflows
+                // are allowed to spill to additional pages naturally.
+                {
+                    var usableH = baseH - mT - mB;
+                    var defRH = sheet.DefaultRowHeight > 0 ? sheet.DefaultRowHeight : options.FontSize * options.LineSpacing;
+                    var startRow = sheet.PrintArea.HasValue ? sheet.PrintArea.Value.StartRow : 0;
+                    var endRow = sheet.PrintArea.HasValue ? Math.Min(sheet.PrintArea.Value.EndRow, sheet.Rows.Count - 1) : sheet.Rows.Count - 1;
+                    var rawTotal = 0f;
+                    for (var r = startRow; r <= endRow; r++)
+                        rawTotal += sheet.RowHeights.TryGetValue(r, out var rh) ? rh : defRH;
+                    var scaledH = rawTotal * fitScaleF;
+                    System.Console.Error.WriteLine($"[SCALE_DEBUG] usableH={usableH:F1} rawTotal={rawTotal:F1} scaledH={scaledH:F1} overflow={scaledH > usableH} smallOverflow={scaledH > usableH && scaledH < usableH * 1.05f}");
+                    if (scaledH > usableH && scaledH < usableH * 1.05f)
+                    {
+                        // Small overflow: use height-based scale instead
+                        var heightScale = usableH / rawTotal;
+                        fitScaleF = heightScale;
+                        fitPct = (int)Math.Max(10, Math.Floor(fitScaleF * 100));
+                    }
+                }
+
                 sheet.PrintScale = fitPct;
                 // Store precise float scale to avoid integer rounding loss
                 sheet.EffectivePrintScaleF = fitScaleF;
+                System.Console.Error.WriteLine($"[SCALE_DEBUG] FINAL fitScaleF={fitScaleF:F4} fitPct={fitPct}");
             }
             else if (estTotal > 0 && sheet.PrintScale < 100)
             {
@@ -1952,15 +1979,12 @@ internal static class ExcelToPdfConverter
             {
                 var usablePageH = pageHeight - options.MarginTop - options.MarginBottom;
                 var overflowHeight = chartHeight - renderHeight;
-                // Dominant charts in LibreOffice are rendered inline at their
-                // anchor position and typically span multiple print pages.
-                // Inline charts need more overflow to match LibreOffice's output
-                // since the chart doesn't consume a separate page.
-                var minOverflow = isInlineChart
-                    ? usablePageH * 2 + 1f  // 3 overflow pages
-                    : usablePageH + 1f;     // 2 overflow pages
-                if (overflowHeight < minOverflow)
-                    overflowHeight = minOverflow;
+                // Only force minimum overflow pages for non-inline dominant charts
+                // that are rendered as standalone (e.g. chart-only sheets in LibreOffice).
+                // Inline charts (anchored within data area) should only get overflow
+                // pages when their actual content exceeds what was rendered.
+                if (!isInlineChart && overflowHeight < usablePageH + 1f)
+                    overflowHeight = usablePageH + 1f;
                 while (overflowHeight > 0f)
                 {
                     chartPage = doc.AddPage(pageWidth, pageHeight);
@@ -2301,50 +2325,152 @@ internal static class ExcelToPdfConverter
         var allValues = series.SelectMany(s => s.Values).ToArray();
         if (allValues.Length == 0) return;
 
-        var dataMax = allValues.Max();
-        var dataMin = Math.Min(0, allValues.Min());
-
-        var (niceMin, niceMax, niceStep) = NiceAxisScale(dataMin, dataMax);
-        var range = niceMax - niceMin;
-        if (range <= 0) range = 1;
+        var isStacked = chart.ChartType.Contains("stacked", StringComparison.OrdinalIgnoreCase);
+        var isPercentStacked = chart.ChartType.Contains("percentStacked", StringComparison.OrdinalIgnoreCase);
 
         var categories = series[0].Categories;
         var numCats = Math.Max(categories.Length, series.Max(s => s.Values.Length));
         if (numCats == 0) return;
-
         var numSeries = series.Count;
+
+        // Determine axis range
+        double niceMin, niceMax, niceStep;
+        if (isPercentStacked)
+        {
+            niceMin = 0; niceMax = 100; niceStep = 10;
+        }
+        else if (isStacked)
+        {
+            double dataMax = 0, dataMin = 0;
+            for (var ci = 0; ci < numCats; ci++)
+            {
+                double posSum = 0, negSum = 0;
+                for (var si = 0; si < numSeries; si++)
+                {
+                    var val = ci < series[si].Values.Length ? series[si].Values[ci] : 0;
+                    if (val >= 0) posSum += val; else negSum += val;
+                }
+                dataMax = Math.Max(dataMax, posSum);
+                dataMin = Math.Min(dataMin, negSum);
+            }
+            (niceMin, niceMax, niceStep) = NiceAxisScale(dataMin, dataMax);
+        }
+        else
+        {
+            var dataMax = allValues.Max();
+            var dataMin = Math.Min(0, allValues.Min());
+            (niceMin, niceMax, niceStep) = NiceAxisScale(dataMin, dataMax);
+        }
+
+        var range = niceMax - niceMin;
+        if (range <= 0) range = 1;
+
         var groupHeight = plotHeight / numCats;
-        var barHeight = groupHeight * 0.7f / numSeries;
+        var barHeight = isStacked ? groupHeight * 0.7f : groupHeight * 0.7f / numSeries;
         var groupPadding = groupHeight * 0.15f;
 
         var baselineX = plotLeft + (float)((0 - niceMin) / range) * plotWidth;
 
-        // X-axis gridlines and labels at nice round numbers
-        for (var tickVal = niceMin; tickVal <= niceMax + niceStep * 0.01; tickVal += niceStep)
+        // X-axis gridlines and labels (skip for percent-stacked with deleted axis)
+        if (!isPercentStacked)
         {
-            var gridX = plotLeft + (float)((tickVal - niceMin) / range) * plotWidth;
-            page.AddLine(gridX, plotBottom, gridX, plotBottom + plotHeight,
-                new PdfColor(0.85f, 0.85f, 0.85f), 0.5f);
-            var label = FormatAxisValue(tickVal, axisFmtCode);
-            page.AddText(label, gridX - label.Length * axisFontSize * 0.25f, plotBottom - axisFontSize * 1.5f, axisFontSize);
+            for (var tickVal = niceMin; tickVal <= niceMax + niceStep * 0.01; tickVal += niceStep)
+            {
+                var gridX = plotLeft + (float)((tickVal - niceMin) / range) * plotWidth;
+                page.AddLine(gridX, plotBottom, gridX, plotBottom + plotHeight,
+                    new PdfColor(0.85f, 0.85f, 0.85f), 0.5f);
+                var label = FormatAxisValue(tickVal, axisFmtCode);
+                page.AddText(label, gridX - label.Length * axisFontSize * 0.25f, plotBottom - axisFontSize * 1.5f, axisFontSize);
+            }
         }
 
-        // Draw horizontal bars (categories from bottom to top, matching spreadsheet convention)
+        // Data label format
+        var dlFmt = chart.DataLabelFormatCode;
+        var showVal = chart.ShowDataLabelVal;
+
+        // Draw horizontal bars
         for (var ci = 0; ci < numCats; ci++)
         {
             var groupY = plotBottom + ci * groupHeight + groupPadding;
-            for (var si = 0; si < numSeries; si++)
-            {
-                var val = si < series.Count && ci < series[si].Values.Length
-                    ? series[si].Values[ci] : 0;
-                var barY = groupY + si * barHeight;
-                var valX = plotLeft + (float)((val - niceMin) / range) * plotWidth;
-                var barLeft = Math.Min(valX, baselineX);
-                var barDrawW = Math.Abs(valX - baselineX);
-                if (barDrawW < 0.5f) barDrawW = 0.5f;
 
-                var color = ChartColors[si % ChartColors.Length];
-                page.AddRectangle(barLeft, barY, barDrawW, barHeight, color);
+            if (isStacked)
+            {
+                double cumPos = 0, cumNeg = 0;
+                double catTotal = 0;
+                if (isPercentStacked)
+                {
+                    for (var si = 0; si < numSeries; si++)
+                        catTotal += Math.Abs(ci < series[si].Values.Length ? series[si].Values[ci] : 0);
+                    if (catTotal == 0) catTotal = 1;
+                }
+
+                for (var si = 0; si < numSeries; si++)
+                {
+                    var rawVal = si < numSeries && ci < series[si].Values.Length
+                        ? series[si].Values[ci] : 0;
+                    var val = isPercentStacked ? (rawVal / catTotal * 100) : rawVal;
+                    var barY = groupY;
+
+                    double barBase, barTop;
+                    if (val >= 0)
+                    {
+                        barBase = cumPos;
+                        cumPos += val;
+                        barTop = cumPos;
+                    }
+                    else
+                    {
+                        barTop = cumNeg;
+                        cumNeg += val;
+                        barBase = cumNeg;
+                    }
+
+                    var x0 = plotLeft + (float)((barBase - niceMin) / range) * plotWidth;
+                    var x1 = plotLeft + (float)((barTop - niceMin) / range) * plotWidth;
+                    var barDrawW = Math.Max(0.5f, Math.Abs(x1 - x0));
+                    var color = ChartColors[si % ChartColors.Length];
+                    page.AddRectangle(Math.Min(x0, x1), barY, barDrawW, barHeight, color);
+
+                    // Data label centered in bar segment
+                    if (showVal && barDrawW > 10)
+                    {
+                        var labelText = FormatDataLabel(rawVal, dlFmt);
+                        var labelWidth = (float)MeasureHelveticaWidth(labelText, axisFontSize, true);
+                        var barCenterX = Math.Min(x0, x1) + barDrawW / 2f - labelWidth / 2f;
+                        var barCenterY = barY + barHeight / 2f - axisFontSize * 0.35f;
+                        // Use white text for large segments, black for small
+                        var isLargeSeg = barDrawW > plotWidth * 0.25f;
+                        page.AddText(labelText, barCenterX, barCenterY, axisFontSize,
+                            isLargeSeg ? new PdfColor(1f, 1f, 1f) : new PdfColor(0, 0, 0), bold: true);
+                    }
+                }
+            }
+            else
+            {
+                // Clustered: bars side by side
+                for (var si = 0; si < numSeries; si++)
+                {
+                    var val = si < numSeries && ci < series[si].Values.Length
+                        ? series[si].Values[ci] : 0;
+                    var barY = groupY + si * barHeight;
+                    var valX = plotLeft + (float)((val - niceMin) / range) * plotWidth;
+                    var barLeft = Math.Min(valX, baselineX);
+                    var barDrawW = Math.Abs(valX - baselineX);
+                    if (barDrawW < 0.5f) barDrawW = 0.5f;
+
+                    var color = ChartColors[si % ChartColors.Length];
+                    page.AddRectangle(barLeft, barY, barDrawW, barHeight, color);
+
+                    // Data label
+                    if (showVal && barDrawW > 10)
+                    {
+                        var labelText = FormatDataLabel(val, dlFmt);
+                        var labelWidth = (float)MeasureHelveticaWidth(labelText, axisFontSize, true);
+                        var barCenterX = barLeft + barDrawW / 2f - labelWidth / 2f;
+                        var barCenterY = barY + barHeight / 2f - axisFontSize * 0.35f;
+                        page.AddText(labelText, barCenterX, barCenterY, axisFontSize, bold: true);
+                    }
+                }
             }
 
             // Category label (on Y-axis, left side)
@@ -2359,11 +2485,11 @@ internal static class ExcelToPdfConverter
         // Draw axes
         page.AddLine(plotLeft, plotBottom, plotLeft, plotBottom + plotHeight,
             new PdfColor(0, 0, 0), 0.8f);
-        page.AddLine(plotLeft, plotBottom, plotLeft + plotWidth, plotBottom,
-            new PdfColor(0, 0, 0), 0.8f);
+        if (!isPercentStacked)
+            page.AddLine(plotLeft, plotBottom, plotLeft + plotWidth, plotBottom,
+                new PdfColor(0, 0, 0), 0.8f);
 
-        var hIsStacked = chart.ChartType.Contains("stacked", StringComparison.OrdinalIgnoreCase);
-        RenderLegend(page, series, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, hIsStacked);
+        RenderLegend(page, series, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, isStacked);
     }
 
     /// <summary>Renders a line chart.</summary>
@@ -2859,6 +2985,55 @@ internal static class ExcelToPdfConverter
         return $"{val:F1}";
     }
 
+    /// <summary>Formats a data label value using the chart's data label format code.</summary>
+    private static string FormatDataLabel(double val, string formatCode)
+    {
+        if (string.IsNullOrEmpty(formatCode))
+            return val == Math.Floor(val) ? $"{val:F0}" : $"{val:F1}";
+
+        // Handle "$"#,##0 pattern (quoted dollar prefix + comma grouping)
+        var prefix = "";
+        var suffix = "";
+        var code = formatCode;
+        // Extract quoted prefix (e.g., "$")
+        if (code.StartsWith("\"") || code.StartsWith("\""))
+        {
+            var closeIdx = code.IndexOf('"', 1);
+            if (closeIdx > 1)
+            {
+                prefix = code.Substring(1, closeIdx - 1);
+                code = code[(closeIdx + 1)..];
+            }
+        }
+        // Extract quoted suffix
+        if (code.EndsWith("\"") || code.EndsWith("\""))
+        {
+            var openIdx = code.LastIndexOf('"', code.Length - 2);
+            if (openIdx >= 0)
+            {
+                suffix = code.Substring(openIdx + 1, code.Length - openIdx - 2);
+                code = code[..openIdx];
+            }
+        }
+
+        // Count decimal places from format
+        var decimalPlaces = 0;
+        var dotIdx = code.IndexOf('.');
+        if (dotIdx >= 0)
+        {
+            for (var i = dotIdx + 1; i < code.Length && code[i] == '0'; i++)
+                decimalPlaces++;
+        }
+
+        string formatted;
+        if (code.Contains("#,##") || code.Contains("0,0"))
+            formatted = val.ToString($"N{decimalPlaces}", System.Globalization.CultureInfo.InvariantCulture);
+        else
+            formatted = val.ToString($"F{decimalPlaces}", System.Globalization.CultureInfo.InvariantCulture);
+
+        return prefix + formatted + suffix;
+    }
+
     /// <summary>
     /// Calculates "nice" axis bounds and step for chart axis labeling.
     /// Returns (niceMin, niceMax, step) that produce round-number axis labels.
@@ -3089,7 +3264,9 @@ internal static class ExcelToPdfConverter
 
         // Built-in Helvetica-Bold appears heavier than spreadsheet renderer output
         // for very large headings, so keep large titles in regular weight.
-        return fontSize <= 20f;
+        // When a Unicode/CJK font is embedded, bold is simulated via stroke;
+        // this does not produce the same heavy visual, so allow larger sizes.
+        return fontSize <= 40f;
     }
 
     /// <summary>
