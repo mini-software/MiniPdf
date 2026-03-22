@@ -399,12 +399,10 @@ internal static class ExcelToPdfConverter
         {
             var usableW = baseW - mL - mR;
             var estTotal = EstimateColumnWidthTotal(sheet, options);
-            System.Console.Error.WriteLine($"[SCALE_DEBUG] sheet={sheet.Name} usableW={usableW:F1} estTotal={estTotal:F1} fitToPage={sheet.FitToPage} fitToWidth={sheet.FitToWidth} fitToHeight={sheet.FitToHeight} origScale={sheet.PrintScale} mdw={sheet.MaxDigitWidthPx:F2}");
             if (estTotal > usableW && estTotal > 0)
             {
                 var fitScaleF = usableW / estTotal;
                 var fitPct = (int)Math.Max(10, Math.Floor(fitScaleF * 100));
-                System.Console.Error.WriteLine($"[SCALE_DEBUG] fitScaleF={fitScaleF:F4} fitPct={fitPct}");
 
                 // Check if the width-based scale causes rows to barely overflow
                 // one page height.  When the overflow is small (< 5%), reduce
@@ -419,7 +417,6 @@ internal static class ExcelToPdfConverter
                     for (var r = startRow; r <= endRow; r++)
                         rawTotal += sheet.RowHeights.TryGetValue(r, out var rh) ? rh : defRH;
                     var scaledH = rawTotal * fitScaleF;
-                    System.Console.Error.WriteLine($"[SCALE_DEBUG] usableH={usableH:F1} rawTotal={rawTotal:F1} scaledH={scaledH:F1} overflow={scaledH > usableH} smallOverflow={scaledH > usableH && scaledH < usableH * 1.05f}");
                     if (scaledH > usableH && scaledH < usableH * 1.05f)
                     {
                         // Small overflow: use height-based scale instead
@@ -432,7 +429,6 @@ internal static class ExcelToPdfConverter
                 sheet.PrintScale = fitPct;
                 // Store precise float scale to avoid integer rounding loss
                 sheet.EffectivePrintScaleF = fitScaleF;
-                System.Console.Error.WriteLine($"[SCALE_DEBUG] FINAL fitScaleF={fitScaleF:F4} fitPct={fitPct}");
             }
             else if (estTotal > 0 && sheet.PrintScale < 100)
             {

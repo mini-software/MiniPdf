@@ -3549,6 +3549,7 @@ internal sealed class ExcelSheet
         if (string.IsNullOrWhiteSpace(fontName)) return 7.378f;
         return fontName.Trim().ToLowerInvariant() switch
         {
+            "century gothic" => 8.13f,
             "franklin gothic medium" => 8.5f,
             "franklin gothic book" => 8.2f,
             "georgia" => 7.8f,
