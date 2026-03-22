@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-21T16:27:53.830243
+Generated: 2026-03-22T03:02:48.317400
 
 ## Summary
 
@@ -197,8 +197,11 @@ Generated: 2026-03-21T16:27:53.830243
 | 189 | 🟢 classic189_alternating_image_text_rows | 0.8974 | 0.8632 | 1/1 | **0.9042** |
 | 190 | 🟢 classic190_dashboard_kpi_images | 1.0 | 0.9444 | 1/1 | **0.9778** |
 | 191 | 🟡 classic191_payroll_calculator | 0.7135 | 0.895 | 9/9 | **0.8434** |
+| 192 | 🟡 nthu_article | 0.9324 | 0.8205 | 21/20 | **0.8012** |
+| 193 | ⚪ nthu_article_new | N/A | N/A | ?/? | **N/A** |
+| 194 | ⚪ nthu_article_old | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.9576**
+**Average Overall Score: 0.9469**
 
 ## Visual Comparison
 
@@ -2227,6 +2230,108 @@ Generated: 2026-03-21T16:27:53.830243
 <tr>
   <td><img src="images/classic191_payroll_calculator_p9_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic191_payroll_calculator_p9_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>nthu_article</b></td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 80.1%</td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p8_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p8_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p9_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p9_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p10_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p10_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p11_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p11_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p12_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p12_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p13_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p13_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p14_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p14_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p15_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p15_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p16_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p16_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p17_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p17_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p18_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p18_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p19_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p19_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p20_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p20_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/nthu_article_p21_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><b>nthu_article_new</b></td>
+  <td colspan="1">nthu_article_new N/A</td>
+</tr>
+<tr>
+  <td colspan="2"><i>No images</i></td>
+</tr>
+<tr>
+  <td><b>nthu_article_old</b></td>
+  <td colspan="1">nthu_article_old N/A</td>
+</tr>
+<tr>
+  <td colspan="2"><i>No images</i></td>
 </tr>
 </table>
 
@@ -8353,6 +8458,238 @@ Text content: ✅ Identical
 
 ```
 </details>
+
+### nthu_article
+
+- **Text Similarity:** 0.9324
+- **Visual Average:** 0.8205
+- **Overall Score:** 0.8012
+- **Pages:** MiniPdf=21, Reference=20
+- **File Size:** MiniPdf=4691713 bytes, Reference=798510 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/nthu_article.pdf
++++ reference/nthu_article.pdf
+@@ -1,7 +1,7 @@
+ 國立清華大學中國文學系碩博士學位論文格式規範
+
+-經111年11月09日111學年度第一學期第3次系務會議通過
+
+-一、論文編印項目次序與頁碼編排
+
+-（一）紙本論文次序
+
++經 111 年 11 月 09 日 111 學年度第一學期第 3 次系務會議通過
+
++一、 論文編印項目次序與頁碼編排
+
++（一） 紙本論文次序
+
+ 封面 Front Cover
+
+ 書名頁 Title Page（同封面）
+
+ 論文指導教授推薦書(影本)
+
+@@ -20,147 +20,145 @@
+ 名詞附錄 Glossary of Terms (可免)
+
+ 索引 Index (可免)
+
+ 封底 Back Cover、書背 Spine
+
+-（二）電子檔論文次序
+
++（二） 電子檔論文次序
+
+ 去掉前項 藍字 項目。
+
+-（三）頁碼編排
+
+-1，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i, ii, iii… ）。
+
+-2，論文本文開始至最末，用阿拉伯數字標示頁碼。
+
+-3，頁碼標於頁面底端，置中。
+
+-（四）版面配置
+
+-包括封面，全書版面配置邊界設定為下上2 .54 公分，左右 2.9 公分
+
+-二、
+
++（三） 頁碼編排
+
++1 ，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i, ii, iii… ）。
+
++2 ，論文本文開始至最末，用阿拉伯數字標示頁碼。
+
++3 ，頁碼標於頁面底端，置中。
+
++（四） 版面配置
+
++包括封面，全書版面配置邊界設定為下上 2.54 公分，左右 2.9 公分
+
+ 1
+
+ ---PAGE---
+
+-封面（與書名頁）、書背格式
+
+-封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝（
+
+-https://registra.site.nthu.edu.tw/var/file/211/1211/img/75/203558730.pdf ）。 論
+
+-文封面建議採用亮面雲彩紙。如下範例 A 、範例 B （可直接下載套用。此為教
+
+-務處公布之格式）。
+
++二、封面（與書名頁）、書背格式
+
++封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝
+
++（ https://registra.site.nthu.edu.tw/var/file/211/1211/img/75/203558730.pdf ）。論
+
++文封面建議採用亮面雲彩紙。如下範例 A 、範例 B （可直接下載套用。此為
+
++教務處公布之格式）。
+
+ 三、論文指導教授推薦書、學位考試委員審定書、授權書
+
+-推薦書、審定書自中文系網頁下載，相關規定請洽詢系辦。授權書包括：「
+
+-國立清華大學博碩士論文全文電子檔著作權授權書」、「國立清華大學博碩
+
+-士紙本論文著作權授權書」、「國家圖書館博碩士論文電子檔案上網授權
+
+-書」、「華藝博碩士論文全文電子學位論文授權書」，相關規定可參 附件一
+
+-，或國立清華大學圖書館博碩士論文全系統，常見問題第 7 項。
+
++推薦書、審定書自中文系網頁下載，相關規定請洽詢系辦。授權書包括：
+
++「國立清華大學博碩士論文全文電子檔著作權授權書」、「國立清華大學博
+
++碩士紙本論文著作權授權書」、「國家圖書館博碩士論文電子檔案上網授權
+
++書」、「華藝博碩士論文全文電子學位論文授權書」，相關規定可參 附件一 ，
+
++或國立清華大學圖書館博碩士論文全系統，常見問題第 7 項。
+
+ 四、中英文摘要
+
+ 摘要應裝訂於論文內。內容應說明研究目的、論述重點、研究方法或程序、
+
+ 研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二頁，
+
+-橫式書寫，行距建議設定為 1.2 行（ word 中選「多行」，設定 1.2 ），段距 0.5
+
+-行。標題「摘要」二字或「 Abstract 」1 6 級字，置中，可加黑。「關鍵詞：」
+
+-或「 Key words: 」12級，可加黑；與摘要主文間，空一行。英文與數字用
+
+-Times New Roman 。如範例 C （中文）與範例 D （英文）。
+
+-五、目次
+
++橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），段距
+
++0.5 行 。標題「摘要」二字或「 Abstract 」 16 級字，置中，可加黑。「關鍵
+
++詞：」或「 Key words: 」 12 級，可加黑；與摘要主文間，空一行。英文與數
+
++字用 Times New Roman 。如範例 C （中文）與範例 D （英文）。
+
++五、 目次
+
+ 包括各章、各節、節下小標之標題、參考文獻、附錄及其所在之頁數。「目
+
+-次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列於
+
+-其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
+
++次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列
+
++於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
+
+ 體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。目次
+
+ 格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
+
+ 六、論文正文
+
+-（一）章節標題
+
++（一） 章節標題
+
+ 章次與章名間空一格，如「第一章　緒論」。 18 級，標楷體，置中。
+
+ 各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16 級，
+
+ 標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
+
+-「1、」、「（1）」 …… 等順序表示， 14 級（或 12 級），左齊。
+
+-（二）內文
+
+-1，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文
+
+-中，書名和篇名連用時，省略篇名號，如《莊子 ‧ 天下》。若為英
+
+-文，書名請用斜體，篇名請用 “ ” 。日文翻譯成中文，行文時亦請
+
++「 1 、」、「（ 1 ）」……等順序表示， 14 級（或 12 級），左齊。
+
++（二） 內文
+
++1 ，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文中，
+
++書名和篇名連用時，省略篇名號，如《莊子‧天下》。若為英文，
+
++書名請用斜體，篇名請用“ ”。日文翻譯成中文，行文時亦請一
+
+ 2
+
+ ---PAGE---
+
+-一併改用中文新式標號。
+
+-2，行距建議設定為 1.2 行（ word 中選「多行」，設定 1.2 ），各段「左
+
+-右對齊」。
+
+-（三）引文
+
++併改用中文新式標號。
+
++2 ，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段
+
++「左右對齊」。
+
++（三） 引文
+
+ 所有引文均須核對無誤。引文左縮排 3 字元，標楷體 12 級。若需特別
+
+ 引用之外文，也依上述格式處理，字體建議用 Times New Roman 。外
+
+ 文引文，亦可翻譯成流暢達意之中文，於註腳中附上所引篇章之外文
+
+ 原名，並得視需要將所徵引之原文置於註腳中。
+
+... (17267 more characters)
+
+```
+</details>
+
+### nthu_article_new
+
+**Error:** Reference PDF not found
+
+### nthu_article_old
+
+**Error:** Reference PDF not found
 
 ## Improvement Suggestions
 

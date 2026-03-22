@@ -21,9 +21,11 @@ internal static class DocxReader
     private static readonly XNamespace WPS = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape";
     private static readonly XNamespace WPG = "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup";
     private static readonly XNamespace MC = "http://schemas.openxmlformats.org/markup-compatibility/2006";
+    private static readonly XNamespace M = "http://schemas.openxmlformats.org/officeDocument/2006/math";
 
     /// <summary>
-    /// Unwraps SDT (Structured Document Tag) elements by replacing them with their sdtContent children.
+    /// Unwraps SDT (Structured Document Tag) and mc:AlternateContent elements
+    /// by replacing them with their inner children.
     /// </summary>
     private static IEnumerable<XElement> UnwrapSdt(IEnumerable<XElement> elements)
     {
@@ -35,6 +37,16 @@ internal static class DocxReader
                 if (content != null)
                 {
                     foreach (var inner in UnwrapSdt(content.Elements()))
+                        yield return inner;
+                }
+            }
+            else if (el.Name == MC + "AlternateContent")
+            {
+                // Prefer mc:Choice content over mc:Fallback
+                var choice = el.Element(MC + "Choice");
+                if (choice != null)
+                {
+                    foreach (var inner in UnwrapSdt(choice.Elements()))
                         yield return inner;
                 }
             }
@@ -626,6 +638,38 @@ internal static class DocxReader
                         runs.Add(run);
                 }
             }
+            else if (child.Name == M + "oMathPara" || child.Name == M + "oMath")
+            {
+                // Extract text from Office Math (OMML) elements.
+                // Math content uses <m:r>/<m:t> instead of <w:r>/<w:t>.
+                // Read formatting from <w:rPr> inside <m:r> when available.
+                foreach (var mr in child.Descendants(M + "r"))
+                {
+                    var mathText = "";
+                    foreach (var mt in mr.Elements(M + "t"))
+                        mathText += mt.Value;
+                    if (string.IsNullOrEmpty(mathText))
+                        continue;
+
+                    var mBold = bold;
+                    var mItalic = italic;
+                    var mFontSize = fontSize;
+                    PdfColor? mColor = color;
+                    // Read <w:rPr> inside math run for formatting
+                    var wrPr = mr.Element(W + "rPr");
+                    if (wrPr != null)
+                    {
+                        if (wrPr.Element(W + "b") != null) mBold = true;
+                        if (wrPr.Element(W + "i") != null) mItalic = true;
+                        var sz = wrPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
+                        if (float.TryParse(sz, out var s) && s > 0)
+                            mFontSize = s / 2f;
+                        var rc = ReadRunColor(wrPr);
+                        if (rc != null) mColor = rc;
+                    }
+                    runs.Add(new DocxRun(mathText, mBold, mItalic, mFontSize, mColor));
+                }
+            }
         }
 
         // Resolve deferred mid-paragraph page break: if content runs followed the
@@ -837,12 +881,19 @@ internal static class DocxReader
                 return defaultEastAsiaFontName ?? parentFontName ?? defaultLatinFontName;
         }
 
-        var explicitFont = rFonts.Attribute(W + "eastAsia")?.Value
-            ?? rFonts.Attribute(W + "ascii")?.Value
+        // Prefer Latin (ascii/hAnsi) explicit fonts over eastAsia.  CJK characters
+        // will still be rendered with the correct East Asian font via PdfWriter's
+        // per-character font slot assignment fallback.
+        var explicitFont = rFonts.Attribute(W + "ascii")?.Value
             ?? rFonts.Attribute(W + "hAnsi")?.Value
+            ?? rFonts.Attribute(W + "eastAsia")?.Value
             ?? rFonts.Attribute(W + "cs")?.Value;
         if (!string.IsNullOrWhiteSpace(explicitFont))
             return explicitFont;
+
+        var hasLatinTheme = !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "asciiTheme")?.Value)
+            || !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "hAnsiTheme")?.Value)
+            || !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "cstheme")?.Value);
 
         var hasEastAsiaTheme = !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "eastAsiaTheme")?.Value)
             || (string.Equals(rFonts.Attribute(W + "asciiTheme")?.Value, "minorEastAsia", StringComparison.OrdinalIgnoreCase)
@@ -850,15 +901,14 @@ internal static class DocxReader
             || (string.Equals(rFonts.Attribute(W + "hAnsiTheme")?.Value, "minorEastAsia", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(rFonts.Attribute(W + "hAnsiTheme")?.Value, "majorEastAsia", StringComparison.OrdinalIgnoreCase));
 
-        if (hasEastAsiaTheme)
-            return defaultEastAsiaFontName ?? parentFontName ?? defaultLatinFontName;
-
-        var hasLatinTheme = !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "asciiTheme")?.Value)
-            || !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "hAnsiTheme")?.Value)
-            || !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "cstheme")?.Value);
-
+        // Prefer Latin theme when available — this sets the preferred font hint
+        // for the text block.  CJK codepoints that aren't covered by the Latin
+        // font will fall through to the system CJK font via PdfWriter's fallback.
         if (hasLatinTheme)
             return defaultLatinFontName ?? parentFontName ?? defaultEastAsiaFontName;
+
+        if (hasEastAsiaTheme)
+            return defaultEastAsiaFontName ?? parentFontName ?? defaultLatinFontName;
 
         return parentFontName;
     }
@@ -877,16 +927,16 @@ internal static class DocxReader
         // Try inline images first, then fall back to anchor images
         var container = drawing.Descendants(WP + "inline").FirstOrDefault();
         var isAnchor = false;
+        var isBehindDoc = false;
         if (container == null)
         {
-            // Fall back to anchor (floating) images
-            // Only include anchors that are in front of text (behindDoc!=1) and have an actual image blip
+            // Fall back to anchor (floating) images, including behind-doc images
             var anchor = drawing.Descendants(WP + "anchor").FirstOrDefault();
-            if (anchor != null && anchor.Attribute("behindDoc")?.Value != "1"
-                               && anchor.Descendants(A + "blip").Any())
+            if (anchor != null && anchor.Descendants(A + "blip").Any())
             {
                 container = anchor;
                 isAnchor = true;
+                isBehindDoc = anchor.Attribute("behindDoc")?.Value == "1";
             }
         }
         if (container == null) return null;
@@ -961,23 +1011,26 @@ internal static class DocxReader
 
         // Read anchor position offsets
         long offsetXEmu = 0, offsetYEmu = 0;
+        string? relFromH = null, relFromV = null;
         if (isAnchor)
         {
             var posH = container.Element(WP + "positionH");
             var posV = container.Element(WP + "positionV");
             if (posH != null)
             {
+                relFromH = posH.Attribute("relativeFrom")?.Value;
                 var off = posH.Element(WP + "posOffset");
                 if (off != null) long.TryParse(off.Value, out offsetXEmu);
             }
             if (posV != null)
             {
+                relFromV = posV.Attribute("relativeFrom")?.Value;
                 var off = posV.Element(WP + "posOffset");
                 if (off != null) long.TryParse(off.Value, out offsetYEmu);
             }
         }
 
-        return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu);
+        return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu, isBehindDoc, relFromH, relFromV);
     }
 
     private static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu,
@@ -2621,7 +2674,10 @@ internal sealed record DocxImage(
     long HeightEmu = 0,
     bool IsAnchor = false,
     long OffsetXEmu = 0,
-    long OffsetYEmu = 0
+    long OffsetYEmu = 0,
+    bool IsBehindDoc = false,
+    string? RelativeFromH = null,
+    string? RelativeFromV = null
 );
 
 /// <summary>Represents a floating text box (wrapNone) with absolute position.</summary>
@@ -2738,13 +2794,26 @@ internal sealed class DocxNumberingDef
         }
 
         var counter = IncrementCounter(ilvl, level.Start);
-        var formatted = FormatNumber(counter, level.NumFmt);
-        // Replace %1, %2 etc. placeholders in lvlText with formatted number
+        // Replace all level placeholders (%1, %2, ...) with their respective counter values.
+        // %1 = ilvl 0, %2 = ilvl 1, etc.  Iterate 9→1 to avoid partial matches.
         var text = level.LvlText;
-        text = text.Replace("%" + (ilvl + 1), formatted);
-        // Also replace other level placeholders with empty if they exist
-        for (var i = 1; i <= 9; i++)
-            text = text.Replace("%" + i, "");
+        for (var i = 9; i >= 1; i--)
+        {
+            var placeholder = "%" + i;
+            if (!text.Contains(placeholder)) continue;
+            var levelIdx = i - 1;
+            if (levelIdx == ilvl)
+            {
+                text = text.Replace(placeholder, FormatNumber(counter, level.NumFmt));
+            }
+            else
+            {
+                var refLevel = Levels.FirstOrDefault(l => l.Ilvl == levelIdx);
+                var refFmt = refLevel?.NumFmt ?? "decimal";
+                var refCounter = _counters.TryGetValue(levelIdx, out var rc) ? rc : 0;
+                text = text.Replace(placeholder, refCounter > 0 ? FormatNumber(refCounter, refFmt) : "");
+            }
+        }
         return text;
     }
 
