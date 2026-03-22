@@ -12,4 +12,10 @@
     <ProjectReference Include="..\src\MiniPdf\MiniPdf.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="startup.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

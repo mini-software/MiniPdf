@@ -69,4 +69,12 @@ jobs:
           app-name: 'minipdf-api'
           slot-name: 'Production'
           package: .
+
+      - name: Set startup command
+        run: |
+          az webapp config set \
+            --resource-group rg-minipdf-api \
+            --name minipdf-api \
+            --startup-file "/home/site/wwwroot/startup.sh" \
+            --output none
           
