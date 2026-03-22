@@ -25,7 +25,8 @@ internal static class ExcelReader
         // Read theme colors and styles
         var themeColors = ReadThemeColors(archive);
         var normalFontFamily = ReadNormalFontFamily(archive);
-        var maxDigitWidthPx = ExcelSheet.LookupMaxDigitWidthPx(normalFontFamily);
+        var normalFontSize = ReadNormalFontSize(archive);
+        var maxDigitWidthPx = ExcelSheet.LookupMaxDigitWidthPx(normalFontFamily, normalFontSize);
         var fontStyles = ReadFontStyles(archive, themeColors);
         var fillColors = ReadFillColors(archive, themeColors);
         var borders = ReadBorders(archive, themeColors);
@@ -462,7 +463,7 @@ internal static class ExcelReader
         if (stylesEntry == null) return;
 
         List<(bool? Bold, PdfColor? FillColor)> dxfInfos;
-        Dictionary<string, (int HeaderDxf, int TotalDxf, int WholeDxf)> tableStyleMap;
+        Dictionary<string, (int HeaderDxf, int TotalDxf, int WholeDxf, int FirstColDxf)> tableStyleMap;
         using (var stylesStream = stylesEntry.Open())
         {
             var stylesDoc = XDocument.Load(stylesStream);
@@ -507,14 +508,14 @@ internal static class ExcelReader
                 }
             }
 
-            // Parse table styles: map style name → (headerRow dxfId, totalRow dxfId, wholeTable dxfId)
-            tableStyleMap = new Dictionary<string, (int, int, int)>(StringComparer.OrdinalIgnoreCase);
+            // Parse table styles: map style name → (headerRow dxfId, totalRow dxfId, wholeTable dxfId, firstColumn dxfId)
+            tableStyleMap = new Dictionary<string, (int, int, int, int)>(StringComparer.OrdinalIgnoreCase);
             foreach (var ts in stylesDoc.Descendants(ns + "tableStyle"))
             {
                 var name = ts.Attribute("name")?.Value;
                 if (string.IsNullOrEmpty(name)) continue;
 
-                int headerDxf = -1, totalDxf = -1, wholeDxf = -1;
+                int headerDxf = -1, totalDxf = -1, wholeDxf = -1, firstColDxf = -1;
                 foreach (var tse in ts.Elements(ns + "tableStyleElement"))
                 {
                     var type = tse.Attribute("type")?.Value;
@@ -523,9 +524,10 @@ internal static class ExcelReader
                         if (type == "headerRow") headerDxf = dxfId;
                         else if (type == "totalRow") totalDxf = dxfId;
                         else if (type == "wholeTable") wholeDxf = dxfId;
+                        else if (type == "firstColumn") firstColDxf = dxfId;
                     }
                 }
-                tableStyleMap[name] = (headerDxf, totalDxf, wholeDxf);
+                tableStyleMap[name] = (headerDxf, totalDxf, wholeDxf, firstColDxf);
             }
         }
 
@@ -566,6 +568,7 @@ internal static class ExcelReader
             (bool? Bold, PdfColor? FillColor) headerStyle = (true, null);
             (bool? Bold, PdfColor? FillColor) totalStyle = (true, null);
             (bool? Bold, PdfColor? FillColor) wholeStyle = (null, null);
+            (bool? Bold, PdfColor? FillColor) firstColStyle = (null, null);
 
             if (!string.IsNullOrEmpty(styleName) && tableStyleMap.TryGetValue(styleName, out var dxfIds))
             {
@@ -582,6 +585,8 @@ internal static class ExcelReader
                 }
                 if (dxfIds.WholeDxf >= 0 && dxfIds.WholeDxf < dxfInfos.Count)
                     wholeStyle = dxfInfos[dxfIds.WholeDxf];
+                if (dxfIds.FirstColDxf >= 0 && dxfIds.FirstColDxf < dxfInfos.Count)
+                    firstColStyle = dxfInfos[dxfIds.FirstColDxf];
             }
 
             void ApplyStyle(List<ExcelCell> row, int c, bool? bold, PdfColor? fill)
@@ -620,14 +625,11 @@ internal static class ExcelReader
                     ApplyStyle(rows[r], c, wholeStyle.Bold, wholeStyle.FillColor);
             }
 
-            // First column: all data rows get bold (when showFirstColumn)
-            if (showFirstColumn)
+            // First column: apply firstColumn DXF style (when showFirstColumn)
+            if (showFirstColumn && (firstColStyle.Bold != null || firstColStyle.FillColor != null))
             {
                 for (var r = dataStart; r <= dataEnd && r < rows.Count; r++)
-                {
-                    if (startCol < rows[r].Count && !rows[r][startCol].Bold)
-                        rows[r][startCol] = rows[r][startCol] with { Bold = true };
-                }
+                    ApplyStyle(rows[r], startCol, firstColStyle.Bold, firstColStyle.FillColor);
             }
         }
     }
@@ -894,6 +896,45 @@ internal static class ExcelReader
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Reads the Normal style font size (in points) from styles.xml.
+    /// The Normal style is cellStyleXfs[0]; its fontId → fonts[fontId].sz gives the size.
+    /// Returns 11 (modern Excel default) when the size cannot be determined.
+    /// </summary>
+    private static float ReadNormalFontSize(ZipArchive archive)
+    {
+        var stylesEntry = archive.GetEntry("xl/styles.xml");
+        if (stylesEntry == null) return 11f;
+
+        using var ss = stylesEntry.Open();
+        var sdoc = XDocument.Load(ss);
+        var ns = sdoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+
+        // cellStyleXfs[0] is the Normal style
+        var cellStyleXfs = sdoc.Descendants(ns + "cellStyleXfs").FirstOrDefault();
+        var firstXf = cellStyleXfs?.Elements(ns + "xf").FirstOrDefault();
+        if (firstXf == null) return 11f;
+
+        if (!int.TryParse(firstXf.Attribute("fontId")?.Value, out var fontId))
+            return 11f;
+
+        var fonts = sdoc.Descendants(ns + "fonts").FirstOrDefault();
+        if (fonts == null) return 11f;
+
+        var fontEls = fonts.Elements(ns + "font").ToList();
+        if (fontId < 0 || fontId >= fontEls.Count) return 11f;
+
+        var szEl = fontEls[fontId].Element(ns + "sz");
+        if (szEl != null && float.TryParse(szEl.Attribute("val")?.Value,
+            System.Globalization.NumberStyles.Any,
+            System.Globalization.CultureInfo.InvariantCulture, out var sz) && sz > 0)
+        {
+            return sz;
+        }
+
+        return 11f;
     }
 
     private static List<PdfColor> ReadThemeColors(ZipArchive archive)
@@ -3541,26 +3582,43 @@ internal sealed class ExcelSheet
     }
 
     /// <summary>
-    /// Looks up the max digit width (pixels at 96 DPI, 11pt) for common fonts.
+    /// Looks up the max digit width (pixels at 96 DPI) for common fonts.
+    /// The lookup table stores values measured at 11pt. When the Normal style
+    /// uses a different font size, the value is scaled proportionally so that
+    /// column-width-to-points conversion matches the actual workbook layout.
     /// Returns the calibration default for unknown fonts so existing behaviour is preserved.
     /// </summary>
-    internal static float LookupMaxDigitWidthPx(string? fontName)
+    internal static float LookupMaxDigitWidthPx(string? fontName, float fontSizePt = 11f)
     {
-        if (string.IsNullOrWhiteSpace(fontName)) return 7.378f;
-        return fontName.Trim().ToLowerInvariant() switch
+        const float calibrationSizePt = 11f;
+        float baseMdw;
+        if (string.IsNullOrWhiteSpace(fontName))
         {
-            "century gothic" => 8.13f,
-            "franklin gothic medium" => 8.5f,
-            "franklin gothic book" => 8.2f,
-            "georgia" => 7.8f,
-            "verdana" => 8.3f,
-            "trebuchet ms" => 7.6f,
-            "tahoma" => 8.0f,
-            "garamond" => 6.8f,
-            "corbel" => 7.6f,
-            "times new roman" => 6.8f,
-            "consolas" or "courier new" => 7.3f,
-            _ => 7.378f, // Calibri / Arial / Aptos and other common fonts
-        };
+            baseMdw = 7.378f;
+        }
+        else
+        {
+            baseMdw = fontName.Trim().ToLowerInvariant() switch
+            {
+                "century gothic" => 8.13f,
+                "franklin gothic medium" => 8.5f,
+                "franklin gothic book" => 8.2f,
+                "georgia" => 7.8f,
+                "verdana" => 8.3f,
+                "trebuchet ms" => 7.6f,
+                "tahoma" => 8.0f,
+                "garamond" => 6.8f,
+                "corbel" => 7.6f,
+                "times new roman" => 6.8f,
+                "consolas" or "courier new" => 7.3f,
+                _ => 7.378f, // Calibri / Arial / Aptos and other common fonts
+            };
+        }
+
+        // Scale from the 11pt calibration size to the actual Normal font size
+        if (fontSizePt > 0 && Math.Abs(fontSizePt - calibrationSizePt) > 0.01f)
+            baseMdw *= fontSizePt / calibrationSizePt;
+
+        return baseMdw;
     }
 }

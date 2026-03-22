@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-22T13:52:29.599870
+Generated: 2026-03-22T20:42:35.761945
 
 ## Summary
 
@@ -8,16 +8,16 @@ Generated: 2026-03-22T13:52:29.599870
 |---|-----------|----------|------------|-------------|--------|
 | 1 | 🟢 Academic Achievement Summary Table | 0.9347 | 0.9436 | 2/2 | **0.9513** |
 | 2 | 🟢 AcademicAchievement_temp | 0.9347 | 0.9436 | 2/2 | **0.9513** |
-| 3 | 🟢 Expense report basic1 | 0.9889 | 0.893 | 1/1 | **0.9528** |
+| 3 | 🟡 Expense report basic1 | 1.0 | 0.4796 | 1/1 | **0.7918** |
 | 4 | 🟡 payroll-calculator_f | 0.6588 | 0.8848 | 27/27 | **0.8174** |
 | 5 | 🟢 PO_anonymized | 0.9625 | 0.9154 | 8/8 | **0.9512** |
 | 6 | 🟢 Simple invoice1 | 0.9535 | 0.8331 | 1/1 | **0.9146** |
 | 7 | 🟢 Small business cash flow forecast1 | 0.9473 | 0.8185 | 5/5 | **0.9063** |
 | 8 | 🔴 Wedding_timeline_planner1_copy | 0.2616 | 0.7194 | 4/5 | **0.4924** |
-| 9 | 🟢 Event budget1 | 0.9517 | 0.8466 | 5/5 | **0.9193** |
+| 9 | 🟢 Event budget1 | 0.9517 | 0.8468 | 5/5 | **0.9194** |
 | 10 | ⚪ Event budget1_dbg | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.7857**
+**Average Overall Score: 0.7696**
 
 ## Visual Comparison
 
@@ -49,7 +49,7 @@ Generated: 2026-03-22T13:52:29.599870
 </tr>
 <tr>
   <td><b>Expense report basic1</b></td>
-  <td colspan="1">Expense report basic1 <span style="color:#3fb950">⬤</span> 95.3%</td>
+  <td colspan="1">Expense report basic1 <span style="color:#d29922">⬤</span> 79.2%</td>
 </tr>
 <tr>
   <td><img src="images/Expense report basic1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -542,35 +542,13 @@ Generated: 2026-03-22T13:52:29.599870
 
 ### Expense report basic1
 
-- **Text Similarity:** 0.9889
-- **Visual Average:** 0.893
-- **Overall Score:** 0.9528
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.4796
+- **Overall Score:** 0.7918
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=62053 bytes, Reference=40991 bytes
+- **File Size:** MiniPdf=61233 bytes, Reference=47897 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/Expense report basic1.pdf
-+++ reference/Expense report basic1.pdf
-@@ -17,7 +17,6 @@
- $0.00
-
- Total $111.00 $250.00 $60.00 $50.00 $0.00 $300.00 $25.00 $796.00
-
- Subtotal $796.00
-
--Advances $0.00
-
--APPROVED
-
-+APPROVED Advances $0.00
-
- NOTES
-
- Total $796.00
-```
-</details>
+Text content: ✅ Identical
 
 ### payroll-calculator_f
 
@@ -1116,10 +1094,10 @@ Generated: 2026-03-22T13:52:29.599870
 ### Event budget1
 
 - **Text Similarity:** 0.9517
-- **Visual Average:** 0.8466
-- **Overall Score:** 0.9193
+- **Visual Average:** 0.8468
+- **Overall Score:** 0.9194
 - **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=105295 bytes, Reference=121226 bytes
+- **File Size:** MiniPdf=146810 bytes, Reference=121226 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1255,5 +1233,6 @@ Generated: 2026-03-22T13:52:29.599870
 ### ⚠ Low-Score Test Cases (below 0.8)
 
 1. **Wedding_timeline_planner1_copy** (score: 0.4924)
+1. **Expense report basic1** (score: 0.7918)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
