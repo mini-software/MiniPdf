@@ -22,3 +22,8 @@ scripts/Run-Benchmark_docx.ps1 -Filter "heading"
 scripts/Run-Benchmark_issues.ps1 -Filter "sa8000"    # -Filter is mandatory for issues
 ```
 
+### Reference PDF Generation
+- Issue reference PDFs (`tests/Issue_Files/reference_docx/`, `reference_xlsx/`) **must** be generated using Microsoft Office (Word/Excel), **not** LibreOffice.
+- `Run-Benchmark_issues.ps1` defaults to `-Engine office` (Word/Excel COM). Do not change to `libre`.
+- Word COM `ExportAsFixedFormat` may miss features like `behindDoc` watermarks. When the COM output differs from manual Word export, **copy the user's manually exported PDF** as the reference instead.
+

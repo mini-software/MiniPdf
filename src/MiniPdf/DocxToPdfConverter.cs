@@ -212,6 +212,31 @@ internal static class DocxToPdfConverter
         if (pdfDoc.Pages.Count == 0)
             pdfDoc.AddPage(options.PageWidth, options.PageHeight);
 
+        // Render behindDoc images on all pages (Word treats these as page-level backgrounds).
+        if (state.BehindDocImages.Count > 0)
+        {
+            const float emuPerPt = 914400f / 72f;
+            var totalPages = pdfDoc.Pages.Count;
+            for (int pi = 0; pi < totalPages; pi++)
+            {
+                var page = pdfDoc.Pages[pi];
+                foreach (var img in state.BehindDocImages)
+                {
+                    var fmt = img.Extension;
+                    if (fmt != "jpg" && fmt != "png") continue;
+                    var w = img.WidthEmu > 0 ? img.WidthEmu / emuPerPt : 200f;
+                    var h = img.HeightEmu > 0 ? img.HeightEmu / emuPerPt : 150f;
+                    var ax = img.RelativeFromH == "page"
+                        ? img.OffsetXEmu / emuPerPt
+                        : options.MarginLeft + img.OffsetXEmu / emuPerPt;
+                    var ay = img.RelativeFromV == "page"
+                        ? options.PageHeight - img.OffsetYEmu / emuPerPt
+                        : options.PageHeight - options.MarginTop - img.OffsetYEmu / emuPerPt;
+                    page.AddImage(img.Data, fmt, ax, ay - h, w, h);
+                }
+            }
+        }
+
         // Render header/footer background shapes on all pages.
         if (docxDoc.HeaderShapes is { Count: > 0 } || docxDoc.FooterShapes is { Count: > 0 })
         {
@@ -360,6 +385,18 @@ internal static class DocxToPdfConverter
         /// from empty paragraphs is preserved across page breaks.
         /// </summary>
         public float PendingVerticalSpace { get; set; }
+        /// <summary>
+        /// The spacingAfter value applied by the most recently rendered paragraph.
+        /// Used for paragraph spacing collapsing: the space between adjacent
+        /// paragraphs is max(spacingAfter_prev, spacingBefore_current) rather
+        /// than the sum (matching Word/LibreOffice behavior).
+        /// </summary>
+        public float LastSpacingAfter { get; set; }
+        /// <summary>
+        /// BehindDoc anchor images collected during paragraph rendering.
+        /// These are rendered on every page after layout is complete (matching Word behavior).
+        /// </summary>
+        public List<DocxImage> BehindDocImages { get; } = new();
 
         public float UsableWidth => Options.PageWidth - Options.MarginLeft - Options.MarginRight;
 
@@ -384,6 +421,7 @@ internal static class DocxToPdfConverter
                 }
                 IsTopOfPage = true;
                 LastLineHeight = 0;
+                LastSpacingAfter = 0;
             }
         }
 
@@ -404,6 +442,7 @@ internal static class DocxToPdfConverter
             }
             IsTopOfPage = true;
             LastLineHeight = 0;
+            LastSpacingAfter = 0;
         }
     }
 
@@ -450,10 +489,17 @@ internal static class DocxToPdfConverter
             }
         }
 
-        // Apply spacing before (skip at top of page to match Word behavior, unless forced)
+        // Apply spacing before with collapsing: the space between adjacent
+        // paragraphs is max(spacingAfter_prev, spacingBefore_current), matching
+        // Word/LibreOffice behavior.  Since spacingAfter was already applied by
+        // the previous paragraph, only add the excess (if any).
         var spacingBefore = paragraph.SpacingBefore > 0 ? paragraph.SpacingBefore : 0;
         if (spacingBefore > 0 && (!state.IsTopOfPage || paragraph.ForceSpacingBefore))
-            state.AdvanceY(spacingBefore);
+        {
+            var extraBefore = spacingBefore - state.LastSpacingAfter;
+            if (extraBefore > 0)
+                state.AdvanceY(extraBefore);
+        }
 
         // Handle empty paragraphs before EnsurePage — they don't produce visible content
         // and should not force a new page (avoids spurious trailing pages).
@@ -483,6 +529,7 @@ internal static class DocxToPdfConverter
                 state.PendingVerticalSpace += totalEmptyAdvance;
             }
             state.LastLineHeight = lineHeight;
+            state.LastSpacingAfter = spacingAfterEmpty;
             if (paragraph.HasPageBreakAfter)
                 state.ForceNewPage();
             return;
@@ -517,6 +564,7 @@ internal static class DocxToPdfConverter
             }
             var spacingAfterGhost = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             state.AdvanceY(spacingAfterGhost);
+            state.LastSpacingAfter = spacingAfterGhost;
             return;
         }
 
@@ -679,6 +727,7 @@ internal static class DocxToPdfConverter
             // Apply spacing after
             var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             state.AdvanceY(spacingAfterEmpty);
+            state.LastSpacingAfter = spacingAfterEmpty;
 
             // Handle page break after (even for empty paragraphs)
             if (paragraph.HasPageBreakAfter)
@@ -856,6 +905,7 @@ internal static class DocxToPdfConverter
         // Apply spacing after
         var spacingAfter = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
         state.AdvanceY(spacingAfter);
+        state.LastSpacingAfter = spacingAfter;
 
         state.LastLineHeight = lineHeight;
 
@@ -1384,6 +1434,13 @@ internal static class DocxToPdfConverter
         // Anchor images: render at absolute offset position without advancing cursor
         if (image.IsAnchor)
         {
+            // BehindDoc images are collected and rendered on every page after layout
+            if (image.IsBehindDoc)
+            {
+                state.BehindDocImages.Add(image);
+                return;
+            }
+
             var anchorX = state.Options.MarginLeft + image.OffsetXEmu / emuPerPoint;
             var anchorY = state.CurrentY - image.OffsetYEmu / emuPerPoint;
 
@@ -2213,8 +2270,11 @@ internal static class DocxToPdfConverter
                 continue;
             }
 
-            var words = pLine.Split(' ');
-            var currentLine = "";
+            // Preserve leading spaces (e.g., code indentation in <w:br/>-separated blocks)
+            var trimmedLine = pLine.TrimStart(' ');
+            var leadingSpaceCount = pLine.Length - trimmedLine.Length;
+            var words = trimmedLine.Split(' ');
+            var currentLine = leadingSpaceCount > 0 ? new string(' ', leadingSpaceCount) : "";
             var maxWidth = lines.Count == 0 ? firstLineWidth : subsequentWidth;
 
             foreach (var word in words)
@@ -2347,16 +2407,29 @@ internal static class DocxToPdfConverter
         // When text contains CJK characters, the PDF renderer uses CJK fonts for the
         // entire text block (including ASCII spaces). CJK fonts render space at 500/1000,
         // not at the Calibri width (226/1000). Detect CJK context to use correct metrics.
+        // However, spaces between Latin-only characters should use Calibri width to
+        // produce line breaks that match Word/LibreOffice reference output.
         bool hasCjk = false;
         foreach (var c in text)
             if (c >= '\u2E80') { hasCjk = true; break; }
-        foreach (var ch in text)
+        for (var i = 0; i < text.Length; i++)
         {
+            var ch = text[i];
             var w = GetCalibrCharWidth(ch);
             if (w == 1000 && ch >= '\u2E80') // CJK full-width characters
                 cjkUnits += w;
             else if (hasCjk && ch == ' ')
-                cjkUnits += 500; // CJK font renders space at half-width
+            {
+                // Use CJK space width only when adjacent to a CJK/fullwidth character.
+                // Spaces between Latin characters use Calibri width for accurate wrapping.
+                bool adjCjk = false;
+                if (i > 0) { var p = text[i - 1]; adjCjk |= GetCalibrCharWidth(p) == 1000 && p >= '\u2E80'; }
+                if (!adjCjk && i + 1 < text.Length) { var n = text[i + 1]; adjCjk |= GetCalibrCharWidth(n) == 1000 && n >= '\u2E80'; }
+                if (adjCjk)
+                    cjkUnits += 500;
+                else
+                    latinUnits += w; // Calibri space (226)
+            }
             else
                 latinUnits += w;
         }
