@@ -1394,6 +1394,9 @@ internal static class ExcelReader
             }
         }
 
+        // Accumulate numeric cell values by reference for formula evaluation
+        var cellNumericValues = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+
         foreach (var row in doc.Descendants(ns + "row"))
         {
             // Parse the row number to detect gaps (sparse rows)
@@ -1467,6 +1470,11 @@ internal static class ExcelReader
                     else if (TryEvaluateDatePartFormula(formula, out var datePartValue))
                     {
                         value = datePartValue;
+                    }
+                    else if (string.IsNullOrEmpty(value) &&
+                             TryEvaluateArithmeticFormula(formula, cellNumericValues, out var arithmeticValue))
+                    {
+                        value = arithmeticValue.ToString(System.Globalization.CultureInfo.InvariantCulture);
                     }
                 }
 
@@ -1572,6 +1580,14 @@ internal static class ExcelReader
                     underline = true;
                 }
 
+                // Store numeric value for formula evaluation by later cells
+                if (!string.IsNullOrEmpty(reference) && !string.IsNullOrEmpty(value) &&
+                    double.TryParse(value, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out var storedVal))
+                {
+                    cellNumericValues[reference.Replace("$", "")] = storedVal;
+                }
+
                 cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent));
                 lastColIndex = colIndex + 1;
             }
@@ -1666,6 +1682,129 @@ internal static class ExcelReader
 
         value = result.ToString(System.Globalization.CultureInfo.InvariantCulture);
         return true;
+    }
+
+    /// <summary>
+    /// Evaluates simple arithmetic formulas (SUM, addition of cell references)
+    /// when the cached value is missing. Supports:
+    ///   =SUM(A1:A5)         — range SUM
+    ///   =SUM(A1:A5,B1:B5)   — multi-range SUM
+    ///   =A1+B1+C1           — addition of cell references
+    /// </summary>
+    private static bool TryEvaluateArithmeticFormula(string formula, Dictionary<string, double> cellValues, out double result)
+    {
+        result = 0;
+        if (string.IsNullOrWhiteSpace(formula))
+            return false;
+
+        var expr = formula.Trim();
+        if (expr.StartsWith("=", StringComparison.Ordinal))
+            expr = expr[1..];
+
+        // SUM(range, ...) pattern
+        if (expr.StartsWith("SUM(", StringComparison.OrdinalIgnoreCase) && expr.EndsWith(")"))
+        {
+            var inner = expr[4..^1].Trim();
+            if (string.IsNullOrEmpty(inner))
+                return false;
+
+            double total = 0;
+            foreach (var part in inner.Split(','))
+            {
+                var p = part.Trim();
+                if (p.Contains(':'))
+                {
+                    if (!TrySumRange(p, cellValues, out var rangeSum))
+                        return false;
+                    total += rangeSum;
+                }
+                else
+                {
+                    var key = p.Replace("$", "");
+                    if (cellValues.TryGetValue(key, out var v))
+                        total += v;
+                    // Cell not found — treat as 0 (empty cell)
+                }
+            }
+            result = total;
+            return true;
+        }
+
+        // Simple addition: A1+B1+C1 (cell references separated by +)
+        if (System.Text.RegularExpressions.Regex.IsMatch(expr, @"^[A-Za-z$]+[0-9$]+(\+[A-Za-z$]+[0-9$]+)+$"))
+        {
+            double total = 0;
+            foreach (var refPart in expr.Split('+'))
+            {
+                var key = refPart.Trim().Replace("$", "");
+                if (cellValues.TryGetValue(key, out var v))
+                    total += v;
+            }
+            result = total;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TrySumRange(string range, Dictionary<string, double> cellValues, out double sum)
+    {
+        sum = 0;
+        var parts = range.Split(':');
+        if (parts.Length != 2) return false;
+
+        var startRef = parts[0].Trim().Replace("$", "");
+        var endRef = parts[1].Trim().Replace("$", "");
+
+        var startCol = ParseColumnLetters(startRef);
+        var startRow = ParseRowNumber(startRef);
+        var endCol = ParseColumnLetters(endRef);
+        var endRow = ParseRowNumber(endRef);
+
+        if (startCol == 0 || startRow == 0 || endCol == 0 || endRow == 0)
+            return false;
+
+        for (int r = startRow; r <= endRow; r++)
+        {
+            for (int c = startCol; c <= endCol; c++)
+            {
+                var key = ColumnNumberToLetters(c) + r.ToString();
+                if (cellValues.TryGetValue(key, out var v))
+                    sum += v;
+            }
+        }
+        return true;
+    }
+
+    private static int ParseColumnLetters(string cellRef)
+    {
+        int col = 0;
+        foreach (var c in cellRef)
+        {
+            if (char.IsLetter(c))
+                col = col * 26 + (char.ToUpper(c) - 'A' + 1);
+            else
+                break;
+        }
+        return col;
+    }
+
+    private static int ParseRowNumber(string cellRef)
+    {
+        var numPart = new string(cellRef.Where(char.IsDigit).ToArray());
+        return int.TryParse(numPart, out var row) ? row : 0;
+    }
+
+    private static string ColumnNumberToLetters(int col)
+    {
+        var sb = new System.Text.StringBuilder();
+        while (col > 0)
+        {
+            col--;
+            sb.Insert(0, (char)('A' + col % 26));
+            col /= 26;
+        }
+        return sb.ToString();
     }
 
     /// <summary>

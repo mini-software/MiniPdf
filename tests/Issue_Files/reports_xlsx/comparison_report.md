@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-22T20:42:35.761945
+Generated: 2026-03-22T23:48:55.627528
 
 ## Summary
 
@@ -16,8 +16,9 @@ Generated: 2026-03-22T20:42:35.761945
 | 8 | 🔴 Wedding_timeline_planner1_copy | 0.2616 | 0.7194 | 4/5 | **0.4924** |
 | 9 | 🟢 Event budget1 | 0.9517 | 0.8468 | 5/5 | **0.9194** |
 | 10 | ⚪ Event budget1_dbg | N/A | N/A | ?/? | **N/A** |
+| 11 | 🟡 Business expense budget1 | 0.9664 | 0.7814 | 4/4 | **0.8991** |
 
-**Average Overall Score: 0.7696**
+**Average Overall Score: 0.7813**
 
 ## Visual Comparison
 
@@ -289,6 +290,26 @@ Generated: 2026-03-22T20:42:35.761945
 </tr>
 <tr>
   <td colspan="2"><i>No images</i></td>
+</tr>
+<tr>
+  <td><b>Business expense budget1</b></td>
+  <td colspan="1">Business expense budget1 <span style="color:#d29922">⬤</span> 89.9%</td>
+</tr>
+<tr>
+  <td><img src="images/Business expense budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Business expense budget1_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Business expense budget1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Business expense budget1_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Business expense budget1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Business expense budget1_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Business expense budget1_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Business expense budget1_p4_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -1227,6 +1248,68 @@ Text content: ✅ Identical
 ### Event budget1_dbg
 
 **Error:** Reference PDF not found
+
+### Business expense budget1
+
+- **Text Similarity:** 0.9664
+- **Visual Average:** 0.7814
+- **Overall Score:** 0.8991
+- **Pages:** MiniPdf=4, Reference=4
+- **File Size:** MiniPdf=717506 bytes, Reference=173721 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Business expense budget1.pdf
++++ reference/Business expense budget1.pdf
+@@ -41,16 +41,7 @@
+ Travel & Entertainment 24700 22100
+
+ Professional Services 24600 23400
+
+ Budget vs Actual by Category
+
+-140000
+
+-120000
+
+-100000
+
+-80000
+
+-60000
+
+ Amount (\$)
+
+-40000
+
+-20000
+
+-0
+
+-Personnel Operations Marketing Travel & Entertainment Professional Services
+
+ Category
+
+ ---PAGE---
+
+ Q2 ACTUAL VARIANCE
+
+@@ -81,4 +72,6 @@
+ 2,100.00 0.00
+
+ 12,600.00 1,200.00
+
+ ---PAGE---
+
+-121,600.00 6,350.00
++121,600.00 6,350.00
+
++Total Budget
+
++Total Actual
+```
+</details>
 
 ## Improvement Suggestions
 

@@ -3589,7 +3589,7 @@
     "name": "classic119_dashboard_multi_charts",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 218939,
+    "minipdf_size": 218941,
     "reference_size": 94742,
     "minipdf_pages": 2,
     "reference_pages": 2,
@@ -3598,10 +3598,10 @@
     "word_text_similarity": 0.7619,
     "text_diff": "--- minipdf/classic119_dashboard_multi_charts.pdf\n+++ reference/classic119_dashboard_multi_charts.pdf\n@@ -1,24 +1,19 @@\n KPI Dashboard - Q4 2025\n\n Revenue vs Expenses\n\n Month Revenue Expenses\n\n-120\n\n Oct 85 60\n\n Nov 92 65\n\n-100\n\n Dec 110 70\n\n-80\n\n-60\n\n Segment Share\n\n-40\n\n Enterprise 45\n\n SMB 30\n\n-20\n\n Consumer 25\n\n-0\n\n-Oct Nov Dec\n\n Revenue by Segment\n\n-Enterprise\n\n+Enter\n\n SMB\n\n-Consumer\n\n-Slice4\n\n----PAGE---\n+Cons\n\n+---PAGE---\n\n+Revenue\n\n+Expenses\n\n+rprise\n\n+sumer",
     "visual_scores": [
-      0.8368,
+      0.8366,
       0.9802
     ],
-    "visual_avg": 0.9085,
+    "visual_avg": 0.9084,
     "diff_images": [
       {
         "page": 1,

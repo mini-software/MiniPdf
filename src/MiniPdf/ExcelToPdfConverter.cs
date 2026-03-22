@@ -1916,12 +1916,31 @@ internal static class ExcelToPdfConverter
             // Determine anchor Y position
             if (!rowTopY.TryGetValue(chart.AnchorRow, out var chartTopY))
             {
-                chartTopY = (pageHeight - options.MarginTop) - chart.AnchorRow * lineHeight;
-                if (chartTopY < options.MarginBottom) chartTopY = pageHeight - options.MarginTop;
+                // Chart anchor row is beyond rendered rows — find closest earlier row
+                // and extrapolate, or use current rendering Y position as the baseline.
+                var bestRow = -1;
+                foreach (var key in rowTopY.Keys)
+                {
+                    if (key <= chart.AnchorRow && key > bestRow) bestRow = key;
+                }
+                if (bestRow >= 0)
+                {
+                    chartTopY = rowTopY[bestRow] - (chart.AnchorRow - bestRow) * lineHeight;
+                }
+                else
+                {
+                    chartTopY = currentY;
+                }
             }
             if (!rowPage.TryGetValue(chart.AnchorRow, out var chartPage))
             {
-                chartPage = currentPage!;
+                // Use the page of the closest earlier row, or the last rendered page
+                var bestRow = -1;
+                foreach (var key in rowPage.Keys)
+                {
+                    if (key <= chart.AnchorRow && key > bestRow) bestRow = key;
+                }
+                chartPage = bestRow >= 0 ? rowPage[bestRow] : currentPage!;
             }
 
             var chartColIdx = Array.IndexOf(columns, chart.AnchorCol);
