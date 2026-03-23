@@ -173,6 +173,8 @@ internal static class DocxToPdfConverter
         }
 
         state.EnsurePage();
+        // Record section 0 start page
+        state.SectionStartPages.Add(0);
 
         var sectionIndex = 0;
         foreach (var element in processedElements)
@@ -224,6 +226,9 @@ internal static class DocxToPdfConverter
                                 state.ExitMultiColumnSection();
                             state.ForceNewPage();
                         }
+                        // Record new section's start page
+                        state.SectionStartPages.Add(pdfDoc.Pages.Count - 1);
+                        state.CurrentSectionIndex = sectionIndex;
                     }
                     break;
                 case DocxTable table:
@@ -310,7 +315,12 @@ internal static class DocxToPdfConverter
         var hasFooterElements = docxDoc.FooterElements is { Count: > 0 }
             && docxDoc.FooterElements.Any(e => e is DocxTable
                 || (e is DocxParagraph p && (p.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text)) || p.Images.Count > 0)));
-        if (hasHeaderElements || hasFooterElements)
+
+        // Check for per-section footer elements
+        var hasSectionFooters = docxDoc.SectionFooterElements is { Count: > 0 }
+            && docxDoc.SectionFooterElements.Any(f => f is { Count: > 0 });
+
+        if (hasHeaderElements || hasFooterElements || hasSectionFooters)
         {
             var totalPages = pdfDoc.Pages.Count;
             for (int pi = 0; pi < totalPages; pi++)
@@ -321,11 +331,47 @@ internal static class DocxToPdfConverter
                     var headerStartY = page.Height - options.HeaderMargin;
                     RenderHeaderFooterElementsOnPage(page, options, docxDoc.HeaderElements!, headerStartY, pi, totalPages);
                 }
-                if (hasFooterElements)
+
+                // Determine footer elements for this page: prefer per-section, fall back to global
+                List<DocxElement>? pageFooterElements = null;
+                int sectionPageNum = -1;
+                if (hasSectionFooters)
                 {
-                    var footerContentHeight = EstimateElementsHeight(docxDoc.FooterElements!, options);
+                    // Find which section this page belongs to
+                    int pageSectionIdx = 0;
+                    for (int si = state.SectionStartPages.Count - 1; si >= 0; si--)
+                    {
+                        if (pi >= state.SectionStartPages[si])
+                        {
+                            pageSectionIdx = si;
+                            break;
+                        }
+                    }
+                    if (pageSectionIdx < docxDoc.SectionFooterElements!.Count)
+                        pageFooterElements = docxDoc.SectionFooterElements[pageSectionIdx];
+
+                    // Calculate section-relative page number using PageNumStart
+                    // Walk backward to find nearest ancestor section with PageNumStart
+                    int ancestorIdx = pageSectionIdx;
+                    while (ancestorIdx > 0 && (ancestorIdx >= sectionLayouts.Count || sectionLayouts[ancestorIdx].PageNumStart < 0))
+                        ancestorIdx--;
+                    if (ancestorIdx >= 0 && ancestorIdx < sectionLayouts.Count && sectionLayouts[ancestorIdx].PageNumStart >= 0)
+                    {
+                        int pagesFromAncestor = pi - state.SectionStartPages[ancestorIdx];
+                        sectionPageNum = sectionLayouts[ancestorIdx].PageNumStart + pagesFromAncestor;
+                    }
+                }
+                // Fall back to global footer if no section-specific footer
+                if (pageFooterElements == null && hasFooterElements)
+                    pageFooterElements = docxDoc.FooterElements;
+
+                if (pageFooterElements is { Count: > 0 }
+                    && pageFooterElements.Any(e => e is DocxTable
+                        || (e is DocxParagraph pp && (pp.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text)) || pp.Images.Count > 0))))
+                {
+                    var footerContentHeight = EstimateElementsHeight(pageFooterElements, options);
                     var footerStartY = options.FooterMargin + footerContentHeight;
-                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.FooterElements!, footerStartY, pi, totalPages);
+                    RenderHeaderFooterElementsOnPage(page, options, pageFooterElements, footerStartY, pi, totalPages, sectionPageNum);
                 }
             }
         }
@@ -370,9 +416,7 @@ internal static class DocxToPdfConverter
             var resolvedRuns = new List<(string Text, bool Bold, string? FontName)>();
             foreach (var run in runs)
             {
-                var text = run.Text
-                    .Replace("{PAGE}", (pageIndex + 1).ToString())
-                    .Replace("{NUMPAGES}", totalPages.ToString());
+                var text = ResolvePagePlaceholders(run.Text, pageIndex + 1, totalPages);
                 if (text == "\n") continue; // skip paragraph breaks for width calc
                 resolvedRuns.Add((text, run.Bold, run.FontName));
             }
@@ -440,6 +484,10 @@ internal static class DocxToPdfConverter
         /// </summary>
         public List<DocxImage> BehindDocImages { get; } = new();
         public Dictionary<int, List<DocxImage>> BehindDocImagesPerPage { get; } = new();
+
+        // Per-section tracking: maps sectionIndex -> first page index (0-based)
+        public List<int> SectionStartPages { get; } = new();
+        public int CurrentSectionIndex { get; set; } = 0;
 
         // Multi-column state
         public int ColumnCount { get; set; } = 1;
@@ -610,7 +658,9 @@ internal static class DocxToPdfConverter
         {
             var extraBefore = spacingBefore - state.LastSpacingAfter;
             if (extraBefore > 0)
+            {
                 state.AdvanceY(extraBefore);
+            }
         }
 
         // Handle empty paragraphs before EnsurePage — they don't produce visible content
@@ -909,6 +959,7 @@ internal static class DocxToPdfConverter
                 paragraph.HasPageBreakBefore, paragraph.HasPageBreakAfter, paragraph.Shading, paragraph.TabStops,
                 paragraph.SectionBreak, paragraph.Borders),
                 x, firstLineX, wrapAvailableWidth, wrapFirstLineWidth, fontSize, lineHeight);
+
         }
         else
         {
@@ -986,6 +1037,15 @@ internal static class DocxToPdfConverter
             }
         }
 
+        // For exact line spacing, cap paragraph height to lineHeight so
+        // imperfect width estimation doesn't cause multi-line wrapping that
+        // inflates equation/overlay paragraphs beyond their intended height.
+        if (paragraph.LineSpacingExact && paragraphStartY > 0)
+        {
+            var expectedBottomY = paragraphStartY - lineHeight;
+            if (state.CurrentY < expectedBottomY)
+                state.CurrentY = expectedBottomY;
+        }
         // Render paragraph borders
         if (paragraph.Borders != null && state.CurrentPage != null)
         {
@@ -1245,7 +1305,7 @@ internal static class DocxToPdfConverter
                 var rFs = r.FontSize > 0 ? r.FontSize : defaultFontSize;
                 // Remove hard line breaks for width estimation (only first line matters for single-line case)
                 var rText = r.Text.Replace("\n", "");
-                rText = ExpandTabs(rText, rFs, paragraph.TabStops, false);
+                rText = ExpandTabs(rText, rFs, paragraph.TabStops, false, currentXOffset: totalWidth);
                 rText = AddInterScriptSpacing(rText);
                 // Add inter-script gap at run boundaries (Latin↔CJK)
                 if (prevRunTextPre != null && rText.Length > 0
@@ -1267,7 +1327,17 @@ internal static class DocxToPdfConverter
         // underlined runs should use CJK half-width (500/1000) for space metrics
         // to match Word/LibreOffice rendering of form-fill underline lines.
         var hasCjkContext = paragraph.Runs.Any(r =>
-            !string.IsNullOrEmpty(r.Text) && r.Text.Any(c => c >= '\u2E80'));
+            !string.IsNullOrEmpty(r.Text) && r.Text.Any(c => c >= '\u2E80' && !char.IsHighSurrogate(c) && !char.IsLowSurrogate(c)));
+
+        // Extend rightEdge for tab-leader paragraphs so dot-filled text doesn't wrap
+        if (paragraph.TabStops is { Count: > 0 }
+            && paragraph.TabStops.Any(ts => ts.Leader is "dot" or "hyphen" or "underscore"))
+        {
+            var maxTabPos = paragraph.TabStops.Max(ts => ts.Position);
+            var expandedRight = state.Options.MarginLeft + maxTabPos / 0.725f;
+            if (expandedRight > rightEdge)
+                rightEdge = expandedRight;
+        }
 
         string? prevRenderedSegment = null;
         foreach (var run in paragraph.Runs)
@@ -1305,7 +1375,46 @@ internal static class DocxToPdfConverter
                 // For left-aligned text, keep Calibri widths to preserve layout matching.
                 var isCenterRight = paragraph.Alignment is "center" or "right";
                 var useCalibri = isCenterRight ? false : state.Options.UseCalibriWidths;
-                var segment = ExpandTabs(hardLines[hi], runFs, paragraph.TabStops, useCalibri);
+
+                // Handle tab stops directly: advance to tab position with leader fill
+                if (hardLines[hi] == "\t" && paragraph.TabStops is { Count: > 0 })
+                {
+                    var relX = currentX - state.Options.MarginLeft;
+                    DocxTabStop? matchedStop = null;
+                    foreach (var ts in paragraph.TabStops)
+                    {
+                        if (ts.Position > relX + 1)
+                        {
+                            matchedStop = ts;
+                            break;
+                        }
+                    }
+                    if (matchedStop != null)
+                    {
+                        var leaderChar = matchedStop.Leader switch
+                        {
+                            "dot" => '.',
+                            "hyphen" => '-',
+                            "underscore" => '_',
+                            _ => (char?)null
+                        };
+                        if (leaderChar != null)
+                        {
+                            var leaderCharWidth = runFs * GetHelveticaCharWidth(leaderChar.Value) / 1000f * 0.725f;
+                            var gapWidth = matchedStop.Position - relX;
+                            var fillCount = Math.Max(1, (int)(gapWidth / leaderCharWidth));
+                            var leaderText = new string(leaderChar.Value, fillCount);
+                            state.EnsurePage();
+                            state.CurrentPage!.AddText(leaderText, currentX, state.CurrentY + run.VerticalPosition, runFs, runColor,
+                                bold: run.Bold, charSpacing: run.CharSpacing, preferredFontName: run.FontName,
+                                maxWidth: gapWidth > 0 ? gapWidth : (float?)null);
+                        }
+                        currentX = state.Options.MarginLeft + matchedStop.Position;
+                        continue;
+                    }
+                }
+
+                var segment = ExpandTabs(hardLines[hi], runFs, paragraph.TabStops, useCalibri, currentXOffset: currentX - state.Options.MarginLeft);
                 segment = AddInterScriptSpacing(segment);
                 if (string.IsNullOrEmpty(segment)) continue;
 
@@ -1323,7 +1432,7 @@ internal static class DocxToPdfConverter
 
                 // When segment contains CJK characters, the PDF renderer uses CJK fonts
                 // for the entire text block, so ASCII spaces use CJK half-width (500/1000).
-                var segmentHasCjk = hasCjkContext && segment.Any(c => c >= '\u2E80');
+                var segmentHasCjk = hasCjkContext && segment.Any(c => c >= '\u2E80' && !char.IsHighSurrogate(c) && !char.IsLowSurrogate(c));
                 var effectiveSpaceWidth = (isWhitespaceUnderline || segmentHasCjk)
                     ? runFs * 500f / 1000f
                     : runFs * GetWrapCharWidth(' ', useCalibri) / 1000f;
@@ -1342,8 +1451,8 @@ internal static class DocxToPdfConverter
                         ? effectiveSpaceWidth + run.CharSpacing
                         : 0;
 
-                    // Check if word fits on current line
-                    if (currentX + spaceWidth + wordWidth > rightEdge && (pendingText.Length > 0 || currentX > baseX + 1))
+                    // Check if word fits on current line (skip wrapping for exact line spacing)
+                    if (!paragraph.LineSpacingExact && currentX + spaceWidth + wordWidth > rightEdge && (pendingText.Length > 0 || currentX > baseX + 1))
                     {
                         // When pendingText is empty and the word contains CJK characters,
                         // skip wrapping to fill remaining space on the current line.
@@ -1352,7 +1461,7 @@ internal static class DocxToPdfConverter
                         var canCjkBreak = pendingText.Length == 0
                             && word.Length > 1
                             && remainingWidth >= runFs * 0.9f
-                            && word.Any(c => c >= '\u2E80');
+                            && word.Any(c => c >= '\u2E80' && !char.IsHighSurrogate(c) && !char.IsLowSurrogate(c));
 
                         if (!canCjkBreak)
                         {
@@ -1393,7 +1502,7 @@ internal static class DocxToPdfConverter
                     currentX += wordWidth;
 
                     // Break oversized CJK words at character boundaries (kinsoku)
-                    while (currentX > rightEdge && pendingText.Length > 1)
+                    while (!paragraph.LineSpacingExact && currentX > rightEdge && pendingText.Length > 1)
                     {
                         var breakAt = -1;
                         float accWidth = 0;
@@ -1674,7 +1783,7 @@ internal static class DocxToPdfConverter
     /// at the specified starting Y position, flowing downward.
     /// </summary>
     private static void RenderHeaderFooterElementsOnPage(PdfPage page, ConversionOptions options,
-        List<DocxElement> elements, float startY, int pageIndex = 0, int totalPages = 1)
+        List<DocxElement> elements, float startY, int pageIndex = 0, int totalPages = 1, int sectionPageNum = -1)
     {
         const float emuPerPt = 914400f / 72f;
         var y = startY;
@@ -1719,9 +1828,9 @@ internal static class DocxToPdfConverter
                         y -= imgH + 1f;
                     }
                     // Render text runs (resolve page-number placeholders)
-                    var text = string.Concat(para.Runs.Select(r => r.Text))
-                        .Replace("{PAGE}", (pageIndex + 1).ToString())
-                        .Replace("{NUMPAGES}", totalPages.ToString());
+                    var effectivePageNum = sectionPageNum > 0 ? sectionPageNum : (pageIndex + 1);
+                    var text = string.Concat(para.Runs.Select(r => r.Text));
+                    text = ResolvePagePlaceholders(text, effectivePageNum, totalPages);
                     if (!string.IsNullOrEmpty(text))
                     {
                         var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
@@ -2320,7 +2429,7 @@ internal static class DocxToPdfConverter
 
     // ── Word wrapping ───────────────────────────────────────────────────
 
-    private static string ExpandTabs(string text, float fontSize, List<DocxTabStop>? tabStops = null, bool useCalibriWidths = true)
+    private static string ExpandTabs(string text, float fontSize, List<DocxTabStop>? tabStops = null, bool useCalibriWidths = true, float currentXOffset = 0f)
     {
         if (!text.Contains('\t'))
             return text;
@@ -2337,7 +2446,7 @@ internal static class DocxToPdfConverter
                 if (i < segments.Length - 1)
                 {
                     // Find the next tab stop beyond current text width
-                    var currentLineWidth = EstimateTextWidth(sb.ToString(), fontSize);
+                    var currentLineWidth = currentXOffset + EstimateTextWidth(sb.ToString(), fontSize);
                     DocxTabStop? matchedStop = null;
                     foreach (var ts in tabStops)
                     {
@@ -2563,11 +2672,19 @@ internal static class DocxToPdfConverter
         // Reduce the Latin portion to better match actual document font wrapping.
         // Must match the unit calculation in EstimateTextWidth (CJK-context spaces = 500).
         bool hasCjk = false;
-        foreach (var c in text) if (c >= '\u2E80') { hasCjk = true; break; }
+        foreach (var c in text) if (c >= '\u2E80' && !char.IsHighSurrogate(c) && !char.IsLowSurrogate(c)) { hasCjk = true; break; }
         float latinUnits = 0;
         float totalUnits = 0;
-        foreach (var ch in text)
+        for (int i = 0; i < text.Length; i++)
         {
+            var ch = text[i];
+            if (char.IsHighSurrogate(ch) && i + 1 < text.Length && char.IsLowSurrogate(text[i + 1]))
+            {
+                latinUnits += 500;
+                totalUnits += 500;
+                i++;
+                continue;
+            }
             var w = GetHelveticaCharWidth(ch);
             var actual = (hasCjk && ch == ' ') ? 500 : w;
             totalUnits += actual;
@@ -2591,6 +2708,37 @@ internal static class DocxToPdfConverter
     }
 
     /// <summary>
+    /// Resolves {PAGE}, {PAGE:roman}, {PAGE:ROMAN}, {NUMPAGES} placeholders.
+    /// </summary>
+    private static string ResolvePagePlaceholders(string text, int pageNum, int totalPages)
+    {
+        if (text.Contains("{PAGE:roman}"))
+            text = text.Replace("{PAGE:roman}", ToRoman(pageNum, false));
+        else if (text.Contains("{PAGE:ROMAN}"))
+            text = text.Replace("{PAGE:ROMAN}", ToRoman(pageNum, true));
+        text = text.Replace("{PAGE}", pageNum.ToString());
+        text = text.Replace("{NUMPAGES}", totalPages.ToString());
+        return text;
+    }
+
+    private static string ToRoman(int number, bool uppercase)
+    {
+        if (number <= 0) return number.ToString();
+        var sb = new System.Text.StringBuilder();
+        int[] values = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+        string[] symbols = { "m", "cm", "d", "cd", "c", "xc", "l", "xl", "x", "ix", "v", "iv", "i" };
+        for (int i = 0; i < values.Length; i++)
+        {
+            while (number >= values[i])
+            {
+                sb.Append(symbols[i]);
+                number -= values[i];
+            }
+        }
+        return uppercase ? sb.ToString().ToUpperInvariant() : sb.ToString();
+    }
+
+    /// <summary>
     /// Estimates the rendered width of a text string using Helvetica font metrics.
     /// </summary>
     private static float EstimateTextWidth(string text, float fontSize, float charSpacing = 0)
@@ -2598,9 +2746,21 @@ internal static class DocxToPdfConverter
         float totalUnits = 0;
         bool hasCjk = false;
         foreach (var c in text)
-            if (c >= '\u2E80') { hasCjk = true; break; }
-        foreach (var ch in text)
-            totalUnits += (hasCjk && ch == ' ') ? 500 : GetHelveticaCharWidth(ch);
+            if (c >= '\u2E80' && !char.IsHighSurrogate(c) && !char.IsLowSurrogate(c)) { hasCjk = true; break; }
+        for (int i = 0; i < text.Length; i++)
+        {
+            var ch = text[i];
+            // Handle surrogate pairs as single characters (Mathematical symbols, emoji, etc.)
+            if (char.IsHighSurrogate(ch) && i + 1 < text.Length && char.IsLowSurrogate(text[i + 1]))
+            {
+                totalUnits += 500; // approximate width for SMP characters (math symbols etc.)
+                i++; // skip low surrogate
+            }
+            else
+            {
+                totalUnits += (hasCjk && ch == ' ') ? 500 : GetHelveticaCharWidth(ch);
+            }
+        }
         var width = fontSize * totalUnits / 1000f;
         if (charSpacing != 0 && text.Length > 1)
             width += charSpacing * (text.Length - 1);
@@ -2621,10 +2781,17 @@ internal static class DocxToPdfConverter
         // produce line breaks that match Word/LibreOffice reference output.
         bool hasCjk = false;
         foreach (var c in text)
-            if (c >= '\u2E80') { hasCjk = true; break; }
+            if (c >= '\u2E80' && !char.IsHighSurrogate(c) && !char.IsLowSurrogate(c)) { hasCjk = true; break; }
         for (var i = 0; i < text.Length; i++)
         {
             var ch = text[i];
+            // Handle surrogate pairs as single characters
+            if (char.IsHighSurrogate(ch) && i + 1 < text.Length && char.IsLowSurrogate(text[i + 1]))
+            {
+                latinUnits += 500; // approximate width for SMP characters
+                i++;
+                continue;
+            }
             var w = GetCalibrCharWidth(ch);
             if (w == 1000 && ch >= '\u2E80') // CJK full-width characters
                 cjkUnits += w;

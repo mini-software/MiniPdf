@@ -196,6 +196,16 @@ internal static class DocxReader
 
                     if (isWrapNone)
                     {
+                        // wrapNone text boxes are positioned absolutely and do not
+                        // consume space in the main flow per the OOXML spec.
+                        // Skip ghost flow; only render as floating overlay.
+                        // Exception: large text boxes that visually occupy block space
+                        // still need ghost flow for approximate layout.
+                        var containerSpacing = child.Element(W + "pPr")?.Element(W + "spacing");
+                        var containerLineRule = containerSpacing?.Attribute(W + "lineRule")?.Value;
+                        bool skipGhostFlow = containerLineRule == "exact"
+                            || extentHeightPt < 40;
+
                         // wrapNone dual-render: emit content as ghost flow paragraphs for layout
                         // (advance Y but don't render text), AND create floating textbox for
                         // visual overlay at the absolute position.
@@ -216,9 +226,12 @@ internal static class DocxReader
                                     tbPara = tbPara with { SpacingBefore = tbPara.SpacingBefore + anchorOffsetPt, ForceSpacingBefore = true };
                                 if (firstContent && hasVisibleContent && textBoxBorder != null)
                                     tbPara = tbPara with { TextBoxBorder = textBoxBorder };
-                                elements.Add(tbPara);
-                                if (hasVisibleContent)
-                                    emittedVisibleTextBoxParagraph = true;
+                                if (!skipGhostFlow)
+                                {
+                                    elements.Add(tbPara);
+                                    if (hasVisibleContent)
+                                        emittedVisibleTextBoxParagraph = true;
+                                }
                                 if (hasVisibleContent)
                                     firstContent = false;
 
@@ -318,9 +331,53 @@ internal static class DocxReader
         var headerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName);
         var footerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
 
+        // Read per-section footer elements from paragraph-level sectPr
+        List<List<DocxElement>?>? sectionFooterElements = null;
+        foreach (var element in elements)
+        {
+            if (element is DocxParagraph p && p.SectionBreak != null)
+            {
+                // Find the corresponding paragraph XML to extract sectPr
+                // Match by searching body paragraphs with sectPr in pPr
+                sectionFooterElements ??= new List<List<DocxElement>?>();
+                // Default: no section-specific footer (will inherit body footer)
+                sectionFooterElements.Add(null);
+            }
+        }
+        // Now actually read the footer elements from each paragraph's sectPr
+        if (sectionFooterElements != null)
+        {
+            int sIdx = 0;
+            foreach (var pEl in UnwrapSdt(body.Elements()).Where(e => e.Name == W + "p"))
+            {
+                var pPr = pEl.Element(W + "pPr");
+                var sectPrEl = pPr?.Element(W + "sectPr");
+                if (sectPrEl == null) continue;
+                if (sIdx < sectionFooterElements.Count)
+                {
+                    var secFooter = ReadHeaderFooterElementsFromSectPr(sectPrEl, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
+                    sectionFooterElements[sIdx] = secFooter.Count > 0 ? secFooter : null;
+                }
+                sIdx++;
+            }
+            // Add body sectPr footer as the last section entry
+            sectionFooterElements.Add(footerElements.Count > 0 ? footerElements : null);
+
+            // Footer inheritance: fill null entries with the most recent non-null footer
+            List<DocxElement>? lastFooter = null;
+            for (int i = 0; i < sectionFooterElements.Count; i++)
+            {
+                if (sectionFooterElements[i] != null)
+                    lastFooter = sectionFooterElements[i];
+                else if (lastFooter != null)
+                    sectionFooterElements[i] = lastFooter;
+            }
+        }
+
         return new DocxDocument(elements, pageLayout, headerText, footerText, headerShapes, footerShapes, headerRuns, footerRuns,
             defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName,
-            headerElements.Count > 0 ? headerElements : null, footerElements.Count > 0 ? footerElements : null);
+            headerElements.Count > 0 ? headerElements : null, footerElements.Count > 0 ? footerElements : null,
+            sectionFooterElements);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -594,7 +651,14 @@ internal static class DocxReader
                     var fieldType = GetFieldInstructionType(currentFieldInstr);
                     if (fieldType == "PAGE" || fieldType == "NUMPAGES")
                     {
+                        // Detect format switches like \* roman, \* ROMAN, \* arabic
                         var placeholder = fieldType == "PAGE" ? "{PAGE}" : "{NUMPAGES}";
+                        if (fieldType == "PAGE")
+                        {
+                            var instr = currentFieldInstr.Trim();
+                            if (instr.Contains("\\* roman", StringComparison.OrdinalIgnoreCase))
+                                placeholder = instr.Contains("\\* ROMAN") ? "{PAGE:ROMAN}" : "{PAGE:roman}";
+                        }
                         var rPr = child.Element(W + "rPr");
                         var fBold = bold; var fItalic = italic; var fSize = fontSize; var fColor = color;
                         if (rPr != null)
@@ -646,35 +710,10 @@ internal static class DocxReader
             }
             else if (child.Name == M + "oMathPara" || child.Name == M + "oMath")
             {
-                // Extract text from Office Math (OMML) elements.
-                // Math content uses <m:r>/<m:t> instead of <w:r>/<w:t>.
-                // Read formatting from <w:rPr> inside <m:r> when available.
-                foreach (var mr in child.Descendants(M + "r"))
-                {
-                    var mathText = "";
-                    foreach (var mt in mr.Elements(M + "t"))
-                        mathText += mt.Value;
-                    if (string.IsNullOrEmpty(mathText))
-                        continue;
-
-                    var mBold = bold;
-                    var mItalic = italic;
-                    var mFontSize = fontSize;
-                    PdfColor? mColor = color;
-                    // Read <w:rPr> inside math run for formatting
-                    var wrPr = mr.Element(W + "rPr");
-                    if (wrPr != null)
-                    {
-                        if (wrPr.Element(W + "b") != null) mBold = true;
-                        if (wrPr.Element(W + "i") != null) mItalic = true;
-                        var sz = wrPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
-                        if (float.TryParse(sz, out var s) && s > 0)
-                            mFontSize = s / 2f;
-                        var rc = ReadRunColor(wrPr);
-                        if (rc != null) mColor = rc;
-                    }
-                    runs.Add(new DocxRun(mathText, mBold, mItalic, mFontSize, mColor));
-                }
+                // Linearize Office Math (OMML) elements into compact inline text.
+                var mathText = LinearizeOmml(child);
+                if (!string.IsNullOrEmpty(mathText))
+                    runs.Add(new DocxRun(mathText, bold, italic, fontSize, color));
             }
         }
 
@@ -704,6 +743,109 @@ internal static class DocxReader
             sectionBreakLayout, borders, shapes.Count > 0 ? shapes : null,
             ContextualSpacing: contextualSpacing, SnapToGrid: snapToGrid,
             ParagraphMarkUnderline: paragraphMarkUnderline);
+    }
+
+    /// <summary>
+    /// Linearize OMML (Office Math Markup Language) element into compact inline text.
+    /// Handles fractions, subscripts, superscripts, summations, and delimiters.
+    /// </summary>
+    private static string LinearizeOmml(XElement element)
+    {
+        var sb = new System.Text.StringBuilder();
+        LinearizeOmmlCore(element, sb);
+        return sb.ToString();
+    }
+
+    private static void LinearizeOmmlCore(XElement el, System.Text.StringBuilder sb)
+    {
+        if (el.Name == M + "f") // Fraction: num/den
+        {
+            var num = el.Element(M + "num");
+            var den = el.Element(M + "den");
+            if (num != null) LinearizeOmmlCore(num, sb);
+            sb.Append('/');
+            if (den != null) LinearizeOmmlCore(den, sb);
+            return;
+        }
+        if (el.Name == M + "nary") // N-ary (summation, product, etc.)
+        {
+            var naryPr = el.Element(M + "naryPr");
+            var chr = naryPr?.Element(M + "chr")?.Attribute(M + "val")?.Value ?? "\u2211"; // default Σ
+            var sub = el.Element(M + "sub");
+            var sup = el.Element(M + "sup");
+            var e = el.Element(M + "e");
+            sb.Append(chr);
+            if (sub != null) { sb.Append('('); LinearizeOmmlCore(sub, sb); sb.Append(')'); }
+            if (sup != null) { sb.Append("^("); LinearizeOmmlCore(sup, sb); sb.Append(')'); }
+            sb.Append(' ');
+            if (e != null) LinearizeOmmlCore(e, sb);
+            return;
+        }
+        if (el.Name == M + "d") // Delimiter (parentheses, brackets)
+        {
+            var dPr = el.Element(M + "dPr");
+            var begChr = dPr?.Element(M + "begChr")?.Attribute(M + "val")?.Value ?? "(";
+            var endChr = dPr?.Element(M + "endChr")?.Attribute(M + "val")?.Value ?? ")";
+            sb.Append(begChr);
+            foreach (var de in el.Elements(M + "e"))
+                LinearizeOmmlCore(de, sb);
+            sb.Append(endChr);
+            return;
+        }
+        if (el.Name == M + "sSub") // Subscript
+        {
+            var e = el.Element(M + "e");
+            var sub = el.Element(M + "sub");
+            if (e != null) LinearizeOmmlCore(e, sb);
+            if (sub != null) LinearizeOmmlCore(sub, sb);
+            return;
+        }
+        if (el.Name == M + "sSup") // Superscript
+        {
+            var e = el.Element(M + "e");
+            var sup = el.Element(M + "sup");
+            if (e != null) LinearizeOmmlCore(e, sb);
+            if (sup != null) { sb.Append('^'); LinearizeOmmlCore(sup, sb); }
+            return;
+        }
+        if (el.Name == M + "sSubSup") // Sub-superscript
+        {
+            var e = el.Element(M + "e");
+            var sub = el.Element(M + "sub");
+            var sup = el.Element(M + "sup");
+            if (e != null) LinearizeOmmlCore(e, sb);
+            if (sub != null) LinearizeOmmlCore(sub, sb);
+            if (sup != null) { sb.Append('^'); LinearizeOmmlCore(sup, sb); }
+            return;
+        }
+        if (el.Name == M + "r") // Math run: extract text
+        {
+            foreach (var mt in el.Elements(M + "t"))
+            {
+                if (!string.IsNullOrEmpty(mt.Value))
+                    sb.Append(mt.Value);
+            }
+            return;
+        }
+        if (el.Name == M + "func") // Function (sin, cos, lim, etc.)
+        {
+            var fName = el.Element(M + "fName");
+            var e = el.Element(M + "e");
+            if (fName != null) LinearizeOmmlCore(fName, sb);
+            if (e != null) LinearizeOmmlCore(e, sb);
+            return;
+        }
+        if (el.Name == M + "rad") // Radical (square root)
+        {
+            sb.Append("\u221A(");
+            var e = el.Element(M + "e");
+            if (e != null) LinearizeOmmlCore(e, sb);
+            sb.Append(')');
+            return;
+        }
+        // For container elements (oMathPara, oMath, e, num, den, sub, sup, etc.), recurse into children
+        foreach (var child in el.Elements())
+            LinearizeOmmlCore(child, sb);
     }
 
     private static DocxBorderEdge? ReadBorderEdge(XElement? el)
@@ -2019,6 +2161,14 @@ internal static class DocxReader
     {
         var sectPr = body.Element(W + "sectPr");
         if (sectPr == null) return [];
+        return ReadHeaderFooterElementsFromSectPr(sectPr, relationships, archive, styles, numbering, refElementName, defaultFontName, defaultEastAsiaFontName);
+    }
+
+    private static List<DocxElement> ReadHeaderFooterElementsFromSectPr(
+        XElement sectPr, Dictionary<string, string> relationships, ZipArchive archive,
+        Dictionary<string, DocxStyleInfo> styles, Dictionary<string, DocxNumberingDef> numbering,
+        string refElementName, string? defaultFontName, string? defaultEastAsiaFontName)
+    {
 
         var hfRef = sectPr.Element(W + refElementName);
         if (hfRef == null) return [];
@@ -2077,6 +2227,21 @@ internal static class DocxReader
                 "left" or "inside" => "left",
                 _ => null
             };
+            // If no explicit align, infer from posOffset relative to page
+            if (alignment == null && posH?.Attribute("relativeFrom")?.Value == "page")
+            {
+                var posOffsetStr = posH.Element(WP + "posOffset")?.Value;
+                if (long.TryParse(posOffsetStr, out var posOffsetEmu))
+                {
+                    // A4 page width ≈ 7560000 EMU; centered if offset is 30-70% of page width
+                    const long typicalPageWidthEmu = 7560000;
+                    var fraction = (double)posOffsetEmu / typicalPageWidthEmu;
+                    if (fraction >= 0.30 && fraction <= 0.70)
+                        alignment = "center";
+                    else if (fraction > 0.70)
+                        alignment = "right";
+                }
+            }
 
             foreach (var txbxP in txbxContent.Elements(W + "p"))
             {
@@ -2162,7 +2327,16 @@ internal static class DocxReader
                 columnSpacing = cs * twipsToPoints;
         }
 
-        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch, headerMargin, footerMargin, sectionType, columnCount, columnSpacing);
+        // Parse page number start
+        int pageNumStart = -1;
+        var pgNumType = sectPr.Element(W + "pgNumType");
+        if (pgNumType != null)
+        {
+            if (int.TryParse(pgNumType.Attribute(W + "start")?.Value, out var pns))
+                pageNumStart = pns;
+        }
+
+        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch, headerMargin, footerMargin, sectionType, columnCount, columnSpacing, pageNumStart);
     }
 
 
@@ -2619,7 +2793,8 @@ internal sealed record DocxDocument(
     string? DefaultFontName = null,
     string? DefaultEastAsiaFontName = null,
     List<DocxElement>? HeaderElements = null,
-    List<DocxElement>? FooterElements = null
+    List<DocxElement>? FooterElements = null,
+    List<List<DocxElement>?>? SectionFooterElements = null
 );
 
 /// <summary>Page layout settings from sectPr.</summary>
@@ -2635,7 +2810,8 @@ internal sealed record DocxPageLayout(
     float FooterMargin = 36,
     string SectionType = "nextPage",
     int ColumnCount = 1,
-    float ColumnSpacing = 36
+    float ColumnSpacing = 36,
+    int PageNumStart = -1
 );
 
 /// <summary>Base type for document elements (paragraphs, tables).</summary>
