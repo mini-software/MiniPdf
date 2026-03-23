@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-22T16:17:58.967689
+Generated: 2026-03-23T09:21:45.073309
 
 ## Summary
 
@@ -11,20 +11,20 @@ Generated: 2026-03-22T16:17:58.967689
 | 3 | 🟢 Class News | 0.9959 | 0.8703 | 4/4 | **0.9465** |
 | 4 | 🟢 Confirmatory_Affidavit | 0.9845 | 0.965 | 2/2 | **0.9798** |
 | 5 | ⚪ cooperation | N/A | N/A | ?/? | **N/A** |
-| 6 | 🟢 Cooperation Agreement Template | 0.9831 | 0.984 | 7/7 | **0.9868** |
+| 6 | 🟢 Cooperation Agreement Template | 0.9835 | 0.984 | 7/7 | **0.987** |
 | 7 | 🟢 Invoice | 0.9947 | 0.9129 | 1/1 | **0.963** |
 | 8 | 🟡 MODERN LIVING | 0.7952 | 0.7889 | 2/2 | **0.8336** |
-| 9 | 🟡 nthu_article | 0.8778 | 0.8234 | 21/20 | **0.7805** |
+| 9 | 🟡 nthu_article | 0.877 | 0.8236 | 21/20 | **0.7802** |
 | 10 | 🟢 OSCAR WARD | 0.9941 | 0.8535 | 1/1 | **0.939** |
 | 11 | 🟡 SA8000 ch sample | 0.9908 | 0.6197 | 3/2 | **0.7442** |
 | 12 | 🟢 Support_Letter | 0.9959 | 0.9589 | 1/1 | **0.9819** |
-| 13 | 🔴 CCU_article | 0.6092 | 0.5946 | 14/21 | **0.5815** |
+| 13 | 🟢 CCU_article | 1.0 | 1.0 | 15/15 | **1.0** |
 | 14 | ⚪ 20260317_sample_CN_old | N/A | N/A | ?/? | **N/A** |
 | 15 | ⚪ SA8000 ch sample_old | N/A | N/A | ?/? | **N/A** |
 | 16 | ⚪ nthu_article_new | N/A | N/A | ?/? | **N/A** |
 | 17 | ⚪ nthu_article_old | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.6117**
+**Average Overall Score: 0.6363**
 
 ## Visual Comparison
 
@@ -339,7 +339,7 @@ Generated: 2026-03-22T16:17:58.967689
 </tr>
 <tr>
   <td><b>CCU_article</b></td>
-  <td colspan="1">CCU_article <span style="color:#f85149">⬤</span> 58.1%</td>
+  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 100.0%</td>
 </tr>
 <tr>
   <td><img src="images/CCU_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -398,32 +398,8 @@ Generated: 2026-03-22T16:17:58.967689
   <td><img src="images/CCU_article_p14_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/CCU_article_p15_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/CCU_article_p15_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/CCU_article_p16_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/CCU_article_p17_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/CCU_article_p18_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/CCU_article_p19_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/CCU_article_p20_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/CCU_article_p21_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>20260317_sample_CN_old</b></td>
@@ -1031,28 +1007,17 @@ Generated: 2026-03-22T16:17:58.967689
 
 ### Cooperation Agreement Template
 
-- **Text Similarity:** 0.9831
+- **Text Similarity:** 0.9835
 - **Visual Average:** 0.984
-- **Overall Score:** 0.9868
+- **Overall Score:** 0.987
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=4360679 bytes, Reference=139728 bytes
+- **File Size:** MiniPdf=4368487 bytes, Reference=139728 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Cooperation Agreement Template.pdf
 +++ reference/Cooperation Agreement Template.pdf
-@@ -1,4 +1,4 @@
--附件1
-
-+附件 1
-
- XXXXXXX 项目
-
- 合作协议
-
- （模板）
-
 @@ -15,10 +15,10 @@
  电    话：                  地  址：
 
@@ -1060,7 +1025,7 @@ Generated: 2026-03-22T16:17:58.967689
 
  电    话：                  地  址：
 
--经各主体单位友好协商，各主体单位本着互相合作的精神，自愿组成联合体，就《XXXXX项
+-经各主体单位友好协商，各主体单位本着互相合作的精神，自愿组成联合体，就《 XXXXX 项
 
 -目》（以下简称本项目）申报和执行中涉及的内容一致同意签订本协议如下：
 
@@ -1374,11 +1339,11 @@ Generated: 2026-03-22T16:17:58.967689
 
 ### nthu_article
 
-- **Text Similarity:** 0.8778
-- **Visual Average:** 0.8234
-- **Overall Score:** 0.7805
+- **Text Similarity:** 0.877
+- **Visual Average:** 0.8236
+- **Overall Score:** 0.7802
 - **Pages:** MiniPdf=21, Reference=20
-- **File Size:** MiniPdf=4994494 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=5476343 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1541,21 +1506,21 @@ Generated: 2026-03-22T16:17:58.967689
 
  各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16 級，
 
- 標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
+-標楷體，置中。章節以下小節所使用符號，依 「一、」、「 （一） 」、
 
 -「1、」、「（1）」 …… 等順序表示， 14 級（或 12 級），左齊。
 
--（二）內文
++標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
+
++「 1 、」、「（ 1 ）」……等順序表示， 14 級（或 12 級），左齊。
+
+ （二） 內文
 
 -1，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文
 
 -中，書名和篇名連用時，省略篇名號，如《莊子 ‧ 天下》。若為英
 
 -文，書名請用斜體，篇名請用 “ ” 。日文翻譯成中文，行文時亦請
-
-+「 1 、」、「（ 1 ）」……等順序表示， 14 級（或 12 級），左齊。
-
-+（二） 內文
 
 +1 ，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文中，
 
@@ -1587,11 +1552,8 @@ Generated: 2026-03-22T16:17:58.967689
 
  引用之外文，也依上述格式處理，字體建議用 Times New Roman 。外
 
- 文引文，亦可翻譯成流暢達意之中文，於註腳中附上所引篇章之外文
-
- 原名，並得視需要將所徵引之原文置於註腳中。
-
-... (17278 more characters)
+ 文引文，亦可翻譯成流暢達意之中文，於註腳中附上所引篇
+... (17396 more characters)
 
 ```
 </details>
@@ -1893,133 +1855,13 @@ Generated: 2026-03-22T16:17:58.967689
 
 ### CCU_article
 
-- **Text Similarity:** 0.6092
-- **Visual Average:** 0.5946
-- **Overall Score:** 0.5815
-- **Pages:** MiniPdf=14, Reference=21
-- **File Size:** MiniPdf=5029347 bytes, Reference=632710 bytes
+- **Text Similarity:** 1.0
+- **Visual Average:** 1.0
+- **Overall Score:** 1.0
+- **Pages:** MiniPdf=15, Reference=15
+- **File Size:** MiniPdf=5230422 bytes, Reference=5230422 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/CCU_article.pdf
-+++ reference/CCU_article.pdf
-@@ -8,206 +8,346 @@
- 中華民國 114 年 9 月
-
- ---PAGE---
-
- 摘要
-
--本研究探討以深度學習方法改善多分類影像辨識之效能。近年卷積神經網路
-
--在多種視覺任務上展現優異表現，然而在資料量受限與類別不平衡 (class
-
--imbalance)
-
--的情況下，傳統訓練流程容易造成某些少數類別辨識率偏低。為解決此問題，本研
-
--究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature
-
--orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail)
-
--類別之召回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準
-
--模型，所提方法在 Macro-F1 及少數類別 Top-1
-
--準確率均有顯著提升。最後，本研究並分析特徵空間分佈，證實特徵正交化有助於
-
--降低類別間干擾。
-
--本論文之主要貢獻包含：(1) 提出一套可即插即用之動態類別權重調整策略；(2)
-
--引入特徵正交化損失於長尾分類場景；(3)
-
--於多組資料集與不同網路骨幹下驗證方法之穩健性；(4)
-
--釋出實驗程式碼以利後續研究延伸。
-
-+本研究探討以深度學習方法改善多分類影像辨識之效能。近年卷積神經網路在多
-
-+種視覺任務上展現優異表現，然而在資料量受限與類別不平衡 (class imbalance)
-
-+的情況下，傳統訓練流程容易造成某些少數類別辨識率偏低。為解決此問題，本
-
-+研究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature
-
-+orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別
-
-+之召回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模
-
-+型，所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研究
-
-+並分析特徵空間分佈，證實特徵正交化有助於降低類別間干擾。
-
-+本論文之主要貢獻包含： (1) 提出一套可即插即用之動態類別權重調整策略；
-
-+(2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗
-
-+證方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。
-
- 關鍵詞：深度學習、長尾學習、特徵表徵、卷積神經網路
-
-+i
-
- ---PAGE---
-
- Abstract
-
--This thesis investigates a training framework to improve class-imbalanced
-
--multi-class image classification under limited data regimes. Although modern
-
--convolutional neural networks achieve strong performance, minority classes in
-
--long-tail distributions often suffer from poor recall. We propose a plug-and-play
-
--framework that combines dynamic class re-weighting with feature
-
--orthogonalization to mitigate inter-class interference while preserving global
-
--accuracy. Experiments on public and proprietary datasets demonstrate
-
--consistent gains in Macro-F1 and minority-class Top-1 accuracy over strong
-
--baselines. Feature space visualization further confirms that orthogonalization
-
--encourages better inter-class separation.
-
--The contributions are: (1) a dynamic weight schedule responsive to per-epoch
-
--error rates; (2) a feature orthogonalization loss for long-tail settings; (3) extensive
-
--cross-dataset and cross-backbone experiments; (4) open-source code release.
-
-+This thesis investigates a training framework to improve class-imbalanced multi-class im-
-
-+age classification under limited data regimes. Although modern convolutional neural net-
-
-+works achieve strong performance, minority classes in long-tail distributions often suffer
-
-+from poor recall. We propose a plug-and-play framework that combines dynamic class re-
-
-+weighting with feature orthogonalization to mitigate inter-class interference while preserv-
-
-+ing global accuracy. Experiments on public and proprietary datasets demonstrate consis-
-
-+tent gains in Macro-F1 and minority-class Top-1 accuracy over strong baselines. Feature
-
-+space visualization further confirms that orthogonalization encourages better inter-class
-
-+separation.
-
-+The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class
-
-+difficulty; (2) incorporation of a feature orthogonalization loss ta
-... (15408 more characters)
-
-```
-</details>
+Text content: ✅ Identical
 
 ### 20260317_sample_CN_old
 
@@ -2041,9 +1883,8 @@ Generated: 2026-03-22T16:17:58.967689
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **CCU_article** (score: 0.5815)
 1. **20260318_issue** (score: 0.6868)
 1. **SA8000 ch sample** (score: 0.7442)
-1. **nthu_article** (score: 0.7805)
+1. **nthu_article** (score: 0.7802)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

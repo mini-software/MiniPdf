@@ -54,6 +54,8 @@ def main():
                         help="Output directory for Office-generated PDFs")
     parser.add_argument("--filter", default=None, metavar="PATTERN",
                         help="Only convert files whose name contains this substring")
+    parser.add_argument("--force", action="store_true",
+                        help="Overwrite existing PDFs (default: skip if PDF already exists)")
     args = parser.parse_args()
 
     xlsx_dir = os.path.abspath(args.xlsx_dir)
@@ -82,8 +84,13 @@ def main():
     failed = 0
     consecutive_errors = 0
 
+    skipped = 0
     for xlsx in xlsx_files:
         pdf_path = os.path.join(pdf_dir, xlsx.stem + ".pdf")
+        if not args.force and os.path.isfile(pdf_path):
+            print(f"  Skipping {xlsx.name} (PDF exists)")
+            skipped += 1
+            continue
         print(f"  Converting {xlsx.name} ...", end=" ", flush=True)
         try:
             wb = excel.Workbooks.Open(os.path.abspath(str(xlsx)))
@@ -110,7 +117,11 @@ def main():
                 consecutive_errors = 0
 
     _quit_excel(excel)
-    print(f"\nDone: {passed} succeeded, {failed} failed out of {len(xlsx_files)} files.")
+    msg = f"\nDone: {passed} succeeded, {failed} failed"
+    if skipped:
+        msg += f", {skipped} skipped"
+    msg += f" out of {len(xlsx_files)} files."
+    print(msg)
 
 
 if __name__ == "__main__":

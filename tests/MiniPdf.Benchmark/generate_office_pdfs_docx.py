@@ -51,6 +51,8 @@ def main():
                         help="Output directory for Office-generated PDFs")
     parser.add_argument("--filter", default=None, metavar="PATTERN",
                         help="Only convert files whose name contains this substring")
+    parser.add_argument("--force", action="store_true",
+                        help="Overwrite existing PDFs (default: skip if PDF already exists)")
     args = parser.parse_args()
 
     docx_dir = os.path.abspath(args.docx_dir)
@@ -79,8 +81,13 @@ def main():
     failed = 0
     consecutive_errors = 0
 
+    skipped = 0
     for docx in docx_files:
         pdf_path = os.path.join(pdf_dir, docx.stem + ".pdf")
+        if not args.force and os.path.isfile(pdf_path):
+            print(f"  Skipping {docx.name} (PDF exists)")
+            skipped += 1
+            continue
         print(f"  Converting {docx.name} ...", end=" ", flush=True)
         try:
             doc = word.Documents.Open(os.path.abspath(str(docx)))
@@ -106,7 +113,11 @@ def main():
                 consecutive_errors = 0
 
     _quit_word(word)
-    print(f"\nDone: {passed} succeeded, {failed} failed out of {len(docx_files)} files.")
+    msg = f"\nDone: {passed} succeeded, {failed} failed"
+    if skipped:
+        msg += f", {skipped} skipped"
+    msg += f" out of {len(docx_files)} files."
+    print(msg)
 
 
 if __name__ == "__main__":
