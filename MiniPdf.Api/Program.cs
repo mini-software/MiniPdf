@@ -33,7 +33,8 @@ var app = builder.Build();
 
 app.UseCors();
 
-#if DEBUG
+if (app.Environment.IsDevelopment())
+{
     app.MapGet("/test", () => Results.Content("""
     <!DOCTYPE html>
     <html lang="en">
@@ -97,7 +98,7 @@ app.UseCors();
     </body>
     </html>
     """, "text/html"));
-#endif
+}
 
 app.MapPost("/api/convert", async (IFormFile file) =>
 {
