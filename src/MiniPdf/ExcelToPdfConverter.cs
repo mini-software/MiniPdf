@@ -671,11 +671,13 @@ internal static class ExcelToPdfConverter
         var avgCharWidth = options.FontSize * 0.47f;
 
         // Determine column widths first to decide on layout strategy
+        var hasExplicitColWidths = sheet.ColumnWidths.Count > 0 || sheet.DefaultColumnWidth > 0f;
         var columnPadding = options.ColumnPadding;
-        if (sheet.FitToPage && sheet.FitToWidth >= 1)
+        if (hasExplicitColWidths || (sheet.FitToPage && sheet.FitToWidth >= 1))
         {
-            // When fitToPage is active, use zero inter-column padding to match
-            // LibreOffice's layout model (columns are adjacent, separated by borders).
+            // When the spreadsheet defines explicit column widths, or fitToPage is
+            // active, use zero inter-column padding to match Excel/LibreOffice layout
+            // (columns are adjacent, separated only by cell borders/padding).
             columnPadding = 0f;
         }
         else if (maxCols > 6)
@@ -1326,23 +1328,24 @@ internal static class ExcelToPdfConverter
                             }
                             var nextCellHasContent = nextContentCol >= 0;
 
-                            // When wrapText is set, wrap text within the cell width instead of clipping
+                            // When wrapText is set, wrap text within the cell width instead of clipping.
+                            // Don't set cellClipWidth for wrapped text — each line is already
+                            // fitted by WrapCellText. Setting maxWidth would trigger Tz horizontal
+                            // scaling in PdfWriter, which uses raw Helvetica widths that differ
+                            // from the CalibriFittingScale used for wrapping, causing ~15%
+                            // over-compression of the rendered text.
                             if (row[col].WrapText && fitChars < cellText.Length)
                             {
                                 cellLines[i] = WrapCellText(cellText, effectiveWidth, cellFontSizeForFit);
-                                cellClipWidth[i] = effectiveWidth;
                             }
                             else
                             {
                                 var shouldClip = isMerged || (!isLastCol && nextCellHasContent);
-                                // Set maxWidth only when the cell actually needs clipping
-                                // (next cell has content or this is a merged cell).
-                                // LibreOffice lets text overflow into adjacent empty cells
-                                // rather than compressing horizontally with Tz scaling.
-                                if (shouldClip)
-                                {
-                                    cellClipWidth[i] = effectiveWidth;
-                                }
+                                // Don't set cellClipWidth (maxWidth) — text is already
+                                // truncated by FittingChars below when it overflows.
+                                // Setting maxWidth triggers Tz horizontal scaling in PdfWriter
+                                // using raw Helvetica widths, which over-compresses text
+                                // because FittingChars uses CalibriFittingScale (0.85×).
                                 if (shouldClip)
                                 {
                                     fitChars = FittingChars(cellText, effectiveWidth, cellFontSizeForFit);
