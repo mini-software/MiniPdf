@@ -3039,6 +3039,11 @@ internal sealed class DocxNumberingDef
                 var refLevel = Levels.FirstOrDefault(l => l.Ilvl == levelIdx);
                 var refFmt = refLevel?.NumFmt ?? "decimal";
                 var refCounter = _counters.TryGetValue(levelIdx, out var rc) ? rc : 0;
+                // When a parent-level counter was never explicitly set (e.g. TOC
+                // multi-level lists where chapter headings lack numPr), fall back
+                // to the level's start value so "%1.%2" renders "1.1" not ".1".
+                if (refCounter == 0 && refLevel != null)
+                    refCounter = refLevel.Start;
                 text = text.Replace(placeholder, refCounter > 0 ? FormatNumber(refCounter, refFmt) : "");
             }
         }
