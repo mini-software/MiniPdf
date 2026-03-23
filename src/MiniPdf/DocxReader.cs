@@ -541,6 +541,12 @@ internal static class DocxReader
                 alignment = styleInfo.Alignment;
             if (spacingBefore < 0) spacingBefore = styleInfo.SpacingBefore;
             if (spacingAfter < 0) spacingAfter = styleInfo.SpacingAfter;
+            if (lineSpacing == 0 && styleInfo.LineSpacing > 0)
+            {
+                lineSpacing = styleInfo.LineSpacing;
+                lineSpacingAbsolute = styleInfo.LineSpacingAbsolute;
+                lineSpacingExact = styleInfo.LineSpacingExact;
+            }
             contextualSpacing = styleInfo.ContextualSpacing;
             paragraphFontName = styleInfo.FontName;
             if (charSpacing == 0) charSpacing = styleInfo.CharSpacing;
@@ -2235,6 +2241,7 @@ internal static class DocxReader
             bool caps = false;
             float styleLineSpacing = 0;
             bool styleLineSpacingAbsolute = false;
+            bool styleLineSpacingExact = false;
             bool contextualSpacing = false;
             string? styleFontName = null;
             float styleCharSpacing = 0;
@@ -2273,6 +2280,7 @@ internal static class DocxReader
                     {
                         var lineRule = spacing.Attribute(W + "lineRule")?.Value;
                         styleLineSpacingAbsolute = lineRule == "exact" || lineRule == "atLeast";
+                        styleLineSpacingExact = lineRule == "exact";
                         styleLineSpacing = styleLineSpacingAbsolute ? sl / 20f : sl / 240f;
                     }
                 }
@@ -2287,7 +2295,7 @@ internal static class DocxReader
                 bold = true;
             }
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, contextualSpacing, styleFontName, styleCharSpacing);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, styleLineSpacingExact, contextualSpacing, styleFontName, styleCharSpacing);
         }
 
         // Second pass: resolve basedOn inheritance
@@ -2314,10 +2322,13 @@ internal static class DocxReader
             var spacingEl = pPr?.Element(W + "spacing");
             var spacingBefore = spacingEl?.Attribute(W + "before") != null ? current.SpacingBefore : baseStyle.SpacingBefore;
             var spacingAfter = spacingEl?.Attribute(W + "after") != null ? current.SpacingAfter : baseStyle.SpacingAfter;
+            var lineSpacing3 = spacingEl?.Attribute(W + "line") != null ? current.LineSpacing : baseStyle.LineSpacing;
+            var lineSpacingAbsolute3 = spacingEl?.Attribute(W + "line") != null ? current.LineSpacingAbsolute : baseStyle.LineSpacingAbsolute;
+            var lineSpacingExact3 = spacingEl?.Attribute(W + "line") != null ? current.LineSpacingExact : baseStyle.LineSpacingExact;
             var contextualSpacing2 = current.ContextualSpacing || baseStyle.ContextualSpacing;
             var charSpacing2 = rPr?.Element(W + "spacing") != null ? current.CharSpacing : baseStyle.CharSpacing;
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, ContextualSpacing: contextualSpacing2, FontName: styleFontName, CharSpacing: charSpacing2);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, lineSpacing3, lineSpacingAbsolute3, lineSpacingExact3, contextualSpacing2, styleFontName, charSpacing2);
         }
 
         // Extract default font name from Normal style or docDefaults
@@ -2766,6 +2777,7 @@ internal sealed record DocxStyleInfo(
     bool Caps = false,
     float LineSpacing = 0,
     bool LineSpacingAbsolute = false,
+    bool LineSpacingExact = false,
     bool ContextualSpacing = false,
     string? FontName = null,
     float CharSpacing = 0

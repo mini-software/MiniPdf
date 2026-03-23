@@ -91,6 +91,8 @@ def main():
                         help="Output directory for reference PDFs")
     parser.add_argument("--filter", default=None, metavar="PATTERN",
                         help="Only convert files whose name contains this substring")
+    parser.add_argument("--force", action="store_true",
+                        help="Overwrite existing PDFs (default: skip if PDF already exists)")
     args = parser.parse_args()
 
     xlsx_dir = os.path.abspath(args.xlsx_dir)
@@ -118,7 +120,13 @@ def main():
 
     passed = 0
     failed = 0
+    skipped = 0
     for xlsx in xlsx_files:
+        pdf_path = os.path.join(pdf_dir, xlsx.stem + ".pdf")
+        if not args.force and os.path.isfile(pdf_path):
+            print(f"  Skipping {xlsx.name} (PDF exists)")
+            skipped += 1
+            continue
         ok = convert_xlsx_to_pdf(soffice, str(xlsx), pdf_dir)
         if ok:
             pdf_name = xlsx.stem + ".pdf"
@@ -127,7 +135,11 @@ def main():
         else:
             failed += 1
 
-    print(f"\nDone! Passed: {passed}, Failed: {failed}, Total: {len(xlsx_files)}")
+    msg = f"\nDone! Passed: {passed}, Failed: {failed}"
+    if skipped:
+        msg += f", Skipped: {skipped}"
+    msg += f", Total: {len(xlsx_files)}"
+    print(msg)
 
 
 if __name__ == "__main__":
