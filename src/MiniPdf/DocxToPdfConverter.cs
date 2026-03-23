@@ -189,6 +189,11 @@ internal static class DocxToPdfConverter
                         if (sectionIndex < sectionLayouts.Count)
                         {
                             var nextLayout = sectionLayouts[sectionIndex];
+
+                            // Exit multi-column mode before applying new layout
+                            if (state.ColumnCount > 1)
+                                state.ExitMultiColumnSection();
+
                             state.Options.PageWidth = nextLayout.PageWidth;
                             state.Options.PageHeight = nextLayout.PageHeight;
                             state.Options.MarginTop = nextLayout.MarginTop;
@@ -198,8 +203,27 @@ internal static class DocxToPdfConverter
                             state.Options.GridLinePitch = nextLayout.GridLinePitch;
                             state.Options.HeaderMargin = nextLayout.HeaderMargin;
                             state.Options.FooterMargin = nextLayout.FooterMargin;
+
+                            // Continuous sections don't force a new page
+                            if (nextLayout.SectionType == "continuous")
+                            {
+                                // Enter multi-column if applicable
+                                if (nextLayout.ColumnCount > 1)
+                                    state.EnterMultiColumnSection(nextLayout.ColumnCount, nextLayout.ColumnSpacing);
+                            }
+                            else
+                            {
+                                state.ForceNewPage();
+                                if (nextLayout.ColumnCount > 1)
+                                    state.EnterMultiColumnSection(nextLayout.ColumnCount, nextLayout.ColumnSpacing);
+                            }
                         }
-                        state.ForceNewPage();
+                        else
+                        {
+                            if (state.ColumnCount > 1)
+                                state.ExitMultiColumnSection();
+                            state.ForceNewPage();
+                        }
                     }
                     break;
                 case DocxTable table:
@@ -212,15 +236,15 @@ internal static class DocxToPdfConverter
         if (pdfDoc.Pages.Count == 0)
             pdfDoc.AddPage(options.PageWidth, options.PageHeight);
 
-        // Render behindDoc images on all pages (Word treats these as page-level backgrounds).
-        if (state.BehindDocImages.Count > 0)
+        // Render behindDoc images.
+        // Page-relative behindDoc images act as watermarks and repeat on all pages.
+        // Other behindDoc images render only on their anchor page.
+        if (state.BehindDocImagesPerPage.Count > 0)
         {
             const float emuPerPt = 914400f / 72f;
-            var totalPages = pdfDoc.Pages.Count;
-            for (int pi = 0; pi < totalPages; pi++)
+            foreach (var (_, images) in state.BehindDocImagesPerPage)
             {
-                var page = pdfDoc.Pages[pi];
-                foreach (var img in state.BehindDocImages)
+                foreach (var img in images)
                 {
                     var fmt = img.Extension;
                     if (fmt != "jpg" && fmt != "png") continue;
@@ -232,7 +256,25 @@ internal static class DocxToPdfConverter
                     var ay = img.RelativeFromV == "page"
                         ? options.PageHeight - img.OffsetYEmu / emuPerPt
                         : options.PageHeight - options.MarginTop - img.OffsetYEmu / emuPerPt;
-                    page.AddImage(img.Data, fmt, ax, ay - h, w, h);
+                    var isWatermark = img.RelativeFromH == "page" && img.RelativeFromV == "page";
+                    if (isWatermark)
+                    {
+                        // Render on all pages as a repeating watermark
+                        for (int pi = 0; pi < pdfDoc.Pages.Count; pi++)
+                            pdfDoc.Pages[pi].AddImage(img.Data, fmt, ax, ay - h, w, h);
+                    }
+                    else
+                    {
+                        // Render only on the anchor page — find it from the dictionary key
+                        foreach (var (pageIdx2, imgs2) in state.BehindDocImagesPerPage)
+                        {
+                            if (imgs2.Contains(img) && pageIdx2 >= 0 && pageIdx2 < pdfDoc.Pages.Count)
+                            {
+                                pdfDoc.Pages[pageIdx2].AddImage(img.Data, fmt, ax, ay - h, w, h);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -397,6 +439,16 @@ internal static class DocxToPdfConverter
         /// These are rendered on every page after layout is complete (matching Word behavior).
         /// </summary>
         public List<DocxImage> BehindDocImages { get; } = new();
+        public Dictionary<int, List<DocxImage>> BehindDocImagesPerPage { get; } = new();
+
+        // Multi-column state
+        public int ColumnCount { get; set; } = 1;
+        public int CurrentColumn { get; set; } = 0;
+        public float ColumnWidth { get; set; }
+        public float ColumnSpacing { get; set; }
+        public float ColumnTopY { get; set; }
+        public float SavedMarginLeft { get; set; }
+        public float SavedMarginRight { get; set; }
 
         public float UsableWidth => Options.PageWidth - Options.MarginLeft - Options.MarginRight;
 
@@ -406,10 +458,50 @@ internal static class DocxToPdfConverter
             Options = options;
         }
 
+        public void EnterMultiColumnSection(int colCount, float colSpacing)
+        {
+            ColumnCount = colCount;
+            CurrentColumn = 0;
+            ColumnSpacing = colSpacing;
+            SavedMarginLeft = Options.MarginLeft;
+            SavedMarginRight = Options.MarginRight;
+            var totalUsable = Options.PageWidth - SavedMarginLeft - SavedMarginRight;
+            ColumnWidth = (totalUsable - (colCount - 1) * colSpacing) / colCount;
+            ColumnTopY = CurrentY;
+            // Set margins for first column
+            Options.MarginRight = Options.PageWidth - SavedMarginLeft - ColumnWidth;
+        }
+
+        public void ExitMultiColumnSection()
+        {
+            Options.MarginLeft = SavedMarginLeft;
+            Options.MarginRight = SavedMarginRight;
+            ColumnCount = 1;
+            CurrentColumn = 0;
+        }
+
+        public bool AdvanceToNextColumn()
+        {
+            if (CurrentColumn + 1 >= ColumnCount)
+                return false;
+            CurrentColumn++;
+            Options.MarginLeft = SavedMarginLeft + CurrentColumn * (ColumnWidth + ColumnSpacing);
+            Options.MarginRight = Options.PageWidth - Options.MarginLeft - ColumnWidth;
+            CurrentY = ColumnTopY;
+            IsTopOfPage = true;
+            LastLineHeight = 0;
+            LastSpacingAfter = 0;
+            return true;
+        }
+
         public void EnsurePage()
         {
             if (CurrentPage == null || CurrentY < Options.MarginBottom)
             {
+                // Try advancing to next column before creating a new page
+                if (ColumnCount > 1 && CurrentPage != null && AdvanceToNextColumn())
+                    return;
+
                 CurrentPage = Doc.AddPage(Options.PageWidth, Options.PageHeight);
                 CurrentY = Options.PageHeight - Options.MarginTop;
                 // Apply accumulated vertical space from empty paragraphs that
@@ -422,6 +514,15 @@ internal static class DocxToPdfConverter
                 IsTopOfPage = true;
                 LastLineHeight = 0;
                 LastSpacingAfter = 0;
+
+                // Reset to first column on new page
+                if (ColumnCount > 1)
+                {
+                    CurrentColumn = 0;
+                    ColumnTopY = CurrentY;
+                    Options.MarginLeft = SavedMarginLeft;
+                    Options.MarginRight = Options.PageWidth - SavedMarginLeft - ColumnWidth;
+                }
             }
         }
 
@@ -433,6 +534,14 @@ internal static class DocxToPdfConverter
 
         public void ForceNewPage()
         {
+            // Restore margins if in multi-column mode
+            if (ColumnCount > 1)
+            {
+                CurrentColumn = 0;
+                Options.MarginLeft = SavedMarginLeft;
+                Options.MarginRight = Options.PageWidth - SavedMarginLeft - ColumnWidth;
+            }
+
             CurrentPage = Doc.AddPage(Options.PageWidth, Options.PageHeight);
             CurrentY = Options.PageHeight - Options.MarginTop;
             if (PendingVerticalSpace > 0)
@@ -443,6 +552,9 @@ internal static class DocxToPdfConverter
             IsTopOfPage = true;
             LastLineHeight = 0;
             LastSpacingAfter = 0;
+
+            if (ColumnCount > 1)
+                ColumnTopY = CurrentY;
         }
     }
 
@@ -739,6 +851,9 @@ internal static class DocxToPdfConverter
         // Merge consecutive runs with identical formatting to reduce text extraction artifacts
         var mergedRuns = MergeConsecutiveRuns(paragraph.Runs, fontSize);
 
+        // Detect column breaks in runs
+        var hasColumnBreak = mergedRuns.Any(r => r.IsColumnBreak);
+
         // Suppress underline on trailing whitespace-only runs when the paragraph
         // already has underline context (paragraph mark underline or any preceding
         // run with explicit <w:u> declaration). In such cases the underlined spaces
@@ -768,6 +883,7 @@ internal static class DocxToPdfConverter
             var firstRunUnderline = firstRun.Underline;
             var firstRunCharSpacing = firstRun.CharSpacing;
             var firstRunFontName = firstRun.FontName;
+            var firstRunVertPos = firstRun.VerticalPosition;
 
             hasVaryingFormat = mergedRuns.Any(r =>
             {
@@ -777,7 +893,8 @@ internal static class DocxToPdfConverter
                     || r.Bold != firstRunBold
                     || r.Underline != firstRunUnderline
                     || Math.Abs(r.CharSpacing - firstRunCharSpacing) > 0.01f
-                    || !string.Equals(r.FontName, firstRunFontName, StringComparison.OrdinalIgnoreCase);
+                    || !string.Equals(r.FontName, firstRunFontName, StringComparison.OrdinalIgnoreCase)
+                    || Math.Abs(r.VerticalPosition - firstRunVertPos) > 0.01f;
             });
         }
 
@@ -912,6 +1029,13 @@ internal static class DocxToPdfConverter
         // Handle page break after
         if (paragraph.HasPageBreakAfter)
             state.ForceNewPage();
+
+        // Handle column break: advance to next column
+        if (hasColumnBreak && state.ColumnCount > 1)
+        {
+            if (!state.AdvanceToNextColumn())
+                state.ForceNewPage();
+        }
 
 
     }
@@ -1062,11 +1186,14 @@ internal static class DocxToPdfConverter
                 || (isCurWhitespace && !current.Underline);
             var charSpacingMatch = Math.Abs(current.CharSpacing - next.CharSpacing) < 0.01f || isWhitespaceOnly || isCurWhitespace;
             var fontNameMatch = string.Equals(current.FontName, next.FontName, StringComparison.OrdinalIgnoreCase) || isWhitespaceOnly || isCurWhitespace;
-            if (Math.Abs(curFs - nextFs) < 0.01f && colorMatch && boldMatch && underlineMatch && charSpacingMatch && fontNameMatch
-                && !current.IsPageBreak && !next.IsPageBreak)
+            var vertPosMatch = Math.Abs(current.VerticalPosition - next.VerticalPosition) < 0.01f;
+            if (Math.Abs(curFs - nextFs) < 0.01f && colorMatch && boldMatch && underlineMatch && charSpacingMatch && fontNameMatch && vertPosMatch
+                && !current.IsPageBreak && !next.IsPageBreak
+                && !current.IsColumnBreak && !next.IsColumnBreak)
             {
                 current = new DocxRun(current.Text + next.Text, current.Bold, current.Italic || next.Italic,
-                    current.FontSize, current.Color, false, current.Underline, current.CharSpacing, current.FontName);
+                    current.FontSize, current.Color, false, current.Underline, current.CharSpacing, current.FontName,
+                    VerticalPosition: current.VerticalPosition);
             }
             else
             {
@@ -1233,7 +1360,7 @@ internal static class DocxToPdfConverter
                             if (pendingText.Length > 0)
                             {
                                 var flushMaxW = rightEdge - pendingX;
-                                state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName, maxWidth: flushMaxW > 0 ? flushMaxW : (float?)null);
+                                state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName, maxWidth: flushMaxW > 0 ? flushMaxW : (float?)null);
                                 pendingText = "";
                             }
                             // Wrap to next line
@@ -1285,7 +1412,7 @@ internal static class DocxToPdfConverter
                         }
                         if (breakAt <= 0) break;
                         var cjkBrkMaxW = rightEdge - pendingX;
-                        state.CurrentPage!.AddText(pendingText[..breakAt], pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName, maxWidth: cjkBrkMaxW > 0 ? cjkBrkMaxW : (float?)null);
+                        state.CurrentPage!.AddText(pendingText[..breakAt], pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName, maxWidth: cjkBrkMaxW > 0 ? cjkBrkMaxW : (float?)null);
                         pendingText = pendingText[breakAt..];
                         if (!state.IsTopOfPage && state.CurrentY - lineHeight < state.Options.MarginBottom)
                             state.ForceNewPage();
@@ -1315,7 +1442,7 @@ internal static class DocxToPdfConverter
                         ? pendingText.Length * cjkSpaceWidth
                         : null;
                     var segMaxW = rightEdge - pendingX;
-                    state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName, underlineWidth: ulWidth, maxWidth: segMaxW > 0 ? segMaxW : (float?)null);
+                    state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName, underlineWidth: ulWidth, maxWidth: segMaxW > 0 ? segMaxW : (float?)null);
                 }
 
             }
@@ -1437,10 +1564,16 @@ internal static class DocxToPdfConverter
         // Anchor images: render at absolute offset position without advancing cursor
         if (image.IsAnchor)
         {
-            // BehindDoc images are collected and rendered on every page after layout
+            // BehindDoc images are rendered on the page they appear on
             if (image.IsBehindDoc)
             {
-                state.BehindDocImages.Add(image);
+                var pageIdx = state.Doc.Pages.Count - 1;
+                if (!state.BehindDocImagesPerPage.TryGetValue(pageIdx, out var list))
+                {
+                    list = new List<DocxImage>();
+                    state.BehindDocImagesPerPage[pageIdx] = list;
+                }
+                list.Add(image);
                 return;
             }
 
@@ -1553,12 +1686,28 @@ internal static class DocxToPdfConverter
                 case DocxParagraph para:
                 {
                     var usableW = options.PageWidth - options.MarginLeft - options.MarginRight;
-                    // Render inline images
+                    // Render images (inline + behindDoc anchors)
                     foreach (var image in para.Images)
                     {
-                        if (image.IsAnchor) continue;
+                        if (image.IsAnchor && !image.IsBehindDoc) continue;
                         var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                         var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
+                        var fmt = image.Extension;
+                        if (fmt != "jpg" && fmt != "png") continue;
+
+                        if (image.IsBehindDoc)
+                        {
+                            // Render behindDoc anchor at absolute position on this page
+                            var ax = image.RelativeFromH == "page"
+                                ? image.OffsetXEmu / emuPerPt
+                                : options.MarginLeft + image.OffsetXEmu / emuPerPt;
+                            var ay = image.RelativeFromV == "page"
+                                ? options.PageHeight - image.OffsetYEmu / emuPerPt
+                                : options.PageHeight - options.MarginTop - image.OffsetYEmu / emuPerPt;
+                            page.AddImage(image.Data, fmt, ax, ay - imgH, imgW, imgH);
+                            continue;
+                        }
+
                         if (imgW > usableW) { var s = usableW / imgW; imgW *= s; imgH *= s; }
                         var imgX = para.Alignment switch
                         {
@@ -1566,12 +1715,8 @@ internal static class DocxToPdfConverter
                             "right" => options.MarginLeft + usableW - imgW,
                             _ => options.MarginLeft
                         };
-                        var fmt = image.Extension;
-                        if (fmt == "jpg" || fmt == "png")
-                        {
-                            page.AddImage(image.Data, fmt, imgX, y - imgH, imgW, imgH);
-                            y -= imgH + 1f;
-                        }
+                        page.AddImage(image.Data, fmt, imgX, y - imgH, imgW, imgH);
+                        y -= imgH + 1f;
                     }
                     // Render text runs (resolve page-number placeholders)
                     var text = string.Concat(para.Runs.Select(r => r.Text))

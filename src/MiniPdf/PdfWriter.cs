@@ -520,7 +520,6 @@ internal sealed class PdfWriter
             // Image XObjects
             for (var j = 0; j < page.ImageBlocks.Count; j++)
             {
-                _objectOffsets[imageObjNums[i][j]] = Position;
                 WriteImageXObject(imageObjNums[i][j], page.ImageBlocks[j], imageMaskObjNums[i][j]);
             }
 
@@ -614,6 +613,7 @@ internal sealed class PdfWriter
             dictExtras = "/Filter /FlateDecode\n";
         }
 
+        _objectOffsets[objNum] = Position;
         WriteRaw($"{objNum} 0 obj\n");
         WriteRaw("<< /Type /XObject /Subtype /Image\n");
         WriteRaw($"/Width {width} /Height {height}\n");

@@ -739,6 +739,7 @@ internal static class DocxReader
         var hasExplicitUnderlineDecl = false;
         var charSpacing = parentCharSpacing;
         var fontName = parentFontName;
+        float verticalPosition = 0;
 
         if (rPr != null)
         {
@@ -764,10 +765,16 @@ internal static class DocxReader
                 charSpacing = cs / 20f; // twips to points
 
             fontName = ResolveRunFontName(rPr, parentFontName, defaultLatinFontName, defaultEastAsiaFontName);
+
+            // Vertical position (w:position w:val in half-points)
+            var posEl = rPr.Element(W + "position");
+            if (posEl != null && float.TryParse(posEl.Attribute(W + "val")?.Value, out var posVal))
+                verticalPosition = posVal / 2f; // half-points to points
         }
 
         // Collect text from <w:t>, <w:tab>, <w:br> elements
         bool isPageBreak = false;
+        bool isColumnBreak = false;
         var text = "";
         foreach (var child in rElement.Elements())
         {
@@ -780,12 +787,14 @@ internal static class DocxReader
                 var brType = child.Attribute(W + "type")?.Value;
                 if (brType == "page")
                     isPageBreak = true;
+                else if (brType == "column")
+                    isColumnBreak = true;
                 else
                     text += "\n";
             }
         }
 
-        if (string.IsNullOrEmpty(text) && !isPageBreak)
+        if (string.IsNullOrEmpty(text) && !isPageBreak && !isColumnBreak)
             return null;
 
         if (caps && !string.IsNullOrEmpty(text))
@@ -801,7 +810,7 @@ internal static class DocxReader
             fontName = defaultEastAsiaFontName;
         }
 
-        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl);
+        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl, isColumnBreak, verticalPosition);
     }
 
     private static string? GetFieldInstructionType(string? instruction)
@@ -2131,7 +2140,29 @@ internal static class DocxReader
             if (float.TryParse(pgMar.Attribute(W + "footer")?.Value, out var fm)) footerMargin = fm * twipsToPoints;
         }
 
-        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch, headerMargin, footerMargin);
+        // Parse section type (nextPage, continuous, evenPage, oddPage)
+        var sectionType = "nextPage";
+        var typeEl = sectPr.Element(W + "type");
+        if (typeEl != null)
+        {
+            var typeVal = typeEl.Attribute(W + "val")?.Value;
+            if (!string.IsNullOrEmpty(typeVal))
+                sectionType = typeVal;
+        }
+
+        // Parse column layout
+        int columnCount = 1;
+        float columnSpacing = 36f;
+        var colsEl = sectPr.Element(W + "cols");
+        if (colsEl != null)
+        {
+            if (int.TryParse(colsEl.Attribute(W + "num")?.Value, out var cn) && cn > 1)
+                columnCount = cn;
+            if (float.TryParse(colsEl.Attribute(W + "space")?.Value, out var cs) && cs > 0)
+                columnSpacing = cs * twipsToPoints;
+        }
+
+        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch, headerMargin, footerMargin, sectionType, columnCount, columnSpacing);
     }
 
 
@@ -2363,6 +2394,10 @@ internal static class DocxReader
         }
         if (defaultEastAsiaFontName == null)
             defaultEastAsiaFontName = effectiveThemeEastAsiaFont;
+
+        // OOXML default line spacing is single (1.0) when not specified
+        if (defaultLineSpacing == 0)
+            defaultLineSpacing = 1.0f;
 
         return (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName);
     }
@@ -2597,7 +2632,10 @@ internal sealed record DocxPageLayout(
     float MarginRight = 72,
     float GridLinePitch = 0,
     float HeaderMargin = 36,
-    float FooterMargin = 36
+    float FooterMargin = 36,
+    string SectionType = "nextPage",
+    int ColumnCount = 1,
+    float ColumnSpacing = 36
 );
 
 /// <summary>Base type for document elements (paragraphs, tables).</summary>
@@ -2674,7 +2712,9 @@ internal sealed record DocxRun(
     bool Underline = false,
     float CharSpacing = 0,
     string? FontName = null,
-    bool HasExplicitUnderlineDecl = false
+    bool HasExplicitUnderlineDecl = false,
+    bool IsColumnBreak = false,
+    float VerticalPosition = 0
 );
 
 /// <summary>Represents an embedded image.</summary>

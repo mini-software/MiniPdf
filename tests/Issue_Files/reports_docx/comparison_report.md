@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-23T09:21:45.073309
+Generated: 2026-03-23T14:05:44.897674
 
 ## Summary
 
@@ -16,7 +16,7 @@ Generated: 2026-03-23T09:21:45.073309
 | 8 | 🟡 MODERN LIVING | 0.7952 | 0.7889 | 2/2 | **0.8336** |
 | 9 | 🟡 nthu_article | 0.877 | 0.8236 | 21/20 | **0.7802** |
 | 10 | 🟢 OSCAR WARD | 0.9941 | 0.8535 | 1/1 | **0.939** |
-| 11 | 🟡 SA8000 ch sample | 0.9908 | 0.6197 | 3/2 | **0.7442** |
+| 11 | 🟢 SA8000 ch sample | 0.992 | 0.875 | 3/3 | **0.9468** |
 | 12 | 🟢 Support_Letter | 0.9959 | 0.9589 | 1/1 | **0.9819** |
 | 13 | 🟢 CCU_article | 1.0 | 1.0 | 15/15 | **1.0** |
 | 14 | ⚪ 20260317_sample_CN_old | N/A | N/A | ?/? | **N/A** |
@@ -24,7 +24,7 @@ Generated: 2026-03-23T09:21:45.073309
 | 16 | ⚪ nthu_article_new | N/A | N/A | ?/? | **N/A** |
 | 17 | ⚪ nthu_article_old | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.6363**
+**Average Overall Score: 0.6482**
 
 ## Visual Comparison
 
@@ -315,7 +315,7 @@ Generated: 2026-03-23T09:21:45.073309
 </tr>
 <tr>
   <td><b>SA8000 ch sample</b></td>
-  <td colspan="1">SA8000 ch sample <span style="color:#d29922">⬤</span> 74.4%</td>
+  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 94.7%</td>
 </tr>
 <tr>
   <td><img src="images/SA8000 ch sample_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -327,7 +327,7 @@ Generated: 2026-03-23T09:21:45.073309
 </tr>
 <tr>
   <td><img src="images/SA8000 ch sample_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
+  <td><img src="images/SA8000 ch sample_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>Support_Letter</b></td>
@@ -1625,11 +1625,11 @@ Generated: 2026-03-23T09:21:45.073309
 
 ### SA8000 ch sample
 
-- **Text Similarity:** 0.9908
-- **Visual Average:** 0.6197
-- **Overall Score:** 0.7442
-- **Pages:** MiniPdf=3, Reference=2
-- **File Size:** MiniPdf=3798629 bytes, Reference=186097 bytes
+- **Text Similarity:** 0.992
+- **Visual Average:** 0.875
+- **Overall Score:** 0.9468
+- **Pages:** MiniPdf=3, Reference=3
+- **File Size:** MiniPdf=3798629 bytes, Reference=159484 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1657,25 +1657,27 @@ Generated: 2026-03-23T09:21:45.073309
 
 -5、童工是指年龄在16周岁以下的人（按照我国法律规定）。（  √   ）
 
-+5、童工是指年龄在16 周岁以下的人（按照我国法律规定）。（  √   ）
+-6、公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）
 
- 6、公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）
-
- 7、公司法定节假日安排上班的话，可以在其他时间安排调休。（  ×   ）
+-7、公司法定节假日安排上班的话，可以在其他时间安排调休。（  ×   ）
 
 -8、当不同的法规、规章与 SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）
 
 -9、根据劳动法规定，员工每月加班时间最多不超过36小时。（  √    ）
 
--10、某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）
++5、 童工是指年龄在16 周岁以下的人（按照我国法律规定）。（  √   ）
+
++6、 公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）
+
++7、 公司法定节假日安排上班的话，可以在其他时间安排调休。（  ×   ）
+
++8、 当不同的法规、规章与SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）
+
++9、 根据劳动法规定，员工每月加班时间最多不超过36 小时。（  √    ）
+
+ 10、某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）
 
 -二、不定项选择题（共20分，每题2分）
-
-+8、当不同的法规、规章与SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）
-
-+9、根据劳动法规定，员工每月加班时间最多不超过36 小时。（  √    ）
-
-+10、 某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）
 
 +二、不定项选择题（共20 分，每题2 分）
 
@@ -1739,9 +1741,9 @@ Generated: 2026-03-23T09:21:45.073309
 
 +针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出SA8000 的哪一条款。
 
-+1、公司在运行SA8000 社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施是将2 名
++1、公司在运行SA8000 社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施
 
-+童工立即开除。
++是将2 名童工立即开除。
 
  STP 小组的含义是什么？
 
@@ -1767,7 +1769,7 @@ Generated: 2026-03-23T09:21:45.073309
 
  4、最高管理者对组织的职业健康安全工作负最终责任。（ √ ）
 
-@@ -58,35 +58,34 @@
+@@ -58,7 +58,7 @@
  8、只有取得特种作业资格，才能进行特种作业。（ √ ）
 
  9、安全管理是管理者的事，员工关系不大。（ × ）
@@ -1780,30 +1782,29 @@ Generated: 2026-03-23T09:21:45.073309
 
  1.建立和实施职业健康安全管理体系的根本目的是（ A  ）
 
--A、使组织能够控制职业健康安全风险，并持续改进其绩效。B、使组织的所有风险彻底消灭，作到绝对安全。
-
-+A、 使组织能够控制职业健康安全风险，并持续改进其绩效。B、使组织的所有风险彻底消灭，作到绝对安全。
+ A、使组织能够控制职业健康安全风险，并持续改进其绩效。B、使组织的所有风险彻底消灭，作到绝对安全。
 
  C、制定健康安全方针和目标，并依照执行。D、将所有与职业健康安全有关的过程形成文件
 
- 2.制定职业健康安全管理方案的目的是（ B  ）
-
--A、辨识和评价组织的危险源。     B、实现组织的职业健康安全目标。
-
-+A、 辨识和评价组织的危险源。     B、实现组织的职业健康安全目标。
-
+@@ -67,12 +67,12 @@
  C、便于组织实施纠正措施。        D、满足相关方的要求
 
  3.组织的职业健康安全管理体系文件应包含（ D  ）
 
--A、提供查询相关文件的途径。       B、对管理体系核心要素及相互作用的描述。
+ A、提供查询相关文件的途径。       B、对管理体系核心要素及相互作用的描述。
 
 -C、至少对11个要素的描述。         D、A+B。
 
-+A、 提供查询相关文件的途径。       B、对管理体系核心要素及相互作用的描述。
++C、至少对11 个要素的描述。         D、A+B。
 
-+C、至少对11 个要素的描述
-... (1220 more characters)
+ 4.特种作业种类应包括（ D  ）
+
+ A、电工。B、金属焊接切割。C、矿山通风。D、A+B+C。
+
+ 5.危险源辨识没有包括的内容有（ D  ）
+
+-A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在
+... (564 more characters)
 
 ```
 </details>
@@ -1859,7 +1860,7 @@ Generated: 2026-03-23T09:21:45.073309
 - **Visual Average:** 1.0
 - **Overall Score:** 1.0
 - **Pages:** MiniPdf=15, Reference=15
-- **File Size:** MiniPdf=5230422 bytes, Reference=5230422 bytes
+- **File Size:** MiniPdf=5230639 bytes, Reference=5230422 bytes
 
 Text content: ✅ Identical
 
@@ -1884,7 +1885,6 @@ Text content: ✅ Identical
 ### ⚠ Low-Score Test Cases (below 0.8)
 
 1. **20260318_issue** (score: 0.6868)
-1. **SA8000 ch sample** (score: 0.7442)
 1. **nthu_article** (score: 0.7802)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
