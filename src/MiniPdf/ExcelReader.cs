@@ -31,7 +31,7 @@ internal static class ExcelReader
         var fillColors = ReadFillColors(archive, themeColors);
         var borders = ReadBorders(archive, themeColors);
         var numberFormats = ReadNumberFormats(archive);
-        var dxfStyles = ReadDxfStyles(archive);
+        var dxfStyles = ReadDxfStyles(archive, themeColors);
         var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents) = ReadCellXfStyles(archive);
 
         // Read workbook to get sheet names and order
@@ -57,6 +57,7 @@ internal static class ExcelReader
 
             var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
             var images = ReadSheetImages(archive, info.SheetId);
+            var drawingShapes = ReadSheetShapes(archive, info.SheetId, themeColors);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
             var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
@@ -65,7 +66,7 @@ internal static class ExcelReader
             printAreas.TryGetValue(currentIndex, out var printArea);
             printTitleRows.TryGetValue(currentIndex, out var printTitleRow);
             ApplyTableStyleFormatting(archive, info.SheetId, rows, themeColors);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: printTitleRow != default ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt, maxDigitWidthPx: maxDigitWidthPx));
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, shapes: drawingShapes, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: printTitleRow != default ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt, maxDigitWidthPx: maxDigitWidthPx));
             sheetEntries.Add(entry);
         }
 
@@ -1003,7 +1004,7 @@ internal static class ExcelReader
     /// Reads differential formatting (dxf) styles from styles.xml.
     /// These are used by conditional formatting rules to override cell appearance.
     /// </summary>
-    private static List<(PdfColor? FontColor, PdfColor? FillColor)> ReadDxfStyles(ZipArchive archive)
+    private static List<(PdfColor? FontColor, PdfColor? FillColor)> ReadDxfStyles(ZipArchive archive, List<PdfColor> themeColors)
     {
         var result = new List<(PdfColor? FontColor, PdfColor? FillColor)>();
         var entry = archive.GetEntry("xl/styles.xml");
@@ -1025,12 +1026,7 @@ internal static class ExcelReader
             if (fontEl != null)
             {
                 var colorEl = fontEl.Element(ns + "color");
-                if (colorEl != null)
-                {
-                    var rgb = colorEl.Attribute("rgb")?.Value;
-                    if (!string.IsNullOrEmpty(rgb))
-                        fontColor = PdfColor.FromHex(rgb);
-                }
+                fontColor = ResolveColorElement(colorEl, themeColors);
             }
 
             var fillEl = dxf.Element(ns + "fill");
@@ -1038,12 +1034,7 @@ internal static class ExcelReader
             {
                 var bgEl = fillEl.Descendants(ns + "bgColor").FirstOrDefault()
                         ?? fillEl.Descendants(ns + "fgColor").FirstOrDefault();
-                if (bgEl != null)
-                {
-                    var rgb = bgEl.Attribute("rgb")?.Value;
-                    if (!string.IsNullOrEmpty(rgb))
-                        fillColor = PdfColor.FromHex(rgb);
-                }
+                fillColor = ResolveColorElement(bgEl, themeColors);
             }
 
             result.Add((fontColor, fillColor));
@@ -1124,6 +1115,12 @@ internal static class ExcelReader
             {
                 values[name] = numVal;
             }
+            else if (DateTime.TryParse(cellText, System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out var dateVal))
+            {
+                // Date-formatted cell: convert back to Excel serial number
+                values[name] = DateToExcelSerial(dateVal);
+            }
         }
 
         return values;
@@ -1144,6 +1141,11 @@ internal static class ExcelReader
             var (fontColor, fillColor) = dxfStyles[dxfId];
             if (fontColor == null && fillColor == null) continue;
 
+            // For expression-type CFs, try range-wide evaluation first (e.g. NAME+N=TODAY())
+            bool? rangeWideResult = null;
+            if (type == "expression")
+                rangeWideResult = EvaluateRangeExpression(formula, definedNames);
+
             // Parse sqref (may contain multiple space-separated ranges)
             foreach (var rangeStr in sqref.Split(' ', StringSplitOptions.RemoveEmptyEntries))
             {
@@ -1153,7 +1155,28 @@ internal static class ExcelReader
                 if (startRow < 0) startRow = 0;
                 if (endRow < 0) endRow = rows.Count - 1;
 
-
+                // Range-wide expression: apply to all cells (including empty) if true
+                if (rangeWideResult == true)
+                {
+                    for (var r = startRow; r <= endRow && r < rows.Count; r++)
+                    {
+                        var row = rows[r];
+                        for (var c = startCol; c <= endCol && c < row.Count; c++)
+                        {
+                            var cell = row[c];
+                            row[c] = cell with
+                            {
+                                Color = fontColor ?? cell.Color,
+                                FillColor = fillColor ?? cell.FillColor
+                            };
+                        }
+                    }
+                    continue;
+                }
+                else if (rangeWideResult == false)
+                {
+                    continue; // Expression is false for entire range
+                }
 
                 for (var r = startRow; r <= endRow && r < rows.Count; r++)
                 {
@@ -1185,23 +1208,27 @@ internal static class ExcelReader
     {
         if (type == "cellIs")
         {
-            // Try to parse cell value and formula value as numbers
-            if (!TryGetCellNumericValue(cell, out var cellVal)) return false;
-            if (!double.TryParse(formula, System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture, out var threshold))
-                return false;
-
-            return op switch
+            // Try numeric comparison first
+            if (TryGetCellNumericValue(cell, out var cellVal) &&
+                double.TryParse(formula, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out var threshold))
             {
-                "lessThan" => cellVal < threshold,
-                "greaterThan" => cellVal > threshold,
-                "equal" => Math.Abs(cellVal - threshold) < 1e-10,
-                "notEqual" => Math.Abs(cellVal - threshold) >= 1e-10,
-                "lessThanOrEqual" => cellVal <= threshold,
-                "greaterThanOrEqual" => cellVal >= threshold,
-                "between" => cellVal >= threshold, // simplified
-                _ => false
-            };
+                return op switch
+                {
+                    "lessThan" => cellVal < threshold,
+                    "greaterThan" => cellVal > threshold,
+                    "equal" => Math.Abs(cellVal - threshold) < 1e-10,
+                    "notEqual" => Math.Abs(cellVal - threshold) >= 1e-10,
+                    "lessThanOrEqual" => cellVal <= threshold,
+                    "greaterThanOrEqual" => cellVal >= threshold,
+                    "between" => cellVal >= threshold, // simplified
+                    _ => false
+                };
+            }
+
+            // Fall back to string comparison (e.g. operator=equal, formula="✔")
+            var trimmedFormula = formula.Trim('"');
+            return op == "equal" && cell.Text == trimmedFormula;
         }
 
         if (type == "expression")
@@ -1242,6 +1269,46 @@ internal static class ExcelReader
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Evaluates a range-wide expression formula that doesn't depend on individual cell values.
+    /// Supports patterns like "NAME+N=TODAY()" or "NAME=TODAY()".
+    /// Returns true/false/null (null = can't evaluate).
+    /// </summary>
+    private static bool? EvaluateRangeExpression(string formula, Dictionary<string, double> definedNames)
+    {
+        // Pattern: NAME+N=TODAY() or NAME-N=TODAY() or NAME=TODAY()
+        var m = System.Text.RegularExpressions.Regex.Match(formula,
+            @"^(\w+)\s*([+\-]\s*\d+)?\s*=\s*TODAY\(\)\s*$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (!m.Success) return null;
+
+        var name = m.Groups[1].Value;
+        if (!definedNames.TryGetValue(name, out var baseVal)) return null;
+
+        double offset = 0;
+        if (m.Groups[2].Success)
+        {
+            var offsetStr = m.Groups[2].Value.Replace(" ", "");
+            if (!double.TryParse(offsetStr, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out offset))
+                return null;
+        }
+
+        var todaySerial = DateToExcelSerial(DateTime.Today);
+        return Math.Abs(baseVal + offset - todaySerial) < 1e-10;
+    }
+
+    /// <summary>
+    /// Converts a DateTime to an Excel serial date number (days since Jan 1, 1900, with the 1900 leap year bug).
+    /// </summary>
+    private static double DateToExcelSerial(DateTime date)
+    {
+        // Excel epoch: Jan 1, 1900 = serial 1.
+        // Excel incorrectly treats 1900 as a leap year, so dates after Feb 28, 1900 are off by 1.
+        var serial = (date - new DateTime(1899, 12, 30)).TotalDays;
+        return serial;
     }
 
     /// <summary>
@@ -2968,6 +3035,153 @@ internal static class ExcelReader
     }
 
     /// <summary>
+    /// Reads decorative shape elements (rectangles, rounded rectangles) from a worksheet's drawing.
+    /// </summary>
+    private static List<ExcelDrawingShape> ReadSheetShapes(ZipArchive archive, int sheetId, List<PdfColor> themeColors)
+    {
+        var shapes = new List<ExcelDrawingShape>();
+        var relsEntry = archive.GetEntry($"xl/worksheets/_rels/sheet{sheetId}.xml.rels");
+        if (relsEntry == null) return shapes;
+
+        string drawingPath;
+        using (var relsStream = relsEntry.Open())
+        {
+            var relsDoc = XDocument.Load(relsStream);
+            var drawingRel = relsDoc.Descendants().FirstOrDefault(e =>
+                e.Attribute("Type")?.Value?.EndsWith("/drawing") == true);
+            if (drawingRel == null) return shapes;
+            var target = drawingRel.Attribute("Target")?.Value;
+            if (string.IsNullOrEmpty(target)) return shapes;
+            drawingPath = target.StartsWith('/') ? target.TrimStart('/') : "xl/" + target.TrimStart('.', '/');
+        }
+
+        var drawingEntry = archive.GetEntry(drawingPath);
+        if (drawingEntry == null) return shapes;
+
+        using var dStream = drawingEntry.Open();
+        var dDoc = XDocument.Load(dStream);
+        var xdr = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing");
+        var a = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/main");
+
+        // Map scheme color names to theme indices (must match ReadThemeColors order: 0=lt1, 1=dk1, 2=lt2, 3=dk2, 4-9=accent1-6)
+        static int SchemeColorToThemeIndex(string val) => val switch
+        {
+            "lt1" or "bg1" => 0, "dk1" or "tx1" => 1,
+            "lt2" or "bg2" => 2, "dk2" or "tx2" => 3,
+            "accent1" => 4, "accent2" => 5, "accent3" => 6, "accent4" => 7,
+            "accent5" => 8, "accent6" => 9, "hlink" => 10, "folHlink" => 11,
+            _ => -1
+        };
+
+        foreach (var anchor in dDoc.Descendants(xdr + "twoCellAnchor"))
+        {
+            // Only process direct sp children (not grouped shapes)
+            var sp = anchor.Element(xdr + "sp");
+            if (sp == null) continue;
+
+            var spPr = sp.Element(xdr + "spPr") ?? sp.Element(a + "spPr");
+            if (spPr == null) continue;
+
+            // Only render rectangle-like preset shapes
+            var prstGeom = spPr.Element(a + "prstGeom");
+            var prst = prstGeom?.Attribute("prst")?.Value ?? "";
+            if (prst is not ("rect" or "roundRect" or "round1Rect" or "round2SameRect"
+                or "round2DiagRect" or "snip1Rect" or "snip2SameRect" or "snipRoundRect"))
+                continue;
+
+            // Read anchor positions
+            var fromEl = anchor.Element(xdr + "from");
+            var toEl = anchor.Element(xdr + "to");
+            if (fromEl == null || toEl == null) continue;
+
+            int.TryParse(fromEl.Element(xdr + "row")?.Value, out var fromRow);
+            int.TryParse(fromEl.Element(xdr + "col")?.Value, out var fromCol);
+            long.TryParse(fromEl.Element(xdr + "colOff")?.Value, out var fromColOff);
+            long.TryParse(fromEl.Element(xdr + "rowOff")?.Value, out var fromRowOff);
+            int.TryParse(toEl.Element(xdr + "row")?.Value, out var toRow);
+            int.TryParse(toEl.Element(xdr + "col")?.Value, out var toCol);
+            long.TryParse(toEl.Element(xdr + "colOff")?.Value, out var toColOff);
+            long.TryParse(toEl.Element(xdr + "rowOff")?.Value, out var toRowOff);
+
+            // Read fill
+            PdfColor? fillColor = null;
+            var solidFill = spPr.Element(a + "solidFill");
+            if (solidFill != null)
+            {
+                var srgb = solidFill.Element(a + "srgbClr");
+                var schemeClr = solidFill.Element(a + "schemeClr");
+                if (srgb != null)
+                    fillColor = PdfColor.FromHex(srgb.Attribute("val")?.Value ?? "");
+                else if (schemeClr != null)
+                {
+                    var idx = SchemeColorToThemeIndex(schemeClr.Attribute("val")?.Value ?? "");
+                    if (idx >= 0 && idx < themeColors.Count)
+                    {
+                        fillColor = themeColors[idx];
+                        var lumMod = schemeClr.Element(a + "lumMod");
+                        var lumOff = schemeClr.Element(a + "lumOff");
+                        if (lumMod != null || lumOff != null)
+                        {
+                            var mod = lumMod != null && int.TryParse(lumMod.Attribute("val")?.Value, out var m) ? m / 100000.0 : 1.0;
+                            var off = lumOff != null && int.TryParse(lumOff.Attribute("val")?.Value, out var o) ? o / 100000.0 : 0.0;
+                            var fc = fillColor.Value;
+                            fillColor = new PdfColor(
+                                (float)Math.Min(1, fc.R * mod + off),
+                                (float)Math.Min(1, fc.G * mod + off),
+                                (float)Math.Min(1, fc.B * mod + off));
+                        }
+                    }
+                }
+            }
+
+            // Read border (line)
+            PdfColor? borderColor = null;
+            float borderWidthPt = 0;
+            var ln = spPr.Element(a + "ln");
+            if (ln != null)
+            {
+                if (long.TryParse(ln.Attribute("w")?.Value, out var wEmu))
+                    borderWidthPt = wEmu / 914400f * 72f;
+                var lnFill = ln.Element(a + "solidFill");
+                if (lnFill != null)
+                {
+                    var srgb = lnFill.Element(a + "srgbClr");
+                    var schemeClr = lnFill.Element(a + "schemeClr");
+                    if (srgb != null)
+                        borderColor = PdfColor.FromHex(srgb.Attribute("val")?.Value ?? "");
+                    else if (schemeClr != null)
+                    {
+                        var idx = SchemeColorToThemeIndex(schemeClr.Attribute("val")?.Value ?? "");
+                        if (idx >= 0 && idx < themeColors.Count)
+                        {
+                            borderColor = themeColors[idx];
+                            var lumMod = schemeClr.Element(a + "lumMod");
+                            if (lumMod != null && int.TryParse(lumMod.Attribute("val")?.Value, out var m))
+                            {
+                                var fc = borderColor.Value;
+                                var mod = m / 100000.0;
+                                borderColor = new PdfColor(
+                                    (float)Math.Min(1, fc.R * mod),
+                                    (float)Math.Min(1, fc.G * mod),
+                                    (float)Math.Min(1, fc.B * mod));
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (fillColor == null && borderColor == null) continue;
+
+            shapes.Add(new ExcelDrawingShape(
+                fromRow, fromCol, toRow, toCol,
+                fromColOff, fromRowOff, toColOff, toRowOff,
+                fillColor, borderColor, borderWidthPt));
+        }
+
+        return shapes;
+    }
+
+    /// <summary>
     /// Reads chart anchors and basic chart metadata from a worksheet's drawing.
     /// </summary>
     private static List<ExcelChartInfo> ReadSheetCharts(ZipArchive archive, int sheetId, List<ExcelSheet> allSheets)
@@ -3530,6 +3744,17 @@ internal sealed record ExcelCell(
 /// <summary>
 /// Represents an image embedded in an Excel worksheet.
 /// </summary>
+/// <summary>
+/// Represents a decorative shape (rectangle, rounded rectangle) from XLSX drawings.
+/// </summary>
+internal sealed record ExcelDrawingShape(
+    int FromRow, int FromCol, int ToRow, int ToCol,
+    long FromColOffEmu, long FromRowOffEmu, long ToColOffEmu, long ToRowOffEmu,
+    PdfColor? FillColor,
+    PdfColor? BorderColor,
+    float BorderWidthPt
+);
+
 internal sealed record ExcelEmbeddedImage(
     int AnchorRow,    // 0-based row index of the top-left anchor
     int AnchorCol,    // 0-based column index of the top-left anchor
@@ -3589,6 +3814,7 @@ internal sealed class ExcelSheet
     public string Name { get; }
     public List<List<ExcelCell>> Rows { get; }
     public List<ExcelEmbeddedImage> Images { get; }
+    public List<ExcelDrawingShape> Shapes { get; }
     public List<ExcelChartInfo> Charts { get; }
     /// <summary>
     /// Excel column widths keyed by 0-based column index.
@@ -3672,6 +3898,7 @@ internal sealed class ExcelSheet
         Dictionary<int, float>? columnWidths = null,
         float defaultColumnWidth = 8.43f,
         List<ExcelChartInfo>? charts = null,
+        List<ExcelDrawingShape>? shapes = null,
         List<(int, int, int, int)>? mergedCells = null,
         Dictionary<int, float>? rowHeights = null,
         float defaultRowHeight = 15f,
@@ -3694,6 +3921,7 @@ internal sealed class ExcelSheet
         Name = name;
         Rows = rows;
         Images = images ?? new List<ExcelEmbeddedImage>();
+        Shapes = shapes ?? new List<ExcelDrawingShape>();
         Charts = charts ?? new List<ExcelChartInfo>();
         ColumnWidths = columnWidths ?? new Dictionary<int, float>();
         DefaultColumnWidth = defaultColumnWidth;

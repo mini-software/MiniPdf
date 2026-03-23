@@ -758,6 +758,20 @@ internal sealed class PdfWriter
             var ly2 = line.Y2.ToString("F3", CultureInfo.InvariantCulture);
             sb.Append($"{lr} {lg} {lb} RG\n");
             sb.Append($"{lw} w\n");
+            if (line.DashPattern is { Length: > 0 })
+            {
+                sb.Append('[');
+                for (var di = 0; di < line.DashPattern.Length; di++)
+                {
+                    if (di > 0) sb.Append(' ');
+                    sb.Append(line.DashPattern[di].ToString("F1", CultureInfo.InvariantCulture));
+                }
+                sb.Append("] 0 d\n");
+            }
+            else
+            {
+                sb.Append("[] 0 d\n");
+            }
             sb.Append($"{lx1} {ly1} m\n");
             sb.Append($"{lx2} {ly2} l\n");
             sb.Append("S\n");
@@ -1269,7 +1283,21 @@ internal sealed class PdfWriter
     {
         if (data.Length < 26) return false;
         if (!data.AsSpan(0, 8).SequenceEqual(PngSignature.AsSpan())) return false;
-        return data[24] == 8 && data[25] == 6; // 8-bit RGBA
+        if (data[24] == 8 && data[25] == 6) return true; // 8-bit RGBA
+        // Palette PNG with tRNS chunk also has alpha
+        if (data[25] == 3)
+        {
+            var pos = 8;
+            while (pos + 12 <= data.Length)
+            {
+                var chunkLen = (data[pos] << 24) | (data[pos + 1] << 16) | (data[pos + 2] << 8) | data[pos + 3];
+                var chunkType = Encoding.ASCII.GetString(data, pos + 4, 4);
+                if (chunkType == "tRNS") return true;
+                if (chunkType == "IEND") break;
+                pos += 12 + chunkLen;
+            }
+        }
+        return false;
     }
 
     private static bool TryDecodePngToRgb(byte[] data, out int width, out int height, out byte[] rgb, out byte[]? alpha)
@@ -1285,14 +1313,22 @@ internal sealed class PdfWriter
         height = (data[20] << 24) | (data[21] << 16) | (data[22] << 8) | data[23];
         var bitDepth  = data[24];
         var colorType = data[25];
-        // Supported: RGB (2) with 8-bit depth, RGBA (6) with 8-bit depth
-        if (bitDepth != 8 || colorType is not (2 or 6))
-            return false;
+        // Supported: RGB (2) 8-bit, RGBA (6) 8-bit, Indexed (3) 1/2/4/8-bit
+        if (colorType == 3)
+        {
+            if (bitDepth is not (1 or 2 or 4 or 8)) return false;
+        }
+        else
+        {
+            if (bitDepth != 8 || colorType is not (2 or 6)) return false;
+        }
 
-        int channels = colorType == 6 ? 4 : 3;
+        int channels = colorType == 6 ? 4 : colorType == 2 ? 3 : 1; // palette uses 1 byte per pixel (at 8-bit)
 
-        // Collect all IDAT chunks and concatenate their compressed data
+        // Collect IDAT data and palette/transparency chunks
         using var idatStream = new System.IO.MemoryStream();
+        byte[]? palette = null;
+        byte[]? trns = null;
         var pos = 8;
         while (pos + 12 <= data.Length)
         {
@@ -1300,10 +1336,22 @@ internal sealed class PdfWriter
             var chunkType = Encoding.ASCII.GetString(data, pos + 4, 4);
             if (chunkType == "IDAT")
                 idatStream.Write(data, pos + 8, chunkLen);
+            else if (chunkType == "PLTE")
+            {
+                palette = new byte[chunkLen];
+                Array.Copy(data, pos + 8, palette, 0, chunkLen);
+            }
+            else if (chunkType == "tRNS")
+            {
+                trns = new byte[chunkLen];
+                Array.Copy(data, pos + 8, trns, 0, chunkLen);
+            }
             else if (chunkType == "IEND")
                 break;
             pos += 12 + chunkLen;
         }
+
+        if (colorType == 3 && palette == null) return false; // palette PNG requires PLTE
 
         // zlib-compressed data: skip 2-byte zlib header, decompress raw deflate
         var compressed = idatStream.ToArray();
@@ -1323,11 +1371,18 @@ internal sealed class PdfWriter
             return false;
         }
 
-        // Apply PNG row filters to get raw RGB data
-        var stride = width * channels;
+        // Apply PNG row filters to get raw pixel data
+        // For palette images, stride is bytes per row of indexed data (may pack multiple pixels per byte)
+        int stride;
+        if (colorType == 3)
+            stride = (width * bitDepth + 7) / 8; // bits per pixel, packed
+        else
+            stride = width * channels;
         var outputRgb = new byte[width * height * 3];
-        byte[]? outputAlpha = channels == 4 ? new byte[width * height] : null;
+        byte[]? outputAlpha = (channels == 4 || (colorType == 3 && trns != null)) ? new byte[width * height] : null;
         var prevRow = new byte[stride];
+        // For palette filtering, the filter unit is 1 byte (regardless of sub-byte packing)
+        var filterUnit = colorType == 3 ? 1 : channels;
 
         for (var row = 0; row < height; row++)
         {
@@ -1343,7 +1398,7 @@ internal sealed class PdfWriter
                     break;
                 case 1: // Sub
                     for (var x = 0; x < stride; x++)
-                        cur[x] = (byte)(raw[x] + (x >= channels ? cur[x - channels] : 0));
+                        cur[x] = (byte)(raw[x] + (x >= filterUnit ? cur[x - filterUnit] : 0));
                     break;
                 case 2: // Up
                     for (var x = 0; x < stride; x++)
@@ -1352,16 +1407,16 @@ internal sealed class PdfWriter
                 case 3: // Average
                     for (var x = 0; x < stride; x++)
                     {
-                        var a = x >= channels ? cur[x - channels] : 0;
+                        var a = x >= filterUnit ? cur[x - filterUnit] : 0;
                         cur[x] = (byte)(raw[x] + (a + prevRow[x]) / 2);
                     }
                     break;
                 case 4: // Paeth
                     for (var x = 0; x < stride; x++)
                     {
-                        var a = x >= channels ? cur[x - channels] : 0;
+                        var a = x >= filterUnit ? cur[x - filterUnit] : 0;
                         var b = prevRow[x];
-                        var c = x >= channels ? prevRow[x - channels] : 0;
+                        var c = x >= filterUnit ? prevRow[x - filterUnit] : 0;
                         cur[x] = (byte)(raw[x] + PaethPredictor(a, b, c));
                     }
                     break;
@@ -1370,15 +1425,46 @@ internal sealed class PdfWriter
                     break;
             }
 
-            // Convert to RGB; extract alpha channel separately if RGBA
+            // Convert to RGB; handle palette mapping for indexed color
             var outBase = row * width * 3;
-            for (var px = 0; px < width; px++)
+            if (colorType == 3)
             {
-                outputRgb[outBase + px * 3]     = cur[px * channels];
-                outputRgb[outBase + px * 3 + 1] = cur[px * channels + 1];
-                outputRgb[outBase + px * 3 + 2] = cur[px * channels + 2];
-                if (channels == 4)
-                    outputAlpha![row * width + px] = cur[px * channels + 3];
+                // Palette: each pixel is an index into the PLTE table
+                for (var px = 0; px < width; px++)
+                {
+                    int idx;
+                    if (bitDepth == 8)
+                        idx = cur[px];
+                    else
+                    {
+                        // Sub-byte packing: extract the pixel index from packed bytes
+                        var pixelsPerByte = 8 / bitDepth;
+                        var byteIdx = px / pixelsPerByte;
+                        var bitShift = (pixelsPerByte - 1 - px % pixelsPerByte) * bitDepth;
+                        var mask = (1 << bitDepth) - 1;
+                        idx = (cur[byteIdx] >> bitShift) & mask;
+                    }
+                    var palBase = idx * 3;
+                    if (palBase + 2 < palette!.Length)
+                    {
+                        outputRgb[outBase + px * 3]     = palette[palBase];
+                        outputRgb[outBase + px * 3 + 1] = palette[palBase + 1];
+                        outputRgb[outBase + px * 3 + 2] = palette[palBase + 2];
+                    }
+                    if (outputAlpha != null)
+                        outputAlpha[row * width + px] = (trns != null && idx < trns.Length) ? trns[idx] : (byte)255;
+                }
+            }
+            else
+            {
+                for (var px = 0; px < width; px++)
+                {
+                    outputRgb[outBase + px * 3]     = cur[px * channels];
+                    outputRgb[outBase + px * 3 + 1] = cur[px * channels + 1];
+                    outputRgb[outBase + px * 3 + 2] = cur[px * channels + 2];
+                    if (channels == 4)
+                        outputAlpha![row * width + px] = cur[px * channels + 3];
+                }
             }
 
             cur.CopyTo(prevRow, 0);

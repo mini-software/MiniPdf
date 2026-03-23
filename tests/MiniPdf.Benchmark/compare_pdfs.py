@@ -282,11 +282,30 @@ def pixel_diff_score(pix1, pix2, grid_n: int = 20) -> float:
     w2, h2, s2 = pix2
 
     if w1 != w2 or h1 != h2:
-        min_len = min(len(s1), len(s2))
-        if min_len == 0:
-            return 0.0
-        matching = sum(1 for a, b in zip(s1[:min_len], s2[:min_len]) if a == b)
-        return matching / min_len
+        # Resize both images to the smaller dimensions so the full comparison
+        # algorithm can run instead of the old byte-level fallback.
+        try:
+            from PIL import Image
+            ch1 = len(s1) // (w1 * h1)
+            ch2 = len(s2) // (w2 * h2)
+            mode1 = "RGB" if ch1 == 3 else "RGBA"
+            mode2 = "RGB" if ch2 == 3 else "RGBA"
+            img1 = Image.frombytes(mode1, (w1, h1), bytes(s1))
+            img2 = Image.frombytes(mode2, (w2, h2), bytes(s2))
+            tw, th = min(w1, w2), min(h1, h2)
+            img1 = img1.resize((tw, th), Image.LANCZOS).convert("RGB")
+            img2 = img2.resize((tw, th), Image.LANCZOS).convert("RGB")
+            s1 = img1.tobytes()
+            s2 = img2.tobytes()
+            w1 = h1 = None  # trigger re-assignment below
+            w1, h1 = tw, th
+            w2, h2 = tw, th
+        except Exception:
+            min_len = min(len(s1), len(s2))
+            if min_len == 0:
+                return 0.0
+            matching = sum(1 for a, b in zip(s1[:min_len], s2[:min_len]) if a == b)
+            return matching / min_len
 
     total = len(s1)
     if total == 0:

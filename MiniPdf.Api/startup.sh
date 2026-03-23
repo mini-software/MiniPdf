@@ -4,8 +4,11 @@
 # /home/ is persistent storage on Azure App Service Linux.
 
 FONT_DIR="/home/fonts"
+FONT_COUNT=$(find "$FONT_DIR" -maxdepth 1 -name '*.ttf' -o -name '*.ttc' 2>/dev/null | wc -l)
 
-if [ ! -f "$FONT_DIR/.done" ]; then
+if [ "$FONT_COUNT" -ge 10 ]; then
+    echo "[startup] Found $FONT_COUNT fonts in $FONT_DIR (uploaded), skipping download."
+elif [ ! -f "$FONT_DIR/.done" ]; then
     echo "[startup] Downloading fonts to $FONT_DIR ..."
     mkdir -p "$FONT_DIR"
 

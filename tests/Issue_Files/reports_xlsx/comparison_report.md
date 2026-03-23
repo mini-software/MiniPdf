@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-22T23:48:55.627528
+Generated: 2026-03-23T08:52:00.414058
 
 ## Summary
 
@@ -8,7 +8,7 @@ Generated: 2026-03-22T23:48:55.627528
 |---|-----------|----------|------------|-------------|--------|
 | 1 | 🟢 Academic Achievement Summary Table | 0.9347 | 0.9436 | 2/2 | **0.9513** |
 | 2 | 🟢 AcademicAchievement_temp | 0.9347 | 0.9436 | 2/2 | **0.9513** |
-| 3 | 🟡 Expense report basic1 | 1.0 | 0.4796 | 1/1 | **0.7918** |
+| 3 | 🟢 Expense report basic1 | 1.0 | 0.7531 | 1/1 | **0.9012** |
 | 4 | 🟡 payroll-calculator_f | 0.6588 | 0.8848 | 27/27 | **0.8174** |
 | 5 | 🟢 PO_anonymized | 0.9625 | 0.9154 | 8/8 | **0.9512** |
 | 6 | 🟢 Simple invoice1 | 0.9535 | 0.8331 | 1/1 | **0.9146** |
@@ -16,9 +16,10 @@ Generated: 2026-03-22T23:48:55.627528
 | 8 | 🔴 Wedding_timeline_planner1_copy | 0.2616 | 0.7194 | 4/5 | **0.4924** |
 | 9 | 🟢 Event budget1 | 0.9517 | 0.8468 | 5/5 | **0.9194** |
 | 10 | ⚪ Event budget1_dbg | N/A | N/A | ?/? | **N/A** |
-| 11 | 🟡 Business expense budget1 | 0.9664 | 0.7814 | 4/4 | **0.8991** |
+| 11 | 🟢 Business expense budget1 | 0.9664 | 0.8747 | 4/4 | **0.9364** |
+| 12 | 🟢 Weekly schedule planner1 | 1.0 | 0.7566 | 1/1 | **0.9026** |
 
-**Average Overall Score: 0.7813**
+**Average Overall Score: 0.8037**
 
 ## Visual Comparison
 
@@ -50,7 +51,7 @@ Generated: 2026-03-22T23:48:55.627528
 </tr>
 <tr>
   <td><b>Expense report basic1</b></td>
-  <td colspan="1">Expense report basic1 <span style="color:#d29922">⬤</span> 79.2%</td>
+  <td colspan="1">Expense report basic1 <span style="color:#3fb950">⬤</span> 90.1%</td>
 </tr>
 <tr>
   <td><img src="images/Expense report basic1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -293,7 +294,7 @@ Generated: 2026-03-22T23:48:55.627528
 </tr>
 <tr>
   <td><b>Business expense budget1</b></td>
-  <td colspan="1">Business expense budget1 <span style="color:#d29922">⬤</span> 89.9%</td>
+  <td colspan="1">Business expense budget1 <span style="color:#3fb950">⬤</span> 93.6%</td>
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -310,6 +311,14 @@ Generated: 2026-03-22T23:48:55.627528
 <tr>
   <td><img src="images/Business expense budget1_p4_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Business expense budget1_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Weekly schedule planner1</b></td>
+  <td colspan="1">Weekly schedule planner1 <span style="color:#3fb950">⬤</span> 90.3%</td>
+</tr>
+<tr>
+  <td><img src="images/Weekly schedule planner1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Weekly schedule planner1_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -564,10 +573,10 @@ Generated: 2026-03-22T23:48:55.627528
 ### Expense report basic1
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.4796
-- **Overall Score:** 0.7918
+- **Visual Average:** 0.7531
+- **Overall Score:** 0.9012
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=61233 bytes, Reference=47897 bytes
+- **File Size:** MiniPdf=61485 bytes, Reference=47897 bytes
 
 Text content: ✅ Identical
 
@@ -1252,10 +1261,10 @@ Text content: ✅ Identical
 ### Business expense budget1
 
 - **Text Similarity:** 0.9664
-- **Visual Average:** 0.7814
-- **Overall Score:** 0.8991
+- **Visual Average:** 0.8747
+- **Overall Score:** 0.9364
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=717506 bytes, Reference=173721 bytes
+- **File Size:** MiniPdf=722392 bytes, Reference=173721 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1311,11 +1320,45 @@ Text content: ✅ Identical
 ```
 </details>
 
+### Weekly schedule planner1
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.7566
+- **Overall Score:** 0.9026
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=694095 bytes, Reference=96071 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Weekly schedule planner1.pdf
++++ reference/Weekly schedule planner1.pdf
+@@ -5,7 +5,8 @@
+ Read 30 min/day Go grocery shopping
+
+ Stretch Pick up dry cleaning
+
+ Monday Tuesday Wednesday Thursday Friday Saturday Sunday
+
+-23 24 25 26 27 28 29
+
++23
+
++24 25 26 27 28 29
+
+ March March March March March March March
+
+ ✔ Run ✔ Run ✖ Run Run Run Run Run
+
+ ✖ Read ✔ Read ✔ Read Read Read Read Read
+
+```
+</details>
+
 ## Improvement Suggestions
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
 1. **Wedding_timeline_planner1_copy** (score: 0.4924)
-1. **Expense report basic1** (score: 0.7918)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

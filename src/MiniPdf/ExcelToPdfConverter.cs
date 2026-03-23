@@ -314,6 +314,7 @@ internal static class ExcelToPdfConverter
                     columnWidths: sheet.ColumnWidths,
                     defaultColumnWidth: sheet.DefaultColumnWidth,
                     charts: sheet.Charts.Count > 0 ? sheet.Charts : null,
+                    shapes: sheet.Shapes.Count > 0 ? sheet.Shapes : null,
                     mergedCells: sheet.MergedCells,
                     rowHeights: sheet.RowHeights,
                     defaultRowHeight: sheet.DefaultRowHeight,
@@ -372,6 +373,7 @@ internal static class ExcelToPdfConverter
                                 images: sheet.Images.Count > 0 ? sheet.Images : null,
                                 columnWidths: sheet.ColumnWidths, defaultColumnWidth: sheet.DefaultColumnWidth,
                                 charts: sheet.Charts.Count > 0 ? sheet.Charts : null,
+                                shapes: sheet.Shapes.Count > 0 ? sheet.Shapes : null,
                                 mergedCells: sheet.MergedCells, rowHeights: sheet.RowHeights,
                                 defaultRowHeight: sheet.DefaultRowHeight, customHeightRows: sheet.CustomHeightRows,
                                 isLandscape: sheet.IsLandscape, printScale: combined2, paperSize: sheet.PaperSize,
@@ -566,6 +568,7 @@ internal static class ExcelToPdfConverter
                 columnWidths: trimmedColWidths,
                 defaultColumnWidth: sheet.DefaultColumnWidth,
                 charts: trimmedCharts.Count > 0 ? trimmedCharts : null,
+                shapes: sheet.Shapes.Count > 0 ? sheet.Shapes : null,
                 mergedCells: trimmedMerged,
                 rowHeights: trimmedRowHeights,
                 defaultRowHeight: sheet.DefaultRowHeight,
@@ -1688,25 +1691,25 @@ internal static class ExcelToPdfConverter
                     {
                         var bc = border.Left.Color ?? borderColor;
                         var bw = Math.Max(0.08f, BorderStyleWidth(border.Left.Style) * borderScaleFactor);
-                        currentPage!.AddLine(bx, byTop, bx, byBottom, bc, bw);
+                        currentPage!.AddLine(bx, byTop, bx, byBottom, bc, bw, BorderDashPattern(border.Left.Style, bw));
                     }
                     if (border.Right is { Style: not "none" and not "" })
                     {
                         var bc = border.Right.Color ?? borderColor;
                         var bw = Math.Max(0.08f, BorderStyleWidth(border.Right.Style) * borderScaleFactor);
-                        currentPage!.AddLine(bxRight, byTop, bxRight, byBottom, bc, bw);
+                        currentPage!.AddLine(bxRight, byTop, bxRight, byBottom, bc, bw, BorderDashPattern(border.Right.Style, bw));
                     }
                     if (border.Top is { Style: not "none" and not "" })
                     {
                         var bc = border.Top.Color ?? borderColor;
                         var bw = Math.Max(0.08f, BorderStyleWidth(border.Top.Style) * borderScaleFactor);
-                        currentPage!.AddLine(bx, byTop, bxRight, byTop, bc, bw);
+                        currentPage!.AddLine(bx, byTop, bxRight, byTop, bc, bw, BorderDashPattern(border.Top.Style, bw));
                     }
                     if (border.Bottom is { Style: not "none" and not "" })
                     {
                         var bc = border.Bottom.Color ?? borderColor;
                         var bw = Math.Max(0.08f, BorderStyleWidth(border.Bottom.Style) * borderScaleFactor);
-                        currentPage!.AddLine(bx, byBottom, bxRight, byBottom, bc, bw);
+                        currentPage!.AddLine(bx, byBottom, bxRight, byBottom, bc, bw, BorderDashPattern(border.Bottom.Style, bw));
                     }
                 }
 
@@ -1795,6 +1798,55 @@ internal static class ExcelToPdfConverter
         }
 
         // (Trailing empty page logic moved to RenderSheet for proper per-sheet page tracking)
+
+        // Place drawing shapes (rectangles used as decorative frames)
+        const float ShapeEmuToPt = 1f / 12700f;
+        foreach (var shape in sheet.Shapes)
+        {
+            // Resolve anchor positions using rowTopY and colXStarts
+            if (!rowTopY.TryGetValue(shape.FromRow, out var shapeTop))
+                continue;
+            if (!rowTopY.TryGetValue(shape.ToRow, out var shapeBot))
+            {
+                // If toRow is beyond rendered rows, use bottom margin
+                shapeBot = options.MarginBottom;
+            }
+
+            // Determine which column group the shape's from-column falls into
+            var fromIdx = Array.IndexOf(columns, shape.FromCol);
+            if (fromIdx < 0) fromIdx = 0;
+            var toIdx = Array.IndexOf(columns, shape.ToCol);
+            if (toIdx < 0) toIdx = columns.Length - 1;
+
+            var shapeX = colXStarts[fromIdx] + shape.FromColOffEmu * ShapeEmuToPt;
+            var shapeXRight = toIdx < colXStarts.Length ?
+                colXStarts[toIdx] + shape.ToColOffEmu * ShapeEmuToPt :
+                colXStarts[^1] + colWidths[^1];
+
+            // Adjust for row offsets
+            shapeTop -= shape.FromRowOffEmu * ShapeEmuToPt;
+            shapeBot -= shape.ToRowOffEmu * ShapeEmuToPt;
+
+            var shapeW = shapeXRight - shapeX;
+            var shapeH = shapeTop - shapeBot;
+            if (shapeW <= 0 || shapeH <= 0) continue;
+
+            var shapePage = rowPage.TryGetValue(shape.FromRow, out var sp) ? sp : currentPage!;
+
+            // Render fill
+            if (shape.FillColor is { } fc)
+                shapePage.AddRectangle(shapeX, shapeBot, shapeW, shapeH, fc);
+
+            // Render border
+            if (shape.BorderColor is { } bc && shape.BorderWidthPt > 0)
+            {
+                var bw = shape.BorderWidthPt;
+                shapePage.AddLine(shapeX, shapeTop, shapeXRight, shapeTop, bc, bw);         // top
+                shapePage.AddLine(shapeX, shapeBot, shapeXRight, shapeBot, bc, bw);         // bottom
+                shapePage.AddLine(shapeX, shapeTop, shapeX, shapeBot, bc, bw);              // left
+                shapePage.AddLine(shapeXRight, shapeTop, shapeXRight, shapeBot, bc, bw);    // right
+            }
+        }
 
         // Place embedded images and chart placeholders
         if (sheet.Images.Count == 0 && sheet.Charts.Count == 0) return;
@@ -3291,8 +3343,22 @@ internal static class ExcelToPdfConverter
     {
         "thick" => 1.5f,
         "medium" or "mediumDashed" or "mediumDashDot" or "mediumDashDotDot" => 1f,
-        "hair" => 0.1f,
-        _ => 0.3f // thin, dashed, dotted, dashDot, dashDotDot, double, slantDashDot
+        "dotted" or "hair" => 0.1f,
+        _ => 0.3f // thin, dashed, dashDot, dashDotDot, double, slantDashDot
+    };
+
+    /// <summary>
+    /// Maps OOXML border style names to PDF dash patterns.
+    /// Returns null for solid lines.
+    /// </summary>
+    private static float[]? BorderDashPattern(string style, float lineWidth) => style switch
+    {
+        "dotted" => new[] { 0.2f, 0.8f },
+        "dashed" or "mediumDashed" => new[] { 4f, 2f },
+        "dashDot" or "mediumDashDot" or "slantDashDot" => new[] { 4f, 1.5f, Math.Max(0.5f, lineWidth), 1.5f },
+        "dashDotDot" or "mediumDashDotDot" => new[] { 4f, 1f, Math.Max(0.5f, lineWidth), 1f, Math.Max(0.5f, lineWidth), 1f },
+        "hair" => new[] { 0.5f, 0.5f },
+        _ => null // solid: thin, medium, thick
     };
 
     /// <summary>

@@ -61,7 +61,8 @@ internal sealed record PdfLineBlock(
     float X2,            // end X in points
     float Y2,            // end Y in points
     PdfColor Color,      // stroke color
-    float LineWidth = 1f // stroke width in points
+    float LineWidth = 1f, // stroke width in points
+    float[]? DashPattern = null // PDF dash array (e.g. [1,1] for dotted, [3,3] for dashed)
 );
 
 /// <summary>
@@ -209,9 +210,9 @@ internal sealed class PdfPage
     /// <summary>
     /// Adds a line segment at the specified coordinates.
     /// </summary>
-    public PdfPage AddLine(float x1, float y1, float x2, float y2, PdfColor? color = null, float lineWidth = 1f)
+    public PdfPage AddLine(float x1, float y1, float x2, float y2, PdfColor? color = null, float lineWidth = 1f, float[]? dashPattern = null)
     {
-        _lineBlocks.Add(new PdfLineBlock(x1, y1, x2, y2, color ?? new PdfColor(0, 0, 0), lineWidth));
+        _lineBlocks.Add(new PdfLineBlock(x1, y1, x2, y2, color ?? new PdfColor(0, 0, 0), lineWidth, dashPattern));
         return this;
     }
 
