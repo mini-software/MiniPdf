@@ -1,21 +1,20 @@
 ﻿<#
 .SYNOPSIS
     Benchmark Issue_Files: convert user-reported xlsx/docx to PDF (MiniPdf + LibreOffice) → compare → report.
-    -Filter is mandatory — only filtered (single-file) runs are allowed.
 
 .DESCRIPTION
     Converts files in tests/Issue_Files/xlsx and tests/Issue_Files/docx using both
     MiniPdf and LibreOffice, then runs compare_pdfs.py to produce a comparison report.
-    Requires -Filter to select specific file(s) by name pattern.
+    When -Filter is omitted, all issue files (xlsx + docx) are processed.
 
 .EXAMPLE
-    .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000"
+    .\scripts\Run-Benchmark_issues.ps1                              # run ALL issue xlsx + docx
+    .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000"             # only files matching "sa8000"
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -SkipReference
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -CompareOnly
 #>
 
 param(
-    [Parameter(Mandatory=$true)]
     [string]$Filter,
     [switch]$CompareOnly,
     [switch]$SkipMiniPdf,

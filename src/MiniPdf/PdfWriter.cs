@@ -1575,10 +1575,19 @@ internal sealed class PdfWriter
         var preferred = NormalizeFontName(preferredFontName);
         if (string.IsNullOrEmpty(preferred)) return -1;
 
+        // Pass 1: exact match (highest priority)
         for (var i = 0; i < loadedFonts.Count; i++)
         {
             var candidate = NormalizeFontName(loadedFonts[i].name);
-            if (candidate == preferred || candidate.Contains(preferred, StringComparison.Ordinal))
+            if (candidate == preferred)
+                return i;
+        }
+
+        // Pass 2: partial/contains match or alias match
+        for (var i = 0; i < loadedFonts.Count; i++)
+        {
+            var candidate = NormalizeFontName(loadedFonts[i].name);
+            if (candidate.Contains(preferred, StringComparison.Ordinal))
                 return i;
 
             if (IsFontAliasMatch(preferred, candidate))

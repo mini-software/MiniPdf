@@ -3062,7 +3062,6 @@ internal static class ExcelReader
         var dDoc = XDocument.Load(dStream);
         var xdr = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing");
         var a = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/main");
-
         // Map scheme color names to theme indices (must match ReadThemeColors order: 0=lt1, 1=dk1, 2=lt2, 3=dk2, 4-9=accent1-6)
         static int SchemeColorToThemeIndex(string val) => val switch
         {
@@ -3075,6 +3074,7 @@ internal static class ExcelReader
 
         foreach (var anchor in dDoc.Descendants(xdr + "twoCellAnchor"))
         {
+
             // Only process direct sp children (not grouped shapes)
             var sp = anchor.Element(xdr + "sp");
             if (sp == null) continue;
@@ -3797,7 +3797,9 @@ internal sealed record ExcelChartInfo(
     bool ShowDataLabelVal = false,       // show value data labels
     string DataLabelFormatCode = "",     // numFmt formatCode for data labels (e.g. "$#,##0")
     string ValueAxisFormatCode = "",    // numFmt formatCode for value axis (e.g. "#,##0")
-    bool IsTwoCellAnchor = false         // true when chart uses twoCellAnchor (cell-relative sizing)
+    bool IsTwoCellAnchor = false,        // true when chart uses twoCellAnchor (cell-relative sizing)
+    PdfColor? ChartTextColor = null,     // text color for chart labels/titles (null = black)
+    string ChartFontName = ""            // font name for chart text
 )
 {
     /// <summary>Overlay series for combo charts (e.g., line series over bar chart).</summary>
