@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-23T22:37:19.747649
+Generated: 2026-03-24T21:56:29.202438
 
 ## Summary
 
@@ -8,19 +8,20 @@ Generated: 2026-03-23T22:37:19.747649
 |---|-----------|----------|------------|-------------|--------|
 | 1 | 🟢 Academic Achievement Summary Table | 0.8766 | 0.9475 | 2/2 | **0.9296** |
 | 2 | 🟢 AcademicAchievement_temp | 0.8766 | 0.9475 | 2/2 | **0.9296** |
-| 3 | 🟢 Business expense budget1 | 0.9664 | 0.8747 | 4/4 | **0.9364** |
-| 4 | ⚪ Business_expense_budget1_copy | N/A | N/A | ?/? | **N/A** |
-| 5 | 🟢 Event budget1 | 0.9517 | 0.8468 | 5/5 | **0.9194** |
-| 6 | 🟢 Expense report basic1 | 1.0 | 0.7531 | 1/1 | **0.9012** |
-| 7 | 🔴 payroll-calculator_f | 0.7318 | 0.5736 | 28/27 | **0.6222** |
-| 8 | 🟢 PO_anonymized | 0.9625 | 0.9174 | 8/8 | **0.952** |
-| 9 | 🟡 Simple invoice1 | 0.9535 | 0.7382 | 1/1 | **0.8767** |
-| 10 | 🔴 Small business cash flow forecast1 | 0.9464 | 0.3244 | 2/5 | **0.6083** |
-| 11 | ⚪ Wedding timeline planner1 | N/A | N/A | ?/? | **N/A** |
-| 12 | 🟡 Wedding_timeline_planner1_copy | 0.9679 | 0.7284 | 4/5 | **0.7785** |
-| 13 | 🟢 Weekly schedule planner1 | 1.0 | 0.7627 | 1/1 | **0.9051** |
+| 3 | 🟢 Business expense budget1 | 0.9601 | 0.8762 | 4/4 | **0.9345** |
+| 4 | 🟢 Business expenses budget2 | 0.9836 | 0.7713 | 4/4 | **0.902** |
+| 5 | ⚪ Business_expense_budget1_copy | N/A | N/A | ?/? | **N/A** |
+| 6 | 🟢 Event budget1 | 0.9477 | 0.8468 | 5/5 | **0.9178** |
+| 7 | 🟢 Expense report basic1 | 1.0 | 0.7531 | 1/1 | **0.9012** |
+| 8 | 🔴 payroll-calculator_f | 0.4567 | 0.5458 | 25/27 | **0.501** |
+| 9 | 🟢 PO_anonymized | 0.9625 | 0.9173 | 8/8 | **0.9519** |
+| 10 | 🟡 Simple invoice1 | 0.9417 | 0.7382 | 1/1 | **0.872** |
+| 11 | 🔴 Small business cash flow forecast1 | 0.9698 | 0.3245 | 2/5 | **0.6177** |
+| 12 | ⚪ Wedding timeline planner1 | N/A | N/A | ?/? | **N/A** |
+| 13 | 🟡 Wedding_timeline_planner1_copy | 0.9679 | 0.7284 | 4/5 | **0.7785** |
+| 14 | 🟡 Weekly schedule planner1 | 1.0 | 0.725 | 1/1 | **0.89** |
 
-**Average Overall Score: 0.7199**
+**Average Overall Score: 0.7233**
 
 ## Visual Comparison
 
@@ -52,7 +53,7 @@ Generated: 2026-03-23T22:37:19.747649
 </tr>
 <tr>
   <td><b>Business expense budget1</b></td>
-  <td colspan="1">Business expense budget1 <span style="color:#3fb950">⬤</span> 93.6%</td>
+  <td colspan="1">Business expense budget1 <span style="color:#3fb950">⬤</span> 93.5%</td>
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -71,6 +72,26 @@ Generated: 2026-03-23T22:37:19.747649
   <td><img src="images/Business expense budget1_p4_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
+  <td><b>Business expenses budget2</b></td>
+  <td colspan="1">Business expenses budget2 <span style="color:#3fb950">⬤</span> 90.2%</td>
+</tr>
+<tr>
+  <td><img src="images/Business expenses budget2_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Business expenses budget2_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Business expenses budget2_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Business expenses budget2_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Business expenses budget2_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Business expenses budget2_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Business expenses budget2_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Business expenses budget2_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><b>Business_expense_budget1_copy</b></td>
   <td colspan="1">Business_expense_budget1_copy N/A</td>
 </tr>
@@ -79,7 +100,7 @@ Generated: 2026-03-23T22:37:19.747649
 </tr>
 <tr>
   <td><b>Event budget1</b></td>
-  <td colspan="1">Event budget1 <span style="color:#3fb950">⬤</span> 91.9%</td>
+  <td colspan="1">Event budget1 <span style="color:#3fb950">⬤</span> 91.8%</td>
 </tr>
 <tr>
   <td><img src="images/Event budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -111,7 +132,7 @@ Generated: 2026-03-23T22:37:19.747649
 </tr>
 <tr>
   <td><b>payroll-calculator_f</b></td>
-  <td colspan="1">payroll-calculator_f <span style="color:#f85149">⬤</span> 62.2%</td>
+  <td colspan="1">payroll-calculator_f <span style="color:#f85149">⬤</span> 50.1%</td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -214,16 +235,12 @@ Generated: 2026-03-23T22:37:19.747649
   <td><img src="images/payroll-calculator_f_p25_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/payroll-calculator_f_p26_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
   <td><img src="images/payroll-calculator_f_p26_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/payroll-calculator_f_p27_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p27_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p28_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><i>missing</i></td>
+  <td><img src="images/payroll-calculator_f_p27_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>PO_anonymized</b></td>
@@ -263,7 +280,7 @@ Generated: 2026-03-23T22:37:19.747649
 </tr>
 <tr>
   <td><b>Simple invoice1</b></td>
-  <td colspan="1">Simple invoice1 <span style="color:#d29922">⬤</span> 87.7%</td>
+  <td colspan="1">Simple invoice1 <span style="color:#d29922">⬤</span> 87.2%</td>
 </tr>
 <tr>
   <td><img src="images/Simple invoice1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -271,7 +288,7 @@ Generated: 2026-03-23T22:37:19.747649
 </tr>
 <tr>
   <td><b>Small business cash flow forecast1</b></td>
-  <td colspan="1">Small business cash flow forecast1 <span style="color:#f85149">⬤</span> 60.8%</td>
+  <td colspan="1">Small business cash flow forecast1 <span style="color:#f85149">⬤</span> 61.8%</td>
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -326,7 +343,7 @@ Generated: 2026-03-23T22:37:19.747649
 </tr>
 <tr>
   <td><b>Weekly schedule planner1</b></td>
-  <td colspan="1">Weekly schedule planner1 <span style="color:#3fb950">⬤</span> 90.5%</td>
+  <td colspan="1">Weekly schedule planner1 <span style="color:#d29922">⬤</span> 89.0%</td>
 </tr>
 <tr>
   <td><img src="images/Weekly schedule planner1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -588,23 +605,25 @@ Generated: 2026-03-23T22:37:19.747649
 
 ### Business expense budget1
 
-- **Text Similarity:** 0.9664
-- **Visual Average:** 0.8747
-- **Overall Score:** 0.9364
+- **Text Similarity:** 0.9601
+- **Visual Average:** 0.8762
+- **Overall Score:** 0.9345
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=722392 bytes, Reference=173721 bytes
+- **File Size:** MiniPdf=722334 bytes, Reference=173721 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Business expense budget1.pdf
 +++ reference/Business expense budget1.pdf
-@@ -41,16 +41,7 @@
+@@ -41,17 +41,7 @@
  Travel & Entertainment 24700 22100
 
  Professional Services 24600 23400
 
  Budget vs Actual by Category
+
+-Total Budget Total Actual
 
 -140000
 
@@ -632,7 +651,7 @@ Generated: 2026-03-23T22:37:19.747649
 
  Q2 ACTUAL VARIANCE
 
-@@ -81,4 +72,6 @@
+@@ -82,4 +72,6 @@
  2,100.00 0.00
 
  12,600.00 1,200.00
@@ -648,17 +667,77 @@ Generated: 2026-03-23T22:37:19.747649
 ```
 </details>
 
+### Business expenses budget2
+
+- **Text Similarity:** 0.9836
+- **Visual Average:** 0.7713
+- **Overall Score:** 0.902
+- **Pages:** MiniPdf=4, Reference=4
+- **File Size:** MiniPdf=787163 bytes, Reference=402762 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Business expenses budget2.pdf
++++ reference/Business expenses budget2.pdf
+@@ -1,108 +1,109 @@
+ Market Financial Consulting
+
+ PLANNED EXPENSES
+
+ January February March April May June July August September October November December Total
+
+-EMPLOYEE COSTS $ 107,950.00  $ 107,950.00  $ 107,950.00  $ 111,125.00  $ 111,125.00  $ 111,125.00  $ 111,125.00  $ 117,348.00  $ 117,348.00  $ 117,348.00  $ 117,348.00  $ 117,348.00  $ 1,355,090.00
+
+-Wages $ 85,000.00  $ 85,000.00  $ 85,000.00  $ 87,500.00  $ 87,500.00  $ 87,500.00  $ 87,500.00  $ 92,400.00  $ 92,400.00  $ 92,400.00  $ 92,400.00  $ 92,400.00  $ 1,067,000.00
+
+-Benefits $ 22,950.00  $ 22,950.00  $ 22,950.00  $ 23,625.00  $ 23,625.00  $ 23,625.00  $ 23,625.00  $ 24,948.00  $ 24,948.00  $ 24,948.00  $ 24,948.00  $ 24,948.00  $ 288,090.00
+
+-OFFICE COSTS $ 11,370.00  $ 11,770.00  $ 11,770.00  $ 11,470.00  $ 11,470.00  $ 11,470.00  $ 11,470.00  $ 11,470.00  $ 11,470.00  $ 11,470.00  $ 11,770.00  $ 11,770.00  $ 138,740.00
+
+-Office lease $ 9,800.00  $ 9,800.00  $ 9,800.00  $ 9,800.00  $ 9,800.00  $ 9,800.00  $ 9,800.00  $ 9,800.00  $ 9,800.00  $ 9,800.00  $ 9,800.00  $ 9,800.00  $ 117,600.00
+
+-Gas $ -    $ 400.00  $ 400.00  $ 100.00  $ 100.00  $ 100.00  $ 100.00  $ 100.00  $ 100.00  $ 100.00  $ 400.00  $ 400.00  $ 2,300.00
+
+-Electric $ 300.00  $ 300.00  $ 300.00  $ 300.00  $ 300.00  $ 300.00  $ 300.00  $ 300.00  $ 300.00  $ 300.00  $ 300.00  $ 300.00  $ 3,600.00
+
+-Water $ 40.00  $ 40.00  $ 40.00  $ 40.00  $ 40.00  $ 40.00  $ 40.00  $ 40.00  $ 40.00  $ 40.00  $ 40.00  $ 40.00  $ 480.00
+
+-Telephone $ 250.00  $ 250.00  $ 250.00  $ 250.00  $ 250.00  $ 250.00  $ 250.00  $ 250.00  $ 250.00  $ 250.00  $ 250.00  $ 250.00  $ 3,000.00
+
+-Internet access $ 180.00  $ 180.00  $ 180.00  $ 180.00  $ 180.00  $ 180.00  $ 180.00  $ 180.00  $ 180.00  $ 180.00  $ 180.00  $ 180.00  $ 2,160.00
+
+-Office supplies $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 2,400.00
+
+-Security $ 600.00  $ 600.00  $ 600.00  $ 600.00  $ 600.00  $ 600.00  $ 600.00  $ 600.00  $ 600.00  $ 600.00  $ 600.00  $ 600.00  $ 7,200.00
+
+-MARKETING COSTS $ 8,100.00  $ 3,100.00  $ 3,100.00  $ 11,100.00  $ 3,100.00  $ 3,900.00  $ 8,100.00  $ 6,100.00  $ 3,100.00  $ 8,100.00  $ 3,100.00  $ 6,900.00  $ 67,800.00
+
+-Web site hosting $ 500.00  $ 500.00  $ 500.00  $ 500.00  $ 500.00  $ 500.00  $ 500.00  $ 500.00  $ 500.00  $ 500.00  $ 500.00  $ 500.00  $ 6,000.00
+
+-Web site updates $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 1,000.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 1,000.00  $ 4,000.00
+
+-Collateral preparation $ 5,000.00  $ -    $ -    $ 5,000.00  $ -    $ -    $ 5,000.00  $ -    $ -    $ 5,000.00  $ -    $ -    $ 20,000.00
+
+-Collateral printing $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 2,400.00
+
+-Marketing events $ 2,000.00  $ 2,000.00  $ 2,000.00  $ 5,000.00  $ 2,000.00  $
+... (14283 more characters)
+
+```
+</details>
+
 ### Business_expense_budget1_copy
 
 **Error:** MiniPdf PDF not found
 
 ### Event budget1
 
-- **Text Similarity:** 0.9517
+- **Text Similarity:** 0.9477
 - **Visual Average:** 0.8468
-- **Overall Score:** 0.9194
+- **Overall Score:** 0.9178
 - **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=147391 bytes, Reference=121226 bytes
+- **File Size:** MiniPdf=147527 bytes, Reference=121226 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -682,11 +761,11 @@ Generated: 2026-03-23T22:37:19.747649
 
  Note:
 
--Additional instructions have been provided in column A in each worksheet. This text has been intentionally hidden. To remo
+-Additional instructions have been provided in column A in each worksheet. This text has been intentionally
 
 -text, select column A, then select DELETE.
 
--To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and then select
+-To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and then sele
 
 -ALTERNATIVE TEXT
 
@@ -743,7 +822,7 @@ Generated: 2026-03-23T22:37:19.747649
 
  $1,936.00 $1,831.00
 
-@@ -71,12 +71,15 @@
+@@ -71,13 +71,15 @@
  Items @ $0.00 $0.00
 
  Total $0.00 $0.00
@@ -753,6 +832,8 @@ Generated: 2026-03-23T22:37:19.747649
 -PROFIT
 
 -Event budget
+
+-Total expenses Total income
 
 +Event budget PROFIT
 
@@ -797,18 +878,18 @@ Text content: ✅ Identical
 
 ### payroll-calculator_f
 
-- **Text Similarity:** 0.7318
-- **Visual Average:** 0.5736
-- **Overall Score:** 0.6222
-- **Pages:** MiniPdf=28, Reference=27
-- **File Size:** MiniPdf=3124734 bytes, Reference=540676 bytes
+- **Text Similarity:** 0.4567
+- **Visual Average:** 0.5458
+- **Overall Score:** 0.501
+- **Pages:** MiniPdf=25, Reference=27
+- **File Size:** MiniPdf=3124744 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/payroll-calculator_f.pdf
 +++ reference/payroll-calculator_f.pdf
-@@ -1,371 +1,452 @@
+@@ -1,357 +1,452 @@
  Employee Register
 
 -Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
@@ -924,7 +1005,7 @@ Text content: ✅ Identical
 +© 2013 - 2026 Spreadsheet123 LTD
 
 +Payroll Calcu
-... (30527 more characters)
+... (30494 more characters)
 
 ```
 </details>
@@ -932,10 +1013,10 @@ Text content: ✅ Identical
 ### PO_anonymized
 
 - **Text Similarity:** 0.9625
-- **Visual Average:** 0.9174
-- **Overall Score:** 0.952
+- **Visual Average:** 0.9173
+- **Overall Score:** 0.9519
 - **Pages:** MiniPdf=8, Reference=8
-- **File Size:** MiniPdf=4740401 bytes, Reference=338357 bytes
+- **File Size:** MiniPdf=4740377 bytes, Reference=338357 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1069,11 +1150,11 @@ Text content: ✅ Identical
 
 ### Simple invoice1
 
-- **Text Similarity:** 0.9535
+- **Text Similarity:** 0.9417
 - **Visual Average:** 0.7382
-- **Overall Score:** 0.8767
+- **Overall Score:** 0.872
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=305693 bytes, Reference=78344 bytes
+- **File Size:** MiniPdf=329465 bytes, Reference=78344 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1089,7 +1170,7 @@ Text content: ✅ Identical
 
  Invoice #: 10654
 
--Invoice date: 3/23/2026
+-Invoice date: 3/24/2026
 
 -Embrace
 
@@ -1126,11 +1207,11 @@ Text content: ✅ Identical
 
 ### Small business cash flow forecast1
 
-- **Text Similarity:** 0.9464
-- **Visual Average:** 0.3244
-- **Overall Score:** 0.6083
+- **Text Similarity:** 0.9698
+- **Visual Average:** 0.3245
+- **Overall Score:** 0.6177
 - **Pages:** MiniPdf=2, Reference=5
-- **File Size:** MiniPdf=381405 bytes, Reference=126373 bytes
+- **File Size:** MiniPdf=381592 bytes, Reference=126373 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1146,7 +1227,7 @@ Text content: ✅ Identical
 
 -Apr 2026 May 2026 Jun 2026 Jul 2026 Aug 2026 Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027 Total
 
--Cash on hand (beginning of month) $ 10,000.00 $ 8,050.00 $ 9,350.00 $ 890.00 $ 2,190.00 $ 13,590.00 $ 13,790.00 $ 15,290.00 $ 16,410.00 $ 14,360.00 $ 16,560.00 $ 18,780.00
+-Cash on hand (beginning of month) $ 10,000.00  $ 8,050.00  $ 9,350.00 $ 890.00 $ 2,190.00  $ 13,590.00  $ 13,790.00  $ 15,290.00  $ 16,410.00  $ 14,360.00  $ 16,560.00  $ 18,780.00
 
 +Starting cash on hand $     10,000.00 Starting date Apr 2026 Cash minimum balance alert $        2,000.00
 
@@ -1158,7 +1239,7 @@ Text content: ✅ Identical
 
  Cash receipts
 
--Cash sales $ 2,500.00 $ 3,000.00 $ 3,600.00 $ 3,000.00 $ 14,000.00 $ 6,000.00 $ 3,000.00 $ 2,800.00 $ 3,500.00 $ 4,000.00 $ 3,800.00 $ 4,200.00 $ 53,400.00
+-Cash sales $ 2,500.00  $ 3,000.00  $ 3,600.00  $ 3,000.00  $ 14,000.00  $ 6,000.00  $ 3,000.00  $ 2,800.00  $ 3,500.00  $ 4,000.00  $ 3,800.00  $ 4,200.00  $ 53,400.00
 
 -Returns and allowances $ 200.00 $ 200.00
 
@@ -1172,9 +1253,9 @@ Text content: ✅ Identical
 
 -Other receipts $ -
 
--Total cash receipts $ 2,500.00 $ 3,000.00 $ 3,400.00 $ 3,000.00 $ 14,000.00 $ 6,000.00 $ 3,000.00 $ 2,800.00 $ 3,500.00 $ 4,000.00 $ 3,800.00 $ 4,200.00 $ 53,600.00
+-Total cash receipts $ 2,500.00  $ 3,000.00  $ 3,400.00  $ 3,000.00  $ 14,000.00  $ 6,000.00  $ 3,000.00  $ 2,800.00  $ 3,500.00  $ 4,000.00  $ 3,800.00  $ 4,200.00  $ 53,600.00
 
--Total cash available $ 12,500.00 $ 11,050.00 $ 12,750.00 $ 3,890.00 $ 16,190.00 $ 19,590.00 $ 16,790.00 $ 18,090.00 $ 19,910.00 $ 18,360.00 $ 20,360.00 $ 22,980.00
+-Total cash available $ 12,500.00  $ 11,050.00  $ 12,750.00  $ 3,890.00  $ 16,190.00  $ 19,590.00  $ 16,790.00  $ 18,090.00  $ 19,910.00  $ 18,360.00  $ 20,360.00  $ 22,980.00
 
 +Cash sales $        2,500.00  $        3,000.00  $        3,600.00  $        3,000.00  $     14,000.00  $        6,000.00  $        3,000.00  $        2,800.00  $        3,500.00  $        4,000.00  $        3,800.00  $        4,200.00  $         53,400.00
 
@@ -1198,10 +1279,8 @@ Text content: ✅ Identical
 
 -Advertising $ 3,000.00 $ 3,000.00
 
--Commissions and fees $ 250.00 $ 300.00 $ 360.00 $ 300.00 $ 1,400.00 $ 400.00 $ 300.00 $ 280.00 $ 350.00 $ 400.00 $ 380.00 $ 420.00 $ 5,140.00
-
--Contract labor $ 200.00 $ 200.00 $
-... (5614 more characters)
+-Commissions and fees $ 250.00  $ 300.00  $ 360.00  $ 300.00  $ 1,400.00  $ 400.00  $ 300.00  $ 280.00  $ 350.00  $ 400.00  $ 380.00  $
+... (5765 more characters)
 
 ```
 </details>
@@ -1366,10 +1445,10 @@ Text content: ✅ Identical
 ### Weekly schedule planner1
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.7627
-- **Overall Score:** 0.9051
+- **Visual Average:** 0.725
+- **Overall Score:** 0.89
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=698094 bytes, Reference=96071 bytes
+- **File Size:** MiniPdf=698109 bytes, Reference=96071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1402,8 +1481,8 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **Small business cash flow forecast1** (score: 0.6083)
-1. **payroll-calculator_f** (score: 0.6222)
+1. **payroll-calculator_f** (score: 0.501)
+1. **Small business cash flow forecast1** (score: 0.6177)
 1. **Wedding_timeline_planner1_copy** (score: 0.7785)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

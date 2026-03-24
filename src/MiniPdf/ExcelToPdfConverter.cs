@@ -1115,15 +1115,24 @@ internal static class ExcelToPdfConverter
 
                     var titleIsBold = ShouldUsePdfBold(cell?.Bold ?? false, cellFs, cell?.FontName);
                     var titleIndentOff = (cell?.Indent ?? 0) * avgCharWidth;
+                    var titleAcctPrefixW = cell?.AccountingPrefix != null
+                        ? (float)MeasureHelveticaWidth(cell.AccountingPrefix, cellFs, bold: titleIsBold)
+                        : 0f;
                     for (var lineIdx = 0; lineIdx < titleCellLines[i].Length; lineIdx++)
                     {
                         if (!string.IsNullOrEmpty(titleCellLines[i][lineIdx]))
                         {
                             var textX = x + titleIndentOff;
-                            if (alignment == "right")
+                            var lineMaxWidth = titleClipWidths[i];
+                            if (alignment == "right" || titleAcctPrefixW > 0)
                             {
                                 var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs, bold: titleIsBold);
                                 textX = x + cellWidth - tw - titleIndentOff;
+                                if (titleAcctPrefixW > 0 && textX < x + titleAcctPrefixW)
+                                {
+                                    textX = x + titleAcctPrefixW;
+                                    lineMaxWidth = cellWidth - titleAcctPrefixW;
+                                }
                             }
                             else if (alignment == "center")
                             {
@@ -1131,7 +1140,7 @@ internal static class ExcelToPdfConverter
                                 textX = x + (cellWidth - tw) / 2f;
                             }
                             currentPage!.AddText(titleCellLines[i][lineIdx], textX, cellY, cellFs, cell?.Color,
-                                maxWidth: titleClipWidths[i],
+                                maxWidth: lineMaxWidth,
                                 bold: titleIsBold,
                                 underline: cell?.Underline ?? false,
                                 preferredFontName: cell?.FontName);
@@ -1496,15 +1505,24 @@ internal static class ExcelToPdfConverter
 
                         var mpIsBold = ShouldUsePdfBold(cell?.Bold ?? false, options.FontSize, cell?.FontName);
                         var mpIndentOff = (cell?.Indent ?? 0) * avgCharWidth;
+                        var mpAcctPrefixW = cell?.AccountingPrefix != null
+                            ? (float)MeasureHelveticaWidth(cell.AccountingPrefix, options.FontSize, bold: mpIsBold)
+                            : 0f;
                         for (var lineIdx = linesRendered; lineIdx < linesRendered + linesToRender && lineIdx < lines.Length; lineIdx++)
                         {
                             if (!string.IsNullOrEmpty(lines[lineIdx]))
                             {
                                 var textX = x + mpIndentOff;
-                                if (mpAlignment == "right")
+                                float mpLineMaxWidth = 0;
+                                if (mpAlignment == "right" || mpAcctPrefixW > 0)
                                 {
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize, bold: mpIsBold);
                                     textX = x + mpCellWidth - tw - mpIndentOff;
+                                    if (mpAcctPrefixW > 0 && textX < x + mpAcctPrefixW)
+                                    {
+                                        textX = x + mpAcctPrefixW;
+                                        mpLineMaxWidth = mpCellWidth - mpAcctPrefixW;
+                                    }
                                 }
                                 else if (mpAlignment == "center")
                                 {
@@ -1514,7 +1532,8 @@ internal static class ExcelToPdfConverter
                                 currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color,
                                     bold: mpIsBold,
                                     underline: cell?.Underline ?? false,
-                                    preferredFontName: cell?.FontName);
+                                    preferredFontName: cell?.FontName,
+                                    maxWidth: mpLineMaxWidth > 0 ? mpLineMaxWidth : null);
                             }
                             cellY -= lineHeight;
                         }
@@ -1736,15 +1755,31 @@ internal static class ExcelToPdfConverter
 
                 var isBold = ShouldUsePdfBold(cell?.Bold ?? false, cellFontSize, cell?.FontName);
                 var indentOff = (cell?.Indent ?? 0) * avgCharWidth;
+                // For accounting format, reserve space for the left-aligned prefix
+                // so the right-aligned number doesn't overlap it.
+                var acctPrefixWidth = cell?.AccountingPrefix != null
+                    ? (float)MeasureHelveticaWidth(cell.AccountingPrefix, cellFontSize, bold: isBold)
+                    : 0f;
                 for (var lineIdx = 0; lineIdx < lines.Length; lineIdx++)
                 {
                     if (!string.IsNullOrEmpty(lines[lineIdx]))
                     {
                         var textX = x + indentOff;
-                        if (alignment == "right")
+                        var lineMaxWidth = cellClipWidth[i];
+                        // Accounting format forces right-alignment for the number part
+                        // regardless of the cell's explicit alignment, because the `*`
+                        // fill character in the format code fills the gap between the
+                        // left-aligned prefix and the right-aligned number.
+                        if (alignment == "right" || acctPrefixWidth > 0)
                         {
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize, bold: isBold);
                             textX = x + cellWidth - textWidth - indentOff;
+                            // Clamp: don't start before the accounting prefix
+                            if (acctPrefixWidth > 0 && textX < x + acctPrefixWidth)
+                            {
+                                textX = x + acctPrefixWidth;
+                                lineMaxWidth = cellWidth - acctPrefixWidth;
+                            }
                         }
                         else if (alignment == "center")
                         {
@@ -1752,7 +1787,7 @@ internal static class ExcelToPdfConverter
                             textX = x + (cellWidth - textWidth) / 2f;
                         }
                         currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color,
-                            maxWidth: cellClipWidth[i],
+                            maxWidth: lineMaxWidth,
                             bold: isBold,
                             underline: cell?.Underline ?? false,
                             preferredFontName: cell?.FontName);
@@ -2100,6 +2135,8 @@ internal static class ExcelToPdfConverter
         var labelFontSize = baseFontSize - 1;
         var axisFontSize = baseFontSize - 2;
         var padding = 8f;
+        var chartColor = chart.ChartTextColor;
+        var chartFont = chart.ChartFontName;
 
         // Draw chart title (clipped to chart width)
         var titleY = top;
@@ -2111,7 +2148,7 @@ internal static class ExcelToPdfConverter
             // Center the title horizontally
             var titleTextWidth = (float)MeasureHelveticaWidth(clippedTitle, titleFontSize);
             var titleX = x + (width - titleTextWidth) / 2f;
-            page.AddText(clippedTitle, titleX, titleY - titleFontSize, titleFontSize);
+            page.AddText(clippedTitle, titleX, titleY - titleFontSize, titleFontSize, chartColor, preferredFontName: chartFont);
             titleY -= titleFontSize * 2.2f;
         }
 
@@ -2129,15 +2166,15 @@ internal static class ExcelToPdfConverter
         var type = chart.ChartType.ToLowerInvariant();
         if (type.Contains("pie") || type.Contains("doughnut"))
         {
-            RenderPieChart(page, chart, x, top, width, height, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, type.Contains("doughnut"), chart.ShowDataLabelPercent);
+            RenderPieChart(page, chart, x, top, width, height, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, type.Contains("doughnut"), chart.ShowDataLabelPercent, chartColor, chartFont);
         }
         else if (type.Contains("scatter") || type.Contains("bubble"))
         {
-            RenderScatterChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, chart.ValueAxisFormatCode);
+            RenderScatterChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, chart.ValueAxisFormatCode, chartColor, chartFont);
         }
         else if (type.Contains("radar"))
         {
-            RenderLineChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, skipAxisLabels: true, axisFmtCode: chart.ValueAxisFormatCode);
+            RenderLineChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, skipAxisLabels: true, axisFmtCode: chart.ValueAxisFormatCode, textColor: chartColor, fontName: chartFont);
             // Add spoke labels around the radar center
             if (chart.Series.Count > 0)
             {
@@ -2150,7 +2187,7 @@ internal static class ExcelToPdfConverter
                     var angle = Math.PI / 2 - 2 * Math.PI * ci / categories.Length;
                     var lx = centerX + (float)(Math.Cos(angle) * labelRadius);
                     var ly = centerY + (float)(Math.Sin(angle) * labelRadius);
-                    page.AddText(TruncateLabel(categories[ci], 15), lx - axisFontSize * 2, ly - axisFontSize * 0.3f, axisFontSize);
+                    page.AddText(TruncateLabel(categories[ci], 15), lx - axisFontSize * 2, ly - axisFontSize * 0.3f, axisFontSize, chartColor, preferredFontName: chartFont);
                 }
                 // Add concentric value labels along the top spoke
                 var allVals = chart.Series.SelectMany(s => s.Values).ToArray();
@@ -2162,45 +2199,46 @@ internal static class ExcelToPdfConverter
                         var frac = (float)((tickVal - niceMin) / (niceMax - niceMin));
                         var tickY = centerY + frac * plotHeight * 0.4f;
                         var label = FormatAxisValue(tickVal, chart.ValueAxisFormatCode);
-                        page.AddText(label, centerX - axisFontSize, tickY, axisFontSize);
+                        page.AddText(label, centerX - axisFontSize, tickY, axisFontSize, chartColor, preferredFontName: chartFont);
                     }
                 }
             }
         }
         else if (type.Contains("line"))
         {
-            RenderLineChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, skipAxisLabels: false, axisFmtCode: chart.ValueAxisFormatCode);
+            RenderLineChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, skipAxisLabels: false, axisFmtCode: chart.ValueAxisFormatCode, textColor: chartColor, fontName: chartFont);
         }
         else if (type.Contains("area"))
         {
-            RenderAreaChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, chart.ValueAxisFormatCode);
+            RenderAreaChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, chart.ValueAxisFormatCode, chartColor, chartFont);
         }
         else if (type.Contains("horizontal"))
         {
-            RenderHorizontalBarChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, chart.ValueAxisFormatCode);
+            RenderHorizontalBarChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, chart.ValueAxisFormatCode, chartColor, chartFont);
         }
         else
         {
             // Default: bar/column/bubble → bar chart
-            RenderBarChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, chart.ValueAxisFormatCode);
+            RenderBarChart(page, chart, plotLeft, plotBottom, plotWidth, plotHeight, labelFontSize, axisFontSize, chart.ValueAxisFormatCode, chartColor, chartFont);
         }
 
         // Y-axis title (rotated text not supported, place vertically aligned)
         if (!string.IsNullOrEmpty(chart.ValueAxisTitle))
         {
-            page.AddText(chart.ValueAxisTitle, x + 2, plotBottom + plotHeight * 0.4f, axisFontSize);
+            page.AddText(chart.ValueAxisTitle, x + 2, plotBottom + plotHeight * 0.4f, axisFontSize, chartColor, preferredFontName: chartFont);
         }
         // X-axis title
         if (!string.IsNullOrEmpty(chart.CategoryAxisTitle))
         {
-            page.AddText(chart.CategoryAxisTitle, plotLeft + plotWidth * 0.35f, plotBottom - 22f, axisFontSize);
+            page.AddText(chart.CategoryAxisTitle, plotLeft + plotWidth * 0.35f, plotBottom - 22f, axisFontSize, chartColor, preferredFontName: chartFont);
         }
     }
 
     /// <summary>Renders a bar/column chart.</summary>
     private static void RenderBarChart(PdfPage page, ExcelChartInfo chart,
         float plotLeft, float plotBottom, float plotWidth, float plotHeight,
-        float labelFontSize, float axisFontSize, string axisFmtCode = "")
+        float labelFontSize, float axisFontSize, string axisFmtCode = "",
+        PdfColor? textColor = null, string? fontName = null)
     {
         var series = chart.Series;
         if (series.Count == 0) return;
@@ -2269,7 +2307,7 @@ internal static class ExcelToPdfConverter
                 new PdfColor(0.85f, 0.85f, 0.85f), 0.5f);
             var label = FormatAxisValue(tickVal, axisFmtCode);
             if (isPercentStacked) label += "%";
-            page.AddText(label, plotLeft - label.Length * axisFontSize * 0.5f - 4f, gridY - axisFontSize * 0.3f, axisFontSize);
+            page.AddText(label, plotLeft - label.Length * axisFontSize * 0.5f - 4f, gridY - axisFontSize * 0.3f, axisFontSize, textColor, preferredFontName: fontName);
         }
 
         // Draw bars
@@ -2342,7 +2380,7 @@ internal static class ExcelToPdfConverter
             {
                 var label = TruncateLabel(categories[ci], (int)(groupWidth / (axisFontSize * 0.4f)));
                 var labelX = plotLeft + ci * groupWidth + groupWidth * 0.1f;
-                page.AddText(label, labelX, plotBottom - axisFontSize * 1.5f, axisFontSize);
+                page.AddText(label, labelX, plotBottom - axisFontSize * 1.5f, axisFontSize, textColor, preferredFontName: fontName);
             }
         }
 
@@ -2381,13 +2419,14 @@ internal static class ExcelToPdfConverter
         // Legend (include both bar and overlay series)
         var allSeries = new List<ExcelChartSeries>(series);
         allSeries.AddRange(chart.OverlaySeries);
-        RenderLegend(page, allSeries, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, isStacked);
+        RenderLegend(page, allSeries, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, isStacked, textColor, fontName);
     }
 
     /// <summary>Renders a horizontal bar chart (categories on Y-axis, values on X-axis).</summary>
     private static void RenderHorizontalBarChart(PdfPage page, ExcelChartInfo chart,
         float plotLeft, float plotBottom, float plotWidth, float plotHeight,
-        float labelFontSize, float axisFontSize, string axisFmtCode = "")
+        float labelFontSize, float axisFontSize, string axisFmtCode = "",
+        PdfColor? textColor = null, string? fontName = null)
     {
         var series = chart.Series;
         if (series.Count == 0) return;
@@ -2450,7 +2489,7 @@ internal static class ExcelToPdfConverter
                 page.AddLine(gridX, plotBottom, gridX, plotBottom + plotHeight,
                     new PdfColor(0.85f, 0.85f, 0.85f), 0.5f);
                 var label = FormatAxisValue(tickVal, axisFmtCode);
-                page.AddText(label, gridX - label.Length * axisFontSize * 0.25f, plotBottom - axisFontSize * 1.5f, axisFontSize);
+                page.AddText(label, gridX - label.Length * axisFontSize * 0.25f, plotBottom - axisFontSize * 1.5f, axisFontSize, textColor, preferredFontName: fontName);
             }
         }
 
@@ -2548,7 +2587,7 @@ internal static class ExcelToPdfConverter
             {
                 var label = TruncateLabel(categories[ci], 12);
                 var labelY = plotBottom + (ci + 0.5f) * groupHeight - axisFontSize * 0.3f;
-                page.AddText(label, plotLeft - label.Length * axisFontSize * 0.5f - 4f, labelY, axisFontSize);
+                page.AddText(label, plotLeft - label.Length * axisFontSize * 0.5f - 4f, labelY, axisFontSize, textColor, preferredFontName: fontName);
             }
         }
 
@@ -2559,13 +2598,14 @@ internal static class ExcelToPdfConverter
             page.AddLine(plotLeft, plotBottom, plotLeft + plotWidth, plotBottom,
                 new PdfColor(0, 0, 0), 0.8f);
 
-        RenderLegend(page, series, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, isStacked);
+        RenderLegend(page, series, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, isStacked, textColor, fontName);
     }
 
     /// <summary>Renders a line chart.</summary>
     private static void RenderLineChart(PdfPage page, ExcelChartInfo chart,
         float plotLeft, float plotBottom, float plotWidth, float plotHeight,
-        float labelFontSize, float axisFontSize, bool skipAxisLabels = false, string axisFmtCode = "")
+        float labelFontSize, float axisFontSize, bool skipAxisLabels = false, string axisFmtCode = "",
+        PdfColor? textColor = null, string? fontName = null)
     {
         var series = chart.Series;
         if (series.Count == 0) return;
@@ -2594,7 +2634,7 @@ internal static class ExcelToPdfConverter
             if (!skipAxisLabels)
             {
                 var label = FormatAxisValue(tickVal, axisFmtCode);
-                page.AddText(label, plotLeft - label.Length * axisFontSize * 0.5f - 4f, gridY - axisFontSize * 0.3f, axisFontSize);
+                page.AddText(label, plotLeft - label.Length * axisFontSize * 0.5f - 4f, gridY - axisFontSize * 0.3f, axisFontSize, textColor, preferredFontName: fontName);
             }
         }
 
@@ -2627,7 +2667,7 @@ internal static class ExcelToPdfConverter
             {
                 var xPos = plotLeft + ci * plotWidth / Math.Max(1, numPoints - 1);
                 var label = TruncateLabel(categories[ci], 15);
-                page.AddText(label, xPos - axisFontSize, plotBottom - axisFontSize * 1.5f, axisFontSize);
+                page.AddText(label, xPos - axisFontSize, plotBottom - axisFontSize * 1.5f, axisFontSize, textColor, preferredFontName: fontName);
             }
         }
 
@@ -2637,13 +2677,14 @@ internal static class ExcelToPdfConverter
         page.AddLine(plotLeft, plotBottom, plotLeft + plotWidth, plotBottom,
             new PdfColor(0, 0, 0), 0.8f);
 
-        RenderLegend(page, series, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize);
+        RenderLegend(page, series, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, textColor: textColor, fontName: fontName);
     }
 
     /// <summary>Renders a scatter (XY) chart or bubble chart with numeric X and Y axes.</summary>
     private static void RenderScatterChart(PdfPage page, ExcelChartInfo chart,
         float plotLeft, float plotBottom, float plotWidth, float plotHeight,
-        float labelFontSize, float axisFontSize, string axisFmtCode = "")
+        float labelFontSize, float axisFontSize, string axisFmtCode = "",
+        PdfColor? textColor = null, string? fontName = null)
     {
         var series = chart.Series;
         if (series.Count == 0) return;
@@ -2682,7 +2723,7 @@ internal static class ExcelToPdfConverter
             page.AddLine(plotLeft, gridY, plotLeft + plotWidth, gridY,
                 new PdfColor(0.85f, 0.85f, 0.85f), 0.5f);
             var label = FormatAxisValue(tickVal, axisFmtCode);
-            page.AddText(label, plotLeft - label.Length * axisFontSize * 0.5f - 4f, gridY - axisFontSize * 0.3f, axisFontSize);
+            page.AddText(label, plotLeft - label.Length * axisFontSize * 0.5f - 4f, gridY - axisFontSize * 0.3f, axisFontSize, textColor, preferredFontName: fontName);
         }
 
         // X-axis tick labels
@@ -2692,7 +2733,7 @@ internal static class ExcelToPdfConverter
             page.AddLine(gridX, plotBottom, gridX, plotBottom + plotHeight,
                 new PdfColor(0.85f, 0.85f, 0.85f), 0.5f);
             var label = FormatAxisValue(tickVal, axisFmtCode);
-            page.AddText(label, gridX - axisFontSize * 0.5f, plotBottom - axisFontSize * 1.5f, axisFontSize);
+            page.AddText(label, gridX - axisFontSize * 0.5f, plotBottom - axisFontSize * 1.5f, axisFontSize, textColor, preferredFontName: fontName);
         }
 
         // Plot data points
@@ -2724,6 +2765,7 @@ internal static class ExcelToPdfConverter
             var color = ChartColors[i % ChartColors.Length];
             page.AddRectangle(legendX, legendY, 8, 8, color);
             var serName = string.IsNullOrEmpty(series[i].Name) ? $"Series{i + 1}" : series[i].Name;
+            page.AddText(serName, legendX + 10, legendY, axisFontSize, textColor, preferredFontName: fontName);
             legendX += (serName.Length + 3) * axisFontSize * 0.5f;
         }
     }
@@ -2731,7 +2773,8 @@ internal static class ExcelToPdfConverter
     /// <summary>Renders an area chart (filled line chart) using vertical strips to approximate fill.</summary>
     private static void RenderAreaChart(PdfPage page, ExcelChartInfo chart,
         float plotLeft, float plotBottom, float plotWidth, float plotHeight,
-        float labelFontSize, float axisFontSize, string axisFmtCode = "")
+        float labelFontSize, float axisFontSize, string axisFmtCode = "",
+        PdfColor? textColor = null, string? fontName = null)
     {
         var series = chart.Series;
         if (series.Count == 0) return;
@@ -2786,7 +2829,7 @@ internal static class ExcelToPdfConverter
                 new PdfColor(0.85f, 0.85f, 0.85f), 0.5f);
             var label = FormatAxisValue(tickVal);
             if (isPercentStacked) label += "%";
-            page.AddText(label, plotLeft - label.Length * axisFontSize * 0.5f - 4f, gridY - axisFontSize * 0.3f, axisFontSize);
+            page.AddText(label, plotLeft - label.Length * axisFontSize * 0.5f - 4f, gridY - axisFontSize * 0.3f, axisFontSize, textColor, preferredFontName: fontName);
         }
 
         var baselineY = plotBottom + (float)((0 - niceMin) / range) * plotHeight;
@@ -2906,7 +2949,7 @@ internal static class ExcelToPdfConverter
         {
             var xPos = plotLeft + ci * plotWidth / Math.Max(1, numPoints - 1);
             var label = TruncateLabel(categories[ci], 15);
-            page.AddText(label, xPos - axisFontSize, plotBottom - axisFontSize * 1.5f, axisFontSize);
+            page.AddText(label, xPos - axisFontSize, plotBottom - axisFontSize * 1.5f, axisFontSize, textColor, preferredFontName: fontName);
         }
 
         // Axes
@@ -2916,14 +2959,15 @@ internal static class ExcelToPdfConverter
             new PdfColor(0, 0, 0), 0.8f);
 
         // Legend (reversed for stacked charts)
-        RenderLegend(page, series, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, isStacked);
+        RenderLegend(page, series, plotLeft + plotWidth * 0.05f, plotBottom + plotHeight + 5f, axisFontSize, isStacked, textColor, fontName);
     }
 
     /// <summary>Renders a pie or doughnut chart using rectangles to approximate sectors.</summary>
     private static void RenderPieChart(PdfPage page, ExcelChartInfo chart,
         float chartX, float chartTop, float chartWidth, float chartHeight,
         float plotLeft, float plotBottom, float plotWidth, float plotHeight,
-        float labelFontSize, bool isDoughnut, bool showPercent)
+        float labelFontSize, bool isDoughnut, bool showPercent,
+        PdfColor? textColor = null, string? fontName = null)
     {
         var series = chart.Series;
         if (series.Count == 0 || series[0].Values.Length == 0) return;
@@ -3004,7 +3048,7 @@ internal static class ExcelToPdfConverter
                 var valStr = FormatAxisValue(values[i]);
                 // Use simple "Category Value" format to match LibreOffice text extraction
                 var labelText = $"{catName}; {seriesName}; {valStr}; {pct}%";
-                page.AddText(TruncateLabel(labelText, 30), lx, ly, labelFontSize - 1);
+                page.AddText(TruncateLabel(labelText, 30), lx, ly, labelFontSize - 1, textColor, preferredFontName: fontName);
             }
         }
 
@@ -3016,14 +3060,15 @@ internal static class ExcelToPdfConverter
             var color = ChartColors[i % ChartColors.Length];
             page.AddRectangle(plotLeft + plotWidth * 0.55f, legendY, 8, 8, color);
             var legendName = i < categories.Length ? categories[i] : $"Slice{i + 1}";
-            page.AddText(legendName, legendTextX, legendY, labelFontSize);
+            page.AddText(legendName, legendTextX, legendY, labelFontSize, textColor, preferredFontName: fontName);
             legendY -= labelFontSize * 1.5f;
         }
     }
 
     /// <summary>Renders legend entries for chart series.</summary>
     private static void RenderLegend(PdfPage page, List<ExcelChartSeries> series,
-        float x, float y, float fontSize, bool reverseOrder = false)
+        float x, float y, float fontSize, bool reverseOrder = false,
+        PdfColor? textColor = null, string? fontName = null)
     {
         if (series.Count <= 1) return;
         var legendX = x;
@@ -3034,6 +3079,7 @@ internal static class ExcelToPdfConverter
             var color = ChartColors[i % ChartColors.Length];
             page.AddRectangle(legendX, y, 8, 8, color);
             var name = string.IsNullOrEmpty(series[i].Name) ? $"Series{i + 1}" : series[i].Name;
+            page.AddText(name, legendX + 10, y, fontSize, textColor, preferredFontName: fontName);
             legendX += (name.Length + 3) * fontSize * 0.5f;
         }
     }
