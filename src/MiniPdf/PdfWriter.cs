@@ -157,20 +157,44 @@ internal sealed class PdfWriter
                 PrioritizePreferredCjkFont(candidatePaths, document.PreferredCjkFontName);
 
             // Helper to load one font file and add to loadedFonts using the parsed TTF name.
+            void LoadSingleFont(byte[] ttf, string fallbackName)
+            {
+                var cmap = ParseCmapTable(ttf);
+                if (cmap.Count == 0) return;
+                var (advances, upm) = ParseHmtxWidths(ttf);
+                var (asc, desc, capH, bbox) = ParseFontMetrics(ttf);
+                var (parsedFamily, parsedFullName) = ReadFontNames(ttf);
+                var name = !string.IsNullOrEmpty(parsedFullName) ? parsedFullName
+                         : !string.IsNullOrEmpty(parsedFamily)   ? parsedFamily
+                         : fallbackName;
+                loadedFonts.Add((ttf, cmap, advances, upm, asc, desc, capH, bbox, name));
+            }
+
             void LoadFontFile(string path)
             {
                 try
                 {
-                    var ttf = LoadTtfFont(path);
-                    var cmap = ParseCmapTable(ttf);
-                    if (cmap.Count == 0) return;
-                    var (advances, upm) = ParseHmtxWidths(ttf);
-                    var (asc, desc, capH, bbox) = ParseFontMetrics(ttf);
-                    var (parsedFamily, parsedFullName) = ReadFontNames(ttf);
-                    var name = !string.IsNullOrEmpty(parsedFullName) ? parsedFullName
-                             : !string.IsNullOrEmpty(parsedFamily)   ? parsedFamily
-                             : Path.GetFileNameWithoutExtension(path);
-                    loadedFonts.Add((ttf, cmap, advances, upm, asc, desc, capH, bbox, name));
+                    var raw = File.ReadAllBytes(path);
+                    // For TTC collections, load ALL faces (e.g. Cambria Math is face 1 of cambria.ttc)
+                    if (raw.Length > 12 && raw[0] == 't' && raw[1] == 't' && raw[2] == 'c' && raw[3] == 'f')
+                    {
+                        var numFonts = (int)ReadU32(raw, 8);
+                        for (int fi = 0; fi < numFonts; fi++)
+                        {
+                            try
+                            {
+                                var offset = (int)ReadU32(raw, 12 + fi * 4);
+                                var ttf = ExtractTtfFromTtc(raw, offset);
+                                var fallback = Path.GetFileNameWithoutExtension(path) + (fi > 0 ? $"_{fi}" : "");
+                                LoadSingleFont(ttf, fallback);
+                            }
+                            catch { /* skip faces that fail to parse */ }
+                        }
+                    }
+                    else
+                    {
+                        LoadSingleFont(raw, Path.GetFileNameWithoutExtension(path));
+                    }
                 }
                 catch { /* skip fonts that fail to parse */ }
             }
@@ -520,6 +544,7 @@ internal sealed class PdfWriter
             // Image XObjects
             for (var j = 0; j < page.ImageBlocks.Count; j++)
             {
+                _objectOffsets[imageObjNums[i][j]] = Position;
                 WriteImageXObject(imageObjNums[i][j], page.ImageBlocks[j], imageMaskObjNums[i][j]);
             }
 
@@ -613,7 +638,6 @@ internal sealed class PdfWriter
             dictExtras = "/Filter /FlateDecode\n";
         }
 
-        _objectOffsets[objNum] = Position;
         WriteRaw($"{objNum} 0 obj\n");
         WriteRaw("<< /Type /XObject /Subtype /Image\n");
         WriteRaw($"/Width {width} /Height {height}\n");
@@ -849,7 +873,8 @@ internal sealed class PdfWriter
                 // Always set character spacing to prevent Tc from previous
                 // text blocks leaking through the graphics state.
                 sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
-                // Apply horizontal scaling if text overflows MaxWidth
+                // Apply horizontal scaling if text overflows MaxWidth;
+                // always reset Tz to prevent scaling from previous blocks leaking.
                 if (block.MaxWidth.HasValue)
                 {
                     var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
@@ -858,6 +883,14 @@ internal sealed class PdfWriter
                         var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
                         sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
                     }
+                    else
+                    {
+                        sb.Append("100.0 Tz\n");
+                    }
+                }
+                else
+                {
+                    sb.Append("100.0 Tz\n");
                 }
                 sb.Append($"{x} {y} Td\n");
                 sb.Append($"({escapedText}) Tj\n");
@@ -893,7 +926,8 @@ internal sealed class PdfWriter
                 // Always set character spacing to prevent Tc from previous
                 // text blocks leaking through the graphics state.
                 sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
-                // Apply horizontal scaling if text overflows MaxWidth
+                // Apply horizontal scaling if text overflows MaxWidth;
+                // always reset Tz to prevent scaling from previous blocks leaking.
                 if (block.MaxWidth.HasValue)
                 {
                     var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
@@ -902,6 +936,14 @@ internal sealed class PdfWriter
                         var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
                         sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
                     }
+                    else
+                    {
+                        sb.Append("100.0 Tz\n");
+                    }
+                }
+                else
+                {
+                    sb.Append("100.0 Tz\n");
                 }
                 sb.Append($"{x} {y} Td\n");
 
@@ -1639,6 +1681,7 @@ internal sealed class PdfWriter
                 "malgun.ttf",     // Malgun Gothic (Korean)
                 "segoeui.ttf",    // Segoe UI (Arabic, Hebrew, Thai, etc.)
                 "seguiemj.ttf",   // Segoe UI Emoji
+                "cambria.ttc",    // Cambria + Cambria Math (mathematical symbols)
                 "seguisym.ttf",   // Segoe UI Symbol
                 "simsun.ttc",     // SimSun (CJK fallback)
                 "simhei.ttf",     // SimHei (CJK fallback)
@@ -1709,7 +1752,7 @@ internal sealed class PdfWriter
     private static readonly HashSet<string> _latinFontSubstitutes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         "Calibri", "Calibri Light", "Calibri Body",
-        "Cambria", "Cambria Math",
+        "Cambria",
         "Consolas", "Corbel", "Candara", "Constantia",
         "Arial", "Arial Narrow", "Arial Black",
         "Times New Roman",

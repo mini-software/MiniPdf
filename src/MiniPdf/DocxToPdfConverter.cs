@@ -211,13 +211,13 @@ internal static class DocxToPdfConverter
                             {
                                 // Enter multi-column if applicable
                                 if (nextLayout.ColumnCount > 1)
-                                    state.EnterMultiColumnSection(nextLayout.ColumnCount, nextLayout.ColumnSpacing);
+                                    state.EnterMultiColumnSection(nextLayout.ColumnCount, nextLayout.ColumnSpacing, nextLayout.ColumnWidths, nextLayout.ColumnGaps);
                             }
                             else
                             {
                                 state.ForceNewPage();
                                 if (nextLayout.ColumnCount > 1)
-                                    state.EnterMultiColumnSection(nextLayout.ColumnCount, nextLayout.ColumnSpacing);
+                                    state.EnterMultiColumnSection(nextLayout.ColumnCount, nextLayout.ColumnSpacing, nextLayout.ColumnWidths, nextLayout.ColumnGaps);
                             }
                         }
                         else
@@ -247,9 +247,9 @@ internal static class DocxToPdfConverter
         if (state.BehindDocImagesPerPage.Count > 0)
         {
             const float emuPerPt = 914400f / 72f;
-            foreach (var (_, images) in state.BehindDocImagesPerPage)
+            foreach (var (_, entries) in state.BehindDocImagesPerPage)
             {
-                foreach (var img in images)
+                foreach (var (img, anchorY) in entries)
                 {
                     var fmt = img.Extension;
                     if (fmt != "jpg" && fmt != "png") continue;
@@ -258,9 +258,13 @@ internal static class DocxToPdfConverter
                     var ax = img.RelativeFromH == "page"
                         ? img.OffsetXEmu / emuPerPt
                         : options.MarginLeft + img.OffsetXEmu / emuPerPt;
-                    var ay = img.RelativeFromV == "page"
-                        ? options.PageHeight - img.OffsetYEmu / emuPerPt
-                        : options.PageHeight - options.MarginTop - img.OffsetYEmu / emuPerPt;
+                    float ay;
+                    if (img.RelativeFromV == "page")
+                        ay = options.PageHeight - img.OffsetYEmu / emuPerPt;
+                    else if (img.RelativeFromV == "paragraph")
+                        ay = anchorY - img.OffsetYEmu / emuPerPt;
+                    else
+                        ay = options.PageHeight - options.MarginTop - img.OffsetYEmu / emuPerPt;
                     var isWatermark = img.RelativeFromH == "page" && img.RelativeFromV == "page";
                     if (isWatermark)
                     {
@@ -271,9 +275,9 @@ internal static class DocxToPdfConverter
                     else
                     {
                         // Render only on the anchor page — find it from the dictionary key
-                        foreach (var (pageIdx2, imgs2) in state.BehindDocImagesPerPage)
+                        foreach (var (pageIdx2, entries2) in state.BehindDocImagesPerPage)
                         {
-                            if (imgs2.Contains(img) && pageIdx2 >= 0 && pageIdx2 < pdfDoc.Pages.Count)
+                            if (entries2.Any(e => e.Image == img) && pageIdx2 >= 0 && pageIdx2 < pdfDoc.Pages.Count)
                             {
                                 pdfDoc.Pages[pageIdx2].AddImage(img.Data, fmt, ax, ay - h, w, h);
                                 break;
@@ -483,7 +487,7 @@ internal static class DocxToPdfConverter
         /// These are rendered on every page after layout is complete (matching Word behavior).
         /// </summary>
         public List<DocxImage> BehindDocImages { get; } = new();
-        public Dictionary<int, List<DocxImage>> BehindDocImagesPerPage { get; } = new();
+        public Dictionary<int, List<(DocxImage Image, float AnchorY)>> BehindDocImagesPerPage { get; } = new();
 
         // Per-section tracking: maps sectionIndex -> first page index (0-based)
         public List<int> SectionStartPages { get; } = new();
@@ -497,6 +501,8 @@ internal static class DocxToPdfConverter
         public float ColumnTopY { get; set; }
         public float SavedMarginLeft { get; set; }
         public float SavedMarginRight { get; set; }
+        public float[]? ColumnWidths { get; set; }
+        public float[]? ColumnGaps { get; set; }
 
         public float UsableWidth => Options.PageWidth - Options.MarginLeft - Options.MarginRight;
 
@@ -506,15 +512,26 @@ internal static class DocxToPdfConverter
             Options = options;
         }
 
-        public void EnterMultiColumnSection(int colCount, float colSpacing)
+        public void EnterMultiColumnSection(int colCount, float colSpacing, float[]? colWidths = null, float[]? colGaps = null)
         {
             ColumnCount = colCount;
             CurrentColumn = 0;
             ColumnSpacing = colSpacing;
             SavedMarginLeft = Options.MarginLeft;
             SavedMarginRight = Options.MarginRight;
-            var totalUsable = Options.PageWidth - SavedMarginLeft - SavedMarginRight;
-            ColumnWidth = (totalUsable - (colCount - 1) * colSpacing) / colCount;
+            ColumnWidths = colWidths;
+            ColumnGaps = colGaps;
+
+            if (colWidths != null && colWidths.Length > 0)
+            {
+                // Unequal column widths
+                ColumnWidth = colWidths[0];
+            }
+            else
+            {
+                var totalUsable = Options.PageWidth - SavedMarginLeft - SavedMarginRight;
+                ColumnWidth = (totalUsable - (colCount - 1) * colSpacing) / colCount;
+            }
             ColumnTopY = CurrentY;
             // Set margins for first column
             Options.MarginRight = Options.PageWidth - SavedMarginLeft - ColumnWidth;
@@ -533,8 +550,27 @@ internal static class DocxToPdfConverter
             if (CurrentColumn + 1 >= ColumnCount)
                 return false;
             CurrentColumn++;
-            Options.MarginLeft = SavedMarginLeft + CurrentColumn * (ColumnWidth + ColumnSpacing);
-            Options.MarginRight = Options.PageWidth - Options.MarginLeft - ColumnWidth;
+
+            if (ColumnWidths != null && CurrentColumn < ColumnWidths.Length)
+            {
+                // Unequal columns: calculate left margin from accumulated widths + gaps
+                var left = SavedMarginLeft;
+                for (int i = 0; i < CurrentColumn; i++)
+                {
+                    left += ColumnWidths[i];
+                    if (ColumnGaps != null && i < ColumnGaps.Length)
+                        left += ColumnGaps[i];
+                }
+                Options.MarginLeft = left;
+                ColumnWidth = ColumnWidths[CurrentColumn];
+                Options.MarginRight = Options.PageWidth - Options.MarginLeft - ColumnWidth;
+            }
+            else
+            {
+                Options.MarginLeft = SavedMarginLeft + CurrentColumn * (ColumnWidth + ColumnSpacing);
+                Options.MarginRight = Options.PageWidth - Options.MarginLeft - ColumnWidth;
+            }
+
             CurrentY = ColumnTopY;
             IsTopOfPage = true;
             LastLineHeight = 0;
@@ -904,6 +940,27 @@ internal static class DocxToPdfConverter
         // Detect column breaks in runs
         var hasColumnBreak = mergedRuns.Any(r => r.IsColumnBreak);
 
+        // If the first run is a column break, advance to next column BEFORE
+        // rendering the paragraph text so the content appears in the correct column.
+        var columnBreakHandledAtStart = false;
+        if (hasColumnBreak && state.ColumnCount > 1
+            && mergedRuns.Count > 0 && mergedRuns[0].IsColumnBreak)
+        {
+            // Remove the leading column-break run so it isn't processed again
+            mergedRuns = mergedRuns.Skip(1).ToList();
+            if (!state.AdvanceToNextColumn())
+                state.ForceNewPage();
+            columnBreakHandledAtStart = true;
+
+            // Recalculate layout variables since margins changed after column advance
+            availableWidth = state.UsableWidth - indentLeft - indentRight;
+            x = options.MarginLeft + indentLeft;
+            firstLineX = x + Math.Max(0, paragraph.IndentFirstLine);
+            firstLineWidth = availableWidth - Math.Max(0, paragraph.IndentFirstLine);
+            wrapFirstLineWidth = firstLineWidth;
+            wrapAvailableWidth = availableWidth;
+        }
+
         // Suppress underline on trailing whitespace-only runs when the paragraph
         // already has underline context (paragraph mark underline or any preceding
         // run with explicit <w:u> declaration). In such cases the underlined spaces
@@ -1090,8 +1147,9 @@ internal static class DocxToPdfConverter
         if (paragraph.HasPageBreakAfter)
             state.ForceNewPage();
 
-        // Handle column break: advance to next column
-        if (hasColumnBreak && state.ColumnCount > 1)
+        // Handle column break at end: advance to next column
+        // (only when column break was NOT already handled at the start)
+        if (hasColumnBreak && !columnBreakHandledAtStart && state.ColumnCount > 1)
         {
             if (!state.AdvanceToNextColumn())
                 state.ForceNewPage();
@@ -1237,8 +1295,9 @@ internal static class DocxToPdfConverter
             var nextFs = next.FontSize > 0 ? next.FontSize : defaultFontSize;
             // Whitespace-only runs are format-agnostic (invisible characters have no visible color/bold)
             // EXCEPT for underline: underlined spaces create a visible line and must be preserved.
-            var isWhitespaceOnly = string.IsNullOrWhiteSpace(next.Text);
-            var isCurWhitespace = string.IsNullOrWhiteSpace(current.Text);
+            // EXCEPT for tabs: tab characters need their own font for leader dot rendering.
+            var isWhitespaceOnly = string.IsNullOrWhiteSpace(next.Text) && !next.Text.Contains('\t');
+            var isCurWhitespace = string.IsNullOrWhiteSpace(current.Text) && !current.Text.Contains('\t');
             var colorMatch = current.Color == next.Color || isWhitespaceOnly || isCurWhitespace;
             var boldMatch = current.Bold == next.Bold || isWhitespaceOnly || isCurWhitespace;
             var underlineMatch = current.Underline == next.Underline
@@ -1295,6 +1354,7 @@ internal static class DocxToPdfConverter
         // Use Helvetica widths (useCalibri=false) because the multi-format path
         // renders each run individually without Tz compression, so positioning
         // must match the actual rendered (Helvetica) glyph widths.
+        var needsPerLineAlignment = false;
         if (paragraph.Alignment is "center" or "right")
         {
             var totalWidth = 0f;
@@ -1317,10 +1377,63 @@ internal static class DocxToPdfConverter
                 prevRunTextPre = rText;
             }
             var lineW = isFirstLine ? firstLineWidth : availableWidth;
-            var offset = paragraph.Alignment == "center"
-                ? (lineW - totalWidth) / 2
-                : lineW - totalWidth;
-            currentX += offset;
+            if (totalWidth <= lineW)
+            {
+                // Single-line: apply one-time alignment offset
+                var offset = paragraph.Alignment == "center"
+                    ? (lineW - totalWidth) / 2
+                    : lineW - totalWidth;
+                currentX += offset;
+            }
+            else
+            {
+                // Multi-line: defer alignment to per-line flush
+                needsPerLineAlignment = true;
+            }
+        }
+
+        // Line buffer for per-line alignment when center/right text wraps across lines.
+        // Each entry stores the AddText parameters; entries are flushed with an
+        // alignment shift when a line break (word-wrap, CJK break, or hard break) occurs.
+        var lineEntries = needsPerLineAlignment
+            ? new List<(string Text, float X, float Y, float FontSize, PdfColor? Color, bool Bold, bool Underline, float CharSpacing, string? FontName, float? MaxWidth, float? UlWidth)>()
+            : null;
+
+        void BufferOrEmit(string text, float bx, float by, float bfs, PdfColor? bcolor,
+            bool bbold, bool bunderline, float bcs, string? bfontName, float? bmaxW, float? bulW)
+        {
+            if (lineEntries != null)
+                lineEntries.Add((text, bx, by, bfs, bcolor, bbold, bunderline, bcs, bfontName, bmaxW, bulW));
+            else
+                state.CurrentPage!.AddText(text, bx, by, bfs, bcolor,
+                    bold: bbold, underline: bunderline, charSpacing: bcs,
+                    preferredFontName: bfontName, maxWidth: bmaxW, underlineWidth: bulW);
+        }
+
+        void FlushLineEntries()
+        {
+            if (lineEntries == null || lineEntries.Count == 0) return;
+            // Compute actual line content width from buffered entries
+            float minX = float.MaxValue, maxEndX = 0;
+            foreach (var e in lineEntries)
+            {
+                if (e.X < minX) minX = e.X;
+                var w = EstimateWrapTextWidth(e.Text, e.FontSize, e.Bold, e.CharSpacing, false);
+                var endX = e.X + w;
+                if (endX > maxEndX) maxEndX = endX;
+            }
+            var lineTextWidth = maxEndX - minX;
+            var lw = isFirstLine ? firstLineWidth : availableWidth;
+            var shift = paragraph.Alignment == "center"
+                ? Math.Max(0, (lw - lineTextWidth) / 2f)
+                : Math.Max(0, lw - lineTextWidth);
+            foreach (var e in lineEntries)
+            {
+                state.CurrentPage!.AddText(e.Text, e.X + shift, e.Y, e.FontSize, e.Color,
+                    bold: e.Bold, underline: e.Underline, charSpacing: e.CharSpacing,
+                    preferredFontName: e.FontName, maxWidth: e.MaxWidth, underlineWidth: e.UlWidth);
+            }
+            lineEntries.Clear();
         }
 
         // Detect CJK context: if any run contains CJK text, whitespace-only
@@ -1354,6 +1467,7 @@ internal static class DocxToPdfConverter
                 // Force line break for each \n (except before the first segment)
                 if (hi > 0)
                 {
+                    FlushLineEntries();
                     if (!state.IsTopOfPage && state.CurrentY - lineHeight < state.Options.MarginBottom)
                         state.ForceNewPage();
                     else
@@ -1469,9 +1583,10 @@ internal static class DocxToPdfConverter
                             if (pendingText.Length > 0)
                             {
                                 var flushMaxW = rightEdge - pendingX;
-                                state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName, maxWidth: flushMaxW > 0 ? flushMaxW : (float?)null);
+                                BufferOrEmit(pendingText, pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, run.Bold, run.Underline, run.CharSpacing, run.FontName, flushMaxW > 0 ? flushMaxW : (float?)null, null);
                                 pendingText = "";
                             }
+                            FlushLineEntries();
                             // Wrap to next line
                             if (!state.IsTopOfPage && state.CurrentY - lineHeight < state.Options.MarginBottom)
                                 state.ForceNewPage();
@@ -1521,7 +1636,8 @@ internal static class DocxToPdfConverter
                         }
                         if (breakAt <= 0) break;
                         var cjkBrkMaxW = rightEdge - pendingX;
-                        state.CurrentPage!.AddText(pendingText[..breakAt], pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName, maxWidth: cjkBrkMaxW > 0 ? cjkBrkMaxW : (float?)null);
+                        BufferOrEmit(pendingText[..breakAt], pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, run.Bold, run.Underline, run.CharSpacing, run.FontName, cjkBrkMaxW > 0 ? cjkBrkMaxW : (float?)null, null);
+                        FlushLineEntries();
                         pendingText = pendingText[breakAt..];
                         if (!state.IsTopOfPage && state.CurrentY - lineHeight < state.Options.MarginBottom)
                             state.ForceNewPage();
@@ -1551,12 +1667,13 @@ internal static class DocxToPdfConverter
                         ? pendingText.Length * cjkSpaceWidth
                         : null;
                     var segMaxW = rightEdge - pendingX;
-                    state.CurrentPage!.AddText(pendingText, pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, bold: run.Bold, underline: run.Underline, charSpacing: run.CharSpacing, preferredFontName: run.FontName, underlineWidth: ulWidth, maxWidth: segMaxW > 0 ? segMaxW : (float?)null);
+                    BufferOrEmit(pendingText, pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, run.Bold, run.Underline, run.CharSpacing, run.FontName, segMaxW > 0 ? segMaxW : (float?)null, ulWidth);
                 }
 
             }
         }
 
+        FlushLineEntries();
         state.AdvanceY(lineHeight);
     }
 
@@ -1679,10 +1796,10 @@ internal static class DocxToPdfConverter
                 var pageIdx = state.Doc.Pages.Count - 1;
                 if (!state.BehindDocImagesPerPage.TryGetValue(pageIdx, out var list))
                 {
-                    list = new List<DocxImage>();
+                    list = new List<(DocxImage, float)>();
                     state.BehindDocImagesPerPage[pageIdx] = list;
                 }
-                list.Add(image);
+                list.Add((image, state.CurrentY));
                 return;
             }
 

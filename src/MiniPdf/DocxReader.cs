@@ -885,9 +885,24 @@ internal static class DocxReader
 
         if (rPr != null)
         {
-            if (rPr.Element(W + "b") != null) bold = true;
-            if (rPr.Element(W + "i") != null) italic = true;
-            if (rPr.Element(W + "caps") != null) caps = true;
+            var bEl = rPr.Element(W + "b");
+            if (bEl != null)
+            {
+                var bVal = bEl.Attribute(W + "val")?.Value;
+                bold = bVal is not ("0" or "false");
+            }
+            var iEl = rPr.Element(W + "i");
+            if (iEl != null)
+            {
+                var iVal = iEl.Attribute(W + "val")?.Value;
+                italic = iVal is not ("0" or "false");
+            }
+            var capsEl = rPr.Element(W + "caps");
+            if (capsEl != null)
+            {
+                var capsVal = capsEl.Attribute(W + "val")?.Value;
+                caps = capsVal is not ("0" or "false");
+            }
             var uEl = rPr.Element(W + "u");
             if (uEl != null)
             {
@@ -2318,6 +2333,8 @@ internal static class DocxReader
         // Parse column layout
         int columnCount = 1;
         float columnSpacing = 36f;
+        float[]? columnWidths = null;
+        float[]? columnGaps = null;
         var colsEl = sectPr.Element(W + "cols");
         if (colsEl != null)
         {
@@ -2325,6 +2342,28 @@ internal static class DocxReader
                 columnCount = cn;
             if (float.TryParse(colsEl.Attribute(W + "space")?.Value, out var cs) && cs > 0)
                 columnSpacing = cs * twipsToPoints;
+
+            // Parse individual column widths for unequal-width layouts
+            var equalWidth = colsEl.Attribute(W + "equalWidth")?.Value;
+            if (equalWidth == "0")
+            {
+                var colElements = colsEl.Elements(W + "col").ToArray();
+                if (colElements.Length > 0)
+                {
+                    columnWidths = new float[colElements.Length];
+                    columnGaps = new float[colElements.Length];
+                    for (int i = 0; i < colElements.Length; i++)
+                    {
+                        if (float.TryParse(colElements[i].Attribute(W + "w")?.Value, out var cw))
+                            columnWidths[i] = cw * twipsToPoints;
+                        if (float.TryParse(colElements[i].Attribute(W + "space")?.Value, out var cgs))
+                            columnGaps[i] = cgs * twipsToPoints;
+                    }
+                    // Infer column count from col elements if not explicitly set
+                    if (columnCount <= 1)
+                        columnCount = colElements.Length;
+                }
+            }
         }
 
         // Parse page number start
@@ -2336,7 +2375,7 @@ internal static class DocxReader
                 pageNumStart = pns;
         }
 
-        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch, headerMargin, footerMargin, sectionType, columnCount, columnSpacing, pageNumStart);
+        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch, headerMargin, footerMargin, sectionType, columnCount, columnSpacing, pageNumStart, columnWidths, columnGaps);
     }
 
 
@@ -2811,7 +2850,9 @@ internal sealed record DocxPageLayout(
     string SectionType = "nextPage",
     int ColumnCount = 1,
     float ColumnSpacing = 36,
-    int PageNumStart = -1
+    int PageNumStart = -1,
+    float[]? ColumnWidths = null,
+    float[]? ColumnGaps = null
 );
 
 /// <summary>Base type for document elements (paragraphs, tables).</summary>
