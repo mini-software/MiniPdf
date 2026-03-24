@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-24T21:56:29.202438
+Generated: 2026-03-24T22:30:09.493623
 
 ## Summary
 
@@ -9,7 +9,7 @@ Generated: 2026-03-24T21:56:29.202438
 | 1 | 🟢 Academic Achievement Summary Table | 0.8766 | 0.9475 | 2/2 | **0.9296** |
 | 2 | 🟢 AcademicAchievement_temp | 0.8766 | 0.9475 | 2/2 | **0.9296** |
 | 3 | 🟢 Business expense budget1 | 0.9601 | 0.8762 | 4/4 | **0.9345** |
-| 4 | 🟢 Business expenses budget2 | 0.9836 | 0.7713 | 4/4 | **0.902** |
+| 4 | 🟡 Business expenses budget2 | 0.9836 | 0.7655 | 4/4 | **0.8996** |
 | 5 | ⚪ Business_expense_budget1_copy | N/A | N/A | ?/? | **N/A** |
 | 6 | 🟢 Event budget1 | 0.9477 | 0.8468 | 5/5 | **0.9178** |
 | 7 | 🟢 Expense report basic1 | 1.0 | 0.7531 | 1/1 | **0.9012** |
@@ -21,7 +21,7 @@ Generated: 2026-03-24T21:56:29.202438
 | 13 | 🟡 Wedding_timeline_planner1_copy | 0.9679 | 0.7284 | 4/5 | **0.7785** |
 | 14 | 🟡 Weekly schedule planner1 | 1.0 | 0.725 | 1/1 | **0.89** |
 
-**Average Overall Score: 0.7233**
+**Average Overall Score: 0.7231**
 
 ## Visual Comparison
 
@@ -73,7 +73,7 @@ Generated: 2026-03-24T21:56:29.202438
 </tr>
 <tr>
   <td><b>Business expenses budget2</b></td>
-  <td colspan="1">Business expenses budget2 <span style="color:#3fb950">⬤</span> 90.2%</td>
+  <td colspan="1">Business expenses budget2 <span style="color:#d29922">⬤</span> 90.0%</td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -670,10 +670,10 @@ Generated: 2026-03-24T21:56:29.202438
 ### Business expenses budget2
 
 - **Text Similarity:** 0.9836
-- **Visual Average:** 0.7713
-- **Overall Score:** 0.902
+- **Visual Average:** 0.7655
+- **Overall Score:** 0.8996
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=787163 bytes, Reference=402762 bytes
+- **File Size:** MiniPdf=851726 bytes, Reference=402762 bytes
 
 <details><summary>Text Diff</summary>
 

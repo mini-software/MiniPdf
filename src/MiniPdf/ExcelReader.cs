@@ -2937,6 +2937,108 @@ internal static class ExcelReader
 
         foreach (var anchor in anchors)
         {
+            // Handle group shapes: iterate each pic inside grpSp individually
+            var grpSp = anchor.Element(xdr + "grpSp");
+            if (grpSp != null)
+            {
+                var grpXfrm = grpSp.Element(xdr + "grpSpPr")?.Element(a + "xfrm");
+                long grpExtCx = 0, grpExtCy = 0, chOffX = 0, chOffY = 0, chExtCx = 0, chExtCy = 0;
+                if (grpXfrm != null)
+                {
+                    var grpExt = grpXfrm.Element(a + "ext");
+                    long.TryParse(grpExt?.Attribute("cx")?.Value, out grpExtCx);
+                    long.TryParse(grpExt?.Attribute("cy")?.Value, out grpExtCy);
+                    var chOff = grpXfrm.Element(a + "chOff");
+                    long.TryParse(chOff?.Attribute("x")?.Value, out chOffX);
+                    long.TryParse(chOff?.Attribute("y")?.Value, out chOffY);
+                    var chExt = grpXfrm.Element(a + "chExt");
+                    long.TryParse(chExt?.Attribute("cx")?.Value, out chExtCx);
+                    long.TryParse(chExt?.Attribute("cy")?.Value, out chExtCy);
+                }
+
+                // Read anchor from/to for AnchorRow/Col
+                var gFromEl = anchor.Element(xdr + "from");
+                var gToEl = anchor.Element(xdr + "to");
+                int gFromRow = 0, gFromCol = 0, gToRow = 1, gToCol = 1;
+                long gFromColOff = 0, gFromRowOff = 0;
+                if (gFromEl != null)
+                {
+                    int.TryParse(gFromEl.Element(xdr + "row")?.Value, out gFromRow);
+                    int.TryParse(gFromEl.Element(xdr + "col")?.Value, out gFromCol);
+                    long.TryParse(gFromEl.Element(xdr + "colOff")?.Value, out gFromColOff);
+                    long.TryParse(gFromEl.Element(xdr + "rowOff")?.Value, out gFromRowOff);
+                }
+                if (gToEl != null)
+                {
+                    int.TryParse(gToEl.Element(xdr + "row")?.Value, out gToRow);
+                    int.TryParse(gToEl.Element(xdr + "col")?.Value, out gToCol);
+                }
+
+                foreach (var pic in grpSp.Elements(xdr + "pic"))
+                {
+                    var picBlip = pic.Descendants(a + "blip").FirstOrDefault();
+                    var picRid = picBlip?.Attribute(r + "embed")?.Value;
+                    if (string.IsNullOrEmpty(picRid)) continue;
+
+                    if (!rIdToMedia.TryGetValue(picRid, out var gMediaPath)) continue;
+                    var gMediaEntry = archive.GetEntry(gMediaPath);
+                    if (gMediaEntry == null) continue;
+
+                    byte[] gImgData;
+                    using (var ms = new System.IO.MemoryStream())
+                    {
+                        using var imS = gMediaEntry.Open();
+                        imS.CopyTo(ms);
+                        gImgData = ms.ToArray();
+                    }
+
+                    var gExt = System.IO.Path.GetExtension(gMediaPath).TrimStart('.').ToLowerInvariant();
+                    if (gExt == "jpeg") gExt = "jpg";
+
+                    // Read pic's own xfrm in child coordinate space
+                    var picXfrm = pic.Descendants(a + "xfrm").FirstOrDefault();
+                    long picOffX = 0, picOffY = 0, picCx = 0, picCy = 0;
+                    if (picXfrm != null)
+                    {
+                        long.TryParse(picXfrm.Element(a + "off")?.Attribute("x")?.Value, out picOffX);
+                        long.TryParse(picXfrm.Element(a + "off")?.Attribute("y")?.Value, out picOffY);
+                        long.TryParse(picXfrm.Element(a + "ext")?.Attribute("cx")?.Value, out picCx);
+                        long.TryParse(picXfrm.Element(a + "ext")?.Attribute("cy")?.Value, out picCy);
+                    }
+
+                    // Transform from child coords to sheet-relative EMU offset from anchor
+                    long offsetXEmu = 0, offsetYEmu = 0, wEmu = 0, hEmu = 0;
+                    if (chExtCx > 0 && chExtCy > 0)
+                    {
+                        offsetXEmu = (picOffX - chOffX) * grpExtCx / chExtCx;
+                        offsetYEmu = (picOffY - chOffY) * grpExtCy / chExtCy;
+                        wEmu = picCx * grpExtCx / chExtCx;
+                        hEmu = picCy * grpExtCy / chExtCy;
+                    }
+                    else
+                    {
+                        wEmu = picCx;
+                        hEmu = picCy;
+                    }
+
+                    images.Add(new ExcelEmbeddedImage(
+                        AnchorRow: gFromRow,
+                        AnchorCol: gFromCol,
+                        SpanRows: Math.Max(1, gToRow - gFromRow),
+                        SpanCols: Math.Max(1, gToCol - gFromCol),
+                        Data: gImgData,
+                        Extension: gExt,
+                        WidthEmu: wEmu,
+                        HeightEmu: hEmu,
+                        FromColOffEmu: gFromColOff,
+                        FromRowOffEmu: gFromRowOff,
+                        OffsetXEmu: offsetXEmu,
+                        OffsetYEmu: offsetYEmu
+                    ));
+                }
+                continue;
+            }
+
             var fromEl = anchor.Element(xdr + "from");
             var toEl = anchor.Element(xdr + "to");
             var extEl = anchor.Element(xdr + "ext");
@@ -3074,6 +3176,164 @@ internal static class ExcelReader
 
         foreach (var anchor in dDoc.Descendants(xdr + "twoCellAnchor"))
         {
+            // Handle group shapes: extract custGeom sp elements as polygons
+            var grpSp = anchor.Element(xdr + "grpSp");
+            if (grpSp != null)
+            {
+                var grpXfrm = grpSp.Element(xdr + "grpSpPr")?.Element(a + "xfrm");
+                long grpExtCx = 0, grpExtCy = 0, chOffX = 0, chOffY = 0, chExtCx = 0, chExtCy = 0;
+                if (grpXfrm != null)
+                {
+                    var grpExt = grpXfrm.Element(a + "ext");
+                    long.TryParse(grpExt?.Attribute("cx")?.Value, out grpExtCx);
+                    long.TryParse(grpExt?.Attribute("cy")?.Value, out grpExtCy);
+                    var chOff = grpXfrm.Element(a + "chOff");
+                    long.TryParse(chOff?.Attribute("x")?.Value, out chOffX);
+                    long.TryParse(chOff?.Attribute("y")?.Value, out chOffY);
+                    var chExt = grpXfrm.Element(a + "chExt");
+                    long.TryParse(chExt?.Attribute("cx")?.Value, out chExtCx);
+                    long.TryParse(chExt?.Attribute("cy")?.Value, out chExtCy);
+                }
+
+                var gFromEl = anchor.Element(xdr + "from");
+                var gToEl = anchor.Element(xdr + "to");
+                int gFromRow = 0, gFromCol = 0, gToRow = 1, gToCol = 1;
+                long gFromColOff = 0, gFromRowOff = 0;
+                if (gFromEl != null)
+                {
+                    int.TryParse(gFromEl.Element(xdr + "row")?.Value, out gFromRow);
+                    int.TryParse(gFromEl.Element(xdr + "col")?.Value, out gFromCol);
+                    long.TryParse(gFromEl.Element(xdr + "colOff")?.Value, out gFromColOff);
+                    long.TryParse(gFromEl.Element(xdr + "rowOff")?.Value, out gFromRowOff);
+                }
+                if (gToEl != null)
+                {
+                    int.TryParse(gToEl.Element(xdr + "row")?.Value, out gToRow);
+                    int.TryParse(gToEl.Element(xdr + "col")?.Value, out gToCol);
+                }
+
+                foreach (var gSp in grpSp.Elements(xdr + "sp"))
+                {
+                    var gSpPr = gSp.Element(xdr + "spPr") ?? gSp.Element(a + "spPr");
+                    if (gSpPr == null) continue;
+                    var custGeom = gSpPr.Element(a + "custGeom");
+                    if (custGeom == null) continue;
+
+                    // Read fill color
+                    PdfColor? gFill = null;
+                    var gSolidFill = gSpPr.Element(a + "solidFill");
+                    if (gSolidFill != null)
+                    {
+                        var gSrgb = gSolidFill.Element(a + "srgbClr");
+                        if (gSrgb != null)
+                        {
+                            gFill = PdfColor.FromHex(gSrgb.Attribute("val")?.Value ?? "");
+                            // Apply alpha: blend with white background
+                            var alphaEl = gSrgb.Element(a + "alpha");
+                            if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var alphaVal))
+                            {
+                                var alpha = alphaVal / 100000f;
+                                var fc = gFill.Value;
+                                gFill = new PdfColor(
+                                    fc.R * alpha + 1f * (1 - alpha),
+                                    fc.G * alpha + 1f * (1 - alpha),
+                                    fc.B * alpha + 1f * (1 - alpha));
+                            }
+                        }
+                    }
+                    if (gFill == null) continue;
+
+                    // Read sp xfrm in child coords
+                    var spXfrm = gSpPr.Element(a + "xfrm");
+                    long spOffX = 0, spOffY = 0, spCx = 0, spCy = 0;
+                    if (spXfrm != null)
+                    {
+                        long.TryParse(spXfrm.Element(a + "off")?.Attribute("x")?.Value, out spOffX);
+                        long.TryParse(spXfrm.Element(a + "off")?.Attribute("y")?.Value, out spOffY);
+                        long.TryParse(spXfrm.Element(a + "ext")?.Attribute("cx")?.Value, out spCx);
+                        long.TryParse(spXfrm.Element(a + "ext")?.Attribute("cy")?.Value, out spCy);
+                    }
+
+                    // Transform to sheet-relative EMU
+                    long offsetXEmu = 0, offsetYEmu = 0, wEmu = spCx, hEmu = spCy;
+                    if (chExtCx > 0 && chExtCy > 0)
+                    {
+                        offsetXEmu = (spOffX - chOffX) * grpExtCx / chExtCx;
+                        offsetYEmu = (spOffY - chOffY) * grpExtCy / chExtCy;
+                        wEmu = spCx * grpExtCx / chExtCx;
+                        hEmu = spCy * grpExtCy / chExtCy;
+                    }
+
+                    // Parse custGeom path to polygon points
+                    var pathEl = custGeom.Descendants(a + "path").FirstOrDefault();
+                    if (pathEl == null) continue;
+                    long.TryParse(pathEl.Attribute("w")?.Value, out var pathW);
+                    long.TryParse(pathEl.Attribute("h")?.Value, out var pathH);
+                    if (pathW <= 0 || pathH <= 0) continue;
+
+                    var polyPts = new List<(float X, float Y)>();
+                    float curX = 0, curY = 0;
+                    foreach (var cmd in pathEl.Elements())
+                    {
+                        var cmdName = cmd.Name.LocalName;
+                        if (cmdName == "moveTo")
+                        {
+                            var pt = cmd.Element(a + "pt");
+                            long.TryParse(pt?.Attribute("x")?.Value, out var mx);
+                            long.TryParse(pt?.Attribute("y")?.Value, out var my);
+                            curX = (float)mx / pathW;
+                            curY = (float)my / pathH;
+                            polyPts.Add((curX, curY));
+                        }
+                        else if (cmdName == "lnTo")
+                        {
+                            var pt = cmd.Element(a + "pt");
+                            long.TryParse(pt?.Attribute("x")?.Value, out var lx);
+                            long.TryParse(pt?.Attribute("y")?.Value, out var ly);
+                            curX = (float)lx / pathW;
+                            curY = (float)ly / pathH;
+                            polyPts.Add((curX, curY));
+                        }
+                        else if (cmdName == "cubicBezTo")
+                        {
+                            var pts = cmd.Elements(a + "pt").ToArray();
+                            if (pts.Length < 3) continue;
+                            long.TryParse(pts[0].Attribute("x")?.Value, out var c1x);
+                            long.TryParse(pts[0].Attribute("y")?.Value, out var c1y);
+                            long.TryParse(pts[1].Attribute("x")?.Value, out var c2x);
+                            long.TryParse(pts[1].Attribute("y")?.Value, out var c2y);
+                            long.TryParse(pts[2].Attribute("x")?.Value, out var epx);
+                            long.TryParse(pts[2].Attribute("y")?.Value, out var epy);
+                            float x0 = curX, y0 = curY;
+                            float x1 = (float)c1x / pathW, y1 = (float)c1y / pathH;
+                            float x2 = (float)c2x / pathW, y2 = (float)c2y / pathH;
+                            float x3 = (float)epx / pathW, y3 = (float)epy / pathH;
+                            const int segs = 16;
+                            for (int si = 1; si <= segs; si++)
+                            {
+                                float t = (float)si / segs;
+                                float u = 1 - t;
+                                float bx = u * u * u * x0 + 3 * u * u * t * x1 + 3 * u * t * t * x2 + t * t * t * x3;
+                                float by = u * u * u * y0 + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * y3;
+                                polyPts.Add((bx, by));
+                            }
+                            curX = x3; curY = y3;
+                        }
+                    }
+                    if (polyPts.Count < 3) continue;
+
+                    shapes.Add(new ExcelDrawingShape(
+                        gFromRow, gFromCol, gToRow, gToCol,
+                        gFromColOff, gFromRowOff, 0, 0,
+                        gFill, null, 0,
+                        OffsetXEmu: offsetXEmu,
+                        OffsetYEmu: offsetYEmu,
+                        WidthEmu: wEmu,
+                        HeightEmu: hEmu,
+                        PolygonPoints: polyPts));
+                }
+                continue;
+            }
 
             // Only process direct sp children (not grouped shapes)
             var sp = anchor.Element(xdr + "sp");
@@ -3752,7 +4012,12 @@ internal sealed record ExcelDrawingShape(
     long FromColOffEmu, long FromRowOffEmu, long ToColOffEmu, long ToRowOffEmu,
     PdfColor? FillColor,
     PdfColor? BorderColor,
-    float BorderWidthPt
+    float BorderWidthPt,
+    long OffsetXEmu = 0,
+    long OffsetYEmu = 0,
+    long WidthEmu = 0,
+    long HeightEmu = 0,
+    List<(float X, float Y)>? PolygonPoints = null
 );
 
 internal sealed record ExcelEmbeddedImage(
@@ -3767,7 +4032,9 @@ internal sealed record ExcelEmbeddedImage(
     long FromColOffEmu = 0,  // sub-cell X offset from left edge of AnchorCol (EMU)
     long FromRowOffEmu = 0,  // sub-cell Y offset from top edge of AnchorRow (EMU)
     long ToColOffEmu = 0,    // sub-cell X offset within the "to" column (EMU)
-    long ToRowOffEmu = 0     // sub-cell Y offset within the "to" row (EMU)
+    long ToRowOffEmu = 0,    // sub-cell Y offset within the "to" row (EMU)
+    long OffsetXEmu = 0,     // additional X offset from anchor (for grouped images)
+    long OffsetYEmu = 0      // additional Y offset from anchor (for grouped images)
 );
 
 /// <summary>
