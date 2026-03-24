@@ -72,6 +72,10 @@ public class I18n
             ["UnsupportedFontFile"] = "Unsupported font format. Please select a .ttf or .otf file.",
             ["ModeBrowser"] = "Browser",
             ["ModeApi"] = "Cloud API",
+            ["ApiLimitsNote"] = "Cloud API limit: max 10 conversions/day per IP, file size ≤ 10 MB.",
+            ["BrowserNoLimits"] = "Browser mode: no usage limits, all processing is done locally.",
+            ["CheckingFontCache"] = "Checking font cache...",
+            ["FontLoadedFromCache"] = "Font loaded from cache (no download needed)",
         },
         ["zh-CN"] = new()
         {
@@ -104,6 +108,10 @@ public class I18n
             ["UnsupportedFontFile"] = "不支持的字体格式。请选择 .ttf 或 .otf 文件。",
             ["ModeBrowser"] = "浏览器",
             ["ModeApi"] = "云端 API",
+            ["ApiLimitsNote"] = "云端 API 限制：每个 IP 每天最多 10 次转换，文件大小 ≤ 10 MB。",
+            ["BrowserNoLimits"] = "浏览器模式：无使用限制，所有处理均在本地完成。",
+            ["CheckingFontCache"] = "正在检查字体缓存...",
+            ["FontLoadedFromCache"] = "字体已从缓存加载（无需下载）",
         },
         ["zh-TW"] = new()
         {
@@ -136,6 +144,10 @@ public class I18n
             ["UnsupportedFontFile"] = "不支援的字型格式。請選擇 .ttf 或 .otf 檔案。",
             ["ModeBrowser"] = "瀏覽器",
             ["ModeApi"] = "雲端 API",
+            ["ApiLimitsNote"] = "雲端 API 限制：每個 IP 每天最多 10 次轉換，檔案大小 ≤ 10 MB。",
+            ["BrowserNoLimits"] = "瀏覽器模式：無使用限制，所有處理均在本地完成。",
+            ["CheckingFontCache"] = "正在檢查字型快取...",
+            ["FontLoadedFromCache"] = "字型已從快取載入（無需下載）",
         },
         ["ja"] = new()
         {
@@ -168,6 +180,10 @@ public class I18n
             ["UnsupportedFontFile"] = "サポートされていないフォント形式です。.ttf または .otf ファイルを選択してください。",
             ["ModeBrowser"] = "ブラウザ",
             ["ModeApi"] = "クラウド API",
+            ["ApiLimitsNote"] = "クラウド API 制限: IP ごとに1日最大10回の変換、ファイルサイズ ≤ 10 MB。",
+            ["BrowserNoLimits"] = "ブラウザモード: 使用制限なし、すべての処理はローカルで行われます。",
+            ["CheckingFontCache"] = "フォントキャッシュを確認中...",
+            ["FontLoadedFromCache"] = "キャッシュからフォントを読み込みました（ダウンロード不要）",
         },
         ["ko"] = new()
         {
@@ -200,6 +216,10 @@ public class I18n
             ["UnsupportedFontFile"] = "지원되지 않는 글꼴 형식입니다. .ttf 또는 .otf 파일을 선택하세요.",
             ["ModeBrowser"] = "브라우저",
             ["ModeApi"] = "클라우드 API",
+            ["ApiLimitsNote"] = "클라우드 API 제한: IP당 하루 최대 10회 변환, 파일 크기 ≤ 10 MB.",
+            ["BrowserNoLimits"] = "브라우저 모드: 사용 제한 없음, 모든 처리는 로컬에서 수행됩니다.",
+            ["CheckingFontCache"] = "글꼴 캐시 확인 중...",
+            ["FontLoadedFromCache"] = "캐시에서 글꼴을 로드했습니다 (다운로드 불필요)",
         },
         ["fr"] = new()
         {
@@ -232,6 +252,10 @@ public class I18n
             ["UnsupportedFontFile"] = "Format de police non pris en charge. Veuillez sélectionner un fichier .ttf ou .otf.",
             ["ModeBrowser"] = "Navigateur",
             ["ModeApi"] = "API Cloud",
+            ["ApiLimitsNote"] = "Limite API Cloud : max 10 conversions/jour par IP, taille du fichier ≤ 10 Mo.",
+            ["BrowserNoLimits"] = "Mode navigateur : aucune limite d'utilisation, tout le traitement est effectué localement.",
+            ["CheckingFontCache"] = "Vérification du cache de polices...",
+            ["FontLoadedFromCache"] = "Police chargée depuis le cache (aucun téléchargement nécessaire)",
         },
         ["it"] = new()
         {
@@ -264,6 +288,10 @@ public class I18n
             ["UnsupportedFontFile"] = "Formato font non supportato. Seleziona un file .ttf o .otf.",
             ["ModeBrowser"] = "Browser",
             ["ModeApi"] = "API Cloud",
+            ["ApiLimitsNote"] = "Limite API Cloud: max 10 conversioni/giorno per IP, dimensione file ≤ 10 MB.",
+            ["BrowserNoLimits"] = "Modalità browser: nessun limite di utilizzo, tutta l'elaborazione avviene localmente.",
+            ["CheckingFontCache"] = "Verifica della cache dei font...",
+            ["FontLoadedFromCache"] = "Font caricato dalla cache (nessun download necessario)",
         },
     };
 }

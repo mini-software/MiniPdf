@@ -1,3 +1,4 @@
+﻿using System.Collections.Concurrent;
 using MiniSoftware;
 
 // Register fonts from /home/fonts/ (Azure App Service persistent storage)
@@ -32,6 +33,38 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseCors();
+
+// --- IP-based rate limiting: 10 requests per day per IP, 10 MB max ---
+const int MaxRequestsPerDay = 10;
+const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
+var ipRequestCounts = new ConcurrentDictionary<string, (int Count, DateTime ResetTime)>();
+
+string GetClientIp(HttpContext ctx)
+{
+    // Prefer X-Forwarded-For header (Azure / reverse proxy)
+    var forwarded = ctx.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+    if (!string.IsNullOrEmpty(forwarded))
+        return forwarded.Split(',', StringSplitOptions.TrimEntries)[0];
+    return ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+}
+
+bool TryConsumeRateLimit(string ip)
+{
+    var now = DateTime.UtcNow;
+    var resetTime = now.Date.AddDays(1); // midnight UTC
+
+    var entry = ipRequestCounts.AddOrUpdate(
+        ip,
+        _ => (1, resetTime),
+        (_, existing) =>
+        {
+            if (now >= existing.ResetTime)
+                return (1, resetTime); // new day, reset
+            return (existing.Count + 1, existing.ResetTime);
+        });
+
+    return entry.Count <= MaxRequestsPerDay;
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -100,8 +133,23 @@ if (app.Environment.IsDevelopment())
     """, "text/html"));
 }
 
-app.MapPost("/api/convert", async (IFormFile file) =>
+app.MapPost("/api/convert", async (HttpContext ctx, IFormFile file) =>
 {
+    // Enforce file size limit (10 MB)
+    if (file.Length > MaxFileSizeBytes)
+    {
+        return Results.BadRequest("File size exceeds the 10 MB limit.");
+    }
+
+    // Enforce IP-based rate limit (10 per day)
+    var clientIp = GetClientIp(ctx);
+    if (!TryConsumeRateLimit(clientIp))
+    {
+        return Results.Json(
+            new { error = "Rate limit exceeded. Maximum 10 conversions per day per IP." },
+            statusCode: 429);
+    }
+
     var ext = Path.GetExtension(file.FileName);
     if (!ext.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) &&
         !ext.Equals(".docx", StringComparison.OrdinalIgnoreCase))

@@ -149,6 +149,43 @@ h1:focus { outline: none; }
     color: var(--accent);
 }
 
+/* ===== API / Browser Limits Notes ===== */
+.api-limits-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    margin-bottom: 1rem;
+    padding: .5rem .75rem;
+    font-size: .78rem;
+    color: #92400e;
+    background: #fef3c7;
+    border-radius: 8px;
+}
+
+.api-limits-note svg {
+    flex-shrink: 0;
+    color: #d97706;
+}
+
+.browser-no-limits-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    margin-bottom: 1rem;
+    padding: .5rem .75rem;
+    font-size: .78rem;
+    color: #166534;
+    background: #f0fdf4;
+    border-radius: 8px;
+}
+
+.browser-no-limits-note svg {
+    flex-shrink: 0;
+    color: #16a34a;
+}
+
 /* ===== Drop Zone ===== */
 .drop-zone {
     position: relative;
