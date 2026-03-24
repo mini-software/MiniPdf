@@ -1841,6 +1841,36 @@ internal static class ExcelToPdfConverter
         const float ShapeEmuToPt = 1f / 12700f;
         foreach (var shape in sheet.Shapes)
         {
+            // Polygon shapes (custom geometry from group shapes)
+            if (shape.PolygonPoints is { Count: >= 3 } polyPts && shape.WidthEmu > 0 && shape.HeightEmu > 0)
+            {
+                if (!rowTopY.TryGetValue(shape.FromRow, out var polyTop)) continue;
+                var polyFromIdx = Array.IndexOf(columns, shape.FromCol);
+                if (polyFromIdx < 0) polyFromIdx = 0;
+
+                var polyX = colXStarts[polyFromIdx] + shape.FromColOffEmu * ShapeEmuToPt;
+                polyTop -= shape.FromRowOffEmu * ShapeEmuToPt;
+                // Apply group offset
+                polyX += shape.OffsetXEmu * ShapeEmuToPt;
+                polyTop -= shape.OffsetYEmu * ShapeEmuToPt;
+
+                var polyW = shape.WidthEmu * ShapeEmuToPt;
+                var polyH = shape.HeightEmu * ShapeEmuToPt;
+                if (polyW <= 0 || polyH <= 0) continue;
+
+                var polyPage = rowPage.TryGetValue(shape.FromRow, out var pp) ? pp : currentPage!;
+                var pdfPoints = new List<PdfPoint>(polyPts.Count);
+                foreach (var (nx, ny) in polyPts)
+                {
+                    // Normalized coordinates: X goes right, Y goes down in OOXML
+                    // PDF coordinates: Y goes up
+                    pdfPoints.Add(new PdfPoint(polyX + nx * polyW, polyTop - ny * polyH));
+                }
+                if (shape.FillColor is { } pfc)
+                    polyPage.AddPolygon(pdfPoints, pfc);
+                continue;
+            }
+
             // Resolve anchor positions using rowTopY and colXStarts
             if (!rowTopY.TryGetValue(shape.FromRow, out var shapeTop))
                 continue;
@@ -1928,6 +1958,10 @@ internal static class ExcelToPdfConverter
             // Apply sub-cell row offset (fromRowOff) — shift image down within anchor row
             var fromRowOffPt = img.FromRowOffEmu * EmuToPt;
             imgTopY -= fromRowOffPt;
+
+            // Apply group-relative offset (for images inside grouped shapes)
+            imgX += img.OffsetXEmu * EmuToPt;
+            imgTopY -= img.OffsetYEmu * EmuToPt;
 
             // Calculate render size.
             // Prefer explicit EMU dimensions (from <ext cx cy> in oneCellAnchor).
