@@ -1402,6 +1402,7 @@ internal sealed class PdfWriter
         height = (data[20] << 24) | (data[21] << 16) | (data[22] << 8) | data[23];
         var bitDepth  = data[24];
         var colorType = data[25];
+        var interlace = data[28]; // 0=none, 1=Adam7
         // Supported: RGB (2) 8-bit, RGBA (6) 8-bit, Indexed (3) 1/2/4/8-bit
         if (colorType == 3)
         {
@@ -1469,6 +1470,145 @@ internal sealed class PdfWriter
             stride = width * channels;
         var outputRgb = new byte[width * height * 3];
         byte[]? outputAlpha = (channels == 4 || (colorType == 3 && trns != null)) ? new byte[width * height] : null;
+
+        // Adam7 interlaced PNG: decode 7 passes and place pixels in correct positions
+        if (interlace == 1)
+        {
+            int[] xStart = { 0, 4, 0, 2, 0, 1, 0 };
+            int[] xStep  = { 8, 8, 4, 4, 2, 2, 1 };
+            int[] yStart = { 0, 0, 4, 0, 2, 0, 1 };
+            int[] yStep  = { 8, 8, 8, 4, 4, 2, 2 };
+
+            // Build full-image pixel buffer: channels bytes per pixel for RGB/RGBA, 1 byte for indexed
+            var pixelBytes = colorType == 3 ? 1 : channels;
+            var fullPixels = new byte[width * height * pixelBytes];
+            var dataPos = 0;
+
+            for (var pass = 0; pass < 7; pass++)
+            {
+                var subW = width <= xStart[pass] ? 0 : (width - xStart[pass] + xStep[pass] - 1) / xStep[pass];
+                var subH = height <= yStart[pass] ? 0 : (height - yStart[pass] + yStep[pass] - 1) / yStep[pass];
+                if (subW <= 0 || subH <= 0) continue;
+
+                int subStride;
+                if (colorType == 3)
+                    subStride = (subW * bitDepth + 7) / 8;
+                else
+                    subStride = subW * channels;
+
+                var subFilterUnit = colorType == 3 ? 1 : channels;
+                var subPrevRow = new byte[subStride];
+
+                for (var subRow = 0; subRow < subH; subRow++)
+                {
+                    if (dataPos >= decompressed.Length) break;
+                    var filterByte = decompressed[dataPos++];
+                    if (dataPos + subStride > decompressed.Length) break;
+                    var raw = decompressed.AsSpan(dataPos, subStride);
+                    var cur = new byte[subStride];
+
+                    switch (filterByte)
+                    {
+                        case 0: raw.CopyTo(cur); break;
+                        case 1:
+                            for (var x = 0; x < subStride; x++)
+                                cur[x] = (byte)(raw[x] + (x >= subFilterUnit ? cur[x - subFilterUnit] : 0));
+                            break;
+                        case 2:
+                            for (var x = 0; x < subStride; x++)
+                                cur[x] = (byte)(raw[x] + subPrevRow[x]);
+                            break;
+                        case 3:
+                            for (var x = 0; x < subStride; x++)
+                            {
+                                var a = x >= subFilterUnit ? cur[x - subFilterUnit] : 0;
+                                cur[x] = (byte)(raw[x] + (a + subPrevRow[x]) / 2);
+                            }
+                            break;
+                        case 4:
+                            for (var x = 0; x < subStride; x++)
+                            {
+                                var a = x >= subFilterUnit ? cur[x - subFilterUnit] : 0;
+                                var b = subPrevRow[x];
+                                var c = x >= subFilterUnit ? subPrevRow[x - subFilterUnit] : 0;
+                                cur[x] = (byte)(raw[x] + PaethPredictor(a, b, c));
+                            }
+                            break;
+                        default: raw.CopyTo(cur); break;
+                    }
+
+                    // Place sub-image pixels into full image
+                    var imgY = yStart[pass] + subRow * yStep[pass];
+                    for (var subPx = 0; subPx < subW; subPx++)
+                    {
+                        var imgX = xStart[pass] + subPx * xStep[pass];
+                        if (colorType == 3)
+                        {
+                            int idx;
+                            if (bitDepth == 8) idx = cur[subPx];
+                            else
+                            {
+                                var ppb = 8 / bitDepth;
+                                var bi = subPx / ppb;
+                                var shift = (ppb - 1 - subPx % ppb) * bitDepth;
+                                idx = (cur[bi] >> shift) & ((1 << bitDepth) - 1);
+                            }
+                            fullPixels[imgY * width + imgX] = (byte)idx;
+                        }
+                        else
+                        {
+                            var srcOff = subPx * channels;
+                            var dstOff = (imgY * width + imgX) * channels;
+                            for (var ch = 0; ch < channels; ch++)
+                                fullPixels[dstOff + ch] = cur[srcOff + ch];
+                        }
+                    }
+
+                    cur.CopyTo(subPrevRow, 0);
+                    dataPos += subStride;
+                }
+            }
+
+            // Convert fullPixels to outputRgb / outputAlpha
+            for (var row = 0; row < height; row++)
+            {
+                var outBase = row * width * 3;
+                if (colorType == 3)
+                {
+                    for (var px = 0; px < width; px++)
+                    {
+                        var idx = fullPixels[row * width + px];
+                        var palBase = idx * 3;
+                        if (palBase + 2 < palette!.Length)
+                        {
+                            outputRgb[outBase + px * 3]     = palette[palBase];
+                            outputRgb[outBase + px * 3 + 1] = palette[palBase + 1];
+                            outputRgb[outBase + px * 3 + 2] = palette[palBase + 2];
+                        }
+                        if (outputAlpha != null)
+                            outputAlpha[row * width + px] = (trns != null && idx < trns.Length) ? trns[idx] : (byte)255;
+                    }
+                }
+                else
+                {
+                    for (var px = 0; px < width; px++)
+                    {
+                        var pixBase = (row * width + px) * channels;
+                        outputRgb[outBase + px * 3]     = fullPixels[pixBase];
+                        outputRgb[outBase + px * 3 + 1] = fullPixels[pixBase + 1];
+                        outputRgb[outBase + px * 3 + 2] = fullPixels[pixBase + 2];
+                        if (channels == 4)
+                            outputAlpha![row * width + px] = fullPixels[pixBase + 3];
+                    }
+                }
+            }
+
+            rgb = outputRgb;
+            alpha = outputAlpha;
+            return true;
+        }
+
+        // Non-interlaced: apply row filters sequentially
         var prevRow = new byte[stride];
         // For palette filtering, the filter unit is 1 byte (regardless of sub-byte packing)
         var filterUnit = colorType == 3 ? 1 : channels;

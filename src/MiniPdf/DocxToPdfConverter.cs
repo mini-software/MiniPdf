@@ -875,7 +875,7 @@ internal static class DocxToPdfConverter
         // Render images first (inline images)
         foreach (var image in paragraph.Images)
         {
-            RenderImage(state, image);
+            RenderImage(state, image, paragraph.Alignment);
         }
 
         // Render anchor shapes (filled rectangles behind text)
@@ -1787,7 +1787,7 @@ internal static class DocxToPdfConverter
 
     // ── Image rendering ─────────────────────────────────────────────────
 
-    private static void RenderImage(RenderState state, DocxImage image)
+    private static void RenderImage(RenderState state, DocxImage image, string alignment = "left")
     {
         const float emuPerPoint = 914400f / 72f;
 
@@ -1842,6 +1842,10 @@ internal static class DocxToPdfConverter
             state.EnsurePage();
 
         var x = state.Options.MarginLeft;
+        if (alignment == "center")
+            x = state.Options.MarginLeft + (state.UsableWidth - width) / 2;
+        else if (alignment == "right")
+            x = state.Options.MarginLeft + state.UsableWidth - width;
         var y = state.CurrentY - height;
 
         state.CurrentPage!.AddImage(image.Data, format, x, y, width, height);
