@@ -53,6 +53,11 @@ internal sealed class PdfTextBlock
     public bool Bold { get; }
 
     /// <summary>
+    /// Whether to render text using the italic font variant.
+    /// </summary>
+    public bool Italic { get; }
+
+    /// <summary>
     /// Whether to render an underline below the text.
     /// </summary>
     public bool Underline { get; }
@@ -81,7 +86,7 @@ internal sealed class PdfTextBlock
     /// </summary>
     public float? UnderlineWidth { get; }
 
-    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null)
+    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null)
     {
         Text = text;
         X = x;
@@ -91,6 +96,7 @@ internal sealed class PdfTextBlock
         ClipRect = clipRect;
         MaxWidth = maxWidth;
         Bold = bold;
+        Italic = italic;
         Underline = underline;
         CharSpacing = charSpacing;
         WordSpacing = wordSpacing;

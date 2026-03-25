@@ -170,12 +170,20 @@ internal static class DocxReader
                             extentWidthPt = cx / 914400f * 72f;
                     }
 
-                    // Read text box outline (border) from shape properties
+                    // Read text box outline (border) and fill from shape properties
                     DocxTextBoxBorder? textBoxBorder = null;
+                    PdfColor? textBoxFillColor = null;
                     var wsp = anchor.Descendants(WPS + "wsp").FirstOrDefault();
                     if (wsp != null)
                     {
                         var spPr = wsp.Element(WPS + "spPr") ?? wsp.Element(A + "spPr");
+                        // Parse shape fill (background)
+                        var shapeFill = spPr?.Element(A + "solidFill");
+                        if (shapeFill != null)
+                        {
+                            var (fc, _) = ResolveSolidFill(shapeFill, themeColors);
+                            textBoxFillColor = fc;
+                        }
                         var ln = spPr?.Element(A + "ln");
                         if (ln != null)
                         {
@@ -242,7 +250,7 @@ internal static class DocxReader
                         if (floatingParas.Count > 0)
                         {
                             floatingTextBoxes ??= new List<DocxFloatingTextBox>();
-                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom));
+                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom, textBoxFillColor));
                         }
                     }
                     else
@@ -490,7 +498,8 @@ internal static class DocxReader
                     if (numDef.Format == "bullet")
                     {
                         isBulletList = true;
-                        listText = "\u2022"; // bullet character
+                        var lvlDef2 = numDef.Levels.FirstOrDefault(l => l.Ilvl == listLevel) ?? numDef.Levels.FirstOrDefault();
+                        listText = MapBulletChar(lvlDef2?.LvlText, lvlDef2?.FontName);
                     }
                     else
                     {
@@ -2758,6 +2767,51 @@ internal static class DocxReader
         return null;
     }
 
+    /// <summary>
+    /// Maps a bullet character from Wingdings/Symbol font encoding to a Unicode equivalent.
+    /// </summary>
+    private static string MapBulletChar(string? lvlText, string? fontName)
+    {
+        if (string.IsNullOrEmpty(lvlText))
+            return "\u2022"; // fallback bullet
+
+        var ch = lvlText[0];
+
+        if (fontName != null && fontName.Contains("Wingdings", StringComparison.OrdinalIgnoreCase))
+        {
+            // Wingdings PUA → Unicode mappings (common bullets)
+            return ch switch
+            {
+                '\uf0d8' => "\u27A2", // ➢ right arrowhead
+                '\uf0a7' => "\u25AA", // ▪ small black square
+                '\uf0a8' => "\u25CB", // ○ white circle
+                '\uf076' => "\u2756", // ❖ black diamond minus white X
+                '\uf0FC' => "\u2714", // ✔ check mark
+                '\uf0FB' => "\u2718", // ✘ cross mark
+                '\uf0E8' => "\u25BA", // ► right-pointing triangle
+                '\uf0D2' => "\u27A4", // ➤ right arrowhead (filled)
+                _ => "\u2022", // fallback
+            };
+        }
+
+        if (fontName != null && fontName.Contains("Symbol", StringComparison.OrdinalIgnoreCase))
+        {
+            return ch switch
+            {
+                '\uf0b7' => "\u2022", // • bullet
+                '\uf0a7' => "\u2666", // ♦ diamond
+                '\uf0B0' => "\u2218", // ∘ ring operator
+                _ => "\u2022",
+            };
+        }
+
+        // For standard fonts, use the character as-is if printable
+        if (ch >= ' ')
+            return lvlText;
+
+        return "\u2022"; // fallback
+    }
+
     private static Dictionary<string, DocxNumberingDef> ReadNumbering(ZipArchive archive)
     {
         var result = new Dictionary<string, DocxNumberingDef>();
@@ -2791,7 +2845,9 @@ internal static class DocxReader
                     if (int.TryParse(lvlInd.Attribute(W + "hanging")?.Value, out var lh))
                         lvlHanging = lh / 20f;
                 }
-                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal, lvlIndentLeft, lvlHanging));
+                // Read bullet font name from rPr/rFonts (e.g. Wingdings, Symbol)
+                var lvlFontName = lvl.Element(W + "rPr")?.Element(W + "rFonts")?.Attribute(W + "ascii")?.Value;
+                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal, lvlIndentLeft, lvlHanging, lvlFontName));
             }
             abstractDefs[absId] = levels;
         }
@@ -2957,7 +3013,8 @@ internal sealed record DocxFloatingTextBox(
     List<DocxParagraph> Paragraphs,
     DocxTextBoxBorder? Border = null,
     string HRelativeFrom = "column",
-    string VRelativeFrom = "paragraph"
+    string VRelativeFrom = "paragraph",
+    PdfColor? FillColor = null
 );
 
 /// <summary>Represents a text box outline border (rectangle drawn around text box content).</summary>
@@ -3157,4 +3214,4 @@ internal sealed class DocxNumberingDef
     }
 }
 
-internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start, float IndentLeft = 0, float Hanging = 0);
+internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start, float IndentLeft = 0, float Hanging = 0, string? FontName = null);

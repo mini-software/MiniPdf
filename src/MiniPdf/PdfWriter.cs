@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace MiniSoftware;
@@ -58,8 +59,10 @@ internal sealed class PdfWriter
         var cpsByPreferredFont = new Dictionary<string, HashSet<int>>(StringComparer.OrdinalIgnoreCase);
         // Track preferred font names that also need a bold variant embedded.
         var boldPreferredFontNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        // Track preferred font names that also need an italic variant embedded.
+        var italicPreferredFontNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var page in pages)
-            foreach (var block in page.TextBlocks)
+            foreach (var block in page.TextBlocks.Concat(page.OverlayTexts))
             {
                 bool blockNeedsUnicode = false;
                 foreach (var ch in block.Text)
@@ -89,6 +92,8 @@ internal sealed class PdfWriter
                             set.Add(cp);
                             if (block.Bold)
                                 boldPreferredFontNames.Add(block.PreferredFontName!);
+                            if (block.Italic)
+                                italicPreferredFontNames.Add(block.PreferredFontName!);
                         }
                     }
                 }
@@ -99,7 +104,7 @@ internal sealed class PdfWriter
         // would fall back to the built-in Helvetica instead of the document's
         // intended font (e.g. Times New Roman).
         foreach (var page in pages)
-            foreach (var block in page.TextBlocks)
+            foreach (var block in page.TextBlocks.Concat(page.OverlayTexts))
             {
                 if (string.IsNullOrWhiteSpace(block.PreferredFontName)) continue;
                 bool allWinAnsi = true;
@@ -117,6 +122,8 @@ internal sealed class PdfWriter
                     set.Add(cp);
                     if (block.Bold)
                         boldPreferredFontNames.Add(block.PreferredFontName!);
+                    if (block.Italic)
+                        italicPreferredFontNames.Add(block.PreferredFontName!);
                 }
             }
 
@@ -232,6 +239,20 @@ internal sealed class PdfWriter
                         // Register the bold font with the same codepoints as the regular font
                         if (cpsByPreferredFont.TryGetValue(prefName, out var regularCps))
                             cpsByPreferredFont[boldName] = new HashSet<int>(regularCps);
+                    }
+                }
+
+                // 5) Load italic variants for preferred fonts that have italic text blocks.
+                foreach (var prefName in italicPreferredFontNames)
+                {
+                    var italicName = prefName + " Italic";
+                    var italicPath = FindSystemFontByPreferredName(italicName);
+                    if (italicPath != null && !loadedPaths.Contains(italicPath))
+                    {
+                        LoadFontFile(italicPath);
+                        loadedPaths.Add(italicPath);
+                        if (cpsByPreferredFont.TryGetValue(prefName, out var regularCps))
+                            cpsByPreferredFont[italicName] = new HashSet<int>(regularCps);
                     }
                 }
             }
@@ -401,9 +422,10 @@ internal sealed class PdfWriter
 
         // Allocate object numbers.
         //   1 = Catalog, 2 = Pages, 3 = Font F1 (Helvetica/WinAnsi), 4 = Font F1B (Helvetica-Bold/WinAnsi)
+        //   5 = Font F1I (Helvetica-Oblique/WinAnsi), 6 = Font F1BI (Helvetica-BoldOblique/WinAnsi)
         //   Per embedded font: 6 objects (ToUnicode, Descriptor, CIDFont, Type0, FontFile2, CIDToGIDMap)
         //   Per page: content stream obj, N image XObject objs, page obj
-        var nextObj = 5;
+        var nextObj = 7;
 
         // Allocate font objects
         foreach (var ef in embeddedFonts)
@@ -462,6 +484,14 @@ internal sealed class PdfWriter
         // ── Object 4: Font F1B (Helvetica-Bold, built-in WinAnsiEncoding) ──
         _objectOffsets[4] = Position;
         WriteRaw("4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>\nendobj\n");
+
+        // ── Object 5: Font F1I (Helvetica-Oblique, built-in WinAnsiEncoding) ──
+        _objectOffsets[5] = Position;
+        WriteRaw("5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>\nendobj\n");
+
+        // ── Object 6: Font F1BI (Helvetica-BoldOblique, built-in WinAnsiEncoding) ──
+        _objectOffsets[6] = Position;
+        WriteRaw("6 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-BoldOblique /Encoding /WinAnsiEncoding >>\nendobj\n");
 
         // ── Per-font objects (F2, F3, …) ───────────────────────────────────
         for (var fi = 0; fi < embeddedFonts.Count; fi++)
@@ -556,8 +586,8 @@ internal sealed class PdfWriter
             WriteRaw($"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {w} {h}]\n");
             WriteRaw($"/Contents {contentObjNums[i]} 0 R\n");
             WriteRaw("/Resources <<\n");
-            // Font dictionary: F1, F1B + Fn for each embedded font
-            WriteRaw("/Font << /F1 3 0 R /F1B 4 0 R");
+            // Font dictionary: F1, F1B, F1I, F1BI + Fn for each embedded font
+            WriteRaw("/Font << /F1 3 0 R /F1B 4 0 R /F1I 5 0 R /F1BI 6 0 R");
             for (var fi = 0; fi < embeddedFonts.Count; fi++)
                 WriteRaw($" /F{fi + 2} {embeddedFonts[fi].Type0Obj} 0 R");
             WriteRaw(" >>\n");
@@ -815,9 +845,32 @@ internal sealed class PdfWriter
             sb.Append("Q\n");
         }
 
-        // Render text blocks on top
-        foreach (var block in page.TextBlocks)
+        // Render text blocks on top; overlay text renders after overlay rects
+        var allTextBlocks = page.OverlayTexts.Count > 0
+            ? page.TextBlocks.Concat(new PdfTextBlock[] { null! }).Concat(page.OverlayTexts)
+            : (IEnumerable<PdfTextBlock>)page.TextBlocks;
+        foreach (var block in allTextBlocks)
         {
+            // Null sentinel separates regular text from overlay text;
+            // emit overlay rectangles at this point to cover underlying text.
+            if (block == null)
+            {
+                foreach (var rect in page.OverlayRects)
+                {
+                    var rx = rect.X.ToString("F3", CultureInfo.InvariantCulture);
+                    var ry = rect.Y.ToString("F3", CultureInfo.InvariantCulture);
+                    var rw = rect.Width.ToString("F3", CultureInfo.InvariantCulture);
+                    var rh = rect.Height.ToString("F3", CultureInfo.InvariantCulture);
+                    var rr = rect.FillColor.R.ToString("F3", CultureInfo.InvariantCulture);
+                    var rg2 = rect.FillColor.G.ToString("F3", CultureInfo.InvariantCulture);
+                    var rb = rect.FillColor.B.ToString("F3", CultureInfo.InvariantCulture);
+                    sb.Append($"{rr} {rg2} {rb} rg\n");
+                    sb.Append($"{rx} {ry} {rw} {rh} re\n");
+                    sb.Append("f\n");
+                }
+                continue;
+            }
+
             var fontSize = block.FontSize.ToString(CultureInfo.InvariantCulture);
             var x = block.X.ToString(CultureInfo.InvariantCulture);
             var y = block.Y.ToString(CultureInfo.InvariantCulture);
@@ -859,10 +912,24 @@ internal sealed class PdfWriter
             if (hasBoldFontVariant && !blockHasEmbeddedPref)
                 blockHasEmbeddedPref = true; // Route through embedded path for bold font
 
+            // Check if a dedicated italic font variant is available for this block.
+            var italicFontKey = block.Italic && !string.IsNullOrWhiteSpace(block.PreferredFontName)
+                ? block.PreferredFontName + " Italic" : null;
+            var hasItalicFontVariant = italicFontKey != null && fontNameToSlot != null
+                && fontNameToSlot.ContainsKey(italicFontKey);
+            if (hasItalicFontVariant && !blockHasEmbeddedPref)
+                blockHasEmbeddedPref = true; // Route through embedded path for italic font
+
             if (!hasUnicodeFont || (!block.Text.Any(c => !IsWinAnsiHandled(c)) && !blockHasEmbeddedPref))
             {
-                // Pure Latin-1 text (or preferred font not found) — use F1 (Helvetica) or F1B (Helvetica-Bold)
-                var fontName = block.Bold ? "F1B" : "F1";
+                // Pure Latin-1 text (or preferred font not found) — use F1/F1B/F1I/F1BI
+                var fontName = (block.Bold, block.Italic) switch
+                {
+                    (true, true) => "F1BI",
+                    (true, false) => "F1B",
+                    (false, true) => "F1I",
+                    _ => "F1"
+                };
                 var escapedText = EscapePdfString(block.Text);
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
@@ -957,6 +1024,9 @@ internal sealed class PdfWriter
                     // Use the bold font variant slot if available; otherwise fall back to regular.
                     if (hasBoldFontVariant)
                         fontNameToSlot.TryGetValue(boldFontKey!, out blockPrefSlot);
+                    // Use the italic font variant slot if available.
+                    if (blockPrefSlot < 0 && hasItalicFontVariant)
+                        fontNameToSlot.TryGetValue(italicFontKey!, out blockPrefSlot);
                     if (blockPrefSlot < 0)
                         fontNameToSlot.TryGetValue(block.PreferredFontName!, out blockPrefSlot);
                 }
@@ -1076,7 +1146,7 @@ internal sealed class PdfWriter
     };
 
     /// <summary>Returns Helvetica-Bold character width in 1/1000 em units.</summary>
-    private static int HelveticaBoldCharWidth(char ch) => ch switch
+    internal static int HelveticaBoldCharWidth(char ch) => ch switch
     {
         ' ' => 278, '!' => 333, '"' => 474, '#' => 556, '$' => 556, '%' => 889,
         '&' => 722, '\'' => 238, '(' => 333, ')' => 333, '*' => 389, '+' => 584,

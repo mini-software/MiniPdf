@@ -76,6 +76,8 @@ internal sealed class PdfPage
     private readonly List<PdfEllipseBlock> _ellipseBlocks = [];
     private readonly List<PdfPolygonBlock> _polygonBlocks = [];
     private readonly List<PdfLineBlock> _lineBlocks = [];
+    private readonly List<PdfRectBlock> _overlayRects = [];
+    private readonly List<PdfTextBlock> _overlayTexts = [];
 
     /// <summary>
     /// Page width in points.
@@ -117,6 +119,9 @@ internal sealed class PdfPage
     /// </summary>
     public IReadOnlyList<PdfLineBlock> LineBlocks => _lineBlocks;
 
+    internal IReadOnlyList<PdfRectBlock> OverlayRects => _overlayRects;
+    internal IReadOnlyList<PdfTextBlock> OverlayTexts => _overlayTexts;
+
     internal PdfPage(float width, float height)
     {
         Width = width;
@@ -140,9 +145,9 @@ internal sealed class PdfPage
     /// <param name="preferredFontName">Optional preferred Unicode font family hint.</param>
     /// <param name="underlineWidth">Optional explicit underline width override in points.</param>
     /// <returns>The current page for chaining.</returns>
-    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null)
+    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null)
     {
-        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, underline, charSpacing, wordSpacing, preferredFontName, underlineWidth));
+        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, italic, underline, charSpacing, wordSpacing, preferredFontName, underlineWidth));
         return this;
     }
 
@@ -213,6 +218,18 @@ internal sealed class PdfPage
     public PdfPage AddLine(float x1, float y1, float x2, float y2, PdfColor? color = null, float lineWidth = 1f, float[]? dashPattern = null)
     {
         _lineBlocks.Add(new PdfLineBlock(x1, y1, x2, y2, color ?? new PdfColor(0, 0, 0), lineWidth, dashPattern));
+        return this;
+    }
+
+    internal PdfPage AddOverlayRectangle(float x, float y, float width, float height, PdfColor fillColor)
+    {
+        _overlayRects.Add(new PdfRectBlock(x, y, width, height, fillColor));
+        return this;
+    }
+
+    internal PdfPage AddOverlayText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, float? maxWidth = null, bool bold = false, bool italic = false, string? preferredFontName = null)
+    {
+        _overlayTexts.Add(new PdfTextBlock(text, x, y, fontSize, color, null, maxWidth, bold, italic, false, 0, 0, preferredFontName, null));
         return this;
     }
 
