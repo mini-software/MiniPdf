@@ -711,6 +711,15 @@ internal static class DocxToPdfConverter
         if (paragraph.Runs.Count == 0 && paragraph.Images.Count == 0 && paragraph.Shading == null
             && (paragraph.Shapes == null || paragraph.Shapes.Count == 0))
         {
+            // Record start position so floating textboxes anchored to this
+            // empty paragraph use the correct Y (before advancing by lineHeight).
+            // Word's vRelativeFrom="paragraph" measures from the line-box top,
+            // while state.CurrentY is the next baseline. Offset upward by
+            // (lineHeight - fontSize) to approximate the paragraph top.
+            var baselineToTopOffset = lineHeight - fontSize;
+            if (baselineToTopOffset < 0) baselineToTopOffset = 0;
+            state.LastParagraphStartY = state.CurrentY + baselineToTopOffset;
+
             var totalEmptyAdvance = lineHeight;
             var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             totalEmptyAdvance += spacingAfterEmpty;
@@ -1191,12 +1200,10 @@ internal static class DocxToPdfConverter
                 boxTop = options.PageHeight - options.MarginTop - box.YPt;
             }
 
-            // Render fill background if present (obscures text behind the textbox)
-            // Use overlay layer so fill renders AFTER regular text in the PDF content stream.
-            var useOverlay = box.FillColor != null;
+            // Render fill background if present
             if (box.FillColor is { } fill)
             {
-                targetPage.AddOverlayRectangle(boxLeft, boxTop - box.HeightPt, box.WidthPt, box.HeightPt, fill);
+                targetPage.AddRectangle(boxLeft, boxTop - box.HeightPt, box.WidthPt, box.HeightPt, fill);
             }
 
             // Render border if present
@@ -1213,13 +1220,12 @@ internal static class DocxToPdfConverter
             }
 
             // Render text content at absolute position.
-            // Offset baseline down from boxTop by the first line's font size to
-            // account for the font ascender and internal shape top margin (~0.05").
-            // Without this offset the text baseline sits at boxTop, causing glyphs
-            // to extend above the textbox boundary and its fill background.
+            // Offset baseline down from boxTop by the first line's font size + top inset
+            // so text sits inside the textbox boundary, not on its edge.
             var firstFontSize = box.Paragraphs.FirstOrDefault()?.FontSize ?? 0;
             if (firstFontSize <= 0) firstFontSize = options.FontSize;
-            var currentY = boxTop - firstFontSize;
+            var topInset = box.TopInsetPt;
+            var currentY = boxTop - firstFontSize - topInset;
             foreach (var para in box.Paragraphs)
             {
                 var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
@@ -1252,28 +1258,27 @@ internal static class DocxToPdfConverter
                 var bold = para.Bold || (para.Runs.FirstOrDefault()?.Bold ?? false);
                 var italic = para.Italic || (para.Runs.FirstOrDefault()?.Italic ?? false);
 
-                // Wrap text within the box width
-                var maxWidth = box.WidthPt > 0 ? box.WidthPt : state.UsableWidth;
+                // Wrap text within the box width (minus left/right insets)
+                var leftInset = box.LeftInsetPt;
+                var maxWidth = (box.WidthPt > 0 ? box.WidthPt : state.UsableWidth) - leftInset * 2;
+                if (maxWidth < 10) maxWidth = box.WidthPt > 0 ? box.WidthPt : state.UsableWidth;
                 var lines = WordWrap(fullText, maxWidth, maxWidth, fontSize,
                     para.TabStops, useCalibriWidths: options.UseCalibriWidths);
 
                 foreach (var line in lines)
                 {
-                    var x = boxLeft;
+                    var x = boxLeft + leftInset;
                     if (para.Alignment == "center")
                     {
                         var textWidth = EstimateWrapTextWidth(line, fontSize, bold, 0, options.UseCalibriWidths);
-                        x = boxLeft + (maxWidth - textWidth) / 2;
+                        x = boxLeft + leftInset + (maxWidth - textWidth) / 2;
                     }
                     else if (para.Alignment == "right")
                     {
                         var textWidth = EstimateWrapTextWidth(line, fontSize, bold, 0, options.UseCalibriWidths);
-                        x = boxLeft + maxWidth - textWidth;
+                        x = boxLeft + leftInset + maxWidth - textWidth;
                     }
-                    if (useOverlay)
-                        targetPage.AddOverlayText(line, x, currentY, fontSize, color, bold: bold, italic: italic);
-                    else
-                        targetPage.AddText(line, x, currentY, fontSize, color, bold: bold, italic: italic);
+                    targetPage.AddText(line, x, currentY, fontSize, color, bold: bold, italic: italic);
                     currentY -= lineHeight;
                 }
             }

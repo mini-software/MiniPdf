@@ -62,7 +62,7 @@ internal sealed class PdfWriter
         // Track preferred font names that also need an italic variant embedded.
         var italicPreferredFontNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var page in pages)
-            foreach (var block in page.TextBlocks.Concat(page.OverlayTexts))
+            foreach (var block in page.TextBlocks)
             {
                 bool blockNeedsUnicode = false;
                 foreach (var ch in block.Text)
@@ -104,7 +104,7 @@ internal sealed class PdfWriter
         // would fall back to the built-in Helvetica instead of the document's
         // intended font (e.g. Times New Roman).
         foreach (var page in pages)
-            foreach (var block in page.TextBlocks.Concat(page.OverlayTexts))
+            foreach (var block in page.TextBlocks)
             {
                 if (string.IsNullOrWhiteSpace(block.PreferredFontName)) continue;
                 bool allWinAnsi = true;
@@ -845,32 +845,9 @@ internal sealed class PdfWriter
             sb.Append("Q\n");
         }
 
-        // Render text blocks on top; overlay text renders after overlay rects
-        var allTextBlocks = page.OverlayTexts.Count > 0
-            ? page.TextBlocks.Concat(new PdfTextBlock[] { null! }).Concat(page.OverlayTexts)
-            : (IEnumerable<PdfTextBlock>)page.TextBlocks;
-        foreach (var block in allTextBlocks)
+        // Render text blocks on top
+        foreach (var block in page.TextBlocks)
         {
-            // Null sentinel separates regular text from overlay text;
-            // emit overlay rectangles at this point to cover underlying text.
-            if (block == null)
-            {
-                foreach (var rect in page.OverlayRects)
-                {
-                    var rx = rect.X.ToString("F3", CultureInfo.InvariantCulture);
-                    var ry = rect.Y.ToString("F3", CultureInfo.InvariantCulture);
-                    var rw = rect.Width.ToString("F3", CultureInfo.InvariantCulture);
-                    var rh = rect.Height.ToString("F3", CultureInfo.InvariantCulture);
-                    var rr = rect.FillColor.R.ToString("F3", CultureInfo.InvariantCulture);
-                    var rg2 = rect.FillColor.G.ToString("F3", CultureInfo.InvariantCulture);
-                    var rb = rect.FillColor.B.ToString("F3", CultureInfo.InvariantCulture);
-                    sb.Append($"{rr} {rg2} {rb} rg\n");
-                    sb.Append($"{rx} {ry} {rw} {rh} re\n");
-                    sb.Append("f\n");
-                }
-                continue;
-            }
-
             var fontSize = block.FontSize.ToString(CultureInfo.InvariantCulture);
             var x = block.X.ToString(CultureInfo.InvariantCulture);
             var y = block.Y.ToString(CultureInfo.InvariantCulture);

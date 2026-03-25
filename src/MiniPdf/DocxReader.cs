@@ -202,6 +202,18 @@ internal static class DocxReader
                         }
                     }
 
+                    // Parse bodyPr text insets (defaults: lIns=91440, tIns=45720 EMU)
+                    float topInsetPt = 3.6f;  // 45720 EMU default
+                    float leftInsetPt = 7.2f; // 91440 EMU default
+                    var bodyPr = wsp?.Element(WPS + "bodyPr");
+                    if (bodyPr != null)
+                    {
+                        if (long.TryParse(bodyPr.Attribute("tIns")?.Value, out var tIns))
+                            topInsetPt = tIns / 914400f * 72f;
+                        if (long.TryParse(bodyPr.Attribute("lIns")?.Value, out var lIns))
+                            leftInsetPt = lIns / 914400f * 72f;
+                    }
+
                     if (isWrapNone)
                     {
                         // wrapNone text boxes are positioned absolutely and do not
@@ -250,7 +262,7 @@ internal static class DocxReader
                         if (floatingParas.Count > 0)
                         {
                             floatingTextBoxes ??= new List<DocxFloatingTextBox>();
-                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom, textBoxFillColor));
+                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom, textBoxFillColor, topInsetPt, leftInsetPt));
                         }
                     }
                     else
@@ -3014,7 +3026,9 @@ internal sealed record DocxFloatingTextBox(
     DocxTextBoxBorder? Border = null,
     string HRelativeFrom = "column",
     string VRelativeFrom = "paragraph",
-    PdfColor? FillColor = null
+    PdfColor? FillColor = null,
+    float TopInsetPt = 3.6f,
+    float LeftInsetPt = 7.2f
 );
 
 /// <summary>Represents a text box outline border (rectangle drawn around text box content).</summary>
