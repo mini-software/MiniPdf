@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-24T22:30:09.493623
+Generated: 2026-03-25T10:56:34.575621
 
 ## Summary
 
@@ -9,19 +9,19 @@ Generated: 2026-03-24T22:30:09.493623
 | 1 | 🟢 Academic Achievement Summary Table | 0.8766 | 0.9475 | 2/2 | **0.9296** |
 | 2 | 🟢 AcademicAchievement_temp | 0.8766 | 0.9475 | 2/2 | **0.9296** |
 | 3 | 🟢 Business expense budget1 | 0.9601 | 0.8762 | 4/4 | **0.9345** |
-| 4 | 🟡 Business expenses budget2 | 0.9836 | 0.7655 | 4/4 | **0.8996** |
+| 4 | 🟢 Business expenses budget2 | 0.9857 | 0.7903 | 4/4 | **0.9104** |
 | 5 | ⚪ Business_expense_budget1_copy | N/A | N/A | ?/? | **N/A** |
 | 6 | 🟢 Event budget1 | 0.9477 | 0.8468 | 5/5 | **0.9178** |
 | 7 | 🟢 Expense report basic1 | 1.0 | 0.7531 | 1/1 | **0.9012** |
-| 8 | 🔴 payroll-calculator_f | 0.4567 | 0.5458 | 25/27 | **0.501** |
+| 8 | 🔴 payroll-calculator_f | 0.4567 | 0.5449 | 25/27 | **0.5006** |
 | 9 | 🟢 PO_anonymized | 0.9625 | 0.9173 | 8/8 | **0.9519** |
-| 10 | 🟡 Simple invoice1 | 0.9417 | 0.7382 | 1/1 | **0.872** |
+| 10 | 🟡 Simple invoice1 | 0.9535 | 0.7382 | 1/1 | **0.8767** |
 | 11 | 🔴 Small business cash flow forecast1 | 0.9698 | 0.3245 | 2/5 | **0.6177** |
 | 12 | ⚪ Wedding timeline planner1 | N/A | N/A | ?/? | **N/A** |
 | 13 | 🟡 Wedding_timeline_planner1_copy | 0.9679 | 0.7284 | 4/5 | **0.7785** |
-| 14 | 🟡 Weekly schedule planner1 | 1.0 | 0.725 | 1/1 | **0.89** |
+| 14 | 🟡 Weekly schedule planner1 | 1.0 | 0.7245 | 1/1 | **0.8898** |
 
-**Average Overall Score: 0.7231**
+**Average Overall Score: 0.7242**
 
 ## Visual Comparison
 
@@ -73,7 +73,7 @@ Generated: 2026-03-24T22:30:09.493623
 </tr>
 <tr>
   <td><b>Business expenses budget2</b></td>
-  <td colspan="1">Business expenses budget2 <span style="color:#d29922">⬤</span> 90.0%</td>
+  <td colspan="1">Business expenses budget2 <span style="color:#3fb950">⬤</span> 91.0%</td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -280,7 +280,7 @@ Generated: 2026-03-24T22:30:09.493623
 </tr>
 <tr>
   <td><b>Simple invoice1</b></td>
-  <td colspan="1">Simple invoice1 <span style="color:#d29922">⬤</span> 87.2%</td>
+  <td colspan="1">Simple invoice1 <span style="color:#d29922">⬤</span> 87.7%</td>
 </tr>
 <tr>
   <td><img src="images/Simple invoice1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -359,7 +359,7 @@ Generated: 2026-03-24T22:30:09.493623
 - **Visual Average:** 0.9475
 - **Overall Score:** 0.9296
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=412307 bytes, Reference=168612 bytes
+- **File Size:** MiniPdf=413036 bytes, Reference=168612 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -484,7 +484,7 @@ Generated: 2026-03-24T22:30:09.493623
 - **Visual Average:** 0.9475
 - **Overall Score:** 0.9296
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=412307 bytes, Reference=168612 bytes
+- **File Size:** MiniPdf=413036 bytes, Reference=168612 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -609,7 +609,7 @@ Generated: 2026-03-24T22:30:09.493623
 - **Visual Average:** 0.8762
 - **Overall Score:** 0.9345
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=722334 bytes, Reference=173721 bytes
+- **File Size:** MiniPdf=724233 bytes, Reference=173721 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -669,18 +669,18 @@ Generated: 2026-03-24T22:30:09.493623
 
 ### Business expenses budget2
 
-- **Text Similarity:** 0.9836
-- **Visual Average:** 0.7655
-- **Overall Score:** 0.8996
+- **Text Similarity:** 0.9857
+- **Visual Average:** 0.7903
+- **Overall Score:** 0.9104
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=851726 bytes, Reference=402762 bytes
+- **File Size:** MiniPdf=850618 bytes, Reference=402762 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Business expenses budget2.pdf
 +++ reference/Business expenses budget2.pdf
-@@ -1,108 +1,109 @@
+@@ -1,110 +1,109 @@
  Market Financial Consulting
 
  PLANNED EXPENSES
@@ -722,7 +722,7 @@ Generated: 2026-03-24T22:30:09.493623
 -Collateral printing $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 2,400.00
 
 -Marketing events $ 2,000.00  $ 2,000.00  $ 2,000.00  $ 5,000.00  $ 2,000.00  $
-... (14283 more characters)
+... (14343 more characters)
 
 ```
 </details>
@@ -737,7 +737,7 @@ Generated: 2026-03-24T22:30:09.493623
 - **Visual Average:** 0.8468
 - **Overall Score:** 0.9178
 - **Pages:** MiniPdf=5, Reference=5
-- **File Size:** MiniPdf=147527 bytes, Reference=121226 bytes
+- **File Size:** MiniPdf=149471 bytes, Reference=121226 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -872,17 +872,17 @@ Generated: 2026-03-24T22:30:09.493623
 - **Visual Average:** 0.7531
 - **Overall Score:** 0.9012
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=61485 bytes, Reference=47897 bytes
+- **File Size:** MiniPdf=62115 bytes, Reference=47897 bytes
 
 Text content: ✅ Identical
 
 ### payroll-calculator_f
 
 - **Text Similarity:** 0.4567
-- **Visual Average:** 0.5458
-- **Overall Score:** 0.501
+- **Visual Average:** 0.5449
+- **Overall Score:** 0.5006
 - **Pages:** MiniPdf=25, Reference=27
-- **File Size:** MiniPdf=3124744 bytes, Reference=540676 bytes
+- **File Size:** MiniPdf=3163303 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1016,7 +1016,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9173
 - **Overall Score:** 0.9519
 - **Pages:** MiniPdf=8, Reference=8
-- **File Size:** MiniPdf=4740377 bytes, Reference=338357 bytes
+- **File Size:** MiniPdf=4748054 bytes, Reference=338357 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1150,11 +1150,11 @@ Text content: ✅ Identical
 
 ### Simple invoice1
 
-- **Text Similarity:** 0.9417
+- **Text Similarity:** 0.9535
 - **Visual Average:** 0.7382
-- **Overall Score:** 0.872
+- **Overall Score:** 0.8767
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=329465 bytes, Reference=78344 bytes
+- **File Size:** MiniPdf=329987 bytes, Reference=78344 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1170,7 +1170,7 @@ Text content: ✅ Identical
 
  Invoice #: 10654
 
--Invoice date: 3/24/2026
+-Invoice date: 3/25/2026
 
 -Embrace
 
@@ -1211,7 +1211,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.3245
 - **Overall Score:** 0.6177
 - **Pages:** MiniPdf=2, Reference=5
-- **File Size:** MiniPdf=381592 bytes, Reference=126373 bytes
+- **File Size:** MiniPdf=385750 bytes, Reference=126373 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1295,7 +1295,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.7284
 - **Overall Score:** 0.7785
 - **Pages:** MiniPdf=4, Reference=5
-- **File Size:** MiniPdf=743741 bytes, Reference=126603 bytes
+- **File Size:** MiniPdf=745361 bytes, Reference=126603 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1445,10 +1445,10 @@ Text content: ✅ Identical
 ### Weekly schedule planner1
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.725
-- **Overall Score:** 0.89
+- **Visual Average:** 0.7245
+- **Overall Score:** 0.8898
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=698109 bytes, Reference=96071 bytes
+- **File Size:** MiniPdf=702280 bytes, Reference=96071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1481,7 +1481,7 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **payroll-calculator_f** (score: 0.501)
+1. **payroll-calculator_f** (score: 0.5006)
 1. **Small business cash flow forecast1** (score: 0.6177)
 1. **Wedding_timeline_planner1_copy** (score: 0.7785)
 

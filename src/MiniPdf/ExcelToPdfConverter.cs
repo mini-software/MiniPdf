@@ -440,6 +440,24 @@ internal static class ExcelToPdfConverter
             }
         }
 
+        // For fitToPage sheets with a reduced printScale: produce larger pages at
+        // natural content size instead of standard-size pages with scaled-down
+        // content.  This matches how Excel/Office exports PDFs — the page
+        // dimensions grow to accommodate the content so fonts stay at their
+        // original point size and text renders crisply.
+        // Margins are also scaled so the content region on the enlarged page
+        // occupies the same proportional area as on the standard page.
+        var pageScaleUp = 1f;
+        if (sheet.FitToPage && sheet.PrintScale != 100 && sheet.PrintScale > 0)
+        {
+            pageScaleUp = 100f / sheet.PrintScale;
+            sheet.PrintScale = 100; // content stays at natural size
+            mL *= pageScaleUp;
+            mR *= pageScaleUp;
+            mT *= pageScaleUp;
+            mB *= pageScaleUp;
+        }
+
         var fontSize = options.FontSize;
         var colPadding = options.ColumnPadding;
         if (sheet.PrintScale != 100 && sheet.PrintScale > 0)
@@ -457,8 +475,8 @@ internal static class ExcelToPdfConverter
             MarginBottom = mB,
             ColumnPadding = colPadding,
             LineSpacing = options.LineSpacing,
-            PageWidth = baseW,
-            PageHeight = baseH,
+            PageWidth = baseW * pageScaleUp,
+            PageHeight = baseH * pageScaleUp,
             IncludeSheetName = options.IncludeSheetName,
             ScaleCellFonts = scaleCellFonts,
         };
