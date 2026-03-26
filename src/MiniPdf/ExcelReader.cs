@@ -464,7 +464,7 @@ internal static class ExcelReader
         if (stylesEntry == null) return;
 
         List<(bool? Bold, PdfColor? FillColor)> dxfInfos;
-        Dictionary<string, (int HeaderDxf, int TotalDxf, int WholeDxf, int FirstColDxf)> tableStyleMap;
+        Dictionary<string, (int HeaderDxf, int TotalDxf, int WholeDxf, int FirstColDxf, int FirstRowStripeDxf)> tableStyleMap;
         using (var stylesStream = stylesEntry.Open())
         {
             var stylesDoc = XDocument.Load(stylesStream);
@@ -509,14 +509,14 @@ internal static class ExcelReader
                 }
             }
 
-            // Parse table styles: map style name → (headerRow dxfId, totalRow dxfId, wholeTable dxfId, firstColumn dxfId)
-            tableStyleMap = new Dictionary<string, (int, int, int, int)>(StringComparer.OrdinalIgnoreCase);
+            // Parse table styles: map style name → (headerRow dxfId, totalRow dxfId, wholeTable dxfId, firstColumn dxfId, firstRowStripe dxfId)
+            tableStyleMap = new Dictionary<string, (int, int, int, int, int)>(StringComparer.OrdinalIgnoreCase);
             foreach (var ts in stylesDoc.Descendants(ns + "tableStyle"))
             {
                 var name = ts.Attribute("name")?.Value;
                 if (string.IsNullOrEmpty(name)) continue;
 
-                int headerDxf = -1, totalDxf = -1, wholeDxf = -1, firstColDxf = -1;
+                int headerDxf = -1, totalDxf = -1, wholeDxf = -1, firstColDxf = -1, firstRowStripeDxf = -1;
                 foreach (var tse in ts.Elements(ns + "tableStyleElement"))
                 {
                     var type = tse.Attribute("type")?.Value;
@@ -526,9 +526,10 @@ internal static class ExcelReader
                         else if (type == "totalRow") totalDxf = dxfId;
                         else if (type == "wholeTable") wholeDxf = dxfId;
                         else if (type == "firstColumn") firstColDxf = dxfId;
+                        else if (type == "firstRowStripe") firstRowStripeDxf = dxfId;
                     }
                 }
-                tableStyleMap[name] = (headerDxf, totalDxf, wholeDxf, firstColDxf);
+                tableStyleMap[name] = (headerDxf, totalDxf, wholeDxf, firstColDxf, firstRowStripeDxf);
             }
         }
 
@@ -541,6 +542,7 @@ internal static class ExcelReader
             int headerRowCount = 1;
             int totalsRowCount = 0;
             bool showFirstColumn = false;
+            bool showRowStripes = false;
             using (var tableStream = tableEntry.Open())
             {
                 var tableDoc = XDocument.Load(tableStream);
@@ -554,7 +556,10 @@ internal static class ExcelReader
                 var styleInfo = tableDoc.Root?.Descendants().FirstOrDefault(e => e.Name.LocalName == "tableStyleInfo");
                 styleName = styleInfo?.Attribute("name")?.Value;
                 if (styleInfo != null)
+                {
                     showFirstColumn = styleInfo.Attribute("showFirstColumn")?.Value == "1";
+                    showRowStripes = styleInfo.Attribute("showRowStripes")?.Value == "1";
+                }
             }
 
             if (string.IsNullOrEmpty(refAttr)) continue;
@@ -570,6 +575,7 @@ internal static class ExcelReader
             (bool? Bold, PdfColor? FillColor) totalStyle = (true, null);
             (bool? Bold, PdfColor? FillColor) wholeStyle = (null, null);
             (bool? Bold, PdfColor? FillColor) firstColStyle = (null, null);
+            PdfColor? firstRowStripeFill = null;
 
             if (!string.IsNullOrEmpty(styleName) && tableStyleMap.TryGetValue(styleName, out var dxfIds))
             {
@@ -588,6 +594,8 @@ internal static class ExcelReader
                     wholeStyle = dxfInfos[dxfIds.WholeDxf];
                 if (dxfIds.FirstColDxf >= 0 && dxfIds.FirstColDxf < dxfInfos.Count)
                     firstColStyle = dxfInfos[dxfIds.FirstColDxf];
+                if (dxfIds.FirstRowStripeDxf >= 0 && dxfIds.FirstRowStripeDxf < dxfInfos.Count)
+                    firstRowStripeFill = dxfInfos[dxfIds.FirstRowStripeDxf].FillColor;
             }
 
             void ApplyStyle(List<ExcelCell> row, int c, bool? bold, PdfColor? fill)
@@ -600,7 +608,7 @@ internal static class ExcelReader
                     row[c] = cell with { Bold = newBold, FillColor = newFill };
             }
 
-            // Header rows
+            // Header rows: apply table headerRow bold and fill.
             for (var r = startRow; r < startRow + headerRowCount && r <= endRow && r < rows.Count; r++)
             {
                 for (var c = startCol; c <= endCol; c++)
@@ -617,13 +625,36 @@ internal static class ExcelReader
                 }
             }
 
-            // Data rows: apply wholeTable fill (if the cell doesn't already have fill)
+            // Data rows: apply wholeTable fill and row stripe banding
             var dataStart = startRow + headerRowCount;
             var dataEnd = totalsRowCount > 0 ? endRow - totalsRowCount : endRow;
             for (var r = dataStart; r <= dataEnd && r < rows.Count; r++)
             {
+                var dataRowIndex = r - dataStart;
+                var isFirstStripe = showRowStripes && firstRowStripeFill != null && (dataRowIndex % 2 == 0);
+
                 for (var c = startCol; c <= endCol; c++)
-                    ApplyStyle(rows[r], c, wholeStyle.Bold, wholeStyle.FillColor);
+                {
+                    if (c >= rows[r].Count) continue;
+                    var cell = rows[r][c];
+                    PdfColor? newFill = cell.FillColor;
+
+                    if (isFirstStripe)
+                    {
+                        // Banded row: apply firstRowStripe fill when cell has no
+                        // fill or its fill matches the wholeTable default.
+                        if (newFill == null || ColorsMatch(newFill, wholeStyle.FillColor))
+                            newFill = firstRowStripeFill;
+                    }
+                    else if (wholeStyle.FillColor != null && newFill == null)
+                    {
+                        newFill = wholeStyle.FillColor;
+                    }
+
+                    var newBold = wholeStyle.Bold == true && !cell.Bold ? true : cell.Bold;
+                    if (newBold != cell.Bold || newFill != cell.FillColor)
+                        rows[r][c] = cell with { Bold = newBold, FillColor = newFill };
+                }
             }
 
             // First column: apply firstColumn DXF style (when showFirstColumn)
@@ -634,6 +665,15 @@ internal static class ExcelReader
             }
         }
     }
+
+    /// <summary>
+    /// Compares two PdfColor values allowing a small tolerance for theme rounding.
+    /// </summary>
+    private static bool ColorsMatch(PdfColor? a, PdfColor? b)
+        => a.HasValue && b.HasValue
+            && Math.Abs(a.Value.R - b.Value.R) <= 0.02f
+            && Math.Abs(a.Value.G - b.Value.G) <= 0.02f
+            && Math.Abs(a.Value.B - b.Value.B) <= 0.02f;
 
     /// <summary>
     /// Reads cellXf style entries from styles.xml.
