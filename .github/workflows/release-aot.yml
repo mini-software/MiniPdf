@@ -29,6 +29,7 @@ jobs:
           - os: ubuntu-22.04
             rid: linux-arm64
             artifact: minipdf-linux-arm64.tar.gz
+            extra_args: -p:ObjCopyName=aarch64-linux-gnu-objcopy
           - os: macos-latest
             rid: osx-x64
             artifact: minipdf-osx-x64.tar.gz
@@ -69,6 +70,7 @@ jobs:
           -c Release
           -r ${{ matrix.rid }}
           -o publish
+          ${{ matrix.extra_args }}
 
       - name: Package (Windows)
         if: runner.os == 'Windows'
