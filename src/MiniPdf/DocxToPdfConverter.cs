@@ -473,6 +473,7 @@ internal static class DocxToPdfConverter
         public bool IsTopOfPage { get; set; } = true;
         public float LastParagraphStartY { get; set; }
         public float LastLineHeight { get; set; }
+        public bool LastParagraphWasEmpty { get; set; }
         /// <summary>
         /// Accumulated vertical space from empty paragraphs that overflowed past
         /// the bottom margin.  Applied at the top of the next page so that spacing
@@ -657,8 +658,10 @@ internal static class DocxToPdfConverter
         var options = state.Options;
         var fontSize = paragraph.FontSize > 0 ? paragraph.FontSize : options.FontSize;
         // Font metrics factor: single-spaced line height ≈ fontSize × FontMetricsFactor
-        // Use font-specific factor based on the dominant run font
-        var paraFontName = paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
+        // Use font-specific factor based on the dominant run font, falling back to
+        // the paragraph mark font (pPr/rPr/rFonts) for empty paragraphs.
+        var paraFontName = paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName
+                        ?? paragraph.ParagraphFontName;
         var metricsFactor = GetFontMetricsFactor(paraFontName);
         float lineHeight;
         if (paragraph.LineSpacingAbsolute && paragraph.LineSpacing > 0)
@@ -744,6 +747,7 @@ internal static class DocxToPdfConverter
             }
             state.LastLineHeight = lineHeight;
             state.LastSpacingAfter = spacingAfterEmpty;
+            state.LastParagraphWasEmpty = true;
             if (paragraph.HasPageBreakAfter)
                 state.ForceNewPage();
             return;
@@ -799,8 +803,10 @@ internal static class DocxToPdfConverter
         // When a paragraph's auto line height exceeds the previous paragraph's line
         // height, the baseline distance must match the larger value to prevent text
         // overlap (e.g., 36pt text following a 16pt paragraph).
+        // Skip this compensation when the previous paragraph was empty, as empty
+        // paragraphs have no visible content that could overlap.
         if (!wasTopOfPage && !paragraph.LineSpacingAbsolute && state.LastLineHeight > 0
-            && lineHeight > state.LastLineHeight)
+            && lineHeight > state.LastLineHeight && !state.LastParagraphWasEmpty)
         {
             state.AdvanceY(lineHeight - state.LastLineHeight);
         }
@@ -914,6 +920,7 @@ internal static class DocxToPdfConverter
             var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             state.AdvanceY(spacingAfterEmpty);
             state.LastSpacingAfter = spacingAfterEmpty;
+            state.LastParagraphWasEmpty = true;
 
             // Handle page break after (even for empty paragraphs)
             if (paragraph.HasPageBreakAfter)
@@ -1133,6 +1140,7 @@ internal static class DocxToPdfConverter
         state.LastSpacingAfter = spacingAfter;
 
         state.LastLineHeight = lineHeight;
+        state.LastParagraphWasEmpty = false;
 
         // Handle page break after
         if (paragraph.HasPageBreakAfter)

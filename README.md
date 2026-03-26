@@ -18,6 +18,12 @@ English | <a href="README.zh-CN.md">简体中文</a> | <a href="documents/README
 
 ---
 
+<div align="center">
+ Your <a href="https://github.com/mini-software/MiniPdf">Stars</a> or <a href="https://mini-software.github.io/">Donations</a> can make MiniPDF better
+</div>
+
+---
+
 A minimal, lightweight .NET library for converting office files to PDF.
 
 👉 **[Online Demo](https://mini-software.github.io/MiniPdf/)** — Try it in your browser, no install required.

@@ -438,6 +438,7 @@ internal static class DocxReader
         float charSpacing = 0;
         int firstLineChars = 0;
         bool paragraphMarkUnderline = false;
+        string? paragraphMarkFontName = null;
 
         if (pPr != null)
         {
@@ -601,6 +602,15 @@ internal static class DocxReader
                     if (!string.IsNullOrEmpty(pMarkUVal) && pMarkUVal != "none")
                         paragraphMarkUnderline = true;
                 }
+                // Paragraph mark font name (used for empty paragraph line height)
+                var pMarkRFonts = rPr.Element(W + "rFonts");
+                if (pMarkRFonts != null)
+                {
+                    var pMarkFont = pMarkRFonts.Attribute(W + "ascii")?.Value
+                                 ?? pMarkRFonts.Attribute(W + "hAnsi")?.Value;
+                    if (!string.IsNullOrEmpty(pMarkFont))
+                        paragraphMarkFontName = pMarkFont;
+                }
             }
         }
 
@@ -629,6 +639,9 @@ internal static class DocxReader
             paragraphFontName = styleInfo.FontName;
             if (charSpacing == 0) charSpacing = styleInfo.CharSpacing;
         }
+        // Paragraph mark font overrides style font for line height calculation
+        if (!string.IsNullOrEmpty(paragraphMarkFontName))
+            paragraphFontName = paragraphMarkFontName;
         // Paragraph-level contextualSpacing overrides style
         if (pPr?.Element(W + "contextualSpacing") != null)
             contextualSpacing = true;
@@ -763,7 +776,8 @@ internal static class DocxReader
             bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops,
             sectionBreakLayout, borders, shapes.Count > 0 ? shapes : null,
             ContextualSpacing: contextualSpacing, SnapToGrid: snapToGrid,
-            ParagraphMarkUnderline: paragraphMarkUnderline);
+            ParagraphMarkUnderline: paragraphMarkUnderline,
+            ParagraphFontName: paragraphFontName);
     }
 
     /// <summary>
@@ -2962,7 +2976,8 @@ internal sealed record DocxParagraph(
     List<DocxFloatingTextBox>? FloatingTextBoxes = null,
     bool IsTextBoxFlow = false,
     float TextBoxWidth = 0,
-    bool ParagraphMarkUnderline = false
+    bool ParagraphMarkUnderline = false,
+    string? ParagraphFontName = null
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>

@@ -439,6 +439,87 @@ def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str,
     return diff_images
 
 
+def validate_pdf_structure(pdf_path: str) -> dict:
+    """Validate PDF internal structure: xref offsets, stream lengths, header/trailer.
+
+    Returns a dict with:
+      - valid (bool): True if no structural errors found
+      - errors (list[str]): descriptions of any issues detected
+    """
+    errors = []
+    try:
+        with open(pdf_path, "rb") as f:
+            raw = f.read()
+    except Exception as e:
+        return {"valid": False, "errors": [f"Cannot read file: {e}"]}
+
+    text = raw.decode("latin-1")
+
+    # 1. Header check
+    if not text.startswith("%PDF-"):
+        errors.append("Missing %PDF- header")
+
+    # 2. EOF check
+    if "%%EOF" not in text[-64:]:
+        errors.append("Missing %%EOF at end of file")
+
+    # 3. Find xref table via startxref pointer
+    m_startxref = re.search(r"startxref\s+(\d+)\s+%%EOF", text)
+    if not m_startxref:
+        errors.append("Cannot locate startxref pointer")
+        return {"valid": len(errors) == 0, "errors": errors}
+
+    xref_offset = int(m_startxref.group(1))
+    if not text[xref_offset:].startswith("xref\n"):
+        errors.append(f"startxref offset {xref_offset} does not point to 'xref' keyword")
+        return {"valid": False, "errors": errors}
+
+    # 4. Parse xref entries and validate offsets
+    xref_section = text[xref_offset:]
+    trailer_pos = xref_section.find("trailer")
+    if trailer_pos < 0:
+        errors.append("No trailer found after xref")
+        return {"valid": False, "errors": errors}
+
+    xref_body = xref_section[:trailer_pos].strip()
+    xref_lines = xref_body.split("\n")
+    if len(xref_lines) < 2:
+        errors.append("xref table too short")
+        return {"valid": False, "errors": errors}
+
+    parts = xref_lines[1].split()
+    start_obj = int(parts[0])
+    num_objs = int(parts[1])
+
+    for idx in range(2, min(2 + num_objs, len(xref_lines))):
+        entry = xref_lines[idx]
+        if "f" in entry:
+            continue
+        offset = int(entry[:10])
+        obj_num = start_obj + idx - 2
+        # Verify the bytes at this offset start with "N 0 obj"
+        actual = raw[offset : offset + len(str(obj_num)) + 6].decode("latin-1", errors="replace")
+        expected = f"{obj_num} 0 obj"
+        if not actual.startswith(expected):
+            errors.append(f"xref obj {obj_num}: offset {offset} -> found {actual!r}, expected {expected!r}")
+
+    # 5. Validate stream lengths
+    for m in re.finditer(r"/Length (\d+)\s*>>(?:\n|\r\n?)stream(?:\n|\r\n?)", text):
+        declared = int(m.group(1))
+        stream_start = m.end()
+        endstream_pos = raw.find(b"\nendstream", stream_start)
+        if endstream_pos < 0:
+            endstream_pos = raw.find(b"\r\nendstream", stream_start)
+        if endstream_pos < 0:
+            errors.append(f"Missing endstream for stream at offset {stream_start}")
+            continue
+        actual_len = endstream_pos - stream_start
+        if declared != actual_len:
+            errors.append(f"Stream at {stream_start}: declared length {declared}, actual {actual_len}")
+
+    return {"valid": len(errors) == 0, "errors": errors}
+
+
 def compare_single(minipdf_path: str, reference_path: str, report_images_dir: str, name: str,
                    ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 1.01,
                    office_path=None) -> dict:
@@ -462,6 +543,13 @@ def compare_single(minipdf_path: str, reference_path: str, report_images_dir: st
     # File sizes
     result["minipdf_size"] = os.path.getsize(minipdf_path)
     result["reference_size"] = os.path.getsize(reference_path)
+
+    # PDF structure validation (xref offsets, stream lengths)
+    validity = validate_pdf_structure(minipdf_path)
+    result["pdf_valid"] = validity["valid"]
+    if not validity["valid"]:
+        result["pdf_errors"] = validity["errors"]
+        print(f"  ⚠ PDF structure errors in {name}: {validity['errors'][:3]}")
 
     # Page counts
     if HAS_FITZ:
@@ -623,11 +711,12 @@ def generate_report(results: list[dict], report_dir: str):
 
         # Summary table
         f.write("## Summary\n\n")
-        f.write("| # | Test Case | Text Sim | Visual Avg | Pages (M/R) | Overall |\n")
-        f.write("|---|-----------|----------|------------|-------------|--------|\n")
+        f.write("| # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |\n")
+        f.write("|---|-----------|-------|----------|------------|-------------|--------|\n")
 
         for i, r in enumerate(results, 1):
             name = r["name"]
+            pdf_valid = "✅" if r.get("pdf_valid", True) else "❌"
             text_sim = r.get("text_similarity", "N/A")
             vis_avg = r.get("visual_avg", "N/A")
             mp = r.get("minipdf_pages", "?")
@@ -645,7 +734,7 @@ def generate_report(results: list[dict], report_dir: str):
             else:
                 emoji = "⚪"
 
-            f.write(f"| {i} | {emoji} {name} | {text_sim} | {vis_avg} | {mp}/{rp} | **{overall}** |\n")
+            f.write(f"| {i} | {emoji} {name} | {pdf_valid} | {text_sim} | {vis_avg} | {mp}/{rp} | **{overall}** |\n")
 
         avg_overall = sum(r.get("overall_score", 0) for r in results) / len(results) if results else 0
         f.write(f"\n**Average Overall Score: {avg_overall:.4f}**\n\n")

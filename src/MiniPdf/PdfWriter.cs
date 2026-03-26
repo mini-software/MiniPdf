@@ -61,6 +61,8 @@ internal sealed class PdfWriter
         var boldPreferredFontNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         // Track preferred font names that also need an italic variant embedded.
         var italicPreferredFontNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        // Track preferred font names that need a bold italic variant embedded.
+        var boldItalicPreferredFontNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var page in pages)
             foreach (var block in page.TextBlocks)
             {
@@ -94,6 +96,8 @@ internal sealed class PdfWriter
                                 boldPreferredFontNames.Add(block.PreferredFontName!);
                             if (block.Italic)
                                 italicPreferredFontNames.Add(block.PreferredFontName!);
+                            if (block.Bold && block.Italic)
+                                boldItalicPreferredFontNames.Add(block.PreferredFontName!);
                         }
                     }
                 }
@@ -124,6 +128,8 @@ internal sealed class PdfWriter
                         boldPreferredFontNames.Add(block.PreferredFontName!);
                     if (block.Italic)
                         italicPreferredFontNames.Add(block.PreferredFontName!);
+                    if (block.Bold && block.Italic)
+                        boldItalicPreferredFontNames.Add(block.PreferredFontName!);
                 }
             }
 
@@ -253,6 +259,20 @@ internal sealed class PdfWriter
                         loadedPaths.Add(italicPath);
                         if (cpsByPreferredFont.TryGetValue(prefName, out var regularCps))
                             cpsByPreferredFont[italicName] = new HashSet<int>(regularCps);
+                    }
+                }
+
+                // 6) Load bold italic variants for preferred fonts that have both bold and italic text blocks.
+                foreach (var prefName in boldItalicPreferredFontNames)
+                {
+                    var boldItalicName = prefName + " Bold Italic";
+                    var boldItalicPath = FindSystemFontByPreferredName(boldItalicName);
+                    if (boldItalicPath != null && !loadedPaths.Contains(boldItalicPath))
+                    {
+                        LoadFontFile(boldItalicPath);
+                        loadedPaths.Add(boldItalicPath);
+                        if (cpsByPreferredFont.TryGetValue(prefName, out var regularCps))
+                            cpsByPreferredFont[boldItalicName] = new HashSet<int>(regularCps);
                     }
                 }
             }
@@ -574,7 +594,6 @@ internal sealed class PdfWriter
             // Image XObjects
             for (var j = 0; j < page.ImageBlocks.Count; j++)
             {
-                _objectOffsets[imageObjNums[i][j]] = Position;
                 WriteImageXObject(imageObjNums[i][j], page.ImageBlocks[j], imageMaskObjNums[i][j]);
             }
 
@@ -668,6 +687,7 @@ internal sealed class PdfWriter
             dictExtras = "/Filter /FlateDecode\n";
         }
 
+        _objectOffsets[objNum] = Position;
         WriteRaw($"{objNum} 0 obj\n");
         WriteRaw("<< /Type /XObject /Subtype /Image\n");
         WriteRaw($"/Width {width} /Height {height}\n");
@@ -897,6 +917,14 @@ internal sealed class PdfWriter
             if (hasItalicFontVariant && !blockHasEmbeddedPref)
                 blockHasEmbeddedPref = true; // Route through embedded path for italic font
 
+            // Check if a dedicated bold italic font variant is available for this block.
+            var boldItalicFontKey = block.Bold && block.Italic && !string.IsNullOrWhiteSpace(block.PreferredFontName)
+                ? block.PreferredFontName + " Bold Italic" : null;
+            var hasBoldItalicFontVariant = boldItalicFontKey != null && fontNameToSlot != null
+                && fontNameToSlot.ContainsKey(boldItalicFontKey);
+            if (hasBoldItalicFontVariant && !blockHasEmbeddedPref)
+                blockHasEmbeddedPref = true; // Route through embedded path for bold italic font
+
             if (!hasUnicodeFont || (!block.Text.Any(c => !IsWinAnsiHandled(c)) && !blockHasEmbeddedPref))
             {
                 // Pure Latin-1 text (or preferred font not found) — use F1/F1B/F1I/F1BI
@@ -956,7 +984,7 @@ internal sealed class PdfWriter
                 // makes the glyphs appear bolder, matching how PDF viewers handle
                 // bold CJK text when no dedicated bold font file is embedded.
                 // Skip stroke simulation when a dedicated bold font variant is available.
-                if (block.Bold && !hasBoldFontVariant)
+                if (block.Bold && !hasBoldFontVariant && !hasBoldItalicFontVariant)
                 {
                     var strokeW = (block.FontSize * 0.03f).ToString("F2", CultureInfo.InvariantCulture);
                     sb.Append($"{strokeW} w\n");       // stroke width
@@ -998,8 +1026,11 @@ internal sealed class PdfWriter
                 var blockPrefSlot = -1;
                 if (fontNameToSlot != null && !string.IsNullOrWhiteSpace(block.PreferredFontName))
                 {
+                    // Use the bold italic font variant slot if available (highest priority).
+                    if (hasBoldItalicFontVariant)
+                        fontNameToSlot.TryGetValue(boldItalicFontKey!, out blockPrefSlot);
                     // Use the bold font variant slot if available; otherwise fall back to regular.
-                    if (hasBoldFontVariant)
+                    if (blockPrefSlot < 0 && hasBoldFontVariant)
                         fontNameToSlot.TryGetValue(boldFontKey!, out blockPrefSlot);
                     // Use the italic font variant slot if available.
                     if (blockPrefSlot < 0 && hasItalicFontVariant)
