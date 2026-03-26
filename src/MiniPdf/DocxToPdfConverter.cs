@@ -1381,48 +1381,10 @@ internal static class DocxToPdfConverter
         var needsPerLineAlignment = false;
         var isJustified = paragraph.Alignment == "both";
         if (isJustified)
-            {
-                // Keep justify width calculation consistent with wrapping logic so
-                // run boundaries do not accumulate gaps before bold/non-bold segments.
-                static float JustifyEntryWidth((string Text, float X, float Y, float FontSize, PdfColor? Color, bool Bold, bool Italic, bool Underline, float CharSpacing, string? FontName, float? MaxWidth, float? UlWidth) e, bool useCalibri)
-                {
-                    var w = EstimateWrapTextWidth(e.Text, e.FontSize, e.Bold, e.CharSpacing, useCalibri);
-                    if (useCalibri && e.FontName != null
-                        && !e.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
-                    {
-                        w *= e.Bold ? 1.12f : 1.04f;
-                    }
-                    return w;
-                }
-
-                var useCalibriJustify = state.Options.UseCalibriWidths;
-                float totalTextWidth = 0;
-                int totalSpaces = 0;
-                foreach (var e in lineEntries)
-                {
-                    totalTextWidth += JustifyEntryWidth(e, useCalibriJustify);
-                    totalSpaces += e.Text.Count(c => c == ' ');
-                }
-                float justifyWordSpacing = 0;
-                if (!isLastLine && totalSpaces > 0)
-                {
-                    var extraSpace = lw - totalTextWidth;
-                    if (extraSpace > 0)
-                        justifyWordSpacing = extraSpace / totalSpaces;
-                }
-
-                float entryX = lineEntries[0].X;
-                foreach (var e in lineEntries)
-                {
-                    state.CurrentPage!.AddText(e.Text, entryX, e.Y, e.FontSize, e.Color,
-                        bold: e.Bold, italic: e.Italic, underline: e.Underline, charSpacing: e.CharSpacing,
-                        wordSpacing: justifyWordSpacing,
-                        preferredFontName: e.FontName, maxWidth: null, underlineWidth: e.UlWidth);
-                    entryX += JustifyEntryWidth(e, useCalibriJustify)
-                        + justifyWordSpacing * e.Text.Count(c => c == ' ');
-                }
-            }
-            else if (paragraph.Alignment is "center" or "right")
+        {
+            needsPerLineAlignment = true;
+        }
+        else if (paragraph.Alignment is "center" or "right")
         {
             var totalWidth = 0f;
             string? prevRunTextPre = null;
@@ -1484,15 +1446,17 @@ internal static class DocxToPdfConverter
 
             if (isJustified)
             {
-                // Keep justify width calculation consistent with wrapping logic so
-                // run boundaries do not accumulate gaps before bold/non-bold segments.
-                static float JustifyEntryWidth((string Text, float X, float Y, float FontSize, PdfColor? Color, bool Bold, bool Italic, bool Underline, float CharSpacing, string? FontName, float? MaxWidth, float? UlWidth) e, bool useCalibri)
+                // Compute word spacing from Calibri-estimated widths (same as wrapping).
+                // Each entry gets maxWidth so PdfWriter can Tz-scale each run to
+                // exactly its allocated width using the actual embedded font metrics,
+                // eliminating gaps at run boundaries (e.g. regular→bold transitions).
+                static float WrapEntryWidth((string Text, float X, float Y, float FontSize, PdfColor? Color, bool Bold, bool Italic, bool Underline, float CharSpacing, string? FontName, float? MaxWidth, float? UlWidth) e, bool useCalibri)
                 {
                     var w = EstimateWrapTextWidth(e.Text, e.FontSize, e.Bold, e.CharSpacing, useCalibri);
                     if (useCalibri && e.FontName != null
                         && !e.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
                     {
-                        w *= e.Bold ? 1.12f : 1.04f;
+                        w *= e.Bold ? 1.06f : 1.00f;
                     }
                     return w;
                 }
@@ -1502,7 +1466,7 @@ internal static class DocxToPdfConverter
                 int totalSpaces = 0;
                 foreach (var e in lineEntries)
                 {
-                    totalTextWidth += JustifyEntryWidth(e, useCalibriJustify);
+                    totalTextWidth += WrapEntryWidth(e, useCalibriJustify);
                     totalSpaces += e.Text.Count(c => c == ' ');
                 }
                 float justifyWordSpacing = 0;
@@ -1516,11 +1480,12 @@ internal static class DocxToPdfConverter
                 float entryX = lineEntries[0].X;
                 foreach (var e in lineEntries)
                 {
+                    var estW = WrapEntryWidth(e, useCalibriJustify);
                     state.CurrentPage!.AddText(e.Text, entryX, e.Y, e.FontSize, e.Color,
                         bold: e.Bold, italic: e.Italic, underline: e.Underline, charSpacing: e.CharSpacing,
                         wordSpacing: justifyWordSpacing,
-                        preferredFontName: e.FontName, maxWidth: null, underlineWidth: e.UlWidth);
-                    entryX += JustifyEntryWidth(e, useCalibriJustify)
+                        preferredFontName: e.FontName, maxWidth: estW, underlineWidth: e.UlWidth);
+                    entryX += estW
                         + justifyWordSpacing * e.Text.Count(c => c == ' ');
                 }
             }
@@ -1679,7 +1644,7 @@ internal static class DocxToPdfConverter
                 var nonCalibriWidthFactor = 1f;
                 if (useCalibri && run.FontName != null
                     && !run.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
-                    nonCalibriWidthFactor = run.Bold ? 1.12f : 1.04f;
+                    nonCalibriWidthFactor = run.Bold ? 1.06f : 1.00f;
 
                 for (var wi = 0; wi < words.Length; wi++)
                 {

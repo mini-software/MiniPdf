@@ -34,6 +34,12 @@ internal sealed class PdfWriter
         public int[] Bbox = [-166, -225, 1000, 931];
         /// <summary>Maps Unicode code point → CID. BMP chars use identity; non-BMP use PUA slots.</summary>
         public Dictionary<int, int> CpToCid = new();
+        /// <summary>Glyph advance widths indexed by glyph ID (from hmtx table).</summary>
+        public ushort[] Advances = [];
+        /// <summary>Maps Unicode code point → glyph ID (from cmap table).</summary>
+        public Dictionary<int, ushort> Cmap = new();
+        /// <summary>Font units per em (from head table).</summary>
+        public int UnitsPerEm = 1000;
         // PDF object numbers (assigned during Write)
         public int ToUnicodeObj, DescriptorObj, CidFontObj, Type0Obj, FontFileObj, CidToGidObj;
     }
@@ -420,6 +426,9 @@ internal sealed class PdfWriter
                     CapHeight = (int)(capH * scale),
                     Bbox = [.. bbox.Select(v => (int)(v * scale))],
                     CpToCid = cpToCid,
+                    Advances = advances,
+                    Cmap = cmap,
+                    UnitsPerEm = upm,
                 });
             }
 
@@ -992,25 +1001,74 @@ internal sealed class PdfWriter
                     sb.Append("\n");
                     sb.Append("2 Tr\n");               // rendering mode: fill + stroke
                 }
-                // Apply word spacing (Tw) for justified text
-                if (block.WordSpacing != 0)
-                    sb.Append($"{block.WordSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tw\n");
-                // Always set character spacing to prevent Tc from previous
-                // text blocks leaking through the graphics state.
+                // Determine the block's preferred font slot for font-aware
+                // width computation and Tz scaling.
+                var blockPrefSlot = -1;
+                if (fontNameToSlot != null && !string.IsNullOrWhiteSpace(block.PreferredFontName))
+                {
+                    if (hasBoldItalicFontVariant)
+                        fontNameToSlot.TryGetValue(boldItalicFontKey!, out blockPrefSlot);
+                    if (blockPrefSlot < 0 && hasBoldFontVariant)
+                        fontNameToSlot.TryGetValue(boldFontKey!, out blockPrefSlot);
+                    if (blockPrefSlot < 0 && hasItalicFontVariant)
+                        fontNameToSlot.TryGetValue(italicFontKey!, out blockPrefSlot);
+                    if (blockPrefSlot < 0)
+                        fontNameToSlot.TryGetValue(block.PreferredFontName!, out blockPrefSlot);
+                }
+
+                // For CID/Identity-H fonts, Tw (word spacing) does NOT work —
+                // the PDF spec applies Tw only to single-byte 0x20.
+                // Instead: use Tz to correct glyph width (actual vs layout estimate),
+                // and TJ displacement values to add word spacing at space boundaries.
+                // TJ displacements are scaled by Tz/100, so we compensate for that.
+                var wordSpacingTJ = 0; // for CID path only
+                var cidTzPercent = 100.0;
+                {
+                    EmbeddedFontInfo? efForCid = null;
+                    if (blockPrefSlot >= 0 && embeddedFonts != null && blockPrefSlot < embeddedFonts.Count)
+                        efForCid = embeddedFonts[blockPrefSlot];
+                    if (efForCid != null && block.MaxWidth.HasValue)
+                    {
+                        var actualGlyphWidth = MeasureEmbeddedFontWidth(block.Text, block.FontSize, efForCid);
+                        if (actualGlyphWidth > 0)
+                            cidTzPercent = (double)block.MaxWidth.Value / actualGlyphWidth * 100.0;
+                        // Clamp: only compress, never expand beyond 100%
+                        if (cidTzPercent > 100.0) cidTzPercent = 100.0;
+                    }
+                    if (block.WordSpacing > 0)
+                    {
+                        // TJ displacement = -(ws / fontSize / (Tz/100)) * 1000
+                        // because PDF applies × Tz/100 to TJ values in text space
+                        var tzFactor = cidTzPercent / 100.0;
+                        wordSpacingTJ = -(int)Math.Round((double)block.WordSpacing / block.FontSize / tzFactor * 1000.0);
+                    }
+                }
+                // Don't emit Tw for CID path (handled by TJ). Tc is still needed.
                 sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
-                // Apply horizontal scaling if text overflows MaxWidth;
-                // always reset Tz to prevent scaling from previous blocks leaking.
+                // Tz: for CID path, use computed cidTzPercent.
+                // For WinAnsi fallback with no embedded font, keep compress-only Tz.
                 if (block.MaxWidth.HasValue)
                 {
-                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
-                    if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
+                    EmbeddedFontInfo? efForTz = null;
+                    if (blockPrefSlot >= 0 && embeddedFonts != null && blockPrefSlot < embeddedFonts.Count)
+                        efForTz = embeddedFonts[blockPrefSlot];
+                    if (efForTz != null)
                     {
-                        var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
-                        sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
+                        sb.Append($"{cidTzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
                     }
                     else
                     {
-                        sb.Append("100.0 Tz\n");
+                        // Fallback: Helvetica metrics, compress-only Tz
+                        var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
+                        if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
+                        {
+                            var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
+                            sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
+                        }
+                        else
+                        {
+                            sb.Append("100.0 Tz\n");
+                        }
                     }
                 }
                 else
@@ -1021,23 +1079,8 @@ internal sealed class PdfWriter
 
                 // Split text into runs by font slot.  Default all chars to slot 0 (F2).
                 var codePoints = ShapeArabicCodePoints(EnumerateCodePoints(block.Text).ToList());
-                // Per-block font preference: if the block specifies a preferred font,
-                // try to use that font's slot for each codepoint (if the font includes it).
-                var blockPrefSlot = -1;
-                if (fontNameToSlot != null && !string.IsNullOrWhiteSpace(block.PreferredFontName))
-                {
-                    // Use the bold italic font variant slot if available (highest priority).
-                    if (hasBoldItalicFontVariant)
-                        fontNameToSlot.TryGetValue(boldItalicFontKey!, out blockPrefSlot);
-                    // Use the bold font variant slot if available; otherwise fall back to regular.
-                    if (blockPrefSlot < 0 && hasBoldFontVariant)
-                        fontNameToSlot.TryGetValue(boldFontKey!, out blockPrefSlot);
-                    // Use the italic font variant slot if available.
-                    if (blockPrefSlot < 0 && hasItalicFontVariant)
-                        fontNameToSlot.TryGetValue(italicFontKey!, out blockPrefSlot);
-                    if (blockPrefSlot < 0)
-                        fontNameToSlot.TryGetValue(block.PreferredFontName!, out blockPrefSlot);
-                }
+                // Per-block font preference: blockPrefSlot was already determined
+                // above for Tz computation. Re-use it for run assignment.
                 var runs = new List<(int fontSlot, List<int> cps)>();
                 foreach (var cp in codePoints)
                 {
@@ -1062,20 +1105,50 @@ internal sealed class PdfWriter
                 {
                     var fontName = $"F{run.fontSlot + 2}";
                     sb.Append($"/{fontName} {fontSize} Tf\n");
-                    sb.Append('<');
-                    foreach (var cp in run.cps)
+                    // Use TJ (array form) to insert word spacing at space boundaries.
+                    // Tw doesn't work for CID/Identity-H fonts, so we use TJ
+                    // displacement values to add spacing after each space character.
+                    if (wordSpacingTJ != 0)
                     {
-                        // Map code point to CID via the font's CpToCid table
-                        var cid = cp;
-                        if (embeddedFonts != null && run.fontSlot < embeddedFonts.Count)
+                        sb.Append('[');
+                        sb.Append('<');
+                        foreach (var cp in run.cps)
                         {
-                            var ef = embeddedFonts[run.fontSlot];
-                            if (ef.CpToCid.TryGetValue(cp, out var mapped))
-                                cid = mapped;
+                            var cid = cp;
+                            if (embeddedFonts != null && run.fontSlot < embeddedFonts.Count)
+                            {
+                                var ef = embeddedFonts[run.fontSlot];
+                                if (ef.CpToCid.TryGetValue(cp, out var mapped))
+                                    cid = mapped;
+                            }
+                            sb.Append(cid.ToString("X4"));
+                            // Insert TJ displacement after space characters
+                            if (cp == ' ')
+                            {
+                                sb.Append('>');
+                                sb.Append(wordSpacingTJ.ToString(CultureInfo.InvariantCulture));
+                                sb.Append('<');
+                            }
                         }
-                        sb.Append(cid.ToString("X4"));
+                        sb.Append(">] TJ\n");
                     }
-                    sb.Append("> Tj\n");
+                    else
+                    {
+                        // No word spacing — use simple Tj
+                        sb.Append('<');
+                        foreach (var cp in run.cps)
+                        {
+                            var cid = cp;
+                            if (embeddedFonts != null && run.fontSlot < embeddedFonts.Count)
+                            {
+                                var ef = embeddedFonts[run.fontSlot];
+                                if (ef.CpToCid.TryGetValue(cp, out var mapped))
+                                    cid = mapped;
+                            }
+                            sb.Append(cid.ToString("X4"));
+                        }
+                        sb.Append("> Tj\n");
+                    }
                 }
 
                 if (block.Bold)
@@ -1108,6 +1181,24 @@ internal sealed class PdfWriter
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Measures text width using an embedded font's actual glyph advance widths.
+    /// Returns the width in points for the given font size, excluding Tc/Tw contributions.
+    /// </summary>
+    private static double MeasureEmbeddedFontWidth(string text, float fontSize, EmbeddedFontInfo ef)
+    {
+        double total = 0;
+        foreach (var ch in text)
+        {
+            int cp = ch;
+            if (ef.Cmap.TryGetValue(cp, out var gid) && gid < ef.Advances.Length)
+                total += ef.Advances[gid];
+            else
+                total += ef.UnitsPerEm / 2; // fallback: half em
+        }
+        return total * fontSize / ef.UnitsPerEm;
     }
 
     /// <summary>
