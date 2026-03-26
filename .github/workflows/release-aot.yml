@@ -10,8 +10,8 @@ permissions:
 
 jobs:
   build:
-    # Only run when tag starts with 'cli-v' (e.g. cli-v0.1.0)
-    if: startsWith(github.ref_name, 'cli-v') || github.event_name == 'workflow_dispatch'
+    # Run for v* tags (e.g. v0.22.0) or manual dispatch
+    if: startsWith(github.ref_name, 'v') || github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
@@ -64,12 +64,24 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-aarch64-linux-gnu zlib1g-dev:arm64
 
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          if [ -z "$VERSION" ] || [ "$VERSION" = "$TAG" ]; then
+            VERSION="0.0.1"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Publish AOT
         run: >
           dotnet publish src/MiniPdf.Cli/MiniPdf.Cli.csproj
           -c Release
           -r ${{ matrix.rid }}
           -o publish
+          -p:Version=${{ steps.version.outputs.VERSION }}
           ${{ matrix.extra_args }}
 
       - name: Package (Windows)
