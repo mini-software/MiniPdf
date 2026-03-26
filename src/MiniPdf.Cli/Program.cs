@@ -150,8 +150,7 @@ internal sealed class CliApp
 
     private static int ShowVersion()
     {
-        var asm = typeof(MiniPdf).Assembly;
-        var ver = asm.GetName().Version;
+        var ver = typeof(CliApp).Assembly.GetName().Version;
         Console.WriteLine($"minipdf {ver?.ToString(3) ?? "0.0.0"}");
         return 0;
     }
