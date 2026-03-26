@@ -1325,8 +1325,17 @@ internal static class DocxToPdfConverter
                 && !current.IsPageBreak && !next.IsPageBreak
                 && !current.IsColumnBreak && !next.IsColumnBreak)
             {
-                current = new DocxRun(current.Text + next.Text, current.Bold, current.Italic || next.Italic,
-                    current.FontSize, current.Color, false, current.Underline, current.CharSpacing, current.FontName,
+                // When the current run is whitespace-only, adopt the next run's
+                // visual formatting so that following non-whitespace text retains
+                // its bold/color/font (whitespace is format-agnostic).
+                var useBold = isCurWhitespace ? next.Bold : current.Bold;
+                var useItalic = isCurWhitespace ? (current.Italic || next.Italic) : (current.Italic || next.Italic);
+                var useColor = isCurWhitespace ? next.Color : current.Color;
+                var useUnderline = isCurWhitespace ? next.Underline : current.Underline;
+                var useCharSpacing = isCurWhitespace ? next.CharSpacing : current.CharSpacing;
+                var useFontName = isCurWhitespace ? next.FontName : current.FontName;
+                current = new DocxRun(current.Text + next.Text, useBold, useItalic,
+                    current.FontSize, useColor, false, useUnderline, useCharSpacing, useFontName,
                     VerticalPosition: current.VerticalPosition);
             }
             else
@@ -1370,7 +1379,50 @@ internal static class DocxToPdfConverter
         // renders each run individually without Tz compression, so positioning
         // must match the actual rendered (Helvetica) glyph widths.
         var needsPerLineAlignment = false;
-        if (paragraph.Alignment is "center" or "right")
+        var isJustified = paragraph.Alignment == "both";
+        if (isJustified)
+            {
+                // Keep justify width calculation consistent with wrapping logic so
+                // run boundaries do not accumulate gaps before bold/non-bold segments.
+                static float JustifyEntryWidth((string Text, float X, float Y, float FontSize, PdfColor? Color, bool Bold, bool Italic, bool Underline, float CharSpacing, string? FontName, float? MaxWidth, float? UlWidth) e, bool useCalibri)
+                {
+                    var w = EstimateWrapTextWidth(e.Text, e.FontSize, e.Bold, e.CharSpacing, useCalibri);
+                    if (useCalibri && e.FontName != null
+                        && !e.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
+                    {
+                        w *= e.Bold ? 1.12f : 1.04f;
+                    }
+                    return w;
+                }
+
+                var useCalibriJustify = state.Options.UseCalibriWidths;
+                float totalTextWidth = 0;
+                int totalSpaces = 0;
+                foreach (var e in lineEntries)
+                {
+                    totalTextWidth += JustifyEntryWidth(e, useCalibriJustify);
+                    totalSpaces += e.Text.Count(c => c == ' ');
+                }
+                float justifyWordSpacing = 0;
+                if (!isLastLine && totalSpaces > 0)
+                {
+                    var extraSpace = lw - totalTextWidth;
+                    if (extraSpace > 0)
+                        justifyWordSpacing = extraSpace / totalSpaces;
+                }
+
+                float entryX = lineEntries[0].X;
+                foreach (var e in lineEntries)
+                {
+                    state.CurrentPage!.AddText(e.Text, entryX, e.Y, e.FontSize, e.Color,
+                        bold: e.Bold, italic: e.Italic, underline: e.Underline, charSpacing: e.CharSpacing,
+                        wordSpacing: justifyWordSpacing,
+                        preferredFontName: e.FontName, maxWidth: null, underlineWidth: e.UlWidth);
+                    entryX += JustifyEntryWidth(e, useCalibriJustify)
+                        + justifyWordSpacing * e.Text.Count(c => c == ' ');
+                }
+            }
+            else if (paragraph.Alignment is "center" or "right")
         {
             var totalWidth = 0f;
             string? prevRunTextPre = null;
@@ -1425,28 +1477,75 @@ internal static class DocxToPdfConverter
                     preferredFontName: bfontName, maxWidth: bmaxW, underlineWidth: bulW);
         }
 
-        void FlushLineEntries()
+        void FlushLineEntries(bool isLastLine = false)
         {
             if (lineEntries == null || lineEntries.Count == 0) return;
-            // Compute actual line content width from buffered entries
-            float minX = float.MaxValue, maxEndX = 0;
-            foreach (var e in lineEntries)
-            {
-                if (e.X < minX) minX = e.X;
-                var w = EstimateWrapTextWidth(e.Text, e.FontSize, e.Bold, e.CharSpacing, false);
-                var endX = e.X + w;
-                if (endX > maxEndX) maxEndX = endX;
-            }
-            var lineTextWidth = maxEndX - minX;
             var lw = isFirstLine ? firstLineWidth : availableWidth;
-            var shift = paragraph.Alignment == "center"
-                ? Math.Max(0, (lw - lineTextWidth) / 2f)
-                : Math.Max(0, lw - lineTextWidth);
-            foreach (var e in lineEntries)
+
+            if (isJustified)
             {
-                state.CurrentPage!.AddText(e.Text, e.X + shift, e.Y, e.FontSize, e.Color,
-                    bold: e.Bold, italic: e.Italic, underline: e.Underline, charSpacing: e.CharSpacing,
-                    preferredFontName: e.FontName, maxWidth: e.MaxWidth, underlineWidth: e.UlWidth);
+                // Keep justify width calculation consistent with wrapping logic so
+                // run boundaries do not accumulate gaps before bold/non-bold segments.
+                static float JustifyEntryWidth((string Text, float X, float Y, float FontSize, PdfColor? Color, bool Bold, bool Italic, bool Underline, float CharSpacing, string? FontName, float? MaxWidth, float? UlWidth) e, bool useCalibri)
+                {
+                    var w = EstimateWrapTextWidth(e.Text, e.FontSize, e.Bold, e.CharSpacing, useCalibri);
+                    if (useCalibri && e.FontName != null
+                        && !e.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
+                    {
+                        w *= e.Bold ? 1.12f : 1.04f;
+                    }
+                    return w;
+                }
+
+                var useCalibriJustify = state.Options.UseCalibriWidths;
+                float totalTextWidth = 0;
+                int totalSpaces = 0;
+                foreach (var e in lineEntries)
+                {
+                    totalTextWidth += JustifyEntryWidth(e, useCalibriJustify);
+                    totalSpaces += e.Text.Count(c => c == ' ');
+                }
+                float justifyWordSpacing = 0;
+                if (!isLastLine && totalSpaces > 0)
+                {
+                    var extraSpace = lw - totalTextWidth;
+                    if (extraSpace > 0)
+                        justifyWordSpacing = extraSpace / totalSpaces;
+                }
+
+                float entryX = lineEntries[0].X;
+                foreach (var e in lineEntries)
+                {
+                    state.CurrentPage!.AddText(e.Text, entryX, e.Y, e.FontSize, e.Color,
+                        bold: e.Bold, italic: e.Italic, underline: e.Underline, charSpacing: e.CharSpacing,
+                        wordSpacing: justifyWordSpacing,
+                        preferredFontName: e.FontName, maxWidth: null, underlineWidth: e.UlWidth);
+                    entryX += JustifyEntryWidth(e, useCalibriJustify)
+                        + justifyWordSpacing * e.Text.Count(c => c == ' ');
+                }
+            }
+            else
+            {
+                // For center/right alignment, use original positioning logic
+                float minX = float.MaxValue, maxEndX = 0;
+                foreach (var e in lineEntries)
+                {
+                    if (e.X < minX) minX = e.X;
+                    var w = EstimateWrapTextWidth(e.Text, e.FontSize, e.Bold, e.CharSpacing, false);
+                    var endX = e.X + w;
+                    if (endX > maxEndX) maxEndX = endX;
+                }
+                var lineTextWidth = maxEndX - minX;
+                var shift = paragraph.Alignment == "center"
+                    ? Math.Max(0, (lw - lineTextWidth) / 2f)
+                    : Math.Max(0, lw - lineTextWidth);
+                foreach (var e in lineEntries)
+                {
+                    state.CurrentPage!.AddText(e.Text, e.X + shift, e.Y, e.FontSize, e.Color,
+                        bold: e.Bold, italic: e.Italic, underline: e.Underline, charSpacing: e.CharSpacing,
+                        wordSpacing: 0,
+                        preferredFontName: e.FontName, maxWidth: e.MaxWidth, underlineWidth: e.UlWidth);
+                }
             }
             lineEntries.Clear();
         }
@@ -1572,10 +1671,20 @@ internal static class DocxToPdfConverter
                 var pendingText = "";
                 var pendingX = currentX;
 
+                // When wrapping uses Calibri widths but the run's actual font is
+                // non-Calibri (e.g. Times New Roman), glyph widths differ —
+                // especially uppercase letters which are substantially wider in
+                // serif fonts. Apply a correction factor so wrapping decisions
+                // better match the actual font width.
+                var nonCalibriWidthFactor = 1f;
+                if (useCalibri && run.FontName != null
+                    && !run.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
+                    nonCalibriWidthFactor = run.Bold ? 1.12f : 1.04f;
+
                 for (var wi = 0; wi < words.Length; wi++)
                 {
                     var word = words[wi];
-                    var wordWidth = EstimateWrapTextWidth(word, runFs, run.Bold, run.CharSpacing, useCalibri);
+                    var wordWidth = EstimateWrapTextWidth(word, runFs, run.Bold, run.CharSpacing, useCalibri) * nonCalibriWidthFactor;
                     var spaceWidth = wi > 0
                         ? effectiveSpaceWidth + run.CharSpacing
                         : 0;
@@ -1666,7 +1775,7 @@ internal static class DocxToPdfConverter
                                 : runFs * AscentRatio;
                             state.AdvanceY(cjkBrkAscentOffset);
                         }
-                        currentX = baseX + EstimateWrapTextWidth(pendingText, runFs, run.Bold, run.CharSpacing, useCalibri);
+                        currentX = baseX + EstimateWrapTextWidth(pendingText, runFs, run.Bold, run.CharSpacing, useCalibri) * nonCalibriWidthFactor;
                         pendingX = baseX;
                         isFirstLine = false;
                     }
@@ -1692,7 +1801,7 @@ internal static class DocxToPdfConverter
             }
         }
 
-        FlushLineEntries();
+        FlushLineEntries(isLastLine: true);
         state.AdvanceY(lineHeight);
     }
 
@@ -2418,8 +2527,55 @@ internal static class DocxToPdfConverter
             state.AdvanceY(rowHeight);
         }
 
-        // Add some spacing after table
-        state.AdvanceY(2f);
+        // After table, add spacing to prevent the next paragraph's text from
+        // overlapping with table cell content.  Table cells position the first
+        // text baseline at (cellTop - fontSize), leaving only
+        // (lineHeight - fontSize + cellPaddingV) between the last baseline and
+        // the row bottom.  For text-only rows the gap can be as small as ~1 pt,
+        // while image-heavy rows naturally provide a large gap.  Compute the
+        // natural gap for the last row and add a deficit only when needed.
+        if (table.Rows.Count > 0)
+        {
+            var lastRowIdx = table.Rows.Count - 1;
+            var lastRow = table.Rows[lastRowIdx];
+            var lastRowHeight = rowHeights[lastRowIdx];
+            float maxTextContentH = 0;
+            var colIdx2 = 0;
+            for (var ci = 0; ci < lastRow.Cells.Count && colIdx2 < colWidths.Length; ci++)
+            {
+                var cell = lastRow.Cells[ci];
+                var span = cell.GridSpan;
+                var cw = colWidths[colIdx2];
+                for (var s = 1; s < span && colIdx2 + s < colWidths.Length; s++)
+                    cw += colWidths[colIdx2 + s];
+                colIdx2 += span;
+                if (!cell.IsVMergeContinue)
+                {
+                    // Only consider cells that contain visible text –
+                    // image-only cells do not contribute a text baseline
+                    // near the row bottom and should not shrink the gap.
+                    var hasText = false;
+                    foreach (var p in cell.Paragraphs)
+                        foreach (var r in p.Runs)
+                            if (!string.IsNullOrEmpty(r.Text)) { hasText = true; break; }
+                    if (hasText)
+                    {
+                        var ch = CalculateCellContentHeight(cell, cw, cellPaddingH, cellPaddingV, options);
+                        maxTextContentH = Math.Max(maxTextContentH, ch);
+                    }
+                }
+            }
+            // naturalGap: distance from the tallest *text* cell's content
+            // to the row bottom (rowHeight - textContentHeight + cellPaddingV).
+            // Image-only cells are excluded so they don't mask a tight text fit.
+            var naturalGap = lastRowHeight - maxTextContentH + cellPaddingV;
+            var postTableGap = Math.Max(2f, options.FontSize - naturalGap);
+            state.AdvanceY(postTableGap);
+        }
+        else
+        {
+            state.AdvanceY(2f);
+        }
     }
 
     private static float[] CalculateTableColumnWidths(DocxTable table, float usableWidth)
@@ -2838,6 +2994,10 @@ internal static class DocxToPdfConverter
         if (useCalibriWidths)
             return EstimateCalibrTextWidth(text, fontSize, bold, charSpacing);
         var rawWidth = EstimateTextWidth(text, fontSize, charSpacing);
+        // Bold text in serif fonts (e.g. Times New Roman) is typically ~5% wider
+        // than regular weight. Without this, bold keywords fits too easily on a
+        // line, causing fewer word-wrap breaks than the reference document.
+        if (bold) rawWidth *= 1.10f;
         // Helvetica Latin metrics are wider than common CJK-Latin fonts
         // (PMingLiU, SimSun, etc.) which use narrower Latin glyphs.
         // Reduce the Latin portion to better match actual document font wrapping.
@@ -2907,6 +3067,21 @@ internal static class DocxToPdfConverter
             }
         }
         return uppercase ? sb.ToString().ToUpperInvariant() : sb.ToString();
+    }
+
+    /// <summary>
+    /// Computes the actual rendered width matching PdfWriter.MeasureTextWidth,
+    /// using HelveticaBold metrics for bold text (no Latin fraction reduction).
+    /// </summary>
+    private static float EstimateRenderedWidth(string text, float fontSize, bool bold, float charSpacing = 0)
+    {
+        float totalUnits = 0;
+        foreach (var ch in text)
+            totalUnits += bold ? PdfWriter.HelveticaBoldCharWidth(ch) : GetHelveticaCharWidth(ch);
+        var width = fontSize * totalUnits / 1000f;
+        if (charSpacing != 0 && text.Length > 1)
+            width += charSpacing * (text.Length - 1);
+        return width;
     }
 
     /// <summary>
@@ -2981,7 +3156,9 @@ internal static class DocxToPdfConverter
             else
                 latinUnits += w;
         }
-        // Calibri Bold is ~3% wider than Calibri Regular on average
+        // Calibri Bold is ~3% wider than Calibri Regular on average.
+        // In multi-format paragraphs where runs use non-Calibri fonts (e.g.
+        // Times New Roman Bold), the effective width difference is larger (~8-12%).
         if (bold) latinUnits *= 1.03f;
         // Approximate kerning/hinting reduction: actual rendered text is ~2.3% narrower
         // than raw glyph-width sum due to font-level kerning pairs and grid fitting.
