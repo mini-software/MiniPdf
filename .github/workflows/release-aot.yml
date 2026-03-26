@@ -51,11 +51,15 @@ jobs:
         if: matrix.rid == 'linux-arm64'
         run: |
           sudo dpkg --add-architecture arm64
+          # Add arm64 sources from ports
           sudo bash -c 'cat > /etc/apt/sources.list.d/arm64.list << EOF
           deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs) main restricted universe multiverse
           deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-updates main restricted universe multiverse
+          deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-security main restricted universe multiverse
           EOF'
-          sudo sed -i 's/^deb http/deb [arch=amd64] http/g' /etc/apt/sources.list
+          # Restrict ALL existing sources to amd64 only
+          sudo sed -i 's/^deb \(http\|mirror\)/deb [arch=amd64] \1/g' /etc/apt/sources.list
+          sudo sed -i 's/^deb \(http\|mirror\)/deb [arch=amd64] \1/g' /etc/apt/sources.list.d/*.list 2>/dev/null || true
           sudo apt-get update
           sudo apt-get install -y gcc-aarch64-linux-gnu zlib1g-dev:arm64
 
