@@ -1335,7 +1335,20 @@ internal static class ExcelToPdfConverter
                             // the number to fit the column width, even for the last column.
                             if (!cellText.Contains('\n'))
                                 cellText = FitNumericText(cellText, effectiveWidth, cellFontSizeForFit);
-                            var fitChars = FittingChars(cellText, effectiveWidth, cellFontSizeForFit);
+                            // Subtract indent from available width so text doesn't overflow
+                            // into adjacent columns when rendered at x + indentOff.
+                            var cellIndentPts = (row[col].Indent) * avgCharWidth;
+                            var textAvailWidth = effectiveWidth - cellIndentPts;
+                            // FittingChars applies CalibriFittingScale internally, so it
+                            // underestimates actual Helvetica character widths.  For the
+                            // wrap/clip decision, compensate by passing a narrower target
+                            // so that the check reflects how many characters truly fit
+                            // when rendered.  Using 0.97 (slightly above CalibriFittingScale)
+                            // allows a few more characters per line (closer to Calibri
+                            // line breaks) while cellClipWidth catches any overflow with
+                            // mild Tz horizontal compression.
+                            var renderFitWidth = (float)(textAvailWidth * 0.97);
+                            var fitChars = FittingChars(cellText, renderFitWidth, cellFontSizeForFit);
                             var isLastCol = (i == columns.Length - 1);
 
                             // Find next non-merged column with content
@@ -1355,15 +1368,17 @@ internal static class ExcelToPdfConverter
                             }
                             var nextCellHasContent = nextContentCol >= 0;
 
-                            // When wrapText is set, wrap text within the cell width instead of clipping.
-                            // Don't set cellClipWidth for wrapped text — each line is already
-                            // fitted by WrapCellText. Setting maxWidth would trigger Tz horizontal
-                            // scaling in PdfWriter, which uses raw Helvetica widths that differ
-                            // from the CalibriFittingScale used for wrapping, causing ~15%
-                            // over-compression of the rendered text.
+                            // When wrapText is set, always set cellClipWidth so that
+                            // PdfWriter can apply Tz horizontal scaling if any line
+                            // overflows the column.  FittingChars uses CalibriFittingScale
+                            // (0.85×) which may allow more characters than actually fit
+                            // when rendered in Helvetica.
+                            if (row[col].WrapText)
+                                cellClipWidth[i] = (float)textAvailWidth;
+
                             if (row[col].WrapText && fitChars < cellText.Length)
                             {
-                                cellLines[i] = WrapCellText(cellText, effectiveWidth, cellFontSizeForFit);
+                                cellLines[i] = WrapCellText(cellText, renderFitWidth, cellFontSizeForFit);
                             }
                             else
                             {
@@ -1375,7 +1390,7 @@ internal static class ExcelToPdfConverter
                                 // because FittingChars uses CalibriFittingScale (0.85×).
                                 if (shouldClip)
                                 {
-                                    fitChars = FittingChars(cellText, effectiveWidth, cellFontSizeForFit);
+                                    fitChars = FittingChars(cellText, textAvailWidth, cellFontSizeForFit);
                                 }
                                 if (shouldClip && cellText.Length > fitChars)
                                 {
@@ -1772,6 +1787,7 @@ internal static class ExcelToPdfConverter
                 }
 
                 var isBold = ShouldUsePdfBold(cell?.Bold ?? false, cellFontSize, cell?.FontName);
+                var boldPrefixRemaining = cell?.BoldPrefixLength ?? 0;
                 var indentOff = (cell?.Indent ?? 0) * avgCharWidth;
                 // For accounting format, reserve space for the left-aligned prefix
                 // so the right-aligned number doesn't overlap it.
@@ -1804,11 +1820,62 @@ internal static class ExcelToPdfConverter
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize, bold: isBold);
                             textX = x + (cellWidth - textWidth) / 2f;
                         }
-                        currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color,
-                            maxWidth: lineMaxWidth,
-                            bold: isBold,
-                            underline: cell?.Underline ?? false,
-                            preferredFontName: cell?.FontName);
+
+                        // Rich text: render bold prefix and normal suffix separately
+                        if (boldPrefixRemaining > 0 && !isBold)
+                        {
+                            var lineText = lines[lineIdx];
+                            var boldLen = Math.Min(boldPrefixRemaining, lineText.Length);
+                            var boldPart = lineText[..boldLen];
+                            var normalPart = boldLen < lineText.Length ? lineText[boldLen..] : null;
+                            // If normal text starts with a space, skip it and add an
+                            // explicit gap so the space renders between the two AddText
+                            // calls rather than being compressed by Tz scaling.
+                            float spaceGap = 0;
+                            if (normalPart != null && normalPart.Length > 0 && normalPart[0] == ' ')
+                            {
+                                spaceGap = (float)MeasureHelveticaWidth(" ", cellFontSize, bold: false);
+                                normalPart = normalPart[1..];
+                                if (normalPart.Length == 0) normalPart = null;
+                            }
+
+                            // Measure bold width using Helvetica Bold metrics.
+                            // Set maxWidth=boldWidth so PdfWriter Tz-compresses the
+                            // actual rendered font (e.g. Verdana-Bold) to exactly this
+                            // width, preventing overlap with the normal text.
+                            var boldWidth = (float)MeasureHelveticaWidth(boldPart, cellFontSize, bold: true);
+
+                            currentPage!.AddText(boldPart, textX, cellY, cellFontSize, color,
+                                maxWidth: boldWidth,
+                                bold: true,
+                                underline: cell?.Underline ?? false,
+                                preferredFontName: cell?.FontName);
+
+                            if (normalPart != null)
+                            {
+                                var normalX = textX + boldWidth + spaceGap;
+                                var normalMax = lineMaxWidth > 0 ? lineMaxWidth - boldWidth - spaceGap : 0f;
+                                currentPage!.AddText(normalPart, normalX, cellY, cellFontSize, color,
+                                    maxWidth: normalMax > 0 ? normalMax : 0f,
+                                    bold: false,
+                                    underline: cell?.Underline ?? false,
+                                    preferredFontName: cell?.FontName);
+                            }
+                            boldPrefixRemaining -= boldLen;
+                        }
+                        else
+                        {
+                            currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color,
+                                maxWidth: lineMaxWidth,
+                                bold: isBold,
+                                underline: cell?.Underline ?? false,
+                                preferredFontName: cell?.FontName);
+                        }
+                    }
+                    else
+                    {
+                        // Empty line still consumes bold prefix chars (newline splits)
+                        boldPrefixRemaining = Math.Max(0, boldPrefixRemaining - 1);
                     }
                     cellY -= lineHeight;
                 }

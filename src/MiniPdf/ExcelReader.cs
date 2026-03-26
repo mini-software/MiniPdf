@@ -20,7 +20,7 @@ internal static class ExcelReader
         using var archive = new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen: true);
 
         // Read shared strings table
-        var sharedStrings = ReadSharedStrings(archive);
+        var (sharedStrings, boldPrefixLengths) = ReadSharedStrings(archive);
 
         // Read theme colors and styles
         var themeColors = ReadThemeColors(archive);
@@ -55,7 +55,7 @@ internal static class ExcelReader
 
             if (entry == null) continue;
 
-            var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
+            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
             var images = ReadSheetImages(archive, info.SheetId);
             var drawingShapes = ReadSheetShapes(archive, info.SheetId, themeColors);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
@@ -76,7 +76,7 @@ internal static class ExcelReader
             var entry = archive.GetEntry("xl/worksheets/sheet1.xml");
             if (entry != null)
             {
-                var rows = ReadSheet(entry, sharedStrings, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
+                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
                 var images = ReadSheetImages(archive, 1);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
@@ -118,11 +118,12 @@ internal static class ExcelReader
         return sheets;
     }
 
-    private static List<string> ReadSharedStrings(ZipArchive archive)
+    private static (List<string> Strings, Dictionary<int, int> BoldPrefixLengths) ReadSharedStrings(ZipArchive archive)
     {
         var strings = new List<string>();
+        var boldPrefixLengths = new Dictionary<int, int>();
         var entry = archive.GetEntry("xl/sharedStrings.xml");
-        if (entry == null) return strings;
+        if (entry == null) return (strings, boldPrefixLengths);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -130,11 +131,24 @@ internal static class ExcelReader
 
         foreach (var si in doc.Descendants(ns + "si"))
         {
+            var runs = si.Elements(ns + "r").ToList();
+            if (runs.Count >= 2)
+            {
+                // Rich text: check if the first run is bold and subsequent runs are not.
+                var firstRpr = runs[0].Element(ns + "rPr");
+                var firstBold = firstRpr?.Element(ns + "b") != null;
+                if (firstBold)
+                {
+                    var firstText = string.Concat(runs[0].Descendants(ns + "t").Select(t => t.Value));
+                    if (firstText.Length > 0)
+                        boldPrefixLengths[strings.Count] = firstText.Length;
+                }
+            }
             var text = string.Concat(si.Descendants(ns + "t").Select(t => t.Value));
             strings.Add(text);
         }
 
-        return strings;
+        return (strings, boldPrefixLengths);
     }
 
     private static (List<SheetInfo> Sheets, Dictionary<int, (int StartCol, int StartRow, int EndCol, int EndRow)> PrintAreas, Dictionary<int, (int StartRow, int EndRow)> PrintTitleRows) ReadWorkbook(ZipArchive archive)
@@ -1452,7 +1466,7 @@ internal static class ExcelReader
         return fillColors[fillIndex];
     }
 
-    private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings,
+    private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings, Dictionary<int, int> boldPrefixLengths,
         List<FontStyleInfo> fontStyles, List<PdfColor?> fillColors, List<CellBorderInfo?> borders, Dictionary<int, string> numberFormats,
         List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts, List<int> cellXfIndents)
     {
@@ -1634,9 +1648,12 @@ internal static class ExcelReader
 
                 string text;
                 string? acctPrefix = null;
+                int cellBoldPrefixLen = 0;
                 if (type == "s" && int.TryParse(value, out var idx) && idx < sharedStrings.Count)
                 {
                     text = sharedStrings[idx];
+                    if (boldPrefixLengths.TryGetValue(idx, out var bpl))
+                        cellBoldPrefixLen = bpl;
                 }
                 else if (type == "inlineStr")
                 {
@@ -1695,7 +1712,7 @@ internal static class ExcelReader
                     cellNumericValues[reference.Replace("$", "")] = storedVal;
                 }
 
-                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent));
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent, cellBoldPrefixLen));
                 lastColIndex = colIndex + 1;
             }
 
@@ -4038,7 +4055,8 @@ internal sealed record ExcelCell(
     bool WrapText = false,
     string? AccountingPrefix = null,
     string? FontName = null,
-    int Indent = 0
+    int Indent = 0,
+    int BoldPrefixLength = 0
 );
 
 /// <summary>

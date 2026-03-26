@@ -33,6 +33,12 @@ internal sealed class PdfWriter
         public int[] Bbox = [-166, -225, 1000, 931];
         /// <summary>Maps Unicode code point → CID. BMP chars use identity; non-BMP use PUA slots.</summary>
         public Dictionary<int, int> CpToCid = new();
+        /// <summary>Glyph advance widths from the 'hmtx' table (glyph index → advance width in font units).</summary>
+        public ushort[] GlyphAdvances = [];
+        /// <summary>Units per em from the 'head' table.</summary>
+        public int Upm = 1000;
+        /// <summary>Maps Unicode code point → glyph ID for width measurement.</summary>
+        public Dictionary<int, ushort> Cmap = new();
         // PDF object numbers (assigned during Write)
         public int ToUnicodeObj, DescriptorObj, CidFontObj, Type0Obj, FontFileObj, CidToGidObj;
     }
@@ -379,6 +385,9 @@ internal sealed class PdfWriter
                     CapHeight = (int)(capH * scale),
                     Bbox = [.. bbox.Select(v => (int)(v * scale))],
                     CpToCid = cpToCid,
+                    GlyphAdvances = advances,
+                    Upm = upm,
+                    Cmap = cmap,
                 });
             }
 
@@ -930,7 +939,22 @@ internal sealed class PdfWriter
                 // always reset Tz to prevent scaling from previous blocks leaking.
                 if (block.MaxWidth.HasValue)
                 {
-                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
+                    // When an embedded font is used, measure natural width using
+                    // the actual font metrics so Tz correctly compresses/expands
+                    // to match the maxWidth.  Helvetica metrics would be wrong
+                    // because the embedded font (e.g. Verdana-Bold) has different widths.
+                    EmbeddedFontInfo? blockFont = null;
+                    if (hasBoldFontVariant && fontNameToSlot!.TryGetValue(boldFontKey!, out var boldSlotIdx))
+                        blockFont = embeddedFonts[boldSlotIdx];
+                    else if (blockHasEmbeddedPref && fontNameToSlot!.TryGetValue(block.PreferredFontName!, out var prefSlotIdx))
+                        blockFont = embeddedFonts[prefSlotIdx];
+
+                    var naturalWidth = blockFont != null
+                        ? MeasureEmbeddedFontWidth(block.Text, block.FontSize, block.CharSpacing, blockFont)
+                        : -1.0;
+                    if (naturalWidth < 0)
+                        naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
+
                     if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
                     {
                         var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
@@ -1046,6 +1070,26 @@ internal sealed class PdfWriter
         }
         var result = total * fontSize / 1000.0;
         // Tc adds charSpacing points per character (except after the last)
+        if (charSpacing != 0 && text.Length > 1)
+            result += charSpacing * (text.Length - 1);
+        return result;
+    }
+
+    /// <summary>
+    /// Measures the natural rendering width of text using the actual embedded font metrics.
+    /// Returns -1 if the font cannot measure all characters (caller should fall back to Helvetica).
+    /// </summary>
+    private static double MeasureEmbeddedFontWidth(string text, float fontSize, float charSpacing, EmbeddedFontInfo font)
+    {
+        double total = 0;
+        foreach (var ch in text)
+        {
+            if (!font.Cmap.TryGetValue(ch, out var gid))
+                return -1; // character not in font
+            var advance = gid < font.GlyphAdvances.Length ? font.GlyphAdvances[gid] : 0;
+            total += advance;
+        }
+        var result = total * fontSize / font.Upm;
         if (charSpacing != 0 && text.Length > 1)
             result += charSpacing * (text.Length - 1);
         return result;
