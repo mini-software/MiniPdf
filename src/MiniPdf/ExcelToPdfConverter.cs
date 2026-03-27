@@ -972,10 +972,11 @@ internal static class ExcelToPdfConverter
                             for (var mc = i + 1; mc < columns.Length && columns[mc] <= endCol; mc++)
                                 effectiveW += colWidths[mc] + columnPadding;
 
-                        var fitChars = FittingChars(cellText, effectiveW, cellFs);
+                        var titleFontName = titleRow[col].FontName;
+                        var fitChars = FittingChars(cellText, effectiveW, cellFs, titleFontName);
                         if (titleRow[col].WrapText && fitChars < cellText.Length)
                         {
-                            titleCellLines[i] = WrapCellText(cellText, effectiveW, cellFs);
+                            titleCellLines[i] = WrapCellText(cellText, effectiveW, cellFs, titleFontName);
                             titleClipWidths[i] = effectiveW;
                         }
                         else
@@ -1305,8 +1306,13 @@ internal static class ExcelToPdfConverter
                     if (!string.IsNullOrEmpty(cellText))
                     {
                         // Use the cell's actual font size for width calculations,
-                        // scaled by print scale to match print-scaled column widths
+                        // scaled by print scale to match print-scaled column widths.
+                        // When using font-specific width tables (e.g. Verdana)
+                        // and fitToPage is active, also scale by fitToPageScale so
+                        // the wrapping decision approximates Excel's unscaled layout.
                         var cellFontSizeForFit = row[col].FontSize * printScaleFactor;
+                        if (fitToPageScale < 1f && IsVerdanaFont(row[col].FontName))
+                            cellFontSizeForFit *= fitToPageScale;
 
                         // Handle explicit newlines in cell text (e.g., Alt+Enter in Excel).
                         // Otherwise write full text as a single line.
@@ -1347,8 +1353,14 @@ internal static class ExcelToPdfConverter
                             // allows a few more characters per line (closer to Calibri
                             // line breaks) while cellClipWidth catches any overflow with
                             // mild Tz horizontal compression.
-                            var renderFitWidth = (float)(textAvailWidth * 0.97);
-                            var fitChars = FittingChars(cellText, renderFitWidth, cellFontSizeForFit);
+                            // When the actual font width table is used (e.g. Verdana),
+                            // no extra scaling is needed.
+                            var cellFontName = row[col].FontName;
+                            var cellBoldPrefix = row[col].BoldPrefixLength;
+                            var renderFitWidth = IsVerdanaFont(cellFontName)
+                                ? (float)textAvailWidth
+                                : (float)(textAvailWidth * 0.97);
+                            var fitChars = FittingChars(cellText, renderFitWidth, cellFontSizeForFit, cellFontName, cellBoldPrefix);
                             var isLastCol = (i == columns.Length - 1);
 
                             // Find next non-merged column with content
@@ -1378,7 +1390,7 @@ internal static class ExcelToPdfConverter
 
                             if (row[col].WrapText && fitChars < cellText.Length)
                             {
-                                cellLines[i] = WrapCellText(cellText, renderFitWidth, cellFontSizeForFit);
+                                cellLines[i] = WrapCellText(cellText, renderFitWidth, cellFontSizeForFit, cellFontName, cellBoldPrefix);
                             }
                             else
                             {
@@ -1390,7 +1402,7 @@ internal static class ExcelToPdfConverter
                                 // because FittingChars uses CalibriFittingScale (0.85×).
                                 if (shouldClip)
                                 {
-                                    fitChars = FittingChars(cellText, textAvailWidth, cellFontSizeForFit);
+                                    fitChars = FittingChars(cellText, textAvailWidth, cellFontSizeForFit, cellFontName, cellBoldPrefix);
                                 }
                                 if (shouldClip && cellText.Length > fitChars)
                                 {
@@ -1402,7 +1414,7 @@ internal static class ExcelToPdfConverter
                                     // Single-column overflow: clip text at page right edge.
                                     // LibreOffice calculates row height from text wrapping at the default
                                     // column width, but renders a single line clipped at the page boundary.
-                                    var pageClipChars = FittingChars(cellText, pageWidth - options.MarginLeft, cellFontSizeForFit);
+                                    var pageClipChars = FittingChars(cellText, pageWidth - options.MarginLeft, cellFontSizeForFit, cellFontName);
                                     var clippedText = pageClipChars < cellText.Length ? cellText[..pageClipChars] : cellText;
                                     cellLines[i] = new[] { clippedText };
 
@@ -1412,7 +1424,7 @@ internal static class ExcelToPdfConverter
                                     var defaultColPts = ExcelSheet.CharUnitsToPoints(
                                         sheet.DefaultColumnWidth > 0 ? sheet.DefaultColumnWidth : 8.43f);
                                     var wrapWidth = Math.Max(1f, (defaultColPts - 11f) * (float)CalibriFittingScale);
-                                    var wrapChars = FittingChars(cellText, wrapWidth, cellFontSizeForFit);
+                                    var wrapChars = FittingChars(cellText, wrapWidth, cellFontSizeForFit, cellFontName);
                                     if (wrapChars > 0)
                                     {
                                         var virtualLines = (int)Math.Ceiling((double)cellText.Length / wrapChars);
@@ -1834,16 +1846,16 @@ internal static class ExcelToPdfConverter
                             float spaceGap = 0;
                             if (normalPart != null && normalPart.Length > 0 && normalPart[0] == ' ')
                             {
-                                spaceGap = (float)MeasureHelveticaWidth(" ", cellFontSize, bold: false);
+                                spaceGap = (float)MeasureFontWidth(" ", cellFontSize, bold: false, cell?.FontName);
                                 normalPart = normalPart[1..];
                                 if (normalPart.Length == 0) normalPart = null;
                             }
 
-                            // Measure bold width using Helvetica Bold metrics.
+                            // Measure bold width using actual font metrics when available.
                             // Set maxWidth=boldWidth so PdfWriter Tz-compresses the
-                            // actual rendered font (e.g. Verdana-Bold) to exactly this
-                            // width, preventing overlap with the normal text.
-                            var boldWidth = (float)MeasureHelveticaWidth(boldPart, cellFontSize, bold: true);
+                            // actual rendered font to exactly this width, preventing
+                            // overlap with the normal text.
+                            var boldWidth = (float)MeasureFontWidth(boldPart, cellFontSize, bold: true, cell?.FontName);
 
                             currentPage!.AddText(boldPart, textX, cellY, cellFontSize, color,
                                 maxWidth: boldWidth,
@@ -3306,20 +3318,30 @@ internal static class ExcelToPdfConverter
     /// <summary>
     /// Wrap a single cell text into multiple lines using precise Helvetica widths.
     /// </summary>
-    private static string[] WrapCellText(string text, float widthPts, float fontSize)
+    private static string[] WrapCellText(string text, float widthPts, float fontSize, string? fontName = null, int boldPrefixLength = 0)
     {
-        if (FittingChars(text, widthPts, fontSize) >= text.Length)
+        if (FittingChars(text, widthPts, fontSize, fontName, boldPrefixLength) >= text.Length)
             return new[] { text };
 
         var lines = new List<string>();
         var remaining = text.AsSpan();
+        var bplRemaining = boldPrefixLength;
         while (remaining.Length > 0)
         {
-            var fit = FittingChars(remaining.ToString(), widthPts, fontSize);
+            var fit = FittingChars(remaining.ToString(), widthPts, fontSize, fontName, bplRemaining);
             if (fit >= remaining.Length)
             {
                 lines.Add(remaining.ToString());
                 break;
+            }
+            // When the character just past the fit range is a space,
+            // the last word fits completely — break at the space.
+            if (fit < remaining.Length && remaining[fit] == ' ')
+            {
+                lines.Add(remaining[..fit].ToString());
+                bplRemaining = Math.Max(0, bplRemaining - fit - 1);
+                remaining = remaining[(fit + 1)..]; // skip the space
+                continue;
             }
             // Try to break at a space within the fitted portion
             var breakAt = fit;
@@ -3335,11 +3357,13 @@ internal static class ExcelToPdfConverter
             {
                 // No space found — hard break
                 lines.Add(remaining[..breakAt].ToString());
+                bplRemaining = Math.Max(0, bplRemaining - breakAt);
                 remaining = remaining[breakAt..];
             }
             else
             {
                 lines.Add(remaining[..breakAt].ToString());
+                bplRemaining = Math.Max(0, bplRemaining - breakAt - 1);
                 remaining = remaining[(breakAt + 1)..]; // skip the space
             }
         }
@@ -3390,15 +3414,30 @@ internal static class ExcelToPdfConverter
     /// that fit within <paramref name="widthPts"/> points, accounting for CJK width.
     /// If the text has no CJK characters, this is equivalent to widthPts / avgCharWidth.
     /// </summary>
-    private static int FittingChars(string text, float widthPts, float fontSize)
+    private static int FittingChars(string text, float widthPts, float fontSize, string? fontName = null, int boldPrefixLength = 0)
     {
+        // When a non-substituted font (e.g. Verdana) is specified, use its actual
+        // character widths instead of the Helvetica-based CalibriFittingScale
+        // approximation.  This produces correct word-wrapping positions that match
+        // the embedded font rendering in PdfWriter.
+        if (IsVerdanaFont(fontName))
+        {
+            double used = 0;
+            for (var i = 0; i < text.Length; i++)
+            {
+                var cw = i < boldPrefixLength ? VerdanaBoldCharWidth(text[i]) : VerdanaCharWidth(text[i]);
+                used += cw * fontSize / 1000.0 * VerdanaFittingScale;
+                if (used > widthPts) return Math.Max(1, i);
+            }
+            return text.Length;
+        }
         // Scale Helvetica character widths to approximate Calibri metrics.
-        double used = 0;
+        double usedH = 0;
         const double scale = CalibriFittingScale;
         for (var i = 0; i < text.Length; i++)
         {
-            used += HelveticaCharWidth(text[i]) * fontSize / 1000.0 * scale;
-            if (used > widthPts) return Math.Max(1, i);
+            usedH += HelveticaCharWidth(text[i]) * fontSize / 1000.0 * scale;
+            if (usedH > widthPts) return Math.Max(1, i);
         }
         return text.Length;
     }
@@ -3453,6 +3492,63 @@ internal static class ExcelToPdfConverter
 
     /// <summary>Calibri-to-Helvetica scale factor used by truncation and fitting functions.</summary>
     private const double CalibriFittingScale = 0.85;
+
+    /// <summary>Returns true if the font name is Verdana (case-insensitive).</summary>
+    private static bool IsVerdanaFont(string? fontName)
+        => string.Equals(fontName, "Verdana", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Scale factor for Verdana character widths used by wrapping/fitting.
+    /// Accounts for the systematic difference between TTF glyph advances and
+    /// the column-width calibration in CharUnitsToPointsScaled.</summary>
+    private const double VerdanaFittingScale = 0.93;
+
+    /// <summary>Returns Verdana Regular character width in 1/1000 em units.</summary>
+    private static int VerdanaCharWidth(char ch) => ch switch
+    {
+        ' ' => 352, '!' => 394, '"' => 459, '#' => 818, '$' => 636, '%' => 1076,
+        '&' => 727, '\'' => 269, '(' => 454, ')' => 454, '*' => 636, '+' => 818,
+        ',' => 364, '-' => 454, '.' => 364, '/' => 454,
+        >= '0' and <= '9' => 636,
+        ':' => 454, ';' => 454, '<' => 818, '=' => 818, '>' => 818, '?' => 545,
+        '@' => 1000,
+        'A' => 684, 'B' => 686, 'C' => 698, 'D' => 771, 'E' => 632, 'F' => 575,
+        'G' => 775, 'H' => 751, 'I' => 421, 'J' => 455, 'K' => 693, 'L' => 557,
+        'M' => 843, 'N' => 748, 'O' => 787, 'P' => 603, 'Q' => 787, 'R' => 695,
+        'S' => 684, 'T' => 616, 'U' => 732, 'V' => 684, 'W' => 989, 'X' => 685,
+        'Y' => 615, 'Z' => 685,
+        '[' => 454, '\\' => 454, ']' => 454, '^' => 818, '_' => 636, '`' => 636,
+        'a' => 601, 'b' => 623, 'c' => 521, 'd' => 623, 'e' => 596, 'f' => 352,
+        'g' => 623, 'h' => 633, 'i' => 274, 'j' => 344, 'k' => 592, 'l' => 274,
+        'm' => 973, 'n' => 633, 'o' => 607, 'p' => 623, 'q' => 623, 'r' => 427,
+        's' => 521, 't' => 394, 'u' => 633, 'v' => 592, 'w' => 818, 'x' => 592,
+        'y' => 592, 'z' => 525,
+        '{' => 635, '|' => 454, '}' => 635, '~' => 818,
+        _ => IsFullWidthChar(ch) ? 1000 : 601
+    };
+
+    /// <summary>Returns Verdana Bold character width in 1/1000 em units.</summary>
+    private static int VerdanaBoldCharWidth(char ch) => ch switch
+    {
+        ' ' => 342, '!' => 402, '"' => 587, '#' => 867, '$' => 711, '%' => 1272,
+        '&' => 862, '\'' => 332, '(' => 543, ')' => 543, '*' => 711, '+' => 867,
+        ',' => 361, '-' => 480, '.' => 361, '/' => 689,
+        >= '0' and <= '9' => 711,
+        ':' => 402, ';' => 402, '<' => 867, '=' => 867, '>' => 867, '?' => 617,
+        '@' => 964,
+        'A' => 776, 'B' => 762, 'C' => 724, 'D' => 830, 'E' => 683, 'F' => 650,
+        'G' => 811, 'H' => 837, 'I' => 546, 'J' => 555, 'K' => 771, 'L' => 637,
+        'M' => 948, 'N' => 847, 'O' => 850, 'P' => 733, 'Q' => 850, 'R' => 782,
+        'S' => 710, 'T' => 682, 'U' => 812, 'V' => 764, 'W' => 1128, 'X' => 764,
+        'Y' => 737, 'Z' => 692,
+        '[' => 543, '\\' => 689, ']' => 543, '^' => 867, '_' => 711, '`' => 711,
+        'a' => 668, 'b' => 699, 'c' => 588, 'd' => 699, 'e' => 664, 'f' => 422,
+        'g' => 699, 'h' => 712, 'i' => 342, 'j' => 403, 'k' => 671, 'l' => 342,
+        'm' => 1058, 'n' => 712, 'o' => 687, 'p' => 699, 'q' => 699, 'r' => 497,
+        's' => 593, 't' => 456, 'u' => 712, 'v' => 650, 'w' => 979, 'x' => 669,
+        'y' => 651, 'z' => 597,
+        '{' => 711, '|' => 543, '}' => 711, '~' => 867,
+        _ => IsFullWidthChar(ch) ? 1000 : 668
+    };
 
     /// <summary>
     /// Returns true when a cell carries visible text or borders.
@@ -3539,6 +3635,22 @@ internal static class ExcelToPdfConverter
         foreach (var ch in text)
             total += bold ? HelveticaBoldCharWidth(ch) : HelveticaCharWidth(ch);
         return total * fontSize / 1000.0;
+    }
+
+    /// <summary>
+    /// Measures text width using the actual font metrics when available (Verdana),
+    /// falling back to Helvetica for other fonts.
+    /// </summary>
+    private static double MeasureFontWidth(string text, double fontSize, bool bold, string? fontName)
+    {
+        if (IsVerdanaFont(fontName))
+        {
+            double total = 0;
+            foreach (var ch in text)
+                total += bold ? VerdanaBoldCharWidth(ch) : VerdanaCharWidth(ch);
+            return total * fontSize / 1000.0;
+        }
+        return MeasureHelveticaWidth(text, fontSize, bold);
     }
 
     /// <summary>
