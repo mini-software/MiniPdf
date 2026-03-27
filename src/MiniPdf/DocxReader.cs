@@ -68,13 +68,16 @@ internal static class DocxReader
         var relationships = ReadRelationships(archive);
 
         // Read styles
-        var (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName) = ReadStyles(archive);
+        var (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName, tableStyles) = ReadStyles(archive);
 
         // Read numbering definitions (for list bullets/numbers)
         var numbering = ReadNumbering(archive);
 
         // Read theme colors for resolving schemeClr references
         var themeColors = ReadThemeColors(archive);
+
+        // Read footnotes
+        var footnotes = ReadFootnotes(archive, styles, defaultFontName, defaultEastAsiaFontName);
 
         // Read main document
         var entry = archive.GetEntry("word/document.xml");
@@ -141,6 +144,7 @@ internal static class DocxReader
                     // Read anchor position
                     float anchorOffsetPt = 0;
                     string vRelativeFrom = "paragraph";
+                    string? vAlign = null;
                     var posV = anchor.Element(WP + "positionV");
                     if (posV != null)
                     {
@@ -148,9 +152,12 @@ internal static class DocxReader
                         var off = posV.Element(WP + "posOffset");
                         if (off != null && long.TryParse(off.Value, out var emu))
                             anchorOffsetPt = emu / 914400f * 72f;
+                        var alignEl = posV.Element(WP + "align");
+                        if (alignEl != null) vAlign = alignEl.Value;
                     }
                     float anchorXPt = 0;
                     string hRelativeFrom = "column";
+                    string? hAlign = null;
                     var posH = anchor.Element(WP + "positionH");
                     if (posH != null)
                     {
@@ -158,6 +165,8 @@ internal static class DocxReader
                         var off = posH.Element(WP + "posOffset");
                         if (off != null && long.TryParse(off.Value, out var hEmu))
                             anchorXPt = hEmu / 914400f * 72f;
+                        var alignEl = posH.Element(WP + "align");
+                        if (alignEl != null) hAlign = alignEl.Value;
                     }
                     float extentHeightPt = 0;
                     float extentWidthPt = 0;
@@ -231,7 +240,7 @@ internal static class DocxReader
                         // visual overlay at the absolute position.
                         var floatingParas = new List<DocxParagraph>();
                         bool firstContent = true;
-                        foreach (var tp in txbxContent.Elements(W + "p"))
+                        foreach (var tp in UnwrapSdt(txbxContent.Elements()).Where(e => e.Name == W + "p"))
                         {
                             var tbPara = ReadParagraph(tp, styles, numbering, relationships, archive, themeColors);
                             if (tbPara != null)
@@ -262,7 +271,7 @@ internal static class DocxReader
                         if (floatingParas.Count > 0)
                         {
                             floatingTextBoxes ??= new List<DocxFloatingTextBox>();
-                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom, textBoxFillColor, topInsetPt, leftInsetPt));
+                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom, textBoxFillColor, topInsetPt, leftInsetPt, hAlign, vAlign));
                         }
                     }
                     else
@@ -305,7 +314,17 @@ internal static class DocxReader
                     // For floating textboxes (wrapNone), still emit the host paragraph
                     // (with its spacing) to preserve vertical layout.
                     if (emittedVisibleTextBoxParagraph && allRunsHostTextBox)
+                    {
+                        // Even when skipping the host paragraph's runs, still emit a
+                        // minimal paragraph if there are floating textboxes that need
+                        // to be attached (they render at absolute positions as overlays).
+                        if (floatingTextBoxes != null)
+                        {
+                            var emptyHost = paragraph with { Runs = [], FloatingTextBoxes = floatingTextBoxes };
+                            elements.Add(emptyHost);
+                        }
                         continue;
+                    }
 
                     // Add text box displacement as SpacingBefore on the containing paragraph
                     if (textBoxSpacing > 0)
@@ -332,7 +351,7 @@ internal static class DocxReader
             }
             else if (child.Name == W + "tbl")
             {
-                var table = ReadTable(child, styles, numbering, relationships, archive, defaultFontName, defaultEastAsiaFontName);
+                var table = ReadTable(child, styles, numbering, relationships, archive, defaultFontName, defaultEastAsiaFontName, tableStyles);
                 if (table != null)
                     elements.Add(table);
             }
@@ -342,14 +361,14 @@ internal static class DocxReader
         var pageLayout = ReadPageLayout(body);
 
         // Read header/footer content
-        var headerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName);
-        var footerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
+        var headerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName, tableStyles);
+        var footerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName, tableStyles);
         var headerShapes = ReadHeaderFooterShapes(body, relationships, archive, "headerReference", themeColors);
         var footerShapes = ReadHeaderFooterShapes(body, relationships, archive, "footerReference", themeColors);
         var headerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName);
         var footerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
-        var headerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName);
-        var footerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
+        var headerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName, tableStyles);
+        var footerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName, tableStyles);
 
         // Read per-section footer elements from paragraph-level sectPr
         List<List<DocxElement>?>? sectionFooterElements = null;
@@ -375,7 +394,7 @@ internal static class DocxReader
                 if (sectPrEl == null) continue;
                 if (sIdx < sectionFooterElements.Count)
                 {
-                    var secFooter = ReadHeaderFooterElementsFromSectPr(sectPrEl, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
+                    var secFooter = ReadHeaderFooterElementsFromSectPr(sectPrEl, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName, tableStyles);
                     sectionFooterElements[sIdx] = secFooter.Count > 0 ? secFooter : null;
                 }
                 sIdx++;
@@ -397,7 +416,7 @@ internal static class DocxReader
         return new DocxDocument(elements, pageLayout, headerText, footerText, headerShapes, footerShapes, headerRuns, footerRuns,
             defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName,
             headerElements.Count > 0 ? headerElements : null, footerElements.Count > 0 ? footerElements : null,
-            sectionFooterElements);
+            sectionFooterElements, footnotes);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -439,6 +458,7 @@ internal static class DocxReader
         int firstLineChars = 0;
         bool paragraphMarkUnderline = false;
         string? paragraphMarkFontName = null;
+        bool hasExplicitAlignment = false;
 
         if (pPr != null)
         {
@@ -448,7 +468,10 @@ internal static class DocxReader
             // Alignment
             var jc = pPr.Element(W + "jc")?.Attribute(W + "val")?.Value;
             if (!string.IsNullOrEmpty(jc))
+            {
                 alignment = jc;
+                hasExplicitAlignment = true;
+            }
 
             // Spacing (in twips: 1/20 of a point)
             var spacing = pPr.Element(W + "spacing");
@@ -625,7 +648,7 @@ internal static class DocxReader
             if (!italic) italic = styleInfo.Italic;
             if (!caps) caps = styleInfo.Caps;
             if (color == null) color = styleInfo.Color;
-            if (alignment == "left" && !string.IsNullOrEmpty(styleInfo.Alignment))
+            if (!hasExplicitAlignment && !string.IsNullOrEmpty(styleInfo.Alignment))
                 alignment = styleInfo.Alignment;
             if (spacingBefore < 0) spacingBefore = styleInfo.SpacingBefore;
             if (spacingAfter < 0) spacingAfter = styleInfo.SpacingAfter;
@@ -706,7 +729,7 @@ internal static class DocxReader
                     continue;
                 }
 
-                var run = ReadRun(child, bold, italic, fontSize, color, caps, charSpacing, paragraphFontName, defaultLatinFontName, defaultEastAsiaFontName);
+                var run = ReadRun(child, bold, italic, fontSize, color, caps, charSpacing, paragraphFontName, defaultLatinFontName, defaultEastAsiaFontName, styles);
                 if (run != null)
                 {
                     if (run.IsPageBreak)
@@ -737,7 +760,7 @@ internal static class DocxReader
                 // Extract text from hyperlink runs
                 foreach (var r in child.Elements(W + "r"))
                 {
-                    var run = ReadRun(r, bold, italic, fontSize, color, caps, charSpacing, paragraphFontName, defaultLatinFontName, defaultEastAsiaFontName);
+                    var run = ReadRun(r, bold, italic, fontSize, color, caps, charSpacing, paragraphFontName, defaultLatinFontName, defaultEastAsiaFontName, styles);
                     if (run != null)
                         runs.Add(run);
                 }
@@ -899,7 +922,7 @@ internal static class DocxReader
         return new DocxBorderEdge(Math.Max(0.5f, width), color);
     }
 
-    private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor, bool parentCaps = false, float parentCharSpacing = 0, string? parentFontName = null, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
+    private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor, bool parentCaps = false, float parentCharSpacing = 0, string? parentFontName = null, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null, Dictionary<string, DocxStyleInfo>? styles = null)
     {
         // Textbox content is parsed separately from w:txbxContent paragraphs.
         // Skip host runs that carry textbox payload to avoid duplicate/garbled flow text.
@@ -917,6 +940,22 @@ internal static class DocxReader
         var charSpacing = parentCharSpacing;
         var fontName = parentFontName;
         float verticalPosition = 0;
+
+        // Resolve character style (rStyle) defaults before reading inline overrides
+        if (rPr != null && styles != null)
+        {
+            var rStyleId = rPr.Element(W + "rStyle")?.Attribute(W + "val")?.Value;
+            if (!string.IsNullOrEmpty(rStyleId) && styles.TryGetValue(rStyleId, out var charStyle))
+            {
+                if (charStyle.FontSize > 0) fontSize = charStyle.FontSize;
+                if (charStyle.Bold) bold = true;
+                if (charStyle.Italic) italic = true;
+                if (charStyle.Caps) caps = true;
+                if (charStyle.Color != null) color = charStyle.Color;
+                if (!string.IsNullOrWhiteSpace(charStyle.FontName)) fontName = charStyle.FontName;
+                if (charStyle.CharSpacing != 0) charSpacing = charStyle.CharSpacing;
+            }
+        }
 
         if (rPr != null)
         {
@@ -967,6 +1006,7 @@ internal static class DocxReader
         // Collect text from <w:t>, <w:tab>, <w:br> elements
         bool isPageBreak = false;
         bool isColumnBreak = false;
+        string? footnoteId = null;
         var text = "";
         foreach (var child in rElement.Elements())
         {
@@ -983,6 +1023,38 @@ internal static class DocxReader
                     isColumnBreak = true;
                 else
                     text += "\n";
+            }
+            else if (child.Name == W + "footnoteReference")
+            {
+                // Footnote reference mark in the document body
+                footnoteId = child.Attribute(W + "id")?.Value;
+                if (!string.IsNullOrEmpty(footnoteId))
+                    text += footnoteId; // Use id as display number (sequential for normal footnotes)
+            }
+            else if (child.Name == W + "footnoteRef")
+            {
+                // Footnote self-reference inside footnote text – skip in body parsing.
+                // ReadFootnotes() handles this element separately.
+            }
+        }
+
+        // Handle w:vertAlign for superscript/subscript
+        if (rPr != null)
+        {
+            var vertAlignEl = rPr.Element(W + "vertAlign");
+            if (vertAlignEl != null)
+            {
+                var vaVal = vertAlignEl.Attribute(W + "val")?.Value;
+                if (vaVal == "superscript")
+                {
+                    verticalPosition = fontSize * 0.33f;
+                    fontSize *= 0.58f;
+                }
+                else if (vaVal == "subscript")
+                {
+                    verticalPosition = -fontSize * 0.2f;
+                    fontSize *= 0.58f;
+                }
             }
         }
 
@@ -1002,7 +1074,7 @@ internal static class DocxReader
             fontName = defaultEastAsiaFontName;
         }
 
-        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl, isColumnBreak, verticalPosition);
+        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl, isColumnBreak, verticalPosition, footnoteId);
     }
 
     private static string? GetFieldInstructionType(string? instruction)
@@ -1237,7 +1309,12 @@ internal static class DocxReader
             }
         }
 
-        return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu, isBehindDoc, relFromH, relFromV);
+        // Detect wrapTopAndBottom on anchor
+        bool isWrapTopBottom = false;
+        if (isAnchor && container != null)
+            isWrapTopBottom = container.Element(WP + "wrapTopAndBottom") != null;
+
+        return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu, isBehindDoc, relFromH, relFromV, isWrapTopBottom);
     }
 
     private static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu,
@@ -1912,7 +1989,8 @@ internal static class DocxReader
 
     private static DocxTable? ReadTable(XElement tblElement, Dictionary<string, DocxStyleInfo> styles,
         Dictionary<string, DocxNumberingDef> numbering, Dictionary<string, string> relationships, ZipArchive archive,
-        string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
+        string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null,
+        Dictionary<string, DocxTableStyleInfo>? tableStyles = null)
     {
         var rows = new List<DocxTableRow>();
 
@@ -1940,9 +2018,23 @@ internal static class DocxReader
                 cellMarginBottom = mb / 20f;
         }
 
-        // Detect whether the table has visible borders
-        var hasBorders = false;
+        // Resolve table style
         var tblStyleVal = tblPr?.Element(W + "tblStyle")?.Attribute(W + "val")?.Value;
+        DocxTableStyleInfo? tblStyleInfo = null;
+        if (!string.IsNullOrEmpty(tblStyleVal) && tableStyles != null)
+            tableStyles.TryGetValue(tblStyleVal, out tblStyleInfo);
+
+        // Apply style-level cell margins (if not explicitly set on the table)
+        if (tblCellMar == null && tblStyleInfo != null)
+        {
+            if (tblStyleInfo.CellMarginLeft >= 0) cellMarginLeft = tblStyleInfo.CellMarginLeft;
+            if (tblStyleInfo.CellMarginRight >= 0) cellMarginRight = tblStyleInfo.CellMarginRight;
+            if (tblStyleInfo.CellMarginTop >= 0) cellMarginTop = tblStyleInfo.CellMarginTop;
+            if (tblStyleInfo.CellMarginBottom >= 0) cellMarginBottom = tblStyleInfo.CellMarginBottom;
+        }
+
+        // Detect whether the table has visible borders
+        var hasBorders = tblStyleInfo?.HasBorders ?? false;
         if (!string.IsNullOrEmpty(tblStyleVal) && tblStyleVal.Contains("Grid", StringComparison.OrdinalIgnoreCase))
             hasBorders = true;
         var tblBorders = tblPr?.Element(W + "tblBorders");
@@ -1957,6 +2049,11 @@ internal static class DocxReader
                     hasBorders = true;
             }
         }
+
+        // Read tblLook for banding
+        var tblLook = tblPr?.Element(W + "tblLook");
+        var noHBand = tblLook?.Attribute(W + "noHBand")?.Value == "1";
+        var firstRowLook = tblLook?.Attribute(W + "firstRow")?.Value == "1";
         if (tblGrid != null)
         {
             foreach (var col in tblGrid.Elements(W + "gridCol"))
@@ -1968,6 +2065,7 @@ internal static class DocxReader
             }
         }
 
+        var rowIndex = 0;
         foreach (var tr in tblElement.Elements(W + "tr"))
         {
             var cells = new List<DocxTableCell>();
@@ -2074,12 +2172,54 @@ internal static class DocxReader
                     }
                 }
 
+                // Apply table style: band shading and firstRow borders
+                if (tblStyleInfo != null)
+                {
+                    var isFirstRow = firstRowLook && rowIndex == 0;
+                    if (shading == null && !noHBand && !isFirstRow)
+                    {
+                        // Banding starts after header row (rowIndex 1 = band1)
+                        var bandIndex = firstRowLook ? rowIndex - 1 : rowIndex;
+                        if (bandIndex % 2 == 0 && tblStyleInfo.Band1HorzShading != null)
+                            shading = tblStyleInfo.Band1HorzShading;
+                        else if (bandIndex % 2 == 1 && tblStyleInfo.Band2HorzShading != null)
+                            shading = tblStyleInfo.Band2HorzShading;
+                    }
+                    if (isFirstRow && cellBorders == null && tblStyleInfo.FirstRowBorders != null)
+                        cellBorders = tblStyleInfo.FirstRowBorders;
+                }
+
                 cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading, cellBorders, isVMergeContinue, isVMergeRestart, verticalAlignment));
             }
             rows.Add(new DocxTableRow(cells, rowHeight));
+            rowIndex++;
         }
 
-        return new DocxTable(rows, columnWidths, hasBorders, cellMarginLeft, cellMarginRight, cellMarginTop, cellMarginBottom, tableAlignment);
+        // Resolve table-level border edges (style then explicit override)
+        DocxBorderEdge? finalBorderTop = tblStyleInfo?.BorderTop;
+        DocxBorderEdge? finalBorderBottom = tblStyleInfo?.BorderBottom;
+        DocxBorderEdge? finalBorderLeft = tblStyleInfo?.BorderLeft;
+        DocxBorderEdge? finalBorderRight = tblStyleInfo?.BorderRight;
+        DocxBorderEdge? finalInsideH = tblStyleInfo?.BorderInsideH;
+        DocxBorderEdge? finalInsideV = tblStyleInfo?.BorderInsideV;
+        if (tblBorders != null)
+        {
+            var ot = ReadBorderEdge(tblBorders.Element(W + "top"));
+            var ob = ReadBorderEdge(tblBorders.Element(W + "bottom"));
+            var ol = ReadBorderEdge(tblBorders.Element(W + "left"));
+            var or2 = ReadBorderEdge(tblBorders.Element(W + "right"));
+            var oih = ReadBorderEdge(tblBorders.Element(W + "insideH"));
+            var oiv = ReadBorderEdge(tblBorders.Element(W + "insideV"));
+            if (ot != null) finalBorderTop = ot;
+            if (ob != null) finalBorderBottom = ob;
+            if (ol != null) finalBorderLeft = ol;
+            if (or2 != null) finalBorderRight = or2;
+            if (oih != null) finalInsideH = oih;
+            if (oiv != null) finalInsideV = oiv;
+        }
+
+        return new DocxTable(rows, columnWidths, hasBorders, cellMarginLeft, cellMarginRight, cellMarginTop, cellMarginBottom, tableAlignment,
+            finalInsideH, finalInsideV, finalBorderTop, finalBorderBottom, finalBorderLeft, finalBorderRight);
     }
 
     private static DocxPageLayout? ReadPageLayout(XElement body)
@@ -2091,7 +2231,8 @@ internal static class DocxReader
 
     private static string? ReadHeaderFooter(XElement body, Dictionary<string, string> relationships,
         ZipArchive archive, Dictionary<string, DocxStyleInfo> styles, Dictionary<string, DocxNumberingDef> numbering,
-        string refElementName, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
+        string refElementName, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null,
+        Dictionary<string, DocxTableStyleInfo>? tableStyles = null)
     {
         var sectPr = body.Element(W + "sectPr");
         if (sectPr == null) return null;
@@ -2207,17 +2348,19 @@ internal static class DocxReader
     private static List<DocxElement> ReadHeaderFooterElements(
         XElement body, Dictionary<string, string> relationships, ZipArchive archive,
         Dictionary<string, DocxStyleInfo> styles, Dictionary<string, DocxNumberingDef> numbering,
-        string refElementName, string? defaultFontName, string? defaultEastAsiaFontName)
+        string refElementName, string? defaultFontName, string? defaultEastAsiaFontName,
+        Dictionary<string, DocxTableStyleInfo>? tableStyles = null)
     {
         var sectPr = body.Element(W + "sectPr");
         if (sectPr == null) return [];
-        return ReadHeaderFooterElementsFromSectPr(sectPr, relationships, archive, styles, numbering, refElementName, defaultFontName, defaultEastAsiaFontName);
+        return ReadHeaderFooterElementsFromSectPr(sectPr, relationships, archive, styles, numbering, refElementName, defaultFontName, defaultEastAsiaFontName, tableStyles);
     }
 
     private static List<DocxElement> ReadHeaderFooterElementsFromSectPr(
         XElement sectPr, Dictionary<string, string> relationships, ZipArchive archive,
         Dictionary<string, DocxStyleInfo> styles, Dictionary<string, DocxNumberingDef> numbering,
-        string refElementName, string? defaultFontName, string? defaultEastAsiaFontName)
+        string refElementName, string? defaultFontName, string? defaultEastAsiaFontName,
+        Dictionary<string, DocxTableStyleInfo>? tableStyles = null)
     {
 
         var hfRef = sectPr.Element(W + refElementName);
@@ -2251,7 +2394,7 @@ internal static class DocxReader
             }
             else if (child.Name == W + "tbl")
             {
-                var table = ReadTable(child, styles, numbering, hfRels, archive, defaultFontName, defaultEastAsiaFontName);
+                var table = ReadTable(child, styles, numbering, hfRels, archive, defaultFontName, defaultEastAsiaFontName, tableStyles);
                 if (table != null)
                     elements.Add(table);
             }
@@ -2414,6 +2557,64 @@ internal static class DocxReader
     }
 
 
+    /// <summary>
+    /// Parses word/footnotes.xml and returns a dictionary of footnote definitions (normal footnotes only).
+    /// </summary>
+    private static Dictionary<string, DocxFootnote>? ReadFootnotes(ZipArchive archive, Dictionary<string, DocxStyleInfo> styles,
+        string? defaultFontName, string? defaultEastAsiaFontName)
+    {
+        var entry = archive.GetEntry("word/footnotes.xml");
+        if (entry == null) return null;
+
+        XDocument doc;
+        using (var stream = entry.Open())
+            doc = XDocument.Load(stream);
+
+        var result = new Dictionary<string, DocxFootnote>();
+        int seqNum = 0; // sequential number for normal footnotes
+
+        foreach (var fn in doc.Root!.Elements(W + "footnote"))
+        {
+            var fnId = fn.Attribute(W + "id")?.Value;
+            var fnType = fn.Attribute(W + "type")?.Value;
+            if (string.IsNullOrEmpty(fnId)) continue;
+            // Skip separator and continuationSeparator (type != null means special)
+            if (fnType != null) continue;
+
+            seqNum++;
+            var runs = new List<DocxRun>();
+            float fontSize = 10f; // default footnote text size
+
+            foreach (var p in fn.Elements(W + "p"))
+            {
+                // Check paragraph style for footnote text size
+                var pStyle = p.Element(W + "pPr")?.Element(W + "pStyle")?.Attribute(W + "val")?.Value;
+                if (!string.IsNullOrEmpty(pStyle) && styles.TryGetValue(pStyle, out var fnStyle))
+                {
+                    if (fnStyle.FontSize > 0) fontSize = fnStyle.FontSize;
+                }
+
+                foreach (var r in p.Elements(W + "r"))
+                {
+                    var text = "";
+                    foreach (var child in r.Elements())
+                    {
+                        if (child.Name == W + "t")
+                            text += child.Value;
+                        else if (child.Name == W + "footnoteRef")
+                            text += seqNum.ToString(); // Self-reference: display the footnote number
+                    }
+                    if (!string.IsNullOrEmpty(text))
+                        runs.Add(new DocxRun(text, FontSize: fontSize));
+                }
+            }
+
+            result[fnId] = new DocxFootnote(fnId, fontSize, runs);
+        }
+
+        return result.Count > 0 ? result : null;
+    }
+
     private static Dictionary<string, string> ReadRelationships(ZipArchive archive)
     {
         return ReadPartRelationships(archive, "word/_rels/document.xml.rels");
@@ -2439,12 +2640,12 @@ internal static class DocxReader
         return rels;
     }
 
-    private static (Dictionary<string, DocxStyleInfo> Styles, float DefaultLineSpacing, bool DefaultLineSpacingAbsolute, string? DefaultFontName, string? DefaultEastAsiaFontName) ReadStyles(ZipArchive archive)
+    private static (Dictionary<string, DocxStyleInfo> Styles, float DefaultLineSpacing, bool DefaultLineSpacingAbsolute, string? DefaultFontName, string? DefaultEastAsiaFontName, Dictionary<string, DocxTableStyleInfo> TableStyles) ReadStyles(ZipArchive archive)
     {
         var styles = new Dictionary<string, DocxStyleInfo>();
         var (majorThemeLatinFont, minorThemeLatinFont, majorThemeEastAsiaFont, minorThemeEastAsiaFont) = ReadThemeFonts(archive);
         var entry = archive.GetEntry("word/styles.xml");
-        if (entry == null) return (styles, 0, false, null, null);
+        if (entry == null) return (styles, 0, false, null, null, new Dictionary<string, DocxTableStyleInfo>());
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -2647,7 +2848,80 @@ internal static class DocxReader
         if (defaultLineSpacing == 0)
             defaultLineSpacing = 1.0f;
 
-        return (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName);
+        // Parse table styles
+        var tableStyles = new Dictionary<string, DocxTableStyleInfo>();
+        foreach (var style in styleElements)
+        {
+            var styleType = style.Attribute(W + "type")?.Value;
+            if (styleType != "table") continue;
+            var styleId = style.Attribute(W + "styleId")?.Value;
+            if (string.IsNullOrEmpty(styleId)) continue;
+
+            var tblPrStyle = style.Element(W + "tblPr");
+            var tblBordersStyle = tblPrStyle?.Element(W + "tblBorders");
+            bool hasBorders = false;
+            DocxBorderEdge? bTop = null, bBottom = null, bLeft = null, bRight = null, bInsideH = null, bInsideV = null;
+            if (tblBordersStyle != null)
+            {
+                bTop = ReadBorderEdge(tblBordersStyle.Element(W + "top"));
+                bBottom = ReadBorderEdge(tblBordersStyle.Element(W + "bottom"));
+                bLeft = ReadBorderEdge(tblBordersStyle.Element(W + "left"));
+                bRight = ReadBorderEdge(tblBordersStyle.Element(W + "right"));
+                bInsideH = ReadBorderEdge(tblBordersStyle.Element(W + "insideH"));
+                bInsideV = ReadBorderEdge(tblBordersStyle.Element(W + "insideV"));
+                if (bTop != null || bBottom != null || bLeft != null || bRight != null || bInsideH != null || bInsideV != null)
+                    hasBorders = true;
+            }
+
+            // Cell margins from table style
+            float cmTop = -1, cmBottom = -1, cmLeft = -1, cmRight = -1;
+            var styleCellMar = tblPrStyle?.Element(W + "tblCellMar");
+            if (styleCellMar != null)
+            {
+                if (int.TryParse(styleCellMar.Element(W + "top")?.Attribute(W + "w")?.Value, out var smt))
+                    cmTop = smt / 20f;
+                if (int.TryParse(styleCellMar.Element(W + "bottom")?.Attribute(W + "w")?.Value, out var smb))
+                    cmBottom = smb / 20f;
+                if (int.TryParse(styleCellMar.Element(W + "left")?.Attribute(W + "w")?.Value, out var sml))
+                    cmLeft = sml / 20f;
+                if (int.TryParse(styleCellMar.Element(W + "right")?.Attribute(W + "w")?.Value, out var smr))
+                    cmRight = smr / 20f;
+            }
+
+            // Band shading
+            PdfColor? band1Horz = null, band2Horz = null;
+            DocxBorders? firstRowBorders = null;
+            foreach (var tsp in style.Elements(W + "tblStylePr"))
+            {
+                var tspType = tsp.Attribute(W + "type")?.Value;
+                var tcPr = tsp.Element(W + "tcPr");
+                if (tcPr == null) continue;
+                var shd = tcPr.Element(W + "shd");
+                var fill = shd?.Attribute(W + "fill")?.Value;
+                PdfColor? shadingColor = !string.IsNullOrEmpty(fill) && fill != "auto" ? PdfColor.FromHex(fill) : null;
+
+                if (tspType == "band1Horz" && shadingColor != null)
+                    band1Horz = shadingColor;
+                else if (tspType == "band2Horz" && shadingColor != null)
+                    band2Horz = shadingColor;
+                else if (tspType == "firstRow")
+                {
+                    var frBorders = tcPr.Element(W + "tcBorders");
+                    if (frBorders != null)
+                        firstRowBorders = new DocxBorders(
+                            Top: ReadBorderEdge(frBorders.Element(W + "top")),
+                            Bottom: ReadBorderEdge(frBorders.Element(W + "bottom")),
+                            Left: ReadBorderEdge(frBorders.Element(W + "left")),
+                            Right: ReadBorderEdge(frBorders.Element(W + "right"))
+                        );
+                }
+            }
+
+            tableStyles[styleId] = new DocxTableStyleInfo(hasBorders, bTop, bBottom, bLeft, bRight, bInsideH, bInsideV,
+                band1Horz, band2Horz, firstRowBorders, cmTop, cmBottom, cmLeft, cmRight);
+        }
+
+        return (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName, tableStyles);
     }
 
     /// <summary>
@@ -2915,7 +3189,8 @@ internal sealed record DocxDocument(
     string? DefaultEastAsiaFontName = null,
     List<DocxElement>? HeaderElements = null,
     List<DocxElement>? FooterElements = null,
-    List<List<DocxElement>?>? SectionFooterElements = null
+    List<List<DocxElement>?>? SectionFooterElements = null,
+    Dictionary<string, DocxFootnote>? Footnotes = null
 );
 
 /// <summary>Page layout settings from sectPr.</summary>
@@ -3014,7 +3289,15 @@ internal sealed record DocxRun(
     string? FontName = null,
     bool HasExplicitUnderlineDecl = false,
     bool IsColumnBreak = false,
-    float VerticalPosition = 0
+    float VerticalPosition = 0,
+    string? FootnoteId = null
+);
+
+/// <summary>Represents a footnote definition parsed from word/footnotes.xml.</summary>
+internal sealed record DocxFootnote(
+    string Id,
+    float FontSize,
+    List<DocxRun> Runs
 );
 
 /// <summary>Represents an embedded image.</summary>
@@ -3028,7 +3311,8 @@ internal sealed record DocxImage(
     long OffsetYEmu = 0,
     bool IsBehindDoc = false,
     string? RelativeFromH = null,
-    string? RelativeFromV = null
+    string? RelativeFromV = null,
+    bool IsWrapTopBottom = false
 );
 
 /// <summary>Represents a floating text box (wrapNone) with absolute position.</summary>
@@ -3043,7 +3327,9 @@ internal sealed record DocxFloatingTextBox(
     string VRelativeFrom = "paragraph",
     PdfColor? FillColor = null,
     float TopInsetPt = 3.6f,
-    float LeftInsetPt = 7.2f
+    float LeftInsetPt = 7.2f,
+    string? HAlign = null,
+    string? VAlign = null
 );
 
 /// <summary>Represents a text box outline border (rectangle drawn around text box content).</summary>
@@ -3090,7 +3376,13 @@ internal sealed record DocxTable(
     float CellMarginRight = 5.4f,
     float CellMarginTop = 0f,
     float CellMarginBottom = 0f,
-    string Alignment = "left"
+    string Alignment = "left",
+    DocxBorderEdge? BorderInsideH = null,
+    DocxBorderEdge? BorderInsideV = null,
+    DocxBorderEdge? BorderTop = null,
+    DocxBorderEdge? BorderBottom = null,
+    DocxBorderEdge? BorderLeft = null,
+    DocxBorderEdge? BorderRight = null
 ) : DocxElement;
 
 /// <summary>Represents a table row.</summary>
@@ -3124,6 +3416,25 @@ internal sealed record DocxStyleInfo(
     bool ContextualSpacing = false,
     string? FontName = null,
     float CharSpacing = 0
+);
+
+/// <summary>Table style definition from styles.xml.</summary>
+internal sealed record DocxTableStyleInfo(
+    bool HasBorders = false,
+    DocxBorderEdge? BorderTop = null,
+    DocxBorderEdge? BorderBottom = null,
+    DocxBorderEdge? BorderLeft = null,
+    DocxBorderEdge? BorderRight = null,
+    DocxBorderEdge? BorderInsideH = null,
+    DocxBorderEdge? BorderInsideV = null,
+    PdfColor? Band1HorzShading = null,
+    PdfColor? Band2HorzShading = null,
+    DocxBorders? FirstRowBorders = null,
+    float CellMarginTop = -1,
+    float CellMarginBottom = -1,
+    float CellMarginLeft = -1,
+    float CellMarginRight = -1,
+    float ParagraphSpacingAfter = -1
 );
 
 /// <summary>Numbering definition for lists.</summary>

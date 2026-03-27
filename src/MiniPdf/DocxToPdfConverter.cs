@@ -161,10 +161,14 @@ internal static class DocxToPdfConverter
         {
             var headerContentHeight = EstimateElementsHeight(docxDoc.HeaderElements, options);
             var headerAreaHeight = options.MarginTop - options.HeaderMargin;
+            if (headerAreaHeight < 0) headerAreaHeight = 0; // header starts below marginTop
             if (headerContentHeight > headerAreaHeight)
             {
-                // Preserve the original gap between header area and body content
-                options.MarginTop = options.HeaderMargin + headerContentHeight + headerAreaHeight;
+                // Preserve a reasonable gap between header area and body content.
+                // When headerMargin > marginTop (header below nominal body start),
+                // use half the original top margin as a gap, which approximates Word behavior.
+                var gap = headerAreaHeight > 0 ? headerAreaHeight : Math.Max(6f, options.MarginTop / 2f);
+                options.MarginTop = options.HeaderMargin + headerContentHeight + gap;
             }
         }
         // Adjust bottom margin when footer content is taller than the default footer area
@@ -179,6 +183,10 @@ internal static class DocxToPdfConverter
         state.EnsurePage();
         // Record section 0 start page
         state.SectionStartPages.Add(0);
+
+        // Initialize footnote support
+        state.Footnotes = docxDoc.Footnotes;
+        state.BaseMarginBottom = options.MarginBottom;
 
         var sectionIndex = 0;
         foreach (var element in processedElements)
@@ -313,6 +321,9 @@ internal static class DocxToPdfConverter
                 }
             }
         }
+
+        // Render footnotes on the last page
+        state.RenderPageFootnotes();
 
         // Render headers and footers text on all pages
         // When full elements are available, use them; otherwise fall back to text-only rendering.
@@ -498,6 +509,12 @@ internal static class DocxToPdfConverter
         public List<int> SectionStartPages { get; } = new();
         public int CurrentSectionIndex { get; set; } = 0;
 
+        // Footnote tracking
+        public Dictionary<string, DocxFootnote>? Footnotes { get; set; }
+        public List<string> CurrentPageFootnoteIds { get; } = new();
+        public float FootnoteReservedHeight { get; set; }
+        public float BaseMarginBottom { get; set; }
+
         // Multi-column state
         public int ColumnCount { get; set; } = 1;
         public int CurrentColumn { get; set; } = 0;
@@ -591,6 +608,15 @@ internal static class DocxToPdfConverter
                 if (ColumnCount > 1 && CurrentPage != null && AdvanceToNextColumn())
                     return;
 
+                // Render footnotes on the current page before moving to a new one
+                if (CurrentPage != null)
+                {
+                    RenderPageFootnotes();
+                    CurrentPageFootnoteIds.Clear();
+                    FootnoteReservedHeight = 0;
+                    Options.MarginBottom = BaseMarginBottom;
+                }
+
                 CurrentPage = Doc.AddPage(Options.PageWidth, Options.PageHeight);
                 CurrentY = Options.PageHeight - Options.MarginTop;
                 // Apply accumulated vertical space from empty paragraphs that
@@ -623,6 +649,9 @@ internal static class DocxToPdfConverter
 
         public void ForceNewPage()
         {
+            // Render footnotes before leaving the current page
+            RenderPageFootnotes();
+
             // Restore margins if in multi-column mode
             if (ColumnCount > 1)
             {
@@ -642,8 +671,56 @@ internal static class DocxToPdfConverter
             LastLineHeight = 0;
             LastSpacingAfter = 0;
 
+            // Reset footnote state for new page
+            CurrentPageFootnoteIds.Clear();
+            FootnoteReservedHeight = 0;
+            Options.MarginBottom = BaseMarginBottom;
+
             if (ColumnCount > 1)
                 ColumnTopY = CurrentY;
+        }
+
+        public void AddFootnoteReference(string fnId)
+        {
+            if (Footnotes == null || !Footnotes.TryGetValue(fnId, out var fn)) return;
+            if (CurrentPageFootnoteIds.Contains(fnId)) return;
+            CurrentPageFootnoteIds.Add(fnId);
+
+            // Reserve space: separator line (1pt) + spacing (4pt) + one line per footnote
+            var lineH = fn.FontSize * 1.2f;
+            if (FootnoteReservedHeight == 0)
+                FootnoteReservedHeight = 5f; // separator + gap
+            FootnoteReservedHeight += lineH;
+            Options.MarginBottom = BaseMarginBottom + FootnoteReservedHeight;
+        }
+
+        public void RenderPageFootnotes()
+        {
+            if (CurrentPage == null || Footnotes == null || CurrentPageFootnoteIds.Count == 0) return;
+
+            var x = Options.MarginLeft;
+            var separatorW = UsableWidth * 0.33f;
+            var y = BaseMarginBottom + FootnoteReservedHeight;
+
+            // Draw separator line
+            CurrentPage.AddLine(x, y, x + separatorW, y, new PdfColor(0, 0, 0), 0.5f);
+            y -= 4f;
+
+            // Render each footnote
+            foreach (var fnId in CurrentPageFootnoteIds)
+            {
+                if (!Footnotes.TryGetValue(fnId, out var fn)) continue;
+                var lineH = fn.FontSize * 1.2f;
+                y -= lineH;
+                var curX = x;
+                foreach (var run in fn.Runs)
+                {
+                    var runFs = run.FontSize > 0 ? run.FontSize : fn.FontSize;
+                    var drawY = y + (run.VerticalPosition > 0 ? run.VerticalPosition : 0);
+                    CurrentPage.AddText(run.Text, curX, drawY, runFs, preferredFontName: "Helvetica");
+                    curX += run.Text.Length * runFs * 0.5f; // approximate width
+                }
+            }
         }
     }
 
@@ -878,10 +955,32 @@ internal static class DocxToPdfConverter
         }
 
 
-        // Render images first (inline images)
+        // Render images first (inline images), defer wrapTopAndBottom to after text
+        List<DocxImage>? deferredWrapTBImages = null;
+        float deferredImagesTotalHeight = 0;
         foreach (var image in paragraph.Images)
         {
+            if (image.IsWrapTopBottom)
+            {
+                deferredWrapTBImages ??= new List<DocxImage>();
+                deferredWrapTBImages.Add(image);
+                const float emuPt = 914400f / 72f;
+                var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPt : 150f;
+                var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPt : 200f;
+                if (imgW > state.UsableWidth) imgH *= state.UsableWidth / imgW;
+                deferredImagesTotalHeight += imgH + 1f;
+                continue;
+            }
             RenderImage(state, image, paragraph.Alignment);
+        }
+
+        // Proactive page break: if text + deferred wrapTopAndBottom images
+        // won't fit on the current page, break before rendering anything.
+        if (deferredWrapTBImages != null && state.CurrentPage != null && !state.IsTopOfPage)
+        {
+            var neededHeight = lineHeight + deferredImagesTotalHeight;
+            if (state.CurrentY - neededHeight < state.Options.MarginBottom)
+                state.ForceNewPage();
         }
 
         // Render anchor shapes (filled rectangles behind text)
@@ -914,8 +1013,16 @@ internal static class DocxToPdfConverter
         {
             // Only add line height when no inline images were rendered
             // (inline images advance Y themselves via RenderImage)
-            if (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor))
+            if (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom))
                 state.AdvanceY(lineHeight);
+
+            // Render wrapTopAndBottom images even for empty paragraphs
+            foreach (var image in paragraph.Images)
+            {
+                if (image.IsWrapTopBottom)
+                    RenderImage(state, image, paragraph.Alignment);
+            }
+
             // Apply spacing after
             var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             state.AdvanceY(spacingAfterEmpty);
@@ -1134,6 +1241,13 @@ internal static class DocxToPdfConverter
             state.CurrentPage.AddLine(tbRight, tbTop, tbRight, tbBottom, tb.Color, tb.LineWidth);
         }
 
+        // Render deferred wrapTopAndBottom images (after text, before spacing)
+        if (deferredWrapTBImages != null)
+        {
+            foreach (var image in deferredWrapTBImages)
+                RenderImage(state, image, paragraph.Alignment);
+        }
+
         // Apply spacing after
         var spacingAfter = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
         state.AdvanceY(spacingAfter);
@@ -1176,15 +1290,45 @@ internal static class DocxToPdfConverter
         foreach (var box in boxes)
         {
             // Convert DOCX coordinates (origin top-left) to PDF (origin bottom-left)
-            // Horizontal: column/margin → offset from left margin; page → offset from page edge
-            var boxLeft = box.HRelativeFrom == "page"
-                ? box.XPt
-                : options.MarginLeft + box.XPt;
+            var usableW = options.PageWidth - options.MarginLeft - options.MarginRight;
+
+            // Horizontal positioning with alignment support
+            float boxLeft;
+            if (box.HAlign != null)
+            {
+                var refWidth = box.HRelativeFrom == "page" ? options.PageWidth : usableW;
+                var refLeft = box.HRelativeFrom == "page" ? 0f : options.MarginLeft;
+                boxLeft = box.HAlign switch
+                {
+                    "center" => refLeft + (refWidth - box.WidthPt) / 2,
+                    "right" => refLeft + refWidth - box.WidthPt,
+                    _ => refLeft // left
+                };
+            }
+            else
+            {
+                boxLeft = box.HRelativeFrom == "page"
+                    ? box.XPt
+                    : options.MarginLeft + box.XPt;
+            }
 
             // Vertical positioning with cross-page support
             var targetPage = page;
             float boxTop;
-            if (box.VRelativeFrom is "paragraph" or "line")
+            if (box.VAlign != null)
+            {
+                var refHeight = box.VRelativeFrom == "page" ? options.PageHeight
+                    : options.PageHeight - options.MarginTop - options.MarginBottom;
+                var refTop = box.VRelativeFrom == "page" ? options.PageHeight
+                    : options.PageHeight - options.MarginTop;
+                boxTop = box.VAlign switch
+                {
+                    "center" => refTop - (refHeight - box.HeightPt) / 2,
+                    "bottom" => refTop - refHeight + box.HeightPt,
+                    _ => refTop // top
+                };
+            }
+            else if (box.VRelativeFrom is "paragraph" or "line")
             {
                 // Compute position in continuous document space to handle cross-page textboxes
                 var contentHeight = options.PageHeight - options.MarginTop - options.MarginBottom;
@@ -1231,12 +1375,23 @@ internal static class DocxToPdfConverter
             // Offset baseline down from boxTop by the first line's font size + top inset
             // so text sits inside the textbox boundary, not on its edge.
             var firstFontSize = box.Paragraphs.FirstOrDefault()?.FontSize ?? 0;
+            if (box.Paragraphs.Count > 0)
+            {
+                var firstRunsMax = box.Paragraphs[0].Runs.Where(r => r.FontSize > 0).Select(r => r.FontSize).DefaultIfEmpty(0f).Max();
+                if (firstRunsMax > firstFontSize) firstFontSize = firstRunsMax;
+            }
             if (firstFontSize <= 0) firstFontSize = options.FontSize;
             var topInset = box.TopInsetPt;
             var currentY = boxTop - firstFontSize - topInset;
             foreach (var para in box.Paragraphs)
             {
+                // Use paragraph font size, but prefer run-level size when larger (runs may override inherited style size)
                 var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
+                if (para.Runs.Count > 0)
+                {
+                    var maxRunFs = para.Runs.Where(r => r.FontSize > 0).Select(r => r.FontSize).DefaultIfEmpty(0f).Max();
+                    if (maxRunFs > fontSize) fontSize = maxRunFs;
+                }
                 var paraRunFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
                 float lineHeight;
                 if (para.LineSpacingAbsolute && para.LineSpacing > 0)
@@ -1323,7 +1478,8 @@ internal static class DocxToPdfConverter
             var vertPosMatch = Math.Abs(current.VerticalPosition - next.VerticalPosition) < 0.01f;
             if (Math.Abs(curFs - nextFs) < 0.01f && colorMatch && boldMatch && italicMatch && underlineMatch && charSpacingMatch && fontNameMatch && vertPosMatch
                 && !current.IsPageBreak && !next.IsPageBreak
-                && !current.IsColumnBreak && !next.IsColumnBreak)
+                && !current.IsColumnBreak && !next.IsColumnBreak
+                && current.FootnoteId == null && next.FootnoteId == null)
             {
                 // When the current run is whitespace-only, adopt the next run's
                 // visual formatting so that following non-whitespace text retains
@@ -1535,6 +1691,10 @@ internal static class DocxToPdfConverter
         foreach (var run in paragraph.Runs)
         {
             if (string.IsNullOrEmpty(run.Text)) continue;
+
+            // Register footnote reference for bottom-of-page rendering
+            if (!string.IsNullOrEmpty(run.FootnoteId))
+                state.AddFootnoteReference(run.FootnoteId);
 
             var runFs = run.FontSize > 0 ? run.FontSize : defaultFontSize;
             var runColor = run.Color ?? paragraph.Color;
@@ -1881,7 +2041,7 @@ internal static class DocxToPdfConverter
             return; // Only support JPEG and PNG
 
         // Anchor images: render at absolute offset position without advancing cursor
-        if (image.IsAnchor)
+        if (image.IsAnchor && !image.IsWrapTopBottom)
         {
             // BehindDoc images are rendered on the page they appear on
             if (image.IsBehindDoc)
@@ -1924,7 +2084,17 @@ internal static class DocxToPdfConverter
             state.EnsurePage();
 
         var x = state.Options.MarginLeft;
-        if (alignment == "center")
+        if (image.IsWrapTopBottom)
+        {
+            // wrapTopAndBottom: use anchor horizontal offset
+            const float emuPerPt = 914400f / 72f;
+            x = state.Options.MarginLeft + image.OffsetXEmu / emuPerPt;
+            if (x + width > state.Options.PageWidth - state.Options.MarginRight)
+                x = state.Options.PageWidth - state.Options.MarginRight - width;
+            if (x < state.Options.MarginLeft)
+                x = state.Options.MarginLeft;
+        }
+        else if (alignment == "center")
             x = state.Options.MarginLeft + (state.UsableWidth - width) / 2;
         else if (alignment == "right")
             x = state.Options.MarginLeft + state.UsableWidth - width;
@@ -1944,12 +2114,22 @@ internal static class DocxToPdfConverter
     {
         const float emuPerPt = 914400f / 72f;
         float totalHeight = 0;
+        float lastSpacingAfter = 0;
+        var isFirst = true;
         foreach (var element in elements)
         {
             switch (element)
             {
                 case DocxParagraph para:
                 {
+                    // Apply spacing before (with collapsing) for non-first paragraphs
+                    if (!isFirst)
+                    {
+                        var sb = para.SpacingBefore > 0 ? para.SpacingBefore : 0f;
+                        var gap = Math.Max(sb, lastSpacingAfter);
+                        totalHeight += gap;
+                    }
+
                     var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
                     float lineHeight;
                     if (para.LineSpacingAbsolute && para.LineSpacing > 0)
@@ -1962,7 +2142,7 @@ internal static class DocxToPdfConverter
                     var usableW = options.PageWidth - options.MarginLeft - options.MarginRight;
                     foreach (var image in para.Images)
                     {
-                        if (image.IsAnchor) continue;
+                        if (image.IsAnchor && !image.IsWrapTopBottom) continue;
                         var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                         var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
                         if (imgW > usableW) imgH *= usableW / imgW;
@@ -1973,6 +2153,9 @@ internal static class DocxToPdfConverter
                         totalHeight += lineHeight;
                     else if (para.Images.Count == 0)
                         totalHeight += lineHeight;
+
+                    lastSpacingAfter = para.SpacingAfter >= 0 ? para.SpacingAfter : 0f;
+                    isFirst = false;
                     break;
                 }
                 case DocxTable table:
@@ -1988,6 +2171,8 @@ internal static class DocxToPdfConverter
                         rowH = Math.Max(rowH, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
                         totalHeight += rowH;
                     }
+                    lastSpacingAfter = 0;
+                    isFirst = false;
                     break;
                 }
             }
@@ -2004,6 +2189,8 @@ internal static class DocxToPdfConverter
     {
         const float emuPerPt = 914400f / 72f;
         var y = startY;
+        float lastSpacingAfter = 0;
+        var isFirst = true;
 
         foreach (var element in elements)
         {
@@ -2011,11 +2198,19 @@ internal static class DocxToPdfConverter
             {
                 case DocxParagraph para:
                 {
+                    // Apply spacing before (with collapsing) for non-first paragraphs
+                    if (!isFirst)
+                    {
+                        var sb = para.SpacingBefore > 0 ? para.SpacingBefore : 0f;
+                        var gap = Math.Max(sb, lastSpacingAfter);
+                        y -= gap;
+                    }
+
                     var usableW = options.PageWidth - options.MarginLeft - options.MarginRight;
-                    // Render images (inline + behindDoc anchors)
+                    // Render images (inline + behindDoc anchors + wrapTopAndBottom anchors)
                     foreach (var image in para.Images)
                     {
-                        if (image.IsAnchor && !image.IsBehindDoc) continue;
+                        if (image.IsAnchor && !image.IsBehindDoc && !image.IsWrapTopBottom) continue;
                         var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                         var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
                         var fmt = image.Extension;
@@ -2035,12 +2230,27 @@ internal static class DocxToPdfConverter
                         }
 
                         if (imgW > usableW) { var s = usableW / imgW; imgW *= s; imgH *= s; }
-                        var imgX = para.Alignment switch
+                        float imgX;
+                        if (image.IsWrapTopBottom)
                         {
-                            "center" => options.MarginLeft + (usableW - imgW) / 2,
-                            "right" => options.MarginLeft + usableW - imgW,
-                            _ => options.MarginLeft
-                        };
+                            // wrapTopAndBottom: use anchor horizontal offset
+                            imgX = (image.RelativeFromH == "margin" ? options.MarginLeft : options.MarginLeft)
+                                + image.OffsetXEmu / emuPerPt;
+                            // Clamp so image stays in page bounds
+                            if (imgX + imgW > options.PageWidth - options.MarginRight)
+                                imgX = options.PageWidth - options.MarginRight - imgW;
+                            if (imgX < options.MarginLeft)
+                                imgX = options.MarginLeft;
+                        }
+                        else
+                        {
+                            imgX = para.Alignment switch
+                            {
+                                "center" => options.MarginLeft + (usableW - imgW) / 2,
+                                "right" => options.MarginLeft + usableW - imgW,
+                                _ => options.MarginLeft
+                            };
+                        }
                         page.AddImage(image.Data, fmt, imgX, y - imgH, imgW, imgH);
                         y -= imgH + 1f;
                     }
@@ -2070,11 +2280,15 @@ internal static class DocxToPdfConverter
                             bold: firstRun?.Bold ?? false, italic: firstRun?.Italic ?? false, preferredFontName: firstRun?.FontName);
                         y -= lineHeight - runFontSize;
                     }
+                    lastSpacingAfter = para.SpacingAfter >= 0 ? para.SpacingAfter : 0f;
+                    isFirst = false;
                     break;
                 }
                 case DocxTable table:
                 {
                     y = RenderHeaderFooterTable(page, options, table, y);
+                    lastSpacingAfter = 0;
+                    isFirst = false;
                     break;
                 }
             }
@@ -2236,6 +2450,7 @@ internal static class DocxToPdfConverter
         {
             var row = table.Rows[rowIndex];
             var rowHeight = rowHeights[rowIndex];
+            var isLastRow = rowIndex == table.Rows.Count - 1;
 
             // Defensive floor for image-heavy rows: ensure inline image extents
             // are always respected, even when upstream row-height hints are small.
@@ -2246,6 +2461,10 @@ internal static class DocxToPdfConverter
             // Check if row fits on current page
             if (state.CurrentY - rowHeight < options.MarginBottom)
             {
+                state.RenderPageFootnotes();
+                state.CurrentPageFootnoteIds.Clear();
+                state.FootnoteReservedHeight = 0;
+                options.MarginBottom = state.BaseMarginBottom;
                 state.CurrentPage = state.Doc.AddPage(options.PageWidth, options.PageHeight);
                 state.CurrentY = options.PageHeight - options.MarginTop;
                 isFirstRow = true; // new page: draw top border again
@@ -2324,8 +2543,9 @@ internal static class DocxToPdfConverter
                     var para = cellParaList[cellParaIdx];
                     var isFirstCellPara = cellParaIdx == 0;
                     var isLastCellPara = cellParaIdx == cellParaList.Count - 1;
-                    // Apply spacing before (skip for first paragraph in cell)
-                    if (!isFirstCellPara && para.SpacingBefore > 0)
+                    // Apply spacing before for all paragraphs including the first
+                    // (Word applies paragraph-level spacing inside table cells)
+                    if (para.SpacingBefore > 0)
                         textY -= para.SpacingBefore;
 
                     // Render images inside table cells
@@ -2469,20 +2689,41 @@ internal static class DocxToPdfConverter
                 }
                 else if (table.HasBorders)
                 {
-                    // Fall back to table-level grid
-                    var borderColor = PdfColor.FromRgb(0, 0, 0);
-                    const float borderWidth = 0.5f;
+                    // Fall back to table-level grid (style-aware)
                     var tableLeft = options.MarginLeft;
                     var tableRight = options.MarginLeft + colWidths.Sum();
 
-                    if (isFirstRow)
-                        state.CurrentPage!.AddLine(tableLeft, rowTop, tableRight, rowTop, borderColor, borderWidth);
-                    state.CurrentPage!.AddLine(tableLeft, rowBottom, tableRight, rowBottom, borderColor, borderWidth);
+                    // Horizontal lines
+                    if (isFirstRow && table.BorderTop != null)
+                        state.CurrentPage!.AddLine(tableLeft, rowTop, tableRight, rowTop, table.BorderTop.Color, table.BorderTop.Width);
+                    else if (isFirstRow)
+                        state.CurrentPage!.AddLine(tableLeft, rowTop, tableRight, rowTop, PdfColor.FromRgb(0, 0, 0), 0.5f);
 
+                    if (isLastRow && table.BorderBottom != null)
+                        state.CurrentPage!.AddLine(tableLeft, rowBottom, tableRight, rowBottom, table.BorderBottom.Color, table.BorderBottom.Width);
+                    else if (table.BorderInsideH != null)
+                        state.CurrentPage!.AddLine(tableLeft, rowBottom, tableRight, rowBottom, table.BorderInsideH.Color, table.BorderInsideH.Width);
+                    else
+                        state.CurrentPage!.AddLine(tableLeft, rowBottom, tableRight, rowBottom, PdfColor.FromRgb(0, 0, 0), 0.5f);
+
+                    // Vertical lines
                     var vx = tableLeft;
                     for (var c = 0; c <= colCount; c++)
                     {
-                        state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, borderColor, borderWidth);
+                        var isOuterEdge = c == 0 || c == colCount;
+                        if (isOuterEdge)
+                        {
+                            var edge = c == 0 ? table.BorderLeft : table.BorderRight;
+                            if (edge != null)
+                                state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, edge.Color, edge.Width);
+                            else
+                                state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, PdfColor.FromRgb(0, 0, 0), 0.5f);
+                        }
+                        else if (table.BorderInsideV != null)
+                            state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, table.BorderInsideV.Color, table.BorderInsideV.Width);
+                        else
+                            state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, PdfColor.FromRgb(0, 0, 0), 0.5f);
+
                         if (c < colCount) vx += colWidths[c];
                     }
                 }
@@ -2541,6 +2782,10 @@ internal static class DocxToPdfConverter
         {
             state.AdvanceY(2f);
         }
+
+        // Reset spacing context after table so the next paragraph's SpacingBefore
+        // is not collapsed with the pre-table paragraph's SpacingAfter.
+        state.LastSpacingAfter = 0;
     }
 
     private static float[] CalculateTableColumnWidths(DocxTable table, float usableWidth)
@@ -2580,7 +2825,9 @@ internal static class DocxToPdfConverter
             var isFirstPara = pi == 0;
             var isLastPara = pi == cellParas.Count - 1;
 
-            if (!isFirstPara && para.SpacingBefore > 0)
+            // Apply SpacingBefore for all paragraphs including the first
+            // (Word applies paragraph-level spacing inside table cells)
+            if (para.SpacingBefore > 0)
                 cellHeight += para.SpacingBefore;
 
             const float emuPerPt = 914400f / 72f;
@@ -2611,14 +2858,17 @@ internal static class DocxToPdfConverter
             if (string.IsNullOrEmpty(text))
             {
                 cellHeight += lineHeight;
-                // Suppress SpacingAfter for all paragraphs in table cells (TableGrid after=0)
+                // Apply SpacingAfter for the last paragraph (contributes to bottom cell padding)
+                if (isLastPara && para.SpacingAfter > 0)
+                    cellHeight += para.SpacingAfter;
                 continue;
             }
 
             var lines = WordWrap(text, textWidth, textWidth, runFontSize, null, runBold, runCharSpacing, options.UseCalibriWidths);
             cellHeight += lines.Count * lineHeight;
-            // Suppress SpacingAfter for all paragraphs in table cells
-            // (TableGrid style sets after=0, matching Word/LibreOffice compact cell behavior)
+            // Apply SpacingAfter for the last paragraph (contributes to bottom cell padding)
+            if (isLastPara && para.SpacingAfter > 0)
+                cellHeight += para.SpacingAfter;
         }
 
         return cellHeight;
@@ -2937,6 +3187,7 @@ internal static class DocxToPdfConverter
     /// <summary>
     /// Estimates text width using the appropriate font metrics for word-wrap layout.
     /// Uses Calibri widths for Calibri-based documents, Helvetica widths otherwise.
+    /// </summary>
     /// <summary>
     /// Returns the font metrics factor used for line height calculation.
     /// Serif fonts like Times New Roman have smaller ascent/descent ratios and need a lower factor.
