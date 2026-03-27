@@ -1,0 +1,85 @@
+name: Release AOT Binaries
+
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: startsWith(github.ref_name, 'v') || github.event_name == 'workflow_dispatch'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, rid: win-x64,    artifact: minipdf-win-x64.zip }
+          - { os: windows-latest, rid: win-arm64,   artifact: minipdf-win-arm64.zip }
+          - { os: ubuntu-22.04,   rid: linux-x64,   artifact: minipdf-linux-x64.tar.gz }
+          - os: ubuntu-22.04
+            rid: linux-arm64
+            artifact: minipdf-linux-arm64.tar.gz
+            extra_args: -p:ObjCopyName=aarch64-linux-gnu-objcopy
+          - { os: macos-latest,   rid: osx-x64,    artifact: minipdf-osx-x64.tar.gz }
+          - { os: macos-latest,   rid: osx-arm64,   artifact: minipdf-osx-arm64.tar.gz }
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '9.0.x' }
+
+      - name: Install cross-compilation toolchain (Linux ARM64)
+        if: matrix.rid == 'linux-arm64'
+        run: |
+          sudo dpkg --add-architecture arm64
+          sudo bash -c 'cat > /etc/apt/sources.list.d/arm64.list << EOF
+          deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs) main restricted universe multiverse
+          deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-updates main restricted universe multiverse
+          deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-security main restricted universe multiverse
+          EOF'
+          sudo sed -i 's/^deb \(http\|mirror\)/deb [arch=amd64] \1/g' /etc/apt/sources.list
+          sudo sed -i 's/^deb \(http\|mirror\)/deb [arch=amd64] \1/g' /etc/apt/sources.list.d/*.list 2>/dev/null || true
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu zlib1g-dev:arm64
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [ -z "$VERSION" ] || [ "$VERSION" = "$GITHUB_REF_NAME" ]; then VERSION="0.0.1"; fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Publish AOT
+        run: >
+          dotnet publish src/MiniPdf.Cli/MiniPdf.Cli.csproj
+          -c Release -r ${{ matrix.rid }} -o publish
+          -p:Version=${{ steps.version.outputs.VERSION }}
+          ${{ matrix.extra_args }}
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Copy-Item publish/MiniPdf.Cli.exe publish/minipdf.exe
+          Compress-Archive -Path publish/minipdf.exe -DestinationPath ${{ matrix.artifact }}
+
+      - name: Package (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          cp publish/MiniPdf.Cli publish/minipdf
+          chmod +x publish/minipdf
+          tar -czf ${{ matrix.artifact }} -C publish minipdf
+
+      - name: Upload release asset
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with: { files: '${{ matrix.artifact }}' }
+
+      - name: Upload build artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with: { name: '${{ matrix.artifact }}', path: '${{ matrix.artifact }}' }
