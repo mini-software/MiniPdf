@@ -898,6 +898,23 @@ internal static class DocxToPdfConverter
         var availableWidth = state.UsableWidth - indentLeft - indentRight;
         var x = options.MarginLeft + indentLeft;
 
+        // Prevent orphaned list labels: if the first text line won't fit on
+        // this page, force a new page before rendering the label so the
+        // number/bullet stays together with its content.
+        if ((paragraph.IsBulletList || paragraph.IsNumberedList) && paragraph.ListText != null
+            && state.CurrentPage != null && !state.IsTopOfPage
+            && state.CurrentY - lineHeight < state.Options.MarginBottom)
+        {
+            state.ForceNewPage();
+            state.EnsurePage();
+            var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
+                ? (lineHeight + fontSize) / 2f
+                : fontSize * AscentRatio;
+            state.AdvanceY(ascentOffset);
+            paragraphStartY = state.CurrentY;
+            state.LastParagraphStartY = paragraphStartY;
+        }
+
         // Render list bullet/number
         if ((paragraph.IsBulletList || paragraph.IsNumberedList) && paragraph.ListText != null)
         {

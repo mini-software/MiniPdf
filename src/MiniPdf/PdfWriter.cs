@@ -34,12 +34,12 @@ internal sealed class PdfWriter
         public int[] Bbox = [-166, -225, 1000, 931];
         /// <summary>Maps Unicode code point → CID. BMP chars use identity; non-BMP use PUA slots.</summary>
         public Dictionary<int, int> CpToCid = new();
-        /// <summary>Glyph advance widths indexed by glyph ID (from hmtx table).</summary>
-        public ushort[] Advances = [];
-        /// <summary>Maps Unicode code point → glyph ID (from cmap table).</summary>
+        /// <summary>Glyph advance widths from the 'hmtx' table (glyph index → advance width in font units).</summary>
+        public ushort[] GlyphAdvances = [];
+        /// <summary>Units per em from the 'head' table.</summary>
+        public int Upm = 1000;
+        /// <summary>Maps Unicode code point → glyph ID for width measurement.</summary>
         public Dictionary<int, ushort> Cmap = new();
-        /// <summary>Font units per em (from head table).</summary>
-        public int UnitsPerEm = 1000;
         // PDF object numbers (assigned during Write)
         public int ToUnicodeObj, DescriptorObj, CidFontObj, Type0Obj, FontFileObj, CidToGidObj;
     }
@@ -426,9 +426,9 @@ internal sealed class PdfWriter
                     CapHeight = (int)(capH * scale),
                     Bbox = [.. bbox.Select(v => (int)(v * scale))],
                     CpToCid = cpToCid,
-                    Advances = advances,
+                    GlyphAdvances = advances,
+                    Upm = upm,
                     Cmap = cmap,
-                    UnitsPerEm = upm,
                 });
             }
 
@@ -1049,26 +1049,30 @@ internal sealed class PdfWriter
                 // For WinAnsi fallback with no embedded font, keep compress-only Tz.
                 if (block.MaxWidth.HasValue)
                 {
-                    EmbeddedFontInfo? efForTz = null;
-                    if (blockPrefSlot >= 0 && embeddedFonts != null && blockPrefSlot < embeddedFonts.Count)
-                        efForTz = embeddedFonts[blockPrefSlot];
-                    if (efForTz != null)
+                    // When an embedded font is used, measure natural width using
+                    // the actual font metrics so Tz correctly compresses/expands
+                    // to match the maxWidth.  Helvetica metrics would be wrong
+                    // because the embedded font (e.g. Verdana-Bold) has different widths.
+                    EmbeddedFontInfo? blockFont = null;
+                    if (hasBoldFontVariant && fontNameToSlot!.TryGetValue(boldFontKey!, out var boldSlotIdx))
+                        blockFont = embeddedFonts[boldSlotIdx];
+                    else if (blockHasEmbeddedPref && fontNameToSlot!.TryGetValue(block.PreferredFontName!, out var prefSlotIdx))
+                        blockFont = embeddedFonts[prefSlotIdx];
+
+                    var naturalWidth = blockFont != null
+                        ? MeasureEmbeddedFontWidth(block.Text, block.FontSize, block.CharSpacing, blockFont)
+                        : -1.0;
+                    if (naturalWidth < 0)
+                        naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
+
+                    if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
                     {
-                        sb.Append($"{cidTzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
+                        var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
+                        sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
                     }
                     else
                     {
-                        // Fallback: Helvetica metrics, compress-only Tz
-                        var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
-                        if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
-                        {
-                            var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
-                            sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
-                        }
-                        else
-                        {
-                            sb.Append("100.0 Tz\n");
-                        }
+                        sb.Append("100.0 Tz\n");
                     }
                 }
                 else
@@ -1193,12 +1197,12 @@ internal sealed class PdfWriter
         foreach (var ch in text)
         {
             int cp = ch;
-            if (ef.Cmap.TryGetValue(cp, out var gid) && gid < ef.Advances.Length)
-                total += ef.Advances[gid];
+            if (ef.Cmap.TryGetValue(cp, out var gid) && gid < ef.GlyphAdvances.Length)
+                total += ef.GlyphAdvances[gid];
             else
-                total += ef.UnitsPerEm / 2; // fallback: half em
+                total += ef.Upm / 2; // fallback: half em
         }
-        return total * fontSize / ef.UnitsPerEm;
+        return total * fontSize / ef.Upm;
     }
 
     /// <summary>
@@ -1215,6 +1219,26 @@ internal sealed class PdfWriter
         }
         var result = total * fontSize / 1000.0;
         // Tc adds charSpacing points per character (except after the last)
+        if (charSpacing != 0 && text.Length > 1)
+            result += charSpacing * (text.Length - 1);
+        return result;
+    }
+
+    /// <summary>
+    /// Measures the natural rendering width of text using the actual embedded font metrics.
+    /// Returns -1 if the font cannot measure all characters (caller should fall back to Helvetica).
+    /// </summary>
+    private static double MeasureEmbeddedFontWidth(string text, float fontSize, float charSpacing, EmbeddedFontInfo font)
+    {
+        double total = 0;
+        foreach (var ch in text)
+        {
+            if (!font.Cmap.TryGetValue(ch, out var gid))
+                return -1; // character not in font
+            var advance = gid < font.GlyphAdvances.Length ? font.GlyphAdvances[gid] : 0;
+            total += advance;
+        }
+        var result = total * fontSize / font.Upm;
         if (charSpacing != 0 && text.Length > 1)
             result += charSpacing * (text.Length - 1);
         return result;
