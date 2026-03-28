@@ -2560,16 +2560,18 @@ internal static class DocxToPdfConverter
                     var para = cellParaList[cellParaIdx];
                     var isFirstCellPara = cellParaIdx == 0;
                     var isLastCellPara = cellParaIdx == cellParaList.Count - 1;
-                    // Apply spacing before for all paragraphs including the first
-                    // (Word applies paragraph-level spacing inside table cells)
-                    if (para.SpacingBefore > 0)
+                    // Skip SpacingBefore for the first paragraph in a table cell
+                    // (Word default compat mode does not apply SpacingBefore to the first cell paragraph)
+                    if (!isFirstCellPara && para.SpacingBefore > 0)
                         textY -= para.SpacingBefore;
 
                     // Render images inside table cells
                     const float emuPerPt = 914400f / 72f;
+                    var cellHasInlineImages = false;
                     foreach (var image in para.Images)
                     {
                         if (image.IsAnchor) continue; // Skip anchor images in cell flow
+                        cellHasInlineImages = true;
                         var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                         var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
                         var maxImgW = cellWidth - cellPaddingH * 2;
@@ -2592,7 +2594,8 @@ internal static class DocxToPdfConverter
                     var text = string.Concat(para.Runs.Select(r => r.Text));
                     if (string.IsNullOrEmpty(text))
                     {
-                        // Empty paragraph still takes up space
+                        // Empty paragraph still takes up space (skip when images already rendered)
+                        if (cellHasInlineImages) continue;
                         float emptyLineH;
                         if (para.LineSpacingAbsolute && para.LineSpacing > 0)
                             emptyLineH = para.LineSpacing;
@@ -2842,15 +2845,17 @@ internal static class DocxToPdfConverter
             var isFirstPara = pi == 0;
             var isLastPara = pi == cellParas.Count - 1;
 
-            // Apply SpacingBefore for all paragraphs including the first
-            // (Word applies paragraph-level spacing inside table cells)
-            if (para.SpacingBefore > 0)
+            // Skip SpacingBefore for the first paragraph in a table cell
+            // (Word default compat mode does not apply SpacingBefore to the first cell paragraph)
+            if (!isFirstPara && para.SpacingBefore > 0)
                 cellHeight += para.SpacingBefore;
 
             const float emuPerPt = 914400f / 72f;
+            var hasInlineImages = false;
             foreach (var image in para.Images)
             {
                 if (image.IsAnchor) continue;
+                hasInlineImages = true;
                 var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                 var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
                 var maxImgW = cellWidth - cellPaddingH * 2;
@@ -2874,7 +2879,10 @@ internal static class DocxToPdfConverter
 
             if (string.IsNullOrEmpty(text))
             {
-                cellHeight += lineHeight;
+                // Only add line height when no inline images were rendered
+                // (inline images already account for the paragraph's vertical space)
+                if (!hasInlineImages)
+                    cellHeight += lineHeight;
                 // Apply SpacingAfter for the last paragraph (contributes to bottom cell padding)
                 if (isLastPara && para.SpacingAfter > 0)
                     cellHeight += para.SpacingAfter;
