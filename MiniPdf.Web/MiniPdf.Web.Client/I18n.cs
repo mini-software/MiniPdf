@@ -76,6 +76,11 @@ public class I18n
             ["BrowserNoLimits"] = "Browser mode: no usage limits, all processing is done locally.",
             ["CheckingFontCache"] = "Checking font cache...",
             ["FontLoadedFromCache"] = "Font loaded from cache (no download needed)",
+            ["ApiRecommend"] = "The Cloud API provides better rendering results because the server has CJK and other fonts pre-installed.",
+            ["ApiPrivacy"] = "No files are stored on the API server. All uploaded files are converted in memory and immediately discarded.",
+            ["ApiSourceCode"] = "The API is fully open source. View the source code on",
+            ["ApiAlternative"] = "If the result is still not satisfactory, you can try the local CLI tool or NuGet package, or",
+            ["ApiStatsNote"] = "The API uses a local SQLite database to track usage statistics (processing time per request, daily request count). No file content is stored.",
         },
         ["zh-CN"] = new()
         {
@@ -112,6 +117,11 @@ public class I18n
             ["BrowserNoLimits"] = "浏览器模式：无使用限制，所有处理均在本地完成。",
             ["CheckingFontCache"] = "正在检查字体缓存...",
             ["FontLoadedFromCache"] = "字体已从缓存加载（无需下载）",
+            ["ApiRecommend"] = "推荐使用云端 API，因为服务器已预装 CJK 等字体，渲染效果更好。",
+            ["ApiPrivacy"] = "API 服务器不会保存任何文件。所有上传的文件均在内存中转换后立即丢弃。",
+            ["ApiSourceCode"] = "API 完全开源，源代码可在以下地址查看：",
+            ["ApiAlternative"] = "如果转换效果仍不理想，可以尝试本地 CLI 工具或 NuGet 包安装，或者",
+            ["ApiStatsNote"] = "API 使用本地 SQLite 数据库统计使用情况（每次请求处理时间、每日请求次数），不会存储任何文件内容。",
         },
         ["zh-TW"] = new()
         {
@@ -148,6 +158,11 @@ public class I18n
             ["BrowserNoLimits"] = "瀏覽器模式：無使用限制，所有處理均在本地完成。",
             ["CheckingFontCache"] = "正在檢查字型快取...",
             ["FontLoadedFromCache"] = "字型已從快取載入（無需下載）",
+            ["ApiRecommend"] = "推薦使用雲端 API，因為伺服器已預裝 CJK 等字型，渲染效果更好。",
+            ["ApiPrivacy"] = "API 伺服器不會儲存任何檔案。所有上傳的檔案均在記憶體中轉換後立即丟棄。",
+            ["ApiSourceCode"] = "API 完全開源，原始碼可在以下位置查看：",
+            ["ApiAlternative"] = "如果轉換效果仍不理想，可以嘗試本地 CLI 工具或 NuGet 套件安裝，或者",
+            ["ApiStatsNote"] = "API 使用本地 SQLite 資料庫統計使用情況（每次請求處理時間、每日請求次數），不會儲存任何檔案內容。",
         },
         ["ja"] = new()
         {
@@ -184,6 +199,11 @@ public class I18n
             ["BrowserNoLimits"] = "ブラウザモード: 使用制限なし、すべての処理はローカルで行われます。",
             ["CheckingFontCache"] = "フォントキャッシュを確認中...",
             ["FontLoadedFromCache"] = "キャッシュからフォントを読み込みました（ダウンロード不要）",
+            ["ApiRecommend"] = "クラウド API の使用をお勧めします。サーバーに CJK フォントなどがプリインストールされているため、より良いレンダリング結果が得られます。",
+            ["ApiPrivacy"] = "API サーバーにファイルは保存されません。アップロードされたファイルはメモリ内で変換され、即座に破棄されます。",
+            ["ApiSourceCode"] = "API は完全にオープンソースです。ソースコードはこちらで確認できます：",
+            ["ApiAlternative"] = "結果がまだ満足できない場合は、ローカル CLI ツールまたは NuGet パッケージをお試しいただくか、",
+            ["ApiStatsNote"] = "API はローカルの SQLite データベースを使用して使用状況を追跡しています（リクエストごとの処理時間、日次リクエスト数）。ファイル内容は保存されません。",
         },
         ["ko"] = new()
         {
@@ -220,6 +240,11 @@ public class I18n
             ["BrowserNoLimits"] = "브라우저 모드: 사용 제한 없음, 모든 처리는 로컬에서 수행됩니다.",
             ["CheckingFontCache"] = "글꼴 캐시 확인 중...",
             ["FontLoadedFromCache"] = "캐시에서 글꼴을 로드했습니다 (다운로드 불필요)",
+            ["ApiRecommend"] = "클라우드 API 사용을 권장합니다. 서버에 CJK 글꼴 등이 사전 설치되어 있어 더 나은 렌더링 결과를 얻을 수 있습니다.",
+            ["ApiPrivacy"] = "API 서버에 파일이 저장되지 않습니다. 업로드된 파일은 메모리에서 변환 후 즉시 삭제됩니다.",
+            ["ApiSourceCode"] = "API는 완전히 오픈 소스입니다. 소스 코드는 여기에서 확인할 수 있습니다:",
+            ["ApiAlternative"] = "결과가 만족스럽지 않다면 로컬 CLI 도구 또는 NuGet 패키지를 사용하거나,",
+            ["ApiStatsNote"] = "API는 로컬 SQLite 데이터베이스를 사용하여 사용 통계를 추적합니다(요청별 처리 시간, 일일 요청 수). 파일 내용은 저장되지 않습니다.",
         },
         ["fr"] = new()
         {
@@ -256,6 +281,11 @@ public class I18n
             ["BrowserNoLimits"] = "Mode navigateur : aucune limite d'utilisation, tout le traitement est effectué localement.",
             ["CheckingFontCache"] = "Vérification du cache de polices...",
             ["FontLoadedFromCache"] = "Police chargée depuis le cache (aucun téléchargement nécessaire)",
+            ["ApiRecommend"] = "L'API Cloud est recommandée car le serveur dispose de polices CJK et autres préinstallées, offrant de meilleurs résultats de rendu.",
+            ["ApiPrivacy"] = "Aucun fichier n'est stocké sur le serveur API. Tous les fichiers téléchargés sont convertis en mémoire et immédiatement supprimés.",
+            ["ApiSourceCode"] = "L'API est entièrement open source. Consultez le code source sur",
+            ["ApiAlternative"] = "Si le résultat n'est toujours pas satisfaisant, vous pouvez essayer l'outil CLI local ou le package NuGet, ou",
+            ["ApiStatsNote"] = "L'API utilise une base de données SQLite locale pour suivre les statistiques d'utilisation (temps de traitement par requête, nombre de requêtes quotidiennes). Aucun contenu de fichier n'est stocké.",
         },
         ["it"] = new()
         {
@@ -292,6 +322,11 @@ public class I18n
             ["BrowserNoLimits"] = "Modalità browser: nessun limite di utilizzo, tutta l'elaborazione avviene localmente.",
             ["CheckingFontCache"] = "Verifica della cache dei font...",
             ["FontLoadedFromCache"] = "Font caricato dalla cache (nessun download necessario)",
+            ["ApiRecommend"] = "Si consiglia l'API Cloud perché il server ha font CJK e altri preinstallati, offrendo risultati di rendering migliori.",
+            ["ApiPrivacy"] = "Nessun file viene archiviato sul server API. Tutti i file caricati vengono convertiti in memoria e immediatamente eliminati.",
+            ["ApiSourceCode"] = "L'API è completamente open source. Visualizza il codice sorgente su",
+            ["ApiAlternative"] = "Se il risultato non è ancora soddisfacente, puoi provare lo strumento CLI locale o il pacchetto NuGet, oppure",
+            ["ApiStatsNote"] = "L'API utilizza un database SQLite locale per tracciare le statistiche di utilizzo (tempo di elaborazione per richiesta, conteggio richieste giornaliere). Nessun contenuto di file viene archiviato.",
         },
     };
 }

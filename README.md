@@ -36,6 +36,7 @@ A minimal, lightweight .NET library for converting office files to PDF.
 - **Word-to-PDF** — Convert `.docx` files to PDF 
 - **Minimal dependencies** — Lightweight; relies almost entirely on built-in .NET APIs
 - **Serverless-ready** — No COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
+- **Native AOT** — Pre-compiled standalone binaries for Windows / Linux / macOS; no .NET runtime required
 - **Valid PDF 1.4** output
 - **100% open-source & free** — Apache 2.0 licensed, commercial use welcome; just keep the attribution. PRs & contributions are even better!
 - **Chart** — Not currently supported well
@@ -123,6 +124,45 @@ minipdf report.docx --fonts ./Fonts
 | `minipdf convert <file> -o <out>` | Convert with explicit output path |
 | `minipdf --version` | Show version |
 | `minipdf --help` | Show help |
+
+### Native AOT Standalone Binaries
+
+MiniPdf.Cli supports **Native AOT** (Ahead-of-Time) compilation — C# code is compiled directly into native machine code at build time, just like C/C++, producing a standalone executable. No .NET runtime or JIT compiler is needed at run time.
+
+**Advantages:**
+
+- **Zero dependencies** — no .NET SDK or runtime needed on the target machine
+- **Instant startup** — native machine code, no JIT warm-up
+- **Small footprint** — single-file binary, easy to distribute and deploy
+- **CI/CD friendly** — download and run in any pipeline without installing .NET
+
+**Download:** grab the binary for your platform from the [GitHub Releases](https://github.com/shps951023/MiniPdf/releases) page.
+
+| Platform | File |
+|----------|------|
+| Windows x64 | `minipdf-win-x64.zip` |
+| Windows ARM64 | `minipdf-win-arm64.zip` |
+| Linux x64 | `minipdf-linux-x64.tar.gz` |
+| Linux ARM64 | `minipdf-linux-arm64.tar.gz` |
+| macOS x64 | `minipdf-osx-x64.tar.gz` |
+| macOS ARM64 (Apple Silicon) | `minipdf-osx-arm64.tar.gz` |
+
+**Usage (example on Linux / macOS):**
+
+```bash
+# Download & extract
+tar -xzf minipdf-linux-x64.tar.gz
+
+# Convert
+./minipdf report.docx -o report.pdf
+```
+
+**Usage (example on Windows):**
+
+```powershell
+# Extract the zip, then run
+.\minipdf.exe report.docx -o report.pdf
+```
 
 ## Benchmark
 

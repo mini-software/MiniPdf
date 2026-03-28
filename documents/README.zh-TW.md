@@ -29,6 +29,7 @@
 - **Word 轉 PDF** — 將 `.docx` 檔案轉換為 PDF
 - **極少相依性** — 輕量化設計，幾乎僅使用 .NET 內建 API
 - **Serverless 就緒** — 無需 COM、無需安裝 Office、無需 Adobe Acrobat — 有 .NET 即可運行
+- **Native AOT** — 預編譯獨立二進位檔，支援 Windows / Linux / macOS，無需安裝 .NET 執行階段
 - **標準 PDF 1.4** 格式輸出
 - **完全開源免費** — 基於 Apache 2.0 授權，可自由商用，無任何限制，註明出處即可。歡迎提交 PR 一起貢獻！
 - **圖表** — 目前支援尚不完善
@@ -116,6 +117,45 @@ minipdf report.docx --fonts ./Fonts
 | `minipdf convert <file> -o <out>` | 轉換並指定輸出路徑 |
 | `minipdf --version` | 顯示版本 |
 | `minipdf --help` | 顯示說明 |
+
+### Native AOT 獨立二進位檔
+
+MiniPdf.Cli 支援 **Native AOT**（Ahead-of-Time，預編譯）— 在建置階段將 C# 程式碼直接編譯為原生機器碼，如同 C/C++ 編譯一樣，產生獨立的可執行檔。執行時無需 .NET 執行階段或 JIT 編譯器。
+
+**優勢：**
+
+- **零相依性** — 目標機器無需安裝 .NET SDK 或執行階段
+- **即時啟動** — 原生機器碼，無 JIT 預熱
+- **體積精巧** — 單檔二進位，便於散佈和部署
+- **CI/CD 友善** — 下載即可執行，無需在流水線中安裝 .NET
+
+**下載：** 從 [GitHub Releases](https://github.com/shps951023/MiniPdf/releases) 頁面下載對應平台的二進位檔。
+
+| 平台 | 檔案 |
+|----------|------|
+| Windows x64 | `minipdf-win-x64.zip` |
+| Windows ARM64 | `minipdf-win-arm64.zip` |
+| Linux x64 | `minipdf-linux-x64.tar.gz` |
+| Linux ARM64 | `minipdf-linux-arm64.tar.gz` |
+| macOS x64 | `minipdf-osx-x64.tar.gz` |
+| macOS ARM64 (Apple Silicon) | `minipdf-osx-arm64.tar.gz` |
+
+**使用方式（Linux / macOS 範例）：**
+
+```bash
+# 下載並解壓
+tar -xzf minipdf-linux-x64.tar.gz
+
+# 轉換
+./minipdf report.docx -o report.pdf
+```
+
+**使用方式（Windows 範例）：**
+
+```powershell
+# 解壓 zip 後執行
+.\minipdf.exe report.docx -o report.pdf
+```
 
 ## 基準測試
 

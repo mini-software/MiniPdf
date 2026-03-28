@@ -29,6 +29,7 @@ Office ファイルを PDF に変換するための、ミニマルで軽量な .
 - **Word → PDF 変換** — `.docx` ファイルを PDF に変換
 - **最小限の依存関係** — 軽量設計、ほぼ .NET 組み込み API のみを使用
 - **サーバーレス対応** — COM 不要、Office インストール不要、Adobe Acrobat 不要 — .NET があればどこでも動作
+- **Native AOT** — Windows / Linux / macOS 向けのプリコンパイル済みスタンドアロンバイナリ。.NET ランタイムのインストール不要
 - **有効な PDF 1.4** 形式で出力
 - **完全オープンソース＆無料** — Apache 2.0 ライセンス、商用利用自由、帰属表示のみでOK。PR・コントリビュート大歓迎！
 - **グラフ** — 現在は十分にサポートされていません
@@ -116,6 +117,45 @@ minipdf report.docx --fonts ./Fonts
 | `minipdf convert <file> -o <out>` | 出力パスを指定して変換 |
 | `minipdf --version` | バージョンを表示 |
 | `minipdf --help` | ヘルプを表示 |
+
+### Native AOT スタンドアロンバイナリ
+
+MiniPdf.Cli は **Native AOT**（Ahead-of-Time、事前コンパイル）をサポートしています — ビルド時に C# コードを C/C++ と同様にネイティブマシンコードへ直接コンパイルし、スタンドアロンの実行ファイルを生成します。実行時に .NET ランタイムや JIT コンパイラは不要です。
+
+**メリット：**
+
+- **依存関係ゼロ** — ターゲットマシンに .NET SDK やランタイムのインストール不要
+- **即時起動** — ネイティブマシンコード、JIT ウォームアップなし
+- **軽量** — シングルファイルバイナリ、配布・デプロイが容易
+- **CI/CD フレンドリー** — ダウンロードしてすぐ実行、パイプラインに .NET のインストール不要
+
+**ダウンロード：** [GitHub Releases](https://github.com/shps951023/MiniPdf/releases) ページからお使いのプラットフォーム用のバイナリをダウンロードしてください。
+
+| プラットフォーム | ファイル |
+|----------|------|
+| Windows x64 | `minipdf-win-x64.zip` |
+| Windows ARM64 | `minipdf-win-arm64.zip` |
+| Linux x64 | `minipdf-linux-x64.tar.gz` |
+| Linux ARM64 | `minipdf-linux-arm64.tar.gz` |
+| macOS x64 | `minipdf-osx-x64.tar.gz` |
+| macOS ARM64 (Apple Silicon) | `minipdf-osx-arm64.tar.gz` |
+
+**使用方法（Linux / macOS の例）：**
+
+```bash
+# ダウンロードして展開
+tar -xzf minipdf-linux-x64.tar.gz
+
+# 変換
+./minipdf report.docx -o report.pdf
+```
+
+**使用方法（Windows の例）：**
+
+```powershell
+# zip を展開して実行
+.\minipdf.exe report.docx -o report.pdf
+```
 
 ## ベンチマーク
 

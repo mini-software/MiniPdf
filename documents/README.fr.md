@@ -29,6 +29,7 @@ Une bibliothèque .NET minimale et légère pour convertir des fichiers Office e
 - **Word → PDF** — Convertit les fichiers `.docx` en PDF
 - **Dépendances minimales** — Conception légère, repose presque entièrement sur les API .NET intégrées
 - **Prêt pour le serverless** — Pas de COM, pas d'installation d'Office, pas d'Adobe Acrobat — fonctionne partout où .NET fonctionne
+- **Native AOT** — Binaires autonomes précompilés pour Windows / Linux / macOS ; aucun runtime .NET requis
 - **Sortie PDF 1.4** valide
 - **100 % open-source & gratuit** — Licence Apache 2.0, usage commercial bienvenu ; il suffit de conserver l'attribution. Les PR et contributions sont les bienvenues !
 - **Graphiques** — Pas encore bien pris en charge
@@ -116,6 +117,45 @@ minipdf report.docx --fonts ./Fonts
 | `minipdf convert <file> -o <out>` | Convertir avec chemin de sortie explicite |
 | `minipdf --version` | Afficher la version |
 | `minipdf --help` | Afficher l'aide |
+
+### Binaires autonomes Native AOT
+
+MiniPdf.Cli prend en charge la compilation **Native AOT** (Ahead-of-Time) — le code C# est compilé directement en code machine natif lors du build, comme en C/C++, produisant un exécutable autonome. Aucun runtime .NET ni compilateur JIT n'est nécessaire à l'exécution.
+
+**Avantages :**
+
+- **Zéro dépendance** — aucun SDK ou runtime .NET nécessaire sur la machine cible
+- **Démarrage instantané** — code machine natif, pas de préchauffage JIT
+- **Empreinte réduite** — binaire en fichier unique, facile à distribuer et déployer
+- **Compatible CI/CD** — téléchargez et exécutez dans n'importe quel pipeline sans installer .NET
+
+**Téléchargement :** récupérez le binaire correspondant à votre plateforme sur la page [GitHub Releases](https://github.com/shps951023/MiniPdf/releases).
+
+| Plateforme | Fichier |
+|----------|------|
+| Windows x64 | `minipdf-win-x64.zip` |
+| Windows ARM64 | `minipdf-win-arm64.zip` |
+| Linux x64 | `minipdf-linux-x64.tar.gz` |
+| Linux ARM64 | `minipdf-linux-arm64.tar.gz` |
+| macOS x64 | `minipdf-osx-x64.tar.gz` |
+| macOS ARM64 (Apple Silicon) | `minipdf-osx-arm64.tar.gz` |
+
+**Utilisation (exemple sous Linux / macOS) :**
+
+```bash
+# Télécharger et extraire
+tar -xzf minipdf-linux-x64.tar.gz
+
+# Convertir
+./minipdf report.docx -o report.pdf
+```
+
+**Utilisation (exemple sous Windows) :**
+
+```powershell
+# Extraire le zip, puis exécuter
+.\minipdf.exe report.docx -o report.pdf
+```
 
 ## Benchmark
 

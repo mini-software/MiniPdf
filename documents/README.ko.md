@@ -29,6 +29,7 @@ Office 파일을 PDF로 변환하는 최소한의 경량 .NET 라이브러리입
 - **Word → PDF 변환** — `.docx` 파일을 PDF로 변환
 - **최소 의존성** — 경량 설계, 거의 .NET 내장 API만 사용
 - **서버리스 지원** — COM 불필요, Office 설치 불필요, Adobe Acrobat 불필요 — .NET만 있으면 어디서든 실행
+- **Native AOT** — Windows / Linux / macOS용 사전 컴파일된 독립 실행 바이너리, .NET 런타임 설치 불필요
 - **유효한 PDF 1.4** 형식 출력
 - **100% 오픈소스 & 무료** — Apache 2.0 라이선스, 상업적 사용 자유, 출처 표기만 하면 OK. PR 기여 환영!
 - **차트** — 현재 충분히 지원되지 않음
@@ -116,6 +117,45 @@ minipdf report.docx --fonts ./Fonts
 | `minipdf convert <file> -o <out>` | 출력 경로를 지정하여 변환 |
 | `minipdf --version` | 버전 표시 |
 | `minipdf --help` | 도움말 표시 |
+
+### Native AOT 독립 실행 바이너리
+
+MiniPdf.Cli는 **Native AOT**(Ahead-of-Time, 사전 컴파일)를 지원합니다 — 빌드 시 C# 코드를 C/C++처럼 네이티브 머신 코드로 직접 컴파일하여 독립 실행 파일을 생성합니다. 실행 시 .NET 런타임이나 JIT 컴파일러가 필요하지 않습니다.
+
+**장점:**
+
+- **의존성 제로** — 대상 머신에 .NET SDK 또는 런타임 설치 불필요
+- **즉시 시작** — 네이티브 머신 코드, JIT 워밍업 없음
+- **경량** — 단일 파일 바이너리, 배포 및 전달 용이
+- **CI/CD 친화적** — 다운로드 후 바로 실행, 파이프라인에 .NET 설치 불필요
+
+**다운로드:** [GitHub Releases](https://github.com/shps951023/MiniPdf/releases) 페이지에서 플랫폼에 맞는 바이너리를 다운로드하세요.
+
+| 플랫폼 | 파일 |
+|----------|------|
+| Windows x64 | `minipdf-win-x64.zip` |
+| Windows ARM64 | `minipdf-win-arm64.zip` |
+| Linux x64 | `minipdf-linux-x64.tar.gz` |
+| Linux ARM64 | `minipdf-linux-arm64.tar.gz` |
+| macOS x64 | `minipdf-osx-x64.tar.gz` |
+| macOS ARM64 (Apple Silicon) | `minipdf-osx-arm64.tar.gz` |
+
+**사용 방법 (Linux / macOS 예시):**
+
+```bash
+# 다운로드 및 압축 해제
+tar -xzf minipdf-linux-x64.tar.gz
+
+# 변환
+./minipdf report.docx -o report.pdf
+```
+
+**사용 방법 (Windows 예시):**
+
+```powershell
+# zip 압축 해제 후 실행
+.\minipdf.exe report.docx -o report.pdf
+```
 
 ## 벤치마크
 

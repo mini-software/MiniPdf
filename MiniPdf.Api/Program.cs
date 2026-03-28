@@ -1,4 +1,6 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using Microsoft.Data.Sqlite;
 using MiniSoftware;
 
 // Register fonts from /home/fonts/ (Azure App Service persistent storage)
@@ -16,6 +18,52 @@ foreach (var dir in new[] { "/home/fonts", Path.Combine(AppContext.BaseDirectory
             }
             catch { /* skip fonts that fail to parse */ }
         }
+}
+
+// --- SQLite usage stats ---
+var dbPath = Path.Combine(AppContext.BaseDirectory, "usage.db");
+var connStr = $"Data Source={dbPath}";
+using (var initConn = new SqliteConnection(connStr))
+{
+    initConn.Open();
+    using var cmd = initConn.CreateCommand();
+    cmd.CommandText = """
+        CREATE TABLE IF NOT EXISTS request_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT NOT NULL,
+            ip_hash TEXT NOT NULL,
+            file_type TEXT NOT NULL,
+            file_size INTEGER NOT NULL,
+            duration_ms INTEGER NOT NULL,
+            success INTEGER NOT NULL
+        )
+        """;
+    cmd.ExecuteNonQuery();
+}
+
+void LogRequest(string ipHash, string fileType, long fileSize, long durationMs, bool success)
+{
+    try
+    {
+        using var conn = new SqliteConnection(connStr);
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "INSERT INTO request_log (timestamp, ip_hash, file_type, file_size, duration_ms, success) VALUES (@ts, @ip, @ft, @fs, @d, @s)";
+        cmd.Parameters.AddWithValue("@ts", DateTime.UtcNow.ToString("o"));
+        cmd.Parameters.AddWithValue("@ip", ipHash);
+        cmd.Parameters.AddWithValue("@ft", fileType);
+        cmd.Parameters.AddWithValue("@fs", fileSize);
+        cmd.Parameters.AddWithValue("@d", durationMs);
+        cmd.Parameters.AddWithValue("@s", success ? 1 : 0);
+        cmd.ExecuteNonQuery();
+    }
+    catch { /* non-critical */ }
+}
+
+string HashIp(string ip)
+{
+    var bytes = System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(ip + "minipdf-salt"));
+    return Convert.ToHexString(bytes)[..16];
 }
 
 var builder = WebApplication.CreateBuilder(args);
@@ -157,12 +205,106 @@ app.MapPost("/api/convert", async (HttpContext ctx, IFormFile file) =>
         return Results.BadRequest("Only .xlsx and .docx files are supported.");
     }
 
-    using var stream = file.OpenReadStream();
-    byte[] pdfBytes = ext.Equals(".docx", StringComparison.OrdinalIgnoreCase)
-        ? MiniPdf.ConvertDocxToPdf(stream)
-        : MiniPdf.ConvertToPdf(stream);
+    var sw = Stopwatch.StartNew();
+    var ipHash = HashIp(clientIp);
+    try
+    {
+        using var stream = file.OpenReadStream();
+        byte[] pdfBytes = ext.Equals(".docx", StringComparison.OrdinalIgnoreCase)
+            ? MiniPdf.ConvertDocxToPdf(stream)
+            : MiniPdf.ConvertToPdf(stream);
 
-    return Results.File(pdfBytes, "application/pdf", "output.pdf");
+        sw.Stop();
+        LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, true);
+
+        return Results.File(pdfBytes, "application/pdf", "output.pdf");
+    }
+    catch (Exception)
+    {
+        sw.Stop();
+        LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, false);
+        throw;
+    }
 }).DisableAntiforgery();
+
+app.MapGet("/api/stats", () =>
+{
+    try
+    {
+        using var conn = new SqliteConnection(connStr);
+        conn.Open();
+
+        // Daily summary for last 30 days
+        using var dailyCmd = conn.CreateCommand();
+        dailyCmd.CommandText = """
+            SELECT date(timestamp) as day, COUNT(*) as count,
+                   CAST(AVG(duration_ms) AS INTEGER) as avg_ms,
+                   CAST(MIN(duration_ms) AS INTEGER) as min_ms,
+                   CAST(MAX(duration_ms) AS INTEGER) as max_ms,
+                   SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as success_count
+            FROM request_log
+            WHERE timestamp >= datetime('now', '-30 days')
+            GROUP BY date(timestamp)
+            ORDER BY day DESC
+            """;
+        var daily = new List<object>();
+        using (var reader = dailyCmd.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                daily.Add(new
+                {
+                    date = reader.GetString(0),
+                    count = reader.GetInt32(1),
+                    avgMs = reader.GetInt32(2),
+                    minMs = reader.GetInt32(3),
+                    maxMs = reader.GetInt32(4),
+                    successCount = reader.GetInt32(5),
+                });
+            }
+        }
+
+        // File type breakdown
+        using var typeCmd = conn.CreateCommand();
+        typeCmd.CommandText = """
+            SELECT file_type, COUNT(*) as count, CAST(AVG(duration_ms) AS INTEGER) as avg_ms
+            FROM request_log
+            WHERE timestamp >= datetime('now', '-30 days')
+            GROUP BY file_type
+            """;
+        var byType = new List<object>();
+        using (var reader2 = typeCmd.ExecuteReader())
+        {
+            while (reader2.Read())
+            {
+                byType.Add(new
+                {
+                    fileType = reader2.GetString(0),
+                    count = reader2.GetInt32(1),
+                    avgMs = reader2.GetInt32(2),
+                });
+            }
+        }
+
+        // Total stats
+        using var totalCmd = conn.CreateCommand();
+        totalCmd.CommandText = "SELECT COUNT(*), CAST(AVG(duration_ms) AS INTEGER) FROM request_log";
+        int totalCount = 0, totalAvgMs = 0;
+        using (var reader3 = totalCmd.ExecuteReader())
+        {
+            if (reader3.Read())
+            {
+                totalCount = reader3.GetInt32(0);
+                totalAvgMs = reader3.IsDBNull(1) ? 0 : reader3.GetInt32(1);
+            }
+        }
+
+        return Results.Ok(new { totalCount, totalAvgMs, daily, byType });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
 
 app.Run();
