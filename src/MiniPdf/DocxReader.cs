@@ -2219,7 +2219,9 @@ internal static class DocxReader
         }
 
         return new DocxTable(rows, columnWidths, hasBorders, cellMarginLeft, cellMarginRight, cellMarginTop, cellMarginBottom, tableAlignment,
-            finalInsideH, finalInsideV, finalBorderTop, finalBorderBottom, finalBorderLeft, finalBorderRight);
+            finalInsideH, finalInsideV, finalBorderTop, finalBorderBottom, finalBorderLeft, finalBorderRight,
+            StyleLineSpacing: tblStyleInfo?.ParagraphLineSpacing ?? -1,
+            StyleSpacingAfter: tblStyleInfo?.ParagraphSpacingAfter ?? -1);
     }
 
     private static DocxPageLayout? ReadPageLayout(XElement body)
@@ -2873,6 +2875,28 @@ internal static class DocxReader
                     hasBorders = true;
             }
 
+            // Paragraph-level spacing from table style pPr
+            float paraLineSpacing = -1;
+            float paraSpacingAfter = -1;
+            var stylePPr = style.Element(W + "pPr");
+            if (stylePPr != null)
+            {
+                var spacingEl = stylePPr.Element(W + "spacing");
+                if (spacingEl != null)
+                {
+                    var lineRule = spacingEl.Attribute(W + "lineRule")?.Value;
+                    if (int.TryParse(spacingEl.Attribute(W + "line")?.Value, out var lineVal))
+                    {
+                        if (lineRule == "exact" || lineRule == "atLeast")
+                            paraLineSpacing = lineVal / 20f; // twips to pt
+                        else
+                            paraLineSpacing = lineVal / 240f; // auto multiplier
+                    }
+                    if (int.TryParse(spacingEl.Attribute(W + "after")?.Value, out var afterVal))
+                        paraSpacingAfter = afterVal / 20f; // twips to pt
+                }
+            }
+
             // Cell margins from table style
             float cmTop = -1, cmBottom = -1, cmLeft = -1, cmRight = -1;
             var styleCellMar = tblPrStyle?.Element(W + "tblCellMar");
@@ -2918,7 +2942,8 @@ internal static class DocxReader
             }
 
             tableStyles[styleId] = new DocxTableStyleInfo(hasBorders, bTop, bBottom, bLeft, bRight, bInsideH, bInsideV,
-                band1Horz, band2Horz, firstRowBorders, cmTop, cmBottom, cmLeft, cmRight);
+                band1Horz, band2Horz, firstRowBorders, cmTop, cmBottom, cmLeft, cmRight,
+                ParagraphSpacingAfter: paraSpacingAfter, ParagraphLineSpacing: paraLineSpacing);
         }
 
         return (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName, tableStyles);
@@ -3382,7 +3407,9 @@ internal sealed record DocxTable(
     DocxBorderEdge? BorderTop = null,
     DocxBorderEdge? BorderBottom = null,
     DocxBorderEdge? BorderLeft = null,
-    DocxBorderEdge? BorderRight = null
+    DocxBorderEdge? BorderRight = null,
+    float StyleLineSpacing = -1,
+    float StyleSpacingAfter = -1
 ) : DocxElement;
 
 /// <summary>Represents a table row.</summary>
@@ -3434,7 +3461,8 @@ internal sealed record DocxTableStyleInfo(
     float CellMarginBottom = -1,
     float CellMarginLeft = -1,
     float CellMarginRight = -1,
-    float ParagraphSpacingAfter = -1
+    float ParagraphSpacingAfter = -1,
+    float ParagraphLineSpacing = -1
 );
 
 /// <summary>Numbering definition for lists.</summary>

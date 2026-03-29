@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-27T17:33:12.362513
+Generated: 2026-03-29T13:50:55.674439
 
 ## Summary
 
@@ -9,7 +9,7 @@ Generated: 2026-03-27T17:33:12.362513
 | 1 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9591 | 2/2 | **0.9812** |
 | 2 | 🟢 20260318_issue | ✅ | 0.9982 | 0.9249 | 7/7 | **0.9692** |
 | 3 | 🟢 CCU_article | ✅ | 0.9323 | 0.9525 | 21/21 | **0.9539** |
-| 4 | 🔴 Class News | ✅ | 0.8874 | 0.5261 | 5/4 | **0.6654** |
+| 4 | 🟡 Class News | ✅ | 0.8874 | 0.8551 | 4/4 | **0.897** |
 | 5 | 🟢 Confirmatory_Affidavit | ✅ | 0.956 | 0.9628 | 2/2 | **0.9675** |
 | 6 | 🟡 Cooperation Agreement Template | ✅ | 0.8676 | 0.8123 | 6/7 | **0.772** |
 | 7 | 🟢 Invoice | ✅ | 0.9963 | 0.901 | 1/1 | **0.9589** |
@@ -20,8 +20,10 @@ Generated: 2026-03-27T17:33:12.362513
 | 12 | 🟢 Support_Letter | ✅ | 0.9959 | 0.9563 | 1/1 | **0.9809** |
 | 13 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9789 | 17/17 | **0.9916** |
 | 14 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
+| 15 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
+| 16 | 🟢 13_IEEE_Style_Paper | ✅ | 0.9944 | 0.9642 | 2/2 | **0.9834** |
 
-**Average Overall Score: 0.8216**
+**Average Overall Score: 0.7949**
 
 ## Visual Comparison
 
@@ -161,7 +163,7 @@ Generated: 2026-03-27T17:33:12.362513
 </tr>
 <tr>
   <td><b>Class News</b></td>
-  <td colspan="1">Class News <span style="color:#f85149">⬤</span> 66.5%</td>
+  <td colspan="1">Class News <span style="color:#d29922">⬤</span> 89.7%</td>
 </tr>
 <tr>
   <td><img src="images/Class News_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -178,10 +180,6 @@ Generated: 2026-03-27T17:33:12.362513
 <tr>
   <td><img src="images/Class News_p4_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Class News_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/Class News_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
 </tr>
 <tr>
   <td><b>Confirmatory_Affidavit</b></td>
@@ -441,6 +439,25 @@ Generated: 2026-03-27T17:33:12.362513
 </tr>
 <tr>
   <td colspan="2"><i>No images</i></td>
+</tr>
+<tr>
+  <td><b>Class News_debug</b></td>
+  <td colspan="1">Class News_debug N/A</td>
+</tr>
+<tr>
+  <td colspan="2"><i>No images</i></td>
+</tr>
+<tr>
+  <td><b>13_IEEE_Style_Paper</b></td>
+  <td colspan="1">13_IEEE_Style_Paper <span style="color:#3fb950">⬤</span> 98.3%</td>
+</tr>
+<tr>
+  <td><img src="images/13_IEEE_Style_Paper_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/13_IEEE_Style_Paper_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/13_IEEE_Style_Paper_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/13_IEEE_Style_Paper_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -709,17 +726,17 @@ Generated: 2026-03-27T17:33:12.362513
 ### Class News
 
 - **Text Similarity:** 0.8874
-- **Visual Average:** 0.5261
-- **Overall Score:** 0.6654
-- **Pages:** MiniPdf=5, Reference=4
-- **File Size:** MiniPdf=343881 bytes, Reference=147827 bytes
+- **Visual Average:** 0.8551
+- **Overall Score:** 0.897
+- **Pages:** MiniPdf=4, Reference=4
+- **File Size:** MiniPdf=343613 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Class News.pdf
 +++ reference/Class News.pdf
-@@ -4,59 +4,67 @@
+@@ -4,57 +4,67 @@
  sycamoremiddle.org
 
  ytanaka@sycamoremiddle.edu
@@ -811,7 +828,7 @@ Generated: 2026-03-27T17:33:12.362513
 -ultricies erat sit amet massa ullamco rper ferme ntum. Quisque a suscipit nulla, non posuere
 
 -tellus. Viva mus justo erat, suscipit sit amet dui s
-... (10070 more characters)
+... (10055 more characters)
 
 ```
 </details>
@@ -1920,11 +1937,105 @@ Generated: 2026-03-27T17:33:12.362513
 
 **Error:** Reference PDF not found
 
+### Class News_debug
+
+**Error:** Reference PDF not found
+
+### 13_IEEE_Style_Paper
+
+- **Text Similarity:** 0.9944
+- **Visual Average:** 0.9642
+- **Overall Score:** 0.9834
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=1150046 bytes, Reference=174711 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/13_IEEE_Style_Paper.pdf
++++ reference/13_IEEE_Style_Paper.pdf
+@@ -6,19 +6,19 @@
+ email@university.edu
+
+ Abstract
+
+ This paper presents a novel approach to converting document formats while preserving layout fidelity.
+
+-We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content,
+
+-and reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a
+
+-benchmark of 500 documents across various formats including DOCX, XLSX, and PDF.
+
++We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content, and
+
++reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a benchmark of
+
++500 documents across various formats including DOCX, XLSX, and PDF.
+
+ 1. Introduction
+
+ Document format conversion is a fundamental problem in information technology. Organizations
+
+-frequently need to convert documents between formats for archival, sharing, and processing purposes.
+
+-The challenge lies in preserving the visual layout, formatting, and semantic structure of the original
+
+-document [1].
+
++frequently need to convert documents between formats for archival, sharing, and processing purposes. The
+
++challenge lies in preserving the visual layout, formatting, and semantic structure of the original document
+
++[1].
+
+ Traditional approaches rely on simple text extraction followed by re-rendering, which often loses important
+
+ formatting information such as margins, indentation, font styles, and table layouts [2].
+
+ 2. Related Work
+
+-Several approaches have been proposed for document conversion. Smith et al. [4] introduced a rule-
+
+-based system that handles specific format pairs.
+
++Several approaches have been proposed for document conversion. Smith et al. [4] introduced a rule-based
+
++system that handles specific format pairs.
+
+ 3. Experimental Results
+
+ Table 1 shows the comparison of our method against baselines.
+
+ Method Accuracy (%) Speed (docs/s) Memory (MB)
+
+@@ -26,9 +26,9 @@
+ ML-based 85.5 45 1024
+
+ Ours 95.1 89 512
+
+ References
+
+----PAGE---
+
+ [1] A. Brown, Document Processing: Principles and Practice, IEEE Trans., vol. 45, 2023.
+
+ [2] C. Davis et al., Layout-aware text extraction from PDF documents, Proc. ICDAR, 2022.
+
+ [3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.
+
++---PAGE---
+
+ [4] I. Smith et al., Rule-based multi-format document converter, Proc. DocEng, 2020.
+
+ [5] K. Johnson and L. Lee, Learning document conversion, Proc. ACL, 2023.
+```
+</details>
+
 ## Improvement Suggestions
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **Class News** (score: 0.6654)
 1. **SA8000 ch sample** (score: 0.7442)
 1. **Cooperation Agreement Template** (score: 0.772)
 1. **nthu_article** (score: 0.7831)

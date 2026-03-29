@@ -746,7 +746,16 @@ internal static class DocxToPdfConverter
         else
         {
             var lineSpacingMul = paragraph.LineSpacing > 0 ? paragraph.LineSpacing : options.LineSpacing;
-            lineHeight = fontSize * metricsFactor * lineSpacingMul;
+            // Use maximum run font size for line height when runs specify larger sizes
+            // than the paragraph default (e.g. title text with run-level sz=48 but no
+            // paragraph-level font size). Prevents text overlap on hard line breaks.
+            var effectiveFs = fontSize;
+            foreach (var run in paragraph.Runs)
+            {
+                var runFs = run.FontSize > 0 ? run.FontSize : fontSize;
+                if (runFs > effectiveFs) effectiveFs = runFs;
+            }
+            lineHeight = effectiveFs * metricsFactor * lineSpacingMul;
         }
 
         // Snap to document grid when active (CJK line grid)
@@ -2183,7 +2192,7 @@ internal static class DocxToPdfConverter
                     var cellPaddingV = Math.Max(table.CellMarginTop, table.CellMarginBottom);
                     foreach (var row in table.Rows)
                     {
-                        var rowH = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options);
+                        var rowH = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
                         if (row.Height > 0) rowH = Math.Max(rowH, row.Height);
                         rowH = Math.Max(rowH, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
                         totalHeight += rowH;
@@ -2337,7 +2346,7 @@ internal static class DocxToPdfConverter
         var y = startY;
         foreach (var row in table.Rows)
         {
-            var rowHeight = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options);
+            var rowHeight = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
             if (row.Height > 0) rowHeight = Math.Max(rowHeight, row.Height);
             rowHeight = Math.Max(rowHeight, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
 
@@ -2358,7 +2367,7 @@ internal static class DocxToPdfConverter
                 float vAlignOffset = 0;
                 if (cell.VerticalAlignment != "top")
                 {
-                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options);
+                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
                     var space = rowHeight - contentHeight;
                     if (space > 0)
                         vAlignOffset = cell.VerticalAlignment == "bottom" ? space : space / 2;
@@ -2394,7 +2403,7 @@ internal static class DocxToPdfConverter
                     if (para.LineSpacingAbsolute && para.LineSpacing > 0)
                         lineHeight = para.LineSpacing;
                     else
-                        lineHeight = runFontSize * GetFontMetricsFactor(firstRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+                        lineHeight = runFontSize * GetFontMetricsFactor(firstRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
                     var textWidth = cellWidth - cellPaddingH * 2;
                     var lines = WordWrap(text, textWidth, textWidth, runFontSize, null,
                         firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, options.UseCalibriWidths);
@@ -2450,7 +2459,7 @@ internal static class DocxToPdfConverter
         for (var ri = 0; ri < table.Rows.Count; ri++)
         {
             var r = table.Rows[ri];
-            var ch = CalculateRowHeight(r, colWidths, cellPaddingH, cellPaddingV, options);
+            var ch = CalculateRowHeight(r, colWidths, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
             var rh = ch;
             if (r.Height > 0)
             {
@@ -2546,7 +2555,7 @@ internal static class DocxToPdfConverter
                 float vAlignOffset = 0;
                 if (cell.VerticalAlignment != "top")
                 {
-                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options);
+                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
                     var space = cellRenderHeight - contentHeight;
                     if (space > 0)
                         vAlignOffset = cell.VerticalAlignment == "bottom" ? space : space / 2;
@@ -2602,7 +2611,7 @@ internal static class DocxToPdfConverter
                         else
                         {
                             var emptyRunFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
-                            emptyLineH = fontSize * GetFontMetricsFactor(emptyRunFont) * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+                            emptyLineH = fontSize * GetFontMetricsFactor(emptyRunFont) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
                         }
                         textY -= emptyLineH;
                         // Suppress SpacingAfter for all paragraphs in table cells (TableGrid after=0)
@@ -2622,7 +2631,7 @@ internal static class DocxToPdfConverter
                     if (para.LineSpacingAbsolute && para.LineSpacing > 0)
                         lineHeight = para.LineSpacing;
                     else
-                        lineHeight = effectiveFontSize * GetFontMetricsFactor(cellRunFontName) * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+                        lineHeight = effectiveFontSize * GetFontMetricsFactor(cellRunFontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
                     var textWidth = cellWidth - cellPaddingH * 2;
                     var lines = WordWrap(text, textWidth, textWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, options.UseCalibriWidths);
 
@@ -2786,7 +2795,7 @@ internal static class DocxToPdfConverter
                             if (!string.IsNullOrEmpty(r.Text)) { hasText = true; break; }
                     if (hasText)
                     {
-                        var ch = CalculateCellContentHeight(cell, cw, cellPaddingH, cellPaddingV, options);
+                        var ch = CalculateCellContentHeight(cell, cw, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
                         maxTextContentH = Math.Max(maxTextContentH, ch);
                     }
                 }
@@ -2835,7 +2844,7 @@ internal static class DocxToPdfConverter
         return result;
     }
 
-    private static float CalculateCellContentHeight(DocxTableCell cell, float cellWidth, float cellPaddingH, float cellPaddingV, ConversionOptions options)
+    private static float CalculateCellContentHeight(DocxTableCell cell, float cellWidth, float cellPaddingH, float cellPaddingV, ConversionOptions options, float styleLineSpacing = -1, float styleSpacingAfter = -1)
     {
         var cellHeight = cellPaddingV * 2;
         var cellParas = cell.Paragraphs;
@@ -2873,7 +2882,7 @@ internal static class DocxToPdfConverter
             if (para.LineSpacingAbsolute && para.LineSpacing > 0)
                 lineHeight = para.LineSpacing; // exact/atLeast: absolute points
             else
-                lineHeight = runFontSize * GetFontMetricsFactor(dominantRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+                lineHeight = runFontSize * GetFontMetricsFactor(dominantRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : (styleLineSpacing > 0 ? styleLineSpacing : options.LineSpacing));
             var textWidth = cellWidth - cellPaddingH * 2;
             var text = string.Concat(para.Runs.Select(r => r.Text));
 
@@ -2884,24 +2893,37 @@ internal static class DocxToPdfConverter
                 if (!hasInlineImages)
                     cellHeight += lineHeight;
                 // Apply SpacingAfter for the last paragraph (contributes to bottom cell padding)
-                if (isLastPara && para.SpacingAfter > 0)
-                    cellHeight += para.SpacingAfter;
+                var emptyAfter = styleSpacingAfter >= 0 ? styleSpacingAfter : para.SpacingAfter;
+                if (isLastPara && emptyAfter > 0)
+                    cellHeight += emptyAfter;
                 continue;
             }
 
             var lines = WordWrap(text, textWidth, textWidth, runFontSize, null, runBold, runCharSpacing, options.UseCalibriWidths);
             cellHeight += lines.Count * lineHeight;
             // Apply SpacingAfter for the last paragraph (contributes to bottom cell padding)
-            if (isLastPara && para.SpacingAfter > 0)
-                cellHeight += para.SpacingAfter;
+            var textAfter = styleSpacingAfter >= 0 ? styleSpacingAfter : para.SpacingAfter;
+            if (isLastPara && textAfter > 0)
+                cellHeight += textAfter;
         }
 
         return cellHeight;
     }
 
-    private static float CalculateRowHeight(DocxTableRow row, float[] colWidths, float cellPaddingH, float cellPaddingV, ConversionOptions options)
+    private static float CalculateRowHeight(DocxTableRow row, float[] colWidths, float cellPaddingH, float cellPaddingV, ConversionOptions options, float styleLineSpacing = -1, float styleSpacingAfter = -1)
     {
-        var maxHeight = options.FontSize * FontMetricsFactor * options.LineSpacing + cellPaddingV * 2;
+        // Use table style line spacing for minimum row height
+        // (tables often define single spacing via style, e.g. TableGrid line=240).
+        var minLineSpacing = options.LineSpacing;
+        if (styleLineSpacing > 0)
+            minLineSpacing = styleLineSpacing;
+        else if (row.Cells.Count > 0 && row.Cells[0].Paragraphs.Count > 0)
+        {
+            var firstPara = row.Cells[0].Paragraphs[0];
+            if (firstPara.LineSpacing > 0 && !firstPara.LineSpacingAbsolute)
+                minLineSpacing = firstPara.LineSpacing;
+        }
+        var maxHeight = options.FontSize * FontMetricsFactor * minLineSpacing + cellPaddingV * 2;
 
         var colIdx = 0;
         for (var cellIdx = 0; cellIdx < row.Cells.Count && colIdx < colWidths.Length; cellIdx++)
@@ -2918,7 +2940,7 @@ internal static class DocxToPdfConverter
             if (cell.IsVMergeContinue)
                 continue;
 
-            var cellHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options);
+            var cellHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options, styleLineSpacing, styleSpacingAfter);
             maxHeight = Math.Max(maxHeight, cellHeight);
         }
 
@@ -3266,7 +3288,11 @@ internal static class DocxToPdfConverter
         if (latinUnits > 0 && totalUnits > 0)
         {
             var latinFraction = latinUnits / totalUnits;
-            rawWidth *= 1f - latinFraction * 0.22f;
+            // CJK fonts (PMingLiU, SimSun) use much narrower Latin glyphs than
+            // Helvetica → 22% reduction. Pure Latin serif fonts (Times New Roman)
+            // are closer to Helvetica; bold text is ~5% narrower, regular ~8%.
+            var reductionFactor = hasCjk ? 0.22f : (bold ? 0.05f : 0.08f);
+            rawWidth *= 1f - latinFraction * reductionFactor;
         }
         return rawWidth;
     }
