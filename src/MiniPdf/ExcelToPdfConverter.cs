@@ -396,8 +396,9 @@ internal static class ExcelToPdfConverter
         // recalculate the PrintScale from actual column widths. LibreOffice
         // ignores the stored scale attribute and computes the minimum scale
         // needed to fit all columns within one page width.
+        var heightFitted = false;
         if (sheet.FitToPage && sheet.FitToWidth >= 1 && sheet.FitToHeight == 0
-            && sheet.PrintScale > 0 && sheet.PrintScale < 100)
+            && sheet.PrintScale > 0)
         {
             var usableW = baseW - mL - mR;
             var estTotal = EstimateColumnWidthTotal(sheet, options);
@@ -407,9 +408,11 @@ internal static class ExcelToPdfConverter
                 var fitPct = (int)Math.Max(10, Math.Floor(fitScaleF * 100));
 
                 // Check if the width-based scale causes rows to barely overflow
-                // one page height.  When the overflow is small (< 5%), reduce
-                // the scale so content fits on a single page.  Larger overflows
-                // are allowed to spill to additional pages naturally.
+                // one page height.  When the overflow is moderate (< 10%),
+                // reduce the scale so content fits on a single page.  This
+                // avoids ugly page breaks where only a few rows spill to a
+                // second page.  Larger overflows are allowed to spill to
+                // additional pages naturally.
                 {
                     var usableH = baseH - mT - mB;
                     var defRH = sheet.DefaultRowHeight > 0 ? sheet.DefaultRowHeight : options.FontSize * options.LineSpacing;
@@ -419,12 +422,13 @@ internal static class ExcelToPdfConverter
                     for (var r = startRow; r <= endRow; r++)
                         rawTotal += sheet.RowHeights.TryGetValue(r, out var rh) ? rh : defRH;
                     var scaledH = rawTotal * fitScaleF;
-                    if (scaledH > usableH && scaledH < usableH * 1.05f)
+                    if (scaledH > usableH && scaledH < usableH * 1.10f)
                     {
-                        // Small overflow: use height-based scale instead
+                        // Moderate overflow: use height-based scale instead
                         var heightScale = usableH / rawTotal;
                         fitScaleF = heightScale;
                         fitPct = (int)Math.Max(10, Math.Floor(fitScaleF * 100));
+                        heightFitted = true;
                     }
                 }
 
@@ -447,8 +451,11 @@ internal static class ExcelToPdfConverter
         // original point size and text renders crisply.
         // Margins are also scaled so the content region on the enlarged page
         // occupies the same proportional area as on the standard page.
+        // Exception: when height-fitting was applied (heightFitted), render at
+        // the reduced scale on a standard-size page to match Excel's output
+        // where the content is compressed to fit a single page.
         var pageScaleUp = 1f;
-        if (sheet.FitToPage && sheet.PrintScale != 100 && sheet.PrintScale > 0)
+        if (sheet.FitToPage && sheet.PrintScale != 100 && sheet.PrintScale > 0 && !heightFitted)
         {
             pageScaleUp = 100f / sheet.PrintScale;
             sheet.PrintScale = 100; // content stays at natural size
@@ -1106,18 +1113,8 @@ internal static class ExcelToPdfConverter
                         cellY = currentY - cellFs;
                     else if (vertAlign == "center")
                     {
-                        // LibreOffice keeps short, single-line center-aligned text
-                        // slightly closer to the row baseline than strict geometric centering.
-                        if (titleCellLines[i].Length <= 1)
-                        {
-                            var slack = Math.Max(0f, titleRowH - cellFs);
-                            cellY = currentY - titleRowH + descent + slack * 0.35f;
-                        }
-                        else
-                        {
-                            var textBlock = cellFs + lineHeight * (titleCellLines[i].Length - 1);
-                            cellY = currentY - (titleRowH - textBlock) / 2f - cellFs + descent;
-                        }
+                        var textBlock = cellFs + lineHeight * (titleCellLines[i].Length - 1);
+                        cellY = currentY - (titleRowH - textBlock) / 2f - cellFs + descent;
                     }
                     else
                         cellY = currentY - titleRowH + descent + lineHeight * (titleCellLines[i].Length - 1);
@@ -1659,17 +1656,7 @@ internal static class ExcelToPdfConverter
                     cellY = currentY - cellFontSize;
                 else if (verticalAlignment == "center")
                 {
-                    // Keep single-line centered cells closer to the baseline so
-                    // cross-column text rows stay aligned with reference output.
-                    if (lines.Length <= 1)
-                    {
-                        var slack = Math.Max(0f, rowHeight - cellFontSize);
-                        cellY = currentY - rowHeight + descent - ascentCompensation + slack * 0.35f;
-                    }
-                    else
-                    {
-                        cellY = currentY - (rowHeight - textBlock) / 2f - cellFontSize + descent - ascentCompensation;
-                    }
+                    cellY = currentY - (rowHeight - textBlock) / 2f - cellFontSize + descent - ascentCompensation;
                 }
                 else // "bottom" (default)
                     cellY = currentY - rowHeight + descent - ascentCompensation + lineHeight * (lines.Length - 1);
@@ -3500,7 +3487,7 @@ internal static class ExcelToPdfConverter
     /// <summary>Scale factor for Verdana character widths used by wrapping/fitting.
     /// Accounts for the systematic difference between TTF glyph advances and
     /// the column-width calibration in CharUnitsToPointsScaled.</summary>
-    private const double VerdanaFittingScale = 0.93;
+    private const double VerdanaFittingScale = 0.919;
 
     /// <summary>Returns Verdana Regular character width in 1/1000 em units.</summary>
     private static int VerdanaCharWidth(char ch) => ch switch
