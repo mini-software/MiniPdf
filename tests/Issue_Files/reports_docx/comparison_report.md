@@ -1,37 +1,49 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-29T13:50:55.674439
+Generated: 2026-03-29T20:21:59.295284
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9591 | 2/2 | **0.9812** |
-| 2 | 🟢 20260318_issue | ✅ | 0.9982 | 0.9249 | 7/7 | **0.9692** |
-| 3 | 🟢 CCU_article | ✅ | 0.9323 | 0.9525 | 21/21 | **0.9539** |
-| 4 | 🟡 Class News | ✅ | 0.8874 | 0.8551 | 4/4 | **0.897** |
-| 5 | 🟢 Confirmatory_Affidavit | ✅ | 0.956 | 0.9628 | 2/2 | **0.9675** |
-| 6 | 🟡 Cooperation Agreement Template | ✅ | 0.8676 | 0.8123 | 6/7 | **0.772** |
-| 7 | 🟢 Invoice | ✅ | 0.9963 | 0.901 | 1/1 | **0.9589** |
-| 8 | 🟡 MODERN LIVING | ✅ | 0.7489 | 0.7752 | 2/2 | **0.8096** |
-| 9 | 🟡 nthu_article | ✅ | 0.8408 | 0.8669 | 19/20 | **0.7831** |
-| 10 | 🟢 OSCAR WARD | ✅ | 0.9461 | 0.8673 | 1/1 | **0.9254** |
-| 11 | 🟡 SA8000 ch sample | ✅ | 0.9908 | 0.6196 | 3/2 | **0.7442** |
-| 12 | 🟢 Support_Letter | ✅ | 0.9959 | 0.9563 | 1/1 | **0.9809** |
-| 13 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9789 | 17/17 | **0.9916** |
-| 14 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
-| 15 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
-| 16 | 🟢 13_IEEE_Style_Paper | ✅ | 0.9944 | 0.9642 | 2/2 | **0.9834** |
+| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 0.9944 | 0.9642 | 2/2 | **0.9834** |
+| 2 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9634 | 2/2 | **0.983** |
+| 3 | 🟢 20260318_issue | ✅ | 0.9598 | 0.868 | 7/7 | **0.9311** |
+| 4 | 🟢 CCU_article | ✅ | 0.9264 | 0.9457 | 21/21 | **0.9488** |
+| 5 | 🔴 Class News | ✅ | 0.9006 | 0.5524 | 5/4 | **0.6812** |
+| 6 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
+| 7 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.9693 | 2/2 | **0.981** |
+| 8 | 🟡 Cooperation Agreement Template | ✅ | 0.8697 | 0.8117 | 6/7 | **0.7726** |
+| 9 | 🟢 Invoice | ✅ | 0.9963 | 0.9013 | 1/1 | **0.959** |
+| 10 | 🟡 MODERN LIVING | ✅ | 0.8363 | 0.7813 | 2/2 | **0.847** |
+| 11 | 🟡 nthu_article | ✅ | 0.8387 | 0.8734 | 20/20 | **0.8848** |
+| 12 | 🟢 OSCAR WARD | ✅ | 0.9941 | 0.867 | 1/1 | **0.9444** |
+| 13 | 🟡 SA8000 ch sample | ✅ | 0.9908 | 0.6197 | 3/2 | **0.7442** |
+| 14 | 🟢 Support_Letter | ✅ | 1.0 | 0.9579 | 1/1 | **0.9832** |
+| 15 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9792 | 17/17 | **0.9917** |
+| 16 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.7949**
+**Average Overall Score: 0.7897**
 
 ## Visual Comparison
 
 <table>
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
+  <td><b>13_IEEE_Style_Paper</b></td>
+  <td colspan="1">13_IEEE_Style_Paper <span style="color:#3fb950">⬤</span> 98.3%</td>
+</tr>
+<tr>
+  <td><img src="images/13_IEEE_Style_Paper_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/13_IEEE_Style_Paper_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/13_IEEE_Style_Paper_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/13_IEEE_Style_Paper_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><b>20260317_sample_CN</b></td>
-  <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 98.1%</td>
+  <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 98.3%</td>
 </tr>
 <tr>
   <td><img src="images/20260317_sample_CN_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -43,7 +55,7 @@ Generated: 2026-03-29T13:50:55.674439
 </tr>
 <tr>
   <td><b>20260318_issue</b></td>
-  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 96.9%</td>
+  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.1%</td>
 </tr>
 <tr>
   <td><img src="images/20260318_issue_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -75,7 +87,7 @@ Generated: 2026-03-29T13:50:55.674439
 </tr>
 <tr>
   <td><b>CCU_article</b></td>
-  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 95.4%</td>
+  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 94.9%</td>
 </tr>
 <tr>
   <td><img src="images/CCU_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -163,7 +175,7 @@ Generated: 2026-03-29T13:50:55.674439
 </tr>
 <tr>
   <td><b>Class News</b></td>
-  <td colspan="1">Class News <span style="color:#d29922">⬤</span> 89.7%</td>
+  <td colspan="1">Class News <span style="color:#f85149">⬤</span> 68.1%</td>
 </tr>
 <tr>
   <td><img src="images/Class News_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -182,8 +194,19 @@ Generated: 2026-03-29T13:50:55.674439
   <td><img src="images/Class News_p4_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
+  <td><img src="images/Class News_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><b>Class News_debug</b></td>
+  <td colspan="1">Class News_debug N/A</td>
+</tr>
+<tr>
+  <td colspan="2"><i>No images</i></td>
+</tr>
+<tr>
   <td><b>Confirmatory_Affidavit</b></td>
-  <td colspan="1">Confirmatory_Affidavit <span style="color:#3fb950">⬤</span> 96.8%</td>
+  <td colspan="1">Confirmatory_Affidavit <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/Confirmatory_Affidavit_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -195,7 +218,7 @@ Generated: 2026-03-29T13:50:55.674439
 </tr>
 <tr>
   <td><b>Cooperation Agreement Template</b></td>
-  <td colspan="1">Cooperation Agreement Template <span style="color:#d29922">⬤</span> 77.2%</td>
+  <td colspan="1">Cooperation Agreement Template <span style="color:#d29922">⬤</span> 77.3%</td>
 </tr>
 <tr>
   <td><img src="images/Cooperation Agreement Template_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -235,7 +258,7 @@ Generated: 2026-03-29T13:50:55.674439
 </tr>
 <tr>
   <td><b>MODERN LIVING</b></td>
-  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 81.0%</td>
+  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 84.7%</td>
 </tr>
 <tr>
   <td><img src="images/MODERN LIVING_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -247,7 +270,7 @@ Generated: 2026-03-29T13:50:55.674439
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 78.3%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 88.5%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -326,12 +349,12 @@ Generated: 2026-03-29T13:50:55.674439
   <td><img src="images/nthu_article_p19_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/nthu_article_p20_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/nthu_article_p20_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>OSCAR WARD</b></td>
-  <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 92.5%</td>
+  <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 94.4%</td>
 </tr>
 <tr>
   <td><img src="images/OSCAR WARD_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -355,7 +378,7 @@ Generated: 2026-03-29T13:50:55.674439
 </tr>
 <tr>
   <td><b>Support_Letter</b></td>
-  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 98.1%</td>
+  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 98.3%</td>
 </tr>
 <tr>
   <td><img src="images/Support_Letter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -440,36 +463,108 @@ Generated: 2026-03-29T13:50:55.674439
 <tr>
   <td colspan="2"><i>No images</i></td>
 </tr>
-<tr>
-  <td><b>Class News_debug</b></td>
-  <td colspan="1">Class News_debug N/A</td>
-</tr>
-<tr>
-  <td colspan="2"><i>No images</i></td>
-</tr>
-<tr>
-  <td><b>13_IEEE_Style_Paper</b></td>
-  <td colspan="1">13_IEEE_Style_Paper <span style="color:#3fb950">⬤</span> 98.3%</td>
-</tr>
-<tr>
-  <td><img src="images/13_IEEE_Style_Paper_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/13_IEEE_Style_Paper_p1_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/13_IEEE_Style_Paper_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/13_IEEE_Style_Paper_p2_reference.png" width="340" alt="Reference"></td>
-</tr>
 </table>
 
 ## Detailed Results
 
+### 13_IEEE_Style_Paper
+
+- **Text Similarity:** 0.9944
+- **Visual Average:** 0.9642
+- **Overall Score:** 0.9834
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=1150046 bytes, Reference=174711 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/13_IEEE_Style_Paper.pdf
++++ reference/13_IEEE_Style_Paper.pdf
+@@ -6,19 +6,19 @@
+ email@university.edu
+
+ Abstract
+
+ This paper presents a novel approach to converting document formats while preserving layout fidelity.
+
+-We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content,
+
+-and reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a
+
+-benchmark of 500 documents across various formats including DOCX, XLSX, and PDF.
+
++We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content, and
+
++reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a benchmark of
+
++500 documents across various formats including DOCX, XLSX, and PDF.
+
+ 1. Introduction
+
+ Document format conversion is a fundamental problem in information technology. Organizations
+
+-frequently need to convert documents between formats for archival, sharing, and processing purposes.
+
+-The challenge lies in preserving the visual layout, formatting, and semantic structure of the original
+
+-document [1].
+
++frequently need to convert documents between formats for archival, sharing, and processing purposes. The
+
++challenge lies in preserving the visual layout, formatting, and semantic structure of the original document
+
++[1].
+
+ Traditional approaches rely on simple text extraction followed by re-rendering, which often loses important
+
+ formatting information such as margins, indentation, font styles, and table layouts [2].
+
+ 2. Related Work
+
+-Several approaches have been proposed for document conversion. Smith et al. [4] introduced a rule-
+
+-based system that handles specific format pairs.
+
++Several approaches have been proposed for document conversion. Smith et al. [4] introduced a rule-based
+
++system that handles specific format pairs.
+
+ 3. Experimental Results
+
+ Table 1 shows the comparison of our method against baselines.
+
+ Method Accuracy (%) Speed (docs/s) Memory (MB)
+
+@@ -26,9 +26,9 @@
+ ML-based 85.5 45 1024
+
+ Ours 95.1 89 512
+
+ References
+
+----PAGE---
+
+ [1] A. Brown, Document Processing: Principles and Practice, IEEE Trans., vol. 45, 2023.
+
+ [2] C. Davis et al., Layout-aware text extraction from PDF documents, Proc. ICDAR, 2022.
+
+ [3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.
+
++---PAGE---
+
+ [4] I. Smith et al., Rule-based multi-format document converter, Proc. DocEng, 2020.
+
+ [5] K. Johnson and L. Lee, Learning document conversion, Proc. ACL, 2023.
+```
+</details>
+
 ### 20260317_sample_CN
 
 - **Text Similarity:** 0.994
-- **Visual Average:** 0.9591
-- **Overall Score:** 0.9812
+- **Visual Average:** 0.9634
+- **Overall Score:** 0.983
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7581789 bytes, Reference=201209 bytes
+- **File Size:** MiniPdf=7581833 bytes, Reference=201209 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -518,11 +613,11 @@ Generated: 2026-03-29T13:50:55.674439
 
 ### 20260318_issue
 
-- **Text Similarity:** 0.9982
-- **Visual Average:** 0.9249
-- **Overall Score:** 0.9692
+- **Text Similarity:** 0.9598
+- **Visual Average:** 0.868
+- **Overall Score:** 0.9311
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=1507220 bytes, Reference=344088 bytes
+- **File Size:** MiniPdf=1507146 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -565,7 +660,60 @@ Generated: 2026-03-29T13:50:55.674439
 
  Document Version Control
 
-@@ -71,12 +72,11 @@
+@@ -31,17 +32,20 @@
+ document for information only.
+
+ Name Department Responsibility
+
+ Document Classification
+
+-Classification Company Confidential
+
+-Definition Information is Group confidential and needs to be protected
+
+-Context Where loss of information confidentiality would result in significant harm to the
+
+-interests of the organization, financial loss, embarrassment or loss of information
+
+-Introduction
+
+-The Process Definition Document (PDD) captures the flow of a business process to be developed.
+
++Company Confidential
+
++Classification
+
+ 1
+
+ 页脚的公司名称
+
+ ---PAGE---
+
+ 页眉的名称 ……………………..
+
+ 页眉 换了一行 .
+
++Information is Group confidential and needs to be protected
+
++Definition
+
++Where loss of information confidentiality would result in significant harm to the
+
++Context
+
++interests of the organization, financial loss, embarrassment or loss of information
+
++Introduction
+
++The Process Definition Document (PDD) captures the flow of a business process to be developed.
+
+ The flowchart contained within the document captures, at a high level, the business process to be automated, the
+
+ target systems used within the process and any assumptions that have been taken into account.
+
+ Once agreed as the basis for the automation of the target process, the flowchart and assumptions will be used as a
+
+@@ -68,12 +72,11 @@
  2. Fill the title of work order.
 
  3. Fill Asset code. Automatically display description after filling asset code.
@@ -597,67 +745,27 @@ Generated: 2026-03-29T13:50:55.674439
 
 ### CCU_article
 
-- **Text Similarity:** 0.9323
-- **Visual Average:** 0.9525
-- **Overall Score:** 0.9539
+- **Text Similarity:** 0.9264
+- **Visual Average:** 0.9457
+- **Overall Score:** 0.9488
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6545948 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6548526 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/CCU_article.pdf
 +++ reference/CCU_article.pdf
-@@ -1,40 +1,43 @@
- 中正大學
+@@ -14,8 +14,8 @@
+ 研究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature
 
- 宇宙工程研究所碩士論文
+ orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別
 
- 結合動態重加權與特徵正交化之長尾影像分類研究
+ 之召回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模
 
--Long-Tail Image Classification via Dynamic Re-weighting and Feature
+-型，所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研
 
--Orthogonalization
-
-+Long-Tail Image Classification via Dynamic Re-weighting and
-
-+Feature Orthogonalization
-
- 研究生：王小明
-
- 指導教授：李天才教授
-
- 中華民國 114 年 9 月
-
- ---PAGE---
-
- 摘要
-
- 本研究探討以深度學習方法改善多分類影像辨識之效能。近年卷積神經網路在多
-
--種視覺任務上展現優異表現，然而在資料量受限與類別不平衡 (class imbalance) 的
-
--情況下，傳統訓練流程容易造成某些少數類別辨識率偏低。為解決此問題，本研
-
--究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature
-
--orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別之召
-
--回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模型，
-
--所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研究並分
-
--析特徵空間分佈，證實特徵正交化有助於降低類別間干擾。
-
-+種視覺任務上展現優異表現，然而在資料量受限與類別不平衡 (class imbalance)
-
-+的情況下，傳統訓練流程容易造成某些少數類別辨識率偏低。為解決此問題，本
-
-+研究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature
-
-+orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別
-
-+之召回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模
+-究並分析特徵空間分佈，證實特徵正交化有助於降低類別間干擾。
 
 +型，所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研究
 
@@ -665,45 +773,46 @@ Generated: 2026-03-29T13:50:55.674439
 
  本論文之主要貢獻包含： (1) 提出一套可即插即用之動態類別權重調整策略；
 
--(2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗證
+ (2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗
 
--方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。
+ 證方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。
 
-+(2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗
-
-+證方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。
-
- 關鍵詞：深度學習、長尾學習、特徵表徵、卷積神經網路
-
+@@ -23,21 +23,21 @@
  i
 
  ---PAGE---
 
  Abstract
 
--This thesis investigates a training framework to improve class-imbalanced multi-class im- age
+-This thesis investigates a training framework to improve class-imbalanced multi-class
 
--classification under limited data regimes. Although modern convolutional neural net- works achieve
+-im- age classification under limited data regimes. Although modern convolutional
 
--strong performance, minority classes in long-tail distributions often suffer from poor recall. We
+-neural net- works achieve strong performance, minority classes in long-tail
 
--propose a plug-and-play framework that combines dynamic class re- weighting with feature
+-distributions often suffer from poor recall. We propose a plug-and-play framework that
 
--orthogonalization to mitigate inter-class interference while preserv- ing global accuracy. Experiments
+-combines dynamic class re- weighting with feature orthogonalization to mitigate
 
--on public and proprietary datasets demonstrate consis- tent gains in Macro-F1 and minority-class
+-inter-class interference while preserv- ing global accuracy. Experiments on public and
 
--Top-1 accuracy over strong baselines. Feature space visualization further confirms that
+-proprietary datasets demonstrate consis- tent gains in Macro-F1 and minority-class
 
--orthogonalization encourages better inter-class separation.
+-Top-1 accuracy over strong baselines. Feature space visualization further confirms
 
--The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class difficulty; (2)
+-that orthogonalization encourages better inter-class separation.
 
--incorporation of a feature orthogonalization loss tailored for long-tail set- tings; (3) comprehensive
+-The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch
 
--evaluation across multiple backbones and datasets; (4) public release of reproducible code.
+-class difficulty; (2) incorporation of a feature orthogonalization loss tailored for long-tail
 
--Keywords: deep learning, long-tail learning, feature representation, convolutional neural networks
+-set- tings; (3) comprehensive evaluation across multiple backbones and datasets; (4)
+
+-public release of reproducible code.
+
+-Keywords: deep learning, long-tail learning, feature representation, convolutional
+
+-neural networks
 
 +This thesis investigates a training framework to improve class-imbalanced multi-class im-
 
@@ -717,41 +826,68 @@ Generated: 2026-03-29T13:50:55.674439
 
 +ing global accuracy. Experiments on public and proprietary datasets demonstrate consis-
 
-+tent gains in Macro-
-... (15601 more characters)
++tent gains in Macro-F1 and minority-class Top-1 accuracy over strong baselines. Feature
+
++space visualization further confirms that orthogonalization encourages better inter-class
+
++separation.
+
++The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class
+
++difficulty; (2) incorporation of a feature orthogonalization loss tailored for long-tail set-
+
++tings; (3) comprehensive evaluation across multiple backbones and datasets; (4) public
+
++release of reproducible code.
+
++Keywords: deep learning, long-tail learning, feature representation, convolutional neural
+
++networks
+
+ ii
+
+ ---PAGE---
+
+ 誌謝
+
+@@ -58,48 +58,48 @@
+ iii
+
+ ---PAGE---
+
+ 目  錄
+
+-摘要 ........................................................................
+... (14631 more characters)
 
 ```
 </details>
 
 ### Class News
 
-- **Text Similarity:** 0.8874
-- **Visual Average:** 0.8551
-- **Overall Score:** 0.897
-- **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=343613 bytes, Reference=147827 bytes
+- **Text Similarity:** 0.9006
+- **Visual Average:** 0.5524
+- **Overall Score:** 0.6812
+- **Pages:** MiniPdf=5, Reference=4
+- **File Size:** MiniPdf=345113 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Class News.pdf
 +++ reference/Class News.pdf
-@@ -4,57 +4,67 @@
- sycamoremiddle.org
-
+@@ -5,128 +5,132 @@
  ytanaka@sycamoremiddle.edu
 
  Welcome back to school!
 
--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius ipsum. Fusce
+ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
 
--venenatis quam vel libero scelerisque, a mattis diam sollicitudin. Lorem ipsum dolor sit amet,
+-ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam sollicitudin.
 
--consectetur adipiscing elit. Aliquam non varius ipsum. Fusce venenatis quam vel libero sce
+-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
 
--lerisque, a mattis diam sollicitudin.
-
-+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
+-ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis diam sollicitudin.
 
 +ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam
 
@@ -763,19 +899,19 @@ Generated: 2026-03-29T13:50:55.674439
 
  Upcoming Events
 
--Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet odio. Vestibulum ultric
+-Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet odio.
 
 -School Dance
 
--ies erat sit amet massa ullamcorper ferm entum. Quisque a suscipit nulla, non posuere tellus.
+-Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum. Quisque a
 
 +School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
 
  9.9 | 5-7pm
 
--Vivamus justo erat, suscipit sit amet ultr icie. Ma ecenas massa velit, consectetur sit amet
+-suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit amet ultr icie. Ma
 
--dapibus et, dapibus sit amet odio. Vestibulum ultricies erat sit amet massa ullamcorper.
+-ecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet odio.
 
 +odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
 
@@ -783,25 +919,29 @@ Generated: 2026-03-29T13:50:55.674439
 
  Book Fair
 
+-Vestibulum ultricies erat sit amet massa ullamcorper.
+
 +amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,
 
  10.1 - 11.1
 
--Lorem ipsum dolor sit amet, consectetur adipi scing elit. Aliquam non varius ipsum. Fusce ven
-
--enatis quam vel libero scelerisque, a mattis diam sollicitudin. Lorem ipsum dolor sit amet, cons
-
 +dapibus sit amet odio. Vestibulum ultricies erat sit amet massa ullamcorper.
 
- Picture Day
++Picture Day
 
--ectetur adipiscing elit. Aliquam non varius ipsum. Fusce venenatis quam vel libero sce lerisque,
+ Lorem ipsum dolor sit amet, consectetur adipi scing elit. Aliquam non varius
 
-+Lorem ipsum dolor sit amet, consectetur adipi scing elit. Aliquam non varius
+-Picture Day
+
+-ipsum. Fusce ven enatis quam vel libero scelerisque, a mattis diam sollicitudin.
 
  10.15
 
--a mattis diam sollicitudin. Quisque a suscipit nulla, non posuere tellus.
+-Lorem ipsum dolor sit amet, cons ectetur adipiscing elit. Aliquam non varius
+
+-ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis diam sollicitudin.
+
+-Quisque a suscipit nulla, non posuere tellus.
 
 +ipsum. Fusce ven enatis quam vel libero scelerisque, a mattis diam
 
@@ -815,61 +955,59 @@ Generated: 2026-03-29T13:50:55.674439
 
  Recent highlights
 
--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius ipsum. Fusce
+ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
 
--venenatis quam vel libero scelerisque, a mattis diam sollicitudin. Lorem ipsum dolor sit amet,
+-ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam sollicitudin.
 
--consectetur adipiscing elit. Aliquam non varius ipsum. Fusce venenatis quam vel libero
+-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
 
--scelerisque, a mattis diam sollicitudin.
+-ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam sollicitudin.
 
--Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet odio. Vestibulum
+-Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet odio.
 
--ultricies erat sit amet massa ullamco rper ferme ntum. Quisque a suscipit nulla, non posuere
+-Vestibulum ultricies erat sit amet massa ullamco rper ferme ntum. Quisque a
 
--tellus. Viva mus justo erat, suscipit sit amet dui s
-... (10055 more characters)
+-suscipit nulla, non posuere tellus. Viva mus justo erat, suscipit sit amet dui sed,
+
+-ultricies porttitor mi.
+
+-Aliquam pharetra risus vitae odio imperdiet condimentum. Fusce in quam varius,
+
+-dictum mi sit amet, aliquam mi. Suspe ndisse 
+... (8983 more characters)
 
 ```
 </details>
 
+### Class News_debug
+
+**Error:** Reference PDF not found
+
 ### Confirmatory_Affidavit
 
-- **Text Similarity:** 0.956
-- **Visual Average:** 0.9628
-- **Overall Score:** 0.9675
+- **Text Similarity:** 0.9832
+- **Visual Average:** 0.9693
+- **Overall Score:** 0.981
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=795105 bytes, Reference=143292 bytes
+- **File Size:** MiniPdf=795829 bytes, Reference=143292 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Confirmatory_Affidavit.pdf
 +++ reference/Confirmatory_Affidavit.pdf
-@@ -2,26 +2,27 @@
- I, the undersigned,
-
- Sofia Verbitckaia
-
+@@ -4,26 +4,25 @@
  hereby state under oath,
 
--1. I am an adult female with full legal capacity and currently reside at Fuga Qui minima aut, Sun
+ 1. I am an adult female with full legal capacity and currently reside at Fuga Qui
 
--magni praesenti.
+ minima aut, Sunt magni praesenti.
 
--2. I am a Russian national, born in Omck / Russia, on 21 December 1999. I have been issued with
+-2. I am a Russian national, born in Omck / Russia, on 21 December 1999. I have been
 
--Russian passport, with passport number 770752777. A copy of my passport is attached hereto
+-issued with a Russian passport, with passport number 770752777. A copy of my
 
--marked as Annexure "A1".
-
--3. I confirm the content of the Affidavit in terms of regulation 3(2)(d) of the Immigration Regulati
-
--2014, deposed to by my spouse Jada Randolph, in as far it relates to me.
-
-+1. I am an adult female with full legal capacity and currently reside at Fuga Qui
-
-+minima aut, Sunt magni praesenti.
+-passport is attached hereto marked as Annexure "A1".
 
 +2. I am a Russian national, born in Omck / Russia, on 21 December 1999. I have
 
@@ -877,7 +1015,11 @@ Generated: 2026-03-29T13:50:55.674439
 
 +my passport is attached hereto marked as Annexure "A1".
 
-+3. I confirm the content of the Affidavit in terms of regulation 3(2)(d) of the
+ 3. I confirm the content of the Affidavit in terms of regulation 3(2)(d) of the
+
+-Immigration Regulations, 2014, deposed to by my spouse Jada Randolph, in as far
+
+-it relates to me.
 
 +Immigration Regulations, 2014, deposed to by my spouse Jada Randolph, in
 
@@ -887,29 +1029,33 @@ Generated: 2026-03-29T13:50:55.674439
 
  SOFIA VERBITCKAIA
 
- SIGNED AT __________________ ON THIS THE ____ DAY OF __________ 2026.
+-SIGNED AT __________________ ON THIS THE ____ DAY OF __________
+
+-2026.
+
++SIGNED AT __________________ ON THIS THE ____ DAY OF __________ 2026.
 
  I hereby certify that the deponent to this affidavit has acknowledged to me that:
 
  a. She knows and understands the contents hereof and that it is true and correct;
 
- b. She has no objection to taking the prescribed oath; and
-
--c. She regards the prescribed oath as binding on her conscience.
++b. She has no objection to taking the prescribed oath; and
 
  Page 1 of 2
 
  ---PAGE---
 
--I certify that the deponent has confirmed aforesaid (a) to (c) before me, that the contents of this affid
+-b. She has no objection to taking the prescribed oath; and
 
--sworn to duly and that the Regulations as contained in Government Notice No. R.1258 of 21 July 1
+ c. She regards the prescribed oath as binding on her conscience.
 
--amended) and Government Notice No. R.1648 dated 19 August 1977 (as amended) have been com
+-I certify that the deponent has confirmed aforesaid (a) to (c) before me, that the contents of
 
--with.
+-this affidavit is sworn to duly and that the Regulations as contained in Government Notice
 
-+c. She regards the prescribed oath as binding on her conscience.
+-No. R.1258 of 21 July 1972 (as amended) and Government Notice No. R.1648 dated 19
+
+-August 1977 (as amended) have been complied with.
 
 +I certify that the deponent has confirmed aforesaid (a) to (c) before me, that the
 
@@ -930,11 +1076,11 @@ Generated: 2026-03-29T13:50:55.674439
 
 ### Cooperation Agreement Template
 
-- **Text Similarity:** 0.8676
-- **Visual Average:** 0.8123
-- **Overall Score:** 0.772
+- **Text Similarity:** 0.8697
+- **Visual Average:** 0.8117
+- **Overall Score:** 0.7726
 - **Pages:** MiniPdf=6, Reference=7
-- **File Size:** MiniPdf=4368770 bytes, Reference=139728 bytes
+- **File Size:** MiniPdf=4368764 bytes, Reference=139728 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -948,7 +1094,7 @@ Generated: 2026-03-29T13:50:55.674439
 
  电    话：                  地  址：
 
--经各主体单位友好协商，各主体单位本着互相合作的精神，自愿组成联合体，就《 XXXXX 项目》（以下简称
+-经各主体单位友好协商，各主体单位本着互相合作的精神，自愿组成联合体，就《 XXXXX 项目》（以下简称本
 
 +经各主体单位友好协商，各主体单位本着互相合作的精神，自愿组成联合体，就《 XXXXX
 
@@ -956,7 +1102,7 @@ Generated: 2026-03-29T13:50:55.674439
 
  一、合作模式
 
--由   （甲方） 作为承担单位，     （乙方、丙方） 作为合作单位，组成联合体进行联合申报本项目。
+-由 （甲方） 作为承担单位， （乙方、丙方） 作为合作单位，组成联合体进行联合申报本项目。
 
 +由 （甲方） 作为承担单位， （乙方、丙方） 作为合作单位，组成
 
@@ -1138,10 +1284,10 @@ Generated: 2026-03-29T13:50:55.674439
 ### Invoice
 
 - **Text Similarity:** 0.9963
-- **Visual Average:** 0.901
-- **Overall Score:** 0.9589
+- **Visual Average:** 0.9013
+- **Overall Score:** 0.959
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=473615 bytes, Reference=65867 bytes
+- **File Size:** MiniPdf=473606 bytes, Reference=65867 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1181,18 +1327,18 @@ Generated: 2026-03-29T13:50:55.674439
 
 ### MODERN LIVING
 
-- **Text Similarity:** 0.7489
-- **Visual Average:** 0.7752
-- **Overall Score:** 0.8096
+- **Text Similarity:** 0.8363
+- **Visual Average:** 0.7813
+- **Overall Score:** 0.847
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=507169 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=507545 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/MODERN LIVING.pdf
 +++ reference/MODERN LIVING.pdf
-@@ -4,55 +4,62 @@
+@@ -4,20 +4,24 @@
  WHAT’S NEW
 
  Ready to settle?
@@ -1201,7 +1347,7 @@ Generated: 2026-03-29T13:50:55.674439
 
 -TAKE A LOOK INSIDE
 
--Newsletters are periodicals used to advertise or update your subscribers with information
+-Newsletters are periodicals used to advertise or update your subscribers
 
 +Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE
 
@@ -1209,7 +1355,7 @@ Generated: 2026-03-29T13:50:55.674439
 
  Add description text here to get your
 
--about your product or blog. They can be printed or emailed and are an excellent way to
+-with information about your product or blog. They can be printed or emailed
 
 +are an excellent way to maintain regular contact with your subscribers and subscribers interested in your topic
 
@@ -1225,17 +1371,23 @@ Generated: 2026-03-29T13:50:55.674439
 
  subscribers interested in your topic
 
--maintain regular contact with your subscribers and drive traffic to your site. Type the
+-and are an excellent way to maintain regular contact with your subscribers
 
--content of your newsletter here.
+-and drive traffic to your site. Type the content of your newsletter here.
 
 -PROPERTY TRENDS
 
--Newsletters are periodicals used to advertise or update your subscribers with information
+-Newsletters are periodicals used to advertise or update your subscribers
 
-+maintain regular contact with your subscribers. Type the content of your
+-Add description text here to get your
 
-+newsletter here.
+-with information about your product or blog. They are an excellent way to subscribers interested in your topic
+
+ maintain regular contact with your subscribers. Type the content of your
+
+ newsletter here.
+
+-ARE YOU READY TO LIST?
 
 +ARE YOU READY TO
 
@@ -1243,13 +1395,7 @@ Generated: 2026-03-29T13:50:55.674439
 
 +information about your product or blog. Type the content of your newsletter
 
- Add description text here to get your
-
--about your product or blog. They are an excellent way to maintain regular contact with subscribers interested in your topic
-
--your subscribers. Type the content of your newsletter here.
-
--ARE YOU READY TO LIST?
++Add description text here to get your
 
 +here.
 
@@ -1261,62 +1407,66 @@ Generated: 2026-03-29T13:50:55.674439
 
  Take a look inside
 
- By Vanja Jovanovic
+@@ -40,8 +44,7 @@
+ Newsletters are periodicals use to advertise or update your
 
- By Kemen Ikaztegieta
+ excellent way to maintain regular contact
 
--Newsletters are periodicals used to advertise or update your subscribers
+ subscribers with information about your product or blog. Type
 
--with information about your product or blog. They can be printed or emailed
+-with your subscribers and drive traffic to
 
--and are an excellent way to maintain regular contact with your subscribers
+-the content of your newsletter here.
 
--and drive traffic to your site. Type the content of your newsletter here.
++the content of your newsletter here. with your subscribers and drive traffic to
 
--Newsletters are periodicals use to advertise or update your subscribers
+ your site. Type the content of your
 
--with information about your product or blog. They can be printed or emailed
+ newsletter here.
 
--and are an excellent way to maintain regular contact with your subscribers
+ Newsletters are periodicals used to
 
--and drive traffic to your site. Type your content here.
+@@ -52,10 +55,11 @@
+ advertise or update your subscribers with
 
--Newsletters are periodicals used to advertise or
+ information about your product or blog.
 
--Newsletters are periodicals use to advertise or update your subscribers
+ Type the content of your newsletter here.
 
--update your subscribers with information about
+-Are you Newsletters are periodicals used to advertise or update your subscribers with
 
--with information about your product or blog. Type the content of your
+-ready to list? information about your product or blog. They can be printed or emailed and are an
 
--your product or blog. They can be printed or
+-excellent way to maintain regular contact with your subscribers and drive traffic to your
 
-+Newsletters are periodicals used to advertise or update your
++Newsletters are periodicals used to advertise or update your subscribers with
 
-+subscribers with information about your product or blog. They
++Are you
 
-+can be printed or emailed and are an excellent way to maintain
++information about your product or blog. They can be printed or emailed and are an
 
-+regular contact with your subsc
-... (2681 more characters)
++ready to list? excellent way to maintain regular contact with your subscribers and drive traffic to
+
++your site. Type the content of your newsletter here
+... (232 more characters)
 
 ```
 </details>
 
 ### nthu_article
 
-- **Text Similarity:** 0.8408
-- **Visual Average:** 0.8669
-- **Overall Score:** 0.7831
-- **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=8513687 bytes, Reference=798510 bytes
+- **Text Similarity:** 0.8387
+- **Visual Average:** 0.8734
+- **Overall Score:** 0.8848
+- **Pages:** MiniPdf=20, Reference=20
+- **File Size:** MiniPdf=8515091 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/nthu_article.pdf
 +++ reference/nthu_article.pdf
-@@ -1,10 +1,10 @@
+@@ -1,7 +1,7 @@
  國立清華大學中國文學系碩博士學位論文格式規範
 
 -經111年11月09日111學年度第一學期第3次系務會議通過
@@ -1335,17 +1485,23 @@ Generated: 2026-03-29T13:50:55.674439
 
  書名頁 Title Page（同封面）
 
--論文指導教授推薦書 (影本)
+ 論文指導教授推薦書(影本)
 
-+論文指導教授推薦書(影本)
+@@ -14,119 +14,151 @@
+ 表次 List of Tables（可免）
 
- 學位考試委員審定書(影本)
+ 圖次 List of Figures（可免）
 
- 授權書（清大電子檔授權書、紙本論文授權書；國家圖書館、華藝授權書）
+ 符號說明 List of Symbols（可免）
 
- 誌謝辭 Acknowledgements (可免)
+-論文正文(從第一章開始 排序) Main Text of Thesis
 
-@@ -20,230 +20,267 @@
++論文正文(從第一章開始排序) Main Text of Thesis
+
+ 參考文獻 References（或 引用書目 Works cited / Bibliography）
+
+ 附錄 Appendixes（可免）
+
  名詞附錄 Glossary of Terms (可免)
 
  索引 Index (可免)
@@ -1360,11 +1516,9 @@ Generated: 2026-03-29T13:50:55.674439
 
 -（三）頁碼編排
 
--1，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i, ii,
+-1，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼 （ i, ii, iii… ）。
 
--iii… ）。
-
--2，論文本文開始至最末，用阿拉伯數字標示頁碼 。
+-2，論文本文開始至最末，用阿拉伯數字標示頁碼。
 
 -3，頁碼標於頁面底端，置中。
 
@@ -1382,25 +1536,25 @@ Generated: 2026-03-29T13:50:55.674439
 
  包括封面，全書版面配置邊界設定為下上 2.54 公分，左右 2.9 公分
 
--二、
++1
 
- 1
++---PAGE---
 
- ---PAGE---
+ 二、封面（與書名頁）、書背格式
 
--封面（與書名頁）、書背格式
+-1
 
-+二、封面（與書名頁）、書背格式
+----PAGE---
 
- 封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝
+-封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝（
 
--（
+-https://registra.site.nthu.edu.tw/var/file/211/1211/img/75/203558730.pdf ）。論
 
--https://registra.site.nthu.edu.tw/var/file/211/1211/img/75/203558730.pdf ）。
+-文封面建議採用亮面雲彩紙。如下範例 A 、範例 B （ 可直接下載套用。此為教
 
--論文封面建議採用亮面雲彩紙。如下範例 A 、範例 B （ 可直接下載套用。此
+-務處公布之格式）。
 
--為教務處公布之格式）。
++封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝
 
 +（ https://registra.site.nthu.edu.tw/var/file/211/1211/img/75/203558730.pdf ）。論
 
@@ -1416,9 +1570,9 @@ Generated: 2026-03-29T13:50:55.674439
 
 -士紙本論文著作權授權書」、「國家圖書館博碩士論文電子檔案上網授權
 
--書」、「華藝博碩士論文全文電子學位論文授權書」，相關規定可參 附件
+-書」、「華藝博碩士論文全文電子學位論文授權書」，相關規定可參 附件一
 
--一 ，或國立清華大學圖書館博碩士論文全系統，常見問題第 7 項。
+-，或國立清華大學圖書館博碩士論文全系統，常見問題第 7 項。
 
 +推薦書、審定書自中文系網頁下載，相關規定請洽詢系辦。授權書包括：
 
@@ -1434,19 +1588,17 @@ Generated: 2026-03-29T13:50:55.674439
 
  摘要應裝訂於論文內。內容應說明研究目的、論述重點、研究方法或程序、
 
--研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二
+ 研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二頁，
 
--頁，橫式書寫，行距建議設定為 1.2 行（ word 中選「多行」，設定 1.2 ），
+-橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），段距 0.5
 
--段距 0.5 行。標題「摘要」二字或「 Abstract 」1 6 級字，置中，可加黑。「
+-行。標題「摘要」二字或「 Abstract 」1 6 級字，置中，可加黑。「關鍵詞：」
 
--關鍵詞：」或「 Key words: 」12 級，可加黑；與摘要主文間，空一行。英文
+-或「 Key words: 」12 級，可加黑；與摘要主文間，空一行。英文與數字用
 
--與數字用 Times New Roman 。如範例 C （中文）與範例 D （英文）。
+-Times New Roman 。 如範例 C （ 中文）與範例 D （ 英文）。
 
 -五、目次
-
-+研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二頁，
 
 +橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），段距
 
@@ -1460,45 +1612,43 @@ Generated: 2026-03-29T13:50:55.674439
 
  包括各章、各節、節下小標之標題、參考文獻、附錄及其所在之頁數。「目
 
- 次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列
+-次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列於
 
--於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標
+-其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
 
--楷體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。
+-體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。 目次
 
--目次格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
++次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列
 
 +於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
 
 +體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。目次
 
-+格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
+ 格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
 
  六、論文正文
 
 -（一）章節標題
 
--章次與章名間空一格，如「第一章　緒論」。 18 級，標楷體，置
++（一） 章節標題
 
--中。各章新頁起。節次與節名間空一格，如「第一節　研究動
+ 章次與章名間空一格，如「第一章　緒論」。 18 級，標楷體，置中。
 
--機」。 16 級，標楷體，置中。章節以下小節所使用符號，依「一、」、
+ 各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16 級，
 
--「（一）」、「1、」、「（1）」 …… 等順序表示， 14 級（或 12 級），
+ 標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
 
--左齊。
+-「1、」、「（1）」 …… 等順序表示， 14 級（或 12 級），左齊。
 
 -（二）內文
 
--1，
+-1，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文
 
-+（一） 章節標題
+-中，書名和篇名連用時，省略篇名號，如《莊子 ‧ 天下》。若為英
 
-+章次與章名間空一格，如「第一章　緒論」。 18 級，標楷體，置中。
+-文，書名請用斜體，篇名請用 “ ” 。日文翻譯成中文，行文時亦請
 
-+各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16 級，
-
-+標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
+-一併改用中文新式標號。
 
 +「 1 、」、「（ 1 ）」……等順序表示， 14 級（或 12 級），左齊。
 
@@ -1514,85 +1664,54 @@ Generated: 2026-03-29T13:50:55.674439
 
  ---PAGE---
 
--請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文
-
--中，書名和篇名連用時，省略篇名號，如《莊子 ‧ 天下》。若為
-
--英文，書名請用斜體，篇名請用 “ ” 。日文翻譯成中文，行文時亦
-
--請一併改用中文新式標號。
-
--2，行距建議設定為 1.2 行（ word 中選「多行」，設定 1.2 ），各段「
-
--左
-... (17502 more characters)
+-2，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 
+... (17598 more characters)
 
 ```
 </details>
 
 ### OSCAR WARD
 
-- **Text Similarity:** 0.9461
-- **Visual Average:** 0.8673
-- **Overall Score:** 0.9254
+- **Text Similarity:** 0.9941
+- **Visual Average:** 0.867
+- **Overall Score:** 0.9444
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=205184 bytes, Reference=49023 bytes
+- **File Size:** MiniPdf=205258 bytes, Reference=49023 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/OSCAR WARD.pdf
 +++ reference/OSCAR WARD.pdf
-@@ -6,14 +6,16 @@
- Chanchal Sharma
-
+@@ -7,8 +7,8 @@
  123 45th Ave Chicago, IL
 
  Dear Chanchal,
 
--I sincerely appreciate the opportunity to interview and learn more about the role. Our conversation rein
+ I sincerely appreciate the opportunity to interview and learn more about the role. Our
 
--enthusiasm for contributing to the team and bringing my expertise to the company’s ongoing initiatives
+-conversation reinforced my enthusiasm for contributing to the team and bringing my expertise
 
--our discussion about future goals particularly inspiring, and it further solidified my excitement about this
-
--opportunity.
-
--The role’s focus on impactful work aligns with my professional background, and I look forward to the po
-
--of applying my skills to support the company’s growth. I am eager to bring my experience in driving eff
-
--and innovation to the team while continuing to develop and refine my abilities in a fast-paced environm
-
--Thank you again for your time and thoughtful discussion. I appreciate the chance to be considered and
-
--forward to next steps. Please let me know if I can provide any additional details to assist in the decisio
-
--process.
-
--Warm regards,
-+I sincerely appreciate the opportunity to interview and learn more about the role. Our
+-to the company’s ongoing initiatives. I found our discussion about future goals particularly
 
 +conversation reinforced my enthusiasm for contributing to the team and bringing my expertise to
 
 +the company’s ongoing initiatives. I found our discussion about future goals particularly
 
-+inspiring, and it further solidified my excitement about this opportunity.
+ inspiring, and it further solidified my excitement about this opportunity.
 
-+The role’s focus on impactful work aligns with my professional background, and I look forward
+ The role’s focus on impactful work aligns with my professional background, and I look forward
 
-+to the possibility of applying my skills to support the company’s growth. I am eager to bring my
+ to the possibility of applying my skills to support the company’s growth. I am eager to bring my
 
-+experience in driving efficiency and innovation to the team while continuing to develop and
+@@ -17,4 +17,5 @@
+ Thank you again for your time and thoughtful discussion. I appreciate the chance to be
 
-+refine my abilities in a fast-paced environment.
+ considered and look forward to next steps. Please let me know if I can provide any additional
 
-+Thank you again for your time and thoughtful discussion. I appreciate the chance to be
+ details to assist in the decision-making process.
 
-+considered and look forward to next steps. Please let me know if I can provide any additional
-
-+details to assist in the decision-making process.
-
+-Warm regards,
 +Warm regards,
 
 +Oscar Ward
@@ -1602,10 +1721,10 @@ Generated: 2026-03-29T13:50:55.674439
 ### SA8000 ch sample
 
 - **Text Similarity:** 0.9908
-- **Visual Average:** 0.6196
+- **Visual Average:** 0.6197
 - **Overall Score:** 0.7442
 - **Pages:** MiniPdf=3, Reference=2
-- **File Size:** MiniPdf=3800200 bytes, Reference=186097 bytes
+- **File Size:** MiniPdf=3800186 bytes, Reference=186097 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1786,18 +1905,18 @@ Generated: 2026-03-29T13:50:55.674439
 
 ### Support_Letter
 
-- **Text Similarity:** 0.9959
-- **Visual Average:** 0.9563
-- **Overall Score:** 0.9809
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9579
+- **Overall Score:** 0.9832
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1003969 bytes, Reference=147353 bytes
+- **File Size:** MiniPdf=1004102 bytes, Reference=147353 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Support_Letter.pdf
 +++ reference/Support_Letter.pdf
-@@ -12,10 +12,10 @@
+@@ -12,9 +12,9 @@
  1. I, Pascale Donaldson, a South African national born on 09 February 2006 with South African
 
  Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of
@@ -1810,21 +1929,17 @@ Generated: 2026-03-29T13:50:55.674439
 
 -relevant Immigration Regulations made under section 7 of the Act.
 
--2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing
-
 +national born on 21 December 1999, and support her application for a renewal of his Relatives Visa in
 
 +terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with the relevant
 
 +Immigration Regulations made under section 7 of the Act.
 
-+2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,
+ 2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,
 
  food, medical, physical and emotional needs he may require whilst residing with me in South Africa at
 
  the following address during his entire sojourn:
-
- Dicta modi aut labor
 
 ```
 </details>
@@ -1832,8 +1947,8 @@ Generated: 2026-03-29T13:50:55.674439
 ### Template for MSc Thesis
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9789
-- **Overall Score:** 0.9916
+- **Visual Average:** 0.9792
+- **Overall Score:** 0.9917
 - **Pages:** MiniPdf=17, Reference=17
 - **File Size:** MiniPdf=1293328 bytes, Reference=402081 bytes
 
@@ -1937,107 +2052,12 @@ Generated: 2026-03-29T13:50:55.674439
 
 **Error:** Reference PDF not found
 
-### Class News_debug
-
-**Error:** Reference PDF not found
-
-### 13_IEEE_Style_Paper
-
-- **Text Similarity:** 0.9944
-- **Visual Average:** 0.9642
-- **Overall Score:** 0.9834
-- **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1150046 bytes, Reference=174711 bytes
-
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/13_IEEE_Style_Paper.pdf
-+++ reference/13_IEEE_Style_Paper.pdf
-@@ -6,19 +6,19 @@
- email@university.edu
-
- Abstract
-
- This paper presents a novel approach to converting document formats while preserving layout fidelity.
-
--We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content,
-
--and reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a
-
--benchmark of 500 documents across various formats including DOCX, XLSX, and PDF.
-
-+We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content, and
-
-+reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a benchmark of
-
-+500 documents across various formats including DOCX, XLSX, and PDF.
-
- 1. Introduction
-
- Document format conversion is a fundamental problem in information technology. Organizations
-
--frequently need to convert documents between formats for archival, sharing, and processing purposes.
-
--The challenge lies in preserving the visual layout, formatting, and semantic structure of the original
-
--document [1].
-
-+frequently need to convert documents between formats for archival, sharing, and processing purposes. The
-
-+challenge lies in preserving the visual layout, formatting, and semantic structure of the original document
-
-+[1].
-
- Traditional approaches rely on simple text extraction followed by re-rendering, which often loses important
-
- formatting information such as margins, indentation, font styles, and table layouts [2].
-
- 2. Related Work
-
--Several approaches have been proposed for document conversion. Smith et al. [4] introduced a rule-
-
--based system that handles specific format pairs.
-
-+Several approaches have been proposed for document conversion. Smith et al. [4] introduced a rule-based
-
-+system that handles specific format pairs.
-
- 3. Experimental Results
-
- Table 1 shows the comparison of our method against baselines.
-
- Method Accuracy (%) Speed (docs/s) Memory (MB)
-
-@@ -26,9 +26,9 @@
- ML-based 85.5 45 1024
-
- Ours 95.1 89 512
-
- References
-
-----PAGE---
-
- [1] A. Brown, Document Processing: Principles and Practice, IEEE Trans., vol. 45, 2023.
-
- [2] C. Davis et al., Layout-aware text extraction from PDF documents, Proc. ICDAR, 2022.
-
- [3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.
-
-+---PAGE---
-
- [4] I. Smith et al., Rule-based multi-format document converter, Proc. DocEng, 2020.
-
- [5] K. Johnson and L. Lee, Learning document conversion, Proc. ACL, 2023.
-```
-</details>
-
 ## Improvement Suggestions
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
+1. **Class News** (score: 0.6812)
 1. **SA8000 ch sample** (score: 0.7442)
-1. **Cooperation Agreement Template** (score: 0.772)
-1. **nthu_article** (score: 0.7831)
+1. **Cooperation Agreement Template** (score: 0.7726)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
