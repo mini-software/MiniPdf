@@ -668,6 +668,10 @@ internal static class DocxReader
         // Paragraph-level contextualSpacing overrides style
         if (pPr?.Element(W + "contextualSpacing") != null)
             contextualSpacing = true;
+        // keepNext: paragraph-level pPr overrides style; absence of pPr element means use style default
+        bool keepNext = styles.TryGetValue(effectiveStyleId, out var kni) && kni.KeepNext;
+        if (pPr?.Element(W + "keepNext") is { } knEl)
+            keepNext = knEl.Attribute(W + "val")?.Value is not ("0" or "false");
         if (spacingBefore < 0) spacingBefore = 0;
         if (spacingAfter < 0) spacingAfter = 0;
 
@@ -800,7 +804,8 @@ internal static class DocxReader
             sectionBreakLayout, borders, shapes.Count > 0 ? shapes : null,
             ContextualSpacing: contextualSpacing, SnapToGrid: snapToGrid,
             ParagraphMarkUnderline: paragraphMarkUnderline,
-            ParagraphFontName: paragraphFontName);
+            ParagraphFontName: paragraphFontName,
+            KeepNext: keepNext);
     }
 
     /// <summary>
@@ -2770,6 +2775,10 @@ internal static class DocxReader
                     contextualSpacing = true;
             }
 
+            // keepNext: determined from pPr element
+            var keepNextStyle = pPr?.Element(W + "keepNext") is { } kn &&
+                kn.Attribute(W + "val")?.Value is not ("0" or "false");
+
             // Heading styles get bold by default
             if (styleId.StartsWith("Heading", StringComparison.OrdinalIgnoreCase) ||
                 styleId.StartsWith("heading", StringComparison.Ordinal))
@@ -2777,7 +2786,7 @@ internal static class DocxReader
                 bold = true;
             }
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, styleLineSpacingExact, contextualSpacing, styleFontName, styleCharSpacing);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, styleLineSpacingExact, contextualSpacing, styleFontName, styleCharSpacing, KeepNext: keepNextStyle);
         }
 
         // Second pass: resolve basedOn inheritance
@@ -2809,8 +2818,11 @@ internal static class DocxReader
             var lineSpacingExact3 = spacingEl?.Attribute(W + "line") != null ? current.LineSpacingExact : baseStyle.LineSpacingExact;
             var contextualSpacing2 = current.ContextualSpacing || baseStyle.ContextualSpacing;
             var charSpacing2 = rPr?.Element(W + "spacing") != null ? current.CharSpacing : baseStyle.CharSpacing;
+            // keepNext is inherited from base style if not explicitly set by the derived style
+            var keepNext2 = current.KeepNext ||
+                (pPr?.Element(W + "keepNext") == null && baseStyle.KeepNext);
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, lineSpacing3, lineSpacingAbsolute3, lineSpacingExact3, contextualSpacing2, styleFontName, charSpacing2);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, lineSpacing3, lineSpacingAbsolute3, lineSpacingExact3, contextualSpacing2, styleFontName, charSpacing2, KeepNext: keepNext2);
         }
 
         // Extract default font name from Normal style or docDefaults
@@ -3277,7 +3289,8 @@ internal sealed record DocxParagraph(
     bool IsTextBoxFlow = false,
     float TextBoxWidth = 0,
     bool ParagraphMarkUnderline = false,
-    string? ParagraphFontName = null
+    string? ParagraphFontName = null,
+    bool KeepNext = false
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>
@@ -3442,7 +3455,8 @@ internal sealed record DocxStyleInfo(
     bool LineSpacingExact = false,
     bool ContextualSpacing = false,
     string? FontName = null,
-    float CharSpacing = 0
+    float CharSpacing = 0,
+    bool KeepNext = false
 );
 
 /// <summary>Table style definition from styles.xml.</summary>

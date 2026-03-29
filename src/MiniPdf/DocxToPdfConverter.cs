@@ -189,11 +189,30 @@ internal static class DocxToPdfConverter
         state.BaseMarginBottom = options.MarginBottom;
 
         var sectionIndex = 0;
-        foreach (var element in processedElements)
+        for (int elemIdx = 0; elemIdx < processedElements.Count; elemIdx++)
         {
+            var element = processedElements[elemIdx];
             switch (element)
             {
                 case DocxParagraph paragraph:
+                    // keepNext: prevent orphaned heading at bottom of page.
+                    // If this paragraph has keepNext and there is a following paragraph,
+                    // ensure there is room for the heading + at least 2 body lines.
+                    if (paragraph.KeepNext && elemIdx + 1 < processedElements.Count
+                        && processedElements[elemIdx + 1] is DocxParagraph followPara
+                        && state.CurrentPage != null)
+                    {
+                        var thisH = EstimateElementsHeight(new System.Collections.Generic.List<DocxElement> { paragraph }, state.Options);
+                        var spacingBeforeH = paragraph.SpacingBefore > 0 ? paragraph.SpacingBefore : 0f;
+                        var followFontSz = followPara.FontSize > 0 ? followPara.FontSize : state.Options.FontSize;
+                        var followLineH = followFontSz * GetFontMetricsFactor(followPara.ParagraphFontName) *
+                            (followPara.LineSpacing > 0 ? followPara.LineSpacing : state.Options.LineSpacing);
+                        // Require space for heading + 2 follow lines (widow/orphan control)
+                        var needed = spacingBeforeH + thisH + 2f * followLineH;
+                        if (state.CurrentY - needed < state.Options.MarginBottom)
+                            state.ForceNewPage();
+                    }
+
                     RenderParagraph(state, paragraph);
                     if (paragraph.FloatingTextBoxes is { Count: > 0 })
                         RenderFloatingTextBoxes(state, paragraph.FloatingTextBoxes, state.LastParagraphStartY);
@@ -2189,7 +2208,7 @@ internal static class DocxToPdfConverter
                     var usableWidth = options.PageWidth - options.MarginLeft - options.MarginRight;
                     var colWidths = CalculateTableColumnWidths(table, usableWidth);
                     var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
-                    var cellPaddingV = Math.Max(table.CellMarginTop, table.CellMarginBottom);
+                    var cellPaddingV = Math.Max(1f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
                     foreach (var row in table.Rows)
                     {
                         var rowH = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
@@ -2447,7 +2466,7 @@ internal static class DocxToPdfConverter
         var options = state.Options;
         var usableWidth = state.UsableWidth;
         var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
-        var cellPaddingV = Math.Max(table.CellMarginTop, table.CellMarginBottom);
+        var cellPaddingV = Math.Max(1f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
 
         // Determine column widths
         var colWidths = CalculateTableColumnWidths(table, usableWidth);
