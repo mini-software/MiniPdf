@@ -478,7 +478,7 @@ internal static class ExcelReader
         if (stylesEntry == null) return;
 
         List<(bool? Bold, PdfColor? FillColor)> dxfInfos;
-        Dictionary<string, (int HeaderDxf, int TotalDxf, int WholeDxf, int FirstColDxf, int FirstRowStripeDxf)> tableStyleMap;
+        Dictionary<string, (int HeaderDxf, int TotalDxf, int WholeDxf, int FirstColDxf, int FirstRowStripeDxf, int SecondRowStripeDxf)> tableStyleMap;
         using (var stylesStream = stylesEntry.Open())
         {
             var stylesDoc = XDocument.Load(stylesStream);
@@ -523,14 +523,14 @@ internal static class ExcelReader
                 }
             }
 
-            // Parse table styles: map style name → (headerRow dxfId, totalRow dxfId, wholeTable dxfId, firstColumn dxfId, firstRowStripe dxfId)
-            tableStyleMap = new Dictionary<string, (int, int, int, int, int)>(StringComparer.OrdinalIgnoreCase);
+            // Parse table styles: map style name → (headerRow dxfId, totalRow dxfId, wholeTable dxfId, firstColumn dxfId, firstRowStripe dxfId, secondRowStripe dxfId)
+            tableStyleMap = new Dictionary<string, (int, int, int, int, int, int)>(StringComparer.OrdinalIgnoreCase);
             foreach (var ts in stylesDoc.Descendants(ns + "tableStyle"))
             {
                 var name = ts.Attribute("name")?.Value;
                 if (string.IsNullOrEmpty(name)) continue;
 
-                int headerDxf = -1, totalDxf = -1, wholeDxf = -1, firstColDxf = -1, firstRowStripeDxf = -1;
+                int headerDxf = -1, totalDxf = -1, wholeDxf = -1, firstColDxf = -1, firstRowStripeDxf = -1, secondRowStripeDxf = -1;
                 foreach (var tse in ts.Elements(ns + "tableStyleElement"))
                 {
                     var type = tse.Attribute("type")?.Value;
@@ -541,9 +541,10 @@ internal static class ExcelReader
                         else if (type == "wholeTable") wholeDxf = dxfId;
                         else if (type == "firstColumn") firstColDxf = dxfId;
                         else if (type == "firstRowStripe") firstRowStripeDxf = dxfId;
+                        else if (type == "secondRowStripe") secondRowStripeDxf = dxfId;
                     }
                 }
-                tableStyleMap[name] = (headerDxf, totalDxf, wholeDxf, firstColDxf, firstRowStripeDxf);
+                tableStyleMap[name] = (headerDxf, totalDxf, wholeDxf, firstColDxf, firstRowStripeDxf, secondRowStripeDxf);
             }
         }
 
@@ -590,6 +591,7 @@ internal static class ExcelReader
             (bool? Bold, PdfColor? FillColor) wholeStyle = (null, null);
             (bool? Bold, PdfColor? FillColor) firstColStyle = (null, null);
             PdfColor? firstRowStripeFill = null;
+            PdfColor? secondRowStripeFill = null;
 
             if (!string.IsNullOrEmpty(styleName) && tableStyleMap.TryGetValue(styleName, out var dxfIds))
             {
@@ -610,6 +612,8 @@ internal static class ExcelReader
                     firstColStyle = dxfInfos[dxfIds.FirstColDxf];
                 if (dxfIds.FirstRowStripeDxf >= 0 && dxfIds.FirstRowStripeDxf < dxfInfos.Count)
                     firstRowStripeFill = dxfInfos[dxfIds.FirstRowStripeDxf].FillColor;
+                if (dxfIds.SecondRowStripeDxf >= 0 && dxfIds.SecondRowStripeDxf < dxfInfos.Count)
+                    secondRowStripeFill = dxfInfos[dxfIds.SecondRowStripeDxf].FillColor;
             }
 
             void ApplyStyle(List<ExcelCell> row, int c, bool? bold, PdfColor? fill)
@@ -646,6 +650,7 @@ internal static class ExcelReader
             {
                 var dataRowIndex = r - dataStart;
                 var isFirstStripe = showRowStripes && firstRowStripeFill != null && (dataRowIndex % 2 == 0);
+                var isSecondStripe = showRowStripes && secondRowStripeFill != null && (dataRowIndex % 2 == 1);
 
                 for (var c = startCol; c <= endCol; c++)
                 {
@@ -659,6 +664,11 @@ internal static class ExcelReader
                         // fill or its fill matches the wholeTable default.
                         if (newFill == null || ColorsMatch(newFill, wholeStyle.FillColor))
                             newFill = firstRowStripeFill;
+                    }
+                    else if (isSecondStripe)
+                    {
+                        if (newFill == null || ColorsMatch(newFill, wholeStyle.FillColor))
+                            newFill = secondRowStripeFill;
                     }
                     else if (wholeStyle.FillColor != null && newFill == null)
                     {
