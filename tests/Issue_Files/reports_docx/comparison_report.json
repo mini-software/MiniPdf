@@ -838,5 +838,37 @@
     "reference_exists": false,
     "error": "Reference PDF not found",
     "score": 0.0
+  },
+  {
+    "name": "14_Thesis_Chapter",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 1001976,
+    "reference_size": 159781,
+    "pdf_valid": true,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9547,
+      0.9941
+    ],
+    "visual_avg": 0.9744,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "14_Thesis_Chapter_p1_minipdf.png",
+        "reference_img": "14_Thesis_Chapter_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "14_Thesis_Chapter_p2_minipdf.png",
+        "reference_img": "14_Thesis_Chapter_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9898
   }
 ]

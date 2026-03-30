@@ -18,6 +18,11 @@ internal static class DocxToPdfConverter
     // Used only as a fallback; per-character Calibri widths are used when available.
     private const float CalibriWidthScale = 0.87f;
 
+    // Per-conversion flag: true when the document's default font is a serif font
+    // (Times New Roman, Georgia, etc.), which has narrower Latin glyphs than Helvetica.
+    // Used to apply a stronger width reduction in EstimateWrapTextWidth.
+    [ThreadStatic] private static bool s_serifFont;
+
     /// <summary>
     /// Options for controlling DOCX-to-PDF conversion.
     /// </summary>
@@ -99,7 +104,14 @@ internal static class DocxToPdfConverter
         // Many Word docs use theme fonts (e.g., minorHAnsi -> Cambria), so always using
         // Calibri widths can under-wrap and reduce page count.
         if (!string.IsNullOrWhiteSpace(docxDoc.DefaultFontName))
+        {
             options.UseCalibriWidths = docxDoc.DefaultFontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase);
+            s_serifFont = IsSerifFont(docxDoc.DefaultFontName);
+        }
+        else
+        {
+            s_serifFont = false;
+        }
 
         var pdfDoc = new PdfDocument();
 
@@ -3268,6 +3280,20 @@ internal static class DocxToPdfConverter
     }
 
     /// <summary>
+    /// Returns true when the font is a serif family whose Latin glyphs are
+    /// noticeably narrower than Helvetica (used for width reduction tuning).
+    /// </summary>
+    private static bool IsSerifFont(string? fontName)
+    {
+        if (fontName == null) return false;
+        return fontName.Contains("Times", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Georgia", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Cambria", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Palatino", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Garamond", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
     /// When using Helvetica fallback, applies a kerning/hinting reduction since
     /// Helvetica is wider than most actual document fonts (Times New Roman, PMingLiU, etc.).
     /// </summary>
@@ -3308,9 +3334,11 @@ internal static class DocxToPdfConverter
         {
             var latinFraction = latinUnits / totalUnits;
             // CJK fonts (PMingLiU, SimSun) use much narrower Latin glyphs than
-            // Helvetica → 22% reduction. Pure Latin serif fonts (Times New Roman)
-            // are closer to Helvetica; bold text is ~5% narrower, regular ~8%.
-            var reductionFactor = hasCjk ? 0.22f : (bold ? 0.05f : 0.08f);
+            // Helvetica → 22% reduction. Serif fonts (Times New Roman, Georgia)
+            // have noticeably narrower Latin glyphs → 10% reduction.
+            // Other non-Calibri sans-serif fonts are closer → 8%.
+            var serifReduction = s_serifFont ? 0.10f : 0.08f;
+            var reductionFactor = hasCjk ? 0.22f : (bold ? 0.05f : serifReduction);
             rawWidth *= 1f - latinFraction * reductionFactor;
         }
         return rawWidth;

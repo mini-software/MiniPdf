@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-29T20:21:59.295284
+Generated: 2026-03-30T02:15:16.922752
 
 ## Summary
 
@@ -22,8 +22,9 @@ Generated: 2026-03-29T20:21:59.295284
 | 14 | 🟢 Support_Letter | ✅ | 1.0 | 0.9579 | 1/1 | **0.9832** |
 | 15 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9792 | 17/17 | **0.9917** |
 | 16 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
+| 17 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9744 | 2/2 | **0.9898** |
 
-**Average Overall Score: 0.7897**
+**Average Overall Score: 0.8015**
 
 ## Visual Comparison
 
@@ -462,6 +463,18 @@ Generated: 2026-03-29T20:21:59.295284
 </tr>
 <tr>
   <td colspan="2"><i>No images</i></td>
+</tr>
+<tr>
+  <td><b>14_Thesis_Chapter</b></td>
+  <td colspan="1">14_Thesis_Chapter <span style="color:#3fb950">⬤</span> 99.0%</td>
+</tr>
+<tr>
+  <td><img src="images/14_Thesis_Chapter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/14_Thesis_Chapter_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/14_Thesis_Chapter_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/14_Thesis_Chapter_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -2051,6 +2064,16 @@ Generated: 2026-03-29T20:21:59.295284
 ### Template_repaired
 
 **Error:** Reference PDF not found
+
+### 14_Thesis_Chapter
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9744
+- **Overall Score:** 0.9898
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=1001976 bytes, Reference=159781 bytes
+
+Text content: ✅ Identical
 
 ## Improvement Suggestions
 
