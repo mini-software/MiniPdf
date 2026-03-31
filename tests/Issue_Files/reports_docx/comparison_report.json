@@ -870,5 +870,31 @@
       }
     ],
     "overall_score": 0.9898
+  },
+  {
+    "name": "Fabrikam",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 159289,
+    "reference_size": 55486,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9244,
+    "flat_text_similarity": 0.9244,
+    "word_text_similarity": 0.9032,
+    "text_diff": "--- minipdf/Fabrikam.pdf\n+++ reference/Fabrikam.pdf\n@@ -1,30 +1,29 @@\n Fabrikam, Inc. Fabrikam, Inc.\n\n-Wei Wei\n\n-1234 East Main Street 1234 East Main Street\n\n-Portland, OR 54321 Portland, OR 54321\n\n-www.fabrikam.com www.fabrikam.com\n\n-(415) 555-0123 | kristel@fabrikam.com\n\n-(415) 555-0123 | kristel@fabrikam.com\n\n-Fabrikam, Inc. Fabrikam, Inc.\n\n-Wei Wei\n\n+Kristel Kangro Kristel Kangro\n\n 1234 East Main Street 1234 East Main Street\n\n Portland, OR 54321 Portland, OR 54321\n\n www.fabrikam.com www.fabrikam.com\n\n (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com\n\n Fabrikam, Inc. Fabrikam, Inc.\n\n-Wei Wei\n\n+Kristel Kangro Kristel Kangro\n\n 1234 East Main Street 1234 East Main Street\n\n Portland, OR 54321 Portland, OR 54321\n\n www.fabrikam.com www.fabrikam.com\n\n (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com\n\n Fabrikam, Inc. Fabrikam, Inc.\n\n-Wei Wei\n\n+Kristel Kangro Kristel Kangro\n\n 1234 East Main Street 1234 East Main Street\n\n Portland, OR 54321 Portland, OR 54321\n\n www.fabrikam.com www.fabrikam.com\n\n (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com\n\n Fabrikam, Inc. Fabrikam, Inc.\n\n-Wei Wei\n\n+Kristel Kangro Kristel Kangro\n\n+1234 East Main Street 1234 East Main Street\n\n+Portland, OR 54321 Portland, OR 54321\n\n+www.fabrikam.com www.fabrikam.com\n\n+(415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com\n\n+Fabrikam, Inc. Fabrikam, Inc.\n\n+Kristel Kangro Kristel Kangro\n\n 1234 East Main Street 1234 East Main Street\n\n Portland, OR 54321 Portland, OR 54321\n\n www.fabrikam.com www.fabrikam.com\n",
+    "visual_scores": [
+      0.9425
+    ],
+    "visual_avg": 0.9425,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Fabrikam_p1_minipdf.png",
+        "reference_img": "Fabrikam_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9468
   }
 ]

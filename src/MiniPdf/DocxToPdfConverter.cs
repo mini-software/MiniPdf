@@ -1069,8 +1069,12 @@ internal static class DocxToPdfConverter
         if (paragraph.Runs.Count == 0)
         {
             // Only add line height when no inline images were rendered
-            // (inline images advance Y themselves via RenderImage)
-            if (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom))
+            // (inline images advance Y themselves via RenderImage).
+            // Skip line height for paragraphs that exist solely to host anchor shapes
+            // (e.g. behind-doc drawing groups); they are positioned absolutely and
+            // should not push subsequent content down.
+            var isShapeOnlyParagraph = paragraph.Shapes is { Count: > 0 } && paragraph.Images.Count == 0;
+            if (!isShapeOnlyParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
                 state.AdvanceY(lineHeight);
 
             // Render wrapTopAndBottom images even for empty paragraphs
@@ -2007,6 +2011,17 @@ internal static class DocxToPdfConverter
             1f + (fc.B - 1f) * a);
 
         RenderShapeGeometry(state.CurrentPage!, x, y, width, height, blended, shape);
+
+        // Render stroke/outline if present
+        if (shape.StrokeColor != null)
+        {
+            var strokeWidth = shape.StrokeWidthEmu > 0 ? shape.StrokeWidthEmu / emuPerPoint : 0.75f;
+            var sc = shape.StrokeColor.Value;
+            state.CurrentPage!.AddLine(x, y, x + width, y, sc, strokeWidth);                // bottom
+            state.CurrentPage!.AddLine(x, y + height, x + width, y + height, sc, strokeWidth); // top
+            state.CurrentPage!.AddLine(x, y, x, y + height, sc, strokeWidth);                // left
+            state.CurrentPage!.AddLine(x + width, y, x + width, y + height, sc, strokeWidth); // right
+        }
     }
 
     private static void RenderHeaderFooterShape(PdfPage page, ConversionOptions options, DocxShape shape)
@@ -2027,6 +2042,16 @@ internal static class DocxToPdfConverter
             1f + (fc.B - 1f) * a);
 
         RenderShapeGeometry(page, x, y, width, height, blended, shape);
+
+        if (shape.StrokeColor != null)
+        {
+            var strokeWidth = shape.StrokeWidthEmu > 0 ? shape.StrokeWidthEmu / emuPerPoint : 0.75f;
+            var sc = shape.StrokeColor.Value;
+            page.AddLine(x, y, x + width, y, sc, strokeWidth);
+            page.AddLine(x, y + height, x + width, y + height, sc, strokeWidth);
+            page.AddLine(x, y, x, y + height, sc, strokeWidth);
+            page.AddLine(x + width, y, x + width, y + height, sc, strokeWidth);
+        }
     }
 
     /// <summary>
@@ -2036,6 +2061,11 @@ internal static class DocxToPdfConverter
     private static void RenderShapeGeometry(PdfPage page, float x, float y, float width, float height,
         PdfColor color, DocxShape shape)
     {
+        // If shape has no fill (stroke-only), skip fill rendering
+        if (!shape.FillOnly && shape.StrokeColor != null &&
+            shape.FillColor is { R: >= 0.999f, G: >= 0.999f, B: >= 0.999f })
+            return; // stroke-only shape, fill handled separately
+
         if (shape.PresetGeometry == "frame")
         {
             // Frame shape: draw 4 border rectangles, leaving center empty
@@ -2224,8 +2254,15 @@ internal static class DocxToPdfConverter
                     foreach (var row in table.Rows)
                     {
                         var rowH = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
-                        if (row.Height > 0) rowH = Math.Max(rowH, row.Height);
-                        rowH = Math.Max(rowH, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
+                        if (row.Height > 0)
+                        {
+                            if (row.HeightExact)
+                                rowH = row.Height;
+                            else
+                                rowH = Math.Max(rowH, row.Height);
+                        }
+                        if (!row.HeightExact)
+                            rowH = Math.Max(rowH, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
                         totalHeight += rowH;
                     }
                     lastSpacingAfter = 0;
@@ -2378,8 +2415,15 @@ internal static class DocxToPdfConverter
         foreach (var row in table.Rows)
         {
             var rowHeight = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
-            if (row.Height > 0) rowHeight = Math.Max(rowHeight, row.Height);
-            rowHeight = Math.Max(rowHeight, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
+            if (row.Height > 0)
+            {
+                if (row.HeightExact)
+                    rowHeight = row.Height;
+                else
+                    rowHeight = Math.Max(rowHeight, row.Height);
+            }
+            if (!row.HeightExact)
+                rowHeight = Math.Max(rowHeight, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
 
             var cellX = tableOffsetX;
             var colIdx = 0;
@@ -2394,31 +2438,46 @@ internal static class DocxToPdfConverter
                 colIdx += cell.GridSpan;
                 if (cell.IsVMergeContinue) { cellX += cellWidth; continue; }
 
+                // Per-cell margin overrides
+                var effPaddingLeft = cell.CellMarginLeft >= 0 ? cell.CellMarginLeft : table.CellMarginLeft;
+                var effPaddingRight = cell.CellMarginRight >= 0 ? cell.CellMarginRight : table.CellMarginRight;
+                var effPaddingTop = cell.CellMarginTop >= 0 ? cell.CellMarginTop : cellPaddingV;
+                var effPaddingBottom = cell.CellMarginBottom >= 0 ? cell.CellMarginBottom : cellPaddingV;
+                var effPaddingH = (effPaddingLeft + effPaddingRight) / 2;
+                var effPaddingV = Math.Max(effPaddingTop, effPaddingBottom);
+
                 // Vertical alignment
                 float vAlignOffset = 0;
                 if (cell.VerticalAlignment != "top")
                 {
-                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
+                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, effPaddingH, effPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
                     var space = rowHeight - contentHeight;
                     if (space > 0)
                         vAlignOffset = cell.VerticalAlignment == "bottom" ? space : space / 2;
                 }
 
-                var textY = y - cellPaddingV - vAlignOffset;
+                var textY = y - effPaddingV - vAlignOffset;
+                float lastParaSpacingAfter = 0;
                 foreach (var para in cell.Paragraphs)
                 {
+                    // Paragraph spacing before
+                    var spBefore = para.SpacingBefore > 0 ? para.SpacingBefore : 0f;
+                    if (spBefore > lastParaSpacingAfter)
+                        textY -= spBefore - lastParaSpacingAfter;
+                    lastParaSpacingAfter = 0;
+
                     // Render inline images
                     foreach (var image in para.Images)
                     {
                         if (image.IsAnchor) continue;
                         var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                         var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
-                        var maxW = cellWidth - cellPaddingH * 2;
+                        var maxW = cellWidth - effPaddingLeft - effPaddingRight;
                         if (imgW > maxW) { var s = maxW / imgW; imgW *= s; imgH *= s; }
                         var fmt = image.Extension;
                         if (fmt == "jpg" || fmt == "png")
                         {
-                            page.AddImage(image.Data, fmt, cellX + cellPaddingH, textY - imgH, imgW, imgH);
+                            page.AddImage(image.Data, fmt, cellX + effPaddingLeft, textY - imgH, imgW, imgH);
                             textY -= imgH + 1f;
                         }
                     }
@@ -2435,7 +2494,7 @@ internal static class DocxToPdfConverter
                         lineHeight = para.LineSpacing;
                     else
                         lineHeight = runFontSize * GetFontMetricsFactor(firstRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
-                    var textWidth = cellWidth - cellPaddingH * 2;
+                    var textWidth = cellWidth - effPaddingLeft - effPaddingRight;
                     var lines = WordWrap(text, textWidth, textWidth, runFontSize, null,
                         firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, options.UseCalibriWidths);
 
@@ -2446,9 +2505,9 @@ internal static class DocxToPdfConverter
                             firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, options.UseCalibriWidths);
                         var lineX = para.Alignment switch
                         {
-                            "center" => cellX + cellPaddingH + (textWidth - lineTextWidth) / 2,
-                            "right" => cellX + cellPaddingH + textWidth - lineTextWidth,
-                            _ => cellX + cellPaddingH
+                            "center" => cellX + effPaddingLeft + (textWidth - lineTextWidth) / 2,
+                            "right" => cellX + effPaddingLeft + textWidth - lineTextWidth,
+                            _ => cellX + effPaddingLeft
                         };
 
                         float? cellMaxWidth = null;
@@ -2461,6 +2520,11 @@ internal static class DocxToPdfConverter
                             preferredFontName: firstRun?.FontName);
                         textY -= lineHeight - runFontSize;
                     }
+
+                    // Paragraph spacing after
+                    var spAfter = para.SpacingAfter >= 0 ? para.SpacingAfter : (table.StyleSpacingAfter > 0 ? table.StyleSpacingAfter : 0f);
+                    textY -= spAfter;
+                    lastParaSpacingAfter = spAfter;
                 }
 
                 cellX += cellWidth;
@@ -2494,11 +2558,16 @@ internal static class DocxToPdfConverter
             var rh = ch;
             if (r.Height > 0)
             {
-                var hasVM = r.Cells.Any(c => c.IsVMergeRestart || c.IsVMergeContinue);
-                if (hasVM)
+                if (r.HeightExact)
                     rh = r.Height;
                 else
-                    rh = Math.Max(rh, r.Height);
+                {
+                    var hasVM = r.Cells.Any(c => c.IsVMergeRestart || c.IsVMergeContinue);
+                    if (hasVM)
+                        rh = r.Height;
+                    else
+                        rh = Math.Max(rh, r.Height);
+                }
             }
             rowHeights[ri] = rh;
         }
@@ -2511,7 +2580,8 @@ internal static class DocxToPdfConverter
 
             // Defensive floor for image-heavy rows: ensure inline image extents
             // are always respected, even when upstream row-height hints are small.
-            rowHeight = Math.Max(rowHeight, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
+            if (!row.HeightExact)
+                rowHeight = Math.Max(rowHeight, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
 
             state.EnsurePage();
 
@@ -2583,17 +2653,24 @@ internal static class DocxToPdfConverter
                 }
 
                 // Apply vertical alignment offset
+                // Per-cell margin overrides
+                var effCellLeft = cell.CellMarginLeft >= 0 ? cell.CellMarginLeft : table.CellMarginLeft;
+                var effCellRight = cell.CellMarginRight >= 0 ? cell.CellMarginRight : table.CellMarginRight;
+                var effCellTop = cell.CellMarginTop >= 0 ? cell.CellMarginTop : cellPaddingV;
+                var effCellBottom = cell.CellMarginBottom >= 0 ? cell.CellMarginBottom : cellPaddingV;
+                var effCellPaddingV = Math.Max(effCellTop, effCellBottom);
+
                 float vAlignOffset = 0;
                 if (cell.VerticalAlignment != "top")
                 {
-                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
+                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, (effCellLeft + effCellRight) / 2, effCellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
                     var space = cellRenderHeight - contentHeight;
                     if (space > 0)
                         vAlignOffset = cell.VerticalAlignment == "bottom" ? space : space / 2;
                 }
 
                 // Render cell content (images and text)
-                var textY = state.CurrentY - cellPaddingV - vAlignOffset;
+                var textY = state.CurrentY - effCellPaddingV - vAlignOffset;
                 var cellParaList = cell.Paragraphs;
                 for (var cellParaIdx = 0; cellParaIdx < cellParaList.Count; cellParaIdx++)
                 {
@@ -2614,7 +2691,7 @@ internal static class DocxToPdfConverter
                         cellHasInlineImages = true;
                         var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                         var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
-                        var maxImgW = cellWidth - cellPaddingH * 2;
+                        var maxImgW = cellWidth - effCellLeft - effCellRight;
                         if (imgW > maxImgW)
                         {
                             var s = maxImgW / imgW;
@@ -2625,7 +2702,7 @@ internal static class DocxToPdfConverter
                         if (fmt == "jpg" || fmt == "png")
                         {
                             var imgY = textY - imgH;
-                            state.CurrentPage!.AddImage(image.Data, fmt, cellX + cellPaddingH, imgY, imgW, imgH);
+                            state.CurrentPage!.AddImage(image.Data, fmt, cellX + effCellLeft, imgY, imgW, imgH);
                             textY -= imgH + 1f;
                         }
                     }
@@ -2645,7 +2722,13 @@ internal static class DocxToPdfConverter
                             emptyLineH = fontSize * GetFontMetricsFactor(emptyRunFont) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
                         }
                         textY -= emptyLineH;
-                        // Suppress SpacingAfter for all paragraphs in table cells (TableGrid after=0)
+                        // Apply SpacingAfter: table style override takes precedence, else paragraph's own
+                        // Skip SpacingAfter for the last paragraph in the cell (Word behaviour)
+                        if (!isLastCellPara)
+                        {
+                            var spAfter = table.StyleSpacingAfter >= 0 ? table.StyleSpacingAfter : (para.SpacingAfter > 0 ? para.SpacingAfter : 0f);
+                            if (spAfter > 0) textY -= spAfter;
+                        }
                         continue;
                     }
 
@@ -2663,19 +2746,19 @@ internal static class DocxToPdfConverter
                         lineHeight = para.LineSpacing;
                     else
                         lineHeight = effectiveFontSize * GetFontMetricsFactor(cellRunFontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
-                    var textWidth = cellWidth - cellPaddingH * 2;
+                    var textWidth = cellWidth - effCellLeft - effCellRight;
                     var lines = WordWrap(text, textWidth, textWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, options.UseCalibriWidths);
 
                     foreach (var line in lines)
                     {
                         textY -= effectiveFontSize;
-                        if (textY < state.CurrentY - cellRenderHeight + cellPaddingV) break; // clip
+                        if (textY < state.CurrentY - cellRenderHeight + effCellPaddingV) break; // clip
                         var lineTextWidth = EstimateWrapTextWidth(line, effectiveFontSize, cellRunBold, cellRunCharSpacing, options.UseCalibriWidths);
                         var lineRenderX = para.Alignment switch
                         {
-                            "center" => cellX + cellPaddingH + (textWidth - lineTextWidth) / 2,
-                            "right" => cellX + cellPaddingH + textWidth - lineTextWidth,
-                            _ => cellX + cellPaddingH
+                            "center" => cellX + effCellLeft + (textWidth - lineTextWidth) / 2,
+                            "right" => cellX + effCellLeft + textWidth - lineTextWidth,
+                            _ => cellX + effCellLeft
                         };
 
                         // Use Tz compression to fit Helvetica rendering within cell boundaries
@@ -2704,8 +2787,13 @@ internal static class DocxToPdfConverter
                         textY -= lineHeight - effectiveFontSize;
                     }
 
-                    // Suppress SpacingAfter for all paragraphs in table cells (TableGrid after=0)
-                    _ = isLastCellPara; // variable kept for potential future use
+                    // Apply SpacingAfter: table style override takes precedence, else paragraph's own
+                    // Skip SpacingAfter for the last paragraph in the cell (Word behaviour)
+                    if (!isLastCellPara)
+                    {
+                        var spAfter = table.StyleSpacingAfter >= 0 ? table.StyleSpacingAfter : (para.SpacingAfter > 0 ? para.SpacingAfter : 0f);
+                        if (spAfter > 0) textY -= spAfter;
+                    }
                 }
 
                 cellX += cellWidth;
@@ -2923,19 +3011,25 @@ internal static class DocxToPdfConverter
                 // (inline images already account for the paragraph's vertical space)
                 if (!hasInlineImages)
                     cellHeight += lineHeight;
-                // Apply SpacingAfter for the last paragraph (contributes to bottom cell padding)
-                var emptyAfter = styleSpacingAfter >= 0 ? styleSpacingAfter : para.SpacingAfter;
-                if (isLastPara && emptyAfter > 0)
-                    cellHeight += emptyAfter;
+                // Apply SpacingAfter for all non-last paragraphs (matching rendering logic)
+                if (!isLastPara)
+                {
+                    var emptyAfter = styleSpacingAfter >= 0 ? styleSpacingAfter : (para.SpacingAfter > 0 ? para.SpacingAfter : 0f);
+                    if (emptyAfter > 0)
+                        cellHeight += emptyAfter;
+                }
                 continue;
             }
 
             var lines = WordWrap(text, textWidth, textWidth, runFontSize, null, runBold, runCharSpacing, options.UseCalibriWidths);
             cellHeight += lines.Count * lineHeight;
-            // Apply SpacingAfter for the last paragraph (contributes to bottom cell padding)
-            var textAfter = styleSpacingAfter >= 0 ? styleSpacingAfter : para.SpacingAfter;
-            if (isLastPara && textAfter > 0)
-                cellHeight += textAfter;
+            // Apply SpacingAfter for all non-last paragraphs (matching rendering logic)
+            if (!isLastPara)
+            {
+                var textAfter = styleSpacingAfter >= 0 ? styleSpacingAfter : (para.SpacingAfter > 0 ? para.SpacingAfter : 0f);
+                if (textAfter > 0)
+                    cellHeight += textAfter;
+            }
         }
 
         return cellHeight;

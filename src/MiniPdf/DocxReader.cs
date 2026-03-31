@@ -182,12 +182,17 @@ internal static class DocxReader
                     // Read text box outline (border) and fill from shape properties
                     DocxTextBoxBorder? textBoxBorder = null;
                     PdfColor? textBoxFillColor = null;
+                    // When the anchor contains a group shape (wgp), the individual shapes
+                    // in the group already render their own fills via ReadAnchorShapes /
+                    // ProcessGroupChildren.  Extracting fill from the wsp here would
+                    // duplicate the background rectangle and paint over child shapes.
+                    bool anchorHasGroupShape = anchor.Descendants(WPG + "wgp").Any();
                     var wsp = anchor.Descendants(WPS + "wsp").FirstOrDefault();
                     if (wsp != null)
                     {
                         var spPr = wsp.Element(WPS + "spPr") ?? wsp.Element(A + "spPr");
-                        // Parse shape fill (background)
-                        var shapeFill = spPr?.Element(A + "solidFill");
+                        // Parse shape fill (background) — skip for group shapes
+                        var shapeFill = !anchorHasGroupShape ? spPr?.Element(A + "solidFill") : null;
                         if (shapeFill != null)
                         {
                             var (fc, _) = ResolveSolidFill(shapeFill, themeColors);
@@ -1495,60 +1500,9 @@ internal static class DocxReader
                 (grpFillColor, grpFillAlpha) = ResolveSolidFill(grpSolidFill, themeColors);
             }
 
-            // Process each child shape in the group
-            foreach (var childWsp in grpSp.Elements(WPS + "wsp"))
-            {
-                var childSpPr = childWsp.Element(WPS + "spPr") ?? childWsp.Element(A + "spPr");
-                if (childSpPr == null) continue;
-                if (childSpPr.Element(A + "noFill") != null) continue;
-
-                PdfColor? fillColor;
-                float alpha;
-                var childFill = childSpPr.Element(A + "solidFill");
-                if (childFill != null)
-                {
-                    (fillColor, alpha) = ResolveSolidFill(childFill, themeColors);
-                }
-                else if (childSpPr.Element(A + "grpFill") != null && grpFillColor != null)
-                {
-                    fillColor = grpFillColor;
-                    alpha = grpFillAlpha;
-                }
-                else
-                {
-                    continue;
-                }
-                if (fillColor == null) continue;
-
-                // Get child shape position/size in child coordinate space
-                var childXfrm = childSpPr.Element(A + "xfrm");
-                if (childXfrm == null) continue;
-                long childOffX = 0, childOffY = 0, childCx = 0, childCy = 0;
-                var cOff = childXfrm.Element(A + "off");
-                if (cOff != null)
-                {
-                    long.TryParse(cOff.Attribute("x")?.Value, out childOffX);
-                    long.TryParse(cOff.Attribute("y")?.Value, out childOffY);
-                }
-                var cExt = childXfrm.Element(A + "ext");
-                if (cExt != null)
-                {
-                    long.TryParse(cExt.Attribute("cx")?.Value, out childCx);
-                    long.TryParse(cExt.Attribute("cy")?.Value, out childCy);
-                }
-
-                var (childPresetGeom, childFrameThicknessRatio, childCustomPaths) =
-                    ReadShapeGeometry(childSpPr, childCx, childCy);
-
-                // Map child coordinates to page-relative EMU
-                var pageX = anchorOffsetX + (childOffX - chOffX) * grpExtCx / chExtCx;
-                var pageY = anchorOffsetY + (childOffY - chOffY) * grpExtCy / chExtCy;
-                var pageW = childCx * grpExtCx / chExtCx;
-                var pageH = childCy * grpExtCy / chExtCy;
-
-                result.Add(new DocxShape(pageW, pageH, pageX, pageY, fillColor.Value, alpha,
-                    childPresetGeom, childFrameThicknessRatio, childCustomPaths));
-            }
+            // Process child shapes (both direct wsp and nested grpSp sub-groups)
+            ProcessGroupChildren(grpSp, result, themeColors, grpFillColor, grpFillAlpha,
+                anchorOffsetX, anchorOffsetY, chOffX, chOffY, grpExtCx, grpExtCy, chExtCx, chExtCy);
             return result;
         }
 
@@ -1556,12 +1510,32 @@ internal static class DocxReader
         var spPr = anchor.Descendants(WPS + "spPr").FirstOrDefault()
               ?? anchor.Descendants(A + "spPr").FirstOrDefault();
         if (spPr == null) return result;
-        if (spPr.Element(A + "noFill") != null) return result;
-        var solidFill = spPr.Element(A + "solidFill");
-        if (solidFill == null) return result;
 
-        var (singleColor, singleAlpha) = ResolveSolidFill(solidFill, themeColors);
-        if (singleColor == null) return result;
+        // Check for stroke
+        PdfColor? singleStrokeColor = null;
+        float singleStrokeWidth = 0;
+        var singleLn = spPr.Element(A + "ln");
+        if (singleLn != null)
+        {
+            var lnFill = singleLn.Element(A + "solidFill");
+            if (lnFill != null)
+            {
+                (singleStrokeColor, _) = ResolveSolidFill(lnFill, themeColors);
+                float.TryParse(singleLn.Attribute("w")?.Value, out singleStrokeWidth);
+            }
+        }
+
+        bool singleHasNoFill = spPr.Element(A + "noFill") != null;
+        if (singleHasNoFill && singleStrokeColor == null) return result;
+
+        PdfColor? singleColor = null;
+        float singleAlpha = 1f;
+        var solidFill = spPr.Element(A + "solidFill");
+        if (solidFill != null)
+        {
+            (singleColor, singleAlpha) = ResolveSolidFill(solidFill, themeColors);
+        }
+        if (singleColor == null && singleStrokeColor == null) return result;
 
         // Get extent (size)
         var extent = anchor.Element(WP + "extent");
@@ -1575,9 +1549,171 @@ internal static class DocxReader
         var (presetGeom, frameThicknessRatio, customPaths) =
             ReadShapeGeometry(spPr, widthEmu, heightEmu);
 
-        result.Add(new DocxShape(widthEmu, heightEmu, anchorOffsetX, anchorOffsetY, singleColor.Value, singleAlpha,
-            presetGeom, frameThicknessRatio, customPaths));
+        var shapeFill = singleColor ?? new PdfColor(1, 1, 1); // default white if stroke-only
+        result.Add(new DocxShape(widthEmu, heightEmu, anchorOffsetX, anchorOffsetY, shapeFill, singleAlpha,
+            presetGeom, frameThicknessRatio, customPaths,
+            StrokeColor: singleStrokeColor, StrokeWidthEmu: singleStrokeWidth,
+            FillOnly: singleColor != null && singleStrokeColor == null));
         return result;
+    }
+
+    private static void ProcessGroupChildren(
+        XElement groupElement, List<DocxShape> result,
+        Dictionary<string, string>? themeColors,
+        PdfColor? grpFillColor, float grpFillAlpha,
+        long anchorOffsetX, long anchorOffsetY,
+        long chOffX, long chOffY,
+        long grpExtCx, long grpExtCy,
+        long chExtCx, long chExtCy)
+    {
+        foreach (var child in groupElement.Elements())
+        {
+            if (child.Name == WPS + "wsp")
+            {
+                ReadSingleWspShape(child, result, themeColors, grpFillColor, grpFillAlpha,
+                    anchorOffsetX, anchorOffsetY, chOffX, chOffY, grpExtCx, grpExtCy, chExtCx, chExtCy);
+            }
+            else if (child.Name == WPG + "grpSp")
+            {
+                // Nested sub-group: read its own coordinate mapping, then recurse
+                var subGrpSpPr = child.Element(WPG + "grpSpPr");
+                var subXfrm = subGrpSpPr?.Element(A + "xfrm");
+                long subOffX = 0, subOffY = 0, subCx = 1, subCy = 1;
+                long subChOffX = 0, subChOffY = 0, subChCx = 1, subChCy = 1;
+                if (subXfrm != null)
+                {
+                    var off = subXfrm.Element(A + "off");
+                    if (off != null)
+                    {
+                        long.TryParse(off.Attribute("x")?.Value, out subOffX);
+                        long.TryParse(off.Attribute("y")?.Value, out subOffY);
+                    }
+                    var ext = subXfrm.Element(A + "ext");
+                    if (ext != null)
+                    {
+                        long.TryParse(ext.Attribute("cx")?.Value, out subCx);
+                        long.TryParse(ext.Attribute("cy")?.Value, out subCy);
+                    }
+                    var cOff = subXfrm.Element(A + "chOff");
+                    if (cOff != null)
+                    {
+                        long.TryParse(cOff.Attribute("x")?.Value, out subChOffX);
+                        long.TryParse(cOff.Attribute("y")?.Value, out subChOffY);
+                    }
+                    var cExt = subXfrm.Element(A + "chExt");
+                    if (cExt != null)
+                    {
+                        long.TryParse(cExt.Attribute("cx")?.Value, out subChCx);
+                        long.TryParse(cExt.Attribute("cy")?.Value, out subChCy);
+                    }
+                }
+                if (subChCx == 0) subChCx = 1;
+                if (subChCy == 0) subChCy = 1;
+
+                // Sub-group fill inheritance
+                PdfColor? subGrpFill = grpFillColor;
+                float subGrpAlpha = grpFillAlpha;
+                var subFill = subGrpSpPr?.Element(A + "solidFill");
+                if (subFill != null)
+                    (subGrpFill, subGrpAlpha) = ResolveSolidFill(subFill, themeColors);
+
+                // Map sub-group origin to parent coordinate space then to page EMU
+                var mappedAnchorX = anchorOffsetX + (subOffX - chOffX) * grpExtCx / chExtCx;
+                var mappedAnchorY = anchorOffsetY + (subOffY - chOffY) * grpExtCy / chExtCy;
+                var mappedExtCx = subCx * grpExtCx / chExtCx;
+                var mappedExtCy = subCy * grpExtCy / chExtCy;
+
+                ProcessGroupChildren(child, result, themeColors, subGrpFill, subGrpAlpha,
+                    mappedAnchorX, mappedAnchorY,
+                    subChOffX, subChOffY,
+                    mappedExtCx, mappedExtCy,
+                    subChCx, subChCy);
+            }
+        }
+    }
+
+    private static void ReadSingleWspShape(
+        XElement childWsp, List<DocxShape> result,
+        Dictionary<string, string>? themeColors,
+        PdfColor? grpFillColor, float grpFillAlpha,
+        long anchorOffsetX, long anchorOffsetY,
+        long chOffX, long chOffY,
+        long grpExtCx, long grpExtCy,
+        long chExtCx, long chExtCy)
+    {
+        var childSpPr = childWsp.Element(WPS + "spPr") ?? childWsp.Element(A + "spPr");
+        if (childSpPr == null) return;
+
+        // Read stroke/outline
+        PdfColor? strokeColor = null;
+        float strokeWidthEmu = 0;
+        var ln = childSpPr.Element(A + "ln");
+        if (ln != null)
+        {
+            var lnNoFill = ln.Element(A + "noFill");
+            if (lnNoFill == null)
+            {
+                var lnFill = ln.Element(A + "solidFill");
+                if (lnFill != null)
+                {
+                    (strokeColor, _) = ResolveSolidFill(lnFill, themeColors);
+                    float.TryParse(ln.Attribute("w")?.Value, out strokeWidthEmu);
+                }
+            }
+        }
+
+        bool hasNoFill = childSpPr.Element(A + "noFill") != null;
+
+        PdfColor? fillColor = null;
+        float alpha = 1f;
+        if (!hasNoFill)
+        {
+            var childFill = childSpPr.Element(A + "solidFill");
+            if (childFill != null)
+            {
+                (fillColor, alpha) = ResolveSolidFill(childFill, themeColors);
+            }
+            else if (childSpPr.Element(A + "grpFill") != null && grpFillColor != null)
+            {
+                fillColor = grpFillColor;
+                alpha = grpFillAlpha;
+            }
+        }
+
+        // Skip if neither fill nor stroke
+        if (fillColor == null && strokeColor == null) return;
+
+        // Get child shape position/size in child coordinate space
+        var childXfrm = childSpPr.Element(A + "xfrm");
+        if (childXfrm == null) return;
+        long childOffX = 0, childOffY = 0, childCx = 0, childCy = 0;
+        var cOff = childXfrm.Element(A + "off");
+        if (cOff != null)
+        {
+            long.TryParse(cOff.Attribute("x")?.Value, out childOffX);
+            long.TryParse(cOff.Attribute("y")?.Value, out childOffY);
+        }
+        var cExt = childXfrm.Element(A + "ext");
+        if (cExt != null)
+        {
+            long.TryParse(cExt.Attribute("cx")?.Value, out childCx);
+            long.TryParse(cExt.Attribute("cy")?.Value, out childCy);
+        }
+
+        var (childPresetGeom, childFrameThicknessRatio, childCustomPaths) =
+            ReadShapeGeometry(childSpPr, childCx, childCy);
+
+        // Map child coordinates to page-relative EMU
+        var pageX = anchorOffsetX + (childOffX - chOffX) * grpExtCx / chExtCx;
+        var pageY = anchorOffsetY + (childOffY - chOffY) * grpExtCy / chExtCy;
+        var pageW = childCx * grpExtCx / chExtCx;
+        var pageH = childCy * grpExtCy / chExtCy;
+
+        var shapeFill = fillColor ?? new PdfColor(1, 1, 1);
+        result.Add(new DocxShape(pageW, pageH, pageX, pageY, shapeFill, alpha,
+            childPresetGeom, childFrameThicknessRatio, childCustomPaths,
+            StrokeColor: strokeColor, StrokeWidthEmu: strokeWidthEmu,
+            FillOnly: fillColor != null && strokeColor == null));
     }
 
     private static (string? PresetGeometry, float FrameThicknessRatio, List<DocxCustomPath>? CustomPaths)
@@ -2077,10 +2213,14 @@ internal static class DocxReader
 
             // Read row height from trPr
             float rowHeight = 0;
+            bool rowHeightExact = false;
             var trPr = tr.Element(W + "trPr");
             var trHeightEl = trPr?.Element(W + "trHeight");
             if (trHeightEl != null && int.TryParse(trHeightEl.Attribute(W + "val")?.Value, out var rh))
+            {
                 rowHeight = rh / 20f; // twips to points
+                rowHeightExact = trHeightEl.Attribute(W + "hRule")?.Value == "exact";
+            }
 
             foreach (var tc in tr.Elements(W + "tc"))
             {
@@ -2127,6 +2267,10 @@ internal static class DocxReader
                 bool isVMergeContinue = false;
                 bool isVMergeRestart = false;
                 string verticalAlignment = "top";
+                float tcMarTop = -1f;
+                float tcMarBottom = -1f;
+                float tcMarLeft = -1f;
+                float tcMarRight = -1f;
 
                 if (tcPr != null)
                 {
@@ -2175,6 +2319,24 @@ internal static class DocxReader
                         if (!string.IsNullOrEmpty(va))
                             verticalAlignment = va;
                     }
+
+                    // Per-cell margins (tcMar)
+                    var tcMarEl = tcPr.Element(W + "tcMar");
+                    if (tcMarEl != null)
+                    {
+                        var topEl = tcMarEl.Element(W + "top");
+                        if (topEl != null && int.TryParse(topEl.Attribute(W + "w")?.Value, out var mt))
+                            tcMarTop = mt / 20f;
+                        var bottomEl = tcMarEl.Element(W + "bottom");
+                        if (bottomEl != null && int.TryParse(bottomEl.Attribute(W + "w")?.Value, out var mb))
+                            tcMarBottom = mb / 20f;
+                        var leftEl = tcMarEl.Element(W + "left") ?? tcMarEl.Element(W + "start");
+                        if (leftEl != null && int.TryParse(leftEl.Attribute(W + "w")?.Value, out var ml))
+                            tcMarLeft = ml / 20f;
+                        var rightEl = tcMarEl.Element(W + "right") ?? tcMarEl.Element(W + "end");
+                        if (rightEl != null && int.TryParse(rightEl.Attribute(W + "w")?.Value, out var mr))
+                            tcMarRight = mr / 20f;
+                    }
                 }
 
                 // Apply table style: band shading and firstRow borders
@@ -2194,9 +2356,10 @@ internal static class DocxReader
                         cellBorders = tblStyleInfo.FirstRowBorders;
                 }
 
-                cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading, cellBorders, isVMergeContinue, isVMergeRestart, verticalAlignment));
+                cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading, cellBorders, isVMergeContinue, isVMergeRestart, verticalAlignment,
+                    tcMarTop, tcMarBottom, tcMarLeft, tcMarRight));
             }
-            rows.Add(new DocxTableRow(cells, rowHeight));
+            rows.Add(new DocxTableRow(cells, rowHeight, rowHeightExact));
             rowIndex++;
         }
 
@@ -3402,7 +3565,10 @@ internal sealed record DocxShape(
     float Alpha = 1f,
     string? PresetGeometry = null,
     float FrameThicknessRatio = 0.125f,
-    List<DocxCustomPath>? CustomPaths = null
+    List<DocxCustomPath>? CustomPaths = null,
+    PdfColor? StrokeColor = null,
+    float StrokeWidthEmu = 0f,
+    bool FillOnly = true
 );
 
 /// <summary>Represents a table.</summary>
@@ -3426,7 +3592,7 @@ internal sealed record DocxTable(
 ) : DocxElement;
 
 /// <summary>Represents a table row.</summary>
-internal sealed record DocxTableRow(List<DocxTableCell> Cells, float Height = 0);
+internal sealed record DocxTableRow(List<DocxTableCell> Cells, float Height = 0, bool HeightExact = false);
 
 /// <summary>Represents a table cell.</summary>
 internal sealed record DocxTableCell(
@@ -3437,7 +3603,11 @@ internal sealed record DocxTableCell(
     DocxBorders? Borders = null,
     bool IsVMergeContinue = false,
     bool IsVMergeRestart = false,
-    string VerticalAlignment = "top"
+    string VerticalAlignment = "top",
+    float CellMarginTop = -1f,
+    float CellMarginBottom = -1f,
+    float CellMarginLeft = -1f,
+    float CellMarginRight = -1f
 );
 
 /// <summary>Style definition from styles.xml.</summary>
