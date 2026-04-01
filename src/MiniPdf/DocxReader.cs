@@ -677,6 +677,14 @@ internal static class DocxReader
         bool keepNext = styles.TryGetValue(effectiveStyleId, out var kni) && kni.KeepNext;
         if (pPr?.Element(W + "keepNext") is { } knEl)
             keepNext = knEl.Attribute(W + "val")?.Value is not ("0" or "false");
+        // autoSpaceDE: auto spacing between Latin text and East Asian text (default true per OOXML)
+        bool autoSpaceDE = true;
+        if (pPr?.Element(W + "autoSpaceDE")?.Attribute(W + "val")?.Value is "0" or "false")
+            autoSpaceDE = false;
+        // autoSpaceDN: auto spacing between numbers and East Asian text (default true per OOXML)
+        bool autoSpaceDN = true;
+        if (pPr?.Element(W + "autoSpaceDN")?.Attribute(W + "val")?.Value is "0" or "false")
+            autoSpaceDN = false;
         if (spacingBefore < 0) spacingBefore = 0;
         if (spacingAfter < 0) spacingAfter = 0;
 
@@ -810,7 +818,9 @@ internal static class DocxReader
             ContextualSpacing: contextualSpacing, SnapToGrid: snapToGrid,
             ParagraphMarkUnderline: paragraphMarkUnderline,
             ParagraphFontName: paragraphFontName,
-            KeepNext: keepNext);
+            KeepNext: keepNext,
+            AutoSpaceDE: autoSpaceDE,
+            AutoSpaceDN: autoSpaceDN);
     }
 
     /// <summary>
@@ -998,8 +1008,15 @@ internal static class DocxReader
             var sz = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
             if (float.TryParse(sz, out var s) && s > 0)
                 fontSize = s / 2f; // half-points to points
-            var runColor = ReadRunColor(rPr);
-            if (runColor != null) color = runColor;
+            var colorEl = rPr.Element(W + "color");
+            if (colorEl != null)
+            {
+                var colorVal = colorEl.Attribute(W + "val")?.Value;
+                if (!string.IsNullOrEmpty(colorVal) && colorVal != "auto")
+                    color = PdfColor.FromHex(colorVal);
+                else
+                    color = parentColor; // "auto" resets to paragraph default, overriding character style
+            }
             // Character spacing (w:spacing w:val in twips)
             var spacingEl = rPr.Element(W + "spacing");
             if (spacingEl != null && int.TryParse(spacingEl.Attribute(W + "val")?.Value, out var cs))
@@ -2881,7 +2898,10 @@ internal static class DocxReader
             var rPr = style.Element(W + "rPr");
             var pPr = style.Element(W + "pPr");
 
-            float fontSize = defaultFontSize;
+            // Character styles should not inherit default font size;
+            // they should only carry an explicit size if defined.
+            var styleType = style.Attribute(W + "type")?.Value;
+            float fontSize = styleType == "character" ? 0 : defaultFontSize;
             bool bold = false;
             bool italic = false;
             PdfColor? color = null;
@@ -3453,7 +3473,9 @@ internal sealed record DocxParagraph(
     float TextBoxWidth = 0,
     bool ParagraphMarkUnderline = false,
     string? ParagraphFontName = null,
-    bool KeepNext = false
+    bool KeepNext = false,
+    bool AutoSpaceDE = true,
+    bool AutoSpaceDN = true
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>

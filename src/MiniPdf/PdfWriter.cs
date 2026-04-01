@@ -1197,6 +1197,7 @@ internal sealed class PdfWriter
         foreach (var ch in text)
         {
             int cp = ch;
+            if (cp == 0x2009) { total += ef.Upm / 4.0; continue; } // THIN SPACE: quarter-em
             if (ef.Cmap.TryGetValue(cp, out var gid) && gid < ef.GlyphAdvances.Length)
                 total += ef.GlyphAdvances[gid];
             else
@@ -1233,6 +1234,7 @@ internal sealed class PdfWriter
         double total = 0;
         foreach (var ch in text)
         {
+            if (ch == '\u2009') { total += font.Upm / 4.0; continue; } // THIN SPACE: quarter-em
             if (!font.Cmap.TryGetValue(ch, out var gid))
                 return -1; // character not in font
             var advance = gid < font.GlyphAdvances.Length ? font.GlyphAdvances[gid] : 0;
@@ -1265,6 +1267,7 @@ internal sealed class PdfWriter
         's' => 500, 't' => 278, 'u' => 556, 'v' => 500, 'w' => 722, 'x' => 500,
         'y' => 500, 'z' => 500,
         '{' => 334, '|' => 260, '}' => 334, '~' => 584,
+        '\u2009' => 250, // THIN SPACE: quarter-em for autoSpaceDE
         _ => IsFullWidthCharPdf(ch) ? 1000 : 556
     };
 
@@ -1289,6 +1292,7 @@ internal sealed class PdfWriter
         's' => 556, 't' => 333, 'u' => 611, 'v' => 556, 'w' => 778, 'x' => 556,
         'y' => 556, 'z' => 500,
         '{' => 389, '|' => 280, '}' => 389, '~' => 584,
+        '\u2009' => 250, // THIN SPACE: quarter-em for autoSpaceDE
         _ => IsFullWidthCharPdf(ch) ? 1000 : 556
     };
 
@@ -2826,9 +2830,14 @@ internal sealed class PdfWriter
         sb.Append('[');
         foreach (var cp in unicodeChars)
         {
-            if (cmap.TryGetValue(cp, out var gid) && gid < advances.Length)
+            var cid = cpToCid != null && cpToCid.TryGetValue(cp, out var mapped) ? mapped : cp;
+            if (cp == 0x2009)
             {
-                var cid = cpToCid != null && cpToCid.TryGetValue(cp, out var mapped) ? mapped : cp;
+                // THIN SPACE: force quarter-em width regardless of font's native advance
+                sb.Append($"{cid} [250] ");
+            }
+            else if (cmap.TryGetValue(cp, out var gid) && gid < advances.Length)
+            {
                 var w = (int)(advances[gid] * 1000L / upm);
                 sb.Append($"{cid} [{w}] ");
             }

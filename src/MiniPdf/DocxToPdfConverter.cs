@@ -557,6 +557,15 @@ internal static class DocxToPdfConverter
         public float[]? ColumnWidths { get; set; }
         public float[]? ColumnGaps { get; set; }
 
+        /// <summary>
+        /// When grid snapping is active, the ascent offset applied at the top of a
+        /// paragraph's first rendered line.  Stored so that the table renderer can
+        /// compensate for the extra descent space included in the final AdvanceY of
+        /// the preceding paragraph (Word's grid model places the next element at
+        /// baseline + descent, not baseline + lineHeight).
+        /// </summary>
+        public float LastGridAscentExcess { get; set; }
+
         public float UsableWidth => Options.PageWidth - Options.MarginLeft - Options.MarginRight;
 
         public RenderState(PdfDocument doc, ConversionOptions options)
@@ -628,6 +637,7 @@ internal static class DocxToPdfConverter
             IsTopOfPage = true;
             LastLineHeight = 0;
             LastSpacingAfter = 0;
+            LastGridAscentExcess = 0;
             return true;
         }
 
@@ -701,6 +711,7 @@ internal static class DocxToPdfConverter
             IsTopOfPage = true;
             LastLineHeight = 0;
             LastSpacingAfter = 0;
+            LastGridAscentExcess = 0;
 
             // Reset footnote state for new page
             CurrentPageFootnoteIds.Clear();
@@ -865,6 +876,10 @@ internal static class DocxToPdfConverter
             state.LastLineHeight = lineHeight;
             state.LastSpacingAfter = spacingAfterEmpty;
             state.LastParagraphWasEmpty = true;
+            if (options.GridLinePitch > 0 && paragraph.SnapToGrid && !(paragraph.LineSpacingAbsolute && paragraph.LineSpacingExact))
+                state.LastGridAscentExcess = (lineHeight + fontSize) / 2f;
+            else
+                state.LastGridAscentExcess = 0;
             if (paragraph.HasPageBreakAfter)
                 state.ForceNewPage();
             return;
@@ -998,8 +1013,10 @@ internal static class DocxToPdfConverter
         // For justified text (jc="both"), use the natural Calibri width for wrapping.
         // The per-character Calibri width table provides sufficient accuracy for
         // line-break matching without additional width reduction.
-        var wrapFirstLineWidth = firstLineWidth;
-        var wrapAvailableWidth = availableWidth;
+        // Add small CJK tolerance: CJK fonts may render fullwidth characters
+        // slightly narrower than the 1000-unit estimate, preventing unnecessary wraps.
+        var wrapFirstLineWidth = firstLineWidth + 0.5f;
+        var wrapAvailableWidth = availableWidth + 0.5f;
 
         // Numbered justified paragraphs in DOCX references tend to wrap slightly
         // earlier than our baseline estimation. Apply a tiny, localized reduction
@@ -1186,7 +1203,7 @@ internal static class DocxToPdfConverter
         else
         {
             // Simple path: all runs share the same formatting
-            var fullText = AddInterScriptSpacing(string.Concat(mergedRuns.Select(r => r.Text)));
+            var fullText = AddInterScriptSpacing(string.Concat(mergedRuns.Select(r => r.Text)), paragraph.AutoSpaceDE, paragraph.AutoSpaceDN);
             var dominantRun = mergedRuns.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
             var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
             var runColor = dominantRun?.Color ?? paragraph.Color;
@@ -1316,6 +1333,15 @@ internal static class DocxToPdfConverter
 
         state.LastLineHeight = lineHeight;
         state.LastParagraphWasEmpty = false;
+
+        // When grid snapping is active, the AdvanceY(lineHeight) after the last
+        // text line includes both the descent of the current line and the ascent
+        // of the *next* line. Tables do not consume that ascent, so record the
+        // excess so RenderTable can compensate.
+        if (options.GridLinePitch > 0 && paragraph.SnapToGrid && !(paragraph.LineSpacingAbsolute && paragraph.LineSpacingExact))
+            state.LastGridAscentExcess = (lineHeight + fontSize) / 2f;
+        else
+            state.LastGridAscentExcess = 0;
 
         // Handle page break after
         if (paragraph.HasPageBreakAfter)
@@ -1612,7 +1638,7 @@ internal static class DocxToPdfConverter
                 // Remove hard line breaks for width estimation (only first line matters for single-line case)
                 var rText = r.Text.Replace("\n", "");
                 rText = ExpandTabs(rText, rFs, paragraph.TabStops, false, currentXOffset: totalWidth);
-                rText = AddInterScriptSpacing(rText);
+                rText = AddInterScriptSpacing(rText, paragraph.AutoSpaceDE, paragraph.AutoSpaceDN);
                 // Add inter-script gap at run boundaries (Latin↔CJK)
                 if (prevRunTextPre != null && rText.Length > 0
                     && NeedInterRunScriptGap(prevRunTextPre, rText))
@@ -1829,7 +1855,7 @@ internal static class DocxToPdfConverter
                 }
 
                 var segment = ExpandTabs(hardLines[hi], runFs, paragraph.TabStops, useCalibri, currentXOffset: currentX - state.Options.MarginLeft);
-                segment = AddInterScriptSpacing(segment);
+                segment = AddInterScriptSpacing(segment, paragraph.AutoSpaceDE, paragraph.AutoSpaceDN);
                 if (string.IsNullOrEmpty(segment)) continue;
 
                 // Add inter-script gap at run boundaries (Latin↔CJK) for centered/right text
@@ -1867,10 +1893,31 @@ internal static class DocxToPdfConverter
                     && !run.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
                     nonCalibriWidthFactor = run.Bold ? 1.06f : 1.00f;
 
+                // When a CJK paragraph has pure-Latin runs (e.g. "PECVD"),
+                // EstimateWrapTextWidth sees no CJK in the word and applies only
+                // 8% Latin reduction instead of the 22% CJK-context reduction.
+                // Pre-compute correction factor to match CJK font Latin glyph widths.
+                var cjkLatinCorrection = 1f;
+                if (!useCalibri && hasCjkContext)
+                {
+                    var nonCjkKeep = run.Bold ? 0.95f : (s_serifFont ? 0.90f : 0.92f);
+                    cjkLatinCorrection = 0.78f / nonCjkKeep;
+                }
+
                 for (var wi = 0; wi < words.Length; wi++)
                 {
                     var word = words[wi];
                     var wordWidth = EstimateWrapTextWidth(word, runFs, run.Bold, run.CharSpacing, useCalibri) * nonCalibriWidthFactor;
+                    // Apply CJK Latin correction for pure-Latin words in CJK paragraph
+                    if (cjkLatinCorrection < 1f && word.Length > 0)
+                    {
+                        bool wordHasCjk = false;
+                        foreach (var wc in word)
+                            if (wc >= '\u2E80' && !char.IsHighSurrogate(wc) && !char.IsLowSurrogate(wc))
+                            { wordHasCjk = true; break; }
+                        if (!wordHasCjk)
+                            wordWidth *= cjkLatinCorrection;
+                    }
                     var spaceWidth = wi > 0
                         ? effectiveSpaceWidth + run.CharSpacing
                         : 0;
@@ -1933,7 +1980,16 @@ internal static class DocxToPdfConverter
                         float accWidth = 0;
                         for (var ci = 0; ci < pendingText.Length; ci++)
                         {
-                            accWidth += runFs * GetWrapCharWidth(pendingText[ci], useCalibri) / 1000f;
+                            var charW = runFs * GetWrapCharWidth(pendingText[ci], useCalibri) / 1000f;
+                            // In CJK paragraph context, Latin chars render with CJK font's
+                            // narrower Latin glyphs. Apply 22% reduction for non-fullwidth chars.
+                            if (!useCalibri && hasCjkContext
+                                && GetWrapCharWidth(pendingText[ci], useCalibri) != 1000
+                                && pendingText[ci] >= '!' && pendingText[ci] <= '~')
+                            {
+                                charW *= 0.78f;
+                            }
+                            accWidth += charW;
                             // Update break point before overflow check so the last
                             // fitting character is included on the current line.
                             if (ci > 0 && (GetWrapCharWidth(pendingText[ci], useCalibri) == 1000 || GetWrapCharWidth(pendingText[ci - 1], useCalibri) == 1000))
@@ -2483,7 +2539,7 @@ internal static class DocxToPdfConverter
                     }
 
                     // Render text
-                    var text = string.Concat(para.Runs.Select(r => r.Text));
+                    var text = AddInterScriptSpacing(string.Concat(para.Runs.Select(r => r.Text)), para.AutoSpaceDE, para.AutoSpaceDN);
                     if (string.IsNullOrEmpty(text)) continue;
 
                     var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
@@ -2540,6 +2596,16 @@ internal static class DocxToPdfConverter
     private static void RenderTable(RenderState state, DocxTable table)
     {
         var options = state.Options;
+
+        // When a grid-snapped paragraph precedes the table, its final
+        // AdvanceY(lineHeight) included the ascent of the *next* line.
+        // Tables have no ascent to consume, so pull CurrentY back up.
+        if (state.LastGridAscentExcess > 0 && !state.IsTopOfPage)
+        {
+            state.CurrentY += state.LastGridAscentExcess;
+            state.LastGridAscentExcess = 0;
+        }
+
         var usableWidth = state.UsableWidth;
         var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
         var cellPaddingV = Math.Max(1f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
@@ -2562,14 +2628,69 @@ internal static class DocxToPdfConverter
                     rh = r.Height;
                 else
                 {
-                    var hasVM = r.Cells.Any(c => c.IsVMergeRestart || c.IsVMergeContinue);
-                    if (hasVM)
-                        rh = r.Height;
-                    else
-                        rh = Math.Max(rh, r.Height);
+                    rh = Math.Max(rh, r.Height);
                 }
             }
             rowHeights[ri] = rh;
+        }
+
+        // Distribute vMerge restart cell heights across all merged rows.
+        // CalculateRowHeight excludes vMergeRestart cells, so each row height
+        // reflects only its non-merged cell content. This pass ensures the
+        // merged cell content fits within the sum of spanned row heights.
+        for (var ri = 0; ri < table.Rows.Count; ri++)
+        {
+            var r = table.Rows[ri];
+            var colIdx2 = 0;
+            for (var ci2 = 0; ci2 < r.Cells.Count && colIdx2 < colCount; ci2++)
+            {
+                var cell2 = r.Cells[ci2];
+                if (cell2.IsVMergeRestart)
+                {
+                    // Count merged rows and sum their current heights
+                    var mergedColIdx2 = colIdx2;
+                    var spanCount = 1;
+                    for (var mr = ri + 1; mr < table.Rows.Count; mr++)
+                    {
+                        var nci2 = 0;
+                        DocxTableCell? mc = null;
+                        for (var nc = 0; nc < table.Rows[mr].Cells.Count; nc++)
+                        {
+                            if (nci2 == mergedColIdx2) { mc = table.Rows[mr].Cells[nc]; break; }
+                            nci2 += table.Rows[mr].Cells[nc].GridSpan;
+                            if (nci2 > mergedColIdx2) break;
+                        }
+                        if (mc is { IsVMergeContinue: true })
+                            spanCount++;
+                        else
+                            break;
+                    }
+
+                    if (spanCount > 1)
+                    {
+                        // Calculate merged cell content height
+                        var cellW2 = colWidths[colIdx2];
+                        for (var s = 1; s < cell2.GridSpan && colIdx2 + s < colCount; s++)
+                            cellW2 += colWidths[colIdx2 + s];
+                        var mergedContentHeight = CalculateCellContentHeight(cell2, cellW2, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
+
+                        // Sum current heights of all merged rows
+                        var currentSum = 0f;
+                        for (var mr = ri; mr < ri + spanCount; mr++)
+                            currentSum += rowHeights[mr];
+
+                        // If merged content needs more space, distribute excess evenly
+                        if (mergedContentHeight > currentSum)
+                        {
+                            var excess = mergedContentHeight - currentSum;
+                            var perRow = excess / spanCount;
+                            for (var mr = ri; mr < ri + spanCount; mr++)
+                                rowHeights[mr] += perRow;
+                        }
+                    }
+                }
+                colIdx2 += cell2.GridSpan;
+            }
         }
 
         for (var rowIndex = 0; rowIndex < table.Rows.Count; rowIndex++)
@@ -2708,7 +2829,7 @@ internal static class DocxToPdfConverter
                     }
 
                     var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
-                    var text = string.Concat(para.Runs.Select(r => r.Text));
+                    var text = AddInterScriptSpacing(string.Concat(para.Runs.Select(r => r.Text)), para.AutoSpaceDE, para.AutoSpaceDN);
                     if (string.IsNullOrEmpty(text))
                     {
                         // Empty paragraph still takes up space (skip when images already rendered)
@@ -2720,6 +2841,12 @@ internal static class DocxToPdfConverter
                         {
                             var emptyRunFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
                             emptyLineH = fontSize * GetFontMetricsFactor(emptyRunFont) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
+                        }
+                        // Snap empty paragraph line height to document grid when active
+                        if (options.GridLinePitch > 0 && para.SnapToGrid && !(para.LineSpacingAbsolute && para.LineSpacingExact))
+                        {
+                            var gridPitch = options.GridLinePitch;
+                            emptyLineH = Math.Max(gridPitch, Compat.Ceiling(emptyLineH / gridPitch) * gridPitch);
                         }
                         textY -= emptyLineH;
                         // Apply SpacingAfter: table style override takes precedence, else paragraph's own
@@ -2746,8 +2873,19 @@ internal static class DocxToPdfConverter
                         lineHeight = para.LineSpacing;
                     else
                         lineHeight = effectiveFontSize * GetFontMetricsFactor(cellRunFontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
+
+                    // Snap line height to document grid when active (CJK line grid)
+                    if (options.GridLinePitch > 0 && para.SnapToGrid && !(para.LineSpacingAbsolute && para.LineSpacingExact))
+                    {
+                        var gridPitch = options.GridLinePitch;
+                        lineHeight = Math.Max(gridPitch, Compat.Ceiling(lineHeight / gridPitch) * gridPitch);
+                    }
+
                     var textWidth = cellWidth - effCellLeft - effCellRight;
-                    var lines = WordWrap(text, textWidth, textWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, options.UseCalibriWidths);
+                    // Add small CJK tolerance: CJK fonts may render fullwidth characters
+                    // slightly narrower than the 1000-unit estimate, preventing unnecessary wraps.
+                    var wrapWidth = textWidth + 0.5f;
+                    var lines = WordWrap(text, wrapWidth, wrapWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, options.UseCalibriWidths);
 
                     foreach (var line in lines)
                     {
@@ -3002,8 +3140,16 @@ internal static class DocxToPdfConverter
                 lineHeight = para.LineSpacing; // exact/atLeast: absolute points
             else
                 lineHeight = runFontSize * GetFontMetricsFactor(dominantRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : (styleLineSpacing > 0 ? styleLineSpacing : options.LineSpacing));
+
+            // Snap line height to document grid when active (CJK line grid)
+            if (options.GridLinePitch > 0 && para.SnapToGrid && !(para.LineSpacingAbsolute && para.LineSpacingExact))
+            {
+                var gridPitch = options.GridLinePitch;
+                lineHeight = Math.Max(gridPitch, Compat.Ceiling(lineHeight / gridPitch) * gridPitch);
+            }
+
             var textWidth = cellWidth - cellPaddingH * 2;
-            var text = string.Concat(para.Runs.Select(r => r.Text));
+            var text = AddInterScriptSpacing(string.Concat(para.Runs.Select(r => r.Text)), para.AutoSpaceDE, para.AutoSpaceDN);
 
             if (string.IsNullOrEmpty(text))
             {
@@ -3062,7 +3208,7 @@ internal static class DocxToPdfConverter
 
             colIdx += span;
 
-            if (cell.IsVMergeContinue)
+            if (cell.IsVMergeContinue || cell.IsVMergeRestart)
                 continue;
 
             var cellHeight = CalculateCellContentHeight(cell, cellWidth, cellPaddingH, cellPaddingV, options, styleLineSpacing, styleSpacingAfter);
@@ -3292,7 +3438,7 @@ internal static class DocxToPdfConverter
                 // Break oversized words only at CJK character boundaries
                 while (EstimateWrapTextWidth(currentLine, fontSize, bold, charSpacing, useCalibriWidths) > maxWidth && currentLine.Length > 1)
                 {
-                    // Find the latest CJK break point that fits, respecting kinsoku rules
+                    // Find the latest CJK or hyphen break point that fits, respecting kinsoku rules
                     var breakAt = -1;
                     for (var ci = 1; ci < currentLine.Length; ci++)
                     {
@@ -3305,8 +3451,13 @@ internal static class DocxToPdfConverter
                             if (!IsNoStartChar(currentLine[ci]))
                                 breakAt = ci;
                         }
+                        // Allow breaking after a hyphen (e.g. "020-88888888" → "020-" + "88888888")
+                        else if (currentLine[ci - 1] == '-' && ci > 1)
+                        {
+                            breakAt = ci;
+                        }
                     }
-                    if (breakAt <= 0) break; // No CJK break point found
+                    if (breakAt <= 0) break; // No break point found
                     lines.Add(currentLine[..breakAt]);
                     currentLine = currentLine[breakAt..];
                     maxWidth = subsequentWidth;
@@ -3428,11 +3579,12 @@ internal static class DocxToPdfConverter
         {
             var latinFraction = latinUnits / totalUnits;
             // CJK fonts (PMingLiU, SimSun) use much narrower Latin glyphs than
-            // Helvetica → 22% reduction. Serif fonts (Times New Roman, Georgia)
-            // have noticeably narrower Latin glyphs → 10% reduction.
+            // Helvetica → 27% reduction (uppercase Latin glyphs in SimSun are
+            // typically 500/1000 vs Helvetica's 667-722/1000). Serif fonts
+            // (Times New Roman, Georgia) have noticeably narrower Latin glyphs → 10%.
             // Other non-Calibri sans-serif fonts are closer → 8%.
             var serifReduction = s_serifFont ? 0.10f : 0.08f;
-            var reductionFactor = hasCjk ? 0.22f : (bold ? 0.05f : serifReduction);
+            var reductionFactor = hasCjk ? 0.27f : (bold ? 0.05f : serifReduction);
             rawWidth *= 1f - latinFraction * reductionFactor;
         }
         return rawWidth;
@@ -3582,6 +3734,7 @@ internal static class DocxToPdfConverter
     private static int GetHelveticaCharWidth(char ch)
     {
         if (ch < ' ') return 0; // control characters (\n, \r, \t, etc.)
+        if (ch == '\u2009') return 250; // THIN SPACE: quarter-em for autoSpaceDE
         if (ch >= ' ' && ch <= '~')
             return HelveticaWidths[ch - ' '];
         if (ch >= '\u4E00' && ch <= '\u9FFF'    // CJK Unified Ideographs
@@ -3628,17 +3781,25 @@ internal static class DocxToPdfConverter
     /// Inserts a space between Latin-script words and CJK characters to approximate
     /// Word/LibreOffice inter-script spacing, but avoids aggressive insertion for
     /// short labels and pure numeric tokens (e.g. "A期", "500字").
+    /// When <paramref name="autoSpaceDE"/> is true (OOXML default), inserts spaces
+    /// between Latin words and CJK characters (e.g. "如PECVD" → "如 PECVD").
+    /// When <paramref name="autoSpaceDN"/> is true (OOXML default), also inserts
+    /// spaces between digit sequences and CJK ideographs (e.g. "2025年" → "2025 年").
     /// </summary>
-    private static string AddInterScriptSpacing(string text)
+    private static string AddInterScriptSpacing(string text, bool autoSpaceDE = true, bool autoSpaceDN = true)
     {
         if (string.IsNullOrEmpty(text) || text.Length < 2) return text;
         var sb = new System.Text.StringBuilder(text.Length + 8);
         sb.Append(text[0]);
         for (var i = 1; i < text.Length; i++)
         {
-            if (ShouldInsertInterScriptSpace(text, i))
+            if (autoSpaceDE && ShouldInsertInterScriptSpace(text, i))
             {
                 sb.Append(' ');
+            }
+            else if (autoSpaceDN && ShouldInsertDigitCjkSpace(text, i))
+            {
+                sb.Append('\u2009'); // THIN SPACE: ~1/4 em, not expanded by justified word spacing
             }
             sb.Append(text[i]);
         }
@@ -3648,6 +3809,22 @@ internal static class DocxToPdfConverter
     private static bool IsLatinOrDigit(char c) => c is >= '0' and <= '9' or >= 'A' and <= 'Z' or >= 'a' and <= 'z';
     private static bool IsLatinLetter(char c) => c is >= 'A' and <= 'Z' or >= 'a' and <= 'z';
     private static bool IsCjkIdeograph(char c) => c is >= '\u4E00' and <= '\u9FFF' or >= '\u3400' and <= '\u4DBF';
+    private static bool IsAsciiDigit(char c) => c is >= '0' and <= '9';
+
+    /// <summary>
+    /// Returns true when a space should be inserted at <paramref name="boundaryIndex"/>
+    /// to implement OOXML autoSpaceDE (digit↔CJK ideograph spacing).
+    /// Word inserts spacing only at digit→CJK boundaries (e.g. "2025年" → "2025 年"),
+    /// not at CJK→digit boundaries (e.g. "年11" stays as-is).
+    /// </summary>
+    private static bool ShouldInsertDigitCjkSpace(string text, int boundaryIndex)
+    {
+        if (boundaryIndex <= 0 || boundaryIndex >= text.Length) return false;
+        var left = text[boundaryIndex - 1];
+        var right = text[boundaryIndex];
+        // digit→CJK boundary only (not CJK→digit)
+        return IsAsciiDigit(left) && IsCjkIdeograph(right);
+    }
 
     private static bool ShouldInsertInterScriptSpace(string text, int boundaryIndex)
     {
