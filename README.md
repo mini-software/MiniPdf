@@ -26,6 +26,10 @@ English | <a href="README.zh-CN.md">简体中文</a> | <a href="documents/README
 
 A minimal, lightweight .NET library for converting office files to PDF.
 
+<div align="center">
+<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word to PDF conversion" />
+</div>
+
 👉 **[Online Demo](https://mini-software.github.io/MiniPdf/)** — Try it in your browser, no install required.
 
 > ⚠️ Due to limited fonts available in the browser, the rendering results may not be optimal. For the best experience, please test locally on your machine.
@@ -42,6 +46,10 @@ A minimal, lightweight .NET library for converting office files to PDF.
 - **Chart** — Not currently supported well
 
 > **Note:** MiniPdf currently only handles basic conversions. Complex or highly customized Office documents may not convert perfectly. If you encounter compatibility issues, please [open an Issue](https://github.com/shps951023/MiniPdf/issues) or submit a Pull Request — contributions are very welcome!
+
+## Reference
+- Trained small LLM by `Apache POI` + `LibreOffice` 
+- AI development by `GitHub Copilot` + `Claude Code`
 
 ## Getting Started
 
@@ -166,7 +174,7 @@ tar -xzf minipdf-linux-x64.tar.gz
 
 ## Benchmark
 
-MiniPdf output is compared against LibreOffice as the reference renderer across **373 test cases**.
+MiniPdf output is compared against MiniExcel and Office 365 as the reference renderers across **373 test cases**.
 
 | Report | Cases | 🟢 Excellent (≥90%) | 🟡 Acceptable (70%–90%) | 🔴 Needs Improvement (<70%) | Average Score |
 |---|---|---|---|---|---|
@@ -186,10 +194,10 @@ Scoring: text similarity 40% + visual similarity 40% + page count 20%
 
 ### Visual Comparison
 
-All test cases comparing MiniPdf output vs LibreOffice reference. Page 1 shown for multi-page results.
+All test cases comparing MiniPdf output vs MiniExcel / Office 365 reference. Page 1 shown for multi-page results.
 
 <table>
-<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
+<tr><th>MiniPdf</th><th>MiniExcel / Office 365 (Reference)</th></tr>
 <tr>
   <td><b>classic01</b></td>
   <td>Basic table with headers 🟢 99.9%</td>

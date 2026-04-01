@@ -19,6 +19,10 @@
 
 Una libreria .NET minimale e leggera per convertire file Office in PDF.
 
+<div align="center">
+<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word to PDF conversion" />
+</div>
+
 👉 **[Demo online](https://mini-software.github.io/MiniPdf/)** — Provalo nel browser, nessuna installazione richiesta.
 
 > ⚠️ A causa dei font limitati disponibili nel browser, i risultati del rendering potrebbero non essere ottimali. Per la migliore esperienza, si consiglia di testare localmente sul proprio computer.
@@ -35,6 +39,10 @@ Una libreria .NET minimale e leggera per convertire file Office in PDF.
 - **Grafici** — Attualmente non ben supportati
 
 > **Nota:** MiniPdf attualmente gestisce solo le conversioni di base. Documenti Office complessi o altamente personalizzati potrebbero non essere convertiti perfettamente. Se riscontri problemi di compatibilità, [apri una Issue](https://github.com/shps951023/MiniPdf/issues) o invia una Pull Request — i contributi sono molto graditi!
+
+## Riferimenti
+- Trained small LLM by `Apache POI` + `LibreOffice`
+- AI development by `GitHub Copilot` + `Claude Code`
 
 ## Iniziare
 
@@ -159,7 +167,7 @@ tar -xzf minipdf-linux-x64.tar.gz
 
 ## Benchmark
 
-L'output di MiniPdf viene confrontato con LibreOffice come renderer di riferimento su **373 casi di test**.
+L'output di MiniPdf viene confrontato con MiniExcel e Office 365 come renderer di riferimento su **373 casi di test**.
 
 | Report | Casi | 🟢 Eccellente (≥90%) | 🟡 Accettabile (70%–90%) | 🔴 Da migliorare (<70%) | Punteggio medio |
 |---|---|---|---|---|---|
@@ -179,10 +187,10 @@ Punteggio: similarità testo 40% + similarità visiva 40% + conteggio pagine 20%
 
 ### Confronto visivo
 
-Tutti i casi di test che confrontano l'output di MiniPdf con il riferimento LibreOffice. Per i risultati multipagina viene mostrata la pagina 1.
+Tutti i casi di test che confrontano l'output di MiniPdf con il riferimento MiniExcel / Office 365. Per i risultati multipagina viene mostrata la pagina 1.
 
 <table>
-<tr><th>MiniPdf</th><th>LibreOffice (Riferimento)</th></tr>
+<tr><th>MiniPdf</th><th>MiniExcel / Office 365 (Riferimento)</th></tr>
 <tr>
   <td><b>classic01</b></td>
   <td>Basic table with headers 🟢 99.9%</td>
@@ -1717,7 +1725,7 @@ Tutti i casi di test che confrontano l'output di MiniPdf con il riferimento Libr
 
 ### Benchmark DOCX
 
-L'output DOCX di MiniPdf viene confrontato con LibreOffice come renderer di riferimento su **180 casi di test classici**.
+L'output DOCX di MiniPdf viene confrontato con MiniExcel e Office 365 come renderer di riferimento su **180 casi di test classici**.
 
 | Categoria | Conteggio | Soglia |
 |---|---|---|
@@ -1729,10 +1737,10 @@ L'output DOCX di MiniPdf viene confrontato con LibreOffice come renderer di rife
 
 #### Confronto visivo DOCX
 
-Tutti i casi di test DOCX che confrontano l'output di MiniPdf con il riferimento LibreOffice. Per i risultati multipagina viene mostrata la pagina 1.
+Tutti i casi di test DOCX che confrontano l'output di MiniPdf con il riferimento MiniExcel / Office 365. Per i risultati multipagina viene mostrata la pagina 1.
 
 <table>
-<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
+<tr><th>MiniPdf</th><th>MiniExcel / Office 365 (Reference)</th></tr>
 <tr>
   <td><b>classic01</b></td>
   <td>Basic table with headers 🟢 99.9%</td>

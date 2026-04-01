@@ -19,6 +19,10 @@
 
 Office ファイルを PDF に変換するための、ミニマルで軽量な .NET ライブラリです。
 
+<div align="center">
+<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word to PDF conversion" />
+</div>
+
 👉 **[オンラインデモ](https://mini-software.github.io/MiniPdf/)** — インストール不要、ブラウザですぐにお試しいただけます。
 
 > ⚠️ ブラウザで利用可能なフォントが限られているため、レンダリング結果が最適でない場合があります。最良の結果を得るには、ローカル環境でテストしてください。
@@ -35,6 +39,10 @@ Office ファイルを PDF に変換するための、ミニマルで軽量な .
 - **グラフ** — 現在は十分にサポートされていません
 
 > **注意：** MiniPdf は現在、基本的な変換のみ対応しています。複雑またはカスタマイズされた Office ドキュメントは、完全に変換できない場合があります。互換性の問題が見つかった場合は、[Issue を作成](https://github.com/shps951023/MiniPdf/issues)するか、Pull Request を送信してください。コントリビューション大歓迎です！
+
+## 参考
+- `Apache POI` + `LibreOffice` で小型参照モデルをトレーニング
+- AI 開発に `GitHub Copilot` + `Claude Code` を使用
 
 ## はじめに
 
@@ -159,7 +167,7 @@ tar -xzf minipdf-linux-x64.tar.gz
 
 ## ベンチマーク
 
-MiniPdf の出力は LibreOffice をリファレンスレンダラーとして **373 件のテストケース**で比較されています。
+MiniPdf の出力は MiniExcel および Office 365 をリファレンスレンダラーとして **373 件のテストケース**で比較されています。
 
 | レポート | 件数 | 🟢 優秀 (≥90%) | 🟡 許容範囲 (70%–90%) | 🔴 要改善 (<70%) | 平均スコア |
 |---|---|---|---|---|---|
@@ -179,10 +187,10 @@ MiniPdf の出力は LibreOffice をリファレンスレンダラーとして *
 
 ### ビジュアル比較
 
-全テストケースの MiniPdf 出力と LibreOffice リファレンスの比較。複数ページの場合は1ページ目を表示。
+全テストケースの MiniPdf 出力と MiniExcel / Office 365 リファレンスの比較。複数ページの場合は1ページ目を表示。
 
 <table>
-<tr><th>MiniPdf</th><th>LibreOffice（リファレンス）</th></tr>
+<tr><th>MiniPdf</th><th>MiniExcel / Office 365（リファレンス）</th></tr>
 <tr>
   <td><b>classic01</b></td>
   <td>Basic table with headers 🟢 99.9%</td>
@@ -1717,7 +1725,7 @@ MiniPdf の出力は LibreOffice をリファレンスレンダラーとして *
 
 ### DOCX ベンチマーク
 
-MiniPdf DOCX の出力は LibreOffice をリファレンスレンダラーとして **180 件のクラシックテストケース**で比較されています。
+MiniPdf DOCX の出力は MiniExcel および Office 365 をリファレンスレンダラーとして **180 件のクラシックテストケース**で比較されています。
 
 | カテゴリ | 件数 | しきい値 |
 |---|---|---|
@@ -1729,10 +1737,10 @@ MiniPdf DOCX の出力は LibreOffice をリファレンスレンダラーとし
 
 #### DOCX ビジュアル比較
 
-全 DOCX テストケースの MiniPdf 出力と LibreOffice リファレンスの比較。複数ページの場合は1ページ目を表示。
+全 DOCX テストケースの MiniPdf 出力と MiniExcel / Office 365 リファレンスの比較。複数ページの場合は1ページ目を表示。
 
 <table>
-<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
+<tr><th>MiniPdf</th><th>MiniExcel / Office 365 (Reference)</th></tr>
 <tr>
   <td><b>classic01</b></td>
   <td>Basic table with headers 🟢 99.9%</td>
