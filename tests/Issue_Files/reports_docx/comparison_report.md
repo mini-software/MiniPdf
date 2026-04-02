@@ -1,31 +1,32 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-31T13:26:35.087320
+Generated: 2026-04-02T11:45:09.005322
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 0.9944 | 0.9642 | 2/2 | **0.9834** |
-| 2 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9634 | 2/2 | **0.983** |
-| 3 | 🟢 20260318_issue | ✅ | 0.9598 | 0.868 | 7/7 | **0.9311** |
-| 4 | 🟢 CCU_article | ✅ | 0.9264 | 0.9457 | 21/21 | **0.9488** |
-| 5 | 🔴 Class News | ✅ | 0.9006 | 0.5524 | 5/4 | **0.6812** |
-| 6 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
-| 7 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.9693 | 2/2 | **0.981** |
-| 8 | 🟡 Cooperation Agreement Template | ✅ | 0.8697 | 0.8117 | 6/7 | **0.7726** |
-| 9 | 🟢 Invoice | ✅ | 0.9963 | 0.9013 | 1/1 | **0.959** |
-| 10 | 🟡 MODERN LIVING | ✅ | 0.8363 | 0.7813 | 2/2 | **0.847** |
-| 11 | 🟡 nthu_article | ✅ | 0.8387 | 0.8734 | 20/20 | **0.8848** |
-| 12 | 🟢 OSCAR WARD | ✅ | 0.9941 | 0.867 | 1/1 | **0.9444** |
-| 13 | 🟡 SA8000 ch sample | ✅ | 0.9908 | 0.6197 | 3/2 | **0.7442** |
-| 14 | 🟢 Support_Letter | ✅ | 1.0 | 0.9579 | 1/1 | **0.9832** |
-| 15 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9792 | 17/17 | **0.9917** |
-| 16 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
-| 17 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9744 | 2/2 | **0.9898** |
-| 18 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
+| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9669 | 2/2 | **0.9868** |
+| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9744 | 2/2 | **0.9898** |
+| 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9557 | 2/2 | **0.9799** |
+| 4 | 🟢 20260318_issue | ✅ | 0.9597 | 0.8515 | 7/7 | **0.9245** |
+| 5 | 🟢 CCU_article | ✅ | 0.9255 | 0.9452 | 21/21 | **0.9483** |
+| 6 | 🟡 Class News | ✅ | 0.9493 | 0.5526 | 5/4 | **0.7008** |
+| 7 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
+| 8 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.9691 | 2/2 | **0.9809** |
+| 9 | 🟡 Cooperation Agreement Template | ✅ | 0.8644 | 0.7923 | 6/7 | **0.7627** |
+| 10 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
+| 11 | 🟢 Invoice | ✅ | 0.9963 | 0.9017 | 1/1 | **0.9592** |
+| 12 | 🟢 issues66 | ✅ | 0.9745 | 0.9838 | 3/3 | **0.9833** |
+| 13 | 🟡 MODERN LIVING | ✅ | 0.8851 | 0.7827 | 2/2 | **0.8671** |
+| 14 | 🟡 nthu_article | ✅ | 0.8387 | 0.8679 | 20/20 | **0.8826** |
+| 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
+| 16 | 🟢 SA8000 ch sample | ✅ | 0.9945 | 0.9203 | 2/2 | **0.9659** |
+| 17 | 🟢 Support_Letter | ✅ | 1.0 | 0.9579 | 1/1 | **0.9832** |
+| 18 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.979 | 17/17 | **0.9916** |
+| 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8096**
+**Average Overall Score: 0.8315**
 
 ## Visual Comparison
 
@@ -33,7 +34,7 @@ Generated: 2026-03-31T13:26:35.087320
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>13_IEEE_Style_Paper</b></td>
-  <td colspan="1">13_IEEE_Style_Paper <span style="color:#3fb950">⬤</span> 98.3%</td>
+  <td colspan="1">13_IEEE_Style_Paper <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
   <td><img src="images/13_IEEE_Style_Paper_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -44,8 +45,20 @@ Generated: 2026-03-31T13:26:35.087320
   <td><img src="images/13_IEEE_Style_Paper_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
+  <td><b>14_Thesis_Chapter</b></td>
+  <td colspan="1">14_Thesis_Chapter <span style="color:#3fb950">⬤</span> 99.0%</td>
+</tr>
+<tr>
+  <td><img src="images/14_Thesis_Chapter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/14_Thesis_Chapter_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/14_Thesis_Chapter_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/14_Thesis_Chapter_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><b>20260317_sample_CN</b></td>
-  <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 98.3%</td>
+  <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 98.0%</td>
 </tr>
 <tr>
   <td><img src="images/20260317_sample_CN_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -57,7 +70,7 @@ Generated: 2026-03-31T13:26:35.087320
 </tr>
 <tr>
   <td><b>20260318_issue</b></td>
-  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.1%</td>
+  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 92.5%</td>
 </tr>
 <tr>
   <td><img src="images/20260318_issue_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -89,7 +102,7 @@ Generated: 2026-03-31T13:26:35.087320
 </tr>
 <tr>
   <td><b>CCU_article</b></td>
-  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 94.9%</td>
+  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 94.8%</td>
 </tr>
 <tr>
   <td><img src="images/CCU_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -177,7 +190,7 @@ Generated: 2026-03-31T13:26:35.087320
 </tr>
 <tr>
   <td><b>Class News</b></td>
-  <td colspan="1">Class News <span style="color:#f85149">⬤</span> 68.1%</td>
+  <td colspan="1">Class News <span style="color:#d29922">⬤</span> 70.1%</td>
 </tr>
 <tr>
   <td><img src="images/Class News_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -220,7 +233,7 @@ Generated: 2026-03-31T13:26:35.087320
 </tr>
 <tr>
   <td><b>Cooperation Agreement Template</b></td>
-  <td colspan="1">Cooperation Agreement Template <span style="color:#d29922">⬤</span> 77.3%</td>
+  <td colspan="1">Cooperation Agreement Template <span style="color:#d29922">⬤</span> 76.3%</td>
 </tr>
 <tr>
   <td><img src="images/Cooperation Agreement Template_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -251,6 +264,14 @@ Generated: 2026-03-31T13:26:35.087320
   <td><img src="images/Cooperation Agreement Template_p7_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
+  <td><b>Fabrikam</b></td>
+  <td colspan="1">Fabrikam <span style="color:#3fb950">⬤</span> 94.7%</td>
+</tr>
+<tr>
+  <td><img src="images/Fabrikam_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Fabrikam_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><b>Invoice</b></td>
   <td colspan="1">Invoice <span style="color:#3fb950">⬤</span> 95.9%</td>
 </tr>
@@ -259,8 +280,24 @@ Generated: 2026-03-31T13:26:35.087320
   <td><img src="images/Invoice_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
+  <td><b>issues66</b></td>
+  <td colspan="1">issues66 <span style="color:#3fb950">⬤</span> 98.3%</td>
+</tr>
+<tr>
+  <td><img src="images/issues66_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/issues66_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/issues66_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/issues66_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/issues66_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/issues66_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><b>MODERN LIVING</b></td>
-  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 84.7%</td>
+  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 86.7%</td>
 </tr>
 <tr>
   <td><img src="images/MODERN LIVING_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -272,7 +309,7 @@ Generated: 2026-03-31T13:26:35.087320
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 88.5%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 88.3%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -356,7 +393,7 @@ Generated: 2026-03-31T13:26:35.087320
 </tr>
 <tr>
   <td><b>OSCAR WARD</b></td>
-  <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 94.4%</td>
+  <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 94.5%</td>
 </tr>
 <tr>
   <td><img src="images/OSCAR WARD_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -364,7 +401,7 @@ Generated: 2026-03-31T13:26:35.087320
 </tr>
 <tr>
   <td><b>SA8000 ch sample</b></td>
-  <td colspan="1">SA8000 ch sample <span style="color:#d29922">⬤</span> 74.4%</td>
+  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 96.6%</td>
 </tr>
 <tr>
   <td><img src="images/SA8000 ch sample_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -373,10 +410,6 @@ Generated: 2026-03-31T13:26:35.087320
 <tr>
   <td><img src="images/SA8000 ch sample_p2_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/SA8000 ch sample_p2_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/SA8000 ch sample_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
 </tr>
 <tr>
   <td><b>Support_Letter</b></td>
@@ -465,44 +498,24 @@ Generated: 2026-03-31T13:26:35.087320
 <tr>
   <td colspan="2"><i>No images</i></td>
 </tr>
-<tr>
-  <td><b>14_Thesis_Chapter</b></td>
-  <td colspan="1">14_Thesis_Chapter <span style="color:#3fb950">⬤</span> 99.0%</td>
-</tr>
-<tr>
-  <td><img src="images/14_Thesis_Chapter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/14_Thesis_Chapter_p1_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/14_Thesis_Chapter_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/14_Thesis_Chapter_p2_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>Fabrikam</b></td>
-  <td colspan="1">Fabrikam <span style="color:#3fb950">⬤</span> 94.7%</td>
-</tr>
-<tr>
-  <td><img src="images/Fabrikam_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Fabrikam_p1_reference.png" width="340" alt="Reference"></td>
-</tr>
 </table>
 
 ## Detailed Results
 
 ### 13_IEEE_Style_Paper
 
-- **Text Similarity:** 0.9944
-- **Visual Average:** 0.9642
-- **Overall Score:** 0.9834
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9669
+- **Overall Score:** 0.9868
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1150046 bytes, Reference=174711 bytes
+- **File Size:** MiniPdf=1152856 bytes, Reference=174711 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/13_IEEE_Style_Paper.pdf
 +++ reference/13_IEEE_Style_Paper.pdf
-@@ -6,19 +6,19 @@
+@@ -6,13 +6,14 @@
  email@university.edu
 
  Abstract
@@ -511,9 +524,9 @@ Generated: 2026-03-31T13:26:35.087320
 
 -We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content,
 
--and reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a
+-and reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a benchmark
 
--benchmark of 500 documents across various formats including DOCX, XLSX, and PDF.
+-of 500 documents across various formats including DOCX, XLSX, and PDF.
 
 +We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content, and
 
@@ -523,13 +536,13 @@ Generated: 2026-03-31T13:26:35.087320
 
  1. Introduction
 
- Document format conversion is a fundamental problem in information technology. Organizations
+-Document format conversion is a fundamental problem in information technology. Organizations frequently
 
--frequently need to convert documents between formats for archival, sharing, and processing purposes.
+-need to convert documents between formats for archival, sharing, and processing purposes. The challenge
 
--The challenge lies in preserving the visual layout, formatting, and semantic structure of the original
+-lies in preserving the visual layout, formatting, and semantic structure of the original document [1].
 
--document [1].
++Document format conversion is a fundamental problem in information technology. Organizations
 
 +frequently need to convert documents between formats for archival, sharing, and processing purposes. The
 
@@ -543,28 +556,16 @@ Generated: 2026-03-31T13:26:35.087320
 
  2. Related Work
 
--Several approaches have been proposed for document conversion. Smith et al. [4] introduced a rule-
+@@ -24,10 +25,10 @@
+ Rule-based 78.2 120 256
 
--based system that handles specific format pairs.
-
-+Several approaches have been proposed for document conversion. Smith et al. [4] introduced a rule-based
-
-+system that handles specific format pairs.
-
- 3. Experimental Results
-
- Table 1 shows the comparison of our method against baselines.
-
- Method Accuracy (%) Speed (docs/s) Memory (MB)
-
-@@ -26,9 +26,9 @@
  ML-based 85.5 45 1024
 
  Ours 95.1 89 512
 
- References
-
 ----PAGE---
+
+ References
 
  [1] A. Brown, Document Processing: Principles and Practice, IEEE Trans., vol. 45, 2023.
 
@@ -580,13 +581,23 @@ Generated: 2026-03-31T13:26:35.087320
 ```
 </details>
 
+### 14_Thesis_Chapter
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9744
+- **Overall Score:** 0.9898
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=1005005 bytes, Reference=159781 bytes
+
+Text content: ✅ Identical
+
 ### 20260317_sample_CN
 
 - **Text Similarity:** 0.994
-- **Visual Average:** 0.9634
-- **Overall Score:** 0.983
+- **Visual Average:** 0.9557
+- **Overall Score:** 0.9799
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7581833 bytes, Reference=201209 bytes
+- **File Size:** MiniPdf=7595274 bytes, Reference=201209 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -635,11 +646,11 @@ Generated: 2026-03-31T13:26:35.087320
 
 ### 20260318_issue
 
-- **Text Similarity:** 0.9598
-- **Visual Average:** 0.868
-- **Overall Score:** 0.9311
+- **Text Similarity:** 0.9597
+- **Visual Average:** 0.8515
+- **Overall Score:** 0.9245
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=1507146 bytes, Reference=344088 bytes
+- **File Size:** MiniPdf=1518177 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -670,7 +681,7 @@ Generated: 2026-03-31T13:26:35.087320
 
  页眉 换了一行 .
 
--RESTRICTED DISTRIBUTION 1
+-RESTRICTED DISTRIBUTION1
 
 +1
 
@@ -682,7 +693,7 @@ Generated: 2026-03-31T13:26:35.087320
 
  Document Version Control
 
-@@ -31,17 +32,20 @@
+@@ -31,19 +32,23 @@
  document for information only.
 
  Name Department Responsibility
@@ -695,25 +706,19 @@ Generated: 2026-03-31T13:26:35.087320
 
 -Context Where loss of information confidentiality would result in significant harm to the
 
--interests of the organization, financial loss, embarrassment or loss of information
-
--Introduction
-
--The Process Definition Document (PDD) captures the flow of a business process to be developed.
-
 +Company Confidential
 
 +Classification
 
- 1
++1
 
- 页脚的公司名称
++页脚的公司名称
 
- ---PAGE---
++---PAGE---
 
- 页眉的名称 ……………………..
++页眉的名称 ……………………..
 
- 页眉 换了一行 .
++页眉 换了一行 .
 
 +Information is Group confidential and needs to be protected
 
@@ -723,11 +728,11 @@ Generated: 2026-03-31T13:26:35.087320
 
 +Context
 
-+interests of the organization, financial loss, embarrassment or loss of information
+ interests of the organization, financial loss, embarrassment or loss of information
 
-+Introduction
+ Introduction
 
-+The Process Definition Document (PDD) captures the flow of a business process to be developed.
+ The Process Definition Document (PDD) captures the flow of a business process to be developed.
 
  The flowchart contained within the document captures, at a high level, the business process to be automated, the
 
@@ -735,7 +740,21 @@ Generated: 2026-03-31T13:26:35.087320
 
  Once agreed as the basis for the automation of the target process, the flowchart and assumptions will be used as a
 
-@@ -68,12 +72,11 @@
+-页脚的公司名称
+
+----PAGE---
+
+-页眉的名称 ……………………..
+
+-页眉 换了一行 .
+
+ platform from which the automated solution will be designed.
+
+ Changes to this business process may constitute a request for change and will be subject to the agreed agility program
+
+ change procedures.
+
+@@ -67,12 +72,11 @@
  2. Fill the title of work order.
 
  3. Fill Asset code. Automatically display description after filling asset code.
@@ -767,27 +786,47 @@ Generated: 2026-03-31T13:26:35.087320
 
 ### CCU_article
 
-- **Text Similarity:** 0.9264
-- **Visual Average:** 0.9457
-- **Overall Score:** 0.9488
+- **Text Similarity:** 0.9255
+- **Visual Average:** 0.9452
+- **Overall Score:** 0.9483
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6548526 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6549941 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/CCU_article.pdf
 +++ reference/CCU_article.pdf
-@@ -14,8 +14,8 @@
- 研究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature
+@@ -9,35 +9,35 @@
+ ---PAGE---
 
- orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別
+ 摘要
 
- 之召回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模
+ 本研究探討以深度學習方法改善多分類影像辨識之效能。近年卷積神經網路在多
 
--型，所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研
+-種視覺任務上展現優異表現，然而在資料量受限與類別不平衡 (class imbalance) 的
 
--究並分析特徵空間分佈，證實特徵正交化有助於降低類別間干擾。
+-情況下，傳統訓練流程容易造成某些少數類別辨識率偏低。為解決此問題，本研
+
+-究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature
+
+-orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別之召
+
+-回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模型，
+
+-所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研究並分
+
+-析特徵空間分佈，證實特徵正交化有助於降低類別間干擾。
+
++種視覺任務上展現優異表現，然而在資料量受限與類別不平衡 (class imbalance)
+
++的情況下，傳統訓練流程容易造成某些少數類別辨識率偏低。為解決此問題，本
+
++研究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature
+
++orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別
+
++之召回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模
 
 +型，所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研究
 
@@ -795,11 +834,16 @@ Generated: 2026-03-31T13:26:35.087320
 
  本論文之主要貢獻包含： (1) 提出一套可即插即用之動態類別權重調整策略；
 
- (2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗
+-(2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗證
 
- 證方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。
+-方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。
 
-@@ -23,21 +23,21 @@
++(2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗
+
++證方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。
+
+ 關鍵詞：深度學習、長尾學習、特徵表徵、卷積神經網路
+
  i
 
  ---PAGE---
@@ -856,49 +900,25 @@ Generated: 2026-03-31T13:26:35.087320
 
 +The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class
 
-+difficulty; (2) incorporation of a feature orthogonalization loss tailored for long-tail set-
-
-+tings; (3) comprehensive evaluation across multiple backbones and datasets; (4) public
-
-+release of reproducible code.
-
-+Keywords: deep learning, long-tail learning, feature representation, convolutional neural
-
-+networks
-
- ii
-
- ---PAGE---
-
- 誌謝
-
-@@ -58,48 +58,48 @@
- iii
-
- ---PAGE---
-
- 目  錄
-
--摘要 ........................................................................
-... (14631 more characters)
+... (15673 more characters)
 
 ```
 </details>
 
 ### Class News
 
-- **Text Similarity:** 0.9006
-- **Visual Average:** 0.5524
-- **Overall Score:** 0.6812
+- **Text Similarity:** 0.9493
+- **Visual Average:** 0.5526
+- **Overall Score:** 0.7008
 - **Pages:** MiniPdf=5, Reference=4
-- **File Size:** MiniPdf=345113 bytes, Reference=147827 bytes
+- **File Size:** MiniPdf=345087 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Class News.pdf
 +++ reference/Class News.pdf
-@@ -5,128 +5,132 @@
+@@ -5,36 +5,37 @@
  ytanaka@sycamoremiddle.edu
 
  Welcome back to school!
@@ -931,9 +951,9 @@ Generated: 2026-03-31T13:26:35.087320
 
  9.9 | 5-7pm
 
--suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit amet ultr icie. Ma
+-suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit amet ultr icie.
 
--ecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet odio.
+-Ma ecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet odio.
 
 +odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
 
@@ -993,10 +1013,10 @@ Generated: 2026-03-31T13:26:35.087320
 
 -ultricies porttitor mi.
 
--Aliquam pharetra risus vitae odio imperdiet condimentum. Fusce in quam varius,
++ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam
 
--dictum mi sit amet, aliquam mi. Suspe ndisse 
-... (8983 more characters)
++sollicitudin. Lorem ipsum dolor sit amet, consectetur adipis
+... (8493 more characters)
 
 ```
 </details>
@@ -1008,10 +1028,10 @@ Generated: 2026-03-31T13:26:35.087320
 ### Confirmatory_Affidavit
 
 - **Text Similarity:** 0.9832
-- **Visual Average:** 0.9693
-- **Overall Score:** 0.981
+- **Visual Average:** 0.9691
+- **Overall Score:** 0.9809
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=795829 bytes, Reference=143292 bytes
+- **File Size:** MiniPdf=795821 bytes, Reference=143292 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1098,18 +1118,18 @@ Generated: 2026-03-31T13:26:35.087320
 
 ### Cooperation Agreement Template
 
-- **Text Similarity:** 0.8697
-- **Visual Average:** 0.8117
-- **Overall Score:** 0.7726
+- **Text Similarity:** 0.8644
+- **Visual Average:** 0.7923
+- **Overall Score:** 0.7627
 - **Pages:** MiniPdf=6, Reference=7
-- **File Size:** MiniPdf=4368764 bytes, Reference=139728 bytes
+- **File Size:** MiniPdf=4368769 bytes, Reference=139728 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Cooperation Agreement Template.pdf
 +++ reference/Cooperation Agreement Template.pdf
-@@ -15,24 +15,30 @@
+@@ -15,13 +15,21 @@
  电    话：                  地  址：
 
  丙    方：
@@ -1156,17 +1176,16 @@ Generated: 2026-03-31T13:26:35.087320
 
  ......
 
- （二）乙方负责
-
+@@ -29,10 +37,8 @@
  1.
 
  2.
 
+ 3.
+
 -— 2 —
 
 ----PAGE---
-
- 3.
 
  ......
 
@@ -1180,7 +1199,7 @@ Generated: 2026-03-31T13:26:35.087320
 
  3.
 
-@@ -46,14 +52,14 @@
+@@ -46,6 +52,8 @@
  2.
 
  3.
@@ -1197,30 +1216,35 @@ Generated: 2026-03-31T13:26:35.087320
 
  2.
 
- 3.
-
- ......
-
+@@ -54,8 +62,6 @@
  （三）丙方的权利和义务
-
--— 3 —
-
-----PAGE---
 
  1.
 
  2.
 
+-— 3 —
+
+----PAGE---
+
  3.
 
-@@ -70,26 +76,35 @@
+ ......
+
+ 五、付款方式
+
+@@ -70,24 +76,35 @@
  户    名：
 
  账    号：
 
  开户银行：
 
--甲方向上述账号汇出款项即视为甲方已履行付款义务，在协议履行过程中，因乙方、丙方账
++— 4 —
+
++---PAGE---
+
+ 甲方向上述账号汇出款项即视为甲方已履行付款义务，在协议履行过程中，因乙方、丙方账
 
 -六、保密约定 户的原因（包括但不限于账号被注销、被冻结等）导致乙方、丙方无法收取款项的，由乙方、丙
 
@@ -1230,13 +1254,9 @@ Generated: 2026-03-31T13:26:35.087320
 
 -方商业秘密，则泄露方因承担相应责任，包括但不限于由此造成的损失以及律师费、保全费、诉 （一）本协议适用于中华人民共和国法律。联合体各方同意，在本协议履行过程中如发生争
 
--议，应本着平等友好、相互理解的精神协商解决。如不能通过友好协商解决，任何一方应提交至 讼费等合理维权费用。
+-八、不可抗力 议，应本着平等友好、相互理解的精神协商解决。如不能通过友好协商解决，任何一方应提交至 讼费等合理维权费用。
 
- — 4 —
-
- ---PAGE---
-
-+甲方向上述账号汇出款项即视为甲方已履行付款义务，在协议履行过程中，因乙方、丙方账
+-广州仲裁委员会申请仲裁。 任何一方由于不可抗力原因不能履行协议时，应在不可抗力事件发生后 1 日内向联合体各方通报，以减轻可能
 
 +户的原因（包括但不限于账号被注销、被冻结等）导致乙方、丙方无法收取款项的，由乙方、丙
 
@@ -1258,11 +1278,9 @@ Generated: 2026-03-31T13:26:35.087320
 
 +议，应本着平等友好、相互理解的精神协商解决。如不能通过友好协商解决，任何一方应提交至
 
- 广州仲裁委员会申请仲裁。
++广州仲裁委员会申请仲裁。
 
- 八、不可抗力
-
--任何一方由于不可抗力原因不能履行协议时，应在不可抗力事件发生后 1 日内向联合体各方通报，以减轻可能
++八、不可抗力
 
 +任何一方由于不可抗力原因不能履行协议时，应在不可抗力事件发生后 1 日内向联合体各方
 
@@ -1273,6 +1291,10 @@ Generated: 2026-03-31T13:26:35.087320
  九、合同生效
 
  1 ）本合同在甲、乙、丙方法人代表或其授权代表签字盖章后生效。
+
+-— 4 —
+
+----PAGE---
 
  2 ）合同一式 陆 份，其中甲方 贰 份，乙方 贰 份，丙方 贰 份。
 
@@ -1303,11 +1325,108 @@ Generated: 2026-03-31T13:26:35.087320
 ```
 </details>
 
+### Fabrikam
+
+- **Text Similarity:** 0.9244
+- **Visual Average:** 0.9425
+- **Overall Score:** 0.9468
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=159289 bytes, Reference=55486 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Fabrikam.pdf
++++ reference/Fabrikam.pdf
+@@ -1,30 +1,29 @@
+ Fabrikam, Inc. Fabrikam, Inc.
+
+-Wei Wei
+
+-1234 East Main Street 1234 East Main Street
+
+-Portland, OR 54321 Portland, OR 54321
+
+-www.fabrikam.com www.fabrikam.com
+
+-(415) 555-0123 | kristel@fabrikam.com
+
+-(415) 555-0123 | kristel@fabrikam.com
+
+-Fabrikam, Inc. Fabrikam, Inc.
+
+-Wei Wei
+
++Kristel Kangro Kristel Kangro
+
+ 1234 East Main Street 1234 East Main Street
+
+ Portland, OR 54321 Portland, OR 54321
+
+ www.fabrikam.com www.fabrikam.com
+
+ (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
+
+ Fabrikam, Inc. Fabrikam, Inc.
+
+-Wei Wei
+
++Kristel Kangro Kristel Kangro
+
+ 1234 East Main Street 1234 East Main Street
+
+ Portland, OR 54321 Portland, OR 54321
+
+ www.fabrikam.com www.fabrikam.com
+
+ (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
+
+ Fabrikam, Inc. Fabrikam, Inc.
+
+-Wei Wei
+
++Kristel Kangro Kristel Kangro
+
+ 1234 East Main Street 1234 East Main Street
+
+ Portland, OR 54321 Portland, OR 54321
+
+ www.fabrikam.com www.fabrikam.com
+
+ (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
+
+ Fabrikam, Inc. Fabrikam, Inc.
+
+-Wei Wei
+
++Kristel Kangro Kristel Kangro
+
++1234 East Main Street 1234 East Main Street
+
++Portland, OR 54321 Portland, OR 54321
+
++www.fabrikam.com www.fabrikam.com
+
++(415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
+
++Fabrikam, Inc. Fabrikam, Inc.
+
++Kristel Kangro Kristel Kangro
+
+ 1234 East Main Street 1234 East Main Street
+
+ Portland, OR 54321 Portland, OR 54321
+
+ www.fabrikam.com www.fabrikam.com
+
+```
+</details>
+
 ### Invoice
 
 - **Text Similarity:** 0.9963
-- **Visual Average:** 0.9013
-- **Overall Score:** 0.959
+- **Visual Average:** 0.9017
+- **Overall Score:** 0.9592
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=473606 bytes, Reference=65867 bytes
 
@@ -1347,29 +1466,144 @@ Generated: 2026-03-31T13:26:35.087320
 ```
 </details>
 
+### issues66
+
+- **Text Similarity:** 0.9745
+- **Visual Average:** 0.9838
+- **Overall Score:** 0.9833
+- **Pages:** MiniPdf=3, Reference=3
+- **File Size:** MiniPdf=4079297 bytes, Reference=229716 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/issues66.pdf
++++ reference/issues66.pdf
+@@ -1,4 +1,4 @@
+-微纳加工平台工艺申请表 （2014 年版）
+
++微纳加工平台工艺申请表 （ 2014 年版）
+
+ 批号 : 显微镜#1-20251126 14:40~20251126 14:45
+
+ 020-
+
+ 申请人 init 申请人电话 88888888<br /> 申请人邮箱 1@my.com 申请人签字
+
+@@ -6,31 +6,31 @@
+ 付费人 init 课题编号 测试项目 付费人邮箱 1@my.com 付费人签字
+
+ 申请日期 20251126 所属单位 985 高校
+
+ 样品材料 样品尺寸
+
+-试验目的及说明 样品数量与编号 0
+
++样品数量与编号 0
+
++试验目的及说明
+
+ 目的
+
+ 序
+
+ 工艺名称 工艺要求及说明 日期 计价和确认 备注
+
+ 号
+
+ 总费用：0.80￥ 总用时：0 天0 时
+
+ 2025 年11 月26 日14 时40 分 机时费：0.80￥ 5 分0 秒
+
+-显微镜#1
+
+-8 至 开机用时：
+
++8 显微镜#1 至 开机用时：
+
+ 2025 年11 月26 日14 时45 分 工艺负责人确认： 关机用时：
+
+ 工艺申请人确认： 沉积用时：
+
+ 加工平台批准人签字
+
+-最终服务质量评价（请签名） 最终检验员
+
+-非常满意_______       基本满意_______        不满意_________ 最终检验结论：
+
++最终检验员
+
++最终服务质量评价（请签名） 非常满意_______       基本满意_______        不满意_________ 最终检验结论：
+
+ （签字）
+
+ 工艺流程总计价： 0.80￥ 计价核准人签字： 日期：
+
+ 备注：
+
+-1） 所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。
+
+-2）使用涉及设定温度的设备时（如PECVD、蒸镀衬底温度、回流炉、高温炉、键合机等），请填写使用温度的上限和时间。使用如PECVD、蒸镀等设备时，衬底温
+
++1 ）所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。
+
++2 ）使用涉及设定温度的设备时（如PECVD、蒸镀衬底温度、回流炉、高温炉、键合机等），请填写使用温度的上限和时间。使用如PECVD、蒸镀等设备时，衬底温
+
+ 度没有特殊要求的可填写：常规。
+
+ 1
+
+ ---PAGE---
+
+ 3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。
+
+ 4）涉及沉积和蒸镀使用的原材料时候，必须清楚填写材料的种类、厚度。
+
+-5） 接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用 SU8。
+
++5 ）接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用SU8。
+
+ 2
+
+ ---PAGE---
+
+ 3
+```
+</details>
+
 ### MODERN LIVING
 
-- **Text Similarity:** 0.8363
-- **Visual Average:** 0.7813
-- **Overall Score:** 0.847
+- **Text Similarity:** 0.8851
+- **Visual Average:** 0.7827
+- **Overall Score:** 0.8671
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=507545 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=508009 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/MODERN LIVING.pdf
 +++ reference/MODERN LIVING.pdf
-@@ -4,20 +4,24 @@
- WHAT’S NEW
+@@ -1,29 +1,27 @@
+ OCTOBER / 20XX / ISSUE #10
+
+ M O D E R N  L I V I N G
+
+ Your guide to buy or rent
+
++WHAT’S NEW
 
  Ready to settle?
 
+-WHAT’S NEW
+
  By Peyton Davis
+
+-Newsletters are periodicals used to advertise or update your subscribers
 
 -TAKE A LOOK INSIDE
 
--Newsletters are periodicals used to advertise or update your subscribers
+-with information about your product or blog. They can be printed or emailed
 
 +Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE
 
@@ -1377,33 +1611,29 @@ Generated: 2026-03-31T13:26:35.087320
 
  Add description text here to get your
 
--with information about your product or blog. They can be printed or emailed
+-and are an excellent way to maintain regular contact with your subscribers
+
+-subscribers interested in your topic
+
+-and drive traffic to your site. Type the content of your newsletter here.
 
 +are an excellent way to maintain regular contact with your subscribers and subscribers interested in your topic
 
 +drive traffic to your site. Type the content of your newsletter here.
 
-+PROPERTY TRENDS
+ PROPERTY TRENDS
+
+-Newsletters are periodicals used to advertise or update your subscribers
 
 +Newsletters are periodicals used to advertise or update your subscribers with
 
-+Add description text here to get your
+ Add description text here to get your
+
+-with information about your product or blog. They are an excellent way to
 
 +information about your product or blog. They are an excellent way to
 
  subscribers interested in your topic
-
--and are an excellent way to maintain regular contact with your subscribers
-
--and drive traffic to your site. Type the content of your newsletter here.
-
--PROPERTY TRENDS
-
--Newsletters are periodicals used to advertise or update your subscribers
-
--Add description text here to get your
-
--with information about your product or blog. They are an excellent way to subscribers interested in your topic
 
  maintain regular contact with your subscribers. Type the content of your
 
@@ -1411,17 +1641,23 @@ Generated: 2026-03-31T13:26:35.087320
 
 -ARE YOU READY TO LIST?
 
+-Newsletters are periodicals used to advertise or update your subscribers
+
 +ARE YOU READY TO
 
 +Newsletters are periodicals used to advertise or update your subscribers with LIST?
 
 +information about your product or blog. Type the content of your newsletter
 
-+Add description text here to get your
+ Add description text here to get your
+
+-with information about your product or blog. Type the content of your
 
 +here.
 
-+subscribers interested in your topic
+ subscribers interested in your topic
+
+-newsletter here.
 
  ---PAGE---
 
@@ -1429,7 +1665,7 @@ Generated: 2026-03-31T13:26:35.087320
 
  Take a look inside
 
-@@ -40,8 +44,7 @@
+@@ -46,8 +44,7 @@
  Newsletters are periodicals use to advertise or update your
 
  excellent way to maintain regular contact
@@ -1448,29 +1684,27 @@ Generated: 2026-03-31T13:26:35.087320
 
  Newsletters are periodicals used to
 
-@@ -52,10 +55,11 @@
- advertise or update your subscribers with
+@@ -61,9 +58,8 @@
+ Newsletters are periodicals used to advertise or update your subscribers with
 
- information about your product or blog.
+ Are you
 
- Type the content of your newsletter here.
+ information about your product or blog. They can be printed or emailed and are an
 
--Are you Newsletters are periodicals used to advertise or update your subscribers with
+-excellent way to maintain regular contact with your subscribers and drive traffic to
 
--ready to list? information about your product or blog. They can be printed or emailed and are an
-
--excellent way to maintain regular contact with your subscribers and drive traffic to your
-
-+Newsletters are periodicals used to advertise or update your subscribers with
-
-+Are you
-
-+information about your product or blog. They can be printed or emailed and are an
+-ready to
 
 +ready to list? excellent way to maintain regular contact with your subscribers and drive traffic to
 
-+your site. Type the content of your newsletter here
-... (232 more characters)
+ your site. Type the content of your newsletter here.
+
+-list?
+
++By Adrian King
+
+ Newsletters are periodicals used to advertise or update your subscribers with
+... (100 more characters)
 
 ```
 </details>
@@ -1478,10 +1712,10 @@ Generated: 2026-03-31T13:26:35.087320
 ### nthu_article
 
 - **Text Similarity:** 0.8387
-- **Visual Average:** 0.8734
-- **Overall Score:** 0.8848
+- **Visual Average:** 0.8679
+- **Overall Score:** 0.8826
 - **Pages:** MiniPdf=20, Reference=20
-- **File Size:** MiniPdf=8515091 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=8695021 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1491,7 +1725,7 @@ Generated: 2026-03-31T13:26:35.087320
 @@ -1,7 +1,7 @@
  國立清華大學中國文學系碩博士學位論文格式規範
 
--經111年11月09日111學年度第一學期第3次系務會議通過
+-經111 年11 月09 日111 學年度第一學期第3 次系務會議通過
 
 -一、論文編印項目次序與頁碼編排
 
@@ -1686,46 +1920,25 @@ Generated: 2026-03-31T13:26:35.087320
 
  ---PAGE---
 
--2，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 
-... (17598 more characters)
+-2，行距建議設定為 1.2 行 （ word 中選「多行」，設定
+... (17592 more characters)
 
 ```
 </details>
 
 ### OSCAR WARD
 
-- **Text Similarity:** 0.9941
-- **Visual Average:** 0.867
-- **Overall Score:** 0.9444
+- **Text Similarity:** 0.9949
+- **Visual Average:** 0.8666
+- **Overall Score:** 0.9446
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=205258 bytes, Reference=49023 bytes
+- **File Size:** MiniPdf=205257 bytes, Reference=49023 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/OSCAR WARD.pdf
 +++ reference/OSCAR WARD.pdf
-@@ -7,8 +7,8 @@
- 123 45th Ave Chicago, IL
-
- Dear Chanchal,
-
- I sincerely appreciate the opportunity to interview and learn more about the role. Our
-
--conversation reinforced my enthusiasm for contributing to the team and bringing my expertise
-
--to the company’s ongoing initiatives. I found our discussion about future goals particularly
-
-+conversation reinforced my enthusiasm for contributing to the team and bringing my expertise to
-
-+the company’s ongoing initiatives. I found our discussion about future goals particularly
-
- inspiring, and it further solidified my excitement about this opportunity.
-
- The role’s focus on impactful work aligns with my professional background, and I look forward
-
- to the possibility of applying my skills to support the company’s growth. I am eager to bring my
-
 @@ -17,4 +17,5 @@
  Thank you again for your time and thoughtful discussion. I appreciate the chance to be
 
@@ -1742,27 +1955,25 @@ Generated: 2026-03-31T13:26:35.087320
 
 ### SA8000 ch sample
 
-- **Text Similarity:** 0.9908
-- **Visual Average:** 0.6197
-- **Overall Score:** 0.7442
-- **Pages:** MiniPdf=3, Reference=2
-- **File Size:** MiniPdf=3800186 bytes, Reference=186097 bytes
+- **Text Similarity:** 0.9945
+- **Visual Average:** 0.9203
+- **Overall Score:** 0.9659
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=3978467 bytes, Reference=186097 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/SA8000 ch sample.pdf
 +++ reference/SA8000 ch sample.pdf
-@@ -1,20 +1,20 @@
+@@ -1,16 +1,16 @@
  SA8000 基础知识培训考试题
 
  部门：                工号：           姓名：            得分：
 
--一、判断题（共20分，每题2分）
+ 一、判断题（共20 分，每题2 分）
 
 -1、公司应在新员工入厂后一个月内与之签定劳动合同。（  √  ）
-
-+一、判断题（共20 分，每题2 分）
 
 +1、公司应在新员工入厂后一个月内与之签定劳动合同。（ √  ）
 
@@ -1772,9 +1983,7 @@ Generated: 2026-03-31T13:26:35.087320
 
  4、公司员工每周至少要有一天休息。（  √   ）
 
--5、童工是指年龄在16周岁以下的人（按照我国法律规定）。（  √   ）
-
-+5、童工是指年龄在16 周岁以下的人（按照我国法律规定）。（  √   ）
+ 5、童工是指年龄在16 周岁以下的人（按照我国法律规定）。（  √   ）
 
  6、公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）
 
@@ -1782,33 +1991,19 @@ Generated: 2026-03-31T13:26:35.087320
 
 -8、当不同的法规、规章与 SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）
 
--9、根据劳动法规定，员工每月加班时间最多不超过36小时。（  √    ）
++8、当不同的法规、规章与SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）
+
+ 9、根据劳动法规定，员工每月加班时间最多不超过36 小时。（  √    ）
 
 -10、某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）
 
--二、不定项选择题（共20分，每题2分）
-
-+8、当不同的法规、规章与SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）
-
-+9、根据劳动法规定，员工每月加班时间最多不超过36 小时。（  √    ）
-
 +10、 某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）
 
-+二、不定项选择题（共20 分，每题2 分）
+ 二、不定项选择题（共20 分，每题2 分）
 
  1、以下哪些形式属于强迫劳工（ ABD  ）
 
  A、工厂对新员工要求扣押身份证一星期       B、工厂使用监狱劳工
-
--C、工厂只给1.2倍的加班费                 D、工厂要求员工晚上都加班，如果不加班就要罚款
-
-+C、工厂只给1.2 倍的加班费                 D、工厂要求员工晚上都加班，如果不加班就要罚款
-
- 2、以下哪些属于特种作业，需要操作人员具有特种设备作业证（ ABCD  ）
-
- A、电工作业      B、叉车    C、锅炉      D、电梯     E、冲床操作
-
- 3、公司推行社会责任的好处（  ABC  ）
 
 @@ -23,9 +23,9 @@
  4、劳工标准包括（ ABCDE  ）
@@ -1833,26 +2028,18 @@ Generated: 2026-03-31T13:26:35.087320
 
  A、监狱劳动                 B、标准禁止一切形式的强迫劳动
 
-@@ -38,17 +38,17 @@
- A、首次会议；    B、收集审核证据； C、确定不符合项并编写不符合项报告；
-
- D、召开末次会议；  E、宣布审核结果。
-
+@@ -40,15 +40,15 @@
  10、公司应在新员工入厂后 (  A  )个月内与之签定合同
 
--A、1个月   B、二个月  C、3个月   D、6个月
+ A、1 个月   B、二个月  C、3 个月   D、6 个月
 
--三、案例分析题（共10分，每题5分）
+ 三、案例分析题（共10 分，每题5 分）
 
 -针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出 SA8000 的哪一条款。
 
 -1、公司在运行 SA8000
 
--社会责任管理体系过程中，内审发现使用了2名童工，公司的纠正措施是将2名童工立即开除。
-
-+A、1 个月   B、二个月  C、3 个月   D、6 个月
-
-+三、案例分析题（共10 分，每题5 分）
+-社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施是将2 名童工立即开除。
 
 +针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出SA8000 的哪一条款。
 
@@ -1862,11 +2049,13 @@ Generated: 2026-03-31T13:26:35.087320
 
  STP 小组的含义是什么？
 
- ---PAGE---
++---PAGE---
 
  ISO45001 基础知识培训考试题
 
--一、判断题（共20分，每题2分）
+----PAGE---
+
+-一、判断题（共20 分，每题2 分）
 
 -1、一个管理十分严谨、设备精良并经消防主管部门审批合格的油库，在加强日常管理的情况下，可以不列入危险
 
@@ -1884,16 +2073,10 @@ Generated: 2026-03-31T13:26:35.087320
 
  4、最高管理者对组织的职业健康安全工作负最终责任。（ √ ）
 
-@@ -58,35 +58,34 @@
- 8、只有取得特种作业资格，才能进行特种作业。（ √ ）
-
- 9、安全管理是管理者的事，员工关系不大。（ × ）
-
+@@ -60,32 +60,32 @@
  10、我国《劳动法》规定，任何组织不得招收未成年工进行生产和服务作业。（ × ）
 
--二、单项选择题（共20分，每题2分）
-
-+二、单项选择题（共20 分，每题2 分）
+ 二、单项选择题（共20 分，每题2 分）
 
  1.建立和实施职业健康安全管理体系的根本目的是（ A  ）
 
@@ -1915,12 +2098,40 @@ Generated: 2026-03-31T13:26:35.087320
 
 -A、提供查询相关文件的途径。       B、对管理体系核心要素及相互作用的描述。
 
--C、至少对11个要素的描述。         D、A+B。
-
 +A、 提供查询相关文件的途径。       B、对管理体系核心要素及相互作用的描述。
 
-+C、至少对11 个要素的描述
-... (1220 more characters)
+ C、至少对11 个要素的描述。         D、A+B。
+
+ 4.特种作业种类应包括（ D  ）
+
+-A、电工。B、金属焊接切割。C、矿山通风。D、A+B+C。
+
++A、 电工。B、金属焊接切割。C、矿山通风。D、A+B+C。
+
+ 5.危险源辨识没有包括的内容有（ D  ）
+
+-A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在其自身工作场
+
+-所的活动。
+
++A、 常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在其自身工作场所
+
++的活动。
+
+ 6.中国职业健康安全基本方针是（ C  ）
+
+-A、百年大计，质量第一。  B、水火无情，安全第一。  C、安全第一，预防为主。  D、安全重于泰山。
+
++A、 百年大计，质量第一。  B、水火无情，安全第一。  C、安全第一，预防为主。  D、安全重于泰山。
+
+ 7.职业健康安全“三同时”是指新建、改建、扩建工程的健康安全设施必须与主体工程（ B  ）
+
+-A、同时规划、同时建设、同时安装。        B、同时设计、同时施工、同时投入使用。
+
++A、 同时规划、同时建设、同时安装。        B、同时设计、同时施工、同时投入使用。
+
+ C、同时计划、同时购买、同时使用。         D、同时设计
+... (603 more characters)
 
 ```
 </details>
@@ -1969,10 +2180,10 @@ Generated: 2026-03-31T13:26:35.087320
 ### Template for MSc Thesis
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9792
-- **Overall Score:** 0.9917
+- **Visual Average:** 0.979
+- **Overall Score:** 0.9916
 - **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=1293328 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=1293315 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2065,7 +2276,7 @@ Generated: 2026-03-31T13:26:35.087320
 -➢ Gamelin F.X., Baquet G., Berthoin S., Thevenet D., Nourry C., Nottin S., Bosquet L. (2009), Effect of high
 
 -intensity intermittent training o
-... (5688 more characters)
+... (5790 more characters)
 
 ```
 </details>
@@ -2074,119 +2285,11 @@ Generated: 2026-03-31T13:26:35.087320
 
 **Error:** Reference PDF not found
 
-### 14_Thesis_Chapter
-
-- **Text Similarity:** 1.0
-- **Visual Average:** 0.9744
-- **Overall Score:** 0.9898
-- **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1001976 bytes, Reference=159781 bytes
-
-Text content: ✅ Identical
-
-### Fabrikam
-
-- **Text Similarity:** 0.9244
-- **Visual Average:** 0.9425
-- **Overall Score:** 0.9468
-- **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=159289 bytes, Reference=55486 bytes
-
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/Fabrikam.pdf
-+++ reference/Fabrikam.pdf
-@@ -1,30 +1,29 @@
- Fabrikam, Inc. Fabrikam, Inc.
-
--Wei Wei
-
--1234 East Main Street 1234 East Main Street
-
--Portland, OR 54321 Portland, OR 54321
-
--www.fabrikam.com www.fabrikam.com
-
--(415) 555-0123 | kristel@fabrikam.com
-
--(415) 555-0123 | kristel@fabrikam.com
-
--Fabrikam, Inc. Fabrikam, Inc.
-
--Wei Wei
-
-+Kristel Kangro Kristel Kangro
-
- 1234 East Main Street 1234 East Main Street
-
- Portland, OR 54321 Portland, OR 54321
-
- www.fabrikam.com www.fabrikam.com
-
- (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
-
- Fabrikam, Inc. Fabrikam, Inc.
-
--Wei Wei
-
-+Kristel Kangro Kristel Kangro
-
- 1234 East Main Street 1234 East Main Street
-
- Portland, OR 54321 Portland, OR 54321
-
- www.fabrikam.com www.fabrikam.com
-
- (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
-
- Fabrikam, Inc. Fabrikam, Inc.
-
--Wei Wei
-
-+Kristel Kangro Kristel Kangro
-
- 1234 East Main Street 1234 East Main Street
-
- Portland, OR 54321 Portland, OR 54321
-
- www.fabrikam.com www.fabrikam.com
-
- (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
-
- Fabrikam, Inc. Fabrikam, Inc.
-
--Wei Wei
-
-+Kristel Kangro Kristel Kangro
-
-+1234 East Main Street 1234 East Main Street
-
-+Portland, OR 54321 Portland, OR 54321
-
-+www.fabrikam.com www.fabrikam.com
-
-+(415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
-
-+Fabrikam, Inc. Fabrikam, Inc.
-
-+Kristel Kangro Kristel Kangro
-
- 1234 East Main Street 1234 East Main Street
-
- Portland, OR 54321 Portland, OR 54321
-
- www.fabrikam.com www.fabrikam.com
-
-```
-</details>
-
 ## Improvement Suggestions
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **Class News** (score: 0.6812)
-1. **SA8000 ch sample** (score: 0.7442)
-1. **Cooperation Agreement Template** (score: 0.7726)
+1. **Class News** (score: 0.7008)
+1. **Cooperation Agreement Template** (score: 0.7627)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

@@ -171,7 +171,7 @@ internal static class DocxToPdfConverter
         // Adjust top margin when header content is taller than the default header area
         if (docxDoc.HeaderElements is { Count: > 0 })
         {
-            var headerContentHeight = EstimateElementsHeight(docxDoc.HeaderElements, options);
+            var headerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.HeaderElements), options);
             var headerAreaHeight = options.MarginTop - options.HeaderMargin;
             if (headerAreaHeight < 0) headerAreaHeight = 0; // header starts below marginTop
             if (headerContentHeight > headerAreaHeight)
@@ -186,7 +186,7 @@ internal static class DocxToPdfConverter
         // Adjust bottom margin when footer content is taller than the default footer area
         if (docxDoc.FooterElements is { Count: > 0 })
         {
-            var footerContentHeight = EstimateElementsHeight(docxDoc.FooterElements, options);
+            var footerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.FooterElements), options);
             var footerTopFromBottom = options.FooterMargin + footerContentHeight;
             if (footerTopFromBottom > options.MarginBottom)
                 options.MarginBottom = footerTopFromBottom;
@@ -419,9 +419,10 @@ internal static class DocxToPdfConverter
                     && pageFooterElements.Any(e => e is DocxTable
                         || (e is DocxParagraph pp && (pp.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text)) || pp.Images.Count > 0))))
                 {
-                    var footerContentHeight = EstimateElementsHeight(pageFooterElements, options);
+                    var trimmedFooter = TrimTrailingEmptyParagraphs(pageFooterElements);
+                    var footerContentHeight = EstimateElementsHeight(trimmedFooter, options);
                     var footerStartY = options.FooterMargin + footerContentHeight;
-                    RenderHeaderFooterElementsOnPage(page, options, pageFooterElements, footerStartY, pi, totalPages, sectionPageNum);
+                    RenderHeaderFooterElementsOnPage(page, options, trimmedFooter, footerStartY, pi, totalPages, sectionPageNum);
                 }
             }
         }
@@ -1225,9 +1226,15 @@ internal static class DocxToPdfConverter
 
             for (var i = 0; i < lines.Count; i++)
             {
-                // Proactive page break: ensure a full line box fits above bottom margin
+                // Proactive page break: break only when the text's descenders
+                // would clip below the bottom margin.  Text is rendered at the
+                // current Y (baseline); only the descent extends downward.
+                // Using the full lineHeight (which includes inter-line spacing /
+                // grid pitch) is over-conservative and causes premature breaks
+                // that don't match Word/LibreOffice behavior.
+                var pageBreakDescent = runFontSize * (GetFontMetricsFactor(runFontName) - 1f);
                 if (state.CurrentPage != null && !state.IsTopOfPage
-                    && state.CurrentY - lineHeight < state.Options.MarginBottom)
+                    && state.CurrentY - pageBreakDescent < state.Options.MarginBottom)
                 {
                     state.ForceNewPage();
                 }
@@ -1598,9 +1605,11 @@ internal static class DocxToPdfConverter
         float baseX, float firstLineX, float availableWidth, float firstLineWidth,
         float defaultFontSize, float lineHeight)
     {
-        // Proactive page break: ensure a full line box fits above bottom margin
+        // Proactive page break: use text descent to check margin fit
+        var mfPageBreakDescent = defaultFontSize * (GetFontMetricsFactor(
+            paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName) - 1f);
         if (state.CurrentPage != null && !state.IsTopOfPage
-            && state.CurrentY - lineHeight < state.Options.MarginBottom)
+            && state.CurrentY - mfPageBreakDescent < state.Options.MarginBottom)
         {
             state.ForceNewPage();
         }
@@ -1794,7 +1803,7 @@ internal static class DocxToPdfConverter
                 if (hi > 0)
                 {
                     FlushLineEntries();
-                    if (!state.IsTopOfPage && state.CurrentY - lineHeight < state.Options.MarginBottom)
+                    if (!state.IsTopOfPage && state.CurrentY - runFs * (GetFontMetricsFactor(run.FontName) - 1f) < state.Options.MarginBottom)
                         state.ForceNewPage();
                     else
                         state.AdvanceY(lineHeight);
@@ -1945,7 +1954,7 @@ internal static class DocxToPdfConverter
                             }
                             FlushLineEntries();
                             // Wrap to next line
-                            if (!state.IsTopOfPage && state.CurrentY - lineHeight < state.Options.MarginBottom)
+                            if (!state.IsTopOfPage && state.CurrentY - runFs * (GetFontMetricsFactor(run.FontName) - 1f) < state.Options.MarginBottom)
                                 state.ForceNewPage();
                             else
                                 state.AdvanceY(lineHeight);
@@ -2005,7 +2014,7 @@ internal static class DocxToPdfConverter
                         BufferOrEmit(pendingText[..breakAt], pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, run.Bold, run.Italic, run.Underline, run.CharSpacing, run.FontName, cjkBrkMaxW > 0 ? cjkBrkMaxW : (float?)null, null);
                         FlushLineEntries();
                         pendingText = pendingText[breakAt..];
-                        if (!state.IsTopOfPage && state.CurrentY - lineHeight < state.Options.MarginBottom)
+                        if (!state.IsTopOfPage && state.CurrentY - runFs * (GetFontMetricsFactor(run.FontName) - 1f) < state.Options.MarginBottom)
                             state.ForceNewPage();
                         else
                             state.AdvanceY(lineHeight);
@@ -2248,6 +2257,24 @@ internal static class DocxToPdfConverter
     }
 
     // ── Header/footer element rendering ─────────────────────────────────
+
+    /// <summary>
+    /// Removes trailing empty paragraphs from a list of elements.
+    /// Footer/header content often ends with an empty paragraph that should not
+    /// inflate the estimated height (Word ignores these for layout purposes).
+    /// </summary>
+    private static List<DocxElement> TrimTrailingEmptyParagraphs(List<DocxElement> elements)
+    {
+        var trimmed = new List<DocxElement>(elements);
+        while (trimmed.Count > 0
+            && trimmed[^1] is DocxParagraph p
+            && p.Runs.Count == 0
+            && p.Images.Count == 0)
+        {
+            trimmed.RemoveAt(trimmed.Count - 1);
+        }
+        return trimmed;
+    }
 
     /// <summary>
     /// Estimates the total height of a list of elements (paragraphs + tables)
@@ -2614,6 +2641,15 @@ internal static class DocxToPdfConverter
         var colWidths = CalculateTableColumnWidths(table, usableWidth);
         var colCount = colWidths.Length;
 
+        // Calculate table alignment offset
+        var tableWidth = colWidths.Sum();
+        var tableOffsetX = table.Alignment switch
+        {
+            "center" => options.MarginLeft + (usableWidth - tableWidth) / 2,
+            "right" => options.MarginLeft + usableWidth - tableWidth,
+            _ => options.MarginLeft
+        };
+
         var isFirstRow = true;
         // Pre-calculate row heights for all rows so we can compute vMerge spans
         var rowHeights = new float[table.Rows.Count];
@@ -2718,7 +2754,7 @@ internal static class DocxToPdfConverter
                 isFirstRow = true; // new page: draw top border again
             }
 
-            var cellX = options.MarginLeft;
+            var cellX = tableOffsetX;
             var colIdx = 0;
 
             for (var ci = 0; ci < row.Cells.Count && colIdx < colCount; ci++)
@@ -2937,81 +2973,58 @@ internal static class DocxToPdfConverter
                 cellX += cellWidth;
             }
 
-            // Draw per-cell borders (or fall back to table-level grid)
+            // Draw per-cell borders with table-level fallback for unspecified edges
             {
                 var rowTop = state.CurrentY;
                 var rowBottom = state.CurrentY - rowHeight;
-                var bx = options.MarginLeft;
+                var bx = tableOffsetX;
                 var bci = 0;
-                var hasAnyCellBorder = row.Cells.Any(c => c.Borders != null);
 
-                if (hasAnyCellBorder)
+                foreach (var cell in row.Cells)
                 {
-                    // Per-cell borders
-                    foreach (var cell in row.Cells)
+                    if (bci >= colWidths.Length) break;
+                    var bCellWidth = colWidths[bci];
+                    if (cell.GridSpan > 1)
+                        for (var g = 1; g < cell.GridSpan && bci + g < colWidths.Length; g++)
+                            bCellWidth += colWidths[bci + g];
+
+                    var cellGridEnd = bci + (cell.GridSpan > 1 ? cell.GridSpan : 1);
+                    var isFirstCell = bci == 0;
+                    var isLastCell = cellGridEnd >= colCount;
+                    var borders = cell.Borders;
+
+                    // Resolve each border: prefer cell-level, fall back to table-level
+                    DocxBorderEdge? topBorder, bottomBorder, leftBorder, rightBorder;
+                    if (borders != null)
                     {
-                        if (bci >= colWidths.Length) break;
-                        var bCellWidth = colWidths[bci];
-                        if (cell.GridSpan > 1)
-                            for (var g = 1; g < cell.GridSpan && bci + g < colWidths.Length; g++)
-                                bCellWidth += colWidths[bci + g];
-
-                        var borders = cell.Borders;
-                        if (borders != null)
-                        {
-                            if (borders.Top != null)
-                                state.CurrentPage!.AddLine(bx, rowTop, bx + bCellWidth, rowTop, borders.Top.Color, borders.Top.Width);
-                            if (borders.Bottom != null)
-                                state.CurrentPage!.AddLine(bx, rowBottom, bx + bCellWidth, rowBottom, borders.Bottom.Color, borders.Bottom.Width);
-                            if (borders.Left != null)
-                                state.CurrentPage!.AddLine(bx, rowTop, bx, rowBottom, borders.Left.Color, borders.Left.Width);
-                            if (borders.Right != null)
-                                state.CurrentPage!.AddLine(bx + bCellWidth, rowTop, bx + bCellWidth, rowBottom, borders.Right.Color, borders.Right.Width);
-                        }
-
-                        bx += bCellWidth;
-                        bci += cell.GridSpan > 1 ? cell.GridSpan : 1;
+                        topBorder = borders.Top ?? (table.HasBorders ? (isFirstRow ? table.BorderTop : table.BorderInsideH) : null);
+                        bottomBorder = borders.Bottom ?? (table.HasBorders ? (isLastRow ? table.BorderBottom : table.BorderInsideH) : null);
+                        leftBorder = borders.Left ?? (table.HasBorders ? (isFirstCell ? table.BorderLeft : table.BorderInsideV) : null);
+                        rightBorder = borders.Right ?? (table.HasBorders ? (isLastCell ? table.BorderRight : table.BorderInsideV) : null);
                     }
-                }
-                else if (table.HasBorders)
-                {
-                    // Fall back to table-level grid (style-aware)
-                    var tableLeft = options.MarginLeft;
-                    var tableRight = options.MarginLeft + colWidths.Sum();
-
-                    // Horizontal lines
-                    if (isFirstRow && table.BorderTop != null)
-                        state.CurrentPage!.AddLine(tableLeft, rowTop, tableRight, rowTop, table.BorderTop.Color, table.BorderTop.Width);
-                    else if (isFirstRow)
-                        state.CurrentPage!.AddLine(tableLeft, rowTop, tableRight, rowTop, PdfColor.FromRgb(0, 0, 0), 0.5f);
-
-                    if (isLastRow && table.BorderBottom != null)
-                        state.CurrentPage!.AddLine(tableLeft, rowBottom, tableRight, rowBottom, table.BorderBottom.Color, table.BorderBottom.Width);
-                    else if (table.BorderInsideH != null)
-                        state.CurrentPage!.AddLine(tableLeft, rowBottom, tableRight, rowBottom, table.BorderInsideH.Color, table.BorderInsideH.Width);
+                    else if (table.HasBorders)
+                    {
+                        topBorder = isFirstRow ? table.BorderTop : table.BorderInsideH;
+                        bottomBorder = isLastRow ? table.BorderBottom : table.BorderInsideH;
+                        leftBorder = isFirstCell ? table.BorderLeft : table.BorderInsideV;
+                        rightBorder = isLastCell ? table.BorderRight : table.BorderInsideV;
+                    }
                     else
-                        state.CurrentPage!.AddLine(tableLeft, rowBottom, tableRight, rowBottom, PdfColor.FromRgb(0, 0, 0), 0.5f);
-
-                    // Vertical lines
-                    var vx = tableLeft;
-                    for (var c = 0; c <= colCount; c++)
                     {
-                        var isOuterEdge = c == 0 || c == colCount;
-                        if (isOuterEdge)
-                        {
-                            var edge = c == 0 ? table.BorderLeft : table.BorderRight;
-                            if (edge != null)
-                                state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, edge.Color, edge.Width);
-                            else
-                                state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, PdfColor.FromRgb(0, 0, 0), 0.5f);
-                        }
-                        else if (table.BorderInsideV != null)
-                            state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, table.BorderInsideV.Color, table.BorderInsideV.Width);
-                        else
-                            state.CurrentPage!.AddLine(vx, rowTop, vx, rowBottom, PdfColor.FromRgb(0, 0, 0), 0.5f);
-
-                        if (c < colCount) vx += colWidths[c];
+                        topBorder = bottomBorder = leftBorder = rightBorder = null;
                     }
+
+                    if (topBorder != null)
+                        state.CurrentPage!.AddLine(bx, rowTop, bx + bCellWidth, rowTop, topBorder.Color, topBorder.Width);
+                    if (bottomBorder != null)
+                        state.CurrentPage!.AddLine(bx, rowBottom, bx + bCellWidth, rowBottom, bottomBorder.Color, bottomBorder.Width);
+                    if (leftBorder != null)
+                        state.CurrentPage!.AddLine(bx, rowTop, bx, rowBottom, leftBorder.Color, leftBorder.Width);
+                    if (rightBorder != null)
+                        state.CurrentPage!.AddLine(bx + bCellWidth, rowTop, bx + bCellWidth, rowBottom, rightBorder.Color, rightBorder.Width);
+
+                    bx += bCellWidth;
+                    bci += cell.GridSpan > 1 ? cell.GridSpan : 1;
                 }
             }
 

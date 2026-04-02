@@ -478,6 +478,14 @@ internal static class DocxReader
                 hasExplicitAlignment = true;
             }
 
+            // framePr with xAlign overrides alignment (legacy positioned text frame)
+            var framePrXAlign = pPr.Element(W + "framePr")?.Attribute(W + "xAlign")?.Value;
+            if (!string.IsNullOrEmpty(framePrXAlign))
+            {
+                alignment = framePrXAlign; // "center", "right", etc.
+                hasExplicitAlignment = true;
+            }
+
             // Spacing (in twips: 1/20 of a point)
             var spacing = pPr.Element(W + "spacing");
             if (spacing != null)
@@ -699,6 +707,7 @@ internal static class DocxReader
         int fieldDepth = 0;
         bool inFieldInstr = false; // between begin and separate
         string currentFieldInstr = ""; // accumulated field instruction text
+        bool fieldResultEmitted = false; // whether a PAGE/NUMPAGES placeholder was emitted between separate and end
         bool pendingMidParaBreak = false; // page break found with no content runs before it
         foreach (var child in UnwrapSdt(pElement.Elements()))
         {
@@ -709,9 +718,31 @@ internal static class DocxReader
                 if (fldChar != null)
                 {
                     var fldType = fldChar.Attribute(W + "fldCharType")?.Value;
-                    if (fldType == "begin") { fieldDepth++; inFieldInstr = true; currentFieldInstr = ""; continue; }
-                    if (fldType == "separate") { inFieldInstr = false; continue; }
-                    if (fldType == "end") { fieldDepth--; if (fieldDepth <= 0) { fieldDepth = 0; inFieldInstr = false; } currentFieldInstr = ""; continue; }
+                    if (fldType == "begin") { fieldDepth++; inFieldInstr = true; currentFieldInstr = ""; fieldResultEmitted = false; continue; }
+                    if (fldType == "separate") { inFieldInstr = false; fieldResultEmitted = false; continue; }
+                    if (fldType == "end")
+                    {
+                        // Emit PAGE/NUMPAGES placeholder if no result text was found between separate and end
+                        if (!fieldResultEmitted && fieldDepth > 0 && !inFieldInstr)
+                        {
+                            var ft = GetFieldInstructionType(currentFieldInstr);
+                            if (ft == "PAGE" || ft == "NUMPAGES")
+                            {
+                                var ph = ft == "PAGE" ? "{PAGE}" : "{NUMPAGES}";
+                                if (ft == "PAGE")
+                                {
+                                    var instr = currentFieldInstr.Trim();
+                                    if (instr.Contains("\\* roman", StringComparison.OrdinalIgnoreCase))
+                                        ph = instr.Contains("\\* ROMAN") ? "{PAGE:ROMAN}" : "{PAGE:roman}";
+                                }
+                                runs.Add(new DocxRun(ph, bold, italic, fontSize, color));
+                            }
+                        }
+                        fieldDepth--;
+                        if (fieldDepth <= 0) { fieldDepth = 0; inFieldInstr = false; }
+                        currentFieldInstr = "";
+                        continue;
+                    }
                 }
                 if (child.Element(W + "instrText") != null)
                 {
@@ -742,6 +773,7 @@ internal static class DocxReader
                             if (float.TryParse(sz, out var s) && s > 0) fSize = s / 2f;
                         }
                         runs.Add(new DocxRun(placeholder, fBold, fItalic, fSize, fColor));
+                        fieldResultEmitted = true;
                     }
                     continue;
                 }
