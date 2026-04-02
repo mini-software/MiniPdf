@@ -807,14 +807,22 @@ internal static class DocxToPdfConverter
             var gridPitch = options.GridLinePitch;
             if (paragraph.LineSpacing == 0)
             {
-                // Auto-spaced: use max run font size for grid-snapped height.
+                // Auto-spaced: for fonts that fit in a single grid cell, snap
+                // the line height to the grid pitch.  For larger fonts spanning
+                // multiple cells, keep the raw auto-spacing value (fontSize ×
+                // metricsFactor) — Word advances by the natural line height,
+                // not the full n×gridPitch allocation, so subsequent text
+                // resumes closer to the heading.
                 var maxFs = fontSize;
                 foreach (var run in paragraph.Runs)
                 {
                     var runFs = run.FontSize > 0 ? run.FontSize : fontSize;
                     if (runFs > maxFs) maxFs = runFs;
                 }
-                lineHeight = Math.Max(gridPitch, Compat.Ceiling(maxFs / gridPitch) * gridPitch);
+                if (Compat.Ceiling(maxFs / gridPitch) > 1)
+                    lineHeight = Math.Max(gridPitch, lineHeight);
+                else
+                    lineHeight = gridPitch;
             }
             else if (paragraph.LineSpacingAbsolute && !paragraph.LineSpacingExact)
             {
@@ -836,6 +844,15 @@ internal static class DocxToPdfConverter
             {
                 state.AdvanceY(extraBefore);
             }
+        }
+
+        // Force a page break when the paragraph carries Word's lastRenderedPageBreak
+        // hint, indicating that Word placed a break before this paragraph's content.
+        // This must precede the empty-paragraph block so it fires for non-empty
+        // paragraphs that would render visible text.
+        if (paragraph.HasLastRenderedPageBreak && state.CurrentPage != null && !state.IsTopOfPage)
+        {
+            state.ForceNewPage();
         }
 
         // Handle empty paragraphs before EnsurePage — they don't produce visible content
@@ -1226,15 +1243,11 @@ internal static class DocxToPdfConverter
 
             for (var i = 0; i < lines.Count; i++)
             {
-                // Proactive page break: break only when the text's descenders
-                // would clip below the bottom margin.  Text is rendered at the
-                // current Y (baseline); only the descent extends downward.
-                // Using the full lineHeight (which includes inter-line spacing /
-                // grid pitch) is over-conservative and causes premature breaks
-                // that don't match Word/LibreOffice behavior.
-                var pageBreakDescent = runFontSize * (GetFontMetricsFactor(runFontName) - 1f);
+                // Proactive page break: break when the text's descenders would
+                // clip below the bottom margin.
+                var pageBreakThreshold = runFontSize * (GetFontMetricsFactor(runFontName) - 1f);
                 if (state.CurrentPage != null && !state.IsTopOfPage
-                    && state.CurrentY - pageBreakDescent < state.Options.MarginBottom)
+                    && state.CurrentY - pageBreakThreshold < state.Options.MarginBottom)
                 {
                     state.ForceNewPage();
                 }
@@ -3836,7 +3849,11 @@ internal static class DocxToPdfConverter
         {
             if (autoSpaceDE && ShouldInsertInterScriptSpace(text, i))
             {
-                sb.Append(' ');
+                // Use THIN SPACE so the inter-script gap is not treated as a word
+                // boundary by WordWrap (Split(' ')) and is not expanded by justify
+                // word spacing.  Word's autoSpaceDE is visual spacing only – it does
+                // NOT create a line-break opportunity.
+                sb.Append('\u2009');
             }
             else if (autoSpaceDN && ShouldInsertDigitCjkSpace(text, i))
             {

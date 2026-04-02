@@ -447,6 +447,7 @@ internal static class DocxReader
         bool isNumberedList = false;
         bool pageBreakBefore = false;
         bool pageBreakAfter = false;
+        bool hasLastRenderedPageBreak = false;
         bool snapToGrid = true;
         int listLevel = 0;
         string? listText = null;
@@ -778,6 +779,16 @@ internal static class DocxReader
                     continue;
                 }
 
+                // Detect lastRenderedPageBreak: Word's hint that a page break occurred
+                // at this position in the last rendering pass.  Only honour it when the
+                // marker appears before any visible content in the paragraph (i.e. a
+                // paragraph-level page break, not a mid-paragraph line break).
+                if (!hasLastRenderedPageBreak && runs.Count == 0 && images.Count == 0
+                    && child.Element(W + "lastRenderedPageBreak") != null)
+                {
+                    hasLastRenderedPageBreak = true;
+                }
+
                 var run = ReadRun(child, bold, italic, fontSize, color, caps, charSpacing, paragraphFontName, defaultLatinFontName, defaultEastAsiaFontName, styles);
                 if (run != null)
                 {
@@ -852,7 +863,8 @@ internal static class DocxReader
             ParagraphFontName: paragraphFontName,
             KeepNext: keepNext,
             AutoSpaceDE: autoSpaceDE,
-            AutoSpaceDN: autoSpaceDN);
+            AutoSpaceDN: autoSpaceDN,
+            HasLastRenderedPageBreak: hasLastRenderedPageBreak);
     }
 
     /// <summary>
@@ -3507,7 +3519,8 @@ internal sealed record DocxParagraph(
     string? ParagraphFontName = null,
     bool KeepNext = false,
     bool AutoSpaceDE = true,
-    bool AutoSpaceDN = true
+    bool AutoSpaceDN = true,
+    bool HasLastRenderedPageBreak = false
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>
