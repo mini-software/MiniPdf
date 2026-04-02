@@ -1,4 +1,0 @@
-{
-    "github.copilot.chat.backgroundCompaction": true,
-    "github.copilot.chat.summarizeAgentConversationHistoryThreshold": 170000
-}
