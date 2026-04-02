@@ -2993,19 +2993,40 @@ internal static class DocxToPdfConverter
                     var isLastCell = cellGridEnd >= colCount;
                     var borders = cell.Borders;
 
+                    // Suppress horizontal borders inside vertically-merged cell groups:
+                    // - vMerge continue cells: suppress top border (internal to merge)
+                    // - Any cell whose next row continues the merge at the same column: suppress bottom border
+                    var suppressTop = cell.IsVMergeContinue;
+                    var suppressBottom = false;
+                    if (cell.IsVMergeRestart || cell.IsVMergeContinue)
+                    {
+                        // Check if the next row has a vMerge continue at the same column
+                        var nextRowIdx = rowIndex + 1;
+                        if (nextRowIdx < table.Rows.Count)
+                        {
+                            var nci = 0;
+                            foreach (var nc in table.Rows[nextRowIdx].Cells)
+                            {
+                                if (nci == bci) { suppressBottom = nc.IsVMergeContinue; break; }
+                                nci += nc.GridSpan;
+                                if (nci > bci) break;
+                            }
+                        }
+                    }
+
                     // Resolve each border: prefer cell-level, fall back to table-level
                     DocxBorderEdge? topBorder, bottomBorder, leftBorder, rightBorder;
                     if (borders != null)
                     {
-                        topBorder = borders.Top ?? (table.HasBorders ? (isFirstRow ? table.BorderTop : table.BorderInsideH) : null);
-                        bottomBorder = borders.Bottom ?? (table.HasBorders ? (isLastRow ? table.BorderBottom : table.BorderInsideH) : null);
+                        topBorder = suppressTop ? null : (borders.Top ?? (table.HasBorders ? (isFirstRow ? table.BorderTop : table.BorderInsideH) : null));
+                        bottomBorder = suppressBottom ? null : (borders.Bottom ?? (table.HasBorders ? (isLastRow ? table.BorderBottom : table.BorderInsideH) : null));
                         leftBorder = borders.Left ?? (table.HasBorders ? (isFirstCell ? table.BorderLeft : table.BorderInsideV) : null);
                         rightBorder = borders.Right ?? (table.HasBorders ? (isLastCell ? table.BorderRight : table.BorderInsideV) : null);
                     }
                     else if (table.HasBorders)
                     {
-                        topBorder = isFirstRow ? table.BorderTop : table.BorderInsideH;
-                        bottomBorder = isLastRow ? table.BorderBottom : table.BorderInsideH;
+                        topBorder = suppressTop ? null : (isFirstRow ? table.BorderTop : table.BorderInsideH);
+                        bottomBorder = suppressBottom ? null : (isLastRow ? table.BorderBottom : table.BorderInsideH);
                         leftBorder = isFirstCell ? table.BorderLeft : table.BorderInsideV;
                         rightBorder = isLastCell ? table.BorderRight : table.BorderInsideV;
                     }
@@ -3074,7 +3095,11 @@ internal static class DocxToPdfConverter
             // to the row bottom (rowHeight - textContentHeight + cellPaddingV).
             // Image-only cells are excluded so they don't mask a tight text fit.
             var naturalGap = lastRowHeight - maxTextContentH + cellPaddingV;
-            var postTableGap = Math.Max(2f, options.FontSize - naturalGap);
+            // The next paragraph draws text at the baseline (state.CurrentY) and
+            // the visual top extends upward by ~fontSize*0.6 (font ascent).  Use
+            // fontSize*0.8 as the floor so the text visual top clears the table
+            // bottom border with a small gap (~2 pt), matching Word behaviour.
+            var postTableGap = Math.Max(options.FontSize * 0.8f, options.FontSize - naturalGap);
             state.AdvanceY(postTableGap);
         }
         else
@@ -3585,7 +3610,10 @@ internal static class DocxToPdfConverter
             var w = GetHelveticaCharWidth(ch);
             var actual = (hasCjk && ch == ' ') ? 500 : w;
             totalUnits += actual;
-            if (!(w == 1000 && ch >= '\u2E80'))
+            // Exclude CJK fullwidth glyphs and auto-inserted thin spaces (\u2009)
+            // from the Latin fraction. Thin spaces are inter-script spacing that
+            // doesn't shrink under CJK font Latin-glyph reduction.
+            if (!(w == 1000 && ch >= '\u2E80') && ch != '\u2009')
                 latinUnits += actual;
         }
         if (latinUnits > 0 && totalUnits > 0)
