@@ -65,15 +65,21 @@ jobs:
       - name: Package (Windows)
         if: runner.os == 'Windows'
         run: |
-          Copy-Item publish/MiniPdf.Gui.exe publish/minipdf-gui.exe
-          Compress-Archive -Path publish/minipdf-gui.exe -DestinationPath ${{ matrix.artifact }}
+          $dist = 'dist'
+          New-Item -ItemType Directory -Path $dist -Force | Out-Null
+          Copy-Item publish/MiniPdf.Gui.exe $dist/minipdf-gui.exe
+          Get-ChildItem publish -Filter '*.dll' | Copy-Item -Destination $dist
+          Compress-Archive -Path $dist/* -DestinationPath ${{ matrix.artifact }}
 
       - name: Package (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
-          cp publish/MiniPdf.Gui publish/minipdf-gui
-          chmod +x publish/minipdf-gui
-          tar -czf ${{ matrix.artifact }} -C publish minipdf-gui
+          mkdir -p dist
+          cp publish/MiniPdf.Gui dist/minipdf-gui
+          chmod +x dist/minipdf-gui
+          cp publish/*.so dist/ 2>/dev/null || true
+          cp publish/*.dylib dist/ 2>/dev/null || true
+          tar -czf ${{ matrix.artifact }} -C dist .
 
       - name: Upload release asset
         if: github.event_name == 'release'
