@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   build:
-    if: startsWith(github.ref_name, 'gui-v') || github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref_name, 'v') || github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
@@ -51,6 +51,7 @@ jobs:
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#gui-v}"
+          VERSION="${VERSION#v}"
           if [ -z "$VERSION" ] || [ "$VERSION" = "$GITHUB_REF_NAME" ]; then VERSION="0.0.1"; fi
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
