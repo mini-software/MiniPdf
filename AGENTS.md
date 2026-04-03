@@ -1,4 +1,5 @@
 - English
+- No Emoji
 - .NET security policy
 - System can't auto git push 
 
