@@ -12,6 +12,11 @@ internal static class DocxToPdfConverter
     // ratios than Calibri, so the standard factor over-estimates line height.
     // TNR: (usWinAscent+usWinDescent)/unitsPerEm ≈ 1.107
     private const float FontMetricsFactorTimesNewRoman = 1.098f;
+    // CJK font metric factor: East Asian fonts (SimSun, PMingLiU, MS Gothic, etc.)
+    // have taller ascent+descent.  Measured from LibreOffice reference:
+    // 12pt SimSun single-spaced ≈ 15.5pt line height → 1.29 × fontSize.
+    // Only applied when paragraph has NO explicit w:line (auto spacing fallback).
+    private const float FontMetricsFactorCJK = 1.29f;
     // Helvetica ascent ratio: visual top of text is baseline + fontSize × AscentRatio
     private const float AscentRatio = 1.075f;
     // Calibri-to-Helvetica width ratio: most DOCX documents use Calibri (default since Word 2007).
@@ -783,6 +788,13 @@ internal static class DocxToPdfConverter
         var paraFontName = paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName
                         ?? paragraph.ParagraphFontName;
         var metricsFactor = GetFontMetricsFactor(paraFontName);
+        // CJK fonts have taller ascent+descent ratios.  Apply the CJK-specific
+        // factor for TOC paragraphs (TOC1-9) using auto line spacing so that the
+        // table of contents page-break position matches the reference.  Limited
+        // to TOC styles to avoid cumulative height growth in body text pages.
+        if (paragraph.LineSpacing <= 0 && paraFontName != null && IsCjkFont(paraFontName)
+            && IsTocStyle(paragraph.StyleId))
+            metricsFactor = FontMetricsFactorCJK;
         float lineHeight;
         if (paragraph.LineSpacingAbsolute && paragraph.LineSpacing > 0)
             lineHeight = paragraph.LineSpacing; // exact/atLeast: absolute points
@@ -860,6 +872,7 @@ internal static class DocxToPdfConverter
         if (paragraph.Runs.Count == 0 && paragraph.Images.Count == 0 && paragraph.Shading == null
             && (paragraph.Shapes == null || paragraph.Shapes.Count == 0))
         {
+
             // Record start position so floating textboxes anchored to this
             // empty paragraph use the correct Y (before advancing by lineHeight).
             // Word's vRelativeFrom="paragraph" measures from the line-box top,
@@ -875,6 +888,18 @@ internal static class DocxToPdfConverter
 
             if (state.CurrentPage != null)
             {
+                // At top of page, add an ascent offset for the paragraph mark so
+                // that empty paragraphs consume the same initial space as non-empty
+                // ones.  Without this, a leading empty paragraph's height starts
+                // directly at the margin instead of being offset by the mark's
+                // ascent, causing subsequent content to sit too high.
+                if (state.IsTopOfPage)
+                {
+                    var emptyAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
+                        ? (lineHeight + fontSize) / 2f
+                        : fontSize * AscentRatio;
+                    state.AdvanceY(emptyAscentOffset);
+                }
                 state.AdvanceY(totalEmptyAdvance);
                 // If the empty paragraph pushed past the bottom margin, accumulate
                 // the overflow as pending vertical space for the next page so that
@@ -3573,6 +3598,41 @@ internal static class DocxToPdfConverter
              fontName.Contains("Georgia", StringComparison.OrdinalIgnoreCase)))
             return FontMetricsFactorTimesNewRoman;
         return FontMetricsFactor;
+    }
+
+    /// <summary>
+    /// Returns true when the font name is a well-known CJK (East Asian) font family.
+    /// </summary>
+    private static bool IsCjkFont(string fontName)
+    {
+        return fontName.Contains("SimSun", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("SimHei", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("NSimSun", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("FangSong", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("KaiTi", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("MingLiU", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("PMingLiU", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("MS Gothic", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("MS Mincho", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Meiryo", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Malgun", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Batang", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Gulim", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("DengXian", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Microsoft YaHei", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Microsoft JhengHei", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Yu Gothic", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Yu Mincho", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Returns true when the style is a Table of Contents style (TOC1–TOC9).
+    /// </summary>
+    private static bool IsTocStyle(string? styleId)
+    {
+        return styleId != null && styleId.Length == 4
+            && styleId.StartsWith("TOC", StringComparison.OrdinalIgnoreCase)
+            && char.IsDigit(styleId[3]);
     }
 
     /// <summary>
