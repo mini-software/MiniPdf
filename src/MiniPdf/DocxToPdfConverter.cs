@@ -1025,7 +1025,7 @@ internal static class DocxToPdfConverter
             {
                 // Hanging indent from DOCX: number at outdented position, body text at indentLeft
                 var numberX = options.MarginLeft + paragraph.IndentLeft + paragraph.IndentFirstLine;
-                state.CurrentPage!.AddText(paragraph.ListText, numberX, state.CurrentY, fontSize, preferredFontName: listFont);
+                state.CurrentPage!.AddText(paragraph.ListText, numberX, state.CurrentY, fontSize, preferredFontName: listFont, bold: paragraph.ListTextBold);
                 // x and availableWidth remain unchanged (body text wraps at indentLeft)
             }
             else
@@ -1036,13 +1036,13 @@ internal static class DocxToPdfConverter
                     // Style already provides left indentation (e.g. ListParagraph)
                     // Place the label to the left of the text body without reducing available width
                     var numberX = options.MarginLeft + Math.Max(0, paragraph.IndentLeft - 18f);
-                    state.CurrentPage!.AddText(paragraph.ListText, numberX, state.CurrentY, fontSize, preferredFontName: listFont);
+                    state.CurrentPage!.AddText(paragraph.ListText, numberX, state.CurrentY, fontSize, preferredFontName: listFont, bold: paragraph.ListTextBold);
                     // x and availableWidth remain unchanged (indentLeft already accounts for list)
                 }
                 else
                 {
                     var listIndent = 18f * (paragraph.ListLevel + 1);
-                    state.CurrentPage!.AddText(paragraph.ListText, x + listIndent - 12f, state.CurrentY, fontSize, preferredFontName: listFont);
+                    state.CurrentPage!.AddText(paragraph.ListText, x + listIndent - 12f, state.CurrentY, fontSize, preferredFontName: listFont, bold: paragraph.ListTextBold);
                     x += listIndent;
                     availableWidth -= listIndent;
                 }
@@ -1237,7 +1237,7 @@ internal static class DocxToPdfConverter
                 paragraph.SpacingBefore, paragraph.SpacingAfter, paragraph.LineSpacing, paragraph.LineSpacingAbsolute,
                 paragraph.LineSpacingExact, paragraph.IndentLeft, paragraph.IndentRight, paragraph.IndentFirstLine,
                 paragraph.IsBulletList, paragraph.IsNumberedList, paragraph.ListLevel, paragraph.ListText,
-                paragraph.StyleId, paragraph.Bold, paragraph.Italic, paragraph.FontSize, paragraph.Color,
+                paragraph.ListTextBold, paragraph.StyleId, paragraph.Bold, paragraph.Italic, paragraph.FontSize, paragraph.Color,
                 paragraph.HasPageBreakBefore, paragraph.HasPageBreakAfter, paragraph.Shading, paragraph.TabStops,
                 paragraph.SectionBreak, paragraph.Borders),
                 x, firstLineX, wrapAvailableWidth, wrapFirstLineWidth, fontSize, lineHeight);

@@ -451,6 +451,7 @@ internal static class DocxReader
         bool snapToGrid = true;
         int listLevel = 0;
         string? listText = null;
+        bool listTextBold = false;
         string? styleId = null;
         bool bold = false;
         bool italic = false;
@@ -562,6 +563,7 @@ internal static class DocxReader
                     var lvlDef = numDef.Levels.FirstOrDefault(l => l.Ilvl == listLevel) ?? numDef.Levels.FirstOrDefault();
                     if (lvlDef != null)
                     {
+                        if (lvlDef.Bold) listTextBold = true;
                         if (indentLeft == 0 && lvlDef.IndentLeft > 0)
                             indentLeft = lvlDef.IndentLeft;
                         if (indentFirstLine == 0 && lvlDef.Hanging > 0)
@@ -855,7 +857,7 @@ internal static class DocxReader
         // If paragraph has no runs and no images, represent as empty paragraph for spacing
         return new DocxParagraph(runs, images, alignment, spacingBefore, spacingAfter,
             lineSpacing, lineSpacingAbsolute, lineSpacingExact, indentLeft, indentRight, indentFirstLine,
-            isBulletList, isNumberedList, listLevel, listText, styleId,
+            isBulletList, isNumberedList, listLevel, listText, listTextBold, styleId,
             bold, italic, fontSize, color, pageBreakBefore, pageBreakAfter, paragraphShading, tabStops,
             sectionBreakLayout, borders, shapes.Count > 0 ? shapes : null,
             ContextualSpacing: contextualSpacing, SnapToGrid: snapToGrid,
@@ -3410,8 +3412,12 @@ internal static class DocxReader
                         lvlHanging = lh / 20f;
                 }
                 // Read bullet font name from rPr/rFonts (e.g. Wingdings, Symbol)
-                var lvlFontName = lvl.Element(W + "rPr")?.Element(W + "rFonts")?.Attribute(W + "ascii")?.Value;
-                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal, lvlIndentLeft, lvlHanging, lvlFontName));
+                var lvlRPr = lvl.Element(W + "rPr");
+                var lvlFontName = lvlRPr?.Element(W + "rFonts")?.Attribute(W + "ascii")?.Value;
+                // Read bold from numbering level rPr (used for list label rendering)
+                var lvlBoldEl = lvlRPr?.Element(W + "b");
+                var lvlBold = lvlBoldEl != null && lvlBoldEl.Attribute(W + "val")?.Value is not ("0" or "false");
+                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal, lvlIndentLeft, lvlHanging, lvlFontName, lvlBold));
             }
             abstractDefs[absId] = levels;
         }
@@ -3496,6 +3502,7 @@ internal sealed record DocxParagraph(
     bool IsNumberedList = false,
     int ListLevel = 0,
     string? ListText = null,
+    bool ListTextBold = false,
     string? StyleId = null,
     bool Bold = false,
     bool Italic = false,
@@ -3833,4 +3840,4 @@ internal sealed class DocxNumberingDef
     }
 }
 
-internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start, float IndentLeft = 0, float Hanging = 0, string? FontName = null);
+internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start, float IndentLeft = 0, float Hanging = 0, string? FontName = null, bool Bold = false);
