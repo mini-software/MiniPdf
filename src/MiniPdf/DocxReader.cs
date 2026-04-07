@@ -1507,7 +1507,16 @@ internal static class DocxReader
         if (isAnchor && container != null)
             isWrapTopBottom = container.Element(WP + "wrapTopAndBottom") != null;
 
-        return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu, isBehindDoc, relFromH, relFromV, isWrapTopBottom);
+        // Read alpha from alphaModFix
+        float alpha = 1f;
+        var alphaModFix = blip.Element(A + "alphaModFix");
+        if (alphaModFix != null)
+        {
+            if (int.TryParse(alphaModFix.Attribute("amt")?.Value, out var amt))
+                alpha = amt / 100000f;
+        }
+
+        return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu, isBehindDoc, relFromH, relFromV, isWrapTopBottom, alpha);
     }
 
     private static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu,

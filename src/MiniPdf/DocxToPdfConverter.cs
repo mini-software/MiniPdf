@@ -28,6 +28,11 @@ internal static class DocxToPdfConverter
     // Used to apply a stronger width reduction in EstimateWrapTextWidth.
     [ThreadStatic] private static bool s_serifFont;
 
+    // Per-paragraph override: when set, WordWrap uses these character widths instead of
+    // Helvetica/Calibri metrics. Used for fonts with significantly different glyph widths
+    // (e.g. Century Gothic) where Helvetica is a poor proxy.
+    [ThreadStatic] private static int[]? s_overrideWidths;
+
     /// <summary>
     /// Options for controlling DOCX-to-PDF conversion.
     /// </summary>
@@ -320,7 +325,7 @@ internal static class DocxToPdfConverter
                     {
                         // Render on all pages as a repeating watermark
                         for (int pi = 0; pi < pdfDoc.Pages.Count; pi++)
-                            pdfDoc.Pages[pi].AddImage(img.Data, fmt, ax, ay - h, w, h);
+                            pdfDoc.Pages[pi].AddImage(img.Data, fmt, ax, ay - h, w, h, img.Alpha);
                     }
                     else
                     {
@@ -329,7 +334,7 @@ internal static class DocxToPdfConverter
                         {
                             if (entries2.Any(e => e.Image == img) && pageIdx2 >= 0 && pageIdx2 < pdfDoc.Pages.Count)
                             {
-                                pdfDoc.Pages[pageIdx2].AddImage(img.Data, fmt, ax, ay - h, w, h);
+                                pdfDoc.Pages[pageIdx2].AddImage(img.Data, fmt, ax, ay - h, w, h, img.Alpha);
                                 break;
                             }
                         }
@@ -1300,7 +1305,11 @@ internal static class DocxToPdfConverter
 
                 // Use Tz compression to fit Helvetica text into Calibri-width lines\n only when text actually exceeds available width
                 var renderMaxWidth = tabLeaderMaxWidth;
-                var textWidth = EstimateWrapTextWidth(line, runFontSize, runBold, runCharSpacing, options.UseCalibriWidths);
+                // For center/right alignment, use Helvetica widths for positioning
+                // so the rendered text aligns correctly with the margin edge.
+                var isCenterRight = paragraph.Alignment is "center" or "right";
+                var alignUseCalibri = isCenterRight ? false : options.UseCalibriWidths;
+                var textWidth = EstimateWrapTextWidth(line, runFontSize, runBold, runCharSpacing, alignUseCalibri);
                 // Only apply Tz for non-tab-leader lines when text significantly overflows
                 if (renderMaxWidth == null && textWidth > lineW)
                     renderMaxWidth = lineW;
@@ -1570,8 +1579,10 @@ internal static class DocxToPdfConverter
                 // other fonts (e.g. Century Gothic) have different glyph widths.
                 var boxUseCalibri = options.UseCalibriWidths
                     && (string.IsNullOrEmpty(paraRunFont) || paraRunFont.Contains("Calibri", StringComparison.OrdinalIgnoreCase));
+                s_overrideWidths = IsCenturyGothicLikeFont(paraRunFont) ? CenturyGothicWidths : null;
                 var lines = WordWrap(fullText, maxWidth, maxWidth, fontSize,
                     para.TabStops, useCalibriWidths: boxUseCalibri);
+                s_overrideWidths = null;
 
                 foreach (var line in lines)
                 {
@@ -2387,7 +2398,7 @@ internal static class DocxToPdfConverter
                 height *= scale;
             }
 
-            state.CurrentPage!.AddImage(image.Data, format, anchorX, anchorY - height, width, height);
+            state.CurrentPage!.AddImage(image.Data, format, anchorX, anchorY - height, width, height, image.Alpha);
             return; // Don't advance Y
         }
 
@@ -3797,6 +3808,8 @@ internal static class DocxToPdfConverter
     /// </summary>
     private static float EstimateWrapTextWidth(string text, float fontSize, bool bold = false, float charSpacing = 0, bool useCalibriWidths = true)
     {
+        if (s_overrideWidths != null && !useCalibriWidths)
+            return EstimateOverrideTextWidth(text, fontSize, bold, charSpacing);
         if (useCalibriWidths)
             return EstimateCalibrTextWidth(text, fontSize, bold, charSpacing);
         var rawWidth = EstimateTextWidth(text, fontSize, charSpacing);
@@ -3894,6 +3907,37 @@ internal static class DocxToPdfConverter
         float totalUnits = 0;
         foreach (var ch in text)
             totalUnits += bold ? PdfWriter.HelveticaBoldCharWidth(ch) : GetHelveticaCharWidth(ch);
+        var width = fontSize * totalUnits / 1000f;
+        if (charSpacing != 0 && text.Length > 1)
+            width += charSpacing * (text.Length - 1);
+        return width;
+    }
+
+    /// <summary>
+    /// Estimates text width using override character widths (e.g. Century Gothic).
+    /// No Latin‐fraction reduction is applied because the widths already match the actual font.
+    /// </summary>
+    private static float EstimateOverrideTextWidth(string text, float fontSize, bool bold, float charSpacing)
+    {
+        var widths = s_overrideWidths!;
+        float totalUnits = 0;
+        for (int i = 0; i < text.Length; i++)
+        {
+            var ch = text[i];
+            if (char.IsHighSurrogate(ch) && i + 1 < text.Length && char.IsLowSurrogate(text[i + 1]))
+            {
+                totalUnits += 500;
+                i++;
+                continue;
+            }
+            if (ch < ' ') continue;
+            if (ch == '\u2009') { totalUnits += 250; continue; }
+            if (ch >= ' ' && ch <= '~')
+                totalUnits += widths[ch - ' '];
+            else
+                totalUnits += GetHelveticaCharWidth(ch); // CJK / other Unicode fallback
+        }
+        if (bold) totalUnits *= 1.03f;
         var width = fontSize * totalUnits / 1000f;
         if (charSpacing != 0 && text.Length > 1)
             width += charSpacing * (text.Length - 1);
@@ -4245,4 +4289,26 @@ internal static class DocxToPdfConverter
         335, 525, 452, 715, 433, 453, 395, // t-z
         314, 460, 314, 498, // { to ~
     ];
+
+    // Century Gothic character widths for ASCII 32..126 (in thousandths of a unit)
+    // Extracted from CenturyGothic.ttf via Windows GDI ABC widths (UPM=2048, scaled to 1000 units)
+    private static readonly int[] CenturyGothicWidths =
+    [
+        277, 295, 309, 720, 554, 775, 757, 198, 369, 369, // ' ' to )
+        425, 606, 277, 332, 277, 437, // * to /
+        554, 554, 554, 554, 554, 554, 554, 554, 554, 554, // 0-9
+        277, 277, 606, 606, 606, 591, 867, // : to @
+        740, 574, 813, 744, 536, 485, 872, 683, 226, // A-I
+        482, 591, 462, 919, 740, 869, 592, 871, 607, 498, // J-S
+        426, 655, 702, 960, 609, 592, 480, // T-Z
+        351, 605, 351, 672, 500, 378, // [ to `
+        683, 682, 647, 685, 650, 314, 673, 610, 200, // a-i
+        203, 502, 200, 938, 610, 655, 682, 682, 301, 388, // j-s
+        339, 608, 554, 831, 480, 536, 425, // t-z
+        351, 672, 351, 606, // { to ~
+    ];
+
+    private static bool IsCenturyGothicLikeFont(string? fontName) =>
+        !string.IsNullOrEmpty(fontName)
+        && fontName.Contains("Century Gothic", StringComparison.OrdinalIgnoreCase);
 }
