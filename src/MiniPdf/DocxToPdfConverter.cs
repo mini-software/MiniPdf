@@ -233,6 +233,8 @@ internal static class DocxToPdfConverter
                     RenderParagraph(state, paragraph);
                     if (paragraph.FloatingTextBoxes is { Count: > 0 })
                         RenderFloatingTextBoxes(state, paragraph.FloatingTextBoxes, state.LastParagraphStartY);
+                    if (paragraph.ConnectorLines is { Count: > 0 })
+                        RenderConnectorLines(state, paragraph.ConnectorLines, state.LastParagraphStartY);
                     if (paragraph.SectionBreak != null)
                     {
                         sectionIndex++;
@@ -337,7 +339,8 @@ internal static class DocxToPdfConverter
         }
 
         // Render header/footer background shapes on all pages.
-        if (docxDoc.HeaderShapes is { Count: > 0 } || docxDoc.FooterShapes is { Count: > 0 })
+        if (docxDoc.HeaderShapes is { Count: > 0 } || docxDoc.FooterShapes is { Count: > 0 }
+            || docxDoc.HeaderFooterImages is { Count: > 0 })
         {
             var totalPages = pdfDoc.Pages.Count;
             for (int pi = 0; pi < totalPages; pi++)
@@ -354,6 +357,12 @@ internal static class DocxToPdfConverter
                 {
                     foreach (var shape in docxDoc.FooterShapes)
                         RenderHeaderFooterShape(page, options, shape);
+                }
+
+                if (docxDoc.HeaderFooterImages is { Count: > 0 })
+                {
+                    foreach (var img in docxDoc.HeaderFooterImages)
+                        RenderHeaderFooterImage(page, options, img);
                 }
             }
         }
@@ -1557,20 +1566,26 @@ internal static class DocxToPdfConverter
                 var leftInset = box.LeftInsetPt;
                 var maxWidth = (box.WidthPt > 0 ? box.WidthPt : state.UsableWidth) - leftInset * 2;
                 if (maxWidth < 10) maxWidth = box.WidthPt > 0 ? box.WidthPt : state.UsableWidth;
+                // Use Calibri widths only when the text box paragraph actually uses Calibri;
+                // other fonts (e.g. Century Gothic) have different glyph widths.
+                var boxUseCalibri = options.UseCalibriWidths
+                    && (string.IsNullOrEmpty(paraRunFont) || paraRunFont.Contains("Calibri", StringComparison.OrdinalIgnoreCase));
                 var lines = WordWrap(fullText, maxWidth, maxWidth, fontSize,
-                    para.TabStops, useCalibriWidths: options.UseCalibriWidths);
+                    para.TabStops, useCalibriWidths: boxUseCalibri);
 
                 foreach (var line in lines)
                 {
                     var x = boxLeft + leftInset;
                     if (para.Alignment == "center")
                     {
-                        var textWidth = EstimateWrapTextWidth(line, fontSize, bold, 0, options.UseCalibriWidths);
+                        // Use Helvetica widths for positioning: PDF renders with Helvetica,
+                        // so Calibri estimates can misalign center/right text.
+                        var textWidth = EstimateWrapTextWidth(line, fontSize, bold, 0, useCalibriWidths: false);
                         x = boxLeft + leftInset + (maxWidth - textWidth) / 2;
                     }
                     else if (para.Alignment == "right")
                     {
-                        var textWidth = EstimateWrapTextWidth(line, fontSize, bold, 0, options.UseCalibriWidths);
+                        var textWidth = EstimateWrapTextWidth(line, fontSize, bold, 0, useCalibriWidths: false);
                         x = boxLeft + leftInset + maxWidth - textWidth;
                     }
                     targetPage.AddText(line, x, currentY, fontSize, color, bold: bold, italic: italic);
@@ -1578,6 +1593,104 @@ internal static class DocxToPdfConverter
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Renders connector lines (straightConnector1, line shapes) as absolute-positioned lines.
+    /// </summary>
+    private static void RenderConnectorLines(RenderState state, List<DocxConnectorLine> lines, float paragraphY)
+    {
+        var page = state.CurrentPage;
+        if (page == null) return;
+        var options = state.Options;
+        var hostPageIdx = -1;
+        for (int i = 0; i < state.Doc.Pages.Count; i++)
+        {
+            if (state.Doc.Pages[i] == page) { hostPageIdx = i; break; }
+        }
+        if (hostPageIdx < 0) return;
+
+        var contentHeight = options.PageHeight - options.MarginTop - options.MarginBottom;
+        var contentTop = options.PageHeight - options.MarginTop;
+
+        foreach (var conn in lines)
+        {
+            // Convert DOCX coords to PDF coords
+            float pdfX1, pdfY1, pdfX2, pdfY2;
+
+            if (conn.HRelativeFrom == "page")
+            {
+                pdfX1 = conn.X1Pt;
+                pdfX2 = conn.X2Pt;
+            }
+            else // column or margin
+            {
+                pdfX1 = options.MarginLeft + conn.X1Pt;
+                pdfX2 = options.MarginLeft + conn.X2Pt;
+            }
+
+            var targetPage = page;
+            if (conn.VRelativeFrom is "paragraph" or "line")
+            {
+                var hostDistFromTop = contentTop - paragraphY;
+                var cy1 = hostPageIdx * contentHeight + hostDistFromTop + conn.Y1Pt;
+                var cy2 = hostPageIdx * contentHeight + hostDistFromTop + conn.Y2Pt;
+                var targetIdx1 = (int)(cy1 / contentHeight);
+                if (targetIdx1 >= state.Doc.Pages.Count) targetIdx1 = state.Doc.Pages.Count - 1;
+                if (targetIdx1 < 0) targetIdx1 = 0;
+                pdfY1 = contentTop - (cy1 - targetIdx1 * contentHeight);
+                pdfY2 = contentTop - (cy2 - targetIdx1 * contentHeight);
+                targetPage = state.Doc.Pages[targetIdx1];
+            }
+            else if (conn.VRelativeFrom == "page")
+            {
+                pdfY1 = options.PageHeight - conn.Y1Pt;
+                pdfY2 = options.PageHeight - conn.Y2Pt;
+            }
+            else // margin
+            {
+                pdfY1 = contentTop - conn.Y1Pt;
+                pdfY2 = contentTop - conn.Y2Pt;
+            }
+
+            targetPage.AddLine(pdfX1, pdfY1, pdfX2, pdfY2, conn.Color, conn.LineWidthPt, conn.DashPattern);
+
+            // Render arrow heads as small filled triangles
+            if (conn.HasTailArrow)
+            {
+                RenderArrowHead(targetPage, pdfX1, pdfY1, pdfX2, pdfY2, conn.LineWidthPt, conn.Color);
+            }
+            if (conn.HasHeadArrow)
+            {
+                RenderArrowHead(targetPage, pdfX2, pdfY2, pdfX1, pdfY1, conn.LineWidthPt, conn.Color);
+            }
+        }
+    }
+
+    /// <summary>Renders a filled triangle arrow head at (toX, toY) pointing from (fromX, fromY).</summary>
+    private static void RenderArrowHead(PdfPage page, float fromX, float fromY, float toX, float toY, float lineWidth, PdfColor color)
+    {
+        var arrowLen = Math.Max(lineWidth * 4, 6f);
+        var arrowHalfW = arrowLen * 0.4f;
+        var dx = toX - fromX;
+        var dy = toY - fromY;
+        var len = (float)Math.Sqrt(dx * dx + dy * dy);
+        if (len < 0.01f) return;
+        var ux = dx / len;
+        var uy = dy / len;
+        // Perpendicular
+        var px = -uy;
+        var py = ux;
+        // Triangle points: tip at (toX,toY), base offset back along the line
+        var bx = toX - ux * arrowLen;
+        var by = toY - uy * arrowLen;
+        var points = new List<PdfPoint>
+        {
+            new PdfPoint(toX, toY),
+            new PdfPoint(bx + px * arrowHalfW, by + py * arrowHalfW),
+            new PdfPoint(bx - px * arrowHalfW, by - py * arrowHalfW)
+        };
+        page.AddPolygon(points, color);
     }
 
     /// <summary>
@@ -2157,6 +2270,23 @@ internal static class DocxToPdfConverter
         }
     }
 
+    private static void RenderHeaderFooterImage(PdfPage page, ConversionOptions options, DocxImage img)
+    {
+        const float emuPerPoint = 914400f / 72f;
+        var width = img.WidthEmu / emuPerPoint;
+        var height = img.HeightEmu / emuPerPoint;
+
+        // Footer/header anchor images have offsets relative to the footer paragraph position.
+        // The footer paragraph is at approximately (pageHeight - footerMargin) in top-down DOCX coords.
+        // Convert to PDF bottom-up: y = footerMargin - offsetYPt - height
+        var offsetXPt = img.OffsetXEmu / emuPerPoint;
+        var offsetYPt = img.OffsetYEmu / emuPerPoint;
+        var x = options.MarginLeft + offsetXPt;
+        var y = options.FooterMargin - offsetYPt - height;
+
+        page.AddImage(img.Data, img.Extension, x, y, width, height, img.Alpha);
+    }
+
     /// <summary>
     /// Renders shape geometry. For "frame" shapes, draws only the border area.
     /// Supports frame, ellipse and custom polygon paths; defaults to rectangle.
@@ -2529,7 +2659,7 @@ internal static class DocxToPdfConverter
         {
             "center" => options.MarginLeft + (usableWidth - tableWidth) / 2,
             "right" => options.MarginLeft + usableWidth - tableWidth,
-            _ => options.MarginLeft
+            _ => options.MarginLeft + table.IndentLeft
         };
 
         var y = startY;
@@ -2547,7 +2677,10 @@ internal static class DocxToPdfConverter
                 rowHeight = Math.Max(rowHeight, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
 
             var cellX = tableOffsetX;
-            var colIdx = 0;
+            var colIdx = row.GridBefore;
+            // Advance cellX past skipped grid columns
+            for (var gb = 0; gb < row.GridBefore && gb < colCount; gb++)
+                cellX += colWidths[gb];
 
             for (var ci = 0; ci < row.Cells.Count && colIdx < colCount; ci++)
             {
@@ -2685,7 +2818,7 @@ internal static class DocxToPdfConverter
         {
             "center" => options.MarginLeft + (usableWidth - tableWidth) / 2,
             "right" => options.MarginLeft + usableWidth - tableWidth,
-            _ => options.MarginLeft
+            _ => options.MarginLeft + table.IndentLeft
         };
 
         var isFirstRow = true;
@@ -2715,7 +2848,7 @@ internal static class DocxToPdfConverter
         for (var ri = 0; ri < table.Rows.Count; ri++)
         {
             var r = table.Rows[ri];
-            var colIdx2 = 0;
+            var colIdx2 = r.GridBefore;
             for (var ci2 = 0; ci2 < r.Cells.Count && colIdx2 < colCount; ci2++)
             {
                 var cell2 = r.Cells[ci2];
@@ -2793,7 +2926,10 @@ internal static class DocxToPdfConverter
             }
 
             var cellX = tableOffsetX;
-            var colIdx = 0;
+            var colIdx = row.GridBefore;
+            // Advance cellX past skipped grid columns
+            for (var gb = 0; gb < row.GridBefore && gb < colCount; gb++)
+                cellX += colWidths[gb];
 
             for (var ci = 0; ci < row.Cells.Count && colIdx < colCount; ci++)
             {
@@ -3104,7 +3240,7 @@ internal static class DocxToPdfConverter
             var lastRow = table.Rows[lastRowIdx];
             var lastRowHeight = rowHeights[lastRowIdx];
             float maxTextContentH = 0;
-            var colIdx2 = 0;
+            var colIdx2 = lastRow.GridBefore;
             for (var ci = 0; ci < lastRow.Cells.Count && colIdx2 < colWidths.Length; ci++)
             {
                 var cell = lastRow.Cells[ci];
@@ -3165,7 +3301,13 @@ internal static class DocxToPdfConverter
                 Compat.ArrayFill(res, cw);
                 return res;
             }
-            // Use actual DOCX widths (don't scale to usable width)
+            // Use actual DOCX widths; scale down proportionally if they exceed usable width
+            if (total > usableWidth)
+            {
+                var scale = usableWidth / total;
+                for (var i = 0; i < widths.Length; i++)
+                    widths[i] *= scale;
+            }
             return widths;
         }
 
@@ -3272,7 +3414,7 @@ internal static class DocxToPdfConverter
         }
         var maxHeight = options.FontSize * FontMetricsFactor * minLineSpacing + cellPaddingV * 2;
 
-        var colIdx = 0;
+        var colIdx = row.GridBefore;
         for (var cellIdx = 0; cellIdx < row.Cells.Count && colIdx < colWidths.Length; cellIdx++)
         {
             var cell = row.Cells[cellIdx];
@@ -3298,7 +3440,7 @@ internal static class DocxToPdfConverter
     {
         const float emuPerPt = 914400f / 72f;
         var maxHeight = 0f;
-        var colIdx = 0;
+        var colIdx = row.GridBefore;
 
         for (var cellIdx = 0; cellIdx < row.Cells.Count && colIdx < colWidths.Length; cellIdx++)
         {

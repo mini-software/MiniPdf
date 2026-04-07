@@ -9,7 +9,8 @@ internal sealed record PdfImageBlock(
     float X,             // left edge in points (PDF origin = bottom-left)
     float Y,             // bottom edge in points
     float RenderWidth,   // rendered width in points
-    float RenderHeight   // rendered height in points
+    float RenderHeight,  // rendered height in points
+    float Alpha = 1f     // opacity (0..1), used for watermarks etc.
 );
 
 /// <summary>
@@ -161,9 +162,9 @@ internal sealed class PdfPage
     /// <param name="width">Rendered width in points.</param>
     /// <param name="height">Rendered height in points.</param>
     /// <returns>The current page for chaining.</returns>
-    public PdfPage AddImage(byte[] data, string format, float x, float y, float width, float height)
+    public PdfPage AddImage(byte[] data, string format, float x, float y, float width, float height, float alpha = 1f)
     {
-        _imageBlocks.Add(new PdfImageBlock(data, format, x, y, width, height));
+        _imageBlocks.Add(new PdfImageBlock(data, format, x, y, width, height, alpha));
         return this;
     }
 

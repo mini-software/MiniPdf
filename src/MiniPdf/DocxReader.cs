@@ -233,12 +233,8 @@ internal static class DocxReader
                         // wrapNone text boxes are positioned absolutely and do not
                         // consume space in the main flow per the OOXML spec.
                         // Skip ghost flow; only render as floating overlay.
-                        // Exception: large text boxes that visually occupy block space
-                        // still need ghost flow for approximate layout.
-                        var containerSpacing = child.Element(W + "pPr")?.Element(W + "spacing");
-                        var containerLineRule = containerSpacing?.Attribute(W + "lineRule")?.Value;
-                        bool skipGhostFlow = containerLineRule == "exact"
-                            || extentHeightPt < 40;
+                        // The document's own empty paragraphs provide vertical spacing.
+                        bool skipGhostFlow = true;
 
                         // wrapNone dual-render: emit content as ghost flow paragraphs for layout
                         // (advance Y but don't render text), AND create floating textbox for
@@ -310,6 +306,122 @@ internal static class DocxReader
                     }
                 }
 
+                // Parse connector/line shapes from anchors (straightConnector1, line)
+                List<DocxConnectorLine>? connectorLines = null;
+                foreach (var anchor in child.Descendants(WP + "anchor"))
+                {
+                    var wspEl = anchor.Descendants(WPS + "wsp").FirstOrDefault();
+                    if (wspEl == null) continue;
+                    if (anchor.Descendants(WPS + "txbx").Any()) continue; // already handled as text box
+
+                    var spPrEl = wspEl.Element(WPS + "spPr") ?? wspEl.Element(A + "spPr");
+                    if (spPrEl == null) continue;
+                    var prstGeomEl = spPrEl.Element(A + "prstGeom");
+                    var prst = prstGeomEl?.Attribute("prst")?.Value;
+                    if (prst != "straightConnector1" && prst != "line") continue;
+
+                    // Position
+                    var cPosH = anchor.Element(WP + "positionH");
+                    var cPosV = anchor.Element(WP + "positionV");
+                    float cXPt = 0, cYPt = 0;
+                    string cHRel = "column", cVRel = "paragraph";
+                    if (cPosH != null)
+                    {
+                        cHRel = cPosH.Attribute("relativeFrom")?.Value ?? "column";
+                        var off = cPosH.Element(WP + "posOffset");
+                        if (off != null && long.TryParse(off.Value, out var hEmu))
+                            cXPt = hEmu / 914400f * 72f;
+                    }
+                    if (cPosV != null)
+                    {
+                        cVRel = cPosV.Attribute("relativeFrom")?.Value ?? "paragraph";
+                        var off = cPosV.Element(WP + "posOffset");
+                        if (off != null && long.TryParse(off.Value, out var vEmu))
+                            cYPt = vEmu / 914400f * 72f;
+                    }
+
+                    // Extent
+                    float cWPt = 0, cHPt = 0;
+                    var cExtent = anchor.Element(WP + "extent");
+                    if (cExtent != null)
+                    {
+                        if (long.TryParse(cExtent.Attribute("cx")?.Value, out var cx))
+                            cWPt = cx / 914400f * 72f;
+                        if (long.TryParse(cExtent.Attribute("cy")?.Value, out var cy))
+                            cHPt = cy / 914400f * 72f;
+                    }
+
+                    // Check for flip in xfrm
+                    var xfrm = spPrEl.Element(A + "xfrm");
+                    bool flipH = xfrm?.Attribute("flipH")?.Value == "1";
+                    bool flipV = xfrm?.Attribute("flipV")?.Value == "1";
+
+                    // Compute line endpoints
+                    float x1 = cXPt, y1 = cYPt;
+                    float x2 = cXPt + cWPt, y2 = cYPt + cHPt;
+                    if (flipH) { x1 = cXPt + cWPt; x2 = cXPt; }
+                    if (flipV) { y1 = cYPt + cHPt; y2 = cYPt; }
+
+                    // Line properties
+                    var lnEl = spPrEl.Element(A + "ln");
+                    float lineW = 1f; // default
+                    if (lnEl != null && int.TryParse(lnEl.Attribute("w")?.Value, out var lnWEmu))
+                        lineW = lnWEmu / 914400f * 72f;
+                    if (lineW < 0.25f) lineW = 0.75f;
+
+                    // Dash pattern
+                    float[]? dashArr = null;
+                    var prstDash = lnEl?.Element(A + "prstDash");
+                    if (prstDash != null)
+                    {
+                        var dashVal = prstDash.Attribute("val")?.Value;
+                        dashArr = dashVal switch
+                        {
+                            "dash" => new[] { 4f * lineW, 3f * lineW },
+                            "sysDash" => new[] { 3f * lineW, 1f * lineW },
+                            "dot" => new[] { lineW, lineW },
+                            "dashDot" => new[] { 4f * lineW, 2f * lineW, lineW, 2f * lineW },
+                            "lgDash" => new[] { 8f * lineW, 3f * lineW },
+                            _ => null
+                        };
+                    }
+
+                    // Arrow heads
+                    bool hasTailArrow = false, hasHeadArrow = false;
+                    var tailEnd = lnEl?.Element(A + "tailEnd");
+                    if (tailEnd != null && tailEnd.Attribute("type")?.Value is "triangle" or "arrow" or "stealth")
+                        hasTailArrow = true;
+                    var headEnd = lnEl?.Element(A + "headEnd");
+                    if (headEnd != null && headEnd.Attribute("type")?.Value is "triangle" or "arrow" or "stealth")
+                        hasHeadArrow = true;
+
+                    // Resolve line color: try direct solidFill in ln, then style lnRef
+                    PdfColor lineColor = new PdfColor(0, 0, 0); // default black
+                    var lnFillEl = lnEl?.Element(A + "solidFill");
+                    if (lnFillEl != null)
+                    {
+                        var (c, _) = ResolveSolidFill(lnFillEl, themeColors);
+                        if (c != null) lineColor = c.Value;
+                    }
+                    else
+                    {
+                        // Try style element
+                        var styleEl = wspEl.Element(WPS + "style");
+                        var lnRef = styleEl?.Element(A + "lnRef");
+                        var lnRefFill = lnRef?.Element(A + "schemeClr") ?? lnRef?.Element(A + "srgbClr");
+                        if (lnRefFill != null)
+                        {
+                            // Create a temporary solidFill-like wrapper for ResolveSolidFill
+                            var tempFill = new XElement(A + "solidFill", lnRefFill);
+                            var (c, _) = ResolveSolidFill(tempFill, themeColors);
+                            if (c != null) lineColor = c.Value;
+                        }
+                    }
+
+                    connectorLines ??= new List<DocxConnectorLine>();
+                    connectorLines.Add(new DocxConnectorLine(x1, y1, x2, y2, lineW, lineColor, dashArr, hasTailArrow, hasHeadArrow, cHRel, cVRel));
+                }
+
                 var paragraph = ReadParagraph(child, styles, numbering, relationships, archive, themeColors, defaultFontName, defaultEastAsiaFontName);
                 if (paragraph != null)
                 {
@@ -323,9 +435,9 @@ internal static class DocxReader
                         // Even when skipping the host paragraph's runs, still emit a
                         // minimal paragraph if there are floating textboxes that need
                         // to be attached (they render at absolute positions as overlays).
-                        if (floatingTextBoxes != null)
+                        if (floatingTextBoxes != null || connectorLines != null)
                         {
-                            var emptyHost = paragraph with { Runs = [], FloatingTextBoxes = floatingTextBoxes };
+                            var emptyHost = paragraph with { Runs = [], FloatingTextBoxes = floatingTextBoxes, ConnectorLines = connectorLines };
                             elements.Add(emptyHost);
                         }
                         continue;
@@ -340,6 +452,11 @@ internal static class DocxReader
                     if (floatingTextBoxes != null)
                     {
                         paragraph = paragraph with { FloatingTextBoxes = floatingTextBoxes };
+                    }
+                    // Attach connector lines to the host paragraph
+                    if (connectorLines != null)
+                    {
+                        paragraph = paragraph with { ConnectorLines = connectorLines };
                     }
                     // Fix up style-based numbered list counter
                     if (paragraph.IsNumberedList && paragraph.ListText == "1.")
@@ -374,6 +491,8 @@ internal static class DocxReader
         var footerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
         var headerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName, tableStyles);
         var footerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName, tableStyles);
+        var hfImages = ReadHeaderFooterImages(body, relationships, archive, "headerReference");
+        hfImages.AddRange(ReadHeaderFooterImages(body, relationships, archive, "footerReference"));
 
         // Read per-section footer elements from paragraph-level sectPr
         List<List<DocxElement>?>? sectionFooterElements = null;
@@ -421,7 +540,8 @@ internal static class DocxReader
         return new DocxDocument(elements, pageLayout, headerText, footerText, headerShapes, footerShapes, headerRuns, footerRuns,
             defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName,
             headerElements.Count > 0 ? headerElements : null, footerElements.Count > 0 ? footerElements : null,
-            sectionFooterElements, footnotes);
+            sectionFooterElements, footnotes,
+            hfImages.Count > 0 ? hfImages : null);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -2209,6 +2329,11 @@ internal static class DocxReader
         var tblJc = tblPr?.Element(W + "jc")?.Attribute(W + "val")?.Value;
         if (!string.IsNullOrEmpty(tblJc))
             tableAlignment = tblJc;
+        // Table indent (tblInd)
+        float tableIndentLeft = 0;
+        var tblIndEl = tblPr?.Element(W + "tblInd");
+        if (tblIndEl != null && int.TryParse(tblIndEl.Attribute(W + "w")?.Value, out var tblIndW))
+            tableIndentLeft = tblIndW / 20f;
         var tblCellMar = tblPr?.Element(W + "tblCellMar");
         if (tblCellMar != null)
         {
@@ -2277,6 +2402,7 @@ internal static class DocxReader
             // Read row height from trPr
             float rowHeight = 0;
             bool rowHeightExact = false;
+            int gridBefore = 0;
             var trPr = tr.Element(W + "trPr");
             var trHeightEl = trPr?.Element(W + "trHeight");
             if (trHeightEl != null && int.TryParse(trHeightEl.Attribute(W + "val")?.Value, out var rh))
@@ -2285,7 +2411,12 @@ internal static class DocxReader
                 rowHeightExact = trHeightEl.Attribute(W + "hRule")?.Value == "exact";
             }
 
-            foreach (var tc in tr.Elements(W + "tc"))
+            // Parse gridBefore: number of grid columns to skip before first cell
+            var gridBeforeEl = trPr?.Element(W + "gridBefore");
+            if (gridBeforeEl != null && int.TryParse(gridBeforeEl.Attribute(W + "val")?.Value, out var gbVal))
+                gridBefore = gbVal;
+
+            foreach (var tc in UnwrapSdt(tr.Elements()).Where(e => e.Name == W + "tc"))
             {
                 var cellParagraphs = new List<DocxParagraph>();
                 foreach (var child in UnwrapSdt(tc.Elements()))
@@ -2422,7 +2553,31 @@ internal static class DocxReader
                 cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading, cellBorders, isVMergeContinue, isVMergeRestart, verticalAlignment,
                     tcMarTop, tcMarBottom, tcMarLeft, tcMarRight));
             }
-            rows.Add(new DocxTableRow(cells, rowHeight, rowHeightExact));
+
+            // Infer gridBefore when not explicitly set: if the row has fewer cells
+            // than grid columns and the first cell's width matches a later grid column
+            if (gridBefore == 0 && columnWidths.Count > 0 && cells.Count > 0)
+            {
+                var totalSpan = 0;
+                foreach (var c in cells) totalSpan += c.GridSpan;
+                if (totalSpan < columnWidths.Count && cells[0].Width > 0)
+                {
+                    // First cell's width doesn't match gridCol[0]: scan for matching column
+                    if (Math.Abs(columnWidths[0] - cells[0].Width) > 2f)
+                    {
+                        for (int gi = 1; gi < columnWidths.Count; gi++)
+                        {
+                            if (Math.Abs(columnWidths[gi] - cells[0].Width) < 2f)
+                            {
+                                gridBefore = gi;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            rows.Add(new DocxTableRow(cells, rowHeight, rowHeightExact, gridBefore));
             rowIndex++;
         }
 
@@ -2452,7 +2607,8 @@ internal static class DocxReader
         return new DocxTable(rows, columnWidths, hasBorders, cellMarginLeft, cellMarginRight, cellMarginTop, cellMarginBottom, tableAlignment,
             finalInsideH, finalInsideV, finalBorderTop, finalBorderBottom, finalBorderLeft, finalBorderRight,
             StyleLineSpacing: tblStyleInfo?.ParagraphLineSpacing ?? -1,
-            StyleSpacingAfter: tblStyleInfo?.ParagraphSpacingAfter ?? -1);
+            StyleSpacingAfter: tblStyleInfo?.ParagraphSpacingAfter ?? -1,
+            IndentLeft: tableIndentLeft);
     }
 
     private static DocxPageLayout? ReadPageLayout(XElement body)
@@ -2572,6 +2728,102 @@ internal static class DocxReader
         }
 
         return shapes;
+    }
+
+    /// <summary>
+    /// Reads anchor images from header/footer XML (e.g. watermark globe images).
+    /// </summary>
+    private static List<DocxImage> ReadHeaderFooterImages(
+        XElement body,
+        Dictionary<string, string> relationships,
+        ZipArchive archive,
+        string refElementName)
+    {
+        var sectPr = body.Element(W + "sectPr");
+        if (sectPr == null) return [];
+
+        var hfRef = sectPr.Element(W + refElementName);
+        if (hfRef == null) return [];
+
+        var rId = hfRef.Attribute(R + "id")?.Value;
+        if (string.IsNullOrEmpty(rId) || !relationships.TryGetValue(rId, out var target))
+            return [];
+
+        var path = target.StartsWith("/") ? target.TrimStart('/') : "word/" + target;
+        var entry = archive.GetEntry(path);
+        if (entry == null) return [];
+
+        // Read header/footer-specific relationships
+        var hfRelsPath = $"word/_rels/{target}.rels";
+        var hfRels = ReadPartRelationships(archive, hfRelsPath);
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        var images = new List<DocxImage>();
+
+        foreach (var anchor in doc.Descendants(WP + "anchor"))
+        {
+            var blip = anchor.Descendants(A + "blip").FirstOrDefault();
+            if (blip == null) continue;
+
+            var embedId = blip.Attribute(R + "embed")?.Value;
+            if (string.IsNullOrEmpty(embedId) || !hfRels.TryGetValue(embedId, out var imgTarget))
+                continue;
+
+            var imgPath = "word/" + imgTarget;
+            var imgEntry = archive.GetEntry(imgPath);
+            if (imgEntry == null) continue;
+
+            using var imgStream = imgEntry.Open();
+            using var ms = new MemoryStream();
+            imgStream.CopyTo(ms);
+            var data = ms.ToArray();
+
+            var ext = Path.GetExtension(imgTarget).TrimStart('.').ToLowerInvariant();
+            if (ext == "jpeg") ext = "jpg";
+            if (ext is "emf" or "wmf") continue; // skip vector formats for now
+
+            // Get extent
+            var extent = anchor.Element(WP + "extent");
+            long widthEmu = 0, heightEmu = 0;
+            if (extent != null)
+            {
+                long.TryParse(extent.Attribute("cx")?.Value, out widthEmu);
+                long.TryParse(extent.Attribute("cy")?.Value, out heightEmu);
+            }
+
+            // Get position
+            long offsetXEmu = 0, offsetYEmu = 0;
+            string? relFromH = null, relFromV = null;
+            var posH = anchor.Element(WP + "positionH");
+            var posV = anchor.Element(WP + "positionV");
+            if (posH != null)
+            {
+                relFromH = posH.Attribute("relativeFrom")?.Value;
+                var off = posH.Element(WP + "posOffset");
+                if (off != null) long.TryParse(off.Value, out offsetXEmu);
+            }
+            if (posV != null)
+            {
+                relFromV = posV.Attribute("relativeFrom")?.Value;
+                var off = posV.Element(WP + "posOffset");
+                if (off != null) long.TryParse(off.Value, out offsetYEmu);
+            }
+
+            // Read alpha from alphaModFix
+            float alpha = 1f;
+            var alphaModFix = blip.Element(A + "alphaModFix");
+            if (alphaModFix != null)
+            {
+                if (int.TryParse(alphaModFix.Attribute("amt")?.Value, out var amt))
+                    alpha = amt / 100000f;
+            }
+
+            images.Add(new DocxImage(data, ext, widthEmu, heightEmu, true, offsetXEmu, offsetYEmu,
+                false, relFromH, relFromV, false, alpha));
+        }
+
+        return images;
     }
 
     /// <summary>
@@ -3460,7 +3712,8 @@ internal sealed record DocxDocument(
     List<DocxElement>? HeaderElements = null,
     List<DocxElement>? FooterElements = null,
     List<List<DocxElement>?>? SectionFooterElements = null,
-    Dictionary<string, DocxFootnote>? Footnotes = null
+    Dictionary<string, DocxFootnote>? Footnotes = null,
+    List<DocxImage>? HeaderFooterImages = null
 );
 
 /// <summary>Page layout settings from sectPr.</summary>
@@ -3527,7 +3780,8 @@ internal sealed record DocxParagraph(
     bool KeepNext = false,
     bool AutoSpaceDE = true,
     bool AutoSpaceDN = true,
-    bool HasLastRenderedPageBreak = false
+    bool HasLastRenderedPageBreak = false,
+    List<DocxConnectorLine>? ConnectorLines = null
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.</summary>
@@ -3587,7 +3841,23 @@ internal sealed record DocxImage(
     bool IsBehindDoc = false,
     string? RelativeFromH = null,
     string? RelativeFromV = null,
-    bool IsWrapTopBottom = false
+    bool IsWrapTopBottom = false,
+    float Alpha = 1f
+);
+
+/// <summary>Represents a connector line or straight line shape.</summary>
+internal sealed record DocxConnectorLine(
+    float X1Pt,
+    float Y1Pt,
+    float X2Pt,
+    float Y2Pt,
+    float LineWidthPt,
+    PdfColor Color,
+    float[]? DashPattern = null,
+    bool HasTailArrow = false,
+    bool HasHeadArrow = false,
+    string HRelativeFrom = "column",
+    string VRelativeFrom = "paragraph"
 );
 
 /// <summary>Represents a floating text box (wrapNone) with absolute position.</summary>
@@ -3662,11 +3932,12 @@ internal sealed record DocxTable(
     DocxBorderEdge? BorderLeft = null,
     DocxBorderEdge? BorderRight = null,
     float StyleLineSpacing = -1,
-    float StyleSpacingAfter = -1
+    float StyleSpacingAfter = -1,
+    float IndentLeft = 0
 ) : DocxElement;
 
 /// <summary>Represents a table row.</summary>
-internal sealed record DocxTableRow(List<DocxTableCell> Cells, float Height = 0, bool HeightExact = false);
+internal sealed record DocxTableRow(List<DocxTableCell> Cells, float Height = 0, bool HeightExact = false, int GridBefore = 0);
 
 /// <summary>Represents a table cell.</summary>
 internal sealed record DocxTableCell(

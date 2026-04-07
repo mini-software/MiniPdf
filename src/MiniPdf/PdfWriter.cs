@@ -625,6 +625,23 @@ internal sealed class PdfWriter
                 for (var j = 0; j < imageObjNums[i].Count; j++)
                     WriteRaw($"/Im{j} {imageObjNums[i][j]} 0 R\n");
                 WriteRaw(">>\n");
+                // ExtGState entries for images with alpha < 1
+                var hasAlpha = false;
+                for (var j = 0; j < page.ImageBlocks.Count; j++)
+                {
+                    if (page.ImageBlocks[j].Alpha < 1f)
+                    {
+                        if (!hasAlpha)
+                        {
+                            WriteRaw("/ExtGState <<\n");
+                            hasAlpha = true;
+                        }
+                        var ca = page.ImageBlocks[j].Alpha.ToString("F3", CultureInfo.InvariantCulture);
+                        WriteRaw($"/GS_A{j} << /Type /ExtGState /ca {ca} >>\n");
+                    }
+                }
+                if (hasAlpha)
+                    WriteRaw(">>\n");
             }
             WriteRaw(">>\n");
             WriteRaw(">>\nendobj\n");
@@ -869,6 +886,8 @@ internal sealed class PdfWriter
             var w = img.RenderWidth.ToString("F3", CultureInfo.InvariantCulture);
             var h = img.RenderHeight.ToString("F3", CultureInfo.InvariantCulture);
             sb.Append("q\n");
+            if (img.Alpha < 1f)
+                sb.Append($"/GS_A{idx} gs\n");
             sb.Append($"{w} 0 0 {h} {x} {y} cm\n");
             sb.Append($"/Im{idx} Do\n");
             sb.Append("Q\n");
