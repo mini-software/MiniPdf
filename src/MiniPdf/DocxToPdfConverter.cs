@@ -1270,7 +1270,11 @@ internal static class DocxToPdfConverter
             var runCharSpacing = dominantRun?.CharSpacing ?? 0f;
             var runFontName = dominantRun?.FontName;
 
-            var lines = WordWrap(fullText, wrapFirstLineWidth, wrapAvailableWidth, runFontSize, paragraph.TabStops, runBold, runCharSpacing, options.UseCalibriWidths);
+            // Use Calibri widths only when the run font is Calibri-like;
+            // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
+            var paraUseCalibri = options.UseCalibriWidths
+                && !IsWideSansSerifFont(runFontName);
+            var lines = WordWrap(fullText, wrapFirstLineWidth, wrapAvailableWidth, runFontSize, paragraph.TabStops, runBold, runCharSpacing, paraUseCalibri);
 
             // If paragraph has leader tab stops, apply maxWidth so the Tz operator
             // compresses the extra-dot text to fit the intended tab position.
@@ -1308,7 +1312,7 @@ internal static class DocxToPdfConverter
                 // For center/right alignment, use Helvetica widths for positioning
                 // so the rendered text aligns correctly with the margin edge.
                 var isCenterRight = paragraph.Alignment is "center" or "right";
-                var alignUseCalibri = isCenterRight ? false : options.UseCalibriWidths;
+                var alignUseCalibri = isCenterRight ? false : paraUseCalibri;
                 var textWidth = EstimateWrapTextWidth(line, runFontSize, runBold, runCharSpacing, alignUseCalibri);
                 // Only apply Tz for non-tab-leader lines when text significantly overflows
                 if (renderMaxWidth == null && textWidth > lineW)
@@ -2510,7 +2514,9 @@ internal static class DocxToPdfConverter
                 case DocxTable table:
                 {
                     var usableWidth = options.PageWidth - options.MarginLeft - options.MarginRight;
-                    var colWidths = CalculateTableColumnWidths(table, usableWidth);
+                    var effectiveTableWidth = string.IsNullOrEmpty(table.Alignment) || table.Alignment == "left"
+                        ? usableWidth - table.IndentLeft : usableWidth;
+                    var colWidths = CalculateTableColumnWidths(table, effectiveTableWidth);
                     var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
                     var cellPaddingV = Math.Max(1f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
                     foreach (var row in table.Rows)
@@ -2659,9 +2665,11 @@ internal static class DocxToPdfConverter
     {
         const float emuPerPt = 914400f / 72f;
         var usableWidth = options.PageWidth - options.MarginLeft - options.MarginRight;
+        var effectiveTableWidth = string.IsNullOrEmpty(table.Alignment) || table.Alignment == "left"
+            ? usableWidth - table.IndentLeft : usableWidth;
         var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
         var cellPaddingV = Math.Max(table.CellMarginTop, table.CellMarginBottom);
-        var colWidths = CalculateTableColumnWidths(table, usableWidth);
+        var colWidths = CalculateTableColumnWidths(table, effectiveTableWidth);
         var colCount = colWidths.Length;
 
         // Calculate table total width and center offset
@@ -2760,14 +2768,18 @@ internal static class DocxToPdfConverter
                     else
                         lineHeight = runFontSize * GetFontMetricsFactor(firstRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
                     var textWidth = cellWidth - effPaddingLeft - effPaddingRight;
+                    // Use Calibri widths only when the run font is Calibri-like;
+                    // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
+                    var cellUseCalibri = options.UseCalibriWidths
+                        && !IsWideSansSerifFont(firstRun?.FontName);
                     var lines = WordWrap(text, textWidth, textWidth, runFontSize, null,
-                        firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, options.UseCalibriWidths);
+                        firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, cellUseCalibri);
 
                     foreach (var line in lines)
                     {
                         textY -= runFontSize;
                         var lineTextWidth = EstimateWrapTextWidth(line, runFontSize,
-                            firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, options.UseCalibriWidths);
+                            firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, cellUseCalibri);
                         var lineX = para.Alignment switch
                         {
                             "center" => cellX + effPaddingLeft + (textWidth - lineTextWidth) / 2,
@@ -2816,11 +2828,13 @@ internal static class DocxToPdfConverter
         }
 
         var usableWidth = state.UsableWidth;
+        var effectiveTableWidth = string.IsNullOrEmpty(table.Alignment) || table.Alignment == "left"
+            ? usableWidth - table.IndentLeft : usableWidth;
         var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
         var cellPaddingV = Math.Max(1f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
 
         // Determine column widths
-        var colWidths = CalculateTableColumnWidths(table, usableWidth);
+        var colWidths = CalculateTableColumnWidths(table, effectiveTableWidth);
         var colCount = colWidths.Length;
 
         // Calculate table alignment offset
@@ -3106,13 +3120,17 @@ internal static class DocxToPdfConverter
                     // Add small CJK tolerance: CJK fonts may render fullwidth characters
                     // slightly narrower than the 1000-unit estimate, preventing unnecessary wraps.
                     var wrapWidth = textWidth + 0.5f;
-                    var lines = WordWrap(text, wrapWidth, wrapWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, options.UseCalibriWidths);
+                    // Use Calibri widths only when the run font is Calibri-like;
+                    // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
+                    var cellUseCalibri = options.UseCalibriWidths
+                        && !IsWideSansSerifFont(cellRunFontName);
+                    var lines = WordWrap(text, wrapWidth, wrapWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, cellUseCalibri);
 
                     foreach (var line in lines)
                     {
                         textY -= effectiveFontSize;
                         if (textY < state.CurrentY - cellRenderHeight + effCellPaddingV) break; // clip
-                        var lineTextWidth = EstimateWrapTextWidth(line, effectiveFontSize, cellRunBold, cellRunCharSpacing, options.UseCalibriWidths);
+                        var lineTextWidth = EstimateWrapTextWidth(line, effectiveFontSize, cellRunBold, cellRunCharSpacing, cellUseCalibri);
                         var lineRenderX = para.Alignment switch
                         {
                             "center" => cellX + effCellLeft + (textWidth - lineTextWidth) / 2,
@@ -3396,7 +3414,11 @@ internal static class DocxToPdfConverter
                 continue;
             }
 
-            var lines = WordWrap(text, textWidth, textWidth, runFontSize, null, runBold, runCharSpacing, options.UseCalibriWidths);
+            // Use Calibri widths only when the run font is Calibri-like;
+            // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
+            var cellUseCalibri = options.UseCalibriWidths
+                && !IsWideSansSerifFont(dominantRun?.FontName);
+            var lines = WordWrap(text, textWidth, textWidth, runFontSize, null, runBold, runCharSpacing, cellUseCalibri);
             cellHeight += lines.Count * lineHeight;
             // Apply SpacingAfter for all non-last paragraphs (matching rendering logic)
             if (!isLastPara)
@@ -4311,4 +4333,21 @@ internal static class DocxToPdfConverter
     private static bool IsCenturyGothicLikeFont(string? fontName) =>
         !string.IsNullOrEmpty(fontName)
         && fontName.Contains("Century Gothic", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Returns true for wide geometric sans-serif fonts whose Latin glyphs are
+    /// significantly wider than Calibri, requiring Helvetica-based width estimation
+    /// for accurate word wrapping.  Excludes CJK, serif, and standard sans-serif
+    /// families (Arial, Helvetica) where Calibri-based estimation works well.
+    /// </summary>
+    private static bool IsWideSansSerifFont(string? fontName)
+    {
+        if (string.IsNullOrEmpty(fontName)) return false;
+        return fontName.Contains("Montserrat", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Century Gothic", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Futura", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Comfortaa", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Poppins", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Raleway", StringComparison.OrdinalIgnoreCase);
+    }
 }
