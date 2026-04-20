@@ -977,6 +977,28 @@ internal static class DocxToPdfConverter
 
         state.EnsurePage();
 
+        // Paragraphs that host only behindDoc images render the images for
+        // deferred drawing but still consume vertical space based on the
+        // paragraph mark's font size (matching Word's behaviour).
+        if (paragraph.Runs.Count == 0
+            && paragraph.Images.Count > 0 && paragraph.Images.All(img => img.IsBehindDoc)
+            && (paragraph.Shapes == null || paragraph.Shapes.Count == 0))
+        {
+            var baselineToTopOffset = lineHeight - fontSize;
+            if (baselineToTopOffset < 0) baselineToTopOffset = 0;
+            state.LastParagraphStartY = state.CurrentY + baselineToTopOffset;
+            foreach (var image in paragraph.Images)
+                RenderImage(state, image, paragraph.Alignment);
+            var sa = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
+            state.AdvanceY(lineHeight + sa);
+            state.LastLineHeight = lineHeight;
+            state.LastSpacingAfter = sa;
+            state.LastParagraphWasEmpty = true;
+            if (paragraph.HasPageBreakAfter)
+                state.ForceNewPage();
+            return;
+        }
+
         // At top of page, offset by font ascent so text visual top aligns with margin.
         // When a document grid is active, center the text within the first grid cell
         // so the baseline position matches LibreOffice's CJK line grid placement.
@@ -1147,8 +1169,12 @@ internal static class DocxToPdfConverter
             // Skip line height for paragraphs that exist solely to host anchor shapes
             // (e.g. behind-doc drawing groups); they are positioned absolutely and
             // should not push subsequent content down.
+            // Also skip for paragraphs that only contain behindDoc images — these are
+            // rendered behind the document at absolute positions and should not push
+            // subsequent content down.
             var isShapeOnlyParagraph = paragraph.Shapes is { Count: > 0 } && paragraph.Images.Count == 0;
-            if (!isShapeOnlyParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
+            var isBehindDocOnlyParagraph = paragraph.Images.Count > 0 && paragraph.Images.All(img => img.IsBehindDoc);
+            if (!isShapeOnlyParagraph && !isBehindDocOnlyParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
                 state.AdvanceY(lineHeight);
 
             // Render wrapTopAndBottom images even for empty paragraphs
@@ -1274,7 +1300,11 @@ internal static class DocxToPdfConverter
             // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
             var paraUseCalibri = options.UseCalibriWidths
                 && !IsWideSansSerifFont(runFontName);
+            s_overrideWidths = GetFontOverrideWidths(runFontName);
             var lines = WordWrap(fullText, wrapFirstLineWidth, wrapAvailableWidth, runFontSize, paragraph.TabStops, runBold, runCharSpacing, paraUseCalibri);
+            // Keep s_overrideWidths set during the rendering loop so that
+            // EstimateWrapTextWidth uses the same font metrics as WordWrap,
+            // ensuring accurate justified text spacing and Tz compression.
 
             // If paragraph has leader tab stops, apply maxWidth so the Tz operator
             // compresses the extra-dot text to fit the intended tab position.
@@ -1342,6 +1372,7 @@ internal static class DocxToPdfConverter
                 state.CurrentPage!.AddText(line, renderX, state.CurrentY, runFontSize, runColor, maxWidth: renderMaxWidth, bold: runBold, italic: runItalic, underline: runUnderline, charSpacing: runCharSpacing, wordSpacing: wordSpacing, preferredFontName: runFontName);
                 state.AdvanceY(lineHeight);
             }
+            s_overrideWidths = null;
         }
 
         // For exact line spacing, cap paragraph height to lineHeight so
@@ -1583,7 +1614,7 @@ internal static class DocxToPdfConverter
                 // other fonts (e.g. Century Gothic) have different glyph widths.
                 var boxUseCalibri = options.UseCalibriWidths
                     && (string.IsNullOrEmpty(paraRunFont) || paraRunFont.Contains("Calibri", StringComparison.OrdinalIgnoreCase));
-                s_overrideWidths = IsCenturyGothicLikeFont(paraRunFont) ? CenturyGothicWidths : null;
+                s_overrideWidths = GetFontOverrideWidths(paraRunFont);
                 var lines = WordWrap(fullText, maxWidth, maxWidth, fontSize,
                     para.TabStops, useCalibriWidths: boxUseCalibri);
                 s_overrideWidths = null;
@@ -2772,6 +2803,7 @@ internal static class DocxToPdfConverter
                     // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
                     var cellUseCalibri = options.UseCalibriWidths
                         && !IsWideSansSerifFont(firstRun?.FontName);
+                    s_overrideWidths = GetFontOverrideWidths(firstRun?.FontName);
                     var lines = WordWrap(text, textWidth, textWidth, runFontSize, null,
                         firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, cellUseCalibri);
 
@@ -2797,6 +2829,7 @@ internal static class DocxToPdfConverter
                             preferredFontName: firstRun?.FontName);
                         textY -= lineHeight - runFontSize;
                     }
+                    s_overrideWidths = null;
 
                     // Paragraph spacing after
                     var spAfter = para.SpacingAfter >= 0 ? para.SpacingAfter : (table.StyleSpacingAfter > 0 ? table.StyleSpacingAfter : 0f);
@@ -3124,6 +3157,7 @@ internal static class DocxToPdfConverter
                     // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
                     var cellUseCalibri = options.UseCalibriWidths
                         && !IsWideSansSerifFont(cellRunFontName);
+                    s_overrideWidths = GetFontOverrideWidths(cellRunFontName);
                     var lines = WordWrap(text, wrapWidth, wrapWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, cellUseCalibri);
 
                     foreach (var line in lines)
@@ -3163,6 +3197,7 @@ internal static class DocxToPdfConverter
                         state.CurrentPage!.AddText(line, lineRenderX, textY, effectiveFontSize, runColor, maxWidth: cellMaxWidth, bold: cellRunBold, italic: cellRunItalic, underline: cellRunUnderline, charSpacing: cellRunCharSpacing, wordSpacing: cellWordSpacing, preferredFontName: cellRunFontName);
                         textY -= lineHeight - effectiveFontSize;
                     }
+                    s_overrideWidths = null;
 
                     // Apply SpacingAfter: table style override takes precedence, else paragraph's own
                     // Skip SpacingAfter for the last paragraph in the cell (Word behaviour)
@@ -3418,7 +3453,9 @@ internal static class DocxToPdfConverter
             // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
             var cellUseCalibri = options.UseCalibriWidths
                 && !IsWideSansSerifFont(dominantRun?.FontName);
+            s_overrideWidths = GetFontOverrideWidths(dominantRun?.FontName);
             var lines = WordWrap(text, textWidth, textWidth, runFontSize, null, runBold, runCharSpacing, cellUseCalibri);
+            s_overrideWidths = null;
             cellHeight += lines.Count * lineHeight;
             // Apply SpacingAfter for all non-last paragraphs (matching rendering logic)
             if (!isLastPara)
@@ -4330,9 +4367,42 @@ internal static class DocxToPdfConverter
         351, 672, 351, 606, // { to ~
     ];
 
+    // Montserrat SemiBold character widths for ASCII 32..126 (in thousandths of a unit)
+    // Montserrat is a geometric sans-serif (Google Font) that is wider than Helvetica,
+    // especially in SemiBold/Bold weights.  These values approximate the actual glyph
+    // advance widths, enabling accurate word wrapping for Montserrat-based documents.
+    private static readonly int[] MontserratWidths =
+    [
+        260, 292, 458, 630, 610, 833, 730, 242, 330, 330, // ' ' to )
+        471, 630, 260, 385, 260, 381, // * to /
+        620, 620, 620, 620, 620, 620, 620, 620, 620, 620, // 0-9
+        260, 260, 630, 630, 630, 535, 948, // : to @
+        666, 666, 672, 730, 600, 572, 730, 747, 284, // A-I
+        462, 646, 552, 887, 747, 757, 642, 757, 653, 586, // J-S
+        576, 727, 642, 947, 608, 590, 581, // T-Z
+        330, 381, 330, 530, 490, 365, // [ to `
+        586, 631, 534, 631, 588, 340, 611, 618, 259, // a-i
+        259, 557, 270, 930, 618, 622, 631, 631, 394, 494, // j-s
+        377, 618, 532, 800, 520, 532, 506, // t-z
+        366, 284, 366, 630, // { to ~
+    ];
+
     private static bool IsCenturyGothicLikeFont(string? fontName) =>
         !string.IsNullOrEmpty(fontName)
         && fontName.Contains("Century Gothic", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsMontserratFont(string? fontName) =>
+        !string.IsNullOrEmpty(fontName)
+        && fontName.Contains("Montserrat", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Returns the appropriate per-character width override table for fonts with
+    /// significantly different glyph widths from Helvetica, or null for standard fonts.
+    /// </summary>
+    private static int[]? GetFontOverrideWidths(string? fontName) =>
+        IsCenturyGothicLikeFont(fontName) ? CenturyGothicWidths
+        : IsMontserratFont(fontName) ? MontserratWidths
+        : null;
 
     /// <summary>
     /// Returns true for wide geometric sans-serif fonts whose Latin glyphs are

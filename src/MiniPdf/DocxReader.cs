@@ -1267,7 +1267,35 @@ internal static class DocxReader
             fontName = defaultEastAsiaFontName;
         }
 
+        // Some documents express weight via the font family itself (e.g. "Montserrat ExtraBold",
+        // "Open Sans SemiBold") instead of a <w:b/> element. When MiniPdf falls back to its
+        // built-in fonts it would otherwise render those runs in regular weight. Detect a bold-ish
+        // weight in the family name and promote the run to bold so the visual weight is preserved.
+        if (!bold && FontNameImpliesBold(fontName))
+            bold = true;
+        if (!italic && FontNameImpliesItalic(fontName))
+            italic = true;
+
         return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl, isColumnBreak, verticalPosition, footnoteId);
+    }
+
+    private static bool FontNameImpliesBold(string? fontName)
+    {
+        if (string.IsNullOrEmpty(fontName))
+            return false;
+        var fn = fontName.ToUpperInvariant();
+        // "Bold" covers Bold/ExtraBold/SemiBold/DemiBold/UltraBold; "Black"/"Heavy" are heavier than bold.
+        // "Medium" sits between regular and bold; map to bold to better approximate visual weight
+        // when only regular/bold weights are available in the fallback font.
+        return fn.Contains("BOLD") || fn.Contains("BLACK") || fn.Contains("HEAVY") || fn.Contains("MEDIUM");
+    }
+
+    private static bool FontNameImpliesItalic(string? fontName)
+    {
+        if (string.IsNullOrEmpty(fontName))
+            return false;
+        var fn = fontName.ToUpperInvariant();
+        return fn.Contains("ITALIC") || fn.Contains("OBLIQUE");
     }
 
     private static string? GetFieldInstructionType(string? instruction)
