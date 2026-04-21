@@ -884,7 +884,9 @@ internal static class DocxToPdfConverter
         // Handle empty paragraphs before EnsurePage — they don't produce visible content
         // and should not force a new page (avoids spurious trailing pages).
         if (paragraph.Runs.Count == 0 && paragraph.Images.Count == 0 && paragraph.Shading == null
-            && (paragraph.Shapes == null || paragraph.Shapes.Count == 0))
+            && (paragraph.Shapes == null || paragraph.Shapes.Count == 0)
+            && (paragraph.FloatingTextBoxes == null || paragraph.FloatingTextBoxes.Count == 0)
+            && (paragraph.ConnectorLines == null || paragraph.ConnectorLines.Count == 0))
         {
 
             // Record start position so floating textboxes anchored to this
@@ -984,11 +986,30 @@ internal static class DocxToPdfConverter
             && paragraph.Images.Count > 0 && paragraph.Images.All(img => img.IsBehindDoc)
             && (paragraph.Shapes == null || paragraph.Shapes.Count == 0))
         {
+            // Capture paragraph-top Y before the ascent offset so behindDoc
+            // images anchored at positionV=0 relativeFrom="paragraph" align with
+            // the actual top of the paragraph (i.e., the top margin when this is
+            // the first paragraph on the page), not the text baseline.
+            var paragraphTopY = state.CurrentY;
+            // At top of page, apply the ascent offset so the first line's visual
+            // top aligns with the top margin (matching the empty-paragraph branch
+            // above).  Without this the paragraph mark "line" would straddle the
+            // margin and following paragraphs would sit too high on the page.
+            if (state.IsTopOfPage)
+            {
+                var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
+                    ? (lineHeight + fontSize) / 2f
+                    : fontSize * AscentRatio;
+                state.AdvanceY(ascentOffset);
+            }
             var baselineToTopOffset = lineHeight - fontSize;
             if (baselineToTopOffset < 0) baselineToTopOffset = 0;
-            state.LastParagraphStartY = state.CurrentY + baselineToTopOffset;
+            state.LastParagraphStartY = paragraphTopY + baselineToTopOffset;
+            var savedY = state.CurrentY;
+            state.CurrentY = paragraphTopY;
             foreach (var image in paragraph.Images)
                 RenderImage(state, image, paragraph.Alignment);
+            state.CurrentY = savedY;
             var sa = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             state.AdvanceY(lineHeight + sa);
             state.LastLineHeight = lineHeight;
@@ -1174,7 +1195,16 @@ internal static class DocxToPdfConverter
             // subsequent content down.
             var isShapeOnlyParagraph = paragraph.Shapes is { Count: > 0 } && paragraph.Images.Count == 0;
             var isBehindDocOnlyParagraph = paragraph.Images.Count > 0 && paragraph.Images.All(img => img.IsBehindDoc);
-            if (!isShapeOnlyParagraph && !isBehindDocOnlyParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
+            // Paragraphs whose only visual content is wrapNone floating textboxes and/or
+            // connector lines (anchored shapes that are absolutely positioned overlays)
+            // should not consume a line height in the main flow, matching Word's behaviour.
+            var isFloatingAnchorOnlyParagraph =
+                paragraph.Runs.Count == 0
+                && paragraph.Images.Count == 0
+                && (paragraph.Shapes is null || paragraph.Shapes.Count == 0)
+                && ((paragraph.FloatingTextBoxes is { Count: > 0 })
+                    || (paragraph.ConnectorLines is { Count: > 0 }));
+            if (!isShapeOnlyParagraph && !isBehindDocOnlyParagraph && !isFloatingAnchorOnlyParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
                 state.AdvanceY(lineHeight);
 
             // Render wrapTopAndBottom images even for empty paragraphs
