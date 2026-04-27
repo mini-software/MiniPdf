@@ -33,6 +33,12 @@ internal static class DocxToPdfConverter
     // (e.g. Century Gothic) where Helvetica is a poor proxy.
     [ThreadStatic] private static int[]? s_overrideWidths;
 
+    // Per-paragraph flag: set when the run font is a wide sans-serif (Franklin Gothic,
+    // etc.) whose Latin glyphs are close to Helvetica width. In that case the default
+    // 8% Latin reduction in EstimateWrapTextWidth produces too-narrow estimates,
+    // causing WordWrap to over-pack lines that then trigger Tz compression at render.
+    [ThreadStatic] private static bool s_wideSansSerifFont;
+
     /// <summary>
     /// Options for controlling DOCX-to-PDF conversion.
     /// </summary>
@@ -270,6 +276,10 @@ internal static class DocxToPdfConverter
                             }
                             else
                             {
+                                // At hard section breaks, clear any accumulated PendingVerticalSpace
+                                // from the closing section so it does not shift the next section's
+                                // first content downward on the new page.
+                                state.PendingVerticalSpace = 0;
                                 state.ForceNewPage();
                                 if (nextLayout.ColumnCount > 1)
                                     state.EnterMultiColumnSection(nextLayout.ColumnCount, nextLayout.ColumnSpacing, nextLayout.ColumnWidths, nextLayout.ColumnGaps);
@@ -279,6 +289,7 @@ internal static class DocxToPdfConverter
                         {
                             if (state.ColumnCount > 1)
                                 state.ExitMultiColumnSection();
+                            state.PendingVerticalSpace = 0;
                             state.ForceNewPage();
                         }
                         // Record new section's start page
@@ -881,11 +892,29 @@ internal static class DocxToPdfConverter
             state.ForceNewPage();
         }
 
+        // Detect "line-spacer" host paragraphs: empty paragraphs whose only visual
+        // content is a small wrapNone floating textbox that visually fits within a
+        // single line of the paragraph and is anchored at ~0 vertical offset.  In
+        // Word these paragraphs DO consume their line height (the textbox occupies
+        // the empty line).  Larger floating overlays are handled by the
+        // isFloatingAnchorOnlyParagraph branch below, where the line height is
+        // suppressed because the overlay is positioned absolutely.
+        var isLineSpacerAnchorHost =
+            paragraph.Runs.Count == 0
+            && paragraph.Images.Count == 0
+            && paragraph.Shading == null
+            && (paragraph.Shapes == null || paragraph.Shapes.Count == 0)
+            && (paragraph.ConnectorLines == null || paragraph.ConnectorLines.Count == 0)
+            && paragraph.FloatingTextBoxes is { Count: > 0 }
+            && paragraph.FloatingTextBoxes.All(b =>
+                Math.Abs(b.YPt) <= lineHeight
+                && b.HeightPt <= lineHeight * 1.5f);
+
         // Handle empty paragraphs before EnsurePage — they don't produce visible content
         // and should not force a new page (avoids spurious trailing pages).
         if (paragraph.Runs.Count == 0 && paragraph.Images.Count == 0 && paragraph.Shading == null
             && (paragraph.Shapes == null || paragraph.Shapes.Count == 0)
-            && (paragraph.FloatingTextBoxes == null || paragraph.FloatingTextBoxes.Count == 0)
+            && ((paragraph.FloatingTextBoxes == null || paragraph.FloatingTextBoxes.Count == 0) || isLineSpacerAnchorHost)
             && (paragraph.ConnectorLines == null || paragraph.ConnectorLines.Count == 0))
         {
 
@@ -1331,6 +1360,7 @@ internal static class DocxToPdfConverter
             var paraUseCalibri = options.UseCalibriWidths
                 && !IsWideSansSerifFont(runFontName);
             s_overrideWidths = GetFontOverrideWidths(runFontName);
+            s_wideSansSerifFont = IsWideSansSerifFont(runFontName) && s_overrideWidths == null;
             var lines = WordWrap(fullText, wrapFirstLineWidth, wrapAvailableWidth, runFontSize, paragraph.TabStops, runBold, runCharSpacing, paraUseCalibri);
             // Keep s_overrideWidths set during the rendering loop so that
             // EstimateWrapTextWidth uses the same font metrics as WordWrap,
@@ -1403,6 +1433,7 @@ internal static class DocxToPdfConverter
                 state.AdvanceY(lineHeight);
             }
             s_overrideWidths = null;
+            s_wideSansSerifFont = false;
         }
 
         // For exact line spacing, cap paragraph height to lineHeight so
@@ -2834,6 +2865,7 @@ internal static class DocxToPdfConverter
                     var cellUseCalibri = options.UseCalibriWidths
                         && !IsWideSansSerifFont(firstRun?.FontName);
                     s_overrideWidths = GetFontOverrideWidths(firstRun?.FontName);
+                    s_wideSansSerifFont = IsWideSansSerifFont(firstRun?.FontName) && s_overrideWidths == null;
                     var lines = WordWrap(text, textWidth, textWidth, runFontSize, null,
                         firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, cellUseCalibri);
 
@@ -2860,6 +2892,7 @@ internal static class DocxToPdfConverter
                         textY -= lineHeight - runFontSize;
                     }
                     s_overrideWidths = null;
+                    s_wideSansSerifFont = false;
 
                     // Paragraph spacing after
                     var spAfter = para.SpacingAfter >= 0 ? para.SpacingAfter : (table.StyleSpacingAfter > 0 ? table.StyleSpacingAfter : 0f);
@@ -3211,6 +3244,7 @@ internal static class DocxToPdfConverter
                     var cellUseCalibri = options.UseCalibriWidths
                         && !IsWideSansSerifFont(cellRunFontName);
                     s_overrideWidths = GetFontOverrideWidths(cellRunFontName);
+                    s_wideSansSerifFont = IsWideSansSerifFont(cellRunFontName) && s_overrideWidths == null;
                     var lines = WordWrap(text, wrapWidth, wrapWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, cellUseCalibri);
 
                     foreach (var line in lines)
@@ -3251,6 +3285,7 @@ internal static class DocxToPdfConverter
                         textY -= lineHeight - effectiveFontSize;
                     }
                     s_overrideWidths = null;
+                    s_wideSansSerifFont = false;
 
                     // Apply SpacingAfter: table style override takes precedence, else paragraph's own
                     // Skip SpacingAfter for the last paragraph in the cell (Word behaviour)
@@ -3418,8 +3453,12 @@ internal static class DocxToPdfConverter
                 Compat.ArrayFill(res, cw);
                 return res;
             }
-            // Use actual DOCX widths; scale down proportionally if they exceed usable width
-            if (total > usableWidth)
+            // Use actual DOCX widths; scale down proportionally only when they exceed
+            // the usable width by more than a small tolerance. Word lets modestly
+            // overflowing tables extend past the right margin instead of shrinking
+            // declared column widths (e.g. layouts that intentionally overhang the
+            // text area to bleed an image past the margin).
+            if (total > usableWidth * 1.05f)
             {
                 var scale = usableWidth / total;
                 for (var i = 0; i < widths.Length; i++)
@@ -3507,8 +3546,10 @@ internal static class DocxToPdfConverter
             var cellUseCalibri = options.UseCalibriWidths
                 && !IsWideSansSerifFont(dominantRun?.FontName);
             s_overrideWidths = GetFontOverrideWidths(dominantRun?.FontName);
+            s_wideSansSerifFont = IsWideSansSerifFont(dominantRun?.FontName) && s_overrideWidths == null;
             var lines = WordWrap(text, textWidth, textWidth, runFontSize, null, runBold, runCharSpacing, cellUseCalibri);
             s_overrideWidths = null;
+            s_wideSansSerifFont = false;
             cellHeight += lines.Count * lineHeight;
             // Apply SpacingAfter for all non-last paragraphs (matching rendering logic)
             if (!isLastPara)
@@ -3965,6 +4006,11 @@ internal static class DocxToPdfConverter
             // (Times New Roman, Georgia) have noticeably narrower Latin glyphs → 10%.
             // Other non-Calibri sans-serif fonts are closer → 8%.
             var serifReduction = s_serifFont ? 0.10f : 0.08f;
+            // Wide sans-serif fonts (Franklin Gothic, Montserrat) have Latin glyphs
+            // close to Helvetica width; use a small reduction so WordWrap doesn't
+            // over-pack lines (which would trigger Tz compression at render time).
+            if (s_wideSansSerifFont && !hasCjk && !bold)
+                serifReduction = 0.04f;
             var reductionFactor = hasCjk ? 0.27f : (bold ? 0.05f : serifReduction);
             rawWidth *= 1f - latinFraction * reductionFactor;
         }
@@ -4471,6 +4517,7 @@ internal static class DocxToPdfConverter
             || fontName.Contains("Futura", StringComparison.OrdinalIgnoreCase)
             || fontName.Contains("Comfortaa", StringComparison.OrdinalIgnoreCase)
             || fontName.Contains("Poppins", StringComparison.OrdinalIgnoreCase)
-            || fontName.Contains("Raleway", StringComparison.OrdinalIgnoreCase);
+            || fontName.Contains("Raleway", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Franklin Gothic", StringComparison.OrdinalIgnoreCase);
     }
 }
