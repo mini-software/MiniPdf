@@ -1364,6 +1364,9 @@ internal static class DocxToPdfConverter
         // already has underline context (paragraph mark underline or any preceding
         // run with explicit <w:u> declaration). In such cases the underlined spaces
         // are paragraph mark formatting artifacts, not intentional form-fill lines.
+        // Also suppress for justified paragraphs that have other non-whitespace text:
+        // Word collapses trailing whitespace at the end of justified paragraphs, so
+        // the underline of those spaces is not rendered.
         if (mergedRuns.Count >= 2)
         {
             var lastRun = mergedRuns[^1];
@@ -1372,7 +1375,9 @@ internal static class DocxToPdfConverter
                 var hasUnderlineContext = paragraph.ParagraphMarkUnderline
                     || mergedRuns.Take(mergedRuns.Count - 1).Any(r =>
                         !string.IsNullOrWhiteSpace(r.Text) && r.HasExplicitUnderlineDecl);
-                if (hasUnderlineContext)
+                var isJustifiedWithText = paragraph.Alignment == "both"
+                    && mergedRuns.Take(mergedRuns.Count - 1).Any(r => !string.IsNullOrWhiteSpace(r.Text));
+                if (hasUnderlineContext || isJustifiedWithText)
                 {
                     mergedRuns[^1] = lastRun with { Underline = false };
                 }

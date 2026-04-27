@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-27T22:08:49.682130
+Generated: 2026-04-27T22:17:48.844789
 
 ## Summary
 
@@ -23,10 +23,10 @@ Generated: 2026-04-27T22:08:49.682130
 | 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
 | 16 | 🟢 SA8000 ch sample | ✅ | 0.9945 | 0.9203 | 2/2 | **0.9659** |
 | 17 | 🟢 Support_Letter | ✅ | 1.0 | 0.9579 | 1/1 | **0.9832** |
-| 18 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.979 | 17/17 | **0.9916** |
+| 18 | 🟡 Template for MSc Thesis | ✅ | 1.0 | 0.8422 | 19/17 | **0.8369** |
 | 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8392**
+**Average Overall Score: 0.8310**
 
 ## Visual Comparison
 
@@ -417,7 +417,7 @@ Generated: 2026-04-27T22:08:49.682130
 </tr>
 <tr>
   <td><b>Template for MSc Thesis</b></td>
-  <td colspan="1">Template for MSc Thesis <span style="color:#3fb950">⬤</span> 99.2%</td>
+  <td colspan="1">Template for MSc Thesis <span style="color:#d29922">⬤</span> 83.7%</td>
 </tr>
 <tr>
   <td><img src="images/Template for MSc Thesis_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -486,6 +486,14 @@ Generated: 2026-04-27T22:08:49.682130
 <tr>
   <td><img src="images/Template for MSc Thesis_p17_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Template for MSc Thesis_p17_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Template for MSc Thesis_p18_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><img src="images/Template for MSc Thesis_p19_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
 </tr>
 <tr>
   <td><b>Template_repaired</b></td>
@@ -2082,28 +2090,26 @@ Text content: ✅ Identical
 ### Template for MSc Thesis
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.979
-- **Overall Score:** 0.9916
-- **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=1293315 bytes, Reference=402081 bytes
+- **Visual Average:** 0.8422
+- **Overall Score:** 0.8369
+- **Pages:** MiniPdf=19, Reference=17
+- **File Size:** MiniPdf=1293371 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Template for MSc Thesis.pdf
 +++ reference/Template for MSc Thesis.pdf
-@@ -8,36 +8,35 @@
+@@ -8,15 +8,16 @@
  ➢ Font and Font size for the general text of the report: Times New Roman 12
 
  ➢ LINE SPACING: 1.5
 
  ➢ MARGINS: At least 2.5 inch on the binding side; 1 inch at top and bottom
 
--➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The chapters
+-➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The chapters to be
 
--to be numbered in the Arabic numerals. The Page number should be bottom
-
--centered
+-numbered in the Arabic numerals. The Page number should be bottom centered
 
 +➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The
 
@@ -2119,11 +2125,11 @@ Text content: ✅ Identical
 
  ➢ REFERENCES: List of References should include only those published or accepted for
 
--publication works that are cited in the text. Use of footnotes or endnotes should be
+-publication works that are cited in the text. Use of footnotes or endnotes should be avoided as
 
--avoided as a substitute for a reference list. Ideally, the names of all authors should be
+-a substitute for a reference list. Ideally, the names of all authors should be provided, but for
 
--provided, but for the long author lists “ et al ” can be used.
+-the long author lists “ et al ” can be used.
 
 +publication works that are cited in the text. Use of footnotes or endnotes should be avoided
 
@@ -2137,35 +2143,32 @@ Text content: ✅ Identical
 
  Negotiation research spans many departments [3]; 2. This result was later contradicted by
 
- Becker and Seligman [5]. 3. This effect has been widely studied [1-3, 7].
-
+@@ -24,34 +25,35 @@
  [A.1] Reference list: The references for such style should be listed and numbered
 
  consecutively in the order of citation.
 
--[B] Citation of the reference by surname(s) of the author(s) directly (or
+ [B] Citation of the reference by surname(s) of the author(s) directly (or parenthetically)
 
--parenthetically) and year of publications i.e. as demonstrated (Allan and Jones, 1995).
+-and year of publications i.e. as demonstrated (Allan and Jones, 1995). Kramer et al. (2000) have
 
--Kramer et al. (2000) have recently shown ....
-
-+[B] Citation of the reference by surname(s) of the author(s) directly (or parenthetically)
+-recently shown ....
 
 +and year of publications i.e. as demonstrated (Allan and Jones, 1995). Kramer et al. (2000)
 
 +have recently shown ....
 
-+---PAGE---
+ ---PAGE---
 
- 1. Single Author: the author's surname (without initials, unless there is ambiguity) and the
+-1. Single Author: the author's surname (without initials, unless there is ambiguity) and the year
 
- year of publication; 2. Two Authors: both authors' surnames and the year of publication; 3.
+-of publication; 2. Two Authors: both authors' surnames and the year of publication; 3. Three or
 
-----PAGE---
+-more authors: first author's surname followed by 'et al.' and the year of publication.
 
--Three or more authors: first author's surname followed by 'et al.' and the year of
++1. Single Author: the author's surname (without initials, unless there is ambiguity) and the
 
--publication.
++year of publication; 2. Two Authors: both authors' surnames and the year of publication; 3.
 
 +Three or more authors: first author's surname followed by 'et al.' and the year of publication.
 
@@ -2175,10 +2178,10 @@ Text content: ✅ Identical
 
  JOURNAL ARTICLE
 
--➢ Gamelin F.X., Baquet G., Berthoin S., Thevenet D., Nourry C., Nottin S., Bosquet L. (2009), Effect of high
+-➢ Gamelin F.X., Baquet G., Berthoin S., Thevenet D., Nourry C., Nottin S., Bosquet L. (2009), Effect of high intensity
 
--intensity intermittent training o
-... (5790 more characters)
+-
+... (6475 more characters)
 
 ```
 </details>
