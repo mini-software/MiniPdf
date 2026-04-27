@@ -967,9 +967,28 @@ internal sealed class PdfWriter
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
                 sb.Append($"/{fontName} {fontSize} Tf\n");
+                // For justified text, the caller's wordSpacing was derived from a
+                // wrap-time width estimate. Recompute it using the actual measured
+                // natural width so the rendered line fills (not exceeds) MaxWidth.
+                double effectiveWsWa = block.WordSpacing;
+                double naturalWidthWa = -1.0;
+                if (block.MaxWidth.HasValue)
+                    naturalWidthWa = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
+                if (block.WordSpacing > 0 && block.MaxWidth.HasValue
+                    && naturalWidthWa > 0 && naturalWidthWa < block.MaxWidth.Value)
+                {
+                    int spaceCountWa = 0;
+                    foreach (var ch in block.Text) if (ch == ' ') spaceCountWa++;
+                    if (spaceCountWa > 0)
+                    {
+                        var newWs = (block.MaxWidth.Value - naturalWidthWa) / spaceCountWa;
+                        if (newWs < 0) newWs = 0;
+                        effectiveWsWa = newWs;
+                    }
+                }
                 // Apply word spacing (Tw) for justified text
-                if (block.WordSpacing != 0)
-                    sb.Append($"{block.WordSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tw\n");
+                if (effectiveWsWa != 0)
+                    sb.Append($"{effectiveWsWa.ToString("F2", CultureInfo.InvariantCulture)} Tw\n");
                 // Always set character spacing to prevent Tc from previous
                 // text blocks leaking through the graphics state.
                 sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
@@ -977,10 +996,9 @@ internal sealed class PdfWriter
                 // always reset Tz to prevent scaling from previous blocks leaking.
                 if (block.MaxWidth.HasValue)
                 {
-                    var naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
-                    if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
+                    if (naturalWidthWa > block.MaxWidth.Value && naturalWidthWa > 0)
                     {
-                        var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
+                        var tzPercent = (block.MaxWidth.Value / naturalWidthWa) * 100.0;
                         sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
                     }
                     else
@@ -1040,59 +1058,65 @@ internal sealed class PdfWriter
                 // Instead: use Tz to correct glyph width (actual vs layout estimate),
                 // and TJ displacement values to add word spacing at space boundaries.
                 // TJ displacements are scaled by Tz/100, so we compensate for that.
-                var wordSpacingTJ = 0; // for CID path only
-                var cidTzPercent = 100.0;
+
+                // Measure natural rendering width once, using the actual embedded font
+                // when available. This drives Tz (compression to MaxWidth) and is also
+                // used to recompute wordSpacing for justified lines (caller's ws was
+                // derived from a width estimate that may differ from the real glyph
+                // metrics, especially for serif runs in a Calibri-default doc).
+                EmbeddedFontInfo? blockFont = null;
+                if (hasBoldFontVariant && fontNameToSlot!.TryGetValue(boldFontKey!, out var boldSlotIdx))
+                    blockFont = embeddedFonts![boldSlotIdx];
+                else if (blockHasEmbeddedPref && fontNameToSlot!.TryGetValue(block.PreferredFontName!, out var prefSlotIdx))
+                    blockFont = embeddedFonts![prefSlotIdx];
+
+                double naturalWidth = blockFont != null
+                    ? MeasureEmbeddedFontWidth(block.Text, block.FontSize, block.CharSpacing, blockFont)
+                    : -1.0;
+                if (naturalWidth < 0)
+                    naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
+
+                // Effective word spacing: when both wordSpacing>0 and MaxWidth are set,
+                // the caller's intent is "fill MaxWidth using word spacing". Recompute
+                // ws from the actual natural width so the rendered line fills (not
+                // exceeds) MaxWidth even when the caller's wrap estimate was inaccurate.
+                double effectiveWordSpacing = block.WordSpacing;
+                if (block.WordSpacing > 0 && block.MaxWidth.HasValue
+                    && naturalWidth > 0 && naturalWidth < block.MaxWidth.Value)
                 {
-                    EmbeddedFontInfo? efForCid = null;
-                    if (blockPrefSlot >= 0 && embeddedFonts != null && blockPrefSlot < embeddedFonts.Count)
-                        efForCid = embeddedFonts[blockPrefSlot];
-                    if (efForCid != null && block.MaxWidth.HasValue)
+                    int spaceCount = 0;
+                    foreach (var ch in block.Text) if (ch == ' ') spaceCount++;
+                    if (spaceCount > 0)
                     {
-                        var actualGlyphWidth = MeasureEmbeddedFontWidth(block.Text, block.FontSize, efForCid);
-                        if (actualGlyphWidth > 0)
-                            cidTzPercent = (double)block.MaxWidth.Value / actualGlyphWidth * 100.0;
-                        // Clamp: only compress, never expand beyond 100%
-                        if (cidTzPercent > 100.0) cidTzPercent = 100.0;
+                        var newWs = (block.MaxWidth.Value - naturalWidth) / spaceCount;
+                        if (newWs < 0) newWs = 0;
+                        effectiveWordSpacing = newWs;
                     }
-                    if (block.WordSpacing > 0)
-                    {
-                        // TJ displacement = -(ws / fontSize / (Tz/100)) * 1000
-                        // because PDF applies × Tz/100 to TJ values in text space
-                        var tzFactor = cidTzPercent / 100.0;
-                        wordSpacingTJ = -(int)Math.Round((double)block.WordSpacing / block.FontSize / tzFactor * 1000.0);
-                    }
+                }
+
+                var cidTzPercent = 100.0;
+                if (block.MaxWidth.HasValue && naturalWidth > 0)
+                {
+                    cidTzPercent = (double)block.MaxWidth.Value / naturalWidth * 100.0;
+                    // Clamp: only compress, never expand beyond 100%
+                    if (cidTzPercent > 100.0) cidTzPercent = 100.0;
+                }
+
+                var wordSpacingTJ = 0;
+                if (effectiveWordSpacing > 0)
+                {
+                    // TJ displacement = -(ws / fontSize / (Tz/100)) * 1000
+                    // because PDF applies × Tz/100 to TJ values in text space
+                    var tzFactor = cidTzPercent / 100.0;
+                    wordSpacingTJ = -(int)Math.Round(effectiveWordSpacing / block.FontSize / tzFactor * 1000.0);
                 }
                 // Don't emit Tw for CID path (handled by TJ). Tc is still needed.
                 sb.Append($"{block.CharSpacing.ToString("F2", CultureInfo.InvariantCulture)} Tc\n");
-                // Tz: for CID path, use computed cidTzPercent.
-                // For WinAnsi fallback with no embedded font, keep compress-only Tz.
-                if (block.MaxWidth.HasValue)
+                // Tz: compress-only when natural exceeds MaxWidth.
+                if (block.MaxWidth.HasValue && naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
                 {
-                    // When an embedded font is used, measure natural width using
-                    // the actual font metrics so Tz correctly compresses/expands
-                    // to match the maxWidth.  Helvetica metrics would be wrong
-                    // because the embedded font (e.g. Verdana-Bold) has different widths.
-                    EmbeddedFontInfo? blockFont = null;
-                    if (hasBoldFontVariant && fontNameToSlot!.TryGetValue(boldFontKey!, out var boldSlotIdx))
-                        blockFont = embeddedFonts[boldSlotIdx];
-                    else if (blockHasEmbeddedPref && fontNameToSlot!.TryGetValue(block.PreferredFontName!, out var prefSlotIdx))
-                        blockFont = embeddedFonts[prefSlotIdx];
-
-                    var naturalWidth = blockFont != null
-                        ? MeasureEmbeddedFontWidth(block.Text, block.FontSize, block.CharSpacing, blockFont)
-                        : -1.0;
-                    if (naturalWidth < 0)
-                        naturalWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
-
-                    if (naturalWidth > block.MaxWidth.Value && naturalWidth > 0)
-                    {
-                        var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
-                        sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
-                    }
-                    else
-                    {
-                        sb.Append("100.0 Tz\n");
-                    }
+                    var tzPercent = (block.MaxWidth.Value / naturalWidth) * 100.0;
+                    sb.Append($"{tzPercent.ToString("F1", CultureInfo.InvariantCulture)} Tz\n");
                 }
                 else
                 {

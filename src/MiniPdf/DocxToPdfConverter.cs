@@ -28,6 +28,14 @@ internal static class DocxToPdfConverter
     // Used to apply a stronger width reduction in EstimateWrapTextWidth.
     [ThreadStatic] private static bool s_serifFont;
 
+    // Per-paragraph/cell flag: set when the run font is a serif font (Times New Roman,
+    // Georgia, etc.) inside a document whose default font is Calibri. Calibri Latin
+    // glyphs are noticeably wider than serif glyphs (e.g. Calibri 'a'=507, 'e'=515 vs
+    // Times 'a'=444, 'e'=444), so the Calibri-width estimate is ~5% too wide for serif
+    // runs. Without this correction WordWrap wraps trailing words (e.g. "publication.")
+    // to a new line that Word fits comfortably on the previous line.
+    [ThreadStatic] private static bool s_serifRunInCalibri;
+
     // Per-paragraph override: when set, WordWrap uses these character widths instead of
     // Helvetica/Calibri metrics. Used for fonts with significantly different glyph widths
     // (e.g. Century Gothic) where Helvetica is a poor proxy.
@@ -1361,6 +1369,7 @@ internal static class DocxToPdfConverter
                 && !IsWideSansSerifFont(runFontName);
             s_overrideWidths = GetFontOverrideWidths(runFontName);
             s_wideSansSerifFont = IsWideSansSerifFont(runFontName) && s_overrideWidths == null;
+            s_serifRunInCalibri = paraUseCalibri && !s_serifFont && IsSerifFont(runFontName);
             var lines = WordWrap(fullText, wrapFirstLineWidth, wrapAvailableWidth, runFontSize, paragraph.TabStops, runBold, runCharSpacing, paraUseCalibri);
             // Keep s_overrideWidths set during the rendering loop so that
             // EstimateWrapTextWidth uses the same font metrics as WordWrap,
@@ -1423,17 +1432,31 @@ internal static class DocxToPdfConverter
                     var spaceCount = line.Count(c => c == ' ');
                     if (spaceCount > 0)
                     {
-                        var extraSpace = lineW - textWidth;
+                        // When the wrap estimate undercounts true rendered width
+                        // (e.g. serif runs in a Calibri-default doc had latinUnits
+                        // scaled by 0.95 in EstimateCalibrTextWidth), invert that
+                        // scaling so wordSpacing reflects the true text width.
+                        // Otherwise justified word spacing pushes the rendered
+                        // line past the right margin.
+                        var realTextWidth = s_serifRunInCalibri ? textWidth / 0.95f : textWidth;
+                        var extraSpace = lineW - realTextWidth;
                         if (extraSpace > 0)
                             wordSpacing = extraSpace / spaceCount;
                     }
                 }
+                // For justified paragraphs, always cap rendered width to lineW via
+                // Tz so any wrap-time estimate error compresses instead of
+                // overflowing the right margin (applies to last line too — in case
+                // the algorithm packed one extra word due to undercounting).
+                if (paragraph.Alignment == "both" && renderMaxWidth == null)
+                    renderMaxWidth = lineW;
 
                 state.CurrentPage!.AddText(line, renderX, state.CurrentY, runFontSize, runColor, maxWidth: renderMaxWidth, bold: runBold, italic: runItalic, underline: runUnderline, charSpacing: runCharSpacing, wordSpacing: wordSpacing, preferredFontName: runFontName);
                 state.AdvanceY(lineHeight);
             }
             s_overrideWidths = null;
             s_wideSansSerifFont = false;
+            s_serifRunInCalibri = false;
         }
 
         // For exact line spacing, cap paragraph height to lineHeight so
@@ -2060,7 +2083,9 @@ internal static class DocxToPdfConverter
                 // Force line break for each \n (except before the first segment)
                 if (hi > 0)
                 {
-                    FlushLineEntries();
+                    // The line ending at this <w:br/> is the last visual line
+                    // of the preceding segment, so it must not be justified.
+                    FlushLineEntries(isLastLine: true);
                     if (!state.IsTopOfPage && state.CurrentY - runFs * (GetFontMetricsFactor(run.FontName) - 1f) < state.Options.MarginBottom)
                         state.ForceNewPage();
                     else
@@ -2082,6 +2107,12 @@ internal static class DocxToPdfConverter
                 // For left-aligned text, keep Calibri widths to preserve layout matching.
                 var isCenterRight = paragraph.Alignment is "center" or "right";
                 var useCalibri = isCenterRight ? false : state.Options.UseCalibriWidths;
+                // When the run font is a serif (Times New Roman etc.) inside a Calibri-default
+                // document, Calibri Latin glyphs are ~5% wider than the serif glyphs Word
+                // actually renders. Apply the s_serifRunInCalibri flag so downstream
+                // EstimateWrapTextWidth/EstimateCalibrTextWidth calls scale the estimate down,
+                // matching Word's wrap decisions for serif runs in Calibri-default docs.
+                s_serifRunInCalibri = useCalibri && !s_serifFont && IsSerifFont(run.FontName);
 
                 // Handle tab stops directly: advance to tab position with leader fill
                 if (hardLines[hi] == "\t" && paragraph.TabStops is { Count: > 0 })
@@ -2312,6 +2343,7 @@ internal static class DocxToPdfConverter
 
         FlushLineEntries(isLastLine: true);
         state.AdvanceY(lineHeight);
+        s_serifRunInCalibri = false;
     }
 
     // ── Shape rendering ─────────────────────────────────────────────────
@@ -2866,6 +2898,7 @@ internal static class DocxToPdfConverter
                         && !IsWideSansSerifFont(firstRun?.FontName);
                     s_overrideWidths = GetFontOverrideWidths(firstRun?.FontName);
                     s_wideSansSerifFont = IsWideSansSerifFont(firstRun?.FontName) && s_overrideWidths == null;
+                    s_serifRunInCalibri = cellUseCalibri && !s_serifFont && IsSerifFont(firstRun?.FontName);
                     var lines = WordWrap(text, textWidth, textWidth, runFontSize, null,
                         firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, cellUseCalibri);
 
@@ -2893,6 +2926,7 @@ internal static class DocxToPdfConverter
                     }
                     s_overrideWidths = null;
                     s_wideSansSerifFont = false;
+                    s_serifRunInCalibri = false;
 
                     // Paragraph spacing after
                     var spAfter = para.SpacingAfter >= 0 ? para.SpacingAfter : (table.StyleSpacingAfter > 0 ? table.StyleSpacingAfter : 0f);
@@ -3245,6 +3279,7 @@ internal static class DocxToPdfConverter
                         && !IsWideSansSerifFont(cellRunFontName);
                     s_overrideWidths = GetFontOverrideWidths(cellRunFontName);
                     s_wideSansSerifFont = IsWideSansSerifFont(cellRunFontName) && s_overrideWidths == null;
+                    s_serifRunInCalibri = cellUseCalibri && !s_serifFont && IsSerifFont(cellRunFontName);
                     var lines = WordWrap(text, wrapWidth, wrapWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, cellUseCalibri);
 
                     foreach (var line in lines)
@@ -3286,6 +3321,7 @@ internal static class DocxToPdfConverter
                     }
                     s_overrideWidths = null;
                     s_wideSansSerifFont = false;
+                    s_serifRunInCalibri = false;
 
                     // Apply SpacingAfter: table style override takes precedence, else paragraph's own
                     // Skip SpacingAfter for the last paragraph in the cell (Word behaviour)
@@ -3477,7 +3513,15 @@ internal static class DocxToPdfConverter
 
     private static float CalculateCellContentHeight(DocxTableCell cell, float cellWidth, float cellPaddingH, float cellPaddingV, ConversionOptions options, float styleLineSpacing = -1, float styleSpacingAfter = -1)
     {
-        var cellHeight = cellPaddingV * 2;
+        // Honor cell-level top/bottom margin overrides so the calculated
+        // content height matches the renderer's effective padding (which
+        // uses Math.Max of the cell's own top/bottom margins). Without
+        // this, cells with explicit larger margins underestimate height
+        // and trigger spurious end-of-cell clipping.
+        var effCellTop = cell.CellMarginTop >= 0 ? cell.CellMarginTop : cellPaddingV;
+        var effCellBottom = cell.CellMarginBottom >= 0 ? cell.CellMarginBottom : cellPaddingV;
+        var effCellPaddingV = Math.Max(effCellTop, effCellBottom);
+        var cellHeight = effCellPaddingV * 2;
         var cellParas = cell.Paragraphs;
         for (var pi = 0; pi < cellParas.Count; pi++)
         {
@@ -3547,9 +3591,11 @@ internal static class DocxToPdfConverter
                 && !IsWideSansSerifFont(dominantRun?.FontName);
             s_overrideWidths = GetFontOverrideWidths(dominantRun?.FontName);
             s_wideSansSerifFont = IsWideSansSerifFont(dominantRun?.FontName) && s_overrideWidths == null;
+            s_serifRunInCalibri = cellUseCalibri && !s_serifFont && IsSerifFont(dominantRun?.FontName);
             var lines = WordWrap(text, textWidth, textWidth, runFontSize, null, runBold, runCharSpacing, cellUseCalibri);
             s_overrideWidths = null;
             s_wideSansSerifFont = false;
+            s_serifRunInCalibri = false;
             cellHeight += lines.Count * lineHeight;
             // Apply SpacingAfter for all non-last paragraphs (matching rendering logic)
             if (!isLastPara)
@@ -3969,7 +4015,13 @@ internal static class DocxToPdfConverter
         // Bold text in serif fonts (e.g. Times New Roman) is typically ~5% wider
         // than regular weight. Without this, bold keywords fits too easily on a
         // line, causing fewer word-wrap breaks than the reference document.
-        if (bold) rawWidth *= 1.10f;
+        // Skip the inflation for wide sans-serif fonts (Franklin Gothic Demi,
+        // Montserrat, etc.) - those are already heavy weights whose bold variant
+        // is only marginally wider; over-inflating forces spurious wraps when
+        // the text would actually fit (e.g. "ready to list?" headings).
+        bool hasCjkPre = false;
+        foreach (var c in text) if (c >= '\u2E80' && !char.IsHighSurrogate(c) && !char.IsLowSurrogate(c)) { hasCjkPre = true; break; }
+        if (bold && !(s_wideSansSerifFont && !hasCjkPre)) rawWidth *= 1.10f;
         // Helvetica Latin metrics are wider than common CJK-Latin fonts
         // (PMingLiU, SimSun, etc.) which use narrower Latin glyphs.
         // Reduce the Latin portion to better match actual document font wrapping.
@@ -4009,9 +4061,11 @@ internal static class DocxToPdfConverter
             // Wide sans-serif fonts (Franklin Gothic, Montserrat) have Latin glyphs
             // close to Helvetica width; use a small reduction so WordWrap doesn't
             // over-pack lines (which would trigger Tz compression at render time).
-            if (s_wideSansSerifFont && !hasCjk && !bold)
+            // Apply this for bold weights too: Franklin Gothic Demi Bold is only
+            // marginally wider than Demi, so the regular 5% bold reduction works.
+            if (s_wideSansSerifFont && !hasCjk)
                 serifReduction = 0.04f;
-            var reductionFactor = hasCjk ? 0.27f : (bold ? 0.05f : serifReduction);
+            var reductionFactor = hasCjk ? 0.27f : (bold && !s_wideSansSerifFont ? 0.05f : serifReduction);
             rawWidth *= 1f - latinFraction * reductionFactor;
         }
         return rawWidth;
@@ -4182,6 +4236,11 @@ internal static class DocxToPdfConverter
         // than raw glyph-width sum due to font-level kerning pairs and grid fitting.
         // Only apply to Latin characters; CJK fonts have no inter-character kerning.
         latinUnits *= 0.977f;
+        // When the run font is a serif (Times New Roman etc.) inside a Calibri-default
+        // document, Calibri Latin glyphs are ~5% wider than the serif glyphs Word will
+        // actually render with. Apply an additional reduction so WordWrap matches Word's
+        // line-break decisions for the serif text.
+        if (s_serifRunInCalibri) latinUnits *= 0.95f;
         var totalUnits = latinUnits + cjkUnits;
         var width = fontSize * totalUnits / 1000f;
         if (charSpacing != 0 && text.Length > 1)
