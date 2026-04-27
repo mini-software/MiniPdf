@@ -12,6 +12,7 @@
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000"             # only files matching "sa8000"
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -SkipReference
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -CompareOnly
+    .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -SingleFile # convert via published .NET single-file CLI
 #>
 
 param(
@@ -22,6 +23,8 @@ param(
     [switch]$SkipInstall,
     [switch]$WithOffice,
     [switch]$SkipOffice,
+    [switch]$SingleFile,
+    [string]$SingleFileRid = "win-x64",
     [ValidateSet("libre", "office")]
     [string]$Engine = "office"
 )
@@ -31,6 +34,9 @@ $ScriptRoot = Split-Path -Parent $PSScriptRoot
 $IssueDir = Join-Path (Join-Path $ScriptRoot "tests") "Issue_Files"
 $BenchmarkDir = Join-Path (Join-Path $ScriptRoot "tests") "MiniPdf.Benchmark"
 $ScriptsDir = Join-Path (Join-Path $ScriptRoot "tests") "MiniPdf.Scripts"
+$CliProject = Join-Path (Join-Path (Join-Path $ScriptRoot "src") "MiniPdf.Cli") "MiniPdf.Cli.csproj"
+$SingleFilePublishDir = Join-Path (Join-Path (Join-Path $IssueDir "_singlefile") "MiniPdf.Cli") $SingleFileRid
+$SingleFileExe = Join-Path $SingleFilePublishDir "MiniPdf.Cli.exe"
 
 # Issue source dirs
 $XlsxIssueDir = Join-Path $IssueDir "xlsx"
@@ -55,6 +61,69 @@ $ReportDocx = Join-Path $IssueDir "reports_docx"
 Write-Host "`n============================================================" -ForegroundColor Cyan
 Write-Host "  MiniPdf Issue Files Benchmark" -ForegroundColor Cyan
 Write-Host "============================================================`n" -ForegroundColor Cyan
+
+if ($SingleFile) {
+    Write-Host "  MiniPdf mode: .NET single-file CLI ($SingleFileRid)" -ForegroundColor DarkCyan
+} else {
+    Write-Host "  MiniPdf mode: dotnet run (script)" -ForegroundColor DarkCyan
+}
+
+function Ensure-SingleFileCli {
+    if (-not $SingleFile) { return }
+
+    if (-not (Test-Path $CliProject)) {
+        throw "MiniPdf CLI project not found: $CliProject"
+    }
+
+    if (-not (Test-Path $SingleFilePublishDir)) {
+        New-Item -ItemType Directory -Path $SingleFilePublishDir -Force | Out-Null
+    }
+
+    if (-not (Test-Path $SingleFileExe)) {
+        Write-Host "[Build] Publishing MiniPdf single-file CLI..." -ForegroundColor Yellow
+        dotnet publish $CliProject -c Release -r $SingleFileRid --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false -o $SingleFilePublishDir
+        if ($LASTEXITCODE -ne 0) {
+            throw "dotnet publish failed for single-file CLI."
+        }
+    }
+}
+
+function Convert-WithSingleFileCli {
+    param(
+        [string]$InputDir,
+        [string]$OutputDir,
+        [string]$Extension,
+        [string]$FilterPattern
+    )
+
+    Ensure-SingleFileCli
+
+    $files = Get-ChildItem -Path $InputDir -Filter "*.$Extension" -ErrorAction SilentlyContinue | Sort-Object Name
+    if ($FilterPattern) {
+        $files = $files | Where-Object { $_.BaseName -like "*$FilterPattern*" }
+    }
+
+    if (-not $files -or $files.Count -eq 0) {
+        Write-Host "No .$Extension files found in $InputDir" -ForegroundColor DarkYellow
+        return
+    }
+
+    $passed = 0
+    $failed = 0
+
+    foreach ($f in $files) {
+        $pdfPath = Join-Path $OutputDir ($f.BaseName + ".pdf")
+        & $SingleFileExe convert $f.FullName -o $pdfPath
+        if ($LASTEXITCODE -eq 0) {
+            $passed++
+        } else {
+            $failed++
+            Write-Host "  ERR $($f.Name)" -ForegroundColor Red
+        }
+    }
+
+    Write-Host "  Done via single-file CLI. Passed: $passed, Failed: $failed, Total: $($files.Count)" -ForegroundColor Cyan
+}
 
 # Step 0: Install Python dependencies
 if (-not $SkipInstall) {
@@ -83,13 +152,17 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
 
     if (-not $CompareOnly -and -not $SkipMiniPdf) {
         Write-Host '[Step 1] Converting XLSX -> PDF (MiniPdf)...' -ForegroundColor Yellow
-        Push-Location $ScriptsDir
-        try {
-            $convertArgs = @("convert_xlsx_to_pdf.cs", "--", $XlsxIssueDir, $MiniPdfXlsx)
-            if ($Filter) { $convertArgs += $Filter }
-            dotnet run --no-cache @convertArgs
-        } finally {
-            Pop-Location
+        if ($SingleFile) {
+            Convert-WithSingleFileCli -InputDir $XlsxIssueDir -OutputDir $MiniPdfXlsx -Extension "xlsx" -FilterPattern $Filter
+        } else {
+            Push-Location $ScriptsDir
+            try {
+                $convertArgs = @("convert_xlsx_to_pdf.cs", "--", $XlsxIssueDir, $MiniPdfXlsx)
+                if ($Filter) { $convertArgs += $Filter }
+                dotnet run --no-cache @convertArgs
+            } finally {
+                Pop-Location
+            }
         }
     }
 
@@ -155,13 +228,17 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
 
     if (-not $CompareOnly -and -not $SkipMiniPdf) {
         Write-Host '[Step 1] Converting DOCX -> PDF (MiniPdf)...' -ForegroundColor Yellow
-        Push-Location $ScriptsDir
-        try {
-            $convertArgs = @("convert_docx_to_pdf.cs", "--", $DocxIssueDir, $MiniPdfDocx)
-            if ($Filter) { $convertArgs += $Filter }
-            dotnet run --no-cache @convertArgs
-        } finally {
-            Pop-Location
+        if ($SingleFile) {
+            Convert-WithSingleFileCli -InputDir $DocxIssueDir -OutputDir $MiniPdfDocx -Extension "docx" -FilterPattern $Filter
+        } else {
+            Push-Location $ScriptsDir
+            try {
+                $convertArgs = @("convert_docx_to_pdf.cs", "--", $DocxIssueDir, $MiniPdfDocx)
+                if ($Filter) { $convertArgs += $Filter }
+                dotnet run --no-cache @convertArgs
+            } finally {
+                Pop-Location
+            }
         }
     }
 

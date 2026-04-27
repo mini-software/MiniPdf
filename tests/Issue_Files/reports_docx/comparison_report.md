@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-27T12:18:14.439278
+Generated: 2026-04-27T22:08:49.682130
 
 ## Summary
 
@@ -9,7 +9,7 @@ Generated: 2026-04-27T12:18:14.439278
 | 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9669 | 2/2 | **0.9868** |
 | 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9744 | 2/2 | **0.9898** |
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9557 | 2/2 | **0.9799** |
-| 4 | 🟢 20260318_issue | ✅ | 0.9597 | 0.8515 | 7/7 | **0.9245** |
+| 4 | 🟢 20260318_issue | ✅ | 0.9998 | 0.9395 | 7/7 | **0.9757** |
 | 5 | 🟢 CCU_article | ✅ | 0.9255 | 0.9452 | 21/21 | **0.9483** |
 | 6 | 🟢 Class News | ✅ | 0.9414 | 0.8573 | 4/4 | **0.9195** |
 | 7 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
@@ -19,14 +19,14 @@ Generated: 2026-04-27T12:18:14.439278
 | 11 | 🟢 Invoice | ✅ | 0.9963 | 0.9017 | 1/1 | **0.9592** |
 | 12 | 🟢 issues66 | ✅ | 0.9745 | 0.9838 | 3/3 | **0.9833** |
 | 13 | 🟡 MODERN LIVING | ✅ | 0.8851 | 0.7827 | 2/2 | **0.8671** |
-| 14 | 🟡 nthu_article | ✅ | 0.8387 | 0.8679 | 20/20 | **0.8826** |
+| 14 | 🟡 nthu_article | ✅ | 0.8242 | 0.8226 | 18/20 | **0.7587** |
 | 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
 | 16 | 🟢 SA8000 ch sample | ✅ | 0.9945 | 0.9203 | 2/2 | **0.9659** |
 | 17 | 🟢 Support_Letter | ✅ | 1.0 | 0.9579 | 1/1 | **0.9832** |
 | 18 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.979 | 17/17 | **0.9916** |
 | 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8430**
+**Average Overall Score: 0.8392**
 
 ## Visual Comparison
 
@@ -70,7 +70,7 @@ Generated: 2026-04-27T12:18:14.439278
 </tr>
 <tr>
   <td><b>20260318_issue</b></td>
-  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 92.5%</td>
+  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
   <td><img src="images/20260318_issue_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -305,7 +305,7 @@ Generated: 2026-04-27T12:18:14.439278
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 88.3%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 75.9%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -380,11 +380,11 @@ Generated: 2026-04-27T12:18:14.439278
   <td><img src="images/nthu_article_p18_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/nthu_article_p19_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
   <td><img src="images/nthu_article_p19_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/nthu_article_p20_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
   <td><img src="images/nthu_article_p20_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
@@ -642,11 +642,11 @@ Text content: ✅ Identical
 
 ### 20260318_issue
 
-- **Text Similarity:** 0.9597
-- **Visual Average:** 0.8515
-- **Overall Score:** 0.9245
+- **Text Similarity:** 0.9998
+- **Visual Average:** 0.9395
+- **Overall Score:** 0.9757
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=1518177 bytes, Reference=344088 bytes
+- **File Size:** MiniPdf=1512691 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -663,113 +663,6 @@ Text content: ✅ Identical
 -J jfdlj 水水水顶顶顶顶水水水水
 
 +Jjfdlj 水水水顶顶顶顶水水水水
-
- 页脚的公司名称
-
- ---PAGE---
-
- 页眉的名称 ……………………..
-
-@@ -13,7 +13,8 @@
- ---PAGE---
-
- 页眉的名称 ……………………..
-
- 页眉 换了一行 .
-
--RESTRICTED DISTRIBUTION1
-
-+1
-
-+RESTRICTED DISTRIBUTION
-
- The information is standard Company Confidential but due to its sensitivity it has restricted distribution and viewing
-
- within Volvo Cars.
-
- Document Version Control
-
-@@ -31,19 +32,23 @@
- document for information only.
-
- Name Department Responsibility
-
- Document Classification
-
--Classification Company Confidential
-
--Definition Information is Group confidential and needs to be protected
-
--Context Where loss of information confidentiality would result in significant harm to the
-
-+Company Confidential
-
-+Classification
-
-+1
-
-+页脚的公司名称
-
-+---PAGE---
-
-+页眉的名称 ……………………..
-
-+页眉 换了一行 .
-
-+Information is Group confidential and needs to be protected
-
-+Definition
-
-+Where loss of information confidentiality would result in significant harm to the
-
-+Context
-
- interests of the organization, financial loss, embarrassment or loss of information
-
- Introduction
-
- The Process Definition Document (PDD) captures the flow of a business process to be developed.
-
- The flowchart contained within the document captures, at a high level, the business process to be automated, the
-
- target systems used within the process and any assumptions that have been taken into account.
-
- Once agreed as the basis for the automation of the target process, the flowchart and assumptions will be used as a
-
--页脚的公司名称
-
-----PAGE---
-
--页眉的名称 ……………………..
-
--页眉 换了一行 .
-
- platform from which the automated solution will be designed.
-
- Changes to this business process may constitute a request for change and will be subject to the agreed agility program
-
- change procedures.
-
-@@ -67,12 +72,11 @@
- 2. Fill the title of work order.
-
- 3. Fill Asset code. Automatically display description after filling asset code.
-
- 4. Choose the Owner group.
-
--5.
-
- 页脚的公司名称
-
- ---PAGE---
-
- 页眉的名称 ……………………..
-
- 页眉 换了一行 .
-
--Choose the Work Type.
-
-+5. Choose the Work Type.
 
  页脚的公司名称
 
@@ -1720,11 +1613,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.8387
-- **Visual Average:** 0.8679
-- **Overall Score:** 0.8826
-- **Pages:** MiniPdf=20, Reference=20
-- **File Size:** MiniPdf=8695021 bytes, Reference=798510 bytes
+- **Text Similarity:** 0.8242
+- **Visual Average:** 0.8226
+- **Overall Score:** 0.7587
+- **Pages:** MiniPdf=18, Reference=20
+- **File Size:** MiniPdf=8693251 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1752,7 +1645,7 @@ Text content: ✅ Identical
 
  論文指導教授推薦書(影本)
 
-@@ -14,119 +14,151 @@
+@@ -14,227 +14,273 @@
  表次 List of Tables（可免）
 
  圖次 List of Figures（可免）
@@ -1813,11 +1706,11 @@ Text content: ✅ Identical
 
 -封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝（
 
--https://registra.site.nthu.edu.tw/var/file/211/1211/img/75/203558730.pdf ）。論
+-https://registra.site.nthu.edu.tw/var/file/211/1211/img/75/203558730.pdf ）。論文
 
--文封面建議採用亮面雲彩紙。如下範例 A 、範例 B （ 可直接下載套用。此為教
+-封面建議採用亮面雲彩紙。如下範例 A 、範例 B （ 可直接下載套用。此為教務
 
--務處公布之格式）。
+-處公布之格式）。
 
 +封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝
 
@@ -1930,7 +1823,7 @@ Text content: ✅ Identical
  ---PAGE---
 
 -2，行距建議設定為 1.2 行 （ word 中選「多行」，設定
-... (17592 more characters)
+... (17934 more characters)
 
 ```
 </details>
@@ -2298,6 +2191,7 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
+1. **nthu_article** (score: 0.7587)
 1. **Cooperation Agreement Template** (score: 0.7627)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

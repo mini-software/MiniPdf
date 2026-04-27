@@ -1,0 +1,1226 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex" xmlns:cx2="http://schemas.microsoft.com/office/drawing/2015/10/21/chartex" xmlns:cx3="http://schemas.microsoft.com/office/drawing/2016/5/9/chartex" xmlns:cx4="http://schemas.microsoft.com/office/drawing/2016/5/10/chartex" xmlns:cx5="http://schemas.microsoft.com/office/drawing/2016/5/11/chartex" xmlns:cx6="http://schemas.microsoft.com/office/drawing/2016/5/12/chartex" xmlns:cx7="http://schemas.microsoft.com/office/drawing/2016/5/13/chartex" xmlns:cx8="http://schemas.microsoft.com/office/drawing/2016/5/14/chartex" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:aink="http://schemas.microsoft.com/office/drawing/2016/ink" xmlns:am3d="http://schemas.microsoft.com/office/drawing/2017/model3d" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:oel="http://schemas.microsoft.com/office/2019/extlst" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:w16cex="http://schemas.microsoft.com/office/word/2018/wordml/cex" xmlns:w16cid="http://schemas.microsoft.com/office/word/2016/wordml/cid" xmlns:w16="http://schemas.microsoft.com/office/word/2018/wordml" xmlns:w16du="http://schemas.microsoft.com/office/word/2023/wordml/word16du" xmlns:w16sdtdh="http://schemas.microsoft.com/office/word/2020/wordml/sdtdatahash" xmlns:w16sdtfl="http://schemas.microsoft.com/office/word/2024/wordml/sdtformatlock" xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 w15 w16se w16cid w16 w16cex w16sdtdh w16sdtfl w16du wp14">
+  <w:body>
+    <w:p w14:paraId="1DB0BBBF" w14:textId="77777777" w:rsidR="00197602" w:rsidRPr="00197602" w:rsidRDefault="00D70344" w:rsidP="00F12D04">
+      <w:pPr>
+        <w:pStyle w:val="ObjectAnchor" />
+        <w:rPr>
+          <w:sz w:val="12" />
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:lang w:val="en-AU" w:eastAsia="en-AU" />
+        </w:rPr>
+        <w:drawing>
+          <wp:anchor distT="0" distB="0" distL="114300" distR="114300" simplePos="0" relativeHeight="251663360" behindDoc="0" locked="1" layoutInCell="1" allowOverlap="1" wp14:anchorId="3188AB82" wp14:editId="2623F410">
+            <wp:simplePos x="0" y="0" />
+            <wp:positionH relativeFrom="column">
+              <wp:posOffset>1710055</wp:posOffset>
+            </wp:positionH>
+            <wp:positionV relativeFrom="paragraph">
+              <wp:posOffset>1810385</wp:posOffset>
+            </wp:positionV>
+            <wp:extent cx="5605272" cy="3172968" />
+            <wp:effectExtent l="0" t="0" r="0" b="8890" />
+            <wp:wrapNone />
+            <wp:docPr id="2" name="Picture 2" descr="living room" />
+            <wp:cNvGraphicFramePr>
+              <a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1" />
+            </wp:cNvGraphicFramePr>
+            <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                  <pic:nvPicPr>
+                    <pic:cNvPr id="2" name="Picture 2" descr="living room" />
+                    <pic:cNvPicPr>
+                      <a:picLocks noChangeAspect="1" noChangeArrowheads="1" />
+                    </pic:cNvPicPr>
+                  </pic:nvPicPr>
+                  <pic:blipFill>
+                    <a:blip r:embed="rId10">
+                      <a:extLst>
+                        <a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}">
+                          <a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0" />
+                        </a:ext>
+                      </a:extLst>
+                    </a:blip>
+                    <a:srcRect />
+                    <a:stretch>
+                      <a:fillRect />
+                    </a:stretch>
+                  </pic:blipFill>
+                  <pic:spPr bwMode="auto">
+                    <a:xfrm>
+                      <a:off x="0" y="0" />
+                      <a:ext cx="5605272" cy="3172968" />
+                    </a:xfrm>
+                    <a:prstGeom prst="rect">
+                      <a:avLst />
+                    </a:prstGeom>
+                    <a:noFill />
+                    <a:ln>
+                      <a:noFill />
+                    </a:ln>
+                  </pic:spPr>
+                </pic:pic>
+              </a:graphicData>
+            </a:graphic>
+            <wp14:sizeRelH relativeFrom="page">
+              <wp14:pctWidth>0</wp14:pctWidth>
+            </wp14:sizeRelH>
+            <wp14:sizeRelV relativeFrom="page">
+              <wp14:pctHeight>0</wp14:pctHeight>
+            </wp14:sizeRelV>
+          </wp:anchor>
+        </w:drawing>
+      </w:r>
+      <w:r w:rsidR="00197602" w:rsidRPr="00197602">
+        <w:rPr>
+          <w:rFonts w:ascii="Times New Roman" />
+          <w:lang w:val="en-AU" w:eastAsia="en-AU" />
+        </w:rPr>
+        <mc:AlternateContent>
+          <mc:Choice Requires="wps">
+            <w:drawing>
+              <wp:anchor distT="0" distB="0" distL="114300" distR="114300" simplePos="0" relativeHeight="251659264" behindDoc="1" locked="1" layoutInCell="1" allowOverlap="1" wp14:anchorId="056340D1" wp14:editId="1D181AD6">
+                <wp:simplePos x="0" y="0" />
+                <wp:positionH relativeFrom="column">
+                  <wp:posOffset>4664710</wp:posOffset>
+                </wp:positionH>
+                <wp:positionV relativeFrom="paragraph">
+                  <wp:posOffset>-457200</wp:posOffset>
+                </wp:positionV>
+                <wp:extent cx="2651760" cy="10058400" />
+                <wp:effectExtent l="0" t="0" r="0" b="0" />
+                <wp:wrapNone />
+                <wp:docPr id="11" name="Rectangle 11" descr="Decorative">
+                  <a:extLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                    <a:ext uri="{C183D7F6-B498-43B3-948B-1728B52AA6E4}">
+                      <adec:decorative xmlns:adec="http://schemas.microsoft.com/office/drawing/2017/decorative" val="1" />
+                    </a:ext>
+                  </a:extLst>
+                </wp:docPr>
+                <wp:cNvGraphicFramePr>
+                  <a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" />
+                </wp:cNvGraphicFramePr>
+                <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                  <a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
+                    <wps:wsp>
+                      <wps:cNvSpPr>
+                        <a:spLocks noChangeArrowheads="1" />
+                      </wps:cNvSpPr>
+                      <wps:spPr bwMode="auto">
+                        <a:xfrm>
+                          <a:off x="0" y="0" />
+                          <a:ext cx="2651760" cy="10058400" />
+                        </a:xfrm>
+                        <a:prstGeom prst="rect">
+                          <a:avLst />
+                        </a:prstGeom>
+                        <a:solidFill>
+                          <a:schemeClr val="tx2">
+                            <a:lumMod val="75000" />
+                            <a:alpha val="10000" />
+                          </a:schemeClr>
+                        </a:solidFill>
+                        <a:ln>
+                          <a:noFill />
+                        </a:ln>
+                      </wps:spPr>
+                      <wps:bodyPr rot="0" vert="horz" wrap="square" lIns="91440" tIns="45720" rIns="91440" bIns="45720" anchor="t" anchorCtr="0" upright="1">
+                        <a:noAutofit />
+                      </wps:bodyPr>
+                    </wps:wsp>
+                  </a:graphicData>
+                </a:graphic>
+                <wp14:sizeRelH relativeFrom="page">
+                  <wp14:pctWidth>0</wp14:pctWidth>
+                </wp14:sizeRelH>
+                <wp14:sizeRelV relativeFrom="page">
+                  <wp14:pctHeight>0</wp14:pctHeight>
+                </wp14:sizeRelV>
+              </wp:anchor>
+            </w:drawing>
+          </mc:Choice>
+          <mc:Fallback>
+            <w:pict>
+              <v:rect w14:anchorId="51034967" id="Rectangle 11" o:spid="_x0000_s1026" alt="Decorative" style="position:absolute;margin-left:367.3pt;margin-top:-36pt;width:208.8pt;height:11in;z-index:-251657216;visibility:visible;mso-wrap-style:square;mso-width-percent:0;mso-height-percent:0;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;mso-position-horizontal:absolute;mso-position-horizontal-relative:text;mso-position-vertical:absolute;mso-position-vertical-relative:text;mso-width-percent:0;mso-height-percent:0;mso-width-relative:page;mso-height-relative:page;v-text-anchor:top" o:gfxdata="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&#xA;" fillcolor="#17365d [2415]" stroked="f">
+                <v:fill opacity="6682f" />
+                <w10:anchorlock />
+              </v:rect>
+            </w:pict>
+          </mc:Fallback>
+        </mc:AlternateContent>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:w="5000" w:type="pct" />
+        <w:tblLook w:val="0600" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="1" w:noVBand="1" />
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="7020" />
+        <w:gridCol w:w="719" />
+        <w:gridCol w:w="3061" />
+      </w:tblGrid>
+      <w:tr w:rsidR="002719D0" w14:paraId="1ACB0F2D" w14:textId="77777777" w:rsidTr="002719D0">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="3250" w:type="pct" />
+          </w:tcPr>
+          <w:p w14:paraId="201F593E" w14:textId="77777777" w:rsidR="002719D0" w:rsidRPr="00BE521F" w:rsidRDefault="00000000" w:rsidP="00BE521F">
+            <w:pPr>
+              <w:pStyle w:val="Title" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="-1448844401" />
+                <w:placeholder>
+                  <w:docPart w:val="C9233A1506204C52AA396B35FD562AE7" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>MODERN LIVING</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00B7283D">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="6DAF649B" w14:textId="77777777" w:rsidR="002719D0" w:rsidRDefault="00000000" w:rsidP="008A3EBD">
+            <w:pPr>
+              <w:pStyle w:val="Subtitle" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="1020513911" />
+                <w:placeholder>
+                  <w:docPart w:val="49B875DDA2AB44CBA4C03DBAAF5BF7D0" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>Your guide to buy or rent</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00B7283D">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="7CB37A47" w14:textId="77777777" w:rsidR="002719D0" w:rsidRPr="008A3EBD" w:rsidRDefault="002719D0" w:rsidP="008A3EBD">
+            <w:r>
+              <w:rPr>
+                <w:noProof />
+                <w:lang w:val="en-AU" w:eastAsia="en-AU" />
+              </w:rPr>
+              <mc:AlternateContent>
+                <mc:Choice Requires="wps">
+                  <w:drawing>
+                    <wp:inline distT="0" distB="0" distL="0" distR="0" wp14:anchorId="7C0D0C47" wp14:editId="40CA3E1D">
+                      <wp:extent cx="1145540" cy="0" />
+                      <wp:effectExtent l="0" t="19050" r="54610" b="38100" />
+                      <wp:docPr id="10" name="Line 13" descr="Decorative">
+                        <a:extLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                          <a:ext uri="{C183D7F6-B498-43B3-948B-1728B52AA6E4}">
+                            <adec:decorative xmlns:adec="http://schemas.microsoft.com/office/drawing/2017/decorative" val="1" />
+                          </a:ext>
+                        </a:extLst>
+                      </wp:docPr>
+                      <wp:cNvGraphicFramePr>
+                        <a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" />
+                      </wp:cNvGraphicFramePr>
+                      <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                        <a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
+                          <wps:wsp>
+                            <wps:cNvCnPr>
+                              <a:cxnSpLocks noChangeShapeType="1" />
+                            </wps:cNvCnPr>
+                            <wps:spPr bwMode="auto">
+                              <a:xfrm>
+                                <a:off x="0" y="0" />
+                                <a:ext cx="1145540" cy="0" />
+                              </a:xfrm>
+                              <a:prstGeom prst="line">
+                                <a:avLst />
+                              </a:prstGeom>
+                              <a:noFill />
+                              <a:ln w="63500">
+                                <a:solidFill>
+                                  <a:srgbClr val="231F20" />
+                                </a:solidFill>
+                                <a:round />
+                                <a:headEnd />
+                                <a:tailEnd />
+                              </a:ln>
+                              <a:extLst>
+                                <a:ext uri="{909E8E84-426E-40DD-AFC4-6F175D3DCCD1}">
+                                  <a14:hiddenFill xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main">
+                                    <a:noFill />
+                                  </a14:hiddenFill>
+                                </a:ext>
+                              </a:extLst>
+                            </wps:spPr>
+                            <wps:bodyPr />
+                          </wps:wsp>
+                        </a:graphicData>
+                      </a:graphic>
+                    </wp:inline>
+                  </w:drawing>
+                </mc:Choice>
+                <mc:Fallback>
+                  <w:pict>
+                    <v:line w14:anchorId="3E830840" id="Line 13" o:spid="_x0000_s1026" alt="Decorative" style="visibility:visible;mso-wrap-style:square;mso-left-percent:-10001;mso-top-percent:-10001;mso-position-horizontal:absolute;mso-position-horizontal-relative:char;mso-position-vertical:absolute;mso-position-vertical-relative:line;mso-left-percent:-10001;mso-top-percent:-10001" from="0,0" to="90.2pt,0" o:gfxdata="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&#xA;bWxQSwUGAAAAAAQABADzAAAAEgUAAAAA&#xA;" strokecolor="#231f20" strokeweight="5pt">
+                      <w10:anchorlock />
+                    </v:line>
+                  </w:pict>
+                </mc:Fallback>
+              </mc:AlternateContent>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="333" w:type="pct" />
+          </w:tcPr>
+          <w:p w14:paraId="0C66EC42" w14:textId="77777777" w:rsidR="002719D0" w:rsidRDefault="002719D0" />
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="1417" w:type="pct" />
+          </w:tcPr>
+          <w:p w14:paraId="63825A32" w14:textId="77777777" w:rsidR="002719D0" w:rsidRDefault="00000000" w:rsidP="008F2B7D">
+            <w:pPr>
+              <w:pStyle w:val="TopicDescription" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="-2014445731" />
+                <w:placeholder>
+                  <w:docPart w:val="7881BD145A9A473DB9E2262F57CD53D7" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>OCTOBER / 20XX / ISSUE #10</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00B7283D">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="002719D0" w14:paraId="531DACCA" w14:textId="77777777" w:rsidTr="002719D0">
+        <w:trPr>
+          <w:trHeight w:val="5904" />
+        </w:trPr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="3250" w:type="pct" />
+          </w:tcPr>
+          <w:p w14:paraId="7B11F11C" w14:textId="77777777" w:rsidR="002719D0" w:rsidRPr="002719D0" w:rsidRDefault="002719D0" w:rsidP="002719D0" />
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="333" w:type="pct" />
+          </w:tcPr>
+          <w:p w14:paraId="7A5BAF1D" w14:textId="77777777" w:rsidR="002719D0" w:rsidRDefault="002719D0" w:rsidP="002719D0" />
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="1417" w:type="pct" />
+          </w:tcPr>
+          <w:p w14:paraId="2A59D3C3" w14:textId="77777777" w:rsidR="002719D0" w:rsidRDefault="002719D0" w:rsidP="002719D0" />
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00AD2E65" w14:paraId="4D2DECDE" w14:textId="77777777" w:rsidTr="00AD2E65">
+        <w:trPr>
+          <w:trHeight w:val="1008" />
+        </w:trPr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="3250" w:type="pct" />
+            <w:vMerge w:val="restart" />
+          </w:tcPr>
+          <w:p w14:paraId="347AB021" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRPr="002719D0" w:rsidRDefault="00000000" w:rsidP="002719D0">
+            <w:pPr>
+              <w:pStyle w:val="Heading1" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="152189379" />
+                <w:placeholder>
+                  <w:docPart w:val="F7E7CD2C51E4421EBDBF409F4439213D" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>Ready to settle?</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00B7283D">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="61C3A74C" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRDefault="00000000" w:rsidP="002719D0">
+            <w:pPr>
+              <w:pStyle w:val="Byline" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="953295860" />
+                <w:placeholder>
+                  <w:docPart w:val="7F3F87A7C04048B29686A43AB2694FD6" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>By Peyton Davis</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00B7283D">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:sdt>
+            <w:sdtPr>
+              <w:id w:val="445277527" />
+              <w:placeholder>
+                <w:docPart w:val="070B4A50D2004005A5008F34559C427E" />
+              </w:placeholder>
+              <w:showingPlcHdr />
+              <w15:appearance w15:val="hidden" />
+            </w:sdtPr>
+            <w:sdtContent>
+              <w:p w14:paraId="29F5E920" w14:textId="77777777" w:rsidR="00B7283D" w:rsidRPr="00B7283D" w:rsidRDefault="00B7283D" w:rsidP="00B7283D">
+                <w:r w:rsidRPr="00B7283D">
+                  <w:t xml:space="preserve">Newsletters are periodicals used to advertise or update your subscribers with information about your product or blog. They can be printed or emailed and are an excellent way to maintain regular contact with your subscribers and drive traffic to your site. Type the content of your newsletter here. </w:t>
+                </w:r>
+              </w:p>
+              <w:p w14:paraId="59FD3449" w14:textId="77777777" w:rsidR="00B7283D" w:rsidRPr="00B7283D" w:rsidRDefault="00B7283D" w:rsidP="00B7283D">
+                <w:r w:rsidRPr="00B7283D">
+                  <w:t xml:space="preserve">Newsletters are periodicals used to advertise or update your subscribers with information about your product or blog. They are an excellent way to maintain regular contact with your subscribers. Type the content of your newsletter here. </w:t>
+                </w:r>
+              </w:p>
+              <w:p w14:paraId="61CBAF2E" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRPr="002719D0" w:rsidRDefault="00B7283D" w:rsidP="00B7283D">
+                <w:r w:rsidRPr="00B7283D">
+                  <w:t>Newsletters are periodicals used to advertise or update your subscribers with information about your product or blog. Type the content of your newsletter here.</w:t>
+                </w:r>
+              </w:p>
+            </w:sdtContent>
+          </w:sdt>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="333" w:type="pct" />
+            <w:vMerge w:val="restart" />
+          </w:tcPr>
+          <w:p w14:paraId="5E0C6FAB" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRDefault="00AD2E65" w:rsidP="00197602" />
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="1417" w:type="pct" />
+            <w:vAlign w:val="center" />
+          </w:tcPr>
+          <w:p w14:paraId="1E24EBE8" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRPr="00BE521F" w:rsidRDefault="00000000" w:rsidP="00BE521F">
+            <w:pPr>
+              <w:pStyle w:val="TOCHeading" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="-127868471" />
+                <w:placeholder>
+                  <w:docPart w:val="22060949BA37403781474DC2DCAF4E3E" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>What’s New</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00B7283D">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="097AF5A2" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRDefault="00AD2E65" w:rsidP="00AD2E65">
+            <w:pPr>
+              <w:pStyle w:val="TOCHeading" />
+            </w:pPr>
+            <w:r>
+              <w:rPr>
+                <w:noProof />
+                <w:lang w:val="en-AU" w:eastAsia="en-AU" />
+              </w:rPr>
+              <mc:AlternateContent>
+                <mc:Choice Requires="wps">
+                  <w:drawing>
+                    <wp:inline distT="0" distB="0" distL="0" distR="0" wp14:anchorId="13F921B4" wp14:editId="6B744DC8">
+                      <wp:extent cx="180340" cy="0" />
+                      <wp:effectExtent l="0" t="0" r="0" b="0" />
+                      <wp:docPr id="8" name="Line 9" descr="Decorative">
+                        <a:extLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                          <a:ext uri="{C183D7F6-B498-43B3-948B-1728B52AA6E4}">
+                            <adec:decorative xmlns:adec="http://schemas.microsoft.com/office/drawing/2017/decorative" val="1" />
+                          </a:ext>
+                        </a:extLst>
+                      </wp:docPr>
+                      <wp:cNvGraphicFramePr>
+                        <a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" />
+                      </wp:cNvGraphicFramePr>
+                      <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                        <a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
+                          <wps:wsp>
+                            <wps:cNvCnPr>
+                              <a:cxnSpLocks noChangeShapeType="1" />
+                            </wps:cNvCnPr>
+                            <wps:spPr bwMode="auto">
+                              <a:xfrm>
+                                <a:off x="0" y="0" />
+                                <a:ext cx="180340" cy="0" />
+                              </a:xfrm>
+                              <a:prstGeom prst="line">
+                                <a:avLst />
+                              </a:prstGeom>
+                              <a:noFill />
+                              <a:ln w="25400">
+                                <a:solidFill>
+                                  <a:srgbClr val="231F20" />
+                                </a:solidFill>
+                                <a:round />
+                                <a:headEnd />
+                                <a:tailEnd />
+                              </a:ln>
+                              <a:extLst>
+                                <a:ext uri="{909E8E84-426E-40DD-AFC4-6F175D3DCCD1}">
+                                  <a14:hiddenFill xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main">
+                                    <a:noFill />
+                                  </a14:hiddenFill>
+                                </a:ext>
+                              </a:extLst>
+                            </wps:spPr>
+                            <wps:bodyPr />
+                          </wps:wsp>
+                        </a:graphicData>
+                      </a:graphic>
+                    </wp:inline>
+                  </w:drawing>
+                </mc:Choice>
+                <mc:Fallback>
+                  <w:pict>
+                    <v:line w14:anchorId="504B6F7C" id="Line 9" o:spid="_x0000_s1026" alt="Decorative" style="visibility:visible;mso-wrap-style:square;mso-left-percent:-10001;mso-top-percent:-10001;mso-position-horizontal:absolute;mso-position-horizontal-relative:char;mso-position-vertical:absolute;mso-position-vertical-relative:line;mso-left-percent:-10001;mso-top-percent:-10001" from="0,0" to="14.2pt,0" o:gfxdata="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&#xA;SwUGAAAAAAQABADzAAAADwUAAAAA&#xA;" strokecolor="#231f20" strokeweight="2pt">
+                      <w10:anchorlock />
+                    </v:line>
+                  </w:pict>
+                </mc:Fallback>
+              </mc:AlternateContent>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00AD2E65" w14:paraId="21B2C4F0" w14:textId="77777777" w:rsidTr="00AD2E65">
+        <w:trPr>
+          <w:trHeight w:val="2700" />
+        </w:trPr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="3250" w:type="pct" />
+            <w:vMerge />
+          </w:tcPr>
+          <w:p w14:paraId="75E4D025" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRPr="002719D0" w:rsidRDefault="00AD2E65" w:rsidP="002719D0">
+            <w:pPr>
+              <w:pStyle w:val="Heading1" />
+            </w:pPr>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="333" w:type="pct" />
+            <w:vMerge />
+          </w:tcPr>
+          <w:p w14:paraId="661210ED" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRDefault="00AD2E65" w:rsidP="00197602" />
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="1417" w:type="pct" />
+            <w:tcMar>
+              <w:left w:w="173" w:type="dxa" />
+              <w:right w:w="173" w:type="dxa" />
+            </w:tcMar>
+          </w:tcPr>
+          <w:p w14:paraId="5E204D1B" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRDefault="00000000" w:rsidP="00AD2E65">
+            <w:pPr>
+              <w:pStyle w:val="TopicTitle" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="-547690056" />
+                <w:placeholder>
+                  <w:docPart w:val="426F2483956346F786211C23664390EC" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>TAKE A LOOK INSIDE</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00B7283D">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="183AEC10" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRPr="00C77147" w:rsidRDefault="00000000" w:rsidP="00AD2E65">
+            <w:pPr>
+              <w:pStyle w:val="TopicDescription" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="863630194" />
+                <w:placeholder>
+                  <w:docPart w:val="F440E3F47A6A41EDA0AAB384D31FFCF6" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>Add description text here to get your subscribers interested in your topic</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00B7283D">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="277EE0D4" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRDefault="00000000" w:rsidP="00AD2E65">
+            <w:pPr>
+              <w:pStyle w:val="TopicTitle" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="-127320585" />
+                <w:placeholder>
+                  <w:docPart w:val="DE9E14BA9CC84134B5D7B251D6884D62" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>PROPERTY TRENDS</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00B7283D">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="4983F5A3" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRDefault="00000000" w:rsidP="00AD2E65">
+            <w:pPr>
+              <w:pStyle w:val="TopicDescription" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="161511961" />
+                <w:placeholder>
+                  <w:docPart w:val="256AF5396025461382A24B53241123DF" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>Add description text here to get your subscribers interested in your topic</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+          </w:p>
+          <w:p w14:paraId="66735923" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRPr="00C77147" w:rsidRDefault="00000000" w:rsidP="00AD2E65">
+            <w:pPr>
+              <w:pStyle w:val="TopicTitle" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="-1794044444" />
+                <w:placeholder>
+                  <w:docPart w:val="5884421AF47848EDA56DF0B9158EE038" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>ARE YOU READY TO LIST?</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00B7283D">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="722F7545" w14:textId="77777777" w:rsidR="00AD2E65" w:rsidRDefault="00000000" w:rsidP="00AD2E65">
+            <w:pPr>
+              <w:pStyle w:val="TopicDescription" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="-1633009460" />
+                <w:placeholder>
+                  <w:docPart w:val="4D4CE56565A74DE88F7443FCFE99D81E" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00B7283D" w:rsidRPr="00B7283D">
+                  <w:t>Add description text here to get your subscribers interested in your topic</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p w14:paraId="623A022D" w14:textId="77777777" w:rsidR="00197602" w:rsidRDefault="00197602" w:rsidP="002719D0">
+      <w:pPr>
+        <w:pStyle w:val="NoSpacing" />
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="66727421" w14:textId="77777777" w:rsidR="00197602" w:rsidRDefault="00197602" w:rsidP="002719D0">
+      <w:pPr>
+        <w:pStyle w:val="NoSpacing" />
+        <w:sectPr w:rsidR="00197602" w:rsidSect="007D0E86">
+          <w:pgSz w:w="12240" w:h="15840" />
+          <w:pgMar w:top="720" w:right="720" w:bottom="360" w:left="720" w:header="0" w:footer="0" w:gutter="0" />
+          <w:cols w:space="720" />
+          <w:docGrid w:linePitch="360" />
+        </w:sectPr>
+      </w:pPr>
+    </w:p>
+    <w:p w14:paraId="4FDDF286" w14:textId="77777777" w:rsidR="00197602" w:rsidRDefault="00624FC0" w:rsidP="00624FC0">
+      <w:pPr>
+        <w:pStyle w:val="ObjectAnchor" />
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:spacing w:val="40" />
+          <w:lang w:val="en-AU" w:eastAsia="en-AU" />
+        </w:rPr>
+        <w:lastRenderedPageBreak />
+        <w:drawing>
+          <wp:anchor distT="0" distB="0" distL="114300" distR="114300" simplePos="0" relativeHeight="251665408" behindDoc="0" locked="1" layoutInCell="1" allowOverlap="1" wp14:anchorId="35BE5A8E" wp14:editId="771973E3">
+            <wp:simplePos x="0" y="0" />
+            <wp:positionH relativeFrom="column">
+              <wp:posOffset>-457200</wp:posOffset>
+            </wp:positionH>
+            <wp:positionV relativeFrom="paragraph">
+              <wp:posOffset>4260850</wp:posOffset>
+            </wp:positionV>
+            <wp:extent cx="4443984" cy="2542032" />
+            <wp:effectExtent l="0" t="0" r="0" b="0" />
+            <wp:wrapNone />
+            <wp:docPr id="4" name="Picture 4" descr="picture of renovated kitchen" />
+            <wp:cNvGraphicFramePr>
+              <a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1" />
+            </wp:cNvGraphicFramePr>
+            <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                  <pic:nvPicPr>
+                    <pic:cNvPr id="4" name="Picture 4" descr="picture of renovated kitchen" />
+                    <pic:cNvPicPr>
+                      <a:picLocks noChangeAspect="1" noChangeArrowheads="1" />
+                    </pic:cNvPicPr>
+                  </pic:nvPicPr>
+                  <pic:blipFill>
+                    <a:blip r:embed="rId11">
+                      <a:extLst>
+                        <a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}">
+                          <a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0" />
+                        </a:ext>
+                      </a:extLst>
+                    </a:blip>
+                    <a:srcRect />
+                    <a:stretch>
+                      <a:fillRect />
+                    </a:stretch>
+                  </pic:blipFill>
+                  <pic:spPr bwMode="auto">
+                    <a:xfrm>
+                      <a:off x="0" y="0" />
+                      <a:ext cx="4443984" cy="2542032" />
+                    </a:xfrm>
+                    <a:prstGeom prst="rect">
+                      <a:avLst />
+                    </a:prstGeom>
+                    <a:noFill />
+                    <a:ln>
+                      <a:noFill />
+                    </a:ln>
+                  </pic:spPr>
+                </pic:pic>
+              </a:graphicData>
+            </a:graphic>
+            <wp14:sizeRelH relativeFrom="page">
+              <wp14:pctWidth>0</wp14:pctWidth>
+            </wp14:sizeRelH>
+            <wp14:sizeRelV relativeFrom="page">
+              <wp14:pctHeight>0</wp14:pctHeight>
+            </wp14:sizeRelV>
+          </wp:anchor>
+        </w:drawing>
+      </w:r>
+      <w:r w:rsidR="00197602">
+        <w:rPr>
+          <w:lang w:val="en-AU" w:eastAsia="en-AU" />
+        </w:rPr>
+        <mc:AlternateContent>
+          <mc:Choice Requires="wps">
+            <w:drawing>
+              <wp:anchor distT="0" distB="0" distL="114300" distR="114300" simplePos="0" relativeHeight="251661312" behindDoc="1" locked="1" layoutInCell="1" allowOverlap="1" wp14:anchorId="75D7E7E0" wp14:editId="29BDA51F">
+                <wp:simplePos x="0" y="0" />
+                <wp:positionH relativeFrom="column">
+                  <wp:posOffset>-457200</wp:posOffset>
+                </wp:positionH>
+                <wp:positionV relativeFrom="paragraph">
+                  <wp:posOffset>-457200</wp:posOffset>
+                </wp:positionV>
+                <wp:extent cx="4462145" cy="7266305" />
+                <wp:effectExtent l="0" t="0" r="0" b="0" />
+                <wp:wrapNone />
+                <wp:docPr id="7" name="Rectangle 4" descr="Decorative">
+                  <a:extLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                    <a:ext uri="{C183D7F6-B498-43B3-948B-1728B52AA6E4}">
+                      <adec:decorative xmlns:adec="http://schemas.microsoft.com/office/drawing/2017/decorative" val="1" />
+                    </a:ext>
+                  </a:extLst>
+                </wp:docPr>
+                <wp:cNvGraphicFramePr>
+                  <a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" />
+                </wp:cNvGraphicFramePr>
+                <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                  <a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
+                    <wps:wsp>
+                      <wps:cNvSpPr>
+                        <a:spLocks noChangeArrowheads="1" />
+                      </wps:cNvSpPr>
+                      <wps:spPr bwMode="auto">
+                        <a:xfrm>
+                          <a:off x="0" y="0" />
+                          <a:ext cx="4462145" cy="7266305" />
+                        </a:xfrm>
+                        <a:prstGeom prst="rect">
+                          <a:avLst />
+                        </a:prstGeom>
+                        <a:solidFill>
+                          <a:schemeClr val="tx2">
+                            <a:lumMod val="75000" />
+                            <a:alpha val="10000" />
+                          </a:schemeClr>
+                        </a:solidFill>
+                        <a:ln>
+                          <a:noFill />
+                        </a:ln>
+                      </wps:spPr>
+                      <wps:bodyPr rot="0" vert="horz" wrap="square" lIns="91440" tIns="45720" rIns="91440" bIns="45720" anchor="t" anchorCtr="0" upright="1">
+                        <a:noAutofit />
+                      </wps:bodyPr>
+                    </wps:wsp>
+                  </a:graphicData>
+                </a:graphic>
+                <wp14:sizeRelH relativeFrom="page">
+                  <wp14:pctWidth>0</wp14:pctWidth>
+                </wp14:sizeRelH>
+                <wp14:sizeRelV relativeFrom="page">
+                  <wp14:pctHeight>0</wp14:pctHeight>
+                </wp14:sizeRelV>
+              </wp:anchor>
+            </w:drawing>
+          </mc:Choice>
+          <mc:Fallback>
+            <w:pict>
+              <v:rect w14:anchorId="572CC1E9" id="Rectangle 4" o:spid="_x0000_s1026" alt="Decorative" style="position:absolute;margin-left:-36pt;margin-top:-36pt;width:351.35pt;height:572.15pt;z-index:-251655168;visibility:visible;mso-wrap-style:square;mso-width-percent:0;mso-height-percent:0;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;mso-position-horizontal:absolute;mso-position-horizontal-relative:text;mso-position-vertical:absolute;mso-position-vertical-relative:text;mso-width-percent:0;mso-height-percent:0;mso-width-relative:page;mso-height-relative:page;v-text-anchor:top" o:gfxdata="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&#xA;" fillcolor="#17365d [2415]" stroked="f">
+                <v:fill opacity="6682f" />
+                <w10:anchorlock />
+              </v:rect>
+            </w:pict>
+          </mc:Fallback>
+        </mc:AlternateContent>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:w="0" w:type="auto" />
+        <w:tblLook w:val="0600" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="1" w:noVBand="1" />
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="2790" />
+        <w:gridCol w:w="3150" />
+        <w:gridCol w:w="810" />
+        <w:gridCol w:w="4050" />
+      </w:tblGrid>
+      <w:tr w:rsidR="00624FC0" w14:paraId="58CC2EB3" w14:textId="77777777" w:rsidTr="00B97E24">
+        <w:trPr>
+          <w:trHeight w:val="11115" />
+        </w:trPr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="5940" w:type="dxa" />
+            <w:gridSpan w:val="2" />
+          </w:tcPr>
+          <w:p w14:paraId="10ADE509" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRDefault="00000000" w:rsidP="00624FC0">
+            <w:pPr>
+              <w:pStyle w:val="Heading1" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="498850335" />
+                <w:placeholder>
+                  <w:docPart w:val="0C50F905C6F0441C93E5A1D551B4F810" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00DD692E" w:rsidRPr="00DD692E">
+                  <w:t>Take a look inside</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00DD692E">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="7A384263" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRPr="00BE521F" w:rsidRDefault="00000000" w:rsidP="00BE521F">
+            <w:pPr>
+              <w:pStyle w:val="Byline" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="-1224750073" />
+                <w:placeholder>
+                  <w:docPart w:val="5365B5377F5D41ABA00C09529462E0BD" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00DD692E" w:rsidRPr="00DD692E">
+                  <w:t>By Kemen Ikaztegieta</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00DD692E">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:sdt>
+            <w:sdtPr>
+              <w:id w:val="-209732386" />
+              <w:placeholder>
+                <w:docPart w:val="D437BB514CF14897B210D3F3E9F6E51D" />
+              </w:placeholder>
+              <w:showingPlcHdr />
+              <w15:appearance w15:val="hidden" />
+            </w:sdtPr>
+            <w:sdtContent>
+              <w:p w14:paraId="5B57D20A" w14:textId="77777777" w:rsidR="00DD692E" w:rsidRPr="00DD692E" w:rsidRDefault="00DD692E" w:rsidP="00DD692E">
+                <w:r w:rsidRPr="00DD692E">
+                  <w:t xml:space="preserve">Newsletters are periodicals used to advertise or update your subscribers with information about your product or blog. They can be printed or emailed and are an excellent way to maintain regular contact with your subscribers and drive traffic to your site. Type the content of your newsletter here. </w:t>
+                </w:r>
+              </w:p>
+              <w:p w14:paraId="5321B00F" w14:textId="77777777" w:rsidR="00DD692E" w:rsidRPr="00DD692E" w:rsidRDefault="00DD692E" w:rsidP="00DD692E">
+                <w:r w:rsidRPr="00DD692E">
+                  <w:t xml:space="preserve">Newsletters are periodicals use to advertise or update your subscribers with information about your product or blog. They can be printed or emailed and are an excellent way to maintain regular contact with your subscribers and drive traffic to your site. Type your content here. </w:t>
+                </w:r>
+              </w:p>
+              <w:p w14:paraId="4E6C14E7" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRDefault="00DD692E" w:rsidP="00DD692E">
+                <w:r w:rsidRPr="00DD692E">
+                  <w:t>Newsletters are periodicals use to advertise or update your subscribers with information about your product or blog. Type the content of your newsletter here.</w:t>
+                </w:r>
+              </w:p>
+            </w:sdtContent>
+          </w:sdt>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="810" w:type="dxa" />
+          </w:tcPr>
+          <w:p w14:paraId="236AB983" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRPr="00624FC0" w:rsidRDefault="00624FC0" w:rsidP="00624FC0" />
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="4050" w:type="dxa" />
+          </w:tcPr>
+          <w:p w14:paraId="505B9707" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRPr="00624FC0" w:rsidRDefault="00000000" w:rsidP="00624FC0">
+            <w:pPr>
+              <w:pStyle w:val="Heading2" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="1176769759" />
+                <w:placeholder>
+                  <w:docPart w:val="F64C56B1A3F14760BA574305D7CBDACF" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00DD692E" w:rsidRPr="00DD692E">
+                  <w:t>Property trends</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00DD692E">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="64BDC979" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRDefault="00000000" w:rsidP="00624FC0">
+            <w:pPr>
+              <w:pStyle w:val="Byline" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="258884692" />
+                <w:placeholder>
+                  <w:docPart w:val="AEB61939C426465C87C3ABC5AF83008E" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00DD692E" w:rsidRPr="00DD692E">
+                  <w:t>By Vanja Jovanovic</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00DD692E">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="5FE7104E" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRDefault="00624FC0" w:rsidP="00197602">
+            <w:r>
+              <w:rPr>
+                <w:noProof />
+                <w:lang w:val="en-AU" w:eastAsia="en-AU" />
+              </w:rPr>
+              <w:drawing>
+                <wp:inline distT="0" distB="0" distL="0" distR="0" wp14:anchorId="56E036D5" wp14:editId="3D6AB2BB">
+                  <wp:extent cx="2112920" cy="1414462" />
+                  <wp:effectExtent l="0" t="0" r="1905" b="0" />
+                  <wp:docPr id="1" name="image2.png" descr="Roller painting white on a wall" />
+                  <wp:cNvGraphicFramePr>
+                    <a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1" />
+                  </wp:cNvGraphicFramePr>
+                  <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                    <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                      <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                        <pic:nvPicPr>
+                          <pic:cNvPr id="1" name="image2.png" descr="Roller painting white on a wall" />
+                          <pic:cNvPicPr />
+                        </pic:nvPicPr>
+                        <pic:blipFill>
+                          <a:blip r:embed="rId12" cstate="print">
+                            <a:extLst>
+                              <a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}">
+                                <a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0" />
+                              </a:ext>
+                            </a:extLst>
+                          </a:blip>
+                          <a:stretch>
+                            <a:fillRect />
+                          </a:stretch>
+                        </pic:blipFill>
+                        <pic:spPr>
+                          <a:xfrm>
+                            <a:off x="0" y="0" />
+                            <a:ext cx="2112920" cy="1414462" />
+                          </a:xfrm>
+                          <a:prstGeom prst="rect">
+                            <a:avLst />
+                          </a:prstGeom>
+                        </pic:spPr>
+                      </pic:pic>
+                    </a:graphicData>
+                  </a:graphic>
+                </wp:inline>
+              </w:drawing>
+            </w:r>
+          </w:p>
+          <w:sdt>
+            <w:sdtPr>
+              <w:id w:val="1620411488" />
+              <w:placeholder>
+                <w:docPart w:val="04FB6BE596AF489992FEDCDCE64EE5F4" />
+              </w:placeholder>
+              <w:showingPlcHdr />
+              <w15:appearance w15:val="hidden" />
+            </w:sdtPr>
+            <w:sdtContent>
+              <w:p w14:paraId="3E696903" w14:textId="77777777" w:rsidR="00DD692E" w:rsidRPr="00DD692E" w:rsidRDefault="00DD692E" w:rsidP="00DD692E">
+                <w:r w:rsidRPr="00DD692E">
+                  <w:t xml:space="preserve">Newsletters are periodicals used to advertise or update your subscribers with information about your product or blog. They can be printed or emailed and are an excellent way to maintain regular contact with your subscribers and drive traffic to your site. Type the content of your newsletter here. </w:t>
+                </w:r>
+              </w:p>
+              <w:p w14:paraId="6CEE6869" w14:textId="77777777" w:rsidR="00DD692E" w:rsidRPr="00DD692E" w:rsidRDefault="00DD692E" w:rsidP="00DD692E">
+                <w:r w:rsidRPr="00DD692E">
+                  <w:t xml:space="preserve">Newsletters are periodicals used to advertise or update your subscribers with information about your product or blog. Type the content of your newsletter here. </w:t>
+                </w:r>
+              </w:p>
+              <w:p w14:paraId="1128798F" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRDefault="00DD692E" w:rsidP="00DD692E">
+                <w:r w:rsidRPr="00DD692E">
+                  <w:t>Newsletters are periodicals used to advertise or update your subscribers with information about your product or blog. Type the content of your newsletter here.</w:t>
+                </w:r>
+              </w:p>
+            </w:sdtContent>
+          </w:sdt>
+        </w:tc>
+      </w:tr>
+      <w:tr w:rsidR="00624FC0" w14:paraId="7F477199" w14:textId="77777777" w:rsidTr="00BE521F">
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="2790" w:type="dxa" />
+            <w:shd w:val="clear" w:color="auto" w:fill="EAF1DD" w:themeFill="accent3" w:themeFillTint="33" />
+            <w:tcMar>
+              <w:top w:w="86" w:type="dxa" />
+              <w:left w:w="216" w:type="dxa" />
+              <w:bottom w:w="115" w:type="dxa" />
+              <w:right w:w="216" w:type="dxa" />
+            </w:tcMar>
+          </w:tcPr>
+          <w:p w14:paraId="2C287B5F" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRDefault="00000000" w:rsidP="00DD692E">
+            <w:pPr>
+              <w:pStyle w:val="Heading2" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="-757056176" />
+                <w:placeholder>
+                  <w:docPart w:val="544A815025AD4294A6A409338F33D3A2" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00DD692E" w:rsidRPr="00DD692E">
+                  <w:rPr>
+                    <w:rStyle w:val="PlaceholderText" />
+                    <w:color w:val="auto" />
+                  </w:rPr>
+                  <w:t xml:space="preserve">Are you </w:t>
+                </w:r>
+                <w:r w:rsidR="00DD692E">
+                  <w:rPr>
+                    <w:rStyle w:val="PlaceholderText" />
+                    <w:color w:val="auto" />
+                  </w:rPr>
+                  <w:br />
+                </w:r>
+                <w:r w:rsidR="00DD692E" w:rsidRPr="00DD692E">
+                  <w:rPr>
+                    <w:rStyle w:val="PlaceholderText" />
+                    <w:color w:val="auto" />
+                  </w:rPr>
+                  <w:t>ready to list?</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00DD692E">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+          <w:p w14:paraId="2811A608" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRDefault="00000000" w:rsidP="00BE521F">
+            <w:pPr>
+              <w:pStyle w:val="Byline" />
+            </w:pPr>
+            <w:sdt>
+              <w:sdtPr>
+                <w:id w:val="-1103487793" />
+                <w:placeholder>
+                  <w:docPart w:val="7A928F118CC044D297A8A13DB3DCCD0F" />
+                </w:placeholder>
+                <w:showingPlcHdr />
+                <w15:appearance w15:val="hidden" />
+              </w:sdtPr>
+              <w:sdtContent>
+                <w:r w:rsidR="00DD692E" w:rsidRPr="00DD692E">
+                  <w:t>By Adrian King</w:t>
+                </w:r>
+              </w:sdtContent>
+            </w:sdt>
+            <w:r w:rsidR="00DD692E">
+              <w:t xml:space="preserve"> </w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="8010" w:type="dxa" />
+            <w:gridSpan w:val="3" />
+            <w:shd w:val="clear" w:color="auto" w:fill="EAF1DD" w:themeFill="accent3" w:themeFillTint="33" />
+            <w:tcMar>
+              <w:top w:w="86" w:type="dxa" />
+              <w:left w:w="216" w:type="dxa" />
+              <w:bottom w:w="115" w:type="dxa" />
+              <w:right w:w="216" w:type="dxa" />
+            </w:tcMar>
+          </w:tcPr>
+          <w:sdt>
+            <w:sdtPr>
+              <w:id w:val="-1587226249" />
+              <w:placeholder>
+                <w:docPart w:val="2EA773F1848A4B6EAF88072C1173C7E5" />
+              </w:placeholder>
+              <w:showingPlcHdr />
+              <w15:appearance w15:val="hidden" />
+            </w:sdtPr>
+            <w:sdtContent>
+              <w:p w14:paraId="481B556D" w14:textId="77777777" w:rsidR="004C3F43" w:rsidRPr="00DD692E" w:rsidRDefault="004C3F43" w:rsidP="004C3F43">
+                <w:r w:rsidRPr="00DD692E">
+                  <w:t xml:space="preserve">Newsletters are periodicals used to advertise or update your subscribers with information about your product or blog. They can be printed or emailed and are an excellent way to maintain regular contact with your subscribers and drive traffic to your site. Type the content of your newsletter here. </w:t>
+                </w:r>
+              </w:p>
+              <w:p w14:paraId="5BA90C3D" w14:textId="77777777" w:rsidR="00624FC0" w:rsidRDefault="004C3F43" w:rsidP="004C3F43">
+                <w:r w:rsidRPr="00DD692E">
+                  <w:t xml:space="preserve">Newsletters are periodicals used to advertise or update your subscribers with information about your product or blog. Type the content of your newsletter here. </w:t>
+                </w:r>
+              </w:p>
+            </w:sdtContent>
+          </w:sdt>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p w14:paraId="72DDFAEE" w14:textId="77777777" w:rsidR="00197602" w:rsidRDefault="00197602" w:rsidP="00B97E24">
+      <w:pPr>
+        <w:pStyle w:val="ObjectAnchor" />
+      </w:pPr>
+    </w:p>
+    <w:sectPr w:rsidR="00197602" w:rsidSect="007D0E86">
+      <w:pgSz w:w="12240" w:h="15840" />
+      <w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720" w:header="720" w:footer="288" w:gutter="0" />
+      <w:cols w:space="720" />
+      <w:docGrid w:linePitch="360" />
+    </w:sectPr>
+  </w:body>
+</w:document>

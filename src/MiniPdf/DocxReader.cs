@@ -204,8 +204,8 @@ internal static class DocxReader
                             var lnFill = ln.Element(A + "solidFill");
                             if (lnFill != null)
                             {
-                                var lnSrgb = lnFill.Element(A + "srgbClr")?.Attribute("val")?.Value;
-                                var lnColor = !string.IsNullOrEmpty(lnSrgb) ? PdfColor.FromHex(lnSrgb) : new PdfColor(0, 0, 0);
+                                var (resolvedLn, _) = ResolveSolidFill(lnFill, themeColors);
+                                var lnColor = resolvedLn ?? new PdfColor(0, 0, 0);
                                 float lnWidth = 0.5f; // default
                                 if (int.TryParse(ln.Attribute("w")?.Value, out var lnW))
                                     lnWidth = lnW / 914400f * 72f;
@@ -1108,6 +1108,33 @@ internal static class DocxReader
         return new DocxBorderEdge(Math.Max(0.5f, width), color);
     }
 
+    /// <summary>Like <see cref="ReadBorderEdge"/> but returns
+    /// <see cref="DocxBorderEdge.Nil"/> for explicit val="nil"/"none" so callers
+    /// can distinguish "explicitly suppressed" from "not specified".</summary>
+    private static DocxBorderEdge? ReadBorderEdgeAllowNil(XElement? el)
+    {
+        if (el == null) return null;
+        var val = el.Attribute(W + "val")?.Value;
+        if (val == "none" || val == "nil") return DocxBorderEdge.Nil;
+        return ReadBorderEdge(el);
+    }
+
+    /// <summary>Layers <paramref name="over"/> on top of <paramref name="under"/>
+    /// per OOXML conditional formatting precedence: a non-null edge in
+    /// <paramref name="over"/> wins; otherwise the edge from <paramref name="under"/>
+    /// is preserved (including <see cref="DocxBorderEdge.Nil"/> sentinels).</summary>
+    private static DocxBorders? MergeBorders(DocxBorders? under, DocxBorders? over)
+    {
+        if (over == null) return under;
+        if (under == null) return over;
+        return new DocxBorders(
+            Top: over.Top ?? under.Top,
+            Bottom: over.Bottom ?? under.Bottom,
+            Left: over.Left ?? under.Left,
+            Right: over.Right ?? under.Right
+        );
+    }
+
     private static DocxRun? ReadRun(XElement rElement, bool parentBold, bool parentItalic, float parentFontSize, PdfColor? parentColor, bool parentCaps = false, float parentCharSpacing = 0, string? parentFontName = null, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null, Dictionary<string, DocxStyleInfo>? styles = null)
     {
         // Textbox content is parsed separately from w:txbxContent paragraphs.
@@ -1128,6 +1155,7 @@ internal static class DocxReader
         float verticalPosition = 0;
 
         // Resolve character style (rStyle) defaults before reading inline overrides
+        string? rStyleVertAlign = null;
         if (rPr != null && styles != null)
         {
             var rStyleId = rPr.Element(W + "rStyle")?.Attribute(W + "val")?.Value;
@@ -1140,6 +1168,7 @@ internal static class DocxReader
                 if (charStyle.Color != null) color = charStyle.Color;
                 if (!string.IsNullOrWhiteSpace(charStyle.FontName)) fontName = charStyle.FontName;
                 if (charStyle.CharSpacing != 0) charSpacing = charStyle.CharSpacing;
+                rStyleVertAlign = charStyle.VerticalAlign;
             }
         }
 
@@ -1232,23 +1261,24 @@ internal static class DocxReader
         }
 
         // Handle w:vertAlign for superscript/subscript
+        // Inline rPr takes precedence over rStyle-inherited vertAlign
+        string? effectiveVertAlign = null;
         if (rPr != null)
         {
             var vertAlignEl = rPr.Element(W + "vertAlign");
             if (vertAlignEl != null)
-            {
-                var vaVal = vertAlignEl.Attribute(W + "val")?.Value;
-                if (vaVal == "superscript")
-                {
-                    verticalPosition = fontSize * 0.33f;
-                    fontSize *= 0.58f;
-                }
-                else if (vaVal == "subscript")
-                {
-                    verticalPosition = -fontSize * 0.2f;
-                    fontSize *= 0.58f;
-                }
-            }
+                effectiveVertAlign = vertAlignEl.Attribute(W + "val")?.Value;
+        }
+        if (effectiveVertAlign == null) effectiveVertAlign = rStyleVertAlign;
+        if (effectiveVertAlign == "superscript")
+        {
+            verticalPosition = fontSize * 0.33f;
+            fontSize *= 0.58f;
+        }
+        else if (effectiveVertAlign == "subscript")
+        {
+            verticalPosition = -fontSize * 0.2f;
+            fontSize *= 0.58f;
         }
 
         if (string.IsNullOrEmpty(text) && !isPageBreak && !isColumnBreak)
@@ -2288,22 +2318,22 @@ internal static class DocxReader
             if (themeKey != null && themeColors.TryGetValue(themeKey, out var hex))
             {
                 fillColor = PdfColor.FromHex(hex);
-                var lumMod = schemeClr.Element(A + "lumMod");
-                if (lumMod != null && int.TryParse(lumMod.Attribute("val")?.Value, out var lm))
+                // Per OOXML spec, lumMod/lumOff modify the HSL luminance (L) channel
+                // of the source color. Applying the factor/offset linearly to RGB
+                // produces a desaturated (gray) result instead of the expected tint.
+                var lumModEl = schemeClr.Element(A + "lumMod");
+                var lumOffEl = schemeClr.Element(A + "lumOff");
+                if (lumModEl != null || lumOffEl != null)
                 {
-                    var factor = lm / 100000f;
                     var fc = fillColor.Value;
-                    fillColor = new PdfColor(fc.R * factor, fc.G * factor, fc.B * factor);
-                }
-                var lumOff = schemeClr.Element(A + "lumOff");
-                if (lumOff != null && int.TryParse(lumOff.Attribute("val")?.Value, out var lo))
-                {
-                    var offset = lo / 100000f;
-                    var fc = fillColor.Value;
-                    fillColor = new PdfColor(
-                        Math.Min(1f, fc.R + offset),
-                        Math.Min(1f, fc.G + offset),
-                        Math.Min(1f, fc.B + offset));
+                    RgbToHsl(fc.R, fc.G, fc.B, out var h, out var s, out var l);
+                    if (lumModEl != null && int.TryParse(lumModEl.Attribute("val")?.Value, out var lm))
+                        l *= (lm / 100000f);
+                    if (lumOffEl != null && int.TryParse(lumOffEl.Attribute("val")?.Value, out var lo))
+                        l += (lo / 100000f);
+                    if (l < 0f) l = 0f; else if (l > 1f) l = 1f;
+                    HslToRgb(h, s, l, out var r2, out var g2, out var b2);
+                    fillColor = new PdfColor(r2, g2, b2);
                 }
             }
             var alphaEl = schemeClr.Element(A + "alpha");
@@ -2312,6 +2342,51 @@ internal static class DocxReader
         }
 
         return (fillColor, alpha);
+    }
+
+    private static void RgbToHsl(float r, float g, float b, out float h, out float s, out float l)
+    {
+        var max = Math.Max(r, Math.Max(g, b));
+        var min = Math.Min(r, Math.Min(g, b));
+        l = (max + min) / 2f;
+        var d = max - min;
+        if (d < 1e-6f)
+        {
+            h = 0f;
+            s = 0f;
+            return;
+        }
+        s = l > 0.5f ? d / (2f - max - min) : d / (max + min);
+        if (max == r)
+            h = ((g - b) / d + (g < b ? 6f : 0f)) / 6f;
+        else if (max == g)
+            h = ((b - r) / d + 2f) / 6f;
+        else
+            h = ((r - g) / d + 4f) / 6f;
+    }
+
+    private static void HslToRgb(float h, float s, float l, out float r, out float g, out float b)
+    {
+        if (s < 1e-6f)
+        {
+            r = g = b = l;
+            return;
+        }
+        var q = l < 0.5f ? l * (1f + s) : l + s - l * s;
+        var p = 2f * l - q;
+        r = HueToRgb(p, q, h + 1f / 3f);
+        g = HueToRgb(p, q, h);
+        b = HueToRgb(p, q, h - 1f / 3f);
+    }
+
+    private static float HueToRgb(float p, float q, float t)
+    {
+        if (t < 0f) t += 1f;
+        if (t > 1f) t -= 1f;
+        if (t < 1f / 6f) return p + (q - p) * 6f * t;
+        if (t < 1f / 2f) return q;
+        if (t < 2f / 3f) return p + (q - p) * (2f / 3f - t) * 6f;
+        return p;
     }
 
     /// <summary>
@@ -2420,6 +2495,7 @@ internal static class DocxReader
         var tblLook = tblPr?.Element(W + "tblLook");
         var noHBand = tblLook?.Attribute(W + "noHBand")?.Value == "1";
         var firstRowLook = tblLook?.Attribute(W + "firstRow")?.Value == "1";
+        var firstColLook = tblLook?.Attribute(W + "firstColumn")?.Value == "1";
         if (tblGrid != null)
         {
             foreach (var col in tblGrid.Elements(W + "gridCol"))
@@ -2453,6 +2529,7 @@ internal static class DocxReader
             if (gridBeforeEl != null && int.TryParse(gridBeforeEl.Attribute(W + "val")?.Value, out var gbVal))
                 gridBefore = gbVal;
 
+            int cellIdx = 0;
             foreach (var tc in UnwrapSdt(tr.Elements()).Where(e => e.Name == W + "tc"))
             {
                 var cellParagraphs = new List<DocxParagraph>();
@@ -2570,25 +2647,48 @@ internal static class DocxReader
                     }
                 }
 
-                // Apply table style: band shading and firstRow borders
+                // Apply table style: band shading and conditional formatting borders
                 if (tblStyleInfo != null)
                 {
                     var isFirstRow = firstRowLook && rowIndex == 0;
-                    if (shading == null && !noHBand && !isFirstRow)
+                    var isFirstCol = firstColLook && cellIdx == 0;
+                    // Determine band: rows after the (optional) header alternate band1 (odd) / band2 (even).
+                    int bandIndex = -1;
+                    if (!noHBand && !isFirstRow)
+                        bandIndex = firstRowLook ? rowIndex - 1 : rowIndex;
+                    var isBand1Horz = bandIndex >= 0 && bandIndex % 2 == 0;
+                    var isBand2Horz = bandIndex >= 0 && bandIndex % 2 == 1;
+
+                    if (shading == null && bandIndex >= 0)
                     {
-                        // Banding starts after header row (rowIndex 1 = band1)
-                        var bandIndex = firstRowLook ? rowIndex - 1 : rowIndex;
-                        if (bandIndex % 2 == 0 && tblStyleInfo.Band1HorzShading != null)
+                        if (isBand1Horz && tblStyleInfo.Band1HorzShading != null)
                             shading = tblStyleInfo.Band1HorzShading;
-                        else if (bandIndex % 2 == 1 && tblStyleInfo.Band2HorzShading != null)
+                        else if (isBand2Horz && tblStyleInfo.Band2HorzShading != null)
                             shading = tblStyleInfo.Band2HorzShading;
                     }
-                    if (isFirstRow && cellBorders == null && tblStyleInfo.FirstRowBorders != null)
-                        cellBorders = tblStyleInfo.FirstRowBorders;
+                    if (cellBorders == null)
+                    {
+                        // Per OOXML precedence (low->high): wholeTable, bands, firstCol/lastCol,
+                        // firstRow/lastRow.  firstRow wins over firstCol on the top-left cell.
+                        // We layer band borders first, then overlay firstCol/firstRow on top.
+                        DocxBorders? layered = null;
+                        if (isBand1Horz && tblStyleInfo.Band1HorzBorders != null)
+                            layered = tblStyleInfo.Band1HorzBorders;
+                        else if (isBand2Horz && tblStyleInfo.Band2HorzBorders != null)
+                            layered = tblStyleInfo.Band2HorzBorders;
+
+                        if (isFirstRow && tblStyleInfo.FirstRowBorders != null)
+                            layered = MergeBorders(layered, tblStyleInfo.FirstRowBorders);
+                        else if (isFirstCol && tblStyleInfo.FirstColBorders != null)
+                            layered = MergeBorders(layered, tblStyleInfo.FirstColBorders);
+
+                        cellBorders = layered;
+                    }
                 }
 
                 cells.Add(new DocxTableCell(cellParagraphs, cellWidth, gridSpan, shading, cellBorders, isVMergeContinue, isVMergeRestart, verticalAlignment,
                     tcMarTop, tcMarBottom, tcMarLeft, tcMarRight));
+                cellIdx++;
             }
 
             // Infer gridBefore when not explicitly set: if the row has fewer cells
@@ -3250,6 +3350,7 @@ internal static class DocxReader
             bool contextualSpacing = false;
             string? styleFontName = null;
             float styleCharSpacing = 0;
+            string? styleVertAlign = null;
 
             if (rPr != null)
             {
@@ -3267,6 +3368,9 @@ internal static class DocxReader
                 var spacingEl = rPr.Element(W + "spacing");
                 if (spacingEl != null && int.TryParse(spacingEl.Attribute(W + "val")?.Value, out var scs))
                     styleCharSpacing = scs / 20f;
+                var vaEl = rPr.Element(W + "vertAlign");
+                if (vaEl != null)
+                    styleVertAlign = vaEl.Attribute(W + "val")?.Value;
             }
 
             if (pPr != null)
@@ -3304,7 +3408,7 @@ internal static class DocxReader
                 bold = true;
             }
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, styleLineSpacingExact, contextualSpacing, styleFontName, styleCharSpacing, KeepNext: keepNextStyle);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, styleLineSpacingExact, contextualSpacing, styleFontName, styleCharSpacing, KeepNext: keepNextStyle, VerticalAlign: styleVertAlign);
         }
 
         // Second pass: resolve basedOn inheritance
@@ -3339,8 +3443,9 @@ internal static class DocxReader
             // keepNext is inherited from base style if not explicitly set by the derived style
             var keepNext2 = current.KeepNext ||
                 (pPr?.Element(W + "keepNext") == null && baseStyle.KeepNext);
+            var vertAlign2 = !string.IsNullOrEmpty(current.VerticalAlign) ? current.VerticalAlign : baseStyle.VerticalAlign;
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, lineSpacing3, lineSpacingAbsolute3, lineSpacingExact3, contextualSpacing2, styleFontName, charSpacing2, KeepNext: keepNext2);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, lineSpacing3, lineSpacingAbsolute3, lineSpacingExact3, contextualSpacing2, styleFontName, charSpacing2, KeepNext: keepNext2, VerticalAlign: vertAlign2);
         }
 
         // Extract default font name from Normal style or docDefaults
@@ -3445,6 +3550,9 @@ internal static class DocxReader
             // Band shading
             PdfColor? band1Horz = null, band2Horz = null;
             DocxBorders? firstRowBorders = null;
+            DocxBorders? firstColBorders = null;
+            DocxBorders? band1HorzBorders = null;
+            DocxBorders? band2HorzBorders = null;
             foreach (var tsp in style.Elements(W + "tblStylePr"))
             {
                 var tspType = tsp.Attribute(W + "type")?.Value;
@@ -3454,26 +3562,58 @@ internal static class DocxReader
                 var fill = shd?.Attribute(W + "fill")?.Value;
                 PdfColor? shadingColor = !string.IsNullOrEmpty(fill) && fill != "auto" ? PdfColor.FromHex(fill) : null;
 
-                if (tspType == "band1Horz" && shadingColor != null)
-                    band1Horz = shadingColor;
-                else if (tspType == "band2Horz" && shadingColor != null)
-                    band2Horz = shadingColor;
+                if (tspType == "band1Horz")
+                {
+                    if (shadingColor != null) band1Horz = shadingColor;
+                    var bBorders = tcPr.Element(W + "tcBorders");
+                    if (bBorders != null)
+                        band1HorzBorders = new DocxBorders(
+                            Top: ReadBorderEdgeAllowNil(bBorders.Element(W + "top")),
+                            Bottom: ReadBorderEdgeAllowNil(bBorders.Element(W + "bottom")),
+                            Left: ReadBorderEdgeAllowNil(bBorders.Element(W + "left")),
+                            Right: ReadBorderEdgeAllowNil(bBorders.Element(W + "right"))
+                        );
+                }
+                else if (tspType == "band2Horz")
+                {
+                    if (shadingColor != null) band2Horz = shadingColor;
+                    var bBorders = tcPr.Element(W + "tcBorders");
+                    if (bBorders != null)
+                        band2HorzBorders = new DocxBorders(
+                            Top: ReadBorderEdgeAllowNil(bBorders.Element(W + "top")),
+                            Bottom: ReadBorderEdgeAllowNil(bBorders.Element(W + "bottom")),
+                            Left: ReadBorderEdgeAllowNil(bBorders.Element(W + "left")),
+                            Right: ReadBorderEdgeAllowNil(bBorders.Element(W + "right"))
+                        );
+                }
                 else if (tspType == "firstRow")
                 {
                     var frBorders = tcPr.Element(W + "tcBorders");
                     if (frBorders != null)
                         firstRowBorders = new DocxBorders(
-                            Top: ReadBorderEdge(frBorders.Element(W + "top")),
-                            Bottom: ReadBorderEdge(frBorders.Element(W + "bottom")),
-                            Left: ReadBorderEdge(frBorders.Element(W + "left")),
-                            Right: ReadBorderEdge(frBorders.Element(W + "right"))
+                            Top: ReadBorderEdgeAllowNil(frBorders.Element(W + "top")),
+                            Bottom: ReadBorderEdgeAllowNil(frBorders.Element(W + "bottom")),
+                            Left: ReadBorderEdgeAllowNil(frBorders.Element(W + "left")),
+                            Right: ReadBorderEdgeAllowNil(frBorders.Element(W + "right"))
+                        );
+                }
+                else if (tspType == "firstCol")
+                {
+                    var fcBorders = tcPr.Element(W + "tcBorders");
+                    if (fcBorders != null)
+                        firstColBorders = new DocxBorders(
+                            Top: ReadBorderEdgeAllowNil(fcBorders.Element(W + "top")),
+                            Bottom: ReadBorderEdgeAllowNil(fcBorders.Element(W + "bottom")),
+                            Left: ReadBorderEdgeAllowNil(fcBorders.Element(W + "left")),
+                            Right: ReadBorderEdgeAllowNil(fcBorders.Element(W + "right"))
                         );
                 }
             }
 
             tableStyles[styleId] = new DocxTableStyleInfo(hasBorders, bTop, bBottom, bLeft, bRight, bInsideH, bInsideV,
-                band1Horz, band2Horz, firstRowBorders, cmTop, cmBottom, cmLeft, cmRight,
-                ParagraphSpacingAfter: paraSpacingAfter, ParagraphLineSpacing: paraLineSpacing);
+                band1Horz, band2Horz, firstRowBorders, firstColBorders, cmTop, cmBottom, cmLeft, cmRight,
+                ParagraphSpacingAfter: paraSpacingAfter, ParagraphLineSpacing: paraLineSpacing,
+                Band1HorzBorders: band1HorzBorders, Band2HorzBorders: band2HorzBorders);
         }
 
         return (styles, defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName, tableStyles);
@@ -3821,11 +3961,15 @@ internal sealed record DocxParagraph(
     List<DocxConnectorLine>? ConnectorLines = null
 ) : DocxElement;
 
-/// <summary>Represents a single border edge.</summary>
+/// <summary>Represents a single border edge.  Width=0 is a sentinel for an
+/// explicit OOXML "nil"/"none" border that suppresses inheritance.</summary>
 internal sealed record DocxBorderEdge(
-    float Width,        // in points
+    float Width,        // in points; 0 means explicit "nil" (suppress inherited border)
     PdfColor Color
-);
+)
+{
+    public static readonly DocxBorderEdge Nil = new(0f, new PdfColor(0, 0, 0));
+}
 
 /// <summary>Represents paragraph borders (top, bottom, left, right).</summary>
 internal sealed record DocxBorders(
@@ -4008,7 +4152,8 @@ internal sealed record DocxStyleInfo(
     bool ContextualSpacing = false,
     string? FontName = null,
     float CharSpacing = 0,
-    bool KeepNext = false
+    bool KeepNext = false,
+    string? VerticalAlign = null
 );
 
 /// <summary>Table style definition from styles.xml.</summary>
@@ -4023,12 +4168,15 @@ internal sealed record DocxTableStyleInfo(
     PdfColor? Band1HorzShading = null,
     PdfColor? Band2HorzShading = null,
     DocxBorders? FirstRowBorders = null,
+    DocxBorders? FirstColBorders = null,
     float CellMarginTop = -1,
     float CellMarginBottom = -1,
     float CellMarginLeft = -1,
     float CellMarginRight = -1,
     float ParagraphSpacingAfter = -1,
-    float ParagraphLineSpacing = -1
+    float ParagraphLineSpacing = -1,
+    DocxBorders? Band1HorzBorders = null,
+    DocxBorders? Band2HorzBorders = null
 );
 
 /// <summary>Numbering definition for lists.</summary>

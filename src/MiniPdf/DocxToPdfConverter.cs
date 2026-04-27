@@ -775,11 +775,13 @@ internal static class DocxToPdfConverter
             if (CurrentPageFootnoteIds.Contains(fnId)) return;
             CurrentPageFootnoteIds.Add(fnId);
 
-            // Reserve space: separator line (1pt) + spacing (4pt) + one line per footnote
+            // Reserve space matching Word's footnote zone layout:
+            //   pre-separator gap (≈ one body line) + separator + post-separator gap
+            //   + each footnote (line height + spacing-after inherited from Normal)
             var lineH = fn.FontSize * 1.2f;
             if (FootnoteReservedHeight == 0)
-                FootnoteReservedHeight = 5f; // separator + gap
-            FootnoteReservedHeight += lineH;
+                FootnoteReservedHeight = 17f; // 12pt gap above separator + 1pt separator + 4pt gap below
+            FootnoteReservedHeight += lineH + 8f; // text line + Normal-style spacing-after
             Options.MarginBottom = BaseMarginBottom + FootnoteReservedHeight;
         }
 
@@ -1203,9 +1205,16 @@ internal static class DocxToPdfConverter
             }
         }
 
-        // First line indent
-        var firstLineX = x + Math.Max(0, paragraph.IndentFirstLine);
-        var firstLineWidth = availableWidth - Math.Max(0, paragraph.IndentFirstLine);
+        // First line indent. Hanging indent (IndentFirstLine < 0) outdents the first
+        // line to the left of the body text, except when the paragraph already renders
+        // a bullet/number at that outdented position (handled above) — in which case
+        // the body first line stays at x.
+        var hasListLabel = (paragraph.IsBulletList || paragraph.IsNumberedList) && paragraph.ListText != null;
+        var effectiveFirstLineIndent = hasListLabel && paragraph.IndentFirstLine < 0
+            ? 0f
+            : paragraph.IndentFirstLine;
+        var firstLineX = x + effectiveFirstLineIndent;
+        var firstLineWidth = availableWidth - effectiveFirstLineIndent;
 
         // For justified text (jc="both"), use the natural Calibri width for wrapping.
         // The per-character Calibri width table provides sufficient accuracy for
@@ -1345,8 +1354,8 @@ internal static class DocxToPdfConverter
             // Recalculate layout variables since margins changed after column advance
             availableWidth = state.UsableWidth - indentLeft - indentRight;
             x = options.MarginLeft + indentLeft;
-            firstLineX = x + Math.Max(0, paragraph.IndentFirstLine);
-            firstLineWidth = availableWidth - Math.Max(0, paragraph.IndentFirstLine);
+            firstLineX = x + effectiveFirstLineIndent;
+            firstLineWidth = availableWidth - effectiveFirstLineIndent;
             wrapFirstLineWidth = firstLineWidth;
             wrapAvailableWidth = availableWidth;
         }
@@ -3250,11 +3259,9 @@ internal static class DocxToPdfConverter
                 for (var cellParaIdx = 0; cellParaIdx < cellParaList.Count; cellParaIdx++)
                 {
                     var para = cellParaList[cellParaIdx];
-                    var isFirstCellPara = cellParaIdx == 0;
-                    var isLastCellPara = cellParaIdx == cellParaList.Count - 1;
-                    // Skip SpacingBefore for the first paragraph in a table cell
-                    // (Word default compat mode does not apply SpacingBefore to the first cell paragraph)
-                    if (!isFirstCellPara && para.SpacingBefore > 0)
+                    // Apply paragraph SpacingBefore (Word applies it for all cell paragraphs,
+                    // including the first; paragraph-style values flow through here).
+                    if (para.SpacingBefore > 0)
                         textY -= para.SpacingBefore;
 
                     // Render images inside table cells
@@ -3303,11 +3310,9 @@ internal static class DocxToPdfConverter
                             emptyLineH = Math.Max(gridPitch, Compat.Ceiling(emptyLineH / gridPitch) * gridPitch);
                         }
                         textY -= emptyLineH;
-                        // Apply SpacingAfter: table style override takes precedence, else paragraph's own
-                        // Skip SpacingAfter for the last paragraph in the cell (Word behaviour)
-                        if (!isLastCellPara)
+                        // Apply SpacingAfter (paragraph value wins; table style is fallback)
                         {
-                            var spAfter = table.StyleSpacingAfter >= 0 ? table.StyleSpacingAfter : (para.SpacingAfter > 0 ? para.SpacingAfter : 0f);
+                            var spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : (table.StyleSpacingAfter >= 0 ? table.StyleSpacingAfter : 0f);
                             if (spAfter > 0) textY -= spAfter;
                         }
                         continue;
@@ -3389,11 +3394,9 @@ internal static class DocxToPdfConverter
                     s_wideSansSerifFont = false;
                     s_serifRunInCalibri = false;
 
-                    // Apply SpacingAfter: table style override takes precedence, else paragraph's own
-                    // Skip SpacingAfter for the last paragraph in the cell (Word behaviour)
-                    if (!isLastCellPara)
+                    // Apply SpacingAfter (paragraph value wins; table style is fallback)
                     {
-                        var spAfter = table.StyleSpacingAfter >= 0 ? table.StyleSpacingAfter : (para.SpacingAfter > 0 ? para.SpacingAfter : 0f);
+                        var spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : (table.StyleSpacingAfter >= 0 ? table.StyleSpacingAfter : 0f);
                         if (spAfter > 0) textY -= spAfter;
                     }
                 }
@@ -3407,6 +3410,7 @@ internal static class DocxToPdfConverter
                 var rowBottom = state.CurrentY - rowHeight;
                 var bx = tableOffsetX;
                 var bci = 0;
+                var deferredRights = new List<(float X, float Top, float Bottom, DocxBorderEdge Border)>();
 
                 foreach (var cell in row.Cells)
                 {
@@ -3442,14 +3446,22 @@ internal static class DocxToPdfConverter
                         }
                     }
 
-                    // Resolve each border: prefer cell-level, fall back to table-level
+                    // Resolve each border: prefer cell-level, fall back to table-level.
+                    // A cell edge with Width<=0 is the OOXML "nil" sentinel: it
+                    // explicitly suppresses the inherited table-level border.
+                    static DocxBorderEdge? Resolve(DocxBorderEdge? cell, DocxBorderEdge? table)
+                    {
+                        if (cell == null) return table;
+                        if (cell.Width <= 0f) return null;
+                        return cell;
+                    }
                     DocxBorderEdge? topBorder, bottomBorder, leftBorder, rightBorder;
                     if (borders != null)
                     {
-                        topBorder = suppressTop ? null : (borders.Top ?? (table.HasBorders ? (isFirstRow ? table.BorderTop : table.BorderInsideH) : null));
-                        bottomBorder = suppressBottom ? null : (borders.Bottom ?? (table.HasBorders ? (isLastRow ? table.BorderBottom : table.BorderInsideH) : null));
-                        leftBorder = borders.Left ?? (table.HasBorders ? (isFirstCell ? table.BorderLeft : table.BorderInsideV) : null);
-                        rightBorder = borders.Right ?? (table.HasBorders ? (isLastCell ? table.BorderRight : table.BorderInsideV) : null);
+                        topBorder = suppressTop ? null : Resolve(borders.Top, table.HasBorders ? (isFirstRow ? table.BorderTop : table.BorderInsideH) : null);
+                        bottomBorder = suppressBottom ? null : Resolve(borders.Bottom, table.HasBorders ? (isLastRow ? table.BorderBottom : table.BorderInsideH) : null);
+                        leftBorder = Resolve(borders.Left, table.HasBorders ? (isFirstCell ? table.BorderLeft : table.BorderInsideV) : null);
+                        rightBorder = Resolve(borders.Right, table.HasBorders ? (isLastCell ? table.BorderRight : table.BorderInsideV) : null);
                     }
                     else if (table.HasBorders)
                     {
@@ -3469,12 +3481,18 @@ internal static class DocxToPdfConverter
                         state.CurrentPage!.AddLine(bx, rowBottom, bx + bCellWidth, rowBottom, bottomBorder.Color, bottomBorder.Width);
                     if (leftBorder != null)
                         state.CurrentPage!.AddLine(bx, rowTop, bx, rowBottom, leftBorder.Color, leftBorder.Width);
+                    // Defer right-border drawing so it is painted AFTER the next cell's
+                    // left border at the same column boundary.  This lets a heavier
+                    // right border (e.g., firstCol right=sz=8 dark) win against a
+                    // lighter inherited insideV left border (e.g., sz=4 light).
                     if (rightBorder != null)
-                        state.CurrentPage!.AddLine(bx + bCellWidth, rowTop, bx + bCellWidth, rowBottom, rightBorder.Color, rightBorder.Width);
+                        deferredRights.Add((bx + bCellWidth, rowTop, rowBottom, rightBorder));
 
                     bx += bCellWidth;
                     bci += cell.GridSpan > 1 ? cell.GridSpan : 1;
                 }
+                foreach (var (rx, rt, rb, rborder) in deferredRights)
+                    state.CurrentPage!.AddLine(rx, rt, rx, rb, rborder.Color, rborder.Width);
             }
 
             isFirstRow = false;
@@ -3592,12 +3610,10 @@ internal static class DocxToPdfConverter
         for (var pi = 0; pi < cellParas.Count; pi++)
         {
             var para = cellParas[pi];
-            var isFirstPara = pi == 0;
-            var isLastPara = pi == cellParas.Count - 1;
 
-            // Skip SpacingBefore for the first paragraph in a table cell
-            // (Word default compat mode does not apply SpacingBefore to the first cell paragraph)
-            if (!isFirstPara && para.SpacingBefore > 0)
+            // Apply paragraph SpacingBefore (matches renderer behaviour);
+            // Word applies paragraph-style SpacingBefore at the top of cells too.
+            if (para.SpacingBefore > 0)
                 cellHeight += para.SpacingBefore;
 
             const float emuPerPt = 914400f / 72f;
@@ -3641,13 +3657,10 @@ internal static class DocxToPdfConverter
                 // (inline images already account for the paragraph's vertical space)
                 if (!hasInlineImages)
                     cellHeight += lineHeight;
-                // Apply SpacingAfter for all non-last paragraphs (matching rendering logic)
-                if (!isLastPara)
-                {
-                    var emptyAfter = styleSpacingAfter >= 0 ? styleSpacingAfter : (para.SpacingAfter > 0 ? para.SpacingAfter : 0f);
-                    if (emptyAfter > 0)
-                        cellHeight += emptyAfter;
-                }
+                // Apply SpacingAfter for all paragraphs (paragraph value wins over table-style default)
+                var emptyAfter = para.SpacingAfter > 0 ? para.SpacingAfter : (styleSpacingAfter >= 0 ? styleSpacingAfter : 0f);
+                if (emptyAfter > 0)
+                    cellHeight += emptyAfter;
                 continue;
             }
 
@@ -3663,13 +3676,10 @@ internal static class DocxToPdfConverter
             s_wideSansSerifFont = false;
             s_serifRunInCalibri = false;
             cellHeight += lines.Count * lineHeight;
-            // Apply SpacingAfter for all non-last paragraphs (matching rendering logic)
-            if (!isLastPara)
-            {
-                var textAfter = styleSpacingAfter >= 0 ? styleSpacingAfter : (para.SpacingAfter > 0 ? para.SpacingAfter : 0f);
-                if (textAfter > 0)
-                    cellHeight += textAfter;
-            }
+            // Apply SpacingAfter for all paragraphs (paragraph value wins over table-style default)
+            var textAfter = para.SpacingAfter > 0 ? para.SpacingAfter : (styleSpacingAfter >= 0 ? styleSpacingAfter : 0f);
+            if (textAfter > 0)
+                cellHeight += textAfter;
         }
 
         return cellHeight;
