@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-02T11:45:09.005322
+Generated: 2026-04-27T12:18:14.439278
 
 ## Summary
 
@@ -11,7 +11,7 @@ Generated: 2026-04-02T11:45:09.005322
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9557 | 2/2 | **0.9799** |
 | 4 | 🟢 20260318_issue | ✅ | 0.9597 | 0.8515 | 7/7 | **0.9245** |
 | 5 | 🟢 CCU_article | ✅ | 0.9255 | 0.9452 | 21/21 | **0.9483** |
-| 6 | 🟡 Class News | ✅ | 0.9493 | 0.5526 | 5/4 | **0.7008** |
+| 6 | 🟢 Class News | ✅ | 0.9414 | 0.8573 | 4/4 | **0.9195** |
 | 7 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
 | 8 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.9691 | 2/2 | **0.9809** |
 | 9 | 🟡 Cooperation Agreement Template | ✅ | 0.8644 | 0.7923 | 6/7 | **0.7627** |
@@ -26,7 +26,7 @@ Generated: 2026-04-02T11:45:09.005322
 | 18 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.979 | 17/17 | **0.9916** |
 | 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8315**
+**Average Overall Score: 0.8430**
 
 ## Visual Comparison
 
@@ -190,7 +190,7 @@ Generated: 2026-04-02T11:45:09.005322
 </tr>
 <tr>
   <td><b>Class News</b></td>
-  <td colspan="1">Class News <span style="color:#d29922">⬤</span> 70.1%</td>
+  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 92.0%</td>
 </tr>
 <tr>
   <td><img src="images/Class News_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -207,10 +207,6 @@ Generated: 2026-04-02T11:45:09.005322
 <tr>
   <td><img src="images/Class News_p4_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Class News_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/Class News_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
 </tr>
 <tr>
   <td><b>Class News_debug</b></td>
@@ -907,85 +903,48 @@ Text content: ✅ Identical
 
 ### Class News
 
-- **Text Similarity:** 0.9493
-- **Visual Average:** 0.5526
-- **Overall Score:** 0.7008
-- **Pages:** MiniPdf=5, Reference=4
-- **File Size:** MiniPdf=345087 bytes, Reference=147827 bytes
+- **Text Similarity:** 0.9414
+- **Visual Average:** 0.8573
+- **Overall Score:** 0.9195
+- **Pages:** MiniPdf=4, Reference=4
+- **File Size:** MiniPdf=345289 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Class News.pdf
 +++ reference/Class News.pdf
-@@ -5,36 +5,37 @@
- ytanaka@sycamoremiddle.edu
+@@ -10,8 +10,7 @@
+ non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
 
- Welcome back to school!
-
- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
-
--ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam sollicitudin.
-
--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
-
--ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis diam sollicitudin.
-
-+ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam
-
-+sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
-
-+non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
-
-+diam sollicitudin.
+ diam sollicitudin.
 
  Upcoming Events
 
--Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet odio.
-
 -School Dance
 
--Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum. Quisque a
+-Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
 
 +School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
 
  9.9 | 5-7pm
 
--suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit amet ultr icie.
+ odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
 
--Ma ecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet odio.
+ Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
 
-+odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
-
-+Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
-
- Book Fair
-
--Vestibulum ultricies erat sit amet massa ullamcorper.
-
-+amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,
-
- 10.1 - 11.1
-
-+dapibus sit amet odio. Vestibulum ultricies erat sit amet massa ullamcorper.
-
-+Picture Day
-
+@@ -23,9 +22,9 @@
  Lorem ipsum dolor sit amet, consectetur adipi scing elit. Aliquam non varius
-
--Picture Day
-
--ipsum. Fusce ven enatis quam vel libero scelerisque, a mattis diam sollicitudin.
 
  10.15
 
--Lorem ipsum dolor sit amet, cons ectetur adipiscing elit. Aliquam non varius
+ ipsum. Fusce ven enatis quam vel libero scelerisque, a mattis diam
 
--ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis diam sollicitudin.
+-sollicitudin. Lorem ipsum dolor sit amet, cons ectetur adipiscing elit. Aliquam
 
--Quisque a suscipit nulla, non posuere tellus.
+-non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
 
-+ipsum. Fusce ven enatis quam vel libero scelerisque, a mattis diam
+-diam sollicitudin. Quisque a suscipit nulla, non posuere tellus.
 
 +sollicitudin. Lorem ipsum dolor sit amet, cons ectetur adipiscing elit.
 
@@ -999,24 +958,74 @@ Text content: ✅ Identical
 
  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
 
--ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam sollicitudin.
+@@ -45,8 +44,7 @@
+ consec tetur adi piscing elit.
 
--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
+ Aliquam non varius ipsum.
 
--ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam sollicitudin.
+ Fusce venenatis quam vel
 
--Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet odio.
+-Our next area of focus
 
--Vestibulum ultricies erat sit amet massa ullamco rper ferme ntum. Quisque a
+-libero scelerisque. Quam vel
 
--suscipit nulla, non posuere tellus. Viva mus justo erat, suscipit sit amet dui sed,
++libero scelerisque. Quam vel Our next area of focus
 
--ultricies porttitor mi.
+ libero sce lerisque, a matm.
 
-+ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam
+ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ma ecenas massa
 
-+sollicitudin. Lorem ipsum dolor sit amet, consectetur adipis
-... (8493 more characters)
+ Lorem ipsum dolor sit amet,
+
+@@ -76,23 +74,25 @@
+ Welcome back to school!
+
+ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
+
+ ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam
+
+-Upcoming Events sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
+
++sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
+
+ non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
+
+-School Dance
+
+ diam sollicitudin.
+
++Upcoming Events
+
++School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+
+ 9.9 | 5-7pm
+
+-Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+
++odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
+
++Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
+
+ Book Fair
+
+-odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
+
++amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,
+
+ 10.1 - 11.1
+
+-Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
+
+-amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,
+
++dapibus sit amet odio. Vestibulum ultricies erat sit amet massa ullamcorper.
+
+ Picture Day
+
+-10.15 dapibus sit amet odio. Vestibulum ultricies erat sit amet massa ullamcorper.
+
+ Lorem ipsum dolor sit amet, consectetur a
+... (936 more characters)
 
 ```
 </details>
@@ -2289,7 +2298,6 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **Class News** (score: 0.7008)
 1. **Cooperation Agreement Template** (score: 0.7627)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

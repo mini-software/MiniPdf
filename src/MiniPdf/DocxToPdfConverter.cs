@@ -2912,6 +2912,11 @@ internal static class DocxToPdfConverter
         var isFirstRow = true;
         // Pre-calculate row heights for all rows so we can compute vMerge spans
         var rowHeights = new float[table.Rows.Count];
+        // Track content-only heights (without trHeight "atLeast" minimum) for
+        // page-fit decisions. Word treats trHeight (atLeast) as a visual
+        // minimum but allows the row to render at content height when needed
+        // to keep the row on the current page.
+        var rowContentHeights = new float[table.Rows.Count];
         for (var ri = 0; ri < table.Rows.Count; ri++)
         {
             var r = table.Rows[ri];
@@ -2927,6 +2932,7 @@ internal static class DocxToPdfConverter
                 }
             }
             rowHeights[ri] = rh;
+            rowContentHeights[ri] = ch;
         }
 
         // Distribute vMerge restart cell heights across all merged rows.
@@ -3001,16 +3007,33 @@ internal static class DocxToPdfConverter
 
             state.EnsurePage();
 
-            // Check if row fits on current page
+            // Check if row fits on current page.
+            // For non-exact-height rows, trHeight acts as an "atLeast" minimum;
+            // Word allows the row to shrink to content height in order to keep
+            // it on the current page when the visual minimum would force a
+            // new page. Mirror that behavior so single tall template rows
+            // (like newsletter sidebars) don't get pushed to a blank page.
             if (state.CurrentY - rowHeight < options.MarginBottom)
             {
-                state.RenderPageFootnotes();
-                state.CurrentPageFootnoteIds.Clear();
-                state.FootnoteReservedHeight = 0;
-                options.MarginBottom = state.BaseMarginBottom;
-                state.CurrentPage = state.Doc.AddPage(options.PageWidth, options.PageHeight);
-                state.CurrentY = options.PageHeight - options.MarginTop;
-                isFirstRow = true; // new page: draw top border again
+                var contentOnly = rowContentHeights[rowIndex];
+                if (!row.HeightExact)
+                    contentOnly = Math.Max(contentOnly, CalculateRowInlineImageFloorHeight(row, colWidths, cellPaddingH, cellPaddingV));
+                if (!row.HeightExact && row.Height > 0
+                    && contentOnly < rowHeight
+                    && state.CurrentY - contentOnly >= options.MarginBottom)
+                {
+                    rowHeight = contentOnly;
+                }
+                else
+                {
+                    state.RenderPageFootnotes();
+                    state.CurrentPageFootnoteIds.Clear();
+                    state.FootnoteReservedHeight = 0;
+                    options.MarginBottom = state.BaseMarginBottom;
+                    state.CurrentPage = state.Doc.AddPage(options.PageWidth, options.PageHeight);
+                    state.CurrentY = options.PageHeight - options.MarginTop;
+                    isFirstRow = true; // new page: draw top border again
+                }
             }
 
             var cellX = tableOffsetX;
