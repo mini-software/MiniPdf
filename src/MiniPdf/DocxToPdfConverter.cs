@@ -605,6 +605,14 @@ internal static class DocxToPdfConverter
         /// </summary>
         public float LastGridAscentExcess { get; set; }
 
+        /// <summary>
+        /// Ascent offset (cell-top to baseline) of the last grid-snapped paragraph's
+        /// first line.  Used to compensate the next paragraph's first-line position
+        /// when it has a different ascent (e.g., 18pt heading followed by 14pt text
+        /// in the same grid cell size produces different baseline offsets).
+        /// </summary>
+        public float LastGridFirstLineAscent { get; set; }
+
         public float UsableWidth => Options.PageWidth - Options.MarginLeft - Options.MarginRight;
 
         public RenderState(PdfDocument doc, ConversionOptions options)
@@ -852,22 +860,43 @@ internal static class DocxToPdfConverter
             var gridPitch = options.GridLinePitch;
             if (paragraph.LineSpacing == 0)
             {
-                // Auto-spaced: for fonts that fit in a single grid cell, snap
-                // the line height to the grid pitch.  For larger fonts spanning
-                // multiple cells, keep the raw auto-spacing value (fontSize ×
-                // metricsFactor) — Word advances by the natural line height,
-                // not the full n×gridPitch allocation, so subsequent text
-                // resumes closer to the heading.
+                // Auto-spaced: snap natural line height up to a multiple of the
+                // grid pitch, matching Word's snap-to-grid behaviour.  For CJK
+                // fonts, the natural line height (fontSize × CJK metrics factor)
+                // can push 14pt body text or 18pt headings into 2 grid cells —
+                // Word centres the glyph within that taller cell, producing the
+                // characteristic generous spacing seen in CJK documents.
                 var maxFs = fontSize;
                 foreach (var run in paragraph.Runs)
                 {
                     var runFs = run.FontSize > 0 ? run.FontSize : fontSize;
                     if (runFs > maxFs) maxFs = runFs;
                 }
-                if (Compat.Ceiling(maxFs / gridPitch) > 1)
-                    lineHeight = Math.Max(gridPitch, lineHeight);
+                var gridFontName = paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName
+                                ?? paragraph.ParagraphFontName;
+                // Only KaiTi/SimSun-family fonts are reliably "tall" enough to
+                // need the CJK metrics factor when deciding snap-to-grid cell
+                // count.  Taiwan/HK fonts (DFKai-SB, PMingLiU, Microsoft JhengHei)
+                // and Yu/Meiryo Japanese fonts have tighter built-in line metrics
+                // and only need the raw font size for the snap calculation —
+                // applying the 1.29 factor to them spuriously doubles cells in
+                // documents like nthu_article.docx.
+                var isTallCjk = gridFontName != null && IsTallCjkFont(gridFontName);
+                if (isTallCjk)
+                {
+                    var natural = maxFs * FontMetricsFactorCJK;
+                    lineHeight = Math.Max(gridPitch, Compat.Ceiling(natural / gridPitch) * gridPitch);
+                }
                 else
-                    lineHeight = gridPitch;
+                {
+                    // Pre-existing rule: snap to a single grid cell for fonts
+                    // that fit, otherwise keep the natural line height (multiple
+                    // cells but without the CJK 1.29 inflation).
+                    if (Compat.Ceiling(maxFs / gridPitch) > 1)
+                        lineHeight = Math.Max(gridPitch, lineHeight);
+                    else
+                        lineHeight = gridPitch;
+                }
             }
             else if (paragraph.LineSpacingAbsolute && !paragraph.LineSpacingExact)
             {
@@ -949,7 +978,7 @@ internal static class DocxToPdfConverter
                 if (state.IsTopOfPage)
                 {
                     var emptyAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
-                        ? (lineHeight + fontSize) / 2f
+                        ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
                         : fontSize * AscentRatio;
                     state.AdvanceY(emptyAscentOffset);
                 }
@@ -973,9 +1002,15 @@ internal static class DocxToPdfConverter
             state.LastSpacingAfter = spacingAfterEmpty;
             state.LastParagraphWasEmpty = true;
             if (options.GridLinePitch > 0 && paragraph.SnapToGrid && !(paragraph.LineSpacingAbsolute && paragraph.LineSpacingExact))
-                state.LastGridAscentExcess = (lineHeight + fontSize) / 2f;
+            {
+                state.LastGridAscentExcess = GetGridAscentOffset(lineHeight, fontSize, paraFontName);
+                state.LastGridFirstLineAscent = state.LastGridAscentExcess;
+            }
             else
+            {
                 state.LastGridAscentExcess = 0;
+                state.LastGridFirstLineAscent = 0;
+            }
             if (paragraph.HasPageBreakAfter)
                 state.ForceNewPage();
             return;
@@ -989,7 +1024,7 @@ internal static class DocxToPdfConverter
             if (state.IsTopOfPage)
             {
                 var ghostAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
-                    ? (lineHeight + fontSize) / 2f
+                    ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
                     : fontSize * AscentRatio;
                 state.AdvanceY(ghostAscentOffset);
             }
@@ -1035,7 +1070,7 @@ internal static class DocxToPdfConverter
             if (state.IsTopOfPage)
             {
                 var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
-                    ? (lineHeight + fontSize) / 2f
+                    ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
                     : fontSize * AscentRatio;
                 state.AdvanceY(ascentOffset);
             }
@@ -1061,12 +1096,37 @@ internal static class DocxToPdfConverter
         // When a document grid is active, center the text within the first grid cell
         // so the baseline position matches LibreOffice's CJK line grid placement.
         var wasTopOfPage = state.IsTopOfPage;
+        float currentGridAscent = 0f;
+        if (options.GridLinePitch > 0 && paragraph.SnapToGrid)
+        {
+            currentGridAscent = GetGridAscentOffset(lineHeight, fontSize, paraFontName);
+        }
         if (state.IsTopOfPage)
         {
             var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
-                ? (lineHeight + fontSize) / 2f
+                ? currentGridAscent
                 : fontSize * AscentRatio;
             state.AdvanceY(ascentOffset);
+        }
+
+        // Grid-snapped paragraphs centre each line in its grid cell.  When the
+        // ascent of this paragraph differs from the previous one (typically
+        // different font sizes sharing the same cell height), the previous
+        // paragraph's final AdvanceY(lineHeight) lands at lastCellTop + lineHeight
+        // + lastAscent — i.e., we are `lastAscent` past the new cell top.  Adjust
+        // by (newAscent - lastAscent) so this paragraph's first line baseline lands
+        // at newCellTop + newAscent.
+        // Scoped to KaiTi/SimSun-family CJK fonts: those use the new
+        // descent-aware ascent formula and benefit from this compensation.
+        // Other fonts (Latin, Taiwan/HK CJK) use the legacy ascent formula whose
+        // baseline placement is already correct without compensation, and where
+        // applying it accumulates errors across mixed-size paragraphs separated
+        // by spacing (e.g., nthu_article).
+        if (!wasTopOfPage && options.GridLinePitch > 0 && paragraph.SnapToGrid
+            && state.LastGridFirstLineAscent > 0 && currentGridAscent > 0
+            && paraFontName != null && IsTallCjkFont(paraFontName))
+        {
+            state.AdvanceY(currentGridAscent - state.LastGridFirstLineAscent);
         }
 
         // When a paragraph's auto line height exceeds the previous paragraph's line
@@ -1100,7 +1160,7 @@ internal static class DocxToPdfConverter
             state.ForceNewPage();
             state.EnsurePage();
             var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
-                ? (lineHeight + fontSize) / 2f
+                ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
                 : fontSize * AscentRatio;
             state.AdvanceY(ascentOffset);
             paragraphStartY = state.CurrentY;
@@ -1397,7 +1457,7 @@ internal static class DocxToPdfConverter
                 if (state.IsTopOfPage)
                 {
                     var lineAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
-                        ? (lineHeight + runFontSize) / 2f
+                        ? GetGridAscentOffset(lineHeight, runFontSize, runFontName)
                         : runFontSize * AscentRatio;
                     state.AdvanceY(lineAscentOffset);
                 }
@@ -1521,9 +1581,15 @@ internal static class DocxToPdfConverter
         // of the *next* line. Tables do not consume that ascent, so record the
         // excess so RenderTable can compensate.
         if (options.GridLinePitch > 0 && paragraph.SnapToGrid && !(paragraph.LineSpacingAbsolute && paragraph.LineSpacingExact))
-            state.LastGridAscentExcess = (lineHeight + fontSize) / 2f;
+        {
+            state.LastGridAscentExcess = GetGridAscentOffset(lineHeight, fontSize, paraFontName);
+            state.LastGridFirstLineAscent = currentGridAscent;
+        }
         else
+        {
             state.LastGridAscentExcess = 0;
+            state.LastGridFirstLineAscent = 0;
+        }
 
         // Handle page break after
         if (paragraph.HasPageBreakAfter)
@@ -3939,6 +4005,40 @@ internal static class DocxToPdfConverter
     /// Estimates text width using the appropriate font metrics for word-wrap layout.
     /// Uses Calibri widths for Calibri-based documents, Helvetica widths otherwise.
     /// </summary>
+    /// <summary>
+    /// Returns the ascent offset to apply when a paragraph is placed at the top
+    /// of a grid cell with snapToGrid active.  Word centres the glyph within
+    /// the cell, so the baseline distance from the cell top is
+    /// (lineHeight - glyphHeight)/2 + ascent.  CJK glyphs have ascent ≈ 0.86×fs
+    /// and descent ≈ 0.14×fs (per typical East Asian metrics); for non-CJK
+    /// fonts we keep the legacy approximation that treats the glyph as fully
+    /// above the baseline.
+    /// </summary>
+    private static float GetGridAscentOffset(float lineHeight, float fontSize, string? fontName)
+    {
+        if (fontName != null && IsTallCjkFont(fontName))
+        {
+            // KaiTi/SimSun-family CJK fonts: ascent ≈ 0.86×fs, descent ≈ 0.14×fs.
+            // Centred glyph baseline sits at (cellHeight - glyphHeight)/2 + ascent
+            // below the cell top.  Other CJK fonts (DFKai-SB, PMingLiU, etc.) have
+            // tighter built-in metrics where Word's baseline placement matches the
+            // legacy (lineHeight + fontSize)/2 formula.
+            return (lineHeight - fontSize) / 2f + fontSize * 0.86f;
+        }
+        return (lineHeight + fontSize) / 2f;
+    }
+
+    private static bool IsTallCjkFont(string fontName)
+    {
+        return fontName.Contains("KaiTi", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("SimSun", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("SimHei", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("NSimSun", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("FangSong", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("DengXian", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("Microsoft YaHei", StringComparison.OrdinalIgnoreCase);
+    }
+
     /// <summary>
     /// Returns the font metrics factor used for line height calculation.
     /// Serif fonts like Times New Roman have smaller ascent/descent ratios and need a lower factor.
