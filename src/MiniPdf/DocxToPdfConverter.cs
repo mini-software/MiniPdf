@@ -10,8 +10,12 @@ internal static class DocxToPdfConverter
     private const float FontMetricsFactor = 1.17f;
     // Times New Roman / Georgia metric factor: these serif fonts have smaller ascent/descent
     // ratios than Calibri, so the standard factor over-estimates line height.
-    // TNR: (usWinAscent+usWinDescent)/unitsPerEm ≈ 1.107
-    private const float FontMetricsFactorTimesNewRoman = 1.098f;
+    // TNR: (usWinAscent+usWinDescent)/unitsPerEm ≈ 1.107, but Word's "auto" line
+    // calculation also adds external leading (sTypoLineGap), giving an effective
+    // single-line height of ~1.151 × fontSize.  Measured against Word/Office PDF
+    // for Template for MSc Thesis (TNR 14pt, line=360 auto = 1.5× single):
+    // reference per-line spacing = 24.18pt → 24.18/(14×1.5) = 1.151.
+    private const float FontMetricsFactorTimesNewRoman = 1.151f;
     // CJK font metric factor: East Asian fonts (SimSun, PMingLiU, MS Gothic, etc.)
     // have taller ascent+descent.  Measured from LibreOffice reference:
     // 12pt SimSun single-spaced ≈ 15.5pt line height → 1.29 × fontSize.
@@ -596,6 +600,15 @@ internal static class DocxToPdfConverter
         /// </summary>
         public float CurrentParagraphTopY { get; set; }
         public float LastLineHeight { get; set; }
+        /// <summary>
+        /// Effective font size of the previously rendered paragraph (its dominant /
+        /// largest run size).  Used to gate the auto-line-height-grow compensation
+        /// so it only fires on real font-size jumps (e.g., 36pt heading after 16pt
+        /// body) and NOT when only the line-spacing multiplier changes.  Without
+        /// this gate, a 14pt paragraph at line=276 (1.15x) followed by another
+        /// 14pt paragraph at line=360 (1.5x) erroneously gains ~5-6pt of leading.
+        /// </summary>
+        public float LastFontSize { get; set; }
         public bool LastParagraphWasEmpty { get; set; }
         /// <summary>
         /// Accumulated vertical space from empty paragraphs that overflowed past
@@ -1039,7 +1052,7 @@ internal static class DocxToPdfConverter
                 {
                     var emptyAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                         ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
-                        : fontSize * AscentRatio;
+                        : fontSize * GetTopOfPageAscentRatio(paraFontName);
                     state.AdvanceY(emptyAscentOffset);
                 }
                 state.AdvanceY(totalEmptyAdvance);
@@ -1059,6 +1072,7 @@ internal static class DocxToPdfConverter
                 state.PendingVerticalSpace += totalEmptyAdvance;
             }
             state.LastLineHeight = lineHeight;
+            state.LastFontSize = fontSize;
             state.LastSpacingAfter = spacingAfterEmpty;
             state.LastParagraphWasEmpty = true;
             if (options.GridLinePitch > 0 && paragraph.SnapToGrid && !(paragraph.LineSpacingAbsolute && paragraph.LineSpacingExact))
@@ -1085,7 +1099,7 @@ internal static class DocxToPdfConverter
             {
                 var ghostAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                     ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
-                    : fontSize * AscentRatio;
+                    : fontSize * GetTopOfPageAscentRatio(paraFontName);
                 state.AdvanceY(ghostAscentOffset);
             }
             state.LastParagraphStartY = state.CurrentY;
@@ -1131,7 +1145,7 @@ internal static class DocxToPdfConverter
             {
                 var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                     ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
-                    : fontSize * AscentRatio;
+                    : fontSize * GetTopOfPageAscentRatio(paraFontName);
                 state.AdvanceY(ascentOffset);
             }
             var baselineToTopOffset = lineHeight - fontSize;
@@ -1145,6 +1159,7 @@ internal static class DocxToPdfConverter
             var sa = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             state.AdvanceY(lineHeight + sa);
             state.LastLineHeight = lineHeight;
+            state.LastFontSize = fontSize;
             state.LastSpacingAfter = sa;
             state.LastParagraphWasEmpty = true;
             if (paragraph.HasPageBreakAfter)
@@ -1170,7 +1185,7 @@ internal static class DocxToPdfConverter
         {
             var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                 ? currentGridAscent
-                : fontSize * AscentRatio;
+                : fontSize * GetTopOfPageAscentRatio(paraFontName);
             state.AdvanceY(ascentOffset);
         }
 
@@ -1195,12 +1210,27 @@ internal static class DocxToPdfConverter
         }
 
         // When a paragraph's auto line height exceeds the previous paragraph's line
-        // height, the baseline distance must match the larger value to prevent text
-        // overlap (e.g., 36pt text following a 16pt paragraph).
-        // Skip this compensation when the previous paragraph was empty, as empty
-        // paragraphs have no visible content that could overlap.
+        // height DUE TO A LARGER FONT, the baseline distance must match the larger
+        // value to prevent text overlap (e.g., 36pt text following a 16pt
+        // paragraph).  Skip this compensation when the previous paragraph was empty,
+        // as empty paragraphs have no visible content that could overlap.
+        // Also skip when only the line-spacing multiplier changed (same/smaller
+        // font): the natural line-box already accommodates the new spacing and
+        // adding more would over-pad the gap (Word does NOT add this leading on a
+        // pure line-spacing change — e.g., a 14pt body paragraph at line=276 (1.15x)
+        // followed by another 14pt list paragraph at line=360 (1.5x)).
+        // Compute the previous paragraph's effective font size (max of
+        // LastFontSize tracker; falls back to current effectiveFs when unknown).
+        var lastEffFsForGate = state.LastFontSize;
+        var currEffFsForGate = fontSize;
+        foreach (var run in paragraph.Runs)
+        {
+            var runFs = run.FontSize > 0 ? run.FontSize : fontSize;
+            if (runFs > currEffFsForGate) currEffFsForGate = runFs;
+        }
         if (!wasTopOfPage && !paragraph.LineSpacingAbsolute && state.LastLineHeight > 0
-            && lineHeight > state.LastLineHeight && !state.LastParagraphWasEmpty)
+            && lineHeight > state.LastLineHeight && !state.LastParagraphWasEmpty
+            && currEffFsForGate > lastEffFsForGate + 0.01f)
         {
             state.AdvanceY(lineHeight - state.LastLineHeight);
         }
@@ -1226,7 +1256,7 @@ internal static class DocxToPdfConverter
             state.EnsurePage();
             var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                 ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
-                : fontSize * AscentRatio;
+                : fontSize * GetTopOfPageAscentRatio(paraFontName);
             state.AdvanceY(ascentOffset);
             paragraphStartY = state.CurrentY;
             state.LastParagraphStartY = paragraphStartY;
@@ -1621,7 +1651,7 @@ internal static class DocxToPdfConverter
                 {
                     var lineAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                         ? GetGridAscentOffset(lineHeight, runFontSize, runFontName)
-                        : runFontSize * AscentRatio;
+                        : runFontSize * GetTopOfPageAscentRatio(runFontName);
                     state.AdvanceY(lineAscentOffset);
                 }
 
@@ -1755,6 +1785,7 @@ internal static class DocxToPdfConverter
         state.LastSpacingAfter = spacingAfter;
 
         state.LastLineHeight = lineHeight;
+        state.LastFontSize = currEffFsForGate;
         state.LastParagraphWasEmpty = false;
 
         // When grid snapping is active, the AdvanceY(lineHeight) after the last
@@ -2146,7 +2177,8 @@ internal static class DocxToPdfConverter
         {
             var mfAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
                 ? (lineHeight + defaultFontSize) / 2f
-                : defaultFontSize * AscentRatio;
+                : defaultFontSize * GetTopOfPageAscentRatio(
+                    paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName);
             state.AdvanceY(mfAscentOffset);
         }
         var currentX = firstLineX;
@@ -2214,8 +2246,14 @@ internal static class DocxToPdfConverter
             if (lineEntries != null)
                 lineEntries.Add((text, bx, by, bfs, bcolor, bbold, bitalic, bunderline, bcs, bfontName, bmaxW, bulW));
             else
+                // Pass a tiny wordSpacing so PdfWriter fills any gap between the chunk's
+                // natural rendered width and the allocated maxWidth via per-space stretching.
+                // Without this, run boundaries (e.g. bold→regular at "...copies)" + ":") show
+                // a visible gap because Calibri-estimated maxWidth over-allocates the bold chunk
+                // versus the actual Times New Roman Bold rendering width.
                 state.CurrentPage!.AddText(text, bx, by, bfs, bcolor,
                     bold: bbold, italic: bitalic, underline: bunderline, charSpacing: bcs,
+                    wordSpacing: bmaxW.HasValue && text != null && text.Contains(' ') ? 0.001f : 0f,
                     preferredFontName: bfontName, maxWidth: bmaxW, underlineWidth: bulW);
         }
 
@@ -2338,9 +2376,19 @@ internal static class DocxToPdfConverter
         }
 
         string? prevRenderedSegment = null;
-        foreach (var run in paragraph.Runs)
+        for (var ri = 0; ri < paragraph.Runs.Count; ri++)
         {
+            var run = paragraph.Runs[ri];
             if (string.IsNullOrEmpty(run.Text)) continue;
+
+            // Lookahead: is there a non-empty run after this one (so the segment-end
+            // flush has a same-line follower whose start position depends on this
+            // chunk filling its allocated slot)?
+            bool hasFollower = false;
+            for (var fi = ri + 1; fi < paragraph.Runs.Count; fi++)
+            {
+                if (!string.IsNullOrEmpty(paragraph.Runs[fi].Text)) { hasFollower = true; break; }
+            }
 
             // Register footnote reference for bottom-of-page rendering
             if (!string.IsNullOrEmpty(run.FootnoteId))
@@ -2368,7 +2416,7 @@ internal static class DocxToPdfConverter
                     {
                         var hardBrAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
                             ? (lineHeight + runFs) / 2f
-                            : runFs * AscentRatio;
+                            : runFs * GetTopOfPageAscentRatio(run.FontName);
                         state.AdvanceY(hardBrAscentOffset);
                     }
                     currentX = baseX;
@@ -2551,11 +2599,14 @@ internal static class DocxToPdfConverter
 
                         if (!canCjkBreak)
                         {
-                            // Flush pending text before wrapping
+                            // Flush pending text before wrapping. Pass null maxWidth — this
+                            // chunk is at end-of-line with no follower, so we don't need
+                            // wordSpacing/Tz adjustments. Letting it render at natural width
+                            // avoids over-stretching that would make left-aligned bullet
+                            // paragraphs look justified.
                             if (pendingText.Length > 0)
                             {
-                                var flushMaxW = rightEdge - pendingX;
-                                BufferOrEmit(pendingText, pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, run.Bold, run.Italic, run.Underline, run.CharSpacing, run.FontName, flushMaxW > 0 ? flushMaxW : (float?)null, null);
+                                BufferOrEmit(pendingText, pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, run.Bold, run.Italic, run.Underline, run.CharSpacing, run.FontName, null, null);
                                 pendingText = "";
                             }
                             FlushLineEntries();
@@ -2569,7 +2620,7 @@ internal static class DocxToPdfConverter
                             {
                                 var wrapAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
                                     ? (lineHeight + runFs) / 2f
-                                    : runFs * AscentRatio;
+                                    : runFs * GetTopOfPageAscentRatio(run.FontName);
                                 state.AdvanceY(wrapAscentOffset);
                             }
                             currentX = baseX;
@@ -2641,7 +2692,7 @@ internal static class DocxToPdfConverter
                         {
                             var cjkBrkAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
                                 ? (lineHeight + runFs) / 2f
-                                : runFs * AscentRatio;
+                                : runFs * GetTopOfPageAscentRatio(run.FontName);
                             state.AdvanceY(cjkBrkAscentOffset);
                         }
                         currentX = baseX + EstimateWrapTextWidth(pendingText, runFs, run.Bold, run.CharSpacing, useCalibri) * nonCalibriWidthFactor;
@@ -2661,10 +2712,19 @@ internal static class DocxToPdfConverter
                         : null;
                     // Constrain each segment's maxWidth to its estimated width so Tz
                     // compression prevents overlap when the actual font renders wider
-                    // than the Calibri-estimated layout width.
-                    var segEstWidth = currentX - pendingX;
-                    var segMaxW = segEstWidth > 0 ? segEstWidth : rightEdge - pendingX;
-                    BufferOrEmit(pendingText, pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, run.Bold, run.Italic, run.Underline, run.CharSpacing, run.FontName, segMaxW > 0 ? segMaxW : (float?)null, ulWidth);
+                    // than the Calibri-estimated layout width — but only when a same-line
+                    // follower run exists. Without a follower, leaving maxWidth=null
+                    // lets the chunk render at its natural width and avoids
+                    // wordSpacing-fill stretching that would make the trailing run look
+                    // justified (e.g. final bold run "Times New Roman 12").
+                    float? segMaxWParam = null;
+                    if (hasFollower)
+                    {
+                        var segEstWidth = currentX - pendingX;
+                        var segMaxW = segEstWidth > 0 ? segEstWidth : rightEdge - pendingX;
+                        segMaxWParam = segMaxW > 0 ? segMaxW : (float?)null;
+                    }
+                    BufferOrEmit(pendingText, pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, run.Bold, run.Italic, run.Underline, run.CharSpacing, run.FontName, segMaxWParam, ulWidth);
                 }
 
             }
@@ -4391,6 +4451,29 @@ internal static class DocxToPdfConverter
         if (fontName != null && fontName.Contains("Franklin Gothic", StringComparison.OrdinalIgnoreCase))
             return FontMetricsFactorFranklinGothic;
         return FontMetricsFactor;
+    }
+
+    /// <summary>
+    /// Returns the font-aware ascent ratio used to offset the FIRST line of a page
+    /// from the top margin (visual glyph top → baseline).  Helvetica/Calibri/Arial use
+    /// the legacy 1.075 (matches Helvetica's natural ascent over its em).  Serif fonts
+    /// like Times New Roman / Georgia have a smaller visual top-to-baseline distance:
+    /// measured against the Word reference PDF for "Template for MSc Thesis.docx"
+    /// (TNR Bold 14pt, top margin 36pt, first line bbox y0=36.57 ≈ topMargin),
+    /// the effective ratio is ~0.80.  Without this, every line of TNR body text
+    /// sits ~3.85pt lower than Word's placement, accumulating throughout the page.
+    /// </summary>
+    private static float GetTopOfPageAscentRatio(string? fontName)
+    {
+        var name = fontName;
+        if (string.IsNullOrEmpty(name)) name = s_defaultFontName;
+        if (!string.IsNullOrEmpty(name) &&
+            (name!.Contains("Times", StringComparison.OrdinalIgnoreCase) ||
+             name.Contains("Georgia", StringComparison.OrdinalIgnoreCase)))
+        {
+            return 0.80f;
+        }
+        return AscentRatio;
     }
 
     /// <summary>
