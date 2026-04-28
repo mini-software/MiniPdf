@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-28T12:55:35.358010
+Generated: 2026-04-28T13:02:10.685540
 
 ## Summary
 
@@ -2100,7 +2100,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8422
 - **Overall Score:** 0.8369
 - **Pages:** MiniPdf=19, Reference=17
-- **File Size:** MiniPdf=1293371 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=1293391 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 

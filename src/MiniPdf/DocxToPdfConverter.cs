@@ -3899,10 +3899,16 @@ internal static class DocxToPdfConverter
                         // LibreOffice output (Calibri dots are narrower than Helvetica).
                         // The rendered line is compressed via Tz to fit the tab position.
                         var leaderCharWidth = fontSize * GetHelveticaCharWidth(leaderChar) / 1000f * 0.725f;
-                        // Account for text after this tab when computing fill
-                        var remainingTextWidth = i + 1 < segments.Length
-                            ? EstimateTextWidth(segments[i + 1], fontSize)
+                        // For right/center-aligned tab stops the text after the tab is
+                        // pushed back from the stop, so the leader fill must reserve
+                        // room for it. For left-aligned tab stops (the default) the
+                        // text after the tab starts AT the stop, so the gap is just
+                        // tabPos - currentX (no remaining-text subtraction).
+                        var remainingTextWidth = (matchedStop.Alignment == "right" || matchedStop.Alignment == "center")
+                            ? EstimateTextWidth(i + 1 < segments.Length ? segments[i + 1] : string.Empty, fontSize)
                             : 0f;
+                        if (matchedStop.Alignment == "center")
+                            remainingTextWidth /= 2f;
                         var gapWidth = matchedStop.Position - currentLineWidth - remainingTextWidth;
                         var fillCount = Math.Max(1, (int)(gapWidth / leaderCharWidth));
                         sb.Append(leaderChar, fillCount);
