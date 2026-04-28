@@ -27,12 +27,14 @@ internal static class DocxToPdfConverter
     // Modern Living template: 11pt body with line=259 (auto, ~1.079×) renders at
     // ~28.5px @150DPI vs ~29px with the default 1.17 factor → ~1.15 ratio.
     private const float FontMetricsFactorAvenir = 1.15f;
-    // Franklin Gothic Book / Demi metric factor: measured against the Word/Office
-    // PDF for the Class News template (Franklin Gothic Book body, 11pt, line=269
-    // auto = 1.121×). Per-line spacing is ~29.5px @150DPI (≈14.16pt) → 11×1.121×F →
-    // F ≈ 1.149. Without this, the default 1.17 factor inflates line height by
-    // ~1px/line and body text accumulates visible vertical drift down the page.
-    private const float FontMetricsFactorFranklinGothic = 1.149f;
+    // Franklin Gothic Book / Demi metric factor: measured against the LibreOffice
+    // reference PDF for the Class News template (Franklin Gothic Book body, 11pt,
+    // line=269 auto = 1.121×). LibreOffice produces a baseline-to-baseline gap of
+    // exactly 14.0pt → factor = 14.0 / (11 × 269/240) = 1.136. The previous 1.149
+    // matched Word's slightly looser 14.16pt but caused ~0.16pt/line drift vs the
+    // LibreOffice reference, accumulating to ~2.6pt over the body text region and
+    // shifting subsequent paragraphs visibly down the page.
+    private const float FontMetricsFactorFranklinGothic = 1.136f;
     // Helvetica ascent ratio: visual top of text is baseline + fontSize × AscentRatio
     private const float AscentRatio = 1.075f;
     // Calibri-to-Helvetica width ratio: most DOCX documents use Calibri (default since Word 2007).
