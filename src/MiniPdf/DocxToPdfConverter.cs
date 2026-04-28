@@ -2321,6 +2321,17 @@ internal static class DocxToPdfConverter
                 {
                     currentX += runFs * 500f / 1000f;
                 }
+                // For left/justified paragraphs, inject a thin space at run boundaries where
+                // a Latin/digit↔CJK script change occurs (mirrors AddInterScriptSpacing behavior
+                // for within-run boundaries). Otherwise digit↔CJK transitions split across runs
+                // (e.g. a TimesNewRoman "5-7" run followed by a CJK "個" run) collapse with no
+                // visible gap, causing tighter wrapping than Word and bumping headings to the
+                // wrong page.
+                else if (!isCenterRight && prevRenderedSegment != null
+                    && NeedInterRunInterScriptSpace(prevRenderedSegment, segment))
+                {
+                    segment = "\u2009" + segment;
+                }
                 prevRenderedSegment = segment;
 
                 // For whitespace-only underlined runs in CJK context, use CJK half-width
@@ -4633,6 +4644,25 @@ internal static class DocxToPdfConverter
         var leftHasLetter = leftLatinLen > 0 && ContainsAsciiLetter(text, boundaryIndex - leftLatinLen, leftLatinLen);
         var rightHasLetter = rightLatinLen > 0 && ContainsAsciiLetter(text, boundaryIndex, rightLatinLen);
         return leftHasLetter || rightHasLetter;
+    }
+
+    /// <summary>
+    /// Cross-run analogue of <see cref="ShouldInsertInterScriptSpace"/>+<see cref="ShouldInsertDigitCjkSpace"/>:
+    /// returns true when a Latin/digit↔CJK transition spans two runs and a thin-space
+    /// gap should therefore be inserted at the boundary. Used by the multi-format
+    /// renderer for left/justified paragraphs (centered/right paths use a 0.5em
+    /// half-CJK gap instead).
+    /// </summary>
+    private static bool NeedInterRunInterScriptSpace(string prevText, string nextText)
+    {
+        if (string.IsNullOrEmpty(prevText) || string.IsNullOrEmpty(nextText)) return false;
+        var left = prevText[^1];
+        var right = nextText[0];
+        // digit↔CJK: always insert (matches autoSpaceDN within-run behavior).
+        if (IsAsciiDigit(left) && IsCjkIdeograph(right)) return true;
+        if (IsCjkIdeograph(left) && IsAsciiDigit(right)) return true;
+        // Latin letter↔CJK: defer to the existing letter-token rule.
+        return NeedInterRunScriptGap(prevText, nextText);
     }
 
     /// <summary>
