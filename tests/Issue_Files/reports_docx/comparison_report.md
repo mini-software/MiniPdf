@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-28T00:22:23.836632
+Generated: 2026-04-28T10:51:22.150318
 
 ## Summary
 
@@ -21,12 +21,12 @@ Generated: 2026-04-28T00:22:23.836632
 | 13 | 🟡 MODERN LIVING | ✅ | 0.8851 | 0.7827 | 2/2 | **0.8671** |
 | 14 | 🟡 nthu_article | ✅ | 0.855 | 0.864 | 19/20 | **0.7876** |
 | 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
-| 16 | 🟢 SA8000 ch sample | ✅ | 0.9945 | 0.9203 | 2/2 | **0.9659** |
+| 16 | 🟢 SA8000 ch sample | ✅ | 0.9945 | 0.9603 | 2/2 | **0.9819** |
 | 17 | 🟢 Support_Letter | ✅ | 1.0 | 0.959 | 1/1 | **0.9836** |
 | 18 | 🟡 Template for MSc Thesis | ✅ | 1.0 | 0.8422 | 19/17 | **0.8369** |
 | 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8335**
+**Average Overall Score: 0.8344**
 
 ## Visual Comparison
 
@@ -397,7 +397,7 @@ Generated: 2026-04-28T00:22:23.836632
 </tr>
 <tr>
   <td><b>SA8000 ch sample</b></td>
-  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 96.6%</td>
+  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 98.2%</td>
 </tr>
 <tr>
   <td><img src="images/SA8000 ch sample_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1873,10 +1873,10 @@ Text content: ✅ Identical
 ### SA8000 ch sample
 
 - **Text Similarity:** 0.9945
-- **Visual Average:** 0.9203
-- **Overall Score:** 0.9659
+- **Visual Average:** 0.9603
+- **Overall Score:** 0.9819
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=3978467 bytes, Reference=186097 bytes
+- **File Size:** MiniPdf=466455 bytes, Reference=186097 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1954,9 +1954,9 @@ Text content: ✅ Identical
 
 -针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出 SA8000 的哪一条款。
 
--1、公司在运行 SA8000
+-1、公司在运行 SA8000 社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施是将2
 
--社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施是将2 名童工立即开除。
+-名童工立即开除。
 
 +针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出SA8000 的哪一条款。
 
@@ -1966,11 +1966,9 @@ Text content: ✅ Identical
 
  STP 小组的含义是什么？
 
-+---PAGE---
+ ---PAGE---
 
  ISO45001 基础知识培训考试题
-
-----PAGE---
 
 -一、判断题（共20 分，每题2 分）
 
@@ -2047,8 +2045,10 @@ Text content: ✅ Identical
 
 +A、 同时规划、同时建设、同时安装。        B、同时设计、同时施工、同时投入使用。
 
- C、同时计划、同时购买、同时使用。         D、同时设计
-... (603 more characters)
+ C、同时计划、同时购买、同时使用。         D、同时设计、同时制造、同时安装。
+
+
+... (590 more characters)
 
 ```
 </details>

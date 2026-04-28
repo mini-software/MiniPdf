@@ -2012,6 +2012,15 @@ internal sealed class PdfWriter
         if (name.Contains("宋体", StringComparison.Ordinal)
             || name.Contains("simsun", StringComparison.OrdinalIgnoreCase))
             return "simsun";
+        if (name.Contains("楷体", StringComparison.Ordinal)
+            || name.Contains("楷體", StringComparison.Ordinal)
+            || name.Contains("kaiti", StringComparison.OrdinalIgnoreCase)
+            || name.Contains("simkai", StringComparison.OrdinalIgnoreCase))
+            return "kaiti";
+        if (name.Contains("仿宋", StringComparison.Ordinal)
+            || name.Contains("fangsong", StringComparison.OrdinalIgnoreCase)
+            || name.Contains("simfang", StringComparison.OrdinalIgnoreCase))
+            return "fangsong";
 
         var sb = new StringBuilder(name.Length);
         foreach (var ch in name)
@@ -2283,8 +2292,12 @@ internal sealed class PdfWriter
         ["Microsoft YaHei"] = ["msyh.ttc"],
         ["楷体"] = ["simkai.ttf"],
         ["KaiTi"] = ["simkai.ttf"],
+        ["楷体_GB2312"] = ["simkai.ttf"],
+        ["KaiTi_GB2312"] = ["simkai.ttf"],
         ["仿宋"] = ["simfang.ttf"],
         ["FangSong"] = ["simfang.ttf"],
+        ["仿宋_GB2312"] = ["simfang.ttf"],
+        ["FangSong_GB2312"] = ["simfang.ttf"],
         ["等线"] = ["Deng.ttf", "Dengl.ttf"],
         ["DengXian"] = ["Deng.ttf", "Dengl.ttf"],
         ["华文中宋"] = ["STZHONGS.TTF"],
