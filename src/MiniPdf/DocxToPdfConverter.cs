@@ -1312,6 +1312,13 @@ internal static class DocxToPdfConverter
                     || (paragraph.ConnectorLines is { Count: > 0 }));
             if (!isShapeOnlyParagraph && !isBehindDocOnlyParagraph && !isFloatingAnchorOnlyParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
                 state.AdvanceY(lineHeight);
+            else if (isShapeOnlyParagraph && wasTopOfPage)
+            {
+                System.Console.Error.WriteLine($"[diag5] BEFORE: CY={state.CurrentY} lineHeight={lineHeight}");
+                state.AdvanceY(lineHeight);
+                System.Console.Error.WriteLine($"[diag5] AFTER: CY={state.CurrentY}");
+            }
+            // TODO test revert
 
             // Render wrapTopAndBottom images even for empty paragraphs
             foreach (var image in paragraph.Images)
@@ -1533,15 +1540,10 @@ internal static class DocxToPdfConverter
             s_serifRunInCalibri = false;
         }
 
-        // For exact line spacing, cap paragraph height to lineHeight so
-        // imperfect width estimation doesn't cause multi-line wrapping that
-        // inflates equation/overlay paragraphs beyond their intended height.
-        if (paragraph.LineSpacingExact && paragraphStartY > 0)
-        {
-            var expectedBottomY = paragraphStartY - lineHeight;
-            if (state.CurrentY < expectedBottomY)
-                state.CurrentY = expectedBottomY;
-        }
+        // (Previously: hard cap to lineHeight for exact line spacing. Removed —
+        // wrapping is now governed by the right-edge check during run rendering,
+        // and the overflow-tolerance heuristic prevents spurious multi-line wraps
+        // for short equation/overlay paragraphs.)
         // Render paragraph borders
         if (paragraph.Borders != null && state.CurrentPage != null)
         {
@@ -2300,8 +2302,14 @@ internal static class DocxToPdfConverter
                         ? effectiveSpaceWidth + run.CharSpacing
                         : 0;
 
-                    // Check if word fits on current line (skip wrapping for exact line spacing)
-                    if (!paragraph.LineSpacingExact && currentX + spaceWidth + wordWidth > rightEdge && (pendingText.Length > 0 || currentX > baseX + 1))
+                    // Check if word fits on current line. For exact line spacing,
+                    // only skip wrapping when overflow is small enough that Tz can
+                    // compress; otherwise legitimate multi-line content (e.g. CJK
+                    // bibliography entries) must wrap to avoid overflowing the right margin.
+                    var lineCapacity = isFirstLine ? firstLineWidth : availableWidth;
+                    var skipWrapForExact = paragraph.LineSpacingExact
+                        && (currentX + spaceWidth + wordWidth) - rightEdge <= lineCapacity * 0.10f;
+                    if (!skipWrapForExact && currentX + spaceWidth + wordWidth > rightEdge && (pendingText.Length > 0 || currentX > baseX + 1))
                     {
                         // When pendingText is empty and the word contains CJK characters,
                         // skip wrapping to fill remaining space on the current line.
@@ -2351,8 +2359,13 @@ internal static class DocxToPdfConverter
                     pendingText += word;
                     currentX += wordWidth;
 
-                    // Break oversized CJK words at character boundaries (kinsoku)
-                    while (!paragraph.LineSpacingExact && currentX > rightEdge && pendingText.Length > 1)
+                    // Break oversized CJK words at character boundaries (kinsoku).
+                    // For exact line spacing, only break when overflow is significant
+                    // (not just minor estimation noise that Tz can compress away).
+                    var cjkLineCapacity = isFirstLine ? firstLineWidth : availableWidth;
+                    var skipCjkBreakForExact = paragraph.LineSpacingExact
+                        && currentX - rightEdge <= cjkLineCapacity * 0.10f;
+                    while (!skipCjkBreakForExact && currentX > rightEdge && pendingText.Length > 1)
                     {
                         var breakAt = -1;
                         float accWidth = 0;

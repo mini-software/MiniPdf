@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-27T22:17:48.844789
+Generated: 2026-04-28T00:22:23.836632
 
 ## Summary
 
@@ -10,8 +10,8 @@ Generated: 2026-04-27T22:17:48.844789
 | 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9744 | 2/2 | **0.9898** |
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9557 | 2/2 | **0.9799** |
 | 4 | 🟢 20260318_issue | ✅ | 0.9998 | 0.9395 | 7/7 | **0.9757** |
-| 5 | 🟢 CCU_article | ✅ | 0.9255 | 0.9452 | 21/21 | **0.9483** |
-| 6 | 🟢 Class News | ✅ | 0.9414 | 0.8573 | 4/4 | **0.9195** |
+| 5 | 🟢 CCU_article | ✅ | 0.9268 | 0.9478 | 21/21 | **0.9498** |
+| 6 | 🟢 Class News | ✅ | 0.9613 | 0.8807 | 4/4 | **0.9368** |
 | 7 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
 | 8 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.9691 | 2/2 | **0.9809** |
 | 9 | 🟡 Cooperation Agreement Template | ✅ | 0.8644 | 0.7923 | 6/7 | **0.7627** |
@@ -19,14 +19,14 @@ Generated: 2026-04-27T22:17:48.844789
 | 11 | 🟢 Invoice | ✅ | 0.9963 | 0.9017 | 1/1 | **0.9592** |
 | 12 | 🟢 issues66 | ✅ | 0.9745 | 0.9838 | 3/3 | **0.9833** |
 | 13 | 🟡 MODERN LIVING | ✅ | 0.8851 | 0.7827 | 2/2 | **0.8671** |
-| 14 | 🟡 nthu_article | ✅ | 0.8242 | 0.8226 | 18/20 | **0.7587** |
+| 14 | 🟡 nthu_article | ✅ | 0.855 | 0.864 | 19/20 | **0.7876** |
 | 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
 | 16 | 🟢 SA8000 ch sample | ✅ | 0.9945 | 0.9203 | 2/2 | **0.9659** |
-| 17 | 🟢 Support_Letter | ✅ | 1.0 | 0.9579 | 1/1 | **0.9832** |
+| 17 | 🟢 Support_Letter | ✅ | 1.0 | 0.959 | 1/1 | **0.9836** |
 | 18 | 🟡 Template for MSc Thesis | ✅ | 1.0 | 0.8422 | 19/17 | **0.8369** |
 | 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8310**
+**Average Overall Score: 0.8335**
 
 ## Visual Comparison
 
@@ -102,7 +102,7 @@ Generated: 2026-04-27T22:17:48.844789
 </tr>
 <tr>
   <td><b>CCU_article</b></td>
-  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 94.8%</td>
+  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 95.0%</td>
 </tr>
 <tr>
   <td><img src="images/CCU_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -190,7 +190,7 @@ Generated: 2026-04-27T22:17:48.844789
 </tr>
 <tr>
   <td><b>Class News</b></td>
-  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 92.0%</td>
+  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 93.7%</td>
 </tr>
 <tr>
   <td><img src="images/Class News_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -305,7 +305,7 @@ Generated: 2026-04-27T22:17:48.844789
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 75.9%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 78.8%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -380,7 +380,7 @@ Generated: 2026-04-27T22:17:48.844789
   <td><img src="images/nthu_article_p18_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/nthu_article_p19_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/nthu_article_p19_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
@@ -409,7 +409,7 @@ Generated: 2026-04-27T22:17:48.844789
 </tr>
 <tr>
   <td><b>Support_Letter</b></td>
-  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 98.3%</td>
+  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
   <td><img src="images/Support_Letter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -683,11 +683,11 @@ Text content: ✅ Identical
 
 ### CCU_article
 
-- **Text Similarity:** 0.9255
-- **Visual Average:** 0.9452
-- **Overall Score:** 0.9483
+- **Text Similarity:** 0.9268
+- **Visual Average:** 0.9478
+- **Overall Score:** 0.9498
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6549941 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6550902 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -797,34 +797,40 @@ Text content: ✅ Identical
 
 +The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class
 
-... (15673 more characters)
+... (15683 more characters)
 
 ```
 </details>
 
 ### Class News
 
-- **Text Similarity:** 0.9414
-- **Visual Average:** 0.8573
-- **Overall Score:** 0.9195
+- **Text Similarity:** 0.9613
+- **Visual Average:** 0.8807
+- **Overall Score:** 0.9368
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=345289 bytes, Reference=147827 bytes
+- **File Size:** MiniPdf=344928 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Class News.pdf
 +++ reference/Class News.pdf
-@@ -10,8 +10,7 @@
+@@ -8,9 +8,9 @@
+ ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam
+
+ sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
+
  non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
 
- diam sollicitudin.
-
- Upcoming Events
+-Upcoming Events diam sollicitudin.
 
 -School Dance
 
 -Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+
++diam sollicitudin.
+
++Upcoming Events
 
 +School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
 
@@ -834,41 +840,40 @@ Text content: ✅ Identical
 
  Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
 
-@@ -23,9 +22,9 @@
- Lorem ipsum dolor sit amet, consectetur adipi scing elit. Aliquam non varius
+@@ -34,17 +34,17 @@
+ diam sollicitudin.
 
- 10.15
+ Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet
 
- ipsum. Fusce ven enatis quam vel libero scelerisque, a mattis diam
+ odio. Vestibulum ultricies erat sit amet massa ullamco rper ferme ntum.
 
--sollicitudin. Lorem ipsum dolor sit amet, cons ectetur adipiscing elit. Aliquam
+-Quisque a suscipit nulla, non posuere tellus. Viva mus justo erat, suscipit
 
--non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
+-sit amet dui sed, ultricies porttitor mi.
 
--diam sollicitudin. Quisque a suscipit nulla, non posuere tellus.
++Quisque a suscipit nulla, non posuere tellus. Viva mus justo erat, suscipit sit
 
-+sollicitudin. Lorem ipsum dolor sit amet, cons ectetur adipiscing elit.
++amet dui sed, ultricies porttitor mi.
 
-+Aliquam non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a
+ Aliquam pharetra risus vitae odio imperdiet condimentum. Fusce in quam
 
-+mattis diam sollicitudin. Quisque a suscipit nulla, non posuere tellus.
+ varius, dictum mi sit amet, aliquam mi. Suspe ndisse potenti. Pellentesque
 
- ---PAGE---
++auctor id neque vel maximus.
 
- Recent highlights
+ Fall highlights
 
- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
+ Lorem ipsum dolor sit amet,
 
-@@ -45,8 +44,7 @@
  consec tetur adi piscing elit.
 
  Aliquam non varius ipsum.
 
  Fusce venenatis quam vel
 
--Our next area of focus
-
 -libero scelerisque. Quam vel
+
+-Our next area of focus
 
 +libero scelerisque. Quam vel Our next area of focus
 
@@ -878,22 +883,39 @@ Text content: ✅ Identical
 
  Lorem ipsum dolor sit amet,
 
-@@ -76,23 +74,25 @@
- Welcome back to school!
+@@ -54,7 +54,8 @@
+ Aliquam non varius ipsum.
 
- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non varius
+ sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Non
 
+ Fusce venenatis quam vel
+
+-libero scelerisque. Quam vel varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis.
+
++varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis.
+
++libero scelerisque. Quam vel
+
+ libero sce lerisque, a mattis
+
+ Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+
+ diam venenatis quam vel.
+
+@@ -75,9 +76,9 @@
  ipsum. Fusce venenatis quam vel libero scelerisque, a mattis diam
 
--Upcoming Events sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
-
-+sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
+ sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
 
  non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
 
+-Upcoming Events diam sollicitudin.
+
 -School Dance
 
- diam sollicitudin.
+-Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+
++diam sollicitudin.
 
 +Upcoming Events
 
@@ -901,32 +923,17 @@ Text content: ✅ Identical
 
  9.9 | 5-7pm
 
--Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+ odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
 
-+odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
+ Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
 
-+Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
+@@ -101,10 +102,11 @@
+ diam sollicitudin.
 
- Book Fair
+ Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet
 
--odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
-
-+amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,
-
- 10.1 - 11.1
-
--Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
-
--amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,
-
-+dapibus sit amet odio. Vestibulum ultricies erat sit amet massa ullamcorper.
-
- Picture Day
-
--10.15 dapibus sit amet odio. Vestibulum ultricies erat sit amet massa ullamcorper.
-
- Lorem ipsum dolor sit amet, consectetur a
-... (936 more characters)
+ odio. Vestibul
+... (1311 more characters)
 
 ```
 </details>
@@ -1621,11 +1628,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.8242
-- **Visual Average:** 0.8226
-- **Overall Score:** 0.7587
-- **Pages:** MiniPdf=18, Reference=20
-- **File Size:** MiniPdf=8693251 bytes, Reference=798510 bytes
+- **Text Similarity:** 0.855
+- **Visual Average:** 0.864
+- **Overall Score:** 0.7876
+- **Pages:** MiniPdf=19, Reference=20
+- **File Size:** MiniPdf=8694967 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1653,7 +1660,7 @@ Text content: ✅ Identical
 
  論文指導教授推薦書(影本)
 
-@@ -14,227 +14,273 @@
+@@ -14,257 +14,273 @@
  表次 List of Tables（可免）
 
  圖次 List of Figures（可免）
@@ -1831,7 +1838,7 @@ Text content: ✅ Identical
  ---PAGE---
 
 -2，行距建議設定為 1.2 行 （ word 中選「多行」，設定
-... (17934 more characters)
+... (17817 more characters)
 
 ```
 </details>
@@ -2049,10 +2056,10 @@ Text content: ✅ Identical
 ### Support_Letter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9579
-- **Overall Score:** 0.9832
+- **Visual Average:** 0.959
+- **Overall Score:** 0.9836
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1004102 bytes, Reference=147353 bytes
+- **File Size:** MiniPdf=1004095 bytes, Reference=147353 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2194,7 +2201,7 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.7587)
 1. **Cooperation Agreement Template** (score: 0.7627)
+1. **nthu_article** (score: 0.7876)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
