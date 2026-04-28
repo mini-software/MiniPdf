@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-28T15:03:04.343253
+Generated: 2026-04-28T16:35:33.681286
 
 ## Summary
 
@@ -18,15 +18,15 @@ Generated: 2026-04-28T15:03:04.343253
 | 10 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
 | 11 | 🟢 Invoice | ✅ | 0.9963 | 0.9017 | 1/1 | **0.9592** |
 | 12 | 🟢 issues66 | ✅ | 0.9745 | 0.9838 | 3/3 | **0.9833** |
-| 13 | 🟡 MODERN LIVING | ✅ | 0.8851 | 0.7827 | 2/2 | **0.8671** |
-| 14 | 🟡 nthu_article | ✅ | 0.8589 | 0.8649 | 19/20 | **0.7895** |
+| 13 | 🟡 MODERN LIVING | ✅ | 0.8811 | 0.8026 | 2/2 | **0.8735** |
+| 14 | 🟡 nthu_article | ✅ | 0.8598 | 0.8708 | 19/20 | **0.7922** |
 | 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
 | 16 | 🟢 SA8000 ch sample | ✅ | 0.9929 | 0.9629 | 2/2 | **0.9823** |
 | 17 | 🟢 Support_Letter | ✅ | 1.0 | 0.959 | 1/1 | **0.9836** |
 | 18 | 🟡 Template for MSc Thesis | ✅ | 1.0 | 0.8422 | 19/17 | **0.8369** |
 | 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8345**
+**Average Overall Score: 0.8350**
 
 ## Visual Comparison
 
@@ -293,7 +293,7 @@ Generated: 2026-04-28T15:03:04.343253
 </tr>
 <tr>
   <td><b>MODERN LIVING</b></td>
-  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 86.7%</td>
+  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 87.4%</td>
 </tr>
 <tr>
   <td><img src="images/MODERN LIVING_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -305,7 +305,7 @@ Generated: 2026-04-28T15:03:04.343253
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.0%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.2%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1490,29 +1490,21 @@ Text content: ✅ Identical
 
 ### MODERN LIVING
 
-- **Text Similarity:** 0.8851
-- **Visual Average:** 0.7827
-- **Overall Score:** 0.8671
+- **Text Similarity:** 0.8811
+- **Visual Average:** 0.8026
+- **Overall Score:** 0.8735
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=508009 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=508048 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/MODERN LIVING.pdf
 +++ reference/MODERN LIVING.pdf
-@@ -1,29 +1,27 @@
- OCTOBER / 20XX / ISSUE #10
-
- M O D E R N  L I V I N G
-
- Your guide to buy or rent
-
-+WHAT’S NEW
+@@ -4,25 +4,24 @@
+ WHAT’S NEW
 
  Ready to settle?
-
--WHAT’S NEW
 
  By Peyton Davis
 
@@ -1530,35 +1522,31 @@ Text content: ✅ Identical
 
 -and are an excellent way to maintain regular contact with your subscribers
 
--subscribers interested in your topic
-
--and drive traffic to your site. Type the content of your newsletter here.
-
 +are an excellent way to maintain regular contact with your subscribers and subscribers interested in your topic
 
 +drive traffic to your site. Type the content of your newsletter here.
 
- PROPERTY TRENDS
-
--Newsletters are periodicals used to advertise or update your subscribers
++PROPERTY TRENDS
 
 +Newsletters are periodicals used to advertise or update your subscribers with
 
- Add description text here to get your
-
--with information about your product or blog. They are an excellent way to
++Add description text here to get your
 
 +information about your product or blog. They are an excellent way to
 
  subscribers interested in your topic
 
- maintain regular contact with your subscribers. Type the content of your
+-and drive traffic to your site. Type the content of your newsletter here.
 
- newsletter here.
-
--ARE YOU READY TO LIST?
+-PROPERTY TRENDS
 
 -Newsletters are periodicals used to advertise or update your subscribers
+
+-with information about your product or blog. They are an excellent way to
+
++maintain regular contact with your subscribers. Type the content of your
+
++newsletter here.
 
 +ARE YOU READY TO
 
@@ -1567,6 +1555,16 @@ Text content: ✅ Identical
 +information about your product or blog. Type the content of your newsletter
 
  Add description text here to get your
+
+-maintain regular contact with your subscribers. Type the content of your subscribers interested in your topic
+
+-newsletter here.
+
+-ARE YOU READY TO LIST?
+
+-Newsletters are periodicals used to advertise or update your subscribers
+
+-Add description text here to get your
 
 -with information about your product or blog. Type the content of your
 
@@ -1582,7 +1580,7 @@ Text content: ✅ Identical
 
  Take a look inside
 
-@@ -46,8 +44,7 @@
+@@ -45,8 +44,7 @@
  Newsletters are periodicals use to advertise or update your
 
  excellent way to maintain regular contact
@@ -1601,7 +1599,7 @@ Text content: ✅ Identical
 
  Newsletters are periodicals used to
 
-@@ -61,9 +58,8 @@
+@@ -60,8 +58,7 @@
  Newsletters are periodicals used to advertise or update your subscribers with
 
  Are you
@@ -1610,29 +1608,27 @@ Text content: ✅ Identical
 
 -excellent way to maintain regular contact with your subscribers and drive traffic to
 
--ready to
+-ready to list?
 
 +ready to list? excellent way to maintain regular contact with your subscribers and drive traffic to
 
  your site. Type the content of your newsletter here.
 
--list?
+ By Adrian King
 
-+By Adrian King
-
- Newsletters are periodicals used to advertise or update your subscribers with
-... (100 more characters)
+ Newsletters are periodical
+... (52 more characters)
 
 ```
 </details>
 
 ### nthu_article
 
-- **Text Similarity:** 0.8589
-- **Visual Average:** 0.8649
-- **Overall Score:** 0.7895
+- **Text Similarity:** 0.8598
+- **Visual Average:** 0.8708
+- **Overall Score:** 0.7922
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=8696784 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=8699214 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1658,7 +1654,7 @@ Text content: ✅ Identical
 
  論文指導教授推薦書(影本)
 
-@@ -14,106 +14,107 @@
+@@ -14,108 +14,107 @@
  表次 List of Tables（可免）
 
  圖次 List of Figures（可免）
@@ -1707,15 +1703,11 @@ Text content: ✅ Identical
 
  包括封面，全書版面配置邊界設定為下上 2.54 公分，左右 2.9 公分
 
-+1
+ 1
 
-+---PAGE---
+ ---PAGE---
 
  二、封面（與書名頁）、書背格式
-
--1
-
-----PAGE---
 
 -封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝（
 
@@ -1755,17 +1747,15 @@ Text content: ✅ Identical
 
  研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二頁，
 
--橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），段距 0.5
+ 橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），段距
 
--行。標題「摘要」二字或「 Abstract 」1 6 級字，置中，可加黑。「關鍵詞：」
+-0.5 行。標題「摘要」二字或「 Abstract 」1 6 級字，置中，可加黑。「關鍵
 
--或「 Key words: 」12 級，可加黑；與摘要主文間，空一行。英文與數字用
+-詞：」或「 Key words: 」12 級，可加黑；與摘要主文間，空一行。英文與數
 
--Times New Roman 。 如範例 C （ 中文）與範例 D （ 英文）。
+-字用 Times New Roman 。 如範例 C （ 中文）與範例 D （ 英文）。
 
 -五、目次
-
-+橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），段距
 
 +0.5 行 。標題「摘要」二字或「 Abstract 」 16 級字，置中，可加黑。「關鍵
 
@@ -1777,19 +1767,17 @@ Text content: ✅ Identical
 
  包括各章、各節、節下小標之標題、參考文獻、附錄及其所在之頁數。「目
 
--次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列於
+ 次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列
 
--其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
+ 於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
 
--體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。 目次
+-體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。 目
 
-+次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列
-
-+於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
+-次格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
 
 +體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。目次
 
- 格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
++格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
 
  六、論文正文
 
@@ -1799,11 +1787,11 @@ Text content: ✅ Identical
 
  章次與章名間空一格，如「第一章　緒論」。 18 級，標楷體，置中。
 
- 各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16 級，
+-各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16
 
- 標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
+-級，標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）
 
--「1、」、「（1）」 …… 等順序表示， 14 級（或 12 級），左齊。
+-」、「1、」、「（1）」 …… 等順序表示， 14 級（或 12 級），左齊。
 
 -（二）內文
 
@@ -1813,7 +1801,9 @@ Text content: ✅ Identical
 
 -文，書名請用斜體，篇名請用 “ ” 。日文翻譯成中文，行文時亦請
 
--一併改用中文新式標號。
++各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16 級，
+
++標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
 
 +「 1 、」、「（ 1 ）」……等順序表示， 14 級（或 12 級），左齊。
 
@@ -1829,24 +1819,26 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--2，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段「左
+-一併改用中文新式標號。
 
--右對齊」。
-
--（三）引文
+-2，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段
 
 +併改用中文新式標號。
 
 +2 ，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段
 
-+「左右對齊」。
+ 「左右對齊」。
+
+-（三）引文
 
 +（三） 引文
 
  所有引文均須核對無誤。引文左縮排 3 字元，標楷體 12 級。若需特別
 
--
-... (16013 more characters)
+-引用之外文，也依上述格式處理，字體建議用 Times New Roman 。 外
+
++引用之外文，
+... (15842 more characters)
 
 ```
 </details>
@@ -2213,6 +2205,6 @@ Text content: ✅ Identical
 ### ⚠ Low-Score Test Cases (below 0.8)
 
 1. **Cooperation Agreement Template** (score: 0.7627)
-1. **nthu_article** (score: 0.7895)
+1. **nthu_article** (score: 0.7922)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

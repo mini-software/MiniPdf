@@ -254,7 +254,13 @@ internal static class DocxToPdfConverter
                         // Require space for heading + 2 follow lines (widow/orphan control)
                         var needed = spacingBeforeH + thisH + 2f * followLineH;
                         if (state.CurrentY - needed < state.Options.MarginBottom)
+                        {
                             state.ForceNewPage();
+                            // The follow paragraph may carry Word's stale
+                            // lastRenderedPageBreak hint which would force a
+                            // second page break, orphaning this heading.
+                            state.SuppressNextLastRenderedPageBreak = true;
+                        }
                     }
 
                     RenderParagraph(state, paragraph);
@@ -569,6 +575,15 @@ internal static class DocxToPdfConverter
         /// from empty paragraphs is preserved across page breaks.
         /// </summary>
         public float PendingVerticalSpace { get; set; }
+        /// <summary>
+        /// When true, the next encountered HasLastRenderedPageBreak hint is
+        /// suppressed.  Set by the keepNext widow/orphan logic when it forces
+        /// a page break to keep a heading with its following paragraph: Word's
+        /// stale lastRenderedPageBreak hint on the body paragraph would
+        /// otherwise cause a duplicate page break, leaving the heading alone
+        /// on the prior page.
+        /// </summary>
+        public bool SuppressNextLastRenderedPageBreak { get; set; }
         /// <summary>
         /// The spacingAfter value applied by the most recently rendered paragraph.
         /// Used for paragraph spacing collapsing: the space between adjacent
@@ -936,7 +951,14 @@ internal static class DocxToPdfConverter
         // paragraphs that would render visible text.
         if (paragraph.HasLastRenderedPageBreak && state.CurrentPage != null && !state.IsTopOfPage)
         {
-            state.ForceNewPage();
+            if (state.SuppressNextLastRenderedPageBreak)
+            {
+                state.SuppressNextLastRenderedPageBreak = false;
+            }
+            else
+            {
+                state.ForceNewPage();
+            }
         }
 
         // Detect "line-spacer" host paragraphs: empty paragraphs whose only visual
@@ -1364,7 +1386,17 @@ internal static class DocxToPdfConverter
                 && (paragraph.Shapes is null || paragraph.Shapes.Count == 0)
                 && ((paragraph.FloatingTextBoxes is { Count: > 0 })
                     || (paragraph.ConnectorLines is { Count: > 0 }));
-            if (!isShapeOnlyParagraph && !isBehindDocOnlyParagraph && !isFloatingAnchorOnlyParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
+            // Paragraphs whose only visual content is wrapNone anchor images
+            // (overlay-positioned, like a section opener with a hero image and an
+            // anchored decorative shape) should not consume a line height in the
+            // main flow. Word treats these images as absolute overlays anchored to
+            // the paragraph mark; the paragraph mark itself does not push following
+            // content (e.g., the next table/heading) downward.
+            var isWrapNoneAnchorOverlayOnlyParagraph =
+                paragraph.Runs.Count == 0
+                && paragraph.Images.Count > 0
+                && paragraph.Images.All(img => img.IsAnchor && !img.IsWrapTopBottom);
+            if (!isShapeOnlyParagraph && !isBehindDocOnlyParagraph && !isFloatingAnchorOnlyParagraph && !isWrapNoneAnchorOverlayOnlyParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
                 state.AdvanceY(lineHeight);
             else if (isShapeOnlyParagraph && wasTopOfPage)
             {

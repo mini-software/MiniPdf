@@ -591,6 +591,7 @@ internal static class DocxReader
         int listLevel = 0;
         string? listText = null;
         bool listTextBold = false;
+        string? listNumFmt = null;
         string? styleId = null;
         bool bold = false;
         bool italic = false;
@@ -707,6 +708,7 @@ internal static class DocxReader
                             indentLeft = lvlDef.IndentLeft;
                         if (indentFirstLine == 0 && lvlDef.Hanging > 0)
                             indentFirstLine = -lvlDef.Hanging;
+                        listNumFmt = lvlDef.NumFmt;
                     }
                 }
             }
@@ -827,6 +829,19 @@ internal static class DocxReader
         bool keepNext = styles.TryGetValue(effectiveStyleId, out var kni) && kni.KeepNext;
         if (pPr?.Element(W + "keepNext") is { } knEl)
             keepNext = knEl.Attribute(W + "val")?.Value is not ("0" or "false");
+        // Heuristic: a top-level CJK-numbered heading paragraph (e.g. "一、", "（一）") with
+        // an explicit spacing-before is structurally a section heading. Word/LibreOffice
+        // typically keep such headings with the next body paragraph; if there isn't room
+        // for the heading + at least 2 lines of follow-up content, the heading is pushed
+        // to the next page. Mark these as keep-with-next so DocxToPdfConverter applies
+        // its existing widow/orphan logic.
+        if (!keepNext && isNumberedList && listLevel == 0 && spacingBefore > 0
+            && listNumFmt is "taiwaneseCountingThousand" or "taiwaneseCounting"
+                or "ideographTraditional" or "chineseCounting" or "chineseCountingThousand"
+                or "japaneseCounting")
+        {
+            keepNext = true;
+        }
         // autoSpaceDE: auto spacing between Latin text and East Asian text (default true per OOXML)
         bool autoSpaceDE = true;
         if (pPr?.Element(W + "autoSpaceDE")?.Attribute(W + "val")?.Value is "0" or "false")
