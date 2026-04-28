@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-28T17:06:15.598762
+Generated: 2026-04-28T18:26:04.242055
 
 ## Summary
 
@@ -18,7 +18,7 @@ Generated: 2026-04-28T17:06:15.598762
 | 10 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
 | 11 | 🟢 Invoice | ✅ | 0.9963 | 0.9017 | 1/1 | **0.9592** |
 | 12 | 🟢 issues66 | ✅ | 0.9745 | 0.9838 | 3/3 | **0.9833** |
-| 13 | 🟡 MODERN LIVING | ✅ | 0.8811 | 0.8459 | 2/2 | **0.8908** |
+| 13 | 🟡 MODERN LIVING | ✅ | 0.8811 | 0.8462 | 2/2 | **0.8909** |
 | 14 | 🟡 nthu_article | ✅ | 0.8598 | 0.8708 | 19/20 | **0.7922** |
 | 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
 | 16 | 🟢 SA8000 ch sample | ✅ | 0.9929 | 0.9629 | 2/2 | **0.9823** |
@@ -1491,10 +1491,10 @@ Text content: ✅ Identical
 ### MODERN LIVING
 
 - **Text Similarity:** 0.8811
-- **Visual Average:** 0.8459
-- **Overall Score:** 0.8908
+- **Visual Average:** 0.8462
+- **Overall Score:** 0.8909
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=508048 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=508053 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2100,7 +2100,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8422
 - **Overall Score:** 0.8369
 - **Pages:** MiniPdf=19, Reference=17
-- **File Size:** MiniPdf=1293892 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=1184196 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2191,7 +2191,7 @@ Text content: ✅ Identical
 -➢ Gamelin F.X., Baquet G., Berthoin S., Thevenet D., Nourry C., Nottin S., Bosquet L. (2009), Effect of high
 
 -intensity intermittent training on heart rate 
-... (5947 more characters)
+... (6057 more characters)
 
 ```
 </details>

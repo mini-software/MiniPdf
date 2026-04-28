@@ -591,6 +591,7 @@ internal static class DocxReader
         int listLevel = 0;
         string? listText = null;
         bool listTextBold = false;
+        string? listFontName = null;
         string? listNumFmt = null;
         string? styleId = null;
         bool bold = false;
@@ -691,6 +692,7 @@ internal static class DocxReader
                         isBulletList = true;
                         var lvlDef2 = numDef.Levels.FirstOrDefault(l => l.Ilvl == listLevel) ?? numDef.Levels.FirstOrDefault();
                         listText = MapBulletChar(lvlDef2?.LvlText, lvlDef2?.FontName);
+                        listFontName = lvlDef2?.FontName;
                     }
                     else
                     {
@@ -1020,7 +1022,8 @@ internal static class DocxReader
             KeepNext: keepNext,
             AutoSpaceDE: autoSpaceDE,
             AutoSpaceDN: autoSpaceDN,
-            HasLastRenderedPageBreak: hasLastRenderedPageBreak);
+            HasLastRenderedPageBreak: hasLastRenderedPageBreak,
+            ListFontName: listFontName);
     }
 
     /// <summary>
@@ -3993,7 +3996,12 @@ internal sealed record DocxParagraph(
     bool AutoSpaceDE = true,
     bool AutoSpaceDN = true,
     bool HasLastRenderedPageBreak = false,
-    List<DocxConnectorLine>? ConnectorLines = null
+    List<DocxConnectorLine>? ConnectorLines = null,
+    // Font name declared by the numbering level rPr (e.g. "Wingdings", "Symbol").
+    // Used so the bullet glyph is rendered with that family rather than falling
+    // back to the run/text font, which often lacks the Wingdings-style glyph
+    // that Word actually paints for codepoints like F0D8 (➢).
+    string? ListFontName = null
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.  Width=0 is a sentinel for an

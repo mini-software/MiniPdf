@@ -2833,7 +2833,61 @@ internal sealed class PdfWriter
             }
         }
 
+        // Pass 3: Symbol-encoded fonts (e.g. Wingdings, Symbol) only expose a
+        // (platformId=3, encodingId=0) subtable mapping codepoints in the U+F000
+        // private-use range. Without this pass these fonts load with an empty
+        // cmap and their glyphs (e.g. Wingdings F0D8 = ➢ outlined arrowhead) are
+        // unreachable, forcing fallback to heavier Segoe UI Symbol U+27A2.
+        for (var i = 0; i < numSubtables; i++)
+        {
+            var stOff = off + 4 + i * 8;
+            var platformId = ReadU16(ttf, stOff);
+            var encodingId = ReadU16(ttf, stOff + 2);
+            var subtableOffset = off + (int)ReadU32(ttf, stOff + 4);
+
+            if (!(platformId == 3 && encodingId == 0)) continue;
+
+            var format = ReadU16(ttf, subtableOffset);
+            if (format == 4)
+            {
+                ParseCmapFormat4(ttf, subtableOffset, map);
+                if (map.Count > 0)
+                {
+                    AddSymbolFontUnicodeAliases(map);
+                    return map;
+                }
+            }
+        }
+
         return map;
+    }
+
+    /// <summary>
+    /// For Wingdings/Symbol fonts whose glyphs live in the U+F020-F0FE private
+    /// use area, also expose the standard Unicode equivalents (e.g. U+27A2 ➢
+    /// for Wingdings F0D8) so DOCX numbering bullets remapped to Unicode in
+    /// MapBulletChar still resolve to the correct glyph in this font.
+    /// </summary>
+    private static void AddSymbolFontUnicodeAliases(Dictionary<int, ushort> map)
+    {
+        // Wingdings PUA → Unicode equivalents used by MapBulletChar in DocxReader
+        (int pua, int unicode)[] aliases =
+        {
+            (0xF0D8, 0x27A2), // ➢ right arrowhead
+            (0xF0A7, 0x25AA), // ▪ small black square
+            (0xF0A8, 0x25CB), // ○ white circle
+            (0xF076, 0x2756), // ❖ black diamond minus white X
+            (0xF0FC, 0x2714), // ✔ check mark
+            (0xF0FB, 0x2718), // ✘ cross mark
+            (0xF0E8, 0x25BA), // ► right-pointing triangle
+            (0xF0D2, 0x27A4), // ➤ right arrowhead (filled)
+            (0xF0B7, 0x2022), // • bullet (Symbol font)
+        };
+        foreach (var (pua, unicode) in aliases)
+        {
+            if (map.TryGetValue(pua, out var gid) && !map.ContainsKey(unicode))
+                map[unicode] = gid;
+        }
     }
 
     private static void ParseCmapFormat4(byte[] ttf, int off, Dictionary<int, ushort> map)

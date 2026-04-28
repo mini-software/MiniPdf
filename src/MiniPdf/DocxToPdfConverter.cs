@@ -17,6 +17,12 @@ internal static class DocxToPdfConverter
     // 12pt SimSun single-spaced ≈ 15.5pt line height → 1.29 × fontSize.
     // Only applied when paragraph has NO explicit w:line (auto spacing fallback).
     private const float FontMetricsFactorCJK = 1.29f;
+    // AvenirNext LT Pro / Avenir metric factor: this sans-serif family has a more
+    // compact ascent+descent than Helvetica (which we fall back to when Avenir is
+    // missing). Measured against LibreOffice's LiberationSerif substitute on the
+    // Modern Living template: 11pt body with line=259 (auto, ~1.079×) renders at
+    // ~28.5px @150DPI vs ~29px with the default 1.17 factor → ~1.15 ratio.
+    private const float FontMetricsFactorAvenir = 1.15f;
     // Helvetica ascent ratio: visual top of text is baseline + fontSize × AscentRatio
     private const float AscentRatio = 1.075f;
     // Calibri-to-Helvetica width ratio: most DOCX documents use Calibri (default since Word 2007).
@@ -52,6 +58,13 @@ internal static class DocxToPdfConverter
     // label overflows its hanging-indent slot. Word's spec default is 720 twips (36pt);
     // many CJK templates use 480 twips (24pt).
     [ThreadStatic] private static float s_defaultTabStopPt;
+
+    // Document-level default font name (resolved through theme), used as a fallback
+    // when paragraph/run-level font name is unspecified — important for line-height
+    // calculation (GetFontMetricsFactor) on themed documents like the Modern Living
+    // template whose body uses theme minorHAnsi → "AvenirNext LT Pro Medium" without
+    // an explicit per-paragraph font.
+    [ThreadStatic] private static string? s_defaultFontName;
 
     /// <summary>
     /// Options for controlling DOCX-to-PDF conversion.
@@ -137,10 +150,12 @@ internal static class DocxToPdfConverter
         {
             options.UseCalibriWidths = docxDoc.DefaultFontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase);
             s_serifFont = IsSerifFont(docxDoc.DefaultFontName);
+            s_defaultFontName = docxDoc.DefaultFontName;
         }
         else
         {
             s_serifFont = false;
+            s_defaultFontName = null;
         }
 
         s_defaultTabStopPt = docxDoc.DefaultTabStopPt > 0 ? docxDoc.DefaultTabStopPt : 36f;
@@ -1217,8 +1232,14 @@ internal static class DocxToPdfConverter
         {
             // Use the paragraph's first run font so the list label shares the same
             // embedded font slot as the body text, keeping identical ascent metrics
-            // and preventing text-extraction Y-offset splits.
-            var listFont = paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
+            // and preventing text-extraction Y-offset splits. If the numbering level
+            // declares an explicit symbol font (Wingdings/Symbol etc.), prefer it so
+            // codepoints like U+27A2 (mapped from Wingdings F0D8) render with the
+            // correct outlined arrowhead glyph rather than a fallback emoji-symbol
+            // font's heavier filled glyph.
+            var listFont = !string.IsNullOrEmpty(paragraph.ListFontName)
+                ? paragraph.ListFontName
+                : paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
 
             if (paragraph.IndentFirstLine < 0)
             {
@@ -1525,7 +1546,7 @@ internal static class DocxToPdfConverter
                 paragraph.IsBulletList, paragraph.IsNumberedList, paragraph.ListLevel, paragraph.ListText,
                 paragraph.ListTextBold, paragraph.StyleId, paragraph.Bold, paragraph.Italic, paragraph.FontSize, paragraph.Color,
                 paragraph.HasPageBreakBefore, paragraph.HasPageBreakAfter, paragraph.Shading, paragraph.TabStops,
-                paragraph.SectionBreak, paragraph.Borders),
+                paragraph.SectionBreak, paragraph.Borders) { ListFontName = paragraph.ListFontName },
                 x, firstLineX, wrapAvailableWidth, wrapFirstLineWidth, fontSize, lineHeight);
 
         }
@@ -2317,6 +2338,11 @@ internal static class DocxToPdfConverter
                 // EstimateWrapTextWidth/EstimateCalibrTextWidth calls scale the estimate down,
                 // matching Word's wrap decisions for serif runs in Calibri-default docs.
                 s_serifRunInCalibri = useCalibri && !s_serifFont && IsSerifFont(run.FontName);
+                // Mirror simple-format path: per-run flags for wide sans-serif (Franklin Gothic
+                // etc.) and Helvetica-fallback fonts (AvenirNext etc.) so EstimateWrapTextWidth
+                // applies the correct Latin reduction in this multi-format wrap path too.
+                s_overrideWidths = GetFontOverrideWidths(run.FontName);
+                s_wideSansSerifFont = IsWideSansSerifFont(run.FontName) && s_overrideWidths == null;
 
                 // Handle tab stops directly: advance to tab position with leader fill
                 if (hardLines[hi] == "\t" && paragraph.TabStops is { Count: > 0 })
@@ -2490,7 +2516,7 @@ internal static class DocxToPdfConverter
                         }
                     }
 
-                    if (wi > 0)
+                    if (wi > 0 && pendingText.Length > 0)
                     {
                         pendingText += " ";
                         currentX += spaceWidth;
@@ -2577,6 +2603,8 @@ internal static class DocxToPdfConverter
 
         FlushLineEntries(isLastLine: true);
         state.AdvanceY(lineHeight);
+        s_overrideWidths = null;
+        s_wideSansSerifFont = false;
         s_serifRunInCalibri = false;
     }
 
@@ -4229,10 +4257,24 @@ internal static class DocxToPdfConverter
     /// </summary>
     private static float GetFontMetricsFactor(string? fontName)
     {
+        // Fall back to the document-level default font name only when it would change
+        // the answer (Avenir/AvenirNext via theme minorHAnsi) and the paragraph/run
+        // does not specify one explicitly. Themed templates often leave the body
+        // paragraph and runs without rFonts, relying on docDefaults; without this
+        // fallback the line-height factor stays at 1.17 (Helvetica-ish) and body
+        // text accumulates ~0.5px drift per line vs LibreOffice's 1.15 substitute.
+        if (string.IsNullOrEmpty(fontName)
+            && s_defaultFontName != null
+            && s_defaultFontName.Contains("Avenir", StringComparison.OrdinalIgnoreCase))
+        {
+            return FontMetricsFactorAvenir;
+        }
         if (fontName != null &&
             (fontName.Contains("Times", StringComparison.OrdinalIgnoreCase) ||
              fontName.Contains("Georgia", StringComparison.OrdinalIgnoreCase)))
             return FontMetricsFactorTimesNewRoman;
+        if (fontName != null && fontName.Contains("Avenir", StringComparison.OrdinalIgnoreCase))
+            return FontMetricsFactorAvenir;
         return FontMetricsFactor;
     }
 
@@ -4913,6 +4955,11 @@ internal static class DocxToPdfConverter
             || fontName.Contains("Comfortaa", StringComparison.OrdinalIgnoreCase)
             || fontName.Contains("Poppins", StringComparison.OrdinalIgnoreCase)
             || fontName.Contains("Raleway", StringComparison.OrdinalIgnoreCase)
-            || fontName.Contains("Franklin Gothic", StringComparison.OrdinalIgnoreCase);
+            || fontName.Contains("Franklin Gothic", StringComparison.OrdinalIgnoreCase)
+            // AvenirNext LT Pro / Avenir: theme minorFont in some Office templates
+            // (e.g. "Modern Living"). Not bundled with Windows so it falls back to
+            // Helvetica at render time; treat it as a wide-sans-serif so wrap
+            // estimation uses Helvetica metrics with mild reduction.
+            || fontName.Contains("Avenir", StringComparison.OrdinalIgnoreCase);
     }
 }
