@@ -47,6 +47,12 @@ internal static class DocxToPdfConverter
     // causing WordWrap to over-pack lines that then trigger Tz compression at render.
     [ThreadStatic] private static bool s_wideSansSerifFont;
 
+    // Document-level default tab stop in points, parsed from word/settings.xml.
+    // Used to snap auto-numbered list-label body text to the next tab stop when the
+    // label overflows its hanging-indent slot. Word's spec default is 720 twips (36pt);
+    // many CJK templates use 480 twips (24pt).
+    [ThreadStatic] private static float s_defaultTabStopPt;
+
     /// <summary>
     /// Options for controlling DOCX-to-PDF conversion.
     /// </summary>
@@ -136,6 +142,8 @@ internal static class DocxToPdfConverter
         {
             s_serifFont = false;
         }
+
+        s_defaultTabStopPt = docxDoc.DefaultTabStopPt > 0 ? docxDoc.DefaultTabStopPt : 36f;
 
         var pdfDoc = new PdfDocument();
 
@@ -1209,6 +1217,16 @@ internal static class DocxToPdfConverter
                             }
                         }
                     }
+                    // Word's tab-suffix on auto-numbering: after the level text, a tab
+                    // advances to the next tab stop. When the label overflows the hanging
+                    // indent slot, snap to the next default tab stop greater than labelEnd.
+                    // Default tab stops are at multiples of defaultTabStopPt from the left
+                    // margin (paragraph origin), i.e. positions relative to MarginLeft.
+                    var dts = s_defaultTabStopPt > 0 ? s_defaultTabStopPt : 36f;
+                    var labelEndRelMargin = labelEnd - options.MarginLeft;
+                    var nextDefaultStopRel = (float)(Math.Floor(labelEndRelMargin / dts) + 1) * dts;
+                    var nextDefaultStop = options.MarginLeft + nextDefaultStopRel;
+                    if (nextDefaultStop > target) target = nextDefaultStop;
                     listLabelOverflow = target - bodyX;
                 }
             }
@@ -4510,15 +4528,23 @@ internal static class DocxToPdfConverter
     /// between Latin words and CJK characters (e.g. "如PECVD" → "如 PECVD").
     /// When <paramref name="autoSpaceDN"/> is true (OOXML default), also inserts
     /// spaces between digit sequences and CJK ideographs (e.g. "2025年" → "2025 年").
+    /// NOTE: paragraph-level <c>w:autoSpaceDE</c>/<c>w:autoSpaceDN</c>=0 is intentionally
+    /// ignored. Modern Word (compatibilityMode 15) renders the inter-script gap regardless
+    /// — the visual balancing is driven by document-level compat flags such as
+    /// <c>balanceSingleByteDoubleByteWidth</c> and <c>useFELayout</c>, which are present
+    /// in virtually every Word-authored docx and override the paragraph-level "off" flag.
     /// </summary>
     private static string AddInterScriptSpacing(string text, bool autoSpaceDE = true, bool autoSpaceDN = true)
     {
         if (string.IsNullOrEmpty(text) || text.Length < 2) return text;
+        // Always apply inter-script spacing to mirror Word's modern rendering. The
+        // paragraph-level flags are kept in the API for back-compat / future use but
+        // do not gate the visual gap.
         var sb = new System.Text.StringBuilder(text.Length + 8);
         sb.Append(text[0]);
         for (var i = 1; i < text.Length; i++)
         {
-            if (autoSpaceDE && ShouldInsertInterScriptSpace(text, i))
+            if (ShouldInsertInterScriptSpace(text, i))
             {
                 // Use THIN SPACE so the inter-script gap is not treated as a word
                 // boundary by WordWrap (Split(' ')) and is not expanded by justify
@@ -4526,7 +4552,7 @@ internal static class DocxToPdfConverter
                 // NOT create a line-break opportunity.
                 sb.Append('\u2009');
             }
-            else if (autoSpaceDN && ShouldInsertDigitCjkSpace(text, i))
+            else if (ShouldInsertDigitCjkSpace(text, i))
             {
                 sb.Append('\u2009'); // THIN SPACE: ~1/4 em, not expanded by justified word spacing
             }

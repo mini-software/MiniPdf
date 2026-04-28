@@ -79,6 +79,24 @@ internal static class DocxReader
         // Read footnotes
         var footnotes = ReadFootnotes(archive, styles, defaultFontName, defaultEastAsiaFontName);
 
+        // Read settings.xml for defaultTabStop (used for list-label tab-suffix snapping).
+        // Word's spec default is 720 twips (36pt); CJK templates often override to 480 (24pt).
+        float defaultTabStopPt = 36f;
+        var settingsEntry = archive.GetEntry("word/settings.xml");
+        if (settingsEntry != null)
+        {
+            try
+            {
+                using var settingsStream = settingsEntry.Open();
+                var settingsDoc = XDocument.Load(settingsStream);
+                var dts = settingsDoc.Descendants(W + "defaultTabStop").FirstOrDefault();
+                var dtsVal = dts?.Attribute(W + "val")?.Value;
+                if (int.TryParse(dtsVal, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var dtsTwips) && dtsTwips > 0)
+                    defaultTabStopPt = dtsTwips / 20f;
+            }
+            catch { /* ignore malformed settings */ }
+        }
+
         // Read main document
         var entry = archive.GetEntry("word/document.xml");
         if (entry == null)
@@ -541,7 +559,8 @@ internal static class DocxReader
             defaultLineSpacing, defaultLineSpacingAbsolute, defaultFontName, defaultEastAsiaFontName,
             headerElements.Count > 0 ? headerElements : null, footerElements.Count > 0 ? footerElements : null,
             sectionFooterElements, footnotes,
-            hfImages.Count > 0 ? hfImages : null);
+            hfImages.Count > 0 ? hfImages : null,
+            defaultTabStopPt);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -3890,7 +3909,8 @@ internal sealed record DocxDocument(
     List<DocxElement>? FooterElements = null,
     List<List<DocxElement>?>? SectionFooterElements = null,
     Dictionary<string, DocxFootnote>? Footnotes = null,
-    List<DocxImage>? HeaderFooterImages = null
+    List<DocxImage>? HeaderFooterImages = null,
+    float DefaultTabStopPt = 36f
 );
 
 /// <summary>Page layout settings from sectPr.</summary>
