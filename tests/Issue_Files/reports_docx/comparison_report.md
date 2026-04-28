@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-28T16:35:33.681286
+Generated: 2026-04-28T17:06:15.598762
 
 ## Summary
 
@@ -18,7 +18,7 @@ Generated: 2026-04-28T16:35:33.681286
 | 10 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
 | 11 | 🟢 Invoice | ✅ | 0.9963 | 0.9017 | 1/1 | **0.9592** |
 | 12 | 🟢 issues66 | ✅ | 0.9745 | 0.9838 | 3/3 | **0.9833** |
-| 13 | 🟡 MODERN LIVING | ✅ | 0.8811 | 0.8026 | 2/2 | **0.8735** |
+| 13 | 🟡 MODERN LIVING | ✅ | 0.8811 | 0.8459 | 2/2 | **0.8908** |
 | 14 | 🟡 nthu_article | ✅ | 0.8598 | 0.8708 | 19/20 | **0.7922** |
 | 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
 | 16 | 🟢 SA8000 ch sample | ✅ | 0.9929 | 0.9629 | 2/2 | **0.9823** |
@@ -26,7 +26,7 @@ Generated: 2026-04-28T16:35:33.681286
 | 18 | 🟡 Template for MSc Thesis | ✅ | 1.0 | 0.8422 | 19/17 | **0.8369** |
 | 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8350**
+**Average Overall Score: 0.8359**
 
 ## Visual Comparison
 
@@ -293,7 +293,7 @@ Generated: 2026-04-28T16:35:33.681286
 </tr>
 <tr>
   <td><b>MODERN LIVING</b></td>
-  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 87.4%</td>
+  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 89.1%</td>
 </tr>
 <tr>
   <td><img src="images/MODERN LIVING_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1491,8 +1491,8 @@ Text content: ✅ Identical
 ### MODERN LIVING
 
 - **Text Similarity:** 0.8811
-- **Visual Average:** 0.8026
-- **Overall Score:** 0.8735
+- **Visual Average:** 0.8459
+- **Overall Score:** 0.8908
 - **Pages:** MiniPdf=2, Reference=2
 - **File Size:** MiniPdf=508048 bytes, Reference=220316 bytes
 

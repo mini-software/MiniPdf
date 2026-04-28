@@ -552,10 +552,10 @@
     "word_text_similarity": 0.8577,
     "text_diff": "--- minipdf/MODERN LIVING.pdf\n+++ reference/MODERN LIVING.pdf\n@@ -4,25 +4,24 @@\n WHAT’S NEW\n\n Ready to settle?\n\n By Peyton Davis\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n-TAKE A LOOK INSIDE\n\n-with information about your product or blog. They can be printed or emailed\n\n+Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE\n\n+information about your product or blog. They can be printed or emailed and\n\n Add description text here to get your\n\n-and are an excellent way to maintain regular contact with your subscribers\n\n+are an excellent way to maintain regular contact with your subscribers and subscribers interested in your topic\n\n+drive traffic to your site. Type the content of your newsletter here.\n\n+PROPERTY TRENDS\n\n+Newsletters are periodicals used to advertise or update your subscribers with\n\n+Add description text here to get your\n\n+information about your product or blog. They are an excellent way to\n\n subscribers interested in your topic\n\n-and drive traffic to your site. Type the content of your newsletter here.\n\n-PROPERTY TRENDS\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n-with information about your product or blog. They are an excellent way to\n\n+maintain regular contact with your subscribers. Type the content of your\n\n+newsletter here.\n\n+ARE YOU READY TO\n\n+Newsletters are periodicals used to advertise or update your subscribers with LIST?\n\n+information about your product or blog. Type the content of your newsletter\n\n Add description text here to get your\n\n-maintain regular contact with your subscribers. Type the content of your subscribers interested in your topic\n\n-newsletter here.\n\n-ARE YOU READY TO LIST?\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n-Add description text here to get your\n\n-with information about your product or blog. Type the content of your\n\n+here.\n\n subscribers interested in your topic\n\n-newsletter here.\n\n ---PAGE---\n\n Property trends\n\n Take a look inside\n\n@@ -45,8 +44,7 @@\n Newsletters are periodicals use to advertise or update your\n\n excellent way to maintain regular contact\n\n subscribers with information about your product or blog. Type\n\n-with your subscribers and drive traffic to\n\n-the content of your newsletter here.\n\n+the content of your newsletter here. with your subscribers and drive traffic to\n\n your site. Type the content of your\n\n newsletter here.\n\n Newsletters are periodicals used to\n\n@@ -60,8 +58,7 @@\n Newsletters are periodicals used to advertise or update your subscribers with\n\n Are you\n\n information about your product or blog. They can be printed or emailed and are an\n\n-excellent way to maintain regular contact with your subscribers and drive traffic to\n\n-ready to list?\n\n+ready to list? excellent way to maintain regular contact with your subscribers and drive traffic to\n\n your site. Type the content of your newsletter here.\n\n By Adrian King\n\n Newsletters are periodicals used to advertise or update your subscribers with\n",
     "visual_scores": [
-      0.8245,
-      0.7807
+      0.8569,
+      0.835
     ],
-    "visual_avg": 0.8026,
+    "visual_avg": 0.8459,
     "diff_images": [
       {
         "page": 1,
@@ -568,7 +568,7 @@
         "reference_img": "MODERN LIVING_p2_reference.png"
       }
     ],
-    "overall_score": 0.8735
+    "overall_score": 0.8908
   },
   {
     "name": "nthu_article",

@@ -567,6 +567,13 @@ internal static class DocxToPdfConverter
         public float CurrentY { get; set; }
         public bool IsTopOfPage { get; set; } = true;
         public float LastParagraphStartY { get; set; }
+        /// <summary>
+        /// Captures the paragraph's line-box TOP (before ascent advance) at the
+        /// start of each paragraph.  Used as the anchor base for floating images
+        /// whose positionV relativeFrom="paragraph" is measured from the line-box
+        /// top, not the baseline.
+        /// </summary>
+        public float CurrentParagraphTopY { get; set; }
         public float LastLineHeight { get; set; }
         public bool LastParagraphWasEmpty { get; set; }
         /// <summary>
@@ -1133,6 +1140,11 @@ internal static class DocxToPdfConverter
         {
             currentGridAscent = GetGridAscentOffset(lineHeight, fontSize, paraFontName);
         }
+        // Capture the paragraph TOP (line-box top) before the ascent advance so
+        // anchored images using positionV relativeFrom="paragraph" can be placed
+        // relative to the paragraph's visual top edge — Word measures these
+        // anchors from the line-box top, not the baseline.
+        state.CurrentParagraphTopY = state.CurrentY;
         if (state.IsTopOfPage)
         {
             var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
@@ -2738,7 +2750,15 @@ internal static class DocxToPdfConverter
             }
 
             var anchorX = state.Options.MarginLeft + image.OffsetXEmu / emuPerPoint;
-            var anchorY = state.CurrentY - image.OffsetYEmu / emuPerPoint;
+            // For positionV relativeFrom="paragraph", Word measures the anchor
+            // from the paragraph's line-box TOP, not its baseline.  Use the
+            // captured paragraph top (set at paragraph entry, before the
+            // top-of-page ascent advance) as the anchor base.  Fall back to
+            // CurrentY for unset/non-paragraph relative anchors.
+            var anchorBaseY = image.RelativeFromV == "paragraph" && state.CurrentParagraphTopY > 0
+                ? state.CurrentParagraphTopY
+                : state.CurrentY;
+            var anchorY = anchorBaseY - image.OffsetYEmu / emuPerPoint;
 
             // Clamp to page bounds
             if (width > state.Options.PageWidth - state.Options.MarginLeft - state.Options.MarginRight)
