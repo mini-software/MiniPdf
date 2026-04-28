@@ -2284,7 +2284,16 @@ internal static class DocxToPdfConverter
                     if (useCalibri && e.FontName != null
                         && !e.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
                     {
-                        w *= e.Bold ? 1.06f : 1.00f;
+                        // Bold sans-serif fonts (Arial, Helvetica) embedded in a
+                        // Calibri-default doc render ~18% wider than the Calibri
+                        // estimate. Without this inflation the per-entry justify
+                        // slot under-allocates, and PdfWriter Tz-compresses the
+                        // run (e.g. "5 + number of thesis supervisor(s)" in
+                        // Arial-Bold gets squeezed to ~90% of natural width).
+                        // Times New Roman Bold is closer to Calibri Bold width so
+                        // a smaller 1.06 factor still works for serif runs.
+                        if (e.Bold)
+                            w *= IsSerifFont(e.FontName) ? 1.06f : 1.18f;
                     }
                     return w;
                 }
@@ -2541,7 +2550,10 @@ internal static class DocxToPdfConverter
                 var nonCalibriWidthFactor = 1f;
                 if (useCalibri && run.FontName != null
                     && !run.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
-                    nonCalibriWidthFactor = run.Bold ? 1.06f : 1.00f;
+                {
+                    if (run.Bold)
+                        nonCalibriWidthFactor = IsSerifFont(run.FontName) ? 1.06f : 1.18f;
+                }
 
                 // When a CJK paragraph has pure-Latin runs (e.g. "PECVD"),
                 // EstimateWrapTextWidth sees no CJK in the word and applies only
@@ -2586,7 +2598,31 @@ internal static class DocxToPdfConverter
                     var exactSlack = Math.Min(lineCapacity * 0.10f, runFs);
                     var skipWrapForExact = paragraph.LineSpacingExact
                         && (currentX + spaceWidth + wordWidth) - rightEdge <= exactSlack;
-                    if (!skipWrapForExact && currentX + spaceWidth + wordWidth > rightEdge && (pendingText.Length > 0 || currentX > baseX + 1))
+                    // Word allows a small overhang for line-ending closing punctuation
+                    // (closing paren/bracket/quote, period, comma, semicolon, colon) due to
+                    // optical kerning / "punctuation hang". Mirror this with a small slack
+                    // so words like "parenthetically)" don't get pushed to the next line by
+                    // a sub-glyph estimation overshoot of the preceding bold serif run
+                    // (e.g. "[B] Citation … (or parenthetically)" in the MSc Thesis template,
+                    // where the Calibri×1.06 estimate of TNR Bold over-allocates the bold-run
+                    // width by ~2.7pt). Limited to runFs * 0.25 (~3.5pt at 14pt) so legitimate
+                    // overflows still wrap; gated on closing punctuation only so paragraphs
+                    // with mid-sentence words (e.g. PAGE NUMBERING "should be / bottom centered")
+                    // are unaffected.
+                    var skipWrapForTrailingPunct = false;
+                    if (!skipWrapForExact && word.Length > 0)
+                    {
+                        var lastCh = word[word.Length - 1];
+                        if (lastCh == ')' || lastCh == ']' || lastCh == '}'
+                            || lastCh == '.' || lastCh == ',' || lastCh == ';' || lastCh == ':'
+                            || lastCh == '"' || lastCh == '\'' || lastCh == '\u201D' || lastCh == '\u2019')
+                        {
+                            var punctSlack = runFs * 0.5f;
+                            if ((currentX + spaceWidth + wordWidth) - rightEdge <= punctSlack)
+                                skipWrapForTrailingPunct = true;
+                        }
+                    }
+                    if (!skipWrapForExact && !skipWrapForTrailingPunct && currentX + spaceWidth + wordWidth > rightEdge && (pendingText.Length > 0 || currentX > baseX + 1))
                     {
                         // When pendingText is empty and the word contains CJK characters,
                         // skip wrapping to fill remaining space on the current line.
@@ -2720,6 +2756,27 @@ internal static class DocxToPdfConverter
                     float? segMaxWParam = null;
                     if (hasFollower)
                     {
+                        // When the segment ends with a trailing inter-run space and the
+                        // word widths were inflated via nonCalibriWidthFactor>1 (e.g.
+                        // TNR Bold or Arial Bold layered over Calibri estimates), the
+                        // wordSpacing-fill in BufferOrEmit's non-buffered emit absorbs
+                        // the inflation excess into that single trailing space —
+                        // visibly doubling the gap to the next run. De-inflate
+                        // currentX so the trailing space renders at its natural width
+                        // and the next run begins tight against it.
+                        if (nonCalibriWidthFactor > 1f
+                            && pendingText.Length > 0
+                            && pendingText[^1] == ' ')
+                        {
+                            var trimmedWords = pendingText.TrimEnd(' ');
+                            if (trimmedWords.Length > 0)
+                            {
+                                var natWordsWidth = EstimateWrapTextWidth(trimmedWords, runFs, run.Bold, run.CharSpacing, useCalibri);
+                                var inflationExcess = natWordsWidth * (nonCalibriWidthFactor - 1f);
+                                if (inflationExcess > 0)
+                                    currentX -= inflationExcess;
+                            }
+                        }
                         var segEstWidth = currentX - pendingX;
                         var segMaxW = segEstWidth > 0 ? segEstWidth : rightEdge - pendingX;
                         segMaxWParam = segMaxW > 0 ? segMaxW : (float?)null;

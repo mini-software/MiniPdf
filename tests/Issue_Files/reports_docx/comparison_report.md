@@ -1,33 +1,33 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-29T01:57:34.861485
+Generated: 2026-04-29T03:12:21.794277
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9663 | 2/2 | **0.9865** |
-| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9699 | 2/2 | **0.988** |
+| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9669 | 2/2 | **0.9868** |
+| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9742 | 2/2 | **0.9897** |
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9738 | 2/2 | **0.9871** |
 | 4 | 🟢 20260318_issue | ✅ | 0.975 | 0.867 | 7/7 | **0.9368** |
-| 5 | 🟢 CCU_article | ✅ | 0.9262 | 0.9476 | 21/21 | **0.9495** |
+| 5 | 🟢 CCU_article | ✅ | 0.9265 | 0.9478 | 21/21 | **0.9497** |
 | 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
 | 7 | 🟢 Class News | ✅ | 0.9959 | 0.9115 | 4/4 | **0.963** |
 | 8 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
 | 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.967 | 2/2 | **0.9801** |
 | 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9402 | 0.9839 | 7/7 | **0.9696** |
-| 11 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9426 | 1/1 | **0.9468** |
+| 11 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
 | 12 | 🟢 Invoice | ✅ | 0.9982 | 0.9435 | 1/1 | **0.9767** |
 | 13 | 🟢 issues66 | ✅ | 0.9535 | 0.9755 | 3/3 | **0.9716** |
 | 14 | 🟡 MODERN LIVING | ✅ | 0.857 | 0.8057 | 2/2 | **0.8651** |
-| 15 | 🟡 nthu_article | ✅ | 0.9212 | 0.8238 | 19/18 | **0.798** |
+| 15 | 🟡 nthu_article | ✅ | 0.875 | 0.8713 | 19/20 | **0.7985** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9941 | 0.8637 | 1/1 | **0.9431** |
-| 17 | 🟢 SA8000 ch sample | ✅ | 0.9931 | 0.9625 | 2/2 | **0.9822** |
+| 17 | 🟢 SA8000 ch sample | ✅ | 0.9931 | 0.9667 | 2/2 | **0.9839** |
 | 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9595 | 1/1 | **0.9838** |
-| 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9823 | 17/17 | **0.9929** |
+| 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9825 | 17/17 | **0.993** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8110**
+**Average Overall Score: 0.8113**
 
 ## Visual Comparison
 
@@ -47,7 +47,7 @@ Generated: 2026-04-29T01:57:34.861485
 </tr>
 <tr>
   <td><b>14_Thesis_Chapter</b></td>
-  <td colspan="1">14_Thesis_Chapter <span style="color:#3fb950">⬤</span> 98.8%</td>
+  <td colspan="1">14_Thesis_Chapter <span style="color:#3fb950">⬤</span> 99.0%</td>
 </tr>
 <tr>
   <td><img src="images/14_Thesis_Chapter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -389,7 +389,11 @@ Generated: 2026-04-29T01:57:34.861485
 </tr>
 <tr>
   <td><img src="images/nthu_article_p19_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/nthu_article_p19_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><i>missing</i></td>
+  <td><img src="images/nthu_article_p20_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>OSCAR WARD</b></td>
@@ -401,7 +405,7 @@ Generated: 2026-04-29T01:57:34.861485
 </tr>
 <tr>
   <td><b>SA8000 ch sample</b></td>
-  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 98.2%</td>
+  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
   <td><img src="images/SA8000 ch sample_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -505,10 +509,10 @@ Generated: 2026-04-29T01:57:34.861485
 ### 13_IEEE_Style_Paper
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9663
-- **Overall Score:** 0.9865
+- **Visual Average:** 0.9669
+- **Overall Score:** 0.9868
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1152867 bytes, Reference=175037 bytes
+- **File Size:** MiniPdf=1152864 bytes, Reference=174711 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -584,10 +588,10 @@ Generated: 2026-04-29T01:57:34.861485
 ### 14_Thesis_Chapter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9699
-- **Overall Score:** 0.988
+- **Visual Average:** 0.9742
+- **Overall Score:** 0.9897
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1004993 bytes, Reference=159980 bytes
+- **File Size:** MiniPdf=1005010 bytes, Reference=159781 bytes
 
 Text content: ✅ Identical
 
@@ -732,11 +736,11 @@ Text content: ✅ Identical
 
 ### CCU_article
 
-- **Text Similarity:** 0.9262
-- **Visual Average:** 0.9476
-- **Overall Score:** 0.9495
+- **Text Similarity:** 0.9265
+- **Visual Average:** 0.9478
+- **Overall Score:** 0.9497
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6551996 bytes, Reference=624127 bytes
+- **File Size:** MiniPdf=6551904 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -846,7 +850,7 @@ Text content: ✅ Identical
 
 +The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class
 
-... (15684 more characters)
+... (15327 more characters)
 
 ```
 </details>
@@ -1306,10 +1310,10 @@ Text content: ✅ Identical
 ### Fabrikam
 
 - **Text Similarity:** 0.9244
-- **Visual Average:** 0.9426
+- **Visual Average:** 0.9425
 - **Overall Score:** 0.9468
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=159257 bytes, Reference=55486 bytes
+- **File Size:** MiniPdf=159249 bytes, Reference=55486 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1658,18 +1662,45 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.9212
-- **Visual Average:** 0.8238
-- **Overall Score:** 0.798
-- **Pages:** MiniPdf=19, Reference=18
-- **File Size:** MiniPdf=8699008 bytes, Reference=910055 bytes
+- **Text Similarity:** 0.875
+- **Visual Average:** 0.8713
+- **Overall Score:** 0.7985
+- **Pages:** MiniPdf=19, Reference=20
+- **File Size:** MiniPdf=8699105 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/nthu_article.pdf
 +++ reference/nthu_article.pdf
-@@ -14,7 +14,7 @@
+@@ -1,10 +1,10 @@
+ 國立清華大學中國文學系碩博士學位論文格式規範
+
+ 經 111 年 11 月 09 日 111 學年度第一學期第 3 次系務會議通過
+
+-一、論文編印項目次序與頁碼編排
+
+-（一）紙本論文次序
+
++一、 論文編印項目次序與頁碼編排
+
++（一） 紙本論文次序
+
+ 封面 Front Cover
+
+ 書名頁 Title Page（同封面）
+
+-論文指導教授推薦書 (影本)
+
++論文指導教授推薦書(影本)
+
+ 學位考試委員審定書(影本)
+
+ 授權書（清大電子檔授權書、紙本論文授權書；國家圖書館、華藝授權書）
+
+ 誌謝辭 Acknowledgements (可免)
+
+@@ -14,108 +14,107 @@
  表次 List of Tables（可免）
 
  圖次 List of Figures（可免）
@@ -1686,12 +1717,17 @@ Text content: ✅ Identical
 
  名詞附錄 Glossary of Terms (可免)
 
-@@ -23,186 +23,184 @@
- （二）電子檔論文次序
+ 索引 Index (可免)
+
+ 封底 Back Cover、書背 Spine
+
+-（二）電子檔論文次序
+
++（二） 電子檔論文次序
 
  去掉前項 藍字 項目。
 
- （三）頁碼編排
+-（三）頁碼編排
 
 -1，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i, ii, iii… ）。
 
@@ -1699,23 +1735,25 @@ Text content: ✅ Identical
 
 -3，頁碼標於頁面底端，置中。
 
+-（四）版面配置
+
++（三） 頁碼編排
+
 +1 ，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i, ii, iii… ）。
 
 +2 ，論文本文開始至最末，用阿拉伯數字標示頁碼。
 
 +3 ，頁碼標於頁面底端，置中。
 
- （四）版面配置
++（四） 版面配置
 
  包括封面，全書版面配置邊界設定為下上 2.54 公分，左右 2.9 公分
-
-+二、 封面（與書名頁）、書背格式
 
  1
 
  ---PAGE---
 
--二、封面（與書名頁）、書背格式
+ 二、封面（與書名頁）、書背格式
 
 -封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝（
 
@@ -1725,32 +1763,6 @@ Text content: ✅ Identical
 
 -處公布之格式）。
 
--三、論文指導教授推薦書、學位考試委員審定書、授權書
-
--推薦書、審定書自中文系網頁下載，相關規定請洽詢系辦。授權書包括：
-
--「國立清華大學博碩士論文全文電子檔著作權授權書」、「國立清華大學博
-
--碩士紙本論文著作權授權書」、「國家圖書館博碩士論文電子檔案上網授權
-
--書」、「華藝博碩士論文全文電子學位論文授權書」，相關規定可參 附件一
-
--，或國立清華大學圖書館博碩士論文全系統，常見問題第 7 項。
-
--四、中英文摘要
-
--摘要應裝訂於論文內。內容應說明研究目的、論述重點、研究方法或程序、
-
--研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二
-
--頁，橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），
-
--段距 0.5 行。標題「摘要」二字或「 Abstract 」1 6 級字，置中，可加黑。「關
-
--鍵詞：」或「 Key words: 」12 級，可加黑；與摘要主文間，空一行。英文與
-
--數字用 Times New Roman 。 如範例 C （ 中文）與範例 D （ 英文）。
-
 +封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝
 
 +（ https://registra.site.nthu.edu.tw/var/file/211/1211/img/75/203558730.pdf ）。論
@@ -1759,37 +1771,53 @@ Text content: ✅ Identical
 
 +教務處公布之格式）。
 
-+三、 論文指導教授推薦書、學位考試委員審定書、授權書
+ 三、論文指導教授推薦書、學位考試委員審定書、授權書
 
-+推薦書、審定書自中文系網頁下載，相關規定請洽詢系辦。授權書包括：「國
+ 推薦書、審定書自中文系網頁下載，相關規定請洽詢系辦。授權書包括：
 
-+立清華大學博碩士論文全文電子檔著作權授權書」、「國立清華大學博碩士紙
+ 「國立清華大學博碩士論文全文電子檔著作權授權書」、「國立清華大學博
 
-+本論文著作權授權書」、「國家圖書館博碩士論文電子檔案上網授權書」、「華藝
+ 碩士紙本論文著作權授權書」、「國家圖書館博碩士論文電子檔案上網授權
 
-+博碩士論文全文電子學位論文授權書」，相關規定可參 附件一 ，或國立清華大
+-書」、「華藝博碩士論文全文電子學位論文授權書」，相關規定可參 附件一
 
-+學圖書館博碩士論文全系統，常見問題第 7 項。
+-，或國立清華大學圖書館博碩士論文全系統，常見問題第 7 項。
 
-+四、 中英文摘要
++書」、「華藝博碩士論文全文電子學位論文授權書」，相關規定可參 附件一 ，
 
-+摘要應裝訂於論文內。內容應說明研究目的、論述重點、研究方法或程序、研
++或國立清華大學圖書館博碩士論文全系統，常見問題第 7 項。
 
-+究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二頁，橫
+ 四、中英文摘要
 
-+式書寫，行距建議設定為 1.2 行（ word 中選「多行」，設定 1.2 ），段距 0.5 行。
+ 摘要應裝訂於論文內。內容應說明研究目的、論述重點、研究方法或程序、
 
-+標題「摘要」二字或「 Abstract 」 16 級字，置中，可加黑。「關鍵詞：」或「 Key
+-研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二
 
-+words: 」 12 級，可加黑；與摘要主文間，空一行。英文與數字用 Times New
+-頁，橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），
 
-+Roman 。如範例 C （中文）與範例 D （英文）。
+-段距 0.5 行。標題「摘要」二字或「 Abstract 」1 6 級字，置中，可加黑。
 
- 五、目次
+-「關鍵詞：」或「 Key words: 」12 級，可加黑；與摘要主文間，空一行。英
 
--包括各章、各節、節下小標之標題、參考文獻、附錄及其所在之頁數。「目
+-文與數字用 Times New Roman 。 如範例 C （ 中文）與範例 D （ 英文）。
 
--次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列
+-五、目次
+
++研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二頁，
+
++橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），段距
+
++0.5 行 。標題「摘要」二字或「 Abstract 」 16 級字，置中，可加黑。「關鍵
+
++詞：」或「 Key words: 」 12 級，可加黑；與摘要主文間，空一行。英文與數
+
++字用 Times New Roman 。如範例 C （中文）與範例 D （英文）。
+
++五、 目次
+
+ 包括各章、各節、節下小標之標題、參考文獻、附錄及其所在之頁數。「目
+
+ 次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列
 
 -於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標
 
@@ -1797,23 +1825,19 @@ Text content: ✅ Identical
 
 -目次格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
 
--六、論文正文
++於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
 
-+包括各章、各節、節下小標之標題、參考文獻、附錄及其所在之頁數。「目次」
++體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。目次
 
-+二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列於其後，
++格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
 
-+均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷體，其下各表
+ 六、論文正文
 
-+（或各圖）用 12 級字。英文與數字用 Times New Roman 。目次格式如範例 E ，
+-（一）章節標題
 
-+表次格式如範例 F ，圖次格式如範例 G 。
++（一） 章節標題
 
-+六、 論文正文
-
- （一）章節標題
-
--章次與章名間空一格，如「第一章　緒論」。 18 級，標楷體，置中。
+ 章次與章名間空一格，如「第一章　緒論」。 18 級，標楷體，置中。
 
 -各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16
 
@@ -1821,15 +1845,7 @@ Text content: ✅ Identical
 
 -」、「1、」、「（1）」 …… 等順序表示， 14 級（或 12 級），左齊。
 
-+章次與章名間空一格，如「第一章 緒論」。 18 級，標楷體，置中。各
-
-+章新頁起。節次與節名間空一格，如「第一節 研究動機」。 16 級，標
-
-+楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、「 1 、」、
-
-+「（ 1 ）」……等順序表示， 14 級（或 12 級），左齊。
-
- （二）內文
+-（二）內文
 
 -1，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文
 
@@ -1837,22 +1853,26 @@ Text content: ✅ Identical
 
 -文，書名請用斜體，篇名請用 “ ” 。日文翻譯成中文，行文時亦請
 
++各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16 級，
+
++標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
+
++「 1 、」、「（ 1 ）」……等順序表示， 14 級（或 12 級），左齊。
+
++（二） 內文
+
 +1 ，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文中，
 
 +書名和篇名連用時，省略篇名號，如《莊子‧天下》。若為英文，
 
-+書名請用斜體，篇名請用 “ ” 。日文翻譯成中文，行文時亦請一併
-
-+改用中文新式標號。
-
-+2 ，行距建議設定為 1.2 行（ word 中選「多行」，設定 1.2 ），各段「左右
++書名請用斜體，篇名請用“ ”。日文翻譯成中文，行文時亦請一
 
  2
 
  ---PAGE---
 
--一併改用中文
-... (16581 more characters)
+-一併改
+... (16017 more characters)
 
 ```
 </details>
@@ -1921,10 +1941,10 @@ Text content: ✅ Identical
 ### SA8000 ch sample
 
 - **Text Similarity:** 0.9931
-- **Visual Average:** 0.9625
-- **Overall Score:** 0.9822
+- **Visual Average:** 0.9667
+- **Overall Score:** 0.9839
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=467301 bytes, Reference=186097 bytes
+- **File Size:** MiniPdf=467297 bytes, Reference=186097 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2147,41 +2167,16 @@ Text content: ✅ Identical
 ### Template for MSc Thesis
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9823
-- **Overall Score:** 0.9929
+- **Visual Average:** 0.9825
+- **Overall Score:** 0.993
 - **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=1183472 bytes, Reference=403479 bytes
+- **File Size:** MiniPdf=1183261 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Template for MSc Thesis.pdf
 +++ reference/Template for MSc Thesis.pdf
-@@ -24,9 +24,9 @@
- Becker and Seligman [5]. 3. This effect has been widely studied [1-3, 7].
-
- [A.1] Reference list: The references for such style should be listed and numbered
-
- consecutively in the order of citation.
-
--[B] Citation of the reference by surname(s) of the author(s) directly (or
-
--parenthetically) and year of publications i.e. as demonstrated (Allan and Jones, 1995).
-
--Kramer et al. (2000) have recently shown ....
-
-+[B] Citation of the reference by surname(s) of the author(s) directly (or parenthetically)
-
-+and year of publications i.e. as demonstrated (Allan and Jones, 1995). Kramer et al. (2000)
-
-+have recently shown ....
-
- ---PAGE---
-
- 1. Single Author: the author's surname (without initials, unless there is ambiguity) and the
-
- year of publication; 2. Two Authors: both authors' surnames and the year of publication; 3.
-
 @@ -100,14 +100,14 @@
  knowledge.
 
@@ -2195,9 +2190,9 @@ Text content: ✅ Identical
 
  --------------------------------------------------------------------------------------------------------------------------------
 
- < NAME OF THE M.Sc. STUDENT> has successfully given his/her M.Sc. Oral Examination held
+-< NAME OF THE M.Sc. STUDENT> has successfully given his/her M.Sc. Oral Examination held on
 
- on <Date of M.Sc. Oral Examination> .
+-<Date of M.Sc. Oral Examination> .
 
 -Signature(s) of Supervisor(s) of MSc thesis                                                                       Convener, DPGC
 
@@ -2206,6 +2201,10 @@ Text content: ✅ Identical
 -Signature of PSPC Member #1                                                                  Signature of PSPC Member #1
 
 -Date:                                                                                                              Date:
+
++< NAME OF THE M.Sc. STUDENT> has successfully given his/her M.Sc. Oral Examination held
+
++on <Date of M.Sc. Oral Examination> .
 
 +Signature(s) of Supervisor(s) of MSc thesis Convener, DPGC
 
@@ -2228,9 +2227,9 @@ Text content: ✅ Identical
 
  Abstract
 
--The abstract should be a brief summary of the M. Tech. thesis. It should not contain more than 1-2
+-The abstract should be a brief summary of the M. Tech. thesis. It should not contain more than
 
--pages of A4 size with the text typed in 12 pt Times New Roman font having 1.5 spacing .
+-1-2 pages of A4 size with the text typed in 12 pt Times New Roman font having 1.5 spacing .
 
 +The abstract should be a brief summary of the M. Tech. thesis. It should not contain
 
@@ -2255,6 +2254,6 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.798)
+1. **nthu_article** (score: 0.7985)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
