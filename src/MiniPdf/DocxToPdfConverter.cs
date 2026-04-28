@@ -23,6 +23,12 @@ internal static class DocxToPdfConverter
     // Modern Living template: 11pt body with line=259 (auto, ~1.079×) renders at
     // ~28.5px @150DPI vs ~29px with the default 1.17 factor → ~1.15 ratio.
     private const float FontMetricsFactorAvenir = 1.15f;
+    // Franklin Gothic Book / Demi metric factor: measured against the Word/Office
+    // PDF for the Class News template (Franklin Gothic Book body, 11pt, line=269
+    // auto = 1.121×). Per-line spacing is ~29.5px @150DPI (≈14.16pt) → 11×1.121×F →
+    // F ≈ 1.149. Without this, the default 1.17 factor inflates line height by
+    // ~1px/line and body text accumulates visible vertical drift down the page.
+    private const float FontMetricsFactorFranklinGothic = 1.149f;
     // Helvetica ascent ratio: visual top of text is baseline + fontSize × AscentRatio
     private const float AscentRatio = 1.075f;
     // Calibri-to-Helvetica width ratio: most DOCX documents use Calibri (default since Word 2007).
@@ -1433,11 +1439,8 @@ internal static class DocxToPdfConverter
                 state.AdvanceY(lineHeight);
             else if (isShapeOnlyParagraph && wasTopOfPage)
             {
-                System.Console.Error.WriteLine($"[diag5] BEFORE: CY={state.CurrentY} lineHeight={lineHeight}");
                 state.AdvanceY(lineHeight);
-                System.Console.Error.WriteLine($"[diag5] AFTER: CY={state.CurrentY}");
             }
-            // TODO test revert
 
             // Render wrapTopAndBottom images even for empty paragraphs
             foreach (var image in paragraph.Images)
@@ -4373,12 +4376,20 @@ internal static class DocxToPdfConverter
         {
             return FontMetricsFactorAvenir;
         }
+        if (string.IsNullOrEmpty(fontName)
+            && s_defaultFontName != null
+            && s_defaultFontName.Contains("Franklin Gothic", StringComparison.OrdinalIgnoreCase))
+        {
+            return FontMetricsFactorFranklinGothic;
+        }
         if (fontName != null &&
             (fontName.Contains("Times", StringComparison.OrdinalIgnoreCase) ||
              fontName.Contains("Georgia", StringComparison.OrdinalIgnoreCase)))
             return FontMetricsFactorTimesNewRoman;
         if (fontName != null && fontName.Contains("Avenir", StringComparison.OrdinalIgnoreCase))
             return FontMetricsFactorAvenir;
+        if (fontName != null && fontName.Contains("Franklin Gothic", StringComparison.OrdinalIgnoreCase))
+            return FontMetricsFactorFranklinGothic;
         return FontMetricsFactor;
     }
 
