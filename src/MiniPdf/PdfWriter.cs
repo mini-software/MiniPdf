@@ -1445,7 +1445,12 @@ internal sealed class PdfWriter
     private static bool IsEmojiRange(int cp)
     {
         return cp >= 0x1F000                          // Supplemental Symbols, Emoticons, etc.
-            || (cp >= 0x2600 && cp <= 0x27BF)         // Misc Symbols + Dingbats
+            || (cp >= 0x2600 && cp <= 0x26FF)         // Miscellaneous Symbols (☀ ★ ☎)
+            // Note: U+2700–U+27BF (Dingbats, e.g. ➢ ➤ ✓ ✗) is intentionally excluded.
+            // Word/Wingdings bullets like ➢ are mapped into this range and look best
+            // rendered with a plain text font (Cambria/Times) rather than the emoji
+            // font, which would produce stylised 3D-filled glyphs that don't match
+            // the reference document's outlined arrow appearance.
             || (cp >= 0x2300 && cp <= 0x23FF)         // Misc Technical (⌚ etc.)
             || (cp >= 0x2B50 && cp <= 0x2B55)         // Stars, circles
             || (cp >= 0xFE00 && cp <= 0xFE0F);        // Variation Selectors

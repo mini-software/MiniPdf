@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-28T13:02:10.685540
+Generated: 2026-04-28T14:11:18.996475
 
 ## Summary
 
@@ -2100,23 +2100,25 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8422
 - **Overall Score:** 0.8369
 - **Pages:** MiniPdf=19, Reference=17
-- **File Size:** MiniPdf=1293391 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=1293892 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Template for MSc Thesis.pdf
 +++ reference/Template for MSc Thesis.pdf
-@@ -8,15 +8,16 @@
+@@ -8,36 +8,35 @@
  ➢ Font and Font size for the general text of the report: Times New Roman 12
 
  ➢ LINE SPACING: 1.5
 
  ➢ MARGINS: At least 2.5 inch on the binding side; 1 inch at top and bottom
 
--➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The chapters to be
+-➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The chapters
 
--numbered in the Arabic numerals. The Page number should be bottom centered
+-to be numbered in the Arabic numerals. The Page number should be bottom
+
+-centered
 
 +➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The
 
@@ -2132,11 +2134,11 @@ Text content: ✅ Identical
 
  ➢ REFERENCES: List of References should include only those published or accepted for
 
--publication works that are cited in the text. Use of footnotes or endnotes should be avoided as
+-publication works that are cited in the text. Use of footnotes or endnotes should be
 
--a substitute for a reference list. Ideally, the names of all authors should be provided, but for
+-avoided as a substitute for a reference list. Ideally, the names of all authors should be
 
--the long author lists “ et al ” can be used.
+-provided, but for the long author lists “ et al ” can be used.
 
 +publication works that are cited in the text. Use of footnotes or endnotes should be avoided
 
@@ -2150,16 +2152,19 @@ Text content: ✅ Identical
 
  Negotiation research spans many departments [3]; 2. This result was later contradicted by
 
-@@ -24,34 +25,35 @@
+ Becker and Seligman [5]. 3. This effect has been widely studied [1-3, 7].
+
  [A.1] Reference list: The references for such style should be listed and numbered
 
  consecutively in the order of citation.
 
- [B] Citation of the reference by surname(s) of the author(s) directly (or parenthetically)
+-[B] Citation of the reference by surname(s) of the author(s) directly (or
 
--and year of publications i.e. as demonstrated (Allan and Jones, 1995). Kramer et al. (2000) have
+-parenthetically) and year of publications i.e. as demonstrated (Allan and Jones, 1995).
 
--recently shown ....
+-Kramer et al. (2000) have recently shown ....
+
++[B] Citation of the reference by surname(s) of the author(s) directly (or parenthetically)
 
 +and year of publications i.e. as demonstrated (Allan and Jones, 1995). Kramer et al. (2000)
 
@@ -2167,15 +2172,13 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--1. Single Author: the author's surname (without initials, unless there is ambiguity) and the year
+ 1. Single Author: the author's surname (without initials, unless there is ambiguity) and the
 
--of publication; 2. Two Authors: both authors' surnames and the year of publication; 3. Three or
+ year of publication; 2. Two Authors: both authors' surnames and the year of publication; 3.
 
--more authors: first author's surname followed by 'et al.' and the year of publication.
+-Three or more authors: first author's surname followed by 'et al.' and the year of
 
-+1. Single Author: the author's surname (without initials, unless there is ambiguity) and the
-
-+year of publication; 2. Two Authors: both authors' surnames and the year of publication; 3.
+-publication.
 
 +Three or more authors: first author's surname followed by 'et al.' and the year of publication.
 
@@ -2185,10 +2188,10 @@ Text content: ✅ Identical
 
  JOURNAL ARTICLE
 
--➢ Gamelin F.X., Baquet G., Berthoin S., Thevenet D., Nourry C., Nottin S., Bosquet L. (2009), Effect of high intensity
+-➢ Gamelin F.X., Baquet G., Berthoin S., Thevenet D., Nourry C., Nottin S., Bosquet L. (2009), Effect of high
 
--
-... (6475 more characters)
+-intensity intermittent training on heart rate 
+... (5947 more characters)
 
 ```
 </details>
