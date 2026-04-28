@@ -2219,7 +2219,17 @@ internal static class DocxToPdfConverter
         void FlushLineEntries(bool isLastLine = false)
         {
             if (lineEntries == null || lineEntries.Count == 0) return;
-            var lw = isFirstLine ? firstLineWidth : availableWidth;
+            // Use the actual visible line capacity from the first entry's X
+            // position to the right edge. This is equivalent to firstLineWidth
+            // when the first entry sits at firstLineX, and equivalent to
+            // availableWidth when it sits at baseX (subsequent lines after
+            // wrap). It additionally accounts for leading-tab advance at the
+            // start of a paragraph — without this, a leading <w:tab/> would
+            // make justifyWordSpacing be computed from too-large lw, causing
+            // the rendered text to overflow the right margin.
+            var lw = rightEdge - lineEntries[0].X;
+            if (lw <= 0)
+                lw = isFirstLine ? firstLineWidth : availableWidth;
 
             if (isJustified)
             {
@@ -3254,8 +3264,17 @@ internal static class DocxToPdfConverter
                     s_wideSansSerifFont = false;
                     s_serifRunInCalibri = false;
 
-                    // Paragraph spacing after
-                    var spAfter = para.SpacingAfter >= 0 ? para.SpacingAfter : (table.StyleSpacingAfter > 0 ? table.StyleSpacingAfter : 0f);
+                    // Paragraph spacing after: explicit paragraph/style spacing wins.
+                    // When the paragraph's SpacingAfter came from docDefaults only (not
+                    // explicit), the table style override (if any) takes precedence per
+                    // OOXML cascade order.
+                    float spAfter;
+                    if (para.SpacingAfterExplicit && para.SpacingAfter >= 0)
+                        spAfter = para.SpacingAfter;
+                    else if (table.StyleSpacingAfter >= 0)
+                        spAfter = table.StyleSpacingAfter;
+                    else
+                        spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : 0f;
                     textY -= spAfter;
                     lastParaSpacingAfter = spAfter;
                 }
@@ -3510,9 +3529,14 @@ internal static class DocxToPdfConverter
                 for (var cellParaIdx = 0; cellParaIdx < cellParaList.Count; cellParaIdx++)
                 {
                     var para = cellParaList[cellParaIdx];
-                    // Apply paragraph SpacingBefore (Word applies it for all cell paragraphs,
-                    // including the first; paragraph-style values flow through here).
-                    if (para.SpacingBefore > 0)
+                    var isFirstCellPara = cellParaIdx == 0;
+                    // Skip SpacingBefore for the first paragraph in a table cell.
+                    // LibreOffice (and Word's default compat mode) does not apply
+                    // paragraph-style SpacingBefore at the top of a cell — applying
+                    // it caused the Class News template's first cell title to sit
+                    // ~12pt lower than the LibreOffice reference and shifted every
+                    // downstream row by the same amount.
+                    if (!isFirstCellPara && para.SpacingBefore > 0)
                         textY -= para.SpacingBefore;
 
                     // Render images inside table cells
@@ -3561,9 +3585,15 @@ internal static class DocxToPdfConverter
                             emptyLineH = Math.Max(gridPitch, Compat.Ceiling(emptyLineH / gridPitch) * gridPitch);
                         }
                         textY -= emptyLineH;
-                        // Apply SpacingAfter (paragraph value wins; table style is fallback)
+                        // Apply SpacingAfter (explicit paragraph/style wins over table style; table style overrides docDefaults)
                         {
-                            var spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : (table.StyleSpacingAfter >= 0 ? table.StyleSpacingAfter : 0f);
+                            float spAfter;
+                            if (para.SpacingAfterExplicit && para.SpacingAfter >= 0)
+                                spAfter = para.SpacingAfter;
+                            else if (table.StyleSpacingAfter >= 0)
+                                spAfter = table.StyleSpacingAfter;
+                            else
+                                spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : 0f;
                             if (spAfter > 0) textY -= spAfter;
                         }
                         continue;
@@ -3645,9 +3675,15 @@ internal static class DocxToPdfConverter
                     s_wideSansSerifFont = false;
                     s_serifRunInCalibri = false;
 
-                    // Apply SpacingAfter (paragraph value wins; table style is fallback)
+                    // Apply SpacingAfter (explicit paragraph/style wins over table style; table style overrides docDefaults)
                     {
-                        var spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : (table.StyleSpacingAfter >= 0 ? table.StyleSpacingAfter : 0f);
+                        float spAfter;
+                        if (para.SpacingAfterExplicit && para.SpacingAfter >= 0)
+                            spAfter = para.SpacingAfter;
+                        else if (table.StyleSpacingAfter >= 0)
+                            spAfter = table.StyleSpacingAfter;
+                        else
+                            spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : 0f;
                         if (spAfter > 0) textY -= spAfter;
                     }
                 }
@@ -3861,10 +3897,11 @@ internal static class DocxToPdfConverter
         for (var pi = 0; pi < cellParas.Count; pi++)
         {
             var para = cellParas[pi];
+            var isFirstPara = pi == 0;
 
-            // Apply paragraph SpacingBefore (matches renderer behaviour);
-            // Word applies paragraph-style SpacingBefore at the top of cells too.
-            if (para.SpacingBefore > 0)
+            // Skip SpacingBefore for the first paragraph in a cell — this matches
+            // the renderer's behaviour and the LibreOffice reference layout.
+            if (!isFirstPara && para.SpacingBefore > 0)
                 cellHeight += para.SpacingBefore;
 
             const float emuPerPt = 914400f / 72f;
@@ -3902,14 +3939,21 @@ internal static class DocxToPdfConverter
             var textWidth = cellWidth - cellPaddingH * 2;
             var text = AddInterScriptSpacing(string.Concat(para.Runs.Select(r => r.Text)), para.AutoSpaceDE, para.AutoSpaceDN);
 
+            // Apply SpacingAfter for all paragraphs (explicit paragraph/style wins; table style overrides docDefaults)
+            float ResolveSpAfter(DocxParagraph p)
+            {
+                if (p.SpacingAfterExplicit && p.SpacingAfter >= 0) return p.SpacingAfter;
+                if (styleSpacingAfter >= 0) return styleSpacingAfter;
+                return p.SpacingAfter > 0 ? p.SpacingAfter : 0f;
+            }
+
             if (string.IsNullOrEmpty(text))
             {
                 // Only add line height when no inline images were rendered
                 // (inline images already account for the paragraph's vertical space)
                 if (!hasInlineImages)
                     cellHeight += lineHeight;
-                // Apply SpacingAfter for all paragraphs (paragraph value wins over table-style default)
-                var emptyAfter = para.SpacingAfter > 0 ? para.SpacingAfter : (styleSpacingAfter >= 0 ? styleSpacingAfter : 0f);
+                var emptyAfter = ResolveSpAfter(para);
                 if (emptyAfter > 0)
                     cellHeight += emptyAfter;
                 continue;
@@ -3927,8 +3971,7 @@ internal static class DocxToPdfConverter
             s_wideSansSerifFont = false;
             s_serifRunInCalibri = false;
             cellHeight += lines.Count * lineHeight;
-            // Apply SpacingAfter for all paragraphs (paragraph value wins over table-style default)
-            var textAfter = para.SpacingAfter > 0 ? para.SpacingAfter : (styleSpacingAfter >= 0 ? styleSpacingAfter : 0f);
+            var textAfter = ResolveSpAfter(para);
             if (textAfter > 0)
                 cellHeight += textAfter;
         }
