@@ -576,6 +576,7 @@ internal static class DocxReader
         var alignment = "left";
         float spacingBefore = -1;
         float spacingAfter = -1;
+        bool spacingAfterExplicit = false;
         float lineSpacing = 0;
         bool lineSpacingAbsolute = false;
         bool lineSpacingExact = false;
@@ -636,7 +637,10 @@ internal static class DocxReader
                 if (int.TryParse(spacing.Attribute(W + "before")?.Value, out var sb))
                     spacingBefore = sb / 20f;
                 if (int.TryParse(spacing.Attribute(W + "after")?.Value, out var sa))
+                {
                     spacingAfter = sa / 20f;
+                    spacingAfterExplicit = true;
+                }
                 if (int.TryParse(spacing.Attribute(W + "line")?.Value, out var sl))
                 {
                     var lineRule = spacing.Attribute(W + "lineRule")?.Value;
@@ -1023,7 +1027,8 @@ internal static class DocxReader
             AutoSpaceDE: autoSpaceDE,
             AutoSpaceDN: autoSpaceDN,
             HasLastRenderedPageBreak: hasLastRenderedPageBreak,
-            ListFontName: listFontName);
+            ListFontName: listFontName,
+            SpacingAfterExplicit: spacingAfterExplicit);
     }
 
     /// <summary>
@@ -4001,7 +4006,11 @@ internal sealed record DocxParagraph(
     // Used so the bullet glyph is rendered with that family rather than falling
     // back to the run/text font, which often lacks the Wingdings-style glyph
     // that Word actually paints for codepoints like F0D8 (➢).
-    string? ListFontName = null
+    string? ListFontName = null,
+    // True when the paragraph's pPr/spacing/@after attribute was explicitly set
+    // (vs inherited from style or docDefaults). Used so explicit paragraph spacing
+    // wins over table style spacing per OOXML cascade order.
+    bool SpacingAfterExplicit = false
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.  Width=0 is a sentinel for an
