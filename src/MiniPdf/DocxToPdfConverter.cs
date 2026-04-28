@@ -1487,7 +1487,27 @@ internal static class DocxToPdfConverter
             s_overrideWidths = GetFontOverrideWidths(runFontName);
             s_wideSansSerifFont = IsWideSansSerifFont(runFontName) && s_overrideWidths == null;
             s_serifRunInCalibri = paraUseCalibri && !s_serifFont && IsSerifFont(runFontName);
-            var lines = WordWrap(fullText, wrapFirstLineWidth, wrapAvailableWidth, runFontSize, paragraph.TabStops, runBold, runCharSpacing, paraUseCalibri);
+            // CJK fonts (KaiTi, SimSun, ...) render Latin/digit glyphs at half-width
+            // (~500/1000), but EstimateCalibrTextWidth uses Calibri's wider Latin
+            // widths (e.g. 'S'=549, '0'=507). For CJK runs in Calibri-default docs
+            // this overestimates lines containing Latin/digits, pushing the trailing
+            // CJK glyph to the next line. Add a wrap-budget tolerance proportional
+            // to the actual Latin/digit character count (~50/1000 em per char), so
+            // line-break decisions match Word; renderer-side widths are unaffected.
+            // A flat tolerance is too generous for paragraphs with no/few Latin
+            // chars (it would let several CJK glyphs leak past the right margin).
+            var cjkLatinTolerance = 0f;
+            if (paraUseCalibri && runFontName != null && IsCjkFont(runFontName) && fullText != null)
+            {
+                int latinCount = 0;
+                foreach (var c in fullText)
+                {
+                    if (c < '\u2E80' && c > ' ' && c != '\u2009')
+                        latinCount++;
+                }
+                cjkLatinTolerance = latinCount * runFontSize * 110f / 1000f;
+            }
+            var lines = WordWrap(fullText, wrapFirstLineWidth + cjkLatinTolerance, wrapAvailableWidth + cjkLatinTolerance, runFontSize, paragraph.TabStops, runBold, runCharSpacing, paraUseCalibri);
             // Keep s_overrideWidths set during the rendering loop so that
             // EstimateWrapTextWidth uses the same font metrics as WordWrap,
             // ensuring accurate justified text spacing and Tz compression.
@@ -2350,8 +2370,15 @@ internal static class DocxToPdfConverter
                     // compress; otherwise legitimate multi-line content (e.g. CJK
                     // bibliography entries) must wrap to avoid overflowing the right margin.
                     var lineCapacity = isFirstLine ? firstLineWidth : availableWidth;
+                    // Cap the "exact-spacing" overflow tolerance at ~1 glyph width.
+                    // The 10% relative slack alone is too generous for wide pages with
+                    // CJK content (e.g. 520pt line × 10% = 52pt ≈ 4 Chinese chars),
+                    // which would let several full-width glyphs leak past the right
+                    // margin instead of wrapping. Tz compression should only be
+                    // covering sub-character estimation noise.
+                    var exactSlack = Math.Min(lineCapacity * 0.10f, runFs);
                     var skipWrapForExact = paragraph.LineSpacingExact
-                        && (currentX + spaceWidth + wordWidth) - rightEdge <= lineCapacity * 0.10f;
+                        && (currentX + spaceWidth + wordWidth) - rightEdge <= exactSlack;
                     if (!skipWrapForExact && currentX + spaceWidth + wordWidth > rightEdge && (pendingText.Length > 0 || currentX > baseX + 1))
                     {
                         // When pendingText is empty and the word contains CJK characters,
@@ -2406,8 +2433,9 @@ internal static class DocxToPdfConverter
                     // For exact line spacing, only break when overflow is significant
                     // (not just minor estimation noise that Tz can compress away).
                     var cjkLineCapacity = isFirstLine ? firstLineWidth : availableWidth;
+                    var cjkExactSlack = Math.Min(cjkLineCapacity * 0.10f, runFs);
                     var skipCjkBreakForExact = paragraph.LineSpacingExact
-                        && currentX - rightEdge <= cjkLineCapacity * 0.10f;
+                        && currentX - rightEdge <= cjkExactSlack;
                     while (!skipCjkBreakForExact && currentX > rightEdge && pendingText.Length > 1)
                     {
                         var breakAt = -1;

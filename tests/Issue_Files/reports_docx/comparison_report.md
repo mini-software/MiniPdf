@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-28T11:43:21.155433
+Generated: 2026-04-28T12:39:31.023392
 
 ## Summary
 
@@ -21,7 +21,7 @@ Generated: 2026-04-28T11:43:21.155433
 | 13 | 🟡 MODERN LIVING | ✅ | 0.8851 | 0.7827 | 2/2 | **0.8671** |
 | 14 | 🟡 nthu_article | ✅ | 0.855 | 0.864 | 19/20 | **0.7876** |
 | 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
-| 16 | 🟢 SA8000 ch sample | ✅ | 0.9926 | 0.9625 | 2/2 | **0.982** |
+| 16 | 🟢 SA8000 ch sample | ✅ | 0.9929 | 0.9626 | 2/2 | **0.9822** |
 | 17 | 🟢 Support_Letter | ✅ | 1.0 | 0.959 | 1/1 | **0.9836** |
 | 18 | 🟡 Template for MSc Thesis | ✅ | 1.0 | 0.8422 | 19/17 | **0.8369** |
 | 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
@@ -1872,11 +1872,11 @@ Text content: ✅ Identical
 
 ### SA8000 ch sample
 
-- **Text Similarity:** 0.9926
-- **Visual Average:** 0.9625
-- **Overall Score:** 0.982
+- **Text Similarity:** 0.9929
+- **Visual Average:** 0.9626
+- **Overall Score:** 0.9822
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=467145 bytes, Reference=186097 bytes
+- **File Size:** MiniPdf=467160 bytes, Reference=186097 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1968,9 +1968,7 @@ Text content: ✅ Identical
 
 -针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出 SA8000 的哪一条款。
 
--1、公司在运行 SA8000 社会责任管理体系过程中，内审发现使用了 2 名童工，公司的纠正措施是将 2
-
--名童工立即开除。
+-1、 公司在运行 SA8000 社会责任管理体系过程中，内审发现使用了 2 名童工，公司的纠正措施是将 2 名
 
 +三、案例分析题（共10 分，每题5 分）
 
@@ -1978,7 +1976,7 @@ Text content: ✅ Identical
 
 +1、公司在运行SA8000 社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施是将2 名
 
-+童工立即开除。
+ 童工立即开除。
 
  STP 小组的含义是什么？
 
@@ -2049,8 +2047,8 @@ Text content: ✅ Identical
 
  5.危险源辨识没有包括的内容有（ D  ）
 
--A、常规和非常规活动。B、所有进入工作场所的人员的
-... (1060 more characters)
+-A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场
+... (1052 more characters)
 
 ```
 </details>
