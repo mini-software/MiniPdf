@@ -1152,15 +1152,31 @@ internal sealed class PdfWriter
                 {
                     var fontName = $"F{run.fontSlot + 2}";
                     sb.Append($"/{fontName} {fontSize} Tf\n");
+
+                    // Detect whether this run contains a CJK punctuation-compression
+                    // pair (right-empty followed by left-empty). When present, we use
+                    // TJ form to inject positive kerning that halves the preceding
+                    // punctuation's advance — matching Word's compressPunctuation rule.
+                    bool hasPunctCompress = false;
+                    for (int i = 0; i + 1 < run.cps.Count; i++)
+                    {
+                        if (CjkPunctCompressKerning(run.cps[i], run.cps[i + 1]) != 0)
+                        {
+                            hasPunctCompress = true;
+                            break;
+                        }
+                    }
+
                     // Use TJ (array form) to insert word spacing at space boundaries.
                     // Tw doesn't work for CID/Identity-H fonts, so we use TJ
                     // displacement values to add spacing after each space character.
-                    if (wordSpacingTJ != 0)
+                    if (wordSpacingTJ != 0 || hasPunctCompress)
                     {
                         sb.Append('[');
                         sb.Append('<');
-                        foreach (var cp in run.cps)
+                        for (int i = 0; i < run.cps.Count; i++)
                         {
+                            var cp = run.cps[i];
                             var cid = cp;
                             if (embeddedFonts != null && run.fontSlot < embeddedFonts.Count)
                             {
@@ -1170,11 +1186,21 @@ internal sealed class PdfWriter
                             }
                             sb.Append(cid.ToString("X4"));
                             // Insert TJ displacement after space characters
-                            if (cp == ' ')
+                            if (cp == ' ' && wordSpacingTJ != 0)
                             {
                                 sb.Append('>');
                                 sb.Append(wordSpacingTJ.ToString(CultureInfo.InvariantCulture));
                                 sb.Append('<');
+                            }
+                            else if (i + 1 < run.cps.Count)
+                            {
+                                var kern = CjkPunctCompressKerning(cp, run.cps[i + 1]);
+                                if (kern != 0)
+                                {
+                                    sb.Append('>');
+                                    sb.Append(kern.ToString(CultureInfo.InvariantCulture));
+                                    sb.Append('<');
+                                }
                             }
                         }
                         sb.Append(">] TJ\n");
@@ -1351,6 +1377,65 @@ internal sealed class PdfWriter
             || (c >= 0xFE30 && c <= 0xFE4F)  // CJK Compat Forms
             || (c >= 0xFF01 && c <= 0xFF60)  // Fullwidth Forms
             || (c >= 0xFFE0 && c <= 0xFFE6); // Fullwidth Signs
+    }
+
+    // CJK punctuation with ink occupying the LEFT half of the glyph box and
+    // empty space on the RIGHT side. When followed by a left-empty punct,
+    // Word's compressPunctuation rule collapses the empty halves so the
+    // right-empty punct's advance is reduced to half-width.
+    private static bool IsRightEmptyCjkPunct(int cp) =>
+        cp == 0x3001 // 、 ideographic comma
+        || cp == 0x3002 // 。 ideographic full stop
+        || cp == 0xFF0C // ， fullwidth comma
+        || cp == 0xFF0E // ． fullwidth full stop
+        || cp == 0xFF1A // ： fullwidth colon
+        || cp == 0xFF1B // ； fullwidth semicolon
+        || cp == 0xFF01 // ！ fullwidth exclamation
+        || cp == 0xFF1F // ？ fullwidth question
+        || cp == 0xFF09 // ） fullwidth right paren
+        || cp == 0xFF3D // ］ fullwidth right bracket
+        || cp == 0xFF5D // ｝ fullwidth right brace
+        || cp == 0x300D // 」
+        || cp == 0x300F // 』
+        || cp == 0x3011 // 】
+        || cp == 0x3015 // 〕
+        || cp == 0x3017 // 〗
+        || cp == 0x3019 // 〙
+        || cp == 0x301B // 〛
+        || cp == 0x3009 // 〉
+        || cp == 0x300B // 》
+        ;
+
+    // CJK punctuation with ink occupying the RIGHT half of the glyph box
+    // (i.e., empty space on the LEFT side). When preceded by a right-empty
+    // punct, the pair compresses.
+    private static bool IsLeftEmptyCjkPunct(int cp) =>
+        cp == 0xFF08 // （
+        || cp == 0xFF3B // ［
+        || cp == 0xFF5B // ｛
+        || cp == 0x300C // 「
+        || cp == 0x300E // 『
+        || cp == 0x3010 // 【
+        || cp == 0x3014 // 〔
+        || cp == 0x3016 // 〖
+        || cp == 0x3018 // 〘
+        || cp == 0x301A // 〚
+        || cp == 0x3008 // 〈
+        || cp == 0x300A // 《
+        ;
+
+    /// <summary>
+    /// Implements Word's compressPunctuation rule: when a right-empty CJK
+    /// punctuation (e.g. 。 ， 、) is immediately followed by a left-empty
+    /// CJK punctuation (e.g. （ 「), the empty halves overlap. Reduce the
+    /// preceding punctuation's advance to half-width by emitting positive
+    /// TJ kerning of 500 (units of 1/1000 em).
+    /// </summary>
+    private static int CjkPunctCompressKerning(int curCp, int nextCp)
+    {
+        if (IsRightEmptyCjkPunct(curCp) && IsLeftEmptyCjkPunct(nextCp))
+            return 500;
+        return 0;
     }
 
     /// <summary>

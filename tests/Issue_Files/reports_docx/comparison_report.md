@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-28T12:39:31.023392
+Generated: 2026-04-28T12:55:35.358010
 
 ## Summary
 
@@ -21,7 +21,7 @@ Generated: 2026-04-28T12:39:31.023392
 | 13 | 🟡 MODERN LIVING | ✅ | 0.8851 | 0.7827 | 2/2 | **0.8671** |
 | 14 | 🟡 nthu_article | ✅ | 0.855 | 0.864 | 19/20 | **0.7876** |
 | 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
-| 16 | 🟢 SA8000 ch sample | ✅ | 0.9929 | 0.9626 | 2/2 | **0.9822** |
+| 16 | 🟢 SA8000 ch sample | ✅ | 0.9929 | 0.9629 | 2/2 | **0.9823** |
 | 17 | 🟢 Support_Letter | ✅ | 1.0 | 0.959 | 1/1 | **0.9836** |
 | 18 | 🟡 Template for MSc Thesis | ✅ | 1.0 | 0.8422 | 19/17 | **0.8369** |
 | 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
@@ -1873,10 +1873,10 @@ Text content: ✅ Identical
 ### SA8000 ch sample
 
 - **Text Similarity:** 0.9929
-- **Visual Average:** 0.9626
-- **Overall Score:** 0.9822
+- **Visual Average:** 0.9629
+- **Overall Score:** 0.9823
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=467160 bytes, Reference=186097 bytes
+- **File Size:** MiniPdf=467300 bytes, Reference=186097 bytes
 
 <details><summary>Text Diff</summary>
 
