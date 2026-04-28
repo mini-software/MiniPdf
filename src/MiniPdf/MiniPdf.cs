@@ -1,3 +1,5 @@
+using System.IO.Compression;
+
 namespace MiniSoftware;
 
 /// <summary>
@@ -75,14 +77,93 @@ public static class MiniPdf
     }
 
     /// <summary>
-    /// Converts an Excel (.xlsx) stream to a PDF byte array.
+    /// Converts an Office document stream (.xlsx or .docx) to a PDF byte array.
+    /// The format is auto-detected by inspecting the underlying ZIP package contents.
     /// </summary>
-    /// <param name="inputStream">Stream containing .xlsx data.</param>
+    /// <param name="inputStream">Stream containing .xlsx or .docx data.</param>
     /// <returns>A byte array containing the PDF data.</returns>
     public static byte[] ConvertToPdf(Stream inputStream)
     {
-        var doc = ExcelToPdfConverter.Convert(inputStream);
-        return doc.ToArray();
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(inputStream);
+#else
+        if (inputStream is null) throw new ArgumentNullException(nameof(inputStream));
+#endif
+
+        // Ensure we have a seekable stream so ZipArchive can read the central directory
+        // and the converter can subsequently re-read the package.
+        Stream seekable;
+        bool ownsSeekable = false;
+        if (inputStream.CanSeek)
+        {
+            seekable = inputStream;
+        }
+        else
+        {
+            var ms = new MemoryStream();
+            inputStream.CopyTo(ms);
+            ms.Position = 0;
+            seekable = ms;
+            ownsSeekable = true;
+        }
+
+        try
+        {
+            var startPosition = seekable.Position;
+            var format = DetectOfficeFormat(seekable);
+            seekable.Position = startPosition;
+
+            switch (format)
+            {
+                case OfficeFormat.Docx:
+                    {
+                        var doc = DocxToPdfConverter.Convert(seekable);
+                        return doc.ToArray();
+                    }
+                case OfficeFormat.Xlsx:
+                    {
+                        var doc = ExcelToPdfConverter.Convert(seekable);
+                        return doc.ToArray();
+                    }
+                default:
+                    throw new NotSupportedException(
+                        "Unable to detect Office format from stream. Supported formats: .xlsx, .docx.");
+            }
+        }
+        finally
+        {
+            if (ownsSeekable)
+                seekable.Dispose();
+        }
+    }
+
+    private enum OfficeFormat
+    {
+        Unknown,
+        Xlsx,
+        Docx,
+    }
+
+    private static OfficeFormat DetectOfficeFormat(Stream seekableStream)
+    {
+        try
+        {
+            using var archive = new ZipArchive(seekableStream, ZipArchiveMode.Read, leaveOpen: true);
+            foreach (var entry in archive.Entries)
+            {
+                var name = entry.FullName;
+                if (name.StartsWith("word/", StringComparison.OrdinalIgnoreCase))
+                    return OfficeFormat.Docx;
+                if (name.StartsWith("xl/", StringComparison.OrdinalIgnoreCase))
+                    return OfficeFormat.Xlsx;
+            }
+        }
+        catch (InvalidDataException)
+        {
+            return OfficeFormat.Unknown;
+        }
+
+        return OfficeFormat.Unknown;
     }
 
     /// <summary>

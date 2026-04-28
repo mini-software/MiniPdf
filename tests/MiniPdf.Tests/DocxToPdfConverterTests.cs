@@ -158,6 +158,19 @@ public class DocxToPdfConverterTests
         Assert.Contains("Stream API Test", content);
     }
 
+    [Fact]
+    public void ConvertToPdf_StreamApi_AutoDetectsDocx()
+    {
+        using var docxStream = CreateSimpleDocx("AutoDetect Docx Stream");
+
+        var bytes = MiniPdf.ConvertToPdf(docxStream);
+        var content = Encoding.ASCII.GetString(bytes);
+
+        Assert.StartsWith("%PDF-1.4", content);
+        Assert.Contains("AutoDetect Docx Stream", content);
+        Assert.Contains("%%EOF", content);
+    }
+
       [Fact]
       public void Convert_FooterPageFieldWithSwitch_RendersPageNumber()
       {

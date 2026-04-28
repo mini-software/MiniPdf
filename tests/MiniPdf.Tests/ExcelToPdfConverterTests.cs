@@ -127,6 +127,63 @@ public class ExcelToPdfConverterTests
         Assert.Contains("0.000 0.000 1.000 rg", content);
     }
 
+    [Fact]
+    public void ConvertToPdf_StreamApi_AutoDetectsXlsx()
+    {
+        using var excelStream = CreateSimpleExcel(new[]
+        {
+            new[] { "AutoDetect", "Xlsx" },
+            new[] { "Cell1", "Cell2" },
+        });
+
+        var bytes = MiniPdf.ConvertToPdf(excelStream);
+        var content = Encoding.ASCII.GetString(bytes);
+
+        Assert.StartsWith("%PDF-1.4", content);
+        Assert.Contains("AutoDetect", content);
+        Assert.Contains("Cell1", content);
+        Assert.Contains("%%EOF", content);
+    }
+
+    [Fact]
+    public void ConvertToPdf_StreamApi_WorksWithNonSeekableXlsxStream()
+    {
+        using var excelStream = CreateSimpleExcel(new[]
+        {
+            new[] { "NonSeekable", "Xlsx" },
+            new[] { "Row2A", "Row2B" },
+        });
+        using var nonSeekable = new NonSeekableStream(excelStream);
+
+        var bytes = MiniPdf.ConvertToPdf(nonSeekable);
+        var content = Encoding.ASCII.GetString(bytes);
+
+        Assert.StartsWith("%PDF-1.4", content);
+        Assert.Contains("%%EOF", content);
+        // Sanity check: the produced PDF should be larger than an empty one.
+        Assert.True(bytes.Length > 500, $"Expected non-trivial PDF, got {bytes.Length} bytes");
+    }
+
+    private sealed class NonSeekableStream : Stream
+    {
+        private readonly Stream _inner;
+        public NonSeekableStream(Stream inner) { _inner = inner; }
+        public override bool CanRead => true;
+        public override bool CanSeek => false;
+        public override bool CanWrite => false;
+        public override long Length => throw new NotSupportedException();
+        public override long Position
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
+        public override void Flush() { }
+        public override int Read(byte[] buffer, int offset, int count) => _inner.Read(buffer, offset, count);
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+        public override void SetLength(long value) => throw new NotSupportedException();
+        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+    }
+
     /// <summary>
     /// Creates a minimal valid .xlsx file in memory with the given data.
     /// </summary>
