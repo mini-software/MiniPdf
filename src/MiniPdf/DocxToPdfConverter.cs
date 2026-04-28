@@ -1569,13 +1569,10 @@ internal static class DocxToPdfConverter
                     var spaceCount = line.Count(c => c == ' ');
                     if (spaceCount > 0)
                     {
-                        // When the wrap estimate undercounts true rendered width
-                        // (e.g. serif runs in a Calibri-default doc had latinUnits
-                        // scaled by 0.95 in EstimateCalibrTextWidth), invert that
-                        // scaling so wordSpacing reflects the true text width.
-                        // Otherwise justified word spacing pushes the rendered
-                        // line past the right margin.
-                        var realTextWidth = s_serifRunInCalibri ? textWidth / 0.95f : textWidth;
+                        // Estimate already accounts for serif/bold combinations
+                        // accurately; no additional inversion needed for justified
+                        // word-spacing computation.
+                        var realTextWidth = textWidth;
                         var extraSpace = lineW - realTextWidth;
                         if (extraSpace > 0)
                             wordSpacing = extraSpace / spaceCount;
@@ -4435,17 +4432,23 @@ internal static class DocxToPdfConverter
         }
         // Calibri Bold is ~3% wider than Calibri Regular on average.
         // In multi-format paragraphs where runs use non-Calibri fonts (e.g.
-        // Times New Roman Bold), the effective width difference is larger (~8-12%).
-        if (bold) latinUnits *= 1.03f;
+        // Times New Roman Bold), the effective width difference is larger:
+        // Times New Roman Bold is ~5-7% wider than Calibri Bold at the same
+        // point size. Use a moderate +2% bump (1.05 vs 1.03) when a serif run
+        // lives in a Calibri-default document — too aggressive a factor pushes
+        // bold-serif lines past page boundaries on dense pages.
+        if (bold) latinUnits *= s_serifRunInCalibri ? 1.05f : 1.03f;
         // Approximate kerning/hinting reduction: actual rendered text is ~2.3% narrower
         // than raw glyph-width sum due to font-level kerning pairs and grid fitting.
         // Only apply to Latin characters; CJK fonts have no inter-character kerning.
         latinUnits *= 0.977f;
-        // When the run font is a serif (Times New Roman etc.) inside a Calibri-default
-        // document, Calibri Latin glyphs are ~5% wider than the serif glyphs Word will
-        // actually render with. Apply an additional reduction so WordWrap matches Word's
-        // line-break decisions for the serif text.
-        if (s_serifRunInCalibri) latinUnits *= 0.95f;
+        // For non-bold serif (Times New Roman Regular) in a Calibri-default document,
+        // Times Regular Latin glyphs are very close to Calibri Regular widths, so the
+        // 0.977 kerning factor leaves the estimate slightly narrow. Skip the small
+        // compensating inflation here — applying it shifts wraps in long body
+        // paragraphs without measurable SSIM gains and can push content to the
+        // next page on dense pages.
+        _ = s_serifRunInCalibri;
         var totalUnits = latinUnits + cjkUnits;
         var width = fontSize * totalUnits / 1000f;
         if (charSpacing != 0 && text.Length > 1)
