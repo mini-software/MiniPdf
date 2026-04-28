@@ -99,7 +99,7 @@
     "name": "20260318_issue",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1531226,
+    "minipdf_size": 1531218,
     "reference_size": 344088,
     "pdf_valid": true,
     "minipdf_pages": 7,
@@ -161,7 +161,7 @@
     "name": "CCU_article",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6551920,
+    "minipdf_size": 6551733,
     "reference_size": 624071,
     "pdf_valid": true,
     "minipdf_pages": 21,
@@ -173,7 +173,7 @@
     "visual_scores": [
       0.9648,
       0.9489,
-      0.9551,
+      0.9552,
       0.9497,
       0.9388,
       0.9552,
@@ -365,7 +365,7 @@
     "name": "Confirmatory_Affidavit",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 795789,
+    "minipdf_size": 795389,
     "reference_size": 143292,
     "pdf_valid": true,
     "minipdf_pages": 2,
@@ -397,7 +397,7 @@
     "name": "Cooperation Agreement Template",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4370222,
+    "minipdf_size": 4370216,
     "reference_size": 139728,
     "pdf_valid": true,
     "minipdf_pages": 7,
@@ -511,7 +511,7 @@
     "name": "issues66",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4230927,
+    "minipdf_size": 4230919,
     "reference_size": 229716,
     "pdf_valid": true,
     "minipdf_pages": 3,
@@ -581,7 +581,7 @@
     "name": "nthu_article",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8699150,
+    "minipdf_size": 8698812,
     "reference_size": 798510,
     "pdf_valid": true,
     "minipdf_pages": 19,
@@ -602,12 +602,12 @@
       0.9866,
       0.6569,
       0.9418,
-      0.8877,
+      0.8878,
       0.9455,
       0.8445,
       0.9729,
       0.9344,
-      0.8978,
+      0.8977,
       0.7534,
       0.9574,
       0.0
@@ -779,7 +779,7 @@
     "name": "Support_Letter",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1004121,
+    "minipdf_size": 1003989,
     "reference_size": 147353,
     "pdf_valid": true,
     "minipdf_pages": 1,
@@ -789,9 +789,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "--- minipdf/Support_Letter.pdf\n+++ reference/Support_Letter.pdf\n@@ -12,9 +12,9 @@\n 1. I, Pascale Donaldson, a South African national born on 09 February 2006 with South African\n\n Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of\n\n South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a\n\n-national born on 21 December 1999, and support her application for a renewal of his Relatives Visa\n\n-in terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with the\n\n-relevant Immigration Regulations made under section 7 of the Act.\n\n+national born on 21 December 1999, and support her application for a renewal of his Relatives Visa in\n\n+terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with the relevant\n\n+Immigration Regulations made under section 7 of the Act.\n\n 2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,\n\n food, medical, physical and emotional needs he may require whilst residing with me in South Africa at\n\n the following address during his entire sojourn:\n",
     "visual_scores": [
-      0.9595
+      0.96
     ],
-    "visual_avg": 0.9595,
+    "visual_avg": 0.96,
     "diff_images": [
       {
         "page": 1,
@@ -799,13 +799,13 @@
         "reference_img": "Support_Letter_p1_reference.png"
       }
     ],
-    "overall_score": 0.9838
+    "overall_score": 0.984
   },
   {
     "name": "Template for MSc Thesis",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1183137,
+    "minipdf_size": 1182555,
     "reference_size": 402081,
     "pdf_valid": true,
     "minipdf_pages": 17,
@@ -816,13 +816,13 @@
     "text_diff": "--- minipdf/Template for MSc Thesis.pdf\n+++ reference/Template for MSc Thesis.pdf\n@@ -8,8 +8,9 @@\n ➢ Font and Font size for the general text of the report: Times New Roman 12\n\n ➢ LINE SPACING: 1.5\n\n ➢ MARGINS: At least 2.5 inch on the binding side; 1 inch at top and bottom\n\n-➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The chapters\n\n-to be numbered in the Arabic numerals. The Page number should be bottom centered\n\n+➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The\n\n+chapters to be numbered in the Arabic numerals. The Page number should be\n\n+bottom centered\n\n ➢ PAPER TYPE AND SIZE: A4 size Executive Bond Paper\n\n ➢ PRINTING: BOTH SIDE PRINTING\n\n ➢ Number of copies of M.Sc. thesis to be submitted: 5 + number of thesis supervisor(s)\n\n@@ -86,10 +87,10 @@\n I hereby certify that the work which is being presented in the thesis entitled <TITLE OF M.SC.\n\n THESIS> in the partial fulfillment of the requirements for the award of the degree of MASTER OF\n\n SCIENCE and submitted in the DEPARTMENT OF < NAME OF THE DEPARTMENT >, Indian\n\n-Institute of Technology Indore , is an authentic record of my own work carried out during the time period from\n\n-<Month and year of joining the M.Sc. program> to < Month and year of M.Sc. Thesis submission> under the\n\n-supervision of <Name of the Supervisor of M.Sc. thesis  #1, Designation, and Affiliation> and < Name of the\n\n-Supervisor of M.Sc. thesis #2, Designation, and Affiliation>\n\n+Institute of Technology Indore , is an authentic record of my own work carried out during the time period\n\n+from <Month and year of joining the M.Sc. program> to < Month and year of M.Sc. Thesis submission> under\n\n+the supervision of <Name of the Supervisor of M.Sc. thesis  #1, Designation, and Affiliation> and < Name of\n\n+the Supervisor of M.Sc. thesis #2, Designation, and Affiliation>\n\n The matter presented in this thesis has not been submitted by me for the award of any other degree of\n\n this or any other institute.\n\n Signature of the student with date\n\n@@ -99,14 +100,14 @@\n knowledge.\n\n Signature of the Supervisor of Signature of the Supervisor of\n\n M.Sc. thesis #1 (with date) M.Sc. thesis #2 (with date)\n\n-(NAME OF SUPERVISOR)                                                                (NAME OF SUPERVISOR)\n\n+(NAME OF SUPERVISOR) (NAME OF SUPERVISOR)\n\n --------------------------------------------------------------------------------------------------------------------------------\n\n-< NAME OF THE M.Sc. STUDENT> has successfully given his/her M.Sc. Oral Examination held on\n\n-<Date of M.Sc. Oral Examination> .\n\n-Signature(s) of Supervisor(s) of MSc thesis                                                                       Convener, DPGC\n\n-Date:                                                                                                                                         Date:\n\n-Signature of PSPC Member #1                                                                  Signature of PSPC Member #1\n\n-Date:                                                                                                              Date:\n\n+< NAME OF THE M.Sc. STUDENT> has successfully given his/her M.Sc. Oral Examination held\n\n+on <Date of M.Sc. Oral Examination> .\n\n+Signature(s) of Supervisor(s) of MSc thesis Convener, DPGC\n\n+Date: Date:\n\n+Signature of PSPC Member #1 Signature of PSPC Member #1\n\n+Date: Date:\n\n -----------------------------------------------------------------------------------------------------------------------------------\n\n ---PAGE---\n\n ACKNOWLEDGEMENTS\n\n@@ -114,8 +115,9 @@\n DEDICATION (if any)\n\n ---PAGE---\n\n Abstract\n\n-The abstract should be a brief summary of the M. Tech. thesis. It should not contain more than\n\n-1-2 pages of A4 size with the text typed in 12 pt Times New Roman font having 1.5 spacing .\n\n+The abstract should be a brief summary of the M. Tech. thesis. It should not contain\n\n+more than 1-2 pages of A4 size with the text typed in 12 pt Times New Roman font having\n\n+1.5 spacing .\n\n ---PAGE---\n\n LIST OF PUBLICATIONS\n\n ---PAGE---\n",
     "visual_scores": [
       0.9367,
-      0.9656,
+      0.9678,
       0.9675,
       0.9606,
       0.9315,
       0.9984,
       0.9989,
-      0.9929,
+      0.993,
       0.9986,
       0.9706,
       0.9983,
@@ -833,7 +833,7 @@
       0.9993,
       0.9988
     ],
-    "visual_avg": 0.9831,
+    "visual_avg": 0.9833,
     "diff_images": [
       {
         "page": 1,
@@ -921,7 +921,7 @@
         "reference_img": "Template for MSc Thesis_p17_reference.png"
       }
     ],
-    "overall_score": 0.9932
+    "overall_score": 0.9933
   },
   {
     "name": "Template_repaired",

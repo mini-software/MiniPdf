@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-29T04:41:17.816071
+Generated: 2026-04-29T05:06:49.494056
 
 ## Summary
 
@@ -23,8 +23,8 @@ Generated: 2026-04-29T04:41:17.816071
 | 15 | 🟡 nthu_article | ✅ | 0.875 | 0.8707 | 19/20 | **0.7983** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
 | 17 | 🟢 SA8000 ch sample | ✅ | 0.9931 | 0.9667 | 2/2 | **0.9839** |
-| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9595 | 1/1 | **0.9838** |
-| 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9831 | 17/17 | **0.9932** |
+| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.96 | 1/1 | **0.984** |
+| 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9833 | 17/17 | **0.9933** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
 **Average Overall Score: 0.8119**
@@ -648,7 +648,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8607
 - **Overall Score:** 0.9343
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=1531226 bytes, Reference=344088 bytes
+- **File Size:** MiniPdf=1531218 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -738,7 +738,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9477
 - **Overall Score:** 0.9496
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6551920 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6551733 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1001,7 +1001,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.967
 - **Overall Score:** 0.9801
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=795789 bytes, Reference=143292 bytes
+- **File Size:** MiniPdf=795389 bytes, Reference=143292 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1094,7 +1094,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9846
 - **Overall Score:** 0.9859
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=4370222 bytes, Reference=139728 bytes
+- **File Size:** MiniPdf=4370216 bytes, Reference=139728 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1379,7 +1379,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9755
 - **Overall Score:** 0.9716
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=4230927 bytes, Reference=229716 bytes
+- **File Size:** MiniPdf=4230919 bytes, Reference=229716 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1630,7 +1630,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8707
 - **Overall Score:** 0.7983
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=8699150 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=8698812 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2056,10 +2056,10 @@ Text content: ✅ Identical
 ### Support_Letter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9595
-- **Overall Score:** 0.9838
+- **Visual Average:** 0.96
+- **Overall Score:** 0.984
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1004121 bytes, Reference=147353 bytes
+- **File Size:** MiniPdf=1003989 bytes, Reference=147353 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2097,10 +2097,10 @@ Text content: ✅ Identical
 ### Template for MSc Thesis
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9831
-- **Overall Score:** 0.9932
+- **Visual Average:** 0.9833
+- **Overall Score:** 0.9933
 - **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=1183137 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=1182555 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 

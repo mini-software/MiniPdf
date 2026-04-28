@@ -986,6 +986,14 @@ internal sealed class PdfWriter
                         effectiveWsWa = newWs;
                     }
                 }
+                else if (block.WordSpacing > 0 && block.MaxWidth.HasValue
+                    && naturalWidthWa >= block.MaxWidth.Value)
+                {
+                    // Natural already meets or exceeds MaxWidth: Tz-compression
+                    // alone fills the slot, so any caller-provided word spacing
+                    // would push the rendered line PAST MaxWidth. Zero it out.
+                    effectiveWsWa = 0;
+                }
                 // Apply word spacing (Tw) for justified text
                 if (effectiveWsWa != 0)
                     sb.Append($"{effectiveWsWa.ToString("F2", CultureInfo.InvariantCulture)} Tw\n");
@@ -1092,6 +1100,15 @@ internal sealed class PdfWriter
                         if (newWs < 0) newWs = 0;
                         effectiveWordSpacing = newWs;
                     }
+                }
+                else if (block.WordSpacing > 0 && block.MaxWidth.HasValue
+                    && naturalWidth > 0 && naturalWidth >= block.MaxWidth.Value)
+                {
+                    // Natural already meets/exceeds MaxWidth — Tz-compression alone
+                    // fills the slot. Caller-provided word spacing must be zeroed
+                    // out, otherwise it stacks on top of compressed glyphs and the
+                    // rendered line ends up wider than MaxWidth.
+                    effectiveWordSpacing = 0;
                 }
 
                 var cidTzPercent = 100.0;
