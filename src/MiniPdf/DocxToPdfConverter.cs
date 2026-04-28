@@ -2516,7 +2516,13 @@ internal static class DocxToPdfConverter
                         }
                     }
 
-                    if (wi > 0 && pendingText.Length > 0)
+                    // Add inter-word space when:
+                    //   * pendingText already has content from this run (normal case), OR
+                    //   * a previous run on the same line has already advanced currentX past
+                    //     baseX (e.g., italic "et al" followed by a run whose text begins
+                    //     with " (1999)..."). After Split(' '), words[0]=="" causes the
+                    //     leading space to otherwise be dropped, gluing the runs together.
+                    if (wi > 0 && (pendingText.Length > 0 || currentX > baseX + 0.1f))
                     {
                         pendingText += " ";
                         currentX += spaceWidth;
@@ -4518,6 +4524,15 @@ internal static class DocxToPdfConverter
     {
         float latinUnits = 0;
         float cjkUnits = 0;
+        // Tracks the count of letters/digits — these are the characters
+        // affected by font kerning (kerning pairs are almost exclusively
+        // between letters or letter+digit sequences). Punctuation and spaces
+        // carry their own designed advance and are NOT shrunk by the global
+        // kerning approximation. This separation matters for serif-in-Calibri
+        // (Times) wrap because citation/reference lists are punctuation-heavy
+        // and otherwise get their estimated width pulled below Word's measured
+        // width.
+        int kernableLetterCount = 0;
         // When text contains CJK characters, the PDF renderer uses CJK fonts for the
         // entire text block (including ASCII spaces). CJK fonts render space at 500/1000,
         // not at the Calibri width (226/1000). Detect CJK context to use correct metrics.
@@ -4526,6 +4541,14 @@ internal static class DocxToPdfConverter
         bool hasCjk = false;
         foreach (var c in text)
             if (c >= '\u2E80' && !char.IsHighSurrogate(c) && !char.IsLowSurrogate(c)) { hasCjk = true; break; }
+        // For serif runs (Times New Roman etc.) in a Calibri-default document, use
+        // Times-Roman ASCII width metrics for the Latin portion. Calibri vs Times
+        // ratios vary character-by-character (Times caps/punctuation are noticeably
+        // wider than Calibri while Times lowercase is comparable), so a uniform
+        // multiplier on Calibri widths cannot match Word's wrap consistently across
+        // body paragraphs (lots of lowercase) and citation lines (many uppercase
+        // initials, commas, periods, parentheses).
+        bool useTimesWidths = s_serifRunInCalibri;
         for (var i = 0; i < text.Length; i++)
         {
             var ch = text[i];
@@ -4536,43 +4559,52 @@ internal static class DocxToPdfConverter
                 i++;
                 continue;
             }
-            var w = GetCalibrCharWidth(ch);
+            var w = useTimesWidths ? GetTimesCharWidth(ch) : GetCalibrCharWidth(ch);
             if (w == 1000 && ch >= '\u2E80') // CJK full-width characters
                 cjkUnits += w;
             else if (hasCjk && ch == ' ')
             {
                 // Use CJK space width only when adjacent to a CJK/fullwidth character.
-                // Spaces between Latin characters use Calibri width for accurate wrapping.
+                // Spaces between Latin characters use Calibri/Times width for accurate wrapping.
                 bool adjCjk = false;
                 if (i > 0) { var p = text[i - 1]; adjCjk |= GetCalibrCharWidth(p) == 1000 && p >= '\u2E80'; }
                 if (!adjCjk && i + 1 < text.Length) { var n = text[i + 1]; adjCjk |= GetCalibrCharWidth(n) == 1000 && n >= '\u2E80'; }
                 if (adjCjk)
                     cjkUnits += 500;
                 else
-                    latinUnits += w; // Calibri space (226)
+                {
+                    latinUnits += w;
+                    // space — non-kernable
+                }
             }
             else
+            {
                 latinUnits += w;
+                if (useTimesWidths
+                    && (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9'))
+                    kernableLetterCount++;
+            }
         }
         // Calibri Bold is ~3% wider than Calibri Regular on average.
-        // In multi-format paragraphs where runs use non-Calibri fonts (e.g.
-        // Times New Roman Bold), the effective width difference is larger:
-        // Times New Roman Bold is ~5-7% wider than Calibri Bold at the same
-        // point size. Use a moderate +2% bump (1.05 vs 1.03) when a serif run
-        // lives in a Calibri-default document — too aggressive a factor pushes
-        // bold-serif lines past page boundaries on dense pages.
-        if (bold) latinUnits *= s_serifRunInCalibri ? 1.05f : 1.03f;
+        // Times New Roman Bold is ~6-8% wider than Times Regular at the same
+        // point size; the Times width table above is for Regular weight, so apply
+        // a +6% bump for serif-in-Calibri bold (vs +3% for plain Calibri bold).
+        if (bold)
+        {
+            latinUnits *= useTimesWidths ? 1.06f : 1.03f;
+        }
         // Approximate kerning/hinting reduction: actual rendered text is ~2.3% narrower
         // than raw glyph-width sum due to font-level kerning pairs and grid fitting.
         // Only apply to Latin characters; CJK fonts have no inter-character kerning.
-        latinUnits *= 0.977f;
-        // For non-bold serif (Times New Roman Regular) in a Calibri-default document,
-        // Times Regular Latin glyphs are very close to Calibri Regular widths, so the
-        // 0.977 kerning factor leaves the estimate slightly narrow. Skip the small
-        // compensating inflation here — applying it shifts wraps in long body
-        // paragraphs without measurable SSIM gains and can push content to the
-        // next page on dense pages.
-        _ = s_serifRunInCalibri;
+        // For serif-in-Calibri (Times) path, use a per-letter constant (≈8.8 width
+        // units per kernable letter/digit) instead of a flat percentage. Empirically
+        // this matches Word's measured Times rendering across both 14pt body
+        // narrative (lots of lowercase letters) and 12pt citation lines (lots of
+        // punctuation), where a uniform percentage either over- or under-shoots.
+        if (useTimesWidths)
+            latinUnits -= kernableLetterCount * 8.8f;
+        else
+            latinUnits *= 0.977f;
         var totalUnits = latinUnits + cjkUnits;
         var width = fontSize * totalUnits / 1000f;
         if (charSpacing != 0 && text.Length > 1)
@@ -4866,6 +4898,49 @@ internal static class DocxToPdfConverter
         334, // }
         584, // ~
     ];
+
+    // Times-Roman (Times New Roman Regular) character widths for ASCII 32..126
+    // (in thousandths of a unit). Sourced from Adobe Type 1 Times-Roman AFM —
+    // matches Times New Roman TTF advance widths within ~1 unit. Used by
+    // EstimateCalibrTextWidth when a serif run lives inside a Calibri-default
+    // document so wrap decisions reflect Times glyph advances (Times caps and
+    // punctuation are noticeably wider than Calibri while Times lowercase is
+    // comparable).
+    private static readonly int[] TimesRomanWidths =
+    [
+        250, 333, 408, 500, 500, 833, 778, 180, 333, 333, // ' ' to )
+        500, 564, 250, 333, 250, 278,                     // * to /
+        500, 500, 500, 500, 500, 500, 500, 500, 500, 500, // 0-9
+        278, 278, 564, 564, 564, 444, 921,                // : to @
+        722, 667, 667, 722, 611, 556, 722, 722, 333,      // A-I
+        389, 722, 611, 889, 722, 722, 556, 722, 667, 556, // J-S
+        611, 722, 722, 944, 722, 722, 611,                // T-Z
+        333, 278, 333, 469, 500, 333,                     // [ to `
+        444, 500, 444, 500, 444, 333, 500, 500, 278,      // a-i
+        278, 500, 278, 778, 500, 500, 500, 500, 333, 389, // j-s
+        278, 500, 500, 722, 500, 500, 444,                // t-z
+        480, 200, 480, 541,                               // { to ~
+    ];
+
+    private static int GetTimesCharWidth(char ch)
+    {
+        if (ch < ' ') return 0;
+        if (ch == '\u2009') return 250; // THIN SPACE: quarter-em
+        if (ch >= ' ' && ch <= '~')
+            return TimesRomanWidths[ch - ' '];
+        if (ch >= '\u4E00' && ch <= '\u9FFF'
+            || ch >= '\u3400' && ch <= '\u4DBF'
+            || ch >= '\u3000' && ch <= '\u303F'
+            || ch >= '\u3040' && ch <= '\u309F'
+            || ch >= '\u30A0' && ch <= '\u30FF'
+            || ch >= '\uF900' && ch <= '\uFAFF'
+            || ch >= '\uFF00' && ch <= '\uFFEF')
+            return 1000;
+        // For non-ASCII Latin punctuation (curly quotes, en/em dash, etc.), fall
+        // back to Calibri widths — Times TTF advances for these are close enough
+        // and we already maintain a Calibri table for the full BMP fallback.
+        return GetCalibrCharWidth(ch);
+    }
 
     // Calibri Regular character widths for ASCII 32..126 (in thousandths of a unit)
     // Extracted from Calibri.ttf (UPM=2048, scaled to 1000 units)
