@@ -3,7 +3,7 @@
     "name": "13_IEEE_Style_Paper",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1152864,
+    "minipdf_size": 1152861,
     "reference_size": 174711,
     "pdf_valid": true,
     "minipdf_pages": 2,
@@ -11,12 +11,12 @@
     "text_similarity": 1.0,
     "flat_text_similarity": 0.9365,
     "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/13_IEEE_Style_Paper.pdf\n+++ reference/13_IEEE_Style_Paper.pdf\n@@ -6,13 +6,14 @@\n email@university.edu\n\n Abstract\n\n This paper presents a novel approach to converting document formats while preserving layout fidelity.\n\n-We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content,\n\n-and reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a benchmark\n\n-of 500 documents across various formats including DOCX, XLSX, and PDF.\n\n+We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content, and\n\n+reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a benchmark of\n\n+500 documents across various formats including DOCX, XLSX, and PDF.\n\n 1. Introduction\n\n-Document format conversion is a fundamental problem in information technology. Organizations frequently\n\n-need to convert documents between formats for archival, sharing, and processing purposes. The challenge\n\n-lies in preserving the visual layout, formatting, and semantic structure of the original document [1].\n\n+Document format conversion is a fundamental problem in information technology. Organizations\n\n+frequently need to convert documents between formats for archival, sharing, and processing purposes. The\n\n+challenge lies in preserving the visual layout, formatting, and semantic structure of the original document\n\n+[1].\n\n Traditional approaches rely on simple text extraction followed by re-rendering, which often loses important\n\n formatting information such as margins, indentation, font styles, and table layouts [2].\n\n 2. Related Work\n\n@@ -24,10 +25,10 @@\n Rule-based 78.2 120 256\n\n ML-based 85.5 45 1024\n\n Ours 95.1 89 512\n\n----PAGE---\n\n References\n\n [1] A. Brown, Document Processing: Principles and Practice, IEEE Trans., vol. 45, 2023.\n\n [2] C. Davis et al., Layout-aware text extraction from PDF documents, Proc. ICDAR, 2022.\n\n [3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.\n\n+---PAGE---\n\n [4] I. Smith et al., Rule-based multi-format document converter, Proc. DocEng, 2020.\n\n [5] K. Johnson and L. Lee, Learning document conversion, Proc. ACL, 2023.",
+    "text_diff": "--- minipdf/13_IEEE_Style_Paper.pdf\n+++ reference/13_IEEE_Style_Paper.pdf\n@@ -6,13 +6,14 @@\n email@university.edu\n\n Abstract\n\n This paper presents a novel approach to converting document formats while preserving layout fidelity.\n\n-We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content,\n\n-and reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a benchmark\n\n-of 500 documents across various formats including DOCX, XLSX, and PDF.\n\n+We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content, and\n\n+reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a benchmark of\n\n+500 documents across various formats including DOCX, XLSX, and PDF.\n\n 1. Introduction\n\n-Document format conversion is a fundamental problem in information technology. Organizations frequently\n\n-need to convert documents between formats for archival, sharing, and processing purposes. The challenge\n\n-lies in preserving the visual layout, formatting, and semantic structure of the original document [1].\n\n+Document format conversion is a fundamental problem in information technology. Organizations\n\n+frequently need to convert documents between formats for archival, sharing, and processing purposes. The\n\n+challenge lies in preserving the visual layout, formatting, and semantic structure of the original document\n\n+[1].\n\n Traditional approaches rely on simple text extraction followed by re-rendering, which often loses important\n\n formatting information such as margins, indentation, font styles, and table layouts [2].\n\n 2. Related Work\n\n@@ -27,7 +28,7 @@\n References\n\n [1] A. Brown, Document Processing: Principles and Practice, IEEE Trans., vol. 45, 2023.\n\n [2] C. Davis et al., Layout-aware text extraction from PDF documents, Proc. ICDAR, 2022.\n\n+[3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.\n\n ---PAGE---\n\n-[3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.\n\n [4] I. Smith et al., Rule-based multi-format document converter, Proc. DocEng, 2020.\n\n [5] K. Johnson and L. Lee, Learning document conversion, Proc. ACL, 2023.",
     "visual_scores": [
-      0.9439,
-      0.9899
+      0.9382,
+      0.9877
     ],
-    "visual_avg": 0.9669,
+    "visual_avg": 0.9629,
     "diff_images": [
       {
         "page": 1,
@@ -29,13 +29,13 @@
         "reference_img": "13_IEEE_Style_Paper_p2_reference.png"
       }
     ],
-    "overall_score": 0.9868
+    "overall_score": 0.9852
   },
   {
     "name": "14_Thesis_Chapter",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1005010,
+    "minipdf_size": 1005001,
     "reference_size": 159781,
     "pdf_valid": true,
     "minipdf_pages": 2,
@@ -45,10 +45,10 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9572,
-      0.9911
+      0.9514,
+      0.9941
     ],
-    "visual_avg": 0.9742,
+    "visual_avg": 0.9728,
     "diff_images": [
       {
         "page": 1,
@@ -61,13 +61,13 @@
         "reference_img": "14_Thesis_Chapter_p2_reference.png"
       }
     ],
-    "overall_score": 0.9897
+    "overall_score": 0.9891
   },
   {
     "name": "20260317_sample_CN",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 7595361,
+    "minipdf_size": 7595366,
     "reference_size": 201209,
     "pdf_valid": true,
     "minipdf_pages": 2,
@@ -99,25 +99,25 @@
     "name": "20260318_issue",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1531224,
-    "reference_size": 344825,
+    "minipdf_size": 1531226,
+    "reference_size": 344088,
     "pdf_valid": true,
     "minipdf_pages": 7,
     "reference_pages": 7,
     "text_similarity": 0.975,
-    "flat_text_similarity": 0.8709,
+    "flat_text_similarity": 0.8329,
     "word_text_similarity": 0.975,
-    "text_diff": "--- minipdf/20260318_issue.pdf\n+++ reference/20260318_issue.pdf\n@@ -1,7 +1,7 @@\n 页眉的名称 ……………………..\n\n 页眉 换了一行 .\n\n Title ddddddddfjkfjlasf\n\n-J jfdlj 水水水顶顶顶顶水水水水\n\n+Jjfdlj 水水水顶顶顶顶水水水水\n\n 页脚的公司名称\n\n ---PAGE---\n\n 页眉的名称 ……………………..\n\n@@ -32,17 +32,20 @@\n document for information only.\n\n Name Department Responsibility\n\n Document Classification\n\n-Classification Company Confidential\n\n-Definition Information is Group confidential and needs to be protected\n\n-Context Where loss of information confidentiality would result in significant harm to the\n\n-interests of the organization, financial loss, embarrassment or loss of information\n\n-Introduction\n\n-The Process Definition Document (PDD) captures the flow of a business process to be developed.\n\n+Company Confidential\n\n+Classification\n\n 1\n\n 页脚的公司名称\n\n ---PAGE---\n\n 页眉的名称 ……………………..\n\n 页眉 换了一行 .\n\n+Information is Group confidential and needs to be protected\n\n+Definition\n\n+Where loss of information confidentiality would result in significant harm to the\n\n+Context\n\n+interests of the organization, financial loss, embarrassment or loss of information\n\n+Introduction\n\n+The Process Definition Document (PDD) captures the flow of a business process to be developed.\n\n The flowchart contained within the document captures, at a high level, the business process to be automated, the\n\n target systems used within the process and any assumptions that have been taken into account.\n\n Once agreed as the basis for the automation of the target process, the flowchart and assumptions will be used as a\n",
+    "text_diff": "--- minipdf/20260318_issue.pdf\n+++ reference/20260318_issue.pdf\n@@ -1,7 +1,7 @@\n 页眉的名称 ……………………..\n\n 页眉 换了一行 .\n\n Title ddddddddfjkfjlasf\n\n-J jfdlj 水水水顶顶顶顶水水水水\n\n+Jjfdlj 水水水顶顶顶顶水水水水\n\n 页脚的公司名称\n\n ---PAGE---\n\n 页眉的名称 ……………………..\n\n@@ -32,18 +32,21 @@\n document for information only.\n\n Name Department Responsibility\n\n Document Classification\n\n-Classification Company Confidential\n\n-Definition Information is Group confidential and needs to be protected\n\n-Context Where loss of information confidentiality would result in significant harm to the\n\n-interests of the organization, financial loss, embarrassment or loss of information\n\n-Introduction\n\n-The Process Definition Document (PDD) captures the flow of a business process to be developed.\n\n-The flowchart contained within the document captures, at a high level, the business process to be automated, the\n\n+Company Confidential\n\n+Classification\n\n 1\n\n 页脚的公司名称\n\n ---PAGE---\n\n 页眉的名称 ……………………..\n\n 页眉 换了一行 .\n\n+Information is Group confidential and needs to be protected\n\n+Definition\n\n+Where loss of information confidentiality would result in significant harm to the\n\n+Context\n\n+interests of the organization, financial loss, embarrassment or loss of information\n\n+Introduction\n\n+The Process Definition Document (PDD) captures the flow of a business process to be developed.\n\n+The flowchart contained within the document captures, at a high level, the business process to be automated, the\n\n target systems used within the process and any assumptions that have been taken into account.\n\n Once agreed as the basis for the automation of the target process, the flowchart and assumptions will be used as a\n\n platform from which the automated solution will be designed.\n",
     "visual_scores": [
       0.9875,
-      0.8728,
-      0.753,
-      0.5499,
-      0.9477,
-      0.9596,
+      0.8731,
+      0.7339,
+      0.5299,
+      0.9424,
+      0.9595,
       0.9984
     ],
-    "visual_avg": 0.867,
+    "visual_avg": 0.8607,
     "diff_images": [
       {
         "page": 1,
@@ -155,21 +155,21 @@
         "reference_img": "20260318_issue_p7_reference.png"
       }
     ],
-    "overall_score": 0.9368
+    "overall_score": 0.9343
   },
   {
     "name": "CCU_article",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 6551904,
+    "minipdf_size": 6551920,
     "reference_size": 624071,
     "pdf_valid": true,
     "minipdf_pages": 21,
     "reference_pages": 21,
-    "text_similarity": 0.9265,
-    "flat_text_similarity": 0.9255,
-    "word_text_similarity": 0.8385,
-    "text_diff": "--- minipdf/CCU_article.pdf\n+++ reference/CCU_article.pdf\n@@ -9,35 +9,35 @@\n ---PAGE---\n\n 摘要\n\n 本研究探討以深度學習方法改善多分類影像辨識之效能。近年卷積神經網路在多\n\n-種視覺任務上展現優異表現，然而在資料量受限與類別不平衡 (class imbalance) 的\n\n-情況下，傳統訓練流程容易造成某些少數類別辨識率偏低。為解決此問題，本研\n\n-究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature\n\n-orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別之召\n\n-回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模型，\n\n-所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研究並分\n\n-析特徵空間分佈，證實特徵正交化有助於降低類別間干擾。\n\n+種視覺任務上展現優異表現，然而在資料量受限與類別不平衡 (class imbalance)\n\n+的情況下，傳統訓練流程容易造成某些少數類別辨識率偏低。為解決此問題，本\n\n+研究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature\n\n+orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別\n\n+之召回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模\n\n+型，所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研究\n\n+並分析特徵空間分佈，證實特徵正交化有助於降低類別間干擾。\n\n 本論文之主要貢獻包含： (1) 提出一套可即插即用之動態類別權重調整策略；\n\n-(2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗證\n\n-方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。\n\n+(2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗\n\n+證方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。\n\n 關鍵詞：深度學習、長尾學習、特徵表徵、卷積神經網路\n\n i\n\n ---PAGE---\n\n Abstract\n\n-This thesis investigates a training framework to improve class-imbalanced multi-class\n\n-im- age classification under limited data regimes. Although modern convolutional\n\n-neural net- works achieve strong performance, minority classes in long-tail\n\n-distributions often suffer from poor recall. We propose a plug-and-play framework that\n\n-combines dynamic class re- weighting with feature orthogonalization to mitigate\n\n-inter-class interference while preserv- ing global accuracy. Experiments on public and\n\n-proprietary datasets demonstrate consis- tent gains in Macro-F1 and minority-class\n\n-Top-1 accuracy over strong baselines. Feature space visualization further confirms\n\n-that orthogonalization encourages better inter-class separation.\n\n-The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch\n\n-class difficulty; (2) incorporation of a feature orthogonalization loss tailored for long-tail\n\n-set- tings; (3) comprehensive evaluation across multiple backbones and datasets; (4)\n\n-public release of reproducible code.\n\n-Keywords: deep learning, long-tail learning, feature representation, convolutional\n\n-neural networks\n\n+This thesis investigates a training framework to improve class-imbalanced multi-class im-\n\n+age classification under limited data regimes. Although modern convolutional neural net-\n\n+works achieve strong performance, minority classes in long-tail distributions often suffer\n\n+from poor recall. We propose a plug-and-play framework that combines dynamic class re-\n\n+weighting with feature orthogonalization to mitigate inter-class interference while preserv-\n\n+ing global accuracy. Experiments on public and proprietary datasets demonstrate consis-\n\n+tent gains in Macro-F1 and minority-class Top-1 accuracy over strong baselines. Feature\n\n+space visualization further confirms that orthogonalization encourages better inter-class\n\n+separation.\n\n+The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class\n\n+difficulty; (2) incorporation of a feature orthogonalization loss tailored for long-tail set-\n\n+tings; (3) comprehensive evaluation across multiple backbones and datasets; (4) public\n\n+release of reproducible code.\n\n+Keywords: deep learning, long-tail learning, feature representation, convolutional neural\n\n+networks\n\n ii\n\n ---PAGE---\n\n 誌謝\n\n@@ -58,48 +58,48 @@\n iii\n\n ---PAGE---\n\n 目  錄\n\n-摘要 ........................................................................................................................................................................ i\n\n-Abstract ................................................................................................................................................................ ii\n\n-誌謝 ........................................................................................................................................................................ iii\n\n-第一章 緒論 ................................................................................................................................................... 1\n\n-1.1 研究背景 ............................................................................................................................................... 1\n\n-1.2 研究動機 ............................................................................................................................................... 1\n\n-1.3 問題定義 ............................................................................................................................................... 1\n\n-1.4 研究目的與貢獻 ................................................................................................................................. 2\n\n-1.5 章節安排 ............................................................................................................................................... 2\n\n-第二章 文獻探討 ......................................................................................................................................... 3\n\n-2.1 長尾學習 ............................................................................................................................................... 3\n\n-2.2 表示學習強化 ...................................................................................................................................... 3\n\n-2.3 綜合分析 ............................................................................................................................................... 3\n\n-第三章 資料及研究方法 .......................................................................................................................... 4\n\n-3.1 資料與前處理 ...................................................................................................................................... 4\n\n-3.2 模型架構 ............................................................................................................................................... 4\n\n-3.3 動態類別重加權 ................................................................................................................................. 4\n\n-3.4 特徵正交化損失 ................................................................................................................................. 5\n\n+摘要 .................................................................................................................................... i\n\n+Abstract ............................................................................................................................. ii\n\n+誌謝 ................................................................................................................................. iii\n\n+第一章 緒論 ................................................................................................................... 1\n\n+1.1 研究背景 .................................................................................................................. 1\n\n+1.2 研究動機 .................................................................................................................. 1\n\n+1.3 問題定義 .................................................................................................................. 1\n\n+1.4 研究目的與貢獻 ...................................................................................................... 2\n\n+1.5 章節安排 .................................................................................................................. 2\n\n+第二章 文獻探討 ........................................................................................................... 3\n\n+2.1 長尾學習 .................................................................................................................. 3\n\n+2.2 表示學習強化 .......................................................................................................... 3\n\n+2.3 綜合分析 .................................................................................................................. 3\n\n+第三章 資料及研究方法 ............................................................................................... 4\n\n+3.1 資料與前處理 .......................................................................................................... 4\n\n+3.2 模型架構 .................................................................................................................. 4\n\n+3.3 動態類別重加權 ...................................................................................................... 4\n\n+3.4 特徵正交化損失 ...................................................................................................... 5\n\n iv\n\n ---PAGE---\n\n-3.5 訓練流程演算法 ................................................................................................................................. 5\n\n-3.6 時間複雜度 .......................................................................................................................................... 6\n\n-3.7 程式碼片段示例 ................................................................................................................................. 6\n\n-第四章 實驗結果 ......................................................................................................................................... 7\n\n-4.1 實驗設定 ............................................................................................................................................... 7\n\n-4.2 評估指標 ............................................................................................................................................... 7\n\n-4.3 比較方法 ............................................................................................................................................... 7\n\n-4.4 主要結果 ............................................................................................................................................... 7\n\n-4.5 消融研究 ............................................................................................................................................... 8\n\n-4.6 特徵可視化 .......................................................................................................................................... 8\n\n-4.7 討論 ......................................................................................................................................................... 9\n\n-第五章 結論 ................................................................................................................................................... 10\n\n-參考文獻 ............................................................................................................................................................... 11\n\n-附錄 ........................................................................................................................................................................ 12\n\n+3.5 訓練流程演算法 ...................................................................................................... 5\n\n+3.6 時間複雜度 .............................................................................................................. 6\n\n+3.7 程式碼片段示例 ...................................................................................................... 6\n\n+第四章 實驗結果 ........................................................................................................... 7\n\n+4.1 實驗設定 .................................................................................................................. 7\n\n+4.2 評估指標 .................................................................................................................. 7\n\n+4.3 比較方法 .................................................................................................................. 7\n\n+4.4 主要結果 .................................................................................................................. 7\n\n+4.5 消融研究 .................................................................................................................. 8\n\n+4.6 特徵可視化 .............................................................................................................. 8\n\n+4.7 討論 ......................................................................................................................... 9\n\n+第五章 結論 ................................................................................................................. 10\n\n+參考文獻 .......................................................................................................................... 11\n\n+附錄 ................................................................................................................................. 12\n\n v\n\n ---PAGE---\n\n 圖  次\n\n-圖 4- 1 消融分析示意 ( 示意圖以浮水印代替 ) 。 ......................................................... 8\n\n+圖 4-1 消融分析示意 ( 示意圖以浮水印代替 ) 。 ............................................... 8\n\n vi\n\n ---PAGE---\n\n 表  次\n\n-表 4- 1 主要分類績效 ( 公開資料集 ) .................................................................................... 8\n\n+表 4-1 主要分類績效 ( 公開資料集 ) ................................................................... 8\n\n vii\n\n ---PAGE---\n\n 第一章  緒論\n\n@@ -117,12 +117,10 @@\n 升整體精確度與少數類別表現。\n\n 1.3 問題定義\n\n 𝑁\n\n-給定一組帶有標籤之影像資料集 D = {( 𝑥 , 𝑦 )} ，其中 𝑦 ∈ { 1 , . . . , 𝐾 } ，類\n\n-𝑖 𝑖 𝑖\n\n-𝑖 =1\n\n-別出現頻率高度不均。目標為訓練一個分類模型 𝑓 以最大化長尾場景下之整體效\n\n-𝜃\n\n-能 ( 如 Macro-F1) 與少數類別 Top-1 準確率，同時避免多數類別顯著退化。\n\n+給定一組帶有標籤之影像資料集 D = {( 𝑥 𝑖 , 𝑦 𝑖 )} ，其中 𝑦 𝑖 ∈ { 1 , . . . , 𝐾 } ，類\n\n+𝑖 = 1\n\n+別出現頻率高度不均。目標為訓練一個分類模型 𝑓 𝜃 以最大化長尾場景下之整體效 能\n\n+( 如 Macro-F1) 與少數類別 Top-1 準確率，同時避免多數類別顯著退化。\n\n 1\n\n ---PAGE---\n\n 1.4 研究目的與貢獻\n\n@@ -132,9 +130,8 @@\n (3) 系統性實驗：跨多組資料集與骨幹網路驗證泛用性。\n\n (4) 釋出程式碼與設定，提升可重現性。\n\n 1.5 章節安排\n\n-第 第二章 章回顧相關工作；第 第三章 章詳述方法；第 第四章 章呈現實驗\n\n-設計與結果；第 第五章 章總結並提出未來方向；附錄補充理論推導與額外圖\n\n-表。\n\n+第 第二章 章回顧相關工作；第 第三章 章詳述方法；第 第四章 章呈現實驗設\n\n+計與結果；第 第五章 章總結並提出未來方向；附錄補充理論推導與額外圖表。\n\n 2\n\n ---PAGE---\n\n 第二章  文獻探討\n\n@@ -150,8 +147,7 @@\n 2.3 綜合分析\n\n 現有方法多聚焦於單一面向。本研究結合動態權重與正交化，形成互補：前\n\n A\n\n-者調整梯度貢獻，後者改善特徵幾何結構。相關背景也可參考 L T 相關排版工\n\n-EX\n\n+者調整梯度貢獻，後者改善特徵幾何結構。相關背景也可參考 L TEX 相關排版工\n\n 具說明 [3] 以撰寫論文。\n\n 3\n\n ---PAGE---\n\n@@ -163,53 +159,47 @@\n 採中心裁切。\n\n 3.2 模型架構\n\n 𝑑\n\n-骨幹網路採 ResNet-50 作為主要實驗基礎，記特徵抽取函數為 𝑔 ( 𝑥 ) ∈ R ，分類頭\n\n-𝜃\n\n-𝐾 × 𝑑\n\n-為線性層 𝑊 ∈ R ，預測機率：\n\n+骨幹網路採 ResNet-50 作為主要實驗基礎，記特徵抽取函數為 𝑔 𝜃 ( 𝑥 ) ∈ R ，分類\n\n+𝐾 𝑑\n\n+×\n\n+頭為線性層 𝑊 ∈ R ，預測機率：\n\n exp ( 𝑊 𝑔 ( 𝑥 ))\n\n 𝑘 𝜃\n\n 𝑝 ( 𝑦 = 𝑘 | 𝑥 ) = . (3.1)\n\n ∑\n\n 𝐾\n\n-𝑗 = exp ( 𝑊 𝑔 ( 𝑥 ))\n\n-𝑗 𝜃\n\n-1\n\n+exp ( 𝑊 𝑗 𝑔 𝜃 ( 𝑥 ))\n\n+𝑗 = 1\n\n 3.3 動態類別重加權\n\n ( 𝑡 )\n\n-定義 epoch 𝑡 時類別 𝑘 的錯誤率為 𝑒 ，樣本數為 𝑛 。調整後權重：\n\n-𝑘\n\n-𝑘\n\n-( 𝑡 ) 𝛼\n\n-( 𝑡 ) 𝛼\n\n-𝐾\n\n-( 𝑒 + 𝜖 )\n\n+定義 epoch 𝑡 時類別 𝑘 的錯誤率為 𝑒 ，樣本數為 𝑛 𝑘 。調整後權重：\n\n+𝑘\n\n+( 𝑡 ) ( 𝑡 ) 𝛼\n\n+𝛼 𝐾\n\n+( 𝑒 + 𝜖 ) ∑ ( 𝑒 + 𝜖 )\n\n ( 𝑡 ) 𝑘\n\n-∑ ( 𝑒 + 𝜖 )\n\n-𝑤 = 𝑗 , (3.2)\n\n+𝑗\n\n ( 𝑡 ) ( 𝑡 )\n\n+𝑤 = , (3.2)\n\n / 𝑍 , 𝑍 =\n\n-( 𝑛𝑗 )\n\n-𝑘 𝑗\n\n-( 𝑛𝑘 )\n\n-=1\n\n-𝛽\n\n-𝛽\n\n+𝑘\n\n+𝛽 𝛽\n\n+( 𝑛 𝑘 ) ( 𝑛 𝑗 )\n\n+𝑗 = 1\n\n 4\n\n ---PAGE---\n\n 其中 𝛼 , 𝛽 控制錯誤率與支持度影響力， 𝜖 為平滑常數。分類損失：\n\n-∑\n\n-( 𝑡 )\n\n-L = − 𝑤 log 𝑝 ( 𝑦 | 𝑥 ) . (3.3)\n\n-𝑐𝑙𝑠 𝑖 𝑖\n\n-𝑁\n\n-𝑦𝑖\n\n+∑ 𝑁\n\n+𝑡\n\n+( )\n\n+L 𝑐𝑙𝑠 = − 𝑤 log 𝑝 ( 𝑦 𝑖 | 𝑥 𝑖 ) . (3.3)\n\n+𝑦 𝑖\n\n 𝑖 = 1\n\n 3.4 特徵正交化損失\n\n ∑\n\n 1\n\n-記類別中心 𝑐 = 𝑔 ( 𝑥 ) ，構造正交化項：\n\n-𝑘 ( 𝑥 , 𝑦 = 𝑘 ) 𝜃 𝑖\n\n+記類別中心 𝑐 𝑘 = 𝑔 𝜃 ( 𝑥 𝑖 ) ，構造正交化項：\n\n+( 𝑥 , 𝑦 = 𝑘 )\n\n |D 𝑘 | 𝑖 𝑖\n\n ( )\n\n 2\n\n@@ -218,12 +208,12 @@\n 𝑐 𝑐\n\n 1 𝑗\n\n 𝑘\n\n-L 𝑜𝑟𝑡 ℎ 𝑜 .\n\n-(3.4)\n\n-=\n\n+L =\n\n+𝑜𝑟𝑡 ℎ 𝑜 . (3.4)\n\n+𝐾 ( 𝐾 − 1 )\n\n+𝑘 ≠ 𝑗\n\n 總損失：\n\n-L = L + 𝜆 L . (3.5)\n\n-𝑐𝑙𝑠 𝑜𝑟𝑡 ℎ 𝑜\n\n+L = L 𝑐𝑙𝑠 + 𝜆 L 𝑜𝑟𝑡 ℎ 𝑜 . (3.5)\n\n 3.5 訓練流程演算法\n\n 演算法 3.1 描述整體訓練程序。\n\n Algorithm 3.1 動態重加權與特徵正交化訓練流程\n\n@@ -231,30 +221,28 @@\n 2: for epoch 𝑡 = 1 to 𝑇 do\n\n ( 𝑡 )\n\n 3: 前向計算所有 mini-batch ，蒐集類別錯誤率 𝑒\n\n+𝑘\n\n ( 𝑡 )\n\n 4: 依公式更新 𝑤\n\n 𝑘\n\n-5: 重新計算損失 L 與類別中心 𝑐\n\n-𝑘 𝑐𝑙𝑠 𝑘\n\n-6: 計算 L 並反向傳遞更新參數\n\n-𝑜𝑟𝑡 ℎ 𝑜\n\n+5: 重新計算損失 L 𝑐𝑙𝑠 與類別中心 𝑐 𝑘\n\n+6: 計算 L 𝑜𝑟𝑡 ℎ 𝑜 並反向傳遞更新參數\n\n 7: end for\n\n-8: 輸出最終模型 𝑓\n\n-𝜃\n\n+8: 輸出最終模型 𝑓 𝜃\n\n 5\n\n ---PAGE---\n\n 3.6 時間複雜度\n\n 2\n\n-正交化項計算複雜度為 O( 𝐾 𝑑 ) ，對於中等類別數可接受；若 𝐾 大，可採隨機抽\n\n-樣配對近似。\n\n+正交化項計算複雜度為 O( 𝐾 𝑑 ) ，對於中等類別數可接受；若 𝐾 大，可採隨機\n\n+抽樣配對近似。\n\n 3.7 程式碼片段示例\n\n 以下示例展示權重計算之 Python 風格偽程式：\n\n-def compute_weights(errors, counts, alpha , beta , eps=1e- 4):\n\n+def compute_weights(errors, counts, alpha , beta , eps=1e-4):\n\n # errors, counts: list of length K\n\n import math\n\n raw = [( (e + eps)** alpha ) / (c** beta) for e, c\n\n-in zip (errors, counts)] s =\n\n-sum (raw)\n\n+in zip (errors, counts)]\n\n+s = sum (raw)\n\n return [v / s for v in raw]\n\n Listing 第三章 .1: 動態權重偽程式\n\n 6\n\n@@ -272,8 +260,8 @@\n 比較基準包含：標準交叉熵 (CE) 、反頻率權重 (InvFreq) 、有效樣本權重 (EffNum)\n\n 與本研究 (Ours) 。\n\n 4.4 主要結果\n\n-表 4-1 彙整主要結果，可見本研究在 Macro-F1 與 Minority Recall 皆優於其他方\n\n-法。\n\n+表 4-1 彙整主要結果，可見本研究在 Macro-F1 與 Minority Recall 皆優於其他\n\n+方法。\n\n 7\n\n ---PAGE---\n\n 表 4-1: 主要分類績效 ( 公開資料集 )\n\n@@ -283,8 +271,8 @@\n EffNum 78.0 68.0 59.5\n\n Ours 79.1 71.4 63.7\n\n 4.5 消融研究\n\n-圖 4-1 顯示不同組件對 Macro-F1 之影響：僅動態權重 (DW) 或僅正交化 (Or- tho)\n\n-均有提升，結合後最佳。\n\n+圖 4-1 顯示不同組件對 Macro-F1 之影響：僅動態權重 (DW) 或僅正交化 (Or-\n\n+tho) 均有提升，結合後最佳。\n\n 圖 4-1: 消融分析示意 ( 示意圖以浮水印代替 ) 。\n\n 4.6 特徵可視化\n\n 使用 t-SNE 將特徵嵌入投影至二維，結果顯示本研究方法之類別分群更為集\n\n@@ -301,8 +289,8 @@\n 示在維持整體 Top-1 準確率的同時，可顯著提升 Macro-F1 與少數類別召回率。分\n\n 析證實正交化有助於降低類別間干擾，動態權重則自動聚焦較難類別。\n\n 未來方向包含： (1) 延伸至多標籤與開放集合辨識； (2) 與自監督特徵學習結\n\n-合，降低標註需求； (3) 加入不確定性估計以處理噪聲標籤； (4) 探索低秩表示以降\n\n-低額外計算成本。\n\n+合，降低標註需求； (3) 加入不確定性估計以處理噪聲標籤； (4) 探索低秩表示以\n\n+降低額外計算成本。\n\n 10\n\n ---PAGE---\n\n 參考文獻\n\n@@ -312,61 +300,53 @@\n codebooks,” IEEE Transactions on Communications , vol. 68, no. 5, pp. 2950–2962,\n\n 2020.\n\n A\n\n-[3] M. Goossens, F. Mittelbach, and A. Samarin, The L T . Reading,\n\n-EX Companion\n\n-Mas- sachusetts: Addison-Wesley, 1993.\n\n+[3] M. Goossens, F. Mittelbach, and A. Samarin, The L TEX Companion . Reading, Mas-\n\n+sachusetts: Addison-Wesley, 1993.\n\n [4] D. Knuth, “Knuth: Computers and typesetting.”\n\n 11\n\n ---PAGE---\n\n 附錄\n\n 附錄 A ：正交化梯度推導\n\n-令兩類別中心單位化後之內積為 𝑟𝑘 𝑗 = 𝑘\n\n ⊤ 𝑐\n\n-𝑐 𝑐 𝑗\n\n-。則\n\n+𝑐 𝑐 𝑘\n\n+𝑗\n\n+𝑘\n\n+令兩類別中心單位化後之內積為 𝑟 𝑘 𝑗 = 。 則\n\n 𝑐\n\n+𝑗\n\n+∑\n\n+1 2\n\n+L = 𝑟 . (I)\n\n+𝑜𝑟𝑡 ℎ 𝑜\n\n 𝑘 𝑗\n\n-1\n\n+𝐾 ( 𝐾 − 1 )\n\n+𝑘 ≠ 𝑗\n\n+對特徵向量 𝑐 𝑘 之梯度 ( 忽略常數 ) 為：\n\n+( )\n\n+∑\n\n+𝑐 𝑗 𝑐\n\n+𝑘\n\n+∇ L ∝ 𝑟 − 𝑟 . (II)\n\n+𝑐\n\n+𝑘 𝑜𝑟𝑡 ℎ 𝑜 𝑘 𝑗 𝑘 𝑗\n\n 2\n\n-𝑜𝑟𝑡 ℎ 𝑜\n\n-L =                  ∑ 𝑟\n\n-. (I)\n\n-𝑘\n\n-𝐾 ( 𝐾 − 1)\n\n-𝑗\n\n-對特徵向量 𝑐 之梯度 ( 忽略常數 ) 為：\n\n-𝑘\n\n-)\n\n 𝑐\n\n-𝑘\n\n-( 𝑐\n\n-𝑗 . (II)\n\n-𝑐 𝑐\n\n-∇ 𝑘 𝑗\n\n-𝑐 𝑘\n\n-L\n\n-𝑜𝑟𝑡 ℎ 𝑜\n\n-− 𝑟\n\n-∝ 𝑟\n\n-𝑐𝑘\n\n-∑\n\n-𝑘 𝑗 𝑘 𝑗\n\n+𝑐 𝑐 𝑘\n\n+𝑘 𝑗\n\n 𝑗 ≠ 𝑘\n\n-2\n\n 此可做為計算效率與穩定性之參考。\n\n 附錄 B ：額外結果\n\n 表與圖可於最終版補充更多資料集實驗，本文省略。\n\n 附錄 C ：參考文獻引用示例\n\n 本模板採用 natbib 套件並使用數字型引用。以下示例示範多種引用方式：\n\n • 單一引用：如長尾分類相關工作可參考 [1] 。\n\n-• 多篇合併：演算法與設計概念綜述可見 [1 , 2] 。\n\n+• 多篇合併：演算法與設計概念綜述可見 [1, 2] 。\n\n • 書籍或工具文件：排版細節說明請參考 [3] 。\n\n+A\n\n+• 線上資源： [4] 提供更多 L TEX 排版背景。\n\n 12\n\n-A\n\n-• 線上資源：[4 ] 提供更多 L T\n\n-EX 排版背景。\n\n ---PAGE---\n\n 在正文中建議：首次提及理論時使用完整敘述 + 引用；再次出現僅保留必要引用。\n\n-若需作者式引用（如“ Chen 等人 ”） ，可改用 \\citet 指令，但現行數字樣式下仍會以數\n\n-字標示。若欲改為作者年份樣式，可調整 packages.tex 內 natbib 選項。\n\n+若需作者式引用（如“ Chen 等人”），可改用 \\citet 指令，但現行數字樣式下仍會\n\n+以數字標示。若欲改為作者年份樣式，可調整 packages.tex 內 natbib 選項。\n\n 13",
+    "text_similarity": 0.9262,
+    "flat_text_similarity": 0.9251,
+    "word_text_similarity": 0.8369,
+    "text_diff": "--- minipdf/CCU_article.pdf\n+++ reference/CCU_article.pdf\n@@ -9,35 +9,35 @@\n ---PAGE---\n\n 摘要\n\n 本研究探討以深度學習方法改善多分類影像辨識之效能。近年卷積神經網路在多\n\n-種視覺任務上展現優異表現，然而在資料量受限與類別不平衡 (class imbalance) 的\n\n-情況下，傳統訓練流程容易造成某些少數類別辨識率偏低。為解決此問題，本研\n\n-究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature\n\n-orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別之召\n\n-回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模型，\n\n-所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研究並分\n\n-析特徵空間分佈，證實特徵正交化有助於降低類別間干擾。\n\n+種視覺任務上展現優異表現，然而在資料量受限與類別不平衡 (class imbalance)\n\n+的情況下，傳統訓練流程容易造成某些少數類別辨識率偏低。為解決此問題，本\n\n+研究提出一個結合動態類別重加權 (dynamic re-weighting) 與特徵正交化 (feature\n\n+orthogonalization) 之訓練框架，於保持整體精確度的同時提升長尾 (long-tail) 類別\n\n+之召回率。實驗以公開資料集與自建小型資料集進行驗證，結果顯示相較基準模\n\n+型，所提方法在 Macro-F1 及少數類別 Top-1 準確率均有顯著提升。最後，本研究\n\n+並分析特徵空間分佈，證實特徵正交化有助於降低類別間干擾。\n\n 本論文之主要貢獻包含： (1) 提出一套可即插即用之動態類別權重調整策略；\n\n-(2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗證\n\n-方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。\n\n+(2) 引入特徵正交化損失於長尾分類場景； (3) 於多組資料集與不同網路骨幹下驗\n\n+證方法之穩健性； (4) 釋出實驗程式碼以利後續研究延伸。\n\n 關鍵詞：深度學習、長尾學習、特徵表徵、卷積神經網路\n\n i\n\n ---PAGE---\n\n Abstract\n\n-This thesis investigates a training framework to improve class-imbalanced multi-class\n\n-im- age classification under limited data regimes. Although modern convolutional\n\n-neural net- works achieve strong performance, minority classes in long-tail\n\n-distributions often suffer from poor recall. We propose a plug-and-play framework that\n\n-combines dynamic class re- weighting with feature orthogonalization to mitigate\n\n-inter-class interference while preserv- ing global accuracy. Experiments on public and\n\n-proprietary datasets demonstrate consis- tent gains in Macro-F1 and minority-class\n\n-Top-1 accuracy over strong baselines. Feature space visualization further confirms\n\n-that orthogonalization encourages better inter-class separation.\n\n-The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch\n\n-class difficulty; (2) incorporation of a feature orthogonalization loss tailored for long-tail\n\n-set- tings; (3) comprehensive evaluation across multiple backbones and datasets; (4)\n\n-public release of reproducible code.\n\n-Keywords: deep learning, long-tail learning, feature representation, convolutional\n\n-neural networks\n\n+This thesis investigates a training framework to improve class-imbalanced multi-class im-\n\n+age classification under limited data regimes. Although modern convolutional neural net-\n\n+works achieve strong performance, minority classes in long-tail distributions often suffer\n\n+from poor recall. We propose a plug-and-play framework that combines dynamic class re-\n\n+weighting with feature orthogonalization to mitigate inter-class interference while preserv-\n\n+ing global accuracy. Experiments on public and proprietary datasets demonstrate consis-\n\n+tent gains in Macro-F1 and minority-class Top-1 accuracy over strong baselines. Feature\n\n+space visualization further confirms that orthogonalization encourages better inter-class\n\n+separation.\n\n+The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class\n\n+difficulty; (2) incorporation of a feature orthogonalization loss tailored for long-tail set-\n\n+tings; (3) comprehensive evaluation across multiple backbones and datasets; (4) public\n\n+release of reproducible code.\n\n+Keywords: deep learning, long-tail learning, feature representation, convolutional neural\n\n+networks\n\n ii\n\n ---PAGE---\n\n 誌謝\n\n@@ -58,48 +58,48 @@\n iii\n\n ---PAGE---\n\n 目  錄\n\n-摘要 ........................................................................................................................................................................ i\n\n-Abstract ................................................................................................................................................................ ii\n\n-誌謝 ........................................................................................................................................................................ iii\n\n-第一章 緒論 ................................................................................................................................................... 1\n\n-1.1 研究背景 ............................................................................................................................................... 1\n\n-1.2 研究動機 ............................................................................................................................................... 1\n\n-1.3 問題定義 ............................................................................................................................................... 1\n\n-1.4 研究目的與貢獻 ................................................................................................................................. 2\n\n-1.5 章節安排 ............................................................................................................................................... 2\n\n-第二章 文獻探討 ......................................................................................................................................... 3\n\n-2.1 長尾學習 ............................................................................................................................................... 3\n\n-2.2 表示學習強化 ...................................................................................................................................... 3\n\n-2.3 綜合分析 ............................................................................................................................................... 3\n\n-第三章 資料及研究方法 .......................................................................................................................... 4\n\n-3.1 資料與前處理 ...................................................................................................................................... 4\n\n-3.2 模型架構 ............................................................................................................................................... 4\n\n-3.3 動態類別重加權 ................................................................................................................................. 4\n\n-3.4 特徵正交化損失 ................................................................................................................................. 5\n\n+摘要 .................................................................................................................................... i\n\n+Abstract ............................................................................................................................. ii\n\n+誌謝 ................................................................................................................................. iii\n\n+第一章 緒論 ................................................................................................................... 1\n\n+1.1 研究背景 .................................................................................................................. 1\n\n+1.2 研究動機 .................................................................................................................. 1\n\n+1.3 問題定義 .................................................................................................................. 1\n\n+1.4 研究目的與貢獻 ...................................................................................................... 2\n\n+1.5 章節安排 .................................................................................................................. 2\n\n+第二章 文獻探討 ........................................................................................................... 3\n\n+2.1 長尾學習 .................................................................................................................. 3\n\n+2.2 表示學習強化 .......................................................................................................... 3\n\n+2.3 綜合分析 .................................................................................................................. 3\n\n+第三章 資料及研究方法 ............................................................................................... 4\n\n+3.1 資料與前處理 .......................................................................................................... 4\n\n+3.2 模型架構 .................................................................................................................. 4\n\n+3.3 動態類別重加權 ...................................................................................................... 4\n\n+3.4 特徵正交化損失 ...................................................................................................... 5\n\n iv\n\n ---PAGE---\n\n-3.5 訓練流程演算法 ................................................................................................................................. 5\n\n-3.6 時間複雜度 .......................................................................................................................................... 6\n\n-3.7 程式碼片段示例 ................................................................................................................................. 6\n\n-第四章 實驗結果 ......................................................................................................................................... 7\n\n-4.1 實驗設定 ............................................................................................................................................... 7\n\n-4.2 評估指標 ............................................................................................................................................... 7\n\n-4.3 比較方法 ............................................................................................................................................... 7\n\n-4.4 主要結果 ............................................................................................................................................... 7\n\n-4.5 消融研究 ............................................................................................................................................... 8\n\n-4.6 特徵可視化 .......................................................................................................................................... 8\n\n-4.7 討論 ......................................................................................................................................................... 9\n\n-第五章 結論 ................................................................................................................................................... 10\n\n-參考文獻 ............................................................................................................................................................... 11\n\n-附錄 ........................................................................................................................................................................ 12\n\n+3.5 訓練流程演算法 ...................................................................................................... 5\n\n+3.6 時間複雜度 .............................................................................................................. 6\n\n+3.7 程式碼片段示例 ...................................................................................................... 6\n\n+第四章 實驗結果 ........................................................................................................... 7\n\n+4.1 實驗設定 .................................................................................................................. 7\n\n+4.2 評估指標 .................................................................................................................. 7\n\n+4.3 比較方法 .................................................................................................................. 7\n\n+4.4 主要結果 .................................................................................................................. 7\n\n+4.5 消融研究 .................................................................................................................. 8\n\n+4.6 特徵可視化 .............................................................................................................. 8\n\n+4.7 討論 ......................................................................................................................... 9\n\n+第五章 結論 ................................................................................................................. 10\n\n+參考文獻 .......................................................................................................................... 11\n\n+附錄 ................................................................................................................................. 12\n\n v\n\n ---PAGE---\n\n 圖  次\n\n-圖 4- 1 消融分析示意 ( 示意圖以浮水印代替 ) 。 ......................................................... 8\n\n+圖 4-1 消融分析示意 ( 示意圖以浮水印代替 ) 。 ............................................... 8\n\n vi\n\n ---PAGE---\n\n 表  次\n\n-表 4- 1 主要分類績效 ( 公開資料集 ) .................................................................................... 8\n\n+表 4-1 主要分類績效 ( 公開資料集 ) ................................................................... 8\n\n vii\n\n ---PAGE---\n\n 第一章  緒論\n\n@@ -117,12 +117,10 @@\n 升整體精確度與少數類別表現。\n\n 1.3 問題定義\n\n 𝑁\n\n-給定一組帶有標籤之影像資料集 D = {( 𝑥 , 𝑦 )} ，其中 𝑦 ∈ { 1 , . . . , 𝐾 } ，類\n\n-𝑖 𝑖 𝑖\n\n-𝑖 =1\n\n-別出現頻率高度不均。目標為訓練一個分類模型 𝑓 以最大化長尾場景下之整體效\n\n-𝜃\n\n-能 ( 如 Macro-F1) 與少數類別 Top-1 準確率，同時避免多數類別顯著退化。\n\n+給定一組帶有標籤之影像資料集 D = {( 𝑥 𝑖 , 𝑦 𝑖 )} ，其中 𝑦 𝑖 ∈ { 1 , . . . , 𝐾 } ，類\n\n+𝑖 = 1\n\n+別出現頻率高度不均。目標為訓練一個分類模型 𝑓 𝜃 以最大化長尾場景下之整體效 能\n\n+( 如 Macro-F1) 與少數類別 Top-1 準確率，同時避免多數類別顯著退化。\n\n 1\n\n ---PAGE---\n\n 1.4 研究目的與貢獻\n\n@@ -132,9 +130,8 @@\n (3) 系統性實驗：跨多組資料集與骨幹網路驗證泛用性。\n\n (4) 釋出程式碼與設定，提升可重現性。\n\n 1.5 章節安排\n\n-第 第二章 章回顧相關工作；第 第三章 章詳述方法；第 第四章 章呈現實驗\n\n-設計與結果；第 第五章 章總結並提出未來方向；附錄補充理論推導與額外圖\n\n-表。\n\n+第 第二章 章回顧相關工作；第 第三章 章詳述方法；第 第四章 章呈現實驗設\n\n+計與結果；第 第五章 章總結並提出未來方向；附錄補充理論推導與額外圖表。\n\n 2\n\n ---PAGE---\n\n 第二章  文獻探討\n\n@@ -150,8 +147,7 @@\n 2.3 綜合分析\n\n 現有方法多聚焦於單一面向。本研究結合動態權重與正交化，形成互補：前\n\n A\n\n-者調整梯度貢獻，後者改善特徵幾何結構。相關背景也可參考 L T 相關排版工\n\n-EX\n\n+者調整梯度貢獻，後者改善特徵幾何結構。相關背景也可參考 L TEX 相關排版工\n\n 具說明 [3] 以撰寫論文。\n\n 3\n\n ---PAGE---\n\n@@ -163,53 +159,47 @@\n 採中心裁切。\n\n 3.2 模型架構\n\n 𝑑\n\n-骨幹網路採 ResNet-50 作為主要實驗基礎，記特徵抽取函數為 𝑔 ( 𝑥 ) ∈ R ，分類頭\n\n-𝜃\n\n-𝐾 × 𝑑\n\n-為線性層 𝑊 ∈ R ，預測機率：\n\n+骨幹網路採 ResNet-50 作為主要實驗基礎，記特徵抽取函數為 𝑔 𝜃 ( 𝑥 ) ∈ R ，分類\n\n+𝐾 𝑑\n\n+×\n\n+頭為線性層 𝑊 ∈ R ，預測機率：\n\n exp ( 𝑊 𝑔 ( 𝑥 ))\n\n 𝑘 𝜃\n\n 𝑝 ( 𝑦 = 𝑘 | 𝑥 ) = . (3.1)\n\n ∑\n\n 𝐾\n\n-𝑗 = exp ( 𝑊 𝑔 ( 𝑥 ))\n\n-𝑗 𝜃\n\n-1\n\n+exp ( 𝑊 𝑗 𝑔 𝜃 ( 𝑥 ))\n\n+𝑗 = 1\n\n 3.3 動態類別重加權\n\n ( 𝑡 )\n\n-定義 epoch 𝑡 時類別 𝑘 的錯誤率為 𝑒 ，樣本數為 𝑛 。調整後權重：\n\n-𝑘\n\n-𝑘\n\n-( 𝑡 ) 𝛼\n\n-( 𝑡 ) 𝛼\n\n-𝐾\n\n-( 𝑒 + 𝜖 )\n\n+定義 epoch 𝑡 時類別 𝑘 的錯誤率為 𝑒 ，樣本數為 𝑛 𝑘 。調整後權重：\n\n+𝑘\n\n+( 𝑡 ) ( 𝑡 ) 𝛼\n\n+𝛼 𝐾\n\n+( 𝑒 + 𝜖 ) ∑ ( 𝑒 + 𝜖 )\n\n ( 𝑡 ) 𝑘\n\n-∑ ( 𝑒 + 𝜖 )\n\n-𝑤 = 𝑗 , (3.2)\n\n+𝑗\n\n ( 𝑡 ) ( 𝑡 )\n\n+𝑤 = , (3.2)\n\n / 𝑍 , 𝑍 =\n\n-( 𝑛𝑗 )\n\n-𝑘 𝑗\n\n-( 𝑛𝑘 )\n\n-=1\n\n-𝛽\n\n-𝛽\n\n+𝑘\n\n+𝛽 𝛽\n\n+( 𝑛 𝑘 ) ( 𝑛 𝑗 )\n\n+𝑗 = 1\n\n 4\n\n ---PAGE---\n\n 其中 𝛼 , 𝛽 控制錯誤率與支持度影響力， 𝜖 為平滑常數。分類損失：\n\n-∑\n\n-( 𝑡 )\n\n-L = − 𝑤 log 𝑝 ( 𝑦 | 𝑥 ) . (3.3)\n\n-𝑐𝑙𝑠 𝑖 𝑖\n\n-𝑁\n\n+∑ 𝑁\n\n+𝑡\n\n+( )\n\n+L 𝑐𝑙𝑠 = − 𝑤 log 𝑝 ( 𝑦 𝑖 | 𝑥 𝑖 ) . (3.3)\n\n+𝑦 𝑖\n\n 𝑖 = 1\n\n-𝑦𝑖\n\n 3.4 特徵正交化損失\n\n ∑\n\n 1\n\n-記類別中心 𝑐 = 𝑔 ( 𝑥 ) ，構造正交化項：\n\n-𝑘 ( 𝑥 , 𝑦 = 𝑘 ) 𝜃 𝑖\n\n+記類別中心 𝑐 𝑘 = 𝑔 𝜃 ( 𝑥 𝑖 ) ，構造正交化項：\n\n+( 𝑥 , 𝑦 = 𝑘 )\n\n |D 𝑘 | 𝑖 𝑖\n\n ( )\n\n 2\n\n@@ -218,12 +208,12 @@\n 𝑐 𝑐\n\n 1 𝑗\n\n 𝑘\n\n-L 𝑜𝑟𝑡 ℎ 𝑜 .\n\n-(3.4)\n\n-=\n\n+L =\n\n+𝑜𝑟𝑡 ℎ 𝑜 . (3.4)\n\n+𝐾 ( 𝐾 − 1 )\n\n+𝑘 ≠ 𝑗\n\n 總損失：\n\n-L = L + 𝜆 L . (3.5)\n\n-𝑐𝑙𝑠 𝑜𝑟𝑡 ℎ 𝑜\n\n+L = L 𝑐𝑙𝑠 + 𝜆 L 𝑜𝑟𝑡 ℎ 𝑜 . (3.5)\n\n 3.5 訓練流程演算法\n\n 演算法 3.1 描述整體訓練程序。\n\n Algorithm 3.1 動態重加權與特徵正交化訓練流程\n\n@@ -231,30 +221,28 @@\n 2: for epoch 𝑡 = 1 to 𝑇 do\n\n ( 𝑡 )\n\n 3: 前向計算所有 mini-batch ，蒐集類別錯誤率 𝑒\n\n+𝑘\n\n ( 𝑡 )\n\n 4: 依公式更新 𝑤\n\n 𝑘\n\n-5: 重新計算損失 L 與類別中心 𝑐\n\n-𝑘 𝑐𝑙𝑠 𝑘\n\n-6: 計算 L 並反向傳遞更新參數\n\n-𝑜𝑟𝑡 ℎ 𝑜\n\n+5: 重新計算損失 L 𝑐𝑙𝑠 與類別中心 𝑐 𝑘\n\n+6: 計算 L 𝑜𝑟𝑡 ℎ 𝑜 並反向傳遞更新參數\n\n 7: end for\n\n-8: 輸出最終模型 𝑓\n\n-𝜃\n\n+8: 輸出最終模型 𝑓 𝜃\n\n 5\n\n ---PAGE---\n\n 3.6 時間複雜度\n\n 2\n\n-正交化項計算複雜度為 O( 𝐾 𝑑 ) ，對於中等類別數可接受；若 𝐾 大，可採隨機抽\n\n-樣配對近似。\n\n+正交化項計算複雜度為 O( 𝐾 𝑑 ) ，對於中等類別數可接受；若 𝐾 大，可採隨機\n\n+抽樣配對近似。\n\n 3.7 程式碼片段示例\n\n 以下示例展示權重計算之 Python 風格偽程式：\n\n-def compute_weights(errors, counts, alpha , beta , eps=1e- 4):\n\n+def compute_weights(errors, counts, alpha , beta , eps=1e-4):\n\n # errors, counts: list of length K\n\n import math\n\n raw = [( (e + eps)** alpha ) / (c** beta) for e, c\n\n-in zip (errors, counts)] s =\n\n-sum (raw)\n\n+in zip (errors, counts)]\n\n+s = sum (raw)\n\n return [v / s for v in raw]\n\n Listing 第三章 .1: 動態權重偽程式\n\n 6\n\n@@ -272,8 +260,8 @@\n 比較基準包含：標準交叉熵 (CE) 、反頻率權重 (InvFreq) 、有效樣本權重 (EffNum)\n\n 與本研究 (Ours) 。\n\n 4.4 主要結果\n\n-表 4-1 彙整主要結果，可見本研究在 Macro-F1 與 Minority Recall 皆優於其他方\n\n-法。\n\n+表 4-1 彙整主要結果，可見本研究在 Macro-F1 與 Minority Recall 皆優於其他\n\n+方法。\n\n 7\n\n ---PAGE---\n\n 表 4-1: 主要分類績效 ( 公開資料集 )\n\n@@ -283,8 +271,8 @@\n EffNum 78.0 68.0 59.5\n\n Ours 79.1 71.4 63.7\n\n 4.5 消融研究\n\n-圖 4-1 顯示不同組件對 Macro-F1 之影響：僅動態權重 (DW) 或僅正交化 (Or- tho)\n\n-均有提升，結合後最佳。\n\n+圖 4-1 顯示不同組件對 Macro-F1 之影響：僅動態權重 (DW) 或僅正交化 (Or-\n\n+tho) 均有提升，結合後最佳。\n\n 圖 4-1: 消融分析示意 ( 示意圖以浮水印代替 ) 。\n\n 4.6 特徵可視化\n\n 使用 t-SNE 將特徵嵌入投影至二維，結果顯示本研究方法之類別分群更為集\n\n@@ -301,8 +289,8 @@\n 示在維持整體 Top-1 準確率的同時，可顯著提升 Macro-F1 與少數類別召回率。分\n\n 析證實正交化有助於降低類別間干擾，動態權重則自動聚焦較難類別。\n\n 未來方向包含： (1) 延伸至多標籤與開放集合辨識； (2) 與自監督特徵學習結\n\n-合，降低標註需求； (3) 加入不確定性估計以處理噪聲標籤； (4) 探索低秩表示以降\n\n-低額外計算成本。\n\n+合，降低標註需求； (3) 加入不確定性估計以處理噪聲標籤； (4) 探索低秩表示以\n\n+降低額外計算成本。\n\n 10\n\n ---PAGE---\n\n 參考文獻\n\n@@ -312,61 +300,53 @@\n codebooks,” IEEE Transactions on Communications , vol. 68, no. 5, pp. 2950–2962,\n\n 2020.\n\n A\n\n-[3] M. Goossens, F. Mittelbach, and A. Samarin, The L T . Reading,\n\n-EX Companion\n\n-Mas- sachusetts: Addison-Wesley, 1993.\n\n+[3] M. Goossens, F. Mittelbach, and A. Samarin, The L TEX Companion . Reading, Mas-\n\n+sachusetts: Addison-Wesley, 1993.\n\n [4] D. Knuth, “Knuth: Computers and typesetting.”\n\n 11\n\n ---PAGE---\n\n 附錄\n\n 附錄 A ：正交化梯度推導\n\n-令兩類別中心單位化後之內積為 𝑟𝑘 𝑗 = 𝑘\n\n ⊤ 𝑐\n\n-𝑐 𝑐 𝑗\n\n-。則\n\n+𝑐 𝑐 𝑘\n\n+𝑗\n\n+𝑘\n\n+令兩類別中心單位化後之內積為 𝑟 𝑘 𝑗 = 。 則\n\n 𝑐\n\n+𝑗\n\n+∑\n\n+1 2\n\n+L = 𝑟 . (I)\n\n+𝑜𝑟𝑡 ℎ 𝑜\n\n 𝑘 𝑗\n\n-1\n\n+𝐾 ( 𝐾 − 1 )\n\n+𝑘 ≠ 𝑗\n\n+對特徵向量 𝑐 𝑘 之梯度 ( 忽略常數 ) 為：\n\n+( )\n\n+∑\n\n+𝑐 𝑗 𝑐\n\n+𝑘\n\n+∇ L ∝ 𝑟 − 𝑟 . (II)\n\n+𝑐\n\n+𝑘 𝑜𝑟𝑡 ℎ 𝑜 𝑘 𝑗 𝑘 𝑗\n\n 2\n\n-𝑜𝑟𝑡 ℎ 𝑜\n\n-L =                  ∑ 𝑟\n\n-. (I)\n\n-𝑘\n\n-𝐾 ( 𝐾 − 1)\n\n-𝑗\n\n-對特徵向量 𝑐 之梯度 ( 忽略常數 ) 為：\n\n-𝑘\n\n-)\n\n 𝑐\n\n-𝑘\n\n-( 𝑐\n\n-𝑗 . (II)\n\n-𝑐 𝑐\n\n-∇ 𝑘 𝑗\n\n-𝑐 𝑘\n\n-L\n\n-𝑜𝑟𝑡 ℎ 𝑜\n\n-− 𝑟\n\n-∝ 𝑟\n\n-𝑐𝑘\n\n-∑\n\n-𝑘 𝑗 𝑘 𝑗\n\n+𝑐 𝑐 𝑘\n\n+𝑘 𝑗\n\n 𝑗 ≠ 𝑘\n\n-2\n\n 此可做為計算效率與穩定性之參考。\n\n 附錄 B ：額外結果\n\n 表與圖可於最終版補充更多資料集實驗，本文省略。\n\n 附錄 C ：參考文獻引用示例\n\n 本模板採用 natbib 套件並使用數字型引用。以下示例示範多種引用方式：\n\n • 單一引用：如長尾分類相關工作可參考 [1] 。\n\n-• 多篇合併：演算法與設計概念綜述可見 [1 , 2] 。\n\n+• 多篇合併：演算法與設計概念綜述可見 [1, 2] 。\n\n • 書籍或工具文件：排版細節說明請參考 [3] 。\n\n+A\n\n+• 線上資源： [4] 提供更多 L TEX 排版背景。\n\n 12\n\n-A\n\n-• 線上資源：[4 ] 提供更多 L T\n\n-EX 排版背景。\n\n ---PAGE---\n\n 在正文中建議：首次提及理論時使用完整敘述 + 引用；再次出現僅保留必要引用。\n\n-若需作者式引用（如“ Chen 等人 ”） ，可改用 \\citet 指令，但現行數字樣式下仍會以數\n\n-字標示。若欲改為作者年份樣式，可調整 packages.tex 內 natbib 選項。\n\n+若需作者式引用（如“ Chen 等人”），可改用 \\citet 指令，但現行數字樣式下仍會\n\n+以數字標示。若欲改為作者年份樣式，可調整 packages.tex 內 natbib 選項。\n\n 13",
     "visual_scores": [
       0.9648,
       0.9489,
@@ -177,23 +177,23 @@
       0.9497,
       0.9388,
       0.9552,
-      0.9344,
-      0.9369,
+      0.9332,
+      0.9366,
       0.9246,
       0.961,
       0.9374,
       0.961,
-      0.9613,
+      0.9598,
       0.9642,
       0.9669,
-      0.873,
+      0.8731,
       0.9955,
       0.9206,
       0.9523,
       0.9709,
       0.9316
     ],
-    "visual_avg": 0.9478,
+    "visual_avg": 0.9477,
     "diff_images": [
       {
         "page": 1,
@@ -301,7 +301,7 @@
         "reference_img": "CCU_article_p21_reference.png"
       }
     ],
-    "overall_score": 0.9497
+    "overall_score": 0.9496
   },
   {
     "name": "Checklist",
@@ -315,7 +315,7 @@
     "minipdf_exists": true,
     "reference_exists": true,
     "minipdf_size": 345292,
-    "reference_size": 124498,
+    "reference_size": 147827,
     "pdf_valid": true,
     "minipdf_pages": 4,
     "reference_pages": 4,
@@ -324,12 +324,12 @@
     "word_text_similarity": 0.9959,
     "text_diff": "--- minipdf/Class News.pdf\n+++ reference/Class News.pdf\n@@ -11,7 +11,8 @@\n diam sollicitudin.\n\n Upcoming Events\n\n School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet\n\n-9.9 | 5-7pm odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.\n\n+9.9 | 5-7pm\n\n+odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.\n\n Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit\n\n Book Fair\n\n amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,\n\n@@ -33,8 +34,8 @@\n diam sollicitudin.\n\n Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet\n\n odio. Vestibulum ultricies erat sit amet massa ullamco rper ferme ntum.\n\n-Quisque a suscipit nulla, non posuere tellus. Viva mus justo erat, suscipit\n\n-sit amet dui sed, ultricies porttitor mi.\n\n+Quisque a suscipit nulla, non posuere tellus. Viva mus justo erat, suscipit sit\n\n+amet dui sed, ultricies porttitor mi.\n\n Aliquam pharetra risus vitae odio imperdiet condimentum. Fusce in quam\n\n varius, dictum mi sit amet, aliquam mi. Suspe ndisse potenti. Pellentesque\n\n auctor id neque vel maximus.\n\n@@ -43,8 +44,7 @@\n consec tetur adi piscing elit.\n\n Aliquam non varius ipsum.\n\n Fusce venenatis quam vel\n\n-Our next area of focus\n\n-libero scelerisque. Quam vel\n\n+libero scelerisque. Quam vel Our next area of focus\n\n libero sce lerisque, a matm.\n\n Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ma ecenas massa\n\n Lorem ipsum dolor sit amet,\n\n@@ -79,7 +79,8 @@\n diam sollicitudin.\n\n Upcoming Events\n\n School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet\n\n-9.9 | 5-7pm odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.\n\n+9.9 | 5-7pm\n\n+odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.\n\n Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit\n\n Book Fair\n\n amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,\n\n@@ -101,8 +102,8 @@\n diam sollicitudin.\n\n Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet\n\n odio. Vestibulum ultricies erat sit amet massa ullamco rper ferme ntum.\n\n-Quisque a suscipit nulla, non posuere tellus. Viva mus justo erat, suscipit\n\n-sit amet dui sed, ultricies porttitor mi.\n\n+Quisque a suscipit nulla, non posuere tellus. Viva mus justo erat, suscipit sit\n\n+amet dui sed, ultricies porttitor mi.\n\n Aliquam pharetra risus vitae odio imperdiet condimentum. Fusce in quam\n\n varius, dictum mi sit amet, aliquam mi. Suspe ndisse potenti. Pellentesque\n\n auctor id neque vel maximus.\n\n@@ -112,7 +113,8 @@\n Aliquam non varius ipsum.\n\n Fusce venenatis quam vel\n\n libero scelerisque. Quam vel\n\n-libero sce lerisque, a matm. Our next area of focus\n\n+libero sce lerisque, a matm.\n\n+Our next area of focus\n\n Lorem ipsum dolor sit amet,\n\n Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ma ecenas massa\n\n consec tetur adi piscing elit.\n",
     "visual_scores": [
-      0.9098,
-      0.9101,
-      0.9114,
-      0.9148
+      0.9002,
+      0.9032,
+      0.8765,
+      0.8843
     ],
-    "visual_avg": 0.9115,
+    "visual_avg": 0.8911,
     "diff_images": [
       {
         "page": 1,
@@ -352,7 +352,7 @@
         "reference_img": "Class News_p4_reference.png"
       }
     ],
-    "overall_score": 0.963
+    "overall_score": 0.9548
   },
   {
     "name": "Class News_debug",
@@ -397,25 +397,25 @@
     "name": "Cooperation Agreement Template",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4370267,
-    "reference_size": 259866,
+    "minipdf_size": 4370222,
+    "reference_size": 139728,
     "pdf_valid": true,
     "minipdf_pages": 7,
     "reference_pages": 7,
-    "text_similarity": 0.9402,
-    "flat_text_similarity": 0.9273,
-    "word_text_similarity": 0.9402,
-    "text_diff": "--- minipdf/Cooperation Agreement Template.pdf\n+++ reference/Cooperation Agreement Template.pdf\n@@ -2,28 +2,28 @@\n XXXXXXX 项目\n\n 合作协议\n\n （模板）\n\n-甲    方：\n\n-乙    方：\n\n-丙    方：\n\n+甲 方：\n\n+乙 方：\n\n+丙 方：\n\n 签约地点：\n\n-签订日期：       年    月     日\n\n+签订日期： 年 月 日\n\n — 1 —\n\n ---PAGE---\n\n-甲    方：\n\n-电    话：                  地  址：\n\n-乙    方：\n\n-电    话：                  地  址：\n\n-丙    方：\n\n-电    话：                  地  址：\n\n+甲 方：\n\n+电 话： 地 址：\n\n+乙 方：\n\n+电 话： 地 址：\n\n+丙 方：\n\n+电 话： 地 址：\n\n 经各主体单位友好协商，各主体单位本着互相合作的精神，自愿组成联合体，就《 XXXXX\n\n 项目》（以下简称本项目）申报和执行中涉及的内容一致同意签订本协议如下：\n\n 一、合作模式\n\n-由   （甲方）      作为承担单位，     （乙方、丙方）         作为合作单位，组成\n\n-联合体进行联合申报本项目。承担单位负责本项目的一切组织、协调、申报工作，合作单位授权\n\n-承担单位牵头申报本项目并协助提供申报所需的相关材料。承担单位在申报和执行本项目过程\n\n-中，与本项目主办单位签署的一切文件和处理本项目有关的一切事务，联合体各方均予以承认并\n\n-承担法律责任。承担单位成功申报本项目后，由联合体各方按照本协议各主体单位职责执行，项\n\n-目经费由承担单位向本项目主办单位申请，再由联合体各方按照本协议约定进行分配。\n\n+由 （甲方） 作为承担单位， （乙方、丙方） 作为合作单位，组成联合体进行联\n\n+合申报本项目。承担单位负责本项目的一切组织、协调、申报工作，合作单位授权承担单位牵头\n\n+申报本项目并协助提供申报所需的相关材料。承担单位在申报和执行本项目过程中，与本项目主\n\n+办单位签署的一切文件和处理本项目有关的一切事务，联合体各方均予以承认并承担法律责任。\n\n+承担单位成功申报本项目后，由联合体各方按照本协议各主体单位职责执行，项目经费由承担单\n\n+位向本项目主办单位申请，再由联合体各方按照本协议约定进行分配。\n\n 二、任务分工\n\n 联合体各方同意本项目按照如下分工：\n\n （一）甲方负责：\n\n@@ -38,7 +38,7 @@\n 2.\n\n 3.\n\n ......\n\n-（三） 丙方负责\n\n+（三）丙方负责\n\n 1.\n\n 2.\n\n 3.\n\n@@ -53,9 +53,9 @@\n 3.\n\n ......\n\n （二）乙方的权利和义务\n\n-1.\n\n — 3 —\n\n ---PAGE---\n\n+1.\n\n 2.\n\n 3.\n\n ......\n\n@@ -69,18 +69,18 @@\n 1.......\n\n 2. 付款方式：采用支票、银行汇票、电汇三种形式。\n\n （二）乙方指定以下账号为唯一收款账号：\n\n-户    名：\n\n-账    号：\n\n+户 名：\n\n+账 号：\n\n 开户银行：\n\n （三）丙方指定以下账号为唯一收款账号：\n\n-户    名：\n\n-账    号：\n\n+户 名：\n\n+账 号：\n\n 开户银行：\n\n 甲方向上述账号汇出款项即视为甲方已履行付款义务，在协议履行过程中，因乙方、丙方账\n\n+— 4 —\n\n+---PAGE---\n\n 户的原因（包括但不限于账号被注销、被冻结等）导致乙方、丙方无法收取款项的，由乙方、丙\n\n 方承担相应后果。\n\n-— 4 —\n\n----PAGE---\n\n 六、保密约定\n\n 联合体各方均应对因协商、签订及执行本协议而了解的其他方的商业秘密承担保密责任。未\n\n 经披露其他方事先书面许可，不得向任何第三人或公众泄露也不得从中牟利。如因一方泄露其他\n\n@@ -97,9 +97,9 @@\n 九、合同生效\n\n 1 ）本合同在甲、乙、丙方法人代表或其授权代表签字盖章后生效。\n\n 2 ）合同一式 陆 份，其中甲方 贰 份，乙方 贰 份，丙方 贰 份。\n\n-甲方（盖章）：                          乙方（盖章）：\n\n-法定代表 / 授权代表（签字）：             法定代表 / 授权代表（签字）：\n\n-日期：                                  日期：\n\n+甲方（盖章）： 乙方（盖章）：\n\n+法定代表 / 授权代表（签字）： 法定代表 / 授权代表（签字）：\n\n+日期： 日期：\n\n — 5 —\n\n ---PAGE---\n\n 丙方（盖章）：\n",
+    "text_similarity": 0.9802,
+    "flat_text_similarity": 0.9802,
+    "word_text_similarity": 0.9459,
+    "text_diff": "--- minipdf/Cooperation Agreement Template.pdf\n+++ reference/Cooperation Agreement Template.pdf\n@@ -18,7 +18,7 @@\n 经各主体单位友好协商，各主体单位本着互相合作的精神，自愿组成联合体，就《 XXXXX\n\n 项目》（以下简称本项目）申报和执行中涉及的内容一致同意签订本协议如下：\n\n 一、合作模式\n\n-由   （甲方）      作为承担单位，     （乙方、丙方）         作为合作单位，组成\n\n+由 （甲方） 作为承担单位， （乙方、丙方） 作为合作单位，组成\n\n 联合体进行联合申报本项目。承担单位负责本项目的一切组织、协调、申报工作，合作单位授权\n\n 承担单位牵头申报本项目并协助提供申报所需的相关材料。承担单位在申报和执行本项目过程\n\n 中，与本项目主办单位签署的一切文件和处理本项目有关的一切事务，联合体各方均予以承认并\n\n@@ -28,9 +28,9 @@\n 联合体各方同意本项目按照如下分工：\n\n （一）甲方负责：\n\n 1.\n\n-2.\n\n — 2 —\n\n ---PAGE---\n\n+2.\n\n 3.\n\n ......\n\n （二）乙方负责\n\n@@ -38,7 +38,7 @@\n 2.\n\n 3.\n\n ......\n\n-（三） 丙方负责\n\n+（三）丙方负责\n\n 1.\n\n 2.\n\n 3.\n\n@@ -52,10 +52,10 @@\n 2.\n\n 3.\n\n ......\n\n+— 3 —\n\n+---PAGE---\n\n （二）乙方的权利和义务\n\n 1.\n\n-— 3 —\n\n----PAGE---\n\n 2.\n\n 3.\n\n ......\n\n@@ -76,11 +76,11 @@\n 户    名：\n\n 账    号：\n\n 开户银行：\n\n+— 4 —\n\n+---PAGE---\n\n 甲方向上述账号汇出款项即视为甲方已履行付款义务，在协议履行过程中，因乙方、丙方账\n\n 户的原因（包括但不限于账号被注销、被冻结等）导致乙方、丙方无法收取款项的，由乙方、丙\n\n 方承担相应后果。\n\n-— 4 —\n\n----PAGE---\n\n 六、保密约定\n\n 联合体各方均应对因协商、签订及执行本协议而了解的其他方的商业秘密承担保密责任。未\n\n 经披露其他方事先书面许可，不得向任何第三人或公众泄露也不得从中牟利。如因一方泄露其他\n\n@@ -99,9 +99,9 @@\n 2 ）合同一式 陆 份，其中甲方 贰 份，乙方 贰 份，丙方 贰 份。\n\n 甲方（盖章）：                          乙方（盖章）：\n\n 法定代表 / 授权代表（签字）：             法定代表 / 授权代表（签字）：\n\n-日期：                                  日期：\n\n — 5 —\n\n ---PAGE---\n\n+日期：                                  日期：\n\n 丙方（盖章）：\n\n 法定代表 / 授权代表（签字）：\n\n 日期：\n",
     "visual_scores": [
-      0.9913,
-      0.9747,
-      0.9933,
-      0.9834,
-      0.9469,
-      0.9975,
+      0.9924,
+      0.98,
+      0.9921,
+      0.9827,
+      0.9493,
+      0.9959,
       0.9999
     ],
-    "visual_avg": 0.9839,
+    "visual_avg": 0.9846,
     "diff_images": [
       {
         "page": 1,
@@ -453,7 +453,7 @@
         "reference_img": "Cooperation Agreement Template_p7_reference.png"
       }
     ],
-    "overall_score": 0.9696
+    "overall_score": 0.9859
   },
   {
     "name": "Fabrikam",
@@ -485,19 +485,19 @@
     "name": "Invoice",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 473590,
-    "reference_size": 54261,
+    "minipdf_size": 473626,
+    "reference_size": 65867,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9982,
-    "flat_text_similarity": 0.9982,
+    "text_similarity": 0.9963,
+    "flat_text_similarity": 0.9963,
     "word_text_similarity": 0.9947,
-    "text_diff": "--- minipdf/Invoice.pdf\n+++ reference/Invoice.pdf\n@@ -19,5 +19,4 @@\n TOTAL 420.00\n\n MAKE ALL CHECKS PAYABLE TO CREATE & CO.\n\n Thank you for your business!\n\n-CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334\n\n-1\n+CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334",
+    "text_diff": "--- minipdf/Invoice.pdf\n+++ reference/Invoice.pdf\n@@ -1,7 +1,6 @@\n INVOICE\n\n DATE: TO: Anjali Chaturvedi\n\n-Date\n\n-Extra Frame Photography\n\n+Date Extra Frame Photography\n\n 89 Pacific Ave\n\n INVOICE #\n\n San Francisco, CA\n\n@@ -19,5 +18,4 @@\n TOTAL 420.00\n\n MAKE ALL CHECKS PAYABLE TO CREATE & CO.\n\n Thank you for your business!\n\n-CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334\n\n-1\n+CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334",
     "visual_scores": [
-      0.9435
+      0.9381
     ],
-    "visual_avg": 0.9435,
+    "visual_avg": 0.9381,
     "diff_images": [
       {
         "page": 1,
@@ -505,14 +505,14 @@
         "reference_img": "Invoice_p1_reference.png"
       }
     ],
-    "overall_score": 0.9767
+    "overall_score": 0.9738
   },
   {
     "name": "issues66",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4230934,
-    "reference_size": 229713,
+    "minipdf_size": 4230927,
+    "reference_size": 229716,
     "pdf_valid": true,
     "minipdf_pages": 3,
     "reference_pages": 3,
@@ -521,7 +521,7 @@
     "word_text_similarity": 0.7354,
     "text_diff": "--- minipdf/issues66.pdf\n+++ reference/issues66.pdf\n@@ -1,4 +1,4 @@\n-微纳加工平台工艺申请表 （2014 年版）\n\n+微纳加工平台工艺申请表 （ 2014 年版）\n\n 批号 : 显微镜#1-20251126 14:40~20251126 14:45\n\n 020-\n\n 申请人 init 申请人电话 88888888<br /> 申请人邮箱 1@my.com 申请人签字\n\n@@ -6,31 +6,31 @@\n 付费人 init 课题编号 测试项目 付费人邮箱 1@my.com 付费人签字\n\n 申请日期 20251126 所属单位 985 高校\n\n 样品材料 样品尺寸\n\n-试验目的及说明 样品数量与编号 0\n\n+样品数量与编号 0\n\n+试验目的及说明\n\n 目的\n\n 序\n\n 工艺名称 工艺要求及说明 日期 计价和确认 备注\n\n 号\n\n-总费用：0.80￥ 总用时：0 天 0 时\n\n-2025 年 11 月 26 日 14 时 40 分 机时费：0.80￥ 5 分 0 秒\n\n-显微镜#1\n\n-8 至 开机用时：\n\n-2025 年 11 月 26 日 14 时 45 分 工艺负责人确认： 关机用时：\n\n+总费用：0.80￥ 总用时：0 天0 时\n\n+2025 年11 月26 日14 时40 分 机时费：0.80￥ 5 分0 秒\n\n+8 显微镜#1 至 开机用时：\n\n+2025 年11 月26 日14 时45 分 工艺负责人确认： 关机用时：\n\n 工艺申请人确认： 沉积用时：\n\n 加工平台批准人签字\n\n-最终服务质量评价（请签名） 最终检验员\n\n-非常满意_______       基本满意_______        不满意_________ 最终检验结论：\n\n+最终检验员\n\n+最终服务质量评价（请签名） 非常满意_______       基本满意_______        不满意_________ 最终检验结论：\n\n （签字）\n\n 工艺流程总计价： 0.80￥ 计价核准人签字： 日期：\n\n 备注：\n\n-1） 所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。\n\n-2）使用涉及设定温度的设备时（如 PECVD、蒸镀衬底温度、回流炉、高温炉、键合机等），请填写使用温度的上限和时间。使用如 PECVD、蒸镀等设备时，衬底\n\n-温度没有特殊要求的可填写：常规。\n\n-3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。\n\n+1 ）所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。\n\n+2 ）使用涉及设定温度的设备时（如PECVD、蒸镀衬底温度、回流炉、高温炉、键合机等），请填写使用温度的上限和时间。使用如PECVD、蒸镀等设备时，衬底温\n\n+度没有特殊要求的可填写：常规。\n\n 1\n\n ---PAGE---\n\n+3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。\n\n 4）涉及沉积和蒸镀使用的原材料时候，必须清楚填写材料的种类、厚度。\n\n-5） 接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用 SU8。\n\n+5 ）接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用SU8。\n\n 2\n\n ---PAGE---\n\n 3",
     "visual_scores": [
-      0.9391,
+      0.939,
       0.9874,
       1.0
     ],
@@ -550,19 +550,19 @@
     "minipdf_exists": true,
     "reference_exists": true,
     "minipdf_size": 508054,
-    "reference_size": 212025,
+    "reference_size": 220316,
     "pdf_valid": true,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.857,
-    "flat_text_similarity": 0.8565,
-    "word_text_similarity": 0.8455,
-    "text_diff": "--- minipdf/MODERN LIVING.pdf\n+++ reference/MODERN LIVING.pdf\n@@ -1,27 +1,27 @@\n OCTOBER / 20XX / ISSUE #10\n\n M O D E R N  L I V I N G\n\n Your guide to buy or rent\n\n+WHAT’S NEW\n\n Ready to settle?\n\n-WHAT’S NEW\n\n By Peyton Davis\n\n+TAKE A LOOK INSIDE\n\n Newsletters are periodicals used to advertise or update your subscribers\n\n-TAKE A LOOK INSIDE\n\n-with information about your product or blog. They can be printed or emailed\n\n+with information about your product or blog. They can be printed or\n\n Add description text here to get your\n\n-and are an excellent way to maintain regular contact with your subscribers\n\n+emailed and are an excellent way to maintain regular contact with your subscribers interested in your topic\n\n+subscribers and drive traffic to your site. Type the content of your\n\n+newsletter here.\n\n+PROPERTY TRENDS\n\n+Add description text here to get your\n\n+Newsletters are periodicals used to advertise or update your subscribers\n\n subscribers interested in your topic\n\n-and drive traffic to your site. Type the content of your newsletter here.\n\n-PROPERTY TRENDS\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n-with information about your product or blog. They are an excellent way to Add description text here to get your\n\n-subscribers interested in your topic\n\n+with information about your product or blog. They are an excellent way to\n\n maintain regular contact with your subscribers. Type the content of your\n\n+ARE YOU READY TO LIST?\n\n newsletter here.\n\n-ARE YOU READY TO LIST?\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n Add description text here to get your\n\n+Newsletters are periodicals used to advertise or update your subscribers subscribers interested in your topic\n\n with information about your product or blog. Type the content of your\n\n-subscribers interested in your topic\n\n newsletter here.\n\n ---PAGE---\n\n Property trends\n\n@@ -60,8 +60,7 @@\n Newsletters are periodicals used to advertise or update your subscribers with\n\n Are you\n\n information about your product or blog. They can be printed or emailed and are an\n\n-excellent way to maintain regular contact with your subscribers and drive traffic to\n\n-ready to list?\n\n+ready to list? excellent way to maintain regular contact with your subscribers and drive traffic to\n\n your site. Type the content of your newsletter here.\n\n By Adrian King\n\n Newsletters are periodicals used to advertise or update your subscribers with\n",
+    "text_similarity": 0.8913,
+    "flat_text_similarity": 0.8909,
+    "word_text_similarity": 0.874,
+    "text_diff": "--- minipdf/MODERN LIVING.pdf\n+++ reference/MODERN LIVING.pdf\n@@ -1,28 +1,27 @@\n OCTOBER / 20XX / ISSUE #10\n\n M O D E R N  L I V I N G\n\n Your guide to buy or rent\n\n+WHAT’S NEW\n\n Ready to settle?\n\n-WHAT’S NEW\n\n By Peyton Davis\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n-TAKE A LOOK INSIDE\n\n-with information about your product or blog. They can be printed or emailed\n\n+Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE\n\n+information about your product or blog. They can be printed or emailed and\n\n Add description text here to get your\n\n-and are an excellent way to maintain regular contact with your subscribers\n\n-subscribers interested in your topic\n\n-and drive traffic to your site. Type the content of your newsletter here.\n\n+are an excellent way to maintain regular contact with your subscribers and subscribers interested in your topic\n\n+drive traffic to your site. Type the content of your newsletter here.\n\n PROPERTY TRENDS\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n-with information about your product or blog. They are an excellent way to Add description text here to get your\n\n+Newsletters are periodicals used to advertise or update your subscribers with\n\n+Add description text here to get your\n\n+information about your product or blog. They are an excellent way to\n\n subscribers interested in your topic\n\n maintain regular contact with your subscribers. Type the content of your\n\n newsletter here.\n\n-ARE YOU READY TO LIST?\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n+ARE YOU READY TO\n\n+Newsletters are periodicals used to advertise or update your subscribers with LIST?\n\n+information about your product or blog. Type the content of your newsletter\n\n Add description text here to get your\n\n-with information about your product or blog. Type the content of your\n\n+here.\n\n subscribers interested in your topic\n\n-newsletter here.\n\n ---PAGE---\n\n Property trends\n\n Take a look inside\n\n@@ -45,8 +44,7 @@\n Newsletters are periodicals use to advertise or update your\n\n excellent way to maintain regular contact\n\n subscribers with information about your product or blog. Type\n\n-with your subscribers and drive traffic to\n\n-the content of your newsletter here.\n\n+the content of your newsletter here. with your subscribers and drive traffic to\n\n your site. Type the content of your\n\n newsletter here.\n\n Newsletters are periodicals used to\n\n@@ -60,8 +58,7 @@\n Newsletters are periodicals used to advertise or update your subscribers with\n\n Are you\n\n information about your product or blog. They can be printed or emailed and are an\n\n-excellent way to maintain regular contact with your subscribers and drive traffic to\n\n-ready to list?\n\n+ready to list? excellent way to maintain regular contact with your subscribers and drive traffic to\n\n your site. Type the content of your newsletter here.\n\n By Adrian King\n\n Newsletters are periodicals used to advertise or update your subscribers with\n",
     "visual_scores": [
-      0.8309,
-      0.7806
+      0.844,
+      0.7999
     ],
-    "visual_avg": 0.8057,
+    "visual_avg": 0.8219,
     "diff_images": [
       {
         "page": 1,
@@ -575,13 +575,13 @@
         "reference_img": "MODERN LIVING_p2_reference.png"
       }
     ],
-    "overall_score": 0.8651
+    "overall_score": 0.8853
   },
   {
     "name": "nthu_article",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8699105,
+    "minipdf_size": 8699150,
     "reference_size": 798510,
     "pdf_valid": true,
     "minipdf_pages": 19,
@@ -601,18 +601,18 @@
       0.9572,
       0.9866,
       0.6569,
-      0.9482,
-      0.8948,
+      0.9418,
+      0.8877,
       0.9455,
       0.8445,
       0.9729,
       0.9344,
-      0.8976,
-      0.7535,
+      0.8978,
+      0.7534,
       0.9574,
       0.0
     ],
-    "visual_avg": 0.8713,
+    "visual_avg": 0.8707,
     "diff_images": [
       {
         "page": 1,
@@ -715,25 +715,25 @@
         "reference_img": "nthu_article_p20_reference.png"
       }
     ],
-    "overall_score": 0.7985
+    "overall_score": 0.7983
   },
   {
     "name": "OSCAR WARD",
     "minipdf_exists": true,
     "reference_exists": true,
     "minipdf_size": 205247,
-    "reference_size": 62719,
+    "reference_size": 49023,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9941,
-    "flat_text_similarity": 0.9746,
+    "text_similarity": 0.9949,
+    "flat_text_similarity": 0.9949,
     "word_text_similarity": 0.9941,
-    "text_diff": "--- minipdf/OSCAR WARD.pdf\n+++ reference/OSCAR WARD.pdf\n@@ -7,14 +7,15 @@\n 123 45th Ave Chicago, IL\n\n Dear Chanchal,\n\n I sincerely appreciate the opportunity to interview and learn more about the role. Our\n\n-conversation reinforced my enthusiasm for contributing to the team and bringing my expertise to\n\n-the company’s ongoing initiatives. I found our discussion about future goals particularly\n\n-inspiring, and it further solidified my excitement about this opportunity.\n\n-The role’s focus on impactful work aligns with my professional background, and I look forward\n\n-to the possibility of applying my skills to support the company’s growth. I am eager to bring my\n\n-experience in driving efficiency and innovation to the team while continuing to develop and\n\n-refine my abilities in a fast-paced environment.\n\n+conversation reinforced my enthusiasm for contributing to the team and bringing my\n\n+expertise to the company’s ongoing initiatives. I found our discussion about future goals\n\n+particularly inspiring, and it further solidified my excitement about this opportunity.\n\n+The role’s focus on impactful work aligns with my professional background, and I look\n\n+forward to the possibility of applying my skills to support the company’s growth. I am eager to\n\n+bring my experience in driving efficiency and innovation to the team while continuing to\n\n+develop and refine my abilities in a fast-paced environment.\n\n Thank you again for your time and thoughtful discussion. I appreciate the chance to be\n\n considered and look forward to next steps. Please let me know if I can provide any additional\n\n details to assist in the decision-making process.\n\n-Warm regards,\n+Warm regards,\n\n+Oscar Ward",
+    "text_diff": "--- minipdf/OSCAR WARD.pdf\n+++ reference/OSCAR WARD.pdf\n@@ -17,4 +17,5 @@\n Thank you again for your time and thoughtful discussion. I appreciate the chance to be\n\n considered and look forward to next steps. Please let me know if I can provide any additional\n\n details to assist in the decision-making process.\n\n-Warm regards,\n+Warm regards,\n\n+Oscar Ward",
     "visual_scores": [
-      0.8637
+      0.8438
     ],
-    "visual_avg": 0.8637,
+    "visual_avg": 0.8438,
     "diff_images": [
       {
         "page": 1,
@@ -741,7 +741,7 @@
         "reference_img": "OSCAR WARD_p1_reference.png"
       }
     ],
-    "overall_score": 0.9431
+    "overall_score": 0.9355
   },
   {
     "name": "SA8000 ch sample",
@@ -805,24 +805,24 @@
     "name": "Template for MSc Thesis",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1183261,
+    "minipdf_size": 1183137,
     "reference_size": 402081,
     "pdf_valid": true,
     "minipdf_pages": 17,
     "reference_pages": 17,
     "text_similarity": 1.0,
-    "flat_text_similarity": 0.9671,
+    "flat_text_similarity": 0.9634,
     "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/Template for MSc Thesis.pdf\n+++ reference/Template for MSc Thesis.pdf\n@@ -100,14 +100,14 @@\n knowledge.\n\n Signature of the Supervisor of Signature of the Supervisor of\n\n M.Sc. thesis #1 (with date) M.Sc. thesis #2 (with date)\n\n-(NAME OF SUPERVISOR)                                                                (NAME OF SUPERVISOR)\n\n+(NAME OF SUPERVISOR) (NAME OF SUPERVISOR)\n\n --------------------------------------------------------------------------------------------------------------------------------\n\n-< NAME OF THE M.Sc. STUDENT> has successfully given his/her M.Sc. Oral Examination held on\n\n-<Date of M.Sc. Oral Examination> .\n\n-Signature(s) of Supervisor(s) of MSc thesis                                                                       Convener, DPGC\n\n-Date:                                                                                                                                         Date:\n\n-Signature of PSPC Member #1                                                                  Signature of PSPC Member #1\n\n-Date:                                                                                                              Date:\n\n+< NAME OF THE M.Sc. STUDENT> has successfully given his/her M.Sc. Oral Examination held\n\n+on <Date of M.Sc. Oral Examination> .\n\n+Signature(s) of Supervisor(s) of MSc thesis Convener, DPGC\n\n+Date: Date:\n\n+Signature of PSPC Member #1 Signature of PSPC Member #1\n\n+Date: Date:\n\n -----------------------------------------------------------------------------------------------------------------------------------\n\n ---PAGE---\n\n ACKNOWLEDGEMENTS\n\n@@ -115,8 +115,9 @@\n DEDICATION (if any)\n\n ---PAGE---\n\n Abstract\n\n-The abstract should be a brief summary of the M. Tech. thesis. It should not contain more than\n\n-1-2 pages of A4 size with the text typed in 12 pt Times New Roman font having 1.5 spacing .\n\n+The abstract should be a brief summary of the M. Tech. thesis. It should not contain\n\n+more than 1-2 pages of A4 size with the text typed in 12 pt Times New Roman font having\n\n+1.5 spacing .\n\n ---PAGE---\n\n LIST OF PUBLICATIONS\n\n ---PAGE---\n",
+    "text_diff": "--- minipdf/Template for MSc Thesis.pdf\n+++ reference/Template for MSc Thesis.pdf\n@@ -8,8 +8,9 @@\n ➢ Font and Font size for the general text of the report: Times New Roman 12\n\n ➢ LINE SPACING: 1.5\n\n ➢ MARGINS: At least 2.5 inch on the binding side; 1 inch at top and bottom\n\n-➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The chapters\n\n-to be numbered in the Arabic numerals. The Page number should be bottom centered\n\n+➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The\n\n+chapters to be numbered in the Arabic numerals. The Page number should be\n\n+bottom centered\n\n ➢ PAPER TYPE AND SIZE: A4 size Executive Bond Paper\n\n ➢ PRINTING: BOTH SIDE PRINTING\n\n ➢ Number of copies of M.Sc. thesis to be submitted: 5 + number of thesis supervisor(s)\n\n@@ -86,10 +87,10 @@\n I hereby certify that the work which is being presented in the thesis entitled <TITLE OF M.SC.\n\n THESIS> in the partial fulfillment of the requirements for the award of the degree of MASTER OF\n\n SCIENCE and submitted in the DEPARTMENT OF < NAME OF THE DEPARTMENT >, Indian\n\n-Institute of Technology Indore , is an authentic record of my own work carried out during the time period from\n\n-<Month and year of joining the M.Sc. program> to < Month and year of M.Sc. Thesis submission> under the\n\n-supervision of <Name of the Supervisor of M.Sc. thesis  #1, Designation, and Affiliation> and < Name of the\n\n-Supervisor of M.Sc. thesis #2, Designation, and Affiliation>\n\n+Institute of Technology Indore , is an authentic record of my own work carried out during the time period\n\n+from <Month and year of joining the M.Sc. program> to < Month and year of M.Sc. Thesis submission> under\n\n+the supervision of <Name of the Supervisor of M.Sc. thesis  #1, Designation, and Affiliation> and < Name of\n\n+the Supervisor of M.Sc. thesis #2, Designation, and Affiliation>\n\n The matter presented in this thesis has not been submitted by me for the award of any other degree of\n\n this or any other institute.\n\n Signature of the student with date\n\n@@ -99,14 +100,14 @@\n knowledge.\n\n Signature of the Supervisor of Signature of the Supervisor of\n\n M.Sc. thesis #1 (with date) M.Sc. thesis #2 (with date)\n\n-(NAME OF SUPERVISOR)                                                                (NAME OF SUPERVISOR)\n\n+(NAME OF SUPERVISOR) (NAME OF SUPERVISOR)\n\n --------------------------------------------------------------------------------------------------------------------------------\n\n-< NAME OF THE M.Sc. STUDENT> has successfully given his/her M.Sc. Oral Examination held on\n\n-<Date of M.Sc. Oral Examination> .\n\n-Signature(s) of Supervisor(s) of MSc thesis                                                                       Convener, DPGC\n\n-Date:                                                                                                                                         Date:\n\n-Signature of PSPC Member #1                                                                  Signature of PSPC Member #1\n\n-Date:                                                                                                              Date:\n\n+< NAME OF THE M.Sc. STUDENT> has successfully given his/her M.Sc. Oral Examination held\n\n+on <Date of M.Sc. Oral Examination> .\n\n+Signature(s) of Supervisor(s) of MSc thesis Convener, DPGC\n\n+Date: Date:\n\n+Signature of PSPC Member #1 Signature of PSPC Member #1\n\n+Date: Date:\n\n -----------------------------------------------------------------------------------------------------------------------------------\n\n ---PAGE---\n\n ACKNOWLEDGEMENTS\n\n@@ -114,8 +115,9 @@\n DEDICATION (if any)\n\n ---PAGE---\n\n Abstract\n\n-The abstract should be a brief summary of the M. Tech. thesis. It should not contain more than\n\n-1-2 pages of A4 size with the text typed in 12 pt Times New Roman font having 1.5 spacing .\n\n+The abstract should be a brief summary of the M. Tech. thesis. It should not contain\n\n+more than 1-2 pages of A4 size with the text typed in 12 pt Times New Roman font having\n\n+1.5 spacing .\n\n ---PAGE---\n\n LIST OF PUBLICATIONS\n\n ---PAGE---\n",
     "visual_scores": [
-      0.9383,
-      0.9589,
-      0.9649,
+      0.9367,
+      0.9656,
+      0.9675,
       0.9606,
-      0.9283,
+      0.9315,
       0.9984,
       0.9989,
-      0.9927,
+      0.9929,
       0.9986,
       0.9706,
       0.9983,
@@ -833,7 +833,7 @@
       0.9993,
       0.9988
     ],
-    "visual_avg": 0.9825,
+    "visual_avg": 0.9831,
     "diff_images": [
       {
         "page": 1,
@@ -921,7 +921,7 @@
         "reference_img": "Template for MSc Thesis_p17_reference.png"
       }
     ],
-    "overall_score": 0.993
+    "overall_score": 0.9932
   },
   {
     "name": "Template_repaired",

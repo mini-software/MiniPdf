@@ -1052,7 +1052,7 @@ internal static class DocxToPdfConverter
                 {
                     var emptyAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                         ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
-                        : fontSize * GetTopOfPageAscentRatio(paraFontName);
+                        : fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options));
                     state.AdvanceY(emptyAscentOffset);
                 }
                 state.AdvanceY(totalEmptyAdvance);
@@ -1099,7 +1099,7 @@ internal static class DocxToPdfConverter
             {
                 var ghostAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                     ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
-                    : fontSize * GetTopOfPageAscentRatio(paraFontName);
+                    : fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options));
                 state.AdvanceY(ghostAscentOffset);
             }
             state.LastParagraphStartY = state.CurrentY;
@@ -1145,7 +1145,7 @@ internal static class DocxToPdfConverter
             {
                 var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                     ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
-                    : fontSize * GetTopOfPageAscentRatio(paraFontName);
+                    : fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options));
                 state.AdvanceY(ascentOffset);
             }
             var baselineToTopOffset = lineHeight - fontSize;
@@ -1185,7 +1185,7 @@ internal static class DocxToPdfConverter
         {
             var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                 ? currentGridAscent
-                : fontSize * GetTopOfPageAscentRatio(paraFontName);
+                : fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options));
             state.AdvanceY(ascentOffset);
         }
 
@@ -1234,6 +1234,23 @@ internal static class DocxToPdfConverter
         {
             state.AdvanceY(lineHeight - state.LastLineHeight);
         }
+        // Mirror compensation when the next paragraph's font SHRINKS: Word places
+        // the new baseline closer to the previous one because each line slot's
+        // baseline sits ~54% down its own slot — so the baseline-to-baseline
+        // distance at a paragraph boundary is roughly
+        //   prevLineHeight * (1 - r) + currLineHeight * r   (r ≈ 0.541)
+        // rather than the full prevLineHeight that AdvanceY(lineHeight) at the
+        // end of the previous paragraph applied.  The required additional shift
+        // is therefore (currLineHeight - prevLineHeight) * r — negative for
+        // shrink.  Verified against "Template for MSc Thesis.docx" page 2 where
+        // a 14pt → 12pt list-paragraph transition needs a ~-1.9pt correction.
+        // Gated symmetrically with the grow case above to limit scope.
+        else if (!wasTopOfPage && !paragraph.LineSpacingAbsolute && state.LastLineHeight > 0
+            && lineHeight < state.LastLineHeight && !state.LastParagraphWasEmpty
+            && currEffFsForGate < lastEffFsForGate - 0.01f)
+        {
+            state.AdvanceY((lineHeight - state.LastLineHeight) * 0.541f);
+        }
 
         // Track paragraph start position for borders and floating textboxes
         var paragraphStartY = state.CurrentY;
@@ -1256,7 +1273,7 @@ internal static class DocxToPdfConverter
             state.EnsurePage();
             var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                 ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
-                : fontSize * GetTopOfPageAscentRatio(paraFontName);
+                : fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options));
             state.AdvanceY(ascentOffset);
             paragraphStartY = state.CurrentY;
             state.LastParagraphStartY = paragraphStartY;
@@ -1651,7 +1668,7 @@ internal static class DocxToPdfConverter
                 {
                     var lineAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                         ? GetGridAscentOffset(lineHeight, runFontSize, runFontName)
-                        : runFontSize * GetTopOfPageAscentRatio(runFontName);
+                        : runFontSize * GetTopOfPageAscentRatio(runFontName, ResolveLineSpacingMul(paragraph, options));
                     state.AdvanceY(lineAscentOffset);
                 }
 
@@ -2178,7 +2195,8 @@ internal static class DocxToPdfConverter
             var mfAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
                 ? (lineHeight + defaultFontSize) / 2f
                 : defaultFontSize * GetTopOfPageAscentRatio(
-                    paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName);
+                    paragraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName,
+                    ResolveLineSpacingMul(paragraph, state.Options));
             state.AdvanceY(mfAscentOffset);
         }
         var currentX = firstLineX;
@@ -2290,10 +2308,15 @@ internal static class DocxToPdfConverter
                         // slot under-allocates, and PdfWriter Tz-compresses the
                         // run (e.g. "5 + number of thesis supervisor(s)" in
                         // Arial-Bold gets squeezed to ~90% of natural width).
-                        // Times New Roman Bold is closer to Calibri Bold width so
-                        // a smaller 1.06 factor still works for serif runs.
-                        if (e.Bold)
-                            w *= IsSerifFont(e.FontName) ? 1.06f : 1.18f;
+                        // Times New Roman Bold is handled internally via the
+                        // s_serifRunInCalibri Times-widths path inside
+                        // EstimateCalibrTextWidth (already includes a +6% bold
+                        // bump), so do NOT apply an outer factor here — that
+                        // would double-inflate and leave gaps after bold runs
+                        // when the line is justified but doesn't need stretching
+                        // (justifyWordSpacing == 0).
+                        if (e.Bold && !IsSerifFont(e.FontName))
+                            w *= 1.18f;
                     }
                     return w;
                 }
@@ -2425,7 +2448,7 @@ internal static class DocxToPdfConverter
                     {
                         var hardBrAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
                             ? (lineHeight + runFs) / 2f
-                            : runFs * GetTopOfPageAscentRatio(run.FontName);
+                            : runFs * GetTopOfPageAscentRatio(run.FontName, ResolveLineSpacingMul(paragraph, state.Options));
                         state.AdvanceY(hardBrAscentOffset);
                     }
                     currentX = baseX;
@@ -2546,13 +2569,18 @@ internal static class DocxToPdfConverter
                 // non-Calibri (e.g. Times New Roman), glyph widths differ —
                 // especially uppercase letters which are substantially wider in
                 // serif fonts. Apply a correction factor so wrapping decisions
-                // better match the actual font width.
+                // better match the actual font width. Note: serif bold is
+                // already handled inside EstimateCalibrTextWidth via the
+                // s_serifRunInCalibri Times-widths path (with a +6% bold bump),
+                // so no outer factor is needed here for serif. Sans-serif bold
+                // (Arial/Helvetica) still needs +18% because EstimateCalibrTextWidth
+                // models Calibri (not Arial) widths for non-serif runs.
                 var nonCalibriWidthFactor = 1f;
                 if (useCalibri && run.FontName != null
                     && !run.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (run.Bold)
-                        nonCalibriWidthFactor = IsSerifFont(run.FontName) ? 1.06f : 1.18f;
+                    if (run.Bold && !IsSerifFont(run.FontName))
+                        nonCalibriWidthFactor = 1.18f;
                 }
 
                 // When a CJK paragraph has pure-Latin runs (e.g. "PECVD"),
@@ -2656,7 +2684,7 @@ internal static class DocxToPdfConverter
                             {
                                 var wrapAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
                                     ? (lineHeight + runFs) / 2f
-                                    : runFs * GetTopOfPageAscentRatio(run.FontName);
+                                    : runFs * GetTopOfPageAscentRatio(run.FontName, ResolveLineSpacingMul(paragraph, state.Options));
                                 state.AdvanceY(wrapAscentOffset);
                             }
                             currentX = baseX;
@@ -2728,7 +2756,7 @@ internal static class DocxToPdfConverter
                         {
                             var cjkBrkAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
                                 ? (lineHeight + runFs) / 2f
-                                : runFs * GetTopOfPageAscentRatio(run.FontName);
+                                : runFs * GetTopOfPageAscentRatio(run.FontName, ResolveLineSpacingMul(paragraph, state.Options));
                             state.AdvanceY(cjkBrkAscentOffset);
                         }
                         currentX = baseX + EstimateWrapTextWidth(pendingText, runFs, run.Bold, run.CharSpacing, useCalibri) * nonCalibriWidthFactor;
@@ -4517,10 +4545,17 @@ internal static class DocxToPdfConverter
     /// like Times New Roman / Georgia have a smaller visual top-to-baseline distance:
     /// measured against the Word reference PDF for "Template for MSc Thesis.docx"
     /// (TNR Bold 14pt, top margin 36pt, first line bbox y0=36.57 ≈ topMargin),
-    /// the effective ratio is ~0.80.  Without this, every line of TNR body text
-    /// sits ~3.85pt lower than Word's placement, accumulating throughout the page.
+    /// the effective ratio is ~0.80 at 1.0x line-spacing.  Without this, every line
+    /// of TNR body text sits ~3.85pt lower than Word's placement, accumulating
+    /// throughout the page.
+    ///
+    /// At higher line-spacing (e.g., 1.5x w:line=360 lineRule=auto in the same
+    /// thesis docx) Word places the first-line baseline LOWER within the first
+    /// slot — empirically the glyph-top sits ~1.9pt below the top margin for 14pt
+    /// text and ~3.2pt below for 24pt headings, both consistent with a ratio of
+    /// ~0.935 instead of 0.80.  We bump the ratio when lineSpacingMul &gt; 1.4.
     /// </summary>
-    private static float GetTopOfPageAscentRatio(string? fontName)
+    private static float GetTopOfPageAscentRatio(string? fontName, float lineSpacingMul = 1.0f)
     {
         var name = fontName;
         if (string.IsNullOrEmpty(name)) name = s_defaultFontName;
@@ -4528,9 +4563,22 @@ internal static class DocxToPdfConverter
             (name!.Contains("Times", StringComparison.OrdinalIgnoreCase) ||
              name.Contains("Georgia", StringComparison.OrdinalIgnoreCase)))
         {
-            return 0.80f;
+            return lineSpacingMul > 1.4f ? 0.935f : 0.80f;
         }
         return AscentRatio;
+    }
+
+    /// <summary>
+    /// Helper: resolves the effective lineSpacing multiplier for a paragraph,
+    /// preferring the paragraph value, falling back to the document option, and
+    /// finally to 1.0.  Returns 0 when the paragraph uses an absolute line height
+    /// (lineRule=exact/atLeast) so callers can opt out of multiplier-based logic.
+    /// </summary>
+    private static float ResolveLineSpacingMul(DocxParagraph paragraph, ConversionOptions options)
+    {
+        if (paragraph.LineSpacingAbsolute) return 0f;
+        var mul = paragraph.LineSpacing > 0 ? paragraph.LineSpacing : options.LineSpacing;
+        return mul > 0 ? mul : 1.0f;
     }
 
     /// <summary>

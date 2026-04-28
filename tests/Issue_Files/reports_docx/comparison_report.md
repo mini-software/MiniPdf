@@ -1,33 +1,33 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-29T03:12:21.794277
+Generated: 2026-04-29T04:41:17.816071
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9669 | 2/2 | **0.9868** |
-| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9742 | 2/2 | **0.9897** |
+| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9629 | 2/2 | **0.9852** |
+| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9728 | 2/2 | **0.9891** |
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9738 | 2/2 | **0.9871** |
-| 4 | 🟢 20260318_issue | ✅ | 0.975 | 0.867 | 7/7 | **0.9368** |
-| 5 | 🟢 CCU_article | ✅ | 0.9265 | 0.9478 | 21/21 | **0.9497** |
+| 4 | 🟢 20260318_issue | ✅ | 0.975 | 0.8607 | 7/7 | **0.9343** |
+| 5 | 🟢 CCU_article | ✅ | 0.9262 | 0.9477 | 21/21 | **0.9496** |
 | 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
-| 7 | 🟢 Class News | ✅ | 0.9959 | 0.9115 | 4/4 | **0.963** |
+| 7 | 🟢 Class News | ✅ | 0.9959 | 0.8911 | 4/4 | **0.9548** |
 | 8 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
 | 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.967 | 2/2 | **0.9801** |
-| 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9402 | 0.9839 | 7/7 | **0.9696** |
+| 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9846 | 7/7 | **0.9859** |
 | 11 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
-| 12 | 🟢 Invoice | ✅ | 0.9982 | 0.9435 | 1/1 | **0.9767** |
+| 12 | 🟢 Invoice | ✅ | 0.9963 | 0.9381 | 1/1 | **0.9738** |
 | 13 | 🟢 issues66 | ✅ | 0.9535 | 0.9755 | 3/3 | **0.9716** |
-| 14 | 🟡 MODERN LIVING | ✅ | 0.857 | 0.8057 | 2/2 | **0.8651** |
-| 15 | 🟡 nthu_article | ✅ | 0.875 | 0.8713 | 19/20 | **0.7985** |
-| 16 | 🟢 OSCAR WARD | ✅ | 0.9941 | 0.8637 | 1/1 | **0.9431** |
+| 14 | 🟡 MODERN LIVING | ✅ | 0.8913 | 0.8219 | 2/2 | **0.8853** |
+| 15 | 🟡 nthu_article | ✅ | 0.875 | 0.8707 | 19/20 | **0.7983** |
+| 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
 | 17 | 🟢 SA8000 ch sample | ✅ | 0.9931 | 0.9667 | 2/2 | **0.9839** |
 | 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9595 | 1/1 | **0.9838** |
-| 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9825 | 17/17 | **0.993** |
+| 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9831 | 17/17 | **0.9932** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8113**
+**Average Overall Score: 0.8119**
 
 ## Visual Comparison
 
@@ -35,7 +35,7 @@ Generated: 2026-04-29T03:12:21.794277
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>13_IEEE_Style_Paper</b></td>
-  <td colspan="1">13_IEEE_Style_Paper <span style="color:#3fb950">⬤</span> 98.7%</td>
+  <td colspan="1">13_IEEE_Style_Paper <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
   <td><img src="images/13_IEEE_Style_Paper_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -47,7 +47,7 @@ Generated: 2026-04-29T03:12:21.794277
 </tr>
 <tr>
   <td><b>14_Thesis_Chapter</b></td>
-  <td colspan="1">14_Thesis_Chapter <span style="color:#3fb950">⬤</span> 99.0%</td>
+  <td colspan="1">14_Thesis_Chapter <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
   <td><img src="images/14_Thesis_Chapter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -71,7 +71,7 @@ Generated: 2026-04-29T03:12:21.794277
 </tr>
 <tr>
   <td><b>20260318_issue</b></td>
-  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.7%</td>
+  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.4%</td>
 </tr>
 <tr>
   <td><img src="images/20260318_issue_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -198,7 +198,7 @@ Generated: 2026-04-29T03:12:21.794277
 </tr>
 <tr>
   <td><b>Class News</b></td>
-  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 96.3%</td>
+  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 95.5%</td>
 </tr>
 <tr>
   <td><img src="images/Class News_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -237,7 +237,7 @@ Generated: 2026-04-29T03:12:21.794277
 </tr>
 <tr>
   <td><b>Cooperation Agreement Template</b></td>
-  <td colspan="1">Cooperation Agreement Template <span style="color:#3fb950">⬤</span> 97.0%</td>
+  <td colspan="1">Cooperation Agreement Template <span style="color:#3fb950">⬤</span> 98.6%</td>
 </tr>
 <tr>
   <td><img src="images/Cooperation Agreement Template_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -277,7 +277,7 @@ Generated: 2026-04-29T03:12:21.794277
 </tr>
 <tr>
   <td><b>Invoice</b></td>
-  <td colspan="1">Invoice <span style="color:#3fb950">⬤</span> 97.7%</td>
+  <td colspan="1">Invoice <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
   <td><img src="images/Invoice_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -301,7 +301,7 @@ Generated: 2026-04-29T03:12:21.794277
 </tr>
 <tr>
   <td><b>MODERN LIVING</b></td>
-  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 86.5%</td>
+  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 88.5%</td>
 </tr>
 <tr>
   <td><img src="images/MODERN LIVING_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -397,7 +397,7 @@ Generated: 2026-04-29T03:12:21.794277
 </tr>
 <tr>
   <td><b>OSCAR WARD</b></td>
-  <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 94.3%</td>
+  <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 93.5%</td>
 </tr>
 <tr>
   <td><img src="images/OSCAR WARD_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -509,10 +509,10 @@ Generated: 2026-04-29T03:12:21.794277
 ### 13_IEEE_Style_Paper
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9669
-- **Overall Score:** 0.9868
+- **Visual Average:** 0.9629
+- **Overall Score:** 0.9852
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1152864 bytes, Reference=174711 bytes
+- **File Size:** MiniPdf=1152861 bytes, Reference=174711 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -560,24 +560,18 @@ Generated: 2026-04-29T03:12:21.794277
 
  2. Related Work
 
-@@ -24,10 +25,10 @@
- Rule-based 78.2 120 256
-
- ML-based 85.5 45 1024
-
- Ours 95.1 89 512
-
-----PAGE---
-
+@@ -27,7 +28,7 @@
  References
 
  [1] A. Brown, Document Processing: Principles and Practice, IEEE Trans., vol. 45, 2023.
 
  [2] C. Davis et al., Layout-aware text extraction from PDF documents, Proc. ICDAR, 2022.
 
- [3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.
++[3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.
 
-+---PAGE---
+ ---PAGE---
+
+-[3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.
 
  [4] I. Smith et al., Rule-based multi-format document converter, Proc. DocEng, 2020.
 
@@ -588,10 +582,10 @@ Generated: 2026-04-29T03:12:21.794277
 ### 14_Thesis_Chapter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9742
-- **Overall Score:** 0.9897
+- **Visual Average:** 0.9728
+- **Overall Score:** 0.9891
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1005010 bytes, Reference=159781 bytes
+- **File Size:** MiniPdf=1005001 bytes, Reference=159781 bytes
 
 Text content: ✅ Identical
 
@@ -601,7 +595,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9738
 - **Overall Score:** 0.9871
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7595361 bytes, Reference=201209 bytes
+- **File Size:** MiniPdf=7595366 bytes, Reference=201209 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -651,10 +645,10 @@ Text content: ✅ Identical
 ### 20260318_issue
 
 - **Text Similarity:** 0.975
-- **Visual Average:** 0.867
-- **Overall Score:** 0.9368
+- **Visual Average:** 0.8607
+- **Overall Score:** 0.9343
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=1531224 bytes, Reference=344825 bytes
+- **File Size:** MiniPdf=1531226 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -678,7 +672,7 @@ Text content: ✅ Identical
 
  页眉的名称 ……………………..
 
-@@ -32,17 +32,20 @@
+@@ -32,18 +32,21 @@
  document for information only.
 
  Name Department Responsibility
@@ -696,6 +690,8 @@ Text content: ✅ Identical
 -Introduction
 
 -The Process Definition Document (PDD) captures the flow of a business process to be developed.
+
+-The flowchart contained within the document captures, at a high level, the business process to be automated, the
 
 +Company Confidential
 
@@ -725,22 +721,24 @@ Text content: ✅ Identical
 
 +The Process Definition Document (PDD) captures the flow of a business process to be developed.
 
- The flowchart contained within the document captures, at a high level, the business process to be automated, the
++The flowchart contained within the document captures, at a high level, the business process to be automated, the
 
  target systems used within the process and any assumptions that have been taken into account.
 
  Once agreed as the basis for the automation of the target process, the flowchart and assumptions will be used as a
+
+ platform from which the automated solution will be designed.
 
 ```
 </details>
 
 ### CCU_article
 
-- **Text Similarity:** 0.9265
-- **Visual Average:** 0.9478
-- **Overall Score:** 0.9497
+- **Text Similarity:** 0.9262
+- **Visual Average:** 0.9477
+- **Overall Score:** 0.9496
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6551904 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6551920 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -862,10 +860,10 @@ Text content: ✅ Identical
 ### Class News
 
 - **Text Similarity:** 0.9959
-- **Visual Average:** 0.9115
-- **Overall Score:** 0.963
+- **Visual Average:** 0.8911
+- **Overall Score:** 0.9548
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=345292 bytes, Reference=124498 bytes
+- **File Size:** MiniPdf=345292 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1092,70 +1090,18 @@ Text content: ✅ Identical
 
 ### Cooperation Agreement Template
 
-- **Text Similarity:** 0.9402
-- **Visual Average:** 0.9839
-- **Overall Score:** 0.9696
+- **Text Similarity:** 0.9802
+- **Visual Average:** 0.9846
+- **Overall Score:** 0.9859
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=4370267 bytes, Reference=259866 bytes
+- **File Size:** MiniPdf=4370222 bytes, Reference=139728 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Cooperation Agreement Template.pdf
 +++ reference/Cooperation Agreement Template.pdf
-@@ -2,28 +2,28 @@
- XXXXXXX 项目
-
- 合作协议
-
- （模板）
-
--甲    方：
-
--乙    方：
-
--丙    方：
-
-+甲 方：
-
-+乙 方：
-
-+丙 方：
-
- 签约地点：
-
--签订日期：       年    月     日
-
-+签订日期： 年 月 日
-
- — 1 —
-
- ---PAGE---
-
--甲    方：
-
--电    话：                  地  址：
-
--乙    方：
-
--电    话：                  地  址：
-
--丙    方：
-
--电    话：                  地  址：
-
-+甲 方：
-
-+电 话： 地 址：
-
-+乙 方：
-
-+电 话： 地 址：
-
-+丙 方：
-
-+电 话： 地 址：
-
+@@ -18,7 +18,7 @@
  经各主体单位友好协商，各主体单位本着互相合作的精神，自愿组成联合体，就《 XXXXX
 
  项目》（以下简称本项目）申报和执行中涉及的内容一致同意签订本协议如下：
@@ -1164,33 +1110,34 @@ Text content: ✅ Identical
 
 -由   （甲方）      作为承担单位，     （乙方、丙方）         作为合作单位，组成
 
--联合体进行联合申报本项目。承担单位负责本项目的一切组织、协调、申报工作，合作单位授权
++由 （甲方） 作为承担单位， （乙方、丙方） 作为合作单位，组成
 
--承担单位牵头申报本项目并协助提供申报所需的相关材料。承担单位在申报和执行本项目过程
+ 联合体进行联合申报本项目。承担单位负责本项目的一切组织、协调、申报工作，合作单位授权
 
--中，与本项目主办单位签署的一切文件和处理本项目有关的一切事务，联合体各方均予以承认并
+ 承担单位牵头申报本项目并协助提供申报所需的相关材料。承担单位在申报和执行本项目过程
 
--承担法律责任。承担单位成功申报本项目后，由联合体各方按照本协议各主体单位职责执行，项
+ 中，与本项目主办单位签署的一切文件和处理本项目有关的一切事务，联合体各方均予以承认并
 
--目经费由承担单位向本项目主办单位申请，再由联合体各方按照本协议约定进行分配。
-
-+由 （甲方） 作为承担单位， （乙方、丙方） 作为合作单位，组成联合体进行联
-
-+合申报本项目。承担单位负责本项目的一切组织、协调、申报工作，合作单位授权承担单位牵头
-
-+申报本项目并协助提供申报所需的相关材料。承担单位在申报和执行本项目过程中，与本项目主
-
-+办单位签署的一切文件和处理本项目有关的一切事务，联合体各方均予以承认并承担法律责任。
-
-+承担单位成功申报本项目后，由联合体各方按照本协议各主体单位职责执行，项目经费由承担单
-
-+位向本项目主办单位申请，再由联合体各方按照本协议约定进行分配。
-
- 二、任务分工
-
+@@ -28,9 +28,9 @@
  联合体各方同意本项目按照如下分工：
 
  （一）甲方负责：
+
+ 1.
+
+-2.
+
+ — 2 —
+
+ ---PAGE---
+
++2.
+
+ 3.
+
+ ......
+
+ （二）乙方负责
 
 @@ -38,7 +38,7 @@
  2.
@@ -1209,20 +1156,24 @@ Text content: ✅ Identical
 
  3.
 
-@@ -53,9 +53,9 @@
+@@ -52,10 +52,10 @@
+ 2.
+
  3.
 
  ......
 
++— 3 —
+
++---PAGE---
+
  （二）乙方的权利和义务
 
--1.
+ 1.
 
- — 3 —
+-— 3 —
 
- ---PAGE---
-
-+1.
+----PAGE---
 
  2.
 
@@ -1230,40 +1181,18 @@ Text content: ✅ Identical
 
  ......
 
-@@ -69,18 +69,18 @@
- 1.......
+@@ -76,11 +76,11 @@
+ 户    名：
 
- 2. 付款方式：采用支票、银行汇票、电汇三种形式。
-
- （二）乙方指定以下账号为唯一收款账号：
-
--户    名：
-
--账    号：
-
-+户 名：
-
-+账 号：
+ 账    号：
 
  开户银行：
-
- （三）丙方指定以下账号为唯一收款账号：
-
--户    名：
-
--账    号：
-
-+户 名：
-
-+账 号：
-
- 开户银行：
-
- 甲方向上述账号汇出款项即视为甲方已履行付款义务，在协议履行过程中，因乙方、丙方账
 
 +— 4 —
 
 +---PAGE---
+
+ 甲方向上述账号汇出款项即视为甲方已履行付款义务，在协议履行过程中，因乙方、丙方账
 
  户的原因（包括但不限于账号被注销、被冻结等）导致乙方、丙方无法收取款项的，由乙方、丙
 
@@ -1279,30 +1208,26 @@ Text content: ✅ Identical
 
  经披露其他方事先书面许可，不得向任何第三人或公众泄露也不得从中牟利。如因一方泄露其他
 
-@@ -97,9 +97,9 @@
- 九、合同生效
-
- 1 ）本合同在甲、乙、丙方法人代表或其授权代表签字盖章后生效。
-
+@@ -99,9 +99,9 @@
  2 ）合同一式 陆 份，其中甲方 贰 份，乙方 贰 份，丙方 贰 份。
 
--甲方（盖章）：                          乙方（盖章）：
+ 甲方（盖章）：                          乙方（盖章）：
 
--法定代表 / 授权代表（签字）：             法定代表 / 授权代表（签字）：
+ 法定代表 / 授权代表（签字）：             法定代表 / 授权代表（签字）：
 
 -日期：                                  日期：
-
-+甲方（盖章）： 乙方（盖章）：
-
-+法定代表 / 授权代表（签字）： 法定代表 / 授权代表（签字）：
-
-+日期： 日期：
 
  — 5 —
 
  ---PAGE---
 
++日期：                                  日期：
+
  丙方（盖章）：
+
+ 法定代表 / 授权代表（签字）：
+
+ 日期：
 
 ```
 </details>
@@ -1406,18 +1331,35 @@ Text content: ✅ Identical
 
 ### Invoice
 
-- **Text Similarity:** 0.9982
-- **Visual Average:** 0.9435
-- **Overall Score:** 0.9767
+- **Text Similarity:** 0.9963
+- **Visual Average:** 0.9381
+- **Overall Score:** 0.9738
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=473590 bytes, Reference=54261 bytes
+- **File Size:** MiniPdf=473626 bytes, Reference=65867 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Invoice.pdf
 +++ reference/Invoice.pdf
-@@ -19,5 +19,4 @@
+@@ -1,7 +1,6 @@
+ INVOICE
+
+ DATE: TO: Anjali Chaturvedi
+
+-Date
+
+-Extra Frame Photography
+
++Date Extra Frame Photography
+
+ 89 Pacific Ave
+
+ INVOICE #
+
+ San Francisco, CA
+
+@@ -19,5 +18,4 @@
  TOTAL 420.00
 
  MAKE ALL CHECKS PAYABLE TO CREATE & CO.
@@ -1437,7 +1379,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9755
 - **Overall Score:** 0.9716
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=4230934 bytes, Reference=229713 bytes
+- **File Size:** MiniPdf=4230927 bytes, Reference=229716 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1548,18 +1490,18 @@ Text content: ✅ Identical
 
 ### MODERN LIVING
 
-- **Text Similarity:** 0.857
-- **Visual Average:** 0.8057
-- **Overall Score:** 0.8651
+- **Text Similarity:** 0.8913
+- **Visual Average:** 0.8219
+- **Overall Score:** 0.8853
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=508054 bytes, Reference=212025 bytes
+- **File Size:** MiniPdf=508054 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/MODERN LIVING.pdf
 +++ reference/MODERN LIVING.pdf
-@@ -1,27 +1,27 @@
+@@ -1,28 +1,27 @@
  OCTOBER / 20XX / ISSUE #10
 
  M O D E R N  L I V I N G
@@ -1574,49 +1516,43 @@ Text content: ✅ Identical
 
  By Peyton Davis
 
-+TAKE A LOOK INSIDE
-
- Newsletters are periodicals used to advertise or update your subscribers
+-Newsletters are periodicals used to advertise or update your subscribers
 
 -TAKE A LOOK INSIDE
 
 -with information about your product or blog. They can be printed or emailed
 
-+with information about your product or blog. They can be printed or
++Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE
+
++information about your product or blog. They can be printed or emailed and
 
  Add description text here to get your
 
 -and are an excellent way to maintain regular contact with your subscribers
 
-+emailed and are an excellent way to maintain regular contact with your subscribers interested in your topic
-
-+subscribers and drive traffic to your site. Type the content of your
-
-+newsletter here.
-
-+PROPERTY TRENDS
-
-+Add description text here to get your
-
-+Newsletters are periodicals used to advertise or update your subscribers
-
- subscribers interested in your topic
+-subscribers interested in your topic
 
 -and drive traffic to your site. Type the content of your newsletter here.
 
--PROPERTY TRENDS
++are an excellent way to maintain regular contact with your subscribers and subscribers interested in your topic
+
++drive traffic to your site. Type the content of your newsletter here.
+
+ PROPERTY TRENDS
 
 -Newsletters are periodicals used to advertise or update your subscribers
 
 -with information about your product or blog. They are an excellent way to Add description text here to get your
 
--subscribers interested in your topic
++Newsletters are periodicals used to advertise or update your subscribers with
 
-+with information about your product or blog. They are an excellent way to
++Add description text here to get your
+
++information about your product or blog. They are an excellent way to
+
+ subscribers interested in your topic
 
  maintain regular contact with your subscribers. Type the content of your
-
-+ARE YOU READY TO LIST?
 
  newsletter here.
 
@@ -1624,21 +1560,48 @@ Text content: ✅ Identical
 
 -Newsletters are periodicals used to advertise or update your subscribers
 
++ARE YOU READY TO
+
++Newsletters are periodicals used to advertise or update your subscribers with LIST?
+
++information about your product or blog. Type the content of your newsletter
+
  Add description text here to get your
 
-+Newsletters are periodicals used to advertise or update your subscribers subscribers interested in your topic
+-with information about your product or blog. Type the content of your
 
- with information about your product or blog. Type the content of your
++here.
 
--subscribers interested in your topic
+ subscribers interested in your topic
 
- newsletter here.
+-newsletter here.
 
  ---PAGE---
 
  Property trends
 
-@@ -60,8 +60,7 @@
+ Take a look inside
+
+@@ -45,8 +44,7 @@
+ Newsletters are periodicals use to advertise or update your
+
+ excellent way to maintain regular contact
+
+ subscribers with information about your product or blog. Type
+
+-with your subscribers and drive traffic to
+
+-the content of your newsletter here.
+
++the content of your newsletter here. with your subscribers and drive traffic to
+
+ your site. Type the content of your
+
+ newsletter here.
+
+ Newsletters are periodicals used to
+
+@@ -60,8 +58,7 @@
  Newsletters are periodicals used to advertise or update your subscribers with
 
  Are you
@@ -1655,7 +1618,8 @@ Text content: ✅ Identical
 
  By Adrian King
 
- Newsletters are periodicals used to advertise or update your subscribers with
+ Newsletters are periodicals used to adver
+... (37 more characters)
 
 ```
 </details>
@@ -1663,10 +1627,10 @@ Text content: ✅ Identical
 ### nthu_article
 
 - **Text Similarity:** 0.875
-- **Visual Average:** 0.8713
-- **Overall Score:** 0.7985
+- **Visual Average:** 0.8707
+- **Overall Score:** 0.7983
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=8699105 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=8699150 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1879,52 +1843,18 @@ Text content: ✅ Identical
 
 ### OSCAR WARD
 
-- **Text Similarity:** 0.9941
-- **Visual Average:** 0.8637
-- **Overall Score:** 0.9431
+- **Text Similarity:** 0.9949
+- **Visual Average:** 0.8438
+- **Overall Score:** 0.9355
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=205247 bytes, Reference=62719 bytes
+- **File Size:** MiniPdf=205247 bytes, Reference=49023 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/OSCAR WARD.pdf
 +++ reference/OSCAR WARD.pdf
-@@ -7,14 +7,15 @@
- 123 45th Ave Chicago, IL
-
- Dear Chanchal,
-
- I sincerely appreciate the opportunity to interview and learn more about the role. Our
-
--conversation reinforced my enthusiasm for contributing to the team and bringing my expertise to
-
--the company’s ongoing initiatives. I found our discussion about future goals particularly
-
--inspiring, and it further solidified my excitement about this opportunity.
-
--The role’s focus on impactful work aligns with my professional background, and I look forward
-
--to the possibility of applying my skills to support the company’s growth. I am eager to bring my
-
--experience in driving efficiency and innovation to the team while continuing to develop and
-
--refine my abilities in a fast-paced environment.
-
-+conversation reinforced my enthusiasm for contributing to the team and bringing my
-
-+expertise to the company’s ongoing initiatives. I found our discussion about future goals
-
-+particularly inspiring, and it further solidified my excitement about this opportunity.
-
-+The role’s focus on impactful work aligns with my professional background, and I look
-
-+forward to the possibility of applying my skills to support the company’s growth. I am eager to
-
-+bring my experience in driving efficiency and innovation to the team while continuing to
-
-+develop and refine my abilities in a fast-paced environment.
-
+@@ -17,4 +17,5 @@
  Thank you again for your time and thoughtful discussion. I appreciate the chance to be
 
  considered and look forward to next steps. Please let me know if I can provide any additional
@@ -2167,17 +2097,69 @@ Text content: ✅ Identical
 ### Template for MSc Thesis
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9825
-- **Overall Score:** 0.993
+- **Visual Average:** 0.9831
+- **Overall Score:** 0.9932
 - **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=1183261 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=1183137 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Template for MSc Thesis.pdf
 +++ reference/Template for MSc Thesis.pdf
-@@ -100,14 +100,14 @@
+@@ -8,8 +8,9 @@
+ ➢ Font and Font size for the general text of the report: Times New Roman 12
+
+ ➢ LINE SPACING: 1.5
+
+ ➢ MARGINS: At least 2.5 inch on the binding side; 1 inch at top and bottom
+
+-➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The chapters
+
+-to be numbered in the Arabic numerals. The Page number should be bottom centered
+
++➢ PAGE NUMBERING: Roman numerals till the first page of first chapter. The
+
++chapters to be numbered in the Arabic numerals. The Page number should be
+
++bottom centered
+
+ ➢ PAPER TYPE AND SIZE: A4 size Executive Bond Paper
+
+ ➢ PRINTING: BOTH SIDE PRINTING
+
+ ➢ Number of copies of M.Sc. thesis to be submitted: 5 + number of thesis supervisor(s)
+
+@@ -86,10 +87,10 @@
+ I hereby certify that the work which is being presented in the thesis entitled <TITLE OF M.SC.
+
+ THESIS> in the partial fulfillment of the requirements for the award of the degree of MASTER OF
+
+ SCIENCE and submitted in the DEPARTMENT OF < NAME OF THE DEPARTMENT >, Indian
+
+-Institute of Technology Indore , is an authentic record of my own work carried out during the time period from
+
+-<Month and year of joining the M.Sc. program> to < Month and year of M.Sc. Thesis submission> under the
+
+-supervision of <Name of the Supervisor of M.Sc. thesis  #1, Designation, and Affiliation> and < Name of the
+
+-Supervisor of M.Sc. thesis #2, Designation, and Affiliation>
+
++Institute of Technology Indore , is an authentic record of my own work carried out during the time period
+
++from <Month and year of joining the M.Sc. program> to < Month and year of M.Sc. Thesis submission> under
+
++the supervision of <Name of the Supervisor of M.Sc. thesis  #1, Designation, and Affiliation> and < Name of
+
++the Supervisor of M.Sc. thesis #2, Designation, and Affiliation>
+
+ The matter presented in this thesis has not been submitted by me for the award of any other degree of
+
+ this or any other institute.
+
+ Signature of the student with date
+
+@@ -99,14 +100,14 @@
  knowledge.
 
  Signature of the Supervisor of Signature of the Supervisor of
@@ -2198,50 +2180,8 @@ Text content: ✅ Identical
 
 -Date:                                                                                                                                         Date:
 
--Signature of PSPC Member #1                                                                  Signature of PSPC Member #1
-
--Date:                                                                                                              Date:
-
-+< NAME OF THE M.Sc. STUDENT> has successfully given his/her M.Sc. Oral Examination held
-
-+on <Date of M.Sc. Oral Examination> .
-
-+Signature(s) of Supervisor(s) of MSc thesis Convener, DPGC
-
-+Date: Date:
-
-+Signature of PSPC Member #1 Signature of PSPC Member #1
-
-+Date: Date:
-
- -----------------------------------------------------------------------------------------------------------------------------------
-
- ---PAGE---
-
- ACKNOWLEDGEMENTS
-
-@@ -115,8 +115,9 @@
- DEDICATION (if any)
-
- ---PAGE---
-
- Abstract
-
--The abstract should be a brief summary of the M. Tech. thesis. It should not contain more than
-
--1-2 pages of A4 size with the text typed in 12 pt Times New Roman font having 1.5 spacing .
-
-+The abstract should be a brief summary of the M. Tech. thesis. It should not contain
-
-+more than 1-2 pages of A4 size with the text typed in 12 pt Times New Roman font having
-
-+1.5 spacing .
-
- ---PAGE---
-
- LIST OF PUBLICATIONS
-
- ---PAGE---
+-Signature of PSPC Member #1                                                                  Signature of PS
+... (1078 more characters)
 
 ```
 </details>
@@ -2254,6 +2194,6 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.7985)
+1. **nthu_article** (score: 0.7983)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
