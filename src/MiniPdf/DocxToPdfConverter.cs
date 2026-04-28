@@ -1170,6 +1170,7 @@ internal static class DocxToPdfConverter
         }
 
         // Render list bullet/number
+        float listLabelOverflow = 0f;
         if ((paragraph.IsBulletList || paragraph.IsNumberedList) && paragraph.ListText != null)
         {
             // Use the paragraph's first run font so the list label shares the same
@@ -1182,7 +1183,34 @@ internal static class DocxToPdfConverter
                 // Hanging indent from DOCX: number at outdented position, body text at indentLeft
                 var numberX = options.MarginLeft + paragraph.IndentLeft + paragraph.IndentFirstLine;
                 state.CurrentPage!.AddText(paragraph.ListText, numberX, state.CurrentY, fontSize, preferredFontName: listFont, bold: paragraph.ListTextBold);
-                // x and availableWidth remain unchanged (body text wraps at indentLeft)
+                // If the rendered list label would overflow the hanging-indent slot
+                // and overlap the body text, mirror Word's behaviour: advance the body
+                // to max(label_end, num_tab_pos). The num-aligned tab override only
+                // applies when the label is actually wider than the indent slot.
+                var labelWidth = EstimateTextWidth(paragraph.ListText, fontSize);
+                var labelEnd = numberX + labelWidth;
+                var bodyX = options.MarginLeft + paragraph.IndentLeft;
+                // Use a tolerance: EstimateTextWidth (Helvetica metrics) over-estimates
+                // CJK/Calibri-rendered ASCII digits by ~10% (digit width 556 vs ~500),
+                // so a 2pt floor avoids falsely triggering the num-tab snap for labels
+                // that fit the indent slot in actual rendered metrics (e.g. "5、","8、").
+                if (labelEnd > bodyX + 2f)
+                {
+                    var target = labelEnd;
+                    if (paragraph.TabStops != null)
+                    {
+                        foreach (var ts in paragraph.TabStops)
+                        {
+                            if (ts.Alignment == "num")
+                            {
+                                var tabbedX = options.MarginLeft + ts.Position;
+                                if (tabbedX > target) target = tabbedX;
+                                break;
+                            }
+                        }
+                    }
+                    listLabelOverflow = target - bodyX;
+                }
             }
             else
             {
@@ -1215,6 +1243,14 @@ internal static class DocxToPdfConverter
             : paragraph.IndentFirstLine;
         var firstLineX = x + effectiveFirstLineIndent;
         var firstLineWidth = availableWidth - effectiveFirstLineIndent;
+
+        // If the rendered list label overflowed its hanging-indent slot, push the
+        // first-line body text right to mirror Word's auto-numbered tab behaviour.
+        if (listLabelOverflow > 0f)
+        {
+            firstLineX += listLabelOverflow;
+            firstLineWidth -= listLabelOverflow;
+        }
 
         // For justified text (jc="both"), use the natural Calibri width for wrapping.
         // The per-character Calibri width table provides sufficient accuracy for
@@ -2081,8 +2117,11 @@ internal static class DocxToPdfConverter
                 int totalSpaces = 0;
                 foreach (var e in lineEntries)
                 {
-                    totalTextWidth += WrapEntryWidth(e, useCalibriJustify);
-                    totalSpaces += e.Text.Count(c => c == ' ');
+                    totalTextWidth += e.UlWidth ?? WrapEntryWidth(e, useCalibriJustify);
+                    // Whitespace-underline entries already encode their advance in UlWidth,
+                    // so don't double-count their spaces in the justify denominator.
+                    if (!e.UlWidth.HasValue)
+                        totalSpaces += e.Text.Count(c => c == ' ');
                 }
                 float justifyWordSpacing = 0;
                 if (!isLastLine && totalSpaces > 0)
@@ -2095,13 +2134,17 @@ internal static class DocxToPdfConverter
                 float entryX = lineEntries[0].X;
                 foreach (var e in lineEntries)
                 {
-                    var estW = WrapEntryWidth(e, useCalibriJustify);
+                    // For whitespace-only underlined runs in CJK context, UlWidth holds the
+                    // intended visual advance width (CJK half-width per space). Use it as
+                    // both the maxWidth (so Tz fills to that width) and the entryX advance
+                    // so the next run starts where the layout placed it.
+                    var estW = e.UlWidth ?? WrapEntryWidth(e, useCalibriJustify);
                     state.CurrentPage!.AddText(e.Text, entryX, e.Y, e.FontSize, e.Color,
                         bold: e.Bold, italic: e.Italic, underline: e.Underline, charSpacing: e.CharSpacing,
                         wordSpacing: justifyWordSpacing,
                         preferredFontName: e.FontName, maxWidth: estW, underlineWidth: e.UlWidth);
                     entryX += estW
-                        + justifyWordSpacing * e.Text.Count(c => c == ' ');
+                        + (e.UlWidth.HasValue ? 0 : justifyWordSpacing * e.Text.Count(c => c == ' '));
                 }
             }
             else
@@ -4462,17 +4505,24 @@ internal static class DocxToPdfConverter
 
     /// <summary>
     /// Returns true when a space should be inserted at <paramref name="boundaryIndex"/>
-    /// to implement OOXML autoSpaceDE (digit↔CJK ideograph spacing).
-    /// Word inserts spacing only at digit→CJK boundaries (e.g. "2025年" → "2025 年"),
-    /// not at CJK→digit boundaries (e.g. "年11" stays as-is).
+    /// to implement OOXML autoSpaceDN (digit↔CJK ideograph spacing).
+    /// Word inserts spacing in both directions: digit→CJK (e.g. "2025年" → "2025 年")
+    /// and CJK→digit (e.g. "共20" → "共 20"). Decimal sequences (e.g. "1.2") are
+    /// treated as a single numeric token so "1.2倍" → "1.2 倍" and "给1.2" → "给 1.2".
     /// </summary>
     private static bool ShouldInsertDigitCjkSpace(string text, int boundaryIndex)
     {
         if (boundaryIndex <= 0 || boundaryIndex >= text.Length) return false;
         var left = text[boundaryIndex - 1];
         var right = text[boundaryIndex];
-        // digit→CJK boundary only (not CJK→digit)
-        return IsAsciiDigit(left) && IsCjkIdeograph(right);
+        // digit→CJK or CJK→digit
+        if (IsAsciiDigit(left) && IsCjkIdeograph(right)) return true;
+        if (IsCjkIdeograph(left) && IsAsciiDigit(right)) return true;
+        // Allow decimal point inside a numeric token: CJK→'.'→digit (e.g. "给.1" - rare),
+        // and digit→'.'→CJK is handled by treating '.' as part of the number elsewhere.
+        // For "1.2倍": boundary at 倍 has left='2' (digit) → handled above.
+        // For "给1.2倍": boundary at '1' has left='给' (CJK), right='1' (digit) → handled.
+        return false;
     }
 
     private static bool ShouldInsertInterScriptSpace(string text, int boundaryIndex)
