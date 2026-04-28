@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-28T14:11:18.996475
+Generated: 2026-04-28T15:03:04.343253
 
 ## Summary
 
@@ -19,14 +19,14 @@ Generated: 2026-04-28T14:11:18.996475
 | 11 | 🟢 Invoice | ✅ | 0.9963 | 0.9017 | 1/1 | **0.9592** |
 | 12 | 🟢 issues66 | ✅ | 0.9745 | 0.9838 | 3/3 | **0.9833** |
 | 13 | 🟡 MODERN LIVING | ✅ | 0.8851 | 0.7827 | 2/2 | **0.8671** |
-| 14 | 🟡 nthu_article | ✅ | 0.855 | 0.864 | 19/20 | **0.7876** |
+| 14 | 🟡 nthu_article | ✅ | 0.8589 | 0.8649 | 19/20 | **0.7895** |
 | 15 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8666 | 1/1 | **0.9446** |
 | 16 | 🟢 SA8000 ch sample | ✅ | 0.9929 | 0.9629 | 2/2 | **0.9823** |
 | 17 | 🟢 Support_Letter | ✅ | 1.0 | 0.959 | 1/1 | **0.9836** |
 | 18 | 🟡 Template for MSc Thesis | ✅ | 1.0 | 0.8422 | 19/17 | **0.8369** |
 | 19 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8344**
+**Average Overall Score: 0.8345**
 
 ## Visual Comparison
 
@@ -305,7 +305,7 @@ Generated: 2026-04-28T14:11:18.996475
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 78.8%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.0%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1628,11 +1628,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.855
-- **Visual Average:** 0.864
-- **Overall Score:** 0.7876
+- **Text Similarity:** 0.8589
+- **Visual Average:** 0.8649
+- **Overall Score:** 0.7895
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=8694967 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=8696784 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1642,13 +1642,11 @@ Text content: ✅ Identical
 @@ -1,7 +1,7 @@
  國立清華大學中國文學系碩博士學位論文格式規範
 
--經111 年11 月09 日111 學年度第一學期第3 次系務會議通過
+ 經 111 年 11 月 09 日 111 學年度第一學期第 3 次系務會議通過
 
 -一、論文編印項目次序與頁碼編排
 
 -（一）紙本論文次序
-
-+經 111 年 11 月 09 日 111 學年度第一學期第 3 次系務會議通過
 
 +一、 論文編印項目次序與頁碼編排
 
@@ -1660,7 +1658,7 @@ Text content: ✅ Identical
 
  論文指導教授推薦書(影本)
 
-@@ -14,257 +14,273 @@
+@@ -14,106 +14,107 @@
  表次 List of Tables（可免）
 
  圖次 List of Figures（可免）
@@ -1721,11 +1719,11 @@ Text content: ✅ Identical
 
 -封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝（
 
--https://registra.site.nthu.edu.tw/var/file/211/1211/img/75/203558730.pdf ）。論文
+-https://registra.site.nthu.edu.tw/var/file/211/1211/img/75/203558730.pdf ）。論
 
--封面建議採用亮面雲彩紙。如下範例 A 、範例 B （ 可直接下載套用。此為教務
+-文封面建議採用亮面雲彩紙。如下範例 A 、範例 B （ 可直接下載套用。此為教
 
--處公布之格式）。
+-務處公布之格式）。
 
 +封面顏色：碩士論文 土黃色 ，上光、膠裝；博士論文 淺藍色 ，上光、膠裝
 
@@ -1737,21 +1735,15 @@ Text content: ✅ Identical
 
  三、論文指導教授推薦書、學位考試委員審定書、授權書
 
--推薦書、審定書自中文系網頁下載，相關規定請洽詢系辦。授權書包括：「
+ 推薦書、審定書自中文系網頁下載，相關規定請洽詢系辦。授權書包括：
 
--國立清華大學博碩士論文全文電子檔著作權授權書」、「國立清華大學博碩
+ 「國立清華大學博碩士論文全文電子檔著作權授權書」、「國立清華大學博
 
--士紙本論文著作權授權書」、「國家圖書館博碩士論文電子檔案上網授權
+ 碩士紙本論文著作權授權書」、「國家圖書館博碩士論文電子檔案上網授權
 
 -書」、「華藝博碩士論文全文電子學位論文授權書」，相關規定可參 附件一
 
 -，或國立清華大學圖書館博碩士論文全系統，常見問題第 7 項。
-
-+推薦書、審定書自中文系網頁下載，相關規定請洽詢系辦。授權書包括：
-
-+「國立清華大學博碩士論文全文電子檔著作權授權書」、「國立清華大學博
-
-+碩士紙本論文著作權授權書」、「國家圖書館博碩士論文電子檔案上網授權
 
 +書」、「華藝博碩士論文全文電子學位論文授權書」，相關規定可參 附件一 ，
 
@@ -1837,8 +1829,24 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--2，行距建議設定為 1.2 行 （ word 中選「多行」，設定
-... (17817 more characters)
+-2，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段「左
+
+-右對齊」。
+
+-（三）引文
+
++併改用中文新式標號。
+
++2 ，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段
+
++「左右對齊」。
+
++（三） 引文
+
+ 所有引文均須核對無誤。引文左縮排 3 字元，標楷體 12 級。若需特別
+
+-
+... (16013 more characters)
 
 ```
 </details>
@@ -2205,6 +2213,6 @@ Text content: ✅ Identical
 ### ⚠ Low-Score Test Cases (below 0.8)
 
 1. **Cooperation Agreement Template** (score: 0.7627)
-1. **nthu_article** (score: 0.7876)
+1. **nthu_article** (score: 0.7895)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

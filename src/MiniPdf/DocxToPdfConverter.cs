@@ -2471,7 +2471,7 @@ internal static class DocxToPdfConverter
                             // fitting character is included on the current line.
                             if (ci > 0 && (GetWrapCharWidth(pendingText[ci], useCalibri) == 1000 || GetWrapCharWidth(pendingText[ci - 1], useCalibri) == 1000))
                             {
-                                if (!IsNoStartChar(pendingText[ci]))
+                                if (!IsNoStartChar(pendingText[ci]) && !IsNoEndChar(pendingText[ci - 1]))
                                     breakAt = ci;
                             }
                             if (pendingX + accWidth > rightEdge && breakAt >= 0)
@@ -4062,7 +4062,8 @@ internal static class DocxToPdfConverter
                         if (GetWrapCharWidth(currentLine[ci], useCalibriWidths) == 1000 || GetWrapCharWidth(currentLine[ci - 1], useCalibriWidths) == 1000)
                         {
                             // Kinsoku: don't break before closing/trailing punctuation
-                            if (!IsNoStartChar(currentLine[ci]))
+                            // (no-start) or after opening/leading punctuation (no-end).
+                            if (!IsNoStartChar(currentLine[ci]) && !IsNoEndChar(currentLine[ci - 1]))
                                 breakAt = ci;
                         }
                         // Allow breaking after a hyphen (e.g. "020-88888888" → "020-" + "88888888")
@@ -4519,6 +4520,18 @@ internal static class DocxToPdfConverter
             or '\u300B' or '\u300D'  // 》」
             or '\u300F' or '\u3011'  // 』】
             or '\uFF3D' or '\uFF5D'; // ］｝
+
+    /// <summary>
+    /// CJK kinsoku: characters that must not end a line (opening/leading punctuation).
+    /// These characters are pushed to the next line so the opening bracket stays
+    /// attached to the text it introduces.
+    /// </summary>
+    private static bool IsNoEndChar(char ch) =>
+        ch is '\uFF08' or '\u3008'   // （〈
+            or '\u300A' or '\u300C'  // 《「
+            or '\u300E' or '\u3010'  // 『【
+            or '\uFF3B' or '\uFF5B'  // ［｛
+            or '\u3014';             // 〔
 
     /// <summary>
     /// Inserts a space between Latin-script words and CJK characters to approximate
