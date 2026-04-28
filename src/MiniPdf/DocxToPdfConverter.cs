@@ -1626,6 +1626,32 @@ internal static class DocxToPdfConverter
                 var lineX = i == 0 ? firstLineX : x;
                 var lineW = i == 0 ? firstLineWidth : availableWidth;
 
+                // Leading whitespace from a `<w:tab/>` at paragraph start was
+                // expanded to spaces by ExpandTabs inside WordWrap. For
+                // justified paragraphs the per-space word-spacing stretch
+                // would then inflate what is meant to be a fixed first-line
+                // tab indent, producing an oversized indent and packing more
+                // text onto line 0 (e.g. the simple-path "matter presented"
+                // declaration paragraph in IIT MSc thesis template).
+                // Convert the leading whitespace into a positional advance so
+                // it renders at its intended fixed width.
+                if (paragraph.Alignment == "both" && i == 0
+                    && line.Length > 0 && line[0] == ' '
+                    && mergedRuns.Count > 0
+                    && !string.IsNullOrEmpty(mergedRuns[0].Text)
+                    && mergedRuns[0].Text[0] == '\t')
+                {
+                    int leadCount = 0;
+                    while (leadCount < line.Length && line[leadCount] == ' ') leadCount++;
+                    if (leadCount < line.Length)
+                    {
+                        var leadSpaceW = runFontSize * GetWrapCharWidth(' ', paraUseCalibri) / 1000f;
+                        lineX += leadCount * leadSpaceW;
+                        lineW -= leadCount * leadSpaceW;
+                        line = line.Substring(leadCount);
+                    }
+                }
+
                 // Use Tz compression to fit Helvetica text into Calibri-width lines\n only when text actually exceeds available width
                 var renderMaxWidth = tabLeaderMaxWidth;
                 // For center/right alignment, use Helvetica widths for positioning
@@ -2239,12 +2265,21 @@ internal static class DocxToPdfConverter
                     // both the maxWidth (so Tz fills to that width) and the entryX advance
                     // so the next run starts where the layout placed it.
                     var estW = e.UlWidth ?? WrapEntryWidth(e, useCalibriJustify);
+                    // Per-entry justification target: include this entry's share of the
+                    // line-level justify stretch (ws × spaces in this entry) so PdfWriter
+                    // distributes the stretch evenly across the entry's spaces, instead
+                    // of leaving an empty gap at the run boundary. Without this, mixed
+                    // bold/regular justified lines show wide visual gaps at every run
+                    // transition (e.g. "Indore , is", "STUDENT> has", "Examination> .").
+                    var entrySpaces = e.UlWidth.HasValue ? 0 : e.Text.Count(c => c == ' ');
+                    var entryTarget = e.UlWidth.HasValue
+                        ? estW
+                        : estW + justifyWordSpacing * entrySpaces;
                     state.CurrentPage!.AddText(e.Text, entryX, e.Y, e.FontSize, e.Color,
                         bold: e.Bold, italic: e.Italic, underline: e.Underline, charSpacing: e.CharSpacing,
                         wordSpacing: justifyWordSpacing,
-                        preferredFontName: e.FontName, maxWidth: estW, underlineWidth: e.UlWidth);
-                    entryX += estW
-                        + (e.UlWidth.HasValue ? 0 : justifyWordSpacing * e.Text.Count(c => c == ' '));
+                        preferredFontName: e.FontName, maxWidth: entryTarget, underlineWidth: e.UlWidth);
+                    entryX += entryTarget;
                 }
             }
             else
@@ -2415,6 +2450,21 @@ internal static class DocxToPdfConverter
                 var effectiveSpaceWidth = (isWhitespaceUnderline || segmentHasCjk)
                     ? runFs * 500f / 1000f
                     : runFs * GetWrapCharWidth(' ', useCalibri) / 1000f;
+
+                // Preserve leading whitespace at paragraph start (e.g. a `<w:tab/>`
+                // in its own run expanded by ExpandTabs to spaces). The inter-word
+                // accumulator below otherwise drops these because pendingText is
+                // empty and currentX equals baseX, collapsing the first-line indent.
+                if (isFirstLine && currentX <= baseX + 0.1f
+                    && segment.Length > 0 && segment[0] == ' ')
+                {
+                    int leadCount = 0;
+                    while (leadCount < segment.Length && segment[leadCount] == ' ') leadCount++;
+                    var leadSpaceW = runFs * GetWrapCharWidth(' ', useCalibri) / 1000f;
+                    currentX += leadCount * leadSpaceW;
+                    segment = segment.Substring(leadCount);
+                    if (string.IsNullOrEmpty(segment)) continue;
+                }
 
                 // Split segment by spaces for word wrapping, but accumulate text
                 // per line to produce fewer AddText calls (improves text extraction).
@@ -4064,7 +4114,12 @@ internal static class DocxToPdfConverter
             return [""];
 
         // When tab stops exceed available width, extend effective line width
-        bool hasDefaultTabs = (tabStops is null or { Count: 0 }) && text.Contains('\t');
+        // A purely *leading* tab is a first-line indent (handled positionally by
+        // the caller in the simple/multi-format paths) — it should NOT extend
+        // the wrap width or the rest of the paragraph would be forced onto a
+        // single line. Only treat embedded/trailing tabs as "tab-aligned" content
+        // that Word doesn't wrap.
+        bool hasDefaultTabs = (tabStops is null or { Count: 0 }) && text.TrimStart('\t').Contains('\t');
         if (tabStops is { Count: > 0 })
         {
             var maxTabPos = tabStops.Max(ts => ts.Position);
