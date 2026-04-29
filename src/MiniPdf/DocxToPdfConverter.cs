@@ -4523,7 +4523,15 @@ internal static class DocxToPdfConverter
             || fontName.Contains("NSimSun", StringComparison.OrdinalIgnoreCase)
             || fontName.Contains("FangSong", StringComparison.OrdinalIgnoreCase)
             || fontName.Contains("DengXian", StringComparison.OrdinalIgnoreCase)
-            || fontName.Contains("Microsoft YaHei", StringComparison.OrdinalIgnoreCase);
+            || fontName.Contains("Microsoft YaHei", StringComparison.OrdinalIgnoreCase)
+            // Native Chinese aliases for the same families (DOCX often stores the
+            // localized name rather than the Latin transliteration).
+            || fontName.Contains("宋体", StringComparison.Ordinal)
+            || fontName.Contains("黑体", StringComparison.Ordinal)
+            || fontName.Contains("楷体", StringComparison.Ordinal)
+            || fontName.Contains("仿宋", StringComparison.Ordinal)
+            || fontName.Contains("等线", StringComparison.Ordinal)
+            || fontName.Contains("微软雅黑", StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -4626,7 +4634,16 @@ internal static class DocxToPdfConverter
             || fontName.Contains("Microsoft YaHei", StringComparison.OrdinalIgnoreCase)
             || fontName.Contains("Microsoft JhengHei", StringComparison.OrdinalIgnoreCase)
             || fontName.Contains("Yu Gothic", StringComparison.OrdinalIgnoreCase)
-            || fontName.Contains("Yu Mincho", StringComparison.OrdinalIgnoreCase);
+            || fontName.Contains("Yu Mincho", StringComparison.OrdinalIgnoreCase)
+            // Native Chinese aliases for the same families.
+            || fontName.Contains("宋体", StringComparison.Ordinal)
+            || fontName.Contains("黑体", StringComparison.Ordinal)
+            || fontName.Contains("楷体", StringComparison.Ordinal)
+            || fontName.Contains("仿宋", StringComparison.Ordinal)
+            || fontName.Contains("等线", StringComparison.Ordinal)
+            || fontName.Contains("微软雅黑", StringComparison.Ordinal)
+            || fontName.Contains("微软正黑体", StringComparison.Ordinal)
+            || fontName.Contains("标楷体", StringComparison.Ordinal);
     }
 
     /// <summary>

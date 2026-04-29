@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-28T13:54:09.553017
+Generated: 2026-04-30T01:32:30.529034
 
 ## Summary
 
@@ -9,185 +9,185 @@ Generated: 2026-04-28T13:54:09.553017
 | 1 | 🟢 docx_classic01_single_paragraph | ✅ | 1.0 | 0.9945 | 1/1 | **0.9978** |
 | 2 | 🟢 docx_classic02_multiple_paragraphs | ✅ | 1.0 | 0.9797 | 1/1 | **0.9919** |
 | 3 | 🟢 docx_classic03_headings | ✅ | 1.0 | 0.9908 | 1/1 | **0.9963** |
-| 4 | 🟢 docx_classic04_bold_italic | ✅ | 1.0 | 0.9977 | 1/1 | **0.9991** |
+| 4 | 🟢 docx_classic04_bold_italic | ✅ | 1.0 | 0.9975 | 1/1 | **0.999** |
 | 5 | 🟢 docx_classic05_font_sizes | ✅ | 1.0 | 0.9896 | 1/1 | **0.9958** |
 | 6 | 🟢 docx_classic06_font_colors | ✅ | 1.0 | 0.9984 | 1/1 | **0.9994** |
 | 7 | 🟢 docx_classic07_alignment | ✅ | 1.0 | 0.9854 | 1/1 | **0.9942** |
 | 8 | 🟢 docx_classic08_bullet_list | ✅ | 1.0 | 0.9961 | 1/1 | **0.9984** |
 | 9 | 🟢 docx_classic09_numbered_list | ✅ | 1.0 | 0.993 | 1/1 | **0.9972** |
-| 10 | 🟢 docx_classic10_simple_table | ✅ | 1.0 | 0.9829 | 1/1 | **0.9932** |
-| 11 | 🟢 docx_classic11_table_with_shading | ✅ | 1.0 | 0.9362 | 1/1 | **0.9745** |
-| 12 | 🟢 docx_classic12_merged_cells_table | ✅ | 1.0 | 0.9846 | 1/1 | **0.9938** |
-| 13 | 🟡 docx_classic13_long_document | ✅ | 1.0 | 0.6821 | 3/4 | **0.7728** |
-| 14 | 🟢 docx_classic14_mixed_content | ✅ | 1.0 | 0.9659 | 1/1 | **0.9864** |
-| 15 | 🟢 docx_classic15_indentation | ✅ | 1.0 | 0.9831 | 1/1 | **0.9932** |
-| 16 | 🟢 docx_classic16_line_spacing | ✅ | 1.0 | 0.9869 | 1/1 | **0.9948** |
+| 10 | 🟢 docx_classic10_simple_table | ✅ | 1.0 | 0.9887 | 1/1 | **0.9955** |
+| 11 | 🟢 docx_classic11_table_with_shading | ✅ | 1.0 | 0.9624 | 1/1 | **0.985** |
+| 12 | 🟢 docx_classic12_merged_cells_table | ✅ | 1.0 | 0.99 | 1/1 | **0.996** |
+| 13 | 🟡 docx_classic13_long_document | ✅ | 1.0 | 0.682 | 3/4 | **0.7728** |
+| 14 | 🟢 docx_classic14_mixed_content | ✅ | 1.0 | 0.9705 | 1/1 | **0.9882** |
+| 15 | 🟢 docx_classic15_indentation | ✅ | 1.0 | 0.9833 | 1/1 | **0.9933** |
+| 16 | 🟢 docx_classic16_line_spacing | ✅ | 1.0 | 0.9845 | 1/1 | **0.9938** |
 | 17 | 🟢 docx_classic17_page_break | ✅ | 1.0 | 0.9969 | 3/3 | **0.9988** |
-| 18 | 🟢 docx_classic18_embedded_image | ✅ | 1.0 | 0.9909 | 1/1 | **0.9964** |
-| 19 | 🟢 docx_classic19_multiple_images | ✅ | 1.0 | 0.9901 | 1/1 | **0.996** |
-| 20 | 🟢 docx_classic20_table_with_many_rows | ✅ | 1.0 | 0.9476 | 1/1 | **0.979** |
-| 21 | 🟢 docx_classic21_nested_lists | ✅ | 1.0 | 0.9924 | 1/1 | **0.997** |
-| 22 | 🟢 docx_classic22_horizontal_rule | ✅ | 1.0 | 0.9915 | 1/1 | **0.9966** |
-| 23 | 🟢 docx_classic23_mixed_formatting_runs | ✅ | 1.0 | 0.9967 | 1/1 | **0.9987** |
+| 18 | 🟢 docx_classic18_embedded_image | ✅ | 1.0 | 0.9931 | 1/1 | **0.9972** |
+| 19 | 🟢 docx_classic19_multiple_images | ✅ | 1.0 | 0.9939 | 1/1 | **0.9976** |
+| 20 | 🟢 docx_classic20_table_with_many_rows | ✅ | 1.0 | 0.9622 | 1/1 | **0.9849** |
+| 21 | 🟢 docx_classic21_nested_lists | ✅ | 1.0 | 0.9926 | 1/1 | **0.997** |
+| 22 | 🟢 docx_classic22_horizontal_rule | ✅ | 1.0 | 0.9914 | 1/1 | **0.9966** |
+| 23 | 🟢 docx_classic23_mixed_formatting_runs | ✅ | 1.0 | 0.9966 | 1/1 | **0.9986** |
 | 24 | 🟢 docx_classic24_two_column_table_layout | ✅ | 0.7907 | 0.9904 | 1/1 | **0.9124** |
-| 25 | 🟢 docx_classic25_title_and_subtitle | ✅ | 1.0 | 0.9926 | 2/2 | **0.997** |
-| 26 | 🟢 docx_classic26_table_alignment | ✅ | 1.0 | 0.9856 | 1/1 | **0.9942** |
-| 27 | 🟢 docx_classic27_long_paragraph_wrapping | ✅ | 1.0 | 0.9183 | 1/1 | **0.9673** |
-| 28 | 🟢 docx_classic28_special_characters | ✅ | 0.9948 | 0.9931 | 1/1 | **0.9952** |
-| 29 | 🟢 docx_classic29_table_with_image | ✅ | 0.9728 | 0.9737 | 1/1 | **0.9786** |
-| 30 | 🟢 docx_classic30_comprehensive_report | ✅ | 1.0 | 0.9138 | 3/3 | **0.9655** |
-| 31 | 🟢 docx_classic31_product_card_with_image | ✅ | 1.0 | 0.9559 | 1/1 | **0.9824** |
-| 32 | 🟢 docx_classic31_strikethrough_text | ✅ | 1.0 | 0.9935 | 1/1 | **0.9974** |
-| 33 | 🟢 docx_classic32_company_logo_header | ✅ | 1.0 | 0.9385 | 1/1 | **0.9754** |
+| 25 | 🟢 docx_classic25_title_and_subtitle | ✅ | 1.0 | 0.9929 | 2/2 | **0.9972** |
+| 26 | 🟢 docx_classic26_table_alignment | ✅ | 1.0 | 0.9898 | 1/1 | **0.9959** |
+| 27 | 🟢 docx_classic27_long_paragraph_wrapping | ✅ | 1.0 | 0.9199 | 1/1 | **0.968** |
+| 28 | 🟢 docx_classic28_special_characters | ✅ | 0.9948 | 0.993 | 1/1 | **0.9951** |
+| 29 | 🟢 docx_classic29_table_with_image | ✅ | 0.9728 | 0.9829 | 1/1 | **0.9823** |
+| 30 | 🟢 docx_classic30_comprehensive_report | ✅ | 1.0 | 0.7807 | 3/3 | **0.9123** |
+| 31 | 🟢 docx_classic31_product_card_with_image | ✅ | 1.0 | 0.9506 | 1/1 | **0.9802** |
+| 32 | 🟢 docx_classic31_strikethrough_text | ✅ | 1.0 | 0.9932 | 1/1 | **0.9973** |
+| 33 | 🟢 docx_classic32_company_logo_header | ✅ | 1.0 | 0.9535 | 1/1 | **0.9814** |
 | 34 | 🟢 docx_classic32_superscript_subscript | ✅ | 0.9762 | 0.996 | 1/1 | **0.9889** |
-| 35 | 🟢 docx_classic33_highlighted_text | ✅ | 1.0 | 0.9719 | 1/1 | **0.9888** |
-| 36 | 🟢 docx_classic33_two_products_side_by_side | ✅ | 1.0 | 0.9609 | 1/1 | **0.9844** |
-| 37 | 🔴 docx_classic34_employee_directory_with_photo | ✅ | 1.0 | 0.4849 | 1/2 | **0.694** |
-| 38 | 🟢 docx_classic34_paragraph_borders | ✅ | 1.0 | 0.9809 | 1/1 | **0.9924** |
-| 39 | 🟢 docx_classic35_inventory_with_product_photos | ✅ | 1.0 | 0.9588 | 2/2 | **0.9835** |
-| 40 | 🟡 docx_classic35_tab_stops | ✅ | 0.64 | 0.9914 | 1/1 | **0.8526** |
-| 41 | 🟢 docx_classic36_invoice_with_logo | ✅ | 1.0 | 0.9545 | 1/1 | **0.9818** |
-| 42 | 🟢 docx_classic36_wide_table | ✅ | 1.0 | 0.9733 | 1/1 | **0.9893** |
-| 43 | 🟢 docx_classic37_nested_table | ✅ | 0.9333 | 0.9864 | 1/1 | **0.9679** |
-| 44 | 🟢 docx_classic37_real_estate_listing | ✅ | 1.0 | 0.9377 | 1/1 | **0.9751** |
-| 45 | 🟢 docx_classic38_restaurant_menu_with_photos | ✅ | 1.0 | 0.9679 | 2/2 | **0.9872** |
-| 46 | 🟢 docx_classic38_table_column_widths | ✅ | 0.8485 | 0.9771 | 1/1 | **0.9302** |
-| 47 | 🟢 docx_classic39_cover_page_with_image | ✅ | 1.0 | 0.9856 | 2/2 | **0.9942** |
-| 48 | 🟢 docx_classic39_financial_report | ✅ | 1.0 | 0.9643 | 1/1 | **0.9857** |
-| 49 | 🟢 docx_classic40_product_catalog_with_images | ✅ | 1.0 | 0.9455 | 1/1 | **0.9782** |
-| 50 | 🟢 docx_classic40_resume | ✅ | 1.0 | 0.9655 | 1/1 | **0.9862** |
+| 35 | 🟢 docx_classic33_highlighted_text | ✅ | 1.0 | 0.9717 | 1/1 | **0.9887** |
+| 36 | 🟢 docx_classic33_two_products_side_by_side | ✅ | 1.0 | 0.9527 | 1/1 | **0.9811** |
+| 37 | 🔴 docx_classic34_employee_directory_with_photo | ✅ | 1.0 | 0.4822 | 1/2 | **0.6929** |
+| 38 | 🟢 docx_classic34_paragraph_borders | ✅ | 1.0 | 0.9793 | 1/1 | **0.9917** |
+| 39 | 🟢 docx_classic35_inventory_with_product_photos | ✅ | 1.0 | 0.9802 | 2/2 | **0.9921** |
+| 40 | 🟡 docx_classic35_tab_stops | ✅ | 0.64 | 0.9913 | 1/1 | **0.8525** |
+| 41 | 🟢 docx_classic36_invoice_with_logo | ✅ | 1.0 | 0.9629 | 1/1 | **0.9852** |
+| 42 | 🟢 docx_classic36_wide_table | ✅ | 1.0 | 0.9809 | 1/1 | **0.9924** |
+| 43 | 🟢 docx_classic37_nested_table | ✅ | 0.963 | 0.9896 | 1/1 | **0.981** |
+| 44 | 🟢 docx_classic37_real_estate_listing | ✅ | 1.0 | 0.9468 | 1/1 | **0.9787** |
+| 45 | 🟢 docx_classic38_restaurant_menu_with_photos | ✅ | 1.0 | 0.9608 | 2/2 | **0.9843** |
+| 46 | 🟢 docx_classic38_table_column_widths | ✅ | 0.8485 | 0.981 | 1/1 | **0.9318** |
+| 47 | 🟢 docx_classic39_cover_page_with_image | ✅ | 1.0 | 0.9858 | 2/2 | **0.9943** |
+| 48 | 🟢 docx_classic39_financial_report | ✅ | 1.0 | 0.9728 | 1/1 | **0.9891** |
+| 49 | 🟢 docx_classic40_product_catalog_with_images | ✅ | 1.0 | 0.9729 | 1/1 | **0.9892** |
+| 50 | 🟢 docx_classic40_resume | ✅ | 1.0 | 0.9712 | 1/1 | **0.9885** |
 | 51 | 🟢 docx_classic41_business_letter | ✅ | 0.9893 | 0.9819 | 1/1 | **0.9885** |
-| 52 | 🟢 docx_classic41_newsletter_with_hero_image | ✅ | 1.0 | 0.9156 | 1/1 | **0.9662** |
-| 53 | 🟢 docx_classic42_chart_image_with_data | ✅ | 1.0 | 0.9571 | 1/1 | **0.9828** |
-| 54 | 🟢 docx_classic42_meeting_minutes | ✅ | 0.9903 | 0.9415 | 1/1 | **0.9727** |
-| 55 | 🟢 docx_classic43_event_flyer_with_banner | ✅ | 1.0 | 0.9068 | 1/1 | **0.9627** |
-| 56 | 🟢 docx_classic43_invoice_document | ✅ | 0.9775 | 0.9335 | 1/1 | **0.9644** |
-| 57 | 🟢 docx_classic44_dashboard_with_kpi_image | ✅ | 1.0 | 0.96 | 1/1 | **0.984** |
-| 58 | 🟢 docx_classic44_memo | ✅ | 1.0 | 0.9737 | 1/1 | **0.9895** |
-| 59 | 🟢 docx_classic45_certificate_with_seal | ✅ | 1.0 | 0.9676 | 1/1 | **0.987** |
-| 60 | 🟢 docx_classic45_project_plan | ✅ | 1.0 | 0.934 | 1/1 | **0.9736** |
-| 61 | 🟢 docx_classic46_comparison_table | ✅ | 1.0 | 0.9366 | 1/1 | **0.9746** |
-| 62 | 🟢 docx_classic46_product_image_grid | ✅ | 1.0 | 0.9583 | 1/1 | **0.9833** |
-| 63 | 🟢 docx_classic47_data_dictionary | ✅ | 1.0 | 0.916 | 1/1 | **0.9664** |
-| 64 | 🟢 docx_classic47_news_article_with_hero_image | ✅ | 1.0 | 0.9222 | 1/1 | **0.9689** |
-| 65 | 🟢 docx_classic48_multi_level_headings | ✅ | 1.0 | 0.9734 | 3/3 | **0.9894** |
-| 66 | 🟢 docx_classic48_task_list_with_status_icons | ✅ | 1.0 | 0.9335 | 1/1 | **0.9734** |
-| 67 | 🟢 docx_classic49_cjk_document | ✅ | 0.9849 | 0.9695 | 1/1 | **0.9818** |
-| 68 | 🟢 docx_classic49_wide_panoramic_banner | ✅ | 1.0 | 0.8284 | 1/1 | **0.9314** |
-| 69 | 🟡 docx_classic50_long_table_with_formatting | ✅ | 0.7465 | 0.8071 | 2/2 | **0.8214** |
-| 70 | 🟢 docx_classic50_portrait_tall_image | ✅ | 1.0 | 0.9693 | 1/1 | **0.9877** |
-| 71 | 🟢 docx_classic51_step_by_step_with_images | ✅ | 1.0 | 0.9654 | 1/1 | **0.9862** |
-| 72 | 🟢 docx_classic51_underline_styles | ✅ | 1.0 | 0.995 | 1/1 | **0.998** |
-| 73 | 🟢 docx_classic52_before_after_comparison | ✅ | 1.0 | 0.9485 | 1/1 | **0.9794** |
-| 74 | 🟢 docx_classic52_spacing_before_after | ✅ | 1.0 | 0.9796 | 1/1 | **0.9918** |
-| 75 | 🟢 docx_classic53_color_swatch_palette | ✅ | 1.0 | 0.954 | 1/1 | **0.9816** |
-| 76 | 🟢 docx_classic53_table_merged_complex | ✅ | 1.0 | 0.936 | 1/1 | **0.9744** |
-| 77 | 🟢 docx_classic54_multi_font_family | ✅ | 1.0 | 0.9903 | 1/1 | **0.9961** |
-| 78 | 🟢 docx_classic54_travel_destination_cards | ✅ | 1.0 | 0.9582 | 1/1 | **0.9833** |
-| 79 | 🟢 docx_classic55_background_shading_paragraph | ✅ | 1.0 | 0.9387 | 1/1 | **0.9755** |
-| 80 | 🟢 docx_classic55_lab_results_with_image | ✅ | 1.0 | 0.8767 | 1/1 | **0.9507** |
-| 81 | 🔴 docx_classic56_images_and_tables_mixed | ✅ | 1.0 | 0.4356 | 2/1 | **0.6742** |
-| 82 | 🟢 docx_classic56_software_screenshot_features | ✅ | 1.0 | 0.9414 | 1/1 | **0.9766** |
-| 83 | 🟢 docx_classic57_right_to_left_text | ✅ | 0.9328 | 0.9923 | 1/1 | **0.97** |
-| 84 | 🔴 docx_classic57_sports_results_with_logos | ✅ | 1.0 | 0.4743 | 2/1 | **0.6897** |
-| 85 | 🟡 docx_classic58_dense_paragraph_document | ✅ | 1.0 | 0.7605 | 6/7 | **0.8042** |
-| 86 | 🟢 docx_classic58_report_with_footer_image | ✅ | 1.0 | 0.9046 | 1/1 | **0.9618** |
-| 87 | 🟢 docx_classic59_numbered_and_bullet_mixed | ✅ | 0.9948 | 0.9752 | 1/1 | **0.988** |
-| 88 | 🟢 docx_classic59_nutrition_label_with_image | ✅ | 1.0 | 0.9462 | 1/1 | **0.9785** |
-| 89 | 🟢 docx_classic60_comprehensive_styled_report | ✅ | 1.0 | 0.9212 | 3/3 | **0.9685** |
-| 90 | 🟢 docx_classic60_project_status_with_milestones | ✅ | 1.0 | 0.9241 | 2/2 | **0.9696** |
-| 91 | 🟢 docx_classic61_header_and_footer | ✅ | 1.0 | 0.955 | 1/1 | **0.982** |
-| 92 | 🟢 docx_classic62_footnote_references | ✅ | 1.0 | 0.9753 | 1/1 | **0.9901** |
+| 52 | 🟢 docx_classic41_newsletter_with_hero_image | ✅ | 1.0 | 0.9205 | 1/1 | **0.9682** |
+| 53 | 🟢 docx_classic42_chart_image_with_data | ✅ | 1.0 | 0.9558 | 1/1 | **0.9823** |
+| 54 | 🟢 docx_classic42_meeting_minutes | ✅ | 0.9903 | 0.9608 | 1/1 | **0.9804** |
+| 55 | 🟢 docx_classic43_event_flyer_with_banner | ✅ | 1.0 | 0.9182 | 1/1 | **0.9673** |
+| 56 | 🟢 docx_classic43_invoice_document | ✅ | 0.9775 | 0.9437 | 1/1 | **0.9685** |
+| 57 | 🟢 docx_classic44_dashboard_with_kpi_image | ✅ | 1.0 | 0.9584 | 1/1 | **0.9834** |
+| 58 | 🟢 docx_classic44_memo | ✅ | 1.0 | 0.9725 | 1/1 | **0.989** |
+| 59 | 🟢 docx_classic45_certificate_with_seal | ✅ | 1.0 | 0.9728 | 1/1 | **0.9891** |
+| 60 | 🟢 docx_classic45_project_plan | ✅ | 1.0 | 0.9471 | 1/1 | **0.9788** |
+| 61 | 🟢 docx_classic46_comparison_table | ✅ | 1.0 | 0.9361 | 1/1 | **0.9744** |
+| 62 | 🟢 docx_classic46_product_image_grid | ✅ | 1.0 | 0.9479 | 1/1 | **0.9792** |
+| 63 | 🟢 docx_classic47_data_dictionary | ✅ | 1.0 | 0.9415 | 1/1 | **0.9766** |
+| 64 | 🟢 docx_classic47_news_article_with_hero_image | ✅ | 1.0 | 0.9195 | 1/1 | **0.9678** |
+| 65 | 🟢 docx_classic48_multi_level_headings | ✅ | 1.0 | 0.9727 | 3/3 | **0.9891** |
+| 66 | 🟢 docx_classic48_task_list_with_status_icons | ✅ | 1.0 | 0.9346 | 1/1 | **0.9738** |
+| 67 | 🟢 docx_classic49_cjk_document | ✅ | 0.9849 | 0.9676 | 1/1 | **0.981** |
+| 68 | 🟢 docx_classic49_wide_panoramic_banner | ✅ | 1.0 | 0.8979 | 1/1 | **0.9592** |
+| 69 | 🟡 docx_classic50_long_table_with_formatting | ✅ | 0.7465 | 0.612 | 2/2 | **0.7434** |
+| 70 | 🟢 docx_classic50_portrait_tall_image | ✅ | 1.0 | 0.9668 | 1/1 | **0.9867** |
+| 71 | 🟢 docx_classic51_step_by_step_with_images | ✅ | 1.0 | 0.9525 | 1/1 | **0.981** |
+| 72 | 🟢 docx_classic51_underline_styles | ✅ | 1.0 | 0.9952 | 1/1 | **0.9981** |
+| 73 | 🟢 docx_classic52_before_after_comparison | ✅ | 1.0 | 0.94 | 1/1 | **0.976** |
+| 74 | 🟢 docx_classic52_spacing_before_after | ✅ | 1.0 | 0.9766 | 1/1 | **0.9906** |
+| 75 | 🟢 docx_classic53_color_swatch_palette | ✅ | 1.0 | 0.9484 | 1/1 | **0.9794** |
+| 76 | 🟢 docx_classic53_table_merged_complex | ✅ | 1.0 | 0.9406 | 1/1 | **0.9762** |
+| 77 | 🟢 docx_classic54_multi_font_family | ✅ | 1.0 | 0.9896 | 1/1 | **0.9958** |
+| 78 | 🟢 docx_classic54_travel_destination_cards | ✅ | 1.0 | 0.9701 | 1/1 | **0.988** |
+| 79 | 🟢 docx_classic55_background_shading_paragraph | ✅ | 1.0 | 0.9395 | 1/1 | **0.9758** |
+| 80 | 🟢 docx_classic55_lab_results_with_image | ✅ | 1.0 | 0.9451 | 1/1 | **0.978** |
+| 81 | 🟢 docx_classic56_images_and_tables_mixed | ✅ | 1.0 | 0.9547 | 1/1 | **0.9819** |
+| 82 | 🟢 docx_classic56_software_screenshot_features | ✅ | 1.0 | 0.9364 | 1/1 | **0.9746** |
+| 83 | 🟢 docx_classic57_right_to_left_text | ✅ | 0.9328 | 0.9919 | 1/1 | **0.9699** |
+| 84 | 🟢 docx_classic57_sports_results_with_logos | ✅ | 1.0 | 0.9385 | 1/1 | **0.9754** |
+| 85 | 🟡 docx_classic58_dense_paragraph_document | ✅ | 1.0 | 0.7617 | 6/7 | **0.8047** |
+| 86 | 🟢 docx_classic58_report_with_footer_image | ✅ | 1.0 | 0.9577 | 1/1 | **0.9831** |
+| 87 | 🟢 docx_classic59_numbered_and_bullet_mixed | ✅ | 0.9948 | 0.9756 | 1/1 | **0.9882** |
+| 88 | 🟢 docx_classic59_nutrition_label_with_image | ✅ | 1.0 | 0.9468 | 1/1 | **0.9787** |
+| 89 | 🟢 docx_classic60_comprehensive_styled_report | ✅ | 1.0 | 0.9559 | 3/3 | **0.9824** |
+| 90 | 🔴 docx_classic60_project_status_with_milestones | ✅ | 1.0 | 0.4711 | 1/2 | **0.6884** |
+| 91 | 🟢 docx_classic61_header_and_footer | ✅ | 1.0 | 0.9524 | 1/1 | **0.981** |
+| 92 | 🟢 docx_classic62_footnote_references | ✅ | 1.0 | 0.9745 | 1/1 | **0.9898** |
 | 93 | 🟢 docx_classic63_toc_style_headings | ✅ | 1.0 | 0.9791 | 1/1 | **0.9916** |
-| 94 | 🟢 docx_classic64_multi_column_layout | ✅ | 0.8494 | 0.9525 | 1/1 | **0.9208** |
-| 95 | 🟢 docx_classic65_code_block_styling | ✅ | 1.0 | 0.8845 | 1/1 | **0.9538** |
-| 96 | 🟢 docx_classic66_colored_title_page | ✅ | 1.0 | 0.9511 | 1/1 | **0.9804** |
-| 97 | 🟢 docx_classic67_alternating_row_table | ✅ | 0.9778 | 0.8628 | 1/1 | **0.9362** |
-| 98 | 🟡 docx_classic68_sidebar_layout | ✅ | 0.8283 | 0.9111 | 1/1 | **0.8958** |
-| 99 | 🟢 docx_classic69_blockquote_styling | ✅ | 1.0 | 0.9731 | 1/1 | **0.9892** |
-| 100 | 🟢 docx_classic70_academic_paper | ✅ | 0.9924 | 0.927 | 1/1 | **0.9678** |
-| 101 | 🟢 docx_classic71_legal_document | ✅ | 1.0 | 0.9589 | 1/1 | **0.9836** |
-| 102 | 🟢 docx_classic72_technical_specification | ✅ | 1.0 | 0.906 | 1/1 | **0.9624** |
-| 103 | 🟢 docx_classic73_calendar_layout | ✅ | 1.0 | 0.9328 | 1/1 | **0.9731** |
-| 104 | 🟢 docx_classic74_org_chart | ✅ | 1.0 | 0.8923 | 1/1 | **0.9569** |
-| 105 | 🟢 docx_classic75_newsletter_layout | ✅ | 0.9857 | 0.959 | 1/1 | **0.9779** |
-| 106 | 🟢 docx_classic76_recipe_card | ✅ | 1.0 | 0.969 | 1/1 | **0.9876** |
-| 107 | 🟢 docx_classic77_timeline_layout | ✅ | 1.0 | 0.9031 | 1/1 | **0.9612** |
-| 108 | 🟢 docx_classic78_faq_document | ✅ | 1.0 | 0.9384 | 2/2 | **0.9754** |
-| 109 | 🟢 docx_classic79_glossary | ✅ | 1.0 | 0.9645 | 1/1 | **0.9858** |
-| 110 | 🟢 docx_classic80_matrix_grid | ✅ | 0.9737 | 0.8562 | 1/1 | **0.932** |
-| 111 | 🟢 docx_classic81_budget_table | ✅ | 1.0 | 0.8368 | 1/1 | **0.9347** |
-| 112 | 🟢 docx_classic82_survey_questionnaire | ✅ | 0.9883 | 0.9087 | 2/2 | **0.9588** |
-| 113 | 🟢 docx_classic83_medical_form | ✅ | 1.0 | 0.9095 | 1/1 | **0.9638** |
-| 114 | 🔴 docx_classic84_shipping_label | ✅ | 1.0 | 0.4561 | 2/1 | **0.6824** |
-| 115 | 🟢 docx_classic85_report_card | ✅ | 1.0 | 0.9076 | 1/1 | **0.963** |
-| 116 | 🟡 docx_classic86_checklist_document | ✅ | 0.5629 | 0.97 | 1/1 | **0.8132** |
-| 117 | 🟢 docx_classic87_bibliography | ✅ | 1.0 | 0.9728 | 1/1 | **0.9891** |
-| 118 | 🔴 docx_classic88_presentation_handout | ✅ | 1.0 | 0.4727 | 3/2 | **0.6891** |
-| 119 | 🟢 docx_classic89_multi_image_gallery | ✅ | 1.0 | 0.898 | 1/1 | **0.9592** |
-| 120 | 🟢 docx_classic90_comprehensive_annual_report | ✅ | 1.0 | 0.9174 | 4/4 | **0.967** |
-| 121 | 🟢 docx_classic91_landscape_page | ✅ | 1.0 | 0.9591 | 1/1 | **0.9836** |
-| 122 | 🟢 docx_classic92_first_line_indent | ✅ | 0.9868 | 0.9484 | 1/1 | **0.9741** |
-| 123 | 🟢 docx_classic93_hanging_indent | ✅ | 1.0 | 0.9508 | 1/1 | **0.9803** |
-| 124 | 🟡 docx_classic94_custom_bullet_characters | ✅ | 0.7177 | 0.9816 | 1/1 | **0.8797** |
+| 94 | 🟢 docx_classic64_multi_column_layout | ✅ | 0.8494 | 0.9524 | 1/1 | **0.9207** |
+| 95 | 🟢 docx_classic65_code_block_styling | ✅ | 1.0 | 0.9008 | 1/1 | **0.9603** |
+| 96 | 🟢 docx_classic66_colored_title_page | ✅ | 1.0 | 0.9644 | 1/1 | **0.9858** |
+| 97 | 🟢 docx_classic67_alternating_row_table | ✅ | 0.9778 | 0.8759 | 1/1 | **0.9415** |
+| 98 | 🟢 docx_classic68_sidebar_layout | ✅ | 0.9091 | 0.9355 | 1/1 | **0.9378** |
+| 99 | 🟢 docx_classic69_blockquote_styling | ✅ | 1.0 | 0.9722 | 1/1 | **0.9889** |
+| 100 | 🟢 docx_classic70_academic_paper | ✅ | 0.9924 | 0.9387 | 1/1 | **0.9724** |
+| 101 | 🟢 docx_classic71_legal_document | ✅ | 1.0 | 0.9612 | 1/1 | **0.9845** |
+| 102 | 🟢 docx_classic72_technical_specification | ✅ | 1.0 | 0.9406 | 1/1 | **0.9762** |
+| 103 | 🟢 docx_classic73_calendar_layout | ✅ | 1.0 | 0.9528 | 1/1 | **0.9811** |
+| 104 | 🟢 docx_classic74_org_chart | ✅ | 1.0 | 0.9388 | 1/1 | **0.9755** |
+| 105 | 🟢 docx_classic75_newsletter_layout | ✅ | 0.9857 | 0.9666 | 1/1 | **0.9809** |
+| 106 | 🟢 docx_classic76_recipe_card | ✅ | 1.0 | 0.9716 | 1/1 | **0.9886** |
+| 107 | 🟢 docx_classic77_timeline_layout | ✅ | 1.0 | 0.9064 | 1/1 | **0.9626** |
+| 108 | 🟢 docx_classic78_faq_document | ✅ | 1.0 | 0.9382 | 2/2 | **0.9753** |
+| 109 | 🟢 docx_classic79_glossary | ✅ | 1.0 | 0.9625 | 1/1 | **0.985** |
+| 110 | 🟢 docx_classic80_matrix_grid | ✅ | 0.9737 | 0.9176 | 1/1 | **0.9565** |
+| 111 | 🟢 docx_classic81_budget_table | ✅ | 1.0 | 0.8954 | 1/1 | **0.9582** |
+| 112 | 🟢 docx_classic82_survey_questionnaire | ✅ | 0.9883 | 0.9493 | 2/2 | **0.975** |
+| 113 | 🟢 docx_classic83_medical_form | ✅ | 1.0 | 0.9376 | 1/1 | **0.975** |
+| 114 | 🟢 docx_classic84_shipping_label | ✅ | 0.9714 | 0.933 | 1/1 | **0.9618** |
+| 115 | 🟢 docx_classic85_report_card | ✅ | 1.0 | 0.9296 | 1/1 | **0.9718** |
+| 116 | 🟡 docx_classic86_checklist_document | ✅ | 0.5629 | 0.9699 | 1/1 | **0.8131** |
+| 117 | 🟢 docx_classic87_bibliography | ✅ | 1.0 | 0.9722 | 1/1 | **0.9889** |
+| 118 | 🟡 docx_classic88_presentation_handout | ✅ | 1.0 | 0.7196 | 2/2 | **0.8878** |
+| 119 | 🟢 docx_classic89_multi_image_gallery | ✅ | 1.0 | 0.9331 | 1/1 | **0.9732** |
+| 120 | 🟢 docx_classic90_comprehensive_annual_report | ✅ | 1.0 | 0.9567 | 4/4 | **0.9827** |
+| 121 | 🟢 docx_classic91_landscape_page | ✅ | 1.0 | 0.9645 | 1/1 | **0.9858** |
+| 122 | 🟢 docx_classic92_first_line_indent | ✅ | 0.9868 | 0.9435 | 1/1 | **0.9721** |
+| 123 | 🟢 docx_classic93_hanging_indent | ✅ | 1.0 | 0.9501 | 1/1 | **0.98** |
+| 124 | 🟡 docx_classic94_custom_bullet_characters | ✅ | 0.7177 | 0.9815 | 1/1 | **0.8797** |
 | 125 | 🟢 docx_classic95_contract_template | ✅ | 1.0 | 0.9744 | 1/1 | **0.9898** |
-| 126 | 🟢 docx_classic96_dense_data_table | ✅ | 1.0 | 0.8138 | 1/1 | **0.9255** |
-| 127 | 🟢 docx_classic97_product_catalog | ✅ | 1.0 | 0.9009 | 1/1 | **0.9604** |
-| 128 | 🟢 docx_classic98_training_manual | ✅ | 1.0 | 0.96 | 1/1 | **0.984** |
-| 129 | 🔴 docx_classic99_policy_document | ✅ | 1.0 | 0.4637 | 2/1 | **0.6855** |
-| 130 | 🟡 docx_classic100_multi_page_table | ✅ | 0.9932 | 0.5277 | 3/2 | **0.7084** |
-| 131 | 🟢 docx_classic101_warranty_document | ✅ | 1.0 | 0.9664 | 1/1 | **0.9866** |
-| 132 | 🟢 docx_classic102_curriculum_syllabus | ✅ | 0.9961 | 0.9047 | 1/1 | **0.9603** |
-| 133 | 🟢 docx_classic103_event_program | ✅ | 0.9917 | 0.9381 | 2/2 | **0.9719** |
-| 134 | 🟢 docx_classic104_sop_document | ✅ | 0.9915 | 0.9737 | 2/2 | **0.9861** |
+| 126 | 🟢 docx_classic96_dense_data_table | ✅ | 1.0 | 0.8674 | 1/1 | **0.947** |
+| 127 | 🟢 docx_classic97_product_catalog | ✅ | 1.0 | 0.9309 | 1/1 | **0.9724** |
+| 128 | 🟢 docx_classic98_training_manual | ✅ | 1.0 | 0.9569 | 1/1 | **0.9828** |
+| 129 | 🟢 docx_classic99_policy_document | ✅ | 1.0 | 0.9409 | 1/1 | **0.9764** |
+| 130 | 🟢 docx_classic100_multi_page_table | ✅ | 0.9932 | 0.8645 | 2/2 | **0.9431** |
+| 131 | 🟢 docx_classic101_warranty_document | ✅ | 1.0 | 0.9576 | 1/1 | **0.983** |
+| 132 | 🟢 docx_classic102_curriculum_syllabus | ✅ | 0.9961 | 0.939 | 1/1 | **0.974** |
+| 133 | 🟢 docx_classic103_event_program | ✅ | 0.9917 | 0.9597 | 2/2 | **0.9806** |
+| 134 | 🟢 docx_classic104_sop_document | ✅ | 0.9915 | 0.9708 | 2/2 | **0.9849** |
 | 135 | 🟢 docx_classic105_certificate | ✅ | 1.0 | 0.9679 | 1/1 | **0.9872** |
-| 136 | 🟢 docx_classic106_multi_section_orientation | ✅ | 0.9933 | 0.9704 | 3/3 | **0.9855** |
-| 137 | 🟢 docx_classic107_order_form | ✅ | 0.9859 | 0.9107 | 1/1 | **0.9586** |
-| 138 | 🟢 docx_classic108_comparison_matrix | ✅ | 0.9753 | 0.8647 | 1/1 | **0.936** |
-| 139 | 🟢 docx_classic109_release_notes | ✅ | 1.0 | 0.9661 | 1/1 | **0.9864** |
-| 140 | 🟢 docx_classic110_troubleshooting_guide | ✅ | 1.0 | 0.968 | 1/1 | **0.9872** |
-| 141 | 🟢 docx_classic111_meeting_agenda | ✅ | 0.9187 | 0.9509 | 1/1 | **0.9478** |
-| 142 | 🟢 docx_classic112_project_status_report | ✅ | 0.95 | 0.9167 | 1/1 | **0.9467** |
-| 143 | 🟢 docx_classic113_address_labels | ✅ | 1.0 | 0.9694 | 1/1 | **0.9878** |
-| 144 | 🟢 docx_classic114_test_report | ✅ | 1.0 | 0.9118 | 1/1 | **0.9647** |
-| 145 | 🟢 docx_classic115_price_list | ✅ | 0.9709 | 0.8297 | 1/1 | **0.9202** |
-| 146 | 🟢 docx_classic116_risk_assessment | ✅ | 1.0 | 0.899 | 1/1 | **0.9596** |
-| 147 | 🔴 docx_classic117_employee_handbook_excerpt | ✅ | 1.0 | 0.4679 | 2/1 | **0.6872** |
-| 148 | 🟢 docx_classic118_data_report_with_summary | ✅ | 1.0 | 0.8796 | 1/1 | **0.9518** |
-| 149 | 🟢 docx_classic119_multi_language_document | ✅ | 0.9876 | 0.9652 | 1/1 | **0.9811** |
-| 150 | 🟡 docx_classic120_comprehensive_business_proposal | ✅ | 0.9918 | 0.7162 | 4/3 | **0.7832** |
-| 151 | 🟢 docx_classic121_thin_border_table | ✅ | 1.0 | 0.9781 | 1/1 | **0.9912** |
-| 152 | 🟢 docx_classic122_thick_outer_border_table | ✅ | 1.0 | 0.9788 | 1/1 | **0.9915** |
+| 136 | 🟢 docx_classic106_multi_section_orientation | ✅ | 0.9933 | 0.9724 | 3/3 | **0.9863** |
+| 137 | 🟢 docx_classic107_order_form | ✅ | 0.9859 | 0.9355 | 1/1 | **0.9686** |
+| 138 | 🟢 docx_classic108_comparison_matrix | ✅ | 0.9753 | 0.9132 | 1/1 | **0.9554** |
+| 139 | 🟢 docx_classic109_release_notes | ✅ | 1.0 | 0.9648 | 1/1 | **0.9859** |
+| 140 | 🟢 docx_classic110_troubleshooting_guide | ✅ | 1.0 | 0.9658 | 1/1 | **0.9863** |
+| 141 | 🟢 docx_classic111_meeting_agenda | ✅ | 0.9187 | 0.9605 | 1/1 | **0.9517** |
+| 142 | 🟢 docx_classic112_project_status_report | ✅ | 0.95 | 0.9445 | 1/1 | **0.9578** |
+| 143 | 🟢 docx_classic113_address_labels | ✅ | 1.0 | 0.9772 | 1/1 | **0.9909** |
+| 144 | 🟢 docx_classic114_test_report | ✅ | 1.0 | 0.9498 | 1/1 | **0.9799** |
+| 145 | 🟢 docx_classic115_price_list | ✅ | 0.9709 | 0.9084 | 1/1 | **0.9517** |
+| 146 | 🟢 docx_classic116_risk_assessment | ✅ | 1.0 | 0.9332 | 1/1 | **0.9733** |
+| 147 | 🟢 docx_classic117_employee_handbook_excerpt | ✅ | 1.0 | 0.9394 | 1/1 | **0.9758** |
+| 148 | 🟢 docx_classic118_data_report_with_summary | ✅ | 1.0 | 0.9344 | 1/1 | **0.9738** |
+| 149 | 🟢 docx_classic119_multi_language_document | ✅ | 0.9876 | 0.9645 | 1/1 | **0.9808** |
+| 150 | 🟢 docx_classic120_comprehensive_business_proposal | ✅ | 0.9918 | 0.9587 | 3/3 | **0.9802** |
+| 151 | 🟢 docx_classic121_thin_border_table | ✅ | 1.0 | 0.9825 | 1/1 | **0.993** |
+| 152 | 🟢 docx_classic122_thick_outer_border_table | ✅ | 1.0 | 0.981 | 1/1 | **0.9924** |
 | 153 | 🟢 docx_classic123_dashed_border_table | ✅ | 1.0 | 0.9862 | 1/1 | **0.9945** |
-| 154 | 🟢 docx_classic124_colored_border_table | ✅ | 1.0 | 0.9733 | 1/1 | **0.9893** |
-| 155 | 🟢 docx_classic125_solid_cell_fills | ✅ | 1.0 | 0.9309 | 1/1 | **0.9724** |
-| 156 | 🟢 docx_classic126_dark_header_table | ✅ | 1.0 | 0.9431 | 1/1 | **0.9772** |
-| 157 | 🟢 docx_classic127_font_styles_showcase | ✅ | 1.0 | 0.9715 | 1/1 | **0.9886** |
-| 158 | 🟢 docx_classic128_font_sizes_showcase | ✅ | 1.0 | 0.9609 | 1/1 | **0.9844** |
-| 159 | 🟢 docx_classic129_alignment_combinations | ✅ | 1.0 | 0.9836 | 1/1 | **0.9934** |
-| 160 | 🟢 docx_classic130_wrap_and_indent | ✅ | 1.0 | 0.9751 | 1/1 | **0.99** |
-| 161 | 🟢 docx_classic131_number_format_table | ✅ | 1.0 | 0.9675 | 1/1 | **0.987** |
-| 162 | 🟢 docx_classic132_striped_table | ✅ | 1.0 | 0.8628 | 1/1 | **0.9451** |
-| 163 | 🟢 docx_classic133_gradient_rows_table | ✅ | 1.0 | 0.89 | 1/1 | **0.956** |
-| 164 | 🟢 docx_classic134_heatmap_table | ✅ | 1.0 | 0.9092 | 1/1 | **0.9637** |
-| 165 | 🟢 docx_classic135_bottom_border_paragraphs | ✅ | 1.0 | 0.9784 | 1/1 | **0.9914** |
-| 166 | 🟢 docx_classic136_financial_statement | ✅ | 1.0 | 0.9067 | 1/1 | **0.9627** |
-| 167 | 🟢 docx_classic137_checkerboard_table | ✅ | 1.0 | 0.8711 | 1/1 | **0.9484** |
-| 168 | 🟢 docx_classic138_color_grid_table | ✅ | 1.0 | 0.9133 | 1/1 | **0.9653** |
-| 169 | 🟢 docx_classic139_paragraph_shading_patterns | ✅ | 1.0 | 0.8354 | 1/1 | **0.9342** |
-| 170 | 🟢 docx_classic140_rotated_text_table | ✅ | 0.8158 | 0.9717 | 1/1 | **0.915** |
+| 154 | 🟢 docx_classic124_colored_border_table | ✅ | 1.0 | 0.9774 | 1/1 | **0.991** |
+| 155 | 🟢 docx_classic125_solid_cell_fills | ✅ | 1.0 | 0.9686 | 1/1 | **0.9874** |
+| 156 | 🟢 docx_classic126_dark_header_table | ✅ | 1.0 | 0.941 | 1/1 | **0.9764** |
+| 157 | 🟢 docx_classic127_font_styles_showcase | ✅ | 1.0 | 0.9798 | 1/1 | **0.9919** |
+| 158 | 🟢 docx_classic128_font_sizes_showcase | ✅ | 1.0 | 0.9602 | 1/1 | **0.9841** |
+| 159 | 🟢 docx_classic129_alignment_combinations | ✅ | 1.0 | 0.9821 | 1/1 | **0.9928** |
+| 160 | 🟢 docx_classic130_wrap_and_indent | ✅ | 1.0 | 0.9742 | 1/1 | **0.9897** |
+| 161 | 🟢 docx_classic131_number_format_table | ✅ | 1.0 | 0.9748 | 1/1 | **0.9899** |
+| 162 | 🟢 docx_classic132_striped_table | ✅ | 1.0 | 0.9148 | 1/1 | **0.9659** |
+| 163 | 🟢 docx_classic133_gradient_rows_table | ✅ | 1.0 | 0.9625 | 1/1 | **0.985** |
+| 164 | 🟢 docx_classic134_heatmap_table | ✅ | 1.0 | 0.9632 | 1/1 | **0.9853** |
+| 165 | 🟢 docx_classic135_bottom_border_paragraphs | ✅ | 1.0 | 0.9785 | 1/1 | **0.9914** |
+| 166 | 🟢 docx_classic136_financial_statement | ✅ | 1.0 | 0.9306 | 1/1 | **0.9722** |
+| 167 | 🟢 docx_classic137_checkerboard_table | ✅ | 1.0 | 0.9334 | 1/1 | **0.9734** |
+| 168 | 🟢 docx_classic138_color_grid_table | ✅ | 1.0 | 0.9416 | 1/1 | **0.9766** |
+| 169 | 🟢 docx_classic139_paragraph_shading_patterns | ✅ | 1.0 | 0.8192 | 1/1 | **0.9277** |
+| 170 | 🟢 docx_classic140_rotated_text_table | ✅ | 0.8158 | 0.9728 | 1/1 | **0.9154** |
 | 171 | 🟢 docx_classic141_mixed_border_styles | ✅ | 1.0 | 0.9854 | 1/1 | **0.9942** |
-| 172 | 🟢 docx_classic142_styled_invoice_document | ✅ | 1.0 | 0.9127 | 1/1 | **0.9651** |
-| 173 | 🟢 docx_classic143_multi_section_document | ✅ | 1.0 | 0.8971 | 1/1 | **0.9588** |
-| 174 | 🟢 docx_classic144_note_style_paragraphs | ✅ | 1.0 | 0.9697 | 1/1 | **0.9879** |
-| 175 | 🟢 docx_classic145_status_badge_table | ✅ | 1.0 | 0.919 | 1/1 | **0.9676** |
-| 176 | 🟢 docx_classic146_double_border_table | ✅ | 1.0 | 0.9392 | 1/1 | **0.9757** |
-| 177 | 🟢 docx_classic147_multi_section_styled_report | ✅ | 1.0 | 0.8983 | 1/1 | **0.9593** |
-| 178 | 🟢 docx_classic148_data_grid_document | ✅ | 1.0 | 0.7845 | 1/1 | **0.9138** |
-| 179 | 🟢 docx_classic149_merged_section_report | ✅ | 1.0 | 0.9141 | 1/1 | **0.9656** |
-| 180 | 🟢 docx_classic150_kitchen_sink_styles | ✅ | 1.0 | 0.9336 | 2/2 | **0.9734** |
+| 172 | 🟢 docx_classic142_styled_invoice_document | ✅ | 1.0 | 0.9286 | 1/1 | **0.9714** |
+| 173 | 🟢 docx_classic143_multi_section_document | ✅ | 1.0 | 0.8779 | 1/1 | **0.9512** |
+| 174 | 🟢 docx_classic144_note_style_paragraphs | ✅ | 1.0 | 0.9794 | 1/1 | **0.9918** |
+| 175 | 🟢 docx_classic145_status_badge_table | ✅ | 1.0 | 0.9344 | 1/1 | **0.9738** |
+| 176 | 🟢 docx_classic146_double_border_table | ✅ | 1.0 | 0.9317 | 1/1 | **0.9727** |
+| 177 | 🟢 docx_classic147_multi_section_styled_report | ✅ | 1.0 | 0.9423 | 1/1 | **0.9769** |
+| 178 | 🟢 docx_classic148_data_grid_document | ✅ | 1.0 | 0.8573 | 1/1 | **0.9429** |
+| 179 | 🟢 docx_classic149_merged_section_report | ✅ | 1.0 | 0.9218 | 1/1 | **0.9687** |
+| 180 | 🟢 docx_classic150_kitchen_sink_styles | ✅ | 1.0 | 0.9539 | 2/2 | **0.9816** |
 
-**Average Overall Score: 0.9560**
+**Average Overall Score: 0.9697**
 
 ## Visual Comparison
 
@@ -267,7 +267,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic10_simple_table</b></td>
-  <td colspan="1">docx_classic10_simple_table <span style="color:#3fb950">⬤</span> 99.3%</td>
+  <td colspan="1">docx_classic10_simple_table <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic10_simple_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -275,7 +275,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic11_table_with_shading</b></td>
-  <td colspan="1">docx_classic11_table_with_shading <span style="color:#3fb950">⬤</span> 97.5%</td>
+  <td colspan="1">docx_classic11_table_with_shading <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic11_table_with_shading_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -283,7 +283,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic12_merged_cells_table</b></td>
-  <td colspan="1">docx_classic12_merged_cells_table <span style="color:#3fb950">⬤</span> 99.4%</td>
+  <td colspan="1">docx_classic12_merged_cells_table <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic12_merged_cells_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -311,7 +311,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic14_mixed_content</b></td>
-  <td colspan="1">docx_classic14_mixed_content <span style="color:#3fb950">⬤</span> 98.6%</td>
+  <td colspan="1">docx_classic14_mixed_content <span style="color:#3fb950">⬤</span> 98.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic14_mixed_content_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -327,7 +327,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic16_line_spacing</b></td>
-  <td colspan="1">docx_classic16_line_spacing <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="1">docx_classic16_line_spacing <span style="color:#3fb950">⬤</span> 99.4%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic16_line_spacing_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -351,7 +351,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic18_embedded_image</b></td>
-  <td colspan="1">docx_classic18_embedded_image <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="1">docx_classic18_embedded_image <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic18_embedded_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -359,7 +359,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic19_multiple_images</b></td>
-  <td colspan="1">docx_classic19_multiple_images <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="1">docx_classic19_multiple_images <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic19_multiple_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -367,7 +367,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic20_table_with_many_rows</b></td>
-  <td colspan="1">docx_classic20_table_with_many_rows <span style="color:#3fb950">⬤</span> 97.9%</td>
+  <td colspan="1">docx_classic20_table_with_many_rows <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic20_table_with_many_rows_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -419,7 +419,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic26_table_alignment</b></td>
-  <td colspan="1">docx_classic26_table_alignment <span style="color:#3fb950">⬤</span> 99.4%</td>
+  <td colspan="1">docx_classic26_table_alignment <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic26_table_alignment_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -427,7 +427,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic27_long_paragraph_wrapping</b></td>
-  <td colspan="1">docx_classic27_long_paragraph_wrapping <span style="color:#3fb950">⬤</span> 96.7%</td>
+  <td colspan="1">docx_classic27_long_paragraph_wrapping <span style="color:#3fb950">⬤</span> 96.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic27_long_paragraph_wrapping_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -443,7 +443,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic29_table_with_image</b></td>
-  <td colspan="1">docx_classic29_table_with_image <span style="color:#3fb950">⬤</span> 97.9%</td>
+  <td colspan="1">docx_classic29_table_with_image <span style="color:#3fb950">⬤</span> 98.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic29_table_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -451,7 +451,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic30_comprehensive_report</b></td>
-  <td colspan="1">docx_classic30_comprehensive_report <span style="color:#3fb950">⬤</span> 96.5%</td>
+  <td colspan="1">docx_classic30_comprehensive_report <span style="color:#3fb950">⬤</span> 91.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic30_comprehensive_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -467,7 +467,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic31_product_card_with_image</b></td>
-  <td colspan="1">docx_classic31_product_card_with_image <span style="color:#3fb950">⬤</span> 98.2%</td>
+  <td colspan="1">docx_classic31_product_card_with_image <span style="color:#3fb950">⬤</span> 98.0%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic31_product_card_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -483,7 +483,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic32_company_logo_header</b></td>
-  <td colspan="1">docx_classic32_company_logo_header <span style="color:#3fb950">⬤</span> 97.5%</td>
+  <td colspan="1">docx_classic32_company_logo_header <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic32_company_logo_header_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -507,7 +507,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic33_two_products_side_by_side</b></td>
-  <td colspan="1">docx_classic33_two_products_side_by_side <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="1">docx_classic33_two_products_side_by_side <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic33_two_products_side_by_side_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -515,7 +515,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic34_employee_directory_with_photo</b></td>
-  <td colspan="1">docx_classic34_employee_directory_with_photo <span style="color:#f85149">⬤</span> 69.4%</td>
+  <td colspan="1">docx_classic34_employee_directory_with_photo <span style="color:#f85149">⬤</span> 69.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic34_employee_directory_with_photo_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -535,7 +535,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic35_inventory_with_product_photos</b></td>
-  <td colspan="1">docx_classic35_inventory_with_product_photos <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="1">docx_classic35_inventory_with_product_photos <span style="color:#3fb950">⬤</span> 99.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic35_inventory_with_product_photos_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -547,7 +547,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic35_tab_stops</b></td>
-  <td colspan="1">docx_classic35_tab_stops <span style="color:#d29922">⬤</span> 85.3%</td>
+  <td colspan="1">docx_classic35_tab_stops <span style="color:#d29922">⬤</span> 85.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic35_tab_stops_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -555,7 +555,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic36_invoice_with_logo</b></td>
-  <td colspan="1">docx_classic36_invoice_with_logo <span style="color:#3fb950">⬤</span> 98.2%</td>
+  <td colspan="1">docx_classic36_invoice_with_logo <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic36_invoice_with_logo_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -563,7 +563,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic36_wide_table</b></td>
-  <td colspan="1">docx_classic36_wide_table <span style="color:#3fb950">⬤</span> 98.9%</td>
+  <td colspan="1">docx_classic36_wide_table <span style="color:#3fb950">⬤</span> 99.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic36_wide_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -571,7 +571,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic37_nested_table</b></td>
-  <td colspan="1">docx_classic37_nested_table <span style="color:#3fb950">⬤</span> 96.8%</td>
+  <td colspan="1">docx_classic37_nested_table <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic37_nested_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -579,7 +579,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic37_real_estate_listing</b></td>
-  <td colspan="1">docx_classic37_real_estate_listing <span style="color:#3fb950">⬤</span> 97.5%</td>
+  <td colspan="1">docx_classic37_real_estate_listing <span style="color:#3fb950">⬤</span> 97.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic37_real_estate_listing_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -587,7 +587,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic38_restaurant_menu_with_photos</b></td>
-  <td colspan="1">docx_classic38_restaurant_menu_with_photos <span style="color:#3fb950">⬤</span> 98.7%</td>
+  <td colspan="1">docx_classic38_restaurant_menu_with_photos <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic38_restaurant_menu_with_photos_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -599,7 +599,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic38_table_column_widths</b></td>
-  <td colspan="1">docx_classic38_table_column_widths <span style="color:#3fb950">⬤</span> 93.0%</td>
+  <td colspan="1">docx_classic38_table_column_widths <span style="color:#3fb950">⬤</span> 93.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic38_table_column_widths_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -619,7 +619,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic39_financial_report</b></td>
-  <td colspan="1">docx_classic39_financial_report <span style="color:#3fb950">⬤</span> 98.6%</td>
+  <td colspan="1">docx_classic39_financial_report <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic39_financial_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -627,7 +627,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic40_product_catalog_with_images</b></td>
-  <td colspan="1">docx_classic40_product_catalog_with_images <span style="color:#3fb950">⬤</span> 97.8%</td>
+  <td colspan="1">docx_classic40_product_catalog_with_images <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic40_product_catalog_with_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -635,7 +635,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic40_resume</b></td>
-  <td colspan="1">docx_classic40_resume <span style="color:#3fb950">⬤</span> 98.6%</td>
+  <td colspan="1">docx_classic40_resume <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic40_resume_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -651,7 +651,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic41_newsletter_with_hero_image</b></td>
-  <td colspan="1">docx_classic41_newsletter_with_hero_image <span style="color:#3fb950">⬤</span> 96.6%</td>
+  <td colspan="1">docx_classic41_newsletter_with_hero_image <span style="color:#3fb950">⬤</span> 96.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic41_newsletter_with_hero_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -659,7 +659,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic42_chart_image_with_data</b></td>
-  <td colspan="1">docx_classic42_chart_image_with_data <span style="color:#3fb950">⬤</span> 98.3%</td>
+  <td colspan="1">docx_classic42_chart_image_with_data <span style="color:#3fb950">⬤</span> 98.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic42_chart_image_with_data_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -667,7 +667,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic42_meeting_minutes</b></td>
-  <td colspan="1">docx_classic42_meeting_minutes <span style="color:#3fb950">⬤</span> 97.3%</td>
+  <td colspan="1">docx_classic42_meeting_minutes <span style="color:#3fb950">⬤</span> 98.0%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic42_meeting_minutes_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -675,7 +675,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic43_event_flyer_with_banner</b></td>
-  <td colspan="1">docx_classic43_event_flyer_with_banner <span style="color:#3fb950">⬤</span> 96.3%</td>
+  <td colspan="1">docx_classic43_event_flyer_with_banner <span style="color:#3fb950">⬤</span> 96.7%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic43_event_flyer_with_banner_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -683,7 +683,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic43_invoice_document</b></td>
-  <td colspan="1">docx_classic43_invoice_document <span style="color:#3fb950">⬤</span> 96.4%</td>
+  <td colspan="1">docx_classic43_invoice_document <span style="color:#3fb950">⬤</span> 96.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic43_invoice_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -691,7 +691,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic44_dashboard_with_kpi_image</b></td>
-  <td colspan="1">docx_classic44_dashboard_with_kpi_image <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="1">docx_classic44_dashboard_with_kpi_image <span style="color:#3fb950">⬤</span> 98.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic44_dashboard_with_kpi_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -699,7 +699,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic44_memo</b></td>
-  <td colspan="1">docx_classic44_memo <span style="color:#3fb950">⬤</span> 99.0%</td>
+  <td colspan="1">docx_classic44_memo <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic44_memo_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -707,7 +707,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic45_certificate_with_seal</b></td>
-  <td colspan="1">docx_classic45_certificate_with_seal <span style="color:#3fb950">⬤</span> 98.7%</td>
+  <td colspan="1">docx_classic45_certificate_with_seal <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic45_certificate_with_seal_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -715,7 +715,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic45_project_plan</b></td>
-  <td colspan="1">docx_classic45_project_plan <span style="color:#3fb950">⬤</span> 97.4%</td>
+  <td colspan="1">docx_classic45_project_plan <span style="color:#3fb950">⬤</span> 97.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic45_project_plan_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -723,7 +723,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic46_comparison_table</b></td>
-  <td colspan="1">docx_classic46_comparison_table <span style="color:#3fb950">⬤</span> 97.5%</td>
+  <td colspan="1">docx_classic46_comparison_table <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic46_comparison_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -731,7 +731,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic46_product_image_grid</b></td>
-  <td colspan="1">docx_classic46_product_image_grid <span style="color:#3fb950">⬤</span> 98.3%</td>
+  <td colspan="1">docx_classic46_product_image_grid <span style="color:#3fb950">⬤</span> 97.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic46_product_image_grid_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -739,7 +739,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic47_data_dictionary</b></td>
-  <td colspan="1">docx_classic47_data_dictionary <span style="color:#3fb950">⬤</span> 96.6%</td>
+  <td colspan="1">docx_classic47_data_dictionary <span style="color:#3fb950">⬤</span> 97.7%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic47_data_dictionary_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -747,7 +747,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic47_news_article_with_hero_image</b></td>
-  <td colspan="1">docx_classic47_news_article_with_hero_image <span style="color:#3fb950">⬤</span> 96.9%</td>
+  <td colspan="1">docx_classic47_news_article_with_hero_image <span style="color:#3fb950">⬤</span> 96.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic47_news_article_with_hero_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -771,7 +771,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic48_task_list_with_status_icons</b></td>
-  <td colspan="1">docx_classic48_task_list_with_status_icons <span style="color:#3fb950">⬤</span> 97.3%</td>
+  <td colspan="1">docx_classic48_task_list_with_status_icons <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic48_task_list_with_status_icons_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -779,7 +779,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic49_cjk_document</b></td>
-  <td colspan="1">docx_classic49_cjk_document <span style="color:#3fb950">⬤</span> 98.2%</td>
+  <td colspan="1">docx_classic49_cjk_document <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic49_cjk_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -787,7 +787,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic49_wide_panoramic_banner</b></td>
-  <td colspan="1">docx_classic49_wide_panoramic_banner <span style="color:#3fb950">⬤</span> 93.1%</td>
+  <td colspan="1">docx_classic49_wide_panoramic_banner <span style="color:#3fb950">⬤</span> 95.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic49_wide_panoramic_banner_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -795,7 +795,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic50_long_table_with_formatting</b></td>
-  <td colspan="1">docx_classic50_long_table_with_formatting <span style="color:#d29922">⬤</span> 82.1%</td>
+  <td colspan="1">docx_classic50_long_table_with_formatting <span style="color:#d29922">⬤</span> 74.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic50_long_table_with_formatting_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -807,7 +807,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic50_portrait_tall_image</b></td>
-  <td colspan="1">docx_classic50_portrait_tall_image <span style="color:#3fb950">⬤</span> 98.8%</td>
+  <td colspan="1">docx_classic50_portrait_tall_image <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic50_portrait_tall_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -815,7 +815,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic51_step_by_step_with_images</b></td>
-  <td colspan="1">docx_classic51_step_by_step_with_images <span style="color:#3fb950">⬤</span> 98.6%</td>
+  <td colspan="1">docx_classic51_step_by_step_with_images <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic51_step_by_step_with_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -831,7 +831,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic52_before_after_comparison</b></td>
-  <td colspan="1">docx_classic52_before_after_comparison <span style="color:#3fb950">⬤</span> 97.9%</td>
+  <td colspan="1">docx_classic52_before_after_comparison <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic52_before_after_comparison_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -839,7 +839,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic52_spacing_before_after</b></td>
-  <td colspan="1">docx_classic52_spacing_before_after <span style="color:#3fb950">⬤</span> 99.2%</td>
+  <td colspan="1">docx_classic52_spacing_before_after <span style="color:#3fb950">⬤</span> 99.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic52_spacing_before_after_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -847,7 +847,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic53_color_swatch_palette</b></td>
-  <td colspan="1">docx_classic53_color_swatch_palette <span style="color:#3fb950">⬤</span> 98.2%</td>
+  <td colspan="1">docx_classic53_color_swatch_palette <span style="color:#3fb950">⬤</span> 97.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic53_color_swatch_palette_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -855,7 +855,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic53_table_merged_complex</b></td>
-  <td colspan="1">docx_classic53_table_merged_complex <span style="color:#3fb950">⬤</span> 97.4%</td>
+  <td colspan="1">docx_classic53_table_merged_complex <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic53_table_merged_complex_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -871,7 +871,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic54_travel_destination_cards</b></td>
-  <td colspan="1">docx_classic54_travel_destination_cards <span style="color:#3fb950">⬤</span> 98.3%</td>
+  <td colspan="1">docx_classic54_travel_destination_cards <span style="color:#3fb950">⬤</span> 98.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic54_travel_destination_cards_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -879,7 +879,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic55_background_shading_paragraph</b></td>
-  <td colspan="1">docx_classic55_background_shading_paragraph <span style="color:#3fb950">⬤</span> 97.5%</td>
+  <td colspan="1">docx_classic55_background_shading_paragraph <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic55_background_shading_paragraph_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -887,7 +887,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic55_lab_results_with_image</b></td>
-  <td colspan="1">docx_classic55_lab_results_with_image <span style="color:#3fb950">⬤</span> 95.1%</td>
+  <td colspan="1">docx_classic55_lab_results_with_image <span style="color:#3fb950">⬤</span> 97.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic55_lab_results_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -895,19 +895,15 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic56_images_and_tables_mixed</b></td>
-  <td colspan="1">docx_classic56_images_and_tables_mixed <span style="color:#f85149">⬤</span> 67.4%</td>
+  <td colspan="1">docx_classic56_images_and_tables_mixed <span style="color:#3fb950">⬤</span> 98.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic56_images_and_tables_mixed_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/docx_classic56_images_and_tables_mixed_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/docx_classic56_images_and_tables_mixed_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>docx_classic56_software_screenshot_features</b></td>
-  <td colspan="1">docx_classic56_software_screenshot_features <span style="color:#3fb950">⬤</span> 97.7%</td>
+  <td colspan="1">docx_classic56_software_screenshot_features <span style="color:#3fb950">⬤</span> 97.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic56_software_screenshot_features_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -923,19 +919,15 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic57_sports_results_with_logos</b></td>
-  <td colspan="1">docx_classic57_sports_results_with_logos <span style="color:#f85149">⬤</span> 69.0%</td>
+  <td colspan="1">docx_classic57_sports_results_with_logos <span style="color:#3fb950">⬤</span> 97.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic57_sports_results_with_logos_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/docx_classic57_sports_results_with_logos_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/docx_classic57_sports_results_with_logos_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>docx_classic58_dense_paragraph_document</b></td>
-  <td colspan="1">docx_classic58_dense_paragraph_document <span style="color:#d29922">⬤</span> 80.4%</td>
+  <td colspan="1">docx_classic58_dense_paragraph_document <span style="color:#d29922">⬤</span> 80.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic58_dense_paragraph_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -967,7 +959,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic58_report_with_footer_image</b></td>
-  <td colspan="1">docx_classic58_report_with_footer_image <span style="color:#3fb950">⬤</span> 96.2%</td>
+  <td colspan="1">docx_classic58_report_with_footer_image <span style="color:#3fb950">⬤</span> 98.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic58_report_with_footer_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -991,7 +983,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic60_comprehensive_styled_report</b></td>
-  <td colspan="1">docx_classic60_comprehensive_styled_report <span style="color:#3fb950">⬤</span> 96.9%</td>
+  <td colspan="1">docx_classic60_comprehensive_styled_report <span style="color:#3fb950">⬤</span> 98.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic60_comprehensive_styled_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1007,19 +999,19 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic60_project_status_with_milestones</b></td>
-  <td colspan="1">docx_classic60_project_status_with_milestones <span style="color:#3fb950">⬤</span> 97.0%</td>
+  <td colspan="1">docx_classic60_project_status_with_milestones <span style="color:#f85149">⬤</span> 68.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic60_project_status_with_milestones_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/docx_classic60_project_status_with_milestones_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/docx_classic60_project_status_with_milestones_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
   <td><img src="images/docx_classic60_project_status_with_milestones_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic61_header_and_footer</b></td>
-  <td colspan="1">docx_classic61_header_and_footer <span style="color:#3fb950">⬤</span> 98.2%</td>
+  <td colspan="1">docx_classic61_header_and_footer <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic61_header_and_footer_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1051,7 +1043,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic65_code_block_styling</b></td>
-  <td colspan="1">docx_classic65_code_block_styling <span style="color:#3fb950">⬤</span> 95.4%</td>
+  <td colspan="1">docx_classic65_code_block_styling <span style="color:#3fb950">⬤</span> 96.0%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic65_code_block_styling_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1059,7 +1051,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic66_colored_title_page</b></td>
-  <td colspan="1">docx_classic66_colored_title_page <span style="color:#3fb950">⬤</span> 98.0%</td>
+  <td colspan="1">docx_classic66_colored_title_page <span style="color:#3fb950">⬤</span> 98.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic66_colored_title_page_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1067,7 +1059,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic67_alternating_row_table</b></td>
-  <td colspan="1">docx_classic67_alternating_row_table <span style="color:#3fb950">⬤</span> 93.6%</td>
+  <td colspan="1">docx_classic67_alternating_row_table <span style="color:#3fb950">⬤</span> 94.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic67_alternating_row_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1075,7 +1067,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic68_sidebar_layout</b></td>
-  <td colspan="1">docx_classic68_sidebar_layout <span style="color:#d29922">⬤</span> 89.6%</td>
+  <td colspan="1">docx_classic68_sidebar_layout <span style="color:#3fb950">⬤</span> 93.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic68_sidebar_layout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1091,7 +1083,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic70_academic_paper</b></td>
-  <td colspan="1">docx_classic70_academic_paper <span style="color:#3fb950">⬤</span> 96.8%</td>
+  <td colspan="1">docx_classic70_academic_paper <span style="color:#3fb950">⬤</span> 97.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic70_academic_paper_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1099,7 +1091,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic71_legal_document</b></td>
-  <td colspan="1">docx_classic71_legal_document <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="1">docx_classic71_legal_document <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic71_legal_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1107,7 +1099,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic72_technical_specification</b></td>
-  <td colspan="1">docx_classic72_technical_specification <span style="color:#3fb950">⬤</span> 96.2%</td>
+  <td colspan="1">docx_classic72_technical_specification <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic72_technical_specification_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1115,7 +1107,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic73_calendar_layout</b></td>
-  <td colspan="1">docx_classic73_calendar_layout <span style="color:#3fb950">⬤</span> 97.3%</td>
+  <td colspan="1">docx_classic73_calendar_layout <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic73_calendar_layout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1123,7 +1115,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic74_org_chart</b></td>
-  <td colspan="1">docx_classic74_org_chart <span style="color:#3fb950">⬤</span> 95.7%</td>
+  <td colspan="1">docx_classic74_org_chart <span style="color:#3fb950">⬤</span> 97.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic74_org_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1131,7 +1123,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic75_newsletter_layout</b></td>
-  <td colspan="1">docx_classic75_newsletter_layout <span style="color:#3fb950">⬤</span> 97.8%</td>
+  <td colspan="1">docx_classic75_newsletter_layout <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic75_newsletter_layout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1139,7 +1131,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic76_recipe_card</b></td>
-  <td colspan="1">docx_classic76_recipe_card <span style="color:#3fb950">⬤</span> 98.8%</td>
+  <td colspan="1">docx_classic76_recipe_card <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic76_recipe_card_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1147,7 +1139,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic77_timeline_layout</b></td>
-  <td colspan="1">docx_classic77_timeline_layout <span style="color:#3fb950">⬤</span> 96.1%</td>
+  <td colspan="1">docx_classic77_timeline_layout <span style="color:#3fb950">⬤</span> 96.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic77_timeline_layout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1167,7 +1159,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic79_glossary</b></td>
-  <td colspan="1">docx_classic79_glossary <span style="color:#3fb950">⬤</span> 98.6%</td>
+  <td colspan="1">docx_classic79_glossary <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic79_glossary_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1175,7 +1167,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic80_matrix_grid</b></td>
-  <td colspan="1">docx_classic80_matrix_grid <span style="color:#3fb950">⬤</span> 93.2%</td>
+  <td colspan="1">docx_classic80_matrix_grid <span style="color:#3fb950">⬤</span> 95.7%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic80_matrix_grid_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1183,7 +1175,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic81_budget_table</b></td>
-  <td colspan="1">docx_classic81_budget_table <span style="color:#3fb950">⬤</span> 93.5%</td>
+  <td colspan="1">docx_classic81_budget_table <span style="color:#3fb950">⬤</span> 95.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic81_budget_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1191,7 +1183,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic82_survey_questionnaire</b></td>
-  <td colspan="1">docx_classic82_survey_questionnaire <span style="color:#3fb950">⬤</span> 95.9%</td>
+  <td colspan="1">docx_classic82_survey_questionnaire <span style="color:#3fb950">⬤</span> 97.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic82_survey_questionnaire_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1203,7 +1195,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic83_medical_form</b></td>
-  <td colspan="1">docx_classic83_medical_form <span style="color:#3fb950">⬤</span> 96.4%</td>
+  <td colspan="1">docx_classic83_medical_form <span style="color:#3fb950">⬤</span> 97.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic83_medical_form_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1211,19 +1203,15 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic84_shipping_label</b></td>
-  <td colspan="1">docx_classic84_shipping_label <span style="color:#f85149">⬤</span> 68.2%</td>
+  <td colspan="1">docx_classic84_shipping_label <span style="color:#3fb950">⬤</span> 96.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic84_shipping_label_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/docx_classic84_shipping_label_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/docx_classic84_shipping_label_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>docx_classic85_report_card</b></td>
-  <td colspan="1">docx_classic85_report_card <span style="color:#3fb950">⬤</span> 96.3%</td>
+  <td colspan="1">docx_classic85_report_card <span style="color:#3fb950">⬤</span> 97.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic85_report_card_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1247,7 +1235,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic88_presentation_handout</b></td>
-  <td colspan="1">docx_classic88_presentation_handout <span style="color:#f85149">⬤</span> 68.9%</td>
+  <td colspan="1">docx_classic88_presentation_handout <span style="color:#d29922">⬤</span> 88.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic88_presentation_handout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1258,12 +1246,8 @@ Generated: 2026-04-28T13:54:09.553017
   <td><img src="images/docx_classic88_presentation_handout_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/docx_classic88_presentation_handout_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>docx_classic89_multi_image_gallery</b></td>
-  <td colspan="1">docx_classic89_multi_image_gallery <span style="color:#3fb950">⬤</span> 95.9%</td>
+  <td colspan="1">docx_classic89_multi_image_gallery <span style="color:#3fb950">⬤</span> 97.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic89_multi_image_gallery_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1271,7 +1255,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic90_comprehensive_annual_report</b></td>
-  <td colspan="1">docx_classic90_comprehensive_annual_report <span style="color:#3fb950">⬤</span> 96.7%</td>
+  <td colspan="1">docx_classic90_comprehensive_annual_report <span style="color:#3fb950">⬤</span> 98.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic90_comprehensive_annual_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1291,7 +1275,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic91_landscape_page</b></td>
-  <td colspan="1">docx_classic91_landscape_page <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="1">docx_classic91_landscape_page <span style="color:#3fb950">⬤</span> 98.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic91_landscape_page_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1299,7 +1283,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic92_first_line_indent</b></td>
-  <td colspan="1">docx_classic92_first_line_indent <span style="color:#3fb950">⬤</span> 97.4%</td>
+  <td colspan="1">docx_classic92_first_line_indent <span style="color:#3fb950">⬤</span> 97.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic92_first_line_indent_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1331,7 +1315,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic96_dense_data_table</b></td>
-  <td colspan="1">docx_classic96_dense_data_table <span style="color:#3fb950">⬤</span> 92.5%</td>
+  <td colspan="1">docx_classic96_dense_data_table <span style="color:#3fb950">⬤</span> 94.7%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic96_dense_data_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1339,7 +1323,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic97_product_catalog</b></td>
-  <td colspan="1">docx_classic97_product_catalog <span style="color:#3fb950">⬤</span> 96.0%</td>
+  <td colspan="1">docx_classic97_product_catalog <span style="color:#3fb950">⬤</span> 97.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic97_product_catalog_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1347,7 +1331,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic98_training_manual</b></td>
-  <td colspan="1">docx_classic98_training_manual <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="1">docx_classic98_training_manual <span style="color:#3fb950">⬤</span> 98.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic98_training_manual_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1355,19 +1339,15 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic99_policy_document</b></td>
-  <td colspan="1">docx_classic99_policy_document <span style="color:#f85149">⬤</span> 68.5%</td>
+  <td colspan="1">docx_classic99_policy_document <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic99_policy_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/docx_classic99_policy_document_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/docx_classic99_policy_document_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>docx_classic100_multi_page_table</b></td>
-  <td colspan="1">docx_classic100_multi_page_table <span style="color:#d29922">⬤</span> 70.8%</td>
+  <td colspan="1">docx_classic100_multi_page_table <span style="color:#3fb950">⬤</span> 94.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic100_multi_page_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1378,12 +1358,8 @@ Generated: 2026-04-28T13:54:09.553017
   <td><img src="images/docx_classic100_multi_page_table_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/docx_classic100_multi_page_table_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>docx_classic101_warranty_document</b></td>
-  <td colspan="1">docx_classic101_warranty_document <span style="color:#3fb950">⬤</span> 98.7%</td>
+  <td colspan="1">docx_classic101_warranty_document <span style="color:#3fb950">⬤</span> 98.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic101_warranty_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1391,7 +1367,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic102_curriculum_syllabus</b></td>
-  <td colspan="1">docx_classic102_curriculum_syllabus <span style="color:#3fb950">⬤</span> 96.0%</td>
+  <td colspan="1">docx_classic102_curriculum_syllabus <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic102_curriculum_syllabus_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1399,7 +1375,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic103_event_program</b></td>
-  <td colspan="1">docx_classic103_event_program <span style="color:#3fb950">⬤</span> 97.2%</td>
+  <td colspan="1">docx_classic103_event_program <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic103_event_program_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1411,7 +1387,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic104_sop_document</b></td>
-  <td colspan="1">docx_classic104_sop_document <span style="color:#3fb950">⬤</span> 98.6%</td>
+  <td colspan="1">docx_classic104_sop_document <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic104_sop_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1447,7 +1423,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic107_order_form</b></td>
-  <td colspan="1">docx_classic107_order_form <span style="color:#3fb950">⬤</span> 95.9%</td>
+  <td colspan="1">docx_classic107_order_form <span style="color:#3fb950">⬤</span> 96.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic107_order_form_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1455,7 +1431,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic108_comparison_matrix</b></td>
-  <td colspan="1">docx_classic108_comparison_matrix <span style="color:#3fb950">⬤</span> 93.6%</td>
+  <td colspan="1">docx_classic108_comparison_matrix <span style="color:#3fb950">⬤</span> 95.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic108_comparison_matrix_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1471,7 +1447,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic110_troubleshooting_guide</b></td>
-  <td colspan="1">docx_classic110_troubleshooting_guide <span style="color:#3fb950">⬤</span> 98.7%</td>
+  <td colspan="1">docx_classic110_troubleshooting_guide <span style="color:#3fb950">⬤</span> 98.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic110_troubleshooting_guide_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1479,7 +1455,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic111_meeting_agenda</b></td>
-  <td colspan="1">docx_classic111_meeting_agenda <span style="color:#3fb950">⬤</span> 94.8%</td>
+  <td colspan="1">docx_classic111_meeting_agenda <span style="color:#3fb950">⬤</span> 95.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic111_meeting_agenda_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1487,7 +1463,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic112_project_status_report</b></td>
-  <td colspan="1">docx_classic112_project_status_report <span style="color:#3fb950">⬤</span> 94.7%</td>
+  <td colspan="1">docx_classic112_project_status_report <span style="color:#3fb950">⬤</span> 95.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic112_project_status_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1495,7 +1471,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic113_address_labels</b></td>
-  <td colspan="1">docx_classic113_address_labels <span style="color:#3fb950">⬤</span> 98.8%</td>
+  <td colspan="1">docx_classic113_address_labels <span style="color:#3fb950">⬤</span> 99.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic113_address_labels_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1503,7 +1479,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic114_test_report</b></td>
-  <td colspan="1">docx_classic114_test_report <span style="color:#3fb950">⬤</span> 96.5%</td>
+  <td colspan="1">docx_classic114_test_report <span style="color:#3fb950">⬤</span> 98.0%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic114_test_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1511,7 +1487,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic115_price_list</b></td>
-  <td colspan="1">docx_classic115_price_list <span style="color:#3fb950">⬤</span> 92.0%</td>
+  <td colspan="1">docx_classic115_price_list <span style="color:#3fb950">⬤</span> 95.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic115_price_list_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1519,7 +1495,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic116_risk_assessment</b></td>
-  <td colspan="1">docx_classic116_risk_assessment <span style="color:#3fb950">⬤</span> 96.0%</td>
+  <td colspan="1">docx_classic116_risk_assessment <span style="color:#3fb950">⬤</span> 97.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic116_risk_assessment_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1527,19 +1503,15 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic117_employee_handbook_excerpt</b></td>
-  <td colspan="1">docx_classic117_employee_handbook_excerpt <span style="color:#f85149">⬤</span> 68.7%</td>
+  <td colspan="1">docx_classic117_employee_handbook_excerpt <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic117_employee_handbook_excerpt_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/docx_classic117_employee_handbook_excerpt_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/docx_classic117_employee_handbook_excerpt_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>docx_classic118_data_report_with_summary</b></td>
-  <td colspan="1">docx_classic118_data_report_with_summary <span style="color:#3fb950">⬤</span> 95.2%</td>
+  <td colspan="1">docx_classic118_data_report_with_summary <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic118_data_report_with_summary_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1555,7 +1527,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic120_comprehensive_business_proposal</b></td>
-  <td colspan="1">docx_classic120_comprehensive_business_proposal <span style="color:#d29922">⬤</span> 78.3%</td>
+  <td colspan="1">docx_classic120_comprehensive_business_proposal <span style="color:#3fb950">⬤</span> 98.0%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic120_comprehensive_business_proposal_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1570,12 +1542,8 @@ Generated: 2026-04-28T13:54:09.553017
   <td><img src="images/docx_classic120_comprehensive_business_proposal_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/docx_classic120_comprehensive_business_proposal_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>docx_classic121_thin_border_table</b></td>
-  <td colspan="1">docx_classic121_thin_border_table <span style="color:#3fb950">⬤</span> 99.1%</td>
+  <td colspan="1">docx_classic121_thin_border_table <span style="color:#3fb950">⬤</span> 99.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic121_thin_border_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1599,7 +1567,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic124_colored_border_table</b></td>
-  <td colspan="1">docx_classic124_colored_border_table <span style="color:#3fb950">⬤</span> 98.9%</td>
+  <td colspan="1">docx_classic124_colored_border_table <span style="color:#3fb950">⬤</span> 99.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic124_colored_border_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1607,7 +1575,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic125_solid_cell_fills</b></td>
-  <td colspan="1">docx_classic125_solid_cell_fills <span style="color:#3fb950">⬤</span> 97.2%</td>
+  <td colspan="1">docx_classic125_solid_cell_fills <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic125_solid_cell_fills_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1615,7 +1583,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic126_dark_header_table</b></td>
-  <td colspan="1">docx_classic126_dark_header_table <span style="color:#3fb950">⬤</span> 97.7%</td>
+  <td colspan="1">docx_classic126_dark_header_table <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic126_dark_header_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1623,7 +1591,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic127_font_styles_showcase</b></td>
-  <td colspan="1">docx_classic127_font_styles_showcase <span style="color:#3fb950">⬤</span> 98.9%</td>
+  <td colspan="1">docx_classic127_font_styles_showcase <span style="color:#3fb950">⬤</span> 99.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic127_font_styles_showcase_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1655,7 +1623,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic131_number_format_table</b></td>
-  <td colspan="1">docx_classic131_number_format_table <span style="color:#3fb950">⬤</span> 98.7%</td>
+  <td colspan="1">docx_classic131_number_format_table <span style="color:#3fb950">⬤</span> 99.0%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic131_number_format_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1663,7 +1631,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic132_striped_table</b></td>
-  <td colspan="1">docx_classic132_striped_table <span style="color:#3fb950">⬤</span> 94.5%</td>
+  <td colspan="1">docx_classic132_striped_table <span style="color:#3fb950">⬤</span> 96.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic132_striped_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1671,7 +1639,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic133_gradient_rows_table</b></td>
-  <td colspan="1">docx_classic133_gradient_rows_table <span style="color:#3fb950">⬤</span> 95.6%</td>
+  <td colspan="1">docx_classic133_gradient_rows_table <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic133_gradient_rows_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1679,7 +1647,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic134_heatmap_table</b></td>
-  <td colspan="1">docx_classic134_heatmap_table <span style="color:#3fb950">⬤</span> 96.4%</td>
+  <td colspan="1">docx_classic134_heatmap_table <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic134_heatmap_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1695,7 +1663,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic136_financial_statement</b></td>
-  <td colspan="1">docx_classic136_financial_statement <span style="color:#3fb950">⬤</span> 96.3%</td>
+  <td colspan="1">docx_classic136_financial_statement <span style="color:#3fb950">⬤</span> 97.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic136_financial_statement_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1703,7 +1671,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic137_checkerboard_table</b></td>
-  <td colspan="1">docx_classic137_checkerboard_table <span style="color:#3fb950">⬤</span> 94.8%</td>
+  <td colspan="1">docx_classic137_checkerboard_table <span style="color:#3fb950">⬤</span> 97.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic137_checkerboard_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1711,7 +1679,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic138_color_grid_table</b></td>
-  <td colspan="1">docx_classic138_color_grid_table <span style="color:#3fb950">⬤</span> 96.5%</td>
+  <td colspan="1">docx_classic138_color_grid_table <span style="color:#3fb950">⬤</span> 97.7%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic138_color_grid_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1719,7 +1687,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic139_paragraph_shading_patterns</b></td>
-  <td colspan="1">docx_classic139_paragraph_shading_patterns <span style="color:#3fb950">⬤</span> 93.4%</td>
+  <td colspan="1">docx_classic139_paragraph_shading_patterns <span style="color:#3fb950">⬤</span> 92.8%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic139_paragraph_shading_patterns_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1743,7 +1711,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic142_styled_invoice_document</b></td>
-  <td colspan="1">docx_classic142_styled_invoice_document <span style="color:#3fb950">⬤</span> 96.5%</td>
+  <td colspan="1">docx_classic142_styled_invoice_document <span style="color:#3fb950">⬤</span> 97.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic142_styled_invoice_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1751,7 +1719,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic143_multi_section_document</b></td>
-  <td colspan="1">docx_classic143_multi_section_document <span style="color:#3fb950">⬤</span> 95.9%</td>
+  <td colspan="1">docx_classic143_multi_section_document <span style="color:#3fb950">⬤</span> 95.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic143_multi_section_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1759,7 +1727,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic144_note_style_paragraphs</b></td>
-  <td colspan="1">docx_classic144_note_style_paragraphs <span style="color:#3fb950">⬤</span> 98.8%</td>
+  <td colspan="1">docx_classic144_note_style_paragraphs <span style="color:#3fb950">⬤</span> 99.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic144_note_style_paragraphs_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1767,7 +1735,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic145_status_badge_table</b></td>
-  <td colspan="1">docx_classic145_status_badge_table <span style="color:#3fb950">⬤</span> 96.8%</td>
+  <td colspan="1">docx_classic145_status_badge_table <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic145_status_badge_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1775,7 +1743,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic146_double_border_table</b></td>
-  <td colspan="1">docx_classic146_double_border_table <span style="color:#3fb950">⬤</span> 97.6%</td>
+  <td colspan="1">docx_classic146_double_border_table <span style="color:#3fb950">⬤</span> 97.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic146_double_border_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1783,7 +1751,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic147_multi_section_styled_report</b></td>
-  <td colspan="1">docx_classic147_multi_section_styled_report <span style="color:#3fb950">⬤</span> 95.9%</td>
+  <td colspan="1">docx_classic147_multi_section_styled_report <span style="color:#3fb950">⬤</span> 97.7%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic147_multi_section_styled_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1791,7 +1759,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic148_data_grid_document</b></td>
-  <td colspan="1">docx_classic148_data_grid_document <span style="color:#3fb950">⬤</span> 91.4%</td>
+  <td colspan="1">docx_classic148_data_grid_document <span style="color:#3fb950">⬤</span> 94.3%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic148_data_grid_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1799,7 +1767,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic149_merged_section_report</b></td>
-  <td colspan="1">docx_classic149_merged_section_report <span style="color:#3fb950">⬤</span> 96.6%</td>
+  <td colspan="1">docx_classic149_merged_section_report <span style="color:#3fb950">⬤</span> 96.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic149_merged_section_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1807,7 +1775,7 @@ Generated: 2026-04-28T13:54:09.553017
 </tr>
 <tr>
   <td><b>docx_classic150_kitchen_sink_styles</b></td>
-  <td colspan="1">docx_classic150_kitchen_sink_styles <span style="color:#3fb950">⬤</span> 97.3%</td>
+  <td colspan="1">docx_classic150_kitchen_sink_styles <span style="color:#3fb950">⬤</span> 98.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic150_kitchen_sink_styles_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1892,17 +1860,17 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9908
 - **Overall Score:** 0.9963
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1060748 bytes, Reference=95865 bytes
+- **File Size:** MiniPdf=1060747 bytes, Reference=95865 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic04_bold_italic
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9977
-- **Overall Score:** 0.9991
+- **Visual Average:** 0.9975
+- **Overall Score:** 0.999
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1315 bytes, Reference=94134 bytes
+- **File Size:** MiniPdf=1316 bytes, Reference=94134 bytes
 
 Text content: ✅ Identical
 
@@ -1932,7 +1900,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9854
 - **Overall Score:** 0.9942
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2019 bytes, Reference=43210 bytes
+- **File Size:** MiniPdf=2011 bytes, Reference=43210 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1996,8 +1964,8 @@ Text content: ✅ Identical
 ### docx_classic10_simple_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9829
-- **Overall Score:** 0.9932
+- **Visual Average:** 0.9887
+- **Overall Score:** 0.9955
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=624941 bytes, Reference=73744 bytes
 
@@ -2006,8 +1974,8 @@ Text content: ✅ Identical
 ### docx_classic11_table_with_shading
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9362
-- **Overall Score:** 0.9745
+- **Visual Average:** 0.9624
+- **Overall Score:** 0.985
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=628517 bytes, Reference=91111 bytes
 
@@ -2016,8 +1984,8 @@ Text content: ✅ Identical
 ### docx_classic12_merged_cells_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9846
-- **Overall Score:** 0.9938
+- **Visual Average:** 0.99
+- **Overall Score:** 0.996
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=622050 bytes, Reference=71750 bytes
 
@@ -2026,10 +1994,10 @@ Text content: ✅ Identical
 ### docx_classic13_long_document
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.6821
+- **Visual Average:** 0.682
 - **Overall Score:** 0.7728
 - **Pages:** MiniPdf=3, Reference=4
-- **File Size:** MiniPdf=645900 bytes, Reference=102517 bytes
+- **File Size:** MiniPdf=645889 bytes, Reference=102517 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2116,20 +2084,20 @@ Text content: ✅ Identical
 ### docx_classic14_mixed_content
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9659
-- **Overall Score:** 0.9864
+- **Visual Average:** 0.9705
+- **Overall Score:** 0.9882
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=631967 bytes, Reference=115112 bytes
+- **File Size:** MiniPdf=631968 bytes, Reference=115112 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic15_indentation
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9831
-- **Overall Score:** 0.9932
+- **Visual Average:** 0.9833
+- **Overall Score:** 0.9933
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=620760 bytes, Reference=74243 bytes
+- **File Size:** MiniPdf=620761 bytes, Reference=74243 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2161,10 +2129,10 @@ Text content: ✅ Identical
 ### docx_classic16_line_spacing
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9869
-- **Overall Score:** 0.9948
+- **Visual Average:** 0.9845
+- **Overall Score:** 0.9938
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=622996 bytes, Reference=78004 bytes
+- **File Size:** MiniPdf=622992 bytes, Reference=78004 bytes
 
 Text content: ✅ Identical
 
@@ -2181,8 +2149,8 @@ Text content: ✅ Identical
 ### docx_classic18_embedded_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9909
-- **Overall Score:** 0.9964
+- **Visual Average:** 0.9931
+- **Overall Score:** 0.9972
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=620431 bytes, Reference=67381 bytes
 
@@ -2191,8 +2159,8 @@ Text content: ✅ Identical
 ### docx_classic19_multiple_images
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9901
-- **Overall Score:** 0.996
+- **Visual Average:** 0.9939
+- **Overall Score:** 0.9976
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=623257 bytes, Reference=66233 bytes
 
@@ -2201,40 +2169,40 @@ Text content: ✅ Identical
 ### docx_classic20_table_with_many_rows
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9476
-- **Overall Score:** 0.979
+- **Visual Average:** 0.9622
+- **Overall Score:** 0.9849
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=651615 bytes, Reference=95029 bytes
+- **File Size:** MiniPdf=651611 bytes, Reference=95029 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic21_nested_lists
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9924
+- **Visual Average:** 0.9926
 - **Overall Score:** 0.997
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=620933 bytes, Reference=98694 bytes
+- **File Size:** MiniPdf=620935 bytes, Reference=98694 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic22_horizontal_rule
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9915
+- **Visual Average:** 0.9914
 - **Overall Score:** 0.9966
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=620854 bytes, Reference=70951 bytes
+- **File Size:** MiniPdf=620853 bytes, Reference=70951 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic23_mixed_formatting_runs
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9967
-- **Overall Score:** 0.9987
+- **Visual Average:** 0.9966
+- **Overall Score:** 0.9986
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=622917 bytes, Reference=100389 bytes
+- **File Size:** MiniPdf=622926 bytes, Reference=100389 bytes
 
 Text content: ✅ Identical
 
@@ -2272,18 +2240,18 @@ Text content: ✅ Identical
 ### docx_classic25_title_and_subtitle
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9926
-- **Overall Score:** 0.997
+- **Visual Average:** 0.9929
+- **Overall Score:** 0.9972
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=853712 bytes, Reference=134268 bytes
+- **File Size:** MiniPdf=853714 bytes, Reference=134268 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic26_table_alignment
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9856
-- **Overall Score:** 0.9942
+- **Visual Average:** 0.9898
+- **Overall Score:** 0.9959
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=625300 bytes, Reference=94051 bytes
 
@@ -2292,10 +2260,10 @@ Text content: ✅ Identical
 ### docx_classic27_long_paragraph_wrapping
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9183
-- **Overall Score:** 0.9673
+- **Visual Average:** 0.9199
+- **Overall Score:** 0.968
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=625871 bytes, Reference=72456 bytes
+- **File Size:** MiniPdf=625870 bytes, Reference=72456 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2374,8 +2342,8 @@ Text content: ✅ Identical
 ### docx_classic28_special_characters
 
 - **Text Similarity:** 0.9948
-- **Visual Average:** 0.9931
-- **Overall Score:** 0.9952
+- **Visual Average:** 0.993
+- **Overall Score:** 0.9951
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=4380251 bytes, Reference=80991 bytes
 
@@ -2399,8 +2367,8 @@ Text content: ✅ Identical
 ### docx_classic29_table_with_image
 
 - **Text Similarity:** 0.9728
-- **Visual Average:** 0.9737
-- **Overall Score:** 0.9786
+- **Visual Average:** 0.9829
+- **Overall Score:** 0.9823
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=621388 bytes, Reference=70208 bytes
 
@@ -2430,10 +2398,10 @@ Text content: ✅ Identical
 ### docx_classic30_comprehensive_report
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9138
-- **Overall Score:** 0.9655
+- **Visual Average:** 0.7807
+- **Overall Score:** 0.9123
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=871547 bytes, Reference=220886 bytes
+- **File Size:** MiniPdf=871538 bytes, Reference=220886 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2465,35 +2433,14 @@ Text content: ✅ Identical
 
  Sector Market Share Growth
 
-@@ -25,9 +25,9 @@
- • Green technology and sustainable computing
-
- • Zero-trust security architectures
-
- • Low-code/no-code platform expansion
-
-----PAGE---
-
- 4. Visual Summary
-
- Growth indicator chart (placeholder):
-
-+---PAGE---
-
- 5. Recommendations
-
- 1. Invest in AI-driven automation tools
-
- 2. Prioritize cloud-native architectures
-
 ```
 </details>
 
 ### docx_classic31_product_card_with_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9559
-- **Overall Score:** 0.9824
+- **Visual Average:** 0.9506
+- **Overall Score:** 0.9802
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=623654 bytes, Reference=108260 bytes
 
@@ -2502,8 +2449,8 @@ Text content: ✅ Identical
 ### docx_classic31_strikethrough_text
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9935
-- **Overall Score:** 0.9974
+- **Visual Average:** 0.9932
+- **Overall Score:** 0.9973
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=622192 bytes, Reference=73919 bytes
 
@@ -2512,10 +2459,10 @@ Text content: ✅ Identical
 ### docx_classic32_company_logo_header
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9385
-- **Overall Score:** 0.9754
+- **Visual Average:** 0.9535
+- **Overall Score:** 0.9814
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=630558 bytes, Reference=112769 bytes
+- **File Size:** MiniPdf=630545 bytes, Reference=112769 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2552,7 +2499,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.996
 - **Overall Score:** 0.9889
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=623198 bytes, Reference=73303 bytes
+- **File Size:** MiniPdf=623205 bytes, Reference=73303 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2590,30 +2537,30 @@ Text content: ✅ Identical
 ### docx_classic33_highlighted_text
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9719
-- **Overall Score:** 0.9888
+- **Visual Average:** 0.9717
+- **Overall Score:** 0.9887
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=620415 bytes, Reference=67420 bytes
+- **File Size:** MiniPdf=620416 bytes, Reference=67420 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic33_two_products_side_by_side
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9609
-- **Overall Score:** 0.9844
+- **Visual Average:** 0.9527
+- **Overall Score:** 0.9811
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=634578 bytes, Reference=107718 bytes
+- **File Size:** MiniPdf=634595 bytes, Reference=107718 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic34_employee_directory_with_photo
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.4849
-- **Overall Score:** 0.694
+- **Visual Average:** 0.4822
+- **Overall Score:** 0.6929
 - **Pages:** MiniPdf=1, Reference=2
-- **File Size:** MiniPdf=629713 bytes, Reference=99625 bytes
+- **File Size:** MiniPdf=629714 bytes, Reference=99625 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2636,8 +2583,8 @@ Text content: ✅ Identical
 ### docx_classic34_paragraph_borders
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9809
-- **Overall Score:** 0.9924
+- **Visual Average:** 0.9793
+- **Overall Score:** 0.9917
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=622872 bytes, Reference=69819 bytes
 
@@ -2646,18 +2593,18 @@ Text content: ✅ Identical
 ### docx_classic35_inventory_with_product_photos
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9588
-- **Overall Score:** 0.9835
+- **Visual Average:** 0.9802
+- **Overall Score:** 0.9921
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=635894 bytes, Reference=84431 bytes
+- **File Size:** MiniPdf=635899 bytes, Reference=84431 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic35_tab_stops
 
 - **Text Similarity:** 0.64
-- **Visual Average:** 0.9914
-- **Overall Score:** 0.8526
+- **Visual Average:** 0.9913
+- **Overall Score:** 0.8525
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=623863 bytes, Reference=76285 bytes
 
@@ -2693,8 +2640,8 @@ Text content: ✅ Identical
 ### docx_classic36_invoice_with_logo
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9545
-- **Overall Score:** 0.9818
+- **Visual Average:** 0.9629
+- **Overall Score:** 0.9852
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=9627 bytes, Reference=86303 bytes
 
@@ -2703,8 +2650,8 @@ Text content: ✅ Identical
 ### docx_classic36_wide_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9733
-- **Overall Score:** 0.9893
+- **Visual Average:** 0.9809
+- **Overall Score:** 0.9924
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=637948 bytes, Reference=100125 bytes
 
@@ -2712,9 +2659,9 @@ Text content: ✅ Identical
 
 ### docx_classic37_nested_table
 
-- **Text Similarity:** 0.9333
-- **Visual Average:** 0.9864
-- **Overall Score:** 0.9679
+- **Text Similarity:** 0.963
+- **Visual Average:** 0.9896
+- **Overall Score:** 0.981
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=623439 bytes, Reference=76696 bytes
 
@@ -2723,16 +2670,14 @@ Text content: ✅ Identical
 ```diff
 --- minipdf/docx_classic37_nested_table.pdf
 +++ reference/docx_classic37_nested_table.pdf
-@@ -1,7 +1,6 @@
+@@ -1,6 +1,6 @@
  Nested Table Layout
 
  Section A Section B
 
 -Details: This cell contains plain text while the adjacent
 
--cell has a nested table.
-
--Item Qty
+-Item Qty cell has a nested table.
 
 +Details: This cell contains plain text while the
 
@@ -2747,28 +2692,28 @@ Text content: ✅ Identical
 ### docx_classic37_real_estate_listing
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9377
-- **Overall Score:** 0.9751
+- **Visual Average:** 0.9468
+- **Overall Score:** 0.9787
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=626725 bytes, Reference=106313 bytes
+- **File Size:** MiniPdf=626714 bytes, Reference=106313 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic38_restaurant_menu_with_photos
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9679
-- **Overall Score:** 0.9872
+- **Visual Average:** 0.9608
+- **Overall Score:** 0.9843
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=630200 bytes, Reference=104667 bytes
+- **File Size:** MiniPdf=630206 bytes, Reference=104667 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic38_table_column_widths
 
 - **Text Similarity:** 0.8485
-- **Visual Average:** 0.9771
-- **Overall Score:** 0.9302
+- **Visual Average:** 0.981
+- **Overall Score:** 0.9318
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=628150 bytes, Reference=102328 bytes
 
@@ -2810,40 +2755,40 @@ Text content: ✅ Identical
 ### docx_classic39_cover_page_with_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9856
-- **Overall Score:** 0.9942
+- **Visual Average:** 0.9858
+- **Overall Score:** 0.9943
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=623311 bytes, Reference=120726 bytes
+- **File Size:** MiniPdf=623310 bytes, Reference=120726 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic39_financial_report
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9643
-- **Overall Score:** 0.9857
+- **Visual Average:** 0.9728
+- **Overall Score:** 0.9891
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=634916 bytes, Reference=111342 bytes
+- **File Size:** MiniPdf=634909 bytes, Reference=111342 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic40_product_catalog_with_images
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9455
-- **Overall Score:** 0.9782
+- **Visual Average:** 0.9729
+- **Overall Score:** 0.9892
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=634118 bytes, Reference=117045 bytes
+- **File Size:** MiniPdf=634123 bytes, Reference=117045 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic40_resume
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9655
-- **Overall Score:** 0.9862
+- **Visual Average:** 0.9712
+- **Overall Score:** 0.9885
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=631412 bytes, Reference=197726 bytes
+- **File Size:** MiniPdf=631415 bytes, Reference=197726 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2926,10 +2871,10 @@ Text content: ✅ Identical
 ### docx_classic41_newsletter_with_hero_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9156
-- **Overall Score:** 0.9662
+- **Visual Average:** 0.9205
+- **Overall Score:** 0.9682
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=631792 bytes, Reference=132792 bytes
+- **File Size:** MiniPdf=631800 bytes, Reference=132792 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2973,20 +2918,20 @@ Text content: ✅ Identical
 ### docx_classic42_chart_image_with_data
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9571
-- **Overall Score:** 0.9828
+- **Visual Average:** 0.9558
+- **Overall Score:** 0.9823
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=640218 bytes, Reference=112851 bytes
+- **File Size:** MiniPdf=640229 bytes, Reference=112851 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic42_meeting_minutes
 
 - **Text Similarity:** 0.9903
-- **Visual Average:** 0.9415
-- **Overall Score:** 0.9727
+- **Visual Average:** 0.9608
+- **Overall Score:** 0.9804
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=636197 bytes, Reference=112714 bytes
+- **File Size:** MiniPdf=636209 bytes, Reference=112714 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3037,20 +2982,20 @@ Text content: ✅ Identical
 ### docx_classic43_event_flyer_with_banner
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9068
-- **Overall Score:** 0.9627
+- **Visual Average:** 0.9182
+- **Overall Score:** 0.9673
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=626281 bytes, Reference=109856 bytes
+- **File Size:** MiniPdf=626277 bytes, Reference=109856 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic43_invoice_document
 
 - **Text Similarity:** 0.9775
-- **Visual Average:** 0.9335
-- **Overall Score:** 0.9644
+- **Visual Average:** 0.9437
+- **Overall Score:** 0.9685
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=14493 bytes, Reference=99728 bytes
+- **File Size:** MiniPdf=14494 bytes, Reference=99728 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3109,20 +3054,20 @@ Text content: ✅ Identical
 ### docx_classic44_dashboard_with_kpi_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.96
-- **Overall Score:** 0.984
+- **Visual Average:** 0.9584
+- **Overall Score:** 0.9834
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=639181 bytes, Reference=116297 bytes
+- **File Size:** MiniPdf=639173 bytes, Reference=116297 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic44_memo
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9737
-- **Overall Score:** 0.9895
+- **Visual Average:** 0.9725
+- **Overall Score:** 0.989
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=622512 bytes, Reference=129775 bytes
+- **File Size:** MiniPdf=622554 bytes, Reference=129775 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3172,20 +3117,20 @@ Text content: ✅ Identical
 ### docx_classic45_certificate_with_seal
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9676
-- **Overall Score:** 0.987
+- **Visual Average:** 0.9728
+- **Overall Score:** 0.9891
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2081 bytes, Reference=71997 bytes
+- **File Size:** MiniPdf=2083 bytes, Reference=71997 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic45_project_plan
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.934
-- **Overall Score:** 0.9736
+- **Visual Average:** 0.9471
+- **Overall Score:** 0.9788
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=649210 bytes, Reference=128979 bytes
+- **File Size:** MiniPdf=649220 bytes, Reference=128979 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3219,18 +3164,18 @@ Text content: ✅ Identical
 ### docx_classic46_comparison_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9366
-- **Overall Score:** 0.9746
+- **Visual Average:** 0.9361
+- **Overall Score:** 0.9744
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=635859 bytes, Reference=107695 bytes
+- **File Size:** MiniPdf=635851 bytes, Reference=107695 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic46_product_image_grid
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9583
-- **Overall Score:** 0.9833
+- **Visual Average:** 0.9479
+- **Overall Score:** 0.9792
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=622855 bytes, Reference=83076 bytes
 
@@ -3239,10 +3184,10 @@ Text content: ✅ Identical
 ### docx_classic47_data_dictionary
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.916
-- **Overall Score:** 0.9664
+- **Visual Average:** 0.9415
+- **Overall Score:** 0.9766
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=642892 bytes, Reference=114030 bytes
+- **File Size:** MiniPdf=642896 bytes, Reference=114030 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3274,10 +3219,10 @@ Text content: ✅ Identical
 ### docx_classic47_news_article_with_hero_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9222
-- **Overall Score:** 0.9689
+- **Visual Average:** 0.9195
+- **Overall Score:** 0.9678
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=624822 bytes, Reference=131080 bytes
+- **File Size:** MiniPdf=624820 bytes, Reference=131080 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3320,10 +3265,10 @@ Text content: ✅ Identical
 ### docx_classic48_multi_level_headings
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9734
-- **Overall Score:** 0.9894
+- **Visual Average:** 0.9727
+- **Overall Score:** 0.9891
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=1085034 bytes, Reference=118651 bytes
+- **File Size:** MiniPdf=1085014 bytes, Reference=118651 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3357,20 +3302,20 @@ Text content: ✅ Identical
 ### docx_classic48_task_list_with_status_icons
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9335
-- **Overall Score:** 0.9734
+- **Visual Average:** 0.9346
+- **Overall Score:** 0.9738
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=634043 bytes, Reference=106209 bytes
+- **File Size:** MiniPdf=634042 bytes, Reference=106209 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic49_cjk_document
 
 - **Text Similarity:** 0.9849
-- **Visual Average:** 0.9695
-- **Overall Score:** 0.9818
+- **Visual Average:** 0.9676
+- **Overall Score:** 0.981
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4360630 bytes, Reference=141092 bytes
+- **File Size:** MiniPdf=4360631 bytes, Reference=141092 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3429,20 +3374,20 @@ Text content: ✅ Identical
 ### docx_classic49_wide_panoramic_banner
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8284
-- **Overall Score:** 0.9314
+- **Visual Average:** 0.8979
+- **Overall Score:** 0.9592
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=628073 bytes, Reference=108687 bytes
+- **File Size:** MiniPdf=628079 bytes, Reference=108687 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic50_long_table_with_formatting
 
 - **Text Similarity:** 0.7465
-- **Visual Average:** 0.8071
-- **Overall Score:** 0.8214
+- **Visual Average:** 0.612
+- **Overall Score:** 0.7434
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=684574 bytes, Reference=122324 bytes
+- **File Size:** MiniPdf=684620 bytes, Reference=122324 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3505,6 +3450,34 @@ Text content: ✅ Identical
 -SRV-018 server-018.local 10.0.0.18 RHEL 9 Online
 
 -SRV-019 server-019.local 10.0.0.19 Debian 12 Online
+
+-SRV-020 server-020.local 10.0.0.20 CentOS Stream Online
+
+-9
+
+-SRV-021 server-021.local 10.0.0.21 Ubuntu 22.04 Online
+
+-SRV-022 server-022.local 10.0.0.22 Windows Server Online
+
+-2022
+
+-SRV-023 server-023.local 10.0.0.23 RHEL 9 Online
+
+-SRV-024 server-024.local 10.0.0.24 Debian 12 Maintenance
+
+-SRV-025 server-025.local 10.0.0.25 CentOS Stream Online
+
+-9
+
+-SRV-026 server-026.local 10.0.0.26 Ubuntu 22.04 Online
+
+-SRV-027 server-027.local 10.0.0.27 Windows Server Offline
+
+-2022
+
+-SRV-028 server-028.local 10.0.0.28 RHEL 9 Online
+
+-SRV-029 server-029.local 10.0.0.29 Debian 12 Online
 
 +SRV-001 server- 10.0.0.1 Ubuntu 22.04 Online
 
@@ -3578,39 +3551,7 @@ Text content: ✅ Identical
 
 +018.local
 
-+SRV-019 server- 10.0.0.19 Debian 12 Online
-
-+019.local
-
-+SRV-020 server- 10.0.0.20 CentOS Stream Online
-
-+020.local 9
-
-+SRV-021 server- 10.0.0.21 Ubuntu 22.04 Online
-
-+021.local
-
-+SRV-022 server- 10.0.0.22 Windows Online
-
-+022.local Server 2022
-
- ---PAGE---
-
--SRV-020 server-020.local 10.0.0.20 CentOS Stream Online
-
--9
-
--SRV-021 server-021.local 10.0.0.21 Ubuntu 22.04 Online
-
--SRV-022 server-022.local 10.0.0.22 Windows Server Online
-
--2022
-
--SRV-023 server-023.local 10.0.0.23 RHEL 9 Online
-
--SRV-024 server-024.local 10.0.0.24 Debian 12 Maintenance
-
--SRV-025 server-025.local 10.0.0.25 CentOS Stream Onl
++SRV-019 server- 10.0.
 ... (778 more characters)
 
 ```
@@ -3619,10 +3560,10 @@ Text content: ✅ Identical
 ### docx_classic50_portrait_tall_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9693
-- **Overall Score:** 0.9877
+- **Visual Average:** 0.9668
+- **Overall Score:** 0.9867
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=627620 bytes, Reference=156207 bytes
+- **File Size:** MiniPdf=627613 bytes, Reference=156207 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3656,58 +3597,58 @@ Text content: ✅ Identical
 ### docx_classic51_step_by_step_with_images
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9654
-- **Overall Score:** 0.9862
+- **Visual Average:** 0.9525
+- **Overall Score:** 0.981
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=633693 bytes, Reference=86405 bytes
+- **File Size:** MiniPdf=633697 bytes, Reference=86405 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic51_underline_styles
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.995
-- **Overall Score:** 0.998
+- **Visual Average:** 0.9952
+- **Overall Score:** 0.9981
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=621243 bytes, Reference=68896 bytes
+- **File Size:** MiniPdf=621244 bytes, Reference=68896 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic52_before_after_comparison
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9485
-- **Overall Score:** 0.9794
+- **Visual Average:** 0.94
+- **Overall Score:** 0.976
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=631037 bytes, Reference=71180 bytes
+- **File Size:** MiniPdf=631038 bytes, Reference=71180 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic52_spacing_before_after
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9796
-- **Overall Score:** 0.9918
+- **Visual Average:** 0.9766
+- **Overall Score:** 0.9906
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=623769 bytes, Reference=76163 bytes
+- **File Size:** MiniPdf=623770 bytes, Reference=76163 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic53_color_swatch_palette
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.954
-- **Overall Score:** 0.9816
+- **Visual Average:** 0.9484
+- **Overall Score:** 0.9794
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=623697 bytes, Reference=105872 bytes
+- **File Size:** MiniPdf=623703 bytes, Reference=105872 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic53_table_merged_complex
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.936
-- **Overall Score:** 0.9744
+- **Visual Average:** 0.9406
+- **Overall Score:** 0.9762
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=631896 bytes, Reference=93385 bytes
 
@@ -3716,28 +3657,28 @@ Text content: ✅ Identical
 ### docx_classic54_multi_font_family
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9903
-- **Overall Score:** 0.9961
+- **Visual Average:** 0.9896
+- **Overall Score:** 0.9958
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1131704 bytes, Reference=250187 bytes
+- **File Size:** MiniPdf=1131705 bytes, Reference=250187 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic54_travel_destination_cards
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9582
-- **Overall Score:** 0.9833
+- **Visual Average:** 0.9701
+- **Overall Score:** 0.988
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=633119 bytes, Reference=105061 bytes
+- **File Size:** MiniPdf=633118 bytes, Reference=105061 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic55_background_shading_paragraph
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9387
-- **Overall Score:** 0.9755
+- **Visual Average:** 0.9395
+- **Overall Score:** 0.9758
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=621279 bytes, Reference=67663 bytes
 
@@ -3746,58 +3687,40 @@ Text content: ✅ Identical
 ### docx_classic55_lab_results_with_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8767
-- **Overall Score:** 0.9507
+- **Visual Average:** 0.9451
+- **Overall Score:** 0.978
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=639659 bytes, Reference=118015 bytes
+- **File Size:** MiniPdf=639647 bytes, Reference=118015 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic56_images_and_tables_mixed
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.4356
-- **Overall Score:** 0.6742
-- **Pages:** MiniPdf=2, Reference=1
-- **File Size:** MiniPdf=635058 bytes, Reference=84307 bytes
+- **Visual Average:** 0.9547
+- **Overall Score:** 0.9819
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=634799 bytes, Reference=84307 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/docx_classic56_images_and_tables_mixed.pdf
-+++ reference/docx_classic56_images_and_tables_mixed.pdf
-@@ -9,6 +9,5 @@
- Description Industrial-grade gadget for heavy use
-
- Connector Plus
-
- Product Connector Plus
-
-----PAGE---
-
- Price $19.99
-
- Description Universal connector with fast transfer
-```
-</details>
+Text content: ✅ Identical
 
 ### docx_classic56_software_screenshot_features
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9414
-- **Overall Score:** 0.9766
+- **Visual Average:** 0.9364
+- **Overall Score:** 0.9746
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=633512 bytes, Reference=118476 bytes
+- **File Size:** MiniPdf=633511 bytes, Reference=118476 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic57_right_to_left_text
 
 - **Text Similarity:** 0.9328
-- **Visual Average:** 0.9923
-- **Overall Score:** 0.97
+- **Visual Average:** 0.9919
+- **Overall Score:** 0.9699
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=802325 bytes, Reference=97228 bytes
+- **File Size:** MiniPdf=802324 bytes, Reference=97228 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3825,36 +3748,20 @@ Text content: ✅ Identical
 ### docx_classic57_sports_results_with_logos
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.4743
-- **Overall Score:** 0.6897
-- **Pages:** MiniPdf=2, Reference=1
-- **File Size:** MiniPdf=641210 bytes, Reference=112026 bytes
+- **Visual Average:** 0.9385
+- **Overall Score:** 0.9754
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=640991 bytes, Reference=112026 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/docx_classic57_sports_results_with_logos.pdf
-+++ reference/docx_classic57_sports_results_with_logos.pdf
-@@ -11,5 +11,4 @@
- 2 Man City 68 20 8 4
-
- 3 Liverpool 65 19 8 5
-
- 4 Chelsea 58 17 7 8
-
-----PAGE---
-
- 5 Tottenham 52 15 7 10
-```
-</details>
+Text content: ✅ Identical
 
 ### docx_classic58_dense_paragraph_document
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.7605
-- **Overall Score:** 0.8042
+- **Visual Average:** 0.7617
+- **Overall Score:** 0.8047
 - **Pages:** MiniPdf=6, Reference=7
-- **File Size:** MiniPdf=672298 bytes, Reference=107116 bytes
+- **File Size:** MiniPdf=672301 bytes, Reference=107116 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3937,20 +3844,20 @@ Text content: ✅ Identical
 ### docx_classic58_report_with_footer_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9046
-- **Overall Score:** 0.9618
+- **Visual Average:** 0.9577
+- **Overall Score:** 0.9831
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=633679 bytes, Reference=136402 bytes
+- **File Size:** MiniPdf=633672 bytes, Reference=136402 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic59_numbered_and_bullet_mixed
 
 - **Text Similarity:** 0.9948
-- **Visual Average:** 0.9752
-- **Overall Score:** 0.988
+- **Visual Average:** 0.9756
+- **Overall Score:** 0.9882
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=630750 bytes, Reference=119386 bytes
+- **File Size:** MiniPdf=630746 bytes, Reference=119386 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3980,20 +3887,20 @@ Text content: ✅ Identical
 ### docx_classic59_nutrition_label_with_image
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9462
-- **Overall Score:** 0.9785
+- **Visual Average:** 0.9468
+- **Overall Score:** 0.9787
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=630561 bytes, Reference=109697 bytes
+- **File Size:** MiniPdf=630528 bytes, Reference=109697 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic60_comprehensive_styled_report
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9212
-- **Overall Score:** 0.9685
+- **Visual Average:** 0.9559
+- **Overall Score:** 0.9824
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=874751 bytes, Reference=244937 bytes
+- **File Size:** MiniPdf=874761 bytes, Reference=244937 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4051,20 +3958,36 @@ Text content: ✅ Identical
 ### docx_classic60_project_status_with_milestones
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9241
-- **Overall Score:** 0.9696
-- **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=640887 bytes, Reference=141002 bytes
+- **Visual Average:** 0.4711
+- **Overall Score:** 0.6884
+- **Pages:** MiniPdf=1, Reference=2
+- **File Size:** MiniPdf=640592 bytes, Reference=141002 bytes
 
-Text content: ✅ Identical
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/docx_classic60_project_status_with_milestones.pdf
++++ reference/docx_classic60_project_status_with_milestones.pdf
+@@ -14,4 +14,5 @@
+ • Database migration downtime exceeding 4-hour window
+
+ • Third-party API compatibility issues
+
+ • Team capacity constraints during March
+
++---PAGE---
+
+ Figure: Sprint velocity chart
+```
+</details>
 
 ### docx_classic61_header_and_footer
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.955
-- **Overall Score:** 0.982
+- **Visual Average:** 0.9524
+- **Overall Score:** 0.981
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=622205 bytes, Reference=76328 bytes
+- **File Size:** MiniPdf=622204 bytes, Reference=76328 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4123,8 +4046,8 @@ Text content: ✅ Identical
 ### docx_classic62_footnote_references
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9753
-- **Overall Score:** 0.9901
+- **Visual Average:** 0.9745
+- **Overall Score:** 0.9898
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=623251 bytes, Reference=83417 bytes
 
@@ -4204,10 +4127,10 @@ Text content: ✅ Identical
 ### docx_classic64_multi_column_layout
 
 - **Text Similarity:** 0.8494
-- **Visual Average:** 0.9525
-- **Overall Score:** 0.9208
+- **Visual Average:** 0.9524
+- **Overall Score:** 0.9207
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=629187 bytes, Reference=84036 bytes
+- **File Size:** MiniPdf=629185 bytes, Reference=84036 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4273,8 +4196,8 @@ Text content: ✅ Identical
 ### docx_classic65_code_block_styling
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8845
-- **Overall Score:** 0.9538
+- **Visual Average:** 0.9008
+- **Overall Score:** 0.9603
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=707115 bytes, Reference=91759 bytes
 
@@ -4283,8 +4206,8 @@ Text content: ✅ Identical
 ### docx_classic66_colored_title_page
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9511
-- **Overall Score:** 0.9804
+- **Visual Average:** 0.9644
+- **Overall Score:** 0.9858
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=2738 bytes, Reference=89358 bytes
 
@@ -4293,10 +4216,10 @@ Text content: ✅ Identical
 ### docx_classic67_alternating_row_table
 
 - **Text Similarity:** 0.9778
-- **Visual Average:** 0.8628
-- **Overall Score:** 0.9362
+- **Visual Average:** 0.8759
+- **Overall Score:** 0.9415
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=647043 bytes, Reference=115887 bytes
+- **File Size:** MiniPdf=647033 bytes, Reference=115887 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4337,11 +4260,11 @@ Text content: ✅ Identical
 
 ### docx_classic68_sidebar_layout
 
-- **Text Similarity:** 0.8283
-- **Visual Average:** 0.9111
-- **Overall Score:** 0.8958
+- **Text Similarity:** 0.9091
+- **Visual Average:** 0.9355
+- **Overall Score:** 0.9378
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=623552 bytes, Reference=129996 bytes
+- **File Size:** MiniPdf=623551 bytes, Reference=129996 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4357,35 +4280,33 @@ Text content: ✅ Identical
 
 -MiniPdf is a lightweight .NET library for
 
--converting Word and Excel documents to PDF
-
 +MiniPdf is a lightweight .NET library for converting Word and
 
  Installation
 
--format without requiring Microsoft Office.
+-converting Word and Excel documents to PDF
 
 +Excel documents to PDF format without requiring Microsoft
 
  Configuration
 
+-format without requiring Microsoft Office.
+
 +Office.
 
-+API Reference
+ API Reference
 
  Key Features
 
--API Reference
-
--DOCX to PDF conversion
-
  FAQ
 
--XLSX to PDF conversion
+-DOCX to PDF conversion
 
 +• DOCX to PDF conversion
 
  Changelog
+
+-XLSX to PDF conversion
 
 -CJK font support
 
@@ -4405,20 +4326,20 @@ Text content: ✅ Identical
 ### docx_classic69_blockquote_styling
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9731
-- **Overall Score:** 0.9892
+- **Visual Average:** 0.9722
+- **Overall Score:** 0.9889
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=623643 bytes, Reference=110121 bytes
+- **File Size:** MiniPdf=623642 bytes, Reference=110121 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic70_academic_paper
 
 - **Text Similarity:** 0.9924
-- **Visual Average:** 0.927
-- **Overall Score:** 0.9678
+- **Visual Average:** 0.9387
+- **Overall Score:** 0.9724
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=639355 bytes, Reference=158286 bytes
+- **File Size:** MiniPdf=639347 bytes, Reference=158286 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4505,10 +4426,10 @@ Text content: ✅ Identical
 ### docx_classic71_legal_document
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9589
-- **Overall Score:** 0.9836
+- **Visual Average:** 0.9612
+- **Overall Score:** 0.9845
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=3739 bytes, Reference=91798 bytes
+- **File Size:** MiniPdf=3746 bytes, Reference=91798 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4538,18 +4459,18 @@ Text content: ✅ Identical
 ### docx_classic72_technical_specification
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.906
-- **Overall Score:** 0.9624
+- **Visual Average:** 0.9406
+- **Overall Score:** 0.9762
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=648409 bytes, Reference=158590 bytes
+- **File Size:** MiniPdf=648404 bytes, Reference=158590 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic73_calendar_layout
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9328
-- **Overall Score:** 0.9731
+- **Visual Average:** 0.9528
+- **Overall Score:** 0.9811
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=17205 bytes, Reference=68915 bytes
 
@@ -4558,8 +4479,8 @@ Text content: ✅ Identical
 ### docx_classic74_org_chart
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8923
-- **Overall Score:** 0.9569
+- **Visual Average:** 0.9388
+- **Overall Score:** 0.9755
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=625417 bytes, Reference=102171 bytes
 
@@ -4568,10 +4489,10 @@ Text content: ✅ Identical
 ### docx_classic75_newsletter_layout
 
 - **Text Similarity:** 0.9857
-- **Visual Average:** 0.959
-- **Overall Score:** 0.9779
+- **Visual Average:** 0.9666
+- **Overall Score:** 0.9809
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=631095 bytes, Reference=112463 bytes
+- **File Size:** MiniPdf=631108 bytes, Reference=112463 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4615,20 +4536,20 @@ Text content: ✅ Identical
 ### docx_classic76_recipe_card
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.969
-- **Overall Score:** 0.9876
+- **Visual Average:** 0.9716
+- **Overall Score:** 0.9886
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=625775 bytes, Reference=138002 bytes
+- **File Size:** MiniPdf=625793 bytes, Reference=138002 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic77_timeline_layout
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9031
-- **Overall Score:** 0.9612
+- **Visual Average:** 0.9064
+- **Overall Score:** 0.9626
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=632848 bytes, Reference=120673 bytes
+- **File Size:** MiniPdf=632845 bytes, Reference=120673 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4668,10 +4589,10 @@ Text content: ✅ Identical
 ### docx_classic78_faq_document
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9384
-- **Overall Score:** 0.9754
+- **Visual Average:** 0.9382
+- **Overall Score:** 0.9753
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=627927 bytes, Reference=128489 bytes
+- **File Size:** MiniPdf=627928 bytes, Reference=128489 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4783,10 +4704,10 @@ Text content: ✅ Identical
 ### docx_classic79_glossary
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9645
-- **Overall Score:** 0.9858
+- **Visual Average:** 0.9625
+- **Overall Score:** 0.985
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=623194 bytes, Reference=112625 bytes
+- **File Size:** MiniPdf=623193 bytes, Reference=112625 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4828,10 +4749,10 @@ Text content: ✅ Identical
 ### docx_classic80_matrix_grid
 
 - **Text Similarity:** 0.9737
-- **Visual Average:** 0.8562
-- **Overall Score:** 0.932
+- **Visual Average:** 0.9176
+- **Overall Score:** 0.9565
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=648760 bytes, Reference=111032 bytes
+- **File Size:** MiniPdf=648755 bytes, Reference=111032 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4871,20 +4792,20 @@ Text content: ✅ Identical
 ### docx_classic81_budget_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8368
-- **Overall Score:** 0.9347
+- **Visual Average:** 0.8954
+- **Overall Score:** 0.9582
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=648111 bytes, Reference=129792 bytes
+- **File Size:** MiniPdf=648102 bytes, Reference=129792 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic82_survey_questionnaire
 
 - **Text Similarity:** 0.9883
-- **Visual Average:** 0.9087
-- **Overall Score:** 0.9588
+- **Visual Average:** 0.9493
+- **Overall Score:** 0.975
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=666450 bytes, Reference=123279 bytes
+- **File Size:** MiniPdf=666428 bytes, Reference=123279 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -4953,15 +4874,15 @@ Text content: ✅ Identical
 
  goals.
 
-----PAGE---
-
  Career Development
 
  Statement 1 2 3 4 5
 
- I have
++I have
 
-+---PAGE---
+ ---PAGE---
+
+-I have
 
  opportunities
 
@@ -5004,40 +4925,78 @@ Text content: ✅ Identical
 ### docx_classic83_medical_form
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9095
-- **Overall Score:** 0.9638
+- **Visual Average:** 0.9376
+- **Overall Score:** 0.975
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=647979 bytes, Reference=116392 bytes
+- **File Size:** MiniPdf=647992 bytes, Reference=116392 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic84_shipping_label
 
-- **Text Similarity:** 1.0
-- **Visual Average:** 0.4561
-- **Overall Score:** 0.6824
-- **Pages:** MiniPdf=2, Reference=1
-- **File Size:** MiniPdf=79711 bytes, Reference=115136 bytes
+- **Text Similarity:** 0.9714
+- **Visual Average:** 0.933
+- **Overall Score:** 0.9618
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=79452 bytes, Reference=115136 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/docx_classic84_shipping_label.pdf
 +++ reference/docx_classic84_shipping_label.pdf
-@@ -26,7 +26,6 @@
+@@ -1,5 +1,6 @@
+ FROM: TRACKING #:
+
+-MiniPdf Corp 1Z999AA10123456784
+
++1Z999AA10123456784
+
++MiniPdf Corp
+
+ 123 Tech Ave
+
+ Suite 101
+
+ San Francisco, CA 94105
+
+@@ -9,7 +10,8 @@
+ New York, NY 10001
+
+ PRIORITY MAIL | Weight: 2.5 lbs | Ship Date: 03/01/2026
+
+ FROM: TRACKING #:
+
+-MiniPdf Corp 1Z999AA20123456784
+
++1Z999AA20123456784
+
++MiniPdf Corp
+
+ 123 Tech Ave
+
+ Suite 102
+
+ San Francisco, CA 94105
+
+@@ -19,7 +21,8 @@
+ New York, NY 10002
+
+ PRIORITY MAIL | Weight: 5.0 lbs | Ship Date: 03/02/2026
+
+ FROM: TRACKING #:
+
+-MiniPdf Corp 1Z999AA30123456784
+
++1Z999AA30123456784
+
++MiniPdf Corp
+
  123 Tech Ave
 
  Suite 103
 
  San Francisco, CA 94105
-
-----PAGE---
-
- TO:
-
- Customer 3
-
- 756 Main Street
 
 ```
 </details>
@@ -5045,18 +5004,18 @@ Text content: ✅ Identical
 ### docx_classic85_report_card
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9076
-- **Overall Score:** 0.963
+- **Visual Average:** 0.9296
+- **Overall Score:** 0.9718
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=21616 bytes, Reference=95268 bytes
+- **File Size:** MiniPdf=21525 bytes, Reference=95268 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic86_checklist_document
 
 - **Text Similarity:** 0.5629
-- **Visual Average:** 0.97
-- **Overall Score:** 0.8132
+- **Visual Average:** 0.9699
+- **Overall Score:** 0.8131
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=4264217 bytes, Reference=89619 bytes
 
@@ -5154,10 +5113,10 @@ Text content: ✅ Identical
 ### docx_classic87_bibliography
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9728
-- **Overall Score:** 0.9891
+- **Visual Average:** 0.9722
+- **Overall Score:** 0.9889
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=623487 bytes, Reference=141475 bytes
+- **File Size:** MiniPdf=623493 bytes, Reference=141475 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5203,32 +5162,27 @@ Text content: ✅ Identical
 ### docx_classic88_presentation_handout
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.4727
-- **Overall Score:** 0.6891
-- **Pages:** MiniPdf=3, Reference=2
-- **File Size:** MiniPdf=630959 bytes, Reference=112210 bytes
+- **Visual Average:** 0.7196
+- **Overall Score:** 0.8878
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=630682 bytes, Reference=112210 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/docx_classic88_presentation_handout.pdf
 +++ reference/docx_classic88_presentation_handout.pdf
-@@ -14,7 +14,6 @@
+@@ -20,11 +20,11 @@
  ______________________________________________________________________
 
- Slide 3: DOCX Support
+ Slide 4: XLSX Support
 
- How Word documents are parsed and converted.
+ Excel workbook processing and chart rendering.
 
 ----PAGE---
 
  Notes:
 
- ______________________________________________________________________
-
- ______________________________________________________________________
-
-@@ -25,13 +24,13 @@
  ______________________________________________________________________
 
  ______________________________________________________________________
@@ -5243,28 +5197,14 @@ Text content: ✅ Identical
 
  Notes:
 
- ______________________________________________________________________
-
- ______________________________________________________________________
-
- ______________________________________________________________________
-
-----PAGE---
-
- Slide 6: Future Plans
-
- Roadmap for v2.0 and beyond.
-
- Notes:
-
 ```
 </details>
 
 ### docx_classic89_multi_image_gallery
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.898
-- **Overall Score:** 0.9592
+- **Visual Average:** 0.9331
+- **Overall Score:** 0.9732
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=627171 bytes, Reference=103275 bytes
 
@@ -5292,10 +5232,10 @@ Text content: ✅ Identical
 ### docx_classic90_comprehensive_annual_report
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9174
-- **Overall Score:** 0.967
+- **Visual Average:** 0.9567
+- **Overall Score:** 0.9827
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=653675 bytes, Reference=198798 bytes
+- **File Size:** MiniPdf=653686 bytes, Reference=198798 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5333,20 +5273,20 @@ Text content: ✅ Identical
 ### docx_classic91_landscape_page
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9591
-- **Overall Score:** 0.9836
+- **Visual Average:** 0.9645
+- **Overall Score:** 0.9858
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=635680 bytes, Reference=109003 bytes
+- **File Size:** MiniPdf=635716 bytes, Reference=109003 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic92_first_line_indent
 
 - **Text Similarity:** 0.9868
-- **Visual Average:** 0.9484
-- **Overall Score:** 0.9741
+- **Visual Average:** 0.9435
+- **Overall Score:** 0.9721
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=624942 bytes, Reference=77578 bytes
+- **File Size:** MiniPdf=624941 bytes, Reference=77578 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5399,10 +5339,10 @@ Text content: ✅ Identical
 ### docx_classic93_hanging_indent
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9508
-- **Overall Score:** 0.9803
+- **Visual Average:** 0.9501
+- **Overall Score:** 0.98
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=625606 bytes, Reference=93155 bytes
+- **File Size:** MiniPdf=625605 bytes, Reference=93155 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5447,10 +5387,10 @@ Text content: ✅ Identical
 ### docx_classic94_custom_bullet_characters
 
 - **Text Similarity:** 0.7177
-- **Visual Average:** 0.9816
+- **Visual Average:** 0.9815
 - **Overall Score:** 0.8797
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4263608 bytes, Reference=117189 bytes
+- **File Size:** MiniPdf=4263604 bytes, Reference=117189 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5530,20 +5470,20 @@ Text content: ✅ Identical
 ### docx_classic96_dense_data_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8138
-- **Overall Score:** 0.9255
+- **Visual Average:** 0.8674
+- **Overall Score:** 0.947
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=692500 bytes, Reference=126875 bytes
+- **File Size:** MiniPdf=692472 bytes, Reference=126875 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic97_product_catalog
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9009
-- **Overall Score:** 0.9604
+- **Visual Average:** 0.9309
+- **Overall Score:** 0.9724
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=5534 bytes, Reference=84145 bytes
+- **File Size:** MiniPdf=5519 bytes, Reference=84145 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5573,26 +5513,24 @@ Text content: ✅ Identical
 ### docx_classic98_training_manual
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.96
-- **Overall Score:** 0.984
+- **Visual Average:** 0.9569
+- **Overall Score:** 0.9828
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=711351 bytes, Reference=173553 bytes
+- **File Size:** MiniPdf=711310 bytes, Reference=173553 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/docx_classic98_training_manual.pdf
 +++ reference/docx_classic98_training_manual.pdf
-@@ -15,8 +15,8 @@
+@@ -15,7 +15,8 @@
  using MiniPdf;
 
  var converter = new DocxToPdfConverter();
 
  converter.Convert("input.docx", "output.pdf");
 
--WARNING: Large files may require additional memory. Set appropriate limits for production
-
--use.
+-WARNING: Large files may require additional memory. Set appropriate limits for production use.
 
 +WARNING: Large files may require additional memory. Set appropriate limits for
 
@@ -5610,17 +5548,17 @@ Text content: ✅ Identical
 ### docx_classic99_policy_document
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.4637
-- **Overall Score:** 0.6855
-- **Pages:** MiniPdf=2, Reference=1
-- **File Size:** MiniPdf=630788 bytes, Reference=139982 bytes
+- **Visual Average:** 0.9409
+- **Overall Score:** 0.9764
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=630510 bytes, Reference=139982 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/docx_classic99_policy_document.pdf
 +++ reference/docx_classic99_policy_document.pdf
-@@ -6,22 +6,21 @@
+@@ -6,20 +6,20 @@
  Reviewer A. Chen 2026-02-20
 
  Approver D. Williams 2026-03-01
@@ -5677,41 +5615,31 @@ Text content: ✅ Identical
 
  employment or contract.
 
-----PAGE---
-
- --- End of Policy ---
 ```
 </details>
 
 ### docx_classic100_multi_page_table
 
 - **Text Similarity:** 0.9932
-- **Visual Average:** 0.5277
-- **Overall Score:** 0.7084
-- **Pages:** MiniPdf=3, Reference=2
-- **File Size:** MiniPdf=723451 bytes, Reference=141154 bytes
+- **Visual Average:** 0.8645
+- **Overall Score:** 0.9431
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=723242 bytes, Reference=141154 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/docx_classic100_multi_page_table.pdf
 +++ reference/docx_classic100_multi_page_table.pdf
-@@ -22,7 +22,6 @@
- EMP-019 Frank Williams Engineering Analyst Sydney
+@@ -38,10 +38,11 @@
+ EMP-035 Eva Johnson Marketing Senior Engineer San Francisco
 
- EMP-020 Bob Smith HR Senior Engineer London
+ EMP-036 Grace Jones Engineering Analyst London
 
- EMP-021 Iris Moore Marketing Specialist Sydney
+ EMP-037 Alice Smith HR Analyst New York
 
 ----PAGE---
 
- EMP-022 Jack Garcia Sales Director San Francisco
-
- EMP-023 Bob Davis Marketing Coordinator San Francisco
-
- EMP-024 Jack Brown Engineering Director Sydney
-
-@@ -42,6 +41,8 @@
  EMP-038 Grace Smith Operations Manager New York
 
  EMP-039 Eva Smith Engineering Coordinator London
@@ -5728,30 +5656,16 @@ Text content: ✅ Identical
 
  EMP-043 Alice Garcia HR Director New York
 
-@@ -49,7 +50,6 @@
- EMP-045 David Williams HR Coordinator Berlin
-
- EMP-046 Eva Johnson Operations Director Sydney
-
- EMP-047 Carol Miller HR Coordinator Berlin
-
-----PAGE---
-
- EMP-048 Bob Jones Marketing Manager Berlin
-
- EMP-049 Jack Brown Engineering Director Tokyo
-
- EMP-050 Grace Garcia Engineering Manager San Francisco
 ```
 </details>
 
 ### docx_classic101_warranty_document
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9664
-- **Overall Score:** 0.9866
+- **Visual Average:** 0.9576
+- **Overall Score:** 0.983
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=627248 bytes, Reference=134098 bytes
+- **File Size:** MiniPdf=627249 bytes, Reference=134098 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5805,10 +5719,10 @@ Text content: ✅ Identical
 ### docx_classic102_curriculum_syllabus
 
 - **Text Similarity:** 0.9961
-- **Visual Average:** 0.9047
-- **Overall Score:** 0.9603
+- **Visual Average:** 0.939
+- **Overall Score:** 0.974
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=644284 bytes, Reference=150812 bytes
+- **File Size:** MiniPdf=644294 bytes, Reference=150812 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5846,10 +5760,10 @@ Text content: ✅ Identical
 ### docx_classic103_event_program
 
 - **Text Similarity:** 0.9917
-- **Visual Average:** 0.9381
-- **Overall Score:** 0.9719
+- **Visual Average:** 0.9597
+- **Overall Score:** 0.9806
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=636749 bytes, Reference=147081 bytes
+- **File Size:** MiniPdf=636745 bytes, Reference=147081 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5881,10 +5795,10 @@ Text content: ✅ Identical
 ### docx_classic104_sop_document
 
 - **Text Similarity:** 0.9915
-- **Visual Average:** 0.9737
-- **Overall Score:** 0.9861
+- **Visual Average:** 0.9708
+- **Overall Score:** 0.9849
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=637283 bytes, Reference=161569 bytes
+- **File Size:** MiniPdf=637293 bytes, Reference=161569 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5930,27 +5844,6 @@ Text content: ✅ Identical
 
  Generate test documents using the benchmark generator scripts.
 
-@@ -21,9 +22,9 @@
- Review the benchmark report for any scores below 95%.
-
- 3.6 File Issues
-
- Create GitHub issues for any identified regressions.
-
-----PAGE---
-
- 3.7 Verify Fixes
-
- Re-run the benchmark after code changes to confirm improvements.
-
-+---PAGE---
-
- 4. Acceptance Criteria
-
- • Average quality score must be >= 97%
-
- • No individual test case shall score below 80%
-
 ```
 </details>
 
@@ -5967,10 +5860,10 @@ Text content: ✅ Identical
 ### docx_classic106_multi_section_orientation
 
 - **Text Similarity:** 0.9933
-- **Visual Average:** 0.9704
-- **Overall Score:** 0.9855
+- **Visual Average:** 0.9724
+- **Overall Score:** 0.9863
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=648755 bytes, Reference=121828 bytes
+- **File Size:** MiniPdf=648752 bytes, Reference=121828 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6042,10 +5935,10 @@ Text content: ✅ Identical
 ### docx_classic107_order_form
 
 - **Text Similarity:** 0.9859
-- **Visual Average:** 0.9107
-- **Overall Score:** 0.9586
+- **Visual Average:** 0.9355
+- **Overall Score:** 0.9686
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=18593 bytes, Reference=96453 bytes
+- **File Size:** MiniPdf=18588 bytes, Reference=96453 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6093,10 +5986,10 @@ Text content: ✅ Identical
 ### docx_classic108_comparison_matrix
 
 - **Text Similarity:** 0.9753
-- **Visual Average:** 0.8647
-- **Overall Score:** 0.936
+- **Visual Average:** 0.9132
+- **Overall Score:** 0.9554
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=794083 bytes, Reference=118891 bytes
+- **File Size:** MiniPdf=794095 bytes, Reference=118891 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6193,30 +6086,30 @@ Text content: ✅ Identical
 ### docx_classic109_release_notes
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9661
-- **Overall Score:** 0.9864
+- **Visual Average:** 0.9648
+- **Overall Score:** 0.9859
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=633016 bytes, Reference=161252 bytes
+- **File Size:** MiniPdf=633015 bytes, Reference=161252 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic110_troubleshooting_guide
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.968
-- **Overall Score:** 0.9872
+- **Visual Average:** 0.9658
+- **Overall Score:** 0.9863
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=636653 bytes, Reference=111746 bytes
+- **File Size:** MiniPdf=636657 bytes, Reference=111746 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic111_meeting_agenda
 
 - **Text Similarity:** 0.9187
-- **Visual Average:** 0.9509
-- **Overall Score:** 0.9478
+- **Visual Average:** 0.9605
+- **Overall Score:** 0.9517
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4272421 bytes, Reference=130313 bytes
+- **File Size:** MiniPdf=4272422 bytes, Reference=130313 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6264,8 +6157,8 @@ Text content: ✅ Identical
 ### docx_classic112_project_status_report
 
 - **Text Similarity:** 0.95
-- **Visual Average:** 0.9167
-- **Overall Score:** 0.9467
+- **Visual Average:** 0.9445
+- **Overall Score:** 0.9578
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=4274544 bytes, Reference=159646 bytes
 
@@ -6319,30 +6212,30 @@ Text content: ✅ Identical
 ### docx_classic113_address_labels
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9694
-- **Overall Score:** 0.9878
+- **Visual Average:** 0.9772
+- **Overall Score:** 0.9909
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=626926 bytes, Reference=116233 bytes
+- **File Size:** MiniPdf=626922 bytes, Reference=116233 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic114_test_report
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9118
-- **Overall Score:** 0.9647
+- **Visual Average:** 0.9498
+- **Overall Score:** 0.9799
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=643695 bytes, Reference=147821 bytes
+- **File Size:** MiniPdf=643687 bytes, Reference=147821 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic115_price_list
 
 - **Text Similarity:** 0.9709
-- **Visual Average:** 0.8297
-- **Overall Score:** 0.9202
+- **Visual Average:** 0.9084
+- **Overall Score:** 0.9517
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=646655 bytes, Reference=123194 bytes
+- **File Size:** MiniPdf=646665 bytes, Reference=123194 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6401,20 +6294,20 @@ Text content: ✅ Identical
 ### docx_classic116_risk_assessment
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.899
-- **Overall Score:** 0.9596
+- **Visual Average:** 0.9332
+- **Overall Score:** 0.9733
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=650747 bytes, Reference=120292 bytes
+- **File Size:** MiniPdf=650726 bytes, Reference=120292 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic117_employee_handbook_excerpt
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.4679
-- **Overall Score:** 0.6872
-- **Pages:** MiniPdf=2, Reference=1
-- **File Size:** MiniPdf=643050 bytes, Reference=179606 bytes
+- **Visual Average:** 0.9394
+- **Overall Score:** 0.9758
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=642766 bytes, Reference=179606 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6474,36 +6367,26 @@ Text content: ✅ Identical
 
  • Treat all colleagues with respect and dignity
 
-@@ -26,5 +27,4 @@
- Step 1: Verbal warning with documented discussion
-
- Step 2: Written warning with improvement plan
-
- Step 3: Final written warning with performance review
-
-----PAGE---
-
- Step 4: Termination of employment
 ```
 </details>
 
 ### docx_classic118_data_report_with_summary
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8796
-- **Overall Score:** 0.9518
+- **Visual Average:** 0.9344
+- **Overall Score:** 0.9738
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4137013 bytes, Reference=130167 bytes
+- **File Size:** MiniPdf=4137008 bytes, Reference=130167 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic119_multi_language_document
 
 - **Text Similarity:** 0.9876
-- **Visual Average:** 0.9652
-- **Overall Score:** 0.9811
+- **Visual Average:** 0.9645
+- **Overall Score:** 0.9808
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=8270412 bytes, Reference=136786 bytes
+- **File Size:** MiniPdf=8270417 bytes, Reference=136786 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6545,10 +6428,10 @@ Text content: ✅ Identical
 ### docx_classic120_comprehensive_business_proposal
 
 - **Text Similarity:** 0.9918
-- **Visual Average:** 0.7162
-- **Overall Score:** 0.7832
-- **Pages:** MiniPdf=4, Reference=3
-- **File Size:** MiniPdf=647909 bytes, Reference=200095 bytes
+- **Visual Average:** 0.9587
+- **Overall Score:** 0.9802
+- **Pages:** MiniPdf=3, Reference=3
+- **File Size:** MiniPdf=647643 bytes, Reference=200095 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6613,26 +6496,14 @@ Text content: ✅ Identical
 
  3. CJK font auto-embedding for international documents
 
-@@ -43,6 +43,5 @@
- seats)
-
- Premium Support $5,000 24/7 with SLA
-
- Custom Integration $15,000 One-time setup
-
-----PAGE---
-
- TOTAL (Year 1) $38,000
-
- We look forward to partnering with Acme Corporation.
 ```
 </details>
 
 ### docx_classic121_thin_border_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9781
-- **Overall Score:** 0.9912
+- **Visual Average:** 0.9825
+- **Overall Score:** 0.993
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=629331 bytes, Reference=93903 bytes
 
@@ -6641,8 +6512,8 @@ Text content: ✅ Identical
 ### docx_classic122_thick_outer_border_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9788
-- **Overall Score:** 0.9915
+- **Visual Average:** 0.981
+- **Overall Score:** 0.9924
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=631644 bytes, Reference=98269 bytes
 
@@ -6661,8 +6532,8 @@ Text content: ✅ Identical
 ### docx_classic124_colored_border_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9733
-- **Overall Score:** 0.9893
+- **Visual Average:** 0.9774
+- **Overall Score:** 0.991
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=626724 bytes, Reference=88322 bytes
 
@@ -6671,18 +6542,18 @@ Text content: ✅ Identical
 ### docx_classic125_solid_cell_fills
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9309
-- **Overall Score:** 0.9724
+- **Visual Average:** 0.9686
+- **Overall Score:** 0.9874
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=626564 bytes, Reference=92426 bytes
+- **File Size:** MiniPdf=626560 bytes, Reference=92426 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic126_dark_header_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9431
-- **Overall Score:** 0.9772
+- **Visual Average:** 0.941
+- **Overall Score:** 0.9764
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=628811 bytes, Reference=101627 bytes
 
@@ -6691,18 +6562,18 @@ Text content: ✅ Identical
 ### docx_classic127_font_styles_showcase
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9715
-- **Overall Score:** 0.9886
+- **Visual Average:** 0.9798
+- **Overall Score:** 0.9919
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=628248 bytes, Reference=138431 bytes
+- **File Size:** MiniPdf=628246 bytes, Reference=138431 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic128_font_sizes_showcase
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9609
-- **Overall Score:** 0.9844
+- **Visual Average:** 0.9602
+- **Overall Score:** 0.9841
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=621037 bytes, Reference=79780 bytes
 
@@ -6744,8 +6615,8 @@ Text content: ✅ Identical
 ### docx_classic129_alignment_combinations
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9836
-- **Overall Score:** 0.9934
+- **Visual Average:** 0.9821
+- **Overall Score:** 0.9928
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=628305 bytes, Reference=93307 bytes
 
@@ -6754,10 +6625,10 @@ Text content: ✅ Identical
 ### docx_classic130_wrap_and_indent
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9751
-- **Overall Score:** 0.99
+- **Visual Average:** 0.9742
+- **Overall Score:** 0.9897
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=626064 bytes, Reference=80252 bytes
+- **File Size:** MiniPdf=626062 bytes, Reference=80252 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6801,58 +6672,58 @@ Text content: ✅ Identical
 ### docx_classic131_number_format_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9675
-- **Overall Score:** 0.987
+- **Visual Average:** 0.9748
+- **Overall Score:** 0.9899
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=633275 bytes, Reference=98702 bytes
+- **File Size:** MiniPdf=633266 bytes, Reference=98702 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic132_striped_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8628
-- **Overall Score:** 0.9451
+- **Visual Average:** 0.9148
+- **Overall Score:** 0.9659
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=637956 bytes, Reference=103001 bytes
+- **File Size:** MiniPdf=637944 bytes, Reference=103001 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic133_gradient_rows_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.89
-- **Overall Score:** 0.956
+- **Visual Average:** 0.9625
+- **Overall Score:** 0.985
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=636006 bytes, Reference=96779 bytes
+- **File Size:** MiniPdf=635997 bytes, Reference=96779 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic134_heatmap_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9092
-- **Overall Score:** 0.9637
+- **Visual Average:** 0.9632
+- **Overall Score:** 0.9853
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=642511 bytes, Reference=92444 bytes
+- **File Size:** MiniPdf=642504 bytes, Reference=92444 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic135_bottom_border_paragraphs
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9784
+- **Visual Average:** 0.9785
 - **Overall Score:** 0.9914
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=623751 bytes, Reference=87812 bytes
+- **File Size:** MiniPdf=623749 bytes, Reference=87812 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic136_financial_statement
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9067
-- **Overall Score:** 0.9627
+- **Visual Average:** 0.9306
+- **Overall Score:** 0.9722
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=634941 bytes, Reference=114465 bytes
 
@@ -6861,18 +6732,18 @@ Text content: ✅ Identical
 ### docx_classic137_checkerboard_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8711
-- **Overall Score:** 0.9484
+- **Visual Average:** 0.9334
+- **Overall Score:** 0.9734
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=647311 bytes, Reference=63596 bytes
+- **File Size:** MiniPdf=647303 bytes, Reference=63596 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic138_color_grid_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9133
-- **Overall Score:** 0.9653
+- **Visual Average:** 0.9416
+- **Overall Score:** 0.9766
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=622735 bytes, Reference=65776 bytes
 
@@ -6881,20 +6752,20 @@ Text content: ✅ Identical
 ### docx_classic139_paragraph_shading_patterns
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8354
-- **Overall Score:** 0.9342
+- **Visual Average:** 0.8192
+- **Overall Score:** 0.9277
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=623793 bytes, Reference=72758 bytes
+- **File Size:** MiniPdf=623791 bytes, Reference=72758 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic140_rotated_text_table
 
 - **Text Similarity:** 0.8158
-- **Visual Average:** 0.9717
-- **Overall Score:** 0.915
+- **Visual Average:** 0.9728
+- **Overall Score:** 0.9154
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=625288 bytes, Reference=90797 bytes
+- **File Size:** MiniPdf=625278 bytes, Reference=90797 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6934,18 +6805,18 @@ Text content: ✅ Identical
 ### docx_classic142_styled_invoice_document
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9127
-- **Overall Score:** 0.9651
+- **Visual Average:** 0.9286
+- **Overall Score:** 0.9714
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=12050 bytes, Reference=94931 bytes
+- **File Size:** MiniPdf=12052 bytes, Reference=94931 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic143_multi_section_document
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8971
-- **Overall Score:** 0.9588
+- **Visual Average:** 0.8779
+- **Overall Score:** 0.9512
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=10342 bytes, Reference=80334 bytes
 
@@ -6954,8 +6825,8 @@ Text content: ✅ Identical
 ### docx_classic144_note_style_paragraphs
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9697
-- **Overall Score:** 0.9879
+- **Visual Average:** 0.9794
+- **Overall Score:** 0.9918
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=622086 bytes, Reference=110519 bytes
 
@@ -6964,18 +6835,18 @@ Text content: ✅ Identical
 ### docx_classic145_status_badge_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.919
-- **Overall Score:** 0.9676
+- **Visual Average:** 0.9344
+- **Overall Score:** 0.9738
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=633915 bytes, Reference=110142 bytes
+- **File Size:** MiniPdf=633911 bytes, Reference=110142 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic146_double_border_table
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9392
-- **Overall Score:** 0.9757
+- **Visual Average:** 0.9317
+- **Overall Score:** 0.9727
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=627904 bytes, Reference=96549 bytes
 
@@ -6984,8 +6855,8 @@ Text content: ✅ Identical
 ### docx_classic147_multi_section_styled_report
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8983
-- **Overall Score:** 0.9593
+- **Visual Average:** 0.9423
+- **Overall Score:** 0.9769
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=644164 bytes, Reference=115750 bytes
 
@@ -6994,30 +6865,30 @@ Text content: ✅ Identical
 ### docx_classic148_data_grid_document
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.7845
-- **Overall Score:** 0.9138
+- **Visual Average:** 0.8573
+- **Overall Score:** 0.9429
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=668380 bytes, Reference=111668 bytes
+- **File Size:** MiniPdf=668362 bytes, Reference=111668 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic149_merged_section_report
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9141
-- **Overall Score:** 0.9656
+- **Visual Average:** 0.9218
+- **Overall Score:** 0.9687
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=13235 bytes, Reference=84151 bytes
+- **File Size:** MiniPdf=13222 bytes, Reference=84151 bytes
 
 Text content: ✅ Identical
 
 ### docx_classic150_kitchen_sink_styles
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9336
-- **Overall Score:** 0.9734
+- **Visual Average:** 0.9539
+- **Overall Score:** 0.9816
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=638037 bytes, Reference=159873 bytes
+- **File Size:** MiniPdf=638049 bytes, Reference=159873 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7049,28 +6920,6 @@ Text content: ✅ Identical
 
  Double border below this paragraph
 
-@@ -20,10 +20,10 @@
- Level 1 indented item with some descriptive text
-
- Level 2 indented item with some descriptive text
-
- Level 3 indented item with some descriptive text
-
-----PAGE---
-
- Size Comparison
-
- 10pt text sample
-
- 14pt text sample
-
-+---PAGE---
-
- 18pt text sample
-
- 24pt text sample
-
- End of Style Showcase
 ```
 </details>
 
@@ -7078,15 +6927,9 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **docx_classic56_images_and_tables_mixed** (score: 0.6742)
-1. **docx_classic84_shipping_label** (score: 0.6824)
-1. **docx_classic99_policy_document** (score: 0.6855)
-1. **docx_classic117_employee_handbook_excerpt** (score: 0.6872)
-1. **docx_classic88_presentation_handout** (score: 0.6891)
-1. **docx_classic57_sports_results_with_logos** (score: 0.6897)
-1. **docx_classic34_employee_directory_with_photo** (score: 0.694)
-1. **docx_classic100_multi_page_table** (score: 0.7084)
+1. **docx_classic60_project_status_with_milestones** (score: 0.6884)
+1. **docx_classic34_employee_directory_with_photo** (score: 0.6929)
+1. **docx_classic50_long_table_with_formatting** (score: 0.7434)
 1. **docx_classic13_long_document** (score: 0.7728)
-1. **docx_classic120_comprehensive_business_proposal** (score: 0.7832)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
