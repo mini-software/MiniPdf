@@ -485,19 +485,19 @@
     "name": "Invoice",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 828148,
+    "minipdf_size": 113620,
     "reference_size": 65867,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9982,
+    "text_similarity": 1.0,
     "flat_text_similarity": 0.9982,
-    "word_text_similarity": 0.9947,
-    "text_diff": "--- minipdf/Invoice.pdf\n+++ reference/Invoice.pdf\n@@ -18,5 +18,4 @@\n TOTAL 420.00\n\n MAKE ALL CHECKS PAYABLE TO CREATE & CO.\n\n Thank you for your business!\n\n-CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334\n\n-1\n+CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334",
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/Invoice.pdf\n+++ reference/Invoice.pdf\n@@ -1,7 +1,6 @@\n INVOICE\n\n DATE: TO: Anjali Chaturvedi\n\n-Date\n\n-Extra Frame Photography\n\n+Date Extra Frame Photography\n\n 89 Pacific Ave\n\n INVOICE #\n\n San Francisco, CA\n",
     "visual_scores": [
-      0.9387
+      0.9592
     ],
-    "visual_avg": 0.9387,
+    "visual_avg": 0.9592,
     "diff_images": [
       {
         "page": 1,
@@ -505,7 +505,7 @@
         "reference_img": "Invoice_p1_reference.png"
       }
     ],
-    "overall_score": 0.9748
+    "overall_score": 0.9837
   },
   {
     "name": "issues66",

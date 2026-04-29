@@ -509,6 +509,22 @@ internal static class DocxReader
         var footerRuns = ReadHeaderFooterRuns(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName);
         var headerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName, tableStyles);
         var footerElements = ReadHeaderFooterElements(body, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName, tableStyles);
+        // First-page-specific header/footer (used when sectPr has <w:titlePg/>).
+        // Returns an empty list (not null) when titlePg is set but no first-type reference exists,
+        // signaling "render no header/footer on the first page".
+        List<DocxElement>? firstPageHeaderElements = null;
+        List<DocxElement>? firstPageFooterElements = null;
+        if (pageLayout?.TitlePg == true)
+        {
+            var bodySectPr = body.Element(W + "sectPr");
+            if (bodySectPr != null)
+            {
+                var fhe = ReadHeaderFooterElementsFromSectPr(bodySectPr, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName, tableStyles, typeFilter: "first");
+                var ffe = ReadHeaderFooterElementsFromSectPr(bodySectPr, relationships, archive, styles, numbering, "footerReference", defaultFontName, defaultEastAsiaFontName, tableStyles, typeFilter: "first");
+                firstPageHeaderElements = fhe;
+                firstPageFooterElements = ffe;
+            }
+        }
         var hfImages = ReadHeaderFooterImages(body, relationships, archive, "headerReference");
         hfImages.AddRange(ReadHeaderFooterImages(body, relationships, archive, "footerReference"));
 
@@ -560,7 +576,9 @@ internal static class DocxReader
             headerElements.Count > 0 ? headerElements : null, footerElements.Count > 0 ? footerElements : null,
             sectionFooterElements, footnotes,
             hfImages.Count > 0 ? hfImages : null,
-            defaultTabStopPt);
+            defaultTabStopPt,
+            firstPageHeaderElements,
+            firstPageFooterElements);
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -3126,10 +3144,27 @@ internal static class DocxReader
         XElement sectPr, Dictionary<string, string> relationships, ZipArchive archive,
         Dictionary<string, DocxStyleInfo> styles, Dictionary<string, DocxNumberingDef> numbering,
         string refElementName, string? defaultFontName, string? defaultEastAsiaFontName,
-        Dictionary<string, DocxTableStyleInfo>? tableStyles = null)
+        Dictionary<string, DocxTableStyleInfo>? tableStyles = null, string? typeFilter = null)
     {
 
-        var hfRef = sectPr.Element(W + refElementName);
+        XElement? hfRef = null;
+        foreach (var candidate in sectPr.Elements(W + refElementName))
+        {
+            var t = candidate.Attribute(W + "type")?.Value;
+            // OOXML: type defaults to "default" when absent.
+            var normalized = string.IsNullOrEmpty(t) ? "default" : t;
+            if (typeFilter == null)
+            {
+                // Legacy behavior: prefer default type, fall back to the first reference seen.
+                if (normalized == "default") { hfRef = candidate; break; }
+                hfRef ??= candidate;
+            }
+            else if (string.Equals(normalized, typeFilter, StringComparison.OrdinalIgnoreCase))
+            {
+                hfRef = candidate;
+                break;
+            }
+        }
         if (hfRef == null) return [];
 
         var rId = hfRef.Attribute(R + "id")?.Value;
@@ -3319,7 +3354,11 @@ internal static class DocxReader
                 pageNumStart = pns;
         }
 
-        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch, headerMargin, footerMargin, sectionType, columnCount, columnSpacing, pageNumStart, columnWidths, columnGaps);
+        // Parse titlePg flag — when set, the first page of the section uses a
+        // distinct first-page header/footer (or none when no first reference is given).
+        bool titlePg = sectPr.Element(W + "titlePg") != null;
+
+        return new DocxPageLayout(pageWidth, pageHeight, marginTop, marginBottom, marginLeft, marginRight, gridLinePitch, headerMargin, footerMargin, sectionType, columnCount, columnSpacing, pageNumStart, columnWidths, columnGaps, titlePg);
     }
 
 
@@ -3864,51 +3903,66 @@ internal static class DocxReader
     private static string? ResolveFontNameFromRFonts(XElement rFonts, string? majorThemeLatinFont, string? minorThemeLatinFont,
         string? majorThemeEastAsiaFont, string? minorThemeEastAsiaFont, bool preferEastAsiaTheme = false)
     {
-        string? explicitFont;
-        if (preferEastAsiaTheme)
-        {
-            explicitFont = rFonts.Attribute(W + "eastAsia")?.Value
-                ?? rFonts.Attribute(W + "ascii")?.Value
-                ?? rFonts.Attribute(W + "hAnsi")?.Value
-                ?? rFonts.Attribute(W + "cs")?.Value;
-        }
-        else
-        {
-            explicitFont = rFonts.Attribute(W + "ascii")?.Value
-                ?? rFonts.Attribute(W + "hAnsi")?.Value
-                ?? rFonts.Attribute(W + "cs")?.Value
-                ?? rFonts.Attribute(W + "eastAsia")?.Value;
-        }
-        if (!string.IsNullOrWhiteSpace(explicitFont))
-            return explicitFont;
+        // OOXML rFonts attributes are scoped by script:
+        //   ascii / asciiTheme / hAnsi / hAnsiTheme  → Latin / Western text
+        //   eastAsia / eastAsiaTheme                 → CJK text
+        //   cs / cstheme                             → complex scripts (Arabic, Hebrew, Thai)
+        // For Latin runs, w:cs and w:eastAsia must NOT take priority over the Latin theme;
+        // doing so causes themed Latin docs (where docDefaults sets cs="Times New Roman" for
+        // complex-script fallback while ascii/hAnsiTheme point to Century Gothic) to render
+        // body text in Times New Roman instead of the theme's Latin face.
 
-        string? themeFont = null;
-        if (preferEastAsiaTheme)
-            themeFont = rFonts.Attribute(W + "eastAsiaTheme")?.Value
-                ?? rFonts.Attribute(W + "asciiTheme")?.Value
-                ?? rFonts.Attribute(W + "hAnsiTheme")?.Value;
-        else
-            themeFont = rFonts.Attribute(W + "asciiTheme")?.Value
-                ?? rFonts.Attribute(W + "hAnsiTheme")?.Value
-                ?? rFonts.Attribute(W + "eastAsiaTheme")?.Value;
-
-        if (string.IsNullOrWhiteSpace(themeFont))
-            return null;
-
-        if (themeFont.EndsWith("EastAsia", StringComparison.OrdinalIgnoreCase))
+        static string? ResolveThemeToken(string? themeFont,
+            string? majorLatin, string? minorLatin, string? majorEa, string? minorEa)
         {
+            if (string.IsNullOrWhiteSpace(themeFont)) return null;
+            if (themeFont!.EndsWith("EastAsia", StringComparison.OrdinalIgnoreCase))
+            {
+                if (themeFont.StartsWith("major", StringComparison.OrdinalIgnoreCase))
+                    return majorEa ?? majorLatin;
+                if (themeFont.StartsWith("minor", StringComparison.OrdinalIgnoreCase))
+                    return minorEa ?? minorLatin;
+            }
             if (themeFont.StartsWith("major", StringComparison.OrdinalIgnoreCase))
-                return majorThemeEastAsiaFont ?? majorThemeLatinFont;
+                return majorLatin;
             if (themeFont.StartsWith("minor", StringComparison.OrdinalIgnoreCase))
-                return minorThemeEastAsiaFont ?? minorThemeLatinFont;
+                return minorLatin;
+            return null;
         }
 
-        if (themeFont.StartsWith("major", StringComparison.OrdinalIgnoreCase))
-            return majorThemeLatinFont;
-        if (themeFont.StartsWith("minor", StringComparison.OrdinalIgnoreCase))
-            return minorThemeLatinFont;
+        if (preferEastAsiaTheme)
+        {
+            var eaExplicit = rFonts.Attribute(W + "eastAsia")?.Value;
+            if (!string.IsNullOrWhiteSpace(eaExplicit))
+                return eaExplicit;
+            var eaThemeResolved = ResolveThemeToken(rFonts.Attribute(W + "eastAsiaTheme")?.Value,
+                majorThemeLatinFont, minorThemeLatinFont, majorThemeEastAsiaFont, minorThemeEastAsiaFont);
+            if (!string.IsNullOrWhiteSpace(eaThemeResolved))
+                return eaThemeResolved;
+        }
 
-        return null;
+        // Latin (preferred): explicit ascii/hAnsi → asciiTheme/hAnsiTheme.
+        var latinExplicit = rFonts.Attribute(W + "ascii")?.Value
+            ?? rFonts.Attribute(W + "hAnsi")?.Value;
+        if (!string.IsNullOrWhiteSpace(latinExplicit))
+            return latinExplicit;
+
+        var latinThemeResolved = ResolveThemeToken(
+            rFonts.Attribute(W + "asciiTheme")?.Value ?? rFonts.Attribute(W + "hAnsiTheme")?.Value,
+            majorThemeLatinFont, minorThemeLatinFont, majorThemeEastAsiaFont, minorThemeEastAsiaFont);
+        if (!string.IsNullOrWhiteSpace(latinThemeResolved))
+            return latinThemeResolved;
+
+        // Final fallbacks: complex-script and East Asian explicit/theme entries.
+        var fallbackExplicit = rFonts.Attribute(W + "cs")?.Value
+            ?? rFonts.Attribute(W + "eastAsia")?.Value;
+        if (!string.IsNullOrWhiteSpace(fallbackExplicit))
+            return fallbackExplicit;
+
+        var fallbackTheme = ResolveThemeToken(
+            rFonts.Attribute(W + "cstheme")?.Value ?? rFonts.Attribute(W + "eastAsiaTheme")?.Value,
+            majorThemeLatinFont, minorThemeLatinFont, majorThemeEastAsiaFont, minorThemeEastAsiaFont);
+        return fallbackTheme;
     }
 
     private static string? ResolveThemeEastAsiaFont(string? eastAsiaLang,
@@ -4088,7 +4142,9 @@ internal sealed record DocxDocument(
     List<List<DocxElement>?>? SectionFooterElements = null,
     Dictionary<string, DocxFootnote>? Footnotes = null,
     List<DocxImage>? HeaderFooterImages = null,
-    float DefaultTabStopPt = 36f
+    float DefaultTabStopPt = 36f,
+    List<DocxElement>? FirstPageHeaderElements = null,
+    List<DocxElement>? FirstPageFooterElements = null
 );
 
 /// <summary>Page layout settings from sectPr.</summary>
@@ -4107,7 +4163,8 @@ internal sealed record DocxPageLayout(
     float ColumnSpacing = 36,
     int PageNumStart = -1,
     float[]? ColumnWidths = null,
-    float[]? ColumnGaps = null
+    float[]? ColumnGaps = null,
+    bool TitlePg = false
 );
 
 /// <summary>Base type for document elements (paragraphs, tables).</summary>

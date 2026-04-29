@@ -452,13 +452,26 @@ internal static class DocxToPdfConverter
         if (hasHeaderElements || hasFooterElements || hasSectionFooters)
         {
             var totalPages = pdfDoc.Pages.Count;
+            // First page of section 0 honors body-sectPr titlePg (suppresses default header/footer
+            // when no first-type reference is present, or uses the first-type reference when present).
+            bool firstPageTitlePg = docxDoc.PageLayout?.TitlePg == true;
+            var firstPageHeaderOverride = docxDoc.FirstPageHeaderElements;
+            var firstPageFooterOverride = docxDoc.FirstPageFooterElements;
             for (int pi = 0; pi < totalPages; pi++)
             {
                 var page = pdfDoc.Pages[pi];
-                if (hasHeaderElements)
+                bool isFirstPageOfDoc = (pi == 0);
+                bool suppressDefaultHeader = isFirstPageOfDoc && firstPageTitlePg;
+                bool suppressDefaultFooter = isFirstPageOfDoc && firstPageTitlePg;
+                if (!suppressDefaultHeader && hasHeaderElements)
                 {
                     var headerStartY = page.Height - options.HeaderMargin;
                     RenderHeaderFooterElementsOnPage(page, options, docxDoc.HeaderElements!, headerStartY, pi, totalPages);
+                }
+                else if (suppressDefaultHeader && firstPageHeaderOverride is { Count: > 0 })
+                {
+                    var headerStartY = page.Height - options.HeaderMargin;
+                    RenderHeaderFooterElementsOnPage(page, options, firstPageHeaderOverride, headerStartY, pi, totalPages);
                 }
 
                 // Determine footer elements for this page: prefer per-section, fall back to global
@@ -493,6 +506,12 @@ internal static class DocxToPdfConverter
                 // Fall back to global footer if no section-specific footer
                 if (pageFooterElements == null && hasFooterElements)
                     pageFooterElements = docxDoc.FooterElements;
+
+                // titlePg override: suppress default footer on first page (or use first-type override).
+                if (suppressDefaultFooter)
+                {
+                    pageFooterElements = (firstPageFooterOverride is { Count: > 0 }) ? firstPageFooterOverride : null;
+                }
 
                 if (pageFooterElements is { Count: > 0 }
                     && pageFooterElements.Any(e => e is DocxTable
@@ -995,7 +1014,9 @@ internal static class DocxToPdfConverter
         // Word/LibreOffice behavior.  Since spacingAfter was already applied by
         // the previous paragraph, only add the excess (if any).
         var spacingBefore = paragraph.SpacingBefore > 0 ? paragraph.SpacingBefore : 0;
-        if (spacingBefore > 0 && (!state.IsTopOfPage || paragraph.ForceSpacingBefore))
+        // Word/LibreOffice apply explicit pStyle SpacingBefore even at the top of a page
+        // (only inherited Normal/docDefault spacing-before is suppressed at top of page).
+        if (spacingBefore > 0 && (!state.IsTopOfPage || paragraph.ForceSpacingBefore || paragraph.SpacingBeforeExplicit))
         {
             var extraBefore = spacingBefore - state.LastSpacingAfter;
             if (extraBefore > 0)

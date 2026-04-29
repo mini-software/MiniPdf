@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T04:18:48.843049
+Generated: 2026-04-30T07:49:43.516048
 
 ## Summary
 
@@ -17,7 +17,7 @@ Generated: 2026-04-30T04:18:48.843049
 | 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.967 | 2/2 | **0.9801** |
 | 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9846 | 7/7 | **0.9859** |
 | 11 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
-| 12 | 🟢 Invoice | ✅ | 0.9982 | 0.9387 | 1/1 | **0.9748** |
+| 12 | 🟢 Invoice | ✅ | 1.0 | 0.9592 | 1/1 | **0.9837** |
 | 13 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
 | 14 | 🟡 MODERN LIVING | ✅ | 0.8902 | 0.8311 | 2/2 | **0.8885** |
 | 15 | 🟡 nthu_article | ✅ | 0.8772 | 0.8748 | 19/20 | **0.8008** |
@@ -27,7 +27,7 @@ Generated: 2026-04-30T04:18:48.843049
 | 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8119**
+**Average Overall Score: 0.8124**
 
 ## Visual Comparison
 
@@ -277,7 +277,7 @@ Generated: 2026-04-30T04:18:48.843049
 </tr>
 <tr>
   <td><b>Invoice</b></td>
-  <td colspan="1">Invoice <span style="color:#3fb950">⬤</span> 97.5%</td>
+  <td colspan="1">Invoice <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
   <td><img src="images/Invoice_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1343,28 +1343,34 @@ Text content: ✅ Identical
 
 ### Invoice
 
-- **Text Similarity:** 0.9982
-- **Visual Average:** 0.9387
-- **Overall Score:** 0.9748
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9592
+- **Overall Score:** 0.9837
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=828148 bytes, Reference=65867 bytes
+- **File Size:** MiniPdf=113620 bytes, Reference=65867 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Invoice.pdf
 +++ reference/Invoice.pdf
-@@ -18,5 +18,4 @@
- TOTAL 420.00
+@@ -1,7 +1,6 @@
+ INVOICE
 
- MAKE ALL CHECKS PAYABLE TO CREATE & CO.
+ DATE: TO: Anjali Chaturvedi
 
- Thank you for your business!
+-Date
 
--CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334
+-Extra Frame Photography
 
--1
-+CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334
++Date Extra Frame Photography
+
+ 89 Pacific Ave
+
+ INVOICE #
+
+ San Francisco, CA
+
 ```
 </details>
 

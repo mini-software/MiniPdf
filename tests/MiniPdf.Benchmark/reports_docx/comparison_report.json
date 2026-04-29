@@ -1103,7 +1103,7 @@
     "name": "docx_classic36_invoice_with_logo",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 9627,
+    "minipdf_size": 272854,
     "reference_size": 86303,
     "pdf_valid": true,
     "minipdf_pages": 1,
@@ -1113,9 +1113,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9629
+      0.964
     ],
-    "visual_avg": 0.9629,
+    "visual_avg": 0.964,
     "diff_images": [
       {
         "page": 1,
@@ -1123,7 +1123,7 @@
         "reference_img": "docx_classic36_invoice_with_logo_p1_reference.png"
       }
     ],
-    "overall_score": 0.9852
+    "overall_score": 0.9856
   },
   {
     "name": "docx_classic36_wide_table",
@@ -1505,7 +1505,7 @@
     "name": "docx_classic43_invoice_document",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 14494,
+    "minipdf_size": 280556,
     "reference_size": 99728,
     "pdf_valid": true,
     "minipdf_pages": 1,
@@ -1515,9 +1515,9 @@
     "word_text_similarity": 0.9775,
     "text_diff": "--- minipdf/docx_classic43_invoice_document.pdf\n+++ reference/docx_classic43_invoice_document.pdf\n@@ -7,14 +7,18 @@\n Bill To: Widget Industries Ship To: Same as billing\n\n Item Description Qty Unit Price Total\n\n SVC-001 Consulting 40 $150.00 $6,000.00\n\n-Services (40 hrs)\n\n+Services (40\n\n+hrs)\n\n LIC-002 Enterprise 5 $499.00 $2,495.00\n\n-License (Annual)\n\n-HW-003 Server Hardware 2 $2,499.00 $4,998.00\n\n+License\n\n+(Annual)\n\n+HW-003 Server 2 $2,499.00 $4,998.00\n\n+Hardware\n\n SUP-004 Premium 1 $1,800.00 $1,800.00\n\n Support Plan\n\n-TRN-005 On-site Training 1 $3,000.00 $3,000.00\n\n-(2 days)\n\n+TRN-005 On-site 1 $3,000.00 $3,000.00\n\n+Training (2\n\n+days)\n\n Subtotal:  $18,293.00\n\n Tax (8.25%):  $1,509.17\n\n Total Due: $19,802.17",
     "visual_scores": [
-      0.9437
+      0.949
     ],
-    "visual_avg": 0.9437,
+    "visual_avg": 0.949,
     "diff_images": [
       {
         "page": 1,
@@ -1525,7 +1525,7 @@
         "reference_img": "docx_classic43_invoice_document_p1_reference.png"
       }
     ],
-    "overall_score": 0.9685
+    "overall_score": 0.9706
   },
   {
     "name": "docx_classic44_dashboard_with_kpi_image",
@@ -4671,7 +4671,7 @@
     "name": "docx_classic142_styled_invoice_document",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 12052,
+    "minipdf_size": 275985,
     "reference_size": 94931,
     "pdf_valid": true,
     "minipdf_pages": 1,
@@ -4681,9 +4681,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.9286
+      0.9306
     ],
-    "visual_avg": 0.9286,
+    "visual_avg": 0.9306,
     "diff_images": [
       {
         "page": 1,
@@ -4691,7 +4691,7 @@
         "reference_img": "docx_classic142_styled_invoice_document_p1_reference.png"
       }
     ],
-    "overall_score": 0.9714
+    "overall_score": 0.9722
   },
   {
     "name": "docx_classic143_multi_section_document",

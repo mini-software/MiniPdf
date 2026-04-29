@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T01:32:30.529034
+Generated: 2026-04-30T07:49:14.640999
 
 ## Summary
 
@@ -46,7 +46,7 @@ Generated: 2026-04-30T01:32:30.529034
 | 38 | 🟢 docx_classic34_paragraph_borders | ✅ | 1.0 | 0.9793 | 1/1 | **0.9917** |
 | 39 | 🟢 docx_classic35_inventory_with_product_photos | ✅ | 1.0 | 0.9802 | 2/2 | **0.9921** |
 | 40 | 🟡 docx_classic35_tab_stops | ✅ | 0.64 | 0.9913 | 1/1 | **0.8525** |
-| 41 | 🟢 docx_classic36_invoice_with_logo | ✅ | 1.0 | 0.9629 | 1/1 | **0.9852** |
+| 41 | 🟢 docx_classic36_invoice_with_logo | ✅ | 1.0 | 0.964 | 1/1 | **0.9856** |
 | 42 | 🟢 docx_classic36_wide_table | ✅ | 1.0 | 0.9809 | 1/1 | **0.9924** |
 | 43 | 🟢 docx_classic37_nested_table | ✅ | 0.963 | 0.9896 | 1/1 | **0.981** |
 | 44 | 🟢 docx_classic37_real_estate_listing | ✅ | 1.0 | 0.9468 | 1/1 | **0.9787** |
@@ -61,7 +61,7 @@ Generated: 2026-04-30T01:32:30.529034
 | 53 | 🟢 docx_classic42_chart_image_with_data | ✅ | 1.0 | 0.9558 | 1/1 | **0.9823** |
 | 54 | 🟢 docx_classic42_meeting_minutes | ✅ | 0.9903 | 0.9608 | 1/1 | **0.9804** |
 | 55 | 🟢 docx_classic43_event_flyer_with_banner | ✅ | 1.0 | 0.9182 | 1/1 | **0.9673** |
-| 56 | 🟢 docx_classic43_invoice_document | ✅ | 0.9775 | 0.9437 | 1/1 | **0.9685** |
+| 56 | 🟢 docx_classic43_invoice_document | ✅ | 0.9775 | 0.949 | 1/1 | **0.9706** |
 | 57 | 🟢 docx_classic44_dashboard_with_kpi_image | ✅ | 1.0 | 0.9584 | 1/1 | **0.9834** |
 | 58 | 🟢 docx_classic44_memo | ✅ | 1.0 | 0.9725 | 1/1 | **0.989** |
 | 59 | 🟢 docx_classic45_certificate_with_seal | ✅ | 1.0 | 0.9728 | 1/1 | **0.9891** |
@@ -177,7 +177,7 @@ Generated: 2026-04-30T01:32:30.529034
 | 169 | 🟢 docx_classic139_paragraph_shading_patterns | ✅ | 1.0 | 0.8192 | 1/1 | **0.9277** |
 | 170 | 🟢 docx_classic140_rotated_text_table | ✅ | 0.8158 | 0.9728 | 1/1 | **0.9154** |
 | 171 | 🟢 docx_classic141_mixed_border_styles | ✅ | 1.0 | 0.9854 | 1/1 | **0.9942** |
-| 172 | 🟢 docx_classic142_styled_invoice_document | ✅ | 1.0 | 0.9286 | 1/1 | **0.9714** |
+| 172 | 🟢 docx_classic142_styled_invoice_document | ✅ | 1.0 | 0.9306 | 1/1 | **0.9722** |
 | 173 | 🟢 docx_classic143_multi_section_document | ✅ | 1.0 | 0.8779 | 1/1 | **0.9512** |
 | 174 | 🟢 docx_classic144_note_style_paragraphs | ✅ | 1.0 | 0.9794 | 1/1 | **0.9918** |
 | 175 | 🟢 docx_classic145_status_badge_table | ✅ | 1.0 | 0.9344 | 1/1 | **0.9738** |
@@ -555,7 +555,7 @@ Generated: 2026-04-30T01:32:30.529034
 </tr>
 <tr>
   <td><b>docx_classic36_invoice_with_logo</b></td>
-  <td colspan="1">docx_classic36_invoice_with_logo <span style="color:#3fb950">⬤</span> 98.5%</td>
+  <td colspan="1">docx_classic36_invoice_with_logo <span style="color:#3fb950">⬤</span> 98.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic36_invoice_with_logo_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -683,7 +683,7 @@ Generated: 2026-04-30T01:32:30.529034
 </tr>
 <tr>
   <td><b>docx_classic43_invoice_document</b></td>
-  <td colspan="1">docx_classic43_invoice_document <span style="color:#3fb950">⬤</span> 96.9%</td>
+  <td colspan="1">docx_classic43_invoice_document <span style="color:#3fb950">⬤</span> 97.1%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic43_invoice_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1711,7 +1711,7 @@ Generated: 2026-04-30T01:32:30.529034
 </tr>
 <tr>
   <td><b>docx_classic142_styled_invoice_document</b></td>
-  <td colspan="1">docx_classic142_styled_invoice_document <span style="color:#3fb950">⬤</span> 97.1%</td>
+  <td colspan="1">docx_classic142_styled_invoice_document <span style="color:#3fb950">⬤</span> 97.2%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic142_styled_invoice_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -2640,10 +2640,10 @@ Text content: ✅ Identical
 ### docx_classic36_invoice_with_logo
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9629
-- **Overall Score:** 0.9852
+- **Visual Average:** 0.964
+- **Overall Score:** 0.9856
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=9627 bytes, Reference=86303 bytes
+- **File Size:** MiniPdf=272854 bytes, Reference=86303 bytes
 
 Text content: ✅ Identical
 
@@ -2992,10 +2992,10 @@ Text content: ✅ Identical
 ### docx_classic43_invoice_document
 
 - **Text Similarity:** 0.9775
-- **Visual Average:** 0.9437
-- **Overall Score:** 0.9685
+- **Visual Average:** 0.949
+- **Overall Score:** 0.9706
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=14494 bytes, Reference=99728 bytes
+- **File Size:** MiniPdf=280556 bytes, Reference=99728 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6805,10 +6805,10 @@ Text content: ✅ Identical
 ### docx_classic142_styled_invoice_document
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9286
-- **Overall Score:** 0.9714
+- **Visual Average:** 0.9306
+- **Overall Score:** 0.9722
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=12052 bytes, Reference=94931 bytes
+- **File Size:** MiniPdf=275985 bytes, Reference=94931 bytes
 
 Text content: ✅ Identical
 
