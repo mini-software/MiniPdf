@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T03:47:22.322757
+Generated: 2026-04-30T04:18:48.843049
 
 ## Summary
 
@@ -9,7 +9,7 @@ Generated: 2026-04-30T03:47:22.322757
 | 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9629 | 2/2 | **0.9852** |
 | 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9728 | 2/2 | **0.9891** |
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9738 | 2/2 | **0.9871** |
-| 4 | 🟢 20260318_issue | ✅ | 0.975 | 0.8623 | 7/7 | **0.9349** |
+| 4 | 🟢 20260318_issue | ✅ | 0.9685 | 0.865 | 7/7 | **0.9334** |
 | 5 | 🟢 CCU_article | ✅ | 0.922 | 0.9477 | 21/21 | **0.9479** |
 | 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
 | 7 | 🟢 Class News | ✅ | 0.9919 | 0.8904 | 4/4 | **0.9529** |
@@ -20,7 +20,7 @@ Generated: 2026-04-30T03:47:22.322757
 | 12 | 🟢 Invoice | ✅ | 0.9982 | 0.9387 | 1/1 | **0.9748** |
 | 13 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
 | 14 | 🟡 MODERN LIVING | ✅ | 0.8902 | 0.8311 | 2/2 | **0.8885** |
-| 15 | 🟡 nthu_article | ✅ | 0.8741 | 0.8706 | 19/20 | **0.7979** |
+| 15 | 🟡 nthu_article | ✅ | 0.8772 | 0.8748 | 19/20 | **0.8008** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
 | 17 | 🟢 SA8000 ch sample | ✅ | 0.9923 | 0.96 | 2/2 | **0.9809** |
 | 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9606 | 1/1 | **0.9842** |
@@ -71,7 +71,7 @@ Generated: 2026-04-30T03:47:22.322757
 </tr>
 <tr>
   <td><b>20260318_issue</b></td>
-  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.5%</td>
+  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.3%</td>
 </tr>
 <tr>
   <td><img src="images/20260318_issue_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -313,7 +313,7 @@ Generated: 2026-04-30T03:47:22.322757
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.8%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 80.1%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -644,11 +644,11 @@ Text content: ✅ Identical
 
 ### 20260318_issue
 
-- **Text Similarity:** 0.975
-- **Visual Average:** 0.8623
-- **Overall Score:** 0.9349
+- **Text Similarity:** 0.9685
+- **Visual Average:** 0.865
+- **Overall Score:** 0.9334
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=1531208 bytes, Reference=344088 bytes
+- **File Size:** MiniPdf=1531209 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -672,30 +672,57 @@ Text content: ✅ Identical
 
  页眉的名称 ……………………..
 
-@@ -32,17 +32,20 @@
- document for information only.
-
- Name Department Responsibility
-
+@@ -34,16 +34,16 @@
  Document Classification
 
--Classification Company Confidential
+ Company Confidential
 
--Definition Information is Group confidential and needs to be protected
+ Classification
 
--Context Where loss of information confidentiality would result in significant harm to the
++1
 
--interests of the organization, financial loss, embarrassment or loss of information
++页脚的公司名称
 
--Introduction
++---PAGE---
 
--The Process Definition Document (PDD) captures the flow of a business process to be developed.
++页眉的名称 ……………………..
 
-+Company Confidential
++页眉 换了一行 .
 
-+Classification
+ Information is Group confidential and needs to be protected
 
- 1
+ Definition
+
+ Where loss of information confidentiality would result in significant harm to the
+
+ Context
+
+ interests of the organization, financial loss, embarrassment or loss of information
+
+-1
+
+-页脚的公司名称
+
+----PAGE---
+
+-页眉的名称 ……………………..
+
+-页眉 换了一行 .
+
+ Introduction
+
+ The Process Definition Document (PDD) captures the flow of a business process to be developed.
+
+ The flowchart contained within the document captures, at a high level, the business process to be automated, the
+
+@@ -72,12 +72,11 @@
+ 2. Fill the title of work order.
+
+ 3. Fill Asset code. Automatically display description after filling asset code.
+
+ 4. Choose the Owner group.
+
+-5.
 
  页脚的公司名称
 
@@ -705,25 +732,15 @@ Text content: ✅ Identical
 
  页眉 换了一行 .
 
-+Information is Group confidential and needs to be protected
+-Choose the Work Type.
 
-+Definition
++5. Choose the Work Type.
 
-+Where loss of information confidentiality would result in significant harm to the
+ 页脚的公司名称
 
-+Context
+ ---PAGE---
 
-+interests of the organization, financial loss, embarrassment or loss of information
-
-+Introduction
-
-+The Process Definition Document (PDD) captures the flow of a business process to be developed.
-
- The flowchart contained within the document captures, at a high level, the business process to be automated, the
-
- target systems used within the process and any assumptions that have been taken into account.
-
- Once agreed as the basis for the automation of the target process, the flowchart and assumptions will be used as a
+ 页眉的名称 ……………………..
 
 ```
 </details>
@@ -1607,11 +1624,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.8741
-- **Visual Average:** 0.8706
-- **Overall Score:** 0.7979
+- **Text Similarity:** 0.8772
+- **Visual Average:** 0.8748
+- **Overall Score:** 0.8008
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=9018597 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=9018813 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1660,7 +1677,7 @@ Text content: ✅ Identical
 
  名詞附錄 Glossary of Terms (可免)
 
-@@ -23,174 +23,176 @@
+@@ -23,98 +23,98 @@
  （二） 電子檔論文次序
 
  去掉前項 藍字 項目。
@@ -1753,11 +1770,13 @@ Text content: ✅ Identical
 
  次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列
 
- 於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
+-於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標
 
--體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。目
+-楷體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。
 
--次格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
+-目次格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
+
++於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
 
 +體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。目次
 
@@ -1805,12 +1824,8 @@ Text content: ✅ Identical
 
 +併改用中文新式標號。
 
-+2 ，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段
-
- 「左右對齊」。
-
- （三） 引
-... (16903 more characters)
++2 ，行距建議設定為 1.2 行 （ word
+... (15182 more characters)
 
 ```
 </details>
@@ -2202,8 +2217,4 @@ Text content: ✅ Identical
 
 ## Improvement Suggestions
 
-### ⚠ Low-Score Test Cases (below 0.8)
-
-1. **nthu_article** (score: 0.7979)
-
-Review the text diffs and visual comparisons above to identify specific rendering issues.
+All test cases scored 0.8 or above. 🎉

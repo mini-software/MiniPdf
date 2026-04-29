@@ -1,13 +1,13 @@
-ㄘ# MiniPdf vs Reference PDF Comparison Report
+# MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-03-29T20:19:30.681649
+Generated: 2026-04-30T03:44:56.718989
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.8766 | 0.915 | 2/2 | **0.9166** |
-| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.8766 | 0.915 | 2/2 | **0.9166** |
+| 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9293 | 0.9152 | 2/2 | **0.9378** |
+| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9293 | 0.9152 | 2/2 | **0.9378** |
 | 3 | 🟢 Business expense budget1 | ✅ | 0.9601 | 0.8761 | 4/4 | **0.9345** |
 | 4 | 🟡 Business expenses budget2 | ✅ | 0.7489 | 0.7908 | 4/4 | **0.8159** |
 | 5 | 🟡 Business plan checklist with SWOT analysis1 | ✅ | 1.0 | 0.5567 | 1/1 | **0.8227** |
@@ -20,9 +20,9 @@ Generated: 2026-03-29T20:19:30.681649
 | 12 | 🔴 Small business cash flow forecast1 | ✅ | 0.9765 | 0.3221 | 2/5 | **0.6194** |
 | 13 | ⚪ Wedding timeline planner1 | ✅ | N/A | N/A | ?/? | **N/A** |
 | 14 | 🟡 Wedding_timeline_planner1_copy | ✅ | 0.9718 | 0.7304 | 4/5 | **0.7809** |
-| 15 | 🟡 Weekly schedule planner1 | ✅ | 1.0 | 0.7413 | 1/1 | **0.8965** |
+| 15 | 🟢 Weekly schedule planner1 | ✅ | 1.0 | 0.7597 | 1/1 | **0.9039** |
 
-**Average Overall Score: 0.7044**
+**Average Overall Score: 0.7078**
 
 ## Visual Comparison
 
@@ -30,7 +30,7 @@ Generated: 2026-03-29T20:19:30.681649
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>Academic Achievement Summary Table</b></td>
-  <td colspan="1">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 91.7%</td>
+  <td colspan="1">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 93.8%</td>
 </tr>
 <tr>
   <td><img src="images/Academic Achievement Summary Table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -42,7 +42,7 @@ Generated: 2026-03-29T20:19:30.681649
 </tr>
 <tr>
   <td><b>AcademicAchievement_temp</b></td>
-  <td colspan="1">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 91.7%</td>
+  <td colspan="1">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 93.8%</td>
 </tr>
 <tr>
   <td><img src="images/AcademicAchievement_temp_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -352,7 +352,7 @@ Generated: 2026-03-29T20:19:30.681649
 </tr>
 <tr>
   <td><b>Weekly schedule planner1</b></td>
-  <td colspan="1">Weekly schedule planner1 <span style="color:#d29922">⬤</span> 89.6%</td>
+  <td colspan="1">Weekly schedule planner1 <span style="color:#3fb950">⬤</span> 90.4%</td>
 </tr>
 <tr>
   <td><img src="images/Weekly schedule planner1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -364,11 +364,11 @@ Generated: 2026-03-29T20:19:30.681649
 
 ### Academic Achievement Summary Table
 
-- **Text Similarity:** 0.8766
-- **Visual Average:** 0.915
-- **Overall Score:** 0.9166
+- **Text Similarity:** 0.9293
+- **Visual Average:** 0.9152
+- **Overall Score:** 0.9378
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=413235 bytes, Reference=168612 bytes
+- **File Size:** MiniPdf=574983 bytes, Reference=168612 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -462,23 +462,21 @@ Generated: 2026-03-29T20:19:30.681649
 
  4
 
--本人 承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
+-本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
 
--报名人 员签 名：
+-报名人员签名：
 
--日 期： 年   月   日
-
--填表说明 ：1 .请将各类学术 成果 按 等级、 层次 及 水平自高到低顺 序 填 写 。不加行 、 减行，不加页 、 减页， 本表 采用A4正反面打印。
-
--2. 核心期刊是指 北京大学图 书 馆“中 文核心期刊 ” 、 南京大学“中 文社 会科学引 文 索引 （ CSSCI ）来源期刊 ” （ 含扩展版 、 集 刊）、 中国科学技术信息 研究 所
-
--“中国科技 论文 统计 源期刊 ”和科学引 文 索引 （ SCI ）、社 会科学引 文 索引 （ SSCI ） 。其中，被SCI 、 SSCI收录的 期刊 要求进入所在学科 领 域Q 1、 Q2。
 +本人承 诺 以上情况属 实 ，并有相 应证 明。如有不 实 之 处 ，愿意承担相 应责 任。
 
 +报 名人 员签 名：
 
-+日期：    年   月   日
+ 日期：    年   月   日
 
+-填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。
+
+-2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所
+
+-“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。
 +填表 说 明： 1. 请 将各 类 学 术 成果按等 级层 、 次及水平自高到低 顺 序填写。不加行、减行，不加 页 、减 页 ，本表采用 A4正反面打印。
 
 +2.核心期刊是指北京大学 图书馆 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 扩 展版、集刊）、中国科学技 术 信息研究所
@@ -489,11 +487,11 @@ Generated: 2026-03-29T20:19:30.681649
 
 ### AcademicAchievement_temp
 
-- **Text Similarity:** 0.8766
-- **Visual Average:** 0.915
-- **Overall Score:** 0.9166
+- **Text Similarity:** 0.9293
+- **Visual Average:** 0.9152
+- **Overall Score:** 0.9378
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=413235 bytes, Reference=168612 bytes
+- **File Size:** MiniPdf=574983 bytes, Reference=168612 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -587,23 +585,21 @@ Generated: 2026-03-29T20:19:30.681649
 
  4
 
--本人 承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
+-本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
 
--报名人 员签 名：
+-报名人员签名：
 
--日 期： 年   月   日
-
--填表说明 ：1 .请将各类学术 成果 按 等级、 层次 及 水平自高到低顺 序 填 写 。不加行 、 减行，不加页 、 减页， 本表 采用A4正反面打印。
-
--2. 核心期刊是指 北京大学图 书 馆“中 文核心期刊 ” 、 南京大学“中 文社 会科学引 文 索引 （ CSSCI ）来源期刊 ” （ 含扩展版 、 集 刊）、 中国科学技术信息 研究 所
-
--“中国科技 论文 统计 源期刊 ”和科学引 文 索引 （ SCI ）、社 会科学引 文 索引 （ SSCI ） 。其中，被SCI 、 SSCI收录的 期刊 要求进入所在学科 领 域Q 1、 Q2。
 +本人承 诺 以上情况属 实 ，并有相 应证 明。如有不 实 之 处 ，愿意承担相 应责 任。
 
 +报 名人 员签 名：
 
-+日期：    年   月   日
+ 日期：    年   月   日
 
+-填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。
+
+-2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所
+
+-“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。
 +填表 说 明： 1. 请 将各 类 学 术 成果按等 级层 、 次及水平自高到低 顺 序填写。不加行、减行，不加 页 、减 页 ，本表采用 A4正反面打印。
 
 +2.核心期刊是指北京大学 图书馆 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 扩 展版、集刊）、中国科学技 术 信息研究所
@@ -1189,7 +1185,7 @@ Text content: ✅ Identical
 
  Invoice #: 10654
 
--Invoice date: 3/29/2026
+-Invoice date: 4/30/2026
 
 -Embrace
 
@@ -1468,10 +1464,10 @@ Text content: ✅ Identical
 ### Weekly schedule planner1
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.7413
-- **Overall Score:** 0.8965
+- **Visual Average:** 0.7597
+- **Overall Score:** 0.9039
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=702770 bytes, Reference=96071 bytes
+- **File Size:** MiniPdf=700907 bytes, Reference=96071 bytes
 
 <details><summary>Text Diff</summary>
 

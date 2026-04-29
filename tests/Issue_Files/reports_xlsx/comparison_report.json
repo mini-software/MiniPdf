@@ -3,20 +3,20 @@
     "name": "Academic Achievement Summary Table",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 413235,
+    "minipdf_size": 574983,
     "reference_size": 168612,
     "pdf_valid": true,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8766,
-    "flat_text_similarity": 0.8732,
-    "word_text_similarity": 0.4635,
-    "text_diff": "--- minipdf/Academic Achievement Summary Table.pdf\n+++ reference/Academic Achievement Summary Table.pdf\n@@ -1,11 +1,11 @@\n 附件3\n\n-学术业绩汇总表\n\n+学 术业绩汇总 表\n\n 报考岗位： 报考岗位代码： 考生姓名：\n\n 博士论文题目： 博士论文研究方向：\n\n-公开发表的主要 论文情况\n\n-角色 转载刊物、转载字数及转载 是否为代表作\n\n+公开 发 表的主要 论 文情况\n\n+角色 转载刊物、转载字数及 是否为代表作\n\n 序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n-（排名） 时间等 （指定1篇）\n\n+（排名） 转载时间等 （指定1篇）\n\n 1\n\n 2\n\n 3\n\n@@ -19,19 +19,19 @@\n 11\n\n 12\n\n ---PAGE---\n\n-公开出版的主要专 （ 译 ） 著 、 教材情况\n\n-角色 全书文字 本人写作 转载刊物、转载字数及转载\n\n+公开出版的主要 专译 （ ）著、教材情况\n\n+角色 全书文 本人写 转载刊物、转载字数及\n\n 序号 题目 出版社名称 出版号 出版时间 备注\n\n-（排名） 数 量 时间等\n\n+（排名） 字数 作量 转载时间等\n\n 1\n\n 2\n\n-获批的决策咨询 报 告情况\n\n+获 批的决策咨 询报 告情况\n\n 序号 题目 批示领导级别 获批时间 角色（排名） 备注\n\n 1\n\n 2\n\n 3\n\n 4\n\n-承担的主要科 研课题情况\n\n+承担的主要科研 课题 情况\n\n 项目\n\n 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注\n\n 级别\n\n@@ -39,9 +39,9 @@\n 2\n\n 3\n\n 4\n\n-本人 承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。\n\n-报名人 员签 名：\n\n-日 期： 年   月   日\n\n-填表说明 ：1 .请将各类学术 成果 按 等级、 层次 及 水平自高到低顺 序 填 写 。不加行 、 减行，不加页 、 减页， 本表 采用A4正反面打印。\n\n-2. 核心期刊是指 北京大学图 书 馆“中 文核心期刊 ” 、 南京大学“中 文社 会科学引 文 索引 （ CSSCI ）来源期刊 ” （ 含扩展版 、 集 刊）、 中国科学技术信息 研究 所\n\n-“中国科技 论文 统计 源期刊 ”和科学引 文 索引 （ SCI ）、社 会科学引 文 索引 （ SSCI ） 。其中，被SCI 、 SSCI收录的 期刊 要求进入所在学科 领 域Q 1、 Q2。\n+本人承 诺 以上情况属 实 ，并有相 应证 明。如有不 实 之 处 ，愿意承担相 应责 任。\n\n+报 名人 员签 名：\n\n+日期：    年   月   日\n\n+填表 说 明： 1. 请 将各 类 学 术 成果按等 级层 、 次及水平自高到低 顺 序填写。不加行、减行，不加 页 、减 页 ，本表采用 A4正反面打印。\n\n+2.核心期刊是指北京大学 图书馆 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 扩 展版、集刊）、中国科学技 术 信息研究所\n\n+“中国科技 论 文 统计 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 录 的期刊要求 进 入所在学科 领 域 Q1、Q2。",
+    "text_similarity": 0.9293,
+    "flat_text_similarity": 0.9281,
+    "word_text_similarity": 0.5551,
+    "text_diff": "--- minipdf/Academic Achievement Summary Table.pdf\n+++ reference/Academic Achievement Summary Table.pdf\n@@ -1,11 +1,11 @@\n 附件3\n\n-学术业绩汇总表\n\n+学 术业绩汇总 表\n\n 报考岗位： 报考岗位代码： 考生姓名：\n\n 博士论文题目： 博士论文研究方向：\n\n-公开发表的主要 论文情况\n\n-角色 转载刊物、转载字数及转载 是否为代表作\n\n+公开 发 表的主要 论 文情况\n\n+角色 转载刊物、转载字数及 是否为代表作\n\n 序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n-（排名） 时间等 （指定1篇）\n\n+（排名） 转载时间等 （指定1篇）\n\n 1\n\n 2\n\n 3\n\n@@ -19,19 +19,19 @@\n 11\n\n 12\n\n ---PAGE---\n\n-公开出版的主要专 （ 译 ） 著 、 教材情况\n\n-角色 全书文字 本人写作 转载刊物、转载字数及转载\n\n+公开出版的主要 专译 （ ）著、教材情况\n\n+角色 全书文 本人写 转载刊物、转载字数及\n\n 序号 题目 出版社名称 出版号 出版时间 备注\n\n-（排名） 数 量 时间等\n\n+（排名） 字数 作量 转载时间等\n\n 1\n\n 2\n\n-获批的决策咨询 报 告情况\n\n+获 批的决策咨 询报 告情况\n\n 序号 题目 批示领导级别 获批时间 角色（排名） 备注\n\n 1\n\n 2\n\n 3\n\n 4\n\n-承担的主要科 研课题情况\n\n+承担的主要科研 课题 情况\n\n 项目\n\n 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注\n\n 级别\n\n@@ -39,9 +39,9 @@\n 2\n\n 3\n\n 4\n\n-本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。\n\n-报名人员签名：\n\n+本人承 诺 以上情况属 实 ，并有相 应证 明。如有不 实 之 处 ，愿意承担相 应责 任。\n\n+报 名人 员签 名：\n\n 日期：    年   月   日\n\n-填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。\n\n-2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所\n\n-“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。\n+填表 说 明： 1. 请 将各 类 学 术 成果按等 级层 、 次及水平自高到低 顺 序填写。不加行、减行，不加 页 、减 页 ，本表采用 A4正反面打印。\n\n+2.核心期刊是指北京大学 图书馆 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 扩 展版、集刊）、中国科学技 术 信息研究所\n\n+“中国科技 论 文 统计 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 录 的期刊要求 进 入所在学科 领 域 Q1、Q2。",
     "visual_scores": [
-      0.9389,
-      0.8911
+      0.939,
+      0.8914
     ],
-    "visual_avg": 0.915,
+    "visual_avg": 0.9152,
     "diff_images": [
       {
         "page": 1,
@@ -29,26 +29,26 @@
         "reference_img": "Academic Achievement Summary Table_p2_reference.png"
       }
     ],
-    "overall_score": 0.9166
+    "overall_score": 0.9378
   },
   {
     "name": "AcademicAchievement_temp",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 413235,
+    "minipdf_size": 574983,
     "reference_size": 168612,
     "pdf_valid": true,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8766,
-    "flat_text_similarity": 0.8732,
-    "word_text_similarity": 0.4635,
-    "text_diff": "--- minipdf/AcademicAchievement_temp.pdf\n+++ reference/AcademicAchievement_temp.pdf\n@@ -1,11 +1,11 @@\n 附件3\n\n-学术业绩汇总表\n\n+学 术业绩汇总 表\n\n 报考岗位： 报考岗位代码： 考生姓名：\n\n 博士论文题目： 博士论文研究方向：\n\n-公开发表的主要 论文情况\n\n-角色 转载刊物、转载字数及转载 是否为代表作\n\n+公开 发 表的主要 论 文情况\n\n+角色 转载刊物、转载字数及 是否为代表作\n\n 序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n-（排名） 时间等 （指定1篇）\n\n+（排名） 转载时间等 （指定1篇）\n\n 1\n\n 2\n\n 3\n\n@@ -19,19 +19,19 @@\n 11\n\n 12\n\n ---PAGE---\n\n-公开出版的主要专 （ 译 ） 著 、 教材情况\n\n-角色 全书文字 本人写作 转载刊物、转载字数及转载\n\n+公开出版的主要 专译 （ ）著、教材情况\n\n+角色 全书文 本人写 转载刊物、转载字数及\n\n 序号 题目 出版社名称 出版号 出版时间 备注\n\n-（排名） 数 量 时间等\n\n+（排名） 字数 作量 转载时间等\n\n 1\n\n 2\n\n-获批的决策咨询 报 告情况\n\n+获 批的决策咨 询报 告情况\n\n 序号 题目 批示领导级别 获批时间 角色（排名） 备注\n\n 1\n\n 2\n\n 3\n\n 4\n\n-承担的主要科 研课题情况\n\n+承担的主要科研 课题 情况\n\n 项目\n\n 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注\n\n 级别\n\n@@ -39,9 +39,9 @@\n 2\n\n 3\n\n 4\n\n-本人 承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。\n\n-报名人 员签 名：\n\n-日 期： 年   月   日\n\n-填表说明 ：1 .请将各类学术 成果 按 等级、 层次 及 水平自高到低顺 序 填 写 。不加行 、 减行，不加页 、 减页， 本表 采用A4正反面打印。\n\n-2. 核心期刊是指 北京大学图 书 馆“中 文核心期刊 ” 、 南京大学“中 文社 会科学引 文 索引 （ CSSCI ）来源期刊 ” （ 含扩展版 、 集 刊）、 中国科学技术信息 研究 所\n\n-“中国科技 论文 统计 源期刊 ”和科学引 文 索引 （ SCI ）、社 会科学引 文 索引 （ SSCI ） 。其中，被SCI 、 SSCI收录的 期刊 要求进入所在学科 领 域Q 1、 Q2。\n+本人承 诺 以上情况属 实 ，并有相 应证 明。如有不 实 之 处 ，愿意承担相 应责 任。\n\n+报 名人 员签 名：\n\n+日期：    年   月   日\n\n+填表 说 明： 1. 请 将各 类 学 术 成果按等 级层 、 次及水平自高到低 顺 序填写。不加行、减行，不加 页 、减 页 ，本表采用 A4正反面打印。\n\n+2.核心期刊是指北京大学 图书馆 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 扩 展版、集刊）、中国科学技 术 信息研究所\n\n+“中国科技 论 文 统计 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 录 的期刊要求 进 入所在学科 领 域 Q1、Q2。",
+    "text_similarity": 0.9293,
+    "flat_text_similarity": 0.9281,
+    "word_text_similarity": 0.5551,
+    "text_diff": "--- minipdf/AcademicAchievement_temp.pdf\n+++ reference/AcademicAchievement_temp.pdf\n@@ -1,11 +1,11 @@\n 附件3\n\n-学术业绩汇总表\n\n+学 术业绩汇总 表\n\n 报考岗位： 报考岗位代码： 考生姓名：\n\n 博士论文题目： 博士论文研究方向：\n\n-公开发表的主要 论文情况\n\n-角色 转载刊物、转载字数及转载 是否为代表作\n\n+公开 发 表的主要 论 文情况\n\n+角色 转载刊物、转载字数及 是否为代表作\n\n 序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n-（排名） 时间等 （指定1篇）\n\n+（排名） 转载时间等 （指定1篇）\n\n 1\n\n 2\n\n 3\n\n@@ -19,19 +19,19 @@\n 11\n\n 12\n\n ---PAGE---\n\n-公开出版的主要专 （ 译 ） 著 、 教材情况\n\n-角色 全书文字 本人写作 转载刊物、转载字数及转载\n\n+公开出版的主要 专译 （ ）著、教材情况\n\n+角色 全书文 本人写 转载刊物、转载字数及\n\n 序号 题目 出版社名称 出版号 出版时间 备注\n\n-（排名） 数 量 时间等\n\n+（排名） 字数 作量 转载时间等\n\n 1\n\n 2\n\n-获批的决策咨询 报 告情况\n\n+获 批的决策咨 询报 告情况\n\n 序号 题目 批示领导级别 获批时间 角色（排名） 备注\n\n 1\n\n 2\n\n 3\n\n 4\n\n-承担的主要科 研课题情况\n\n+承担的主要科研 课题 情况\n\n 项目\n\n 序号 课题名称 项目来源 课题编号 角色（排名） 起止时间 成果鉴定（评价） 备注\n\n 级别\n\n@@ -39,9 +39,9 @@\n 2\n\n 3\n\n 4\n\n-本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。\n\n-报名人员签名：\n\n+本人承 诺 以上情况属 实 ，并有相 应证 明。如有不 实 之 处 ，愿意承担相 应责 任。\n\n+报 名人 员签 名：\n\n 日期：    年   月   日\n\n-填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。\n\n-2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所\n\n-“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。\n+填表 说 明： 1. 请 将各 类 学 术 成果按等 级层 、 次及水平自高到低 顺 序填写。不加行、减行，不加 页 、减 页 ，本表采用 A4正反面打印。\n\n+2.核心期刊是指北京大学 图书馆 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 扩 展版、集刊）、中国科学技 术 信息研究所\n\n+“中国科技 论 文 统计 源期刊”和科学引文索引（ SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 录 的期刊要求 进 入所在学科 领 域 Q1、Q2。",
     "visual_scores": [
-      0.9389,
-      0.8911
+      0.939,
+      0.8914
     ],
-    "visual_avg": 0.915,
+    "visual_avg": 0.9152,
     "diff_images": [
       {
         "page": 1,
@@ -61,7 +61,7 @@
         "reference_img": "AcademicAchievement_temp_p2_reference.png"
       }
     ],
-    "overall_score": 0.9166
+    "overall_score": 0.9378
   },
   {
     "name": "Business expense budget1",
@@ -520,9 +520,9 @@
     "minipdf_pages": 1,
     "reference_pages": 1,
     "text_similarity": 0.9223,
-    "flat_text_similarity": 0.7922,
+    "flat_text_similarity": 0.814,
     "word_text_similarity": 0.9223,
-    "text_diff": "--- minipdf/Simple invoice1.pdf\n+++ reference/Simple invoice1.pdf\n@@ -1,16 +1,13 @@\n-Elegant INVOICE\n\n+INVOICE\n\n+Elegant\n\n Invoice #: 10654\n\n-Invoice date: 3/29/2026\n\n-Embrace\n\n+Embrace Invoice date: 3/17/2026\n\n Job: Wedding florals\n\n-Hailey Clark\n\n-345 W Main Bill to:\n\n+345 W Main Bill to: Hailey Clark\n\n Los Angeles, CA 14151 Address: 123 Avenue A,\n\n-Burbank, CA 56789\n\n-P: 915-555-0195\n\n+P: 915-555-0195 Burbank, CA 56789\n\n F: 915-555-0105 Phone: 805-555-0185\n\n-elegantembrace@example.com NA\n\n-Fax:\n\n+elegantembrace@example.com Fax: NA\n\n Item # Description Qty Unit price Discount Price\n\n A875 Peonies 35 $1.05 $36.75\n\n K245 Tulips 25 $2.00 $50.00\n",
+    "text_diff": "--- minipdf/Simple invoice1.pdf\n+++ reference/Simple invoice1.pdf\n@@ -1,16 +1,13 @@\n-Elegant INVOICE\n\n+INVOICE\n\n+Elegant\n\n Invoice #: 10654\n\n-Invoice date: 4/30/2026\n\n-Embrace\n\n+Embrace Invoice date: 3/17/2026\n\n Job: Wedding florals\n\n-Hailey Clark\n\n-345 W Main Bill to:\n\n+345 W Main Bill to: Hailey Clark\n\n Los Angeles, CA 14151 Address: 123 Avenue A,\n\n-Burbank, CA 56789\n\n-P: 915-555-0195\n\n+P: 915-555-0195 Burbank, CA 56789\n\n F: 915-555-0105 Phone: 805-555-0185\n\n-elegantembrace@example.com NA\n\n-Fax:\n\n+elegantembrace@example.com Fax: NA\n\n Item # Description Qty Unit price Discount Price\n\n A875 Peonies 35 $1.05 $36.75\n\n K245 Tulips 25 $2.00 $50.00\n",
     "visual_scores": [
       0.6853
     ],
@@ -647,7 +647,7 @@
     "name": "Weekly schedule planner1",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 702770,
+    "minipdf_size": 700907,
     "reference_size": 96071,
     "pdf_valid": true,
     "minipdf_pages": 1,
@@ -657,9 +657,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "--- minipdf/Weekly schedule planner1.pdf\n+++ reference/Weekly schedule planner1.pdf\n@@ -5,7 +5,8 @@\n Read 30 min/day Go grocery shopping\n\n Stretch Pick up dry cleaning\n\n Monday Tuesday Wednesday Thursday Friday Saturday Sunday\n\n-23 24 25 26 27 28 29\n\n+23\n\n+24 25 26 27 28 29\n\n March March March March March March March\n\n ✔ Run ✔ Run ✖ Run Run Run Run Run\n\n ✖ Read ✔ Read ✔ Read Read Read Read Read\n",
     "visual_scores": [
-      0.7413
+      0.7597
     ],
-    "visual_avg": 0.7413,
+    "visual_avg": 0.7597,
     "diff_images": [
       {
         "page": 1,
@@ -667,6 +667,6 @@
         "reference_img": "Weekly schedule planner1_p1_reference.png"
       }
     ],
-    "overall_score": 0.8965
+    "overall_score": 0.9039
   }
 ]

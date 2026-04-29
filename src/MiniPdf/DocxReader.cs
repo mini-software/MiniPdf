@@ -681,17 +681,22 @@ internal static class DocxReader
                 bool hasLeftCharsNonZero = leftCharsAttr != null
                     && int.TryParse(leftCharsAttr.Value, out leftCharsVal)
                     && leftCharsVal != 0;
-                if (hasLeftCharsNonZero)
+                int leftTwips = 0;
+                bool hasLeftTwips = leftAttr != null && int.TryParse(leftAttr.Value, out leftTwips);
+                if (hasLeftTwips)
+                {
+                    // When both w:left and w:leftChars are present, Word uses the
+                    // cached explicit twip value (w:left). Word recalculates leftChars
+                    // on save, so the explicit twip measurement is what was last laid out.
+                    indentLeft = leftTwips / 20f;
+                    paraHasIndentLeft = true;
+                    paraHasExplicitListIndent = true;
+                }
+                else if (hasLeftCharsNonZero)
                 {
                     // leftChars=N (non-zero) means N/100 East-Asian character widths.
                     indentLeft = (leftCharsVal / 100f) * 11f;
                     paraHasIndentLeft = true;
-                }
-                else if (leftAttr != null && int.TryParse(leftAttr.Value, out var il))
-                {
-                    indentLeft = il / 20f;
-                    paraHasIndentLeft = true;
-                    paraHasExplicitListIndent = true;
                 }
                 // leftChars="0" alone (no numeric left attribute) does NOT lock the
                 // indent. Per OOXML 17.3.1.12, leftChars only suppresses chars-based
