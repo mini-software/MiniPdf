@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T02:50:23.310788
+Generated: 2026-04-30T03:47:22.322757
 
 ## Summary
 
@@ -17,17 +17,17 @@ Generated: 2026-04-30T02:50:23.310788
 | 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.967 | 2/2 | **0.9801** |
 | 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9846 | 7/7 | **0.9859** |
 | 11 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
-| 12 | 🟢 Invoice | ✅ | 0.9963 | 0.9381 | 1/1 | **0.9738** |
-| 13 | 🟢 issues66 | ✅ | 0.9475 | 0.9815 | 3/3 | **0.9716** |
-| 14 | 🟡 MODERN LIVING | ✅ | 0.8913 | 0.8286 | 2/2 | **0.888** |
-| 15 | 🟡 nthu_article | ✅ | 0.8741 | 0.8705 | 19/20 | **0.7978** |
+| 12 | 🟢 Invoice | ✅ | 0.9982 | 0.9387 | 1/1 | **0.9748** |
+| 13 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
+| 14 | 🟡 MODERN LIVING | ✅ | 0.8902 | 0.8311 | 2/2 | **0.8885** |
+| 15 | 🟡 nthu_article | ✅ | 0.8741 | 0.8706 | 19/20 | **0.7979** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
 | 17 | 🟢 SA8000 ch sample | ✅ | 0.9923 | 0.96 | 2/2 | **0.9809** |
-| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9582 | 1/1 | **0.9833** |
+| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9606 | 1/1 | **0.9842** |
 | 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8117**
+**Average Overall Score: 0.8119**
 
 ## Visual Comparison
 
@@ -277,7 +277,7 @@ Generated: 2026-04-30T02:50:23.310788
 </tr>
 <tr>
   <td><b>Invoice</b></td>
-  <td colspan="1">Invoice <span style="color:#3fb950">⬤</span> 97.4%</td>
+  <td colspan="1">Invoice <span style="color:#3fb950">⬤</span> 97.5%</td>
 </tr>
 <tr>
   <td><img src="images/Invoice_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -417,7 +417,7 @@ Generated: 2026-04-30T02:50:23.310788
 </tr>
 <tr>
   <td><b>Support_Letter</b></td>
-  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 98.3%</td>
+  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
   <td><img src="images/Support_Letter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1326,35 +1326,18 @@ Text content: ✅ Identical
 
 ### Invoice
 
-- **Text Similarity:** 0.9963
-- **Visual Average:** 0.9381
-- **Overall Score:** 0.9738
+- **Text Similarity:** 0.9982
+- **Visual Average:** 0.9387
+- **Overall Score:** 0.9748
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=473626 bytes, Reference=65867 bytes
+- **File Size:** MiniPdf=828148 bytes, Reference=65867 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Invoice.pdf
 +++ reference/Invoice.pdf
-@@ -1,7 +1,6 @@
- INVOICE
-
- DATE: TO: Anjali Chaturvedi
-
--Date
-
--Extra Frame Photography
-
-+Date Extra Frame Photography
-
- 89 Pacific Ave
-
- INVOICE #
-
- San Francisco, CA
-
-@@ -19,5 +18,4 @@
+@@ -18,5 +18,4 @@
  TOTAL 420.00
 
  MAKE ALL CHECKS PAYABLE TO CREATE & CO.
@@ -1370,11 +1353,11 @@ Text content: ✅ Identical
 
 ### issues66
 
-- **Text Similarity:** 0.9475
-- **Visual Average:** 0.9815
-- **Overall Score:** 0.9716
+- **Text Similarity:** 0.9488
+- **Visual Average:** 0.9813
+- **Overall Score:** 0.972
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=4230988 bytes, Reference=229716 bytes
+- **File Size:** MiniPdf=4389086 bytes, Reference=229716 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1447,7 +1430,7 @@ Text content: ✅ Identical
 
 -工艺流程总计价： 备注： 0.80￥ 计价核准人签字： 日期：
 
--1） 所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。
+-1 ） 所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。
 
 -2）使用涉及设定温度的设备时（如 PECVD、蒸镀衬底温度、回流炉、高温炉、键合机等），请填写使用温度的上限和时间。使用如 PECVD、蒸镀等设备时，衬底
 
@@ -1473,7 +1456,7 @@ Text content: ✅ Identical
 
  4）涉及沉积和蒸镀使用的原材料时候，必须清楚填写材料的种类、厚度。
 
--5） 接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用 SU8。
+-5 ） 接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用 SU8。
 
 +5 ）接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用SU8。
 
@@ -1487,11 +1470,11 @@ Text content: ✅ Identical
 
 ### MODERN LIVING
 
-- **Text Similarity:** 0.8913
-- **Visual Average:** 0.8286
-- **Overall Score:** 0.888
+- **Text Similarity:** 0.8902
+- **Visual Average:** 0.8311
+- **Overall Score:** 0.8885
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=508053 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=693580 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1513,35 +1496,29 @@ Text content: ✅ Identical
 
  By Peyton Davis
 
--Newsletters are periodicals used to advertise or update your subscribers
+-Newsletters are periodicals used to advertise or update your subscribers with
 
 -TAKE A LOOK INSIDE
 
--with information about your product or blog. They can be printed or emailed
-
 +Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE
 
-+information about your product or blog. They can be printed or emailed and
+ information about your product or blog. They can be printed or emailed and
 
  Add description text here to get your
 
--and are an excellent way to maintain regular contact with your subscribers
+-are an excellent way to maintain regular contact with your subscribers and
 
 -subscribers interested in your topic
 
--and drive traffic to your site. Type the content of your newsletter here.
-
 +are an excellent way to maintain regular contact with your subscribers and subscribers interested in your topic
 
-+drive traffic to your site. Type the content of your newsletter here.
+ drive traffic to your site. Type the content of your newsletter here.
 
  PROPERTY TRENDS
 
--Newsletters are periodicals used to advertise or update your subscribers
+ Newsletters are periodicals used to advertise or update your subscribers with
 
--with information about your product or blog. They are an excellent way to Add description text here to get your
-
-+Newsletters are periodicals used to advertise or update your subscribers with
+-information about your product or blog. They are an excellent way to maintain Add description text here to get your
 
 +Add description text here to get your
 
@@ -1549,13 +1526,11 @@ Text content: ✅ Identical
 
  subscribers interested in your topic
 
- maintain regular contact with your subscribers. Type the content of your
+-regular contact with your subscribers. Type the content of your newsletter
 
- newsletter here.
++maintain regular contact with your subscribers. Type the content of your
 
--ARE YOU READY TO LIST?
-
--Newsletters are periodicals used to advertise or update your subscribers
++newsletter here.
 
 +ARE YOU READY TO
 
@@ -1563,15 +1538,21 @@ Text content: ✅ Identical
 
 +information about your product or blog. Type the content of your newsletter
 
- Add description text here to get your
++Add description text here to get your
 
--with information about your product or blog. Type the content of your
+ here.
 
-+here.
+-ARE YOU READY TO LIST?
+
+-Newsletters are periodicals used to advertise or update your subscribers with
+
+-Add description text here to get your
+
+-information about your product or blog. Type the content of your newsletter
 
  subscribers interested in your topic
 
--newsletter here.
+-here.
 
  ---PAGE---
 
@@ -1579,44 +1560,47 @@ Text content: ✅ Identical
 
  Take a look inside
 
-@@ -45,8 +44,7 @@
+@@ -31,22 +30,21 @@
+ Newsletters are periodicals used to advertise or update your
+
+ subscribers with information about your product or blog. They
+
+ can be printed or emailed and are an excellent way to maintain
+
+-regular contact with your subscribers and drive traffic to your site.
+
+-Type the content of your newsletter here.
+
++regular contact with your subscribers and drive traffic to your
+
++site. Type the content of your newsletter here.
+
  Newsletters are periodicals use to advertise or update your
 
- excellent way to maintain regular contact
+ subscribers with information about your product or blog. They
 
- subscribers with information about your product or blog. Type
-
--with your subscribers and drive traffic to
-
--the content of your newsletter here.
-
-+the content of your newsletter here. with your subscribers and drive traffic to
-
- your site. Type the content of your
-
- newsletter here.
+ can be printed or emailed and are an excellent way to maintain
 
  Newsletters are periodicals used to
 
-@@ -60,8 +58,7 @@
- Newsletters are periodicals used to advertise or update your subscribers with
+-regular contact with your subscribers and drive traffic to your site.
 
- Are you
++regular contact with your subscribers and drive traffic to your
 
- information about your product or blog. They can be printed or emailed and are an
+ advertise or update your subscribers with
 
--excellent way to maintain regular contact with your subscribers and drive traffic to
+-Type your content here.
 
--ready to list?
++site. Type your content here.
 
-+ready to list? excellent way to maintain regular contact with your subscribers and drive traffic to
+ information about your product or blog.
 
- your site. Type the content of your newsletter here.
+ They can be printed or emailed and are an
 
- By Adrian King
+ Newsletters are periodicals use to advertise or update your
 
- Newsletters are periodicals used to adver
-... (37 more characters)
+ ex
+... (1117 more characters)
 
 ```
 </details>
@@ -1624,10 +1608,10 @@ Text content: ✅ Identical
 ### nthu_article
 
 - **Text Similarity:** 0.8741
-- **Visual Average:** 0.8705
-- **Overall Score:** 0.7978
+- **Visual Average:** 0.8706
+- **Overall Score:** 0.7979
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=8698655 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=9018597 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2046,10 +2030,10 @@ Text content: ✅ Identical
 ### Support_Letter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9582
-- **Overall Score:** 0.9833
+- **Visual Average:** 0.9606
+- **Overall Score:** 0.9842
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1003998 bytes, Reference=147353 bytes
+- **File Size:** MiniPdf=1010827 bytes, Reference=147353 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2220,6 +2204,6 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.7978)
+1. **nthu_article** (score: 0.7979)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

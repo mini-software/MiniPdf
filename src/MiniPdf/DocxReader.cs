@@ -1420,6 +1420,11 @@ internal static class DocxReader
         if (!italic && FontNameImpliesItalic(fontName))
             italic = true;
 
+        // Final guarantee: every run has a non-empty FontName so the PdfWriter font-embedding
+        // pipeline can route it through MaybeFallbackForMissingFont (e.g. Avenir → TNR).
+        if (string.IsNullOrEmpty(fontName) && !string.IsNullOrEmpty(defaultLatinFontName))
+            fontName = PdfWriter.MaybeFallbackForMissingFont(defaultLatinFontName);
+
         return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl, isColumnBreak, verticalPosition, footnoteId);
     }
 
@@ -1533,7 +1538,7 @@ internal static class DocxReader
             ?? rFonts.Attribute(W + "eastAsia")?.Value
             ?? rFonts.Attribute(W + "cs")?.Value;
         if (!string.IsNullOrWhiteSpace(explicitFont))
-            return explicitFont;
+            return PdfWriter.MaybeFallbackForMissingFont(explicitFont);
 
         var hasLatinTheme = !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "asciiTheme")?.Value)
             || !string.IsNullOrWhiteSpace(rFonts.Attribute(W + "hAnsiTheme")?.Value)
@@ -1549,12 +1554,12 @@ internal static class DocxReader
         // for the text block.  CJK codepoints that aren't covered by the Latin
         // font will fall through to the system CJK font via PdfWriter's fallback.
         if (hasLatinTheme)
-            return defaultLatinFontName ?? parentFontName ?? defaultEastAsiaFontName;
+            return PdfWriter.MaybeFallbackForMissingFont(defaultLatinFontName ?? parentFontName ?? defaultEastAsiaFontName);
 
         if (hasEastAsiaTheme)
-            return defaultEastAsiaFontName ?? parentFontName ?? defaultLatinFontName;
+            return PdfWriter.MaybeFallbackForMissingFont(defaultEastAsiaFontName ?? parentFontName ?? defaultLatinFontName);
 
-        return parentFontName;
+        return PdfWriter.MaybeFallbackForMissingFont(parentFontName);
     }
 
     private static PdfColor? ReadRunColor(XElement rPr)
@@ -3823,8 +3828,8 @@ internal static class DocxReader
             }
         }
 
-        return (string.IsNullOrWhiteSpace(majorLatin) ? null : majorLatin,
-            string.IsNullOrWhiteSpace(minorLatin) ? null : minorLatin,
+        return (string.IsNullOrWhiteSpace(majorLatin) ? null : PdfWriter.MaybeFallbackForMissingFont(majorLatin),
+            string.IsNullOrWhiteSpace(minorLatin) ? null : PdfWriter.MaybeFallbackForMissingFont(minorLatin),
             majorEastAsia, minorEastAsia);
     }
 

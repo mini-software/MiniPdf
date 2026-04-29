@@ -2260,7 +2260,10 @@ internal sealed class PdfWriter
         "Cambria",
         "Consolas", "Corbel", "Candara", "Constantia",
         "Arial", "Arial Narrow", "Arial Black",
-        "Times New Roman",
+        // NOTE: "Times New Roman" is intentionally NOT listed here. PdfWriter has only the
+        // built-in Helvetica family of Type1 fonts (no built-in Times); listing TNR here
+        // would route serif body text through Helvetica, producing visibly sans-serif PDFs.
+        // Keep TNR on the system-font embedding path so a real Times TTF is embedded.
         "Verdana", "Tahoma", "Trebuchet MS",
         "Georgia", "Garamond", "Book Antiqua",
         "Courier New",
@@ -2306,6 +2309,33 @@ internal sealed class PdfWriter
             catch { }
         }
         return result;
+    }
+
+    /// <summary>
+    /// If <paramref name="fontName"/> names a font family that is NOT installed on the
+    /// current system but the document expects a serif (e.g. proprietary "AvenirNext LT
+    /// Pro Medium" / "AvenirNext LT Pro Light" used by some templates — Word/LibreOffice
+    /// silently substitute these with Liberation Serif when the proprietary face is
+    /// unavailable), remap to "Times New Roman" so an actual serif TTF is embedded
+    /// instead of falling back to the built-in sans-serif Helvetica. Conservative: only
+    /// applies to a small allow-list of known missing-font patterns and only when TNR
+    /// is itself installed.
+    /// </summary>
+    internal static string? MaybeFallbackForMissingFont(string? fontName)
+    {
+        if (string.IsNullOrWhiteSpace(fontName)) return fontName;
+        // Skip well-known fonts that already have substitutes — they intentionally
+        // route through the built-in Helvetica path.
+        if (_latinFontSubstitutes.Contains(fontName!)) return fontName;
+        // Only apply to known proprietary serif/sans families that aren't on most systems.
+        // Today: the Avenir Next LT Pro family used by the "MODERN LIVING" template.
+        if (fontName!.IndexOf("Avenir", StringComparison.OrdinalIgnoreCase) < 0)
+            return fontName;
+        // Honor the original if it actually IS installed.
+        if (FindSystemFontByPreferredName(fontName) != null) return fontName;
+        // Fallback target must itself be available.
+        if (FindSystemFontByPreferredName("Times New Roman") == null) return fontName;
+        return "Times New Roman";
     }
 
     /// <summary>

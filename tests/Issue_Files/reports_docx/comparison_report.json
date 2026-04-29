@@ -485,19 +485,19 @@
     "name": "Invoice",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 473626,
+    "minipdf_size": 828148,
     "reference_size": 65867,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9963,
-    "flat_text_similarity": 0.9963,
+    "text_similarity": 0.9982,
+    "flat_text_similarity": 0.9982,
     "word_text_similarity": 0.9947,
-    "text_diff": "--- minipdf/Invoice.pdf\n+++ reference/Invoice.pdf\n@@ -1,7 +1,6 @@\n INVOICE\n\n DATE: TO: Anjali Chaturvedi\n\n-Date\n\n-Extra Frame Photography\n\n+Date Extra Frame Photography\n\n 89 Pacific Ave\n\n INVOICE #\n\n San Francisco, CA\n\n@@ -19,5 +18,4 @@\n TOTAL 420.00\n\n MAKE ALL CHECKS PAYABLE TO CREATE & CO.\n\n Thank you for your business!\n\n-CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334\n\n-1\n+CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334",
+    "text_diff": "--- minipdf/Invoice.pdf\n+++ reference/Invoice.pdf\n@@ -18,5 +18,4 @@\n TOTAL 420.00\n\n MAKE ALL CHECKS PAYABLE TO CREATE & CO.\n\n Thank you for your business!\n\n-CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334\n\n-1\n+CREATE & CO. 123 MAIN ST. | SEATTLE, WA 78910 | PHONE: 111-222-3333 | FAX: 111-222-3334",
     "visual_scores": [
-      0.9381
+      0.9387
     ],
-    "visual_avg": 0.9381,
+    "visual_avg": 0.9387,
     "diff_images": [
       {
         "page": 1,
@@ -505,27 +505,27 @@
         "reference_img": "Invoice_p1_reference.png"
       }
     ],
-    "overall_score": 0.9738
+    "overall_score": 0.9748
   },
   {
     "name": "issues66",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 4230988,
+    "minipdf_size": 4389086,
     "reference_size": 229716,
     "pdf_valid": true,
     "minipdf_pages": 3,
     "reference_pages": 3,
-    "text_similarity": 0.9475,
-    "flat_text_similarity": 0.9475,
-    "word_text_similarity": 0.7265,
-    "text_diff": "--- minipdf/issues66.pdf\n+++ reference/issues66.pdf\n@@ -1,4 +1,4 @@\n-微纳加工平台工艺申请表 （2014 年版）\n\n+微纳加工平台工艺申请表 （ 2014 年版）\n\n 批号 : 显微镜#1-20251126 14:40~20251126 14:45\n\n 020-\n\n 申请人 init 申请人电话 88888888<br /> 申请人邮箱 1@my.com 申请人签字\n\n@@ -6,30 +6,31 @@\n 付费人 init 课题编号 测试项目 付费人邮箱 1@my.com 付费人签字\n\n 申请日期 20251126 所属单位 985 高校\n\n 样品材料 样品尺寸\n\n-试验目的及说明 样品数量与编号 0\n\n+样品数量与编号 0\n\n+试验目的及说明\n\n 目的\n\n 序\n\n 工艺名称 工艺要求及说明 日期 计价和确认 备注\n\n 号\n\n-总费用：0.80￥ 总用时：0 天 0 时\n\n-2025 年 11 月 26 日 14 时 40 分 机时费：0.80￥ 5 分 0 秒\n\n-显微镜#1\n\n-8 至 开机用时：\n\n-2025 年 11 月 26 日 14 时 45 分 工艺负责人确认： 关机用时：\n\n+总费用：0.80￥ 总用时：0 天0 时\n\n+2025 年11 月26 日14 时40 分 机时费：0.80￥ 5 分0 秒\n\n+8 显微镜#1 至 开机用时：\n\n+2025 年11 月26 日14 时45 分 工艺负责人确认： 关机用时：\n\n 工艺申请人确认： 沉积用时：\n\n 加工平台批准人签字\n\n-最终服务质量评价（请签名） 最终检验员\n\n-非常满意_______       基本满意_______        不满意_________ 最终检验结论：\n\n+最终检验员\n\n+最终服务质量评价（请签名） 非常满意_______       基本满意_______        不满意_________ 最终检验结论：\n\n （签字）\n\n-工艺流程总计价： 备注： 0.80￥ 计价核准人签字： 日期：\n\n-1） 所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。\n\n-2）使用涉及设定温度的设备时（如 PECVD、蒸镀衬底温度、回流炉、高温炉、键合机等），请填写使用温度的上限和时间。使用如 PECVD、蒸镀等设备时，衬底\n\n-温度没有特殊要求的可填写：常规。\n\n-3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。\n\n+工艺流程总计价： 0.80￥ 计价核准人签字： 日期：\n\n+备注：\n\n+1 ）所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。\n\n+2 ）使用涉及设定温度的设备时（如PECVD、蒸镀衬底温度、回流炉、高温炉、键合机等），请填写使用温度的上限和时间。使用如PECVD、蒸镀等设备时，衬底温\n\n+度没有特殊要求的可填写：常规。\n\n 1\n\n ---PAGE---\n\n+3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。\n\n 4）涉及沉积和蒸镀使用的原材料时候，必须清楚填写材料的种类、厚度。\n\n-5） 接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用 SU8。\n\n+5 ）接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用SU8。\n\n 2\n\n ---PAGE---\n\n 3",
+    "text_similarity": 0.9488,
+    "flat_text_similarity": 0.9488,
+    "word_text_similarity": 0.7378,
+    "text_diff": "--- minipdf/issues66.pdf\n+++ reference/issues66.pdf\n@@ -1,4 +1,4 @@\n-微纳加工平台工艺申请表 （2014 年版）\n\n+微纳加工平台工艺申请表 （ 2014 年版）\n\n 批号 : 显微镜#1-20251126 14:40~20251126 14:45\n\n 020-\n\n 申请人 init 申请人电话 88888888<br /> 申请人邮箱 1@my.com 申请人签字\n\n@@ -6,30 +6,31 @@\n 付费人 init 课题编号 测试项目 付费人邮箱 1@my.com 付费人签字\n\n 申请日期 20251126 所属单位 985 高校\n\n 样品材料 样品尺寸\n\n-试验目的及说明 样品数量与编号 0\n\n+样品数量与编号 0\n\n+试验目的及说明\n\n 目的\n\n 序\n\n 工艺名称 工艺要求及说明 日期 计价和确认 备注\n\n 号\n\n-总费用：0.80￥ 总用时：0 天 0 时\n\n-2025 年 11 月 26 日 14 时 40 分 机时费：0.80￥ 5 分 0 秒\n\n-显微镜#1\n\n-8 至 开机用时：\n\n-2025 年 11 月 26 日 14 时 45 分 工艺负责人确认： 关机用时：\n\n+总费用：0.80￥ 总用时：0 天0 时\n\n+2025 年11 月26 日14 时40 分 机时费：0.80￥ 5 分0 秒\n\n+8 显微镜#1 至 开机用时：\n\n+2025 年11 月26 日14 时45 分 工艺负责人确认： 关机用时：\n\n 工艺申请人确认： 沉积用时：\n\n 加工平台批准人签字\n\n-最终服务质量评价（请签名） 最终检验员\n\n-非常满意_______       基本满意_______        不满意_________ 最终检验结论：\n\n+最终检验员\n\n+最终服务质量评价（请签名） 非常满意_______       基本满意_______        不满意_________ 最终检验结论：\n\n （签字）\n\n-工艺流程总计价： 备注： 0.80￥ 计价核准人签字： 日期：\n\n-1 ） 所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。\n\n-2）使用涉及设定温度的设备时（如 PECVD、蒸镀衬底温度、回流炉、高温炉、键合机等），请填写使用温度的上限和时间。使用如 PECVD、蒸镀等设备时，衬底\n\n-温度没有特殊要求的可填写：常规。\n\n-3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。\n\n+工艺流程总计价： 0.80￥ 计价核准人签字： 日期：\n\n+备注：\n\n+1 ）所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。\n\n+2 ）使用涉及设定温度的设备时（如PECVD、蒸镀衬底温度、回流炉、高温炉、键合机等），请填写使用温度的上限和时间。使用如PECVD、蒸镀等设备时，衬底温\n\n+度没有特殊要求的可填写：常规。\n\n 1\n\n ---PAGE---\n\n+3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。\n\n 4）涉及沉积和蒸镀使用的原材料时候，必须清楚填写材料的种类、厚度。\n\n-5 ） 接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用 SU8。\n\n+5 ）接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用SU8。\n\n 2\n\n ---PAGE---\n\n 3",
     "visual_scores": [
-      0.9542,
-      0.9903,
+      0.9539,
+      0.99,
       1.0
     ],
-    "visual_avg": 0.9815,
+    "visual_avg": 0.9813,
     "diff_images": [
       {
         "page": 1,
@@ -543,26 +543,26 @@
         "reference_img": "issues66_p3_reference.png"
       }
     ],
-    "overall_score": 0.9716
+    "overall_score": 0.972
   },
   {
     "name": "MODERN LIVING",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 508053,
+    "minipdf_size": 693580,
     "reference_size": 220316,
     "pdf_valid": true,
     "minipdf_pages": 2,
     "reference_pages": 2,
-    "text_similarity": 0.8913,
-    "flat_text_similarity": 0.8909,
-    "word_text_similarity": 0.874,
-    "text_diff": "--- minipdf/MODERN LIVING.pdf\n+++ reference/MODERN LIVING.pdf\n@@ -1,28 +1,27 @@\n OCTOBER / 20XX / ISSUE #10\n\n M O D E R N  L I V I N G\n\n Your guide to buy or rent\n\n+WHAT’S NEW\n\n Ready to settle?\n\n-WHAT’S NEW\n\n By Peyton Davis\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n-TAKE A LOOK INSIDE\n\n-with information about your product or blog. They can be printed or emailed\n\n+Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE\n\n+information about your product or blog. They can be printed or emailed and\n\n Add description text here to get your\n\n-and are an excellent way to maintain regular contact with your subscribers\n\n-subscribers interested in your topic\n\n-and drive traffic to your site. Type the content of your newsletter here.\n\n+are an excellent way to maintain regular contact with your subscribers and subscribers interested in your topic\n\n+drive traffic to your site. Type the content of your newsletter here.\n\n PROPERTY TRENDS\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n-with information about your product or blog. They are an excellent way to Add description text here to get your\n\n+Newsletters are periodicals used to advertise or update your subscribers with\n\n+Add description text here to get your\n\n+information about your product or blog. They are an excellent way to\n\n subscribers interested in your topic\n\n maintain regular contact with your subscribers. Type the content of your\n\n newsletter here.\n\n-ARE YOU READY TO LIST?\n\n-Newsletters are periodicals used to advertise or update your subscribers\n\n+ARE YOU READY TO\n\n+Newsletters are periodicals used to advertise or update your subscribers with LIST?\n\n+information about your product or blog. Type the content of your newsletter\n\n Add description text here to get your\n\n-with information about your product or blog. Type the content of your\n\n+here.\n\n subscribers interested in your topic\n\n-newsletter here.\n\n ---PAGE---\n\n Property trends\n\n Take a look inside\n\n@@ -45,8 +44,7 @@\n Newsletters are periodicals use to advertise or update your\n\n excellent way to maintain regular contact\n\n subscribers with information about your product or blog. Type\n\n-with your subscribers and drive traffic to\n\n-the content of your newsletter here.\n\n+the content of your newsletter here. with your subscribers and drive traffic to\n\n your site. Type the content of your\n\n newsletter here.\n\n Newsletters are periodicals used to\n\n@@ -60,8 +58,7 @@\n Newsletters are periodicals used to advertise or update your subscribers with\n\n Are you\n\n information about your product or blog. They can be printed or emailed and are an\n\n-excellent way to maintain regular contact with your subscribers and drive traffic to\n\n-ready to list?\n\n+ready to list? excellent way to maintain regular contact with your subscribers and drive traffic to\n\n your site. Type the content of your newsletter here.\n\n By Adrian King\n\n Newsletters are periodicals used to advertise or update your subscribers with\n",
+    "text_similarity": 0.8902,
+    "flat_text_similarity": 0.879,
+    "word_text_similarity": 0.8902,
+    "text_diff": "--- minipdf/MODERN LIVING.pdf\n+++ reference/MODERN LIVING.pdf\n@@ -1,28 +1,27 @@\n OCTOBER / 20XX / ISSUE #10\n\n M O D E R N  L I V I N G\n\n Your guide to buy or rent\n\n+WHAT’S NEW\n\n Ready to settle?\n\n-WHAT’S NEW\n\n By Peyton Davis\n\n-Newsletters are periodicals used to advertise or update your subscribers with\n\n-TAKE A LOOK INSIDE\n\n+Newsletters are periodicals used to advertise or update your subscribers with TAKE A LOOK INSIDE\n\n information about your product or blog. They can be printed or emailed and\n\n Add description text here to get your\n\n-are an excellent way to maintain regular contact with your subscribers and\n\n-subscribers interested in your topic\n\n+are an excellent way to maintain regular contact with your subscribers and subscribers interested in your topic\n\n drive traffic to your site. Type the content of your newsletter here.\n\n PROPERTY TRENDS\n\n Newsletters are periodicals used to advertise or update your subscribers with\n\n-information about your product or blog. They are an excellent way to maintain Add description text here to get your\n\n+Add description text here to get your\n\n+information about your product or blog. They are an excellent way to\n\n subscribers interested in your topic\n\n-regular contact with your subscribers. Type the content of your newsletter\n\n+maintain regular contact with your subscribers. Type the content of your\n\n+newsletter here.\n\n+ARE YOU READY TO\n\n+Newsletters are periodicals used to advertise or update your subscribers with LIST?\n\n+information about your product or blog. Type the content of your newsletter\n\n+Add description text here to get your\n\n here.\n\n-ARE YOU READY TO LIST?\n\n-Newsletters are periodicals used to advertise or update your subscribers with\n\n-Add description text here to get your\n\n-information about your product or blog. Type the content of your newsletter\n\n subscribers interested in your topic\n\n-here.\n\n ---PAGE---\n\n Property trends\n\n Take a look inside\n\n@@ -31,22 +30,21 @@\n Newsletters are periodicals used to advertise or update your\n\n subscribers with information about your product or blog. They\n\n can be printed or emailed and are an excellent way to maintain\n\n-regular contact with your subscribers and drive traffic to your site.\n\n-Type the content of your newsletter here.\n\n+regular contact with your subscribers and drive traffic to your\n\n+site. Type the content of your newsletter here.\n\n Newsletters are periodicals use to advertise or update your\n\n subscribers with information about your product or blog. They\n\n can be printed or emailed and are an excellent way to maintain\n\n Newsletters are periodicals used to\n\n-regular contact with your subscribers and drive traffic to your site.\n\n+regular contact with your subscribers and drive traffic to your\n\n advertise or update your subscribers with\n\n-Type your content here.\n\n+site. Type your content here.\n\n information about your product or blog.\n\n They can be printed or emailed and are an\n\n Newsletters are periodicals use to advertise or update your\n\n excellent way to maintain regular contact\n\n-subscribers with information about your product or blog. Type the\n\n-with your subscribers and drive traffic to\n\n-content of your newsletter here.\n\n+subscribers with information about your product or blog. Type\n\n+the content of your newsletter here. with your subscribers and drive traffic to\n\n your site. Type the content of your\n\n newsletter here.\n\n Newsletters are periodicals used to\n\n@@ -60,9 +58,8 @@\n Newsletters are periodicals used to advertise or update your subscribers with\n\n Are you\n\n information about your product or blog. They can be printed or emailed and are an\n\n-excellent way to maintain regular contact with your subscribers and drive traffic to your\n\n-ready to list?\n\n-site. Type the content of your newsletter here.\n\n+ready to list? excellent way to maintain regular contact with your subscribers and drive traffic to\n\n+your site. Type the content of your newsletter here.\n\n By Adrian King\n\n Newsletters are periodicals used to advertise or update your subscribers with\n\n information about your product or blog. Type the content of your newsletter here.",
     "visual_scores": [
-      0.8427,
-      0.8144
+      0.8448,
+      0.8173
     ],
-    "visual_avg": 0.8286,
+    "visual_avg": 0.8311,
     "diff_images": [
       {
         "page": 1,
@@ -575,13 +575,13 @@
         "reference_img": "MODERN LIVING_p2_reference.png"
       }
     ],
-    "overall_score": 0.888
+    "overall_score": 0.8885
   },
   {
     "name": "nthu_article",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 8698655,
+    "minipdf_size": 9018597,
     "reference_size": 798510,
     "pdf_valid": true,
     "minipdf_pages": 19,
@@ -596,23 +596,23 @@
       0.9574,
       0.9381,
       0.9481,
-      0.9285,
+      0.9284,
       0.9954,
       0.9572,
       0.9866,
       0.6569,
-      0.9418,
+      0.9417,
       0.8878,
-      0.9456,
+      0.9457,
       0.8445,
       0.9729,
       0.9344,
       0.8977,
       0.7534,
-      0.9571,
+      0.9593,
       0.0
     ],
-    "visual_avg": 0.8705,
+    "visual_avg": 0.8706,
     "diff_images": [
       {
         "page": 1,
@@ -715,7 +715,7 @@
         "reference_img": "nthu_article_p20_reference.png"
       }
     ],
-    "overall_score": 0.7978
+    "overall_score": 0.7979
   },
   {
     "name": "OSCAR WARD",
@@ -779,7 +779,7 @@
     "name": "Support_Letter",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 1003998,
+    "minipdf_size": 1010827,
     "reference_size": 147353,
     "pdf_valid": true,
     "minipdf_pages": 1,
@@ -789,9 +789,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "--- minipdf/Support_Letter.pdf\n+++ reference/Support_Letter.pdf\n@@ -10,20 +10,20 @@\n TERMS OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA VERBITCKAIA\n\n PASSPORT NUMBER 770752777\n\n 1. I, Pascale Donaldson, a South African national born on 09 February 2006 with South African\n\n-Identification Number: 658, (a South African born on 09 February 2006 and a permanent\n\n-resident of South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia\n\n-(“Applicant”), a national born on 21 December 1999, and support her application for a renewal\n\n-of his Relatives Visa in terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002)\n\n-(“Act”), read with the relevant Immigration Regulations made under section 7 of the Act.\n\n-2. I accept full responsibility of any financial costs and subsistence, including but not limited to,\n\n-housing, food, medical, physical and emotional needs he may require whilst residing with me in\n\n-South Africa at the following address during his entire sojourn:\n\n+Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of\n\n+South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a\n\n+national born on 21 December 1999, and support her application for a renewal of his Relatives Visa in\n\n+terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with the relevant\n\n+Immigration Regulations made under section 7 of the Act.\n\n+2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,\n\n+food, medical, physical and emotional needs he may require whilst residing with me in South Africa at\n\n+the following address during his entire sojourn:\n\n Dicta modi aut labor\n\n Voluptates alias exc\n\n Ut temporibus aliqui\n\n Qui magna fugiat cor\n\n-3. I trust that this is in order, but should you require any additional information, please do not\n\n-hesitate to contact me.\n\n+3. I trust that this is in order, but should you require any additional information, please do not hesitate\n\n+to contact me.\n\n Yours sincerely,\n\n ___________________________\n\n Pascale Donaldson\n",
     "visual_scores": [
-      0.9582
+      0.9606
     ],
-    "visual_avg": 0.9582,
+    "visual_avg": 0.9606,
     "diff_images": [
       {
         "page": 1,
@@ -799,7 +799,7 @@
         "reference_img": "Support_Letter_p1_reference.png"
       }
     ],
-    "overall_score": 0.9833
+    "overall_score": 0.9842
   },
   {
     "name": "Template for MSc Thesis",

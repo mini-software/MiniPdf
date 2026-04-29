@@ -1678,7 +1678,11 @@ internal static class DocxToPdfConverter
                 && !IsWideSansSerifFont(runFontName);
             s_overrideWidths = GetFontOverrideWidths(runFontName);
             s_wideSansSerifFont = IsWideSansSerifFont(runFontName) && s_overrideWidths == null;
-            s_serifRunInCalibri = paraUseCalibri && !s_serifFont && IsSerifFont(runFontName);
+            // NOTE: do NOT gate on !s_serifFont — when document default IS a serif (e.g. Times,
+            // or Avenir-substituted-to-Times) a serif run still needs the Times-widths estimator
+            // path to wrap correctly. Without this, the Calibri-default narrow widths apply
+            // and lines fit too much text per row.
+            s_serifRunInCalibri = paraUseCalibri && IsSerifFont(runFontName);
             // CJK fonts (KaiTi, SimSun, ...) render Latin/digit glyphs at half-width
             // (~500/1000), but EstimateCalibrTextWidth uses Calibri's wider Latin
             // widths (e.g. 'S'=549, '0'=507). For CJK runs in Calibri-default docs
@@ -2524,7 +2528,7 @@ internal static class DocxToPdfConverter
                 // actually renders. Apply the s_serifRunInCalibri flag so downstream
                 // EstimateWrapTextWidth/EstimateCalibrTextWidth calls scale the estimate down,
                 // matching Word's wrap decisions for serif runs in Calibri-default docs.
-                s_serifRunInCalibri = useCalibri && !s_serifFont && IsSerifFont(run.FontName);
+                s_serifRunInCalibri = useCalibri && IsSerifFont(run.FontName);
                 // Mirror simple-format path: per-run flags for wide sans-serif (Franklin Gothic
                 // etc.) and Helvetica-fallback fonts (AvenirNext etc.) so EstimateWrapTextWidth
                 // applies the correct Latin reduction in this multi-format wrap path too.
@@ -3441,7 +3445,7 @@ internal static class DocxToPdfConverter
                         && !IsWideSansSerifFont(firstRun?.FontName);
                     s_overrideWidths = GetFontOverrideWidths(firstRun?.FontName);
                     s_wideSansSerifFont = IsWideSansSerifFont(firstRun?.FontName) && s_overrideWidths == null;
-                    s_serifRunInCalibri = cellUseCalibri && !s_serifFont && IsSerifFont(firstRun?.FontName);
+                    s_serifRunInCalibri = cellUseCalibri && IsSerifFont(firstRun?.FontName);
                     var lines = WordWrap(text, textWidth, textWidth, runFontSize, null,
                         firstRun?.Bold ?? false, firstRun?.CharSpacing ?? 0f, cellUseCalibri);
 
@@ -3842,7 +3846,7 @@ internal static class DocxToPdfConverter
                         && !IsWideSansSerifFont(cellRunFontName);
                     s_overrideWidths = GetFontOverrideWidths(cellRunFontName);
                     s_wideSansSerifFont = IsWideSansSerifFont(cellRunFontName) && s_overrideWidths == null;
-                    s_serifRunInCalibri = cellUseCalibri && !s_serifFont && IsSerifFont(cellRunFontName);
+                    s_serifRunInCalibri = cellUseCalibri && IsSerifFont(cellRunFontName);
                     var lines = WordWrap(text, wrapWidth, wrapWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, cellUseCalibri);
 
                     foreach (var line in lines)
