@@ -3779,11 +3779,15 @@ internal static class DocxToPdfConverter
                     var cellRunUnderline = dominantRun?.Underline ?? false;
                     var cellRunCharSpacing = dominantRun?.CharSpacing ?? 0f;
                     var cellRunFontName = dominantRun?.FontName;
+                    // Word's line height includes the paragraph mark font size from pPr/rPr/sz —
+                    // when the mark is larger than the run text, the line grows accordingly.
+                    var cellLineMetricFs = effectiveFontSize;
+                    if (para.FontSize > effectiveFontSize) cellLineMetricFs = para.FontSize;
                     float lineHeight;
                     if (para.LineSpacingAbsolute && para.LineSpacing > 0)
                         lineHeight = para.LineSpacing;
                     else
-                        lineHeight = effectiveFontSize * GetFontMetricsFactor(cellRunFontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
+                        lineHeight = cellLineMetricFs * GetFontMetricsFactor(cellRunFontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
 
                     // Snap line height to document grid when active (CJK line grid)
                     if (options.GridLinePitch > 0 && para.SnapToGrid && !(para.LineSpacingAbsolute && para.LineSpacingExact))
@@ -4094,11 +4098,15 @@ internal static class DocxToPdfConverter
             var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
             var runCharSpacing = dominantRun?.CharSpacing ?? 0f;
             var runBold = dominantRun?.Bold ?? false;
+            // Word's line height includes the paragraph mark font size from pPr/rPr/sz —
+            // when the mark is larger than the run text, the line grows accordingly.
+            var lineMetricFs = runFontSize;
+            if (para.FontSize > runFontSize) lineMetricFs = para.FontSize;
             float lineHeight;
             if (para.LineSpacingAbsolute && para.LineSpacing > 0)
                 lineHeight = para.LineSpacing; // exact/atLeast: absolute points
             else
-                lineHeight = runFontSize * GetFontMetricsFactor(dominantRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : (styleLineSpacing > 0 ? styleLineSpacing : options.LineSpacing));
+                lineHeight = lineMetricFs * GetFontMetricsFactor(dominantRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : (styleLineSpacing > 0 ? styleLineSpacing : options.LineSpacing));
 
             // Snap line height to document grid when active (CJK line grid)
             if (options.GridLinePitch > 0 && para.SnapToGrid && !(para.LineSpacingAbsolute && para.LineSpacingExact))
