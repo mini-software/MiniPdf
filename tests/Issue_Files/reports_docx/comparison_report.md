@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-29T05:06:49.494056
+Generated: 2026-04-29T23:56:23.347303
 
 ## Summary
 
@@ -20,7 +20,7 @@ Generated: 2026-04-29T05:06:49.494056
 | 12 | 🟢 Invoice | ✅ | 0.9963 | 0.9381 | 1/1 | **0.9738** |
 | 13 | 🟢 issues66 | ✅ | 0.9535 | 0.9755 | 3/3 | **0.9716** |
 | 14 | 🟡 MODERN LIVING | ✅ | 0.8913 | 0.8219 | 2/2 | **0.8853** |
-| 15 | 🟡 nthu_article | ✅ | 0.875 | 0.8707 | 19/20 | **0.7983** |
+| 15 | 🟡 nthu_article | ✅ | 0.8724 | 0.8709 | 19/20 | **0.7973** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
 | 17 | 🟢 SA8000 ch sample | ✅ | 0.9931 | 0.9667 | 2/2 | **0.9839** |
 | 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.96 | 1/1 | **0.984** |
@@ -313,7 +313,7 @@ Generated: 2026-04-29T05:06:49.494056
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.8%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.7%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1626,11 +1626,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.875
-- **Visual Average:** 0.8707
-- **Overall Score:** 0.7983
+- **Text Similarity:** 0.8724
+- **Visual Average:** 0.8709
+- **Overall Score:** 0.7973
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=8698812 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=8698625 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1664,7 +1664,7 @@ Text content: ✅ Identical
 
  誌謝辭 Acknowledgements (可免)
 
-@@ -14,108 +14,107 @@
+@@ -14,258 +14,273 @@
  表次 List of Tables（可免）
 
  圖次 List of Figures（可免）
@@ -1783,13 +1783,11 @@ Text content: ✅ Identical
 
  次」二字標題置中， 16 級標楷體。各目次 12 級字。若有表次、圖次，則列
 
--於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標
+ 於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
 
--楷體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。
+-體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。目
 
--目次格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
-
-+於其後，均使用新頁開始表列，「表目次」（或「圖目次」）二字 16 級標楷
+-次格式如範例 E ，表次格式如範例 F ，圖次格式如範例 G 。
 
 +體，其下各表（或各圖）用 12 級字。英文與數字用 Times New Roman 。目次
 
@@ -1835,8 +1833,10 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--一併改
-... (16017 more characters)
+-一併改用中文新式標號。
+
+-2，行距建議設定為 1.2 行 （ word 中選「多行
+... (17682 more characters)
 
 ```
 </details>
@@ -2194,6 +2194,6 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.7983)
+1. **nthu_article** (score: 0.7973)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

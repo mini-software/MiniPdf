@@ -583,6 +583,9 @@ internal static class DocxReader
         float indentLeft = 0;
         float indentRight = 0;
         float indentFirstLine = 0;
+        bool paraHasIndentLeft = false;
+        bool paraHasIndentRight = false;
+        bool paraHasIndentFirstLine = false;
         bool isBulletList = false;
         bool isNumberedList = false;
         bool pageBreakBefore = false;
@@ -653,17 +656,66 @@ internal static class DocxReader
             }
 
             // Indentation (in twips); w:start/w:end are bidi-aware equivalents of w:left/w:right
+            // Per OOXML 17.3.1.12: w:leftChars overrides w:left; presence of either marks indent as paragraph-set.
             var ind = pPr.Element(W + "ind");
             if (ind != null)
             {
-                if (int.TryParse(ind.Attribute(W + "left")?.Value ?? ind.Attribute(W + "start")?.Value, out var il))
+                var leftCharsAttr = ind.Attribute(W + "leftChars") ?? ind.Attribute(W + "startChars");
+                var leftAttr = ind.Attribute(W + "left") ?? ind.Attribute(W + "start");
+                int leftCharsVal = 0;
+                bool hasLeftCharsNonZero = leftCharsAttr != null
+                    && int.TryParse(leftCharsAttr.Value, out leftCharsVal)
+                    && leftCharsVal != 0;
+                if (hasLeftCharsNonZero)
+                {
+                    // leftChars=N (non-zero) means N/100 East-Asian character widths.
+                    indentLeft = (leftCharsVal / 100f) * 11f;
+                    paraHasIndentLeft = true;
+                }
+                else if (leftAttr != null && int.TryParse(leftAttr.Value, out var il))
+                {
                     indentLeft = il / 20f;
-                if (int.TryParse(ind.Attribute(W + "right")?.Value ?? ind.Attribute(W + "end")?.Value, out var ir))
+                    paraHasIndentLeft = true;
+                }
+                else if (leftCharsAttr != null)
+                {
+                    // leftChars="0" with no left attribute: explicit zero, do not inherit.
+                    indentLeft = 0;
+                    paraHasIndentLeft = true;
+                }
+                var rightCharsAttr = ind.Attribute(W + "rightChars") ?? ind.Attribute(W + "endChars");
+                var rightAttr = ind.Attribute(W + "right") ?? ind.Attribute(W + "end");
+                int rightCharsVal = 0;
+                bool hasRightCharsNonZero = rightCharsAttr != null
+                    && int.TryParse(rightCharsAttr.Value, out rightCharsVal)
+                    && rightCharsVal != 0;
+                if (hasRightCharsNonZero)
+                {
+                    indentRight = (rightCharsVal / 100f) * 11f;
+                    paraHasIndentRight = true;
+                }
+                else if (rightAttr != null && int.TryParse(rightAttr.Value, out var ir))
+                {
                     indentRight = ir / 20f;
-                if (int.TryParse(ind.Attribute(W + "firstLine")?.Value, out var fl))
+                    paraHasIndentRight = true;
+                }
+                else if (rightCharsAttr != null)
+                {
+                    indentRight = 0;
+                    paraHasIndentRight = true;
+                }
+                var flAttr = ind.Attribute(W + "firstLine");
+                if (flAttr != null && int.TryParse(flAttr.Value, out var fl))
+                {
                     indentFirstLine = fl / 20f;
-                if (int.TryParse(ind.Attribute(W + "hanging")?.Value, out var hg))
+                    paraHasIndentFirstLine = true;
+                }
+                var hgAttr = ind.Attribute(W + "hanging");
+                if (hgAttr != null && int.TryParse(hgAttr.Value, out var hg))
+                {
                     indentFirstLine = -hg / 20f;
+                    paraHasIndentFirstLine = true;
+                }
                 if (int.TryParse(ind.Attribute(W + "firstLineChars")?.Value, out var flc))
                     firstLineChars = flc;
             }
@@ -824,6 +876,11 @@ internal static class DocxReader
             contextualSpacing = styleInfo.ContextualSpacing;
             paragraphFontName = styleInfo.FontName;
             if (charSpacing == 0) charSpacing = styleInfo.CharSpacing;
+
+            // Inherit indents per-attribute from style if paragraph didn't set them
+            if (!paraHasIndentLeft && styleInfo.HasIndentLeft) indentLeft = styleInfo.IndentLeft;
+            if (!paraHasIndentRight && styleInfo.HasIndentRight) indentRight = styleInfo.IndentRight;
+            if (!paraHasIndentFirstLine && styleInfo.HasIndentFirstLine) indentFirstLine = styleInfo.IndentFirstLine;
         }
         // Paragraph mark font overrides style font for line height calculation
         if (!string.IsNullOrEmpty(paragraphMarkFontName))
@@ -3393,6 +3450,8 @@ internal static class DocxReader
             string? styleFontName = null;
             float styleCharSpacing = 0;
             string? styleVertAlign = null;
+            float styleIndentLeft = 0, styleIndentRight = 0, styleIndentFirstLine = 0;
+            bool styleHasIndentLeft = false, styleHasIndentRight = false, styleHasIndentFirstLine = false;
 
             if (rPr != null)
             {
@@ -3437,6 +3496,36 @@ internal static class DocxReader
                 }
                 if (pPr.Element(W + "contextualSpacing") != null)
                     contextualSpacing = true;
+
+                // Indentation from style
+                var styleInd = pPr.Element(W + "ind");
+                if (styleInd != null)
+                {
+                    var leftAttr = styleInd.Attribute(W + "left") ?? styleInd.Attribute(W + "start");
+                    if (leftAttr != null && int.TryParse(leftAttr.Value, out var sli))
+                    {
+                        styleIndentLeft = sli / 20f;
+                        styleHasIndentLeft = true;
+                    }
+                    var rightAttr = styleInd.Attribute(W + "right") ?? styleInd.Attribute(W + "end");
+                    if (rightAttr != null && int.TryParse(rightAttr.Value, out var sri))
+                    {
+                        styleIndentRight = sri / 20f;
+                        styleHasIndentRight = true;
+                    }
+                    var flAttr = styleInd.Attribute(W + "firstLine");
+                    if (flAttr != null && int.TryParse(flAttr.Value, out var sfl))
+                    {
+                        styleIndentFirstLine = sfl / 20f;
+                        styleHasIndentFirstLine = true;
+                    }
+                    var hgAttr = styleInd.Attribute(W + "hanging");
+                    if (hgAttr != null && int.TryParse(hgAttr.Value, out var shg))
+                    {
+                        styleIndentFirstLine = -shg / 20f;
+                        styleHasIndentFirstLine = true;
+                    }
+                }
             }
 
             // keepNext: determined from pPr element
@@ -3450,7 +3539,9 @@ internal static class DocxReader
                 bold = true;
             }
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, styleLineSpacingExact, contextualSpacing, styleFontName, styleCharSpacing, KeepNext: keepNextStyle, VerticalAlign: styleVertAlign);
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color, alignment, spacingBefore, spacingAfter, caps, styleLineSpacing, styleLineSpacingAbsolute, styleLineSpacingExact, contextualSpacing, styleFontName, styleCharSpacing, KeepNext: keepNextStyle, VerticalAlign: styleVertAlign,
+                IndentLeft: styleIndentLeft, IndentRight: styleIndentRight, IndentFirstLine: styleIndentFirstLine,
+                HasIndentLeft: styleHasIndentLeft, HasIndentRight: styleHasIndentRight, HasIndentFirstLine: styleHasIndentFirstLine);
         }
 
         // Second pass: resolve basedOn inheritance
@@ -3487,7 +3578,21 @@ internal static class DocxReader
                 (pPr?.Element(W + "keepNext") == null && baseStyle.KeepNext);
             var vertAlign2 = !string.IsNullOrEmpty(current.VerticalAlign) ? current.VerticalAlign : baseStyle.VerticalAlign;
 
-            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, lineSpacing3, lineSpacingAbsolute3, lineSpacingExact3, contextualSpacing2, styleFontName, charSpacing2, KeepNext: keepNext2, VerticalAlign: vertAlign2);
+            // Indent: per-attribute fallback to base style
+            var styleIndEl = pPr?.Element(W + "ind");
+            bool curHasLeft = current.HasIndentLeft;
+            bool curHasRight = current.HasIndentRight;
+            bool curHasFirstLine = current.HasIndentFirstLine;
+            float indLeft2 = curHasLeft ? current.IndentLeft : baseStyle.IndentLeft;
+            float indRight2 = curHasRight ? current.IndentRight : baseStyle.IndentRight;
+            float indFirst2 = curHasFirstLine ? current.IndentFirstLine : baseStyle.IndentFirstLine;
+            bool hasLeft2 = curHasLeft || baseStyle.HasIndentLeft;
+            bool hasRight2 = curHasRight || baseStyle.HasIndentRight;
+            bool hasFirst2 = curHasFirstLine || baseStyle.HasIndentFirstLine;
+
+            styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, lineSpacing3, lineSpacingAbsolute3, lineSpacingExact3, contextualSpacing2, styleFontName, charSpacing2, KeepNext: keepNext2, VerticalAlign: vertAlign2,
+                IndentLeft: indLeft2, IndentRight: indRight2, IndentFirstLine: indFirst2,
+                HasIndentLeft: hasLeft2, HasIndentRight: hasRight2, HasIndentFirstLine: hasFirst2);
         }
 
         // Extract default font name from Normal style or docDefaults
@@ -4205,7 +4310,13 @@ internal sealed record DocxStyleInfo(
     string? FontName = null,
     float CharSpacing = 0,
     bool KeepNext = false,
-    string? VerticalAlign = null
+    string? VerticalAlign = null,
+    float IndentLeft = 0,
+    float IndentRight = 0,
+    float IndentFirstLine = 0,
+    bool HasIndentLeft = false,
+    bool HasIndentRight = false,
+    bool HasIndentFirstLine = false
 );
 
 /// <summary>Table style definition from styles.xml.</summary>
