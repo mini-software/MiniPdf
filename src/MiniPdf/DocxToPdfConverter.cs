@@ -1321,7 +1321,12 @@ internal static class DocxToPdfConverter
                 // characteristic "label  body" gap seen in CJK numbered lists like
                 // "五、 目次" where the label fits inside the indent slot but Word
                 // still inserts a tab gap.
-                bool autoTabAfterLabel = !paragraph.HasExplicitListIndent;
+                //
+                // OOXML w:suff overrides this: "space" or "nothing" suppress the
+                // auto-tab, making body text follow the level number immediately.
+                bool suffIsTab = !string.Equals(paragraph.ListSuff, "nothing", StringComparison.OrdinalIgnoreCase)
+                              && !string.Equals(paragraph.ListSuff, "space", StringComparison.OrdinalIgnoreCase);
+                bool autoTabAfterLabel = !paragraph.HasExplicitListIndent && suffIsTab;
                 if (labelEnd > bodyX + 2f || autoTabAfterLabel)
                 {
                     var target = labelEnd;
@@ -1342,11 +1347,17 @@ internal static class DocxToPdfConverter
                     // indent slot, snap to the next default tab stop greater than labelEnd.
                     // Default tab stops are at multiples of defaultTabStopPt from the left
                     // margin (paragraph origin), i.e. positions relative to MarginLeft.
-                    var dts = s_defaultTabStopPt > 0 ? s_defaultTabStopPt : 36f;
-                    var labelEndRelMargin = labelEnd - options.MarginLeft;
-                    var nextDefaultStopRel = (float)(Math.Floor(labelEndRelMargin / dts) + 1) * dts;
-                    var nextDefaultStop = options.MarginLeft + nextDefaultStopRel;
-                    if (nextDefaultStop > target) target = nextDefaultStop;
+                    // Skip the default-stop snap entirely when the level's w:suff is
+                    // "space" or "nothing" — Word writes the body text immediately after
+                    // the number with no tab advance.
+                    if (suffIsTab)
+                    {
+                        var dts = s_defaultTabStopPt > 0 ? s_defaultTabStopPt : 36f;
+                        var labelEndRelMargin = labelEnd - options.MarginLeft;
+                        var nextDefaultStopRel = (float)(Math.Floor(labelEndRelMargin / dts) + 1) * dts;
+                        var nextDefaultStop = options.MarginLeft + nextDefaultStopRel;
+                        if (nextDefaultStop > target) target = nextDefaultStop;
+                    }
                     listLabelOverflow = target - bodyX;
                 }
             }

@@ -607,6 +607,7 @@ internal static class DocxReader
         bool listTextBold = false;
         string? listFontName = null;
         string? listNumFmt = null;
+        string listSuff = "tab";
         string? styleId = null;
         bool bold = false;
         bool italic = false;
@@ -771,6 +772,7 @@ internal static class DocxReader
                         if (lvlDef.IndentLeft > 0) numLevelIndentLeft = lvlDef.IndentLeft;
                         if (lvlDef.Hanging > 0) numLevelIndentFirstLine = -lvlDef.Hanging;
                         listNumFmt = lvlDef.NumFmt;
+                        listSuff = lvlDef.Suff;
                     }
                 }
             }
@@ -1097,7 +1099,8 @@ internal static class DocxReader
             HasLastRenderedPageBreak: hasLastRenderedPageBreak,
             ListFontName: listFontName,
             SpacingAfterExplicit: spacingAfterExplicit,
-            HasExplicitListIndent: paraHasExplicitListIndent);
+            HasExplicitListIndent: paraHasExplicitListIndent,
+            ListSuff: listSuff);
     }
 
     /// <summary>
@@ -3987,6 +3990,12 @@ internal static class DocxReader
                 var ilvl = int.TryParse(lvl.Attribute(W + "ilvl")?.Value, out var iv) ? iv : 0;
                 var numFmt = lvl.Element(W + "numFmt")?.Attribute(W + "val")?.Value ?? "decimal";
                 var lvlText = lvl.Element(W + "lvlText")?.Attribute(W + "val")?.Value ?? "%1.";
+                // OOXML w:suff: separator between the level's auto-number and the
+                // body text. Default is "tab"; explicit "space" or "nothing"
+                // suppresses the auto-tab snap so body text follows the number
+                // immediately. Used by the renderer to decide whether to advance
+                // to the next default tab stop for inherited-indent list paragraphs.
+                var lvlSuff = lvl.Element(W + "suff")?.Attribute(W + "val")?.Value ?? "tab";
                 var startVal = int.TryParse(lvl.Element(W + "start")?.Attribute(W + "val")?.Value, out var sv) ? sv : 1;
                 // Read level indentation (pPr/ind) for hanging indent support
                 float lvlIndentLeft = 0, lvlHanging = 0;
@@ -4004,7 +4013,7 @@ internal static class DocxReader
                 // Read bold from numbering level rPr (used for list label rendering)
                 var lvlBoldEl = lvlRPr?.Element(W + "b");
                 var lvlBold = lvlBoldEl != null && lvlBoldEl.Attribute(W + "val")?.Value is not ("0" or "false");
-                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal, lvlIndentLeft, lvlHanging, lvlFontName, lvlBold));
+                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal, lvlIndentLeft, lvlHanging, lvlFontName, lvlBold, lvlSuff));
             }
             abstractDefs[absId] = levels;
         }
@@ -4131,7 +4140,11 @@ internal sealed record DocxParagraph(
     // paragraph level. When false (i.e., the list paragraph inherits its indent
     // from numbering or style), Word's auto-numbering "suff=tab" advances the
     // body text past the list label to the next default tab stop.
-    bool HasExplicitListIndent = false
+    bool HasExplicitListIndent = false,
+    // OOXML w:suff for the resolved numbering level: "tab" (default), "space",
+    // or "nothing". Renderer uses this to gate the auto-tab snap so body text
+    // follows the number immediately when suff is "space" or "nothing".
+    string ListSuff = "tab"
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.  Width=0 is a sentinel for an
@@ -4475,4 +4488,4 @@ internal sealed class DocxNumberingDef
     }
 }
 
-internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start, float IndentLeft = 0, float Hanging = 0, string? FontName = null, bool Bold = false);
+internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start, float IndentLeft = 0, float Hanging = 0, string? FontName = null, bool Bold = false, string Suff = "tab");
