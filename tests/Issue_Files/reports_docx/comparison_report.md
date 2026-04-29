@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T01:36:27.469965
+Generated: 2026-04-30T02:50:23.310788
 
 ## Summary
 
@@ -9,25 +9,25 @@ Generated: 2026-04-30T01:36:27.469965
 | 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9629 | 2/2 | **0.9852** |
 | 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9728 | 2/2 | **0.9891** |
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9738 | 2/2 | **0.9871** |
-| 4 | 🟢 20260318_issue | ✅ | 0.975 | 0.8607 | 7/7 | **0.9343** |
-| 5 | 🟢 CCU_article | ✅ | 0.9262 | 0.9477 | 21/21 | **0.9496** |
+| 4 | 🟢 20260318_issue | ✅ | 0.975 | 0.8623 | 7/7 | **0.9349** |
+| 5 | 🟢 CCU_article | ✅ | 0.922 | 0.9477 | 21/21 | **0.9479** |
 | 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
-| 7 | 🟢 Class News | ✅ | 0.9959 | 0.8911 | 4/4 | **0.9548** |
+| 7 | 🟢 Class News | ✅ | 0.9919 | 0.8904 | 4/4 | **0.9529** |
 | 8 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
 | 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.967 | 2/2 | **0.9801** |
 | 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9846 | 7/7 | **0.9859** |
 | 11 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
 | 12 | 🟢 Invoice | ✅ | 0.9963 | 0.9381 | 1/1 | **0.9738** |
-| 13 | 🟢 issues66 | ✅ | 0.9535 | 0.9755 | 3/3 | **0.9716** |
-| 14 | 🟡 MODERN LIVING | ✅ | 0.8913 | 0.8219 | 2/2 | **0.8853** |
+| 13 | 🟢 issues66 | ✅ | 0.9475 | 0.9815 | 3/3 | **0.9716** |
+| 14 | 🟡 MODERN LIVING | ✅ | 0.8913 | 0.8286 | 2/2 | **0.888** |
 | 15 | 🟡 nthu_article | ✅ | 0.8741 | 0.8705 | 19/20 | **0.7978** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
-| 17 | 🟢 SA8000 ch sample | ✅ | 0.9931 | 0.9667 | 2/2 | **0.9839** |
-| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.96 | 1/1 | **0.984** |
-| 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9833 | 17/17 | **0.9933** |
+| 17 | 🟢 SA8000 ch sample | ✅ | 0.9923 | 0.96 | 2/2 | **0.9809** |
+| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9582 | 1/1 | **0.9833** |
+| 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8119**
+**Average Overall Score: 0.8117**
 
 ## Visual Comparison
 
@@ -71,7 +71,7 @@ Generated: 2026-04-30T01:36:27.469965
 </tr>
 <tr>
   <td><b>20260318_issue</b></td>
-  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.4%</td>
+  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.5%</td>
 </tr>
 <tr>
   <td><img src="images/20260318_issue_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -103,7 +103,7 @@ Generated: 2026-04-30T01:36:27.469965
 </tr>
 <tr>
   <td><b>CCU_article</b></td>
-  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 95.0%</td>
+  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 94.8%</td>
 </tr>
 <tr>
   <td><img src="images/CCU_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -198,7 +198,7 @@ Generated: 2026-04-30T01:36:27.469965
 </tr>
 <tr>
   <td><b>Class News</b></td>
-  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 95.5%</td>
+  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 95.3%</td>
 </tr>
 <tr>
   <td><img src="images/Class News_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -301,7 +301,7 @@ Generated: 2026-04-30T01:36:27.469965
 </tr>
 <tr>
   <td><b>MODERN LIVING</b></td>
-  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 88.5%</td>
+  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 88.8%</td>
 </tr>
 <tr>
   <td><img src="images/MODERN LIVING_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -405,7 +405,7 @@ Generated: 2026-04-30T01:36:27.469965
 </tr>
 <tr>
   <td><b>SA8000 ch sample</b></td>
-  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/SA8000 ch sample_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -417,7 +417,7 @@ Generated: 2026-04-30T01:36:27.469965
 </tr>
 <tr>
   <td><b>Support_Letter</b></td>
-  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 98.3%</td>
 </tr>
 <tr>
   <td><img src="images/Support_Letter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -425,7 +425,7 @@ Generated: 2026-04-30T01:36:27.469965
 </tr>
 <tr>
   <td><b>Template for MSc Thesis</b></td>
-  <td colspan="1">Template for MSc Thesis <span style="color:#3fb950">⬤</span> 99.3%</td>
+  <td colspan="1">Template for MSc Thesis <span style="color:#3fb950">⬤</span> 99.4%</td>
 </tr>
 <tr>
   <td><img src="images/Template for MSc Thesis_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -645,10 +645,10 @@ Text content: ✅ Identical
 ### 20260318_issue
 
 - **Text Similarity:** 0.975
-- **Visual Average:** 0.8607
-- **Overall Score:** 0.9343
+- **Visual Average:** 0.8623
+- **Overall Score:** 0.9349
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=1531218 bytes, Reference=344088 bytes
+- **File Size:** MiniPdf=1531208 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -672,7 +672,7 @@ Text content: ✅ Identical
 
  页眉的名称 ……………………..
 
-@@ -32,18 +32,21 @@
+@@ -32,17 +32,20 @@
  document for information only.
 
  Name Department Responsibility
@@ -690,8 +690,6 @@ Text content: ✅ Identical
 -Introduction
 
 -The Process Definition Document (PDD) captures the flow of a business process to be developed.
-
--The flowchart contained within the document captures, at a high level, the business process to be automated, the
 
 +Company Confidential
 
@@ -721,24 +719,22 @@ Text content: ✅ Identical
 
 +The Process Definition Document (PDD) captures the flow of a business process to be developed.
 
-+The flowchart contained within the document captures, at a high level, the business process to be automated, the
+ The flowchart contained within the document captures, at a high level, the business process to be automated, the
 
  target systems used within the process and any assumptions that have been taken into account.
 
  Once agreed as the basis for the automation of the target process, the flowchart and assumptions will be used as a
-
- platform from which the automated solution will be designed.
 
 ```
 </details>
 
 ### CCU_article
 
-- **Text Similarity:** 0.9262
+- **Text Similarity:** 0.922
 - **Visual Average:** 0.9477
-- **Overall Score:** 0.9496
+- **Overall Score:** 0.9479
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6551733 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6551117 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -848,7 +844,7 @@ Text content: ✅ Identical
 
 +The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class
 
-... (15327 more characters)
+... (15558 more characters)
 
 ```
 </details>
@@ -859,25 +855,31 @@ Text content: ✅ Identical
 
 ### Class News
 
-- **Text Similarity:** 0.9959
-- **Visual Average:** 0.8911
-- **Overall Score:** 0.9548
+- **Text Similarity:** 0.9919
+- **Visual Average:** 0.8904
+- **Overall Score:** 0.9529
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=345292 bytes, Reference=147827 bytes
+- **File Size:** MiniPdf=345304 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Class News.pdf
 +++ reference/Class News.pdf
-@@ -11,7 +11,8 @@
+@@ -10,9 +10,9 @@
+ non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
+
  diam sollicitudin.
 
  Upcoming Events
 
- School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+-Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+
+-School Dance
 
 -9.9 | 5-7pm odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
+
++School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
 
 +9.9 | 5-7pm
 
@@ -889,7 +891,7 @@ Text content: ✅ Identical
 
  amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,
 
-@@ -33,8 +34,8 @@
+@@ -34,8 +34,8 @@
  diam sollicitudin.
 
  Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet
@@ -910,7 +912,7 @@ Text content: ✅ Identical
 
  auctor id neque vel maximus.
 
-@@ -43,8 +44,7 @@
+@@ -44,8 +44,7 @@
  consec tetur adi piscing elit.
 
  Aliquam non varius ipsum.
@@ -929,14 +931,20 @@ Text content: ✅ Identical
 
  Lorem ipsum dolor sit amet,
 
-@@ -79,7 +79,8 @@
+@@ -79,9 +78,9 @@
+ non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
+
  diam sollicitudin.
 
  Upcoming Events
 
- School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+-Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+
+-School Dance
 
 -9.9 | 5-7pm odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
+
++School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
 
 +9.9 | 5-7pm
 
@@ -948,7 +956,7 @@ Text content: ✅ Identical
 
  amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,
 
-@@ -101,8 +102,8 @@
+@@ -103,8 +102,8 @@
  diam sollicitudin.
 
  Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet
@@ -969,24 +977,11 @@ Text content: ✅ Identical
 
  auctor id neque vel maximus.
 
-@@ -112,7 +113,8 @@
+@@ -114,7 +113,8 @@
  Aliquam non varius ipsum.
 
- Fusce venenatis quam vel
-
- libero scelerisque. Quam vel
-
--libero sce lerisque, a matm. Our next area of focus
-
-+libero sce lerisque, a matm.
-
-+Our next area of focus
-
- Lorem ipsum dolor sit amet,
-
- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ma ecenas massa
-
- consec tetur adi piscing elit.
+ Fusce venenatis
+... (289 more characters)
 
 ```
 </details>
@@ -1375,11 +1370,11 @@ Text content: ✅ Identical
 
 ### issues66
 
-- **Text Similarity:** 0.9535
-- **Visual Average:** 0.9755
+- **Text Similarity:** 0.9475
+- **Visual Average:** 0.9815
 - **Overall Score:** 0.9716
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=4230919 bytes, Reference=229716 bytes
+- **File Size:** MiniPdf=4230988 bytes, Reference=229716 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1397,7 +1392,7 @@ Text content: ✅ Identical
 
  申请人 init 申请人电话 88888888<br /> 申请人邮箱 1@my.com 申请人签字
 
-@@ -6,31 +6,31 @@
+@@ -6,30 +6,31 @@
  付费人 init 课题编号 测试项目 付费人邮箱 1@my.com 付费人签字
 
  申请日期 20251126 所属单位 985 高校
@@ -1450,9 +1445,7 @@ Text content: ✅ Identical
 
  （签字）
 
- 工艺流程总计价： 0.80￥ 计价核准人签字： 日期：
-
- 备注：
+-工艺流程总计价： 备注： 0.80￥ 计价核准人签字： 日期：
 
 -1） 所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。
 
@@ -1461,6 +1454,10 @@ Text content: ✅ Identical
 -温度没有特殊要求的可填写：常规。
 
 -3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。
+
++工艺流程总计价： 0.80￥ 计价核准人签字： 日期：
+
++备注：
 
 +1 ）所有衬底材料部分须清楚填写包括：列明至少表面的三层材料的成分和支撑（主）衬底材料、尺寸和厚度等相关信息。
 
@@ -1491,10 +1488,10 @@ Text content: ✅ Identical
 ### MODERN LIVING
 
 - **Text Similarity:** 0.8913
-- **Visual Average:** 0.8219
-- **Overall Score:** 0.8853
+- **Visual Average:** 0.8286
+- **Overall Score:** 0.888
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=508054 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=508053 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1863,11 +1860,11 @@ Text content: ✅ Identical
 
 ### SA8000 ch sample
 
-- **Text Similarity:** 0.9931
-- **Visual Average:** 0.9667
-- **Overall Score:** 0.9839
+- **Text Similarity:** 0.9923
+- **Visual Average:** 0.96
+- **Overall Score:** 0.9809
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=467297 bytes, Reference=186097 bytes
+- **File Size:** MiniPdf=467276 bytes, Reference=186097 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1893,17 +1890,21 @@ Text content: ✅ Identical
 
  4、公司员工每周至少要有一天休息。（  √   ）
 
--5、童工是指年龄在 16 周岁以下的人（按照我国法律规定）。（  √   ）
+-5、 童工是指年龄在 16 周岁以下的人（按照我国法律规定）。（  √   ）
+
+-6、 公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）
+
+-7、 公司法定节假日安排上班的话，可以在其他时间安排调休。（  ×   ）
+
+-8、 当不同的法规、规章与 SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）
+
+-9、 根据劳动法规定，员工每月加班时间最多不超过 36 小时。（  √    ）
 
 +5、童工是指年龄在16 周岁以下的人（按照我国法律规定）。（  √   ）
 
- 6、公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）
++6、公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）
 
- 7、公司法定节假日安排上班的话，可以在其他时间安排调休。（  ×   ）
-
--8、当不同的法规、规章与 SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）
-
--9、根据劳动法规定，员工每月加班时间最多不超过 36 小时。（  √    ）
++7、公司法定节假日安排上班的话，可以在其他时间安排调休。（  ×   ）
 
 +8、当不同的法规、规章与SA8000 标准同一议题时，公司应遵守最严格的要求。（  √    ）
 
@@ -1957,7 +1958,9 @@ Text content: ✅ Identical
 
 -针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出 SA8000 的哪一条款。
 
--1、 公司在运行 SA8000 社会责任管理体系过程中，内审发现使用了 2 名童工，公司的纠正措施是将 2 名
+-1、 公司在运行 SA8000 社会责任管理体系过程中，内审发现使用了 2 名童工，公司的纠正措施是将
+
+-2 名童工立即开除。
 
 +三、案例分析题（共10 分，每题5 分）
 
@@ -1965,7 +1968,7 @@ Text content: ✅ Identical
 
 +1、公司在运行SA8000 社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施是将2 名
 
- 童工立即开除。
++童工立即开除。
 
  STP 小组的含义是什么？
 
@@ -1973,7 +1976,7 @@ Text content: ✅ Identical
 
  ISO45001 基础知识培训考试题
 
--一、判断题（共 20 分，每题 2 分）
+-一、 判断题（共 20 分，每题 2 分）
 
 -1、一个管理十分严谨、设备精良并经消防主管部门审批合格的油库，在加强日常管理的情况下，可以不列入危险
 
@@ -2034,14 +2037,8 @@ Text content: ✅ Identical
 
 +A、 电工。B、金属焊接切割。C、矿山通风。D、A+B+C。
 
- 5.危险源辨识没有包括的内容有（ D  ）
-
--A、常规和非常规活动。B、所有进入工作场所的人员的活动。C、工作场所的设施。D、供应商在其自身工作场
-
--所的活动。
-
-+A、 常规和非
-... (1017 more characters)
+ 5
+... (1108 more characters)
 
 ```
 </details>
@@ -2049,28 +2046,42 @@ Text content: ✅ Identical
 ### Support_Letter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.96
-- **Overall Score:** 0.984
+- **Visual Average:** 0.9582
+- **Overall Score:** 0.9833
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1003989 bytes, Reference=147353 bytes
+- **File Size:** MiniPdf=1003998 bytes, Reference=147353 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Support_Letter.pdf
 +++ reference/Support_Letter.pdf
-@@ -12,9 +12,9 @@
+@@ -10,20 +10,20 @@
+ TERMS OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA VERBITCKAIA
+
+ PASSPORT NUMBER 770752777
+
  1. I, Pascale Donaldson, a South African national born on 09 February 2006 with South African
 
- Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of
+-Identification Number: 658, (a South African born on 09 February 2006 and a permanent
 
- South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a
+-resident of South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia
 
--national born on 21 December 1999, and support her application for a renewal of his Relatives Visa
+-(“Applicant”), a national born on 21 December 1999, and support her application for a renewal
 
--in terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with the
+-of his Relatives Visa in terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002)
 
--relevant Immigration Regulations made under section 7 of the Act.
+-(“Act”), read with the relevant Immigration Regulations made under section 7 of the Act.
+
+-2. I accept full responsibility of any financial costs and subsistence, including but not limited to,
+
+-housing, food, medical, physical and emotional needs he may require whilst residing with me in
+
+-South Africa at the following address during his entire sojourn:
+
++Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of
+
++South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a
 
 +national born on 21 December 1999, and support her application for a renewal of his Relatives Visa in
 
@@ -2078,11 +2089,33 @@ Text content: ✅ Identical
 
 +Immigration Regulations made under section 7 of the Act.
 
- 2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,
++2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,
 
- food, medical, physical and emotional needs he may require whilst residing with me in South Africa at
++food, medical, physical and emotional needs he may require whilst residing with me in South Africa at
 
- the following address during his entire sojourn:
++the following address during his entire sojourn:
+
+ Dicta modi aut labor
+
+ Voluptates alias exc
+
+ Ut temporibus aliqui
+
+ Qui magna fugiat cor
+
+-3. I trust that this is in order, but should you require any additional information, please do not
+
+-hesitate to contact me.
+
++3. I trust that this is in order, but should you require any additional information, please do not hesitate
+
++to contact me.
+
+ Yours sincerely,
+
+ ___________________________
+
+ Pascale Donaldson
 
 ```
 </details>
@@ -2090,10 +2123,10 @@ Text content: ✅ Identical
 ### Template for MSc Thesis
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9833
-- **Overall Score:** 0.9933
+- **Visual Average:** 0.984
+- **Overall Score:** 0.9936
 - **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=1182555 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=1182800 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2174,7 +2207,7 @@ Text content: ✅ Identical
 -Date:                                                                                                                                         Date:
 
 -Signature of PSPC Member #1                                                                  Signature of PS
-... (1078 more characters)
+... (1080 more characters)
 
 ```
 </details>

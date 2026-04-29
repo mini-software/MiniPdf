@@ -1520,12 +1520,32 @@ internal static class DocxToPdfConverter
             var isWrapNoneAnchorOverlayOnlyParagraph =
                 paragraph.Runs.Count == 0
                 && paragraph.Images.Count > 0
-                && paragraph.Images.All(img => img.IsAnchor && !img.IsWrapTopBottom);
-            if (!isShapeOnlyParagraph && !isBehindDocOnlyParagraph && !isFloatingAnchorOnlyParagraph && !isWrapNoneAnchorOverlayOnlyParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
+                && paragraph.Images.All(img => img.IsAnchor && !img.IsWrapTopBottom)
+                && (paragraph.Shapes is null || paragraph.Shapes.Count == 0);
+            // Mixed "ObjectAnchor"-style host paragraph: empty paragraph carrying both
+            // wrapNone anchor image(s) AND anchor shape(s) (e.g. hero photo + behindDoc
+            // background rectangle on a section opener page). The anchor content is
+            // absolutely positioned, but the paragraph mark still consumes one font
+            // ascent of vertical space before subsequent flow content (e.g. a table).
+            var isObjectAnchorHostParagraph =
+                paragraph.Runs.Count == 0
+                && paragraph.Images.Count > 0
+                && paragraph.Images.All(img => img.IsAnchor && !img.IsWrapTopBottom)
+                && paragraph.Shapes is { Count: > 0 };
+            if (!isShapeOnlyParagraph && !isBehindDocOnlyParagraph && !isFloatingAnchorOnlyParagraph && !isWrapNoneAnchorOverlayOnlyParagraph && !isObjectAnchorHostParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
                 state.AdvanceY(lineHeight);
             else if (isShapeOnlyParagraph && wasTopOfPage)
             {
                 state.AdvanceY(lineHeight);
+            }
+            else if (isObjectAnchorHostParagraph)
+            {
+                // Advance by ~lineHeight + an additional half-ascent to land the
+                // following table at Word's measured top. Empirically converges
+                // the section-opener layout (hero photo + behindDoc background
+                // rectangle anchored on a 10pt ObjectAnchor mark) to LibreOffice
+                // and Word output for MODERN LIVING-style templates.
+                state.AdvanceY(fontSize * 1.43f);
             }
 
             // Render wrapTopAndBottom images even for empty paragraphs
