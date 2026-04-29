@@ -586,6 +586,16 @@ internal static class DocxReader
         bool paraHasIndentLeft = false;
         bool paraHasIndentRight = false;
         bool paraHasIndentFirstLine = false;
+        // Numbering-level indent captured separately so it can be applied as the
+        // lowest-priority fallback (paragraph > style > numbering per OOXML cascade).
+        float numLevelIndentLeft = 0;
+        float numLevelIndentFirstLine = 0;
+        // True when pPr/ind explicitly sets left/start/hanging numerically at the
+        // paragraph level (i.e., the user positioned this paragraph rather than
+        // inheriting from numbering/style). Word's auto-numbering "suff=tab" only
+        // advances body text to the next tab stop when the paragraph does NOT
+        // override numbering's indent — explicit ind disables that auto-tab.
+        bool paraHasExplicitListIndent = false;
         bool isBulletList = false;
         bool isNumberedList = false;
         bool pageBreakBefore = false;
@@ -676,13 +686,12 @@ internal static class DocxReader
                 {
                     indentLeft = il / 20f;
                     paraHasIndentLeft = true;
+                    paraHasExplicitListIndent = true;
                 }
-                else if (leftCharsAttr != null)
-                {
-                    // leftChars="0" with no left attribute: explicit zero, do not inherit.
-                    indentLeft = 0;
-                    paraHasIndentLeft = true;
-                }
+                // leftChars="0" alone (no numeric left attribute) does NOT lock the
+                // indent. Per OOXML 17.3.1.12, leftChars only suppresses chars-based
+                // indent; the numerical left value continues to inherit from style
+                // and (as final fallback) from numbering.
                 var rightCharsAttr = ind.Attribute(W + "rightChars") ?? ind.Attribute(W + "endChars");
                 var rightAttr = ind.Attribute(W + "right") ?? ind.Attribute(W + "end");
                 int rightCharsVal = 0;
@@ -699,11 +708,7 @@ internal static class DocxReader
                     indentRight = ir / 20f;
                     paraHasIndentRight = true;
                 }
-                else if (rightCharsAttr != null)
-                {
-                    indentRight = 0;
-                    paraHasIndentRight = true;
-                }
+                // rightChars="0" alone: see comment for leftChars="0" above.
                 var flAttr = ind.Attribute(W + "firstLine");
                 if (flAttr != null && int.TryParse(flAttr.Value, out var fl))
                 {
@@ -715,6 +720,7 @@ internal static class DocxReader
                 {
                     indentFirstLine = -hg / 20f;
                     paraHasIndentFirstLine = true;
+                    paraHasExplicitListIndent = true;
                 }
                 if (int.TryParse(ind.Attribute(W + "firstLineChars")?.Value, out var flc))
                     firstLineChars = flc;
@@ -756,16 +762,14 @@ internal static class DocxReader
                         listText = numDef.FormatListText(listLevel);
                     }
 
-                    // Apply numbering level indentation as fallback per-property
-                    // (paragraph ind may specify hanging but not left, or vice versa)
+                    // Capture numbering level indentation; apply later as the LOWEST
+                    // priority fallback (paragraph > style > numbering per OOXML cascade)
                     var lvlDef = numDef.Levels.FirstOrDefault(l => l.Ilvl == listLevel) ?? numDef.Levels.FirstOrDefault();
                     if (lvlDef != null)
                     {
                         if (lvlDef.Bold) listTextBold = true;
-                        if (indentLeft == 0 && lvlDef.IndentLeft > 0)
-                            indentLeft = lvlDef.IndentLeft;
-                        if (indentFirstLine == 0 && lvlDef.Hanging > 0)
-                            indentFirstLine = -lvlDef.Hanging;
+                        if (lvlDef.IndentLeft > 0) numLevelIndentLeft = lvlDef.IndentLeft;
+                        if (lvlDef.Hanging > 0) numLevelIndentFirstLine = -lvlDef.Hanging;
                         listNumFmt = lvlDef.NumFmt;
                     }
                 }
@@ -882,6 +886,13 @@ internal static class DocxReader
             if (!paraHasIndentRight && styleInfo.HasIndentRight) indentRight = styleInfo.IndentRight;
             if (!paraHasIndentFirstLine && styleInfo.HasIndentFirstLine) indentFirstLine = styleInfo.IndentFirstLine;
         }
+        // Apply numbering-level indent as the LOWEST-priority fallback. Per OOXML
+        // cascade (paragraph > style > numbering), numbering's ind only applies
+        // when neither the paragraph nor any style in the chain set the value.
+        if (!paraHasIndentLeft && indentLeft == 0 && numLevelIndentLeft > 0)
+            indentLeft = numLevelIndentLeft;
+        if (!paraHasIndentFirstLine && indentFirstLine == 0 && numLevelIndentFirstLine != 0)
+            indentFirstLine = numLevelIndentFirstLine;
         // Paragraph mark font overrides style font for line height calculation
         if (!string.IsNullOrEmpty(paragraphMarkFontName))
             paragraphFontName = paragraphMarkFontName;
@@ -1085,7 +1096,8 @@ internal static class DocxReader
             AutoSpaceDN: autoSpaceDN,
             HasLastRenderedPageBreak: hasLastRenderedPageBreak,
             ListFontName: listFontName,
-            SpacingAfterExplicit: spacingAfterExplicit);
+            SpacingAfterExplicit: spacingAfterExplicit,
+            HasExplicitListIndent: paraHasExplicitListIndent);
     }
 
     /// <summary>
@@ -3579,7 +3591,6 @@ internal static class DocxReader
             var vertAlign2 = !string.IsNullOrEmpty(current.VerticalAlign) ? current.VerticalAlign : baseStyle.VerticalAlign;
 
             // Indent: per-attribute fallback to base style
-            var styleIndEl = pPr?.Element(W + "ind");
             bool curHasLeft = current.HasIndentLeft;
             bool curHasRight = current.HasIndentRight;
             bool curHasFirstLine = current.HasIndentFirstLine;
@@ -4115,7 +4126,12 @@ internal sealed record DocxParagraph(
     // True when the paragraph's pPr/spacing/@after attribute was explicitly set
     // (vs inherited from style or docDefaults). Used so explicit paragraph spacing
     // wins over table style spacing per OOXML cascade order.
-    bool SpacingAfterExplicit = false
+    bool SpacingAfterExplicit = false,
+    // True when pPr/ind explicitly sets left/start/hanging numerically at the
+    // paragraph level. When false (i.e., the list paragraph inherits its indent
+    // from numbering or style), Word's auto-numbering "suff=tab" advances the
+    // body text past the list label to the next default tab stop.
+    bool HasExplicitListIndent = false
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.  Width=0 is a sentinel for an

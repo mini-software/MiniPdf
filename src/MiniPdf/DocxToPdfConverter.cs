@@ -1312,7 +1312,17 @@ internal static class DocxToPdfConverter
                 // CJK/Calibri-rendered ASCII digits by ~10% (digit width 556 vs ~500),
                 // so a 2pt floor avoids falsely triggering the num-tab snap for labels
                 // that fit the indent slot in actual rendered metrics (e.g. "5、","8、").
-                if (labelEnd > bodyX + 2f)
+                //
+                // Additionally, when the paragraph did NOT explicitly set its own
+                // pPr/ind (left/hanging) — i.e., it inherits the list indent from the
+                // numbering definition or paragraph style — Word always applies the
+                // auto-numbering suffix tab: after the level text, body text snaps to
+                // the next default tab stop greater than labelEnd. This produces the
+                // characteristic "label  body" gap seen in CJK numbered lists like
+                // "五、 目次" where the label fits inside the indent slot but Word
+                // still inserts a tab gap.
+                bool autoTabAfterLabel = !paragraph.HasExplicitListIndent;
+                if (labelEnd > bodyX + 2f || autoTabAfterLabel)
                 {
                     var target = labelEnd;
                     if (paragraph.TabStops != null)
