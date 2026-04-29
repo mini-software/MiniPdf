@@ -577,6 +577,7 @@ internal static class DocxReader
         float spacingBefore = -1;
         float spacingAfter = -1;
         bool spacingAfterExplicit = false;
+        bool spacingBeforeExplicit = false;
         float lineSpacing = 0;
         bool lineSpacingAbsolute = false;
         bool lineSpacingExact = false;
@@ -649,7 +650,10 @@ internal static class DocxReader
             if (spacing != null)
             {
                 if (int.TryParse(spacing.Attribute(W + "before")?.Value, out var sb))
+                {
                     spacingBefore = sb / 20f;
+                    spacingBeforeExplicit = true;
+                }
                 if (int.TryParse(spacing.Attribute(W + "after")?.Value, out var sa))
                 {
                     spacingAfter = sa / 20f;
@@ -871,7 +875,22 @@ internal static class DocxReader
             if (color == null) color = styleInfo.Color;
             if (!hasExplicitAlignment && !string.IsNullOrEmpty(styleInfo.Alignment))
                 alignment = styleInfo.Alignment;
-            if (spacingBefore < 0) spacingBefore = styleInfo.SpacingBefore;
+            if (spacingBefore < 0)
+            {
+                spacingBefore = styleInfo.SpacingBefore;
+                // Treat as explicit when inherited from a non-Normal pStyle —
+                // i.e., the document author chose a custom paragraph style
+                // (e.g., TableHeading) that defines its own spacing-before.
+                // Inherited Normal/docDefault spacing-before stays non-explicit
+                // so it can be suppressed at the top of a table cell to match
+                // LibreOffice/Word collapse behaviour.
+                if (styleInfo.SpacingBefore > 0
+                    && !string.IsNullOrEmpty(styleId)
+                    && !string.Equals(styleId, "Normal", StringComparison.OrdinalIgnoreCase))
+                {
+                    spacingBeforeExplicit = true;
+                }
+            }
             if (spacingAfter < 0) spacingAfter = styleInfo.SpacingAfter;
             if (lineSpacing == 0 && styleInfo.LineSpacing > 0)
             {
@@ -1099,6 +1118,7 @@ internal static class DocxReader
             HasLastRenderedPageBreak: hasLastRenderedPageBreak,
             ListFontName: listFontName,
             SpacingAfterExplicit: spacingAfterExplicit,
+            SpacingBeforeExplicit: spacingBeforeExplicit,
             HasExplicitListIndent: paraHasExplicitListIndent,
             ListSuff: listSuff);
     }
@@ -4141,6 +4161,13 @@ internal sealed record DocxParagraph(
     // (vs inherited from style or docDefaults). Used so explicit paragraph spacing
     // wins over table style spacing per OOXML cascade order.
     bool SpacingAfterExplicit = false,
+    // True when the paragraph's pPr/spacing/@before is explicitly set at the
+    // paragraph level, OR when it is inherited from a non-Normal pStyle that
+    // defines its own spacing-before. Used so the renderer can apply explicit
+    // table-cell heading spacing-before (e.g., pStyle="TableHeading") at the
+    // top of a cell while still suppressing inherited Normal/docDefault before
+    // (which Word/LibreOffice collapse at cell boundaries).
+    bool SpacingBeforeExplicit = false,
     // True when pPr/ind explicitly sets left/start/hanging numerically at the
     // paragraph level. When false (i.e., the list paragraph inherits its indent
     // from numbering or style), Word's auto-numbering "suff=tab" advances the

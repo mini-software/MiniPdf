@@ -3741,13 +3741,17 @@ internal static class DocxToPdfConverter
                 {
                     var para = cellParaList[cellParaIdx];
                     var isFirstCellPara = cellParaIdx == 0;
-                    // Skip SpacingBefore for the first paragraph in a table cell.
-                    // LibreOffice (and Word's default compat mode) does not apply
-                    // paragraph-style SpacingBefore at the top of a cell — applying
-                    // it caused the Class News template's first cell title to sit
-                    // ~12pt lower than the LibreOffice reference and shifted every
-                    // downstream row by the same amount.
-                    if (!isFirstCellPara && para.SpacingBefore > 0)
+                    // Skip SpacingBefore for the first paragraph in a table cell
+                    // when it is inherited from Normal/docDefault. Apply it when
+                    // the paragraph (or its non-Normal pStyle) explicitly defines
+                    // spacing-before — e.g. pStyle="TableHeading" with w:before.
+                    // LibreOffice/Word both collapse the inherited Normal value at
+                    // the top of a cell, but Word respects an explicit pStyle
+                    // spacing-before there (matters for the 20260318_issue Word
+                    // reference's TableHeading rows).
+                    bool applySpacingBefore = (!isFirstCellPara || para.SpacingBeforeExplicit)
+                        && para.SpacingBefore > 0;
+                    if (applySpacingBefore)
                         textY -= para.SpacingBefore;
 
                     // Render images inside table cells
@@ -4114,9 +4118,12 @@ internal static class DocxToPdfConverter
             var para = cellParas[pi];
             var isFirstPara = pi == 0;
 
-            // Skip SpacingBefore for the first paragraph in a cell — this matches
-            // the renderer's behaviour and the LibreOffice reference layout.
-            if (!isFirstPara && para.SpacingBefore > 0)
+            // Skip SpacingBefore for the first paragraph in a cell when it is
+            // inherited from Normal/docDefault; apply it when explicitly defined
+            // by the paragraph or its non-Normal pStyle (e.g. TableHeading).
+            bool applySpacingBefore = (!isFirstPara || para.SpacingBeforeExplicit)
+                && para.SpacingBefore > 0;
+            if (applySpacingBefore)
                 cellHeight += para.SpacingBefore;
 
             const float emuPerPt = 914400f / 72f;
