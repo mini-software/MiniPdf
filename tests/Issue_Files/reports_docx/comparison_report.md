@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-29T23:56:23.347303
+Generated: 2026-04-30T00:57:29.737839
 
 ## Summary
 
@@ -20,7 +20,7 @@ Generated: 2026-04-29T23:56:23.347303
 | 12 | 🟢 Invoice | ✅ | 0.9963 | 0.9381 | 1/1 | **0.9738** |
 | 13 | 🟢 issues66 | ✅ | 0.9535 | 0.9755 | 3/3 | **0.9716** |
 | 14 | 🟡 MODERN LIVING | ✅ | 0.8913 | 0.8219 | 2/2 | **0.8853** |
-| 15 | 🟡 nthu_article | ✅ | 0.8724 | 0.8709 | 19/20 | **0.7973** |
+| 15 | 🟡 nthu_article | ✅ | 0.8741 | 0.8705 | 19/20 | **0.7978** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
 | 17 | 🟢 SA8000 ch sample | ✅ | 0.9931 | 0.9667 | 2/2 | **0.9839** |
 | 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.96 | 1/1 | **0.984** |
@@ -313,7 +313,7 @@ Generated: 2026-04-29T23:56:23.347303
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.7%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.8%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1626,11 +1626,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.8724
-- **Visual Average:** 0.8709
-- **Overall Score:** 0.7973
+- **Text Similarity:** 0.8741
+- **Visual Average:** 0.8705
+- **Overall Score:** 0.7978
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=8698625 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=8698655 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1642,11 +1642,9 @@ Text content: ✅ Identical
 
  經 111 年 11 月 09 日 111 學年度第一學期第 3 次系務會議通過
 
--一、論文編印項目次序與頁碼編排
+ 一、 論文編印項目次序與頁碼編排
 
 -（一）紙本論文次序
-
-+一、 論文編印項目次序與頁碼編排
 
 +（一） 紙本論文次序
 
@@ -1664,7 +1662,7 @@ Text content: ✅ Identical
 
  誌謝辭 Acknowledgements (可免)
 
-@@ -14,258 +14,273 @@
+@@ -14,7 +14,7 @@
  表次 List of Tables（可免）
 
  圖次 List of Figures（可免）
@@ -1681,17 +1679,12 @@ Text content: ✅ Identical
 
  名詞附錄 Glossary of Terms (可免)
 
- 索引 Index (可免)
-
- 封底 Back Cover、書背 Spine
-
--（二）電子檔論文次序
-
-+（二） 電子檔論文次序
+@@ -23,174 +23,176 @@
+ （二） 電子檔論文次序
 
  去掉前項 藍字 項目。
 
--（三）頁碼編排
+ （三） 頁碼編排
 
 -1，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i, ii, iii… ）。
 
@@ -1700,8 +1693,6 @@ Text content: ✅ Identical
 -3，頁碼標於頁面底端，置中。
 
 -（四）版面配置
-
-+（三） 頁碼編排
 
 +1 ，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i, ii, iii… ）。
 
@@ -1765,8 +1756,6 @@ Text content: ✅ Identical
 
 -文與數字用 Times New Roman 。 如範例 C （ 中文）與範例 D （ 英文）。
 
--五、目次
-
 +研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二頁，
 
 +橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），段距
@@ -1777,7 +1766,7 @@ Text content: ✅ Identical
 
 +字用 Times New Roman 。如範例 C （中文）與範例 D （英文）。
 
-+五、 目次
+ 五、 目次
 
  包括各章、各節、節下小標之標題、參考文獻、附錄及其所在之頁數。「目
 
@@ -1795,9 +1784,7 @@ Text content: ✅ Identical
 
  六、論文正文
 
--（一）章節標題
-
-+（一） 章節標題
+ （一） 章節標題
 
  章次與章名間空一格，如「第一章　緒論」。 18 級，標楷體，置中。
 
@@ -1807,21 +1794,19 @@ Text content: ✅ Identical
 
 -」、「1、」、「（1）」 …… 等順序表示， 14 級（或 12 級），左齊。
 
--（二）內文
-
--1，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文
-
--中，書名和篇名連用時，省略篇名號，如《莊子 ‧ 天下》。若為英
-
--文，書名請用斜體，篇名請用 “ ” 。日文翻譯成中文，行文時亦請
-
 +各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16 級，
 
 +標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
 
 +「 1 、」、「（ 1 ）」……等順序表示， 14 級（或 12 級），左齊。
 
-+（二） 內文
+ （二） 內文
+
+-1，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文
+
+-中，書名和篇名連用時，省略篇名號，如《莊子 ‧ 天下》。若為英
+
+-文，書名請用斜體，篇名請用 “ ” 。日文翻譯成中文，行文時亦請
 
 +1 ，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文中，
 
@@ -1835,8 +1820,16 @@ Text content: ✅ Identical
 
 -一併改用中文新式標號。
 
--2，行距建議設定為 1.2 行 （ word 中選「多行
-... (17682 more characters)
+-2，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段
+
++併改用中文新式標號。
+
++2 ，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段
+
+ 「左右對齊」。
+
+ （三） 引
+... (16903 more characters)
 
 ```
 </details>
@@ -2194,6 +2187,6 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.7973)
+1. **nthu_article** (score: 0.7978)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
