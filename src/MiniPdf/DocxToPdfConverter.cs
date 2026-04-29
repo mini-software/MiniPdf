@@ -913,11 +913,27 @@ internal static class DocxToPdfConverter
             // Use maximum run font size for line height when runs specify larger sizes
             // than the paragraph default (e.g. title text with run-level sz=48 but no
             // paragraph-level font size). Prevents text overlap on hard line breaks.
+            // Word ignores font size of empty runs and tab-only runs (no glyphs that
+            // contribute vertical metrics).  Without this, a leading 14pt `<w:tab/>`
+            // run inflates a visible 12pt body line by ~17%.  Whitespace runs (real
+            // spaces) DO contribute — Word renders space glyphs at the run's font
+            // size, so they keep their full vertical metrics.
             var effectiveFs = fontSize;
             foreach (var run in paragraph.Runs)
             {
                 var runFs = run.FontSize > 0 ? run.FontSize : fontSize;
-                if (runFs > effectiveFs) effectiveFs = runFs;
+                if (runFs <= effectiveFs) continue;
+                var rt = run.Text;
+                bool tabOnly = !string.IsNullOrEmpty(rt);
+                if (tabOnly)
+                {
+                    for (int ci = 0; ci < rt.Length; ci++)
+                    {
+                        if (rt[ci] != '\t') { tabOnly = false; break; }
+                    }
+                }
+                if (string.IsNullOrEmpty(rt) || tabOnly) continue;
+                effectiveFs = runFs;
             }
             lineHeight = effectiveFs * metricsFactor * lineSpacingMul;
         }
