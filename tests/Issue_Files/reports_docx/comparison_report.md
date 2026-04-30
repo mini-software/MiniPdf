@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T10:19:06.246061
+Generated: 2026-04-30T12:03:22.186205
 
 ## Summary
 
@@ -9,8 +9,8 @@ Generated: 2026-04-30T10:19:06.246061
 | 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9629 | 2/2 | **0.9852** |
 | 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9728 | 2/2 | **0.9891** |
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9738 | 2/2 | **0.9871** |
-| 4 | 🟢 20260318_issue | ✅ | 0.9685 | 0.865 | 7/7 | **0.9334** |
-| 5 | 🟢 CCU_article | ✅ | 0.922 | 0.9466 | 21/21 | **0.9474** |
+| 4 | 🟢 20260318_issue | ✅ | 0.9685 | 0.8651 | 7/7 | **0.9334** |
+| 5 | 🟢 CCU_article | ✅ | 0.9268 | 0.9466 | 21/21 | **0.9494** |
 | 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
 | 7 | 🟢 Class News | ✅ | 0.9919 | 0.8692 | 4/4 | **0.9444** |
 | 8 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
@@ -20,14 +20,14 @@ Generated: 2026-04-30T10:19:06.246061
 | 12 | 🟢 Invoice | ✅ | 1.0 | 0.9592 | 1/1 | **0.9837** |
 | 13 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
 | 14 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8358 | 2/2 | **0.877** |
-| 15 | 🟡 nthu_article | ✅ | 0.8757 | 0.8742 | 19/20 | **0.8** |
+| 15 | 🟡 nthu_article | ✅ | 0.875 | 0.8708 | 19/20 | **0.7983** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
 | 17 | 🟢 SA8000 ch sample | ✅ | 0.9921 | 0.9642 | 2/2 | **0.9825** |
-| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9461 | 1/1 | **0.9784** |
+| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.946 | 1/1 | **0.9784** |
 | 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8127**
+**Average Overall Score: 0.8128**
 
 ## Visual Comparison
 
@@ -103,7 +103,7 @@ Generated: 2026-04-30T10:19:06.246061
 </tr>
 <tr>
   <td><b>CCU_article</b></td>
-  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 94.7%</td>
+  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 94.9%</td>
 </tr>
 <tr>
   <td><img src="images/CCU_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -313,7 +313,7 @@ Generated: 2026-04-30T10:19:06.246061
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 80.0%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.8%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -645,7 +645,7 @@ Text content: ✅ Identical
 ### 20260318_issue
 
 - **Text Similarity:** 0.9685
-- **Visual Average:** 0.865
+- **Visual Average:** 0.8651
 - **Overall Score:** 0.9334
 - **Pages:** MiniPdf=7, Reference=7
 - **File Size:** MiniPdf=1531209 bytes, Reference=344088 bytes
@@ -747,11 +747,11 @@ Text content: ✅ Identical
 
 ### CCU_article
 
-- **Text Similarity:** 0.922
+- **Text Similarity:** 0.9268
 - **Visual Average:** 0.9466
-- **Overall Score:** 0.9474
+- **Overall Score:** 0.9494
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6551120 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6551674 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -861,7 +861,7 @@ Text content: ✅ Identical
 
 +The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class
 
-... (15558 more characters)
+... (15312 more characters)
 
 ```
 </details>
@@ -1562,11 +1562,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.8757
-- **Visual Average:** 0.8742
-- **Overall Score:** 0.8
+- **Text Similarity:** 0.875
+- **Visual Average:** 0.8708
+- **Overall Score:** 0.7983
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=9019147 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=9019155 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1600,7 +1600,7 @@ Text content: ✅ Identical
 
  誌謝辭 Acknowledgements (可免)
 
-@@ -14,107 +14,107 @@
+@@ -14,108 +14,107 @@
  表次 List of Tables（可免）
 
  圖次 List of Figures（可免）
@@ -1772,7 +1772,7 @@ Text content: ✅ Identical
  ---PAGE---
 
 -一併改
-... (15897 more characters)
+... (16017 more characters)
 
 ```
 </details>
@@ -1990,42 +1990,28 @@ Text content: ✅ Identical
 ### Support_Letter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9461
+- **Visual Average:** 0.946
 - **Overall Score:** 0.9784
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1010825 bytes, Reference=147353 bytes
+- **File Size:** MiniPdf=1010651 bytes, Reference=147353 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Support_Letter.pdf
 +++ reference/Support_Letter.pdf
-@@ -10,20 +10,20 @@
- TERMS OF SECTION 18 OF THE IMMIGRATION ACT, 2002 (ACT NO. 13 of 2002) MRS. SOFIA VERBITCKAIA
-
- PASSPORT NUMBER 770752777
-
+@@ -12,9 +12,9 @@
  1. I, Pascale Donaldson, a South African national born on 09 February 2006 with South African
 
--Identification Number: 658, (a South African born on 09 February 2006 and a permanent
+ Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of
 
--resident of South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia
+ South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a
 
--(“Applicant”), a national born on 21 December 1999, and support her application for a renewal
+-national born on 21 December 1999, and support her application for a renewal of his Relatives Visa
 
--of his Relatives Visa in terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002)
+-in terms of section 18 of the Immigration Act, 2002 (Act No. 13 of 2002) (“Act”), read with the
 
--(“Act”), read with the relevant Immigration Regulations made under section 7 of the Act.
-
--2. I accept full responsibility of any financial costs and subsistence, including but not limited to,
-
--housing, food, medical, physical and emotional needs he may require whilst residing with me in
-
--South Africa at the following address during his entire sojourn:
-
-+Identification Number: 658, (a South African born on 09 February 2006 and a permanent resident of
-
-+South Africa) hereby confirm that I am the life partner of Mrs. Sofia Verbitckaia (“Applicant”), a
+-relevant Immigration Regulations made under section 7 of the Act.
 
 +national born on 21 December 1999, and support her application for a renewal of his Relatives Visa in
 
@@ -2033,33 +2019,11 @@ Text content: ✅ Identical
 
 +Immigration Regulations made under section 7 of the Act.
 
-+2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,
+ 2. I accept full responsibility of any financial costs and subsistence, including but not limited to, housing,
 
-+food, medical, physical and emotional needs he may require whilst residing with me in South Africa at
+ food, medical, physical and emotional needs he may require whilst residing with me in South Africa at
 
-+the following address during his entire sojourn:
-
- Dicta modi aut labor
-
- Voluptates alias exc
-
- Ut temporibus aliqui
-
- Qui magna fugiat cor
-
--3. I trust that this is in order, but should you require any additional information, please do not
-
--hesitate to contact me.
-
-+3. I trust that this is in order, but should you require any additional information, please do not hesitate
-
-+to contact me.
-
- Yours sincerely,
-
- ___________________________
-
- Pascale Donaldson
+ the following address during his entire sojourn:
 
 ```
 </details>
@@ -2162,4 +2126,8 @@ Text content: ✅ Identical
 
 ## Improvement Suggestions
 
-All test cases scored 0.8 or above. 🎉
+### ⚠ Low-Score Test Cases (below 0.8)
+
+1. **nthu_article** (score: 0.7983)
+
+Review the text diffs and visual comparisons above to identify specific rendering issues.

@@ -1078,6 +1078,7 @@ internal static class DocxReader
         var effectiveStyleId = !string.IsNullOrEmpty(styleId) ? styleId : "Normal";
         bool contextualSpacing = false;
         string? paragraphFontName = null;
+        bool styleProvidedIndentLeft = false;
         if (styles.TryGetValue(effectiveStyleId, out var styleInfo))
         {
             if (fontSize == 0) fontSize = styleInfo.FontSize;
@@ -1115,16 +1116,29 @@ internal static class DocxReader
             if (charSpacing == 0) charSpacing = styleInfo.CharSpacing;
 
             // Inherit indents per-attribute from style if paragraph didn't set them
-            if (!paraHasIndentLeft && styleInfo.HasIndentLeft) indentLeft = styleInfo.IndentLeft;
+            if (!paraHasIndentLeft && styleInfo.HasIndentLeft) { indentLeft = styleInfo.IndentLeft; styleProvidedIndentLeft = true; }
             if (!paraHasIndentRight && styleInfo.HasIndentRight) indentRight = styleInfo.IndentRight;
             if (!paraHasIndentFirstLine && styleInfo.HasIndentFirstLine) indentFirstLine = styleInfo.IndentFirstLine;
         }
-        // Apply numbering-level indent as the LOWEST-priority fallback. Per OOXML
-        // cascade (paragraph > style > numbering), numbering's ind only applies
-        // when neither the paragraph nor any style in the chain set the value.
-        if (!paraHasIndentLeft && indentLeft == 0 && numLevelIndentLeft > 0)
+        // Numbering-level indent. Per OOXML 17.9.3, when a paragraph references a
+        // numbering definition (numPr), the numbering's ind overrides any ind
+        // inherited from the paragraph's style; only ind set directly on the
+        // paragraph overrides numbering. For non-numbered paragraphs, numbering
+        // ind is the lowest-priority fallback (only when neither paragraph nor
+        // style set the value). Verified against MS Word output for CCU_article
+        // TOC3-styled "4.7" entry whose numbering supplies ind left=739
+        // hanging=538 and style supplies ind left=141 only — Word renders the
+        // label hanging at the numbering's left/hanging slot, not the style's
+        // narrow left=141.
+        bool paragraphIsNumbered = numLevelIndentLeft > 0 || numLevelIndentFirstLine != 0;
+        if (paragraphIsNumbered && !paraHasIndentLeft && numLevelIndentLeft > 0)
             indentLeft = numLevelIndentLeft;
-        if (!paraHasIndentFirstLine && indentFirstLine == 0 && numLevelIndentFirstLine != 0)
+        else if (!paraHasIndentLeft && indentLeft == 0 && numLevelIndentLeft > 0)
+            indentLeft = numLevelIndentLeft;
+        if (paragraphIsNumbered && !paraHasIndentFirstLine && numLevelIndentFirstLine != 0)
+            indentFirstLine = numLevelIndentFirstLine;
+        else if (!paraHasIndentFirstLine && indentFirstLine == 0 && numLevelIndentFirstLine != 0
+            && !styleProvidedIndentLeft)
             indentFirstLine = numLevelIndentFirstLine;
         // Paragraph mark font overrides style font for line height calculation
         if (!string.IsNullOrEmpty(paragraphMarkFontName))

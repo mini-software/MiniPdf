@@ -1384,15 +1384,23 @@ internal static class DocxToPdfConverter
                     var target = labelEnd;
                     if (paragraph.TabStops != null)
                     {
+                        // Word's auto-numbering suffix tab advances to the NEXT tab
+                        // stop greater than labelEnd. Consider all explicit pPr tab
+                        // stops (any alignment) plus any "num"-aligned tab from the
+                        // numbering definition; pick the smallest one beyond labelEnd.
+                        // Required for TOC entries that style only "left" of ind but
+                        // declare an explicit left/right tab stop in pPr/tabs (see
+                        // CCU_article TOC3 4.7 entry: ind left=141, tabs left=739
+                        // and right=8645/dot — body snaps to 739 then page-number
+                        // snaps to 8645 via the right-tab dot leader).
+                        float? bestTab = null;
                         foreach (var ts in paragraph.TabStops)
                         {
-                            if (ts.Alignment == "num")
-                            {
-                                var tabbedX = options.MarginLeft + ts.Position;
-                                if (tabbedX > target) target = tabbedX;
-                                break;
-                            }
+                            var tabbedX = options.MarginLeft + ts.Position;
+                            if (tabbedX > labelEnd && (bestTab == null || tabbedX < bestTab.Value))
+                                bestTab = tabbedX;
                         }
+                        if (bestTab.HasValue && bestTab.Value > target) target = bestTab.Value;
                     }
                     // Word's tab-suffix on auto-numbering: after the level text, a tab
                     // advances to the next tab stop. The tab stops considered are the
