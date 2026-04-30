@@ -24,8 +24,139 @@ internal static class DocxReader
     private static readonly XNamespace M = "http://schemas.openxmlformats.org/officeDocument/2006/math";
 
     /// <summary>
+    /// Per-document context for resolving SDT (content control) data bindings and
+    /// glossary placeholder doc-parts. Loaded once per Read() call.
+    /// </summary>
+    private sealed class SdtContext
+    {
+        // storeItemID (with braces, upper-case GUID) -> custom XML data store
+        public Dictionary<string, XDocument> XmlStores { get; } = new(StringComparer.OrdinalIgnoreCase);
+        // glossary docPart name -> inline runs extracted from its docPartBody paragraphs
+        public Dictionary<string, IList<XElement>> InlinePlaceholders { get; } = new(StringComparer.OrdinalIgnoreCase);
+    }
+
+    [ThreadStatic] private static SdtContext? _sdtContext;
+
+    private static SdtContext LoadSdtContext(ZipArchive archive)
+    {
+        var ctx = new SdtContext();
+
+        // docProps/core.xml uses a reserved storeItemID for SDT data-binding.
+        var coreEntry = archive.GetEntry("docProps/core.xml");
+        if (coreEntry != null)
+        {
+            try
+            {
+                using var s = coreEntry.Open();
+                ctx.XmlStores["{6C3C8BC8-F283-45AE-878A-BAB7291924A1}"] = XDocument.Load(s);
+            }
+            catch { /* ignore malformed core.xml */ }
+        }
+
+        // customXml/itemPropsN.xml -> ds:datastoreItem ds:itemID maps to customXml/itemN.xml
+        XNamespace dsNs = "http://schemas.openxmlformats.org/officeDocument/2006/customXml";
+        foreach (var e in archive.Entries)
+        {
+            var path = e.FullName.Replace('\\', '/');
+            if (!path.StartsWith("customXml/itemProps", StringComparison.OrdinalIgnoreCase) ||
+                !path.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                continue;
+            try
+            {
+                XDocument props;
+                using (var s = e.Open())
+                    props = XDocument.Load(s);
+                var item = props.Descendants(dsNs + "datastoreItem").FirstOrDefault();
+                var id = item?.Attribute(dsNs + "itemID")?.Value;
+                if (string.IsNullOrEmpty(id)) continue;
+                var itemPath = System.Text.RegularExpressions.Regex.Replace(
+                    path, "itemProps", "item", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                var itemEntry = archive.GetEntry(itemPath);
+                if (itemEntry == null) continue;
+                using var s2 = itemEntry.Open();
+                ctx.XmlStores[id!] = XDocument.Load(s2);
+            }
+            catch { /* ignore individual store failures */ }
+        }
+
+        // Glossary docParts provide placeholder text shown when a bound SDT resolves to empty.
+        var glossaryEntry = archive.GetEntry("word/glossary/document.xml");
+        if (glossaryEntry != null)
+        {
+            try
+            {
+                XDocument glossDoc;
+                using (var s = glossaryEntry.Open())
+                    glossDoc = XDocument.Load(s);
+                foreach (var dp in glossDoc.Descendants(W + "docPart"))
+                {
+                    var name = dp.Element(W + "docPartPr")?.Element(W + "name")?.Attribute(W + "val")?.Value;
+                    if (string.IsNullOrEmpty(name)) continue;
+                    var body = dp.Element(W + "docPartBody");
+                    if (body == null) continue;
+                    var runs = new List<XElement>();
+                    foreach (var p in body.Elements(W + "p"))
+                    {
+                        foreach (var r in p.Elements(W + "r"))
+                            runs.Add(r);
+                    }
+                    if (runs.Count > 0)
+                        ctx.InlinePlaceholders[name!] = runs;
+                }
+            }
+            catch { /* ignore malformed glossary */ }
+        }
+
+        return ctx;
+    }
+
+    private static string? ResolveSdtBoundValue(XElement sdtPr)
+    {
+        var ctx = _sdtContext;
+        if (ctx == null) return null;
+        var dataBinding = sdtPr.Element(W + "dataBinding");
+        if (dataBinding == null) return null;
+        var storeItemID = dataBinding.Attribute(W + "storeItemID")?.Value;
+        var xpath = dataBinding.Attribute(W + "xpath")?.Value;
+        var prefixMappings = dataBinding.Attribute(W + "prefixMappings")?.Value ?? "";
+        if (string.IsNullOrEmpty(storeItemID) || string.IsNullOrEmpty(xpath)) return null;
+        if (!ctx.XmlStores.TryGetValue(storeItemID, out var doc) || doc.Root == null) return null;
+
+        var nsMgr = new System.Xml.XmlNamespaceManager(new System.Xml.NameTable());
+        foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(
+            prefixMappings, @"xmlns:([\w-]+)\s*=\s*['""]([^'""]+)['""]"))
+        {
+            try { nsMgr.AddNamespace(m.Groups[1].Value, m.Groups[2].Value); } catch { }
+        }
+
+        try
+        {
+            var node = System.Xml.XPath.Extensions.XPathEvaluate(doc, xpath, nsMgr);
+            if (node is IEnumerable<object> seq)
+            {
+                foreach (var n in seq)
+                {
+                    if (n is XElement xe) return xe.Value;
+                    if (n is XAttribute xa) return xa.Value;
+                    if (n is XText xt) return xt.Value;
+                }
+                return null;
+            }
+            return node?.ToString();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Unwraps SDT (Structured Document Tag) and mc:AlternateContent elements
-    /// by replacing them with their inner children.
+    /// by replacing them with their inner children. SDTs with a w:dataBinding
+    /// resolve their bound XML value; if the bound value is empty and a
+    /// w:placeholder/w:docPart references a glossary entry, the placeholder
+    /// runs are emitted instead of the cached sdtContent (which Word may have
+    /// stamped with the local user name on last open).
     /// </summary>
     private static IEnumerable<XElement> UnwrapSdt(IEnumerable<XElement> elements)
     {
@@ -33,7 +164,45 @@ internal static class DocxReader
         {
             if (el.Name == W + "sdt")
             {
+                var sdtPr = el.Element(W + "sdtPr");
                 var content = el.Element(W + "sdtContent");
+                var hasDataBinding = sdtPr?.Element(W + "dataBinding") != null;
+
+                if (hasDataBinding && sdtPr != null && content != null && _sdtContext != null)
+                {
+                    var bound = ResolveSdtBoundValue(sdtPr);
+                    bool isInline = content.Elements(W + "r").Any() && !content.Elements(W + "p").Any();
+
+                    if (string.IsNullOrEmpty(bound))
+                    {
+                        // Bound value is empty -> use placeholder docPart text if available.
+                        var placeholderName = sdtPr.Element(W + "placeholder")?.Element(W + "docPart")?.Attribute(W + "val")?.Value;
+                        if (!string.IsNullOrEmpty(placeholderName) &&
+                            _sdtContext.InlinePlaceholders.TryGetValue(placeholderName!, out var phRuns) &&
+                            phRuns.Count > 0 && isInline)
+                        {
+                            foreach (var r in phRuns)
+                                yield return r;
+                            continue;
+                        }
+                        // Otherwise fall through to default sdtContent unwrap.
+                    }
+                    else if (isInline)
+                    {
+                        // Replace cached run text with the live bound value, preserving rPr from
+                        // the first existing run if present.
+                        var firstRun = content.Elements(W + "r").FirstOrDefault();
+                        var rPr = firstRun?.Element(W + "rPr");
+                        var newRun = new XElement(W + "r");
+                        if (rPr != null) newRun.Add(new XElement(rPr));
+                        newRun.Add(new XElement(W + "t",
+                            new XAttribute(XNamespace.Xml + "space", "preserve"),
+                            bound));
+                        yield return newRun;
+                        continue;
+                    }
+                }
+
                 if (content != null)
                 {
                     foreach (var inner in UnwrapSdt(content.Elements()))
@@ -64,6 +233,21 @@ internal static class DocxReader
     {
         using var archive = new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen: true);
 
+        // SDT data-binding / glossary placeholder context (must be loaded before any
+        // UnwrapSdt call, including footnotes/headers/body).
+        _sdtContext = LoadSdtContext(archive);
+        try
+        {
+            return ReadCore(archive);
+        }
+        finally
+        {
+            _sdtContext = null;
+        }
+    }
+
+    private static DocxDocument ReadCore(ZipArchive archive)
+    {
         // Read relationships to resolve image references
         var relationships = ReadRelationships(archive);
 
@@ -3681,17 +3865,18 @@ internal static class DocxReader
         // Extract default font name from Normal style or docDefaults
         string? defaultFontName = null;
         string? defaultEastAsiaFontName = null;
+        XElement? normalStyleRFonts = null;
         foreach (var style in styleElements)
         {
             var sid = style.Attribute(W + "styleId")?.Value;
             if (sid == "Normal" || style.Attribute(W + "default")?.Value == "1")
             {
-                var rFonts = style.Element(W + "rPr")?.Element(W + "rFonts");
-                if (rFonts != null)
+                normalStyleRFonts = style.Element(W + "rPr")?.Element(W + "rFonts");
+                if (normalStyleRFonts != null && RFontsHasLatinAttr(normalStyleRFonts))
                 {
-                    defaultFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont,
+                    defaultFontName = ResolveFontNameFromRFonts(normalStyleRFonts, majorThemeLatinFont, minorThemeLatinFont,
                         effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont);
-                    defaultEastAsiaFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont,
+                    defaultEastAsiaFontName = ResolveFontNameFromRFonts(normalStyleRFonts, majorThemeLatinFont, minorThemeLatinFont,
                         effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont, preferEastAsiaTheme: true);
                 }
                 break;
@@ -3707,6 +3892,14 @@ internal static class DocxReader
                 defaultEastAsiaFontName = ResolveFontNameFromRFonts(rFonts, majorThemeLatinFont, minorThemeLatinFont,
                     effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont, preferEastAsiaTheme: true);
             }
+        }
+        // Last resort: accept the Normal-style cs/eastAsia fallback (e.g. legacy docs without docDefaults)
+        if (defaultFontName == null && normalStyleRFonts != null)
+        {
+            defaultFontName = ResolveFontNameFromRFonts(normalStyleRFonts, majorThemeLatinFont, minorThemeLatinFont,
+                effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont);
+            defaultEastAsiaFontName ??= ResolveFontNameFromRFonts(normalStyleRFonts, majorThemeLatinFont, minorThemeLatinFont,
+                effectiveThemeEastAsiaFont, effectiveThemeEastAsiaFont, preferEastAsiaTheme: true);
         }
         if (defaultEastAsiaFontName == null)
             defaultEastAsiaFontName = effectiveThemeEastAsiaFont;
@@ -3897,6 +4090,12 @@ internal static class DocxReader
             majorEastAsia, minorEastAsia);
     }
 
+    private static bool RFontsHasLatinAttr(XElement rFonts) =>
+        rFonts.Attribute(W + "ascii") != null
+        || rFonts.Attribute(W + "hAnsi") != null
+        || rFonts.Attribute(W + "asciiTheme") != null
+        || rFonts.Attribute(W + "hAnsiTheme") != null;
+
     /// <summary>
     /// Resolves effective font name from w:rFonts, including Latin and EastAsia theme references.
     /// </summary>
@@ -3954,15 +4153,29 @@ internal static class DocxReader
             return latinThemeResolved;
 
         // Final fallbacks: complex-script and East Asian explicit/theme entries.
-        var fallbackExplicit = rFonts.Attribute(W + "cs")?.Value
-            ?? rFonts.Attribute(W + "eastAsia")?.Value;
-        if (!string.IsNullOrWhiteSpace(fallbackExplicit))
+        // Skip cs/cstheme for Latin runs when the value is a Word "(Body CS)"/"(Heading CS)" placeholder
+        // — those are not real installed font names, and using them prevents inheritance from finding the
+        // theme's Latin face (e.g. Century Gothic via docDefaults asciiTheme=minorHAnsi).
+        var csValue = rFonts.Attribute(W + "cs")?.Value;
+        var eaValue = rFonts.Attribute(W + "eastAsia")?.Value;
+        var fallbackExplicit = csValue ?? eaValue;
+        if (!string.IsNullOrWhiteSpace(fallbackExplicit) && !LooksLikeComplexScriptPlaceholder(fallbackExplicit))
             return fallbackExplicit;
 
         var fallbackTheme = ResolveThemeToken(
             rFonts.Attribute(W + "cstheme")?.Value ?? rFonts.Attribute(W + "eastAsiaTheme")?.Value,
             majorThemeLatinFont, minorThemeLatinFont, majorThemeEastAsiaFont, minorThemeEastAsiaFont);
         return fallbackTheme;
+    }
+
+    private static bool LooksLikeComplexScriptPlaceholder(string? font)
+    {
+        if (string.IsNullOrWhiteSpace(font)) return false;
+        // Word stamps synthetic names like "Times New Roman (Body CS)" / "Calibri (Headings CS)"
+        // when a theme's complex-script font is referenced but not yet resolved to an installed face.
+        return font!.IndexOf("(Body CS)", StringComparison.OrdinalIgnoreCase) >= 0
+            || font.IndexOf("(Headings CS)", StringComparison.OrdinalIgnoreCase) >= 0
+            || font.IndexOf("(Heading CS)", StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
     private static string? ResolveThemeEastAsiaFont(string? eastAsiaLang,
