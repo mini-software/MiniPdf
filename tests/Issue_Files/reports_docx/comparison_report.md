@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T12:03:22.186205
+Generated: 2026-04-30T13:34:56.514843
 
 ## Summary
 
@@ -8,7 +8,7 @@ Generated: 2026-04-30T12:03:22.186205
 |---|-----------|-------|----------|------------|-------------|--------|
 | 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9629 | 2/2 | **0.9852** |
 | 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9728 | 2/2 | **0.9891** |
-| 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9738 | 2/2 | **0.9871** |
+| 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9796 | 2/2 | **0.9894** |
 | 4 | 🟢 20260318_issue | ✅ | 0.9685 | 0.8651 | 7/7 | **0.9334** |
 | 5 | 🟢 CCU_article | ✅ | 0.9268 | 0.9466 | 21/21 | **0.9494** |
 | 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
@@ -20,14 +20,14 @@ Generated: 2026-04-30T12:03:22.186205
 | 12 | 🟢 Invoice | ✅ | 1.0 | 0.9592 | 1/1 | **0.9837** |
 | 13 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
 | 14 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8358 | 2/2 | **0.877** |
-| 15 | 🟡 nthu_article | ✅ | 0.875 | 0.8708 | 19/20 | **0.7983** |
+| 15 | 🟡 nthu_article | ✅ | 0.86 | 0.8709 | 19/20 | **0.7924** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
 | 17 | 🟢 SA8000 ch sample | ✅ | 0.9921 | 0.9642 | 2/2 | **0.9825** |
 | 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.946 | 1/1 | **0.9784** |
 | 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8128**
+**Average Overall Score: 0.8126**
 
 ## Visual Comparison
 
@@ -59,7 +59,7 @@ Generated: 2026-04-30T12:03:22.186205
 </tr>
 <tr>
   <td><b>20260317_sample_CN</b></td>
-  <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 98.7%</td>
+  <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
   <td><img src="images/20260317_sample_CN_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -313,7 +313,7 @@ Generated: 2026-04-30T12:03:22.186205
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.8%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.2%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -592,10 +592,10 @@ Text content: ✅ Identical
 ### 20260317_sample_CN
 
 - **Text Similarity:** 0.994
-- **Visual Average:** 0.9738
-- **Overall Score:** 0.9871
+- **Visual Average:** 0.9796
+- **Overall Score:** 0.9894
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7595366 bytes, Reference=201209 bytes
+- **File Size:** MiniPdf=7586903 bytes, Reference=201209 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1562,18 +1562,18 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.875
-- **Visual Average:** 0.8708
-- **Overall Score:** 0.7983
+- **Text Similarity:** 0.86
+- **Visual Average:** 0.8709
+- **Overall Score:** 0.7924
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=9019155 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=9016391 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/nthu_article.pdf
 +++ reference/nthu_article.pdf
-@@ -1,10 +1,10 @@
+@@ -1,7 +1,7 @@
  國立清華大學中國文學系碩博士學位論文格式規範
 
  經 111 年 11 月 09 日 111 學年度第一學期第 3 次系務會議通過
@@ -1590,15 +1590,7 @@ Text content: ✅ Identical
 
  書名頁 Title Page（同封面）
 
--論文指導教授推薦書 (影本)
-
-+論文指導教授推薦書(影本)
-
- 學位考試委員審定書(影本)
-
- 授權書（清大電子檔授權書、紙本論文授權書；國家圖書館、華藝授權書）
-
- 誌謝辭 Acknowledgements (可免)
+ 論文指導教授推薦書(影本)
 
 @@ -14,108 +14,107 @@
  表次 List of Tables（可免）
@@ -1693,13 +1685,13 @@ Text content: ✅ Identical
 
 -研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二
 
--頁，橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），
+-頁，橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），段
 
--段距 0.5 行。標題「摘要」二字或「 Abstract 」1 6 級字，置中，可加黑。
+-距 0.5 行。標題「摘要」二字或「 Abstract 」1 6 級字，置中，可加黑。「關鍵
 
--「關鍵詞：」或「 Key words: 」12 級，可加黑；與摘要主文間，空一行。英
+-詞：」或「 Key words: 」12 級，可加黑；與摘要主文間，空一行。英文與數
 
--文與數字用 Times New Roman 。 如範例 C （ 中文）與範例 D （ 英文）。
+-字用 Times New Roman 。 如範例 C （ 中文）與範例 D （ 英文）。
 
 -五、目次
 
@@ -1771,8 +1763,14 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--一併改
-... (16017 more characters)
+-一併改用中文新式標號。
+
+-2，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段
+
++併改用中文新式標號。
+
++2 ，行距建議設定為 1.2 行 （ word 中選「多行」，
+... (15884 more characters)
 
 ```
 </details>
@@ -2034,7 +2032,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.984
 - **Overall Score:** 0.9936
 - **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=1182800 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=1182797 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2128,6 +2126,6 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.7983)
+1. **nthu_article** (score: 0.7924)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

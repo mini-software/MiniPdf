@@ -2699,7 +2699,23 @@ internal static class DocxToPdfConverter
                 for (var wi = 0; wi < words.Length; wi++)
                 {
                     var word = words[wi];
-                    var wordWidth = EstimateWrapTextWidth(word, runFs, run.Bold, run.CharSpacing, useCalibri) * nonCalibriWidthFactor;
+                    // For sans-serif Bold runs in a Calibri-default doc, nonCalibriWidthFactor
+                    // (1.18) compensates Arial Bold Latin glyph width vs Calibri. However, CJK
+                    // fullwidth glyphs (1000/1000 advance) are NOT widened by Bold weight, so
+                    // applying the factor to CJK-containing words over-inflates the estimate by
+                    // ~18% per CJK char (~7pt for a 4-char Chinese label at 9.5pt). Skip the
+                    // factor when the word contains any CJK ideograph; the small Latin
+                    // punctuation portion (e.g. trailing ":") is negligible.
+                    var effectiveFactor = nonCalibriWidthFactor;
+                    if (effectiveFactor > 1f)
+                    {
+                        foreach (var wc in word)
+                        {
+                            if (wc >= '\u2E80' && !char.IsHighSurrogate(wc) && !char.IsLowSurrogate(wc))
+                            { effectiveFactor = 1f; break; }
+                        }
+                    }
+                    var wordWidth = EstimateWrapTextWidth(word, runFs, run.Bold, run.CharSpacing, useCalibri) * effectiveFactor;
                     // Apply CJK Latin correction for pure-Latin words in CJK paragraph
                     if (cjkLatinCorrection < 1f && word.Length > 0)
                     {
@@ -3380,13 +3396,22 @@ internal static class DocxToPdfConverter
         var colWidths = CalculateTableColumnWidths(table, effectiveTableWidth);
         var colCount = colWidths.Length;
 
-        // Calculate table total width and center offset
+        // Calculate table total width and center offset.
+        // When the document explicitly specifies w:tblInd (Word convention),
+        // the indent measures from the page text margin to the FIRST CELL'S
+        // CONTENT, not to the table border.  The border therefore sits one
+        // cellMar to the left of (MarginLeft + tblInd) so cell content visually
+        // aligns with surrounding body paragraphs.  When tblInd is absent
+        // (most older / LibreOffice-authored docs) the legacy behaviour of
+        // placing the border AT the margin matches the existing references.
         var tableWidth = colWidths.Sum();
+        var tableBorderShift = (table.IndentLeftExplicit && table.CellMarginLeft > 0)
+            ? table.CellMarginLeft : 0f;
         var tableOffsetX = table.Alignment switch
         {
             "center" => options.MarginLeft + (usableWidth - tableWidth) / 2,
             "right" => options.MarginLeft + usableWidth - tableWidth,
-            _ => options.MarginLeft + table.IndentLeft
+            _ => options.MarginLeft + table.IndentLeft - tableBorderShift
         };
 
         var y = startY;
@@ -3560,13 +3585,15 @@ internal static class DocxToPdfConverter
         var colWidths = CalculateTableColumnWidths(table, effectiveTableWidth);
         var colCount = colWidths.Length;
 
-        // Calculate table alignment offset
+        // Calculate table alignment offset (see RenderTable for tblInd semantics).
         var tableWidth = colWidths.Sum();
+        var tableBorderShift = (table.IndentLeftExplicit && table.CellMarginLeft > 0)
+            ? table.CellMarginLeft : 0f;
         var tableOffsetX = table.Alignment switch
         {
             "center" => options.MarginLeft + (usableWidth - tableWidth) / 2,
             "right" => options.MarginLeft + usableWidth - tableWidth,
-            _ => options.MarginLeft + table.IndentLeft
+            _ => options.MarginLeft + table.IndentLeft - tableBorderShift
         };
 
         var isFirstRow = true;

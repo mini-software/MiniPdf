@@ -1680,6 +1680,29 @@ internal static class DocxReader
             fontName = defaultEastAsiaFontName;
         }
 
+        // Symmetric guard: w:hint="eastAsia" forces ResolveRunFontName to pick the
+        // eastAsia face (e.g. SimSun) even for a pure-Latin run that explicitly
+        // names ascii=Arial.  In Word, hint=eastAsia is only meant to disambiguate
+        // characters that fall in mixed Unicode ranges — unambiguously Latin text
+        // should still render in the ascii font.  Re-prefer the ascii font when
+        // the run text contains no CJK characters and an explicit ascii (or hAnsi)
+        // attribute is present.
+        if (!string.IsNullOrEmpty(text)
+            && !ContainsCjkText(text)
+            && rPr != null)
+        {
+            var rFontsLatin = rPr.Element(W + "rFonts");
+            var hintLatin = rFontsLatin?.Attribute(W + "hint")?.Value;
+            if (string.Equals(hintLatin, "eastAsia", StringComparison.OrdinalIgnoreCase)
+                && IsKnownEastAsianFont(fontName))
+            {
+                var asciiName = rFontsLatin?.Attribute(W + "ascii")?.Value
+                               ?? rFontsLatin?.Attribute(W + "hAnsi")?.Value;
+                if (!string.IsNullOrWhiteSpace(asciiName) && !IsKnownEastAsianFont(asciiName))
+                    fontName = PdfWriter.MaybeFallbackForMissingFont(asciiName);
+            }
+        }
+
         // Some documents express weight via the font family itself (e.g. "Montserrat ExtraBold",
         // "Open Sans SemiBold") instead of a <w:b/> element. When MiniPdf falls back to its
         // built-in fonts it would otherwise render those runs in regular weight. Detect a bold-ish
@@ -1767,6 +1790,8 @@ internal static class DocxReader
             || n.Contains("pingfang")
             || n.Contains("heiti")
             || n.Contains("song")
+            || n.Contains("宋体")
+            || n.Contains("宋體")
             || n.Contains("noto sans cjk")
             || n.Contains("新細明體")
             || n.Contains("新细明体")
@@ -2833,9 +2858,13 @@ internal static class DocxReader
             tableAlignment = tblJc;
         // Table indent (tblInd)
         float tableIndentLeft = 0;
+        bool tableIndentExplicit = false;
         var tblIndEl = tblPr?.Element(W + "tblInd");
         if (tblIndEl != null && int.TryParse(tblIndEl.Attribute(W + "w")?.Value, out var tblIndW))
+        {
             tableIndentLeft = tblIndW / 20f;
+            tableIndentExplicit = true;
+        }
         var tblCellMar = tblPr?.Element(W + "tblCellMar");
         if (tblCellMar != null)
         {
@@ -3002,11 +3031,15 @@ internal static class DocxReader
                     var tcBorders = tcPr.Element(W + "tcBorders");
                     if (tcBorders != null)
                     {
+                        // Use AllowNil here so an explicit w:val="nil"/"none" at the cell
+                        // level produces the Width=0 sentinel that suppresses the inherited
+                        // table-level border (instead of being indistinguishable from "edge
+                        // not specified", which would let the table border win).
                         cellBorders = new DocxBorders(
-                            Top: ReadBorderEdge(tcBorders.Element(W + "top")),
-                            Bottom: ReadBorderEdge(tcBorders.Element(W + "bottom")),
-                            Left: ReadBorderEdge(tcBorders.Element(W + "left")),
-                            Right: ReadBorderEdge(tcBorders.Element(W + "right"))
+                            Top: ReadBorderEdgeAllowNil(tcBorders.Element(W + "top")),
+                            Bottom: ReadBorderEdgeAllowNil(tcBorders.Element(W + "bottom")),
+                            Left: ReadBorderEdgeAllowNil(tcBorders.Element(W + "left")),
+                            Right: ReadBorderEdgeAllowNil(tcBorders.Element(W + "right"))
                         );
                     }
 
@@ -3135,7 +3168,8 @@ internal static class DocxReader
             finalInsideH, finalInsideV, finalBorderTop, finalBorderBottom, finalBorderLeft, finalBorderRight,
             StyleLineSpacing: tblStyleInfo?.ParagraphLineSpacing ?? -1,
             StyleSpacingAfter: tblStyleInfo?.ParagraphSpacingAfter ?? -1,
-            IndentLeft: tableIndentLeft);
+            IndentLeft: tableIndentLeft,
+            IndentLeftExplicit: tableIndentExplicit);
     }
 
     private static DocxPageLayout? ReadPageLayout(XElement body)
@@ -4652,7 +4686,8 @@ internal sealed record DocxTable(
     DocxBorderEdge? BorderRight = null,
     float StyleLineSpacing = -1,
     float StyleSpacingAfter = -1,
-    float IndentLeft = 0
+    float IndentLeft = 0,
+    bool IndentLeftExplicit = false
 ) : DocxElement;
 
 /// <summary>Represents a table row.</summary>
