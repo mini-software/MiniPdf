@@ -3008,10 +3008,8 @@ internal static class DocxToPdfConverter
     private static void RenderShapeGeometry(PdfPage page, float x, float y, float width, float height,
         PdfColor color, DocxShape shape)
     {
-        // If shape has no fill (stroke-only), skip fill rendering
-        if (!shape.FillOnly && shape.StrokeColor != null &&
-            shape.FillColor is { R: >= 0.999f, G: >= 0.999f, B: >= 0.999f })
-            return; // stroke-only shape, fill handled separately
+        // If shape has no explicit fill (stroke-only), skip fill rendering
+        if (!shape.HasFill) return;
 
         if (shape.PresetGeometry == "frame")
         {

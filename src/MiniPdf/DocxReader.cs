@@ -2149,7 +2149,8 @@ internal static class DocxReader
         result.Add(new DocxShape(widthEmu, heightEmu, anchorOffsetX, anchorOffsetY, shapeFill, singleAlpha,
             presetGeom, frameThicknessRatio, customPaths,
             StrokeColor: singleStrokeColor, StrokeWidthEmu: singleStrokeWidth,
-            FillOnly: singleColor != null && singleStrokeColor == null));
+            FillOnly: singleColor != null && singleStrokeColor == null,
+            HasFill: singleColor != null));
         return result;
     }
 
@@ -2309,7 +2310,8 @@ internal static class DocxReader
         result.Add(new DocxShape(pageW, pageH, pageX, pageY, shapeFill, alpha,
             childPresetGeom, childFrameThicknessRatio, childCustomPaths,
             StrokeColor: strokeColor, StrokeWidthEmu: strokeWidthEmu,
-            FillOnly: fillColor != null && strokeColor == null));
+            FillOnly: fillColor != null && strokeColor == null,
+            HasFill: fillColor != null));
     }
 
     private static (string? PresetGeometry, float FrameThicknessRatio, List<DocxCustomPath>? CustomPaths)
@@ -4586,7 +4588,8 @@ internal sealed record DocxShape(
     List<DocxCustomPath>? CustomPaths = null,
     PdfColor? StrokeColor = null,
     float StrokeWidthEmu = 0f,
-    bool FillOnly = true
+    bool FillOnly = true,
+    bool HasFill = true
 );
 
 /// <summary>Represents a table.</summary>

@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T08:56:03.669020
+Generated: 2026-04-30T09:41:12.294816
 
 ## Summary
 
@@ -16,7 +16,7 @@ Generated: 2026-04-30T08:56:03.669020
 | 8 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
 | 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.9696 | 2/2 | **0.9811** |
 | 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9846 | 7/7 | **0.9859** |
-| 11 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9456 | 1/1 | **0.948** |
+| 11 | 🟢 Fabrikam | ✅ | 1.0 | 0.9466 | 1/1 | **0.9786** |
 | 12 | 🟢 Invoice | ✅ | 1.0 | 0.9592 | 1/1 | **0.9837** |
 | 13 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
 | 14 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8358 | 2/2 | **0.877** |
@@ -27,7 +27,7 @@ Generated: 2026-04-30T08:56:03.669020
 | 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8112**
+**Average Overall Score: 0.8127**
 
 ## Visual Comparison
 
@@ -269,7 +269,7 @@ Generated: 2026-04-30T08:56:03.669020
 </tr>
 <tr>
   <td><b>Fabrikam</b></td>
-  <td colspan="1">Fabrikam <span style="color:#3fb950">⬤</span> 94.8%</td>
+  <td colspan="1">Fabrikam <span style="color:#3fb950">⬤</span> 97.9%</td>
 </tr>
 <tr>
   <td><img src="images/Fabrikam_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1244,97 +1244,35 @@ Text content: ✅ Identical
 
 ### Fabrikam
 
-- **Text Similarity:** 0.9244
-- **Visual Average:** 0.9456
-- **Overall Score:** 0.948
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9466
+- **Overall Score:** 0.9786
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=229117 bytes, Reference=55486 bytes
+- **File Size:** MiniPdf=95298 bytes, Reference=55486 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Fabrikam.pdf
 +++ reference/Fabrikam.pdf
-@@ -1,30 +1,29 @@
- Fabrikam, Inc. Fabrikam, Inc.
+@@ -3,8 +3,7 @@
+ 1234 East Main Street 1234 East Main Street
 
--Wei Wei
+ Portland, OR 54321 Portland, OR 54321
 
--1234 East Main Street 1234 East Main Street
-
--Portland, OR 54321 Portland, OR 54321
-
--www.fabrikam.com www.fabrikam.com
+ www.fabrikam.com www.fabrikam.com
 
 -(415) 555-0123 | kristel@fabrikam.com
 
 -(415) 555-0123 | kristel@fabrikam.com
-
--Fabrikam, Inc. Fabrikam, Inc.
-
--Wei Wei
-
-+Kristel Kangro Kristel Kangro
-
- 1234 East Main Street 1234 East Main Street
-
- Portland, OR 54321 Portland, OR 54321
-
- www.fabrikam.com www.fabrikam.com
-
- (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
-
- Fabrikam, Inc. Fabrikam, Inc.
-
--Wei Wei
-
-+Kristel Kangro Kristel Kangro
-
- 1234 East Main Street 1234 East Main Street
-
- Portland, OR 54321 Portland, OR 54321
-
- www.fabrikam.com www.fabrikam.com
-
- (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
-
- Fabrikam, Inc. Fabrikam, Inc.
-
--Wei Wei
-
-+Kristel Kangro Kristel Kangro
-
- 1234 East Main Street 1234 East Main Street
-
- Portland, OR 54321 Portland, OR 54321
-
- www.fabrikam.com www.fabrikam.com
-
- (415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
-
- Fabrikam, Inc. Fabrikam, Inc.
-
--Wei Wei
-
-+Kristel Kangro Kristel Kangro
-
-+1234 East Main Street 1234 East Main Street
-
-+Portland, OR 54321 Portland, OR 54321
-
-+www.fabrikam.com www.fabrikam.com
 
 +(415) 555-0123 | kristel@fabrikam.com (415) 555-0123 | kristel@fabrikam.com
 
-+Fabrikam, Inc. Fabrikam, Inc.
+ Fabrikam, Inc. Fabrikam, Inc.
 
-+Kristel Kangro Kristel Kangro
+ Kristel Kangro Kristel Kangro
 
  1234 East Main Street 1234 East Main Street
-
- Portland, OR 54321 Portland, OR 54321
-
- www.fabrikam.com www.fabrikam.com
 
 ```
 </details>
