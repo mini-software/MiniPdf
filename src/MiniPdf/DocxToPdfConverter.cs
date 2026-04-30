@@ -612,6 +612,16 @@ internal static class DocxToPdfConverter
         public PdfPage? CurrentPage { get; set; }
         public float CurrentY { get; set; }
         public bool IsTopOfPage { get; set; } = true;
+        /// <summary>
+        /// True once any content (paragraph/table line) has been rendered into the
+        /// document.  Used to distinguish "very first paragraph of the document"
+        /// (where Word/LibreOffice honor explicit pStyle SpacingBefore even at
+        /// the top of page 1, e.g. Invoice ContactInfo header) from "first
+        /// paragraph after a section/page break" (where applying every section
+        /// heading's explicit SpacingBefore caused cascading layout shifts and
+        /// extra page breaks in long multi-section documents like CCU_article).
+        /// </summary>
+        public bool HasRenderedAnyContent { get; set; }
         public float LastParagraphStartY { get; set; }
         /// <summary>
         /// Captures the paragraph's line-box TOP (before ascent advance) at the
@@ -818,6 +828,7 @@ internal static class DocxToPdfConverter
         {
             CurrentY -= amount;
             IsTopOfPage = false;
+            HasRenderedAnyContent = true;
         }
 
         public void ForceNewPage()
@@ -1014,9 +1025,13 @@ internal static class DocxToPdfConverter
         // Word/LibreOffice behavior.  Since spacingAfter was already applied by
         // the previous paragraph, only add the excess (if any).
         var spacingBefore = paragraph.SpacingBefore > 0 ? paragraph.SpacingBefore : 0;
-        // Word/LibreOffice apply explicit pStyle SpacingBefore even at the top of a page
-        // (only inherited Normal/docDefault spacing-before is suppressed at top of page).
-        if (spacingBefore > 0 && (!state.IsTopOfPage || paragraph.ForceSpacingBefore || paragraph.SpacingBeforeExplicit))
+        // Word/LibreOffice apply explicit pStyle SpacingBefore on the very first
+        // paragraph of the document (e.g. Invoice ContactInfo with w:before=520),
+        // but suppress it on first-paragraph-after-page/section-break to avoid
+        // cascading layout shifts in long multi-section documents.
+        bool isVeryFirstParagraph = state.IsTopOfPage && !state.HasRenderedAnyContent;
+        if (spacingBefore > 0 && (!state.IsTopOfPage || paragraph.ForceSpacingBefore
+            || (isVeryFirstParagraph && paragraph.SpacingBeforeExplicit)))
         {
             var extraBefore = spacingBefore - state.LastSpacingAfter;
             if (extraBefore > 0)

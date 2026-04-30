@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T07:49:43.516048
+Generated: 2026-04-30T08:56:03.669020
 
 ## Summary
 
@@ -10,24 +10,24 @@ Generated: 2026-04-30T07:49:43.516048
 | 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9728 | 2/2 | **0.9891** |
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9738 | 2/2 | **0.9871** |
 | 4 | 🟢 20260318_issue | ✅ | 0.9685 | 0.865 | 7/7 | **0.9334** |
-| 5 | 🟢 CCU_article | ✅ | 0.922 | 0.9477 | 21/21 | **0.9479** |
+| 5 | 🟢 CCU_article | ✅ | 0.922 | 0.9466 | 21/21 | **0.9474** |
 | 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
-| 7 | 🟢 Class News | ✅ | 0.9919 | 0.8904 | 4/4 | **0.9529** |
+| 7 | 🟢 Class News | ✅ | 0.9919 | 0.8692 | 4/4 | **0.9444** |
 | 8 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
-| 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.967 | 2/2 | **0.9801** |
+| 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.9696 | 2/2 | **0.9811** |
 | 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9846 | 7/7 | **0.9859** |
-| 11 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9425 | 1/1 | **0.9468** |
+| 11 | 🟢 Fabrikam | ✅ | 0.9244 | 0.9456 | 1/1 | **0.948** |
 | 12 | 🟢 Invoice | ✅ | 1.0 | 0.9592 | 1/1 | **0.9837** |
 | 13 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
-| 14 | 🟡 MODERN LIVING | ✅ | 0.8902 | 0.8311 | 2/2 | **0.8885** |
+| 14 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8358 | 2/2 | **0.877** |
 | 15 | 🟡 nthu_article | ✅ | 0.8772 | 0.8748 | 19/20 | **0.8008** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
 | 17 | 🟢 SA8000 ch sample | ✅ | 0.9923 | 0.96 | 2/2 | **0.9809** |
-| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9606 | 1/1 | **0.9842** |
+| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9461 | 1/1 | **0.9784** |
 | 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8124**
+**Average Overall Score: 0.8112**
 
 ## Visual Comparison
 
@@ -103,7 +103,7 @@ Generated: 2026-04-30T07:49:43.516048
 </tr>
 <tr>
   <td><b>CCU_article</b></td>
-  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 94.8%</td>
+  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 94.7%</td>
 </tr>
 <tr>
   <td><img src="images/CCU_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -198,7 +198,7 @@ Generated: 2026-04-30T07:49:43.516048
 </tr>
 <tr>
   <td><b>Class News</b></td>
-  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 95.3%</td>
+  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 94.4%</td>
 </tr>
 <tr>
   <td><img src="images/Class News_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -225,7 +225,7 @@ Generated: 2026-04-30T07:49:43.516048
 </tr>
 <tr>
   <td><b>Confirmatory_Affidavit</b></td>
-  <td colspan="1">Confirmatory_Affidavit <span style="color:#3fb950">⬤</span> 98.0%</td>
+  <td colspan="1">Confirmatory_Affidavit <span style="color:#3fb950">⬤</span> 98.1%</td>
 </tr>
 <tr>
   <td><img src="images/Confirmatory_Affidavit_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -269,7 +269,7 @@ Generated: 2026-04-30T07:49:43.516048
 </tr>
 <tr>
   <td><b>Fabrikam</b></td>
-  <td colspan="1">Fabrikam <span style="color:#3fb950">⬤</span> 94.7%</td>
+  <td colspan="1">Fabrikam <span style="color:#3fb950">⬤</span> 94.8%</td>
 </tr>
 <tr>
   <td><img src="images/Fabrikam_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -301,7 +301,7 @@ Generated: 2026-04-30T07:49:43.516048
 </tr>
 <tr>
   <td><b>MODERN LIVING</b></td>
-  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 88.8%</td>
+  <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 87.7%</td>
 </tr>
 <tr>
   <td><img src="images/MODERN LIVING_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -417,7 +417,7 @@ Generated: 2026-04-30T07:49:43.516048
 </tr>
 <tr>
   <td><b>Support_Letter</b></td>
-  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 98.4%</td>
+  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 97.8%</td>
 </tr>
 <tr>
   <td><img src="images/Support_Letter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -748,10 +748,10 @@ Text content: ✅ Identical
 ### CCU_article
 
 - **Text Similarity:** 0.922
-- **Visual Average:** 0.9477
-- **Overall Score:** 0.9479
+- **Visual Average:** 0.9466
+- **Overall Score:** 0.9474
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6551117 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6551120 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -873,42 +873,36 @@ Text content: ✅ Identical
 ### Class News
 
 - **Text Similarity:** 0.9919
-- **Visual Average:** 0.8904
-- **Overall Score:** 0.9529
+- **Visual Average:** 0.8692
+- **Overall Score:** 0.9444
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=345304 bytes, Reference=147827 bytes
+- **File Size:** MiniPdf=345312 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Class News.pdf
 +++ reference/Class News.pdf
-@@ -10,9 +10,9 @@
+@@ -10,8 +10,7 @@
  non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
 
  diam sollicitudin.
 
  Upcoming Events
 
--Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
-
 -School Dance
 
--9.9 | 5-7pm odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
+-Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
 
 +School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
 
-+9.9 | 5-7pm
+ 9.9 | 5-7pm
 
-+odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
+ odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
 
  Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
 
- Book Fair
-
- amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,
-
-@@ -34,8 +34,8 @@
+@@ -35,8 +34,8 @@
  diam sollicitudin.
 
  Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet
@@ -929,16 +923,16 @@ Text content: ✅ Identical
 
  auctor id neque vel maximus.
 
-@@ -44,8 +44,7 @@
+@@ -45,8 +44,7 @@
  consec tetur adi piscing elit.
 
  Aliquam non varius ipsum.
 
  Fusce venenatis quam vel
 
--Our next area of focus
-
 -libero scelerisque. Quam vel
+
+-Our next area of focus
 
 +libero scelerisque. Quam vel Our next area of focus
 
@@ -948,32 +942,26 @@ Text content: ✅ Identical
 
  Lorem ipsum dolor sit amet,
 
-@@ -79,9 +78,9 @@
+@@ -80,8 +78,7 @@
  non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
 
  diam sollicitudin.
 
  Upcoming Events
 
--Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
-
 -School Dance
 
--9.9 | 5-7pm odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
+-Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
 
 +School Dance Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
 
-+9.9 | 5-7pm
+ 9.9 | 5-7pm
 
-+odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
+ odio. Vestibulum ultric ies erat sit amet massa ullamcorper ferm entum.
 
  Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
 
- Book Fair
-
- amet ultr icie. Ma ecenas massa velit, consectetur sit amet dapibus et,
-
-@@ -103,8 +102,8 @@
+@@ -105,8 +102,8 @@
  diam sollicitudin.
 
  Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet
@@ -994,11 +982,23 @@ Text content: ✅ Identical
 
  auctor id neque vel maximus.
 
-@@ -114,7 +113,8 @@
- Aliquam non varius ipsum.
+@@ -127,7 +124,8 @@
+ Fusce venenatis quam vel
 
- Fusce venenatis
-... (289 more characters)
+ sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Non
+
+ libero scelerisque. Quam vel
+
+-libero sce lerisque, a mattis varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis.
+
++varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis.
+
++libero sce lerisque, a mattis
+
+ diam venenatis quam vel.
+
+ Maecenas massa veli
+... (128 more characters)
 
 ```
 </details>
@@ -1010,8 +1010,8 @@ Text content: ✅ Identical
 ### Confirmatory_Affidavit
 
 - **Text Similarity:** 0.9832
-- **Visual Average:** 0.967
-- **Overall Score:** 0.9801
+- **Visual Average:** 0.9696
+- **Overall Score:** 0.9811
 - **Pages:** MiniPdf=2, Reference=2
 - **File Size:** MiniPdf=795389 bytes, Reference=143292 bytes
 
@@ -1061,15 +1061,13 @@ Text content: ✅ Identical
 
  I hereby certify that the deponent to this affidavit has acknowledged to me that:
 
-+a. She knows and understands the contents hereof and that it is true and correct;
+ a. She knows and understands the contents hereof and that it is true and correct;
 
 +b. She has no objection to taking the prescribed oath; and
 
  Page 1 of 2
 
  ---PAGE---
-
--a. She knows and understands the contents hereof and that it is true and correct;
 
 -b. She has no objection to taking the prescribed oath; and
 
@@ -1247,10 +1245,10 @@ Text content: ✅ Identical
 ### Fabrikam
 
 - **Text Similarity:** 0.9244
-- **Visual Average:** 0.9425
-- **Overall Score:** 0.9468
+- **Visual Average:** 0.9456
+- **Overall Score:** 0.948
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=159249 bytes, Reference=55486 bytes
+- **File Size:** MiniPdf=229117 bytes, Reference=55486 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1493,29 +1491,21 @@ Text content: ✅ Identical
 
 ### MODERN LIVING
 
-- **Text Similarity:** 0.8902
-- **Visual Average:** 0.8311
-- **Overall Score:** 0.8885
+- **Text Similarity:** 0.8567
+- **Visual Average:** 0.8358
+- **Overall Score:** 0.877
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=693580 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=693581 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/MODERN LIVING.pdf
 +++ reference/MODERN LIVING.pdf
-@@ -1,28 +1,27 @@
- OCTOBER / 20XX / ISSUE #10
-
- M O D E R N  L I V I N G
-
- Your guide to buy or rent
-
-+WHAT’S NEW
+@@ -4,24 +4,24 @@
+ WHAT’S NEW
 
  Ready to settle?
-
--WHAT’S NEW
 
  By Peyton Davis
 
@@ -1537,19 +1527,27 @@ Text content: ✅ Identical
 
  drive traffic to your site. Type the content of your newsletter here.
 
- PROPERTY TRENDS
+-Newsletters are periodicals used to advertise or update your subscribers with PROPERTY TRENDS
+
+-information about your product or blog. They are an excellent way to maintain
+
+-Add description text here to get your
+
+-regular contact with your subscribers. Type the content of your newsletter subscribers interested in your topic
+
+-here.
+
+-ARE YOU READY TO LIST?
+
++PROPERTY TRENDS
 
  Newsletters are periodicals used to advertise or update your subscribers with
 
--information about your product or blog. They are an excellent way to maintain Add description text here to get your
-
-+Add description text here to get your
+ Add description text here to get your
 
 +information about your product or blog. They are an excellent way to
 
- subscribers interested in your topic
-
--regular contact with your subscribers. Type the content of your newsletter
++subscribers interested in your topic
 
 +maintain regular contact with your subscribers. Type the content of your
 
@@ -1559,19 +1557,11 @@ Text content: ✅ Identical
 
 +Newsletters are periodicals used to advertise or update your subscribers with LIST?
 
-+information about your product or blog. Type the content of your newsletter
+ information about your product or blog. Type the content of your newsletter
 
 +Add description text here to get your
 
- here.
-
--ARE YOU READY TO LIST?
-
--Newsletters are periodicals used to advertise or update your subscribers with
-
--Add description text here to get your
-
--information about your product or blog. Type the content of your newsletter
++here.
 
  subscribers interested in your topic
 
@@ -1583,7 +1573,7 @@ Text content: ✅ Identical
 
  Take a look inside
 
-@@ -31,22 +30,21 @@
+@@ -30,22 +30,21 @@
  Newsletters are periodicals used to advertise or update your
 
  subscribers with information about your product or blog. They
@@ -1622,8 +1612,12 @@ Text content: ✅ Identical
 
  Newsletters are periodicals use to advertise or update your
 
- ex
-... (1117 more characters)
+ excellent way to maintain regular contact
+
+-subscribers with information about your product or blog. Type the
+
+-with your subscribers and drive traffic to
+... (1061 more characters)
 
 ```
 </details>
@@ -2051,10 +2045,10 @@ Text content: ✅ Identical
 ### Support_Letter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9606
-- **Overall Score:** 0.9842
+- **Visual Average:** 0.9461
+- **Overall Score:** 0.9784
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1010827 bytes, Reference=147353 bytes
+- **File Size:** MiniPdf=1010825 bytes, Reference=147353 bytes
 
 <details><summary>Text Diff</summary>
 
