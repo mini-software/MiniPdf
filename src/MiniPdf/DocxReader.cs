@@ -822,6 +822,7 @@ internal static class DocxReader
         DocxBorders? borders = null;
         float charSpacing = 0;
         int firstLineChars = 0;
+        bool firstLineCharsExplicit = false;
         bool paragraphMarkUnderline = false;
         string? paragraphMarkFontName = null;
         bool hasExplicitAlignment = false;
@@ -934,8 +935,12 @@ internal static class DocxReader
                     paraHasIndentFirstLine = true;
                     paraHasExplicitListIndent = true;
                 }
-                if (int.TryParse(ind.Attribute(W + "firstLineChars")?.Value, out var flc))
+                var flcAttr = ind.Attribute(W + "firstLineChars");
+                if (flcAttr != null && int.TryParse(flcAttr.Value, out var flc))
+                {
                     firstLineChars = flc;
+                    firstLineCharsExplicit = true;
+                }
             }
 
             // Page break before (respect w:val="false" / w:val="0" to disable)
@@ -1160,6 +1165,29 @@ internal static class DocxReader
         {
             var charSize = fontSize > 0 ? fontSize : 10.5f;
             indentFirstLine = firstLineChars / 100f * charSize;
+        }
+        // Explicit w:firstLineChars="0" on the paragraph suppresses any inherited
+        // POSITIVE first-line indent (from style); it does NOT zero out a hanging
+        // indent (negative firstLine) inherited from numbering. Word's cascade
+        // treats firstLineChars as the East-Asian recomputation of the chars-based
+        // positive indent, but the auto-numbering hanging continues to apply
+        // (verified against MS Word output for CJK ListParagraph paragraphs that
+        // use <w:ind w:firstLineChars="0"/> with a numbering hanging — the label
+        // still hangs at the left margin and the body sits at the indent left).
+        // Explicit w:firstLineChars="0" on the paragraph suppresses any inherited
+        // POSITIVE first-line indent (from style); it does NOT zero out a hanging
+        // indent (negative firstLine) inherited from numbering. Word's cascade
+        // treats firstLineChars as the East-Asian recomputation of the chars-based
+        // positive indent, but the auto-numbering hanging continues to apply
+        // (verified against MS Word output for CJK ListParagraph paragraphs that
+        // use <w:ind w:firstLineChars="0"/> with a numbering hanging — the label
+        // still hangs at the left margin and the body sits at the indent left).
+        if (firstLineCharsExplicit && firstLineChars == 0 && !paraHasIndentFirstLine
+            && indentFirstLine > 0)
+        {
+            // Restore numbering hanging (negative) if any; otherwise zero.
+            indentFirstLine = numLevelIndentFirstLine < 0 ? numLevelIndentFirstLine : 0;
+            paraHasIndentFirstLine = true;
         }
 
         // Read runs (with field code tracking)

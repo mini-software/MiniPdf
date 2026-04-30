@@ -1395,21 +1395,16 @@ internal static class DocxToPdfConverter
                         }
                     }
                     // Word's tab-suffix on auto-numbering: after the level text, a tab
-                    // advances to the next tab stop. When the label overflows the hanging
-                    // indent slot, snap to the next default tab stop greater than labelEnd.
-                    // Default tab stops are at multiples of defaultTabStopPt from the left
-                    // margin (paragraph origin), i.e. positions relative to MarginLeft.
-                    // Skip the default-stop snap entirely when the level's w:suff is
-                    // "space" or "nothing" — Word writes the body text immediately after
-                    // the number with no tab advance.
-                    if (suffIsTab)
-                    {
-                        var dts = s_defaultTabStopPt > 0 ? s_defaultTabStopPt : 36f;
-                        var labelEndRelMargin = labelEnd - options.MarginLeft;
-                        var nextDefaultStopRel = (float)(Math.Floor(labelEndRelMargin / dts) + 1) * dts;
-                        var nextDefaultStop = options.MarginLeft + nextDefaultStopRel;
-                        if (nextDefaultStop > target) target = nextDefaultStop;
-                    }
+                    // advances to the next tab stop. The tab stops considered are the
+                    // explicit num tab from numbering pPr/tabs (handled above) and any
+                    // explicit pPr/tabs on the paragraph. Word does NOT fall back to
+                    // document-level default tab stops for the auto-numbering suffix
+                    // tab — if no explicit tab stop sits past labelEnd, the body text
+                    // is rendered immediately after the level text (no extra gap).
+                    // (Verified against Word for Microsoft 365 output: a CJK numbered
+                    // list paragraph "%1、" with japaneseCounting and ind left=510
+                    // hanging=510 renders "一、判断题" with the body flush against the
+                    // level text rather than snapping to the next 21pt default stop.)
                     listLabelOverflow = target - bodyX;
                 }
             }

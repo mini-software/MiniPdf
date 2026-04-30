@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T09:41:12.294816
+Generated: 2026-04-30T10:19:06.246061
 
 ## Summary
 
@@ -20,9 +20,9 @@ Generated: 2026-04-30T09:41:12.294816
 | 12 | 🟢 Invoice | ✅ | 1.0 | 0.9592 | 1/1 | **0.9837** |
 | 13 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
 | 14 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8358 | 2/2 | **0.877** |
-| 15 | 🟡 nthu_article | ✅ | 0.8772 | 0.8748 | 19/20 | **0.8008** |
+| 15 | 🟡 nthu_article | ✅ | 0.8757 | 0.8742 | 19/20 | **0.8** |
 | 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
-| 17 | 🟢 SA8000 ch sample | ✅ | 0.9923 | 0.96 | 2/2 | **0.9809** |
+| 17 | 🟢 SA8000 ch sample | ✅ | 0.9921 | 0.9642 | 2/2 | **0.9825** |
 | 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.9461 | 1/1 | **0.9784** |
 | 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
@@ -313,7 +313,7 @@ Generated: 2026-04-30T09:41:12.294816
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 80.1%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 80.0%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -405,7 +405,7 @@ Generated: 2026-04-30T09:41:12.294816
 </tr>
 <tr>
   <td><b>SA8000 ch sample</b></td>
-  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 98.1%</td>
+  <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 98.2%</td>
 </tr>
 <tr>
   <td><img src="images/SA8000 ch sample_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1433,7 +1433,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8358
 - **Overall Score:** 0.877
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=693581 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=722835 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1562,11 +1562,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.8772
-- **Visual Average:** 0.8748
-- **Overall Score:** 0.8008
+- **Text Similarity:** 0.8757
+- **Visual Average:** 0.8742
+- **Overall Score:** 0.8
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=9018813 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=9019147 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1578,9 +1578,11 @@ Text content: ✅ Identical
 
  經 111 年 11 月 09 日 111 學年度第一學期第 3 次系務會議通過
 
- 一、 論文編印項目次序與頁碼編排
+-一、論文編印項目次序與頁碼編排
 
 -（一）紙本論文次序
+
++一、 論文編印項目次序與頁碼編排
 
 +（一） 紙本論文次序
 
@@ -1598,7 +1600,7 @@ Text content: ✅ Identical
 
  誌謝辭 Acknowledgements (可免)
 
-@@ -14,7 +14,7 @@
+@@ -14,107 +14,107 @@
  表次 List of Tables（可免）
 
  圖次 List of Figures（可免）
@@ -1615,12 +1617,17 @@ Text content: ✅ Identical
 
  名詞附錄 Glossary of Terms (可免)
 
-@@ -23,98 +23,98 @@
- （二） 電子檔論文次序
+ 索引 Index (可免)
+
+ 封底 Back Cover、書背 Spine
+
+-（二）電子檔論文次序
+
++（二） 電子檔論文次序
 
  去掉前項 藍字 項目。
 
- （三） 頁碼編排
+-（三）頁碼編排
 
 -1，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i, ii, iii… ）。
 
@@ -1629,6 +1636,8 @@ Text content: ✅ Identical
 -3，頁碼標於頁面底端，置中。
 
 -（四）版面配置
+
++（三） 頁碼編排
 
 +1 ，頁碼從「誌謝辭」開始編排，用小寫羅馬數字標示頁碼（ i, ii, iii… ）。
 
@@ -1692,6 +1701,8 @@ Text content: ✅ Identical
 
 -文與數字用 Times New Roman 。 如範例 C （ 中文）與範例 D （ 英文）。
 
+-五、目次
+
 +研究結果與結論及關鍵詞（ 5-7 個）等，以 500 字為原則，至多不超過二頁，
 
 +橫式書寫，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），段距
@@ -1702,7 +1713,7 @@ Text content: ✅ Identical
 
 +字用 Times New Roman 。如範例 C （中文）與範例 D （英文）。
 
- 五、 目次
++五、 目次
 
  包括各章、各節、節下小標之標題、參考文獻、附錄及其所在之頁數。「目
 
@@ -1722,7 +1733,9 @@ Text content: ✅ Identical
 
  六、論文正文
 
- （一） 章節標題
+-（一）章節標題
+
++（一） 章節標題
 
  章次與章名間空一格，如「第一章　緒論」。 18 級，標楷體，置中。
 
@@ -1732,19 +1745,21 @@ Text content: ✅ Identical
 
 -」、「1、」、「（1）」 …… 等順序表示， 14 級（或 12 級），左齊。
 
-+各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16 級，
-
-+標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
-
-+「 1 、」、「（ 1 ）」……等順序表示， 14 級（或 12 級），左齊。
-
- （二） 內文
+-（二）內文
 
 -1，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文
 
 -中，書名和篇名連用時，省略篇名號，如《莊子 ‧ 天下》。若為英
 
 -文，書名請用斜體，篇名請用 “ ” 。日文翻譯成中文，行文時亦請
+
++各章新頁起。節次與節名間空一格，如「第一節　研究動機」。 16 級，
+
++標楷體，置中。章節以下小節所使用符號，依「一、」、「（一）」、
+
++「 1 、」、「（ 1 ）」……等順序表示， 14 級（或 12 級），左齊。
+
++（二） 內文
 
 +1 ，請用新式標號，惟書名號改用《》，篇名號改用〈〉。在行文中，
 
@@ -1756,14 +1771,8 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--一併改用中文新式標號。
-
--2，行距建議設定為 1.2 行 （ word 中選「多行」，設定 1.2 ），各段
-
-+併改用中文新式標號。
-
-+2 ，行距建議設定為 1.2 行 （ word
-... (15182 more characters)
+-一併改
+... (15897 more characters)
 
 ```
 </details>
@@ -1797,11 +1806,11 @@ Text content: ✅ Identical
 
 ### SA8000 ch sample
 
-- **Text Similarity:** 0.9923
-- **Visual Average:** 0.96
-- **Overall Score:** 0.9809
+- **Text Similarity:** 0.9921
+- **Visual Average:** 0.9642
+- **Overall Score:** 0.9825
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=467276 bytes, Reference=186097 bytes
+- **File Size:** MiniPdf=467296 bytes, Reference=186097 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1837,6 +1846,10 @@ Text content: ✅ Identical
 
 -9、 根据劳动法规定，员工每月加班时间最多不超过 36 小时。（  √    ）
 
+-10、某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）
+
+-二、不定项选择题（共 20 分，每题 2 分）
+
 +5、童工是指年龄在16 周岁以下的人（按照我国法律规定）。（  √   ）
 
 +6、公司在员工辞职或解雇时应一次性把工资结算并支付。（  √   ）
@@ -1847,9 +1860,7 @@ Text content: ✅ Identical
 
 +9、根据劳动法规定，员工每月加班时间最多不超过36 小时。（  √    ）
 
- 10、 某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）
-
--二、不定项选择题（共 20 分，每题 2 分）
++10、 某公司将职工食堂的饭票作为工资支付给职工。（  ×   ）
 
 +二、不定项选择题（共20 分，每题2 分）
 
@@ -1895,9 +1906,7 @@ Text content: ✅ Identical
 
 -针对以下事实描述分析是否违反社会责任要求，如果违反的话，请写出 SA8000 的哪一条款。
 
--1、 公司在运行 SA8000 社会责任管理体系过程中，内审发现使用了 2 名童工，公司的纠正措施是将
-
--2 名童工立即开除。
+-1、 公司在运行 SA8000 社会责任管理体系过程中，内审发现使用了 2 名童工，公司的纠正措施是将 2 名
 
 +三、案例分析题（共10 分，每题5 分）
 
@@ -1905,7 +1914,7 @@ Text content: ✅ Identical
 
 +1、公司在运行SA8000 社会责任管理体系过程中，内审发现使用了2 名童工，公司的纠正措施是将2 名
 
-+童工立即开除。
+ 童工立即开除。
 
  STP 小组的含义是什么？
 
@@ -1913,7 +1922,7 @@ Text content: ✅ Identical
 
  ISO45001 基础知识培训考试题
 
--一、 判断题（共 20 分，每题 2 分）
+-一、判断题（共 20 分，每题 2 分）
 
 -1、一个管理十分严谨、设备精良并经消防主管部门审批合格的油库，在加强日常管理的情况下，可以不列入危险
 
@@ -1972,10 +1981,8 @@ Text content: ✅ Identical
 
 -A、电工。B、金属焊接切割。C、矿山通风。D、A+B+C。
 
-+A、 电工。B、金属焊接切割。C、矿山通风。D、A+B+C。
-
- 5
-... (1108 more characters)
++A、 电工。B、金
+... (1133 more characters)
 
 ```
 </details>
