@@ -2293,14 +2293,34 @@ internal sealed class PdfWriter
 
         if (!Directory.Exists(fontDir)) return result;
 
-        foreach (var file in Directory.GetFiles(fontDir))
+        // On Linux/macOS fonts live in subdirectories; Windows Fonts dir is flat.
+        var searchOption = Compat.IsWindows() ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
+        foreach (var file in Directory.GetFiles(fontDir, "*", searchOption))
         {
             var ext = Path.GetExtension(file).ToLowerInvariant();
-            if (ext is not (".ttf" or ".otf")) continue;
+            if (ext is not (".ttf" or ".otf" or ".ttc")) continue;
             try
             {
                 var ttf = File.ReadAllBytes(file);
-                var (family, fullName) = ReadFontNames(ttf);
+                if (ext == ".ttc")
+                {
+                    // TrueType Collection: register each sub-font by its name.
+                    if (ttf.Length >= 12 && ttf[0] == 't' && ttf[1] == 't' && ttf[2] == 'c' && ttf[3] == 'f')
+                    {
+                        int numFonts = (ttf[8] << 24) | (ttf[9] << 16) | (ttf[10] << 8) | ttf[11];
+                        for (var fi = 0; fi < numFonts; fi++)
+                        {
+                            var offPos = 12 + fi * 4;
+                            if (offPos + 4 > ttf.Length) break;
+                            int fontOff = (ttf[offPos] << 24) | (ttf[offPos+1] << 16) | (ttf[offPos+2] << 8) | ttf[offPos+3];
+                            var (fam, full) = ReadFontNames(ttf, fontOff);
+                            if (!string.IsNullOrEmpty(full))  { var k = NormalizeFontName(full);  if (!result.ContainsKey(k)) result[k] = file; }
+                            if (!string.IsNullOrEmpty(fam))   { var k = NormalizeFontName(fam);   if (!result.ContainsKey(k)) result[k] = file; }
+                        }
+                    }
+                    continue;
+                }
+                var (family, fullName) = ReadFontNames(ttf, 0);
                 if (!string.IsNullOrEmpty(fullName))
                     { var k = NormalizeFontName(fullName);   if (!result.ContainsKey(k)) result[k] = file; }
                 if (!string.IsNullOrEmpty(family))
@@ -2352,20 +2372,24 @@ internal sealed class PdfWriter
 
     /// <summary>
     /// Reads the font family name (name ID 1) and full name (name ID 4) from a TrueType/OpenType font binary.
+    /// <paramref name="baseOffset"/> is the start of the Offset Table within the buffer (0 for standalone .ttf/.otf;
+    /// the per-font offset stored in the TTC header for .ttc collections).
+    /// The name-table offset stored inside the font directory is always an absolute file offset, so no
+    /// adjustment is needed beyond shifting the Offset Table parsing by <paramref name="baseOffset"/>.
     /// Returns empty strings if the name table cannot be read.
     /// </summary>
-    private static (string family, string fullName) ReadFontNames(byte[] ttf)
+    private static (string family, string fullName) ReadFontNames(byte[] ttf, int baseOffset = 0)
     {
         try
         {
-            if (ttf.Length < 12) return ("", "");
-            int numTables = (ttf[4] << 8) | ttf[5];
+            if (ttf.Length < baseOffset + 12) return ("", "");
+            int numTables = (ttf[baseOffset + 4] << 8) | ttf[baseOffset + 5];
 
             // Find the 'name' table record
             int nameTableOffset = -1;
             for (var i = 0; i < numTables; i++)
             {
-                var pos = 12 + i * 16;
+                var pos = baseOffset + 12 + i * 16;
                 if (pos + 16 > ttf.Length) break;
                 if (ttf[pos] == 'n' && ttf[pos+1] == 'a' && ttf[pos+2] == 'm' && ttf[pos+3] == 'e')
                 {
