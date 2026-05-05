@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-05-05T09:54:17.781170
+Generated: 2026-05-05T22:11:00.176588
 
 ## Summary
 
@@ -18,17 +18,18 @@ Generated: 2026-05-05T09:54:17.781170
 | 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9846 | 7/7 | **0.9859** |
 | 11 | 🟢 Fabrikam | ✅ | 1.0 | 0.9466 | 1/1 | **0.9786** |
 | 12 | 🟢 Invoice | ✅ | 1.0 | 0.9592 | 1/1 | **0.9837** |
-| 13 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
-| 14 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8358 | 2/2 | **0.877** |
-| 15 | 🟡 nthu_article | ✅ | 0.86 | 0.8709 | 19/20 | **0.7924** |
-| 16 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
-| 17 | 🟢 SA8000 ch sample | ✅ | 0.9921 | 0.9642 | 2/2 | **0.9825** |
-| 18 | 🟢 Support_Letter | ✅ | 1.0 | 0.946 | 1/1 | **0.9784** |
-| 19 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
-| 20 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
-| 21 | 🟢 issue202605 | ✅ | 0.8653 | 0.913 | 2/2 | **0.9113** |
+| 13 | 🟢 issue202605 | ✅ | 0.8653 | 0.913 | 2/2 | **0.9113** |
+| 14 | 🟢 issue26050501 | ✅ | 0.9188 | 0.9395 | 2/2 | **0.9433** |
+| 15 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
+| 16 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8358 | 2/2 | **0.877** |
+| 17 | 🟡 nthu_article | ✅ | 0.86 | 0.8709 | 19/20 | **0.7924** |
+| 18 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
+| 19 | 🟢 SA8000 ch sample | ✅ | 0.9921 | 0.9642 | 2/2 | **0.9825** |
+| 20 | 🟢 Support_Letter | ✅ | 1.0 | 0.946 | 1/1 | **0.9784** |
+| 21 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
+| 22 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8173**
+**Average Overall Score: 0.8230**
 
 ## Visual Comparison
 
@@ -285,6 +286,30 @@ Generated: 2026-05-05T09:54:17.781170
   <td><img src="images/Invoice_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
+  <td><b>issue202605</b></td>
+  <td colspan="1">issue202605 <span style="color:#3fb950">⬤</span> 91.1%</td>
+</tr>
+<tr>
+  <td><img src="images/issue202605_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/issue202605_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/issue202605_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/issue202605_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>issue26050501</b></td>
+  <td colspan="1">issue26050501 <span style="color:#3fb950">⬤</span> 94.3%</td>
+</tr>
+<tr>
+  <td><img src="images/issue26050501_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/issue26050501_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/issue26050501_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/issue26050501_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><b>issues66</b></td>
   <td colspan="1">issues66 <span style="color:#3fb950">⬤</span> 97.2%</td>
 </tr>
@@ -502,18 +527,6 @@ Generated: 2026-05-05T09:54:17.781170
 </tr>
 <tr>
   <td colspan="2"><i>No images</i></td>
-</tr>
-<tr>
-  <td><b>issue202605</b></td>
-  <td colspan="1">issue202605 <span style="color:#3fb950">⬤</span> 91.1%</td>
-</tr>
-<tr>
-  <td><img src="images/issue202605_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/issue202605_p1_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/issue202605_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/issue202605_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -1323,6 +1336,343 @@ Text content: ✅ Identical
 ```
 </details>
 
+### issue202605
+
+- **Text Similarity:** 0.8653
+- **Visual Average:** 0.913
+- **Overall Score:** 0.9113
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=7689730 bytes, Reference=154034 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/issue202605.pdf
++++ reference/issue202605.pdf
+@@ -2,9 +2,10 @@
+ 115 學年度博士班入學甄試聯合招生
+
+ 資訊工程學系學經歷表
+
+ 基本資料
+
+-姓　　名 准考證號碼 (此欄由本單位填寫)
+
++姓  名 准考證號碼 ( 此欄由本單位填寫 )
+
+ 畢業論文名稱 指導教授
+
+-進入本系博士班 □計算機網路 □晶片系統設計與電子設計自動化 □電腦系統
+
++進入本系博士班
+
++□計算機網路 □晶片系統設計與電子設計自動化 □電腦系統
+
+ 擬研讀領域/方向
+
+ □電腦視覺、計算機圖學與影像處理□人工智慧、數據科學、演算法與人機互動
+
+ (可複選)
+
+@@ -12,31 +13,32 @@
+ 姓名(至多三位)
+
+ □應屆 □一般生
+
+ 就學狀況 報考身分
+
+-□在職生
+
+-□非應屆
+
++□非應屆 □在職生
+
+ 學業表現 (請填寫大學(含)以上學歷之成績記錄，並隨附歷年成績表，含班級或全系排名，若曾轉學、轉系，請註明。)
+
+ 學業成績 學業成績
+
+-學校名稱 科系/組別 在學時間(西元年/月)
+
++學校名稱 科系 / 組別 在學時間 ( 西元年 / 月 )
+
+ 總平均 總排名
+
+-_____/_____至_____/_____
+
+-_____/_____至_____/_____
+
+-_____/_____至_____/_____
+
+-_____/_____至_____/_____
+
++_____/_____ 至 _____/_____
+
++_____/_____ 至 _____/_____
+
++_____/_____ 至 _____/_____
+
++_____/_____ 至 _____/_____
+
+ 語文能力表現 (請檢附檢定證明，如無資料可免填。)
+
+-1. 全民英檢 □初級 □中試 □中高級 □高級 □優級 通過考試階段：□初試　□複試
+
++1. 全民英檢 □初級 □中試 □中高級 □高級 □優級 通過考試階段：□初試 □複試
+
+ 2. 英文檢定 □托福/分數：        □多益/分數：        □其他       /分數：
+
+ 3. 其他
+
+ 工作經歷 (請依序填寫大學畢業後之全職工作經歷(不含兼任研究助理)；如無可免填。)
+
+-1. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）
+
+-/     至　   /
+
+-2. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）
+
+-/     至　   /
+
+-3. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）
+
+-/     至　   /
+
++服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）
+
++1.
+
++/     至    /
+
++服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）
+
++2.
+
++/     至    /
+
++服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）
+
++3.
+
++/     至    /
+
+ 1 頁
+
+ ---PAGE---
+
+-著作發表 (請條列曾發表之論文或其他著作 、 專利，並檢附證明；如無資料可免
+
+-填。)
+
++著作發表 (請條列曾發表之論文或其他著作 、 專利，並檢附證明；如無資料可免填。)
+
+ 1.
+
+ 2.
+
+ 3.
+
+```
+</details>
+
+### issue26050501
+
+- **Text Similarity:** 0.9188
+- **Visual Average:** 0.9395
+- **Overall Score:** 0.9433
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=236761 bytes, Reference=111155 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/issue26050501.pdf
++++ reference/issue26050501.pdf
+@@ -5,57 +5,50 @@
+ 學習 Hadoop 的首要任務是理解它試圖解決的問題：大數據
+
+ 帶來的巨大挑戰。請詳細複習大數據的核心特徵，也就是著
+
+ 名的 3V：資料量龐大 (Volume)、生成與處理速度極快
+
+-(Velocity)，以及資料結構多樣化
+
+-What is big
+
+-(Variety)，包含了大量非結構化或半結構化的資料。您必須清
+
+-data?
+
+-楚釐清，傳統的關聯式資料庫 (RDBMS) 在面對這類海量且
+
+-缺乏固定 Schema 的資料時，會遭遇嚴重的效能瓶頸與擴展
+
+-限制，這正是業界急需全新分散式運算與儲存架構的根本原
+
+-因。
+
++What is big (Velocity)，以及資料結構多樣化 (Variety)，包含了大量
+
++data? 非結構化或半結構化的資料。您必須清楚釐清，傳統的關聯
+
++式資料庫 (RDBMS) 在面對這類海量且缺乏固定 Schema 的資
+
++料時，會遭遇嚴重的效能瓶頸與擴展限制，這正是業界急需
+
++全新分散式運算與儲存架構的根本原因。
+
+ MapReduce 是處理巨量資料的核心程式設計模型，其設計哲
+
+-學深受「分而治之 (Divide and
+
+-Conquer)」概念的影響。您需要深刻理解兩個階段的明確分
+
+-工：Map 階段負責在各個資料節點上就近進行資料過濾、轉
+
+-MapReduce 換與提取，並產出 Key-Value 對；Reduce 階段則負責將這
+
+-些中間結果進行跨節點的彙總與整合。此外，請務必掌握系
+
+-統層面的運作邏輯，包括 JobTracker 如何進行全域的任務
+
+-排程與資源分配，以及 TaskTracker 如何在各個節點上監控
+
+-並執行具體的 Map 或 Reduce 任務。
+
++學深受「分而治之 (Divide and Conquer)」概念的影響。您
+
++需要深刻理解兩個階段的明確分工：Map 階段負責在各個資
+
++料節點上就近進行資料過濾、轉換與提取，並產出 Key-
+
++MapReduce Value 對；Reduce 階段則負責將這些中間結果進行跨節點的
+
++彙總與整合。此外，請務必掌握系統層面的運作邏輯，包括
+
++JobTracker 如何進行全域的任務排程與資源分配，以及
+
++TaskTracker 如何在各個節點上監控並執行具體的 Map 或
+
++Reduce 任務。
+
+ 認識 Hadoop 這個由 Apache 基金會維護的重量級開源框
+
+-架。請複習它的發展起源以及核心設計目標：Hadoop 專為
+
+-在由商用廉價硬體 (Commodity hardware) 所組成的龐大叢
+
+-集上運行而生。您的學習重點在於理解 Hadoop 如何「化劣
+
+-Meet Hadoop 勢為優勢」，也就是它並不強求底層硬體具備高可靠性，而
+
+-是透過軟體架構層面（如資料多重副本與任務自動重試）提
+
+-供卓越的容錯機制 (Fault
+
+-Tolerance)。這使得企業能以極低的硬體成本，獲得具備強大
+
+-橫向擴展能力的大數據處理平台。
+
++架。請複習它的發展起源以及核心設計目標：Hadoop 專為在
+
++由商用廉價硬體 (Commodity hardware) 所組成的龐大叢集
+
++上運行而生。您的學習重點在於理解 Hadoop 如何「化劣勢
+
++Meet Hadoop
+
++為優勢」，也就是它並不強求底層硬體具備高可靠性，而是透
+
++過軟體架構層面（如資料多重副本與任務自動重試）提供卓
+
++越的容錯機制 (Fault Tolerance)。這使得企業能以極低的
+
++硬體成本，獲得具備強大橫向擴展能力的大數據處理平台。
+
++Hadoop HDFS 是支撐整個 Hadoop 生態系的儲存骨幹，專為儲存超大
+
+ ---PAGE---
+
+ 章節大綱
+
+ 學習指引 (Study Guide)
+
+ (Outline)
+
+-HDFS 是支撐整個 Hadoop 生態系的儲存骨幹，專為儲存超
+
+-大檔案而設計。請深入探討其「一次寫入，多次讀取 (write-
+
+-once, read-many)」的串流存取設計理念。您需要熟練掌握
+
++Distributed 檔案而設計。請深入探討其「一次寫入，多次讀取 (write-
+
++File System once, read-many)」的串流存取設計理念。您需要熟練掌握
+
+ HDFS 的核心架構：預設 64MB (或 128MB) 的資料區塊
+
+-Hadoop
+
+ (Block) 設計有何優勢？Namenode (Master 節點) 如何負責
+
+-Distributed
+
+-管理整個檔案系統的 Metadata
+
+-File System
+
+-(如檔案名稱、權限與區塊映射表)？而 Datanode (Slave 節
+
+-點) 又是如何負責實際儲存資料區塊並定期發送心跳訊號
+
+-(Heartbeat)？理解這些節點間的互動是掌握分散式儲存的關
+
+-鍵。
+
++管理整個檔案系統的 Metadata (如檔案名稱、權限與區塊映
+
++射表)？而 Datanode (Slave 節點) 又是如何負責實際儲存
+
++資料區塊並定期發送心跳訊號 (Heartbeat)？理解這些節點
+
++間的互動是掌握分散式儲存的關鍵。
+
+ 任何雲端與大數據的理論都必須透過實際動手做來驗證。本
+
+ 節要求您具備從零開始建置 Hadoop 偽分散式 (Pseudo-
+
+-distributed) 叢集的能力。請複習所有關鍵的前置作業：包含
+
+-在虛擬機 (VM) 中安裝 Linux 系統、正確配置 Java 執行環
+
++distributed) 叢集的能力。請複習所有關鍵的前置作業：包
+
++含在虛擬機 (VM) 中安裝 Linux 系統、正確配置 Java 執行
+
+ How to install
+
+-境，以及設定 SSH 無密碼登入機制。接著，您需要熟悉
+
++環境，以及設定 SSH 無密碼登入機制。接著，您需要熟悉
+
+ Hadoop
+
+-Hadoop 的核心 XML 設定檔 (core-site.xml, hdfs-site.xml
+
+-等) 的配置意義。最後，請務必親自執行格式化 Namenode
+
+-的指令，並透過經典的 Wordcount 範例，體驗完整的任務提
+
+-交、執行與結果檢視流程。
++Hadoop 的核心 XML 設定檔 (core-site.xml, hdfs-
+
++site.xml 等) 的配置意義。最後，請務必親自執行格式化
+
++Namenode 的指令，並透過經典的 Wordcount 範例，體驗完
+
++整的任務提交、執行與結果檢視流程。
+```
+</details>
+
 ### issues66
 
 - **Text Similarity:** 0.9488
@@ -1579,7 +1929,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8709
 - **Overall Score:** 0.7924
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=9016391 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=9016407 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2134,144 +2484,6 @@ Text content: ✅ Identical
 ### Template_repaired
 
 **Error:** Reference PDF not found
-
-### issue202605
-
-- **Text Similarity:** 0.8653
-- **Visual Average:** 0.913
-- **Overall Score:** 0.9113
-- **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7689730 bytes, Reference=154034 bytes
-
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/issue202605.pdf
-+++ reference/issue202605.pdf
-@@ -2,9 +2,10 @@
- 115 學年度博士班入學甄試聯合招生
-
- 資訊工程學系學經歷表
-
- 基本資料
-
--姓　　名 准考證號碼 (此欄由本單位填寫)
-
-+姓  名 准考證號碼 ( 此欄由本單位填寫 )
-
- 畢業論文名稱 指導教授
-
--進入本系博士班 □計算機網路 □晶片系統設計與電子設計自動化 □電腦系統
-
-+進入本系博士班
-
-+□計算機網路 □晶片系統設計與電子設計自動化 □電腦系統
-
- 擬研讀領域/方向
-
- □電腦視覺、計算機圖學與影像處理□人工智慧、數據科學、演算法與人機互動
-
- (可複選)
-
-@@ -12,31 +13,32 @@
- 姓名(至多三位)
-
- □應屆 □一般生
-
- 就學狀況 報考身分
-
--□在職生
-
--□非應屆
-
-+□非應屆 □在職生
-
- 學業表現 (請填寫大學(含)以上學歷之成績記錄，並隨附歷年成績表，含班級或全系排名，若曾轉學、轉系，請註明。)
-
- 學業成績 學業成績
-
--學校名稱 科系/組別 在學時間(西元年/月)
-
-+學校名稱 科系 / 組別 在學時間 ( 西元年 / 月 )
-
- 總平均 總排名
-
--_____/_____至_____/_____
-
--_____/_____至_____/_____
-
--_____/_____至_____/_____
-
--_____/_____至_____/_____
-
-+_____/_____ 至 _____/_____
-
-+_____/_____ 至 _____/_____
-
-+_____/_____ 至 _____/_____
-
-+_____/_____ 至 _____/_____
-
- 語文能力表現 (請檢附檢定證明，如無資料可免填。)
-
--1. 全民英檢 □初級 □中試 □中高級 □高級 □優級 通過考試階段：□初試　□複試
-
-+1. 全民英檢 □初級 □中試 □中高級 □高級 □優級 通過考試階段：□初試 □複試
-
- 2. 英文檢定 □托福/分數：        □多益/分數：        □其他       /分數：
-
- 3. 其他
-
- 工作經歷 (請依序填寫大學畢業後之全職工作經歷(不含兼任研究助理)；如無可免填。)
-
--1. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）
-
--/     至　   /
-
--2. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）
-
--/     至　   /
-
--3. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）
-
--/     至　   /
-
-+服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）
-
-+1.
-
-+/     至    /
-
-+服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）
-
-+2.
-
-+/     至    /
-
-+服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）
-
-+3.
-
-+/     至    /
-
- 1 頁
-
- ---PAGE---
-
--著作發表 (請條列曾發表之論文或其他著作 、 專利，並檢附證明；如無資料可免
-
--填。)
-
-+著作發表 (請條列曾發表之論文或其他著作 、 專利，並檢附證明；如無資料可免填。)
-
- 1.
-
- 2.
-
- 3.
-
-```
-</details>
 
 ## Improvement Suggestions
 

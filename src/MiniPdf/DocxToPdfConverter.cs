@@ -65,6 +65,10 @@ internal static class DocxToPdfConverter
     // causing WordWrap to over-pack lines that then trigger Tz compression at render.
     [ThreadStatic] private static bool s_wideSansSerifFont;
 
+    // Per-paragraph/cell flag: Taiwan Kai fonts use Latin glyphs that are closer
+    // to monospaced/full-width than the PMingLiU/SimSun reduction path assumes.
+    [ThreadStatic] private static bool s_taiwanKaiFont;
+
     // Document-level default tab stop in points, parsed from word/settings.xml.
     // Used to snap auto-numbered list-label body text to the next tab stop when the
     // label overflows its hanging-indent slot. Word's spec default is 720 twips (36pt);
@@ -3617,9 +3621,13 @@ internal static class DocxToPdfConverter
         // When a grid-snapped paragraph precedes the table, its final
         // AdvanceY(lineHeight) included the ascent of the *next* line.
         // Tables have no ascent to consume, so pull CurrentY back up.
-        if (state.LastGridAscentExcess > 0 && !state.IsTopOfPage)
+        if (state.LastGridAscentExcess > 0 && !state.IsTopOfPage && table.CellSpacing <= 0)
         {
             state.CurrentY += state.LastGridAscentExcess;
+            state.LastGridAscentExcess = 0;
+        }
+        else if (table.CellSpacing > 0)
+        {
             state.LastGridAscentExcess = 0;
         }
 
@@ -3628,6 +3636,8 @@ internal static class DocxToPdfConverter
             ? usableWidth - table.IndentLeft : usableWidth;
         var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
         var cellPaddingV = Math.Max(1f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
+        var cellSpacing = Math.Max(0f, table.CellSpacing);
+        var cellInset = cellSpacing > 0 ? cellSpacing / 2f : 0f;
 
         // Determine column widths
         var colWidths = CalculateTableColumnWidths(table, effectiveTableWidth);
@@ -3729,6 +3739,291 @@ internal static class DocxToPdfConverter
             }
         }
 
+        // Identify tblHeader rows (consecutive IsHeader rows at the top of the table)
+        var headerRowIndices = new List<int>();
+        for (var hri = 0; hri < table.Rows.Count && table.Rows[hri].IsHeader; hri++)
+            headerRowIndices.Add(hri);
+
+        // Local function: draw cells + borders for one row then advance Y.
+        // Captures: state, options, table, colWidths, colCount, tableOffsetX,
+        //           cellPaddingH, cellPaddingV, rowHeights.
+        void DrawOneTableRow(DocxTableRow rowArg, int rowIdxArg, float rowHeightArg, bool isLastArg, ref bool isFirstArg)
+        {
+            var cellX2 = tableOffsetX + cellInset;
+            var colIdx3 = rowArg.GridBefore;
+            for (var gb = 0; gb < rowArg.GridBefore && gb < colCount; gb++)
+                cellX2 += colWidths[gb];
+
+            for (var ci = 0; ci < rowArg.Cells.Count && colIdx3 < colCount; ci++)
+            {
+                var cell = rowArg.Cells[ci];
+                var cellWidth = colWidths[colIdx3];
+                if (cell.GridSpan > 1)
+                    for (var s = 1; s < cell.GridSpan && colIdx3 + s < colCount; s++)
+                        cellWidth += colWidths[colIdx3 + s];
+                colIdx3 += cell.GridSpan;
+                if (cell.IsVMergeContinue) { cellX2 += cellWidth; continue; }
+
+                var cellDrawWidth = Math.Max(1f, cellWidth - cellSpacing);
+                var rowDrawTop = state.CurrentY - cellInset;
+                var cellDrawHeight = Math.Max(1f, rowHeightArg - cellSpacing);
+
+                var cellRenderHeight = cellDrawHeight;
+                if (cell.IsVMergeRestart)
+                {
+                    var mergedColIdx = colIdx3 - cell.GridSpan;
+                    for (var mr = rowIdxArg + 1; mr < table.Rows.Count; mr++)
+                    {
+                        var nextRow2 = table.Rows[mr];
+                        var nci2 = 0;
+                        DocxTableCell? mergedCell = null;
+                        for (var nc = 0; nc < nextRow2.Cells.Count; nc++)
+                        {
+                            if (nci2 == mergedColIdx) { mergedCell = nextRow2.Cells[nc]; break; }
+                            nci2 += nextRow2.Cells[nc].GridSpan;
+                            if (nci2 > mergedColIdx) break;
+                        }
+                        if (mergedCell is { IsVMergeContinue: true })
+                            cellRenderHeight += rowHeights[mr];
+                        else
+                            break;
+                    }
+                }
+
+                if (cell.Shading != null)
+                    state.CurrentPage!.AddRectangle(cellX2, rowDrawTop - cellRenderHeight, cellDrawWidth, cellRenderHeight, cell.Shading);
+
+                var effCellLeft = cell.CellMarginLeft >= 0 ? cell.CellMarginLeft : table.CellMarginLeft;
+                var effCellRight = cell.CellMarginRight >= 0 ? cell.CellMarginRight : table.CellMarginRight;
+                var effCellTop = cell.CellMarginTop >= 0 ? cell.CellMarginTop : cellPaddingV;
+                var effCellBottom = cell.CellMarginBottom >= 0 ? cell.CellMarginBottom : cellPaddingV;
+                var effCellPaddingV = Math.Max(effCellTop, effCellBottom);
+
+                float vAlignOffset = 0;
+                if (cell.VerticalAlignment != "top")
+                {
+                    var contentHeight = CalculateCellContentHeight(cell, cellDrawWidth, (effCellLeft + effCellRight) / 2, effCellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
+                    var space = cellRenderHeight - contentHeight;
+                    if (space > 0)
+                        vAlignOffset = cell.VerticalAlignment == "bottom" ? space : space / 2;
+                }
+
+                var textY2 = rowDrawTop - effCellPaddingV - vAlignOffset;
+                var cellParaList = cell.Paragraphs;
+                for (var cellParaIdx = 0; cellParaIdx < cellParaList.Count; cellParaIdx++)
+                {
+                    var para = cellParaList[cellParaIdx];
+                    var isFirstCellPara = cellParaIdx == 0;
+                    bool applySpacingBefore = (!isFirstCellPara || para.SpacingBeforeExplicit) && para.SpacingBefore > 0;
+                    if (applySpacingBefore) textY2 -= para.SpacingBefore;
+
+                    const float emuPerPt2 = 914400f / 72f;
+                    var cellHasInlineImages = false;
+                    foreach (var image in para.Images)
+                    {
+                        if (image.IsAnchor) continue;
+                        cellHasInlineImages = true;
+                        var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt2 : 100f;
+                        var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt2 : 75f;
+                        var maxImgW = cellDrawWidth - effCellLeft - effCellRight;
+                        if (imgW > maxImgW) { var s = maxImgW / imgW; imgW *= s; imgH *= s; }
+                        var fmt = image.Extension;
+                        if (fmt == "jpg" || fmt == "png")
+                        {
+                            state.CurrentPage!.AddImage(image.Data, fmt, cellX2 + effCellLeft, textY2 - imgH, imgW, imgH);
+                            textY2 -= imgH + 1f;
+                        }
+                    }
+
+                    var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
+                    var text = AddInterScriptSpacing(string.Concat(para.Runs.Select(r => r.Text)), para.AutoSpaceDE, para.AutoSpaceDN);
+                    if (string.IsNullOrEmpty(text))
+                    {
+                        if (cellHasInlineImages) continue;
+                        float emptyLineH;
+                        if (para.LineSpacingAbsolute && para.LineSpacing > 0)
+                            emptyLineH = para.LineSpacing;
+                        else
+                        {
+                            var emptyRunFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
+                            emptyLineH = fontSize * GetFontMetricsFactor(emptyRunFont) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
+                        }
+                        if (options.GridLinePitch > 0 && para.SnapToGrid && !(para.LineSpacingAbsolute && para.LineSpacingExact))
+                        {
+                            var gridPitch = options.GridLinePitch;
+                            emptyLineH = Math.Max(gridPitch, Compat.Ceiling(emptyLineH / gridPitch) * gridPitch);
+                        }
+                        textY2 -= emptyLineH;
+                        {
+                            float spAfter;
+                            if (para.SpacingAfterExplicit && para.SpacingAfter >= 0) spAfter = para.SpacingAfter;
+                            else if (table.StyleSpacingAfter >= 0) spAfter = table.StyleSpacingAfter;
+                            else spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : 0f;
+                            if (spAfter > 0) textY2 -= spAfter;
+                        }
+                        continue;
+                    }
+
+                    var dominantRun = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
+                    var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
+                    var effectiveFontSize = runFontSize;
+                    var runColor = dominantRun?.Color ?? para.Color;
+                    var cellRunBold = dominantRun?.Bold ?? false;
+                    var cellRunItalic = dominantRun?.Italic ?? false;
+                    var cellRunUnderline = dominantRun?.Underline ?? false;
+                    var cellRunCharSpacing = dominantRun?.CharSpacing ?? 0f;
+                    var cellRunFontName = dominantRun?.FontName;
+                    var cellLineMetricFs = effectiveFontSize;
+                    if (para.FontSize > effectiveFontSize) cellLineMetricFs = para.FontSize;
+                    float lineHeight;
+                    if (para.LineSpacingAbsolute && para.LineSpacing > 0)
+                        lineHeight = para.LineSpacing;
+                    else
+                        lineHeight = cellLineMetricFs * GetFontMetricsFactor(cellRunFontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
+                    if (options.GridLinePitch > 0 && para.SnapToGrid && !IsTaiwanKaiFont(cellRunFontName) && !(para.LineSpacingAbsolute && para.LineSpacingExact))
+                    {
+                        var gridPitch = options.GridLinePitch;
+                        lineHeight = Math.Max(gridPitch, Compat.Ceiling(lineHeight / gridPitch) * gridPitch);
+                    }
+
+                    var textWidth = cellDrawWidth - effCellLeft - effCellRight;
+                    var wrapWidth = textWidth + 0.5f;
+                    var cellUseCalibri = options.UseCalibriWidths && !IsWideSansSerifFont(cellRunFontName) && !IsTaiwanKaiFont(cellRunFontName);
+                    s_overrideWidths = GetFontOverrideWidths(cellRunFontName);
+                    s_wideSansSerifFont = IsWideSansSerifFont(cellRunFontName) && s_overrideWidths == null;
+                    s_taiwanKaiFont = IsTaiwanKaiFont(cellRunFontName);
+                    s_serifRunInCalibri = cellUseCalibri && IsSerifFont(cellRunFontName);
+                    var lines = WordWrap(text, wrapWidth, wrapWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, cellUseCalibri);
+
+                    foreach (var line in lines)
+                    {
+                        textY2 -= effectiveFontSize;
+                        if (textY2 < rowDrawTop - cellRenderHeight + effCellPaddingV) break;
+                        var lineTextWidth = EstimateWrapTextWidth(line, effectiveFontSize, cellRunBold, cellRunCharSpacing, cellUseCalibri);
+                        var lineRenderX = para.Alignment switch
+                        {
+                            "center" => cellX2 + effCellLeft + (textWidth - lineTextWidth) / 2,
+                            "right" => cellX2 + effCellLeft + textWidth - lineTextWidth,
+                            _ => cellX2 + effCellLeft
+                        };
+                        float? cellMaxWidth = null;
+                        var helveticaWidth = EstimateTextWidth(line, effectiveFontSize, cellRunCharSpacing);
+                        if (helveticaWidth > textWidth) cellMaxWidth = textWidth;
+                        float cellWordSpacing = 0;
+                        if (para.Alignment == "both" && line != lines[^1])
+                        {
+                            var spaceCount = line.Count(c => c == ' ');
+                            if (spaceCount > 0)
+                            {
+                                var extraSpace = textWidth - lineTextWidth;
+                                if (extraSpace > 0) cellWordSpacing = extraSpace / spaceCount;
+                            }
+                        }
+                        state.CurrentPage!.AddText(line, lineRenderX, textY2, effectiveFontSize, runColor, maxWidth: cellMaxWidth, bold: cellRunBold, italic: cellRunItalic, underline: cellRunUnderline, charSpacing: cellRunCharSpacing, wordSpacing: cellWordSpacing, preferredFontName: cellRunFontName);
+                        textY2 -= lineHeight - effectiveFontSize;
+                    }
+                    s_overrideWidths = null;
+                    s_wideSansSerifFont = false;
+                    s_taiwanKaiFont = false;
+                    s_serifRunInCalibri = false;
+
+                    {
+                        float spAfter;
+                        if (para.SpacingAfterExplicit && para.SpacingAfter >= 0) spAfter = para.SpacingAfter;
+                        else if (table.StyleSpacingAfter >= 0) spAfter = table.StyleSpacingAfter;
+                        else spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : 0f;
+                        if (spAfter > 0) textY2 -= spAfter;
+                    }
+                }
+
+                cellX2 += cellWidth;
+            }
+
+            // Draw per-cell borders
+            {
+                var rowTop2 = state.CurrentY - cellInset;
+                var rowBottom2 = state.CurrentY - rowHeightArg + cellInset;
+                var bx2 = tableOffsetX + cellInset;
+                var bci2 = 0;
+                var deferredRights2 = new List<(float X, float Top, float Bottom, DocxBorderEdge Border)>();
+
+                foreach (var cell in rowArg.Cells)
+                {
+                    if (bci2 >= colWidths.Length) break;
+                    var bCellWidth = colWidths[bci2];
+                    if (cell.GridSpan > 1)
+                        for (var g = 1; g < cell.GridSpan && bci2 + g < colWidths.Length; g++)
+                            bCellWidth += colWidths[bci2 + g];
+                    bCellWidth = Math.Max(1f, bCellWidth - cellSpacing);
+
+                    var cellGridEnd = bci2 + (cell.GridSpan > 1 ? cell.GridSpan : 1);
+                    var isFirstCell2 = bci2 == 0;
+                    var isLastCell2 = cellGridEnd >= colCount;
+                    var borders2 = cell.Borders;
+
+                    var suppressTop2 = cell.IsVMergeContinue;
+                    var suppressBottom2 = false;
+                    if (cell.IsVMergeRestart || cell.IsVMergeContinue)
+                    {
+                        var nextRowIdx2 = rowIdxArg + 1;
+                        if (nextRowIdx2 < table.Rows.Count)
+                        {
+                            var nci3 = 0;
+                            foreach (var nc in table.Rows[nextRowIdx2].Cells)
+                            {
+                                if (nci3 == bci2) { suppressBottom2 = nc.IsVMergeContinue; break; }
+                                nci3 += nc.GridSpan;
+                                if (nci3 > bci2) break;
+                            }
+                        }
+                    }
+
+                    static DocxBorderEdge? ResolveEdge(DocxBorderEdge? cellEdge, DocxBorderEdge? tableEdge)
+                    {
+                        if (cellEdge == null) return tableEdge;
+                        if (cellEdge.Width <= 0f) return null;
+                        return cellEdge;
+                    }
+                    DocxBorderEdge? topBorder2, bottomBorder2, leftBorder2, rightBorder2;
+                    if (borders2 != null)
+                    {
+                        topBorder2 = suppressTop2 ? null : ResolveEdge(borders2.Top, table.HasBorders ? (isFirstArg ? table.BorderTop : table.BorderInsideH) : null);
+                        bottomBorder2 = suppressBottom2 ? null : ResolveEdge(borders2.Bottom, table.HasBorders ? (isLastArg ? table.BorderBottom : table.BorderInsideH) : null);
+                        leftBorder2 = ResolveEdge(borders2.Left, table.HasBorders ? (isFirstCell2 ? table.BorderLeft : table.BorderInsideV) : null);
+                        rightBorder2 = ResolveEdge(borders2.Right, table.HasBorders ? (isLastCell2 ? table.BorderRight : table.BorderInsideV) : null);
+                    }
+                    else if (table.HasBorders)
+                    {
+                        topBorder2 = suppressTop2 ? null : (isFirstArg ? table.BorderTop : table.BorderInsideH);
+                        bottomBorder2 = suppressBottom2 ? null : (isLastArg ? table.BorderBottom : table.BorderInsideH);
+                        leftBorder2 = isFirstCell2 ? table.BorderLeft : table.BorderInsideV;
+                        rightBorder2 = isLastCell2 ? table.BorderRight : table.BorderInsideV;
+                    }
+                    else
+                    {
+                        topBorder2 = bottomBorder2 = leftBorder2 = rightBorder2 = null;
+                    }
+
+                    if (topBorder2 != null)
+                        state.CurrentPage!.AddLine(bx2, rowTop2, bx2 + bCellWidth, rowTop2, topBorder2.Color, topBorder2.Width);
+                    if (bottomBorder2 != null)
+                        state.CurrentPage!.AddLine(bx2, rowBottom2, bx2 + bCellWidth, rowBottom2, bottomBorder2.Color, bottomBorder2.Width);
+                    if (leftBorder2 != null)
+                        state.CurrentPage!.AddLine(bx2, rowTop2, bx2, rowBottom2, leftBorder2.Color, leftBorder2.Width);
+                    if (rightBorder2 != null)
+                        deferredRights2.Add((bx2 + bCellWidth, rowTop2, rowBottom2, rightBorder2));
+
+                    bx2 += bCellWidth;
+                    bci2 += cell.GridSpan > 1 ? cell.GridSpan : 1;
+                }
+                foreach (var (rx, rt, rb, rborder) in deferredRights2)
+                    state.CurrentPage!.AddLine(rx, rt, rx, rb, rborder.Color, rborder.Width);
+            }
+
+            isFirstArg = false;
+            state.AdvanceY(rowHeightArg);
+        }
+
         for (var rowIndex = 0; rowIndex < table.Rows.Count; rowIndex++)
         {
             var row = table.Rows[rowIndex];
@@ -3768,353 +4063,19 @@ internal static class DocxToPdfConverter
                     state.CurrentPage = state.Doc.AddPage(options.PageWidth, options.PageHeight);
                     state.CurrentY = options.PageHeight - options.MarginTop;
                     isFirstRow = true; // new page: draw top border again
+                    // Repeat tblHeader rows at the top of the new page
+                    foreach (var hri in headerRowIndices)
+                    {
+                        var hrow = table.Rows[hri];
+                        var hrowHeight = rowHeights[hri];
+                        if (!hrow.HeightExact)
+                            hrowHeight = Math.Max(hrowHeight, CalculateRowInlineImageFloorHeight(hrow, colWidths, cellPaddingH, cellPaddingV));
+                        DrawOneTableRow(hrow, hri, hrowHeight, false, ref isFirstRow);
+                    }
                 }
             }
 
-            var cellX = tableOffsetX;
-            var colIdx = row.GridBefore;
-            // Advance cellX past skipped grid columns
-            for (var gb = 0; gb < row.GridBefore && gb < colCount; gb++)
-                cellX += colWidths[gb];
-
-            for (var ci = 0; ci < row.Cells.Count && colIdx < colCount; ci++)
-            {
-                var cell = row.Cells[ci];
-                var cellWidth = colWidths[colIdx];
-
-                // Handle grid span
-                if (cell.GridSpan > 1)
-                {
-                    for (var s = 1; s < cell.GridSpan && colIdx + s < colCount; s++)
-                        cellWidth += colWidths[colIdx + s];
-                }
-
-                // Advance column index past spanned columns
-                colIdx += cell.GridSpan;
-
-                // Skip rendering content for vertically merged continuation cells
-                if (cell.IsVMergeContinue)
-                {
-                    cellX += cellWidth;
-                    continue;
-                }
-
-                // For vMerge restart cells, calculate the total height spanning all merged rows
-                var cellRenderHeight = rowHeight;
-                if (cell.IsVMergeRestart)
-                {
-                    var mergedColIdx = colIdx - cell.GridSpan; // column index for this cell
-                    for (var mr = rowIndex + 1; mr < table.Rows.Count; mr++)
-                    {
-                        // Find the cell at the same column position in the next row
-                        var nextRow = table.Rows[mr];
-                        var nci = 0;
-                        DocxTableCell? mergedCell = null;
-                        for (var nc = 0; nc < nextRow.Cells.Count; nc++)
-                        {
-                            if (nci == mergedColIdx) { mergedCell = nextRow.Cells[nc]; break; }
-                            nci += nextRow.Cells[nc].GridSpan;
-                            if (nci > mergedColIdx) break;
-                        }
-                        if (mergedCell is { IsVMergeContinue: true })
-                            cellRenderHeight += rowHeights[mr];
-                        else
-                            break;
-                    }
-                }
-
-                // Draw cell shading
-                if (cell.Shading != null)
-                {
-                    state.CurrentPage!.AddRectangle(cellX, state.CurrentY - cellRenderHeight, cellWidth, cellRenderHeight, cell.Shading);
-                }
-
-                // Apply vertical alignment offset
-                // Per-cell margin overrides
-                var effCellLeft = cell.CellMarginLeft >= 0 ? cell.CellMarginLeft : table.CellMarginLeft;
-                var effCellRight = cell.CellMarginRight >= 0 ? cell.CellMarginRight : table.CellMarginRight;
-                var effCellTop = cell.CellMarginTop >= 0 ? cell.CellMarginTop : cellPaddingV;
-                var effCellBottom = cell.CellMarginBottom >= 0 ? cell.CellMarginBottom : cellPaddingV;
-                var effCellPaddingV = Math.Max(effCellTop, effCellBottom);
-
-                float vAlignOffset = 0;
-                if (cell.VerticalAlignment != "top")
-                {
-                    var contentHeight = CalculateCellContentHeight(cell, cellWidth, (effCellLeft + effCellRight) / 2, effCellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
-                    var space = cellRenderHeight - contentHeight;
-                    if (space > 0)
-                        vAlignOffset = cell.VerticalAlignment == "bottom" ? space : space / 2;
-                }
-
-                // Render cell content (images and text)
-                var textY = state.CurrentY - effCellPaddingV - vAlignOffset;
-                var cellParaList = cell.Paragraphs;
-                for (var cellParaIdx = 0; cellParaIdx < cellParaList.Count; cellParaIdx++)
-                {
-                    var para = cellParaList[cellParaIdx];
-                    var isFirstCellPara = cellParaIdx == 0;
-                    // Skip SpacingBefore for the first paragraph in a table cell
-                    // when it is inherited from Normal/docDefault. Apply it when
-                    // the paragraph (or its non-Normal pStyle) explicitly defines
-                    // spacing-before — e.g. pStyle="TableHeading" with w:before.
-                    // LibreOffice/Word both collapse the inherited Normal value at
-                    // the top of a cell, but Word respects an explicit pStyle
-                    // spacing-before there (matters for the 20260318_issue Word
-                    // reference's TableHeading rows).
-                    bool applySpacingBefore = (!isFirstCellPara || para.SpacingBeforeExplicit)
-                        && para.SpacingBefore > 0;
-                    if (applySpacingBefore)
-                        textY -= para.SpacingBefore;
-
-                    // Render images inside table cells
-                    const float emuPerPt = 914400f / 72f;
-                    var cellHasInlineImages = false;
-                    foreach (var image in para.Images)
-                    {
-                        if (image.IsAnchor) continue; // Skip anchor images in cell flow
-                        cellHasInlineImages = true;
-                        var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
-                        var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
-                        var maxImgW = cellWidth - effCellLeft - effCellRight;
-                        if (imgW > maxImgW)
-                        {
-                            var s = maxImgW / imgW;
-                            imgW *= s;
-                            imgH *= s;
-                        }
-                        var fmt = image.Extension;
-                        if (fmt == "jpg" || fmt == "png")
-                        {
-                            var imgY = textY - imgH;
-                            state.CurrentPage!.AddImage(image.Data, fmt, cellX + effCellLeft, imgY, imgW, imgH);
-                            textY -= imgH + 1f;
-                        }
-                    }
-
-                    var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
-                    var text = AddInterScriptSpacing(string.Concat(para.Runs.Select(r => r.Text)), para.AutoSpaceDE, para.AutoSpaceDN);
-                    if (string.IsNullOrEmpty(text))
-                    {
-                        // Empty paragraph still takes up space (skip when images already rendered)
-                        if (cellHasInlineImages) continue;
-                        float emptyLineH;
-                        if (para.LineSpacingAbsolute && para.LineSpacing > 0)
-                            emptyLineH = para.LineSpacing;
-                        else
-                        {
-                            var emptyRunFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
-                            emptyLineH = fontSize * GetFontMetricsFactor(emptyRunFont) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
-                        }
-                        // Snap empty paragraph line height to document grid when active
-                        if (options.GridLinePitch > 0 && para.SnapToGrid && !(para.LineSpacingAbsolute && para.LineSpacingExact))
-                        {
-                            var gridPitch = options.GridLinePitch;
-                            emptyLineH = Math.Max(gridPitch, Compat.Ceiling(emptyLineH / gridPitch) * gridPitch);
-                        }
-                        textY -= emptyLineH;
-                        // Apply SpacingAfter (explicit paragraph/style wins over table style; table style overrides docDefaults)
-                        {
-                            float spAfter;
-                            if (para.SpacingAfterExplicit && para.SpacingAfter >= 0)
-                                spAfter = para.SpacingAfter;
-                            else if (table.StyleSpacingAfter >= 0)
-                                spAfter = table.StyleSpacingAfter;
-                            else
-                                spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : 0f;
-                            if (spAfter > 0) textY -= spAfter;
-                        }
-                        continue;
-                    }
-
-                    var dominantRun = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
-                    var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
-                    var effectiveFontSize = runFontSize;
-                    var runColor = dominantRun?.Color ?? para.Color;
-                    var cellRunBold = dominantRun?.Bold ?? false;
-                    var cellRunItalic = dominantRun?.Italic ?? false;
-                    var cellRunUnderline = dominantRun?.Underline ?? false;
-                    var cellRunCharSpacing = dominantRun?.CharSpacing ?? 0f;
-                    var cellRunFontName = dominantRun?.FontName;
-                    // Word's line height includes the paragraph mark font size from pPr/rPr/sz —
-                    // when the mark is larger than the run text, the line grows accordingly.
-                    var cellLineMetricFs = effectiveFontSize;
-                    if (para.FontSize > effectiveFontSize) cellLineMetricFs = para.FontSize;
-                    float lineHeight;
-                    if (para.LineSpacingAbsolute && para.LineSpacing > 0)
-                        lineHeight = para.LineSpacing;
-                    else
-                        lineHeight = cellLineMetricFs * GetFontMetricsFactor(cellRunFontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
-
-                    // Snap line height to document grid when active (CJK line grid)
-                    if (options.GridLinePitch > 0 && para.SnapToGrid && !(para.LineSpacingAbsolute && para.LineSpacingExact))
-                    {
-                        var gridPitch = options.GridLinePitch;
-                        lineHeight = Math.Max(gridPitch, Compat.Ceiling(lineHeight / gridPitch) * gridPitch);
-                    }
-
-                    var textWidth = cellWidth - effCellLeft - effCellRight;
-                    // Add small CJK tolerance: CJK fonts may render fullwidth characters
-                    // slightly narrower than the 1000-unit estimate, preventing unnecessary wraps.
-                    var wrapWidth = textWidth + 0.5f;
-                    // Use Calibri widths only when the run font is Calibri-like;
-                    // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
-                    var cellUseCalibri = options.UseCalibriWidths
-                        && !IsWideSansSerifFont(cellRunFontName);
-                    s_overrideWidths = GetFontOverrideWidths(cellRunFontName);
-                    s_wideSansSerifFont = IsWideSansSerifFont(cellRunFontName) && s_overrideWidths == null;
-                    s_serifRunInCalibri = cellUseCalibri && IsSerifFont(cellRunFontName);
-                    var lines = WordWrap(text, wrapWidth, wrapWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, cellUseCalibri);
-
-                    foreach (var line in lines)
-                    {
-                        textY -= effectiveFontSize;
-                        if (textY < state.CurrentY - cellRenderHeight + effCellPaddingV) break; // clip
-                        var lineTextWidth = EstimateWrapTextWidth(line, effectiveFontSize, cellRunBold, cellRunCharSpacing, cellUseCalibri);
-                        var lineRenderX = para.Alignment switch
-                        {
-                            "center" => cellX + effCellLeft + (textWidth - lineTextWidth) / 2,
-                            "right" => cellX + effCellLeft + textWidth - lineTextWidth,
-                            _ => cellX + effCellLeft
-                        };
-
-                        // Use Tz compression to fit Helvetica rendering within cell boundaries
-                        // when the estimated width (using non-Helvetica metrics) is narrower than
-                        // what Helvetica would actually render. Also compress when the Helvetica
-                        // rendering exceeds the cell text width.
-                        float? cellMaxWidth = null;
-                        var helveticaWidth = EstimateTextWidth(line, effectiveFontSize, cellRunCharSpacing);
-                        if (helveticaWidth > textWidth)
-                            cellMaxWidth = textWidth;
-
-                        // Calculate word spacing for justified text in table cells
-                        float cellWordSpacing = 0;
-                        if (para.Alignment == "both" && line != lines[^1])
-                        {
-                            var spaceCount = line.Count(c => c == ' ');
-                            if (spaceCount > 0)
-                            {
-                                var extraSpace = textWidth - lineTextWidth;
-                                if (extraSpace > 0)
-                                    cellWordSpacing = extraSpace / spaceCount;
-                            }
-                        }
-
-                        state.CurrentPage!.AddText(line, lineRenderX, textY, effectiveFontSize, runColor, maxWidth: cellMaxWidth, bold: cellRunBold, italic: cellRunItalic, underline: cellRunUnderline, charSpacing: cellRunCharSpacing, wordSpacing: cellWordSpacing, preferredFontName: cellRunFontName);
-                        textY -= lineHeight - effectiveFontSize;
-                    }
-                    s_overrideWidths = null;
-                    s_wideSansSerifFont = false;
-                    s_serifRunInCalibri = false;
-
-                    // Apply SpacingAfter (explicit paragraph/style wins over table style; table style overrides docDefaults)
-                    {
-                        float spAfter;
-                        if (para.SpacingAfterExplicit && para.SpacingAfter >= 0)
-                            spAfter = para.SpacingAfter;
-                        else if (table.StyleSpacingAfter >= 0)
-                            spAfter = table.StyleSpacingAfter;
-                        else
-                            spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : 0f;
-                        if (spAfter > 0) textY -= spAfter;
-                    }
-                }
-
-                cellX += cellWidth;
-            }
-
-            // Draw per-cell borders with table-level fallback for unspecified edges
-            {
-                var rowTop = state.CurrentY;
-                var rowBottom = state.CurrentY - rowHeight;
-                var bx = tableOffsetX;
-                var bci = 0;
-                var deferredRights = new List<(float X, float Top, float Bottom, DocxBorderEdge Border)>();
-
-                foreach (var cell in row.Cells)
-                {
-                    if (bci >= colWidths.Length) break;
-                    var bCellWidth = colWidths[bci];
-                    if (cell.GridSpan > 1)
-                        for (var g = 1; g < cell.GridSpan && bci + g < colWidths.Length; g++)
-                            bCellWidth += colWidths[bci + g];
-
-                    var cellGridEnd = bci + (cell.GridSpan > 1 ? cell.GridSpan : 1);
-                    var isFirstCell = bci == 0;
-                    var isLastCell = cellGridEnd >= colCount;
-                    var borders = cell.Borders;
-
-                    // Suppress horizontal borders inside vertically-merged cell groups:
-                    // - vMerge continue cells: suppress top border (internal to merge)
-                    // - Any cell whose next row continues the merge at the same column: suppress bottom border
-                    var suppressTop = cell.IsVMergeContinue;
-                    var suppressBottom = false;
-                    if (cell.IsVMergeRestart || cell.IsVMergeContinue)
-                    {
-                        // Check if the next row has a vMerge continue at the same column
-                        var nextRowIdx = rowIndex + 1;
-                        if (nextRowIdx < table.Rows.Count)
-                        {
-                            var nci = 0;
-                            foreach (var nc in table.Rows[nextRowIdx].Cells)
-                            {
-                                if (nci == bci) { suppressBottom = nc.IsVMergeContinue; break; }
-                                nci += nc.GridSpan;
-                                if (nci > bci) break;
-                            }
-                        }
-                    }
-
-                    // Resolve each border: prefer cell-level, fall back to table-level.
-                    // A cell edge with Width<=0 is the OOXML "nil" sentinel: it
-                    // explicitly suppresses the inherited table-level border.
-                    static DocxBorderEdge? Resolve(DocxBorderEdge? cell, DocxBorderEdge? table)
-                    {
-                        if (cell == null) return table;
-                        if (cell.Width <= 0f) return null;
-                        return cell;
-                    }
-                    DocxBorderEdge? topBorder, bottomBorder, leftBorder, rightBorder;
-                    if (borders != null)
-                    {
-                        topBorder = suppressTop ? null : Resolve(borders.Top, table.HasBorders ? (isFirstRow ? table.BorderTop : table.BorderInsideH) : null);
-                        bottomBorder = suppressBottom ? null : Resolve(borders.Bottom, table.HasBorders ? (isLastRow ? table.BorderBottom : table.BorderInsideH) : null);
-                        leftBorder = Resolve(borders.Left, table.HasBorders ? (isFirstCell ? table.BorderLeft : table.BorderInsideV) : null);
-                        rightBorder = Resolve(borders.Right, table.HasBorders ? (isLastCell ? table.BorderRight : table.BorderInsideV) : null);
-                    }
-                    else if (table.HasBorders)
-                    {
-                        topBorder = suppressTop ? null : (isFirstRow ? table.BorderTop : table.BorderInsideH);
-                        bottomBorder = suppressBottom ? null : (isLastRow ? table.BorderBottom : table.BorderInsideH);
-                        leftBorder = isFirstCell ? table.BorderLeft : table.BorderInsideV;
-                        rightBorder = isLastCell ? table.BorderRight : table.BorderInsideV;
-                    }
-                    else
-                    {
-                        topBorder = bottomBorder = leftBorder = rightBorder = null;
-                    }
-
-                    if (topBorder != null)
-                        state.CurrentPage!.AddLine(bx, rowTop, bx + bCellWidth, rowTop, topBorder.Color, topBorder.Width);
-                    if (bottomBorder != null)
-                        state.CurrentPage!.AddLine(bx, rowBottom, bx + bCellWidth, rowBottom, bottomBorder.Color, bottomBorder.Width);
-                    if (leftBorder != null)
-                        state.CurrentPage!.AddLine(bx, rowTop, bx, rowBottom, leftBorder.Color, leftBorder.Width);
-                    // Defer right-border drawing so it is painted AFTER the next cell's
-                    // left border at the same column boundary.  This lets a heavier
-                    // right border (e.g., firstCol right=sz=8 dark) win against a
-                    // lighter inherited insideV left border (e.g., sz=4 light).
-                    if (rightBorder != null)
-                        deferredRights.Add((bx + bCellWidth, rowTop, rowBottom, rightBorder));
-
-                    bx += bCellWidth;
-                    bci += cell.GridSpan > 1 ? cell.GridSpan : 1;
-                }
-                foreach (var (rx, rt, rb, rborder) in deferredRights)
-                    state.CurrentPage!.AddLine(rx, rt, rx, rb, rborder.Color, rborder.Width);
-            }
-
-            isFirstRow = false;
-            state.AdvanceY(rowHeight);
+            DrawOneTableRow(row, rowIndex, rowHeight, isLastRow, ref isFirstRow);
         }
 
         // After table, add spacing to prevent the next paragraph's text from
@@ -4268,7 +4229,7 @@ internal static class DocxToPdfConverter
                 lineHeight = lineMetricFs * GetFontMetricsFactor(dominantRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : (styleLineSpacing > 0 ? styleLineSpacing : options.LineSpacing));
 
             // Snap line height to document grid when active (CJK line grid)
-            if (options.GridLinePitch > 0 && para.SnapToGrid && !(para.LineSpacingAbsolute && para.LineSpacingExact))
+            if (options.GridLinePitch > 0 && para.SnapToGrid && !IsTaiwanKaiFont(dominantRun?.FontName) && !(para.LineSpacingAbsolute && para.LineSpacingExact))
             {
                 var gridPitch = options.GridLinePitch;
                 lineHeight = Math.Max(gridPitch, Compat.Ceiling(lineHeight / gridPitch) * gridPitch);
@@ -4300,13 +4261,16 @@ internal static class DocxToPdfConverter
             // Use Calibri widths only when the run font is Calibri-like;
             // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
             var cellUseCalibri = options.UseCalibriWidths
-                && !IsWideSansSerifFont(dominantRun?.FontName);
+                && !IsWideSansSerifFont(dominantRun?.FontName)
+                && !IsTaiwanKaiFont(dominantRun?.FontName);
             s_overrideWidths = GetFontOverrideWidths(dominantRun?.FontName);
             s_wideSansSerifFont = IsWideSansSerifFont(dominantRun?.FontName) && s_overrideWidths == null;
+            s_taiwanKaiFont = IsTaiwanKaiFont(dominantRun?.FontName);
             s_serifRunInCalibri = cellUseCalibri && !s_serifFont && IsSerifFont(dominantRun?.FontName);
             var lines = WordWrap(text, textWidth, textWidth, runFontSize, null, runBold, runCharSpacing, cellUseCalibri);
             s_overrideWidths = null;
             s_wideSansSerifFont = false;
+            s_taiwanKaiFont = false;
             s_serifRunInCalibri = false;
             cellHeight += lines.Count * lineHeight;
             var textAfter = ResolveSpAfter(para);
@@ -4574,6 +4538,39 @@ internal static class DocxToPdfConverter
                             }
                         }
                     }
+                    // When the next word starts with a CJK character and the whole word
+                    // doesn't fit, fill the current line with as many leading CJK
+                    // characters from that word as possible before breaking. This matches
+                    // Word's character-by-character CJK line-breaking (CJK chars are each
+                    // individually breakable; they don't need a space boundary).
+                    if (!wrapped && currentLine.Length > 0 && word.Length > 0
+                        && GetWrapCharWidth(word[0], useCalibriWidths) == 1000)
+                    {
+                        var fillBreak = 0;
+                        for (var fi = 1; fi <= word.Length; fi++)
+                        {
+                            var cand = currentLine + " " + word[..fi];
+                            if (EstimateWrapTextWidth(cand, fontSize, bold, charSpacing, useCalibriWidths) > maxWidth)
+                                break;
+                            var prevCh = word[fi - 1];
+                            var nextCh = fi < word.Length ? word[fi] : '\0';
+                            // Only mark a valid break point at a CJK boundary, respecting kinsoku
+                            if ((GetWrapCharWidth(prevCh, useCalibriWidths) == 1000 ||
+                                 (nextCh != '\0' && GetWrapCharWidth(nextCh, useCalibriWidths) == 1000))
+                                && (nextCh == '\0' || !IsNoStartChar(nextCh))
+                                && !IsNoEndChar(prevCh))
+                            {
+                                fillBreak = fi;
+                            }
+                        }
+                        if (fillBreak > 0)
+                        {
+                            lines.Add(currentLine + " " + word[..fillBreak]);
+                            currentLine = word[fillBreak..];
+                            maxWidth = subsequentWidth;
+                            wrapped = true;
+                        }
+                    }
                     if (!wrapped)
                     {
                         lines.Add(currentLine);
@@ -4733,7 +4730,17 @@ internal static class DocxToPdfConverter
             return FontMetricsFactorAvenir;
         if (fontName != null && fontName.Contains("Franklin Gothic", StringComparison.OrdinalIgnoreCase))
             return FontMetricsFactorFranklinGothic;
+        if (fontName != null && IsTaiwanKaiFont(fontName))
+            return 1.50f;
         return FontMetricsFactor;
+    }
+
+    private static bool IsTaiwanKaiFont(string? fontName)
+    {
+        if (string.IsNullOrEmpty(fontName)) return false;
+        return fontName.Contains("DFKai", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("標楷體", StringComparison.Ordinal)
+            || fontName.Contains("標楷体", StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -4901,7 +4908,7 @@ internal static class DocxToPdfConverter
             // marginally wider than Demi, so the regular 5% bold reduction works.
             if (s_wideSansSerifFont && !hasCjk)
                 serifReduction = 0.04f;
-            var reductionFactor = hasCjk ? 0.27f : (bold && !s_wideSansSerifFont ? 0.05f : serifReduction);
+            var reductionFactor = s_taiwanKaiFont ? 0f : (hasCjk ? 0.27f : (bold && !s_wideSansSerifFont ? 0.05f : serifReduction));
             rawWidth *= 1f - latinFraction * reductionFactor;
         }
         return rawWidth;

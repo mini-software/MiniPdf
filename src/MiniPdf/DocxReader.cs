@@ -2877,10 +2877,18 @@ internal static class DocxReader
 
         // Read table-level cell margins
         float cellMarginLeft = 5.4f, cellMarginRight = 5.4f, cellMarginTop = 0f, cellMarginBottom = 0f;
+        float cellSpacing = 0f;
         var tableAlignment = "left";
         var tblJc = tblPr?.Element(W + "jc")?.Attribute(W + "val")?.Value;
         if (!string.IsNullOrEmpty(tblJc))
             tableAlignment = tblJc;
+        var tblCellSpacingEl = tblPr?.Element(W + "tblCellSpacing");
+        if (tblCellSpacingEl != null
+            && int.TryParse(tblCellSpacingEl.Attribute(W + "w")?.Value, out var tcs)
+            && tcs > 0)
+        {
+            cellSpacing = tcs / 20f;
+        }
         // Table indent (tblInd)
         float tableIndentLeft = 0;
         bool tableIndentExplicit = false;
@@ -2972,6 +2980,9 @@ internal static class DocxReader
             var gridBeforeEl = trPr?.Element(W + "gridBefore");
             if (gridBeforeEl != null && int.TryParse(gridBeforeEl.Attribute(W + "val")?.Value, out var gbVal))
                 gridBefore = gbVal;
+
+            // Parse tblHeader: marks this row as a repeating header row
+            var isHeaderRow = trPr?.Element(W + "tblHeader") != null;
 
             int cellIdx = 0;
             foreach (var tc in UnwrapSdt(tr.Elements()).Where(e => e.Name == W + "tc"))
@@ -3162,7 +3173,7 @@ internal static class DocxReader
                 }
             }
 
-            rows.Add(new DocxTableRow(cells, rowHeight, rowHeightExact, gridBefore));
+            rows.Add(new DocxTableRow(cells, rowHeight, rowHeightExact, gridBefore, isHeaderRow));
             rowIndex++;
         }
 
@@ -3194,7 +3205,8 @@ internal static class DocxReader
             StyleLineSpacing: tblStyleInfo?.ParagraphLineSpacing ?? -1,
             StyleSpacingAfter: tblStyleInfo?.ParagraphSpacingAfter ?? -1,
             IndentLeft: tableIndentLeft,
-            IndentLeftExplicit: tableIndentExplicit);
+            IndentLeftExplicit: tableIndentExplicit,
+            CellSpacing: cellSpacing);
     }
 
     private static DocxPageLayout? ReadPageLayout(XElement body)
@@ -3789,12 +3801,21 @@ internal static class DocxReader
         // Two-pass style reading: first pass populates all styles, second pass resolves basedOn inheritance
         var styleElements = doc.Descendants(W + "style").ToList();
         var basedOnMap = new Dictionary<string, string>(); // styleId -> basedOn styleId
+        string? defaultParagraphStyleId = null;
 
         // First pass: read all styles without inheritance
         foreach (var style in styleElements)
         {
             var styleId = style.Attribute(W + "styleId")?.Value;
             if (string.IsNullOrEmpty(styleId)) continue;
+            var styleType = style.Attribute(W + "type")?.Value;
+            var styleName = style.Element(W + "name")?.Attribute(W + "val")?.Value;
+            if (styleType == "paragraph"
+                && (style.Attribute(W + "default")?.Value == "1"
+                    || string.Equals(styleName, "Normal", StringComparison.OrdinalIgnoreCase)))
+            {
+                defaultParagraphStyleId ??= styleId;
+            }
 
             var basedOn = style.Element(W + "basedOn")?.Attribute(W + "val")?.Value;
             if (!string.IsNullOrEmpty(basedOn))
@@ -3805,7 +3826,6 @@ internal static class DocxReader
 
             // Character styles should not inherit default font size;
             // they should only carry an explicit size if defined.
-            var styleType = style.Attribute(W + "type")?.Value;
             float fontSize = styleType == "character" ? 0 : defaultFontSize;
             bool bold = false;
             bool italic = false;
@@ -3963,6 +3983,13 @@ internal static class DocxReader
             styles[styleId] = new DocxStyleInfo(fontSize, bold, italic, color2, alignment, spacingBefore, spacingAfter, caps2, lineSpacing3, lineSpacingAbsolute3, lineSpacingExact3, contextualSpacing2, styleFontName, charSpacing2, KeepNext: keepNext2, VerticalAlign: vertAlign2,
                 IndentLeft: indLeft2, IndentRight: indRight2, IndentFirstLine: indFirst2,
                 HasIndentLeft: hasLeft2, HasIndentRight: hasRight2, HasIndentFirstLine: hasFirst2);
+        }
+
+        if (!styles.ContainsKey("Normal")
+            && defaultParagraphStyleId != null
+            && styles.TryGetValue(defaultParagraphStyleId, out var defaultParagraphStyle))
+        {
+            styles["Normal"] = defaultParagraphStyle;
         }
 
         // Extract default font name from Normal style or docDefaults
@@ -4713,11 +4740,12 @@ internal sealed record DocxTable(
     float StyleLineSpacing = -1,
     float StyleSpacingAfter = -1,
     float IndentLeft = 0,
-    bool IndentLeftExplicit = false
+    bool IndentLeftExplicit = false,
+    float CellSpacing = 0
 ) : DocxElement;
 
 /// <summary>Represents a table row.</summary>
-internal sealed record DocxTableRow(List<DocxTableCell> Cells, float Height = 0, bool HeightExact = false, int GridBefore = 0);
+internal sealed record DocxTableRow(List<DocxTableCell> Cells, float Height = 0, bool HeightExact = false, int GridBefore = 0, bool IsHeader = false);
 
 /// <summary>Represents a table cell.</summary>
 internal sealed record DocxTableCell(

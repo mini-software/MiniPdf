@@ -508,6 +508,70 @@
     "overall_score": 0.9837
   },
   {
+    "name": "issue202605",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 7689730,
+    "reference_size": 154034,
+    "pdf_valid": true,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.8653,
+    "flat_text_similarity": 0.8637,
+    "word_text_similarity": 0.6926,
+    "text_diff": "--- minipdf/issue202605.pdf\n+++ reference/issue202605.pdf\n@@ -2,9 +2,10 @@\n 115 學年度博士班入學甄試聯合招生\n\n 資訊工程學系學經歷表\n\n 基本資料\n\n-姓　　名 准考證號碼 (此欄由本單位填寫)\n\n+姓  名 准考證號碼 ( 此欄由本單位填寫 )\n\n 畢業論文名稱 指導教授\n\n-進入本系博士班 □計算機網路 □晶片系統設計與電子設計自動化 □電腦系統\n\n+進入本系博士班\n\n+□計算機網路 □晶片系統設計與電子設計自動化 □電腦系統\n\n 擬研讀領域/方向\n\n □電腦視覺、計算機圖學與影像處理□人工智慧、數據科學、演算法與人機互動\n\n (可複選)\n\n@@ -12,31 +13,32 @@\n 姓名(至多三位)\n\n □應屆 □一般生\n\n 就學狀況 報考身分\n\n-□在職生\n\n-□非應屆\n\n+□非應屆 □在職生\n\n 學業表現 (請填寫大學(含)以上學歷之成績記錄，並隨附歷年成績表，含班級或全系排名，若曾轉學、轉系，請註明。)\n\n 學業成績 學業成績\n\n-學校名稱 科系/組別 在學時間(西元年/月)\n\n+學校名稱 科系 / 組別 在學時間 ( 西元年 / 月 )\n\n 總平均 總排名\n\n-_____/_____至_____/_____\n\n-_____/_____至_____/_____\n\n-_____/_____至_____/_____\n\n-_____/_____至_____/_____\n\n+_____/_____ 至 _____/_____\n\n+_____/_____ 至 _____/_____\n\n+_____/_____ 至 _____/_____\n\n+_____/_____ 至 _____/_____\n\n 語文能力表現 (請檢附檢定證明，如無資料可免填。)\n\n-1. 全民英檢 □初級 □中試 □中高級 □高級 □優級 通過考試階段：□初試　□複試\n\n+1. 全民英檢 □初級 □中試 □中高級 □高級 □優級 通過考試階段：□初試 □複試\n\n 2. 英文檢定 □托福/分數：        □多益/分數：        □其他       /分數：\n\n 3. 其他\n\n 工作經歷 (請依序填寫大學畢業後之全職工作經歷(不含兼任研究助理)；如無可免填。)\n\n-1. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）\n\n-/     至　   /\n\n-2. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）\n\n-/     至　   /\n\n-3. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）\n\n-/     至　   /\n\n+服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）\n\n+1.\n\n+/     至    /\n\n+服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）\n\n+2.\n\n+/     至    /\n\n+服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）\n\n+3.\n\n+/     至    /\n\n 1 頁\n\n ---PAGE---\n\n-著作發表 (請條列曾發表之論文或其他著作 、 專利，並檢附證明；如無資料可免\n\n-填。)\n\n+著作發表 (請條列曾發表之論文或其他著作 、 專利，並檢附證明；如無資料可免填。)\n\n 1.\n\n 2.\n\n 3.\n",
+    "visual_scores": [
+      0.919,
+      0.907
+    ],
+    "visual_avg": 0.913,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "issue202605_p1_minipdf.png",
+        "reference_img": "issue202605_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "issue202605_p2_minipdf.png",
+        "reference_img": "issue202605_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9113
+  },
+  {
+    "name": "issue26050501",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 236761,
+    "reference_size": 111155,
+    "pdf_valid": true,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "text_similarity": 0.9188,
+    "flat_text_similarity": 0.9169,
+    "word_text_similarity": 0.6556,
+    "text_diff": "--- minipdf/issue26050501.pdf\n+++ reference/issue26050501.pdf\n@@ -5,57 +5,50 @@\n 學習 Hadoop 的首要任務是理解它試圖解決的問題：大數據\n\n 帶來的巨大挑戰。請詳細複習大數據的核心特徵，也就是著\n\n 名的 3V：資料量龐大 (Volume)、生成與處理速度極快\n\n-(Velocity)，以及資料結構多樣化\n\n-What is big\n\n-(Variety)，包含了大量非結構化或半結構化的資料。您必須清\n\n-data?\n\n-楚釐清，傳統的關聯式資料庫 (RDBMS) 在面對這類海量且\n\n-缺乏固定 Schema 的資料時，會遭遇嚴重的效能瓶頸與擴展\n\n-限制，這正是業界急需全新分散式運算與儲存架構的根本原\n\n-因。\n\n+What is big (Velocity)，以及資料結構多樣化 (Variety)，包含了大量\n\n+data? 非結構化或半結構化的資料。您必須清楚釐清，傳統的關聯\n\n+式資料庫 (RDBMS) 在面對這類海量且缺乏固定 Schema 的資\n\n+料時，會遭遇嚴重的效能瓶頸與擴展限制，這正是業界急需\n\n+全新分散式運算與儲存架構的根本原因。\n\n MapReduce 是處理巨量資料的核心程式設計模型，其設計哲\n\n-學深受「分而治之 (Divide and\n\n-Conquer)」概念的影響。您需要深刻理解兩個階段的明確分\n\n-工：Map 階段負責在各個資料節點上就近進行資料過濾、轉\n\n-MapReduce 換與提取，並產出 Key-Value 對；Reduce 階段則負責將這\n\n-些中間結果進行跨節點的彙總與整合。此外，請務必掌握系\n\n-統層面的運作邏輯，包括 JobTracker 如何進行全域的任務\n\n-排程與資源分配，以及 TaskTracker 如何在各個節點上監控\n\n-並執行具體的 Map 或 Reduce 任務。\n\n+學深受「分而治之 (Divide and Conquer)」概念的影響。您\n\n+需要深刻理解兩個階段的明確分工：Map 階段負責在各個資\n\n+料節點上就近進行資料過濾、轉換與提取，並產出 Key-\n\n+MapReduce Value 對；Reduce 階段則負責將這些中間結果進行跨節點的\n\n+彙總與整合。此外，請務必掌握系統層面的運作邏輯，包括\n\n+JobTracker 如何進行全域的任務排程與資源分配，以及\n\n+TaskTracker 如何在各個節點上監控並執行具體的 Map 或\n\n+Reduce 任務。\n\n 認識 Hadoop 這個由 Apache 基金會維護的重量級開源框\n\n-架。請複習它的發展起源以及核心設計目標：Hadoop 專為\n\n-在由商用廉價硬體 (Commodity hardware) 所組成的龐大叢\n\n-集上運行而生。您的學習重點在於理解 Hadoop 如何「化劣\n\n-Meet Hadoop 勢為優勢」，也就是它並不強求底層硬體具備高可靠性，而\n\n-是透過軟體架構層面（如資料多重副本與任務自動重試）提\n\n-供卓越的容錯機制 (Fault\n\n-Tolerance)。這使得企業能以極低的硬體成本，獲得具備強大\n\n-橫向擴展能力的大數據處理平台。\n\n+架。請複習它的發展起源以及核心設計目標：Hadoop 專為在\n\n+由商用廉價硬體 (Commodity hardware) 所組成的龐大叢集\n\n+上運行而生。您的學習重點在於理解 Hadoop 如何「化劣勢\n\n+Meet Hadoop\n\n+為優勢」，也就是它並不強求底層硬體具備高可靠性，而是透\n\n+過軟體架構層面（如資料多重副本與任務自動重試）提供卓\n\n+越的容錯機制 (Fault Tolerance)。這使得企業能以極低的\n\n+硬體成本，獲得具備強大橫向擴展能力的大數據處理平台。\n\n+Hadoop HDFS 是支撐整個 Hadoop 生態系的儲存骨幹，專為儲存超大\n\n ---PAGE---\n\n 章節大綱\n\n 學習指引 (Study Guide)\n\n (Outline)\n\n-HDFS 是支撐整個 Hadoop 生態系的儲存骨幹，專為儲存超\n\n-大檔案而設計。請深入探討其「一次寫入，多次讀取 (write-\n\n-once, read-many)」的串流存取設計理念。您需要熟練掌握\n\n+Distributed 檔案而設計。請深入探討其「一次寫入，多次讀取 (write-\n\n+File System once, read-many)」的串流存取設計理念。您需要熟練掌握\n\n HDFS 的核心架構：預設 64MB (或 128MB) 的資料區塊\n\n-Hadoop\n\n (Block) 設計有何優勢？Namenode (Master 節點) 如何負責\n\n-Distributed\n\n-管理整個檔案系統的 Metadata\n\n-File System\n\n-(如檔案名稱、權限與區塊映射表)？而 Datanode (Slave 節\n\n-點) 又是如何負責實際儲存資料區塊並定期發送心跳訊號\n\n-(Heartbeat)？理解這些節點間的互動是掌握分散式儲存的關\n\n-鍵。\n\n+管理整個檔案系統的 Metadata (如檔案名稱、權限與區塊映\n\n+射表)？而 Datanode (Slave 節點) 又是如何負責實際儲存\n\n+資料區塊並定期發送心跳訊號 (Heartbeat)？理解這些節點\n\n+間的互動是掌握分散式儲存的關鍵。\n\n 任何雲端與大數據的理論都必須透過實際動手做來驗證。本\n\n 節要求您具備從零開始建置 Hadoop 偽分散式 (Pseudo-\n\n-distributed) 叢集的能力。請複習所有關鍵的前置作業：包含\n\n-在虛擬機 (VM) 中安裝 Linux 系統、正確配置 Java 執行環\n\n+distributed) 叢集的能力。請複習所有關鍵的前置作業：包\n\n+含在虛擬機 (VM) 中安裝 Linux 系統、正確配置 Java 執行\n\n How to install\n\n-境，以及設定 SSH 無密碼登入機制。接著，您需要熟悉\n\n+環境，以及設定 SSH 無密碼登入機制。接著，您需要熟悉\n\n Hadoop\n\n-Hadoop 的核心 XML 設定檔 (core-site.xml, hdfs-site.xml\n\n-等) 的配置意義。最後，請務必親自執行格式化 Namenode\n\n-的指令，並透過經典的 Wordcount 範例，體驗完整的任務提\n\n-交、執行與結果檢視流程。\n+Hadoop 的核心 XML 設定檔 (core-site.xml, hdfs-\n\n+site.xml 等) 的配置意義。最後，請務必親自執行格式化\n\n+Namenode 的指令，並透過經典的 Wordcount 範例，體驗完\n\n+整的任務提交、執行與結果檢視流程。",
+    "visual_scores": [
+      0.9305,
+      0.9485
+    ],
+    "visual_avg": 0.9395,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "issue26050501_p1_minipdf.png",
+        "reference_img": "issue26050501_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "issue26050501_p2_minipdf.png",
+        "reference_img": "issue26050501_p2_reference.png"
+      }
+    ],
+    "overall_score": 0.9433
+  },
+  {
     "name": "issues66",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -581,7 +645,7 @@
     "name": "nthu_article",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 9016391,
+    "minipdf_size": 9016407,
     "reference_size": 798510,
     "pdf_valid": true,
     "minipdf_pages": 19,
@@ -929,37 +993,5 @@
     "reference_exists": false,
     "error": "Reference PDF not found",
     "score": 0.0
-  },
-  {
-    "name": "issue202605",
-    "minipdf_exists": true,
-    "reference_exists": true,
-    "minipdf_size": 7689730,
-    "reference_size": 154034,
-    "pdf_valid": true,
-    "minipdf_pages": 2,
-    "reference_pages": 2,
-    "text_similarity": 0.8653,
-    "flat_text_similarity": 0.8637,
-    "word_text_similarity": 0.6926,
-    "text_diff": "--- minipdf/issue202605.pdf\n+++ reference/issue202605.pdf\n@@ -2,9 +2,10 @@\n 115 學年度博士班入學甄試聯合招生\n\n 資訊工程學系學經歷表\n\n 基本資料\n\n-姓　　名 准考證號碼 (此欄由本單位填寫)\n\n+姓  名 准考證號碼 ( 此欄由本單位填寫 )\n\n 畢業論文名稱 指導教授\n\n-進入本系博士班 □計算機網路 □晶片系統設計與電子設計自動化 □電腦系統\n\n+進入本系博士班\n\n+□計算機網路 □晶片系統設計與電子設計自動化 □電腦系統\n\n 擬研讀領域/方向\n\n □電腦視覺、計算機圖學與影像處理□人工智慧、數據科學、演算法與人機互動\n\n (可複選)\n\n@@ -12,31 +13,32 @@\n 姓名(至多三位)\n\n □應屆 □一般生\n\n 就學狀況 報考身分\n\n-□在職生\n\n-□非應屆\n\n+□非應屆 □在職生\n\n 學業表現 (請填寫大學(含)以上學歷之成績記錄，並隨附歷年成績表，含班級或全系排名，若曾轉學、轉系，請註明。)\n\n 學業成績 學業成績\n\n-學校名稱 科系/組別 在學時間(西元年/月)\n\n+學校名稱 科系 / 組別 在學時間 ( 西元年 / 月 )\n\n 總平均 總排名\n\n-_____/_____至_____/_____\n\n-_____/_____至_____/_____\n\n-_____/_____至_____/_____\n\n-_____/_____至_____/_____\n\n+_____/_____ 至 _____/_____\n\n+_____/_____ 至 _____/_____\n\n+_____/_____ 至 _____/_____\n\n+_____/_____ 至 _____/_____\n\n 語文能力表現 (請檢附檢定證明，如無資料可免填。)\n\n-1. 全民英檢 □初級 □中試 □中高級 □高級 □優級 通過考試階段：□初試　□複試\n\n+1. 全民英檢 □初級 □中試 □中高級 □高級 □優級 通過考試階段：□初試 □複試\n\n 2. 英文檢定 □托福/分數：        □多益/分數：        □其他       /分數：\n\n 3. 其他\n\n 工作經歷 (請依序填寫大學畢業後之全職工作經歷(不含兼任研究助理)；如無可免填。)\n\n-1. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）\n\n-/     至　   /\n\n-2. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）\n\n-/     至　   /\n\n-3. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）\n\n-/     至　   /\n\n+服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）\n\n+1.\n\n+/     至    /\n\n+服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）\n\n+2.\n\n+/     至    /\n\n+服 務 機 構 名 稱 服 務 部 門 職 稱 起迄年月（西元年/月）\n\n+3.\n\n+/     至    /\n\n 1 頁\n\n ---PAGE---\n\n-著作發表 (請條列曾發表之論文或其他著作 、 專利，並檢附證明；如無資料可免\n\n-填。)\n\n+著作發表 (請條列曾發表之論文或其他著作 、 專利，並檢附證明；如無資料可免填。)\n\n 1.\n\n 2.\n\n 3.\n",
-    "visual_scores": [
-      0.919,
-      0.907
-    ],
-    "visual_avg": 0.913,
-    "diff_images": [
-      {
-        "page": 1,
-        "minipdf_img": "issue202605_p1_minipdf.png",
-        "reference_img": "issue202605_p1_reference.png"
-      },
-      {
-        "page": 2,
-        "minipdf_img": "issue202605_p2_minipdf.png",
-        "reference_img": "issue202605_p2_reference.png"
-      }
-    ],
-    "overall_score": 0.9113
   }
 ]
