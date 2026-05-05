@@ -1535,6 +1535,7 @@ internal static class DocxReader
         var hasExplicitUnderlineDecl = false;
         var charSpacing = parentCharSpacing;
         var fontName = parentFontName;
+        PdfColor? runShading = null;
         float verticalPosition = 0;
 
         // Resolve character style (rStyle) defaults before reading inline overrides
@@ -1595,6 +1596,7 @@ internal static class DocxReader
                 else
                     color = parentColor; // "auto" resets to paragraph default, overriding character style
             }
+            runShading = ReadRunShading(rPr.Element(W + "shd"));
             // Character spacing (w:spacing w:val in twips)
             var spacingEl = rPr.Element(W + "spacing");
             if (spacingEl != null && int.TryParse(spacingEl.Attribute(W + "val")?.Value, out var cs))
@@ -1717,7 +1719,30 @@ internal static class DocxReader
         if (string.IsNullOrEmpty(fontName) && !string.IsNullOrEmpty(defaultLatinFontName))
             fontName = PdfWriter.MaybeFallbackForMissingFont(defaultLatinFontName);
 
-        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl, isColumnBreak, verticalPosition, footnoteId);
+        return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl, isColumnBreak, verticalPosition, footnoteId, runShading);
+    }
+
+    private static PdfColor? ReadRunShading(XElement? shdEl)
+    {
+        if (shdEl == null) return null;
+
+        var fill = shdEl.Attribute(W + "fill")?.Value;
+        if (string.IsNullOrEmpty(fill) || fill == "auto")
+            fill = "FFFFFF";
+
+        var baseColor = PdfColor.FromHex(fill);
+        var val = shdEl.Attribute(W + "val")?.Value;
+        if (!string.IsNullOrEmpty(val) && val.StartsWith("pct", StringComparison.OrdinalIgnoreCase)
+            && int.TryParse(val.Substring(3), out var pct) && pct > 0)
+        {
+            var amount = Math.Min(100, pct) / 100f;
+            return new PdfColor(
+                baseColor.R * (1f - amount),
+                baseColor.G * (1f - amount),
+                baseColor.B * (1f - amount));
+        }
+
+        return baseColor;
     }
 
     private static bool FontNameImpliesBold(string? fontName)
@@ -4571,7 +4596,8 @@ internal sealed record DocxRun(
     bool HasExplicitUnderlineDecl = false,
     bool IsColumnBreak = false,
     float VerticalPosition = 0,
-    string? FootnoteId = null
+    string? FootnoteId = null,
+    PdfColor? Shading = null
 );
 
 /// <summary>Represents a footnote definition parsed from word/footnotes.xml.</summary>
