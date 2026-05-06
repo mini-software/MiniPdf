@@ -125,6 +125,76 @@ function Convert-WithSingleFileCli {
     Write-Host "  Done via single-file CLI. Passed: $passed, Failed: $failed, Total: $($files.Count)" -ForegroundColor Cyan
 }
 
+function Get-ReportScores {
+    param([string]$ReportDir)
+
+    $jsonPath = Join-Path $ReportDir "comparison_report.json"
+    $scores = @{}
+
+    if (-not (Test-Path $jsonPath)) {
+        return $scores
+    }
+
+    try {
+        $results = Get-Content -Path $jsonPath -Raw | ConvertFrom-Json
+        foreach ($result in @($results)) {
+            if ($null -ne $result.name -and $null -ne $result.overall_score) {
+                $scores[$result.name] = [double]$result.overall_score
+            }
+        }
+    } catch {
+        Write-Host "  WARNING: Could not read existing score report: $jsonPath" -ForegroundColor DarkYellow
+    }
+
+    return $scores
+}
+
+function Show-ScoreDrops {
+    param(
+        [string]$Kind,
+        [hashtable]$BeforeScores,
+        [string]$ReportDir
+    )
+
+    if (-not $BeforeScores -or $BeforeScores.Count -eq 0) {
+        return
+    }
+
+    $afterScores = Get-ReportScores -ReportDir $ReportDir
+    if (-not $afterScores -or $afterScores.Count -eq 0) {
+        return
+    }
+
+    $drops = foreach ($name in $afterScores.Keys) {
+        if ($BeforeScores.ContainsKey($name)) {
+            $before = [double]$BeforeScores[$name]
+            $after = [double]$afterScores[$name]
+            $delta = [Math]::Round($after - $before, 4)
+            if ($delta -lt 0) {
+                [pscustomobject]@{
+                    Name = $name
+                    Before = $before
+                    After = $after
+                    Delta = $delta
+                }
+            }
+        }
+    }
+
+    $drops = @($drops | Sort-Object Delta, Name)
+    if ($drops.Count -eq 0) {
+        Write-Host "  Score drop check ($Kind): no lower scores found." -ForegroundColor Green
+        return
+    }
+
+    Write-Host "`n  Score drop check ($Kind): $($drops.Count) lower score(s) found" -ForegroundColor Red
+    Write-Host "  Name | Before | After | Delta" -ForegroundColor Red
+    Write-Host "  ---- | ------ | ----- | -----" -ForegroundColor Red
+    foreach ($drop in $drops) {
+        Write-Host ("  {0} | {1:N4} | {2:N4} | {3:N4}" -f $drop.Name, $drop.Before, $drop.After, $drop.Delta) -ForegroundColor Red
+    }
+}
+
 # Step 0: Install Python dependencies
 if (-not $SkipInstall) {
     Write-Host "[Step 0] Installing Python dependencies..." -ForegroundColor Yellow
@@ -202,6 +272,7 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
     }
 
     Write-Host "[Step 3] Comparing XLSX PDFs..." -ForegroundColor Yellow
+    $xlsxScoresBefore = Get-ReportScores -ReportDir $ReportXlsx
     $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfXlsx, "--reference-dir", $RefXlsx, "--report-dir", $ReportXlsx)
     if ($WithOffice -and (Test-Path $OfficeXlsx)) {
         $compareArgs += @("--office-dir", $OfficeXlsx)
@@ -213,6 +284,7 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
     } finally {
         Pop-Location
     }
+    Show-ScoreDrops -Kind "XLSX" -BeforeScores $xlsxScoresBefore -ReportDir $ReportXlsx
 } else {
     Write-Host "No XLSX files in Issue_Files/xlsx — skipping." -ForegroundColor DarkYellow
 }
@@ -278,6 +350,7 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
     }
 
     Write-Host "[Step 3] Comparing DOCX PDFs..." -ForegroundColor Yellow
+    $docxScoresBefore = Get-ReportScores -ReportDir $ReportDocx
     $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfDocx, "--reference-dir", $RefDocx, "--report-dir", $ReportDocx)
     if ($WithOffice -and (Test-Path $OfficeDocx)) {
         $compareArgs += @("--office-dir", $OfficeDocx)
@@ -289,6 +362,7 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
     } finally {
         Pop-Location
     }
+    Show-ScoreDrops -Kind "DOCX" -BeforeScores $docxScoresBefore -ReportDir $ReportDocx
 } else {
     Write-Host "No DOCX files in Issue_Files/docx — skipping." -ForegroundColor DarkYellow
 }
