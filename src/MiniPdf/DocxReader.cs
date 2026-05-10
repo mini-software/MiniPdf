@@ -2972,8 +2972,11 @@ internal static class DocxReader
             var trHeightEl = trPr?.Element(W + "trHeight");
             if (trHeightEl != null && int.TryParse(trHeightEl.Attribute(W + "val")?.Value, out var rh))
             {
-                rowHeight = rh / 20f; // twips to points
-                rowHeightExact = trHeightEl.Attribute(W + "hRule")?.Value == "exact";
+                var heightRule = trHeightEl.Attribute(W + "hRule")?.Value;
+                rowHeightExact = heightRule == "exact";
+                // OOXML: absent hRule defaults to "atLeast" — apply all non-zero row heights.
+                if (rowHeightExact || heightRule == "atLeast" || heightRule == null)
+                    rowHeight = rh / 20f; // twips to points
             }
 
             // Parse gridBefore: number of grid columns to skip before first cell

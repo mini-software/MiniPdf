@@ -1239,7 +1239,11 @@ internal static class DocxToPdfConverter
         // relative to the paragraph's visual top edge — Word measures these
         // anchors from the line-box top, not the baseline.
         state.CurrentParagraphTopY = state.CurrentY;
-        if (state.IsTopOfPage)
+        // Skip top-of-page ascent offset for shape-only paragraphs (behindDoc drawing
+        // groups anchored absolutely). They have no baseline to place and should not
+        // push following content down — matches Word/LibreOffice behaviour.
+        var isShapeOnlyTopPage = paragraph.Shapes is { Count: > 0 } && paragraph.Images.Count == 0 && paragraph.Runs.Count == 0;
+        if (state.IsTopOfPage && !isShapeOnlyTopPage)
         {
             var ascentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
                 ? currentGridAscent
@@ -1592,10 +1596,6 @@ internal static class DocxToPdfConverter
                 && paragraph.Shapes is { Count: > 0 };
             if (!isShapeOnlyParagraph && !isBehindDocOnlyParagraph && !isFloatingAnchorOnlyParagraph && !isWrapNoneAnchorOverlayOnlyParagraph && !isObjectAnchorHostParagraph && (paragraph.Images.Count == 0 || !paragraph.Images.Any(img => !img.IsAnchor || img.IsWrapTopBottom)))
                 state.AdvanceY(lineHeight);
-            else if (isShapeOnlyParagraph && wasTopOfPage)
-            {
-                state.AdvanceY(lineHeight);
-            }
             else if (isObjectAnchorHostParagraph)
             {
                 // Advance by ~lineHeight + an additional half-ascent to land the
@@ -3294,7 +3294,7 @@ internal static class DocxToPdfConverter
                         ? usableWidth - table.IndentLeft : usableWidth;
                     var colWidths = CalculateTableColumnWidths(table, effectiveTableWidth);
                     var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
-                    var cellPaddingV = Math.Max(1f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
+                    var cellPaddingV = Math.Max(0f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
                     foreach (var row in table.Rows)
                     {
                         var rowH = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter);
@@ -3635,7 +3635,7 @@ internal static class DocxToPdfConverter
         var effectiveTableWidth = string.IsNullOrEmpty(table.Alignment) || table.Alignment == "left"
             ? usableWidth - table.IndentLeft : usableWidth;
         var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
-        var cellPaddingV = Math.Max(1f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
+        var cellPaddingV = Math.Max(0f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
         var cellSpacing = Math.Max(0f, table.CellSpacing);
         var cellInset = cellSpacing > 0 ? cellSpacing / 2f : 0f;
 
@@ -3678,6 +3678,7 @@ internal static class DocxToPdfConverter
             }
             rowHeights[ri] = rh;
             rowContentHeights[ri] = ch;
+            System.Console.Error.WriteLine($"[DBG] tbl cellPadV={cellPaddingV:F2} row[{ri}]: ch={ch:F3} rh_trH={r.Height:F3} exact={r.HeightExact} => rowHeight={rh:F3}");
         }
 
         // Distribute vMerge restart cell heights across all merged rows.
@@ -3749,6 +3750,7 @@ internal static class DocxToPdfConverter
         //           cellPaddingH, cellPaddingV, rowHeights.
         void DrawOneTableRow(DocxTableRow rowArg, int rowIdxArg, float rowHeightArg, bool isLastArg, ref bool isFirstArg)
         {
+            System.Console.Error.WriteLine($"[DBG2] DrawRow[{rowIdxArg}] state.CurrentY={state.CurrentY:F3} rowHeight={rowHeightArg:F3}");
             var cellX2 = tableOffsetX + cellInset;
             var colIdx3 = rowArg.GridBefore;
             for (var gb = 0; gb < rowArg.GridBefore && gb < colCount; gb++)
@@ -3895,9 +3897,14 @@ internal static class DocxToPdfConverter
                     s_serifRunInCalibri = cellUseCalibri && IsSerifFont(cellRunFontName);
                     var lines = WordWrap(text, wrapWidth, wrapWidth, effectiveFontSize, null, cellRunBold, cellRunCharSpacing, cellUseCalibri);
 
+                    // For the first line of the first cell paragraph, place the baseline
+                    // using the font's actual usWinAscent ratio rather than the nominal
+                    // font size. This matches LibreOffice's cell baseline placement.
+                    var firstLineAscRatio = isFirstCellPara ? GetCellFirstLineAscentRatio(cellRunFontName) : 1.0f;
                     foreach (var line in lines)
                     {
-                        textY2 -= effectiveFontSize;
+                        textY2 -= effectiveFontSize * firstLineAscRatio;
+                        firstLineAscRatio = 1.0f;
                         if (textY2 < rowDrawTop - cellRenderHeight + effCellPaddingV) break;
                         var lineTextWidth = EstimateWrapTextWidth(line, effectiveFontSize, cellRunBold, cellRunCharSpacing, cellUseCalibri);
                         var lineRenderX = para.Alignment switch
@@ -4184,6 +4191,13 @@ internal static class DocxToPdfConverter
         var effCellTop = cell.CellMarginTop >= 0 ? cell.CellMarginTop : cellPaddingV;
         var effCellBottom = cell.CellMarginBottom >= 0 ? cell.CellMarginBottom : cellPaddingV;
         var effCellPaddingV = Math.Max(effCellTop, effCellBottom);
+        // Mirror the renderer's effective horizontal margins: cell-level overrides
+        // take priority over the table-level cellPaddingH.  Using only cellPaddingH
+        // here (as before) gave a wider textWidth than the renderer actually uses for
+        // cells that carry an explicit CellMarginRight/Left, causing the wrap count —
+        // and therefore the content height — to be under-estimated.
+        var effCellLeft  = cell.CellMarginLeft  >= 0 ? cell.CellMarginLeft  : cellPaddingH;
+        var effCellRight = cell.CellMarginRight >= 0 ? cell.CellMarginRight : cellPaddingH;
         var cellHeight = effCellPaddingV * 2;
         var cellParas = cell.Paragraphs;
         for (var pi = 0; pi < cellParas.Count; pi++)
@@ -4207,7 +4221,7 @@ internal static class DocxToPdfConverter
                 hasInlineImages = true;
                 var imgW = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 100f;
                 var imgH = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 75f;
-                var maxImgW = cellWidth - cellPaddingH * 2;
+                var maxImgW = cellWidth - effCellLeft - effCellRight;
                 if (imgW > maxImgW)
                     imgH *= maxImgW / imgW;
                 cellHeight += imgH + 1f;
@@ -4235,7 +4249,7 @@ internal static class DocxToPdfConverter
                 lineHeight = Math.Max(gridPitch, Compat.Ceiling(lineHeight / gridPitch) * gridPitch);
             }
 
-            var textWidth = cellWidth - cellPaddingH * 2;
+            var textWidth = cellWidth - effCellLeft - effCellRight;
             var text = AddInterScriptSpacing(string.Concat(para.Runs.Select(r => r.Text)), para.AutoSpaceDE, para.AutoSpaceDN);
 
             // Apply SpacingAfter for all paragraphs (explicit paragraph/style wins; table style overrides docDefaults)
@@ -4272,12 +4286,21 @@ internal static class DocxToPdfConverter
             s_wideSansSerifFont = false;
             s_taiwanKaiFont = false;
             s_serifRunInCalibri = false;
+            // Mirror the renderer's first-line ascent drop: the baseline of the
+            // first text line in a cell is placed at (cellTop - effPaddingV - ascRatio*fontSize)
+            // rather than the normal (cellTop - effPaddingV - fontSize), so the
+            // extra (ascRatio - 1) * fontSize must be included in the height budget.
+            if (isFirstPara)
+            {
+                var ascRatio = GetCellFirstLineAscentRatio(dominantRun?.FontName);
+                if (ascRatio > 1.0f)
+                    cellHeight += (ascRatio - 1.0f) * runFontSize;
+            }
             cellHeight += lines.Count * lineHeight;
             var textAfter = ResolveSpAfter(para);
             if (textAfter > 0)
                 cellHeight += textAfter;
         }
-
         return cellHeight;
     }
 
@@ -4731,9 +4754,35 @@ internal static class DocxToPdfConverter
         if (fontName != null && fontName.Contains("Franklin Gothic", StringComparison.OrdinalIgnoreCase))
             return FontMetricsFactorFranklinGothic;
         if (fontName != null && IsTaiwanKaiFont(fontName))
-            return 1.50f;
+            return 1.40f;
         return FontMetricsFactor;
     }
+
+    private static float GetCellFirstLineAscentRatio(string? fontName)
+    {
+        // Returns the ratio of usWinAscent/unitsPerEm for fonts used as the first
+        // paragraph of a table cell. LibreOffice places the first cell baseline at
+        // rowTop - cellPadding - spacingBefore - fontSize * ascentRatio, using the
+        // font's real OS/2 ascent metric rather than the nominal font size.
+        // Measured from LibreOffice reference PDFs for each font.
+        // Franklin Gothic Book: usWinAscent/unitsPerEm ≈ 1.152 (Class News template).
+        if (fontName != null && fontName.Contains("Franklin Gothic Book", StringComparison.OrdinalIgnoreCase))
+            return 1.152f;
+        // Franklin Gothic Demi: usWinAscent/unitsPerEm ≈ 1.011 (Class News masthead).
+        if (fontName != null && fontName.Contains("Franklin Gothic Demi", StringComparison.OrdinalIgnoreCase))
+            return 1.011f;
+        // Also match theme-resolved Franklin Gothic names (FGB used as minorHAnsi).
+        if (string.IsNullOrEmpty(fontName)
+            && s_defaultFontName != null
+            && s_defaultFontName.Contains("Franklin Gothic Book", StringComparison.OrdinalIgnoreCase))
+            return 1.152f;
+        if (string.IsNullOrEmpty(fontName)
+            && s_defaultFontName != null
+            && s_defaultFontName.Contains("Franklin Gothic Demi", StringComparison.OrdinalIgnoreCase))
+            return 1.011f;
+        return 1.0f;
+    }
+
 
     private static bool IsTaiwanKaiFont(string? fontName)
     {
