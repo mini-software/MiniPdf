@@ -942,6 +942,61 @@ internal static class ExcelToPdfConverter
             printTitleEnd = sheet.PrintTitleRows.Value.EndRow;
         }
 
+        CellBorderInfo? EffectiveBorderForCell(List<ExcelCell> row, int rowIndex, int col, CellBorderInfo? border)
+        {
+            if (!mergeEndCol.TryGetValue((rowIndex, col), out var endCol) || endCol >= row.Count)
+                return border;
+
+            var endBorder = row[endCol].Border;
+            if (endBorder?.Right == null)
+                return border;
+
+            return new CellBorderInfo(border?.Left, endBorder.Right, border?.Top, border?.Bottom);
+        }
+
+        void DrawCellBorder(List<ExcelCell> row, int rowIndex, int i, int col, float x, float topY, float height, CellBorderInfo? border)
+        {
+            border = EffectiveBorderForCell(row, rowIndex, col, border);
+            if (border == null)
+                return;
+
+            var bx = x;
+            var byTop = topY;
+            var byBottom = topY - height;
+            var bxRight = x + colWidths[i];
+            if (mergeEndCol.TryGetValue((rowIndex, col), out var borderEndCol))
+            {
+                for (var mc = i + 1; mc < columns.Length && columns[mc] <= borderEndCol; mc++)
+                    bxRight += columnPadding + colWidths[mc];
+            }
+            var borderColor = new PdfColor(0f, 0f, 0f);
+
+            if (border.Left is { Style: not "none" and not "" })
+            {
+                var bc = border.Left.Color ?? borderColor;
+                var bw = Math.Max(0.08f, BorderStyleWidth(border.Left.Style) * borderScaleFactor);
+                currentPage!.AddLine(bx, byTop, bx, byBottom, bc, bw, BorderDashPattern(border.Left.Style, bw));
+            }
+            if (border.Right is { Style: not "none" and not "" })
+            {
+                var bc = border.Right.Color ?? borderColor;
+                var bw = Math.Max(0.08f, BorderStyleWidth(border.Right.Style) * borderScaleFactor);
+                currentPage!.AddLine(bxRight, byTop, bxRight, byBottom, bc, bw, BorderDashPattern(border.Right.Style, bw));
+            }
+            if (border.Top is { Style: not "none" and not "" })
+            {
+                var bc = border.Top.Color ?? borderColor;
+                var bw = Math.Max(0.08f, BorderStyleWidth(border.Top.Style) * borderScaleFactor);
+                currentPage!.AddLine(bx, byTop, bxRight, byTop, bc, bw, BorderDashPattern(border.Top.Style, bw));
+            }
+            if (border.Bottom is { Style: not "none" and not "" })
+            {
+                var bc = border.Bottom.Color ?? borderColor;
+                var bw = Math.Max(0.08f, BorderStyleWidth(border.Bottom.Style) * borderScaleFactor);
+                currentPage!.AddLine(bx, byBottom, bxRight, byBottom, bc, bw, BorderDashPattern(border.Bottom.Style, bw));
+            }
+        }
+
         // Helper: render print title rows at the current page position.
         // Returns the total height consumed by the title rows.
         float RenderPrintTitleRows()
@@ -972,6 +1027,19 @@ internal static class ExcelToPdfConverter
                         var cellText = titleRow[col].Text;
                         var cellFs = titleRow[col].FontSize * printScaleFactor;
                         if (fitToPageScale < 1f) cellFs *= fitToPageScale;
+
+                        if (cellText.Contains('\n'))
+                        {
+                            titleCellLines[i] = cellText.Split('\n');
+                            titleClipWidths[i] = colWidths[i];
+                            if (mergeEndCol.TryGetValue((titleRowIdx, col), out var newlineEndCol))
+                            {
+                                for (var mc = i + 1; mc < columns.Length && columns[mc] <= newlineEndCol; mc++)
+                                    titleClipWidths[i] += colWidths[mc] + columnPadding;
+                            }
+                            titleMaxLines = Math.Max(titleMaxLines, titleCellLines[i].Length);
+                            continue;
+                        }
 
                         var isMerged = mergeEndCol.TryGetValue((titleRowIdx, col), out var endCol);
                         var effectiveW = colWidths[i];
@@ -1078,6 +1146,7 @@ internal static class ExcelToPdfConverter
                     if (fitToPageScale < 1f) cellFs *= fitToPageScale;
                     var alignment = cell?.Alignment ?? "left";
                     var vertAlign = cell?.VerticalAlignment ?? "bottom";
+                    var border = cell?.Border;
 
                     var cellWidth = colWidths[i];
                     if (mergeEndCol.TryGetValue((titleRowIdx, col), out var mergeEnd))
@@ -1105,6 +1174,9 @@ internal static class ExcelToPdfConverter
                         }
                         currentPage!.AddRectangle(x, currentY - titleRowH, fillWidth, titleRowH, fillColor);
                     }
+
+                    if (!mergeInterior.Contains((titleRowIdx, col)))
+                        DrawCellBorder(titleRow, titleRowIdx, i, col, x, currentY, titleRowH, border);
 
                     // Text
                     var descent = options.FontSize * 0.31f;
@@ -1725,47 +1797,8 @@ internal static class ExcelToPdfConverter
                     currentPage!.AddRectangle(x, fillY, fillWidth, fillHeight, fillColor);
                 }
 
-                // Draw cell borders.
-                // For merged cells, extend the right border to the end of the merged span.
-                if (border != null && !isInsideMerge)
-                {
-                    var borderHeight = rowHeight;
-                    var bx = x;
-                    var byTop = currentY;
-                    var byBottom = currentY - borderHeight;
-                    var bxRight = x + colWidths[i] + columnPadding;
-                    if (mergeEndCol.TryGetValue((excelRowIndex, col), out var borderEndCol))
-                    {
-                        for (var mc = i + 1; mc < columns.Length && columns[mc] <= borderEndCol; mc++)
-                            bxRight += colWidths[mc] + columnPadding;
-                    }
-                    var borderColor = new PdfColor(0f, 0f, 0f);
-
-                    if (border.Left is { Style: not "none" and not "" })
-                    {
-                        var bc = border.Left.Color ?? borderColor;
-                        var bw = Math.Max(0.08f, BorderStyleWidth(border.Left.Style) * borderScaleFactor);
-                        currentPage!.AddLine(bx, byTop, bx, byBottom, bc, bw, BorderDashPattern(border.Left.Style, bw));
-                    }
-                    if (border.Right is { Style: not "none" and not "" })
-                    {
-                        var bc = border.Right.Color ?? borderColor;
-                        var bw = Math.Max(0.08f, BorderStyleWidth(border.Right.Style) * borderScaleFactor);
-                        currentPage!.AddLine(bxRight, byTop, bxRight, byBottom, bc, bw, BorderDashPattern(border.Right.Style, bw));
-                    }
-                    if (border.Top is { Style: not "none" and not "" })
-                    {
-                        var bc = border.Top.Color ?? borderColor;
-                        var bw = Math.Max(0.08f, BorderStyleWidth(border.Top.Style) * borderScaleFactor);
-                        currentPage!.AddLine(bx, byTop, bxRight, byTop, bc, bw, BorderDashPattern(border.Top.Style, bw));
-                    }
-                    if (border.Bottom is { Style: not "none" and not "" })
-                    {
-                        var bc = border.Bottom.Color ?? borderColor;
-                        var bw = Math.Max(0.08f, BorderStyleWidth(border.Bottom.Style) * borderScaleFactor);
-                        currentPage!.AddLine(bx, byBottom, bxRight, byBottom, bc, bw, BorderDashPattern(border.Bottom.Style, bw));
-                    }
-                }
+                if (!isInsideMerge)
+                    DrawCellBorder(row, excelRowIndex, i, col, x, currentY, rowHeight, border);
 
                 // For merged cells, compute the full available text width.
                 var cellWidth = colWidths[i];

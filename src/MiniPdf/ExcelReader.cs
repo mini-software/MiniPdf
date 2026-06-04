@@ -1722,6 +1722,7 @@ internal static class ExcelReader
                     cellNumericValues[reference.Replace("$", "")] = storedVal;
                 }
 
+                text = NormalizeCellText(text);
                 cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent, cellBoldPrefixLen));
                 lastColIndex = colIndex + 1;
             }
@@ -1730,6 +1731,14 @@ internal static class ExcelReader
         }
 
         return rows;
+    }
+
+    private static string NormalizeCellText(string text)
+    {
+        if (text.IndexOf('\r') < 0)
+            return text;
+
+        return text.Replace("\r\n", "\n").Replace('\r', '\n');
     }
 
     private static int ParseColumnIndex(string cellReference)
