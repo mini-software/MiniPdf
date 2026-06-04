@@ -1,0 +1,91 @@
+name: Conversion quality issue
+description: Report incorrect, blank, missing, or visually different PDF output.
+title: "[Conversion]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when MiniPdf creates a PDF but the result is blank, incomplete, visually incorrect, or different from Office/LibreOffice output.
+
+  - type: dropdown
+    id: source-format
+    attributes:
+      label: Source document type
+      options:
+        - XLSX
+        - DOCX
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: MiniPdf version
+      description: Provide the NuGet package version, CLI version, commit SHA, or release tag you are using.
+      placeholder: "Example: 0.1.0, v0.1.0, or commit abc1234"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      multiple: true
+      options:
+        - MiniPdf library
+        - MiniPdf CLI
+        - MiniPdf GUI
+        - MiniPdf Web demo
+        - MiniPdf API
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: runtime
+    attributes:
+      label: Runtime or host details
+      placeholder: "Example: .NET 9.0.16, ASP.NET Core on Azure App Service, Chrome 125"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "Example: Windows 11 24H2 x64, Ubuntu 24.04 x64, macOS 15 arm64"
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-example
+    attributes:
+      label: Minimal test example
+      description: Provide the smallest code sample, command, or steps that reproduce the conversion result.
+      placeholder: |
+        MiniPdf.ConvertToPdf("input.xlsx", "output.pdf");
+
+        Expected:
+        Actual:
+    validations:
+      required: true
+
+  - type: textarea
+    id: uploaded-files
+    attributes:
+      label: Input and output files
+      description: Upload the source document, generated PDF, and a reference PDF or screenshot when available. Drag and drop files into this field.
+      placeholder: "Attach input.xlsx/input.docx, MiniPdf output.pdf, and expected/reference output here."
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add screenshots, logs, stack traces, or notes about Office/LibreOffice behavior.
+      render: text
+    validations:
+      required: false

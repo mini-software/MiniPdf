@@ -1,0 +1,54 @@
+name: Documentation issue
+description: Report missing, unclear, outdated, or incorrect documentation.
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: dropdown
+    id: doc-area
+    attributes:
+      label: Documentation area
+      multiple: true
+      options:
+        - README
+        - NuGet README
+        - CLI documentation
+        - API usage
+        - Web demo
+        - Release notes
+        - Translations
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: What should be changed?
+      description: Explain what is missing, confusing, outdated, or incorrect.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-text
+    attributes:
+      label: Suggested wording or example
+      description: Provide replacement text, an example, or the expected documentation behavior.
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: MiniPdf version or documentation version
+      placeholder: "Example: 0.1.0, v0.1.0, main branch"
+    validations:
+      required: false
+
+  - type: textarea
+    id: uploaded-files
+    attributes:
+      label: Related files or screenshots
+      description: Upload screenshots or sample files if they help explain the documentation issue.
+      placeholder: "Attach files here when available."
+    validations:
+      required: false

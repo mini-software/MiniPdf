@@ -1,0 +1,70 @@
+name: Usage question
+description: Ask a focused MiniPdf usage or troubleshooting question.
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For broader discussion, ideas, or open-ended design topics, GitHub Discussions may be a better place.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What are you trying to do, and where are you stuck?
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: MiniPdf version
+      placeholder: "Example: 0.1.0, v0.1.0, or commit abc1234"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      multiple: true
+      options:
+        - MiniPdf library
+        - MiniPdf CLI
+        - MiniPdf GUI
+        - MiniPdf Web demo
+        - MiniPdf API
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "Example: Windows 11 24H2 x64, Ubuntu 24.04 x64, macOS 15 arm64"
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-example
+    attributes:
+      label: Code, command, or steps tried
+      description: Show the smallest example that demonstrates the question.
+      placeholder: |
+        MiniPdf.ConvertToPdf("input.xlsx", "output.pdf");
+
+        What I expected:
+        What happened:
+    validations:
+      required: true
+
+  - type: textarea
+    id: uploaded-files
+    attributes:
+      label: Related files
+      description: Upload input files, output PDFs, logs, or screenshots when relevant.
+      placeholder: "Attach files here when available."
+    validations:
+      required: false

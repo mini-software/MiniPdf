@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: MiniPdf discussions
+    url: https://github.com/mini-software/MiniPdf/discussions
+    about: Ask open-ended questions or share ideas that do not need issue tracking.

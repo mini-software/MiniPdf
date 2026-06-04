@@ -1,0 +1,76 @@
+name: Feature request
+description: Suggest a new MiniPdf capability or improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to do, and what is missing today?
+      placeholder: "Describe the workflow or scenario this feature would support."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the API, CLI option, rendering behavior, or workflow you would like.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Affected area
+      multiple: true
+      options:
+        - XLSX to PDF
+        - DOCX to PDF
+        - MiniPdf library API
+        - MiniPdf CLI
+        - MiniPdf GUI
+        - MiniPdf Web demo
+        - MiniPdf API
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: MiniPdf version or baseline
+      placeholder: "Example: 0.1.0, v0.1.0, main branch"
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-example
+    attributes:
+      label: Example usage
+      description: Show the code, command, or document scenario you expect to work.
+      placeholder: |
+        MiniPdf.ConvertToPdf("input.xlsx", "output.pdf");
+
+        Desired behavior:
+    validations:
+      required: true
+
+  - type: textarea
+    id: uploaded-files
+    attributes:
+      label: Sample files or references
+      description: Upload sample documents, screenshots, or references if they help explain the request.
+      placeholder: "Attach sample files here when available."
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe any current workaround or alternative approach.
+    validations:
+      required: false
