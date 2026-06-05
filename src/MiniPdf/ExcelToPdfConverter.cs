@@ -918,18 +918,24 @@ internal static class ExcelToPdfConverter
             currentY -= lineHeight * 1.5f;
         }
 
-        // Build a merge lookup: for each (row, col) that is the start of a merge,
-        // store the end column. Used to calculate effective text width for merged cells.
-        // Also track interior cells of merge ranges so we can skip their fill/border.
+        // Build merge lookups. Only the top-left cell of a merge range renders
+        // the merged fill, border, and text; every other covered cell is interior.
         var mergeEndCol = new Dictionary<(int, int), int>(); // (row, col) → endCol
-        var mergeInterior = new HashSet<(int, int)>(); // cells inside merge (not start col)
+        var mergeEndRow = new Dictionary<(int, int), int>(); // (row, col) → endRow
+        var mergeInterior = new HashSet<(int, int)>();
         foreach (var (sr, sc, er, ec) in sheet.MergedCells)
         {
+            mergeEndCol[(sr, sc)] = ec;
+            mergeEndRow[(sr, sc)] = er;
             for (var r = sr; r <= er; r++)
             {
-                mergeEndCol[(r, sc)] = ec;
-                for (var c = sc + 1; c <= ec; c++)
+                for (var c = sc; c <= ec; c++)
+                {
+                    if (r == sr && c == sc)
+                        continue;
+
                     mergeInterior.Add((r, c));
+                }
             }
         }
 
@@ -944,14 +950,34 @@ internal static class ExcelToPdfConverter
 
         CellBorderInfo? EffectiveBorderForCell(List<ExcelCell> row, int rowIndex, int col, CellBorderInfo? border)
         {
-            if (!mergeEndCol.TryGetValue((rowIndex, col), out var endCol) || endCol >= row.Count)
+            var hasMergedCols = mergeEndCol.TryGetValue((rowIndex, col), out var endCol);
+            var hasMergedRows = mergeEndRow.TryGetValue((rowIndex, col), out var endRow);
+            if (!hasMergedCols && !hasMergedRows)
                 return border;
 
-            var endBorder = row[endCol].Border;
-            if (endBorder?.Right == null)
-                return border;
+            var right = border?.Right;
+            if (hasMergedCols && endCol < row.Count)
+                right = row[endCol].Border?.Right ?? right;
+            if (hasMergedRows && endRow < sheet.Rows.Count)
+            {
+                var bottomRow = sheet.Rows[endRow];
+                if (hasMergedCols && endCol < bottomRow.Count)
+                    right = bottomRow[endCol].Border?.Right ?? right;
+                else if (col < bottomRow.Count)
+                    right = bottomRow[col].Border?.Right ?? right;
+            }
 
-            return new CellBorderInfo(border?.Left, endBorder.Right, border?.Top, border?.Bottom);
+            var bottom = border?.Bottom;
+            if (hasMergedRows && endRow < sheet.Rows.Count)
+            {
+                var bottomRow = sheet.Rows[endRow];
+                if (col < bottomRow.Count)
+                    bottom = bottomRow[col].Border?.Bottom ?? bottom;
+                if (hasMergedCols && endCol < bottomRow.Count)
+                    bottom = bottomRow[endCol].Border?.Bottom ?? bottom;
+            }
+
+            return new CellBorderInfo(border?.Left, right, border?.Top, bottom);
         }
 
         void DrawCellBorder(List<ExcelCell> row, int rowIndex, int i, int col, float x, float topY, float height, CellBorderInfo? border)
@@ -995,6 +1021,44 @@ internal static class ExcelToPdfConverter
                 var bw = Math.Max(0.08f, BorderStyleWidth(border.Bottom.Style) * borderScaleFactor);
                 currentPage!.AddLine(bx, byBottom, bxRight, byBottom, bc, bw, BorderDashPattern(border.Bottom.Style, bw));
             }
+        }
+
+        float ScaledRowHeightAt(int rowIndex)
+        {
+            var height = sheet.RowHeights.TryGetValue(rowIndex, out var explicitHeight)
+                ? explicitHeight
+                : lineHeight / Math.Max(printScaleFactor * fitToPageScale, 0.0001f);
+
+            if (sheet.PrintScale != 100 && sheet.PrintScale > 0)
+                height *= sheet.PrintScale / 100f;
+            if (fitToPageScale < 1f)
+                height *= fitToPageScale;
+
+            return height;
+        }
+
+        float MergedHeightForCell(int rowIndex, int col, float currentRowHeight)
+        {
+            if (!mergeEndRow.TryGetValue((rowIndex, col), out var endRow) || endRow <= rowIndex)
+                return currentRowHeight;
+
+            var height = currentRowHeight;
+            for (var r = rowIndex + 1; r <= endRow && r < sheet.Rows.Count; r++)
+                height += ScaledRowHeightAt(r);
+
+            return height;
+        }
+
+        static float TextBaselineY(string verticalAlignment, float topY, float height, float textBlockHeight,
+            float firstLineFontSize, float descent, float ascentCompensation, int lineCount, float lineHeight)
+        {
+            if (verticalAlignment == "top" || textBlockHeight > height)
+                return topY - firstLineFontSize;
+
+            if (verticalAlignment == "center")
+                return topY - (height - textBlockHeight) / 2f - firstLineFontSize + descent - ascentCompensation;
+
+            return topY - height + descent - ascentCompensation + lineHeight * (lineCount - 1);
         }
 
         // Helper: render print title rows at the current page position.
@@ -1152,6 +1216,7 @@ internal static class ExcelToPdfConverter
                     if (mergeEndCol.TryGetValue((titleRowIdx, col), out var mergeEnd))
                         for (var mc = i + 1; mc < columns.Length && columns[mc] <= mergeEnd; mc++)
                             cellWidth += colWidths[mc] + columnPadding;
+                    var titleCellHeight = MergedHeightForCell(titleRowIdx, col, titleRowH);
 
                     // Fill — skip for cells inside a merge range.
                     // Extend into column padding only when the next visible cell shares
@@ -1172,24 +1237,17 @@ internal static class ExcelToPdfConverter
                             if (hasSameFillRight)
                                 fillWidth += columnPadding;
                         }
-                        currentPage!.AddRectangle(x, currentY - titleRowH, fillWidth, titleRowH, fillColor);
+                        currentPage!.AddRectangle(x, currentY - titleCellHeight, fillWidth, titleCellHeight, fillColor);
                     }
 
                     if (!mergeInterior.Contains((titleRowIdx, col)))
-                        DrawCellBorder(titleRow, titleRowIdx, i, col, x, currentY, titleRowH, border);
+                        DrawCellBorder(titleRow, titleRowIdx, i, col, x, currentY, titleCellHeight, border);
 
                     // Text
                     var descent = options.FontSize * 0.31f;
-                    float cellY;
-                    if (vertAlign == "top")
-                        cellY = currentY - cellFs;
-                    else if (vertAlign == "center")
-                    {
-                        var textBlock = cellFs + lineHeight * (titleCellLines[i].Length - 1);
-                        cellY = currentY - (titleRowH - textBlock) / 2f - cellFs + descent;
-                    }
-                    else
-                        cellY = currentY - titleRowH + descent + lineHeight * (titleCellLines[i].Length - 1);
+                    var textBlock = cellFs + lineHeight * (titleCellLines[i].Length - 1);
+                    var cellY = TextBaselineY(vertAlign, currentY, titleCellHeight, textBlock,
+                        cellFs, descent, 0f, titleCellLines[i].Length, lineHeight);
 
                     // Render accounting prefix left-aligned in title rows.
                     if (cell?.AccountingPrefix != null && titleCellLines[i].Length > 0 && !string.IsNullOrEmpty(titleCellLines[i][0]))
@@ -1723,19 +1781,13 @@ internal static class ExcelToPdfConverter
                     ? (cellFontSize - options.FontSize) * 0.1f
                     : 0f;
                 float cellY;
-                var textBlock = cellFontSize + lineHeight * (lines.Length - 1);
-                if (verticalAlignment == "top" || textBlock > rowHeight)
-                    cellY = currentY - cellFontSize;
-                else if (verticalAlignment == "center")
-                {
-                    cellY = currentY - (rowHeight - textBlock) / 2f - cellFontSize + descent - ascentCompensation;
-                }
-                else // "bottom" (default)
-                    cellY = currentY - rowHeight + descent - ascentCompensation + lineHeight * (lines.Length - 1);
-
                 // Skip fill/border for cells inside a merge range (not the start column).
                 // Only the merge origin cell renders the fill covering the full merged area.
                 var isInsideMerge = mergeInterior.Contains((excelRowIndex, col));
+                var cellHeight = isInsideMerge ? rowHeight : MergedHeightForCell(excelRowIndex, col, rowHeight);
+                var textBlock = cellFontSize + lineHeight * (lines.Length - 1);
+                cellY = TextBaselineY(verticalAlignment, currentY, cellHeight, textBlock,
+                    cellFontSize, descent, ascentCompensation, lines.Length, lineHeight);
 
                 // Draw fill rectangle behind cell if fill color is set.
                 // For merged cells, extend the fill across the full merged column span.
@@ -1751,8 +1803,8 @@ internal static class ExcelToPdfConverter
                     // Avoid hairline seams only where neighboring cells share the same fill
                     // and have no explicit borders (do not bleed across styled boundaries).
                     var fillSeamOverlap = Math.Max(0.2f, columnPadding);
-                    var fillY = currentY - rowHeight;
-                    var fillHeight = rowHeight;
+                    var fillY = currentY - cellHeight;
+                    var fillHeight = cellHeight;
                     if (border == null)
                     {
                         var mergedHere = mergeEndCol.ContainsKey((excelRowIndex, col));
@@ -1798,7 +1850,7 @@ internal static class ExcelToPdfConverter
                 }
 
                 if (!isInsideMerge)
-                    DrawCellBorder(row, excelRowIndex, i, col, x, currentY, rowHeight, border);
+                    DrawCellBorder(row, excelRowIndex, i, col, x, currentY, cellHeight, border);
 
                 // For merged cells, compute the full available text width.
                 var cellWidth = colWidths[i];
