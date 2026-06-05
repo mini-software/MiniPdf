@@ -1,4 +1,3 @@
-# MiniPdf
 
 <div align="center">
 <p>

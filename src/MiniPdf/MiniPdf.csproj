@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.nuget.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\documents\README.nuget.md" Pack="true" PackagePath="\" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
     <None Include="..\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>

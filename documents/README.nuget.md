@@ -1,11 +1,9 @@
-# MiniPdf
-
 [![NuGet](https://img.shields.io/nuget/v/MiniPdf.svg)](https://www.nuget.org/packages/MiniPdf)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/MiniPdf.svg)](https://www.nuget.org/packages/MiniPdf)
 [![GitHub stars](https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github)](https://github.com/shps951023/MiniPdf)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/shps951023/MiniPdf/blob/main/LICENSE)
 
-English | [简体中文](README.zh-CN.md) | [繁体中文](documents/README.zh-TW.md) | [日本語](documents/README.ja.md) | [한국어](documents/README.ko.md) | [Italiano](documents/README.it.md) | [Français](documents/README.fr.md)
+English | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Italiano](README.it.md) | [Français](README.fr.md)
 
 A minimal, lightweight .NET library for converting office files to PDF.
 
@@ -61,4 +59,4 @@ Detailed reports:
 ## Links
 
 - Source code: https://github.com/shps951023/MiniPdf
-- License: [Apache-2.0](LICENSE)
+- License: [Apache-2.0](https://github.com/shps951023/MiniPdf/blob/main/LICENSE)
