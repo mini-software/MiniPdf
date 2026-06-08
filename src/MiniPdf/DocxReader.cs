@@ -1231,22 +1231,8 @@ internal static class DocxReader
                     if (fldType == "separate") { inFieldInstr = false; fieldResultEmitted = false; continue; }
                     if (fldType == "end")
                     {
-                        // Emit PAGE/NUMPAGES placeholder if no result text was found between separate and end
-                        if (!fieldResultEmitted && fieldDepth > 0 && !inFieldInstr)
-                        {
-                            var ft = GetFieldInstructionType(currentFieldInstr);
-                            if (ft == "PAGE" || ft == "NUMPAGES")
-                            {
-                                var ph = ft == "PAGE" ? "{PAGE}" : "{NUMPAGES}";
-                                if (ft == "PAGE")
-                                {
-                                    var instr = currentFieldInstr.Trim();
-                                    if (instr.Contains("\\* roman", StringComparison.OrdinalIgnoreCase))
-                                        ph = instr.Contains("\\* ROMAN") ? "{PAGE:ROMAN}" : "{PAGE:roman}";
-                                }
-                                runs.Add(new DocxRun(ph, bold, italic, fontSize, color));
-                            }
-                        }
+                        if (!fieldResultEmitted && fieldDepth > 0)
+                            EmitPageFieldPlaceholder(currentFieldInstr, runs, bold, italic, fontSize, color);
                         fieldDepth--;
                         if (fieldDepth <= 0) { fieldDepth = 0; inFieldInstr = false; }
                         currentFieldInstr = "";
@@ -1265,14 +1251,6 @@ internal static class DocxReader
                     var fieldType = GetFieldInstructionType(currentFieldInstr);
                     if (fieldType == "PAGE" || fieldType == "NUMPAGES")
                     {
-                        // Detect format switches like \* roman, \* ROMAN, \* arabic
-                        var placeholder = fieldType == "PAGE" ? "{PAGE}" : "{NUMPAGES}";
-                        if (fieldType == "PAGE")
-                        {
-                            var instr = currentFieldInstr.Trim();
-                            if (instr.Contains("\\* roman", StringComparison.OrdinalIgnoreCase))
-                                placeholder = instr.Contains("\\* ROMAN") ? "{PAGE:ROMAN}" : "{PAGE:roman}";
-                        }
                         var rPr = child.Element(W + "rPr");
                         var fBold = bold; var fItalic = italic; var fSize = fontSize; var fColor = color;
                         if (rPr != null)
@@ -1281,7 +1259,7 @@ internal static class DocxReader
                             var sz = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
                             if (float.TryParse(sz, out var s) && s > 0) fSize = s / 2f;
                         }
-                        runs.Add(new DocxRun(placeholder, fBold, fItalic, fSize, fColor));
+                        EmitPageFieldPlaceholder(currentFieldInstr, runs, fBold, fItalic, fSize, fColor);
                         fieldResultEmitted = true;
                         continue;
                     }
@@ -1379,6 +1357,23 @@ internal static class DocxReader
             HasExplicitListIndent: paraHasExplicitListIndent,
             ListSuff: listSuff,
             OutlineLevel: ReadOutlineLevel(pPr));
+    }
+
+    private static void EmitPageFieldPlaceholder(string instruction, List<DocxRun> runs, bool bold, bool italic, float fontSize, PdfColor? color)
+    {
+        var fieldType = GetFieldInstructionType(instruction);
+        if (fieldType != "PAGE" && fieldType != "NUMPAGES")
+            return;
+
+        var placeholder = fieldType == "PAGE" ? "{PAGE}" : "{NUMPAGES}";
+        if (fieldType == "PAGE")
+        {
+            var instr = instruction.Trim();
+            if (instr.Contains("\\* roman", StringComparison.OrdinalIgnoreCase))
+                placeholder = instr.Contains("\\* ROMAN") ? "{PAGE:ROMAN}" : "{PAGE:roman}";
+        }
+
+        runs.Add(new DocxRun(placeholder, bold, italic, fontSize, color));
     }
 
     private static void ExpandTocPlaceholders(List<DocxElement> elements, DocxPageLayout? pageLayout)

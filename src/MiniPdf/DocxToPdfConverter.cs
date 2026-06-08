@@ -2650,7 +2650,7 @@ internal static class DocxToPdfConverter
                         };
                         if (leaderChar != null)
                         {
-                            var leaderCharWidth = runFs * GetHelveticaCharWidth(leaderChar.Value) / 1000f * 0.725f;
+                            var leaderCharWidth = GetTabLeaderCharWidth(leaderChar.Value, runFs, hasCjkContext);
                             var gapWidth = matchedStop.Position - relX;
                             var fillCount = Math.Max(1, (int)(gapWidth / leaderCharWidth));
                             var leaderText = new string(leaderChar.Value, fillCount);
@@ -4428,7 +4428,7 @@ internal static class DocxToPdfConverter
                         // Use Calibri-equivalent scale so the dot count matches
                         // LibreOffice output (Calibri dots are narrower than Helvetica).
                         // The rendered line is compressed via Tz to fit the tab position.
-                        var leaderCharWidth = fontSize * GetHelveticaCharWidth(leaderChar) / 1000f * 0.725f;
+                        var leaderCharWidth = GetTabLeaderCharWidth(leaderChar, fontSize, ContainsCjk(text));
                         // For right/center-aligned tab stops the text after the tab is
                         // pushed back from the stop, so the leader fill must reserve
                         // room for it. For left-aligned tab stops (the default) the
@@ -4474,6 +4474,24 @@ internal static class DocxToPdfConverter
             }
         }
         return sb2.ToString();
+    }
+
+    private static float GetTabLeaderCharWidth(char leaderChar, float fontSize, bool cjkContext)
+    {
+        if (cjkContext && leaderChar == '.')
+            return fontSize * 500f / 1000f;
+
+        return fontSize * GetHelveticaCharWidth(leaderChar) / 1000f * 0.725f;
+    }
+
+    private static bool ContainsCjk(string text)
+    {
+        foreach (var ch in text)
+        {
+            if (ch >= '\u2E80' && !char.IsHighSurrogate(ch) && !char.IsLowSurrogate(ch))
+                return true;
+        }
+        return false;
     }
 
     private static List<string> WordWrap(string text, float firstLineWidth, float subsequentWidth, float fontSize, List<DocxTabStop>? tabStops = null, bool bold = false, float charSpacing = 0, bool useCalibriWidths = true)
