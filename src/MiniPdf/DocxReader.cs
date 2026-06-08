@@ -624,9 +624,16 @@ internal static class DocxReader
                     connectorLines.Add(new DocxConnectorLine(x1, y1, x2, y2, lineW, lineColor, dashArr, hasTailArrow, hasHeadArrow, cHRel, cVRel));
                 }
 
+                var isEmptyTocField = IsTocFieldWithoutCachedResult(child, out var tocMinLevel, out var tocMaxLevel);
                 var paragraph = ReadParagraph(child, styles, numbering, relationships, archive, themeColors, defaultFontName, defaultEastAsiaFontName);
                 if (paragraph != null)
                 {
+                    if (isEmptyTocField && paragraph.Runs.Count == 0 && paragraph.Images.Count == 0)
+                    {
+                        elements.Add(new DocxTocPlaceholder(tocMinLevel, tocMaxLevel));
+                        continue;
+                    }
+
                     // Host paragraphs for anchored textboxes may contain synthetic fallback
                     // runs that duplicate textbox text; skip these when textbox content
                     // was already emitted as standalone paragraphs.
@@ -683,6 +690,7 @@ internal static class DocxReader
 
         // Read page layout from sectPr
         var pageLayout = ReadPageLayout(body);
+        ExpandTocPlaceholders(elements, pageLayout);
 
         // Read header/footer content
         var headerText = ReadHeaderFooter(body, relationships, archive, styles, numbering, "headerReference", defaultFontName, defaultEastAsiaFontName, tableStyles);
@@ -1275,8 +1283,8 @@ internal static class DocxReader
                         }
                         runs.Add(new DocxRun(placeholder, fBold, fItalic, fSize, fColor));
                         fieldResultEmitted = true;
+                        continue;
                     }
-                    continue;
                 }
 
                 // Detect lastRenderedPageBreak: Word's hint that a page break occurred
@@ -1369,7 +1377,187 @@ internal static class DocxReader
             SpacingAfterExplicit: spacingAfterExplicit,
             SpacingBeforeExplicit: spacingBeforeExplicit,
             HasExplicitListIndent: paraHasExplicitListIndent,
-            ListSuff: listSuff);
+            ListSuff: listSuff,
+            OutlineLevel: ReadOutlineLevel(pPr));
+    }
+
+    private static void ExpandTocPlaceholders(List<DocxElement> elements, DocxPageLayout? pageLayout)
+    {
+        var placeholderIndexes = new List<int>();
+        for (var i = 0; i < elements.Count; i++)
+        {
+            if (elements[i] is DocxTocPlaceholder)
+                placeholderIndexes.Add(i);
+        }
+        if (placeholderIndexes.Count == 0)
+            return;
+
+        var headingEntries = CollectTocHeadingEntries(elements);
+        for (var pi = placeholderIndexes.Count - 1; pi >= 0; pi--)
+        {
+            var index = placeholderIndexes[pi];
+            var placeholder = (DocxTocPlaceholder)elements[index];
+            var generated = new List<DocxElement>();
+            var rightTab = Math.Max(72f, (pageLayout?.PageWidth ?? 612f) - (pageLayout?.MarginLeft ?? 72f) - (pageLayout?.MarginRight ?? 72f));
+
+            foreach (var entry in headingEntries)
+            {
+                if (entry.Level < placeholder.MinLevel || entry.Level > placeholder.MaxLevel)
+                    continue;
+
+                var indent = Math.Max(0, entry.Level - 1) * 18f;
+                generated.Add(new DocxParagraph(
+                    Runs: [new DocxRun(entry.Text + "\t" + entry.PageNumber)],
+                    Images: [],
+                    SpacingAfter: 0,
+                    IndentLeft: indent,
+                    StyleId: "TOC" + entry.Level,
+                    FontSize: 11,
+                    TabStops: [new DocxTabStop(rightTab, "right", "dot")],
+                    OutlineLevel: -1));
+            }
+
+            elements.RemoveAt(index);
+            if (generated.Count > 0)
+                elements.InsertRange(index, generated);
+        }
+    }
+
+    private static List<(int Level, string Text, int PageNumber)> CollectTocHeadingEntries(List<DocxElement> elements)
+    {
+        var entries = new List<(int Level, string Text, int PageNumber)>();
+        var pageNumber = 1;
+        foreach (var element in elements)
+        {
+            if (element is not DocxParagraph paragraph)
+                continue;
+
+            if (paragraph.HasPageBreakBefore)
+                pageNumber++;
+
+            var headingLevel = GetTocHeadingLevel(paragraph);
+            if (headingLevel is >= 1 and <= 9)
+            {
+                var text = string.Concat(paragraph.Runs.Select(r => r.Text)).Trim();
+                if (!string.IsNullOrWhiteSpace(text))
+                    entries.Add((headingLevel.Value, text, pageNumber));
+            }
+
+            if (paragraph.HasPageBreakAfter)
+                pageNumber++;
+            if (paragraph.SectionBreak != null && !string.Equals(paragraph.SectionBreak.SectionType, "continuous", StringComparison.OrdinalIgnoreCase))
+                pageNumber++;
+        }
+        return entries;
+    }
+
+    private static int? GetTocHeadingLevel(DocxParagraph paragraph)
+    {
+        if (paragraph.OutlineLevel is >= 0 and <= 8)
+            return paragraph.OutlineLevel + 1;
+
+        if (string.IsNullOrEmpty(paragraph.StyleId) || paragraph.StyleId.StartsWith("TOC", StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var styleId = paragraph.StyleId;
+        if (styleId.StartsWith("Heading", StringComparison.OrdinalIgnoreCase))
+        {
+            var suffix = styleId.Substring("Heading".Length);
+            if (int.TryParse(suffix, out var level) && level is >= 1 and <= 9)
+                return level;
+        }
+
+        return null;
+    }
+
+    private static int ReadOutlineLevel(XElement? pPr)
+    {
+        var outline = pPr?.Element(W + "outlineLvl")?.Attribute(W + "val")?.Value;
+        return int.TryParse(outline, out var level) ? level : -1;
+    }
+
+    private static bool IsTocFieldWithoutCachedResult(XElement pElement, out int minLevel, out int maxLevel)
+    {
+        minLevel = 1;
+        maxLevel = 9;
+        var fieldDepth = 0;
+        var inInstruction = false;
+        var instruction = "";
+        var sawToc = false;
+        var sawCachedResult = false;
+
+        foreach (var child in UnwrapSdt(pElement.Elements()))
+        {
+            if (child.Name != W + "r")
+                continue;
+
+            var fldChar = child.Element(W + "fldChar");
+            if (fldChar != null)
+            {
+                var type = fldChar.Attribute(W + "fldCharType")?.Value;
+                if (type == "begin")
+                {
+                    fieldDepth++;
+                    inInstruction = true;
+                    instruction = "";
+                    sawCachedResult = false;
+                    continue;
+                }
+                if (type == "separate")
+                {
+                    if (IsTocInstruction(instruction))
+                    {
+                        sawToc = true;
+                        (minLevel, maxLevel) = ReadTocOutlineRange(instruction);
+                    }
+                    inInstruction = false;
+                    continue;
+                }
+                if (type == "end")
+                {
+                    if (!sawToc && IsTocInstruction(instruction))
+                    {
+                        sawToc = true;
+                        (minLevel, maxLevel) = ReadTocOutlineRange(instruction);
+                    }
+                    fieldDepth = Math.Max(0, fieldDepth - 1);
+                    inInstruction = fieldDepth > 0;
+                    continue;
+                }
+            }
+
+            var instrText = child.Element(W + "instrText");
+            if (instrText != null && inInstruction)
+            {
+                instruction += instrText.Value;
+                continue;
+            }
+
+            if (fieldDepth > 0 && !inInstruction && !string.IsNullOrWhiteSpace(child.Element(W + "t")?.Value))
+                sawCachedResult = true;
+        }
+
+        return sawToc && !sawCachedResult;
+    }
+
+    private static bool IsTocInstruction(string instruction)
+    {
+        var trimmed = instruction.TrimStart();
+        return trimmed.StartsWith("TOC", StringComparison.OrdinalIgnoreCase)
+            && (trimmed.Length == 3 || char.IsWhiteSpace(trimmed[3]));
+    }
+
+    private static (int MinLevel, int MaxLevel) ReadTocOutlineRange(string instruction)
+    {
+        var match = System.Text.RegularExpressions.Regex.Match(instruction, @"\\o\s+""(?<min>\d+)\s*-\s*(?<max>\d+)""", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (!match.Success)
+            return (1, 9);
+
+        var min = int.TryParse(match.Groups["min"].Value, out var parsedMin) ? parsedMin : 1;
+        var max = int.TryParse(match.Groups["max"].Value, out var parsedMax) ? parsedMax : 9;
+        min = Compat.Clamp(min, 1, 9);
+        max = Compat.Clamp(max, min, 9);
+        return (min, max);
     }
 
     /// <summary>
@@ -4516,6 +4704,8 @@ internal sealed record DocxPageLayout(
 /// <summary>Base type for document elements (paragraphs, tables).</summary>
 internal abstract record DocxElement;
 
+internal sealed record DocxTocPlaceholder(int MinLevel = 1, int MaxLevel = 9) : DocxElement;
+
 /// <summary>Represents a paragraph in a DOCX document.</summary>
 internal sealed record DocxParagraph(
     List<DocxRun> Runs,
@@ -4584,7 +4774,8 @@ internal sealed record DocxParagraph(
     // OOXML w:suff for the resolved numbering level: "tab" (default), "space",
     // or "nothing". Renderer uses this to gate the auto-tab snap so body text
     // follows the number immediately when suff is "space" or "nothing".
-    string ListSuff = "tab"
+    string ListSuff = "tab",
+    int OutlineLevel = -1
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.  Width=0 is a sentinel for an

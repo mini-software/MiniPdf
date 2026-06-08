@@ -183,6 +183,31 @@ public class DocxToPdfConverterTests
         Assert.Contains("1", texts, StringComparer.Ordinal);
       }
 
+      [Fact]
+      public void Convert_EmptyTocField_GeneratesHeadingEntries()
+      {
+        using var docxStream = CreateDocxWithEmptyTocField();
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+        var texts = doc.Pages.SelectMany(p => p.TextBlocks).Select(b => b.Text).ToList();
+
+        Assert.Contains(texts, t => t.Contains("Chapter One", StringComparison.Ordinal));
+        Assert.Contains(texts, t => t.Contains("1.1 Background", StringComparison.Ordinal));
+        Assert.True(texts.Count(t => t.Contains("Chapter One", StringComparison.Ordinal)) >= 2);
+        Assert.Contains(texts, t => t.Contains('.') && t.Contains("Chapter One", StringComparison.Ordinal));
+      }
+
+      [Fact]
+      public void Convert_TocFieldWithCachedResult_RendersResultText()
+      {
+        using var docxStream = CreateDocxWithCachedTocField();
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+        var texts = doc.Pages.SelectMany(p => p.TextBlocks).Select(b => b.Text).ToList();
+
+        Assert.Contains(texts, t => t.Contains("Existing Entry", StringComparison.Ordinal));
+      }
+
     // ── Helper: Create minimal DOCX ─────────────────────────────────────
 
     [Fact]
@@ -640,6 +665,80 @@ public class DocxToPdfConverterTests
                     <w:r><w:fldChar w:fldCharType="end"/></w:r>
                   </w:p>
                 </w:ftr>
+                """);
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
+    private static MemoryStream CreateDocxWithEmptyTocField()
+    {
+        return CreateDocxFromBodyXml(
+            """
+            <w:p>
+              <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+              <w:r><w:instrText> TOC \o "1-2" \h \z \u </w:instrText></w:r>
+              <w:r><w:fldChar w:fldCharType="end"/></w:r>
+            </w:p>
+            <w:p>
+              <w:pPr><w:pStyle w:val="Heading1"/><w:outlineLvl w:val="0"/></w:pPr>
+              <w:r><w:t>Chapter One</w:t></w:r>
+            </w:p>
+            <w:p><w:r><w:br w:type="page"/></w:r></w:p>
+            <w:p>
+              <w:pPr><w:pStyle w:val="Heading2"/><w:outlineLvl w:val="1"/></w:pPr>
+              <w:r><w:t>1.1 Background</w:t></w:r>
+            </w:p>
+            """);
+    }
+
+    private static MemoryStream CreateDocxWithCachedTocField()
+    {
+        return CreateDocxFromBodyXml(
+            """
+            <w:p>
+              <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+              <w:r><w:instrText> TOC \o "1-1" \h \z \u </w:instrText></w:r>
+              <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+              <w:r><w:t>Existing Entry</w:t><w:tab/><w:t>5</w:t></w:r>
+              <w:r><w:fldChar w:fldCharType="end"/></w:r>
+            </w:p>
+            """);
+    }
+
+    private static MemoryStream CreateDocxFromBodyXml(string bodyXml)
+    {
+        var ms = new MemoryStream();
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/document.xml",
+                $"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:body>
+                    {bodyXml}
+                  </w:body>
+                </w:document>
                 """);
         }
 
