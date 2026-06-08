@@ -993,5 +993,73 @@
     "reference_exists": false,
     "error": "Reference PDF not found",
     "score": 0.0
+  },
+  {
+    "name": "TestIssue61",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 170841,
+    "reference_size": 100753,
+    "pdf_valid": true,
+    "minipdf_pages": 8,
+    "reference_pages": 8,
+    "text_similarity": 0.7143,
+    "flat_text_similarity": 0.2593,
+    "word_text_similarity": 0.7143,
+    "text_diff": "--- minipdf/TestIssue61.pdf\n+++ reference/TestIssue61.pdf\n@@ -2,12 +2,12 @@\n 生簡章\n\n 1\n\n ---PAGE---\n\n-第一章 介紹與大綱..................................................................2\n\n-1.1 背景與研究動機..................................................................3\n\n-1.1.1 技術定義......................................................................5\n\n-1.2 專案目標........................................................................6\n\n-第二章 系統設計....................................................................7\n\n-2.1 系統架構........................................................................8\n\n+第一章 介紹與大綱 ........................................................................................................ 2\n\n+1.1 背景與研究動機 ................................................................................................... 3\n\n+1.1.1 技術定義 ....................................................................................................... 5\n\n+1.2 專案目標 ............................................................................................................. 6\n\n+第二章 系統設計 ........................................................................................................... 7\n\n+2.1 系統架構 ............................................................................................................. 8\n\n 第一章 介紹與大綱\n\n 2\n\n ---PAGE---\n",
+    "visual_scores": [
+      0.9874,
+      0.9882,
+      0.998,
+      0.9948,
+      0.9987,
+      0.9988,
+      0.9982,
+      0.9988
+    ],
+    "visual_avg": 0.9954,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "TestIssue61_p1_minipdf.png",
+        "reference_img": "TestIssue61_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "TestIssue61_p2_minipdf.png",
+        "reference_img": "TestIssue61_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "TestIssue61_p3_minipdf.png",
+        "reference_img": "TestIssue61_p3_reference.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "TestIssue61_p4_minipdf.png",
+        "reference_img": "TestIssue61_p4_reference.png"
+      },
+      {
+        "page": 5,
+        "minipdf_img": "TestIssue61_p5_minipdf.png",
+        "reference_img": "TestIssue61_p5_reference.png"
+      },
+      {
+        "page": 6,
+        "minipdf_img": "TestIssue61_p6_minipdf.png",
+        "reference_img": "TestIssue61_p6_reference.png"
+      },
+      {
+        "page": 7,
+        "minipdf_img": "TestIssue61_p7_minipdf.png",
+        "reference_img": "TestIssue61_p7_reference.png"
+      },
+      {
+        "page": 8,
+        "minipdf_img": "TestIssue61_p8_minipdf.png",
+        "reference_img": "TestIssue61_p8_reference.png"
+      }
+    ],
+    "overall_score": 0.8839
   }
 ]

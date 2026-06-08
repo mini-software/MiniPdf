@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-05-05T22:11:00.176588
+Generated: 2026-06-08T19:41:54.979408
 
 ## Summary
 
@@ -28,8 +28,9 @@ Generated: 2026-05-05T22:11:00.176588
 | 20 | 🟢 Support_Letter | ✅ | 1.0 | 0.946 | 1/1 | **0.9784** |
 | 21 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 22 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
+| 23 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
 
-**Average Overall Score: 0.8230**
+**Average Overall Score: 0.8257**
 
 ## Visual Comparison
 
@@ -527,6 +528,42 @@ Generated: 2026-05-05T22:11:00.176588
 </tr>
 <tr>
   <td colspan="2"><i>No images</i></td>
+</tr>
+<tr>
+  <td><b>TestIssue61</b></td>
+  <td colspan="1">TestIssue61 <span style="color:#d29922">⬤</span> 88.4%</td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue61_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue61_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue61_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue61_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue61_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue61_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue61_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue61_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue61_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue61_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue61_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue61_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue61_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue61_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue61_p8_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue61_p8_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -2484,6 +2521,59 @@ Text content: ✅ Identical
 ### Template_repaired
 
 **Error:** Reference PDF not found
+
+### TestIssue61
+
+- **Text Similarity:** 0.7143
+- **Visual Average:** 0.9954
+- **Overall Score:** 0.8839
+- **Pages:** MiniPdf=8, Reference=8
+- **File Size:** MiniPdf=170841 bytes, Reference=100753 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/TestIssue61.pdf
++++ reference/TestIssue61.pdf
+@@ -2,12 +2,12 @@
+ 生簡章
+
+ 1
+
+ ---PAGE---
+
+-第一章 介紹與大綱..................................................................2
+
+-1.1 背景與研究動機..................................................................3
+
+-1.1.1 技術定義......................................................................5
+
+-1.2 專案目標........................................................................6
+
+-第二章 系統設計....................................................................7
+
+-2.1 系統架構........................................................................8
+
++第一章 介紹與大綱 ........................................................................................................ 2
+
++1.1 背景與研究動機 ................................................................................................... 3
+
++1.1.1 技術定義 ....................................................................................................... 5
+
++1.2 專案目標 ............................................................................................................. 6
+
++第二章 系統設計 ........................................................................................................... 7
+
++2.1 系統架構 ............................................................................................................. 8
+
+ 第一章 介紹與大綱
+
+ 2
+
+ ---PAGE---
+
+```
+</details>
 
 ## Improvement Suggestions
 
