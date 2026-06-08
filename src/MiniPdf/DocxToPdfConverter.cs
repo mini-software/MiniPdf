@@ -972,6 +972,10 @@ internal static class DocxToPdfConverter
             lineHeight = effectiveFs * metricsFactor * lineSpacingMul;
         }
 
+        var isLargeCjkTitle = IsLargeCjkTitle(paragraph);
+        if (isLargeCjkTitle && !paragraph.LineSpacingAbsolute)
+            lineHeight = Math.Max(lineHeight, fontSize * 1.47f);
+
         // Snap to document grid when active (CJK line grid)
         if (options.GridLinePitch > 0 && paragraph.SnapToGrid)
         {
@@ -1034,6 +1038,8 @@ internal static class DocxToPdfConverter
         // but suppress it on first-paragraph-after-page/section-break to avoid
         // cascading layout shifts in long multi-section documents.
         bool isVeryFirstParagraph = state.IsTopOfPage && !state.HasRenderedAnyContent;
+        if (isLargeCjkTitle && isVeryFirstParagraph)
+            spacingBefore += 30f;
         if (spacingBefore > 0 && (!state.IsTopOfPage || paragraph.ForceSpacingBefore
             || (isVeryFirstParagraph && paragraph.SpacingBeforeExplicit)))
         {
@@ -1764,7 +1770,8 @@ internal static class DocxToPdfConverter
                 }
                 cjkLatinTolerance = latinCount * runFontSize * 110f / 1000f;
             }
-            var lines = WordWrap(fullText, wrapFirstLineWidth + cjkLatinTolerance, wrapAvailableWidth + cjkLatinTolerance, runFontSize, paragraph.TabStops, runBold, runCharSpacing, paraUseCalibri);
+            var titleWrapTolerance = isLargeCjkTitle ? runFontSize * 0.55f : 0f;
+            var lines = WordWrap(fullText, wrapFirstLineWidth + cjkLatinTolerance + titleWrapTolerance, wrapAvailableWidth + cjkLatinTolerance + titleWrapTolerance, runFontSize, paragraph.TabStops, runBold, runCharSpacing, paraUseCalibri);
             // Keep s_overrideWidths set during the rendering loop so that
             // EstimateWrapTextWidth uses the same font metrics as WordWrap,
             // ensuring accurate justified text spacing and Tz compression.
@@ -4482,6 +4489,19 @@ internal static class DocxToPdfConverter
             return fontSize * 500f / 1000f;
 
         return fontSize * GetHelveticaCharWidth(leaderChar) / 1000f * 0.725f;
+    }
+
+    private static bool IsLargeCjkTitle(DocxParagraph paragraph)
+    {
+        if (!string.Equals(paragraph.StyleId, "Title", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        foreach (var run in paragraph.Runs)
+        {
+            if ((run.FontSize > 0 ? run.FontSize : paragraph.FontSize) >= 30f && ContainsCjk(run.Text))
+                return true;
+        }
+        return false;
     }
 
     private static bool ContainsCjk(string text)

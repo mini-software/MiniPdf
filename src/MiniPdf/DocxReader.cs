@@ -1395,19 +1395,24 @@ internal static class DocxReader
             var generated = new List<DocxElement>();
             var rightTab = Math.Max(72f, (pageLayout?.PageWidth ?? 612f) - (pageLayout?.MarginLeft ?? 72f) - (pageLayout?.MarginRight ?? 72f));
 
-            foreach (var entry in headingEntries)
-            {
-                if (entry.Level < placeholder.MinLevel || entry.Level > placeholder.MaxLevel)
-                    continue;
+            var tocEntries = headingEntries
+                .Where(entry => entry.Level >= placeholder.MinLevel && entry.Level <= placeholder.MaxLevel)
+                .ToList();
 
-                var indent = Math.Max(0, entry.Level - 1) * 18f;
+            for (var entryIndex = 0; entryIndex < tocEntries.Count; entryIndex++)
+            {
+                var entry = tocEntries[entryIndex];
+                var indent = Math.Max(0, entry.Level - 1) * 12f;
                 generated.Add(new DocxParagraph(
                     Runs: [new DocxRun(entry.Text + "\t" + entry.PageNumber)],
                     Images: [],
-                    SpacingAfter: 0,
+                    SpacingAfter: entryIndex == tocEntries.Count - 1 ? 24f : 0f,
                     IndentLeft: indent,
                     StyleId: "TOC" + entry.Level,
                     FontSize: 11,
+                    LineSpacing: 24f,
+                    LineSpacingAbsolute: true,
+                    LineSpacingExact: true,
                     TabStops: [new DocxTabStop(rightTab, "right", "dot")],
                     OutlineLevel: -1));
             }
