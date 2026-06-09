@@ -1,28 +1,32 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-04-30T13:32:33.502189
+Generated: 2026-06-09T13:19:25.254201
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9293 | 0.9152 | 2/2 | **0.9378** |
-| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9293 | 0.9152 | 2/2 | **0.9378** |
+| 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9293 | 0.9163 | 2/2 | **0.9382** |
+| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9293 | 0.9163 | 2/2 | **0.9382** |
 | 3 | 🟢 Business expense budget1 | ✅ | 0.9601 | 0.8761 | 4/4 | **0.9345** |
 | 4 | 🟡 Business expenses budget2 | ✅ | 0.7489 | 0.7908 | 4/4 | **0.8159** |
 | 5 | 🟡 Business plan checklist with SWOT analysis1 | ✅ | 1.0 | 0.5567 | 1/1 | **0.8227** |
 | 6 | ⚪ Business_expense_budget1_copy | ✅ | N/A | N/A | ?/? | **N/A** |
-| 7 | 🔴 Event budget1 | ✅ | 0.9438 | 0.4846 | 4/5 | **0.6714** |
+| 7 | 🔴 Event budget1 | ✅ | 0.9328 | 0.4846 | 4/5 | **0.667** |
 | 8 | 🟢 Expense report basic1 | ✅ | 1.0 | 0.754 | 1/1 | **0.9016** |
-| 9 | 🔴 payroll-calculator_f | ✅ | 0.4563 | 0.5441 | 25/27 | **0.5002** |
-| 10 | 🟢 PO_anonymized | ✅ | 0.9625 | 0.9059 | 8/8 | **0.9474** |
+| 9 | 🔴 payroll-calculator_f | ✅ | 0.4566 | 0.5442 | 25/27 | **0.5003** |
+| 10 | 🟢 PO_anonymized | ✅ | 0.9704 | 0.9182 | 8/8 | **0.9554** |
 | 11 | 🟡 Simple invoice1 | ✅ | 0.9223 | 0.6853 | 1/1 | **0.843** |
 | 12 | 🔴 Small business cash flow forecast1 | ✅ | 0.9765 | 0.3221 | 2/5 | **0.6194** |
 | 13 | ⚪ Wedding timeline planner1 | ✅ | N/A | N/A | ?/? | **N/A** |
-| 14 | 🟡 Wedding_timeline_planner1_copy | ✅ | 0.9718 | 0.7304 | 4/5 | **0.7809** |
-| 15 | 🟢 Weekly schedule planner1 | ✅ | 1.0 | 0.7597 | 1/1 | **0.9039** |
+| 14 | 🟡 Wedding_timeline_planner1_copy | ✅ | 0.9632 | 0.7303 | 4/5 | **0.7774** |
+| 15 | 🟡 Weekly schedule planner1 | ✅ | 0.9375 | 0.7595 | 1/1 | **0.8788** |
+| 16 | 🔴 XlsxIssue75 | ✅ | 0.6439 | 0.7282 | 114/144 | **0.6488** |
+| 17 | 🟢 XlsxIssue77_MergedCellAlignment | ✅ | 1.0 | 0.8014 | 2/2 | **0.9206** |
+| 18 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8544 | 6/6 | **0.9418** |
+| 19 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8476 | 6/6 | **0.939** |
 
-**Average Overall Score: 0.7078**
+**Average Overall Score: 0.7391**
 
 ## Visual Comparison
 
@@ -109,7 +113,7 @@ Generated: 2026-04-30T13:32:33.502189
 </tr>
 <tr>
   <td><b>Event budget1</b></td>
-  <td colspan="1">Event budget1 <span style="color:#f85149">⬤</span> 67.1%</td>
+  <td colspan="1">Event budget1 <span style="color:#f85149">⬤</span> 66.7%</td>
 </tr>
 <tr>
   <td><img src="images/Event budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -253,7 +257,7 @@ Generated: 2026-04-30T13:32:33.502189
 </tr>
 <tr>
   <td><b>PO_anonymized</b></td>
-  <td colspan="1">PO_anonymized <span style="color:#3fb950">⬤</span> 94.7%</td>
+  <td colspan="1">PO_anonymized <span style="color:#3fb950">⬤</span> 95.5%</td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -328,7 +332,7 @@ Generated: 2026-04-30T13:32:33.502189
 </tr>
 <tr>
   <td><b>Wedding_timeline_planner1_copy</b></td>
-  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 78.1%</td>
+  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 77.7%</td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -352,11 +356,659 @@ Generated: 2026-04-30T13:32:33.502189
 </tr>
 <tr>
   <td><b>Weekly schedule planner1</b></td>
-  <td colspan="1">Weekly schedule planner1 <span style="color:#3fb950">⬤</span> 90.4%</td>
+  <td colspan="1">Weekly schedule planner1 <span style="color:#d29922">⬤</span> 87.9%</td>
 </tr>
 <tr>
   <td><img src="images/Weekly schedule planner1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Weekly schedule planner1_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue75</b></td>
+  <td colspan="1">XlsxIssue75 <span style="color:#f85149">⬤</span> 64.9%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p8_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p8_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p9_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p9_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p10_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p10_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p11_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p11_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p12_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p12_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p13_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p13_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p14_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p14_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p15_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p15_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p16_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p16_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p17_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p17_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p18_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p18_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p19_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p19_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p20_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p20_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p21_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p21_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p22_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p22_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p23_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p23_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p24_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p24_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p25_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p25_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p26_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p26_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p27_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p27_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p28_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p28_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p29_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p29_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p30_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p30_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p31_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p31_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p32_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p32_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p33_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p33_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p34_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p34_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p35_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p35_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p36_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p36_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p37_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p37_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p38_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p38_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p39_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p39_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p40_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p40_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p41_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p41_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p42_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p42_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p43_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p43_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p44_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p44_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p45_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p45_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p46_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p46_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p47_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p47_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p48_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p48_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p49_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p49_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p50_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p50_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p51_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p51_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p52_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p52_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p53_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p53_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p54_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p54_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p55_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p55_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p56_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p56_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p57_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p57_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p58_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p58_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p59_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p59_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p60_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p60_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p61_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p61_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p62_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p62_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p63_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p63_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p64_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p64_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p65_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p65_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p66_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p66_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p67_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p67_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p68_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p68_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p69_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p69_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p70_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p70_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p71_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p71_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p72_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p72_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p73_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p73_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p74_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p74_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p75_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p75_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p76_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p76_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p77_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p77_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p78_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p78_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p79_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p79_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p80_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p80_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p81_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p81_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p82_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p82_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p83_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p83_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p84_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p84_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p85_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p85_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p86_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p86_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p87_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p87_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p88_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p88_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p89_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p89_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p90_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p90_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p91_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p91_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p92_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p92_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p93_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p93_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p94_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p94_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p95_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p95_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p96_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p96_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p97_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p97_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p98_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p98_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p99_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p99_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p100_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p100_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p101_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p101_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p102_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p102_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p103_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p103_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p104_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p104_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p105_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p105_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p106_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p106_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p107_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p107_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p108_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p108_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p109_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p109_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p110_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p110_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p111_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p111_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p112_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p112_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p113_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p113_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p114_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p114_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p115_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p116_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p117_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p118_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p119_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p120_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p121_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p122_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p123_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p124_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p125_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p126_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p127_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p128_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p129_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p130_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p131_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p132_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p133_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p134_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p135_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p136_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p137_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p138_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p139_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p140_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p141_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p142_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p143_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue75_p144_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue77_MergedCellAlignment</b></td>
+  <td colspan="1">XlsxIssue77_MergedCellAlignment <span style="color:#3fb950">⬤</span> 92.1%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue77_Template1</b></td>
+  <td colspan="1">XlsxIssue77_Template1 <span style="color:#3fb950">⬤</span> 94.2%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template1_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template1_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template1_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue77_Template2_Workaround</b></td>
+  <td colspan="1">XlsxIssue77_Template2_Workaround <span style="color:#3fb950">⬤</span> 93.9%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p6_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -365,10 +1017,10 @@ Generated: 2026-04-30T13:32:33.502189
 ### Academic Achievement Summary Table
 
 - **Text Similarity:** 0.9293
-- **Visual Average:** 0.9152
-- **Overall Score:** 0.9378
+- **Visual Average:** 0.9163
+- **Overall Score:** 0.9382
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=574983 bytes, Reference=168612 bytes
+- **File Size:** MiniPdf=576099 bytes, Reference=168612 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -488,10 +1140,10 @@ Generated: 2026-04-30T13:32:33.502189
 ### AcademicAchievement_temp
 
 - **Text Similarity:** 0.9293
-- **Visual Average:** 0.9152
-- **Overall Score:** 0.9378
+- **Visual Average:** 0.9163
+- **Overall Score:** 0.9382
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=574983 bytes, Reference=168612 bytes
+- **File Size:** MiniPdf=576099 bytes, Reference=168612 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -754,11 +1406,11 @@ Text content: ✅ Identical
 
 ### Event budget1
 
-- **Text Similarity:** 0.9438
+- **Text Similarity:** 0.9328
 - **Visual Average:** 0.4846
-- **Overall Score:** 0.6714
+- **Overall Score:** 0.667
 - **Pages:** MiniPdf=4, Reference=5
-- **File Size:** MiniPdf=149840 bytes, Reference=121226 bytes
+- **File Size:** MiniPdf=149304 bytes, Reference=121226 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -852,13 +1504,15 @@ Text content: ✅ Identical
 
 +Total income
 
- LOSS SUMMARY
++LOSS SUMMARY
 
 +Total expenses
 
 +Estimated Actual
 
  $1,831 $333
+
+-LOSS SUMMARY
 
 -Total Estimated Actual
 
@@ -891,35 +1545,39 @@ Text content: ✅ Identical
 
 ### payroll-calculator_f
 
-- **Text Similarity:** 0.4563
-- **Visual Average:** 0.5441
-- **Overall Score:** 0.5002
+- **Text Similarity:** 0.4566
+- **Visual Average:** 0.5442
+- **Overall Score:** 0.5003
 - **Pages:** MiniPdf=25, Reference=27
-- **File Size:** MiniPdf=3163605 bytes, Reference=540676 bytes
+- **File Size:** MiniPdf=3160944 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/payroll-calculator_f.pdf
 +++ reference/payroll-calculator_f.pdf
-@@ -1,358 +1,452 @@
+@@ -1,73 +1,90 @@
  Employee Register
 
 -Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
 
--Annual Regular Overtime Exempt Pay Federal Additional Amount to Withhold
+-Step 2 Step 3 Step 4
 
--ID Employee's Name M/F Hire Date Occupation W-4 Form Filing Status Filing Status Step 2 Step 3 Step 4
-
--Salary Hourly Hourly from Frequency Allowance (With every paycheck)
+-Annual Regular Overtime Exempt Additional Amount to Withhold
 
 -(b)
 
--($) Rate ($) Rate ($) Overtime ($)
+-Pay Federal
+
+-ID Employee's Name M/F Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status (With every paycheck) Filing Status
 
 -Dependents Other Deductions
 
+-Frequency Allowance
+
 -Box in (c)
+
+-($) Rate ($) Rate ($) Overtime ($)
 
 -Under Age 17 Dependents ($)
 
@@ -959,17 +1617,19 @@ Text content: ✅ Identical
 
 -Pre-Tax Adjustments Post-Tax Adjustments Post-Tax Deductions Payroll Calculator
 
--Tax Deferral Plan (401k) Health Insurance Premiums Other Withholdings Exempt from State Local Insurance Other Deductions Social
-
--Address
-
--(%) ($) ($) FICA Tax Tax ($) ($) Security
+-State Local Social
 
 -(c)
 
--(%) (%) #
+-Tax Deferral Plan (401k) Health Insurance Premiums Other Withholdings Exempt from Insurance Other Deductions
+
+-Tax Tax Address Security
 
 -Extra
+
+-(%) ($) ($) FICA ($) ($)
+
+-(%) (%) #
 
 -withholding
 
@@ -1019,19 +1679,19 @@ Text content: ✅ Identical
 
 +© 2013 - 2026 Spreadsheet123 LTD
 
-+Payroll Cal
-... (30517 more characters)
++Payroll
+... (30512 more characters)
 
 ```
 </details>
 
 ### PO_anonymized
 
-- **Text Similarity:** 0.9625
-- **Visual Average:** 0.9059
-- **Overall Score:** 0.9474
+- **Text Similarity:** 0.9704
+- **Visual Average:** 0.9182
+- **Overall Score:** 0.9554
 - **Pages:** MiniPdf=8, Reference=8
-- **File Size:** MiniPdf=4746120 bytes, Reference=338357 bytes
+- **File Size:** MiniPdf=4660928 bytes, Reference=338357 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1055,21 +1715,7 @@ Text content: ✅ Identical
 
  Check points Sample size Comment Remark
 
-@@ -40,12 +40,14 @@
- Total Defectives 1 4
-
- Maximum Defectives 0 7 14 21
-
- Inspection qty: >80%
-
--Item# XXX PO No. Batch qty. Inspection quantity No. of carton
-
-+Inspection quantity No. of carton
-
-+Item# XXX PO No. Batch qty.
-
- Packed Unpacked Packed Unpacked
-
+@@ -46,7 +46,8 @@
  XX-ABC-57052-C 71662963 61,859 41,466 8,462 61 16
 
  Total: 41,466 8,462 61 16
@@ -1088,7 +1734,7 @@ Text content: ✅ Identical
 
  Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
 
-@@ -60,122 +62,148 @@
+@@ -61,7 +62,7 @@
  Quantity per carton: Part C & Insert 619
 
  Dimension of carton (cm): L x W X H x x 47 x 32 x 43
@@ -1105,60 +1751,100 @@ Text content: ✅ Identical
 
  Dimension chart
 
--Measure 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-
-+Measure
-
-+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-
- Standard
-
--Part A Length 26.66 25.73 25.55 25.29 26.17 26.19 26.71 26.5 26.51 25.78 25.85 26.53 25 25.78 25.59 25.52 26.62 27 25.28 26.25
-
-+Part A Length
-
-+26.66 25.73 25.55 25.29 26.17 26.19 26.71 26.5 26.51 25.78 25.85 26.53 25 25.78 25.59 25.52 26.62 27 25.28 26.25
-
- 35.38±0.16(mm)
-
--Part A Width 25.66 25.13 25.61 25.23 26.19 26.04 25.13 25.38 25.9 25.05 26.06 25.84 25.41 25.04 26.4 25.75 26.06 25.29 25.74 26.23
-
-+Part A Width
-
-+25.66 25.13 25.61 25.23 26.19 26.04 25.13 25.38 25.9 25.05 26.06 25.84 25.41 25.04 26.4 25.75 26.06 25.29 25.74 26.23
-
- 47.37±0.31(in)
-
--Part B Thick 12.93 12.6 12.63 13.07 12.82 12.94 12.74 12.89 12.76 13.27 12.65 12.84 13.02 13.22 12.62 12.6 12.97 12.9 12.82 12.99
-
-+Part B Thick
-
-+12.93 12.6 12.63 13.07 12.82 12.94 12.74 12.89 12.76 13.27 12.65 12.84 13.02 13.22 12.62 12.6 12.97 12.9 12.82 12.99
-
- 31.75±0.33(cm)
-
--Part B Diam 11.08 10.93 11.18 11.46 11.23 10.84 11.34 11.26 11.29 10.99 11.03 10.9 10.76 11.25 11.24 11.41 11.28 11.13 10.84 11.21
-
-+Part B Diam
-
-+11.08 10.93 11.18 11.46 11.23 10.84 11.34 11.26 11.29 10.99 11.03 10.9 10.76 11.25 11.24 11.41 11.28 11.13 10.84 11.21
-
- 34.58±0.3(cm)
-
--Part C OD 21.49 21.04 20.84 20.86 20 21.08 21.4 21.08 20.41 20.89 20.43 21.64 21.52 21.44 20.8 20.45 21.49 21.62 20.53 21.01
-
-+Part C OD
-
-+21.49 21.04 20.84 20.86 20 21.08 21.4 21.08 20.41 20.89 20.43 21.64 21.52 21.44 20.8 20.45 21.49 21.62 20.53 21.01
+@@ -84,10 +85,10 @@
+ 21.49 21.04 20.84 20.86 20 21.08 21.4 21.08 20.41 20.89 20.43 21.64 21.52 21.44 20.8 20.45 21.49 21.62 20.53 21.01
 
  47.06±0.14(in)
 
--Part C ID 126.15 131.5 131.5 126.6 129.3 129.91 127.6 132.2 128.9 127.2 129.8 131.3 127.2 128.0 133.2 130.6 129.0 129.7 126.6 127.4
+ Part C ID
 
-+Part C ID
+-126.15 131.5 131.5 126.6 129.3 129.91 127.6 132.2 128.9 127.2 129.8 131.3 127.2 128.0 133.2 130.6 129.0 129.7 126.6 127.4
 
-+126.15 131.51 131.49 126.58 129.29 129.91 127.64 132.23 128.91 127.19 129.78 131.35 127.22 128.01 13
-... (8523 more characters)
++126.15 131.51 131.49 126.58 129.29 129.91 127.64 132.23 128.91 127.19 129.78 131.35 127.22 128.01 133.22 130.59 129.02 129.68 126.57 127.38
+
+ 19.14±0.17(mm)
+
+ Part D Height
+
+-checked by ø4.56 and ø4.64 pin gauge , all within spec.
+
++checked by ø4.56 and ø4.64 pin gauges , all within spec.
+
+ 35.23±0.18(cm)
+
+ Part D Width
+
+ 46.81±0.47(mm)
+
+@@ -126,76 +127,83 @@
+ Date: 3/6/2026
+
+ Authorized QC Inspector of XXX
+
+ Doc#: FIR-003.5
+
+-Effective: 20171109 Page 2 of 8
+
+----PAGE---
+
+-Final Inspection Report
+
+-Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
+
+-XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
+
+-PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
+
+-Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
+
+-Lot ID: 9928-539898(1st lot)
+
+-Item#: XX-ABC-68878-C
+
+-Description: Standard Component Assembly with Seal Insert
+
+-Photos
+
+-Doc#: FIR-003.5
+
+-Effective: 20171109 Page 3 of 8
+
+----PAGE---
+
+-Final Inspection Report
+
+-Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
+
+-XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
+
+-PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
+
+-Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
+
+-Lot ID: 9928-539898(1st lot)
+
+-Item#: XX-ABC-68878-C
+
+-Description: Standard Component Assembly with Seal Insert
+
+-Photos
+
+-Doc#: FIR-003.5
+
+-Effective: 20171109 Page 4 of 8
+
+----PAGE---
+
+-Final Inspection Report
+
+-Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
+
+-XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
+
+-PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
+
+-Project#: XXBFNO6 Inspection date: 24-Jan-2026 Ba
+... (4673 more characters)
 
 ```
 </details>
@@ -1169,7 +1855,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.6853
 - **Overall Score:** 0.843
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=330241 bytes, Reference=78344 bytes
+- **File Size:** MiniPdf=330180 bytes, Reference=78344 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1185,7 +1871,7 @@ Text content: ✅ Identical
 
  Invoice #: 10654
 
--Invoice date: 4/30/2026
+-Invoice date: 6/9/2026
 
 -Embrace
 
@@ -1230,29 +1916,27 @@ Text content: ✅ Identical
 - **Visual Average:** 0.3221
 - **Overall Score:** 0.6194
 - **Pages:** MiniPdf=2, Reference=5
-- **File Size:** MiniPdf=389325 bytes, Reference=126373 bytes
+- **File Size:** MiniPdf=389189 bytes, Reference=126373 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Small business cash flow forecast1.pdf
 +++ reference/Small business cash flow forecast1.pdf
-@@ -1,52 +1,53 @@
+@@ -1,53 +1,53 @@
  ELBIDE REALTY
 
  Cash flow forecast
 
 -Starting cash on hand $ 10,000.00 Starting date Apr 2026 Cash minimum balance alert $ 2,000.00
 
--Apr 2026 May 2026 Jun 2026 Jul 2026 Aug 2026 Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027 Total
-
--Cash on hand (beginning of month) $ 10,000.00  $ 8,050.00  $ 9,350.00 $ 890.00 $ 2,190.00  $ 13,590.00  $ 13,790.00  $ 15,290.00  $ 16,410.00  $ 14,360.00  $ 16,560.00  $ 18,780.00
-
 +Starting cash on hand $     10,000.00 Starting date Apr 2026 Cash minimum balance alert $        2,000.00
 
-+Apr 2026 May 2026 Jun 2026 Jul 2026 Aug 2026 Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027
+ Apr 2026 May 2026 Jun 2026 Jul 2026 Aug 2026 Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027
 
-+Total
+ Total
+
+-Cash on hand (beginning of month) $ 10,000.00  $ 8,050.00  $ 9,350.00 $ 890.00 $ 2,190.00  $ 13,590.00  $ 13,790.00  $ 15,290.00  $ 16,410.00  $ 14,360.00  $ 16,560.00  $ 18,780.00
 
 +Cash on hand (beginning of month) $     10,000.00  $        8,050.00  $        9,350.00 $           890.00 $        2,190.00  $     13,590.00  $     13,790.00  $     15,290.00  $     16,410.00  $     14,360.00  $     16,560.00  $     18,780.00
 
@@ -1298,8 +1982,12 @@ Text content: ✅ Identical
 
 -Advertising $ 3,000.00 $ 3,000.00
 
--Commissions and fees $ 250.00  $ 300.00  $ 360.00  $ 300.00  $ 1,400.00  $ 400.00  $ 300.00  $ 280.00  $ 350.00  $ 400.00  $ 380.00  $
-... (5767 more characters)
+-Commissions and fees $ 250.00  $ 300.00  $ 360.00  $ 300.00  $ 1,400.00  $ 400.00  $ 300.00  $ 280.00  $ 350.00  $ 400.00  $ 380.00  $ 420.00  $ 5,140.00
+
+-Contract labor $ 200.00 $ 200.00 $ 200.00 $ 200.00 $ 200.00 $ 200.00  $ 1,200.00
+
+-Employee be
+... (5651 more characters)
 
 ```
 </details>
@@ -1310,19 +1998,29 @@ Text content: ✅ Identical
 
 ### Wedding_timeline_planner1_copy
 
-- **Text Similarity:** 0.9718
-- **Visual Average:** 0.7304
-- **Overall Score:** 0.7809
+- **Text Similarity:** 0.9632
+- **Visual Average:** 0.7303
+- **Overall Score:** 0.7774
 - **Pages:** MiniPdf=4, Reference=5
-- **File Size:** MiniPdf=745841 bytes, Reference=126603 bytes
+- **File Size:** MiniPdf=745837 bytes, Reference=126603 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Wedding_timeline_planner1_copy.pdf
 +++ reference/Wedding_timeline_planner1_copy.pdf
-@@ -5,33 +5,34 @@
+@@ -1,37 +1,38 @@
+ Wedding timeline planner
+
+ DONE?
+
+ ☐ Arrange a gathering for you and your parents.
+
++9 - 12
+
  ☐ Determine budget and how expenses will be shared.
+
+-9 - 12
 
  MONTHS TO GO
 
@@ -1362,9 +2060,11 @@ Text content: ✅ Identical
 
  ☐ Choose the members of your wedding party.
 
- 6 - 9
++6 - 9
 
  ☐ Enroll in wedding/shower gift registries.
+
+-6 - 9
 
 -MONTHS TO GO ☐ Hire a photographer and a videographer.
 
@@ -1410,12 +2110,18 @@ Text content: ✅ Identical
 
  possible.)
 
-@@ -47,31 +48,38 @@
+@@ -45,33 +46,40 @@
+ ☐ Schedule wedding cake design appointments and tastings.
+
+ ☐ Start planning your honeymoon.
+
  ☐ Finalize the guest list.
 
- 4 - 6
++4 - 6
 
  ☐ Order invitations and other wedding stationery.
+
+-4 - 6
 
 -MONTHS TO GO Plan wedding-day beauty preparations; ask your stylist how far in advance
 
@@ -1443,55 +2149,519 @@ Text content: ✅ Identical
 
 +for visas, passports and inoculations.
 
-+Hire your wedding day transportation (carriage, limousine service,
-
-+☐
-
-+etc.).
-
- ☐ Plan the rehearsal dinner.
-
- ☐ Obtain a marriage license. Bring all necessary documents.
-
- 2 - 4
-
- ☐ Order tuxedoes for the groom and groo
-... (2651 more characters)
++Hire you
+... (2885 more characters)
 
 ```
 </details>
 
 ### Weekly schedule planner1
 
-- **Text Similarity:** 1.0
-- **Visual Average:** 0.7597
-- **Overall Score:** 0.9039
+- **Text Similarity:** 0.9375
+- **Visual Average:** 0.7595
+- **Overall Score:** 0.8788
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=700907 bytes, Reference=96071 bytes
+- **File Size:** MiniPdf=703643 bytes, Reference=96071 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Weekly schedule planner1.pdf
 +++ reference/Weekly schedule planner1.pdf
-@@ -5,7 +5,8 @@
- Read 30 min/day Go grocery shopping
-
+@@ -6,7 +6,8 @@
  Stretch Pick up dry cleaning
 
  Monday Tuesday Wednesday Thursday Friday Saturday Sunday
 
--23 24 25 26 27 28 29
+ 23
 
-+23
+-March 24 March 25 March 26 March 27 March 28 March 29 March
 
 +24 25 26 27 28 29
 
- March March March March March March March
++March March March March March March March
 
  ✔ Run ✔ Run ✖ Run Run Run Run Run
 
  ✖ Read ✔ Read ✔ Read Read Read Read Read
+
+ ✔ Stretch ✔ Stretch ✖ Stretch Stretch Stretch Stretch Stretch
+
+```
+</details>
+
+### XlsxIssue75
+
+- **Text Similarity:** 0.6439
+- **Visual Average:** 0.7282
+- **Overall Score:** 0.6488
+- **Pages:** MiniPdf=114, Reference=144
+- **File Size:** MiniPdf=2736075 bytes, Reference=5896167 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue75.pdf
++++ reference/XlsxIssue75.pdf
+@@ -8,14 +8,14 @@
+ 00198 Fred Invoice
+
+ 00198 Fred Invoice
+
+ 00198 Fred Invoice
+
+-3991030        Fred Credit Memo
+
++3991030 Fred Credit Memo
+
+ 208 Fred Invoice
+
+-3991014        Fred Invoice
+
+-3991014        Fred Invoice
+
+-3991014        Fred Invoice
+
+-3991014        Fred Invoice
+
+-3991014        Fred Invoice
+
+-3991014        Fred Invoice
+
++3991014 Fred Invoice
+
++3991014 Fred Invoice
+
++3991014 Fred Invoice
+
++3991014 Fred Invoice
+
++3991014 Fred Invoice
+
++3991014 Fred Invoice
+
+ 32250 Fred Invoice
+
+ 32250 Fred Invoice
+
+ 95828 Fred Invoice
+
+@@ -26,24 +26,27 @@
+ 91773 Fred Invoice
+
+ 0269 Fred Payment
+
+ 0269 Fred Payment
+
+-3991032        Fred Invoice
+
+-3991032        Fred Invoice
+
+-3991032        Fred Invoice
+
+-3991032        Fred Invoice
+
+-3991032        Fred Invoice
+
+-3991032        Fred Invoice
+
+-3991032        Fred Invoice
+
++3991032 Fred Invoice
+
++3991032 Fred Invoice
+
++3991032 Fred Invoice
+
++3991032 Fred Invoice
+
++3991032 Fred Invoice
+
++3991032 Fred Invoice
+
++3991032 Fred Invoice
+
+ 04550 Fred Invoice
+
+-3991293        Fred Invoice
+
+-3991293        Fred Invoice
+
+-3991293        Fred Invoice
+
+-3991293        Fred Invoice
+
+-3991293        Fred Invoice
+
+-3991293        Fred Invoice
+
+-3991293        Fred Invoice
+
+-3991293        Fred Invoice
+
+-3991293        Fred Invoice
+
+-3991293        Fred Invoice
+
++3991293 Fred Invoice
+
++3991293 Fred Invoice
+
++3991293 Fred Invoice
+
++3991293 Fred Invoice
+
++3991293 Fred Invoice
+
++3991293 Fred Invoice
+
++3991293 Fred Invoice
+
++3991293 Fred Invoice
+
++3991293 Fred Invoice
+
++3991293 Fred Invoice
+
++30184 Fred Invoice
+
++30184 Fred Invoice
+
++30184 Fred Invoice
+
+ 30184 Fred Invoice
+
+ 30184 Fred Invoice
+
+ ---PAGE---
+
+@@ -64,56 +67,53 @@
+ 30184 Fred Invoice
+
+ 30184 Fred Invoice
+
+ 30184 Fred Invoice
+
+-30184 Fred Invoice
+
+-30184 Fred Invoice
+
+-30184 Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Credit Memo
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Credit Memo
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Credit Memo
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Credit Memo
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+----PAGE---
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Credit Memo
+
+-BLAC002        Fred Credit Memo
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Invoice
+
+-BLAC002        Fred Credit Memo
+
+-BLAC002        Fred Invoice
+
+-BLAC002    
+... (322484 more characters)
+
+```
+</details>
+
+### XlsxIssue77_MergedCellAlignment
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.8014
+- **Overall Score:** 0.9206
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=705850 bytes, Reference=172385 bytes
+
+Text content: ✅ Identical
+
+### XlsxIssue77_Template1
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.8544
+- **Overall Score:** 0.9418
+- **Pages:** MiniPdf=6, Reference=6
+- **File Size:** MiniPdf=417011 bytes, Reference=64464 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue77_Template1.pdf
++++ reference/XlsxIssue77_Template1.pdf
+@@ -6,8 +6,8 @@
+ Attn Customer:   Please return parts to the return address below.
+
+ Customer Name Sales Person Requestor
+
+ Return Address: Reason for Return:
+
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
+
+-factory packaging, with no extra labels or markings on the product.
+
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
+
++code, original factory packaging, with no extra labels or markings on the product.
+
+ Original Qty
+
+ Part No. Per Unit
+
+ Invoice # Authorized
+
+@@ -20,8 +20,8 @@
+ Attn Customer:   Please return parts to the return address below.
+
+ Customer Name Sales Person Requestor
+
+ Return Address: Reason for Return:
+
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
+
+-factory packaging, with no extra labels or markings on the product.
+
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
+
++code, original factory packaging, with no extra labels or markings on the product.
+
+ Original Qty
+
+ Part No. Per Unit
+
+ Invoice # Authorized
+
+@@ -34,8 +34,8 @@
+ Attn Customer:   Please return parts to the return address below.
+
+ Customer Name Sales Person Requestor
+
+ Return Address: Reason for Return:
+
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
+
+-factory packaging, with no extra labels or markings on the product.
+
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
+
++code, original factory packaging, with no extra labels or markings on the product.
+
+ Original Qty
+
+ Part No. Per Unit
+
+ Invoice # Authorized
+
+@@ -48,8 +48,8 @@
+ Attn Customer:   Please return parts to the return address below.
+
+ Customer Name Sales Person Requestor
+
+ Return Address: Reason for Return:
+
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
+
+-factory packaging, with no extra labels or markings on the product.
+
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
+
++code, original factory packaging, with no extra labels or markings on the product.
+
+ Original Qty
+
+ Part No. Per Unit
+
+ Invoice # Authorized
+
+@@ -62,8 +62,8 @@
+ Attn Customer:   Please return parts to the return address below.
+
+ Customer Name Sales Person Requestor
+
+ Return Address: Reason for Return:
+
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
+
+-factory packaging, with no extra labels or markings on the product.
+
++NOTE - All parts returned for credit
+... (854 more characters)
+
+```
+</details>
+
+### XlsxIssue77_Template2_Workaround
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.8476
+- **Overall Score:** 0.939
+- **Pages:** MiniPdf=6, Reference=6
+- **File Size:** MiniPdf=419398 bytes, Reference=64466 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue77_Template2_Workaround.pdf
++++ reference/XlsxIssue77_Template2_Workaround.pdf
+@@ -6,8 +6,8 @@
+ Attn Customer:   Please return parts to the return address below.
+
+ Customer Name Sales Person Requestor
+
+ Return Address: Reason for Return:
+
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
+
+-factory packaging, with no extra labels or markings on the product.
+
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
+
++code, original factory packaging, with no extra labels or markings on the product.
+
+ Original Qty
+
+ Part No. Per Unit
+
+ Invoice # Authorized
+
+@@ -20,8 +20,8 @@
+ Attn Customer:   Please return parts to the return address below.
+
+ Customer Name Sales Person Requestor
+
+ Return Address: Reason for Return:
+
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
+
+-factory packaging, with no extra labels or markings on the product.
+
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
+
++code, original factory packaging, with no extra labels or markings on the product.
+
+ Original Qty
+
+ Part No. Per Unit
+
+ Invoice # Authorized
+
+@@ -34,8 +34,8 @@
+ Attn Customer:   Please return parts to the return address below.
+
+ Customer Name Sales Person Requestor
+
+ Return Address: Reason for Return:
+
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
+
+-factory packaging, with no extra labels or markings on the product.
+
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
+
++code, original factory packaging, with no extra labels or markings on the product.
+
+ Original Qty
+
+ Part No. Per Unit
+
+ Invoice # Authorized
+
+@@ -48,8 +48,8 @@
+ Attn Customer:   Please return parts to the return address below.
+
+ Customer Name Sales Person Requestor
+
+ Return Address: Reason for Return:
+
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
+
+-factory packaging, with no extra labels or markings on the product.
+
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
+
++code, original factory packaging, with no extra labels or markings on the product.
+
+ Original Qty
+
+ Part No. Per Unit
+
+ Invoice # Authorized
+
+@@ -62,8 +62,8 @@
+ Attn Customer:   Please return parts to the return address below.
+
+ Customer Name Sales Person Requestor
+
+ Return Address: Reason for Return:
+
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
+
+-factory packaging, with no extra labels or markings on the product.
+
++NOTE - All par
+... (876 more characters)
 
 ```
 </details>
@@ -1500,9 +2670,10 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **payroll-calculator_f** (score: 0.5002)
+1. **payroll-calculator_f** (score: 0.5003)
 1. **Small business cash flow forecast1** (score: 0.6194)
-1. **Event budget1** (score: 0.6714)
-1. **Wedding_timeline_planner1_copy** (score: 0.7809)
+1. **XlsxIssue75** (score: 0.6488)
+1. **Event budget1** (score: 0.667)
+1. **Wedding_timeline_planner1_copy** (score: 0.7774)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

@@ -19,6 +19,31 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: authoring-app
+    attributes:
+      label: Authoring application
+      description: Which application created or last saved the source document?
+      options:
+        - Microsoft Office
+        - WPS Office
+        - LibreOffice
+        - Apache OpenOffice
+        - Google Docs/Sheets
+        - Generated programmatically (e.g. OpenXML SDK, EPPlus, NPOI)
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: authoring-app-version
+    attributes:
+      label: Authoring application version
+      description: Provide the version of the application selected above.
+      placeholder: "Example: Microsoft Office 2021, WPS Office 12.1, LibreOffice 24.8"
+    validations:
+      required: false
+
   - type: input
     id: version
     attributes:

@@ -1,36 +1,37 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-06-08T19:41:54.979408
+Generated: 2026-06-09T13:22:10.427862
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9629 | 2/2 | **0.9852** |
-| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9728 | 2/2 | **0.9891** |
-| 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9796 | 2/2 | **0.9894** |
+| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9679 | 2/2 | **0.9872** |
+| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9759 | 2/2 | **0.9904** |
+| 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9612 | 2/2 | **0.9821** |
 | 4 | 🟢 20260318_issue | ✅ | 0.9685 | 0.8651 | 7/7 | **0.9334** |
-| 5 | 🟢 CCU_article | ✅ | 0.9268 | 0.9466 | 21/21 | **0.9494** |
+| 5 | 🟢 CCU_article | ✅ | 0.8754 | 0.9467 | 21/21 | **0.9288** |
 | 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
-| 7 | 🟢 Class News | ✅ | 0.9919 | 0.8692 | 4/4 | **0.9444** |
+| 7 | 🟢 Class News | ✅ | 0.9665 | 0.8876 | 4/4 | **0.9416** |
 | 8 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
-| 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9832 | 0.9696 | 2/2 | **0.9811** |
+| 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9791 | 0.9696 | 2/2 | **0.9795** |
 | 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9846 | 7/7 | **0.9859** |
-| 11 | 🟢 Fabrikam | ✅ | 1.0 | 0.9466 | 1/1 | **0.9786** |
-| 12 | 🟢 Invoice | ✅ | 1.0 | 0.9592 | 1/1 | **0.9837** |
-| 13 | 🟢 issue202605 | ✅ | 0.8653 | 0.913 | 2/2 | **0.9113** |
-| 14 | 🟢 issue26050501 | ✅ | 0.9188 | 0.9395 | 2/2 | **0.9433** |
-| 15 | 🟢 issues66 | ✅ | 0.9488 | 0.9813 | 3/3 | **0.972** |
-| 16 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8358 | 2/2 | **0.877** |
-| 17 | 🟡 nthu_article | ✅ | 0.86 | 0.8709 | 19/20 | **0.7924** |
-| 18 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8438 | 1/1 | **0.9355** |
+| 11 | 🟢 Fabrikam | ✅ | 1.0 | 0.9426 | 1/1 | **0.977** |
+| 12 | 🟢 Invoice | ✅ | 1.0 | 0.9591 | 1/1 | **0.9836** |
+| 13 | 🟢 issue202605 | ✅ | 0.8674 | 0.9128 | 2/2 | **0.9121** |
+| 14 | 🟢 issue26050501 | ✅ | 0.9188 | 0.94 | 2/2 | **0.9435** |
+| 15 | 🟢 issues66 | ✅ | 0.9548 | 0.9232 | 3/3 | **0.9512** |
+| 16 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8365 | 2/2 | **0.8773** |
+| 17 | 🟡 nthu_article | ✅ | 0.8599 | 0.869 | 19/20 | **0.7916** |
+| 18 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8445 | 1/1 | **0.9358** |
 | 19 | 🟢 SA8000 ch sample | ✅ | 0.9921 | 0.9642 | 2/2 | **0.9825** |
 | 20 | 🟢 Support_Letter | ✅ | 1.0 | 0.946 | 1/1 | **0.9784** |
 | 21 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 22 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 | 23 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
+| 24 | 🟢 TestIssue78 | ✅ | 0.9961 | 0.9588 | 1/1 | **0.982** |
 
-**Average Overall Score: 0.8257**
+**Average Overall Score: 0.8301**
 
 ## Visual Comparison
 
@@ -38,7 +39,7 @@ Generated: 2026-06-08T19:41:54.979408
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>13_IEEE_Style_Paper</b></td>
-  <td colspan="1">13_IEEE_Style_Paper <span style="color:#3fb950">⬤</span> 98.5%</td>
+  <td colspan="1">13_IEEE_Style_Paper <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
   <td><img src="images/13_IEEE_Style_Paper_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -50,7 +51,7 @@ Generated: 2026-06-08T19:41:54.979408
 </tr>
 <tr>
   <td><b>14_Thesis_Chapter</b></td>
-  <td colspan="1">14_Thesis_Chapter <span style="color:#3fb950">⬤</span> 98.9%</td>
+  <td colspan="1">14_Thesis_Chapter <span style="color:#3fb950">⬤</span> 99.0%</td>
 </tr>
 <tr>
   <td><img src="images/14_Thesis_Chapter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -62,7 +63,7 @@ Generated: 2026-06-08T19:41:54.979408
 </tr>
 <tr>
   <td><b>20260317_sample_CN</b></td>
-  <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 98.9%</td>
+  <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 98.2%</td>
 </tr>
 <tr>
   <td><img src="images/20260317_sample_CN_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -106,7 +107,7 @@ Generated: 2026-06-08T19:41:54.979408
 </tr>
 <tr>
   <td><b>CCU_article</b></td>
-  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 94.9%</td>
+  <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 92.9%</td>
 </tr>
 <tr>
   <td><img src="images/CCU_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -201,7 +202,7 @@ Generated: 2026-06-08T19:41:54.979408
 </tr>
 <tr>
   <td><b>Class News</b></td>
-  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 94.4%</td>
+  <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 94.2%</td>
 </tr>
 <tr>
   <td><img src="images/Class News_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -228,7 +229,7 @@ Generated: 2026-06-08T19:41:54.979408
 </tr>
 <tr>
   <td><b>Confirmatory_Affidavit</b></td>
-  <td colspan="1">Confirmatory_Affidavit <span style="color:#3fb950">⬤</span> 98.1%</td>
+  <td colspan="1">Confirmatory_Affidavit <span style="color:#3fb950">⬤</span> 98.0%</td>
 </tr>
 <tr>
   <td><img src="images/Confirmatory_Affidavit_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -272,7 +273,7 @@ Generated: 2026-06-08T19:41:54.979408
 </tr>
 <tr>
   <td><b>Fabrikam</b></td>
-  <td colspan="1">Fabrikam <span style="color:#3fb950">⬤</span> 97.9%</td>
+  <td colspan="1">Fabrikam <span style="color:#3fb950">⬤</span> 97.7%</td>
 </tr>
 <tr>
   <td><img src="images/Fabrikam_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -288,7 +289,7 @@ Generated: 2026-06-08T19:41:54.979408
 </tr>
 <tr>
   <td><b>issue202605</b></td>
-  <td colspan="1">issue202605 <span style="color:#3fb950">⬤</span> 91.1%</td>
+  <td colspan="1">issue202605 <span style="color:#3fb950">⬤</span> 91.2%</td>
 </tr>
 <tr>
   <td><img src="images/issue202605_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -312,7 +313,7 @@ Generated: 2026-06-08T19:41:54.979408
 </tr>
 <tr>
   <td><b>issues66</b></td>
-  <td colspan="1">issues66 <span style="color:#3fb950">⬤</span> 97.2%</td>
+  <td colspan="1">issues66 <span style="color:#3fb950">⬤</span> 95.1%</td>
 </tr>
 <tr>
   <td><img src="images/issues66_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -424,7 +425,7 @@ Generated: 2026-06-08T19:41:54.979408
 </tr>
 <tr>
   <td><b>OSCAR WARD</b></td>
-  <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 93.5%</td>
+  <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 93.6%</td>
 </tr>
 <tr>
   <td><img src="images/OSCAR WARD_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -565,6 +566,14 @@ Generated: 2026-06-08T19:41:54.979408
   <td><img src="images/TestIssue61_p8_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/TestIssue61_p8_reference.png" width="340" alt="Reference"></td>
 </tr>
+<tr>
+  <td><b>TestIssue78</b></td>
+  <td colspan="1">TestIssue78 <span style="color:#3fb950">⬤</span> 98.2%</td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue78_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue78_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
 </table>
 
 ## Detailed Results
@@ -572,10 +581,10 @@ Generated: 2026-06-08T19:41:54.979408
 ### 13_IEEE_Style_Paper
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9629
-- **Overall Score:** 0.9852
+- **Visual Average:** 0.9679
+- **Overall Score:** 0.9872
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1152861 bytes, Reference=174711 bytes
+- **File Size:** MiniPdf=1152862 bytes, Reference=174711 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -623,42 +632,26 @@ Generated: 2026-06-08T19:41:54.979408
 
  2. Related Work
 
-@@ -27,7 +28,7 @@
- References
-
- [1] A. Brown, Document Processing: Principles and Practice, IEEE Trans., vol. 45, 2023.
-
- [2] C. Davis et al., Layout-aware text extraction from PDF documents, Proc. ICDAR, 2022.
-
-+[3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.
-
- ---PAGE---
-
--[3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.
-
- [4] I. Smith et al., Rule-based multi-format document converter, Proc. DocEng, 2020.
-
- [5] K. Johnson and L. Lee, Learning document conversion, Proc. ACL, 2023.
 ```
 </details>
 
 ### 14_Thesis_Chapter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9728
-- **Overall Score:** 0.9891
+- **Visual Average:** 0.9759
+- **Overall Score:** 0.9904
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1005001 bytes, Reference=159781 bytes
+- **File Size:** MiniPdf=1005002 bytes, Reference=159781 bytes
 
 Text content: ✅ Identical
 
 ### 20260317_sample_CN
 
 - **Text Similarity:** 0.994
-- **Visual Average:** 0.9796
-- **Overall Score:** 0.9894
+- **Visual Average:** 0.9612
+- **Overall Score:** 0.9821
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7586903 bytes, Reference=201209 bytes
+- **File Size:** MiniPdf=7586886 bytes, Reference=201209 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -711,7 +704,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8651
 - **Overall Score:** 0.9334
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=1531209 bytes, Reference=344088 bytes
+- **File Size:** MiniPdf=1531193 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -810,11 +803,11 @@ Text content: ✅ Identical
 
 ### CCU_article
 
-- **Text Similarity:** 0.9268
-- **Visual Average:** 0.9466
-- **Overall Score:** 0.9494
+- **Text Similarity:** 0.8754
+- **Visual Average:** 0.9467
+- **Overall Score:** 0.9288
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6551674 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6540793 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -924,7 +917,7 @@ Text content: ✅ Identical
 
 +The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class
 
-... (15312 more characters)
+... (12611 more characters)
 
 ```
 </details>
@@ -935,11 +928,11 @@ Text content: ✅ Identical
 
 ### Class News
 
-- **Text Similarity:** 0.9919
-- **Visual Average:** 0.8692
-- **Overall Score:** 0.9444
+- **Text Similarity:** 0.9665
+- **Visual Average:** 0.8876
+- **Overall Score:** 0.9416
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=345312 bytes, Reference=147827 bytes
+- **File Size:** MiniPdf=345318 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1005,7 +998,26 @@ Text content: ✅ Identical
 
  Lorem ipsum dolor sit amet,
 
-@@ -80,8 +78,7 @@
+@@ -56,7 +54,8 @@
+ Aliquam non varius ipsum.
+
+ sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Non
+
+ Fusce venenatis quam vel
+
+-libero scelerisque. Quam vel varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis.
+
++varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis.
+
++libero scelerisque. Quam vel
+
+ libero sce lerisque, a mattis
+
+ Maecenas massa velit, consectetur sit amet da pibus et, dapibus sit amet
+
+ diam venenatis quam vel.
+
+@@ -79,8 +78,7 @@
  non varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis
 
  diam sollicitudin.
@@ -1024,7 +1036,7 @@ Text content: ✅ Identical
 
  Quisque a suscipit nulla, non posuere tellus. Vivamus justo erat, suscipit sit
 
-@@ -105,8 +102,8 @@
+@@ -104,8 +102,8 @@
  diam sollicitudin.
 
  Maecenas massa velit, consectetur sit amet dapibus et, dapibus sit amet
@@ -1041,27 +1053,8 @@ Text content: ✅ Identical
 
  Aliquam pharetra risus vitae odio imperdiet condimentum. Fusce in quam
 
- varius, dictum mi sit amet, aliquam mi. Suspe ndisse potenti. Pellentesque
-
- auctor id neque vel maximus.
-
-@@ -127,7 +124,8 @@
- Fusce venenatis quam vel
-
- sollicitudin. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Non
-
- libero scelerisque. Quam vel
-
--libero sce lerisque, a mattis varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis.
-
-+varius ipsum. Fusce venenatis quam vel libero sce lerisque, a mattis.
-
-+libero sce lerisque, a mattis
-
- diam venenatis quam vel.
-
- Maecenas massa veli
-... (128 more characters)
+ varius, dictum mi sit amet,
+... (1007 more characters)
 
 ```
 </details>
@@ -1072,18 +1065,26 @@ Text content: ✅ Identical
 
 ### Confirmatory_Affidavit
 
-- **Text Similarity:** 0.9832
+- **Text Similarity:** 0.9791
 - **Visual Average:** 0.9696
-- **Overall Score:** 0.9811
+- **Overall Score:** 0.9795
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=795389 bytes, Reference=143292 bytes
+- **File Size:** MiniPdf=795543 bytes, Reference=143292 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Confirmatory_Affidavit.pdf
 +++ reference/Confirmatory_Affidavit.pdf
-@@ -4,26 +4,25 @@
+@@ -1,31 +1,28 @@
+-1
+
+ CONFIRMATORY AFFIDAVIT
+
+ I, the undersigned,
+
+ Sofia Verbitckaia
+
  hereby state under oath,
 
  1. I am an adult female with full legal capacity and currently reside at Fuga Qui
@@ -1131,6 +1132,8 @@ Text content: ✅ Identical
  Page 1 of 2
 
  ---PAGE---
+
+-2
 
 -b. She has no objection to taking the prescribed oath; and
 
@@ -1308,10 +1311,10 @@ Text content: ✅ Identical
 ### Fabrikam
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9466
-- **Overall Score:** 0.9786
+- **Visual Average:** 0.9426
+- **Overall Score:** 0.977
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=95298 bytes, Reference=55486 bytes
+- **File Size:** MiniPdf=95314 bytes, Reference=55486 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1343,8 +1346,8 @@ Text content: ✅ Identical
 ### Invoice
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9592
-- **Overall Score:** 0.9837
+- **Visual Average:** 0.9591
+- **Overall Score:** 0.9836
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=113620 bytes, Reference=65867 bytes
 
@@ -1375,18 +1378,18 @@ Text content: ✅ Identical
 
 ### issue202605
 
-- **Text Similarity:** 0.8653
-- **Visual Average:** 0.913
-- **Overall Score:** 0.9113
+- **Text Similarity:** 0.8674
+- **Visual Average:** 0.9128
+- **Overall Score:** 0.9121
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7689730 bytes, Reference=154034 bytes
+- **File Size:** MiniPdf=7690208 bytes, Reference=154034 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/issue202605.pdf
 +++ reference/issue202605.pdf
-@@ -2,9 +2,10 @@
+@@ -2,7 +2,7 @@
  115 學年度博士班入學甄試聯合招生
 
  資訊工程學系學經歷表
@@ -1399,30 +1402,26 @@ Text content: ✅ Identical
 
  畢業論文名稱 指導教授
 
--進入本系博士班 □計算機網路 □晶片系統設計與電子設計自動化 □電腦系統
+ 進入本系博士班
 
-+進入本系博士班
+ □計算機網路 □晶片系統設計與電子設計自動化 □電腦系統
 
-+□計算機網路 □晶片系統設計與電子設計自動化 □電腦系統
-
- 擬研讀領域/方向
-
- □電腦視覺、計算機圖學與影像處理□人工智慧、數據科學、演算法與人機互動
-
+@@ -11,40 +11,34 @@
  (可複選)
 
-@@ -12,31 +13,32 @@
+ 有興趣指導教授
+
  姓名(至多三位)
 
- □應屆 □一般生
+-□應屆
+
+-□一般生
+
++□應屆 □一般生
 
  就學狀況 報考身分
 
--□在職生
-
--□非應屆
-
-+□非應屆 □在職生
+ □非應屆 □在職生
 
  學業表現 (請填寫大學(含)以上學歷之成績記錄，並隨附歷年成績表，含班級或全系排名，若曾轉學、轉系，請註明。)
 
@@ -1434,13 +1433,21 @@ Text content: ✅ Identical
 
  總平均 總排名
 
--_____/_____至_____/_____
+-_____/_____至
 
--_____/_____至_____/_____
+-_____/_____
 
--_____/_____至_____/_____
+-_____/_____至
 
--_____/_____至_____/_____
+-_____/_____
+
+-_____/_____至
+
+-_____/_____
+
+-_____/_____至
+
+-_____/_____
 
 +_____/_____ 至 _____/_____
 
@@ -1462,15 +1469,21 @@ Text content: ✅ Identical
 
  工作經歷 (請依序填寫大學畢業後之全職工作經歷(不含兼任研究助理)；如無可免填。)
 
--1. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）
+-1. 服務機構名稱 服務部門 職稱 起迄年月（西元年/
+
+-月）
 
 -/     至　   /
 
--2. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）
+-2. 服務機構名稱 服務部門 職稱 起迄年月（西元年/
+
+-月）
 
 -/     至　   /
 
--3. 服務機構名稱 服務部門 職稱 起迄年月（西元年/月）
+-3. 服務機構名稱 服務部門 職稱 起迄年月（西元年/
+
+-月）
 
 -/     至　   /
 
@@ -1514,10 +1527,10 @@ Text content: ✅ Identical
 ### issue26050501
 
 - **Text Similarity:** 0.9188
-- **Visual Average:** 0.9395
-- **Overall Score:** 0.9433
+- **Visual Average:** 0.94
+- **Overall Score:** 0.9435
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=236761 bytes, Reference=111155 bytes
+- **File Size:** MiniPdf=236777 bytes, Reference=111155 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1712,11 +1725,11 @@ Text content: ✅ Identical
 
 ### issues66
 
-- **Text Similarity:** 0.9488
-- **Visual Average:** 0.9813
-- **Overall Score:** 0.972
+- **Text Similarity:** 0.9548
+- **Visual Average:** 0.9232
+- **Overall Score:** 0.9512
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=4389086 bytes, Reference=229716 bytes
+- **File Size:** MiniPdf=4389058 bytes, Reference=229716 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1734,21 +1747,7 @@ Text content: ✅ Identical
 
  申请人 init 申请人电话 88888888<br /> 申请人邮箱 1@my.com 申请人签字
 
-@@ -6,30 +6,31 @@
- 付费人 init 课题编号 测试项目 付费人邮箱 1@my.com 付费人签字
-
- 申请日期 20251126 所属单位 985 高校
-
- 样品材料 样品尺寸
-
--试验目的及说明 样品数量与编号 0
-
-+样品数量与编号 0
-
-+试验目的及说明
-
- 目的
-
+@@ -12,25 +12,25 @@
  序
 
  工艺名称 工艺要求及说明 日期 计价和确认 备注
@@ -1795,8 +1794,6 @@ Text content: ✅ Identical
 
 -温度没有特殊要求的可填写：常规。
 
--3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。
-
 +工艺流程总计价： 0.80￥ 计价核准人签字： 日期：
 
 +备注：
@@ -1807,13 +1804,17 @@ Text content: ✅ Identical
 
 +度没有特殊要求的可填写：常规。
 
- 1
++1
 
- ---PAGE---
++---PAGE---
 
-+3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。
+ 3）使用涉及真空的设备，在样品进入腔室之前必须清洗；可根据样品的材料自己填写使用清洗溶液。
 
  4）涉及沉积和蒸镀使用的原材料时候，必须清楚填写材料的种类、厚度。
+
+-1
+
+----PAGE---
 
 -5 ） 接触光刻胶的种类，薄光刻胶可使用： AR-P 5350 （ lift-off 正胶）； SUN lift130 （负胶） ；厚胶可使用 SU8。
 
@@ -1830,10 +1831,10 @@ Text content: ✅ Identical
 ### MODERN LIVING
 
 - **Text Similarity:** 0.8567
-- **Visual Average:** 0.8358
-- **Overall Score:** 0.877
+- **Visual Average:** 0.8365
+- **Overall Score:** 0.8773
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=722835 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=722843 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1962,11 +1963,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.86
-- **Visual Average:** 0.8709
-- **Overall Score:** 0.7924
+- **Text Similarity:** 0.8599
+- **Visual Average:** 0.869
+- **Overall Score:** 0.7916
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=9016407 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=9016394 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2170,7 +2171,7 @@ Text content: ✅ Identical
 +併改用中文新式標號。
 
 +2 ，行距建議設定為 1.2 行 （ word 中選「多行」，
-... (15884 more characters)
+... (15793 more characters)
 
 ```
 </details>
@@ -2178,8 +2179,8 @@ Text content: ✅ Identical
 ### OSCAR WARD
 
 - **Text Similarity:** 0.9949
-- **Visual Average:** 0.8438
-- **Overall Score:** 0.9355
+- **Visual Average:** 0.8445
+- **Overall Score:** 0.9358
 - **Pages:** MiniPdf=1, Reference=1
 - **File Size:** MiniPdf=205247 bytes, Reference=49023 bytes
 
@@ -2432,7 +2433,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.984
 - **Overall Score:** 0.9936
 - **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=1182797 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=1182796 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2575,10 +2576,64 @@ Text content: ✅ Identical
 ```
 </details>
 
+### TestIssue78
+
+- **Text Similarity:** 0.9961
+- **Visual Average:** 0.9588
+- **Overall Score:** 0.982
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=3720352 bytes, Reference=57420 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/TestIssue78.pdf
++++ reference/TestIssue78.pdf
+@@ -7,15 +7,15 @@
+ 一、 本原始记录适用于曳引驱动乘客与载货电梯的自行
+
+ 检测；
+
+ 二、 本原始记录的检测基本内容、要求和方法等均依据
+
+-《电梯自行检测规则》（TSG T7008-
+
+-2023）和公司正式发布的《电梯检测作业指导书》制定；
+
++《电梯自行检测规则》（TSG T7008-2023）和公司正式发布的《电梯检测作业指
+
++导书》制定；
+
+ 三、 检测项目分为关键检测项目和一般检测项目两个类
+
+ 别，其中标有“*”的为关键检测项目；
+
+ 四、 检测所使用的仪器、设备应完好，且在计量有效期
+
+ 内；
+
+ 五、 检测过程中，检测人员应当使用检测信息化管理系
+
+-统（如中奥智检系统、市场局检测系统等），按照《电梯检测作业指导书》的
+
+-要求如实、规范地记录检测情况，不得漏检、漏记；
+
++统（如中奥智检系统、市场局检测系统等），按照《电梯检测作业指导书》的要
+
++求如实、规范地记录检测情况，不得漏检、漏记；
+
+ 六、 检测记录填写，应按照如下要求进行填写：
+
+ 1） 检测记录信息页按照检验报告、使用登记证、产品合
+
+ 格证、维保合同等现场实际情况信息进行填写，保证其信息的准确性；
+```
+</details>
+
 ## Improvement Suggestions
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.7924)
+1. **nthu_article** (score: 0.7916)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
