@@ -1,0 +1,15 @@
+[package]
+name = "minipdf-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Experimental Rust CLI for MiniPdf Office-to-PDF conversion."
+
+[[bin]]
+name = "minipdf"
+path = "src/main.rs"
+
+[dependencies]
+clap.workspace = true
+minipdf = { path = "../minipdf" }

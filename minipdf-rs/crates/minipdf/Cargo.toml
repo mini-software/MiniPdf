@@ -1,0 +1,12 @@
+[package]
+name = "minipdf"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Experimental Rust implementation of MiniPdf Office-to-PDF conversion."
+
+[dependencies]
+roxmltree.workspace = true
+thiserror.workspace = true
+zip.workspace = true

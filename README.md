@@ -99,6 +99,10 @@ Notes:
 
 MiniPdf also provides a command-line tool — **MiniPdf.Cli** — for quick conversion without writing code.
 
+### Experimental Rust Version
+
+An experimental Rust rewrite is available under [minipdf-rs](minipdf-rs). It contains a `minipdf` library crate and a Rust CLI with the same basic command shape as the .NET tool. The Rust version currently supports basic `.xlsx` and `.docx` text extraction and PDF generation, and is not yet feature-equivalent with the .NET implementation.
+
 ### Install
 
 ```bash

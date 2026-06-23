@@ -1,6 +1,7 @@
 ## Build outputs
 **/bin/
 **/obj/
+**/target/
 
 ## IDE
 .vs/
