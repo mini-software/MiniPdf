@@ -63,6 +63,10 @@ MiniPdf.ConvertToPdf("report.docx", "output.pdf");
 // Fichier vers tableau d'octets
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 
+// Rend les feuilles Excel indiquees par nom ou index 1-based (null rend toutes les feuilles)
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
+
 // Flux vers tableau d'octets
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);

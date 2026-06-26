@@ -29,6 +29,8 @@ internal sealed class CliApp
         string? inputPath = null;
         string? outputPath = null;
         string? fontDir = null;
+        string[]? sheets = null;
+        int[]? sheetIndexes = null;
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -39,6 +41,9 @@ internal sealed class CliApp
                     break;
                 case "--fonts" when i + 1 < args.Length:
                     fontDir = args[++i];
+                    break;
+                case "--sheets" when i + 1 < args.Length:
+                    (sheets, sheetIndexes) = ParseSheets(args[++i]);
                     break;
                 case "-h" or "--help":
                     ShowConvertHelp();
@@ -90,7 +95,7 @@ internal sealed class CliApp
 
         try
         {
-            MiniPdf.ConvertToPdf(inputPath, outputPath);
+            MiniPdf.ConvertToPdf(inputPath, outputPath, sheets, sheetIndexes);
             Console.WriteLine(outputPath);
             return 0;
         }
@@ -112,6 +117,23 @@ internal sealed class CliApp
                 MiniPdf.RegisterFont(name, File.ReadAllBytes(file));
             }
         }
+    }
+
+    private static (string[]? Names, int[]? Indexes) ParseSheets(string value)
+    {
+        var names = new List<string>();
+        var indexes = new List<int>();
+        foreach (var token in value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            if (int.TryParse(token, out var index))
+                indexes.Add(index);
+            else
+                names.Add(token);
+        }
+
+        return (
+            names.Count > 0 ? names.ToArray() : null,
+            indexes.Count > 0 ? indexes.ToArray() : null);
     }
 
     private static int ShowHelp()
@@ -144,6 +166,7 @@ internal sealed class CliApp
             Options:
               -o, --output     Output PDF path (default: <input>.pdf)
               --fonts <dir>    Directory of .ttf/.ttc fonts to register
+                              --sheets <items>  Comma-separated Excel sheet names or 1-based indexes to render
               -h, --help       Show this help
             """);
     }

@@ -63,6 +63,10 @@ MiniPdf.ConvertToPdf("report.docx", "output.pdf");
 // 파일에서 바이트 배열로
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 
+// 이름 또는 1-based 인덱스로 지정한 Excel 시트 렌더링(null이면 모든 시트)
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
+
 // 스트림에서 바이트 배열로
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);

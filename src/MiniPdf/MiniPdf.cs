@@ -44,15 +44,44 @@ public static class MiniPdf
     /// <param name="inputPath">Path to the source .xlsx file.</param>
     /// <param name="outputPath">Path for the output .pdf file.</param>
     public static void ConvertToPdf(string inputPath, string outputPath)
+        => ConvertToPdf(inputPath, outputPath, null, null);
+
+    /// <summary>
+    /// Converts an Excel (.xlsx) file to a PDF file.
+    /// </summary>
+    /// <param name="inputPath">Path to the source .xlsx file.</param>
+    /// <param name="outputPath">Path for the output .pdf file.</param>
+    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets.</param>
+    public static void ConvertToPdf(string inputPath, string outputPath, string[]? sheets)
+        => ConvertToPdf(inputPath, outputPath, sheets, null);
+
+    /// <summary>
+    /// Converts an Excel (.xlsx) file to a PDF file.
+    /// </summary>
+    /// <param name="inputPath">Path to the source .xlsx file.</param>
+    /// <param name="outputPath">Path for the output .pdf file.</param>
+    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets.</param>
+    public static void ConvertToPdf(string inputPath, string outputPath, int[]? sheetIndexes)
+        => ConvertToPdf(inputPath, outputPath, null, sheetIndexes);
+
+    /// <summary>
+    /// Converts an Excel (.xlsx) file to a PDF file.
+    /// </summary>
+    /// <param name="inputPath">Path to the source .xlsx file.</param>
+    /// <param name="outputPath">Path for the output .pdf file.</param>
+    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets unless sheetIndexes is specified.</param>
+    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets unless sheets is specified.</param>
+    public static void ConvertToPdf(string inputPath, string outputPath, string[]? sheets, int[]? sheetIndexes)
     {
         var ext = Path.GetExtension(inputPath);
         if (ext.Equals(".docx", StringComparison.OrdinalIgnoreCase))
         {
+            ThrowIfSheetsSpecifiedForDocx(sheets, sheetIndexes);
             DocxToPdfConverter.ConvertToFile(inputPath, outputPath);
         }
         else
         {
-            ExcelToPdfConverter.ConvertToFile(inputPath, outputPath);
+            ExcelToPdfConverter.ConvertToFile(inputPath, outputPath, new ExcelToPdfConverter.ConversionOptions { Sheets = sheets, SheetIndexes = sheetIndexes });
         }
     }
 
@@ -62,16 +91,45 @@ public static class MiniPdf
     /// <param name="inputPath">Path to the source .xlsx file.</param>
     /// <returns>A byte array containing the PDF data.</returns>
     public static byte[] ConvertToPdf(string inputPath)
+        => ConvertToPdf(inputPath, (string[]?)null);
+
+    /// <summary>
+    /// Converts an Excel (.xlsx) file to a PDF byte array.
+    /// </summary>
+    /// <param name="inputPath">Path to the source .xlsx file.</param>
+    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets.</param>
+    /// <returns>A byte array containing the PDF data.</returns>
+    public static byte[] ConvertToPdf(string inputPath, string[]? sheets)
+        => ConvertToPdf(inputPath, sheets, null);
+
+    /// <summary>
+    /// Converts an Excel (.xlsx) file to a PDF byte array.
+    /// </summary>
+    /// <param name="inputPath">Path to the source .xlsx file.</param>
+    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets.</param>
+    /// <returns>A byte array containing the PDF data.</returns>
+    public static byte[] ConvertToPdf(string inputPath, int[]? sheetIndexes)
+        => ConvertToPdf(inputPath, sheets: null, sheetIndexes: sheetIndexes);
+
+    /// <summary>
+    /// Converts an Excel (.xlsx) file to a PDF byte array.
+    /// </summary>
+    /// <param name="inputPath">Path to the source .xlsx file.</param>
+    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets unless sheetIndexes is specified.</param>
+    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets unless sheets is specified.</param>
+    /// <returns>A byte array containing the PDF data.</returns>
+    public static byte[] ConvertToPdf(string inputPath, string[]? sheets, int[]? sheetIndexes)
     {
         var ext = Path.GetExtension(inputPath);
         if (ext.Equals(".docx", StringComparison.OrdinalIgnoreCase))
         {
+            ThrowIfSheetsSpecifiedForDocx(sheets, sheetIndexes);
             var doc = DocxToPdfConverter.Convert(inputPath);
             return doc.ToArray();
         }
         else
         {
-            var doc = ExcelToPdfConverter.Convert(inputPath);
+            var doc = ExcelToPdfConverter.Convert(inputPath, new ExcelToPdfConverter.ConversionOptions { Sheets = sheets, SheetIndexes = sheetIndexes });
             return doc.ToArray();
         }
     }
@@ -83,6 +141,37 @@ public static class MiniPdf
     /// <param name="inputStream">Stream containing .xlsx or .docx data.</param>
     /// <returns>A byte array containing the PDF data.</returns>
     public static byte[] ConvertToPdf(Stream inputStream)
+        => ConvertToPdf(inputStream, (string[]?)null);
+
+    /// <summary>
+    /// Converts an Office document stream (.xlsx or .docx) to a PDF byte array.
+    /// The format is auto-detected by inspecting the underlying ZIP package contents.
+    /// </summary>
+    /// <param name="inputStream">Stream containing .xlsx or .docx data.</param>
+    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets.</param>
+    /// <returns>A byte array containing the PDF data.</returns>
+    public static byte[] ConvertToPdf(Stream inputStream, string[]? sheets)
+        => ConvertToPdf(inputStream, sheets, null);
+
+    /// <summary>
+    /// Converts an Office document stream (.xlsx or .docx) to a PDF byte array.
+    /// The format is auto-detected by inspecting the underlying ZIP package contents.
+    /// </summary>
+    /// <param name="inputStream">Stream containing .xlsx or .docx data.</param>
+    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets.</param>
+    /// <returns>A byte array containing the PDF data.</returns>
+    public static byte[] ConvertToPdf(Stream inputStream, int[]? sheetIndexes)
+        => ConvertToPdf(inputStream, null, sheetIndexes);
+
+    /// <summary>
+    /// Converts an Office document stream (.xlsx or .docx) to a PDF byte array.
+    /// The format is auto-detected by inspecting the underlying ZIP package contents.
+    /// </summary>
+    /// <param name="inputStream">Stream containing .xlsx or .docx data.</param>
+    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets unless sheetIndexes is specified.</param>
+    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets unless sheets is specified.</param>
+    /// <returns>A byte array containing the PDF data.</returns>
+    public static byte[] ConvertToPdf(Stream inputStream, string[]? sheets, int[]? sheetIndexes)
     {
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(inputStream);
@@ -117,12 +206,13 @@ public static class MiniPdf
             {
                 case OfficeFormat.Docx:
                     {
+                        ThrowIfSheetsSpecifiedForDocx(sheets, sheetIndexes);
                         var doc = DocxToPdfConverter.Convert(seekable);
                         return doc.ToArray();
                     }
                 case OfficeFormat.Xlsx:
                     {
-                        var doc = ExcelToPdfConverter.Convert(seekable);
+                        var doc = ExcelToPdfConverter.Convert(seekable, new ExcelToPdfConverter.ConversionOptions { Sheets = sheets, SheetIndexes = sheetIndexes });
                         return doc.ToArray();
                     }
                 default:
@@ -164,6 +254,12 @@ public static class MiniPdf
         }
 
         return OfficeFormat.Unknown;
+    }
+
+    private static void ThrowIfSheetsSpecifiedForDocx(string[]? sheets, int[]? sheetIndexes)
+    {
+        if (sheets != null || sheetIndexes != null)
+            throw new NotSupportedException("Sheet selection is only supported for .xlsx files.");
     }
 
     /// <summary>

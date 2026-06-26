@@ -63,6 +63,10 @@ MiniPdf.ConvertToPdf("report.docx", "output.pdf");
 // 檔案轉位元組陣列
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 
+// 依名稱或 1-based 索引渲染指定的 Excel 工作表（null 會渲染所有工作表）
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
+
 // 串流轉位元組陣列
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);

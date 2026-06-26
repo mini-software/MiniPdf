@@ -77,6 +77,10 @@ MiniPdf.ConvertToPdf("report.docx", "output.pdf");
 // 文件转字节数组
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 
+// 按名称或 1-based 索引渲染指定的 Excel 工作表（null 会渲染所有工作表）
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
+
 // 流转字节数组
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);

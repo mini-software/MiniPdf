@@ -63,6 +63,10 @@ MiniPdf.ConvertToPdf("report.docx", "output.pdf");
 // ファイルからバイト配列へ
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 
+// 名前または 1-based インデックスで指定した Excel シートをレンダリング（null ならすべてのシート）
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
+
 // ストリームからバイト配列へ
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);

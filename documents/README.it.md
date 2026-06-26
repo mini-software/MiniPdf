@@ -63,6 +63,10 @@ MiniPdf.ConvertToPdf("report.docx", "output.pdf");
 // Da file a array di byte
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 
+// Renderizza i fogli Excel indicati per nome o indice 1-based (null renderizza tutti i fogli)
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
+
 // Da stream a array di byte
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);

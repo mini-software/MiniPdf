@@ -70,6 +70,10 @@ MiniPdf.ConvertToPdf("report.docx", "output.pdf");
 // File to byte array
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 
+// Render selected Excel sheets by name or 1-based index (null renders all sheets)
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
+
 // Stream to byte array
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
@@ -123,6 +127,9 @@ minipdf report.docx -o /path/to/output.pdf
 
 # Register custom fonts (for containers / headless environments)
 minipdf report.docx --fonts ./Fonts
+
+# Render selected Excel sheets by name or 1-based index
+minipdf data.xlsx --sheets Summary,2
 ```
 
 ### Commands

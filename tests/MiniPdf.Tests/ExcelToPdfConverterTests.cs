@@ -60,6 +60,106 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_WithSelectedSheets_RendersOnlyMatchingSheets()
+    {
+        using var excelStream = CreateMultiSheetExcel(new[]
+        {
+            ("Summary", new[] { new[] { "SummaryOnly" } }),
+            ("Details", new[] { new[] { "DetailsOnly" } }),
+            ("Archive", new[] { new[] { "ArchiveOnly" } }),
+        });
+
+        var bytes = MiniPdf.ConvertToPdf(excelStream, new[] { "Details" });
+        var content = Encoding.ASCII.GetString(bytes);
+
+        Assert.Contains("DetailsOnly", content);
+        Assert.DoesNotContain("SummaryOnly", content);
+        Assert.DoesNotContain("ArchiveOnly", content);
+    }
+
+    [Fact]
+    public void Convert_WithSelectedSheetIndexes_RendersOnlyMatchingSheets()
+    {
+        using var excelStream = CreateMultiSheetExcel(new[]
+        {
+            ("Summary", new[] { new[] { "SummaryOnly" } }),
+            ("Details", new[] { new[] { "DetailsOnly" } }),
+            ("Archive", new[] { new[] { "ArchiveOnly" } }),
+        });
+
+        var bytes = MiniPdf.ConvertToPdf(excelStream, new[] { 2 });
+        var content = Encoding.ASCII.GetString(bytes);
+
+        Assert.Contains("DetailsOnly", content);
+        Assert.DoesNotContain("SummaryOnly", content);
+        Assert.DoesNotContain("ArchiveOnly", content);
+    }
+
+    [Fact]
+    public void Convert_WithSelectedSheetNamesAndIndexes_RendersUnion()
+    {
+        using var excelStream = CreateMultiSheetExcel(new[]
+        {
+            ("Summary", new[] { new[] { "SummaryOnly" } }),
+            ("Details", new[] { new[] { "DetailsOnly" } }),
+            ("Archive", new[] { new[] { "ArchiveOnly" } }),
+        });
+
+        var bytes = MiniPdf.ConvertToPdf(excelStream, new[] { "Archive" }, sheetIndexes: new[] { 1 });
+        var content = Encoding.ASCII.GetString(bytes);
+
+        Assert.Contains("SummaryOnly", content);
+        Assert.Contains("ArchiveOnly", content);
+        Assert.DoesNotContain("DetailsOnly", content);
+    }
+
+    [Fact]
+    public void Convert_WithNullSheets_RendersAllSheets()
+    {
+        using var excelStream = CreateMultiSheetExcel(new[]
+        {
+            ("Summary", new[] { new[] { "SummaryOnly" } }),
+            ("Details", new[] { new[] { "DetailsOnly" } }),
+        });
+
+        var bytes = MiniPdf.ConvertToPdf(excelStream, sheets: null);
+        var content = Encoding.ASCII.GetString(bytes);
+
+        Assert.Contains("SummaryOnly", content);
+        Assert.Contains("DetailsOnly", content);
+    }
+
+    [Fact]
+    public void Convert_WithUnknownSheet_ThrowsHelpfulError()
+    {
+        using var excelStream = CreateMultiSheetExcel(new[]
+        {
+            ("Summary", new[] { new[] { "SummaryOnly" } }),
+            ("Details", new[] { new[] { "DetailsOnly" } }),
+        });
+
+        var ex = Assert.Throws<ArgumentException>(() => MiniPdf.ConvertToPdf(excelStream, new[] { "Missing" }));
+
+        Assert.Contains("Sheet(s) not found: Missing", ex.Message);
+        Assert.Contains("Available sheets: Summary, Details", ex.Message);
+    }
+
+    [Fact]
+    public void Convert_WithUnknownSheetIndex_ThrowsHelpfulError()
+    {
+        using var excelStream = CreateMultiSheetExcel(new[]
+        {
+            ("Summary", new[] { new[] { "SummaryOnly" } }),
+            ("Details", new[] { new[] { "DetailsOnly" } }),
+        });
+
+        var ex = Assert.Throws<ArgumentException>(() => MiniPdf.ConvertToPdf(excelStream, new[] { 3 }));
+
+        Assert.Contains("Sheet index(es) out of range: 3", ex.Message);
+        Assert.Contains("Available index range: 1-2", ex.Message);
+    }
+
+    [Fact]
     public void ConvertToFile_CreatesOutputFile()
     {
         var excelPath = Path.Combine(Path.GetTempPath(), $"minipdf_test_{Guid.NewGuid()}.xlsx");
@@ -286,6 +386,114 @@ public class ExcelToPdfConverterTests
             }
             ssSb.AppendLine("</sst>");
 
+            AddEntry(archive, "xl/sharedStrings.xml", ssSb.ToString());
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
+    private static MemoryStream CreateMultiSheetExcel((string Name, string[][] Rows)[] sheets)
+    {
+        var ms = new MemoryStream();
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            var worksheetOverrides = string.Join(Environment.NewLine, sheets.Select((_, index) =>
+                $"  <Override PartName=\"/xl/worksheets/sheet{index + 1}.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"));
+            AddEntry(archive, "[Content_Types].xml",
+                $$"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+                {{worksheetOverrides}}
+                  <Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+                </Relationships>
+                """);
+
+            var rels = new StringBuilder();
+            for (var i = 0; i < sheets.Length; i++)
+            {
+                rels.AppendLine($"  <Relationship Id=\"rId{i + 1}\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet{i + 1}.xml\"/>");
+            }
+            rels.AppendLine($"  <Relationship Id=\"rId{sheets.Length + 1}\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings\" Target=\"sharedStrings.xml\"/>");
+            AddEntry(archive, "xl/_rels/workbook.xml.rels",
+                $$"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                {{rels}}</Relationships>
+                """);
+
+            var workbookSheets = new StringBuilder();
+            for (var i = 0; i < sheets.Length; i++)
+            {
+                workbookSheets.AppendLine($"    <sheet name=\"{EscapeXml(sheets[i].Name)}\" sheetId=\"{i + 1}\" r:id=\"rId{i + 1}\"/>");
+            }
+            AddEntry(archive, "xl/workbook.xml",
+                $$"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+                          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                  <sheets>
+                {{workbookSheets}}  </sheets>
+                </workbook>
+                """);
+
+            var sharedStrings = new List<string>();
+            var sharedStringIndex = new Dictionary<string, int>();
+
+            int GetStringIndex(string value)
+            {
+                if (!sharedStringIndex.TryGetValue(value, out var idx))
+                {
+                    idx = sharedStrings.Count;
+                    sharedStrings.Add(value);
+                    sharedStringIndex[value] = idx;
+                }
+                return idx;
+            }
+
+            for (var sheetIndex = 0; sheetIndex < sheets.Length; sheetIndex++)
+            {
+                var sheetSb = new StringBuilder();
+                sheetSb.AppendLine("""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>""");
+                sheetSb.AppendLine("""<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">""");
+                sheetSb.AppendLine("<sheetData>");
+                for (var r = 0; r < sheets[sheetIndex].Rows.Length; r++)
+                {
+                    sheetSb.AppendLine($"  <row r=\"{r + 1}\">");
+                    for (var c = 0; c < sheets[sheetIndex].Rows[r].Length; c++)
+                    {
+                        var colLetter = (char)('A' + c);
+                        var cellRef = $"{colLetter}{r + 1}";
+                        var idx = GetStringIndex(sheets[sheetIndex].Rows[r][c]);
+                        sheetSb.AppendLine($"    <c r=\"{cellRef}\" t=\"s\"><v>{idx}</v></c>");
+                    }
+                    sheetSb.AppendLine("  </row>");
+                }
+                sheetSb.AppendLine("</sheetData>");
+                sheetSb.AppendLine("</worksheet>");
+                AddEntry(archive, $"xl/worksheets/sheet{sheetIndex + 1}.xml", sheetSb.ToString());
+            }
+
+            var ssSb = new StringBuilder();
+            ssSb.AppendLine("""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>""");
+            ssSb.AppendLine($"""<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="{sharedStrings.Count}" uniqueCount="{sharedStrings.Count}">""");
+            foreach (var s in sharedStrings)
+            {
+                ssSb.AppendLine($"  <si><t>{EscapeXml(s)}</t></si>");
+            }
+            ssSb.AppendLine("</sst>");
             AddEntry(archive, "xl/sharedStrings.xml", ssSb.ToString());
         }
 

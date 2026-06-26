@@ -47,6 +47,12 @@ internal static class ExcelToPdfConverter
         /// during auto-row-height and rendering. Used when fitToHeight requires
         /// vertical compression to fit content on the specified number of pages.</summary>
         internal bool ScaleCellFonts { get; set; } = false;
+
+        /// <summary>Sheet names to render. Null renders all visible sheets unless SheetIndexes is specified.</summary>
+        internal string[]? Sheets { get; set; }
+
+        /// <summary>1-based sheet indexes to render. Null renders all visible sheets unless Sheets is specified.</summary>
+        internal int[]? SheetIndexes { get; set; }
     }
 
     /// <summary>
@@ -71,6 +77,7 @@ internal static class ExcelToPdfConverter
     {
         options ??= new ConversionOptions();
         var sheets = ExcelReader.ReadSheets(excelStream);
+        sheets = FilterSheets(sheets, options.Sheets, options.SheetIndexes);
         var doc = new PdfDocument();
 
         // Track page ranges per sheet for footer rendering
@@ -102,6 +109,56 @@ internal static class ExcelToPdfConverter
         }
 
         return doc;
+    }
+
+    private static List<ExcelSheet> FilterSheets(List<ExcelSheet> sheets, string[]? selectedSheets, int[]? selectedSheetIndexes)
+    {
+        if (selectedSheets == null && selectedSheetIndexes == null)
+            return sheets;
+
+        var names = selectedSheets
+            ?? Array.Empty<string>();
+        var normalizedNames = names
+            .Select(name => name?.Trim())
+            .Where(name => !string.IsNullOrEmpty(name))
+            .Select(name => name!)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var indexes = (selectedSheetIndexes ?? Array.Empty<int>())
+            .Distinct()
+            .ToArray();
+
+        if (normalizedNames.Length == 0 && indexes.Length == 0)
+            throw new ArgumentException("At least one sheet name or index must be specified.", nameof(selectedSheets));
+
+        var outOfRangeIndexes = indexes
+            .Where(index => index < 1 || index > sheets.Count)
+            .ToArray();
+        if (outOfRangeIndexes.Length > 0)
+        {
+            var availableRange = sheets.Count == 0 ? "none" : $"1-{sheets.Count}";
+            throw new ArgumentException($"Sheet index(es) out of range: {string.Join(", ", outOfRangeIndexes)}. Available index range: {availableRange}.", nameof(selectedSheetIndexes));
+        }
+
+        var selectedPositions = new HashSet<int>(indexes.Select(index => index - 1));
+        for (var i = 0; i < sheets.Count; i++)
+        {
+            if (normalizedNames.Any(name => string.Equals(sheets[i].Name, name, StringComparison.OrdinalIgnoreCase)))
+                selectedPositions.Add(i);
+        }
+
+        var missingNames = normalizedNames
+            .Where(name => !sheets.Any(sheet => string.Equals(sheet.Name, name, StringComparison.OrdinalIgnoreCase)))
+            .ToArray();
+        if (missingNames.Length > 0)
+        {
+            var available = string.Join(", ", sheets.Select(sheet => sheet.Name));
+            throw new ArgumentException($"Sheet(s) not found: {string.Join(", ", missingNames)}. Available sheets: {available}.", nameof(selectedSheets));
+        }
+
+        return sheets
+            .Where((_, index) => selectedPositions.Contains(index))
+            .ToList();
     }
 
     /// <summary>
