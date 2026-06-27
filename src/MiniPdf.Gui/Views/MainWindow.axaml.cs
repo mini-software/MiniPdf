@@ -47,7 +47,7 @@ public partial class MainWindow : Window
             {
                 new FilePickerFileType("Office Documents")
                 {
-                    Patterns = new[] { "*.docx", "*.xlsx" }
+                    Patterns = new[] { "*.docx", "*.xlsx", "*.pptx" }
                 }
             }
         });

@@ -3,7 +3,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github)](https://github.com/shps951023/MiniPdf)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/shps951023/MiniPdf/blob/main/LICENSE)
 
-A command-line tool to convert Excel (`.xlsx`) and Word (`.docx`) files to PDF.  
+A command-line tool to convert Excel (`.xlsx`), Word (`.docx`), and PowerPoint (`.pptx`) files to PDF.  
 Powered by [MiniPdf](https://www.nuget.org/packages/MiniPdf) — zero-dependency, pure .NET.
 
 ## Install
@@ -21,6 +21,9 @@ minipdf data.xlsx
 # Convert Word to PDF
 minipdf report.docx
 
+# Convert PowerPoint to PDF
+minipdf slides.pptx
+
 # Specify output path
 minipdf report.docx -o /path/to/output.pdf
 
@@ -32,7 +35,7 @@ minipdf report.docx --fonts ./Fonts
 
 | Command | Description |
 |---------|-------------|
-| `minipdf <file>` | Convert `.xlsx` / `.docx` to PDF |
+| `minipdf <file>` | Convert `.xlsx` / `.docx` / `.pptx` to PDF |
 | `minipdf convert <file> -o <out>` | Convert with explicit output path |
 | `minipdf --version` | Show version |
 | `minipdf --help` | Show help |

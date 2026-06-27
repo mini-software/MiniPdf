@@ -44,7 +44,7 @@
          @ondragleave="HandleDragLeave"
          @ondragover:preventDefault>
 
-        <InputFile OnChange="HandleFileSelected" accept=".docx,.xlsx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+        <InputFile OnChange="HandleFileSelected" accept=".docx,.xlsx,.pptx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation" />
 
         @if (selectedFile is null)
         {
@@ -58,6 +58,7 @@
                 <div class="badges">
                     <span class="badge badge-docx">.docx</span>
                     <span class="badge badge-xlsx">.xlsx</span>
+                    <span class="badge badge-pptx">.pptx</span>
                 </div>
             </div>
         }
@@ -249,7 +250,7 @@
         selectedFile = e.File;
 
         var ext = Path.GetExtension(selectedFile.Name).ToLowerInvariant();
-        if (ext is not ".docx" and not ".xlsx")
+        if (ext is not ".docx" and not ".xlsx" and not ".pptx")
         {
             errorMessage = L.T("UnsupportedFile");
             selectedFile = null;
@@ -377,10 +378,7 @@
         await stream.CopyToAsync(ms);
         ms.Position = 0;
 
-        var ext = Path.GetExtension(selectedFile.Name).ToLowerInvariant();
-        byte[] pdfBytes = ext == ".docx"
-            ? MiniSoftware.MiniPdf.ConvertDocxToPdf(ms)
-            : MiniSoftware.MiniPdf.ConvertToPdf(ms);
+        byte[] pdfBytes = MiniSoftware.MiniPdf.ConvertToPdf(ms);
 
         var outputName = Path.GetFileNameWithoutExtension(selectedFile.Name) + ".pdf";
         await JS.InvokeVoidAsync("downloadFile", outputName, "application/pdf", pdfBytes);

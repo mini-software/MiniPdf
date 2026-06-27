@@ -135,9 +135,9 @@ if (app.Environment.IsDevelopment())
     </head>
     <body>
         <h1>MiniPdf Convert Test</h1>
-        <p>Upload a <strong>.xlsx</strong> or <strong>.docx</strong> file to convert to PDF.</p>
+        <p>Upload a <strong>.xlsx</strong>, <strong>.docx</strong>, or <strong>.pptx</strong> file to convert to PDF.</p>
         <div id="dropZone">Drag &amp; drop file here, or click to select</div>
-        <input type="file" id="fileInput" accept=".xlsx,.docx" hidden />
+        <input type="file" id="fileInput" accept=".xlsx,.docx,.pptx" hidden />
         <button id="convertBtn" disabled>Convert to PDF</button>
         <div id="status"></div>
         <script>
@@ -200,9 +200,10 @@ app.MapPost("/api/convert", async (HttpContext ctx, IFormFile file) =>
 
     var ext = Path.GetExtension(file.FileName);
     if (!ext.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) &&
-        !ext.Equals(".docx", StringComparison.OrdinalIgnoreCase))
+        !ext.Equals(".docx", StringComparison.OrdinalIgnoreCase) &&
+        !ext.Equals(".pptx", StringComparison.OrdinalIgnoreCase))
     {
-        return Results.BadRequest("Only .xlsx and .docx files are supported.");
+        return Results.BadRequest("Only .xlsx, .docx, and .pptx files are supported.");
     }
 
     var sw = Stopwatch.StartNew();
@@ -210,9 +211,7 @@ app.MapPost("/api/convert", async (HttpContext ctx, IFormFile file) =>
     try
     {
         using var stream = file.OpenReadStream();
-        byte[] pdfBytes = ext.Equals(".docx", StringComparison.OrdinalIgnoreCase)
-            ? MiniPdf.ConvertDocxToPdf(stream)
-            : MiniPdf.ConvertToPdf(stream);
+        byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 
         sw.Stop();
         LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, true);

@@ -846,6 +846,37 @@ internal sealed class PdfWriter
             sb.Append("f\n");
         }
 
+        foreach (var path in page.PathBlocks)
+        {
+            var pr = path.FillColor.R.ToString("F3", CultureInfo.InvariantCulture);
+            var pg = path.FillColor.G.ToString("F3", CultureInfo.InvariantCulture);
+            var pb = path.FillColor.B.ToString("F3", CultureInfo.InvariantCulture);
+            sb.Append($"{pr} {pg} {pb} rg\n");
+
+            foreach (var command in path.Commands)
+            {
+                switch (command.Op)
+                {
+                    case 'M':
+                        sb.Append($"{command.Values[0].ToString("F3", CultureInfo.InvariantCulture)} {command.Values[1].ToString("F3", CultureInfo.InvariantCulture)} m\n");
+                        break;
+                    case 'L':
+                        sb.Append($"{command.Values[0].ToString("F3", CultureInfo.InvariantCulture)} {command.Values[1].ToString("F3", CultureInfo.InvariantCulture)} l\n");
+                        break;
+                    case 'C':
+                        sb.Append($"{command.Values[0].ToString("F3", CultureInfo.InvariantCulture)} {command.Values[1].ToString("F3", CultureInfo.InvariantCulture)} ");
+                        sb.Append($"{command.Values[2].ToString("F3", CultureInfo.InvariantCulture)} {command.Values[3].ToString("F3", CultureInfo.InvariantCulture)} ");
+                        sb.Append($"{command.Values[4].ToString("F3", CultureInfo.InvariantCulture)} {command.Values[5].ToString("F3", CultureInfo.InvariantCulture)} c\n");
+                        break;
+                    case 'Z':
+                        sb.Append("h\n");
+                        break;
+                }
+            }
+
+            sb.Append("f\n");
+        }
+
         // Draw line segments
         foreach (var line in page.LineBlocks)
         {

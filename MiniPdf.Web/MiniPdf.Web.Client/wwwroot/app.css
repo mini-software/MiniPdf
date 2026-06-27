@@ -257,6 +257,7 @@ h1:focus { outline: none; }
 
 .badge-docx { background: #dbeafe; color: #2563eb; }
 .badge-xlsx { background: #dcfce7; color: #16a34a; }
+.badge-pptx { background: #ffedd5; color: #ea580c; }
 
 /* ===== Selected File ===== */
 .file-info {
@@ -279,6 +280,7 @@ h1:focus { outline: none; }
 
 .file-icon-wrap.docx { background: #dbeafe; }
 .file-icon-wrap.xlsx { background: #dcfce7; }
+.file-icon-wrap.pptx { background: #ffedd5; }
 
 .file-meta { min-width: 0; }
 

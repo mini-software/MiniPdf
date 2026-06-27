@@ -53,6 +53,16 @@ internal sealed record PdfPolygonBlock(
     bool EvenOddFill = false
 );
 
+internal sealed record PdfPathCommand(
+    char Op,
+    float[] Values
+);
+
+internal sealed record PdfPathBlock(
+    List<PdfPathCommand> Commands,
+    PdfColor FillColor
+);
+
 /// <summary>
 /// Represents a line segment on a PDF page.
 /// </summary>
@@ -76,6 +86,7 @@ internal sealed class PdfPage
     private readonly List<PdfRectBlock> _rectBlocks = [];
     private readonly List<PdfEllipseBlock> _ellipseBlocks = [];
     private readonly List<PdfPolygonBlock> _polygonBlocks = [];
+    private readonly List<PdfPathBlock> _pathBlocks = [];
     private readonly List<PdfLineBlock> _lineBlocks = [];
     private readonly List<PdfRectBlock> _overlayRects = [];
     private readonly List<PdfTextBlock> _overlayTexts = [];
@@ -114,6 +125,8 @@ internal sealed class PdfPage
     /// Gets the polygon blocks on this page.
     /// </summary>
     public IReadOnlyList<PdfPolygonBlock> PolygonBlocks => _polygonBlocks;
+
+    public IReadOnlyList<PdfPathBlock> PathBlocks => _pathBlocks;
 
     /// <summary>
     /// Gets the line blocks on this page.
@@ -212,6 +225,13 @@ internal sealed class PdfPage
 
         _polygonBlocks.Add(new PdfPolygonBlock(valid[0],
             fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f), valid, evenOddFill));
+        return this;
+    }
+
+    internal PdfPage AddPath(List<PdfPathCommand> commands, PdfColor? fillColor = null)
+    {
+        if (commands.Count > 0)
+            _pathBlocks.Add(new PdfPathBlock(commands, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f)));
         return this;
     }
 

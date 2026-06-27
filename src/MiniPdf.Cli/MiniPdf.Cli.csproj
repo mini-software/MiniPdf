@@ -20,8 +20,8 @@
     <Version>0.1.0</Version>
     <PackageVersion>0.1.0</PackageVersion>
     <Authors>shps951023</Authors>
-    <Description>A command-line tool to convert Excel (.xlsx) and Word (.docx) files to PDF. Powered by MiniPdf — zero-dependency, pure .NET.</Description>
-    <PackageTags>pdf;excel;xlsx;word;docx;converter;cli;tool;minipdf</PackageTags>
+    <Description>A command-line tool to convert Excel (.xlsx), Word (.docx), and PowerPoint (.pptx) files to PDF. Powered by MiniPdf — zero-dependency, pure .NET.</Description>
+    <PackageTags>pdf;excel;xlsx;word;docx;powerpoint;pptx;converter;cli;tool;minipdf</PackageTags>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/shps951023/MiniPdf</PackageProjectUrl>
     <RepositoryUrl>https://github.com/shps951023/MiniPdf.git</RepositoryUrl>

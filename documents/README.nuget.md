@@ -13,6 +13,7 @@ Online Demo: https://mini-software.github.io/MiniPdf/
 
 - Excel to PDF conversion (`.xlsx`)
 - Word to PDF conversion (`.docx`)
+- PowerPoint to PDF conversion (`.pptx`)
 - Minimal dependencies — lightweight; relies almost entirely on built-in .NET APIs
 - Serverless-ready — no COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
 - Valid PDF 1.4 output
@@ -34,6 +35,9 @@ MiniPdf.ConvertToPdf("data.xlsx", "output.pdf");
 
 // Word to PDF
 MiniPdf.ConvertToPdf("report.docx", "output.pdf");
+
+// PowerPoint to PDF
+MiniPdf.ConvertToPdf("slides.pptx", "output.pdf");
 
 // File to byte array
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");

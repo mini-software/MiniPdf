@@ -74,9 +74,9 @@ internal sealed class CliApp
         }
 
         var ext = Path.GetExtension(inputPath).ToLowerInvariant();
-        if (ext is not (".xlsx" or ".docx"))
+        if (ext is not (".xlsx" or ".docx" or ".pptx"))
         {
-            Console.Error.WriteLine($"Error: unsupported file type '{ext}'. Supported: .xlsx, .docx");
+            Console.Error.WriteLine($"Error: unsupported file type '{ext}'. Supported: .xlsx, .docx, .pptx");
             return 1;
         }
 
@@ -139,7 +139,7 @@ internal sealed class CliApp
     private static int ShowHelp()
     {
         Console.WriteLine("""
-            MiniPdf CLI - Convert Excel/Word to PDF
+            MiniPdf CLI - Convert Excel/Word/PowerPoint to PDF
 
             Usage:
               minipdf <input>              Convert file to PDF (output beside input)
@@ -161,12 +161,12 @@ internal sealed class CliApp
             Usage: minipdf convert <input> [options]
 
             Arguments:
-              <input>          Path to .xlsx or .docx file
+              <input>          Path to .xlsx, .docx, or .pptx file
 
             Options:
               -o, --output     Output PDF path (default: <input>.pdf)
               --fonts <dir>    Directory of .ttf/.ttc fonts to register
-                              --sheets <items>  Comma-separated Excel sheet names or 1-based indexes to render
+              --sheets <items> Comma-separated Excel sheet names or 1-based indexes to render
               -h, --help       Show this help
             """);
     }

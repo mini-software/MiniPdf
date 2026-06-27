@@ -24,7 +24,7 @@ English | <a href="README.zh-CN.md">简体中文</a> | <a href="documents/README
 A minimal, lightweight .NET library for converting office files to PDF.
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word to PDF conversion" />
+<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word/PowerPoint to PDF conversion" />
 </div>
 
 👉 **[Online Demo](https://mini-software.github.io/MiniPdf/)** — Try it in your browser, no install required.
@@ -35,6 +35,7 @@ A minimal, lightweight .NET library for converting office files to PDF.
 
 - **Excel-to-PDF** — Convert `.xlsx` files to PDF 
 - **Word-to-PDF** — Convert `.docx` files to PDF 
+- **PowerPoint-to-PDF** — Convert `.pptx` files to PDF
 - **Minimal dependencies** — Lightweight; relies almost entirely on built-in .NET APIs
 - **Serverless-ready** — No COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
 - **Native AOT** — Pre-compiled standalone binaries for Windows / Linux / macOS; no .NET runtime required
@@ -66,6 +67,9 @@ MiniPdf.ConvertToPdf("data.xlsx", "output.pdf");
 
 // Word to PDF
 MiniPdf.ConvertToPdf("report.docx", "output.pdf");
+
+// PowerPoint to PDF
+MiniPdf.ConvertToPdf("slides.pptx", "output.pdf");
 
 // File to byte array
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
@@ -122,6 +126,9 @@ minipdf data.xlsx
 # Convert Word to PDF
 minipdf report.docx
 
+# Convert PowerPoint to PDF
+minipdf slides.pptx
+
 # Specify output path
 minipdf report.docx -o /path/to/output.pdf
 
@@ -136,7 +143,7 @@ minipdf data.xlsx --sheets Summary,2
 
 | Command | Description |
 |---------|-------------|
-| `minipdf <file>` | Convert `.xlsx` / `.docx` to PDF |
+| `minipdf <file>` | Convert `.xlsx` / `.docx` / `.pptx` to PDF |
 | `minipdf convert <file> -o <out>` | Convert with explicit output path |
 | `minipdf --version` | Show version |
 | `minipdf --help` | Show help |

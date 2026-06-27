@@ -17,7 +17,7 @@
 Una libreria .NET minimale e leggera per convertire file Office in PDF.
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word to PDF conversion" />
+<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word/PowerPoint to PDF conversion" />
 </div>
 
 👉 **[Demo online](https://mini-software.github.io/MiniPdf/)** — Provalo nel browser, nessuna installazione richiesta.
@@ -28,6 +28,7 @@ Una libreria .NET minimale e leggera per convertire file Office in PDF.
 
 - **Excel → PDF** — Converte file `.xlsx` in PDF
 - **Word → PDF** — Converte file `.docx` in PDF
+- **PowerPoint → PDF** — Converte file `.pptx` in PDF
 - **Dipendenze minime** — Design leggero, utilizza quasi esclusivamente le API .NET integrate
 - **Pronto per il serverless** — Nessun COM, nessuna installazione di Office, nessun Adobe Acrobat — funziona ovunque .NET funzioni
 - **Native AOT** — Binari standalone precompilati per Windows / Linux / macOS; nessun runtime .NET richiesto
@@ -59,6 +60,9 @@ MiniPdf.ConvertToPdf("data.xlsx", "output.pdf");
 
 // Word in PDF
 MiniPdf.ConvertToPdf("report.docx", "output.pdf");
+
+// PowerPoint in PDF
+MiniPdf.ConvertToPdf("slides.pptx", "output.pdf");
 
 // Da file a array di byte
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
@@ -111,6 +115,9 @@ minipdf data.xlsx
 # Converti Word in PDF
 minipdf report.docx
 
+# Converti PowerPoint in PDF
+minipdf slides.pptx
+
 # Specifica il percorso di output
 minipdf report.docx -o /path/to/output.pdf
 
@@ -122,7 +129,7 @@ minipdf report.docx --fonts ./Fonts
 
 | Comando | Descrizione |
 |---------|-------------|
-| `minipdf <file>` | Converti `.xlsx` / `.docx` in PDF |
+| `minipdf <file>` | Converti `.xlsx` / `.docx` / `.pptx` in PDF |
 | `minipdf convert <file> -o <out>` | Converti con percorso di output esplicito |
 | `minipdf --version` | Mostra la versione |
 | `minipdf --help` | Mostra l'aiuto |

@@ -17,7 +17,7 @@
 Office ファイルを PDF に変換するための、ミニマルで軽量な .NET ライブラリです。
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word to PDF conversion" />
+<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word/PowerPoint to PDF conversion" />
 </div>
 
 👉 **[オンラインデモ](https://mini-software.github.io/MiniPdf/)** — インストール不要、ブラウザですぐにお試しいただけます。
@@ -28,6 +28,7 @@ Office ファイルを PDF に変換するための、ミニマルで軽量な .
 
 - **Excel → PDF 変換** — `.xlsx` ファイルを PDF に変換
 - **Word → PDF 変換** — `.docx` ファイルを PDF に変換
+- **PowerPoint → PDF 変換** — `.pptx` ファイルを PDF に変換
 - **最小限の依存関係** — 軽量設計、ほぼ .NET 組み込み API のみを使用
 - **サーバーレス対応** — COM 不要、Office インストール不要、Adobe Acrobat 不要 — .NET があればどこでも動作
 - **Native AOT** — Windows / Linux / macOS 向けのプリコンパイル済みスタンドアロンバイナリ。.NET ランタイムのインストール不要
@@ -59,6 +60,9 @@ MiniPdf.ConvertToPdf("data.xlsx", "output.pdf");
 
 // Word を PDF に
 MiniPdf.ConvertToPdf("report.docx", "output.pdf");
+
+// PowerPoint を PDF に
+MiniPdf.ConvertToPdf("slides.pptx", "output.pdf");
 
 // ファイルからバイト配列へ
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
@@ -111,6 +115,9 @@ minipdf data.xlsx
 # Word を PDF に変換
 minipdf report.docx
 
+# PowerPoint を PDF に変換
+minipdf slides.pptx
+
 # 出力パスを指定
 minipdf report.docx -o /path/to/output.pdf
 
@@ -122,7 +129,7 @@ minipdf report.docx --fonts ./Fonts
 
 | コマンド | 説明 |
 |---------|-------------|
-| `minipdf <file>` | `.xlsx` / `.docx` を PDF に変換 |
+| `minipdf <file>` | `.xlsx` / `.docx` / `.pptx` を PDF に変換 |
 | `minipdf convert <file> -o <out>` | 出力パスを指定して変換 |
 | `minipdf --version` | バージョンを表示 |
 | `minipdf --help` | ヘルプを表示 |

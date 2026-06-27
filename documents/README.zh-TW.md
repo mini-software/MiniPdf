@@ -17,7 +17,7 @@
 一個極簡、輕量化的 .NET 函式庫，用於將 Office 檔案轉換為 PDF。
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word to PDF conversion" />
+<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word/PowerPoint to PDF conversion" />
 </div>
 
 👉 **[線上示範](https://mini-software.github.io/MiniPdf/)** — 在瀏覽器中快速體驗，無需安裝。
@@ -28,6 +28,7 @@
 
 - **Excel 轉 PDF** — 將 `.xlsx` 檔案轉換為 PDF
 - **Word 轉 PDF** — 將 `.docx` 檔案轉換為 PDF
+- **PowerPoint 轉 PDF** — 將 `.pptx` 檔案轉換為 PDF
 - **極少相依性** — 輕量化設計，幾乎僅使用 .NET 內建 API
 - **Serverless 就緒** — 無需 COM、無需安裝 Office、無需 Adobe Acrobat — 有 .NET 即可運行
 - **Native AOT** — 預編譯獨立二進位檔，支援 Windows / Linux / macOS，無需安裝 .NET 執行階段
@@ -59,6 +60,9 @@ MiniPdf.ConvertToPdf("data.xlsx", "output.pdf");
 
 // Word 轉 PDF
 MiniPdf.ConvertToPdf("report.docx", "output.pdf");
+
+// PowerPoint 轉 PDF
+MiniPdf.ConvertToPdf("slides.pptx", "output.pdf");
 
 // 檔案轉位元組陣列
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
@@ -111,6 +115,9 @@ minipdf data.xlsx
 # 將 Word 轉為 PDF
 minipdf report.docx
 
+# 將 PowerPoint 轉為 PDF
+minipdf slides.pptx
+
 # 指定輸出路徑
 minipdf report.docx -o /path/to/output.pdf
 
@@ -122,7 +129,7 @@ minipdf report.docx --fonts ./Fonts
 
 | 命令 | 說明 |
 |---------|-------------|
-| `minipdf <file>` | 將 `.xlsx` / `.docx` 轉換為 PDF |
+| `minipdf <file>` | 將 `.xlsx` / `.docx` / `.pptx` 轉換為 PDF |
 | `minipdf convert <file> -o <out>` | 轉換並指定輸出路徑 |
 | `minipdf --version` | 顯示版本 |
 | `minipdf --help` | 顯示說明 |

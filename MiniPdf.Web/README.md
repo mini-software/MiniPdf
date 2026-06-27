@@ -8,6 +8,7 @@ An online document-to-PDF converter powered by [MiniPdf](https://github.com/mini
 
 - **Convert Word (.docx) → PDF** — preserves text, tables, images
 - **Convert Excel (.xlsx) → PDF** — renders all sheets
+- **Convert PowerPoint (.pptx) → PDF** — renders slide text, basic shapes, and images
 - **Pure client-side conversion** — MiniPdf runs entirely in the browser via WebAssembly
 - **No server upload** — files never leave your machine
 - **Drag-and-drop UI** — responsive single-page interface
@@ -20,7 +21,6 @@ Browser (Standalone Blazor WebAssembly)
 ┌──────────────────────────────────────────┐
 │  Converter.razor                          │
 │  - Drag & drop / file picker              │
-│  - MiniPdf.ConvertDocxToPdf() in WASM     │
 │  - MiniPdf.ConvertToPdf() in WASM         │
 │  - JS interop downloads PDF locally       │
 └──────────────────────────────────────────┘

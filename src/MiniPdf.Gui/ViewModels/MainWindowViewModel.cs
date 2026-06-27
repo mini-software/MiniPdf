@@ -60,7 +60,8 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var ext = Path.GetExtension(path);
         return ext.Equals(".docx", StringComparison.OrdinalIgnoreCase)
-            || ext.Equals(".xlsx", StringComparison.OrdinalIgnoreCase);
+            || ext.Equals(".xlsx", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".pptx", StringComparison.OrdinalIgnoreCase);
     }
 
     [RelayCommand]

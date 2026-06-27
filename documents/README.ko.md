@@ -17,7 +17,7 @@
 Office 파일을 PDF로 변환하는 최소한의 경량 .NET 라이브러리입니다.
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word to PDF conversion" />
+<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word/PowerPoint to PDF conversion" />
 </div>
 
 👉 **[온라인 데모](https://mini-software.github.io/MiniPdf/)** — 설치 없이 브라우저에서 바로 체험하세요.
@@ -28,6 +28,7 @@ Office 파일을 PDF로 변환하는 최소한의 경량 .NET 라이브러리입
 
 - **Excel → PDF 변환** — `.xlsx` 파일을 PDF로 변환
 - **Word → PDF 변환** — `.docx` 파일을 PDF로 변환
+- **PowerPoint → PDF 변환** — `.pptx` 파일을 PDF로 변환
 - **최소 의존성** — 경량 설계, 거의 .NET 내장 API만 사용
 - **서버리스 지원** — COM 불필요, Office 설치 불필요, Adobe Acrobat 불필요 — .NET만 있으면 어디서든 실행
 - **Native AOT** — Windows / Linux / macOS용 사전 컴파일된 독립 실행 바이너리, .NET 런타임 설치 불필요
@@ -59,6 +60,9 @@ MiniPdf.ConvertToPdf("data.xlsx", "output.pdf");
 
 // Word를 PDF로
 MiniPdf.ConvertToPdf("report.docx", "output.pdf");
+
+// PowerPoint를 PDF로
+MiniPdf.ConvertToPdf("slides.pptx", "output.pdf");
 
 // 파일에서 바이트 배열로
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
@@ -111,6 +115,9 @@ minipdf data.xlsx
 # Word를 PDF로 변환
 minipdf report.docx
 
+# PowerPoint를 PDF로 변환
+minipdf slides.pptx
+
 # 출력 경로 지정
 minipdf report.docx -o /path/to/output.pdf
 
@@ -122,7 +129,7 @@ minipdf report.docx --fonts ./Fonts
 
 | 명령어 | 설명 |
 |---------|-------------|
-| `minipdf <file>` | `.xlsx` / `.docx`를 PDF로 변환 |
+| `minipdf <file>` | `.xlsx` / `.docx` / `.pptx`를 PDF로 변환 |
 | `minipdf convert <file> -o <out>` | 출력 경로를 지정하여 변환 |
 | `minipdf --version` | 버전 표시 |
 | `minipdf --help` | 도움말 표시 |

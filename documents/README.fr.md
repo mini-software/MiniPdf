@@ -17,7 +17,7 @@
 Une bibliothèque .NET minimale et légère pour convertir des fichiers Office en PDF.
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word to PDF conversion" />
+<img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word/PowerPoint to PDF conversion" />
 </div>
 
 👉 **[Démo en ligne](https://mini-software.github.io/MiniPdf/)** — Essayez directement dans votre navigateur, aucune installation requise.
@@ -28,6 +28,7 @@ Une bibliothèque .NET minimale et légère pour convertir des fichiers Office e
 
 - **Excel → PDF** — Convertit les fichiers `.xlsx` en PDF
 - **Word → PDF** — Convertit les fichiers `.docx` en PDF
+- **PowerPoint → PDF** — Convertit les fichiers `.pptx` en PDF
 - **Dépendances minimales** — Conception légère, repose presque entièrement sur les API .NET intégrées
 - **Prêt pour le serverless** — Pas de COM, pas d'installation d'Office, pas d'Adobe Acrobat — fonctionne partout où .NET fonctionne
 - **Native AOT** — Binaires autonomes précompilés pour Windows / Linux / macOS ; aucun runtime .NET requis
@@ -59,6 +60,9 @@ MiniPdf.ConvertToPdf("data.xlsx", "output.pdf");
 
 // Word vers PDF
 MiniPdf.ConvertToPdf("report.docx", "output.pdf");
+
+// PowerPoint vers PDF
+MiniPdf.ConvertToPdf("slides.pptx", "output.pdf");
 
 // Fichier vers tableau d'octets
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
@@ -111,6 +115,9 @@ minipdf data.xlsx
 # Convertir Word en PDF
 minipdf report.docx
 
+# Convertir PowerPoint en PDF
+minipdf slides.pptx
+
 # Spécifier le chemin de sortie
 minipdf report.docx -o /path/to/output.pdf
 
@@ -122,7 +129,7 @@ minipdf report.docx --fonts ./Fonts
 
 | Commande | Description |
 |---------|-------------|
-| `minipdf <file>` | Convertir `.xlsx` / `.docx` en PDF |
+| `minipdf <file>` | Convertir `.xlsx` / `.docx` / `.pptx` en PDF |
 | `minipdf convert <file> -o <out>` | Convertir avec chemin de sortie explicite |
 | `minipdf --version` | Afficher la version |
 | `minipdf --help` | Afficher l'aide |
