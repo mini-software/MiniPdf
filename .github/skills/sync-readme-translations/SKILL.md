@@ -12,7 +12,7 @@ Propagate content changes from the English `README.md` to all translated version
 
 | File | Language |
 |------|----------|
-| `README.zh-CN.md` | 简体中文 (Simplified Chinese) |
+| `documents/README.zh-CN.md` | 简体中文 (Simplified Chinese) |
 | `documents/README.zh-TW.md` | 繁體中文 (Traditional Chinese) |
 | `documents/README.ja.md` | 日本語 (Japanese) |
 | `documents/README.ko.md` | 한국어 (Korean) |
