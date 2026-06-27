@@ -117,6 +117,7 @@ internal sealed class PdfWriter
             foreach (var block in page.TextBlocks)
             {
                 if (string.IsNullOrWhiteSpace(block.PreferredFontName)) continue;
+                if (_latinFontSubstitutes.Contains(block.PreferredFontName!)) continue;
                 bool allWinAnsi = true;
                 foreach (var ch in block.Text)
                     if (!IsWinAnsiHandled(ch)) { allWinAnsi = false; break; }
@@ -1262,6 +1263,24 @@ internal sealed class PdfWriter
                 var y1 = ulY.ToString("F3", CultureInfo.InvariantCulture);
                 var x2 = (block.X + textWidth).ToString("F3", CultureInfo.InvariantCulture);
                 var lw = ulThickness.ToString("F3", CultureInfo.InvariantCulture);
+                sb.Append($"{block.Color.R.ToString("F3", CultureInfo.InvariantCulture)} " +
+                          $"{block.Color.G.ToString("F3", CultureInfo.InvariantCulture)} " +
+                          $"{block.Color.B.ToString("F3", CultureInfo.InvariantCulture)} RG\n");
+                sb.Append($"{lw} w\n");
+                sb.Append($"{x1} {y1} m {x2} {y1} l S\n");
+            }
+
+            if (block.Strikethrough)
+            {
+                var textWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
+                if (block.MaxWidth.HasValue && textWidth > block.MaxWidth.Value)
+                    textWidth = block.MaxWidth.Value;
+                var strikeY = block.Y + block.FontSize * 0.32f;
+                var strikeThickness = Math.Max(0.5f, block.FontSize * 0.05f);
+                var x1 = block.X.ToString("F3", CultureInfo.InvariantCulture);
+                var y1 = strikeY.ToString("F3", CultureInfo.InvariantCulture);
+                var x2 = (block.X + textWidth).ToString("F3", CultureInfo.InvariantCulture);
+                var lw = strikeThickness.ToString("F3", CultureInfo.InvariantCulture);
                 sb.Append($"{block.Color.R.ToString("F3", CultureInfo.InvariantCulture)} " +
                           $"{block.Color.G.ToString("F3", CultureInfo.InvariantCulture)} " +
                           $"{block.Color.B.ToString("F3", CultureInfo.InvariantCulture)} RG\n");

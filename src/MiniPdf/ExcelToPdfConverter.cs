@@ -63,7 +63,7 @@ internal static class ExcelToPdfConverter
     /// <returns>A PdfDocument containing the Excel data.</returns>
     internal static PdfDocument Convert(string excelPath, ConversionOptions? options = null)
     {
-        using var stream = File.OpenRead(excelPath);
+        using var stream = new FileStream(excelPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
         return Convert(stream, options);
     }
 
@@ -299,6 +299,16 @@ internal static class ExcelToPdfConverter
         return (left, center, right);
     }
 
+    private static float GetPrintScaleFactor(ExcelSheet sheet)
+    {
+        if (sheet.EffectivePrintScaleF is { } effectiveScale && effectiveScale > 0f)
+            return effectiveScale;
+
+        return sheet.PrintScale > 0 && sheet.PrintScale != 100
+            ? sheet.PrintScale / 100f
+            : 1f;
+    }
+
     private static void RenderSheet(PdfDocument doc, ExcelSheet sheet, ConversionOptions options)
     {
         // Skip only if there's truly nothing to render (no rows AND no images).
@@ -356,7 +366,7 @@ internal static class ExcelToPdfConverter
             }
 
             // Estimate the fitToPage width compression that will also shrink rows.
-            var printScaleF = sheet.PrintScale / 100f;
+            var printScaleF = GetPrintScaleFactor(sheet);
             var estColTotal = EstimateColumnWidthTotal(sheet, options) * printScaleF;
             var estFitToPageScale = estColTotal > usableW ? usableW / estColTotal : 1f;
             // Effective row scale = PrintScale × fitToPage width-compression
@@ -400,7 +410,7 @@ internal static class ExcelToPdfConverter
             // a single page.  If any segment overflows, compress the scale further.
             if (sheet.RowBreaks.Count > 0 && sheet.PrintTitleRows.HasValue)
             {
-                var segPrintScaleF = sheet.PrintScale / 100f;
+                var segPrintScaleF = GetPrintScaleFactor(sheet);
                 var segColTotal = EstimateColumnWidthTotal(sheet, options) * segPrintScaleF;
                 var segFitToPageScale = segColTotal > usableW ? usableW / segColTotal : 1f;
                 var segScale = segPrintScaleF * segFitToPageScale;
@@ -453,7 +463,6 @@ internal static class ExcelToPdfConverter
         // recalculate the PrintScale from actual column widths. LibreOffice
         // ignores the stored scale attribute and computes the minimum scale
         // needed to fit all columns within one page width.
-        var heightFitted = false;
         if (sheet.FitToPage && sheet.FitToWidth >= 1 && sheet.FitToHeight == 0
             && sheet.PrintScale > 0)
         {
@@ -485,7 +494,6 @@ internal static class ExcelToPdfConverter
                         var heightScale = usableH / rawTotal;
                         fitScaleF = heightScale;
                         fitPct = (int)Math.Max(10, Math.Floor(fitScaleF * 100));
-                        heightFitted = true;
                     }
                 }
 
@@ -501,34 +509,13 @@ internal static class ExcelToPdfConverter
             }
         }
 
-        // For fitToPage sheets with a reduced printScale: produce larger pages at
-        // natural content size instead of standard-size pages with scaled-down
-        // content.  This matches how Excel/Office exports PDFs — the page
-        // dimensions grow to accommodate the content so fonts stay at their
-        // original point size and text renders crisply.
-        // Margins are also scaled so the content region on the enlarged page
-        // occupies the same proportional area as on the standard page.
-        // Exception: when height-fitting was applied (heightFitted), render at
-        // the reduced scale on a standard-size page to match Excel's output
-        // where the content is compressed to fit a single page.
-        var pageScaleUp = 1f;
-        if (sheet.FitToPage && sheet.PrintScale != 100 && sheet.PrintScale > 0 && !heightFitted)
-        {
-            pageScaleUp = 100f / sheet.PrintScale;
-            sheet.PrintScale = 100; // content stays at natural size
-            mL *= pageScaleUp;
-            mR *= pageScaleUp;
-            mT *= pageScaleUp;
-            mB *= pageScaleUp;
-        }
-
         var fontSize = options.FontSize;
         var colPadding = options.ColumnPadding;
-        if (sheet.PrintScale != 100 && sheet.PrintScale > 0)
+        var printScaleForRendering = GetPrintScaleFactor(sheet);
+        if (printScaleForRendering != 1f)
         {
-            var scale = sheet.PrintScale / 100f;
-            fontSize *= scale;
-            colPadding *= scale;
+            fontSize *= printScaleForRendering;
+            colPadding *= printScaleForRendering;
         }
         options = new ConversionOptions
         {
@@ -539,8 +526,8 @@ internal static class ExcelToPdfConverter
             MarginBottom = mB,
             ColumnPadding = colPadding,
             LineSpacing = options.LineSpacing,
-            PageWidth = baseW * pageScaleUp,
-            PageHeight = baseH * pageScaleUp,
+            PageWidth = baseW,
+            PageHeight = baseH,
             IncludeSheetName = options.IncludeSheetName,
             ScaleCellFonts = scaleCellFonts,
         };
@@ -773,11 +760,11 @@ internal static class ExcelToPdfConverter
         // Apply print scale to column widths so more columns fit per page.
         // Font size is already scaled in options, but Excel explicit column widths
         // from CharUnitsToPoints are at full size and need scaling too.
-        if (sheet.PrintScale != 100 && sheet.PrintScale > 0)
+        var naturalWidthScale = GetPrintScaleFactor(sheet);
+        if (naturalWidthScale != 1f)
         {
-            var scale = sheet.PrintScale / 100f;
             for (var i = 0; i < naturalWidths.Length; i++)
-                naturalWidths[i] *= scale;
+            naturalWidths[i] *= naturalWidthScale;
         }
 
         var totalNatural = naturalWidths.Sum() + columnPadding * (maxCols - 1);
@@ -925,7 +912,7 @@ internal static class ExcelToPdfConverter
         float fitToPageScale = 1f)
     {
         // Print scale factor for cell-level font sizes (column widths are already print-scaled by caller)
-        var printScaleFactor = (sheet.PrintScale != 100 && sheet.PrintScale > 0) ? sheet.PrintScale / 100f : 1f;
+        var printScaleFactor = GetPrintScaleFactor(sheet);
         var borderScaleFactor = printScaleFactor * (fitToPageScale < 1f ? fitToPageScale : 1f);
 
         // Use the sheet's default row height if available, otherwise fall back to font-based calculation
@@ -1086,8 +1073,8 @@ internal static class ExcelToPdfConverter
                 ? explicitHeight
                 : lineHeight / Math.Max(printScaleFactor * fitToPageScale, 0.0001f);
 
-            if (sheet.PrintScale != 100 && sheet.PrintScale > 0)
-                height *= sheet.PrintScale / 100f;
+            if (printScaleFactor != 1f)
+                height *= printScaleFactor;
             if (fitToPageScale < 1f)
                 height *= fitToPageScale;
 
@@ -1346,6 +1333,7 @@ internal static class ExcelToPdfConverter
                                 maxWidth: lineMaxWidth,
                                 bold: titleIsBold,
                                 underline: cell?.Underline ?? false,
+                                strikethrough: cell?.Strikethrough ?? false,
                                 preferredFontName: cell?.FontName);
                         }
                         cellY -= lineHeight;
@@ -1402,7 +1390,7 @@ internal static class ExcelToPdfConverter
 
                     // Height: sum actual row heights for the spanned rows
                     imgH = 0;
-                    var tPrintScale = (sheet.PrintScale > 0 && sheet.PrintScale != 100) ? sheet.PrintScale / 100f : 1f;
+                    var tPrintScale = GetPrintScaleFactor(sheet);
                     var tRowScale = tPrintScale * fitToPageScale;
                     for (var ri = img.AnchorRow; ri < img.AnchorRow + img.SpanRows; ri++)
                     {
@@ -1456,8 +1444,8 @@ internal static class ExcelToPdfConverter
             }
 
             // Apply print scale to explicit row heights
-            if (hasExplicitHeight && sheet.PrintScale != 100 && sheet.PrintScale > 0)
-                explicitRowHeight *= sheet.PrintScale / 100f;
+            if (hasExplicitHeight && printScaleFactor != 1f)
+                explicitRowHeight *= printScaleFactor;
             // Apply fitToPage additional scale
             if (hasExplicitHeight && fitToPageScale < 1f)
                 explicitRowHeight *= fitToPageScale;
@@ -1761,6 +1749,7 @@ internal static class ExcelToPdfConverter
                                 currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color,
                                     bold: mpIsBold,
                                     underline: cell?.Underline ?? false,
+                                    strikethrough: cell?.Strikethrough ?? false,
                                     preferredFontName: cell?.FontName,
                                     maxWidth: mpLineMaxWidth > 0 ? mpLineMaxWidth : null);
                             }
@@ -1990,6 +1979,7 @@ internal static class ExcelToPdfConverter
                                 maxWidth: boldWidth,
                                 bold: true,
                                 underline: cell?.Underline ?? false,
+                                strikethrough: cell?.Strikethrough ?? false,
                                 preferredFontName: cell?.FontName);
 
                             if (normalPart != null)
@@ -2000,6 +1990,7 @@ internal static class ExcelToPdfConverter
                                     maxWidth: normalMax > 0 ? normalMax : 0f,
                                     bold: false,
                                     underline: cell?.Underline ?? false,
+                                    strikethrough: cell?.Strikethrough ?? false,
                                     preferredFontName: cell?.FontName);
                             }
                             boldPrefixRemaining -= boldLen;
@@ -2010,6 +2001,7 @@ internal static class ExcelToPdfConverter
                                 maxWidth: lineMaxWidth,
                                 bold: isBold,
                                 underline: cell?.Underline ?? false,
+                                strikethrough: cell?.Strikethrough ?? false,
                                 preferredFontName: cell?.FontName);
                         }
                     }
@@ -2217,7 +2209,7 @@ internal static class ExcelToPdfConverter
 
                 // Height: sum actual row heights for the spanned rows
                 imgRenderHeight = 0;
-                var printScale = (sheet.PrintScale > 0 && sheet.PrintScale != 100) ? sheet.PrintScale / 100f : 1f;
+                var printScale = GetPrintScaleFactor(sheet);
                 var rowScale = printScale * fitToPageScale;
                 for (var ri = img.AnchorRow; ri < img.AnchorRow + img.SpanRows; ri++)
                 {

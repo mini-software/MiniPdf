@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-06-09T13:19:25.254201
+Generated: 2026-06-27T00:41:42.698479
 
 ## Summary
 
@@ -25,8 +25,9 @@ Generated: 2026-06-09T13:19:25.254201
 | 17 | 🟢 XlsxIssue77_MergedCellAlignment | ✅ | 1.0 | 0.8014 | 2/2 | **0.9206** |
 | 18 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8544 | 6/6 | **0.9418** |
 | 19 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8476 | 6/6 | **0.939** |
+| 20 | 🟡 Grocery list1 | ✅ | 0.9231 | 0.7854 | 1/1 | **0.8834** |
 
-**Average Overall Score: 0.7391**
+**Average Overall Score: 0.7463**
 
 ## Visual Comparison
 
@@ -1009,6 +1010,14 @@ Generated: 2026-06-09T13:19:25.254201
 <tr>
   <td><img src="images/XlsxIssue77_Template2_Workaround_p6_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/XlsxIssue77_Template2_Workaround_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Grocery list1</b></td>
+  <td colspan="1">Grocery list1 <span style="color:#d29922">⬤</span> 88.3%</td>
+</tr>
+<tr>
+  <td><img src="images/Grocery list1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Grocery list1_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -2662,6 +2671,125 @@ Text content: ✅ Identical
 
 +NOTE - All par
 ... (876 more characters)
+
+```
+</details>
+
+### Grocery list1
+
+- **Text Similarity:** 0.9231
+- **Visual Average:** 0.7854
+- **Overall Score:** 0.8834
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=182633 bytes, Reference=86288 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Grocery list1.pdf
++++ reference/Grocery list1.pdf
+@@ -1,25 +1,38 @@
+ ORCHARD GROCERY HOME DELIVERY LOCAL MARKET OTHER GRAND TOTAL
+
+ GROCERY LIST
+
+-Customize this list. Replace the entries above with your own to track your most frequently
+
+-$11.95 $6.12 $31.85 $216.60 $3.99 $270.51
+
+-used categories.
+
++Customize this list. Replace the entries above with your own to track your most $11.95 $6.12 $31.85 $216.60 $3.99 $270.51
+
++frequently used categories.
+
+ DONE? ITEM STORE CATEGORY QTY UNIT UNIT PRICE TOTAL NOTE
+
+ Yes Peaches Azure River Farm ORCHARD 2 lbs $2.99 $5.98
+
+ Yes Apples Azure River Farm ORCHARD 3 lbs $1.99 $5.97 Have coupon
+
+ Bananas Wide World Importers OTHER 1 bunch $3.99 $3.99
+
+-Yes Lettuce Market LOCAL MARKET 2 head $2.29 $4.58
+
++LOCAL
+
++Yes Lettuce Market 2 head $2.29 $4.58
+
++MARKET
+
+ Tomatoes Market LOCAL MARKET 4 lbs $3.49 $13.96
+
+-Yes Squash Market LOCAL MARKET 2 each $1.50 $3.00
+
+-Yes Celery Wide World Importers LOCAL MARKET 2 bunch $1.99 $3.98
+
++LOCAL
+
++Yes Squash Market 2 each $1.50 $3.00
+
++MARKET
+
++LOCAL
+
++Yes Celery Wide World Importers 2 bunch $1.99 $3.98
+
++MARKET
+
+ Cucumber Market LOCAL MARKET 1 lbs $2.29 $2.29
+
+ Mushrooms Wide World Importers GROCERY 0.5 lbs $2.25 $1.13
+
+-Yes Milk Local Farmer HOME DELIVERY 2 gal $3.99 $7.98
+
+-Variety of block
+
+-Yes Cheese Local Farmer HOME DELIVERY 1 lbs $9.99 $9.99
+
+-cheeses
+
+-Yes Eggs Local Farmer HOME DELIVERY 2 doz $3.50 $7.00
+
+-Yes Cottage cheese Local Farmer HOME DELIVERY 1 16 oz $3.89 $3.89
+
+-Yes Sour cream Local Farmer HOME DELIVERY 1 8 oz $2.99 $2.99
+
++HOME
+
++Yes Milk Local Farmer 2 gal $3.99 $7.98
+
++DELIVERY
+
++HOME Variety of
+
++Yes Cheese Local Farmer 1 lbs $9.99 $9.99
+
++DELIVERY block cheeses
+
++HOME
+
++Yes Eggs Local Farmer 2 doz $3.50 $7.00
+
++DELIVERY
+
++HOME
+
++Yes Cottage cheese Local Farmer 1 16 oz $3.89 $3.89
+
++DELIVERY
+
++HOME
+
++Yes Sour cream Local Farmer 1 8 oz $2.99 $2.99
+
++DELIVERY
+
+ Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99 Greek with honey
+
+ Bacon wrapped
+
+ Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90
 
 ```
 </details>

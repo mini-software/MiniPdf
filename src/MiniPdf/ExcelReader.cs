@@ -9,6 +9,27 @@ namespace MiniSoftware;
 /// </summary>
 internal static class ExcelReader
 {
+    private sealed record DxfStyleInfo
+    {
+        public PdfColor? FontColor { get; init; }
+        public PdfColor? FillColor { get; init; }
+        public bool FillSpecified { get; init; }
+        public bool? Bold { get; init; }
+        public bool? Italic { get; init; }
+        public bool? Underline { get; init; }
+        public bool? Strikethrough { get; init; }
+        public float? FontSize { get; init; }
+        public string? FontName { get; init; }
+        public string? Alignment { get; init; }
+        public string? VerticalAlignment { get; init; }
+        public bool? WrapText { get; init; }
+        public int? Indent { get; init; }
+
+        public bool HasAnyStyle => FontColor != null || FillColor != null || FillSpecified || Bold != null ||
+            Italic != null || Underline != null || Strikethrough != null || FontSize != null ||
+            FontName != null || Alignment != null || VerticalAlignment != null || WrapText != null || Indent != null;
+    }
+
     /// <summary>
     /// Reads all sheets from an Excel file and returns their data as a list of sheets,
     /// where each sheet is a list of rows, and each row is a list of cell values.
@@ -65,7 +86,7 @@ internal static class ExcelReader
             var pageSetup = ReadPageSetup(entry);
             printAreas.TryGetValue(currentIndex, out var printArea);
             printTitleRows.TryGetValue(currentIndex, out var printTitleRow);
-            ApplyTableStyleFormatting(archive, info.SheetId, rows, themeColors);
+            ApplyTableStyleFormatting(archive, info.SheetId, rows, dxfStyles);
             sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, shapes: drawingShapes, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: printArea != default ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: printTitleRow != default ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt, maxDigitWidthPx: maxDigitWidthPx));
             sheetEntries.Add(entry);
         }
@@ -257,12 +278,13 @@ internal static class ExcelReader
             if (nameEl != null)
                 fontName = nameEl.Attribute("val")?.Value;
 
-            // Read bold / italic / underline
+            // Read bold / italic / underline / strikethrough
             var bold = font.Element(ns + "b") != null;
             var italic = font.Element(ns + "i") != null;
             var underline = font.Element(ns + "u") != null;
+            var strikethrough = font.Element(ns + "strike") != null;
 
-            styles.Add(new FontStyleInfo(color, fontSize, bold, italic, underline, fontName));
+            styles.Add(new FontStyleInfo(color, fontSize, bold, italic, underline, fontName, strikethrough));
         }
 
         return styles;
@@ -445,12 +467,12 @@ internal static class ExcelReader
     }
 
     /// <summary>
-    /// Reads table definitions for a worksheet and applies table-style formatting
-    /// (bold, fill) to header rows, total rows, and first-column cells.
-    /// Resolves dxf-based style info including theme colors for fills.
+    /// Reads table definitions for a worksheet and applies table-style formatting.
+    /// Named table styles are applied first; direct table and table-column DXF ids
+    /// then override them, matching Office/LibreOffice precedence for custom tables.
     /// </summary>
     private static void ApplyTableStyleFormatting(ZipArchive archive, int sheetId,
-        List<List<ExcelCell>> rows, List<PdfColor> themeColors)
+        List<List<ExcelCell>> rows, IReadOnlyList<DxfStyleInfo> dxfInfos)
     {
         var relsPath = $"xl/worksheets/_rels/sheet{sheetId}.xml.rels";
         var relsEntry = archive.GetEntry(relsPath);
@@ -473,55 +495,15 @@ internal static class ExcelReader
 
         if (tableFiles.Count == 0) return;
 
-        // Read dxf entries and table style mappings from styles.xml
+        // Read table style mappings from styles.xml.
         var stylesEntry = archive.GetEntry("xl/styles.xml");
         if (stylesEntry == null) return;
 
-        List<(bool? Bold, PdfColor? FillColor)> dxfInfos;
         Dictionary<string, (int HeaderDxf, int TotalDxf, int WholeDxf, int FirstColDxf, int FirstRowStripeDxf, int SecondRowStripeDxf)> tableStyleMap;
         using (var stylesStream = stylesEntry.Open())
         {
             var stylesDoc = XDocument.Load(stylesStream);
             var ns = stylesDoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
-
-            // Parse dxf entries
-            dxfInfos = new List<(bool?, PdfColor?)>();
-            var dxfs = stylesDoc.Descendants(ns + "dxfs").FirstOrDefault();
-            if (dxfs != null)
-            {
-                foreach (var dxf in dxfs.Elements(ns + "dxf"))
-                {
-                    bool? bold = null;
-                    PdfColor? fillColor = null;
-
-                    var fontEl = dxf.Element(ns + "font");
-                    if (fontEl != null)
-                    {
-                        var bEl = fontEl.Element(ns + "b");
-                        if (bEl != null)
-                        {
-                            var val = bEl.Attribute("val")?.Value;
-                            bold = val == null || val == "1" || string.Equals(val, "true", StringComparison.OrdinalIgnoreCase);
-                        }
-                    }
-
-                    var fillEl = dxf.Element(ns + "fill");
-                    if (fillEl != null)
-                    {
-                        var bgEl = fillEl.Descendants(ns + "bgColor").FirstOrDefault();
-                        if (bgEl != null)
-                            fillColor = ResolveColorElement(bgEl, themeColors);
-                        if (fillColor == null)
-                        {
-                            var fgEl = fillEl.Descendants(ns + "fgColor").FirstOrDefault();
-                            if (fgEl != null)
-                                fillColor = ResolveColorElement(fgEl, themeColors);
-                        }
-                    }
-
-                    dxfInfos.Add((bold, fillColor));
-                }
-            }
 
             // Parse table styles: map style name → (headerRow dxfId, totalRow dxfId, wholeTable dxfId, firstColumn dxfId, firstRowStripe dxfId, secondRowStripe dxfId)
             tableStyleMap = new Dictionary<string, (int, int, int, int, int, int)>(StringComparer.OrdinalIgnoreCase);
@@ -556,19 +538,40 @@ internal static class ExcelReader
             string? refAttr, styleName;
             int headerRowCount = 1;
             int totalsRowCount = 0;
+            int headerRowDxf = -1;
+            int dataDxf = -1;
+            int totalsRowDxf = -1;
             bool showFirstColumn = false;
             bool showRowStripes = false;
+            var columnDataDxfs = new List<int>();
+            var columnTotalsDxfs = new List<int>();
             using (var tableStream = tableEntry.Open())
             {
                 var tableDoc = XDocument.Load(tableStream);
-                refAttr = tableDoc.Root?.Attribute("ref")?.Value;
+                var root = tableDoc.Root;
+                var ns = root?.GetDefaultNamespace() ?? XNamespace.None;
+                refAttr = root?.Attribute("ref")?.Value;
 
-                if (int.TryParse(tableDoc.Root?.Attribute("headerRowCount")?.Value, out var hrc))
+                if (int.TryParse(root?.Attribute("headerRowCount")?.Value, out var hrc))
                     headerRowCount = hrc;
-                if (int.TryParse(tableDoc.Root?.Attribute("totalsRowCount")?.Value, out var trc))
+                if (int.TryParse(root?.Attribute("totalsRowCount")?.Value, out var trc))
                     totalsRowCount = trc;
 
-                var styleInfo = tableDoc.Root?.Descendants().FirstOrDefault(e => e.Name.LocalName == "tableStyleInfo");
+                headerRowDxf = ReadDxfId(root, "headerRowDxfId");
+                dataDxf = ReadDxfId(root, "dataDxfId");
+                totalsRowDxf = ReadDxfId(root, "totalsRowDxfId");
+
+                var tableColumns = root?.Element(ns + "tableColumns");
+                if (tableColumns != null)
+                {
+                    foreach (var tableColumn in tableColumns.Elements(ns + "tableColumn"))
+                    {
+                        columnDataDxfs.Add(ReadDxfId(tableColumn, "dataDxfId"));
+                        columnTotalsDxfs.Add(ReadDxfId(tableColumn, "totalsRowDxfId"));
+                    }
+                }
+
+                var styleInfo = root?.Descendants().FirstOrDefault(e => e.Name.LocalName == "tableStyleInfo");
                 styleName = styleInfo?.Attribute("name")?.Value;
                 if (styleInfo != null)
                 {
@@ -583,54 +586,36 @@ internal static class ExcelReader
 
             var (startRow, startCol) = ParseCellRef(rangeParts[0]);
             var (endRow, endCol) = ParseCellRef(rangeParts[1]);
+            if (startRow < 0 || startCol < 0 || endRow < 0 || endCol < 0) continue;
 
-
-            // Resolve table style dxf entries
-            (bool? Bold, PdfColor? FillColor) headerStyle = (true, null);
-            (bool? Bold, PdfColor? FillColor) totalStyle = (true, null);
-            (bool? Bold, PdfColor? FillColor) wholeStyle = (null, null);
-            (bool? Bold, PdfColor? FillColor) firstColStyle = (null, null);
-            PdfColor? firstRowStripeFill = null;
-            PdfColor? secondRowStripeFill = null;
+            DxfStyleInfo? namedHeaderStyle = null;
+            DxfStyleInfo? namedTotalStyle = null;
+            DxfStyleInfo? namedWholeStyle = null;
+            DxfStyleInfo? namedFirstColStyle = null;
+            DxfStyleInfo? namedFirstRowStripeStyle = null;
+            DxfStyleInfo? namedSecondRowStripeStyle = null;
 
             if (!string.IsNullOrEmpty(styleName) && tableStyleMap.TryGetValue(styleName, out var dxfIds))
             {
-                if (dxfIds.HeaderDxf >= 0 && dxfIds.HeaderDxf < dxfInfos.Count)
-                {
-                    var dxf = dxfInfos[dxfIds.HeaderDxf];
-                    // Preserve default bold=true for header rows when DXF doesn't override it
-                    headerStyle = (dxf.Bold ?? headerStyle.Bold, dxf.FillColor ?? headerStyle.FillColor);
-                }
-                if (dxfIds.TotalDxf >= 0 && dxfIds.TotalDxf < dxfInfos.Count)
-                {
-                    var dxf = dxfInfos[dxfIds.TotalDxf];
-                    totalStyle = (dxf.Bold ?? totalStyle.Bold, dxf.FillColor ?? totalStyle.FillColor);
-                }
-                if (dxfIds.WholeDxf >= 0 && dxfIds.WholeDxf < dxfInfos.Count)
-                    wholeStyle = dxfInfos[dxfIds.WholeDxf];
-                if (dxfIds.FirstColDxf >= 0 && dxfIds.FirstColDxf < dxfInfos.Count)
-                    firstColStyle = dxfInfos[dxfIds.FirstColDxf];
-                if (dxfIds.FirstRowStripeDxf >= 0 && dxfIds.FirstRowStripeDxf < dxfInfos.Count)
-                    firstRowStripeFill = dxfInfos[dxfIds.FirstRowStripeDxf].FillColor;
-                if (dxfIds.SecondRowStripeDxf >= 0 && dxfIds.SecondRowStripeDxf < dxfInfos.Count)
-                    secondRowStripeFill = dxfInfos[dxfIds.SecondRowStripeDxf].FillColor;
-            }
-
-            void ApplyStyle(List<ExcelCell> row, int c, bool? bold, PdfColor? fill)
-            {
-                if (c >= row.Count) return;
-                var cell = row[c];
-                var newBold = bold == true && !cell.Bold ? true : cell.Bold;
-                var newFill = fill != null && cell.FillColor == null ? fill : cell.FillColor;
-                if (newBold != cell.Bold || newFill != cell.FillColor)
-                    row[c] = cell with { Bold = newBold, FillColor = newFill };
+                namedHeaderStyle = GetDxfStyle(dxfInfos, dxfIds.HeaderDxf);
+                namedTotalStyle = GetDxfStyle(dxfInfos, dxfIds.TotalDxf);
+                namedWholeStyle = GetDxfStyle(dxfInfos, dxfIds.WholeDxf);
+                namedFirstColStyle = GetDxfStyle(dxfInfos, dxfIds.FirstColDxf);
+                namedFirstRowStripeStyle = GetDxfStyle(dxfInfos, dxfIds.FirstRowStripeDxf);
+                namedSecondRowStripeStyle = GetDxfStyle(dxfInfos, dxfIds.SecondRowStripeDxf);
             }
 
             // Header rows: apply table headerRow bold and fill.
             for (var r = startRow; r < startRow + headerRowCount && r <= endRow && r < rows.Count; r++)
             {
-                for (var c = startCol; c <= endCol; c++)
-                    ApplyStyle(rows[r], c, headerStyle.Bold, headerStyle.FillColor);
+                for (var c = startCol; c <= endCol && c < rows[r].Count; c++)
+                {
+                    var cell = rows[r][c] with { Bold = true };
+                    if (namedHeaderStyle != null) cell = ApplyDxfStyle(cell, namedHeaderStyle);
+                    if (GetDxfStyle(dxfInfos, headerRowDxf) is { } directHeaderStyle)
+                        cell = ApplyDxfStyle(cell, directHeaderStyle);
+                    rows[r][c] = cell;
+                }
             }
 
             // Totals rows
@@ -638,56 +623,91 @@ internal static class ExcelReader
             {
                 for (var r = endRow - totalsRowCount + 1; r <= endRow && r < rows.Count; r++)
                 {
-                    for (var c = startCol; c <= endCol; c++)
-                        ApplyStyle(rows[r], c, totalStyle.Bold, totalStyle.FillColor);
+                    for (var c = startCol; c <= endCol && c < rows[r].Count; c++)
+                    {
+                        var cell = rows[r][c] with { Bold = true };
+                        if (namedTotalStyle != null) cell = ApplyDxfStyle(cell, namedTotalStyle);
+                        if (GetDxfStyle(dxfInfos, totalsRowDxf) is { } directTotalStyle)
+                            cell = ApplyDxfStyle(cell, directTotalStyle);
+
+                        var relativeCol = c - startCol;
+                        if (relativeCol >= 0 && relativeCol < columnTotalsDxfs.Count &&
+                            GetDxfStyle(dxfInfos, columnTotalsDxfs[relativeCol]) is { } columnTotalStyle)
+                        {
+                            cell = ApplyDxfStyle(cell, columnTotalStyle);
+                        }
+
+                        rows[r][c] = cell;
+                    }
                 }
             }
 
             // Data rows: apply wholeTable fill and row stripe banding
             var dataStart = startRow + headerRowCount;
             var dataEnd = totalsRowCount > 0 ? endRow - totalsRowCount : endRow;
+            var directDataStyle = GetDxfStyle(dxfInfos, dataDxf);
             for (var r = dataStart; r <= dataEnd && r < rows.Count; r++)
             {
                 var dataRowIndex = r - dataStart;
-                var isFirstStripe = showRowStripes && firstRowStripeFill != null && (dataRowIndex % 2 == 0);
-                var isSecondStripe = showRowStripes && secondRowStripeFill != null && (dataRowIndex % 2 == 1);
+                var stripeStyle = showRowStripes
+                    ? (dataRowIndex % 2 == 0 ? namedFirstRowStripeStyle : namedSecondRowStripeStyle)
+                    : null;
 
-                for (var c = startCol; c <= endCol; c++)
+                for (var c = startCol; c <= endCol && c < rows[r].Count; c++)
                 {
-                    if (c >= rows[r].Count) continue;
                     var cell = rows[r][c];
-                    PdfColor? newFill = cell.FillColor;
+                    if (directDataStyle != null) cell = ApplyDxfStyle(cell, directDataStyle);
+                    else if (namedWholeStyle != null) cell = ApplyDxfStyle(cell, namedWholeStyle);
+                    if (stripeStyle != null) cell = ApplyDxfStyle(cell, stripeStyle);
 
-                    if (isFirstStripe)
+                    var relativeCol = c - startCol;
+                    if (relativeCol >= 0 && relativeCol < columnDataDxfs.Count &&
+                        GetDxfStyle(dxfInfos, columnDataDxfs[relativeCol]) is { } columnDataStyle)
                     {
-                        // Banded row: apply firstRowStripe fill when cell has no
-                        // fill or its fill matches the wholeTable default.
-                        if (newFill == null || ColorsMatch(newFill, wholeStyle.FillColor))
-                            newFill = firstRowStripeFill;
-                    }
-                    else if (isSecondStripe)
-                    {
-                        if (newFill == null || ColorsMatch(newFill, wholeStyle.FillColor))
-                            newFill = secondRowStripeFill;
-                    }
-                    else if (wholeStyle.FillColor != null && newFill == null)
-                    {
-                        newFill = wholeStyle.FillColor;
+                        cell = ApplyDxfStyle(cell, columnDataStyle);
                     }
 
-                    var newBold = wholeStyle.Bold == true && !cell.Bold ? true : cell.Bold;
-                    if (newBold != cell.Bold || newFill != cell.FillColor)
-                        rows[r][c] = cell with { Bold = newBold, FillColor = newFill };
+                    rows[r][c] = cell;
                 }
             }
 
             // First column: apply firstColumn DXF style (when showFirstColumn)
-            if (showFirstColumn && (firstColStyle.Bold != null || firstColStyle.FillColor != null))
+            if (showFirstColumn && namedFirstColStyle != null)
             {
                 for (var r = dataStart; r <= dataEnd && r < rows.Count; r++)
-                    ApplyStyle(rows[r], startCol, firstColStyle.Bold, firstColStyle.FillColor);
+                {
+                    if (startCol < rows[r].Count)
+                        rows[r][startCol] = ApplyDxfStyle(rows[r][startCol], namedFirstColStyle);
+                }
             }
         }
+    }
+
+    private static int ReadDxfId(XElement? element, string attributeName)
+        => int.TryParse(element?.Attribute(attributeName)?.Value, out var dxfId) ? dxfId : -1;
+
+    private static DxfStyleInfo? GetDxfStyle(IReadOnlyList<DxfStyleInfo> dxfInfos, int dxfId)
+        => dxfId >= 0 && dxfId < dxfInfos.Count ? dxfInfos[dxfId] : null;
+
+    private static ExcelCell ApplyDxfStyle(ExcelCell cell, DxfStyleInfo dxf)
+    {
+        if (!dxf.HasAnyStyle) return cell;
+
+        return cell with
+        {
+            Color = dxf.FontColor ?? cell.Color,
+            FillColor = dxf.FillSpecified ? dxf.FillColor : cell.FillColor,
+            Bold = dxf.Bold ?? cell.Bold,
+            Italic = dxf.Italic ?? cell.Italic,
+            Underline = dxf.Underline ?? cell.Underline,
+            Strikethrough = dxf.Strikethrough ?? cell.Strikethrough,
+            FontSize = dxf.FontSize ?? cell.FontSize,
+            FontName = dxf.FontName ?? cell.FontName,
+            Alignment = dxf.Alignment ?? cell.Alignment,
+            VerticalAlignment = dxf.VerticalAlignment ?? cell.VerticalAlignment,
+            WrapText = dxf.WrapText ?? cell.WrapText,
+            Indent = dxf.Indent ?? cell.Indent
+        };
     }
 
     /// <summary>
@@ -1066,11 +1086,11 @@ internal static class ExcelReader
 
     /// <summary>
     /// Reads differential formatting (dxf) styles from styles.xml.
-    /// These are used by conditional formatting rules to override cell appearance.
+    /// These are used by table styles and conditional formatting rules to override cell appearance.
     /// </summary>
-    private static List<(PdfColor? FontColor, PdfColor? FillColor)> ReadDxfStyles(ZipArchive archive, List<PdfColor> themeColors)
+    private static List<DxfStyleInfo> ReadDxfStyles(ZipArchive archive, List<PdfColor> themeColors)
     {
-        var result = new List<(PdfColor? FontColor, PdfColor? FillColor)>();
+        var result = new List<DxfStyleInfo>();
         var entry = archive.GetEntry("xl/styles.xml");
         if (entry == null) return result;
 
@@ -1085,27 +1105,114 @@ internal static class ExcelReader
         {
             PdfColor? fontColor = null;
             PdfColor? fillColor = null;
+            bool? bold = null;
+            bool? italic = null;
+            bool? underline = null;
+            bool? strikethrough = null;
+            float? fontSize = null;
+            string? fontName = null;
+            string? alignment = null;
+            string? verticalAlignment = null;
+            bool? wrapText = null;
+            int? indent = null;
+            var fillSpecified = false;
 
             var fontEl = dxf.Element(ns + "font");
             if (fontEl != null)
             {
                 var colorEl = fontEl.Element(ns + "color");
                 fontColor = ResolveColorElement(colorEl, themeColors);
+                bold = ReadBooleanFontFlag(fontEl.Element(ns + "b"));
+                italic = ReadBooleanFontFlag(fontEl.Element(ns + "i"));
+                underline = ReadUnderlineFlag(fontEl.Element(ns + "u"));
+                strikethrough = ReadBooleanFontFlag(fontEl.Element(ns + "strike"));
+
+                var szAttr = fontEl.Element(ns + "sz")?.Attribute("val")?.Value;
+                if (float.TryParse(szAttr, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out var parsedSize) && parsedSize > 0)
+                {
+                    fontSize = parsedSize;
+                }
+
+                fontName = fontEl.Element(ns + "name")?.Attribute("val")?.Value;
             }
 
             var fillEl = dxf.Element(ns + "fill");
             if (fillEl != null)
             {
-                var bgEl = fillEl.Descendants(ns + "bgColor").FirstOrDefault()
-                        ?? fillEl.Descendants(ns + "fgColor").FirstOrDefault();
-                fillColor = ResolveColorElement(bgEl, themeColors);
+                fillSpecified = true;
+                var patternFill = fillEl.Element(ns + "patternFill");
+                var patternType = patternFill?.Attribute("patternType")?.Value;
+                if (!string.Equals(patternType, "none", StringComparison.OrdinalIgnoreCase))
+                {
+                    var bgEl = fillEl.Descendants(ns + "bgColor").FirstOrDefault();
+                    if (bgEl != null)
+                        fillColor = ResolveColorElement(bgEl, themeColors);
+                    if (fillColor == null)
+                    {
+                        var fgEl = fillEl.Descendants(ns + "fgColor").FirstOrDefault();
+                        if (fgEl != null)
+                            fillColor = ResolveColorElement(fgEl, themeColors);
+                    }
+                }
             }
 
-            result.Add((fontColor, fillColor));
+            var alignmentEl = dxf.Element(ns + "alignment");
+            if (alignmentEl != null)
+            {
+                alignment = alignmentEl.Attribute("horizontal")?.Value;
+                verticalAlignment = alignmentEl.Attribute("vertical")?.Value;
+
+                var wrapTextAttr = alignmentEl.Attribute("wrapText")?.Value;
+                if (!string.IsNullOrEmpty(wrapTextAttr))
+                    wrapText = IsTrueValue(wrapTextAttr);
+
+                var indentAttr = alignmentEl.Attribute("indent")?.Value;
+                if (int.TryParse(indentAttr, out var parsedIndent))
+                    indent = parsedIndent;
+            }
+
+            result.Add(new DxfStyleInfo
+            {
+                FontColor = fontColor,
+                FillColor = fillColor,
+                FillSpecified = fillSpecified,
+                Bold = bold,
+                Italic = italic,
+                Underline = underline,
+                Strikethrough = strikethrough,
+                FontSize = fontSize,
+                FontName = fontName,
+                Alignment = alignment,
+                VerticalAlignment = verticalAlignment,
+                WrapText = wrapText,
+                Indent = indent
+            });
         }
 
         return result;
     }
+
+    private static bool? ReadBooleanFontFlag(XElement? element)
+    {
+        if (element == null) return null;
+        var val = element.Attribute("val")?.Value;
+        return string.IsNullOrEmpty(val) || IsTrueValue(val);
+    }
+
+    private static bool? ReadUnderlineFlag(XElement? element)
+    {
+        if (element == null) return null;
+        var val = element.Attribute("val")?.Value;
+        if (string.IsNullOrEmpty(val)) return true;
+        if (val == "0" || string.Equals(val, "false", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(val, "none", StringComparison.OrdinalIgnoreCase))
+            return false;
+        return true;
+    }
+
+    private static bool IsTrueValue(string value)
+        => value == "1" || string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// Reads conditional formatting rules from a worksheet entry.
@@ -1191,19 +1298,19 @@ internal static class ExcelReader
     }
 
     /// <summary>
-    /// Applies conditional formatting rules to cell data, overriding font/fill colors where rules match.
+    /// Applies conditional formatting rules to cell data, overriding cell appearance where rules match.
     /// </summary>
     private static void ApplyConditionalFormatting(
         List<List<ExcelCell>> rows,
         List<(string Sqref, string Type, string Operator, string Formula, int DxfId)> cfRules,
-        List<(PdfColor? FontColor, PdfColor? FillColor)> dxfStyles,
+        List<DxfStyleInfo> dxfStyles,
         Dictionary<string, double> definedNames)
     {
         foreach (var (sqref, type, op, formula, dxfId) in cfRules)
         {
             if (dxfId < 0 || dxfId >= dxfStyles.Count) continue;
-            var (fontColor, fillColor) = dxfStyles[dxfId];
-            if (fontColor == null && fillColor == null) continue;
+            var dxfStyle = dxfStyles[dxfId];
+            if (!dxfStyle.HasAnyStyle) continue;
 
             // For expression-type CFs, try range-wide evaluation first (e.g. NAME+N=TODAY())
             bool? rangeWideResult = null;
@@ -1227,12 +1334,7 @@ internal static class ExcelReader
                         var row = rows[r];
                         for (var c = startCol; c <= endCol && c < row.Count; c++)
                         {
-                            var cell = row[c];
-                            row[c] = cell with
-                            {
-                                Color = fontColor ?? cell.Color,
-                                FillColor = fillColor ?? cell.FillColor
-                            };
+                            row[c] = ApplyDxfStyle(row[c], dxfStyle);
                         }
                     }
                     continue;
@@ -1248,26 +1350,21 @@ internal static class ExcelReader
                     for (var c = startCol; c <= endCol && c < row.Count; c++)
                     {
                         var cell = row[c];
-                        if (string.IsNullOrEmpty(cell.Text)) continue;
+                        if (type != "expression" && string.IsNullOrEmpty(cell.Text)) continue;
 
-                        var matches = EvaluateCondition(cell, type, op, formula, definedNames);
+                        var matches = EvaluateCondition(rows, cell, type, op, formula,
+                            r, c, startRow, startCol, definedNames);
 
                         if (matches)
-                        {
-                            row[c] = cell with
-                            {
-                                Color = fontColor ?? cell.Color,
-                                FillColor = fillColor ?? cell.FillColor
-                            };
-
-                        }
+                            row[c] = ApplyDxfStyle(cell, dxfStyle);
                     }
                 }
             }
         }
     }
 
-    private static bool EvaluateCondition(ExcelCell cell, string type, string op, string formula,
+    private static bool EvaluateCondition(List<List<ExcelCell>> rows, ExcelCell cell, string type, string op, string formula,
+        int targetRow, int targetCol, int anchorRow, int anchorCol,
         Dictionary<string, double> definedNames)
     {
         if (type == "cellIs")
@@ -1297,15 +1394,15 @@ internal static class ExcelReader
 
         if (type == "expression")
         {
-            // Support simple patterns like "C8<Cash_Minimum" → current cell value < defined name
-            // The formula references the first cell in the range, but semantically means "this cell"
-            if (!TryGetCellNumericValue(cell, out var cellVal)) return false;
+            if (EvaluateConditionalExpression(rows, formula, targetRow, targetCol, anchorRow, anchorCol, definedNames) is { } expressionResult)
+                return expressionResult;
 
             // Try to match pattern: CELLREF < NAME or CELLREF > NAME etc.
             var m = System.Text.RegularExpressions.Regex.Match(formula, @"^[A-Z]+\d+\s*(<|>|<=|>=|=)\s*(.+)$",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             if (m.Success)
             {
+                if (!TryGetCellNumericValue(cell, out var cellVal)) return false;
                 var compOp = m.Groups[1].Value;
                 var rhs = m.Groups[2].Value.Trim();
 
@@ -1334,6 +1431,151 @@ internal static class ExcelReader
 
         return false;
     }
+
+    private static bool? EvaluateConditionalExpression(List<List<ExcelCell>> rows, string formula,
+        int targetRow, int targetCol, int anchorRow, int anchorCol, Dictionary<string, double> definedNames)
+    {
+        var trimmed = formula.Trim();
+        if (trimmed.StartsWith("=", StringComparison.Ordinal))
+            trimmed = trimmed[1..];
+
+        var isBlank = System.Text.RegularExpressions.Regex.Match(trimmed,
+            @"^NOT\(ISBLANK\((\$?)([A-Z]+)(\$?)(\d+)\)\)$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (isBlank.Success && TryResolveConditionalCellReference(isBlank, targetRow, targetCol, anchorRow, anchorCol, out var blankRow, out var blankCol))
+            return !string.IsNullOrEmpty(GetCellText(rows, blankRow, blankCol));
+
+        var directBlank = System.Text.RegularExpressions.Regex.Match(trimmed,
+            @"^ISBLANK\((\$?)([A-Z]+)(\$?)(\d+)\)$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (directBlank.Success && TryResolveConditionalCellReference(directBlank, targetRow, targetCol, anchorRow, anchorCol, out blankRow, out blankCol))
+            return string.IsNullOrEmpty(GetCellText(rows, blankRow, blankCol));
+
+        var compare = System.Text.RegularExpressions.Regex.Match(trimmed,
+            @"^(\$?)([A-Z]+)(\$?)(\d+)\s*(<>|<=|>=|=|<|>)\s*(.+)$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (!compare.Success || !TryResolveConditionalCellReference(compare, targetRow, targetCol, anchorRow, anchorCol, out var row, out var col))
+            return null;
+
+        var lhsText = GetCellText(rows, row, col);
+        var op = compare.Groups[5].Value;
+        var rhsText = compare.Groups[6].Value.Trim();
+
+        if (TryResolveRhsValue(rows, rhsText, targetRow, targetCol, anchorRow, anchorCol, definedNames, out var rhsCellText, out var rhsNumber))
+        {
+            if (TryParseCellNumber(lhsText, out var lhsNumber) && rhsNumber.HasValue)
+                return CompareNumbers(lhsNumber, rhsNumber.Value, op);
+
+            if (rhsCellText != null)
+                return CompareStrings(lhsText, rhsCellText, op);
+        }
+
+        if (TryParseCellNumber(lhsText, out var lhsNumeric) &&
+            double.TryParse(rhsText, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var rhsNumeric))
+        {
+            return CompareNumbers(lhsNumeric, rhsNumeric, op);
+        }
+
+        return CompareStrings(lhsText, rhsText.Trim('"'), op);
+    }
+
+    private static bool TryResolveConditionalCellReference(System.Text.RegularExpressions.Match match,
+        int targetRow, int targetCol, int anchorRow, int anchorCol, out int row, out int col)
+    {
+        var colAbsolute = match.Groups[1].Value == "$";
+        var colLetters = match.Groups[2].Value;
+        var rowAbsolute = match.Groups[3].Value == "$";
+        var rowNumber = match.Groups[4].Value;
+        var (refRow, refCol) = ParseCellRef(colLetters + rowNumber);
+        row = rowAbsolute ? refRow : refRow + (targetRow - anchorRow);
+        col = colAbsolute ? refCol : refCol + (targetCol - anchorCol);
+        return row >= 0 && col >= 0;
+    }
+
+    private static bool TryResolveRhsValue(List<List<ExcelCell>> rows, string rhs,
+        int targetRow, int targetCol, int anchorRow, int anchorCol, Dictionary<string, double> definedNames,
+        out string? text, out double? number)
+    {
+        text = null;
+        number = null;
+
+        if (rhs.Length >= 2 && rhs[0] == '"' && rhs[^1] == '"')
+        {
+            text = rhs[1..^1];
+            return true;
+        }
+
+        var cellRef = System.Text.RegularExpressions.Regex.Match(rhs,
+            @"^(\$?)([A-Z]+)(\$?)(\d+)$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (cellRef.Success && TryResolveConditionalCellReference(cellRef, targetRow, targetCol, anchorRow, anchorCol, out var row, out var col))
+        {
+            text = GetCellText(rows, row, col);
+            if (TryParseCellNumber(text, out var parsed))
+                number = parsed;
+            return true;
+        }
+
+        if (definedNames.TryGetValue(rhs, out var definedValue))
+        {
+            number = definedValue;
+            text = definedValue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            return true;
+        }
+
+        if (double.TryParse(rhs, System.Globalization.NumberStyles.Any,
+            System.Globalization.CultureInfo.InvariantCulture, out var numeric))
+        {
+            number = numeric;
+            text = rhs;
+            return true;
+        }
+
+        text = rhs;
+        return true;
+    }
+
+    private static string GetCellText(List<List<ExcelCell>> rows, int row, int col)
+        => row >= 0 && row < rows.Count && col >= 0 && col < rows[row].Count
+            ? rows[row][col].Text
+            : string.Empty;
+
+    private static bool TryParseCellNumber(string text, out double value)
+    {
+        value = 0;
+        if (string.IsNullOrWhiteSpace(text)) return false;
+        var normalized = text.Replace("$", "").Replace(",", "").Trim();
+        if (normalized.StartsWith('(') && normalized.EndsWith(')'))
+            normalized = "-" + normalized[1..^1];
+        if (normalized == "-")
+        {
+            value = 0;
+            return true;
+        }
+        return double.TryParse(normalized, System.Globalization.NumberStyles.Any,
+            System.Globalization.CultureInfo.InvariantCulture, out value);
+    }
+
+    private static bool CompareNumbers(double lhs, double rhs, string op)
+        => op switch
+        {
+            "<" => lhs < rhs,
+            ">" => lhs > rhs,
+            "<=" => lhs <= rhs,
+            ">=" => lhs >= rhs,
+            "=" => Math.Abs(lhs - rhs) < 1e-10,
+            "<>" => Math.Abs(lhs - rhs) >= 1e-10,
+            _ => false
+        };
+
+    private static bool CompareStrings(string lhs, string rhs, string op)
+        => op switch
+        {
+            "=" => string.Equals(lhs, rhs, StringComparison.OrdinalIgnoreCase),
+            "<>" => !string.Equals(lhs, rhs, StringComparison.OrdinalIgnoreCase),
+            _ => false
+        };
 
     /// <summary>
     /// Evaluates a range-wide expression formula that doesn't depend on individual cell values.
@@ -1620,6 +1862,7 @@ internal static class ExcelReader
                 bool bold = false;
                 bool italic = false;
                 bool underline = false;
+                bool strikethrough = false;
                 CellBorderInfo? border = null;
                 bool wrapText = false;
                 string? fontName = null;
@@ -1632,6 +1875,7 @@ internal static class ExcelReader
                     bold = fontStyle.Bold;
                     italic = fontStyle.Italic;
                     underline = fontStyle.Underline;
+                    strikethrough = fontStyle.Strikethrough;
                     fontName = fontStyle.FontName;
                     fillColor = ResolveFillColor(styleIndex, fillColors, cellXfFillIndices);
                     border = ResolveBorder(styleIndex, borders, cellXfBorderIndices);
@@ -1723,7 +1967,7 @@ internal static class ExcelReader
                 }
 
                 text = NormalizeCellText(text);
-                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent, cellBoldPrefixLen));
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, strikethrough, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent, cellBoldPrefixLen));
                 lastColIndex = colIndex + 1;
             }
 
@@ -4045,7 +4289,7 @@ internal static class ExcelReader
 /// <summary>
 /// Represents font styling information for a cell.
 /// </summary>
-internal sealed record FontStyleInfo(PdfColor? Color, float Size = 11f, bool Bold = false, bool Italic = false, bool Underline = false, string? FontName = null);
+internal sealed record FontStyleInfo(PdfColor? Color, float Size = 11f, bool Bold = false, bool Italic = false, bool Underline = false, string? FontName = null, bool Strikethrough = false);
 
 /// <summary>
 /// Represents border styling for one side of a cell.
@@ -4069,6 +4313,7 @@ internal sealed record ExcelCell(
     bool Bold = false,
     bool Italic = false,
     bool Underline = false,
+    bool Strikethrough = false,
     CellBorderInfo? Border = null,
     string VerticalAlignment = "bottom",
     bool WrapText = false,

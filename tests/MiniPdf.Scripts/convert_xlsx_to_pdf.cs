@@ -19,6 +19,7 @@ var filterPattern = args.Length > 2 ? args[2] : null;
 Directory.CreateDirectory(pdfDir);
 
 var xlsxFiles = Directory.GetFiles(xlsxDir, "*.xlsx")
+                         .Where(f => !Path.GetFileName(f).StartsWith("~$", StringComparison.Ordinal))
                          .OrderBy(f => f)
                          .ToArray();
 

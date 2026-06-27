@@ -63,6 +63,11 @@ internal sealed class PdfTextBlock
     public bool Underline { get; }
 
     /// <summary>
+    /// Whether to render a line through the text.
+    /// </summary>
+    public bool Strikethrough { get; }
+
+    /// <summary>
     /// Character spacing in points (PDF Tc operator). 0 means default.
     /// </summary>
     public float CharSpacing { get; }
@@ -86,7 +91,7 @@ internal sealed class PdfTextBlock
     /// </summary>
     public float? UnderlineWidth { get; }
 
-    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null)
+    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null, bool strikethrough = false)
     {
         Text = text;
         X = x;
@@ -98,6 +103,7 @@ internal sealed class PdfTextBlock
         Bold = bold;
         Italic = italic;
         Underline = underline;
+        Strikethrough = strikethrough;
         CharSpacing = charSpacing;
         WordSpacing = wordSpacing;
         PreferredFontName = preferredFontName;

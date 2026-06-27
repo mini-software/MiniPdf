@@ -1696,5 +1696,31 @@
       }
     ],
     "overall_score": 0.939
+  },
+  {
+    "name": "Grocery list1",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 182633,
+    "reference_size": 86288,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9231,
+    "flat_text_similarity": 0.7133,
+    "word_text_similarity": 0.9231,
+    "text_diff": "--- minipdf/Grocery list1.pdf\n+++ reference/Grocery list1.pdf\n@@ -1,25 +1,38 @@\n ORCHARD GROCERY HOME DELIVERY LOCAL MARKET OTHER GRAND TOTAL\n\n GROCERY LIST\n\n-Customize this list. Replace the entries above with your own to track your most frequently\n\n-$11.95 $6.12 $31.85 $216.60 $3.99 $270.51\n\n-used categories.\n\n+Customize this list. Replace the entries above with your own to track your most $11.95 $6.12 $31.85 $216.60 $3.99 $270.51\n\n+frequently used categories.\n\n DONE? ITEM STORE CATEGORY QTY UNIT UNIT PRICE TOTAL NOTE\n\n Yes Peaches Azure River Farm ORCHARD 2 lbs $2.99 $5.98\n\n Yes Apples Azure River Farm ORCHARD 3 lbs $1.99 $5.97 Have coupon\n\n Bananas Wide World Importers OTHER 1 bunch $3.99 $3.99\n\n-Yes Lettuce Market LOCAL MARKET 2 head $2.29 $4.58\n\n+LOCAL\n\n+Yes Lettuce Market 2 head $2.29 $4.58\n\n+MARKET\n\n Tomatoes Market LOCAL MARKET 4 lbs $3.49 $13.96\n\n-Yes Squash Market LOCAL MARKET 2 each $1.50 $3.00\n\n-Yes Celery Wide World Importers LOCAL MARKET 2 bunch $1.99 $3.98\n\n+LOCAL\n\n+Yes Squash Market 2 each $1.50 $3.00\n\n+MARKET\n\n+LOCAL\n\n+Yes Celery Wide World Importers 2 bunch $1.99 $3.98\n\n+MARKET\n\n Cucumber Market LOCAL MARKET 1 lbs $2.29 $2.29\n\n Mushrooms Wide World Importers GROCERY 0.5 lbs $2.25 $1.13\n\n-Yes Milk Local Farmer HOME DELIVERY 2 gal $3.99 $7.98\n\n-Variety of block\n\n-Yes Cheese Local Farmer HOME DELIVERY 1 lbs $9.99 $9.99\n\n-cheeses\n\n-Yes Eggs Local Farmer HOME DELIVERY 2 doz $3.50 $7.00\n\n-Yes Cottage cheese Local Farmer HOME DELIVERY 1 16 oz $3.89 $3.89\n\n-Yes Sour cream Local Farmer HOME DELIVERY 1 8 oz $2.99 $2.99\n\n+HOME\n\n+Yes Milk Local Farmer 2 gal $3.99 $7.98\n\n+DELIVERY\n\n+HOME Variety of\n\n+Yes Cheese Local Farmer 1 lbs $9.99 $9.99\n\n+DELIVERY block cheeses\n\n+HOME\n\n+Yes Eggs Local Farmer 2 doz $3.50 $7.00\n\n+DELIVERY\n\n+HOME\n\n+Yes Cottage cheese Local Farmer 1 16 oz $3.89 $3.89\n\n+DELIVERY\n\n+HOME\n\n+Yes Sour cream Local Farmer 1 8 oz $2.99 $2.99\n\n+DELIVERY\n\n Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99 Greek with honey\n\n Bacon wrapped\n\n Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90\n",
+    "visual_scores": [
+      0.7854
+    ],
+    "visual_avg": 0.7854,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Grocery list1_p1_minipdf.png",
+        "reference_img": "Grocery list1_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.8834
   }
 ]

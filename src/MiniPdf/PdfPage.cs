@@ -140,15 +140,17 @@ internal sealed class PdfPage
     /// <param name="clipRect">Optional clipping rectangle for visual overflow control.</param>
     /// <param name="maxWidth">Optional max render width; applies horizontal scaling when needed.</param>
     /// <param name="bold">Whether to use the bold variant for WinAnsi text.</param>
+    /// <param name="italic">Whether to render text using the italic font variant.</param>
     /// <param name="underline">Whether to draw an underline under the text.</param>
     /// <param name="charSpacing">Character spacing in points (PDF Tc).</param>
     /// <param name="wordSpacing">Word spacing in points (PDF Tw).</param>
     /// <param name="preferredFontName">Optional preferred Unicode font family hint.</param>
     /// <param name="underlineWidth">Optional explicit underline width override in points.</param>
+    /// <param name="strikethrough">Whether to draw a line through the text.</param>
     /// <returns>The current page for chaining.</returns>
-    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null)
+    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null, bool strikethrough = false)
     {
-        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, italic, underline, charSpacing, wordSpacing, preferredFontName, underlineWidth));
+        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, italic, underline, charSpacing, wordSpacing, preferredFontName, underlineWidth, strikethrough));
         return this;
     }
 

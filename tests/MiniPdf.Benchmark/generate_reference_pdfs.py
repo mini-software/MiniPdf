@@ -111,7 +111,7 @@ def main():
     print(f"Output: {pdf_dir}")
     print()
 
-    xlsx_files = sorted(Path(xlsx_dir).glob("*.xlsx"))
+    xlsx_files = sorted(f for f in Path(xlsx_dir).glob("*.xlsx") if not f.name.startswith("~$"))
     if args.filter:
         xlsx_files = [f for f in xlsx_files if args.filter.lower() in f.stem.lower()]
     if not xlsx_files:
