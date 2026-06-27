@@ -129,6 +129,30 @@ public class PptxToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_WithLuminosityTransform_AdjustsHslLuminance()
+    {
+        using var pptxStream = CreatePptx(
+            new PptxSlideSpec(
+                new[]
+                {
+                    new PptxShapeSpec(
+                        "rect",
+                        914400,
+                        914400,
+                        1800000,
+                        1000000,
+                        FillXml: "<a:solidFill><a:srgbClr val=\"B3DAD6\"><a:lumMod val=\"75000\"/></a:srgbClr></a:solidFill>"),
+                }));
+
+        var doc = PptxToPdfConverter.Convert(pptxStream);
+        var transformedRect = Assert.Single(doc.Pages[0].RectBlocks, rect => rect.FillColor != PdfColor.White);
+
+        Assert.Equal(112 / 255f, transformedRect.FillColor.R, precision: 2);
+        Assert.Equal(186 / 255f, transformedRect.FillColor.G, precision: 2);
+        Assert.Equal(178 / 255f, transformedRect.FillColor.B, precision: 2);
+    }
+
+    [Fact]
     public void Convert_WithDiagramDrawing_RendersSmartArtFallback()
     {
         using var pptxStream = CreatePptxWithDiagramDrawing();
@@ -582,9 +606,9 @@ public class PptxToPdfConverterTests
                 """;
         }
 
-        var fill = shape.FillColor == null
+        var fill = shape.FillXml ?? (shape.FillColor == null
             ? "<a:noFill/>"
-            : $"<a:solidFill><a:srgbClr val=\"{shape.FillColor}\"/></a:solidFill>";
+            : $"<a:solidFill><a:srgbClr val=\"{shape.FillColor}\"/></a:solidFill>");
         var outline = shape.OutlineColor == null
             ? "<a:ln><a:noFill/></a:ln>"
             : $"<a:ln w=\"12700\"><a:solidFill><a:srgbClr val=\"{shape.OutlineColor}\"/></a:solidFill></a:ln>";
@@ -688,7 +712,8 @@ public class PptxToPdfConverterTests
         string Color = "000000",
         string? FillColor = null,
         string? OutlineColor = null,
-        string? PictureRelationshipId = null)
+        string? PictureRelationshipId = null,
+        string? FillXml = null)
     {
         public static PptxShapeSpec TextBox(string text, long x, long y, long width, long height, int fontSize = 1800, string color = "000000")
             => new("rect", x, y, width, height, text, fontSize, color);

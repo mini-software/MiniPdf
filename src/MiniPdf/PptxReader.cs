@@ -968,19 +968,83 @@ internal static class PptxReader
     {
         var lumMod = 1f;
         var lumOff = 0f;
+        var hasLuminosityTransform = false;
 
         var lumModElement = colorElement.Element(A + "lumMod");
         if (lumModElement != null && int.TryParse(lumModElement.Attribute("val")?.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var lumModValue))
+        {
             lumMod = lumModValue / 100000f;
+            hasLuminosityTransform = true;
+        }
 
         var lumOffElement = colorElement.Element(A + "lumOff");
         if (lumOffElement != null && int.TryParse(lumOffElement.Attribute("val")?.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var lumOffValue))
+        {
             lumOff = lumOffValue / 100000f;
+            hasLuminosityTransform = true;
+        }
+
+        if (!hasLuminosityTransform)
+            return color;
+
+        var (hue, saturation, luminance) = RgbToHsl(color);
+        luminance = Compat.Clamp(luminance * lumMod + lumOff, 0f, 1f);
+        return HslToRgb(hue, saturation, luminance);
+    }
+
+    private static (float Hue, float Saturation, float Luminance) RgbToHsl(PdfColor color)
+    {
+        var max = Math.Max(color.R, Math.Max(color.G, color.B));
+        var min = Math.Min(color.R, Math.Min(color.G, color.B));
+        var luminance = (max + min) / 2f;
+
+        if (Math.Abs(max - min) < 0.00001f)
+            return (0f, 0f, luminance);
+
+        var delta = max - min;
+        var saturation = luminance > 0.5f
+            ? delta / (2f - max - min)
+            : delta / (max + min);
+        float hue;
+        if (Math.Abs(max - color.R) < 0.00001f)
+            hue = (color.G - color.B) / delta + (color.G < color.B ? 6f : 0f);
+        else if (Math.Abs(max - color.G) < 0.00001f)
+            hue = (color.B - color.R) / delta + 2f;
+        else
+            hue = (color.R - color.G) / delta + 4f;
+
+        return (hue / 6f, saturation, luminance);
+    }
+
+    private static PdfColor HslToRgb(float hue, float saturation, float luminance)
+    {
+        if (saturation <= 0.00001f)
+            return new PdfColor(luminance, luminance, luminance);
+
+        var upperBound = luminance < 0.5f
+            ? luminance * (1f + saturation)
+            : luminance + saturation - luminance * saturation;
+        var lowerBound = 2f * luminance - upperBound;
 
         return new PdfColor(
-            Compat.Clamp(color.R * lumMod + lumOff, 0f, 1f),
-            Compat.Clamp(color.G * lumMod + lumOff, 0f, 1f),
-            Compat.Clamp(color.B * lumMod + lumOff, 0f, 1f));
+            HueToRgb(lowerBound, upperBound, hue + 1f / 3f),
+            HueToRgb(lowerBound, upperBound, hue),
+            HueToRgb(lowerBound, upperBound, hue - 1f / 3f));
+    }
+
+    private static float HueToRgb(float lowerBound, float upperBound, float hueOffset)
+    {
+        if (hueOffset < 0f)
+            hueOffset += 1f;
+        if (hueOffset > 1f)
+            hueOffset -= 1f;
+        if (hueOffset < 1f / 6f)
+            return lowerBound + (upperBound - lowerBound) * 6f * hueOffset;
+        if (hueOffset < 1f / 2f)
+            return upperBound;
+        if (hueOffset < 2f / 3f)
+            return lowerBound + (upperBound - lowerBound) * (2f / 3f - hueOffset) * 6f;
+        return lowerBound;
     }
 
     private static PptxRelatedPart? ReadRelatedPart(
