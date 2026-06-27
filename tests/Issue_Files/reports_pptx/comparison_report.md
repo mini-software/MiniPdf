@@ -1,14 +1,14 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-06-27T13:19:18.633491
+Generated: 2026-06-27T14:28:37.487440
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 Asian Pacific | ✅ | 0.9499 | 0.8436 | 12/12 | **0.9174** |
+| 1 | 🟢 Asian Pacific | ✅ | 0.9499 | 0.8567 | 12/12 | **0.9226** |
 
-**Average Overall Score: 0.9174**
+**Average Overall Score: 0.9226**
 
 ## Visual Comparison
 
@@ -16,7 +16,7 @@ Generated: 2026-06-27T13:19:18.633491
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>Asian Pacific</b></td>
-  <td colspan="1">Asian Pacific <span style="color:#3fb950">⬤</span> 91.7%</td>
+  <td colspan="1">Asian Pacific <span style="color:#3fb950">⬤</span> 92.3%</td>
 </tr>
 <tr>
   <td><img src="images/Asian Pacific_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -73,10 +73,10 @@ Generated: 2026-06-27T13:19:18.633491
 ### Asian Pacific
 
 - **Text Similarity:** 0.9499
-- **Visual Average:** 0.8436
-- **Overall Score:** 0.9174
+- **Visual Average:** 0.8567
+- **Overall Score:** 0.9226
 - **Pages:** MiniPdf=12, Reference=12
-- **File Size:** MiniPdf=743881 bytes, Reference=355585 bytes
+- **File Size:** MiniPdf=745414 bytes, Reference=355585 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -112,13 +112,17 @@ Generated: 2026-06-27T13:19:18.633491
 
  Interesting facts
 
- List some interesting facts about Asian Pacific Heritage Month.
+-List some interesting facts about Asian Pacific Heritage
 
- Here are a few examples:
+-Month. Here are a few examples:
 
 -• In 1978, President Jimmy Carter signed a resolution
 
 -designating May as Asian/Pacific Heritage Week.
+
++List some interesting facts about Asian Pacific Heritage Month.
+
++Here are a few examples:
 
 +• In 1978, President Jimmy Carter signed a resolution designating
 
@@ -128,9 +132,9 @@ Generated: 2026-06-27T13:19:18.633491
 
  Japanese to the United States on May 7, 1843, and to mark the
 
--anniversary of the completion of the transcontinental railroad
+-anniversary of the completion of the transcontinental
 
--on May 10, 1869.
+-railroad on May 10, 1869.
 
 -• In 1992, the official designation of May as Asian-Pacific
 
@@ -204,18 +208,7 @@ Generated: 2026-06-27T13:19:18.633491
 
 -• The writing of Amy Tan
 
--• The music of Yo-Yo Ma
-
--• The artwork of Yayoi Kusama
-
-+•
-
-+The writing of Amy Tan
-
-+•
-
-+
-... (689 more characters)
+... (782 more characters)
 
 ```
 </details>

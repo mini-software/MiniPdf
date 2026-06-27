@@ -45,14 +45,41 @@ internal sealed class PptxShape : PptxElement
     public PdfColor? FillColor { get; }
     public PptxOutline? Outline { get; }
     public List<PptxTextParagraph> Paragraphs { get; }
+    public PptxTextBodyProperties TextBodyProperties { get; }
 
-    public PptxShape(string shapeType, PptxRect bounds, PdfColor? fillColor, PptxOutline? outline, List<PptxTextParagraph> paragraphs)
+    public PptxShape(string shapeType, PptxRect bounds, PdfColor? fillColor, PptxOutline? outline, List<PptxTextParagraph> paragraphs, PptxTextBodyProperties textBodyProperties)
     {
         ShapeType = shapeType;
         Bounds = bounds;
         FillColor = fillColor;
         Outline = outline;
         Paragraphs = paragraphs;
+        TextBodyProperties = textBodyProperties;
+    }
+
+    public PptxShape(string shapeType, PptxRect bounds, PdfColor? fillColor, PptxOutline? outline, List<PptxTextParagraph> paragraphs)
+        : this(shapeType, bounds, fillColor, outline, paragraphs, PptxTextBodyProperties.Default)
+    {
+    }
+}
+
+internal readonly struct PptxTextBodyProperties
+{
+    public static readonly PptxTextBodyProperties Default = new(0, 0, 0, 0, "top");
+
+    public float LeftInset { get; }
+    public float TopInset { get; }
+    public float RightInset { get; }
+    public float BottomInset { get; }
+    public string VerticalAnchor { get; }
+
+    public PptxTextBodyProperties(float leftInset, float topInset, float rightInset, float bottomInset, string verticalAnchor)
+    {
+        LeftInset = leftInset;
+        TopInset = topInset;
+        RightInset = rightInset;
+        BottomInset = bottomInset;
+        VerticalAnchor = verticalAnchor;
     }
 }
 
@@ -95,12 +122,20 @@ internal sealed class PptxTextParagraph
     public List<PptxTextRun> Runs { get; }
     public bool IsBullet { get; }
     public string Alignment { get; }
+    public float MarginLeft { get; }
+    public float Indent { get; }
+    public float SpaceBefore { get; }
+    public float? LineSpacing { get; }
 
-    public PptxTextParagraph(List<PptxTextRun> runs, bool isBullet = false, string alignment = "left")
+    public PptxTextParagraph(List<PptxTextRun> runs, bool isBullet = false, string alignment = "left", float marginLeft = 0f, float indent = 0f, float spaceBefore = 0f, float? lineSpacing = null)
     {
         Runs = runs;
         IsBullet = isBullet;
         Alignment = alignment;
+        MarginLeft = marginLeft;
+        Indent = indent;
+        SpaceBefore = spaceBefore;
+        LineSpacing = lineSpacing;
     }
 }
 
@@ -369,12 +404,13 @@ internal static class PptxReader
             ?? ReadStyleFill(shapeElement.Element(P + "style"), themeColors)
             ?? ReadShapeFill(inheritedShapeProperties, themeColors)
             ?? ReadStyleFill(inheritedShape?.Element(P + "style"), themeColors);
+        var textBodyProperties = ReadTextBodyProperties(shapeElement, inheritedShape);
         var paragraphs = ReadTextParagraphs(shapeElement, inheritedShape, themeColors);
 
         if (fillColor == null && outline == null && paragraphs.Count == 0)
             return;
 
-        elements.Add(new PptxShape(shapeType, bounds, fillColor, outline, paragraphs));
+        elements.Add(new PptxShape(shapeType, bounds, fillColor, outline, paragraphs, textBodyProperties));
     }
 
     private static void ReadPicture(
@@ -527,7 +563,7 @@ internal static class PptxReader
                 var fillColor = ReadShapeFill(cellProperties, themeColors);
                 var paragraphs = ReadTextParagraphsFromTextBody(cell.Element(A + "txBody"), null, themeColors);
                 if (fillColor != null || paragraphs.Count > 0)
-                    elements.Add(new PptxShape("rect", cellBounds, fillColor, null, paragraphs));
+                    elements.Add(new PptxShape("rect", cellBounds, fillColor, null, paragraphs, PptxTextBodyProperties.Default));
 
                 AddTableBorderLines(cellProperties, cellBounds, themeColors, elements);
 
@@ -606,7 +642,7 @@ internal static class PptxReader
         if (fillColor == null && outline == null && paragraphs.Count == 0)
             return;
 
-        elements.Add(new PptxShape(shapeType, bounds, fillColor, outline, paragraphs));
+        elements.Add(new PptxShape(shapeType, bounds, fillColor, outline, paragraphs, PptxTextBodyProperties.Default));
     }
 
     private static void AddTableBorderLines(XElement? cellProperties, PptxRect bounds, Dictionary<string, PdfColor> themeColors, List<PptxElement> elements)
@@ -700,12 +736,16 @@ internal static class PptxReader
         foreach (var paragraphElement in textBody.Elements(A + "p"))
         {
             var level = ReadParagraphLevel(paragraphElement);
-            var defaultRunProperties = paragraphElement
-                .Element(A + "pPr")?
-                .Element(A + "defRPr")
-                ?? ReadInheritedDefaultRunProperties(inheritedShape, level);
+            var paragraphProperties = paragraphElement.Element(A + "pPr");
+            var inheritedParagraphProperties = ReadInheritedParagraphProperties(inheritedShape, level);
+            var defaultRunProperties = paragraphProperties?.Element(A + "defRPr")
+                ?? inheritedParagraphProperties?.Element(A + "defRPr");
             var isBullet = IsBulletParagraph(paragraphElement, inheritedShape, level);
-            var alignment = ReadParagraphAlignment(paragraphElement);
+            var alignment = ReadParagraphAlignment(paragraphProperties, inheritedParagraphProperties);
+            var marginLeft = ReadParagraphPointAttribute(paragraphProperties, inheritedParagraphProperties, "marL", 0f);
+            var indent = ReadParagraphPointAttribute(paragraphProperties, inheritedParagraphProperties, "indent", 0f);
+            var spaceBefore = ReadSpacing(paragraphProperties?.Element(A + "spcBef"), inheritedParagraphProperties?.Element(A + "spcBef"));
+            var lineSpacing = ReadLineSpacing(paragraphProperties?.Element(A + "lnSpc"), inheritedParagraphProperties?.Element(A + "lnSpc"));
             var runs = new List<PptxTextRun>();
             var hasText = false;
 
@@ -728,16 +768,48 @@ internal static class PptxReader
                 }
             }
 
-            if (runs.Count > 0)
-                paragraphs.Add(new PptxTextParagraph(runs, isBullet, alignment));
+            paragraphs.Add(new PptxTextParagraph(runs, isBullet, alignment, marginLeft, indent, spaceBefore, lineSpacing));
         }
 
         return paragraphs;
     }
 
-    private static string ReadParagraphAlignment(XElement paragraphElement)
+    private static PptxTextBodyProperties ReadTextBodyProperties(XElement shapeElement, XElement? inheritedShape)
     {
-        return paragraphElement.Element(A + "pPr")?.Attribute("algn")?.Value?.ToLowerInvariant() switch
+        var bodyProperties = shapeElement.Element(P + "txBody")?.Element(A + "bodyPr");
+        var inheritedBodyProperties = inheritedShape?.Element(P + "txBody")?.Element(A + "bodyPr");
+
+        return new PptxTextBodyProperties(
+            ReadInset(bodyProperties, inheritedBodyProperties, "lIns"),
+            ReadInset(bodyProperties, inheritedBodyProperties, "tIns"),
+            ReadInset(bodyProperties, inheritedBodyProperties, "rIns"),
+            ReadInset(bodyProperties, inheritedBodyProperties, "bIns"),
+            ReadVerticalAnchor(bodyProperties, inheritedBodyProperties));
+    }
+
+    private static float ReadInset(XElement? bodyProperties, XElement? inheritedBodyProperties, string attributeName)
+    {
+        return ReadEmuToPoint(bodyProperties?.Attribute(attributeName)?.Value)
+            ?? ReadEmuToPoint(inheritedBodyProperties?.Attribute(attributeName)?.Value)
+            ?? 0f;
+    }
+
+    private static string ReadVerticalAnchor(XElement? bodyProperties, XElement? inheritedBodyProperties)
+    {
+        var anchor = bodyProperties?.Attribute("anchor")?.Value
+            ?? inheritedBodyProperties?.Attribute("anchor")?.Value;
+
+        return anchor?.ToLowerInvariant() switch
+        {
+            "ctr" => "middle",
+            "b" => "bottom",
+            _ => "top",
+        };
+    }
+
+    private static string ReadParagraphAlignment(XElement? paragraphProperties, XElement? inheritedParagraphProperties)
+    {
+        return (paragraphProperties?.Attribute("algn")?.Value ?? inheritedParagraphProperties?.Attribute("algn")?.Value)?.ToLowerInvariant() switch
         {
             "ctr" => "center",
             "r" => "right",
@@ -745,6 +817,68 @@ internal static class PptxReader
         };
     }
 
+    private static XElement? ReadInheritedParagraphProperties(XElement? inheritedShape, int level)
+    {
+        if (inheritedShape == null)
+            return null;
+
+        var listStyle = inheritedShape.Element(P + "txBody")?.Element(A + "lstStyle");
+        return listStyle?.Element(A + $"lvl{level + 1}pPr")
+            ?? listStyle?.Element(A + "lvl1pPr");
+    }
+
+    private static float ReadParagraphPointAttribute(XElement? paragraphProperties, XElement? inheritedParagraphProperties, string attributeName, float fallback)
+    {
+        return ReadEmuToPoint(paragraphProperties?.Attribute(attributeName)?.Value)
+            ?? ReadEmuToPoint(inheritedParagraphProperties?.Attribute(attributeName)?.Value)
+            ?? fallback;
+    }
+
+    private static float? ReadEmuToPoint(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+        return long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var emu)
+            ? emu / (float)EmusPerPoint
+            : null;
+    }
+
+    private static float ReadSpacing(XElement? spacingElement, XElement? inheritedSpacingElement)
+    {
+        return ReadSpacingValue(spacingElement)
+            ?? ReadSpacingValue(inheritedSpacingElement)
+            ?? 0f;
+    }
+
+    private static float? ReadSpacingValue(XElement? spacingElement)
+    {
+        if (spacingElement == null)
+            return null;
+
+        var pointValue = spacingElement.Element(A + "spcPts")?.Attribute("val")?.Value;
+        if (int.TryParse(pointValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out var hundredthsOfPoint))
+            return Math.Max(0f, hundredthsOfPoint / 100f);
+
+        return null;
+    }
+
+    private static float? ReadLineSpacing(XElement? lineSpacingElement, XElement? inheritedLineSpacingElement)
+    {
+        return ReadLineSpacingValue(lineSpacingElement)
+            ?? ReadLineSpacingValue(inheritedLineSpacingElement);
+    }
+
+    private static float? ReadLineSpacingValue(XElement? lineSpacingElement)
+    {
+        if (lineSpacingElement == null)
+            return null;
+
+        var percentValue = lineSpacingElement.Element(A + "spcPct")?.Attribute("val")?.Value;
+        if (int.TryParse(percentValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out var thousandthsOfPercent))
+            return Math.Max(0.1f, thousandthsOfPercent / 100000f);
+
+        return null;
+    }
     private static int ReadParagraphLevel(XElement paragraphElement)
     {
         var value = paragraphElement.Element(A + "pPr")?.Attribute("lvl")?.Value;

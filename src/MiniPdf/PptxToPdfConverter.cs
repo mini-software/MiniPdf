@@ -428,26 +428,99 @@ internal static class PptxToPdfConverter
 
     private static void RenderText(PdfPage page, PptxShape shape, ConversionOptions options)
     {
-        var textX = shape.Bounds.X + options.TextInset;
+        var bodyProperties = shape.TextBodyProperties;
+        var textX = shape.Bounds.X + options.TextInset + bodyProperties.LeftInset;
         var textTop = shape.Bounds.Y + options.TextInset;
-        var maxWidth = Math.Max(1f, shape.Bounds.Width - options.TextInset * 2);
+        var maxWidth = Math.Max(1f, shape.Bounds.Width - options.TextInset * 2 - bodyProperties.LeftInset - bodyProperties.RightInset);
+        var availableHeight = Math.Max(1f, shape.Bounds.Height - options.TextInset * 2);
         var clipY = ToPdfY(page, shape.Bounds.Y, shape.Bounds.Height);
         var clipRect = (shape.Bounds.X, clipY, shape.Bounds.Width, shape.Bounds.Height);
-        var currentTop = textTop;
+        var textHeight = EstimateTextHeight(shape.Paragraphs, maxWidth, options);
+        var currentTop = AlignTextTop(bodyProperties.VerticalAnchor, textTop, availableHeight, textHeight);
 
         foreach (var paragraph in shape.Paragraphs)
         {
+            currentTop += paragraph.SpaceBefore;
             if (paragraph.Runs.Count == 0)
             {
-                currentTop += 12f * options.LineSpacing;
+                currentTop += EmptyParagraphHeight(paragraph, options);
                 continue;
             }
 
-            var paragraphHeight = RenderParagraph(page, paragraph, textX, currentTop, maxWidth, clipRect, options);
+            var paragraphX = textX + Math.Max(0f, paragraph.MarginLeft + Math.Min(0f, paragraph.Indent));
+            var paragraphWidth = Math.Max(1f, maxWidth - Math.Max(0f, paragraph.MarginLeft + Math.Min(0f, paragraph.Indent)));
+            var paragraphHeight = RenderParagraph(page, paragraph, paragraphX, currentTop, paragraphWidth, clipRect, options);
             currentTop += paragraphHeight;
             if (currentTop > shape.Bounds.Y + shape.Bounds.Height)
                 break;
         }
+    }
+
+    private static float AlignTextTop(string verticalAnchor, float top, float availableHeight, float textHeight)
+    {
+        if (verticalAnchor.Equals("middle", StringComparison.OrdinalIgnoreCase))
+            return top + Math.Max(0f, (availableHeight - textHeight) / 2f);
+        if (verticalAnchor.Equals("bottom", StringComparison.OrdinalIgnoreCase))
+            return top + Math.Max(0f, availableHeight - textHeight);
+        return top;
+    }
+
+    private static float EstimateTextHeight(List<PptxTextParagraph> paragraphs, float maxWidth, ConversionOptions options)
+    {
+        var height = 0f;
+        foreach (var paragraph in paragraphs)
+        {
+            height += paragraph.SpaceBefore;
+            if (paragraph.Runs.Count == 0)
+            {
+                height += EmptyParagraphHeight(paragraph, options);
+                continue;
+            }
+
+            var paragraphWidth = Math.Max(1f, maxWidth - Math.Max(0f, paragraph.MarginLeft + Math.Min(0f, paragraph.Indent)));
+            if (CanRenderAsSingleStyle(paragraph))
+            {
+                var firstRun = paragraph.Runs[0];
+                var text = string.Concat(paragraph.Runs.Select(run => run.Text));
+                var lineCount = CountWrappedLines(text, paragraphWidth, firstRun.FontSize);
+                height += firstRun.FontSize * (paragraph.LineSpacing ?? options.LineSpacing) * lineCount;
+                continue;
+            }
+
+            height += EstimateStyledTextHeight(paragraph, paragraphWidth, options);
+        }
+
+        return height;
+    }
+
+    private static float EmptyParagraphHeight(PptxTextParagraph paragraph, ConversionOptions options)
+    {
+        return 21f * (paragraph.LineSpacing ?? options.LineSpacing);
+    }
+
+    private static int CountWrappedLines(string text, float maxWidth, float fontSize)
+    {
+        var lineCount = 0;
+        foreach (var segment in text.Split('\n'))
+        {
+            if (segment.Length == 0)
+            {
+                lineCount++;
+                continue;
+            }
+
+            lineCount += Math.Max(1, WrapLine(segment, maxWidth, fontSize).Count);
+        }
+
+        return Math.Max(1, lineCount);
+    }
+
+    private static float EstimateStyledTextHeight(PptxTextParagraph paragraph, float maxWidth, ConversionOptions options)
+    {
+        var lineHeights = BuildStyledLineHeights(paragraph, maxWidth, options);
+        return lineHeights.Count == 0
+            ? 12f * options.LineSpacing
+            : lineHeights.Sum();
     }
 
     private static float RenderParagraph(
@@ -463,7 +536,15 @@ internal static class PptxToPdfConverter
         {
             var firstRun = paragraph.Runs[0];
             var text = string.Concat(paragraph.Runs.Select(run => run.Text));
-            return RenderWrappedText(page, text, firstRun, paragraph.Alignment, x, top, maxWidth, clipRect, options);
+            if (paragraph.IsBullet && paragraph.MarginLeft > 0f && paragraph.Indent < 0f && text.StartsWith("\u2022 ", StringComparison.Ordinal))
+            {
+                AddText(page, "\u2022", firstRun, x, top, Math.Max(1f, paragraph.MarginLeft), clipRect);
+                var contentX = x + paragraph.MarginLeft;
+                var contentWidth = Math.Max(1f, maxWidth - paragraph.MarginLeft);
+                return RenderWrappedText(page, text.Substring(2), firstRun, paragraph.Alignment, paragraph.LineSpacing ?? options.LineSpacing, contentX, top, contentWidth, clipRect);
+            }
+
+            return RenderWrappedText(page, text, firstRun, paragraph.Alignment, paragraph.LineSpacing ?? options.LineSpacing, x, top, maxWidth, clipRect);
         }
 
         return RenderStyledWrappedText(page, paragraph, x, top, maxWidth, clipRect, options);
@@ -478,41 +559,7 @@ internal static class PptxToPdfConverter
         (float X, float Y, float Width, float Height) clipRect,
         ConversionOptions options)
     {
-        var lines = new List<List<StyledTextSegment>>();
-        var currentLine = new List<StyledTextSegment>();
-        var currentWidth = 0f;
-
-        void CommitLine()
-        {
-            lines.Add(currentLine);
-            currentLine = new List<StyledTextSegment>();
-            currentWidth = 0f;
-        }
-
-        foreach (var run in paragraph.Runs)
-        {
-            foreach (var token in SplitStyledText(run.Text))
-            {
-                if (token == "\n")
-                {
-                    CommitLine();
-                    continue;
-                }
-
-                if (token.Length == 0)
-                    continue;
-
-                var tokenWidth = EstimateTextWidth(token, run.FontSize);
-                if (currentLine.Count > 0 && currentWidth + tokenWidth > maxWidth)
-                    CommitLine();
-
-                currentLine.Add(new StyledTextSegment(token, run, tokenWidth));
-                currentWidth += tokenWidth;
-            }
-        }
-
-        if (currentLine.Count > 0)
-            lines.Add(currentLine);
+        var lines = BuildStyledLines(paragraph, maxWidth);
         if (lines.Count == 0)
             return 12f * options.LineSpacing;
 
@@ -521,12 +568,12 @@ internal static class PptxToPdfConverter
         {
             if (line.Count == 0)
             {
-                currentTop += 12f * options.LineSpacing;
+                currentTop += EmptyParagraphHeight(paragraph, options);
                 continue;
             }
 
             var lineWidth = line.Sum(segment => segment.Width);
-            var lineHeight = line.Max(segment => segment.Run.FontSize) * options.LineSpacing;
+            var lineHeight = line.Max(segment => segment.Run.FontSize) * (paragraph.LineSpacing ?? options.LineSpacing);
             var currentX = AlignLineX(paragraph.Alignment, x, maxWidth, lineWidth);
             foreach (var segment in line)
             {
@@ -576,11 +623,11 @@ internal static class PptxToPdfConverter
         string text,
         PptxTextRun style,
         string alignment,
+        float lineSpacing,
         float x,
         float top,
         float maxWidth,
-        (float X, float Y, float Width, float Height) clipRect,
-        ConversionOptions options)
+        (float X, float Y, float Width, float Height) clipRect)
     {
         var lines = new List<string>();
         foreach (var segment in text.Split('\n'))
@@ -597,7 +644,7 @@ internal static class PptxToPdfConverter
         if (lines.Count == 0)
             lines.Add(string.Empty);
 
-        var lineHeight = style.FontSize * options.LineSpacing;
+        var lineHeight = style.FontSize * lineSpacing;
         for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
         {
             if (lines[lineIndex].Length == 0)
@@ -607,6 +654,54 @@ internal static class PptxToPdfConverter
         }
 
         return lineHeight * lines.Count;
+    }
+
+    private static List<List<StyledTextSegment>> BuildStyledLines(PptxTextParagraph paragraph, float maxWidth)
+    {
+        var lines = new List<List<StyledTextSegment>>();
+        var currentLine = new List<StyledTextSegment>();
+        var currentWidth = 0f;
+
+        void CommitLine()
+        {
+            lines.Add(currentLine);
+            currentLine = new List<StyledTextSegment>();
+            currentWidth = 0f;
+        }
+
+        foreach (var run in paragraph.Runs)
+        {
+            foreach (var token in SplitStyledText(run.Text))
+            {
+                if (token == "\n")
+                {
+                    CommitLine();
+                    continue;
+                }
+
+                if (token.Length == 0)
+                    continue;
+
+                var tokenWidth = EstimateTextWidth(token, run.FontSize);
+                if (currentLine.Count > 0 && currentWidth + tokenWidth > maxWidth)
+                    CommitLine();
+
+                currentLine.Add(new StyledTextSegment(token, run, tokenWidth));
+                currentWidth += tokenWidth;
+            }
+        }
+
+        if (currentLine.Count > 0)
+            lines.Add(currentLine);
+
+        return lines;
+    }
+
+    private static List<float> BuildStyledLineHeights(PptxTextParagraph paragraph, float maxWidth, ConversionOptions options)
+    {
+        return BuildStyledLines(paragraph, maxWidth)
+            .Select(line => line.Count == 0 ? 12f * options.LineSpacing : line.Max(segment => segment.Run.FontSize) * (paragraph.LineSpacing ?? options.LineSpacing))
+            .ToList();
     }
 
     private static float AlignTextX(string text, float fontSize, string alignment, float x, float maxWidth)

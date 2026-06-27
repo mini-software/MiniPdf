@@ -153,6 +153,22 @@ public class PptxToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_WithInheritedPlaceholderTextLayout_PreservesAlignmentAndSpacing()
+    {
+        using var pptxStream = CreatePptxWithInheritedPlaceholderTextLayout();
+
+        var doc = PptxToPdfConverter.Convert(pptxStream);
+        var title = Assert.Single(doc.Pages[0].TextBlocks, block => block.Text == "Centered Title");
+        var bullet = Assert.Single(doc.Pages[0].TextBlocks, block => block.Text == "\u2022");
+        var bulletText = Assert.Single(doc.Pages[0].TextBlocks, block => block.Text == "Indented bullet");
+        var secondHeading = Assert.Single(doc.Pages[0].TextBlocks, block => block.Text == "Second heading");
+
+        Assert.True(title.X > 120f, $"Expected inherited center alignment to move title right, got x={title.X}");
+        Assert.True(bulletText.X - bullet.X > 15f, $"Expected hanging bullet indent, got delta={bulletText.X - bullet.X}");
+        Assert.True(bulletText.Y - secondHeading.Y > 35f, $"Expected empty paragraph to add vertical spacing, got delta={bulletText.Y - secondHeading.Y}");
+    }
+
+    [Fact]
     public void Convert_WithDiagramDrawing_RendersSmartArtFallback()
     {
         using var pptxStream = CreatePptxWithDiagramDrawing();
@@ -442,6 +458,98 @@ public class PptxToPdfConverterTests
                                     <p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr></p:spTree></p:cSld>
                                     <p:clrMap bg1="dk1" tx1="lt1" bg2="dk2" tx2="lt2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>
                                 </p:sldMaster>
+                                """);
+                }
+
+                ms.Position = 0;
+                return ms;
+        }
+
+        private static MemoryStream CreatePptxWithInheritedPlaceholderTextLayout()
+        {
+                var ms = new MemoryStream();
+                using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                        AddEntry(archive, "[Content_Types].xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                                    <Default Extension="xml" ContentType="application/xml"/>
+                                    <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                                    <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>
+                                    <Override PartName="/ppt/slides/slide1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>
+                                    <Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>
+                                    <Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>
+                                </Types>
+                                """);
+                        AddEntry(archive, "_rels/.rels",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
+                                </Relationships>
+                                """);
+                        AddEntry(archive, "ppt/presentation.xml", CreatePresentationXml(1, 9144000, 6858000));
+                        AddEntry(archive, "ppt/_rels/presentation.xml.rels", CreatePresentationRelationships(1));
+                        AddEntry(archive, "ppt/theme/theme1.xml", ThemeXml);
+                        AddEntry(archive, "ppt/slides/slide1.xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                                    <p:cSld>
+                                        <p:bg><p:bgPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></p:bgPr></p:bg>
+                                        <p:spTree>
+                                            <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
+                                            <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>
+                                            <p:sp>
+                                                <p:nvSpPr><p:cNvPr id="2" name="Title"/><p:cNvSpPr/><p:nvPr><p:ph type="title"/></p:nvPr></p:nvSpPr>
+                                                <p:spPr/>
+                                                <p:txBody><a:bodyPr anchor="ctr"/><a:lstStyle/><a:p><a:r><a:t>Centered Title</a:t></a:r></a:p></p:txBody>
+                                            </p:sp>
+                                            <p:sp>
+                                                <p:nvSpPr><p:cNvPr id="3" name="Body"/><p:cNvSpPr/><p:nvPr><p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr>
+                                                <p:spPr/>
+                                                <p:txBody>
+                                                    <a:bodyPr/>
+                                                    <a:lstStyle/>
+                                                    <a:p><a:r><a:t>First heading</a:t></a:r></a:p>
+                                                    <a:p><a:pPr lvl="1"/><a:r><a:t>Indented bullet</a:t></a:r></a:p>
+                                                    <a:p><a:pPr lvl="1"/></a:p>
+                                                    <a:p><a:r><a:t>Second heading</a:t></a:r></a:p>
+                                                </p:txBody>
+                                            </p:sp>
+                                        </p:spTree>
+                                    </p:cSld>
+                                </p:sld>
+                                """);
+                        AddEntry(archive, "ppt/slides/_rels/slide1.xml.rels",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
+                                </Relationships>
+                                """);
+                        AddEntry(archive, "ppt/slideLayouts/slideLayout1.xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <p:sldLayout xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                                    <p:cSld>
+                                        <p:spTree>
+                                            <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
+                                            <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>
+                                            <p:sp>
+                                                <p:nvSpPr><p:cNvPr id="2" name="Title"/><p:cNvSpPr/><p:nvPr><p:ph type="title"/></p:nvPr></p:nvSpPr>
+                                                <p:spPr><a:xfrm><a:off x="914400" y="914400"/><a:ext cx="3657600" cy="914400"/></a:xfrm></p:spPr>
+                                                <p:txBody><a:bodyPr anchor="ctr"/><a:lstStyle><a:lvl1pPr algn="ctr"><a:defRPr sz="2400"/></a:lvl1pPr></a:lstStyle></p:txBody>
+                                            </p:sp>
+                                            <p:sp>
+                                                <p:nvSpPr><p:cNvPr id="3" name="Body"/><p:cNvSpPr/><p:nvPr><p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr>
+                                                <p:spPr><a:xfrm><a:off x="914400" y="2286000"/><a:ext cx="3657600" cy="2743200"/></a:xfrm></p:spPr>
+                                                <p:txBody><a:bodyPr/><a:lstStyle><a:lvl1pPr marL="0" indent="0"><a:buNone/><a:defRPr sz="1800"/></a:lvl1pPr><a:lvl2pPr marL="283464" indent="-283464"><a:defRPr sz="1800"/></a:lvl2pPr></a:lstStyle></p:txBody>
+                                            </p:sp>
+                                        </p:spTree>
+                                    </p:cSld>
+                                </p:sldLayout>
                                 """);
                 }
 
