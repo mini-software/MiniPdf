@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-06-09T13:22:10.427862
+Generated: 2026-06-27T15:14:25.460789
 
 ## Summary
 
@@ -29,9 +29,9 @@ Generated: 2026-06-09T13:22:10.427862
 | 21 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
 | 22 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 | 23 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
-| 24 | 🟢 TestIssue78 | ✅ | 0.9961 | 0.9588 | 1/1 | **0.982** |
+| 24 | 🟢 TestIssue78 | ✅ | 0.9961 | 0.9723 | 1/1 | **0.9874** |
 
-**Average Overall Score: 0.8301**
+**Average Overall Score: 0.8303**
 
 ## Visual Comparison
 
@@ -568,7 +568,7 @@ Generated: 2026-06-09T13:22:10.427862
 </tr>
 <tr>
   <td><b>TestIssue78</b></td>
-  <td colspan="1">TestIssue78 <span style="color:#3fb950">⬤</span> 98.2%</td>
+  <td colspan="1">TestIssue78 <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
   <td><img src="images/TestIssue78_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -2579,10 +2579,10 @@ Text content: ✅ Identical
 ### TestIssue78
 
 - **Text Similarity:** 0.9961
-- **Visual Average:** 0.9588
-- **Overall Score:** 0.982
+- **Visual Average:** 0.9723
+- **Overall Score:** 0.9874
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=3720352 bytes, Reference=57420 bytes
+- **File Size:** MiniPdf=3720372 bytes, Reference=57420 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2596,9 +2596,9 @@ Text content: ✅ Identical
 
  二、 本原始记录的检测基本内容、要求和方法等均依据
 
--《电梯自行检测规则》（TSG T7008-
+-《电梯自行检测规则》（TSG T7008-2023）和公司正式发布的《电梯检测作业指导
 
--2023）和公司正式发布的《电梯检测作业指导书》制定；
+-书》制定；
 
 +《电梯自行检测规则》（TSG T7008-2023）和公司正式发布的《电梯检测作业指
 

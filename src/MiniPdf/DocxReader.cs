@@ -1087,6 +1087,7 @@ internal static class DocxReader
         bool contextualSpacing = false;
         string? paragraphFontName = null;
         bool styleProvidedIndentLeft = false;
+        float styleIndentFirstLineForListLabel = 0;
         if (styles.TryGetValue(effectiveStyleId, out var styleInfo))
         {
             if (fontSize == 0) fontSize = styleInfo.FontSize;
@@ -1126,7 +1127,11 @@ internal static class DocxReader
             // Inherit indents per-attribute from style if paragraph didn't set them
             if (!paraHasIndentLeft && styleInfo.HasIndentLeft) { indentLeft = styleInfo.IndentLeft; styleProvidedIndentLeft = true; }
             if (!paraHasIndentRight && styleInfo.HasIndentRight) indentRight = styleInfo.IndentRight;
-            if (!paraHasIndentFirstLine && styleInfo.HasIndentFirstLine) indentFirstLine = styleInfo.IndentFirstLine;
+            if (!paraHasIndentFirstLine && styleInfo.HasIndentFirstLine)
+            {
+                indentFirstLine = styleInfo.IndentFirstLine;
+                styleIndentFirstLineForListLabel = styleInfo.IndentFirstLine;
+            }
         }
         // Numbering-level indent. Per OOXML 17.9.3, when a paragraph references a
         // numbering definition (numPr), the numbering's ind overrides any ind
@@ -1356,7 +1361,8 @@ internal static class DocxReader
             SpacingBeforeExplicit: spacingBeforeExplicit,
             HasExplicitListIndent: paraHasExplicitListIndent,
             ListSuff: listSuff,
-            OutlineLevel: ReadOutlineLevel(pPr));
+            OutlineLevel: ReadOutlineLevel(pPr),
+            StyleIndentFirstLine: styleIndentFirstLineForListLabel);
     }
 
     private static void EmitPageFieldPlaceholder(string instruction, List<DocxRun> runs, bool bold, bool italic, float fontSize, PdfColor? color)
@@ -4775,7 +4781,8 @@ internal sealed record DocxParagraph(
     // or "nothing". Renderer uses this to gate the auto-tab snap so body text
     // follows the number immediately when suff is "space" or "nothing".
     string ListSuff = "tab",
-    int OutlineLevel = -1
+    int OutlineLevel = -1,
+    float StyleIndentFirstLine = 0
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.  Width=0 is a sentinel for an

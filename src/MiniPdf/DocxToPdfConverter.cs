@@ -1020,6 +1020,14 @@ internal static class DocxToPdfConverter
                         lineHeight = gridPitch;
                 }
             }
+            else if (!paragraph.LineSpacingAbsolute)
+            {
+                // In CJK document-grid layouts, explicit auto line spacing is
+                // applied against the grid pitch, not the raw font metrics.
+                // Example: w:line="360" (1.5x) with linePitch=312 twips is
+                // 15.6pt * 1.5 = 23.4pt in LibreOffice/Word output.
+                lineHeight = Math.Max(lineHeight, gridPitch * paragraph.LineSpacing);
+            }
             else if (paragraph.LineSpacingAbsolute && !paragraph.LineSpacingExact)
             {
                 // Snap atLeast line spacing to the nearest grid line.
@@ -1141,8 +1149,8 @@ internal static class DocxToPdfConverter
             state.LastParagraphWasEmpty = true;
             if (options.GridLinePitch > 0 && paragraph.SnapToGrid && !(paragraph.LineSpacingAbsolute && paragraph.LineSpacingExact))
             {
-                state.LastGridAscentExcess = GetGridAscentOffset(lineHeight, fontSize, paraFontName);
-                state.LastGridFirstLineAscent = state.LastGridAscentExcess;
+                state.LastGridFirstLineAscent = GetGridAscentOffset(lineHeight, fontSize, paraFontName);
+                state.LastGridAscentExcess = 0;
             }
             else
             {
@@ -1366,6 +1374,15 @@ internal static class DocxToPdfConverter
             {
                 // Hanging indent from DOCX: number at outdented position, body text at indentLeft
                 var numberX = options.MarginLeft + paragraph.IndentLeft + paragraph.IndentFirstLine;
+                bool suffIsTab = !string.Equals(paragraph.ListSuff, "nothing", StringComparison.OrdinalIgnoreCase)
+                              && !string.Equals(paragraph.ListSuff, "space", StringComparison.OrdinalIgnoreCase);
+                bool autoTabAfterLabel = !paragraph.HasExplicitListIndent && suffIsTab;
+                if (autoTabAfterLabel
+                    && paragraph.StyleIndentFirstLine > 0
+                    && paragraph.TabStops is { Count: > 0 })
+                {
+                    numberX = options.MarginLeft + paragraph.IndentLeft + paragraph.StyleIndentFirstLine;
+                }
                 state.CurrentPage!.AddText(paragraph.ListText, numberX, state.CurrentY, fontSize, preferredFontName: listFont, bold: paragraph.ListTextBold);
                 // If the rendered list label would overflow the hanging-indent slot
                 // and overlap the body text, mirror Word's behaviour: advance the body
@@ -1390,9 +1407,6 @@ internal static class DocxToPdfConverter
                 //
                 // OOXML w:suff overrides this: "space" or "nothing" suppress the
                 // auto-tab, making body text follow the level number immediately.
-                bool suffIsTab = !string.Equals(paragraph.ListSuff, "nothing", StringComparison.OrdinalIgnoreCase)
-                              && !string.Equals(paragraph.ListSuff, "space", StringComparison.OrdinalIgnoreCase);
-                bool autoTabAfterLabel = !paragraph.HasExplicitListIndent && suffIsTab;
                 if (labelEnd > bodyX + 2f || autoTabAfterLabel)
                 {
                     var target = labelEnd;
@@ -4580,9 +4594,46 @@ internal static class DocxToPdfConverter
                 }
                 else
                 {
-                    // Try breaking the word at hyphens before wrapping to the next line
                     var wrapped = false;
-                    if (word.Contains('-'))
+                    var wordHasCjk = false;
+                    foreach (var wc in word)
+                    {
+                        if (GetWrapCharWidth(wc, useCalibriWidths) == 1000 && wc >= '\u2E80')
+                        {
+                            wordHasCjk = true;
+                            break;
+                        }
+                    }
+
+                    if (wordHasCjk && currentLine.Length > 0)
+                    {
+                        var fillBreak = 0;
+                        for (var fi = 1; fi <= word.Length; fi++)
+                        {
+                            var cand = currentLine + " " + word[..fi];
+                            if (EstimateWrapTextWidth(cand, fontSize, bold, charSpacing, useCalibriWidths) > maxWidth)
+                                break;
+                            var prevCh = word[fi - 1];
+                            var nextCh = fi < word.Length ? word[fi] : '\0';
+                            if ((GetWrapCharWidth(prevCh, useCalibriWidths) == 1000 ||
+                                 (nextCh != '\0' && GetWrapCharWidth(nextCh, useCalibriWidths) == 1000))
+                                && (nextCh == '\0' || !IsNoStartChar(nextCh))
+                                && !IsNoEndChar(prevCh))
+                            {
+                                fillBreak = fi;
+                            }
+                        }
+                        if (fillBreak > 0)
+                        {
+                            lines.Add(currentLine + " " + word[..fillBreak]);
+                            currentLine = word[fillBreak..];
+                            maxWidth = subsequentWidth;
+                            wrapped = true;
+                        }
+                    }
+
+                    // Try breaking the word at hyphens before wrapping to the next line
+                    if (!wrapped && word.Contains('-'))
                     {
                         var parts = word.Split('-');
                         for (var pi = parts.Length - 1; pi >= 1; pi--)
