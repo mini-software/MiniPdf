@@ -106,6 +106,17 @@ public class PptxToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_WithOfficeSvgBlipCrop_AppliesSourceRectangle()
+    {
+        using var pptxStream = CreatePptxWithOfficeSvgBlip(" l=\"25000\" t=\"25000\" r=\"25000\" b=\"25000\"");
+
+        var doc = PptxToPdfConverter.Convert(pptxStream);
+        var move = doc.Pages[0].PathBlocks[0].Commands.First(command => command.Op == 'M');
+
+        Assert.True(move.Values[0] < 72f, $"Expected cropped SVG path to extend left of picture frame, got x={move.Values[0]}");
+    }
+
+    [Fact]
     public void Convert_WithMasterColorMap_ResolvesLayoutBackgroundSchemeColor()
     {
         using var pptxStream = CreatePptxWithMappedLayoutBackground();
@@ -115,6 +126,17 @@ public class PptxToPdfConverterTests
         Assert.Contains(doc.Pages[0].RectBlocks, rect =>
             rect.X == 0 && rect.Y == 0 && rect.Width == doc.Pages[0].Width && rect.Height == doc.Pages[0].Height &&
             rect.FillColor == PdfColor.White);
+    }
+
+    [Fact]
+    public void Convert_WithDiagramDrawing_RendersSmartArtFallback()
+    {
+        using var pptxStream = CreatePptxWithDiagramDrawing();
+
+        var doc = PptxToPdfConverter.Convert(pptxStream);
+
+        Assert.Contains(doc.Pages[0].TextBlocks, block => block.Text.Contains("SmartArt Text", StringComparison.Ordinal));
+        Assert.Contains(doc.Pages[0].RectBlocks, rect => rect.FillColor == PdfColor.FromHex("2F5597"));
     }
 
     [Fact]
@@ -267,7 +289,7 @@ public class PptxToPdfConverterTests
         return ms;
     }
 
-        private static MemoryStream CreatePptxWithOfficeSvgBlip()
+        private static MemoryStream CreatePptxWithOfficeSvgBlip(string sourceRectAttributes = "")
         {
                 var ms = new MemoryStream();
                 using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
@@ -295,7 +317,7 @@ public class PptxToPdfConverterTests
                         AddEntry(archive, "ppt/_rels/presentation.xml.rels", CreatePresentationRelationships(1));
                         AddEntry(archive, "ppt/theme/theme1.xml", ThemeXml);
                         AddEntry(archive, "ppt/slides/slide1.xml",
-                                """
+                            $$"""
                                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                                 <p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
                                              xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
@@ -308,7 +330,7 @@ public class PptxToPdfConverterTests
                                             <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>
                                             <p:pic>
                                                 <p:nvPicPr><p:cNvPr id="2" name="Graphic 1"/><p:cNvPicPr/><p:nvPr/></p:nvPicPr>
-                                                <p:blipFill><a:blip><a:extLst><a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}"><asvg:svgBlip r:embed="rIdImage1"/></a:ext></a:extLst></a:blip><a:stretch><a:fillRect/></a:stretch></p:blipFill>
+                                                <p:blipFill><a:blip><a:extLst><a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}"><asvg:svgBlip r:embed="rIdImage1"/></a:ext></a:extLst></a:blip><a:srcRect{{sourceRectAttributes}}/><a:stretch><a:fillRect/></a:stretch></p:blipFill>
                                                 <p:spPr><a:xfrm><a:off x="914400" y="914400"/><a:ext cx="1828800" cy="1828800"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr>
                                             </p:pic>
                                         </p:spTree>
@@ -396,6 +418,73 @@ public class PptxToPdfConverterTests
                                     <p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr></p:spTree></p:cSld>
                                     <p:clrMap bg1="dk1" tx1="lt1" bg2="dk2" tx2="lt2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>
                                 </p:sldMaster>
+                                """);
+                }
+
+                ms.Position = 0;
+                return ms;
+        }
+
+        private static MemoryStream CreatePptxWithDiagramDrawing()
+        {
+                var ms = new MemoryStream();
+                using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                        AddEntry(archive, "[Content_Types].xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                                    <Default Extension="xml" ContentType="application/xml"/>
+                                    <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                                    <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>
+                                    <Override PartName="/ppt/slides/slide1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>
+                                    <Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>
+                                </Types>
+                                """);
+                        AddEntry(archive, "_rels/.rels",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
+                                </Relationships>
+                                """);
+                        AddEntry(archive, "ppt/presentation.xml", CreatePresentationXml(1, 9144000, 6858000));
+                        AddEntry(archive, "ppt/_rels/presentation.xml.rels", CreatePresentationRelationships(1));
+                        AddEntry(archive, "ppt/theme/theme1.xml", ThemeXml);
+                        AddEntry(archive, "ppt/slides/slide1.xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:dgm="http://schemas.openxmlformats.org/drawingml/2006/diagram">
+                                    <p:cSld>
+                                        <p:bg><p:bgPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></p:bgPr></p:bg>
+                                        <p:spTree>
+                                            <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
+                                            <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>
+                                            <p:graphicFrame>
+                                                <p:nvGraphicFramePr><p:cNvPr id="2" name="SmartArt"/><p:cNvGraphicFramePr/><p:nvPr/></p:nvGraphicFramePr>
+                                                <p:xfrm><a:off x="914400" y="914400"/><a:ext cx="3657600" cy="1828800"/></p:xfrm>
+                                                <a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/diagram"><dgm:relIds r:dm="rIdData" r:lo="rIdLayout" r:qs="rIdStyle" r:cs="rIdColors"/></a:graphicData></a:graphic>
+                                            </p:graphicFrame>
+                                        </p:spTree>
+                                    </p:cSld>
+                                </p:sld>
+                                """);
+                        AddEntry(archive, "ppt/slides/_rels/slide1.xml.rels",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                                    <Relationship Id="rIdDiagram" Type="http://schemas.microsoft.com/office/2007/relationships/diagramDrawing" Target="../diagrams/drawing1.xml"/>
+                                </Relationships>
+                                """);
+                        AddEntry(archive, "ppt/diagrams/drawing1.xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <dsp:drawing xmlns:dsp="http://schemas.microsoft.com/office/drawing/2008/diagram" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                                    <dsp:spTree>
+                                        <dsp:nvGrpSpPr><dsp:cNvPr id="0" name=""/><dsp:cNvGrpSpPr/></dsp:nvGrpSpPr><dsp:grpSpPr/>
+                                        <dsp:sp><dsp:nvSpPr><dsp:cNvPr id="1" name=""/><dsp:cNvSpPr/></dsp:nvSpPr><dsp:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="3657600" cy="1828800"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="2F5597"/></a:solidFill></dsp:spPr><dsp:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr sz="1800"><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></a:rPr><a:t>SmartArt Text</a:t></a:r></a:p></dsp:txBody></dsp:sp>
+                                    </dsp:spTree>
+                                </dsp:drawing>
                                 """);
                 }
 

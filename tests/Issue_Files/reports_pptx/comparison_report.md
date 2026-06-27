@@ -1,14 +1,14 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-06-27T11:53:53.687792
+Generated: 2026-06-27T13:19:18.633491
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟡 Asian Pacific | ✅ | 0.8508 | 0.8248 | 12/12 | **0.8702** |
+| 1 | 🟢 Asian Pacific | ✅ | 0.9499 | 0.8436 | 12/12 | **0.9174** |
 
-**Average Overall Score: 0.8702**
+**Average Overall Score: 0.9174**
 
 ## Visual Comparison
 
@@ -16,7 +16,7 @@ Generated: 2026-06-27T11:53:53.687792
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>Asian Pacific</b></td>
-  <td colspan="1">Asian Pacific <span style="color:#d29922">⬤</span> 87.0%</td>
+  <td colspan="1">Asian Pacific <span style="color:#3fb950">⬤</span> 91.7%</td>
 </tr>
 <tr>
   <td><img src="images/Asian Pacific_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -72,18 +72,18 @@ Generated: 2026-06-27T11:53:53.687792
 
 ### Asian Pacific
 
-- **Text Similarity:** 0.8508
-- **Visual Average:** 0.8248
-- **Overall Score:** 0.8702
+- **Text Similarity:** 0.9499
+- **Visual Average:** 0.8436
+- **Overall Score:** 0.9174
 - **Pages:** MiniPdf=12, Reference=12
-- **File Size:** MiniPdf=717415 bytes, Reference=355585 bytes
+- **File Size:** MiniPdf=743881 bytes, Reference=355585 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Asian Pacific.pdf
 +++ reference/Asian Pacific.pdf
-@@ -17,41 +17,62 @@
+@@ -17,55 +17,62 @@
  • Map of Pacific Islands
 
  ---PAGE---
@@ -94,6 +94,8 @@ Generated: 2026-06-27T11:53:53.687792
 
 -people of Asian Pacific heritage.
 
+-1st Event 2nd Event 3rd Event 4th Event 5th Event 6th Event
+
 +Make a timeline of the important historical event or list historical contributions made by people of Asian
 
 +Pacific heritage.
@@ -102,9 +104,9 @@ Generated: 2026-06-27T11:53:53.687792
 
 +1 Event 2 Event 3rd Event 4 Event 5 Event 6 Event
 
-+Date Date Date Date Date Date
+ Date Date Date Date Date Date
 
-+Description Description Description Description Description Description
+ Description Description Description Description Description Description
 
  ---PAGE---
 
@@ -146,21 +148,37 @@ Generated: 2026-06-27T11:53:53.687792
 
  Key people
 
--Choose three notable people of Asian Pacific American heritage using Bing.com
+-Choose three notable people of Asian Pacific American heritage using Bing.com and discuss
 
--and discuss their lives and accomplishments. Here are some examples:
+-their lives and accomplishments. Here are some examples:
 
 +Choose three notable people of Asian Pacific American heritage using Bing.com and discuss their
 
 +lives and accomplishments. Here are some examples:
 
-+Anna May Wong was the first Chinese Duke Kahanamoku was a Hawaiian
+ Anna May Wong was the first Chinese Duke Kahanamoku was a Hawaiian
 
-+Sessue Hayakawa was a Japanese actor
+ Sessue Hayakawa was a Japanese actor
+
+-American Hollywood movie star, as competitive swimmer. He won five
 
 +American Hollywood movie star, as well competitive swimmer. He won five
 
-+and one of the biggest stars in
+ and one of the biggest stars in
+
+-well as the first Chinese American Olympic metals for swimming. He also
+
+-Hollywood during the silent film
+
+-actress to gain international popularized the Hawaiian sport of
+
+-era. His fame matched that of Charlie
+
+-recognition. She appeared in over surfing in the US.
+
+-Chaplin.
+
+-sixty movies throughout her career.
 
 +as the first Chinese American actress to Olympic metals for swimming. He also
 
@@ -178,11 +196,11 @@ Generated: 2026-06-27T11:53:53.687792
 
  Arts and literature
 
--Provide examples of art and literature that
+ Provide examples of art and literature that are
 
--are significant to Asian Pacific Heritage
+ significant to Asian Pacific Heritage Month.
 
--Month. Here are a few examples:
+ Here are a few examples:
 
 -• The writing of Amy Tan
 
@@ -190,40 +208,14 @@ Generated: 2026-06-27T11:53:53.687792
 
 -• The artwork of Yayoi Kusama
 
-+Provide examples of art and literature that are
-
-+significant to Asian Pacific Heritage Month.
-
-+Here are a few examples:
-
 +•
 
 +The writing of Amy Tan
 
 +•
 
-+The music of Yo-Yo Ma
-
-+•
-
-+The artwork of Yayoi Kusama
-
- ---PAGE---
-
- How we celebrate
-
- List some ways you can celebrate Asian Pacific Heritage
-
- Month. Here are a few examples:
-
--• Discover Asian Pacific American artists
-
--• Read Asian Pacific American authors
-
--• Listen to Asian Pacific American Heritage musicians
-
--• Le
-... (363 more characters)
++
+... (689 more characters)
 
 ```
 </details>

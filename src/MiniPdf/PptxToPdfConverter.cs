@@ -16,7 +16,7 @@ internal static class PptxToPdfConverter
 
     internal sealed class ConversionOptions
     {
-        public float TextInset { get; set; } = 6f;
+        public float TextInset { get; set; } = 0f;
         public float LineSpacing { get; set; } = 1.15f;
     }
 
@@ -100,6 +100,10 @@ internal static class PptxToPdfConverter
         if (viewBox.Width <= 0 || viewBox.Height <= 0)
             return;
 
+        viewBox = ApplySvgCrop(viewBox, picture.Crop);
+        if (viewBox.Width <= 0 || viewBox.Height <= 0)
+            return;
+
         var scaleX = picture.Bounds.Width / viewBox.Width;
         var scaleY = picture.Bounds.Height / viewBox.Height;
         var pdfBottom = ToPdfY(page, picture.Bounds.Y, picture.Bounds.Height);
@@ -125,6 +129,22 @@ internal static class PptxToPdfConverter
             if (commands.Count > 0)
                 page.AddPath(commands, fill.Value);
         }
+    }
+
+    private static (float X, float Y, float Width, float Height) ApplySvgCrop((float X, float Y, float Width, float Height) viewBox, PptxCrop crop)
+    {
+        var left = Math.Max(0f, Math.Min(0.95f, crop.Left));
+        var top = Math.Max(0f, Math.Min(0.95f, crop.Top));
+        var right = Math.Max(0f, Math.Min(0.95f, crop.Right));
+        var bottom = Math.Max(0f, Math.Min(0.95f, crop.Bottom));
+
+        var widthFactor = Math.Max(0.01f, 1f - left - right);
+        var heightFactor = Math.Max(0.01f, 1f - top - bottom);
+        return (
+            viewBox.X + viewBox.Width * left,
+            viewBox.Y + viewBox.Height * top,
+            viewBox.Width * widthFactor,
+            viewBox.Height * heightFactor);
     }
 
     private static (float X, float Y, float Width, float Height) ReadSvgViewBox(XElement root)
@@ -443,49 +463,119 @@ internal static class PptxToPdfConverter
         {
             var firstRun = paragraph.Runs[0];
             var text = string.Concat(paragraph.Runs.Select(run => run.Text));
-            return RenderWrappedText(page, text, firstRun, x, top, maxWidth, clipRect, options);
+            return RenderWrappedText(page, text, firstRun, paragraph.Alignment, x, top, maxWidth, clipRect, options);
         }
 
-        var currentX = x;
-        var currentTop = top;
-        var maxLineHeight = 0f;
+        return RenderStyledWrappedText(page, paragraph, x, top, maxWidth, clipRect, options);
+    }
+
+    private static float RenderStyledWrappedText(
+        PdfPage page,
+        PptxTextParagraph paragraph,
+        float x,
+        float top,
+        float maxWidth,
+        (float X, float Y, float Width, float Height) clipRect,
+        ConversionOptions options)
+    {
+        var lines = new List<List<StyledTextSegment>>();
+        var currentLine = new List<StyledTextSegment>();
+        var currentWidth = 0f;
+
+        void CommitLine()
+        {
+            lines.Add(currentLine);
+            currentLine = new List<StyledTextSegment>();
+            currentWidth = 0f;
+        }
+
         foreach (var run in paragraph.Runs)
         {
-            var pieces = run.Text.Split('\n');
-            for (var pieceIndex = 0; pieceIndex < pieces.Length; pieceIndex++)
+            foreach (var token in SplitStyledText(run.Text))
             {
-                if (pieceIndex > 0)
+                if (token == "\n")
                 {
-                    currentTop += Math.Max(maxLineHeight, run.FontSize * options.LineSpacing);
-                    currentX = x;
-                    maxLineHeight = 0f;
+                    CommitLine();
+                    continue;
                 }
 
-                var piece = pieces[pieceIndex];
-                if (piece.Length == 0)
+                if (token.Length == 0)
                     continue;
 
-                var estimatedWidth = EstimateTextWidth(piece, run.FontSize);
-                if (currentX > x && currentX + estimatedWidth > x + maxWidth)
-                {
-                    currentTop += Math.Max(maxLineHeight, run.FontSize * options.LineSpacing);
-                    currentX = x;
-                    maxLineHeight = 0f;
-                }
+                var tokenWidth = EstimateTextWidth(token, run.FontSize);
+                if (currentLine.Count > 0 && currentWidth + tokenWidth > maxWidth)
+                    CommitLine();
 
-                AddText(page, piece, run, currentX, currentTop, maxWidth - (currentX - x), clipRect);
-                currentX += estimatedWidth;
-                maxLineHeight = Math.Max(maxLineHeight, run.FontSize * options.LineSpacing);
+                currentLine.Add(new StyledTextSegment(token, run, tokenWidth));
+                currentWidth += tokenWidth;
             }
         }
 
-        return Math.Max(maxLineHeight, 12f * options.LineSpacing);
+        if (currentLine.Count > 0)
+            lines.Add(currentLine);
+        if (lines.Count == 0)
+            return 12f * options.LineSpacing;
+
+        var currentTop = top;
+        foreach (var line in lines)
+        {
+            if (line.Count == 0)
+            {
+                currentTop += 12f * options.LineSpacing;
+                continue;
+            }
+
+            var lineWidth = line.Sum(segment => segment.Width);
+            var lineHeight = line.Max(segment => segment.Run.FontSize) * options.LineSpacing;
+            var currentX = AlignLineX(paragraph.Alignment, x, maxWidth, lineWidth);
+            foreach (var segment in line)
+            {
+                if (!string.IsNullOrWhiteSpace(segment.Text))
+                    AddText(page, segment.Text, segment.Run, currentX, currentTop, maxWidth - (currentX - x), clipRect);
+                currentX += segment.Width;
+            }
+
+            currentTop += lineHeight;
+        }
+
+        return currentTop - top;
+    }
+
+    private static IEnumerable<string> SplitStyledText(string text)
+    {
+        var token = new StringBuilder();
+        foreach (var character in text)
+        {
+            if (character == '\r')
+                continue;
+            if (character == '\n')
+            {
+                if (token.Length > 0)
+                {
+                    yield return token.ToString();
+                    token.Clear();
+                }
+                yield return "\n";
+                continue;
+            }
+
+            token.Append(character);
+            if (char.IsWhiteSpace(character))
+            {
+                yield return token.ToString();
+                token.Clear();
+            }
+        }
+
+        if (token.Length > 0)
+            yield return token.ToString();
     }
 
     private static float RenderWrappedText(
         PdfPage page,
         string text,
         PptxTextRun style,
+        string alignment,
         float x,
         float top,
         float maxWidth,
@@ -512,10 +602,40 @@ internal static class PptxToPdfConverter
         {
             if (lines[lineIndex].Length == 0)
                 continue;
-            AddText(page, lines[lineIndex], style, x, top + lineHeight * lineIndex, maxWidth, clipRect);
+            var alignedX = AlignTextX(lines[lineIndex], style.FontSize, alignment, x, maxWidth);
+            AddText(page, lines[lineIndex], style, alignedX, top + lineHeight * lineIndex, maxWidth - (alignedX - x), clipRect);
         }
 
         return lineHeight * lines.Count;
+    }
+
+    private static float AlignTextX(string text, float fontSize, string alignment, float x, float maxWidth)
+    {
+        var width = EstimateTextWidth(text, fontSize);
+        return AlignLineX(alignment, x, maxWidth, width);
+    }
+
+    private static float AlignLineX(string alignment, float x, float maxWidth, float width)
+    {
+        if (alignment.Equals("center", StringComparison.OrdinalIgnoreCase))
+            return x + Math.Max(0, (maxWidth - width) / 2f);
+        if (alignment.Equals("right", StringComparison.OrdinalIgnoreCase))
+            return x + Math.Max(0, maxWidth - width);
+        return x;
+    }
+
+    private sealed class StyledTextSegment
+    {
+        public string Text { get; }
+        public PptxTextRun Run { get; }
+        public float Width { get; }
+
+        public StyledTextSegment(string text, PptxTextRun run, float width)
+        {
+            Text = text;
+            Run = run;
+            Width = width;
+        }
     }
 
     private static List<string> WrapLine(string text, float maxWidth, float fontSize)

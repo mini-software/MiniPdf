@@ -3,30 +3,30 @@
     "name": "Asian Pacific",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 717415,
+    "minipdf_size": 743881,
     "reference_size": 355585,
     "pdf_valid": true,
     "minipdf_pages": 12,
     "reference_pages": 12,
-    "text_similarity": 0.8508,
-    "flat_text_similarity": 0.8316,
-    "word_text_similarity": 0.8508,
-    "text_diff": "--- minipdf/Asian Pacific.pdf\n+++ reference/Asian Pacific.pdf\n@@ -17,41 +17,62 @@\n • Map of Pacific Islands\n\n ---PAGE---\n\n History\n\n-Make a timeline of the important historical event or list historical contributions made by\n\n-people of Asian Pacific heritage.\n\n+Make a timeline of the important historical event or list historical contributions made by people of Asian\n\n+Pacific heritage.\n\n+st nd th th th\n\n+1 Event 2 Event 3rd Event 4 Event 5 Event 6 Event\n\n+Date Date Date Date Date Date\n\n+Description Description Description Description Description Description\n\n ---PAGE---\n\n Interesting facts\n\n List some interesting facts about Asian Pacific Heritage Month.\n\n Here are a few examples:\n\n-• In 1978, President Jimmy Carter signed a resolution\n\n-designating May as Asian/Pacific Heritage Week.\n\n+• In 1978, President Jimmy Carter signed a resolution designating\n\n+May as Asian/Pacific Heritage Week.\n\n • May was chosen to commemorate the immigration of the first\n\n Japanese to the United States on May 7, 1843, and to mark the\n\n-anniversary of the completion of the transcontinental railroad\n\n-on May 10, 1869.\n\n-• In 1992, the official designation of May as Asian-Pacific\n\n-American Heritage Month was signed into law.\n\n+anniversary of the completion of the transcontinental railroad on\n\n+May 10, 1869.\n\n+• In 1992, the official designation of May as Asian-Pacific American\n\n+Heritage Month was signed into law.\n\n ---PAGE---\n\n Key people\n\n-Choose three notable people of Asian Pacific American heritage using Bing.com\n\n-and discuss their lives and accomplishments. Here are some examples:\n\n+Choose three notable people of Asian Pacific American heritage using Bing.com and discuss their\n\n+lives and accomplishments. Here are some examples:\n\n+Anna May Wong was the first Chinese Duke Kahanamoku was a Hawaiian\n\n+Sessue Hayakawa was a Japanese actor\n\n+American Hollywood movie star, as well competitive swimmer. He won five\n\n+and one of the biggest stars in\n\n+as the first Chinese American actress to Olympic metals for swimming. He also\n\n+Hollywood during the silent film era. His\n\n+gain international recognition. She popularized the Hawaiian sport of\n\n+fame matched that of Charlie Chaplin.\n\n+appeared in over sixty movies surfing in the US.\n\n+throughout her career.\n\n ---PAGE---\n\n Arts and literature\n\n-Provide examples of art and literature that\n\n-are significant to Asian Pacific Heritage\n\n-Month. Here are a few examples:\n\n-• The writing of Amy Tan\n\n-• The music of Yo-Yo Ma\n\n-• The artwork of Yayoi Kusama\n\n+Provide examples of art and literature that are\n\n+significant to Asian Pacific Heritage Month.\n\n+Here are a few examples:\n\n+•\n\n+The writing of Amy Tan\n\n+•\n\n+The music of Yo-Yo Ma\n\n+•\n\n+The artwork of Yayoi Kusama\n\n ---PAGE---\n\n How we celebrate\n\n List some ways you can celebrate Asian Pacific Heritage\n\n Month. Here are a few examples:\n\n-• Discover Asian Pacific American artists\n\n-• Read Asian Pacific American authors\n\n-• Listen to Asian Pacific American Heritage musicians\n\n-• Learn important moments of\n\n-Asian Pacific American Heritage history\n\n+•\n\n+Discover Asian Pacific American artists\n\n+•\n\n+Read Asian Pacific American authors\n\n+•\n\n+Listen to Asian Pacific American Heritage musicians\n\n+•\n\n+Learn important moments of Asian Pacific American Herit\n\n+age history\n\n ---PAGE---\n\n Conclusion\n\n Provide a brief summary of your presentation.\n",
+    "text_similarity": 0.9499,
+    "flat_text_similarity": 0.8732,
+    "word_text_similarity": 0.9499,
+    "text_diff": "--- minipdf/Asian Pacific.pdf\n+++ reference/Asian Pacific.pdf\n@@ -17,55 +17,62 @@\n • Map of Pacific Islands\n\n ---PAGE---\n\n History\n\n-Make a timeline of the important historical event or list historical contributions made by\n\n-people of Asian Pacific heritage.\n\n-1st Event 2nd Event 3rd Event 4th Event 5th Event 6th Event\n\n+Make a timeline of the important historical event or list historical contributions made by people of Asian\n\n+Pacific heritage.\n\n+st nd th th th\n\n+1 Event 2 Event 3rd Event 4 Event 5 Event 6 Event\n\n Date Date Date Date Date Date\n\n Description Description Description Description Description Description\n\n ---PAGE---\n\n Interesting facts\n\n List some interesting facts about Asian Pacific Heritage Month.\n\n Here are a few examples:\n\n-• In 1978, President Jimmy Carter signed a resolution\n\n-designating May as Asian/Pacific Heritage Week.\n\n+• In 1978, President Jimmy Carter signed a resolution designating\n\n+May as Asian/Pacific Heritage Week.\n\n • May was chosen to commemorate the immigration of the first\n\n Japanese to the United States on May 7, 1843, and to mark the\n\n-anniversary of the completion of the transcontinental railroad\n\n-on May 10, 1869.\n\n-• In 1992, the official designation of May as Asian-Pacific\n\n-American Heritage Month was signed into law.\n\n+anniversary of the completion of the transcontinental railroad on\n\n+May 10, 1869.\n\n+• In 1992, the official designation of May as Asian-Pacific American\n\n+Heritage Month was signed into law.\n\n ---PAGE---\n\n Key people\n\n-Choose three notable people of Asian Pacific American heritage using Bing.com and discuss\n\n-their lives and accomplishments. Here are some examples:\n\n+Choose three notable people of Asian Pacific American heritage using Bing.com and discuss their\n\n+lives and accomplishments. Here are some examples:\n\n Anna May Wong was the first Chinese Duke Kahanamoku was a Hawaiian\n\n Sessue Hayakawa was a Japanese actor\n\n-American Hollywood movie star, as competitive swimmer. He won five\n\n+American Hollywood movie star, as well competitive swimmer. He won five\n\n and one of the biggest stars in\n\n-well as the first Chinese American Olympic metals for swimming. He also\n\n-Hollywood during the silent film\n\n-actress to gain international popularized the Hawaiian sport of\n\n-era. His fame matched that of Charlie\n\n-recognition. She appeared in over surfing in the US.\n\n-Chaplin.\n\n-sixty movies throughout her career.\n\n+as the first Chinese American actress to Olympic metals for swimming. He also\n\n+Hollywood during the silent film era. His\n\n+gain international recognition. She popularized the Hawaiian sport of\n\n+fame matched that of Charlie Chaplin.\n\n+appeared in over sixty movies surfing in the US.\n\n+throughout her career.\n\n ---PAGE---\n\n Arts and literature\n\n Provide examples of art and literature that are\n\n significant to Asian Pacific Heritage Month.\n\n Here are a few examples:\n\n-• The writing of Amy Tan\n\n-• The music of Yo-Yo Ma\n\n-• The artwork of Yayoi Kusama\n\n+•\n\n+The writing of Amy Tan\n\n+•\n\n+The music of Yo-Yo Ma\n\n+•\n\n+The artwork of Yayoi Kusama\n\n ---PAGE---\n\n How we celebrate\n\n List some ways you can celebrate Asian Pacific Heritage\n\n Month. Here are a few examples:\n\n-• Discover Asian Pacific American artists\n\n-• Read Asian Pacific American authors\n\n-• Listen to Asian Pacific American Heritage musicians\n\n-• Learn important moments of Asian Pacific American\n\n-Heritage history\n\n+•\n\n+Discover Asian Pacific American artists\n\n+•\n\n+Read Asian Pacific American authors\n\n+•\n\n+Listen to Asian Pacific American Heritage musicians\n\n+•\n\n+Learn important moments of Asian Pacific American Herit\n\n+age history\n\n ---PAGE---\n\n Conclusion\n\n Provide a brief summary of your presentation.\n",
     "visual_scores": [
-      0.9089,
-      0.8301,
-      0.6909,
-      0.786,
-      0.8191,
-      0.9054,
-      0.8018,
-      0.6831,
-      0.9285,
-      0.7654,
-      0.8305,
-      0.9479
+      0.9097,
+      0.8379,
+      0.7814,
+      0.7861,
+      0.8203,
+      0.916,
+      0.8034,
+      0.6928,
+      0.9388,
+      0.8502,
+      0.8308,
+      0.9556
     ],
-    "visual_avg": 0.8248,
+    "visual_avg": 0.8436,
     "diff_images": [
       {
         "page": 1,
@@ -89,6 +89,6 @@
         "reference_img": "Asian Pacific_p12_reference.png"
       }
     ],
-    "overall_score": 0.8702
+    "overall_score": 0.9174
   }
 ]

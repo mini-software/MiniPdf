@@ -9,6 +9,8 @@ to post a summary of completed work to the GitHub issue.
 
 ## Testing Workflow
 
+After making code changes, run the relevant validation before reporting completion.
+
 ### Unit Tests
 ```powershell
 dotnet test tests/MiniPdf.Tests

@@ -61,12 +61,14 @@ internal sealed class PptxPicture : PptxElement
     public PptxRect Bounds { get; }
     public byte[] Data { get; }
     public string Format { get; }
+    public PptxCrop Crop { get; }
 
-    public PptxPicture(PptxRect bounds, byte[] data, string format)
+    public PptxPicture(PptxRect bounds, byte[] data, string format, PptxCrop crop)
     {
         Bounds = bounds;
         Data = data;
         Format = format;
+        Crop = crop;
     }
 }
 
@@ -92,11 +94,13 @@ internal sealed class PptxTextParagraph
 {
     public List<PptxTextRun> Runs { get; }
     public bool IsBullet { get; }
+    public string Alignment { get; }
 
-    public PptxTextParagraph(List<PptxTextRun> runs, bool isBullet = false)
+    public PptxTextParagraph(List<PptxTextRun> runs, bool isBullet = false, string alignment = "left")
     {
         Runs = runs;
         IsBullet = isBullet;
+        Alignment = alignment;
     }
 }
 
@@ -152,6 +156,24 @@ internal readonly struct PptxRect
     }
 }
 
+internal readonly struct PptxCrop
+{
+    public static readonly PptxCrop None = new(0, 0, 0, 0);
+
+    public float Left { get; }
+    public float Top { get; }
+    public float Right { get; }
+    public float Bottom { get; }
+
+    public PptxCrop(float left, float top, float right, float bottom)
+    {
+        Left = left;
+        Top = top;
+        Right = right;
+        Bottom = bottom;
+    }
+}
+
 internal static class PptxReader
 {
     private const double EmusPerPoint = 12700d;
@@ -160,6 +182,7 @@ internal static class PptxReader
 
     private static readonly XNamespace P = "http://schemas.openxmlformats.org/presentationml/2006/main";
     private static readonly XNamespace A = "http://schemas.openxmlformats.org/drawingml/2006/main";
+    private static readonly XNamespace Dsp = "http://schemas.microsoft.com/office/drawing/2008/diagram";
     private static readonly XNamespace R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
     private static readonly XNamespace Rel = "http://schemas.openxmlformats.org/package/2006/relationships";
 
@@ -295,6 +318,10 @@ internal static class PptxReader
             {
                 ReadConnector(child, themeColors, coordinateMap, elements);
             }
+            else if (child.Name == P + "graphicFrame")
+            {
+                ReadGraphicFrame(archive, child, relationships, themeColors, coordinateMap, elements);
+            }
             else if (child.Name == P + "grpSp")
             {
                 var groupMap = CreateGroupMap(child.Element(P + "grpSpPr")?.Element(A + "xfrm"), coordinateMap);
@@ -394,7 +421,27 @@ internal static class PptxReader
         if (format == null)
             return;
 
-        elements.Add(new PptxPicture(bounds, data, format));
+        var crop = ReadPictureCrop(pictureElement.Element(P + "blipFill")?.Element(A + "srcRect"));
+        elements.Add(new PptxPicture(bounds, data, format, crop));
+    }
+
+    private static PptxCrop ReadPictureCrop(XElement? sourceRect)
+    {
+        if (sourceRect == null)
+            return PptxCrop.None;
+
+        return new PptxCrop(
+            ReadCropValue(sourceRect.Attribute("l")?.Value),
+            ReadCropValue(sourceRect.Attribute("t")?.Value),
+            ReadCropValue(sourceRect.Attribute("r")?.Value),
+            ReadCropValue(sourceRect.Attribute("b")?.Value));
+    }
+
+    private static float ReadCropValue(string? value)
+    {
+        if (!float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var result))
+            return 0f;
+        return Compat.Clamp(result / 100000f, 0f, 0.95f);
     }
 
     private static void ReadConnector(
@@ -411,6 +458,170 @@ internal static class PptxReader
         var outline = ReadOutline(shapeProperties?.Element(A + "ln"), themeColors)
             ?? new PptxOutline(PdfColor.Black, 1f);
         AddLineFromBounds(shapeProperties?.Element(A + "xfrm"), bounds, outline, elements);
+    }
+
+    private static void ReadGraphicFrame(
+        ZipArchive archive,
+        XElement graphicFrameElement,
+        Dictionary<string, PptxRelationship> relationships,
+        Dictionary<string, PdfColor> themeColors,
+        CoordinateMap coordinateMap,
+        List<PptxElement> elements)
+    {
+        var bounds = ReadBounds(graphicFrameElement.Element(P + "xfrm"), coordinateMap);
+        if (bounds.Width <= 0 || bounds.Height <= 0)
+            return;
+
+        var graphicData = graphicFrameElement
+            .Element(A + "graphic")?
+            .Element(A + "graphicData");
+        if (graphicData == null)
+            return;
+
+        if (graphicData.Attribute("uri")?.Value == "http://schemas.openxmlformats.org/drawingml/2006/diagram")
+        {
+            ReadDiagramDrawingFrame(archive, graphicFrameElement, relationships, themeColors, bounds, elements);
+            return;
+        }
+
+        var table = graphicData.Element(A + "tbl");
+        if (table == null)
+            return;
+
+        var columnWidths = table.Element(A + "tblGrid")?
+            .Elements(A + "gridCol")
+            .Select(column => ReadLong(column.Attribute("w")?.Value, 0))
+            .Where(width => width > 0)
+            .ToList() ?? new List<long>();
+        var rows = table.Elements(A + "tr").ToList();
+        if (columnWidths.Count == 0 || rows.Count == 0)
+            return;
+
+        var totalColumnWidth = columnWidths.Sum();
+        var rowHeights = rows.Select(row => ReadLong(row.Attribute("h")?.Value, 0)).ToList();
+        var totalRowHeight = rowHeights.Where(height => height > 0).Sum();
+        if (totalColumnWidth <= 0 || totalRowHeight <= 0)
+            return;
+
+        var top = bounds.Y;
+        for (var rowIndex = 0; rowIndex < rows.Count; rowIndex++)
+        {
+            var row = rows[rowIndex];
+            var rowHeight = bounds.Height * rowHeights[rowIndex] / totalRowHeight;
+            var left = bounds.X;
+            var columnIndex = 0;
+
+            foreach (var cell in row.Elements(A + "tc"))
+            {
+                if (columnIndex >= columnWidths.Count)
+                    break;
+
+                var gridSpan = (int)Math.Max(1, ReadLong(cell.Attribute("gridSpan")?.Value, 1));
+                var spannedWidth = 0L;
+                for (var i = 0; i < gridSpan && columnIndex + i < columnWidths.Count; i++)
+                    spannedWidth += columnWidths[columnIndex + i];
+
+                var cellWidth = bounds.Width * spannedWidth / totalColumnWidth;
+                var cellBounds = new PptxRect(left, top, cellWidth, rowHeight);
+                var cellProperties = cell.Element(A + "tcPr");
+                var fillColor = ReadShapeFill(cellProperties, themeColors);
+                var paragraphs = ReadTextParagraphsFromTextBody(cell.Element(A + "txBody"), null, themeColors);
+                if (fillColor != null || paragraphs.Count > 0)
+                    elements.Add(new PptxShape("rect", cellBounds, fillColor, null, paragraphs));
+
+                AddTableBorderLines(cellProperties, cellBounds, themeColors, elements);
+
+                left += cellWidth;
+                columnIndex += gridSpan;
+            }
+
+            top += rowHeight;
+        }
+    }
+
+    private static void ReadDiagramDrawingFrame(
+        ZipArchive archive,
+        XElement graphicFrameElement,
+        Dictionary<string, PptxRelationship> relationships,
+        Dictionary<string, PdfColor> themeColors,
+        PptxRect frameBounds,
+        List<PptxElement> elements)
+    {
+        var relationship = relationships.Values.FirstOrDefault(candidate =>
+            candidate.Type.EndsWith("/diagramDrawing", StringComparison.OrdinalIgnoreCase));
+        if (relationship == null || relationship.TargetMode.Equals("External", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var sourcePartPath = GetSourcePartFromRelationshipPath(relationship.RelationshipPartPath);
+        var drawingPath = ResolveRelationshipTarget(sourcePartPath, relationship.Target);
+        var drawingEntry = archive.GetEntry(drawingPath);
+        if (drawingEntry == null)
+            return;
+
+        var frameTransform = graphicFrameElement.Element(P + "xfrm");
+        var frameExtent = frameTransform?.Element(A + "ext");
+        var frameWidthEmu = ReadLong(frameExtent?.Attribute("cx")?.Value, 0);
+        var frameHeightEmu = ReadLong(frameExtent?.Attribute("cy")?.Value, 0);
+        if (frameWidthEmu <= 0 || frameHeightEmu <= 0)
+            return;
+
+        var drawingMap = new CoordinateMap(
+            frameBounds.X * EmusPerPoint,
+            frameBounds.Y * EmusPerPoint,
+            frameBounds.Width * EmusPerPoint,
+            frameBounds.Height * EmusPerPoint,
+            0,
+            0,
+            frameWidthEmu,
+            frameHeightEmu);
+
+        var drawingXml = LoadXml(drawingEntry);
+        var shapeTree = drawingXml.Root?.Element(Dsp + "spTree");
+        if (shapeTree == null)
+            return;
+
+        foreach (var shape in shapeTree.Elements(Dsp + "sp"))
+            ReadDiagramShape(shape, themeColors, drawingMap, elements);
+    }
+
+    private static void ReadDiagramShape(
+        XElement shapeElement,
+        Dictionary<string, PdfColor> themeColors,
+        CoordinateMap coordinateMap,
+        List<PptxElement> elements)
+    {
+        var shapeProperties = shapeElement.Element(Dsp + "spPr");
+        var bounds = ReadBounds(shapeProperties?.Element(A + "xfrm"), coordinateMap);
+        if (bounds.Width <= 0 || bounds.Height <= 0)
+            return;
+
+        var shapeType = shapeProperties?
+            .Element(A + "prstGeom")?
+            .Attribute("prst")?
+            .Value ?? "rect";
+        var fillColor = ReadShapeFill(shapeProperties, themeColors);
+        var outline = ReadOutline(shapeProperties?.Element(A + "ln"), themeColors);
+        var paragraphs = ReadTextParagraphsFromTextBody(shapeElement.Element(Dsp + "txBody"), null, themeColors);
+
+        if (fillColor == null && outline == null && paragraphs.Count == 0)
+            return;
+
+        elements.Add(new PptxShape(shapeType, bounds, fillColor, outline, paragraphs));
+    }
+
+    private static void AddTableBorderLines(XElement? cellProperties, PptxRect bounds, Dictionary<string, PdfColor> themeColors, List<PptxElement> elements)
+    {
+        AddBorderLine(cellProperties?.Element(A + "lnL"), bounds.X, bounds.Y, bounds.X, bounds.Y + bounds.Height, themeColors, elements);
+        AddBorderLine(cellProperties?.Element(A + "lnR"), bounds.X + bounds.Width, bounds.Y, bounds.X + bounds.Width, bounds.Y + bounds.Height, themeColors, elements);
+        AddBorderLine(cellProperties?.Element(A + "lnT"), bounds.X, bounds.Y, bounds.X + bounds.Width, bounds.Y, themeColors, elements);
+        AddBorderLine(cellProperties?.Element(A + "lnB"), bounds.X, bounds.Y + bounds.Height, bounds.X + bounds.Width, bounds.Y + bounds.Height, themeColors, elements);
+    }
+
+    private static void AddBorderLine(XElement? lineElement, float x1, float y1, float x2, float y2, Dictionary<string, PdfColor> themeColors, List<PptxElement> elements)
+    {
+        var outline = ReadOutline(lineElement, themeColors);
+        if (outline != null)
+            elements.Add(new PptxLine(x1, y1, x2, y2, outline));
     }
 
     private static void AddLineFromBounds(XElement? transformElement, PptxRect bounds, PptxOutline outline, List<PptxElement> elements)
@@ -477,6 +688,14 @@ internal static class PptxReader
         if (textBody == null)
             return new List<PptxTextParagraph>();
 
+        return ReadTextParagraphsFromTextBody(textBody, inheritedShape, themeColors);
+    }
+
+    private static List<PptxTextParagraph> ReadTextParagraphsFromTextBody(XElement? textBody, XElement? inheritedShape, Dictionary<string, PdfColor> themeColors)
+    {
+        if (textBody == null)
+            return new List<PptxTextParagraph>();
+
         var paragraphs = new List<PptxTextParagraph>();
         foreach (var paragraphElement in textBody.Elements(A + "p"))
         {
@@ -486,6 +705,7 @@ internal static class PptxReader
                 .Element(A + "defRPr")
                 ?? ReadInheritedDefaultRunProperties(inheritedShape, level);
             var isBullet = IsBulletParagraph(paragraphElement, inheritedShape, level);
+            var alignment = ReadParagraphAlignment(paragraphElement);
             var runs = new List<PptxTextRun>();
             var hasText = false;
 
@@ -509,10 +729,20 @@ internal static class PptxReader
             }
 
             if (runs.Count > 0)
-                paragraphs.Add(new PptxTextParagraph(runs, isBullet));
+                paragraphs.Add(new PptxTextParagraph(runs, isBullet, alignment));
         }
 
         return paragraphs;
+    }
+
+    private static string ReadParagraphAlignment(XElement paragraphElement)
+    {
+        return paragraphElement.Element(A + "pPr")?.Attribute("algn")?.Value?.ToLowerInvariant() switch
+        {
+            "ctr" => "center",
+            "r" => "right",
+            _ => "left",
+        };
     }
 
     private static int ReadParagraphLevel(XElement paragraphElement)
@@ -565,7 +795,7 @@ internal static class PptxReader
             ?? 18f;
         var color = ReadSolidFill(runProperties, themeColors)
             ?? ReadSolidFill(defaultRunProperties, themeColors)
-            ?? PdfColor.Black;
+            ?? (themeColors.TryGetValue("tx1", out var defaultTextColor) ? defaultTextColor : PdfColor.Black);
         var bold = ReadBool(runProperties?.Attribute("b")?.Value)
             || (runProperties?.Attribute("b") == null && ReadBool(defaultRunProperties?.Attribute("b")?.Value));
         var italic = ReadBool(runProperties?.Attribute("i")?.Value)
@@ -573,6 +803,8 @@ internal static class PptxReader
         var underlineValue = runProperties?.Attribute("u")?.Value ?? defaultRunProperties?.Attribute("u")?.Value;
         var underline = !string.IsNullOrWhiteSpace(underlineValue)
             && !underlineValue!.Equals("none", StringComparison.OrdinalIgnoreCase);
+        if (!underline && runProperties?.Element(A + "hlinkClick") != null)
+            underline = true;
         var fontName = ReadFontName(runProperties) ?? ReadFontName(defaultRunProperties);
 
         return new PptxTextRun(text, fontSize, color, bold, italic, underline, fontName);
