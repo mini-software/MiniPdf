@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-06-27T00:41:42.698479
+Generated: 2026-07-03T00:01:54.968354
 
 ## Summary
 
@@ -26,8 +26,9 @@ Generated: 2026-06-27T00:41:42.698479
 | 18 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8544 | 6/6 | **0.9418** |
 | 19 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8476 | 6/6 | **0.939** |
 | 20 | 🟡 Grocery list1 | ✅ | 0.9231 | 0.7854 | 1/1 | **0.8834** |
+| 21 | 🟡 XlsxIssue82_WideTable | ✅ | 0.9537 | 0.8329 | 14/13 | **0.8146** |
 
-**Average Overall Score: 0.7463**
+**Average Overall Score: 0.7496**
 
 ## Visual Comparison
 
@@ -1018,6 +1019,66 @@ Generated: 2026-06-27T00:41:42.698479
 <tr>
   <td><img src="images/Grocery list1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Grocery list1_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue82_WideTable</b></td>
+  <td colspan="1">XlsxIssue82_WideTable <span style="color:#d29922">⬤</span> 81.5%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p8_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p8_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p9_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p9_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p10_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p10_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p11_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p11_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p12_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p12_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p13_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p13_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p14_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
 </tr>
 </table>
 
@@ -2790,6 +2851,90 @@ Text content: ✅ Identical
  Bacon wrapped
 
  Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90
+
+```
+</details>
+
+### XlsxIssue82_WideTable
+
+- **Text Similarity:** 0.9537
+- **Visual Average:** 0.8329
+- **Overall Score:** 0.8146
+- **Pages:** MiniPdf=14, Reference=13
+- **File Size:** MiniPdf=633053 bytes, Reference=506241 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue82_WideTable.pdf
++++ reference/XlsxIssue82_WideTable.pdf
+@@ -382,66 +382,34 @@
+ Priority customer account; generated row 119 should remain readable without column overlap.
+
+ Priority customer account; generated row 120 should remain readable without column overlap.
+
+ ---PAGE---
+
+-Record ID First Name Last Name Street Address City Region Postal Code
+
+-ID-0001 Naveen Adhikari 2000 West Programmatic Export Boulevard Building 0 Kathmandu CA 90000
+
+-ID-0002 Alicia Morrison 2001 West Programmatic Export Boulevard Building 1 Seattle CA 90001
+
+-ID-0003 Marcus Chen 2002 West Programmatic Export Boulevard Building 2 Austin CA 90002
+
+-ID-0004 Priya Patel 2003 West Programmatic Export Boulevard Building 3 Toronto CA 90003
+
+-ID-0005 Daniel Rodriguez 2004 West Programmatic Export Boulevard Building 4 Singapore CA 90004
+
+-ID-0006 Mei Tanaka 2005 West Programmatic Export Boulevard Building 5 Dublin CA 90005
+
+-ID-0007 Sofia Bennett 2006 West Programmatic Export Boulevard Building 6 Melbourne CA 90006
+
+-ID-0008 Owen Singh 2007 West Programmatic Export Boulevard Building 7 Berlin CA 90007
+
+-ID-0009 Ibrahim Kim 2008 West Programmatic Export Boulevard Building 8 Kathmandu CA 90008
+
+-ID-0010 Caroline Olsen 2009 West Programmatic Export Boulevard Building 9 Seattle CA 90009
+
+-ID-0011 Naveen Adhikari 2010 West Programmatic Export Boulevard Building 10 Austin CA 90010
+
+-ID-0012 Alicia Morrison 2011 West Programmatic Export Boulevard Building 11 Toronto CA 90011
+
+-ID-0013 Marcus Chen 2012 West Programmatic Export Boulevard Building 0 Singapore CA 90012
+
+-ID-0014 Priya Patel 2013 West Programmatic Export Boulevard Building 1 Dublin CA 90013
+
+-ID-0015 Daniel Rodriguez 2014 West Programmatic Export Boulevard Building 2 Melbourne CA 90014
+
+-ID-0016 Mei Tanaka 2015 West Programmatic Export Boulevard Building 3 Berlin CA 90015
+
+-ID-0017 Sofia Bennett 2016 West Programmatic Export Boulevard Building 4 Kathmandu CA 90016
+
+-ID-0018 Owen Singh 2017 West Programmatic Export Boulevard Building 5 Seattle CA 90017
+
+-ID-0019 Ibrahim Kim 2018 West Programmatic Export Boulevard Building 6 Austin CA 90018
+
+-ID-0020 Caroline Olsen 2019 West Programmatic Export Boulevard Building 7 Toronto CA 90019
+
+-ID-0021 Naveen Adhikari 2020 West Programmatic Export Boulevard Building 8 Singapore CA 90020
+
+-ID-0022 Alicia Morrison 2021 West Programmatic Export Boulevard Building 9 Dublin CA 90021
+
+-ID-0023 Marcus Chen 2022 West Programmatic Export Boulevard Building 10 Melbourne CA 90022
+
+-ID-0024 Priya Patel 2023 West Programmatic Export Boulevard Building 11 Berlin CA 90023
+
+-ID-0025 Daniel Rodriguez 2024 West Programmatic Export Boulevard Building 0 Kathmandu CA 90024
+
+-ID-0026 Mei Tanaka 2025 West Programmatic Export Boulevard Building 1 Seattle CA 90025
+
+-ID-0027 Sofia Bennett 2026 West Programmatic Export Boulevard Building 2 Austin CA 90026
+
+-ID-0028 Owen Singh 2027 West Programmatic Export Boulevard Building 3 Toronto CA 90027
+
+-ID-0029 Ibrahim Kim 2028 West Programmatic Expo
+... (3278 more characters)
 
 ```
 </details>

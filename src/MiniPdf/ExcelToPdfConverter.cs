@@ -914,6 +914,7 @@ internal static class ExcelToPdfConverter
         // Print scale factor for cell-level font sizes (column widths are already print-scaled by caller)
         var printScaleFactor = GetPrintScaleFactor(sheet);
         var borderScaleFactor = printScaleFactor * (fitToPageScale < 1f ? fitToPageScale : 1f);
+        var cellTextInset = Math.Min(2.5f, Math.Max(1f, options.FontSize * 0.18f));
 
         // Use the sheet's default row height if available, otherwise fall back to font-based calculation
         var defaultLineHeight = sheet.DefaultRowHeight > 0 ? sheet.DefaultRowHeight : options.FontSize * options.LineSpacing;
@@ -1139,7 +1140,7 @@ internal static class ExcelToPdfConverter
                         if (cellText.Contains('\n'))
                         {
                             titleCellLines[i] = cellText.Split('\n');
-                            titleClipWidths[i] = colWidths[i];
+                            titleClipWidths[i] = Math.Max(1f, colWidths[i] - 2f * cellTextInset);
                             if (mergeEndCol.TryGetValue((titleRowIdx, col), out var newlineEndCol))
                             {
                                 for (var mc = i + 1; mc < columns.Length && columns[mc] <= newlineEndCol; mc++)
@@ -1154,13 +1155,14 @@ internal static class ExcelToPdfConverter
                         if (isMerged)
                             for (var mc = i + 1; mc < columns.Length && columns[mc] <= endCol; mc++)
                                 effectiveW += colWidths[mc] + columnPadding;
+                        var textEffectiveW = Math.Max(1f, effectiveW - 2f * cellTextInset);
 
                         var titleFontName = titleRow[col].FontName;
-                        var fitChars = FittingChars(cellText, effectiveW, cellFs, titleFontName);
+                        var fitChars = FittingChars(cellText, textEffectiveW, cellFs, titleFontName);
                         if (titleRow[col].WrapText && fitChars < cellText.Length)
                         {
-                            titleCellLines[i] = WrapCellText(cellText, effectiveW, cellFs, titleFontName);
-                            titleClipWidths[i] = effectiveW;
+                            titleCellLines[i] = WrapCellText(cellText, textEffectiveW, cellFs, titleFontName);
+                            titleClipWidths[i] = textEffectiveW;
                         }
                         else
                         {
@@ -1180,7 +1182,7 @@ internal static class ExcelToPdfConverter
                             var shouldClip = isMerged || (i < columns.Length - 1 && nextHasContent);
                             if (shouldClip)
                             {
-                                titleClipWidths[i] = effectiveW;
+                                titleClipWidths[i] = textEffectiveW;
                             }
                             if (shouldClip && cellText.Length > fitChars)
                                 titleCellLines[i] = new[] { cellText[..fitChars] };
@@ -1296,7 +1298,7 @@ internal static class ExcelToPdfConverter
                     // Render accounting prefix left-aligned in title rows.
                     if (cell?.AccountingPrefix != null && titleCellLines[i].Length > 0 && !string.IsNullOrEmpty(titleCellLines[i][0]))
                     {
-                        currentPage!.AddText(cell.AccountingPrefix, x, cellY, cellFs, cell?.Color,
+                        currentPage!.AddText(cell.AccountingPrefix, x + cellTextInset, cellY, cellFs, cell?.Color,
                             maxWidth: titleClipWidths[i],
                             bold: ShouldUsePdfBold(cell?.Bold ?? false, cellFs, cell?.FontName),
                             underline: false,
@@ -1308,26 +1310,28 @@ internal static class ExcelToPdfConverter
                     var titleAcctPrefixW = cell?.AccountingPrefix != null
                         ? (float)MeasureHelveticaWidth(cell.AccountingPrefix, cellFs, bold: titleIsBold)
                         : 0f;
+                    var titleContentX = x + cellTextInset;
+                    var titleContentWidth = Math.Max(1f, cellWidth - 2f * cellTextInset);
                     for (var lineIdx = 0; lineIdx < titleCellLines[i].Length; lineIdx++)
                     {
                         if (!string.IsNullOrEmpty(titleCellLines[i][lineIdx]))
                         {
-                            var textX = x + titleIndentOff;
+                            var textX = titleContentX + titleIndentOff;
                             var lineMaxWidth = titleClipWidths[i];
                             if (alignment == "right" || titleAcctPrefixW > 0)
                             {
                                 var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs, bold: titleIsBold);
-                                textX = x + cellWidth - tw - titleIndentOff;
-                                if (titleAcctPrefixW > 0 && textX < x + titleAcctPrefixW)
+                                textX = titleContentX + titleContentWidth - tw - titleIndentOff;
+                                if (titleAcctPrefixW > 0 && textX < titleContentX + titleAcctPrefixW)
                                 {
-                                    textX = x + titleAcctPrefixW;
-                                    lineMaxWidth = cellWidth - titleAcctPrefixW;
+                                    textX = titleContentX + titleAcctPrefixW;
+                                    lineMaxWidth = titleContentWidth - titleAcctPrefixW;
                                 }
                             }
                             else if (alignment == "center")
                             {
                                 var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs, bold: titleIsBold);
-                                textX = x + (cellWidth - tw) / 2f;
+                                textX = titleContentX + (titleContentWidth - tw) / 2f;
                             }
                             currentPage!.AddText(titleCellLines[i][lineIdx], textX, cellY, cellFs, cell?.Color,
                                 maxWidth: lineMaxWidth,
@@ -1516,7 +1520,7 @@ internal static class ExcelToPdfConverter
                             // Subtract indent from available width so text doesn't overflow
                             // into adjacent columns when rendered at x + indentOff.
                             var cellIndentPts = (row[col].Indent) * avgCharWidth;
-                            var textAvailWidth = effectiveWidth - cellIndentPts;
+                            var textAvailWidth = Math.Max(1f, effectiveWidth - 2f * cellTextInset - cellIndentPts);
                             // FittingChars applies CalibriFittingScale internally, so it
                             // underestimates actual Helvetica character widths.  For the
                             // wrap/clip decision, compensate by passing a narrower target
@@ -1567,14 +1571,11 @@ internal static class ExcelToPdfConverter
                             else
                             {
                                 var shouldClip = isMerged || (!isLastCol && nextCellHasContent);
-                                // Don't set cellClipWidth (maxWidth) — text is already
-                                // truncated by FittingChars below when it overflows.
-                                // Setting maxWidth triggers Tz horizontal scaling in PdfWriter
-                                // using raw Helvetica widths, which over-compresses text
-                                // because FittingChars uses CalibriFittingScale (0.85×).
                                 if (shouldClip)
                                 {
                                     fitChars = FittingChars(cellText, textAvailWidth, cellFontSizeForFit, cellFontName, cellBoldPrefix);
+                                    if (cellText.Length <= fitChars && textAvailWidth > 0)
+                                        cellClipWidth[i] = Math.Max(1f, (float)textAvailWidth - cellTextInset);
                                 }
                                 if (shouldClip && cellText.Length > fitChars)
                                 {
@@ -1714,7 +1715,7 @@ internal static class ExcelToPdfConverter
                         // Render accounting prefix left-aligned in overflow rows.
                         if (cell?.AccountingPrefix != null && linesRendered == 0 && lines.Length > 0 && !string.IsNullOrEmpty(lines[0]))
                         {
-                            currentPage!.AddText(cell.AccountingPrefix, x, cellY, options.FontSize, color,
+                            currentPage!.AddText(cell.AccountingPrefix, x + cellTextInset, cellY, options.FontSize, color,
                                 bold: ShouldUsePdfBold(cell?.Bold ?? false, options.FontSize, cell?.FontName),
                                 underline: false,
                                 preferredFontName: cell?.FontName);
@@ -1725,26 +1726,28 @@ internal static class ExcelToPdfConverter
                         var mpAcctPrefixW = cell?.AccountingPrefix != null
                             ? (float)MeasureHelveticaWidth(cell.AccountingPrefix, options.FontSize, bold: mpIsBold)
                             : 0f;
+                        var mpContentX = x + cellTextInset;
+                        var mpContentWidth = Math.Max(1f, mpCellWidth - 2f * cellTextInset);
                         for (var lineIdx = linesRendered; lineIdx < linesRendered + linesToRender && lineIdx < lines.Length; lineIdx++)
                         {
                             if (!string.IsNullOrEmpty(lines[lineIdx]))
                             {
-                                var textX = x + mpIndentOff;
+                                var textX = mpContentX + mpIndentOff;
                                 float mpLineMaxWidth = 0;
                                 if (mpAlignment == "right" || mpAcctPrefixW > 0)
                                 {
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize, bold: mpIsBold);
-                                    textX = x + mpCellWidth - tw - mpIndentOff;
-                                    if (mpAcctPrefixW > 0 && textX < x + mpAcctPrefixW)
+                                    textX = mpContentX + mpContentWidth - tw - mpIndentOff;
+                                    if (mpAcctPrefixW > 0 && textX < mpContentX + mpAcctPrefixW)
                                     {
-                                        textX = x + mpAcctPrefixW;
-                                        mpLineMaxWidth = mpCellWidth - mpAcctPrefixW;
+                                        textX = mpContentX + mpAcctPrefixW;
+                                        mpLineMaxWidth = mpContentWidth - mpAcctPrefixW;
                                     }
                                 }
                                 else if (mpAlignment == "center")
                                 {
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize, bold: mpIsBold);
-                                    textX = x + (mpCellWidth - tw) / 2f;
+                                    textX = mpContentX + (mpContentWidth - tw) / 2f;
                                 }
                                 currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color,
                                     bold: mpIsBold,
@@ -1909,7 +1912,7 @@ internal static class ExcelToPdfConverter
                 // Render accounting prefix (e.g., " $") left-aligned for accounting format cells.
                 if (cell?.AccountingPrefix != null && lines.Length > 0 && !string.IsNullOrEmpty(lines[0]))
                 {
-                    currentPage!.AddText(cell.AccountingPrefix, x, cellY, cellFontSize, color,
+                    currentPage!.AddText(cell.AccountingPrefix, x + cellTextInset, cellY, cellFontSize, color,
                         maxWidth: cellClipWidth[i],
                         bold: ShouldUsePdfBold(cell.Bold, cellFontSize, cell.FontName),
                         underline: false,
@@ -1924,11 +1927,13 @@ internal static class ExcelToPdfConverter
                 var acctPrefixWidth = cell?.AccountingPrefix != null
                     ? (float)MeasureHelveticaWidth(cell.AccountingPrefix, cellFontSize, bold: isBold)
                     : 0f;
+                var contentX = x + cellTextInset;
+                var contentWidth = Math.Max(1f, cellWidth - 2f * cellTextInset);
                 for (var lineIdx = 0; lineIdx < lines.Length; lineIdx++)
                 {
                     if (!string.IsNullOrEmpty(lines[lineIdx]))
                     {
-                        var textX = x + indentOff;
+                        var textX = contentX + indentOff;
                         var lineMaxWidth = cellClipWidth[i];
                         // Accounting format forces right-alignment for the number part
                         // regardless of the cell's explicit alignment, because the `*`
@@ -1937,18 +1942,18 @@ internal static class ExcelToPdfConverter
                         if (alignment == "right" || acctPrefixWidth > 0)
                         {
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize, bold: isBold);
-                            textX = x + cellWidth - textWidth - indentOff;
+                            textX = contentX + contentWidth - textWidth - indentOff;
                             // Clamp: don't start before the accounting prefix
-                            if (acctPrefixWidth > 0 && textX < x + acctPrefixWidth)
+                            if (acctPrefixWidth > 0 && textX < contentX + acctPrefixWidth)
                             {
-                                textX = x + acctPrefixWidth;
-                                lineMaxWidth = cellWidth - acctPrefixWidth;
+                                textX = contentX + acctPrefixWidth;
+                                lineMaxWidth = contentWidth - acctPrefixWidth;
                             }
                         }
                         else if (alignment == "center")
                         {
                             var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize, bold: isBold);
-                            textX = x + (cellWidth - textWidth) / 2f;
+                            textX = contentX + (contentWidth - textWidth) / 2f;
                         }
 
                         // Rich text: render bold prefix and normal suffix separately

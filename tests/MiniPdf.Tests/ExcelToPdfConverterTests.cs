@@ -96,6 +96,41 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_PrintTitleRowsStartingAtFirstRow_RepeatsHeaderAfterPageBreak()
+    {
+        var rows = new List<string[]> { new[] { "Record ID", "Name", "City" } };
+        for (var i = 1; i <= 90; i++)
+            rows.Add(new[] { $"ID-{i:00000}", $"Name {i}", $"City {i}" });
+
+        using var excelStream = CreateSimpleExcel(rows.ToArray(), printTitleFirstRow: true);
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+
+        Assert.True(doc.Pages.Count >= 2, $"Expected multiple pages, got {doc.Pages.Count}");
+        Assert.Contains(doc.Pages[1].TextBlocks, block => block.Text == "Record ID");
+    }
+
+    [Fact]
+    public void Convert_AdjacentContentColumns_ConstrainFullTextToCellWidth()
+    {
+        using var excelStream = CreateSimpleExcel(
+            new[]
+            {
+                new[] { "Street Address", "City" },
+                new[] { "1035 North Evergreen Avenue Suite 235", "Berlin" },
+            },
+            columnWidths: new[] { 34f, 18f },
+            customWidth: false);
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+        var addressBlock = doc.Pages.SelectMany(page => page.TextBlocks)
+            .FirstOrDefault(block => block.Text == "1035 North Evergreen Avenue Suite 235");
+
+        Assert.NotNull(addressBlock);
+        Assert.True(addressBlock.MaxWidth.HasValue, "Adjacent populated cells should constrain text to the cell width.");
+    }
+
+    [Fact]
     public void Convert_EmptyExcel_CreatesAtLeastOnePage()
     {
         using var excelStream = CreateSimpleExcel(Array.Empty<string[]>());
@@ -332,7 +367,7 @@ public class ExcelToPdfConverterTests
     /// <summary>
     /// Creates a minimal valid .xlsx file in memory with the given data.
     /// </summary>
-    private static MemoryStream CreateSimpleExcel(string[][] rows, float[]? columnWidths = null, bool customWidth = true)
+    private static MemoryStream CreateSimpleExcel(string[][] rows, float[]? columnWidths = null, bool customWidth = true, bool printTitleFirstRow = false)
     {
         var ms = new MemoryStream();
 
@@ -370,15 +405,24 @@ public class ExcelToPdfConverterTests
                 </Relationships>
                 """);
 
-            // xl/workbook.xml
+                        var definedNames = printTitleFirstRow
+                                ? """
+                                        <definedNames>
+                                            <definedName name="_xlnm.Print_Titles" localSheetId="0">'Sheet1'!$1:$1</definedName>
+                                        </definedNames>
+                                    """
+                                : "";
+
+                        // xl/workbook.xml
             AddEntry(archive, "xl/workbook.xml",
-                """
+                                $$"""
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
                           xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
                   <sheets>
                     <sheet name="Sheet1" sheetId="1" r:id="rId1"/>
                   </sheets>
+                                {{definedNames}}
                 </workbook>
                 """);
 
