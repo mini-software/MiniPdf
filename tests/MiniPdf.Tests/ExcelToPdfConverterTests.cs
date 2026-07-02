@@ -51,6 +51,51 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_ProgrammaticColumnWidthsWithoutCustomWidth_UsesWidths()
+    {
+        using var excelStream = CreateSimpleExcel(
+            new[]
+            {
+                new[] { "A", "B", "C", "D" },
+                new[] { "1", "2", "3", "4" },
+            },
+            columnWidths: new[] { 24f, 24f, 24f, 24f },
+            customWidth: false);
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+
+        Assert.True(doc.Pages.Count >= 2, $"Expected wide generated columns to split across pages, got {doc.Pages.Count}");
+        Assert.Contains(doc.Pages[1].TextBlocks, block => block.Text == "D");
+    }
+
+    [Fact]
+    public void Convert_GeneratedWideTextTableWithoutColumnWidths_InfersReadableColumnGroups()
+    {
+        using var excelStream = CreateSimpleExcel(new[]
+        {
+            new[] { "First", "Last", "Address", "Phone", "Email", "Company", "Title", "Notes" },
+            new[]
+            {
+                "Naveen",
+                "Adhikari",
+                "1234 North Evergreen Avenue",
+                "555-0123",
+                "naveen.adhikari@example.test",
+                "Contoso Operations",
+                "QA Automation Specialist",
+                "Priority customer account",
+            },
+        });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+        var content = Encoding.ASCII.GetString(doc.ToArray());
+
+        Assert.True(doc.Pages.Count >= 2, $"Expected inferred wide columns to create column groups, got {doc.Pages.Count}");
+        Assert.Contains("1234 North Evergreen Avenue", content);
+        Assert.Contains("QA Automation Specialist", content);
+    }
+
+    [Fact]
     public void Convert_EmptyExcel_CreatesAtLeastOnePage()
     {
         using var excelStream = CreateSimpleExcel(Array.Empty<string[]>());
@@ -287,7 +332,7 @@ public class ExcelToPdfConverterTests
     /// <summary>
     /// Creates a minimal valid .xlsx file in memory with the given data.
     /// </summary>
-    private static MemoryStream CreateSimpleExcel(string[][] rows)
+    private static MemoryStream CreateSimpleExcel(string[][] rows, float[]? columnWidths = null, bool customWidth = true)
     {
         var ms = new MemoryStream();
 
@@ -356,6 +401,17 @@ public class ExcelToPdfConverterTests
             var sheetSb = new StringBuilder();
             sheetSb.AppendLine("""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>""");
             sheetSb.AppendLine("""<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">""");
+            if (columnWidths is { Length: > 0 })
+            {
+                sheetSb.AppendLine("<cols>");
+                for (var c = 0; c < columnWidths.Length; c++)
+                {
+                    var width = columnWidths[c].ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    var customWidthAttr = customWidth ? " customWidth=\"1\"" : "";
+                    sheetSb.AppendLine($"  <col min=\"{c + 1}\" max=\"{c + 1}\" width=\"{width}\"{customWidthAttr}/>");
+                }
+                sheetSb.AppendLine("</cols>");
+            }
             sheetSb.AppendLine("<sheetData>");
 
             for (var r = 0; r < rows.Length; r++)

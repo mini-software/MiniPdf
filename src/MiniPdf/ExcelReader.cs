@@ -2887,13 +2887,17 @@ internal static class ExcelReader
     /// <summary>
     /// Reads column widths from a worksheet entry.
     /// Returns (columnWidths dict, defaultColumnWidth) where widths are in Excel character units.
-    /// Only explicitly customised columns (customWidth="1") or an explicit defaultColWidth
+    /// Explicitly customised columns, best-fit/generated width columns, or an explicit defaultColWidth
     /// attribute on sheetFormatPr contribute; otherwise the dict/default remain at 0.
     /// </summary>
     private static (Dictionary<int, float> widths, float defaultWidth) ReadColumnWidths(ZipArchiveEntry entry)
     {
         var widths = new Dictionary<int, float>();
         var defaultWidth = 0f; // 0 = "not set explicitly"
+
+        static bool IsTrue(string? value) =>
+            string.Equals(value, "1", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -2914,14 +2918,14 @@ internal static class ExcelReader
         }
 
         // Only use column widths that are explicitly customized (customWidth="1")
-        // or explicitly hidden (hidden="1").
+        // or explicitly hidden (hidden="1").  Some programmatic XLSX writers emit
+        // a real width or bestFit column without customWidth, so also accept widths
+        // that clearly differ from the sheet/default column width.
         foreach (var col in doc.Descendants(ns + "col"))
         {
-            var isHidden = col.Attribute("hidden")?.Value == "1";
-
-            // Skip default-width columns (not customised by the spreadsheet author)
-            var customWidth = col.Attribute("customWidth")?.Value;
-            if (customWidth != "1" && !isHidden) continue;
+            var isHidden = IsTrue(col.Attribute("hidden")?.Value);
+            var hasCustomWidth = IsTrue(col.Attribute("customWidth")?.Value);
+            var hasBestFitWidth = IsTrue(col.Attribute("bestFit")?.Value);
 
             var minAttr = col.Attribute("min")?.Value;
             var maxAttr = col.Attribute("max")?.Value;
@@ -2934,6 +2938,11 @@ internal static class ExcelReader
                 System.Globalization.NumberStyles.Any,
                 System.Globalization.CultureInfo.InvariantCulture,
                 out var colWidth)) continue;
+
+            var comparisonDefault = defaultWidth > 0f ? defaultWidth : 8.43f;
+            var differsFromDefault = Math.Abs(colWidth - comparisonDefault) > 0.01f;
+            if (!hasCustomWidth && !hasBestFitWidth && !differsFromDefault && !isHidden)
+                continue;
 
             for (var c = minCol; c <= maxCol; c++)
                 widths[c - 1] = isHidden ? 0f : colWidth; // hidden columns get 0 width

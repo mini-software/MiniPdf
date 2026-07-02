@@ -3934,11 +3934,13 @@ internal static class ExcelToPdfConverter
             }
             else
             {
-                // No explicit column widths — use Excel's default column width (8.43
-                // char units) like LibreOffice does.  Text that exceeds the column
-                // boundary is clipped in the rendering step (shouldClip logic).
+                // No explicit column widths — start from Excel's default width, then
+                // widen columns with real content so programmatically generated wide
+                // tables do not pack long text columns into one unreadable page.
                 var defaultPts = ExcelSheet.CharUnitsToPoints(8.43f);
-                widths[i] = Compat.Clamp(defaultPts, minColWidth, maxColWidth);
+                var contentPts = colMaxWidthPts[i] + 2 * avgCharWidth;
+                var natural = Math.Max(defaultPts, contentPts);
+                widths[i] = Compat.Clamp(natural, minColWidth, maxColWidth);
             }
         }
 
