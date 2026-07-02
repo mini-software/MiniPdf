@@ -57,7 +57,11 @@ fn main() {
     }
 }
 
-fn run_convert(input: PathBuf, output: Option<PathBuf>, fonts: Option<PathBuf>) -> minipdf::Result<()> {
+fn run_convert(
+    input: PathBuf,
+    output: Option<PathBuf>,
+    fonts: Option<PathBuf>,
+) -> minipdf::Result<()> {
     if !input.exists() {
         return Err(minipdf::MiniPdfError::InvalidInput(format!(
             "file not found: {}",

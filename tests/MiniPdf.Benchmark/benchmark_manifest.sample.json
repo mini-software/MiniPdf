@@ -1,0 +1,25 @@
+{
+  "description": "Sample manifest for shared benchmark corpus runs. Source documents are shared; generated reports and images carry format, case, language, and engine metadata.",
+  "cases": [
+    {
+      "name": "20260317_sample_CN",
+      "case_id": "docx_issue_20260317_sample_CN",
+      "format": "docx",
+      "source_path": "tests/Issue_Files/docx/20260317_sample_CN.docx",
+      "content_language": "zh-CN",
+      "display_name": "DOCX 20260317 Chinese Sample",
+      "suite": "issue-smoke",
+      "tags": ["issue", "cjk", "docx"]
+    },
+    {
+      "name": "AcademicAchievement_temp",
+      "case_id": "xlsx_issue_academic_achievement_temp",
+      "format": "xlsx",
+      "source_path": "tests/Issue_Files/xlsx/AcademicAchievement_temp.xlsx",
+      "content_language": "zh-TW",
+      "display_name": "XLSX Academic Achievement Template",
+      "suite": "issue-smoke",
+      "tags": ["issue", "table", "xlsx"]
+    }
+  ]
+}

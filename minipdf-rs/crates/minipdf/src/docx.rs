@@ -3,7 +3,7 @@ use std::io::Cursor;
 use zip::ZipArchive;
 
 use crate::pdf::{PdfColor, PdfDocument};
-use crate::{read_zip_text, truncate_to_width, Result};
+use crate::{read_zip_text, Result};
 
 const PAGE_WIDTH: f32 = 595.28;
 const PAGE_HEIGHT: f32 = 841.89;
@@ -95,7 +95,8 @@ fn wrap_text(text: &str, max_width: f32, font_size: f32) -> Vec<String> {
                 if !current.is_empty() {
                     lines.push(current);
                 }
-                current = truncate_to_width(word, max_width, font_size);
+                current = String::new();
+                append_wrapped_word(&mut lines, &mut current, word, max_width, font_size);
             }
         }
 
@@ -107,4 +108,61 @@ fn wrap_text(text: &str, max_width: f32, font_size: f32) -> Vec<String> {
     }
 
     lines
+}
+
+fn append_wrapped_word(
+    lines: &mut Vec<String>,
+    current: &mut String,
+    word: &str,
+    max_width: f32,
+    font_size: f32,
+) {
+    if crate::text_width(word, font_size) <= max_width {
+        current.push_str(word);
+        return;
+    }
+
+    for chunk in split_word_to_width(word, max_width, font_size) {
+        if !current.is_empty() {
+            lines.push(std::mem::take(current));
+        }
+        current.push_str(&chunk);
+    }
+}
+
+fn split_word_to_width(word: &str, max_width: f32, font_size: f32) -> Vec<String> {
+    let mut chunks = Vec::new();
+    let mut current = String::new();
+
+    for ch in word.chars() {
+        let mut candidate = current.clone();
+        candidate.push(ch);
+        if !current.is_empty() && crate::text_width(&candidate, font_size) > max_width {
+            chunks.push(std::mem::take(&mut current));
+        }
+        current.push(ch);
+    }
+
+    if !current.is_empty() {
+        chunks.push(current);
+    }
+
+    chunks
+}
+
+#[cfg(test)]
+mod tests {
+    use super::wrap_text;
+
+    #[test]
+    fn wraps_unspaced_text_without_truncating() {
+        let text = "abcdefghijklmnopqrstuvwxyz";
+        let lines = wrap_text(text, 40.0, 12.0);
+
+        assert!(lines.len() > 1);
+        assert_eq!(lines.concat(), text);
+        assert!(lines
+            .iter()
+            .all(|line| crate::text_width(line, 12.0) <= 40.0));
+    }
 }

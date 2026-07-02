@@ -736,31 +736,54 @@ internal static class PptxToPdfConverter
     private static List<string> WrapLine(string text, float maxWidth, float fontSize)
     {
         var result = new List<string>();
-        var words = text.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-        if (words.Length == 0)
+        if (text.Length == 0)
         {
             result.Add(text);
             return result;
         }
 
-        var current = string.Empty;
-        foreach (var word in words)
+        var current = new StringBuilder();
+        foreach (var token in SplitWrapTokens(text))
         {
-            var candidate = current.Length == 0 ? word : current + " " + word;
+            var candidate = current.Length == 0 ? token : current + token;
             if (current.Length > 0 && EstimateTextWidth(candidate, fontSize) > maxWidth)
             {
-                result.Add(current);
-                current = word;
+                result.Add(current.ToString());
+                current.Clear();
             }
-            else
-            {
-                current = candidate;
-            }
+
+            current.Append(token);
         }
 
         if (current.Length > 0)
-            result.Add(current);
+            result.Add(current.ToString());
+        if (result.Count == 0)
+            result.Add(text);
         return result;
+    }
+
+    private static IEnumerable<string> SplitWrapTokens(string text)
+    {
+        var token = new StringBuilder();
+        var tokenIsWhiteSpace = false;
+        var hasToken = false;
+
+        foreach (var character in text)
+        {
+            var isWhiteSpace = char.IsWhiteSpace(character);
+            if (hasToken && isWhiteSpace != tokenIsWhiteSpace)
+            {
+                yield return token.ToString();
+                token.Clear();
+            }
+
+            token.Append(character);
+            tokenIsWhiteSpace = isWhiteSpace;
+            hasToken = true;
+        }
+
+        if (hasToken)
+            yield return token.ToString();
     }
 
     private static void AddText(

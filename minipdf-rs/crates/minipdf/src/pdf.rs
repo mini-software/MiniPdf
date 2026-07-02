@@ -138,13 +138,17 @@ impl PdfDocument {
             let page_id = content_id + 1;
             page_ids.push(page_id);
 
-            let content = write_content_stream(page);
-            let content_object = format!(
-                "<< /Length {} >>\nstream\n{}endstream",
-                content.len(),
-                String::from_utf8_lossy(&content)
-            );
-            objects.push(content_object.into_bytes());
+            let mut content = write_content_stream(page);
+            if content.ends_with(b"\n") {
+                content.pop();
+            }
+
+            let mut content_object = Vec::new();
+            content_object
+                .extend_from_slice(format!("<< /Length {} >>\nstream\n", content.len()).as_bytes());
+            content_object.extend_from_slice(&content);
+            content_object.extend_from_slice(b"\nendstream");
+            objects.push(content_object);
 
             let page_object = format!(
                 "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {:.2} {:.2}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents {} 0 R >>",

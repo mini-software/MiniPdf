@@ -22,12 +22,29 @@ param(
     [switch]$SkipOffice,
     [ValidateSet("libre", "office")]
     [string]$Engine = "office",
-    [string]$Filter
+    [string]$Filter,
+    [string]$SourceDir,
+    [string]$MiniPdfDir,
+    [string]$ReferenceDir,
+    [string]$OfficeDir,
+    [string]$ReportDir,
+    [string]$Manifest,
+    [string]$ReportScope = "shared",
+    [switch]$CompositeImages,
+    [string]$CandidateLabel = "MiniPdf",
+    [string]$ReferenceLabel,
+    [string]$OfficeLabel = "Office"
 )
 
 $ErrorActionPreference = "Continue"
 $ScriptRoot = Split-Path -Parent $PSScriptRoot
 $BenchmarkDir = Join-Path (Join-Path $ScriptRoot "tests") "MiniPdf.Benchmark"
+
+function Resolve-BenchmarkPath([string]$PathValue) {
+    if (-not $PathValue) { return $null }
+    if ([System.IO.Path]::IsPathRooted($PathValue)) { return $PathValue }
+    return Join-Path $ScriptRoot $PathValue
+}
 
 Write-Host "`n============================================================" -ForegroundColor Cyan
 Write-Host "  MiniPdf Self-Evolution Benchmark Pipeline" -ForegroundColor Cyan
@@ -54,6 +71,17 @@ if ($WithOffice) { $pyArgs += "--with-office" }
 if ($SkipOffice) { $pyArgs += "--skip-office" }
 if ($Engine -ne "office") { $pyArgs += "--engine"; $pyArgs += $Engine }
 if ($Filter) { $pyArgs += "--filter"; $pyArgs += $Filter }
+if ($SourceDir) { $pyArgs += "--source-dir"; $pyArgs += (Resolve-BenchmarkPath $SourceDir) }
+if ($MiniPdfDir) { $pyArgs += "--minipdf-dir"; $pyArgs += (Resolve-BenchmarkPath $MiniPdfDir) }
+if ($ReferenceDir) { $pyArgs += "--reference-dir"; $pyArgs += (Resolve-BenchmarkPath $ReferenceDir) }
+if ($OfficeDir) { $pyArgs += "--office-dir"; $pyArgs += (Resolve-BenchmarkPath $OfficeDir) }
+if ($ReportDir) { $pyArgs += "--report-dir"; $pyArgs += (Resolve-BenchmarkPath $ReportDir) }
+if ($Manifest) { $pyArgs += "--manifest"; $pyArgs += (Resolve-BenchmarkPath $Manifest) }
+if ($ReportScope -ne "shared") { $pyArgs += "--report-scope"; $pyArgs += $ReportScope }
+if ($CompositeImages) { $pyArgs += "--composite-images" }
+if ($CandidateLabel -ne "MiniPdf") { $pyArgs += "--candidate-label"; $pyArgs += $CandidateLabel }
+if ($ReferenceLabel) { $pyArgs += "--reference-label"; $pyArgs += $ReferenceLabel }
+if ($OfficeLabel -ne "Office") { $pyArgs += "--office-label"; $pyArgs += $OfficeLabel }
 
 # Run the benchmark pipeline
 Write-Host "`n[Running] python run_benchmark.py $($pyArgs -join ' ')`n" -ForegroundColor Yellow
@@ -65,7 +93,8 @@ try {
 }
 
 # Open the report if it exists
-$reportPath = Join-Path (Join-Path $BenchmarkDir "reports") "comparison_report.md"
+$reportDirPath = if ($ReportDir) { Resolve-BenchmarkPath $ReportDir } else { Join-Path $BenchmarkDir "reports" }
+$reportPath = Join-Path $reportDirPath "comparison_report.md"
 if (Test-Path $reportPath) {
     Write-Host "`n[Done] Report: $reportPath" -ForegroundColor Green
     Write-Host "Opening report..." -ForegroundColor Cyan

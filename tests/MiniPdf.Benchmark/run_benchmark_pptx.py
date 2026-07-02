@@ -26,6 +26,20 @@ REFERENCE_PDF_DIR = SCRIPT_DIR / "reference_pdfs_pptx"
 REPORT_DIR = SCRIPT_DIR / "reports_pptx"
 
 
+def configure_paths(args):
+    """Override default benchmark paths without changing existing defaults."""
+    global PPTX_DIR, MINIPDF_PDF_DIR, REFERENCE_PDF_DIR, REPORT_DIR
+
+    if args.source_dir:
+        PPTX_DIR = Path(args.source_dir).resolve()
+    if args.minipdf_dir:
+        MINIPDF_PDF_DIR = Path(args.minipdf_dir).resolve()
+    if args.reference_dir:
+        REFERENCE_PDF_DIR = Path(args.reference_dir).resolve()
+    if args.report_dir:
+        REPORT_DIR = Path(args.report_dir).resolve()
+
+
 def banner(msg: str):
     print(f"\n{'='*60}")
     print(f"  {msg}")
@@ -60,7 +74,9 @@ def step_generate_reference_pdfs(filter_pattern: str = None):
 
 
 def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 0.90,
-                 filter_pattern: str = None):
+                 filter_pattern: str = None, manifest: str = None, report_scope: str = "shared",
+                 composite_images: bool = False, candidate_label: str = "MiniPdf",
+                 reference_label: str = "LibreOffice Reference"):
     banner("Step 3: Compare MiniPdf vs Reference")
     cmd = [
         sys.executable, "compare_pdfs.py",
@@ -72,6 +88,14 @@ def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: 
         cmd += ["--ai-compare", "--ai-max-pages", str(ai_max_pages), "--ai-threshold", str(ai_threshold)]
     if filter_pattern:
         cmd += ["--filter", filter_pattern]
+    if manifest:
+        cmd += ["--manifest", str(Path(manifest).resolve()), "--report-scope", report_scope]
+    if composite_images:
+        cmd += [
+            "--composite-images",
+            "--candidate-label", candidate_label,
+            "--reference-label", reference_label,
+        ]
     return run(cmd, cwd=str(SCRIPT_DIR))
 
 
@@ -117,7 +141,27 @@ def main():
                         help="Max pages per PDF to send to AI (default: 1)")
     parser.add_argument("--ai-threshold", type=float, default=0.97, metavar="T",
                         help="Skip AI call when pixel score >= threshold (default: 0.97)")
+    parser.add_argument("--source-dir", default=None, metavar="DIR",
+                        help="Shared PPTX source directory (default: tests/MiniPdf.Scripts/output_pptx)")
+    parser.add_argument("--minipdf-dir", default=None, metavar="DIR",
+                        help="MiniPdf PDF output directory override")
+    parser.add_argument("--reference-dir", default=None, metavar="DIR",
+                        help="Reference PDF output directory override")
+    parser.add_argument("--report-dir", default=None, metavar="DIR",
+                        help="Report output directory override")
+    parser.add_argument("--manifest", default=None, metavar="JSON",
+                        help="Benchmark manifest forwarded to compare_pdfs.py")
+    parser.add_argument("--report-scope", default="shared", metavar="NAME",
+                        help="Report scope metadata forwarded to compare_pdfs.py")
+    parser.add_argument("--composite-images", action="store_true",
+                        help="Generate labeled side-by-side comparison images")
+    parser.add_argument("--candidate-label", default="MiniPdf",
+                        help="Candidate renderer label for composite images")
+    parser.add_argument("--reference-label", default="LibreOffice Reference",
+                        help="Reference renderer label for composite images")
     args = parser.parse_args()
+
+    configure_paths(args)
 
     banner("MiniPdf PPTX Benchmark Pipeline")
     print(f"  PPTX dir:       {PPTX_DIR.resolve()}")
@@ -129,7 +173,12 @@ def main():
         ai_compare=args.ai_compare,
         ai_max_pages=args.ai_max_pages,
         ai_threshold=args.ai_threshold,
-        filter_pattern=args.filter)
+        filter_pattern=args.filter,
+        manifest=args.manifest,
+        report_scope=args.report_scope,
+        composite_images=args.composite_images,
+        candidate_label=args.candidate_label,
+        reference_label=args.reference_label)
 
     if args.compare_only:
         step_compare(**compare_kwargs)

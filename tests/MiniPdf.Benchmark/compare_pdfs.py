@@ -23,6 +23,7 @@ import re
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 # Try to import fitz (PyMuPDF) for text extraction and visual comparison
 try:
@@ -99,6 +100,149 @@ AI_CLIENT, AI_MODEL = _make_openai_client()
 def natural_sort_key(text: str):
     """Sort strings in human order, e.g. case2 < case10."""
     return [int(part) if part.isdigit() else part.lower() for part in re.split(r"(\d+)", text)]
+
+
+def slugify_label(value: str) -> str:
+    """Turn an engine/display label into a filesystem-safe lowercase token."""
+    slug = re.sub(r"[^A-Za-z0-9]+", "_", value.strip().lower()).strip("_")
+    return slug or "engine"
+
+
+def normalize_manifest_case(entry: dict) -> dict:
+    """Normalize one benchmark manifest entry into the compare_pdfs case shape."""
+    if not isinstance(entry, dict):
+        raise ValueError(f"Manifest case must be an object, got {type(entry).__name__}")
+
+    case = dict(entry)
+    name = (
+        case.get("name")
+        or case.get("pdf_stem")
+        or case.get("stem")
+        or case.get("case_id")
+        or case.get("id")
+    )
+    if not name:
+        raise ValueError(f"Manifest case is missing name/pdf_stem/case_id: {entry!r}")
+
+    case["name"] = str(name)
+    case.setdefault("case_id", str(name))
+    return case
+
+
+def load_manifest_cases(manifest_path: str) -> list[dict]:
+    """Load benchmark cases from a manifest JSON file."""
+    with open(manifest_path, encoding="utf-8") as f:
+        data = json.load(f)
+
+    if isinstance(data, list):
+        raw_cases = data
+    elif isinstance(data, dict) and isinstance(data.get("cases"), list):
+        raw_cases = data["cases"]
+    else:
+        raise ValueError("Manifest must be a case array or an object with a 'cases' array")
+
+    return [normalize_manifest_case(entry) for entry in raw_cases]
+
+
+def case_matches_filter(case: dict, pattern: Optional[str]) -> bool:
+    """Return whether a manifest case matches the existing substring filter."""
+    if not pattern:
+        return True
+
+    needle = pattern.lower()
+    values = [
+        case.get("name"),
+        case.get("case_id"),
+        case.get("display_name"),
+        case.get("format"),
+        case.get("content_language"),
+        case.get("source_path"),
+    ]
+    tags = case.get("tags") or []
+    if isinstance(tags, str):
+        values.append(tags)
+    else:
+        values.extend(str(tag) for tag in tags)
+
+    return any(value is not None and needle in str(value).lower() for value in values)
+
+
+def apply_case_metadata(result: dict, case_metadata: Optional[dict], report_scope: Optional[str] = None):
+    """Copy stable manifest dimensions into a comparison result."""
+    if report_scope:
+        result["report_scope"] = report_scope
+    if not case_metadata:
+        return
+
+    for key in (
+        "case_id",
+        "format",
+        "source_path",
+        "content_language",
+        "display_name",
+        "tags",
+        "suite",
+    ):
+        if key in case_metadata and case_metadata[key] not in (None, ""):
+            result[key] = case_metadata[key]
+
+
+def result_display_name(result: dict) -> str:
+    return str(result.get("display_name") or result.get("name") or "")
+
+
+def result_metadata_summary(result: dict) -> str:
+    parts = []
+    for label, key in (
+        ("format", "format"),
+        ("case", "case_id"),
+        ("language", "content_language"),
+        ("scope", "report_scope"),
+    ):
+        value = result.get(key)
+        if value:
+            parts.append(f"{label}: {value}")
+    return " | ".join(parts)
+
+
+def save_composite_image(components: list[tuple[str, str]], output_path: str) -> bool:
+    """Create one labeled side-by-side image from already-rendered page PNGs."""
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+    except ImportError:
+        return False
+
+    opened = []
+    for label, path in components:
+        if path and os.path.isfile(path):
+            opened.append((label, Image.open(path).convert("RGB")))
+    if len(opened) < 2:
+        return False
+
+    target_height = min(image.height for _, image in opened)
+    resized = []
+    for label, image in opened:
+        if image.height != target_height:
+            width = round(image.width * target_height / image.height)
+            image = image.resize((width, target_height), Image.LANCZOS)
+        resized.append((label, image))
+
+    pad = 24
+    label_height = 36
+    total_width = sum(image.width for _, image in resized) + pad * (len(resized) + 1)
+    total_height = target_height + label_height + pad * 2
+    canvas = Image.new("RGB", (total_width, total_height), "white")
+    draw = ImageDraw.Draw(canvas)
+    font = ImageFont.load_default()
+
+    x = pad
+    for label, image in resized:
+        draw.text((x, pad // 2), label, fill=(20, 20, 20), font=font)
+        canvas.paste(image, (x, label_height + pad))
+        x += image.width + pad
+
+    canvas.save(output_path)
+    return True
 
 _AI_SYSTEM_PROMPT = """\
 You are an expert PDF rendering quality analyst.
@@ -375,16 +519,33 @@ def pixel_diff_score(pix1, pix2, grid_n: int = 20) -> float:
     return round(0.40 * raw_score + 0.40 * grid_score + 0.20 * top_score, 4)
 
 
-def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str, dpi: int = 150,
-                     office_pdf_path=None):
+def save_visual_diff(
+    pdf1_path: str,
+    pdf2_path: str,
+    output_dir: str,
+    name: str,
+    dpi: int = 150,
+    office_pdf_path=None,
+    composite_output_dir: Optional[str] = None,
+    labels: Optional[dict] = None,
+):
     """Save visual diff images for each page."""
     if not HAS_FITZ:
         return []
+
+    labels = labels or {}
+    candidate_label = labels.get("candidate", "MiniPdf")
+    reference_label = labels.get("reference", "LibreOffice Reference")
+    office_label = labels.get("office", "Office")
 
     # Remove stale images from previous runs with different page counts
     import glob
     for suffix in ("minipdf", "reference", "office"):
         for old in glob.glob(os.path.join(output_dir, f"{glob.escape(name)}_p*_{suffix}.png")):
+            os.remove(old)
+    if composite_output_dir:
+        os.makedirs(composite_output_dir, exist_ok=True)
+        for old in glob.glob(os.path.join(composite_output_dir, f"{glob.escape(name)}_p*_*.png")):
             os.remove(old)
 
     diff_images = []
@@ -411,6 +572,10 @@ def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str,
             pix3 = doc3[i].get_pixmap(matrix=mat, alpha=False)
 
         # Save individual renderings
+        path1 = None
+        path2 = None
+        path3 = None
+
         if pix1:
             path1 = os.path.join(output_dir, f"{name}_p{i+1}_minipdf.png")
             pix1.save(path1)
@@ -430,6 +595,17 @@ def save_visual_diff(pdf1_path: str, pdf2_path: str, output_dir: str, name: str,
         }
         if doc3 is not None:
             entry["office_img"] = f"{name}_p{i+1}_office.png" if pix3 else None
+        if composite_output_dir:
+            engine_slugs = [slugify_label(candidate_label), slugify_label(reference_label)]
+            components = [(candidate_label, path1), (reference_label, path2)]
+            if doc3 is not None:
+                engine_slugs.append(slugify_label(office_label))
+                components.append((office_label, path3))
+
+            composite_name = f"{name}_p{i+1}_{'_vs_'.join(engine_slugs)}.png"
+            composite_path = os.path.join(composite_output_dir, composite_name)
+            if save_composite_image(components, composite_path):
+                entry["composite_img"] = composite_name
         diff_images.append(entry)
 
     doc1.close()
@@ -520,15 +696,28 @@ def validate_pdf_structure(pdf_path: str) -> dict:
     return {"valid": len(errors) == 0, "errors": errors}
 
 
-def compare_single(minipdf_path: str, reference_path: str, report_images_dir: str, name: str,
-                   ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 1.01,
-                   office_path=None) -> dict:
+def compare_single(
+    minipdf_path: str,
+    reference_path: str,
+    report_images_dir: str,
+    name: str,
+    ai_compare: bool = False,
+    ai_max_pages: int = 1,
+    ai_threshold: float = 1.01,
+    office_path=None,
+    case_metadata: Optional[dict] = None,
+    report_scope: Optional[str] = None,
+    composite_images: bool = False,
+    composite_output_dir: Optional[str] = None,
+    labels: Optional[dict] = None,
+) -> dict:
     """Compare a single pair of PDFs and return a detailed result."""
     result = {
         "name": name,
         "minipdf_exists": os.path.isfile(minipdf_path),
         "reference_exists": os.path.isfile(reference_path),
     }
+    apply_case_metadata(result, case_metadata, report_scope)
 
     if not result["minipdf_exists"]:
         result["error"] = "MiniPdf PDF not found"
@@ -641,8 +830,15 @@ def compare_single(minipdf_path: str, reference_path: str, report_images_dir: st
 
         # Save diff images
         os.makedirs(report_images_dir, exist_ok=True)
-        result["diff_images"] = save_visual_diff(minipdf_path, reference_path, report_images_dir, name,
-                                                   office_pdf_path=office_path)
+        result["diff_images"] = save_visual_diff(
+            minipdf_path,
+            reference_path,
+            report_images_dir,
+            name,
+            office_pdf_path=office_path,
+            composite_output_dir=composite_output_dir if composite_images else None,
+            labels=labels,
+        )
 
         # ── AI visual comparison ──────────────────────────────────────────────
         if ai_compare and AI_CLIENT is not None:
@@ -739,6 +935,33 @@ def generate_report(results: list[dict], report_dir: str):
         avg_overall = sum(r.get("overall_score", 0) for r in results) / len(results) if results else 0
         f.write(f"\n**Average Overall Score: {avg_overall:.4f}**\n\n")
 
+        has_composite = any(
+            pg.get("composite_img")
+            for r in results
+            for pg in r.get("diff_images", [])
+        )
+        if has_composite:
+            f.write("## Labeled Side-by-Side Comparison\n\n")
+            f.write("<table>\n")
+            f.write("<tr><th>Case</th><th>Comparison</th></tr>\n")
+            for r in results:
+                display_name = result_display_name(r)
+                metadata = result_metadata_summary(r)
+                title = display_name if not metadata else f"{display_name}<br><small>{metadata}</small>"
+                for idx, pg in enumerate(r.get("diff_images", [])):
+                    composite_img = pg.get("composite_img")
+                    if not composite_img:
+                        continue
+                    page_num = pg.get("page", idx + 1)
+                    f.write("<tr>\n")
+                    f.write(f"  <td><b>{title}</b><br>Page {page_num}</td>\n")
+                    f.write(
+                        f"  <td><img src=\"side-by-side/{composite_img}\" "
+                        f"width=\"760\" alt=\"{display_name} page {page_num} comparison\"></td>\n"
+                    )
+                    f.write("</tr>\n")
+            f.write("</table>\n\n")
+
         # ── Detect whether any result has office images ──────────────────
         has_office = any(
             pg.get("office_img")
@@ -758,6 +981,8 @@ def generate_report(results: list[dict], report_dir: str):
 
         for r in results:
             name = r["name"]
+            display_name = result_display_name(r)
+            metadata = result_metadata_summary(r)
             overall = r.get("overall_score", "N/A")
             if isinstance(overall, float):
                 if overall >= 0.9:
@@ -778,9 +1003,10 @@ def generate_report(results: list[dict], report_dir: str):
             diff_images = r.get("diff_images", [])
 
             # Header row: test case name + score
+            title = display_name if not metadata else f"{display_name}<br><small>{metadata}</small>"
             f.write(f"<tr>\n")
-            f.write(f"  <td><b>{name}</b></td>\n")
-            f.write(f"  <td colspan=\"{num_cols - 1}\">{name} {score_cell}</td>\n")
+            f.write(f"  <td><b>{title}</b></td>\n")
+            f.write(f"  <td colspan=\"{num_cols - 1}\">{display_name} {score_cell}</td>\n")
             f.write(f"</tr>\n")
 
             if not diff_images:
@@ -844,12 +1070,18 @@ def generate_report(results: list[dict], report_dir: str):
         f.write("## Detailed Results\n\n")
         for r in results:
             name = r["name"]
-            f.write(f"### {name}\n\n")
+            display_name = result_display_name(r)
+            metadata = result_metadata_summary(r)
+            f.write(f"### {display_name}\n\n")
 
             if "error" in r:
                 f.write(f"**Error:** {r['error']}\n\n")
                 continue
 
+            if metadata:
+                f.write(f"- **Case Metadata:** {metadata}\n")
+            if r.get("source_path"):
+                f.write(f"- **Source:** {r['source_path']}\n")
             f.write(f"- **Text Similarity:** {r.get('text_similarity', 'N/A')}\n")
             f.write(f"- **Visual Average:** {r.get('visual_avg', 'N/A')}\n")
             if r.get("ai_visual_avg") is not None:
@@ -974,6 +1206,20 @@ def main():
                         help="Skip comparisons; regenerate report from existing comparison_report.json")
     parser.add_argument("--filter", default=None, metavar="PATTERN",
                         help="Only compare files whose name contains this substring")
+    parser.add_argument("--manifest", default=None, metavar="JSON",
+                        help="Benchmark manifest JSON. When set, compare exactly the listed cases instead of scanning directories")
+    parser.add_argument("--report-scope", default="shared", metavar="NAME",
+                        help="Logical report audience/scope recorded in JSON metadata (default: shared)")
+    parser.add_argument("--composite-images", action="store_true",
+                        help="Also write labeled side-by-side composite PNGs under the report directory")
+    parser.add_argument("--composite-dir", default=None, metavar="DIR",
+                        help="Composite image output directory (default: <report-dir>/side-by-side)")
+    parser.add_argument("--candidate-label", default="MiniPdf",
+                        help="Label for candidate renderer images in composite output")
+    parser.add_argument("--reference-label", default="LibreOffice Reference",
+                        help="Label for reference renderer images in composite output")
+    parser.add_argument("--office-label", default="Office",
+                        help="Label for optional Office renderer images in composite output")
     args = parser.parse_args()
 
     if args.ai_compare:
@@ -992,6 +1238,12 @@ def main():
     office_dir = os.path.abspath(args.office_dir) if args.office_dir else None
     report_dir = os.path.abspath(args.report_dir)
     images_dir = os.path.join(report_dir, "images")
+    composite_dir = os.path.abspath(args.composite_dir) if args.composite_dir else os.path.join(report_dir, "side-by-side")
+    labels = {
+        "candidate": args.candidate_label,
+        "reference": args.reference_label,
+        "office": args.office_label,
+    }
 
     os.makedirs(report_dir, exist_ok=True)
     json_path = os.path.join(report_dir, "comparison_report.json")
@@ -1015,23 +1267,32 @@ def main():
     if office_dir:
         print(f"Office PDFs:     {office_dir}")
     print(f"Report output:   {report_dir}")
+    if args.manifest:
+        print(f"Manifest:        {os.path.abspath(args.manifest)}")
+        print(f"Report scope:    {args.report_scope}")
+    if args.composite_images:
+        print(f"Composite PNGs:  {composite_dir}")
     print()
 
-    # Collect all test names from both directories
-    names = set()
-    for d in [minipdf_dir, reference_dir]:
-        if os.path.isdir(d):
-            for f in Path(d).glob("*.pdf"):
+    if args.manifest:
+        cases = [case for case in load_manifest_cases(args.manifest) if case_matches_filter(case, args.filter)]
+    else:
+        # Collect all test names from both directories
+        names = set()
+        for d in [minipdf_dir, reference_dir]:
+            if os.path.isdir(d):
+                for f in Path(d).glob("*.pdf"):
+                    names.add(f.stem)
+        if office_dir and os.path.isdir(office_dir):
+            for f in Path(office_dir).glob("*.pdf"):
                 names.add(f.stem)
-    if office_dir and os.path.isdir(office_dir):
-        for f in Path(office_dir).glob("*.pdf"):
-            names.add(f.stem)
 
-    # Apply filter
-    if args.filter:
-        names = {n for n in names if args.filter.lower() in n.lower()}
+        # Apply filter
+        if args.filter:
+            names = {n for n in names if args.filter.lower() in n.lower()}
+        cases = [{"name": name} for name in sorted(names, key=natural_sort_key)]
 
-    if not names:
+    if not cases:
         print("No PDF files found in either directory.")
         print("Run the following first:")
         print("  1. python generate_classic_xlsx.py       (generate test Excel files)")
@@ -1039,7 +1300,7 @@ def main():
         print("  3. python generate_reference_pdfs.py      (generate reference PDFs)")
         sys.exit(1)
 
-    filtered_mode = bool(args.filter)
+    filtered_mode = bool(args.filter) and not args.manifest
     existing_results_by_name = {}
     if filtered_mode and os.path.isfile(json_path):
         try:
@@ -1054,7 +1315,8 @@ def main():
             print(f"WARNING: Failed to load existing report for merge: {e}")
 
     results = []
-    for name in sorted(names, key=natural_sort_key):
+    for case in sorted(cases, key=lambda c: natural_sort_key(c["name"])):
+        name = case["name"]
         mp = os.path.join(minipdf_dir, f"{name}.pdf")
         rp = os.path.join(reference_dir, f"{name}.pdf")
         op = os.path.join(office_dir, f"{name}.pdf") if office_dir else None
@@ -1065,6 +1327,11 @@ def main():
             ai_max_pages=args.ai_max_pages,
             ai_threshold=args.ai_threshold,
             office_path=op,
+            case_metadata=case,
+            report_scope=args.report_scope if args.manifest else None,
+            composite_images=args.composite_images,
+            composite_output_dir=composite_dir,
+            labels=labels,
         )
         score = result.get("overall_score", "N/A")
         print(f"score={score}")

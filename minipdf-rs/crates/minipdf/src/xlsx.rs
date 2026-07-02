@@ -61,7 +61,9 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
     Ok(sheets)
 }
 
-fn read_shared_strings<R: std::io::Read + std::io::Seek>(archive: &mut ZipArchive<R>) -> Result<Vec<String>> {
+fn read_shared_strings<R: std::io::Read + std::io::Seek>(
+    archive: &mut ZipArchive<R>,
+) -> Result<Vec<String>> {
     let Some(shared_xml) = read_zip_text(archive, "xl/sharedStrings.xml")? else {
         return Ok(Vec::new());
     };
@@ -79,7 +81,9 @@ fn read_shared_strings<R: std::io::Read + std::io::Seek>(archive: &mut ZipArchiv
     Ok(strings)
 }
 
-fn read_sheet_paths<R: std::io::Read + std::io::Seek>(archive: &mut ZipArchive<R>) -> Result<Vec<(String, String)>> {
+fn read_sheet_paths<R: std::io::Read + std::io::Seek>(
+    archive: &mut ZipArchive<R>,
+) -> Result<Vec<(String, String)>> {
     let rels = read_workbook_relationships(archive)?;
     let Some(workbook_xml) = read_zip_text(archive, "xl/workbook.xml")? else {
         return Ok(Vec::new());
@@ -106,13 +110,18 @@ fn read_sheet_paths<R: std::io::Read + std::io::Seek>(archive: &mut ZipArchive<R
     Ok(result)
 }
 
-fn read_workbook_relationships<R: std::io::Read + std::io::Seek>(archive: &mut ZipArchive<R>) -> Result<HashMap<String, String>> {
+fn read_workbook_relationships<R: std::io::Read + std::io::Seek>(
+    archive: &mut ZipArchive<R>,
+) -> Result<HashMap<String, String>> {
     let Some(rels_xml) = read_zip_text(archive, "xl/_rels/workbook.xml.rels")? else {
         return Ok(HashMap::new());
     };
     let rels_doc = roxmltree::Document::parse(&rels_xml)?;
     let mut rels = HashMap::new();
-    for rel in rels_doc.descendants().filter(|node| node.has_tag_name("Relationship")) {
+    for rel in rels_doc
+        .descendants()
+        .filter(|node| node.has_tag_name("Relationship"))
+    {
         let Some(id) = rel.attribute("Id") else {
             continue;
         };
@@ -142,12 +151,20 @@ fn read_sheet_rows(sheet_xml: &str, shared_strings: &[String]) -> Result<Vec<Vec
     for row in xml.descendants().filter(|node| node.has_tag_name("row")) {
         let mut cells: Vec<(usize, String)> = Vec::new();
         for cell in row.children().filter(|node| node.has_tag_name("c")) {
-            let col = cell.attribute("r").and_then(column_index_from_ref).unwrap_or(cells.len());
+            let col = cell
+                .attribute("r")
+                .and_then(column_index_from_ref)
+                .unwrap_or(cells.len());
             let value = read_cell_value(cell, shared_strings);
             cells.push((col, value));
         }
 
-        let width = cells.iter().map(|(col, _)| *col).max().map(|col| col + 1).unwrap_or(0);
+        let width = cells
+            .iter()
+            .map(|(col, _)| *col)
+            .max()
+            .map(|col| col + 1)
+            .unwrap_or(0);
         let mut row_values = vec![String::new(); width];
         for (col, value) in cells {
             if let Some(slot) = row_values.get_mut(col) {
@@ -212,7 +229,14 @@ fn render_sheet(doc: &mut PdfDocument, sheet: &SheetData) {
     let max_cols = ((PAGE_WIDTH - MARGIN * 2.0) / COL_WIDTH).floor() as usize;
 
     let page = doc.page_mut(page_index).expect("page index is valid");
-    page.add_text(&sheet.name, MARGIN, y, TITLE_FONT_SIZE, PdfColor::BLACK, true);
+    page.add_text(
+        &sheet.name,
+        MARGIN,
+        y,
+        TITLE_FONT_SIZE,
+        PdfColor::BLACK,
+        true,
+    );
     y -= ROW_HEIGHT * 1.4;
 
     for (row_index, row) in sheet.rows.iter().enumerate() {
@@ -225,19 +249,58 @@ fn render_sheet(doc: &mut PdfDocument, sheet: &SheetData) {
         let page = doc.page_mut(page_index).expect("page index is valid");
 
         let is_header = row_index == 0;
-        for col_index in 0..row.len().min(max_cols) {
+        for (col_index, cell_value) in row.iter().enumerate().take(max_cols) {
             let x = MARGIN + col_index as f32 * COL_WIDTH;
-            let fill = if is_header { PdfColor::TABLE_HEADER } else { PdfColor::WHITE };
+            let fill = if is_header {
+                PdfColor::TABLE_HEADER
+            } else {
+                PdfColor::WHITE
+            };
             page.add_rect(x, y - 4.0, COL_WIDTH, ROW_HEIGHT, fill);
-            page.add_line(x, y - 4.0, x + COL_WIDTH, y - 4.0, PdfColor::LIGHT_GRAY, 0.5);
-            page.add_line(x, y - 4.0, x, y - 4.0 + ROW_HEIGHT, PdfColor::LIGHT_GRAY, 0.5);
+            page.add_line(
+                x,
+                y - 4.0,
+                x + COL_WIDTH,
+                y - 4.0,
+                PdfColor::LIGHT_GRAY,
+                0.5,
+            );
+            page.add_line(
+                x,
+                y - 4.0,
+                x,
+                y - 4.0 + ROW_HEIGHT,
+                PdfColor::LIGHT_GRAY,
+                0.5,
+            );
 
-            let text = truncate_to_width(&row[col_index], COL_WIDTH - 6.0, CELL_FONT_SIZE);
-            page.add_text(text, x + 3.0, y + 1.0, CELL_FONT_SIZE, PdfColor::BLACK, is_header);
+            let text = truncate_to_width(cell_value, COL_WIDTH - 6.0, CELL_FONT_SIZE);
+            page.add_text(
+                text,
+                x + 3.0,
+                y + 1.0,
+                CELL_FONT_SIZE,
+                PdfColor::BLACK,
+                is_header,
+            );
         }
         let right = MARGIN + row.len().min(max_cols) as f32 * COL_WIDTH;
-        page.add_line(MARGIN, y - 4.0 + ROW_HEIGHT, right, y - 4.0 + ROW_HEIGHT, PdfColor::LIGHT_GRAY, 0.5);
-        page.add_line(right, y - 4.0, right, y - 4.0 + ROW_HEIGHT, PdfColor::LIGHT_GRAY, 0.5);
+        page.add_line(
+            MARGIN,
+            y - 4.0 + ROW_HEIGHT,
+            right,
+            y - 4.0 + ROW_HEIGHT,
+            PdfColor::LIGHT_GRAY,
+            0.5,
+        );
+        page.add_line(
+            right,
+            y - 4.0,
+            right,
+            y - 4.0 + ROW_HEIGHT,
+            PdfColor::LIGHT_GRAY,
+            0.5,
+        );
         y -= ROW_HEIGHT;
     }
 }

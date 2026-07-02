@@ -31,6 +31,22 @@ OFFICE_PDF_DIR = SCRIPT_DIR / "office_pdfs_docx"
 REPORT_DIR = SCRIPT_DIR / "reports_docx"
 
 
+def configure_paths(args):
+    """Override default benchmark paths without changing existing defaults."""
+    global DOCX_DIR, MINIPDF_PDF_DIR, REFERENCE_PDF_DIR, OFFICE_PDF_DIR, REPORT_DIR
+
+    if args.source_dir:
+        DOCX_DIR = Path(args.source_dir).resolve()
+    if args.minipdf_dir:
+        MINIPDF_PDF_DIR = Path(args.minipdf_dir).resolve()
+    if args.reference_dir:
+        REFERENCE_PDF_DIR = Path(args.reference_dir).resolve()
+    if args.office_dir:
+        OFFICE_PDF_DIR = Path(args.office_dir).resolve()
+    if args.report_dir:
+        REPORT_DIR = Path(args.report_dir).resolve()
+
+
 def banner(msg: str):
     print(f"\n{'='*60}")
     print(f"  {msg}")
@@ -95,7 +111,10 @@ def step_generate_office_pdfs(filter_pattern: str = None):
 
 
 def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 0.90,
-                 use_office: bool = False, filter_pattern: str = None):
+                 use_office: bool = False, filter_pattern: str = None, manifest: str = None,
+                 report_scope: str = "shared", composite_images: bool = False,
+                 candidate_label: str = "MiniPdf", reference_label: str = "Reference",
+                 office_label: str = "Office"):
     """Step 4: Compare MiniPdf PDFs against reference PDFs."""
     banner("Step 4: Compare MiniPdf vs Reference")
     cmd = [
@@ -110,6 +129,15 @@ def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: 
         cmd += ["--ai-compare", "--ai-max-pages", str(ai_max_pages), "--ai-threshold", str(ai_threshold)]
     if filter_pattern:
         cmd += ["--filter", filter_pattern]
+    if manifest:
+        cmd += ["--manifest", str(Path(manifest).resolve()), "--report-scope", report_scope]
+    if composite_images:
+        cmd += [
+            "--composite-images",
+            "--candidate-label", candidate_label,
+            "--reference-label", reference_label,
+            "--office-label", office_label,
+        ]
     return run(cmd, cwd=str(SCRIPT_DIR))
 
 
@@ -171,7 +199,31 @@ def main():
                         help="Max pages per PDF to send to AI (default: 1)")
     parser.add_argument("--ai-threshold", type=float, default=0.97, metavar="T",
                         help="Skip AI call when pixel score >= threshold (default: 0.97)")
+    parser.add_argument("--source-dir", default=None, metavar="DIR",
+                        help="Shared DOCX source directory (default: tests/MiniPdf.Scripts/output_docx)")
+    parser.add_argument("--minipdf-dir", default=None, metavar="DIR",
+                        help="MiniPdf PDF output directory override")
+    parser.add_argument("--reference-dir", default=None, metavar="DIR",
+                        help="Reference PDF output directory override")
+    parser.add_argument("--office-dir", default=None, metavar="DIR",
+                        help="Office PDF output directory override")
+    parser.add_argument("--report-dir", default=None, metavar="DIR",
+                        help="Report output directory override")
+    parser.add_argument("--manifest", default=None, metavar="JSON",
+                        help="Benchmark manifest forwarded to compare_pdfs.py")
+    parser.add_argument("--report-scope", default="shared", metavar="NAME",
+                        help="Report scope metadata forwarded to compare_pdfs.py")
+    parser.add_argument("--composite-images", action="store_true",
+                        help="Generate labeled side-by-side comparison images")
+    parser.add_argument("--candidate-label", default="MiniPdf",
+                        help="Candidate renderer label for composite images")
+    parser.add_argument("--reference-label", default=None,
+                        help="Reference renderer label for composite images")
+    parser.add_argument("--office-label", default="Office",
+                        help="Office renderer label for composite images")
     args = parser.parse_args()
+
+    configure_paths(args)
 
     banner("MiniPdf DOCX Benchmark Pipeline")
     print(f"  DOCX dir:       {DOCX_DIR.resolve()}")
@@ -182,8 +234,17 @@ def main():
         print(f"  Office PDFs:    {OFFICE_PDF_DIR.resolve()}")
     print(f"  Reports:        {REPORT_DIR.resolve()}")
 
+    reference_label = args.reference_label or ("Office Reference" if args.engine == "office" else "LibreOffice Reference")
     ai_kwargs = dict(ai_compare=args.ai_compare, ai_max_pages=args.ai_max_pages, ai_threshold=args.ai_threshold)
     compare_kwargs = dict(**ai_kwargs, use_office=args.with_office)
+    compare_kwargs.update(
+        manifest=args.manifest,
+        report_scope=args.report_scope,
+        composite_images=args.composite_images,
+        candidate_label=args.candidate_label,
+        reference_label=reference_label,
+        office_label=args.office_label,
+    )
     filt = args.filter
 
     if args.compare_only:
