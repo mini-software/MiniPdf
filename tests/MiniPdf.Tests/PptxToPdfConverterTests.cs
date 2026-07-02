@@ -27,6 +27,70 @@ public class PptxToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_TextRunsWithPreservedWhitespaceAndTabs_RendersSpacing()
+    {
+        using var pptxStream = CreatePptx(
+            new PptxSlideSpec(
+                new[]
+                {
+                    PptxShapeSpec.TextBoxWithBodyXml(
+                        """
+                              <p:txBody>
+                                <a:bodyPr/>
+                                <a:lstStyle/>
+                                <a:p>
+                                  <a:r><a:rPr sz="1800"/><a:t xml:space="preserve">GPU  Guide</a:t></a:r>
+                                  <a:tab/>
+                                  <a:r><a:rPr sz="1800"/><a:t>Ready</a:t></a:r>
+                                </a:p>
+                              </p:txBody>
+                        """,
+                        914400,
+                        914400,
+                        5000000,
+                        900000),
+                }));
+
+        var doc = PptxToPdfConverter.Convert(pptxStream);
+        var renderedText = string.Concat(doc.Pages[0].TextBlocks.Select(block => block.Text));
+
+        Assert.Contains("GPU  Guide", renderedText, StringComparison.Ordinal);
+        Assert.Contains("\tReady", renderedText, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Convert_CjkTextRunWithEastAsianFont_UsesEastAsianTypeface()
+    {
+        using var pptxStream = CreatePptx(
+            new PptxSlideSpec(
+                new[]
+                {
+                    PptxShapeSpec.TextBoxWithBodyXml(
+                        """
+                              <p:txBody>
+                                <a:bodyPr/>
+                                <a:lstStyle/>
+                                <a:p>
+                                  <a:r>
+                                    <a:rPr sz="1800"><a:latin typeface="Calibri"/><a:ea typeface="MS PGothic"/></a:rPr>
+                                    <a:t>接続</a:t>
+                                  </a:r>
+                                </a:p>
+                              </p:txBody>
+                        """,
+                        914400,
+                        914400,
+                        3000000,
+                        900000),
+                }));
+
+        var doc = PptxToPdfConverter.Convert(pptxStream);
+        var text = Assert.Single(doc.Pages[0].TextBlocks, block => block.Text == "接続");
+
+        Assert.Equal("MS PGothic", text.PreferredFontName);
+    }
+
+    [Fact]
     public void Convert_TwoSlides_PreservesPresentationOrder()
     {
         using var pptxStream = CreatePptx(
@@ -720,7 +784,8 @@ public class PptxToPdfConverterTests
         var outline = shape.OutlineColor == null
             ? "<a:ln><a:noFill/></a:ln>"
             : $"<a:ln w=\"12700\"><a:solidFill><a:srgbClr val=\"{shape.OutlineColor}\"/></a:solidFill></a:ln>";
-        var textBody = shape.Text == null
+        var textBody = shape.TextBodyXml
+            ?? (shape.Text == null
             ? string.Empty
             : $$"""
                       <p:txBody>
@@ -728,7 +793,7 @@ public class PptxToPdfConverterTests
                         <a:lstStyle/>
                         <a:p><a:r><a:rPr sz="{{shape.FontSize}}"><a:solidFill><a:srgbClr val="{{shape.Color}}"/></a:solidFill></a:rPr><a:t>{{EscapeXml(shape.Text)}}</a:t></a:r></a:p>
                       </p:txBody>
-                """;
+            """);
 
         return $$"""
                 <p:sp>
@@ -821,10 +886,14 @@ public class PptxToPdfConverterTests
         string? FillColor = null,
         string? OutlineColor = null,
         string? PictureRelationshipId = null,
-        string? FillXml = null)
+        string? FillXml = null,
+        string? TextBodyXml = null)
     {
         public static PptxShapeSpec TextBox(string text, long x, long y, long width, long height, int fontSize = 1800, string color = "000000")
             => new("rect", x, y, width, height, text, fontSize, color);
+
+        public static PptxShapeSpec TextBoxWithBodyXml(string textBodyXml, long x, long y, long width, long height)
+            => new("rect", x, y, width, height, TextBodyXml: textBodyXml);
 
         public static PptxShapeSpec Shape(string shapeType, long x, long y, long width, long height, string? fillColor = null, string? outlineColor = null)
             => new(shapeType, x, y, width, height, FillColor: fillColor, OutlineColor: outlineColor);

@@ -766,6 +766,11 @@ internal static class PptxReader
                 {
                     runs.Add(ReadTextRun("\n", child.Element(A + "rPr"), defaultRunProperties, themeColors));
                 }
+                else if (child.Name == A + "tab")
+                {
+                    runs.Add(ReadTextRun("\t", child.Element(A + "rPr"), defaultRunProperties, themeColors));
+                    hasText = true;
+                }
             }
 
             paragraphs.Add(new PptxTextParagraph(runs, isBullet, alignment, marginLeft, indent, spaceBefore, lineSpacing));
@@ -939,22 +944,60 @@ internal static class PptxReader
             && !underlineValue!.Equals("none", StringComparison.OrdinalIgnoreCase);
         if (!underline && runProperties?.Element(A + "hlinkClick") != null)
             underline = true;
-        var fontName = ReadFontName(runProperties) ?? ReadFontName(defaultRunProperties);
+        var fontName = ReadFontName(text, runProperties) ?? ReadFontName(text, defaultRunProperties);
 
         return new PptxTextRun(text, fontSize, color, bold, italic, underline, fontName);
     }
 
-    private static string? ReadFontName(XElement? runProperties)
+    private static string? ReadFontName(string text, XElement? runProperties)
     {
-        var latin = runProperties?.Element(A + "latin")?.Attribute("typeface")?.Value;
-        if (!string.IsNullOrWhiteSpace(latin) && !latin!.StartsWith("+", StringComparison.Ordinal))
-            return latin;
+        var latin = ReadTypeface(runProperties?.Element(A + "latin"));
+        var eastAsian = ReadTypeface(runProperties?.Element(A + "ea"));
+        var complexScript = ReadTypeface(runProperties?.Element(A + "cs"));
 
-        var eastAsian = runProperties?.Element(A + "ea")?.Attribute("typeface")?.Value;
-        if (!string.IsNullOrWhiteSpace(eastAsian) && !eastAsian!.StartsWith("+", StringComparison.Ordinal))
+        if (ContainsEastAsianText(text) && eastAsian != null)
             return eastAsian;
+        if (ContainsComplexScriptText(text) && complexScript != null)
+            return complexScript;
 
-        return null;
+        return latin ?? eastAsian ?? complexScript;
+    }
+
+    private static string? ReadTypeface(XElement? fontElement)
+    {
+        var typeface = fontElement?.Attribute("typeface")?.Value;
+        return !string.IsNullOrWhiteSpace(typeface) && !typeface!.StartsWith("+", StringComparison.Ordinal)
+            ? typeface
+            : null;
+    }
+
+    private static bool ContainsEastAsianText(string text)
+    {
+        foreach (var character in text)
+        {
+            if (character is >= '\u3000' and <= '\u30FF'
+                or >= '\u3400' and <= '\u4DBF'
+                or >= '\u4E00' and <= '\u9FFF'
+                or >= '\uAC00' and <= '\uD7AF'
+                or >= '\uF900' and <= '\uFAFF'
+                or >= '\uFF00' and <= '\uFFEF')
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool ContainsComplexScriptText(string text)
+    {
+        foreach (var character in text)
+        {
+            if (character is >= '\u0590' and <= '\u08FF'
+                or >= '\u0900' and <= '\u0D7F'
+                or >= '\u0E00' and <= '\u0EFF')
+                return true;
+        }
+
+        return false;
     }
 
     private static float? ReadFontSize(string? value)
