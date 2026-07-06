@@ -226,6 +226,16 @@ public class DocxToPdfConverterTests
         AssertXrefOffsetsAreCorrect(bytes);
     }
 
+    [Fact]
+    public void Convert_DocxWithRootRelativeImageRelationship_RendersImage()
+    {
+        using var docxStream = CreateDocxWithPngImage("/media/image1.png", "media/image1.png");
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+
+        Assert.Contains(doc.Pages, page => page.ImageBlocks.Count > 0);
+    }
+
     private static void AssertXrefOffsetsAreCorrect(byte[] pdfBytes)
     {
         var text = Encoding.GetEncoding("iso-8859-1").GetString(pdfBytes);
@@ -262,7 +272,9 @@ public class DocxToPdfConverterTests
         }
     }
 
-    private static MemoryStream CreateDocxWithPngImage()
+    private static MemoryStream CreateDocxWithPngImage(
+        string imageRelationshipTarget = "media/image1.png",
+        string imageEntryPath = "word/media/image1.png")
     {
         var ms = new MemoryStream();
 
@@ -291,10 +303,10 @@ public class DocxToPdfConverterTests
                 """);
 
             AddEntry(archive, "word/_rels/document.xml.rels",
-                """
+                $$"""
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-                  <Relationship Id="rId10" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image1.png"/>
+                  <Relationship Id="rId10" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="{{EscapeXml(imageRelationshipTarget)}}"/>
                 </Relationships>
                 """);
 
@@ -349,7 +361,7 @@ public class DocxToPdfConverterTests
                 """);
 
             // Add the PNG image as binary entry
-            var imgEntry = archive.CreateEntry("word/media/image1.png");
+            var imgEntry = archive.CreateEntry(imageEntryPath);
             using (var imgStream = imgEntry.Open())
                 imgStream.Write(pngBytes, 0, pngBytes.Length);
         }

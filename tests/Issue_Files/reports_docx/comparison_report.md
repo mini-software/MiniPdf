@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-06-27T15:14:25.460789
+Generated: 2026-07-06T22:17:54.898184
 
 ## Summary
 
@@ -30,8 +30,9 @@ Generated: 2026-06-27T15:14:25.460789
 | 22 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 | 23 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
 | 24 | 🟢 TestIssue78 | ✅ | 0.9961 | 0.9723 | 1/1 | **0.9874** |
+| 25 | 🟢 Issue83_Output | ✅ | 1.0 | 0.98 | 1/1 | **0.992** |
 
-**Average Overall Score: 0.8303**
+**Average Overall Score: 0.8368**
 
 ## Visual Comparison
 
@@ -573,6 +574,14 @@ Generated: 2026-06-27T15:14:25.460789
 <tr>
   <td><img src="images/TestIssue78_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/TestIssue78_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Issue83_Output</b></td>
+  <td colspan="1">Issue83_Output <span style="color:#3fb950">⬤</span> 99.2%</td>
+</tr>
+<tr>
+  <td><img src="images/Issue83_Output_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Issue83_Output_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -2629,6 +2638,16 @@ Text content: ✅ Identical
  格证、维保合同等现场实际情况信息进行填写，保证其信息的准确性；
 ```
 </details>
+
+### Issue83_Output
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.98
+- **Overall Score:** 0.992
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=3473 bytes, Reference=14968 bytes
+
+Text content: ✅ Identical
 
 ## Improvement Suggestions
 

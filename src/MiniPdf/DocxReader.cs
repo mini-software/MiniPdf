@@ -2121,7 +2121,7 @@ internal static class DocxReader
             return null;
 
         // Read image data from archive
-        var imagePath = "word/" + target;
+        var imagePath = ResolveWordRelationshipTarget(target);
         var imageEntry = archive.GetEntry(imagePath);
         if (imageEntry == null) return null;
 
@@ -2207,6 +2207,22 @@ internal static class DocxReader
         }
 
         return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu, isBehindDoc, relFromH, relFromV, isWrapTopBottom, alpha);
+    }
+
+    private static string ResolveWordRelationshipTarget(string target)
+    {
+        return target.StartsWith("/", StringComparison.Ordinal)
+            ? target.TrimStart('/')
+            : "word/" + target;
+    }
+
+    private static string GetRelationshipsPath(string partPath)
+    {
+        var slashIndex = partPath.LastIndexOf('/');
+        if (slashIndex < 0)
+            return "_rels/" + partPath + ".rels";
+
+        return partPath.Substring(0, slashIndex) + "/_rels/" + partPath.Substring(slashIndex + 1) + ".rels";
     }
 
     private static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu,
@@ -3509,7 +3525,7 @@ internal static class DocxReader
         if (string.IsNullOrEmpty(rId) || !relationships.TryGetValue(rId, out var target))
             return [];
 
-        var path = target.StartsWith("/") ? target.TrimStart('/') : "word/" + target;
+        var path = ResolveWordRelationshipTarget(target);
         var entry = archive.GetEntry(path);
         if (entry == null) return [];
 
@@ -3549,7 +3565,7 @@ internal static class DocxReader
         if (entry == null) return [];
 
         // Read header/footer-specific relationships
-        var hfRelsPath = $"word/_rels/{target}.rels";
+        var hfRelsPath = GetRelationshipsPath(path);
         var hfRels = ReadPartRelationships(archive, hfRelsPath);
 
         using var stream = entry.Open();
@@ -3565,7 +3581,7 @@ internal static class DocxReader
             if (string.IsNullOrEmpty(embedId) || !hfRels.TryGetValue(embedId, out var imgTarget))
                 continue;
 
-            var imgPath = "word/" + imgTarget;
+            var imgPath = ResolveWordRelationshipTarget(imgTarget);
             var imgEntry = archive.GetEntry(imgPath);
             if (imgEntry == null) continue;
 
@@ -3667,12 +3683,12 @@ internal static class DocxReader
         if (string.IsNullOrEmpty(rId) || !relationships.TryGetValue(rId, out var target))
             return [];
 
-        var path = target.StartsWith("/") ? target.TrimStart('/') : "word/" + target;
+        var path = ResolveWordRelationshipTarget(target);
         var entry = archive.GetEntry(path);
         if (entry == null) return [];
 
         // Read header/footer-specific relationships for image resolution
-        var hfRelsPath = $"word/_rels/{target}.rels";
+        var hfRelsPath = GetRelationshipsPath(path);
         var hfRels = ReadPartRelationships(archive, hfRelsPath);
 
         using var stream = entry.Open();
