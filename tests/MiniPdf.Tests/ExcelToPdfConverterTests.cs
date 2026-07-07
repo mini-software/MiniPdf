@@ -131,6 +131,32 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_WithRenderLimits_RendersOnlyLeadingRowsAndColumns()
+    {
+        using var excelStream = CreateSimpleExcel(new[]
+        {
+            new[] { "H1", "H2", "H3" },
+            new[] { "R1C1", "R1C2", "R1C3" },
+            new[] { "R2C1", "R2C2", "R2C3" },
+        });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            MaxRows = 2,
+            MaxColumns = 2,
+        });
+        var renderedText = string.Join("\n", doc.Pages.SelectMany(page => page.TextBlocks).Select(block => block.Text));
+
+        Assert.Contains("H1", renderedText);
+        Assert.Contains("H2", renderedText);
+        Assert.Contains("R1C1", renderedText);
+        Assert.Contains("R1C2", renderedText);
+        Assert.DoesNotContain("H3", renderedText);
+        Assert.DoesNotContain("R1C3", renderedText);
+        Assert.DoesNotContain("R2C1", renderedText);
+    }
+
+    [Fact]
     public void Convert_EmptyExcel_CreatesAtLeastOnePage()
     {
         using var excelStream = CreateSimpleExcel(Array.Empty<string[]>());

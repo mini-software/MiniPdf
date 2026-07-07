@@ -1,38 +1,38 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-06T22:17:54.898184
+Generated: 2026-07-07T23:42:21.764336
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9679 | 2/2 | **0.9872** |
-| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9759 | 2/2 | **0.9904** |
-| 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9612 | 2/2 | **0.9821** |
-| 4 | 🟢 20260318_issue | ✅ | 0.9685 | 0.8651 | 7/7 | **0.9334** |
-| 5 | 🟢 CCU_article | ✅ | 0.8754 | 0.9467 | 21/21 | **0.9288** |
+| 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9675 | 2/2 | **0.987** |
+| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9747 | 2/2 | **0.9899** |
+| 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9824 | 2/2 | **0.9906** |
+| 4 | 🟡 20260318_issue | ✅ | 0.6304 | 0.8704 | 7/7 | **0.8003** |
+| 5 | 🟢 CCU_article | ✅ | 0.8763 | 0.9467 | 21/21 | **0.9292** |
 | 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
 | 7 | 🟢 Class News | ✅ | 0.9665 | 0.8876 | 4/4 | **0.9416** |
 | 8 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
-| 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9791 | 0.9696 | 2/2 | **0.9795** |
+| 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9791 | 0.969 | 2/2 | **0.9792** |
 | 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9846 | 7/7 | **0.9859** |
 | 11 | 🟢 Fabrikam | ✅ | 1.0 | 0.9426 | 1/1 | **0.977** |
 | 12 | 🟢 Invoice | ✅ | 1.0 | 0.9591 | 1/1 | **0.9836** |
-| 13 | 🟢 issue202605 | ✅ | 0.8674 | 0.9128 | 2/2 | **0.9121** |
-| 14 | 🟢 issue26050501 | ✅ | 0.9188 | 0.94 | 2/2 | **0.9435** |
-| 15 | 🟢 issues66 | ✅ | 0.9548 | 0.9232 | 3/3 | **0.9512** |
-| 16 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8365 | 2/2 | **0.8773** |
-| 17 | 🟡 nthu_article | ✅ | 0.8599 | 0.869 | 19/20 | **0.7916** |
-| 18 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8445 | 1/1 | **0.9358** |
-| 19 | 🟢 SA8000 ch sample | ✅ | 0.9921 | 0.9642 | 2/2 | **0.9825** |
-| 20 | 🟢 Support_Letter | ✅ | 1.0 | 0.946 | 1/1 | **0.9784** |
-| 21 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.984 | 17/17 | **0.9936** |
-| 22 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
-| 23 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
-| 24 | 🟢 TestIssue78 | ✅ | 0.9961 | 0.9723 | 1/1 | **0.9874** |
-| 25 | 🟢 Issue83_Output | ✅ | 1.0 | 0.98 | 1/1 | **0.992** |
+| 13 | 🟢 Issue83_Output | ✅ | 1.0 | 0.98 | 1/1 | **0.992** |
+| 14 | 🟢 issue202605 | ✅ | 0.8674 | 0.9128 | 2/2 | **0.9121** |
+| 15 | 🟢 issue26050501 | ✅ | 0.94 | 0.9394 | 2/2 | **0.9518** |
+| 16 | 🟢 issues66 | ✅ | 0.9548 | 0.9232 | 3/3 | **0.9512** |
+| 17 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8365 | 2/2 | **0.8773** |
+| 18 | 🟡 nthu_article | ✅ | 0.8587 | 0.8695 | 19/20 | **0.7913** |
+| 19 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8445 | 1/1 | **0.9358** |
+| 20 | 🟢 SA8000 ch sample | ✅ | 0.9921 | 0.9642 | 2/2 | **0.9825** |
+| 21 | 🟢 Support_Letter | ✅ | 1.0 | 0.9392 | 1/1 | **0.9757** |
+| 22 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9841 | 17/17 | **0.9936** |
+| 23 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
+| 24 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
+| 25 | 🟢 TestIssue78 | ✅ | 0.9961 | 0.9723 | 1/1 | **0.9874** |
 
-**Average Overall Score: 0.8368**
+**Average Overall Score: 0.8320**
 
 ## Visual Comparison
 
@@ -64,7 +64,7 @@ Generated: 2026-07-06T22:17:54.898184
 </tr>
 <tr>
   <td><b>20260317_sample_CN</b></td>
-  <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 98.2%</td>
+  <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 99.1%</td>
 </tr>
 <tr>
   <td><img src="images/20260317_sample_CN_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -76,7 +76,7 @@ Generated: 2026-07-06T22:17:54.898184
 </tr>
 <tr>
   <td><b>20260318_issue</b></td>
-  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.3%</td>
+  <td colspan="1">20260318_issue <span style="color:#d29922">⬤</span> 80.0%</td>
 </tr>
 <tr>
   <td><img src="images/20260318_issue_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -230,7 +230,7 @@ Generated: 2026-07-06T22:17:54.898184
 </tr>
 <tr>
   <td><b>Confirmatory_Affidavit</b></td>
-  <td colspan="1">Confirmatory_Affidavit <span style="color:#3fb950">⬤</span> 98.0%</td>
+  <td colspan="1">Confirmatory_Affidavit <span style="color:#3fb950">⬤</span> 97.9%</td>
 </tr>
 <tr>
   <td><img src="images/Confirmatory_Affidavit_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -289,6 +289,14 @@ Generated: 2026-07-06T22:17:54.898184
   <td><img src="images/Invoice_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
+  <td><b>Issue83_Output</b></td>
+  <td colspan="1">Issue83_Output <span style="color:#3fb950">⬤</span> 99.2%</td>
+</tr>
+<tr>
+  <td><img src="images/Issue83_Output_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Issue83_Output_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
   <td><b>issue202605</b></td>
   <td colspan="1">issue202605 <span style="color:#3fb950">⬤</span> 91.2%</td>
 </tr>
@@ -302,7 +310,7 @@ Generated: 2026-07-06T22:17:54.898184
 </tr>
 <tr>
   <td><b>issue26050501</b></td>
-  <td colspan="1">issue26050501 <span style="color:#3fb950">⬤</span> 94.3%</td>
+  <td colspan="1">issue26050501 <span style="color:#3fb950">⬤</span> 95.2%</td>
 </tr>
 <tr>
   <td><img src="images/issue26050501_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -342,7 +350,7 @@ Generated: 2026-07-06T22:17:54.898184
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.2%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.1%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -446,7 +454,7 @@ Generated: 2026-07-06T22:17:54.898184
 </tr>
 <tr>
   <td><b>Support_Letter</b></td>
-  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 97.8%</td>
+  <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
   <td><img src="images/Support_Letter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -575,14 +583,6 @@ Generated: 2026-07-06T22:17:54.898184
   <td><img src="images/TestIssue78_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/TestIssue78_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
-<tr>
-  <td><b>Issue83_Output</b></td>
-  <td colspan="1">Issue83_Output <span style="color:#3fb950">⬤</span> 99.2%</td>
-</tr>
-<tr>
-  <td><img src="images/Issue83_Output_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Issue83_Output_p1_reference.png" width="340" alt="Reference"></td>
-</tr>
 </table>
 
 ## Detailed Results
@@ -590,10 +590,10 @@ Generated: 2026-07-06T22:17:54.898184
 ### 13_IEEE_Style_Paper
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9679
-- **Overall Score:** 0.9872
+- **Visual Average:** 0.9675
+- **Overall Score:** 0.987
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1152862 bytes, Reference=174711 bytes
+- **File Size:** MiniPdf=523578 bytes, Reference=174711 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -647,20 +647,20 @@ Generated: 2026-07-06T22:17:54.898184
 ### 14_Thesis_Chapter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9759
-- **Overall Score:** 0.9904
+- **Visual Average:** 0.9747
+- **Overall Score:** 0.9899
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1005002 bytes, Reference=159781 bytes
+- **File Size:** MiniPdf=373405 bytes, Reference=159781 bytes
 
 Text content: ✅ Identical
 
 ### 20260317_sample_CN
 
 - **Text Similarity:** 0.994
-- **Visual Average:** 0.9612
-- **Overall Score:** 0.9821
+- **Visual Average:** 0.9824
+- **Overall Score:** 0.9906
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7586886 bytes, Reference=201209 bytes
+- **File Size:** MiniPdf=7288824 bytes, Reference=201209 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -709,25 +709,25 @@ Text content: ✅ Identical
 
 ### 20260318_issue
 
-- **Text Similarity:** 0.9685
-- **Visual Average:** 0.8651
-- **Overall Score:** 0.9334
+- **Text Similarity:** 0.6304
+- **Visual Average:** 0.8704
+- **Overall Score:** 0.8003
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=1531193 bytes, Reference=344088 bytes
+- **File Size:** MiniPdf=592077 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/20260318_issue.pdf
 +++ reference/20260318_issue.pdf
-@@ -1,7 +1,7 @@
+@@ -1,14 +1,14 @@
  页眉的名称 ……………………..
 
  页眉 换了一行 .
 
  Title ddddddddfjkfjlasf
 
--J jfdlj 水水水顶顶顶顶水水水水
+-Jjf dl j水水水顶顶顶顶水水水水
 
 +Jjfdlj 水水水顶顶顶顶水水水水
 
@@ -737,57 +737,90 @@ Text content: ✅ Identical
 
  页眉的名称 ……………………..
 
-@@ -34,16 +34,16 @@
+ 页眉 换了一行 .
+
+-R e v ision H istor y
+
++Revision History
+
+ Date Revision Author Description
+
+-2025-5-13 张三 Initial dra f t
+
++2025-5-13 张三 Initial draft
+
+ 页脚的公司名称
+
+ ---PAGE---
+
+ 页眉的名称 ……………………..
+
+@@ -18,69 +18,68 @@
+ The information is standard Company Confidential but due to its sensitivity it has restricted distribution and viewing
+
+ within Volvo Cars.
+
+ Document Version Control
+
+-D ate Iss u ed V ersion D escription Au thor
+
+-2025-5-13 V1 . 0 D ra f t Y an g L i
+
+-2025-08-29 V2 . 0 Chan g e Z hon g , S hen g y o u
+
++Date Issued Version Description Author
+
++2025-5-13 V1.0 Draft Yang Li
+
++2025-08-29 V2.0 Change Zhong, Shengyou
+
+ Contributors
+
+ The content of this document has been authored with the combined input of the following group of key individuals.
+
+-N a m e R ole A rea
+
++Name Role Area
+
+ Cost Accountant CAC
+
+ Source Documents
+
+-Title Au thor V ersion D ate
+
++Title Author Version Date
+
+ Document Sign-off Requirements
+
+ The following table contains the people required to sign-off and/or review this document and those that require the
+
+ document for information only.
+
+-N a m e D epart m ent R esponsi b ilit y
+
++Name Department Responsibility
+
  Document Classification
 
- Company Confidential
+-Co m pan y Con f idential
 
- Classification
+-Classi f ication
 
-+1
+-In f or m ation is G ro u p con f idential and needs to b e protected
 
-+页脚的公司名称
+-D e f inition
 
-+---PAGE---
+-W here loss o f in f or m ation con f identialit y wo u ld res u lt in si g ni f icant har m to the
 
-+页眉的名称 ……………………..
+-Conte x t
 
-+页眉 换了一行 .
+-interests o f the or g ani z ation , f inancial loss , e m b arrass m ent or loss o f in f or m ation
 
- Information is Group confidential and needs to be protected
++Company Confidential
 
- Definition
++Classification
 
- Where loss of information confidentiality would result in significant harm to the
-
- Context
-
- interests of the organization, financial loss, embarrassment or loss of information
-
--1
-
--页脚的公司名称
-
-----PAGE---
-
--页眉的名称 ……………………..
-
--页眉 换了一行 .
-
- Introduction
-
- The Process Definition Document (PDD) captures the flow of a business process to be developed.
-
- The flowchart contained within the document captures, at a high level, the business process to be automated, the
-
-@@ -72,12 +72,11 @@
- 2. Fill the title of work order.
-
- 3. Fill Asset code. Automatically display description after filling asset code.
-
- 4. Choose the Owner group.
-
--5.
+ 1
 
  页脚的公司名称
 
@@ -797,26 +830,45 @@ Text content: ✅ Identical
 
  页眉 换了一行 .
 
--Choose the Work Type.
++Information is Group confidential and needs to be protected
 
-+5. Choose the Work Type.
++Definition
 
- 页脚的公司名称
++Where loss of information confidentiality would result in significant harm to the
 
- ---PAGE---
++Context
 
- 页眉的名称 ……………………..
++interests of the organization, financial loss, embarrassment or loss of information
+
+ Introduction
+
+-The P rocess D e f inition D oc um ent (PDD) capt u res the f low o f a bu siness process to b e de v eloped.
+
+-The f lowchart contained within the doc um ent capt u res , at a hi g h le v el , the bu siness process to b e a u to m ated , the
+
+-tar g et s y ste m s u sed within the process and an y ass um ptions that ha v e b een taken into acco u nt.
+
+-O nce a g reed as the b asis f or the a u to m ation o f the tar g et process , the f lowchart and ass um ptions will b e u sed as a
+
+-plat f or m f ro m which the a u to m ated sol u tion will b e desi g ned.
+
+-Chan g es to this bu siness process m a y constit u te a re qu est f or chan g e and will b e s u bj ect to the a g reed a g ilit y pro g ra m
+
+-chan g e proced u res.
+
+-N ote : This doc um ent mu st b e co m pleted in the a b sence o f e x istin g process doc um entation that pro v ides the le v
+... (2735 more characters)
 
 ```
 </details>
 
 ### CCU_article
 
-- **Text Similarity:** 0.8754
+- **Text Similarity:** 0.8763
 - **Visual Average:** 0.9467
-- **Overall Score:** 0.9288
+- **Overall Score:** 0.9292
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6540793 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6478372 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -926,7 +978,7 @@ Text content: ✅ Identical
 
 +The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class
 
-... (12611 more characters)
+... (12636 more characters)
 
 ```
 </details>
@@ -1075,10 +1127,10 @@ Text content: ✅ Identical
 ### Confirmatory_Affidavit
 
 - **Text Similarity:** 0.9791
-- **Visual Average:** 0.9696
-- **Overall Score:** 0.9795
+- **Visual Average:** 0.969
+- **Overall Score:** 0.9792
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=795543 bytes, Reference=143292 bytes
+- **File Size:** MiniPdf=151684 bytes, Reference=143292 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1179,7 +1231,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9846
 - **Overall Score:** 0.9859
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=4370216 bytes, Reference=139728 bytes
+- **File Size:** MiniPdf=4060338 bytes, Reference=139728 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1385,6 +1437,16 @@ Text content: ✅ Identical
 ```
 </details>
 
+### Issue83_Output
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.98
+- **Overall Score:** 0.992
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=3473 bytes, Reference=14968 bytes
+
+Text content: ✅ Identical
+
 ### issue202605
 
 - **Text Similarity:** 0.8674
@@ -1535,39 +1597,29 @@ Text content: ✅ Identical
 
 ### issue26050501
 
-- **Text Similarity:** 0.9188
-- **Visual Average:** 0.94
-- **Overall Score:** 0.9435
+- **Text Similarity:** 0.94
+- **Visual Average:** 0.9394
+- **Overall Score:** 0.9518
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=236777 bytes, Reference=111155 bytes
+- **File Size:** MiniPdf=236644 bytes, Reference=111155 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/issue26050501.pdf
 +++ reference/issue26050501.pdf
-@@ -5,57 +5,50 @@
+@@ -5,50 +5,50 @@
  學習 Hadoop 的首要任務是理解它試圖解決的問題：大數據
 
  帶來的巨大挑戰。請詳細複習大數據的核心特徵，也就是著
 
  名的 3V：資料量龐大 (Volume)、生成與處理速度極快
 
--(Velocity)，以及資料結構多樣化
+-What is big (Velocity)，以及資料結構多樣化 (Variety)，包含了大量非結
 
--What is big
+-data? 構化或半結構化的資料。您必須清楚釐清，傳統的關聯式資
 
--(Variety)，包含了大量非結構化或半結構化的資料。您必須清
-
--data?
-
--楚釐清，傳統的關聯式資料庫 (RDBMS) 在面對這類海量且
-
--缺乏固定 Schema 的資料時，會遭遇嚴重的效能瓶頸與擴展
-
--限制，這正是業界急需全新分散式運算與儲存架構的根本原
-
--因。
+-料庫 (RDBMS) 在面對這類海量且缺乏固定 Schema 的資
 
 +What is big (Velocity)，以及資料結構多樣化 (Variety)，包含了大量
 
@@ -1575,33 +1627,23 @@ Text content: ✅ Identical
 
 +式資料庫 (RDBMS) 在面對這類海量且缺乏固定 Schema 的資
 
-+料時，會遭遇嚴重的效能瓶頸與擴展限制，這正是業界急需
+ 料時，會遭遇嚴重的效能瓶頸與擴展限制，這正是業界急需
 
-+全新分散式運算與儲存架構的根本原因。
+ 全新分散式運算與儲存架構的根本原因。
 
  MapReduce 是處理巨量資料的核心程式設計模型，其設計哲
 
--學深受「分而治之 (Divide and
+ 學深受「分而治之 (Divide and Conquer)」概念的影響。您
 
--Conquer)」概念的影響。您需要深刻理解兩個階段的明確分
+ 需要深刻理解兩個階段的明確分工：Map 階段負責在各個資
 
--工：Map 階段負責在各個資料節點上就近進行資料過濾、轉
+ 料節點上就近進行資料過濾、轉換與提取，並產出 Key-
 
--MapReduce 換與提取，並產出 Key-Value 對；Reduce 階段則負責將這
+-MapReduce Value 對；Reduce 階段則負責將這些中間結果進行跨節點
 
--些中間結果進行跨節點的彙總與整合。此外，請務必掌握系
+-的彙總與整合。此外，請務必掌握系統層面的運作邏輯，包
 
--統層面的運作邏輯，包括 JobTracker 如何進行全域的任務
-
--排程與資源分配，以及 TaskTracker 如何在各個節點上監控
-
--並執行具體的 Map 或 Reduce 任務。
-
-+學深受「分而治之 (Divide and Conquer)」概念的影響。您
-
-+需要深刻理解兩個階段的明確分工：Map 階段負責在各個資
-
-+料節點上就近進行資料過濾、轉換與提取，並產出 Key-
+-括 JobTracker 如何進行全域的任務排程與資源分配，以及
 
 +MapReduce Value 對；Reduce 階段則負責將這些中間結果進行跨節點的
 
@@ -1609,9 +1651,9 @@ Text content: ✅ Identical
 
 +JobTracker 如何進行全域的任務排程與資源分配，以及
 
-+TaskTracker 如何在各個節點上監控並執行具體的 Map 或
+ TaskTracker 如何在各個節點上監控並執行具體的 Map 或
 
-+Reduce 任務。
+ Reduce 任務。
 
  認識 Hadoop 這個由 Apache 基金會維護的重量級開源框
 
@@ -1625,11 +1667,11 @@ Text content: ✅ Identical
 
 -是透過軟體架構層面（如資料多重副本與任務自動重試）提
 
--供卓越的容錯機制 (Fault
+-供卓越的容錯機制 (Fault Tolerance)。這使得企業能以極低
 
--Tolerance)。這使得企業能以極低的硬體成本，獲得具備強大
+-的硬體成本，獲得具備強大橫向擴展能力的大數據處理平
 
--橫向擴展能力的大數據處理平台。
+-台。
 
 +架。請複習它的發展起源以及核心設計目標：Hadoop 專為在
 
@@ -1663,29 +1705,25 @@ Text content: ✅ Identical
 
 -once, read-many)」的串流存取設計理念。您需要熟練掌握
 
+-Hadoop HDFS 的核心架構：預設 64MB (或 128MB) 的資料區塊
+
+-Distributed (Block) 設計有何優勢？Namenode (Master 節點) 如何負責
+
+-File System 管理整個檔案系統的 Metadata (如檔案名稱、權限與區塊映
+
+-射表)？而 Datanode (Slave 節點) 又是如何負責實際儲存資
+
+-料區塊並定期發送心跳訊號 (Heartbeat)？理解這些節點間的
+
+-互動是掌握分散式儲存的關鍵。
+
 +Distributed 檔案而設計。請深入探討其「一次寫入，多次讀取 (write-
 
 +File System once, read-many)」的串流存取設計理念。您需要熟練掌握
 
- HDFS 的核心架構：預設 64MB (或 128MB) 的資料區塊
++HDFS 的核心架構：預設 64MB (或 128MB) 的資料區塊
 
--Hadoop
-
- (Block) 設計有何優勢？Namenode (Master 節點) 如何負責
-
--Distributed
-
--管理整個檔案系統的 Metadata
-
--File System
-
--(如檔案名稱、權限與區塊映射表)？而 Datanode (Slave 節
-
--點) 又是如何負責實際儲存資料區塊並定期發送心跳訊號
-
--(Heartbeat)？理解這些節點間的互動是掌握分散式儲存的關
-
--鍵。
++(Block) 設計有何優勢？Namenode (Master 節點) 如何負責
 
 +管理整個檔案系統的 Metadata (如檔案名稱、權限與區塊映
 
@@ -1972,11 +2010,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.8599
-- **Visual Average:** 0.869
-- **Overall Score:** 0.7916
+- **Text Similarity:** 0.8587
+- **Visual Average:** 0.8695
+- **Overall Score:** 0.7913
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=9016394 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=9008766 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2180,7 +2218,7 @@ Text content: ✅ Identical
 +併改用中文新式標號。
 
 +2 ，行距建議設定為 1.2 行 （ word 中選「多行」，
-... (15793 more characters)
+... (16067 more characters)
 
 ```
 </details>
@@ -2398,10 +2436,10 @@ Text content: ✅ Identical
 ### Support_Letter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.946
-- **Overall Score:** 0.9784
+- **Visual Average:** 0.9392
+- **Overall Score:** 0.9757
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1010651 bytes, Reference=147353 bytes
+- **File Size:** MiniPdf=359862 bytes, Reference=147353 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2439,10 +2477,10 @@ Text content: ✅ Identical
 ### Template for MSc Thesis
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.984
+- **Visual Average:** 0.9841
 - **Overall Score:** 0.9936
 - **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=1182796 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=865865 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2639,20 +2677,10 @@ Text content: ✅ Identical
 ```
 </details>
 
-### Issue83_Output
-
-- **Text Similarity:** 1.0
-- **Visual Average:** 0.98
-- **Overall Score:** 0.992
-- **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=3473 bytes, Reference=14968 bytes
-
-Text content: ✅ Identical
-
 ## Improvement Suggestions
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.7916)
+1. **nthu_article** (score: 0.7913)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

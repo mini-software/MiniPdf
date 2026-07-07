@@ -136,6 +136,12 @@ minipdf report.docx --fonts ./Fonts
 
 # Render selected Excel sheets by name or 1-based index
 minipdf data.xlsx --sheets Summary,2
+
+# Compress PDF content streams for large outputs
+minipdf data.xlsx --compress
+
+# Render a bounded Excel preview
+minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
 ```
 
 ### Commands
@@ -144,6 +150,8 @@ minipdf data.xlsx --sheets Summary,2
 |---------|-------------|
 | `minipdf <file>` | Convert `.xlsx` / `.docx` / `.pptx` to PDF |
 | `minipdf convert <file> -o <out>` | Convert with explicit output path |
+| `minipdf convert <file> --compress` | Compress PDF content streams |
+| `minipdf data.xlsx --max-rows <n> --max-columns <n>` | Render a bounded Excel preview |
 | `minipdf --version` | Show version |
 | `minipdf --help` | Show help |
 

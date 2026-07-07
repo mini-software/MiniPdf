@@ -31,6 +31,9 @@ internal sealed class CliApp
         string? fontDir = null;
         string[]? sheets = null;
         int[]? sheetIndexes = null;
+        bool compress = false;
+        int? maxRows = null;
+        int? maxColumns = null;
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -44,6 +47,25 @@ internal sealed class CliApp
                     break;
                 case "--sheets" when i + 1 < args.Length:
                     (sheets, sheetIndexes) = ParseSheets(args[++i]);
+                    break;
+                case "--compress":
+                    compress = true;
+                    break;
+                case "--max-rows":
+                    if (i + 1 >= args.Length || !TryParsePositiveInt(args[++i], out var parsedMaxRows))
+                    {
+                        Console.Error.WriteLine("Error: --max-rows requires a positive integer value.");
+                        return 1;
+                    }
+                    maxRows = parsedMaxRows;
+                    break;
+                case "--max-columns":
+                    if (i + 1 >= args.Length || !TryParsePositiveInt(args[++i], out var parsedMaxColumns))
+                    {
+                        Console.Error.WriteLine("Error: --max-columns requires a positive integer value.");
+                        return 1;
+                    }
+                    maxColumns = parsedMaxColumns;
                     break;
                 case "-h" or "--help":
                     ShowConvertHelp();
@@ -95,7 +117,14 @@ internal sealed class CliApp
 
         try
         {
-            MiniPdf.ConvertToPdf(inputPath, outputPath, sheets, sheetIndexes);
+            MiniPdf.ConvertToPdf(inputPath, outputPath, new MiniPdfConversionOptions
+            {
+                Sheets = sheets,
+                SheetIndexes = sheetIndexes,
+                Compress = compress,
+                MaxRows = maxRows,
+                MaxColumns = maxColumns,
+            });
             Console.WriteLine(outputPath);
             return 0;
         }
@@ -136,6 +165,9 @@ internal sealed class CliApp
             indexes.Count > 0 ? indexes.ToArray() : null);
     }
 
+    private static bool TryParsePositiveInt(string value, out int result)
+        => int.TryParse(value, out result) && result > 0;
+
     private static int ShowHelp()
     {
         Console.WriteLine("""
@@ -167,6 +199,9 @@ internal sealed class CliApp
               -o, --output     Output PDF path (default: <input>.pdf)
               --fonts <dir>    Directory of .ttf/.ttc fonts to register
               --sheets <items> Comma-separated Excel sheet names or 1-based indexes to render
+                            --compress       Compress PDF content streams with FlateDecode
+                            --max-rows <n>   Render only the first n rows from each Excel sheet or print area
+                            --max-columns <n> Render only the first n columns from each Excel sheet or print area
               -h, --help       Show this help
             """);
     }

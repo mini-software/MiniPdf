@@ -58,11 +58,26 @@ internal sealed class PdfDocument
     }
 
     /// <summary>
+    /// Saves the PDF document to a file.
+    /// </summary>
+    internal void Save(string filePath, PdfSaveOptions? options)
+    {
+        using var stream = File.Create(filePath);
+        Save(stream, options);
+    }
+
+    /// <summary>
     /// Saves the PDF document to a stream.
     /// </summary>
     public void Save(Stream stream)
+        => Save(stream, null);
+
+    /// <summary>
+    /// Saves the PDF document to a stream.
+    /// </summary>
+    internal void Save(Stream stream, PdfSaveOptions? options)
     {
-        var writer = new PdfWriter(stream);
+        var writer = new PdfWriter(stream, options);
         writer.Write(this);
     }
 
@@ -70,9 +85,20 @@ internal sealed class PdfDocument
     /// Saves the PDF document to a byte array.
     /// </summary>
     public byte[] ToArray()
+        => ToArray(null);
+
+    /// <summary>
+    /// Saves the PDF document to a byte array.
+    /// </summary>
+    internal byte[] ToArray(PdfSaveOptions? options)
     {
         using var ms = new MemoryStream();
-        Save(ms);
+        Save(ms, options);
         return ms.ToArray();
     }
+}
+
+internal sealed class PdfSaveOptions
+{
+    public bool CompressContentStreams { get; set; }
 }

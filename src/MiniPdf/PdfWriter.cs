@@ -11,12 +11,14 @@ namespace MiniSoftware;
 internal sealed class PdfWriter
 {
     private readonly Stream _stream;
+    private readonly PdfSaveOptions _options;
     private readonly List<long> _objectOffsets = [];
     private int _objectCount;
 
-    internal PdfWriter(Stream stream)
+    internal PdfWriter(Stream stream, PdfSaveOptions? options = null)
     {
         _stream = stream;
+        _options = options ?? new PdfSaveOptions();
     }
 
     /// <summary>
@@ -596,9 +598,11 @@ internal sealed class PdfWriter
 
             // Content stream
             var content = contentStreams[i];
+            var encodedContent = _options.CompressContentStreams ? CompressToZlib(content) : content;
+            var filter = _options.CompressContentStreams ? " /Filter /FlateDecode" : "";
             _objectOffsets[contentObjNums[i]] = Position;
-            WriteRaw($"{contentObjNums[i]} 0 obj\n<< /Length {content.Length} >>\nstream\n");
-            _stream.Write(content);
+            WriteRaw($"{contentObjNums[i]} 0 obj\n<< /Length {encodedContent.Length}{filter} >>\nstream\n");
+            _stream.Write(encodedContent);
             WriteRaw("\nendstream\nendobj\n");
 
             // Image XObjects

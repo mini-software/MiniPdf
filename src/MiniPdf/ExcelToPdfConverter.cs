@@ -53,6 +53,12 @@ internal static class ExcelToPdfConverter
 
         /// <summary>1-based sheet indexes to render. Null renders all visible sheets unless Sheets is specified.</summary>
         internal int[]? SheetIndexes { get; set; }
+
+        /// <summary>Maximum number of rows to render from each sheet or print area.</summary>
+        internal int? MaxRows { get; set; }
+
+        /// <summary>Maximum number of columns to render from each sheet or print area.</summary>
+        internal int? MaxColumns { get; set; }
     }
 
     /// <summary>
@@ -78,6 +84,7 @@ internal static class ExcelToPdfConverter
         options ??= new ConversionOptions();
         var sheets = ExcelReader.ReadSheets(excelStream);
         sheets = FilterSheets(sheets, options.Sheets, options.SheetIndexes);
+        sheets = ApplyRenderLimits(sheets, options.MaxRows, options.MaxColumns);
         var doc = new PdfDocument();
 
         // Track page ranges per sheet for footer rendering
@@ -159,6 +166,83 @@ internal static class ExcelToPdfConverter
         return sheets
             .Where((_, index) => selectedPositions.Contains(index))
             .ToList();
+    }
+
+    private static List<ExcelSheet> ApplyRenderLimits(List<ExcelSheet> sheets, int? maxRows, int? maxColumns)
+    {
+        if (!maxRows.HasValue && !maxColumns.HasValue)
+            return sheets;
+
+        return sheets
+            .Select(sheet => ApplyRenderLimits(sheet, maxRows, maxColumns))
+            .ToList();
+    }
+
+    private static ExcelSheet ApplyRenderLimits(ExcelSheet sheet, int? maxRows, int? maxColumns)
+    {
+        var startCol = sheet.PrintArea?.StartCol ?? 0;
+        var startRow = sheet.PrintArea?.StartRow ?? 0;
+        var endCol = sheet.PrintArea?.EndCol ?? GetLastColumnIndex(sheet);
+        var endRow = sheet.PrintArea?.EndRow ?? GetLastRowIndex(sheet);
+
+        if (maxColumns.HasValue)
+            endCol = Math.Min(endCol, startCol + maxColumns.Value - 1);
+        if (maxRows.HasValue)
+            endRow = Math.Min(endRow, startRow + maxRows.Value - 1);
+
+        var limitedPrintArea = (StartCol: startCol, StartRow: startRow, EndCol: endCol, EndRow: endRow);
+        if (sheet.PrintArea.HasValue && sheet.PrintArea.Value.Equals(limitedPrintArea))
+            return sheet;
+
+        var limitedSheet = new ExcelSheet(sheet.Name, sheet.Rows,
+            images: sheet.Images.Count > 0 ? sheet.Images : null,
+            columnWidths: sheet.ColumnWidths,
+            defaultColumnWidth: sheet.DefaultColumnWidth,
+            charts: sheet.Charts.Count > 0 ? sheet.Charts : null,
+            shapes: sheet.Shapes.Count > 0 ? sheet.Shapes : null,
+            mergedCells: sheet.MergedCells,
+            rowHeights: sheet.RowHeights,
+            defaultRowHeight: sheet.DefaultRowHeight,
+            customHeightRows: sheet.CustomHeightRows,
+            isLandscape: sheet.IsLandscape,
+            printScale: sheet.PrintScale,
+            paperSize: sheet.PaperSize,
+            printArea: limitedPrintArea,
+            marginLeftPt: sheet.MarginLeftPt,
+            marginRightPt: sheet.MarginRightPt,
+            marginTopPt: sheet.MarginTopPt,
+            marginBottomPt: sheet.MarginBottomPt,
+            fitToPage: sheet.FitToPage,
+            fitToWidth: sheet.FitToWidth,
+            fitToHeight: sheet.FitToHeight,
+            horizontalCentered: sheet.HorizontalCentered,
+            printTitleRows: sheet.PrintTitleRows,
+            rowBreaks: sheet.RowBreaks,
+            oddFooter: sheet.OddFooter,
+            footerMarginPt: sheet.FooterMarginPt,
+            maxDigitWidthPx: sheet.MaxDigitWidthPx);
+        limitedSheet.EffectivePrintScaleF = sheet.EffectivePrintScaleF;
+        return limitedSheet;
+    }
+
+    private static int GetLastColumnIndex(ExcelSheet sheet)
+    {
+        var maxColumn = sheet.Rows.Count > 0 ? sheet.Rows.Max(row => row.Count) - 1 : 0;
+        if (sheet.Images.Count > 0)
+            maxColumn = Math.Max(maxColumn, sheet.Images.Max(img => img.AnchorCol + Math.Max(1, img.SpanCols) - 1));
+        if (sheet.Charts.Count > 0)
+            maxColumn = Math.Max(maxColumn, sheet.Charts.Max(chart => chart.AnchorCol));
+        return Math.Max(0, maxColumn);
+    }
+
+    private static int GetLastRowIndex(ExcelSheet sheet)
+    {
+        var maxRow = sheet.Rows.Count > 0 ? sheet.Rows.Count - 1 : 0;
+        if (sheet.Images.Count > 0)
+            maxRow = Math.Max(maxRow, sheet.Images.Max(img => img.AnchorRow + Math.Max(1, img.SpanRows) - 1));
+        if (sheet.Charts.Count > 0)
+            maxRow = Math.Max(maxRow, sheet.Charts.Max(chart => chart.AnchorRow));
+        return Math.Max(0, maxRow);
     }
 
     /// <summary>

@@ -77,6 +77,22 @@ public class PdfDocumentTests
     }
 
     [Fact]
+    public void Save_WithCompressedContentStreams_WritesFlateContentStream()
+    {
+        var doc = new PdfDocument();
+        doc.AddPage().AddText("Hello compressed stream", 50, 700);
+
+        var bytes = doc.ToArray(new PdfSaveOptions { CompressContentStreams = true });
+        var content = System.Text.Encoding.ASCII.GetString(bytes);
+        var streamBytes = ExtractFirstStream(bytes, out var declaredLength);
+        var decoded = System.Text.Encoding.ASCII.GetString(DecompressZlib(streamBytes));
+
+        Assert.Contains("/Filter /FlateDecode", content);
+        Assert.Equal(declaredLength, streamBytes.Length);
+        Assert.Contains("Hello compressed stream", decoded);
+    }
+
+    [Fact]
     public void Save_MultiplePages_AllIncluded()
     {
         var doc = new PdfDocument();
@@ -158,5 +174,40 @@ public class PdfDocumentTests
         Assert.StartsWith("%PDF-1.4", content);
         Assert.Contains("%%EOF", content);
         Assert.Contains("/Type /Page", content);
+    }
+
+    private static byte[] ExtractFirstStream(byte[] pdfBytes, out int declaredLength)
+    {
+        var content = System.Text.Encoding.ASCII.GetString(pdfBytes);
+        var lengthMarker = "/Length ";
+        var lengthStart = content.IndexOf(lengthMarker, StringComparison.Ordinal);
+        Assert.True(lengthStart >= 0, "PDF stream length marker was not found.");
+        lengthStart += lengthMarker.Length;
+        var lengthEnd = lengthStart;
+        while (lengthEnd < content.Length && char.IsDigit(content[lengthEnd]))
+            lengthEnd++;
+        declaredLength = int.Parse(content[lengthStart..lengthEnd], System.Globalization.CultureInfo.InvariantCulture);
+
+        var streamMarker = "stream\n";
+        var streamStart = content.IndexOf(streamMarker, lengthEnd, StringComparison.Ordinal);
+        Assert.True(streamStart >= 0, "PDF stream marker was not found.");
+        streamStart += streamMarker.Length;
+
+        var endStreamMarker = "\nendstream";
+        var streamEnd = content.IndexOf(endStreamMarker, streamStart, StringComparison.Ordinal);
+        Assert.True(streamEnd >= 0, "PDF endstream marker was not found.");
+
+        var streamBytes = new byte[streamEnd - streamStart];
+        Array.Copy(pdfBytes, streamStart, streamBytes, 0, streamBytes.Length);
+        return streamBytes;
+    }
+
+    private static byte[] DecompressZlib(byte[] compressedBytes)
+    {
+        using var input = new MemoryStream(compressedBytes);
+        using var zlib = new System.IO.Compression.ZLibStream(input, System.IO.Compression.CompressionMode.Decompress);
+        using var output = new MemoryStream();
+        zlib.CopyTo(output);
+        return output.ToArray();
     }
 }
