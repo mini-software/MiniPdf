@@ -3,6 +3,10 @@
 - .NET security policy
 - System can't auto git push 
 
+## Documentation Workflow
+
+When updating README.md or documentation, sync the corresponding translated README files under `documents/` in the same change. Keep API examples, CLI examples, command tables, benchmark numbers, and report links aligned across languages.
+
 ## Issue Summary Workflow
 When user says "summary on issue #N", use `gh issue comment N --body-file -` 
 to post a summary of completed work to the GitHub issue.

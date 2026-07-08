@@ -21,6 +21,24 @@ public sealed class MiniPdfConversionOptions
 
     /// <summary>Maximum number of worksheet columns to render from each Excel sheet or print area.</summary>
     public int? MaxColumns { get; set; }
+
+    /// <summary>Override Excel worksheet orientation. True renders XLSX sheets in landscape; false renders portrait.</summary>
+    public bool? Landscape { get; set; }
+
+    /// <summary>Override Excel fit-to-page mode. When true, wide XLSX sheets are scaled to fit the page width.</summary>
+    public bool? FitToPage { get; set; }
+
+    /// <summary>Number of horizontal pages to fit each Excel sheet to. 0 means unlimited.</summary>
+    public int? FitToWidth { get; set; }
+
+    /// <summary>Number of vertical pages to fit each Excel sheet to. 0 means unlimited.</summary>
+    public int? FitToHeight { get; set; }
+
+    /// <summary>Excel print scale percentage for XLSX sheets (10-400). Values below 100 fit more content per page.</summary>
+    public int? PrintScale { get; set; }
+
+    /// <summary>Target minimum number of worksheet rows per PDF page. Applies by fitting the sheet height to a derived page count.</summary>
+    public int? RowsPerPage { get; set; }
 }
 
 /// <summary>
@@ -356,8 +374,11 @@ public static class MiniPdf
     private static void ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(MiniPdfConversionOptions options)
     {
         ThrowIfSheetsSpecifiedForNonXlsx(options.Sheets, options.SheetIndexes);
-        if (options.MaxRows.HasValue || options.MaxColumns.HasValue)
-            throw new NotSupportedException("Row and column limits are only supported for .xlsx files.");
+        if (options.MaxRows.HasValue || options.MaxColumns.HasValue ||
+            options.Landscape.HasValue || options.FitToPage.HasValue ||
+            options.FitToWidth.HasValue || options.FitToHeight.HasValue ||
+            options.PrintScale.HasValue || options.RowsPerPage.HasValue)
+            throw new NotSupportedException("Excel-specific conversion options are only supported for .xlsx files.");
     }
 
     private static void ValidateConversionOptions(MiniPdfConversionOptions options)
@@ -366,6 +387,14 @@ public static class MiniPdf
             throw new ArgumentOutOfRangeException(nameof(options.MaxRows), "MaxRows must be greater than zero.");
         if (options.MaxColumns.HasValue && options.MaxColumns.Value <= 0)
             throw new ArgumentOutOfRangeException(nameof(options.MaxColumns), "MaxColumns must be greater than zero.");
+        if (options.FitToWidth.HasValue && options.FitToWidth.Value < 0)
+            throw new ArgumentOutOfRangeException(nameof(options.FitToWidth), "FitToWidth must be zero or greater.");
+        if (options.FitToHeight.HasValue && options.FitToHeight.Value < 0)
+            throw new ArgumentOutOfRangeException(nameof(options.FitToHeight), "FitToHeight must be zero or greater.");
+        if (options.PrintScale.HasValue && (options.PrintScale.Value < 10 || options.PrintScale.Value > 400))
+            throw new ArgumentOutOfRangeException(nameof(options.PrintScale), "PrintScale must be between 10 and 400.");
+        if (options.RowsPerPage.HasValue && options.RowsPerPage.Value <= 0)
+            throw new ArgumentOutOfRangeException(nameof(options.RowsPerPage), "RowsPerPage must be greater than zero.");
     }
 
     private static ExcelToPdfConverter.ConversionOptions CreateExcelOptions(MiniPdfConversionOptions options)
@@ -375,6 +404,12 @@ public static class MiniPdf
             SheetIndexes = options.SheetIndexes,
             MaxRows = options.MaxRows,
             MaxColumns = options.MaxColumns,
+            Landscape = options.Landscape,
+            FitToPage = options.FitToPage,
+            FitToWidth = options.FitToWidth,
+            FitToHeight = options.FitToHeight,
+            PrintScale = options.PrintScale,
+            RowsPerPage = options.RowsPerPage,
         };
 
     private static PdfSaveOptions? CreatePdfSaveOptions(MiniPdfConversionOptions options)

@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-07T23:39:24.961449
+Generated: 2026-07-08T11:42:50.380491
 
 ## Summary
 
@@ -27,8 +27,9 @@ Generated: 2026-07-07T23:39:24.961449
 | 19 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8587 | 6/6 | **0.9435** |
 | 20 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8519 | 6/6 | **0.9408** |
 | 21 | 🟡 XlsxIssue82_WideTable | ✅ | 0.9537 | 0.8329 | 14/13 | **0.8146** |
+| 22 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9066 | 0.9076 | 16/16 | **0.9257** |
 
-**Average Overall Score: 0.7380**
+**Average Overall Score: 0.7465**
 
 ## Visual Comparison
 
@@ -1079,6 +1080,74 @@ Generated: 2026-07-07T23:39:24.961449
 <tr>
   <td><img src="images/XlsxIssue82_WideTable_p14_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><i>missing</i></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue81_LayoutOptions</b></td>
+  <td colspan="1">XlsxIssue81_LayoutOptions <span style="color:#3fb950">⬤</span> 92.6%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p8_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p8_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p9_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p9_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p10_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p10_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p11_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p11_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p12_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p12_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p13_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p13_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p14_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p14_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p15_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p15_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p16_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p16_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -2967,6 +3036,94 @@ Text content: ✅ Identical
 
 -ID-0029 Ibrahim Kim 2028 West Programmatic Expo
 ... (3278 more characters)
+
+```
+</details>
+
+### XlsxIssue81_LayoutOptions
+
+- **Text Similarity:** 0.9066
+- **Visual Average:** 0.9076
+- **Overall Score:** 0.9257
+- **Pages:** MiniPdf=16, Reference=16
+- **File Size:** MiniPdf=582078 bytes, Reference=455225 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue81_LayoutOptions.pdf
++++ reference/XlsxIssue81_LayoutOptions.pdf
+@@ -1,130 +1,130 @@
+ Invoice Customer Region Owner
+
+-INV-00001 Customer account with extended legal name Europe Operations owner 2
+
+-INV-00002 Customer account with extended legal name Asia Pacific Operations owner 3
+
+-INV-00003 Customer account with extended legal name Latin America Operations owner 4
+
+-INV-00004 Customer account with extended legal name North America Operations owner 5
+
+-INV-00005 Customer account with extended legal name Europe Operations owner 6
+
+-INV-00006 Customer account with extended legal name Asia Pacific Operations owner 7
+
+-INV-00007 Customer account with extended legal name Latin America Operations owner 8
+
+-INV-00008 Customer account with extended legal name North America Operations owner 9
+
+-INV-00009 Customer account with extended legal name Europe Operations owner 1
+
+-INV-00010 Customer account with extended legal name Asia Pacific Operations owner 2
+
+-INV-00011 Customer account with extended legal name Latin America Operations owner 3
+
+-INV-00012 Customer account with extended legal name North America Operations owner 4
+
+-INV-00013 Customer account with extended legal name Europe Operations owner 5
+
+-INV-00014 Customer account with extended legal name Asia Pacific Operations owner 6
+
+-INV-00015 Customer account with extended legal name Latin America Operations owner 7
+
+-INV-00016 Customer account with extended legal name North America Operations owner 8
+
+-INV-00017 Customer account with extended legal name Europe Operations owner 9
+
+-INV-00018 Customer account with extended legal name Asia Pacific Operations owner 1
+
+-INV-00019 Customer account with extended legal name Latin America Operations owner 2
+
+-INV-00020 Customer account with extended legal name North America Operations owner 3
+
+-INV-00021 Customer account with extended legal name Europe Operations owner 4
+
+-INV-00022 Customer account with extended legal name Asia Pacific Operations owner 5
+
+-INV-00023 Customer account with extended legal name Latin America Operations owner 6
+
+-INV-00024 Customer account with extended legal name North America Operations owner 7
+
+-INV-00025 Customer account with extended legal name Europe Operations owner 8
+
+-INV-00026 Customer account with extended legal name Asia Pacific Operations owner 9
+
+-INV-00027 Customer account with extended legal name Latin America Operations owner 1
+
+-INV-00028 Customer account with extended legal name North America Operations owner 2
+
+-INV-00029 Customer account with extended legal name Europe Operations owner 3
+
+-INV-00030 Customer account with extended legal name Asia Pacific Operations owner 4
+
+-INV-00031 Customer account with extended legal name Latin America Operations owner 5
+
+-INV-00032 Customer account with extended legal name North America Operations owner 6
+
+-INV-00033 Customer account with extended legal name Europe Operations owner 7
+
+-INV-00034 Customer account with extended legal name Asia Paci
+... (43524 more characters)
 
 ```
 </details>

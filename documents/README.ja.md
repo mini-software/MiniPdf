@@ -70,6 +70,16 @@ byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
 
+// 大きいまたは横長の Excel シートを圧縮し、レイアウトを調整
+MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
+{
+  Compress = true,
+  FitToPage = true,
+  Landscape = true,
+  PrintScale = 70,
+  RowsPerPage = 80,
+});
+
 // ストリームからバイト配列へ
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
@@ -122,6 +132,21 @@ minipdf report.docx -o /path/to/output.pdf
 
 # カスタムフォントを登録（コンテナ/ヘッドレス環境向け）
 minipdf report.docx --fonts ./Fonts
+
+# 名前または 1-based インデックスで指定した Excel シートをレンダリング
+minipdf data.xlsx --sheets Summary,2
+
+# 大きい出力向けに PDF コンテンツストリームを圧縮
+minipdf data.xlsx --compress
+
+# 範囲を制限した Excel プレビューをレンダリング
+minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
+
+# 大きいまたは横長の Excel シートのレイアウトを調整
+minipdf data.xlsx --fit-to-page --landscape --scale 70
+
+# 1ページあたりのワークシート行数を増やす
+minipdf data.xlsx --rows-per-page 80 --compress
 ```
 
 ### コマンド一覧
@@ -130,6 +155,10 @@ minipdf report.docx --fonts ./Fonts
 |---------|-------------|
 | `minipdf <file>` | `.xlsx` / `.docx` / `.pptx` を PDF に変換 |
 | `minipdf convert <file> -o <out>` | 出力パスを指定して変換 |
+| `minipdf convert <file> --compress` | PDF コンテンツストリームを圧縮 |
+| `minipdf data.xlsx --max-rows <n> --max-columns <n>` | 範囲を制限した Excel プレビューをレンダリング |
+| `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | Excel レイアウトをフィットおよびスケール |
+| `minipdf data.xlsx --rows-per-page <n>` | 1ページあたりの Excel 行数を増やす |
 | `minipdf --version` | バージョンを表示 |
 | `minipdf --help` | ヘルプを表示 |
 

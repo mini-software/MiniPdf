@@ -70,6 +70,16 @@ byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
 
+// 크거나 넓은 Excel 시트의 출력 압축 및 레이아웃 조정
+MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
+{
+  Compress = true,
+  FitToPage = true,
+  Landscape = true,
+  PrintScale = 70,
+  RowsPerPage = 80,
+});
+
 // 스트림에서 바이트 배열로
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
@@ -122,6 +132,21 @@ minipdf report.docx -o /path/to/output.pdf
 
 # 사용자 정의 글꼴 등록 (컨테이너/헤드리스 환경용)
 minipdf report.docx --fonts ./Fonts
+
+# 이름 또는 1-based 인덱스로 지정한 Excel 시트 렌더링
+minipdf data.xlsx --sheets Summary,2
+
+# 큰 출력용 PDF 콘텐츠 스트림 압축
+minipdf data.xlsx --compress
+
+# 제한된 Excel 미리보기 렌더링
+minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
+
+# 크거나 넓은 Excel 시트 레이아웃 조정
+minipdf data.xlsx --fit-to-page --landscape --scale 70
+
+# PDF 페이지당 더 많은 워크시트 행을 목표로 설정
+minipdf data.xlsx --rows-per-page 80 --compress
 ```
 
 ### 명령어
@@ -130,6 +155,10 @@ minipdf report.docx --fonts ./Fonts
 |---------|-------------|
 | `minipdf <file>` | `.xlsx` / `.docx` / `.pptx`를 PDF로 변환 |
 | `minipdf convert <file> -o <out>` | 출력 경로를 지정하여 변환 |
+| `minipdf convert <file> --compress` | PDF 콘텐츠 스트림 압축 |
+| `minipdf data.xlsx --max-rows <n> --max-columns <n>` | 제한된 Excel 미리보기 렌더링 |
+| `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | Excel 레이아웃 맞춤 및 배율 조정 |
+| `minipdf data.xlsx --rows-per-page <n>` | PDF 페이지당 더 많은 Excel 행을 목표로 설정 |
 | `minipdf --version` | 버전 표시 |
 | `minipdf --help` | 도움말 표시 |
 

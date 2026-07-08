@@ -70,6 +70,16 @@ byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
 
+// Comprimi e regola il layout di fogli Excel grandi o larghi
+MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
+{
+  Compress = true,
+  FitToPage = true,
+  Landscape = true,
+  PrintScale = 70,
+  RowsPerPage = 80,
+});
+
 // Da stream a array di byte
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
@@ -122,6 +132,21 @@ minipdf report.docx -o /path/to/output.pdf
 
 # Registra font personalizzati (per container / ambienti headless)
 minipdf report.docx --fonts ./Fonts
+
+# Renderizza fogli Excel indicati per nome o indice 1-based
+minipdf data.xlsx --sheets Summary,2
+
+# Comprimi gli stream di contenuto PDF per output grandi
+minipdf data.xlsx --compress
+
+# Renderizza un'anteprima Excel limitata
+minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
+
+# Regola il layout di fogli Excel grandi o larghi
+minipdf data.xlsx --fit-to-page --landscape --scale 70
+
+# Punta a piu righe del foglio per pagina PDF
+minipdf data.xlsx --rows-per-page 80 --compress
 ```
 
 ### Comandi
@@ -130,6 +155,10 @@ minipdf report.docx --fonts ./Fonts
 |---------|-------------|
 | `minipdf <file>` | Converti `.xlsx` / `.docx` / `.pptx` in PDF |
 | `minipdf convert <file> -o <out>` | Converti con percorso di output esplicito |
+| `minipdf convert <file> --compress` | Comprimi gli stream di contenuto PDF |
+| `minipdf data.xlsx --max-rows <n> --max-columns <n>` | Renderizza un'anteprima Excel limitata |
+| `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | Adatta e scala il layout Excel |
+| `minipdf data.xlsx --rows-per-page <n>` | Punta a piu righe Excel per pagina PDF |
 | `minipdf --version` | Mostra la versione |
 | `minipdf --help` | Mostra l'aiuto |
 

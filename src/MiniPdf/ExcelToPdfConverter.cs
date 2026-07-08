@@ -59,6 +59,24 @@ internal static class ExcelToPdfConverter
 
         /// <summary>Maximum number of columns to render from each sheet or print area.</summary>
         internal int? MaxColumns { get; set; }
+
+        /// <summary>Override sheet orientation. True renders landscape; false renders portrait.</summary>
+        internal bool? Landscape { get; set; }
+
+        /// <summary>Override fit-to-page mode.</summary>
+        internal bool? FitToPage { get; set; }
+
+        /// <summary>Override horizontal fit-to page count. 0 means unlimited.</summary>
+        internal int? FitToWidth { get; set; }
+
+        /// <summary>Override vertical fit-to page count. 0 means unlimited.</summary>
+        internal int? FitToHeight { get; set; }
+
+        /// <summary>Override Excel print scale percentage.</summary>
+        internal int? PrintScale { get; set; }
+
+        /// <summary>Target minimum number of worksheet rows per PDF page.</summary>
+        internal int? RowsPerPage { get; set; }
     }
 
     /// <summary>
@@ -85,6 +103,7 @@ internal static class ExcelToPdfConverter
         var sheets = ExcelReader.ReadSheets(excelStream);
         sheets = FilterSheets(sheets, options.Sheets, options.SheetIndexes);
         sheets = ApplyRenderLimits(sheets, options.MaxRows, options.MaxColumns);
+        sheets = ApplyLayoutOptions(sheets, options);
         var doc = new PdfDocument();
 
         // Track page ranges per sheet for footer rendering
@@ -223,6 +242,76 @@ internal static class ExcelToPdfConverter
             maxDigitWidthPx: sheet.MaxDigitWidthPx);
         limitedSheet.EffectivePrintScaleF = sheet.EffectivePrintScaleF;
         return limitedSheet;
+    }
+
+    private static List<ExcelSheet> ApplyLayoutOptions(List<ExcelSheet> sheets, ConversionOptions options)
+    {
+        if (!options.Landscape.HasValue && !options.FitToPage.HasValue &&
+            !options.FitToWidth.HasValue && !options.FitToHeight.HasValue &&
+            !options.PrintScale.HasValue && !options.RowsPerPage.HasValue)
+            return sheets;
+
+        return sheets
+            .Select(sheet => ApplyLayoutOptions(sheet, options))
+            .ToList();
+    }
+
+    private static ExcelSheet ApplyLayoutOptions(ExcelSheet sheet, ConversionOptions options)
+    {
+        var isLandscape = options.Landscape ?? sheet.IsLandscape;
+        var printScale = options.PrintScale ?? sheet.PrintScale;
+        var fitToPage = options.FitToPage ?? sheet.FitToPage;
+        var fitToWidth = options.FitToWidth ?? sheet.FitToWidth;
+        var fitToHeight = options.FitToHeight ?? sheet.FitToHeight;
+
+        if (options.FitToWidth.HasValue || options.FitToHeight.HasValue || options.RowsPerPage.HasValue)
+            fitToPage = true;
+
+        if (options.RowsPerPage.HasValue)
+        {
+            var rowCount = GetRenderedRowCount(sheet);
+            if (rowCount > 0)
+                fitToHeight = Math.Max(1, (int)Math.Ceiling(rowCount / (double)options.RowsPerPage.Value));
+        }
+
+        var layoutSheet = new ExcelSheet(sheet.Name, sheet.Rows,
+            images: sheet.Images.Count > 0 ? sheet.Images : null,
+            columnWidths: sheet.ColumnWidths,
+            defaultColumnWidth: sheet.DefaultColumnWidth,
+            charts: sheet.Charts.Count > 0 ? sheet.Charts : null,
+            shapes: sheet.Shapes.Count > 0 ? sheet.Shapes : null,
+            mergedCells: sheet.MergedCells,
+            rowHeights: sheet.RowHeights,
+            defaultRowHeight: sheet.DefaultRowHeight,
+            customHeightRows: sheet.CustomHeightRows,
+            isLandscape: isLandscape,
+            printScale: printScale,
+            paperSize: sheet.PaperSize,
+            printArea: sheet.PrintArea,
+            marginLeftPt: sheet.MarginLeftPt,
+            marginRightPt: sheet.MarginRightPt,
+            marginTopPt: sheet.MarginTopPt,
+            marginBottomPt: sheet.MarginBottomPt,
+            fitToPage: fitToPage,
+            fitToWidth: fitToWidth,
+            fitToHeight: fitToHeight,
+            horizontalCentered: sheet.HorizontalCentered,
+            printTitleRows: sheet.PrintTitleRows,
+            rowBreaks: sheet.RowBreaks,
+            oddFooter: sheet.OddFooter,
+            footerMarginPt: sheet.FooterMarginPt,
+            maxDigitWidthPx: sheet.MaxDigitWidthPx);
+
+        if (!options.PrintScale.HasValue)
+            layoutSheet.EffectivePrintScaleF = sheet.EffectivePrintScaleF;
+        return layoutSheet;
+    }
+
+    private static int GetRenderedRowCount(ExcelSheet sheet)
+    {
+        var startRow = sheet.PrintArea?.StartRow ?? 0;
+        var endRow = sheet.PrintArea?.EndRow ?? GetLastRowIndex(sheet);
+        return endRow >= startRow ? endRow - startRow + 1 : 0;
     }
 
     private static int GetLastColumnIndex(ExcelSheet sheet)
@@ -452,7 +541,7 @@ internal static class ExcelToPdfConverter
             // Estimate the fitToPage width compression that will also shrink rows.
             var printScaleF = GetPrintScaleFactor(sheet);
             var estColTotal = EstimateColumnWidthTotal(sheet, options) * printScaleF;
-            var estFitToPageScale = estColTotal > usableW ? usableW / estColTotal : 1f;
+            var estFitToPageScale = sheet.FitToWidth >= 1 && estColTotal > usableW ? usableW / estColTotal : 1f;
             // Effective row scale = PrintScale × fitToPage width-compression
             var effectiveScale = printScaleF * estFitToPageScale;
 
@@ -858,7 +947,7 @@ internal static class ExcelToPdfConverter
         // smaller and pagination matches the real spreadsheet output.
         var fitToPageScale = 1f;
 
-        if (sheet.FitToPage && totalNatural > usableWidth && maxCols > 1)
+        if (sheet.FitToPage && sheet.FitToWidth >= 1 && totalNatural > usableWidth && maxCols > 1)
         {
             var fitScale = usableWidth / totalNatural;
             for (var i = 0; i < naturalWidths.Length; i++)

@@ -157,6 +157,107 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_WithLandscapeOption_UsesLandscapePageDimensions()
+    {
+        using var excelStream = CreateSimpleExcel(new[]
+        {
+            new[] { "A", "B" },
+            new[] { "1", "2" },
+        });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Landscape = true,
+        });
+
+        Assert.True(doc.Pages[0].Width > doc.Pages[0].Height,
+            $"Expected landscape dimensions, got {doc.Pages[0].Width}x{doc.Pages[0].Height}.");
+    }
+
+    [Fact]
+    public void Convert_WithFitToPageOption_FitsWideColumnsOnSinglePage()
+    {
+        var rows = new[]
+        {
+            new[] { "First", "Last", "Address", "Phone", "Email", "Company", "Title", "Notes" },
+            new[]
+            {
+                "Naveen",
+                "Adhikari",
+                "1234 North Evergreen Avenue",
+                "555-0123",
+                "naveen.adhikari@example.test",
+                "Contoso Operations",
+                "QA Automation Specialist",
+                "Priority customer account",
+            },
+        };
+
+        using var defaultStream = CreateSimpleExcel(rows);
+        using var fitStream = CreateSimpleExcel(rows);
+
+        var defaultDoc = ExcelToPdfConverter.Convert(defaultStream);
+        var fitDoc = ExcelToPdfConverter.Convert(fitStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            FitToPage = true,
+        });
+
+        Assert.True(defaultDoc.Pages.Count >= 2, $"Expected default wide sheet to split, got {defaultDoc.Pages.Count} pages.");
+        Assert.Single(fitDoc.Pages);
+    }
+
+    [Fact]
+    public void Convert_WithFitToWidthZero_DoesNotForceWideColumnsOntoOnePage()
+    {
+        var rows = new[]
+        {
+            new[] { "First", "Last", "Address", "Phone", "Email", "Company", "Title", "Notes" },
+            new[]
+            {
+                "Naveen",
+                "Adhikari",
+                "1234 North Evergreen Avenue",
+                "555-0123",
+                "naveen.adhikari@example.test",
+                "Contoso Operations",
+                "QA Automation Specialist",
+                "Priority customer account",
+            },
+        };
+
+        using var excelStream = CreateSimpleExcel(rows);
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            FitToPage = true,
+            FitToWidth = 0,
+        });
+
+        Assert.True(doc.Pages.Count >= 2, $"Expected unlimited fit-to-width to keep column groups, got {doc.Pages.Count} pages.");
+    }
+
+    [Fact]
+    public void Convert_WithRowsPerPageOption_ReducesTallSheetPageCount()
+    {
+        var rows = Enumerable.Range(0, 80)
+            .Select(i => new[] { $"Row{i}", $"Value{i}" })
+            .ToArray();
+
+        using var defaultStream = CreateSimpleExcel(rows);
+        using var compactStream = CreateSimpleExcel(rows);
+
+        var defaultDoc = ExcelToPdfConverter.Convert(defaultStream);
+        var compactDoc = ExcelToPdfConverter.Convert(compactStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            RowsPerPage = 80,
+        });
+
+        Assert.True(defaultDoc.Pages.Count >= 2, $"Expected default tall sheet to need multiple pages, got {defaultDoc.Pages.Count}.");
+        Assert.True(compactDoc.Pages.Count < defaultDoc.Pages.Count,
+            $"Expected rows-per-page layout to reduce pages from {defaultDoc.Pages.Count}, got {compactDoc.Pages.Count}.");
+    }
+
+    [Fact]
     public void Convert_EmptyExcel_CreatesAtLeastOnePage()
     {
         using var excelStream = CreateSimpleExcel(Array.Empty<string[]>());

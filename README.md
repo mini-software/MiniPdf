@@ -77,6 +77,16 @@ byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
 
+// Compress and adjust Excel layout for large or wide sheets
+MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
+{
+  Compress = true,
+  FitToPage = true,
+  Landscape = true,
+  PrintScale = 70,
+  RowsPerPage = 80,
+});
+
 // Stream to byte array
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
@@ -142,6 +152,12 @@ minipdf data.xlsx --compress
 
 # Render a bounded Excel preview
 minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
+
+# Adjust Excel layout for large or wide sheets
+minipdf data.xlsx --fit-to-page --landscape --scale 70
+
+# Target more worksheet rows per PDF page
+minipdf data.xlsx --rows-per-page 80 --compress
 ```
 
 ### Commands
@@ -152,6 +168,8 @@ minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
 | `minipdf convert <file> -o <out>` | Convert with explicit output path |
 | `minipdf convert <file> --compress` | Compress PDF content streams |
 | `minipdf data.xlsx --max-rows <n> --max-columns <n>` | Render a bounded Excel preview |
+| `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | Fit and scale Excel layout |
+| `minipdf data.xlsx --rows-per-page <n>` | Target more Excel rows per PDF page |
 | `minipdf --version` | Show version |
 | `minipdf --help` | Show help |
 

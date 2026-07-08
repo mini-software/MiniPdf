@@ -84,6 +84,16 @@ byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
 
+// 压缩并调整大型或宽 Excel 工作表的版面
+MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
+{
+  Compress = true,
+  FitToPage = true,
+  Landscape = true,
+  PrintScale = 70,
+  RowsPerPage = 80,
+});
+
 // 流转字节数组
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
@@ -136,6 +146,21 @@ minipdf report.docx -o /path/to/output.pdf
 
 # 注册自定义字体（适用于容器/无头环境）
 minipdf report.docx --fonts ./Fonts
+
+# 按名称或 1-based 索引渲染指定的 Excel 工作表
+minipdf data.xlsx --sheets Summary,2
+
+# 为大型输出压缩 PDF 内容流
+minipdf data.xlsx --compress
+
+# 渲染有边界的 Excel 预览
+minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
+
+# 调整大型或宽 Excel 工作表的版面
+minipdf data.xlsx --fit-to-page --landscape --scale 70
+
+# 目标是每页容纳更多工作表行
+minipdf data.xlsx --rows-per-page 80 --compress
 ```
 
 ### 命令说明
@@ -144,6 +169,10 @@ minipdf report.docx --fonts ./Fonts
 |---------|-------------|
 | `minipdf <file>` | 将 `.xlsx` / `.docx` / `.pptx` 转换为 PDF |
 | `minipdf convert <file> -o <out>` | 转换并指定输出路径 |
+| `minipdf convert <file> --compress` | 压缩 PDF 内容流 |
+| `minipdf data.xlsx --max-rows <n> --max-columns <n>` | 渲染有边界的 Excel 预览 |
+| `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | 适配并缩放 Excel 版面 |
+| `minipdf data.xlsx --rows-per-page <n>` | 目标是每页容纳更多 Excel 行 |
 | `minipdf --version` | 显示版本 |
 | `minipdf --help` | 显示帮助 |
 

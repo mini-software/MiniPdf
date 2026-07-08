@@ -34,6 +34,12 @@ internal sealed class CliApp
         bool compress = false;
         int? maxRows = null;
         int? maxColumns = null;
+        bool? landscape = null;
+        bool? fitToPage = null;
+        int? fitToWidth = null;
+        int? fitToHeight = null;
+        int? printScale = null;
+        int? rowsPerPage = null;
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -66,6 +72,47 @@ internal sealed class CliApp
                         return 1;
                     }
                     maxColumns = parsedMaxColumns;
+                    break;
+                case "--landscape":
+                    landscape = true;
+                    break;
+                case "--portrait":
+                    landscape = false;
+                    break;
+                case "--fit-to-page":
+                    fitToPage = true;
+                    break;
+                case "--fit-to-width":
+                    if (i + 1 >= args.Length || !TryParseNonNegativeInt(args[++i], out var parsedFitToWidth))
+                    {
+                        Console.Error.WriteLine("Error: --fit-to-width requires a non-negative integer value.");
+                        return 1;
+                    }
+                    fitToWidth = parsedFitToWidth;
+                    break;
+                case "--fit-to-height":
+                    if (i + 1 >= args.Length || !TryParseNonNegativeInt(args[++i], out var parsedFitToHeight))
+                    {
+                        Console.Error.WriteLine("Error: --fit-to-height requires a non-negative integer value.");
+                        return 1;
+                    }
+                    fitToHeight = parsedFitToHeight;
+                    break;
+                case "--scale" or "--print-scale" or "--scale-to-fit":
+                    if (i + 1 >= args.Length || !TryParsePrintScale(args[++i], out var parsedPrintScale))
+                    {
+                        Console.Error.WriteLine("Error: --scale requires an integer value between 10 and 400.");
+                        return 1;
+                    }
+                    printScale = parsedPrintScale;
+                    break;
+                case "--rows-per-page":
+                    if (i + 1 >= args.Length || !TryParsePositiveInt(args[++i], out var parsedRowsPerPage))
+                    {
+                        Console.Error.WriteLine("Error: --rows-per-page requires a positive integer value.");
+                        return 1;
+                    }
+                    rowsPerPage = parsedRowsPerPage;
                     break;
                 case "-h" or "--help":
                     ShowConvertHelp();
@@ -124,6 +171,12 @@ internal sealed class CliApp
                 Compress = compress,
                 MaxRows = maxRows,
                 MaxColumns = maxColumns,
+                Landscape = landscape,
+                FitToPage = fitToPage,
+                FitToWidth = fitToWidth,
+                FitToHeight = fitToHeight,
+                PrintScale = printScale,
+                RowsPerPage = rowsPerPage,
             });
             Console.WriteLine(outputPath);
             return 0;
@@ -168,6 +221,12 @@ internal sealed class CliApp
     private static bool TryParsePositiveInt(string value, out int result)
         => int.TryParse(value, out result) && result > 0;
 
+    private static bool TryParseNonNegativeInt(string value, out int result)
+        => int.TryParse(value, out result) && result >= 0;
+
+    private static bool TryParsePrintScale(string value, out int result)
+        => int.TryParse(value, out result) && result >= 10 && result <= 400;
+
     private static int ShowHelp()
     {
         Console.WriteLine("""
@@ -189,21 +248,27 @@ internal sealed class CliApp
 
     private static void ShowConvertHelp()
     {
-        Console.WriteLine("""
-            Usage: minipdf convert <input> [options]
-
-            Arguments:
-              <input>          Path to .xlsx, .docx, or .pptx file
-
-            Options:
-              -o, --output     Output PDF path (default: <input>.pdf)
-              --fonts <dir>    Directory of .ttf/.ttc fonts to register
-              --sheets <items> Comma-separated Excel sheet names or 1-based indexes to render
-                            --compress       Compress PDF content streams with FlateDecode
-                            --max-rows <n>   Render only the first n rows from each Excel sheet or print area
-                            --max-columns <n> Render only the first n columns from each Excel sheet or print area
-              -h, --help       Show this help
-            """);
+                Console.WriteLine(string.Join(Environment.NewLine,
+                        "Usage: minipdf convert <input> [options]",
+                        "",
+                        "Arguments:",
+                        "  <input>          Path to .xlsx, .docx, or .pptx file",
+                        "",
+                        "Options:",
+                        "  -o, --output          Output PDF path (default: <input>.pdf)",
+                        "  --fonts <dir>         Directory of .ttf/.ttc fonts to register",
+                        "  --sheets <items>      Comma-separated Excel sheet names or 1-based indexes to render",
+                        "  --compress            Compress PDF content streams with FlateDecode",
+                        "  --max-rows <n>        Render only the first n rows from each Excel sheet or print area",
+                        "  --max-columns <n>     Render only the first n columns from each Excel sheet or print area",
+                        "  --landscape           Render Excel sheets in landscape orientation",
+                        "  --portrait            Render Excel sheets in portrait orientation",
+                        "  --fit-to-page         Scale wide Excel sheets to fit the page width",
+                        "  --fit-to-width <n>    Fit Excel sheets to n pages wide (0 = unlimited)",
+                        "  --fit-to-height <n>   Fit Excel sheets to n pages tall (0 = unlimited)",
+                        "  --scale <n>           Set Excel print scale percentage (10-400)",
+                        "  --rows-per-page <n>   Target at least n Excel rows per PDF page",
+                        "  -h, --help            Show this help"));
     }
 
     private static int ShowVersion()

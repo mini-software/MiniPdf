@@ -70,6 +70,16 @@ byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
 MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
 
+// Compresser et ajuster la mise en page des grands ou larges fichiers Excel
+MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
+{
+  Compress = true,
+  FitToPage = true,
+  Landscape = true,
+  PrintScale = 70,
+  RowsPerPage = 80,
+});
+
 // Flux vers tableau d'octets
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
@@ -122,6 +132,21 @@ minipdf report.docx -o /path/to/output.pdf
 
 # Enregistrer des polices personnalisées (pour conteneurs / environnements headless)
 minipdf report.docx --fonts ./Fonts
+
+# Rendre les feuilles Excel indiquees par nom ou index 1-based
+minipdf data.xlsx --sheets Summary,2
+
+# Compresser les flux de contenu PDF pour les sorties volumineuses
+minipdf data.xlsx --compress
+
+# Rendre un apercu Excel limite
+minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
+
+# Ajuster la mise en page des grands ou larges fichiers Excel
+minipdf data.xlsx --fit-to-page --landscape --scale 70
+
+# Viser davantage de lignes de feuille par page PDF
+minipdf data.xlsx --rows-per-page 80 --compress
 ```
 
 ### Commandes
@@ -130,6 +155,10 @@ minipdf report.docx --fonts ./Fonts
 |---------|-------------|
 | `minipdf <file>` | Convertir `.xlsx` / `.docx` / `.pptx` en PDF |
 | `minipdf convert <file> -o <out>` | Convertir avec chemin de sortie explicite |
+| `minipdf convert <file> --compress` | Compresser les flux de contenu PDF |
+| `minipdf data.xlsx --max-rows <n> --max-columns <n>` | Rendre un apercu Excel limite |
+| `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | Ajuster et mettre a l'echelle la mise en page Excel |
+| `minipdf data.xlsx --rows-per-page <n>` | Viser davantage de lignes Excel par page PDF |
 | `minipdf --version` | Afficher la version |
 | `minipdf --help` | Afficher l'aide |
 
