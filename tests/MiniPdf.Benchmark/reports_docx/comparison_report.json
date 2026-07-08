@@ -3685,19 +3685,19 @@
     "name": "docx_classic105_certificate",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 3737971,
+    "minipdf_size": 4207087,
     "reference_size": 104606,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.911,
-    "flat_text_similarity": 0.911,
-    "word_text_similarity": 0.8333,
-    "text_diff": "--- minipdf/docx_classic105_certificate.pdf\n+++ reference/docx_classic105_certificate.pdf\n@@ -1,10 +1,10 @@\n ★ ★ ★ ★ ★\n\n-CERTIFICATE OF COMPLETI\n\n+CERTIFICATE OF COMPLETION\n\n This is to certify that\n\n-JOHN ALEXANDER SMIT\n\n-has successfully completed the requ\n\n-the MiniPdf Developer Certificati\n\n+JOHN ALEXANDER SMITH\n\n+has successfully completed the requirements for\n\n+the MiniPdf Developer Certification Program\n\n Issued: March 1, 2026\n\n-________________________ _____________________\n\n-Program Director Chief Technology Offic\n\n+________________________ ________________________\n\n+Program Director Chief Technology Officer\n\n ★ ★ ★ ★ ★",
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.9636
+      0.9719
     ],
-    "visual_avg": 0.9636,
+    "visual_avg": 0.9719,
     "diff_images": [
       {
         "page": 1,
@@ -3705,7 +3705,7 @@
         "reference_img": "docx_classic105_certificate_p1_reference.png"
       }
     ],
-    "overall_score": 0.9498
+    "overall_score": 0.9888
   },
   {
     "name": "docx_classic106_multi_section_orientation",

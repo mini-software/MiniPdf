@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-07T23:33:02.600115
+Generated: 2026-07-08T00:09:07.110952
 
 ## Summary
 
@@ -140,7 +140,7 @@ Generated: 2026-07-07T23:33:02.600115
 | 132 | 🟢 docx_classic102_curriculum_syllabus | ✅ | 0.9961 | 0.9466 | 1/1 | **0.9771** |
 | 133 | 🟢 docx_classic103_event_program | ✅ | 0.9917 | 0.9628 | 2/2 | **0.9818** |
 | 134 | 🟢 docx_classic104_sop_document | ✅ | 0.9915 | 0.9702 | 2/2 | **0.9847** |
-| 135 | 🟢 docx_classic105_certificate | ✅ | 0.911 | 0.9636 | 1/1 | **0.9498** |
+| 135 | 🟢 docx_classic105_certificate | ✅ | 1.0 | 0.9719 | 1/1 | **0.9888** |
 | 136 | 🟢 docx_classic106_multi_section_orientation | ✅ | 0.9933 | 0.9711 | 3/3 | **0.9858** |
 | 137 | 🟢 docx_classic107_order_form | ✅ | 0.9859 | 0.9559 | 1/1 | **0.9767** |
 | 138 | 🟢 docx_classic108_comparison_matrix | ✅ | 0.95 | 0.8898 | 1/1 | **0.9359** |
@@ -187,7 +187,7 @@ Generated: 2026-07-07T23:33:02.600115
 | 179 | 🟢 docx_classic149_merged_section_report | ✅ | 1.0 | 0.9301 | 1/1 | **0.972** |
 | 180 | 🟢 docx_classic150_kitchen_sink_styles | ✅ | 1.0 | 0.9594 | 2/2 | **0.9838** |
 
-**Average Overall Score: 0.9711**
+**Average Overall Score: 0.9713**
 
 ## Visual Comparison
 
@@ -1399,7 +1399,7 @@ Generated: 2026-07-07T23:33:02.600115
 </tr>
 <tr>
   <td><b>docx_classic105_certificate</b></td>
-  <td colspan="1">docx_classic105_certificate <span style="color:#3fb950">⬤</span> 95.0%</td>
+  <td colspan="1">docx_classic105_certificate <span style="color:#3fb950">⬤</span> 98.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic105_certificate_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -5668,51 +5668,13 @@ Text content: ✅ Identical
 
 ### docx_classic105_certificate
 
-- **Text Similarity:** 0.911
-- **Visual Average:** 0.9636
-- **Overall Score:** 0.9498
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9719
+- **Overall Score:** 0.9888
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=3737971 bytes, Reference=104606 bytes
+- **File Size:** MiniPdf=4207087 bytes, Reference=104606 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/docx_classic105_certificate.pdf
-+++ reference/docx_classic105_certificate.pdf
-@@ -1,10 +1,10 @@
- ★ ★ ★ ★ ★
-
--CERTIFICATE OF COMPLETI
-
-+CERTIFICATE OF COMPLETION
-
- This is to certify that
-
--JOHN ALEXANDER SMIT
-
--has successfully completed the requ
-
--the MiniPdf Developer Certificati
-
-+JOHN ALEXANDER SMITH
-
-+has successfully completed the requirements for
-
-+the MiniPdf Developer Certification Program
-
- Issued: March 1, 2026
-
--________________________ _____________________
-
--Program Director Chief Technology Offic
-
-+________________________ ________________________
-
-+Program Director Chief Technology Officer
-
- ★ ★ ★ ★ ★
-```
-</details>
+Text content: ✅ Identical
 
 ### docx_classic106_multi_section_orientation
 

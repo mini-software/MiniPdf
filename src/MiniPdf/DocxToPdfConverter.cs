@@ -1854,6 +1854,9 @@ internal static class DocxToPdfConverter
                 var isCenterRight = paragraph.Alignment is "center" or "right";
                 var alignUseCalibri = isCenterRight ? false : paraUseCalibri;
                 var textWidth = EstimateWrapTextWidth(line, runFontSize, runBold, runCharSpacing, alignUseCalibri);
+                if (isCenterRight
+                    && PdfWriter.TryMeasurePreferredFontWidth(runFontName, line, runFontSize, runBold, runItalic, runCharSpacing, out var measuredWidth))
+                    textWidth = measuredWidth;
                 // Only apply Tz for non-tab-leader lines when text significantly overflows
                 if (renderMaxWidth == null && textWidth > lineW)
                     renderMaxWidth = lineW;

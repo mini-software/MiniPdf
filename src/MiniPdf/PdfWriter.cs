@@ -46,6 +46,16 @@ internal sealed class PdfWriter
         public int ToUnicodeObj, DescriptorObj, CidFontObj, Type0Obj, FontFileObj, CidToGidObj;
     }
 
+    private sealed class FontMeasureInfo
+    {
+        public Dictionary<int, ushort> Cmap = new();
+        public ushort[] GlyphAdvances = [];
+        public int Upm = 1000;
+    }
+
+    private static readonly object MeasureFontCacheLock = new();
+    private static readonly Dictionary<string, FontMeasureInfo?> MeasureFontCache = new(StringComparer.OrdinalIgnoreCase);
+
     internal void Write(PdfDocument document)
     {
         // PDF Header
@@ -119,7 +129,8 @@ internal sealed class PdfWriter
             foreach (var block in page.TextBlocks)
             {
                 if (string.IsNullOrWhiteSpace(block.PreferredFontName)) continue;
-                if (_latinFontSubstitutes.Contains(block.PreferredFontName!)) continue;
+                if (_latinFontSubstitutes.Contains(block.PreferredFontName!)
+                    && !cpsByPreferredFont.ContainsKey(block.PreferredFontName!)) continue;
                 bool allWinAnsi = true;
                 foreach (var ch in block.Text)
                     if (!IsWinAnsiHandled(ch)) { allWinAnsi = false; break; }
@@ -309,7 +320,8 @@ internal sealed class PdfWriter
                 {
                     var preferredIdx = FindPreferredFontIndex(loadedFonts, preferredName);
                     if (preferredIdx >= 0
-                        && loadedFonts[preferredIdx].cmap.ContainsKey(cp))
+                        && loadedFonts[preferredIdx].cmap.TryGetValue(cp, out var preferredGid)
+                        && HasUsableGlyph(loadedFonts[preferredIdx].ttf, cp, preferredGid))
                     {
                         cpToFontSlot[cp] = preferredIdx;
                         found = true;
@@ -331,7 +343,8 @@ internal sealed class PdfWriter
                 {
                     for (var fi = 0; fi < loadedFonts.Count; fi++)
                     {
-                        if (loadedFonts[fi].cmap.ContainsKey(cp))
+                        if (loadedFonts[fi].cmap.TryGetValue(cp, out var gid)
+                            && HasUsableGlyph(loadedFonts[fi].ttf, cp, gid))
                         {
                             cpToFontSlot[cp] = fi;
                             found = true;
@@ -2412,6 +2425,129 @@ internal sealed class PdfWriter
         return "Times New Roman";
     }
 
+    internal static bool TryMeasurePreferredFontWidth(string? fontName, string text, float fontSize,
+        bool bold, bool italic, float charSpacing, out float width)
+    {
+        width = 0;
+        if (string.IsNullOrWhiteSpace(fontName)) return false;
+        if (string.IsNullOrEmpty(text)) return true;
+
+        var candidates = new List<string>();
+        if (bold && italic) candidates.Add(fontName! + " Bold Italic");
+        if (bold) candidates.Add(fontName! + " Bold");
+        if (italic) candidates.Add(fontName! + " Italic");
+        candidates.Add(fontName!);
+
+        foreach (var candidate in candidates.Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            if (!TryGetMeasureFont(candidate, out var font)) continue;
+            if (TryMeasureFontWidth(font, text, fontSize, charSpacing, out width))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetMeasureFont(string fontName, out FontMeasureInfo font)
+    {
+        var key = NormalizeFontName(fontName);
+        lock (MeasureFontCacheLock)
+        {
+            if (MeasureFontCache.TryGetValue(key, out var cached))
+            {
+                font = cached!;
+                return cached != null;
+            }
+        }
+
+        FontMeasureInfo? loaded = null;
+        try
+        {
+            var path = FindSystemFontByPreferredName(fontName);
+            if (path != null)
+            {
+                var ttf = LoadPreferredTtfFont(path, fontName);
+                var cmap = ParseCmapTable(ttf);
+                if (cmap.Count > 0)
+                {
+                    var (advances, upm) = ParseHmtxWidths(ttf);
+                    loaded = new FontMeasureInfo { Cmap = cmap, GlyphAdvances = advances, Upm = upm };
+                }
+            }
+        }
+        catch { }
+
+        lock (MeasureFontCacheLock)
+            MeasureFontCache[key] = loaded;
+
+        font = loaded!;
+        return loaded != null;
+    }
+
+    private static bool TryMeasureFontWidth(FontMeasureInfo font, string text, float fontSize,
+        float charSpacing, out float width)
+    {
+        double total = 0;
+        foreach (var cp in EnumerateCodePoints(text))
+        {
+            if (cp < ' ') continue;
+            if (cp == 0x2009)
+            {
+                total += font.Upm / 4.0;
+                continue;
+            }
+            if (!font.Cmap.TryGetValue(cp, out var gid) || gid >= font.GlyphAdvances.Length)
+            {
+                width = 0;
+                return false;
+            }
+            total += font.GlyphAdvances[gid];
+        }
+
+        width = (float)(total * fontSize / font.Upm);
+        if (charSpacing != 0 && text.Length > 1)
+            width += charSpacing * (text.Length - 1);
+        return true;
+    }
+
+    private static byte[] LoadPreferredTtfFont(string path, string fontName)
+    {
+        var raw = File.ReadAllBytes(path);
+        if (raw.Length > 12 && raw[0] == 't' && raw[1] == 't' && raw[2] == 'c' && raw[3] == 'f')
+        {
+            var numFonts = (int)ReadU32(raw, 8);
+            if (numFonts <= 0) return LoadTtfFontFromBytes(raw);
+
+            var target = NormalizeFontName(fontName);
+            var fallbackOffset = (int)ReadU32(raw, 12);
+            var partialMatchOffset = -1;
+
+            for (var fi = 0; fi < numFonts; fi++)
+            {
+                var offPos = 12 + fi * 4;
+                if (offPos + 4 > raw.Length) break;
+                var offset = (int)ReadU32(raw, offPos);
+                var (family, fullName) = ReadFontNames(raw, offset);
+                var familyKey = NormalizeFontName(family);
+                var fullKey = NormalizeFontName(fullName);
+
+                if (familyKey == target || fullKey == target)
+                    return ExtractTtfFromTtc(raw, offset);
+
+                if (partialMatchOffset < 0
+                    && ((fullKey.Length > 0 && fullKey.Contains(target, StringComparison.Ordinal))
+                        || (familyKey.Length > 0 && familyKey.Contains(target, StringComparison.Ordinal))
+                        || IsFontAliasMatch(target, fullKey)
+                        || IsFontAliasMatch(target, familyKey)))
+                    partialMatchOffset = offset;
+            }
+
+            return ExtractTtfFromTtc(raw, partialMatchOffset >= 0 ? partialMatchOffset : fallbackOffset);
+        }
+
+        return LoadTtfFontFromBytes(raw);
+    }
+
     /// <summary>
     /// Tries to find a system font file whose family or full name matches <paramref name="fontName"/>.
     /// Returns the full file path, or null if not found.
@@ -3360,6 +3496,12 @@ internal sealed class PdfWriter
     /// Returns true for CFF fonts or when tables can't be found (assumes glyph exists).
     /// Filters out glyphs that have a glyf entry but zero contours (empty placeholders).
     /// </summary>
+    private static bool HasUsableGlyph(byte[] ttf, int codePoint, ushort gid)
+    {
+        if (codePoint is ' ' or 0x00A0 or 0x2009) return true;
+        return HasGlyphOutline(ttf, gid);
+    }
+
     private static bool HasGlyphOutline(byte[] ttf, ushort gid)
     {
         var (glyfOff, _) = FindTable(ttf, "glyf");
