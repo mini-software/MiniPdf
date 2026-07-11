@@ -25,7 +25,7 @@ Propagate content changes from the English `README.md` to all translated version
 2. **For each translated file**, read the corresponding section and apply the same change in that language.
 3. **Preserve localized phrasing** — translate new/changed text naturally; do not produce literal word-for-word translations.
 4. **Keep shared elements untranslated** — badges, image paths, links, HTML tags, table structure, and code blocks must stay identical across all files.
-5. **Use `multi_replace_string_in_file`** to batch all edits efficiently when multiple files need the same structural change.
+5. **Use `apply_patch`** to batch related edits while preserving each translated file's localized wording.
 6. **Verify** that the number of edits matches the number of target files × changed sections.
 
 ## Rules

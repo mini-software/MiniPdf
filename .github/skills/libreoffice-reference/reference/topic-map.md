@@ -1,12 +1,14 @@
 # LibreOffice Vault — Topic Map
 
-Snapshot of the structure of the local Obsidian vault `LibreOffice-Word-to-PDF`. Use this as a quick lookup before searching the vault.
+Snapshot of the structure of the local Obsidian vault `LibreOffice-to-PDF`. Use this as a quick lookup before searching the vault.
 
 > Note: The Map of Content (`00-Index/MOC - LibreOffice Word to PDF.md`) lists ~200 planned notes, but only a subset exist as real files on disk. Always verify with `scripts/list-vault.ps1` (or `grep_search`) before assuming a note is present.
 
 ## Vault root
 
-`<OBSIDIAN_VAULT_ROOT>\LibreOffice-Word-to-PDF\`
+`<OBSIDIAN_VAULT_ROOT>\LibreOffice-to-PDF\`
+
+The scripts also recognize the older folder name `LibreOffice-Word-to-PDF` if that is the one present locally.
 
 The base is resolved by `scripts/_common.ps1` (see [SKILL.md](../SKILL.md#vault-locations) for details). Default: `<MyDocuments>\Obsidian Vault`.
 

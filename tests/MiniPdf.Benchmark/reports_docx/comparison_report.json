@@ -159,19 +159,19 @@
     "name": "docx_classic07_alignment",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 2011,
+    "minipdf_size": 259671,
     "reference_size": 43210,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
     "text_similarity": 1.0,
-    "flat_text_similarity": 0.9677,
+    "flat_text_similarity": 1.0,
     "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/docx_classic07_alignment.pdf\n+++ reference/docx_classic07_alignment.pdf\n@@ -1,8 +1,8 @@\n-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut\n\n-labore et dolore magna aliqua.\n\n-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut\n\n-labore et dolore magna aliqua.\n\n-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut\n\n-labore et dolore magna aliqua.\n\n-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut\n\n-labore et dolore magna aliqua.\n+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt\n\n+ut labore et dolore magna aliqua.\n\n+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt\n\n+ut labore et dolore magna aliqua.\n\n+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt\n\n+ut labore et dolore magna aliqua.\n\n+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt\n\n+ut labore et dolore magna aliqua.",
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.9854
+      0.9904
     ],
-    "visual_avg": 0.9854,
+    "visual_avg": 0.9904,
     "diff_images": [
       {
         "page": 1,
@@ -179,7 +179,7 @@
         "reference_img": "docx_classic07_alignment_p1_reference.png"
       }
     ],
-    "overall_score": 0.9942
+    "overall_score": 0.9962
   },
   {
     "name": "docx_classic08_bullet_list",

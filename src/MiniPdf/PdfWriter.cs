@@ -2324,7 +2324,6 @@ internal sealed class PdfWriter
     private static readonly HashSet<string> _latinFontSubstitutes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         "Calibri", "Calibri Light", "Calibri Body",
-        "Cambria",
         "Consolas", "Corbel", "Candara", "Constantia",
         "Arial", "Arial Narrow", "Arial Black",
         // NOTE: "Times New Roman" is intentionally NOT listed here. PdfWriter has only the

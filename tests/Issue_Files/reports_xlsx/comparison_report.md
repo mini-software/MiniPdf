@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-08T11:42:50.380491
+Generated: 2026-07-11T14:12:37.114215
 
 ## Summary
 
@@ -15,21 +15,21 @@ Generated: 2026-07-08T11:42:50.380491
 | 7 | 🔴 Event budget1 | ✅ | 0.9547 | 0.4868 | 4/5 | **0.6766** |
 | 8 | 🟡 Expense report basic1 | ✅ | 1.0 | 0.6359 | 1/1 | **0.8544** |
 | 9 | 🟡 Grocery list1 | ✅ | 0.9231 | 0.7854 | 1/1 | **0.8834** |
-| 10 | 🔴 payroll-calculator_f | ✅ | 0.4279 | 0.5451 | 25/27 | **0.4892** |
+| 10 | 🔴 payroll-calculator_f | ✅ | 0.4575 | 0.5447 | 25/27 | **0.5009** |
 | 11 | 🟢 PO_anonymized | ✅ | 0.9702 | 0.9294 | 8/8 | **0.9598** |
 | 12 | 🟡 Simple invoice1 | ✅ | 0.9223 | 0.7642 | 1/1 | **0.8746** |
 | 13 | 🔴 Small business cash flow forecast1 | ✅ | 0.9765 | 0.3246 | 2/5 | **0.6204** |
 | 14 | ⚪ Wedding timeline planner1 | ✅ | N/A | N/A | ?/? | **N/A** |
-| 15 | 🔴 Wedding_timeline_planner1_copy | ✅ | 0.2515 | 0.7239 | 4/5 | **0.4902** |
-| 16 | 🟡 Weekly schedule planner1 | ✅ | 0.9293 | 0.7361 | 1/1 | **0.8662** |
+| 15 | 🟡 Wedding_timeline_planner1_copy | ✅ | 0.9648 | 0.7286 | 4/5 | **0.7774** |
+| 16 | 🟡 Weekly schedule planner1 | ✅ | 0.9375 | 0.7364 | 1/1 | **0.8696** |
 | 17 | 🔴 XlsxIssue75 | ✅ | 0.6439 | 0.7259 | 114/144 | **0.6479** |
 | 18 | 🟢 XlsxIssue77_MergedCellAlignment | ✅ | 1.0 | 0.8013 | 2/2 | **0.9205** |
 | 19 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8587 | 6/6 | **0.9435** |
 | 20 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8519 | 6/6 | **0.9408** |
-| 21 | 🟡 XlsxIssue82_WideTable | ✅ | 0.9537 | 0.8329 | 14/13 | **0.8146** |
-| 22 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9066 | 0.9076 | 16/16 | **0.9257** |
+| 21 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9066 | 0.9076 | 16/16 | **0.9257** |
+| 22 | 🟡 XlsxIssue82_WideTable | ✅ | 0.9537 | 0.8329 | 14/13 | **0.8146** |
 
-**Average Overall Score: 0.7465**
+**Average Overall Score: 0.7603**
 
 ## Visual Comparison
 
@@ -156,7 +156,7 @@ Generated: 2026-07-08T11:42:50.380491
 </tr>
 <tr>
   <td><b>payroll-calculator_f</b></td>
-  <td colspan="1">payroll-calculator_f <span style="color:#f85149">⬤</span> 48.9%</td>
+  <td colspan="1">payroll-calculator_f <span style="color:#f85149">⬤</span> 50.1%</td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -343,7 +343,7 @@ Generated: 2026-07-08T11:42:50.380491
 </tr>
 <tr>
   <td><b>Wedding_timeline_planner1_copy</b></td>
-  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#f85149">⬤</span> 49.0%</td>
+  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 77.7%</td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -367,7 +367,7 @@ Generated: 2026-07-08T11:42:50.380491
 </tr>
 <tr>
   <td><b>Weekly schedule planner1</b></td>
-  <td colspan="1">Weekly schedule planner1 <span style="color:#d29922">⬤</span> 86.6%</td>
+  <td colspan="1">Weekly schedule planner1 <span style="color:#d29922">⬤</span> 87.0%</td>
 </tr>
 <tr>
   <td><img src="images/Weekly schedule planner1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1022,66 +1022,6 @@ Generated: 2026-07-08T11:42:50.380491
   <td><img src="images/XlsxIssue77_Template2_Workaround_p6_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>XlsxIssue82_WideTable</b></td>
-  <td colspan="1">XlsxIssue82_WideTable <span style="color:#d29922">⬤</span> 81.5%</td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p1_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p2_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p6_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p7_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p8_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p8_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p9_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p9_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p10_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p10_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p11_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p11_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p12_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p12_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p13_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p13_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p14_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
-</tr>
-<tr>
   <td><b>XlsxIssue81_LayoutOptions</b></td>
   <td colspan="1">XlsxIssue81_LayoutOptions <span style="color:#3fb950">⬤</span> 92.6%</td>
 </tr>
@@ -1148,6 +1088,66 @@ Generated: 2026-07-08T11:42:50.380491
 <tr>
   <td><img src="images/XlsxIssue81_LayoutOptions_p16_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/XlsxIssue81_LayoutOptions_p16_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue82_WideTable</b></td>
+  <td colspan="1">XlsxIssue82_WideTable <span style="color:#d29922">⬤</span> 81.5%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p8_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p8_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p9_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p9_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p10_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p10_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p11_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p11_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p12_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p12_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p13_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p13_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p14_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><i>missing</i></td>
 </tr>
 </table>
 
@@ -1826,31 +1826,31 @@ Text content: ✅ Identical
 
 ### payroll-calculator_f
 
-- **Text Similarity:** 0.4279
-- **Visual Average:** 0.5451
-- **Overall Score:** 0.4892
+- **Text Similarity:** 0.4575
+- **Visual Average:** 0.5447
+- **Overall Score:** 0.5009
 - **Pages:** MiniPdf=25, Reference=27
-- **File Size:** MiniPdf=2988270 bytes, Reference=540676 bytes
+- **File Size:** MiniPdf=3160357 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/payroll-calculator_f.pdf
 +++ reference/payroll-calculator_f.pdf
-@@ -1,362 +1,451 @@
+@@ -1,73 +1,90 @@
  Employee Register
 
--Info rmation contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
+-Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
 
--Ste p 2 Ste p 3 Ste p 4
+-Step 2 Step 3 Step 4
 
--Annual Regula r Overtime Exempt Additional Amount to Withhold
+-Annual Regular Overtime Exempt Additional Amount to Withhold
 
 -(b)
 
--Pa y Federal
+-Pay Federal
 
--I D Employee's Name M/FHire Date Occupation Sala ry Hourly Hourly f rom W-4 Form Filing Status ( With every paycheck) Filing Status
+-ID Employee's Name M/F Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status (With every paycheck) Filing Status
 
 -Dependents Other Deductions
 
@@ -1858,17 +1858,11 @@ Text content: ✅ Identical
 
 -Box in (c)
 
--( $) Rate ( $) Rate ( $) Overtime ( $)
+-($) Rate ($) Rate ($) Overtime ($)
 
--Under Age 17 Dependents ( $)
+-Under Age 17 Dependents ($)
 
--1 Adam Jones M 15- Feb-13 Senio r Accountant 42,000.00 20 .19 30 .29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked 100
-
--2 Nichola Brown F 2 8-Sep-11 CR Manager 5 4,481.00 26 .19 3 9.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
-
--3 Benny Erwin M 11- May-11 Applications PM 48,785.00 23 .45 35 .18 No Monthly W-4 (before 2020) Married 4
-
-----PAGE---
+-1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked 100
 
 +Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing St
 
@@ -1890,9 +1884,11 @@ Text content: ✅ Identical
 
 +1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
 
-+2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
+ 2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
 
-+3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4
+ 3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4
+
+----PAGE---
 
  When adding more rows, insert new rows above this one
 
@@ -1900,37 +1896,23 @@ Text content: ✅ Identical
 
 -© 2013 - 2026 Spreadsheet123 LTD
 
--P re-Tax Adjustments Po st-Tax Adjustments Po st-Tax Deductions Pa yroll Calculator
+-Pre-Tax Adjustments Post-Tax Adjustments Post-Tax Deductions Payroll Calculator
 
 -State Local Social
 
 -(c)
 
--Ta x Deferral Plan (401k) Health Insurance Premiums Other Withholdings Exempt from In surance Other Deductions
+-Tax Deferral Plan (401k) Health Insurance Premiums Other Withholdings Exempt from Insurance Other Deductions
 
--Ta x Ta x Address Secu rity
+-Tax Tax Address Security
 
 -Extra
 
--( %) ( $) ( $) FICA ( $) ( $)
+-(%) ($) ($) FICA ($) ($)
 
--( %) ( %) #
+-(%) (%) #
 
 -withholding
-
--( $)
-
--50 4.00% - - Not Exempt 4.63% 0 .00% 45.00 -
-
--111 St reet, Town/City, ST, 00000 ***-**-6789
-
--3 .00% - - Not Exempt 4.63% 0 .00% 42.00 -
-
--111 St reet, Town/City, ST, 00000 ***-**-4321
-
--4.50% - - Not Exempt 4.63% 0 .00% 1 4.00 30 .00
-
--111 St reet, Town/City, ST, 00000 ***-**-0000
 
 +Page 1 of 27
 
@@ -1952,10 +1934,34 @@ Text content: ✅ Identical
 
 +Under Age 17 Dependents ($) withholding
 
-+($)
+ ($)
 
-+100 50 4.00% - - Not Exempt 4.63% 0.00% 45.00 - 111 Stree
-... (32196 more characters)
+-50 4.00% - - Not Exempt 4.63% 0.00% 45.00 -
+
+-111 Street, Town/City, ST, 00000 ***-**-6789
+
+-3.00% - - Not Exempt 4.63% 0.00% 42.00 -
+
+-111 Street, Town/City, ST, 00000 ***-**-4321
+
+-4.50% - - Not Exempt 4.63% 0.00% 14.00 30.00
+
+-111 Street, Town/City, ST, 00000 ***-**-0000
+
++100 50 4.00% - - Not Exempt 4.63% 0.00% 45.00 - 111 Street, Town/City, ST, 00000 ***-**-6789
+
++3.00% - - Not Exempt 4.63% 0.00% 42.00 - 111 Street, Town/City, ST, 00000 ***-**-4321
+
++4.50% - - Not Exempt 4.63% 0.00% 14.00 30.00 111 Street, Town/City, ST, 00000 ***-**-0000
+
++Page 2 of 27
+
++---PAGE---
+
++© 2013 - 2026 Spreadsheet123 LTD
+
++Payroll
+... (30135 more characters)
 
 ```
 </details>
@@ -2130,7 +2136,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.7642
 - **Overall Score:** 0.8746
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=65781 bytes, Reference=78344 bytes
+- **File Size:** MiniPdf=65782 bytes, Reference=78344 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2146,7 +2152,7 @@ Text content: ✅ Identical
 
  Invoice #: 10654
 
--Invoice date: 7/7/2026
+-Invoice date: 7/11/2026
 
 -Embrace
 
@@ -2273,123 +2279,97 @@ Text content: ✅ Identical
 
 ### Wedding_timeline_planner1_copy
 
-- **Text Similarity:** 0.2515
-- **Visual Average:** 0.7239
-- **Overall Score:** 0.4902
+- **Text Similarity:** 0.9648
+- **Visual Average:** 0.7286
+- **Overall Score:** 0.7774
 - **Pages:** MiniPdf=4, Reference=5
-- **File Size:** MiniPdf=765211 bytes, Reference=126603 bytes
+- **File Size:** MiniPdf=745837 bytes, Reference=126603 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Wedding_timeline_planner1_copy.pdf
 +++ reference/Wedding_timeline_planner1_copy.pdf
-@@ -1,118 +1,131 @@
+@@ -1,37 +1,38 @@
  Wedding timeline planner
 
  DONE?
 
--☐ A rrange a gat h ering fo r you and you r parent s.
+ ☐ Arrange a gathering for you and your parents.
 
--☐ D etermine bu dget and how e x pen s e s w ill b e sh ared .
++9 - 12
 
-+☐ Arrange a gathering for you and your parents.
+ ☐ Determine budget and how expenses will be shared.
 
- 9 - 12
-
-+☐ Determine budget and how expenses will be shared.
+-9 - 12
 
  MONTHS TO GO
 
--☐ D i scuss t h e s i z e , s t y le , l oc ati o n , and sco pe of t h e w edding you
+ ☐ Discuss the size, style, location, and scope of the wedding you want.
 
--Choos e a target w edding date and time . (Th e a c t u al date w ill depend o n
-
-+☐ Discuss the size, style, location, and scope of the wedding you want.
+-Choose a target wedding date and time. (The actual date will depend on
 
 +Choose a target wedding date and time. (The actual date will depend
 
  ☐
 
--v en u e a v aila b ilit y.)
-
--C reate a b inder t o s t o re and o rgani z e idea s, wo r ksh eet s, re c eipt s,
+-venue availability.)
 
 +on venue availability.)
 
-+Create a binder to store and organize ideas, worksheets, receipts,
+ Create a binder to store and organize ideas, worksheets, receipts,
 
  ☐
 
--b r ochu re s, et c.
+ brochures, etc.
 
--☐ V i s it and re s er v e w edding and re c epti o n s ite s.
+ ☐ Visit and reserve wedding and reception sites.
 
--☐ M eet w it h you r off i c iant .
+ ☐ Meet with your officiant.
 
--S tart co mpiling you r g u e s t li s t t o e s timate h ead cou nt . Co n s ider bu dget
-
-+brochures, etc.
-
-+☐ Visit and reserve wedding and reception sites.
-
-+☐ Meet with your officiant.
+-Start compiling your guest list to estimate head count. Consider budget
 
 +Start compiling your guest list to estimate head count. Consider
 
  ☐
 
--wh en t h in k ing a bou t “ m us t - in v ite s” v er sus “ ni c e - t o- in v ite s.”
-
--☐ B egin sho pping fo r t h e w edding g ow n .
-
--☐ Choos e t h e mem b er s of you r w edding part y.
-
--☐ E nr o ll in w edding /show er gi f t regi s trie s.
+-when thinking about “must-invites” versus “nice-to-invites.”
 
 +budget when thinking about “must-invites” versus “nice-to-invites.”
 
-+☐ Begin shopping for the wedding gown.
+ ☐ Begin shopping for the wedding gown.
 
-+☐ Choose the members of your wedding party.
+ ☐ Choose the members of your wedding party.
 
- 6 - 9
++6 - 9
 
--MONTHS TO GO ☐ H ire a p ho t o grap h er and a v ide o grap h er .
+ ☐ Enroll in wedding/shower gift registries.
 
--Book an engagement p ho t o s e ss i o n , e s pe c iall y i f you plan t o in c l u de a
+-6 - 9
 
-+☐ Enroll in wedding/shower gift registries.
+-MONTHS TO GO ☐ Hire a photographer and a videographer.
 
 +MONTHS TO GO
 
 +☐ Hire a photographer and a videographer.
 
-+Book an engagement photo session, especially if you plan to include a
+ Book an engagement photo session, especially if you plan to include a
 
  ☐
 
--pr of e ss i o nal engagement pi c t u re w it h S a v e - t h e -D ate c ard s.
+ professional engagement picture with Save-the-Date cards.
 
--☐ H ire a c aterer .
+ ☐ Hire a caterer.
 
--☐ H ire a f l o ri s t .
+ ☐ Hire a florist.
 
--M a k e arrangement s fo r m us i c t o b e pla y ed at t h e c erem o n y and
+ Make arrangements for music to be played at the ceremony and
 
--☐ re c epti o n . (T a sks mig h t in c l u de book ing a b and o r so l o m us i c ian , h irin
+-☐ reception. (Tasks might include booking a band or solo musician, hiring a
 
--DJ, choos ing s igni f i c ant m us i c al s ele c ti o n s, and so o n .).
+-DJ, choosing significant musical selections, and so on.).
 
--R e s er v e a b l ock of ho tel r oo m s fo r ou t -of- t ow n g u e s t s. (As
-
-+professional engagement picture with Save-the-Date cards.
-
-+☐ Hire a caterer.
-
-+☐ Hire a florist.
-
-+Make arrangements for music to be played at the ceremony and
+-Reserve a block of hotel rooms for out-of-town guests. (Ask about group
 
 +☐ reception. (Tasks might include booking a band or solo musician,
 
@@ -2399,28 +2379,78 @@ Text content: ✅ Identical
 
  ☐
 
--rate s.)
+-rates.)
 
--S end ou t S a v e - t h e -D ate c ard s. (I n c l u de
-... (7743 more characters)
++group rates.)
+
+ Send out Save-the-Date cards. (Include lodging info and maps, as
+
+ ☐
+
+ possible.)
+
+@@ -45,33 +46,40 @@
+ ☐ Schedule wedding cake design appointments and tastings.
+
+ ☐ Start planning your honeymoon.
+
+ ☐ Finalize the guest list.
+
++4 - 6
+
+ ☐ Order invitations and other wedding stationery.
+
+-4 - 6
+
+-MONTHS TO GO Plan wedding-day beauty preparations; ask your stylist how far in
+
+-☐ advance they book wedding parties, and whether they are willing to work
+
+-on the wedding site.
+
+-Finalize all honeymoon plans. If traveling outside the country, arrange for
+
++MONTHS TO GO
+
++Plan wedding-day beauty preparations; ask your stylist how far in
+
++☐ advance they book wedding parties, and whether they are willing to
+
++work on the wedding site.
+
++Finalize all honeymoon plans. If traveling outside the country, arrange
+
+ ☐
+
+-visas, passports and inoculations.
+
+-☐ Hire your wedding day transportation (carriage, limousine service, etc.).
+
++for visas, passports and inoculations.
+
++Hire your wedding day transportation (carriage, limousine service,
+
++☐
+
+... (2822 more characters)
 
 ```
 </details>
 
 ### Weekly schedule planner1
 
-- **Text Similarity:** 0.9293
-- **Visual Average:** 0.7361
-- **Overall Score:** 0.8662
+- **Text Similarity:** 0.9375
+- **Visual Average:** 0.7364
+- **Overall Score:** 0.8696
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1000647 bytes, Reference=96071 bytes
+- **File Size:** MiniPdf=1017563 bytes, Reference=96071 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Weekly schedule planner1.pdf
 +++ reference/Weekly schedule planner1.pdf
-@@ -6,10 +6,11 @@
+@@ -6,7 +6,8 @@
  Stretch Pick up dry cleaning
 
  Monday Tuesday Wednesday Thursday Friday Saturday Sunday
@@ -2439,13 +2469,6 @@ Text content: ✅ Identical
 
  ✔ Stretch ✔ Stretch ✖ Stretch Stretch Stretch Stretch Stretch
 
--✔ Go to vet ✔ Shoppin g Present
-
-+✔ Go to vet ✔ Shopping Present
-
- ✔ Rehearse
-
- Notes
 ```
 </details>
 
@@ -2956,90 +2979,6 @@ Text content: ✅ Identical
 ```
 </details>
 
-### XlsxIssue82_WideTable
-
-- **Text Similarity:** 0.9537
-- **Visual Average:** 0.8329
-- **Overall Score:** 0.8146
-- **Pages:** MiniPdf=14, Reference=13
-- **File Size:** MiniPdf=633053 bytes, Reference=506241 bytes
-
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/XlsxIssue82_WideTable.pdf
-+++ reference/XlsxIssue82_WideTable.pdf
-@@ -382,66 +382,34 @@
- Priority customer account; generated row 119 should remain readable without column overlap.
-
- Priority customer account; generated row 120 should remain readable without column overlap.
-
- ---PAGE---
-
--Record ID First Name Last Name Street Address City Region Postal Code
-
--ID-0001 Naveen Adhikari 2000 West Programmatic Export Boulevard Building 0 Kathmandu CA 90000
-
--ID-0002 Alicia Morrison 2001 West Programmatic Export Boulevard Building 1 Seattle CA 90001
-
--ID-0003 Marcus Chen 2002 West Programmatic Export Boulevard Building 2 Austin CA 90002
-
--ID-0004 Priya Patel 2003 West Programmatic Export Boulevard Building 3 Toronto CA 90003
-
--ID-0005 Daniel Rodriguez 2004 West Programmatic Export Boulevard Building 4 Singapore CA 90004
-
--ID-0006 Mei Tanaka 2005 West Programmatic Export Boulevard Building 5 Dublin CA 90005
-
--ID-0007 Sofia Bennett 2006 West Programmatic Export Boulevard Building 6 Melbourne CA 90006
-
--ID-0008 Owen Singh 2007 West Programmatic Export Boulevard Building 7 Berlin CA 90007
-
--ID-0009 Ibrahim Kim 2008 West Programmatic Export Boulevard Building 8 Kathmandu CA 90008
-
--ID-0010 Caroline Olsen 2009 West Programmatic Export Boulevard Building 9 Seattle CA 90009
-
--ID-0011 Naveen Adhikari 2010 West Programmatic Export Boulevard Building 10 Austin CA 90010
-
--ID-0012 Alicia Morrison 2011 West Programmatic Export Boulevard Building 11 Toronto CA 90011
-
--ID-0013 Marcus Chen 2012 West Programmatic Export Boulevard Building 0 Singapore CA 90012
-
--ID-0014 Priya Patel 2013 West Programmatic Export Boulevard Building 1 Dublin CA 90013
-
--ID-0015 Daniel Rodriguez 2014 West Programmatic Export Boulevard Building 2 Melbourne CA 90014
-
--ID-0016 Mei Tanaka 2015 West Programmatic Export Boulevard Building 3 Berlin CA 90015
-
--ID-0017 Sofia Bennett 2016 West Programmatic Export Boulevard Building 4 Kathmandu CA 90016
-
--ID-0018 Owen Singh 2017 West Programmatic Export Boulevard Building 5 Seattle CA 90017
-
--ID-0019 Ibrahim Kim 2018 West Programmatic Export Boulevard Building 6 Austin CA 90018
-
--ID-0020 Caroline Olsen 2019 West Programmatic Export Boulevard Building 7 Toronto CA 90019
-
--ID-0021 Naveen Adhikari 2020 West Programmatic Export Boulevard Building 8 Singapore CA 90020
-
--ID-0022 Alicia Morrison 2021 West Programmatic Export Boulevard Building 9 Dublin CA 90021
-
--ID-0023 Marcus Chen 2022 West Programmatic Export Boulevard Building 10 Melbourne CA 90022
-
--ID-0024 Priya Patel 2023 West Programmatic Export Boulevard Building 11 Berlin CA 90023
-
--ID-0025 Daniel Rodriguez 2024 West Programmatic Export Boulevard Building 0 Kathmandu CA 90024
-
--ID-0026 Mei Tanaka 2025 West Programmatic Export Boulevard Building 1 Seattle CA 90025
-
--ID-0027 Sofia Bennett 2026 West Programmatic Export Boulevard Building 2 Austin CA 90026
-
--ID-0028 Owen Singh 2027 West Programmatic Export Boulevard Building 3 Toronto CA 90027
-
--ID-0029 Ibrahim Kim 2028 West Programmatic Expo
-... (3278 more characters)
-
-```
-</details>
-
 ### XlsxIssue81_LayoutOptions
 
 - **Text Similarity:** 0.9066
@@ -3128,14 +3067,98 @@ Text content: ✅ Identical
 ```
 </details>
 
+### XlsxIssue82_WideTable
+
+- **Text Similarity:** 0.9537
+- **Visual Average:** 0.8329
+- **Overall Score:** 0.8146
+- **Pages:** MiniPdf=14, Reference=13
+- **File Size:** MiniPdf=633053 bytes, Reference=506241 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue82_WideTable.pdf
++++ reference/XlsxIssue82_WideTable.pdf
+@@ -382,66 +382,34 @@
+ Priority customer account; generated row 119 should remain readable without column overlap.
+
+ Priority customer account; generated row 120 should remain readable without column overlap.
+
+ ---PAGE---
+
+-Record ID First Name Last Name Street Address City Region Postal Code
+
+-ID-0001 Naveen Adhikari 2000 West Programmatic Export Boulevard Building 0 Kathmandu CA 90000
+
+-ID-0002 Alicia Morrison 2001 West Programmatic Export Boulevard Building 1 Seattle CA 90001
+
+-ID-0003 Marcus Chen 2002 West Programmatic Export Boulevard Building 2 Austin CA 90002
+
+-ID-0004 Priya Patel 2003 West Programmatic Export Boulevard Building 3 Toronto CA 90003
+
+-ID-0005 Daniel Rodriguez 2004 West Programmatic Export Boulevard Building 4 Singapore CA 90004
+
+-ID-0006 Mei Tanaka 2005 West Programmatic Export Boulevard Building 5 Dublin CA 90005
+
+-ID-0007 Sofia Bennett 2006 West Programmatic Export Boulevard Building 6 Melbourne CA 90006
+
+-ID-0008 Owen Singh 2007 West Programmatic Export Boulevard Building 7 Berlin CA 90007
+
+-ID-0009 Ibrahim Kim 2008 West Programmatic Export Boulevard Building 8 Kathmandu CA 90008
+
+-ID-0010 Caroline Olsen 2009 West Programmatic Export Boulevard Building 9 Seattle CA 90009
+
+-ID-0011 Naveen Adhikari 2010 West Programmatic Export Boulevard Building 10 Austin CA 90010
+
+-ID-0012 Alicia Morrison 2011 West Programmatic Export Boulevard Building 11 Toronto CA 90011
+
+-ID-0013 Marcus Chen 2012 West Programmatic Export Boulevard Building 0 Singapore CA 90012
+
+-ID-0014 Priya Patel 2013 West Programmatic Export Boulevard Building 1 Dublin CA 90013
+
+-ID-0015 Daniel Rodriguez 2014 West Programmatic Export Boulevard Building 2 Melbourne CA 90014
+
+-ID-0016 Mei Tanaka 2015 West Programmatic Export Boulevard Building 3 Berlin CA 90015
+
+-ID-0017 Sofia Bennett 2016 West Programmatic Export Boulevard Building 4 Kathmandu CA 90016
+
+-ID-0018 Owen Singh 2017 West Programmatic Export Boulevard Building 5 Seattle CA 90017
+
+-ID-0019 Ibrahim Kim 2018 West Programmatic Export Boulevard Building 6 Austin CA 90018
+
+-ID-0020 Caroline Olsen 2019 West Programmatic Export Boulevard Building 7 Toronto CA 90019
+
+-ID-0021 Naveen Adhikari 2020 West Programmatic Export Boulevard Building 8 Singapore CA 90020
+
+-ID-0022 Alicia Morrison 2021 West Programmatic Export Boulevard Building 9 Dublin CA 90021
+
+-ID-0023 Marcus Chen 2022 West Programmatic Export Boulevard Building 10 Melbourne CA 90022
+
+-ID-0024 Priya Patel 2023 West Programmatic Export Boulevard Building 11 Berlin CA 90023
+
+-ID-0025 Daniel Rodriguez 2024 West Programmatic Export Boulevard Building 0 Kathmandu CA 90024
+
+-ID-0026 Mei Tanaka 2025 West Programmatic Export Boulevard Building 1 Seattle CA 90025
+
+-ID-0027 Sofia Bennett 2026 West Programmatic Export Boulevard Building 2 Austin CA 90026
+
+-ID-0028 Owen Singh 2027 West Programmatic Export Boulevard Building 3 Toronto CA 90027
+
+-ID-0029 Ibrahim Kim 2028 West Programmatic Expo
+... (3278 more characters)
+
+```
+</details>
+
 ## Improvement Suggestions
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **payroll-calculator_f** (score: 0.4892)
-1. **Wedding_timeline_planner1_copy** (score: 0.4902)
+1. **payroll-calculator_f** (score: 0.5009)
 1. **Small business cash flow forecast1** (score: 0.6204)
 1. **XlsxIssue75** (score: 0.6479)
 1. **Event budget1** (score: 0.6766)
+1. **Wedding_timeline_planner1_copy** (score: 0.7774)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

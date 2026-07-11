@@ -1,38 +1,38 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-07T23:42:21.764336
+Generated: 2026-07-11T14:15:29.191728
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
 | 1 | 🟢 13_IEEE_Style_Paper | ✅ | 1.0 | 0.9675 | 2/2 | **0.987** |
-| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.9747 | 2/2 | **0.9899** |
+| 2 | 🟢 14_Thesis_Chapter | ✅ | 1.0 | 0.975 | 2/2 | **0.99** |
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9824 | 2/2 | **0.9906** |
-| 4 | 🟡 20260318_issue | ✅ | 0.6304 | 0.8704 | 7/7 | **0.8003** |
+| 4 | 🟢 20260318_issue | ✅ | 0.9685 | 0.8715 | 7/7 | **0.936** |
 | 5 | 🟢 CCU_article | ✅ | 0.8763 | 0.9467 | 21/21 | **0.9292** |
 | 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
 | 7 | 🟢 Class News | ✅ | 0.9665 | 0.8876 | 4/4 | **0.9416** |
 | 8 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
 | 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9791 | 0.969 | 2/2 | **0.9792** |
-| 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9846 | 7/7 | **0.9859** |
+| 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9849 | 7/7 | **0.986** |
 | 11 | 🟢 Fabrikam | ✅ | 1.0 | 0.9426 | 1/1 | **0.977** |
-| 12 | 🟢 Invoice | ✅ | 1.0 | 0.9591 | 1/1 | **0.9836** |
+| 12 | 🟢 Invoice | ✅ | 1.0 | 0.9594 | 1/1 | **0.9838** |
 | 13 | 🟢 Issue83_Output | ✅ | 1.0 | 0.98 | 1/1 | **0.992** |
-| 14 | 🟢 issue202605 | ✅ | 0.8674 | 0.9128 | 2/2 | **0.9121** |
+| 14 | 🟢 issue202605 | ✅ | 0.8674 | 0.9133 | 2/2 | **0.9123** |
 | 15 | 🟢 issue26050501 | ✅ | 0.94 | 0.9394 | 2/2 | **0.9518** |
 | 16 | 🟢 issues66 | ✅ | 0.9548 | 0.9232 | 3/3 | **0.9512** |
 | 17 | 🟡 MODERN LIVING | ✅ | 0.8567 | 0.8365 | 2/2 | **0.8773** |
-| 18 | 🟡 nthu_article | ✅ | 0.8587 | 0.8695 | 19/20 | **0.7913** |
+| 18 | 🟡 nthu_article | ✅ | 0.8597 | 0.8694 | 19/20 | **0.7916** |
 | 19 | 🟢 OSCAR WARD | ✅ | 0.9949 | 0.8445 | 1/1 | **0.9358** |
 | 20 | 🟢 SA8000 ch sample | ✅ | 0.9921 | 0.9642 | 2/2 | **0.9825** |
 | 21 | 🟢 Support_Letter | ✅ | 1.0 | 0.9392 | 1/1 | **0.9757** |
-| 22 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9841 | 17/17 | **0.9936** |
+| 22 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9848 | 17/17 | **0.9939** |
 | 23 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 | 24 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
 | 25 | 🟢 TestIssue78 | ✅ | 0.9961 | 0.9723 | 1/1 | **0.9874** |
 
-**Average Overall Score: 0.8320**
+**Average Overall Score: 0.8374**
 
 ## Visual Comparison
 
@@ -76,7 +76,7 @@ Generated: 2026-07-07T23:42:21.764336
 </tr>
 <tr>
   <td><b>20260318_issue</b></td>
-  <td colspan="1">20260318_issue <span style="color:#d29922">⬤</span> 80.0%</td>
+  <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.6%</td>
 </tr>
 <tr>
   <td><img src="images/20260318_issue_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -350,7 +350,7 @@ Generated: 2026-07-07T23:42:21.764336
 </tr>
 <tr>
   <td><b>nthu_article</b></td>
-  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.1%</td>
+  <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.2%</td>
 </tr>
 <tr>
   <td><img src="images/nthu_article_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -593,7 +593,7 @@ Generated: 2026-07-07T23:42:21.764336
 - **Visual Average:** 0.9675
 - **Overall Score:** 0.987
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=523578 bytes, Reference=174711 bytes
+- **File Size:** MiniPdf=523579 bytes, Reference=174711 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -647,8 +647,8 @@ Generated: 2026-07-07T23:42:21.764336
 ### 14_Thesis_Chapter
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9747
-- **Overall Score:** 0.9899
+- **Visual Average:** 0.975
+- **Overall Score:** 0.99
 - **Pages:** MiniPdf=2, Reference=2
 - **File Size:** MiniPdf=373405 bytes, Reference=159781 bytes
 
@@ -709,25 +709,25 @@ Text content: ✅ Identical
 
 ### 20260318_issue
 
-- **Text Similarity:** 0.6304
-- **Visual Average:** 0.8704
-- **Overall Score:** 0.8003
+- **Text Similarity:** 0.9685
+- **Visual Average:** 0.8715
+- **Overall Score:** 0.936
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=592077 bytes, Reference=344088 bytes
+- **File Size:** MiniPdf=591186 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/20260318_issue.pdf
 +++ reference/20260318_issue.pdf
-@@ -1,14 +1,14 @@
+@@ -1,7 +1,7 @@
  页眉的名称 ……………………..
 
  页眉 换了一行 .
 
  Title ddddddddfjkfjlasf
 
--Jjf dl j水水水顶顶顶顶水水水水
+-J jfdlj 水水水顶顶顶顶水水水水
 
 +Jjfdlj 水水水顶顶顶顶水水水水
 
@@ -737,127 +737,75 @@ Text content: ✅ Identical
 
  页眉的名称 ……………………..
 
- 页眉 换了一行 .
-
--R e v ision H istor y
-
-+Revision History
-
- Date Revision Author Description
-
--2025-5-13 张三 Initial dra f t
-
-+2025-5-13 张三 Initial draft
-
- 页脚的公司名称
-
- ---PAGE---
-
- 页眉的名称 ……………………..
-
-@@ -18,69 +18,68 @@
- The information is standard Company Confidential but due to its sensitivity it has restricted distribution and viewing
-
- within Volvo Cars.
-
- Document Version Control
-
--D ate Iss u ed V ersion D escription Au thor
-
--2025-5-13 V1 . 0 D ra f t Y an g L i
-
--2025-08-29 V2 . 0 Chan g e Z hon g , S hen g y o u
-
-+Date Issued Version Description Author
-
-+2025-5-13 V1.0 Draft Yang Li
-
-+2025-08-29 V2.0 Change Zhong, Shengyou
-
- Contributors
-
- The content of this document has been authored with the combined input of the following group of key individuals.
-
--N a m e R ole A rea
-
-+Name Role Area
-
- Cost Accountant CAC
-
- Source Documents
-
--Title Au thor V ersion D ate
-
-+Title Author Version Date
-
- Document Sign-off Requirements
-
- The following table contains the people required to sign-off and/or review this document and those that require the
-
- document for information only.
-
--N a m e D epart m ent R esponsi b ilit y
-
-+Name Department Responsibility
-
+@@ -34,16 +34,16 @@
  Document Classification
 
--Co m pan y Con f idential
+ Company Confidential
 
--Classi f ication
+ Classification
 
--In f or m ation is G ro u p con f idential and needs to b e protected
++1
 
--D e f inition
++页脚的公司名称
 
--W here loss o f in f or m ation con f identialit y wo u ld res u lt in si g ni f icant har m to the
++---PAGE---
 
--Conte x t
++页眉的名称 ……………………..
 
--interests o f the or g ani z ation , f inancial loss , e m b arrass m ent or loss o f in f or m ation
++页眉 换了一行 .
 
-+Company Confidential
+ Information is Group confidential and needs to be protected
 
-+Classification
+ Definition
 
- 1
+ Where loss of information confidentiality would result in significant harm to the
 
- 页脚的公司名称
+ Context
 
- ---PAGE---
+ interests of the organization, financial loss, embarrassment or loss of information
 
- 页眉的名称 ……………………..
+-1
 
- 页眉 换了一行 .
+-页脚的公司名称
 
-+Information is Group confidential and needs to be protected
+----PAGE---
 
-+Definition
+-页眉的名称 ……………………..
 
-+Where loss of information confidentiality would result in significant harm to the
-
-+Context
-
-+interests of the organization, financial loss, embarrassment or loss of information
+-页眉 换了一行 .
 
  Introduction
 
--The P rocess D e f inition D oc um ent (PDD) capt u res the f low o f a bu siness process to b e de v eloped.
+ The Process Definition Document (PDD) captures the flow of a business process to be developed.
 
--The f lowchart contained within the doc um ent capt u res , at a hi g h le v el , the bu siness process to b e a u to m ated , the
+ The flowchart contained within the document captures, at a high level, the business process to be automated, the
 
--tar g et s y ste m s u sed within the process and an y ass um ptions that ha v e b een taken into acco u nt.
+@@ -72,12 +72,11 @@
+ 2. Fill the title of work order.
 
--O nce a g reed as the b asis f or the a u to m ation o f the tar g et process , the f lowchart and ass um ptions will b e u sed as a
+ 3. Fill Asset code. Automatically display description after filling asset code.
 
--plat f or m f ro m which the a u to m ated sol u tion will b e desi g ned.
+ 4. Choose the Owner group.
 
--Chan g es to this bu siness process m a y constit u te a re qu est f or chan g e and will b e s u bj ect to the a g reed a g ilit y pro g ra m
+-5.
 
--chan g e proced u res.
+ 页脚的公司名称
 
--N ote : This doc um ent mu st b e co m pleted in the a b sence o f e x istin g process doc um entation that pro v ides the le v
-... (2735 more characters)
+ ---PAGE---
+
+ 页眉的名称 ……………………..
+
+ 页眉 换了一行 .
+
+-Choose the Work Type.
+
++5. Choose the Work Type.
+
+ 页脚的公司名称
+
+ ---PAGE---
+
+ 页眉的名称 ……………………..
 
 ```
 </details>
@@ -868,7 +816,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9467
 - **Overall Score:** 0.9292
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6478372 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=6540800 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -978,7 +926,7 @@ Text content: ✅ Identical
 
 +The contributions are: (1) a dynamic weighting strategy adaptive to per-epoch class
 
-... (12636 more characters)
+... (12589 more characters)
 
 ```
 </details>
@@ -1130,7 +1078,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.969
 - **Overall Score:** 0.9792
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=151684 bytes, Reference=143292 bytes
+- **File Size:** MiniPdf=151685 bytes, Reference=143292 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1228,8 +1176,8 @@ Text content: ✅ Identical
 ### Cooperation Agreement Template
 
 - **Text Similarity:** 0.9802
-- **Visual Average:** 0.9846
-- **Overall Score:** 0.9859
+- **Visual Average:** 0.9849
+- **Overall Score:** 0.986
 - **Pages:** MiniPdf=7, Reference=7
 - **File Size:** MiniPdf=4060338 bytes, Reference=139728 bytes
 
@@ -1407,10 +1355,10 @@ Text content: ✅ Identical
 ### Invoice
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9591
-- **Overall Score:** 0.9836
+- **Visual Average:** 0.9594
+- **Overall Score:** 0.9838
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=113620 bytes, Reference=65867 bytes
+- **File Size:** MiniPdf=113622 bytes, Reference=65867 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1450,10 +1398,10 @@ Text content: ✅ Identical
 ### issue202605
 
 - **Text Similarity:** 0.8674
-- **Visual Average:** 0.9128
-- **Overall Score:** 0.9121
+- **Visual Average:** 0.9133
+- **Overall Score:** 0.9123
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7690208 bytes, Reference=154034 bytes
+- **File Size:** MiniPdf=7897586 bytes, Reference=154034 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2010,11 +1958,11 @@ Text content: ✅ Identical
 
 ### nthu_article
 
-- **Text Similarity:** 0.8587
-- **Visual Average:** 0.8695
-- **Overall Score:** 0.7913
+- **Text Similarity:** 0.8597
+- **Visual Average:** 0.8694
+- **Overall Score:** 0.7916
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=9008766 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=9224028 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2218,7 +2166,7 @@ Text content: ✅ Identical
 +併改用中文新式標號。
 
 +2 ，行距建議設定為 1.2 行 （ word 中選「多行」，
-... (16067 more characters)
+... (15875 more characters)
 
 ```
 </details>
@@ -2477,10 +2425,10 @@ Text content: ✅ Identical
 ### Template for MSc Thesis
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9841
-- **Overall Score:** 0.9936
+- **Visual Average:** 0.9848
+- **Overall Score:** 0.9939
 - **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=865865 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=865859 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2681,6 +2629,6 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **nthu_article** (score: 0.7913)
+1. **nthu_article** (score: 0.7916)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

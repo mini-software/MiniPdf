@@ -59,6 +59,8 @@ internal static class DocxToPdfConverter
     // (e.g. Century Gothic) where Helvetica is a poor proxy.
     [ThreadStatic] private static int[]? s_overrideWidths;
 
+    [ThreadStatic] private static string? s_preferredWrapFontName;
+
     // Per-paragraph flag: set when the run font is a wide sans-serif (Franklin Gothic,
     // etc.) whose Latin glyphs are close to Helvetica width. In that case the default
     // 8% Latin reduction in EstimateWrapTextWidth produces too-narrow estimates,
@@ -1758,6 +1760,7 @@ internal static class DocxToPdfConverter
             var paraUseCalibri = options.UseCalibriWidths
                 && !IsWideSansSerifFont(runFontName);
             s_overrideWidths = GetFontOverrideWidths(runFontName);
+            s_preferredWrapFontName = ShouldUsePreferredFontWidthsForWrap(runFontName, paraUseCalibri) ? runFontName : null;
             s_wideSansSerifFont = IsWideSansSerifFont(runFontName) && s_overrideWidths == null;
             // NOTE: do NOT gate on !s_serifFont — when document default IS a serif (e.g. Times,
             // or Avenir-substituted-to-Times) a serif run still needs the Times-widths estimator
@@ -1904,6 +1907,7 @@ internal static class DocxToPdfConverter
                 state.AdvanceY(lineHeight);
             }
             s_overrideWidths = null;
+            s_preferredWrapFontName = null;
             s_wideSansSerifFont = false;
             s_serifRunInCalibri = false;
         }
@@ -4985,12 +4989,22 @@ internal static class DocxToPdfConverter
             || fontName.Contains("Garamond", StringComparison.OrdinalIgnoreCase);
     }
 
+    private static bool ShouldUsePreferredFontWidthsForWrap(string? fontName, bool useCalibriWidths)
+    {
+        return !useCalibriWidths
+            && fontName?.Contains("Cambria", StringComparison.OrdinalIgnoreCase) == true;
+    }
+
     /// <summary>
     /// When using Helvetica fallback, applies a kerning/hinting reduction since
     /// Helvetica is wider than most actual document fonts (Times New Roman, PMingLiU, etc.).
     /// </summary>
     private static float EstimateWrapTextWidth(string text, float fontSize, bool bold = false, float charSpacing = 0, bool useCalibriWidths = true)
     {
+        if (!useCalibriWidths
+            && !string.IsNullOrWhiteSpace(s_preferredWrapFontName)
+            && PdfWriter.TryMeasurePreferredFontWidth(s_preferredWrapFontName, text, fontSize, bold, italic: false, charSpacing, out var preferredWidth))
+            return preferredWidth;
         if (s_overrideWidths != null && !useCalibriWidths)
             return EstimateOverrideTextWidth(text, fontSize, bold, charSpacing);
         if (useCalibriWidths)

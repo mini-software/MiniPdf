@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-08T00:09:07.110952
+Generated: 2026-07-08T23:02:28.291622
 
 ## Summary
 
@@ -12,7 +12,7 @@ Generated: 2026-07-08T00:09:07.110952
 | 4 | 🟢 docx_classic04_bold_italic | ✅ | 1.0 | 0.9975 | 1/1 | **0.999** |
 | 5 | 🟢 docx_classic05_font_sizes | ✅ | 1.0 | 0.9896 | 1/1 | **0.9958** |
 | 6 | 🟢 docx_classic06_font_colors | ✅ | 1.0 | 0.9984 | 1/1 | **0.9994** |
-| 7 | 🟢 docx_classic07_alignment | ✅ | 1.0 | 0.9854 | 1/1 | **0.9942** |
+| 7 | 🟢 docx_classic07_alignment | ✅ | 1.0 | 0.9904 | 1/1 | **0.9962** |
 | 8 | 🟢 docx_classic08_bullet_list | ✅ | 1.0 | 0.9949 | 1/1 | **0.998** |
 | 9 | 🟢 docx_classic09_numbered_list | ✅ | 1.0 | 0.9915 | 1/1 | **0.9966** |
 | 10 | 🟢 docx_classic10_simple_table | ✅ | 1.0 | 0.9874 | 1/1 | **0.995** |
@@ -243,7 +243,7 @@ Generated: 2026-07-08T00:09:07.110952
 </tr>
 <tr>
   <td><b>docx_classic07_alignment</b></td>
-  <td colspan="1">docx_classic07_alignment <span style="color:#3fb950">⬤</span> 99.4%</td>
+  <td colspan="1">docx_classic07_alignment <span style="color:#3fb950">⬤</span> 99.6%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic07_alignment_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1897,49 +1897,12 @@ Text content: ✅ Identical
 ### docx_classic07_alignment
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9854
-- **Overall Score:** 0.9942
+- **Visual Average:** 0.9904
+- **Overall Score:** 0.9962
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=2011 bytes, Reference=43210 bytes
+- **File Size:** MiniPdf=259671 bytes, Reference=43210 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/docx_classic07_alignment.pdf
-+++ reference/docx_classic07_alignment.pdf
-@@ -1,8 +1,8 @@
--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-
--labore et dolore magna aliqua.
-
--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-
--labore et dolore magna aliqua.
-
--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-
--labore et dolore magna aliqua.
-
--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-
--labore et dolore magna aliqua.
-+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
-
-+ut labore et dolore magna aliqua.
-
-+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
-
-+ut labore et dolore magna aliqua.
-
-+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
-
-+ut labore et dolore magna aliqua.
-
-+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
-
-+ut labore et dolore magna aliqua.
-```
-</details>
+Text content: ✅ Identical
 
 ### docx_classic08_bullet_list
 
