@@ -76,7 +76,8 @@ def step_generate_reference_pdfs(filter_pattern: str = None):
 def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 0.90,
                  filter_pattern: str = None, manifest: str = None, report_scope: str = "shared",
                  composite_images: bool = False, candidate_label: str = "MiniPdf",
-                 reference_label: str = "LibreOffice Reference"):
+                 reference_label: str = "LibreOffice Reference", heatmaps: bool = False,
+                 heatmap_threshold: int = 12, heatmap_gain: float = 5.0):
     banner("Step 3: Compare MiniPdf vs Reference")
     cmd = [
         sys.executable, "compare_pdfs.py",
@@ -95,6 +96,12 @@ def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: 
             "--composite-images",
             "--candidate-label", candidate_label,
             "--reference-label", reference_label,
+        ]
+    if heatmaps:
+        cmd += [
+            "--heatmaps",
+            "--heatmap-threshold", str(heatmap_threshold),
+            "--heatmap-gain", str(heatmap_gain),
         ]
     return run(cmd, cwd=str(SCRIPT_DIR))
 
@@ -155,6 +162,12 @@ def main():
                         help="Report scope metadata forwarded to compare_pdfs.py")
     parser.add_argument("--composite-images", action="store_true",
                         help="Generate labeled side-by-side comparison images")
+    parser.add_argument("--heatmaps", action="store_true",
+                        help="Generate contextual per-page difference heatmaps")
+    parser.add_argument("--heatmap-threshold", type=int, default=12, metavar="N",
+                        help="Heatmap difference threshold (default: 12)")
+    parser.add_argument("--heatmap-gain", type=float, default=5.0, metavar="G",
+                        help="Heatmap difference amplification (default: 5.0)")
     parser.add_argument("--candidate-label", default="MiniPdf",
                         help="Candidate renderer label for composite images")
     parser.add_argument("--reference-label", default="LibreOffice Reference",
@@ -178,7 +191,10 @@ def main():
         report_scope=args.report_scope,
         composite_images=args.composite_images,
         candidate_label=args.candidate_label,
-        reference_label=args.reference_label)
+        reference_label=args.reference_label,
+        heatmaps=args.heatmaps,
+        heatmap_threshold=args.heatmap_threshold,
+        heatmap_gain=args.heatmap_gain)
 
     if args.compare_only:
         step_compare(**compare_kwargs)

@@ -9,9 +9,11 @@ Produces a detailed comparison report including:
 
 Prerequisites:
     pip install pymupdf   # for text extraction + rendering
+    pip install Pillow    # for heatmaps and composite images
 
 Usage:
     python compare_pdfs.py [--minipdf-dir ./minipdf_pdfs] [--reference-dir ./reference_pdfs] [--report-dir ./reports]
+    python compare_pdfs.py --heatmaps --heatmap-threshold 12 --heatmap-gain 5
 """
 
 import argparse
@@ -401,6 +403,80 @@ def render_page_to_pixels(pdf_path: str, page_num: int, dpi: int = 150):
     return result
 
 
+def _aligned_rgb_images(pix1, pix2):
+    """Convert two pixel tuples to equally sized RGB PIL images."""
+    if pix1 is None or pix2 is None:
+        return None, None
+
+    from PIL import Image
+
+    def to_image(pix):
+        width, height, samples = pix
+        channels = len(samples) // (width * height)
+        mode = "RGB" if channels == 3 else "RGBA"
+        return Image.frombytes(mode, (width, height), bytes(samples)).convert("RGB")
+
+    image1 = to_image(pix1)
+    image2 = to_image(pix2)
+    if image1.size != image2.size:
+        target_size = (min(image1.width, image2.width), min(image1.height, image2.height))
+        image1 = image1.resize(target_size, Image.LANCZOS)
+        image2 = image2.resize(target_size, Image.LANCZOS)
+    return image1, image2
+
+
+def save_difference_heatmap(
+    pix1,
+    pix2,
+    output_path: str,
+    threshold: int = 12,
+    gain: float = 5.0,
+) -> Optional[dict]:
+    """Write a contextual blue-to-red difference heatmap and return metrics."""
+    try:
+        from PIL import Image, ImageChops, ImageOps, ImageStat
+    except ImportError:
+        return None
+
+    image1, image2 = _aligned_rgb_images(pix1, pix2)
+    if image1 is None or image2 is None:
+        return None
+
+    threshold = max(0, min(255, int(threshold)))
+    gain = max(0.1, float(gain))
+    difference = ImageChops.difference(image1, image2)
+    red, green, blue = difference.split()
+    intensity = ImageChops.lighter(ImageChops.lighter(red, green), blue)
+    changed_mask = intensity.point(lambda value: 255 if value > threshold else 0)
+    difference_bbox = changed_mask.getbbox()
+
+    signal_lut = [
+        0 if value <= threshold else min(255, round((value - threshold) * gain))
+        for value in range(256)
+    ]
+    signal = intensity.point(signal_lut)
+    heat = ImageOps.colorize(signal, black=(45, 55, 225), white=(255, 45, 35))
+    context = ImageOps.grayscale(image2).convert("RGB")
+    contextual_heat = Image.blend(context, heat, 0.80)
+    contextual_heat.save(output_path)
+
+    histogram = changed_mask.histogram()
+    changed_pixels = sum(histogram[1:])
+    total_pixels = image1.width * image1.height
+    stats = ImageStat.Stat(difference)
+    rmse = (sum(channel_rms ** 2 for channel_rms in stats.rms) / len(stats.rms)) ** 0.5
+    return {
+        "size_px": [image1.width, image1.height],
+        "difference_bbox_px": list(difference_bbox) if difference_bbox else None,
+        "changed_pixels": changed_pixels,
+        "changed_fraction": round(changed_pixels / total_pixels, 6) if total_pixels else 0.0,
+        "mean_abs_rgb": round(sum(stats.mean) / len(stats.mean), 4),
+        "rmse_rgb": round(rmse, 4),
+        "threshold": threshold,
+        "gain": gain,
+    }
+
+
 def pixel_diff_score(pix1, pix2, grid_n: int = 20) -> float:
     """
     Compare two pixmaps and return a structural similarity score 0.0-1.0.
@@ -528,6 +604,9 @@ def save_visual_diff(
     office_pdf_path=None,
     composite_output_dir: Optional[str] = None,
     labels: Optional[dict] = None,
+    heatmaps: bool = False,
+    heatmap_threshold: int = 12,
+    heatmap_gain: float = 5.0,
 ):
     """Save visual diff images for each page."""
     if not HAS_FITZ:
@@ -540,7 +619,7 @@ def save_visual_diff(
 
     # Remove stale images from previous runs with different page counts
     import glob
-    for suffix in ("minipdf", "reference", "office"):
+    for suffix in ("minipdf", "reference", "office", "heatmap"):
         for old in glob.glob(os.path.join(output_dir, f"{glob.escape(name)}_p*_{suffix}.png")):
             os.remove(old)
     if composite_output_dir:
@@ -595,6 +674,19 @@ def save_visual_diff(
         }
         if doc3 is not None:
             entry["office_img"] = f"{name}_p{i+1}_office.png" if pix3 else None
+        if heatmaps and pix1 and pix2:
+            heatmap_name = f"{name}_p{i+1}_heatmap.png"
+            heatmap_path = os.path.join(output_dir, heatmap_name)
+            heatmap_metrics = save_difference_heatmap(
+                (pix1.width, pix1.height, pix1.samples),
+                (pix2.width, pix2.height, pix2.samples),
+                heatmap_path,
+                threshold=heatmap_threshold,
+                gain=heatmap_gain,
+            )
+            if heatmap_metrics:
+                entry["heatmap_img"] = heatmap_name
+                entry["heatmap_metrics"] = heatmap_metrics
         if composite_output_dir:
             engine_slugs = [slugify_label(candidate_label), slugify_label(reference_label)]
             components = [(candidate_label, path1), (reference_label, path2)]
@@ -710,6 +802,9 @@ def compare_single(
     composite_images: bool = False,
     composite_output_dir: Optional[str] = None,
     labels: Optional[dict] = None,
+    heatmaps: bool = False,
+    heatmap_threshold: int = 12,
+    heatmap_gain: float = 5.0,
 ) -> dict:
     """Compare a single pair of PDFs and return a detailed result."""
     result = {
@@ -838,6 +933,9 @@ def compare_single(
             office_pdf_path=office_path,
             composite_output_dir=composite_output_dir if composite_images else None,
             labels=labels,
+            heatmaps=heatmaps,
+            heatmap_threshold=heatmap_threshold,
+            heatmap_gain=heatmap_gain,
         )
 
         # ── AI visual comparison ──────────────────────────────────────────────
@@ -958,6 +1056,41 @@ def generate_report(results: list[dict], report_dir: str):
                     f.write(
                         f"  <td><img src=\"side-by-side/{composite_img}\" "
                         f"width=\"760\" alt=\"{display_name} page {page_num} comparison\"></td>\n"
+                    )
+                    f.write("</tr>\n")
+            f.write("</table>\n\n")
+
+        has_heatmaps = any(
+            pg.get("heatmap_img")
+            for r in results
+            for pg in r.get("diff_images", [])
+        )
+        if has_heatmaps:
+            f.write("## Difference Heatmaps\n\n")
+            f.write("Blue areas are below the configured difference threshold; red areas have stronger pixel differences. The reference rendering is retained as faint context.\n\n")
+            f.write("<table>\n")
+            f.write("<tr><th>Case</th><th>Heatmap</th><th>Metrics</th></tr>\n")
+            for r in results:
+                display_name = result_display_name(r)
+                for idx, pg in enumerate(r.get("diff_images", [])):
+                    heatmap_img = pg.get("heatmap_img")
+                    if not heatmap_img:
+                        continue
+                    page_num = pg.get("page", idx + 1)
+                    metrics = pg.get("heatmap_metrics", {})
+                    changed_fraction = metrics.get("changed_fraction", 0) * 100
+                    bbox = metrics.get("difference_bbox_px")
+                    f.write("<tr>\n")
+                    f.write(f"  <td><b>{display_name}</b><br>Page {page_num}</td>\n")
+                    f.write(f"  <td><img src=\"images/{heatmap_img}\" width=\"760\" alt=\"{display_name} page {page_num} difference heatmap\"></td>\n")
+                    f.write(
+                        "  <td>"
+                        f"changed: {metrics.get('changed_pixels', 0)} px ({changed_fraction:.2f}%)<br>"
+                        f"bbox: {bbox}<br>"
+                        f"mean abs RGB: {metrics.get('mean_abs_rgb', 0)}<br>"
+                        f"RMSE RGB: {metrics.get('rmse_rgb', 0)}<br>"
+                        f"threshold: {metrics.get('threshold', 0)}, gain: {metrics.get('gain', 0)}"
+                        "</td>\n"
                     )
                     f.write("</tr>\n")
             f.write("</table>\n\n")
@@ -1214,6 +1347,12 @@ def main():
                         help="Also write labeled side-by-side composite PNGs under the report directory")
     parser.add_argument("--composite-dir", default=None, metavar="DIR",
                         help="Composite image output directory (default: <report-dir>/side-by-side)")
+    parser.add_argument("--heatmaps", action="store_true",
+                        help="Generate contextual per-page pixel-difference heatmaps")
+    parser.add_argument("--heatmap-threshold", type=int, default=12, metavar="N",
+                        help="Ignore per-channel differences at or below this value (default: 12)")
+    parser.add_argument("--heatmap-gain", type=float, default=5.0, metavar="G",
+                        help="Amplification applied above the heatmap threshold (default: 5.0)")
     parser.add_argument("--candidate-label", default="MiniPdf",
                         help="Label for candidate renderer images in composite output")
     parser.add_argument("--reference-label", default="LibreOffice Reference",
@@ -1221,6 +1360,13 @@ def main():
     parser.add_argument("--office-label", default="Office",
                         help="Label for optional Office renderer images in composite output")
     args = parser.parse_args()
+
+    if args.heatmaps:
+        try:
+            import PIL  # noqa: F401
+        except ImportError:
+            print("WARNING: --heatmaps requested but Pillow is not installed.")
+            print("         Install with: pip install Pillow")
 
     if args.ai_compare:
         if not HAS_OPENAI:
@@ -1272,6 +1418,8 @@ def main():
         print(f"Report scope:    {args.report_scope}")
     if args.composite_images:
         print(f"Composite PNGs:  {composite_dir}")
+    if args.heatmaps:
+        print(f"Heatmaps:        threshold={args.heatmap_threshold}, gain={args.heatmap_gain:g}")
     print()
 
     if args.manifest:
@@ -1332,6 +1480,9 @@ def main():
             composite_images=args.composite_images,
             composite_output_dir=composite_dir,
             labels=labels,
+            heatmaps=args.heatmaps,
+            heatmap_threshold=args.heatmap_threshold,
+            heatmap_gain=args.heatmap_gain,
         )
         score = result.get("overall_score", "N/A")
         print(f"score={score}")

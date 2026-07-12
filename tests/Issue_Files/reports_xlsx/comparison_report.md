@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-12T03:22:32.353305
+Generated: 2026-07-12T12:48:47.041147
 
 ## Summary
 
@@ -30,6 +30,24 @@ Generated: 2026-07-12T03:22:32.353305
 | 22 | 🟡 XlsxIssue82_WideTable | ✅ | 0.9537 | 0.8329 | 14/13 | **0.8146** |
 
 **Average Overall Score: 0.7612**
+
+## Difference Heatmaps
+
+Blue areas are below the configured difference threshold; red areas have stronger pixel differences. The reference rendering is retained as faint context.
+
+<table>
+<tr><th>Case</th><th>Heatmap</th><th>Metrics</th></tr>
+<tr>
+  <td><b>Academic Achievement Summary Table</b><br>Page 1</td>
+  <td><img src="images/Academic Achievement Summary Table_p1_heatmap.png" width="760" alt="Academic Achievement Summary Table page 1 difference heatmap"></td>
+  <td>changed: 131110 px (6.02%)<br>bbox: [46, 21, 1717, 1143]<br>mean abs RGB: 7.904<br>RMSE RGB: 37.0258<br>threshold: 10, gain: 4.0</td>
+</tr>
+<tr>
+  <td><b>Academic Achievement Summary Table</b><br>Page 2</td>
+  <td><img src="images/Academic Achievement Summary Table_p2_heatmap.png" width="760" alt="Academic Achievement Summary Table page 2 difference heatmap"></td>
+  <td>changed: 225419 px (10.36%)<br>bbox: [46, 11, 1717, 1166]<br>mean abs RGB: 13.8769<br>RMSE RGB: 49.8002<br>threshold: 10, gain: 4.0</td>
+</tr>
+</table>
 
 ## Visual Comparison
 

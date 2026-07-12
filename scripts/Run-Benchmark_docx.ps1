@@ -31,6 +31,9 @@ param(
     [string]$Manifest,
     [string]$ReportScope = "shared",
     [switch]$CompositeImages,
+    [switch]$Heatmaps,
+    [int]$HeatmapThreshold = 12,
+    [double]$HeatmapGain = 5.0,
     [string]$CandidateLabel = "MiniPdf",
     [string]$ReferenceLabel,
     [string]$OfficeLabel = "Office"
@@ -79,6 +82,11 @@ if ($ReportDir) { $pyArgs += "--report-dir"; $pyArgs += (Resolve-BenchmarkPath $
 if ($Manifest) { $pyArgs += "--manifest"; $pyArgs += (Resolve-BenchmarkPath $Manifest) }
 if ($ReportScope -ne "shared") { $pyArgs += "--report-scope"; $pyArgs += $ReportScope }
 if ($CompositeImages) { $pyArgs += "--composite-images" }
+if ($Heatmaps) {
+    $pyArgs += "--heatmaps"
+    $pyArgs += "--heatmap-threshold"; $pyArgs += $HeatmapThreshold
+    $pyArgs += "--heatmap-gain"; $pyArgs += $HeatmapGain
+}
 if ($CandidateLabel -ne "MiniPdf") { $pyArgs += "--candidate-label"; $pyArgs += $CandidateLabel }
 if ($ReferenceLabel) { $pyArgs += "--reference-label"; $pyArgs += $ReferenceLabel }
 if ($OfficeLabel -ne "Office") { $pyArgs += "--office-label"; $pyArgs += $OfficeLabel }

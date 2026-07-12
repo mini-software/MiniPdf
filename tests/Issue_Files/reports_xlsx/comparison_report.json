@@ -21,12 +21,50 @@
       {
         "page": 1,
         "minipdf_img": "Academic Achievement Summary Table_p1_minipdf.png",
-        "reference_img": "Academic Achievement Summary Table_p1_reference.png"
+        "reference_img": "Academic Achievement Summary Table_p1_reference.png",
+        "heatmap_img": "Academic Achievement Summary Table_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1754,
+            1241
+          ],
+          "difference_bbox_px": [
+            46,
+            21,
+            1717,
+            1143
+          ],
+          "changed_pixels": 131110,
+          "changed_fraction": 0.060233,
+          "mean_abs_rgb": 7.904,
+          "rmse_rgb": 37.0258,
+          "threshold": 10,
+          "gain": 4.0
+        }
       },
       {
         "page": 2,
         "minipdf_img": "Academic Achievement Summary Table_p2_minipdf.png",
-        "reference_img": "Academic Achievement Summary Table_p2_reference.png"
+        "reference_img": "Academic Achievement Summary Table_p2_reference.png",
+        "heatmap_img": "Academic Achievement Summary Table_p2_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1754,
+            1241
+          ],
+          "difference_bbox_px": [
+            46,
+            11,
+            1717,
+            1166
+          ],
+          "changed_pixels": 225419,
+          "changed_fraction": 0.103559,
+          "mean_abs_rgb": 13.8769,
+          "rmse_rgb": 49.8002,
+          "threshold": 10,
+          "gain": 4.0
+        }
       }
     ],
     "overall_score": 0.973

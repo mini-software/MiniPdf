@@ -114,7 +114,8 @@ def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: 
                  use_office: bool = False, filter_pattern: str = None, manifest: str = None,
                  report_scope: str = "shared", composite_images: bool = False,
                  candidate_label: str = "MiniPdf", reference_label: str = "Reference",
-                 office_label: str = "Office"):
+                 office_label: str = "Office", heatmaps: bool = False,
+                 heatmap_threshold: int = 12, heatmap_gain: float = 5.0):
     """Step 4: Compare MiniPdf PDFs against reference PDFs."""
     banner("Step 4: Compare MiniPdf vs Reference")
     cmd = [
@@ -137,6 +138,12 @@ def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: 
             "--candidate-label", candidate_label,
             "--reference-label", reference_label,
             "--office-label", office_label,
+        ]
+    if heatmaps:
+        cmd += [
+            "--heatmaps",
+            "--heatmap-threshold", str(heatmap_threshold),
+            "--heatmap-gain", str(heatmap_gain),
         ]
     return run(cmd, cwd=str(SCRIPT_DIR))
 
@@ -215,6 +222,12 @@ def main():
                         help="Report scope metadata forwarded to compare_pdfs.py")
     parser.add_argument("--composite-images", action="store_true",
                         help="Generate labeled side-by-side comparison images")
+    parser.add_argument("--heatmaps", action="store_true",
+                        help="Generate contextual per-page difference heatmaps")
+    parser.add_argument("--heatmap-threshold", type=int, default=12, metavar="N",
+                        help="Heatmap difference threshold (default: 12)")
+    parser.add_argument("--heatmap-gain", type=float, default=5.0, metavar="G",
+                        help="Heatmap difference amplification (default: 5.0)")
     parser.add_argument("--candidate-label", default="MiniPdf",
                         help="Candidate renderer label for composite images")
     parser.add_argument("--reference-label", default=None,
@@ -244,6 +257,9 @@ def main():
         candidate_label=args.candidate_label,
         reference_label=reference_label,
         office_label=args.office_label,
+        heatmaps=args.heatmaps,
+        heatmap_threshold=args.heatmap_threshold,
+        heatmap_gain=args.heatmap_gain,
     )
     filt = args.filter
 

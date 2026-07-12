@@ -12,6 +12,7 @@
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000"             # only files matching "sa8000"
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -SkipReference
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -CompareOnly
+    .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -CompareOnly -Heatmaps
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -SingleFile # convert via published .NET single-file CLI
 #>
 
@@ -25,6 +26,9 @@ param(
     [switch]$SkipOffice,
     [switch]$SingleFile,
     [string]$SingleFileRid = "win-x64",
+    [switch]$Heatmaps,
+    [int]$HeatmapThreshold = 12,
+    [double]$HeatmapGain = 5.0,
     [ValidateSet("libre", "office")]
     [string]$Engine = "office"
 )
@@ -278,6 +282,9 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
         $compareArgs += @("--office-dir", $OfficeXlsx)
     }
     if ($Filter) { $compareArgs += @("--filter", $Filter) }
+    if ($Heatmaps) {
+        $compareArgs += @("--heatmaps", "--heatmap-threshold", $HeatmapThreshold, "--heatmap-gain", $HeatmapGain)
+    }
     Push-Location $BenchmarkDir
     try {
         python @compareArgs
@@ -356,6 +363,9 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
         $compareArgs += @("--office-dir", $OfficeDocx)
     }
     if ($Filter) { $compareArgs += @("--filter", $Filter) }
+    if ($Heatmaps) {
+        $compareArgs += @("--heatmaps", "--heatmap-threshold", $HeatmapThreshold, "--heatmap-gain", $HeatmapGain)
+    }
     Push-Location $BenchmarkDir
     try {
         python @compareArgs
