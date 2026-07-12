@@ -1243,16 +1243,25 @@ internal static class ExcelToPdfConverter
 
         float ScaledRowHeightAt(int rowIndex)
         {
+            var fixedRowPrintScaleFactor = FixedRowPrintScaleFactor(rowIndex);
             var height = sheet.RowHeights.TryGetValue(rowIndex, out var explicitHeight)
                 ? explicitHeight
-                : lineHeight / Math.Max(printScaleFactor * fitToPageScale, 0.0001f);
+                : lineHeight / Math.Max(fixedRowPrintScaleFactor * fitToPageScale, 0.0001f);
 
-            if (printScaleFactor != 1f)
-                height *= printScaleFactor;
+            if (fixedRowPrintScaleFactor != 1f)
+                height *= fixedRowPrintScaleFactor;
             if (fitToPageScale < 1f)
                 height *= fitToPageScale;
 
             return height;
+        }
+
+        float FixedRowPrintScaleFactor(int rowIndex)
+        {
+            var isManualPageSegment = sheet.RowBreaks.Any(breakRow => breakRow <= rowIndex);
+            return sheet.FitToPage && sheet.FitToHeight == 0 && sheet.EffectivePrintScaleF.HasValue && isManualPageSegment
+                ? sheet.PrintScale / 100f
+                : printScaleFactor;
         }
 
         float MergedHeightForCell(int rowIndex, int col, float currentRowHeight)
@@ -1294,7 +1303,8 @@ internal static class ExcelToPdfConverter
 
                 // Calculate row height
                 var hasTitleExplicitH = sheet.RowHeights.TryGetValue(titleRowIdx, out var titleExplicitH);
-                if (hasTitleExplicitH && printScaleFactor != 1f) titleExplicitH *= printScaleFactor;
+                var fixedRowPrintScaleFactor = FixedRowPrintScaleFactor(titleRowIdx);
+                if (hasTitleExplicitH && fixedRowPrintScaleFactor != 1f) titleExplicitH *= fixedRowPrintScaleFactor;
                 if (hasTitleExplicitH && fitToPageScale < 1f) titleExplicitH *= fitToPageScale;
 
                 // Compute cell lines and max lines
@@ -1610,6 +1620,7 @@ internal static class ExcelToPdfConverter
 
             // Determine this row's effective height
             var hasExplicitHeight = sheet.RowHeights.TryGetValue(excelRowIndex, out var explicitRowHeight);
+            var fixedRowPrintScaleFactor = FixedRowPrintScaleFactor(excelRowIndex);
 
             // Skip hidden rows (height 0 in the RowHeights dictionary)
             if (hasExplicitHeight && explicitRowHeight <= 0f)
@@ -1621,8 +1632,8 @@ internal static class ExcelToPdfConverter
             }
 
             // Apply print scale to explicit row heights
-            if (hasExplicitHeight && printScaleFactor != 1f)
-                explicitRowHeight *= printScaleFactor;
+            if (hasExplicitHeight && fixedRowPrintScaleFactor != 1f)
+                explicitRowHeight *= fixedRowPrintScaleFactor;
             // Apply fitToPage additional scale
             if (hasExplicitHeight && fitToPageScale < 1f)
                 explicitRowHeight *= fitToPageScale;

@@ -1,12 +1,12 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-12T14:29:26.307806
+Generated: 2026-07-12T17:42:21.324170
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9785 | 0.954 | 2/2 | **0.973** |
+| 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9785 | 0.9563 | 2/2 | **0.9739** |
 | 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9785 | 0.954 | 2/2 | **0.973** |
 | 3 | 🟢 Business expense budget1 | ✅ | 0.9601 | 0.8752 | 4/4 | **0.9341** |
 | 4 | 🟡 Business expenses budget2 | ✅ | 0.9809 | 0.6699 | 4/4 | **0.8603** |
@@ -31,41 +31,13 @@ Generated: 2026-07-12T14:29:26.307806
 
 **Average Overall Score: 0.7621**
 
-## Difference Heatmaps
-
-Blue areas are below the configured difference threshold; red areas have stronger pixel differences. The reference rendering is retained as faint context.
-
-<table>
-<tr><th>Case</th><th>Heatmap</th><th>Metrics</th></tr>
-<tr>
-  <td><b>Academic Achievement Summary Table</b><br>Page 1</td>
-  <td><img src="images/Academic Achievement Summary Table_p1_heatmap.png" width="760" alt="Academic Achievement Summary Table page 1 difference heatmap"></td>
-  <td>changed: 131110 px (6.02%)<br>bbox: [46, 21, 1717, 1143]<br>mean abs RGB: 7.904<br>RMSE RGB: 37.0258<br>threshold: 10, gain: 4.0</td>
-</tr>
-<tr>
-  <td><b>Academic Achievement Summary Table</b><br>Page 2</td>
-  <td><img src="images/Academic Achievement Summary Table_p2_heatmap.png" width="760" alt="Academic Achievement Summary Table page 2 difference heatmap"></td>
-  <td>changed: 225419 px (10.36%)<br>bbox: [46, 11, 1717, 1166]<br>mean abs RGB: 13.8769<br>RMSE RGB: 49.8002<br>threshold: 10, gain: 4.0</td>
-</tr>
-<tr>
-  <td><b>AcademicAchievement_temp</b><br>Page 1</td>
-  <td><img src="images/AcademicAchievement_temp_p1_heatmap.png" width="760" alt="AcademicAchievement_temp page 1 difference heatmap"></td>
-  <td>changed: 131110 px (6.02%)<br>bbox: [46, 21, 1717, 1143]<br>mean abs RGB: 7.904<br>RMSE RGB: 37.0258<br>threshold: 10, gain: 4.0</td>
-</tr>
-<tr>
-  <td><b>AcademicAchievement_temp</b><br>Page 2</td>
-  <td><img src="images/AcademicAchievement_temp_p2_heatmap.png" width="760" alt="AcademicAchievement_temp page 2 difference heatmap"></td>
-  <td>changed: 224980 px (10.34%)<br>bbox: [46, 11, 1717, 1166]<br>mean abs RGB: 13.828<br>RMSE RGB: 49.6809<br>threshold: 10, gain: 4.0</td>
-</tr>
-</table>
-
 ## Visual Comparison
 
 <table>
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
   <td><b>Academic Achievement Summary Table</b></td>
-  <td colspan="1">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 97.3%</td>
+  <td colspan="1">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
   <td><img src="images/Academic Achievement Summary Table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1184,10 +1156,10 @@ Blue areas are below the configured difference threshold; red areas have stronge
 ### Academic Achievement Summary Table
 
 - **Text Similarity:** 0.9785
-- **Visual Average:** 0.954
-- **Overall Score:** 0.973
+- **Visual Average:** 0.9563
+- **Overall Score:** 0.9739
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1929166 bytes, Reference=168612 bytes
+- **File Size:** MiniPdf=1929104 bytes, Reference=168612 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2164,7 +2136,7 @@ Text content: ✅ Identical
 
  Invoice #: 10654
 
--Invoice date: 7/11/2026
+-Invoice date: 7/12/2026
 
 -Embrace
 

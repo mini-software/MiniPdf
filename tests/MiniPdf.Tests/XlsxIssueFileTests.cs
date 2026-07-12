@@ -6,6 +6,28 @@ namespace MiniSoftware.Tests;
 public class XlsxIssueFileTests
 {
     [Fact]
+    public void AcademicAchievement_ManualPageBreak_UsesIntegerScaleForFixedRows()
+    {
+        var issuePath = FindIssueXlsx("Academic Achievement Summary Table.xlsx");
+
+        var doc = ExcelToPdfConverter.Convert(issuePath);
+
+        Assert.Equal(2, doc.Pages.Count);
+        var horizontalGridLines = doc.Pages[1].LineBlocks
+            .Where(line => Math.Abs(line.Y1 - line.Y2) < 0.001f)
+            .Select(line => line.Y1)
+            .Distinct()
+            .OrderByDescending(y => y)
+            .ToArray();
+        var repeatedFixedRows = horizontalGridLines
+            .Zip(horizontalGridLines.Skip(1), (top, bottom) => top - bottom)
+            .Count(height => Math.Abs(height - 28.4625f) < 0.001f);
+
+        Assert.True(repeatedFixedRows >= 8,
+            $"Expected repeated 37.95pt rows at 75% scale, found {repeatedFixedRows} matching rows.");
+    }
+
+    [Fact]
     public void Issue81_LayoutOptions_CompactLargeWorksheetOutput()
     {
         var issuePath = FindIssueXlsx("XlsxIssue81_LayoutOptions.xlsx");
