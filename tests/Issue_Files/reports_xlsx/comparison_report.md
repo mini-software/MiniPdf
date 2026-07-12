@@ -1,13 +1,13 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-12T12:48:47.041147
+Generated: 2026-07-12T14:29:26.307806
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
 | 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9785 | 0.954 | 2/2 | **0.973** |
-| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9322 | 0.9504 | 2/2 | **0.953** |
+| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9785 | 0.954 | 2/2 | **0.973** |
 | 3 | 🟢 Business expense budget1 | ✅ | 0.9601 | 0.8752 | 4/4 | **0.9341** |
 | 4 | 🟡 Business expenses budget2 | ✅ | 0.9809 | 0.6699 | 4/4 | **0.8603** |
 | 5 | 🟡 Business plan checklist with SWOT analysis1 | ✅ | 0.9915 | 0.5465 | 1/1 | **0.8152** |
@@ -29,7 +29,7 @@ Generated: 2026-07-12T12:48:47.041147
 | 21 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9066 | 0.9076 | 16/16 | **0.9257** |
 | 22 | 🟡 XlsxIssue82_WideTable | ✅ | 0.9537 | 0.8329 | 14/13 | **0.8146** |
 
-**Average Overall Score: 0.7612**
+**Average Overall Score: 0.7621**
 
 ## Difference Heatmaps
 
@@ -46,6 +46,16 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><b>Academic Achievement Summary Table</b><br>Page 2</td>
   <td><img src="images/Academic Achievement Summary Table_p2_heatmap.png" width="760" alt="Academic Achievement Summary Table page 2 difference heatmap"></td>
   <td>changed: 225419 px (10.36%)<br>bbox: [46, 11, 1717, 1166]<br>mean abs RGB: 13.8769<br>RMSE RGB: 49.8002<br>threshold: 10, gain: 4.0</td>
+</tr>
+<tr>
+  <td><b>AcademicAchievement_temp</b><br>Page 1</td>
+  <td><img src="images/AcademicAchievement_temp_p1_heatmap.png" width="760" alt="AcademicAchievement_temp page 1 difference heatmap"></td>
+  <td>changed: 131110 px (6.02%)<br>bbox: [46, 21, 1717, 1143]<br>mean abs RGB: 7.904<br>RMSE RGB: 37.0258<br>threshold: 10, gain: 4.0</td>
+</tr>
+<tr>
+  <td><b>AcademicAchievement_temp</b><br>Page 2</td>
+  <td><img src="images/AcademicAchievement_temp_p2_heatmap.png" width="760" alt="AcademicAchievement_temp page 2 difference heatmap"></td>
+  <td>changed: 224980 px (10.34%)<br>bbox: [46, 11, 1717, 1166]<br>mean abs RGB: 13.828<br>RMSE RGB: 49.6809<br>threshold: 10, gain: 4.0</td>
 </tr>
 </table>
 
@@ -67,7 +77,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><b>AcademicAchievement_temp</b></td>
-  <td colspan="1">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 95.3%</td>
+  <td colspan="1">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 97.3%</td>
 </tr>
 <tr>
   <td><img src="images/AcademicAchievement_temp_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1288,29 +1298,25 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
 ### AcademicAchievement_temp
 
-- **Text Similarity:** 0.9322
-- **Visual Average:** 0.9504
-- **Overall Score:** 0.953
+- **Text Similarity:** 0.9785
+- **Visual Average:** 0.954
+- **Overall Score:** 0.973
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=576528 bytes, Reference=168612 bytes
+- **File Size:** MiniPdf=1929114 bytes, Reference=168612 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/AcademicAchievement_temp.pdf
 +++ reference/AcademicAchievement_temp.pdf
-@@ -1,11 +1,11 @@
- 附件3
-
--学术业绩汇总表
-
-+学 术业绩汇总 表
+@@ -2,10 +2,10 @@
+ 学 术业绩汇总 表
 
  报考岗位： 报考岗位代码： 考生姓名：
 
  博士论文题目： 博士论文研究方向：
 
--公开发表的主要 论文情况
+-公开 发 表的主要 论文情况
 
 -角色 转载刊物、转载字数及转 是否为代表作
 
@@ -1337,7 +1343,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
  ---PAGE---
 
--公开出版的主要专 （ 译 ） 著 、 教材情况
+-公开出版的主要 专 （ 译 ）著、教材情况
 
 -角色 全书文字 本人写作 转载刊物、转载字数及转
 
@@ -1355,7 +1361,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
  2
 
--获批的决策咨询 报 告情况
+-获 批的决策咨 询 报 告情况
 
 +获 批的决策咨 询报 告情况
 
@@ -1369,7 +1375,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
  4
 
--承担的主要科 研课题情况
+-承担的主要科研 课 题情况
 
 +承担的主要科研 课题 情况
 
@@ -1379,28 +1385,24 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
  级别
 
-@@ -39,9 +39,9 @@
- 2
-
+@@ -40,8 +40,8 @@
  3
 
  4
 
--本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。
+ 本人承 诺 以上情况属 实 ，并有相 应证 明。如有不 实 之 处 ，愿意承担相 应责 任。
 
--报名人员签名：
-
-+本人承 诺 以上情况属 实 ，并有相 应证 明。如有不 实 之 处 ，愿意承担相 应责 任。
+-报名人 员签 名：
 
 +报 名人 员签 名：
 
  日期：    年   月   日
 
--填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。
+-填表 说 明：1. 请 将各 类 学 术 成果按等 级、 层 次及水平自高到低 顺 序填写。不加行、减行，不加 页 、减 页 ，本表采用A4正反面打印。
 
--2.核心期刊是指北京大学图书馆“中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含扩展版、集刊）、中国科学技术信息研究所
+-2.核心期刊是指北京大学 图 书 馆 “中文核心期刊”、南京大学“中文社会科学引文索引（CSSCI）来源期刊”（含 扩 展版、集刊）、中国科学技 术 信息研究所
 
--“中国科技论文统计源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收录的期刊要求进入所在学科领域Q1、Q2。
+-“中国科技 论文 统计 源期刊”和科学引文索引（SCI）、社会科学引文索引（SSCI）。其中，被SCI、SSCI收 录 的期刊要求 进 入所在学科 领 域Q1、Q2。
 +填表 说 明： 1. 请 将各 类 学 术 成果按等 级层 、 次及水平自高到低 顺 序填写。不加行、减行，不加 页 、减 页 ，本表采用 A4正反面打印。
 
 +2.核心期刊是指北京大学 图书馆 “中文核心期刊”、南京大学“中文社会科学引文索引（ CSSCI）来源期刊”（含 扩 展版、集刊）、中国科学技 术 信息研究所

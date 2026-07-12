@@ -1,0 +1,534 @@
+{
+  "case": "AcademicAchievement_temp",
+  "page": 2,
+  "mini_pdf": {
+    "page_size_pt": [
+      841.89,
+      595.28
+    ],
+    "page_fonts": [
+      "DengXian-Light",
+      "Helvetica",
+      "Helvetica-Bold",
+      "Helvetica-BoldOblique",
+      "Helvetica-Oblique",
+      "MS-UI-Gothic",
+      "SimHei"
+    ],
+    "full_width_horizontal_lines_y_pt": [
+      5.65,
+      32.88,
+      119.0,
+      144.75,
+      287.6,
+      316.31,
+      459.83,
+      518.15
+    ],
+    "vertical_grid_lines_x_pt": [
+      22.65,
+      51.72,
+      257.51,
+      353.31,
+      427.28,
+      468.44,
+      509.61,
+      581.46,
+      633.09,
+      747.29,
+      823.79
+    ],
+    "key_text_lines": [
+      {
+        "text": "公开出版的主要专（译）著、教材情况",
+        "bbox_pt": [
+          320.35,
+          12.71,
+          509.92,
+          25.91
+        ],
+        "first_visible_x_pt": 320.35,
+        "leading_spaces": 0,
+        "leading_space_width_pt": 0,
+        "fonts": [
+          "DengXian-Light",
+          "MS-UI-Gothic"
+        ],
+        "sizes_pt": [
+          12.1
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          0
+        ]
+      },
+      {
+        "text": "获批的决策咨询报告情况",
+        "bbox_pt": [
+          356.66,
+          125.32,
+          489.78,
+          138.52
+        ],
+        "first_visible_x_pt": 356.66,
+        "leading_spaces": 0,
+        "leading_space_width_pt": 0,
+        "fonts": [
+          "DengXian-Light",
+          "MS-UI-Gothic",
+          "SimHei"
+        ],
+        "sizes_pt": [
+          12.1
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          0,
+          4
+        ]
+      },
+      {
+        "text": "承担的主要科研课题情况",
+        "bbox_pt": [
+          356.66,
+          295.4,
+          489.78,
+          308.6
+        ],
+        "first_visible_x_pt": 356.66,
+        "leading_spaces": 0,
+        "leading_space_width_pt": 0,
+        "fonts": [
+          "DengXian-Light",
+          "MS-UI-Gothic",
+          "SimHei"
+        ],
+        "sizes_pt": [
+          12.1
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          0,
+          4
+        ]
+      },
+      {
+        "text": "本人承诺以上情况属实，并有相应证明。如有不实之处，愿意承担相应责任。",
+        "bbox_pt": [
+          243.2,
+          466.49,
+          589.01,
+          478.04
+        ],
+        "first_visible_x_pt": 243.2,
+        "leading_spaces": 0,
+        "leading_space_width_pt": 0,
+        "fonts": [
+          "DengXian-Light",
+          "MS-UI-Gothic"
+        ],
+        "sizes_pt": [
+          10.59
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          0
+        ]
+      },
+      {
+        "text": "报名人员签名：",
+        "bbox_pt": [
+          293.42,
+          488.27,
+          565.07,
+          499.83
+        ],
+        "first_visible_x_pt": 493.02,
+        "leading_spaces": 62,
+        "leading_space_width_pt": 199.59,
+        "fonts": [
+          "DengXian-Light",
+          "MS-UI-Gothic",
+          "SimHei"
+        ],
+        "sizes_pt": [
+          10.59
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          0,
+          4
+        ]
+      },
+      {
+        "text": "日期：    年   月   日",
+        "bbox_pt": [
+          250.14,
+          499.17,
+          617.43,
+          509.76
+        ],
+        "first_visible_x_pt": 527.0,
+        "leading_spaces": 86,
+        "leading_space_width_pt": 276.86,
+        "fonts": [
+          "MS-UI-Gothic"
+        ],
+        "sizes_pt": [
+          10.59
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          0
+        ]
+      },
+      {
+        "text": "填表说明：1.请将各类学术成果按等级、层次及水平自高到低顺序填写。不加行、减行，不加页、减页，本表采用A4正反面打印。",
+        "bbox_pt": [
+          24.15,
+          526.79,
+          599.37,
+          538.35
+        ],
+        "first_visible_x_pt": 24.15,
+        "leading_spaces": 0,
+        "leading_space_width_pt": 0,
+        "fonts": [
+          "DengXian-Light",
+          "MS-UI-Gothic",
+          "SimHei"
+        ],
+        "sizes_pt": [
+          10.59
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          0,
+          4
+        ]
+      }
+    ]
+  },
+  "reference_pdf": {
+    "page_size_pt": [
+      841.89,
+      595.3
+    ],
+    "page_fonts": [
+      "BAAAAA+MS-UIGothic",
+      "DAAAAA+SimHei",
+      "NotoSansSC-Thin"
+    ],
+    "full_width_horizontal_lines_y_pt": [
+      5.6,
+      32.96,
+      61.44,
+      89.92,
+      118.4,
+      144.04,
+      171.96,
+      200.44,
+      228.92,
+      257.4,
+      285.88,
+      314.36,
+      342.84,
+      371.32,
+      399.8,
+      428.28,
+      456.76,
+      514.89
+    ],
+    "vertical_grid_lines_x_pt": [
+      22.62,
+      51.64,
+      257.77,
+      353.33,
+      427.38,
+      468.59,
+      509.8,
+      581.47,
+      632.96,
+      746.28,
+      823.1
+    ],
+    "key_text_lines": [
+      {
+        "text": "公开出版的主要",
+        "bbox_pt": [
+          327.31,
+          13.21,
+          412.67,
+          25.41
+        ],
+        "first_visible_x_pt": 327.31,
+        "leading_spaces": 0,
+        "leading_space_width_pt": 0,
+        "fonts": [
+          "MS-UIGothic"
+        ],
+        "sizes_pt": [
+          12.19
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          4
+        ]
+      },
+      {
+        "text": "承担的主要科研",
+        "bbox_pt": [
+          355.77,
+          294.05,
+          441.12,
+          306.25
+        ],
+        "first_visible_x_pt": 355.77,
+        "leading_spaces": 0,
+        "leading_space_width_pt": 0,
+        "fonts": [
+          "MS-UIGothic"
+        ],
+        "sizes_pt": [
+          12.19
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          4
+        ]
+      },
+      {
+        "text": "本人承",
+        "bbox_pt": [
+          249.79,
+          464.62,
+          281.59,
+          475.22
+        ],
+        "first_visible_x_pt": 249.79,
+        "leading_spaces": 0,
+        "leading_space_width_pt": 0,
+        "fonts": [
+          "MS-UIGothic"
+        ],
+        "sizes_pt": [
+          10.6
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          4
+        ]
+      },
+      {
+        "text": "日期：    年   月   日",
+        "bbox_pt": [
+          238.7,
+          496.42,
+          606.23,
+          507.02
+        ],
+        "first_visible_x_pt": 515.72,
+        "leading_spaces": 86,
+        "leading_space_width_pt": 277.02,
+        "fonts": [
+          "MS-UIGothic"
+        ],
+        "sizes_pt": [
+          10.6
+        ],
+        "colors": [
+          "#000000"
+        ],
+        "flags": [
+          4
+        ]
+      }
+    ]
+  },
+  "pixel_comparison": {
+    "image_size_px": [
+      1754,
+      1241
+    ],
+    "mini_content_bbox_px": [
+      46,
+      11,
+      1717,
+      1166
+    ],
+    "reference_content_bbox_px": [
+      46,
+      11,
+      1716,
+      1158
+    ],
+    "difference_bbox_px": [
+      46,
+      11,
+      1717,
+      1166
+    ],
+    "changed_pixels": 224980,
+    "changed_fraction": 0.103358,
+    "mean_abs_rgb": 13.828,
+    "rmse_rgb": 49.6809,
+    "threshold": 10,
+    "heatmap": "artifacts/AcademicAchievement_temp_p2_heatmap.png"
+  },
+  "workbook": {
+    "sheet": "学术业绩汇总表",
+    "dimensions": "A1:AA57",
+    "print_area": "",
+    "orientation": "landscape",
+    "paper_size": 9,
+    "scale_percent": 74,
+    "fit_to_width": null,
+    "fit_to_height": 0,
+    "margins_inches": {
+      "left": 0.314583333333333,
+      "right": 0.251388888888889,
+      "top": 0.0784722222222222,
+      "bottom": 0.0388888888888889,
+      "header": 0.196527777777778,
+      "footer": 0.0388888888888889
+    },
+    "column_widths": {
+      "A": 6.88671875,
+      "B": 5.6640625,
+      "F": 26.21875,
+      "G": 5.6640625,
+      "K": 7.0,
+      "L": 10.5546875,
+      "M": 9.77734375,
+      "O": 5.6640625,
+      "R": 6.109375,
+      "T": 5.6640625,
+      "V": 5.6640625,
+      "W": 5.6640625,
+      "X": 1.77734375,
+      "Y": 1.5546875,
+      "Z": 0.88671875,
+      "AA": 18.21875,
+      "AB": 5.6640625,
+      "AX": 9.0
+    },
+    "row_heights": {
+      "1": 28.05,
+      "2": 31.95,
+      "3": 46.05,
+      "4": 45.0,
+      "5": 34.95,
+      "6": 40.05,
+      "7": 40.95,
+      "8": 40.95,
+      "9": 40.95,
+      "10": 40.95,
+      "11": 40.95,
+      "12": 40.95,
+      "13": 40.95,
+      "14": 40.95,
+      "15": 40.95,
+      "16": 40.95,
+      "17": 40.95,
+      "18": 40.95,
+      "19": 36.0,
+      "20": 37.95,
+      "21": 37.95,
+      "22": 37.95,
+      "23": 34.05,
+      "24": 37.05,
+      "25": 37.95,
+      "26": 37.95,
+      "27": 37.95,
+      "28": 37.95,
+      "29": 37.95,
+      "30": 37.95,
+      "31": 37.95,
+      "32": 37.95,
+      "33": 37.95,
+      "34": 37.95,
+      "35": 22.05,
+      "36": 55.05,
+      "37": 67.95,
+      "38": 37.5,
+      "39": 37.5,
+      "40": 37.5,
+      "41": 37.5,
+      "42": 37.5,
+      "43": 37.5,
+      "44": 37.5,
+      "45": 37.5,
+      "46": 37.5,
+      "47": 37.5,
+      "48": 37.5,
+      "49": 37.5,
+      "50": 37.5,
+      "51": 37.5,
+      "52": 37.5,
+      "53": 37.5,
+      "54": 37.5,
+      "55": 37.5,
+      "56": 37.5,
+      "57": 37.5,
+      "58": 37.5,
+      "59": 37.5,
+      "60": 37.5,
+      "61": 37.5,
+      "62": 37.5,
+      "63": 37.5,
+      "64": 37.5,
+      "65": 37.5,
+      "66": 37.5,
+      "67": 37.5,
+      "68": 37.5,
+      "69": 37.5,
+      "70": 37.5,
+      "71": 37.5,
+      "72": 37.5,
+      "73": 37.5,
+      "74": 37.5,
+      "75": 37.5,
+      "76": 37.5,
+      "77": 37.5,
+      "78": 37.5,
+      "79": 37.5
+    },
+    "merged_range_count": 177,
+    "signature_cell": {
+      "coordinate": "A35",
+      "merge": "A35:AA36",
+      "font": {
+        "name": "仿宋_GB2312",
+        "size_pt": 14.0,
+        "bold": true,
+        "italic": false
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true
+      },
+      "fill_type": null
+    }
+  }
+}

@@ -241,8 +241,17 @@ internal sealed class PdfWriter
             if (cpsByPreferredFont.Count > 0)
             {
                 var loadedPaths = new HashSet<string>(candidatePaths, StringComparer.OrdinalIgnoreCase);
+                var loadedPreferredFaces = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 foreach (var prefName in cpsByPreferredFont.Keys)
                 {
+                    if (UsesLegacySimplifiedChineseFallback(prefName))
+                    {
+                        const string officeFallback = "MS UI Gothic";
+                        var fallbackPath = FindSystemFontByPreferredName(officeFallback);
+                        if (fallbackPath != null && loadedPreferredFaces.Add(officeFallback))
+                            LoadSingleFont(LoadPreferredTtfFont(fallbackPath, officeFallback), officeFallback);
+                    }
+
                     var extraPath = FindSystemFontByPreferredName(prefName);
                     if (extraPath != null && !loadedPaths.Contains(extraPath))
                     {
@@ -2585,6 +2594,24 @@ internal sealed class PdfWriter
     private static string? FindSystemFontByPreferredName(string fontName)
     {
         if (string.IsNullOrWhiteSpace(fontName)) return null;
+
+        if (Compat.IsWindows())
+        {
+            string[]? mappedFiles = null;
+            if (!CjkFontFileMap.TryGetValue(fontName, out mappedFiles))
+                LatinFontFileMap.TryGetValue(fontName, out mappedFiles);
+            if (mappedFiles != null)
+            {
+                var fontDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
+                foreach (var mappedFile in mappedFiles)
+                {
+                    var mappedPath = Path.Combine(fontDir, mappedFile);
+                    if (File.Exists(mappedPath))
+                        return mappedPath;
+                }
+            }
+        }
+
         var cache = _systemFontNameCache.Value;
         var normalized = NormalizeFontName(fontName);
         return cache.TryGetValue(normalized, out var path) ? path : null;
@@ -2705,6 +2732,7 @@ internal sealed class PdfWriter
         ["Yu Mincho"] = ["YuMincho.ttf"],
         ["游ゴシック"] = ["YuGothR.ttc", "YuGothic.ttf"],
         ["Yu Gothic"] = ["YuGothR.ttc", "YuGothic.ttf"],
+        ["MS UI Gothic"] = ["msgothic.ttc"],
         // Korean
         ["맑은 고딕"] = ["malgun.ttf"],
         ["Malgun Gothic"] = ["malgun.ttf"],

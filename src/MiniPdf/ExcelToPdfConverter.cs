@@ -3878,6 +3878,12 @@ internal static class ExcelToPdfConverter
         if (!requestedBold)
             return false;
 
+        if (fontName != null && (fontName.Contains("方正小标宋", StringComparison.Ordinal)
+            || fontName.Contains("FZXiaoBiaoSong", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("仿宋_GB2312", StringComparison.Ordinal)
+            || fontName.Contains("FangSong_GB2312", StringComparison.OrdinalIgnoreCase)))
+            return false;
+
         // When the original font name already contains a weight keyword
         // (e.g. "Franklin Gothic Medium", "Arial Black"), the bold attribute
         // in the spreadsheet merely selects that weight – it does not mean
