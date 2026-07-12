@@ -326,6 +326,18 @@ internal sealed class PdfWriter
                         cpToFontSlot[cp] = preferredIdx;
                         found = true;
                     }
+
+                    if (!found && UsesLegacySimplifiedChineseFallback(preferredName))
+                    {
+                        var fallbackIdx = FindPreferredFontIndex(loadedFonts, "DengXian Light");
+                        if (fallbackIdx >= 0
+                            && loadedFonts[fallbackIdx].cmap.TryGetValue(cp, out var fallbackGid)
+                            && HasUsableGlyph(loadedFonts[fallbackIdx].ttf, cp, fallbackGid))
+                        {
+                            cpToFontSlot[cp] = fallbackIdx;
+                            found = true;
+                        }
+                    }
                 }
 
                 // For emoji ranges, try the emoji font first
@@ -2126,6 +2138,14 @@ internal sealed class PdfWriter
         List<(byte[] ttf, Dictionary<int, ushort> cmap, ushort[] advances, int upm, int asc, int desc, int capH, int[] bbox, string name)> loadedFonts,
         string preferredFontName)
     {
+        if (UsesLegacySimplifiedChineseFallback(preferredFontName))
+        {
+            var officeFallback = NormalizeFontName("MS UI Gothic");
+            for (var i = 0; i < loadedFonts.Count; i++)
+                if (NormalizeFontName(loadedFonts[i].name) == officeFallback)
+                    return i;
+        }
+
         var preferred = NormalizeFontName(preferredFontName);
         if (string.IsNullOrEmpty(preferred)) return -1;
 
@@ -2149,6 +2169,16 @@ internal sealed class PdfWriter
         }
 
         return -1;
+    }
+
+    private static bool UsesLegacySimplifiedChineseFallback(string? fontName)
+    {
+        if (string.IsNullOrWhiteSpace(fontName)) return false;
+
+        return fontName.Contains("方正小标宋", StringComparison.Ordinal)
+            || fontName.Contains("FZXiaoBiaoSong", StringComparison.OrdinalIgnoreCase)
+            || fontName.Contains("仿宋_GB2312", StringComparison.Ordinal)
+            || fontName.Contains("FangSong_GB2312", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string NormalizeFontName(string? name)
@@ -2246,6 +2276,7 @@ internal sealed class PdfWriter
             string[] candidates = [
                 "kaiu.ttf",       // DFKai-SB / BiauKai (Traditional Chinese)
                 "bkai00mp.ttf",   // BiauKai fallback on some Windows installs
+                "Dengl.ttf",      // Thin Simplified Chinese fallback for legacy Office fonts
                 "mingliu.ttc",    // MingLiU / PMingLiU (Traditional Chinese serif)
                 "pmingliu.ttc",   // PMingLiU on some Windows installs
                 "msjh.ttc",       // Microsoft JhengHei (Traditional Chinese)
