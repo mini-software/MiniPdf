@@ -96,6 +96,52 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_LargeGeneratedWideTable_UsesA4ColumnGroups()
+    {
+        var rows = new List<string[]>
+        {
+            Enumerable.Range(1, 10).Select(index => $"Header{index}").ToArray(),
+        };
+        rows.AddRange(Enumerable.Range(1, 1000).Select(row =>
+            Enumerable.Range(1, 10).Select(column => $"Long generated value {row}-{column}").ToArray()));
+        using var excelStream = CreateSimpleExcel(rows.ToArray());
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+        var firstPageText = doc.Pages[0].TextBlocks.Select(block => block.Text).ToHashSet();
+        var headerY = doc.Pages[0].TextBlocks.First(block => block.Text == "Header1").Y;
+        var firstRowY = doc.Pages[0].TextBlocks.Where(block => block.Y < headerY).Max(block => block.Y);
+
+        Assert.Equal(595.2756f, doc.Pages[0].Width, 3);
+        Assert.Equal(841.8898f, doc.Pages[0].Height, 3);
+        Assert.Equal(14.52f, headerY - firstRowY, 3);
+        for (var column = 1; column <= 9; column++)
+            Assert.Contains($"Header{column}", firstPageText);
+        Assert.DoesNotContain("Header10", firstPageText);
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "Header10");
+    }
+
+    [Fact]
+    public void Convert_FitAttributesWithoutFitFlag_DoesNotCompressAllRowsToOnePageHigh()
+    {
+        var rows = new List<string[]>
+        {
+            Enumerable.Range(1, 8).Select(index => $"Header{index}").ToArray(),
+        };
+        rows.AddRange(Enumerable.Range(1, 100).Select(row =>
+            Enumerable.Range(1, 8).Select(column => $"Value {row}-{column}").ToArray()));
+        using var excelStream = CreateSimpleExcel(rows.ToArray(), includeUnflaggedFitAttributes: true);
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+        var minimumFontSize = doc.Pages.SelectMany(page => page.TextBlocks).Min(block => block.FontSize);
+        var firstPageText = doc.Pages[0].TextBlocks.Select(block => block.Text).ToHashSet();
+
+        Assert.True(doc.Pages.Count > 1, $"Expected rows to paginate naturally, got {doc.Pages.Count} page.");
+        Assert.True(minimumFontSize >= 10f, $"Expected readable text, got {minimumFontSize}pt.");
+        for (var column = 1; column <= 8; column++)
+            Assert.Contains($"Header{column}", firstPageText);
+    }
+
+    [Fact]
     public void Convert_PrintTitleRowsStartingAtFirstRow_RepeatsHeaderAfterPageBreak()
     {
         var rows = new List<string[]> { new[] { "Record ID", "Name", "City" } };
@@ -128,6 +174,23 @@ public class ExcelToPdfConverterTests
 
         Assert.NotNull(addressBlock);
         Assert.True(addressBlock.MaxWidth.HasValue, "Adjacent populated cells should constrain text to the cell width.");
+    }
+
+    [Fact]
+    public void Convert_EmbeddedNewlineWithoutWrapText_RendersOnOneLine()
+    {
+        using var excelStream = CreateSimpleExcel(new[]
+        {
+            new[] { "Name", "Address" },
+            new[] { "Alice", "Line 1\nLine 2" },
+        });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+        var renderedText = doc.Pages.SelectMany(page => page.TextBlocks).Select(block => block.Text).ToArray();
+
+        Assert.Contains("Line 1 Line 2", renderedText);
+        Assert.DoesNotContain("Line 1", renderedText);
+        Assert.DoesNotContain("Line 2", renderedText);
     }
 
     [Fact]
@@ -494,7 +557,8 @@ public class ExcelToPdfConverterTests
     /// <summary>
     /// Creates a minimal valid .xlsx file in memory with the given data.
     /// </summary>
-    private static MemoryStream CreateSimpleExcel(string[][] rows, float[]? columnWidths = null, bool customWidth = true, bool printTitleFirstRow = false)
+    private static MemoryStream CreateSimpleExcel(string[][] rows, float[]? columnWidths = null, bool customWidth = true,
+        bool printTitleFirstRow = false, bool includeUnflaggedFitAttributes = false)
     {
         var ms = new MemoryStream();
 
@@ -599,6 +663,8 @@ public class ExcelToPdfConverterTests
             }
 
             sheetSb.AppendLine("</sheetData>");
+            if (includeUnflaggedFitAttributes)
+                sheetSb.AppendLine("<pageSetup paperSize=\"1\" scale=\"100\" fitToWidth=\"1\" fitToHeight=\"1\"/>");
             sheetSb.AppendLine("</worksheet>");
 
             AddEntry(archive, "xl/worksheets/sheet1.xml", sheetSb.ToString());

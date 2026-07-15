@@ -607,6 +607,7 @@ def save_visual_diff(
     heatmaps: bool = False,
     heatmap_threshold: int = 12,
     heatmap_gain: float = 5.0,
+    max_compare_pages: int = 0,
 ):
     """Save visual diff images for each page."""
     if not HAS_FITZ:
@@ -620,7 +621,16 @@ def save_visual_diff(
     # Remove stale images from previous runs with different page counts
     import glob
     for suffix in ("minipdf", "reference", "office", "heatmap"):
-        for old in glob.glob(os.path.join(output_dir, f"{glob.escape(name)}_p*_{suffix}.png")):
+        if max_compare_pages > 0:
+            old_images = (
+                os.path.join(output_dir, f"{name}_p{page}_{suffix}.png")
+                for page in range(1, max_compare_pages + 1)
+            )
+        else:
+            old_images = glob.glob(os.path.join(output_dir, f"{glob.escape(name)}_p*_{suffix}.png"))
+        for old in old_images:
+            if not os.path.isfile(old):
+                continue
             os.remove(old)
     if composite_output_dir:
         os.makedirs(composite_output_dir, exist_ok=True)
@@ -632,6 +642,8 @@ def save_visual_diff(
     doc2 = fitz.open(pdf2_path)
     doc3 = fitz.open(office_pdf_path) if office_pdf_path and os.path.isfile(office_pdf_path) else None
     max_pages = max(len(doc1), len(doc2), len(doc3) if doc3 else 0)
+    if max_compare_pages > 0:
+        max_pages = min(max_pages, max_compare_pages)
 
     for i in range(max_pages):
         mat = fitz.Matrix(dpi / 72, dpi / 72)
@@ -805,6 +817,7 @@ def compare_single(
     heatmaps: bool = False,
     heatmap_threshold: int = 12,
     heatmap_gain: float = 5.0,
+    max_compare_pages: int = 0,
 ) -> dict:
     """Compare a single pair of PDFs and return a detailed result."""
     result = {
@@ -860,6 +873,11 @@ def compare_single(
         text_m = extract_text_fallback(minipdf_path)
         text_r = extract_text_fallback(reference_path)
 
+    if max_compare_pages > 0:
+        text_m = text_m[:max_compare_pages]
+        text_r = text_r[:max_compare_pages]
+        result["compared_pages"] = max_compare_pages
+
     # Flatten text for comparison
     flat_m = "\n---PAGE---\n".join(text_m).strip()
     flat_r = "\n---PAGE---\n".join(text_r).strip()
@@ -914,6 +932,8 @@ def compare_single(
     visual_scores = []
     if HAS_FITZ:
         max_pages = max(result["minipdf_pages"], result["reference_pages"])
+        if max_compare_pages > 0:
+            max_pages = min(max_pages, max_compare_pages)
         for p in range(max_pages):
             pix_m = render_page_to_pixels(minipdf_path, p)
             pix_r = render_page_to_pixels(reference_path, p)
@@ -936,6 +956,7 @@ def compare_single(
             heatmaps=heatmaps,
             heatmap_threshold=heatmap_threshold,
             heatmap_gain=heatmap_gain,
+            max_compare_pages=max_compare_pages,
         )
 
         # ── AI visual comparison ──────────────────────────────────────────────
@@ -1339,6 +1360,8 @@ def main():
                         help="Skip comparisons; regenerate report from existing comparison_report.json")
     parser.add_argument("--filter", default=None, metavar="PATTERN",
                         help="Only compare files whose name contains this substring")
+    parser.add_argument("--max-pages", type=int, default=0, metavar="N",
+                        help="Compare content and visuals for at most N pages per PDF; 0 compares all pages")
     parser.add_argument("--manifest", default=None, metavar="JSON",
                         help="Benchmark manifest JSON. When set, compare exactly the listed cases instead of scanning directories")
     parser.add_argument("--report-scope", default="shared", metavar="NAME",
@@ -1483,6 +1506,7 @@ def main():
             heatmaps=args.heatmaps,
             heatmap_threshold=args.heatmap_threshold,
             heatmap_gain=args.heatmap_gain,
+            max_compare_pages=args.max_pages,
         )
         score = result.get("overall_score", "N/A")
         print(f"score={score}")

@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-12T17:42:21.324170
+Generated: 2026-07-14T23:32:10.982314
 
 ## Summary
 
@@ -27,9 +27,34 @@ Generated: 2026-07-12T17:42:21.324170
 | 19 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8587 | 6/6 | **0.9435** |
 | 20 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8519 | 6/6 | **0.9408** |
 | 21 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9066 | 0.9076 | 16/16 | **0.9257** |
-| 22 | 🟡 XlsxIssue82_WideTable | ✅ | 0.9537 | 0.8329 | 14/13 | **0.8146** |
+| 22 | 🟡 XlsxIssue82_WideTable | ✅ | 1.0 | 0.8648 | 14/13 | **0.8459** |
+| 23 | 🔴 XlsxIssue82_5mb | ✅ | 0.5554 | 0.8025 | 383/766 | **0.6432** |
+| 24 | 🔴 XlsxIssue82_SampleTestData5mb | ✅ | 0.4255 | 0.9146 | 834/1668 | **0.636** |
 
-**Average Overall Score: 0.7621**
+**Average Overall Score: 0.7532**
+
+## Difference Heatmaps
+
+Blue areas are below the configured difference threshold; red areas have stronger pixel differences. The reference rendering is retained as faint context.
+
+<table>
+<tr><th>Case</th><th>Heatmap</th><th>Metrics</th></tr>
+<tr>
+  <td><b>XlsxIssue82_SampleTestData5mb</b><br>Page 1</td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_heatmap.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 1 difference heatmap"></td>
+  <td>changed: 336229 px (15.45%)<br>bbox: [118, 156, 1050, 1600]<br>mean abs RGB: 23.9263<br>RMSE RGB: 68.9431<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>XlsxIssue82_SampleTestData5mb</b><br>Page 2</td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p2_heatmap.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 2 difference heatmap"></td>
+  <td>changed: 346766 px (15.93%)<br>bbox: [182, 156, 1050, 1600]<br>mean abs RGB: 24.5758<br>RMSE RGB: 69.8042<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>XlsxIssue82_SampleTestData5mb</b><br>Page 3</td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_heatmap.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 3 difference heatmap"></td>
+  <td>changed: 345159 px (15.86%)<br>bbox: [171, 156, 1050, 1600]<br>mean abs RGB: 24.5889<br>RMSE RGB: 69.9574<br>threshold: 12, gain: 5.0</td>
+</tr>
+</table>
 
 ## Visual Comparison
 
@@ -1091,7 +1116,7 @@ Generated: 2026-07-12T17:42:21.324170
 </tr>
 <tr>
   <td><b>XlsxIssue82_WideTable</b></td>
-  <td colspan="1">XlsxIssue82_WideTable <span style="color:#d29922">⬤</span> 81.5%</td>
+  <td colspan="1">XlsxIssue82_WideTable <span style="color:#d29922">⬤</span> 84.6%</td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_WideTable_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1106,48 +1131,36 @@ Generated: 2026-07-12T17:42:21.324170
   <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue82_WideTable_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p4_reference.png" width="340" alt="Reference"></td>
+  <td><b>XlsxIssue82_5mb</b></td>
+  <td colspan="1">XlsxIssue82_5mb <span style="color:#f85149">⬤</span> 64.3%</td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue82_WideTable_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p5_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_5mb_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_5mb_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue82_WideTable_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p6_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_5mb_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_5mb_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue82_WideTable_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p7_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_5mb_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_5mb_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue82_WideTable_p8_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p8_reference.png" width="340" alt="Reference"></td>
+  <td><b>XlsxIssue82_SampleTestData5mb</b></td>
+  <td colspan="1">XlsxIssue82_SampleTestData5mb <span style="color:#f85149">⬤</span> 63.6%</td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue82_WideTable_p9_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p9_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue82_WideTable_p10_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p10_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue82_WideTable_p11_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p11_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p12_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p12_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p13_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p13_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p14_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><i>missing</i></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -3053,84 +3066,204 @@ Text content: ✅ Identical
 
 ### XlsxIssue82_WideTable
 
-- **Text Similarity:** 0.9537
-- **Visual Average:** 0.8329
-- **Overall Score:** 0.8146
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.8648
+- **Overall Score:** 0.8459
 - **Pages:** MiniPdf=14, Reference=13
 - **File Size:** MiniPdf=633053 bytes, Reference=506241 bytes
+
+Text content: ✅ Identical
+
+### XlsxIssue82_5mb
+
+- **Text Similarity:** 0.5554
+- **Visual Average:** 0.8025
+- **Overall Score:** 0.6432
+- **Pages:** MiniPdf=383, Reference=766
+- **File Size:** MiniPdf=11672995 bytes, Reference=21494385 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
---- minipdf/XlsxIssue82_WideTable.pdf
-+++ reference/XlsxIssue82_WideTable.pdf
-@@ -382,66 +382,34 @@
- Priority customer account; generated row 119 should remain readable without column overlap.
+--- minipdf/XlsxIssue82_5mb.pdf
++++ reference/XlsxIssue82_5mb.pdf
+@@ -1,143 +1,143 @@
+-Name Email Phone Address Company Text DescriptioJob Title
 
- Priority customer account; generated row 120 should remain readable without column overlap.
+-Quentin Hoschiller 573.920.922808 LuMraz and Labore et Non delenEmergency Management Specialist
 
- ---PAGE---
+-Lowell Olseve.lind@720.754.667029 DeRosenbauSoluta nihAut iste qFast Food Cook
 
--Record ID First Name Last Name Street Address City Region Postal Code
+-Sydnee Cgunnar.sc 1.31E+10 908 MatteStrosin, KiVoluptateSed aliquiInteraction Designer
 
--ID-0001 Naveen Adhikari 2000 West Programmatic Export Boulevard Building 0 Kathmandu CA 90000
+-Tomasa Dgerlach.ar+1 (276) 9787 Rey Balistreri-Provident Et cupidit Motorcycle Mechanic
 
--ID-0002 Alicia Morrison 2001 West Programmatic Export Boulevard Building 1 Seattle CA 90001
+-Payton Kuherman.b1-201-33353401 HaWolff-ErdVero iste lCulpa id aJanitorial Supervisor
 
--ID-0003 Marcus Chen 2002 West Programmatic Export Boulevard Building 2 Austin CA 90002
+-Constanticrist.elmer(551) 609-32868 KulRunolfssoOfficia volAut non dPressing Machine Operator
 
--ID-0004 Priya Patel 2003 West Programmatic Export Boulevard Building 3 Toronto CA 90003
+-Tad Hart kathryn041-928-43477833 KleKunze, FrIpsum praFacilis unTherapist
 
--ID-0005 Daniel Rodriguez 2004 West Programmatic Export Boulevard Building 4 Singapore CA 90004
+-Tristian Lilittle.bobbi+1.870.9283843 ReMitchell-SDignissimEum beatTechnical Writer
 
--ID-0006 Mei Tanaka 2005 West Programmatic Export Boulevard Building 5 Dublin CA 90005
+-Miss Tierrgpredovic912-817-0310 Elliot Ward-Wil Ab at eveAut voluptCredit Checkers Clerk
 
--ID-0007 Sofia Bennett 2006 West Programmatic Export Boulevard Building 6 Melbourne CA 90006
+-Nicolette domenic4+1-352-6113158 StoKerluke GCulpa ea Quos ear Postsecondary Education Administrators
 
--ID-0008 Owen Singh 2007 West Programmatic Export Boulevard Building 7 Berlin CA 90007
+-Rosalind kimberly.p 1.68E+10 700 Hyatt Bode-SwifEst et qui Eveniet teLoan Counselor
 
--ID-0009 Ibrahim Kim 2008 West Programmatic Export Boulevard Building 8 Kathmandu CA 90008
+-Hector Brelarkin@s1-458-225987 Isom Strosin-K Labore ut Quidem pCement Mason and Concrete Finisher
 
--ID-0010 Caroline Olsen 2009 West Programmatic Export Boulevard Building 9 Seattle CA 90009
+-Marjory Kbrandyn.e1-210-606671 Kaci Mann, McMolestias Fuga et vBrokerage Clerk
 
--ID-0011 Naveen Adhikari 2010 West Programmatic Export Boulevard Building 10 Austin CA 90010
+-Forrest Tuwilmer93 216.242.5214 BahriBlick, O'CEnim earuAut sequi Musician
 
--ID-0012 Alicia Morrison 2011 West Programmatic Export Boulevard Building 11 Toronto CA 90011
+-Kennedy gutkowski+1.321.40693 MossiAbshire, Dolor doloRerum asIndustrial-Organizational Psychologist
 
--ID-0013 Marcus Chen 2012 West Programmatic Export Boulevard Building 0 Singapore CA 90012
+-Lysanne gebert@y+1.272.474137 BergNitzsche AsperioreAt doloresInterviewer
 
--ID-0014 Priya Patel 2013 West Programmatic Export Boulevard Building 1 Dublin CA 90013
+-Randall Dgreenholt.1.7E+10 90795 BeiLuettgen, Blanditiis Et natus qMixing and Blending Machine Operator
 
--ID-0015 Daniel Rodriguez 2014 West Programmatic Export Boulevard Building 2 Melbourne CA 90014
+-Chanelle sally46@ 1.44E+10 8856 AngYundt-KirliVoluptas lDolores mCommunication Equipment Repairer
 
--ID-0016 Mei Tanaka 2015 West Programmatic Export Boulevard Building 3 Berlin CA 90015
+-Mr. Gregoudietrich 1-469-314750 Ebert Goyette InUnde odit Qui aut doClinical Laboratory Technician
 
--ID-0017 Sofia Bennett 2016 West Programmatic Export Boulevard Building 4 Kathmandu CA 90016
+-Rosalia Vdonna.sim 1.39E+10 9022 CletAbbott, CSoluta id tAut sit et Mechanical Engineer
 
--ID-0018 Owen Singh 2017 West Programmatic Export Boulevard Building 5 Seattle CA 90017
+-Sigmund teresa93 +1.937.532314 CristAufderharConsectetQuibusdaProducer
 
--ID-0019 Ibrahim Kim 2018 West Programmatic Export Boulevard Building 6 Austin CA 90018
+-Prof. Janiahettinger312.745.350901 LuSawayn, Sint aut reAlias sed Loading Machine Operator
 
--ID-0020 Caroline Olsen 2019 West Programmatic Export Boulevard Building 7 Toronto CA 90019
+-Mr. Brad lhickle@y856-513-791499 MoKeebler, LAssumenAsperioreAircraft Mechanics OR Aircraft Service Technic
 
--ID-0021 Naveen Adhikari 2020 West Programmatic Export Boulevard Building 8 Singapore CA 90020
+-Christop dstrosin@(563) 429-150 Bertr Kreiger LtQuas occCommodi Aircraft Body Repairer
 
--ID-0022 Alicia Morrison 2021 West Programmatic Export Boulevard Building 9 Dublin CA 90021
+-Dr. Toni erling43@+1-765-386102 AssJenkins InLaborum Ut aut et uLog Grader and Scaler
 
--ID-0023 Marcus Chen 2022 West Programmatic Export Boulevard Building 10 Melbourne CA 90022
+-Reece Faekirlin@lo463.613.79314 SibyFeeney GVoluptate Quo exercRecordkeeping Clerk
 
--ID-0024 Priya Patel 2023 West Programmatic Export Boulevard Building 11 Berlin CA 90023
+-Izaiah Skilhgoyette 240-241-28932 BartDavis-WelQui fuga dEnim quiaBiologist
 
--ID-0025 Daniel Rodriguez 2024 West Programmatic Export Boulevard Building 0 Kathmandu CA 90024
+-Mathilde romaguer1-218-29880599 ProCarter-PuAb voluptSimilique Fence Erector
 
--ID-0026 Mei Tanaka 2025 West Programmatic Export Boulevard Building 1 Seattle CA 90025
+-Mr. Jarreddimitri.hay279.899.66187 ConKonopelsAutem sit Soluta dolParalegal
 
--ID-0027 Sofia Bennett 2026 West Programmatic Export Boulevard Building 2 Austin CA 90026
+-Kameron simone.hy1-510-89134203 KatStiedemaIpsa ut a PerspiciatiDirectory Assistance Operator
 
--ID-0028 Owen Singh 2027 West Programmatic Export Boulevard Building 3 Toronto CA 90027
+-Miss Libbathena68+1.937.891155 MaxiD'Amore-Est dolor Eum voluGrinder OR Polisher
 
--ID-0029 Ibrahim Kim 2028 West Programmatic Expo
-... (3278 more characters)
+-Nayeli Bernadia28@1-781-79758562 BotLittle, VolkHarum suExercitati Life Science T
+... (23009 more characters)
+
+```
+</details>
+
+### XlsxIssue82_SampleTestData5mb
+
+- **Text Similarity:** 0.4255
+- **Visual Average:** 0.9146
+- **Overall Score:** 0.636
+- **Pages:** MiniPdf=834, Reference=1668
+- **File Size:** MiniPdf=17310030 bytes, Reference=32924505 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue82_SampleTestData5mb.pdf
++++ reference/XlsxIssue82_SampleTestData5mb.pdf
+@@ -1,146 +1,146 @@
+-ID Name Email City Country Departme Notes Value1 Value2
+
+-1 User 1 user1@exToronto UK IT pwJqdCF 7606130.6770746
+
+-2 User 2 user2@exDelhi Germany IT S6gIttJQr 4563050.8501622
+
+-3 User 3 user3@exSydney UK Finance mmp5R2o 8021150.4416720
+
+-4 User 4 user4@exBerlin Australia HR BpiYtDuC 9291320.9823119
+
+-5 User 5 user5@exBerlin France HR DXnTIbeT 1784920.9325545
+
+-6 User 6 user6@exDelhi Australia HR Iw9DkBE 5184120.1261322
+
+-7 User 7 user7@exToronto Australia Finance tN5mvZp 722180.5143867
+
+-8 User 8 user8@exTokyo USA Ops xqmF3Xc 2386230.8771951
+
+-9 User 9 user9@exLondon Australia Ops k099328N 3697430.6153598
+
+-10 User 10 user10@eDelhi Germany IT 3YvAHvc 240890.9405733
+
+-11 User 11 user11@eSydney France Sales r2O9ZtMJ 9294630.4255769
+
+-12 User 12 user12@eTokyo Japan Sales y8JVUgT 7777420.6389746
+
+-13 User 13 user13@eTokyo India Support v5XTbqB 2237840.2318513
+
+-14 User 14 user14@e New York Japan Ops pxwvBMP 1871680.7562123
+
+-15 User 15 user15@eSydney Japan Ops NPs68SC 3327850.3476629
+
+-16 User 16 user16@eDelhi Canada Ops JMgIo6JD 9665950.1094972
+
+-17 User 17 user17@eParis Australia Ops LWFef8u 4294230.1728704
+
+-18 User 18 user18@eTokyo Australia Ops 4y2atULB 1799540.9145143
+
+-19 User 19 user19@eBerlin France Finance MoiyHIdz 4164760.4178346
+
+-20 User 20 user20@eLondon India Sales Gg4eeM2 1520830.2796521
+
+-21 User 21 user21@eTokyo India Finance hk0tj7hQtj 9135100.5214738
+
+-22 User 22 user22@e New York UK IT FexqT7i2 9598500.2004014
+
+-23 User 23 user23@eSydney Japan Ops wZdZL0Kl 8131080.0758994
+
+-24 User 24 user24@eLondon Germany Support I6go0j9fZ 1754610.2702659
+
+-25 User 25 user25@eLondon Canada Ops eE9wvY6 5828150.8325951
+
+-26 User 26 user26@eTokyo Japan Support vTlTmSLZ 6989100.0572326
+
+-27 User 27 user27@eDelhi UK Ops 001jLkp56 4637420.6366096
+
+-28 User 28 user28@eTokyo India Ops JYMn1HV 1859840.7516507
+
+-29 User 29 user29@eLondon India Sales kDD8aBkf 1104780.8380068
+
+-30 User 30 user30@eBerlin UK Ops vt3rlC8s2 1656820.4784514
+
+-31 User 31 user31@eSydney Canada Ops Sy0TGdV 3002880.5455363
+
+-32 User 32 user32@eLondon Japan IT nuLK3hv5 9328110.9327352
+
+-33 User 33 user33@eTokyo Australia Finance 8QxYNyk 7322500.0841050
+
+-34 User 34 user34@e New York Germany IT WpY292G 1200210.2129103
+
+-35 User 35 user35@eParis India IT Jc9UIcHT 6316340.3495153
+
+-36 User 36 user36@eSydney Canada Ops JuxIUrhxz 8589090.8466705
+
+-37 User 37 user37@eBerlin Germany Ops f3VPwwb 3355530.8283657
+
+-38 User 38 user38@e New York India Support RK2dsJA 772740.0923227
+
+-39 User 39 user39@eLondon UK Ops h7clcYpB 1277440.4235435
+
+-40 User 40 user40@eParis Canada IT 5fFW0pL9 7661180.0962124
+
+-41 User 41 user41@eTokyo Australia HR b0aptneo 185840.3069412
+
+-42 User 42 user42@eSydney Canada HR zc3bKQD 3779140.1143154
+
+-43 User 43 user43@eSydney India IT kOXLmqe 6923390.9172149
+
+-44 User 44 user44@e New York Canada Sales IfbMmzIxe 2116040.7609570
+
+-45 User 45 user45@eSydney 
+... (16011 more characters)
 
 ```
 </details>
@@ -3141,6 +3274,8 @@ Text content: ✅ Identical
 
 1. **payroll-calculator_f** (score: 0.5009)
 1. **Small business cash flow forecast1** (score: 0.6204)
+1. **XlsxIssue82_SampleTestData5mb** (score: 0.636)
+1. **XlsxIssue82_5mb** (score: 0.6432)
 1. **XlsxIssue75** (score: 0.6479)
 1. **Event budget1** (score: 0.6766)
 1. **Wedding_timeline_planner1_copy** (score: 0.7774)

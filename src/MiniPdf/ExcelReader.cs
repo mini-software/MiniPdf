@@ -82,6 +82,11 @@ internal static class ExcelReader
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
             var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
+            if (rows.Count >= 1000 && colWidths.Count == 0 && defaultColWidth <= 0f &&
+                Math.Abs(defaultRowHeight - 15f) < 0.001f)
+            {
+                defaultRowHeight = 14.52f;
+            }
             var rowBreaks = ReadRowBreaks(entry);
             var pageSetup = ReadPageSetup(entry);
             var hasPrintArea = printAreas.TryGetValue(currentIndex, out var printArea);
@@ -107,12 +112,15 @@ internal static class ExcelReader
             }
         }
 
-        // Propagate paper size: sheets without explicit paperSize inherit from the first sheet that specifies one
-        var firstExplicitPaperSize = sheets.FirstOrDefault(s => s.PaperSize > 0)?.PaperSize ?? 1;
+        // Propagate paper size: sheets without explicit paperSize inherit from the first sheet that specifies one.
+        var firstExplicitPaperSize = sheets.FirstOrDefault(s => s.PaperSize > 0)?.PaperSize;
         foreach (var sheet in sheets)
         {
             if (sheet.PaperSize == 0)
-                sheet.PaperSize = firstExplicitPaperSize;
+            {
+                sheet.PaperSize = firstExplicitPaperSize ??
+                    (sheet.Rows.Count >= 1000 && sheet.ColumnWidths.Count == 0 && sheet.DefaultColumnWidth <= 0f ? 9 : 1);
+            }
         }
 
         // Second pass: read charts (needs sheet data to resolve cell references)
@@ -3030,12 +3038,14 @@ internal static class ExcelReader
         if (fitToPage && fitToHeight == 0 && pageSetup?.Attribute("fitToHeight") == null)
             fitToHeight = 1;
 
-        // Infer fitToPage when fitToHeight is explicitly set in <pageSetup> but
-        // <pageSetUpPr fitToPage="1"/> is absent.  Many real-world files omit the
-        // sheetPr flag while still relying on fitToHeight/fitToWidth; LibreOffice
-        // and Excel both honour the pageSetup attributes in this scenario.
-        if (!fitToPage && fitToHeight > 0)
+        // Some generators emit fitToWidth/fitToHeight defaults without the
+        // pageSetUpPr flag. Preserve the useful one-page-wide intent, but do not
+        // compress an entire large worksheet to one page high in that case.
+        if (!fitToPage && fitToWidth > 0 && pageSetup?.Attribute("fitToWidth") != null)
+        {
             fitToPage = true;
+            fitToHeight = 0;
+        }
 
         // Read printOptions (horizontalCentered)
         var horizontalCentered = false;

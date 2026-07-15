@@ -914,6 +914,8 @@ internal static class ExcelToPdfConverter
 
         // Determine column widths first to decide on layout strategy
         var hasExplicitColWidths = sheet.ColumnWidths.Count > 0 || sheet.DefaultColumnWidth > 0f;
+        var isLargeGeneratedTable = sheet.Rows.Count >= 1000 &&
+            sheet.ColumnWidths.Count == 0 && sheet.DefaultColumnWidth <= 0f;
         var columnPadding = options.ColumnPadding;
         if (hasExplicitColWidths || (sheet.FitToPage && sheet.FitToWidth >= 1))
         {
@@ -922,7 +924,7 @@ internal static class ExcelToPdfConverter
             // (columns are adjacent, separated only by cell borders/padding).
             columnPadding = 0f;
         }
-        else if (maxCols > 6)
+        else if (maxCols > 6 && !isLargeGeneratedTable)
         {
             columnPadding = options.ColumnPadding * 6f / maxCols;
         }
@@ -957,7 +959,7 @@ internal static class ExcelToPdfConverter
             fitToPageScale = fitScale;
         }
 
-        if (naturalWidths.Sum() > usableWidth && maxCols > 1)
+        if (totalNatural > usableWidth + 0.01f && maxCols > 1)
         {
             // Columns don't fit — split into groups that fit on a page each
             RenderSheetColumnGroups(doc, sheet, options, pageWidth, pageHeight, usableWidth, columnPadding, avgCharWidth, naturalWidths);
@@ -1665,6 +1667,9 @@ internal static class ExcelToPdfConverter
 
                     if (!string.IsNullOrEmpty(cellText))
                     {
+                        if (!row[col].WrapText && cellText.Contains('\n'))
+                            cellText = cellText.Replace('\n', ' ');
+
                         // Use the cell's actual font size for width calculations,
                         // scaled by print scale to match print-scaled column widths.
                         // When using font-specific width tables (e.g. Verdana)
@@ -4068,6 +4073,8 @@ internal static class ExcelToPdfConverter
     private static float[] CalculateNaturalColumnWidths(ExcelSheet sheet, int maxCols, float usableWidth, ConversionOptions options)
     {
         var avgCharWidth = options.FontSize * 0.47f;
+        var isLargeGeneratedTable = sheet.Rows.Count >= 1000 &&
+            sheet.ColumnWidths.Count == 0 && sheet.DefaultColumnWidth <= 0f;
         // Track the max measured width (in points) per column rather than raw char count.
         // This accounts for CJK characters being ~2× wider than Latin chars.
         var colMaxWidthPts = new float[maxCols];
@@ -4131,10 +4138,11 @@ internal static class ExcelToPdfConverter
             {
                 // No explicit column widths — start from Excel's default width, then
                 // widen columns with real content so programmatically generated wide
-                // tables do not pack long text columns into one unreadable page.
+                // tables do not pack long text columns into one unreadable page. Large
+                // data exports retain Excel's default widths so all fields stay together.
                 var defaultPts = ExcelSheet.CharUnitsToPoints(8.43f);
                 var contentPts = colMaxWidthPts[i] + 2 * avgCharWidth;
-                var natural = Math.Max(defaultPts, contentPts);
+                var natural = isLargeGeneratedTable ? defaultPts : Math.Max(defaultPts, contentPts);
                 widths[i] = Compat.Clamp(natural, minColWidth, maxColWidth);
             }
         }
