@@ -61,6 +61,18 @@ public class XlsxIssueFileTests
         Assert.Equal(compactDoc.Pages.Count, CountPdfPages(compactPdf));
     }
 
+    [Fact]
+    public void Issue82_WideTable_NoColumnMetadataFitsOnFinalPage()
+    {
+        var issuePath = FindIssueXlsx("XlsxIssue82_WideTable.xlsx");
+
+        var doc = ExcelToPdfConverter.Convert(issuePath);
+
+        Assert.Equal(13, doc.Pages.Count);
+        Assert.Contains(doc.Pages[12].TextBlocks, block => block.Text == "Phone");
+        Assert.Contains(doc.Pages[12].TextBlocks, block => block.Text.Contains("QA Automation Specialist"));
+    }
+
     private static string FindIssueXlsx(string fileName)
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);

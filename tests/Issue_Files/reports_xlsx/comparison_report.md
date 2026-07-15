@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-14T23:32:10.982314
+Generated: 2026-07-15T09:52:12.280844
 
 ## Summary
 
@@ -27,11 +27,11 @@ Generated: 2026-07-14T23:32:10.982314
 | 19 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8587 | 6/6 | **0.9435** |
 | 20 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8519 | 6/6 | **0.9408** |
 | 21 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9066 | 0.9076 | 16/16 | **0.9257** |
-| 22 | 🟡 XlsxIssue82_WideTable | ✅ | 1.0 | 0.8648 | 14/13 | **0.8459** |
+| 22 | 🟢 XlsxIssue82_WideTable | ✅ | 0.9994 | 0.8992 | 13/13 | **0.9594** |
 | 23 | 🔴 XlsxIssue82_5mb | ✅ | 0.5554 | 0.8025 | 383/766 | **0.6432** |
 | 24 | 🔴 XlsxIssue82_SampleTestData5mb | ✅ | 0.4255 | 0.9146 | 834/1668 | **0.636** |
 
-**Average Overall Score: 0.7532**
+**Average Overall Score: 0.7579**
 
 ## Difference Heatmaps
 
@@ -1116,7 +1116,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><b>XlsxIssue82_WideTable</b></td>
-  <td colspan="1">XlsxIssue82_WideTable <span style="color:#d29922">⬤</span> 84.6%</td>
+  <td colspan="1">XlsxIssue82_WideTable <span style="color:#3fb950">⬤</span> 95.9%</td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_WideTable_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1129,6 +1129,46 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><img src="images/XlsxIssue82_WideTable_p3_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p4_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p5_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p5_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p6_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p6_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p7_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p7_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p8_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p8_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p9_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p9_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p10_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p10_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p11_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p11_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p12_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p12_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p13_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p13_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue82_5mb</b></td>
@@ -3066,13 +3106,100 @@ Text content: ✅ Identical
 
 ### XlsxIssue82_WideTable
 
-- **Text Similarity:** 1.0
-- **Visual Average:** 0.8648
-- **Overall Score:** 0.8459
-- **Pages:** MiniPdf=14, Reference=13
-- **File Size:** MiniPdf=633053 bytes, Reference=506241 bytes
+- **Text Similarity:** 0.9994
+- **Visual Average:** 0.8992
+- **Overall Score:** 0.9594
+- **Pages:** MiniPdf=13, Reference=13
+- **File Size:** MiniPdf=631576 bytes, Reference=506241 bytes
 
-Text content: ✅ Identical
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue82_WideTable.pdf
++++ reference/XlsxIssue82_WideTable.pdf
+@@ -382,34 +382,34 @@
+ Priority customer account; generated row 119 should remain readable without column overlap.
+
+ Priority customer account; generated row 120 should remain readable without column overlap.
+
+ ---PAGE---
+
+-Record ID First NamLast NamStreet AdCity Region Postal CoPhone
+
+-ID-0001 Naveen Adhikari 2000 WesKathmandCA 90000 QA Automation Specialist
+
+-ID-0002 Alicia Morrison 2001 WesSeattle CA 90001 Senior Data Coordinator
+
+-ID-0003 Marcus Chen 2002 WesAustin CA 90002 Customer Success Manager
+
+-ID-0004 Priya Patel 2003 WesToronto CA 90003 Field Operations Analyst
+
+-ID-0005 Daniel Rodriguez 2004 Wes Singapore CA 90004 Principal Support Engineer
+
+-ID-0006 Mei Tanaka 2005 WesDublin CA 90005 QA Automation Specialist
+
+-ID-0007 Sofia Bennett 2006 WesMelbourn CA 90006 Senior Data Coordinator
+
+-ID-0008 Owen Singh 2007 WesBerlin CA 90007 Customer Success Manager
+
+-ID-0009 Ibrahim Kim 2008 WesKathmandCA 90008 Field Operations Analyst
+
+-ID-0010 Caroline Olsen 2009 WesSeattle CA 90009 Principal Support Engineer
+
+-ID-0011 Naveen Adhikari 2010 WesAustin CA 90010 QA Automation Specialist
+
+-ID-0012 Alicia Morrison 2011 WesToronto CA 90011 Senior Data Coordinator
+
+-ID-0013 Marcus Chen 2012 Wes Singapore CA 90012 Customer Success Manager
+
+-ID-0014 Priya Patel 2013 WesDublin CA 90013 Field Operations Analyst
+
+-ID-0015 Daniel Rodriguez 2014 WesMelbourn CA 90014 Principal Support Engineer
+
+-ID-0016 Mei Tanaka 2015 WesBerlin CA 90015 QA Automation Specialist
+
+-ID-0017 Sofia Bennett 2016 WesKathmandCA 90016 Senior Data Coordinator
+
+-ID-0018 Owen Singh 2017 WesSeattle CA 90017 Customer Success Manager
+
+-ID-0019 Ibrahim Kim 2018 WesAustin CA 90018 Field Operations Analyst
+
+-ID-0020 Caroline Olsen 2019 WesToronto CA 90019 Principal Support Engineer
+
+-ID-0021 Naveen Adhikari 2020 Wes Singapore CA 90020 QA Automation Specialist
+
+-ID-0022 Alicia Morrison 2021 WesDublin CA 90021 Senior Data Coordinator
+
+-ID-0023 Marcus Chen 2022 WesMelbourn CA 90022 Customer Success Manager
+
+-ID-0024 Priya Patel 2023 WesBerlin CA 90023 Field Operations Analyst
+
+-ID-0025 Daniel Rodriguez 2024 WesKathmandCA 90024 Principal Support Engineer
+
+-ID-0026 Mei Tanaka 2025 WesSeattle CA 90025 QA Automation Specialist
+
+-ID-0027 Sofia Bennett 2026 WesAustin CA 90026 Senior Data Coordinator
+
+-ID-0028 Owen Singh 2027 WesToronto CA 90027 Customer Success Manager
+
+-ID-0029 Ibrahim Kim 2028 Wes Singapore CA 90028 Field Operations Analyst
+
+-ID-0030 Caroline Olsen 2029 WesDublin CA 90029 Principal Support Engineer
++Record IDFirst NamLast NamStreet AdCity Region Postal CoPhone
+
++ID-0001 Naveen Adhikari 2000 WestKathmandCA 90000 QA Automation Specialist
+
++ID-0002 Alicia Morrison 2001 WestSeattle CA 90001 Senior Data Coordinator
+
++ID-0003 Marcus Chen 2002 WestAustin CA 90002 Customer Success Manager
+
++ID-0004 Priya Patel 2003 WestToronto CA 90003 Field Operations Analyst
+
++ID-0005 Daniel Rodriguez 2004 WestSingapore CA 90004 P
+... (1889 more characters)
+
+```
+</details>
 
 ### XlsxIssue82_5mb
 
