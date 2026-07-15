@@ -127,7 +127,7 @@ public class ExcelToPdfConverterTests
         {
             Enumerable.Range(1, 8).Select(index => $"Header{index}").ToArray(),
         };
-        rows.AddRange(Enumerable.Range(1, 100).Select(row =>
+        rows.AddRange(Enumerable.Range(1, 1000).Select(row =>
             Enumerable.Range(1, 8).Select(column => $"Value {row}-{column}").ToArray()));
         using var excelStream = CreateSimpleExcel(rows.ToArray(), includeUnflaggedFitAttributes: true);
 
@@ -136,6 +136,8 @@ public class ExcelToPdfConverterTests
         var firstPageText = doc.Pages[0].TextBlocks.Select(block => block.Text).ToHashSet();
 
         Assert.True(doc.Pages.Count > 1, $"Expected rows to paginate naturally, got {doc.Pages.Count} page.");
+        Assert.Equal(595.2756f, doc.Pages[0].Width, 3);
+        Assert.Equal(841.8898f, doc.Pages[0].Height, 3);
         Assert.True(minimumFontSize >= 10f, $"Expected readable text, got {minimumFontSize}pt.");
         for (var column = 1; column <= 8; column++)
             Assert.Contains($"Header{column}", firstPageText);

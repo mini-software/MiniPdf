@@ -116,6 +116,11 @@ internal static class ExcelReader
         var firstExplicitPaperSize = sheets.FirstOrDefault(s => s.PaperSize > 0)?.PaperSize;
         foreach (var sheet in sheets)
         {
+            if (sheet.Rows.Count >= 1000 && sheet.ColumnWidths.Count == 0 && sheet.DefaultColumnWidth <= 0f &&
+                sheet.PaperSize == 1 && sheet.FitToPage && sheet.FitToWidth > 0 && sheet.FitToHeight == 0)
+            {
+                sheet.PaperSize = 9;
+            }
             if (sheet.PaperSize == 0)
             {
                 sheet.PaperSize = firstExplicitPaperSize ??

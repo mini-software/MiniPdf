@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-15T09:52:12.280844
+Generated: 2026-07-15T10:12:48.615236
 
 ## Summary
 
@@ -28,10 +28,10 @@ Generated: 2026-07-15T09:52:12.280844
 | 20 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8519 | 6/6 | **0.9408** |
 | 21 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9066 | 0.9076 | 16/16 | **0.9257** |
 | 22 | 🟢 XlsxIssue82_WideTable | ✅ | 0.9994 | 0.8992 | 13/13 | **0.9594** |
-| 23 | 🔴 XlsxIssue82_5mb | ✅ | 0.5554 | 0.8025 | 383/766 | **0.6432** |
+| 23 | 🟡 XlsxIssue82_5mb | ✅ | 0.6678 | 0.838 | 361/766 | **0.7023** |
 | 24 | 🔴 XlsxIssue82_SampleTestData5mb | ✅ | 0.4255 | 0.9146 | 834/1668 | **0.636** |
 
-**Average Overall Score: 0.7579**
+**Average Overall Score: 0.7604**
 
 ## Difference Heatmaps
 
@@ -39,6 +39,21 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
 <table>
 <tr><th>Case</th><th>Heatmap</th><th>Metrics</th></tr>
+<tr>
+  <td><b>XlsxIssue82_5mb</b><br>Page 1</td>
+  <td><img src="images/XlsxIssue82_5mb_p1_heatmap.png" width="760" alt="XlsxIssue82_5mb page 1 difference heatmap"></td>
+  <td>changed: 522300 px (23.99%)<br>bbox: [109, 118, 1241, 1610]<br>mean abs RGB: 39.1166<br>RMSE RGB: 89.4975<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>XlsxIssue82_5mb</b><br>Page 2</td>
+  <td><img src="images/XlsxIssue82_5mb_p2_heatmap.png" width="760" alt="XlsxIssue82_5mb page 2 difference heatmap"></td>
+  <td>changed: 511904 px (23.52%)<br>bbox: [109, 118, 1240, 1610]<br>mean abs RGB: 38.2641<br>RMSE RGB: 88.4589<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>XlsxIssue82_5mb</b><br>Page 3</td>
+  <td><img src="images/XlsxIssue82_5mb_p3_heatmap.png" width="760" alt="XlsxIssue82_5mb page 3 difference heatmap"></td>
+  <td>changed: 520220 px (23.90%)<br>bbox: [109, 118, 1241, 1610]<br>mean abs RGB: 38.9034<br>RMSE RGB: 89.1988<br>threshold: 12, gain: 5.0</td>
+</tr>
 <tr>
   <td><b>XlsxIssue82_SampleTestData5mb</b><br>Page 1</td>
   <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_heatmap.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 1 difference heatmap"></td>
@@ -1172,7 +1187,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><b>XlsxIssue82_5mb</b></td>
-  <td colspan="1">XlsxIssue82_5mb <span style="color:#f85149">⬤</span> 64.3%</td>
+  <td colspan="1">XlsxIssue82_5mb <span style="color:#d29922">⬤</span> 70.2%</td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_5mb_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -3203,18 +3218,18 @@ Text content: ✅ Identical
 
 ### XlsxIssue82_5mb
 
-- **Text Similarity:** 0.5554
-- **Visual Average:** 0.8025
-- **Overall Score:** 0.6432
-- **Pages:** MiniPdf=383, Reference=766
-- **File Size:** MiniPdf=11672995 bytes, Reference=21494385 bytes
+- **Text Similarity:** 0.6678
+- **Visual Average:** 0.838
+- **Overall Score:** 0.7023
+- **Pages:** MiniPdf=361, Reference=766
+- **File Size:** MiniPdf=11677465 bytes, Reference=21494385 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/XlsxIssue82_5mb.pdf
 +++ reference/XlsxIssue82_5mb.pdf
-@@ -1,143 +1,143 @@
+@@ -1,152 +1,143 @@
 -Name Email Phone Address Company Text DescriptioJob Title
 
 -Quentin Hoschiller 573.920.922808 LuMraz and Labore et Non delenEmergency Management Specialist
@@ -3261,7 +3276,7 @@ Text content: ✅ Identical
 
 -Prof. Janiahettinger312.745.350901 LuSawayn, Sint aut reAlias sed Loading Machine Operator
 
--Mr. Brad lhickle@y856-513-791499 MoKeebler, LAssumenAsperioreAircraft Mechanics OR Aircraft Service Technic
+-Mr. Brad lhickle@y856-513-791499 MoKeebler, LAssumenAsperioreAircraft Mechanics OR Aircraft Service Tech
 
 -Christop dstrosin@(563) 429-150 Bertr Kreiger LtQuas occCommodi Aircraft Body Repairer
 
@@ -3279,8 +3294,8 @@ Text content: ✅ Identical
 
 -Miss Libbathena68+1.937.891155 MaxiD'Amore-Est dolor Eum voluGrinder OR Polisher
 
--Nayeli Bernadia28@1-781-79758562 BotLittle, VolkHarum suExercitati Life Science T
-... (23009 more characters)
+-Nayeli Bernadia28@1-781-79758562 BotLittle, VolkHarum suExercitati Life Science Tech
+... (23798 more characters)
 
 ```
 </details>
@@ -3402,9 +3417,9 @@ Text content: ✅ Identical
 1. **payroll-calculator_f** (score: 0.5009)
 1. **Small business cash flow forecast1** (score: 0.6204)
 1. **XlsxIssue82_SampleTestData5mb** (score: 0.636)
-1. **XlsxIssue82_5mb** (score: 0.6432)
 1. **XlsxIssue75** (score: 0.6479)
 1. **Event budget1** (score: 0.6766)
+1. **XlsxIssue82_5mb** (score: 0.7023)
 1. **Wedding_timeline_planner1_copy** (score: 0.7774)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
