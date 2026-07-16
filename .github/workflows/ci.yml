@@ -37,6 +37,11 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Install CJK TrueType font
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes fonts-wqy-microhei
+
       - name: Restore dependencies
         run: dotnet restore
 

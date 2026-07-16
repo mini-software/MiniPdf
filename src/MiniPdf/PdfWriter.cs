@@ -2326,6 +2326,7 @@ internal sealed class PdfWriter
         {
             string[] searchDirs = [
                 "/usr/share/fonts/truetype/noto",
+                "/usr/share/fonts/truetype/wqy",
                 "/usr/share/fonts/opentype/noto",
                 "/usr/share/fonts/noto-cjk",
                 "/usr/share/fonts/google-noto-cjk",
