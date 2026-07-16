@@ -362,14 +362,21 @@ internal sealed class PdfWriter
 
                 if (!found)
                 {
-                    for (var fi = 0; fi < loadedFonts.Count; fi++)
+                    for (var subsettablePass = 0; subsettablePass < 2 && !found; subsettablePass++)
                     {
-                        if (loadedFonts[fi].cmap.TryGetValue(cp, out var gid)
-                            && HasUsableGlyph(loadedFonts[fi].ttf, cp, gid))
+                        var requireSubsettable = subsettablePass == 0;
+                        for (var fi = 0; fi < loadedFonts.Count; fi++)
                         {
-                            cpToFontSlot[cp] = fi;
-                            found = true;
-                            break;
+                            if (CanSubsetTrueTypeFont(loadedFonts[fi].ttf) != requireSubsettable)
+                                continue;
+
+                            if (loadedFonts[fi].cmap.TryGetValue(cp, out var gid)
+                                && HasUsableGlyph(loadedFonts[fi].ttf, cp, gid))
+                            {
+                                cpToFontSlot[cp] = fi;
+                                found = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -3671,6 +3678,12 @@ internal sealed class PdfWriter
         if (codePoint is ' ' or 0x00A0 or 0x2009) return true;
         return HasGlyphOutline(ttf, gid);
     }
+
+    private static bool CanSubsetTrueTypeFont(byte[] ttf)
+        => FindTable(ttf, "glyf").offset != 0
+            && FindTable(ttf, "loca").offset != 0
+            && FindTable(ttf, "head").offset != 0
+            && FindTable(ttf, "maxp").offset != 0;
 
     private static bool HasGlyphOutline(byte[] ttf, ushort gid)
     {
