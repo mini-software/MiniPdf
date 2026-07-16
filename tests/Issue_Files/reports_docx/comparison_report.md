@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-12T17:23:16.574809
+Generated: 2026-07-15T22:18:58.254623
 
 ## Summary
 
@@ -31,8 +31,10 @@ Generated: 2026-07-12T17:23:16.574809
 | 23 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
 | 24 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
 | 25 | 🟢 TestIssue78 | ✅ | 0.9961 | 0.9723 | 1/1 | **0.9874** |
+| 26 | 🟢 Issue79_FilledContract | ✅ | 0.9933 | 0.9751 | 1/1 | **0.9874** |
+| 27 | 🟢 Issue79_TemplateContract | ✅ | 1.0 | 0.9745 | 1/1 | **0.9898** |
 
-**Average Overall Score: 0.8374**
+**Average Overall Score: 0.8486**
 
 ## Visual Comparison
 
@@ -582,6 +584,22 @@ Generated: 2026-07-12T17:23:16.574809
 <tr>
   <td><img src="images/TestIssue78_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/TestIssue78_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Issue79_FilledContract</b></td>
+  <td colspan="1">Issue79_FilledContract <span style="color:#3fb950">⬤</span> 98.7%</td>
+</tr>
+<tr>
+  <td><img src="images/Issue79_FilledContract_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Issue79_FilledContract_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Issue79_TemplateContract</b></td>
+  <td colspan="1">Issue79_TemplateContract <span style="color:#3fb950">⬤</span> 99.0%</td>
+</tr>
+<tr>
+  <td><img src="images/Issue79_TemplateContract_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Issue79_TemplateContract_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -2624,6 +2642,58 @@ Text content: ✅ Identical
  格证、维保合同等现场实际情况信息进行填写，保证其信息的准确性；
 ```
 </details>
+
+### Issue79_FilledContract
+
+- **Text Similarity:** 0.9933
+- **Visual Average:** 0.9751
+- **Overall Score:** 0.9874
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=293726 bytes, Reference=75476 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Issue79_FilledContract.pdf
++++ reference/Issue79_FilledContract.pdf
+@@ -2,7 +2,7 @@
+ 甲方：甲方公司
+
+ 乙方：乙方公司
+
+ 乙方根据双方签署合同为甲方提供服务。
+
+-1.合作时间：2026 年 06 月 29 日
+
++1.合作时间：2026 年06 月29 日
+
+ 2.项目汇总
+
+ 类型项目 项目合作日期 总金额（元）
+
+ 技术服务费 2026-06-29 666
+
+@@ -23,4 +23,4 @@
+ 甲方：甲方公司 乙方：乙方公司
+
+ 授权代表：张三 授权代表：李四
+
+ 乙方在此处盖章
+
+-日期：2026 年 06 月 29 日 日期：2026 年 06 月 29 日
++日期：2026 年06 月29 日 日期：2026 年06 月29 日
+```
+</details>
+
+### Issue79_TemplateContract
+
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9745
+- **Overall Score:** 0.9898
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=134303 bytes, Reference=74748 bytes
+
+Text content: ✅ Identical
 
 ## Improvement Suggestions
 

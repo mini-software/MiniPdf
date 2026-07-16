@@ -2941,10 +2941,8 @@ internal sealed class PdfWriter
     }
 
     /// <summary>
-    /// Subsets a TrueType font by zeroing out glyph outlines not in the needed set.
-    /// Preserves the font structure (all tables, glyph count, loca format) so glyph IDs
-    /// remain stable. Only 'glyf' table entries for unused glyphs are replaced with
-    /// empty glyph records, yielding much better compression.
+    /// Subsets a TrueType font by rebuilding its glyph data with only the needed outlines.
+    /// Glyph IDs remain stable because the loca table retains an entry for every glyph.
     /// </summary>
     private static byte[] SubsetTtfFont(byte[] ttf, HashSet<ushort> neededGlyphs)
     {
@@ -3010,22 +3008,129 @@ internal sealed class PdfWriter
             }
         }
 
-        // Clone the font data
-        var result = (byte[])ttf.Clone();
-
-        // Zero out glyph data for unused glyphs
+        using var compactGlyf = new MemoryStream();
+        var compactOffsets = new uint[numGlyphs + 1];
         for (ushort gid = 0; gid < numGlyphs; gid++)
         {
-            if (allNeeded.Contains(gid)) continue;
+            compactOffsets[gid] = (uint)compactGlyf.Position;
+            if (allNeeded.Contains(gid))
+            {
+                var glyphStart = (int)(glyfOff + offsets[gid]);
+                var glyphLength = (int)(offsets[gid + 1] - offsets[gid]);
+                if (glyphLength > 0 && glyphStart >= 0 && glyphStart + glyphLength <= ttf.Length)
+                    compactGlyf.Write(ttf, glyphStart, glyphLength);
+            }
 
-            var glyphStart = (int)(glyfOff + offsets[gid]);
-            var glyphEnd = (int)(glyfOff + offsets[gid + 1]);
-            var glyphSize = glyphEnd - glyphStart;
-            if (glyphSize > 0 && glyphStart >= 0 && glyphEnd <= result.Length)
-                Array.Clear(result, glyphStart, glyphSize);
+            if (!isLong && compactGlyf.Position % 2 != 0)
+                compactGlyf.WriteByte(0);
+        }
+        compactOffsets[numGlyphs] = (uint)compactGlyf.Position;
+
+        var useLongLoca = isLong || compactGlyf.Length > ushort.MaxValue * 2L;
+        var compactLoca = new byte[(numGlyphs + 1) * (useLongLoca ? 4 : 2)];
+        for (var gid = 0; gid <= numGlyphs; gid++)
+        {
+            if (useLongLoca)
+                WriteU32(compactLoca, gid * 4, compactOffsets[gid]);
+            else
+                WriteU16(compactLoca, gid * 2, (ushort)(compactOffsets[gid] / 2));
+        }
+
+        var replacementTables = new Dictionary<string, byte[]>(StringComparer.Ordinal)
+        {
+            ["glyf"] = compactGlyf.ToArray(),
+            ["loca"] = compactLoca,
+        };
+        var compactHead = new byte[FindTable(ttf, "head").length];
+        Buffer.BlockCopy(ttf, (int)headOff, compactHead, 0, compactHead.Length);
+        WriteU32(compactHead, 8, 0);
+        WriteU16(compactHead, 50, (ushort)(useLongLoca ? 1 : 0));
+        replacementTables["head"] = compactHead;
+
+        return RebuildTtfTables(ttf, replacementTables);
+    }
+
+    private static byte[] RebuildTtfTables(byte[] ttf, IReadOnlyDictionary<string, byte[]> replacementTables)
+    {
+        var sourceTableCount = ReadU16(ttf, 4);
+        var tables = new List<(string Tag, int Offset, int Length)>();
+        var bitmapTableTags = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "EBDT", "EBLC", "EBSC", "CBDT", "CBLC", "sbix",
+        };
+        for (var i = 0; i < sourceTableCount; i++)
+        {
+            var entryOffset = 12 + i * 16;
+            var tag = Encoding.ASCII.GetString(ttf, entryOffset, 4);
+            if (bitmapTableTags.Contains(tag))
+                continue;
+            tables.Add((tag, (int)ReadU32(ttf, entryOffset + 8), (int)ReadU32(ttf, entryOffset + 12)));
+        }
+
+        var numTables = tables.Count;
+        using var stream = new MemoryStream();
+        stream.Write(new byte[12 + numTables * 16]);
+        var buffer = stream.GetBuffer();
+        Buffer.BlockCopy(ttf, 0, buffer, 0, 4);
+        WriteU16(buffer, 4, (ushort)numTables);
+        var maxPowerOfTwo = 1;
+        var entrySelector = 0;
+        while (maxPowerOfTwo * 2 <= numTables)
+        {
+            maxPowerOfTwo *= 2;
+            entrySelector++;
+        }
+        var searchRange = maxPowerOfTwo * 16;
+        WriteU16(buffer, 6, (ushort)searchRange);
+        WriteU16(buffer, 8, (ushort)entrySelector);
+        WriteU16(buffer, 10, (ushort)(numTables * 16 - searchRange));
+
+        var tableOffsets = new Dictionary<string, int>(StringComparer.Ordinal);
+        for (var i = 0; i < numTables; i++)
+        {
+            var entryOffset = 12 + i * 16;
+            var (tag, sourceOffset, sourceLength) = tables[i];
+            if (sourceOffset < 0 || sourceLength < 0 || sourceOffset + sourceLength > ttf.Length)
+                return ttf;
+
+            while (stream.Position % 4 != 0)
+                stream.WriteByte(0);
+
+            var data = replacementTables.TryGetValue(tag, out var replacement)
+                ? replacement
+                : ttf.AsSpan(sourceOffset, sourceLength).ToArray();
+            var tableOffset = (int)stream.Position;
+            tableOffsets[tag] = tableOffset;
+            stream.Write(data);
+
+            buffer = stream.GetBuffer();
+            Buffer.BlockCopy(Encoding.ASCII.GetBytes(tag), 0, buffer, entryOffset, 4);
+            WriteU32(buffer, entryOffset + 4, CalculateTtfChecksum(data));
+            WriteU32(buffer, entryOffset + 8, (uint)tableOffset);
+            WriteU32(buffer, entryOffset + 12, (uint)data.Length);
+        }
+
+        var result = stream.ToArray();
+        if (tableOffsets.TryGetValue("head", out var rebuiltHeadOffset))
+        {
+            WriteU32(result, rebuiltHeadOffset + 8, 0);
+            WriteU32(result, rebuiltHeadOffset + 8, unchecked(0xB1B0AFBAu - CalculateTtfChecksum(result)));
         }
 
         return result;
+    }
+
+    private static uint CalculateTtfChecksum(ReadOnlySpan<byte> data)
+    {
+        uint checksum = 0;
+        for (var i = 0; i < data.Length; i += 4)
+        {
+            uint value = 0;
+            for (var j = 0; j < 4; j++)
+                value = (value << 8) | (i + j < data.Length ? data[i + j] : 0u);
+            checksum = unchecked(checksum + value);
+        }
+        return checksum;
     }
 
     // ── TrueType table parsing ─────────────────────────────────────────
@@ -3398,6 +3503,12 @@ internal sealed class PdfWriter
     {
         return ((uint)data[offset] << 24) | ((uint)data[offset + 1] << 16)
              | ((uint)data[offset + 2] << 8) | data[offset + 3];
+    }
+
+    private static void WriteU16(byte[] data, int offset, ushort value)
+    {
+        data[offset] = (byte)(value >> 8);
+        data[offset + 1] = (byte)(value & 0xFF);
     }
 
     private static void WriteU32(byte[] data, int offset, uint value)

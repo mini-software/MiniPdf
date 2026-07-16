@@ -1113,5 +1113,57 @@
       }
     ],
     "overall_score": 0.9874
+  },
+  {
+    "name": "Issue79_FilledContract",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 293726,
+    "reference_size": 75476,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9933,
+    "flat_text_similarity": 0.9933,
+    "word_text_similarity": 0.8,
+    "text_diff": "--- minipdf/Issue79_FilledContract.pdf\n+++ reference/Issue79_FilledContract.pdf\n@@ -2,7 +2,7 @@\n 甲方：甲方公司\n\n 乙方：乙方公司\n\n 乙方根据双方签署合同为甲方提供服务。\n\n-1.合作时间：2026 年 06 月 29 日\n\n+1.合作时间：2026 年06 月29 日\n\n 2.项目汇总\n\n 类型项目 项目合作日期 总金额（元）\n\n 技术服务费 2026-06-29 666\n\n@@ -23,4 +23,4 @@\n 甲方：甲方公司 乙方：乙方公司\n\n 授权代表：张三 授权代表：李四\n\n 乙方在此处盖章\n\n-日期：2026 年 06 月 29 日 日期：2026 年 06 月 29 日\n+日期：2026 年06 月29 日 日期：2026 年06 月29 日",
+    "visual_scores": [
+      0.9751
+    ],
+    "visual_avg": 0.9751,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Issue79_FilledContract_p1_minipdf.png",
+        "reference_img": "Issue79_FilledContract_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9874
+  },
+  {
+    "name": "Issue79_TemplateContract",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "minipdf_size": 134303,
+    "reference_size": 74748,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.9745
+    ],
+    "visual_avg": 0.9745,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Issue79_TemplateContract_p1_minipdf.png",
+        "reference_img": "Issue79_TemplateContract_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9898
   }
 ]
