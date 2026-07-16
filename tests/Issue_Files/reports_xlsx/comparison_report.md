@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-15T10:12:48.615236
+Generated: 2026-07-16T09:14:51.358353
 
 ## Summary
 
@@ -8,7 +8,7 @@ Generated: 2026-07-15T10:12:48.615236
 |---|-----------|-------|----------|------------|-------------|--------|
 | 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9785 | 0.9563 | 2/2 | **0.9739** |
 | 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9785 | 0.954 | 2/2 | **0.973** |
-| 3 | 🟢 Business expense budget1 | ✅ | 0.9601 | 0.8752 | 4/4 | **0.9341** |
+| 3 | 🟢 Business expense budget1 | ✅ | 0.9539 | 0.8879 | 4/4 | **0.9367** |
 | 4 | 🟡 Business expenses budget2 | ✅ | 0.9809 | 0.6699 | 4/4 | **0.8603** |
 | 5 | 🟡 Business plan checklist with SWOT analysis1 | ✅ | 0.9915 | 0.5465 | 1/1 | **0.8152** |
 | 6 | ⚪ Business_expense_budget1_copy | ✅ | N/A | N/A | ?/? | **N/A** |
@@ -31,7 +31,7 @@ Generated: 2026-07-15T10:12:48.615236
 | 23 | 🟡 XlsxIssue82_5mb | ✅ | 0.6678 | 0.838 | 361/766 | **0.7023** |
 | 24 | 🔴 XlsxIssue82_SampleTestData5mb | ✅ | 0.4255 | 0.9146 | 834/1668 | **0.636** |
 
-**Average Overall Score: 0.7604**
+**Average Overall Score: 0.7605**
 
 ## Difference Heatmaps
 
@@ -101,7 +101,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><b>Business expense budget1</b></td>
-  <td colspan="1">Business expense budget1 <span style="color:#3fb950">⬤</span> 93.4%</td>
+  <td colspan="1">Business expense budget1 <span style="color:#3fb950">⬤</span> 93.7%</td>
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1453,11 +1453,11 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
 ### Business expense budget1
 
-- **Text Similarity:** 0.9601
-- **Visual Average:** 0.8752
-- **Overall Score:** 0.9341
+- **Text Similarity:** 0.9539
+- **Visual Average:** 0.8879
+- **Overall Score:** 0.9367
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=75854 bytes, Reference=173721 bytes
+- **File Size:** MiniPdf=78716 bytes, Reference=173721 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1499,16 +1499,14 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
  Q2 ACTUAL VARIANCE
 
-@@ -82,4 +72,6 @@
- 2,100.00 0.00
-
+@@ -83,4 +73,5 @@
  12,600.00 1,200.00
 
  ---PAGE---
 
--121,600.00 6,350.00
-+121,600.00 6,350.00
+ 121,600.00 6,350.00
 
+-ertainment Professional Services
 +Total Budget
 
 +Total Actual

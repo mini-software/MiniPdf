@@ -979,7 +979,8 @@ internal static class ExcelToPdfConverter
                     options.MarginLeft += centerOffset;
             }
 
-            RenderSheetRows(doc, sheet, options, pageWidth, pageHeight, Enumerable.Range(0, maxCols).ToArray(), columnPadding, colWidths, avgCharWidth, fitToPageScale);
+            RenderSheetRows(doc, sheet, options, pageWidth, pageHeight, Enumerable.Range(0, maxCols).ToArray(), columnPadding, colWidths, avgCharWidth, fitToPageScale,
+                colWidths, 0f);
         }
 
         // Note: trailing empty page logic disabled — it was previously intended to
@@ -1048,6 +1049,9 @@ internal static class ExcelToPdfConverter
             {
                 groupWidths[i] = naturalWidths[group[i]];
             }
+            var precedingVisibleColumns = naturalWidths.Take(group[0]).Count(width => width > 0f);
+            var groupSheetOffset = naturalWidths.Take(group[0]).Where(width => width > 0f).Sum()
+                + columnPadding * precedingVisibleColumns;
 
             // Scale to fit if needed
             var groupTotalWidth = groupWidths.Sum() + columnPadding * (group.Length - 1);
@@ -1061,7 +1065,8 @@ internal static class ExcelToPdfConverter
                 }
             }
 
-            RenderSheetRows(doc, sheet, options, pageWidth, pageHeight, group, columnPadding, groupWidths, avgCharWidth);
+            RenderSheetRows(doc, sheet, options, pageWidth, pageHeight, group, columnPadding, groupWidths, avgCharWidth,
+                allColumnWidths: naturalWidths, groupSheetOffset: groupSheetOffset);
 
             // Remove trailing empty pages created by this column group.
             // When most rows have no text in this group's columns, the vertical
@@ -1077,6 +1082,7 @@ internal static class ExcelToPdfConverter
                 else
                     break;
             }
+
         }
     }
 
@@ -1085,7 +1091,7 @@ internal static class ExcelToPdfConverter
     /// </summary>
     private static void RenderSheetRows(PdfDocument doc, ExcelSheet sheet, ConversionOptions options,
         float pageWidth, float pageHeight, int[] columns, float columnPadding, float[] colWidths, float avgCharWidth,
-        float fitToPageScale = 1f)
+        float fitToPageScale = 1f, float[]? allColumnWidths = null, float groupSheetOffset = 0f)
     {
         // Print scale factor for cell-level font sizes (column widths are already print-scaled by caller)
         var printScaleFactor = GetPrintScaleFactor(sheet);
@@ -2445,11 +2451,6 @@ internal static class ExcelToPdfConverter
 
         foreach (var chart in sheet.Charts)
         {
-            // Only render chart if its anchor column is within the current column group
-            var colGroupStart = columns[0];
-            var colGroupEnd = columns[^1];
-            if (chart.AnchorCol < colGroupStart || chart.AnchorCol > colGroupEnd) continue;
-
             // Determine anchor Y position
             if (!rowTopY.TryGetValue(chart.AnchorRow, out var chartTopY))
             {
@@ -2480,16 +2481,22 @@ internal static class ExcelToPdfConverter
                 chartPage = bestRow >= 0 ? rowPage[bestRow] : currentPage!;
             }
 
-            var chartColIdx = Array.IndexOf(columns, chart.AnchorCol);
-            if (chartColIdx < 0) chartColIdx = 0;
-            var chartX = colXStarts[chartColIdx];
+            var chartX = options.MarginLeft - groupSheetOffset;
+            var sheetWidths = allColumnWidths ?? colWidths;
+            for (var col = 0; col < Math.Min(chart.AnchorCol, sheetWidths.Length); col++)
+                chartX += sheetWidths[col] + columnPadding;
 
-            // Calculate chart render size from EMU (cap to page like original)
+            // Calculate chart render size from EMU. One-cell anchors retain their
+            // sheet-relative size so horizontal page groups show clipped slices.
             const float EmuToPt2 = 1f / 12700f;
             var chartWidth = Math.Min(chart.WidthEmu * EmuToPt2, usableWidth * 0.95f);
             var chartHeight = chart.HeightEmu * EmuToPt2;
             if (chartWidth < 72) chartWidth = usableWidth * 0.6f;
             if (chartHeight < 72) chartHeight = chartWidth * 0.65f;
+
+            var pageLeft = options.MarginLeft;
+            var pageRight = pageWidth - options.MarginRight;
+            if (chartX >= pageRight || chartX + chartWidth <= pageLeft) continue;
 
             // Scale dominant charts (twoCellAnchor spanning >50% of sheet rows) to
             // fill usable page width, matching LibreOffice's full-page output.

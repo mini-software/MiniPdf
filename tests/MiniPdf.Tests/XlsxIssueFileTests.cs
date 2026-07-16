@@ -73,6 +73,20 @@ public class XlsxIssueFileTests
         Assert.Contains(doc.Pages[12].TextBlocks, block => block.Text.Contains("QA Automation Specialist"));
     }
 
+    [Fact]
+    public void BusinessExpenseBudget_ExplicitPageSetupPreservesHorizontalChartSlices()
+    {
+        var issuePath = FindIssueXlsx("Business expense budget1.xlsx");
+
+        var doc = ExcelToPdfConverter.Convert(issuePath);
+
+        Assert.Equal(4, doc.Pages.Count);
+        Assert.DoesNotContain(doc.Pages[0].TextBlocks, block => block.Text == "Q2 ACTUAL");
+        Assert.Contains(doc.Pages[1].TextBlocks, block => block.Text == "Budget vs Actual by Category");
+        Assert.Contains(doc.Pages[2].TextBlocks, block => block.Text == "Q2 ACTUAL");
+        Assert.Contains(doc.Pages[3].TextBlocks, block => block.Text.Contains("Professional Services"));
+    }
+
     private static string FindIssueXlsx(string fileName)
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);

@@ -67,22 +67,22 @@
     "name": "Business expense budget1",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 75854,
+    "minipdf_size": 78716,
     "reference_size": 173721,
     "pdf_valid": true,
     "minipdf_pages": 4,
     "reference_pages": 4,
-    "text_similarity": 0.9601,
-    "flat_text_similarity": 0.9601,
-    "word_text_similarity": 0.9551,
-    "text_diff": "--- minipdf/Business expense budget1.pdf\n+++ reference/Business expense budget1.pdf\n@@ -41,17 +41,7 @@\n Travel & Entertainment 24700 22100\n\n Professional Services 24600 23400\n\n Budget vs Actual by Category\n\n-Total Budget Total Actual\n\n-140000\n\n-120000\n\n-100000\n\n-80000\n\n-60000\n\n Amount (\\$)\n\n-40000\n\n-20000\n\n-0\n\n-Personnel Operations Marketing Travel & Entertainment Professional Services\n\n Category\n\n ---PAGE---\n\n Q2 ACTUAL VARIANCE\n\n@@ -82,4 +72,6 @@\n 2,100.00 0.00\n\n 12,600.00 1,200.00\n\n ---PAGE---\n\n-121,600.00 6,350.00\n+121,600.00 6,350.00\n\n+Total Budget\n\n+Total Actual",
+    "text_similarity": 0.9539,
+    "flat_text_similarity": 0.9539,
+    "word_text_similarity": 0.9497,
+    "text_diff": "--- minipdf/Business expense budget1.pdf\n+++ reference/Business expense budget1.pdf\n@@ -41,17 +41,7 @@\n Travel & Entertainment 24700 22100\n\n Professional Services 24600 23400\n\n Budget vs Actual by Category\n\n-Total Budget Total Actual\n\n-140000\n\n-120000\n\n-100000\n\n-80000\n\n-60000\n\n Amount (\\$)\n\n-40000\n\n-20000\n\n-0\n\n-Personnel Operations Marketing Travel & Entertainment Professional Services\n\n Category\n\n ---PAGE---\n\n Q2 ACTUAL VARIANCE\n\n@@ -83,4 +73,5 @@\n 12,600.00 1,200.00\n\n ---PAGE---\n\n 121,600.00 6,350.00\n\n-ertainment Professional Services\n+Total Budget\n\n+Total Actual",
     "visual_scores": [
       0.7922,
       0.908,
       0.8859,
-      0.9147
+      0.9653
     ],
-    "visual_avg": 0.8752,
+    "visual_avg": 0.8879,
     "diff_images": [
       {
         "page": 1,
@@ -105,7 +105,7 @@
         "reference_img": "Business expense budget1_p4_reference.png"
       }
     ],
-    "overall_score": 0.9341
+    "overall_score": 0.9367
   },
   {
     "name": "Business expenses budget2",

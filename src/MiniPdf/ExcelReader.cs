@@ -3046,7 +3046,7 @@ internal static class ExcelReader
         // Some generators emit fitToWidth/fitToHeight defaults without the
         // pageSetUpPr flag. Preserve the useful one-page-wide intent, but do not
         // compress an entire large worksheet to one page high in that case.
-        if (!fitToPage && fitToWidth > 0 && pageSetup?.Attribute("fitToWidth") != null)
+        if (pageSetUpPr == null && !fitToPage && fitToWidth > 0 && pageSetup?.Attribute("fitToWidth") != null)
         {
             fitToPage = true;
             fitToHeight = 0;
