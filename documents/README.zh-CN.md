@@ -42,6 +42,7 @@
 - **Excel 转 PDF** — 将 `.xlsx` 文件转换为 PDF
 - **Word 转 PDF** — 将 `.docx` 文件转换为 PDF
 - **PowerPoint 转 PDF** — 将 `.pptx` 文件转换为 PDF
+- **PDF 合并与书签** — 合并多个 PDF，并为结果添加顶层书签
 - **极少依赖** — 轻量化设计，几乎仅使用 .NET 内置 API
 - **Serverless 就绪** — 无需 COM、无需安装 Office、无需 Adobe Acrobat — 有 .NET 即可运行
 - **Native AOT** — 预编译独立二进制文件，支持 Windows / Linux / macOS，无需安装 .NET 运行时
@@ -97,7 +98,83 @@ MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
 // 流转字节数组
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
+
+// 合并 PDF 并添加书签
+MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOptions
+{
+  BookmarkTitles = new[] { "Cover", "Body" },
+  Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
+});
 ```
+
+## PDF 合并使用方式
+
+### 合并多个文件
+
+```csharp
+using MiniSoftware;
+
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book.pdf");
+```
+
+输入顺序会被保留，所以 `cover.pdf` 的页面会先出现，然后是 `chapter-1.pdf`，最后是 `chapter-2.pdf`。
+
+### 为每个来源 PDF 添加一个书签
+
+当每个输入 PDF 都要成为顶层书签时，使用 `BookmarkTitles`。标题数量必须与输入 PDF 数量相同。
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1", "Chapter 2" },
+  });
+```
+
+### 为指定页面添加书签
+
+使用 `PdfBookmark` 指定书签目标页。`PageIndex` 从 0 开始，并指向最终合并后的 PDF 页码。
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-custom-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    Bookmarks = new[]
+    {
+      new PdfBookmark("Start", 0),
+      new PdfBookmark("Chapter 2 - page 3", 8),
+    },
+  });
+```
+
+### 返回字节数组
+
+```csharp
+byte[] mergedPdf = MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf" },
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1" },
+  });
+```
+
+PDF 合并目前支持未加密且使用 classic xref table 的 PDF。加密 PDF 以及仅使用 xref stream 的 PDF 会抛出 `NotSupportedException`。
+
+## PDF 合并可视化测试
+
+如需生成带书签的合并 PDF 样例以便人工检查：
+
+```powershell
+./scripts/Test-PdfMergeVisual.ps1
+```
+
+脚本会写入 `artifacts/issue62-merge-visual/merged-bookmarks.pdf`。请用 PDF 阅读器打开它，并检查书签面板是否包含 `Source A`、`Source B` 和 `Source B - page 2`。添加 `-Open` 可在生成后自动打开 PDF。
 
 ## 自定义字体
 

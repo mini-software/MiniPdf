@@ -28,6 +28,7 @@ Une bibliothèque .NET minimale et légère pour convertir des fichiers Office e
 - **Excel → PDF** — Convertit les fichiers `.xlsx` en PDF
 - **Word → PDF** — Convertit les fichiers `.docx` en PDF
 - **PowerPoint → PDF** — Convertit les fichiers `.pptx` en PDF
+- **Fusion PDF avec signets** — Fusionne plusieurs PDF et ajoute des signets de premier niveau au resultat
 - **Dépendances minimales** — Conception légère, repose presque entièrement sur les API .NET intégrées
 - **Prêt pour le serverless** — Pas de COM, pas d'installation d'Office, pas d'Adobe Acrobat — fonctionne partout où .NET fonctionne
 - **Native AOT** — Binaires autonomes précompilés pour Windows / Linux / macOS ; aucun runtime .NET requis
@@ -83,7 +84,83 @@ MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
 // Flux vers tableau d'octets
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
+
+// Fusionner des PDF et ajouter des signets
+MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOptions
+{
+  BookmarkTitles = new[] { "Cover", "Body" },
+  Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
+});
 ```
+
+## Utilisation de la fusion PDF
+
+### Fusionner des fichiers
+
+```csharp
+using MiniSoftware;
+
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book.pdf");
+```
+
+L'ordre d'entree est conserve : les pages de `cover.pdf` apparaissent d'abord, puis celles de `chapter-1.pdf`, puis celles de `chapter-2.pdf`.
+
+### Ajouter un signet par PDF source
+
+Utilisez `BookmarkTitles` lorsque chaque PDF d'entree doit devenir un signet de premier niveau. Le nombre de titres doit correspondre au nombre de PDF d'entree.
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1", "Chapter 2" },
+  });
+```
+
+### Ajouter des signets a des pages precises
+
+Utilisez `PdfBookmark` pour cibler explicitement une page. `PageIndex` commence a 0 et fait reference au PDF final fusionne.
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-custom-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    Bookmarks = new[]
+    {
+      new PdfBookmark("Start", 0),
+      new PdfBookmark("Chapter 2 - page 3", 8),
+    },
+  });
+```
+
+### Retourner un tableau d'octets
+
+```csharp
+byte[] mergedPdf = MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf" },
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1" },
+  });
+```
+
+La fusion PDF prend en charge les PDF non chiffres qui utilisent des classic xref tables. Les PDF chiffres et les PDF utilisant uniquement des xref streams lancent `NotSupportedException`.
+
+## Test visuel de fusion PDF
+
+Pour generer un PDF fusionne avec signets a inspecter manuellement :
+
+```powershell
+./scripts/Test-PdfMergeVisual.ps1
+```
+
+Le script ecrit `artifacts/issue62-merge-visual/merged-bookmarks.pdf`. Ouvrez-le dans un lecteur PDF et verifiez que le panneau des signets contient `Source A`, `Source B` et `Source B - page 2`. Ajoutez `-Open` pour ouvrir le PDF genere apres sa creation.
 
 ## Polices personnalisees
 

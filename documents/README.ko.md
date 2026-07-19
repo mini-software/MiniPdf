@@ -28,6 +28,7 @@ Office 파일을 PDF로 변환하는 최소한의 경량 .NET 라이브러리입
 - **Excel → PDF 변환** — `.xlsx` 파일을 PDF로 변환
 - **Word → PDF 변환** — `.docx` 파일을 PDF로 변환
 - **PowerPoint → PDF 변환** — `.pptx` 파일을 PDF로 변환
+- **PDF 병합 및 북마크** — 여러 PDF를 병합하고 결과에 최상위 북마크 추가
 - **최소 의존성** — 경량 설계, 거의 .NET 내장 API만 사용
 - **서버리스 지원** — COM 불필요, Office 설치 불필요, Adobe Acrobat 불필요 — .NET만 있으면 어디서든 실행
 - **Native AOT** — Windows / Linux / macOS용 사전 컴파일된 독립 실행 바이너리, .NET 런타임 설치 불필요
@@ -83,7 +84,83 @@ MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
 // 스트림에서 바이트 배열로
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
+
+// PDF 병합 및 북마크 추가
+MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOptions
+{
+  BookmarkTitles = new[] { "Cover", "Body" },
+  Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
+});
 ```
+
+## PDF 병합 사용 방법
+
+### 여러 파일 병합
+
+```csharp
+using MiniSoftware;
+
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book.pdf");
+```
+
+입력 순서는 그대로 유지되므로 `cover.pdf` 페이지가 먼저 오고, 그다음 `chapter-1.pdf`, 마지막으로 `chapter-2.pdf`가 이어집니다.
+
+### 원본 PDF마다 북마크 하나 추가
+
+각 입력 PDF를 최상위 북마크로 만들려면 `BookmarkTitles`를 사용합니다. 제목 개수는 입력 PDF 개수와 같아야 합니다.
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1", "Chapter 2" },
+  });
+```
+
+### 특정 페이지에 북마크 추가
+
+명시적인 페이지 대상으로 이동하려면 `PdfBookmark`를 사용합니다. `PageIndex`는 0부터 시작하며 최종 병합 PDF의 페이지를 가리킵니다.
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-custom-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    Bookmarks = new[]
+    {
+      new PdfBookmark("Start", 0),
+      new PdfBookmark("Chapter 2 - page 3", 8),
+    },
+  });
+```
+
+### 바이트 배열 반환
+
+```csharp
+byte[] mergedPdf = MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf" },
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1" },
+  });
+```
+
+PDF 병합은 암호화되지 않은 classic xref table 형식의 PDF를 지원합니다. 암호화된 PDF와 xref stream만 사용하는 PDF는 `NotSupportedException`을 throw합니다.
+
+## PDF 병합 시각적 테스트
+
+북마크가 포함된 병합 PDF 샘플을 생성해 수동으로 확인하려면 다음을 실행하세요.
+
+```powershell
+./scripts/Test-PdfMergeVisual.ps1
+```
+
+스크립트는 `artifacts/issue62-merge-visual/merged-bookmarks.pdf`를 생성합니다. PDF 뷰어에서 열고 북마크 패널에 `Source A`, `Source B`, `Source B - page 2`가 표시되는지 확인하세요. 생성 후 PDF를 바로 열려면 `-Open`을 추가하세요.
 
 ## 사용자 지정 글꼴
 

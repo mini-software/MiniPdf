@@ -28,6 +28,7 @@
 - **Excel 轉 PDF** — 將 `.xlsx` 檔案轉換為 PDF
 - **Word 轉 PDF** — 將 `.docx` 檔案轉換為 PDF
 - **PowerPoint 轉 PDF** — 將 `.pptx` 檔案轉換為 PDF
+- **PDF 合併與書籤** — 合併多個 PDF，並為結果加入頂層書籤
 - **極少相依性** — 輕量化設計，幾乎僅使用 .NET 內建 API
 - **Serverless 就緒** — 無需 COM、無需安裝 Office、無需 Adobe Acrobat — 有 .NET 即可運行
 - **Native AOT** — 預編譯獨立二進位檔，支援 Windows / Linux / macOS，無需安裝 .NET 執行階段
@@ -83,7 +84,83 @@ MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
 // 串流轉位元組陣列
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
+
+// 合併 PDF 並加入書籤
+MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOptions
+{
+  BookmarkTitles = new[] { "Cover", "Body" },
+  Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
+});
 ```
+
+## PDF 合併使用方式
+
+### 合併多個檔案
+
+```csharp
+using MiniSoftware;
+
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book.pdf");
+```
+
+輸入順序會被保留，所以 `cover.pdf` 的頁面會先出現，接著是 `chapter-1.pdf`，最後是 `chapter-2.pdf`。
+
+### 為每個來源 PDF 加入一個書籤
+
+當每個輸入 PDF 都要成為頂層書籤時，使用 `BookmarkTitles`。標題數量必須與輸入 PDF 數量相同。
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1", "Chapter 2" },
+  });
+```
+
+### 為指定頁面加入書籤
+
+使用 `PdfBookmark` 指定書籤目標頁。`PageIndex` 從 0 開始，並指向最終合併後的 PDF 頁碼。
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-custom-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    Bookmarks = new[]
+    {
+      new PdfBookmark("Start", 0),
+      new PdfBookmark("Chapter 2 - page 3", 8),
+    },
+  });
+```
+
+### 回傳位元組陣列
+
+```csharp
+byte[] mergedPdf = MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf" },
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1" },
+  });
+```
+
+PDF 合併目前支援未加密且使用 classic xref table 的 PDF。加密 PDF 以及僅使用 xref stream 的 PDF 會拋出 `NotSupportedException`。
+
+## PDF 合併視覺化測試
+
+如需產生帶書籤的合併 PDF 範例以便人工檢查：
+
+```powershell
+./scripts/Test-PdfMergeVisual.ps1
+```
+
+腳本會寫入 `artifacts/issue62-merge-visual/merged-bookmarks.pdf`。請用 PDF 閱讀器開啟它，並檢查書籤面板是否包含 `Source A`、`Source B` 和 `Source B - page 2`。加入 `-Open` 可在產生後自動開啟 PDF。
 
 ## 自訂字體
 

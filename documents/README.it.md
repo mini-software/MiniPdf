@@ -28,6 +28,7 @@ Una libreria .NET minimale e leggera per convertire file Office in PDF.
 - **Excel → PDF** — Converte file `.xlsx` in PDF
 - **Word → PDF** — Converte file `.docx` in PDF
 - **PowerPoint → PDF** — Converte file `.pptx` in PDF
+- **Unione PDF con segnalibri** — Unisce piu PDF e aggiunge segnalibri di primo livello al risultato
 - **Dipendenze minime** — Design leggero, utilizza quasi esclusivamente le API .NET integrate
 - **Pronto per il serverless** — Nessun COM, nessuna installazione di Office, nessun Adobe Acrobat — funziona ovunque .NET funzioni
 - **Native AOT** — Binari standalone precompilati per Windows / Linux / macOS; nessun runtime .NET richiesto
@@ -83,7 +84,83 @@ MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
 // Da stream a array di byte
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
+
+// Unisci PDF e aggiungi segnalibri
+MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOptions
+{
+  BookmarkTitles = new[] { "Cover", "Body" },
+  Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
+});
 ```
+
+## Utilizzo dell'unione PDF
+
+### Unire file
+
+```csharp
+using MiniSoftware;
+
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book.pdf");
+```
+
+L'ordine di input viene mantenuto, quindi le pagine di `cover.pdf` vengono prima, seguite da `chapter-1.pdf` e poi da `chapter-2.pdf`.
+
+### Aggiungere un segnalibro per ogni PDF sorgente
+
+Usa `BookmarkTitles` quando ogni PDF di input deve diventare un segnalibro di primo livello. Il numero di titoli deve corrispondere al numero di PDF in input.
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1", "Chapter 2" },
+  });
+```
+
+### Aggiungere segnalibri a pagine specifiche
+
+Usa `PdfBookmark` per destinazioni di pagina esplicite. `PageIndex` e zero-based e fa riferimento al PDF finale unito.
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-custom-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    Bookmarks = new[]
+    {
+      new PdfBookmark("Start", 0),
+      new PdfBookmark("Chapter 2 - page 3", 8),
+    },
+  });
+```
+
+### Restituire un array di byte
+
+```csharp
+byte[] mergedPdf = MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf" },
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1" },
+  });
+```
+
+L'unione PDF supporta PDF non crittografati che usano classic xref table. I PDF crittografati e i PDF che usano solo xref stream generano `NotSupportedException`.
+
+## Test visivo di unione PDF
+
+Per generare un PDF unito con segnalibri da controllare manualmente:
+
+```powershell
+./scripts/Test-PdfMergeVisual.ps1
+```
+
+Lo script scrive `artifacts/issue62-merge-visual/merged-bookmarks.pdf`. Aprilo in un visualizzatore PDF e verifica che il pannello dei segnalibri contenga `Source A`, `Source B` e `Source B - page 2`. Aggiungi `-Open` per aprire il PDF generato dopo la creazione.
 
 ## Font personalizzati
 

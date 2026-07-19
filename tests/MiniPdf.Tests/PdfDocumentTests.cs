@@ -108,6 +108,74 @@ public class PdfDocumentTests
     }
 
     [Fact]
+    public void MergePdf_CombinesPagesAndAddsSourceBookmarks()
+    {
+        var first = new PdfDocument();
+        first.AddPage().AddText("First PDF", 50, 700);
+        var second = new PdfDocument();
+        second.AddPage().AddText("Second PDF", 50, 700);
+
+        var firstPath = Path.Combine(Path.GetTempPath(), $"minipdf_merge_first_{Guid.NewGuid()}.pdf");
+        var secondPath = Path.Combine(Path.GetTempPath(), $"minipdf_merge_second_{Guid.NewGuid()}.pdf");
+        try
+        {
+            first.Save(firstPath);
+            second.Save(secondPath);
+
+            var bytes = MiniPdf.MergePdf(new[] { firstPath, secondPath }, new PdfMergeOptions
+            {
+                BookmarkTitles = new[] { "First source", "Second source" }
+            });
+            var content = System.Text.Encoding.ASCII.GetString(bytes);
+
+            Assert.StartsWith("%PDF-1.4", content);
+            Assert.Contains("First PDF", content);
+            Assert.Contains("Second PDF", content);
+            Assert.Contains("/Type /Pages", content);
+            Assert.Contains("/Count 2", content);
+            Assert.Contains("/Outlines", content);
+            Assert.Contains("/Title (First source)", content);
+            Assert.Contains("/Title (Second source)", content);
+            Assert.Contains("/PageMode /UseOutlines", content);
+        }
+        finally
+        {
+            if (File.Exists(firstPath)) File.Delete(firstPath);
+            if (File.Exists(secondPath)) File.Delete(secondPath);
+        }
+    }
+
+    [Fact]
+    public void MergePdf_AddsExplicitPageBookmark()
+    {
+        var doc = new PdfDocument();
+        doc.AddPage().AddText("One", 50, 700);
+        doc.AddPage().AddText("Two", 50, 700);
+
+        var path = Path.Combine(Path.GetTempPath(), $"minipdf_merge_bookmark_{Guid.NewGuid()}.pdf");
+        try
+        {
+            doc.Save(path);
+
+            var bytes = MiniPdf.MergePdf(new[] { path }, new PdfMergeOptions
+            {
+                Bookmarks = new[] { new PdfBookmark("Second page", 1) }
+            });
+            var content = System.Text.Encoding.ASCII.GetString(bytes);
+
+            Assert.Contains("One", content);
+            Assert.Contains("Two", content);
+            Assert.Contains("/Count 2", content);
+            Assert.Contains("/Title (Second page)", content);
+            Assert.Contains("/Dest [", content);
+        }
+        finally
+        {
+            if (File.Exists(path)) File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void Save_ToFile_CreatesFile()
     {
         var doc = new PdfDocument();

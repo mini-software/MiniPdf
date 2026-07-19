@@ -42,6 +42,55 @@ public sealed class MiniPdfConversionOptions
 }
 
 /// <summary>
+/// Options for merging multiple PDF files into one PDF.
+/// </summary>
+public sealed class PdfMergeOptions
+{
+    /// <summary>
+    /// Optional bookmark titles to add at the first page of each input PDF. When provided,
+    /// the number of titles must match the number of input PDFs.
+    /// </summary>
+    public IList<string>? BookmarkTitles { get; set; }
+
+    /// <summary>
+    /// Optional page-specific bookmarks to add to the merged PDF. PageIndex is zero-based
+    /// in the final merged document.
+    /// </summary>
+    public IList<PdfBookmark>? Bookmarks { get; set; }
+}
+
+/// <summary>
+/// Represents a top-level PDF bookmark targeting a page in the merged document.
+/// </summary>
+public sealed class PdfBookmark
+{
+    /// <summary>
+    /// Creates a PDF bookmark.
+    /// </summary>
+    /// <param name="title">Bookmark title.</param>
+    /// <param name="pageIndex">Zero-based page index in the merged PDF.</param>
+    public PdfBookmark(string title, int pageIndex)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(title);
+#else
+        if (title is null) throw new ArgumentNullException(nameof(title));
+#endif
+        if (pageIndex < 0)
+            throw new ArgumentOutOfRangeException(nameof(pageIndex), "PageIndex must be zero or greater.");
+
+        Title = title;
+        PageIndex = pageIndex;
+    }
+
+    /// <summary>Bookmark title.</summary>
+    public string Title { get; }
+
+    /// <summary>Zero-based page index in the merged PDF.</summary>
+    public int PageIndex { get; }
+}
+
+/// <summary>
 /// Main entry point for MiniPdf operations.
 /// Provides simple methods for converting files to PDF format.
 /// </summary>
@@ -75,6 +124,69 @@ public static class MiniPdf
     {
         lock (_registeredFonts)
             return new List<(string, byte[])>(_registeredFonts);
+    }
+
+    /// <summary>
+    /// Merges multiple PDF files into a single PDF file.
+    /// </summary>
+    /// <param name="inputPaths">Input PDF file paths in merge order.</param>
+    /// <param name="outputPath">Path for the merged PDF file.</param>
+    public static void MergePdf(IEnumerable<string> inputPaths, string outputPath)
+        => MergePdf(inputPaths, outputPath, (PdfMergeOptions?)null);
+
+    /// <summary>
+    /// Merges multiple PDF files into a single PDF file and optionally adds bookmarks.
+    /// </summary>
+    /// <param name="inputPaths">Input PDF file paths in merge order.</param>
+    /// <param name="outputPath">Path for the merged PDF file.</param>
+    /// <param name="options">Optional merge settings.</param>
+    public static void MergePdf(IEnumerable<string> inputPaths, string outputPath, PdfMergeOptions? options)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(inputPaths);
+        ArgumentNullException.ThrowIfNull(outputPath);
+#else
+        if (inputPaths is null) throw new ArgumentNullException(nameof(inputPaths));
+        if (outputPath is null) throw new ArgumentNullException(nameof(outputPath));
+#endif
+        var bytes = MergePdf(inputPaths, options);
+        File.WriteAllBytes(outputPath, bytes);
+    }
+
+    /// <summary>
+    /// Merges multiple PDF files into a single PDF byte array.
+    /// </summary>
+    /// <param name="inputPaths">Input PDF file paths in merge order.</param>
+    /// <returns>A byte array containing the merged PDF data.</returns>
+    public static byte[] MergePdf(IEnumerable<string> inputPaths)
+        => MergePdf(inputPaths, (PdfMergeOptions?)null);
+
+    /// <summary>
+    /// Merges multiple PDF files into a single PDF byte array and optionally adds bookmarks.
+    /// </summary>
+    /// <param name="inputPaths">Input PDF file paths in merge order.</param>
+    /// <param name="options">Optional merge settings.</param>
+    /// <returns>A byte array containing the merged PDF data.</returns>
+    public static byte[] MergePdf(IEnumerable<string> inputPaths, PdfMergeOptions? options)
+    {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(inputPaths);
+#else
+        if (inputPaths is null) throw new ArgumentNullException(nameof(inputPaths));
+#endif
+        var paths = inputPaths.ToList();
+        if (paths.Count == 0)
+            throw new ArgumentException("At least one input PDF is required.", nameof(inputPaths));
+
+        var pdfs = new List<byte[]>(paths.Count);
+        foreach (var path in paths)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                throw new ArgumentException("Input PDF paths cannot be null or whitespace.", nameof(inputPaths));
+            pdfs.Add(File.ReadAllBytes(path));
+        }
+
+        return PdfMerger.Merge(pdfs, options);
     }
 
     /// <summary>

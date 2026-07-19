@@ -28,6 +28,7 @@ Office ファイルを PDF に変換するための、ミニマルで軽量な .
 - **Excel → PDF 変換** — `.xlsx` ファイルを PDF に変換
 - **Word → PDF 変換** — `.docx` ファイルを PDF に変換
 - **PowerPoint → PDF 変換** — `.pptx` ファイルを PDF に変換
+- **PDF 結合とブックマーク** — 複数の PDF を結合し、結果にトップレベルのブックマークを追加
 - **最小限の依存関係** — 軽量設計、ほぼ .NET 組み込み API のみを使用
 - **サーバーレス対応** — COM 不要、Office インストール不要、Adobe Acrobat 不要 — .NET があればどこでも動作
 - **Native AOT** — Windows / Linux / macOS 向けのプリコンパイル済みスタンドアロンバイナリ。.NET ランタイムのインストール不要
@@ -83,7 +84,83 @@ MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
 // ストリームからバイト配列へ
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
+
+// PDF を結合し、ブックマークを追加
+MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOptions
+{
+  BookmarkTitles = new[] { "Cover", "Body" },
+  Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
+});
 ```
+
+## PDF 結合の使用方法
+
+### 複数ファイルを結合
+
+```csharp
+using MiniSoftware;
+
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book.pdf");
+```
+
+入力順は保持されるため、`cover.pdf` のページが先に入り、その後に `chapter-1.pdf`、最後に `chapter-2.pdf` が続きます。
+
+### 入力 PDF ごとにブックマークを追加
+
+各入力 PDF をトップレベルのブックマークにしたい場合は `BookmarkTitles` を使用します。タイトル数は入力 PDF 数と一致している必要があります。
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1", "Chapter 2" },
+  });
+```
+
+### 指定ページにブックマークを追加
+
+明示的なページ移動先には `PdfBookmark` を使用します。`PageIndex` は 0 始まりで、結合後 PDF のページを指します。
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-custom-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    Bookmarks = new[]
+    {
+      new PdfBookmark("Start", 0),
+      new PdfBookmark("Chapter 2 - page 3", 8),
+    },
+  });
+```
+
+### バイト配列で受け取る
+
+```csharp
+byte[] mergedPdf = MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf" },
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1" },
+  });
+```
+
+PDF 結合は、暗号化されていない classic xref table 形式の PDF に対応しています。暗号化 PDF と xref stream のみを使う PDF では `NotSupportedException` がスローされます。
+
+## PDF 結合の視覚確認テスト
+
+ブックマーク付きの結合 PDF サンプルを生成して手動確認するには、次を実行します。
+
+```powershell
+./scripts/Test-PdfMergeVisual.ps1
+```
+
+スクリプトは `artifacts/issue62-merge-visual/merged-bookmarks.pdf` を書き出します。PDF ビューアーで開き、ブックマークペインに `Source A`、`Source B`、`Source B - page 2` が表示されることを確認してください。生成後に PDF を開くには `-Open` を追加します。
 
 ## カスタムフォント
 

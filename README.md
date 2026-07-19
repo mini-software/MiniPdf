@@ -35,6 +35,7 @@ A minimal, lightweight .NET library for converting office files to PDF.
 - **Excel-to-PDF** — Convert `.xlsx` files to PDF 
 - **Word-to-PDF** — Convert `.docx` files to PDF 
 - **PowerPoint-to-PDF** — Convert `.pptx` files to PDF
+- **PDF merge with bookmarks** — Merge PDFs and add top-level bookmarks to the result
 - **Minimal dependencies** — Lightweight; relies almost entirely on built-in .NET APIs
 - **Serverless-ready** — No COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
 - **Native AOT** — Pre-compiled standalone binaries for Windows / Linux / macOS; no .NET runtime required
@@ -90,7 +91,83 @@ MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
 // Stream to byte array
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
+
+// Merge PDFs and add bookmarks
+MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOptions
+{
+  BookmarkTitles = new[] { "Cover", "Body" },
+  Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
+});
 ```
+
+## PDF Merge Usage
+
+### Merge Files
+
+```csharp
+using MiniSoftware;
+
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book.pdf");
+```
+
+Input order is preserved, so pages from `cover.pdf` appear first, followed by `chapter-1.pdf`, then `chapter-2.pdf`.
+
+### Add One Bookmark Per Source PDF
+
+Use `BookmarkTitles` when each input PDF should become a top-level bookmark. The number of titles must match the number of input PDFs.
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1", "Chapter 2" },
+  });
+```
+
+### Add Bookmarks To Specific Pages
+
+Use `PdfBookmark` for explicit page targets. `PageIndex` is zero-based and refers to the final merged PDF.
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-custom-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    Bookmarks = new[]
+    {
+      new PdfBookmark("Start", 0),
+      new PdfBookmark("Chapter 2 - page 3", 8),
+    },
+  });
+```
+
+### Return A Byte Array
+
+```csharp
+byte[] mergedPdf = MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf" },
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1" },
+  });
+```
+
+Supported inputs are unencrypted PDFs that use classic xref tables. Encrypted PDFs and xref-stream-only PDFs throw `NotSupportedException`.
+
+## Visual PDF Merge Test
+
+To generate a sample merged PDF with bookmarks for manual inspection:
+
+```powershell
+./scripts/Test-PdfMergeVisual.ps1
+```
+
+The script writes `artifacts/issue62-merge-visual/merged-bookmarks.pdf`. Open it in a PDF viewer and check that the bookmark pane contains `Source A`, `Source B`, and `Source B - page 2`. Add `-Open` to launch the generated PDF after creation.
 
 ## Custom Fonts
 

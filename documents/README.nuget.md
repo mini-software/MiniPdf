@@ -14,6 +14,7 @@ Online Demo: https://mini-software.github.io/MiniPdf/
 - Excel to PDF conversion (`.xlsx`)
 - Word to PDF conversion (`.docx`)
 - PowerPoint to PDF conversion (`.pptx`)
+- PDF merge with top-level bookmarks
 - Minimal dependencies — lightweight; relies almost entirely on built-in .NET APIs
 - Serverless-ready — no COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
 - Valid PDF 1.4 output
@@ -49,7 +50,73 @@ MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
 // Stream to byte array
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytesFromStream = MiniPdf.ConvertToPdf(stream);
+
+// Merge PDFs and add bookmarks
+MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOptions
+{
+  BookmarkTitles = new[] { "Cover", "Body" },
+  Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
+});
 ```
+
+## PDF Merge Usage
+
+### Merge Files
+
+```csharp
+using MiniSoftware;
+
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book.pdf");
+```
+
+Input order is preserved, so pages from `cover.pdf` appear first, followed by `chapter-1.pdf`, then `chapter-2.pdf`.
+
+### Add One Bookmark Per Source PDF
+
+Use `BookmarkTitles` when each input PDF should become a top-level bookmark. The number of titles must match the number of input PDFs.
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1", "Chapter 2" },
+  });
+```
+
+### Add Bookmarks To Specific Pages
+
+Use `PdfBookmark` for explicit page targets. `PageIndex` is zero-based and refers to the final merged PDF.
+
+```csharp
+MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
+  "book-with-custom-bookmarks.pdf",
+  new PdfMergeOptions
+  {
+    Bookmarks = new[]
+    {
+      new PdfBookmark("Start", 0),
+      new PdfBookmark("Chapter 2 - page 3", 8),
+    },
+  });
+```
+
+### Return A Byte Array
+
+```csharp
+byte[] mergedPdf = MiniPdf.MergePdf(
+  new[] { "cover.pdf", "chapter-1.pdf" },
+  new PdfMergeOptions
+  {
+    BookmarkTitles = new[] { "Cover", "Chapter 1" },
+  });
+```
+
+Supported inputs are unencrypted PDFs that use classic xref tables. Encrypted PDFs and xref-stream-only PDFs throw `NotSupportedException`.
 
 ## Benchmark
 
