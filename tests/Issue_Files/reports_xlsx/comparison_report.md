@@ -1,82 +1,42 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-16T09:14:51.358353
+Generated: 2026-07-19T23:17:44.338465
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
 | 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9785 | 0.9563 | 2/2 | **0.9739** |
-| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9785 | 0.954 | 2/2 | **0.973** |
-| 3 | 🟢 Business expense budget1 | ✅ | 0.9539 | 0.8879 | 4/4 | **0.9367** |
-| 4 | 🟡 Business expenses budget2 | ✅ | 0.9809 | 0.6699 | 4/4 | **0.8603** |
+| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9785 | 0.9563 | 2/2 | **0.9739** |
+| 3 | 🟢 Business expense budget1 | ✅ | 0.9659 | 0.862 | 4/4 | **0.9312** |
+| 4 | 🟡 Business expenses budget2 | ✅ | 0.9971 | 0.6288 | 4/4 | **0.8504** |
 | 5 | 🟡 Business plan checklist with SWOT analysis1 | ✅ | 0.9915 | 0.5465 | 1/1 | **0.8152** |
-| 6 | ⚪ Business_expense_budget1_copy | ✅ | N/A | N/A | ?/? | **N/A** |
-| 7 | 🔴 Event budget1 | ✅ | 0.9547 | 0.4868 | 4/5 | **0.6766** |
-| 8 | 🟡 Expense report basic1 | ✅ | 1.0 | 0.6359 | 1/1 | **0.8544** |
-| 9 | 🟡 Grocery list1 | ✅ | 0.9231 | 0.7854 | 1/1 | **0.8834** |
-| 10 | 🔴 payroll-calculator_f | ✅ | 0.4575 | 0.5447 | 25/27 | **0.5009** |
-| 11 | 🟢 PO_anonymized | ✅ | 0.9702 | 0.9294 | 8/8 | **0.9598** |
-| 12 | 🟡 Simple invoice1 | ✅ | 0.9223 | 0.7642 | 1/1 | **0.8746** |
-| 13 | 🔴 Small business cash flow forecast1 | ✅ | 0.9765 | 0.3246 | 2/5 | **0.6204** |
-| 14 | ⚪ Wedding timeline planner1 | ✅ | N/A | N/A | ?/? | **N/A** |
-| 15 | 🟡 Wedding_timeline_planner1_copy | ✅ | 0.9648 | 0.7286 | 4/5 | **0.7774** |
-| 16 | 🟡 Weekly schedule planner1 | ✅ | 0.9375 | 0.7364 | 1/1 | **0.8696** |
-| 17 | 🔴 XlsxIssue75 | ✅ | 0.6439 | 0.7259 | 114/144 | **0.6479** |
-| 18 | 🟢 XlsxIssue77_MergedCellAlignment | ✅ | 1.0 | 0.8013 | 2/2 | **0.9205** |
-| 19 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8587 | 6/6 | **0.9435** |
-| 20 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8519 | 6/6 | **0.9408** |
-| 21 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9066 | 0.9076 | 16/16 | **0.9257** |
-| 22 | 🟢 XlsxIssue82_WideTable | ✅ | 0.9994 | 0.8992 | 13/13 | **0.9594** |
-| 23 | 🟡 XlsxIssue82_5mb | ✅ | 0.6678 | 0.838 | 361/766 | **0.7023** |
-| 24 | 🔴 XlsxIssue82_SampleTestData5mb | ✅ | 0.4255 | 0.9146 | 834/1668 | **0.636** |
+| 6 | 🔴 Event budget1 | ✅ | 0.7597 | 0.6756 | 4/5 | **0.6741** |
+| 7 | 🟡 Expense report basic1 | ✅ | 1.0 | 0.6359 | 1/1 | **0.8544** |
+| 8 | 🟡 Grocery list1 | ✅ | 0.9231 | 0.7854 | 1/1 | **0.8834** |
+| 9 | 🔴 payroll-calculator_f | ✅ | 0.7919 | 0.489 | 25/27 | **0.6124** |
+| 10 | 🟡 PO_anonymized | ✅ | 0.9579 | 0.8221 | 9/8 | **0.812** |
+| 11 | 🟡 Simple invoice1 | ✅ | 0.9223 | 0.7642 | 1/1 | **0.8746** |
+| 12 | 🟡 Small business cash flow forecast1 | ✅ | 0.9739 | 0.5409 | 2/5 | **0.7059** |
+| 13 | 🟡 Wedding_timeline_planner1_copy | ✅ | 0.9628 | 0.9046 | 4/5 | **0.847** |
+| 14 | 🟡 Weekly schedule planner1 | ✅ | 0.9375 | 0.7364 | 1/1 | **0.8696** |
+| 15 | 🟡 XlsxIssue75 | ✅ | 0.9672 | 0.953 | 114/144 | **0.8681** |
+| 16 | 🟢 XlsxIssue77_MergedCellAlignment | ✅ | 1.0 | 0.8013 | 2/2 | **0.9205** |
+| 17 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8535 | 6/6 | **0.9414** |
+| 18 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8461 | 6/6 | **0.9384** |
+| 19 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9879 | 0.889 | 16/16 | **0.9508** |
+| 20 | 🟡 XlsxIssue82_5mb | ✅ | 0.6678 | 0.838 | 361/766 | **0.7023** |
+| 21 | 🔴 XlsxIssue82_SampleTestData5mb | ✅ | 0.4255 | 0.9146 | 834/1668 | **0.636** |
+| 22 | 🟢 XlsxIssue82_WideTable | ✅ | 1.0 | 0.8648 | 13/13 | **0.9459** |
 
-**Average Overall Score: 0.7605**
-
-## Difference Heatmaps
-
-Blue areas are below the configured difference threshold; red areas have stronger pixel differences. The reference rendering is retained as faint context.
-
-<table>
-<tr><th>Case</th><th>Heatmap</th><th>Metrics</th></tr>
-<tr>
-  <td><b>XlsxIssue82_5mb</b><br>Page 1</td>
-  <td><img src="images/XlsxIssue82_5mb_p1_heatmap.png" width="760" alt="XlsxIssue82_5mb page 1 difference heatmap"></td>
-  <td>changed: 522300 px (23.99%)<br>bbox: [109, 118, 1241, 1610]<br>mean abs RGB: 39.1166<br>RMSE RGB: 89.4975<br>threshold: 12, gain: 5.0</td>
-</tr>
-<tr>
-  <td><b>XlsxIssue82_5mb</b><br>Page 2</td>
-  <td><img src="images/XlsxIssue82_5mb_p2_heatmap.png" width="760" alt="XlsxIssue82_5mb page 2 difference heatmap"></td>
-  <td>changed: 511904 px (23.52%)<br>bbox: [109, 118, 1240, 1610]<br>mean abs RGB: 38.2641<br>RMSE RGB: 88.4589<br>threshold: 12, gain: 5.0</td>
-</tr>
-<tr>
-  <td><b>XlsxIssue82_5mb</b><br>Page 3</td>
-  <td><img src="images/XlsxIssue82_5mb_p3_heatmap.png" width="760" alt="XlsxIssue82_5mb page 3 difference heatmap"></td>
-  <td>changed: 520220 px (23.90%)<br>bbox: [109, 118, 1241, 1610]<br>mean abs RGB: 38.9034<br>RMSE RGB: 89.1988<br>threshold: 12, gain: 5.0</td>
-</tr>
-<tr>
-  <td><b>XlsxIssue82_SampleTestData5mb</b><br>Page 1</td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_heatmap.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 1 difference heatmap"></td>
-  <td>changed: 336229 px (15.45%)<br>bbox: [118, 156, 1050, 1600]<br>mean abs RGB: 23.9263<br>RMSE RGB: 68.9431<br>threshold: 12, gain: 5.0</td>
-</tr>
-<tr>
-  <td><b>XlsxIssue82_SampleTestData5mb</b><br>Page 2</td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p2_heatmap.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 2 difference heatmap"></td>
-  <td>changed: 346766 px (15.93%)<br>bbox: [182, 156, 1050, 1600]<br>mean abs RGB: 24.5758<br>RMSE RGB: 69.8042<br>threshold: 12, gain: 5.0</td>
-</tr>
-<tr>
-  <td><b>XlsxIssue82_SampleTestData5mb</b><br>Page 3</td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_heatmap.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 3 difference heatmap"></td>
-  <td>changed: 345159 px (15.86%)<br>bbox: [171, 156, 1050, 1600]<br>mean abs RGB: 24.5889<br>RMSE RGB: 69.9574<br>threshold: 12, gain: 5.0</td>
-</tr>
-</table>
+**Average Overall Score: 0.8446**
 
 ## Visual Comparison
 
 <table>
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
-  <td><b>Academic Achievement Summary Table</b></td>
+  <td><b>Academic Achievement Summary Table<br><small>format: xlsx | case: Academic Achievement Summary Table | scope: issue-xlsx</small></b></td>
   <td colspan="1">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
@@ -88,8 +48,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Academic Achievement Summary Table_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>AcademicAchievement_temp</b></td>
-  <td colspan="1">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 97.3%</td>
+  <td><b>AcademicAchievement_temp<br><small>format: xlsx | case: AcademicAchievement_temp | scope: issue-xlsx</small></b></td>
+  <td colspan="1">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
   <td><img src="images/AcademicAchievement_temp_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -100,8 +60,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/AcademicAchievement_temp_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Business expense budget1</b></td>
-  <td colspan="1">Business expense budget1 <span style="color:#3fb950">⬤</span> 93.7%</td>
+  <td><b>Business expense budget1<br><small>format: xlsx | case: Business expense budget1 | scope: issue-xlsx</small></b></td>
+  <td colspan="1">Business expense budget1 <span style="color:#3fb950">⬤</span> 93.1%</td>
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -116,12 +76,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Business expense budget1_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/Business expense budget1_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expense budget1_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>Business expenses budget2</b></td>
-  <td colspan="1">Business expenses budget2 <span style="color:#d29922">⬤</span> 86.0%</td>
+  <td><b>Business expenses budget2<br><small>format: xlsx | case: Business expenses budget2 | scope: issue-xlsx</small></b></td>
+  <td colspan="1">Business expenses budget2 <span style="color:#d29922">⬤</span> 85.0%</td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -136,11 +92,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Business expenses budget2_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/Business expenses budget2_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expenses budget2_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>Business plan checklist with SWOT analysis1</b></td>
+  <td><b>Business plan checklist with SWOT analysis1<br><small>format: xlsx | case: Business plan checklist with SWOT analysis1 | scope: issue-xlsx</small></b></td>
   <td colspan="1">Business plan checklist with SWOT analysis1 <span style="color:#d29922">⬤</span> 81.5%</td>
 </tr>
 <tr>
@@ -148,15 +100,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Business plan checklist with SWOT analysis1_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Business_expense_budget1_copy</b></td>
-  <td colspan="1">Business_expense_budget1_copy N/A</td>
-</tr>
-<tr>
-  <td colspan="2"><i>No images</i></td>
-</tr>
-<tr>
-  <td><b>Event budget1</b></td>
-  <td colspan="1">Event budget1 <span style="color:#f85149">⬤</span> 67.7%</td>
+  <td><b>Event budget1<br><small>format: xlsx | case: Event budget1 | scope: issue-xlsx</small></b></td>
+  <td colspan="1">Event budget1 <span style="color:#f85149">⬤</span> 67.4%</td>
 </tr>
 <tr>
   <td><img src="images/Event budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -171,15 +116,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Event budget1_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/Event budget1_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Event budget1_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/Event budget1_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>Expense report basic1</b></td>
+  <td><b>Expense report basic1<br><small>format: xlsx | case: Expense report basic1 | scope: issue-xlsx</small></b></td>
   <td colspan="1">Expense report basic1 <span style="color:#d29922">⬤</span> 85.4%</td>
 </tr>
 <tr>
@@ -187,7 +124,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Expense report basic1_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Grocery list1</b></td>
+  <td><b>Grocery list1<br><small>format: xlsx | case: Grocery list1 | scope: issue-xlsx</small></b></td>
   <td colspan="1">Grocery list1 <span style="color:#d29922">⬤</span> 88.3%</td>
 </tr>
 <tr>
@@ -195,8 +132,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Grocery list1_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>payroll-calculator_f</b></td>
-  <td colspan="1">payroll-calculator_f <span style="color:#f85149">⬤</span> 50.1%</td>
+  <td><b>payroll-calculator_f<br><small>format: xlsx | case: payroll-calculator_f | scope: issue-xlsx</small></b></td>
+  <td colspan="1">payroll-calculator_f <span style="color:#f85149">⬤</span> 61.2%</td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -211,104 +148,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/payroll-calculator_f_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/payroll-calculator_f_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p6_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p7_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p8_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p8_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p9_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p9_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p10_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p10_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p11_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p11_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p12_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p12_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p13_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p13_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p14_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p14_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p15_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p15_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p16_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p16_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p17_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p17_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p18_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p18_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p19_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p19_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p20_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p20_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p21_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p21_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p22_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p22_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p23_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p23_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p24_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p24_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/payroll-calculator_f_p25_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p25_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/payroll-calculator_f_p26_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/payroll-calculator_f_p27_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>PO_anonymized</b></td>
-  <td colspan="1">PO_anonymized <span style="color:#3fb950">⬤</span> 96.0%</td>
+  <td><b>PO_anonymized<br><small>format: xlsx | case: PO_anonymized | scope: issue-xlsx</small></b></td>
+  <td colspan="1">PO_anonymized <span style="color:#d29922">⬤</span> 81.2%</td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -323,27 +164,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/PO_anonymized_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/PO_anonymized_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/PO_anonymized_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/PO_anonymized_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p6_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/PO_anonymized_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p7_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/PO_anonymized_p8_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p8_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>Simple invoice1</b></td>
+  <td><b>Simple invoice1<br><small>format: xlsx | case: Simple invoice1 | scope: issue-xlsx</small></b></td>
   <td colspan="1">Simple invoice1 <span style="color:#d29922">⬤</span> 87.5%</td>
 </tr>
 <tr>
@@ -351,8 +172,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Simple invoice1_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Small business cash flow forecast1</b></td>
-  <td colspan="1">Small business cash flow forecast1 <span style="color:#f85149">⬤</span> 62.0%</td>
+  <td><b>Small business cash flow forecast1<br><small>format: xlsx | case: Small business cash flow forecast1 | scope: issue-xlsx</small></b></td>
+  <td colspan="1">Small business cash flow forecast1 <span style="color:#d29922">⬤</span> 70.6%</td>
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -367,23 +188,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Small business cash flow forecast1_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
-  <td><img src="images/Small business cash flow forecast1_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/Small business cash flow forecast1_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>Wedding timeline planner1</b></td>
-  <td colspan="1">Wedding timeline planner1 N/A</td>
-</tr>
-<tr>
-  <td colspan="2"><i>No images</i></td>
-</tr>
-<tr>
-  <td><b>Wedding_timeline_planner1_copy</b></td>
-  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 77.7%</td>
+  <td><b>Wedding_timeline_planner1_copy<br><small>format: xlsx | case: Wedding_timeline_planner1_copy | scope: issue-xlsx</small></b></td>
+  <td colspan="1">Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 84.7%</td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -398,15 +204,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Wedding_timeline_planner1_copy_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/Wedding_timeline_planner1_copy_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Wedding_timeline_planner1_copy_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/Wedding_timeline_planner1_copy_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>Weekly schedule planner1</b></td>
+  <td><b>Weekly schedule planner1<br><small>format: xlsx | case: Weekly schedule planner1 | scope: issue-xlsx</small></b></td>
   <td colspan="1">Weekly schedule planner1 <span style="color:#d29922">⬤</span> 87.0%</td>
 </tr>
 <tr>
@@ -414,8 +212,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Weekly schedule planner1_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>XlsxIssue75</b></td>
-  <td colspan="1">XlsxIssue75 <span style="color:#f85149">⬤</span> 64.8%</td>
+  <td><b>XlsxIssue75<br><small>format: xlsx | case: XlsxIssue75 | scope: issue-xlsx</small></b></td>
+  <td colspan="1">XlsxIssue75 <span style="color:#d29922">⬤</span> 86.8%</td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue75_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -430,571 +228,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/XlsxIssue75_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue75_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p6_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p7_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p8_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p8_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p9_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p9_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p10_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p10_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p11_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p11_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p12_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p12_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p13_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p13_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p14_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p14_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p15_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p15_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p16_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p16_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p17_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p17_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p18_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p18_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p19_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p19_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p20_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p20_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p21_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p21_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p22_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p22_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p23_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p23_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p24_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p24_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p25_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p25_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p26_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p26_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p27_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p27_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p28_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p28_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p29_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p29_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p30_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p30_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p31_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p31_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p32_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p32_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p33_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p33_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p34_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p34_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p35_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p35_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p36_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p36_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p37_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p37_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p38_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p38_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p39_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p39_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p40_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p40_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p41_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p41_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p42_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p42_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p43_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p43_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p44_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p44_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p45_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p45_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p46_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p46_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p47_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p47_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p48_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p48_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p49_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p49_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p50_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p50_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p51_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p51_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p52_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p52_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p53_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p53_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p54_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p54_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p55_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p55_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p56_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p56_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p57_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p57_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p58_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p58_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p59_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p59_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p60_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p60_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p61_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p61_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p62_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p62_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p63_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p63_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p64_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p64_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p65_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p65_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p66_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p66_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p67_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p67_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p68_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p68_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p69_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p69_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p70_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p70_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p71_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p71_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p72_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p72_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p73_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p73_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p74_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p74_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p75_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p75_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p76_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p76_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p77_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p77_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p78_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p78_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p79_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p79_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p80_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p80_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p81_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p81_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p82_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p82_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p83_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p83_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p84_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p84_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p85_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p85_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p86_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p86_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p87_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p87_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p88_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p88_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p89_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p89_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p90_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p90_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p91_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p91_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p92_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p92_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p93_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p93_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p94_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p94_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p95_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p95_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p96_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p96_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p97_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p97_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p98_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p98_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p99_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p99_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p100_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p100_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p101_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p101_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p102_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p102_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p103_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p103_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p104_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p104_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p105_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p105_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p106_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p106_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p107_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p107_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p108_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p108_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p109_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p109_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p110_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p110_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p111_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p111_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p112_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p112_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p113_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p113_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue75_p114_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p114_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p115_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p116_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p117_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p118_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p119_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p120_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p121_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p122_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p123_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p124_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p125_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p126_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p127_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p128_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p129_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p130_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p131_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p132_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p133_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p134_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p135_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p136_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p137_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p138_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p139_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p140_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p141_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p142_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p143_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><i>missing</i></td>
-  <td><img src="images/XlsxIssue75_p144_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>XlsxIssue77_MergedCellAlignment</b></td>
+  <td><b>XlsxIssue77_MergedCellAlignment<br><small>format: xlsx | case: XlsxIssue77_MergedCellAlignment | scope: issue-xlsx</small></b></td>
   <td colspan="1">XlsxIssue77_MergedCellAlignment <span style="color:#3fb950">⬤</span> 92.0%</td>
 </tr>
 <tr>
@@ -1006,8 +240,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/XlsxIssue77_MergedCellAlignment_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>XlsxIssue77_Template1</b></td>
-  <td colspan="1">XlsxIssue77_Template1 <span style="color:#3fb950">⬤</span> 94.3%</td>
+  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: issue-xlsx</small></b></td>
+  <td colspan="1">XlsxIssue77_Template1 <span style="color:#3fb950">⬤</span> 94.1%</td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1022,20 +256,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/XlsxIssue77_Template1_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue77_Template1_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue77_Template1_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue77_Template1_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p6_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>XlsxIssue77_Template2_Workaround</b></td>
-  <td colspan="1">XlsxIssue77_Template2_Workaround <span style="color:#3fb950">⬤</span> 94.1%</td>
+  <td><b>XlsxIssue77_Template2_Workaround<br><small>format: xlsx | case: XlsxIssue77_Template2_Workaround | scope: issue-xlsx</small></b></td>
+  <td colspan="1">XlsxIssue77_Template2_Workaround <span style="color:#3fb950">⬤</span> 93.8%</td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template2_Workaround_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1050,20 +272,8 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/XlsxIssue77_Template2_Workaround_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p6_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>XlsxIssue81_LayoutOptions</b></td>
-  <td colspan="1">XlsxIssue81_LayoutOptions <span style="color:#3fb950">⬤</span> 92.6%</td>
+  <td><b>XlsxIssue81_LayoutOptions<br><small>format: xlsx | case: XlsxIssue81_LayoutOptions | scope: issue-xlsx</small></b></td>
+  <td colspan="1">XlsxIssue81_LayoutOptions <span style="color:#3fb950">⬤</span> 95.1%</td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue81_LayoutOptions_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1078,115 +288,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/XlsxIssue81_LayoutOptions_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p6_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p7_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p8_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p8_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p9_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p9_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p10_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p10_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p11_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p11_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p12_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p12_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p13_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p13_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p14_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p14_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p15_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p15_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p16_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p16_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>XlsxIssue82_WideTable</b></td>
-  <td colspan="1">XlsxIssue82_WideTable <span style="color:#3fb950">⬤</span> 95.9%</td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p1_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p2_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p4_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p5_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p6_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p7_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p8_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p8_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p9_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p9_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p10_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p10_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p11_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p11_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p12_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p12_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><img src="images/XlsxIssue82_WideTable_p13_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p13_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>XlsxIssue82_5mb</b></td>
+  <td><b>XlsxIssue82_5mb<br><small>format: xlsx | case: XlsxIssue82_5mb | scope: issue-xlsx</small></b></td>
   <td colspan="1">XlsxIssue82_5mb <span style="color:#d29922">⬤</span> 70.2%</td>
 </tr>
 <tr>
@@ -1202,7 +304,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/XlsxIssue82_5mb_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>XlsxIssue82_SampleTestData5mb</b></td>
+  <td><b>XlsxIssue82_SampleTestData5mb<br><small>format: xlsx | case: XlsxIssue82_SampleTestData5mb | scope: issue-xlsx</small></b></td>
   <td colspan="1">XlsxIssue82_SampleTestData5mb <span style="color:#f85149">⬤</span> 63.6%</td>
 </tr>
 <tr>
@@ -1217,17 +319,34 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
+<tr>
+  <td><b>XlsxIssue82_WideTable<br><small>format: xlsx | case: XlsxIssue82_WideTable | scope: issue-xlsx</small></b></td>
+  <td colspan="1">XlsxIssue82_WideTable <span style="color:#3fb950">⬤</span> 94.6%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_WideTable_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
 </table>
 
 ## Detailed Results
 
 ### Academic Achievement Summary Table
 
+- **Case Metadata:** format: xlsx | case: Academic Achievement Summary Table | scope: issue-xlsx
 - **Text Similarity:** 0.9785
 - **Visual Average:** 0.9563
 - **Overall Score:** 0.9739
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1929104 bytes, Reference=168612 bytes
+- **File Size:** MiniPdf=373862 bytes, Reference=168612 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1338,11 +457,12 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
 ### AcademicAchievement_temp
 
+- **Case Metadata:** format: xlsx | case: AcademicAchievement_temp | scope: issue-xlsx
 - **Text Similarity:** 0.9785
-- **Visual Average:** 0.954
-- **Overall Score:** 0.973
+- **Visual Average:** 0.9563
+- **Overall Score:** 0.9739
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=1929114 bytes, Reference=168612 bytes
+- **File Size:** MiniPdf=373862 bytes, Reference=168612 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1453,9 +573,10 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
 ### Business expense budget1
 
-- **Text Similarity:** 0.9539
-- **Visual Average:** 0.8879
-- **Overall Score:** 0.9367
+- **Case Metadata:** format: xlsx | case: Business expense budget1 | scope: issue-xlsx
+- **Text Similarity:** 0.9659
+- **Visual Average:** 0.862
+- **Overall Score:** 0.9312
 - **Pages:** MiniPdf=4, Reference=4
 - **File Size:** MiniPdf=78716 bytes, Reference=173721 bytes
 
@@ -1499,34 +620,24 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
  Q2 ACTUAL VARIANCE
 
-@@ -83,4 +73,5 @@
- 12,600.00 1,200.00
-
- ---PAGE---
-
- 121,600.00 6,350.00
-
--ertainment Professional Services
-+Total Budget
-
-+Total Actual
 ```
 </details>
 
 ### Business expenses budget2
 
-- **Text Similarity:** 0.9809
-- **Visual Average:** 0.6699
-- **Overall Score:** 0.8603
+- **Case Metadata:** format: xlsx | case: Business expenses budget2 | scope: issue-xlsx
+- **Text Similarity:** 0.9971
+- **Visual Average:** 0.6288
+- **Overall Score:** 0.8504
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=638323 bytes, Reference=402762 bytes
+- **File Size:** MiniPdf=626295 bytes, Reference=402762 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Business expenses budget2.pdf
 +++ reference/Business expenses budget2.pdf
-@@ -1,109 +1,109 @@
+@@ -1,81 +1,81 @@
  Market Financial Consulting
 
  PLANNED EXPENSES
@@ -1567,19 +678,20 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
 -Web site updates $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 1,000.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 1,000.00  $ 4,000.00
 
--Collateral preparation $ 5,000.00  $ -    $ -    $ 5,000.00  $ -    
-... (13476 more characters)
+-Collateral preparation $ 5,000.00  $ -    $ -    $ 5,000.00  $ -    $ 
+... (12461 more characters)
 
 ```
 </details>
 
 ### Business plan checklist with SWOT analysis1
 
+- **Case Metadata:** format: xlsx | case: Business plan checklist with SWOT analysis1 | scope: issue-xlsx
 - **Text Similarity:** 0.9915
 - **Visual Average:** 0.5465
 - **Overall Score:** 0.8152
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=45563 bytes, Reference=64357 bytes
+- **File Size:** MiniPdf=43874 bytes, Reference=64357 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1614,17 +726,14 @@ Blue areas are below the configured difference threshold; red areas have stronge
 ```
 </details>
 
-### Business_expense_budget1_copy
-
-**Error:** MiniPdf PDF not found
-
 ### Event budget1
 
-- **Text Similarity:** 0.9547
-- **Visual Average:** 0.4868
-- **Overall Score:** 0.6766
+- **Case Metadata:** format: xlsx | case: Event budget1 | scope: issue-xlsx
+- **Text Similarity:** 0.7597
+- **Visual Average:** 0.6756
+- **Overall Score:** 0.6741
 - **Pages:** MiniPdf=4, Reference=5
-- **File Size:** MiniPdf=140386 bytes, Reference=121226 bytes
+- **File Size:** MiniPdf=136354 bytes, Reference=121226 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1678,90 +787,97 @@ Blue areas are below the configured difference threshold; red areas have stronge
 
  $882.00 $333.00
 
-@@ -39,8 +39,9 @@
+@@ -38,34 +38,4 @@
+ Stationery supplies
+
  Fax services
 
  Total $12.00 $13.00
 
- ---PAGE---
+----PAGE---
 
 -INCOME
 
 -Event budget
 
-+
+-Estimated Actual
 
+-TOTAL INCOME
+
+-$1,936.00 $1,831.00
+
+-ADMISSIONS
+
+-Estimated no. Actual no. Type Price Estimated income Actual income
+
+-300 278 Adults @ $5.00 $1,500.00 $1,390.00
+
+-197 195 Children @ $2.00 $394.00 $390.00
+
+-42 51 Other @ $1.00 $42.00 $51.00
+
+-Total $1,936.00 $1,831.00
+
+-ADS IN PROGRAM
+
+-Estimated no. Actual no. Type Price Estimated income Actual income
+
+-Covers @ $0.00 $0.00
+
+-Half-pages @ $0.00 $0.00
+
+-Quarter-pages @ $0.00 $0.00
+
+-Total $0.00 $0.00
+
+-EXHIBITORS/VENDORS
+
+-Estimated no. Actual no. Type Price Estimated income Actual income
+
+-Large booths @ $0.00 $0.00
+
+-Med. booths @ $0.00 $0.00
+
+-Small booths @ $0.00 $0.00
+
+-Total $0.00 $0.00
+
+-SALE OF ITEMS
+
+-Estimated no. Actual no. Type Price Estimated income Actual income
+
+-Items @ $0.00 $0.00
+
+-Items @ $0.00 $0.00
+
+-Items @ $0.00 $0.00
+
+-Items @ $0.00 $0.00
+
+-Total $0.00 $0.00
 +---PAGE---
-
-+Event budget INCOME
-
- Estimated Actual
-
- TOTAL INCOME
-
- $1,936.00 $1,831.00
-
-@@ -70,13 +71,15 @@
- Items @ $0.00 $0.00
-
- Total $0.00 $0.00
-
- ---PAGE---
-
--PROFIT
-
--Event budget
-
--Total expenses Total income
-
-+Event budget PROFIT
-
-+Total income
-
- LOSS SUMMARY
-
-+Total expenses
-
-+Estimated Actual
-
- $1,831 $333
-
--Total Estimated Actual
-
-+ACT U AL
-
- Total income $1,936.00 $1,831.00
-
-+Total expenses $882.00 $333.00
-
- $1,936 $882
-
--Total expenses $882.00 $333.00
-
--Total profit (or loss) $1,054.00 $1,498.00
-+Total profit (or loss) $1,054.00 $1,498.00
-
-+E ST I M AT E D
 ```
 </details>
 
 ### Expense report basic1
 
+- **Case Metadata:** format: xlsx | case: Expense report basic1 | scope: issue-xlsx
 - **Text Similarity:** 1.0
 - **Visual Average:** 0.6359
 - **Overall Score:** 0.8544
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=62918 bytes, Reference=47897 bytes
+- **File Size:** MiniPdf=60976 bytes, Reference=47897 bytes
 
 Text content: ✅ Identical
 
 ### Grocery list1
 
+- **Case Metadata:** format: xlsx | case: Grocery list1 | scope: issue-xlsx
 - **Text Similarity:** 0.9231
 - **Visual Average:** 0.7854
 - **Overall Score:** 0.8834
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=182625 bytes, Reference=86288 bytes
+- **File Size:** MiniPdf=107230 bytes, Reference=86288 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1876,18 +992,19 @@ Text content: ✅ Identical
 
 ### payroll-calculator_f
 
-- **Text Similarity:** 0.4575
-- **Visual Average:** 0.5447
-- **Overall Score:** 0.5009
+- **Case Metadata:** format: xlsx | case: payroll-calculator_f | scope: issue-xlsx
+- **Text Similarity:** 0.7919
+- **Visual Average:** 0.489
+- **Overall Score:** 0.6124
 - **Pages:** MiniPdf=25, Reference=27
-- **File Size:** MiniPdf=3160357 bytes, Reference=540676 bytes
+- **File Size:** MiniPdf=3129731 bytes, Reference=540676 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/payroll-calculator_f.pdf
 +++ reference/payroll-calculator_f.pdf
-@@ -1,73 +1,90 @@
+@@ -1,40 +1,48 @@
  Employee Register
 
 -Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
@@ -1938,13 +1055,43 @@ Text content: ✅ Identical
 
  3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4
 
-----PAGE---
++When adding more rows, insert new rows above this one
 
- When adding more rows, insert new rows above this one
++Page 1 of 27
 
-----PAGE---
+ ---PAGE---
 
--© 2013 - 2026 Spreadsheet123 LTD
+-When adding more rows, insert new rows above this one
+
++tatus (W-4 from 2020 or later) Pre-Tax Adjustments Post-Tax Adjustments Post-Tax Deductions
+
++Step 3 Step 4
+
++Tax Deferral Plan Health Insurance Other State Local Other Social
+
++(b) (c) Exempt from Insurance
+
++(401k) Premiums Withholdings Tax Tax Deductions Address Security
+
++Dependents Other Deductions Extra FICA ($)
+
++(%) ($) ($) (%) (%) ($) #
+
++Under Age 17 Dependents ($) withholding
+
++($)
+
++100 50 4.00% - - Not Exempt 4.63% 0.00% 45.00 - 111 Street, Town/City, ST, 00000 ***-**-6789
+
++3.00% - - Not Exempt 4.63% 0.00% 42.00 - 111 Street, Town/City, ST, 00000 ***-**-4321
+
++4.50% - - Not Exempt 4.63% 0.00% 14.00 30.00 111 Street, Town/City, ST, 00000 ***-**-0000
+
++Page 2 of 27
+
+ ---PAGE---
+
+ © 2013 - 2026 Spreadsheet123 LTD
 
 -Pre-Tax Adjustments Post-Tax Adjustments Post-Tax Deductions Payroll Calculator
 
@@ -1964,27 +1111,7 @@ Text content: ✅ Identical
 
 -withholding
 
-+Page 1 of 27
-
-+---PAGE---
-
-+tatus (W-4 from 2020 or later) Pre-Tax Adjustments Post-Tax Adjustments Post-Tax Deductions
-
-+Step 3 Step 4
-
-+Tax Deferral Plan Health Insurance Other State Local Other Social
-
-+(b) (c) Exempt from Insurance
-
-+(401k) Premiums Withholdings Tax Tax Deductions Address Security
-
-+Dependents Other Deductions Extra FICA ($)
-
-+(%) ($) ($) (%) (%) ($) #
-
-+Under Age 17 Dependents ($) withholding
-
- ($)
+-($)
 
 -50 4.00% - - Not Exempt 4.63% 0.00% 45.00 -
 
@@ -1998,31 +1125,20 @@ Text content: ✅ Identical
 
 -111 Street, Town/City, ST, 00000 ***-**-0000
 
-+100 50 4.00% - - Not Exempt 4.63% 0.00% 45.00 - 111 Street, Town/City, ST, 00000 ***-**-6789
-
-+3.00% - - Not Exempt 4.63% 0.00% 42.00 - 111 Street, Town/City, ST, 00000 ***-**-4321
-
-+4.50% - - Not Exempt 4.63% 0.00% 14.00 30.00 111 Street, Town/City, ST, 00000 ***-**-0000
-
-+Page 2 of 27
-
-+---PAGE---
-
-+© 2013 - 2026 Spreadsheet123 LTD
-
-+Payroll
-... (30135 more characters)
++Payrol
+... (1041 more characters)
 
 ```
 </details>
 
 ### PO_anonymized
 
-- **Text Similarity:** 0.9702
-- **Visual Average:** 0.9294
-- **Overall Score:** 0.9598
-- **Pages:** MiniPdf=8, Reference=8
-- **File Size:** MiniPdf=3995443 bytes, Reference=338357 bytes
+- **Case Metadata:** format: xlsx | case: PO_anonymized | scope: issue-xlsx
+- **Text Similarity:** 0.9579
+- **Visual Average:** 0.8221
+- **Overall Score:** 0.812
+- **Pages:** MiniPdf=9, Reference=8
+- **File Size:** MiniPdf=430094 bytes, Reference=338357 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2053,7 +1169,7 @@ Text content: ✅ Identical
 
  Doc#: FIR-003.5
 
--Effective: 20171109 Page 1 of 8
+-Effective: 20171109 Page 1 of 9
 
 +Page 1 of 8
 
@@ -2107,86 +1223,64 @@ Text content: ✅ Identical
 
  46.81±0.47(mm)
 
-@@ -126,76 +127,83 @@
+@@ -124,17 +125,20 @@
+ 13.64 14.08 14.11 13.75 13.88 13.32 13.63 14.19 13.87 13.73 13.9 13.43 13.77 13.7 13.99 13.32 14.08 13.35 13.44 13.78
+
+ 29.9±0.17(in)
+
  Date: 3/6/2026
 
- Authorized QC Inspector of XXX
++Authorized QC Inspector of XXX
 
  Doc#: FIR-003.5
 
--Effective: 20171109 Page 2 of 8
+-Effective: 20171109 Page 2 of 9
 
-----PAGE---
++Page 2 of 8
 
--Final Inspection Report
++Effective: 20171109
 
--Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
+ ---PAGE---
 
--XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
+ Final Inspection Report
 
--PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
+ Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
 
--Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
+ XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
 
--Lot ID: 9928-539898(1st lot)
+ PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
 
--Item#: XX-ABC-68878-C
+ Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
 
--Description: Standard Component Assembly with Seal Insert
+-Date of Manufacture:    1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)
 
--Photos
++Lot ID: 9928-539898(1st lot)
 
--Doc#: FIR-003.5
+ Item#: XX-ABC-68878-C
 
--Effective: 20171109 Page 3 of 8
+ Description: Standard Component Assembly with Seal Insert
 
-----PAGE---
+-Authorized QC Inspector of XXX
 
--Final Inspection Report
++Photos
 
--Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
+ Doc#: FIR-003.5
 
--XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
+-Effective: 20171109 Page 3 of 9
++Page 3 of 8
 
--PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
-
--Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
-
--Lot ID: 9928-539898(1st lot)
-
--Item#: XX-ABC-68878-C
-
--Description: Standard Component Assembly with Seal Insert
-
--Photos
-
--Doc#: FIR-003.5
-
--Effective: 20171109 Page 4 of 8
-
-----PAGE---
-
--Final Inspection Report
-
--Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
-
--XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
-
--PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
-
--Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch 
-... (4669 more characters)
-
++Effective: 20171109
 ```
 </details>
 
 ### Simple invoice1
 
+- **Case Metadata:** format: xlsx | case: Simple invoice1 | scope: issue-xlsx
 - **Text Similarity:** 0.9223
 - **Visual Average:** 0.7642
 - **Overall Score:** 0.8746
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=65782 bytes, Reference=78344 bytes
+- **File Size:** MiniPdf=63921 bytes, Reference=78344 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2202,7 +1296,7 @@ Text content: ✅ Identical
 
  Invoice #: 10654
 
--Invoice date: 7/12/2026
+-Invoice date: 7/19/2026
 
 -Embrace
 
@@ -2243,11 +1337,12 @@ Text content: ✅ Identical
 
 ### Small business cash flow forecast1
 
-- **Text Similarity:** 0.9765
-- **Visual Average:** 0.3246
-- **Overall Score:** 0.6204
+- **Case Metadata:** format: xlsx | case: Small business cash flow forecast1 | scope: issue-xlsx
+- **Text Similarity:** 0.9739
+- **Visual Average:** 0.5409
+- **Overall Score:** 0.7059
 - **Pages:** MiniPdf=2, Reference=5
-- **File Size:** MiniPdf=385815 bytes, Reference=126373 bytes
+- **File Size:** MiniPdf=380774 bytes, Reference=126373 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2318,22 +1413,19 @@ Text content: ✅ Identical
 -Contract labor $ 200.00 $ 200.00 $ 200.00 $ 200.00 $ 200.00 $ 200.00  $ 1,200.00
 
 -Employee be
-... (5651 more characters)
+... (5608 more characters)
 
 ```
 </details>
 
-### Wedding timeline planner1
-
-**Error:** MiniPdf PDF not found
-
 ### Wedding_timeline_planner1_copy
 
-- **Text Similarity:** 0.9648
-- **Visual Average:** 0.7286
-- **Overall Score:** 0.7774
+- **Case Metadata:** format: xlsx | case: Wedding_timeline_planner1_copy | scope: issue-xlsx
+- **Text Similarity:** 0.9628
+- **Visual Average:** 0.9046
+- **Overall Score:** 0.847
 - **Pages:** MiniPdf=4, Reference=5
-- **File Size:** MiniPdf=745837 bytes, Reference=126603 bytes
+- **File Size:** MiniPdf=702961 bytes, Reference=126603 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2482,18 +1574,19 @@ Text content: ✅ Identical
 
 +☐
 
-... (2822 more characters)
+... (2605 more characters)
 
 ```
 </details>
 
 ### Weekly schedule planner1
 
+- **Case Metadata:** format: xlsx | case: Weekly schedule planner1 | scope: issue-xlsx
 - **Text Similarity:** 0.9375
 - **Visual Average:** 0.7364
 - **Overall Score:** 0.8696
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1017563 bytes, Reference=96071 bytes
+- **File Size:** MiniPdf=828209 bytes, Reference=96071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2524,9 +1617,10 @@ Text content: ✅ Identical
 
 ### XlsxIssue75
 
-- **Text Similarity:** 0.6439
-- **Visual Average:** 0.7259
-- **Overall Score:** 0.6479
+- **Case Metadata:** format: xlsx | case: XlsxIssue75 | scope: issue-xlsx
+- **Text Similarity:** 0.9672
+- **Visual Average:** 0.953
+- **Overall Score:** 0.8681
 - **Pages:** MiniPdf=114, Reference=144
 - **File Size:** MiniPdf=1955664 bytes, Reference=5896167 bytes
 
@@ -2635,12 +1729,6 @@ Text content: ✅ Identical
 
 -3991293        Fred Invoice
 
--30184 Fred Invoice
-
--30184 Fred Invoice
-
-----PAGE---
-
 +3991293 Fred Invoice
 
 +3991293 Fred Invoice
@@ -2660,18 +1748,24 @@ Text content: ✅ Identical
 +3991293 Fred Invoice
 
 +3991293 Fred Invoice
-
- 30184 Fred Invoice
-
- 30184 Fred Invoice
-
- 30184 Fred Invoice
 
 +30184 Fred Invoice
 
 +30184 Fred Invoice
 
-+---PAGE---
++30184 Fred Invoice
+
+ 30184 Fred Invoice
+
+ 30184 Fred Invoice
+
+ ---PAGE---
+
+-30184 Fred Invoice
+
+-30184 Fred Invoice
+
+-30184 Fred Invoice
 
  30184 Fred Invoice
 
@@ -2708,104 +1802,53 @@ Text content: ✅ Identical
 
  BLAC002 Fred Invoice
 
-@@ -144,7 +144,6 @@
+@@ -143,4 +143,13 @@
  26202 Fred Invoice
 
  26202 Fred Invoice
 
  26202 Fred Invoice
 
-----PAGE---
+-26202 Fred Invoice
++26202 Fred Invoice
 
- 26202 Fred Invoice
++26202 Fred Invoice
 
- 26202 Fred Invoice
++26202 Fred Invoice
 
- 26202 Fred Invoice
++26202 Fred Invoice
 
-@@ -154,6 +153,7 @@
- 48105 Fred Credit Memo
++12011 Fred Invoice
 
- 12112 Fred Invoice
++011299 Fred Credit Memo
 
- 14449 Fred Invoice
++48105 Fred Credit Memo
 
-+---PAGE---
++48105 Fred Credit Memo
 
- 16668 Fred Invoice
++12112 Fred Invoice
 
- 16668 Fred Credit Memo
-
- 16668 Fred Credit Memo
-
-@@ -193,19 +193,19 @@
- 17957 Fred Invoice
-
- 17957 Fred Invoice
-
- 17957 Fred Invoice
-
-----PAGE---
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
--17957 Fred Invoice
-
-+17957 Fred Invoice
-
-+17957 Fred Invoice
-
-+17957 Fred Invoice
-
-+17957 Fred Invoice
-
-+17957 Fred Invoice
-
-+17957 Fred Invoice
-
-+17957 Fred Invoice
-
-
-... (313812 more characters)
-
++14449 Fred Invoice
 ```
 </details>
 
 ### XlsxIssue77_MergedCellAlignment
 
+- **Case Metadata:** format: xlsx | case: XlsxIssue77_MergedCellAlignment | scope: issue-xlsx
 - **Text Similarity:** 1.0
 - **Visual Average:** 0.8013
 - **Overall Score:** 0.9205
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=388485 bytes, Reference=172385 bytes
+- **File Size:** MiniPdf=354719 bytes, Reference=172385 bytes
 
 Text content: ✅ Identical
 
 ### XlsxIssue77_Template1
 
+- **Case Metadata:** format: xlsx | case: XlsxIssue77_Template1 | scope: issue-xlsx
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8587
-- **Overall Score:** 0.9435
+- **Visual Average:** 0.8535
+- **Overall Score:** 0.9414
 - **Pages:** MiniPdf=6, Reference=6
 - **File Size:** MiniPdf=308766 bytes, Reference=64464 bytes
 
@@ -2876,50 +1919,15 @@ Text content: ✅ Identical
  Part No. Per Unit
 
  Invoice # Authorized
-
-@@ -48,8 +48,8 @@
- Attn Customer:   Please return parts to the return address below.
-
- Customer Name Sales Person Requestor
-
- Return Address: Reason for Return:
-
--NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
-
--factory packaging, with no extra labels or markings on the product.
-
-+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
-
-+code, original factory packaging, with no extra labels or markings on the product.
-
- Original Qty
-
- Part No. Per Unit
-
- Invoice # Authorized
-
-@@ -62,8 +62,8 @@
- Attn Customer:   Please return parts to the return address below.
-
- Customer Name Sales Person Requestor
-
- Return Address: Reason for Return:
-
--NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
-
--factory packaging, with no extra labels or markings on the product.
-
-+NOTE - All parts returned for credit
-... (854 more characters)
-
 ```
 </details>
 
 ### XlsxIssue77_Template2_Workaround
 
+- **Case Metadata:** format: xlsx | case: XlsxIssue77_Template2_Workaround | scope: issue-xlsx
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.8519
-- **Overall Score:** 0.9408
+- **Visual Average:** 0.8461
+- **Overall Score:** 0.9384
 - **Pages:** MiniPdf=6, Reference=6
 - **File Size:** MiniPdf=311159 bytes, Reference=64466 bytes
 
@@ -2990,50 +1998,15 @@ Text content: ✅ Identical
  Part No. Per Unit
 
  Invoice # Authorized
-
-@@ -48,8 +48,8 @@
- Attn Customer:   Please return parts to the return address below.
-
- Customer Name Sales Person Requestor
-
- Return Address: Reason for Return:
-
--NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
-
--factory packaging, with no extra labels or markings on the product.
-
-+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
-
-+code, original factory packaging, with no extra labels or markings on the product.
-
- Original Qty
-
- Part No. Per Unit
-
- Invoice # Authorized
-
-@@ -62,8 +62,8 @@
- Attn Customer:   Please return parts to the return address below.
-
- Customer Name Sales Person Requestor
-
- Return Address: Reason for Return:
-
--NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original
-
--factory packaging, with no extra labels or markings on the product.
-
-+NOTE - All par
-... (876 more characters)
-
 ```
 </details>
 
 ### XlsxIssue81_LayoutOptions
 
-- **Text Similarity:** 0.9066
-- **Visual Average:** 0.9076
-- **Overall Score:** 0.9257
+- **Case Metadata:** format: xlsx | case: XlsxIssue81_LayoutOptions | scope: issue-xlsx
+- **Text Similarity:** 0.9879
+- **Visual Average:** 0.889
+- **Overall Score:** 0.9508
 - **Pages:** MiniPdf=16, Reference=16
 - **File Size:** MiniPdf=582078 bytes, Reference=455225 bytes
 
@@ -3042,7 +2015,7 @@ Text content: ✅ Identical
 ```diff
 --- minipdf/XlsxIssue81_LayoutOptions.pdf
 +++ reference/XlsxIssue81_LayoutOptions.pdf
-@@ -1,130 +1,130 @@
+@@ -1,122 +1,122 @@
  Invoice Customer Region Owner
 
 -INV-00001 Customer account with extended legal name Europe Operations owner 2
@@ -3112,110 +2085,14 @@ Text content: ✅ Identical
 -INV-00033 Customer account with extended legal name Europe Operations owner 7
 
 -INV-00034 Customer account with extended legal name Asia Paci
-... (43524 more characters)
-
-```
-</details>
-
-### XlsxIssue82_WideTable
-
-- **Text Similarity:** 0.9994
-- **Visual Average:** 0.8992
-- **Overall Score:** 0.9594
-- **Pages:** MiniPdf=13, Reference=13
-- **File Size:** MiniPdf=631576 bytes, Reference=506241 bytes
-
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/XlsxIssue82_WideTable.pdf
-+++ reference/XlsxIssue82_WideTable.pdf
-@@ -382,34 +382,34 @@
- Priority customer account; generated row 119 should remain readable without column overlap.
-
- Priority customer account; generated row 120 should remain readable without column overlap.
-
- ---PAGE---
-
--Record ID First NamLast NamStreet AdCity Region Postal CoPhone
-
--ID-0001 Naveen Adhikari 2000 WesKathmandCA 90000 QA Automation Specialist
-
--ID-0002 Alicia Morrison 2001 WesSeattle CA 90001 Senior Data Coordinator
-
--ID-0003 Marcus Chen 2002 WesAustin CA 90002 Customer Success Manager
-
--ID-0004 Priya Patel 2003 WesToronto CA 90003 Field Operations Analyst
-
--ID-0005 Daniel Rodriguez 2004 Wes Singapore CA 90004 Principal Support Engineer
-
--ID-0006 Mei Tanaka 2005 WesDublin CA 90005 QA Automation Specialist
-
--ID-0007 Sofia Bennett 2006 WesMelbourn CA 90006 Senior Data Coordinator
-
--ID-0008 Owen Singh 2007 WesBerlin CA 90007 Customer Success Manager
-
--ID-0009 Ibrahim Kim 2008 WesKathmandCA 90008 Field Operations Analyst
-
--ID-0010 Caroline Olsen 2009 WesSeattle CA 90009 Principal Support Engineer
-
--ID-0011 Naveen Adhikari 2010 WesAustin CA 90010 QA Automation Specialist
-
--ID-0012 Alicia Morrison 2011 WesToronto CA 90011 Senior Data Coordinator
-
--ID-0013 Marcus Chen 2012 Wes Singapore CA 90012 Customer Success Manager
-
--ID-0014 Priya Patel 2013 WesDublin CA 90013 Field Operations Analyst
-
--ID-0015 Daniel Rodriguez 2014 WesMelbourn CA 90014 Principal Support Engineer
-
--ID-0016 Mei Tanaka 2015 WesBerlin CA 90015 QA Automation Specialist
-
--ID-0017 Sofia Bennett 2016 WesKathmandCA 90016 Senior Data Coordinator
-
--ID-0018 Owen Singh 2017 WesSeattle CA 90017 Customer Success Manager
-
--ID-0019 Ibrahim Kim 2018 WesAustin CA 90018 Field Operations Analyst
-
--ID-0020 Caroline Olsen 2019 WesToronto CA 90019 Principal Support Engineer
-
--ID-0021 Naveen Adhikari 2020 Wes Singapore CA 90020 QA Automation Specialist
-
--ID-0022 Alicia Morrison 2021 WesDublin CA 90021 Senior Data Coordinator
-
--ID-0023 Marcus Chen 2022 WesMelbourn CA 90022 Customer Success Manager
-
--ID-0024 Priya Patel 2023 WesBerlin CA 90023 Field Operations Analyst
-
--ID-0025 Daniel Rodriguez 2024 WesKathmandCA 90024 Principal Support Engineer
-
--ID-0026 Mei Tanaka 2025 WesSeattle CA 90025 QA Automation Specialist
-
--ID-0027 Sofia Bennett 2026 WesAustin CA 90026 Senior Data Coordinator
-
--ID-0028 Owen Singh 2027 WesToronto CA 90027 Customer Success Manager
-
--ID-0029 Ibrahim Kim 2028 Wes Singapore CA 90028 Field Operations Analyst
-
--ID-0030 Caroline Olsen 2029 WesDublin CA 90029 Principal Support Engineer
-+Record IDFirst NamLast NamStreet AdCity Region Postal CoPhone
-
-+ID-0001 Naveen Adhikari 2000 WestKathmandCA 90000 QA Automation Specialist
-
-+ID-0002 Alicia Morrison 2001 WestSeattle CA 90001 Senior Data Coordinator
-
-+ID-0003 Marcus Chen 2002 WestAustin CA 90002 Customer Success Manager
-
-+ID-0004 Priya Patel 2003 WestToronto CA 90003 Field Operations Analyst
-
-+ID-0005 Daniel Rodriguez 2004 WestSingapore CA 90004 P
-... (1889 more characters)
+... (16871 more characters)
 
 ```
 </details>
 
 ### XlsxIssue82_5mb
 
+- **Case Metadata:** format: xlsx | case: XlsxIssue82_5mb | scope: issue-xlsx
 - **Text Similarity:** 0.6678
 - **Visual Average:** 0.838
 - **Overall Score:** 0.7023
@@ -3300,6 +2177,7 @@ Text content: ✅ Identical
 
 ### XlsxIssue82_SampleTestData5mb
 
+- **Case Metadata:** format: xlsx | case: XlsxIssue82_SampleTestData5mb | scope: issue-xlsx
 - **Text Similarity:** 0.4255
 - **Visual Average:** 0.9146
 - **Overall Score:** 0.636
@@ -3408,16 +2286,25 @@ Text content: ✅ Identical
 ```
 </details>
 
+### XlsxIssue82_WideTable
+
+- **Case Metadata:** format: xlsx | case: XlsxIssue82_WideTable | scope: issue-xlsx
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.8648
+- **Overall Score:** 0.9459
+- **Pages:** MiniPdf=13, Reference=13
+- **File Size:** MiniPdf=631576 bytes, Reference=506241 bytes
+
+Text content: ✅ Identical
+
 ## Improvement Suggestions
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **payroll-calculator_f** (score: 0.5009)
-1. **Small business cash flow forecast1** (score: 0.6204)
+1. **payroll-calculator_f** (score: 0.6124)
 1. **XlsxIssue82_SampleTestData5mb** (score: 0.636)
-1. **XlsxIssue75** (score: 0.6479)
-1. **Event budget1** (score: 0.6766)
+1. **Event budget1** (score: 0.6741)
 1. **XlsxIssue82_5mb** (score: 0.7023)
-1. **Wedding_timeline_planner1_copy** (score: 0.7774)
+1. **Small business cash flow forecast1** (score: 0.7059)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

@@ -76,9 +76,10 @@ def step_generate_minipdf_pdfs(filter_pattern: str = None):
     """Step 2: Convert DOCX files to PDF using MiniPdf."""
     banner("Step 2: Convert DOCX -> PDF (MiniPdf)")
     scripts_dir = SCRIPT_DIR / ".." / "MiniPdf.Scripts"
-    cmd = ["dotnet", "run", "convert_docx_to_pdf.cs"]
+    cmd = ["dotnet", "run", "convert_docx_to_pdf.cs", "--",
+           str(DOCX_DIR.resolve()), str(MINIPDF_PDF_DIR.resolve())]
     if filter_pattern:
-        cmd += ["--", str(DOCX_DIR.resolve()), str(MINIPDF_PDF_DIR.resolve()), filter_pattern]
+        cmd += [filter_pattern]
     return run(cmd, cwd=str(scripts_dir))
 
 

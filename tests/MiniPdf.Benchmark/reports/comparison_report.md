@@ -1,13 +1,13 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-07T23:27:18.176195
+Generated: 2026-07-19T19:49:12.102818
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
 | 1 | 🟢 classic01_basic_table_with_headers | ✅ | 1.0 | 0.9965 | 1/1 | **0.9986** |
-| 2 | 🟢 classic02_multiple_worksheets | ✅ | 0.9914 | 0.9966 | 3/3 | **0.9952** |
+| 2 | 🟢 classic02_multiple_worksheets | ✅ | 0.9942 | 0.9972 | 3/3 | **0.9966** |
 | 3 | 🟢 classic03_empty_workbook | ✅ | 1.0 | 1.0 | 1/1 | **1.0** |
 | 4 | 🟢 classic04_single_cell | ✅ | 1.0 | 0.9994 | 1/1 | **0.9998** |
 | 5 | 🟢 classic05_wide_table | ✅ | 0.8846 | 0.9899 | 3/3 | **0.9498** |
@@ -23,7 +23,7 @@ Generated: 2026-07-07T23:27:18.176195
 | 15 | 🟢 classic15_negative_numbers | ✅ | 0.9375 | 0.9954 | 1/1 | **0.9732** |
 | 16 | 🟢 classic16_percentage_strings | ✅ | 0.9939 | 0.9953 | 1/1 | **0.9957** |
 | 17 | 🟢 classic17_currency_strings | ✅ | 1.0 | 0.9946 | 1/1 | **0.9978** |
-| 18 | 🔴 classic18_large_dataset | ✅ | 0.9001 | 0.4838 | 24/42 | **0.6536** |
+| 18 | 🟢 classic18_large_dataset | ✅ | 1.0 | 0.9427 | 42/42 | **0.9771** |
 | 19 | 🟢 classic19_single_column_list | ✅ | 1.0 | 0.9947 | 1/1 | **0.9979** |
 | 20 | 🟢 classic20_all_empty_cells | ✅ | 1.0 | 1.0 | 1/1 | **1.0** |
 | 21 | 🟢 classic21_header_only | ✅ | 1.0 | 0.9977 | 1/1 | **0.9991** |
@@ -55,7 +55,7 @@ Generated: 2026-07-07T23:27:18.176195
 | 47 | 🟢 classic47_time_series | ✅ | 1.0 | 0.9748 | 1/1 | **0.9899** |
 | 48 | 🟢 classic48_survey_results | ✅ | 0.9831 | 0.9885 | 1/1 | **0.9886** |
 | 49 | 🟡 classic49_contact_list | ✅ | 0.6658 | 0.9753 | 1/1 | **0.8564** |
-| 50 | 🟢 classic50_budget_vs_actuals | ✅ | 0.9934 | 0.9873 | 3/3 | **0.9923** |
+| 50 | 🟢 classic50_budget_vs_actuals | ✅ | 0.9933 | 0.9875 | 3/3 | **0.9923** |
 | 51 | 🟡 classic51_product_catalog | ✅ | 0.6341 | 0.9633 | 1/1 | **0.839** |
 | 52 | 🟢 classic52_pivot_summary | ✅ | 0.9978 | 0.9858 | 1/1 | **0.9934** |
 | 53 | 🟢 classic53_invoice | ✅ | 0.9444 | 0.9773 | 1/1 | **0.9687** |
@@ -64,7 +64,7 @@ Generated: 2026-07-07T23:27:18.176195
 | 56 | 🟢 classic56_alternating_row_colors | ✅ | 1.0 | 0.9765 | 1/1 | **0.9906** |
 | 57 | 🟢 classic57_cjk_only | ✅ | 0.9945 | 0.9904 | 1/1 | **0.994** |
 | 58 | 🟢 classic58_mixed_numeric_formats | ✅ | 0.9726 | 0.9908 | 1/1 | **0.9854** |
-| 59 | 🟢 classic59_multi_sheet_summary | ✅ | 1.0 | 0.9954 | 4/4 | **0.9982** |
+| 59 | 🟢 classic59_multi_sheet_summary | ✅ | 1.0 | 0.9955 | 4/4 | **0.9982** |
 | 60 | 🔴 classic60_large_wide_table | ✅ | 0.852 | 0.6012 | 4/6 | **0.6813** |
 | 61 | 🟢 classic61_product_card_with_image | ✅ | 1.0 | 0.989 | 1/1 | **0.9956** |
 | 62 | 🟢 classic62_company_logo_header | ✅ | 0.988 | 0.9869 | 1/1 | **0.99** |
@@ -76,7 +76,7 @@ Generated: 2026-07-07T23:27:18.176195
 | 68 | 🟢 classic68_restaurant_menu | ✅ | 0.875 | 0.9218 | 1/1 | **0.9187** |
 | 69 | 🟢 classic69_image_only_sheet | ✅ | 1.0 | 0.9767 | 1/1 | **0.9907** |
 | 70 | 🟢 classic70_product_catalog_with_images | ✅ | 0.9675 | 0.9665 | 1/1 | **0.9736** |
-| 71 | 🟢 classic71_multi_sheet_with_images | ✅ | 0.9898 | 0.9926 | 3/3 | **0.993** |
+| 71 | 🟢 classic71_multi_sheet_with_images | ✅ | 0.9896 | 0.9925 | 3/3 | **0.9928** |
 | 72 | 🟢 classic72_bar_chart_image_with_data | ✅ | 1.0 | 0.953 | 1/1 | **0.9812** |
 | 73 | 🟢 classic73_event_flyer_with_banner | ✅ | 0.9087 | 0.9636 | 1/1 | **0.9489** |
 | 74 | 🟢 classic74_dashboard_with_kpi_image | ✅ | 0.9846 | 0.9454 | 1/1 | **0.972** |
@@ -148,7 +148,7 @@ Generated: 2026-07-07T23:27:18.176195
 | 140 | 🟢 classic140_rotated_text | ✅ | 0.9583 | 0.991 | 1/1 | **0.9797** |
 | 141 | 🟢 classic141_mixed_edge_borders | ✅ | 1.0 | 0.9853 | 1/1 | **0.9941** |
 | 142 | 🟢 classic142_styled_invoice | ✅ | 1.0 | 0.9421 | 1/1 | **0.9768** |
-| 143 | 🟢 classic143_colored_tabs | ✅ | 1.0 | 0.9961 | 4/4 | **0.9984** |
+| 143 | 🟢 classic143_colored_tabs | ✅ | 0.9916 | 0.9963 | 4/4 | **0.9952** |
 | 144 | 🟢 classic144_note_style_cells | ✅ | 1.0 | 0.9658 | 1/1 | **0.9863** |
 | 145 | 🟢 classic145_status_badges | ✅ | 1.0 | 0.9501 | 1/1 | **0.98** |
 | 146 | 🟢 classic146_double_border_table | ✅ | 1.0 | 0.9678 | 1/1 | **0.9871** |
@@ -157,35 +157,35 @@ Generated: 2026-07-07T23:27:18.176195
 | 149 | 🟢 classic149_merged_styled_sections | ✅ | 1.0 | 0.9251 | 1/1 | **0.97** |
 | 150 | 🟢 classic150_kitchen_sink_styles | ✅ | 0.9839 | 0.9506 | 1/1 | **0.9738** |
 | 151 | 🟢 classic151_multilingual_greetings | ✅ | 0.9291 | 0.9851 | 1/1 | **0.9657** |
-| 152 | 🟢 classic152_emoji_sampler | ✅ | 1.0 | 0.9869 | 1/1 | **0.9948** |
-| 153 | 🟢 classic153_currency_symbols | ✅ | 0.9918 | 0.9869 | 1/1 | **0.9915** |
-| 154 | 🟢 classic154_math_symbols | ✅ | 0.9881 | 0.9898 | 1/1 | **0.9912** |
-| 155 | 🟢 classic155_diacritical_marks | ✅ | 1.0 | 0.9922 | 1/1 | **0.9969** |
+| 152 | 🟢 classic152_emoji_sampler | ✅ | 0.9717 | 0.987 | 1/1 | **0.9835** |
+| 153 | 🟢 classic153_currency_symbols | ✅ | 0.9918 | 0.987 | 1/1 | **0.9915** |
+| 154 | 🟢 classic154_math_symbols | ✅ | 0.9881 | 0.99 | 1/1 | **0.9912** |
+| 155 | 🟢 classic155_diacritical_marks | ✅ | 1.0 | 0.9921 | 1/1 | **0.9968** |
 | 156 | 🟡 classic156_rtl_bidi_text | ✅ | 0.5912 | 0.995 | 1/1 | **0.8345** |
 | 157 | 🟢 classic157_cjk_extended | ✅ | 1.0 | 0.9775 | 1/1 | **0.991** |
 | 158 | 🟢 classic158_emoji_skin_tones | ✅ | 1.0 | 0.9791 | 1/1 | **0.9916** |
-| 159 | 🟢 classic159_zwj_emoji | ✅ | 0.9372 | 0.9886 | 1/1 | **0.9703** |
+| 159 | 🟢 classic159_zwj_emoji | ✅ | 0.9251 | 0.9878 | 1/1 | **0.9652** |
 | 160 | 🟢 classic160_punctuation_marks | ✅ | 0.9915 | 0.9936 | 1/1 | **0.994** |
 | 161 | 🟢 classic161_box_drawing | ✅ | 0.9976 | 0.9867 | 1/1 | **0.9937** |
 | 162 | 🟢 classic162_cjk_emoji_styled | ✅ | 1.0 | 0.9872 | 1/1 | **0.9949** |
-| 163 | 🟢 classic163_cyrillic_alphabets | ✅ | 0.9398 | 0.9834 | 1/1 | **0.9693** |
+| 163 | 🟢 classic163_cyrillic_alphabets | ✅ | 0.9519 | 0.9849 | 1/1 | **0.9747** |
 | 164 | 🟢 classic164_indic_scripts | ✅ | 1.0 | 0.9903 | 1/1 | **0.9961** |
 | 165 | 🟢 classic165_southeast_asian | ✅ | 0.9672 | 0.8185 | 1/1 | **0.9143** |
 | 166 | 🟢 classic166_emoji_progress | ✅ | 1.0 | 0.9761 | 1/1 | **0.9904** |
 | 167 | 🟢 classic167_musical_symbols | ✅ | 1.0 | 0.9843 | 1/1 | **0.9937** |
-| 168 | 🟢 classic168_mixed_ltr_rtl_styled | ✅ | 0.8621 | 0.9732 | 1/1 | **0.9341** |
+| 168 | 🟢 classic168_mixed_ltr_rtl_styled | ✅ | 0.8696 | 0.9695 | 1/1 | **0.9356** |
 | 169 | 🟢 classic169_korean_invoice | ✅ | 1.0 | 0.9839 | 1/1 | **0.9936** |
 | 170 | 🟢 classic170_emoji_dashboard | ✅ | 1.0 | 0.9778 | 1/1 | **0.9911** |
 | 171 | 🟢 classic171_ipa_phonetic | ✅ | 0.9703 | 0.9911 | 1/1 | **0.9846** |
 | 172 | 🟢 classic172_emoji_timeline | ✅ | 1.0 | 0.9849 | 1/1 | **0.994** |
 | 173 | 🟢 classic173_african_languages | ✅ | 0.9783 | 0.9847 | 1/1 | **0.9852** |
 | 174 | 🟢 classic174_technical_symbols | ✅ | 0.9971 | 0.9848 | 1/1 | **0.9928** |
-| 175 | 🟢 classic175_multiscript_catalog | ✅ | 0.9686 | 0.9774 | 1/1 | **0.9784** |
+| 175 | 🟢 classic175_multiscript_catalog | ✅ | 0.9686 | 0.9773 | 1/1 | **0.9784** |
 | 176 | 🟢 classic176_combining_characters | ✅ | 0.9469 | 0.9886 | 1/1 | **0.9742** |
-| 177 | 🟢 classic177_emoji_calendar | ✅ | 1.0 | 0.9864 | 1/1 | **0.9946** |
+| 177 | 🟢 classic177_emoji_calendar | ✅ | 0.9965 | 0.9864 | 1/1 | **0.9932** |
 | 178 | 🟢 classic178_caucasus_ethiopic | ✅ | 0.9936 | 0.9887 | 1/1 | **0.9929** |
-| 179 | 🟢 classic179_emoji_inventory | ✅ | 1.0 | 0.9782 | 1/1 | **0.9913** |
-| 180 | 🟢 classic180_polyglot_paragraph | ✅ | 0.9772 | 0.9884 | 1/1 | **0.9862** |
+| 179 | 🟢 classic179_emoji_inventory | ✅ | 0.9925 | 0.9782 | 1/1 | **0.9883** |
+| 180 | 🟢 classic180_polyglot_paragraph | ✅ | 0.9747 | 0.9888 | 1/1 | **0.9854** |
 | 181 | 🟢 classic181_feedback_tracker_with_images | ✅ | 0.9865 | 0.9574 | 2/2 | **0.9776** |
 | 182 | 🟢 classic182_dense_long_text_columns | ✅ | 0.9302 | 0.9742 | 2/2 | **0.9618** |
 | 183 | 🟢 classic183_mixed_content_grid | ✅ | 1.0 | 0.961 | 1/1 | **0.9844** |
@@ -198,7 +198,1565 @@ Generated: 2026-07-07T23:27:18.176195
 | 190 | 🟢 classic190_dashboard_kpi_images | ✅ | 1.0 | 0.9637 | 1/1 | **0.9855** |
 | 191 | 🟡 classic191_payroll_calculator | ✅ | 0.8377 | 0.8429 | 9/9 | **0.8722** |
 
-**Average Overall Score: 0.9487**
+**Average Overall Score: 0.9503**
+
+## Difference Heatmaps
+
+Blue areas are below the configured difference threshold; red areas have stronger pixel differences. The reference rendering is retained as faint context.
+
+<table>
+<tr><th>Case</th><th>Heatmap</th><th>Metrics</th></tr>
+<tr>
+  <td><b>classic01_basic_table_with_headers</b><br>Page 1</td>
+  <td><img src="images/classic01_basic_table_with_headers_p1_heatmap.png" width="760" alt="classic01_basic_table_with_headers page 1 difference heatmap"></td>
+  <td>changed: 10424 px (0.51%)<br>bbox: [113, 148, 416, 300]<br>mean abs RGB: 0.804<br>RMSE RGB: 12.6724<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic02_multiple_worksheets</b><br>Page 1</td>
+  <td><img src="images/classic02_multiple_worksheets_p1_heatmap.png" width="760" alt="classic02_multiple_worksheets page 1 difference heatmap"></td>
+  <td>changed: 6229 px (0.30%)<br>bbox: [114, 148, 318, 301]<br>mean abs RGB: 0.4829<br>RMSE RGB: 9.8212<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic02_multiple_worksheets</b><br>Page 2</td>
+  <td><img src="images/classic02_multiple_worksheets_p2_heatmap.png" width="760" alt="classic02_multiple_worksheets page 2 difference heatmap"></td>
+  <td>changed: 6935 px (0.34%)<br>bbox: [114, 148, 318, 269]<br>mean abs RGB: 0.5341<br>RMSE RGB: 10.3172<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic02_multiple_worksheets</b><br>Page 3</td>
+  <td><img src="images/classic02_multiple_worksheets_p3_heatmap.png" width="760" alt="classic02_multiple_worksheets page 3 difference heatmap"></td>
+  <td>changed: 7141 px (0.35%)<br>bbox: [113, 147, 318, 269]<br>mean abs RGB: 0.5472<br>RMSE RGB: 10.4587<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic03_empty_workbook</b><br>Page 1</td>
+  <td><img src="images/classic03_empty_workbook_p1_heatmap.png" width="760" alt="classic03_empty_workbook page 1 difference heatmap"></td>
+  <td>changed: 0 px (0.00%)<br>bbox: None<br>mean abs RGB: 0.0<br>RMSE RGB: 0.0<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic04_single_cell</b><br>Page 1</td>
+  <td><img src="images/classic04_single_cell_p1_heatmap.png" width="760" alt="classic04_single_cell page 1 difference heatmap"></td>
+  <td>changed: 741 px (0.04%)<br>bbox: [114, 147, 165, 175]<br>mean abs RGB: 0.0575<br>RMSE RGB: 3.3811<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic05_wide_table</b><br>Page 1</td>
+  <td><img src="images/classic05_wide_table_p1_heatmap.png" width="760" alt="classic05_wide_table page 1 difference heatmap"></td>
+  <td>changed: 20420 px (1.00%)<br>bbox: [113, 148, 1014, 331]<br>mean abs RGB: 1.6019<br>RMSE RGB: 17.9786<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic05_wide_table</b><br>Page 2</td>
+  <td><img src="images/classic05_wide_table_p2_heatmap.png" width="760" alt="classic05_wide_table page 2 difference heatmap"></td>
+  <td>changed: 22000 px (1.07%)<br>bbox: [114, 148, 1017, 332]<br>mean abs RGB: 1.7267<br>RMSE RGB: 18.719<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic05_wide_table</b><br>Page 3</td>
+  <td><img src="images/classic05_wide_table_p3_heatmap.png" width="760" alt="classic05_wide_table page 3 difference heatmap"></td>
+  <td>changed: 14724 px (0.72%)<br>bbox: [115, 148, 871, 331]<br>mean abs RGB: 1.1562<br>RMSE RGB: 15.2587<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic06_tall_table</b><br>Page 1</td>
+  <td><img src="images/classic06_tall_table_p1_heatmap.png" width="760" alt="classic06_tall_table page 1 difference heatmap"></td>
+  <td>changed: 270116 px (13.19%)<br>bbox: [115, 147, 721, 1505]<br>mean abs RGB: 20.3755<br>RMSE RGB: 63.2458<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic06_tall_table</b><br>Page 2</td>
+  <td><img src="images/classic06_tall_table_p2_heatmap.png" width="760" alt="classic06_tall_table page 2 difference heatmap"></td>
+  <td>changed: 280331 px (13.69%)<br>bbox: [115, 147, 721, 1505]<br>mean abs RGB: 21.1527<br>RMSE RGB: 64.4353<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic06_tall_table</b><br>Page 3</td>
+  <td><img src="images/classic06_tall_table_p3_heatmap.png" width="760" alt="classic06_tall_table page 3 difference heatmap"></td>
+  <td>changed: 293035 px (14.31%)<br>bbox: [115, 147, 733, 1505]<br>mean abs RGB: 22.0954<br>RMSE RGB: 65.8669<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic06_tall_table</b><br>Page 4</td>
+  <td><img src="images/classic06_tall_table_p4_heatmap.png" width="760" alt="classic06_tall_table page 4 difference heatmap"></td>
+  <td>changed: 296215 px (14.47%)<br>bbox: [115, 147, 733, 1505]<br>mean abs RGB: 22.3146<br>RMSE RGB: 66.1569<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic06_tall_table</b><br>Page 5</td>
+  <td><img src="images/classic06_tall_table_p5_heatmap.png" width="760" alt="classic06_tall_table page 5 difference heatmap"></td>
+  <td>changed: 143619 px (7.01%)<br>bbox: [115, 147, 733, 1054]<br>mean abs RGB: 11.123<br>RMSE RGB: 47.0983<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic07_numbers_only</b><br>Page 1</td>
+  <td><img src="images/classic07_numbers_only_p1_heatmap.png" width="760" alt="classic07_numbers_only page 1 difference heatmap"></td>
+  <td>changed: 3361 px (0.16%)<br>bbox: [178, 148, 423, 269]<br>mean abs RGB: 0.2649<br>RMSE RGB: 7.306<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic08_mixed_text_and_numbers</b><br>Page 1</td>
+  <td><img src="images/classic08_mixed_text_and_numbers_p1_heatmap.png" width="760" alt="classic08_mixed_text_and_numbers page 1 difference heatmap"></td>
+  <td>changed: 8186 px (0.40%)<br>bbox: [113, 148, 318, 331]<br>mean abs RGB: 0.6265<br>RMSE RGB: 11.1482<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 1</td>
+  <td><img src="images/classic09_long_text_p1_heatmap.png" width="760" alt="classic09_long_text page 1 difference heatmap"></td>
+  <td>changed: 46141 px (2.25%)<br>bbox: [113, 147, 1241, 299]<br>mean abs RGB: 3.6705<br>RMSE RGB: 27.3883<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 2</td>
+  <td><img src="images/classic09_long_text_p2_heatmap.png" width="760" alt="classic09_long_text page 2 difference heatmap"></td>
+  <td>changed: 19136 px (0.93%)<br>bbox: [114, 177, 1056, 277]<br>mean abs RGB: 1.5232<br>RMSE RGB: 17.6758<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 3</td>
+  <td><img src="images/classic09_long_text_p3_heatmap.png" width="760" alt="classic09_long_text page 3 difference heatmap"></td>
+  <td>changed: 19051 px (0.93%)<br>bbox: [114, 177, 1056, 277]<br>mean abs RGB: 1.5228<br>RMSE RGB: 17.6732<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 4</td>
+  <td><img src="images/classic09_long_text_p4_heatmap.png" width="760" alt="classic09_long_text page 4 difference heatmap"></td>
+  <td>changed: 19353 px (0.95%)<br>bbox: [114, 177, 1056, 277]<br>mean abs RGB: 1.5214<br>RMSE RGB: 17.6675<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 5</td>
+  <td><img src="images/classic09_long_text_p5_heatmap.png" width="760" alt="classic09_long_text page 5 difference heatmap"></td>
+  <td>changed: 20804 px (1.02%)<br>bbox: [114, 177, 1056, 277]<br>mean abs RGB: 1.6269<br>RMSE RGB: 18.2669<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 6</td>
+  <td><img src="images/classic09_long_text_p6_heatmap.png" width="760" alt="classic09_long_text page 6 difference heatmap"></td>
+  <td>changed: 20720 px (1.01%)<br>bbox: [114, 177, 1056, 277]<br>mean abs RGB: 1.6581<br>RMSE RGB: 18.4357<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 7</td>
+  <td><img src="images/classic09_long_text_p7_heatmap.png" width="760" alt="classic09_long_text page 7 difference heatmap"></td>
+  <td>changed: 13136 px (0.64%)<br>bbox: [114, 206, 1056, 277]<br>mean abs RGB: 1.0369<br>RMSE RGB: 14.5663<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 8</td>
+  <td><img src="images/classic09_long_text_p8_heatmap.png" width="760" alt="classic09_long_text page 8 difference heatmap"></td>
+  <td>changed: 5700 px (0.28%)<br>bbox: [114, 262, 1056, 277]<br>mean abs RGB: 0.4444<br>RMSE RGB: 9.5012<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 9</td>
+  <td><img src="images/classic09_long_text_p9_heatmap.png" width="760" alt="classic09_long_text page 9 difference heatmap"></td>
+  <td>changed: 5682 px (0.28%)<br>bbox: [114, 262, 1056, 277]<br>mean abs RGB: 0.4427<br>RMSE RGB: 9.4822<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 10</td>
+  <td><img src="images/classic09_long_text_p10_heatmap.png" width="760" alt="classic09_long_text page 10 difference heatmap"></td>
+  <td>changed: 5699 px (0.28%)<br>bbox: [114, 262, 1056, 277]<br>mean abs RGB: 0.4442<br>RMSE RGB: 9.4994<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 11</td>
+  <td><img src="images/classic09_long_text_p11_heatmap.png" width="760" alt="classic09_long_text page 11 difference heatmap"></td>
+  <td>changed: 5696 px (0.28%)<br>bbox: [114, 262, 1056, 277]<br>mean abs RGB: 0.4438<br>RMSE RGB: 9.494<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic09_long_text</b><br>Page 12</td>
+  <td><img src="images/classic09_long_text_p12_heatmap.png" width="760" alt="classic09_long_text page 12 difference heatmap"></td>
+  <td>changed: 5470 px (0.27%)<br>bbox: [114, 262, 1019, 277]<br>mean abs RGB: 0.4264<br>RMSE RGB: 9.3063<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic10_special_xml_characters</b><br>Page 1</td>
+  <td><img src="images/classic10_special_xml_characters_p1_heatmap.png" width="760" alt="classic10_special_xml_characters page 1 difference heatmap"></td>
+  <td>changed: 13139 px (0.64%)<br>bbox: [113, 147, 465, 367]<br>mean abs RGB: 0.9946<br>RMSE RGB: 14.0377<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic11_sparse_rows</b><br>Page 1</td>
+  <td><img src="images/classic11_sparse_rows_p1_heatmap.png" width="760" alt="classic11_sparse_rows page 1 difference heatmap"></td>
+  <td>changed: 3499 px (0.17%)<br>bbox: [113, 148, 212, 769]<br>mean abs RGB: 0.2664<br>RMSE RGB: 7.2355<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic11_sparse_rows</b><br>Page 2</td>
+  <td><img src="images/classic11_sparse_rows_p2_heatmap.png" width="760" alt="classic11_sparse_rows page 2 difference heatmap"></td>
+  <td>changed: 1057 px (0.05%)<br>bbox: [115, 176, 183, 331]<br>mean abs RGB: 0.0822<br>RMSE RGB: 4.0461<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic12_sparse_columns</b><br>Page 1</td>
+  <td><img src="images/classic12_sparse_columns_p1_heatmap.png" width="760" alt="classic12_sparse_columns page 1 difference heatmap"></td>
+  <td>changed: 4845 px (0.24%)<br>bbox: [114, 147, 1099, 242]<br>mean abs RGB: 0.3785<br>RMSE RGB: 8.7279<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic13_date_strings</b><br>Page 1</td>
+  <td><img src="images/classic13_date_strings_p1_heatmap.png" width="760" alt="classic13_date_strings page 1 difference heatmap"></td>
+  <td>changed: 13920 px (0.68%)<br>bbox: [114, 148, 344, 335]<br>mean abs RGB: 1.0691<br>RMSE RGB: 14.6316<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic14_decimal_numbers</b><br>Page 1</td>
+  <td><img src="images/classic14_decimal_numbers_p1_heatmap.png" width="760" alt="classic14_decimal_numbers page 1 difference heatmap"></td>
+  <td>changed: 9750 px (0.48%)<br>bbox: [114, 147, 318, 335]<br>mean abs RGB: 0.7457<br>RMSE RGB: 12.1716<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic15_negative_numbers</b><br>Page 1</td>
+  <td><img src="images/classic15_negative_numbers_p1_heatmap.png" width="760" alt="classic15_negative_numbers page 1 difference heatmap"></td>
+  <td>changed: 10252 px (0.50%)<br>bbox: [113, 147, 352, 367]<br>mean abs RGB: 0.7809<br>RMSE RGB: 12.4461<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic16_percentage_strings</b><br>Page 1</td>
+  <td><img src="images/classic16_percentage_strings_p1_heatmap.png" width="760" alt="classic16_percentage_strings page 1 difference heatmap"></td>
+  <td>changed: 11363 px (0.55%)<br>bbox: [114, 148, 321, 331]<br>mean abs RGB: 0.8671<br>RMSE RGB: 13.1133<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic17_currency_strings</b><br>Page 1</td>
+  <td><img src="images/classic17_currency_strings_p1_heatmap.png" width="760" alt="classic17_currency_strings page 1 difference heatmap"></td>
+  <td>changed: 14151 px (0.69%)<br>bbox: [113, 148, 334, 363]<br>mean abs RGB: 1.0797<br>RMSE RGB: 14.6172<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 1</td>
+  <td><img src="images/classic18_large_dataset_p1_heatmap.png" width="760" alt="classic18_large_dataset page 1 difference heatmap"></td>
+  <td>changed: 322268 px (14.81%)<br>bbox: [117, 156, 1027, 1596]<br>mean abs RGB: 23.469<br>RMSE RGB: 68.8737<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 2</td>
+  <td><img src="images/classic18_large_dataset_p2_heatmap.png" width="760" alt="classic18_large_dataset page 2 difference heatmap"></td>
+  <td>changed: 343584 px (15.78%)<br>bbox: [118, 156, 1027, 1596]<br>mean abs RGB: 24.7739<br>RMSE RGB: 70.5492<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 3</td>
+  <td><img src="images/classic18_large_dataset_p3_heatmap.png" width="760" alt="classic18_large_dataset page 3 difference heatmap"></td>
+  <td>changed: 388582 px (17.85%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 28.64<br>RMSE RGB: 76.4157<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 4</td>
+  <td><img src="images/classic18_large_dataset_p4_heatmap.png" width="760" alt="classic18_large_dataset page 4 difference heatmap"></td>
+  <td>changed: 399953 px (18.37%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.4614<br>RMSE RGB: 77.5053<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 5</td>
+  <td><img src="images/classic18_large_dataset_p5_heatmap.png" width="760" alt="classic18_large_dataset page 5 difference heatmap"></td>
+  <td>changed: 397432 px (18.26%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.0788<br>RMSE RGB: 76.7078<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 6</td>
+  <td><img src="images/classic18_large_dataset_p6_heatmap.png" width="760" alt="classic18_large_dataset page 6 difference heatmap"></td>
+  <td>changed: 401446 px (18.44%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.3159<br>RMSE RGB: 76.945<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 7</td>
+  <td><img src="images/classic18_large_dataset_p7_heatmap.png" width="760" alt="classic18_large_dataset page 7 difference heatmap"></td>
+  <td>changed: 405329 px (18.62%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.4131<br>RMSE RGB: 76.9459<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 8</td>
+  <td><img src="images/classic18_large_dataset_p8_heatmap.png" width="760" alt="classic18_large_dataset page 8 difference heatmap"></td>
+  <td>changed: 410598 px (18.86%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.6482<br>RMSE RGB: 77.1798<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 9</td>
+  <td><img src="images/classic18_large_dataset_p9_heatmap.png" width="760" alt="classic18_large_dataset page 9 difference heatmap"></td>
+  <td>changed: 405274 px (18.62%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.4912<br>RMSE RGB: 77.0541<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 10</td>
+  <td><img src="images/classic18_large_dataset_p10_heatmap.png" width="760" alt="classic18_large_dataset page 10 difference heatmap"></td>
+  <td>changed: 404316 px (18.57%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.5159<br>RMSE RGB: 77.1363<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 11</td>
+  <td><img src="images/classic18_large_dataset_p11_heatmap.png" width="760" alt="classic18_large_dataset page 11 difference heatmap"></td>
+  <td>changed: 407684 px (18.73%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.5939<br>RMSE RGB: 77.1625<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 12</td>
+  <td><img src="images/classic18_large_dataset_p12_heatmap.png" width="760" alt="classic18_large_dataset page 12 difference heatmap"></td>
+  <td>changed: 411004 px (18.88%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.6773<br>RMSE RGB: 77.2029<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 13</td>
+  <td><img src="images/classic18_large_dataset_p13_heatmap.png" width="760" alt="classic18_large_dataset page 13 difference heatmap"></td>
+  <td>changed: 410409 px (18.85%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.6072<br>RMSE RGB: 77.0925<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 14</td>
+  <td><img src="images/classic18_large_dataset_p14_heatmap.png" width="760" alt="classic18_large_dataset page 14 difference heatmap"></td>
+  <td>changed: 410832 px (18.87%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.5855<br>RMSE RGB: 76.9912<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 15</td>
+  <td><img src="images/classic18_large_dataset_p15_heatmap.png" width="760" alt="classic18_large_dataset page 15 difference heatmap"></td>
+  <td>changed: 405835 px (18.64%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.4031<br>RMSE RGB: 76.9454<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 16</td>
+  <td><img src="images/classic18_large_dataset_p16_heatmap.png" width="760" alt="classic18_large_dataset page 16 difference heatmap"></td>
+  <td>changed: 402368 px (18.49%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.4993<br>RMSE RGB: 77.3672<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 17</td>
+  <td><img src="images/classic18_large_dataset_p17_heatmap.png" width="760" alt="classic18_large_dataset page 17 difference heatmap"></td>
+  <td>changed: 406060 px (18.65%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.4887<br>RMSE RGB: 77.1478<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 18</td>
+  <td><img src="images/classic18_large_dataset_p18_heatmap.png" width="760" alt="classic18_large_dataset page 18 difference heatmap"></td>
+  <td>changed: 412761 px (18.96%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.7647<br>RMSE RGB: 77.2467<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 19</td>
+  <td><img src="images/classic18_large_dataset_p19_heatmap.png" width="760" alt="classic18_large_dataset page 19 difference heatmap"></td>
+  <td>changed: 415068 px (19.07%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.7154<br>RMSE RGB: 77.0614<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 20</td>
+  <td><img src="images/classic18_large_dataset_p20_heatmap.png" width="760" alt="classic18_large_dataset page 20 difference heatmap"></td>
+  <td>changed: 408729 px (18.78%)<br>bbox: [118, 156, 1040, 1596]<br>mean abs RGB: 29.5959<br>RMSE RGB: 77.1105<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 21</td>
+  <td><img src="images/classic18_large_dataset_p21_heatmap.png" width="760" alt="classic18_large_dataset page 21 difference heatmap"></td>
+  <td>changed: 353179 px (16.23%)<br>bbox: [118, 156, 1040, 1384]<br>mean abs RGB: 25.3086<br>RMSE RGB: 71.1429<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 22</td>
+  <td><img src="images/classic18_large_dataset_p22_heatmap.png" width="760" alt="classic18_large_dataset page 22 difference heatmap"></td>
+  <td>changed: 37960 px (1.74%)<br>bbox: [117, 156, 187, 1596]<br>mean abs RGB: 2.7759<br>RMSE RGB: 23.6869<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 23</td>
+  <td><img src="images/classic18_large_dataset_p23_heatmap.png" width="760" alt="classic18_large_dataset page 23 difference heatmap"></td>
+  <td>changed: 40684 px (1.87%)<br>bbox: [118, 156, 187, 1596]<br>mean abs RGB: 2.9765<br>RMSE RGB: 24.5384<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 24</td>
+  <td><img src="images/classic18_large_dataset_p24_heatmap.png" width="760" alt="classic18_large_dataset page 24 difference heatmap"></td>
+  <td>changed: 44871 px (2.06%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.2555<br>RMSE RGB: 25.5998<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 25</td>
+  <td><img src="images/classic18_large_dataset_p25_heatmap.png" width="760" alt="classic18_large_dataset page 25 difference heatmap"></td>
+  <td>changed: 45966 px (2.11%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.3153<br>RMSE RGB: 25.7856<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 26</td>
+  <td><img src="images/classic18_large_dataset_p26_heatmap.png" width="760" alt="classic18_large_dataset page 26 difference heatmap"></td>
+  <td>changed: 45574 px (2.09%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.2996<br>RMSE RGB: 25.7391<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 27</td>
+  <td><img src="images/classic18_large_dataset_p27_heatmap.png" width="760" alt="classic18_large_dataset page 27 difference heatmap"></td>
+  <td>changed: 46131 px (2.12%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.327<br>RMSE RGB: 25.803<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 28</td>
+  <td><img src="images/classic18_large_dataset_p28_heatmap.png" width="760" alt="classic18_large_dataset page 28 difference heatmap"></td>
+  <td>changed: 46668 px (2.14%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.3656<br>RMSE RGB: 25.9743<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 29</td>
+  <td><img src="images/classic18_large_dataset_p29_heatmap.png" width="760" alt="classic18_large_dataset page 29 difference heatmap"></td>
+  <td>changed: 47523 px (2.18%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.4078<br>RMSE RGB: 26.0941<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 30</td>
+  <td><img src="images/classic18_large_dataset_p30_heatmap.png" width="760" alt="classic18_large_dataset page 30 difference heatmap"></td>
+  <td>changed: 46631 px (2.14%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.4003<br>RMSE RGB: 26.1677<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 31</td>
+  <td><img src="images/classic18_large_dataset_p31_heatmap.png" width="760" alt="classic18_large_dataset page 31 difference heatmap"></td>
+  <td>changed: 46597 px (2.14%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.4038<br>RMSE RGB: 26.1894<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 32</td>
+  <td><img src="images/classic18_large_dataset_p32_heatmap.png" width="760" alt="classic18_large_dataset page 32 difference heatmap"></td>
+  <td>changed: 46999 px (2.16%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.4158<br>RMSE RGB: 26.2328<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 33</td>
+  <td><img src="images/classic18_large_dataset_p33_heatmap.png" width="760" alt="classic18_large_dataset page 33 difference heatmap"></td>
+  <td>changed: 47421 px (2.18%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.401<br>RMSE RGB: 26.0854<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 34</td>
+  <td><img src="images/classic18_large_dataset_p34_heatmap.png" width="760" alt="classic18_large_dataset page 34 difference heatmap"></td>
+  <td>changed: 47715 px (2.19%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.4426<br>RMSE RGB: 26.2917<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 35</td>
+  <td><img src="images/classic18_large_dataset_p35_heatmap.png" width="760" alt="classic18_large_dataset page 35 difference heatmap"></td>
+  <td>changed: 48130 px (2.21%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.4604<br>RMSE RGB: 26.2784<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 36</td>
+  <td><img src="images/classic18_large_dataset_p36_heatmap.png" width="760" alt="classic18_large_dataset page 36 difference heatmap"></td>
+  <td>changed: 47360 px (2.18%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.4333<br>RMSE RGB: 26.2822<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 37</td>
+  <td><img src="images/classic18_large_dataset_p37_heatmap.png" width="760" alt="classic18_large_dataset page 37 difference heatmap"></td>
+  <td>changed: 46128 px (2.12%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.3451<br>RMSE RGB: 25.9435<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 38</td>
+  <td><img src="images/classic18_large_dataset_p38_heatmap.png" width="760" alt="classic18_large_dataset page 38 difference heatmap"></td>
+  <td>changed: 46856 px (2.15%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.3967<br>RMSE RGB: 26.1464<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 39</td>
+  <td><img src="images/classic18_large_dataset_p39_heatmap.png" width="760" alt="classic18_large_dataset page 39 difference heatmap"></td>
+  <td>changed: 48187 px (2.21%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.4925<br>RMSE RGB: 26.4714<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 40</td>
+  <td><img src="images/classic18_large_dataset_p40_heatmap.png" width="760" alt="classic18_large_dataset page 40 difference heatmap"></td>
+  <td>changed: 48337 px (2.22%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.4759<br>RMSE RGB: 26.3589<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 41</td>
+  <td><img src="images/classic18_large_dataset_p41_heatmap.png" width="760" alt="classic18_large_dataset page 41 difference heatmap"></td>
+  <td>changed: 47706 px (2.19%)<br>bbox: [118, 156, 200, 1596]<br>mean abs RGB: 3.4492<br>RMSE RGB: 26.2989<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic18_large_dataset</b><br>Page 42</td>
+  <td><img src="images/classic18_large_dataset_p42_heatmap.png" width="760" alt="classic18_large_dataset page 42 difference heatmap"></td>
+  <td>changed: 41125 px (1.89%)<br>bbox: [118, 156, 200, 1384]<br>mean abs RGB: 2.939<br>RMSE RGB: 24.2031<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic19_single_column_list</b><br>Page 1</td>
+  <td><img src="images/classic19_single_column_list_p1_heatmap.png" width="760" alt="classic19_single_column_list page 1 difference heatmap"></td>
+  <td>changed: 17001 px (0.83%)<br>bbox: [115, 148, 189, 800]<br>mean abs RGB: 1.2927<br>RMSE RGB: 15.8901<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic20_all_empty_cells</b><br>Page 1</td>
+  <td><img src="images/classic20_all_empty_cells_p1_heatmap.png" width="760" alt="classic20_all_empty_cells page 1 difference heatmap"></td>
+  <td>changed: 0 px (0.00%)<br>bbox: None<br>mean abs RGB: 0.0<br>RMSE RGB: 0.0<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic21_header_only</b><br>Page 1</td>
+  <td><img src="images/classic21_header_only_p1_heatmap.png" width="760" alt="classic21_header_only page 1 difference heatmap"></td>
+  <td>changed: 2990 px (0.15%)<br>bbox: [114, 147, 576, 175]<br>mean abs RGB: 0.2266<br>RMSE RGB: 6.7027<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic22_long_sheet_name</b><br>Page 1</td>
+  <td><img src="images/classic22_long_sheet_name_p1_heatmap.png" width="760" alt="classic22_long_sheet_name page 1 difference heatmap"></td>
+  <td>changed: 4142 px (0.20%)<br>bbox: [115, 147, 318, 238]<br>mean abs RGB: 0.3257<br>RMSE RGB: 8.1078<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic23_unicode_text</b><br>Page 1</td>
+  <td><img src="images/classic23_unicode_text_p1_heatmap.png" width="760" alt="classic23_unicode_text page 1 difference heatmap"></td>
+  <td>changed: 19826 px (0.97%)<br>bbox: [113, 148, 423, 367]<br>mean abs RGB: 1.5286<br>RMSE RGB: 17.4356<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic24_red_text</b><br>Page 1</td>
+  <td><img src="images/classic24_red_text_p1_heatmap.png" width="760" alt="classic24_red_text page 1 difference heatmap"></td>
+  <td>changed: 13216 px (0.65%)<br>bbox: [113, 148, 444, 273]<br>mean abs RGB: 0.7702<br>RMSE RGB: 12.2316<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic25_multiple_colors</b><br>Page 1</td>
+  <td><img src="images/classic25_multiple_colors_p1_heatmap.png" width="760" alt="classic25_multiple_colors page 1 difference heatmap"></td>
+  <td>changed: 25777 px (1.26%)<br>bbox: [113, 147, 445, 429]<br>mean abs RGB: 1.1856<br>RMSE RGB: 14.9992<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic26_inline_strings</b><br>Page 1</td>
+  <td><img src="images/classic26_inline_strings_p1_heatmap.png" width="760" alt="classic26_inline_strings page 1 difference heatmap"></td>
+  <td>changed: 7996 px (0.39%)<br>bbox: [113, 147, 391, 238]<br>mean abs RGB: 0.6166<br>RMSE RGB: 11.1038<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic27_single_row</b><br>Page 1</td>
+  <td><img src="images/classic27_single_row_p1_heatmap.png" width="760" alt="classic27_single_row page 1 difference heatmap"></td>
+  <td>changed: 3646 px (0.18%)<br>bbox: [114, 147, 778, 175]<br>mean abs RGB: 0.2867<br>RMSE RGB: 7.5958<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic28_duplicate_values</b><br>Page 1</td>
+  <td><img src="images/classic28_duplicate_values_p1_heatmap.png" width="760" alt="classic28_duplicate_values page 1 difference heatmap"></td>
+  <td>changed: 9067 px (0.44%)<br>bbox: [113, 148, 462, 300]<br>mean abs RGB: 0.7018<br>RMSE RGB: 11.875<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic29_formula_results</b><br>Page 1</td>
+  <td><img src="images/classic29_formula_results_p1_heatmap.png" width="760" alt="classic29_formula_results page 1 difference heatmap"></td>
+  <td>changed: 9312 px (0.45%)<br>bbox: [113, 147, 527, 300]<br>mean abs RGB: 0.7209<br>RMSE RGB: 12.0325<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic30_mixed_empty_and_filled_sheets</b><br>Page 1</td>
+  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p1_heatmap.png" width="760" alt="classic30_mixed_empty_and_filled_sheets page 1 difference heatmap"></td>
+  <td>changed: 3752 px (0.18%)<br>bbox: [114, 147, 279, 239]<br>mean abs RGB: 0.2965<br>RMSE RGB: 7.7249<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic30_mixed_empty_and_filled_sheets</b><br>Page 2</td>
+  <td><img src="images/classic30_mixed_empty_and_filled_sheets_p2_heatmap.png" width="760" alt="classic30_mixed_empty_and_filled_sheets page 2 difference heatmap"></td>
+  <td>changed: 3820 px (0.19%)<br>bbox: [114, 147, 422, 206]<br>mean abs RGB: 0.2925<br>RMSE RGB: 7.6116<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic31_bold_header_row</b><br>Page 1</td>
+  <td><img src="images/classic31_bold_header_row_p1_heatmap.png" width="760" alt="classic31_bold_header_row page 1 difference heatmap"></td>
+  <td>changed: 17605 px (0.86%)<br>bbox: [114, 147, 548, 300]<br>mean abs RGB: 1.4106<br>RMSE RGB: 16.9915<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic32_right_aligned_numbers</b><br>Page 1</td>
+  <td><img src="images/classic32_right_aligned_numbers_p1_heatmap.png" width="760" alt="classic32_right_aligned_numbers page 1 difference heatmap"></td>
+  <td>changed: 8026 px (0.39%)<br>bbox: [114, 147, 318, 269]<br>mean abs RGB: 0.6221<br>RMSE RGB: 11.1499<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic33_centered_text</b><br>Page 1</td>
+  <td><img src="images/classic33_centered_text_p1_heatmap.png" width="760" alt="classic33_centered_text page 1 difference heatmap"></td>
+  <td>changed: 5398 px (0.26%)<br>bbox: [114, 147, 596, 238]<br>mean abs RGB: 0.424<br>RMSE RGB: 9.2532<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic34_explicit_column_widths</b><br>Page 1</td>
+  <td><img src="images/classic34_explicit_column_widths_p1_heatmap.png" width="760" alt="classic34_explicit_column_widths page 1 difference heatmap"></td>
+  <td>changed: 13431 px (0.66%)<br>bbox: [115, 147, 662, 273]<br>mean abs RGB: 1.0432<br>RMSE RGB: 14.4563<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic35_explicit_row_heights</b><br>Page 1</td>
+  <td><img src="images/classic35_explicit_row_heights_p1_heatmap.png" width="760" alt="classic35_explicit_row_heights page 1 difference heatmap"></td>
+  <td>changed: 6242 px (0.30%)<br>bbox: [113, 178, 375, 342]<br>mean abs RGB: 0.4848<br>RMSE RGB: 9.8718<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic36_merged_cells</b><br>Page 1</td>
+  <td><img src="images/classic36_merged_cells_p1_heatmap.png" width="760" alt="classic36_merged_cells page 1 difference heatmap"></td>
+  <td>changed: 13223 px (0.65%)<br>bbox: [114, 147, 693, 269]<br>mean abs RGB: 1.0324<br>RMSE RGB: 14.4361<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic37_freeze_panes</b><br>Page 1</td>
+  <td><img src="images/classic37_freeze_panes_p1_heatmap.png" width="760" alt="classic37_freeze_panes page 1 difference heatmap"></td>
+  <td>changed: 46178 px (2.26%)<br>bbox: [115, 147, 501, 800]<br>mean abs RGB: 3.5132<br>RMSE RGB: 26.3773<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic38_hyperlink_cell</b><br>Page 1</td>
+  <td><img src="images/classic38_hyperlink_cell_p1_heatmap.png" width="760" alt="classic38_hyperlink_cell page 1 difference heatmap"></td>
+  <td>changed: 9914 px (0.48%)<br>bbox: [113, 148, 483, 243]<br>mean abs RGB: 0.7218<br>RMSE RGB: 11.9221<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic39_financial_table</b><br>Page 1</td>
+  <td><img src="images/classic39_financial_table_p1_heatmap.png" width="760" alt="classic39_financial_table page 1 difference heatmap"></td>
+  <td>changed: 21099 px (1.03%)<br>bbox: [113, 147, 527, 363]<br>mean abs RGB: 1.5654<br>RMSE RGB: 17.6308<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic40_scientific_notation</b><br>Page 1</td>
+  <td><img src="images/classic40_scientific_notation_p1_heatmap.png" width="760" alt="classic40_scientific_notation page 1 difference heatmap"></td>
+  <td>changed: 15519 px (0.76%)<br>bbox: [113, 147, 415, 335]<br>mean abs RGB: 1.2045<br>RMSE RGB: 15.513<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic41_integer_vs_float</b><br>Page 1</td>
+  <td><img src="images/classic41_integer_vs_float_p1_heatmap.png" width="760" alt="classic41_integer_vs_float page 1 difference heatmap"></td>
+  <td>changed: 12915 px (0.63%)<br>bbox: [113, 147, 331, 425]<br>mean abs RGB: 0.9735<br>RMSE RGB: 13.8576<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic42_boolean_values</b><br>Page 1</td>
+  <td><img src="images/classic42_boolean_values_p1_heatmap.png" width="760" alt="classic42_boolean_values page 1 difference heatmap"></td>
+  <td>changed: 14043 px (0.69%)<br>bbox: [113, 147, 358, 331]<br>mean abs RGB: 1.0845<br>RMSE RGB: 14.7085<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic43_inventory_report</b><br>Page 1</td>
+  <td><img src="images/classic43_inventory_report_p1_heatmap.png" width="760" alt="classic43_inventory_report page 1 difference heatmap"></td>
+  <td>changed: 43099 px (2.10%)<br>bbox: [114, 147, 800, 395]<br>mean abs RGB: 3.3775<br>RMSE RGB: 26.134<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic44_employee_roster</b><br>Page 1</td>
+  <td><img src="images/classic44_employee_roster_p1_heatmap.png" width="760" alt="classic44_employee_roster page 1 difference heatmap"></td>
+  <td>changed: 67344 px (3.29%)<br>bbox: [115, 147, 1018, 429]<br>mean abs RGB: 5.1269<br>RMSE RGB: 31.8619<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic45_sales_by_region</b><br>Page 1</td>
+  <td><img src="images/classic45_sales_by_region_p1_heatmap.png" width="760" alt="classic45_sales_by_region page 1 difference heatmap"></td>
+  <td>changed: 7262 px (0.35%)<br>bbox: [114, 147, 318, 301]<br>mean abs RGB: 0.563<br>RMSE RGB: 10.6314<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic45_sales_by_region</b><br>Page 2</td>
+  <td><img src="images/classic45_sales_by_region_p2_heatmap.png" width="760" alt="classic45_sales_by_region page 2 difference heatmap"></td>
+  <td>changed: 7409 px (0.36%)<br>bbox: [114, 147, 318, 301]<br>mean abs RGB: 0.5746<br>RMSE RGB: 10.7389<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic45_sales_by_region</b><br>Page 3</td>
+  <td><img src="images/classic45_sales_by_region_p3_heatmap.png" width="760" alt="classic45_sales_by_region page 3 difference heatmap"></td>
+  <td>changed: 7533 px (0.37%)<br>bbox: [114, 147, 318, 301]<br>mean abs RGB: 0.5834<br>RMSE RGB: 10.8084<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic45_sales_by_region</b><br>Page 4</td>
+  <td><img src="images/classic45_sales_by_region_p4_heatmap.png" width="760" alt="classic45_sales_by_region page 4 difference heatmap"></td>
+  <td>changed: 7337 px (0.36%)<br>bbox: [114, 147, 318, 301]<br>mean abs RGB: 0.5678<br>RMSE RGB: 10.6657<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic46_grade_book</b><br>Page 1</td>
+  <td><img src="images/classic46_grade_book_p1_heatmap.png" width="760" alt="classic46_grade_book page 1 difference heatmap"></td>
+  <td>changed: 27788 px (1.36%)<br>bbox: [113, 147, 801, 394]<br>mean abs RGB: 2.1528<br>RMSE RGB: 20.7668<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic47_time_series</b><br>Page 1</td>
+  <td><img src="images/classic47_time_series_p1_heatmap.png" width="760" alt="classic47_time_series page 1 difference heatmap"></td>
+  <td>changed: 72385 px (3.54%)<br>bbox: [115, 147, 527, 1148]<br>mean abs RGB: 5.4993<br>RMSE RGB: 32.9972<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic48_survey_results</b><br>Page 1</td>
+  <td><img src="images/classic48_survey_results_p1_heatmap.png" width="760" alt="classic48_survey_results page 1 difference heatmap"></td>
+  <td>changed: 23441 px (1.14%)<br>bbox: [114, 147, 884, 331]<br>mean abs RGB: 1.8185<br>RMSE RGB: 19.0453<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic49_contact_list</b><br>Page 1</td>
+  <td><img src="images/classic49_contact_list_p1_heatmap.png" width="760" alt="classic49_contact_list page 1 difference heatmap"></td>
+  <td>changed: 52563 px (2.57%)<br>bbox: [113, 147, 879, 398]<br>mean abs RGB: 4.001<br>RMSE RGB: 28.171<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic50_budget_vs_actuals</b><br>Page 1</td>
+  <td><img src="images/classic50_budget_vs_actuals_p1_heatmap.png" width="760" alt="classic50_budget_vs_actuals page 1 difference heatmap"></td>
+  <td>changed: 36002 px (1.76%)<br>bbox: [114, 147, 736, 331]<br>mean abs RGB: 2.7831<br>RMSE RGB: 23.5875<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic50_budget_vs_actuals</b><br>Page 2</td>
+  <td><img src="images/classic50_budget_vs_actuals_p2_heatmap.png" width="760" alt="classic50_budget_vs_actuals page 2 difference heatmap"></td>
+  <td>changed: 35553 px (1.74%)<br>bbox: [114, 147, 736, 331]<br>mean abs RGB: 2.7505<br>RMSE RGB: 23.4551<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic50_budget_vs_actuals</b><br>Page 3</td>
+  <td><img src="images/classic50_budget_vs_actuals_p3_heatmap.png" width="760" alt="classic50_budget_vs_actuals page 3 difference heatmap"></td>
+  <td>changed: 28559 px (1.39%)<br>bbox: [114, 147, 736, 331]<br>mean abs RGB: 2.2165<br>RMSE RGB: 21.0684<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic51_product_catalog</b><br>Page 1</td>
+  <td><img src="images/classic51_product_catalog_p1_heatmap.png" width="760" alt="classic51_product_catalog page 1 difference heatmap"></td>
+  <td>changed: 66039 px (3.23%)<br>bbox: [115, 147, 1003, 492]<br>mean abs RGB: 5.0305<br>RMSE RGB: 31.5558<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic52_pivot_summary</b><br>Page 1</td>
+  <td><img src="images/classic52_pivot_summary_p1_heatmap.png" width="760" alt="classic52_pivot_summary page 1 difference heatmap"></td>
+  <td>changed: 36528 px (1.78%)<br>bbox: [113, 147, 780, 331]<br>mean abs RGB: 2.902<br>RMSE RGB: 24.3425<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic53_invoice</b><br>Page 1</td>
+  <td><img src="images/classic53_invoice_p1_heatmap.png" width="760" alt="classic53_invoice page 1 difference heatmap"></td>
+  <td>changed: 47236 px (2.31%)<br>bbox: [113, 152, 796, 781]<br>mean abs RGB: 3.7841<br>RMSE RGB: 27.8633<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic54_multi_level_header</b><br>Page 1</td>
+  <td><img src="images/classic54_multi_level_header_p1_heatmap.png" width="760" alt="classic54_multi_level_header page 1 difference heatmap"></td>
+  <td>changed: 27560 px (1.35%)<br>bbox: [114, 148, 841, 300]<br>mean abs RGB: 2.2302<br>RMSE RGB: 21.4467<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic55_error_values</b><br>Page 1</td>
+  <td><img src="images/classic55_error_values_p1_heatmap.png" width="760" alt="classic55_error_values page 1 difference heatmap"></td>
+  <td>changed: 19420 px (0.95%)<br>bbox: [113, 147, 436, 367]<br>mean abs RGB: 1.4973<br>RMSE RGB: 17.2892<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic56_alternating_row_colors</b><br>Page 1</td>
+  <td><img src="images/classic56_alternating_row_colors_p1_heatmap.png" width="760" alt="classic56_alternating_row_colors page 1 difference heatmap"></td>
+  <td>changed: 81401 px (3.98%)<br>bbox: [109, 147, 440, 494]<br>mean abs RGB: 2.1666<br>RMSE RGB: 17.1996<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic57_cjk_only</b><br>Page 1</td>
+  <td><img src="images/classic57_cjk_only_p1_heatmap.png" width="760" alt="classic57_cjk_only page 1 difference heatmap"></td>
+  <td>changed: 16978 px (0.83%)<br>bbox: [114, 144, 539, 333]<br>mean abs RGB: 1.2015<br>RMSE RGB: 14.9061<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic58_mixed_numeric_formats</b><br>Page 1</td>
+  <td><img src="images/classic58_mixed_numeric_formats_p1_heatmap.png" width="760" alt="classic58_mixed_numeric_formats page 1 difference heatmap"></td>
+  <td>changed: 20883 px (1.02%)<br>bbox: [113, 147, 415, 460]<br>mean abs RGB: 1.5926<br>RMSE RGB: 17.771<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic59_multi_sheet_summary</b><br>Page 1</td>
+  <td><img src="images/classic59_multi_sheet_summary_p1_heatmap.png" width="760" alt="classic59_multi_sheet_summary page 1 difference heatmap"></td>
+  <td>changed: 13684 px (0.67%)<br>bbox: [115, 147, 422, 331]<br>mean abs RGB: 1.0588<br>RMSE RGB: 14.5673<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic59_multi_sheet_summary</b><br>Page 2</td>
+  <td><img src="images/classic59_multi_sheet_summary_p2_heatmap.png" width="760" alt="classic59_multi_sheet_summary page 2 difference heatmap"></td>
+  <td>changed: 13684 px (0.67%)<br>bbox: [115, 147, 422, 331]<br>mean abs RGB: 1.0588<br>RMSE RGB: 14.5673<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic59_multi_sheet_summary</b><br>Page 3</td>
+  <td><img src="images/classic59_multi_sheet_summary_p3_heatmap.png" width="760" alt="classic59_multi_sheet_summary page 3 difference heatmap"></td>
+  <td>changed: 13684 px (0.67%)<br>bbox: [115, 147, 422, 331]<br>mean abs RGB: 1.0588<br>RMSE RGB: 14.5673<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic59_multi_sheet_summary</b><br>Page 4</td>
+  <td><img src="images/classic59_multi_sheet_summary_p4_heatmap.png" width="760" alt="classic59_multi_sheet_summary page 4 difference heatmap"></td>
+  <td>changed: 7435 px (0.36%)<br>bbox: [113, 147, 360, 269]<br>mean abs RGB: 0.5768<br>RMSE RGB: 10.7306<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic60_large_wide_table</b><br>Page 1</td>
+  <td><img src="images/classic60_large_wide_table_p1_heatmap.png" width="760" alt="classic60_large_wide_table page 1 difference heatmap"></td>
+  <td>changed: 468436 px (22.88%)<br>bbox: [114, 147, 1076, 1501]<br>mean abs RGB: 35.7938<br>RMSE RGB: 84.4366<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic60_large_wide_table</b><br>Page 2</td>
+  <td><img src="images/classic60_large_wide_table_p2_heatmap.png" width="760" alt="classic60_large_wide_table page 2 difference heatmap"></td>
+  <td>changed: 69697 px (3.40%)<br>bbox: [115, 148, 1076, 394]<br>mean abs RGB: 5.5132<br>RMSE RGB: 33.4628<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic60_large_wide_table</b><br>Page 3</td>
+  <td><img src="images/classic60_large_wide_table_p3_heatmap.png" width="760" alt="classic60_large_wide_table page 3 difference heatmap"></td>
+  <td>changed: 445150 px (21.74%)<br>bbox: [114, 147, 1076, 1501]<br>mean abs RGB: 34.0461<br>RMSE RGB: 82.4091<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic60_large_wide_table</b><br>Page 4</td>
+  <td><img src="images/classic60_large_wide_table_p4_heatmap.png" width="760" alt="classic60_large_wide_table page 4 difference heatmap"></td>
+  <td>changed: 65339 px (3.19%)<br>bbox: [115, 148, 1076, 394]<br>mean abs RGB: 5.18<br>RMSE RGB: 32.4707<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic61_product_card_with_image</b><br>Page 1</td>
+  <td><img src="images/classic61_product_card_with_image_p1_heatmap.png" width="760" alt="classic61_product_card_with_image page 1 difference heatmap"></td>
+  <td>changed: 14678 px (0.72%)<br>bbox: [109, 141, 589, 442]<br>mean abs RGB: 1.0708<br>RMSE RGB: 14.2949<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic62_company_logo_header</b><br>Page 1</td>
+  <td><img src="images/classic62_company_logo_header_p1_heatmap.png" width="760" alt="classic62_company_logo_header page 1 difference heatmap"></td>
+  <td>changed: 26877 px (1.31%)<br>bbox: [109, 141, 764, 429]<br>mean abs RGB: 2.1667<br>RMSE RGB: 21.0059<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic63_two_products_side_by_side</b><br>Page 1</td>
+  <td><img src="images/classic63_two_products_side_by_side_p1_heatmap.png" width="760" alt="classic63_two_products_side_by_side page 1 difference heatmap"></td>
+  <td>changed: 29230 px (1.43%)<br>bbox: [109, 141, 615, 379]<br>mean abs RGB: 2.2165<br>RMSE RGB: 20.8558<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic64_employee_directory_with_photo</b><br>Page 1</td>
+  <td><img src="images/classic64_employee_directory_with_photo_p1_heatmap.png" width="760" alt="classic64_employee_directory_with_photo page 1 difference heatmap"></td>
+  <td>changed: 45789 px (2.24%)<br>bbox: [109, 142, 793, 404]<br>mean abs RGB: 3.4349<br>RMSE RGB: 25.7149<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic65_inventory_with_product_photos</b><br>Page 1</td>
+  <td><img src="images/classic65_inventory_with_product_photos_p1_heatmap.png" width="760" alt="classic65_inventory_with_product_photos page 1 difference heatmap"></td>
+  <td>changed: 38151 px (1.86%)<br>bbox: [109, 148, 671, 554]<br>mean abs RGB: 2.6962<br>RMSE RGB: 22.572<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic66_invoice_with_logo</b><br>Page 1</td>
+  <td><img src="images/classic66_invoice_with_logo_p1_heatmap.png" width="760" alt="classic66_invoice_with_logo page 1 difference heatmap"></td>
+  <td>changed: 31755 px (1.55%)<br>bbox: [109, 141, 828, 513]<br>mean abs RGB: 2.6412<br>RMSE RGB: 23.3497<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic67_real_estate_listing</b><br>Page 1</td>
+  <td><img src="images/classic67_real_estate_listing_p1_heatmap.png" width="760" alt="classic67_real_estate_listing page 1 difference heatmap"></td>
+  <td>changed: 30051 px (1.47%)<br>bbox: [109, 141, 703, 415]<br>mean abs RGB: 1.985<br>RMSE RGB: 18.5953<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic68_restaurant_menu</b><br>Page 1</td>
+  <td><img src="images/classic68_restaurant_menu_p1_heatmap.png" width="760" alt="classic68_restaurant_menu page 1 difference heatmap"></td>
+  <td>changed: 148605 px (7.26%)<br>bbox: [113, 149, 933, 883]<br>mean abs RGB: 7.3188<br>RMSE RGB: 33.2047<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic69_image_only_sheet</b><br>Page 1</td>
+  <td><img src="images/classic69_image_only_sheet_p1_heatmap.png" width="760" alt="classic69_image_only_sheet page 1 difference heatmap"></td>
+  <td>changed: 23221 px (1.13%)<br>bbox: [109, 141, 582, 463]<br>mean abs RGB: 1.6067<br>RMSE RGB: 16.4578<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic70_product_catalog_with_images</b><br>Page 1</td>
+  <td><img src="images/classic70_product_catalog_with_images_p1_heatmap.png" width="760" alt="classic70_product_catalog_with_images page 1 difference heatmap"></td>
+  <td>changed: 58861 px (2.87%)<br>bbox: [109, 153, 893, 865]<br>mean abs RGB: 4.4344<br>RMSE RGB: 28.4059<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic71_multi_sheet_with_images</b><br>Page 1</td>
+  <td><img src="images/classic71_multi_sheet_with_images_p1_heatmap.png" width="760" alt="classic71_multi_sheet_with_images page 1 difference heatmap"></td>
+  <td>changed: 9707 px (0.47%)<br>bbox: [109, 141, 318, 317]<br>mean abs RGB: 0.7124<br>RMSE RGB: 11.6113<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic71_multi_sheet_with_images</b><br>Page 2</td>
+  <td><img src="images/classic71_multi_sheet_with_images_p2_heatmap.png" width="760" alt="classic71_multi_sheet_with_images page 2 difference heatmap"></td>
+  <td>changed: 9231 px (0.45%)<br>bbox: [109, 141, 318, 317]<br>mean abs RGB: 0.6844<br>RMSE RGB: 11.3503<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic71_multi_sheet_with_images</b><br>Page 3</td>
+  <td><img src="images/classic71_multi_sheet_with_images_p3_heatmap.png" width="760" alt="classic71_multi_sheet_with_images page 3 difference heatmap"></td>
+  <td>changed: 8998 px (0.44%)<br>bbox: [109, 141, 324, 317]<br>mean abs RGB: 0.6643<br>RMSE RGB: 11.0418<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic72_bar_chart_image_with_data</b><br>Page 1</td>
+  <td><img src="images/classic72_bar_chart_image_with_data_p1_heatmap.png" width="760" alt="classic72_bar_chart_image_with_data page 1 difference heatmap"></td>
+  <td>changed: 21824 px (1.07%)<br>bbox: [113, 149, 519, 429]<br>mean abs RGB: 1.9766<br>RMSE RGB: 18.8268<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic73_event_flyer_with_banner</b><br>Page 1</td>
+  <td><img src="images/classic73_event_flyer_with_banner_p1_heatmap.png" width="760" alt="classic73_event_flyer_with_banner page 1 difference heatmap"></td>
+  <td>changed: 52835 px (2.58%)<br>bbox: [109, 141, 837, 818]<br>mean abs RGB: 4.2458<br>RMSE RGB: 29.0016<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic74_dashboard_with_kpi_image</b><br>Page 1</td>
+  <td><img src="images/classic74_dashboard_with_kpi_image_p1_heatmap.png" width="760" alt="classic74_dashboard_with_kpi_image page 1 difference heatmap"></td>
+  <td>changed: 96169 px (4.70%)<br>bbox: [114, 149, 1103, 376]<br>mean abs RGB: 2.4041<br>RMSE RGB: 21.1665<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic75_certificate_with_seal</b><br>Page 1</td>
+  <td><img src="images/classic75_certificate_with_seal_p1_heatmap.png" width="760" alt="classic75_certificate_with_seal page 1 difference heatmap"></td>
+  <td>changed: 46497 px (2.27%)<br>bbox: [216, 181, 791, 401]<br>mean abs RGB: 3.7109<br>RMSE RGB: 27.8688<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic76_product_image_grid</b><br>Page 1</td>
+  <td><img src="images/classic76_product_image_grid_p1_heatmap.png" width="760" alt="classic76_product_image_grid page 1 difference heatmap"></td>
+  <td>changed: 86823 px (4.24%)<br>bbox: [109, 149, 808, 532]<br>mean abs RGB: 5.6429<br>RMSE RGB: 31.8153<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic77_news_article_with_hero_image</b><br>Page 1</td>
+  <td><img src="images/classic77_news_article_with_hero_image_p1_heatmap.png" width="760" alt="classic77_news_article_with_hero_image page 1 difference heatmap"></td>
+  <td>changed: 63329 px (3.09%)<br>bbox: [109, 141, 872, 877]<br>mean abs RGB: 4.5438<br>RMSE RGB: 28.8215<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic78_small_icon_per_row</b><br>Page 1</td>
+  <td><img src="images/classic78_small_icon_per_row_p1_heatmap.png" width="760" alt="classic78_small_icon_per_row page 1 difference heatmap"></td>
+  <td>changed: 27862 px (1.36%)<br>bbox: [109, 147, 656, 387]<br>mean abs RGB: 2.0846<br>RMSE RGB: 20.3138<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic79_wide_panoramic_banner</b><br>Page 1</td>
+  <td><img src="images/classic79_wide_panoramic_banner_p1_heatmap.png" width="760" alt="classic79_wide_panoramic_banner page 1 difference heatmap"></td>
+  <td>changed: 50672 px (2.47%)<br>bbox: [109, 141, 889, 728]<br>mean abs RGB: 4.3372<br>RMSE RGB: 29.8143<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic80_portrait_tall_image</b><br>Page 1</td>
+  <td><img src="images/classic80_portrait_tall_image_p1_heatmap.png" width="760" alt="classic80_portrait_tall_image page 1 difference heatmap"></td>
+  <td>changed: 29258 px (1.43%)<br>bbox: [109, 141, 749, 432]<br>mean abs RGB: 1.879<br>RMSE RGB: 18.7323<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic81_step_by_step_with_images</b><br>Page 1</td>
+  <td><img src="images/classic81_step_by_step_with_images_p1_heatmap.png" width="760" alt="classic81_step_by_step_with_images page 1 difference heatmap"></td>
+  <td>changed: 71959 px (3.51%)<br>bbox: [109, 149, 805, 1005]<br>mean abs RGB: 3.1711<br>RMSE RGB: 24.0835<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic82_before_after_images</b><br>Page 1</td>
+  <td><img src="images/classic82_before_after_images_p1_heatmap.png" width="760" alt="classic82_before_after_images page 1 difference heatmap"></td>
+  <td>changed: 86384 px (4.22%)<br>bbox: [109, 147, 820, 602]<br>mean abs RGB: 4.9571<br>RMSE RGB: 26.3792<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic83_color_swatch_palette</b><br>Page 1</td>
+  <td><img src="images/classic83_color_swatch_palette_p1_heatmap.png" width="760" alt="classic83_color_swatch_palette page 1 difference heatmap"></td>
+  <td>changed: 59468 px (2.90%)<br>bbox: [109, 149, 793, 735]<br>mean abs RGB: 4.5925<br>RMSE RGB: 30.1919<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic84_travel_destination_cards</b><br>Page 1</td>
+  <td><img src="images/classic84_travel_destination_cards_p1_heatmap.png" width="760" alt="classic84_travel_destination_cards page 1 difference heatmap"></td>
+  <td>changed: 80621 px (3.94%)<br>bbox: [109, 149, 1040, 922]<br>mean abs RGB: 4.8014<br>RMSE RGB: 27.7452<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic85_lab_results_with_image</b><br>Page 1</td>
+  <td><img src="images/classic85_lab_results_with_image_p1_heatmap.png" width="760" alt="classic85_lab_results_with_image page 1 difference heatmap"></td>
+  <td>changed: 81897 px (4.00%)<br>bbox: [114, 149, 939, 402]<br>mean abs RGB: 3.3148<br>RMSE RGB: 23.0551<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic86_software_screenshot_features</b><br>Page 1</td>
+  <td><img src="images/classic86_software_screenshot_features_p1_heatmap.png" width="760" alt="classic86_software_screenshot_features page 1 difference heatmap"></td>
+  <td>changed: 27757 px (1.36%)<br>bbox: [109, 141, 765, 398]<br>mean abs RGB: 1.3631<br>RMSE RGB: 16.0799<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic87_sports_results_with_logos</b><br>Page 1</td>
+  <td><img src="images/classic87_sports_results_with_logos_p1_heatmap.png" width="760" alt="classic87_sports_results_with_logos page 1 difference heatmap"></td>
+  <td>changed: 26088 px (1.27%)<br>bbox: [109, 149, 951, 461]<br>mean abs RGB: 2.1094<br>RMSE RGB: 20.744<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic88_image_after_data</b><br>Page 1</td>
+  <td><img src="images/classic88_image_after_data_p1_heatmap.png" width="760" alt="classic88_image_after_data page 1 difference heatmap"></td>
+  <td>changed: 46883 px (2.29%)<br>bbox: [109, 147, 698, 494]<br>mean abs RGB: 2.2052<br>RMSE RGB: 20.3767<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic89_nutrition_label_with_image</b><br>Page 1</td>
+  <td><img src="images/classic89_nutrition_label_with_image_p1_heatmap.png" width="760" alt="classic89_nutrition_label_with_image page 1 difference heatmap"></td>
+  <td>changed: 34230 px (1.67%)<br>bbox: [109, 141, 875, 530]<br>mean abs RGB: 2.4357<br>RMSE RGB: 21.7679<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic90_project_status_with_milestones</b><br>Page 1</td>
+  <td><img src="images/classic90_project_status_with_milestones_p1_heatmap.png" width="760" alt="classic90_project_status_with_milestones page 1 difference heatmap"></td>
+  <td>changed: 109057 px (5.33%)<br>bbox: [113, 149, 1132, 436]<br>mean abs RGB: 4.8682<br>RMSE RGB: 27.3252<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic91_simple_bar_chart</b><br>Page 1</td>
+  <td><img src="images/classic91_simple_bar_chart_p1_heatmap.png" width="760" alt="classic91_simple_bar_chart page 1 difference heatmap"></td>
+  <td>changed: 235335 px (11.49%)<br>bbox: [113, 147, 1241, 739]<br>mean abs RGB: 14.0635<br>RMSE RGB: 45.2391<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic91_simple_bar_chart</b><br>Page 2</td>
+  <td><img src="images/classic91_simple_bar_chart_p2_heatmap.png" width="760" alt="classic91_simple_bar_chart page 2 difference heatmap"></td>
+  <td>changed: 25462 px (1.24%)<br>bbox: [112, 168, 372, 726]<br>mean abs RGB: 1.3783<br>RMSE RGB: 13.9949<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic92_horizontal_bar_chart</b><br>Page 1</td>
+  <td><img src="images/classic92_horizontal_bar_chart_p1_heatmap.png" width="760" alt="classic92_horizontal_bar_chart page 1 difference heatmap"></td>
+  <td>changed: 179710 px (8.78%)<br>bbox: [114, 147, 1241, 726]<br>mean abs RGB: 9.595<br>RMSE RGB: 37.3529<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic92_horizontal_bar_chart</b><br>Page 2</td>
+  <td><img src="images/classic92_horizontal_bar_chart_p2_heatmap.png" width="760" alt="classic92_horizontal_bar_chart page 2 difference heatmap"></td>
+  <td>changed: 8189 px (0.40%)<br>bbox: [112, 168, 372, 726]<br>mean abs RGB: 0.4937<br>RMSE RGB: 9.0256<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic93_line_chart</b><br>Page 1</td>
+  <td><img src="images/classic93_line_chart_p1_heatmap.png" width="760" alt="classic93_line_chart page 1 difference heatmap"></td>
+  <td>changed: 54147 px (2.64%)<br>bbox: [113, 147, 1241, 726]<br>mean abs RGB: 3.3332<br>RMSE RGB: 24.2257<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic93_line_chart</b><br>Page 2</td>
+  <td><img src="images/classic93_line_chart_p2_heatmap.png" width="760" alt="classic93_line_chart page 2 difference heatmap"></td>
+  <td>changed: 13286 px (0.65%)<br>bbox: [112, 168, 432, 726]<br>mean abs RGB: 0.7547<br>RMSE RGB: 10.998<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic94_pie_chart</b><br>Page 1</td>
+  <td><img src="images/classic94_pie_chart_p1_heatmap.png" width="760" alt="classic94_pie_chart page 1 difference heatmap"></td>
+  <td>changed: 213430 px (10.42%)<br>bbox: [114, 147, 1055, 839]<br>mean abs RGB: 11.1916<br>RMSE RGB: 39.7875<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic94_pie_chart</b><br>Page 2</td>
+  <td><img src="images/classic94_pie_chart_p2_heatmap.png" width="760" alt="classic94_pie_chart page 2 difference heatmap"></td>
+  <td>changed: 2593 px (0.13%)<br>bbox: [112, 168, 195, 726]<br>mean abs RGB: 0.1472<br>RMSE RGB: 4.6978<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic95_area_chart</b><br>Page 1</td>
+  <td><img src="images/classic95_area_chart_p1_heatmap.png" width="760" alt="classic95_area_chart page 1 difference heatmap"></td>
+  <td>changed: 171460 px (8.37%)<br>bbox: [114, 148, 1241, 925]<br>mean abs RGB: 8.1578<br>RMSE RGB: 34.2017<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic95_area_chart</b><br>Page 2</td>
+  <td><img src="images/classic95_area_chart_p2_heatmap.png" width="760" alt="classic95_area_chart page 2 difference heatmap"></td>
+  <td>changed: 44355 px (2.17%)<br>bbox: [112, 168, 432, 726]<br>mean abs RGB: 2.6268<br>RMSE RGB: 19.3211<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic96_scatter_chart</b><br>Page 1</td>
+  <td><img src="images/classic96_scatter_chart_p1_heatmap.png" width="760" alt="classic96_scatter_chart page 1 difference heatmap"></td>
+  <td>changed: 84273 px (4.12%)<br>bbox: [113, 146, 1241, 800]<br>mean abs RGB: 5.1553<br>RMSE RGB: 29.8832<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic96_scatter_chart</b><br>Page 2</td>
+  <td><img src="images/classic96_scatter_chart_p2_heatmap.png" width="760" alt="classic96_scatter_chart page 2 difference heatmap"></td>
+  <td>changed: 10026 px (0.49%)<br>bbox: [112, 168, 313, 726]<br>mean abs RGB: 0.627<br>RMSE RGB: 10.223<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic97_doughnut_chart</b><br>Page 1</td>
+  <td><img src="images/classic97_doughnut_chart_p1_heatmap.png" width="760" alt="classic97_doughnut_chart page 1 difference heatmap"></td>
+  <td>changed: 217263 px (10.61%)<br>bbox: [114, 148, 1055, 839]<br>mean abs RGB: 11.8016<br>RMSE RGB: 40.7614<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic97_doughnut_chart</b><br>Page 2</td>
+  <td><img src="images/classic97_doughnut_chart_p2_heatmap.png" width="760" alt="classic97_doughnut_chart page 2 difference heatmap"></td>
+  <td>changed: 2431 px (0.12%)<br>bbox: [112, 168, 195, 726]<br>mean abs RGB: 0.1366<br>RMSE RGB: 4.4796<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic98_radar_chart</b><br>Page 1</td>
+  <td><img src="images/classic98_radar_chart_p1_heatmap.png" width="760" alt="classic98_radar_chart page 1 difference heatmap"></td>
+  <td>changed: 51773 px (2.53%)<br>bbox: [114, 147, 1139, 726]<br>mean abs RGB: 3.0703<br>RMSE RGB: 23.2109<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic98_radar_chart</b><br>Page 2</td>
+  <td><img src="images/classic98_radar_chart_p2_heatmap.png" width="760" alt="classic98_radar_chart page 2 difference heatmap"></td>
+  <td>changed: 1983 px (0.10%)<br>bbox: [112, 168, 195, 726]<br>mean abs RGB: 0.1044<br>RMSE RGB: 3.7132<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic99_bubble_chart</b><br>Page 1</td>
+  <td><img src="images/classic99_bubble_chart_p1_heatmap.png" width="760" alt="classic99_bubble_chart page 1 difference heatmap"></td>
+  <td>changed: 81233 px (3.97%)<br>bbox: [115, 146, 1241, 742]<br>mean abs RGB: 5.0276<br>RMSE RGB: 29.171<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic99_bubble_chart</b><br>Page 2</td>
+  <td><img src="images/classic99_bubble_chart_p2_heatmap.png" width="760" alt="classic99_bubble_chart page 2 difference heatmap"></td>
+  <td>changed: 14476 px (0.71%)<br>bbox: [112, 168, 418, 726]<br>mean abs RGB: 0.9653<br>RMSE RGB: 12.7907<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic100_stacked_bar_chart</b><br>Page 1</td>
+  <td><img src="images/classic100_stacked_bar_chart_p1_heatmap.png" width="760" alt="classic100_stacked_bar_chart page 1 difference heatmap"></td>
+  <td>changed: 224541 px (10.97%)<br>bbox: [112, 148, 999, 909]<br>mean abs RGB: 13.0188<br>RMSE RGB: 43.6177<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic101_percent_stacked_bar</b><br>Page 1</td>
+  <td><img src="images/classic101_percent_stacked_bar_p1_heatmap.png" width="760" alt="classic101_percent_stacked_bar page 1 difference heatmap"></td>
+  <td>changed: 289064 px (14.12%)<br>bbox: [112, 147, 999, 941]<br>mean abs RGB: 16.6662<br>RMSE RGB: 49.2705<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic102_line_chart_with_markers</b><br>Page 1</td>
+  <td><img src="images/classic102_line_chart_with_markers_p1_heatmap.png" width="760" alt="classic102_line_chart_with_markers page 1 difference heatmap"></td>
+  <td>changed: 51232 px (2.50%)<br>bbox: [113, 147, 1241, 726]<br>mean abs RGB: 3.1612<br>RMSE RGB: 23.7183<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic102_line_chart_with_markers</b><br>Page 2</td>
+  <td><img src="images/classic102_line_chart_with_markers_p2_heatmap.png" width="760" alt="classic102_line_chart_with_markers page 2 difference heatmap"></td>
+  <td>changed: 15855 px (0.77%)<br>bbox: [112, 168, 536, 726]<br>mean abs RGB: 0.9851<br>RMSE RGB: 12.7226<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic103_pie_chart_with_labels</b><br>Page 1</td>
+  <td><img src="images/classic103_pie_chart_with_labels_p1_heatmap.png" width="760" alt="classic103_pie_chart_with_labels page 1 difference heatmap"></td>
+  <td>changed: 164836 px (8.05%)<br>bbox: [113, 147, 1203, 839]<br>mean abs RGB: 8.2331<br>RMSE RGB: 34.0559<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic103_pie_chart_with_labels</b><br>Page 2</td>
+  <td><img src="images/classic103_pie_chart_with_labels_p2_heatmap.png" width="760" alt="classic103_pie_chart_with_labels page 2 difference heatmap"></td>
+  <td>changed: 4499 px (0.22%)<br>bbox: [112, 168, 254, 726]<br>mean abs RGB: 0.2628<br>RMSE RGB: 6.4411<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic104_combo_bar_line_chart</b><br>Page 1</td>
+  <td><img src="images/classic104_combo_bar_line_chart_p1_heatmap.png" width="760" alt="classic104_combo_bar_line_chart page 1 difference heatmap"></td>
+  <td>changed: 156955 px (7.67%)<br>bbox: [113, 147, 1241, 726]<br>mean abs RGB: 9.3331<br>RMSE RGB: 37.1549<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic104_combo_bar_line_chart</b><br>Page 2</td>
+  <td><img src="images/classic104_combo_bar_line_chart_p2_heatmap.png" width="760" alt="classic104_combo_bar_line_chart page 2 difference heatmap"></td>
+  <td>changed: 82060 px (4.01%)<br>bbox: [112, 168, 536, 726]<br>mean abs RGB: 4.9762<br>RMSE RGB: 26.8316<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic105_3d_bar_chart</b><br>Page 1</td>
+  <td><img src="images/classic105_3d_bar_chart_p1_heatmap.png" width="760" alt="classic105_3d_bar_chart page 1 difference heatmap"></td>
+  <td>changed: 161274 px (7.88%)<br>bbox: [113, 148, 1241, 726]<br>mean abs RGB: 9.3356<br>RMSE RGB: 37.5826<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic105_3d_bar_chart</b><br>Page 2</td>
+  <td><img src="images/classic105_3d_bar_chart_p2_heatmap.png" width="760" alt="classic105_3d_bar_chart page 2 difference heatmap"></td>
+  <td>changed: 67576 px (3.30%)<br>bbox: [112, 168, 477, 726]<br>mean abs RGB: 4.6556<br>RMSE RGB: 27.6629<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic106_3d_pie_chart</b><br>Page 1</td>
+  <td><img src="images/classic106_3d_pie_chart_p1_heatmap.png" width="760" alt="classic106_3d_pie_chart page 1 difference heatmap"></td>
+  <td>changed: 169296 px (8.27%)<br>bbox: [113, 148, 1058, 871]<br>mean abs RGB: 10.1161<br>RMSE RGB: 39.3368<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic106_3d_pie_chart</b><br>Page 2</td>
+  <td><img src="images/classic106_3d_pie_chart_p2_heatmap.png" width="760" alt="classic106_3d_pie_chart page 2 difference heatmap"></td>
+  <td>changed: 19112 px (0.93%)<br>bbox: [112, 168, 254, 726]<br>mean abs RGB: 1.6761<br>RMSE RGB: 18.1513<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic107_multi_series_line</b><br>Page 1</td>
+  <td><img src="images/classic107_multi_series_line_p1_heatmap.png" width="760" alt="classic107_multi_series_line page 1 difference heatmap"></td>
+  <td>changed: 114154 px (5.57%)<br>bbox: [115, 148, 1241, 804]<br>mean abs RGB: 7.7814<br>RMSE RGB: 38.2263<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic107_multi_series_line</b><br>Page 2</td>
+  <td><img src="images/classic107_multi_series_line_p2_heatmap.png" width="760" alt="classic107_multi_series_line page 2 difference heatmap"></td>
+  <td>changed: 33639 px (1.64%)<br>bbox: [112, 168, 759, 726]<br>mean abs RGB: 2.0681<br>RMSE RGB: 18.6389<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic108_stacked_area_chart</b><br>Page 1</td>
+  <td><img src="images/classic108_stacked_area_chart_p1_heatmap.png" width="760" alt="classic108_stacked_area_chart page 1 difference heatmap"></td>
+  <td>changed: 390101 px (19.05%)<br>bbox: [112, 147, 1055, 976]<br>mean abs RGB: 16.5015<br>RMSE RGB: 44.7095<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic109_scatter_with_trendline</b><br>Page 1</td>
+  <td><img src="images/classic109_scatter_with_trendline_p1_heatmap.png" width="760" alt="classic109_scatter_with_trendline page 1 difference heatmap"></td>
+  <td>changed: 72926 px (3.56%)<br>bbox: [114, 147, 1241, 739]<br>mean abs RGB: 4.4124<br>RMSE RGB: 27.6662<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic109_scatter_with_trendline</b><br>Page 2</td>
+  <td><img src="images/classic109_scatter_with_trendline_p2_heatmap.png" width="760" alt="classic109_scatter_with_trendline page 2 difference heatmap"></td>
+  <td>changed: 9890 px (0.48%)<br>bbox: [112, 168, 313, 726]<br>mean abs RGB: 0.671<br>RMSE RGB: 11.0044<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic110_chart_with_legend</b><br>Page 1</td>
+  <td><img src="images/classic110_chart_with_legend_p1_heatmap.png" width="760" alt="classic110_chart_with_legend page 1 difference heatmap"></td>
+  <td>changed: 138190 px (6.75%)<br>bbox: [114, 147, 1241, 726]<br>mean abs RGB: 8.207<br>RMSE RGB: 35.3842<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic110_chart_with_legend</b><br>Page 2</td>
+  <td><img src="images/classic110_chart_with_legend_p2_heatmap.png" width="760" alt="classic110_chart_with_legend page 2 difference heatmap"></td>
+  <td>changed: 17654 px (0.86%)<br>bbox: [112, 168, 477, 726]<br>mean abs RGB: 1.1368<br>RMSE RGB: 13.5585<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic111_chart_with_axis_labels</b><br>Page 1</td>
+  <td><img src="images/classic111_chart_with_axis_labels_p1_heatmap.png" width="760" alt="classic111_chart_with_axis_labels page 1 difference heatmap"></td>
+  <td>changed: 126128 px (6.16%)<br>bbox: [113, 147, 1241, 742]<br>mean abs RGB: 6.5335<br>RMSE RGB: 31.4932<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic111_chart_with_axis_labels</b><br>Page 2</td>
+  <td><img src="images/classic111_chart_with_axis_labels_p2_heatmap.png" width="760" alt="classic111_chart_with_axis_labels page 2 difference heatmap"></td>
+  <td>changed: 10593 px (0.52%)<br>bbox: [112, 168, 432, 726]<br>mean abs RGB: 0.667<br>RMSE RGB: 10.5314<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic112_multiple_charts</b><br>Page 1</td>
+  <td><img src="images/classic112_multiple_charts_p1_heatmap.png" width="760" alt="classic112_multiple_charts page 1 difference heatmap"></td>
+  <td>changed: 151075 px (7.38%)<br>bbox: [113, 147, 1241, 1167]<br>mean abs RGB: 8.9358<br>RMSE RGB: 37.1689<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic112_multiple_charts</b><br>Page 2</td>
+  <td><img src="images/classic112_multiple_charts_p2_heatmap.png" width="760" alt="classic112_multiple_charts page 2 difference heatmap"></td>
+  <td>changed: 82134 px (4.01%)<br>bbox: [112, 168, 522, 1126]<br>mean abs RGB: 5.117<br>RMSE RGB: 27.9615<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic113_chart_sheet</b><br>Page 1</td>
+  <td><img src="images/classic113_chart_sheet_p1_heatmap.png" width="760" alt="classic113_chart_sheet page 1 difference heatmap"></td>
+  <td>changed: 220898 px (10.79%)<br>bbox: [114, 148, 1241, 840]<br>mean abs RGB: 11.9237<br>RMSE RGB: 40.2526<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic113_chart_sheet</b><br>Page 2</td>
+  <td><img src="images/classic113_chart_sheet_p2_heatmap.png" width="760" alt="classic113_chart_sheet page 2 difference heatmap"></td>
+  <td>changed: 79234 px (3.87%)<br>bbox: [112, 168, 550, 838]<br>mean abs RGB: 4.6492<br>RMSE RGB: 25.0261<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic114_chart_large_dataset</b><br>Page 1</td>
+  <td><img src="images/classic114_chart_large_dataset_p1_heatmap.png" width="760" alt="classic114_chart_large_dataset page 1 difference heatmap"></td>
+  <td>changed: 97708 px (4.77%)<br>bbox: [115, 147, 1241, 1501]<br>mean abs RGB: 6.5027<br>RMSE RGB: 34.8044<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic114_chart_large_dataset</b><br>Page 2</td>
+  <td><img src="images/classic114_chart_large_dataset_p2_heatmap.png" width="760" alt="classic114_chart_large_dataset page 2 difference heatmap"></td>
+  <td>changed: 43829 px (2.14%)<br>bbox: [177, 148, 318, 1501]<br>mean abs RGB: 3.3452<br>RMSE RGB: 25.806<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic114_chart_large_dataset</b><br>Page 3</td>
+  <td><img src="images/classic114_chart_large_dataset_p3_heatmap.png" width="760" alt="classic114_chart_large_dataset page 3 difference heatmap"></td>
+  <td>changed: 11585 px (0.57%)<br>bbox: [166, 148, 318, 613]<br>mean abs RGB: 0.9053<br>RMSE RGB: 13.512<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic114_chart_large_dataset</b><br>Page 4</td>
+  <td><img src="images/classic114_chart_large_dataset_p4_heatmap.png" width="760" alt="classic114_chart_large_dataset page 4 difference heatmap"></td>
+  <td>changed: 22857 px (1.12%)<br>bbox: [112, 168, 668, 726]<br>mean abs RGB: 1.3144<br>RMSE RGB: 14.7143<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic115_chart_negative_values</b><br>Page 1</td>
+  <td><img src="images/classic115_chart_negative_values_p1_heatmap.png" width="760" alt="classic115_chart_negative_values page 1 difference heatmap"></td>
+  <td>changed: 135558 px (6.62%)<br>bbox: [113, 146, 1241, 726]<br>mean abs RGB: 8.0217<br>RMSE RGB: 34.9074<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic115_chart_negative_values</b><br>Page 2</td>
+  <td><img src="images/classic115_chart_negative_values_p2_heatmap.png" width="760" alt="classic115_chart_negative_values page 2 difference heatmap"></td>
+  <td>changed: 16431 px (0.80%)<br>bbox: [112, 168, 372, 726]<br>mean abs RGB: 0.8624<br>RMSE RGB: 11.0281<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic116_percent_stacked_area</b><br>Page 1</td>
+  <td><img src="images/classic116_percent_stacked_area_p1_heatmap.png" width="760" alt="classic116_percent_stacked_area page 1 difference heatmap"></td>
+  <td>changed: 489289 px (23.90%)<br>bbox: [112, 147, 1055, 972]<br>mean abs RGB: 20.2514<br>RMSE RGB: 48.0962<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic117_stock_ohlc_chart</b><br>Page 1</td>
+  <td><img src="images/classic117_stock_ohlc_chart_p1_heatmap.png" width="760" alt="classic117_stock_ohlc_chart page 1 difference heatmap"></td>
+  <td>changed: 183492 px (8.96%)<br>bbox: [115, 147, 1241, 726]<br>mean abs RGB: 10.8104<br>RMSE RGB: 41.0241<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic117_stock_ohlc_chart</b><br>Page 2</td>
+  <td><img src="images/classic117_stock_ohlc_chart_p2_heatmap.png" width="760" alt="classic117_stock_ohlc_chart page 2 difference heatmap"></td>
+  <td>changed: 184296 px (9.00%)<br>bbox: [112, 168, 863, 726]<br>mean abs RGB: 11.1653<br>RMSE RGB: 39.8082<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic118_bar_chart_custom_colors</b><br>Page 1</td>
+  <td><img src="images/classic118_bar_chart_custom_colors_p1_heatmap.png" width="760" alt="classic118_bar_chart_custom_colors page 1 difference heatmap"></td>
+  <td>changed: 171378 px (8.37%)<br>bbox: [113, 148, 1241, 726]<br>mean abs RGB: 10.7157<br>RMSE RGB: 41.9119<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic118_bar_chart_custom_colors</b><br>Page 2</td>
+  <td><img src="images/classic118_bar_chart_custom_colors_p2_heatmap.png" width="760" alt="classic118_bar_chart_custom_colors page 2 difference heatmap"></td>
+  <td>changed: 9954 px (0.49%)<br>bbox: [112, 168, 372, 726]<br>mean abs RGB: 0.6375<br>RMSE RGB: 10.5745<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic119_dashboard_multi_charts</b><br>Page 1</td>
+  <td><img src="images/classic119_dashboard_multi_charts_p1_heatmap.png" width="760" alt="classic119_dashboard_multi_charts page 1 difference heatmap"></td>
+  <td>changed: 267555 px (13.07%)<br>bbox: [114, 149, 1241, 1134]<br>mean abs RGB: 15.7964<br>RMSE RGB: 48.8045<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic119_dashboard_multi_charts</b><br>Page 2</td>
+  <td><img src="images/classic119_dashboard_multi_charts_p2_heatmap.png" width="760" alt="classic119_dashboard_multi_charts page 2 difference heatmap"></td>
+  <td>changed: 39319 px (1.92%)<br>bbox: [112, 175, 300, 1021]<br>mean abs RGB: 2.401<br>RMSE RGB: 18.9385<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic120_chart_with_date_axis</b><br>Page 1</td>
+  <td><img src="images/classic120_chart_with_date_axis_p1_heatmap.png" width="760" alt="classic120_chart_with_date_axis page 1 difference heatmap"></td>
+  <td>changed: 78595 px (3.84%)<br>bbox: [114, 147, 1241, 739]<br>mean abs RGB: 4.9968<br>RMSE RGB: 30.1983<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic120_chart_with_date_axis</b><br>Page 2</td>
+  <td><img src="images/classic120_chart_with_date_axis_p2_heatmap.png" width="760" alt="classic120_chart_with_date_axis page 2 difference heatmap"></td>
+  <td>changed: 22718 px (1.11%)<br>bbox: [112, 168, 550, 726]<br>mean abs RGB: 1.4036<br>RMSE RGB: 15.5358<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic121_thin_borders</b><br>Page 1</td>
+  <td><img src="images/classic121_thin_borders_p1_heatmap.png" width="760" alt="classic121_thin_borders page 1 difference heatmap"></td>
+  <td>changed: 31093 px (1.52%)<br>bbox: [109, 140, 533, 338]<br>mean abs RGB: 2.255<br>RMSE RGB: 20.8178<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic122_thick_outer_thin_inner</b><br>Page 1</td>
+  <td><img src="images/classic122_thick_outer_thin_inner_p1_heatmap.png" width="760" alt="classic122_thick_outer_thin_inner page 1 difference heatmap"></td>
+  <td>changed: 38535 px (1.88%)<br>bbox: [107, 139, 535, 339]<br>mean abs RGB: 3.1458<br>RMSE RGB: 25.5166<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic123_dashed_borders</b><br>Page 1</td>
+  <td><img src="images/classic123_dashed_borders_p1_heatmap.png" width="760" alt="classic123_dashed_borders page 1 difference heatmap"></td>
+  <td>changed: 22228 px (1.09%)<br>bbox: [113, 147, 421, 339]<br>mean abs RGB: 1.6687<br>RMSE RGB: 18.1284<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic124_colored_borders</b><br>Page 1</td>
+  <td><img src="images/classic124_colored_borders_p1_heatmap.png" width="760" alt="classic124_colored_borders page 1 difference heatmap"></td>
+  <td>changed: 36781 px (1.80%)<br>bbox: [113, 147, 545, 370]<br>mean abs RGB: 2.6949<br>RMSE RGB: 23.0126<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic125_solid_fills</b><br>Page 1</td>
+  <td><img src="images/classic125_solid_fills_p1_heatmap.png" width="760" alt="classic125_solid_fills page 1 difference heatmap"></td>
+  <td>changed: 55739 px (2.72%)<br>bbox: [114, 147, 399, 432]<br>mean abs RGB: 2.4027<br>RMSE RGB: 20.3486<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic126_dark_header</b><br>Page 1</td>
+  <td><img src="images/classic126_dark_header_p1_heatmap.png" width="760" alt="classic126_dark_header page 1 difference heatmap"></td>
+  <td>changed: 40700 px (1.99%)<br>bbox: [109, 142, 623, 331]<br>mean abs RGB: 3.0289<br>RMSE RGB: 23.9743<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic127_font_styles</b><br>Page 1</td>
+  <td><img src="images/classic127_font_styles_p1_heatmap.png" width="760" alt="classic127_font_styles page 1 difference heatmap"></td>
+  <td>changed: 42540 px (2.08%)<br>bbox: [114, 147, 605, 429]<br>mean abs RGB: 3.2459<br>RMSE RGB: 25.6704<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic128_font_sizes</b><br>Page 1</td>
+  <td><img src="images/classic128_font_sizes_p1_heatmap.png" width="760" alt="classic128_font_sizes page 1 difference heatmap"></td>
+  <td>changed: 28581 px (1.40%)<br>bbox: [114, 147, 479, 583]<br>mean abs RGB: 2.4354<br>RMSE RGB: 22.7981<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic129_alignment_combos</b><br>Page 1</td>
+  <td><img src="images/classic129_alignment_combos_p1_heatmap.png" width="760" alt="classic129_alignment_combos page 1 difference heatmap"></td>
+  <td>changed: 19923 px (0.97%)<br>bbox: [113, 147, 849, 429]<br>mean abs RGB: 1.589<br>RMSE RGB: 18.0262<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic130_wrap_and_indent</b><br>Page 1</td>
+  <td><img src="images/classic130_wrap_and_indent_p1_heatmap.png" width="760" alt="classic130_wrap_and_indent page 1 difference heatmap"></td>
+  <td>changed: 22950 px (1.12%)<br>bbox: [113, 147, 660, 436]<br>mean abs RGB: 1.7965<br>RMSE RGB: 19.0172<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic131_number_formats</b><br>Page 1</td>
+  <td><img src="images/classic131_number_formats_p1_heatmap.png" width="760" alt="classic131_number_formats page 1 difference heatmap"></td>
+  <td>changed: 38624 px (1.89%)<br>bbox: [113, 147, 838, 488]<br>mean abs RGB: 2.9724<br>RMSE RGB: 24.3527<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic132_striped_table</b><br>Page 1</td>
+  <td><img src="images/classic132_striped_table_p1_heatmap.png" width="760" alt="classic132_striped_table page 1 difference heatmap"></td>
+  <td>changed: 124009 px (6.06%)<br>bbox: [109, 141, 583, 494]<br>mean abs RGB: 3.969<br>RMSE RGB: 24.185<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic133_gradient_rows</b><br>Page 1</td>
+  <td><img src="images/classic133_gradient_rows_p1_heatmap.png" width="760" alt="classic133_gradient_rows page 1 difference heatmap"></td>
+  <td>changed: 109796 px (5.36%)<br>bbox: [109, 147, 493, 494]<br>mean abs RGB: 4.8883<br>RMSE RGB: 32.2242<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic134_heatmap</b><br>Page 1</td>
+  <td><img src="images/classic134_heatmap_p1_heatmap.png" width="760" alt="classic134_heatmap page 1 difference heatmap"></td>
+  <td>changed: 123582 px (6.04%)<br>bbox: [114, 147, 846, 400]<br>mean abs RGB: 6.1049<br>RMSE RGB: 32.2774<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic135_bottom_border_only</b><br>Page 1</td>
+  <td><img src="images/classic135_bottom_border_only_p1_heatmap.png" width="760" alt="classic135_bottom_border_only page 1 difference heatmap"></td>
+  <td>changed: 20084 px (0.98%)<br>bbox: [109, 149, 558, 345]<br>mean abs RGB: 1.6917<br>RMSE RGB: 18.8116<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic136_financial_report_styled</b><br>Page 1</td>
+  <td><img src="images/classic136_financial_report_styled_p1_heatmap.png" width="760" alt="classic136_financial_report_styled page 1 difference heatmap"></td>
+  <td>changed: 84016 px (4.10%)<br>bbox: [109, 141, 761, 466]<br>mean abs RGB: 5.662<br>RMSE RGB: 32.3432<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic137_checkerboard</b><br>Page 1</td>
+  <td><img src="images/classic137_checkerboard_p1_heatmap.png" width="760" alt="classic137_checkerboard page 1 difference heatmap"></td>
+  <td>changed: 102726 px (5.02%)<br>bbox: [109, 143, 584, 567]<br>mean abs RGB: 7.7851<br>RMSE RGB: 37.5375<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic138_color_grid</b><br>Page 1</td>
+  <td><img src="images/classic138_color_grid_p1_heatmap.png" width="760" alt="classic138_color_grid page 1 difference heatmap"></td>
+  <td>changed: 59899 px (2.93%)<br>bbox: [109, 143, 608, 400]<br>mean abs RGB: 2.2956<br>RMSE RGB: 17.5381<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic139_pattern_fills</b><br>Page 1</td>
+  <td><img src="images/classic139_pattern_fills_p1_heatmap.png" width="760" alt="classic139_pattern_fills page 1 difference heatmap"></td>
+  <td>changed: 102569 px (5.01%)<br>bbox: [113, 147, 584, 557]<br>mean abs RGB: 4.459<br>RMSE RGB: 25.6543<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic140_rotated_text</b><br>Page 1</td>
+  <td><img src="images/classic140_rotated_text_p1_heatmap.png" width="760" alt="classic140_rotated_text page 1 difference heatmap"></td>
+  <td>changed: 20674 px (1.01%)<br>bbox: [113, 148, 421, 1092]<br>mean abs RGB: 1.6278<br>RMSE RGB: 18.1459<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic141_mixed_edge_borders</b><br>Page 1</td>
+  <td><img src="images/classic141_mixed_edge_borders_p1_heatmap.png" width="760" alt="classic141_mixed_edge_borders page 1 difference heatmap"></td>
+  <td>changed: 35220 px (1.72%)<br>bbox: [113, 147, 705, 496]<br>mean abs RGB: 2.5389<br>RMSE RGB: 22.847<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic142_styled_invoice</b><br>Page 1</td>
+  <td><img src="images/classic142_styled_invoice_p1_heatmap.png" width="760" alt="classic142_styled_invoice page 1 difference heatmap"></td>
+  <td>changed: 166422 px (8.13%)<br>bbox: [109, 143, 914, 615]<br>mean abs RGB: 7.4273<br>RMSE RGB: 35.3482<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic143_colored_tabs</b><br>Page 1</td>
+  <td><img src="images/classic143_colored_tabs_p1_heatmap.png" width="760" alt="classic143_colored_tabs page 1 difference heatmap"></td>
+  <td>changed: 5547 px (0.27%)<br>bbox: [114, 147, 318, 238]<br>mean abs RGB: 0.4465<br>RMSE RGB: 9.5998<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic143_colored_tabs</b><br>Page 2</td>
+  <td><img src="images/classic143_colored_tabs_p2_heatmap.png" width="760" alt="classic143_colored_tabs page 2 difference heatmap"></td>
+  <td>changed: 5463 px (0.27%)<br>bbox: [113, 147, 318, 242]<br>mean abs RGB: 0.4393<br>RMSE RGB: 9.495<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic143_colored_tabs</b><br>Page 3</td>
+  <td><img src="images/classic143_colored_tabs_p3_heatmap.png" width="760" alt="classic143_colored_tabs page 3 difference heatmap"></td>
+  <td>changed: 5764 px (0.28%)<br>bbox: [114, 147, 318, 238]<br>mean abs RGB: 0.4675<br>RMSE RGB: 9.8293<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic143_colored_tabs</b><br>Page 4</td>
+  <td><img src="images/classic143_colored_tabs_p4_heatmap.png" width="760" alt="classic143_colored_tabs page 4 difference heatmap"></td>
+  <td>changed: 5321 px (0.26%)<br>bbox: [114, 147, 318, 242]<br>mean abs RGB: 0.437<br>RMSE RGB: 9.5036<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic144_note_style_cells</b><br>Page 1</td>
+  <td><img src="images/classic144_note_style_cells_p1_heatmap.png" width="760" alt="classic144_note_style_cells page 1 difference heatmap"></td>
+  <td>changed: 50235 px (2.45%)<br>bbox: [113, 147, 761, 338]<br>mean abs RGB: 1.7336<br>RMSE RGB: 16.0221<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic145_status_badges</b><br>Page 1</td>
+  <td><img src="images/classic145_status_badges_p1_heatmap.png" width="760" alt="classic145_status_badges page 1 difference heatmap"></td>
+  <td>changed: 97670 px (4.77%)<br>bbox: [109, 141, 855, 401]<br>mean abs RGB: 4.744<br>RMSE RGB: 27.5723<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic146_double_border_table</b><br>Page 1</td>
+  <td><img src="images/classic146_double_border_table_p1_heatmap.png" width="760" alt="classic146_double_border_table page 1 difference heatmap"></td>
+  <td>changed: 44284 px (2.16%)<br>bbox: [109, 139, 681, 307]<br>mean abs RGB: 2.8324<br>RMSE RGB: 22.981<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic147_multi_sheet_styled</b><br>Page 1</td>
+  <td><img src="images/classic147_multi_sheet_styled_p1_heatmap.png" width="760" alt="classic147_multi_sheet_styled page 1 difference heatmap"></td>
+  <td>changed: 27012 px (1.32%)<br>bbox: [109, 141, 491, 307]<br>mean abs RGB: 1.6635<br>RMSE RGB: 16.4793<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic147_multi_sheet_styled</b><br>Page 2</td>
+  <td><img src="images/classic147_multi_sheet_styled_p2_heatmap.png" width="760" alt="classic147_multi_sheet_styled page 2 difference heatmap"></td>
+  <td>changed: 49022 px (2.39%)<br>bbox: [109, 141, 867, 307]<br>mean abs RGB: 2.9727<br>RMSE RGB: 21.7203<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic147_multi_sheet_styled</b><br>Page 3</td>
+  <td><img src="images/classic147_multi_sheet_styled_p3_heatmap.png" width="760" alt="classic147_multi_sheet_styled page 3 difference heatmap"></td>
+  <td>changed: 35695 px (1.74%)<br>bbox: [109, 141, 679, 307]<br>mean abs RGB: 2.0166<br>RMSE RGB: 18.0489<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic148_frozen_styled_grid</b><br>Page 1</td>
+  <td><img src="images/classic148_frozen_styled_grid_p1_heatmap.png" width="760" alt="classic148_frozen_styled_grid page 1 difference heatmap"></td>
+  <td>changed: 442365 px (21.60%)<br>bbox: [109, 141, 1102, 807]<br>mean abs RGB: 14.4056<br>RMSE RGB: 43.7985<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic149_merged_styled_sections</b><br>Page 1</td>
+  <td><img src="images/classic149_merged_styled_sections_p1_heatmap.png" width="760" alt="classic149_merged_styled_sections page 1 difference heatmap"></td>
+  <td>changed: 150547 px (7.35%)<br>bbox: [109, 142, 867, 572]<br>mean abs RGB: 9.2635<br>RMSE RGB: 41.4028<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic150_kitchen_sink_styles</b><br>Page 1</td>
+  <td><img src="images/classic150_kitchen_sink_styles_p1_heatmap.png" width="760" alt="classic150_kitchen_sink_styles page 1 difference heatmap"></td>
+  <td>changed: 118574 px (5.79%)<br>bbox: [109, 142, 996, 637]<br>mean abs RGB: 7.7257<br>RMSE RGB: 37.7341<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic151_multilingual_greetings</b><br>Page 1</td>
+  <td><img src="images/classic151_multilingual_greetings_p1_heatmap.png" width="760" alt="classic151_multilingual_greetings page 1 difference heatmap"></td>
+  <td>changed: 36863 px (1.80%)<br>bbox: [113, 147, 979, 555]<br>mean abs RGB: 2.7432<br>RMSE RGB: 23.0719<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic152_emoji_sampler</b><br>Page 1</td>
+  <td><img src="images/classic152_emoji_sampler_p1_heatmap.png" width="760" alt="classic152_emoji_sampler page 1 difference heatmap"></td>
+  <td>changed: 31579 px (1.54%)<br>bbox: [113, 148, 489, 429]<br>mean abs RGB: 2.3462<br>RMSE RGB: 21.3726<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic153_currency_symbols</b><br>Page 1</td>
+  <td><img src="images/classic153_currency_symbols_p1_heatmap.png" width="760" alt="classic153_currency_symbols page 1 difference heatmap"></td>
+  <td>changed: 38067 px (1.86%)<br>bbox: [113, 147, 569, 550]<br>mean abs RGB: 2.8449<br>RMSE RGB: 23.6473<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic154_math_symbols</b><br>Page 1</td>
+  <td><img src="images/classic154_math_symbols_p1_heatmap.png" width="760" alt="classic154_math_symbols page 1 difference heatmap"></td>
+  <td>changed: 26302 px (1.28%)<br>bbox: [113, 147, 781, 460]<br>mean abs RGB: 1.9167<br>RMSE RGB: 19.1756<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic155_diacritical_marks</b><br>Page 1</td>
+  <td><img src="images/classic155_diacritical_marks_p1_heatmap.png" width="760" alt="classic155_diacritical_marks page 1 difference heatmap"></td>
+  <td>changed: 20801 px (1.02%)<br>bbox: [113, 147, 527, 493]<br>mean abs RGB: 1.5206<br>RMSE RGB: 17.1053<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic156_rtl_bidi_text</b><br>Page 1</td>
+  <td><img src="images/classic156_rtl_bidi_text_p1_heatmap.png" width="760" alt="classic156_rtl_bidi_text page 1 difference heatmap"></td>
+  <td>changed: 9535 px (0.47%)<br>bbox: [113, 148, 803, 305]<br>mean abs RGB: 0.7263<br>RMSE RGB: 12.0125<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic157_cjk_extended</b><br>Page 1</td>
+  <td><img src="images/classic157_cjk_extended_p1_heatmap.png" width="760" alt="classic157_cjk_extended page 1 difference heatmap"></td>
+  <td>changed: 46091 px (2.25%)<br>bbox: [113, 148, 975, 396]<br>mean abs RGB: 3.3588<br>RMSE RGB: 25.3573<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic158_emoji_skin_tones</b><br>Page 1</td>
+  <td><img src="images/classic158_emoji_skin_tones_p1_heatmap.png" width="760" alt="classic158_emoji_skin_tones page 1 difference heatmap"></td>
+  <td>changed: 33588 px (1.64%)<br>bbox: [113, 147, 582, 335]<br>mean abs RGB: 2.4913<br>RMSE RGB: 22.0061<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic159_zwj_emoji</b><br>Page 1</td>
+  <td><img src="images/classic159_zwj_emoji_p1_heatmap.png" width="760" alt="classic159_zwj_emoji page 1 difference heatmap"></td>
+  <td>changed: 27653 px (1.35%)<br>bbox: [113, 148, 479, 460]<br>mean abs RGB: 2.1278<br>RMSE RGB: 20.5965<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic160_punctuation_marks</b><br>Page 1</td>
+  <td><img src="images/classic160_punctuation_marks_p1_heatmap.png" width="760" alt="classic160_punctuation_marks page 1 difference heatmap"></td>
+  <td>changed: 16433 px (0.80%)<br>bbox: [113, 147, 844, 398]<br>mean abs RGB: 1.2093<br>RMSE RGB: 15.3297<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic161_box_drawing</b><br>Page 1</td>
+  <td><img src="images/classic161_box_drawing_p1_heatmap.png" width="760" alt="classic161_box_drawing page 1 difference heatmap"></td>
+  <td>changed: 27791 px (1.36%)<br>bbox: [113, 147, 683, 363]<br>mean abs RGB: 2.2596<br>RMSE RGB: 21.6118<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic162_cjk_emoji_styled</b><br>Page 1</td>
+  <td><img src="images/classic162_cjk_emoji_styled_p1_heatmap.png" width="760" alt="classic162_cjk_emoji_styled page 1 difference heatmap"></td>
+  <td>changed: 27715 px (1.35%)<br>bbox: [109, 142, 678, 304]<br>mean abs RGB: 2.0313<br>RMSE RGB: 20.142<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic163_cyrillic_alphabets</b><br>Page 1</td>
+  <td><img src="images/classic163_cyrillic_alphabets_p1_heatmap.png" width="760" alt="classic163_cyrillic_alphabets page 1 difference heatmap"></td>
+  <td>changed: 33058 px (1.61%)<br>bbox: [114, 147, 908, 336]<br>mean abs RGB: 2.3605<br>RMSE RGB: 21.0512<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic164_indic_scripts</b><br>Page 1</td>
+  <td><img src="images/classic164_indic_scripts_p1_heatmap.png" width="760" alt="classic164_indic_scripts page 1 difference heatmap"></td>
+  <td>changed: 10718 px (0.52%)<br>bbox: [113, 147, 427, 335]<br>mean abs RGB: 0.826<br>RMSE RGB: 12.8411<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic165_southeast_asian</b><br>Page 1</td>
+  <td><img src="images/classic165_southeast_asian_p1_heatmap.png" width="760" alt="classic165_southeast_asian page 1 difference heatmap"></td>
+  <td>changed: 15049 px (0.73%)<br>bbox: [113, 147, 601, 331]<br>mean abs RGB: 1.1319<br>RMSE RGB: 14.8523<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic166_emoji_progress</b><br>Page 1</td>
+  <td><img src="images/classic166_emoji_progress_p1_heatmap.png" width="760" alt="classic166_emoji_progress page 1 difference heatmap"></td>
+  <td>changed: 54620 px (2.67%)<br>bbox: [113, 147, 818, 367]<br>mean abs RGB: 3.6867<br>RMSE RGB: 25.7137<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic167_musical_symbols</b><br>Page 1</td>
+  <td><img src="images/classic167_musical_symbols_p1_heatmap.png" width="760" alt="classic167_musical_symbols page 1 difference heatmap"></td>
+  <td>changed: 22717 px (1.11%)<br>bbox: [113, 147, 752, 335]<br>mean abs RGB: 1.6945<br>RMSE RGB: 18.094<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic168_mixed_ltr_rtl_styled</b><br>Page 1</td>
+  <td><img src="images/classic168_mixed_ltr_rtl_styled_p1_heatmap.png" width="760" alt="classic168_mixed_ltr_rtl_styled page 1 difference heatmap"></td>
+  <td>changed: 42303 px (2.07%)<br>bbox: [109, 141, 797, 307]<br>mean abs RGB: 2.3271<br>RMSE RGB: 18.8567<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic169_korean_invoice</b><br>Page 1</td>
+  <td><img src="images/classic169_korean_invoice_p1_heatmap.png" width="760" alt="classic169_korean_invoice page 1 difference heatmap"></td>
+  <td>changed: 40266 px (1.97%)<br>bbox: [116, 144, 868, 466]<br>mean abs RGB: 3.1633<br>RMSE RGB: 25.2733<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic170_emoji_dashboard</b><br>Page 1</td>
+  <td><img src="images/classic170_emoji_dashboard_p1_heatmap.png" width="760" alt="classic170_emoji_dashboard page 1 difference heatmap"></td>
+  <td>changed: 46630 px (2.28%)<br>bbox: [115, 147, 671, 369]<br>mean abs RGB: 2.8078<br>RMSE RGB: 22.1428<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic171_ipa_phonetic</b><br>Page 1</td>
+  <td><img src="images/classic171_ipa_phonetic_p1_heatmap.png" width="760" alt="classic171_ipa_phonetic page 1 difference heatmap"></td>
+  <td>changed: 25566 px (1.25%)<br>bbox: [113, 147, 862, 399]<br>mean abs RGB: 1.8906<br>RMSE RGB: 19.1458<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic172_emoji_timeline</b><br>Page 1</td>
+  <td><img src="images/classic172_emoji_timeline_p1_heatmap.png" width="760" alt="classic172_emoji_timeline page 1 difference heatmap"></td>
+  <td>changed: 43835 px (2.14%)<br>bbox: [114, 147, 704, 429]<br>mean abs RGB: 3.525<br>RMSE RGB: 26.9215<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic173_african_languages</b><br>Page 1</td>
+  <td><img src="images/classic173_african_languages_p1_heatmap.png" width="760" alt="classic173_african_languages page 1 difference heatmap"></td>
+  <td>changed: 32138 px (1.57%)<br>bbox: [113, 148, 830, 398]<br>mean abs RGB: 2.4417<br>RMSE RGB: 21.9461<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic174_technical_symbols</b><br>Page 1</td>
+  <td><img src="images/classic174_technical_symbols_p1_heatmap.png" width="760" alt="classic174_technical_symbols page 1 difference heatmap"></td>
+  <td>changed: 38045 px (1.86%)<br>bbox: [113, 146, 950, 426]<br>mean abs RGB: 2.816<br>RMSE RGB: 23.3733<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic175_multiscript_catalog</b><br>Page 1</td>
+  <td><img src="images/classic175_multiscript_catalog_p1_heatmap.png" width="760" alt="classic175_multiscript_catalog page 1 difference heatmap"></td>
+  <td>changed: 49327 px (2.41%)<br>bbox: [109, 142, 1007, 429]<br>mean abs RGB: 3.2349<br>RMSE RGB: 24.2418<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic176_combining_characters</b><br>Page 1</td>
+  <td><img src="images/classic176_combining_characters_p1_heatmap.png" width="760" alt="classic176_combining_characters page 1 difference heatmap"></td>
+  <td>changed: 27094 px (1.32%)<br>bbox: [113, 147, 761, 367]<br>mean abs RGB: 2.015<br>RMSE RGB: 19.7704<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic177_emoji_calendar</b><br>Page 1</td>
+  <td><img src="images/classic177_emoji_calendar_p1_heatmap.png" width="760" alt="classic177_emoji_calendar page 1 difference heatmap"></td>
+  <td>changed: 41666 px (2.03%)<br>bbox: [113, 147, 550, 554]<br>mean abs RGB: 3.1753<br>RMSE RGB: 25.0626<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic178_caucasus_ethiopic</b><br>Page 1</td>
+  <td><img src="images/classic178_caucasus_ethiopic_p1_heatmap.png" width="760" alt="classic178_caucasus_ethiopic page 1 difference heatmap"></td>
+  <td>changed: 30009 px (1.47%)<br>bbox: [113, 147, 741, 335]<br>mean abs RGB: 2.2797<br>RMSE RGB: 21.257<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic179_emoji_inventory</b><br>Page 1</td>
+  <td><img src="images/classic179_emoji_inventory_p1_heatmap.png" width="760" alt="classic179_emoji_inventory page 1 difference heatmap"></td>
+  <td>changed: 55670 px (2.72%)<br>bbox: [109, 143, 843, 492]<br>mean abs RGB: 3.7394<br>RMSE RGB: 25.845<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic180_polyglot_paragraph</b><br>Page 1</td>
+  <td><img src="images/classic180_polyglot_paragraph_p1_heatmap.png" width="760" alt="classic180_polyglot_paragraph page 1 difference heatmap"></td>
+  <td>changed: 24874 px (1.21%)<br>bbox: [113, 148, 770, 429]<br>mean abs RGB: 1.848<br>RMSE RGB: 18.9143<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic181_feedback_tracker_with_images</b><br>Page 1</td>
+  <td><img src="images/classic181_feedback_tracker_with_images_p1_heatmap.png" width="760" alt="classic181_feedback_tracker_with_images page 1 difference heatmap"></td>
+  <td>changed: 85126 px (4.16%)<br>bbox: [109, 143, 1014, 1379]<br>mean abs RGB: 6.6541<br>RMSE RGB: 36.0685<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic181_feedback_tracker_with_images</b><br>Page 2</td>
+  <td><img src="images/classic181_feedback_tracker_with_images_p2_heatmap.png" width="760" alt="classic181_feedback_tracker_with_images page 2 difference heatmap"></td>
+  <td>changed: 133321 px (6.51%)<br>bbox: [109, 143, 373, 1365]<br>mean abs RGB: 7.1474<br>RMSE RGB: 31.5748<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic182_dense_long_text_columns</b><br>Page 1</td>
+  <td><img src="images/classic182_dense_long_text_columns_p1_heatmap.png" width="760" alt="classic182_dense_long_text_columns page 1 difference heatmap"></td>
+  <td>changed: 72883 px (3.56%)<br>bbox: [114, 147, 956, 429]<br>mean abs RGB: 5.6104<br>RMSE RGB: 33.4768<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic182_dense_long_text_columns</b><br>Page 2</td>
+  <td><img src="images/classic182_dense_long_text_columns_p2_heatmap.png" width="760" alt="classic182_dense_long_text_columns page 2 difference heatmap"></td>
+  <td>changed: 82810 px (4.04%)<br>bbox: [112, 147, 1006, 429]<br>mean abs RGB: 6.2716<br>RMSE RGB: 35.2498<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic183_mixed_content_grid</b><br>Page 1</td>
+  <td><img src="images/classic183_mixed_content_grid_p1_heatmap.png" width="760" alt="classic183_mixed_content_grid page 1 difference heatmap"></td>
+  <td>changed: 82668 px (4.04%)<br>bbox: [113, 147, 990, 629]<br>mean abs RGB: 5.6682<br>RMSE RGB: 31.6416<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic184_wide_narrow_columns</b><br>Page 1</td>
+  <td><img src="images/classic184_wide_narrow_columns_p1_heatmap.png" width="760" alt="classic184_wide_narrow_columns page 1 difference heatmap"></td>
+  <td>changed: 160190 px (7.82%)<br>bbox: [109, 143, 937, 800]<br>mean abs RGB: 12.1103<br>RMSE RGB: 48.561<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic185_tall_rows_vertical_align</b><br>Page 1</td>
+  <td><img src="images/classic185_tall_rows_vertical_align_p1_heatmap.png" width="760" alt="classic185_tall_rows_vertical_align page 1 difference heatmap"></td>
+  <td>changed: 40635 px (1.98%)<br>bbox: [113, 149, 1012, 614]<br>mean abs RGB: 3.2057<br>RMSE RGB: 25.4867<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic186_multi_sheet_image_report</b><br>Page 1</td>
+  <td><img src="images/classic186_multi_sheet_image_report_p1_heatmap.png" width="760" alt="classic186_multi_sheet_image_report page 1 difference heatmap"></td>
+  <td>changed: 18614 px (0.91%)<br>bbox: [114, 148, 620, 331]<br>mean abs RGB: 1.4643<br>RMSE RGB: 17.208<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic186_multi_sheet_image_report</b><br>Page 2</td>
+  <td><img src="images/classic186_multi_sheet_image_report_p2_heatmap.png" width="760" alt="classic186_multi_sheet_image_report page 2 difference heatmap"></td>
+  <td>changed: 93448 px (4.56%)<br>bbox: [113, 147, 802, 779]<br>mean abs RGB: 5.9871<br>RMSE RGB: 32.6644<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic187_bug_report_with_screenshots</b><br>Page 1</td>
+  <td><img src="images/classic187_bug_report_with_screenshots_p1_heatmap.png" width="760" alt="classic187_bug_report_with_screenshots page 1 difference heatmap"></td>
+  <td>changed: 157169 px (7.68%)<br>bbox: [109, 143, 1101, 744]<br>mean abs RGB: 10.9536<br>RMSE RGB: 44.7944<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic188_merged_header_with_images</b><br>Page 1</td>
+  <td><img src="images/classic188_merged_header_with_images_p1_heatmap.png" width="760" alt="classic188_merged_header_with_images page 1 difference heatmap"></td>
+  <td>changed: 68706 px (3.36%)<br>bbox: [113, 161, 891, 606]<br>mean abs RGB: 4.2212<br>RMSE RGB: 26.6277<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic189_alternating_image_text_rows</b><br>Page 1</td>
+  <td><img src="images/classic189_alternating_image_text_rows_p1_heatmap.png" width="760" alt="classic189_alternating_image_text_rows page 1 difference heatmap"></td>
+  <td>changed: 185580 px (9.06%)<br>bbox: [114, 147, 871, 1080]<br>mean abs RGB: 12.1131<br>RMSE RGB: 45.4195<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic190_dashboard_kpi_images</b><br>Page 1</td>
+  <td><img src="images/classic190_dashboard_kpi_images_p1_heatmap.png" width="760" alt="classic190_dashboard_kpi_images page 1 difference heatmap"></td>
+  <td>changed: 76778 px (3.75%)<br>bbox: [109, 178, 919, 638]<br>mean abs RGB: 5.8305<br>RMSE RGB: 33.8226<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic191_payroll_calculator</b><br>Page 1</td>
+  <td><img src="images/classic191_payroll_calculator_p1_heatmap.png" width="760" alt="classic191_payroll_calculator page 1 difference heatmap"></td>
+  <td>changed: 218446 px (10.67%)<br>bbox: [109, 142, 1090, 511]<br>mean abs RGB: 6.1041<br>RMSE RGB: 28.649<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic191_payroll_calculator</b><br>Page 2</td>
+  <td><img src="images/classic191_payroll_calculator_p2_heatmap.png" width="760" alt="classic191_payroll_calculator page 2 difference heatmap"></td>
+  <td>changed: 249093 px (12.16%)<br>bbox: [109, 142, 1124, 511]<br>mean abs RGB: 8.3173<br>RMSE RGB: 34.1574<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic191_payroll_calculator</b><br>Page 3</td>
+  <td><img src="images/classic191_payroll_calculator_p3_heatmap.png" width="760" alt="classic191_payroll_calculator page 3 difference heatmap"></td>
+  <td>changed: 212080 px (10.36%)<br>bbox: [109, 142, 996, 511]<br>mean abs RGB: 6.6292<br>RMSE RGB: 29.6813<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic191_payroll_calculator</b><br>Page 4</td>
+  <td><img src="images/classic191_payroll_calculator_p4_heatmap.png" width="760" alt="classic191_payroll_calculator page 4 difference heatmap"></td>
+  <td>changed: 225401 px (11.01%)<br>bbox: [109, 143, 1102, 542]<br>mean abs RGB: 6.0529<br>RMSE RGB: 27.9615<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic191_payroll_calculator</b><br>Page 5</td>
+  <td><img src="images/classic191_payroll_calculator_p5_heatmap.png" width="760" alt="classic191_payroll_calculator page 5 difference heatmap"></td>
+  <td>changed: 270377 px (13.20%)<br>bbox: [109, 143, 1102, 542]<br>mean abs RGB: 8.1136<br>RMSE RGB: 32.7932<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic191_payroll_calculator</b><br>Page 6</td>
+  <td><img src="images/classic191_payroll_calculator_p6_heatmap.png" width="760" alt="classic191_payroll_calculator page 6 difference heatmap"></td>
+  <td>changed: 257719 px (12.59%)<br>bbox: [109, 143, 1102, 542]<br>mean abs RGB: 8.2582<br>RMSE RGB: 33.63<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic191_payroll_calculator</b><br>Page 7</td>
+  <td><img src="images/classic191_payroll_calculator_p7_heatmap.png" width="760" alt="classic191_payroll_calculator page 7 difference heatmap"></td>
+  <td>changed: 89297 px (4.36%)<br>bbox: [109, 143, 444, 542]<br>mean abs RGB: 2.5428<br>RMSE RGB: 17.8475<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic191_payroll_calculator</b><br>Page 8</td>
+  <td><img src="images/classic191_payroll_calculator_p8_heatmap.png" width="760" alt="classic191_payroll_calculator page 8 difference heatmap"></td>
+  <td>changed: 221494 px (10.82%)<br>bbox: [109, 241, 1126, 744]<br>mean abs RGB: 6.8752<br>RMSE RGB: 30.3705<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>classic191_payroll_calculator</b><br>Page 9</td>
+  <td><img src="images/classic191_payroll_calculator_p9_heatmap.png" width="760" alt="classic191_payroll_calculator page 9 difference heatmap"></td>
+  <td>changed: 121325 px (5.93%)<br>bbox: [109, 149, 750, 752]<br>mean abs RGB: 4.0937<br>RMSE RGB: 24.4395<br>threshold: 12, gain: 5.0</td>
+</tr>
+</table>
 
 ## Visual Comparison
 
@@ -214,7 +1772,7 @@ Generated: 2026-07-07T23:27:18.176195
 </tr>
 <tr>
   <td><b>classic02_multiple_worksheets</b></td>
-  <td colspan="1">classic02_multiple_worksheets <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="1">classic02_multiple_worksheets <span style="color:#3fb950">⬤</span> 99.7%</td>
 </tr>
 <tr>
   <td><img src="images/classic02_multiple_worksheets_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -426,7 +1984,7 @@ Generated: 2026-07-07T23:27:18.176195
 </tr>
 <tr>
   <td><b>classic18_large_dataset</b></td>
-  <td colspan="1">classic18_large_dataset <span style="color:#f85149">⬤</span> 65.4%</td>
+  <td colspan="1">classic18_large_dataset <span style="color:#3fb950">⬤</span> 97.7%</td>
 </tr>
 <tr>
   <td><img src="images/classic18_large_dataset_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -525,75 +2083,75 @@ Generated: 2026-07-07T23:27:18.176195
   <td><img src="images/classic18_large_dataset_p24_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p25_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p25_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p26_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p26_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p27_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p27_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p28_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p28_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p29_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p29_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p30_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p30_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p31_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p31_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p32_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p32_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p33_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p33_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p34_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p34_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p35_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p35_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p36_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p36_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p37_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p37_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p38_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p38_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p39_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p39_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p40_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p40_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p41_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p41_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/classic18_large_dataset_p42_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/classic18_large_dataset_p42_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
@@ -1774,7 +3332,7 @@ Generated: 2026-07-07T23:27:18.176195
 </tr>
 <tr>
   <td><b>classic143_colored_tabs</b></td>
-  <td colspan="1">classic143_colored_tabs <span style="color:#3fb950">⬤</span> 99.8%</td>
+  <td colspan="1">classic143_colored_tabs <span style="color:#3fb950">⬤</span> 99.5%</td>
 </tr>
 <tr>
   <td><img src="images/classic143_colored_tabs_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1866,7 +3424,7 @@ Generated: 2026-07-07T23:27:18.176195
 </tr>
 <tr>
   <td><b>classic152_emoji_sampler</b></td>
-  <td colspan="1">classic152_emoji_sampler <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="1">classic152_emoji_sampler <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
   <td><img src="images/classic152_emoji_sampler_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1922,7 +3480,7 @@ Generated: 2026-07-07T23:27:18.176195
 </tr>
 <tr>
   <td><b>classic159_zwj_emoji</b></td>
-  <td colspan="1">classic159_zwj_emoji <span style="color:#3fb950">⬤</span> 97.0%</td>
+  <td colspan="1">classic159_zwj_emoji <span style="color:#3fb950">⬤</span> 96.5%</td>
 </tr>
 <tr>
   <td><img src="images/classic159_zwj_emoji_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1954,7 +3512,7 @@ Generated: 2026-07-07T23:27:18.176195
 </tr>
 <tr>
   <td><b>classic163_cyrillic_alphabets</b></td>
-  <td colspan="1">classic163_cyrillic_alphabets <span style="color:#3fb950">⬤</span> 96.9%</td>
+  <td colspan="1">classic163_cyrillic_alphabets <span style="color:#3fb950">⬤</span> 97.5%</td>
 </tr>
 <tr>
   <td><img src="images/classic163_cyrillic_alphabets_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -1994,7 +3552,7 @@ Generated: 2026-07-07T23:27:18.176195
 </tr>
 <tr>
   <td><b>classic168_mixed_ltr_rtl_styled</b></td>
-  <td colspan="1">classic168_mixed_ltr_rtl_styled <span style="color:#3fb950">⬤</span> 93.4%</td>
+  <td colspan="1">classic168_mixed_ltr_rtl_styled <span style="color:#3fb950">⬤</span> 93.6%</td>
 </tr>
 <tr>
   <td><img src="images/classic168_mixed_ltr_rtl_styled_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -2066,7 +3624,7 @@ Generated: 2026-07-07T23:27:18.176195
 </tr>
 <tr>
   <td><b>classic177_emoji_calendar</b></td>
-  <td colspan="1">classic177_emoji_calendar <span style="color:#3fb950">⬤</span> 99.5%</td>
+  <td colspan="1">classic177_emoji_calendar <span style="color:#3fb950">⬤</span> 99.3%</td>
 </tr>
 <tr>
   <td><img src="images/classic177_emoji_calendar_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -2082,7 +3640,7 @@ Generated: 2026-07-07T23:27:18.176195
 </tr>
 <tr>
   <td><b>classic179_emoji_inventory</b></td>
-  <td colspan="1">classic179_emoji_inventory <span style="color:#3fb950">⬤</span> 99.1%</td>
+  <td colspan="1">classic179_emoji_inventory <span style="color:#3fb950">⬤</span> 98.8%</td>
 </tr>
 <tr>
   <td><img src="images/classic179_emoji_inventory_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -2090,7 +3648,7 @@ Generated: 2026-07-07T23:27:18.176195
 </tr>
 <tr>
   <td><b>classic180_polyglot_paragraph</b></td>
-  <td colspan="1">classic180_polyglot_paragraph <span style="color:#3fb950">⬤</span> 98.6%</td>
+  <td colspan="1">classic180_polyglot_paragraph <span style="color:#3fb950">⬤</span> 98.5%</td>
 </tr>
 <tr>
   <td><img src="images/classic180_polyglot_paragraph_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -2244,11 +3802,11 @@ Text content: ✅ Identical
 
 ### classic02_multiple_worksheets
 
-- **Text Similarity:** 0.9914
-- **Visual Average:** 0.9966
-- **Overall Score:** 0.9952
+- **Text Similarity:** 0.9942
+- **Visual Average:** 0.9972
+- **Overall Score:** 0.9966
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=3347 bytes, Reference=56518 bytes
+- **File Size:** MiniPdf=3349 bytes, Reference=56518 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2262,11 +3820,13 @@ Text content: ✅ Identical
 
  Metric Value
 
--Total Revenue 1130
+-Total Rev 1130
+
+-Total Cost 3700
 
 +Total Reve 1130
 
- Total Costs 3700
++Total Costs 3700
 
  Net -2570
 ```
@@ -2819,121 +4379,13 @@ Text content: ✅ Identical
 
 ### classic18_large_dataset
 
-- **Text Similarity:** 0.9001
-- **Visual Average:** 0.4838
-- **Overall Score:** 0.6536
-- **Pages:** MiniPdf=24, Reference=42
-- **File Size:** MiniPdf=741197 bytes, Reference=920992 bytes
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9427
+- **Overall Score:** 0.9771
+- **Pages:** MiniPdf=42, Reference=42
+- **File Size:** MiniPdf=765444 bytes, Reference=920992 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/classic18_large_dataset.pdf
-+++ reference/classic18_large_dataset.pdf
-@@ -1,1024 +1,2043 @@
--Col0 Col1 Col2 Col3 Col4 Col5 Col6 Col7 Col8 Col9
-
--R0C0 R0C1 R0C2 R0C3 R0C4 R0C5 R0C6 R0C7 R0C8 R0C9
-
--R1C0 R1C1 R1C2 R1C3 R1C4 R1C5 R1C6 R1C7 R1C8 R1C9
-
--R2C0 R2C1 R2C2 R2C3 R2C4 R2C5 R2C6 R2C7 R2C8 R2C9
-
--R3C0 R3C1 R3C2 R3C3 R3C4 R3C5 R3C6 R3C7 R3C8 R3C9
-
--R4C0 R4C1 R4C2 R4C3 R4C4 R4C5 R4C6 R4C7 R4C8 R4C9
-
--R5C0 R5C1 R5C2 R5C3 R5C4 R5C5 R5C6 R5C7 R5C8 R5C9
-
--R6C0 R6C1 R6C2 R6C3 R6C4 R6C5 R6C6 R6C7 R6C8 R6C9
-
--R7C0 R7C1 R7C2 R7C3 R7C4 R7C5 R7C6 R7C7 R7C8 R7C9
-
--R8C0 R8C1 R8C2 R8C3 R8C4 R8C5 R8C6 R8C7 R8C8 R8C9
-
--R9C0 R9C1 R9C2 R9C3 R9C4 R9C5 R9C6 R9C7 R9C8 R9C9
-
--R10C0 R10C1 R10C2 R10C3 R10C4 R10C5 R10C6 R10C7 R10C8 R10C9
-
--R11C0 R11C1 R11C2 R11C3 R11C4 R11C5 R11C6 R11C7 R11C8 R11C9
-
--R12C0 R12C1 R12C2 R12C3 R12C4 R12C5 R12C6 R12C7 R12C8 R12C9
-
--R13C0 R13C1 R13C2 R13C3 R13C4 R13C5 R13C6 R13C7 R13C8 R13C9
-
--R14C0 R14C1 R14C2 R14C3 R14C4 R14C5 R14C6 R14C7 R14C8 R14C9
-
--R15C0 R15C1 R15C2 R15C3 R15C4 R15C5 R15C6 R15C7 R15C8 R15C9
-
--R16C0 R16C1 R16C2 R16C3 R16C4 R16C5 R16C6 R16C7 R16C8 R16C9
-
--R17C0 R17C1 R17C2 R17C3 R17C4 R17C5 R17C6 R17C7 R17C8 R17C9
-
--R18C0 R18C1 R18C2 R18C3 R18C4 R18C5 R18C6 R18C7 R18C8 R18C9
-
--R19C0 R19C1 R19C2 R19C3 R19C4 R19C5 R19C6 R19C7 R19C8 R19C9
-
--R20C0 R20C1 R20C2 R20C3 R20C4 R20C5 R20C6 R20C7 R20C8 R20C9
-
--R21C0 R21C1 R21C2 R21C3 R21C4 R21C5 R21C6 R21C7 R21C8 R21C9
-
--R22C0 R22C1 R22C2 R22C3 R22C4 R22C5 R22C6 R22C7 R22C8 R22C9
-
--R23C0 R23C1 R23C2 R23C3 R23C4 R23C5 R23C6 R23C7 R23C8 R23C9
-
--R24C0 R24C1 R24C2 R24C3 R24C4 R24C5 R24C6 R24C7 R24C8 R24C9
-
--R25C0 R25C1 R25C2 R25C3 R25C4 R25C5 R25C6 R25C7 R25C8 R25C9
-
--R26C0 R26C1 R26C2 R26C3 R26C4 R26C5 R26C6 R26C7 R26C8 R26C9
-
--R27C0 R27C1 R27C2 R27C3 R27C4 R27C5 R27C6 R27C7 R27C8 R27C9
-
--R28C0 R28C1 R28C2 R28C3 R28C4 R28C5 R28C6 R28C7 R28C8 R28C9
-
--R29C0 R29C1 R29C2 R29C3 R29C4 R29C5 R29C6 R29C7 R29C8 R29C9
-
--R30C0 R30C1 R30C2 R30C3 R30C4 R30C5 R30C6 R30C7 R30C8 R30C9
-
--R31C0 R31C1 R31C2 R31C3 R31C4 R31C5 R31C6 R31C7 R31C8 R31C9
-
--R32C0 R32C1 R32C2 R32C3 R32C4 R32C5 R32C6 R32C7 R32C8 R32C9
-
--R33C0 R33C1 R33C2 R33C3 R33C4 R33C5 R33C6 R33C7 R33C8 R33C9
-
--R34C0 R34C1 R34C2 R34C3 R34C4 R34C5 R34C6 R34C7 R34C8 R34C9
-
--R35C0 R35C1 R35C2 R35C3 R35C4 R35C5 R35C6 R35C7 R35C8 R35C9
-
--R36C0 R36C1 R36C2 R36C3 R36C4 R36C5 R36C6 R36C7 R36C8 R36C9
-
--R37C0 R37C1 R37C2 R37C3 R37C4 R37C5 R37C6 R37C7 R37C8 R37C9
-
--R38C0 R38C1 R38C2 R38C3 R38C4 R38C5 R38C6 R38C7 R38C8 R38C9
-
--R39C0 R39C1 R39C2 R39C3 R39C4 R39C5 R39C6 R39C7 R39C8 R39C9
-
--R40C0 R40C1 R40C2 R40C3 R40C4 R40C5 R40C6 R40C7 R40C8 R40C9
-
--R41C0 R41C1 R41C2 R41C3 R41C4 R41C5 R41C6 R41C7 R41C8 R41C9
-
-----PAGE---
-
--R42C0 R42C1 R42C2 R42C3 R42C4 R42C5 R42C6 R42C7 R42C8 R42C9
-
--R43C0 R43C1 R43C2 R43C3 R43C4 R43C5 R43C6 R43C7 R43C8 R43C9
-
--R44C0 R44C1 R44C2 R44C3 R44C4 R44C5 R44C6 R44C7 R44C8 R44C9
-
--R45C0 R45C1 R45C2 R45C3 R45C4 R45C5 R45C6 R45C7 R45C8 R45C9
-
--R46C0 R46C1 R46C2 R46C3 R46C4 R46C5 R46C6 R46C7 R46C8 R46C9
-
--R47C0 R47C1 R47C
-... (141839 more characters)
-
-```
-</details>
+Text content: ✅ Identical
 
 ### classic19_single_column_list
 
@@ -2981,7 +4433,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9918
 - **Overall Score:** 0.9556
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=686944 bytes, Reference=121984 bytes
+- **File Size:** MiniPdf=450126 bytes, Reference=121984 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3469,11 +4921,11 @@ Text content: ✅ Identical
 
 ### classic50_budget_vs_actuals
 
-- **Text Similarity:** 0.9934
-- **Visual Average:** 0.9873
+- **Text Similarity:** 0.9933
+- **Visual Average:** 0.9875
 - **Overall Score:** 0.9923
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=9270 bytes, Reference=65935 bytes
+- **File Size:** MiniPdf=9293 bytes, Reference=65935 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3481,9 +4933,9 @@ Text content: ✅ Identical
 --- minipdf/classic50_budget_vs_actuals.pdf
 +++ reference/classic50_budget_vs_actuals.pdf
 @@ -1,19 +1,19 @@
--Department Q1 Q2 Q3 Q4 Annual
+-Departme Q1 Q2 Q3 Q4 Annual
 
--Engineering 200000 200000 210000 220000 830000
+-Engineeri 200000 200000 210000 220000 830000
 
 +DepartmenQ1 Q2 Q3 Q4 Annual
 
@@ -3499,9 +4951,9 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--Department Q1 Q2 Q3 Q4 Annual
+-Departme Q1 Q2 Q3 Q4 Annual
 
--Engineering 195000 205000 215000 225000 840000
+-Engineeri 195000 205000 215000 225000 840000
 
 +DepartmenQ1 Q2 Q3 Q4 Annual
 
@@ -3517,9 +4969,9 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--Department Q1 Q2 Q3 Q4 Annual
+-Departme Q1 Q2 Q3 Q4 Annual
 
--Engineering -5000 5000 5000 5000 10000
+-Engineeri -5000 5000 5000 5000 10000
 
 +DepartmenQ1 Q2 Q3 Q4 Annual
 
@@ -3698,7 +5150,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9904
 - **Overall Score:** 0.994
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=156847 bytes, Reference=54240 bytes
+- **File Size:** MiniPdf=80632 bytes, Reference=54240 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -3761,10 +5213,10 @@ Text content: ✅ Identical
 ### classic59_multi_sheet_summary
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9954
+- **Visual Average:** 0.9955
 - **Overall Score:** 0.9982
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=6198 bytes, Reference=61161 bytes
+- **File Size:** MiniPdf=6201 bytes, Reference=61161 bytes
 
 Text content: ✅ Identical
 
@@ -4122,9 +5574,9 @@ Text content: ✅ Identical
 
 ### classic71_multi_sheet_with_images
 
-- **Text Similarity:** 0.9898
-- **Visual Average:** 0.9926
-- **Overall Score:** 0.993
+- **Text Similarity:** 0.9896
+- **Visual Average:** 0.9925
+- **Overall Score:** 0.9928
 - **Pages:** MiniPdf=3, Reference=3
 - **File Size:** MiniPdf=5900 bytes, Reference=56101 bytes
 
@@ -4140,9 +5592,9 @@ Text content: ✅ Identical
 
  ---PAGE---
 
--Department Headcount
+-Departme Headcount
 
--Engineering 45
+-Engineeri 45
 
 +DepartmenHeadcount
 
@@ -4205,7 +5657,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9454
 - **Overall Score:** 0.972
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=295923 bytes, Reference=99265 bytes
+- **File Size:** MiniPdf=182310 bytes, Reference=99265 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7278,13 +8730,32 @@ Text content: ✅ Identical
 
 ### classic143_colored_tabs
 
-- **Text Similarity:** 1.0
-- **Visual Average:** 0.9961
-- **Overall Score:** 0.9984
+- **Text Similarity:** 0.9916
+- **Visual Average:** 0.9963
+- **Overall Score:** 0.9952
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=3479 bytes, Reference=74632 bytes
+- **File Size:** MiniPdf=3483 bytes, Reference=74632 bytes
 
-Text content: ✅ Identical
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic143_colored_tabs.pdf
++++ reference/classic143_colored_tabs.pdf
+@@ -11,5 +11,5 @@
+ Cost 30000
+
+ ---PAGE---
+
+ Label Value
+
+-Employee 50
+
+-Open Rol 5
++Employees 50
+
++Open Roles 5
+```
+</details>
 
 ### classic144_note_style_cells
 
@@ -7379,7 +8850,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9851
 - **Overall Score:** 0.9657
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4542507 bytes, Reference=108265 bytes
+- **File Size:** MiniPdf=449864 bytes, Reference=108265 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7418,21 +8889,52 @@ Text content: ✅ Identical
 
 ### classic152_emoji_sampler
 
-- **Text Similarity:** 1.0
-- **Visual Average:** 0.9869
-- **Overall Score:** 0.9948
+- **Text Similarity:** 0.9717
+- **Visual Average:** 0.987
+- **Overall Score:** 0.9835
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=165578 bytes, Reference=105280 bytes
+- **File Size:** MiniPdf=192925 bytes, Reference=105280 bytes
 
-Text content: ✅ Identical
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic152_emoji_sampler.pdf
++++ reference/classic152_emoji_sampler.pdf
+@@ -1,9 +1,9 @@
+ Category Emoji
+
+ Faces 😀😃😄😁😆
+
+-Hearts ❤ ️ 🧡💛💚💙
+
++Hearts ❤️🧡💛💚💙
+
+ Animals 🐶🐱🐭🐹🐰
+
+ Food 🍎🍐🍊🍋🍌
+
+-Travel ✈ ️ 🚗🚌🚂🚀
+
++Travel ✈️🚗🚌🚂🚀
+
+ Sports ⚽🏀🏈⚾🎾
+
+-Symbols ✅❌⚠ ️ 🔴🟢
+
+-Hands 👍👎👏🤝✌ ️
++Symbols ✅❌⚠️🔴🟢
+
++Hands 👍👎👏🤝✌️
+```
+</details>
 
 ### classic153_currency_symbols
 
 - **Text Similarity:** 0.9918
-- **Visual Average:** 0.9869
+- **Visual Average:** 0.987
 - **Overall Score:** 0.9915
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=328402 bytes, Reference=66698 bytes
+- **File Size:** MiniPdf=334641 bytes, Reference=66698 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7473,10 +8975,10 @@ Text content: ✅ Identical
 ### classic154_math_symbols
 
 - **Text Similarity:** 0.9881
-- **Visual Average:** 0.9898
+- **Visual Average:** 0.99
 - **Overall Score:** 0.9912
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=1215783 bytes, Reference=85712 bytes
+- **File Size:** MiniPdf=923997 bytes, Reference=85712 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7502,10 +9004,10 @@ Text content: ✅ Identical
 ### classic155_diacritical_marks
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9922
-- **Overall Score:** 0.9969
+- **Visual Average:** 0.9921
+- **Overall Score:** 0.9968
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4325726 bytes, Reference=63383 bytes
+- **File Size:** MiniPdf=498366 bytes, Reference=63383 bytes
 
 Text content: ✅ Identical
 
@@ -7515,7 +9017,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.995
 - **Overall Score:** 0.8345
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=329179 bytes, Reference=47337 bytes
+- **File Size:** MiniPdf=236377 bytes, Reference=47337 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7548,7 +9050,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9775
 - **Overall Score:** 0.991
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=368634 bytes, Reference=118155 bytes
+- **File Size:** MiniPdf=187431 bytes, Reference=118155 bytes
 
 Text content: ✅ Identical
 
@@ -7558,17 +9060,17 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9791
 - **Overall Score:** 0.9916
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=298065 bytes, Reference=99585 bytes
+- **File Size:** MiniPdf=183927 bytes, Reference=99585 bytes
 
 Text content: ✅ Identical
 
 ### classic159_zwj_emoji
 
-- **Text Similarity:** 0.9372
-- **Visual Average:** 0.9886
-- **Overall Score:** 0.9703
+- **Text Similarity:** 0.9251
+- **Visual Average:** 0.9878
+- **Overall Score:** 0.9652
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=362013 bytes, Reference=106035 bytes
+- **File Size:** MiniPdf=345152 bytes, Reference=106035 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7580,19 +9082,19 @@ Text content: ✅ Identical
 
 -Family 👨 ‍ 👩 ‍ 👧 ‍ 👦
 
--Couple with heart 👩 ‍ ❤️ ‍ 👨
+-Couple with heart 👩 ‍ ❤ ️ ‍ 👨
 
 -Woman technologist 👩 ‍ 💻
 
 -Man cook 👨 ‍ 🍳
 
--Rainbow flag 🏳️ ‍ 🌈
+-Rainbow flag 🏳 ️ ‍ 🌈
 
--Trans flag 🏳️ ‍ ⚧️
+-Trans flag 🏳 ️ ‍ ⚧ ️
 
 -Firefighter 🧑 ‍ 🚒
 
--Health worker 🧑 ‍ ⚕️
+-Health worker 🧑 ‍ ⚕ ️
 
 -Service dog 🐕 ‍ 🦺
 +Family 👨‍👩‍👧‍👦
@@ -7621,7 +9123,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9936
 - **Overall Score:** 0.994
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=581270 bytes, Reference=110515 bytes
+- **File Size:** MiniPdf=449233 bytes, Reference=110515 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7654,7 +9156,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9867
 - **Overall Score:** 0.9937
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=330036 bytes, Reference=94886 bytes
+- **File Size:** MiniPdf=213243 bytes, Reference=94886 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7684,17 +9186,17 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9872
 - **Overall Score:** 0.9949
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=299740 bytes, Reference=133693 bytes
+- **File Size:** MiniPdf=184861 bytes, Reference=133693 bytes
 
 Text content: ✅ Identical
 
 ### classic163_cyrillic_alphabets
 
-- **Text Similarity:** 0.9398
-- **Visual Average:** 0.9834
-- **Overall Score:** 0.9693
+- **Text Similarity:** 0.9519
+- **Visual Average:** 0.9849
+- **Overall Score:** 0.9747
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=3911706 bytes, Reference=56100 bytes
+- **File Size:** MiniPdf=336814 bytes, Reference=56100 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7704,7 +9206,7 @@ Text content: ✅ Identical
 @@ -1,6 +1,6 @@
  Language Sample Text
 
--Russian Съешь ещё этих мягких французских булок , да вып
+-Russian Съешь ещё этих мягких французских булок , да выпей чаю .
 
 -Ukrainian Жебракують ф і лософи при ґ анку церкви в Гадяч і .
 
@@ -7731,7 +9233,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9903
 - **Overall Score:** 0.9961
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=146373 bytes, Reference=53352 bytes
+- **File Size:** MiniPdf=71613 bytes, Reference=53352 bytes
 
 Text content: ✅ Identical
 
@@ -7741,7 +9243,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8185
 - **Overall Score:** 0.9143
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=147442 bytes, Reference=94767 bytes
+- **File Size:** MiniPdf=72682 bytes, Reference=94767 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7776,7 +9278,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9761
 - **Overall Score:** 0.9904
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=295550 bytes, Reference=101519 bytes
+- **File Size:** MiniPdf=181806 bytes, Reference=101519 bytes
 
 Text content: ✅ Identical
 
@@ -7786,17 +9288,17 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9843
 - **Overall Score:** 0.9937
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=638695 bytes, Reference=107225 bytes
+- **File Size:** MiniPdf=387134 bytes, Reference=107225 bytes
 
 Text content: ✅ Identical
 
 ### classic168_mixed_ltr_rtl_styled
 
-- **Text Similarity:** 0.8621
-- **Visual Average:** 0.9732
-- **Overall Score:** 0.9341
+- **Text Similarity:** 0.8696
+- **Visual Average:** 0.9695
+- **Overall Score:** 0.9356
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=319318 bytes, Reference=83592 bytes
+- **File Size:** MiniPdf=290557 bytes, Reference=83592 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7806,15 +9308,13 @@ Text content: ✅ Identical
 @@ -1,5 +1,5 @@
  Code Name Price
 
--EN-001 Programming Book$29.99
-
-+EN-001 Programming Book $29.99
+ EN-001 Programming Book $29.99
 
  FR-002 Livre de code €25.00
 
--AR-003 ﺔﺠﻣﺮﺑ ﺏﺎﺘﻛ 50 SAR
+-AR-003ﺔﺠﻣﺮﺑ ﺏﺎﺘﻛ50 SAR
 
--HE-004 דוק רפס₪120
+-HE-004דוק רפס₪120
 +AR-003كتاب برمجة50 SAR
 
 +HE-004ספר קוד₪120
@@ -7827,7 +9327,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9839
 - **Overall Score:** 0.9936
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=370044 bytes, Reference=118888 bytes
+- **File Size:** MiniPdf=188028 bytes, Reference=118888 bytes
 
 Text content: ✅ Identical
 
@@ -7837,7 +9337,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9778
 - **Overall Score:** 0.9911
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=150954 bytes, Reference=137376 bytes
+- **File Size:** MiniPdf=111917 bytes, Reference=137376 bytes
 
 Text content: ✅ Identical
 
@@ -7847,7 +9347,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9911
 - **Overall Score:** 0.9846
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4095258 bytes, Reference=76615 bytes
+- **File Size:** MiniPdf=590869 bytes, Reference=76615 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7872,7 +9372,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9849
 - **Overall Score:** 0.994
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=153787 bytes, Reference=117160 bytes
+- **File Size:** MiniPdf=114572 bytes, Reference=117160 bytes
 
 Text content: ✅ Identical
 
@@ -7882,7 +9382,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9847
 - **Overall Score:** 0.9852
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=328234 bytes, Reference=64361 bytes
+- **File Size:** MiniPdf=236434 bytes, Reference=64361 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7921,7 +9421,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9848
 - **Overall Score:** 0.9928
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=870257 bytes, Reference=81967 bytes
+- **File Size:** MiniPdf=294430 bytes, Reference=81967 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7943,10 +9443,10 @@ Text content: ✅ Identical
 ### classic175_multiscript_catalog
 
 - **Text Similarity:** 0.9686
-- **Visual Average:** 0.9774
+- **Visual Average:** 0.9773
 - **Overall Score:** 0.9784
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4175241 bytes, Reference=191190 bytes
+- **File Size:** MiniPdf=553060 bytes, Reference=191190 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -7987,7 +9487,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9886
 - **Overall Score:** 0.9742
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=541775 bytes, Reference=68236 bytes
+- **File Size:** MiniPdf=344230 bytes, Reference=68236 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -8021,13 +9521,42 @@ Text content: ✅ Identical
 
 ### classic177_emoji_calendar
 
-- **Text Similarity:** 1.0
+- **Text Similarity:** 0.9965
 - **Visual Average:** 0.9864
-- **Overall Score:** 0.9946
+- **Overall Score:** 0.9932
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=157580 bytes, Reference=107156 bytes
+- **File Size:** MiniPdf=186933 bytes, Reference=107156 bytes
 
-Text content: ✅ Identical
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic177_emoji_calendar.pdf
++++ reference/classic177_emoji_calendar.pdf
+@@ -4,9 +4,9 @@
+ March 🌸 Spring Equinox
+
+ April 🐣 Easter
+
+ May 👩 Mother's Day
+
+-June ☀ ️ Summer Solstice
+
++June ☀️ Summer Solstice
+
+ July 🎆 Independence Day
+
+-August 🏖 ️ Vacation Season
+
++August 🏖️ Vacation Season
+
+ September 📚 Back to School
+
+ October 🎃 Halloween
+
+ November 🦃 Thanksgiving
+
+```
+</details>
 
 ### classic178_caucasus_ethiopic
 
@@ -8035,7 +9564,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9887
 - **Overall Score:** 0.9929
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=337227 bytes, Reference=58144 bytes
+- **File Size:** MiniPdf=244563 bytes, Reference=58144 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -8065,21 +9594,56 @@ Text content: ✅ Identical
 
 ### classic179_emoji_inventory
 
-- **Text Similarity:** 1.0
+- **Text Similarity:** 0.9925
 - **Visual Average:** 0.9782
-- **Overall Score:** 0.9913
+- **Overall Score:** 0.9883
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=301317 bytes, Reference=138581 bytes
+- **File Size:** MiniPdf=187375 bytes, Reference=138581 bytes
 
-Text content: ✅ Identical
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/classic179_emoji_inventory.pdf
++++ reference/classic179_emoji_inventory.pdf
+@@ -1,11 +1,11 @@
+ Icon Item Stock Min Status
+
+ 📱 Smartphone 150 50 🟢 OK
+
+ 💻 Laptop 42 30 🟡 Low
+
+-🖨 ️ Printer 8 10 🔴 Reorder
+
++🖨️ Printer 8 10 🔴 Reorder
+
+ 🎧 Headphones 200 40 🟢 OK
+
+-⌨ ️ Keyboard 75 25 🟢 OK
+
+-🖱 ️ Mouse 18 20 🔴 Reorder
+
++⌨️ Keyboard 75 25 🟢 OK
+
++🖱️ Mouse 18 20 🔴 Reorder
+
+ 📷 Camera 12 10 🟡 Low
+
+ 🔌 Charger 300 100 🟢 OK
+
+ 💾 USB Drive 5 15 🔴 Reorder
+
+-🖥 ️ Monitor 35 20 🟢 OK
++🖥️ Monitor 35 20 🟢 OK
+```
+</details>
 
 ### classic180_polyglot_paragraph
 
-- **Text Similarity:** 0.9772
-- **Visual Average:** 0.9884
-- **Overall Score:** 0.9862
+- **Text Similarity:** 0.9747
+- **Visual Average:** 0.9888
+- **Overall Score:** 0.9854
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=4229552 bytes, Reference=153951 bytes
+- **File Size:** MiniPdf=389712 bytes, Reference=153951 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -8101,6 +9665,7 @@ Text content: ✅ Identical
 
 -Hindi तेज़ भूरी लोमड़ी
 
+-Emoji 🦊 ➡ ️ 🐕
 +Russian Быстрая бурая лиса.
 
 +Greek Η γρήγορη αλεπού.
@@ -8109,7 +9674,7 @@ Text content: ✅ Identical
 
 +Hindi तेज़ भूरी लोमडी
 
- Emoji 🦊 ➡️ 🐕
++Emoji 🦊 ➡️ 🐕
 ```
 </details>
 
@@ -8521,7 +10086,6 @@ Text content: ✅ Identical
 1. **classic116_percent_stacked_area** (score: 0.5987)
 1. **classic108_stacked_area_chart** (score: 0.6118)
 1. **classic09_long_text** (score: 0.6292)
-1. **classic18_large_dataset** (score: 0.6536)
 1. **classic60_large_wide_table** (score: 0.6813)
 1. **classic12_sparse_columns** (score: 0.699)
 1. **classic112_multiple_charts** (score: 0.7646)

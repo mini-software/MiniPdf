@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-15T22:18:58.254623
+Generated: 2026-07-19T23:20:35.421190
 
 ## Summary
 
@@ -11,13 +11,13 @@ Generated: 2026-07-15T22:18:58.254623
 | 3 | 🟢 20260317_sample_CN | ✅ | 0.994 | 0.9824 | 2/2 | **0.9906** |
 | 4 | 🟢 20260318_issue | ✅ | 0.9685 | 0.8715 | 7/7 | **0.936** |
 | 5 | 🟢 CCU_article | ✅ | 0.8763 | 0.9467 | 21/21 | **0.9292** |
-| 6 | ⚪ Checklist | ✅ | N/A | N/A | ?/? | **N/A** |
-| 7 | 🟢 Class News | ✅ | 0.9665 | 0.8876 | 4/4 | **0.9416** |
-| 8 | ⚪ Class News_debug | ✅ | N/A | N/A | ?/? | **N/A** |
-| 9 | 🟢 Confirmatory_Affidavit | ✅ | 0.9791 | 0.969 | 2/2 | **0.9792** |
-| 10 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9849 | 7/7 | **0.986** |
-| 11 | 🟢 Fabrikam | ✅ | 1.0 | 0.9426 | 1/1 | **0.977** |
-| 12 | 🟢 Invoice | ✅ | 1.0 | 0.9594 | 1/1 | **0.9838** |
+| 6 | 🟢 Class News | ✅ | 0.9665 | 0.8876 | 4/4 | **0.9416** |
+| 7 | 🟢 Confirmatory_Affidavit | ✅ | 0.9791 | 0.969 | 2/2 | **0.9792** |
+| 8 | 🟢 Cooperation Agreement Template | ✅ | 0.9802 | 0.9849 | 7/7 | **0.986** |
+| 9 | 🟢 Fabrikam | ✅ | 1.0 | 0.9426 | 1/1 | **0.977** |
+| 10 | 🟢 Invoice | ✅ | 1.0 | 0.9594 | 1/1 | **0.9838** |
+| 11 | 🟢 Issue79_FilledContract | ✅ | 0.9933 | 0.9751 | 1/1 | **0.9874** |
+| 12 | 🟢 Issue79_TemplateContract | ✅ | 1.0 | 0.9745 | 1/1 | **0.9898** |
 | 13 | 🟢 Issue83_Output | ✅ | 1.0 | 0.98 | 1/1 | **0.992** |
 | 14 | 🟢 issue202605 | ✅ | 0.8674 | 0.9133 | 2/2 | **0.9123** |
 | 15 | 🟢 issue26050501 | ✅ | 0.94 | 0.9394 | 2/2 | **0.9518** |
@@ -28,20 +28,17 @@ Generated: 2026-07-15T22:18:58.254623
 | 20 | 🟢 SA8000 ch sample | ✅ | 0.9921 | 0.9642 | 2/2 | **0.9825** |
 | 21 | 🟢 Support_Letter | ✅ | 1.0 | 0.9392 | 1/1 | **0.9757** |
 | 22 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9848 | 17/17 | **0.9939** |
-| 23 | ⚪ Template_repaired | ✅ | N/A | N/A | ?/? | **N/A** |
-| 24 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
-| 25 | 🟢 TestIssue78 | ✅ | 0.9961 | 0.9723 | 1/1 | **0.9874** |
-| 26 | 🟢 Issue79_FilledContract | ✅ | 0.9933 | 0.9751 | 1/1 | **0.9874** |
-| 27 | 🟢 Issue79_TemplateContract | ✅ | 1.0 | 0.9745 | 1/1 | **0.9898** |
+| 23 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
+| 24 | 🟢 TestIssue78 | ✅ | 0.9961 | 0.9723 | 1/1 | **0.9874** |
 
-**Average Overall Score: 0.8486**
+**Average Overall Score: 0.9547**
 
 ## Visual Comparison
 
 <table>
 <tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
 <tr>
-  <td><b>13_IEEE_Style_Paper</b></td>
+  <td><b>13_IEEE_Style_Paper<br><small>format: docx | case: 13_IEEE_Style_Paper | scope: issue-docx</small></b></td>
   <td colspan="1">13_IEEE_Style_Paper <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
@@ -53,7 +50,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/13_IEEE_Style_Paper_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>14_Thesis_Chapter</b></td>
+  <td><b>14_Thesis_Chapter<br><small>format: docx | case: 14_Thesis_Chapter | scope: issue-docx</small></b></td>
   <td colspan="1">14_Thesis_Chapter <span style="color:#3fb950">⬤</span> 99.0%</td>
 </tr>
 <tr>
@@ -65,7 +62,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/14_Thesis_Chapter_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>20260317_sample_CN</b></td>
+  <td><b>20260317_sample_CN<br><small>format: docx | case: 20260317_sample_CN | scope: issue-docx</small></b></td>
   <td colspan="1">20260317_sample_CN <span style="color:#3fb950">⬤</span> 99.1%</td>
 </tr>
 <tr>
@@ -77,7 +74,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/20260317_sample_CN_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>20260318_issue</b></td>
+  <td><b>20260318_issue<br><small>format: docx | case: 20260318_issue | scope: issue-docx</small></b></td>
   <td colspan="1">20260318_issue <span style="color:#3fb950">⬤</span> 93.6%</td>
 </tr>
 <tr>
@@ -109,7 +106,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/20260318_issue_p7_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>CCU_article</b></td>
+  <td><b>CCU_article<br><small>format: docx | case: CCU_article | scope: issue-docx</small></b></td>
   <td colspan="1">CCU_article <span style="color:#3fb950">⬤</span> 92.9%</td>
 </tr>
 <tr>
@@ -197,14 +194,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/CCU_article_p21_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Checklist</b></td>
-  <td colspan="1">Checklist N/A</td>
-</tr>
-<tr>
-  <td colspan="2"><i>No images</i></td>
-</tr>
-<tr>
-  <td><b>Class News</b></td>
+  <td><b>Class News<br><small>format: docx | case: Class News | scope: issue-docx</small></b></td>
   <td colspan="1">Class News <span style="color:#3fb950">⬤</span> 94.2%</td>
 </tr>
 <tr>
@@ -224,14 +214,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/Class News_p4_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Class News_debug</b></td>
-  <td colspan="1">Class News_debug N/A</td>
-</tr>
-<tr>
-  <td colspan="2"><i>No images</i></td>
-</tr>
-<tr>
-  <td><b>Confirmatory_Affidavit</b></td>
+  <td><b>Confirmatory_Affidavit<br><small>format: docx | case: Confirmatory_Affidavit | scope: issue-docx</small></b></td>
   <td colspan="1">Confirmatory_Affidavit <span style="color:#3fb950">⬤</span> 97.9%</td>
 </tr>
 <tr>
@@ -243,7 +226,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/Confirmatory_Affidavit_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Cooperation Agreement Template</b></td>
+  <td><b>Cooperation Agreement Template<br><small>format: docx | case: Cooperation Agreement Template | scope: issue-docx</small></b></td>
   <td colspan="1">Cooperation Agreement Template <span style="color:#3fb950">⬤</span> 98.6%</td>
 </tr>
 <tr>
@@ -275,7 +258,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/Cooperation Agreement Template_p7_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Fabrikam</b></td>
+  <td><b>Fabrikam<br><small>format: docx | case: Fabrikam | scope: issue-docx</small></b></td>
   <td colspan="1">Fabrikam <span style="color:#3fb950">⬤</span> 97.7%</td>
 </tr>
 <tr>
@@ -283,7 +266,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/Fabrikam_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Invoice</b></td>
+  <td><b>Invoice<br><small>format: docx | case: Invoice | scope: issue-docx</small></b></td>
   <td colspan="1">Invoice <span style="color:#3fb950">⬤</span> 98.4%</td>
 </tr>
 <tr>
@@ -291,7 +274,23 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/Invoice_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Issue83_Output</b></td>
+  <td><b>Issue79_FilledContract<br><small>format: docx | case: Issue79_FilledContract | scope: issue-docx</small></b></td>
+  <td colspan="1">Issue79_FilledContract <span style="color:#3fb950">⬤</span> 98.7%</td>
+</tr>
+<tr>
+  <td><img src="images/Issue79_FilledContract_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Issue79_FilledContract_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Issue79_TemplateContract<br><small>format: docx | case: Issue79_TemplateContract | scope: issue-docx</small></b></td>
+  <td colspan="1">Issue79_TemplateContract <span style="color:#3fb950">⬤</span> 99.0%</td>
+</tr>
+<tr>
+  <td><img src="images/Issue79_TemplateContract_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Issue79_TemplateContract_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>Issue83_Output<br><small>format: docx | case: Issue83_Output | scope: issue-docx</small></b></td>
   <td colspan="1">Issue83_Output <span style="color:#3fb950">⬤</span> 99.2%</td>
 </tr>
 <tr>
@@ -299,7 +298,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/Issue83_Output_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>issue202605</b></td>
+  <td><b>issue202605<br><small>format: docx | case: issue202605 | scope: issue-docx</small></b></td>
   <td colspan="1">issue202605 <span style="color:#3fb950">⬤</span> 91.2%</td>
 </tr>
 <tr>
@@ -311,7 +310,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/issue202605_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>issue26050501</b></td>
+  <td><b>issue26050501<br><small>format: docx | case: issue26050501 | scope: issue-docx</small></b></td>
   <td colspan="1">issue26050501 <span style="color:#3fb950">⬤</span> 95.2%</td>
 </tr>
 <tr>
@@ -323,7 +322,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/issue26050501_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>issues66</b></td>
+  <td><b>issues66<br><small>format: docx | case: issues66 | scope: issue-docx</small></b></td>
   <td colspan="1">issues66 <span style="color:#3fb950">⬤</span> 95.1%</td>
 </tr>
 <tr>
@@ -339,7 +338,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/issues66_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>MODERN LIVING</b></td>
+  <td><b>MODERN LIVING<br><small>format: docx | case: MODERN LIVING | scope: issue-docx</small></b></td>
   <td colspan="1">MODERN LIVING <span style="color:#d29922">⬤</span> 87.7%</td>
 </tr>
 <tr>
@@ -351,7 +350,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/MODERN LIVING_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>nthu_article</b></td>
+  <td><b>nthu_article<br><small>format: docx | case: nthu_article | scope: issue-docx</small></b></td>
   <td colspan="1">nthu_article <span style="color:#d29922">⬤</span> 79.2%</td>
 </tr>
 <tr>
@@ -435,7 +434,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/nthu_article_p20_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>OSCAR WARD</b></td>
+  <td><b>OSCAR WARD<br><small>format: docx | case: OSCAR WARD | scope: issue-docx</small></b></td>
   <td colspan="1">OSCAR WARD <span style="color:#3fb950">⬤</span> 93.6%</td>
 </tr>
 <tr>
@@ -443,7 +442,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/OSCAR WARD_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>SA8000 ch sample</b></td>
+  <td><b>SA8000 ch sample<br><small>format: docx | case: SA8000 ch sample | scope: issue-docx</small></b></td>
   <td colspan="1">SA8000 ch sample <span style="color:#3fb950">⬤</span> 98.2%</td>
 </tr>
 <tr>
@@ -455,7 +454,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/SA8000 ch sample_p2_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Support_Letter</b></td>
+  <td><b>Support_Letter<br><small>format: docx | case: Support_Letter | scope: issue-docx</small></b></td>
   <td colspan="1">Support_Letter <span style="color:#3fb950">⬤</span> 97.6%</td>
 </tr>
 <tr>
@@ -463,7 +462,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/Support_Letter_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Template for MSc Thesis</b></td>
+  <td><b>Template for MSc Thesis<br><small>format: docx | case: Template for MSc Thesis | scope: issue-docx</small></b></td>
   <td colspan="1">Template for MSc Thesis <span style="color:#3fb950">⬤</span> 99.4%</td>
 </tr>
 <tr>
@@ -535,14 +534,7 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/Template for MSc Thesis_p17_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>Template_repaired</b></td>
-  <td colspan="1">Template_repaired N/A</td>
-</tr>
-<tr>
-  <td colspan="2"><i>No images</i></td>
-</tr>
-<tr>
-  <td><b>TestIssue61</b></td>
+  <td><b>TestIssue61<br><small>format: docx | case: TestIssue61 | scope: issue-docx</small></b></td>
   <td colspan="1">TestIssue61 <span style="color:#d29922">⬤</span> 88.4%</td>
 </tr>
 <tr>
@@ -578,28 +570,12 @@ Generated: 2026-07-15T22:18:58.254623
   <td><img src="images/TestIssue61_p8_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
-  <td><b>TestIssue78</b></td>
+  <td><b>TestIssue78<br><small>format: docx | case: TestIssue78 | scope: issue-docx</small></b></td>
   <td colspan="1">TestIssue78 <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
   <td><img src="images/TestIssue78_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/TestIssue78_p1_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>Issue79_FilledContract</b></td>
-  <td colspan="1">Issue79_FilledContract <span style="color:#3fb950">⬤</span> 98.7%</td>
-</tr>
-<tr>
-  <td><img src="images/Issue79_FilledContract_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Issue79_FilledContract_p1_reference.png" width="340" alt="Reference"></td>
-</tr>
-<tr>
-  <td><b>Issue79_TemplateContract</b></td>
-  <td colspan="1">Issue79_TemplateContract <span style="color:#3fb950">⬤</span> 99.0%</td>
-</tr>
-<tr>
-  <td><img src="images/Issue79_TemplateContract_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Issue79_TemplateContract_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -607,11 +583,12 @@ Generated: 2026-07-15T22:18:58.254623
 
 ### 13_IEEE_Style_Paper
 
+- **Case Metadata:** format: docx | case: 13_IEEE_Style_Paper | scope: issue-docx
 - **Text Similarity:** 1.0
 - **Visual Average:** 0.9675
 - **Overall Score:** 0.987
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=523579 bytes, Reference=174711 bytes
+- **File Size:** MiniPdf=478408 bytes, Reference=174711 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -664,21 +641,23 @@ Generated: 2026-07-15T22:18:58.254623
 
 ### 14_Thesis_Chapter
 
+- **Case Metadata:** format: docx | case: 14_Thesis_Chapter | scope: issue-docx
 - **Text Similarity:** 1.0
 - **Visual Average:** 0.975
 - **Overall Score:** 0.99
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=373405 bytes, Reference=159781 bytes
+- **File Size:** MiniPdf=340226 bytes, Reference=159781 bytes
 
 Text content: ✅ Identical
 
 ### 20260317_sample_CN
 
+- **Case Metadata:** format: docx | case: 20260317_sample_CN | scope: issue-docx
 - **Text Similarity:** 0.994
 - **Visual Average:** 0.9824
 - **Overall Score:** 0.9906
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7288824 bytes, Reference=201209 bytes
+- **File Size:** MiniPdf=317618 bytes, Reference=201209 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -727,11 +706,12 @@ Text content: ✅ Identical
 
 ### 20260318_issue
 
+- **Case Metadata:** format: docx | case: 20260318_issue | scope: issue-docx
 - **Text Similarity:** 0.9685
 - **Visual Average:** 0.8715
 - **Overall Score:** 0.936
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=591186 bytes, Reference=344088 bytes
+- **File Size:** MiniPdf=490960 bytes, Reference=344088 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -830,11 +810,12 @@ Text content: ✅ Identical
 
 ### CCU_article
 
+- **Case Metadata:** format: docx | case: CCU_article | scope: issue-docx
 - **Text Similarity:** 0.8763
 - **Visual Average:** 0.9467
 - **Overall Score:** 0.9292
 - **Pages:** MiniPdf=21, Reference=21
-- **File Size:** MiniPdf=6540800 bytes, Reference=624071 bytes
+- **File Size:** MiniPdf=2748949 bytes, Reference=624071 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -949,17 +930,14 @@ Text content: ✅ Identical
 ```
 </details>
 
-### Checklist
-
-**Error:** Reference PDF not found
-
 ### Class News
 
+- **Case Metadata:** format: docx | case: Class News | scope: issue-docx
 - **Text Similarity:** 0.9665
 - **Visual Average:** 0.8876
 - **Overall Score:** 0.9416
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=345318 bytes, Reference=147827 bytes
+- **File Size:** MiniPdf=341805 bytes, Reference=147827 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1086,17 +1064,14 @@ Text content: ✅ Identical
 ```
 </details>
 
-### Class News_debug
-
-**Error:** Reference PDF not found
-
 ### Confirmatory_Affidavit
 
+- **Case Metadata:** format: docx | case: Confirmatory_Affidavit | scope: issue-docx
 - **Text Similarity:** 0.9791
 - **Visual Average:** 0.969
 - **Overall Score:** 0.9792
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=151685 bytes, Reference=143292 bytes
+- **File Size:** MiniPdf=76727 bytes, Reference=143292 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1193,11 +1168,12 @@ Text content: ✅ Identical
 
 ### Cooperation Agreement Template
 
+- **Case Metadata:** format: docx | case: Cooperation Agreement Template | scope: issue-docx
 - **Text Similarity:** 0.9802
 - **Visual Average:** 0.9849
 - **Overall Score:** 0.986
 - **Pages:** MiniPdf=7, Reference=7
-- **File Size:** MiniPdf=4060338 bytes, Reference=139728 bytes
+- **File Size:** MiniPdf=443744 bytes, Reference=139728 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1337,11 +1313,12 @@ Text content: ✅ Identical
 
 ### Fabrikam
 
+- **Case Metadata:** format: docx | case: Fabrikam | scope: issue-docx
 - **Text Similarity:** 1.0
 - **Visual Average:** 0.9426
 - **Overall Score:** 0.977
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=95314 bytes, Reference=55486 bytes
+- **File Size:** MiniPdf=91987 bytes, Reference=55486 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1372,11 +1349,12 @@ Text content: ✅ Identical
 
 ### Invoice
 
+- **Case Metadata:** format: docx | case: Invoice | scope: issue-docx
 - **Text Similarity:** 1.0
 - **Visual Average:** 0.9594
 - **Overall Score:** 0.9838
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=113622 bytes, Reference=65867 bytes
+- **File Size:** MiniPdf=109723 bytes, Reference=65867 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1403,8 +1381,63 @@ Text content: ✅ Identical
 ```
 </details>
 
+### Issue79_FilledContract
+
+- **Case Metadata:** format: docx | case: Issue79_FilledContract | scope: issue-docx
+- **Text Similarity:** 0.9933
+- **Visual Average:** 0.9751
+- **Overall Score:** 0.9874
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=293726 bytes, Reference=75476 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Issue79_FilledContract.pdf
++++ reference/Issue79_FilledContract.pdf
+@@ -2,7 +2,7 @@
+ 甲方：甲方公司
+
+ 乙方：乙方公司
+
+ 乙方根据双方签署合同为甲方提供服务。
+
+-1.合作时间：2026 年 06 月 29 日
+
++1.合作时间：2026 年06 月29 日
+
+ 2.项目汇总
+
+ 类型项目 项目合作日期 总金额（元）
+
+ 技术服务费 2026-06-29 666
+
+@@ -23,4 +23,4 @@
+ 甲方：甲方公司 乙方：乙方公司
+
+ 授权代表：张三 授权代表：李四
+
+ 乙方在此处盖章
+
+-日期：2026 年 06 月 29 日 日期：2026 年 06 月 29 日
++日期：2026 年06 月29 日 日期：2026 年06 月29 日
+```
+</details>
+
+### Issue79_TemplateContract
+
+- **Case Metadata:** format: docx | case: Issue79_TemplateContract | scope: issue-docx
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9745
+- **Overall Score:** 0.9898
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=134303 bytes, Reference=74748 bytes
+
+Text content: ✅ Identical
+
 ### Issue83_Output
 
+- **Case Metadata:** format: docx | case: Issue83_Output | scope: issue-docx
 - **Text Similarity:** 1.0
 - **Visual Average:** 0.98
 - **Overall Score:** 0.992
@@ -1415,11 +1448,12 @@ Text content: ✅ Identical
 
 ### issue202605
 
+- **Case Metadata:** format: docx | case: issue202605 | scope: issue-docx
 - **Text Similarity:** 0.8674
 - **Visual Average:** 0.9133
 - **Overall Score:** 0.9123
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=7897586 bytes, Reference=154034 bytes
+- **File Size:** MiniPdf=874072 bytes, Reference=154034 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1563,11 +1597,12 @@ Text content: ✅ Identical
 
 ### issue26050501
 
+- **Case Metadata:** format: docx | case: issue26050501 | scope: issue-docx
 - **Text Similarity:** 0.94
 - **Visual Average:** 0.9394
 - **Overall Score:** 0.9518
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=236644 bytes, Reference=111155 bytes
+- **File Size:** MiniPdf=155845 bytes, Reference=111155 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1738,11 +1773,12 @@ Text content: ✅ Identical
 
 ### issues66
 
+- **Case Metadata:** format: docx | case: issues66 | scope: issue-docx
 - **Text Similarity:** 0.9548
 - **Visual Average:** 0.9232
 - **Overall Score:** 0.9512
 - **Pages:** MiniPdf=3, Reference=3
-- **File Size:** MiniPdf=5680567 bytes, Reference=229716 bytes
+- **File Size:** MiniPdf=626148 bytes, Reference=229716 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1843,11 +1879,12 @@ Text content: ✅ Identical
 
 ### MODERN LIVING
 
+- **Case Metadata:** format: docx | case: MODERN LIVING | scope: issue-docx
 - **Text Similarity:** 0.8567
 - **Visual Average:** 0.8365
 - **Overall Score:** 0.8773
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=722843 bytes, Reference=220316 bytes
+- **File Size:** MiniPdf=687495 bytes, Reference=220316 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1976,11 +2013,12 @@ Text content: ✅ Identical
 
 ### nthu_article
 
+- **Case Metadata:** format: docx | case: nthu_article | scope: issue-docx
 - **Text Similarity:** 0.8597
 - **Visual Average:** 0.8694
 - **Overall Score:** 0.7916
 - **Pages:** MiniPdf=19, Reference=20
-- **File Size:** MiniPdf=9224028 bytes, Reference=798510 bytes
+- **File Size:** MiniPdf=1963218 bytes, Reference=798510 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2191,11 +2229,12 @@ Text content: ✅ Identical
 
 ### OSCAR WARD
 
+- **Case Metadata:** format: docx | case: OSCAR WARD | scope: issue-docx
 - **Text Similarity:** 0.9949
 - **Visual Average:** 0.8445
 - **Overall Score:** 0.9358
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=205247 bytes, Reference=49023 bytes
+- **File Size:** MiniPdf=126183 bytes, Reference=49023 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2218,11 +2257,12 @@ Text content: ✅ Identical
 
 ### SA8000 ch sample
 
+- **Case Metadata:** format: docx | case: SA8000 ch sample | scope: issue-docx
 - **Text Similarity:** 0.9921
 - **Visual Average:** 0.9642
 - **Overall Score:** 0.9825
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=467296 bytes, Reference=186097 bytes
+- **File Size:** MiniPdf=332116 bytes, Reference=186097 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2401,11 +2441,12 @@ Text content: ✅ Identical
 
 ### Support_Letter
 
+- **Case Metadata:** format: docx | case: Support_Letter | scope: issue-docx
 - **Text Similarity:** 1.0
 - **Visual Average:** 0.9392
 - **Overall Score:** 0.9757
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=361601 bytes, Reference=147353 bytes
+- **File Size:** MiniPdf=174285 bytes, Reference=147353 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2442,11 +2483,12 @@ Text content: ✅ Identical
 
 ### Template for MSc Thesis
 
+- **Case Metadata:** format: docx | case: Template for MSc Thesis | scope: issue-docx
 - **Text Similarity:** 1.0
 - **Visual Average:** 0.9848
 - **Overall Score:** 0.9939
 - **Pages:** MiniPdf=17, Reference=17
-- **File Size:** MiniPdf=865859 bytes, Reference=402081 bytes
+- **File Size:** MiniPdf=808236 bytes, Reference=402081 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2532,17 +2574,14 @@ Text content: ✅ Identical
 ```
 </details>
 
-### Template_repaired
-
-**Error:** Reference PDF not found
-
 ### TestIssue61
 
+- **Case Metadata:** format: docx | case: TestIssue61 | scope: issue-docx
 - **Text Similarity:** 0.7143
 - **Visual Average:** 0.9954
 - **Overall Score:** 0.8839
 - **Pages:** MiniPdf=8, Reference=8
-- **File Size:** MiniPdf=170841 bytes, Reference=100753 bytes
+- **File Size:** MiniPdf=94401 bytes, Reference=100753 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2591,11 +2630,12 @@ Text content: ✅ Identical
 
 ### TestIssue78
 
+- **Case Metadata:** format: docx | case: TestIssue78 | scope: issue-docx
 - **Text Similarity:** 0.9961
 - **Visual Average:** 0.9723
 - **Overall Score:** 0.9874
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=3720372 bytes, Reference=57420 bytes
+- **File Size:** MiniPdf=142127 bytes, Reference=57420 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2642,58 +2682,6 @@ Text content: ✅ Identical
  格证、维保合同等现场实际情况信息进行填写，保证其信息的准确性；
 ```
 </details>
-
-### Issue79_FilledContract
-
-- **Text Similarity:** 0.9933
-- **Visual Average:** 0.9751
-- **Overall Score:** 0.9874
-- **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=293726 bytes, Reference=75476 bytes
-
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/Issue79_FilledContract.pdf
-+++ reference/Issue79_FilledContract.pdf
-@@ -2,7 +2,7 @@
- 甲方：甲方公司
-
- 乙方：乙方公司
-
- 乙方根据双方签署合同为甲方提供服务。
-
--1.合作时间：2026 年 06 月 29 日
-
-+1.合作时间：2026 年06 月29 日
-
- 2.项目汇总
-
- 类型项目 项目合作日期 总金额（元）
-
- 技术服务费 2026-06-29 666
-
-@@ -23,4 +23,4 @@
- 甲方：甲方公司 乙方：乙方公司
-
- 授权代表：张三 授权代表：李四
-
- 乙方在此处盖章
-
--日期：2026 年 06 月 29 日 日期：2026 年 06 月 29 日
-+日期：2026 年06 月29 日 日期：2026 年06 月29 日
-```
-</details>
-
-### Issue79_TemplateContract
-
-- **Text Similarity:** 1.0
-- **Visual Average:** 0.9745
-- **Overall Score:** 0.9898
-- **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=134303 bytes, Reference=74748 bytes
-
-Text content: ✅ Identical
 
 ## Improvement Suggestions
 

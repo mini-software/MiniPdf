@@ -8,7 +8,7 @@
     When -Filter is omitted, all issue files (xlsx + docx) are processed.
 
 .EXAMPLE
-    .\scripts\Run-Benchmark_issues.ps1                              # run ALL issue xlsx + docx
+    .\scripts\Run-Benchmark_issues.ps1 -All                         # run ALL issue xlsx + docx
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000"             # only files matching "sa8000"
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -SkipReference
     .\scripts\Run-Benchmark_issues.ps1 -Filter "sa8000" -CompareOnly
@@ -18,6 +18,7 @@
 
 param(
     [string]$Filter,
+    [switch]$All,
     [switch]$CompareOnly,
     [switch]$SkipMiniPdf,
     [switch]$SkipReference,
@@ -66,6 +67,11 @@ $ReportDocx = Join-Path $IssueDir "reports_docx"
 Write-Host "`n============================================================" -ForegroundColor Cyan
 Write-Host "  MiniPdf Issue Files Benchmark" -ForegroundColor Cyan
 Write-Host "============================================================`n" -ForegroundColor Cyan
+
+if (-not $All -and -not $Filter) {
+    Write-Host "Specify -Filter for a focused issue run, or -All for the full issue benchmark." -ForegroundColor Red
+    exit 1
+}
 
 if ($SingleFile) {
     Write-Host "  MiniPdf mode: .NET single-file CLI ($SingleFileRid)" -ForegroundColor DarkCyan
@@ -200,6 +206,28 @@ function Show-ScoreDrops {
     }
 }
 
+function Write-ComparisonManifest {
+    param(
+        [object[]]$Files,
+        [string]$ManifestPath,
+        [string]$Format
+    )
+
+    $cases = @($Files | Sort-Object BaseName | ForEach-Object {
+        [pscustomobject]@{
+            name = $_.BaseName
+            case_id = $_.BaseName
+            format = $Format
+        }
+    })
+
+    [pscustomobject]@{ cases = $cases } |
+        ConvertTo-Json -Depth 5 |
+        Set-Content -Path $ManifestPath -Encoding UTF8
+
+    return $ManifestPath
+}
+
 # Step 0: Install Python dependencies
 if (-not $SkipInstall) {
     Write-Host "[Step 0] Installing Python dependencies..." -ForegroundColor Yellow
@@ -278,7 +306,8 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
 
     Write-Host "[Step 3] Comparing XLSX PDFs..." -ForegroundColor Yellow
     $xlsxScoresBefore = Get-ReportScores -ReportDir $ReportXlsx
-    $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfXlsx, "--reference-dir", $RefXlsx, "--report-dir", $ReportXlsx)
+    $xlsxManifest = Write-ComparisonManifest -Files $xlsxFiles -ManifestPath (Join-Path $ReportXlsx "comparison_manifest.json") -Format "xlsx"
+    $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfXlsx, "--reference-dir", $RefXlsx, "--report-dir", $ReportXlsx, "--manifest", $xlsxManifest, "--report-scope", "issue-xlsx")
     if ($WithOffice -and (Test-Path $OfficeXlsx)) {
         $compareArgs += @("--office-dir", $OfficeXlsx)
     }
@@ -360,7 +389,8 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
 
     Write-Host "[Step 3] Comparing DOCX PDFs..." -ForegroundColor Yellow
     $docxScoresBefore = Get-ReportScores -ReportDir $ReportDocx
-    $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfDocx, "--reference-dir", $RefDocx, "--report-dir", $ReportDocx)
+    $docxManifest = Write-ComparisonManifest -Files $docxFiles -ManifestPath (Join-Path $ReportDocx "comparison_manifest.json") -Format "docx"
+    $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfDocx, "--reference-dir", $RefDocx, "--report-dir", $ReportDocx, "--manifest", $docxManifest, "--report-scope", "issue-docx")
     if ($WithOffice -and (Test-Path $OfficeDocx)) {
         $compareArgs += @("--office-dir", $OfficeDocx)
     }

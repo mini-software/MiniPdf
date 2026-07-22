@@ -26,7 +26,8 @@ dotnet test tests/MiniPdf.Tests
 ```powershell
 scripts/Run-Benchmark.ps1 -Filter "border"           # only cases containing "border"
 scripts/Run-Benchmark_docx.ps1 -Filter "heading"
-scripts/Run-Benchmark_issues.ps1 -Filter "sa8000"    # -Filter is mandatory for issues
+scripts/Run-Benchmark_issues.ps1 -Filter "sa8000"    # focused issue run
+scripts/Run-Benchmark_issues.ps1 -All                 # full issue benchmark
 ```
 
 

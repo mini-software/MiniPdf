@@ -57,9 +57,10 @@ def run(cmd: list[str], cwd: str = None, check: bool = True) -> int:
 def step_generate_minipdf_pdfs(filter_pattern: str = None):
     banner("Step 1: Convert PPTX -> PDF (MiniPdf)")
     scripts_dir = SCRIPT_DIR / ".." / "MiniPdf.Scripts"
-    cmd = ["dotnet", "run", "convert_pptx_to_pdf.cs"]
+    cmd = ["dotnet", "run", "convert_pptx_to_pdf.cs", "--",
+           str(PPTX_DIR.resolve()), str(MINIPDF_PDF_DIR.resolve())]
     if filter_pattern:
-        cmd += ["--", str(PPTX_DIR.resolve()), str(MINIPDF_PDF_DIR.resolve()), filter_pattern]
+        cmd += [filter_pattern]
     return run(cmd, cwd=str(scripts_dir))
 
 

@@ -1,0 +1,114 @@
+{
+  "cases": [
+    {
+      "name": "Academic Achievement Summary Table",
+      "case_id": "Academic Achievement Summary Table",
+      "format": "xlsx"
+    },
+    {
+      "name": "AcademicAchievement_temp",
+      "case_id": "AcademicAchievement_temp",
+      "format": "xlsx"
+    },
+    {
+      "name": "Business expense budget1",
+      "case_id": "Business expense budget1",
+      "format": "xlsx"
+    },
+    {
+      "name": "Business expenses budget2",
+      "case_id": "Business expenses budget2",
+      "format": "xlsx"
+    },
+    {
+      "name": "Business plan checklist with SWOT analysis1",
+      "case_id": "Business plan checklist with SWOT analysis1",
+      "format": "xlsx"
+    },
+    {
+      "name": "Event budget1",
+      "case_id": "Event budget1",
+      "format": "xlsx"
+    },
+    {
+      "name": "Expense report basic1",
+      "case_id": "Expense report basic1",
+      "format": "xlsx"
+    },
+    {
+      "name": "Grocery list1",
+      "case_id": "Grocery list1",
+      "format": "xlsx"
+    },
+    {
+      "name": "payroll-calculator_f",
+      "case_id": "payroll-calculator_f",
+      "format": "xlsx"
+    },
+    {
+      "name": "PO_anonymized",
+      "case_id": "PO_anonymized",
+      "format": "xlsx"
+    },
+    {
+      "name": "Simple invoice1",
+      "case_id": "Simple invoice1",
+      "format": "xlsx"
+    },
+    {
+      "name": "Small business cash flow forecast1",
+      "case_id": "Small business cash flow forecast1",
+      "format": "xlsx"
+    },
+    {
+      "name": "Wedding_timeline_planner1_copy",
+      "case_id": "Wedding_timeline_planner1_copy",
+      "format": "xlsx"
+    },
+    {
+      "name": "Weekly schedule planner1",
+      "case_id": "Weekly schedule planner1",
+      "format": "xlsx"
+    },
+    {
+      "name": "XlsxIssue75",
+      "case_id": "XlsxIssue75",
+      "format": "xlsx"
+    },
+    {
+      "name": "XlsxIssue77_MergedCellAlignment",
+      "case_id": "XlsxIssue77_MergedCellAlignment",
+      "format": "xlsx"
+    },
+    {
+      "name": "XlsxIssue77_Template1",
+      "case_id": "XlsxIssue77_Template1",
+      "format": "xlsx"
+    },
+    {
+      "name": "XlsxIssue77_Template2_Workaround",
+      "case_id": "XlsxIssue77_Template2_Workaround",
+      "format": "xlsx"
+    },
+    {
+      "name": "XlsxIssue81_LayoutOptions",
+      "case_id": "XlsxIssue81_LayoutOptions",
+      "format": "xlsx"
+    },
+    {
+      "name": "XlsxIssue82_5mb",
+      "case_id": "XlsxIssue82_5mb",
+      "format": "xlsx"
+    },
+    {
+      "name": "XlsxIssue82_SampleTestData5mb",
+      "case_id": "XlsxIssue82_SampleTestData5mb",
+      "format": "xlsx"
+    },
+    {
+      "name": "XlsxIssue82_WideTable",
+      "case_id": "XlsxIssue82_WideTable",
+      "format": "xlsx"
+    }
+  ]
+}
