@@ -61,12 +61,14 @@ internal static class ExcelReader
         // Read each sheet
         var sheetIndex = 0;
         var sheetEntries = new List<ZipArchiveEntry>(); // track entries for conditional formatting pass
+        var sheetEntryPaths = new List<string>();
         foreach (var info in sheetInfos)
         {
             var currentIndex = sheetIndex++;
             if (info.IsHidden) continue;
 
-            var entry = archive.GetEntry($"xl/worksheets/sheet{info.SheetId}.xml")
+            var entry = !string.IsNullOrEmpty(info.TargetPath) ? archive.GetEntry(info.TargetPath) : null;
+            entry ??= archive.GetEntry($"xl/worksheets/sheet{info.SheetId}.xml")
                         ?? archive.GetEntry($"xl/worksheets/{info.Name}.xml");
 
             // Try by relationship id pattern
@@ -77,8 +79,8 @@ internal static class ExcelReader
             if (entry == null) continue;
 
             var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
-            var images = ReadSheetImages(archive, info.SheetId);
-            var drawingShapes = ReadSheetShapes(archive, info.SheetId, themeColors);
+            var images = ReadSheetImages(archive, entry.FullName);
+            var drawingShapes = ReadSheetShapes(archive, entry.FullName, themeColors);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
             var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
@@ -91,9 +93,10 @@ internal static class ExcelReader
             var pageSetup = ReadPageSetup(entry);
             var hasPrintArea = printAreas.TryGetValue(currentIndex, out var printArea);
             var hasPrintTitleRows = printTitleRows.TryGetValue(currentIndex, out var printTitleRow);
-            ApplyTableStyleFormatting(archive, info.SheetId, rows, dxfStyles);
+            ApplyTableStyleFormatting(archive, entry.FullName, rows, dxfStyles);
             sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, shapes: drawingShapes, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: hasPrintArea ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: hasPrintTitleRows ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt, maxDigitWidthPx: maxDigitWidthPx));
             sheetEntries.Add(entry);
+            sheetEntryPaths.Add(entry.FullName);
         }
 
         // If no sheets found via workbook, try reading sheet1 directly
@@ -103,12 +106,13 @@ internal static class ExcelReader
             if (entry != null)
             {
                 var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
-                var images = ReadSheetImages(archive, 1);
+                var images = ReadSheetImages(archive, entry.FullName);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
                 var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
                 var pageSetup = ReadPageSetup(entry);
                 sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, maxDigitWidthPx: maxDigitWidthPx));
+                sheetEntryPaths.Add(entry.FullName);
             }
         }
 
@@ -131,8 +135,8 @@ internal static class ExcelReader
         // Second pass: read charts (needs sheet data to resolve cell references)
         for (var si = 0; si < sheets.Count; si++)
         {
-            var sheetId = si < sheetInfos.Count ? sheetInfos[si].SheetId : 1;
-            var charts = ReadSheetCharts(archive, sheetId, sheets);
+            var worksheetPath = si < sheetEntryPaths.Count ? sheetEntryPaths[si] : $"xl/worksheets/sheet{si + 1}.xml";
+            var charts = ReadSheetCharts(archive, worksheetPath, sheets);
             foreach (var chart in charts)
                 sheets[si].Charts.Add(chart);
         }
@@ -190,21 +194,25 @@ internal static class ExcelReader
         var result = new List<SheetInfo>();
         var printAreas = new Dictionary<int, (int, int, int, int)>();
         var printTitleRows = new Dictionary<int, (int, int)>();
+        var sheetTargetsByRelationshipId = ReadWorkbookSheetTargets(archive);
         var entry = archive.GetEntry("xl/workbook.xml");
         if (entry == null) return (result, printAreas, printTitleRows);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
         var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var r = XNamespace.Get("http://schemas.openxmlformats.org/officeDocument/2006/relationships");
 
         var sheetId = 1;
         foreach (var sheet in doc.Descendants(ns + "sheet"))
         {
             var name = sheet.Attribute("name")?.Value ?? $"Sheet{sheetId}";
+            var relationshipId = sheet.Attribute(r + "id")?.Value;
+            sheetTargetsByRelationshipId.TryGetValue(relationshipId ?? string.Empty, out var targetPath);
             var state = sheet.Attribute("state")?.Value;
             var isHidden = string.Equals(state, "hidden", StringComparison.OrdinalIgnoreCase)
                        || string.Equals(state, "veryHidden", StringComparison.OrdinalIgnoreCase);
-            result.Add(new SheetInfo(name, sheetId, isHidden));
+            result.Add(new SheetInfo(name, sheetId, isHidden, targetPath));
             sheetId++;
         }
 
@@ -253,6 +261,72 @@ internal static class ExcelReader
         }
 
         return (result, printAreas, printTitleRows);
+    }
+
+    private static Dictionary<string, string> ReadWorkbookSheetTargets(ZipArchive archive)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var entry = archive.GetEntry("xl/_rels/workbook.xml.rels");
+        if (entry == null) return result;
+
+        using var stream = entry.Open();
+        var doc = XDocument.Load(stream);
+        foreach (var relationship in doc.Descendants())
+        {
+            var id = relationship.Attribute("Id")?.Value;
+            var type = relationship.Attribute("Type")?.Value;
+            var target = relationship.Attribute("Target")?.Value;
+            var targetMode = relationship.Attribute("TargetMode")?.Value;
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(target)) continue;
+            if (!string.IsNullOrEmpty(targetMode) && !string.Equals(targetMode, "Internal", StringComparison.OrdinalIgnoreCase)) continue;
+            if (type?.EndsWith("/worksheet", StringComparison.OrdinalIgnoreCase) != true) continue;
+
+            result[id] = ResolveRelationshipTarget("xl", target);
+        }
+
+        return result;
+    }
+
+    private static string ResolveRelationshipTarget(string sourceDirectory, string target)
+    {
+        target = target.Replace('\\', '/');
+        if (target.StartsWith('/')) return target.TrimStart('/');
+
+        var combined = string.IsNullOrEmpty(sourceDirectory)
+            ? target
+            : sourceDirectory.TrimEnd('/') + "/" + target;
+        var segments = combined.Split('/');
+        var resolved = new List<string>();
+        foreach (var segment in segments)
+        {
+            if (string.IsNullOrEmpty(segment) || segment == ".") continue;
+            if (segment == "..")
+            {
+                if (resolved.Count > 0) resolved.RemoveAt(resolved.Count - 1);
+                continue;
+            }
+
+            resolved.Add(segment);
+        }
+
+        return string.Join("/", resolved);
+    }
+
+    private static string GetPartDirectory(string partPath)
+    {
+        partPath = partPath.Replace('\\', '/');
+        var slashIndex = partPath.LastIndexOf('/');
+        return slashIndex >= 0 ? partPath.Substring(0, slashIndex) : string.Empty;
+    }
+
+    private static string GetRelationshipPartPath(string partPath)
+    {
+        partPath = partPath.Replace('\\', '/');
+        var directory = GetPartDirectory(partPath);
+        var fileName = System.IO.Path.GetFileName(partPath);
+        return string.IsNullOrEmpty(directory)
+            ? $"_rels/{fileName}.rels"
+            : $"{directory}/_rels/{fileName}.rels";
     }
 
     private static List<FontStyleInfo> ReadFontStyles(ZipArchive archive, List<PdfColor> themeColors)
@@ -411,12 +485,12 @@ internal static class ExcelReader
     /// Reads table definitions for a worksheet and applies table-style borders
     /// to cells within each table range that don't already have explicit borders.
     /// </summary>
-    private static void ApplyTableBorders(ZipArchive archive, int sheetId,
+    private static void ApplyTableBorders(ZipArchive archive, string worksheetPath,
         List<List<ExcelCell>> rows, Dictionary<string, CellBorderInfo> tableStyleBorders)
     {
         if (tableStyleBorders.Count == 0) return;
 
-        var relsPath = $"xl/worksheets/_rels/sheet{sheetId}.xml.rels";
+        var relsPath = GetRelationshipPartPath(worksheetPath);
         var relsEntry = archive.GetEntry(relsPath);
         if (relsEntry == null) return;
 
@@ -484,10 +558,10 @@ internal static class ExcelReader
     /// Named table styles are applied first; direct table and table-column DXF ids
     /// then override them, matching Office/LibreOffice precedence for custom tables.
     /// </summary>
-    private static void ApplyTableStyleFormatting(ZipArchive archive, int sheetId,
+    private static void ApplyTableStyleFormatting(ZipArchive archive, string worksheetPath,
         List<List<ExcelCell>> rows, IReadOnlyList<DxfStyleInfo> dxfInfos)
     {
-        var relsPath = $"xl/worksheets/_rels/sheet{sheetId}.xml.rels";
+        var relsPath = GetRelationshipPartPath(worksheetPath);
         var relsEntry = archive.GetEntry(relsPath);
         if (relsEntry == null) return;
 
@@ -2895,7 +2969,7 @@ internal static class ExcelReader
         return string.IsNullOrEmpty(result) ? "yyyy-MM-dd" : result;
     }
 
-    internal record SheetInfo(string Name, int SheetId, bool IsHidden = false);
+    internal record SheetInfo(string Name, int SheetId, bool IsHidden = false, string? TargetPath = null);
 
     /// <summary>
     /// Reads column widths from a worksheet entry.
@@ -3202,16 +3276,16 @@ internal static class ExcelReader
     /// Reads all images embedded in a given worksheet.
     /// Returns a list of ExcelEmbeddedImage with anchor positions and raw image bytes.
     /// </summary>
-    private static List<ExcelEmbeddedImage> ReadSheetImages(ZipArchive archive, int sheetId)
+    private static List<ExcelEmbeddedImage> ReadSheetImages(ZipArchive archive, string worksheetPath)
     {
         var images = new List<ExcelEmbeddedImage>();
 
         // Step 1: Find the sheet relationships file to locate the drawing
-        var sheetRelsPath = $"xl/worksheets/_rels/sheet{sheetId}.xml.rels";
+        var sheetRelsPath = GetRelationshipPartPath(worksheetPath);
         var relsEntry = archive.GetEntry(sheetRelsPath);
         if (relsEntry == null) return images;
 
-        string? drawingFileName = null;
+        string? drawingPath = null;
         using (var relsStream = relsEntry.Open())
         {
             var relsDoc = XDocument.Load(relsStream);
@@ -3221,16 +3295,14 @@ internal static class ExcelReader
             if (drawingRel == null) return images;
             var target = drawingRel.Attribute("Target")?.Value;
             if (string.IsNullOrEmpty(target)) return images;
-            // Target like "../drawings/drawing1.xml" → filename = "drawing1.xml"
-            drawingFileName = System.IO.Path.GetFileName(target);
+            drawingPath = ResolveRelationshipTarget(GetPartDirectory(worksheetPath), target);
         }
 
-        var drawingPath = $"xl/drawings/{drawingFileName}";
         var drawingEntry = archive.GetEntry(drawingPath);
         if (drawingEntry == null) return images;
 
         // Step 2: Read drawing relationships to map rId → media path
-        var drawingRelsPath = $"xl/drawings/_rels/{drawingFileName}.rels";
+        var drawingRelsPath = GetRelationshipPartPath(drawingPath);
         var drawingRelsEntry = archive.GetEntry(drawingRelsPath);
         if (drawingRelsEntry == null) return images;
 
@@ -3483,10 +3555,10 @@ internal static class ExcelReader
     /// <summary>
     /// Reads decorative shape elements (rectangles, rounded rectangles) from a worksheet's drawing.
     /// </summary>
-    private static List<ExcelDrawingShape> ReadSheetShapes(ZipArchive archive, int sheetId, List<PdfColor> themeColors)
+    private static List<ExcelDrawingShape> ReadSheetShapes(ZipArchive archive, string worksheetPath, List<PdfColor> themeColors)
     {
         var shapes = new List<ExcelDrawingShape>();
-        var relsEntry = archive.GetEntry($"xl/worksheets/_rels/sheet{sheetId}.xml.rels");
+        var relsEntry = archive.GetEntry(GetRelationshipPartPath(worksheetPath));
         if (relsEntry == null) return shapes;
 
         string drawingPath;
@@ -3498,7 +3570,7 @@ internal static class ExcelReader
             if (drawingRel == null) return shapes;
             var target = drawingRel.Attribute("Target")?.Value;
             if (string.IsNullOrEmpty(target)) return shapes;
-            drawingPath = target.StartsWith('/') ? target.TrimStart('/') : "xl/" + target.TrimStart('.', '/');
+            drawingPath = ResolveRelationshipTarget(GetPartDirectory(worksheetPath), target);
         }
 
         var drawingEntry = archive.GetEntry(drawingPath);
@@ -3788,16 +3860,16 @@ internal static class ExcelReader
     /// <summary>
     /// Reads chart anchors and basic chart metadata from a worksheet's drawing.
     /// </summary>
-    private static List<ExcelChartInfo> ReadSheetCharts(ZipArchive archive, int sheetId, List<ExcelSheet> allSheets)
+    private static List<ExcelChartInfo> ReadSheetCharts(ZipArchive archive, string worksheetPath, List<ExcelSheet> allSheets)
     {
         var charts = new List<ExcelChartInfo>();
 
         // Step 1: Find the drawing file from sheet relationships
-        var sheetRelsPath = $"xl/worksheets/_rels/sheet{sheetId}.xml.rels";
+        var sheetRelsPath = GetRelationshipPartPath(worksheetPath);
         var relsEntry = archive.GetEntry(sheetRelsPath);
         if (relsEntry == null) return charts;
 
-        string? drawingFileName = null;
+        string? drawingPath = null;
         using (var relsStream = relsEntry.Open())
         {
             var relsDoc = XDocument.Load(relsStream);
@@ -3807,15 +3879,14 @@ internal static class ExcelReader
             if (drawingRel == null) return charts;
             var target = drawingRel.Attribute("Target")?.Value;
             if (string.IsNullOrEmpty(target)) return charts;
-            drawingFileName = System.IO.Path.GetFileName(target);
+            drawingPath = ResolveRelationshipTarget(GetPartDirectory(worksheetPath), target);
         }
 
-        var drawingPath = $"xl/drawings/{drawingFileName}";
         var drawingEntry = archive.GetEntry(drawingPath);
         if (drawingEntry == null) return charts;
 
         // Step 2: Read drawing relationships to map rId → chart path
-        var drawingRelsPath = $"xl/drawings/_rels/{drawingFileName}.rels";
+        var drawingRelsPath = GetRelationshipPartPath(drawingPath);
         var drawingRelsEntry = archive.GetEntry(drawingRelsPath);
         if (drawingRelsEntry == null) return charts;
 
