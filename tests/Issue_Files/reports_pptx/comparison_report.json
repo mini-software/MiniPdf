@@ -31,62 +31,290 @@
       {
         "page": 1,
         "minipdf_img": "Asian Pacific_p1_minipdf.png",
-        "reference_img": "Asian Pacific_p1_reference.png"
+        "reference_img": "Asian Pacific_p1_reference.png",
+        "heatmap_img": "Asian Pacific_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            0,
+            0,
+            2000,
+            1125
+          ],
+          "changed_pixels": 125177,
+          "changed_fraction": 0.055634,
+          "mean_abs_rgb": 3.3345,
+          "rmse_rgb": 17.1019,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 2,
         "minipdf_img": "Asian Pacific_p2_minipdf.png",
-        "reference_img": "Asian Pacific_p2_reference.png"
+        "reference_img": "Asian Pacific_p2_reference.png",
+        "heatmap_img": "Asian Pacific_p2_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            140,
+            0,
+            2000,
+            1125
+          ],
+          "changed_pixels": 89437,
+          "changed_fraction": 0.03975,
+          "mean_abs_rgb": 2.931,
+          "rmse_rgb": 16.1585,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 3,
         "minipdf_img": "Asian Pacific_p3_minipdf.png",
-        "reference_img": "Asian Pacific_p3_reference.png"
+        "reference_img": "Asian Pacific_p3_reference.png",
+        "heatmap_img": "Asian Pacific_p3_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            0,
+            0,
+            2000,
+            1125
+          ],
+          "changed_pixels": 47785,
+          "changed_fraction": 0.021238,
+          "mean_abs_rgb": 2.055,
+          "rmse_rgb": 15.0269,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 4,
         "minipdf_img": "Asian Pacific_p4_minipdf.png",
-        "reference_img": "Asian Pacific_p4_reference.png"
+        "reference_img": "Asian Pacific_p4_reference.png",
+        "heatmap_img": "Asian Pacific_p4_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            127,
+            0,
+            2000,
+            1125
+          ],
+          "changed_pixels": 26588,
+          "changed_fraction": 0.011817,
+          "mean_abs_rgb": 1.3819,
+          "rmse_rgb": 10.0737,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 5,
         "minipdf_img": "Asian Pacific_p5_minipdf.png",
-        "reference_img": "Asian Pacific_p5_reference.png"
+        "reference_img": "Asian Pacific_p5_reference.png",
+        "heatmap_img": "Asian Pacific_p5_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            0,
+            0,
+            2000,
+            1125
+          ],
+          "changed_pixels": 204888,
+          "changed_fraction": 0.091061,
+          "mean_abs_rgb": 7.7136,
+          "rmse_rgb": 28.0161,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 6,
         "minipdf_img": "Asian Pacific_p6_minipdf.png",
-        "reference_img": "Asian Pacific_p6_reference.png"
+        "reference_img": "Asian Pacific_p6_reference.png",
+        "heatmap_img": "Asian Pacific_p6_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            0,
+            0,
+            1863,
+            1125
+          ],
+          "changed_pixels": 173043,
+          "changed_fraction": 0.076908,
+          "mean_abs_rgb": 9.5649,
+          "rmse_rgb": 40.4101,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 7,
         "minipdf_img": "Asian Pacific_p7_minipdf.png",
-        "reference_img": "Asian Pacific_p7_reference.png"
+        "reference_img": "Asian Pacific_p7_reference.png",
+        "heatmap_img": "Asian Pacific_p7_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            125,
+            0,
+            2000,
+            1125
+          ],
+          "changed_pixels": 258061,
+          "changed_fraction": 0.114694,
+          "mean_abs_rgb": 5.8269,
+          "rmse_rgb": 22.4887,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 8,
         "minipdf_img": "Asian Pacific_p8_minipdf.png",
-        "reference_img": "Asian Pacific_p8_reference.png"
+        "reference_img": "Asian Pacific_p8_reference.png",
+        "heatmap_img": "Asian Pacific_p8_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            126,
+            0,
+            2000,
+            1125
+          ],
+          "changed_pixels": 71346,
+          "changed_fraction": 0.031709,
+          "mean_abs_rgb": 3.5203,
+          "rmse_rgb": 21.3939,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 9,
         "minipdf_img": "Asian Pacific_p9_minipdf.png",
-        "reference_img": "Asian Pacific_p9_reference.png"
+        "reference_img": "Asian Pacific_p9_reference.png",
+        "heatmap_img": "Asian Pacific_p9_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            124,
+            0,
+            2000,
+            1125
+          ],
+          "changed_pixels": 129639,
+          "changed_fraction": 0.057617,
+          "mean_abs_rgb": 6.8981,
+          "rmse_rgb": 34.1859,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 10,
         "minipdf_img": "Asian Pacific_p10_minipdf.png",
-        "reference_img": "Asian Pacific_p10_reference.png"
+        "reference_img": "Asian Pacific_p10_reference.png",
+        "heatmap_img": "Asian Pacific_p10_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            0,
+            0,
+            2000,
+            1125
+          ],
+          "changed_pixels": 59384,
+          "changed_fraction": 0.026393,
+          "mean_abs_rgb": 2.512,
+          "rmse_rgb": 16.3495,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 11,
         "minipdf_img": "Asian Pacific_p11_minipdf.png",
-        "reference_img": "Asian Pacific_p11_reference.png"
+        "reference_img": "Asian Pacific_p11_reference.png",
+        "heatmap_img": "Asian Pacific_p11_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            0,
+            0,
+            2000,
+            1125
+          ],
+          "changed_pixels": 147520,
+          "changed_fraction": 0.065564,
+          "mean_abs_rgb": 3.0421,
+          "rmse_rgb": 14.6974,
+          "threshold": 12,
+          "gain": 5.0
+        }
       },
       {
         "page": 12,
         "minipdf_img": "Asian Pacific_p12_minipdf.png",
-        "reference_img": "Asian Pacific_p12_reference.png"
+        "reference_img": "Asian Pacific_p12_reference.png",
+        "heatmap_img": "Asian Pacific_p12_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            0,
+            0,
+            1558,
+            1125
+          ],
+          "changed_pixels": 51053,
+          "changed_fraction": 0.02269,
+          "mean_abs_rgb": 2.1594,
+          "rmse_rgb": 18.4221,
+          "threshold": 12,
+          "gain": 5.0
+        }
       }
     ],
     "overall_score": 0.9226

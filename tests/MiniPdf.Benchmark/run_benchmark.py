@@ -77,9 +77,10 @@ def step_generate_minipdf_pdfs(filter_pattern: str = None):
     banner("Step 2: Convert Excel -> PDF (MiniPdf)")
     scripts_dir = SCRIPT_DIR / ".." / "MiniPdf.Scripts"
 
-    cmd = ["dotnet", "run", "--no-cache", "convert_xlsx_to_pdf.cs"]
+    cmd = ["dotnet", "run", "--no-cache", "convert_xlsx_to_pdf.cs", "--",
+           str(XLSX_DIR.resolve()), str(MINIPDF_PDF_DIR.resolve())]
     if filter_pattern:
-        cmd += ["--", str(XLSX_DIR.resolve()), str(MINIPDF_PDF_DIR.resolve()), filter_pattern]
+        cmd += [filter_pattern]
     return run(cmd, cwd=str(scripts_dir))
 
 
