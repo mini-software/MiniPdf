@@ -368,6 +368,20 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_WorkbookRelationshipTargetOutsideWorksheetsFolder_RendersSelectedSheetIndex()
+    {
+        using var excelStream = CreateExcelWithWorksheetTarget("sheets/report.xml", "RelationshipTargetOnly");
+
+        var bytes = MiniPdf.ConvertToPdf(excelStream, new MiniPdfConversionOptions
+        {
+            SheetIndexes = new[] { 1 },
+        });
+        var content = Encoding.ASCII.GetString(bytes);
+
+        Assert.Contains("RelationshipTargetOnly", content);
+    }
+
+    [Fact]
     public void Convert_WithSelectedSheetNamesAndIndexes_RendersUnion()
     {
         using var excelStream = CreateMultiSheetExcel(new[]
@@ -795,6 +809,78 @@ public class ExcelToPdfConverterTests
         ms.Position = 0;
         return ms;
     }
+
+        private static MemoryStream CreateExcelWithWorksheetTarget(string worksheetTarget, string cellText)
+        {
+                var ms = new MemoryStream();
+                var worksheetPart = "xl/" + worksheetTarget.Replace('\\', '/').TrimStart('/');
+
+                using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                        AddEntry(archive, "[Content_Types].xml",
+                                $$"""
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                                    <Default Extension="xml" ContentType="application/xml"/>
+                                    <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                                    <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+                                    <Override PartName="/{{worksheetPart}}" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+                                    <Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>
+                                </Types>
+                                """);
+
+                        AddEntry(archive, "_rels/.rels",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+                                </Relationships>
+                                """);
+
+                        AddEntry(archive, "xl/_rels/workbook.xml.rels",
+                                $$"""
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="{{worksheetTarget}}"/>
+                                    <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>
+                                </Relationships>
+                                """);
+
+                        AddEntry(archive, "xl/workbook.xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+                                                    xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                                    <sheets>
+                                        <sheet name="Report" sheetId="1" r:id="rId1"/>
+                                    </sheets>
+                                </workbook>
+                                """);
+
+                        AddEntry(archive, worksheetPart,
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                                    <sheetData>
+                                        <row r="1">
+                                            <c r="A1" t="s"><v>0</v></c>
+                                        </row>
+                                    </sheetData>
+                                </worksheet>
+                                """);
+
+                        AddEntry(archive, "xl/sharedStrings.xml",
+                                $$"""
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="1" uniqueCount="1">
+                                    <si><t>{{EscapeXml(cellText)}}</t></si>
+                                </sst>
+                                """);
+                }
+
+                ms.Position = 0;
+                return ms;
+        }
 
     private static void AddEntry(ZipArchive archive, string path, string content)
     {
