@@ -1,3 +1,7 @@
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Drawing.Text;
 using System.Globalization;
 
 namespace MiniSoftware;
@@ -1525,7 +1529,7 @@ internal static class ExcelToPdfConverter
                                 var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs, bold: titleIsBold);
                                 textX = titleContentX + (titleContentWidth - tw) / 2f;
                             }
-                            currentPage!.AddText(titleCellLines[i][lineIdx], textX, cellY, cellFs, cell?.Color,
+                            AddExcelText(currentPage!, titleCellLines[i][lineIdx], textX, cellY, cellFs, cell?.Color,
                                 maxWidth: lineMaxWidth,
                                 bold: titleIsBold,
                                 underline: cell?.Underline ?? false,
@@ -1945,7 +1949,7 @@ internal static class ExcelToPdfConverter
                                     var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize, bold: mpIsBold);
                                     textX = mpContentX + (mpContentWidth - tw) / 2f;
                                 }
-                                currentPage!.AddText(lines[lineIdx], textX, cellY, options.FontSize, color,
+                                AddExcelText(currentPage!, lines[lineIdx], textX, cellY, options.FontSize, color,
                                     bold: mpIsBold,
                                     underline: cell?.Underline ?? false,
                                     strikethrough: cell?.Strikethrough ?? false,
@@ -2176,7 +2180,7 @@ internal static class ExcelToPdfConverter
                             // overlap with the normal text.
                             var boldWidth = (float)MeasureFontWidth(boldPart, cellFontSize, bold: true, cell?.FontName);
 
-                            currentPage!.AddText(boldPart, textX, cellY, cellFontSize, color,
+                            AddExcelText(currentPage!, boldPart, textX, cellY, cellFontSize, color,
                                 maxWidth: boldWidth,
                                 bold: true,
                                 underline: cell?.Underline ?? false,
@@ -2187,7 +2191,7 @@ internal static class ExcelToPdfConverter
                             {
                                 var normalX = textX + boldWidth + spaceGap;
                                 var normalMax = lineMaxWidth > 0 ? lineMaxWidth - boldWidth - spaceGap : 0f;
-                                currentPage!.AddText(normalPart, normalX, cellY, cellFontSize, color,
+                                AddExcelText(currentPage!, normalPart, normalX, cellY, cellFontSize, color,
                                     maxWidth: normalMax > 0 ? normalMax : 0f,
                                     bold: false,
                                     underline: cell?.Underline ?? false,
@@ -2198,7 +2202,7 @@ internal static class ExcelToPdfConverter
                         }
                         else
                         {
-                            currentPage!.AddText(lines[lineIdx], textX, cellY, cellFontSize, color,
+                            AddExcelText(currentPage!, lines[lineIdx], textX, cellY, cellFontSize, color,
                                 maxWidth: lineMaxWidth,
                                 bold: isBold,
                                 underline: cell?.Underline ?? false,
@@ -3691,6 +3695,121 @@ internal static class ExcelToPdfConverter
             }
         }
         return lines.ToArray();
+    }
+
+    private static void AddExcelText(PdfPage page, string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null, bool strikethrough = false)
+    {
+        if (!ContainsIndicText(text) || !TryRenderComplexScriptText(text, fontSize, color ?? PdfColor.Black, bold, italic, preferredFontName, maxWidth, out var png, out var widthPt, out var heightPt, out var baselineFromBottomPt))
+        {
+            page.AddText(text, x, y, fontSize, color, clipRect, maxWidth, bold, italic, underline, charSpacing, wordSpacing, preferredFontName, underlineWidth, strikethrough);
+            return;
+        }
+
+        var imageY = y - baselineFromBottomPt;
+        page.AddImage(png, "png", x, imageY, widthPt, heightPt);
+        page.AddText(text, x, y, fontSize, color, clipRect, maxWidth, bold, italic, underline: false, charSpacing, wordSpacing, preferredFontName, underlineWidth: null, strikethrough: false, hidden: true);
+    }
+
+    private static bool ContainsIndicText(string text)
+    {
+        foreach (var ch in text)
+        {
+            if (ch is >= '\u0900' and <= '\u0D7F')
+                return true;
+        }
+        return false;
+    }
+
+    private static bool TryRenderComplexScriptText(string text, float fontSize, PdfColor pdfColor, bool bold, bool italic, string? preferredFontName, float? maxWidth, out byte[] png, out float widthPt, out float heightPt, out float baselineFromBottomPt)
+    {
+        png = [];
+        widthPt = 0;
+        heightPt = 0;
+        baselineFromBottomPt = 0;
+
+        try
+        {
+            const float dpiScale = 3f;
+            var fontStyle = (bold ? FontStyle.Bold : FontStyle.Regular) | (italic ? FontStyle.Italic : FontStyle.Regular);
+            using var font = CreateComplexScriptFont(preferredFontName, fontSize, fontStyle);
+            using var probe = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
+            probe.SetResolution(72f * dpiScale, 72f * dpiScale);
+            using var probeGraphics = Graphics.FromImage(probe);
+            probeGraphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            var format = StringFormat.GenericTypographic;
+            format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces | StringFormatFlags.NoClip;
+            var measured = probeGraphics.MeasureString(text, font, int.MaxValue, format);
+
+            var naturalWidthPt = Math.Max(1f, measured.Width / dpiScale);
+            widthPt = Math.Max(1f, Math.Min(maxWidth ?? naturalWidthPt, naturalWidthPt));
+
+            var family = font.FontFamily;
+            var em = family.GetEmHeight(font.Style);
+            var ascent = family.GetCellAscent(font.Style);
+            var lineSpacing = family.GetLineSpacing(font.Style);
+            var baselineFromTopPt = fontSize * ascent / em;
+            heightPt = Math.Max(fontSize * 1.35f, fontSize * lineSpacing / em);
+            baselineFromBottomPt = Math.Max(0.1f, heightPt - baselineFromTopPt);
+
+            var widthPx = Math.Max(1, (int)Math.Ceiling(widthPt * dpiScale));
+            var heightPx = Math.Max(1, (int)Math.Ceiling(heightPt * dpiScale));
+            using var bmp = new Bitmap(widthPx, heightPx, PixelFormat.Format32bppArgb);
+            bmp.SetResolution(72f * dpiScale, 72f * dpiScale);
+            using (var graphics = Graphics.FromImage(bmp))
+            {
+                graphics.Clear(System.Drawing.Color.Transparent);
+                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                using var brush = new SolidBrush(ToDrawingColor(pdfColor));
+                graphics.SetClip(new RectangleF(0, 0, widthPx, heightPx));
+                graphics.DrawString(text, font, brush, 0, 0, format);
+            }
+
+            using var ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Png);
+            png = ms.ToArray();
+            return png.Length > 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static Font CreateComplexScriptFont(string? preferredFontName, float fontSize, FontStyle style)
+    {
+        foreach (var name in ComplexScriptFontCandidates(preferredFontName))
+        {
+            try
+            {
+                if (FontFamily.Families.Any(f => string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase)))
+                    return new Font(name, fontSize, style, GraphicsUnit.Point);
+            }
+            catch
+            {
+            }
+        }
+
+        return new Font(FontFamily.GenericSansSerif, fontSize, style, GraphicsUnit.Point);
+    }
+
+    private static IEnumerable<string> ComplexScriptFontCandidates(string? preferredFontName)
+    {
+        if (!string.IsNullOrWhiteSpace(preferredFontName))
+            yield return preferredFontName!;
+        yield return "Nirmala UI";
+        yield return "Mangal";
+        yield return "Latha";
+        yield return "Vrinda";
+        yield return "Gautami";
+        yield return "Shruti";
+    }
+
+    private static System.Drawing.Color ToDrawingColor(PdfColor color)
+    {
+        static int Component(float value) => Math.Max(0, Math.Min(255, (int)Math.Round(value * 255f)));
+        return System.Drawing.Color.FromArgb(255, Component(color.R), Component(color.G), Component(color.B));
     }
 
     /// <summary>
