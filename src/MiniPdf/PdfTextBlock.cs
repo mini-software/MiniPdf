@@ -68,6 +68,11 @@ internal sealed class PdfTextBlock
     public bool Strikethrough { get; }
 
     /// <summary>
+    /// Whether to keep this text for extraction without painting visible glyphs.
+    /// </summary>
+    public bool Hidden { get; }
+
+    /// <summary>
     /// Character spacing in points (PDF Tc operator). 0 means default.
     /// </summary>
     public float CharSpacing { get; }
@@ -91,7 +96,7 @@ internal sealed class PdfTextBlock
     /// </summary>
     public float? UnderlineWidth { get; }
 
-    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null, bool strikethrough = false)
+    internal PdfTextBlock(string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null, bool strikethrough = false, bool hidden = false)
     {
         Text = text;
         X = x;
@@ -108,5 +113,6 @@ internal sealed class PdfTextBlock
         WordSpacing = wordSpacing;
         PreferredFontName = preferredFontName;
         UnderlineWidth = underlineWidth;
+        Hidden = hidden;
     }
 }

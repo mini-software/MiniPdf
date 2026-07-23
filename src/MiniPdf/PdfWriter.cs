@@ -1044,6 +1044,8 @@ internal sealed class PdfWriter
                 sb.Append("BT\n");
                 sb.Append(colorCmd);
                 sb.Append($"/{fontName} {fontSize} Tf\n");
+                if (block.Hidden)
+                    sb.Append("3 Tr\n");
                 // For justified text, the caller's wordSpacing was derived from a
                 // wrap-time width estimate. Recompute it using the actual measured
                 // natural width so the rendered line fills (not exceeds) MaxWidth.
@@ -1097,6 +1099,8 @@ internal sealed class PdfWriter
                 }
                 sb.Append($"{x} {y} Td\n");
                 sb.Append($"({escapedText}) Tj\n");
+                if (block.Hidden)
+                    sb.Append("0 Tr\n");
                 sb.Append("ET\n");
             }
             else
@@ -1123,6 +1127,8 @@ internal sealed class PdfWriter
                     sb.Append("\n");
                     sb.Append("2 Tr\n");               // rendering mode: fill + stroke
                 }
+                if (block.Hidden)
+                    sb.Append("3 Tr\n");
                 // Determine the block's preferred font slot for font-aware
                 // width computation and Tz scaling.
                 var blockPrefSlot = -1;
@@ -1318,7 +1324,7 @@ internal sealed class PdfWriter
                     }
                 }
 
-                if (block.Bold)
+                if (block.Bold || block.Hidden)
                     sb.Append("0 Tr\n"); // reset rendering mode
                 sb.Append("ET\n");
             }
@@ -1328,7 +1334,7 @@ internal sealed class PdfWriter
                 sb.Append("Q\n");
 
             // Render underline as a line below the text
-            if (block.Underline)
+            if (!block.Hidden && block.Underline)
             {
                 var textWidth = block.UnderlineWidth ?? MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
                 if (!block.UnderlineWidth.HasValue && block.MaxWidth.HasValue && textWidth > block.MaxWidth.Value)
@@ -1346,7 +1352,7 @@ internal sealed class PdfWriter
                 sb.Append($"{x1} {y1} m {x2} {y1} l S\n");
             }
 
-            if (block.Strikethrough)
+            if (!block.Hidden && block.Strikethrough)
             {
                 var textWidth = MeasureTextWidth(block.Text, block.FontSize, block.CharSpacing, bold: block.Bold);
                 if (block.MaxWidth.HasValue && textWidth > block.MaxWidth.Value)

@@ -160,10 +160,11 @@ internal sealed class PdfPage
     /// <param name="preferredFontName">Optional preferred Unicode font family hint.</param>
     /// <param name="underlineWidth">Optional explicit underline width override in points.</param>
     /// <param name="strikethrough">Whether to draw a line through the text.</param>
+    /// <param name="hidden">Whether to keep text extractable without visibly painting it.</param>
     /// <returns>The current page for chaining.</returns>
-    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null, bool strikethrough = false)
+    public PdfPage AddText(string text, float x, float y, float fontSize = 12, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null, bool strikethrough = false, bool hidden = false)
     {
-        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, italic, underline, charSpacing, wordSpacing, preferredFontName, underlineWidth, strikethrough));
+        _textBlocks.Add(new PdfTextBlock(text, x, y, fontSize, color, clipRect, maxWidth, bold, italic, underline, charSpacing, wordSpacing, preferredFontName, underlineWidth, strikethrough, hidden));
         return this;
     }
 

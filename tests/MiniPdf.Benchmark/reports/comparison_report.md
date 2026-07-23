@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-19T19:49:12.102818
+Generated: 2026-07-23T09:55:09.574001
 
 ## Summary
 
@@ -169,7 +169,7 @@ Generated: 2026-07-19T19:49:12.102818
 | 161 | 🟢 classic161_box_drawing | ✅ | 0.9976 | 0.9867 | 1/1 | **0.9937** |
 | 162 | 🟢 classic162_cjk_emoji_styled | ✅ | 1.0 | 0.9872 | 1/1 | **0.9949** |
 | 163 | 🟢 classic163_cyrillic_alphabets | ✅ | 0.9519 | 0.9849 | 1/1 | **0.9747** |
-| 164 | 🟢 classic164_indic_scripts | ✅ | 1.0 | 0.9903 | 1/1 | **0.9961** |
+| 164 | 🟢 classic164_indic_scripts | ✅ | 1.0 | 0.9947 | 1/1 | **0.9979** |
 | 165 | 🟢 classic165_southeast_asian | ✅ | 0.9672 | 0.8185 | 1/1 | **0.9143** |
 | 166 | 🟢 classic166_emoji_progress | ✅ | 1.0 | 0.9761 | 1/1 | **0.9904** |
 | 167 | 🟢 classic167_musical_symbols | ✅ | 1.0 | 0.9843 | 1/1 | **0.9937** |
@@ -1560,11 +1560,6 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><b>classic163_cyrillic_alphabets</b><br>Page 1</td>
   <td><img src="images/classic163_cyrillic_alphabets_p1_heatmap.png" width="760" alt="classic163_cyrillic_alphabets page 1 difference heatmap"></td>
   <td>changed: 33058 px (1.61%)<br>bbox: [114, 147, 908, 336]<br>mean abs RGB: 2.3605<br>RMSE RGB: 21.0512<br>threshold: 12, gain: 5.0</td>
-</tr>
-<tr>
-  <td><b>classic164_indic_scripts</b><br>Page 1</td>
-  <td><img src="images/classic164_indic_scripts_p1_heatmap.png" width="760" alt="classic164_indic_scripts page 1 difference heatmap"></td>
-  <td>changed: 10718 px (0.52%)<br>bbox: [113, 147, 427, 335]<br>mean abs RGB: 0.826<br>RMSE RGB: 12.8411<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>classic165_southeast_asian</b><br>Page 1</td>
@@ -3520,7 +3515,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><b>classic164_indic_scripts</b></td>
-  <td colspan="1">classic164_indic_scripts <span style="color:#3fb950">⬤</span> 99.6%</td>
+  <td colspan="1">classic164_indic_scripts <span style="color:#3fb950">⬤</span> 99.8%</td>
 </tr>
 <tr>
   <td><img src="images/classic164_indic_scripts_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -9230,10 +9225,10 @@ Text content: ✅ Identical
 ### classic164_indic_scripts
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9903
-- **Overall Score:** 0.9961
+- **Visual Average:** 0.9947
+- **Overall Score:** 0.9979
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=71613 bytes, Reference=53352 bytes
+- **File Size:** MiniPdf=77409 bytes, Reference=53352 bytes
 
 Text content: ✅ Identical
 
