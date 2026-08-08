@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-19T23:17:44.338465
+Generated: 2026-08-08T20:30:36.200575
 
 ## Summary
 
@@ -25,11 +25,11 @@ Generated: 2026-07-19T23:17:44.338465
 | 17 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8535 | 6/6 | **0.9414** |
 | 18 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8461 | 6/6 | **0.9384** |
 | 19 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9879 | 0.889 | 16/16 | **0.9508** |
-| 20 | 🟡 XlsxIssue82_5mb | ✅ | 0.6678 | 0.838 | 361/766 | **0.7023** |
+| 20 | 🔴 XlsxIssue82_5mb | ✅ | 0.1277 | 0.8157 | 722/766 | **0.4774** |
 | 21 | 🔴 XlsxIssue82_SampleTestData5mb | ✅ | 0.4255 | 0.9146 | 834/1668 | **0.636** |
 | 22 | 🟢 XlsxIssue82_WideTable | ✅ | 1.0 | 0.8648 | 13/13 | **0.9459** |
 
-**Average Overall Score: 0.8446**
+**Average Overall Score: 0.8344**
 
 ## Visual Comparison
 
@@ -289,7 +289,7 @@ Generated: 2026-07-19T23:17:44.338465
 </tr>
 <tr>
   <td><b>XlsxIssue82_5mb<br><small>format: xlsx | case: XlsxIssue82_5mb | scope: issue-xlsx</small></b></td>
-  <td colspan="1">XlsxIssue82_5mb <span style="color:#d29922">⬤</span> 70.2%</td>
+  <td colspan="1">XlsxIssue82_5mb <span style="color:#f85149">⬤</span> 47.7%</td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_5mb_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -679,7 +679,7 @@ Generated: 2026-07-19T23:17:44.338465
 -Web site updates $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 1,000.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 1,000.00  $ 4,000.00
 
 -Collateral preparation $ 5,000.00  $ -    $ -    $ 5,000.00  $ -    $ 
-... (12461 more characters)
+... (12446 more characters)
 
 ```
 </details>
@@ -2093,11 +2093,11 @@ Text content: ✅ Identical
 ### XlsxIssue82_5mb
 
 - **Case Metadata:** format: xlsx | case: XlsxIssue82_5mb | scope: issue-xlsx
-- **Text Similarity:** 0.6678
-- **Visual Average:** 0.838
-- **Overall Score:** 0.7023
-- **Pages:** MiniPdf=361, Reference=766
-- **File Size:** MiniPdf=11677465 bytes, Reference=21494385 bytes
+- **Text Similarity:** 0.1277
+- **Visual Average:** 0.8157
+- **Overall Score:** 0.4774
+- **Pages:** MiniPdf=722, Reference=766
+- **File Size:** MiniPdf=13447950 bytes, Reference=21494385 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -2105,72 +2105,68 @@ Text content: ✅ Identical
 --- minipdf/XlsxIssue82_5mb.pdf
 +++ reference/XlsxIssue82_5mb.pdf
 @@ -1,152 +1,143 @@
--Name Email Phone Address Company Text DescriptioJob Title
+-Name Email Phone Address
 
--Quentin Hoschiller 573.920.922808 LuMraz and Labore et Non delenEmergency Management Specialist
+-Quentin Hyatt oschiller@huels.com 573.920.9800 22808 Lueilwitz Street Apt. 357 Elysemouth,
 
--Lowell Olseve.lind@720.754.667029 DeRosenbauSoluta nihAut iste qFast Food Cook
+-Lowell Olson eve.lind@braun.info 720.754.6402 67029 Deckow View Lake Marvin, NJ 39600
 
--Sydnee Cgunnar.sc 1.31E+10 908 MatteStrosin, KiVoluptateSed aliquiInteraction Designer
+-Sydnee Crist gunnar.schowalter@hot 1.312812612E+10 908 Matteo Terrace Suite 323 Kirlintown, MA
 
--Tomasa Dgerlach.ar+1 (276) 9787 Rey Balistreri-Provident Et cupidit Motorcycle Mechanic
+-Tomasa Dietrich gerlach.arnold@gmail.co +1 (276) 970-4523 787 Rey Haven Keeblermouth, WA 08523-93
 
--Payton Kuherman.b1-201-33353401 HaWolff-ErdVero iste lCulpa id aJanitorial Supervisor
+-Payton Kutch herman.bartell@yahoo.c 1-201-333-0688 53401 Hahn Drives Suite 920 North Jaquelinv
 
--Constanticrist.elmer(551) 609-32868 KulRunolfssoOfficia volAut non dPressing Machine Operator
+-Constantin Berge crist.elmer@runolfsson.i (551) 609-5462 32868 Kulas Via Randalltown, CA 90194
 
--Tad Hart kathryn041-928-43477833 KleKunze, FrIpsum praFacilis unTherapist
+-Tad Hartmann kathryn04@gmail.com 1-928-434-0830 77833 Klein Islands Suite 594 Waelchiside, T
 
--Tristian Lilittle.bobbi+1.870.9283843 ReMitchell-SDignissimEum beatTechnical Writer
+-Tristian Lindgren I little.bobbie@hotmail.co +1.870.923.9785 83843 Reed Hills Apt. 054 Douglasberg, MI 2
 
--Miss Tierrgpredovic912-817-0310 Elliot Ward-Wil Ab at eveAut voluptCredit Checkers Clerk
+-Miss Tierra Cruickshank gpredovic@hayes.com 912-817-0782 310 Elliot Field Suite 766 Kaiachester, NJ 785
 
--Nicolette domenic4+1-352-6113158 StoKerluke GCulpa ea Quos ear Postsecondary Education Administrators
+-Nicolette Stokes domenic43@dibbert.info +1-352-614-3553 13158 Stoltenberg Drive Suite 965 Gulgowsk
 
--Rosalind kimberly.p 1.68E+10 700 Hyatt Bode-SwifEst et qui Eveniet teLoan Counselor
+-Rosalind Franecki kimberly.price@gmail.co 1.678626965E+10 700 Hyatt Centers Apt. 867 O'Harahaven, NV
 
--Hector Brelarkin@s1-458-225987 Isom Strosin-K Labore ut Quidem pCement Mason and Concrete Finisher
+-Hector Brakus elarkin@schinner.com 1-458-225-2266 987 Isom Summit Apt. 782 New Michellebury
 
--Marjory Kbrandyn.e1-210-606671 Kaci Mann, McMolestias Fuga et vBrokerage Clerk
+-Marjory Kertzmann brandyn.erdman@yahoo 1-210-606-6776 671 Kaci View Port Deron, LA 54797
 
--Forrest Tuwilmer93 216.242.5214 BahriBlick, O'CEnim earuAut sequi Musician
+-Forrest Turner IV wilmer93@ebert.net 216.242.5184 214 Bahringer Route Apt. 038 East Emily, VT
 
--Kennedy gutkowski+1.321.40693 MossiAbshire, Dolor doloRerum asIndustrial-Organizational Psychologist
+-Kennedy Walter IV gutkowski.david@funk.c +1.321.400.8611 693 Mossie Causeway East Jaunita, DC 1388
 
--Lysanne gebert@y+1.272.474137 BergNitzsche AsperioreAt doloresInterviewer
+-Lysanne Hudson gebert@yahoo.com +1.272.473.2148 4137 Berge Vista Suite 831 Robbfort, AR 538
 
--Randall Dgreenholt.1.7E+10 90795 BeiLuettgen, Blanditiis Et natus qMixing and Blending Machine Operator
+-Randall Davis greenholt.shaylee@gmai 1.702456784E+10 90795 Beier Street Suite 226 South Gracielab
 
--Chanelle sally46@ 1.44E+10 8856 AngYundt-KirliVoluptas lDolores mCommunication Equipment Repairer
+-Chanelle Bartell sally46@gmail.com 1.443888922E+10 8856 Angelita Springs North Patricia, SC 653
 
--Mr. Gregoudietrich 1-469-314750 Ebert Goyette InUnde odit Qui aut doClinical Laboratory Technician
+-Mr. Gregorio Auer V udietrich@gmail.com 1-469-314-5762 750 Ebert Stravenue Apt. 791 Marlenemouth
 
--Rosalia Vdonna.sim 1.39E+10 9022 CletAbbott, CSoluta id tAut sit et Mechanical Engineer
+-Rosalia Von donna.simonis@dibbert. 1.385346539E+10 9022 Cleta Points Catharinemouth, DC 0177
 
--Sigmund teresa93 +1.937.532314 CristAufderharConsectetQuibusdaProducer
+-Sigmund Thompson teresa93@marquardt.co +1.937.530.1251 2314 Crist Land Suite 521 West Bo, OH 6742
 
--Prof. Janiahettinger312.745.350901 LuSawayn, Sint aut reAlias sed Loading Machine Operator
+-Prof. Janice Medhurst IV ahettinger@mcglynn.info 312.745.3535 50901 Ludwig Shoal Suite 110 East Vergie, H
 
--Mr. Brad lhickle@y856-513-791499 MoKeebler, LAssumenAsperioreAircraft Mechanics OR Aircraft Service Tech
+-Mr. Brad Feil lhickle@yahoo.com 856-513-7843 91499 Mossie Rest North Alexzander, AR 09
 
--Christop dstrosin@(563) 429-150 Bertr Kreiger LtQuas occCommodi Aircraft Body Repairer
+-Christop Graham dstrosin@considine.info (563) 429-4660 150 Bertrand Point Apt. 261 Powlowskimouth
 
--Dr. Toni erling43@+1-765-386102 AssJenkins InLaborum Ut aut et uLog Grader and Scaler
+-Dr. Toni Mohr II erling43@wintheiser.co +1-765-382-0838 6102 Assunta Wall Apt. 377 North Julianhave
 
--Reece Faekirlin@lo463.613.79314 SibyFeeney GVoluptate Quo exercRecordkeeping Clerk
+-Reece Fadel V ekirlin@lowe.com 463.613.7214 9314 Sibyl Gardens Apt. 695 Angelicaport, O
 
--Izaiah Skilhgoyette 240-241-28932 BartDavis-WelQui fuga dEnim quiaBiologist
+-Izaiah Skiles Sr. hgoyette@huels.com 240-241-2622 8932 Bartoletti Lakes Hahnstad, SC 00025
 
--Mathilde romaguer1-218-29880599 ProCarter-PuAb voluptSimilique Fence Erector
+-Mathilde Stiedemann III romaguera.marlin@hotm 1-218-298-8195 80599 Prohaska Turnpike Apt. 909 Schaeferv
 
--Mr. Jarreddimitri.hay279.899.66187 ConKonopelsAutem sit Soluta dolParalegal
+-Mr. Jarred Heidenreich P dimitri.hayes@gmail.com 279.899.6723 6187 Conn Unions Suite 062 Lake Kellifort, C
 
--Kameron simone.hy1-510-89134203 KatStiedemaIpsa ut a PerspiciatiDirectory Assistance Operator
-
--Miss Libbathena68+1.937.891155 MaxiD'Amore-Est dolor Eum voluGrinder OR Polisher
-
--Nayeli Bernadia28@1-781-79758562 BotLittle, VolkHarum suExercitati Life Science Tech
-... (23798 more characters)
+-Kameron Pfannerstill simone.hyatt@hot
+... (25112 more characters)
 
 ```
 </details>
@@ -2301,10 +2297,10 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
+1. **XlsxIssue82_5mb** (score: 0.4774)
 1. **payroll-calculator_f** (score: 0.6124)
 1. **XlsxIssue82_SampleTestData5mb** (score: 0.636)
 1. **Event budget1** (score: 0.6741)
-1. **XlsxIssue82_5mb** (score: 0.7023)
 1. **Small business cash flow forecast1** (score: 0.7059)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

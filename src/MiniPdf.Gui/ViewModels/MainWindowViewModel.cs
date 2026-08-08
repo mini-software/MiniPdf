@@ -11,6 +11,8 @@ namespace MiniPdf.Gui.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
+    public VisualDiffViewModel VisualDiff { get; } = new();
+
     [ObservableProperty]
     private string _statusText = "Ready";
 

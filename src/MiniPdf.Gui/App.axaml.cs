@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using MiniPdf.Gui.Views;
+using System.Linq;
 
 namespace MiniPdf.Gui;
 
@@ -16,7 +17,7 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow();
+            desktop.MainWindow = new MainWindow(desktop.Args?.FirstOrDefault());
         }
         base.OnFrameworkInitializationCompleted();
     }

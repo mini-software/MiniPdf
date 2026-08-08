@@ -96,7 +96,7 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
-    public void Convert_LargeGeneratedWideTable_UsesA4ColumnGroups()
+    public void Convert_LargeGeneratedWideTable_UsesReadableA4ColumnGroups()
     {
         var rows = new List<string[]>
         {
@@ -114,9 +114,9 @@ public class ExcelToPdfConverterTests
         Assert.Equal(595.2756f, doc.Pages[0].Width, 3);
         Assert.Equal(841.8898f, doc.Pages[0].Height, 3);
         Assert.Equal(14.52f, headerY - firstRowY, 3);
-        for (var column = 1; column <= 9; column++)
+        for (var column = 1; column <= 4; column++)
             Assert.Contains($"Header{column}", firstPageText);
-        Assert.DoesNotContain("Header10", firstPageText);
+        Assert.DoesNotContain("Header5", firstPageText);
         Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "Header10");
     }
 
@@ -139,8 +139,40 @@ public class ExcelToPdfConverterTests
         Assert.Equal(595.2756f, doc.Pages[0].Width, 3);
         Assert.Equal(841.8898f, doc.Pages[0].Height, 3);
         Assert.True(minimumFontSize >= 10f, $"Expected readable text, got {minimumFontSize}pt.");
-        for (var column = 1; column <= 8; column++)
+        for (var column = 1; column <= 6; column++)
             Assert.Contains($"Header{column}", firstPageText);
+        Assert.DoesNotContain("Header7", firstPageText);
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "Header8");
+    }
+
+    [Fact]
+    public void Convert_LargeGeneratedTextTableWithUnflaggedFitAttributes_KeepsReadableColumnGroups()
+    {
+        var rows = new List<string[]>
+        {
+            new[] { "ID", "Name", "Description", "Phone", "Email", "Company", "Title", "Notes" },
+        };
+        rows.AddRange(Enumerable.Range(1, 1000).Select(row => new[]
+        {
+            $"ID-{row:00000}",
+            $"Customer {row:00000}",
+            $"Detailed service description for customer account {row:00000}",
+            "555-0123",
+            $"customer{row:00000}@example.test",
+            "Contoso Operations",
+            "QA Automation Specialist",
+            "Priority customer account",
+        }));
+        using var excelStream = CreateSimpleExcel(rows.ToArray(), includeUnflaggedFitAttributes: true);
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+        var renderedBlocks = doc.Pages.SelectMany(page => page.TextBlocks).ToArray();
+        var renderedText = renderedBlocks.Select(block => block.Text).ToArray();
+
+        Assert.Contains("Description", renderedText);
+        Assert.Contains(renderedText, text => text.StartsWith("QA Automation", StringComparison.Ordinal));
+        Assert.DoesNotContain("Descriptio", renderedText);
+        Assert.Contains(renderedBlocks, block => block.Text.StartsWith("Detailed service", StringComparison.Ordinal) && block.MaxWidth.HasValue);
     }
 
     [Fact]

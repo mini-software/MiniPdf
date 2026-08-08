@@ -13,12 +13,36 @@ public partial class MainWindow : Window
 {
     private MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext!;
 
-    public MainWindow()
+    public MainWindow() : this(null)
+    {
+    }
+
+    public MainWindow(string? reportPath)
     {
         InitializeComponent();
         DataContext = new MainWindowViewModel();
         AddHandler(DragDrop.DropEvent, OnDrop);
         AddHandler(DragDrop.DragOverEvent, OnDragOver);
+
+        if (!string.IsNullOrWhiteSpace(reportPath))
+        {
+            try
+            {
+                ViewModel.VisualDiff.LoadReport(reportPath);
+                MainTabs.SelectedIndex = 1;
+            }
+            catch (Exception ex)
+            {
+                ViewModel.VisualDiff.StatusText = ex.Message;
+                MainTabs.SelectedIndex = 1;
+            }
+        }
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        ViewModel.VisualDiff.Dispose();
+        base.OnClosed(e);
     }
 
     private void OnDragOver(object? sender, DragEventArgs e)
