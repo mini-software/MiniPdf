@@ -1229,11 +1229,11 @@ internal static class ExcelReader
             var fillEl = dxf.Element(ns + "fill");
             if (fillEl != null)
             {
-                fillSpecified = true;
                 var patternFill = fillEl.Element(ns + "patternFill");
                 var patternType = patternFill?.Attribute("patternType")?.Value;
                 if (!string.Equals(patternType, "none", StringComparison.OrdinalIgnoreCase))
                 {
+                    fillSpecified = true;
                     var bgEl = fillEl.Descendants(ns + "bgColor").FirstOrDefault();
                     if (bgEl != null)
                         fillColor = ResolveColorElement(bgEl, themeColors);

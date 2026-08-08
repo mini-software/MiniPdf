@@ -87,6 +87,38 @@ public class XlsxIssueFileTests
         Assert.Contains(doc.Pages[3].TextBlocks, block => block.Text.Contains("Professional Services"));
     }
 
+    [Fact]
+    public void BusinessExpensesBudget2_GroupedDrawingUsesPrintScale()
+    {
+        var issuePath = FindIssueXlsx("Business expenses budget2.xlsx");
+
+        using var stream = File.OpenRead(issuePath);
+        var sheet = Assert.Single(ExcelReader.ReadSheets(stream).Take(1));
+        Assert.Equal("Wages", sheet.Rows[8][1].Text);
+        var firstStripeFill = Assert.IsType<PdfColor>(sheet.Rows[8][1].FillColor);
+        Assert.InRange(firstStripeFill.R, 0.84f, 0.86f);
+        Assert.InRange(firstStripeFill.G, 0.84f, 0.86f);
+        Assert.InRange(firstStripeFill.B, 0.84f, 0.86f);
+        Assert.Equal("Benefits", sheet.Rows[9][1].Text);
+        Assert.Null(sheet.Rows[9][1].FillColor);
+
+        var doc = ExcelToPdfConverter.Convert(issuePath);
+        var page = doc.Pages[0];
+
+        Assert.Equal(2, page.ImageBlocks.Count);
+        Assert.All(page.ImageBlocks, image =>
+        {
+            Assert.InRange(image.RenderWidth, 105f, 107f);
+            Assert.InRange(image.RenderHeight, 67f, 69f);
+        });
+
+        var decoration = Assert.Single(page.PolygonBlocks);
+        var decorationWidth = decoration.Points.Max(point => point.X) - decoration.Points.Min(point => point.X);
+        var decorationHeight = decoration.Points.Max(point => point.Y) - decoration.Points.Min(point => point.Y);
+        Assert.InRange(decorationWidth, 89f, 91f);
+        Assert.InRange(decorationHeight, 49f, 51f);
+    }
+
     private static string FindIssueXlsx(string fileName)
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
