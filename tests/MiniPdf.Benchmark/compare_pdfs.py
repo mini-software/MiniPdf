@@ -425,6 +425,36 @@ def _aligned_rgb_images(pix1, pix2):
     return image1, image2
 
 
+def _save_normalized_pixmaps(pixmaps, paths, aspect_tolerance: float = 0.001):
+    """Save same-aspect page pixmaps at a common size without hiding paper-size differences."""
+    available = [(pix, path) for pix, path in zip(pixmaps, paths) if pix and path]
+    if not available:
+        return
+
+    aspect_ratios = [pix.width / pix.height for pix, _ in available]
+    same_aspect = max(aspect_ratios) - min(aspect_ratios) <= aspect_tolerance
+    if not same_aspect:
+        for pix, path in available:
+            pix.save(path)
+        return
+
+    from PIL import Image
+
+    target_size = (
+        min(pix.width for pix, _ in available),
+        min(pix.height for pix, _ in available),
+    )
+    for pix, path in available:
+        if (pix.width, pix.height) == target_size:
+            pix.save(path)
+            continue
+
+        channels = pix.n
+        mode = "RGB" if channels == 3 else "RGBA"
+        image = Image.frombytes(mode, (pix.width, pix.height), pix.samples).convert("RGB")
+        image.resize(target_size, Image.LANCZOS).save(path)
+
+
 def save_difference_heatmap(
     pix1,
     pix2,
@@ -669,15 +699,17 @@ def save_visual_diff(
 
         if pix1:
             path1 = os.path.join(output_dir, f"{name}_p{i+1}_minipdf.png")
-            pix1.save(path1)
 
         if pix2:
             path2 = os.path.join(output_dir, f"{name}_p{i+1}_reference.png")
-            pix2.save(path2)
 
         if pix3:
             path3 = os.path.join(output_dir, f"{name}_p{i+1}_office.png")
-            pix3.save(path3)
+
+        _save_normalized_pixmaps(
+            (pix1, pix2, pix3),
+            (path1, path2, path3),
+        )
 
         entry = {
             "page": i + 1,

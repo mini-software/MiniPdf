@@ -2259,8 +2259,12 @@ internal static class ExcelToPdfConverter
 
         // (Trailing empty page logic moved to RenderSheet for proper per-sheet page tracking)
 
+        // Drawing coordinates are stored at 100% worksheet scale. Keep their
+        // offsets and dimensions aligned with the print-scaled cell grid.
+        var drawingScale = printScaleFactor * fitToPageScale;
+        var drawingEmuToPt = drawingScale / 12700f;
+
         // Place drawing shapes (rectangles used as decorative frames)
-        const float ShapeEmuToPt = 1f / 12700f;
         foreach (var shape in sheet.Shapes)
         {
             // Polygon shapes (custom geometry from group shapes)
@@ -2270,14 +2274,14 @@ internal static class ExcelToPdfConverter
                 var polyFromIdx = Array.IndexOf(columns, shape.FromCol);
                 if (polyFromIdx < 0) polyFromIdx = 0;
 
-                var polyX = colXStarts[polyFromIdx] + shape.FromColOffEmu * ShapeEmuToPt;
-                polyTop -= shape.FromRowOffEmu * ShapeEmuToPt;
+                var polyX = colXStarts[polyFromIdx] + shape.FromColOffEmu * drawingEmuToPt;
+                polyTop -= shape.FromRowOffEmu * drawingEmuToPt;
                 // Apply group offset
-                polyX += shape.OffsetXEmu * ShapeEmuToPt;
-                polyTop -= shape.OffsetYEmu * ShapeEmuToPt;
+                polyX += shape.OffsetXEmu * drawingEmuToPt;
+                polyTop -= shape.OffsetYEmu * drawingEmuToPt;
 
-                var polyW = shape.WidthEmu * ShapeEmuToPt;
-                var polyH = shape.HeightEmu * ShapeEmuToPt;
+                var polyW = shape.WidthEmu * drawingEmuToPt;
+                var polyH = shape.HeightEmu * drawingEmuToPt;
                 if (polyW <= 0 || polyH <= 0) continue;
 
                 var polyPage = rowPage.TryGetValue(shape.FromRow, out var pp) ? pp : currentPage!;
@@ -2308,14 +2312,14 @@ internal static class ExcelToPdfConverter
             var toIdx = Array.IndexOf(columns, shape.ToCol);
             if (toIdx < 0) toIdx = columns.Length - 1;
 
-            var shapeX = colXStarts[fromIdx] + shape.FromColOffEmu * ShapeEmuToPt;
+            var shapeX = colXStarts[fromIdx] + shape.FromColOffEmu * drawingEmuToPt;
             var shapeXRight = toIdx < colXStarts.Length ?
-                colXStarts[toIdx] + shape.ToColOffEmu * ShapeEmuToPt :
+                colXStarts[toIdx] + shape.ToColOffEmu * drawingEmuToPt :
                 colXStarts[^1] + colWidths[^1];
 
             // Adjust for row offsets
-            shapeTop -= shape.FromRowOffEmu * ShapeEmuToPt;
-            shapeBot -= shape.ToRowOffEmu * ShapeEmuToPt;
+            shapeTop -= shape.FromRowOffEmu * drawingEmuToPt;
+            shapeBot -= shape.ToRowOffEmu * drawingEmuToPt;
 
             var shapeW = shapeXRight - shapeX;
             var shapeH = shapeTop - shapeBot;
@@ -2330,7 +2334,7 @@ internal static class ExcelToPdfConverter
             // Render border
             if (shape.BorderColor is { } bc && shape.BorderWidthPt > 0)
             {
-                var bw = shape.BorderWidthPt;
+                var bw = shape.BorderWidthPt * drawingScale;
                 shapePage.AddLine(shapeX, shapeTop, shapeXRight, shapeTop, bc, bw);         // top
                 shapePage.AddLine(shapeX, shapeBot, shapeXRight, shapeBot, bc, bw);         // bottom
                 shapePage.AddLine(shapeX, shapeTop, shapeX, shapeBot, bc, bw);              // left
@@ -2373,17 +2377,16 @@ internal static class ExcelToPdfConverter
             var imgX = colXStarts[colGroupIdx];
 
             // Apply sub-cell column offset (fromColOff) — shift image right within anchor column
-            const float EmuToPt = 1f / 12700f;
-            var fromColOffPt = Math.Min(img.FromColOffEmu * EmuToPt, colWidths[colGroupIdx]);
+            var fromColOffPt = Math.Min(img.FromColOffEmu * drawingEmuToPt, colWidths[colGroupIdx]);
             imgX += fromColOffPt;
 
             // Apply sub-cell row offset (fromRowOff) — shift image down within anchor row
-            var fromRowOffPt = img.FromRowOffEmu * EmuToPt;
+            var fromRowOffPt = img.FromRowOffEmu * drawingEmuToPt;
             imgTopY -= fromRowOffPt;
 
             // Apply group-relative offset (for images inside grouped shapes)
-            imgX += img.OffsetXEmu * EmuToPt;
-            imgTopY -= img.OffsetYEmu * EmuToPt;
+            imgX += img.OffsetXEmu * drawingEmuToPt;
+            imgTopY -= img.OffsetYEmu * drawingEmuToPt;
 
             // Calculate render size.
             // Prefer explicit EMU dimensions (from <ext cx cy> in oneCellAnchor).
@@ -2392,8 +2395,8 @@ internal static class ExcelToPdfConverter
             float imgRenderWidth, imgRenderHeight;
             if (img.WidthEmu > 0 && img.HeightEmu > 0)
             {
-                imgRenderWidth  = img.WidthEmu  * EmuToPt;
-                imgRenderHeight = img.HeightEmu * EmuToPt;
+                imgRenderWidth  = img.WidthEmu  * drawingEmuToPt;
+                imgRenderHeight = img.HeightEmu * drawingEmuToPt;
             }
             else
             {
@@ -2406,7 +2409,7 @@ internal static class ExcelToPdfConverter
                 var toColGroupIdx = colGroupIdx + img.SpanCols;
                 if (toColGroupIdx < columns.Length && img.ToColOffEmu > 0)
                 {
-                    var toColOffPt = Math.Min(img.ToColOffEmu * EmuToPt, colWidths[toColGroupIdx]);
+                    var toColOffPt = Math.Min(img.ToColOffEmu * drawingEmuToPt, colWidths[toColGroupIdx]);
                     imgRenderWidth += toColOffPt + columnPadding;
                 }
                 imgRenderWidth  = Math.Max(imgRenderWidth, 1f);
@@ -2421,7 +2424,7 @@ internal static class ExcelToPdfConverter
                 }
                 // Adjust for sub-cell row offsets
                 imgRenderHeight -= fromRowOffPt;
-                imgRenderHeight += img.ToRowOffEmu * EmuToPt;
+                imgRenderHeight += img.ToRowOffEmu * drawingEmuToPt;
                 imgRenderHeight = Math.Max(imgRenderHeight, 1f);
             }
 
