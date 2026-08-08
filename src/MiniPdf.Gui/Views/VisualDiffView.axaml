@@ -1,0 +1,170 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MiniPdf.Gui.ViewModels"
+             x:Class="MiniPdf.Gui.Views.VisualDiffView"
+             x:DataType="vm:VisualDiffViewModel">
+    <Grid RowDefinitions="Auto,Auto,*" Margin="12">
+        <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto,Auto,Auto">
+            <Button Grid.Column="0" Content="Open Report" Click="OnOpenReportClick" ToolTip.Tip="Open comparison_report.json" />
+            <Button Grid.Column="1" Content="Classic XLSX" Click="OnClassicXlsxClick" />
+            <Button Grid.Column="2" Content="Classic DOCX" Click="OnClassicDocxClick" />
+            <Button Grid.Column="3" Content="Issue XLSX" Click="OnIssueXlsxClick" />
+            <Button Grid.Column="4" Content="Issue DOCX" Click="OnIssueDocxClick" HorizontalAlignment="Left" />
+            <Button Grid.Column="5" Content="−" Command="{Binding ZoomOutCommand}" Width="34" ToolTip.Tip="Zoom out" />
+            <Button Grid.Column="6" Content="{Binding ZoomText}" Command="{Binding ResetZoomCommand}" MinWidth="62" ToolTip.Tip="Reset zoom" />
+            <Button Grid.Column="7" Content="+" Command="{Binding ZoomInCommand}" Width="34" ToolTip.Tip="Zoom in" />
+            <ToggleButton Grid.Column="8"
+                          Content="Heatmap"
+                          IsChecked="{Binding ShowHeatmap}"
+                          IsEnabled="{Binding HasHeatmap}"
+                          ToolTip.Tip="Show the generated pixel difference heatmap" />
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" Margin="0,10,0,10">
+            <TextBlock Text="{Binding StatusText}" Foreground="#5F6368" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Text="{Binding ReportPath}" Foreground="#777777" FontSize="11" TextTrimming="CharacterEllipsis" MaxWidth="520" />
+            <Button Grid.Column="2"
+                    Content="Open Folder"
+                    Click="OnRevealReportClick"
+                    IsEnabled="{Binding ReportPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                    ToolTip.Tip="Reveal comparison_report.json in File Explorer"
+                    Margin="8,0,0,0"
+                    Padding="10,3" />
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="280,12,*">
+            <Border Grid.Column="0" BorderBrush="#D0D5D6" BorderThickness="1" CornerRadius="6" Background="#FAFBFB">
+                <Grid RowDefinitions="Auto,*" Margin="10">
+                    <TextBox Text="{Binding SearchText}" Watermark="Search case, format, scope..." Margin="0,0,0,8" />
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Cases}" SelectedItem="{Binding SelectedCase}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:DiffCaseItem">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" Margin="4,5">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                    <TextBlock Grid.Column="1" Text="{Binding ScoreText}" FontWeight="Bold" Foreground="#0D6F73" Margin="8,0,0,0" />
+                                    <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Metadata}" Foreground="#777777" FontSize="11" TextTrimming="CharacterEllipsis" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="2" RowDefinitions="Auto,Auto,*">
+                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                    <StackPanel>
+                        <TextBlock Text="{Binding SelectedCase.Name}" FontSize="20" FontWeight="Bold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding SelectedCase.Metadata}" Foreground="#666666" FontSize="12" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="18" VerticalAlignment="Center">
+                        <StackPanel>
+                            <TextBlock Text="OVERALL" FontSize="10" Foreground="#777777" />
+                            <TextBlock Text="{Binding SelectedCase.ScoreText}" FontSize="18" FontWeight="Bold" />
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="VISUAL" FontSize="10" Foreground="#777777" />
+                            <TextBlock Text="{Binding SelectedCase.VisualText}" FontSize="18" FontWeight="Bold" />
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="PAGES M/R" FontSize="10" Foreground="#777777" />
+                            <TextBlock Text="{Binding SelectedCase.PageCountText}" FontSize="18" FontWeight="Bold" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                    <ListBox ItemsSource="{Binding SelectedCase.Pages}"
+                             SelectedItem="{Binding SelectedPage}"
+                             SelectionMode="Single">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="6" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:DiffPageItem">
+                                <StackPanel Margin="8,3">
+                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding ScoreText}" FontSize="11" Foreground="#777777" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock Grid.Column="1" Text="{Binding PageMetrics}" Foreground="#666666" FontSize="11" VerticalAlignment="Center" Margin="12,0,0,0" />
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <Grid ColumnDefinitions="*,10,*" IsVisible="{Binding !ShowHeatmap}">
+                        <Border BorderBrush="#C8CECF" BorderThickness="1" CornerRadius="5" Background="#E7EBEB">
+                            <Grid RowDefinitions="Auto,*">
+                                <Border Background="#F7F9F9" Padding="10,5" BorderBrush="#C8CECF" BorderThickness="0,0,0,1">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="MiniPdf" FontWeight="Bold" VerticalAlignment="Center" />
+                                        <Button Grid.Column="1"
+                                                Content="Open Folder"
+                                                Click="OnRevealCandidateClick"
+                                                IsEnabled="{Binding SelectedPage.CandidatePath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                ToolTip.Tip="Reveal the current MiniPdf PNG in File Explorer"
+                                                Padding="8,2" />
+                                    </Grid>
+                                </Border>
+                                <ScrollViewer x:Name="CandidateScroll" Grid.Row="1" ScrollChanged="OnCandidateScrollChanged">
+                                    <Image Source="{Binding CandidateImage}"
+                                           Width="{Binding CandidateDisplayWidth}"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Stretch="Uniform" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="2" BorderBrush="#C8CECF" BorderThickness="1" CornerRadius="5" Background="#E7EBEB">
+                            <Grid RowDefinitions="Auto,*">
+                                <Border Background="#F7F9F9" Padding="10,5" BorderBrush="#C8CECF" BorderThickness="0,0,0,1">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="Reference" FontWeight="Bold" VerticalAlignment="Center" />
+                                        <Button Grid.Column="1"
+                                                Content="Open Folder"
+                                                Click="OnRevealReferenceClick"
+                                                IsEnabled="{Binding SelectedPage.ReferencePath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                ToolTip.Tip="Reveal the current reference PNG in File Explorer"
+                                                Padding="8,2" />
+                                    </Grid>
+                                </Border>
+                                <ScrollViewer x:Name="ReferenceScroll" Grid.Row="1" ScrollChanged="OnReferenceScrollChanged">
+                                    <Image Source="{Binding ReferenceImage}"
+                                           Width="{Binding ReferenceDisplayWidth}"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Stretch="Uniform" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <Border IsVisible="{Binding ShowHeatmap}" BorderBrush="#C8CECF" BorderThickness="1" CornerRadius="5" Background="#E7EBEB">
+                        <Grid RowDefinitions="Auto,*">
+                            <Border Background="#F7F9F9" Padding="10,5" BorderBrush="#C8CECF" BorderThickness="0,0,0,1">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="Difference Heatmap" FontWeight="Bold" VerticalAlignment="Center" />
+                                    <Button Grid.Column="1"
+                                            Content="Open Folder"
+                                            Click="OnRevealHeatmapClick"
+                                            IsEnabled="{Binding SelectedPage.HeatmapPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                            ToolTip.Tip="Reveal the current heatmap PNG in File Explorer"
+                                            Padding="8,2" />
+                                </Grid>
+                            </Border>
+                            <ScrollViewer Grid.Row="1">
+                                <Image Source="{Binding HeatmapImage}"
+                                       Width="{Binding HeatmapDisplayWidth}"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       Stretch="Uniform" />
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

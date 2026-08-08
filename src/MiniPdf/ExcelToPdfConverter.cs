@@ -1773,9 +1773,8 @@ internal static class ExcelToPdfConverter
                                 var shouldClip = isMerged || (!isLastCol && nextCellHasContent);
                                 if (shouldClip)
                                 {
+                                    cellClipWidth[i] = (float)textAvailWidth;
                                     fitChars = FittingChars(cellText, textAvailWidth, cellFontSizeForFit, cellFontName, cellBoldPrefix);
-                                    if (cellText.Length <= fitChars && textAvailWidth > 0)
-                                        cellClipWidth[i] = Math.Max(1f, (float)textAvailWidth - cellTextInset);
                                 }
                                 if (shouldClip && cellText.Length > fitChars)
                                 {
@@ -4218,6 +4217,8 @@ internal static class ExcelToPdfConverter
 
         // Max column width: relax for sheets with few columns
         var maxColWidth = maxCols <= 2 ? usableWidth * 0.95f : usableWidth * 0.6f;
+        if (isLargeGeneratedTable)
+            maxColWidth = Math.Min(maxColWidth, avgCharWidth * 21f);
 
         // Min column width: enforce readability (wider for many-column sheets)
         var minColWidth = maxCols > 12 ? avgCharWidth * 9 : avgCharWidth * 4;
@@ -4266,7 +4267,7 @@ internal static class ExcelToPdfConverter
             {
                 var defaultPts = ExcelSheet.CharUnitsToPoints(8.43f);
                 var contentPts = colMaxWidthPts[i] + 2 * avgCharWidth;
-                var natural = useDefaultWidths || isLargeGeneratedTable
+                var natural = useDefaultWidths
                     ? defaultPts
                     : Math.Max(defaultPts, contentPts);
                 widths[i] = Compat.Clamp(natural, minColWidth, maxColWidth);

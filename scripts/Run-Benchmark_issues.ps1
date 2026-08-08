@@ -245,7 +245,8 @@ foreach ($d in @($MiniPdfXlsx, $MiniPdfDocx, $RefXlsx, $RefDocx, $OfficeXlsx, $O
 }
 
 # ── XLSX ──
-$xlsxFiles = Get-ChildItem -Path $XlsxIssueDir -Filter "*.xlsx" -ErrorAction SilentlyContinue
+$xlsxAllFiles = @(Get-ChildItem -Path $XlsxIssueDir -Filter "*.xlsx" -ErrorAction SilentlyContinue)
+$xlsxFiles = $xlsxAllFiles
 if ($Filter) {
     $xlsxFiles = $xlsxFiles | Where-Object { $_.BaseName -like "*$Filter*" }
 }
@@ -306,7 +307,7 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
 
     Write-Host "[Step 3] Comparing XLSX PDFs..." -ForegroundColor Yellow
     $xlsxScoresBefore = Get-ReportScores -ReportDir $ReportXlsx
-    $xlsxManifest = Write-ComparisonManifest -Files $xlsxFiles -ManifestPath (Join-Path $ReportXlsx "comparison_manifest.json") -Format "xlsx"
+    $xlsxManifest = Write-ComparisonManifest -Files $xlsxAllFiles -ManifestPath (Join-Path $ReportXlsx "comparison_manifest.json") -Format "xlsx"
     $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfXlsx, "--reference-dir", $RefXlsx, "--report-dir", $ReportXlsx, "--manifest", $xlsxManifest, "--report-scope", "issue-xlsx")
     if ($WithOffice -and (Test-Path $OfficeXlsx)) {
         $compareArgs += @("--office-dir", $OfficeXlsx)
@@ -328,7 +329,8 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
 }
 
 # ── DOCX ──
-$docxFiles = Get-ChildItem -Path $DocxIssueDir -Filter "*.docx" -ErrorAction SilentlyContinue
+$docxAllFiles = @(Get-ChildItem -Path $DocxIssueDir -Filter "*.docx" -ErrorAction SilentlyContinue)
+$docxFiles = $docxAllFiles
 if ($Filter) {
     $docxFiles = $docxFiles | Where-Object { $_.BaseName -like "*$Filter*" }
 }
@@ -389,7 +391,7 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
 
     Write-Host "[Step 3] Comparing DOCX PDFs..." -ForegroundColor Yellow
     $docxScoresBefore = Get-ReportScores -ReportDir $ReportDocx
-    $docxManifest = Write-ComparisonManifest -Files $docxFiles -ManifestPath (Join-Path $ReportDocx "comparison_manifest.json") -Format "docx"
+    $docxManifest = Write-ComparisonManifest -Files $docxAllFiles -ManifestPath (Join-Path $ReportDocx "comparison_manifest.json") -Format "docx"
     $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfDocx, "--reference-dir", $RefDocx, "--report-dir", $ReportDocx, "--manifest", $docxManifest, "--report-scope", "issue-docx")
     if ($WithOffice -and (Test-Path $OfficeDocx)) {
         $compareArgs += @("--office-dir", $OfficeDocx)

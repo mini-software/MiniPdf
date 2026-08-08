@@ -1471,7 +1471,7 @@ def main():
         print("  3. python generate_reference_pdfs.py      (generate reference PDFs)")
         sys.exit(1)
 
-    filtered_mode = bool(args.filter) and not args.manifest
+    filtered_mode = bool(args.filter)
     existing_results_by_name = {}
     if filtered_mode and os.path.isfile(json_path):
         try:

@@ -91,10 +91,11 @@ internal static class ExcelReader
             }
             var rowBreaks = ReadRowBreaks(entry);
             var pageSetup = ReadPageSetup(entry);
+            var ignoreInferredFitToPage = pageSetup.FitToPageInferred && rows.Count >= 1000 && colWidths.Count == 0 && defaultColWidth <= 0f;
             var hasPrintArea = printAreas.TryGetValue(currentIndex, out var printArea);
             var hasPrintTitleRows = printTitleRows.TryGetValue(currentIndex, out var printTitleRow);
             ApplyTableStyleFormatting(archive, entry.FullName, rows, dxfStyles);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, shapes: drawingShapes, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, printArea: hasPrintArea ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: hasPrintTitleRows ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt, maxDigitWidthPx: maxDigitWidthPx));
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, shapes: drawingShapes, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: ignoreInferredFitToPage && pageSetup.PaperSize == 1 ? 9 : pageSetup.PaperSize, printArea: hasPrintArea ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: ignoreInferredFitToPage ? false : pageSetup.FitToPage, fitToWidth: ignoreInferredFitToPage ? 0 : pageSetup.FitToWidth, fitToHeight: ignoreInferredFitToPage ? 0 : pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: hasPrintTitleRows ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt, maxDigitWidthPx: maxDigitWidthPx));
             sheetEntries.Add(entry);
             sheetEntryPaths.Add(entry.FullName);
         }
@@ -111,7 +112,8 @@ internal static class ExcelReader
                 var mergedCells = ReadMergedCells(entry);
                 var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
                 var pageSetup = ReadPageSetup(entry);
-                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: pageSetup.FitToPage, fitToWidth: pageSetup.FitToWidth, fitToHeight: pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, maxDigitWidthPx: maxDigitWidthPx));
+                var ignoreInferredFitToPage = pageSetup.FitToPageInferred && rows.Count >= 1000 && colWidths.Count == 0 && defaultColWidth <= 0f;
+                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: ignoreInferredFitToPage && pageSetup.PaperSize == 1 ? 9 : pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: ignoreInferredFitToPage ? false : pageSetup.FitToPage, fitToWidth: ignoreInferredFitToPage ? 0 : pageSetup.FitToWidth, fitToHeight: ignoreInferredFitToPage ? 0 : pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, maxDigitWidthPx: maxDigitWidthPx));
                 sheetEntryPaths.Add(entry.FullName);
             }
         }
@@ -3048,6 +3050,7 @@ internal static class ExcelReader
         var paperSize = 0; // 0 = not specified (will inherit from first sheet or default to US Letter)
         float marginLeft = -1, marginRight = -1, marginTop = -1, marginBottom = -1, footerMargin = -1;
         var fitToPage = false;
+        var fitToPageInferred = false;
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -3123,6 +3126,7 @@ internal static class ExcelReader
         if (pageSetUpPr == null && !fitToPage && fitToWidth > 0 && pageSetup?.Attribute("fitToWidth") != null)
         {
             fitToPage = true;
+            fitToPageInferred = true;
             fitToHeight = 0;
         }
 
@@ -3144,13 +3148,13 @@ internal static class ExcelReader
             oddHeader = headerFooter.Element(ns + "oddHeader")?.Value;
         }
 
-        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage, fitToWidth, fitToHeight, horizontalCentered, oddFooter, oddHeader, footerMargin);
+        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage, fitToWidth, fitToHeight, fitToPageInferred, horizontalCentered, oddFooter, oddHeader, footerMargin);
     }
 
     internal record PageSetupInfo(
         bool IsLandscape, int Scale, int PaperSize,
         float MarginLeftPt, float MarginRightPt, float MarginTopPt, float MarginBottomPt,
-        bool FitToPage, int FitToWidth, int FitToHeight, bool HorizontalCentered = false,
+        bool FitToPage, int FitToWidth, int FitToHeight, bool FitToPageInferred = false, bool HorizontalCentered = false,
         string? OddFooter = null, string? OddHeader = null, float FooterMarginPt = -1);
 
     /// <summary>
