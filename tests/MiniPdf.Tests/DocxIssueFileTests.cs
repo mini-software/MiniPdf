@@ -23,8 +23,17 @@ public class DocxIssueFileTests
         var dateValue = Assert.Single(firstPage.TextBlocks,
             block => block.Text == "#[checkStart]# 至 #[checkEnd]#");
 
-        Assert.InRange(labels.Max(block => block.X) - labels.Min(block => block.X), 0, 0.1f);
-        Assert.InRange(dateValue.X, 275f, 280f);
+        var labelRightEdges = labels.Select(block =>
+        {
+            Assert.True(PdfWriter.TryMeasurePreferredFontWidth(block.PreferredFontName, block.Text,
+                block.FontSize, block.Bold, block.Italic, block.CharSpacing, out var width));
+            return block.X + width;
+        }).ToArray();
+        Assert.InRange(labelRightEdges.Max() - labelRightEdges.Min(), 0, 0.1f);
+
+        Assert.True(PdfWriter.TryMeasurePreferredFontWidth(dateValue.PreferredFontName, dateValue.Text,
+            dateValue.FontSize, dateValue.Bold, dateValue.Italic, dateValue.CharSpacing, out var dateWidth));
+        Assert.InRange(dateValue.X + dateWidth / 2, 380f, 385f);
     }
 
     [Fact]
