@@ -4,6 +4,46 @@ namespace MiniSoftware.Tests;
 
 public class DocxIssueFileTests
 {
+    [Fact]
+    public void Issue78_HeaderTable_UsesPreferredFontWidthsForAlignment()
+    {
+        var issuePath = FindIssueDocx("TestIssue78.docx");
+
+        using var stream = File.OpenRead(issuePath);
+        var document = DocxToPdfConverter.Convert(stream);
+        var firstPage = Assert.Single(document.Pages);
+        var labels = new[]
+        {
+            "使 用 单 位 名 称：",
+            "单  位  内  编 号：",
+            "设   备   代  码 ：",
+            "设   备   类  别 ：",
+            "检   测   日  期 ：",
+        }.Select(text => Assert.Single(firstPage.TextBlocks, block => block.Text == text)).ToArray();
+        var dateValue = Assert.Single(firstPage.TextBlocks,
+            block => block.Text == "#[checkStart]# 至 #[checkEnd]#");
+
+        Assert.InRange(labels.Max(block => block.X) - labels.Min(block => block.X), 0, 0.1f);
+        Assert.InRange(dateValue.X, 275f, 280f);
+    }
+
+    [Fact]
+    public void Issue78_ParagraphTab_DoesNotMoveNumberedBodyText()
+    {
+        var issuePath = FindIssueDocx("TestIssue78.docx");
+
+        using var stream = File.OpenRead(issuePath);
+        var document = DocxToPdfConverter.Convert(stream);
+        var firstPage = Assert.Single(document.Pages);
+        var label = Assert.Single(firstPage.TextBlocks, block => block.Text == "一、");
+        var body = Assert.Single(firstPage.TextBlocks,
+            block => block.Text.StartsWith("本原始记录适用于", StringComparison.Ordinal));
+
+        Assert.InRange(Math.Abs(body.Y - label.Y), 0, 0.1f);
+        Assert.InRange(label.X, 85f, 105f);
+        Assert.InRange(body.X - label.X, 0, 60f);
+    }
+
     [Theory]
     [InlineData("Issue79_FilledContract.docx")]
     [InlineData("Issue79_TemplateContract.docx")]
