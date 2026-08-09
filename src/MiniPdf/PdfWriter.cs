@@ -2531,7 +2531,7 @@ internal sealed class PdfWriter
 
     private static bool TryGetMeasureFont(string fontName, out FontMeasureInfo font)
     {
-        var key = NormalizeFontName(fontName);
+        var key = fontName.Trim();
         lock (MeasureFontCacheLock)
         {
             if (MeasureFontCache.TryGetValue(key, out var cached))
