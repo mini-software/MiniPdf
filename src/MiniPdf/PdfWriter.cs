@@ -671,23 +671,39 @@ internal sealed class PdfWriter
                 for (var j = 0; j < imageObjNums[i].Count; j++)
                     WriteRaw($"/Im{j} {imageObjNums[i][j]} 0 R\n");
                 WriteRaw(">>\n");
-                // ExtGState entries for images with alpha < 1
-                var hasAlpha = false;
+            }
+
+            var hasAlpha = page.ImageBlocks.Any(image => image.Alpha < 1f)
+                || page.RectBlocks.Any(rect => rect.Alpha < 1f)
+                || page.PolygonBlocks.Any(polygon => polygon.Alpha < 1f);
+            if (hasAlpha)
+            {
+                WriteRaw("/ExtGState <<\n");
                 for (var j = 0; j < page.ImageBlocks.Count; j++)
                 {
                     if (page.ImageBlocks[j].Alpha < 1f)
                     {
-                        if (!hasAlpha)
-                        {
-                            WriteRaw("/ExtGState <<\n");
-                            hasAlpha = true;
-                        }
                         var ca = page.ImageBlocks[j].Alpha.ToString("F3", CultureInfo.InvariantCulture);
                         WriteRaw($"/GS_A{j} << /Type /ExtGState /ca {ca} >>\n");
                     }
                 }
-                if (hasAlpha)
-                    WriteRaw(">>\n");
+                for (var j = 0; j < page.RectBlocks.Count; j++)
+                {
+                    if (page.RectBlocks[j].Alpha < 1f)
+                    {
+                        var ca = page.RectBlocks[j].Alpha.ToString("F3", CultureInfo.InvariantCulture);
+                        WriteRaw($"/GS_R{j} << /Type /ExtGState /ca {ca} >>\n");
+                    }
+                }
+                for (var j = 0; j < page.PolygonBlocks.Count; j++)
+                {
+                    if (page.PolygonBlocks[j].Alpha < 1f)
+                    {
+                        var ca = page.PolygonBlocks[j].Alpha.ToString("F3", CultureInfo.InvariantCulture);
+                        WriteRaw($"/GS_P{j} << /Type /ExtGState /ca {ca} >>\n");
+                    }
+                }
+                WriteRaw(">>\n");
             }
             WriteRaw(">>\n");
             WriteRaw(">>\nendobj\n");
@@ -778,8 +794,9 @@ internal sealed class PdfWriter
         var sb = new StringBuilder();
 
         // Draw filled rectangles first (background)
-        foreach (var rect in page.RectBlocks)
+        for (var rectIndex = 0; rectIndex < page.RectBlocks.Count; rectIndex++)
         {
+            var rect = page.RectBlocks[rectIndex];
             var rx = rect.X.ToString("F3", CultureInfo.InvariantCulture);
             var ry = rect.Y.ToString("F3", CultureInfo.InvariantCulture);
             var rw = rect.Width.ToString("F3", CultureInfo.InvariantCulture);
@@ -787,9 +804,13 @@ internal sealed class PdfWriter
             var rr = rect.FillColor.R.ToString("F3", CultureInfo.InvariantCulture);
             var rg2 = rect.FillColor.G.ToString("F3", CultureInfo.InvariantCulture);
             var rb = rect.FillColor.B.ToString("F3", CultureInfo.InvariantCulture);
+            if (rect.Alpha < 1f)
+                sb.Append($"q\n/GS_R{rectIndex} gs\n");
             sb.Append($"{rr} {rg2} {rb} rg\n");
             sb.Append($"{rx} {ry} {rw} {rh} re\n");
             sb.Append("f\n");
+            if (rect.Alpha < 1f)
+                sb.Append("Q\n");
         }
 
         // Draw filled ellipses
@@ -849,11 +870,14 @@ internal sealed class PdfWriter
         }
 
         // Draw filled polygons
-        foreach (var polygon in page.PolygonBlocks)
+        for (var polygonIndex = 0; polygonIndex < page.PolygonBlocks.Count; polygonIndex++)
         {
+            var polygon = page.PolygonBlocks[polygonIndex];
             var rr = polygon.FillColor.R.ToString("F3", CultureInfo.InvariantCulture);
             var rg2 = polygon.FillColor.G.ToString("F3", CultureInfo.InvariantCulture);
             var rb = polygon.FillColor.B.ToString("F3", CultureInfo.InvariantCulture);
+            if (polygon.Alpha < 1f)
+                sb.Append($"q\n/GS_P{polygonIndex} gs\n");
             sb.Append($"{rr} {rg2} {rb} rg\n");
 
             if (polygon.Subpaths is { Count: > 0 })
@@ -874,6 +898,8 @@ internal sealed class PdfWriter
                 }
 
                 sb.Append(polygon.EvenOddFill ? "f*\n" : "f\n");
+                if (polygon.Alpha < 1f)
+                    sb.Append("Q\n");
                 continue;
             }
 
@@ -889,6 +915,8 @@ internal sealed class PdfWriter
             }
             sb.Append("h\n");
             sb.Append("f\n");
+            if (polygon.Alpha < 1f)
+                sb.Append("Q\n");
         }
 
         foreach (var path in page.PathBlocks)

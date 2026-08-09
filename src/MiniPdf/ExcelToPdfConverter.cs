@@ -2293,7 +2293,7 @@ internal static class ExcelToPdfConverter
                     pdfPoints.Add(new PdfPoint(polyX + nx * polyW, polyTop - ny * polyH));
                 }
                 if (shape.FillColor is { } pfc)
-                    polyPage.AddPolygon(pdfPoints, pfc);
+                    polyPage.AddPolygon(pdfPoints, pfc, shape.FillAlpha);
                 continue;
             }
 
@@ -2329,7 +2329,7 @@ internal static class ExcelToPdfConverter
 
             // Render fill
             if (shape.FillColor is { } fc)
-                shapePage.AddRectangle(shapeX, shapeBot, shapeW, shapeH, fc);
+                shapePage.AddRectangle(shapeX, shapeBot, shapeW, shapeH, fc, shape.FillAlpha);
 
             // Render border
             if (shape.BorderColor is { } bc && shape.BorderWidthPt > 0)

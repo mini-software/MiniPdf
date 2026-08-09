@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-08-09T01:21:13.137281
+Generated: 2026-08-09T01:57:44.974922
 
 ## Summary
 
@@ -9,7 +9,7 @@ Generated: 2026-08-09T01:21:13.137281
 | 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9785 | 0.9563 | 2/2 | **0.9739** |
 | 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9785 | 0.9563 | 2/2 | **0.9739** |
 | 3 | 🟢 Business expense budget1 | ✅ | 0.9659 | 0.862 | 4/4 | **0.9312** |
-| 4 | 🟡 Business expenses budget2 | ✅ | 0.9971 | 0.699 | 4/4 | **0.8784** |
+| 4 | 🟡 Business expenses budget2 | ✅ | 0.9809 | 0.7259 | 4/4 | **0.8827** |
 | 5 | 🟡 Business plan checklist with SWOT analysis1 | ✅ | 0.9915 | 0.5465 | 1/1 | **0.8152** |
 | 6 | 🔴 Event budget1 | ✅ | 0.7597 | 0.6756 | 4/5 | **0.6741** |
 | 7 | 🟡 Expense report basic1 | ✅ | 1.0 | 0.6359 | 1/1 | **0.8544** |
@@ -29,7 +29,7 @@ Generated: 2026-08-09T01:21:13.137281
 | 21 | 🔴 XlsxIssue82_SampleTestData5mb | ✅ | 0.4255 | 0.9146 | 834/1668 | **0.636** |
 | 22 | 🟢 XlsxIssue82_WideTable | ✅ | 1.0 | 0.8648 | 13/13 | **0.9459** |
 
-**Average Overall Score: 0.8357**
+**Average Overall Score: 0.8359**
 
 ## Visual Comparison
 
@@ -77,7 +77,7 @@ Generated: 2026-08-09T01:21:13.137281
 </tr>
 <tr>
   <td><b>Business expenses budget2<br><small>format: xlsx | case: Business expenses budget2 | scope: issue-xlsx</small></b></td>
-  <td colspan="1">Business expenses budget2 <span style="color:#d29922">⬤</span> 87.8%</td>
+  <td colspan="1">Business expenses budget2 <span style="color:#d29922">⬤</span> 88.3%</td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -90,6 +90,10 @@ Generated: 2026-08-09T01:21:13.137281
 <tr>
   <td><img src="images/Business expenses budget2_p3_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/Business expenses budget2_p3_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Business expenses budget2_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Business expenses budget2_p4_reference.png" width="340" alt="Reference"></td>
 </tr>
 <tr>
   <td><b>Business plan checklist with SWOT analysis1<br><small>format: xlsx | case: Business plan checklist with SWOT analysis1 | scope: issue-xlsx</small></b></td>
@@ -626,18 +630,18 @@ Generated: 2026-08-09T01:21:13.137281
 ### Business expenses budget2
 
 - **Case Metadata:** format: xlsx | case: Business expenses budget2 | scope: issue-xlsx
-- **Text Similarity:** 0.9971
-- **Visual Average:** 0.699
-- **Overall Score:** 0.8784
+- **Text Similarity:** 0.9809
+- **Visual Average:** 0.7259
+- **Overall Score:** 0.8827
 - **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=641169 bytes, Reference=402762 bytes
+- **File Size:** MiniPdf=641382 bytes, Reference=402762 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Business expenses budget2.pdf
 +++ reference/Business expenses budget2.pdf
-@@ -1,81 +1,81 @@
+@@ -1,109 +1,109 @@
  Market Financial Consulting
 
  PLANNED EXPENSES
@@ -678,8 +682,8 @@ Generated: 2026-08-09T01:21:13.137281
 
 -Web site updates $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 1,000.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 1,000.00  $ 4,000.00
 
--Collateral preparation $ 5,000.00  $ -    $ -    $ 5,000.00  $ -    $ 
-... (12461 more characters)
+-Collateral preparation $ 5,000.00  $ -    $ -    $ 5,000.00  $ -    
+... (13476 more characters)
 
 ```
 </details>

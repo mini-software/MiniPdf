@@ -113,10 +113,18 @@ public class XlsxIssueFileTests
         });
 
         var decoration = Assert.Single(page.PolygonBlocks);
+        Assert.Equal(new PdfColor(0f, 0f, 0f), decoration.FillColor);
+        Assert.Equal(0.5f, decoration.Alpha);
         var decorationWidth = decoration.Points.Max(point => point.X) - decoration.Points.Min(point => point.X);
         var decorationHeight = decoration.Points.Max(point => point.Y) - decoration.Points.Min(point => point.Y);
         Assert.InRange(decorationWidth, 89f, 91f);
         Assert.InRange(decorationHeight, 49f, 51f);
+
+        using var output = new MemoryStream();
+        doc.Save(output);
+        var pdf = System.Text.Encoding.Latin1.GetString(output.ToArray());
+        Assert.Contains("/GS_P0 << /Type /ExtGState /ca 0.500 >>", pdf);
+        Assert.Contains("/GS_P0 gs", pdf);
     }
 
     private static string FindIssueXlsx(string fileName)

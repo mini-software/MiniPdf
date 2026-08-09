@@ -3641,6 +3641,7 @@ internal static class ExcelReader
 
                     // Read fill color
                     PdfColor? gFill = null;
+                    var gFillAlpha = 1f;
                     var gSolidFill = gSpPr.Element(a + "solidFill");
                     if (gSolidFill != null)
                     {
@@ -3648,17 +3649,9 @@ internal static class ExcelReader
                         if (gSrgb != null)
                         {
                             gFill = PdfColor.FromHex(gSrgb.Attribute("val")?.Value ?? "");
-                            // Apply alpha: blend with white background
                             var alphaEl = gSrgb.Element(a + "alpha");
                             if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var alphaVal))
-                            {
-                                var alpha = alphaVal / 100000f;
-                                var fc = gFill.Value;
-                                gFill = new PdfColor(
-                                    fc.R * alpha + 1f * (1 - alpha),
-                                    fc.G * alpha + 1f * (1 - alpha),
-                                    fc.B * alpha + 1f * (1 - alpha));
-                            }
+                                gFillAlpha = Math.Clamp(alphaVal / 100000f, 0f, 1f);
                         }
                     }
                     if (gFill == null) continue;
@@ -3746,6 +3739,7 @@ internal static class ExcelReader
                         gFromRow, gFromCol, gToRow, gToCol,
                         gFromColOff, gFromRowOff, 0, 0,
                         gFill, null, 0,
+                        FillAlpha: gFillAlpha,
                         OffsetXEmu: offsetXEmu,
                         OffsetYEmu: offsetYEmu,
                         WidthEmu: wEmu,
@@ -3785,6 +3779,7 @@ internal static class ExcelReader
 
             // Read fill
             PdfColor? fillColor = null;
+            var fillAlpha = 1f;
             var solidFill = spPr.Element(a + "solidFill");
             if (solidFill != null)
             {
@@ -3812,6 +3807,10 @@ internal static class ExcelReader
                         }
                     }
                 }
+
+                var alphaEl = (srgb ?? schemeClr)?.Element(a + "alpha");
+                if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var alphaVal))
+                    fillAlpha = Math.Clamp(alphaVal / 100000f, 0f, 1f);
             }
 
             // Read border (line)
@@ -3855,7 +3854,8 @@ internal static class ExcelReader
             shapes.Add(new ExcelDrawingShape(
                 fromRow, fromCol, toRow, toCol,
                 fromColOff, fromRowOff, toColOff, toRowOff,
-                fillColor, borderColor, borderWidthPt));
+                fillColor, borderColor, borderWidthPt,
+                FillAlpha: fillAlpha));
         }
 
         return shapes;
@@ -4434,6 +4434,7 @@ internal sealed record ExcelDrawingShape(
     PdfColor? FillColor,
     PdfColor? BorderColor,
     float BorderWidthPt,
+    float FillAlpha = 1f,
     long OffsetXEmu = 0,
     long OffsetYEmu = 0,
     long WidthEmu = 0,
