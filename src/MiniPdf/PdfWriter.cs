@@ -2656,7 +2656,17 @@ internal sealed class PdfWriter
 
         var cache = _systemFontNameCache.Value;
         var normalized = NormalizeFontName(fontName);
-        return cache.TryGetValue(normalized, out var path) ? path : null;
+        if (cache.TryGetValue(normalized, out var path))
+            return path;
+
+        // Rendering already assigns characters from an unavailable Office CJK
+        // family to the first installed CJK candidate. Use that same font for
+        // layout measurement so alignment does not depend on Helvetica estimates.
+        if (CjkFontFileMap.ContainsKey(fontName))
+            return FindSystemFontCandidates().FirstOrDefault(candidate =>
+                !Path.GetFileName(candidate).Contains("Emoji", StringComparison.OrdinalIgnoreCase));
+
+        return null;
     }
 
     /// <summary>
