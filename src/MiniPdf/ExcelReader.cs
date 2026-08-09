@@ -3651,7 +3651,7 @@ internal static class ExcelReader
                             gFill = PdfColor.FromHex(gSrgb.Attribute("val")?.Value ?? "");
                             var alphaEl = gSrgb.Element(a + "alpha");
                             if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var alphaVal))
-                                gFillAlpha = Math.Clamp(alphaVal / 100000f, 0f, 1f);
+                                gFillAlpha = Compat.Clamp(alphaVal / 100000f, 0f, 1f);
                         }
                     }
                     if (gFill == null) continue;
@@ -3810,7 +3810,7 @@ internal static class ExcelReader
 
                 var alphaEl = (srgb ?? schemeClr)?.Element(a + "alpha");
                 if (alphaEl != null && int.TryParse(alphaEl.Attribute("val")?.Value, out var alphaVal))
-                    fillAlpha = Math.Clamp(alphaVal / 100000f, 0f, 1f);
+                    fillAlpha = Compat.Clamp(alphaVal / 100000f, 0f, 1f);
             }
 
             // Read border (line)
