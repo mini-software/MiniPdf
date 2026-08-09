@@ -21,7 +21,8 @@ internal sealed record PdfRectBlock(
     float Y,             // bottom edge in points
     float Width,         // width in points
     float Height,        // height in points
-    PdfColor FillColor   // fill color
+    PdfColor FillColor,  // fill color
+    float Alpha = 1f     // opacity (0..1)
 );
 
 /// <summary>
@@ -50,7 +51,8 @@ internal sealed record PdfPolygonBlock(
     List<PdfPoint> Points,
     PdfColor FillColor,
     List<List<PdfPoint>>? Subpaths = null,
-    bool EvenOddFill = false
+    bool EvenOddFill = false,
+    float Alpha = 1f
 );
 
 internal sealed record PdfPathCommand(
@@ -187,9 +189,9 @@ internal sealed class PdfPage
     /// <summary>
     /// Adds a filled rectangle at the specified position.
     /// </summary>
-    public PdfPage AddRectangle(float x, float y, float width, float height, PdfColor? fillColor = null)
+    public PdfPage AddRectangle(float x, float y, float width, float height, PdfColor? fillColor = null, float alpha = 1f)
     {
-        _rectBlocks.Add(new PdfRectBlock(x, y, width, height, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f)));
+        _rectBlocks.Add(new PdfRectBlock(x, y, width, height, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f), Math.Clamp(alpha, 0f, 1f)));
         return this;
     }
 
@@ -205,10 +207,10 @@ internal sealed class PdfPage
     /// <summary>
     /// Adds a filled polygon from the provided points.
     /// </summary>
-    public PdfPage AddPolygon(List<PdfPoint> points, PdfColor? fillColor = null)
+    public PdfPage AddPolygon(List<PdfPoint> points, PdfColor? fillColor = null, float alpha = 1f)
     {
         if (points.Count >= 3)
-            _polygonBlocks.Add(new PdfPolygonBlock(points, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f)));
+            _polygonBlocks.Add(new PdfPolygonBlock(points, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f), Alpha: Math.Clamp(alpha, 0f, 1f)));
         return this;
     }
 
