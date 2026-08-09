@@ -1379,12 +1379,6 @@ internal static class DocxToPdfConverter
                 bool suffIsTab = !string.Equals(paragraph.ListSuff, "nothing", StringComparison.OrdinalIgnoreCase)
                               && !string.Equals(paragraph.ListSuff, "space", StringComparison.OrdinalIgnoreCase);
                 bool autoTabAfterLabel = !paragraph.HasExplicitListIndent && suffIsTab;
-                if (autoTabAfterLabel
-                    && paragraph.StyleIndentFirstLine > 0
-                    && paragraph.TabStops is { Count: > 0 })
-                {
-                    numberX = options.MarginLeft + paragraph.IndentLeft + paragraph.StyleIndentFirstLine;
-                }
                 state.CurrentPage!.AddText(paragraph.ListText, numberX, state.CurrentY, fontSize, preferredFontName: listFont, bold: paragraph.ListTextBold);
                 // If the rendered list label would overflow the hanging-indent slot
                 // and overlap the body text, mirror Word's behaviour: advance the body
@@ -1412,33 +1406,17 @@ internal static class DocxToPdfConverter
                 if (labelEnd > bodyX + 2f || autoTabAfterLabel)
                 {
                     var target = labelEnd;
-                    if (paragraph.TabStops != null)
+                    if (paragraph.ListTabStop.HasValue)
                     {
-                        // Word's auto-numbering suffix tab advances to the NEXT tab
-                        // stop greater than labelEnd. Consider all explicit pPr tab
-                        // stops (any alignment) plus any "num"-aligned tab from the
-                        // numbering definition; pick the smallest one beyond labelEnd.
-                        // Required for TOC entries that style only "left" of ind but
-                        // declare an explicit left/right tab stop in pPr/tabs (see
-                        // CCU_article TOC3 4.7 entry: ind left=141, tabs left=739
-                        // and right=8645/dot — body snaps to 739 then page-number
-                        // snaps to 8645 via the right-tab dot leader).
-                        float? bestTab = null;
-                        foreach (var ts in paragraph.TabStops)
-                        {
-                            var tabbedX = options.MarginLeft + ts.Position;
-                            if (tabbedX > labelEnd && (bestTab == null || tabbedX < bestTab.Value))
-                                bestTab = tabbedX;
-                        }
-                        if (bestTab.HasValue && bestTab.Value > target) target = bestTab.Value;
+                        var tabbedX = options.MarginLeft + paragraph.ListTabStop.Value;
+                        if (tabbedX > labelEnd)
+                            target = tabbedX;
                     }
                     // Word's tab-suffix on auto-numbering: after the level text, a tab
-                    // advances to the next tab stop. The tab stops considered are the
-                    // explicit num tab from numbering pPr/tabs (handled above) and any
-                    // explicit pPr/tabs on the paragraph. Word does NOT fall back to
-                    // document-level default tab stops for the auto-numbering suffix
-                    // tab — if no explicit tab stop sits past labelEnd, the body text
-                    // is rendered immediately after the level text (no extra gap).
+                    // advances to the numbering level's explicit "num" tab. Ordinary
+                    // paragraph tab stops only affect explicit tabs in paragraph text.
+                    // Word does not fall back to document-level default tab stops here;
+                    // without a num tab, body text follows the rendered label.
                     // (Verified against Word for Microsoft 365 output: a CJK numbered
                     // list paragraph "%1、" with japaneseCounting and ind left=510
                     // hanging=510 renders "一、判断题" with the body flush against the
@@ -3935,10 +3913,17 @@ internal static class DocxToPdfConverter
                         firstLineAscRatio = 1.0f;
                         if (textY2 < rowDrawTop - cellRenderHeight + effCellPaddingV) break;
                         var lineTextWidth = EstimateWrapTextWidth(line, effectiveFontSize, cellRunBold, cellRunCharSpacing, cellUseCalibri);
+                        var alignmentTextWidth = lineTextWidth;
+                        if (para.Alignment is "center" or "right"
+                            && PdfWriter.TryMeasurePreferredFontWidth(cellRunFontName, line, effectiveFontSize,
+                                cellRunBold, cellRunItalic, cellRunCharSpacing, out var measuredWidth))
+                        {
+                            alignmentTextWidth = measuredWidth;
+                        }
                         var lineRenderX = para.Alignment switch
                         {
-                            "center" => cellX2 + effCellLeft + (textWidth - lineTextWidth) / 2,
-                            "right" => cellX2 + effCellLeft + textWidth - lineTextWidth,
+                            "center" => cellX2 + effCellLeft + (textWidth - alignmentTextWidth) / 2,
+                            "right" => cellX2 + effCellLeft + textWidth - alignmentTextWidth,
                             _ => cellX2 + effCellLeft
                         };
                         float? cellMaxWidth = null;

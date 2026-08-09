@@ -819,6 +819,7 @@ internal static class DocxReader
         string? listFontName = null;
         string? listNumFmt = null;
         string listSuff = "tab";
+        float? listTabStop = null;
         string? styleId = null;
         bool bold = false;
         bool italic = false;
@@ -997,6 +998,7 @@ internal static class DocxReader
                         if (lvlDef.Hanging > 0) numLevelIndentFirstLine = -lvlDef.Hanging;
                         listNumFmt = lvlDef.NumFmt;
                         listSuff = lvlDef.Suff;
+                        listTabStop = lvlDef.TabStop;
                     }
                 }
             }
@@ -1361,6 +1363,7 @@ internal static class DocxReader
             SpacingBeforeExplicit: spacingBeforeExplicit,
             HasExplicitListIndent: paraHasExplicitListIndent,
             ListSuff: listSuff,
+            ListTabStop: listTabStop,
             OutlineLevel: ReadOutlineLevel(pPr),
             StyleIndentFirstLine: styleIndentFirstLineForListLabel);
     }
@@ -4647,13 +4650,18 @@ internal static class DocxReader
                     if (int.TryParse(lvlInd.Attribute(W + "hanging")?.Value, out var lh))
                         lvlHanging = lh / 20f;
                 }
+                float? lvlTabStop = null;
+                var numTab = lvl.Element(W + "pPr")?.Element(W + "tabs")?.Elements(W + "tab")
+                    .FirstOrDefault(tab => tab.Attribute(W + "val")?.Value == "num");
+                if (float.TryParse(numTab?.Attribute(W + "pos")?.Value, out var tabPos))
+                    lvlTabStop = tabPos / 20f;
                 // Read bullet font name from rPr/rFonts (e.g. Wingdings, Symbol)
                 var lvlRPr = lvl.Element(W + "rPr");
                 var lvlFontName = lvlRPr?.Element(W + "rFonts")?.Attribute(W + "ascii")?.Value;
                 // Read bold from numbering level rPr (used for list label rendering)
                 var lvlBoldEl = lvlRPr?.Element(W + "b");
                 var lvlBold = lvlBoldEl != null && lvlBoldEl.Attribute(W + "val")?.Value is not ("0" or "false");
-                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal, lvlIndentLeft, lvlHanging, lvlFontName, lvlBold, lvlSuff));
+                levels.Add(new DocxNumberingLevelDef(ilvl, numFmt, lvlText, startVal, lvlIndentLeft, lvlHanging, lvlFontName, lvlBold, lvlSuff, lvlTabStop));
             }
             abstractDefs[absId] = levels;
         }
@@ -4797,6 +4805,9 @@ internal sealed record DocxParagraph(
     // or "nothing". Renderer uses this to gate the auto-tab snap so body text
     // follows the number immediately when suff is "space" or "nothing".
     string ListSuff = "tab",
+    // Numbering-level w:tab w:val="num" position. Ordinary paragraph tabs do
+    // not position the automatic-numbering suffix.
+    float? ListTabStop = null,
     int OutlineLevel = -1,
     float StyleIndentFirstLine = 0
 ) : DocxElement;
@@ -5146,4 +5157,4 @@ internal sealed class DocxNumberingDef
     }
 }
 
-internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start, float IndentLeft = 0, float Hanging = 0, string? FontName = null, bool Bold = false, string Suff = "tab");
+internal sealed record DocxNumberingLevelDef(int Ilvl, string NumFmt, string LvlText, int Start, float IndentLeft = 0, float Hanging = 0, string? FontName = null, bool Bold = false, string Suff = "tab", float? TabStop = null);
