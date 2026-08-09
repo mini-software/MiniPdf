@@ -191,7 +191,7 @@ internal sealed class PdfPage
     /// </summary>
     public PdfPage AddRectangle(float x, float y, float width, float height, PdfColor? fillColor = null, float alpha = 1f)
     {
-        _rectBlocks.Add(new PdfRectBlock(x, y, width, height, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f), Math.Clamp(alpha, 0f, 1f)));
+        _rectBlocks.Add(new PdfRectBlock(x, y, width, height, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f), Compat.Clamp(alpha, 0f, 1f)));
         return this;
     }
 
@@ -210,7 +210,7 @@ internal sealed class PdfPage
     public PdfPage AddPolygon(List<PdfPoint> points, PdfColor? fillColor = null, float alpha = 1f)
     {
         if (points.Count >= 3)
-            _polygonBlocks.Add(new PdfPolygonBlock(points, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f), Alpha: Math.Clamp(alpha, 0f, 1f)));
+            _polygonBlocks.Add(new PdfPolygonBlock(points, fillColor ?? new PdfColor(0.92f, 0.92f, 0.92f), Alpha: Compat.Clamp(alpha, 0f, 1f)));
         return this;
     }
 
