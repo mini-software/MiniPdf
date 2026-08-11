@@ -42,6 +42,7 @@
 - **Excel 转 PDF** — 将 `.xlsx` 文件转换为 PDF
 - **Word 转 PDF** — 将 `.docx` 文件转换为 PDF
 - **PowerPoint 转 PDF** — 将 `.pptx` 文件转换为 PDF
+- **面向 LLM 的内容提取** — 将 `.xlsx`、`.docx` 和 `.pptx` 内容转换为 Markdown、JSON 或语义化 .NET 模型
 - **PDF 合并与书签** — 合并多个 PDF，并为结果添加顶层书签
 - **极少依赖** — 轻量化设计，几乎仅使用 .NET 内置 API
 - **Serverless 就绪** — 无需 COM、无需安装 Office、无需 Adobe Acrobat — 有 .NET 即可运行
@@ -106,6 +107,25 @@ MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOp
   Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
 });
 ```
+
+## 面向 LLM 的内容提取
+
+无需先生成或解析 PDF，即可按源文件顺序提取内容：
+
+```csharp
+MiniPdfDocumentContent content = MiniPdf.ExtractContent("report.docx");
+string markdown = MiniPdf.ConvertToMarkdown("report.docx");
+string json = MiniPdf.ConvertToJson("report.docx");
+
+MiniPdf.ConvertToJson("data.xlsx", "data.json", new MiniPdfContentOptions
+{
+  Sheets = new[] { "Summary" },
+  MaxRows = 200,
+  MaxColumns = 20,
+});
+```
+
+DOCX、XLSX 和 PPTX 分别映射为文档、工作表和幻灯片 section。输出会保留标题、段落、列表、表格、单元格地址、超链接、DOCX 脚注以及图片/图表元数据。JSON 使用确定性的 schema version `1`。图片仅以元数据占位表示，不执行 OCR，也不导出 sidecar 文件；批注、修订、threaded comments 和 PowerPoint 讲者备注暂不支持。
 
 ## PDF 合并使用方式
 
@@ -238,6 +258,12 @@ minipdf data.xlsx --fit-to-page --landscape --scale 70
 
 # 目标是每页容纳更多工作表行
 minipdf data.xlsx --rows-per-page 80 --compress
+
+# 提取面向 LLM 的 Markdown（输出: report.md）
+minipdf extract report.docx
+
+# 提取确定性的 JSON
+minipdf extract data.xlsx --format json --sheets Summary --max-rows 200
 ```
 
 ### 命令说明
@@ -250,6 +276,8 @@ minipdf data.xlsx --rows-per-page 80 --compress
 | `minipdf data.xlsx --max-rows <n> --max-columns <n>` | 渲染有边界的 Excel 预览 |
 | `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | 适配并缩放 Excel 版面 |
 | `minipdf data.xlsx --rows-per-page <n>` | 目标是每页容纳更多 Excel 行 |
+| `minipdf extract <file>` | 提取面向 LLM 的 Markdown |
+| `minipdf extract <file> --format json` | 提取 schema version 1 的语义化 JSON |
 | `minipdf --version` | 显示版本 |
 | `minipdf --help` | 显示帮助 |
 

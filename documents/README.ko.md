@@ -28,6 +28,7 @@ Office 파일을 PDF로 변환하는 최소한의 경량 .NET 라이브러리입
 - **Excel → PDF 변환** — `.xlsx` 파일을 PDF로 변환
 - **Word → PDF 변환** — `.docx` 파일을 PDF로 변환
 - **PowerPoint → PDF 변환** — `.pptx` 파일을 PDF로 변환
+- **LLM 친화적 콘텐츠 추출** — `.xlsx`, `.docx`, `.pptx` 콘텐츠를 Markdown, JSON 또는 의미 기반 .NET 모델로 변환
 - **PDF 병합 및 북마크** — 여러 PDF를 병합하고 결과에 최상위 북마크 추가
 - **최소 의존성** — 경량 설계, 거의 .NET 내장 API만 사용
 - **서버리스 지원** — COM 불필요, Office 설치 불필요, Adobe Acrobat 불필요 — .NET만 있으면 어디서든 실행
@@ -92,6 +93,25 @@ MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOp
   Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
 });
 ```
+
+## LLM 친화적 콘텐츠 추출
+
+중간 PDF를 생성하거나 다시 파싱하지 않고 원본 순서대로 콘텐츠를 추출합니다.
+
+```csharp
+MiniPdfDocumentContent content = MiniPdf.ExtractContent("report.docx");
+string markdown = MiniPdf.ConvertToMarkdown("report.docx");
+string json = MiniPdf.ConvertToJson("report.docx");
+
+MiniPdf.ConvertToJson("data.xlsx", "data.json", new MiniPdfContentOptions
+{
+  Sheets = new[] { "Summary" },
+  MaxRows = 200,
+  MaxColumns = 20,
+});
+```
+
+DOCX, XLSX, PPTX는 각각 document, worksheet, slide section으로 매핑됩니다. 제목, 문단, 목록, 표, 셀 주소, 하이퍼링크, DOCX 각주 및 이미지/차트 메타데이터를 보존합니다. JSON은 결정적인 schema version `1`을 사용합니다. 이미지는 메타데이터 자리표시자로만 표현되며 OCR이나 sidecar 파일 내보내기는 수행하지 않습니다. 주석, 변경 내용 추적, threaded comments 및 PowerPoint 발표자 노트는 아직 지원하지 않습니다.
 
 ## PDF 병합 사용 방법
 
@@ -224,6 +244,12 @@ minipdf data.xlsx --fit-to-page --landscape --scale 70
 
 # PDF 페이지당 더 많은 워크시트 행을 목표로 설정
 minipdf data.xlsx --rows-per-page 80 --compress
+
+# LLM 친화적 Markdown 추출 (출력: report.md)
+minipdf extract report.docx
+
+# 결정적인 JSON 추출
+minipdf extract data.xlsx --format json --sheets Summary --max-rows 200
 ```
 
 ### 명령어
@@ -236,6 +262,8 @@ minipdf data.xlsx --rows-per-page 80 --compress
 | `minipdf data.xlsx --max-rows <n> --max-columns <n>` | 제한된 Excel 미리보기 렌더링 |
 | `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | Excel 레이아웃 맞춤 및 배율 조정 |
 | `minipdf data.xlsx --rows-per-page <n>` | PDF 페이지당 더 많은 Excel 행을 목표로 설정 |
+| `minipdf extract <file>` | LLM 친화적 Markdown 추출 |
+| `minipdf extract <file> --format json` | schema version 1 의미 기반 JSON 추출 |
 | `minipdf --version` | 버전 표시 |
 | `minipdf --help` | 도움말 표시 |
 

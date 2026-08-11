@@ -28,6 +28,7 @@ Une bibliothèque .NET minimale et légère pour convertir des fichiers Office e
 - **Excel → PDF** — Convertit les fichiers `.xlsx` en PDF
 - **Word → PDF** — Convertit les fichiers `.docx` en PDF
 - **PowerPoint → PDF** — Convertit les fichiers `.pptx` en PDF
+- **Extraction pour LLM** — Convertit le contenu `.xlsx`, `.docx` et `.pptx` en Markdown, JSON ou modèle .NET sémantique
 - **Fusion PDF avec signets** — Fusionne plusieurs PDF et ajoute des signets de premier niveau au resultat
 - **Dépendances minimales** — Conception légère, repose presque entièrement sur les API .NET intégrées
 - **Prêt pour le serverless** — Pas de COM, pas d'installation d'Office, pas d'Adobe Acrobat — fonctionne partout où .NET fonctionne
@@ -92,6 +93,25 @@ MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOp
   Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
 });
 ```
+
+## Extraction de contenu pour LLM
+
+Extrayez le contenu dans l'ordre source sans générer ni analyser un PDF intermédiaire :
+
+```csharp
+MiniPdfDocumentContent content = MiniPdf.ExtractContent("report.docx");
+string markdown = MiniPdf.ConvertToMarkdown("report.docx");
+string json = MiniPdf.ConvertToJson("report.docx");
+
+MiniPdf.ConvertToJson("data.xlsx", "data.json", new MiniPdfContentOptions
+{
+  Sheets = new[] { "Summary" },
+  MaxRows = 200,
+  MaxColumns = 20,
+});
+```
+
+DOCX, XLSX et PPTX sont respectivement mappés vers des sections document, worksheet et slide. La sortie conserve les titres, paragraphes, listes, tableaux, adresses de cellule, liens, notes de bas de page DOCX et métadonnées d'images/graphiques. JSON utilise le schema déterministe version `1`. Les images sont représentées par des métadonnées : aucun OCR ni fichier sidecar n'est produit. Les commentaires, le suivi des modifications, les threaded comments et les notes du présentateur PowerPoint ne sont pas encore pris en charge.
 
 ## Utilisation de la fusion PDF
 
@@ -224,6 +244,12 @@ minipdf data.xlsx --fit-to-page --landscape --scale 70
 
 # Viser davantage de lignes de feuille par page PDF
 minipdf data.xlsx --rows-per-page 80 --compress
+
+# Extraire du Markdown pour LLM (sortie : report.md)
+minipdf extract report.docx
+
+# Extraire du JSON déterministe
+minipdf extract data.xlsx --format json --sheets Summary --max-rows 200
 ```
 
 ### Commandes
@@ -236,6 +262,8 @@ minipdf data.xlsx --rows-per-page 80 --compress
 | `minipdf data.xlsx --max-rows <n> --max-columns <n>` | Rendre un apercu Excel limite |
 | `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | Ajuster et mettre a l'echelle la mise en page Excel |
 | `minipdf data.xlsx --rows-per-page <n>` | Viser davantage de lignes Excel par page PDF |
+| `minipdf extract <file>` | Extraire du Markdown pour LLM |
+| `minipdf extract <file> --format json` | Extraire du JSON sémantique schema version 1 |
 | `minipdf --version` | Afficher la version |
 | `minipdf --help` | Afficher l'aide |
 

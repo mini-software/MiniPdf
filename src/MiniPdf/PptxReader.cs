@@ -89,13 +89,19 @@ internal sealed class PptxPicture : PptxElement
     public byte[] Data { get; }
     public string Format { get; }
     public PptxCrop Crop { get; }
+    public string? Name { get; }
+    public string? AlternativeText { get; }
+    public string? SourcePath { get; }
 
-    public PptxPicture(PptxRect bounds, byte[] data, string format, PptxCrop crop)
+    public PptxPicture(PptxRect bounds, byte[] data, string format, PptxCrop crop, string? name = null, string? alternativeText = null, string? sourcePath = null)
     {
         Bounds = bounds;
         Data = data;
         Format = format;
         Crop = crop;
+        Name = name;
+        AlternativeText = alternativeText;
+        SourcePath = sourcePath;
     }
 }
 
@@ -126,8 +132,9 @@ internal sealed class PptxTextParagraph
     public float Indent { get; }
     public float SpaceBefore { get; }
     public float? LineSpacing { get; }
+    public int Level { get; }
 
-    public PptxTextParagraph(List<PptxTextRun> runs, bool isBullet = false, string alignment = "left", float marginLeft = 0f, float indent = 0f, float spaceBefore = 0f, float? lineSpacing = null)
+    public PptxTextParagraph(List<PptxTextRun> runs, bool isBullet = false, string alignment = "left", float marginLeft = 0f, float indent = 0f, float spaceBefore = 0f, float? lineSpacing = null, int level = 0)
     {
         Runs = runs;
         IsBullet = isBullet;
@@ -136,6 +143,7 @@ internal sealed class PptxTextParagraph
         Indent = indent;
         SpaceBefore = spaceBefore;
         LineSpacing = lineSpacing;
+        Level = level;
     }
 }
 
@@ -148,8 +156,9 @@ internal sealed class PptxTextRun
     public bool Italic { get; }
     public bool Underline { get; }
     public string? FontName { get; }
+    public string? Link { get; }
 
-    public PptxTextRun(string text, float fontSize, PdfColor color, bool bold, bool italic, bool underline, string? fontName)
+    public PptxTextRun(string text, float fontSize, PdfColor color, bool bold, bool italic, bool underline, string? fontName, string? link = null)
     {
         Text = text;
         FontSize = fontSize;
@@ -158,6 +167,7 @@ internal sealed class PptxTextRun
         Italic = italic;
         Underline = underline;
         FontName = fontName;
+        Link = link;
     }
 }
 
@@ -340,7 +350,7 @@ internal static class PptxReader
                 if (!includePlaceholderShapes && IsPlaceholderElement(child))
                     continue;
 
-                ReadShape(child, themeColors, coordinateMap, elements, placeholderDefaults);
+                ReadShape(child, relationships, themeColors, coordinateMap, elements, placeholderDefaults);
             }
             else if (child.Name == P + "pic")
             {
@@ -367,6 +377,7 @@ internal static class PptxReader
 
     private static void ReadShape(
         XElement shapeElement,
+        Dictionary<string, PptxRelationship> relationships,
         Dictionary<string, PdfColor> themeColors,
         CoordinateMap coordinateMap,
         List<PptxElement> elements,
@@ -405,7 +416,7 @@ internal static class PptxReader
             ?? ReadShapeFill(inheritedShapeProperties, themeColors)
             ?? ReadStyleFill(inheritedShape?.Element(P + "style"), themeColors);
         var textBodyProperties = ReadTextBodyProperties(shapeElement, inheritedShape);
-        var paragraphs = ReadTextParagraphs(shapeElement, inheritedShape, themeColors);
+        var paragraphs = ReadTextParagraphs(shapeElement, inheritedShape, themeColors, relationships);
 
         if (fillColor == null && outline == null && paragraphs.Count == 0)
             return;
@@ -420,8 +431,12 @@ internal static class PptxReader
         CoordinateMap coordinateMap,
         List<PptxElement> elements)
     {
-        if (ReadBool(pictureElement.Element(P + "nvPicPr")?.Element(P + "cNvPr")?.Attribute("hidden")?.Value))
+        var pictureProperties = pictureElement.Element(P + "nvPicPr")?.Element(P + "cNvPr");
+        if (ReadBool(pictureProperties?.Attribute("hidden")?.Value))
             return;
+        var pictureName = pictureProperties?.Attribute("name")?.Value;
+        var alternativeText = pictureProperties?.Attribute("descr")?.Value
+            ?? pictureProperties?.Attribute("title")?.Value;
 
         var bounds = ReadBounds(pictureElement.Element(P + "spPr")?.Element(A + "xfrm"), coordinateMap);
         if (bounds.Width <= 0 || bounds.Height <= 0)
@@ -458,7 +473,7 @@ internal static class PptxReader
             return;
 
         var crop = ReadPictureCrop(pictureElement.Element(P + "blipFill")?.Element(A + "srcRect"));
-        elements.Add(new PptxPicture(bounds, data, format, crop));
+        elements.Add(new PptxPicture(bounds, data, format, crop, pictureName, alternativeText, mediaPath));
     }
 
     private static PptxCrop ReadPictureCrop(XElement? sourceRect)
@@ -561,7 +576,7 @@ internal static class PptxReader
                 var cellBounds = new PptxRect(left, top, cellWidth, rowHeight);
                 var cellProperties = cell.Element(A + "tcPr");
                 var fillColor = ReadShapeFill(cellProperties, themeColors);
-                var paragraphs = ReadTextParagraphsFromTextBody(cell.Element(A + "txBody"), null, themeColors);
+                var paragraphs = ReadTextParagraphsFromTextBody(cell.Element(A + "txBody"), null, themeColors, relationships);
                 if (fillColor != null || paragraphs.Count > 0)
                     elements.Add(new PptxShape("rect", cellBounds, fillColor, null, paragraphs, PptxTextBodyProperties.Default));
 
@@ -718,16 +733,24 @@ internal static class PptxReader
         return new CoordinateMap(slideX, slideY, slideRight - slideX, slideBottom - slideY, childX, childY, childWidth, childHeight);
     }
 
-    private static List<PptxTextParagraph> ReadTextParagraphs(XElement shapeElement, XElement? inheritedShape, Dictionary<string, PdfColor> themeColors)
+    private static List<PptxTextParagraph> ReadTextParagraphs(
+        XElement shapeElement,
+        XElement? inheritedShape,
+        Dictionary<string, PdfColor> themeColors,
+        Dictionary<string, PptxRelationship>? relationships = null)
     {
         var textBody = shapeElement.Element(P + "txBody");
         if (textBody == null)
             return new List<PptxTextParagraph>();
 
-        return ReadTextParagraphsFromTextBody(textBody, inheritedShape, themeColors);
+        return ReadTextParagraphsFromTextBody(textBody, inheritedShape, themeColors, relationships);
     }
 
-    private static List<PptxTextParagraph> ReadTextParagraphsFromTextBody(XElement? textBody, XElement? inheritedShape, Dictionary<string, PdfColor> themeColors)
+    private static List<PptxTextParagraph> ReadTextParagraphsFromTextBody(
+        XElement? textBody,
+        XElement? inheritedShape,
+        Dictionary<string, PdfColor> themeColors,
+        Dictionary<string, PptxRelationship>? relationships = null)
     {
         if (textBody == null)
             return new List<PptxTextParagraph>();
@@ -759,21 +782,21 @@ internal static class PptxReader
                         continue;
                     if (isBullet && !hasText)
                         text = "\u2022 " + text;
-                    runs.Add(ReadTextRun(text, runProperties, defaultRunProperties, themeColors));
+                    runs.Add(ReadTextRun(text, runProperties, defaultRunProperties, themeColors, relationships));
                     hasText = true;
                 }
                 else if (child.Name == A + "br")
                 {
-                    runs.Add(ReadTextRun("\n", child.Element(A + "rPr"), defaultRunProperties, themeColors));
+                    runs.Add(ReadTextRun("\n", child.Element(A + "rPr"), defaultRunProperties, themeColors, relationships));
                 }
                 else if (child.Name == A + "tab")
                 {
-                    runs.Add(ReadTextRun("\t", child.Element(A + "rPr"), defaultRunProperties, themeColors));
+                    runs.Add(ReadTextRun("\t", child.Element(A + "rPr"), defaultRunProperties, themeColors, relationships));
                     hasText = true;
                 }
             }
 
-            paragraphs.Add(new PptxTextParagraph(runs, isBullet, alignment, marginLeft, indent, spaceBefore, lineSpacing));
+            paragraphs.Add(new PptxTextParagraph(runs, isBullet, alignment, marginLeft, indent, spaceBefore, lineSpacing, level));
         }
 
         return paragraphs;
@@ -927,7 +950,8 @@ internal static class PptxReader
         string text,
         XElement? runProperties,
         XElement? defaultRunProperties,
-        Dictionary<string, PdfColor> themeColors)
+        Dictionary<string, PdfColor> themeColors,
+        Dictionary<string, PptxRelationship>? relationships = null)
     {
         var fontSize = ReadFontSize(runProperties?.Attribute("sz")?.Value)
             ?? ReadFontSize(defaultRunProperties?.Attribute("sz")?.Value)
@@ -945,8 +969,16 @@ internal static class PptxReader
         if (!underline && runProperties?.Element(A + "hlinkClick") != null)
             underline = true;
         var fontName = ReadFontName(text, runProperties) ?? ReadFontName(text, defaultRunProperties);
+        string? link = null;
+        var linkId = runProperties?.Element(A + "hlinkClick")?.Attribute(R + "id")?.Value;
+        if (!string.IsNullOrWhiteSpace(linkId) && relationships != null && relationships.TryGetValue(linkId!, out var relationship))
+        {
+            link = relationship.TargetMode.Equals("External", StringComparison.OrdinalIgnoreCase)
+                ? relationship.Target
+                : ResolveRelationshipTarget(GetSourcePartFromRelationshipPath(relationship.RelationshipPartPath), relationship.Target);
+        }
 
-        return new PptxTextRun(text, fontSize, color, bold, italic, underline, fontName);
+        return new PptxTextRun(text, fontSize, color, bold, italic, underline, fontName, link);
     }
 
     private static string? ReadFontName(string text, XElement? runProperties)

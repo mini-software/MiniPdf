@@ -78,7 +78,8 @@ internal static class ExcelReader
 
             if (entry == null) continue;
 
-            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
+            var hyperlinks = ReadWorksheetHyperlinks(archive, entry.FullName);
+            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks);
             var images = ReadSheetImages(archive, entry.FullName);
             var drawingShapes = ReadSheetShapes(archive, entry.FullName, themeColors);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
@@ -106,7 +107,8 @@ internal static class ExcelReader
             var entry = archive.GetEntry("xl/worksheets/sheet1.xml");
             if (entry != null)
             {
-                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents);
+                var hyperlinks = ReadWorksheetHyperlinks(archive, entry.FullName);
+                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks);
                 var images = ReadSheetImages(archive, entry.FullName);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
@@ -1809,7 +1811,8 @@ internal static class ExcelReader
 
     private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings, Dictionary<int, int> boldPrefixLengths,
         List<FontStyleInfo> fontStyles, List<PdfColor?> fillColors, List<CellBorderInfo?> borders, Dictionary<int, string> numberFormats,
-        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts, List<int> cellXfIndents)
+        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts, List<int> cellXfIndents,
+        Dictionary<string, string>? hyperlinks = null)
     {
         var rows = new List<List<ExcelCell>>();
 
@@ -2056,7 +2059,9 @@ internal static class ExcelReader
                 }
 
                 text = NormalizeCellText(text);
-                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, strikethrough, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent, cellBoldPrefixLen));
+                string? link = null;
+                hyperlinks?.TryGetValue(normalizedRef, out link);
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, strikethrough, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent, cellBoldPrefixLen, link));
                 lastColIndex = colIndex + 1;
             }
 
@@ -2064,6 +2069,57 @@ internal static class ExcelReader
         }
 
         return rows;
+    }
+
+    private static Dictionary<string, string> ReadWorksheetHyperlinks(ZipArchive archive, string worksheetPath)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var worksheetEntry = archive.GetEntry(worksheetPath);
+        if (worksheetEntry == null)
+            return result;
+
+        XDocument worksheet;
+        using (var stream = worksheetEntry.Open())
+            worksheet = XDocument.Load(stream);
+        var ns = worksheet.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        XNamespace relationshipsNamespace = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+
+        var relationshipTargets = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var relationshipEntry = archive.GetEntry(GetRelationshipPartPath(worksheetPath));
+        if (relationshipEntry != null)
+        {
+            using var stream = relationshipEntry.Open();
+            var relationships = XDocument.Load(stream);
+            foreach (var relationship in relationships.Descendants().Where(element => element.Name.LocalName == "Relationship"))
+            {
+                var id = relationship.Attribute("Id")?.Value;
+                var target = relationship.Attribute("Target")?.Value;
+                if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(target))
+                    continue;
+                var external = relationship.Attribute("TargetMode")?.Value?.Equals("External", StringComparison.OrdinalIgnoreCase) == true;
+                relationshipTargets[id!] = external
+                    ? target!
+                    : ResolveRelationshipTarget(GetPartDirectory(worksheetPath), target!);
+            }
+        }
+
+        foreach (var hyperlink in worksheet.Descendants(ns + "hyperlink"))
+        {
+            var reference = hyperlink.Attribute("ref")?.Value?.Replace("$", string.Empty);
+            if (string.IsNullOrWhiteSpace(reference))
+                continue;
+            var relationshipId = hyperlink.Attribute(relationshipsNamespace + "id")?.Value;
+            var location = hyperlink.Attribute("location")?.Value;
+            string? target = null;
+            if (!string.IsNullOrWhiteSpace(relationshipId))
+                relationshipTargets.TryGetValue(relationshipId!, out target);
+            if (target == null && !string.IsNullOrWhiteSpace(location))
+                target = "#" + location;
+            if (target != null)
+                result[reference!.Split(':')[0]] = target;
+        }
+
+        return result;
     }
 
     private static string NormalizeCellText(string text)
@@ -4419,7 +4475,8 @@ internal sealed record ExcelCell(
     string? AccountingPrefix = null,
     string? FontName = null,
     int Indent = 0,
-    int BoldPrefixLength = 0
+    int BoldPrefixLength = 0,
+    string? Link = null
 );
 
 /// <summary>
