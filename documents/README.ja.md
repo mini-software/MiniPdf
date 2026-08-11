@@ -28,6 +28,7 @@ Office ファイルを PDF に変換するための、ミニマルで軽量な .
 - **Excel → PDF 変換** — `.xlsx` ファイルを PDF に変換
 - **Word → PDF 変換** — `.docx` ファイルを PDF に変換
 - **PowerPoint → PDF 変換** — `.pptx` ファイルを PDF に変換
+- **LLM 向けコンテンツ抽出** — `.xlsx`、`.docx`、`.pptx` を Markdown、JSON、またはセマンティック .NET モデルに変換
 - **PDF 結合とブックマーク** — 複数の PDF を結合し、結果にトップレベルのブックマークを追加
 - **最小限の依存関係** — 軽量設計、ほぼ .NET 組み込み API のみを使用
 - **サーバーレス対応** — COM 不要、Office インストール不要、Adobe Acrobat 不要 — .NET があればどこでも動作
@@ -92,6 +93,25 @@ MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOp
   Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
 });
 ```
+
+## LLM 向けコンテンツ抽出
+
+中間 PDF を生成・解析せず、ソース順を保ったコンテンツを抽出できます。
+
+```csharp
+MiniPdfDocumentContent content = MiniPdf.ExtractContent("report.docx");
+string markdown = MiniPdf.ConvertToMarkdown("report.docx");
+string json = MiniPdf.ConvertToJson("report.docx");
+
+MiniPdf.ConvertToJson("data.xlsx", "data.json", new MiniPdfContentOptions
+{
+  Sheets = new[] { "Summary" },
+  MaxRows = 200,
+  MaxColumns = 20,
+});
+```
+
+DOCX、XLSX、PPTX はそれぞれ document、worksheet、slide section に変換されます。見出し、段落、リスト、表、セルアドレス、ハイパーリンク、DOCX 脚注、画像/グラフのメタデータを保持します。JSON は決定的な schema version `1` です。画像はメタデータのプレースホルダーとして扱い、OCR や sidecar ファイル出力は行いません。コメント、変更履歴、threaded comments、PowerPoint の発表者ノートは未対応です。
 
 ## PDF 結合の使用方法
 
@@ -224,6 +244,12 @@ minipdf data.xlsx --fit-to-page --landscape --scale 70
 
 # 1ページあたりのワークシート行数を増やす
 minipdf data.xlsx --rows-per-page 80 --compress
+
+# LLM 向け Markdown を抽出（出力: report.md）
+minipdf extract report.docx
+
+# 決定的な JSON を抽出
+minipdf extract data.xlsx --format json --sheets Summary --max-rows 200
 ```
 
 ### コマンド一覧
@@ -236,6 +262,8 @@ minipdf data.xlsx --rows-per-page 80 --compress
 | `minipdf data.xlsx --max-rows <n> --max-columns <n>` | 範囲を制限した Excel プレビューをレンダリング |
 | `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | Excel レイアウトをフィットおよびスケール |
 | `minipdf data.xlsx --rows-per-page <n>` | 1ページあたりの Excel 行数を増やす |
+| `minipdf extract <file>` | LLM 向け Markdown を抽出 |
+| `minipdf extract <file> --format json` | schema version 1 のセマンティック JSON を抽出 |
 | `minipdf --version` | バージョンを表示 |
 | `minipdf --help` | ヘルプを表示 |
 

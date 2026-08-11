@@ -14,6 +14,7 @@ Online Demo: https://mini-software.github.io/MiniPdf/
 - Excel to PDF conversion (`.xlsx`)
 - Word to PDF conversion (`.docx`)
 - PowerPoint to PDF conversion (`.pptx`)
+- LLM-friendly Markdown, JSON, and semantic model extraction from `.xlsx`, `.docx`, and `.pptx`
 - PDF merge with top-level bookmarks
 - Minimal dependencies — lightweight; relies almost entirely on built-in .NET APIs
 - Serverless-ready — no COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
@@ -58,6 +59,23 @@ MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOp
   Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
 });
 ```
+
+## LLM-Friendly Content Extraction
+
+```csharp
+MiniPdfDocumentContent content = MiniPdf.ExtractContent("report.docx");
+string markdown = MiniPdf.ConvertToMarkdown("report.docx");
+string json = MiniPdf.ConvertToJson("report.docx");
+
+MiniPdf.ConvertToJson("data.xlsx", "data.json", new MiniPdfContentOptions
+{
+  Sheets = new[] { "Summary" },
+  MaxRows = 200,
+  MaxColumns = 20,
+});
+```
+
+The deterministic JSON schema starts at version `1`. Extraction preserves source order, headings, paragraphs, lists, tables, worksheet cell addresses, hyperlinks, DOCX footnotes, and image/chart metadata. It does not perform OCR or export image sidecar files. Comments, tracked changes, threaded comments, and PowerPoint speaker notes are not yet extracted.
 
 ## PDF Merge Usage
 

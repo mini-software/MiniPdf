@@ -1310,12 +1310,19 @@ internal static class DocxReader
             }
             else if (child.Name == W + "hyperlink")
             {
-                // Extract text from hyperlink runs
+                var relationshipId = child.Attribute(R + "id")?.Value;
+                var anchor = child.Attribute(W + "anchor")?.Value;
+                string? link = null;
+                if (!string.IsNullOrWhiteSpace(relationshipId))
+                    relationships.TryGetValue(relationshipId!, out link);
+                if (link == null && !string.IsNullOrWhiteSpace(anchor))
+                    link = "#" + anchor;
+
                 foreach (var r in child.Elements(W + "r"))
                 {
                     var run = ReadRun(r, bold, italic, fontSize, color, caps, charSpacing, paragraphFontName, defaultLatinFontName, defaultEastAsiaFontName, styles);
                     if (run != null)
-                        runs.Add(run);
+                        runs.Add(run with { Link = link });
                 }
             }
             else if (child.Name == M + "oMathPara" || child.Name == M + "oMath")
@@ -2106,6 +2113,11 @@ internal static class DocxReader
         }
         if (container == null) return null;
 
+        var documentProperties = container.Element(WP + "docPr") ?? container.Descendants(WP + "docPr").FirstOrDefault();
+        var imageName = documentProperties?.Attribute("name")?.Value;
+        var alternativeText = documentProperties?.Attribute("descr")?.Value
+            ?? documentProperties?.Attribute("title")?.Value;
+
         // Get extent (size in EMUs)
         var extent = container.Element(WP + "extent");
         long widthEmu = 0, heightEmu = 0;
@@ -2209,7 +2221,8 @@ internal static class DocxReader
                 alpha = amt / 100000f;
         }
 
-        return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu, isBehindDoc, relFromH, relFromV, isWrapTopBottom, alpha);
+        return new DocxImage(data, ext, widthEmu, heightEmu, isAnchor, offsetXEmu, offsetYEmu, isBehindDoc, relFromH, relFromV, isWrapTopBottom, alpha,
+            imageName, alternativeText, imagePath);
     }
 
     private static string ResolveWordRelationshipTarget(string target)
@@ -4852,7 +4865,8 @@ internal sealed record DocxRun(
     bool IsColumnBreak = false,
     float VerticalPosition = 0,
     string? FootnoteId = null,
-    PdfColor? Shading = null
+    PdfColor? Shading = null,
+    string? Link = null
 );
 
 /// <summary>Represents a footnote definition parsed from word/footnotes.xml.</summary>
@@ -4875,7 +4889,10 @@ internal sealed record DocxImage(
     string? RelativeFromH = null,
     string? RelativeFromV = null,
     bool IsWrapTopBottom = false,
-    float Alpha = 1f
+    float Alpha = 1f,
+    string? Name = null,
+    string? AlternativeText = null,
+    string? SourcePath = null
 );
 
 /// <summary>Represents a connector line or straight line shape.</summary>

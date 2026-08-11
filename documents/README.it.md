@@ -28,6 +28,7 @@ Una libreria .NET minimale e leggera per convertire file Office in PDF.
 - **Excel → PDF** — Converte file `.xlsx` in PDF
 - **Word → PDF** — Converte file `.docx` in PDF
 - **PowerPoint → PDF** — Converte file `.pptx` in PDF
+- **Estrazione per LLM** — Converte contenuti `.xlsx`, `.docx` e `.pptx` in Markdown, JSON o in un modello .NET semantico
 - **Unione PDF con segnalibri** — Unisce piu PDF e aggiunge segnalibri di primo livello al risultato
 - **Dipendenze minime** — Design leggero, utilizza quasi esclusivamente le API .NET integrate
 - **Pronto per il serverless** — Nessun COM, nessuna installazione di Office, nessun Adobe Acrobat — funziona ovunque .NET funzioni
@@ -92,6 +93,25 @@ MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOp
   Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
 });
 ```
+
+## Estrazione di contenuti per LLM
+
+Estrai contenuti nell'ordine sorgente senza generare o analizzare un PDF intermedio:
+
+```csharp
+MiniPdfDocumentContent content = MiniPdf.ExtractContent("report.docx");
+string markdown = MiniPdf.ConvertToMarkdown("report.docx");
+string json = MiniPdf.ConvertToJson("report.docx");
+
+MiniPdf.ConvertToJson("data.xlsx", "data.json", new MiniPdfContentOptions
+{
+  Sheets = new[] { "Summary" },
+  MaxRows = 200,
+  MaxColumns = 20,
+});
+```
+
+DOCX, XLSX e PPTX vengono mappati rispettivamente in section document, worksheet e slide. L'output conserva titoli, paragrafi, elenchi, tabelle, indirizzi delle celle, collegamenti, note a pie di pagina DOCX e metadati di immagini/grafici. JSON usa lo schema deterministico versione `1`. Le immagini sono segnaposto di metadati: non vengono eseguiti OCR o esportazioni sidecar. Commenti, revisioni, threaded comments e note del relatore PowerPoint non sono ancora supportati.
 
 ## Utilizzo dell'unione PDF
 
@@ -224,6 +244,12 @@ minipdf data.xlsx --fit-to-page --landscape --scale 70
 
 # Punta a piu righe del foglio per pagina PDF
 minipdf data.xlsx --rows-per-page 80 --compress
+
+# Estrai Markdown per LLM (output: report.md)
+minipdf extract report.docx
+
+# Estrai JSON deterministico
+minipdf extract data.xlsx --format json --sheets Summary --max-rows 200
 ```
 
 ### Comandi
@@ -236,6 +262,8 @@ minipdf data.xlsx --rows-per-page 80 --compress
 | `minipdf data.xlsx --max-rows <n> --max-columns <n>` | Renderizza un'anteprima Excel limitata |
 | `minipdf data.xlsx --fit-to-page --landscape --scale <n>` | Adatta e scala il layout Excel |
 | `minipdf data.xlsx --rows-per-page <n>` | Punta a piu righe Excel per pagina PDF |
+| `minipdf extract <file>` | Estrai Markdown per LLM |
+| `minipdf extract <file> --format json` | Estrai JSON semantico schema version 1 |
 | `minipdf --version` | Mostra la versione |
 | `minipdf --help` | Mostra l'aiuto |
 
