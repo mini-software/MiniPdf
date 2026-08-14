@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-08-13T22:55:38.385528
+Generated: 2026-08-14T13:51:23.677750
 
 ## Summary
 
@@ -31,8 +31,9 @@ Generated: 2026-08-13T22:55:38.385528
 | 23 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
 | 24 | 🟢 TestIssue78 | ✅ | 0.9872 | 0.9642 | 1/1 | **0.9806** |
 | 25 | 🟢 TestIssue90 | ✅ | 0.9975 | 0.9775 | 1/1 | **0.99** |
+| 26 | 🟢 TestIssue91 | ✅ | 0.8829 | 0.9564 | 3/3 | **0.9357** |
 
-**Average Overall Score: 0.9558**
+**Average Overall Score: 0.9551**
 
 ## Visual Comparison
 
@@ -585,6 +586,22 @@ Generated: 2026-08-13T22:55:38.385528
 <tr>
   <td><img src="images/TestIssue90_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/TestIssue90_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>TestIssue91<br><small>format: docx | case: TestIssue91 | scope: issue-docx</small></b></td>
+  <td colspan="1">TestIssue91 <span style="color:#3fb950">⬤</span> 93.6%</td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue91_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue91_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue91_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue91_p2_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue91_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue91_p3_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -2735,6 +2752,124 @@ Text content: ✅ Identical
  bộ trách nhiệm trước pháp luật cũng như VCBS đối với yêu cầu của mình.
 
  …….., ngày        tháng       năm 20
+
+```
+</details>
+
+### TestIssue91
+
+- **Case Metadata:** format: docx | case: TestIssue91 | scope: issue-docx
+- **Text Similarity:** 0.8829
+- **Visual Average:** 0.9564
+- **Overall Score:** 0.9357
+- **Pages:** MiniPdf=3, Reference=3
+- **File Size:** MiniPdf=502992 bytes, Reference=132452 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/TestIssue91.pdf
++++ reference/TestIssue91.pdf
+@@ -22,7 +22,7 @@
+ Nơi cấp: [ISSUE_PLACE]
+
+ Địa chỉ liên hệ: [ADDRESS]
+
+ Email: [EMAIL] Điện thoại: [PHONE]
+
+-Người đại diện: [ REPRE_NAME ] Chức vụ: [ REPRE_POSITION ]
+
++Người đại diện: [REPRE_NAME] Chức vụ: [REPRE_POSITION]
+
+ Giấy ủy quyền: [AUTHOR_NO]
+
+ Số Tài khoản Ngân hàng: [ACC_BANK_CODE]
+
+ mở tại Ngân hàng: [BANK_NAME]
+
+@@ -31,54 +31,54 @@
+ Giấy phép tương đương hợp pháp khác (nếu có)
+
+ 1
+
+ ---PAGE---
+
+-Trong Phụ lục này, Bên Cho Vay và Bên Vay được gọi riêng là “ Bên ” và được gọi chung là “ Các
+
+-Bên ”. Các Bên đã thống nhất ký kết và thực hiện Hợp Đồng với các nội dung tại Phụ Lục này như
+
+-sau:
+
++Trong Phụ lục này, Bên Cho Vay và Bên Vay được gọi riêng là “ Bên ” và được gọi chung là
+
++“ Các Bên ”. Các Bên đã thống nhất ký kết và thực hiện Hợp Đồng với các nội dung tại Phụ Lục
+
++này như sau:
+
+ ĐIỀU 1: GIÁ TRỊ TÀI SẢN CHO VAY
+
+ Bên A đồng ý cho Bên B vay và Bên B đồng ý vay số tiền là: [CASH_LOAN] VNĐ (Bằng
+
+ chữ: [CASH_LOAN_TEXT] đồng).
+
+-Mục đích vay: Vay vốn đầu tư chứng khoán
+
+-ĐIỀU 2: THỜI HẠN VÀ PHƯƠNG THỨC VAY
+
+-Thời hạn vay là: [TERM] ngày, được tính kể từ ngày giải ngân thực tế.
+
+-Phương thức vay: Bên A giao toàn bộ số tiền cho Bên B vay nêu trên bằng hình thức: Bên A
+
+-hoặc Bên thứ ba được Bên A ủy quyền chuyển khoản vào tài khoản chứng khoán của Bên B số tài
+
+-khoản chứng khoán [DCTERM_CODE], mở tại CTCK.
+
+-Phương thức và thời hạn trả nợ: Đến ngày đáo hạn, Bên B hoặc Bên thứ ba được Bên B ủy
+
++Mục đích vay: Vay vốn đầu tư chứng khoán
+
++ĐIỀU 2: THỜI HẠN VÀ PHƯƠNG THỨC VAY
+
++Thời hạn vay là: [TERM] ngày, được tính kể từ ngày giải ngân thực tế.
+
++Phương thức vay: Bên A giao toàn bộ số tiền cho Bên B vay nêu trên bằng hình thức: Bên
+
++A hoặc Bên thứ ba được Bên A ủy quyền chuyển khoản vào tài khoản chứng khoán của Bên B số
+
++tài khoản chứng khoán [DCTERM_CODE], mở tại CTCK.
+
++Phương thức và thời hạn trả nợ: Đến ngày đáo hạn, Bên B hoặc Bên thứ ba được Bên B ủy
+
+ quyền sẽ chuyển khoản toàn bộ gốc và lãi cho bên A vào tài khoản ngân hàng của Bên A số tài
+
+ khoản [DELIVER_REPRE_ACC_BANK_CODE], mở tại [REPRE_BANK_NAME].
+
+-ĐIỀU 3: LÃI SUẤT
+
+-Các bên thỏa thuận lãi suất cho toàn bộ số tiền vay nêu trên là [INTEREST_RATE] %/năm.
+
++ĐIỀU 3: LÃI SUẤT
+
++Các bên thỏa thuận lãi suất cho toàn bộ số tiền vay nêu trên là [INTEREST_RATE] %/năm.
+
+ Trong trường hợp Bên B trả nợ trước hạn, lãi vay bên B phải trả tính trên số ngày vay thực tế.
+
+-Nếu quá thời hạn vay nêu trên mà Bên B không thanh toán số tiền gốc và tiền lãi thì Bên B
+
+-phải chịu lãi suất quá hạn bằng [EXPIRE RATE]%.
+
++Nếu quá thời hạn vay nêu trên mà Bên B không thanh toán số tiền gốc và tiền lãi thì Bên
+
++B phải chịu lãi suất quá hạn bằng [EXPIRE RATE]%.
+
+ ĐIỀU 4: TỶ LỆ YÊU CẦU, TỶ LỆ XỬ LÝ, TỶ LỆ CẢNH BÁO
+
+ Loại Tài Sản Riêng của Bên Vay và hệ số từng loại Tài Sản Riêng, công thức tính tỷ lệ yêu
+
+-cầu, tỷ lệ xử lý, tỷ lệ cảnh báo được Bên Cho Vay ủy quyền cho ĐỐI TÁC tính toán và công bố trên
+
+-Hệ Th
+... (3884 more characters)
 
 ```
 </details>

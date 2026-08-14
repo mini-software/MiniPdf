@@ -12,6 +12,14 @@ namespace MiniSoftware;
 /// </summary>
 internal static class DocxReader
 {
+    private static readonly string[] VietnameseToneCompositions =
+    [
+        "aàáảãạ", "AÀÁẢÃẠ", "ăằắẳẵặ", "ĂẰẮẲẴẶ", "âầấẩẫậ", "ÂẦẤẨẪẬ",
+        "eèéẻẽẹ", "EÈÉẺẼẸ", "êềếểễệ", "ÊỀẾỂỄỆ", "iìíỉĩị", "IÌÍỈĨỊ",
+        "oòóỏõọ", "OÒÓỎÕỌ", "ôồốổỗộ", "ÔỒỐỔỖỘ", "ơờớởỡợ", "ƠỜỚỞỠỢ",
+        "uùúủũụ", "UÙÚỦŨỤ", "ưừứửữự", "ƯỪỨỬỮỰ", "yỳýỷỹỵ", "YỲÝỶỸỴ",
+    ];
+
     private static readonly XNamespace W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
     private static readonly XNamespace R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
     private static readonly XNamespace WP = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing";
@@ -1888,6 +1896,9 @@ internal static class DocxReader
         if (string.IsNullOrEmpty(text) && !isPageBreak && !isColumnBreak)
             return null;
 
+        if (!string.IsNullOrEmpty(text))
+            text = NormalizeRunText(text);
+
         if (caps && !string.IsNullOrEmpty(text))
             text = text.ToUpperInvariant();
 
@@ -1939,6 +1950,58 @@ internal static class DocxReader
             fontName = PdfWriter.MaybeFallbackForMissingFont(defaultLatinFontName);
 
         return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl, isColumnBreak, verticalPosition, footnoteId, runShading);
+    }
+
+    private static string NormalizeRunText(string text)
+    {
+        if (text.IndexOfAny(['\u0300', '\u0301', '\u0302', '\u0303', '\u0306', '\u0309', '\u031B', '\u0323']) < 0)
+            return text.Normalize(System.Text.NormalizationForm.FormC);
+
+        var normalized = new System.Text.StringBuilder(text.Length);
+        foreach (var character in text)
+        {
+            if (TryComposeVietnameseCharacter(normalized, character))
+                continue;
+            normalized.Append(character);
+        }
+        return normalized.ToString().Normalize(System.Text.NormalizationForm.FormC);
+    }
+
+    private static bool TryComposeVietnameseCharacter(System.Text.StringBuilder text, char combiningMark)
+    {
+        if (text.Length == 0)
+            return false;
+
+        var previous = text[text.Length - 1];
+        var shaped = (previous, combiningMark) switch
+        {
+            ('a', '\u0306') => 'ă', ('A', '\u0306') => 'Ă',
+            ('a', '\u0302') => 'â', ('A', '\u0302') => 'Â',
+            ('e', '\u0302') => 'ê', ('E', '\u0302') => 'Ê',
+            ('o', '\u0302') => 'ô', ('O', '\u0302') => 'Ô',
+            ('o', '\u031B') => 'ơ', ('O', '\u031B') => 'Ơ',
+            ('u', '\u031B') => 'ư', ('U', '\u031B') => 'Ư',
+            _ => '\0',
+        };
+        if (shaped != '\0')
+        {
+            text[text.Length - 1] = shaped;
+            return true;
+        }
+
+        const string toneMarks = "\u0300\u0301\u0309\u0303\u0323";
+        var toneIndex = toneMarks.IndexOf(combiningMark);
+        if (toneIndex < 0)
+            return false;
+
+        foreach (var compositions in VietnameseToneCompositions)
+        {
+            if (compositions[0] != previous)
+                continue;
+            text[text.Length - 1] = compositions[toneIndex + 1];
+            return true;
+        }
+        return false;
     }
 
     private static PdfColor? ReadRunHighlight(XElement? highlightEl)

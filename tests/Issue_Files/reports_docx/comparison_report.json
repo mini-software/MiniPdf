@@ -1245,5 +1245,46 @@
       }
     ],
     "overall_score": 0.99
+  },
+  {
+    "name": "TestIssue91",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "issue-docx",
+    "case_id": "TestIssue91",
+    "format": "docx",
+    "minipdf_size": 502992,
+    "reference_size": 132452,
+    "pdf_valid": true,
+    "minipdf_pages": 3,
+    "reference_pages": 3,
+    "text_similarity": 0.8829,
+    "flat_text_similarity": 0.7319,
+    "word_text_similarity": 0.8829,
+    "text_diff": "--- minipdf/TestIssue91.pdf\n+++ reference/TestIssue91.pdf\n@@ -22,7 +22,7 @@\n Nơi cấp: [ISSUE_PLACE]\n\n Địa chỉ liên hệ: [ADDRESS]\n\n Email: [EMAIL] Điện thoại: [PHONE]\n\n-Người đại diện: [ REPRE_NAME ] Chức vụ: [ REPRE_POSITION ]\n\n+Người đại diện: [REPRE_NAME] Chức vụ: [REPRE_POSITION]\n\n Giấy ủy quyền: [AUTHOR_NO]\n\n Số Tài khoản Ngân hàng: [ACC_BANK_CODE]\n\n mở tại Ngân hàng: [BANK_NAME]\n\n@@ -31,54 +31,54 @@\n Giấy phép tương đương hợp pháp khác (nếu có)\n\n 1\n\n ---PAGE---\n\n-Trong Phụ lục này, Bên Cho Vay và Bên Vay được gọi riêng là “ Bên ” và được gọi chung là “ Các\n\n-Bên ”. Các Bên đã thống nhất ký kết và thực hiện Hợp Đồng với các nội dung tại Phụ Lục này như\n\n-sau:\n\n+Trong Phụ lục này, Bên Cho Vay và Bên Vay được gọi riêng là “ Bên ” và được gọi chung là\n\n+“ Các Bên ”. Các Bên đã thống nhất ký kết và thực hiện Hợp Đồng với các nội dung tại Phụ Lục\n\n+này như sau:\n\n ĐIỀU 1: GIÁ TRỊ TÀI SẢN CHO VAY\n\n Bên A đồng ý cho Bên B vay và Bên B đồng ý vay số tiền là: [CASH_LOAN] VNĐ (Bằng\n\n chữ: [CASH_LOAN_TEXT] đồng).\n\n-Mục đích vay: Vay vốn đầu tư chứng khoán\n\n-ĐIỀU 2: THỜI HẠN VÀ PHƯƠNG THỨC VAY\n\n-Thời hạn vay là: [TERM] ngày, được tính kể từ ngày giải ngân thực tế.\n\n-Phương thức vay: Bên A giao toàn bộ số tiền cho Bên B vay nêu trên bằng hình thức: Bên A\n\n-hoặc Bên thứ ba được Bên A ủy quyền chuyển khoản vào tài khoản chứng khoán của Bên B số tài\n\n-khoản chứng khoán [DCTERM_CODE], mở tại CTCK.\n\n-Phương thức và thời hạn trả nợ: Đến ngày đáo hạn, Bên B hoặc Bên thứ ba được Bên B ủy\n\n+Mục đích vay: Vay vốn đầu tư chứng khoán\n\n+ĐIỀU 2: THỜI HẠN VÀ PHƯƠNG THỨC VAY\n\n+Thời hạn vay là: [TERM] ngày, được tính kể từ ngày giải ngân thực tế.\n\n+Phương thức vay: Bên A giao toàn bộ số tiền cho Bên B vay nêu trên bằng hình thức: Bên\n\n+A hoặc Bên thứ ba được Bên A ủy quyền chuyển khoản vào tài khoản chứng khoán của Bên B số\n\n+tài khoản chứng khoán [DCTERM_CODE], mở tại CTCK.\n\n+Phương thức và thời hạn trả nợ: Đến ngày đáo hạn, Bên B hoặc Bên thứ ba được Bên B ủy\n\n quyền sẽ chuyển khoản toàn bộ gốc và lãi cho bên A vào tài khoản ngân hàng của Bên A số tài\n\n khoản [DELIVER_REPRE_ACC_BANK_CODE], mở tại [REPRE_BANK_NAME].\n\n-ĐIỀU 3: LÃI SUẤT\n\n-Các bên thỏa thuận lãi suất cho toàn bộ số tiền vay nêu trên là [INTEREST_RATE] %/năm.\n\n+ĐIỀU 3: LÃI SUẤT\n\n+Các bên thỏa thuận lãi suất cho toàn bộ số tiền vay nêu trên là [INTEREST_RATE] %/năm.\n\n Trong trường hợp Bên B trả nợ trước hạn, lãi vay bên B phải trả tính trên số ngày vay thực tế.\n\n-Nếu quá thời hạn vay nêu trên mà Bên B không thanh toán số tiền gốc và tiền lãi thì Bên B\n\n-phải chịu lãi suất quá hạn bằng [EXPIRE RATE]%.\n\n+Nếu quá thời hạn vay nêu trên mà Bên B không thanh toán số tiền gốc và tiền lãi thì Bên\n\n+B phải chịu lãi suất quá hạn bằng [EXPIRE RATE]%.\n\n ĐIỀU 4: TỶ LỆ YÊU CẦU, TỶ LỆ XỬ LÝ, TỶ LỆ CẢNH BÁO\n\n Loại Tài Sản Riêng của Bên Vay và hệ số từng loại Tài Sản Riêng, công thức tính tỷ lệ yêu\n\n-cầu, tỷ lệ xử lý, tỷ lệ cảnh báo được Bên Cho Vay ủy quyền cho ĐỐI TÁC tính toán và công bố trên\n\n-Hệ Thống Thông Tin Điện Tử theo từng thời kỳ.\n\n-ĐIỀU 5: THỎA THUẬN CỦA CÁC BÊN\n\n-Những chi phí có liên quan đến việc vay vốn như: phí sử dụng hệ thống, phí chuyển tiền và\n\n-các chi phí khác phát sinh sẽ do Bên B có trách nhiệm thanh toán.\n\n-Các Bên tự chịu trách nhiệm trước pháp luật về việc giao và nhận tài sản vay;\n\n-Bên A cam đoan số tiền cho vay trên là tài sản hợp pháp và thuộc quyền sở hữu của bên A;\n\n-Việc vay và cho vay số tiền nêu trên là hoàn toàn tự nguyện, không bị lừa dối, không bị ép\n\n-buộc, không nhằm trốn tránh bất kỳ nghĩa vụ nào của bên A;\n\n-Bên B cam kết sử dụng tiền vay vào đúng mục đích tại Điều 1 của Phụ Lục Hợp Đồng này;\n\n-Bên B cam kết trả tiền (tiền gốc và tiền lãi) đúng hạn, chỉ được gia hạn khi có sự chấp thuận\n\n-của Bên A bằng văn bản (nếu có sau này); Trường hợp chậm trả thì Bên B chấp nhận chịu mọi\n\n-khoản lãi phạt (chịu mọi khoản lãi phạt), lãi quá hạn... theo quy định pháp luật (nếu có);\n\n+cầu, tỷ lệ xử lý, tỷ lệ cảnh báo được Bên Cho Vay ủy quyền cho ĐỐI TÁC tính toán và công bố\n\n+trên Hệ Thống Thông Tin Điện Tử theo từng thời kỳ.\n\n+ĐIỀU 5: THỎA THUẬN CỦA CÁC BÊN\n\n+Những chi phí có liên quan đến việc vay vốn như: phí sử dụng hệ thống, phí chuyển tiền\n\n+và các chi phí khác phát sinh sẽ do Bên B có trách nhiệm thanh toán.\n\n+Các Bên tự chịu trách nhiệm trước pháp luật về việc giao và nhận tài sản vay;\n\n+Bên A cam đoan số tiền cho vay trên là tài sản hợp pháp và thuộc quyền sở hữu của bên A;\n\n+Việc vay và cho vay số tiền nêu trên là hoàn toàn tự nguyện, không bị lừa dối, không bị ép\n\n+buộc, không nhằm trốn tránh bất kỳ nghĩa vụ nào của bên A;\n\n+Bên B cam kết sử dụng tiền vay vào đúng mục đích tại Điều 1 của Phụ Lục Hợp Đồng này;\n\n+Bên B cam kết trả tiền (tiền gốc và tiền lãi) đúng hạn, chỉ được gia hạn khi có sự chấp\n\n+thuận của Bên A bằng văn bản (nếu có sau này); Trường hợp chậm trả thì Bên B chấp nhận chịu\n\n+mọi khoản lãi phạt (chịu mọi khoản lãi phạt), lãi quá hạn... theo quy định pháp luật (nếu có);\n\n 2\n\n ---PAGE---\n\n-Các Bên cam kết thực hiện đúng theo các quy định tại Hợp đồng và Phụ Lục này. Nếu Bên\n\n-nào vi phạm Hợp Đồng này thì Bên đó sẽ chịu hoàn toàn trách nhiệm trước pháp luật;\n\n-Trong quá trình thực hiện, nếu có tranh chấp xảy ra, hai Bên cùng nhau thương lượng, giải\n\n-quyết trên nguyên tắc tôn trọng quyền lợi của nhau. Nếu không giải quyết được thì một trong hai\n\n-Bên có quyền khởi kiện yêu cầu Tòa án có thẩm quyền giải quyết theo quy định của pháp luật.\n\n-Các Bên thống nhất Phụ Lục Hợp Đồng này sẽ có hiệu lực kể từ ngày Các Bên thực hiện xác\n\n-nhận giao dịch qua Hệ Thống Thông Tin Điện Tử của ĐỐI TÁC.\n\n+Các Bên cam kết thực hiện đúng theo các quy định tại Hợp đồng và Phụ Lục này. Nếu Bên\n\n+nào vi phạm Hợp Đồng này thì Bên đó sẽ chịu hoàn toàn trách nhiệm trước pháp luật;\n\n+Trong quá trình thực hiện, nếu có tranh chấp xảy ra, hai Bên cùng nhau thương lượng, giải\n\n+quyết trên nguyên tắc tôn trọng quyền lợi của nhau. Nếu không giải quyết được thì một trong hai\n\n+Bên có quyền khởi kiện yêu cầu Tòa án có thẩm quyền giải quyết theo quy định của pháp luật.\n\n+Các Bên thống nhất Phụ Lục Hợp Đồng này sẽ có hiệu lực kể từ ngày Các Bên thực hiện\n\n+xác nhận giao dịch qua Hệ Thống Thông Tin Điện Tử của ĐỐI TÁC.\n\n Trong trường hợp Bên A không hoàn tất việc chuyển tiền cho Bên B theo nội dung giao\n\n-dịch đã được xác nhận trên Hệ Thống Thông Tin Điện Tử của ĐỐI TÁC trong thời hạn 15 phút kể từ\n\n-thời điểm xác nhận, Phụ Lục Hợp Đồng này sẽ tự động chấm dứt hiệu lực, và giao dịch được xem là\n\n-chưa được thực hiện.\n\n+dịch đã được xác nhận trên Hệ Thống Thông Tin Điện Tử của ĐỐI TÁC trong thời hạn 15 phút\n\n+kể từ thời điểm xác nhận, Phụ Lục Hợp Đồng này sẽ tự động chấm dứt hiệu lực, và giao dịch được\n\n+xem là chưa được thực hiện.\n\n BÊN VAY BÊN CHO VAY\n\n (Ký, ghi rõ họ tên, đóng dấu) (Ký, ghi rõ họ tên, đóng dấu)\n\n 3",
+    "visual_scores": [
+      0.9508,
+      0.9454,
+      0.973
+    ],
+    "visual_avg": 0.9564,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "TestIssue91_p1_minipdf.png",
+        "reference_img": "TestIssue91_p1_reference.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "TestIssue91_p2_minipdf.png",
+        "reference_img": "TestIssue91_p2_reference.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "TestIssue91_p3_minipdf.png",
+        "reference_img": "TestIssue91_p3_reference.png"
+      }
+    ],
+    "overall_score": 0.9357
   }
 ]
