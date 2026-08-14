@@ -107,8 +107,13 @@ public class DocxIssueFileTests
 
         var yesLabel = Assert.Single(page.TextBlocks, block => block.Text == "Có");
         Assert.InRange(yesLabel.X, 359.9f, 360.1f);
-        Assert.Contains(page.TextBlocks, block =>
-            block.Text.EndsWith("cho Tài khoản", StringComparison.Ordinal));
+        var requestText = string.Concat(page.TextBlocks
+            .Where(block => block.Bold && block.FontSize == 12f)
+            .Select(block => block.Text));
+        Assert.Contains("Nay, đề nghị VCBS thực hiện mở Tiểu khoản", requestText,
+            StringComparison.Ordinal);
+        Assert.Contains("chứng khoán của tôi tại VCBS như sau:", requestText,
+            StringComparison.Ordinal);
 
         var footnoteSeparator = Assert.Single(page.LineBlocks, line =>
             line.X1 is > 71.9f and < 72.1f
