@@ -102,7 +102,7 @@ public class DocxIssueFileTests
         Assert.InRange(checkedBox.Y, 481.5f, 482.5f);
 
         var superscript = Assert.Single(page.TextBlocks, block =>
-            block.Text == "1" && block.X is > 195f and < 196f);
+            block.Text == "1" && block.FontSize is > 7.9f and < 8.1f);
         Assert.InRange(superscript.FontSize, 7.9f, 8.1f);
 
         var yesLabel = Assert.Single(page.TextBlocks, block => block.Text == "Có");
