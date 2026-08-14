@@ -1066,17 +1066,19 @@ internal static class DocxToPdfConverter
             }
         }
 
-        // Force a page break when the paragraph carries Word's lastRenderedPageBreak
-        // hint, indicating that Word placed a break before this paragraph's content.
-        // This must precede the empty-paragraph block so it fires for non-empty
-        // paragraphs that would render visible text.
+        // Word saves lastRenderedPageBreak as cached pagination, not as an
+        // authoring page-break directive. Use it only as a keep-together hint:
+        // when the current paragraph would not fit in the remaining page space,
+        // move the whole paragraph to the next page. If it still fits, ignore the
+        // stale hint so documents opened/saved with different pagination do not
+        // get spurious page breaks.
         if (paragraph.HasLastRenderedPageBreak && state.CurrentPage != null && !state.IsTopOfPage)
         {
             if (state.SuppressNextLastRenderedPageBreak)
             {
                 state.SuppressNextLastRenderedPageBreak = false;
             }
-            else
+            else if (ShouldHonorLastRenderedPageBreak(paragraph, state, fontSize, lineHeight))
             {
                 state.ForceNewPage();
             }
@@ -2336,6 +2338,84 @@ internal static class DocxToPdfConverter
         result.Add(current);
         return result;
     }
+
+        private static bool ShouldHonorLastRenderedPageBreak(DocxParagraph paragraph, RenderState state,
+            float fontSize, float lineHeight)
+        {
+            var remainingHeight = state.CurrentY - state.Options.MarginBottom;
+            if (remainingHeight <= 0)
+                return true;
+
+            var neededHeight = EstimateParagraphFlowHeight(paragraph, state, fontSize, lineHeight);
+            return neededHeight > remainingHeight + 0.1f;
+        }
+
+        private static float EstimateParagraphFlowHeight(DocxParagraph paragraph, RenderState state,
+            float fontSize, float lineHeight)
+        {
+            const float emuPerPt = 914400f / 72f;
+            var height = 0f;
+
+            foreach (var image in paragraph.Images)
+            {
+                if (image.IsAnchor && !image.IsWrapTopBottom)
+                    continue;
+
+                var imageWidth = image.WidthEmu > 0 ? image.WidthEmu / emuPerPt : 200f;
+                var imageHeight = image.HeightEmu > 0 ? image.HeightEmu / emuPerPt : 150f;
+                if (imageWidth > state.UsableWidth)
+                    imageHeight *= state.UsableWidth / imageWidth;
+                height += imageHeight + 1f;
+            }
+
+            var text = AddInterScriptSpacing(string.Concat(paragraph.Runs.Select(run => run.Text)),
+                paragraph.AutoSpaceDE, paragraph.AutoSpaceDN);
+            if (!string.IsNullOrEmpty(text))
+            {
+                var availableWidth = state.UsableWidth - paragraph.IndentLeft - paragraph.IndentRight;
+                var hasListLabel = (paragraph.IsBulletList || paragraph.IsNumberedList) && paragraph.ListText != null;
+                var firstLineIndent = hasListLabel && paragraph.IndentFirstLine < 0 ? 0f : paragraph.IndentFirstLine;
+                var firstLineWidth = Math.Max(1f, availableWidth - firstLineIndent + 0.5f);
+                var subsequentWidth = Math.Max(1f, availableWidth + 0.5f);
+                var dominantRun = paragraph.Runs.FirstOrDefault(run => !string.IsNullOrEmpty(run.Text));
+                var runFontSize = dominantRun?.FontSize > 0 ? dominantRun.FontSize : fontSize;
+                var useCalibri = state.Options.UseCalibriWidths
+                    && !IsWideSansSerifFont(dominantRun?.FontName);
+                var previousOverrideWidths = s_overrideWidths;
+                var previousPreferredWrapFontName = s_preferredWrapFontName;
+                var previousWideSansSerifFont = s_wideSansSerifFont;
+                var previousSerifRunInCalibri = s_serifRunInCalibri;
+                try
+                {
+                    s_overrideWidths = GetFontOverrideWidths(dominantRun?.FontName);
+                    s_preferredWrapFontName = (paragraph.LineSpacingExact && IsSerifFont(dominantRun?.FontName))
+                        || ShouldUsePreferredFontWidthsForWrap(dominantRun?.FontName, useCalibri)
+                        ? dominantRun?.FontName
+                        : null;
+                    s_wideSansSerifFont = IsWideSansSerifFont(dominantRun?.FontName) && s_overrideWidths == null;
+                    s_serifRunInCalibri = useCalibri && IsSerifFont(dominantRun?.FontName);
+
+                    var lines = WordWrap(text, firstLineWidth, subsequentWidth, runFontSize,
+                        paragraph.TabStops, dominantRun?.Bold ?? false, dominantRun?.CharSpacing ?? 0f, useCalibri);
+                    height += Math.Max(1, lines.Count) * lineHeight;
+                }
+                finally
+                {
+                    s_overrideWidths = previousOverrideWidths;
+                    s_preferredWrapFontName = previousPreferredWrapFontName;
+                    s_wideSansSerifFont = previousWideSansSerifFont;
+                    s_serifRunInCalibri = previousSerifRunInCalibri;
+                }
+            }
+            else if (height == 0f && paragraph.Images.Count == 0)
+            {
+                height += lineHeight;
+            }
+
+            if (paragraph.SpacingAfter > 0)
+                height += paragraph.SpacingAfter;
+            return height;
+        }
 
     /// <summary>
     /// Renders runs with varying font sizes/colors on the same line(s).

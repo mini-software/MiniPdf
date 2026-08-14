@@ -126,6 +126,34 @@ public class DocxIssueFileTests
         Assert.InRange(footnoteText.Y, 74.9f, 75.1f);
     }
 
+    [Fact]
+    public void Issue91_DecomposedVietnameseText_IsNormalizedBeforeRendering()
+    {
+        var issuePath = FindIssueDocx("TestIssue91.docx");
+
+        using var stream = File.OpenRead(issuePath);
+        var document = DocxReader.Read(stream);
+        var paragraph = Assert.Single(document.Elements.OfType<DocxParagraph>(), element =>
+            string.Concat(element.Runs.Select(run => run.Text))
+                .StartsWith("Bên B cam kết trả tiền", StringComparison.Ordinal));
+        var paragraphText = string.Concat(paragraph.Runs.Select(run => run.Text));
+
+        Assert.True(paragraphText.IsNormalized(NormalizationForm.FormC));
+        Assert.Contains("Bên B cam kết trả tiền (tiền gốc và tiền lãi)", paragraphText,
+            StringComparison.Ordinal);
+
+        stream.Position = 0;
+        var pdf = DocxToPdfConverter.Convert(stream);
+        var renderedText = string.Concat(pdf.Pages
+            .SelectMany(page => page.TextBlocks)
+            .Select(block => block.Text));
+        Assert.True(renderedText.IsNormalized(NormalizationForm.FormC));
+        Assert.Contains("Bên B cam kết trả tiền", renderedText, StringComparison.Ordinal);
+
+        var secondPageText = string.Concat(pdf.Pages[1].TextBlocks.Select(block => block.Text));
+        Assert.Contains("Bên B cam kết trả tiền", secondPageText, StringComparison.Ordinal);
+    }
+
     private static string FindIssueDocx(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
