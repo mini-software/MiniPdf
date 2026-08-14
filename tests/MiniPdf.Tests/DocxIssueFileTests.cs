@@ -69,6 +69,58 @@ public class DocxIssueFileTests
             $"Expected a compact PDF below 1 MB, got {pdf.Length:N0} bytes.");
     }
 
+    [Fact]
+    public void Issue90_RunHighlightsAndWingdingsCheckMark_ArePreserved()
+    {
+        var issuePath = FindIssueDocx("TestIssue90.docx");
+
+        using var stream = File.OpenRead(issuePath);
+        var document = DocxReader.Read(stream);
+        var paragraphs = document.Elements
+            .OfType<DocxParagraph>()
+            .ToList();
+        var runs = paragraphs
+            .SelectMany(paragraph => paragraph.Runs)
+            .Concat(paragraphs
+                .SelectMany(paragraph => paragraph.FloatingTextBoxes ?? [])
+                .SelectMany(textBox => textBox.Paragraphs)
+                .SelectMany(paragraph => paragraph.Runs))
+            .ToList();
+
+        var highlightedName = Assert.Single(runs,
+            run => run.Text == "Họ tên khách hàng:");
+        Assert.Equal(PdfColor.FromHex("FFFF00"), highlightedName.Shading);
+        Assert.Contains(runs, run => run.Text.Contains('✓'));
+
+        stream.Position = 0;
+        var pdf = DocxToPdfConverter.Convert(stream);
+        var page = Assert.Single(pdf.Pages);
+        var checkedBox = Assert.Single(page.RectBlocks, rectangle =>
+            rectangle.X is > 332f and < 334f
+            && rectangle.Width is > 20f and < 21f
+            && rectangle.Height is > 17f and < 19f);
+        Assert.InRange(checkedBox.Y, 481.5f, 482.5f);
+
+        var superscript = Assert.Single(page.TextBlocks, block =>
+            block.Text == "1" && block.X is > 195f and < 196f);
+        Assert.InRange(superscript.FontSize, 7.9f, 8.1f);
+
+        var yesLabel = Assert.Single(page.TextBlocks, block => block.Text == "Có");
+        Assert.InRange(yesLabel.X, 359.9f, 360.1f);
+        Assert.Contains(page.TextBlocks, block =>
+            block.Text.EndsWith("cho Tài khoản", StringComparison.Ordinal));
+
+        var footnoteSeparator = Assert.Single(page.LineBlocks, line =>
+            line.X1 is > 71.9f and < 72.1f
+            && line.X2 is > 215.9f and < 216.1f
+            && line.Y1 is > 88.9f and < 89.1f
+            && Math.Abs(line.Y1 - line.Y2) < 0.01f);
+        Assert.Equal(144f, footnoteSeparator.X2 - footnoteSeparator.X1, 1);
+        var footnoteText = Assert.Single(page.TextBlocks, block =>
+            block.Text.Contains("Giấy phép tương đương", StringComparison.Ordinal));
+        Assert.InRange(footnoteText.Y, 74.9f, 75.1f);
+    }
+
     private static string FindIssueDocx(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

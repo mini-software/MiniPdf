@@ -298,7 +298,7 @@ internal static class DocxToPdfConverter
 
                     RenderParagraph(state, paragraph, followedByTable: elemIdx + 1 < processedElements.Count && processedElements[elemIdx + 1] is DocxTable);
                     if (paragraph.FloatingTextBoxes is { Count: > 0 })
-                        RenderFloatingTextBoxes(state, paragraph.FloatingTextBoxes, state.LastParagraphStartY);
+                        RenderFloatingTextBoxes(state, paragraph.FloatingTextBoxes, paragraph, state.LastParagraphStartY);
                     if (paragraph.ConnectorLines is { Count: > 0 })
                         RenderConnectorLines(state, paragraph.ConnectorLines, state.LastParagraphStartY);
                     if (paragraph.SectionBreak != null)
@@ -892,12 +892,15 @@ internal static class DocxToPdfConverter
             if (CurrentPage == null || Footnotes == null || CurrentPageFootnoteIds.Count == 0) return;
 
             var x = Options.MarginLeft;
-            var separatorW = UsableWidth * 0.33f;
-            var y = BaseMarginBottom + FootnoteReservedHeight;
+            var separatorW = Math.Min(144f, UsableWidth * 0.33f);
+            var footnoteTextHeight = CurrentPageFootnoteIds
+                .Where(id => Footnotes.ContainsKey(id))
+                .Sum(id => Footnotes[id].FontSize * 1.2f);
+            var y = BaseMarginBottom + footnoteTextHeight + 5f;
 
             // Draw separator line
             CurrentPage.AddLine(x, y, x + separatorW, y, new PdfColor(0, 0, 0), 0.5f);
-            y -= 4f;
+            y -= 2f;
 
             // Render each footnote
             foreach (var fnId in CurrentPageFootnoteIds)
@@ -910,8 +913,11 @@ internal static class DocxToPdfConverter
                 {
                     var runFs = run.FontSize > 0 ? run.FontSize : fn.FontSize;
                     var drawY = y + (run.VerticalPosition > 0 ? run.VerticalPosition : 0);
-                    CurrentPage.AddText(run.Text, curX, drawY, runFs, preferredFontName: "Helvetica");
-                    curX += run.Text.Length * runFs * 0.5f; // approximate width
+                    CurrentPage.AddText(run.Text, curX, drawY, runFs, preferredFontName: run.FontName);
+                    curX += PdfWriter.TryMeasurePreferredFontWidth(
+                        run.FontName, run.Text, runFs, run.Bold, run.Italic, run.CharSpacing, out var runWidth)
+                        ? runWidth
+                        : EstimateTextWidth(run.Text, runFs, run.CharSpacing);
                 }
             }
         }
@@ -1677,7 +1683,7 @@ internal static class DocxToPdfConverter
             }
         }
 
-        var hasVaryingFormat = false;
+        var hasVaryingFormat = mergedRuns.Any(r => r.Text.Contains('\t'));
         if (mergedRuns.Count > 1)
         {
             var firstRun = mergedRuns[0];
@@ -1691,7 +1697,7 @@ internal static class DocxToPdfConverter
             var firstRunVertPos = firstRun.VerticalPosition;
             var firstRunShading = firstRun.Shading;
 
-            hasVaryingFormat = mergedRuns.Any(r =>
+            hasVaryingFormat |= mergedRuns.Any(r =>
             {
                 var rFontSize = r.FontSize > 0 ? r.FontSize : fontSize;
                 return Math.Abs(rFontSize - firstRunFontSize) > 0.01f
@@ -1738,7 +1744,10 @@ internal static class DocxToPdfConverter
             var paraUseCalibri = options.UseCalibriWidths
                 && !IsWideSansSerifFont(runFontName);
             s_overrideWidths = GetFontOverrideWidths(runFontName);
-            s_preferredWrapFontName = ShouldUsePreferredFontWidthsForWrap(runFontName, paraUseCalibri) ? runFontName : null;
+            s_preferredWrapFontName = (paragraph.LineSpacingExact && IsSerifFont(runFontName))
+                || ShouldUsePreferredFontWidthsForWrap(runFontName, paraUseCalibri)
+                ? runFontName
+                : null;
             s_wideSansSerifFont = IsWideSansSerifFont(runFontName) && s_overrideWidths == null;
             // NOTE: do NOT gate on !s_serifFont — when document default IS a serif (e.g. Times,
             // or Avenir-substituted-to-Times) a serif run still needs the Times-widths estimator
@@ -1766,7 +1775,8 @@ internal static class DocxToPdfConverter
                 cjkLatinTolerance = latinCount * runFontSize * 110f / 1000f;
             }
             var titleWrapTolerance = isLargeCjkTitle ? runFontSize * 0.55f : 0f;
-            var lines = WordWrap(fullText, wrapFirstLineWidth + cjkLatinTolerance + titleWrapTolerance, wrapAvailableWidth + cjkLatinTolerance + titleWrapTolerance, runFontSize, paragraph.TabStops, runBold, runCharSpacing, paraUseCalibri);
+            var exactWrapTolerance = paragraph.LineSpacingExact ? runFontSize : 0f;
+            var lines = WordWrap(fullText, wrapFirstLineWidth + cjkLatinTolerance + titleWrapTolerance + exactWrapTolerance, wrapAvailableWidth + cjkLatinTolerance + titleWrapTolerance + exactWrapTolerance, runFontSize, paragraph.TabStops, runBold, runCharSpacing, paraUseCalibri);
             // Keep s_overrideWidths set during the rendering loop so that
             // EstimateWrapTextWidth uses the same font metrics as WordWrap,
             // ensuring accurate justified text spacing and Tz compression.
@@ -1875,7 +1885,9 @@ internal static class DocxToPdfConverter
 
                 if (runShading != null)
                 {
-                    var shadingWidth = renderMaxWidth ?? textWidth;
+                    var shadingWidth = textWidth + wordSpacing * line.Count(c => c == ' ');
+                    if (renderMaxWidth.HasValue)
+                        shadingWidth = Math.Min(shadingWidth, renderMaxWidth.Value);
                     var padX = Math.Max(0.7f, runFontSize * 0.08f);
                     state.CurrentPage!.AddRectangle(renderX - padX, state.CurrentY - runFontSize * 0.24f,
                         shadingWidth + padX * 2, runFontSize * 1.18f, runShading);
@@ -1977,7 +1989,8 @@ internal static class DocxToPdfConverter
     /// Renders floating text boxes (wrapNone) at their absolute page positions.
     /// These text boxes do not affect the normal document flow.
     /// </summary>
-    private static void RenderFloatingTextBoxes(RenderState state, List<DocxFloatingTextBox> boxes, float paragraphY)
+    private static void RenderFloatingTextBoxes(RenderState state, List<DocxFloatingTextBox> boxes,
+        DocxParagraph hostParagraph, float paragraphY)
     {
         var page = state.CurrentPage;
         if (page == null) return;
@@ -1988,6 +2001,14 @@ internal static class DocxToPdfConverter
             if (state.Doc.Pages[i] == page) { hostPageIdx = i; break; }
         }
         if (hostPageIdx < 0) return;
+
+        var hostFontSize = hostParagraph.FontSize > 0 ? hostParagraph.FontSize : options.FontSize;
+        var hostRun = hostParagraph.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
+        if (hostRun?.FontSize > 0)
+            hostFontSize = hostRun.FontSize;
+        var hostFontName = hostRun?.FontName ?? hostParagraph.ParagraphFontName;
+        var hostLineTopY = paragraphY + hostFontSize * GetTopOfPageAscentRatio(
+            hostFontName, ResolveLineSpacingMul(hostParagraph, options));
 
         foreach (var box in boxes)
         {
@@ -2035,7 +2056,8 @@ internal static class DocxToPdfConverter
                 // Compute position in continuous document space to handle cross-page textboxes
                 var contentHeight = options.PageHeight - options.MarginTop - options.MarginBottom;
                 var contentTop = options.PageHeight - options.MarginTop;
-                var hostDistFromTop = contentTop - paragraphY;
+                var anchorReferenceY = box.VRelativeFrom == "paragraph" ? hostLineTopY : paragraphY;
+                var hostDistFromTop = contentTop - anchorReferenceY;
                 var continuousY = hostPageIdx * contentHeight + hostDistFromTop + box.YPt;
                 if (continuousY < 0) continuousY = 0;
                 var targetIdx = (int)(continuousY / contentHeight);
@@ -2084,7 +2106,7 @@ internal static class DocxToPdfConverter
             }
             if (firstFontSize <= 0) firstFontSize = options.FontSize;
             var topInset = box.TopInsetPt;
-            var currentY = boxTop - firstFontSize - topInset;
+            var currentY = boxTop - firstFontSize * 0.8f - topInset;
             foreach (var para in box.Paragraphs)
             {
                 // Use paragraph font size, but prefer run-level size when larger (runs may override inherited style size)
@@ -2288,7 +2310,8 @@ internal static class DocxToPdfConverter
             if (Math.Abs(curFs - nextFs) < 0.01f && colorMatch && boldMatch && italicMatch && underlineMatch && charSpacingMatch && fontNameMatch && shadingMatch && vertPosMatch
                 && !current.IsPageBreak && !next.IsPageBreak
                 && !current.IsColumnBreak && !next.IsColumnBreak
-                && current.FootnoteId == null && next.FootnoteId == null)
+                && current.FootnoteId == null && next.FootnoteId == null
+                && !current.Text.Contains('\t') && !next.Text.Contains('\t'))
             {
                 // When the current run is whitespace-only, adopt the next run's
                 // visual formatting so that following non-whitespace text retains
@@ -2372,7 +2395,10 @@ internal static class DocxToPdfConverter
                 {
                     totalWidth += rFs * 500f / 1000f;
                 }
-                totalWidth += EstimateTextWidth(rText, rFs, r.CharSpacing);
+                totalWidth += PdfWriter.TryMeasurePreferredFontWidth(
+                    r.FontName, rText, rFs, r.Bold, r.Italic, r.CharSpacing, out var preferredWidth)
+                    ? preferredWidth
+                    : EstimateTextWidth(rText, rFs, r.CharSpacing);
                 prevRunTextPre = rText;
             }
             var lineW = isFirstLine ? firstLineWidth : availableWidth;
@@ -2452,8 +2478,11 @@ internal static class DocxToPdfConverter
                 // Each entry gets maxWidth so PdfWriter can Tz-scale each run to
                 // exactly its allocated width using the actual embedded font metrics,
                 // eliminating gaps at run boundaries (e.g. regular→bold transitions).
-                static float WrapEntryWidth((string Text, float X, float Y, float FontSize, PdfColor? Color, bool Bold, bool Italic, bool Underline, float CharSpacing, string? FontName, float? MaxWidth, float? UlWidth, PdfColor? Shading) e, bool useCalibri)
+                static float WrapEntryWidth((string Text, float X, float Y, float FontSize, PdfColor? Color, bool Bold, bool Italic, bool Underline, float CharSpacing, string? FontName, float? MaxWidth, float? UlWidth, PdfColor? Shading) e, bool useCalibri, bool preferActual)
                 {
+                    if (preferActual && PdfWriter.TryMeasurePreferredFontWidth(
+                        e.FontName, e.Text, e.FontSize, e.Bold, e.Italic, e.CharSpacing, out var preferredWidth))
+                        return preferredWidth;
                     var w = EstimateWrapTextWidth(e.Text, e.FontSize, e.Bold, e.CharSpacing, useCalibri);
                     if (useCalibri && e.FontName != null
                         && !e.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
@@ -2482,7 +2511,7 @@ internal static class DocxToPdfConverter
                 int totalSpaces = 0;
                 foreach (var e in lineEntries)
                 {
-                    totalTextWidth += e.UlWidth ?? WrapEntryWidth(e, useCalibriJustify);
+                    totalTextWidth += e.UlWidth ?? WrapEntryWidth(e, useCalibriJustify, isLastLine);
                     // Whitespace-underline entries already encode their advance in UlWidth,
                     // so don't double-count their spaces in the justify denominator.
                     if (!e.UlWidth.HasValue)
@@ -2499,11 +2528,14 @@ internal static class DocxToPdfConverter
                 float entryX = lineEntries[0].X;
                 foreach (var e in lineEntries)
                 {
+                    // Preserve positional advances such as tab stops. Ordinary
+                    // adjacent runs already have e.X == entryX.
+                    entryX = Math.Max(entryX, e.X);
                     // For whitespace-only underlined runs in CJK context, UlWidth holds the
                     // intended visual advance width (CJK half-width per space). Use it as
                     // both the maxWidth (so Tz fills to that width) and the entryX advance
                     // so the next run starts where the layout placed it.
-                    var estW = e.UlWidth ?? WrapEntryWidth(e, useCalibriJustify);
+                    var estW = e.UlWidth ?? WrapEntryWidth(e, useCalibriJustify, isLastLine);
                     // Per-entry justification target: include this entry's share of the
                     // line-level justify stretch (ws × spaces in this entry) so PdfWriter
                     // distributes the stretch evenly across the entry's spaces, instead
@@ -2519,7 +2551,7 @@ internal static class DocxToPdfConverter
                     state.CurrentPage!.AddText(e.Text, entryX, e.Y, e.FontSize, e.Color,
                         bold: e.Bold, italic: e.Italic, underline: e.Underline, charSpacing: e.CharSpacing,
                         wordSpacing: justifyWordSpacing,
-                        preferredFontName: e.FontName, maxWidth: entryTarget, underlineWidth: e.UlWidth);
+                        preferredFontName: e.FontName, maxWidth: isLastLine ? null : entryTarget, underlineWidth: e.UlWidth);
                     entryX += entryTarget;
                 }
             }
@@ -2632,17 +2664,22 @@ internal static class DocxToPdfConverter
                 s_overrideWidths = GetFontOverrideWidths(run.FontName);
                 s_wideSansSerifFont = IsWideSansSerifFont(run.FontName) && s_overrideWidths == null;
 
-                // Handle tab stops directly: advance to tab position with leader fill
-                if (hardLines[hi] == "\t" && paragraph.TabStops is { Count: > 0 })
+                // Handle tabs directly so their position is not flattened into spaces.
+                // Explicit stops take precedence; otherwise use the document's tab grid.
+                var segmentText = hardLines[hi];
+                if (segmentText.StartsWith("\t", StringComparison.Ordinal))
                 {
                     var relX = currentX - state.Options.MarginLeft;
                     DocxTabStop? matchedStop = null;
-                    foreach (var ts in paragraph.TabStops)
+                    if (paragraph.TabStops is { Count: > 0 })
                     {
-                        if (ts.Position > relX + 1)
+                        foreach (var ts in paragraph.TabStops)
                         {
-                            matchedStop = ts;
-                            break;
+                            if (ts.Position > relX + 1)
+                            {
+                                matchedStop = ts;
+                                break;
+                            }
                         }
                     }
                     if (matchedStop != null)
@@ -2666,11 +2703,20 @@ internal static class DocxToPdfConverter
                                 maxWidth: gapWidth > 0 ? gapWidth : (float?)null);
                         }
                         currentX = state.Options.MarginLeft + matchedStop.Position;
-                        continue;
+                        segmentText = segmentText.Substring(1);
                     }
+                    else
+                    {
+                        var defaultTabStop = s_defaultTabStopPt > 0 ? s_defaultTabStopPt : 36f;
+                        var nextStop = (float)(Math.Floor(relX / defaultTabStop) + 1) * defaultTabStop;
+                        currentX = state.Options.MarginLeft + nextStop;
+                        segmentText = segmentText.Substring(1);
+                    }
+                    if (segmentText.Length == 0)
+                        continue;
                 }
 
-                var segment = ExpandTabs(hardLines[hi], runFs, paragraph.TabStops, useCalibri, currentXOffset: currentX - state.Options.MarginLeft);
+                var segment = ExpandTabs(segmentText, runFs, paragraph.TabStops, useCalibri, currentXOffset: currentX - state.Options.MarginLeft);
                 segment = AddInterScriptSpacing(segment, paragraph.AutoSpaceDE, paragraph.AutoSpaceDN);
                 if (string.IsNullOrEmpty(segment)) continue;
 
@@ -3684,7 +3730,6 @@ internal static class DocxToPdfConverter
             }
             rowHeights[ri] = rh;
             rowContentHeights[ri] = ch;
-            System.Console.Error.WriteLine($"[DBG] tbl cellPadV={cellPaddingV:F2} row[{ri}]: ch={ch:F3} rh_trH={r.Height:F3} exact={r.HeightExact} => rowHeight={rh:F3}");
         }
 
         // Distribute vMerge restart cell heights across all merged rows.
@@ -3756,7 +3801,6 @@ internal static class DocxToPdfConverter
         //           cellPaddingH, cellPaddingV, rowHeights.
         void DrawOneTableRow(DocxTableRow rowArg, int rowIdxArg, float rowHeightArg, bool isLastArg, ref bool isFirstArg)
         {
-            System.Console.Error.WriteLine($"[DBG2] DrawRow[{rowIdxArg}] state.CurrentY={state.CurrentY:F3} rowHeight={rowHeightArg:F3}");
             var cellX2 = tableOffsetX + cellInset;
             var colIdx3 = rowArg.GridBefore;
             for (var gb = 0; gb < rowArg.GridBefore && gb < colCount; gb++)
@@ -3818,12 +3862,15 @@ internal static class DocxToPdfConverter
 
                 var textY2 = rowDrawTop - effCellPaddingV - vAlignOffset;
                 var cellParaList = cell.Paragraphs;
+                float lastCellSpacingAfter = 0;
                 for (var cellParaIdx = 0; cellParaIdx < cellParaList.Count; cellParaIdx++)
                 {
                     var para = cellParaList[cellParaIdx];
                     var isFirstCellPara = cellParaIdx == 0;
                     bool applySpacingBefore = (!isFirstCellPara || para.SpacingBeforeExplicit) && para.SpacingBefore > 0;
-                    if (applySpacingBefore) textY2 -= para.SpacingBefore;
+                    if (applySpacingBefore && para.SpacingBefore > lastCellSpacingAfter)
+                        textY2 -= para.SpacingBefore - lastCellSpacingAfter;
+                    lastCellSpacingAfter = 0;
 
                     const float emuPerPt2 = 914400f / 72f;
                     var cellHasInlineImages = false;
@@ -3868,6 +3915,7 @@ internal static class DocxToPdfConverter
                             else if (table.StyleSpacingAfter >= 0) spAfter = table.StyleSpacingAfter;
                             else spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : 0f;
                             if (spAfter > 0) textY2 -= spAfter;
+                            lastCellSpacingAfter = spAfter;
                         }
                         continue;
                     }
@@ -3953,6 +4001,7 @@ internal static class DocxToPdfConverter
                         else if (table.StyleSpacingAfter >= 0) spAfter = table.StyleSpacingAfter;
                         else spAfter = para.SpacingAfter > 0 ? para.SpacingAfter : 0f;
                         if (spAfter > 0) textY2 -= spAfter;
+                        lastCellSpacingAfter = spAfter;
                     }
                 }
 
@@ -4213,6 +4262,7 @@ internal static class DocxToPdfConverter
         var effCellRight = cell.CellMarginRight >= 0 ? cell.CellMarginRight : cellPaddingH;
         var cellHeight = effCellPaddingV * 2;
         var cellParas = cell.Paragraphs;
+        float lastCellSpacingAfter = 0;
         for (var pi = 0; pi < cellParas.Count; pi++)
         {
             var para = cellParas[pi];
@@ -4223,8 +4273,9 @@ internal static class DocxToPdfConverter
             // by the paragraph or its non-Normal pStyle (e.g. TableHeading).
             bool applySpacingBefore = (!isFirstPara || para.SpacingBeforeExplicit)
                 && para.SpacingBefore > 0;
-            if (applySpacingBefore)
-                cellHeight += para.SpacingBefore;
+            if (applySpacingBefore && para.SpacingBefore > lastCellSpacingAfter)
+                cellHeight += para.SpacingBefore - lastCellSpacingAfter;
+            lastCellSpacingAfter = 0;
 
             const float emuPerPt = 914400f / 72f;
             var hasInlineImages = false;
@@ -4282,6 +4333,7 @@ internal static class DocxToPdfConverter
                 var emptyAfter = ResolveSpAfter(para);
                 if (emptyAfter > 0)
                     cellHeight += emptyAfter;
+                lastCellSpacingAfter = emptyAfter;
                 continue;
             }
 
@@ -4313,6 +4365,7 @@ internal static class DocxToPdfConverter
             var textAfter = ResolveSpAfter(para);
             if (textAfter > 0)
                 cellHeight += textAfter;
+            lastCellSpacingAfter = textAfter;
         }
         return cellHeight;
     }
@@ -4466,7 +4519,7 @@ internal static class DocxToPdfConverter
             return sb.ToString();
         }
 
-        const float defaultTabStopPt = 36f; // 0.5 inch default tab stop in points
+        var defaultTabStopPt = s_defaultTabStopPt > 0 ? s_defaultTabStopPt : 36f;
         var spaceWidth = fontSize * GetWrapCharWidth(' ', useCalibriWidths) / 1000f;
         var sb2 = new System.Text.StringBuilder();
         float currentWidth = 0;
@@ -4986,8 +5039,7 @@ internal static class DocxToPdfConverter
     /// </summary>
     private static float EstimateWrapTextWidth(string text, float fontSize, bool bold = false, float charSpacing = 0, bool useCalibriWidths = true)
     {
-        if (!useCalibriWidths
-            && !string.IsNullOrWhiteSpace(s_preferredWrapFontName)
+        if (!string.IsNullOrWhiteSpace(s_preferredWrapFontName)
             && PdfWriter.TryMeasurePreferredFontWidth(s_preferredWrapFontName, text, fontSize, bold, italic: false, charSpacing, out var preferredWidth))
             return preferredWidth;
         if (s_overrideWidths != null && !useCalibriWidths)

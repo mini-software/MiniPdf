@@ -1216,5 +1216,34 @@
       }
     ],
     "overall_score": 0.9806
+  },
+  {
+    "name": "TestIssue90",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "issue-docx",
+    "case_id": "TestIssue90",
+    "format": "docx",
+    "minipdf_size": 717485,
+    "reference_size": 169801,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9975,
+    "flat_text_similarity": 0.9975,
+    "word_text_similarity": 0.9938,
+    "text_diff": "--- minipdf/TestIssue90.pdf\n+++ reference/TestIssue90.pdf\n@@ -10,7 +10,8 @@\n Nay, đề nghị VCBS thực hiện mở Tiểu khoản giao dịch và lưu ký chứng khoán cho Tài khoản\n\n chứng khoán của tôi tại VCBS như sau:\n\n Loại tiểu khoản: API-ALGO\n\n-Đăng ký ứng trước tiền bán chứng khoán tự động: ✓ Có Không\n\n+✓\n\n+Đăng ký ứng trước tiền bán chứng khoán tự động: Có Không\n\n Tôi cam kết việc đề nghị mở tiểu khoản này được thực hiện hoàn toàn tự nguyện và xin chịu toàn\n\n bộ trách nhiệm trước pháp luật cũng như VCBS đối với yêu cầu của mình.\n\n …….., ngày        tháng       năm 20\n",
+    "visual_scores": [
+      0.9775
+    ],
+    "visual_avg": 0.9775,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "TestIssue90_p1_minipdf.png",
+        "reference_img": "TestIssue90_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.99
   }
 ]
