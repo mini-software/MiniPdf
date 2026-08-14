@@ -119,6 +119,11 @@
       "name": "TestIssue78",
       "case_id": "TestIssue78",
       "format": "docx"
+    },
+    {
+      "name": "TestIssue90",
+      "case_id": "TestIssue90",
+      "format": "docx"
     }
   ]
 }

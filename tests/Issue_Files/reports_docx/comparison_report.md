@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-08-10T05:28:57.576315
+Generated: 2026-08-13T22:55:38.385528
 
 ## Summary
 
@@ -30,8 +30,9 @@ Generated: 2026-08-10T05:28:57.576315
 | 22 | 🟢 Template for MSc Thesis | ✅ | 1.0 | 0.9848 | 17/17 | **0.9939** |
 | 23 | 🟡 TestIssue61 | ✅ | 0.7143 | 0.9954 | 8/8 | **0.8839** |
 | 24 | 🟢 TestIssue78 | ✅ | 0.9872 | 0.9642 | 1/1 | **0.9806** |
+| 25 | 🟢 TestIssue90 | ✅ | 0.9975 | 0.9775 | 1/1 | **0.99** |
 
-**Average Overall Score: 0.9544**
+**Average Overall Score: 0.9558**
 
 ## Visual Comparison
 
@@ -576,6 +577,14 @@ Generated: 2026-08-10T05:28:57.576315
 <tr>
   <td><img src="images/TestIssue78_p1_minipdf.png" width="340" alt="MiniPdf"></td>
   <td><img src="images/TestIssue78_p1_reference.png" width="340" alt="Reference"></td>
+</tr>
+<tr>
+  <td><b>TestIssue90<br><small>format: docx | case: TestIssue90 | scope: issue-docx</small></b></td>
+  <td colspan="1">TestIssue90 <span style="color:#3fb950">⬤</span> 99.0%</td>
+</tr>
+<tr>
+  <td><img src="images/TestIssue90_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/TestIssue90_p1_reference.png" width="340" alt="Reference"></td>
 </tr>
 </table>
 
@@ -2691,6 +2700,42 @@ Text content: ✅ Identical
 +1） 检测记录信息页按照检验报告、使用登记证、产品合格证、维保合同等现场实际情
 
 +况信息进行填写，保证其信息的准确性；
+```
+</details>
+
+### TestIssue90
+
+- **Case Metadata:** format: docx | case: TestIssue90 | scope: issue-docx
+- **Text Similarity:** 0.9975
+- **Visual Average:** 0.9775
+- **Overall Score:** 0.99
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=717485 bytes, Reference=169801 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/TestIssue90.pdf
++++ reference/TestIssue90.pdf
+@@ -10,7 +10,8 @@
+ Nay, đề nghị VCBS thực hiện mở Tiểu khoản giao dịch và lưu ký chứng khoán cho Tài khoản
+
+ chứng khoán của tôi tại VCBS như sau:
+
+ Loại tiểu khoản: API-ALGO
+
+-Đăng ký ứng trước tiền bán chứng khoán tự động: ✓ Có Không
+
++✓
+
++Đăng ký ứng trước tiền bán chứng khoán tự động: Có Không
+
+ Tôi cam kết việc đề nghị mở tiểu khoản này được thực hiện hoàn toàn tự nguyện và xin chịu toàn
+
+ bộ trách nhiệm trước pháp luật cũng như VCBS đối với yêu cầu của mình.
+
+ …….., ngày        tháng       năm 20
+
 ```
 </details>
 

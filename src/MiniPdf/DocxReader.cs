@@ -1800,7 +1800,8 @@ internal static class DocxReader
                 else
                     color = parentColor; // "auto" resets to paragraph default, overriding character style
             }
-            runShading = ReadRunShading(rPr.Element(W + "shd"));
+            runShading = ReadRunHighlight(rPr.Element(W + "highlight"))
+                ?? ReadRunShading(rPr.Element(W + "shd"));
             // Character spacing (w:spacing w:val in twips)
             var spacingEl = rPr.Element(W + "spacing");
             if (spacingEl != null && int.TryParse(spacingEl.Attribute(W + "val")?.Value, out var cs))
@@ -1847,6 +1848,20 @@ internal static class DocxReader
                 // Footnote self-reference inside footnote text – skip in body parsing.
                 // ReadFootnotes() handles this element separately.
             }
+            else if (child.Name == W + "sym")
+            {
+                var font = child.Attribute(W + "font")?.Value;
+                var charHex = child.Attribute(W + "char")?.Value;
+                if (int.TryParse(charHex, System.Globalization.NumberStyles.HexNumber,
+                    System.Globalization.CultureInfo.InvariantCulture, out var charCode)
+                    && charCode <= char.MaxValue)
+                {
+                    text += font?.Contains("Wingdings", StringComparison.OrdinalIgnoreCase) == true
+                        && charCode == 0xF0FC
+                            ? "\u2713"
+                            : MapBulletChar(((char)charCode).ToString(), font);
+                }
+            }
         }
 
         // Handle w:vertAlign for superscript/subscript
@@ -1862,12 +1877,12 @@ internal static class DocxReader
         if (effectiveVertAlign == "superscript")
         {
             verticalPosition = fontSize * 0.33f;
-            fontSize *= 0.58f;
+            fontSize *= 2f / 3f;
         }
         else if (effectiveVertAlign == "subscript")
         {
             verticalPosition = -fontSize * 0.2f;
-            fontSize *= 0.58f;
+            fontSize *= 2f / 3f;
         }
 
         if (string.IsNullOrEmpty(text) && !isPageBreak && !isColumnBreak)
@@ -1924,6 +1939,34 @@ internal static class DocxReader
             fontName = PdfWriter.MaybeFallbackForMissingFont(defaultLatinFontName);
 
         return new DocxRun(text, bold, italic, fontSize, color, isPageBreak, underline, charSpacing, fontName, hasExplicitUnderlineDecl, isColumnBreak, verticalPosition, footnoteId, runShading);
+    }
+
+    private static PdfColor? ReadRunHighlight(XElement? highlightEl)
+    {
+        var value = highlightEl?.Attribute(W + "val")?.Value;
+        if (string.IsNullOrEmpty(value) || value == "none")
+            return null;
+
+        return value switch
+        {
+            "black" => PdfColor.FromHex("000000"),
+            "blue" => PdfColor.FromHex("0000FF"),
+            "cyan" => PdfColor.FromHex("00FFFF"),
+            "green" => PdfColor.FromHex("00FF00"),
+            "magenta" => PdfColor.FromHex("FF00FF"),
+            "red" => PdfColor.FromHex("FF0000"),
+            "yellow" => PdfColor.FromHex("FFFF00"),
+            "white" => PdfColor.FromHex("FFFFFF"),
+            "darkBlue" => PdfColor.FromHex("000080"),
+            "darkCyan" => PdfColor.FromHex("008080"),
+            "darkGreen" => PdfColor.FromHex("008000"),
+            "darkMagenta" => PdfColor.FromHex("800080"),
+            "darkRed" => PdfColor.FromHex("800000"),
+            "darkYellow" => PdfColor.FromHex("808000"),
+            "darkGray" => PdfColor.FromHex("808080"),
+            "lightGray" => PdfColor.FromHex("C0C0C0"),
+            _ => null,
+        };
     }
 
     private static PdfColor? ReadRunShading(XElement? shdEl)
@@ -3922,13 +3965,46 @@ internal static class DocxReader
             {
                 // Check paragraph style for footnote text size
                 var pStyle = p.Element(W + "pPr")?.Element(W + "pStyle")?.Attribute(W + "val")?.Value;
+                var paragraphFontName = defaultFontName;
                 if (!string.IsNullOrEmpty(pStyle) && styles.TryGetValue(pStyle, out var fnStyle))
                 {
                     if (fnStyle.FontSize > 0) fontSize = fnStyle.FontSize;
+                    if (!string.IsNullOrWhiteSpace(fnStyle.FontName)) paragraphFontName = fnStyle.FontName;
                 }
 
                 foreach (var r in p.Elements(W + "r"))
                 {
+                    var runFontSize = fontSize;
+                    var runFontName = paragraphFontName;
+                    var verticalPosition = 0f;
+                    var rPr = r.Element(W + "rPr");
+                    var runStyleId = rPr?.Element(W + "rStyle")?.Attribute(W + "val")?.Value;
+                    string? verticalAlign = null;
+                    if (!string.IsNullOrEmpty(runStyleId) && styles.TryGetValue(runStyleId, out var runStyle))
+                    {
+                        if (runStyle.FontSize > 0) runFontSize = runStyle.FontSize;
+                        if (!string.IsNullOrWhiteSpace(runStyle.FontName)) runFontName = runStyle.FontName;
+                        verticalAlign = runStyle.VerticalAlign;
+                    }
+                    if (float.TryParse(rPr?.Element(W + "sz")?.Attribute(W + "val")?.Value,
+                        System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var sizeHalfPoints))
+                        runFontSize = sizeHalfPoints / 2f;
+                    var rFonts = rPr?.Element(W + "rFonts");
+                    runFontName = rFonts?.Attribute(W + "ascii")?.Value
+                        ?? rFonts?.Attribute(W + "hAnsi")?.Value
+                        ?? runFontName;
+                    verticalAlign = rPr?.Element(W + "vertAlign")?.Attribute(W + "val")?.Value ?? verticalAlign;
+                    if (verticalAlign == "superscript")
+                    {
+                        verticalPosition = runFontSize * 0.33f;
+                        runFontSize *= 2f / 3f;
+                    }
+                    else if (verticalAlign == "subscript")
+                    {
+                        verticalPosition = -runFontSize * 0.2f;
+                        runFontSize *= 2f / 3f;
+                    }
+
                     var text = "";
                     foreach (var child in r.Elements())
                     {
@@ -3938,7 +4014,8 @@ internal static class DocxReader
                             text += seqNum.ToString(); // Self-reference: display the footnote number
                     }
                     if (!string.IsNullOrEmpty(text))
-                        runs.Add(new DocxRun(text, FontSize: fontSize));
+                        runs.Add(new DocxRun(text, FontSize: runFontSize, FontName: runFontName,
+                            VerticalPosition: verticalPosition));
                 }
             }
 
