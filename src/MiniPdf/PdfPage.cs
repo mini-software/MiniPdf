@@ -10,7 +10,8 @@ internal sealed record PdfImageBlock(
     float Y,             // bottom edge in points
     float RenderWidth,   // rendered width in points
     float RenderHeight,  // rendered height in points
-    float Alpha = 1f     // opacity (0..1), used for watermarks etc.
+    float Alpha = 1f,    // opacity (0..1), used for watermarks etc.
+    bool RenderAboveText = false
 );
 
 /// <summary>
@@ -180,9 +181,9 @@ internal sealed class PdfPage
     /// <param name="width">Rendered width in points.</param>
     /// <param name="height">Rendered height in points.</param>
     /// <returns>The current page for chaining.</returns>
-    public PdfPage AddImage(byte[] data, string format, float x, float y, float width, float height, float alpha = 1f)
+    public PdfPage AddImage(byte[] data, string format, float x, float y, float width, float height, float alpha = 1f, bool renderAboveText = false)
     {
-        _imageBlocks.Add(new PdfImageBlock(data, format, x, y, width, height, alpha));
+        _imageBlocks.Add(new PdfImageBlock(data, format, x, y, width, height, alpha, renderAboveText));
         return this;
     }
 

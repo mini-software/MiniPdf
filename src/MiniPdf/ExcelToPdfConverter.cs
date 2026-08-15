@@ -921,7 +921,7 @@ internal static class ExcelToPdfConverter
         var isLargeGeneratedTable = sheet.Rows.Count >= 1000 &&
             sheet.ColumnWidths.Count == 0 && sheet.DefaultColumnWidth <= 0f;
         var columnPadding = options.ColumnPadding;
-        if (hasExplicitColWidths || (sheet.FitToPage && sheet.FitToWidth >= 1))
+        if (hasExplicitColWidths || sheet.Images.Count > 0 || (sheet.FitToPage && sheet.FitToWidth >= 1))
         {
             // When the spreadsheet defines explicit column widths, or fitToPage is
             // active, use zero inter-column padding to match Excel/LibreOffice layout
@@ -935,7 +935,7 @@ internal static class ExcelToPdfConverter
 
         // Calculate natural (unscaled) column widths to decide on grouping
         var naturalWidths = CalculateNaturalColumnWidths(sheet, maxCols, usableWidth, options,
-            workbookHasMultipleSheets && !hasExplicitColWidths);
+            (workbookHasMultipleSheets || sheet.Images.Count > 0) && !hasExplicitColWidths);
 
         // Apply print scale to column widths so more columns fit per page.
         // Font size is already scaled in options, but Excel explicit column widths
@@ -1610,7 +1610,7 @@ internal static class ExcelToPdfConverter
                 var imgY = imgTopY - imgH;
                 if (imgY < options.MarginBottom) imgY = options.MarginBottom;
                 var format = img.Extension is "jpg" or "jpeg" ? "jpg" : "png";
-                currentPage!.AddImage(img.Data, format, imgX, imgY, imgW, imgH);
+                currentPage!.AddImage(img.Data, format, imgX, imgY, imgW, imgH, renderAboveText: true);
             }
 
             return totalHeight;
@@ -2440,7 +2440,7 @@ internal static class ExcelToPdfConverter
                 imgY = options.MarginBottom;
 
             var format = img.Extension is "jpg" or "jpeg" ? "jpg" : "png";
-            imgPage.AddImage(img.Data, format, imgX, imgY, imgRenderWidth, imgRenderHeight);
+            imgPage.AddImage(img.Data, format, imgX, imgY, imgRenderWidth, imgRenderHeight, renderAboveText: true);
         }
 
         // Render charts as actual visual elements

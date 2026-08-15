@@ -77,6 +77,26 @@ public class PdfDocumentTests
     }
 
     [Fact]
+    public void Save_WithLayeredImages_PlacesForegroundImageAfterText()
+    {
+        var image = Convert.FromBase64String(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/lLQ2VwAAAABJRU5ErkJggg==");
+        var doc = new PdfDocument();
+        var page = doc.AddPage();
+        page.AddImage(image, "png", 10, 10, 20, 20);
+        page.AddText("Layered text", 10, 20);
+        page.AddImage(image, "png", 10, 10, 20, 20, renderAboveText: true);
+
+        var content = System.Text.Encoding.ASCII.GetString(doc.ToArray());
+        var backgroundImageIndex = content.IndexOf("/Im0 Do", StringComparison.Ordinal);
+        var textIndex = content.IndexOf("(Layered text) Tj", StringComparison.Ordinal);
+        var foregroundImageIndex = content.IndexOf("/Im1 Do", StringComparison.Ordinal);
+
+        Assert.True(backgroundImageIndex < textIndex, "Background image should be painted before text.");
+        Assert.True(textIndex < foregroundImageIndex, "Foreground image should be painted after text.");
+    }
+
+    [Fact]
     public void Save_WithCompressedContentStreams_WritesFlateContentStream()
     {
         var doc = new PdfDocument();
