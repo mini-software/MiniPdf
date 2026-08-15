@@ -84,7 +84,7 @@ def step_generate_minipdf_pdfs(filter_pattern: str = None):
     return run(cmd, cwd=str(scripts_dir))
 
 
-def step_generate_reference_pdfs(filter_pattern: str = None, engine: str = "libre"):
+def step_generate_reference_pdfs(filter_pattern: str = None, engine: str = "libre", force: bool = False):
     """Step 3: Convert Excel files to PDF using the chosen reference engine."""
     if engine == "office":
         banner("Step 3: Convert Excel -> PDF (Office / Excel COM Reference)")
@@ -98,6 +98,8 @@ def step_generate_reference_pdfs(filter_pattern: str = None, engine: str = "libr
                "--pdf-dir", str(REFERENCE_PDF_DIR.resolve())]
     if filter_pattern:
         cmd += ["--filter", filter_pattern]
+    if force:
+        cmd += ["--force"]
     return run(cmd, cwd=str(SCRIPT_DIR), check=False)
 
 
@@ -196,6 +198,8 @@ def main():
     parser.add_argument("--skip-generate", action="store_true", help="Skip Excel generation")
     parser.add_argument("--skip-minipdf", action="store_true", help="Skip MiniPdf PDF conversion")
     parser.add_argument("--skip-reference", action="store_true", help="Skip reference conversion")
+    parser.add_argument("--force-reference", action="store_true",
+                        help="Overwrite existing reference PDFs instead of reusing them")
     parser.add_argument("--engine", choices=["libre", "office"], default="office",
                         help="Reference engine: office (MS Office COM, default) or libre (LibreOffice)")
     parser.add_argument("--with-office", action="store_true",
@@ -278,7 +282,7 @@ def main():
         step_generate_minipdf_pdfs(filter_pattern=filt)
 
     if not args.skip_reference:
-        step_generate_reference_pdfs(filter_pattern=filt, engine=args.engine)
+        step_generate_reference_pdfs(filter_pattern=filt, engine=args.engine, force=args.force_reference)
 
     if args.with_office and not args.skip_office:
         step_generate_office_pdfs(filter_pattern=filt)
