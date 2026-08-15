@@ -982,20 +982,12 @@ internal sealed class PdfWriter
             sb.Append("S\n");
         }
 
-        // Place images (under text)
+        // Place background images under text.
         for (var idx = 0; idx < page.ImageBlocks.Count; idx++)
         {
             var img = page.ImageBlocks[idx];
-            var x = img.X.ToString("F3", CultureInfo.InvariantCulture);
-            var y = img.Y.ToString("F3", CultureInfo.InvariantCulture);
-            var w = img.RenderWidth.ToString("F3", CultureInfo.InvariantCulture);
-            var h = img.RenderHeight.ToString("F3", CultureInfo.InvariantCulture);
-            sb.Append("q\n");
-            if (img.Alpha < 1f)
-                sb.Append($"/GS_A{idx} gs\n");
-            sb.Append($"{w} 0 0 {h} {x} {y} cm\n");
-            sb.Append($"/Im{idx} Do\n");
-            sb.Append("Q\n");
+            if (!img.RenderAboveText)
+                AppendImageBlock(sb, img, idx);
         }
 
         // Render text blocks on top
@@ -1399,7 +1391,29 @@ internal sealed class PdfWriter
             }
         }
 
+        // Worksheet drawing-layer images cover cell text in Excel.
+        for (var idx = 0; idx < page.ImageBlocks.Count; idx++)
+        {
+            var img = page.ImageBlocks[idx];
+            if (img.RenderAboveText)
+                AppendImageBlock(sb, img, idx);
+        }
+
         return sb.ToString();
+    }
+
+    private static void AppendImageBlock(StringBuilder sb, PdfImageBlock img, int index)
+    {
+        var x = img.X.ToString("F3", CultureInfo.InvariantCulture);
+        var y = img.Y.ToString("F3", CultureInfo.InvariantCulture);
+        var width = img.RenderWidth.ToString("F3", CultureInfo.InvariantCulture);
+        var height = img.RenderHeight.ToString("F3", CultureInfo.InvariantCulture);
+        sb.Append("q\n");
+        if (img.Alpha < 1f)
+            sb.Append($"/GS_A{index} gs\n");
+        sb.Append($"{width} 0 0 {height} {x} {y} cm\n");
+        sb.Append($"/Im{index} Do\n");
+        sb.Append("Q\n");
     }
 
     /// <summary>

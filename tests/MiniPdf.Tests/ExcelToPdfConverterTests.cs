@@ -27,6 +27,20 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_WorksheetImage_RendersAboveCellText()
+    {
+        using var excelStream = CreateExcelWithImageOverCell();
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+
+        var image = Assert.Single(doc.Pages.SelectMany(page => page.ImageBlocks));
+        var overlappedText = Assert.Single(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "Covered");
+        Assert.True(image.RenderAboveText);
+        Assert.True(overlappedText.X < image.X + image.RenderWidth,
+            "Default column geometry should keep D1 beneath the A1 drawing edge.");
+    }
+
+    [Fact]
     public void Convert_WithOptions_UsesCustomSettings()
     {
         using var excelStream = CreateSimpleExcel(new[]
@@ -733,6 +747,94 @@ public class ExcelToPdfConverterTests
         ms.Position = 0;
         return ms;
     }
+
+        private static MemoryStream CreateExcelWithImageOverCell()
+        {
+                var stream = new MemoryStream();
+                using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
+                {
+                        AddEntry(archive, "[Content_Types].xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                                    <Default Extension="xml" ContentType="application/xml"/>
+                                    <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                                    <Default Extension="png" ContentType="image/png"/>
+                                    <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+                                    <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+                                    <Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>
+                                </Types>
+                                """);
+                        AddEntry(archive, "_rels/.rels",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+                                </Relationships>
+                                """);
+                        AddEntry(archive, "xl/_rels/workbook.xml.rels",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+                                </Relationships>
+                                """);
+                        AddEntry(archive, "xl/workbook.xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+                                                    xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                                    <sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets>
+                                </workbook>
+                                """);
+                        AddEntry(archive, "xl/worksheets/sheet1.xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+                                                     xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                                      <sheetData><row r="1"><c r="D1" t="inlineStr"><is><t>Covered</t></is></c></row></sheetData>
+                                    <drawing r:id="rId1"/>
+                                </worksheet>
+                                """);
+                        AddEntry(archive, "xl/worksheets/_rels/sheet1.xml.rels",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/>
+                                </Relationships>
+                                """);
+                        AddEntry(archive, "xl/drawings/drawing1.xml",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
+                                                    xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+                                                    xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                                    <xdr:oneCellAnchor>
+                                        <xdr:from><xdr:col>0</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>0</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from>
+                                        <xdr:ext cx="1905000" cy="914400"/>
+                                        <xdr:pic><xdr:blipFill><a:blip r:embed="rId1"/></xdr:blipFill></xdr:pic>
+                                        <xdr:clientData/>
+                                    </xdr:oneCellAnchor>
+                                </xdr:wsDr>
+                                """);
+                        AddEntry(archive, "xl/drawings/_rels/drawing1.xml.rels",
+                                """
+                                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
+                                </Relationships>
+                                """);
+
+                        var imageEntry = archive.CreateEntry("xl/media/image1.png");
+                        using var imageStream = imageEntry.Open();
+                        var image = Convert.FromBase64String(
+                                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/lLQ2VwAAAABJRU5ErkJggg==");
+                        imageStream.Write(image, 0, image.Length);
+                }
+
+                stream.Position = 0;
+                return stream;
+        }
 
     private static MemoryStream CreateMultiSheetExcel((string Name, string[][] Rows)[] sheets)
     {
