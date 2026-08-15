@@ -30,4 +30,8 @@ scripts/Run-Benchmark_issues.ps1 -Filter "sa8000"    # focused issue run
 scripts/Run-Benchmark_issues.ps1 -All                 # full issue benchmark
 ```
 
+## Classic Benchmark Refresh Workflow
+
+When updating all XLSX classic examples, canonical benchmark reports, or stale GitHub README benchmark images, use the `refresh-classic-benchmarks` skill (`/refresh-classic-benchmarks`).
+
 
