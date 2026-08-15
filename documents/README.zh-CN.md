@@ -876,7 +876,7 @@ MiniPdf 的输出与 MiniExcel 及 Office 365 作为参考渲染器进行对比�
 </tr>
 <tr>
   <td><b>classic67</b></td>
-  <td>Real estate listing 🟢 99.8%</td>
+  <td>Real estate listing 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic67_real_estate_listing_p1_minipdf.png" width="320"/></td>
@@ -2666,7 +2666,7 @@ MiniPdf DOCX 的输出与 MiniExcel 及 Office 365 作为参考渲染器进行�
 </tr>
 <tr>
   <td><b>classic67</b></td>
-  <td>Real estate listing 🟢 99.8%</td>
+  <td>Real estate listing 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports_docx/images/docx_classic67_alternating_row_table_p1_minipdf.png" width="320"/></td>

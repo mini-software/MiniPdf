@@ -878,7 +878,7 @@ All test cases comparing MiniPdf output vs MiniExcel / Office 365 reference. Pag
 </tr>
 <tr>
   <td><b>classic67</b></td>
-  <td>Real estate listing 🟢 99.8%</td>
+  <td>Real estate listing 🟢 99.6%</td>
 </tr>
 <tr>
   <td><img src="tests/MiniPdf.Benchmark/reports/images/classic67_real_estate_listing_p1_minipdf.png" width="320"/></td>

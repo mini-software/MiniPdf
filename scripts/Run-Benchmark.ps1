@@ -10,6 +10,7 @@
     .\scripts\Run-Benchmark.ps1
     .\scripts\Run-Benchmark.ps1 -CompareOnly
     .\scripts\Run-Benchmark.ps1 -SkipReference
+    .\scripts\Run-Benchmark.ps1 -Filter "classic" -Engine libre -ForceReference -Heatmaps
 #>
 
 param(
@@ -17,6 +18,7 @@ param(
     [switch]$SkipGenerate,
     [switch]$SkipMiniPdf,
     [switch]$SkipReference,
+    [switch]$ForceReference,
     [switch]$SkipInstall,
     [switch]$WithOffice,
     [switch]$SkipOffice,
@@ -70,6 +72,7 @@ if ($CompareOnly) { $pyArgs += "--compare-only" }
 if ($SkipGenerate) { $pyArgs += "--skip-generate" }
 if ($SkipMiniPdf) { $pyArgs += "--skip-minipdf" }
 if ($SkipReference) { $pyArgs += "--skip-reference" }
+if ($ForceReference) { $pyArgs += "--force-reference" }
 if ($WithOffice) { $pyArgs += "--with-office" }
 if ($SkipOffice) { $pyArgs += "--skip-office" }
 if ($Engine -ne "office") { $pyArgs += "--engine"; $pyArgs += $Engine }
