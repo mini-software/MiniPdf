@@ -1286,5 +1286,34 @@
       }
     ],
     "overall_score": 0.9357
+  },
+  {
+    "name": "TestIssue93",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "issue-docx",
+    "case_id": "TestIssue93",
+    "format": "docx",
+    "minipdf_size": 340675,
+    "reference_size": 127582,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9405,
+    "flat_text_similarity": 0.9405,
+    "word_text_similarity": 0.7113,
+    "text_diff": "--- minipdf/TestIssue93.pdf\n+++ reference/TestIssue93.pdf\n@@ -2,29 +2,34 @@\n 基本信息\n\n 使用单位名称： 产品整机编号：\n\n 工作危险\n\n-机房 可能出现下列危险：\n\n-（扶梯 □1 挤压、夹 □4 绊、滑、落\n\n-上机 □2 危险 能 量 □5 扭 / 扭伤\n\n-舱） □3 打、撞击 □6 快口 / 化学 品\n\n-轿顶井 可能出现下列危险：\n\n-道（扶 □1 挤压、夹 □4 绊、滑、落\n\n-梯倾斜 □2 危险 能 量 □5 扭 / 扭伤\n\n-段） □3 打、撞击 □6 快口 / 化学 品\n\n-底坑 可能出现下列危险：\n\n-（扶梯 □1 挤压、夹 □4 绊、滑、落\n\n-下机 □2 危险 能 量 □5 扭 / 扭伤\n\n-舱） □3 打、撞击 □6 快口 / 化学 品\n\n+机房 可能出现下列危险 ：\n\n+（扶梯 □1 挤压、 夹 □4 绊、滑、 落\n\n+上机 □2 危险能 量 □5 扭 / 扭 伤\n\n+舱 ）\n\n+□3 打、撞 击 □6 快口 / 化学 品\n\n+轿顶井 可能出现下列危险 ：\n\n+道（扶 □1 挤压、 夹 □4 绊、滑、 落\n\n+梯倾斜 □2 危险能 量 □5 扭 / 扭 伤\n\n+段 ）\n\n+□3 打、撞 击 □6 快口 / 化学 品\n\n+底坑 可能出现下列危险 ：\n\n+（扶梯 □1 挤压、 夹 □4 绊、滑、 落\n\n+下机\n\n+□2 危险能 量 □5 扭 / 扭 伤\n\n+舱 ）\n\n+□3 打、撞 击 □6 快口 / 化学 品\n\n 项目\n\n 代码 项目 结果 代码 项目 结果\n\n-半\n\n-A-1_1 机房、滑间境 A-1_27 底境\n\n+A-1_1 机房、滑间境 半 A-1_27 底境\n\n 月\n\n A-1_5 制器隙 A-1_31 底止装置\n\n-半 项\n\n+项\n\n+半\n\n 月 A-1_6 制动停子系\n\n 季 A-2_2 制衬\n\n 项 A-1_7 编器\n\n 度\n\n 层中传动钢丝绳、链号条、传动\n\n-A-1_8 各部位 项 A-2_9\n\n+项\n\n+A-1_8 各部位 A-2_9\n\n 带",
+    "visual_scores": [
+      0.9624
+    ],
+    "visual_avg": 0.9624,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "TestIssue93_p1_minipdf.png",
+        "reference_img": "TestIssue93_p1_reference.png"
+      }
+    ],
+    "overall_score": 0.9612
   }
 ]

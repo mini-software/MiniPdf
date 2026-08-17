@@ -28,6 +28,7 @@ internal static class DocxReader
     private static readonly XNamespace REL = "http://schemas.openxmlformats.org/package/2006/relationships";
     private static readonly XNamespace WPS = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape";
     private static readonly XNamespace WPG = "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup";
+    private static readonly XNamespace V = "urn:schemas-microsoft-com:vml";
     private static readonly XNamespace MC = "http://schemas.openxmlformats.org/markup-compatibility/2006";
     private static readonly XNamespace M = "http://schemas.openxmlformats.org/officeDocument/2006/math";
 
@@ -274,6 +275,7 @@ internal static class DocxReader
         // Read settings.xml for defaultTabStop (used for list-label tab-suffix snapping).
         // Word's spec default is 720 twips (36pt); CJK templates often override to 480 (24pt).
         float defaultTabStopPt = 36f;
+        int compatibilityMode = 15;
         var settingsEntry = archive.GetEntry("word/settings.xml");
         if (settingsEntry != null)
         {
@@ -285,6 +287,10 @@ internal static class DocxReader
                 var dtsVal = dts?.Attribute(W + "val")?.Value;
                 if (int.TryParse(dtsVal, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var dtsTwips) && dtsTwips > 0)
                     defaultTabStopPt = dtsTwips / 20f;
+                var compatibility = settingsDoc.Descendants(W + "compatSetting")
+                    .FirstOrDefault(element => element.Attribute(W + "name")?.Value == "compatibilityMode");
+                if (int.TryParse(compatibility?.Attribute(W + "val")?.Value, out var parsedCompatibilityMode))
+                    compatibilityMode = parsedCompatibilityMode;
             }
             catch { /* ignore malformed settings */ }
         }
@@ -317,6 +323,40 @@ internal static class DocxReader
                 bool emittedVisibleTextBoxParagraph = false;
                 var seenTextBoxPositions = new HashSet<(int, int)>(); // dedup by position
                 List<DocxFloatingTextBox>? floatingTextBoxes = null;
+                foreach (var shape in child.Descendants(V + "shape"))
+                {
+                    var txbxContent = shape.Descendants(W + "txbxContent").FirstOrDefault();
+                    if (txbxContent == null)
+                        continue;
+
+                    var shapeStyle = ParseVmlStyle(shape.Attribute("style")?.Value);
+                    if (!shapeStyle.TryGetValue("position", out var position)
+                        || !position.Equals("absolute", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    var x = ParseVmlPointLength(shapeStyle, "margin-left");
+                    var y = ParseVmlPointLength(shapeStyle, "margin-top");
+                    var width = ParseVmlPointLength(shapeStyle, "width");
+                    var height = ParseVmlPointLength(shapeStyle, "height");
+                    if (width <= 0 || height <= 0)
+                        continue;
+
+                    var floatingParas = new List<DocxParagraph>();
+                    foreach (var tp in UnwrapSdt(txbxContent.Elements()).Where(element => element.Name == W + "p"))
+                    {
+                        var tbPara = ReadParagraph(tp, styles, numbering, relationships, archive, themeColors,
+                            defaultFontName, defaultEastAsiaFontName);
+                        if (tbPara != null)
+                            floatingParas.Add(tbPara with { IsTextBoxFlow = false, TextBoxWidth = width });
+                    }
+
+                    if (floatingParas.Count > 0)
+                    {
+                        floatingTextBoxes ??= [];
+                        floatingTextBoxes.Add(new DocxFloatingTextBox(x, y, width, height, floatingParas,
+                            HRelativeFrom: "margin", VRelativeFrom: "paragraph", AnchorAtParagraphTop: true));
+                    }
+                }
                 foreach (var anchor in child.Descendants(WP + "anchor"))
                 {
                     var txbx = anchor.Descendants(WPS + "txbx").FirstOrDefault();
@@ -778,7 +818,32 @@ internal static class DocxReader
             hfImages.Count > 0 ? hfImages : null,
             defaultTabStopPt,
             firstPageHeaderElements,
-            firstPageFooterElements);
+            firstPageFooterElements,
+            compatibilityMode);
+    }
+
+    private static Dictionary<string, string> ParseVmlStyle(string? style)
+    {
+        var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(style))
+            return values;
+
+        foreach (var declaration in style.Split(';', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var separator = declaration.IndexOf(':');
+            if (separator <= 0)
+                continue;
+            values[declaration[..separator].Trim()] = declaration[(separator + 1)..].Trim();
+        }
+        return values;
+    }
+
+    private static float ParseVmlPointLength(Dictionary<string, string> style, string name)
+    {
+        if (!style.TryGetValue(name, out var value) || !value.EndsWith("pt", StringComparison.OrdinalIgnoreCase))
+            return 0;
+        return float.TryParse(value[..^2], System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out var points) ? points : 0;
     }
 
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
@@ -1305,7 +1370,9 @@ internal static class DocxReader
                 }
 
                 // Check for inline images in the run
-                var drawing = child.Descendants(W + "drawing").FirstOrDefault();
+                var drawing = child.Descendants(W + "txbxContent").Any()
+                    ? null
+                    : child.Descendants(W + "drawing").FirstOrDefault();
                 if (drawing != null)
                 {
                     var image = ReadImage(drawing, relationships, archive);
@@ -4861,7 +4928,8 @@ internal sealed record DocxDocument(
     List<DocxImage>? HeaderFooterImages = null,
     float DefaultTabStopPt = 36f,
     List<DocxElement>? FirstPageHeaderElements = null,
-    List<DocxElement>? FirstPageFooterElements = null
+    List<DocxElement>? FirstPageFooterElements = null,
+    int CompatibilityMode = 15
 );
 
 /// <summary>Page layout settings from sectPr.</summary>
@@ -5064,7 +5132,8 @@ internal sealed record DocxFloatingTextBox(
     float TopInsetPt = 3.6f,
     float LeftInsetPt = 7.2f,
     string? HAlign = null,
-    string? VAlign = null
+    string? VAlign = null,
+    bool AnchorAtParagraphTop = false
 );
 
 /// <summary>Represents a text box outline border (rectangle drawn around text box content).</summary>
