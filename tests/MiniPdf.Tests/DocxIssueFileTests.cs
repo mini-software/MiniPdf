@@ -154,6 +154,41 @@ public class DocxIssueFileTests
         Assert.Contains("Bên B cam kết trả tiền", secondPageText, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void Issue93_VmlImageAndLegacyTableGrid_PreserveLayout()
+    {
+        var issuePath = FindIssueDocx("TestIssue93.docx");
+
+        using var stream = File.OpenRead(issuePath);
+        var parsed = DocxReader.Read(stream);
+        var title = Assert.IsType<DocxParagraph>(parsed.Elements[0]);
+        var textBox = Assert.Single(title.FloatingTextBoxes!);
+
+        Assert.Empty(title.Images);
+        Assert.Equal(12, parsed.CompatibilityMode);
+        Assert.InRange(textBox.XPt, 393.9f, 394f);
+        Assert.True(textBox.AnchorAtParagraphTop);
+        Assert.Single(Assert.Single(textBox.Paragraphs).Images);
+
+        stream.Position = 0;
+        var pdf = DocxToPdfConverter.Convert(stream);
+        var page = Assert.Single(pdf.Pages);
+        var image = Assert.Single(page.ImageBlocks);
+        Assert.True(image.X > 400f, $"Expected the logo on the right, got X={image.X}.");
+        Assert.Equal(2, page.RectBlocks.Count(rectangle =>
+            rectangle.FillColor == PdfColor.FromHex("FFFF00")));
+
+        var dangerHeadings = page.TextBlocks
+            .Where(block => block.Text.Contains("可能出现下列危险", StringComparison.Ordinal))
+            .ToArray();
+        Assert.Equal(3, dangerHeadings.Length);
+        Assert.InRange(dangerHeadings.Max(block => block.Y) - dangerHeadings.Min(block => block.Y), 80f, 130f);
+
+        var workDanger = Assert.Single(page.TextBlocks, block => block.Text == "工作危险");
+        var project = Assert.Single(page.TextBlocks, block => block.Text == "项目" && block.X < 80f);
+        Assert.InRange(workDanger.Y - project.Y, 150f, 165f);
+    }
+
     private static string FindIssueDocx(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
