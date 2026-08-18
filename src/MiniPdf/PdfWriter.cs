@@ -1391,6 +1391,30 @@ internal sealed class PdfWriter
             }
         }
 
+        // Draw form-control overlays after text so source text remains a single,
+        // extractable block while viewer rendering uses stable vector geometry.
+        foreach (var rect in page.OverlayRects)
+        {
+            sb.Append($"{rect.FillColor.R.ToString("F3", CultureInfo.InvariantCulture)} " +
+                      $"{rect.FillColor.G.ToString("F3", CultureInfo.InvariantCulture)} " +
+                      $"{rect.FillColor.B.ToString("F3", CultureInfo.InvariantCulture)} rg\n");
+            sb.Append($"{rect.X.ToString("F3", CultureInfo.InvariantCulture)} " +
+                      $"{rect.Y.ToString("F3", CultureInfo.InvariantCulture)} " +
+                      $"{rect.Width.ToString("F3", CultureInfo.InvariantCulture)} " +
+                      $"{rect.Height.ToString("F3", CultureInfo.InvariantCulture)} re f\n");
+        }
+        foreach (var line in page.OverlayLines)
+        {
+            sb.Append($"{line.Color.R.ToString("F3", CultureInfo.InvariantCulture)} " +
+                      $"{line.Color.G.ToString("F3", CultureInfo.InvariantCulture)} " +
+                      $"{line.Color.B.ToString("F3", CultureInfo.InvariantCulture)} RG\n");
+            sb.Append($"{line.LineWidth.ToString("F3", CultureInfo.InvariantCulture)} w\n");
+            sb.Append($"{line.X1.ToString("F3", CultureInfo.InvariantCulture)} " +
+                      $"{line.Y1.ToString("F3", CultureInfo.InvariantCulture)} m\n");
+            sb.Append($"{line.X2.ToString("F3", CultureInfo.InvariantCulture)} " +
+                      $"{line.Y2.ToString("F3", CultureInfo.InvariantCulture)} l S\n");
+        }
+
         // Worksheet drawing-layer images cover cell text in Excel.
         for (var idx = 0; idx < page.ImageBlocks.Count; idx++)
         {

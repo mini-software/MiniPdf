@@ -1,6 +1,6 @@
 # MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-08-17T22:31:06.245670
+Generated: 2026-08-18T10:51:37.516724
 
 ## Summary
 
@@ -32,9 +32,9 @@ Generated: 2026-08-17T22:31:06.245670
 | 24 | 🟢 TestIssue78 | ✅ | 0.9872 | 0.9642 | 1/1 | **0.9806** |
 | 25 | 🟢 TestIssue90 | ✅ | 0.9975 | 0.9775 | 1/1 | **0.99** |
 | 26 | 🟢 TestIssue91 | ✅ | 0.8829 | 0.9564 | 3/3 | **0.9357** |
-| 27 | 🟢 TestIssue93 | ✅ | 0.9405 | 0.9624 | 1/1 | **0.9612** |
+| 27 | 🟢 TestIssue93 | ✅ | 0.9452 | 0.9625 | 1/1 | **0.9631** |
 
-**Average Overall Score: 0.9553**
+**Average Overall Score: 0.9554**
 
 ## Visual Comparison
 
@@ -606,7 +606,7 @@ Generated: 2026-08-17T22:31:06.245670
 </tr>
 <tr>
   <td><b>TestIssue93<br><small>format: docx | case: TestIssue93 | scope: issue-docx</small></b></td>
-  <td colspan="1">TestIssue93 <span style="color:#3fb950">⬤</span> 96.1%</td>
+  <td colspan="1">TestIssue93 <span style="color:#3fb950">⬤</span> 96.3%</td>
 </tr>
 <tr>
   <td><img src="images/TestIssue93_p1_minipdf.png" width="340" alt="MiniPdf"></td>
@@ -2886,18 +2886,18 @@ Text content: ✅ Identical
 ### TestIssue93
 
 - **Case Metadata:** format: docx | case: TestIssue93 | scope: issue-docx
-- **Text Similarity:** 0.9405
-- **Visual Average:** 0.9624
-- **Overall Score:** 0.9612
+- **Text Similarity:** 0.9452
+- **Visual Average:** 0.9625
+- **Overall Score:** 0.9631
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=340675 bytes, Reference=127582 bytes
+- **File Size:** MiniPdf=346475 bytes, Reference=127582 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/TestIssue93.pdf
 +++ reference/TestIssue93.pdf
-@@ -2,29 +2,34 @@
+@@ -2,28 +2,34 @@
  基本信息
 
  使用单位名称： 产品整机编号：
@@ -2964,11 +2964,7 @@ Text content: ✅ Identical
 
  代码 项目 结果 代码 项目 结果
 
--半
-
--A-1_1 机房、滑间境 A-1_27 底境
-
-+A-1_1 机房、滑间境 半 A-1_27 底境
+ A-1_1 机房、滑间境 半 A-1_27 底境
 
  月
 

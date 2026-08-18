@@ -175,6 +175,12 @@ public class DocxIssueFileTests
         var page = Assert.Single(pdf.Pages);
         var image = Assert.Single(page.ImageBlocks);
         Assert.True(image.X > 400f, $"Expected the logo on the right, got X={image.X}.");
+        var titleBlock = Assert.Single(page.TextBlocks, block => block.Text.Contains("十二", StringComparison.Ordinal));
+        Assert.Contains(titleBlock.PreferredFontName, new[] { "SimHei", "黑体" });
+        var checkboxBlocks = page.TextBlocks
+            .Where(block => block.Text.StartsWith("□1", StringComparison.Ordinal))
+            .ToArray();
+        Assert.Equal(3, checkboxBlocks.Length);
         Assert.Equal(2, page.RectBlocks.Count(rectangle =>
             rectangle.FillColor == PdfColor.FromHex("FFFF00")));
 
@@ -187,6 +193,19 @@ public class DocxIssueFileTests
         var workDanger = Assert.Single(page.TextBlocks, block => block.Text == "工作危险");
         var project = Assert.Single(page.TextBlocks, block => block.Text == "项目" && block.X < 80f);
         Assert.InRange(workDanger.Y - project.Y, 150f, 165f);
+
+        var projectTableRowBoundaries = page.LineBlocks
+            .Where(line => Math.Abs(line.Y1 - line.Y2) < 0.01f
+                && line.X1 is > 65f and < 66f
+                && line.X2 is > 120f and < 121f)
+            .Select(line => line.Y1)
+            .Distinct()
+            .OrderByDescending(y => y)
+            .Take(3)
+            .ToArray();
+        Assert.Equal(3, projectTableRowBoundaries.Length);
+        Assert.InRange(projectTableRowBoundaries[0] - projectTableRowBoundaries[1], 12f, 14f);
+        Assert.InRange(projectTableRowBoundaries[1] - projectTableRowBoundaries[2], 12f, 14f);
     }
 
     private static string FindIssueDocx(string fileName)
