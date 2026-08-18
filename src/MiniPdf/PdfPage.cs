@@ -92,6 +92,7 @@ internal sealed class PdfPage
     private readonly List<PdfPathBlock> _pathBlocks = [];
     private readonly List<PdfLineBlock> _lineBlocks = [];
     private readonly List<PdfRectBlock> _overlayRects = [];
+    private readonly List<PdfLineBlock> _overlayLines = [];
     private readonly List<PdfTextBlock> _overlayTexts = [];
 
     /// <summary>
@@ -137,6 +138,7 @@ internal sealed class PdfPage
     public IReadOnlyList<PdfLineBlock> LineBlocks => _lineBlocks;
 
     internal IReadOnlyList<PdfRectBlock> OverlayRects => _overlayRects;
+    internal IReadOnlyList<PdfLineBlock> OverlayLines => _overlayLines;
     internal IReadOnlyList<PdfTextBlock> OverlayTexts => _overlayTexts;
 
     internal PdfPage(float width, float height)
@@ -251,6 +253,14 @@ internal sealed class PdfPage
     internal PdfPage AddOverlayRectangle(float x, float y, float width, float height, PdfColor fillColor)
     {
         _overlayRects.Add(new PdfRectBlock(x, y, width, height, fillColor));
+        return this;
+    }
+
+    internal PdfPage AddOverlayLine(float x1, float y1, float x2, float y2,
+        PdfColor? color = null, float lineWidth = 1f)
+    {
+        _overlayLines.Add(new PdfLineBlock(x1, y1, x2, y2,
+            color ?? PdfColor.Black, lineWidth));
         return this;
     }
 

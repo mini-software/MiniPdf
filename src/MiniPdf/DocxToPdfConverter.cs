@@ -3908,13 +3908,23 @@ internal static class DocxToPdfConverter
                         for (var mr = ri; mr < ri + spanCount; mr++)
                             currentSum += rowHeights[mr];
 
-                        // If merged content needs more space, distribute excess evenly
                         if (mergedContentHeight > currentSum)
                         {
                             var excess = mergedContentHeight - currentSum;
-                            var perRow = excess / spanCount;
-                            for (var mr = ri; mr < ri + spanCount; mr++)
-                                rowHeights[mr] += perRow;
+                            if (cell2.VerticalAlignment is "center" or "bottom")
+                            {
+                                // Word preserves earlier rows and grows the final row
+                                // for centered/bottom-aligned merged labels.
+                                rowHeights[ri + spanCount - 1] += excess;
+                            }
+                            else
+                            {
+                                // Top-aligned merged content follows the row cadence,
+                                // so spread the extra height across the merged rows.
+                                var perRow = excess / spanCount;
+                                for (var mr = ri; mr < ri + spanCount; mr++)
+                                    rowHeights[mr] += perRow;
+                            }
                         }
                     }
                 }
@@ -4153,7 +4163,16 @@ internal static class DocxToPdfConverter
                                 effectiveFontSize * 1.18f,
                                 cellRunShading);
                         }
-                        state.CurrentPage!.AddText(line, lineRenderX, textY2, effectiveFontSize, runColor, maxWidth: cellMaxWidth, bold: cellRunBold, italic: cellRunItalic, underline: cellRunUnderline, charSpacing: cellRunCharSpacing, wordSpacing: cellWordSpacing, preferredFontName: cellRunFontName);
+                        state.CurrentPage!.AddText(line, lineRenderX, textY2,
+                            effectiveFontSize, runColor, maxWidth: cellMaxWidth,
+                            bold: cellRunBold, italic: cellRunItalic,
+                            underline: cellRunUnderline,
+                            charSpacing: cellRunCharSpacing,
+                            wordSpacing: cellWordSpacing,
+                            preferredFontName: cellRunFontName);
+                        if (line.Length > 0 && line[0] == '\u25A1')
+                            AddFormCheckboxOverlay(state.CurrentPage!, lineRenderX,
+                                textY2, effectiveFontSize, runColor);
                         textY2 -= lineHeight - effectiveFontSize;
                     }
                     s_overrideWidths = null;
@@ -4373,6 +4392,25 @@ internal static class DocxToPdfConverter
         // Reset spacing context after table so the next paragraph's SpacingBefore
         // is not collapsed with the pre-table paragraph's SpacingAfter.
         state.LastSpacingAfter = 0;
+    }
+
+    private static void AddFormCheckboxOverlay(PdfPage page, float x,
+        float baselineY, float fontSize, PdfColor? color)
+    {
+        var boxSize = fontSize * 0.72f;
+        var left = x + fontSize * 0.08f;
+        var bottom = baselineY + fontSize * 0.08f;
+        var right = left + boxSize;
+        var top = bottom + boxSize;
+        var stroke = Math.Max(0.45f, fontSize * 0.06f);
+        var boxColor = color ?? PdfColor.Black;
+
+        page.AddOverlayRectangle(x, baselineY - fontSize * 0.18f,
+            fontSize, fontSize * 1.15f, PdfColor.White);
+        page.AddOverlayLine(left, bottom, right, bottom, boxColor, stroke);
+        page.AddOverlayLine(right, bottom, right, top, boxColor, stroke);
+        page.AddOverlayLine(right, top, left, top, boxColor, stroke);
+        page.AddOverlayLine(left, top, left, bottom, boxColor, stroke);
     }
 
     private static float[] CalculateTableColumnWidths(DocxTable table, float usableWidth)
