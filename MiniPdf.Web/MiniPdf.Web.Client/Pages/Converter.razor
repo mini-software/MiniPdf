@@ -335,7 +335,8 @@
                 using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
                 response.EnsureSuccessStatusCode();
 
-                var totalBytes = response.Content.Headers.ContentLength ?? -1;
+                var hasEncodedBody = response.Content.Headers.ContentEncoding.Count > 0;
+                var totalBytes = hasEncodedBody ? -1 : response.Content.Headers.ContentLength ?? -1;
                 using var contentStream = await response.Content.ReadAsStreamAsync();
                 using var fontMs = new MemoryStream();
                 var buffer = new byte[81920];
