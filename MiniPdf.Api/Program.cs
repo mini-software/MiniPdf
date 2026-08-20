@@ -258,8 +258,10 @@ app.MapPost("/api/convert", async (HttpContext ctx, IFormFile file) =>
     }
 }).DisableAntiforgery();
 
-app.MapGet("/api/stats", () =>
+app.MapGet("/api/stats", (HttpContext ctx) =>
 {
+    ctx.Response.Headers["Cache-Control"] = "no-store";
+
     try
     {
         using var conn = new SqliteConnection(connStr);

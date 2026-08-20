@@ -585,6 +585,103 @@ h1:focus { outline: none; }
 }
 .api-stats svg { flex-shrink: 0; color: #9333ea; margin-top: 1px; }
 
+.api-stats-panel {
+    padding: .75rem;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.api-stats-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-bottom: .65rem;
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.api-stats-refresh {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+
+.api-stats-refresh:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+}
+
+.api-stats-refresh:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+}
+
+.api-stats-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    min-height: 48px;
+    font-size: .8rem;
+    color: var(--text-secondary);
+}
+
+.api-stats-state .spinner {
+    border-color: rgba(100, 116, 139, .2);
+    border-top-color: var(--text-secondary);
+}
+
+.api-stats-state.warning {
+    color: #92400e;
+}
+
+.api-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .5rem;
+}
+
+.api-stat-item {
+    min-width: 0;
+    padding: .55rem .5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-align: left;
+}
+
+.api-stat-item.wide {
+    grid-column: 1 / -1;
+}
+
+.api-stat-item strong {
+    display: block;
+    font-size: 1rem;
+    line-height: 1.2;
+    color: var(--text);
+    overflow-wrap: anywhere;
+}
+
+.api-stat-item span {
+    display: block;
+    margin-top: .2rem;
+    font-size: .72rem;
+    line-height: 1.25;
+    color: var(--text-secondary);
+}
+
 .api-alternative {
     color: #92400e;
     background: #fef3c7;

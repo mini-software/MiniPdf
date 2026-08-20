@@ -179,6 +179,50 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
                 <span>@L.T("ApiStatsNote")</span>
             </div>
+            <div class="api-stats-panel">
+                <div class="api-stats-header">
+                    <span>@L.T("ApiStatsTitle")</span>
+                    <button type="button" class="api-stats-refresh" @onclick="LoadApiStats" disabled="@isApiStatsLoading" title="@L.T("ApiStatsRefresh")">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                    </button>
+                </div>
+                @if (isApiStatsLoading)
+                {
+                    <div class="api-stats-state">
+                        <span class="spinner"></span>
+                        <span>@L.T("ApiStatsLoading")</span>
+                    </div>
+                }
+                else if (apiStatsError is not null)
+                {
+                    <div class="api-stats-state warning">@apiStatsError</div>
+                }
+                else if (apiStats is not null)
+                {
+                    <div class="api-stats-grid">
+                        <div class="api-stat-item">
+                            <strong>@apiStats.TotalCount</strong>
+                            <span>@L.T("ApiStatsTotal")</span>
+                        </div>
+                        <div class="api-stat-item">
+                            <strong>@FormatDuration(apiStats.TotalAvgMs)</strong>
+                            <span>@L.T("ApiStatsAverage")</span>
+                        </div>
+                        <div class="api-stat-item">
+                            <strong>@TodayApiCount</strong>
+                            <span>@L.T("ApiStatsToday")</span>
+                        </div>
+                        <div class="api-stat-item">
+                            <strong>@ApiSuccessRateText</strong>
+                            <span>@L.T("ApiStatsSuccessRate")</span>
+                        </div>
+                        <div class="api-stat-item wide">
+                            <strong>@ApiLoadText</strong>
+                            <span>@L.T("ApiStatsCurrentLoad")</span>
+                        </div>
+                    </div>
+                }
+            </div>
             <div class="api-alternative">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 <span>@L.T("ApiAlternative") <a href="https://github.com/mini-software/MiniPdf/issues" target="_blank">@L.T("OpenIssue")</a></span>
@@ -228,6 +272,7 @@
     private const string ApiBaseUrl = "https://minipdf-api.azurewebsites.net";
     private const string ApiUrl = ApiBaseUrl + "/api/convert";
     private const string ApiStatusUrl = ApiBaseUrl + "/api/status";
+    private const string ApiStatsUrl = ApiBaseUrl + "/api/stats";
     private const string DefaultFontCacheKey = "NotoSansSC-Regular.ttf";
 
     private IBrowserFile? selectedFile;
@@ -244,11 +289,24 @@
     private string? customFontName;
     private ApiStatusKind apiStatus = ApiStatusKind.Unknown;
     private string? apiStatusMessage;
+    private ApiStatsResponse? apiStats;
+    private bool isApiStatsLoading;
+    private string? apiStatsError;
+    private int apiActiveConversions;
+    private int apiMaxConcurrentConversions;
 
     private bool CanConvert => selectedFile is not null && !isConverting && !IsApiBlocked;
     private string FileExt => selectedFile is not null
         ? Path.GetExtension(selectedFile.Name).ToLowerInvariant().TrimStart('.')
         : "";
+    private ApiDailyStats? TodayApiStats => apiStats?.Daily.FirstOrDefault(d => d.Date == DateTime.UtcNow.ToString("yyyy-MM-dd"));
+    private int TodayApiCount => TodayApiStats?.Count ?? 0;
+    private string ApiSuccessRateText => TodayApiStats is { Count: > 0 } today
+        ? $"{today.SuccessCount * 100.0 / today.Count:F0}%"
+        : "-";
+    private string ApiLoadText => apiMaxConcurrentConversions > 0
+        ? $"{apiActiveConversions}/{apiMaxConcurrentConversions}"
+        : "-";
     private bool IsApiBlocked => useApi && apiStatus is ApiStatusKind.Checking or ApiStatusKind.Busy or ApiStatusKind.Unavailable;
     private string ApiStatusCss => apiStatus switch
     {
@@ -260,7 +318,7 @@
     protected override async Task OnInitializedAsync()
     {
         L.OnLanguageChanged += StateHasChanged;
-        await CheckApiStatus();
+        await Task.WhenAll(CheckApiStatus(), LoadApiStats());
     }
 
     public void Dispose()
@@ -302,7 +360,7 @@
         successMessage = null;
 
         if (useApi)
-            await CheckApiStatus();
+            await Task.WhenAll(CheckApiStatus(), LoadApiStats());
     }
 
     private async Task ConvertFile()
@@ -365,6 +423,7 @@
         var outputName = Path.GetFileNameWithoutExtension(selectedFile.Name) + ".pdf";
         await JS.InvokeVoidAsync("downloadFile", outputName, "application/pdf", pdfBytes);
         successMessage = $"{outputName} {L.T("DownloadSuccess")}";
+        await LoadApiStats();
     }
 
     private async Task CheckApiStatus()
@@ -393,6 +452,9 @@
                 return;
             }
 
+            apiActiveConversions = status.ActiveConversions;
+            apiMaxConcurrentConversions = status.MaxConcurrentConversions;
+
             apiStatus = status.IsBusy || !status.Available
                 ? ApiStatusKind.Busy
                 : ApiStatusKind.Available;
@@ -407,6 +469,29 @@
         }
         finally
         {
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadApiStats()
+    {
+        isApiStatsLoading = true;
+        apiStatsError = null;
+        StateHasChanged();
+
+        try
+        {
+            apiStats = await Http.GetFromJsonAsync<ApiStatsResponse>(ApiStatsUrl);
+            if (apiStats is null)
+                apiStatsError = L.T("ApiStatsUnavailable");
+        }
+        catch
+        {
+            apiStatsError = L.T("ApiStatsUnavailable");
+        }
+        finally
+        {
+            isApiStatsLoading = false;
             StateHasChanged();
         }
     }
@@ -427,6 +512,31 @@
     }
 
     private sealed record ApiStatusResponse(bool Available, bool IsBusy, int ActiveConversions, int MaxConcurrentConversions);
+
+    private sealed class ApiStatsResponse
+    {
+        public int TotalCount { get; set; }
+        public int TotalAvgMs { get; set; }
+        public List<ApiDailyStats> Daily { get; set; } = [];
+        public List<ApiFileTypeStats> ByType { get; set; } = [];
+    }
+
+    private sealed class ApiDailyStats
+    {
+        public string Date { get; set; } = "";
+        public int Count { get; set; }
+        public int AvgMs { get; set; }
+        public int MinMs { get; set; }
+        public int MaxMs { get; set; }
+        public int SuccessCount { get; set; }
+    }
+
+    private sealed class ApiFileTypeStats
+    {
+        public string FileType { get; set; } = "";
+        public int Count { get; set; }
+        public int AvgMs { get; set; }
+    }
 
     private enum ApiStatusKind
     {
@@ -553,5 +663,14 @@
         if (bytes >= 1024)
             return $"{bytes / 1024.0:F1} KB";
         return $"{bytes} B";
+    }
+
+    private static string FormatDuration(int milliseconds)
+    {
+        if (milliseconds <= 0)
+            return "-";
+        if (milliseconds >= 1000)
+            return $"{milliseconds / 1000.0:F1} s";
+        return $"{milliseconds} ms";
     }
 }
