@@ -81,6 +81,12 @@ public class I18n
             ["ApiSourceCode"] = "The API is fully open source. View the source code on",
             ["ApiAlternative"] = "If the result is still not satisfactory, you can try the local CLI tool or NuGet package, or",
             ["ApiStatsNote"] = "The API uses a local SQLite database to track usage statistics (processing time per request, daily request count). No file content is stored.",
+            ["ApiStatusChecking"] = "Checking Cloud API availability...",
+            ["ApiStatusAvailable"] = "Cloud API is available.",
+            ["ApiStatusBusy"] = "Cloud API is busy right now. Please try again later or switch to Browser mode.",
+            ["ApiStatusUnavailable"] = "Cloud API is currently unavailable. You can switch to Browser mode.",
+            ["ApiStatusRefresh"] = "Check Cloud API status again",
+            ["ApiRateLimitExceeded"] = "Daily Cloud API limit reached for this IP. Please switch to Browser mode or try again tomorrow.",
         },
         ["zh-CN"] = new()
         {
@@ -122,6 +128,12 @@ public class I18n
             ["ApiSourceCode"] = "API 完全开源，源代码可在以下地址查看：",
             ["ApiAlternative"] = "如果转换效果仍不理想，可以尝试本地 CLI 工具或 NuGet 包安装，或者",
             ["ApiStatsNote"] = "API 使用本地 SQLite 数据库统计使用情况（每次请求处理时间、每日请求次数），不会存储任何文件内容。",
+            ["ApiStatusChecking"] = "正在检查云端 API 是否可用...",
+            ["ApiStatusAvailable"] = "云端 API 当前可用。",
+            ["ApiStatusBusy"] = "云端 API 目前较忙，请稍后再试，或切换到浏览器模式。",
+            ["ApiStatusUnavailable"] = "云端 API 目前不可用，可以切换到浏览器模式。",
+            ["ApiStatusRefresh"] = "重新检查云端 API 状态",
+            ["ApiRateLimitExceeded"] = "此 IP 今日云端 API 次数已用完，请切换到浏览器模式或明天再试。",
         },
         ["zh-TW"] = new()
         {
@@ -163,6 +175,12 @@ public class I18n
             ["ApiSourceCode"] = "API 完全開源，原始碼可在以下位置查看：",
             ["ApiAlternative"] = "如果轉換效果仍不理想，可以嘗試本地 CLI 工具或 NuGet 套件安裝，或者",
             ["ApiStatsNote"] = "API 使用本地 SQLite 資料庫統計使用情況（每次請求處理時間、每日請求次數），不會儲存任何檔案內容。",
+            ["ApiStatusChecking"] = "正在檢查雲端 API 是否可用...",
+            ["ApiStatusAvailable"] = "雲端 API 目前可用。",
+            ["ApiStatusBusy"] = "雲端 API 目前較忙，請稍後再試，或切換到瀏覽器模式。",
+            ["ApiStatusUnavailable"] = "雲端 API 目前不可用，可以切換到瀏覽器模式。",
+            ["ApiStatusRefresh"] = "重新檢查雲端 API 狀態",
+            ["ApiRateLimitExceeded"] = "此 IP 今日雲端 API 次數已用完，請切換到瀏覽器模式或明天再試。",
         },
         ["ja"] = new()
         {
@@ -204,6 +222,12 @@ public class I18n
             ["ApiSourceCode"] = "API は完全にオープンソースです。ソースコードはこちらで確認できます：",
             ["ApiAlternative"] = "結果がまだ満足できない場合は、ローカル CLI ツールまたは NuGet パッケージをお試しいただくか、",
             ["ApiStatsNote"] = "API はローカルの SQLite データベースを使用して使用状況を追跡しています（リクエストごとの処理時間、日次リクエスト数）。ファイル内容は保存されません。",
+            ["ApiStatusChecking"] = "Cloud API の可用性を確認しています...",
+            ["ApiStatusAvailable"] = "Cloud API は利用可能です。",
+            ["ApiStatusBusy"] = "Cloud API は現在混み合っています。後でもう一度お試しいただくか、ブラウザモードに切り替えてください。",
+            ["ApiStatusUnavailable"] = "Cloud API は現在利用できません。ブラウザモードに切り替えることができます。",
+            ["ApiStatusRefresh"] = "Cloud API の状態を再確認",
+            ["ApiRateLimitExceeded"] = "この IP の Cloud API 日次制限に達しました。ブラウザモードに切り替えるか、明日もう一度お試しください。",
         },
         ["ko"] = new()
         {
@@ -245,6 +269,12 @@ public class I18n
             ["ApiSourceCode"] = "API는 완전히 오픈 소스입니다. 소스 코드는 여기에서 확인할 수 있습니다:",
             ["ApiAlternative"] = "결과가 만족스럽지 않다면 로컬 CLI 도구 또는 NuGet 패키지를 사용하거나,",
             ["ApiStatsNote"] = "API는 로컬 SQLite 데이터베이스를 사용하여 사용 통계를 추적합니다(요청별 처리 시간, 일일 요청 수). 파일 내용은 저장되지 않습니다.",
+            ["ApiStatusChecking"] = "Cloud API 사용 가능 여부를 확인하는 중...",
+            ["ApiStatusAvailable"] = "Cloud API를 사용할 수 있습니다.",
+            ["ApiStatusBusy"] = "Cloud API가 현재 혼잡합니다. 나중에 다시 시도하거나 브라우저 모드로 전환하세요.",
+            ["ApiStatusUnavailable"] = "Cloud API를 현재 사용할 수 없습니다. 브라우저 모드로 전환할 수 있습니다.",
+            ["ApiStatusRefresh"] = "Cloud API 상태 다시 확인",
+            ["ApiRateLimitExceeded"] = "이 IP의 Cloud API 일일 한도에 도달했습니다. 브라우저 모드로 전환하거나 내일 다시 시도하세요.",
         },
         ["fr"] = new()
         {
@@ -286,6 +316,12 @@ public class I18n
             ["ApiSourceCode"] = "L'API est entièrement open source. Consultez le code source sur",
             ["ApiAlternative"] = "Si le résultat n'est toujours pas satisfaisant, vous pouvez essayer l'outil CLI local ou le package NuGet, ou",
             ["ApiStatsNote"] = "L'API utilise une base de données SQLite locale pour suivre les statistiques d'utilisation (temps de traitement par requête, nombre de requêtes quotidiennes). Aucun contenu de fichier n'est stocké.",
+            ["ApiStatusChecking"] = "Vérification de la disponibilité de l'API Cloud...",
+            ["ApiStatusAvailable"] = "L'API Cloud est disponible.",
+            ["ApiStatusBusy"] = "L'API Cloud est très sollicitée actuellement. Réessayez plus tard ou passez en mode Navigateur.",
+            ["ApiStatusUnavailable"] = "L'API Cloud est actuellement indisponible. Vous pouvez passer en mode Navigateur.",
+            ["ApiStatusRefresh"] = "Revérifier l'état de l'API Cloud",
+            ["ApiRateLimitExceeded"] = "La limite quotidienne de l'API Cloud est atteinte pour cette IP. Passez en mode Navigateur ou réessayez demain.",
         },
         ["it"] = new()
         {
@@ -327,6 +363,12 @@ public class I18n
             ["ApiSourceCode"] = "L'API è completamente open source. Visualizza il codice sorgente su",
             ["ApiAlternative"] = "Se il risultato non è ancora soddisfacente, puoi provare lo strumento CLI locale o il pacchetto NuGet, oppure",
             ["ApiStatsNote"] = "L'API utilizza un database SQLite locale per tracciare le statistiche di utilizzo (tempo di elaborazione per richiesta, conteggio richieste giornaliere). Nessun contenuto di file viene archiviato.",
+            ["ApiStatusChecking"] = "Verifica della disponibilità dell'API Cloud...",
+            ["ApiStatusAvailable"] = "L'API Cloud è disponibile.",
+            ["ApiStatusBusy"] = "L'API Cloud è occupata in questo momento. Riprova più tardi o passa alla modalità Browser.",
+            ["ApiStatusUnavailable"] = "L'API Cloud non è attualmente disponibile. Puoi passare alla modalità Browser.",
+            ["ApiStatusRefresh"] = "Ricontrolla lo stato dell'API Cloud",
+            ["ApiRateLimitExceeded"] = "Limite giornaliero dell'API Cloud raggiunto per questo IP. Passa alla modalità Browser o riprova domani.",
         },
     };
 }
