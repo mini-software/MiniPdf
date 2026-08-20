@@ -85,7 +85,9 @@ app.UseCors();
 // --- IP-based rate limiting: 10 requests per day per IP, 10 MB max ---
 const int MaxRequestsPerDay = 10;
 const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
+const int MaxConcurrentConversions = 3;
 var ipRequestCounts = new ConcurrentDictionary<string, (int Count, DateTime ResetTime)>();
+var conversionSlots = new SemaphoreSlim(MaxConcurrentConversions, MaxConcurrentConversions);
 
 string GetClientIp(HttpContext ctx)
 {
@@ -113,6 +115,22 @@ bool TryConsumeRateLimit(string ip)
 
     return entry.Count <= MaxRequestsPerDay;
 }
+
+app.MapGet("/api/status", (HttpContext ctx) =>
+{
+    ctx.Response.Headers["Cache-Control"] = "no-store";
+    var activeConversions = MaxConcurrentConversions - conversionSlots.CurrentCount;
+    var isBusy = activeConversions >= MaxConcurrentConversions;
+
+    return Results.Ok(new
+    {
+        status = isBusy ? "busy" : "available",
+        available = !isBusy,
+        isBusy,
+        activeConversions,
+        maxConcurrentConversions = MaxConcurrentConversions
+    });
+});
 
 if (app.Environment.IsDevelopment())
 {
@@ -189,15 +207,6 @@ app.MapPost("/api/convert", async (HttpContext ctx, IFormFile file) =>
         return Results.BadRequest("File size exceeds the 10 MB limit.");
     }
 
-    // Enforce IP-based rate limit (10 per day)
-    var clientIp = GetClientIp(ctx);
-    if (!TryConsumeRateLimit(clientIp))
-    {
-        return Results.Json(
-            new { error = "Rate limit exceeded. Maximum 10 conversions per day per IP." },
-            statusCode: 429);
-    }
-
     var ext = Path.GetExtension(file.FileName);
     if (!ext.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) &&
         !ext.Equals(".docx", StringComparison.OrdinalIgnoreCase) &&
@@ -206,23 +215,46 @@ app.MapPost("/api/convert", async (HttpContext ctx, IFormFile file) =>
         return Results.BadRequest("Only .xlsx, .docx, and .pptx files are supported.");
     }
 
-    var sw = Stopwatch.StartNew();
-    var ipHash = HashIp(clientIp);
+    var clientIp = GetClientIp(ctx);
+    if (!await conversionSlots.WaitAsync(0))
+    {
+        return Results.Json(
+            new { error = "Cloud API is busy. Please try again later or use browser mode." },
+            statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+
     try
     {
-        using var stream = file.OpenReadStream();
-        byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
+        // Enforce IP-based rate limit (10 per day)
+        if (!TryConsumeRateLimit(clientIp))
+        {
+            return Results.Json(
+                new { error = "Rate limit exceeded. Maximum 10 conversions per day per IP." },
+                statusCode: 429);
+        }
 
-        sw.Stop();
-        LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, true);
+        var sw = Stopwatch.StartNew();
+        var ipHash = HashIp(clientIp);
+        try
+        {
+            using var stream = file.OpenReadStream();
+            byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
 
-        return Results.File(pdfBytes, "application/pdf", "output.pdf");
+            sw.Stop();
+            LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, true);
+
+            return Results.File(pdfBytes, "application/pdf", "output.pdf");
+        }
+        catch (Exception)
+        {
+            sw.Stop();
+            LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, false);
+            throw;
+        }
     }
-    catch (Exception)
+    finally
     {
-        sw.Stop();
-        LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, false);
-        throw;
+        conversionSlots.Release();
     }
 }).DisableAntiforgery();
 

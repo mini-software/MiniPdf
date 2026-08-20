@@ -186,6 +186,71 @@ h1:focus { outline: none; }
     color: #16a34a;
 }
 
+/* ===== API Status ===== */
+.api-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    margin-bottom: 1rem;
+    padding: .55rem .75rem;
+    font-size: .8rem;
+    border-radius: 8px;
+}
+
+.api-status svg {
+    flex-shrink: 0;
+}
+
+.api-status.loading {
+    color: #1d4ed8;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+}
+
+.api-status.loading .spinner {
+    border-color: rgba(29, 78, 216, .2);
+    border-top-color: #1d4ed8;
+}
+
+.api-status.success {
+    color: #15803d;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.api-status.warning {
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+}
+
+.api-status-refresh {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-left: auto;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    opacity: .75;
+    transition: opacity var(--transition), background var(--transition);
+}
+
+.api-status-refresh:hover:not(:disabled) {
+    opacity: 1;
+    background: rgba(255, 255, 255, .45);
+}
+
+.api-status-refresh:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+}
+
 /* ===== Drop Zone ===== */
 .drop-zone {
     position: relative;

@@ -39,6 +39,28 @@
         </button>
     </div>
 
+    @if (useApi && apiStatusMessage is not null)
+    {
+        <div class="api-status @ApiStatusCss">
+            @if (apiStatus == ApiStatusKind.Checking)
+            {
+                <span class="spinner"></span>
+            }
+            else if (apiStatus == ApiStatusKind.Available)
+            {
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            }
+            else
+            {
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            }
+            <span>@apiStatusMessage</span>
+            <button type="button" class="api-status-refresh" @onclick="CheckApiStatus" disabled="@(apiStatus == ApiStatusKind.Checking)" title="@L.T("ApiStatusRefresh")">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            </button>
+        </div>
+    }
+
     <div class="drop-zone @(isDragOver ? "drag-over" : "")"
          @ondragenter="HandleDragEnter"
          @ondragleave="HandleDragLeave"
@@ -203,13 +225,15 @@
 </div>
 
 @code {
-    private const string ApiUrl = "https://minipdf-api.azurewebsites.net/api/convert";
+    private const string ApiBaseUrl = "https://minipdf-api.azurewebsites.net";
+    private const string ApiUrl = ApiBaseUrl + "/api/convert";
+    private const string ApiStatusUrl = ApiBaseUrl + "/api/status";
     private const string DefaultFontCacheKey = "NotoSansSC-Regular.ttf";
 
     private IBrowserFile? selectedFile;
     private bool isConverting;
     private bool isDragOver;
-    private bool useApi;
+    private bool useApi = true;
     private string? errorMessage;
     private string? successMessage;
     private static bool _fontLoaded;
@@ -218,15 +242,25 @@
     private bool fontLoadSuccess;
     private int fontProgress;
     private string? customFontName;
+    private ApiStatusKind apiStatus = ApiStatusKind.Unknown;
+    private string? apiStatusMessage;
 
-    private bool CanConvert => selectedFile is not null && !isConverting;
+    private bool CanConvert => selectedFile is not null && !isConverting && !IsApiBlocked;
     private string FileExt => selectedFile is not null
         ? Path.GetExtension(selectedFile.Name).ToLowerInvariant().TrimStart('.')
         : "";
+    private bool IsApiBlocked => useApi && apiStatus is ApiStatusKind.Checking or ApiStatusKind.Busy or ApiStatusKind.Unavailable;
+    private string ApiStatusCss => apiStatus switch
+    {
+        ApiStatusKind.Checking => "loading",
+        ApiStatusKind.Available => "success",
+        _ => "warning"
+    };
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         L.OnLanguageChanged += StateHasChanged;
+        await CheckApiStatus();
     }
 
     public void Dispose()
@@ -261,11 +295,14 @@
     private void HandleDragEnter() => isDragOver = true;
     private void HandleDragLeave() => isDragOver = false;
 
-    private void SetMode(bool api)
+    private async Task SetMode(bool api)
     {
         useApi = api;
         errorMessage = null;
         successMessage = null;
+
+        if (useApi)
+            await CheckApiStatus();
     }
 
     private async Task ConvertFile()
@@ -281,9 +318,20 @@
         try
         {
             if (useApi)
+            {
+                await CheckApiStatus();
+                if (apiStatus is ApiStatusKind.Busy or ApiStatusKind.Unavailable)
+                {
+                    errorMessage = apiStatusMessage;
+                    return;
+                }
+
                 await ConvertViaApi();
+            }
             else
+            {
                 await ConvertLocal();
+            }
         }
         catch (Exception ex)
         {
@@ -310,13 +358,83 @@
         if (!response.IsSuccessStatusCode)
         {
             var errorText = await response.Content.ReadAsStringAsync();
-            throw new Exception(errorText);
+            throw new Exception(GetApiErrorMessage(response, errorText));
         }
 
         var pdfBytes = await response.Content.ReadAsByteArrayAsync();
         var outputName = Path.GetFileNameWithoutExtension(selectedFile.Name) + ".pdf";
         await JS.InvokeVoidAsync("downloadFile", outputName, "application/pdf", pdfBytes);
         successMessage = $"{outputName} {L.T("DownloadSuccess")}";
+    }
+
+    private async Task CheckApiStatus()
+    {
+        apiStatus = ApiStatusKind.Checking;
+        apiStatusMessage = L.T("ApiStatusChecking");
+        StateHasChanged();
+
+        try
+        {
+            using var response = await Http.GetAsync(ApiStatusUrl);
+            if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable ||
+                response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            {
+                apiStatus = ApiStatusKind.Busy;
+                apiStatusMessage = L.T("ApiStatusBusy");
+                return;
+            }
+
+            response.EnsureSuccessStatusCode();
+            var status = await response.Content.ReadFromJsonAsync<ApiStatusResponse>();
+            if (status is null)
+            {
+                apiStatus = ApiStatusKind.Unavailable;
+                apiStatusMessage = L.T("ApiStatusUnavailable");
+                return;
+            }
+
+            apiStatus = status.IsBusy || !status.Available
+                ? ApiStatusKind.Busy
+                : ApiStatusKind.Available;
+            apiStatusMessage = apiStatus == ApiStatusKind.Available
+                ? L.T("ApiStatusAvailable")
+                : L.T("ApiStatusBusy");
+        }
+        catch
+        {
+            apiStatus = ApiStatusKind.Unavailable;
+            apiStatusMessage = L.T("ApiStatusUnavailable");
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+
+    private string GetApiErrorMessage(HttpResponseMessage response, string errorText)
+    {
+        if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+        {
+            apiStatus = ApiStatusKind.Busy;
+            apiStatusMessage = L.T("ApiStatusBusy");
+            return apiStatusMessage;
+        }
+
+        if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            return L.T("ApiRateLimitExceeded");
+
+        return string.IsNullOrWhiteSpace(errorText) ? response.ReasonPhrase ?? response.StatusCode.ToString() : errorText;
+    }
+
+    private sealed record ApiStatusResponse(bool Available, bool IsBusy, int ActiveConversions, int MaxConcurrentConversions);
+
+    private enum ApiStatusKind
+    {
+        Unknown,
+        Checking,
+        Available,
+        Busy,
+        Unavailable
     }
 
     private async Task ConvertLocal()
