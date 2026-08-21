@@ -104,24 +104,6 @@ fn text_width(text: &str, font_size: f32) -> f32 {
         * font_size
 }
 
-fn truncate_to_width(text: &str, max_width: f32, font_size: f32) -> String {
-    if text_width(text, font_size) <= max_width {
-        return text.to_owned();
-    }
-
-    let ellipsis = "...";
-    let mut result = String::new();
-    for ch in text.chars() {
-        let candidate = format!("{result}{ch}{ellipsis}");
-        if text_width(&candidate, font_size) > max_width {
-            break;
-        }
-        result.push(ch);
-    }
-    result.push_str(ellipsis);
-    result
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -180,13 +162,6 @@ mod tests {
         }
 
         assert!(checked_streams > 0);
-    }
-
-    #[test]
-    fn truncates_text_to_fit_width() {
-        let text = truncate_to_width("abcdefghijklmnopqrstuvwxyz", 40.0, 12.0);
-        assert!(text.ends_with("..."));
-        assert!(text_width(&text, 12.0) <= 40.0);
     }
 
     fn find_bytes(haystack: &[u8], needle: &[u8]) -> Option<usize> {

@@ -4,20 +4,26 @@ use std::io::Cursor;
 use zip::ZipArchive;
 
 use crate::pdf::{PdfColor, PdfDocument};
-use crate::{read_zip_text, truncate_to_width, Result};
+use crate::{read_zip_text, text_width, Result};
 
-const PAGE_WIDTH: f32 = 841.89;
-const PAGE_HEIGHT: f32 = 595.28;
-const MARGIN: f32 = 36.0;
-const TITLE_FONT_SIZE: f32 = 14.0;
-const CELL_FONT_SIZE: f32 = 8.0;
-const ROW_HEIGHT: f32 = 19.0;
-const COL_WIDTH: f32 = 92.0;
+const PAGE_WIDTH: f32 = 612.0;
+const PAGE_HEIGHT: f32 = 792.0;
+const MARGIN_X: f32 = 52.0;
+const MARGIN_TOP: f32 = 70.55;
+const MARGIN_BOTTOM: f32 = 54.0;
+const CELL_FONT_SIZE: f32 = 11.0;
+const ROW_HEIGHT: f32 = 15.0;
+const COL_WIDTH: f32 = 47.4;
+
+#[derive(Debug, Clone, Default)]
+struct CellData {
+    text: String,
+    is_numeric: bool,
+}
 
 #[derive(Debug, Clone)]
 struct SheetData {
-    name: String,
-    rows: Vec<Vec<String>>,
+    rows: Vec<Vec<CellData>>,
 }
 
 pub(crate) fn convert_xlsx_bytes(input: &[u8]) -> Result<Vec<u8>> {
@@ -34,18 +40,17 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
     let sheet_paths = read_sheet_paths(&mut archive)?;
     let mut sheets = Vec::new();
 
-    for (name, path) in sheet_paths {
+    for (_, path) in sheet_paths {
         let Some(sheet_xml) = read_zip_text(&mut archive, &path)? else {
             continue;
         };
         let rows = read_sheet_rows(&sheet_xml, &shared_strings)?;
-        sheets.push(SheetData { name, rows });
+        sheets.push(SheetData { rows });
     }
 
     if sheets.is_empty() {
         if let Some(sheet_xml) = read_zip_text(&mut archive, "xl/worksheets/sheet1.xml")? {
             sheets.push(SheetData {
-                name: "Sheet1".to_owned(),
                 rows: read_sheet_rows(&sheet_xml, &shared_strings)?,
             });
         }
@@ -53,8 +58,10 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
 
     if sheets.is_empty() {
         sheets.push(SheetData {
-            name: "Workbook".to_owned(),
-            rows: vec![vec!["Empty XLSX workbook".to_owned()]],
+            rows: vec![vec![CellData {
+                text: "Empty XLSX workbook".to_owned(),
+                is_numeric: false,
+            }]],
         });
     }
 
@@ -144,12 +151,12 @@ fn normalize_xl_path(path: &str) -> String {
     }
 }
 
-fn read_sheet_rows(sheet_xml: &str, shared_strings: &[String]) -> Result<Vec<Vec<String>>> {
+fn read_sheet_rows(sheet_xml: &str, shared_strings: &[String]) -> Result<Vec<Vec<CellData>>> {
     let xml = roxmltree::Document::parse(sheet_xml)?;
     let mut rows = Vec::new();
 
     for row in xml.descendants().filter(|node| node.has_tag_name("row")) {
-        let mut cells: Vec<(usize, String)> = Vec::new();
+        let mut cells: Vec<(usize, CellData)> = Vec::new();
         for cell in row.children().filter(|node| node.has_tag_name("c")) {
             let col = cell
                 .attribute("r")
@@ -165,13 +172,13 @@ fn read_sheet_rows(sheet_xml: &str, shared_strings: &[String]) -> Result<Vec<Vec
             .max()
             .map(|col| col + 1)
             .unwrap_or(0);
-        let mut row_values = vec![String::new(); width];
+        let mut row_values = vec![CellData::default(); width];
         for (col, value) in cells {
             if let Some(slot) = row_values.get_mut(col) {
                 *slot = value;
             }
         }
-        if row_values.iter().any(|value| !value.is_empty()) {
+        if row_values.iter().any(|cell| !cell.text.is_empty()) {
             rows.push(row_values);
         }
     }
@@ -179,14 +186,18 @@ fn read_sheet_rows(sheet_xml: &str, shared_strings: &[String]) -> Result<Vec<Vec
     Ok(rows)
 }
 
-fn read_cell_value(cell: roxmltree::Node<'_, '_>, shared_strings: &[String]) -> String {
+fn read_cell_value(cell: roxmltree::Node<'_, '_>, shared_strings: &[String]) -> CellData {
     let cell_type = cell.attribute("t");
     if cell_type == Some("inlineStr") {
-        return cell
+        let text = cell
             .descendants()
             .filter(|node| node.has_tag_name("t"))
             .filter_map(|node| node.text())
             .collect::<String>();
+        return CellData {
+            text,
+            is_numeric: false,
+        };
     }
 
     let value = cell
@@ -196,14 +207,21 @@ fn read_cell_value(cell: roxmltree::Node<'_, '_>, shared_strings: &[String]) -> 
         .unwrap_or("");
 
     if cell_type == Some("s") {
-        return value
+        let text = value
             .parse::<usize>()
             .ok()
             .and_then(|index| shared_strings.get(index).cloned())
             .unwrap_or_default();
+        return CellData {
+            text,
+            is_numeric: false,
+        };
     }
 
-    value.to_owned()
+    CellData {
+        text: value.to_owned(),
+        is_numeric: matches!(cell_type, None | Some("n")) && value.parse::<f64>().is_ok(),
+    }
 }
 
 fn column_index_from_ref(cell_ref: &str) -> Option<usize> {
@@ -225,82 +243,34 @@ fn render_xlsx(doc: &mut PdfDocument, sheets: &[SheetData]) {
 fn render_sheet(doc: &mut PdfDocument, sheet: &SheetData) {
     let mut page_index = doc.pages().len();
     doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
-    let mut y = PAGE_HEIGHT - MARGIN - TITLE_FONT_SIZE;
-    let max_cols = ((PAGE_WIDTH - MARGIN * 2.0) / COL_WIDTH).floor() as usize;
+    let mut y = PAGE_HEIGHT - MARGIN_TOP - ROW_HEIGHT;
+    let max_cols = ((PAGE_WIDTH - MARGIN_X * 2.0) / COL_WIDTH).floor() as usize;
 
-    let page = doc.page_mut(page_index).expect("page index is valid");
-    page.add_text(
-        &sheet.name,
-        MARGIN,
-        y,
-        TITLE_FONT_SIZE,
-        PdfColor::BLACK,
-        true,
-    );
-    y -= ROW_HEIGHT * 1.4;
-
-    for (row_index, row) in sheet.rows.iter().enumerate() {
-        if y < MARGIN + ROW_HEIGHT {
+    for row in &sheet.rows {
+        if y < MARGIN_BOTTOM + ROW_HEIGHT {
             page_index = doc.pages().len();
             doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
-            y = PAGE_HEIGHT - MARGIN - ROW_HEIGHT;
+            y = PAGE_HEIGHT - MARGIN_TOP - ROW_HEIGHT;
         }
 
         let page = doc.page_mut(page_index).expect("page index is valid");
 
-        let is_header = row_index == 0;
-        for (col_index, cell_value) in row.iter().enumerate().take(max_cols) {
-            let x = MARGIN + col_index as f32 * COL_WIDTH;
-            let fill = if is_header {
-                PdfColor::TABLE_HEADER
+        for (col_index, cell) in row.iter().enumerate().take(max_cols) {
+            let cell_x = MARGIN_X + col_index as f32 * COL_WIDTH;
+            let x = if cell.is_numeric {
+                cell_x + COL_WIDTH - text_width(&cell.text, CELL_FONT_SIZE)
             } else {
-                PdfColor::WHITE
+                cell_x + 3.0
             };
-            page.add_rect(x, y - 4.0, COL_WIDTH, ROW_HEIGHT, fill);
-            page.add_line(
-                x,
-                y - 4.0,
-                x + COL_WIDTH,
-                y - 4.0,
-                PdfColor::LIGHT_GRAY,
-                0.5,
-            );
-            page.add_line(
-                x,
-                y - 4.0,
-                x,
-                y - 4.0 + ROW_HEIGHT,
-                PdfColor::LIGHT_GRAY,
-                0.5,
-            );
-
-            let text = truncate_to_width(cell_value, COL_WIDTH - 6.0, CELL_FONT_SIZE);
             page.add_text(
-                text,
-                x + 3.0,
+                &cell.text,
+                x,
                 y + 1.0,
                 CELL_FONT_SIZE,
                 PdfColor::BLACK,
-                is_header,
+                false,
             );
         }
-        let right = MARGIN + row.len().min(max_cols) as f32 * COL_WIDTH;
-        page.add_line(
-            MARGIN,
-            y - 4.0 + ROW_HEIGHT,
-            right,
-            y - 4.0 + ROW_HEIGHT,
-            PdfColor::LIGHT_GRAY,
-            0.5,
-        );
-        page.add_line(
-            right,
-            y - 4.0,
-            right,
-            y - 4.0 + ROW_HEIGHT,
-            PdfColor::LIGHT_GRAY,
-            0.5,
-        );
         y -= ROW_HEIGHT;
     }
 }

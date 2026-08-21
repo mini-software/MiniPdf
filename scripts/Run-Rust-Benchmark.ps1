@@ -1,0 +1,208 @@
+<#
+.SYNOPSIS
+    Compare Rust MiniPdf against the repository's shared visual fixtures and references.
+
+.DESCRIPTION
+    Reuses the same on-disk classic/issue fixtures, LibreOffice references, and PDF
+    comparison pipeline as the .NET benchmarks. It does not execute C# xUnit tests.
+
+.EXAMPLE
+    .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx
+    .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format docx -Filter "classic01"
+    .\scripts\Run-Rust-Benchmark.ps1 -Suite issue -Format xlsx
+    .\scripts\Run-Rust-Benchmark.ps1 -Suite issue -Format docx -Filter "SA8000"
+#>
+
+param(
+    [ValidateSet("classic", "issue")]
+    [string]$Suite = "classic",
+    [ValidateSet("xlsx", "docx", "pptx")]
+    [string]$Format = "xlsx",
+    [string]$Filter,
+    [int]$MaxCases = 0,
+    [int]$MaxComparePages = 0,
+    [string]$SourceDir,
+    [string]$CandidateDir,
+    [string]$ReferenceDir,
+    [string]$ReportDir,
+    [double]$MinimumScore = 0.95,
+    [switch]$ForceReference,
+    [switch]$SkipReference
+)
+
+$ErrorActionPreference = "Stop"
+$RepoRoot = Split-Path -Parent $PSScriptRoot
+
+if ($Format -eq "pptx") {
+    throw "Rust MiniPdf does not support .pptx. Supported formats: xlsx, docx."
+}
+if ($MaxCases -lt 0) {
+    throw "MaxCases must be zero (all cases) or a positive number."
+}
+if ($MaxComparePages -lt 0) {
+    throw "MaxComparePages must be zero (all pages) or a positive number."
+}
+
+function Resolve-RepoPath([string]$PathValue) {
+    if ([System.IO.Path]::IsPathRooted($PathValue)) { return $PathValue }
+    return Join-Path $RepoRoot $PathValue
+}
+
+$Defaults = @{
+    "classic:xlsx" = @{
+        Source = "tests/MiniPdf.Scripts/output"
+        Reference = "tests/MiniPdf.Benchmark/reference_pdfs"
+        ReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs.py"
+        SourceArgument = "--xlsx-dir"
+    }
+    "classic:docx" = @{
+        Source = "tests/MiniPdf.Scripts/output_docx"
+        Reference = "tests/MiniPdf.Benchmark/reference_pdfs_docx"
+        ReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs_docx.py"
+        SourceArgument = "--docx-dir"
+    }
+    "issue:xlsx" = @{
+        Source = "tests/Issue_Files/xlsx"
+        Reference = "tests/Issue_Files/reference_xlsx"
+        ReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs.py"
+        SourceArgument = "--xlsx-dir"
+    }
+    "issue:docx" = @{
+        Source = "tests/Issue_Files/docx"
+        Reference = "tests/Issue_Files/reference_docx"
+        ReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs_docx.py"
+        SourceArgument = "--docx-dir"
+    }
+}
+
+$Config = $Defaults["$Suite`:$Format"]
+$SourceDir = Resolve-RepoPath $(if ($SourceDir) { $SourceDir } else { $Config.Source })
+$CandidateDir = Resolve-RepoPath $(if ($CandidateDir) { $CandidateDir } else { "artifacts/rust-benchmark/$Suite/$Format/candidates" })
+$ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $Config.Reference })
+$ReportDir = Resolve-RepoPath $(if ($ReportDir) { $ReportDir } else { "artifacts/rust-benchmark/$Suite/$Format/report" })
+
+$Cargo = Join-Path $env:USERPROFILE ".cargo/bin/cargo.exe"
+$Python = Join-Path $RepoRoot ".venv/Scripts/python.exe"
+if (-not (Test-Path $Cargo)) { $Cargo = (Get-Command cargo -ErrorAction Stop).Source }
+if (-not (Test-Path $Python)) { $Python = (Get-Command python -ErrorAction Stop).Source }
+
+$CargoManifest = Join-Path $RepoRoot "minipdf-rs/Cargo.toml"
+$ReferenceScript = Resolve-RepoPath $Config.ReferenceScript
+$CompareScript = Join-Path $RepoRoot "tests/MiniPdf.Benchmark/compare_pdfs.py"
+$ComparisonManifest = Join-Path $ReportDir "comparison_manifest.json"
+$CoverageManifest = Join-Path $ReportDir "benchmark_coverage.json"
+
+$SourceFiles = @(Get-ChildItem $SourceDir -File -Filter "*.$Format" | Where-Object {
+    -not $Filter -or $_.BaseName -like "*$Filter*"
+} | Sort-Object Name)
+if ($MaxCases -gt 0) {
+    $SourceFiles = @($SourceFiles | Select-Object -First $MaxCases)
+}
+if ($SourceFiles.Count -eq 0) {
+    throw "No .$Format files matched '$Filter' in $SourceDir"
+}
+
+New-Item -ItemType Directory -Force -Path $CandidateDir, $ReferenceDir, $ReportDir | Out-Null
+
+$Cases = @($SourceFiles | ForEach-Object {
+    [pscustomobject]@{
+        name = $_.BaseName
+        case_id = $_.BaseName
+        suite = $Suite
+        format = $Format
+        source_path = [System.IO.Path]::GetRelativePath($RepoRoot, $_.FullName).Replace("\", "/")
+        conversion_status = "pending"
+        conversion_exit_code = $null
+        candidate_exists = $false
+        reference_exists = $false
+    }
+})
+
+[pscustomobject]@{ cases = $Cases } | ConvertTo-Json -Depth 5 | Set-Content $ComparisonManifest -Encoding UTF8
+
+Write-Host "Rust benchmark matrix: suite=$Suite format=$Format selected=$($Cases.Count)"
+Write-Host "Shared fixtures only; C# xUnit assertions are not executed by this command."
+
+& $Cargo build --manifest-path $CargoManifest -p minipdf-cli
+if ($LASTEXITCODE -ne 0) { throw "Rust CLI build failed." }
+
+$Cli = Join-Path $RepoRoot "minipdf-rs/target/debug/minipdf.exe"
+for ($Index = 0; $Index -lt $SourceFiles.Count; $Index++) {
+    $SourceFile = $SourceFiles[$Index]
+    $OutputFile = Join-Path $CandidateDir ($SourceFile.BaseName + ".pdf")
+    if (Test-Path $OutputFile) { Remove-Item $OutputFile -Force }
+
+    & $Cli $SourceFile.FullName -o $OutputFile
+    $ExitCode = $LASTEXITCODE
+    $Cases[$Index].conversion_exit_code = $ExitCode
+    $Cases[$Index].candidate_exists = Test-Path $OutputFile
+    $Cases[$Index].conversion_status = if ($ExitCode -eq 0 -and $Cases[$Index].candidate_exists) { "passed" } else { "failed" }
+}
+
+if (-not $SkipReference) {
+    $ReferenceFilters = if ($MaxCases -gt 0) { @($SourceFiles.BaseName) } else { @($Filter) }
+    foreach ($ReferenceFilter in $ReferenceFilters) {
+        $ReferenceArgs = @($ReferenceScript, $Config.SourceArgument, $SourceDir, "--pdf-dir", $ReferenceDir)
+        if ($ReferenceFilter) { $ReferenceArgs += @("--filter", $ReferenceFilter) }
+        if ($ForceReference) { $ReferenceArgs += "--force" }
+        & $Python @ReferenceArgs
+        if ($LASTEXITCODE -ne 0) { throw "LibreOffice reference generation failed." }
+    }
+}
+
+foreach ($Case in $Cases) {
+    $Case.reference_exists = Test-Path (Join-Path $ReferenceDir ($Case.name + ".pdf"))
+}
+
+$PassedConversions = @($Cases | Where-Object { $_.conversion_status -eq "passed" }).Count
+$FailedConversions = $Cases.Count - $PassedConversions
+$MissingReferences = @($Cases | Where-Object { -not $_.reference_exists }).Count
+$Coverage = [pscustomobject]@{
+    suite = $Suite
+    format = $Format
+    fixture_scope = "shared-on-disk-fixtures"
+    executes_dotnet_xunit = $false
+    max_compare_pages = $MaxComparePages
+    selected_cases = $Cases.Count
+    passed_conversions = $PassedConversions
+    failed_conversions = $FailedConversions
+    missing_references = $MissingReferences
+    comparison_completed = $false
+    comparison_results = 0
+    average_score = $null
+    cases = $Cases
+}
+$Coverage | ConvertTo-Json -Depth 6 | Set-Content $CoverageManifest -Encoding UTF8
+
+$CompareArgs = @(
+    $CompareScript,
+    "--minipdf-dir", $CandidateDir,
+    "--reference-dir", $ReferenceDir,
+    "--report-dir", $ReportDir,
+    "--manifest", $ComparisonManifest,
+    "--report-scope", "rust-$Suite-$Format",
+    "--composite-images",
+    "--heatmaps",
+    "--candidate-label", "Rust MiniPdf"
+)
+if ($MaxComparePages -gt 0) { $CompareArgs += @("--max-pages", $MaxComparePages) }
+& $Python @CompareArgs
+if ($LASTEXITCODE -ne 0) { throw "PDF comparison failed." }
+
+$Results = @(Get-Content (Join-Path $ReportDir "comparison_report.json") -Raw | ConvertFrom-Json)
+$BelowThreshold = @($Results | Where-Object { $null -eq $_.overall_score -or $_.overall_score -lt $MinimumScore })
+$Average = ($Results | Where-Object { $null -ne $_.overall_score } | Measure-Object -Property overall_score -Average).Average
+$Coverage.comparison_completed = $true
+$Coverage.comparison_results = $Results.Count
+$Coverage.average_score = $Average
+$Coverage | ConvertTo-Json -Depth 6 | Set-Content $CoverageManifest -Encoding UTF8
+
+Write-Host "Coverage: selected=$($Cases.Count), converted=$PassedConversions, failed=$FailedConversions, missing references=$MissingReferences"
+Write-Host "Visual results: compared=$($Results.Count), average score=$([math]::Round($Average, 4))"
+Write-Host "Coverage manifest: $CoverageManifest"
+Write-Host "Visual report: $(Join-Path $ReportDir 'comparison_report.md')"
+
+if ($FailedConversions -gt 0 -or $MissingReferences -gt 0 -or $BelowThreshold.Count -gt 0) {
+    $ThresholdFailures = ($BelowThreshold | ForEach-Object { "$($_.name)=$($_.overall_score)" }) -join ", "
+    throw "Rust benchmark failed: conversion failures=$FailedConversions, missing references=$MissingReferences, below $MinimumScore=[$ThresholdFailures]"
+}
