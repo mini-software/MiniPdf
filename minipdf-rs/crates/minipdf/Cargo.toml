@@ -4,7 +4,14 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+rust-version.workspace = true
 description = "Experimental Rust implementation of MiniPdf Office-to-PDF conversion."
+readme = "../../README.md"
+keywords = ["pdf", "xlsx", "docx", "office", "converter"]
+categories = ["encoding", "parser-implementations"]
+exclude = ["target/"]
 
 [dependencies]
 roxmltree.workspace = true

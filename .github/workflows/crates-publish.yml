@@ -1,0 +1,73 @@
+name: Crates.io Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Cargo package version to publish (for example, 0.1.0)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref_name, 'rust-v')
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: minipdf-rs
+    env:
+      CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Validate release version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG_VERSION="${{ inputs.version }}"
+          else
+            TAG_VERSION="${GITHUB_REF_NAME#rust-v}"
+          fi
+          CARGO_VERSION="$(sed -n 's/^version = "\([^"]*\)"/\1/p' Cargo.toml | head -n 1)"
+          if [ -z "$TAG_VERSION" ] || [ "$TAG_VERSION" != "$CARGO_VERSION" ]; then
+            echo "::error::Tag version '$TAG_VERSION' does not match Cargo version '$CARGO_VERSION'."
+            exit 1
+          fi
+
+      - name: Test
+        run: cargo test --workspace --locked
+
+      - name: Lint
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      - name: Verify packages
+        run: cargo publish -p minipdf --locked --dry-run
+
+      - name: Publish library
+        run: cargo publish -p minipdf --locked
+
+      - name: Publish CLI
+        shell: bash
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if cargo publish -p minipdf-cli --locked --dry-run; then
+              cargo publish -p minipdf-cli --locked
+              exit $?
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              exit 1
+            fi
+            sleep 20
+          done
