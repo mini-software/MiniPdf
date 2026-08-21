@@ -4,6 +4,16 @@ This directory contains the experimental Rust implementation of MiniPdf. It is a
 
 The first implementation focuses on proving the end-to-end shape: detect `.xlsx` and `.docx` ZIP packages, extract basic workbook/document text, render simple PDF pages, and keep the CLI close to the existing .NET tool.
 
+## Install
+
+```powershell
+cargo add minipdf
+cargo install minipdf-cli
+```
+
+Rust packages are published to crates.io, not NuGet. Repository releases tagged
+`rust-v<version>` publish both packages through GitHub Actions.
+
 ## Layout
 
 ```text
