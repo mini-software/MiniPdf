@@ -51,15 +51,47 @@ A minimal, lightweight .NET library for converting office files to PDF.
 - Trained small LLM by `Apache POI` + `LibreOffice` 
 - AI development by `GitHub Copilot` + `Claude Code`
 
-## Getting Started
+## Quick Start
 
-### Install via NuGet
+Choose the interface that fits your project: C#/.NET, the command line, or the experimental Rust implementation.
+
+### C# / .NET
 
 ```bash
 dotnet add package MiniPdf
 ```
 
-## Usage
+```csharp
+using MiniSoftware;
+
+MiniPdf.ConvertToPdf("report.docx", "report.pdf");
+```
+
+> See [.NET library usage](#net-library-usage) for more options.
+
+### CLI
+
+```bash
+dotnet tool install --global MiniPdf.Cli
+minipdf report.docx -o report.pdf
+```
+
+> See [CLI usage](#cli-tool) for all commands and options.
+
+### Rust (Experimental)
+
+```bash
+cargo add minipdf
+cargo install minipdf-cli
+```
+
+```rust
+minipdf::convert_to_pdf("report.docx", "report.pdf")?;
+```
+
+The Rust implementation currently supports basic `.xlsx` and `.docx` conversion. See the [Rust guide](minipdf-rs/README.md) for details.
+
+## .NET Library Usage
 
 ```csharp
 using MiniSoftware;
@@ -218,10 +250,6 @@ Notes:
 ## CLI Tool
 
 MiniPdf also provides a command-line tool — **MiniPdf.Cli** — for quick conversion without writing code.
-
-### Experimental Rust Version
-
-An experimental Rust rewrite is available under [minipdf-rs](minipdf-rs). It contains a `minipdf` library crate and a Rust CLI with the same basic command shape as the .NET tool. The Rust version currently supports basic `.xlsx` and `.docx` text extraction and PDF generation, and is not yet feature-equivalent with the .NET implementation.
 
 ### Install
 

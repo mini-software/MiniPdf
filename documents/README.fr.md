@@ -44,15 +44,47 @@ Une bibliothèque .NET minimale et légère pour convertir des fichiers Office e
 - Trained small LLM by `Apache POI` + `LibreOffice`
 - AI development by `GitHub Copilot` + `Claude Code`
 
-## Démarrage
+## Démarrage rapide
 
-### Installation via NuGet
+Choisissez l'interface adaptée à votre projet : C#/.NET, la ligne de commande ou l'implémentation Rust expérimentale.
+
+### C# / .NET
 
 ```bash
 dotnet add package MiniPdf
 ```
 
-## Utilisation
+```csharp
+using MiniSoftware;
+
+MiniPdf.ConvertToPdf("report.docx", "report.pdf");
+```
+
+> Consultez l'[utilisation de la bibliothèque .NET](#utilisation-de-la-bibliothèque-net) pour plus d'options.
+
+### CLI
+
+```bash
+dotnet tool install --global MiniPdf.Cli
+minipdf report.docx -o report.pdf
+```
+
+> Consultez l'[outil CLI](#outil-cli) pour toutes les commandes et options.
+
+### Rust (expérimental)
+
+```bash
+cargo add minipdf
+cargo install minipdf-cli
+```
+
+```rust
+minipdf::convert_to_pdf("report.docx", "report.pdf")?;
+```
+
+L'implémentation Rust prend actuellement en charge la conversion de base des fichiers `.xlsx` et `.docx`. Consultez le [guide Rust](../minipdf-rs/README.md) pour plus de détails.
+
+## Utilisation de la bibliothèque .NET
 
 ```csharp
 using MiniSoftware;

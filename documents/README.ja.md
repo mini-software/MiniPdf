@@ -44,15 +44,47 @@ Office ファイルを PDF に変換するための、ミニマルで軽量な .
 - `Apache POI` + `LibreOffice` で小型参照モデルをトレーニング
 - AI 開発に `GitHub Copilot` + `Claude Code` を使用
 
-## はじめに
+## クイックスタート
 
-### NuGet でインストール
+プロジェクトに合わせて、C#/.NET、コマンドライン、または実験的な Rust 実装を選択できます。
+
+### C# / .NET
 
 ```bash
 dotnet add package MiniPdf
 ```
 
-## 使用方法
+```csharp
+using MiniSoftware;
+
+MiniPdf.ConvertToPdf("report.docx", "report.pdf");
+```
+
+> その他のオプションは [.NET ライブラリの使用方法](#net-ライブラリの使用方法)を参照してください。
+
+### CLI
+
+```bash
+dotnet tool install --global MiniPdf.Cli
+minipdf report.docx -o report.pdf
+```
+
+> すべてのコマンドとオプションは [CLI ツール](#cli-ツール)を参照してください。
+
+### Rust（実験的）
+
+```bash
+cargo add minipdf
+cargo install minipdf-cli
+```
+
+```rust
+minipdf::convert_to_pdf("report.docx", "report.pdf")?;
+```
+
+Rust 実装は現在、基本的な `.xlsx` と `.docx` の変換に対応しています。詳細は [Rust ガイド](../minipdf-rs/README.md)を参照してください。
+
+## .NET ライブラリの使用方法
 
 ```csharp
 using MiniSoftware;
