@@ -111,6 +111,15 @@ jobs:
             --fail-on-no-commits \
             --latest
 
+      - name: Start release artifact workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          gh workflow run release-aot.yml --ref main -f version="$VERSION"
+          gh workflow run release-aot-gui.yml --ref main -f version="$VERSION"
+          gh workflow run nuget-publish.yml --ref main -f version="$VERSION"
+
       - name: Summarize release
         env:
           VERSION: ${{ inputs.version }}
