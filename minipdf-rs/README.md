@@ -60,6 +60,8 @@ below `-MinimumScore`.
 - Writes valid PDF 1.4 files using built-in Helvetica fonts.
 - Renders basic unstyled XLSX sheets with spreadsheet-compatible page geometry,
   text overflow, and General-format numeric alignment.
+- Preserves sparse worksheet row positions and paginates wide sheets horizontally
+    instead of dropping columns beyond the first page.
 - Supports the existing CLI shape: shorthand input, `convert`, `-o/--output`, and `--fonts`.
 
 ## Known Gaps
