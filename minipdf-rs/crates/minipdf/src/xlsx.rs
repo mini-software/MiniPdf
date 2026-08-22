@@ -23,7 +23,13 @@ struct CellData {
 
 #[derive(Debug, Clone)]
 struct SheetData {
-    rows: Vec<Vec<CellData>>,
+    rows: Vec<RowData>,
+}
+
+#[derive(Debug, Clone)]
+struct RowData {
+    index: usize,
+    cells: Vec<CellData>,
 }
 
 pub(crate) fn convert_xlsx_bytes(input: &[u8]) -> Result<Vec<u8>> {
@@ -58,10 +64,13 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
 
     if sheets.is_empty() {
         sheets.push(SheetData {
-            rows: vec![vec![CellData {
-                text: "Empty XLSX workbook".to_owned(),
-                is_numeric: false,
-            }]],
+            rows: vec![RowData {
+                index: 0,
+                cells: vec![CellData {
+                    text: "Empty XLSX workbook".to_owned(),
+                    is_numeric: false,
+                }],
+            }],
         });
     }
 
@@ -151,11 +160,16 @@ fn normalize_xl_path(path: &str) -> String {
     }
 }
 
-fn read_sheet_rows(sheet_xml: &str, shared_strings: &[String]) -> Result<Vec<Vec<CellData>>> {
+fn read_sheet_rows(sheet_xml: &str, shared_strings: &[String]) -> Result<Vec<RowData>> {
     let xml = roxmltree::Document::parse(sheet_xml)?;
     let mut rows = Vec::new();
 
     for row in xml.descendants().filter(|node| node.has_tag_name("row")) {
+        let row_index = row
+            .attribute("r")
+            .and_then(|value| value.parse::<usize>().ok())
+            .and_then(|value| value.checked_sub(1))
+            .unwrap_or(rows.len());
         let mut cells: Vec<(usize, CellData)> = Vec::new();
         for cell in row.children().filter(|node| node.has_tag_name("c")) {
             let col = cell
@@ -179,7 +193,10 @@ fn read_sheet_rows(sheet_xml: &str, shared_strings: &[String]) -> Result<Vec<Vec
             }
         }
         if row_values.iter().any(|cell| !cell.text.is_empty()) {
-            rows.push(row_values);
+            rows.push(RowData {
+                index: row_index,
+                cells: row_values,
+            });
         }
     }
 
@@ -241,12 +258,36 @@ fn render_xlsx(doc: &mut PdfDocument, sheets: &[SheetData]) {
 }
 
 fn render_sheet(doc: &mut PdfDocument, sheet: &SheetData) {
+    let max_cols = ((PAGE_WIDTH - MARGIN_X * 2.0) / COL_WIDTH).floor() as usize;
+    let column_count = sheet
+        .rows
+        .iter()
+        .map(|row| row.cells.len())
+        .max()
+        .unwrap_or(0)
+        .max(1);
+
+    for column_start in (0..column_count).step_by(max_cols) {
+        render_sheet_columns(doc, sheet, column_start, max_cols);
+    }
+}
+
+fn render_sheet_columns(
+    doc: &mut PdfDocument,
+    sheet: &SheetData,
+    column_start: usize,
+    max_cols: usize,
+) {
     let mut page_index = doc.pages().len();
     doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
     let mut y = PAGE_HEIGHT - MARGIN_TOP - ROW_HEIGHT;
-    let max_cols = ((PAGE_WIDTH - MARGIN_X * 2.0) / COL_WIDTH).floor() as usize;
+    let mut next_row_index = 0;
 
     for row in &sheet.rows {
+        for _ in next_row_index..row.index {
+            advance_xlsx_row(doc, &mut page_index, &mut y);
+        }
+
         if y < MARGIN_BOTTOM + ROW_HEIGHT {
             page_index = doc.pages().len();
             doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
@@ -255,8 +296,14 @@ fn render_sheet(doc: &mut PdfDocument, sheet: &SheetData) {
 
         let page = doc.page_mut(page_index).expect("page index is valid");
 
-        for (col_index, cell) in row.iter().enumerate().take(max_cols) {
-            let cell_x = MARGIN_X + col_index as f32 * COL_WIDTH;
+        for (page_col_index, cell) in row
+            .cells
+            .iter()
+            .skip(column_start)
+            .take(max_cols)
+            .enumerate()
+        {
+            let cell_x = MARGIN_X + page_col_index as f32 * COL_WIDTH;
             let x = if cell.is_numeric {
                 cell_x + COL_WIDTH - text_width(&cell.text, CELL_FONT_SIZE)
             } else {
@@ -271,18 +318,38 @@ fn render_sheet(doc: &mut PdfDocument, sheet: &SheetData) {
                 false,
             );
         }
-        y -= ROW_HEIGHT;
+        advance_xlsx_row(doc, &mut page_index, &mut y);
+        next_row_index = row.index + 1;
+    }
+}
+
+fn advance_xlsx_row(doc: &mut PdfDocument, page_index: &mut usize, y: &mut f32) {
+    *y -= ROW_HEIGHT;
+    if *y < MARGIN_BOTTOM + ROW_HEIGHT {
+        *page_index = doc.pages().len();
+        doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
+        *y = PAGE_HEIGHT - MARGIN_TOP - ROW_HEIGHT;
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::column_index_from_ref;
+    use super::{column_index_from_ref, read_sheet_rows};
 
     #[test]
     fn parses_excel_column_references() {
         assert_eq!(column_index_from_ref("A1"), Some(0));
         assert_eq!(column_index_from_ref("Z9"), Some(25));
         assert_eq!(column_index_from_ref("AA10"), Some(26));
+    }
+
+    #[test]
+    fn preserves_sparse_row_indices() {
+        let xml = r#"<worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>First</t></is></c></row><row r="5"><c r="A5" t="inlineStr"><is><t>Fifth</t></is></c></row></sheetData></worksheet>"#;
+        let rows = read_sheet_rows(xml, &[]).expect("worksheet XML is valid");
+
+        assert_eq!(rows.len(), 2);
+        assert_eq!(rows[0].index, 0);
+        assert_eq!(rows[1].index, 4);
     }
 }
