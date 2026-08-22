@@ -1,0 +1,119 @@
+name: Release MiniPdf
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Stable semantic version without the v prefix (for example, 0.38.6)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-minipdf
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Validate version
+        shell: pwsh
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if ($env:VERSION -notmatch '^\d+\.\d+\.\d+$') {
+            throw "Version must use stable semantic version format, for example 0.38.6."
+          }
+
+          $tag = "v$env:VERSION"
+          if (git tag --list $tag) {
+            throw "Tag $tag already exists."
+          }
+
+      - name: Update citation metadata
+        shell: pwsh
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          $citationPath = 'CITATION.cff'
+          $citation = [IO.File]::ReadAllText($citationPath)
+          $versionPattern = [regex]::new('(?m)^version:\s*.*$')
+          $datePattern = [regex]::new('(?m)^date-released:\s*.*$')
+
+          $citation = $versionPattern.Replace(
+            $citation, "version: $env:VERSION", 1)
+          $citation = $datePattern.Replace(
+            $citation,
+            "date-released: `"$([DateTime]::UtcNow.ToString('yyyy-MM-dd'))`"",
+            1)
+
+          [IO.File]::WriteAllText(
+            $citationPath,
+            $citation,
+            [Text.UTF8Encoding]::new($false))
+
+          $changedFiles = @(git diff --name-only)
+          if ($changedFiles.Count -ne 1 -or $changedFiles[0] -ne $citationPath) {
+            throw "Expected only $citationPath to change; found: $($changedFiles -join ', ')"
+          }
+
+          git diff --check
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Install CJK TrueType font
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes fonts-wqy-microhei
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build release candidate
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test release candidate
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+      - name: Commit citation metadata
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add CITATION.cff
+          git commit -m "chore: prepare v$VERSION release"
+          git push origin HEAD:main
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          gh release create "v$VERSION" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$(git rev-parse HEAD)" \
+            --title "v$VERSION" \
+            --generate-notes \
+            --fail-on-no-commits \
+            --latest
+
+      - name: Summarize release
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          echo "### MiniPdf v$VERSION published" >> "$GITHUB_STEP_SUMMARY"
+          echo "Existing AOT, GUI, NuGet, and Zenodo workflows will process the release." >> "$GITHUB_STEP_SUMMARY"
