@@ -4,13 +4,18 @@ on:
   release:
     types: [ published ]
   workflow_dispatch:
+    inputs:
+      version:
+        description: Release version without the v prefix
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 jobs:
   build:
-    if: startsWith(github.ref_name, 'v') || github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref_name, 'v') || inputs.version != ''
 
     strategy:
       fail-fast: false
@@ -29,6 +34,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', inputs.version) || github.ref }}
       - uses: actions/setup-dotnet@v4
         with: { dotnet-version: '9.0.x' }
 
@@ -49,8 +56,10 @@ jobs:
       - name: Extract version from tag
         id: version
         shell: bash
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          VERSION="${GITHUB_REF_NAME#gui-v}"
+          VERSION="${INPUT_VERSION:-${GITHUB_REF_NAME#gui-v}}"
           VERSION="${VERSION#v}"
           if [ -z "$VERSION" ] || [ "$VERSION" = "$GITHUB_REF_NAME" ]; then VERSION="0.0.1"; fi
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
@@ -82,11 +91,7 @@ jobs:
           tar -czf ${{ matrix.artifact }} -C dist .
 
       - name: Upload release asset
-        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
-        with: { files: '${{ matrix.artifact }}' }
-
-      - name: Upload build artifact
-        if: github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
-        with: { name: '${{ matrix.artifact }}', path: '${{ matrix.artifact }}' }
+        with:
+          files: ${{ matrix.artifact }}
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', inputs.version) || github.ref_name }}

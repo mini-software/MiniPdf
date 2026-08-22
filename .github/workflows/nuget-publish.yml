@@ -3,6 +3,12 @@ name: NuGet Publish
 on:
   release:
     types: [ published ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version without the v prefix
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -11,11 +17,13 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     # Only run for v* tags, skip cli-v* tags
-    if: startsWith(github.ref_name, 'v') && !startsWith(github.ref_name, 'cli-v')
+    if: (startsWith(github.ref_name, 'v') && !startsWith(github.ref_name, 'cli-v')) || inputs.version != ''
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', inputs.version) || github.ref }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -38,8 +46,10 @@ jobs:
 
       - name: Extract version from tag
         id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${INPUT_VERSION:-${GITHUB_REF_NAME#v}}"
           if [ -z "$VERSION" ]; then
             echo "::error::Could not extract version from GITHUB_REF_NAME='$GITHUB_REF_NAME'"
             exit 1
