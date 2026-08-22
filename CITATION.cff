@@ -2,6 +2,7 @@ cff-version: 1.2.0
 message: "If you use MiniPdf in your work, please cite it using the metadata from this file."
 title: MiniPdf
 type: software
+doi: 10.5281/zenodo.22057294
 version: 0.38.6
 date-released: "2026-08-22"
 authors:
