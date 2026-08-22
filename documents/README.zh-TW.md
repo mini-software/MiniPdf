@@ -46,13 +46,45 @@
 
 ## 快速開始
 
-### 透過 NuGet 安裝
+依專案需求選擇 C#/.NET、命令列或實驗性的 Rust 實作。
+
+### C# / .NET
 
 ```bash
 dotnet add package MiniPdf
 ```
 
-## 使用方式
+```csharp
+using MiniSoftware;
+
+MiniPdf.ConvertToPdf("report.docx", "report.pdf");
+```
+
+> 更多選項請參閱 [.NET 函式庫使用方式](#net-函式庫使用方式)。
+
+### CLI
+
+```bash
+dotnet tool install --global MiniPdf.Cli
+minipdf report.docx -o report.pdf
+```
+
+> 完整命令與選項請參閱 [CLI 工具](#cli-工具)。
+
+### Rust（實驗性）
+
+```bash
+cargo add minipdf
+cargo install minipdf-cli
+```
+
+```rust
+minipdf::convert_to_pdf("report.docx", "report.pdf")?;
+```
+
+Rust 實作目前支援基本的 `.xlsx` 與 `.docx` 轉換。詳情請參閱 [Rust 指南](../minipdf-rs/README.md)。
+
+## .NET 函式庫使用方式
 
 ```csharp
 using MiniSoftware;
