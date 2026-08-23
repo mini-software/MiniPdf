@@ -295,10 +295,13 @@ fn prepare_embedded_fonts(pages: &[PdfPage], fonts: &[RegisteredFont]) -> Vec<Em
     let mut used_glyphs: BTreeMap<usize, BTreeMap<u16, String>> = BTreeMap::new();
     for page in pages {
         for op in &page.ops {
-            let PdfOp::Text { text, .. } = op else {
+            let PdfOp::Text {
+                text, bold, italic, ..
+            } = op
+            else {
                 continue;
             };
-            for run in split_font_runs(text, fonts) {
+            for run in split_font_runs(text, fonts, *bold, *italic) {
                 let Some(font_index) = run.font_index else {
                     continue;
                 };
@@ -452,15 +455,13 @@ struct ShapedText {
     units_per_em: i32,
 }
 
-fn split_font_runs(text: &str, fonts: &[RegisteredFont]) -> Vec<FontRun> {
+fn split_font_runs(text: &str, fonts: &[RegisteredFont], bold: bool, italic: bool) -> Vec<FontRun> {
     let mut runs: Vec<FontRun> = Vec::new();
     for ch in text.chars() {
         let font_index = if ch.is_whitespace() || ch.is_ascii_punctuation() || ch == '\u{fe0f}' {
             runs.last().and_then(|run| run.font_index)
-        } else if ch.is_ascii() {
-            None
         } else {
-            fonts.iter().position(|font| font_supports(font, ch))
+            select_font(fonts, ch, bold, italic)
         };
 
         if let Some(run) = runs.last_mut().filter(|run| run.font_index == font_index) {
@@ -473,6 +474,51 @@ fn split_font_runs(text: &str, fonts: &[RegisteredFont]) -> Vec<FontRun> {
         }
     }
     runs
+}
+
+fn select_font(fonts: &[RegisteredFont], ch: char, bold: bool, italic: bool) -> Option<usize> {
+    fonts
+        .iter()
+        .enumerate()
+        .filter(|(_, font)| font_supports(font, ch))
+        .min_by_key(|(_, font)| font_preference(&font.name, ch, bold, italic))
+        .map(|(index, _)| index)
+}
+
+fn font_preference(name: &str, ch: char, bold: bool, italic: bool) -> u8 {
+    let name = name.to_ascii_lowercase();
+    let codepoint = ch as u32;
+    let preferred = if matches!(codepoint, 0x1100..=0x11ff | 0x3130..=0x318f | 0xac00..=0xd7af) {
+        "malgunsl"
+    } else if matches!(codepoint, 0x0e00..=0x0e7f) {
+        "micross"
+    } else if matches!(codepoint, 0x0900..=0x097f) {
+        "nirmala"
+    } else if matches!(codepoint, 0x2e80..=0x9fff | 0xf900..=0xfaff)
+        || matches!(codepoint, 0x2190..=0x2bff)
+    {
+        "notosanssc"
+    } else if codepoint >= 0x1f000 {
+        "seguiemj"
+    } else if bold && italic {
+        "calibriz"
+    } else if bold {
+        "calibrib"
+    } else if italic {
+        "calibrii"
+    } else {
+        "calibri"
+    };
+
+    if name == preferred {
+        0
+    } else if name.starts_with(preferred) {
+        1
+    } else if name == "calibri" {
+        2
+    } else {
+        10
+    }
 }
 
 fn font_supports(font: &RegisteredFont, ch: char) -> bool {
@@ -591,7 +637,7 @@ fn write_content_stream(
                 };
                 let mut cursor_x = *x;
                 let mut cursor_y = *y;
-                for run in split_font_runs(text, fonts) {
+                for run in split_font_runs(text, fonts, *bold, *italic) {
                     let Some(font_index) = run.font_index else {
                         content.push_str(&format!(
                             "BT /{built_in_font} {:.2} Tf {:.3} {:.3} {:.3} rg {:.2} {:.2} Td ({}) Tj ET\n",
