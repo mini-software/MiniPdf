@@ -82,6 +82,8 @@ fn run_convert(
 
     if let Some(font_dir) = fonts {
         register_fonts_from_dir(&font_dir)?;
+    } else {
+        register_system_fallback_fonts()?;
     }
 
     let output = output.unwrap_or_else(|| input.with_extension("pdf"));
@@ -116,4 +118,73 @@ fn register_fonts_from_dir(font_dir: &Path) -> minipdf::Result<()> {
     }
 
     Ok(())
+}
+
+fn register_system_fallback_fonts() -> minipdf::Result<()> {
+    let candidates = system_fallback_font_paths();
+    for path in candidates.into_iter().filter(|path| path.is_file()) {
+        let name = path
+            .file_stem()
+            .and_then(|name| name.to_str())
+            .unwrap_or("font")
+            .to_owned();
+        minipdf::register_font(name, fs::read(path)?);
+    }
+    Ok(())
+}
+
+fn system_fallback_font_paths() -> Vec<PathBuf> {
+    #[cfg(target_os = "windows")]
+    {
+        let directory = std::env::var_os("WINDIR")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| PathBuf::from(r"C:\Windows"))
+            .join("Fonts");
+        return [
+            "NotoSans-Regular.ttf",
+            "YuGothR.ttc",
+            "NotoSansSC-VF.ttf",
+            "malgunsl.ttf",
+            "malgun.ttf",
+            "LeelawUI.ttf",
+            "Nirmala.ttf",
+            "seguisym.ttf",
+            "seguiemj.ttf",
+        ]
+        .into_iter()
+        .map(|name| directory.join(name))
+        .collect();
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        return [
+            "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf",
+            "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+            "/usr/share/fonts/truetype/noto/NotoSansThai-Regular.ttf",
+            "/usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf",
+            "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        ]
+        .into_iter()
+        .map(PathBuf::from)
+        .collect();
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+        return [
+            "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+            "/System/Library/Fonts/AppleSDGothicNeo.ttc",
+            "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc",
+            "/System/Library/Fonts/Kohinoor.ttc",
+            "/System/Library/Fonts/Apple Color Emoji.ttc",
+        ]
+        .into_iter()
+        .map(PathBuf::from)
+        .collect();
+    }
+
+    #[allow(unreachable_code)]
+    Vec::new()
 }

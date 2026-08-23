@@ -62,7 +62,7 @@ reports remain local build artifacts.
 - Supports `.xlsx` and `.docx` package detection.
 - Extracts shared strings and basic worksheet cell values from `.xlsx`.
 - Extracts paragraph text from `.docx`.
-- Writes valid PDF 1.4 files using built-in Helvetica fonts.
+- Writes valid PDF 1.4 files using built-in Helvetica plus subsetted Unicode fallback fonts.
 - Renders basic unstyled XLSX sheets with spreadsheet-compatible page geometry,
   text overflow, and General-format numeric alignment.
 - Preserves sparse worksheet row positions and paginates wide sheets horizontally
@@ -71,4 +71,4 @@ reports remain local build artifacts.
 
 ## Known Gaps
 
-This is not yet feature-equivalent with the .NET implementation. The next quality milestones are Unicode font embedding, XLSX styles/merged cells/page setup, DOCX table/style/layout support, images, and benchmark integration against the existing LibreOffice comparison pipeline.
+This is not yet feature-equivalent with the .NET implementation. The next quality milestones are XLSX styles/merged cells/page setup, DOCX table/style/layout support, images, and broader benchmark convergence against the existing LibreOffice comparison pipeline.

@@ -1,3 +1,7 @@
+use std::collections::BTreeMap;
+
+use crate::RegisteredFont;
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct PdfColor {
     pub r: f32,
@@ -154,10 +158,20 @@ impl PdfPage {
     }
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct PdfDocument {
     pages: Vec<PdfPage>,
     jpeg_images: Vec<PdfJpegImage>,
+    fonts: Vec<RegisteredFont>,
+}
+
+#[derive(Debug)]
+struct EmbeddedFont {
+    registered_index: usize,
+    resource_name: String,
+    object_id: usize,
+    glyphs: BTreeMap<u16, String>,
+    cid_by_glyph: BTreeMap<u16, u16>,
 }
 
 impl PdfDocument {
@@ -165,6 +179,7 @@ impl PdfDocument {
         Self {
             pages: Vec::new(),
             jpeg_images: Vec::new(),
+            fonts: crate::registered_fonts(),
         }
     }
 
@@ -203,6 +218,12 @@ impl PdfDocument {
         objects
             .push(b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-BoldOblique >>".to_vec());
 
+        let mut embedded_fonts = prepare_embedded_fonts(&self.pages, &self.fonts);
+        for font in &mut embedded_fonts {
+            font.object_id = append_embedded_font_objects(&mut objects, font, &self.fonts);
+        }
+
+        let mut image_ids = Vec::with_capacity(self.jpeg_images.len());
         for image in &self.jpeg_images {
             let mut image_object = format!(
                 "<< /Type /XObject /Subtype /Image /Width {} /Height {} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length {} >>\nstream\n",
@@ -213,16 +234,12 @@ impl PdfDocument {
             .into_bytes();
             image_object.extend_from_slice(&image.data);
             image_object.extend_from_slice(b"\nendstream");
-            objects.push(image_object);
+            image_ids.push(push_object(&mut objects, image_object));
         }
 
         let mut page_ids = Vec::with_capacity(page_count);
-        for (page_index, page) in self.pages.iter().enumerate() {
-            let content_id = 7 + self.jpeg_images.len() + page_index * 2;
-            let page_id = content_id + 1;
-            page_ids.push(page_id);
-
-            let mut content = write_content_stream(page);
+        for page in &self.pages {
+            let mut content = write_content_stream(page, &self.fonts, &embedded_fonts);
             if content.ends_with(b"\n") {
                 content.pop();
             }
@@ -232,20 +249,24 @@ impl PdfDocument {
                 .extend_from_slice(format!("<< /Length {} >>\nstream\n", content.len()).as_bytes());
             content_object.extend_from_slice(&content);
             content_object.extend_from_slice(b"\nendstream");
-            objects.push(content_object);
+            let content_id = push_object(&mut objects, content_object);
 
-            let xobjects = self
-                .jpeg_images
+            let xobjects = image_ids
                 .iter()
                 .enumerate()
-                .map(|(index, _)| format!("/Im{} {} 0 R", index + 1, index + 7))
+                .map(|(index, object_id)| format!("/Im{} {} 0 R", index + 1, object_id))
+                .collect::<Vec<_>>()
+                .join(" ");
+            let embedded_resources = embedded_fonts
+                .iter()
+                .map(|font| format!("/{} {} 0 R", font.resource_name, font.object_id))
                 .collect::<Vec<_>>()
                 .join(" ");
             let page_object = format!(
-                "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {:.2} {:.2}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> /XObject << {} >> >> /Contents {} 0 R >>",
-                page.width, page.height, xobjects, content_id
+                "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {:.2} {:.2}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R {} >> /XObject << {} >> >> /Contents {} 0 R >>",
+                page.width, page.height, embedded_resources, xobjects, content_id
             );
-            objects.push(page_object.into_bytes());
+            page_ids.push(push_object(&mut objects, page_object.into_bytes()));
         }
 
         let kids = page_ids
@@ -257,6 +278,263 @@ impl PdfDocument {
 
         write_objects(objects)
     }
+}
+
+impl Default for PdfDocument {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+fn push_object(objects: &mut Vec<Vec<u8>>, object: Vec<u8>) -> usize {
+    objects.push(object);
+    objects.len()
+}
+
+fn prepare_embedded_fonts(pages: &[PdfPage], fonts: &[RegisteredFont]) -> Vec<EmbeddedFont> {
+    let mut used_glyphs: BTreeMap<usize, BTreeMap<u16, String>> = BTreeMap::new();
+    for page in pages {
+        for op in &page.ops {
+            let PdfOp::Text { text, .. } = op else {
+                continue;
+            };
+            for run in split_font_runs(text, fonts) {
+                let Some(font_index) = run.font_index else {
+                    continue;
+                };
+                let Some(shaped) = shape_text(&run.text, &fonts[font_index].data) else {
+                    continue;
+                };
+                let glyphs = used_glyphs.entry(font_index).or_default();
+                for (glyph_index, glyph) in shaped.glyphs.iter().enumerate() {
+                    glyphs.entry(glyph.id).or_insert_with(|| {
+                        text_for_cluster(&run.text, &shaped.glyphs, glyph_index)
+                    });
+                }
+            }
+        }
+    }
+
+    used_glyphs
+        .into_iter()
+        .enumerate()
+        .map(
+            |(resource_index, (registered_index, glyphs))| EmbeddedFont {
+                registered_index,
+                resource_name: format!("FU{}", resource_index + 1),
+                object_id: 0,
+                cid_by_glyph: glyphs
+                    .keys()
+                    .enumerate()
+                    .map(|(index, glyph_id)| (*glyph_id, index as u16 + 1))
+                    .collect(),
+                glyphs,
+            },
+        )
+        .collect()
+}
+
+fn append_embedded_font_objects(
+    objects: &mut Vec<Vec<u8>>,
+    font: &EmbeddedFont,
+    registered_fonts: &[RegisteredFont],
+) -> usize {
+    let registered = &registered_fonts[font.registered_index];
+    let face = ttf_parser::Face::parse(&registered.data, 0)
+        .expect("font was validated while preparing PDF resources");
+    let pdf_name = format!("MPFont{}", font.registered_index + 1);
+    let mut remapper = subsetter::GlyphRemapper::new();
+    for glyph_id in font.glyphs.keys() {
+        remapper.remap(*glyph_id);
+    }
+    let font_data = subsetter::subset(&registered.data, 0, &remapper)
+        .expect("font was validated while preparing PDF resources");
+
+    let mut font_file = format!(
+        "<< /Length {} /Length1 {} >>\nstream\n",
+        font_data.len(),
+        font_data.len()
+    )
+    .into_bytes();
+    font_file.extend_from_slice(&font_data);
+    font_file.extend_from_slice(b"\nendstream");
+    let font_file_id = push_object(objects, font_file);
+
+    let bbox = face.global_bounding_box();
+    let descriptor = format!(
+        "<< /Type /FontDescriptor /FontName /{pdf_name} /Flags 32 /FontBBox [{} {} {} {}] /ItalicAngle 0 /Ascent {} /Descent {} /CapHeight {} /StemV 80 /FontFile2 {} 0 R >>",
+        bbox.x_min,
+        bbox.y_min,
+        bbox.x_max,
+        bbox.y_max,
+        face.ascender(),
+        face.descender(),
+        face.capital_height().unwrap_or_else(|| face.ascender()),
+        font_file_id
+    );
+    let descriptor_id = push_object(objects, descriptor.into_bytes());
+
+    let units_per_em = u32::from(face.units_per_em());
+    let widths = font
+        .glyphs
+        .keys()
+        .map(|glyph_id| {
+            let advance = u32::from(
+                face.glyph_hor_advance(ttf_parser::GlyphId(*glyph_id))
+                    .unwrap_or(face.units_per_em()),
+            );
+            format!(
+                "{} [{}]",
+                remapper.get(*glyph_id).expect("glyph was remapped"),
+                advance * 1000 / units_per_em
+            )
+        })
+        .collect::<Vec<_>>()
+        .join(" ");
+    let cid_font = format!(
+        "<< /Type /Font /Subtype /CIDFontType2 /BaseFont /{pdf_name} /CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) /Supplement 0 >> /FontDescriptor {} 0 R /DW 1000 /W [{}] /CIDToGIDMap /Identity >>",
+        descriptor_id, widths
+    );
+    let cid_font_id = push_object(objects, cid_font.into_bytes());
+
+    let to_unicode = build_to_unicode_cmap(&font.glyphs, &remapper);
+    let mut to_unicode_object =
+        format!("<< /Length {} >>\nstream\n", to_unicode.len()).into_bytes();
+    to_unicode_object.extend_from_slice(to_unicode.as_bytes());
+    to_unicode_object.extend_from_slice(b"\nendstream");
+    let to_unicode_id = push_object(objects, to_unicode_object);
+
+    let type0_font = format!(
+        "<< /Type /Font /Subtype /Type0 /BaseFont /{pdf_name} /Encoding /Identity-H /DescendantFonts [{} 0 R] /ToUnicode {} 0 R >>",
+        cid_font_id, to_unicode_id
+    );
+    push_object(objects, type0_font.into_bytes())
+}
+
+fn build_to_unicode_cmap(
+    glyphs: &BTreeMap<u16, String>,
+    remapper: &subsetter::GlyphRemapper,
+) -> String {
+    let mut cmap = String::from(
+        "/CIDInit /ProcSet findresource begin\n12 dict begin\nbegincmap\n/CIDSystemInfo << /Registry (Adobe) /Ordering (UCS) /Supplement 0 >> def\n/CMapName /Adobe-Identity-UCS def\n/CMapType 2 def\n1 begincodespacerange\n<0000> <FFFF>\nendcodespacerange\n",
+    );
+    for chunk in glyphs.iter().collect::<Vec<_>>().chunks(100) {
+        cmap.push_str(&format!("{} beginbfchar\n", chunk.len()));
+        for (glyph_id, text) in chunk {
+            let cid = remapper.get(**glyph_id).expect("glyph was remapped");
+            cmap.push_str(&format!("<{cid:04X}> <{}>\n", utf16be_hex(text, false)));
+        }
+        cmap.push_str("endbfchar\n");
+    }
+    cmap.push_str("endcmap\nCMapName currentdict /CMap defineresource pop\nend\nend");
+    cmap
+}
+
+#[derive(Debug)]
+struct FontRun {
+    text: String,
+    font_index: Option<usize>,
+}
+
+#[derive(Debug)]
+struct ShapedGlyph {
+    id: u16,
+    cluster: usize,
+    x_advance: i32,
+    y_advance: i32,
+    x_offset: i32,
+    y_offset: i32,
+}
+
+#[derive(Debug)]
+struct ShapedText {
+    glyphs: Vec<ShapedGlyph>,
+    units_per_em: i32,
+}
+
+fn split_font_runs(text: &str, fonts: &[RegisteredFont]) -> Vec<FontRun> {
+    let mut runs: Vec<FontRun> = Vec::new();
+    for ch in text.chars() {
+        let font_index = if ch.is_whitespace() || ch.is_ascii_punctuation() || ch == '\u{fe0f}' {
+            runs.last().and_then(|run| run.font_index)
+        } else if ch.is_ascii() {
+            None
+        } else {
+            fonts.iter().position(|font| font_supports(font, ch))
+        };
+
+        if let Some(run) = runs.last_mut().filter(|run| run.font_index == font_index) {
+            run.text.push(ch);
+        } else {
+            runs.push(FontRun {
+                text: ch.to_string(),
+                font_index,
+            });
+        }
+    }
+    runs
+}
+
+fn font_supports(font: &RegisteredFont, ch: char) -> bool {
+    is_embeddable_truetype(&font.data)
+        && ttf_parser::Face::parse(&font.data, 0)
+            .ok()
+            .and_then(|face| face.glyph_index(ch))
+            .is_some()
+}
+
+fn is_embeddable_truetype(data: &[u8]) -> bool {
+    data.starts_with(b"\0\x01\0\0") || data.starts_with(b"true") || data.starts_with(b"ttcf")
+}
+
+fn shape_text(text: &str, font_data: &[u8]) -> Option<ShapedText> {
+    let face = rustybuzz::Face::from_slice(font_data, 0)?;
+    let units_per_em = face.units_per_em();
+    let mut buffer = rustybuzz::UnicodeBuffer::new();
+    buffer.push_str(text);
+    buffer.guess_segment_properties();
+    let output = rustybuzz::shape(&face, &[], buffer);
+    let glyphs = output
+        .glyph_infos()
+        .iter()
+        .zip(output.glyph_positions())
+        .filter_map(|(info, position)| {
+            Some(ShapedGlyph {
+                id: u16::try_from(info.glyph_id).ok()?,
+                cluster: usize::try_from(info.cluster).ok()?,
+                x_advance: position.x_advance,
+                y_advance: position.y_advance,
+                x_offset: position.x_offset,
+                y_offset: position.y_offset,
+            })
+        })
+        .collect();
+    Some(ShapedText {
+        glyphs,
+        units_per_em,
+    })
+}
+
+fn text_for_cluster(text: &str, glyphs: &[ShapedGlyph], index: usize) -> String {
+    let start = glyphs[index].cluster.min(text.len());
+    let end = glyphs
+        .iter()
+        .map(|glyph| glyph.cluster)
+        .filter(|cluster| *cluster > start)
+        .min()
+        .unwrap_or(text.len());
+    text.get(start..end).unwrap_or("\u{fffd}").to_owned()
+}
+
+fn utf16be_hex(text: &str, include_bom: bool) -> String {
+    let mut result = String::new();
+    if include_bom {
+        result.push_str("FEFF");
+    }
+    for code_unit in text.encode_utf16() {
+        result.push_str(&format!("{code_unit:04X}"));
+    }
+    result
 }
 
 fn write_objects(objects: Vec<Vec<u8>>) -> Vec<u8> {
@@ -288,7 +566,11 @@ fn write_objects(objects: Vec<Vec<u8>>) -> Vec<u8> {
     pdf
 }
 
-fn write_content_stream(page: &PdfPage) -> Vec<u8> {
+fn write_content_stream(
+    page: &PdfPage,
+    fonts: &[RegisteredFont],
+    embedded_fonts: &[EmbeddedFont],
+) -> Vec<u8> {
     let mut content = String::new();
     for op in &page.ops {
         match op {
@@ -301,22 +583,65 @@ fn write_content_stream(page: &PdfPage) -> Vec<u8> {
                 bold,
                 italic,
             } => {
-                let font = match (*bold, *italic) {
+                let built_in_font = match (*bold, *italic) {
                     (false, false) => "F1",
                     (true, false) => "F2",
                     (false, true) => "F3",
                     (true, true) => "F4",
                 };
-                content.push_str(&format!(
-                    "BT /{font} {:.2} Tf {:.3} {:.3} {:.3} rg {:.2} {:.2} Td ({}) Tj ET\n",
-                    font_size,
-                    clamp_color(color.r),
-                    clamp_color(color.g),
-                    clamp_color(color.b),
-                    x,
-                    y,
-                    escape_pdf_text(text)
-                ));
+                let mut cursor_x = *x;
+                let mut cursor_y = *y;
+                for run in split_font_runs(text, fonts) {
+                    let Some(font_index) = run.font_index else {
+                        content.push_str(&format!(
+                            "BT /{built_in_font} {:.2} Tf {:.3} {:.3} {:.3} rg {:.2} {:.2} Td ({}) Tj ET\n",
+                            font_size,
+                            clamp_color(color.r),
+                            clamp_color(color.g),
+                            clamp_color(color.b),
+                            cursor_x,
+                            cursor_y,
+                            escape_pdf_text(&run.text)
+                        ));
+                        cursor_x += run.text.chars().count() as f32 * font_size * 0.5;
+                        continue;
+                    };
+                    let Some(resource) = embedded_fonts
+                        .iter()
+                        .find(|font| font.registered_index == font_index)
+                    else {
+                        continue;
+                    };
+                    let Some(shaped) = shape_text(&run.text, &fonts[font_index].data) else {
+                        continue;
+                    };
+                    let scale = font_size / shaped.units_per_em as f32;
+                    content.push_str(&format!(
+                        "/Span << /ActualText <{}> >> BDC\n",
+                        utf16be_hex(&run.text, true)
+                    ));
+                    for glyph in shaped.glyphs {
+                        let glyph_x = cursor_x + glyph.x_offset as f32 * scale;
+                        let glyph_y = cursor_y + glyph.y_offset as f32 * scale;
+                        content.push_str(&format!(
+                            "BT /{} {:.2} Tf {:.3} {:.3} {:.3} rg 1 0 0 1 {:.2} {:.2} Tm <{:04X}> Tj ET\n",
+                            resource.resource_name,
+                            font_size,
+                            clamp_color(color.r),
+                            clamp_color(color.g),
+                            clamp_color(color.b),
+                            glyph_x,
+                            glyph_y,
+                            resource
+                                .cid_by_glyph
+                                .get(&glyph.id)
+                                .expect("shaped glyph was registered")
+                        ));
+                        cursor_x += glyph.x_advance as f32 * scale;
+                        cursor_y += glyph.y_advance as f32 * scale;
+                    }
+                    content.push_str("EMC\n");
+                }
             }
             PdfOp::Rect {
                 x,
