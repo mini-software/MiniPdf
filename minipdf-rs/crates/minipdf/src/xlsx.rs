@@ -214,7 +214,7 @@ fn read_column_widths(sheet_xml: &str) -> Result<Vec<f32>> {
 }
 
 fn excel_column_width_to_points(char_units: f32) -> f32 {
-    char_units * 5.62
+    char_units * 5.55
 }
 
 fn read_merge_ranges(sheet_xml: &str) -> Result<Vec<MergeRange>> {
@@ -766,9 +766,20 @@ fn read_cell_value(
         };
     }
 
+    let numeric_value = matches!(cell_type, None | Some("n"))
+        .then(|| value.parse::<f64>().ok())
+        .flatten();
     CellData {
-        text: value.to_owned(),
-        is_numeric: matches!(cell_type, None | Some("n")) && value.parse::<f64>().is_ok(),
+        text: numeric_value
+            .filter(|_| {
+                !value.contains(['e', 'E'])
+                    && value
+                        .split_once('.')
+                        .is_some_and(|(_, fraction)| fraction.len() >= 15)
+            })
+            .map(|value| value.to_string())
+            .unwrap_or_else(|| value.to_owned()),
+        is_numeric: numeric_value.is_some(),
         style,
     }
 }
@@ -901,7 +912,12 @@ fn render_sheet_columns(
                     0.5,
                 );
             }
-            let text_width = text_width(&cell.text, cell.style.font_size);
+            let font_size = if cell.style.bold {
+                cell.style.font_size
+            } else {
+                cell.style.font_size * (10.0 / 11.0)
+            };
+            let text_width = text_width(&cell.text, font_size);
             let x = if cell.is_numeric {
                 cell_x + cell_width - text_width - 3.0
             } else if cell.style.centered {
@@ -918,7 +934,7 @@ fn render_sheet_columns(
                 &cell.text,
                 x,
                 text_y,
-                cell.style.font_size,
+                font_size,
                 PdfTextStyle {
                     color: cell.style.font_color,
                     bold: cell.style.bold,
@@ -964,6 +980,18 @@ mod tests {
         assert_eq!(rows.len(), 2);
         assert_eq!(rows[0].index, 0);
         assert_eq!(rows[1].index, 4);
+    }
+
+    #[test]
+    fn normalizes_general_numeric_values() {
+        let xml = r#"<worksheet><sheetData><row r="1"><c r="A1" t="n"><v>8.859999999999999</v></c><c r="B1" t="n"><v>6.022e+23</v></c></row></sheetData></worksheet>"#;
+        let rows =
+            read_sheet_rows(xml, &[], &XlsxStyles::default()).expect("worksheet XML is valid");
+
+        assert_eq!(rows[0].cells[0].text, "8.86");
+        assert!(rows[0].cells[0].is_numeric);
+        assert_eq!(rows[0].cells[1].text, "6.022e+23");
+        assert!(rows[0].cells[1].is_numeric);
     }
 
     #[test]
@@ -1033,6 +1061,7 @@ mod tests {
         let widths = read_column_widths(xml).expect("worksheet XML is valid");
         let groups = column_groups(&widths, 508.0);
 
+        assert_eq!(widths[0], 83.25);
         assert_eq!(widths.len(), 14);
         assert_eq!(groups, vec![(0, 5), (5, 11), (11, 14)]);
     }

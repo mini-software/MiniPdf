@@ -5,7 +5,7 @@
 
 English | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Italiano](README.it.md) | [Français](README.fr.md)
 
-A minimal, lightweight .NET library for converting office files to PDF.
+A minimal, lightweight .NET + Rust library and CLI for converting office files to PDF.
 
 Online Demo: https://mini-software.github.io/MiniPdf/
 
