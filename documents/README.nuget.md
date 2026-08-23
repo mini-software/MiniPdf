@@ -3,11 +3,15 @@
 [![GitHub stars](https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github)](https://github.com/shps951023/MiniPdf)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/shps951023/MiniPdf/blob/main/LICENSE)
 
-English | [简体中文](README.zh-CN.md) | [繁体中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Italiano](README.it.md) | [Français](README.fr.md)
+# MiniPdf for .NET
 
-A minimal, lightweight .NET + Rust library and CLI for converting office files to PDF.
+The stable MiniPdf implementation for converting Office files to PDF, extracting
+structured content, and merging PDFs from .NET applications or the command line.
+It runs without Microsoft Office, LibreOffice, Adobe Acrobat, or COM automation.
 
-Online Demo: https://mini-software.github.io/MiniPdf/
+[Project home](https://github.com/mini-software/MiniPdf) ·
+[Online demo](https://mini-software.github.io/MiniPdf/) ·
+[Rust implementation](https://github.com/mini-software/MiniPdf/tree/main/minipdf-rs)
 
 ## Features
 
@@ -18,6 +22,7 @@ Online Demo: https://mini-software.github.io/MiniPdf/
 - PDF merge with top-level bookmarks
 - Minimal dependencies — lightweight; relies almost entirely on built-in .NET APIs
 - Serverless-ready — no COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
+- .NET library, global tool, and standalone Native AOT binaries
 - Valid PDF 1.4 output
 - 100% open-source & free — Apache 2.0 licensed, commercial use welcome; just keep the attribution. PRs & contributions are even better!
 
@@ -58,6 +63,33 @@ MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOp
   BookmarkTitles = new[] { "Cover", "Body" },
   Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
 });
+```
+
+### Conversion Options
+
+```csharp
+MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
+{
+  Sheets = new[] { "Summary", "Details" },
+  Compress = true,
+  FitToPage = true,
+  Landscape = true,
+  PrintScale = 70,
+  RowsPerPage = 80,
+});
+```
+
+Sheet selection and layout options apply to XLSX input. `Compress` controls PDF
+content-stream compression for every supported format.
+
+### Custom Fonts
+
+Register TrueType `.ttf` or `.ttc` fonts once at application startup when the
+host has limited system fonts, such as a container or Blazor WebAssembly app.
+
+```csharp
+MiniPdf.RegisterFont("NotoSansSC", File.ReadAllBytes("Fonts/NotoSansSC-Regular.ttf"));
+MiniPdf.ConvertToPdf("report.docx", "report.pdf");
 ```
 
 ## LLM-Friendly Content Extraction
@@ -136,6 +168,21 @@ byte[] mergedPdf = MiniPdf.MergePdf(
 
 Supported inputs are unencrypted PDFs that use classic xref tables. Encrypted PDFs and xref-stream-only PDFs throw `NotSupportedException`.
 
+## Command Line
+
+Install the .NET global tool:
+
+```bash
+dotnet tool install --global MiniPdf.Cli
+minipdf report.docx -o report.pdf
+minipdf extract report.docx
+```
+
+Standalone Native AOT binaries for Windows, Linux, and macOS are available on
+the [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) page.
+See the [CLI reference](https://github.com/mini-software/MiniPdf/blob/main/documents/README.nuget.cli.md)
+for commands and options.
+
 ## Benchmark
 
 MiniPdf output is compared against LibreOffice as the reference renderer across 373 test cases.
@@ -151,5 +198,7 @@ Detailed reports:
 
 ## Links
 
-- Source code: https://github.com/shps951023/MiniPdf
+- Project portal: https://github.com/mini-software/MiniPdf
+- .NET CLI: https://www.nuget.org/packages/MiniPdf.Cli
+- API source: https://github.com/mini-software/MiniPdf/blob/main/src/MiniPdf/MiniPdf.cs
 - License: [Apache-2.0](https://github.com/shps951023/MiniPdf/blob/main/LICENSE)

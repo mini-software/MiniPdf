@@ -24,7 +24,7 @@ from pathlib import Path
 def _create_excel():
     """Create a fresh Excel COM instance."""
     import win32com.client
-    excel = win32com.client.Dispatch("Excel.Application")
+    excel = win32com.client.DispatchEx("Excel.Application")
     excel.Visible = False
     excel.DisplayAlerts = False
     return excel
@@ -72,7 +72,10 @@ def main():
     print(f"Output: {pdf_dir}")
     print()
 
-    xlsx_files = sorted(Path(xlsx_dir).glob("*.xlsx"))
+    xlsx_files = sorted(
+        path for path in Path(xlsx_dir).glob("*.xlsx")
+        if not path.name.startswith("~$")
+    )
     if args.filter:
         xlsx_files = [f for f in xlsx_files if args.filter.lower() in f.stem.lower()]
     if not xlsx_files:
@@ -91,10 +94,26 @@ def main():
             print(f"  Skipping {xlsx.name} (PDF exists)")
             skipped += 1
             continue
+        if args.force and os.path.isfile(pdf_path):
+            os.remove(pdf_path)
         print(f"  Converting {xlsx.name} ...", end=" ", flush=True)
+        wb = None
         try:
-            wb = excel.Workbooks.Open(os.path.abspath(str(xlsx)))
-            wb.ExportAsFixedFormat(0, os.path.abspath(pdf_path))
+            wb = excel.Workbooks.Open(
+                os.path.abspath(str(xlsx)),
+                UpdateLinks=0,
+                ReadOnly=True,
+                IgnoreReadOnlyRecommended=True,
+            )
+            try:
+                wb.ExportAsFixedFormat(0, os.path.abspath(pdf_path))
+            except Exception as export_error:
+                if "didn't find anything to print" not in str(export_error).lower():
+                    raise
+                # Excel refuses completely empty workbooks. Add an invisible,
+                # in-memory printable cell and close without saving afterward.
+                wb.Worksheets(1).Cells(1, 1).Value = " "
+                wb.ExportAsFixedFormat(0, os.path.abspath(pdf_path))
             wb.Close(False)
             passed += 1
             consecutive_errors = 0
@@ -105,9 +124,12 @@ def main():
             print(f"ERR: {e}")
             # Try to close any open workbook
             try:
-                wb.Close(False)
+                if wb is not None:
+                    wb.Close(False)
             except Exception:
                 pass
+            if os.path.isfile(pdf_path):
+                os.remove(pdf_path)
             # If too many consecutive errors, restart Excel
             if consecutive_errors >= 3:
                 print("    (restarting Excel COM...)")
@@ -122,6 +144,8 @@ def main():
         msg += f", {skipped} skipped"
     msg += f" out of {len(xlsx_files)} files."
     print(msg)
+    if failed:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

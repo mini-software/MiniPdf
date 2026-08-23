@@ -3,11 +3,14 @@
     Compare Rust MiniPdf against the repository's shared visual fixtures and references.
 
 .DESCRIPTION
-    Reuses the same on-disk classic/issue fixtures, LibreOffice references, and PDF
-    comparison pipeline as the .NET benchmarks. It does not execute C# xUnit tests.
+    Reuses the same on-disk classic/issue fixtures and PDF comparison pipeline as
+    the .NET benchmarks. Microsoft 365 is the default reference engine, with
+    LibreOffice available through -Engine libre. It does not execute C# xUnit tests.
 
 .EXAMPLE
     .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx
+    .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx -Engine office -Filter "classic180" -ForceReference
+    .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx -Engine libre
     .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format docx -Filter "classic01"
     .\scripts\Run-Rust-Benchmark.ps1 -Suite issue -Format xlsx
     .\scripts\Run-Rust-Benchmark.ps1 -Suite issue -Format docx -Filter "SA8000"
@@ -18,6 +21,8 @@ param(
     [string]$Suite = "classic",
     [ValidateSet("xlsx", "docx", "pptx")]
     [string]$Format = "xlsx",
+    [ValidateSet("office", "libre")]
+    [string]$Engine = "office",
     [string]$Filter,
     [int]$MaxCases = 0,
     [int]$MaxComparePages = 0,
@@ -26,6 +31,7 @@ param(
     [string]$ReferenceDir,
     [string]$ReportDir,
     [double]$MinimumScore = 0.95,
+    [switch]$SkipCandidate,
     [switch]$ForceReference,
     [switch]$SkipReference
 )
@@ -51,33 +57,47 @@ function Resolve-RepoPath([string]$PathValue) {
 $Defaults = @{
     "classic:xlsx" = @{
         Source = "tests/MiniPdf.Scripts/output"
-        Reference = "tests/MiniPdf.Benchmark/reference_pdfs"
-        ReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs.py"
+        LibreReference = "tests/MiniPdf.Benchmark/reference_pdfs"
+        OfficeReference = "tests/MiniPdf.Benchmark/office_pdfs"
+        LibreReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs.py"
+        OfficeReferenceScript = "tests/MiniPdf.Benchmark/generate_office_pdfs.py"
         SourceArgument = "--xlsx-dir"
+        OfficeLabel = "Microsoft 365 Excel Reference"
     }
     "classic:docx" = @{
         Source = "tests/MiniPdf.Scripts/output_docx"
-        Reference = "tests/MiniPdf.Benchmark/reference_pdfs_docx"
-        ReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs_docx.py"
+        LibreReference = "tests/MiniPdf.Benchmark/reference_pdfs_docx"
+        OfficeReference = "tests/MiniPdf.Benchmark/office_pdfs_docx"
+        LibreReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs_docx.py"
+        OfficeReferenceScript = "tests/MiniPdf.Benchmark/generate_office_pdfs_docx.py"
         SourceArgument = "--docx-dir"
+        OfficeLabel = "Microsoft 365 Word Reference"
     }
     "issue:xlsx" = @{
         Source = "tests/Issue_Files/xlsx"
-        Reference = "tests/Issue_Files/reference_xlsx"
-        ReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs.py"
+        LibreReference = "tests/Issue_Files/reference_xlsx"
+        OfficeReference = "tests/Issue_Files/office_xlsx"
+        LibreReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs.py"
+        OfficeReferenceScript = "tests/MiniPdf.Benchmark/generate_office_pdfs.py"
         SourceArgument = "--xlsx-dir"
+        OfficeLabel = "Microsoft 365 Excel Reference"
     }
     "issue:docx" = @{
         Source = "tests/Issue_Files/docx"
-        Reference = "tests/Issue_Files/reference_docx"
-        ReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs_docx.py"
+        LibreReference = "tests/Issue_Files/reference_docx"
+        OfficeReference = "tests/Issue_Files/office_docx"
+        LibreReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs_docx.py"
+        OfficeReferenceScript = "tests/MiniPdf.Benchmark/generate_office_pdfs_docx.py"
         SourceArgument = "--docx-dir"
+        OfficeLabel = "Microsoft 365 Word Reference"
     }
 }
 
 $Config = $Defaults["$Suite`:$Format"]
 $SourceDir = Resolve-RepoPath $(if ($SourceDir) { $SourceDir } else { $Config.Source })
-$ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $Config.Reference })
+$DefaultReference = if ($Engine -eq "office") { $Config.OfficeReference } else { $Config.LibreReference }
+$ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $DefaultReference })
+$ReferenceLabel = if ($Engine -eq "office") { $Config.OfficeLabel } else { "LibreOffice Reference" }
 $IsFocusedRun = -not [string]::IsNullOrWhiteSpace($Filter) -or $MaxCases -gt 0
 $DefaultArtifactRoot = "artifacts/rust-benchmark/$Suite/$Format"
 if ($IsFocusedRun) {
@@ -94,7 +114,7 @@ if (-not (Test-Path $Cargo)) { $Cargo = (Get-Command cargo -ErrorAction Stop).So
 if (-not (Test-Path $Python)) { $Python = (Get-Command python -ErrorAction Stop).Source }
 
 $CargoManifest = Join-Path $RepoRoot "minipdf-rs/Cargo.toml"
-$ReferenceScript = Resolve-RepoPath $Config.ReferenceScript
+$ReferenceScript = Resolve-RepoPath $(if ($Engine -eq "office") { $Config.OfficeReferenceScript } else { $Config.LibreReferenceScript })
 $CompareScript = Join-Path $RepoRoot "tests/MiniPdf.Benchmark/compare_pdfs.py"
 $ComparisonManifest = Join-Path $ReportDir "comparison_manifest.json"
 $CoverageManifest = Join-Path $ReportDir "benchmark_coverage.json"
@@ -127,23 +147,31 @@ $Cases = @($SourceFiles | ForEach-Object {
 
 [pscustomobject]@{ cases = $Cases } | ConvertTo-Json -Depth 5 | Set-Content $ComparisonManifest -Encoding UTF8
 
-Write-Host "Rust benchmark matrix: suite=$Suite format=$Format selected=$($Cases.Count)"
+Write-Host "Rust benchmark matrix: suite=$Suite format=$Format engine=$Engine selected=$($Cases.Count)"
 Write-Host "Shared fixtures only; C# xUnit assertions are not executed by this command."
 
-& $Cargo build --manifest-path $CargoManifest -p minipdf-cli
-if ($LASTEXITCODE -ne 0) { throw "Rust CLI build failed." }
-
 $Cli = Join-Path $RepoRoot "minipdf-rs/target/debug/minipdf.exe"
-for ($Index = 0; $Index -lt $SourceFiles.Count; $Index++) {
-    $SourceFile = $SourceFiles[$Index]
-    $OutputFile = Join-Path $CandidateDir ($SourceFile.BaseName + ".pdf")
-    if (Test-Path $OutputFile) { Remove-Item $OutputFile -Force }
+if (-not $SkipCandidate) {
+    & $Cargo build --manifest-path $CargoManifest -p minipdf-cli
+    if ($LASTEXITCODE -ne 0) { throw "Rust CLI build failed." }
 
-    & $Cli $SourceFile.FullName -o $OutputFile
-    $ExitCode = $LASTEXITCODE
-    $Cases[$Index].conversion_exit_code = $ExitCode
-    $Cases[$Index].candidate_exists = Test-Path $OutputFile
-    $Cases[$Index].conversion_status = if ($ExitCode -eq 0 -and $Cases[$Index].candidate_exists) { "passed" } else { "failed" }
+    for ($Index = 0; $Index -lt $SourceFiles.Count; $Index++) {
+        $SourceFile = $SourceFiles[$Index]
+        $OutputFile = Join-Path $CandidateDir ($SourceFile.BaseName + ".pdf")
+        if (Test-Path $OutputFile) { Remove-Item $OutputFile -Force }
+
+        & $Cli $SourceFile.FullName -o $OutputFile
+        $ExitCode = $LASTEXITCODE
+        $Cases[$Index].conversion_exit_code = $ExitCode
+        $Cases[$Index].candidate_exists = Test-Path $OutputFile
+        $Cases[$Index].conversion_status = if ($ExitCode -eq 0 -and $Cases[$Index].candidate_exists) { "passed" } else { "failed" }
+    }
+} else {
+    for ($Index = 0; $Index -lt $SourceFiles.Count; $Index++) {
+        $OutputFile = Join-Path $CandidateDir ($SourceFiles[$Index].BaseName + ".pdf")
+        $Cases[$Index].candidate_exists = Test-Path $OutputFile
+        $Cases[$Index].conversion_status = if ($Cases[$Index].candidate_exists) { "passed" } else { "failed" }
+    }
 }
 
 if (-not $SkipReference) {
@@ -153,7 +181,7 @@ if (-not $SkipReference) {
         if ($ReferenceFilter) { $ReferenceArgs += @("--filter", $ReferenceFilter) }
         if ($ForceReference) { $ReferenceArgs += "--force" }
         & $Python @ReferenceArgs
-        if ($LASTEXITCODE -ne 0) { throw "LibreOffice reference generation failed." }
+        if ($LASTEXITCODE -ne 0) { throw "$ReferenceLabel generation failed." }
     }
 }
 
@@ -167,6 +195,8 @@ $MissingReferences = @($Cases | Where-Object { -not $_.reference_exists }).Count
 $Coverage = [pscustomobject]@{
     suite = $Suite
     format = $Format
+    reference_engine = $Engine
+    reference_label = $ReferenceLabel
     fixture_scope = "shared-on-disk-fixtures"
     executes_dotnet_xunit = $false
     max_compare_pages = $MaxComparePages
@@ -190,7 +220,8 @@ $CompareArgs = @(
     "--report-scope", "rust-$Suite-$Format",
     "--composite-images",
     "--heatmaps",
-    "--candidate-label", "Rust MiniPdf"
+    "--candidate-label", "Rust MiniPdf",
+    "--reference-label", $ReferenceLabel
 )
 if ($MaxComparePages -gt 0) { $CompareArgs += @("--max-pages", $MaxComparePages) }
 & $Python @CompareArgs

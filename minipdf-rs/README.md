@@ -1,41 +1,126 @@
-# MiniPdf Rust
+# MiniPdf for Rust
 
-This directory contains the experimental Rust implementation of MiniPdf. It is an independent Rust workspace with a reusable `minipdf` library crate and a `minipdf` CLI binary.
+[![crates.io](https://img.shields.io/crates/v/minipdf.svg)](https://crates.io/crates/minipdf)
+[![docs.rs](https://img.shields.io/docsrs/minipdf)](https://docs.rs/minipdf)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](../LICENSE)
 
-The first implementation focuses on proving the end-to-end shape: detect `.xlsx` and `.docx` ZIP packages, extract basic workbook/document text, render simple PDF pages, and keep the CLI close to the existing .NET tool.
+The experimental native Rust implementation of MiniPdf. It provides the
+reusable `minipdf` crate and the `minipdf-cli` package, whose installed binary is
+named `minipdf`.
 
-## Install
+[Project portal](../README.md) ·
+[crates.io](https://crates.io/crates/minipdf) ·
+[API documentation](https://docs.rs/minipdf) ·
+[.NET implementation](../documents/README.nuget.md)
 
-```powershell
+> The Rust implementation is under active development and is not yet
+> feature-equivalent with MiniPdf for .NET. It currently converts XLSX and DOCX
+> files. Use the .NET implementation for PPTX, content extraction, PDF merge,
+> or broader production compatibility.
+
+## Requirements
+
+- Rust 1.82 or later
+- No Microsoft Office, LibreOffice, Adobe Acrobat, or .NET runtime at runtime
+
+## Library
+
+Add the crate:
+
+```bash
 cargo add minipdf
+```
+
+Convert a file to a PDF on disk:
+
+```rust
+fn main() -> minipdf::Result<()> {
+    minipdf::convert_to_pdf("report.docx", "report.pdf")?;
+    Ok(())
+}
+```
+
+Return PDF bytes instead:
+
+```rust
+let pdf = minipdf::convert_to_pdf_bytes("data.xlsx")?;
+```
+
+For a host with limited system fonts, register font bytes before conversion:
+
+```rust
+let font = std::fs::read("fonts/NotoSansSC-Regular.ttf")?;
+minipdf::register_font("NotoSansSC", font);
+minipdf::convert_to_pdf("report.docx", "report.pdf")?;
+```
+
+The public API also supports in-memory Office package bytes through
+`convert_bytes_to_pdf` and package inspection through `detect_office_format`.
+
+## Command Line
+
+Install the CLI from crates.io:
+
+```bash
 cargo install minipdf-cli
 ```
 
-Rust packages are published to crates.io, not NuGet. Repository releases tagged
-`rust-v<version>` publish both packages through GitHub Actions.
+Convert with an automatically selected output name:
 
-## Layout
+```bash
+minipdf report.docx
+```
+
+Specify an output path or font directory:
+
+```bash
+minipdf data.xlsx -o data.pdf
+minipdf report.docx --fonts ./fonts
+minipdf convert report.docx -o report.pdf
+```
+
+## Current Scope
+
+| Capability | Rust status |
+|---|---|
+| XLSX to PDF | Supported; rendering coverage is expanding |
+| DOCX to PDF | Supported; rendering coverage is expanding |
+| PPTX to PDF | Not supported |
+| PDF merge | Not supported |
+| Markdown / JSON extraction | Not supported |
+| PDF output | PDF 1.4 |
+| Fonts | Built-in Helvetica and registered/system fallback fonts |
+| Interfaces | Rust crate and native CLI |
+
+The converter preserves sparse worksheet row positions, paginates wide sheets
+horizontally, and supports basic spreadsheet styling, drawing images, document
+text, and Unicode fallback fonts. Complex Office layout can still differ from
+the source application.
+
+## Development
+
+The Rust implementation is an independent Cargo workspace:
 
 ```text
 minipdf-rs/
-├── Cargo.toml
-└── crates/
-    ├── minipdf/       # Library API and conversion engine
-    └── minipdf-cli/   # CLI binary named minipdf
+|-- Cargo.toml
+`-- crates/
+    |-- minipdf/       # Library API and conversion engine
+    `-- minipdf-cli/   # CLI binary named minipdf
 ```
 
-## Commands
+Run the standard checks from this directory:
 
 ```powershell
-cd minipdf-rs
 cargo fmt --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
-cargo run -p minipdf-cli -- convert path\to\input.xlsx -o output.pdf
 cargo run -p minipdf-cli -- path\to\input.docx
 ```
 
-Run the shared visual fixtures against LibreOffice from the repository root:
+## Visual Benchmarks
+
+Run shared fixtures against LibreOffice from the repository root:
 
 ```powershell
 .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx
@@ -45,30 +130,20 @@ Run the shared visual fixtures against LibreOffice from the repository root:
 .\scripts\Run-Rust-Benchmark-Matrix.ps1 -MaxComparePages 1
 ```
 
-The benchmark reuses the same on-disk fixtures, references, and PDF comparison
-pipeline as the .NET visual benchmarks. It does not execute the C# xUnit test
-methods or their assertions. Each run writes a coverage manifest, Markdown/JSON
-report, side-by-side images, and pixel-difference heatmaps under
-`artifacts/rust-benchmark/<suite>/<format>` and fails on missing output or scores
-below `-MinimumScore`.
+The benchmark reuses the repository fixtures, references, and PDF comparison
+pipeline without executing the C# xUnit tests. Each run writes coverage data,
+Markdown and JSON reports, side-by-side images, and heatmaps under
+`artifacts/rust-benchmark/<suite>/<format>`.
 
-Open the [Rust benchmark matrix](../artifacts/rust-benchmark/benchmark_matrix.md)
-to browse the published XLSX comparison reports and images. Canonical XLSX
-reports are version-controlled; candidate PDFs, logs, focused runs, and DOCX
-reports remain local build artifacts.
+The matrix is generated at `artifacts/rust-benchmark/benchmark_matrix.md` and
+links to the fixture coverage and comparison reports from each run.
 
-## Current Scope
+## Publishing
 
-- Supports `.xlsx` and `.docx` package detection.
-- Extracts shared strings and basic worksheet cell values from `.xlsx`.
-- Extracts paragraph text from `.docx`.
-- Writes valid PDF 1.4 files using built-in Helvetica plus subsetted Unicode fallback fonts.
-- Renders basic unstyled XLSX sheets with spreadsheet-compatible page geometry,
-  text overflow, and General-format numeric alignment.
-- Preserves sparse worksheet row positions and paginates wide sheets horizontally
-    instead of dropping columns beyond the first page.
-- Supports the existing CLI shape: shorthand input, `convert`, `-o/--output`, and `--fonts`.
+Both packages are published to crates.io. Repository releases tagged
+`rust-v<version>` publish `minipdf` first and then `minipdf-cli` through GitHub
+Actions.
 
-## Known Gaps
+## License
 
-This is not yet feature-equivalent with the .NET implementation. The next quality milestones are XLSX styles/merged cells/page setup, DOCX table/style/layout support, images, and broader benchmark convergence against the existing LibreOffice comparison pipeline.
+[Apache License 2.0](../LICENSE).
