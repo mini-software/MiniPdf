@@ -77,9 +77,16 @@ $Defaults = @{
 
 $Config = $Defaults["$Suite`:$Format"]
 $SourceDir = Resolve-RepoPath $(if ($SourceDir) { $SourceDir } else { $Config.Source })
-$CandidateDir = Resolve-RepoPath $(if ($CandidateDir) { $CandidateDir } else { "artifacts/rust-benchmark/$Suite/$Format/candidates" })
 $ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $Config.Reference })
-$ReportDir = Resolve-RepoPath $(if ($ReportDir) { $ReportDir } else { "artifacts/rust-benchmark/$Suite/$Format/report" })
+$IsFocusedRun = -not [string]::IsNullOrWhiteSpace($Filter) -or $MaxCases -gt 0
+$DefaultArtifactRoot = "artifacts/rust-benchmark/$Suite/$Format"
+if ($IsFocusedRun) {
+    $FilterLabel = if ([string]::IsNullOrWhiteSpace($Filter)) { "all" } else { $Filter -replace '[^A-Za-z0-9._-]', '_' }
+    $CaseLabel = if ($MaxCases -gt 0) { "max-$MaxCases" } else { "all" }
+    $DefaultArtifactRoot = "artifacts/rust-benchmark/focused/$Suite/$Format/$FilterLabel-$CaseLabel"
+}
+$CandidateDir = Resolve-RepoPath $(if ($CandidateDir) { $CandidateDir } else { "$DefaultArtifactRoot/candidates" })
+$ReportDir = Resolve-RepoPath $(if ($ReportDir) { $ReportDir } else { "$DefaultArtifactRoot/report" })
 
 $Cargo = Join-Path $env:USERPROFILE ".cargo/bin/cargo.exe"
 $Python = Join-Path $RepoRoot ".venv/Scripts/python.exe"

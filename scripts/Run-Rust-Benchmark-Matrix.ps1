@@ -51,6 +51,7 @@ $Rows = foreach ($Target in $Targets) {
     [pscustomobject]@{
         suite = $Coverage.suite
         format = $Coverage.format
+        report = if ($Coverage.format -eq "xlsx") { "$($Coverage.suite)/$($Coverage.format)/report/comparison_report.md" } else { $null }
         selected_cases = $Coverage.selected_cases
         passed_conversions = $Coverage.passed_conversions
         failed_conversions = $Coverage.failed_conversions
@@ -85,12 +86,13 @@ $Markdown = @(
     "",
     "> This matrix reuses the repository's on-disk fixtures and visual comparison pipeline. It does not execute C# xUnit tests or assertions.",
     "",
-    "| Suite | Format | Selected | Converted | Compared | Missing refs | First pages | Average score | Complete |",
-    "|---|---:|---:|---:|---:|---:|---:|---:|---:|"
+    "| Suite | Format | Report | Selected | Converted | Compared | Missing refs | First pages | Average score | Complete |",
+    "|---|---:|---|---:|---:|---:|---:|---:|---:|---:|"
 )
 foreach ($Row in $Rows) {
     $Score = if ($null -eq $Row.average_score) { "N/A" } else { "{0:N4}" -f $Row.average_score }
-    $Markdown += "| $($Row.suite) | $($Row.format) | $($Row.selected_cases) | $($Row.passed_conversions) | $($Row.comparison_results) | $($Row.missing_references) | $($Row.max_compare_pages) | $Score | $($Row.comparison_completed) |"
+    $ReportLink = if ($Row.report) { "[View comparison]($($Row.report))" } else { "Local artifact" }
+    $Markdown += "| $($Row.suite) | $($Row.format) | $ReportLink | $($Row.selected_cases) | $($Row.passed_conversions) | $($Row.comparison_results) | $($Row.missing_references) | $($Row.max_compare_pages) | $Score | $($Row.comparison_completed) |"
 }
 $Markdown += @(
     "",
