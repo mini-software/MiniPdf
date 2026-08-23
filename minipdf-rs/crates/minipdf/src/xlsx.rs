@@ -671,6 +671,7 @@ fn read_sheet_rows(
             .and_then(|value| value.parse::<f32>().ok())
             .filter(|value| *value > 0.0)
             .unwrap_or(ROW_HEIGHT);
+        let has_custom_height = row.attribute("ht").is_some();
         let mut cells: Vec<(usize, CellData)> = Vec::new();
         for cell in row.children().filter(|node| node.has_tag_name("c")) {
             let col = cell
@@ -693,7 +694,7 @@ fn read_sheet_rows(
                 *slot = value;
             }
         }
-        if row_values.iter().any(|cell| !cell.text.is_empty()) {
+        if has_custom_height || row_values.iter().any(|cell| !cell.text.is_empty()) {
             rows.push(RowData {
                 index: row_index,
                 height,
@@ -963,6 +964,18 @@ mod tests {
 
         assert_eq!(rows[0].height, 68.0);
         assert!(rows[0].cells[3].style.bold);
+    }
+
+    #[test]
+    fn preserves_empty_custom_height_rows_for_image_anchors() {
+        let xml = r#"<worksheet><sheetData><row r="4" ht="60" customHeight="1"/></sheetData></worksheet>"#;
+        let rows =
+            read_sheet_rows(xml, &[], &XlsxStyles::default()).expect("worksheet XML is valid");
+
+        assert_eq!(rows.len(), 1);
+        assert_eq!(rows[0].index, 3);
+        assert_eq!(rows[0].height, 60.0);
+        assert!(rows[0].cells.is_empty());
     }
 
     #[test]
