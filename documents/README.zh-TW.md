@@ -14,7 +14,7 @@
 
 ---
 
-一個極簡、輕量化的 .NET 函式庫，用於將 Office 檔案轉換為 PDF。
+一個極簡、輕量化的 .NET + Rust 函式庫與 CLI 工具，用於將 Office 檔案轉換為 PDF。
 
 <div align="center">
 <img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word/PowerPoint to PDF conversion" />

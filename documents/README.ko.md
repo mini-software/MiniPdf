@@ -14,7 +14,7 @@
 
 ---
 
-Office 파일을 PDF로 변환하는 최소한의 경량 .NET 라이브러리입니다.
+Office 파일을 PDF로 변환하는 최소한의 경량 .NET + Rust 라이브러리 및 CLI입니다.
 
 <div align="center">
 <img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word/PowerPoint to PDF conversion" />

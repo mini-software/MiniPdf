@@ -14,7 +14,7 @@
 
 ---
 
-Una libreria .NET minimale e leggera per convertire file Office in PDF.
+Una libreria e CLI .NET + Rust minimale e leggera per convertire file Office in PDF.
 
 <div align="center">
 <img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word/PowerPoint to PDF conversion" />
