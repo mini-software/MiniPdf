@@ -10,6 +10,8 @@
 param(
     [int]$MaxComparePages = 1,
     [double]$MinimumScore = 0,
+    [ValidateSet("o365", "office", "libre")]
+    [string]$Engine = "o365",
     [switch]$SkipReference,
     [switch]$ForceReference,
     [switch]$ReportOnly
@@ -33,6 +35,7 @@ if (-not $ReportOnly) {
         $Arguments = @{
             Suite = $Target.Suite
             Format = $Target.Format
+            Engine = $Engine
             MaxComparePages = $MaxComparePages
             MinimumScore = $MinimumScore
         }
@@ -51,6 +54,7 @@ $Rows = foreach ($Target in $Targets) {
     [pscustomobject]@{
         suite = $Coverage.suite
         format = $Coverage.format
+        reference_engine = $Coverage.reference_engine
         report = if ($Coverage.format -eq "xlsx") { "$($Coverage.suite)/$($Coverage.format)/report/comparison_report.md" } else { $null }
         selected_cases = $Coverage.selected_cases
         passed_conversions = $Coverage.passed_conversions
@@ -68,6 +72,7 @@ $Summary = [pscustomobject]@{
     fixture_scope = "shared-on-disk-fixtures"
     executes_dotnet_xunit = $false
     rust_supported_formats = @("xlsx", "docx")
+    reference_engine = $Engine
     unsupported_formats = @("pptx")
     selected_cases = ($Rows | Measure-Object selected_cases -Sum).Sum
     passed_conversions = ($Rows | Measure-Object passed_conversions -Sum).Sum

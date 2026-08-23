@@ -1,10 +1,11 @@
 ﻿<#
 .SYNOPSIS
-    Benchmark Issue_Files: convert user-reported xlsx/docx to PDF (MiniPdf + LibreOffice) → compare → report.
+    Benchmark Issue_Files: convert user-reported XLSX/DOCX to PDF (MiniPdf + Microsoft 365) -> compare -> report.
 
 .DESCRIPTION
-    Converts files in tests/Issue_Files/xlsx and tests/Issue_Files/docx using both
-    MiniPdf and LibreOffice, then runs compare_pdfs.py to produce a comparison report.
+    Converts files in tests/Issue_Files/xlsx and tests/Issue_Files/docx using
+    MiniPdf and Microsoft 365 by default, then produces a comparison report.
+    Pass -Engine libre to use LibreOffice instead.
     When -Filter is omitted, all issue files (xlsx + docx) are processed.
 
 .EXAMPLE
@@ -31,8 +32,8 @@ param(
     [int]$HeatmapThreshold = 12,
     [double]$HeatmapGain = 5.0,
     [int]$MaxComparePages = 0,
-    [ValidateSet("libre", "office")]
-    [string]$Engine = "office"
+    [ValidateSet("libre", "office", "o365")]
+    [string]$Engine = "o365"
 )
 
 $ErrorActionPreference = "Continue"
@@ -52,13 +53,15 @@ $DocxIssueDir = Join-Path $IssueDir "docx"
 $MiniPdfXlsx = Join-Path $IssueDir "minipdf_xlsx"
 $MiniPdfDocx = Join-Path $IssueDir "minipdf_docx"
 
-# LibreOffice reference output dirs
+# Selected reference engine output dirs
 $RefXlsx = Join-Path $IssueDir "reference_xlsx"
 $RefDocx = Join-Path $IssueDir "reference_docx"
 
 # Office output dirs
 $OfficeXlsx = Join-Path $IssueDir "office_xlsx"
 $OfficeDocx = Join-Path $IssueDir "office_docx"
+
+$ReferenceLabel = if ($Engine -in @('o365', 'office')) { 'Microsoft 365 Reference' } else { 'LibreOffice Reference' }
 
 # Report dirs
 $ReportXlsx = Join-Path $IssueDir "reports_xlsx"
@@ -231,7 +234,7 @@ function Write-ComparisonManifest {
 # Step 0: Install Python dependencies
 if (-not $SkipInstall) {
     Write-Host "[Step 0] Installing Python dependencies..." -ForegroundColor Yellow
-    pip install openpyxl pymupdf python-docx Pillow --quiet 2>$null
+    pip install openpyxl pymupdf python-docx Pillow pywin32 --quiet 2>$null
     if ($LASTEXITCODE -ne 0) {
         Write-Host "  WARNING: pip install had issues. Continuing anyway..." -ForegroundColor DarkYellow
     } else {
@@ -271,7 +274,7 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
     }
 
     if (-not $CompareOnly -and -not $SkipReference) {
-        if ($Engine -eq 'office') {
+        if ($Engine -in @('o365', 'office')) {
             Write-Host '[Step 2] Converting XLSX -> PDF (Office / Excel COM)...' -ForegroundColor Yellow
             Push-Location $BenchmarkDir
             try {
@@ -308,7 +311,7 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
     Write-Host "[Step 3] Comparing XLSX PDFs..." -ForegroundColor Yellow
     $xlsxScoresBefore = Get-ReportScores -ReportDir $ReportXlsx
     $xlsxManifest = Write-ComparisonManifest -Files $xlsxAllFiles -ManifestPath (Join-Path $ReportXlsx "comparison_manifest.json") -Format "xlsx"
-    $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfXlsx, "--reference-dir", $RefXlsx, "--report-dir", $ReportXlsx, "--manifest", $xlsxManifest, "--report-scope", "issue-xlsx")
+    $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfXlsx, "--reference-dir", $RefXlsx, "--report-dir", $ReportXlsx, "--manifest", $xlsxManifest, "--report-scope", "issue-xlsx", "--reference-label", $ReferenceLabel)
     if ($WithOffice -and (Test-Path $OfficeXlsx)) {
         $compareArgs += @("--office-dir", $OfficeXlsx)
     }
@@ -355,7 +358,7 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
     }
 
     if (-not $CompareOnly -and -not $SkipReference) {
-        if ($Engine -eq 'office') {
+        if ($Engine -in @('o365', 'office')) {
             Write-Host '[Step 2] Converting DOCX -> PDF (Office / Word COM)...' -ForegroundColor Yellow
             Push-Location $BenchmarkDir
             try {
@@ -392,7 +395,7 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
     Write-Host "[Step 3] Comparing DOCX PDFs..." -ForegroundColor Yellow
     $docxScoresBefore = Get-ReportScores -ReportDir $ReportDocx
     $docxManifest = Write-ComparisonManifest -Files $docxAllFiles -ManifestPath (Join-Path $ReportDocx "comparison_manifest.json") -Format "docx"
-    $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfDocx, "--reference-dir", $RefDocx, "--report-dir", $ReportDocx, "--manifest", $docxManifest, "--report-scope", "issue-docx")
+    $compareArgs = @("compare_pdfs.py", "--minipdf-dir", $MiniPdfDocx, "--reference-dir", $RefDocx, "--report-dir", $ReportDocx, "--manifest", $docxManifest, "--report-scope", "issue-docx", "--reference-label", $ReferenceLabel)
     if ($WithOffice -and (Test-Path $OfficeDocx)) {
         $compareArgs += @("--office-dir", $OfficeDocx)
     }
