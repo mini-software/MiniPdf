@@ -912,11 +912,7 @@ fn render_sheet_columns(
                     0.5,
                 );
             }
-            let font_size = if cell.style.bold {
-                cell.style.font_size
-            } else {
-                cell.style.font_size * (10.0 / 11.0)
-            };
+            let font_size = cell.style.font_size;
             let text_width = text_width(&cell.text, font_size);
             let x = if cell.is_numeric {
                 cell_x + cell_width - text_width - 3.0

@@ -141,11 +141,16 @@ fn system_fallback_font_paths() -> Vec<PathBuf> {
             .unwrap_or_else(|| PathBuf::from(r"C:\Windows"))
             .join("Fonts");
         return [
+            "calibri.ttf",
+            "calibrib.ttf",
+            "calibrii.ttf",
+            "calibriz.ttf",
             "NotoSans-Regular.ttf",
             "YuGothR.ttc",
             "NotoSansSC-VF.ttf",
             "malgunsl.ttf",
             "malgun.ttf",
+            "micross.ttf",
             "LeelawUI.ttf",
             "Nirmala.ttf",
             "seguisym.ttf",
