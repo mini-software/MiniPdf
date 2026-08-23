@@ -1,10 +1,11 @@
 use std::collections::HashMap;
 use std::io::{Cursor, Read};
 
+use unicode_bidi::{bidi_class, BidiClass};
 use zip::ZipArchive;
 
-use crate::pdf::{PdfColor, PdfDocument, PdfTextStyle};
-use crate::{read_zip_text, text_width, Result};
+use crate::pdf::{styled_text_width, PdfColor, PdfDocument, PdfTextStyle};
+use crate::{read_zip_text, Result};
 
 const PAGE_WIDTH: f32 = 612.0;
 const PAGE_HEIGHT: f32 = 792.0;
@@ -45,8 +46,17 @@ struct CellStyle {
     font_color: PdfColor,
     fill_color: Option<PdfColor>,
     border_color: Option<PdfColor>,
-    centered: bool,
+    horizontal_alignment: HorizontalAlignment,
     vertical_alignment: VerticalAlignment,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+enum HorizontalAlignment {
+    #[default]
+    General,
+    Left,
+    Center,
+    Right,
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
@@ -66,7 +76,7 @@ impl Default for CellStyle {
             font_color: PdfColor::BLACK,
             fill_color: None,
             border_color: None,
-            centered: false,
+            horizontal_alignment: HorizontalAlignment::General,
             vertical_alignment: VerticalAlignment::Bottom,
         }
     }
@@ -555,8 +565,9 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         font_color: font.color,
                         fill_color,
                         border_color,
-                        centered: alignment.and_then(|node| node.attribute("horizontal"))
-                            == Some("center"),
+                        horizontal_alignment: parse_horizontal_alignment(
+                            alignment.and_then(|node| node.attribute("horizontal")),
+                        ),
                         vertical_alignment: parse_vertical_alignment(
                             alignment.and_then(|node| node.attribute("vertical")),
                         ),
@@ -576,6 +587,15 @@ fn parse_rgb_color(value: &str) -> Option<PdfColor> {
         ((number >> 8) & 0xff) as f32 / 255.0,
         (number & 0xff) as f32 / 255.0,
     ))
+}
+
+fn parse_horizontal_alignment(value: Option<&str>) -> HorizontalAlignment {
+    match value {
+        Some("left") => HorizontalAlignment::Left,
+        Some("center") => HorizontalAlignment::Center,
+        Some("right") => HorizontalAlignment::Right,
+        _ => HorizontalAlignment::General,
+    }
 }
 
 fn parse_vertical_alignment(value: Option<&str>) -> VerticalAlignment {
@@ -913,13 +933,17 @@ fn render_sheet_columns(
                 );
             }
             let font_size = cell.style.font_size;
-            let text_width = text_width(&cell.text, font_size);
-            let x = if cell.is_numeric {
-                cell_x + cell_width - text_width - 3.0
-            } else if cell.style.centered {
-                cell_x + (cell_width - text_width).max(0.0) / 2.0
-            } else {
-                cell_x + 3.0
+            let text_width =
+                styled_text_width(&cell.text, font_size, cell.style.bold, cell.style.italic);
+            let x = match cell.style.horizontal_alignment {
+                HorizontalAlignment::Center => cell_x + (cell_width - text_width).max(0.0) / 2.0,
+                HorizontalAlignment::Right => cell_x + cell_width - text_width - 3.0,
+                HorizontalAlignment::General
+                    if cell.is_numeric || has_rtl_base_direction(&cell.text) =>
+                {
+                    cell_x + cell_width - text_width - 3.0
+                }
+                HorizontalAlignment::General | HorizontalAlignment::Left => cell_x + 3.0,
             };
             let text_y = match cell.style.vertical_alignment {
                 VerticalAlignment::Top => y + (row.height - cell.style.font_size).max(0.0),
@@ -943,6 +967,16 @@ fn render_sheet_columns(
     }
 }
 
+fn has_rtl_base_direction(text: &str) -> bool {
+    text.chars()
+        .find_map(|character| match bidi_class(character) {
+            BidiClass::R | BidiClass::AL => Some(true),
+            BidiClass::L => Some(false),
+            _ => None,
+        })
+        .unwrap_or(false)
+}
+
 fn advance_xlsx_row(doc: &mut PdfDocument, page_index: &mut usize, y: &mut f32, row_height: f32) {
     if *y - row_height < MARGIN_BOTTOM {
         *page_index = doc.pages().len();
@@ -955,9 +989,10 @@ fn advance_xlsx_row(doc: &mut PdfDocument, page_index: &mut usize, y: &mut f32, 
 #[cfg(test)]
 mod tests {
     use super::{
-        column_groups, column_index_from_ref, jpeg_dimensions, parse_rgb_color,
-        parse_vertical_alignment, read_column_widths, read_merge_ranges, read_sheet_rows,
-        relationship_id, CellStyle, VerticalAlignment, XlsxStyles,
+        column_groups, column_index_from_ref, has_rtl_base_direction, jpeg_dimensions,
+        parse_horizontal_alignment, parse_rgb_color, parse_vertical_alignment, read_column_widths,
+        read_merge_ranges, read_sheet_rows, relationship_id, CellStyle, HorizontalAlignment,
+        VerticalAlignment, XlsxStyles,
     };
 
     #[test]
@@ -1091,5 +1126,33 @@ mod tests {
             VerticalAlignment::Bottom
         );
         assert_eq!(parse_vertical_alignment(None), VerticalAlignment::Bottom);
+    }
+
+    #[test]
+    fn distinguishes_horizontal_alignment_values() {
+        assert_eq!(
+            parse_horizontal_alignment(Some("left")),
+            HorizontalAlignment::Left
+        );
+        assert_eq!(
+            parse_horizontal_alignment(Some("center")),
+            HorizontalAlignment::Center
+        );
+        assert_eq!(
+            parse_horizontal_alignment(Some("right")),
+            HorizontalAlignment::Right
+        );
+        assert_eq!(
+            parse_horizontal_alignment(None),
+            HorizontalAlignment::General
+        );
+    }
+
+    #[test]
+    fn detects_rtl_base_direction_for_general_alignment() {
+        assert!(has_rtl_base_direction("كتاب برمجة"));
+        assert!(has_rtl_base_direction("₪120 ספר קוד"));
+        assert!(!has_rtl_base_direction("Programming Book"));
+        assert!(!has_rtl_base_direction("50 SAR"));
     }
 }

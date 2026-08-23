@@ -21,4 +21,5 @@ rustybuzz = "0.20"
 subsetter = "=0.2.3"
 ttf-parser = "0.25"
 thiserror = "2"
+unicode-bidi = "0.3"
 zip = { version = "2.2", default-features = false, features = ["deflate"] }

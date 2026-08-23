@@ -561,6 +561,27 @@ fn shape_text(text: &str, font_data: &[u8]) -> Option<ShapedText> {
     })
 }
 
+pub(crate) fn styled_text_width(text: &str, font_size: f32, bold: bool, italic: bool) -> f32 {
+    let fonts = crate::registered_fonts();
+    split_font_runs(text, &fonts, bold, italic)
+        .into_iter()
+        .map(|run| {
+            let Some(font_index) = run.font_index else {
+                return run.text.chars().count() as f32 * font_size * 0.5;
+            };
+            let Some(shaped) = shape_text(&run.text, &fonts[font_index].data) else {
+                return run.text.chars().count() as f32 * font_size * 0.5;
+            };
+            let scale = font_size / shaped.units_per_em as f32;
+            shaped
+                .glyphs
+                .iter()
+                .map(|glyph| glyph.x_advance as f32 * scale)
+                .sum()
+        })
+        .sum()
+}
+
 fn text_for_cluster(text: &str, glyphs: &[ShapedGlyph], index: usize) -> String {
     let start = glyphs[index].cluster.min(text.len());
     let end = glyphs
