@@ -41,6 +41,20 @@ enum PdfOp {
         color: PdfColor,
         width: f32,
     },
+    Image {
+        image_id: usize,
+        x: f32,
+        y: f32,
+        width: f32,
+        height: f32,
+    },
+}
+
+#[derive(Debug, Clone)]
+struct PdfJpegImage {
+    data: Vec<u8>,
+    width: u16,
+    height: u16,
 }
 
 #[derive(Debug, Clone)]
@@ -98,16 +112,40 @@ impl PdfPage {
             width,
         });
     }
+
+    pub fn add_image(&mut self, image_id: usize, x: f32, y: f32, width: f32, height: f32) {
+        self.ops.push(PdfOp::Image {
+            image_id,
+            x,
+            y,
+            width,
+            height,
+        });
+    }
 }
 
 #[derive(Debug, Default, Clone)]
 pub struct PdfDocument {
     pages: Vec<PdfPage>,
+    jpeg_images: Vec<PdfJpegImage>,
 }
 
 impl PdfDocument {
     pub fn new() -> Self {
-        Self { pages: Vec::new() }
+        Self {
+            pages: Vec::new(),
+            jpeg_images: Vec::new(),
+        }
+    }
+
+    pub fn add_jpeg_image(&mut self, data: Vec<u8>, width: u16, height: u16) -> usize {
+        let image_id = self.jpeg_images.len();
+        self.jpeg_images.push(PdfJpegImage {
+            data,
+            width,
+            height,
+        });
+        image_id
     }
 
     pub fn add_page(&mut self, width: f32, height: f32) -> &mut PdfPage {
@@ -132,9 +170,22 @@ impl PdfDocument {
         objects.push(b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>".to_vec());
         objects.push(b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>".to_vec());
 
+        for image in &self.jpeg_images {
+            let mut image_object = format!(
+                "<< /Type /XObject /Subtype /Image /Width {} /Height {} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length {} >>\nstream\n",
+                image.width,
+                image.height,
+                image.data.len()
+            )
+            .into_bytes();
+            image_object.extend_from_slice(&image.data);
+            image_object.extend_from_slice(b"\nendstream");
+            objects.push(image_object);
+        }
+
         let mut page_ids = Vec::with_capacity(page_count);
         for (page_index, page) in self.pages.iter().enumerate() {
-            let content_id = 5 + page_index * 2;
+            let content_id = 5 + self.jpeg_images.len() + page_index * 2;
             let page_id = content_id + 1;
             page_ids.push(page_id);
 
@@ -150,9 +201,16 @@ impl PdfDocument {
             content_object.extend_from_slice(b"\nendstream");
             objects.push(content_object);
 
+            let xobjects = self
+                .jpeg_images
+                .iter()
+                .enumerate()
+                .map(|(index, _)| format!("/Im{} {} 0 R", index + 1, index + 5))
+                .collect::<Vec<_>>()
+                .join(" ");
             let page_object = format!(
-                "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {:.2} {:.2}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents {} 0 R >>",
-                page.width, page.height, content_id
+                "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {:.2} {:.2}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> /XObject << {} >> >> /Contents {} 0 R >>",
+                page.width, page.height, xobjects, content_id
             );
             objects.push(page_object.into_bytes());
         }
@@ -259,6 +317,22 @@ fn write_content_stream(page: &PdfPage) -> Vec<u8> {
                     y2
                 ));
             }
+            PdfOp::Image {
+                image_id,
+                x,
+                y,
+                width,
+                height,
+            } => {
+                content.push_str(&format!(
+                    "q {:.2} 0 0 {:.2} {:.2} {:.2} cm /Im{} Do Q\n",
+                    width,
+                    height,
+                    x,
+                    y,
+                    image_id + 1
+                ));
+            }
         }
     }
     content.into_bytes()
@@ -282,4 +356,23 @@ fn escape_pdf_text(text: &str) -> String {
         }
     }
     result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::PdfDocument;
+
+    #[test]
+    fn writes_jpeg_image_xobject_and_draw_operation() {
+        let mut document = PdfDocument::new();
+        let image_id = document.add_jpeg_image(vec![0xff, 0xd8, 0xff, 0xd9], 2, 3);
+        document
+            .add_page(100.0, 100.0)
+            .add_image(image_id, 10.0, 20.0, 30.0, 40.0);
+
+        let pdf = String::from_utf8_lossy(&document.to_bytes()).into_owned();
+        assert!(pdf.contains("/Filter /DCTDecode"));
+        assert!(pdf.contains("/Width 2 /Height 3"));
+        assert!(pdf.contains("30.00 0 0 40.00 10.00 20.00 cm /Im1 Do"));
+    }
 }
