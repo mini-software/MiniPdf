@@ -9,7 +9,7 @@
 
 .EXAMPLE
     .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx
-    .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx -Engine office -Filter "classic180" -ForceReference
+    .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx -Engine o365 -Filter "classic180" -ForceReference
     .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx -Engine libre
     .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format docx -Filter "classic01"
     .\scripts\Run-Rust-Benchmark.ps1 -Suite issue -Format xlsx
@@ -21,8 +21,8 @@ param(
     [string]$Suite = "classic",
     [ValidateSet("xlsx", "docx", "pptx")]
     [string]$Format = "xlsx",
-    [ValidateSet("office", "libre")]
-    [string]$Engine = "office",
+    [ValidateSet("o365", "office", "libre")]
+    [string]$Engine = "o365",
     [string]$Filter,
     [int]$MaxCases = 0,
     [int]$MaxComparePages = 0,
@@ -94,10 +94,11 @@ $Defaults = @{
 }
 
 $Config = $Defaults["$Suite`:$Format"]
+$UsesMicrosoft365 = $Engine -in @("o365", "office")
 $SourceDir = Resolve-RepoPath $(if ($SourceDir) { $SourceDir } else { $Config.Source })
-$DefaultReference = if ($Engine -eq "office") { $Config.OfficeReference } else { $Config.LibreReference }
+$DefaultReference = if ($UsesMicrosoft365) { $Config.OfficeReference } else { $Config.LibreReference }
 $ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $DefaultReference })
-$ReferenceLabel = if ($Engine -eq "office") { $Config.OfficeLabel } else { "LibreOffice Reference" }
+$ReferenceLabel = if ($UsesMicrosoft365) { $Config.OfficeLabel } else { "LibreOffice Reference" }
 $IsFocusedRun = -not [string]::IsNullOrWhiteSpace($Filter) -or $MaxCases -gt 0
 $DefaultArtifactRoot = "artifacts/rust-benchmark/$Suite/$Format"
 if ($IsFocusedRun) {
@@ -114,7 +115,7 @@ if (-not (Test-Path $Cargo)) { $Cargo = (Get-Command cargo -ErrorAction Stop).So
 if (-not (Test-Path $Python)) { $Python = (Get-Command python -ErrorAction Stop).Source }
 
 $CargoManifest = Join-Path $RepoRoot "minipdf-rs/Cargo.toml"
-$ReferenceScript = Resolve-RepoPath $(if ($Engine -eq "office") { $Config.OfficeReferenceScript } else { $Config.LibreReferenceScript })
+$ReferenceScript = Resolve-RepoPath $(if ($UsesMicrosoft365) { $Config.OfficeReferenceScript } else { $Config.LibreReferenceScript })
 $CompareScript = Join-Path $RepoRoot "tests/MiniPdf.Benchmark/compare_pdfs.py"
 $ComparisonManifest = Join-Path $ReportDir "comparison_manifest.json"
 $CoverageManifest = Join-Path $ReportDir "benchmark_coverage.json"

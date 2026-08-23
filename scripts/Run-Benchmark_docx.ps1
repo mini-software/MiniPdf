@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    One-click DOCX benchmark: generate DOCX -> convert to PDF (MiniPdf + LibreOffice) -> compare -> report.
+    One-click DOCX benchmark: generate DOCX -> convert to PDF (MiniPdf + Microsoft 365) -> compare -> report.
 
 .DESCRIPTION
     This script orchestrates the full MiniPdf DOCX self-evolution pipeline on Windows.
@@ -20,8 +20,8 @@ param(
     [switch]$SkipInstall,
     [switch]$WithOffice,
     [switch]$SkipOffice,
-    [ValidateSet("libre", "office")]
-    [string]$Engine = "office",
+    [ValidateSet("libre", "office", "o365")]
+    [string]$Engine = "o365",
     [string]$Filter,
     [string]$SourceDir,
     [string]$MiniPdfDir,
@@ -56,7 +56,7 @@ Write-Host "============================================================`n" -For
 # Step 0: Install Python dependencies
 if (-not $SkipInstall) {
     Write-Host "[Step 0] Installing Python dependencies..." -ForegroundColor Yellow
-    pip install python-docx pymupdf Pillow --quiet 2>$null
+    pip install python-docx pymupdf Pillow pywin32 --quiet 2>$null
     if ($LASTEXITCODE -ne 0) {
         Write-Host "  WARNING: pip install had issues. Continuing anyway..." -ForegroundColor DarkYellow
     } else {
@@ -72,7 +72,7 @@ if ($SkipMiniPdf) { $pyArgs += "--skip-minipdf" }
 if ($SkipReference) { $pyArgs += "--skip-reference" }
 if ($WithOffice) { $pyArgs += "--with-office" }
 if ($SkipOffice) { $pyArgs += "--skip-office" }
-if ($Engine -ne "office") { $pyArgs += "--engine"; $pyArgs += $Engine }
+if ($Engine -ne "o365") { $pyArgs += "--engine"; $pyArgs += $Engine }
 if ($Filter) { $pyArgs += "--filter"; $pyArgs += $Filter }
 if ($SourceDir) { $pyArgs += "--source-dir"; $pyArgs += (Resolve-BenchmarkPath $SourceDir) }
 if ($MiniPdfDir) { $pyArgs += "--minipdf-dir"; $pyArgs += (Resolve-BenchmarkPath $MiniPdfDir) }

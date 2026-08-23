@@ -1,18 +1,18 @@
 """
 Automated benchmark test: generates Excel files, converts them to PDF
-via MiniPdf and LibreOffice, compares the results, and produces a report.
+via MiniPdf and Microsoft 365 by default, compares the results, and produces a report.
 
 This is the single entry point for the full "self-evolution" pipeline.
 
 Prerequisites:
-    pip install openpyxl pymupdf
-    LibreOffice installed (for reference PDF generation)
+    pip install openpyxl pymupdf pywin32
+    Microsoft 365 Excel installed (default reference engine)
     .NET 9 SDK (for MiniPdf)
 
 Usage:
     python run_benchmark.py                   # full pipeline
     python run_benchmark.py --skip-generate   # skip Excel generation
-    python run_benchmark.py --skip-reference   # skip LibreOffice conversion
+    python run_benchmark.py --skip-reference   # skip reference conversion
     python run_benchmark.py --skip-minipdf     # skip MiniPdf conversion
     python run_benchmark.py --compare-only     # only run comparison (assumes PDFs exist)
 """
@@ -39,10 +39,12 @@ def configure_paths(args):
         XLSX_DIR = Path(args.source_dir).resolve()
     if args.minipdf_dir:
         MINIPDF_PDF_DIR = Path(args.minipdf_dir).resolve()
-    if args.reference_dir:
-        REFERENCE_PDF_DIR = Path(args.reference_dir).resolve()
     if args.office_dir:
         OFFICE_PDF_DIR = Path(args.office_dir).resolve()
+    if args.reference_dir:
+        REFERENCE_PDF_DIR = Path(args.reference_dir).resolve()
+    elif args.engine in {"o365", "office"}:
+        REFERENCE_PDF_DIR = OFFICE_PDF_DIR
     if args.report_dir:
         REPORT_DIR = Path(args.report_dir).resolve()
 
@@ -84,9 +86,9 @@ def step_generate_minipdf_pdfs(filter_pattern: str = None):
     return run(cmd, cwd=str(scripts_dir))
 
 
-def step_generate_reference_pdfs(filter_pattern: str = None, engine: str = "libre", force: bool = False):
+def step_generate_reference_pdfs(filter_pattern: str = None, engine: str = "o365", force: bool = False):
     """Step 3: Convert Excel files to PDF using the chosen reference engine."""
-    if engine == "office":
+    if engine in {"o365", "office"}:
         banner("Step 3: Convert Excel -> PDF (Office / Excel COM Reference)")
         cmd = [sys.executable, "generate_office_pdfs.py",
                "--xlsx-dir", str(XLSX_DIR.resolve()),
@@ -200,8 +202,8 @@ def main():
     parser.add_argument("--skip-reference", action="store_true", help="Skip reference conversion")
     parser.add_argument("--force-reference", action="store_true",
                         help="Overwrite existing reference PDFs instead of reusing them")
-    parser.add_argument("--engine", choices=["libre", "office"], default="office",
-                        help="Reference engine: office (MS Office COM, default) or libre (LibreOffice)")
+    parser.add_argument("--engine", choices=["libre", "office", "o365"], default="o365",
+                        help="Reference engine: o365 (Microsoft 365 COM, default) or libre (LibreOffice); office is an alias for o365")
     parser.add_argument("--with-office", action="store_true",
                         help="Also convert via Office (Excel COM) and include in comparison")
     parser.add_argument("--skip-office", action="store_true", help="Skip Office conversion (when --with-office)")
@@ -254,7 +256,7 @@ def main():
         print(f"  Office PDFs:   {OFFICE_PDF_DIR.resolve()}")
     print(f"  Reports:       {REPORT_DIR.resolve()}")
 
-    reference_label = args.reference_label or ("Office Reference" if args.engine == "office" else "LibreOffice Reference")
+    reference_label = args.reference_label or ("Microsoft 365 Excel Reference" if args.engine in {"o365", "office"} else "LibreOffice Reference")
     ai_kwargs = dict(ai_compare=args.ai_compare, ai_max_pages=args.ai_max_pages, ai_threshold=args.ai_threshold)
     compare_kwargs = dict(**ai_kwargs, use_office=args.with_office)
     compare_kwargs.update(
