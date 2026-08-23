@@ -17,5 +17,8 @@ rust-version = "1.82"
 [workspace.dependencies]
 clap = { version = "4.5", features = ["derive"] }
 roxmltree = "0.20"
+rustybuzz = "0.20"
+subsetter = "=0.2.3"
+ttf-parser = "0.25"
 thiserror = "2"
 zip = { version = "2.2", default-features = false, features = ["deflate"] }
