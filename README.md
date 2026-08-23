@@ -21,7 +21,7 @@ English | <a href="documents/README.zh-CN.md">简体中文</a> | <a href="docume
 
 ---
 
-A minimal, lightweight .NET library for converting office files to PDF.
+A minimal, lightweight .NET + Rust library and CLI for converting office files to PDF.
 
 <div align="center">
 <img src="https://github.com/user-attachments/assets/41b7e6a7-e194-43f7-aaca-59e9bdf56e10" alt="MiniPdf Demo — Excel/Word/PowerPoint to PDF conversion" />

@@ -8,6 +8,18 @@ body:
       value: |
         Thanks for helping improve MiniPdf. Please provide enough detail for us to reproduce the issue.
 
+  - type: dropdown
+    id: implementation
+    attributes:
+      label: MiniPdf implementation
+      description: Which language implementation is affected?
+      options:
+        - .NET (C#)
+        - Rust
+        - Both / shared
+    validations:
+      required: true
+
   - type: input
     id: version
     attributes:

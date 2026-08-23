@@ -3,6 +3,18 @@ description: Suggest a new MiniPdf capability or improvement.
 title: "[Feature]: "
 labels: ["enhancement"]
 body:
+  - type: dropdown
+    id: implementation
+    attributes:
+      label: MiniPdf implementation
+      description: Which language implementation should this feature target?
+      options:
+        - .NET (C#)
+        - Rust
+        - Both / shared
+    validations:
+      required: true
+
   - type: textarea
     id: problem
     attributes:
