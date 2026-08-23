@@ -3,7 +3,7 @@ use std::io::{Cursor, Read};
 
 use zip::ZipArchive;
 
-use crate::pdf::{PdfColor, PdfDocument};
+use crate::pdf::{PdfColor, PdfDocument, PdfTextStyle};
 use crate::{read_zip_text, text_width, Result};
 
 const PAGE_WIDTH: f32 = 612.0;
@@ -19,13 +19,15 @@ const COL_WIDTH: f32 = 47.4;
 struct CellData {
     text: String,
     is_numeric: bool,
-    bold: bool,
+    style: CellStyle,
 }
 
 #[derive(Debug, Clone)]
 struct SheetData {
     rows: Vec<RowData>,
     images: Vec<SheetImage>,
+    column_widths: Vec<f32>,
+    merges: Vec<MergeRange>,
 }
 
 #[derive(Debug, Clone)]
@@ -35,9 +37,63 @@ struct RowData {
     cells: Vec<CellData>,
 }
 
+#[derive(Debug, Clone, Copy)]
+struct CellStyle {
+    bold: bool,
+    italic: bool,
+    font_size: f32,
+    font_color: PdfColor,
+    fill_color: Option<PdfColor>,
+    border_color: Option<PdfColor>,
+    centered: bool,
+    vertically_centered: bool,
+}
+
+impl Default for CellStyle {
+    fn default() -> Self {
+        Self {
+            bold: false,
+            italic: false,
+            font_size: CELL_FONT_SIZE,
+            font_color: PdfColor::BLACK,
+            fill_color: None,
+            border_color: None,
+            centered: false,
+            vertically_centered: false,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct FontStyle {
+    bold: bool,
+    italic: bool,
+    size: f32,
+    color: PdfColor,
+}
+
+impl Default for FontStyle {
+    fn default() -> Self {
+        Self {
+            bold: false,
+            italic: false,
+            size: CELL_FONT_SIZE,
+            color: PdfColor::BLACK,
+        }
+    }
+}
+
 #[derive(Debug, Default)]
 struct XlsxStyles {
-    cell_bold: Vec<bool>,
+    cells: Vec<CellStyle>,
+}
+
+#[derive(Debug, Clone, Copy)]
+struct MergeRange {
+    start_col: usize,
+    end_col: usize,
+    start_row: usize,
+    end_row: usize,
 }
 
 #[derive(Debug, Clone)]
@@ -74,7 +130,14 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
         };
         let images = read_sheet_images(&mut archive, &path, &sheet_xml)?;
         let rows = read_sheet_rows(&sheet_xml, &shared_strings, &styles)?;
-        sheets.push(SheetData { rows, images });
+        let column_widths = read_column_widths(&sheet_xml)?;
+        let merges = read_merge_ranges(&sheet_xml)?;
+        sheets.push(SheetData {
+            rows,
+            images,
+            column_widths,
+            merges,
+        });
     }
 
     if sheets.is_empty() {
@@ -82,6 +145,8 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             sheets.push(SheetData {
                 rows: read_sheet_rows(&sheet_xml, &shared_strings, &styles)?,
                 images: read_sheet_images(&mut archive, "xl/worksheets/sheet1.xml", &sheet_xml)?,
+                column_widths: read_column_widths(&sheet_xml)?,
+                merges: read_merge_ranges(&sheet_xml)?,
             });
         }
     }
@@ -94,14 +159,94 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
                 cells: vec![CellData {
                     text: "Empty XLSX workbook".to_owned(),
                     is_numeric: false,
-                    bold: false,
+                    style: CellStyle::default(),
                 }],
             }],
             images: Vec::new(),
+            column_widths: Vec::new(),
+            merges: Vec::new(),
         });
     }
 
     Ok(sheets)
+}
+
+fn read_column_widths(sheet_xml: &str) -> Result<Vec<f32>> {
+    let xml = roxmltree::Document::parse(sheet_xml)?;
+    let mut widths = Vec::new();
+    for column in xml.descendants().filter(|node| node.has_tag_name("col")) {
+        let Some(min) = column
+            .attribute("min")
+            .and_then(|value| value.parse::<usize>().ok())
+        else {
+            continue;
+        };
+        let max = column
+            .attribute("max")
+            .and_then(|value| value.parse::<usize>().ok())
+            .unwrap_or(min);
+        let width = if matches!(column.attribute("hidden"), Some("1" | "true")) {
+            0.0
+        } else {
+            column
+                .attribute("width")
+                .and_then(|value| value.parse::<f32>().ok())
+                .filter(|value| *value > 0.0)
+                .map(excel_column_width_to_points)
+                .unwrap_or(COL_WIDTH)
+        };
+        if widths.len() < max {
+            widths.resize(max, COL_WIDTH);
+        }
+        for column_index in min..=max {
+            widths[column_index - 1] = width;
+        }
+    }
+    Ok(widths)
+}
+
+fn excel_column_width_to_points(char_units: f32) -> f32 {
+    char_units * 5.62
+}
+
+fn read_merge_ranges(sheet_xml: &str) -> Result<Vec<MergeRange>> {
+    let xml = roxmltree::Document::parse(sheet_xml)?;
+    Ok(xml
+        .descendants()
+        .filter(|node| node.has_tag_name("mergeCell"))
+        .filter_map(|node| node.attribute("ref"))
+        .filter_map(|reference| {
+            let (start, end) = reference.split_once(':')?;
+            let (start_col, start_row) = cell_position(start)?;
+            let (end_col, end_row) = cell_position(end)?;
+            Some(MergeRange {
+                start_col,
+                end_col,
+                start_row,
+                end_row,
+            })
+        })
+        .collect())
+}
+
+fn column_groups(widths: &[f32], usable_width: f32) -> Vec<(usize, usize)> {
+    let mut groups = Vec::new();
+    let mut start = 0;
+    while start < widths.len() {
+        let mut end = start;
+        let mut group_width = 0.0;
+        while end < widths.len() {
+            let width = widths[end];
+            if end > start && group_width + width > usable_width {
+                break;
+            }
+            group_width += width;
+            end += 1;
+        }
+        groups.push((start, end.max(start + 1)));
+        start = end.max(start + 1);
+    }
+    groups
 }
 
 fn read_sheet_images<R: std::io::Read + std::io::Seek>(
@@ -301,18 +446,79 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
         return Ok(XlsxStyles::default());
     };
     let xml = roxmltree::Document::parse(&styles_xml)?;
-    let font_bold = xml
+    let fonts = xml
         .descendants()
         .find(|node| node.has_tag_name("fonts"))
         .map(|fonts| {
             fonts
                 .children()
                 .filter(|node| node.has_tag_name("font"))
-                .map(|font| font.children().any(|node| node.has_tag_name("b")))
+                .map(|font| FontStyle {
+                    bold: font
+                        .children()
+                        .any(|node| node.has_tag_name("b") && node.attribute("val") != Some("0")),
+                    italic: font
+                        .children()
+                        .any(|node| node.has_tag_name("i") && node.attribute("val") != Some("0")),
+                    size: font
+                        .children()
+                        .find(|node| node.has_tag_name("sz"))
+                        .and_then(|node| node.attribute("val"))
+                        .and_then(|value| value.parse::<f32>().ok())
+                        .unwrap_or(CELL_FONT_SIZE),
+                    color: font
+                        .children()
+                        .find(|node| node.has_tag_name("color"))
+                        .and_then(|node| node.attribute("rgb"))
+                        .and_then(parse_rgb_color)
+                        .unwrap_or(PdfColor::BLACK),
+                })
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
-    let cell_bold = xml
+    let fills = xml
+        .descendants()
+        .find(|node| node.has_tag_name("fills"))
+        .map(|fills| {
+            fills
+                .children()
+                .filter(|node| node.has_tag_name("fill"))
+                .map(|fill| {
+                    fill.descendants()
+                        .find(|node| node.has_tag_name("patternFill"))
+                        .filter(|node| node.attribute("patternType") == Some("solid"))
+                        .and_then(|pattern| {
+                            pattern.children().find(|node| node.has_tag_name("fgColor"))
+                        })
+                        .and_then(|color| color.attribute("rgb"))
+                        .and_then(parse_rgb_color)
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let borders = xml
+        .descendants()
+        .find(|node| node.has_tag_name("borders"))
+        .map(|borders| {
+            borders
+                .children()
+                .filter(|node| node.has_tag_name("border"))
+                .map(|border| {
+                    border
+                        .children()
+                        .find(|side| side.attribute("style").is_some())
+                        .map(|side| {
+                            side.children()
+                                .find(|node| node.has_tag_name("color"))
+                                .and_then(|node| node.attribute("rgb"))
+                                .and_then(parse_rgb_color)
+                                .unwrap_or(PdfColor::BLACK)
+                        })
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let cells = xml
         .descendants()
         .find(|node| node.has_tag_name("cellXfs"))
         .map(|cell_xfs| {
@@ -320,15 +526,47 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                 .children()
                 .filter(|node| node.has_tag_name("xf"))
                 .map(|xf| {
-                    xf.attribute("fontId")
+                    let font = xf
+                        .attribute("fontId")
                         .and_then(|value| value.parse::<usize>().ok())
-                        .and_then(|font_id| font_bold.get(font_id).copied())
-                        .unwrap_or(false)
+                        .and_then(|font_id| fonts.get(font_id).copied())
+                        .unwrap_or_default();
+                    let fill_color = xf
+                        .attribute("fillId")
+                        .and_then(|value| value.parse::<usize>().ok())
+                        .and_then(|fill_id| fills.get(fill_id).copied().flatten());
+                    let border_color = xf
+                        .attribute("borderId")
+                        .and_then(|value| value.parse::<usize>().ok())
+                        .and_then(|border_id| borders.get(border_id).copied().flatten());
+                    let alignment = xf.children().find(|node| node.has_tag_name("alignment"));
+                    CellStyle {
+                        bold: font.bold,
+                        italic: font.italic,
+                        font_size: font.size,
+                        font_color: font.color,
+                        fill_color,
+                        border_color,
+                        centered: alignment.and_then(|node| node.attribute("horizontal"))
+                            == Some("center"),
+                        vertically_centered: alignment.and_then(|node| node.attribute("vertical"))
+                            == Some("center"),
+                    }
                 })
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
-    Ok(XlsxStyles { cell_bold })
+    Ok(XlsxStyles { cells })
+}
+
+fn parse_rgb_color(value: &str) -> Option<PdfColor> {
+    let rgb = value.get(value.len().checked_sub(6)?..)?;
+    let number = u32::from_str_radix(rgb, 16).ok()?;
+    Some(PdfColor::new(
+        ((number >> 16) & 0xff) as f32 / 255.0,
+        ((number >> 8) & 0xff) as f32 / 255.0,
+        (number & 0xff) as f32 / 255.0,
+    ))
 }
 
 fn read_shared_strings<R: std::io::Read + std::io::Seek>(
@@ -473,11 +711,11 @@ fn read_cell_value(
     styles: &XlsxStyles,
 ) -> CellData {
     let cell_type = cell.attribute("t");
-    let bold = cell
+    let style = cell
         .attribute("s")
         .and_then(|value| value.parse::<usize>().ok())
-        .and_then(|style_id| styles.cell_bold.get(style_id).copied())
-        .unwrap_or(false);
+        .and_then(|style_id| styles.cells.get(style_id).copied())
+        .unwrap_or_default();
     if cell_type == Some("inlineStr") {
         let text = cell
             .descendants()
@@ -487,7 +725,7 @@ fn read_cell_value(
         return CellData {
             text,
             is_numeric: false,
-            bold,
+            style,
         };
     }
 
@@ -506,15 +744,27 @@ fn read_cell_value(
         return CellData {
             text,
             is_numeric: false,
-            bold,
+            style,
         };
     }
 
     CellData {
         text: value.to_owned(),
         is_numeric: matches!(cell_type, None | Some("n")) && value.parse::<f64>().is_ok(),
-        bold,
+        style,
     }
+}
+
+fn cell_position(cell_ref: &str) -> Option<(usize, usize)> {
+    let col = column_index_from_ref(cell_ref)?;
+    let row = cell_ref
+        .chars()
+        .skip_while(|ch| ch.is_ascii_alphabetic() || *ch == '$')
+        .collect::<String>()
+        .parse::<usize>()
+        .ok()?
+        .checked_sub(1)?;
+    Some((col, row))
 }
 
 fn column_index_from_ref(cell_ref: &str) -> Option<usize> {
@@ -541,7 +791,6 @@ fn render_xlsx(doc: &mut PdfDocument, sheets: &[SheetData]) {
 }
 
 fn render_sheet(doc: &mut PdfDocument, sheet: &SheetData, image_ids: &[usize]) {
-    let max_cols = ((PAGE_WIDTH - MARGIN_X * 2.0) / COL_WIDTH).floor() as usize;
     let column_count = sheet
         .rows
         .iter()
@@ -549,9 +798,11 @@ fn render_sheet(doc: &mut PdfDocument, sheet: &SheetData, image_ids: &[usize]) {
         .max()
         .unwrap_or(0)
         .max(1);
+    let mut widths = sheet.column_widths.clone();
+    widths.resize(column_count, COL_WIDTH);
 
-    for column_start in (0..column_count).step_by(max_cols) {
-        render_sheet_columns(doc, sheet, image_ids, column_start, max_cols);
+    for (column_start, column_end) in column_groups(&widths, PAGE_WIDTH - MARGIN_X * 2.0) {
+        render_sheet_columns(doc, sheet, image_ids, &widths, column_start, column_end);
     }
 }
 
@@ -559,8 +810,9 @@ fn render_sheet_columns(
     doc: &mut PdfDocument,
     sheet: &SheetData,
     image_ids: &[usize],
+    column_widths: &[f32],
     column_start: usize,
-    max_cols: usize,
+    column_end: usize,
 ) {
     let mut page_index = doc.pages().len();
     doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
@@ -582,36 +834,80 @@ fn render_sheet_columns(
         let page = doc.page_mut(page_index).expect("page index is valid");
 
         for (image, image_id) in sheet.images.iter().zip(image_ids).filter(|(image, _)| {
-            image.row == row.index
-                && image.col >= column_start
-                && image.col < column_start + max_cols
+            image.row == row.index && image.col >= column_start && image.col < column_end
         }) {
-            let x = MARGIN_X + (image.col - column_start) as f32 * COL_WIDTH + image.col_offset;
+            let x = MARGIN_X
+                + column_widths[column_start..image.col].iter().sum::<f32>()
+                + image.col_offset;
             let top = y + row.height - image.row_offset;
             page.add_image(*image_id, x, top - image.height, image.width, image.height);
         }
 
-        for (page_col_index, cell) in row
+        let mut cell_x = MARGIN_X;
+        for (column_index, cell) in row
             .cells
             .iter()
-            .skip(column_start)
-            .take(max_cols)
             .enumerate()
+            .skip(column_start)
+            .take(column_end - column_start)
         {
-            let cell_x = MARGIN_X + page_col_index as f32 * COL_WIDTH;
+            let merge = sheet.merges.iter().find(|merge| {
+                merge.start_row == row.index
+                    && merge.start_col == column_index
+                    && merge.end_row >= row.index
+            });
+            let merge_end = merge
+                .map(|merge| (merge.end_col + 1).min(column_end))
+                .unwrap_or(column_index + 1);
+            let cell_width = column_widths[column_index..merge_end].iter().sum::<f32>();
+            if let Some(fill) = cell.style.fill_color {
+                page.add_rect(cell_x, y, cell_width, row.height, fill);
+            }
+            if let Some(border) = cell.style.border_color {
+                page.add_line(cell_x, y, cell_x + cell_width, y, border, 0.5);
+                page.add_line(
+                    cell_x,
+                    y + row.height,
+                    cell_x + cell_width,
+                    y + row.height,
+                    border,
+                    0.5,
+                );
+                page.add_line(cell_x, y, cell_x, y + row.height, border, 0.5);
+                page.add_line(
+                    cell_x + cell_width,
+                    y,
+                    cell_x + cell_width,
+                    y + row.height,
+                    border,
+                    0.5,
+                );
+            }
+            let text_width = text_width(&cell.text, cell.style.font_size);
             let x = if cell.is_numeric {
-                cell_x + COL_WIDTH - text_width(&cell.text, CELL_FONT_SIZE)
+                cell_x + cell_width - text_width - 3.0
+            } else if cell.style.centered {
+                cell_x + (cell_width - text_width).max(0.0) / 2.0
             } else {
                 cell_x + 3.0
             };
-            page.add_text(
+            let text_y = if cell.style.vertically_centered {
+                y + (row.height - cell.style.font_size).max(0.0) / 2.0 + 1.0
+            } else {
+                y + 1.0
+            };
+            page.add_styled_text(
                 &cell.text,
                 x,
-                y + 1.0,
-                CELL_FONT_SIZE,
-                PdfColor::BLACK,
-                cell.bold,
+                text_y,
+                cell.style.font_size,
+                PdfTextStyle {
+                    color: cell.style.font_color,
+                    bold: cell.style.bold,
+                    italic: cell.style.italic,
+                },
             );
+            cell_x += column_widths[column_index];
         }
         next_row_index = row.index + 1;
     }
@@ -629,7 +925,8 @@ fn advance_xlsx_row(doc: &mut PdfDocument, page_index: &mut usize, y: &mut f32, 
 #[cfg(test)]
 mod tests {
     use super::{
-        column_index_from_ref, jpeg_dimensions, read_sheet_rows, relationship_id, XlsxStyles,
+        column_groups, column_index_from_ref, jpeg_dimensions, parse_rgb_color, read_column_widths,
+        read_merge_ranges, read_sheet_rows, relationship_id, CellStyle, XlsxStyles,
     };
 
     #[test]
@@ -654,12 +951,18 @@ mod tests {
     fn preserves_custom_row_height_and_bold_cell_style() {
         let xml = r#"<worksheet><sheetData><row r="1" ht="68"><c r="D1" s="1" t="inlineStr"><is><t>Product Name</t></is></c></row></sheetData></worksheet>"#;
         let styles = XlsxStyles {
-            cell_bold: vec![false, true],
+            cells: vec![
+                CellStyle::default(),
+                CellStyle {
+                    bold: true,
+                    ..CellStyle::default()
+                },
+            ],
         };
         let rows = read_sheet_rows(xml, &[], &styles).expect("worksheet XML is valid");
 
         assert_eq!(rows[0].height, 68.0);
-        assert!(rows[0].cells[3].bold);
+        assert!(rows[0].cells[3].style.bold);
     }
 
     #[test]
@@ -691,5 +994,29 @@ mod tests {
             relationship_id(children.next().unwrap()).as_deref(),
             Some("rId2")
         );
+    }
+
+    #[test]
+    fn uses_explicit_column_widths_for_horizontal_page_groups() {
+        let xml = r#"<worksheet><cols><col min="1" max="1" width="15"/><col min="2" max="2" width="20"/><col min="3" max="4" width="15"/><col min="5" max="5" width="22"/><col min="6" max="14" width="15"/></cols></worksheet>"#;
+        let widths = read_column_widths(xml).expect("worksheet XML is valid");
+        let groups = column_groups(&widths, 508.0);
+
+        assert_eq!(widths.len(), 14);
+        assert_eq!(groups, vec![(0, 5), (5, 11), (11, 14)]);
+    }
+
+    #[test]
+    fn reads_merged_ranges_and_argb_colors() {
+        let xml = r#"<worksheet><mergeCells><mergeCell ref="A1:N1"/></mergeCells></worksheet>"#;
+        let merges = read_merge_ranges(xml).expect("worksheet XML is valid");
+        let color = parse_rgb_color("004472C4").expect("ARGB color is valid");
+
+        assert_eq!(merges[0].start_col, 0);
+        assert_eq!(merges[0].end_col, 13);
+        assert_eq!(merges[0].start_row, 0);
+        assert_eq!(color.r, 68.0 / 255.0);
+        assert_eq!(color.g, 114.0 / 255.0);
+        assert_eq!(color.b, 196.0 / 255.0);
     }
 }
