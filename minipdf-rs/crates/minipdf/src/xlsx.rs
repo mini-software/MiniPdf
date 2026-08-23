@@ -46,7 +46,15 @@ struct CellStyle {
     fill_color: Option<PdfColor>,
     border_color: Option<PdfColor>,
     centered: bool,
-    vertically_centered: bool,
+    vertical_alignment: VerticalAlignment,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+enum VerticalAlignment {
+    Top,
+    Center,
+    #[default]
+    Bottom,
 }
 
 impl Default for CellStyle {
@@ -59,7 +67,7 @@ impl Default for CellStyle {
             fill_color: None,
             border_color: None,
             centered: false,
-            vertically_centered: false,
+            vertical_alignment: VerticalAlignment::Bottom,
         }
     }
 }
@@ -549,8 +557,9 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         border_color,
                         centered: alignment.and_then(|node| node.attribute("horizontal"))
                             == Some("center"),
-                        vertically_centered: alignment.and_then(|node| node.attribute("vertical"))
-                            == Some("center"),
+                        vertical_alignment: parse_vertical_alignment(
+                            alignment.and_then(|node| node.attribute("vertical")),
+                        ),
                     }
                 })
                 .collect::<Vec<_>>()
@@ -567,6 +576,14 @@ fn parse_rgb_color(value: &str) -> Option<PdfColor> {
         ((number >> 8) & 0xff) as f32 / 255.0,
         (number & 0xff) as f32 / 255.0,
     ))
+}
+
+fn parse_vertical_alignment(value: Option<&str>) -> VerticalAlignment {
+    match value {
+        Some("top") => VerticalAlignment::Top,
+        Some("center") => VerticalAlignment::Center,
+        _ => VerticalAlignment::Bottom,
+    }
 }
 
 fn read_shared_strings<R: std::io::Read + std::io::Seek>(
@@ -892,10 +909,10 @@ fn render_sheet_columns(
             } else {
                 cell_x + 3.0
             };
-            let text_y = if cell.style.vertically_centered {
-                y + (row.height - cell.style.font_size).max(0.0) / 2.0 + 1.0
-            } else {
-                y + 1.0
+            let text_y = match cell.style.vertical_alignment {
+                VerticalAlignment::Top => y + (row.height - cell.style.font_size).max(0.0),
+                VerticalAlignment::Center => y + (row.height - cell.style.font_size).max(0.0) / 2.0,
+                VerticalAlignment::Bottom => y + 1.0,
             };
             page.add_styled_text(
                 &cell.text,
@@ -926,8 +943,9 @@ fn advance_xlsx_row(doc: &mut PdfDocument, page_index: &mut usize, y: &mut f32, 
 #[cfg(test)]
 mod tests {
     use super::{
-        column_groups, column_index_from_ref, jpeg_dimensions, parse_rgb_color, read_column_widths,
-        read_merge_ranges, read_sheet_rows, relationship_id, CellStyle, XlsxStyles,
+        column_groups, column_index_from_ref, jpeg_dimensions, parse_rgb_color,
+        parse_vertical_alignment, read_column_widths, read_merge_ranges, read_sheet_rows,
+        relationship_id, CellStyle, VerticalAlignment, XlsxStyles,
     };
 
     #[test]
@@ -1031,5 +1049,22 @@ mod tests {
         assert_eq!(color.r, 68.0 / 255.0);
         assert_eq!(color.g, 114.0 / 255.0);
         assert_eq!(color.b, 196.0 / 255.0);
+    }
+
+    #[test]
+    fn distinguishes_top_center_and_bottom_alignment() {
+        assert_eq!(
+            parse_vertical_alignment(Some("top")),
+            VerticalAlignment::Top
+        );
+        assert_eq!(
+            parse_vertical_alignment(Some("center")),
+            VerticalAlignment::Center
+        );
+        assert_eq!(
+            parse_vertical_alignment(Some("bottom")),
+            VerticalAlignment::Bottom
+        );
+        assert_eq!(parse_vertical_alignment(None), VerticalAlignment::Bottom);
     }
 }
