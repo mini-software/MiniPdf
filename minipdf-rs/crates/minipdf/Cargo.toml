@@ -19,4 +19,5 @@ rustybuzz.workspace = true
 subsetter.workspace = true
 ttf-parser.workspace = true
 thiserror.workspace = true
+unicode-bidi.workspace = true
 zip.workspace = true

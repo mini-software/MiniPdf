@@ -1,0 +1,75 @@
+{
+  "fixture_scope": "shared-on-disk-fixtures",
+  "executes_dotnet_xunit": false,
+  "rust_supported_formats": [
+    "xlsx",
+    "docx"
+  ],
+  "unsupported_formats": [
+    "pptx"
+  ],
+  "selected_cases": 420.0,
+  "passed_conversions": 420.0,
+  "failed_conversions": 0.0,
+  "missing_references": 0.0,
+  "comparison_results": 420.0,
+  "comparison_completed": true,
+  "suites": [
+    {
+      "suite": "classic",
+      "format": "xlsx",
+      "report": "classic/xlsx/report/comparison_report.md",
+      "selected_cases": 191,
+      "passed_conversions": 191,
+      "failed_conversions": 0,
+      "missing_references": 0,
+      "comparison_completed": true,
+      "comparison_results": 191,
+      "max_compare_pages": 1,
+      "average_score": 0.8922455497382199,
+      "coverage_manifest": "artifacts/rust-benchmark/classic/xlsx/report/benchmark_coverage.json"
+    },
+    {
+      "suite": "classic",
+      "format": "docx",
+      "report": null,
+      "selected_cases": 180,
+      "passed_conversions": 180,
+      "failed_conversions": 0,
+      "missing_references": 0,
+      "comparison_completed": true,
+      "comparison_results": 180,
+      "max_compare_pages": 1,
+      "average_score": 0.8448994444444441,
+      "coverage_manifest": "artifacts/rust-benchmark/classic/docx/report/benchmark_coverage.json"
+    },
+    {
+      "suite": "issue",
+      "format": "xlsx",
+      "report": "issue/xlsx/report/comparison_report.md",
+      "selected_cases": 22,
+      "passed_conversions": 22,
+      "failed_conversions": 0,
+      "missing_references": 0,
+      "comparison_completed": true,
+      "comparison_results": 22,
+      "max_compare_pages": 1,
+      "average_score": 0.5303772727272729,
+      "coverage_manifest": "artifacts/rust-benchmark/issue/xlsx/report/benchmark_coverage.json"
+    },
+    {
+      "suite": "issue",
+      "format": "docx",
+      "report": null,
+      "selected_cases": 27,
+      "passed_conversions": 27,
+      "failed_conversions": 0,
+      "missing_references": 0,
+      "comparison_completed": true,
+      "comparison_results": 27,
+      "max_compare_pages": 1,
+      "average_score": 0.612125925925926,
+      "coverage_manifest": "artifacts/rust-benchmark/issue/docx/report/benchmark_coverage.json"
+    }
+  ]
+}
