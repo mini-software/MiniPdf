@@ -1043,8 +1043,12 @@ def compare_single(
     return result
 
 
-def generate_report(results: list[dict], report_dir: str):
+def generate_report(results: list[dict], report_dir: str, labels: dict | None = None):
     """Generate a markdown + JSON comparison report."""
+    labels = labels or {}
+    candidate_label = labels.get("candidate", "MiniPdf")
+    reference_label = labels.get("reference", "Reference")
+    office_label = labels.get("office", "Office")
     # JSON dump
     json_path = os.path.join(report_dir, "comparison_report.json")
     with open(json_path, "w", encoding="utf-8") as f:
@@ -1053,7 +1057,7 @@ def generate_report(results: list[dict], report_dir: str):
     # Markdown report
     md_path = os.path.join(report_dir, "comparison_report.md")
     with open(md_path, "w", encoding="utf-8") as f:
-        f.write("# MiniPdf vs Reference PDF Comparison Report\n\n")
+        f.write(f"# {candidate_label} vs {reference_label} PDF Comparison Report\n\n")
         f.write(f"Generated: {datetime.now().isoformat()}\n\n")
 
         # Summary table
@@ -1161,9 +1165,9 @@ def generate_report(results: list[dict], report_dir: str):
         f.write("## Visual Comparison\n\n")
         f.write("<table>\n")
         if has_office:
-            f.write("<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th><th>Office (Excel)</th></tr>\n")
+            f.write(f"<tr><th>{candidate_label}</th><th>{reference_label}</th><th>{office_label}</th></tr>\n")
         else:
-            f.write("<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>\n")
+            f.write(f"<tr><th>{candidate_label}</th><th>{reference_label}</th></tr>\n")
 
         for r in results:
             name = r["name"]
@@ -1206,16 +1210,16 @@ def generate_report(results: list[dict], report_dir: str):
                 mini_img = pg.get("minipdf_img")
                 ref_img  = pg.get("reference_img")
                 office_img = pg.get("office_img")
-                mini_td = (f'<img src="images/{mini_img}" width="{img_width}" alt="MiniPdf">'
+                mini_td = (f'<img src="images/{mini_img}" width="{img_width}" alt="{candidate_label}">'
                            if mini_img else "<i>missing</i>")
-                ref_td  = (f'<img src="images/{ref_img}" width="{img_width}" alt="Reference">'
+                ref_td  = (f'<img src="images/{ref_img}" width="{img_width}" alt="{reference_label}">'
                            if ref_img else "<i>missing</i>")
 
                 f.write(f"<tr>\n")
                 f.write(f"  <td>{mini_td}</td>\n")
                 f.write(f"  <td>{ref_td}</td>\n")
                 if has_office:
-                    office_td = (f'<img src="images/{office_img}" width="{img_width}" alt="Office">'
+                    office_td = (f'<img src="images/{office_img}" width="{img_width}" alt="{office_label}">'
                                  if office_img else "<i>missing</i>")
                     f.write(f"  <td>{office_td}</td>\n")
                 f.write(f"</tr>\n")
@@ -1458,7 +1462,7 @@ def main():
         with open(json_path, encoding="utf-8") as jf:
             results = json.load(jf)
         print(f"Loaded {len(results)} results from {json_path}")
-        generate_report(results, report_dir)
+        generate_report(results, report_dir, labels)
         avg = sum(r.get("overall_score", 0) for r in results) / len(results) if results else 0
         print(f"Report regenerated. Overall avg score: {avg:.4f}")
         return
@@ -1577,7 +1581,7 @@ def main():
     else:
         final_results = sorted(final_results, key=lambda r: natural_sort_key(r.get("name", "")))
 
-    generate_report(final_results, report_dir)
+    generate_report(final_results, report_dir, labels)
 
     # Print summary
     avg = sum(r.get("overall_score", 0) for r in final_results) / len(final_results) if final_results else 0
