@@ -8,6 +8,18 @@ body:
       value: |
         For broader discussion, ideas, or open-ended design topics, GitHub Discussions may be a better place.
 
+  - type: dropdown
+    id: implementation
+    attributes:
+      label: MiniPdf implementation
+      description: Which language implementation is your question about?
+      options:
+        - .NET (C#)
+        - Rust
+        - Both / shared
+    validations:
+      required: true
+
   - type: textarea
     id: question
     attributes:

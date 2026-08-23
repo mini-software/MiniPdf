@@ -52,6 +52,11 @@ report, side-by-side images, and pixel-difference heatmaps under
 `artifacts/rust-benchmark/<suite>/<format>` and fails on missing output or scores
 below `-MinimumScore`.
 
+Open the [Rust benchmark matrix](../artifacts/rust-benchmark/benchmark_matrix.md)
+to browse the published XLSX comparison reports and images. Canonical XLSX
+reports are version-controlled; candidate PDFs, logs, focused runs, and DOCX
+reports remain local build artifacts.
+
 ## Current Scope
 
 - Supports `.xlsx` and `.docx` package detection.

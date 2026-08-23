@@ -9,6 +9,18 @@ body:
         Use this when MiniPdf creates a PDF but the result is blank, incomplete, visually incorrect, or different from Office/LibreOffice output.
 
   - type: dropdown
+    id: implementation
+    attributes:
+      label: MiniPdf implementation
+      description: Which language implementation is affected?
+      options:
+        - .NET (C#)
+        - Rust
+        - Both / shared
+    validations:
+      required: true
+
+  - type: dropdown
     id: source-format
     attributes:
       label: Source document type

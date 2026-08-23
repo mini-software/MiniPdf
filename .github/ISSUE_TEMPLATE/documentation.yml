@@ -4,6 +4,19 @@ title: "[Docs]: "
 labels: ["documentation"]
 body:
   - type: dropdown
+    id: implementation
+    attributes:
+      label: MiniPdf implementation
+      description: Which language implementation does the documentation cover?
+      options:
+        - .NET (C#)
+        - Rust
+        - Both / shared
+        - Not applicable
+    validations:
+      required: true
+
+  - type: dropdown
     id: doc-area
     attributes:
       label: Documentation area
