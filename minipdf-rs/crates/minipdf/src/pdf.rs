@@ -16,6 +16,13 @@ impl PdfColor {
     }
 }
 
+#[derive(Debug, Clone, Copy)]
+pub struct PdfTextStyle {
+    pub color: PdfColor,
+    pub bold: bool,
+    pub italic: bool,
+}
+
 #[derive(Debug, Clone)]
 enum PdfOp {
     Text {
@@ -25,6 +32,7 @@ enum PdfOp {
         font_size: f32,
         color: PdfColor,
         bold: bool,
+        italic: bool,
     },
     Rect {
         x: f32,
@@ -82,13 +90,35 @@ impl PdfPage {
         color: PdfColor,
         bold: bool,
     ) {
+        self.add_styled_text(
+            text,
+            x,
+            y,
+            font_size,
+            PdfTextStyle {
+                color,
+                bold,
+                italic: false,
+            },
+        );
+    }
+
+    pub fn add_styled_text(
+        &mut self,
+        text: impl Into<String>,
+        x: f32,
+        y: f32,
+        font_size: f32,
+        style: PdfTextStyle,
+    ) {
         self.ops.push(PdfOp::Text {
             text: text.into(),
             x,
             y,
             font_size,
-            color,
-            bold,
+            color: style.color,
+            bold: style.bold,
+            italic: style.italic,
         });
     }
 
@@ -169,6 +199,9 @@ impl PdfDocument {
         objects.push(Vec::new());
         objects.push(b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>".to_vec());
         objects.push(b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>".to_vec());
+        objects.push(b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>".to_vec());
+        objects
+            .push(b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-BoldOblique >>".to_vec());
 
         for image in &self.jpeg_images {
             let mut image_object = format!(
@@ -185,7 +218,7 @@ impl PdfDocument {
 
         let mut page_ids = Vec::with_capacity(page_count);
         for (page_index, page) in self.pages.iter().enumerate() {
-            let content_id = 5 + self.jpeg_images.len() + page_index * 2;
+            let content_id = 7 + self.jpeg_images.len() + page_index * 2;
             let page_id = content_id + 1;
             page_ids.push(page_id);
 
@@ -205,11 +238,11 @@ impl PdfDocument {
                 .jpeg_images
                 .iter()
                 .enumerate()
-                .map(|(index, _)| format!("/Im{} {} 0 R", index + 1, index + 5))
+                .map(|(index, _)| format!("/Im{} {} 0 R", index + 1, index + 7))
                 .collect::<Vec<_>>()
                 .join(" ");
             let page_object = format!(
-                "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {:.2} {:.2}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> /XObject << {} >> >> /Contents {} 0 R >>",
+                "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {:.2} {:.2}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> /XObject << {} >> >> /Contents {} 0 R >>",
                 page.width, page.height, xobjects, content_id
             );
             objects.push(page_object.into_bytes());
@@ -266,8 +299,14 @@ fn write_content_stream(page: &PdfPage) -> Vec<u8> {
                 font_size,
                 color,
                 bold,
+                italic,
             } => {
-                let font = if *bold { "F2" } else { "F1" };
+                let font = match (*bold, *italic) {
+                    (false, false) => "F1",
+                    (true, false) => "F2",
+                    (false, true) => "F3",
+                    (true, true) => "F4",
+                };
                 content.push_str(&format!(
                     "BT /{font} {:.2} Tf {:.3} {:.3} {:.3} rg {:.2} {:.2} Td ({}) Tj ET\n",
                     font_size,
