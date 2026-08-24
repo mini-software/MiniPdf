@@ -60,6 +60,13 @@ enum PdfOp {
         width: f32,
         height: f32,
     },
+    PushClip {
+        x: f32,
+        y: f32,
+        width: f32,
+        height: f32,
+    },
+    PopClip,
 }
 
 #[derive(Debug, Clone)]
@@ -155,6 +162,19 @@ impl PdfPage {
             width,
             height,
         });
+    }
+
+    pub fn push_clip(&mut self, x: f32, y: f32, width: f32, height: f32) {
+        self.ops.push(PdfOp::PushClip {
+            x,
+            y,
+            width,
+            height,
+        });
+    }
+
+    pub fn pop_clip(&mut self) {
+        self.ops.push(PdfOp::PopClip);
     }
 }
 
@@ -488,7 +508,13 @@ fn select_font(fonts: &[RegisteredFont], ch: char, bold: bool, italic: bool) -> 
 fn font_preference(name: &str, ch: char, bold: bool, italic: bool) -> u8 {
     let name = name.to_ascii_lowercase();
     let codepoint = ch as u32;
-    let preferred = if matches!(codepoint, 0x1100..=0x11ff | 0x3130..=0x318f | 0xac00..=0xd7af) {
+    let preferred = if matches!(codepoint, 0x0530..=0x058f) {
+        "notosansarmenian"
+    } else if matches!(codepoint, 0x10a0..=0x10ff | 0x1c90..=0x1cbf) {
+        "notosansgeorgian"
+    } else if matches!(codepoint, 0x1200..=0x137f | 0x1380..=0x139f | 0x2d80..=0x2ddf) {
+        "ebrima"
+    } else if matches!(codepoint, 0x1100..=0x11ff | 0x3130..=0x318f | 0xac00..=0xd7af) {
         "malgunsl"
     } else if matches!(codepoint, 0x0e00..=0x0e7f) {
         "micross"
@@ -764,6 +790,18 @@ fn write_content_stream(
                     image_id + 1
                 ));
             }
+            PdfOp::PushClip {
+                x,
+                y,
+                width,
+                height,
+            } => {
+                content.push_str(&format!(
+                    "q {:.2} {:.2} {:.2} {:.2} re W n\n",
+                    x, y, width, height
+                ));
+            }
+            PdfOp::PopClip => content.push_str("Q\n"),
         }
     }
     content.into_bytes()
@@ -805,5 +843,18 @@ mod tests {
         assert!(pdf.contains("/Filter /DCTDecode"));
         assert!(pdf.contains("/Width 2 /Height 3"));
         assert!(pdf.contains("30.00 0 0 40.00 10.00 20.00 cm /Im1 Do"));
+    }
+
+    #[test]
+    fn writes_clipping_path_around_page_operations() {
+        let mut document = PdfDocument::new();
+        let page = document.add_page(100.0, 100.0);
+        page.push_clip(10.0, 20.0, 30.0, 40.0);
+        page.add_text("clipped", 10.0, 20.0, 12.0, super::PdfColor::BLACK, false);
+        page.pop_clip();
+
+        let pdf = String::from_utf8_lossy(&document.to_bytes()).into_owned();
+        assert!(pdf.contains("q 10.00 20.00 30.00 40.00 re W n"));
+        assert!(pdf.contains("Q\n"));
     }
 }
