@@ -28,6 +28,37 @@ pub enum MiniPdfError {
 
 pub type Result<T> = std::result::Result<T, MiniPdfError>;
 
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct PageSize {
+    pub width: f32,
+    pub height: f32,
+}
+
+impl PageSize {
+    pub const A4: Self = Self {
+        width: 595.28,
+        height: 841.89,
+    };
+    pub const LETTER: Self = Self {
+        width: 612.0,
+        height: 792.0,
+    };
+
+    pub fn new(width: f32, height: f32) -> Result<Self> {
+        if !width.is_finite() || !height.is_finite() || width <= 0.0 || height <= 0.0 {
+            return Err(MiniPdfError::InvalidInput(
+                "page width and height must be positive finite values".to_owned(),
+            ));
+        }
+        Ok(Self { width, height })
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ConversionOptions {
+    pub page_size: Option<PageSize>,
+}
+
 #[derive(Debug, Clone)]
 pub struct RegisteredFont {
     pub name: String,
@@ -53,12 +84,27 @@ pub fn registered_fonts() -> Vec<RegisteredFont> {
 }
 
 pub fn convert_to_pdf(input_path: impl AsRef<Path>, output_path: impl AsRef<Path>) -> Result<()> {
-    let pdf = convert_to_pdf_bytes(input_path)?;
+    convert_to_pdf_with_options(input_path, output_path, &ConversionOptions::default())
+}
+
+pub fn convert_to_pdf_with_options(
+    input_path: impl AsRef<Path>,
+    output_path: impl AsRef<Path>,
+    options: &ConversionOptions,
+) -> Result<()> {
+    let pdf = convert_to_pdf_bytes_with_options(input_path, options)?;
     fs::write(output_path, pdf)?;
     Ok(())
 }
 
 pub fn convert_to_pdf_bytes(input_path: impl AsRef<Path>) -> Result<Vec<u8>> {
+    convert_to_pdf_bytes_with_options(input_path, &ConversionOptions::default())
+}
+
+pub fn convert_to_pdf_bytes_with_options(
+    input_path: impl AsRef<Path>,
+    options: &ConversionOptions,
+) -> Result<Vec<u8>> {
     let input_path = input_path.as_ref();
     let bytes = fs::read(input_path)?;
     match input_path
@@ -66,16 +112,23 @@ pub fn convert_to_pdf_bytes(input_path: impl AsRef<Path>) -> Result<Vec<u8>> {
         .and_then(|ext| ext.to_str())
         .map(|ext| ext.to_ascii_lowercase())
     {
-        Some(ext) if ext == "docx" => docx::convert_docx_bytes(&bytes),
-        Some(ext) if ext == "xlsx" => xlsx::convert_xlsx_bytes(&bytes),
-        _ => convert_bytes_to_pdf(&bytes),
+        Some(ext) if ext == "docx" => docx::convert_docx_bytes(&bytes, options),
+        Some(ext) if ext == "xlsx" => xlsx::convert_xlsx_bytes(&bytes, options),
+        _ => convert_bytes_to_pdf_with_options(&bytes, options),
     }
 }
 
 pub fn convert_bytes_to_pdf(input: &[u8]) -> Result<Vec<u8>> {
+    convert_bytes_to_pdf_with_options(input, &ConversionOptions::default())
+}
+
+pub fn convert_bytes_to_pdf_with_options(
+    input: &[u8],
+    options: &ConversionOptions,
+) -> Result<Vec<u8>> {
     match detect_office_format(input)? {
-        OfficeFormat::Docx => docx::convert_docx_bytes(input),
-        OfficeFormat::Xlsx => xlsx::convert_xlsx_bytes(input),
+        OfficeFormat::Docx => docx::convert_docx_bytes(input, options),
+        OfficeFormat::Xlsx => xlsx::convert_xlsx_bytes(input, options),
         OfficeFormat::Unknown => Err(MiniPdfError::UnsupportedFormat),
     }
 }

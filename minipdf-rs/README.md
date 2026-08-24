@@ -46,6 +46,24 @@ Return PDF bytes instead:
 let pdf = minipdf::convert_to_pdf_bytes("data.xlsx")?;
 ```
 
+Override the output page size with a preset or custom dimensions:
+
+```rust
+let options = minipdf::ConversionOptions {
+    page_size: Some(minipdf::PageSize::A4),
+};
+minipdf::convert_to_pdf_with_options("data.xlsx", "data.pdf", &options)?;
+
+let custom = minipdf::ConversionOptions {
+    page_size: Some(minipdf::PageSize::new(400.0, 500.0)?),
+};
+minipdf::convert_to_pdf_with_options("report.docx", "report.pdf", &custom)?;
+```
+
+Custom dimensions use PDF points, where 72 points equal one inch. XLSX
+conversion uses an explicit API override first, then the worksheet `pageSetup`
+paper size and orientation. A worksheet without a recognized page setup uses A4.
+
 For a host with limited system fonts, register font bytes before conversion:
 
 ```rust
@@ -79,6 +97,17 @@ minipdf report.docx --fonts ./fonts
 minipdf convert report.docx -o report.pdf
 ```
 
+Select A4 or Letter paper, or provide custom dimensions in PDF points:
+
+```bash
+minipdf data.xlsx --paper-size a4
+minipdf data.xlsx --paper-size letter
+minipdf data.xlsx --page-width 400 --page-height 500
+```
+
+`--paper-size` cannot be combined with `--page-width` and `--page-height`.
+Custom width and height must be provided together.
+
 ## Current Scope
 
 | Capability | Rust status |
@@ -90,6 +119,7 @@ minipdf convert report.docx -o report.pdf
 | Markdown / JSON extraction | Not supported |
 | PDF output | PDF 1.4 |
 | Fonts | Built-in Helvetica and registered/system fallback fonts |
+| Page size | XLSX page setup, A4/Letter presets, or custom point dimensions |
 | Interfaces | Rust crate and native CLI |
 
 The converter preserves sparse worksheet row positions, paginates wide sheets
