@@ -302,7 +302,7 @@ checksum = "88904434abc2901f197fe8cc55f0445e7ded921dba5911dad2e2b39b48e663c4"
 
 [[package]]
 name = "minipdf"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "roxmltree",
  "rustybuzz",
@@ -315,7 +315,7 @@ dependencies = [
 
 [[package]]
 name = "minipdf-cli"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "clap",
  "minipdf",

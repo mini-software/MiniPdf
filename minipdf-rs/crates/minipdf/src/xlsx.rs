@@ -1340,6 +1340,14 @@ fn render_sheet(
     } else {
         column_groups(&widths, usable_width)
     };
+    let layout = SheetRenderLayout {
+        page_size,
+        content_scale,
+        content_left,
+        vertical_scale,
+        margin_top,
+        margin_bottom,
+    };
 
     for (column_start, column_end) in column_ranges {
         render_sheet_columns(
@@ -1349,18 +1357,22 @@ fn render_sheet(
             &widths,
             column_start,
             column_end,
-            page_size,
-            content_scale,
-            content_left,
-            vertical_scale,
-            margin_top,
-            margin_bottom,
+            &layout,
         );
     }
 }
 
 fn centered_scaled_margin(page_extent: f32, margin: f32, scale: f32) -> f32 {
     page_extent * (1.0 - scale) / 2.0 + margin * scale
+}
+
+struct SheetRenderLayout {
+    page_size: PageSize,
+    content_scale: f32,
+    content_left: f32,
+    vertical_scale: f32,
+    margin_top: f32,
+    margin_bottom: f32,
 }
 
 fn render_sheet_columns(
@@ -1370,13 +1382,16 @@ fn render_sheet_columns(
     column_widths: &[f32],
     column_start: usize,
     column_end: usize,
-    page_size: PageSize,
-    content_scale: f32,
-    content_left: f32,
-    vertical_scale: f32,
-    margin_top: f32,
-    margin_bottom: f32,
+    layout: &SheetRenderLayout,
 ) {
+    let SheetRenderLayout {
+        page_size,
+        content_scale,
+        content_left,
+        vertical_scale,
+        margin_top,
+        margin_bottom,
+    } = *layout;
     let row_scale = content_scale * vertical_scale;
     let automatic_breaks = automatic_row_breaks(sheet, page_size, content_scale);
     let mut page_index = doc.pages().len();
@@ -1652,7 +1667,12 @@ fn render_xlsx_row(
         let mut clip_width = cell_width;
         let mut overflow_is_blocked = false;
         if merge.is_none() {
-            for next_column in column_index + 1..column_end {
+            for (next_column, next_width) in column_widths
+                .iter()
+                .enumerate()
+                .take(column_end)
+                .skip(column_index + 1)
+            {
                 if row
                     .cells
                     .get(next_column)
@@ -1661,7 +1681,7 @@ fn render_xlsx_row(
                     overflow_is_blocked = true;
                     break;
                 }
-                clip_width += column_widths[next_column];
+                clip_width += next_width;
             }
         }
         let lines = if cell.style.wrap_text {
