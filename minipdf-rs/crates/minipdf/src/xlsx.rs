@@ -4,7 +4,7 @@ use std::io::{Cursor, Read};
 use unicode_bidi::{bidi_class, BidiClass};
 use zip::ZipArchive;
 
-use crate::pdf::{styled_text_width, PdfColor, PdfDocument, PdfTextStyle};
+use crate::pdf::{styled_text_width_with_font, PdfColor, PdfDocument, PdfTextStyle};
 use crate::{read_zip_text, ConversionOptions, PageSize, Result};
 
 const MARGIN_X: f32 = 54.0;
@@ -28,6 +28,8 @@ struct SheetData {
     column_widths: Vec<f32>,
     merges: Vec<MergeRange>,
     row_breaks: Vec<usize>,
+    default_row_height: f32,
+    print_title_rows: Option<(usize, usize)>,
     page_setup: SheetPageSetup,
 }
 
@@ -40,6 +42,7 @@ struct SheetPageSetup {
     margin_bottom: f32,
     print_scale: f32,
     fit_to_width: bool,
+    horizontal_centered: bool,
 }
 
 impl Default for SheetPageSetup {
@@ -52,6 +55,7 @@ impl Default for SheetPageSetup {
             margin_bottom: MARGIN_BOTTOM,
             print_scale: 1.0,
             fit_to_width: false,
+            horizontal_centered: false,
         }
     }
 }
@@ -75,6 +79,7 @@ struct CellStyle {
     horizontal_alignment: HorizontalAlignment,
     vertical_alignment: VerticalAlignment,
     wrap_text: bool,
+    preferred_font: Option<&'static str>,
 }
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -128,6 +133,7 @@ impl Default for CellStyle {
             horizontal_alignment: HorizontalAlignment::General,
             vertical_alignment: VerticalAlignment::Bottom,
             wrap_text: false,
+            preferred_font: None,
         }
     }
 }
@@ -138,6 +144,7 @@ struct FontStyle {
     italic: bool,
     size: f32,
     color: PdfColor,
+    preferred_font: Option<&'static str>,
 }
 
 impl Default for FontStyle {
@@ -147,6 +154,7 @@ impl Default for FontStyle {
             italic: false,
             size: CELL_FONT_SIZE,
             color: PdfColor::BLACK,
+            preferred_font: None,
         }
     }
 }
@@ -154,6 +162,7 @@ impl Default for FontStyle {
 #[derive(Debug, Default)]
 struct XlsxStyles {
     cells: Vec<CellStyle>,
+    max_digit_width: f32,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -190,16 +199,17 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
     let shared_strings = read_shared_strings(&mut archive)?;
     let styles = read_styles(&mut archive)?;
     let sheet_paths = read_sheet_paths(&mut archive)?;
+    let print_title_rows = read_print_title_rows(&mut archive)?;
     let mut sheets = Vec::new();
 
-    for (_, path) in sheet_paths {
+    for (name, path) in sheet_paths {
         let Some(sheet_xml) = read_zip_text(&mut archive, &path)? else {
             continue;
         };
         let images = read_sheet_images(&mut archive, &path, &sheet_xml)?;
         let mut rows = read_sheet_rows(&sheet_xml, &shared_strings, &styles)?;
         trim_trailing_empty_rows(&mut rows, &images);
-        let column_widths = read_column_widths(&sheet_xml)?;
+        let column_widths = read_column_widths_with_mdw(&sheet_xml, styles.max_digit_width)?;
         let merges = read_merge_ranges(&sheet_xml)?;
         let row_breaks = read_row_breaks(&sheet_xml)?;
         let page_setup = read_page_setup(&sheet_xml)?;
@@ -209,6 +219,8 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             column_widths,
             merges,
             row_breaks,
+            default_row_height: read_default_row_height(&sheet_xml)?,
+            print_title_rows: print_title_rows.get(&name).copied(),
             page_setup,
         });
     }
@@ -221,9 +233,11 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             sheets.push(SheetData {
                 rows,
                 images,
-                column_widths: read_column_widths(&sheet_xml)?,
+                column_widths: read_column_widths_with_mdw(&sheet_xml, styles.max_digit_width)?,
                 merges: read_merge_ranges(&sheet_xml)?,
                 row_breaks: read_row_breaks(&sheet_xml)?,
+                default_row_height: read_default_row_height(&sheet_xml)?,
+                print_title_rows: None,
                 page_setup: read_page_setup(&sheet_xml)?,
             });
         }
@@ -244,11 +258,54 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             column_widths: Vec::new(),
             merges: Vec::new(),
             row_breaks: Vec::new(),
+            default_row_height: ROW_HEIGHT,
+            print_title_rows: None,
             page_setup: SheetPageSetup::default(),
         });
     }
 
     Ok(sheets)
+}
+
+fn read_default_row_height(sheet_xml: &str) -> Result<f32> {
+    let document = roxmltree::Document::parse(sheet_xml)?;
+    Ok(document
+        .descendants()
+        .find(|node| node.has_tag_name("sheetFormatPr"))
+        .and_then(|node| node.attribute("defaultRowHeight"))
+        .and_then(|value| value.parse::<f32>().ok())
+        .filter(|value| *value > 0.0)
+        .unwrap_or(ROW_HEIGHT))
+}
+
+fn read_print_title_rows<R: std::io::Read + std::io::Seek>(
+    archive: &mut ZipArchive<R>,
+) -> Result<HashMap<String, (usize, usize)>> {
+    let Some(workbook_xml) = read_zip_text(archive, "xl/workbook.xml")? else {
+        return Ok(HashMap::new());
+    };
+    let document = roxmltree::Document::parse(&workbook_xml)?;
+    let mut titles = HashMap::new();
+    for name in document.descendants().filter(|node| {
+        node.has_tag_name("definedName") && node.attribute("name") == Some("_xlnm.Print_Titles")
+    }) {
+        let Some((sheet_name, range)) = name.text().and_then(|value| value.split_once('!')) else {
+            continue;
+        };
+        let Some((start, end)) = range.split(',').find_map(|part| {
+            let (start, end) = part.split_once(':')?;
+            let start = start.trim().trim_start_matches('$').parse::<usize>().ok()?;
+            let end = end.trim().trim_start_matches('$').parse::<usize>().ok()?;
+            Some((start.checked_sub(1)?, end.checked_sub(1)?))
+        }) else {
+            continue;
+        };
+        titles.insert(
+            sheet_name.trim_matches('\'').replace("''", "'"),
+            (start, end),
+        );
+    }
+    Ok(titles)
 }
 
 fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
@@ -290,6 +347,11 @@ fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
         .and_then(|node| node.attribute("fitToWidth"))
         .and_then(|value| value.parse::<usize>().ok())
         .unwrap_or(1);
+    let horizontal_centered = document
+        .descendants()
+        .find(|node| node.is_element() && node.tag_name().name() == "printOptions")
+        .and_then(|node| node.attribute("horizontalCentered"))
+        .is_some_and(|value| matches!(value, "1" | "true"));
 
     let margin_top = margin("top", MARGIN_TOP);
     Ok(SheetPageSetup {
@@ -304,10 +366,16 @@ fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
         margin_bottom: margin("bottom", MARGIN_BOTTOM),
         print_scale,
         fit_to_width: fit_to_page && fit_to_width > 0,
+        horizontal_centered,
     })
 }
 
+#[cfg(test)]
 fn read_column_widths(sheet_xml: &str) -> Result<Vec<f32>> {
+    read_column_widths_with_mdw(sheet_xml, 7.0)
+}
+
+fn read_column_widths_with_mdw(sheet_xml: &str, max_digit_width: f32) -> Result<Vec<f32>> {
     let xml = roxmltree::Document::parse(sheet_xml)?;
     let mut widths = Vec::new();
     for column in xml.descendants().filter(|node| node.has_tag_name("col")) {
@@ -328,7 +396,7 @@ fn read_column_widths(sheet_xml: &str) -> Result<Vec<f32>> {
                 .attribute("width")
                 .and_then(|value| value.parse::<f32>().ok())
                 .filter(|value| *value > 0.0)
-                .map(excel_column_width_to_points)
+                .map(|width| excel_column_width_to_points_with_mdw(width, max_digit_width))
                 .unwrap_or(COL_WIDTH)
         };
         if widths.len() < max {
@@ -341,8 +409,9 @@ fn read_column_widths(sheet_xml: &str) -> Result<Vec<f32>> {
     Ok(widths)
 }
 
-fn excel_column_width_to_points(char_units: f32) -> f32 {
-    char_units * 5.62
+fn excel_column_width_to_points_with_mdw(char_units: f32, max_digit_width: f32) -> f32 {
+    let padding = (128.0 / max_digit_width).floor();
+    (((256.0 * char_units + padding) / 256.0) * max_digit_width).floor() * 0.75
 }
 
 fn read_merge_ranges(sheet_xml: &str) -> Result<Vec<MergeRange>> {
@@ -606,6 +675,7 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
     let Some(styles_xml) = read_zip_text(archive, "xl/styles.xml")? else {
         return Ok(XlsxStyles::default());
     };
+    let theme_colors = read_theme_colors(archive)?;
     let xml = roxmltree::Document::parse(&styles_xml)?;
     let fonts = xml
         .descendants()
@@ -619,6 +689,12 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         .children()
                         .find(|node| node.has_tag_name("name"))
                         .and_then(|node| node.attribute("val"));
+                    let font_size = font
+                        .children()
+                        .find(|node| node.has_tag_name("sz"))
+                        .and_then(|node| node.attribute("val"))
+                        .and_then(|value| value.parse::<f32>().ok())
+                        .unwrap_or(CELL_FONT_SIZE);
                     FontStyle {
                         bold: font.children().any(|node| {
                             node.has_tag_name("b") && node.attribute("val") != Some("0")
@@ -626,23 +702,36 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         italic: font.children().any(|node| {
                             node.has_tag_name("i") && node.attribute("val") != Some("0")
                         }),
-                        size: font
-                            .children()
-                            .find(|node| node.has_tag_name("sz"))
-                            .and_then(|node| node.attribute("val"))
-                            .and_then(|value| value.parse::<f32>().ok())
-                            .unwrap_or(CELL_FONT_SIZE),
+                        size: excel_pdf_font_size(font_name, font_size),
                         color: font
                             .children()
                             .find(|node| node.has_tag_name("color"))
-                            .and_then(|node| node.attribute("rgb"))
-                            .and_then(parse_rgb_color)
+                            .and_then(|node| parse_xlsx_color(node, &theme_colors))
                             .unwrap_or(PdfColor::BLACK),
+                        preferred_font: xlsx_preferred_font(font_name),
                     }
                 })
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
+    let max_digit_width = xml
+        .descendants()
+        .find(|node| node.has_tag_name("fonts"))
+        .and_then(|fonts| fonts.children().find(|node| node.has_tag_name("font")))
+        .map(|font| {
+            let name = font
+                .children()
+                .find(|node| node.has_tag_name("name"))
+                .and_then(|node| node.attribute("val"));
+            let size = font
+                .children()
+                .find(|node| node.has_tag_name("sz"))
+                .and_then(|node| node.attribute("val"))
+                .and_then(|value| value.parse::<f32>().ok())
+                .unwrap_or(CELL_FONT_SIZE);
+            excel_max_digit_width(name, size)
+        })
+        .unwrap_or(7.0);
     let fills = xml
         .descendants()
         .find(|node| node.has_tag_name("fills"))
@@ -657,8 +746,7 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         .and_then(|pattern| {
                             pattern.children().find(|node| node.has_tag_name("fgColor"))
                         })
-                        .and_then(|color| color.attribute("rgb"))
-                        .and_then(parse_rgb_color)
+                        .and_then(|color| parse_xlsx_color(color, &theme_colors))
                 })
                 .collect::<Vec<_>>()
         })
@@ -717,12 +805,112 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         wrap_text: alignment
                             .and_then(|node| node.attribute("wrapText"))
                             .is_some_and(|value| matches!(value, "1" | "true")),
+                        preferred_font: font.preferred_font,
                     }
                 })
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
-    Ok(XlsxStyles { cells })
+    Ok(XlsxStyles {
+        cells,
+        max_digit_width,
+    })
+}
+
+fn excel_pdf_font_size(font_name: Option<&str>, size: f32) -> f32 {
+    if font_name.is_some_and(|name| name.eq_ignore_ascii_case("Verdana")) {
+        size * 0.96
+    } else {
+        size
+    }
+}
+
+fn xlsx_preferred_font(font_name: Option<&str>) -> Option<&'static str> {
+    font_name
+        .is_some_and(|name| name.eq_ignore_ascii_case("Verdana"))
+        .then_some("verdana")
+}
+
+fn excel_max_digit_width(font_name: Option<&str>, size: f32) -> f32 {
+    let width_at_ten_points = match font_name.unwrap_or_default().to_ascii_lowercase().as_str() {
+        "arial" => 7.06,
+        "verdana" => 7.55,
+        _ => 7.0,
+    };
+    width_at_ten_points * size / 10.0
+}
+
+fn read_theme_colors<R: std::io::Read + std::io::Seek>(
+    archive: &mut ZipArchive<R>,
+) -> Result<Vec<PdfColor>> {
+    let Some(theme_xml) = read_zip_text(archive, "xl/theme/theme1.xml")? else {
+        return Ok(Vec::new());
+    };
+    let document = roxmltree::Document::parse(&theme_xml)?;
+    Ok(document
+        .descendants()
+        .find(|node| node.has_tag_name("clrScheme"))
+        .map(|scheme| {
+            scheme
+                .children()
+                .filter(|node| node.is_element())
+                .filter_map(|entry| {
+                    let color = entry.children().find(|node| node.is_element())?;
+                    color
+                        .attribute("val")
+                        .and_then(parse_rgb_color)
+                        .or_else(|| color.attribute("lastClr").and_then(parse_rgb_color))
+                })
+                .collect()
+        })
+        .unwrap_or_default())
+}
+
+fn parse_xlsx_color(node: roxmltree::Node<'_, '_>, theme_colors: &[PdfColor]) -> Option<PdfColor> {
+    let color = node
+        .attribute("rgb")
+        .and_then(parse_rgb_color)
+        .or_else(|| {
+            node.attribute("theme")
+                .and_then(|value| value.parse::<usize>().ok())
+                .and_then(|index| theme_colors.get(index).copied())
+        })
+        .or_else(|| {
+            node.attribute("indexed")
+                .and_then(|value| value.parse::<usize>().ok())
+                .and_then(indexed_color)
+        })?;
+    let tint = node
+        .attribute("tint")
+        .and_then(|value| value.parse::<f32>().ok())
+        .unwrap_or(0.0)
+        .clamp(-1.0, 1.0);
+    Some(apply_color_tint(color, tint))
+}
+
+fn indexed_color(index: usize) -> Option<PdfColor> {
+    match index % 8 {
+        0 => Some(PdfColor::BLACK),
+        1 => Some(PdfColor::new(1.0, 1.0, 1.0)),
+        2 => Some(PdfColor::new(1.0, 0.0, 0.0)),
+        3 => Some(PdfColor::new(0.0, 1.0, 0.0)),
+        4 => Some(PdfColor::new(0.0, 0.0, 1.0)),
+        5 => Some(PdfColor::new(1.0, 1.0, 0.0)),
+        6 => Some(PdfColor::new(1.0, 0.0, 1.0)),
+        7 => Some(PdfColor::new(0.0, 1.0, 1.0)),
+        _ => None,
+    }
+}
+
+fn apply_color_tint(color: PdfColor, tint: f32) -> PdfColor {
+    let transform = |channel: f32| {
+        if tint < 0.0 {
+            channel * (1.0 + tint)
+        } else {
+            channel + (1.0 - channel) * tint
+        }
+    };
+    PdfColor::new(transform(color.r), transform(color.g), transform(color.b))
 }
 
 fn font_name_is_emphasis(font_name: Option<&str>) -> bool {
@@ -866,6 +1054,7 @@ fn read_sheet_rows(
     styles: &XlsxStyles,
 ) -> Result<Vec<RowData>> {
     let xml = roxmltree::Document::parse(sheet_xml)?;
+    let default_row_height = read_default_row_height(sheet_xml)?;
     let mut rows = Vec::new();
 
     for row in xml.descendants().filter(|node| node.has_tag_name("row")) {
@@ -878,7 +1067,7 @@ fn read_sheet_rows(
             .attribute("ht")
             .and_then(|value| value.parse::<f32>().ok())
             .filter(|value| *value > 0.0)
-            .unwrap_or(ROW_HEIGHT);
+            .unwrap_or(default_row_height);
         let has_custom_height = row.attribute("ht").is_some();
         let mut cells: Vec<(usize, CellData)> = Vec::new();
         for cell in row.children().filter(|node| node.has_tag_name("c")) {
@@ -902,7 +1091,7 @@ fn read_sheet_rows(
                 *slot = value;
             }
         }
-        if has_custom_height || row_values.iter().any(|cell| !cell.text.is_empty()) {
+        if has_custom_height || row_values.iter().any(cell_is_visible) {
             rows.push(RowData {
                 index: row_index,
                 height,
@@ -917,13 +1106,15 @@ fn read_sheet_rows(
 fn trim_trailing_empty_rows(rows: &mut Vec<RowData>, images: &[SheetImage]) {
     let last_image_row = images.iter().map(|image| image.row).max();
     while rows.last().is_some_and(|row| {
-        let has_visible_cell = row.cells.iter().any(|cell| {
-            !cell.text.is_empty() || cell.style.fill_color.is_some() || cell.style.borders.any()
-        });
+        let has_visible_cell = row.cells.iter().any(cell_is_visible);
         !has_visible_cell && last_image_row.is_none_or(|image_row| row.index > image_row)
     }) {
         rows.pop();
     }
+}
+
+fn cell_is_visible(cell: &CellData) -> bool {
+    !cell.text.is_empty() || cell.style.fill_color.is_some() || cell.style.borders.any()
 }
 
 fn read_cell_value(
@@ -1011,12 +1202,24 @@ fn format_thousands_two_decimals(value: f64) -> String {
     grouped
 }
 
+#[cfg(test)]
 fn wrap_cell_text(
     text: &str,
     max_width: f32,
     font_size: f32,
     bold: bool,
     italic: bool,
+) -> Vec<String> {
+    wrap_cell_text_with_font(text, max_width, font_size, bold, italic, None)
+}
+
+fn wrap_cell_text_with_font(
+    text: &str,
+    max_width: f32,
+    font_size: f32,
+    bold: bool,
+    italic: bool,
+    preferred_font: Option<&str>,
 ) -> Vec<String> {
     let mut lines = Vec::new();
     for paragraph in text.replace("\r\n", "\n").replace('\r', "\n").split('\n') {
@@ -1029,7 +1232,8 @@ fn wrap_cell_text(
             let mut candidate = line.clone();
             candidate.push(character);
             if !line.is_empty()
-                && styled_text_width(&candidate, font_size, bold, italic) > max_width
+                && styled_text_width_with_font(&candidate, font_size, bold, italic, preferred_font)
+                    > max_width
             {
                 lines.push(line);
                 line = character.to_string();
@@ -1110,6 +1314,27 @@ fn render_sheet(
     for width in &mut widths {
         *width *= content_scale;
     }
+    let content_width = widths.iter().sum::<f32>();
+    let content_left = if sheet.page_setup.horizontal_centered && content_width < usable_width {
+        sheet.page_setup.margin_left + (usable_width - content_width) / 2.0
+    } else {
+        sheet.page_setup.margin_left
+    };
+    let vertical_scale = if sheet.print_title_rows.is_some() {
+        0.9
+    } else {
+        1.0
+    };
+    let margin_top = centered_scaled_margin(
+        page_size.height,
+        sheet.page_setup.margin_top,
+        vertical_scale,
+    );
+    let margin_bottom = centered_scaled_margin(
+        page_size.height,
+        sheet.page_setup.margin_bottom,
+        vertical_scale,
+    );
     let column_ranges = if sheet.page_setup.fit_to_width {
         vec![(0, widths.len())]
     } else {
@@ -1126,8 +1351,16 @@ fn render_sheet(
             column_end,
             page_size,
             content_scale,
+            content_left,
+            vertical_scale,
+            margin_top,
+            margin_bottom,
         );
     }
+}
+
+fn centered_scaled_margin(page_extent: f32, margin: f32, scale: f32) -> f32 {
+    page_extent * (1.0 - scale) / 2.0 + margin * scale
 }
 
 fn render_sheet_columns(
@@ -1139,223 +1372,380 @@ fn render_sheet_columns(
     column_end: usize,
     page_size: PageSize,
     content_scale: f32,
+    content_left: f32,
+    vertical_scale: f32,
+    margin_top: f32,
+    margin_bottom: f32,
 ) {
+    let row_scale = content_scale * vertical_scale;
+    let automatic_breaks = automatic_row_breaks(sheet, page_size, content_scale);
     let mut page_index = doc.pages().len();
     doc.add_page(page_size.width, page_size.height);
-    let mut y = page_size.height - sheet.page_setup.margin_top;
+    let mut y = page_size.height - margin_top;
     let mut next_row_index = 0;
 
     for row in &sheet.rows {
         for _ in next_row_index..row.index {
-            advance_xlsx_row(
-                doc,
-                &mut page_index,
-                &mut y,
-                ROW_HEIGHT * content_scale,
-                page_size,
-                sheet.page_setup.margin_top,
-                sheet.page_setup.margin_bottom,
-            );
+            y -= sheet.default_row_height * row_scale;
         }
 
-        if sheet.row_breaks.contains(&row.index)
-            && y < page_size.height - sheet.page_setup.margin_top
+        if (sheet.row_breaks.contains(&row.index) || automatic_breaks.contains(&row.index))
+            && y < page_size.height - margin_top
         {
             page_index = doc.pages().len();
             doc.add_page(page_size.width, page_size.height);
-            y = page_size.height - sheet.page_setup.margin_top;
-        }
-
-        let row_height = row.height * content_scale;
-
-        if y - row_height < sheet.page_setup.margin_bottom {
-            page_index = doc.pages().len();
-            doc.add_page(page_size.width, page_size.height);
-            y = page_size.height - sheet.page_setup.margin_top;
-        }
-        y -= row_height;
-
-        let page = doc.page_mut(page_index).expect("page index is valid");
-
-        for (image, image_id) in sheet.images.iter().zip(image_ids).filter(|(image, _)| {
-            image.row == row.index && image.col >= column_start && image.col < column_end
-        }) {
-            let x = sheet.page_setup.margin_left
-                + column_widths[column_start..image.col].iter().sum::<f32>()
-                + image.col_offset * content_scale;
-            let image_height = image.height * content_scale;
-            let top = y + row_height - image.row_offset * content_scale;
-            page.add_image(
-                *image_id,
-                x,
-                top - image_height,
-                image.width * content_scale,
-                image_height,
+            y = page_size.height - margin_top;
+            repeat_print_title_rows(
+                doc,
+                sheet,
+                image_ids,
+                column_widths,
+                column_start,
+                column_end,
+                content_scale,
+                content_left,
+                row_scale,
+                page_index,
+                &mut y,
+                row.index,
             );
         }
 
-        let mut cell_x = sheet.page_setup.margin_left;
-        let empty_cell = CellData::default();
-        for column_index in column_start..column_end {
-            let merge = sheet.merges.iter().find(|merge| {
-                merge.start_row <= row.index
-                    && merge.end_row >= row.index
-                    && merge.start_col <= column_index
-                    && merge.end_col >= column_index
-            });
-            if merge.is_some_and(|merge| row.index > merge.start_row) {
-                cell_x += column_widths[column_index];
-                continue;
-            }
-            if merge
-                .is_some_and(|merge| column_index > merge.start_col && column_index != column_start)
-            {
-                cell_x += column_widths[column_index];
-                continue;
-            }
-            let source_column = merge.map(|merge| merge.start_col).unwrap_or(column_index);
-            let cell = row.cells.get(source_column).unwrap_or(&empty_cell);
-            let merge_end = merge
-                .map(|merge| (merge.end_col + 1).min(column_end))
-                .unwrap_or(column_index + 1);
-            let cell_width = column_widths[column_index..merge_end].iter().sum::<f32>();
-            let cell_height = merge
-                .map(|merge| {
-                    (merge.start_row..=merge.end_row)
-                        .map(|row_index| {
-                            sheet
-                                .rows
-                                .iter()
-                                .find(|candidate| candidate.index == row_index)
-                                .map(|candidate| candidate.height)
-                                .unwrap_or(ROW_HEIGHT)
-                                * content_scale
-                        })
-                        .sum::<f32>()
-                })
-                .unwrap_or(row_height);
-            let cell_y = y - (cell_height - row_height);
-            if let Some(fill) = cell.style.fill_color {
-                page.add_rect(cell_x, cell_y, cell_width, cell_height, fill);
-            }
-            if let Some(border) = cell.style.borders.bottom {
-                page.add_line(cell_x, cell_y, cell_x + cell_width, cell_y, border, 0.5);
-            }
-            if let Some(border) = cell.style.borders.top {
-                page.add_line(
-                    cell_x,
-                    cell_y + cell_height,
-                    cell_x + cell_width,
-                    cell_y + cell_height,
-                    border,
-                    0.5,
-                );
-            }
-            if let Some(border) = cell.style.borders.left {
-                page.add_line(cell_x, cell_y, cell_x, cell_y + cell_height, border, 0.5);
-            }
-            if let Some(border) = cell.style.borders.right {
-                page.add_line(
-                    cell_x + cell_width,
-                    cell_y,
-                    cell_x + cell_width,
-                    cell_y + cell_height,
-                    border,
-                    0.5,
-                );
-            }
-            let font_size = cell.style.font_size * content_scale;
-            let text = if merge.is_some_and(|merge| merge.start_col < column_start) {
-                String::new()
-            } else {
-                cell.text.replace(['\r', '\n'], " ")
-            };
-            let mut clip_width = cell_width;
-            let mut overflow_is_blocked = false;
-            if merge.is_none() {
-                for next_column in column_index + 1..column_end {
-                    if row
-                        .cells
-                        .get(next_column)
-                        .is_some_and(|next_cell| !next_cell.text.is_empty())
-                    {
-                        overflow_is_blocked = true;
-                        break;
-                    }
-                    clip_width += column_widths[next_column];
+        let row_height = row.height * row_scale;
+
+        if sheet.print_title_rows.is_none() && y - row_height < margin_bottom {
+            page_index = doc.pages().len();
+            doc.add_page(page_size.width, page_size.height);
+            y = page_size.height - margin_top;
+            repeat_print_title_rows(
+                doc,
+                sheet,
+                image_ids,
+                column_widths,
+                column_start,
+                column_end,
+                content_scale,
+                content_left,
+                row_scale,
+                page_index,
+                &mut y,
+                row.index,
+            );
+        }
+        y -= row_height;
+
+        render_xlsx_row(
+            doc,
+            sheet,
+            image_ids,
+            column_widths,
+            column_start,
+            column_end,
+            content_scale,
+            content_left,
+            row_scale,
+            page_index,
+            y,
+            row,
+        );
+        next_row_index = row.index + 1;
+    }
+}
+
+fn automatic_row_breaks(sheet: &SheetData, page_size: PageSize, content_scale: f32) -> Vec<usize> {
+    const PRINT_BOTTOM_RESERVE: f32 = 1.0;
+    let Some((title_start, title_end)) = sheet.print_title_rows else {
+        return Vec::new();
+    };
+    let title_height = (title_start..=title_end)
+        .map(|row_index| {
+            sheet
+                .rows
+                .iter()
+                .find(|row| row.index == row_index)
+                .map(|row| row.height)
+                .unwrap_or(sheet.default_row_height)
+                * content_scale
+        })
+        .sum::<f32>();
+    let mut breaks = Vec::new();
+    let mut y = page_size.height - sheet.page_setup.margin_top;
+    let last_row = sheet.rows.last().map(|row| row.index).unwrap_or(0);
+    for row_index in 0..=last_row {
+        let row_height = sheet
+            .rows
+            .iter()
+            .find(|row| row.index == row_index)
+            .map(|row| row.height)
+            .unwrap_or(sheet.default_row_height)
+            * content_scale;
+        if y - row_height < sheet.page_setup.margin_bottom + PRINT_BOTTOM_RESERVE {
+            breaks.push(row_index);
+            y = page_size.height - sheet.page_setup.margin_top - title_height;
+        }
+        y -= row_height;
+    }
+    breaks
+}
+
+#[allow(clippy::too_many_arguments)]
+fn repeat_print_title_rows(
+    doc: &mut PdfDocument,
+    sheet: &SheetData,
+    image_ids: &[usize],
+    column_widths: &[f32],
+    column_start: usize,
+    column_end: usize,
+    content_scale: f32,
+    content_left: f32,
+    row_scale: f32,
+    page_index: usize,
+    y: &mut f32,
+    current_row_index: usize,
+) {
+    let Some((title_start, title_end)) = sheet.print_title_rows else {
+        return;
+    };
+    if current_row_index <= title_end {
+        return;
+    }
+    for title_row_index in title_start..=title_end {
+        let row = sheet
+            .rows
+            .iter()
+            .find(|candidate| candidate.index == title_row_index);
+        let row_height = row
+            .map(|row| row.height)
+            .unwrap_or(sheet.default_row_height)
+            * row_scale;
+        *y -= row_height;
+        if let Some(row) = row {
+            render_xlsx_row(
+                doc,
+                sheet,
+                image_ids,
+                column_widths,
+                column_start,
+                column_end,
+                content_scale,
+                content_left,
+                row_scale,
+                page_index,
+                *y,
+                row,
+            );
+        }
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn render_xlsx_row(
+    doc: &mut PdfDocument,
+    sheet: &SheetData,
+    image_ids: &[usize],
+    column_widths: &[f32],
+    column_start: usize,
+    column_end: usize,
+    content_scale: f32,
+    content_left: f32,
+    row_scale: f32,
+    page_index: usize,
+    y: f32,
+    row: &RowData,
+) {
+    let row_height = row.height * row_scale;
+
+    let page = doc.page_mut(page_index).expect("page index is valid");
+
+    for (image, image_id) in sheet.images.iter().zip(image_ids).filter(|(image, _)| {
+        image.row == row.index && image.col >= column_start && image.col < column_end
+    }) {
+        let x = content_left
+            + column_widths[column_start..image.col].iter().sum::<f32>()
+            + image.col_offset * content_scale;
+        let image_height = image.height * row_scale;
+        let top = y + row_height - image.row_offset * row_scale;
+        page.add_image(
+            *image_id,
+            x,
+            top - image_height,
+            image.width * content_scale,
+            image_height,
+        );
+    }
+
+    let mut cell_x = content_left;
+    let empty_cell = CellData::default();
+    for column_index in column_start..column_end {
+        let merge = sheet.merges.iter().find(|merge| {
+            merge.start_row <= row.index
+                && merge.end_row >= row.index
+                && merge.start_col <= column_index
+                && merge.end_col >= column_index
+        });
+        if merge.is_some_and(|merge| row.index > merge.start_row) {
+            cell_x += column_widths[column_index];
+            continue;
+        }
+        if merge.is_some_and(|merge| column_index > merge.start_col && column_index != column_start)
+        {
+            cell_x += column_widths[column_index];
+            continue;
+        }
+        let source_column = merge.map(|merge| merge.start_col).unwrap_or(column_index);
+        let cell = row.cells.get(source_column).unwrap_or(&empty_cell);
+        let merge_end = merge
+            .map(|merge| (merge.end_col + 1).min(column_end))
+            .unwrap_or(column_index + 1);
+        let cell_width = column_widths[column_index..merge_end].iter().sum::<f32>();
+        let cell_height = merge
+            .map(|merge| {
+                (merge.start_row..=merge.end_row)
+                    .map(|row_index| {
+                        sheet
+                            .rows
+                            .iter()
+                            .find(|candidate| candidate.index == row_index)
+                            .map(|candidate| candidate.height)
+                            .unwrap_or(sheet.default_row_height)
+                            * row_scale
+                    })
+                    .sum::<f32>()
+            })
+            .unwrap_or(row_height);
+        let cell_y = y - (cell_height - row_height);
+        if let Some(fill) = cell.style.fill_color {
+            page.add_rect(cell_x, cell_y, cell_width, cell_height, fill);
+        }
+        if let Some(border) = cell.style.borders.bottom {
+            page.add_line(cell_x, cell_y, cell_x + cell_width, cell_y, border, 0.5);
+        }
+        if let Some(border) = cell.style.borders.top {
+            page.add_line(
+                cell_x,
+                cell_y + cell_height,
+                cell_x + cell_width,
+                cell_y + cell_height,
+                border,
+                0.5,
+            );
+        }
+        if let Some(border) = cell.style.borders.left {
+            page.add_line(cell_x, cell_y, cell_x, cell_y + cell_height, border, 0.5);
+        }
+        if let Some(border) = cell.style.borders.right {
+            page.add_line(
+                cell_x + cell_width,
+                cell_y,
+                cell_x + cell_width,
+                cell_y + cell_height,
+                border,
+                0.5,
+            );
+        }
+        let font_size = cell.style.font_size * content_scale;
+        let text = if merge.is_some_and(|merge| merge.start_col < column_start) {
+            String::new()
+        } else {
+            cell.text.replace(['\r', '\n'], " ")
+        };
+        let mut clip_width = cell_width;
+        let mut overflow_is_blocked = false;
+        if merge.is_none() {
+            for next_column in column_index + 1..column_end {
+                if row
+                    .cells
+                    .get(next_column)
+                    .is_some_and(|next_cell| !next_cell.text.is_empty())
+                {
+                    overflow_is_blocked = true;
+                    break;
                 }
+                clip_width += column_widths[next_column];
             }
-            let lines = if cell.style.wrap_text {
-                wrap_cell_text(
-                    &cell.text,
-                    (cell_width - 6.0).max(1.0),
+        }
+        let lines = if cell.style.wrap_text {
+            wrap_cell_text_with_font(
+                &cell.text,
+                (cell_width - 6.0).max(1.0),
+                font_size,
+                cell.style.bold,
+                cell.style.italic,
+                cell.style.preferred_font,
+            )
+        } else {
+            vec![text]
+        };
+        let max_text_width = lines
+            .iter()
+            .map(|line| {
+                styled_text_width_with_font(
+                    line,
                     font_size,
                     cell.style.bold,
                     cell.style.italic,
+                    cell.style.preferred_font,
                 )
-            } else {
-                vec![text]
-            };
-            let max_text_width = lines
-                .iter()
-                .map(|line| styled_text_width(line, font_size, cell.style.bold, cell.style.italic))
-                .fold(0.0, f32::max);
-            let should_clip =
-                cell.style.wrap_text || (max_text_width > clip_width && overflow_is_blocked);
-            if should_clip {
-                page.push_clip(
-                    cell_x,
-                    cell_y,
-                    if cell.style.wrap_text {
-                        cell_width
-                    } else {
-                        clip_width
-                    },
-                    cell_height,
-                );
-            }
-            let line_height = font_size * 1.2;
-            let block_height = line_height * lines.len() as f32;
-            let lowest_baseline = match cell.style.vertical_alignment {
-                VerticalAlignment::Top => cell_y + (cell_height - block_height).max(0.0),
-                VerticalAlignment::Center => cell_y + (cell_height - block_height).max(0.0) / 2.0,
-                VerticalAlignment::Bottom => cell_y + 1.0,
-            };
-            let line_count = lines.len();
-            for (line_index, line) in lines.into_iter().enumerate() {
-                let text_width =
-                    styled_text_width(&line, font_size, cell.style.bold, cell.style.italic);
-                let x = match cell.style.horizontal_alignment {
-                    HorizontalAlignment::Center => {
-                        cell_x + (cell_width - text_width).max(0.0) / 2.0
-                    }
-                    HorizontalAlignment::Right => cell_x + cell_width - text_width - 3.0,
-                    HorizontalAlignment::General
-                        if cell.is_numeric || has_rtl_base_direction(&cell.text) =>
-                    {
-                        cell_x + cell_width - text_width - 3.0
-                    }
-                    HorizontalAlignment::General | HorizontalAlignment::Left => cell_x + 3.0,
-                };
-                let text_y = lowest_baseline + (line_count - line_index - 1) as f32 * line_height;
-                page.add_styled_text(
-                    line,
-                    x,
-                    text_y,
-                    font_size,
-                    PdfTextStyle {
-                        color: cell.style.font_color,
-                        bold: cell.style.bold,
-                        italic: cell.style.italic,
-                    },
-                );
-            }
-            if should_clip {
-                page.pop_clip();
-            }
-            cell_x += column_widths[column_index];
+            })
+            .fold(0.0, f32::max);
+        let should_clip =
+            cell.style.wrap_text || (max_text_width > clip_width && overflow_is_blocked);
+        if should_clip {
+            page.push_clip(
+                cell_x,
+                cell_y,
+                if cell.style.wrap_text {
+                    cell_width
+                } else {
+                    clip_width
+                },
+                cell_height,
+            );
         }
-        next_row_index = row.index + 1;
+        let line_height = font_size * 1.2;
+        let block_height = line_height * lines.len() as f32;
+        let lowest_baseline = match cell.style.vertical_alignment {
+            VerticalAlignment::Top => cell_y + (cell_height - block_height).max(0.0),
+            VerticalAlignment::Center => cell_y + (cell_height - block_height).max(0.0) / 2.0,
+            VerticalAlignment::Bottom => cell_y + 1.0,
+        };
+        let line_count = lines.len();
+        for (line_index, line) in lines.into_iter().enumerate() {
+            let text_width = styled_text_width_with_font(
+                &line,
+                font_size,
+                cell.style.bold,
+                cell.style.italic,
+                cell.style.preferred_font,
+            );
+            let x = match cell.style.horizontal_alignment {
+                HorizontalAlignment::Center => cell_x + (cell_width - text_width).max(0.0) / 2.0,
+                HorizontalAlignment::Right => cell_x + cell_width - text_width - 3.0,
+                HorizontalAlignment::General
+                    if cell.is_numeric || has_rtl_base_direction(&cell.text) =>
+                {
+                    cell_x + cell_width - text_width - 3.0
+                }
+                HorizontalAlignment::General | HorizontalAlignment::Left => cell_x + 3.0,
+            };
+            let text_y = lowest_baseline + (line_count - line_index - 1) as f32 * line_height;
+            page.add_styled_text(
+                line,
+                x,
+                text_y,
+                font_size,
+                PdfTextStyle {
+                    color: cell.style.font_color,
+                    bold: cell.style.bold,
+                    italic: cell.style.italic,
+                    preferred_font: cell.style.preferred_font,
+                },
+            );
+        }
+        if should_clip {
+            page.pop_clip();
+        }
+        cell_x += column_widths[column_index];
     }
 }
 
@@ -1369,30 +1759,14 @@ fn has_rtl_base_direction(text: &str) -> bool {
         .unwrap_or(false)
 }
 
-fn advance_xlsx_row(
-    doc: &mut PdfDocument,
-    page_index: &mut usize,
-    y: &mut f32,
-    row_height: f32,
-    page_size: PageSize,
-    margin_top: f32,
-    margin_bottom: f32,
-) {
-    if *y - row_height < margin_bottom {
-        *page_index = doc.pages().len();
-        doc.add_page(page_size.width, page_size.height);
-        *y = page_size.height - margin_top;
-    }
-    *y -= row_height;
-}
-
 #[cfg(test)]
 mod tests {
     use super::{
-        column_groups, column_index_from_ref, effective_content_scale, font_name_is_emphasis,
-        format_thousands_two_decimals, has_rtl_base_direction, jpeg_dimensions, parse_cell_borders,
-        parse_horizontal_alignment, parse_rgb_color, parse_vertical_alignment, read_column_widths,
-        read_merge_ranges, read_page_setup, read_row_breaks, read_sheet_rows, relationship_id,
+        apply_color_tint, column_groups, column_index_from_ref, effective_content_scale,
+        font_name_is_emphasis, format_thousands_two_decimals, has_rtl_base_direction,
+        indexed_color, jpeg_dimensions, parse_cell_borders, parse_horizontal_alignment,
+        parse_rgb_color, parse_vertical_alignment, read_column_widths, read_merge_ranges,
+        read_page_setup, read_row_breaks, read_sheet_rows, relationship_id,
         trim_trailing_empty_rows, wrap_cell_text, CellStyle, HorizontalAlignment, RowData,
         SheetImage, VerticalAlignment, XlsxStyles,
     };
@@ -1439,6 +1813,16 @@ mod tests {
         assert_eq!(page_setup.margin_right, 36.0);
         assert_eq!(page_setup.margin_top, 54.0);
         assert_eq!(page_setup.margin_bottom, 72.0);
+    }
+
+    #[test]
+    fn reads_horizontal_print_centering() {
+        let page_setup = read_page_setup(
+            r#"<worksheet><printOptions horizontalCentered="1"/><sheetData/></worksheet>"#,
+        )
+        .expect("worksheet XML is valid");
+
+        assert!(page_setup.horizontal_centered);
     }
 
     #[test]
@@ -1508,6 +1892,7 @@ mod tests {
                     ..CellStyle::default()
                 },
             ],
+            ..XlsxStyles::default()
         };
         let rows = read_sheet_rows(xml, &[], &styles).expect("worksheet XML is valid");
 
@@ -1525,6 +1910,28 @@ mod tests {
         assert_eq!(rows[0].index, 3);
         assert_eq!(rows[0].height, 60.0);
         assert!(rows[0].cells.is_empty());
+    }
+
+    #[test]
+    fn preserves_rows_with_visible_styles_on_empty_cells() {
+        let xml =
+            r#"<worksheet><sheetData><row r="4"><c r="A4" s="1"/></row></sheetData></worksheet>"#;
+        let styles = XlsxStyles {
+            cells: vec![
+                CellStyle::default(),
+                CellStyle {
+                    fill_color: Some(PdfColor::new(1.0, 1.0, 0.0)),
+                    ..CellStyle::default()
+                },
+            ],
+            ..XlsxStyles::default()
+        };
+
+        let rows = read_sheet_rows(xml, &[], &styles).expect("worksheet XML is valid");
+
+        assert_eq!(rows.len(), 1);
+        assert_eq!(rows[0].index, 3);
+        assert!(rows[0].cells[0].style.fill_color.is_some());
     }
 
     #[test]
@@ -1596,7 +2003,7 @@ mod tests {
         let widths = read_column_widths(xml).expect("worksheet XML is valid");
         let groups = column_groups(&widths, 508.0);
 
-        assert!((widths[0] - 84.3).abs() < 0.001);
+        assert!((widths[0] - 78.75).abs() < 0.001);
         assert_eq!(widths.len(), 14);
         assert_eq!(groups, vec![(0, 5), (5, 11), (11, 14)]);
     }
@@ -1620,6 +2027,16 @@ mod tests {
         assert_eq!(color.r, 68.0 / 255.0);
         assert_eq!(color.g, 114.0 / 255.0);
         assert_eq!(color.b, 196.0 / 255.0);
+    }
+
+    #[test]
+    fn resolves_indexed_and_tinted_theme_colors() {
+        assert_eq!(indexed_color(9), Some(PdfColor::new(1.0, 1.0, 1.0)));
+        assert_eq!(indexed_color(10), Some(PdfColor::new(1.0, 0.0, 0.0)));
+        let tinted = apply_color_tint(PdfColor::new(0.647, 0.647, 0.647), 0.8);
+        assert!((tinted.r - 0.9294).abs() < 0.0001);
+        assert!((tinted.g - 0.9294).abs() < 0.0001);
+        assert!((tinted.b - 0.9294).abs() < 0.0001);
     }
 
     #[test]

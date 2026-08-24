@@ -25,6 +25,7 @@ pub struct PdfTextStyle {
     pub color: PdfColor,
     pub bold: bool,
     pub italic: bool,
+    pub preferred_font: Option<&'static str>,
 }
 
 #[derive(Debug, Clone)]
@@ -37,6 +38,7 @@ enum PdfOp {
         color: PdfColor,
         bold: bool,
         italic: bool,
+        preferred_font: Option<&'static str>,
     },
     Rect {
         x: f32,
@@ -110,6 +112,7 @@ impl PdfPage {
                 color,
                 bold,
                 italic: false,
+                preferred_font: None,
             },
         );
     }
@@ -130,6 +133,7 @@ impl PdfPage {
             color: style.color,
             bold: style.bold,
             italic: style.italic,
+            preferred_font: style.preferred_font,
         });
     }
 
@@ -316,12 +320,16 @@ fn prepare_embedded_fonts(pages: &[PdfPage], fonts: &[RegisteredFont]) -> Vec<Em
     for page in pages {
         for op in &page.ops {
             let PdfOp::Text {
-                text, bold, italic, ..
+                text,
+                bold,
+                italic,
+                preferred_font,
+                ..
             } = op
             else {
                 continue;
             };
-            for run in split_font_runs(text, fonts, *bold, *italic) {
+            for run in split_font_runs(text, fonts, *bold, *italic, *preferred_font) {
                 let Some(font_index) = run.font_index else {
                     continue;
                 };
@@ -481,13 +489,19 @@ struct ShapedText {
     units_per_em: i32,
 }
 
-fn split_font_runs(text: &str, fonts: &[RegisteredFont], bold: bool, italic: bool) -> Vec<FontRun> {
+fn split_font_runs(
+    text: &str,
+    fonts: &[RegisteredFont],
+    bold: bool,
+    italic: bool,
+    preferred_font: Option<&str>,
+) -> Vec<FontRun> {
     let mut runs: Vec<FontRun> = Vec::new();
     for ch in text.chars() {
         let font_index = if ch.is_whitespace() || ch.is_ascii_punctuation() || ch == '\u{fe0f}' {
             runs.last().and_then(|run| run.font_index)
         } else {
-            select_font(fonts, ch, bold, italic)
+            select_font(fonts, ch, bold, italic, preferred_font)
         };
 
         if let Some(run) = runs.last_mut().filter(|run| run.font_index == font_index) {
@@ -502,17 +516,44 @@ fn split_font_runs(text: &str, fonts: &[RegisteredFont], bold: bool, italic: boo
     runs
 }
 
-fn select_font(fonts: &[RegisteredFont], ch: char, bold: bool, italic: bool) -> Option<usize> {
+fn select_font(
+    fonts: &[RegisteredFont],
+    ch: char,
+    bold: bool,
+    italic: bool,
+    preferred_font: Option<&str>,
+) -> Option<usize> {
     fonts
         .iter()
         .enumerate()
         .filter(|(_, font)| font_supports(font, ch))
-        .min_by_key(|(_, font)| font_preference(&font.name, ch, bold, italic))
+        .min_by_key(|(_, font)| font_preference(&font.name, ch, bold, italic, preferred_font))
         .map(|(index, _)| index)
 }
 
-fn font_preference(name: &str, ch: char, bold: bool, italic: bool) -> u8 {
+fn font_preference(
+    name: &str,
+    ch: char,
+    bold: bool,
+    italic: bool,
+    preferred_font: Option<&str>,
+) -> u8 {
     let name = name.to_ascii_lowercase();
+    if let Some(preferred) = preferred_font {
+        let preferred = preferred.to_ascii_lowercase();
+        let preferred_variant = match (preferred.as_str(), bold, italic) {
+            ("verdana", true, true) => "verdanaz",
+            ("verdana", true, false) => "verdanab",
+            ("verdana", false, true) => "verdanai",
+            _ => preferred.as_str(),
+        };
+        if name == preferred_variant {
+            return 0;
+        }
+        if name.starts_with(&preferred) {
+            return 1;
+        }
+    }
     let codepoint = ch as u32;
     let preferred = if matches!(codepoint, 0x0530..=0x058f) {
         "notosansarmenian"
@@ -597,9 +638,15 @@ fn shape_text(text: &str, font_data: &[u8]) -> Option<ShapedText> {
     })
 }
 
-pub(crate) fn styled_text_width(text: &str, font_size: f32, bold: bool, italic: bool) -> f32 {
+pub(crate) fn styled_text_width_with_font(
+    text: &str,
+    font_size: f32,
+    bold: bool,
+    italic: bool,
+    preferred_font: Option<&str>,
+) -> f32 {
     let fonts = crate::registered_fonts();
-    split_font_runs(text, &fonts, bold, italic)
+    split_font_runs(text, &fonts, bold, italic, preferred_font)
         .into_iter()
         .map(|run| {
             let Some(font_index) = run.font_index else {
@@ -685,6 +732,7 @@ fn write_content_stream(
                 color,
                 bold,
                 italic,
+                preferred_font,
             } => {
                 let built_in_font = match (*bold, *italic) {
                     (false, false) => "F1",
@@ -694,7 +742,7 @@ fn write_content_stream(
                 };
                 let mut cursor_x = *x;
                 let mut cursor_y = *y;
-                for run in split_font_runs(text, fonts, *bold, *italic) {
+                for run in split_font_runs(text, fonts, *bold, *italic, *preferred_font) {
                     let Some(font_index) = run.font_index else {
                         content.push_str(&format!(
                             "BT /{built_in_font} {:.2} Tf {:.3} {:.3} {:.3} rg {:.2} {:.2} Td ({}) Tj ET\n",
@@ -843,8 +891,35 @@ mod tests {
 
     #[test]
     fn prefers_simhei_for_bold_cjk_text() {
-        assert_eq!(font_preference("simhei", '学', true, false), 0);
-        assert_eq!(font_preference("NotoSansSC-VF", '学', false, false), 1);
+        assert_eq!(font_preference("simhei", '学', true, false, None), 0);
+        assert_eq!(
+            font_preference("NotoSansSC-VF", '学', false, false, None),
+            1
+        );
+    }
+
+    #[test]
+    fn prefers_matching_verdana_style_variant() {
+        assert_eq!(
+            font_preference("verdana", 'A', false, false, Some("verdana")),
+            0
+        );
+        assert_eq!(
+            font_preference("verdanab", 'A', true, false, Some("verdana")),
+            0
+        );
+        assert_eq!(
+            font_preference("verdanai", 'A', false, true, Some("verdana")),
+            0
+        );
+        assert_eq!(
+            font_preference("verdanaz", 'A', true, true, Some("verdana")),
+            0
+        );
+        assert_eq!(
+            font_preference("verdana", 'A', true, false, Some("verdana")),
+            1
+        );
     }
 
     #[test]
