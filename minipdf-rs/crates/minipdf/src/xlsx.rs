@@ -950,6 +950,21 @@ fn render_sheet_columns(
                 VerticalAlignment::Center => y + (row.height - cell.style.font_size).max(0.0) / 2.0,
                 VerticalAlignment::Bottom => y + 1.0,
             };
+            let mut clip_width = cell_width;
+            let mut overflow_is_blocked = false;
+            if merge.is_none() {
+                for next_column in column_index + 1..column_end {
+                    if !row.cells[next_column].text.is_empty() {
+                        overflow_is_blocked = true;
+                        break;
+                    }
+                    clip_width += column_widths[next_column];
+                }
+            }
+            let should_clip = text_width > clip_width && overflow_is_blocked;
+            if should_clip {
+                page.push_clip(cell_x, y, clip_width, row.height);
+            }
             page.add_styled_text(
                 &cell.text,
                 x,
@@ -961,6 +976,9 @@ fn render_sheet_columns(
                     italic: cell.style.italic,
                 },
             );
+            if should_clip {
+                page.pop_clip();
+            }
             cell_x += column_widths[column_index];
         }
         next_row_index = row.index + 1;
