@@ -5,10 +5,8 @@ use unicode_bidi::{bidi_class, BidiClass};
 use zip::ZipArchive;
 
 use crate::pdf::{styled_text_width, PdfColor, PdfDocument, PdfTextStyle};
-use crate::{read_zip_text, Result};
+use crate::{read_zip_text, ConversionOptions, PageSize, Result};
 
-const PAGE_WIDTH: f32 = 612.0;
-const PAGE_HEIGHT: f32 = 792.0;
 const MARGIN_X: f32 = 52.0;
 const MARGIN_TOP: f32 = 70.55;
 const MARGIN_BOTTOM: f32 = 54.0;
@@ -29,6 +27,7 @@ struct SheetData {
     images: Vec<SheetImage>,
     column_widths: Vec<f32>,
     merges: Vec<MergeRange>,
+    page_size: PageSize,
 }
 
 #[derive(Debug, Clone)]
@@ -127,10 +126,10 @@ struct SheetImage {
     height: f32,
 }
 
-pub(crate) fn convert_xlsx_bytes(input: &[u8]) -> Result<Vec<u8>> {
+pub(crate) fn convert_xlsx_bytes(input: &[u8], options: &ConversionOptions) -> Result<Vec<u8>> {
     let sheets = read_xlsx_sheets(input)?;
     let mut doc = PdfDocument::new();
-    render_xlsx(&mut doc, &sheets);
+    render_xlsx(&mut doc, &sheets, options.page_size);
     Ok(doc.to_bytes())
 }
 
@@ -150,11 +149,13 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
         let rows = read_sheet_rows(&sheet_xml, &shared_strings, &styles)?;
         let column_widths = read_column_widths(&sheet_xml)?;
         let merges = read_merge_ranges(&sheet_xml)?;
+        let page_size = read_page_size(&sheet_xml)?;
         sheets.push(SheetData {
             rows,
             images,
             column_widths,
             merges,
+            page_size,
         });
     }
 
@@ -165,6 +166,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
                 images: read_sheet_images(&mut archive, "xl/worksheets/sheet1.xml", &sheet_xml)?,
                 column_widths: read_column_widths(&sheet_xml)?,
                 merges: read_merge_ranges(&sheet_xml)?,
+                page_size: read_page_size(&sheet_xml)?,
             });
         }
     }
@@ -183,10 +185,27 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             images: Vec::new(),
             column_widths: Vec::new(),
             merges: Vec::new(),
+            page_size: PageSize::A4,
         });
     }
 
     Ok(sheets)
+}
+
+fn read_page_size(sheet_xml: &str) -> Result<PageSize> {
+    let document = roxmltree::Document::parse(sheet_xml)?;
+    let page_setup = document
+        .descendants()
+        .find(|node| node.is_element() && node.tag_name().name() == "pageSetup");
+    let mut page_size = match page_setup.and_then(|node| node.attribute("paperSize")) {
+        Some("1") => PageSize::LETTER,
+        Some("9") | None => PageSize::A4,
+        Some(_) => PageSize::A4,
+    };
+    if page_setup.and_then(|node| node.attribute("orientation")) == Some("landscape") {
+        std::mem::swap(&mut page_size.width, &mut page_size.height);
+    }
+    Ok(page_size)
 }
 
 fn read_column_widths(sheet_xml: &str) -> Result<Vec<f32>> {
@@ -826,7 +845,7 @@ fn column_index_from_ref(cell_ref: &str) -> Option<usize> {
     seen_letter.then_some(col.saturating_sub(1))
 }
 
-fn render_xlsx(doc: &mut PdfDocument, sheets: &[SheetData]) {
+fn render_xlsx(doc: &mut PdfDocument, sheets: &[SheetData], page_size_override: Option<PageSize>) {
     for sheet in sheets {
         let image_ids = sheet
             .images
@@ -835,11 +854,21 @@ fn render_xlsx(doc: &mut PdfDocument, sheets: &[SheetData]) {
                 doc.add_jpeg_image(image.data.clone(), image.pixel_width, image.pixel_height)
             })
             .collect::<Vec<_>>();
-        render_sheet(doc, sheet, &image_ids);
+        render_sheet(
+            doc,
+            sheet,
+            &image_ids,
+            page_size_override.unwrap_or(sheet.page_size),
+        );
     }
 }
 
-fn render_sheet(doc: &mut PdfDocument, sheet: &SheetData, image_ids: &[usize]) {
+fn render_sheet(
+    doc: &mut PdfDocument,
+    sheet: &SheetData,
+    image_ids: &[usize],
+    page_size: PageSize,
+) {
     let column_count = sheet
         .rows
         .iter()
@@ -850,8 +879,16 @@ fn render_sheet(doc: &mut PdfDocument, sheet: &SheetData, image_ids: &[usize]) {
     let mut widths = sheet.column_widths.clone();
     widths.resize(column_count, COL_WIDTH);
 
-    for (column_start, column_end) in column_groups(&widths, PAGE_WIDTH - MARGIN_X * 2.0) {
-        render_sheet_columns(doc, sheet, image_ids, &widths, column_start, column_end);
+    for (column_start, column_end) in column_groups(&widths, page_size.width - MARGIN_X * 2.0) {
+        render_sheet_columns(
+            doc,
+            sheet,
+            image_ids,
+            &widths,
+            column_start,
+            column_end,
+            page_size,
+        );
     }
 }
 
@@ -862,21 +899,22 @@ fn render_sheet_columns(
     column_widths: &[f32],
     column_start: usize,
     column_end: usize,
+    page_size: PageSize,
 ) {
     let mut page_index = doc.pages().len();
-    doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
-    let mut y = PAGE_HEIGHT - MARGIN_TOP;
+    doc.add_page(page_size.width, page_size.height);
+    let mut y = page_size.height - MARGIN_TOP;
     let mut next_row_index = 0;
 
     for row in &sheet.rows {
         for _ in next_row_index..row.index {
-            advance_xlsx_row(doc, &mut page_index, &mut y, ROW_HEIGHT);
+            advance_xlsx_row(doc, &mut page_index, &mut y, ROW_HEIGHT, page_size);
         }
 
         if y - row.height < MARGIN_BOTTOM {
             page_index = doc.pages().len();
-            doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
-            y = PAGE_HEIGHT - MARGIN_TOP;
+            doc.add_page(page_size.width, page_size.height);
+            y = page_size.height - MARGIN_TOP;
         }
         y -= row.height;
 
@@ -995,11 +1033,17 @@ fn has_rtl_base_direction(text: &str) -> bool {
         .unwrap_or(false)
 }
 
-fn advance_xlsx_row(doc: &mut PdfDocument, page_index: &mut usize, y: &mut f32, row_height: f32) {
+fn advance_xlsx_row(
+    doc: &mut PdfDocument,
+    page_index: &mut usize,
+    y: &mut f32,
+    row_height: f32,
+    page_size: PageSize,
+) {
     if *y - row_height < MARGIN_BOTTOM {
         *page_index = doc.pages().len();
-        doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
-        *y = PAGE_HEIGHT - MARGIN_TOP;
+        doc.add_page(page_size.width, page_size.height);
+        *y = page_size.height - MARGIN_TOP;
     }
     *y -= row_height;
 }
@@ -1009,15 +1053,35 @@ mod tests {
     use super::{
         column_groups, column_index_from_ref, has_rtl_base_direction, jpeg_dimensions,
         parse_horizontal_alignment, parse_rgb_color, parse_vertical_alignment, read_column_widths,
-        read_merge_ranges, read_sheet_rows, relationship_id, CellStyle, HorizontalAlignment,
-        VerticalAlignment, XlsxStyles,
+        read_merge_ranges, read_page_size, read_sheet_rows, relationship_id, CellStyle,
+        HorizontalAlignment, VerticalAlignment, XlsxStyles,
     };
+    use crate::PageSize;
 
     #[test]
     fn parses_excel_column_references() {
         assert_eq!(column_index_from_ref("A1"), Some(0));
         assert_eq!(column_index_from_ref("Z9"), Some(25));
         assert_eq!(column_index_from_ref("AA10"), Some(26));
+    }
+
+    #[test]
+    fn defaults_unspecified_page_setup_to_a4() {
+        let page_size =
+            read_page_size("<worksheet><sheetData/></worksheet>").expect("worksheet XML is valid");
+
+        assert_eq!(page_size, PageSize::A4);
+    }
+
+    #[test]
+    fn reads_letter_landscape_page_setup() {
+        let page_size = read_page_size(
+            r#"<worksheet><pageSetup paperSize="1" orientation="landscape"/></worksheet>"#,
+        )
+        .expect("worksheet XML is valid");
+
+        assert_eq!(page_size.width, PageSize::LETTER.height);
+        assert_eq!(page_size.height, PageSize::LETTER.width);
     }
 
     #[test]

@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use clap::{Parser, Subcommand};
+use clap::{Args, Parser, Subcommand, ValueEnum};
 
 #[derive(Debug, Parser)]
 #[command(name = "minipdf")]
@@ -19,6 +19,9 @@ struct Cli {
 
     #[arg(long, value_name = "DIR")]
     fonts: Option<PathBuf>,
+
+    #[command(flatten)]
+    page: PageArgs,
 }
 
 #[derive(Debug, Subcommand)]
@@ -36,18 +39,41 @@ struct ConvertArgs {
 
     #[arg(long, value_name = "DIR")]
     fonts: Option<PathBuf>,
+
+    #[command(flatten)]
+    page: PageArgs,
+}
+
+#[derive(Debug, Args, Default)]
+struct PageArgs {
+    #[arg(long, value_enum, value_name = "SIZE")]
+    paper_size: Option<PaperSizeArg>,
+
+    #[arg(long, value_name = "POINTS", requires = "page_height")]
+    page_width: Option<f32>,
+
+    #[arg(long, value_name = "POINTS", requires = "page_width")]
+    page_height: Option<f32>,
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum)]
+enum PaperSizeArg {
+    A4,
+    Letter,
 }
 
 fn main() {
     let cli = Cli::parse();
     let result = match cli.command {
-        Some(Commands::Convert(args)) => run_convert(args.input, args.output, args.fonts),
+        Some(Commands::Convert(args)) => {
+            run_convert(args.input, args.output, args.fonts, args.page)
+        }
         None => {
             let Some(input) = cli.input else {
                 eprintln!("Error: input file is required. Use --help for usage.");
                 std::process::exit(1);
             };
-            run_convert(input, cli.output, cli.fonts)
+            run_convert(input, cli.output, cli.fonts, cli.page)
         }
     };
 
@@ -61,6 +87,7 @@ fn run_convert(
     input: PathBuf,
     output: Option<PathBuf>,
     fonts: Option<PathBuf>,
+    page: PageArgs,
 ) -> minipdf::Result<()> {
     if !input.exists() {
         return Err(minipdf::MiniPdfError::InvalidInput(format!(
@@ -86,10 +113,31 @@ fn run_convert(
         register_system_fallback_fonts()?;
     }
 
+    let options = conversion_options(page)?;
     let output = output.unwrap_or_else(|| input.with_extension("pdf"));
-    minipdf::convert_to_pdf(&input, &output)?;
+    minipdf::convert_to_pdf_with_options(&input, &output, &options)?;
     println!("{}", output.display());
     Ok(())
+}
+
+fn conversion_options(page: PageArgs) -> minipdf::Result<minipdf::ConversionOptions> {
+    if page.paper_size.is_some() && page.page_width.is_some() {
+        return Err(minipdf::MiniPdfError::InvalidInput(
+            "use either --paper-size or --page-width/--page-height, not both".to_owned(),
+        ));
+    }
+    let page_size = match (page.paper_size, page.page_width, page.page_height) {
+        (Some(PaperSizeArg::A4), None, None) => Some(minipdf::PageSize::A4),
+        (Some(PaperSizeArg::Letter), None, None) => Some(minipdf::PageSize::LETTER),
+        (None, Some(width), Some(height)) => Some(minipdf::PageSize::new(width, height)?),
+        (None, None, None) => None,
+        _ => {
+            return Err(minipdf::MiniPdfError::InvalidInput(
+                "--page-width and --page-height must be specified together".to_owned(),
+            ));
+        }
+    };
+    Ok(minipdf::ConversionOptions { page_size })
 }
 
 fn register_fonts_from_dir(font_dir: &Path) -> minipdf::Result<()> {

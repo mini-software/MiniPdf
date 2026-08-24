@@ -3,7 +3,7 @@ use std::io::Cursor;
 use zip::ZipArchive;
 
 use crate::pdf::{PdfColor, PdfDocument};
-use crate::{read_zip_text, Result};
+use crate::{read_zip_text, ConversionOptions, PageSize, Result};
 
 const PAGE_WIDTH: f32 = 595.28;
 const PAGE_HEIGHT: f32 = 841.89;
@@ -11,10 +11,10 @@ const MARGIN: f32 = 54.0;
 const BODY_FONT_SIZE: f32 = 11.0;
 const LINE_HEIGHT: f32 = 16.0;
 
-pub(crate) fn convert_docx_bytes(input: &[u8]) -> Result<Vec<u8>> {
+pub(crate) fn convert_docx_bytes(input: &[u8], options: &ConversionOptions) -> Result<Vec<u8>> {
     let paragraphs = read_docx_paragraphs(input)?;
     let mut doc = PdfDocument::new();
-    render_docx(&mut doc, &paragraphs);
+    render_docx(&mut doc, &paragraphs, options);
     Ok(doc.to_bytes())
 }
 
@@ -54,19 +54,23 @@ fn read_docx_paragraphs(input: &[u8]) -> Result<Vec<String>> {
     Ok(paragraphs)
 }
 
-fn render_docx(doc: &mut PdfDocument, paragraphs: &[String]) {
+fn render_docx(doc: &mut PdfDocument, paragraphs: &[String], options: &ConversionOptions) {
     let mut page_index = doc.pages().len();
-    doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
-    let mut y = PAGE_HEIGHT - MARGIN - BODY_FONT_SIZE;
-    let max_width = PAGE_WIDTH - MARGIN * 2.0;
+    let page_size = options.page_size.unwrap_or(PageSize {
+        width: PAGE_WIDTH,
+        height: PAGE_HEIGHT,
+    });
+    doc.add_page(page_size.width, page_size.height);
+    let mut y = page_size.height - MARGIN - BODY_FONT_SIZE;
+    let max_width = page_size.width - MARGIN * 2.0;
 
     for paragraph in paragraphs {
         let lines = wrap_text(paragraph, max_width, BODY_FONT_SIZE);
         for line in lines {
             if y < MARGIN {
                 page_index = doc.pages().len();
-                doc.add_page(PAGE_WIDTH, PAGE_HEIGHT);
-                y = PAGE_HEIGHT - MARGIN - BODY_FONT_SIZE;
+                doc.add_page(page_size.width, page_size.height);
+                y = page_size.height - MARGIN - BODY_FONT_SIZE;
             }
             let page = doc.page_mut(page_index).expect("page index is valid");
             page.add_text(line, MARGIN, y, BODY_FONT_SIZE, PdfColor::BLACK, false);
