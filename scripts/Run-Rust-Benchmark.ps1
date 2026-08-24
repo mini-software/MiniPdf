@@ -4,13 +4,13 @@
 
 .DESCRIPTION
     Reuses the same on-disk classic/issue fixtures and PDF comparison pipeline as
-    the .NET benchmarks. Microsoft 365 is the default reference engine, with
-    LibreOffice available through -Engine libre. It does not execute C# xUnit tests.
+    the .NET benchmarks. Microsoft 365 is always the primary scored reference,
+    while LibreOffice is generated and displayed as an auxiliary reference. It
+    does not execute C# xUnit tests.
 
 .EXAMPLE
     .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx
-    .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx -Engine o365 -Filter "classic180" -ForceReference
-    .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx -Engine libre
+    .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx -Filter "classic180" -ForceReference
     .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format docx -Filter "classic01"
     .\scripts\Run-Rust-Benchmark.ps1 -Suite issue -Format xlsx
     .\scripts\Run-Rust-Benchmark.ps1 -Suite issue -Format docx -Filter "SA8000"
@@ -29,6 +29,7 @@ param(
     [string]$SourceDir,
     [string]$CandidateDir,
     [string]$ReferenceDir,
+    [string]$AuxiliaryReferenceDir,
     [string]$ReportDir,
     [double]$MinimumScore = 0.95,
     [switch]$SkipCandidate,
@@ -94,11 +95,14 @@ $Defaults = @{
 }
 
 $Config = $Defaults["$Suite`:$Format"]
-$UsesMicrosoft365 = $Engine -in @("o365", "office")
 $SourceDir = Resolve-RepoPath $(if ($SourceDir) { $SourceDir } else { $Config.Source })
-$DefaultReference = if ($UsesMicrosoft365) { $Config.OfficeReference } else { $Config.LibreReference }
-$ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $DefaultReference })
-$ReferenceLabel = if ($UsesMicrosoft365) { $Config.OfficeLabel } else { "LibreOffice Reference" }
+$ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $Config.OfficeReference })
+$AuxiliaryReferenceDir = Resolve-RepoPath $(if ($AuxiliaryReferenceDir) { $AuxiliaryReferenceDir } else { $Config.LibreReference })
+$ReferenceLabel = $Config.OfficeLabel
+$AuxiliaryReferenceLabel = "LibreOffice"
+if ($Engine -eq "libre") {
+    Write-Warning "-Engine libre is retained for compatibility. Microsoft 365 remains the primary scored reference; LibreOffice is auxiliary."
+}
 $IsFocusedRun = -not [string]::IsNullOrWhiteSpace($Filter) -or $MaxCases -gt 0
 $DefaultArtifactRoot = "artifacts/rust-benchmark/$Suite/$Format"
 if ($IsFocusedRun) {
@@ -115,7 +119,8 @@ if (-not (Test-Path $Cargo)) { $Cargo = (Get-Command cargo -ErrorAction Stop).So
 if (-not (Test-Path $Python)) { $Python = (Get-Command python -ErrorAction Stop).Source }
 
 $CargoManifest = Join-Path $RepoRoot "minipdf-rs/Cargo.toml"
-$ReferenceScript = Resolve-RepoPath $(if ($UsesMicrosoft365) { $Config.OfficeReferenceScript } else { $Config.LibreReferenceScript })
+$OfficeReferenceScript = Resolve-RepoPath $Config.OfficeReferenceScript
+$LibreReferenceScript = Resolve-RepoPath $Config.LibreReferenceScript
 $CompareScript = Join-Path $RepoRoot "tests/MiniPdf.Benchmark/compare_pdfs.py"
 $ComparisonManifest = Join-Path $ReportDir "comparison_manifest.json"
 $CoverageManifest = Join-Path $ReportDir "benchmark_coverage.json"
@@ -130,7 +135,7 @@ if ($SourceFiles.Count -eq 0) {
     throw "No .$Format files matched '$Filter' in $SourceDir"
 }
 
-New-Item -ItemType Directory -Force -Path $CandidateDir, $ReferenceDir, $ReportDir | Out-Null
+New-Item -ItemType Directory -Force -Path $CandidateDir, $ReferenceDir, $AuxiliaryReferenceDir, $ReportDir | Out-Null
 
 $Cases = @($SourceFiles | ForEach-Object {
     [pscustomobject]@{
@@ -143,12 +148,13 @@ $Cases = @($SourceFiles | ForEach-Object {
         conversion_exit_code = $null
         candidate_exists = $false
         reference_exists = $false
+        auxiliary_reference_exists = $false
     }
 })
 
 [pscustomobject]@{ cases = $Cases } | ConvertTo-Json -Depth 5 | Set-Content $ComparisonManifest -Encoding UTF8
 
-Write-Host "Rust benchmark matrix: suite=$Suite format=$Format engine=$Engine selected=$($Cases.Count)"
+Write-Host "Rust benchmark matrix: suite=$Suite format=$Format primary=o365 auxiliary=libreoffice selected=$($Cases.Count)"
 Write-Host "Shared fixtures only; C# xUnit assertions are not executed by this command."
 
 $Cli = Join-Path $RepoRoot "minipdf-rs/target/debug/minipdf.exe"
@@ -178,26 +184,36 @@ if (-not $SkipCandidate) {
 if (-not $SkipReference) {
     $ReferenceFilters = if ($MaxCases -gt 0) { @($SourceFiles.BaseName) } else { @($Filter) }
     foreach ($ReferenceFilter in $ReferenceFilters) {
-        $ReferenceArgs = @($ReferenceScript, $Config.SourceArgument, $SourceDir, "--pdf-dir", $ReferenceDir)
-        if ($ReferenceFilter) { $ReferenceArgs += @("--filter", $ReferenceFilter) }
-        if ($ForceReference) { $ReferenceArgs += "--force" }
-        & $Python @ReferenceArgs
-        if ($LASTEXITCODE -ne 0) { throw "$ReferenceLabel generation failed." }
+        $Providers = @(
+            [pscustomobject]@{ Script = $OfficeReferenceScript; Directory = $ReferenceDir; Label = $ReferenceLabel },
+            [pscustomobject]@{ Script = $LibreReferenceScript; Directory = $AuxiliaryReferenceDir; Label = $AuxiliaryReferenceLabel }
+        )
+        foreach ($Provider in $Providers) {
+            $ReferenceArgs = @($Provider.Script, $Config.SourceArgument, $SourceDir, "--pdf-dir", $Provider.Directory)
+            if ($ReferenceFilter) { $ReferenceArgs += @("--filter", $ReferenceFilter) }
+            if ($ForceReference) { $ReferenceArgs += "--force" }
+            & $Python @ReferenceArgs
+            if ($LASTEXITCODE -ne 0) { throw "$($Provider.Label) generation failed." }
+        }
     }
 }
 
 foreach ($Case in $Cases) {
     $Case.reference_exists = Test-Path (Join-Path $ReferenceDir ($Case.name + ".pdf"))
+    $Case.auxiliary_reference_exists = Test-Path (Join-Path $AuxiliaryReferenceDir ($Case.name + ".pdf"))
 }
 
 $PassedConversions = @($Cases | Where-Object { $_.conversion_status -eq "passed" }).Count
 $FailedConversions = $Cases.Count - $PassedConversions
 $MissingReferences = @($Cases | Where-Object { -not $_.reference_exists }).Count
+$MissingAuxiliaryReferences = @($Cases | Where-Object { -not $_.auxiliary_reference_exists }).Count
 $Coverage = [pscustomobject]@{
     suite = $Suite
     format = $Format
-    reference_engine = $Engine
+    reference_engine = "o365"
     reference_label = $ReferenceLabel
+    auxiliary_reference_engine = "libreoffice"
+    auxiliary_reference_label = "$AuxiliaryReferenceLabel (auxiliary)"
     fixture_scope = "shared-on-disk-fixtures"
     executes_dotnet_xunit = $false
     max_compare_pages = $MaxComparePages
@@ -205,6 +221,7 @@ $Coverage = [pscustomobject]@{
     passed_conversions = $PassedConversions
     failed_conversions = $FailedConversions
     missing_references = $MissingReferences
+    missing_auxiliary_references = $MissingAuxiliaryReferences
     comparison_completed = $false
     comparison_results = 0
     average_score = $null
@@ -216,13 +233,15 @@ $CompareArgs = @(
     $CompareScript,
     "--minipdf-dir", $CandidateDir,
     "--reference-dir", $ReferenceDir,
+    "--auxiliary-dir", $AuxiliaryReferenceDir,
     "--report-dir", $ReportDir,
     "--manifest", $ComparisonManifest,
     "--report-scope", "rust-$Suite-$Format",
     "--composite-images",
     "--heatmaps",
     "--candidate-label", "Rust MiniPdf",
-    "--reference-label", $ReferenceLabel
+    "--reference-label", $ReferenceLabel,
+    "--auxiliary-label", $AuxiliaryReferenceLabel
 )
 if ($MaxComparePages -gt 0) { $CompareArgs += @("--max-pages", $MaxComparePages) }
 & $Python @CompareArgs
@@ -236,12 +255,12 @@ $Coverage.comparison_results = $Results.Count
 $Coverage.average_score = $Average
 $Coverage | ConvertTo-Json -Depth 6 | Set-Content $CoverageManifest -Encoding UTF8
 
-Write-Host "Coverage: selected=$($Cases.Count), converted=$PassedConversions, failed=$FailedConversions, missing references=$MissingReferences"
+Write-Host "Coverage: selected=$($Cases.Count), converted=$PassedConversions, failed=$FailedConversions, missing O365 references=$MissingReferences, missing LibreOffice references=$MissingAuxiliaryReferences"
 Write-Host "Visual results: compared=$($Results.Count), average score=$([math]::Round($Average, 4))"
 Write-Host "Coverage manifest: $CoverageManifest"
 Write-Host "Visual report: $(Join-Path $ReportDir 'comparison_report.md')"
 
-if ($FailedConversions -gt 0 -or $MissingReferences -gt 0 -or $BelowThreshold.Count -gt 0) {
+if ($FailedConversions -gt 0 -or $MissingReferences -gt 0 -or $MissingAuxiliaryReferences -gt 0 -or $BelowThreshold.Count -gt 0) {
     $ThresholdFailures = ($BelowThreshold | ForEach-Object { "$($_.name)=$($_.overall_score)" }) -join ", "
-    throw "Rust benchmark failed: conversion failures=$FailedConversions, missing references=$MissingReferences, below $MinimumScore=[$ThresholdFailures]"
+    throw "Rust benchmark failed: conversion failures=$FailedConversions, missing O365 references=$MissingReferences, missing LibreOffice references=$MissingAuxiliaryReferences, below $MinimumScore=[$ThresholdFailures]"
 }

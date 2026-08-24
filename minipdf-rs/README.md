@@ -150,7 +150,7 @@ cargo run -p minipdf-cli -- path\to\input.docx
 
 ## Visual Benchmarks
 
-Run shared fixtures against LibreOffice from the repository root:
+Run shared fixtures against Microsoft 365 and LibreOffice from the repository root:
 
 ```powershell
 .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format xlsx
@@ -164,6 +164,10 @@ The benchmark reuses the repository fixtures, references, and PDF comparison
 pipeline without executing the C# xUnit tests. Each run writes coverage data,
 Markdown and JSON reports, side-by-side images, and heatmaps under
 `artifacts/rust-benchmark/<suite>/<format>`.
+
+Microsoft 365 is the primary reference used for text, visual, page-count, and
+overall scores. LibreOffice is generated on every run as an auxiliary reference
+and is included in the visual report without affecting those scores.
 
 The matrix is generated at `artifacts/rust-benchmark/benchmark_matrix.md` and
 links to the fixture coverage and comparison reports from each run.
