@@ -202,6 +202,7 @@ fn system_fallback_font_paths() -> Vec<PathBuf> {
             "ebrimabd.ttf",
             "YuGothR.ttc",
             "NotoSansSC-VF.ttf",
+            "simhei.ttf",
             "malgunsl.ttf",
             "malgun.ttf",
             "micross.ttf",

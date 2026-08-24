@@ -55,11 +55,13 @@ $Rows = foreach ($Target in $Targets) {
         suite = $Coverage.suite
         format = $Coverage.format
         reference_engine = $Coverage.reference_engine
+        auxiliary_reference_engine = $Coverage.auxiliary_reference_engine
         report = if ($Coverage.format -eq "xlsx") { "$($Coverage.suite)/$($Coverage.format)/report/comparison_report.md" } else { $null }
         selected_cases = $Coverage.selected_cases
         passed_conversions = $Coverage.passed_conversions
         failed_conversions = $Coverage.failed_conversions
         missing_references = $Coverage.missing_references
+        missing_auxiliary_references = $Coverage.missing_auxiliary_references
         comparison_completed = $Coverage.comparison_completed
         comparison_results = $Coverage.comparison_results
         max_compare_pages = $Coverage.max_compare_pages
@@ -72,12 +74,14 @@ $Summary = [pscustomobject]@{
     fixture_scope = "shared-on-disk-fixtures"
     executes_dotnet_xunit = $false
     rust_supported_formats = @("xlsx", "docx")
-    reference_engine = $Engine
+    reference_engine = "o365"
+    auxiliary_reference_engine = "libreoffice"
     unsupported_formats = @("pptx")
     selected_cases = ($Rows | Measure-Object selected_cases -Sum).Sum
     passed_conversions = ($Rows | Measure-Object passed_conversions -Sum).Sum
     failed_conversions = ($Rows | Measure-Object failed_conversions -Sum).Sum
     missing_references = ($Rows | Measure-Object missing_references -Sum).Sum
+    missing_auxiliary_references = ($Rows | Measure-Object missing_auxiliary_references -Sum).Sum
     comparison_results = ($Rows | Measure-Object comparison_results -Sum).Sum
     comparison_completed = @($Rows | Where-Object { -not $_.comparison_completed }).Count -eq 0
     suites = @($Rows)
@@ -110,6 +114,6 @@ $Markdown | Set-Content $MatrixMarkdown -Encoding UTF8
 Write-Host "Rust shared visual matrix: selected=$($Summary.selected_cases), converted=$($Summary.passed_conversions), compared=$($Summary.comparison_results), complete=$($Summary.comparison_completed)"
 Write-Host "Matrix report: $MatrixMarkdown"
 
-if (-not $Summary.comparison_completed -or $Summary.failed_conversions -gt 0 -or $Summary.missing_references -gt 0) {
+if (-not $Summary.comparison_completed -or $Summary.failed_conversions -gt 0 -or $Summary.missing_references -gt 0 -or $Summary.missing_auxiliary_references -gt 0) {
     throw "Rust shared visual benchmark matrix is incomplete."
 }

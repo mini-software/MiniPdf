@@ -631,7 +631,7 @@ def save_visual_diff(
     output_dir: str,
     name: str,
     dpi: int = 150,
-    office_pdf_path=None,
+    auxiliary_pdf_path=None,
     composite_output_dir: Optional[str] = None,
     labels: Optional[dict] = None,
     heatmaps: bool = False,
@@ -646,11 +646,12 @@ def save_visual_diff(
     labels = labels or {}
     candidate_label = labels.get("candidate", "MiniPdf")
     reference_label = labels.get("reference", "LibreOffice Reference")
-    office_label = labels.get("office", "Office")
+    auxiliary_label = labels.get("auxiliary", "Auxiliary Reference")
+    auxiliary_slug = slugify_label(auxiliary_label)
 
     # Remove stale images from previous runs with different page counts
     import glob
-    for suffix in ("minipdf", "reference", "office", "heatmap"):
+    for suffix in ("minipdf", "reference", "office", "libreoffice_auxiliary_reference", auxiliary_slug, "heatmap"):
         if max_compare_pages > 0:
             old_images = (
                 os.path.join(output_dir, f"{name}_p{page}_{suffix}.png")
@@ -670,7 +671,7 @@ def save_visual_diff(
     diff_images = []
     doc1 = fitz.open(pdf1_path)
     doc2 = fitz.open(pdf2_path)
-    doc3 = fitz.open(office_pdf_path) if office_pdf_path and os.path.isfile(office_pdf_path) else None
+    doc3 = fitz.open(auxiliary_pdf_path) if auxiliary_pdf_path and os.path.isfile(auxiliary_pdf_path) else None
     max_pages = max(len(doc1), len(doc2), len(doc3) if doc3 else 0)
     if max_compare_pages > 0:
         max_pages = min(max_pages, max_compare_pages)
@@ -704,7 +705,7 @@ def save_visual_diff(
             path2 = os.path.join(output_dir, f"{name}_p{i+1}_reference.png")
 
         if pix3:
-            path3 = os.path.join(output_dir, f"{name}_p{i+1}_office.png")
+            path3 = os.path.join(output_dir, f"{name}_p{i+1}_{auxiliary_slug}.png")
 
         _save_normalized_pixmaps(
             (pix1, pix2, pix3),
@@ -717,7 +718,7 @@ def save_visual_diff(
             "reference_img": f"{name}_p{i+1}_reference.png" if pix2 else None,
         }
         if doc3 is not None:
-            entry["office_img"] = f"{name}_p{i+1}_office.png" if pix3 else None
+            entry["auxiliary_img"] = f"{name}_p{i+1}_{auxiliary_slug}.png" if pix3 else None
         if heatmaps and pix1 and pix2:
             heatmap_name = f"{name}_p{i+1}_heatmap.png"
             heatmap_path = os.path.join(output_dir, heatmap_name)
@@ -735,8 +736,8 @@ def save_visual_diff(
             engine_slugs = [slugify_label(candidate_label), slugify_label(reference_label)]
             components = [(candidate_label, path1), (reference_label, path2)]
             if doc3 is not None:
-                engine_slugs.append(slugify_label(office_label))
-                components.append((office_label, path3))
+                engine_slugs.append(auxiliary_slug)
+                components.append((auxiliary_label, path3))
 
             composite_name = f"{name}_p{i+1}_{'_vs_'.join(engine_slugs)}.png"
             composite_path = os.path.join(composite_output_dir, composite_name)
@@ -840,7 +841,7 @@ def compare_single(
     ai_compare: bool = False,
     ai_max_pages: int = 1,
     ai_threshold: float = 1.01,
-    office_path=None,
+    auxiliary_path=None,
     case_metadata: Optional[dict] = None,
     report_scope: Optional[str] = None,
     composite_images: bool = False,
@@ -982,7 +983,7 @@ def compare_single(
             reference_path,
             report_images_dir,
             name,
-            office_pdf_path=office_path,
+            auxiliary_pdf_path=auxiliary_path,
             composite_output_dir=composite_output_dir if composite_images else None,
             labels=labels,
             heatmaps=heatmaps,
@@ -1048,7 +1049,7 @@ def generate_report(results: list[dict], report_dir: str, labels: dict | None = 
     labels = labels or {}
     candidate_label = labels.get("candidate", "MiniPdf")
     reference_label = labels.get("reference", "Reference")
-    office_label = labels.get("office", "Office")
+    auxiliary_label = labels.get("auxiliary", "Auxiliary Reference")
     # JSON dump
     json_path = os.path.join(report_dir, "comparison_report.json")
     with open(json_path, "w", encoding="utf-8") as f:
@@ -1152,20 +1153,25 @@ def generate_report(results: list[dict], report_dir: str, labels: dict | None = 
                     f.write("</tr>\n")
             f.write("</table>\n\n")
 
-        # ── Detect whether any result has office images ──────────────────
-        has_office = any(
-            pg.get("office_img")
+        # ── Detect whether any result has auxiliary images ───────────────
+        has_auxiliary = any(
+            pg.get("auxiliary_img") or pg.get("office_img")
             for r in results
             for pg in r.get("diff_images", [])
         )
-        num_cols = 3 if has_office else 2
-        img_width = 260 if has_office else 340
+        num_cols = 3 if has_auxiliary else 2
+        img_width = 260 if has_auxiliary else 340
 
         # ── Visual side-by-side table ──────────────────────────────────────
         f.write("## Visual Comparison\n\n")
+        if has_auxiliary:
+            f.write(
+                f"Scores compare {candidate_label} against {reference_label}. "
+                f"{auxiliary_label} is an auxiliary rendering and does not affect scores.\n\n"
+            )
         f.write("<table>\n")
-        if has_office:
-            f.write(f"<tr><th>{candidate_label}</th><th>{reference_label}</th><th>{office_label}</th></tr>\n")
+        if has_auxiliary:
+            f.write(f"<tr><th>{candidate_label}</th><th>{reference_label}</th><th>{auxiliary_label}</th></tr>\n")
         else:
             f.write(f"<tr><th>{candidate_label}</th><th>{reference_label}</th></tr>\n")
 
@@ -1209,7 +1215,7 @@ def generate_report(results: list[dict], report_dir: str, labels: dict | None = 
                 page_num = pg.get("page", idx + 1)
                 mini_img = pg.get("minipdf_img")
                 ref_img  = pg.get("reference_img")
-                office_img = pg.get("office_img")
+                auxiliary_img = pg.get("auxiliary_img") or pg.get("office_img")
                 mini_td = (f'<img src="images/{mini_img}" width="{img_width}" alt="{candidate_label}">'
                            if mini_img else "<i>missing</i>")
                 ref_td  = (f'<img src="images/{ref_img}" width="{img_width}" alt="{reference_label}">'
@@ -1218,10 +1224,10 @@ def generate_report(results: list[dict], report_dir: str, labels: dict | None = 
                 f.write(f"<tr>\n")
                 f.write(f"  <td>{mini_td}</td>\n")
                 f.write(f"  <td>{ref_td}</td>\n")
-                if has_office:
-                    office_td = (f'<img src="images/{office_img}" width="{img_width}" alt="{office_label}">'
-                                 if office_img else "<i>missing</i>")
-                    f.write(f"  <td>{office_td}</td>\n")
+                if has_auxiliary:
+                    auxiliary_td = (f'<img src="images/{auxiliary_img}" width="{img_width}" alt="{auxiliary_label}">'
+                                    if auxiliary_img else "<i>missing</i>")
+                    f.write(f"  <td>{auxiliary_td}</td>\n")
                 f.write(f"</tr>\n")
 
                 # ── AI analysis row for this page ──────────────────────────
@@ -1382,7 +1388,9 @@ def main():
     parser.add_argument("--reference-dir", default="reference_pdfs",
                         help="Directory containing reference PDFs (from LibreOffice)")
     parser.add_argument("--office-dir", default=None,
-                        help="Directory containing Office (Excel COM) generated PDFs (optional)")
+                        help=argparse.SUPPRESS)
+    parser.add_argument("--auxiliary-dir", default=None,
+                        help="Directory containing an optional secondary reference rendering")
     parser.add_argument("--report-dir", default="reports",
                         help="Output directory for comparison reports")
     # AI comparison options
@@ -1417,7 +1425,9 @@ def main():
     parser.add_argument("--reference-label", default="LibreOffice Reference",
                         help="Label for reference renderer images in composite output")
     parser.add_argument("--office-label", default="Office",
-                        help="Label for optional Office renderer images in composite output")
+                        help=argparse.SUPPRESS)
+    parser.add_argument("--auxiliary-label", default=None,
+                        help="Label for optional secondary reference images in report output")
     args = parser.parse_args()
 
     if args.heatmaps:
@@ -1440,14 +1450,16 @@ def main():
 
     minipdf_dir = os.path.abspath(args.minipdf_dir)
     reference_dir = os.path.abspath(args.reference_dir)
-    office_dir = os.path.abspath(args.office_dir) if args.office_dir else None
+    auxiliary_dir_arg = args.auxiliary_dir or args.office_dir
+    auxiliary_dir = os.path.abspath(auxiliary_dir_arg) if auxiliary_dir_arg else None
+    auxiliary_label = args.auxiliary_label or args.office_label
     report_dir = os.path.abspath(args.report_dir)
     images_dir = os.path.join(report_dir, "images")
     composite_dir = os.path.abspath(args.composite_dir) if args.composite_dir else os.path.join(report_dir, "side-by-side")
     labels = {
         "candidate": args.candidate_label,
         "reference": args.reference_label,
-        "office": args.office_label,
+        "auxiliary": auxiliary_label,
     }
 
     os.makedirs(report_dir, exist_ok=True)
@@ -1469,8 +1481,8 @@ def main():
 
     print(f"MiniPdf PDFs:    {minipdf_dir}")
     print(f"Reference PDFs:  {reference_dir}")
-    if office_dir:
-        print(f"Office PDFs:     {office_dir}")
+    if auxiliary_dir:
+        print(f"Auxiliary PDFs:  {auxiliary_dir}")
     print(f"Report output:   {report_dir}")
     if args.manifest:
         print(f"Manifest:        {os.path.abspath(args.manifest)}")
@@ -1490,8 +1502,8 @@ def main():
             if os.path.isdir(d):
                 for f in Path(d).glob("*.pdf"):
                     names.add(f.stem)
-        if office_dir and os.path.isdir(office_dir):
-            for f in Path(office_dir).glob("*.pdf"):
+        if auxiliary_dir and os.path.isdir(auxiliary_dir):
+            for f in Path(auxiliary_dir).glob("*.pdf"):
                 names.add(f.stem)
 
         # Apply filter
@@ -1526,14 +1538,14 @@ def main():
         name = case["name"]
         mp = os.path.join(minipdf_dir, f"{name}.pdf")
         rp = os.path.join(reference_dir, f"{name}.pdf")
-        op = os.path.join(office_dir, f"{name}.pdf") if office_dir else None
+        auxiliary_path = os.path.join(auxiliary_dir, f"{name}.pdf") if auxiliary_dir else None
         print(f"Comparing: {name} ...", end=" ")
         result = compare_single(
             mp, rp, images_dir, name,
             ai_compare=args.ai_compare,
             ai_max_pages=args.ai_max_pages,
             ai_threshold=args.ai_threshold,
-            office_path=op,
+            auxiliary_path=auxiliary_path,
             case_metadata=case,
             report_scope=args.report_scope if args.manifest else None,
             composite_images=args.composite_images,

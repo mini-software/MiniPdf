@@ -346,11 +346,7 @@ fn prepare_embedded_fonts(pages: &[PdfPage], fonts: &[RegisteredFont]) -> Vec<Em
                 registered_index,
                 resource_name: format!("FU{}", resource_index + 1),
                 object_id: 0,
-                cid_by_glyph: glyphs
-                    .keys()
-                    .enumerate()
-                    .map(|(index, glyph_id)| (*glyph_id, index as u16 + 1))
-                    .collect(),
+                cid_by_glyph: BTreeMap::new(),
                 glyphs,
             },
         )
@@ -359,7 +355,7 @@ fn prepare_embedded_fonts(pages: &[PdfPage], fonts: &[RegisteredFont]) -> Vec<Em
 
 fn append_embedded_font_objects(
     objects: &mut Vec<Vec<u8>>,
-    font: &EmbeddedFont,
+    font: &mut EmbeddedFont,
     registered_fonts: &[RegisteredFont],
 ) -> usize {
     let registered = &registered_fonts[font.registered_index];
@@ -370,6 +366,16 @@ fn append_embedded_font_objects(
     for glyph_id in font.glyphs.keys() {
         remapper.remap(*glyph_id);
     }
+    font.cid_by_glyph = font
+        .glyphs
+        .keys()
+        .map(|glyph_id| {
+            (
+                *glyph_id,
+                remapper.get(*glyph_id).expect("glyph was remapped"),
+            )
+        })
+        .collect();
     let font_data = subsetter::subset(&registered.data, 0, &remapper)
         .expect("font was validated while preparing PDF resources");
 
@@ -523,7 +529,11 @@ fn font_preference(name: &str, ch: char, bold: bool, italic: bool) -> u8 {
     } else if matches!(codepoint, 0x2e80..=0x9fff | 0xf900..=0xfaff)
         || matches!(codepoint, 0x2190..=0x2bff)
     {
-        "notosanssc"
+        if bold {
+            "simhei"
+        } else {
+            "notosanssc"
+        }
     } else if codepoint >= 0x1f000 {
         "seguiemj"
     } else if bold && italic {
@@ -829,7 +839,13 @@ fn escape_pdf_text(text: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::PdfDocument;
+    use super::{font_preference, PdfDocument};
+
+    #[test]
+    fn prefers_simhei_for_bold_cjk_text() {
+        assert_eq!(font_preference("simhei", '学', true, false), 0);
+        assert_eq!(font_preference("NotoSansSC-VF", '学', false, false), 1);
+    }
 
     #[test]
     fn writes_jpeg_image_xobject_and_draw_operation() {
