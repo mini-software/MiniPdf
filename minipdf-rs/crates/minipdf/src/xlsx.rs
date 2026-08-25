@@ -11,6 +11,11 @@ const MARGIN_X: f32 = 54.0;
 const MARGIN_TOP: f32 = 70.55;
 const MARGIN_BOTTOM: f32 = 54.0;
 const CELL_FONT_SIZE: f32 = 11.0;
+const CELL_BORDER_WIDTH: f32 = 0.96;
+const PRINT_TITLE_HORIZONTAL_SCALE: f32 = 1.00058;
+const PRINT_TITLE_HORIZONTAL_OFFSET: f32 = 0.4;
+const PRINT_TITLE_VERTICAL_SCALE: f32 = 0.898;
+const PRINT_TITLE_TOP_OFFSET: f32 = 1.2;
 const ROW_HEIGHT: f32 = 15.0;
 const COL_WIDTH: f32 = 47.4;
 
@@ -78,6 +83,7 @@ struct CellStyle {
     number_format: NumberFormat,
     horizontal_alignment: HorizontalAlignment,
     vertical_alignment: VerticalAlignment,
+    indent: f32,
     wrap_text: bool,
     preferred_font: Option<&'static str>,
 }
@@ -132,6 +138,7 @@ impl Default for CellStyle {
             number_format: NumberFormat::General,
             horizontal_alignment: HorizontalAlignment::General,
             vertical_alignment: VerticalAlignment::Bottom,
+            indent: 0.0,
             wrap_text: false,
             preferred_font: None,
         }
@@ -802,6 +809,11 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         vertical_alignment: parse_vertical_alignment(
                             alignment.and_then(|node| node.attribute("vertical")),
                         ),
+                        indent: alignment
+                            .and_then(|node| node.attribute("indent"))
+                            .and_then(|value| value.parse::<f32>().ok())
+                            .filter(|value| *value > 0.0)
+                            .unwrap_or(0.0),
                         wrap_text: alignment
                             .and_then(|node| node.attribute("wrapText"))
                             .is_some_and(|value| matches!(value, "1" | "true")),
@@ -935,6 +947,28 @@ fn parse_cell_borders(border: roxmltree::Node<'_, '_>) -> CellBorders {
         right: side_color("right"),
         top: side_color("top"),
         bottom: side_color("bottom"),
+    }
+}
+
+fn merged_cell_borders(rows: &[RowData], merge_range: &MergeRange) -> CellBorders {
+    let cell_at = |row_index: usize, column_index: usize| {
+        rows.iter()
+            .find(|row| row.index == row_index)
+            .and_then(|row| row.cells.get(column_index))
+    };
+    CellBorders {
+        left: (merge_range.start_row..=merge_range.end_row)
+            .find_map(|row_index| cell_at(row_index, merge_range.start_col)?.style.borders.left),
+        right: (merge_range.start_row..=merge_range.end_row)
+            .find_map(|row_index| cell_at(row_index, merge_range.end_col)?.style.borders.right),
+        top: (merge_range.start_col..=merge_range.end_col)
+            .find_map(|column_index| cell_at(merge_range.start_row, column_index)?.style.borders.top),
+        bottom: (merge_range.start_col..=merge_range.end_col).find_map(|column_index| {
+            cell_at(merge_range.end_row, column_index)?
+                .style
+                .borders
+                .bottom
+        }),
     }
 }
 
@@ -1235,8 +1269,16 @@ fn wrap_cell_text_with_font(
                 && styled_text_width_with_font(&candidate, font_size, bold, italic, preferred_font)
                     > max_width
             {
-                lines.push(line);
-                line = character.to_string();
+                if let Some(split_index) = line.rfind(char::is_whitespace) {
+                    let remainder = line[split_index..].trim_start().to_owned();
+                    line.truncate(split_index);
+                    lines.push(line.trim_end().to_owned());
+                    line = remainder;
+                    line.push(character);
+                } else {
+                    lines.push(line);
+                    line = character.to_string();
+                }
             } else {
                 line = candidate;
             }
@@ -1311,25 +1353,38 @@ fn render_sheet(
         sheet.page_setup.print_scale,
         sheet.page_setup.fit_to_width,
     );
+    let horizontal_scale = if sheet.print_title_rows.is_some() {
+        PRINT_TITLE_HORIZONTAL_SCALE
+    } else {
+        1.0
+    };
     for width in &mut widths {
-        *width *= content_scale;
+        *width *= content_scale * horizontal_scale;
     }
     let content_width = widths.iter().sum::<f32>();
     let content_left = if sheet.page_setup.horizontal_centered && content_width < usable_width {
         sheet.page_setup.margin_left + (usable_width - content_width) / 2.0
+            - if sheet.print_title_rows.is_some() {
+                PRINT_TITLE_HORIZONTAL_OFFSET
+            } else {
+                0.0
+            }
     } else {
         sheet.page_setup.margin_left
     };
     let vertical_scale = if sheet.print_title_rows.is_some() {
-        0.9
+        PRINT_TITLE_VERTICAL_SCALE
     } else {
         1.0
     };
-    let margin_top = centered_scaled_margin(
+    let mut margin_top = centered_scaled_margin(
         page_size.height,
         sheet.page_setup.margin_top,
         vertical_scale,
     );
+    if sheet.print_title_rows.is_some() {
+        margin_top -= PRINT_TITLE_TOP_OFFSET;
+    }
     let margin_bottom = centered_scaled_margin(
         page_size.height,
         sheet.page_setup.margin_bottom,
@@ -1629,36 +1684,50 @@ fn render_xlsx_row(
             })
             .unwrap_or(row_height);
         let cell_y = y - (cell_height - row_height);
+        let cell_borders = merge
+            .map(|merge_range| merged_cell_borders(&sheet.rows, merge_range))
+            .unwrap_or(cell.style.borders);
         if let Some(fill) = cell.style.fill_color {
             page.add_rect(cell_x, cell_y, cell_width, cell_height, fill);
         }
-        if let Some(border) = cell.style.borders.bottom {
-            page.add_line(cell_x, cell_y, cell_x + cell_width, cell_y, border, 0.5);
-        }
-        if let Some(border) = cell.style.borders.top {
-            page.add_line(
+        if let Some(border) = cell_borders.bottom {
+            page.add_rect(
                 cell_x,
-                cell_y + cell_height,
-                cell_x + cell_width,
-                cell_y + cell_height,
+                cell_y - CELL_BORDER_WIDTH / 2.0,
+                cell_width,
+                CELL_BORDER_WIDTH,
                 border,
-                0.5,
             );
         }
-        if let Some(border) = cell.style.borders.left {
-            page.add_line(cell_x, cell_y, cell_x, cell_y + cell_height, border, 0.5);
-        }
-        if let Some(border) = cell.style.borders.right {
-            page.add_line(
-                cell_x + cell_width,
-                cell_y,
-                cell_x + cell_width,
-                cell_y + cell_height,
+        if let Some(border) = cell_borders.top {
+            page.add_rect(
+                cell_x,
+                cell_y + cell_height - CELL_BORDER_WIDTH / 2.0,
+                cell_width,
+                CELL_BORDER_WIDTH,
                 border,
-                0.5,
+            );
+        }
+        if let Some(border) = cell_borders.left {
+            page.add_rect(
+                cell_x - CELL_BORDER_WIDTH / 2.0,
+                cell_y,
+                CELL_BORDER_WIDTH,
+                cell_height,
+                border,
+            );
+        }
+        if let Some(border) = cell_borders.right {
+            page.add_rect(
+                cell_x + cell_width - CELL_BORDER_WIDTH / 2.0,
+                cell_y,
+                CELL_BORDER_WIDTH,
+                cell_height,
+                border,
             );
         }
         let font_size = cell.style.font_size * content_scale;
+        let indent_width = cell.style.indent * font_size * 0.7875;
         let text = if merge.is_some_and(|merge| merge.start_col < column_start) {
             String::new()
         } else {
@@ -1687,7 +1756,7 @@ fn render_xlsx_row(
         let lines = if cell.style.wrap_text {
             wrap_cell_text_with_font(
                 &cell.text,
-                (cell_width - 6.0).max(1.0),
+                (cell_width - 6.0 - indent_width).max(1.0),
                 font_size,
                 cell.style.bold,
                 cell.style.italic,
@@ -1724,10 +1793,15 @@ fn render_xlsx_row(
         }
         let line_height = font_size * 1.2;
         let block_height = line_height * lines.len() as f32;
+        let baseline_offset = font_size * 0.2;
         let lowest_baseline = match cell.style.vertical_alignment {
-            VerticalAlignment::Top => cell_y + (cell_height - block_height).max(0.0),
-            VerticalAlignment::Center => cell_y + (cell_height - block_height).max(0.0) / 2.0,
-            VerticalAlignment::Bottom => cell_y + 1.0,
+            VerticalAlignment::Top => {
+                cell_y + (cell_height - block_height).max(0.0) + baseline_offset
+            }
+            VerticalAlignment::Center => {
+                cell_y + (cell_height - block_height).max(0.0) / 2.0 + baseline_offset
+            }
+            VerticalAlignment::Bottom => cell_y + baseline_offset.max(1.0),
         };
         let line_count = lines.len();
         for (line_index, line) in lines.into_iter().enumerate() {
@@ -1740,13 +1814,17 @@ fn render_xlsx_row(
             );
             let x = match cell.style.horizontal_alignment {
                 HorizontalAlignment::Center => cell_x + (cell_width - text_width).max(0.0) / 2.0,
-                HorizontalAlignment::Right => cell_x + cell_width - text_width - 3.0,
+                HorizontalAlignment::Right => {
+                    cell_x + cell_width - text_width - 3.0 - indent_width
+                }
                 HorizontalAlignment::General
                     if cell.is_numeric || has_rtl_base_direction(&cell.text) =>
                 {
                     cell_x + cell_width - text_width - 3.0
                 }
-                HorizontalAlignment::General | HorizontalAlignment::Left => cell_x + 3.0,
+                HorizontalAlignment::General | HorizontalAlignment::Left => {
+                    cell_x + 3.0 + indent_width
+                }
             };
             let text_y = lowest_baseline + (line_count - line_index - 1) as f32 * line_height;
             page.add_styled_text(
@@ -1784,11 +1862,12 @@ mod tests {
     use super::{
         apply_color_tint, column_groups, column_index_from_ref, effective_content_scale,
         font_name_is_emphasis, format_thousands_two_decimals, has_rtl_base_direction,
-        indexed_color, jpeg_dimensions, parse_cell_borders, parse_horizontal_alignment,
-        parse_rgb_color, parse_vertical_alignment, read_column_widths, read_merge_ranges,
-        read_page_setup, read_row_breaks, read_sheet_rows, relationship_id,
-        trim_trailing_empty_rows, wrap_cell_text, CellStyle, HorizontalAlignment, RowData,
-        SheetImage, VerticalAlignment, XlsxStyles,
+        indexed_color, jpeg_dimensions, merged_cell_borders, parse_cell_borders,
+        parse_horizontal_alignment, parse_rgb_color, parse_vertical_alignment,
+        read_column_widths, read_merge_ranges, read_page_setup, read_row_breaks,
+        read_sheet_rows, relationship_id, trim_trailing_empty_rows, wrap_cell_text,
+        CellData, CellStyle, HorizontalAlignment, MergeRange, RowData, SheetImage,
+        VerticalAlignment, XlsxStyles,
     };
     use crate::{PageSize, PdfColor};
 
@@ -1895,10 +1974,12 @@ mod tests {
     fn wraps_explicit_and_width_constrained_cell_text() {
         let explicit = wrap_cell_text("Role\n(Rank)", 100.0, 10.0, false, false);
         let constrained = wrap_cell_text("ABCD", 12.0, 10.0, false, false);
+        let words = wrap_cell_text("alpha beta", 30.0, 10.0, false, false);
 
         assert_eq!(explicit, vec!["Role", "(Rank)"]);
         assert!(constrained.len() > 1);
         assert_eq!(constrained.concat(), "ABCD");
+        assert_eq!(words, vec!["alpha", "beta"]);
     }
 
     #[test]
@@ -1909,6 +1990,7 @@ mod tests {
                 CellStyle::default(),
                 CellStyle {
                     bold: true,
+                    indent: 1.0,
                     ..CellStyle::default()
                 },
             ],
@@ -1918,6 +2000,7 @@ mod tests {
 
         assert_eq!(rows[0].height, 68.0);
         assert!(rows[0].cells[3].style.bold);
+        assert_eq!(rows[0].cells[3].style.indent, 1.0);
     }
 
     #[test]
@@ -2047,6 +2130,45 @@ mod tests {
         assert_eq!(color.r, 68.0 / 255.0);
         assert_eq!(color.g, 114.0 / 255.0);
         assert_eq!(color.b, 196.0 / 255.0);
+    }
+
+    #[test]
+    fn preserves_borders_from_merged_range_edges() {
+        let mut top_left = CellData::default();
+        top_left.style.borders.left = Some(PdfColor::BLACK);
+        top_left.style.borders.top = Some(PdfColor::BLACK);
+        let mut top_right = CellData::default();
+        top_right.style.borders.right = Some(PdfColor::BLACK);
+        let mut bottom_left = CellData::default();
+        bottom_left.style.borders.bottom = Some(PdfColor::BLACK);
+        let mut bottom_right = CellData::default();
+        bottom_right.style.borders.right = Some(PdfColor::BLACK);
+        let rows = vec![
+            RowData {
+                index: 0,
+                height: 10.0,
+                cells: vec![top_left, top_right],
+            },
+            RowData {
+                index: 1,
+                height: 10.0,
+                cells: vec![bottom_left, bottom_right],
+            },
+        ];
+        let borders = merged_cell_borders(
+            &rows,
+            &MergeRange {
+                start_col: 0,
+                end_col: 1,
+                start_row: 0,
+                end_row: 1,
+            },
+        );
+
+        assert_eq!(borders.left, Some(PdfColor::BLACK));
+        assert_eq!(borders.right, Some(PdfColor::BLACK));
+        assert_eq!(borders.top, Some(PdfColor::BLACK));
+        assert_eq!(borders.bottom, Some(PdfColor::BLACK));
     }
 
     #[test]
