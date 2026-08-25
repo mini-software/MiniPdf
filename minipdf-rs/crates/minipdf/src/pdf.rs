@@ -1,4 +1,7 @@
 use std::collections::BTreeMap;
+use std::io::Write;
+
+use flate2::{write::ZlibEncoder, Compression};
 
 use crate::RegisteredFont;
 
@@ -72,8 +75,14 @@ enum PdfOp {
 }
 
 #[derive(Debug, Clone)]
-struct PdfJpegImage {
-    data: Vec<u8>,
+enum PdfImageData {
+    Jpeg(Vec<u8>),
+    Rgba { rgb: Vec<u8>, alpha: Vec<u8> },
+}
+
+#[derive(Debug, Clone)]
+struct PdfImage {
+    data: PdfImageData,
     width: u16,
     height: u16,
 }
@@ -185,7 +194,7 @@ impl PdfPage {
 #[derive(Debug, Clone)]
 pub struct PdfDocument {
     pages: Vec<PdfPage>,
-    jpeg_images: Vec<PdfJpegImage>,
+    images: Vec<PdfImage>,
     fonts: Vec<RegisteredFont>,
 }
 
@@ -202,15 +211,31 @@ impl PdfDocument {
     pub fn new() -> Self {
         Self {
             pages: Vec::new(),
-            jpeg_images: Vec::new(),
+            images: Vec::new(),
             fonts: crate::registered_fonts(),
         }
     }
 
     pub fn add_jpeg_image(&mut self, data: Vec<u8>, width: u16, height: u16) -> usize {
-        let image_id = self.jpeg_images.len();
-        self.jpeg_images.push(PdfJpegImage {
-            data,
+        let image_id = self.images.len();
+        self.images.push(PdfImage {
+            data: PdfImageData::Jpeg(data),
+            width,
+            height,
+        });
+        image_id
+    }
+
+    pub fn add_rgba_image(&mut self, data: Vec<u8>, width: u16, height: u16) -> usize {
+        let mut rgb = Vec::with_capacity(data.len() / 4 * 3);
+        let mut alpha = Vec::with_capacity(data.len() / 4);
+        for pixel in data.chunks_exact(4) {
+            rgb.extend_from_slice(&pixel[..3]);
+            alpha.push(pixel[3]);
+        }
+        let image_id = self.images.len();
+        self.images.push(PdfImage {
+            data: PdfImageData::Rgba { rgb, alpha },
             width,
             height,
         });
@@ -247,16 +272,36 @@ impl PdfDocument {
             font.object_id = append_embedded_font_objects(&mut objects, font, &self.fonts);
         }
 
-        let mut image_ids = Vec::with_capacity(self.jpeg_images.len());
-        for image in &self.jpeg_images {
+        let mut image_ids = Vec::with_capacity(self.images.len());
+        for image in &self.images {
+            let (data, filter, soft_mask) = match &image.data {
+                PdfImageData::Jpeg(data) => (data.clone(), "/DCTDecode", None),
+                PdfImageData::Rgba { rgb, alpha } => {
+                    let alpha = zlib_compress(alpha);
+                    let mut mask_object = format!(
+                        "<< /Type /XObject /Subtype /Image /Width {} /Height {} /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /FlateDecode /Length {} >>\nstream\n",
+                        image.width,
+                        image.height,
+                        alpha.len()
+                    )
+                    .into_bytes();
+                    mask_object.extend_from_slice(&alpha);
+                    mask_object.extend_from_slice(b"\nendstream");
+                    let mask_id = push_object(&mut objects, mask_object);
+                    (zlib_compress(rgb), "/FlateDecode", Some(mask_id))
+                }
+            };
+            let soft_mask = soft_mask.map_or_else(String::new, |id| format!(" /SMask {id} 0 R"));
             let mut image_object = format!(
-                "<< /Type /XObject /Subtype /Image /Width {} /Height {} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length {} >>\nstream\n",
+                "<< /Type /XObject /Subtype /Image /Width {} /Height {} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter {}{} /Length {} >>\nstream\n",
                 image.width,
                 image.height,
-                image.data.len()
+                filter,
+                soft_mask,
+                data.len()
             )
             .into_bytes();
-            image_object.extend_from_slice(&image.data);
+            image_object.extend_from_slice(&data);
             image_object.extend_from_slice(b"\nendstream");
             image_ids.push(push_object(&mut objects, image_object));
         }
@@ -313,6 +358,16 @@ impl Default for PdfDocument {
 fn push_object(objects: &mut Vec<Vec<u8>>, object: Vec<u8>) -> usize {
     objects.push(object);
     objects.len()
+}
+
+fn zlib_compress(data: &[u8]) -> Vec<u8> {
+    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
+    encoder
+        .write_all(data)
+        .expect("writing to memory cannot fail");
+    encoder
+        .finish()
+        .expect("finishing memory stream cannot fail")
 }
 
 fn prepare_embedded_fonts(pages: &[PdfPage], fonts: &[RegisteredFont]) -> Vec<EmbeddedFont> {
@@ -499,7 +554,9 @@ fn split_font_runs(
     let mut runs: Vec<FontRun> = Vec::new();
     for ch in text.chars() {
         let font_index = if ch.is_whitespace() || ch.is_ascii_punctuation() || ch == '\u{fe0f}' {
-            runs.last().and_then(|run| run.font_index)
+            runs.last()
+                .and_then(|run| run.font_index)
+                .or_else(|| select_font(fonts, ch, bold, italic, preferred_font))
         } else {
             select_font(fonts, ch, bold, italic, preferred_font)
         };
@@ -542,6 +599,12 @@ fn font_preference(
     if let Some(preferred) = preferred_font {
         let preferred = preferred.to_ascii_lowercase();
         let preferred_variant = match (preferred.as_str(), bold, italic) {
+            ("corbel", true, true) => "corbelz",
+            ("corbel", true, false) => "corbelb",
+            ("corbel", false, true) => "corbeli",
+            ("bookos", true, true) => "bookosbi",
+            ("bookos", true, false) => "bookosb",
+            ("bookos", false, true) => "bookosi",
             ("verdana", true, true) => "verdanaz",
             ("verdana", true, false) => "verdanab",
             ("verdana", false, true) => "verdanai",
@@ -928,6 +991,22 @@ mod tests {
     }
 
     #[test]
+    fn prefers_book_antiqua_for_palatino_compatible_text() {
+        assert_eq!(
+            font_preference("bookos", 'A', false, false, Some("bookos")),
+            0
+        );
+        assert_eq!(
+            font_preference("bookosb", 'A', true, false, Some("bookos")),
+            0
+        );
+        assert_eq!(
+            font_preference("calibrib", 'A', true, false, Some("bookos")),
+            2
+        );
+    }
+
+    #[test]
     fn writes_jpeg_image_xobject_and_draw_operation() {
         let mut document = PdfDocument::new();
         let image_id = document.add_jpeg_image(vec![0xff, 0xd8, 0xff, 0xd9], 2, 3);
@@ -939,6 +1018,19 @@ mod tests {
         assert!(pdf.contains("/Filter /DCTDecode"));
         assert!(pdf.contains("/Width 2 /Height 3"));
         assert!(pdf.contains("30.00 0 0 40.00 10.00 20.00 cm /Im1 Do"));
+    }
+
+    #[test]
+    fn writes_rgba_image_with_soft_mask() {
+        let mut document = PdfDocument::new();
+        let image_id = document.add_rgba_image(vec![255, 0, 0, 128], 1, 1);
+        document
+            .add_page(100.0, 100.0)
+            .add_image(image_id, 10.0, 20.0, 30.0, 40.0);
+
+        let pdf = String::from_utf8_lossy(&document.to_bytes()).into_owned();
+        assert!(pdf.contains("/SMask"));
+        assert!(pdf.contains("/Filter /FlateDecode"));
     }
 
     #[test]
