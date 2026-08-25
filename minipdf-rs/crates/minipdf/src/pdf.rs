@@ -587,7 +587,7 @@ fn font_preference(
         "calibri"
     };
 
-    if name == preferred {
+    let fallback_score = if name == preferred {
         0
     } else if name.starts_with(preferred) {
         1
@@ -595,7 +595,8 @@ fn font_preference(
         2
     } else {
         10
-    }
+    };
+    fallback_score + if preferred_font.is_some() { 2 } else { 0 }
 }
 
 fn font_supports(font: &RegisteredFont, ch: char) -> bool {
@@ -919,6 +920,10 @@ mod tests {
         assert_eq!(
             font_preference("verdana", 'A', true, false, Some("verdana")),
             1
+        );
+        assert_eq!(
+            font_preference("calibrib", 'A', true, false, Some("verdana")),
+            2
         );
     }
 
