@@ -859,7 +859,7 @@ fn read_theme_colors<R: std::io::Read + std::io::Seek>(
         return Ok(Vec::new());
     };
     let document = roxmltree::Document::parse(&theme_xml)?;
-    Ok(document
+    let scheme_colors = document
         .descendants()
         .find(|node| node.has_tag_name("clrScheme"))
         .map(|scheme| {
@@ -873,9 +873,18 @@ fn read_theme_colors<R: std::io::Read + std::io::Seek>(
                         .and_then(parse_rgb_color)
                         .or_else(|| color.attribute("lastClr").and_then(parse_rgb_color))
                 })
-                .collect()
+                .collect::<Vec<_>>()
         })
-        .unwrap_or_default())
+        .unwrap_or_default();
+    Ok(spreadsheet_theme_colors(&scheme_colors))
+}
+
+fn spreadsheet_theme_colors(scheme_colors: &[PdfColor]) -> Vec<PdfColor> {
+    const INDEX_ORDER: [usize; 12] = [1, 0, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11];
+    INDEX_ORDER
+        .into_iter()
+        .filter_map(|index| scheme_colors.get(index).copied())
+        .collect()
 }
 
 fn parse_xlsx_color(node: roxmltree::Node<'_, '_>, theme_colors: &[PdfColor]) -> Option<PdfColor> {
@@ -957,12 +966,20 @@ fn merged_cell_borders(rows: &[RowData], merge_range: &MergeRange) -> CellBorder
             .and_then(|row| row.cells.get(column_index))
     };
     CellBorders {
-        left: (merge_range.start_row..=merge_range.end_row)
-            .find_map(|row_index| cell_at(row_index, merge_range.start_col)?.style.borders.left),
+        left: (merge_range.start_row..=merge_range.end_row).find_map(|row_index| {
+            cell_at(row_index, merge_range.start_col)?
+                .style
+                .borders
+                .left
+        }),
         right: (merge_range.start_row..=merge_range.end_row)
             .find_map(|row_index| cell_at(row_index, merge_range.end_col)?.style.borders.right),
-        top: (merge_range.start_col..=merge_range.end_col)
-            .find_map(|column_index| cell_at(merge_range.start_row, column_index)?.style.borders.top),
+        top: (merge_range.start_col..=merge_range.end_col).find_map(|column_index| {
+            cell_at(merge_range.start_row, column_index)?
+                .style
+                .borders
+                .top
+        }),
         bottom: (merge_range.start_col..=merge_range.end_col).find_map(|column_index| {
             cell_at(merge_range.end_row, column_index)?
                 .style
@@ -1109,7 +1126,18 @@ fn read_sheet_rows(
                 .attribute("r")
                 .and_then(column_index_from_ref)
                 .unwrap_or(cells.len());
-            let value = read_cell_value(cell, shared_strings, styles);
+            let mut value = read_cell_value(cell, shared_strings, styles);
+            if value.text.is_empty() {
+                if let Some(number) = cell
+                    .children()
+                    .find(|node| node.has_tag_name("f"))
+                    .and_then(|node| node.text())
+                    .and_then(|formula| evaluate_simple_formula(formula, &rows))
+                {
+                    value.text = format_numeric_value(number, "", value.style.number_format);
+                    value.is_numeric = true;
+                }
+            }
             cells.push((col, value));
         }
 
@@ -1200,22 +1228,62 @@ fn read_cell_value(
     CellData {
         text: numeric_value.map_or_else(
             || value.to_owned(),
-            |number| match style.number_format {
-                NumberFormat::ThousandsTwoDecimals => format_thousands_two_decimals(number),
-                NumberFormat::General
-                    if !value.contains(['e', 'E'])
-                        && value
-                            .split_once('.')
-                            .is_some_and(|(_, fraction)| fraction.len() >= 15) =>
-                {
-                    number.to_string()
-                }
-                NumberFormat::General => value.to_owned(),
-            },
+            |number| format_numeric_value(number, value, style.number_format),
         ),
         is_numeric: numeric_value.is_some(),
         style,
     }
+}
+
+fn format_numeric_value(value: f64, source: &str, number_format: NumberFormat) -> String {
+    match number_format {
+        NumberFormat::ThousandsTwoDecimals => format_thousands_two_decimals(value),
+        NumberFormat::General
+            if !source.contains(['e', 'E'])
+                && source
+                    .split_once('.')
+                    .is_some_and(|(_, fraction)| fraction.len() >= 15) =>
+        {
+            value.to_string()
+        }
+        NumberFormat::General if source.is_empty() => value.to_string(),
+        NumberFormat::General => source.to_owned(),
+    }
+}
+
+fn evaluate_simple_formula(formula: &str, rows: &[RowData]) -> Option<f64> {
+    let formula = formula.trim();
+    if formula.len() >= 5 && formula[..4].eq_ignore_ascii_case("SUM(") && formula.ends_with(')') {
+        let (start, end) = formula[4..formula.len() - 1].split_once(':')?;
+        let (start_col, start_row) = cell_position(start)?;
+        let (end_col, end_row) = cell_position(end)?;
+        let mut total = 0.0;
+        for row in start_row.min(end_row)..=start_row.max(end_row) {
+            for col in start_col.min(end_col)..=start_col.max(end_col) {
+                total += numeric_cell_value(rows, col, row)?;
+            }
+        }
+        return Some(total);
+    }
+
+    formula
+        .split('+')
+        .map(|cell_ref| {
+            let (col, row) = cell_position(cell_ref.trim())?;
+            numeric_cell_value(rows, col, row)
+        })
+        .try_fold(0.0, |total, value| value.map(|value| total + value))
+}
+
+fn numeric_cell_value(rows: &[RowData], col: usize, row: usize) -> Option<f64> {
+    rows.iter()
+        .find(|candidate| candidate.index == row)?
+        .cells
+        .get(col)?
+        .text
+        .replace(',', "")
+        .parse()
+        .ok()
 }
 
 fn format_thousands_two_decimals(value: f64) -> String {
@@ -1814,9 +1882,7 @@ fn render_xlsx_row(
             );
             let x = match cell.style.horizontal_alignment {
                 HorizontalAlignment::Center => cell_x + (cell_width - text_width).max(0.0) / 2.0,
-                HorizontalAlignment::Right => {
-                    cell_x + cell_width - text_width - 3.0 - indent_width
-                }
+                HorizontalAlignment::Right => cell_x + cell_width - text_width - 3.0 - indent_width,
                 HorizontalAlignment::General
                     if cell.is_numeric || has_rtl_base_direction(&cell.text) =>
                 {
@@ -1863,11 +1929,10 @@ mod tests {
         apply_color_tint, column_groups, column_index_from_ref, effective_content_scale,
         font_name_is_emphasis, format_thousands_two_decimals, has_rtl_base_direction,
         indexed_color, jpeg_dimensions, merged_cell_borders, parse_cell_borders,
-        parse_horizontal_alignment, parse_rgb_color, parse_vertical_alignment,
-        read_column_widths, read_merge_ranges, read_page_setup, read_row_breaks,
-        read_sheet_rows, relationship_id, trim_trailing_empty_rows, wrap_cell_text,
-        CellData, CellStyle, HorizontalAlignment, MergeRange, RowData, SheetImage,
-        VerticalAlignment, XlsxStyles,
+        parse_horizontal_alignment, parse_rgb_color, parse_vertical_alignment, read_column_widths,
+        read_merge_ranges, read_page_setup, read_row_breaks, read_sheet_rows, relationship_id,
+        spreadsheet_theme_colors, trim_trailing_empty_rows, wrap_cell_text, CellData, CellStyle,
+        HorizontalAlignment, MergeRange, RowData, SheetImage, VerticalAlignment, XlsxStyles,
     };
     use crate::{PageSize, PdfColor};
 
@@ -1961,6 +2026,23 @@ mod tests {
     fn formats_excel_thousands_with_two_decimals() {
         assert_eq!(format_thousands_two_decimals(42_000.0), "42,000.00");
         assert_eq!(format_thousands_two_decimals(-8.5), "-8.50");
+    }
+
+    #[test]
+    fn evaluates_empty_cached_sum_and_addition_formulas() {
+        let xml = r#"<worksheet><sheetData>
+            <row r="1"><c r="A1" t="n"><v>1000</v></c><c r="B1" t="n"><v>250</v></c></row>
+            <row r="2"><c r="A2" t="n"><v>2000</v></c><c r="B2" t="n"><v>750</v></c></row>
+            <row r="3"><c r="A3"><f>SUM(A1:A2)</f><v></v></c><c r="B3"><f>SUM(B1:B2)</f><v></v></c></row>
+            <row r="4"><c r="A4"><f>A3+B3</f><v></v></c></row>
+        </sheetData></worksheet>"#;
+        let rows =
+            read_sheet_rows(xml, &[], &XlsxStyles::default()).expect("worksheet XML is valid");
+
+        assert_eq!(rows[2].cells[0].text, "3000");
+        assert_eq!(rows[2].cells[1].text, "1000");
+        assert_eq!(rows[3].cells[0].text, "4000");
+        assert!(rows[3].cells[0].is_numeric);
     }
 
     #[test]
@@ -2175,6 +2257,17 @@ mod tests {
     fn resolves_indexed_and_tinted_theme_colors() {
         assert_eq!(indexed_color(9), Some(PdfColor::new(1.0, 1.0, 1.0)));
         assert_eq!(indexed_color(10), Some(PdfColor::new(1.0, 0.0, 0.0)));
+        let scheme = [
+            PdfColor::BLACK,
+            PdfColor::new(1.0, 1.0, 1.0),
+            PdfColor::new(0.1, 0.1, 0.1),
+            PdfColor::new(0.9, 0.9, 0.9),
+        ];
+        let theme = spreadsheet_theme_colors(&scheme);
+        assert_eq!(theme[0], scheme[1]);
+        assert_eq!(theme[1], scheme[0]);
+        assert_eq!(theme[2], scheme[3]);
+        assert_eq!(theme[3], scheme[2]);
         let tinted = apply_color_tint(PdfColor::new(0.647, 0.647, 0.647), 0.8);
         assert!((tinted.r - 0.9294).abs() < 0.0001);
         assert!((tinted.g - 0.9294).abs() < 0.0001);
