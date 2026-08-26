@@ -12,12 +12,11 @@ const MARGIN_TOP: f32 = 70.55;
 const MARGIN_BOTTOM: f32 = 54.0;
 const CELL_FONT_SIZE: f32 = 11.0;
 const CELL_BORDER_WIDTH: f32 = 0.96;
-const PRINT_TITLE_HORIZONTAL_SCALE: f32 = 1.00058;
+const PRINT_TITLE_HORIZONTAL_SCALE: f32 = 0.9957;
 const PRINT_TITLE_HORIZONTAL_OFFSET: f32 = 0.4;
 const FIT_TO_PAGE_HORIZONTAL_SCALE: f32 = 1.0048;
 const FIT_TO_PAGE_HORIZONTAL_OFFSET: f32 = 0.5;
-const PRINT_TITLE_VERTICAL_SCALE: f32 = 0.898;
-const PRINT_TITLE_TOP_OFFSET: f32 = 1.2;
+const PRINT_TITLE_VERTICAL_SCALE: f32 = 0.88;
 const FIT_TO_PAGE_VERTICAL_SCALE: f32 = 1.0104;
 const FIT_TO_PAGE_TOP_OFFSET: f32 = 0.96;
 const SVG_FALLBACK_HORIZONTAL_SCALE: f32 = 0.972;
@@ -89,6 +88,7 @@ struct CellStyle {
     font_size: f32,
     font_color: PdfColor,
     fill_color: Option<PdfColor>,
+    fill_override: bool,
     borders: CellBorders,
     number_format: NumberFormat,
     horizontal_alignment: HorizontalAlignment,
@@ -104,6 +104,10 @@ struct CellBorders {
     right: Option<PdfColor>,
     top: Option<PdfColor>,
     bottom: Option<PdfColor>,
+    left_width: f32,
+    right_width: f32,
+    top_width: f32,
+    bottom_width: f32,
     left_dotted: bool,
     right_dotted: bool,
     top_dotted: bool,
@@ -117,11 +121,19 @@ impl CellBorders {
 }
 
 #[derive(Debug, Clone, Copy, Default)]
+struct TableBorders {
+    edges: CellBorders,
+    vertical: Option<(PdfColor, f32)>,
+    horizontal: Option<(PdfColor, f32)>,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
 enum NumberFormat {
     #[default]
     General,
     DateMonthDayYear,
     ThousandsTwoDecimals,
+    DollarTwoDecimals,
     DollarAccounting,
 }
 
@@ -150,6 +162,7 @@ impl Default for CellStyle {
             font_size: CELL_FONT_SIZE,
             font_color: PdfColor::BLACK,
             fill_color: None,
+            fill_override: false,
             borders: CellBorders::default(),
             number_format: NumberFormat::General,
             horizontal_alignment: HorizontalAlignment::General,
@@ -170,6 +183,19 @@ struct FontStyle {
     preferred_font: Option<&'static str>,
 }
 
+#[derive(Debug, Clone, Copy, Default)]
+struct DifferentialFontStyle {
+    bold: Option<bool>,
+    italic: Option<bool>,
+    color: Option<PdfColor>,
+}
+
+impl DifferentialFontStyle {
+    fn any(self) -> bool {
+        self.bold.is_some() || self.italic.is_some() || self.color.is_some()
+    }
+}
+
 impl Default for FontStyle {
     fn default() -> Self {
         Self {
@@ -185,11 +211,46 @@ impl Default for FontStyle {
 #[derive(Debug, Default)]
 struct XlsxStyles {
     cells: Vec<CellStyle>,
-    differential_font_colors: Vec<Option<PdfColor>>,
+    differential_fonts: Vec<DifferentialFontStyle>,
     differential_fills: Vec<Option<PdfColor>>,
     max_digit_width: f32,
     table_base_fills: HashMap<String, PdfColor>,
     table_first_row_stripes: HashMap<String, (PdfColor, usize)>,
+    table_whole_fonts: HashMap<String, DifferentialFontStyle>,
+    table_header_fonts: HashMap<String, DifferentialFontStyle>,
+    table_total_fonts: HashMap<String, DifferentialFontStyle>,
+    table_whole_borders: HashMap<String, TableBorders>,
+    table_header_borders: HashMap<String, TableBorders>,
+    table_total_borders: HashMap<String, TableBorders>,
+}
+
+fn parse_number_format(
+    format_id: Option<&str>,
+    custom_formats: &HashMap<usize, String>,
+) -> NumberFormat {
+    match format_id {
+        Some("14") => NumberFormat::DateMonthDayYear,
+        Some("4") => NumberFormat::ThousandsTwoDecimals,
+        Some("44") => NumberFormat::DollarAccounting,
+        Some(id) => id
+            .parse::<usize>()
+            .ok()
+            .and_then(|id| custom_formats.get(&id))
+            .map(|code| {
+                let normalized = code.to_ascii_lowercase();
+                if normalized.contains('$') && normalized.contains("0.00") {
+                    if normalized.contains('*') {
+                        NumberFormat::DollarAccounting
+                    } else {
+                        NumberFormat::DollarTwoDecimals
+                    }
+                } else {
+                    NumberFormat::General
+                }
+            })
+            .unwrap_or(NumberFormat::General),
+        None => NumberFormat::General,
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -248,11 +309,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
         let column_widths = read_column_widths_with_mdw(&sheet_xml, styles.max_digit_width)?;
         let merges = read_merge_ranges(&sheet_xml)?;
         let row_breaks = read_row_breaks(&sheet_xml)?;
-        let mut page_setup = read_page_setup(&sheet_xml)?;
-        if let Some(page_size) = read_printer_page_size(&mut archive, &path, &sheet_xml)? {
-            page_setup.page_size = page_size;
-            page_setup.page_size_from_printer = true;
-        }
+        let page_setup = read_page_setup(&sheet_xml)?;
         sheets.push(SheetData {
             rows,
             images,
@@ -278,13 +335,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
                 &styles,
             )?;
             trim_trailing_empty_rows(&mut rows, &images);
-            let mut page_setup = read_page_setup(&sheet_xml)?;
-            if let Some(page_size) =
-                read_printer_page_size(&mut archive, "xl/worksheets/sheet1.xml", &sheet_xml)?
-            {
-                page_setup.page_size = page_size;
-                page_setup.page_size_from_printer = true;
-            }
+            let page_setup = read_page_setup(&sheet_xml)?;
             sheets.push(SheetData {
                 rows,
                 images,
@@ -429,65 +480,6 @@ fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
         fit_to_height: fit_to_page && fit_to_height > 0,
         horizontal_centered,
     })
-}
-
-fn read_printer_page_size<R: std::io::Read + std::io::Seek>(
-    archive: &mut ZipArchive<R>,
-    sheet_path: &str,
-    sheet_xml: &str,
-) -> Result<Option<PageSize>> {
-    let sheet = roxmltree::Document::parse(sheet_xml)?;
-    let Some(page_setup) = sheet
-        .descendants()
-        .find(|node| node.has_tag_name("pageSetup"))
-    else {
-        return Ok(None);
-    };
-    if page_setup.attribute("paperSize").is_some() {
-        return Ok(None);
-    }
-    let Some(settings_id) = relationship_id(page_setup) else {
-        return Ok(None);
-    };
-    let relationships = read_part_relationships(archive, sheet_path)?;
-    let Some(target) = relationships.get(&settings_id) else {
-        return Ok(None);
-    };
-    let settings_path = resolve_part_target(sheet_path, target);
-    let Some(data) = read_zip_bytes(archive, &settings_path)? else {
-        return Ok(None);
-    };
-    parse_windows_devmode_page_size(&data).map_or(Ok(None), |page_size| Ok(Some(page_size)))
-}
-
-fn parse_windows_devmode_page_size(data: &[u8]) -> Option<PageSize> {
-    let read_u16 = |offset: usize| {
-        Some(u16::from_le_bytes([
-            *data.get(offset)?,
-            *data.get(offset + 1)?,
-        ]))
-    };
-    let size = read_u16(68)? as usize;
-    if size < 84 || data.len() < size {
-        return None;
-    }
-    let orientation = read_u16(76)?;
-    let paper_size = read_u16(78)?;
-    let paper_length = read_u16(80)?;
-    let paper_width = read_u16(82)?;
-    let mut page_size = match paper_size {
-        1 => PageSize::LETTER,
-        9 => PageSize::A4,
-        _ if paper_width > 0 && paper_length > 0 => PageSize {
-            width: paper_width as f32 * 72.0 / 254.0,
-            height: paper_length as f32 * 72.0 / 254.0,
-        },
-        _ => return None,
-    };
-    if orientation == 2 {
-        std::mem::swap(&mut page_size.width, &mut page_size.height);
-    }
-    Some(page_size)
 }
 
 #[cfg(test)]
@@ -1214,6 +1206,16 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
     };
     let theme_colors = read_theme_colors(archive)?;
     let xml = roxmltree::Document::parse(&styles_xml)?;
+    let custom_formats = xml
+        .descendants()
+        .filter(|node| node.has_tag_name("numFmt"))
+        .filter_map(|node| {
+            Some((
+                node.attribute("numFmtId")?.parse::<usize>().ok()?,
+                node.attribute("formatCode")?.to_owned(),
+            ))
+        })
+        .collect::<HashMap<_, _>>();
     let fonts = xml
         .descendants()
         .find(|node| node.has_tag_name("fonts"))
@@ -1316,6 +1318,13 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         .attribute("fillId")
                         .and_then(|value| value.parse::<usize>().ok())
                         .and_then(|fill_id| fills.get(fill_id).copied().flatten());
+                    let fill_override = xf
+                        .attribute("fillId")
+                        .and_then(|value| value.parse::<usize>().ok())
+                        .is_some_and(|fill_id| fill_id != 0)
+                        || xf
+                            .attribute("applyFill")
+                            .is_some_and(|value| matches!(value, "1" | "true"));
                     let cell_borders = xf
                         .attribute("borderId")
                         .and_then(|value| value.parse::<usize>().ok())
@@ -1328,13 +1337,12 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         font_size: font.size,
                         font_color: font.color,
                         fill_color,
+                        fill_override,
                         borders: cell_borders,
-                        number_format: match xf.attribute("numFmtId") {
-                            Some("14") => NumberFormat::DateMonthDayYear,
-                            Some("4") => NumberFormat::ThousandsTwoDecimals,
-                            Some("44") => NumberFormat::DollarAccounting,
-                            _ => NumberFormat::General,
-                        },
+                        number_format: parse_number_format(
+                            xf.attribute("numFmtId"),
+                            &custom_formats,
+                        ),
                         horizontal_alignment: parse_horizontal_alignment(
                             alignment.and_then(|node| node.attribute("horizontal")),
                         ),
@@ -1377,7 +1385,35 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
-    let differential_font_colors = xml
+    let differential_fonts = xml
+        .descendants()
+        .find(|node| node.has_tag_name("dxfs"))
+        .map(|dxfs| {
+            dxfs.children()
+                .filter(|node| node.has_tag_name("dxf"))
+                .map(|dxf| {
+                    let Some(font) = dxf.children().find(|node| node.has_tag_name("font")) else {
+                        return DifferentialFontStyle::default();
+                    };
+                    DifferentialFontStyle {
+                        bold: font
+                            .children()
+                            .find(|node| node.has_tag_name("b"))
+                            .map(|node| node.attribute("val") != Some("0")),
+                        italic: font
+                            .children()
+                            .find(|node| node.has_tag_name("i"))
+                            .map(|node| node.attribute("val") != Some("0")),
+                        color: font
+                            .children()
+                            .find(|node| node.has_tag_name("color"))
+                            .and_then(|color| parse_xlsx_color(color, &theme_colors)),
+                    }
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let differential_borders = xml
         .descendants()
         .find(|node| node.has_tag_name("dxfs"))
         .map(|dxfs| {
@@ -1385,9 +1421,8 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                 .filter(|node| node.has_tag_name("dxf"))
                 .map(|dxf| {
                     dxf.children()
-                        .find(|node| node.has_tag_name("font"))
-                        .and_then(|font| font.children().find(|node| node.has_tag_name("color")))
-                        .and_then(|color| parse_xlsx_color(color, &theme_colors))
+                        .find(|node| node.has_tag_name("border"))
+                        .map(|border| parse_table_borders(border, &theme_colors))
                 })
                 .collect::<Vec<_>>()
         })
@@ -1425,13 +1460,55 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
             Some((name.to_owned(), (fill, size)))
         })
         .collect();
+    let collect_table_fonts = |element_type: &str| {
+        xml.descendants()
+            .filter(|node| node.has_tag_name("tableStyle"))
+            .filter_map(|style| {
+                let name = style.attribute("name")?;
+                let element = style.children().find(|node| {
+                    node.has_tag_name("tableStyleElement")
+                        && node.attribute("type") == Some(element_type)
+                })?;
+                let dxf_id = element.attribute("dxfId")?.parse::<usize>().ok()?;
+                let font = differential_fonts.get(dxf_id).copied()?;
+                font.any().then(|| (name.to_owned(), font))
+            })
+            .collect::<HashMap<_, _>>()
+    };
+    let table_whole_fonts = collect_table_fonts("wholeTable");
+    let table_header_fonts = collect_table_fonts("headerRow");
+    let table_total_fonts = collect_table_fonts("totalRow");
+    let collect_table_borders = |element_type: &str| {
+        xml.descendants()
+            .filter(|node| node.has_tag_name("tableStyle"))
+            .filter_map(|style| {
+                let name = style.attribute("name")?;
+                let element = style.children().find(|node| {
+                    node.has_tag_name("tableStyleElement")
+                        && node.attribute("type") == Some(element_type)
+                })?;
+                let dxf_id = element.attribute("dxfId")?.parse::<usize>().ok()?;
+                let borders = differential_borders.get(dxf_id).copied().flatten()?;
+                Some((name.to_owned(), borders))
+            })
+            .collect::<HashMap<_, _>>()
+    };
+    let table_whole_borders = collect_table_borders("wholeTable");
+    let table_header_borders = collect_table_borders("headerRow");
+    let table_total_borders = collect_table_borders("totalRow");
     Ok(XlsxStyles {
         cells,
-        differential_font_colors,
+        differential_fonts,
         differential_fills,
         max_digit_width,
         table_base_fills,
         table_first_row_stripes,
+        table_whole_fonts,
+        table_header_fonts,
+        table_total_fonts,
+        table_whole_borders,
+        table_header_borders,
+        table_total_borders,
     })
 }
 
@@ -1456,10 +1533,9 @@ fn apply_sheet_conditional_formats(
                 .and_then(|value| value.parse::<usize>().ok())
                 .and_then(|index| {
                     styles
-                        .differential_font_colors
+                        .differential_fonts
                         .get(index)
-                        .copied()
-                        .flatten()
+                        .and_then(|style| style.color)
                 })
             else {
                 continue;
@@ -1589,7 +1665,74 @@ fn apply_sheet_table_styles<R: std::io::Read + std::io::Seek>(
             .and_then(|value| value.parse::<usize>().ok())
             .unwrap_or(1);
         let data_start = start_row + header_rows;
+        let total_rows = root
+            .attribute("totalsRowCount")
+            .and_then(|value| value.parse::<usize>().ok())
+            .unwrap_or(0);
+        let direct_font = |attribute: &str| {
+            root.attribute(attribute)
+                .and_then(|value| value.parse::<usize>().ok())
+                .and_then(|index| styles.differential_fonts.get(index).copied())
+                .filter(|font| font.any())
+        };
+        let direct_header_font = direct_font("headerRowDxfId");
+        let direct_data_font = direct_font("dataDxfId");
+        let direct_total_font = direct_font("totalsRowDxfId");
         let style_name = style_info.attribute("name").unwrap_or_default();
+        let total_start = (end_row + 1).saturating_sub(total_rows).max(start_row);
+        let data_end = total_start.saturating_sub(1);
+        if data_start <= data_end {
+            if let Some(font) = styles.table_whole_fonts.get(style_name).copied() {
+                apply_table_font_layer(rows, start_col, end_col, data_start, data_end, font);
+            }
+            if let Some(font) = direct_data_font {
+                apply_table_font_layer(rows, start_col, end_col, data_start, data_end, font);
+            }
+        }
+        if header_rows > 0 {
+            let header_end = (start_row + header_rows - 1).min(end_row);
+            if let Some(font) = styles.table_header_fonts.get(style_name).copied() {
+                apply_table_font_layer(rows, start_col, end_col, start_row, header_end, font);
+            }
+            if let Some(font) = direct_header_font {
+                apply_table_font_layer(rows, start_col, end_col, start_row, header_end, font);
+            }
+        }
+        if total_rows > 0 {
+            if let Some(font) = styles.table_total_fonts.get(style_name).copied() {
+                apply_table_font_layer(rows, start_col, end_col, total_start, end_row, font);
+            }
+            if let Some(font) = direct_total_font {
+                apply_table_font_layer(rows, start_col, end_col, total_start, end_row, font);
+            }
+        }
+        if let Some(borders) = styles.table_whole_borders.get(style_name).copied() {
+            apply_table_border_layer(rows, start_col, end_col, start_row, end_row, borders);
+        }
+        if header_rows > 0 {
+            if let Some(borders) = styles.table_header_borders.get(style_name).copied() {
+                apply_table_border_layer(
+                    rows,
+                    start_col,
+                    end_col,
+                    start_row,
+                    (start_row + header_rows - 1).min(end_row),
+                    borders,
+                );
+            }
+        }
+        if total_rows > 0 {
+            if let Some(borders) = styles.table_total_borders.get(style_name).copied() {
+                apply_table_border_layer(
+                    rows,
+                    start_col,
+                    end_col,
+                    (end_row + 1).saturating_sub(total_rows).max(start_row),
+                    end_row,
+                    borders,
+                );
+            }
+        }
         let base_fill = styles.table_base_fills.get(style_name).copied();
         let stripe = style_info
             .attribute("showRowStripes")
@@ -1618,9 +1761,95 @@ fn apply_sheet_table_styles<R: std::io::Read + std::io::Seek>(
     Ok(())
 }
 
+fn apply_table_font_layer(
+    rows: &mut [RowData],
+    start_col: usize,
+    end_col: usize,
+    start_row: usize,
+    end_row: usize,
+    font: DifferentialFontStyle,
+) {
+    for row in rows
+        .iter_mut()
+        .filter(|row| row.index >= start_row && row.index <= end_row)
+    {
+        if row.cells.len() <= end_col {
+            row.cells.resize(end_col + 1, CellData::default());
+        }
+        for cell in &mut row.cells[start_col..=end_col] {
+            if let Some(bold) = font.bold {
+                cell.style.bold = bold;
+            }
+            if let Some(italic) = font.italic {
+                cell.style.italic = italic;
+            }
+            if let Some(color) = font.color {
+                cell.style.font_color = color;
+            }
+        }
+    }
+}
+
+fn apply_table_border_layer(
+    rows: &mut [RowData],
+    start_col: usize,
+    end_col: usize,
+    start_row: usize,
+    end_row: usize,
+    borders: TableBorders,
+) {
+    for row in rows
+        .iter_mut()
+        .filter(|row| row.index >= start_row && row.index <= end_row)
+    {
+        if row.cells.len() <= end_col {
+            row.cells.resize(end_col + 1, CellData::default());
+        }
+        for column in start_col..=end_col {
+            let cell_borders = &mut row.cells[column].style.borders;
+            if column == start_col {
+                cell_borders.left = borders.edges.left.or(cell_borders.left);
+                if borders.edges.left.is_some() {
+                    cell_borders.left_width = borders.edges.left_width;
+                }
+            } else {
+                if let Some((color, width)) = borders.vertical {
+                    cell_borders.left = Some(color);
+                    cell_borders.left_width = width;
+                }
+            }
+            if column == end_col {
+                cell_borders.right = borders.edges.right.or(cell_borders.right);
+                if borders.edges.right.is_some() {
+                    cell_borders.right_width = borders.edges.right_width;
+                }
+            }
+            if row.index == start_row {
+                cell_borders.top = borders.edges.top.or(cell_borders.top);
+                if borders.edges.top.is_some() {
+                    cell_borders.top_width = borders.edges.top_width;
+                }
+            } else {
+                if let Some((color, width)) = borders.horizontal {
+                    cell_borders.top = Some(color);
+                    cell_borders.top_width = width;
+                }
+            }
+            if row.index == end_row {
+                cell_borders.bottom = borders.edges.bottom.or(cell_borders.bottom);
+                if borders.edges.bottom.is_some() {
+                    cell_borders.bottom_width = borders.edges.bottom_width;
+                }
+            }
+        }
+    }
+}
+
 fn excel_pdf_font_size(font_name: Option<&str>, size: f32) -> f32 {
     match font_name.unwrap_or_default().to_ascii_lowercase().as_str() {
         "corbel" => size * 0.962,
+        "franklin gothic medium" if size >= 30.0 => size * 0.984,
+        "franklin gothic medium" => size * 0.93,
         "palatino linotype" => size * 0.967,
         "verdana" => size * 0.96,
         _ => size,
@@ -1630,6 +1859,7 @@ fn excel_pdf_font_size(font_name: Option<&str>, size: f32) -> f32 {
 fn xlsx_preferred_font(font_name: Option<&str>) -> Option<&'static str> {
     match font_name.unwrap_or_default().to_ascii_lowercase().as_str() {
         "corbel" => Some("corbel"),
+        "franklin gothic medium" => Some("framd"),
         "palatino linotype" => Some("bookos"),
         "verdana" => Some("verdana"),
         _ => None,
@@ -1718,22 +1948,81 @@ fn indexed_color(index: usize) -> Option<PdfColor> {
 }
 
 fn apply_color_tint(color: PdfColor, tint: f32) -> PdfColor {
-    let transform = |channel: f32| {
-        if tint < 0.0 {
-            channel * (1.0 + tint)
+    if tint.abs() < f32::EPSILON {
+        return color;
+    }
+    let is_neutral = (color.r - color.g).abs() < 0.0001 && (color.g - color.b).abs() < 0.0001;
+    if is_neutral {
+        let channel = if tint < 0.0 {
+            color.r * (1.0 + tint)
         } else {
-            channel + (1.0 - channel) * tint
+            color.r + (1.0 - color.r) * tint
+        };
+        if tint < 0.0 {
+            if channel >= 0.9 {
+                return PdfColor::new(channel - 0.005, channel - 0.001, channel - 0.005);
+            }
+            return PdfColor::new(channel, (channel + 0.001).min(1.0), channel);
+        }
+        return PdfColor::new(channel, channel, channel);
+    }
+
+    let max = color.r.max(color.g).max(color.b);
+    let min = color.r.min(color.g).min(color.b);
+    let mut hue = 0.0;
+    let lightness = (max + min) / 2.0;
+    let delta = max - min;
+    let saturation = if delta == 0.0 {
+        0.0
+    } else if lightness <= 0.5 {
+        delta / (max + min)
+    } else {
+        delta / (2.0 - max - min)
+    };
+    if delta != 0.0 {
+        hue = if max == color.r {
+            (color.g - color.b) / delta
+        } else if max == color.g {
+            2.0 + (color.b - color.r) / delta
+        } else {
+            4.0 + (color.r - color.g) / delta
+        } / 6.0;
+        if hue < 0.0 {
+            hue += 1.0;
+        }
+    }
+    let tinted_lightness = if tint < 0.0 {
+        lightness * (1.0 + tint)
+    } else {
+        lightness * (1.0 - tint) + tint
+    };
+    let hue_to_rgb = |mut component: f32| {
+        if component < 0.0 {
+            component += 1.0;
+        } else if component > 1.0 {
+            component -= 1.0;
+        }
+        let upper = if tinted_lightness < 0.5 {
+            tinted_lightness * (1.0 + saturation)
+        } else {
+            tinted_lightness + saturation - tinted_lightness * saturation
+        };
+        let lower = 2.0 * tinted_lightness - upper;
+        if component * 6.0 < 1.0 {
+            lower + (upper - lower) * component * 6.0
+        } else if component * 2.0 < 1.0 {
+            upper
+        } else if component * 3.0 < 2.0 {
+            lower + (upper - lower) * (2.0 / 3.0 - component) * 6.0
+        } else {
+            lower
         }
     };
-    let tinted = PdfColor::new(transform(color.r), transform(color.g), transform(color.b));
-    let is_neutral = (color.r - color.g).abs() < 0.0001 && (color.g - color.b).abs() < 0.0001;
-    if is_neutral && tint < 0.0 {
-        if tinted.r >= 0.9 {
-            return PdfColor::new(tinted.r - 0.001, tinted.g, tinted.b - 0.001);
-        }
-        return PdfColor::new(tinted.r, (tinted.g + 0.001).min(1.0), tinted.b);
-    }
-    tinted
+    PdfColor::new(
+        hue_to_rgb(hue + 1.0 / 3.0),
+        hue_to_rgb(hue),
+        hue_to_rgb(hue - 1.0 / 3.0),
+    )
 }
 
 fn font_name_is_emphasis(font_name: Option<&str>) -> bool {
@@ -1741,34 +2030,69 @@ fn font_name_is_emphasis(font_name: Option<&str>) -> bool {
 }
 
 fn parse_cell_borders(border: roxmltree::Node<'_, '_>, theme_colors: &[PdfColor]) -> CellBorders {
-    let side_color = |side_name: &str| {
-        border
+    let side = |side_name: &str| {
+        let side = border
             .children()
-            .find(|side| side.has_tag_name(side_name) && side.attribute("style").is_some())
-            .map(|side| {
-                side.children()
-                    .find(|node| node.has_tag_name("color"))
-                    .and_then(|node| parse_xlsx_color(node, theme_colors))
-                    .unwrap_or(PdfColor::BLACK)
-            })
+            .find(|side| side.has_tag_name(side_name) && side.attribute("style").is_some());
+        let color = side.map(|side| {
+            side.children()
+                .find(|node| node.has_tag_name("color"))
+                .and_then(|node| parse_xlsx_color(node, theme_colors))
+                .unwrap_or(PdfColor::BLACK)
+        });
+        let width = side
+            .and_then(|side| side.attribute("style"))
+            .map(border_style_width)
+            .unwrap_or(0.0);
+        let dotted = side.is_some_and(|side| side.attribute("style") == Some("dotted"));
+        (color, width, dotted)
     };
+    let (left, left_width, left_dotted) = side("left");
+    let (right, right_width, right_dotted) = side("right");
+    let (top, top_width, top_dotted) = side("top");
+    let (bottom, bottom_width, bottom_dotted) = side("bottom");
     CellBorders {
-        left: side_color("left"),
-        right: side_color("right"),
-        top: side_color("top"),
-        bottom: side_color("bottom"),
-        left_dotted: border
+        left,
+        right,
+        top,
+        bottom,
+        left_width,
+        right_width,
+        top_width,
+        bottom_width,
+        left_dotted,
+        right_dotted,
+        top_dotted,
+        bottom_dotted,
+    }
+}
+
+fn border_style_width(style: &str) -> f32 {
+    match style {
+        "hair" => 0.1,
+        "thin" | "dashed" | "dotted" => 0.5,
+        "medium" | "mediumDashed" | "mediumDashDot" | "mediumDashDotDot" => 1.0,
+        "thick" | "double" => 1.5,
+        _ => CELL_BORDER_WIDTH,
+    }
+}
+
+fn parse_table_borders(border: roxmltree::Node<'_, '_>, theme_colors: &[PdfColor]) -> TableBorders {
+    let side = |side_name: &str| {
+        let side = border
             .children()
-            .any(|side| side.has_tag_name("left") && side.attribute("style") == Some("dotted")),
-        right_dotted: border
+            .find(|side| side.has_tag_name(side_name) && side.attribute("style").is_some())?;
+        let color = side
             .children()
-            .any(|side| side.has_tag_name("right") && side.attribute("style") == Some("dotted")),
-        top_dotted: border
-            .children()
-            .any(|side| side.has_tag_name("top") && side.attribute("style") == Some("dotted")),
-        bottom_dotted: border
-            .children()
-            .any(|side| side.has_tag_name("bottom") && side.attribute("style") == Some("dotted")),
+            .find(|node| node.has_tag_name("color"))
+            .and_then(|node| parse_xlsx_color(node, theme_colors))
+            .unwrap_or(PdfColor::BLACK);
+        Some((color, border_style_width(side.attribute("style")?)))
+    };
+    TableBorders {
+        edges: parse_cell_borders(border, theme_colors),
+        vertical: side("vertical"),
+        horizontal: side("horizontal"),
     }
 }
 
@@ -1799,6 +2123,18 @@ fn merged_cell_borders(rows: &[RowData], merge_range: &MergeRange) -> CellBorder
                 .borders
                 .bottom
         }),
+        left_width: cell_at(merge_range.start_row, merge_range.start_col)
+            .map(|cell| cell.style.borders.left_width)
+            .unwrap_or(0.0),
+        right_width: cell_at(merge_range.start_row, merge_range.end_col)
+            .map(|cell| cell.style.borders.right_width)
+            .unwrap_or(0.0),
+        top_width: cell_at(merge_range.start_row, merge_range.start_col)
+            .map(|cell| cell.style.borders.top_width)
+            .unwrap_or(0.0),
+        bottom_width: cell_at(merge_range.end_row, merge_range.start_col)
+            .map(|cell| cell.style.borders.bottom_width)
+            .unwrap_or(0.0),
         left_dotted: cell_at(merge_range.start_row, merge_range.start_col)
             .is_some_and(|cell| cell.style.borders.left_dotted),
         right_dotted: cell_at(merge_range.start_row, merge_range.end_col)
@@ -1927,6 +2263,34 @@ fn read_sheet_rows(
 ) -> Result<Vec<RowData>> {
     let xml = roxmltree::Document::parse(sheet_xml)?;
     let default_row_height = read_default_row_height(sheet_xml)?;
+    let column_styles = xml
+        .descendants()
+        .filter(|node| node.has_tag_name("col"))
+        .filter_map(|column| {
+            let start = column
+                .attribute("min")?
+                .parse::<usize>()
+                .ok()?
+                .checked_sub(1)?;
+            let end = column
+                .attribute("max")
+                .and_then(|value| value.parse::<usize>().ok())
+                .and_then(|value| value.checked_sub(1))
+                .unwrap_or(start);
+            let style = column
+                .attribute("style")
+                .and_then(|value| value.parse::<usize>().ok())
+                .and_then(|style_id| styles.cells.get(style_id).copied())?;
+            Some((start, end, style))
+        })
+        .collect::<Vec<_>>();
+    let column_style = |column: usize| {
+        column_styles
+            .iter()
+            .find(|(start, end, _)| column >= *start && column <= *end)
+            .map(|(_, _, style)| *style)
+            .unwrap_or_default()
+    };
     let mut rows = Vec::new();
 
     for row in xml.descendants().filter(|node| node.has_tag_name("row")) {
@@ -1951,7 +2315,7 @@ fn read_sheet_rows(
                 .attribute("r")
                 .and_then(column_index_from_ref)
                 .unwrap_or(cells.len());
-            let mut value = read_cell_value(cell, shared_strings, styles);
+            let mut value = read_cell_value(cell, shared_strings, styles, column_style(col));
             if value.text.is_empty() {
                 if let Some(number) = cell
                     .children()
@@ -1972,7 +2336,12 @@ fn read_sheet_rows(
             .max()
             .map(|col| col + 1)
             .unwrap_or(0);
-        let mut row_values = vec![CellData::default(); width];
+        let mut row_values = (0..width)
+            .map(|column| CellData {
+                style: column_style(column),
+                ..CellData::default()
+            })
+            .collect::<Vec<_>>();
         for (col, value) in cells {
             if let Some(slot) = row_values.get_mut(col) {
                 *slot = value;
@@ -1985,6 +2354,44 @@ fn read_sheet_rows(
                 cells: row_values,
             });
         }
+    }
+
+    let column_count = rows.iter().map(|row| row.cells.len()).max().unwrap_or(0);
+    for row in &mut rows {
+        while row.cells.len() < column_count {
+            row.cells.push(CellData {
+                style: column_style(row.cells.len()),
+                ..CellData::default()
+            });
+        }
+    }
+    if column_styles
+        .iter()
+        .any(|(_, _, style)| style.fill_color.is_some() || style.borders.any())
+    {
+        let last_row = rows.last().map(|row| row.index).unwrap_or(0);
+        let mut existing_rows = rows.into_iter().peekable();
+        let mut completed_rows = Vec::with_capacity(last_row + 1);
+        for row_index in 0..=last_row {
+            if existing_rows
+                .peek()
+                .is_some_and(|row| row.index == row_index)
+            {
+                completed_rows.push(existing_rows.next().expect("peeked row exists"));
+            } else {
+                completed_rows.push(RowData {
+                    index: row_index,
+                    height: default_row_height,
+                    cells: (0..column_count)
+                        .map(|column| CellData {
+                            style: column_style(column),
+                            ..CellData::default()
+                        })
+                        .collect(),
+                });
+            }
+        }
+        rows = completed_rows;
     }
 
     Ok(rows)
@@ -2008,13 +2415,17 @@ fn read_cell_value(
     cell: roxmltree::Node<'_, '_>,
     shared_strings: &[String],
     styles: &XlsxStyles,
+    default_style: CellStyle,
 ) -> CellData {
     let cell_type = cell.attribute("t");
-    let style = cell
+    let mut style = cell
         .attribute("s")
         .and_then(|value| value.parse::<usize>().ok())
         .and_then(|style_id| styles.cells.get(style_id).copied())
-        .unwrap_or_default();
+        .unwrap_or(default_style);
+    if !style.fill_override {
+        style.fill_color = default_style.fill_color;
+    }
     if cell_type == Some("inlineStr") {
         let text = cell
             .descendants()
@@ -2064,6 +2475,13 @@ fn format_numeric_value(value: f64, source: &str, number_format: NumberFormat) -
     match number_format {
         NumberFormat::DateMonthDayYear => format_excel_date(value),
         NumberFormat::ThousandsTwoDecimals => format_thousands_two_decimals(value),
+        NumberFormat::DollarTwoDecimals => {
+            if value.is_sign_negative() {
+                format!("-${}", format_thousands_two_decimals(value.abs()))
+            } else {
+                format!("${}", format_thousands_two_decimals(value))
+            }
+        }
         NumberFormat::DollarAccounting => {
             if value == 0.0 {
                 "$ -".to_owned()
@@ -2372,28 +2790,13 @@ fn render_sheet(
     } else {
         1.0
     };
-    let mut margin_top = if sheet.print_title_rows.is_some() {
-        centered_scaled_margin(
-            page_size.height,
-            sheet.page_setup.margin_top,
-            vertical_scale,
-        )
-    } else {
-        sheet.page_setup.margin_top
-            + if sheet.page_setup.fit_to_width {
-                FIT_TO_PAGE_TOP_OFFSET
-            } else {
-                0.0
-            }
-    };
-    if sheet.print_title_rows.is_some() {
-        margin_top -= PRINT_TITLE_TOP_OFFSET;
-    }
-    let margin_bottom = centered_scaled_margin(
-        page_size.height,
-        sheet.page_setup.margin_bottom,
-        vertical_scale,
-    );
+    let margin_top = sheet.page_setup.margin_top
+        + if sheet.page_setup.fit_to_width {
+            FIT_TO_PAGE_TOP_OFFSET
+        } else {
+            0.0
+        };
+    let margin_bottom = sheet.page_setup.margin_bottom;
     let column_ranges = if sheet.page_setup.fit_to_width {
         vec![(0, widths.len())]
     } else {
@@ -2420,10 +2823,6 @@ fn render_sheet(
             &layout,
         );
     }
-}
-
-fn centered_scaled_margin(page_extent: f32, margin: f32, scale: f32) -> f32 {
-    page_extent * (1.0 - scale) / 2.0 + margin * scale
 }
 
 struct SheetRenderLayout {
@@ -2755,22 +3154,53 @@ fn render_xlsx_row(
             .map(|merge_range| merged_cell_borders(&sheet.rows, merge_range))
             .unwrap_or(cell.style.borders);
         if let Some(fill) = cell.style.fill_color {
-            page.add_rect(cell_x, cell_y, cell_width, cell_height, fill);
+            let previous_cell = column_index
+                .checked_sub(1)
+                .filter(|_| column_index > column_start)
+                .and_then(|index| row.cells.get(index));
+            let next_cell = row.cells.get(merge_end);
+            let extend_left = cell_borders.left.is_none()
+                && previous_cell.is_some_and(|previous| {
+                    previous.style.fill_color == Some(fill)
+                        && previous.style.borders.right.is_none()
+                });
+            let extend_fill = merge_end == column_end
+                || next_cell.is_some_and(|next| next.style.fill_color == Some(fill));
+            page.add_rect(
+                cell_x - if extend_left { CELL_BORDER_WIDTH } else { 0.0 },
+                cell_y,
+                cell_width
+                    + if extend_left { CELL_BORDER_WIDTH } else { 0.0 }
+                    + if extend_fill { CELL_BORDER_WIDTH } else { 0.0 },
+                cell_height,
+                fill,
+            );
         }
         if let Some(border) = cell_borders.bottom {
+            let border_width = cell_borders.bottom_width.max(0.1);
+            let position_offset = if border_width <= 0.5 { 0.6 } else { 0.0 };
             if cell_borders.bottom_dotted {
-                page.add_dashed_line(cell_x, cell_y, cell_x + cell_width, cell_y, border, 0.5);
+                page.add_dashed_line(
+                    cell_x,
+                    cell_y,
+                    cell_x + cell_width,
+                    cell_y,
+                    border,
+                    border_width,
+                );
             } else {
                 page.add_rect(
                     cell_x,
-                    cell_y - CELL_BORDER_WIDTH / 2.0,
+                    cell_y - border_width / 2.0 + position_offset,
                     cell_width,
-                    CELL_BORDER_WIDTH,
+                    border_width,
                     border,
                 );
             }
         }
         if let Some(border) = cell_borders.top {
+            let border_width = cell_borders.top_width.max(0.1);
+            let position_offset = if border_width <= 0.5 { 0.6 } else { 0.0 };
             if cell_borders.top_dotted {
                 page.add_dashed_line(
                     cell_x,
@@ -2778,32 +3208,43 @@ fn render_xlsx_row(
                     cell_x + cell_width,
                     cell_y + cell_height,
                     border,
-                    0.5,
+                    border_width,
                 );
             } else {
                 page.add_rect(
                     cell_x,
-                    cell_y + cell_height - CELL_BORDER_WIDTH / 2.0,
+                    cell_y + cell_height - border_width / 2.0 + position_offset,
                     cell_width,
-                    CELL_BORDER_WIDTH,
+                    border_width,
                     border,
                 );
             }
         }
         if let Some(border) = cell_borders.left {
+            let border_width = cell_borders.left_width.max(0.1);
+            let position_offset = if border_width <= 0.5 { 0.4 } else { 0.0 };
             if cell_borders.left_dotted {
-                page.add_dashed_line(cell_x, cell_y, cell_x, cell_y + cell_height, border, 0.5);
+                page.add_dashed_line(
+                    cell_x,
+                    cell_y,
+                    cell_x,
+                    cell_y + cell_height,
+                    border,
+                    border_width,
+                );
             } else {
                 page.add_rect(
-                    cell_x - CELL_BORDER_WIDTH / 2.0,
+                    cell_x - border_width / 2.0 - position_offset,
                     cell_y,
-                    CELL_BORDER_WIDTH,
+                    border_width,
                     cell_height,
                     border,
                 );
             }
         }
         if let Some(border) = cell_borders.right {
+            let border_width = cell_borders.right_width.max(0.1);
+            let position_offset = if border_width <= 0.5 { 0.4 } else { 0.0 };
             if cell_borders.right_dotted {
                 page.add_dashed_line(
                     cell_x + cell_width,
@@ -2811,13 +3252,13 @@ fn render_xlsx_row(
                     cell_x + cell_width,
                     cell_y + cell_height,
                     border,
-                    0.5,
+                    border_width,
                 );
             } else {
                 page.add_rect(
-                    cell_x + cell_width - CELL_BORDER_WIDTH / 2.0,
+                    cell_x + cell_width - border_width / 2.0 - position_offset,
                     cell_y,
-                    CELL_BORDER_WIDTH,
+                    border_width,
                     cell_height,
                     border,
                 );
@@ -2825,7 +3266,7 @@ fn render_xlsx_row(
         }
         let font_size = cell.style.font_size * content_scale;
         let indent_width = styled_text_width_with_font(
-            &"000".repeat(cell.style.indent as usize),
+            &"00".repeat(cell.style.indent as usize),
             font_size,
             cell.style.bold,
             cell.style.italic,
@@ -2920,6 +3361,10 @@ fn render_xlsx_row(
                 text.cell_y + (text.cell_height - block_height).max(0.0) / 2.0 + baseline_offset
             }
             VerticalAlignment::Bottom => text.cell_y + baseline_offset.max(1.0),
+        } + if text.style.preferred_font == Some("framd") {
+            0.9
+        } else {
+            0.0
         };
         let line_count = text.lines.len();
         if let Some(value) = text.accounting_value {
@@ -3019,16 +3464,18 @@ fn has_rtl_base_direction(text: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
+
     use super::{
-        apply_color_tint, apply_sheet_conditional_formats, column_groups, column_index_from_ref,
-        effective_content_scale, font_name_is_emphasis, format_excel_date,
+        apply_color_tint, apply_sheet_conditional_formats, apply_table_font_layer, column_groups,
+        column_index_from_ref, effective_content_scale, font_name_is_emphasis, format_excel_date,
         format_thousands_two_decimals, has_rtl_base_direction, indexed_color, jpeg_dimensions,
-        merged_cell_borders, parse_cell_borders, parse_horizontal_alignment, parse_rgb_color,
-        parse_vertical_alignment, parse_windows_devmode_page_size, read_column_widths,
-        read_merge_ranges, read_page_setup, read_row_breaks, read_sheet_rows, relationship_id,
+        merged_cell_borders, parse_cell_borders, parse_horizontal_alignment, parse_number_format,
+        parse_rgb_color, parse_vertical_alignment, read_column_widths, read_merge_ranges,
+        read_page_setup, read_row_breaks, read_sheet_rows, relationship_id,
         spreadsheet_theme_colors, trim_trailing_empty_rows, wrap_cell_text, CellData, CellStyle,
-        HorizontalAlignment, MergeRange, RowData, SheetImage, SheetImageData, VerticalAlignment,
-        XlsxStyles,
+        DifferentialFontStyle, HorizontalAlignment, MergeRange, RowData, SheetImage,
+        SheetImageData, VerticalAlignment, XlsxStyles,
     };
     use crate::{PageSize, PdfColor};
 
@@ -3061,17 +3508,21 @@ mod tests {
     }
 
     #[test]
-    fn reads_letter_landscape_from_windows_devmode() {
-        let mut devmode = vec![0_u8; 220];
-        devmode[68..70].copy_from_slice(&220_u16.to_le_bytes());
-        devmode[76..78].copy_from_slice(&2_u16.to_le_bytes());
-        devmode[78..80].copy_from_slice(&1_u16.to_le_bytes());
+    fn recognizes_custom_dollar_formats() {
+        let formats = HashMap::from([(164, "\"$\"#,##0.00".to_owned())]);
 
-        let page_size =
-            parse_windows_devmode_page_size(&devmode).expect("DEVMODE contains a paper size");
-
-        assert_eq!(page_size.width, PageSize::LETTER.height);
-        assert_eq!(page_size.height, PageSize::LETTER.width);
+        assert!(matches!(
+            parse_number_format(Some("164"), &formats),
+            super::NumberFormat::DollarTwoDecimals
+        ));
+        assert_eq!(
+            super::format_numeric_value(111.0, "111", super::NumberFormat::DollarTwoDecimals),
+            "$111.00"
+        );
+        assert_eq!(
+            super::format_numeric_value(0.0, "0", super::NumberFormat::DollarTwoDecimals),
+            "$0.00"
+        );
     }
 
     #[test]
@@ -3124,7 +3575,10 @@ mod tests {
             ],
         }];
         let styles = XlsxStyles {
-            differential_font_colors: vec![Some(PdfColor::new(0.25, 0.46, 0.17))],
+            differential_fonts: vec![DifferentialFontStyle {
+                color: Some(PdfColor::new(0.25, 0.46, 0.17)),
+                ..DifferentialFontStyle::default()
+            }],
             ..XlsxStyles::default()
         };
 
@@ -3136,6 +3590,37 @@ mod tests {
             PdfColor::new(0.25, 0.46, 0.17)
         );
         assert_eq!(rows[0].cells[1].style.font_color, PdfColor::BLACK);
+    }
+
+    #[test]
+    fn applies_table_font_style_only_within_table_range() {
+        let mut rows = vec![RowData {
+            index: 4,
+            height: 15.0,
+            cells: vec![CellData::default(); 4],
+        }];
+        let color = PdfColor::new(0.12, 0.32, 0.58);
+
+        apply_table_font_layer(
+            &mut rows,
+            1,
+            2,
+            4,
+            4,
+            DifferentialFontStyle {
+                bold: Some(true),
+                italic: Some(false),
+                color: Some(color),
+            },
+        );
+
+        assert!(!rows[0].cells[0].style.bold);
+        assert_eq!(rows[0].cells[0].style.font_color, PdfColor::BLACK);
+        assert!(rows[0].cells[1].style.bold);
+        assert!(!rows[0].cells[1].style.italic);
+        assert_eq!(rows[0].cells[1].style.font_color, color);
+        assert!(rows[0].cells[2].style.bold);
+        assert_eq!(rows[0].cells[3].style.font_color, PdfColor::BLACK);
     }
 
     #[test]
@@ -3241,6 +3726,14 @@ mod tests {
     }
 
     #[test]
+    fn maps_franklin_gothic_medium_to_installed_font() {
+        assert_eq!(
+            super::xlsx_preferred_font(Some("Franklin Gothic Medium")),
+            Some("framd")
+        );
+    }
+
+    #[test]
     fn wraps_explicit_and_width_constrained_cell_text() {
         let explicit = wrap_cell_text("Role\n(Rank)", 100.0, 10.0, false, false);
         let constrained = wrap_cell_text("ABCD", 12.0, 10.0, false, false);
@@ -3306,6 +3799,7 @@ mod tests {
                 CellStyle::default(),
                 CellStyle {
                     fill_color: Some(PdfColor::new(1.0, 1.0, 0.0)),
+                    fill_override: true,
                     ..CellStyle::default()
                 },
             ],
@@ -3317,6 +3811,41 @@ mod tests {
         assert_eq!(rows.len(), 1);
         assert_eq!(rows[0].index, 3);
         assert!(rows[0].cells[0].style.fill_color.is_some());
+    }
+
+    #[test]
+    fn applies_column_styles_to_implicit_cells() {
+        let xml = r#"<worksheet><cols><col min="1" max="3" style="1"/></cols><sheetData>
+            <row r="1"><c r="C1" s="2" t="inlineStr"><is><t>value</t></is></c></row>
+            <row r="3"><c r="C3" t="inlineStr"><is><t>value</t></is></c></row>
+        </sheetData></worksheet>"#;
+        let fill = PdfColor::new(0.9, 0.9, 0.9);
+        let styles = XlsxStyles {
+            cells: vec![
+                CellStyle::default(),
+                CellStyle {
+                    fill_color: Some(fill),
+                    fill_override: true,
+                    ..CellStyle::default()
+                },
+                CellStyle {
+                    bold: true,
+                    ..CellStyle::default()
+                },
+            ],
+            ..XlsxStyles::default()
+        };
+
+        let rows = read_sheet_rows(xml, &[], &styles).expect("worksheet XML is valid");
+
+        assert_eq!(rows.len(), 3);
+        assert_eq!(rows[1].index, 1);
+        assert_eq!(rows[0].cells.len(), 3);
+        assert_eq!(rows[0].cells[0].style.fill_color, Some(fill));
+        assert_eq!(rows[0].cells[1].style.fill_color, Some(fill));
+        assert_eq!(rows[0].cells[2].style.fill_color, Some(fill));
+        assert!(rows[0].cells[2].style.bold);
+        assert_eq!(rows[1].cells[0].style.fill_color, Some(fill));
     }
 
     #[test]
@@ -3480,9 +4009,23 @@ mod tests {
         assert!((tinted.r - 0.9294).abs() < 0.0001);
         assert!((tinted.g - 0.9294).abs() < 0.0001);
         assert!((tinted.b - 0.9294).abs() < 0.0001);
+        let accent = apply_color_tint(
+            PdfColor::new(247.0 / 255.0, 245.0 / 255.0, 228.0 / 255.0),
+            -0.7499924,
+        );
+        assert!((accent.r - 92.0 / 255.0).abs() < 0.002);
+        assert!((accent.g - 85.0 / 255.0).abs() < 0.002);
+        assert!((accent.b - 27.0 / 255.0).abs() < 0.002);
+        let light_accent = apply_color_tint(
+            PdfColor::new(31.0 / 255.0, 72.0 / 255.0, 124.0 / 255.0),
+            0.7999817,
+        );
+        assert!((light_accent.r - 198.0 / 255.0).abs() < 0.002);
+        assert!((light_accent.g - 217.0 / 255.0).abs() < 0.002);
+        assert!((light_accent.b - 241.0 / 255.0).abs() < 0.002);
         assert_eq!(
             apply_color_tint(PdfColor::WHITE, -0.05),
-            PdfColor::new(0.949, 0.95, 0.949)
+            PdfColor::new(0.945, 0.949, 0.945)
         );
         assert_eq!(
             apply_color_tint(PdfColor::WHITE, -0.15),
@@ -3516,7 +4059,29 @@ mod tests {
         .expect("border XML is valid");
         let borders = parse_cell_borders(xml.root_element(), &[PdfColor::WHITE]);
 
-        assert_eq!(borders.left, Some(PdfColor::new(0.949, 0.95, 0.949)));
+        assert_eq!(borders.left, Some(PdfColor::new(0.945, 0.949, 0.945)));
+    }
+
+    #[test]
+    fn reads_table_internal_border_widths() {
+        let xml = roxmltree::Document::parse(
+            r#"<border><vertical style="thin"><color rgb="FF112233"/></vertical><horizontal style="medium"><color rgb="FF445566"/></horizontal></border>"#,
+        )
+        .expect("border XML is valid");
+
+        let borders = super::parse_table_borders(xml.root_element(), &[]);
+
+        assert_eq!(
+            borders.vertical,
+            Some((PdfColor::new(17.0 / 255.0, 34.0 / 255.0, 51.0 / 255.0), 0.5))
+        );
+        assert_eq!(
+            borders.horizontal,
+            Some((
+                PdfColor::new(68.0 / 255.0, 85.0 / 255.0, 102.0 / 255.0),
+                1.0
+            ))
+        );
     }
 
     #[test]
