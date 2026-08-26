@@ -2137,14 +2137,9 @@ internal static class DocxToPdfConverter
                     if (maxRunFs > fontSize) fontSize = maxRunFs;
                 }
                 var paraRunFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
-                float lineHeight;
-                if (para.LineSpacingAbsolute && para.LineSpacing > 0)
-                    lineHeight = para.LineSpacing;
-                else
-                {
-                    var lineSpacingMul = para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing;
-                    lineHeight = fontSize * GetFontMetricsFactor(paraRunFont) * lineSpacingMul;
-                }
+                var lineSpacingMul = GetLineSpacingMultiple(para, options.LineSpacing);
+                var lineHeight = ApplyLineSpacingRule(
+                    para, fontSize * GetFontMetricsFactor(paraRunFont) * lineSpacingMul);
 
                 if (para.Runs.Count == 0)
                 {
@@ -3574,11 +3569,10 @@ internal static class DocxToPdfConverter
                         var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
                         var firstRun = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
                         var runFontSize = firstRun?.FontSize > 0 ? firstRun.FontSize : fontSize;
-                        float lineHeight;
-                        if (para.LineSpacingAbsolute && para.LineSpacing > 0)
-                            lineHeight = para.LineSpacing;
-                        else
-                            lineHeight = runFontSize * GetFontMetricsFactor(firstRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
+                        var lineHeight = ApplyLineSpacingRule(
+                            para,
+                            runFontSize * GetFontMetricsFactor(firstRun?.FontName)
+                                * GetLineSpacingMultiple(para, options.LineSpacing));
                         var textWidth = EstimateTextWidth(text, runFontSize);
                         var textX = para.Alignment switch
                         {
@@ -3720,11 +3714,10 @@ internal static class DocxToPdfConverter
                     var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
                     var firstRun = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
                     var runFontSize = firstRun?.FontSize > 0 ? firstRun.FontSize : fontSize;
-                    float lineHeight;
-                    if (para.LineSpacingAbsolute && para.LineSpacing > 0)
-                        lineHeight = para.LineSpacing;
-                    else
-                        lineHeight = runFontSize * GetFontMetricsFactor(firstRun?.FontName) * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
+                    var lineHeight = ApplyLineSpacingRule(
+                        para,
+                        runFontSize * GetFontMetricsFactor(firstRun?.FontName)
+                            * GetLineSpacingMultiple(para, table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
                     var textWidth = cellWidth - effPaddingLeft - effPaddingRight;
                     // Use Calibri widths only when the run font is Calibri-like;
                     // wide sans-serif fonts (e.g. Montserrat) need Helvetica-based estimation.
@@ -4033,18 +4026,15 @@ internal static class DocxToPdfConverter
                     if (string.IsNullOrEmpty(text))
                     {
                         if (cellHasInlineImages) continue;
-                        float emptyLineH;
-                        if (para.LineSpacingAbsolute && para.LineSpacing > 0)
-                            emptyLineH = para.LineSpacing;
-                        else
-                        {
-                            var emptyRunFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
-                            var emptyMetricsFactor = !options.SnapToGridInTableCells
-                                && emptyRunFont != null && IsTallCjkFont(emptyRunFont)
-                                ? LegacyWordTableCjkMetricsFactor
-                                : GetFontMetricsFactor(emptyRunFont);
-                            emptyLineH = fontSize * emptyMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
-                        }
+                        var emptyRunFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
+                        var emptyMetricsFactor = !options.SnapToGridInTableCells
+                            && emptyRunFont != null && IsTallCjkFont(emptyRunFont)
+                            ? LegacyWordTableCjkMetricsFactor
+                            : GetFontMetricsFactor(emptyRunFont);
+                        var emptyLineH = ApplyLineSpacingRule(
+                            para,
+                            fontSize * emptyMetricsFactor
+                                * GetLineSpacingMultiple(para, table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
                         if (options.SnapToGridInTableCells && options.GridLinePitch > 0 && para.SnapToGrid && !(para.LineSpacingAbsolute && para.LineSpacingExact))
                         {
                             var gridPitch = options.GridLinePitch;
@@ -4074,17 +4064,13 @@ internal static class DocxToPdfConverter
                     var cellRunShading = dominantRun?.Shading;
                     var cellLineMetricFs = effectiveFontSize;
                     if (para.FontSize > effectiveFontSize) cellLineMetricFs = para.FontSize;
-                    float lineHeight;
-                    if (para.LineSpacingAbsolute && para.LineSpacing > 0)
-                        lineHeight = para.LineSpacing;
-                    else
-                    {
-                        var cellMetricsFactor = !options.SnapToGridInTableCells
-                            && cellRunFontName != null && IsTallCjkFont(cellRunFontName)
-                            ? LegacyWordTableCjkMetricsFactor
-                            : GetFontMetricsFactor(cellRunFontName);
-                        lineHeight = cellLineMetricFs * cellMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : (table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing));
-                    }
+                    var cellMetricsFactor = !options.SnapToGridInTableCells
+                        && cellRunFontName != null && IsTallCjkFont(cellRunFontName)
+                        ? LegacyWordTableCjkMetricsFactor
+                        : GetFontMetricsFactor(cellRunFontName);
+                    var cellLineSpacingMul = GetLineSpacingMultiple(
+                        para, table.StyleLineSpacing > 0 ? table.StyleLineSpacing : options.LineSpacing);
+                    var lineHeight = ApplyLineSpacingRule(para, cellLineMetricFs * cellMetricsFactor * cellLineSpacingMul);
                     if (options.SnapToGridInTableCells && options.GridLinePitch > 0 && para.SnapToGrid && !IsTaiwanKaiFont(cellRunFontName) && !(para.LineSpacingAbsolute && para.LineSpacingExact))
                     {
                         var gridPitch = options.GridLinePitch;
