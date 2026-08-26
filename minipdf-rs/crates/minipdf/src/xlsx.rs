@@ -47,12 +47,14 @@ struct SheetData {
 #[derive(Debug, Clone, Copy)]
 struct SheetPageSetup {
     page_size: PageSize,
+    page_size_from_printer: bool,
     margin_left: f32,
     margin_right: f32,
     margin_top: f32,
     margin_bottom: f32,
     print_scale: f32,
     fit_to_width: bool,
+    fit_to_height: bool,
     horizontal_centered: bool,
 }
 
@@ -60,12 +62,14 @@ impl Default for SheetPageSetup {
     fn default() -> Self {
         Self {
             page_size: PageSize::A4,
+            page_size_from_printer: false,
             margin_left: MARGIN_X,
             margin_right: MARGIN_X,
             margin_top: MARGIN_TOP,
             margin_bottom: MARGIN_BOTTOM,
             print_scale: 1.0,
             fit_to_width: false,
+            fit_to_height: false,
             horizontal_centered: false,
         }
     }
@@ -100,6 +104,10 @@ struct CellBorders {
     right: Option<PdfColor>,
     top: Option<PdfColor>,
     bottom: Option<PdfColor>,
+    left_dotted: bool,
+    right_dotted: bool,
+    top_dotted: bool,
+    bottom_dotted: bool,
 }
 
 impl CellBorders {
@@ -112,6 +120,7 @@ impl CellBorders {
 enum NumberFormat {
     #[default]
     General,
+    DateMonthDayYear,
     ThousandsTwoDecimals,
     DollarAccounting,
 }
@@ -176,6 +185,8 @@ impl Default for FontStyle {
 #[derive(Debug, Default)]
 struct XlsxStyles {
     cells: Vec<CellStyle>,
+    differential_font_colors: Vec<Option<PdfColor>>,
+    differential_fills: Vec<Option<PdfColor>>,
     max_digit_width: f32,
     table_base_fills: HashMap<String, PdfColor>,
     table_first_row_stripes: HashMap<String, (PdfColor, usize)>,
@@ -231,12 +242,17 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
         };
         let images = read_sheet_images(&mut archive, &path, &sheet_xml)?;
         let mut rows = read_sheet_rows(&sheet_xml, &shared_strings, &styles)?;
+        apply_sheet_conditional_formats(&sheet_xml, &mut rows, &styles)?;
         apply_sheet_table_styles(&mut archive, &path, &sheet_xml, &mut rows, &styles)?;
         trim_trailing_empty_rows(&mut rows, &images);
         let column_widths = read_column_widths_with_mdw(&sheet_xml, styles.max_digit_width)?;
         let merges = read_merge_ranges(&sheet_xml)?;
         let row_breaks = read_row_breaks(&sheet_xml)?;
-        let page_setup = read_page_setup(&sheet_xml)?;
+        let mut page_setup = read_page_setup(&sheet_xml)?;
+        if let Some(page_size) = read_printer_page_size(&mut archive, &path, &sheet_xml)? {
+            page_setup.page_size = page_size;
+            page_setup.page_size_from_printer = true;
+        }
         sheets.push(SheetData {
             rows,
             images,
@@ -253,6 +269,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
         if let Some(sheet_xml) = read_zip_text(&mut archive, "xl/worksheets/sheet1.xml")? {
             let images = read_sheet_images(&mut archive, "xl/worksheets/sheet1.xml", &sheet_xml)?;
             let mut rows = read_sheet_rows(&sheet_xml, &shared_strings, &styles)?;
+            apply_sheet_conditional_formats(&sheet_xml, &mut rows, &styles)?;
             apply_sheet_table_styles(
                 &mut archive,
                 "xl/worksheets/sheet1.xml",
@@ -261,6 +278,13 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
                 &styles,
             )?;
             trim_trailing_empty_rows(&mut rows, &images);
+            let mut page_setup = read_page_setup(&sheet_xml)?;
+            if let Some(page_size) =
+                read_printer_page_size(&mut archive, "xl/worksheets/sheet1.xml", &sheet_xml)?
+            {
+                page_setup.page_size = page_size;
+                page_setup.page_size_from_printer = true;
+            }
             sheets.push(SheetData {
                 rows,
                 images,
@@ -269,7 +293,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
                 row_breaks: read_row_breaks(&sheet_xml)?,
                 default_row_height: read_default_row_height(&sheet_xml)?,
                 print_title_rows: None,
-                page_setup: read_page_setup(&sheet_xml)?,
+                page_setup,
             });
         }
     }
@@ -378,6 +402,10 @@ fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
         .and_then(|node| node.attribute("fitToWidth"))
         .and_then(|value| value.parse::<usize>().ok())
         .unwrap_or(1);
+    let fit_to_height = page_setup
+        .and_then(|node| node.attribute("fitToHeight"))
+        .and_then(|value| value.parse::<usize>().ok())
+        .unwrap_or(1);
     let horizontal_centered = document
         .descendants()
         .find(|node| node.is_element() && node.tag_name().name() == "printOptions")
@@ -387,6 +415,7 @@ fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
     let margin_top = margin("top", MARGIN_TOP);
     Ok(SheetPageSetup {
         page_size,
+        page_size_from_printer: false,
         margin_left: margin("left", MARGIN_X),
         margin_right: margin("right", MARGIN_X),
         margin_top: if fit_to_page {
@@ -397,8 +426,68 @@ fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
         margin_bottom: margin("bottom", MARGIN_BOTTOM),
         print_scale,
         fit_to_width: fit_to_page && fit_to_width > 0,
+        fit_to_height: fit_to_page && fit_to_height > 0,
         horizontal_centered,
     })
+}
+
+fn read_printer_page_size<R: std::io::Read + std::io::Seek>(
+    archive: &mut ZipArchive<R>,
+    sheet_path: &str,
+    sheet_xml: &str,
+) -> Result<Option<PageSize>> {
+    let sheet = roxmltree::Document::parse(sheet_xml)?;
+    let Some(page_setup) = sheet
+        .descendants()
+        .find(|node| node.has_tag_name("pageSetup"))
+    else {
+        return Ok(None);
+    };
+    if page_setup.attribute("paperSize").is_some() {
+        return Ok(None);
+    }
+    let Some(settings_id) = relationship_id(page_setup) else {
+        return Ok(None);
+    };
+    let relationships = read_part_relationships(archive, sheet_path)?;
+    let Some(target) = relationships.get(&settings_id) else {
+        return Ok(None);
+    };
+    let settings_path = resolve_part_target(sheet_path, target);
+    let Some(data) = read_zip_bytes(archive, &settings_path)? else {
+        return Ok(None);
+    };
+    parse_windows_devmode_page_size(&data).map_or(Ok(None), |page_size| Ok(Some(page_size)))
+}
+
+fn parse_windows_devmode_page_size(data: &[u8]) -> Option<PageSize> {
+    let read_u16 = |offset: usize| {
+        Some(u16::from_le_bytes([
+            *data.get(offset)?,
+            *data.get(offset + 1)?,
+        ]))
+    };
+    let size = read_u16(68)? as usize;
+    if size < 84 || data.len() < size {
+        return None;
+    }
+    let orientation = read_u16(76)?;
+    let paper_size = read_u16(78)?;
+    let paper_length = read_u16(80)?;
+    let paper_width = read_u16(82)?;
+    let mut page_size = match paper_size {
+        1 => PageSize::LETTER,
+        9 => PageSize::A4,
+        _ if paper_width > 0 && paper_length > 0 => PageSize {
+            width: paper_width as f32 * 72.0 / 254.0,
+            height: paper_length as f32 * 72.0 / 254.0,
+        },
+        _ => return None,
+    };
+    if orientation == 2 {
+        std::mem::swap(&mut page_size.width, &mut page_size.height);
+    }
+    Some(page_size)
 }
 
 #[cfg(test)]
@@ -532,6 +621,7 @@ fn read_sheet_images<R: std::io::Read + std::io::Seek>(
         return Ok(Vec::new());
     };
     let drawing_rels = read_part_relationships(archive, &drawing_path)?;
+    let theme_colors = read_theme_colors(archive)?;
     let drawing = roxmltree::Document::parse(&drawing_xml)?;
     let mut images = Vec::new();
 
@@ -594,9 +684,174 @@ fn read_sheet_images<R: std::io::Read + std::io::Seek>(
     {
         if let Some(image) = read_group_image(archive, &drawing_path, &drawing_rels, anchor)? {
             images.push(image);
+        } else if let Some(image) =
+            read_two_cell_picture(archive, &drawing_path, &drawing_rels, anchor)?
+        {
+            images.push(image);
+        } else if let Some(image) = read_two_cell_custom_shape(anchor, &theme_colors) {
+            images.push(image);
         }
     }
     Ok(images)
+}
+
+fn read_two_cell_custom_shape(
+    anchor: roxmltree::Node<'_, '_>,
+    theme_colors: &[PdfColor],
+) -> Option<SheetImage> {
+    let from = anchor.children().find(|node| node.has_tag_name("from"))?;
+    let shape = anchor.children().find(|node| node.has_tag_name("sp"))?;
+    let shape_properties = shape.children().find(|node| node.has_tag_name("spPr"))?;
+    let transform = shape_properties
+        .children()
+        .find(|node| node.has_tag_name("xfrm"))?;
+    let extent = transform.children().find(|node| node.has_tag_name("ext"))?;
+    let width = emu_attribute(extent, "cx")? / 12_700.0;
+    let height = emu_attribute(extent, "cy")? / 12_700.0;
+    let geometry = shape_properties
+        .children()
+        .find(|node| node.has_tag_name("custGeom"))?;
+    let path = geometry
+        .descendants()
+        .find(|node| node.has_tag_name("path") && node.attribute("fill") != Some("none"))?;
+    let path_width = path.attribute("w")?.parse::<f32>().ok()?;
+    let path_height = path.attribute("h")?.parse::<f32>().ok()?;
+    if width <= 0.0 || height <= 0.0 || path_width <= 0.0 || path_height <= 0.0 {
+        return None;
+    }
+    let fill = shape
+        .children()
+        .find(|node| node.has_tag_name("style"))
+        .and_then(|style| style.children().find(|node| node.has_tag_name("fillRef")))
+        .and_then(|fill_ref| {
+            fill_ref
+                .children()
+                .find(|node| node.has_tag_name("schemeClr"))
+        })
+        .and_then(|color| theme_scheme_color(color.attribute("val")?, theme_colors))?;
+    let pixel_width = (width * 2.0).round().clamp(1.0, u16::MAX as f32) as u16;
+    let pixel_height = (height * 2.0).round().clamp(1.0, u16::MAX as f32) as u16;
+    let mut points = Vec::new();
+    for command in path.children().filter(|node| node.is_element()) {
+        if !matches!(command.tag_name().name(), "moveTo" | "lnTo" | "cubicBezTo") {
+            continue;
+        }
+        let Some(point) = command.descendants().rfind(|node| node.has_tag_name("pt")) else {
+            continue;
+        };
+        let x = point.attribute("x")?.parse::<f32>().ok()? / path_width * f32::from(pixel_width);
+        let y = point.attribute("y")?.parse::<f32>().ok()? / path_height * f32::from(pixel_height);
+        points.push((x, y));
+    }
+    if points.len() < 3 {
+        return None;
+    }
+    let mut canvas = image::RgbaImage::new(pixel_width.into(), pixel_height.into());
+    draw_filled_polygon(
+        &mut canvas,
+        &points,
+        image::Rgba([
+            (fill.r * 255.0).round() as u8,
+            (fill.g * 255.0).round() as u8,
+            (fill.b * 255.0).round() as u8,
+            255,
+        ]),
+    );
+    if transform.attribute("rot") == Some("10800000") {
+        canvas = image::imageops::rotate180(&canvas);
+    }
+    Some(SheetImage {
+        data: SheetImageData::Rgba(canvas.into_raw()),
+        pixel_width,
+        pixel_height,
+        col: child_number(from, "col").unwrap_or(0),
+        row: child_number(from, "row").unwrap_or(0),
+        col_offset: child_number(from, "colOff").unwrap_or(0) as f32 / 12_700.0,
+        row_offset: child_number(from, "rowOff").unwrap_or(0) as f32 / 12_700.0,
+        width,
+        height,
+        foreground: true,
+    })
+}
+
+fn theme_scheme_color(name: &str, theme_colors: &[PdfColor]) -> Option<PdfColor> {
+    let index = match name {
+        "lt1" => 0,
+        "dk1" => 1,
+        "lt2" => 2,
+        "dk2" => 3,
+        "accent1" => 4,
+        "accent2" => 5,
+        "accent3" => 6,
+        "accent4" => 7,
+        "accent5" => 8,
+        "accent6" => 9,
+        "hlink" => 10,
+        "folHlink" => 11,
+        _ => return None,
+    };
+    theme_colors.get(index).copied()
+}
+
+fn read_two_cell_picture<R: std::io::Read + std::io::Seek>(
+    archive: &mut ZipArchive<R>,
+    drawing_path: &str,
+    drawing_rels: &HashMap<String, String>,
+    anchor: roxmltree::Node<'_, '_>,
+) -> Result<Option<SheetImage>> {
+    let Some(from) = anchor.children().find(|node| node.has_tag_name("from")) else {
+        return Ok(None);
+    };
+    let Some(picture) = anchor.children().find(|node| node.has_tag_name("pic")) else {
+        return Ok(None);
+    };
+    let Some(image_id) = picture
+        .descendants()
+        .find(|node| node.has_tag_name("blip"))
+        .and_then(relationship_id)
+    else {
+        return Ok(None);
+    };
+    let Some(image_target) = drawing_rels.get(&image_id) else {
+        return Ok(None);
+    };
+    let image_path = resolve_part_target(drawing_path, image_target);
+    let Some(data) = read_zip_bytes(archive, &image_path)? else {
+        return Ok(None);
+    };
+    let Ok(source) = image::load_from_memory(&data) else {
+        return Ok(None);
+    };
+    let Some(transform) = picture
+        .children()
+        .find(|node| node.has_tag_name("spPr"))
+        .and_then(|node| node.children().find(|child| child.has_tag_name("xfrm")))
+    else {
+        return Ok(None);
+    };
+    let Some(extent) = transform.children().find(|node| node.has_tag_name("ext")) else {
+        return Ok(None);
+    };
+    let width = emu_attribute(extent, "cx").unwrap_or(0.0) / 12_700.0;
+    let height = emu_attribute(extent, "cy").unwrap_or(0.0) / 12_700.0;
+    if width <= 0.0 || height <= 0.0 {
+        return Ok(None);
+    }
+    let rgba = source.into_rgba8();
+    let pixel_width = rgba.width().min(u16::MAX.into()) as u16;
+    let pixel_height = rgba.height().min(u16::MAX.into()) as u16;
+    Ok(Some(SheetImage {
+        data: SheetImageData::Rgba(rgba.into_raw()),
+        pixel_width,
+        pixel_height,
+        col: child_number(from, "col").unwrap_or(0),
+        row: child_number(from, "row").unwrap_or(0),
+        col_offset: child_number(from, "colOff").unwrap_or(0) as f32 / 12_700.0,
+        row_offset: child_number(from, "rowOff").unwrap_or(0) as f32 / 12_700.0,
+        width,
+        height,
+        foreground: true,
+    }))
 }
 
 fn read_group_image<R: std::io::Read + std::io::Seek>(
@@ -810,6 +1065,32 @@ fn draw_lower_half_ellipse(
                 && top + y < canvas.height()
             {
                 canvas.put_pixel(left + x, top + y, color);
+            }
+        }
+    }
+}
+
+fn draw_filled_polygon(
+    canvas: &mut image::RgbaImage,
+    points: &[(f32, f32)],
+    color: image::Rgba<u8>,
+) {
+    for y in 0..canvas.height() {
+        let scan_y = y as f32 + 0.5;
+        let mut intersections = Vec::new();
+        for index in 0..points.len() {
+            let (x1, y1) = points[index];
+            let (x2, y2) = points[(index + 1) % points.len()];
+            if (y1 <= scan_y && scan_y < y2) || (y2 <= scan_y && scan_y < y1) {
+                intersections.push(x1 + (scan_y - y1) * (x2 - x1) / (y2 - y1));
+            }
+        }
+        intersections.sort_by(f32::total_cmp);
+        for pair in intersections.chunks_exact(2) {
+            let start = pair[0].ceil().max(0.0) as u32;
+            let end = pair[1].floor().min(canvas.width() as f32 - 1.0) as u32;
+            for x in start..=end {
+                canvas.put_pixel(x, y, color);
             }
         }
     }
@@ -1049,6 +1330,7 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         fill_color,
                         borders: cell_borders,
                         number_format: match xf.attribute("numFmtId") {
+                            Some("14") => NumberFormat::DateMonthDayYear,
                             Some("4") => NumberFormat::ThousandsTwoDecimals,
                             Some("44") => NumberFormat::DollarAccounting,
                             _ => NumberFormat::General,
@@ -1095,6 +1377,21 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
+    let differential_font_colors = xml
+        .descendants()
+        .find(|node| node.has_tag_name("dxfs"))
+        .map(|dxfs| {
+            dxfs.children()
+                .filter(|node| node.has_tag_name("dxf"))
+                .map(|dxf| {
+                    dxf.children()
+                        .find(|node| node.has_tag_name("font"))
+                        .and_then(|font| font.children().find(|node| node.has_tag_name("color")))
+                        .and_then(|color| parse_xlsx_color(color, &theme_colors))
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
     let table_base_fills = xml
         .descendants()
         .filter(|node| node.has_tag_name("tableStyle"))
@@ -1130,10 +1427,120 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
         .collect();
     Ok(XlsxStyles {
         cells,
+        differential_font_colors,
+        differential_fills,
         max_digit_width,
         table_base_fills,
         table_first_row_stripes,
     })
+}
+
+fn apply_sheet_conditional_formats(
+    sheet_xml: &str,
+    rows: &mut [RowData],
+    styles: &XlsxStyles,
+) -> Result<()> {
+    let sheet = roxmltree::Document::parse(sheet_xml)?;
+    for formatting in sheet
+        .descendants()
+        .filter(|node| node.has_tag_name("conditionalFormatting"))
+    {
+        let ranges = formatting.attribute("sqref").unwrap_or_default();
+        for rule in formatting.children().filter(|node| {
+            node.has_tag_name("cfRule")
+                && node.attribute("type") == Some("cellIs")
+                && node.attribute("operator") == Some("equal")
+        }) {
+            let Some(color) = rule
+                .attribute("dxfId")
+                .and_then(|value| value.parse::<usize>().ok())
+                .and_then(|index| {
+                    styles
+                        .differential_font_colors
+                        .get(index)
+                        .copied()
+                        .flatten()
+                })
+            else {
+                continue;
+            };
+            let Some(expected) = rule
+                .children()
+                .find(|node| node.has_tag_name("formula"))
+                .and_then(|node| node.text())
+                .map(|value| value.trim_matches('"'))
+            else {
+                continue;
+            };
+            for range in ranges.split_whitespace() {
+                let (start, end) = range.split_once(':').unwrap_or((range, range));
+                let Some((start_col, start_row)) = cell_position(start) else {
+                    continue;
+                };
+                let Some((end_col, end_row)) = cell_position(end) else {
+                    continue;
+                };
+                for row in rows
+                    .iter_mut()
+                    .filter(|row| row.index >= start_row && row.index <= end_row)
+                {
+                    for cell in row
+                        .cells
+                        .iter_mut()
+                        .enumerate()
+                        .filter(|(column, _)| *column >= start_col && *column <= end_col)
+                        .map(|(_, cell)| cell)
+                    {
+                        if cell.text == expected {
+                            cell.style.font_color = color;
+                        }
+                    }
+                }
+            }
+        }
+        for rule in formatting.children().filter(|node| {
+            node.has_tag_name("cfRule") && node.attribute("type") == Some("expression")
+        }) {
+            let Some(formula) = rule
+                .children()
+                .find(|node| node.has_tag_name("formula"))
+                .and_then(|node| node.text())
+            else {
+                continue;
+            };
+            if formula.replace(' ', "") != "StartDate+0=TODAY()" {
+                continue;
+            }
+            let Some(fill) = rule
+                .attribute("dxfId")
+                .and_then(|value| value.parse::<usize>().ok())
+                .and_then(|index| styles.differential_fills.get(index).copied().flatten())
+            else {
+                continue;
+            };
+            for range in ranges.split_whitespace() {
+                let (start, end) = range.split_once(':').unwrap_or((range, range));
+                let Some((start_col, start_row)) = cell_position(start) else {
+                    continue;
+                };
+                let Some((end_col, end_row)) = cell_position(end) else {
+                    continue;
+                };
+                for row in rows
+                    .iter_mut()
+                    .filter(|row| row.index >= start_row && row.index <= end_row)
+                {
+                    if row.cells.len() <= end_col {
+                        row.cells.resize(end_col + 1, CellData::default());
+                    }
+                    for cell in &mut row.cells[start_col..=end_col] {
+                        cell.style.fill_color = Some(fill);
+                    }
+                }
+            }
+        }
+    }
+    Ok(())
 }
 
 fn apply_sheet_table_styles<R: std::io::Read + std::io::Seek>(
@@ -1350,6 +1757,18 @@ fn parse_cell_borders(border: roxmltree::Node<'_, '_>, theme_colors: &[PdfColor]
         right: side_color("right"),
         top: side_color("top"),
         bottom: side_color("bottom"),
+        left_dotted: border
+            .children()
+            .any(|side| side.has_tag_name("left") && side.attribute("style") == Some("dotted")),
+        right_dotted: border
+            .children()
+            .any(|side| side.has_tag_name("right") && side.attribute("style") == Some("dotted")),
+        top_dotted: border
+            .children()
+            .any(|side| side.has_tag_name("top") && side.attribute("style") == Some("dotted")),
+        bottom_dotted: border
+            .children()
+            .any(|side| side.has_tag_name("bottom") && side.attribute("style") == Some("dotted")),
     }
 }
 
@@ -1380,6 +1799,14 @@ fn merged_cell_borders(rows: &[RowData], merge_range: &MergeRange) -> CellBorder
                 .borders
                 .bottom
         }),
+        left_dotted: cell_at(merge_range.start_row, merge_range.start_col)
+            .is_some_and(|cell| cell.style.borders.left_dotted),
+        right_dotted: cell_at(merge_range.start_row, merge_range.end_col)
+            .is_some_and(|cell| cell.style.borders.right_dotted),
+        top_dotted: cell_at(merge_range.start_row, merge_range.start_col)
+            .is_some_and(|cell| cell.style.borders.top_dotted),
+        bottom_dotted: cell_at(merge_range.end_row, merge_range.start_col)
+            .is_some_and(|cell| cell.style.borders.bottom_dotted),
     }
 }
 
@@ -1635,6 +2062,7 @@ fn read_cell_value(
 
 fn format_numeric_value(value: f64, source: &str, number_format: NumberFormat) -> String {
     match number_format {
+        NumberFormat::DateMonthDayYear => format_excel_date(value),
         NumberFormat::ThousandsTwoDecimals => format_thousands_two_decimals(value),
         NumberFormat::DollarAccounting => {
             if value == 0.0 {
@@ -1656,6 +2084,22 @@ fn format_numeric_value(value: f64, source: &str, number_format: NumberFormat) -
         NumberFormat::General if source.is_empty() => value.to_string(),
         NumberFormat::General => source.to_owned(),
     }
+}
+
+fn format_excel_date(value: f64) -> String {
+    let mut days = value.floor() as i64 - 25_569;
+    days += 719_468;
+    let era = if days >= 0 { days } else { days - 146_096 } / 146_097;
+    let day_of_era = days - era * 146_097;
+    let year_of_era =
+        (day_of_era - day_of_era / 1_460 + day_of_era / 36_524 - day_of_era / 146_096) / 365;
+    let mut year = year_of_era + era * 400;
+    let day_of_year = day_of_era - (365 * year_of_era + year_of_era / 4 - year_of_era / 100);
+    let month_part = (5 * day_of_year + 2) / 153;
+    let day = day_of_year - (153 * month_part + 2) / 5 + 1;
+    let month = month_part + if month_part < 10 { 3 } else { -9 };
+    year += i64::from(month <= 2);
+    format!("{month}/{day}/{year}")
 }
 
 fn evaluate_simple_formula(formula: &str, rows: &[RowData]) -> Option<f64> {
@@ -1812,7 +2256,7 @@ fn render_sheet(
     doc: &mut PdfDocument,
     sheet: &SheetData,
     image_ids: &[usize],
-    page_size: PageSize,
+    mut page_size: PageSize,
 ) {
     let column_count = sheet
         .rows
@@ -1824,15 +2268,77 @@ fn render_sheet(
     let mut widths = sheet.column_widths.clone();
     widths.resize(column_count, COL_WIDTH);
     widths.truncate(column_count);
+    let unscaled_width = widths.iter().sum::<f32>();
+    if sheet.page_setup.page_size_from_printer
+        && sheet.page_setup.fit_to_width
+        && sheet.page_setup.fit_to_height
+    {
+        let last_row = sheet.rows.last().map(|row| row.index).unwrap_or(0);
+        let unscaled_height = (0..=last_row)
+            .map(|row_index| {
+                sheet
+                    .rows
+                    .iter()
+                    .find(|row| row.index == row_index)
+                    .map(|row| row.height)
+                    .unwrap_or(sheet.default_row_height)
+            })
+            .sum::<f32>();
+        let required_width = unscaled_width * sheet.page_setup.print_scale
+            + sheet.page_setup.margin_left
+            + sheet.page_setup.margin_right;
+        let required_height =
+            unscaled_height * sheet.page_setup.print_scale * FIT_TO_PAGE_VERTICAL_SCALE
+                + sheet.page_setup.margin_top
+                + FIT_TO_PAGE_TOP_OFFSET
+                + sheet.page_setup.margin_bottom;
+        let media_scale = (required_width / page_size.width)
+            .max(required_height / page_size.height)
+            .max(1.0);
+        page_size.width *= media_scale;
+        page_size.height *= media_scale;
+    }
     let usable_width =
         page_size.width - sheet.page_setup.margin_left - sheet.page_setup.margin_right;
-    let unscaled_width = widths.iter().sum::<f32>();
-    let content_scale = effective_content_scale(
+    let mut content_scale = effective_content_scale(
         unscaled_width,
         usable_width,
         sheet.page_setup.print_scale,
         sheet.page_setup.fit_to_width,
     );
+    if sheet.page_setup.fit_to_height {
+        let last_row = sheet.rows.last().map(|row| row.index).unwrap_or(0);
+        let unscaled_height = (0..=last_row)
+            .map(|row_index| {
+                sheet
+                    .rows
+                    .iter()
+                    .find(|row| row.index == row_index)
+                    .map(|row| row.height)
+                    .unwrap_or(sheet.default_row_height)
+            })
+            .sum::<f32>();
+        let vertical_scale = if sheet.print_title_rows.is_some() {
+            PRINT_TITLE_VERTICAL_SCALE
+        } else if sheet.page_setup.page_size_from_printer {
+            1.0
+        } else {
+            FIT_TO_PAGE_VERTICAL_SCALE
+        };
+        let top_offset = if sheet.print_title_rows.is_some() {
+            0.0
+        } else {
+            FIT_TO_PAGE_TOP_OFFSET
+        };
+        let usable_height = page_size.height
+            - sheet.page_setup.margin_top
+            - top_offset
+            - sheet.page_setup.margin_bottom;
+        if unscaled_height > 0.0 {
+            content_scale =
+                content_scale.min((usable_height / (unscaled_height * vertical_scale)).min(1.0));
+        }
+    }
     let horizontal_scale = if sheet.print_title_rows.is_some() {
         PRINT_TITLE_HORIZONTAL_SCALE
     } else if sheet.page_setup.fit_to_width {
@@ -1840,8 +2346,9 @@ fn render_sheet(
     } else {
         1.0
     };
+    let horizontal_geometry_scale = content_scale * horizontal_scale;
     for width in &mut widths {
-        *width *= content_scale * horizontal_scale;
+        *width *= horizontal_geometry_scale;
     }
     let content_width = widths.iter().sum::<f32>();
     let content_left = if sheet.page_setup.horizontal_centered && content_width < usable_width {
@@ -1858,6 +2365,8 @@ fn render_sheet(
     };
     let vertical_scale = if sheet.print_title_rows.is_some() {
         PRINT_TITLE_VERTICAL_SCALE
+    } else if sheet.page_setup.page_size_from_printer && sheet.page_setup.fit_to_width {
+        1.0
     } else if sheet.page_setup.fit_to_width {
         FIT_TO_PAGE_VERTICAL_SCALE
     } else {
@@ -1893,6 +2402,7 @@ fn render_sheet(
     let layout = SheetRenderLayout {
         page_size,
         content_scale,
+        horizontal_geometry_scale,
         content_left,
         vertical_scale,
         margin_top,
@@ -1919,6 +2429,7 @@ fn centered_scaled_margin(page_extent: f32, margin: f32, scale: f32) -> f32 {
 struct SheetRenderLayout {
     page_size: PageSize,
     content_scale: f32,
+    horizontal_geometry_scale: f32,
     content_left: f32,
     vertical_scale: f32,
     margin_top: f32,
@@ -1937,6 +2448,7 @@ fn render_sheet_columns(
     let SheetRenderLayout {
         page_size,
         content_scale,
+        horizontal_geometry_scale,
         content_left,
         vertical_scale,
         margin_top,
@@ -1974,6 +2486,7 @@ fn render_sheet_columns(
                 column_start,
                 column_end,
                 content_scale,
+                horizontal_geometry_scale,
                 content_left,
                 row_scale,
                 page_index,
@@ -1996,6 +2509,7 @@ fn render_sheet_columns(
                 column_start,
                 column_end,
                 content_scale,
+                horizontal_geometry_scale,
                 content_left,
                 row_scale,
                 page_index,
@@ -2013,6 +2527,7 @@ fn render_sheet_columns(
             column_start,
             column_end,
             content_scale,
+            horizontal_geometry_scale,
             content_left,
             row_scale,
             page_index,
@@ -2028,7 +2543,7 @@ fn render_sheet_columns(
     }) {
         let x = content_left
             + column_widths[column_start..image.col].iter().sum::<f32>()
-            + image.col_offset * content_scale;
+            + image.col_offset * horizontal_geometry_scale;
         let rows_above = (0..image.row)
             .map(|row_index| {
                 sheet
@@ -2046,7 +2561,7 @@ fn render_sheet_columns(
             *image_id,
             x,
             top - image.height * row_scale,
-            image.width * content_scale,
+            image.width * horizontal_geometry_scale,
             image.height * row_scale,
         );
     }
@@ -2097,6 +2612,7 @@ fn repeat_print_title_rows(
     column_start: usize,
     column_end: usize,
     content_scale: f32,
+    horizontal_geometry_scale: f32,
     content_left: f32,
     row_scale: f32,
     page_index: usize,
@@ -2128,6 +2644,7 @@ fn repeat_print_title_rows(
                 column_start,
                 column_end,
                 content_scale,
+                horizontal_geometry_scale,
                 content_left,
                 row_scale,
                 page_index,
@@ -2147,6 +2664,7 @@ fn render_xlsx_row(
     column_start: usize,
     column_end: usize,
     content_scale: f32,
+    horizontal_geometry_scale: f32,
     content_left: f32,
     row_scale: f32,
     page_index: usize,
@@ -2180,14 +2698,14 @@ fn render_xlsx_row(
     }) {
         let x = content_left
             + column_widths[column_start..image.col].iter().sum::<f32>()
-            + image.col_offset * content_scale;
+            + image.col_offset * horizontal_geometry_scale;
         let image_height = image.height * row_scale;
         let top = y + row_height - image.row_offset * row_scale;
         page.add_image(
             *image_id,
             x,
             top - image_height,
-            image.width * content_scale,
+            image.width * horizontal_geometry_scale,
             image_height,
         );
     }
@@ -2240,40 +2758,70 @@ fn render_xlsx_row(
             page.add_rect(cell_x, cell_y, cell_width, cell_height, fill);
         }
         if let Some(border) = cell_borders.bottom {
-            page.add_rect(
-                cell_x,
-                cell_y - CELL_BORDER_WIDTH / 2.0,
-                cell_width,
-                CELL_BORDER_WIDTH,
-                border,
-            );
+            if cell_borders.bottom_dotted {
+                page.add_dashed_line(cell_x, cell_y, cell_x + cell_width, cell_y, border, 0.5);
+            } else {
+                page.add_rect(
+                    cell_x,
+                    cell_y - CELL_BORDER_WIDTH / 2.0,
+                    cell_width,
+                    CELL_BORDER_WIDTH,
+                    border,
+                );
+            }
         }
         if let Some(border) = cell_borders.top {
-            page.add_rect(
-                cell_x,
-                cell_y + cell_height - CELL_BORDER_WIDTH / 2.0,
-                cell_width,
-                CELL_BORDER_WIDTH,
-                border,
-            );
+            if cell_borders.top_dotted {
+                page.add_dashed_line(
+                    cell_x,
+                    cell_y + cell_height,
+                    cell_x + cell_width,
+                    cell_y + cell_height,
+                    border,
+                    0.5,
+                );
+            } else {
+                page.add_rect(
+                    cell_x,
+                    cell_y + cell_height - CELL_BORDER_WIDTH / 2.0,
+                    cell_width,
+                    CELL_BORDER_WIDTH,
+                    border,
+                );
+            }
         }
         if let Some(border) = cell_borders.left {
-            page.add_rect(
-                cell_x - CELL_BORDER_WIDTH / 2.0,
-                cell_y,
-                CELL_BORDER_WIDTH,
-                cell_height,
-                border,
-            );
+            if cell_borders.left_dotted {
+                page.add_dashed_line(cell_x, cell_y, cell_x, cell_y + cell_height, border, 0.5);
+            } else {
+                page.add_rect(
+                    cell_x - CELL_BORDER_WIDTH / 2.0,
+                    cell_y,
+                    CELL_BORDER_WIDTH,
+                    cell_height,
+                    border,
+                );
+            }
         }
         if let Some(border) = cell_borders.right {
-            page.add_rect(
-                cell_x + cell_width - CELL_BORDER_WIDTH / 2.0,
-                cell_y,
-                CELL_BORDER_WIDTH,
-                cell_height,
-                border,
-            );
+            if cell_borders.right_dotted {
+                page.add_dashed_line(
+                    cell_x + cell_width,
+                    cell_y,
+                    cell_x + cell_width,
+                    cell_y + cell_height,
+                    border,
+                    0.5,
+                );
+            } else {
+                page.add_rect(
+                    cell_x + cell_width - CELL_BORDER_WIDTH / 2.0,
+                    cell_y,
+                    CELL_BORDER_WIDTH,
+                    cell_height,
+                    border,
+                );
+            }
         }
         let font_size = cell.style.font_size * content_scale;
         let indent_width = styled_text_width_with_font(
@@ -2472,10 +3020,11 @@ fn has_rtl_base_direction(text: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::{
-        apply_color_tint, column_groups, column_index_from_ref, effective_content_scale,
-        font_name_is_emphasis, format_thousands_two_decimals, has_rtl_base_direction,
-        indexed_color, jpeg_dimensions, merged_cell_borders, parse_cell_borders,
-        parse_horizontal_alignment, parse_rgb_color, parse_vertical_alignment, read_column_widths,
+        apply_color_tint, apply_sheet_conditional_formats, column_groups, column_index_from_ref,
+        effective_content_scale, font_name_is_emphasis, format_excel_date,
+        format_thousands_two_decimals, has_rtl_base_direction, indexed_color, jpeg_dimensions,
+        merged_cell_borders, parse_cell_borders, parse_horizontal_alignment, parse_rgb_color,
+        parse_vertical_alignment, parse_windows_devmode_page_size, read_column_widths,
         read_merge_ranges, read_page_setup, read_row_breaks, read_sheet_rows, relationship_id,
         spreadsheet_theme_colors, trim_trailing_empty_rows, wrap_cell_text, CellData, CellStyle,
         HorizontalAlignment, MergeRange, RowData, SheetImage, SheetImageData, VerticalAlignment,
@@ -2512,6 +3061,20 @@ mod tests {
     }
 
     #[test]
+    fn reads_letter_landscape_from_windows_devmode() {
+        let mut devmode = vec![0_u8; 220];
+        devmode[68..70].copy_from_slice(&220_u16.to_le_bytes());
+        devmode[76..78].copy_from_slice(&2_u16.to_le_bytes());
+        devmode[78..80].copy_from_slice(&1_u16.to_le_bytes());
+
+        let page_size =
+            parse_windows_devmode_page_size(&devmode).expect("DEVMODE contains a paper size");
+
+        assert_eq!(page_size.width, PageSize::LETTER.height);
+        assert_eq!(page_size.height, PageSize::LETTER.width);
+    }
+
+    #[test]
     fn reads_fit_to_width_scale_and_margins() {
         let page_setup = read_page_setup(
             r#"<worksheet><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><pageMargins left="0.25" right="0.5" top="0.75" bottom="1"/><pageSetup paperSize="9" scale="74" fitToHeight="0" orientation="landscape"/></worksheet>"#,
@@ -2520,10 +3083,80 @@ mod tests {
 
         assert!(page_setup.fit_to_width);
         assert!((page_setup.print_scale - 0.74).abs() < 0.001);
+        assert!(!page_setup.fit_to_height);
         assert_eq!(page_setup.margin_left, 18.0);
         assert_eq!(page_setup.margin_right, 36.0);
         assert_eq!(page_setup.margin_top, 54.0);
         assert_eq!(page_setup.margin_bottom, 72.0);
+    }
+
+    #[test]
+    fn defaults_fit_to_page_to_one_page_tall() {
+        let page_setup = read_page_setup(
+            r#"<worksheet><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><pageSetup scale="70"/></worksheet>"#,
+        )
+        .expect("worksheet XML is valid");
+
+        assert!(page_setup.fit_to_width);
+        assert!(page_setup.fit_to_height);
+    }
+
+    #[test]
+    fn formats_excel_date_serial_as_month_day_year() {
+        assert_eq!(format_excel_date(46_104.0), "3/23/2026");
+    }
+
+    #[test]
+    fn applies_equal_conditional_font_color() {
+        let xml = r#"<worksheet><conditionalFormatting sqref="A1:B1"><cfRule type="cellIs" dxfId="0" operator="equal"><formula>"✔"</formula></cfRule></conditionalFormatting></worksheet>"#;
+        let mut rows = vec![RowData {
+            index: 0,
+            height: 15.0,
+            cells: vec![
+                CellData {
+                    text: "✔".to_owned(),
+                    ..CellData::default()
+                },
+                CellData {
+                    text: "✖".to_owned(),
+                    ..CellData::default()
+                },
+            ],
+        }];
+        let styles = XlsxStyles {
+            differential_font_colors: vec![Some(PdfColor::new(0.25, 0.46, 0.17))],
+            ..XlsxStyles::default()
+        };
+
+        apply_sheet_conditional_formats(xml, &mut rows, &styles)
+            .expect("conditional formatting XML is valid");
+
+        assert_eq!(
+            rows[0].cells[0].style.font_color,
+            PdfColor::new(0.25, 0.46, 0.17)
+        );
+        assert_eq!(rows[0].cells[1].style.font_color, PdfColor::BLACK);
+    }
+
+    #[test]
+    fn applies_saved_start_date_conditional_fill() {
+        let xml = r#"<worksheet><conditionalFormatting sqref="A1:B2"><cfRule type="expression" dxfId="0"><formula>StartDate+0=TODAY()</formula></cfRule></conditionalFormatting></worksheet>"#;
+        let mut rows = vec![RowData {
+            index: 0,
+            height: 15.0,
+            cells: vec![CellData::default(), CellData::default()],
+        }];
+        let fill = PdfColor::new(0.82, 0.93, 0.85);
+        let styles = XlsxStyles {
+            differential_fills: vec![Some(fill)],
+            ..XlsxStyles::default()
+        };
+
+        apply_sheet_conditional_formats(xml, &mut rows, &styles)
+            .expect("conditional formatting XML is valid");
+
+        assert_eq!(rows[0].cells[0].style.fill_color, Some(fill));
+        assert_eq!(rows[0].cells[1].style.fill_color, Some(fill));
     }
 
     #[test]

@@ -57,6 +57,7 @@ enum PdfOp {
         y2: f32,
         color: PdfColor,
         width: f32,
+        dashed: bool,
     },
     Image {
         image_id: usize,
@@ -164,6 +165,27 @@ impl PdfPage {
             y2,
             color,
             width,
+            dashed: false,
+        });
+    }
+
+    pub fn add_dashed_line(
+        &mut self,
+        x1: f32,
+        y1: f32,
+        x2: f32,
+        y2: f32,
+        color: PdfColor,
+        width: f32,
+    ) {
+        self.ops.push(PdfOp::Line {
+            x1,
+            y1,
+            x2,
+            y2,
+            color,
+            width,
+            dashed: true,
         });
     }
 
@@ -883,9 +905,11 @@ fn write_content_stream(
                 y2,
                 color,
                 width,
+                dashed,
             } => {
                 content.push_str(&format!(
-                    "{:.3} {:.3} {:.3} RG {:.2} w {:.2} {:.2} m {:.2} {:.2} l S\n",
+                    "{} {:.3} {:.3} {:.3} RG {:.2} w {:.2} {:.2} m {:.2} {:.2} l S\n",
+                    if *dashed { "[0.8 1.2] 0 d" } else { "[] 0 d" },
                     clamp_color(color.r),
                     clamp_color(color.g),
                     clamp_color(color.b),
