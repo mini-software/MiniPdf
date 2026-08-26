@@ -955,39 +955,33 @@ internal static class DocxToPdfConverter
         if (paragraph.LineSpacing <= 0 && paraFontName != null && IsCjkFont(paraFontName)
             && IsTocStyle(paragraph.StyleId))
             metricsFactor = FontMetricsFactorCJK;
-        float lineHeight;
-        if (paragraph.LineSpacingAbsolute && paragraph.LineSpacing > 0)
-            lineHeight = paragraph.LineSpacing; // exact/atLeast: absolute points
-        else
+        var lineSpacingMul = GetLineSpacingMultiple(paragraph, options.LineSpacing);
+        // Use maximum run font size for line height when runs specify larger sizes
+        // than the paragraph default (e.g. title text with run-level sz=48 but no
+        // paragraph-level font size). Prevents text overlap on hard line breaks.
+        // Word ignores font size of empty runs and tab-only runs (no glyphs that
+        // contribute vertical metrics).  Without this, a leading 14pt `<w:tab/>`
+        // run inflates a visible 12pt body line by ~17%.  Whitespace runs (real
+        // spaces) DO contribute — Word renders space glyphs at the run's font
+        // size, so they keep their full vertical metrics.
+        var effectiveFs = fontSize;
+        foreach (var run in paragraph.Runs)
         {
-            var lineSpacingMul = paragraph.LineSpacing > 0 ? paragraph.LineSpacing : options.LineSpacing;
-            // Use maximum run font size for line height when runs specify larger sizes
-            // than the paragraph default (e.g. title text with run-level sz=48 but no
-            // paragraph-level font size). Prevents text overlap on hard line breaks.
-            // Word ignores font size of empty runs and tab-only runs (no glyphs that
-            // contribute vertical metrics).  Without this, a leading 14pt `<w:tab/>`
-            // run inflates a visible 12pt body line by ~17%.  Whitespace runs (real
-            // spaces) DO contribute — Word renders space glyphs at the run's font
-            // size, so they keep their full vertical metrics.
-            var effectiveFs = fontSize;
-            foreach (var run in paragraph.Runs)
+            var runFs = run.FontSize > 0 ? run.FontSize : fontSize;
+            if (runFs <= effectiveFs) continue;
+            var rt = run.Text;
+            bool tabOnly = !string.IsNullOrEmpty(rt);
+            if (tabOnly)
             {
-                var runFs = run.FontSize > 0 ? run.FontSize : fontSize;
-                if (runFs <= effectiveFs) continue;
-                var rt = run.Text;
-                bool tabOnly = !string.IsNullOrEmpty(rt);
-                if (tabOnly)
+                for (int ci = 0; ci < rt.Length; ci++)
                 {
-                    for (int ci = 0; ci < rt.Length; ci++)
-                    {
-                        if (rt[ci] != '\t') { tabOnly = false; break; }
-                    }
+                    if (rt[ci] != '\t') { tabOnly = false; break; }
                 }
-                if (string.IsNullOrEmpty(rt) || tabOnly) continue;
-                effectiveFs = runFs;
             }
-            lineHeight = effectiveFs * metricsFactor * lineSpacingMul;
+            if (string.IsNullOrEmpty(rt) || tabOnly) continue;
+            effectiveFs = runFs;
         }
+        var lineHeight = ApplyLineSpacingRule(paragraph, effectiveFs * metricsFactor * lineSpacingMul);
 
         var isLargeCjkTitle = IsLargeCjkTitle(paragraph);
         var isCenteredCjkGridHeading = state.IsTopOfPage
@@ -3443,14 +3437,10 @@ internal static class DocxToPdfConverter
                     }
 
                     var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
-                    float lineHeight;
-                    if (para.LineSpacingAbsolute && para.LineSpacing > 0)
-                        lineHeight = para.LineSpacing; // exact/atLeast: absolute points
-                    else
-                    {
-                        var estFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
-                        lineHeight = fontSize * GetFontMetricsFactor(estFont) * (para.LineSpacing > 0 ? para.LineSpacing : options.LineSpacing);
-                    }
+                    var estFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
+                    var lineHeight = ApplyLineSpacingRule(
+                        para,
+                        fontSize * GetFontMetricsFactor(estFont) * GetLineSpacingMultiple(para, options.LineSpacing));
                     var usableW = options.PageWidth - options.MarginLeft - options.MarginRight;
                     foreach (var image in para.Images)
                     {
@@ -4514,17 +4504,13 @@ internal static class DocxToPdfConverter
             // when the mark is larger than the run text, the line grows accordingly.
             var lineMetricFs = runFontSize;
             if (para.FontSize > runFontSize) lineMetricFs = para.FontSize;
-            float lineHeight;
-            if (para.LineSpacingAbsolute && para.LineSpacing > 0)
-                lineHeight = para.LineSpacing; // exact/atLeast: absolute points
-            else
-            {
-                var cellMetricsFactor = !options.SnapToGridInTableCells
-                    && dominantRun?.FontName != null && IsTallCjkFont(dominantRun.FontName)
-                    ? LegacyWordTableCjkMetricsFactor
-                    : GetFontMetricsFactor(dominantRun?.FontName);
-                lineHeight = lineMetricFs * cellMetricsFactor * (para.LineSpacing > 0 ? para.LineSpacing : (styleLineSpacing > 0 ? styleLineSpacing : options.LineSpacing));
-            }
+            var cellMetricsFactor = !options.SnapToGridInTableCells
+                && dominantRun?.FontName != null && IsTallCjkFont(dominantRun.FontName)
+                ? LegacyWordTableCjkMetricsFactor
+                : GetFontMetricsFactor(dominantRun?.FontName);
+            var cellLineSpacingMul = GetLineSpacingMultiple(
+                para, styleLineSpacing > 0 ? styleLineSpacing : options.LineSpacing);
+            var lineHeight = ApplyLineSpacingRule(para, lineMetricFs * cellMetricsFactor * cellLineSpacingMul);
 
             // Snap line height to document grid when active (CJK line grid)
             if (options.SnapToGridInTableCells && options.GridLinePitch > 0 && para.SnapToGrid && !IsTaiwanKaiFont(dominantRun?.FontName) && !(para.LineSpacingAbsolute && para.LineSpacingExact))
@@ -5083,6 +5069,30 @@ internal static class DocxToPdfConverter
             || fontName.Contains("等线", StringComparison.Ordinal)
             || fontName.Contains("微软雅黑", StringComparison.Ordinal);
     }
+
+    /// <summary>
+    /// Applies the paragraph's line spacing rule to a font-derived line height.
+    /// <c>w:lineRule="atLeast"</c> sets a minimum rather than a fixed height: Word grows
+    /// the line to fit the text and only <c>"exact"</c> clamps it.  Honouring a small
+    /// <c>w:line</c> as a fixed height collapses every line onto the previous one.
+    /// </summary>
+    private static float ApplyLineSpacingRule(DocxParagraph para, float naturalLineHeight)
+    {
+        if (!para.LineSpacingAbsolute || para.LineSpacing <= 0)
+            return naturalLineHeight;
+
+        return para.LineSpacingExact
+            ? para.LineSpacing
+            : Math.Max(para.LineSpacing, naturalLineHeight);
+    }
+
+    /// <summary>
+    /// Returns the line spacing multiple for a paragraph, falling back to
+    /// <paramref name="fallback"/> when <c>LineSpacing</c> holds an absolute height in
+    /// points (lineRule="exact"/"atLeast") rather than a multiple of single spacing.
+    /// </summary>
+    private static float GetLineSpacingMultiple(DocxParagraph para, float fallback)
+        => para.LineSpacingAbsolute || para.LineSpacing <= 0 ? fallback : para.LineSpacing;
 
     /// <summary>
     /// Returns the font metrics factor used for line height calculation.
