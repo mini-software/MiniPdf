@@ -19,3 +19,4 @@ path = "src/main.rs"
 [dependencies]
 clap.workspace = true
 minipdf = { version = "0.3.0", path = "../minipdf" }
+ttf-parser.workspace = true
