@@ -156,12 +156,14 @@ fn register_fonts_from_dir(font_dir: &Path) -> minipdf::Result<()> {
             .and_then(|ext| ext.to_str())
             .map(|ext| ext.to_ascii_lowercase());
         if matches!(ext.as_deref(), Some("ttf" | "ttc" | "otf")) {
-            let name = path
-                .file_stem()
-                .and_then(|name| name.to_str())
-                .unwrap_or("font")
-                .to_owned();
-            minipdf::register_font(name, fs::read(path)?);
+            let data = fs::read(&path)?;
+            let name = font_alias_from_data(&data).unwrap_or_else(|| {
+                path.file_stem()
+                    .and_then(|name| name.to_str())
+                    .unwrap_or("font")
+                    .to_owned()
+            });
+            minipdf::register_font(name, data);
         }
     }
 
@@ -178,7 +180,94 @@ fn register_system_fallback_fonts() -> minipdf::Result<()> {
             .to_owned();
         minipdf::register_font(name, fs::read(path)?);
     }
+    register_office_cloud_fonts()?;
     Ok(())
+}
+
+#[cfg(target_os = "windows")]
+fn register_office_cloud_fonts() -> minipdf::Result<()> {
+    let Some(local_app_data) = std::env::var_os("LOCALAPPDATA") else {
+        return Ok(());
+    };
+    let cache_root = PathBuf::from(local_app_data)
+        .join("Microsoft")
+        .join("FontCache");
+    let Ok(cache_versions) = fs::read_dir(cache_root) else {
+        return Ok(());
+    };
+    for cloud_root in cache_versions
+        .filter_map(std::result::Result::ok)
+        .map(|entry| entry.path().join("CloudFonts"))
+        .filter(|path| path.is_dir())
+    {
+        for family in ["Grandview", "Grandview Display"] {
+            let directory = cloud_root.join(family);
+            let Ok(entries) = fs::read_dir(directory) else {
+                continue;
+            };
+            for entry in entries.filter_map(std::result::Result::ok) {
+                let path = entry.path();
+                if path.extension().and_then(|ext| ext.to_str()) != Some("ttf") {
+                    continue;
+                }
+                let Ok(data) = fs::read(path) else {
+                    continue;
+                };
+                if let Some(name) = font_alias_from_data(&data) {
+                    minipdf::register_font(name, data);
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+#[cfg(not(target_os = "windows"))]
+fn register_office_cloud_fonts() -> minipdf::Result<()> {
+    Ok(())
+}
+
+fn font_alias_from_data(data: &[u8]) -> Option<String> {
+    let face = ttf_parser::Face::parse(data, 0).ok()?;
+    let name = |id| {
+        face.names()
+            .into_iter()
+            .find(|name| name.name_id == id && name.is_unicode())
+            .and_then(|name| name.to_string())
+    };
+    let family = name(ttf_parser::name_id::TYPOGRAPHIC_FAMILY)
+        .or_else(|| name(ttf_parser::name_id::FAMILY))?;
+    let subfamily = name(ttf_parser::name_id::TYPOGRAPHIC_SUBFAMILY)
+        .or_else(|| name(ttf_parser::name_id::SUBFAMILY))
+        .unwrap_or_default();
+    Some(build_font_alias(
+        &family,
+        &subfamily,
+        face.is_bold(),
+        face.is_italic(),
+    ))
+}
+
+fn build_font_alias(family: &str, subfamily: &str, bold: bool, italic: bool) -> String {
+    let mut alias = normalize_font_alias(family);
+    if subfamily.to_ascii_lowercase().contains("display") && !alias.contains("display") {
+        alias.push_str("display");
+    }
+    if bold && italic {
+        alias.push('z');
+    } else if bold {
+        alias.push('b');
+    } else if italic {
+        alias.push('i');
+    }
+    alias
+}
+
+fn normalize_font_alias(name: &str) -> String {
+    name.chars()
+        .filter(|character| character.is_ascii_alphanumeric())
+        .flat_map(char::to_lowercase)
+        .collect()
 }
 
 fn system_fallback_font_paths() -> Vec<PathBuf> {
@@ -259,4 +348,25 @@ fn system_fallback_font_paths() -> Vec<PathBuf> {
 
     #[allow(unreachable_code)]
     Vec::new()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::build_font_alias;
+
+    #[test]
+    fn builds_stable_cloud_font_aliases() {
+        assert_eq!(
+            build_font_alias("Grandview", "Regular", false, false),
+            "grandview"
+        );
+        assert_eq!(
+            build_font_alias("Grandview", "Bold", true, false),
+            "grandviewb"
+        );
+        assert_eq!(
+            build_font_alias("Grandview", "Display", false, false),
+            "grandviewdisplay"
+        );
+    }
 }

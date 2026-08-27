@@ -630,6 +630,9 @@ fn font_preference(
             ("verdana", true, true) => "verdanaz",
             ("verdana", true, false) => "verdanab",
             ("verdana", false, true) => "verdanai",
+            ("grandview", true, true) => "grandviewz",
+            ("grandview", true, false) => "grandviewb",
+            ("grandview", false, true) => "grandviewi",
             _ => preferred.as_str(),
         };
         if name == preferred_variant {

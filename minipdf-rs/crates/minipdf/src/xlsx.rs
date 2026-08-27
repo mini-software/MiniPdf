@@ -2191,6 +2191,9 @@ fn excel_pdf_font_size(font_name: Option<&str>, size: f32) -> f32 {
         "corbel" => size * 0.962,
         "franklin gothic medium" if size >= 30.0 => size * 0.984,
         "franklin gothic medium" => size * 0.93,
+        "grandview" => size * 0.956,
+        "grandview display" if size >= 30.0 => size * 0.947,
+        "grandview display" => size * 0.956,
         "palatino linotype" => size * 0.967,
         "verdana" => size * 0.96,
         _ => size,
@@ -2201,6 +2204,8 @@ fn xlsx_preferred_font(font_name: Option<&str>) -> Option<&'static str> {
     match font_name.unwrap_or_default().to_ascii_lowercase().as_str() {
         "corbel" => Some("corbel"),
         "franklin gothic medium" => Some("framd"),
+        "grandview" => Some("grandview"),
+        "grandview display" => Some("grandviewdisplay"),
         "palatino linotype" => Some("bookos"),
         "verdana" => Some("verdana"),
         _ => None,
@@ -3743,10 +3748,10 @@ fn render_xlsx_row(
                 text.cell_y + (text.cell_height - block_height).max(0.0) / 2.0 + baseline_offset
             }
             VerticalAlignment::Bottom => text.cell_y + baseline_offset.max(1.0),
-        } + if text.style.preferred_font == Some("framd") {
-            0.9
-        } else {
-            0.0
+        } + match text.style.preferred_font {
+            Some("framd") => 0.9,
+            Some("grandview" | "grandviewdisplay") => 0.6,
+            _ => 0.0,
         };
         let line_count = text.lines.len();
         if let Some(value) = text.accounting_value {
