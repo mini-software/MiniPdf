@@ -2245,7 +2245,15 @@ internal sealed class PdfWriter
                 return i;
         }
 
-        // Pass 2: partial/contains match or alias match
+        // Pass 2: prefer the regular family face before variants such as Display.
+        for (var i = 0; i < loadedFonts.Count; i++)
+        {
+            var candidate = NormalizeFontName(loadedFonts[i].name);
+            if (candidate == preferred + "regular" || candidate == preferred + "normal")
+                return i;
+        }
+
+        // Pass 3: partial/contains match or alias match
         for (var i = 0; i < loadedFonts.Count; i++)
         {
             var candidate = NormalizeFontName(loadedFonts[i].name);
@@ -2465,6 +2473,8 @@ internal sealed class PdfWriter
     /// </summary>
     private static readonly Lazy<Dictionary<string, string>> _systemFontNameCache
         = new(BuildSystemFontNameCache, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+    private static readonly object OfficeCloudFontCacheLock = new();
+    private static readonly Dictionary<string, string?> OfficeCloudFontCache = new(StringComparer.OrdinalIgnoreCase);
 
     private static Dictionary<string, string> BuildSystemFontNameCache()
     {
@@ -2697,6 +2707,10 @@ internal sealed class PdfWriter
         if (cache.TryGetValue(normalized, out var path))
             return path;
 
+        var officeCloudPath = FindOfficeCloudFontByPreferredName(fontName);
+        if (officeCloudPath != null)
+            return officeCloudPath;
+
         // Rendering already assigns characters from an unavailable Office CJK
         // family to the first installed CJK candidate. Use that same font for
         // layout measurement so alignment does not depend on Helvetica estimates.
@@ -2705,6 +2719,78 @@ internal sealed class PdfWriter
                 !Path.GetFileName(candidate).Contains("Emoji", StringComparison.OrdinalIgnoreCase));
 
         return null;
+    }
+
+    internal static string? FindOfficeCloudFontByPreferredName(string fontName, string? fontCacheRoot = null)
+    {
+        if (!Compat.IsWindows() || string.IsNullOrWhiteSpace(fontName)) return null;
+
+        var normalized = NormalizeFontName(fontName);
+        if (fontCacheRoot == null)
+        {
+            lock (OfficeCloudFontCacheLock)
+                if (OfficeCloudFontCache.TryGetValue(normalized, out var cached))
+                    return cached;
+        }
+
+        fontCacheRoot ??= Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Microsoft", "FontCache");
+        var result = FindOfficeCloudFontByPreferredNameCore(fontName, normalized, fontCacheRoot);
+
+        if (fontCacheRoot.EndsWith(Path.Combine("Microsoft", "FontCache"), StringComparison.OrdinalIgnoreCase))
+        {
+            lock (OfficeCloudFontCacheLock)
+                OfficeCloudFontCache[normalized] = result;
+        }
+        return result;
+    }
+
+    private static string? FindOfficeCloudFontByPreferredNameCore(
+        string fontName, string normalized, string fontCacheRoot)
+    {
+        if (!Directory.Exists(fontCacheRoot)) return null;
+
+        var familyNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { fontName.Trim() };
+        foreach (var suffix in new[] { " Bold Italic", " Bold", " Italic", " Regular" })
+            if (fontName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                familyNames.Add(fontName[..^suffix.Length].Trim());
+
+        string? familyFallback = null;
+        try
+        {
+            foreach (var versionDir in Directory.EnumerateDirectories(fontCacheRoot))
+            {
+                var cloudRoot = Path.Combine(versionDir, "CloudFonts");
+                if (!Directory.Exists(cloudRoot)) continue;
+                foreach (var familyName in familyNames)
+                {
+                    var familyDir = Path.Combine(cloudRoot, familyName);
+                    if (!Directory.Exists(familyDir)) continue;
+                    foreach (var file in Directory.EnumerateFiles(familyDir))
+                    {
+                        var extension = Path.GetExtension(file);
+                        if (extension is not (".ttf" or ".otf" or ".ttc")) continue;
+                        try
+                        {
+                            var data = File.ReadAllBytes(file);
+                            var (family, fullName) = ReadFontNames(data);
+                            var familyKey = NormalizeFontName(family);
+                            var fullKey = NormalizeFontName(fullName);
+                            if (fullKey == normalized)
+                                return file;
+                            if (familyKey != normalized) continue;
+                            if (fullKey == normalized + "regular" || fullKey == normalized + "normal")
+                                return file;
+                            familyFallback ??= file;
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
+        catch { }
+        return familyFallback;
     }
 
     /// <summary>
