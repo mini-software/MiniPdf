@@ -3,6 +3,22 @@ namespace MiniSoftware.Tests;
 public class OfficeCloudFontTests
 {
     [Fact]
+    public void ConversionDiagnostics_ReportsMissingPreferredFontOccurrences()
+    {
+        var diagnostics = new MiniPdfConversionDiagnostics();
+        var document = new PdfDocument();
+        var page = document.AddPage();
+        page.AddText("First", 20, 20, preferredFontName: "MiniPdf Missing Test Font");
+        page.AddText("Second", 20, 40, preferredFontName: "MiniPdf Missing Test Font");
+
+        _ = document.ToArray(new PdfSaveOptions { Diagnostics = diagnostics });
+
+        var missing = Assert.Single(diagnostics.MissingFonts);
+        Assert.Equal("MiniPdf Missing Test Font", missing.FontFamily);
+        Assert.Equal(2, missing.OccurrenceCount);
+    }
+
+    [Fact]
     public void PreferredFontLookup_ResolvesNumericOfficeCloudFontFiles()
     {
         if (!OperatingSystem.IsWindows()) return;

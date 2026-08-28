@@ -682,6 +682,63 @@ h1:focus { outline: none; }
     color: var(--text-secondary);
 }
 
+.missing-fonts-section {
+    margin-top: .75rem;
+    padding-top: .7rem;
+    border-top: 1px solid var(--border);
+    font-size: .78rem;
+}
+
+.missing-fonts-section.local {
+    margin: .75rem 0;
+    padding: .75rem;
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    background: #fffbeb;
+}
+
+.missing-fonts-section > strong,
+.missing-fonts-hint {
+    display: block;
+}
+
+.missing-fonts-hint {
+    margin-top: .2rem;
+    color: var(--text-secondary);
+}
+
+.missing-fonts-list {
+    margin-top: .55rem;
+    border-top: 1px solid var(--border);
+}
+
+.missing-font-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: .65rem;
+    align-items: center;
+    padding: .4rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.missing-font-name {
+    min-width: 0;
+    color: var(--text);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+    .missing-font-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .missing-font-row span:last-child:not(.missing-font-name) {
+        grid-column: 1 / -1;
+    }
+}
+
 .api-alternative {
     color: #92400e;
     background: #fef3c7;

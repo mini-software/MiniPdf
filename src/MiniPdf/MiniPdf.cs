@@ -7,6 +7,9 @@ namespace MiniSoftware;
 /// </summary>
 public sealed class MiniPdfConversionOptions
 {
+    /// <summary>Optional collector populated with diagnostics for this conversion.</summary>
+    public MiniPdfConversionDiagnostics? Diagnostics { get; set; }
+
     /// <summary>Optional Excel sheet names to render. Null renders all visible sheets unless SheetIndexes is specified.</summary>
     public string[]? Sheets { get; set; }
 
@@ -39,6 +42,60 @@ public sealed class MiniPdfConversionOptions
 
     /// <summary>Target minimum number of worksheet rows per PDF page. Applies by fitting the sheet height to a derived page count.</summary>
     public int? RowsPerPage { get; set; }
+}
+
+/// <summary>
+/// Collects non-fatal diagnostics produced while converting an Office document.
+/// </summary>
+public sealed class MiniPdfConversionDiagnostics
+{
+    private readonly Dictionary<string, int> _missingFonts = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>Requested font families that could not be resolved without fallback.</summary>
+    public IReadOnlyList<MiniPdfMissingFont> MissingFonts
+    {
+        get
+        {
+            lock (_missingFonts)
+                return _missingFonts
+                    .OrderByDescending(item => item.Value)
+                    .ThenBy(item => item.Key, StringComparer.OrdinalIgnoreCase)
+                    .Select(item => new MiniPdfMissingFont(item.Key, item.Value))
+                    .ToArray();
+        }
+    }
+
+    internal void Reset()
+    {
+        lock (_missingFonts)
+            _missingFonts.Clear();
+    }
+
+    internal void RecordMissingFont(string fontFamily, int occurrenceCount)
+    {
+        if (string.IsNullOrWhiteSpace(fontFamily) || occurrenceCount <= 0) return;
+        lock (_missingFonts)
+        {
+            _missingFonts.TryGetValue(fontFamily, out var existingCount);
+            _missingFonts[fontFamily] = existingCount + occurrenceCount;
+        }
+    }
+}
+
+/// <summary>Describes one unresolved requested font family.</summary>
+public sealed class MiniPdfMissingFont
+{
+    internal MiniPdfMissingFont(string fontFamily, int occurrenceCount)
+    {
+        FontFamily = fontFamily;
+        OccurrenceCount = occurrenceCount;
+    }
+
+    /// <summary>The font family requested by the source Office document.</summary>
+    public string FontFamily { get; }
+
+    /// <summary>Number of text blocks that requested this font family.</summary>
+    public int OccurrenceCount { get; }
 }
 
 /// <summary>
@@ -300,6 +357,7 @@ public static class MiniPdf
     {
         options ??= new MiniPdfConversionOptions();
         ValidateConversionOptions(options);
+        options.Diagnostics?.Reset();
 
         var ext = Path.GetExtension(inputPath);
         var saveOptions = CreatePdfSaveOptions(options);
@@ -372,6 +430,7 @@ public static class MiniPdf
     {
         options ??= new MiniPdfConversionOptions();
         ValidateConversionOptions(options);
+        options.Diagnostics?.Reset();
 
         var ext = Path.GetExtension(inputPath);
         var saveOptions = CreatePdfSaveOptions(options);
@@ -454,6 +513,7 @@ public static class MiniPdf
 #endif
         options ??= new MiniPdfConversionOptions();
         ValidateConversionOptions(options);
+        options.Diagnostics?.Reset();
 
         // Ensure we have a seekable stream so ZipArchive can read the central directory
         // and the converter can subsequently re-read the package.
@@ -660,8 +720,12 @@ public static class MiniPdf
         };
 
     private static PdfSaveOptions? CreatePdfSaveOptions(MiniPdfConversionOptions options)
-        => options.Compress
-            ? new PdfSaveOptions { CompressContentStreams = true }
+        => options.Compress || options.Diagnostics != null
+            ? new PdfSaveOptions
+            {
+                CompressContentStreams = options.Compress,
+                Diagnostics = options.Diagnostics,
+            }
             : null;
 
     /// <summary>

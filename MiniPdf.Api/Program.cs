@@ -36,18 +36,30 @@ using (var initConn = new SqliteConnection(connStr))
             file_size INTEGER NOT NULL,
             duration_ms INTEGER NOT NULL,
             success INTEGER NOT NULL
-        )
+        );
+        CREATE TABLE IF NOT EXISTS missing_font_log (
+            request_id INTEGER NOT NULL,
+            font_family TEXT COLLATE NOCASE NOT NULL,
+            occurrence_count INTEGER NOT NULL CHECK (occurrence_count > 0),
+            PRIMARY KEY (request_id, font_family),
+            FOREIGN KEY (request_id) REFERENCES request_log(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_missing_font_family
+            ON missing_font_log(font_family);
         """;
     cmd.ExecuteNonQuery();
 }
 
-void LogRequest(string ipHash, string fileType, long fileSize, long durationMs, bool success)
+void LogRequest(string ipHash, string fileType, long fileSize, long durationMs, bool success,
+    IReadOnlyList<MiniPdfMissingFont> missingFonts)
 {
     try
     {
         using var conn = new SqliteConnection(connStr);
         conn.Open();
+        using var transaction = conn.BeginTransaction();
         using var cmd = conn.CreateCommand();
+        cmd.Transaction = transaction;
         cmd.CommandText = "INSERT INTO request_log (timestamp, ip_hash, file_type, file_size, duration_ms, success) VALUES (@ts, @ip, @ft, @fs, @d, @s)";
         cmd.Parameters.AddWithValue("@ts", DateTime.UtcNow.ToString("o"));
         cmd.Parameters.AddWithValue("@ip", ipHash);
@@ -56,6 +68,20 @@ void LogRequest(string ipHash, string fileType, long fileSize, long durationMs, 
         cmd.Parameters.AddWithValue("@d", durationMs);
         cmd.Parameters.AddWithValue("@s", success ? 1 : 0);
         cmd.ExecuteNonQuery();
+
+        cmd.Parameters.Clear();
+        cmd.CommandText = "SELECT last_insert_rowid()";
+        var requestId = (long)(cmd.ExecuteScalar() ?? 0L);
+        cmd.CommandText = "INSERT INTO missing_font_log (request_id, font_family, occurrence_count) VALUES (@requestId, @fontFamily, @occurrenceCount)";
+        foreach (var missingFont in missingFonts)
+        {
+            cmd.Parameters.Clear();
+            cmd.Parameters.AddWithValue("@requestId", requestId);
+            cmd.Parameters.AddWithValue("@fontFamily", missingFont.FontFamily);
+            cmd.Parameters.AddWithValue("@occurrenceCount", missingFont.OccurrenceCount);
+            cmd.ExecuteNonQuery();
+        }
+        transaction.Commit();
     }
     catch { /* non-critical */ }
 }
@@ -235,20 +261,26 @@ app.MapPost("/api/convert", async (HttpContext ctx, IFormFile file) =>
 
         var sw = Stopwatch.StartNew();
         var ipHash = HashIp(clientIp);
+        var diagnostics = new MiniPdfConversionDiagnostics();
         try
         {
             using var stream = file.OpenReadStream();
-            byte[] pdfBytes = MiniPdf.ConvertToPdf(stream);
+            byte[] pdfBytes = MiniPdf.ConvertToPdf(stream, new MiniPdfConversionOptions
+            {
+                Diagnostics = diagnostics,
+            });
 
             sw.Stop();
-            LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, true);
+            LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, true,
+                diagnostics.MissingFonts);
 
             return Results.File(pdfBytes, "application/pdf", "output.pdf");
         }
         catch (Exception)
         {
             sw.Stop();
-            LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, false);
+            LogRequest(ipHash, ext.ToLowerInvariant(), file.Length, sw.ElapsedMilliseconds, false,
+                diagnostics.MissingFonts);
             throw;
         }
     }
@@ -332,7 +364,33 @@ app.MapGet("/api/stats", (HttpContext ctx) =>
             }
         }
 
-        return Results.Ok(new { totalCount, totalAvgMs, daily, byType });
+        using var missingFontCmd = conn.CreateCommand();
+        missingFontCmd.CommandText = """
+            SELECT missing_font_log.font_family,
+                   SUM(missing_font_log.occurrence_count) AS occurrences,
+                   COUNT(DISTINCT missing_font_log.request_id) AS affected_conversions
+            FROM missing_font_log
+            INNER JOIN request_log ON request_log.id = missing_font_log.request_id
+            WHERE request_log.timestamp >= datetime('now', '-30 days')
+            GROUP BY missing_font_log.font_family
+            ORDER BY occurrences DESC, missing_font_log.font_family
+            LIMIT 50
+            """;
+        var missingFonts = new List<object>();
+        using (var reader4 = missingFontCmd.ExecuteReader())
+        {
+            while (reader4.Read())
+            {
+                missingFonts.Add(new
+                {
+                    fontFamily = reader4.GetString(0),
+                    occurrences = reader4.GetInt64(1),
+                    affectedConversions = reader4.GetInt64(2),
+                });
+            }
+        }
+
+        return Results.Ok(new { totalCount, totalAvgMs, daily, byType, missingFonts });
     }
     catch (Exception ex)
     {
