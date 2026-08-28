@@ -734,24 +734,25 @@ pub(crate) fn styled_text_width_with_font(
     italic: bool,
     preferred_font: Option<&str>,
 ) -> f32 {
-    let fonts = crate::registered_fonts();
-    split_font_runs(text, &fonts, bold, italic, preferred_font)
-        .into_iter()
-        .map(|run| {
-            let Some(font_index) = run.font_index else {
-                return run.text.chars().count() as f32 * font_size * 0.5;
-            };
-            let Some(shaped) = shape_text(&run.text, &fonts[font_index].data) else {
-                return run.text.chars().count() as f32 * font_size * 0.5;
-            };
-            let scale = font_size / shaped.units_per_em as f32;
-            shaped
-                .glyphs
-                .iter()
-                .map(|glyph| glyph.x_advance as f32 * scale)
-                .sum()
-        })
-        .sum()
+    crate::with_registered_fonts(|fonts| {
+        split_font_runs(text, fonts, bold, italic, preferred_font)
+            .into_iter()
+            .map(|run| {
+                let Some(font_index) = run.font_index else {
+                    return run.text.chars().count() as f32 * font_size * 0.5;
+                };
+                let Some(shaped) = shape_text(&run.text, &fonts[font_index].data) else {
+                    return run.text.chars().count() as f32 * font_size * 0.5;
+                };
+                let scale = font_size / shaped.units_per_em as f32;
+                shaped
+                    .glyphs
+                    .iter()
+                    .map(|glyph| glyph.x_advance as f32 * scale)
+                    .sum::<f32>()
+            })
+            .sum()
+    })
 }
 
 fn text_for_cluster(text: &str, glyphs: &[ShapedGlyph], index: usize) -> String {

@@ -83,6 +83,14 @@ pub fn registered_fonts() -> Vec<RegisteredFont> {
     fonts.lock().expect("font registry lock poisoned").clone()
 }
 
+pub(crate) fn with_registered_fonts<T>(callback: impl FnOnce(&[RegisteredFont]) -> T) -> T {
+    let Some(fonts) = REGISTERED_FONTS.get() else {
+        return callback(&[]);
+    };
+    let fonts = fonts.lock().expect("font registry lock poisoned");
+    callback(&fonts)
+}
+
 pub fn convert_to_pdf(input_path: impl AsRef<Path>, output_path: impl AsRef<Path>) -> Result<()> {
     convert_to_pdf_with_options(input_path, output_path, &ConversionOptions::default())
 }
