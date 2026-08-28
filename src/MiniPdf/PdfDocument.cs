@@ -101,4 +101,5 @@ internal sealed class PdfDocument
 internal sealed class PdfSaveOptions
 {
     public bool CompressContentStreams { get; set; }
+    public MiniPdfConversionDiagnostics? Diagnostics { get; set; }
 }

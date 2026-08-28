@@ -65,6 +65,7 @@ internal sealed class PdfWriter
 
         var pages = document.Pages;
         var pageCount = pages.Count;
+        RecordMissingFonts(pages);
 
         // Collect all Unicode code points (handling surrogate pairs) from text
         // blocks that contain any non-WinAnsi character.  When a block has ANY
@@ -2685,6 +2686,24 @@ internal sealed class PdfWriter
     {
         if (string.IsNullOrWhiteSpace(fontName)) return null;
 
+        var exactPath = FindExactFontByPreferredName(fontName);
+        if (exactPath != null)
+            return exactPath;
+
+        // Rendering already assigns characters from an unavailable Office CJK
+        // family to the first installed CJK candidate. Use that same font for
+        // layout measurement so alignment does not depend on Helvetica estimates.
+        if (CjkFontFileMap.ContainsKey(fontName))
+            return FindSystemFontCandidates().FirstOrDefault(candidate =>
+                !Path.GetFileName(candidate).Contains("Emoji", StringComparison.OrdinalIgnoreCase));
+
+        return null;
+    }
+
+    private static string? FindExactFontByPreferredName(string fontName)
+    {
+        if (string.IsNullOrWhiteSpace(fontName)) return null;
+
         if (Compat.IsWindows())
         {
             string[]? mappedFiles = null;
@@ -2710,15 +2729,41 @@ internal sealed class PdfWriter
         var officeCloudPath = FindOfficeCloudFontByPreferredName(fontName);
         if (officeCloudPath != null)
             return officeCloudPath;
-
-        // Rendering already assigns characters from an unavailable Office CJK
-        // family to the first installed CJK candidate. Use that same font for
-        // layout measurement so alignment does not depend on Helvetica estimates.
-        if (CjkFontFileMap.ContainsKey(fontName))
-            return FindSystemFontCandidates().FirstOrDefault(candidate =>
-                !Path.GetFileName(candidate).Contains("Emoji", StringComparison.OrdinalIgnoreCase));
-
         return null;
+    }
+
+    private void RecordMissingFonts(IReadOnlyList<PdfPage> pages)
+    {
+        var diagnostics = _options.Diagnostics;
+        if (diagnostics == null) return;
+
+        foreach (var group in pages
+            .SelectMany(page => page.TextBlocks)
+            .Where(block => !string.IsNullOrWhiteSpace(block.Text)
+                && !string.IsNullOrWhiteSpace(block.PreferredFontName))
+            .GroupBy(block => block.PreferredFontName!, StringComparer.OrdinalIgnoreCase))
+        {
+            if (IsPreferredFontAvailable(group.Key)) continue;
+            diagnostics.RecordMissingFont(group.Key, group.Count());
+        }
+    }
+
+    private static bool IsPreferredFontAvailable(string fontName)
+    {
+        var normalized = NormalizeFontName(fontName);
+        foreach (var (registeredName, data) in MiniPdf.GetRegisteredFonts())
+        {
+            if (NormalizeFontName(registeredName) == normalized) return true;
+            try
+            {
+                var (family, fullName) = ReadFontNames(data);
+                if (NormalizeFontName(family) == normalized
+                    || NormalizeFontName(fullName) == normalized)
+                    return true;
+            }
+            catch { }
+        }
+        return FindExactFontByPreferredName(fontName) != null;
     }
 
     internal static string? FindOfficeCloudFontByPreferredName(string fontName, string? fontCacheRoot = null)

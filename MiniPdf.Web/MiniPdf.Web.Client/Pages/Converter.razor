@@ -221,6 +221,23 @@
                             <span>@L.T("ApiStatsCurrentLoad")</span>
                         </div>
                     </div>
+                    @if (apiStats.MissingFonts.Count > 0)
+                    {
+                        <div class="missing-fonts-section">
+                            <strong>@L.T("ApiMissingFontsTitle")</strong>
+                            <span class="missing-fonts-hint">@L.T("ApiMissingFontsHint")</span>
+                            <div class="missing-fonts-list">
+                                @foreach (var font in apiStats.MissingFonts)
+                                {
+                                    <div class="missing-font-row">
+                                        <span class="missing-font-name">@font.FontFamily</span>
+                                        <span>@font.Occurrences @L.T("MissingFontOccurrences")</span>
+                                        <span>@font.AffectedConversions @L.T("MissingFontConversions")</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
                 }
             </div>
             <div class="api-alternative">
@@ -258,6 +275,22 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             <span>@L.T("FontWarning")</span>
         </div>
+        @if (localMissingFonts.Count > 0)
+        {
+            <div class="missing-fonts-section local">
+                <strong>@L.T("LocalMissingFontsTitle")</strong>
+                <span class="missing-fonts-hint">@L.T("LocalMissingFontsHint")</span>
+                <div class="missing-fonts-list">
+                    @foreach (var font in localMissingFonts)
+                    {
+                        <div class="missing-font-row">
+                            <span class="missing-font-name">@font.FontFamily</span>
+                            <span>@font.OccurrenceCount @L.T("MissingFontOccurrences")</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
         <div class="privacy-note">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             <span>@L.T("PrivacyNote")</span>
@@ -287,6 +320,7 @@
     private bool fontLoadSuccess;
     private int fontProgress;
     private string? customFontName;
+    private IReadOnlyList<MiniPdfMissingFont> localMissingFonts = Array.Empty<MiniPdfMissingFont>();
     private ApiStatusKind apiStatus = ApiStatusKind.Unknown;
     private string? apiStatusMessage;
     private ApiStatsResponse? apiStats;
@@ -340,6 +374,7 @@
     {
         errorMessage = null;
         successMessage = null;
+        localMissingFonts = Array.Empty<MiniPdfMissingFont>();
         selectedFile = e.File;
 
         var ext = Path.GetExtension(selectedFile.Name).ToLowerInvariant();
@@ -519,6 +554,7 @@
         public int TotalAvgMs { get; set; }
         public List<ApiDailyStats> Daily { get; set; } = [];
         public List<ApiFileTypeStats> ByType { get; set; } = [];
+        public List<ApiMissingFontStats> MissingFonts { get; set; } = [];
     }
 
     private sealed class ApiDailyStats
@@ -536,6 +572,13 @@
         public string FileType { get; set; } = "";
         public int Count { get; set; }
         public int AvgMs { get; set; }
+    }
+
+    private sealed class ApiMissingFontStats
+    {
+        public string FontFamily { get; set; } = "";
+        public long Occurrences { get; set; }
+        public long AffectedConversions { get; set; }
     }
 
     private enum ApiStatusKind
@@ -623,7 +666,12 @@
         await stream.CopyToAsync(ms);
         ms.Position = 0;
 
-        byte[] pdfBytes = MiniSoftware.MiniPdf.ConvertToPdf(ms);
+        var diagnostics = new MiniPdfConversionDiagnostics();
+        byte[] pdfBytes = MiniSoftware.MiniPdf.ConvertToPdf(ms, new MiniPdfConversionOptions
+        {
+            Diagnostics = diagnostics,
+        });
+        localMissingFonts = diagnostics.MissingFonts;
 
         var outputName = Path.GetFileNameWithoutExtension(selectedFile.Name) + ".pdf";
         await JS.InvokeVoidAsync("downloadFile", outputName, "application/pdf", pdfBytes);
