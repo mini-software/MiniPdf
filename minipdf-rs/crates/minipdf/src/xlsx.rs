@@ -16,7 +16,7 @@ const PRINT_TITLE_HORIZONTAL_SCALE: f32 = 0.9957;
 const PRINT_TITLE_HORIZONTAL_OFFSET: f32 = 0.4;
 const FIT_TO_PAGE_HORIZONTAL_SCALE: f32 = 1.0048;
 const FIT_TO_PAGE_HORIZONTAL_OFFSET: f32 = 0.5;
-const PRINT_TITLE_VERTICAL_SCALE: f32 = 0.88;
+const PRINT_TITLE_VERTICAL_SCALE: f32 = 0.98;
 const FIT_TO_PAGE_VERTICAL_SCALE: f32 = 1.0104;
 const FIT_TO_WIDTH_ONLY_VERTICAL_SCALE: f32 = 0.972;
 const FIT_TO_PAGE_TOP_OFFSET: f32 = 0.96;
@@ -262,7 +262,7 @@ fn parse_number_format(
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct MergeRange {
     start_col: usize,
     end_col: usize,
@@ -304,6 +304,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
     let styles = read_styles(&mut archive)?;
     let sheet_paths = read_sheet_paths(&mut archive)?;
     let print_title_rows = read_print_title_rows(&mut archive)?;
+    let print_areas = read_print_areas(&mut archive)?;
     let mut sheets = Vec::new();
 
     for (name, path) in sheet_paths {
@@ -313,9 +314,9 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
         let mut rows = read_sheet_rows(&sheet_xml, &shared_strings, &styles)?;
         apply_sheet_table_styles(&mut archive, &path, &sheet_xml, &mut rows, &styles)?;
         apply_sheet_conditional_formats(&sheet_xml, &mut rows, &styles)?;
-        let column_widths = read_column_widths_with_mdw(&sheet_xml, styles.max_digit_width)?;
+        let mut column_widths = read_column_widths_with_mdw(&sheet_xml, styles.max_digit_width)?;
         let default_row_height = read_default_row_height(&sheet_xml)?;
-        let images = read_sheet_images(
+        let mut images = read_sheet_images(
             &mut archive,
             &path,
             &sheet_xml,
@@ -323,9 +324,21 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             &rows,
             default_row_height,
         )?;
+        let mut merges = read_merge_ranges(&sheet_xml)?;
+        let mut row_breaks = read_row_breaks(&sheet_xml)?;
+        let mut sheet_print_title_rows = print_title_rows.get(&name).copied();
+        if let Some(print_area) = print_areas.get(&name).copied() {
+            apply_print_area(
+                &mut rows,
+                &mut images,
+                &mut column_widths,
+                &mut merges,
+                &mut row_breaks,
+                &mut sheet_print_title_rows,
+                print_area,
+            );
+        }
         trim_trailing_empty_rows(&mut rows, &images);
-        let merges = read_merge_ranges(&sheet_xml)?;
-        let row_breaks = read_row_breaks(&sheet_xml)?;
         let mut page_setup = read_page_setup(&sheet_xml)?;
         if should_use_printer_page_size(page_setup) {
             if let Some(page_size) = read_printer_page_size(&mut archive, &path, &sheet_xml)? {
@@ -340,7 +353,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             merges,
             row_breaks,
             default_row_height,
-            print_title_rows: print_title_rows.get(&name).copied(),
+            print_title_rows: sheet_print_title_rows,
             page_setup,
         });
     }
@@ -452,6 +465,109 @@ fn read_print_title_rows<R: std::io::Read + std::io::Seek>(
         );
     }
     Ok(titles)
+}
+
+fn read_print_areas<R: std::io::Read + std::io::Seek>(
+    archive: &mut ZipArchive<R>,
+) -> Result<HashMap<String, MergeRange>> {
+    let Some(workbook_xml) = read_zip_text(archive, "xl/workbook.xml")? else {
+        return Ok(HashMap::new());
+    };
+    let document = roxmltree::Document::parse(&workbook_xml)?;
+    Ok(document
+        .descendants()
+        .filter(|node| {
+            node.has_tag_name("definedName") && node.attribute("name") == Some("_xlnm.Print_Area")
+        })
+        .filter_map(|node| node.text().and_then(parse_print_area))
+        .collect())
+}
+
+fn parse_print_area(value: &str) -> Option<(String, MergeRange)> {
+    let (sheet_name, ranges) = value.rsplit_once('!')?;
+    let (start, end) = ranges.split(',').next()?.split_once(':')?;
+    let (start_col, start_row) = cell_position(start)?;
+    let (end_col, end_row) = cell_position(end)?;
+    Some((
+        sheet_name.trim_matches('\'').replace("''", "'"),
+        MergeRange {
+            start_col,
+            end_col,
+            start_row,
+            end_row,
+        },
+    ))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn apply_print_area(
+    rows: &mut Vec<RowData>,
+    images: &mut Vec<SheetImage>,
+    column_widths: &mut Vec<f32>,
+    merges: &mut Vec<MergeRange>,
+    row_breaks: &mut Vec<usize>,
+    print_title_rows: &mut Option<(usize, usize)>,
+    print_area: MergeRange,
+) {
+    rows.retain_mut(|row| {
+        if row.index < print_area.start_row || row.index > print_area.end_row {
+            return false;
+        }
+        row.index -= print_area.start_row;
+        row.cells = row
+            .cells
+            .get(print_area.start_col..=print_area.end_col.min(row.cells.len().saturating_sub(1)))
+            .unwrap_or_default()
+            .to_vec();
+        true
+    });
+    *column_widths = column_widths
+        .get(
+            print_area.start_col
+                ..=print_area
+                    .end_col
+                    .min(column_widths.len().saturating_sub(1)),
+        )
+        .unwrap_or_default()
+        .to_vec();
+    images.retain_mut(|image| {
+        if image.col < print_area.start_col
+            || image.col > print_area.end_col
+            || image.row < print_area.start_row
+            || image.row > print_area.end_row
+        {
+            return false;
+        }
+        image.col -= print_area.start_col;
+        image.row -= print_area.start_row;
+        true
+    });
+    merges.retain_mut(|merge| {
+        if merge.end_col < print_area.start_col
+            || merge.start_col > print_area.end_col
+            || merge.end_row < print_area.start_row
+            || merge.start_row > print_area.end_row
+        {
+            return false;
+        }
+        merge.start_col = merge.start_col.max(print_area.start_col) - print_area.start_col;
+        merge.end_col = merge.end_col.min(print_area.end_col) - print_area.start_col;
+        merge.start_row = merge.start_row.max(print_area.start_row) - print_area.start_row;
+        merge.end_row = merge.end_row.min(print_area.end_row) - print_area.start_row;
+        true
+    });
+    row_breaks.retain_mut(|row| {
+        if *row <= print_area.start_row || *row > print_area.end_row {
+            return false;
+        }
+        *row -= print_area.start_row;
+        true
+    });
+    *print_title_rows = print_title_rows.and_then(|(start, end)| {
+        let start = start.max(print_area.start_row);
+        let end = end.min(print_area.end_row);
+        (start <= end).then_some((start - print_area.start_row, end - print_area.start_row))
+    });
 }
 
 fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
@@ -1816,6 +1932,49 @@ fn apply_sheet_conditional_formats(
             else {
                 continue;
             };
+            if let Some((reference_col, reference_row, expected)) =
+                parse_conditional_text_search(formula)
+            {
+                let differential_index = rule
+                    .attribute("dxfId")
+                    .and_then(|value| value.parse::<usize>().ok());
+                let fill = differential_index
+                    .and_then(|index| styles.differential_fills.get(index).copied().flatten());
+                let matches = rows
+                    .iter()
+                    .find(|row| row.index == reference_row)
+                    .and_then(|row| row.cells.get(reference_col))
+                    .is_some_and(|cell| {
+                        cell.text
+                            .to_ascii_lowercase()
+                            .contains(&expected.to_ascii_lowercase())
+                    });
+                if matches {
+                    for range in ranges.split_whitespace() {
+                        let (start, end) = range.split_once(':').unwrap_or((range, range));
+                        let Some((start_col, start_row)) = cell_position(start) else {
+                            continue;
+                        };
+                        let Some((end_col, end_row)) = cell_position(end) else {
+                            continue;
+                        };
+                        for row in rows
+                            .iter_mut()
+                            .filter(|row| row.index >= start_row && row.index <= end_row)
+                        {
+                            if row.cells.len() <= end_col {
+                                row.cells.resize(end_col + 1, CellData::default());
+                            }
+                            if let Some(fill) = fill {
+                                for cell in &mut row.cells[start_col..=end_col] {
+                                    cell.style.fill_color = Some(fill);
+                                }
+                            }
+                        }
+                    }
+                }
+                continue;
+            }
             if let Some((reference_col, reference_row, row_absolute, expected)) =
                 parse_conditional_text_equality(formula)
             {
@@ -1928,6 +2087,20 @@ fn parse_conditional_text_equality(formula: &str) -> Option<(usize, usize, bool,
         == Some('$');
     let (column, row) = cell_position(reference)?;
     Some((column, row, row_absolute, expected))
+}
+
+fn parse_conditional_text_search(formula: &str) -> Option<(usize, usize, String)> {
+    const PREFIX: &str = "ISNUMBER(SEARCH(\"";
+    const SUFFIX: &str = "))=TRUE";
+    let compact = formula.replace(' ', "");
+    let upper = compact.to_ascii_uppercase();
+    if !upper.starts_with(PREFIX) || !upper.ends_with(SUFFIX) {
+        return None;
+    }
+    let body = &compact[PREFIX.len()..compact.len() - SUFFIX.len()];
+    let (expected, reference) = body.split_once("\",")?;
+    let (column, row) = cell_position(reference)?;
+    Some((column, row, expected.to_owned()))
 }
 
 fn apply_sheet_table_styles<R: std::io::Read + std::io::Seek>(
@@ -2554,6 +2727,9 @@ fn read_sheet_paths<R: std::io::Read + std::io::Seek>(
         .filter(|node| node.has_tag_name("sheet"))
         .enumerate()
     {
+        if matches!(sheet.attribute("state"), Some("hidden" | "veryHidden")) {
+            continue;
+        }
         let name = sheet.attribute("name").unwrap_or("Sheet").to_owned();
         let rel_id = sheet
             .attributes()
@@ -2637,6 +2813,15 @@ fn read_sheet_rows(
             .map(|(_, _, style)| *style)
             .unwrap_or_default()
     };
+    let implicit_cell = |column: usize| {
+        let mut style = column_style(column);
+        style.fill_color = None;
+        style.fill_override = false;
+        CellData {
+            style,
+            ..CellData::default()
+        }
+    };
     let mut rows = Vec::new();
 
     for row in xml.descendants().filter(|node| node.has_tag_name("row")) {
@@ -2682,12 +2867,7 @@ fn read_sheet_rows(
             .max()
             .map(|col| col + 1)
             .unwrap_or(0);
-        let mut row_values = (0..width)
-            .map(|column| CellData {
-                style: column_style(column),
-                ..CellData::default()
-            })
-            .collect::<Vec<_>>();
+        let mut row_values = (0..width).map(implicit_cell).collect::<Vec<_>>();
         for (col, value) in cells {
             if let Some(slot) = row_values.get_mut(col) {
                 *slot = value;
@@ -2705,10 +2885,7 @@ fn read_sheet_rows(
     let column_count = rows.iter().map(|row| row.cells.len()).max().unwrap_or(0);
     for row in &mut rows {
         while row.cells.len() < column_count {
-            row.cells.push(CellData {
-                style: column_style(row.cells.len()),
-                ..CellData::default()
-            });
+            row.cells.push(implicit_cell(row.cells.len()));
         }
     }
     if column_styles
@@ -2728,12 +2905,7 @@ fn read_sheet_rows(
                 completed_rows.push(RowData {
                     index: row_index,
                     height: default_row_height,
-                    cells: (0..column_count)
-                        .map(|column| CellData {
-                            style: column_style(column),
-                            ..CellData::default()
-                        })
-                        .collect(),
+                    cells: (0..column_count).map(implicit_cell).collect(),
                 });
             }
         }
@@ -2764,14 +2936,11 @@ fn read_cell_value(
     default_style: CellStyle,
 ) -> CellData {
     let cell_type = cell.attribute("t");
-    let mut style = cell
+    let style = cell
         .attribute("s")
         .and_then(|value| value.parse::<usize>().ok())
         .and_then(|style_id| styles.cells.get(style_id).copied())
         .unwrap_or(default_style);
-    if !style.fill_override {
-        style.fill_color = default_style.fill_color;
-    }
     if cell_type == Some("inlineStr") {
         let text = cell
             .descendants()
@@ -3144,6 +3313,9 @@ fn render_sheet(
         vec![(0, widths.len())]
     } else {
         column_groups(&widths, usable_width)
+            .into_iter()
+            .filter(|(start, end)| column_group_has_content(sheet, *start, *end))
+            .collect()
     };
     let layout = SheetRenderLayout {
         page_size,
@@ -3196,6 +3368,17 @@ fn rendered_column_count(sheet: &SheetData) -> usize {
         .max(1)
 }
 
+fn column_group_has_content(sheet: &SheetData, column_start: usize, column_end: usize) -> bool {
+    sheet.rows.iter().any(|row| {
+        row.cells
+            .get(column_start..column_end.min(row.cells.len()))
+            .is_some_and(|cells| cells.iter().any(|cell| !cell.text.is_empty()))
+    }) || sheet
+        .images
+        .iter()
+        .any(|image| image.col >= column_start && image.col < column_end)
+}
+
 fn xlsx_vertical_scale(sheet: &SheetData, fallback: f32) -> f32 {
     if sheet.page_setup.fit_to_width && !sheet.page_setup.fit_to_height {
         FIT_TO_WIDTH_ONLY_VERTICAL_SCALE
@@ -3241,7 +3424,7 @@ fn render_sheet_columns(
         margin_bottom,
     } = *layout;
     let row_scale = content_scale * vertical_scale;
-    let automatic_breaks = automatic_row_breaks(sheet, page_size, content_scale);
+    let automatic_breaks = automatic_row_breaks(sheet, page_size, row_scale);
     let first_page_index = doc.pages().len();
     let mut page_index = first_page_index;
     doc.add_page(page_size.width, page_size.height);
@@ -3353,7 +3536,7 @@ fn render_sheet_columns(
     }
 }
 
-fn automatic_row_breaks(sheet: &SheetData, page_size: PageSize, content_scale: f32) -> Vec<usize> {
+fn automatic_row_breaks(sheet: &SheetData, page_size: PageSize, row_scale: f32) -> Vec<usize> {
     const PRINT_BOTTOM_RESERVE: f32 = 1.0;
     let Some((title_start, title_end)) = sheet.print_title_rows else {
         return Vec::new();
@@ -3366,20 +3549,25 @@ fn automatic_row_breaks(sheet: &SheetData, page_size: PageSize, content_scale: f
                 .find(|row| row.index == row_index)
                 .map(|row| row.height)
                 .unwrap_or(sheet.default_row_height)
-                * content_scale
+                * row_scale
         })
         .sum::<f32>();
     let mut breaks = Vec::new();
     let mut y = page_size.height - sheet.page_setup.margin_top;
     let last_row = sheet.rows.last().map(|row| row.index).unwrap_or(0);
     for row_index in 0..=last_row {
+        if sheet.row_breaks.contains(&row_index)
+            && y < page_size.height - sheet.page_setup.margin_top
+        {
+            y = page_size.height - sheet.page_setup.margin_top - title_height;
+        }
         let row_height = sheet
             .rows
             .iter()
             .find(|row| row.index == row_index)
             .map(|row| row.height)
             .unwrap_or(sheet.default_row_height)
-            * content_scale;
+            * row_scale;
         if y - row_height < sheet.page_setup.margin_bottom + PRINT_BOTTOM_RESERVE {
             breaks.push(row_index);
             y = page_size.height - sheet.page_setup.margin_top - title_height;
@@ -3865,12 +4053,13 @@ mod tests {
     use std::collections::HashMap;
 
     use super::{
-        apply_color_tint, apply_sheet_conditional_formats, apply_table_fill_layer,
-        apply_table_font_layer, cell_position, column_groups, column_index_from_ref,
-        composite_rgba_background, effective_content_scale, font_name_is_emphasis,
-        format_excel_date, format_thousands_two_decimals, has_rtl_base_direction, indexed_color,
-        jpeg_dimensions, merged_cell_borders, parse_cell_borders, parse_horizontal_alignment,
-        parse_number_format, parse_rgb_color, parse_vertical_alignment,
+        apply_color_tint, apply_print_area, apply_sheet_conditional_formats,
+        apply_table_fill_layer, apply_table_font_layer, cell_position, column_group_has_content,
+        column_groups, column_index_from_ref, composite_rgba_background, effective_content_scale,
+        font_name_is_emphasis, format_excel_date, format_thousands_two_decimals,
+        has_rtl_base_direction, indexed_color, jpeg_dimensions, merged_cell_borders,
+        parse_cell_borders, parse_conditional_text_search, parse_horizontal_alignment,
+        parse_number_format, parse_print_area, parse_rgb_color, parse_vertical_alignment,
         parse_windows_devmode_page_size, read_column_widths, read_merge_ranges, read_page_setup,
         read_row_breaks, read_sheet_rows, read_two_cell_shape, relationship_id,
         rendered_column_count, spreadsheet_theme_colors, trim_trailing_empty_rows, wrap_cell_text,
@@ -3892,6 +4081,81 @@ mod tests {
         assert_eq!(cell_position("$AA$10"), Some((26, 9)));
         assert_eq!(cell_position("GroceryList[QTY]"), None);
         assert_eq!(cell_position("SUM(A1:A2)"), None);
+    }
+
+    #[test]
+    fn parses_conditional_text_search() {
+        assert_eq!(
+            parse_conditional_text_search(r#"ISNUMBER(SEARCH("accept",$H$16))=TRUE"#),
+            Some((7, 15, "accept".to_owned()))
+        );
+    }
+
+    #[test]
+    fn parses_quoted_sheet_print_area() {
+        assert_eq!(
+            parse_print_area("'FRI report'!$A$2:$Y$310"),
+            Some((
+                "FRI report".to_owned(),
+                MergeRange {
+                    start_col: 0,
+                    end_col: 24,
+                    start_row: 1,
+                    end_row: 309,
+                },
+            ))
+        );
+    }
+
+    #[test]
+    fn clips_and_rebases_sheet_to_print_area() {
+        let mut rows = (0..3)
+            .map(|index| RowData {
+                index,
+                height: 15.0,
+                cells: vec![CellData::default(); 3],
+            })
+            .collect();
+        let mut images = Vec::new();
+        let mut column_widths = vec![10.0, 20.0, 30.0];
+        let mut merges = vec![MergeRange {
+            start_col: 0,
+            end_col: 2,
+            start_row: 0,
+            end_row: 2,
+        }];
+        let mut row_breaks = vec![2];
+        let mut print_title_rows = Some((0, 1));
+
+        apply_print_area(
+            &mut rows,
+            &mut images,
+            &mut column_widths,
+            &mut merges,
+            &mut row_breaks,
+            &mut print_title_rows,
+            MergeRange {
+                start_col: 1,
+                end_col: 2,
+                start_row: 1,
+                end_row: 2,
+            },
+        );
+
+        assert_eq!(rows.iter().map(|row| row.index).collect::<Vec<_>>(), [0, 1]);
+        assert!(rows.iter().all(|row| row.cells.len() == 2));
+        assert_eq!(column_widths, [20.0, 30.0]);
+        assert_eq!(
+            merges,
+            [MergeRange {
+                start_col: 0,
+                end_col: 1,
+                start_row: 0,
+                end_row: 1,
+            }]
+        );
+        assert_eq!(row_breaks, [1]);
+        assert_eq!(print_title_rows, Some((0, 0)));
     }
 
     #[test]
@@ -4389,7 +4653,7 @@ mod tests {
     }
 
     #[test]
-    fn applies_column_styles_to_implicit_cells() {
+    fn applies_column_styles_only_to_explicit_cells() {
         let xml = r#"<worksheet><cols><col min="1" max="3" style="1"/></cols><sheetData>
             <row r="1"><c r="C1" s="2" t="inlineStr"><is><t>value</t></is></c></row>
             <row r="3"><c r="C3" t="inlineStr"><is><t>value</t></is></c></row>
@@ -4416,11 +4680,12 @@ mod tests {
         assert_eq!(rows.len(), 3);
         assert_eq!(rows[1].index, 1);
         assert_eq!(rows[0].cells.len(), 3);
-        assert_eq!(rows[0].cells[0].style.fill_color, Some(fill));
-        assert_eq!(rows[0].cells[1].style.fill_color, Some(fill));
-        assert_eq!(rows[0].cells[2].style.fill_color, Some(fill));
+        assert_eq!(rows[0].cells[0].style.fill_color, None);
+        assert_eq!(rows[0].cells[1].style.fill_color, None);
+        assert_eq!(rows[0].cells[2].style.fill_color, None);
         assert!(rows[0].cells[2].style.bold);
-        assert_eq!(rows[1].cells[0].style.fill_color, Some(fill));
+        assert_eq!(rows[1].cells[0].style.fill_color, None);
+        assert_eq!(rows[2].cells[2].style.fill_color, Some(fill));
     }
 
     #[test]
@@ -4496,6 +4761,60 @@ mod tests {
         assert!((widths[0] - 78.75).abs() < 0.001);
         assert_eq!(widths.len(), 14);
         assert_eq!(groups, vec![(0, 5), (5, 11), (11, 14)]);
+    }
+
+    #[test]
+    fn skips_style_only_horizontal_page_groups() {
+        let sheet = SheetData {
+            rows: vec![RowData {
+                index: 0,
+                height: 15.0,
+                cells: vec![
+                    CellData {
+                        text: "Visible".to_owned(),
+                        ..CellData::default()
+                    },
+                    CellData::default(),
+                ],
+            }],
+            images: Vec::new(),
+            column_widths: vec![100.0, 100.0],
+            merges: Vec::new(),
+            row_breaks: Vec::new(),
+            default_row_height: 15.0,
+            print_title_rows: None,
+            page_setup: SheetPageSetup::default(),
+        };
+
+        assert!(column_group_has_content(&sheet, 0, 1));
+        assert!(!column_group_has_content(&sheet, 1, 2));
+    }
+
+    #[test]
+    fn automatic_breaks_restart_after_manual_breaks() {
+        let sheet = SheetData {
+            rows: (0..4)
+                .map(|index| RowData {
+                    index,
+                    height: 25.0,
+                    cells: Vec::new(),
+                })
+                .collect(),
+            images: Vec::new(),
+            column_widths: Vec::new(),
+            merges: Vec::new(),
+            row_breaks: vec![2],
+            default_row_height: 25.0,
+            print_title_rows: Some((0, 0)),
+            page_setup: SheetPageSetup {
+                page_size: PageSize::new(100.0, 100.0).expect("valid page size"),
+                margin_top: 10.0,
+                margin_bottom: 10.0,
+                ..SheetPageSetup::default()
+            },
+        };
+
+        assert!(super::automatic_row_breaks(&sheet, sheet.page_setup.page_size, 1.0).is_empty());
     }
 
     #[test]
