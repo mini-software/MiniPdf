@@ -19,6 +19,7 @@ const FIT_TO_PAGE_HORIZONTAL_OFFSET: f32 = 0.5;
 const PRINT_TITLE_VERTICAL_SCALE: f32 = 0.98;
 const FIT_TO_PAGE_VERTICAL_SCALE: f32 = 1.0104;
 const FIT_TO_WIDTH_ONLY_VERTICAL_SCALE: f32 = 0.972;
+const PRINT_TITLE_WIDTH_ONLY_VERTICAL_SCALE: f32 = 1.0233;
 const FIT_TO_PAGE_TOP_OFFSET: f32 = 0.96;
 const SVG_FALLBACK_HORIZONTAL_SCALE: f32 = 0.972;
 const GROUP_DRAWING_TOP_OFFSET: f32 = 0.96;
@@ -134,6 +135,8 @@ enum NumberFormat {
     #[default]
     General,
     DateMonthDayYear,
+    PercentageZeroDecimals,
+    PercentageTwoDecimals,
     ThousandsTwoDecimals,
     DollarTwoDecimals,
     DollarAccounting,
@@ -239,6 +242,8 @@ fn parse_number_format(
 ) -> NumberFormat {
     match format_id {
         Some("14") => NumberFormat::DateMonthDayYear,
+        Some("9") => NumberFormat::PercentageZeroDecimals,
+        Some("10") => NumberFormat::PercentageTwoDecimals,
         Some("4") => NumberFormat::ThousandsTwoDecimals,
         Some("44") => NumberFormat::DollarAccounting,
         Some(id) => id
@@ -2178,10 +2183,10 @@ fn apply_sheet_table_styles<R: std::io::Read + std::io::Seek>(
             if let Some(fill) = styles.table_header_fills.get(style_name).copied() {
                 apply_table_fill_layer(rows, start_col, end_col, start_row, header_end, fill);
             }
-            if let Some(font) = styles.table_header_fonts.get(style_name).copied() {
+            if let Some(font) = direct_header_font {
                 apply_table_font_layer(rows, start_col, end_col, start_row, header_end, font);
             }
-            if let Some(font) = direct_header_font {
+            if let Some(font) = styles.table_header_fonts.get(style_name).copied() {
                 apply_table_font_layer(rows, start_col, end_col, start_row, header_end, font);
             }
         }
@@ -2377,9 +2382,11 @@ fn xlsx_preferred_font(font_name: Option<&str>) -> Option<&'static str> {
     match font_name.unwrap_or_default().to_ascii_lowercase().as_str() {
         "corbel" => Some("corbel"),
         "franklin gothic medium" => Some("framd"),
+        "garamond" => Some("gara"),
         "grandview" => Some("grandview"),
         "grandview display" => Some("grandviewdisplay"),
         "palatino linotype" => Some("bookos"),
+        "tw cen mt" => Some("tcm_____"),
         "verdana" => Some("verdana"),
         _ => None,
     }
@@ -2847,16 +2854,18 @@ fn read_sheet_rows(
                 .and_then(column_index_from_ref)
                 .unwrap_or(cells.len());
             let mut value = read_cell_value(cell, shared_strings, styles, column_style(col));
-            if value.text.is_empty() {
-                if let Some(number) = cell
-                    .children()
-                    .find(|node| node.has_tag_name("f"))
-                    .and_then(|node| node.text())
-                    .and_then(|formula| evaluate_simple_formula(formula, &rows))
-                {
-                    value.text = format_numeric_value(number, "", value.style.number_format);
-                    value.is_numeric = true;
-                }
+            let formula = cell
+                .children()
+                .find(|node| node.has_tag_name("f"))
+                .and_then(|node| node.text());
+            let should_evaluate = value.text.is_empty()
+                || formula.is_some_and(|formula| formula.trim().eq_ignore_ascii_case("TODAY()"));
+            if let Some(number) = should_evaluate
+                .then(|| formula.and_then(|formula| evaluate_simple_formula(formula, &rows)))
+                .flatten()
+            {
+                value.text = format_numeric_value(number, "", value.style.number_format);
+                value.is_numeric = true;
             }
             cells.push((col, value));
         }
@@ -2989,6 +2998,8 @@ fn read_cell_value(
 fn format_numeric_value(value: f64, source: &str, number_format: NumberFormat) -> String {
     match number_format {
         NumberFormat::DateMonthDayYear => format_excel_date(value),
+        NumberFormat::PercentageZeroDecimals => format!("{:.0}%", value * 100.0),
+        NumberFormat::PercentageTwoDecimals => format!("{:.2}%", value * 100.0),
         NumberFormat::ThousandsTwoDecimals => format_thousands_two_decimals(value),
         NumberFormat::DollarTwoDecimals => {
             if value.is_sign_negative() {
@@ -3037,6 +3048,9 @@ fn format_excel_date(value: f64) -> String {
 
 fn evaluate_simple_formula(formula: &str, rows: &[RowData]) -> Option<f64> {
     let formula = formula.trim();
+    if formula.eq_ignore_ascii_case("TODAY()") {
+        return Some(excel_today_serial());
+    }
     if formula.len() >= 5 && formula[..4].eq_ignore_ascii_case("SUM(") && formula.ends_with(')') {
         let (start, end) = formula[4..formula.len() - 1].split_once(':')?;
         let (start_col, start_row) = cell_position(start)?;
@@ -3057,6 +3071,13 @@ fn evaluate_simple_formula(formula: &str, rows: &[RowData]) -> Option<f64> {
             numeric_cell_value(rows, col, row)
         })
         .try_fold(0.0, |total, value| value.map(|value| total + value))
+}
+
+fn excel_today_serial() -> f64 {
+    let today = chrono::Local::now().date_naive();
+    let excel_epoch =
+        chrono::NaiveDate::from_ymd_opt(1899, 12, 30).expect("Excel epoch is a valid date");
+    today.signed_duration_since(excel_epoch).num_days() as f64
 }
 
 fn numeric_cell_value(rows: &[RowData], col: usize, row: usize) -> Option<f64> {
@@ -3381,7 +3402,11 @@ fn column_group_has_content(sheet: &SheetData, column_start: usize, column_end: 
 
 fn xlsx_vertical_scale(sheet: &SheetData, fallback: f32) -> f32 {
     if sheet.page_setup.fit_to_width && !sheet.page_setup.fit_to_height {
-        FIT_TO_WIDTH_ONLY_VERTICAL_SCALE
+        if sheet.print_title_rows.is_some() {
+            PRINT_TITLE_WIDTH_ONLY_VERTICAL_SCALE
+        } else {
+            FIT_TO_WIDTH_ONLY_VERTICAL_SCALE
+        }
     } else if sheet.print_title_rows.is_some() {
         if sheet.page_setup.page_size_from_printer {
             1.0
@@ -4237,6 +4262,26 @@ mod tests {
     }
 
     #[test]
+    fn calibrates_width_only_fit_with_print_titles() {
+        let mut sheet = SheetData {
+            rows: Vec::new(),
+            images: Vec::new(),
+            column_widths: Vec::new(),
+            merges: Vec::new(),
+            row_breaks: Vec::new(),
+            default_row_height: 15.0,
+            print_title_rows: Some((12, 12)),
+            page_setup: SheetPageSetup::default(),
+        };
+        sheet.page_setup.fit_to_width = true;
+
+        assert_eq!(
+            xlsx_vertical_scale(&sheet, 0.75),
+            super::PRINT_TITLE_WIDTH_ONLY_VERTICAL_SCALE
+        );
+    }
+
+    #[test]
     fn renders_solid_preset_rectangle() {
         let xml = r#"<twoCellAnchor><from><col>0</col><colOff>0</colOff><row>0</row><rowOff>0</rowOff></from><to><col>2</col><colOff>0</colOff><row>2</row><rowOff>0</rowOff></to><sp><spPr><xfrm><ext cx="25400" cy="12700"/></xfrm><prstGeom prst="rect"/><solidFill><srgbClr val="FF0000"/></solidFill></spPr></sp></twoCellAnchor>"#;
         let document = roxmltree::Document::parse(xml).expect("shape XML is valid");
@@ -4287,6 +4332,22 @@ mod tests {
         assert_eq!(
             super::format_numeric_value(0.0, "0", super::NumberFormat::DollarTwoDecimals),
             "$0.00"
+        );
+    }
+
+    #[test]
+    fn recognizes_builtin_percentage_formats() {
+        assert!(matches!(
+            parse_number_format(Some("9"), &HashMap::new()),
+            super::NumberFormat::PercentageZeroDecimals
+        ));
+        assert!(matches!(
+            parse_number_format(Some("10"), &HashMap::new()),
+            super::NumberFormat::PercentageTwoDecimals
+        ));
+        assert_eq!(
+            super::format_numeric_value(0.06, "0.06", super::NumberFormat::PercentageTwoDecimals),
+            "6.00%"
         );
     }
 
@@ -4558,6 +4619,26 @@ mod tests {
     }
 
     #[test]
+    fn recalculates_today_instead_of_using_stale_cached_value() {
+        let date_style = CellStyle {
+            number_format: super::NumberFormat::DateMonthDayYear,
+            ..CellStyle::default()
+        };
+        let styles = XlsxStyles {
+            cells: vec![date_style],
+            ..XlsxStyles::default()
+        };
+        let xml = r#"<worksheet><sheetData><row r="1"><c r="A1" s="0"><f>TODAY()</f><v>1</v></c></row></sheetData></worksheet>"#;
+
+        let rows = read_sheet_rows(xml, &[], &styles).expect("worksheet XML is valid");
+
+        assert_eq!(
+            rows[0].cells[0].text,
+            format_excel_date(super::excel_today_serial())
+        );
+    }
+
+    #[test]
     fn recognizes_cjk_display_fonts_as_emphasis() {
         assert!(font_name_is_emphasis(Some("黑体")));
         assert!(font_name_is_emphasis(Some("方正小标宋_GBK")));
@@ -4569,6 +4650,15 @@ mod tests {
         assert_eq!(
             super::xlsx_preferred_font(Some("Franklin Gothic Medium")),
             Some("framd")
+        );
+    }
+
+    #[test]
+    fn maps_invoice_fonts_to_installed_fonts() {
+        assert_eq!(super::xlsx_preferred_font(Some("Garamond")), Some("gara"));
+        assert_eq!(
+            super::xlsx_preferred_font(Some("Tw Cen MT")),
+            Some("tcm_____")
         );
     }
 
