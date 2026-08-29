@@ -91,7 +91,6 @@ struct CellStyle {
     font_size: f32,
     font_color: PdfColor,
     fill_color: Option<PdfColor>,
-    fill_override: bool,
     borders: CellBorders,
     number_format: NumberFormat,
     horizontal_alignment: HorizontalAlignment,
@@ -168,7 +167,6 @@ impl Default for CellStyle {
             font_size: CELL_FONT_SIZE,
             font_color: PdfColor::BLACK,
             fill_color: None,
-            fill_override: false,
             borders: CellBorders::default(),
             number_format: NumberFormat::General,
             horizontal_alignment: HorizontalAlignment::General,
@@ -1647,13 +1645,6 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         .attribute("fillId")
                         .and_then(|value| value.parse::<usize>().ok())
                         .and_then(|fill_id| fills.get(fill_id).copied().flatten());
-                    let fill_override = xf
-                        .attribute("fillId")
-                        .and_then(|value| value.parse::<usize>().ok())
-                        .is_some_and(|fill_id| fill_id != 0)
-                        || xf
-                            .attribute("applyFill")
-                            .is_some_and(|value| matches!(value, "1" | "true"));
                     let cell_borders = xf
                         .attribute("borderId")
                         .and_then(|value| value.parse::<usize>().ok())
@@ -1667,7 +1658,6 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         font_size: font.size,
                         font_color: font.color,
                         fill_color,
-                        fill_override,
                         borders: cell_borders,
                         number_format: parse_number_format(
                             xf.attribute("numFmtId"),
@@ -2486,7 +2476,7 @@ fn apply_color_tint(color: PdfColor, tint: f32) -> PdfColor {
         };
         if tint < 0.0 {
             if channel >= 0.9 {
-                return PdfColor::new(channel - 0.005, channel - 0.001, channel - 0.005);
+                return PdfColor::new(channel - 0.004, channel, channel - 0.004);
             }
             return PdfColor::new(channel, (channel + 0.001).min(1.0), channel);
         }
@@ -2820,14 +2810,9 @@ fn read_sheet_rows(
             .map(|(_, _, style)| *style)
             .unwrap_or_default()
     };
-    let implicit_cell = |column: usize| {
-        let mut style = column_style(column);
-        style.fill_color = None;
-        style.fill_override = false;
-        CellData {
-            style,
-            ..CellData::default()
-        }
+    let implicit_cell = |column: usize| CellData {
+        style: column_style(column),
+        ..CellData::default()
     };
     let mut rows = Vec::new();
 
@@ -3402,11 +3387,17 @@ fn column_group_has_content(sheet: &SheetData, column_start: usize, column_end: 
 
 fn xlsx_vertical_scale(sheet: &SheetData, fallback: f32) -> f32 {
     if sheet.page_setup.fit_to_width && !sheet.page_setup.fit_to_height {
-        if sheet.print_title_rows.is_some() {
+        let calibration = if sheet.print_title_rows.is_some() {
             PRINT_TITLE_WIDTH_ONLY_VERTICAL_SCALE
         } else {
             FIT_TO_WIDTH_ONLY_VERTICAL_SCALE
-        }
+        };
+        let print_scale = if sheet.page_setup.print_scale < 1.0 {
+            sheet.page_setup.print_scale * FIT_TO_PAGE_VERTICAL_SCALE
+        } else {
+            sheet.page_setup.print_scale
+        };
+        calibration * print_scale
     } else if sheet.print_title_rows.is_some() {
         if sheet.page_setup.page_size_from_printer {
             1.0
@@ -3866,7 +3857,7 @@ fn render_xlsx_row(
         }
         let font_size = cell.style.font_size * content_scale;
         let indent_width = styled_text_width_with_font(
-            &"0000".repeat(cell.style.indent as usize),
+            &"000".repeat(cell.style.indent as usize),
             CELL_FONT_SIZE * content_scale,
             false,
             false,
@@ -4018,7 +4009,13 @@ fn render_xlsx_row(
                     text.cell_x + (text.cell_width - text_width).max(0.0) / 2.0
                 }
                 HorizontalAlignment::Right => {
-                    text.cell_x + text.cell_width - text_width - 3.0 - text.indent_width
+                    text.cell_x + text.cell_width
+                        - text_width
+                        - if text.indent_width > 0.0 {
+                            text.indent_width
+                        } else {
+                            3.0
+                        }
                 }
                 HorizontalAlignment::General if text.align_right => {
                     text.cell_x + text.cell_width - text_width - 3.0
@@ -4278,6 +4275,27 @@ mod tests {
         assert_eq!(
             xlsx_vertical_scale(&sheet, 0.75),
             super::PRINT_TITLE_WIDTH_ONLY_VERTICAL_SCALE
+        );
+    }
+
+    #[test]
+    fn applies_explicit_print_scale_to_width_only_fit_rows() {
+        let mut sheet = SheetData {
+            rows: Vec::new(),
+            images: Vec::new(),
+            column_widths: Vec::new(),
+            merges: Vec::new(),
+            row_breaks: Vec::new(),
+            default_row_height: 15.0,
+            print_title_rows: None,
+            page_setup: SheetPageSetup::default(),
+        };
+        sheet.page_setup.fit_to_width = true;
+        sheet.page_setup.print_scale = 0.85;
+
+        assert_eq!(
+            xlsx_vertical_scale(&sheet, 0.75),
+            super::FIT_TO_WIDTH_ONLY_VERTICAL_SCALE * 0.85 * super::FIT_TO_PAGE_VERTICAL_SCALE
         );
     }
 
@@ -4728,7 +4746,6 @@ mod tests {
                 CellStyle::default(),
                 CellStyle {
                     fill_color: Some(PdfColor::new(1.0, 1.0, 0.0)),
-                    fill_override: true,
                     ..CellStyle::default()
                 },
             ],
@@ -4743,7 +4760,7 @@ mod tests {
     }
 
     #[test]
-    fn applies_column_styles_only_to_explicit_cells() {
+    fn applies_column_styles_to_implicit_cells() {
         let xml = r#"<worksheet><cols><col min="1" max="3" style="1"/></cols><sheetData>
             <row r="1"><c r="C1" s="2" t="inlineStr"><is><t>value</t></is></c></row>
             <row r="3"><c r="C3" t="inlineStr"><is><t>value</t></is></c></row>
@@ -4754,7 +4771,6 @@ mod tests {
                 CellStyle::default(),
                 CellStyle {
                     fill_color: Some(fill),
-                    fill_override: true,
                     ..CellStyle::default()
                 },
                 CellStyle {
@@ -4770,11 +4786,11 @@ mod tests {
         assert_eq!(rows.len(), 3);
         assert_eq!(rows[1].index, 1);
         assert_eq!(rows[0].cells.len(), 3);
-        assert_eq!(rows[0].cells[0].style.fill_color, None);
-        assert_eq!(rows[0].cells[1].style.fill_color, None);
+        assert_eq!(rows[0].cells[0].style.fill_color, Some(fill));
+        assert_eq!(rows[0].cells[1].style.fill_color, Some(fill));
         assert_eq!(rows[0].cells[2].style.fill_color, None);
         assert!(rows[0].cells[2].style.bold);
-        assert_eq!(rows[1].cells[0].style.fill_color, None);
+        assert_eq!(rows[1].cells[0].style.fill_color, Some(fill));
         assert_eq!(rows[2].cells[2].style.fill_color, Some(fill));
     }
 
@@ -5009,7 +5025,7 @@ mod tests {
         assert!((light_accent.b - 241.0 / 255.0).abs() < 0.002);
         assert_eq!(
             apply_color_tint(PdfColor::WHITE, -0.05),
-            PdfColor::new(0.945, 0.949, 0.945)
+            PdfColor::new(0.946, 0.95, 0.946)
         );
         assert_eq!(
             apply_color_tint(PdfColor::WHITE, -0.15),
@@ -5043,7 +5059,7 @@ mod tests {
         .expect("border XML is valid");
         let borders = parse_cell_borders(xml.root_element(), &[PdfColor::WHITE]);
 
-        assert_eq!(borders.left, Some(PdfColor::new(0.945, 0.949, 0.945)));
+        assert_eq!(borders.left, Some(PdfColor::new(0.946, 0.95, 0.946)));
     }
 
     #[test]

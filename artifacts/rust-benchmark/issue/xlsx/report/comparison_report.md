@@ -1,42 +1,123 @@
 # Rust MiniPdf vs Microsoft 365 Excel Reference PDF Comparison Report
 
-Generated: 2026-08-25T00:54:01.842537
+Generated: 2026-08-29T09:01:37.649097
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 XlsxIssue77_Template1 | ✅ | 0.9969 | 0.9389 | 6/6 | **0.9743** |
+| 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9623 | 0.9507 | 2/2 | **0.9652** |
+| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9623 | 0.9507 | 2/2 | **0.9652** |
+| 3 | 🟢 Business expense budget1 | ✅ | 1.0 | 0.8931 | 4/4 | **0.9572** |
+| 4 | 🟡 Business expenses budget2 | ✅ | 1.0 | 0.7095 | 8/4 | **0.7838** |
+| 5 | 🟡 Business plan checklist with SWOT analysis1 | ✅ | 0.9237 | 0.6033 | 1/1 | **0.8108** |
+| 6 | 🟡 Event budget1 | ✅ | 1.0 | 0.9592 | 6/5 | **0.8837** |
+| 7 | 🟡 Expense report basic1 | ✅ | 1.0 | 0.4231 | 1/1 | **0.7692** |
+| 8 | 🟢 Grocery list1 | ✅ | 0.9915 | 0.9307 | 1/1 | **0.9689** |
+| 9 | 🔴 payroll-calculator_f | ✅ | 0.8857 | 0.5917 | 26/29 | **0.691** |
+| 10 | 🟡 PO_anonymized | ✅ | 0.9751 | 0.7494 | 8/9 | **0.7898** |
+| 11 | 🟢 Simple invoice1 | ✅ | 0.9659 | 0.9707 | 1/1 | **0.9746** |
+| 12 | 🟡 Small business cash flow forecast1 | ✅ | 0.9646 | 0.7151 | 3/5 | **0.7719** |
+| 13 | 🟡 Wedding_timeline_planner1_copy | ✅ | 0.9916 | 0.7815 | 4/8 | **0.8092** |
+| 14 | 🟡 Weekly schedule planner1 | ✅ | 0.9062 | 0.7055 | 2/1 | **0.7447** |
+| 15 | 🟡 XlsxIssue75 | ✅ | 0.9908 | 0.9695 | 140/144 | **0.8841** |
+| 16 | 🟢 XlsxIssue77_MergedCellAlignment | ✅ | 0.9947 | 0.8031 | 2/2 | **0.9191** |
+| 17 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8456 | 6/6 | **0.9382** |
+| 18 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8395 | 6/6 | **0.9358** |
+| 19 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9807 | 0.7905 | 16/16 | **0.9085** |
+| 20 | 🟡 XlsxIssue82_5mb | ✅ | 0.8672 | 0.835 | 383/766 | **0.7809** |
+| 21 | 🟡 XlsxIssue82_SampleTestData5mb | ✅ | 0.6176 | 0.887 | 435/1668 | **0.7018** |
+| 22 | ⚪ XlsxIssue82_WideTable | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.9743**
+**Average Overall Score: 0.8161**
 
 ## Labeled Side-by-Side Comparison
 
 <table>
 <tr><th>Case</th><th>Comparison</th></tr>
 <tr>
+  <td><b>Academic Achievement Summary Table<br><small>format: xlsx | case: Academic Achievement Summary Table | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Academic Achievement Summary Table_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Academic Achievement Summary Table page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>AcademicAchievement_temp<br><small>format: xlsx | case: AcademicAchievement_temp | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/AcademicAchievement_temp_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="AcademicAchievement_temp page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>Business expense budget1<br><small>format: xlsx | case: Business expense budget1 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Business expense budget1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Business expense budget1 page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>Business expenses budget2<br><small>format: xlsx | case: Business expenses budget2 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Business expenses budget2_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Business expenses budget2 page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>Business plan checklist with SWOT analysis1<br><small>format: xlsx | case: Business plan checklist with SWOT analysis1 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Business plan checklist with SWOT analysis1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Business plan checklist with SWOT analysis1 page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>Event budget1<br><small>format: xlsx | case: Event budget1 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Event budget1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Event budget1 page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>Expense report basic1<br><small>format: xlsx | case: Expense report basic1 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Expense report basic1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Expense report basic1 page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>Grocery list1<br><small>format: xlsx | case: Grocery list1 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Grocery list1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Grocery list1 page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>payroll-calculator_f<br><small>format: xlsx | case: payroll-calculator_f | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/payroll-calculator_f_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="payroll-calculator_f page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>PO_anonymized<br><small>format: xlsx | case: PO_anonymized | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/PO_anonymized_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="PO_anonymized page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>Simple invoice1<br><small>format: xlsx | case: Simple invoice1 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Simple invoice1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Simple invoice1 page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>Small business cash flow forecast1<br><small>format: xlsx | case: Small business cash flow forecast1 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Small business cash flow forecast1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Small business cash flow forecast1 page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>Wedding_timeline_planner1_copy<br><small>format: xlsx | case: Wedding_timeline_planner1_copy | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Wedding_timeline_planner1_copy_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Wedding_timeline_planner1_copy page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>Weekly schedule planner1<br><small>format: xlsx | case: Weekly schedule planner1 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/Weekly schedule planner1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Weekly schedule planner1 page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue75<br><small>format: xlsx | case: XlsxIssue75 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/XlsxIssue75_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue75 page 1 comparison"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue77_MergedCellAlignment<br><small>format: xlsx | case: XlsxIssue77_MergedCellAlignment | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/XlsxIssue77_MergedCellAlignment_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_MergedCellAlignment page 1 comparison"></td>
+</tr>
+<tr>
   <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: rust-issue-xlsx</small></b><br>Page 1</td>
   <td><img src="side-by-side/XlsxIssue77_Template1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 1 comparison"></td>
 </tr>
 <tr>
-  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: rust-issue-xlsx</small></b><br>Page 2</td>
-  <td><img src="side-by-side/XlsxIssue77_Template1_p2_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 2 comparison"></td>
+  <td><b>XlsxIssue77_Template2_Workaround<br><small>format: xlsx | case: XlsxIssue77_Template2_Workaround | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/XlsxIssue77_Template2_Workaround_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template2_Workaround page 1 comparison"></td>
 </tr>
 <tr>
-  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: rust-issue-xlsx</small></b><br>Page 3</td>
-  <td><img src="side-by-side/XlsxIssue77_Template1_p3_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 3 comparison"></td>
+  <td><b>XlsxIssue81_LayoutOptions<br><small>format: xlsx | case: XlsxIssue81_LayoutOptions | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/XlsxIssue81_LayoutOptions_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue81_LayoutOptions page 1 comparison"></td>
 </tr>
 <tr>
-  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: rust-issue-xlsx</small></b><br>Page 4</td>
-  <td><img src="side-by-side/XlsxIssue77_Template1_p4_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 4 comparison"></td>
+  <td><b>XlsxIssue82_5mb<br><small>format: xlsx | case: XlsxIssue82_5mb | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/XlsxIssue82_5mb_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue82_5mb page 1 comparison"></td>
 </tr>
 <tr>
-  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: rust-issue-xlsx</small></b><br>Page 5</td>
-  <td><img src="side-by-side/XlsxIssue77_Template1_p5_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 5 comparison"></td>
-</tr>
-<tr>
-  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: rust-issue-xlsx</small></b><br>Page 6</td>
-  <td><img src="side-by-side/XlsxIssue77_Template1_p6_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 6 comparison"></td>
+  <td><b>XlsxIssue82_SampleTestData5mb<br><small>format: xlsx | case: XlsxIssue82_SampleTestData5mb | scope: rust-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/XlsxIssue82_SampleTestData5mb_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 1 comparison"></td>
 </tr>
 </table>
 
@@ -47,34 +128,109 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <table>
 <tr><th>Case</th><th>Heatmap</th><th>Metrics</th></tr>
 <tr>
+  <td><b>Academic Achievement Summary Table</b><br>Page 1</td>
+  <td><img src="images/Academic Achievement Summary Table_p1_heatmap.png" width="760" alt="Academic Achievement Summary Table page 1 difference heatmap"></td>
+  <td>changed: 190940 px (8.77%)<br>bbox: [45, 38, 1725, 1143]<br>mean abs RGB: 13.858<br>RMSE RGB: 52.4995<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>AcademicAchievement_temp</b><br>Page 1</td>
+  <td><img src="images/AcademicAchievement_temp_p1_heatmap.png" width="760" alt="AcademicAchievement_temp page 1 difference heatmap"></td>
+  <td>changed: 190940 px (8.77%)<br>bbox: [45, 38, 1725, 1143]<br>mean abs RGB: 13.858<br>RMSE RGB: 52.4995<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Business expense budget1</b><br>Page 1</td>
+  <td><img src="images/Business expense budget1_p1_heatmap.png" width="760" alt="Business expense budget1 page 1 difference heatmap"></td>
+  <td>changed: 467855 px (21.49%)<br>bbox: [147, 176, 1018, 1597]<br>mean abs RGB: 28.4333<br>RMSE RGB: 73.3179<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Business expenses budget2</b><br>Page 1</td>
+  <td><img src="images/Business expenses budget2_p1_heatmap.png" width="760" alt="Business expenses budget2 page 1 difference heatmap"></td>
+  <td>changed: 664092 px (32.43%)<br>bbox: [140, 73, 1509, 1140]<br>mean abs RGB: 16.2401<br>RMSE RGB: 40.0437<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Business plan checklist with SWOT analysis1</b><br>Page 1</td>
+  <td><img src="images/Business plan checklist with SWOT analysis1_p1_heatmap.png" width="760" alt="Business plan checklist with SWOT analysis1 page 1 difference heatmap"></td>
+  <td>changed: 759959 px (34.91%)<br>bbox: [90, 62, 1179, 1547]<br>mean abs RGB: 21.3479<br>RMSE RGB: 55.8591<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Event budget1</b><br>Page 1</td>
+  <td><img src="images/Event budget1_p1_heatmap.png" width="760" alt="Event budget1 page 1 difference heatmap"></td>
+  <td>changed: 91980 px (4.23%)<br>bbox: [73, 153, 1165, 779]<br>mean abs RGB: 5.9532<br>RMSE RGB: 34.5802<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Expense report basic1</b><br>Page 1</td>
+  <td><img src="images/Expense report basic1_p1_heatmap.png" width="760" alt="Expense report basic1 page 1 difference heatmap"></td>
+  <td>changed: 667090 px (30.65%)<br>bbox: [63, 62, 1691, 983]<br>mean abs RGB: 9.0455<br>RMSE RGB: 26.7801<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Grocery list1</b><br>Page 1</td>
+  <td><img src="images/Grocery list1_p1_heatmap.png" width="760" alt="Grocery list1 page 1 difference heatmap"></td>
+  <td>changed: 235521 px (10.82%)<br>bbox: [46, 77, 1194, 930]<br>mean abs RGB: 6.5427<br>RMSE RGB: 27.8886<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>payroll-calculator_f</b><br>Page 1</td>
+  <td><img src="images/payroll-calculator_f_p1_heatmap.png" width="760" alt="payroll-calculator_f page 1 difference heatmap"></td>
+  <td>changed: 513066 px (25.06%)<br>bbox: [22, 28, 1599, 1160]<br>mean abs RGB: 18.5176<br>RMSE RGB: 45.9602<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>PO_anonymized</b><br>Page 1</td>
+  <td><img src="images/PO_anonymized_p1_heatmap.png" width="760" alt="PO_anonymized page 1 difference heatmap"></td>
+  <td>changed: 718137 px (32.99%)<br>bbox: [58, 71, 1181, 1713]<br>mean abs RGB: 29.8132<br>RMSE RGB: 71.6858<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Simple invoice1</b><br>Page 1</td>
+  <td><img src="images/Simple invoice1_p1_heatmap.png" width="760" alt="Simple invoice1 page 1 difference heatmap"></td>
+  <td>changed: 119065 px (5.47%)<br>bbox: [39, 114, 1201, 1446]<br>mean abs RGB: 6.6701<br>RMSE RGB: 34.0396<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Small business cash flow forecast1</b><br>Page 1</td>
+  <td><img src="images/Small business cash flow forecast1_p1_heatmap.png" width="760" alt="Small business cash flow forecast1 page 1 difference heatmap"></td>
+  <td>changed: 849423 px (39.02%)<br>bbox: [66, 73, 1173, 1682]<br>mean abs RGB: 17.4385<br>RMSE RGB: 42.354<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Wedding_timeline_planner1_copy</b><br>Page 1</td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p1_heatmap.png" width="760" alt="Wedding_timeline_planner1_copy page 1 difference heatmap"></td>
+  <td>changed: 331974 px (16.21%)<br>bbox: [102, 110, 1155, 1526]<br>mean abs RGB: 16.3678<br>RMSE RGB: 48.6299<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Weekly schedule planner1</b><br>Page 1</td>
+  <td><img src="images/Weekly schedule planner1_p1_heatmap.png" width="760" alt="Weekly schedule planner1 page 1 difference heatmap"></td>
+  <td>changed: 671826 px (32.46%)<br>bbox: [62, 96, 1604, 1144]<br>mean abs RGB: 22.6714<br>RMSE RGB: 55.2962<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>XlsxIssue75</b><br>Page 1</td>
+  <td><img src="images/XlsxIssue75_p1_heatmap.png" width="760" alt="XlsxIssue75 page 1 difference heatmap"></td>
+  <td>changed: 109169 px (5.02%)<br>bbox: [112, 112, 1116, 1669]<br>mean abs RGB: 7.5808<br>RMSE RGB: 38.5703<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>XlsxIssue77_MergedCellAlignment</b><br>Page 1</td>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_heatmap.png" width="760" alt="XlsxIssue77_MergedCellAlignment page 1 difference heatmap"></td>
+  <td>changed: 576709 px (28.16%)<br>bbox: [35, 45, 1163, 1607]<br>mean abs RGB: 37.2991<br>RMSE RGB: 85.7278<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
   <td><b>XlsxIssue77_Template1</b><br>Page 1</td>
   <td><img src="images/XlsxIssue77_Template1_p1_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 1 difference heatmap"></td>
-  <td>changed: 279334 px (12.83%)<br>bbox: [82, 171, 1157, 1569]<br>mean abs RGB: 20.3669<br>RMSE RGB: 64.0095<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 440580 px (21.52%)<br>bbox: [82, 95, 1157, 1547]<br>mean abs RGB: 25.5886<br>RMSE RGB: 69.9147<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
-  <td><b>XlsxIssue77_Template1</b><br>Page 2</td>
-  <td><img src="images/XlsxIssue77_Template1_p2_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 2 difference heatmap"></td>
-  <td>changed: 279328 px (12.83%)<br>bbox: [82, 171, 1157, 1569]<br>mean abs RGB: 20.3367<br>RMSE RGB: 63.8803<br>threshold: 12, gain: 5.0</td>
+  <td><b>XlsxIssue77_Template2_Workaround</b><br>Page 1</td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p1_heatmap.png" width="760" alt="XlsxIssue77_Template2_Workaround page 1 difference heatmap"></td>
+  <td>changed: 444766 px (21.72%)<br>bbox: [78, 95, 1153, 1553]<br>mean abs RGB: 25.2068<br>RMSE RGB: 69.4605<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
-  <td><b>XlsxIssue77_Template1</b><br>Page 3</td>
-  <td><img src="images/XlsxIssue77_Template1_p3_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 3 difference heatmap"></td>
-  <td>changed: 279321 px (12.83%)<br>bbox: [82, 171, 1157, 1569]<br>mean abs RGB: 20.2564<br>RMSE RGB: 63.7043<br>threshold: 12, gain: 5.0</td>
+  <td><b>XlsxIssue81_LayoutOptions</b><br>Page 1</td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p1_heatmap.png" width="760" alt="XlsxIssue81_LayoutOptions page 1 difference heatmap"></td>
+  <td>changed: 569573 px (27.82%)<br>bbox: [35, 73, 1066, 1545]<br>mean abs RGB: 32.1578<br>RMSE RGB: 76.3458<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
-  <td><b>XlsxIssue77_Template1</b><br>Page 4</td>
-  <td><img src="images/XlsxIssue77_Template1_p4_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 4 difference heatmap"></td>
-  <td>changed: 279322 px (12.83%)<br>bbox: [82, 171, 1157, 1569]<br>mean abs RGB: 20.2684<br>RMSE RGB: 63.727<br>threshold: 12, gain: 5.0</td>
+  <td><b>XlsxIssue82_5mb</b><br>Page 1</td>
+  <td><img src="images/XlsxIssue82_5mb_p1_heatmap.png" width="760" alt="XlsxIssue82_5mb page 1 difference heatmap"></td>
+  <td>changed: 467730 px (22.84%)<br>bbox: [108, 122, 1222, 1523]<br>mean abs RGB: 34.2896<br>RMSE RGB: 81.5064<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
-  <td><b>XlsxIssue77_Template1</b><br>Page 5</td>
-  <td><img src="images/XlsxIssue77_Template1_p5_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 5 difference heatmap"></td>
-  <td>changed: 279321 px (12.83%)<br>bbox: [82, 171, 1157, 1569]<br>mean abs RGB: 20.2508<br>RMSE RGB: 63.6956<br>threshold: 12, gain: 5.0</td>
-</tr>
-<tr>
-  <td><b>XlsxIssue77_Template1</b><br>Page 6</td>
-  <td><img src="images/XlsxIssue77_Template1_p6_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 6 difference heatmap"></td>
-  <td>changed: 154476 px (7.10%)<br>bbox: [82, 171, 1157, 919]<br>mean abs RGB: 11.3203<br>RMSE RGB: 47.5455<br>threshold: 12, gain: 5.0</td>
+  <td><b>XlsxIssue82_SampleTestData5mb</b><br>Page 1</td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_heatmap.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 1 difference heatmap"></td>
+  <td>changed: 432033 px (19.85%)<br>bbox: [119, 157, 1241, 1599]<br>mean abs RGB: 32.518<br>RMSE RGB: 81.6347<br>threshold: 12, gain: 5.0</td>
 </tr>
 </table>
 
@@ -85,8 +241,152 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 <table>
 <tr><th>Rust MiniPdf</th><th>Microsoft 365 Excel Reference</th><th>LibreOffice</th></tr>
 <tr>
+  <td><b>Academic Achievement Summary Table<br><small>format: xlsx | case: Academic Achievement Summary Table | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 96.5%</td>
+</tr>
+<tr>
+  <td><img src="images/Academic Achievement Summary Table_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Academic Achievement Summary Table_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Academic Achievement Summary Table_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>AcademicAchievement_temp<br><small>format: xlsx | case: AcademicAchievement_temp | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 96.5%</td>
+</tr>
+<tr>
+  <td><img src="images/AcademicAchievement_temp_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/AcademicAchievement_temp_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/AcademicAchievement_temp_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>Business expense budget1<br><small>format: xlsx | case: Business expense budget1 | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Business expense budget1 <span style="color:#3fb950">⬤</span> 95.7%</td>
+</tr>
+<tr>
+  <td><img src="images/Business expense budget1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Business expense budget1_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Business expense budget1_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>Business expenses budget2<br><small>format: xlsx | case: Business expenses budget2 | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Business expenses budget2 <span style="color:#d29922">⬤</span> 78.4%</td>
+</tr>
+<tr>
+  <td><img src="images/Business expenses budget2_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Business expenses budget2_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Business expenses budget2_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>Business plan checklist with SWOT analysis1<br><small>format: xlsx | case: Business plan checklist with SWOT analysis1 | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Business plan checklist with SWOT analysis1 <span style="color:#d29922">⬤</span> 81.1%</td>
+</tr>
+<tr>
+  <td><img src="images/Business plan checklist with SWOT analysis1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Business plan checklist with SWOT analysis1_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Business plan checklist with SWOT analysis1_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>Event budget1<br><small>format: xlsx | case: Event budget1 | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Event budget1 <span style="color:#d29922">⬤</span> 88.4%</td>
+</tr>
+<tr>
+  <td><img src="images/Event budget1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Event budget1_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Event budget1_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>Expense report basic1<br><small>format: xlsx | case: Expense report basic1 | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Expense report basic1 <span style="color:#d29922">⬤</span> 76.9%</td>
+</tr>
+<tr>
+  <td><img src="images/Expense report basic1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Expense report basic1_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Expense report basic1_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>Grocery list1<br><small>format: xlsx | case: Grocery list1 | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Grocery list1 <span style="color:#3fb950">⬤</span> 96.9%</td>
+</tr>
+<tr>
+  <td><img src="images/Grocery list1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Grocery list1_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Grocery list1_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>payroll-calculator_f<br><small>format: xlsx | case: payroll-calculator_f | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">payroll-calculator_f <span style="color:#f85149">⬤</span> 69.1%</td>
+</tr>
+<tr>
+  <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/payroll-calculator_f_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/payroll-calculator_f_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>PO_anonymized<br><small>format: xlsx | case: PO_anonymized | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">PO_anonymized <span style="color:#d29922">⬤</span> 79.0%</td>
+</tr>
+<tr>
+  <td><img src="images/PO_anonymized_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/PO_anonymized_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/PO_anonymized_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>Simple invoice1<br><small>format: xlsx | case: Simple invoice1 | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Simple invoice1 <span style="color:#3fb950">⬤</span> 97.5%</td>
+</tr>
+<tr>
+  <td><img src="images/Simple invoice1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Simple invoice1_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Simple invoice1_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>Small business cash flow forecast1<br><small>format: xlsx | case: Small business cash flow forecast1 | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Small business cash flow forecast1 <span style="color:#d29922">⬤</span> 77.2%</td>
+</tr>
+<tr>
+  <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Small business cash flow forecast1_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Small business cash flow forecast1_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>Wedding_timeline_planner1_copy<br><small>format: xlsx | case: Wedding_timeline_planner1_copy | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Wedding_timeline_planner1_copy <span style="color:#d29922">⬤</span> 80.9%</td>
+</tr>
+<tr>
+  <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>Weekly schedule planner1<br><small>format: xlsx | case: Weekly schedule planner1 | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">Weekly schedule planner1 <span style="color:#d29922">⬤</span> 74.5%</td>
+</tr>
+<tr>
+  <td><img src="images/Weekly schedule planner1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/Weekly schedule planner1_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/Weekly schedule planner1_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue75<br><small>format: xlsx | case: XlsxIssue75 | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">XlsxIssue75 <span style="color:#d29922">⬤</span> 88.4%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue75_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/XlsxIssue75_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue75_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue77_MergedCellAlignment<br><small>format: xlsx | case: XlsxIssue77_MergedCellAlignment | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">XlsxIssue77_MergedCellAlignment <span style="color:#3fb950">⬤</span> 91.9%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
   <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">XlsxIssue77_Template1 <span style="color:#3fb950">⬤</span> 97.4%</td>
+  <td colspan="2">XlsxIssue77_Template1 <span style="color:#3fb950">⬤</span> 93.8%</td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -94,150 +394,1176 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
   <td><img src="images/XlsxIssue77_Template1_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue77_Template1_p2_minipdf.png" width="260" alt="Rust MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p2_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/XlsxIssue77_Template1_p2_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td><b>XlsxIssue77_Template2_Workaround<br><small>format: xlsx | case: XlsxIssue77_Template2_Workaround | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">XlsxIssue77_Template2_Workaround <span style="color:#3fb950">⬤</span> 93.6%</td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue77_Template1_p3_minipdf.png" width="260" alt="Rust MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p3_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/XlsxIssue77_Template1_p3_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue77_Template1_p4_minipdf.png" width="260" alt="Rust MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p4_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/XlsxIssue77_Template1_p4_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td><b>XlsxIssue81_LayoutOptions<br><small>format: xlsx | case: XlsxIssue81_LayoutOptions | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">XlsxIssue81_LayoutOptions <span style="color:#3fb950">⬤</span> 90.8%</td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue77_Template1_p5_minipdf.png" width="260" alt="Rust MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p5_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/XlsxIssue77_Template1_p5_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue77_Template1_p6_minipdf.png" width="260" alt="Rust MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p6_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/XlsxIssue77_Template1_p6_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td><b>XlsxIssue82_5mb<br><small>format: xlsx | case: XlsxIssue82_5mb | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">XlsxIssue82_5mb <span style="color:#d29922">⬤</span> 78.1%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_5mb_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_5mb_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue82_5mb_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue82_SampleTestData5mb<br><small>format: xlsx | case: XlsxIssue82_SampleTestData5mb | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">XlsxIssue82_SampleTestData5mb <span style="color:#d29922">⬤</span> 70.2%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue82_WideTable<br><small>format: xlsx | case: XlsxIssue82_WideTable | scope: rust-issue-xlsx</small></b></td>
+  <td colspan="2">XlsxIssue82_WideTable N/A</td>
+</tr>
+<tr>
+  <td colspan="3"><i>No images</i></td>
 </tr>
 </table>
 
 ## Detailed Results
 
-### XlsxIssue77_Template1
+### Academic Achievement Summary Table
 
-- **Case Metadata:** format: xlsx | case: XlsxIssue77_Template1 | scope: rust-issue-xlsx
-- **Source:** tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx
-- **Text Similarity:** 0.9969
-- **Visual Average:** 0.9389
-- **Overall Score:** 0.9743
-- **Pages:** MiniPdf=6, Reference=6
-- **File Size:** MiniPdf=613804 bytes, Reference=64464 bytes
+- **Case Metadata:** format: xlsx | case: Academic Achievement Summary Table | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Academic Achievement Summary Table.xlsx
+- **Text Similarity:** 0.9623
+- **Visual Average:** 0.9507
+- **Overall Score:** 0.9652
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=245827 bytes, Reference=151877 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
---- minipdf/XlsxIssue77_Template1.pdf
-+++ reference/XlsxIssue77_Template1.pdf
-@@ -6,8 +6,8 @@
- Attn Customer:   Please return parts to the return address below.
+--- minipdf/Academic Achievement Summary Table.pdf
++++ reference/Academic Achievement Summary Table.pdf
+@@ -1,11 +1,11 @@
+-附件 3
 
- Customer Name Sales Person Requestor
++附件3
 
- Return Address: Reason for Return:
+ 学术业绩汇总表
 
--NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext
+-报考岗位 ： 报考岗位代码 ： 考生姓名 ：
 
--ra labels or markings on the product.
+-博士论文题目 ： 博士论文研究方向 ：
 
-+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
++报考岗位： 报考岗位代码： 考生姓名：
 
-+code, original factory packaging, with no extra labels or markings on the product.
++博士论文题目： 博士论文研究方向：
 
- Original Qty
+ 公开发表的主要论文情况
 
- Part No. Per Unit
+ 角色 转载刊物、转载字数及 是否为代表作
 
- Invoice # Authorized
+ 序号 题目 刊物名称 核心期刊情况 刊号 发表时间
 
-@@ -20,8 +20,8 @@
- Attn Customer:   Please return parts to the return address below.
+-（ 排名 ） 转载时间等 （ 指定 1 篇 ）
 
- Customer Name Sales Person Requestor
++（排名） 转载时间等 （指定1篇）
 
- Return Address: Reason for Return:
+ 1
 
--NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext
+ 2
 
--ra labels or markings on the product.
-
-+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
-
-+code, original factory packaging, with no extra labels or markings on the product.
-
- Original Qty
-
- Part No. Per Unit
-
- Invoice # Authorized
-
-@@ -34,8 +34,8 @@
- Attn Customer:   Please return parts to the return address below.
-
- Customer Name Sales Person Requestor
-
- Return Address: Reason for Return:
-
--NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext
-
--ra labels or markings on the product.
-
-+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
-
-+code, original factory packaging, with no extra labels or markings on the product.
-
- Original Qty
-
- Part No. Per Unit
-
- Invoice # Authorized
-
-@@ -48,8 +48,8 @@
- Attn Customer:   Please return parts to the return address below.
-
- Customer Name Sales Person Requestor
-
- Return Address: Reason for Return:
-
--NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext
-
--ra labels or markings on the product.
-
-+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
-
-+code, original factory packaging, with no extra labels or markings on the product.
-
- Original Qty
-
- Part No. Per Unit
-
- Invoice # Authorized
-
-@@ -62,8 +62,8 @@
- Attn Customer:   Please return parts to the return address below.
-
- Customer Name Sales Person Requestor
-
- Return Address: Reason for Return:
-
--NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext
-
--ra labels or markings on the product.
-
-+NOTE - All parts returned for c
-... (860 more characters)
+ 3
 
 ```
 </details>
 
+### AcademicAchievement_temp
+
+- **Case Metadata:** format: xlsx | case: AcademicAchievement_temp | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/AcademicAchievement_temp.xlsx
+- **Text Similarity:** 0.9623
+- **Visual Average:** 0.9507
+- **Overall Score:** 0.9652
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=245827 bytes, Reference=151877 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/AcademicAchievement_temp.pdf
++++ reference/AcademicAchievement_temp.pdf
+@@ -1,11 +1,11 @@
+-附件 3
+
++附件3
+
+ 学术业绩汇总表
+
+-报考岗位 ： 报考岗位代码 ： 考生姓名 ：
+
+-博士论文题目 ： 博士论文研究方向 ：
+
++报考岗位： 报考岗位代码： 考生姓名：
+
++博士论文题目： 博士论文研究方向：
+
+ 公开发表的主要论文情况
+
+ 角色 转载刊物、转载字数及 是否为代表作
+
+ 序号 题目 刊物名称 核心期刊情况 刊号 发表时间
+
+-（ 排名 ） 转载时间等 （ 指定 1 篇 ）
+
++（排名） 转载时间等 （指定1篇）
+
+ 1
+
+ 2
+
+ 3
+
+```
+</details>
+
+### Business expense budget1
+
+- **Case Metadata:** format: xlsx | case: Business expense budget1 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Business expense budget1.xlsx
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.8931
+- **Overall Score:** 0.9572
+- **Pages:** MiniPdf=4, Reference=4
+- **File Size:** MiniPdf=283740 bytes, Reference=159864 bytes
+
+Text content: ✅ Identical
+
+### Business expenses budget2
+
+- **Case Metadata:** format: xlsx | case: Business expenses budget2 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Business expenses budget2.xlsx
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.7095
+- **Overall Score:** 0.7838
+- **Pages:** MiniPdf=8, Reference=4
+- **File Size:** MiniPdf=1042577 bytes, Reference=376973 bytes
+
+Text content: ✅ Identical
+
+### Business plan checklist with SWOT analysis1
+
+- **Case Metadata:** format: xlsx | case: Business plan checklist with SWOT analysis1 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Business plan checklist with SWOT analysis1.xlsx
+- **Text Similarity:** 0.9237
+- **Visual Average:** 0.6033
+- **Overall Score:** 0.8108
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=209139 bytes, Reference=64252 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Business plan checklist with SWOT analysis1.pdf
++++ reference/Business plan checklist with SWOT analysis1.pdf
+@@ -1,7 +1,7 @@
+ Northwind Traders
+
+ Business planning checklist
+
+-Using the strength, weakness, opportunity, and threat (SWOT) analysis framework, develop a checklist of the key
+
+-activities that need to be performed when preparing a formal business plan in the table, below.
+
++Using the strength, weakness, opportunity, and threat (SWOT) analysis framework, develop a checklist of the key activities
+
++that need to be performed when preparing a formal business plan in the table, below.
+
+ Activity Owner Completion date
+
+ Strengths: Define the company's current mission
+
+ Luca Richter 1/9/2023
+
+@@ -9,33 +9,29 @@
+ Strengths: Identify market segments in which the
+
+ company will participate by conducting primary and Dylan Williams 1/9/2023
+
+ secondary market research.
+
+-Strengths: Identify the company's value proposition
+
+-and how it will differentiate itself within the Kristin Orav 1/16/2023
+
+-marketplace.
+
+-Weaknesses: Identify any barriers to market entry
+
+-(for example, capital requirements, technical
+
++Strengths: Identify the company's value proposition and
+
++Kristin Orav 1/16/2023
+
++how it will differentiate itself within the marketplace.
+
++Weaknesses: Identify any barriers to market entry (for
+
++example, capital requirements, technical barriers, patents,
+
+ Flora Berggren 1/6/2023
+
+-barriers, patents, and process barriers) that the
+
+-company needs to overcome.
+
++and process barriers) that the company needs to
+
++overcome.
+
+ Weaknesses: Identify any risks inherent to the
+
+-organization that need to be mitigated so that the Flora Berggren 1/6/2023
+
+-company can realize the business plan.
+
+-Opportunities: Identify areas where the current
+
+-market is underserved that provide an opportunity Kristin Orav 1/6/2023
+
+-for the company.
+
+-Opportunities: Identify any key processes,
+
+-intellectual capital, or other resources that the
+
+-Ian Hansson 1/9/2023
+
+-company can use to its advantage in the
+
+-marketplace.
+
+-Threats: Identify primary competitors, and then
+
+-analyze competitor performance by using all
+
+-Gaurav Cheema 1/9/2023
+
+-available data and additional data that can be
+
+-verified.
+
++organization that need to be mitigated so that the company Flora Berggren 1/6/2023
+
++can realize the business plan.
+
++Opportunities: Identify areas where the current market is
+
++Kristin Orav 1/6/2023
+
++underserved that provide an opportunity for the company.
+
++Opportunities: Identify any key processes, intellectual
+
++capital, or other resources that the company can use to its Ian Hansson 1/9/2023
+
++advantage in the marketplace.
+
++Threats: Identify primary competitors, and then analyze
+
++competitor performance by using all available data and Gaurav Cheema 1/9/2023
+
++additional data that can be verified.
+
+ Threats: Identify secondary and potential future
+
+ Chela Arapelli 1/16/2023
+
+ competitors that might affect the business plan.
+
+-Threats: Develop strate
+... (179 more characters)
+
+```
+</details>
+
+### Event budget1
+
+- **Case Metadata:** format: xlsx | case: Event budget1 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Event budget1.xlsx
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9592
+- **Overall Score:** 0.8837
+- **Pages:** MiniPdf=6, Reference=5
+- **File Size:** MiniPdf=318242 bytes, Reference=121223 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Event budget1.pdf
++++ reference/Event budget1.pdf
+@@ -1,10 +1,11 @@
+ ABOUT THIS TEMPLATE
+
+-Use this event budget workbook to track expenses incurred on and income earned from an event.
+
++Use this event budget workbook to track expenses incurred on and income earned from an
+
++event.
+
+ Enter details in tables in expenses worksheet and income worksheet.
+
+ Total expenses and total income are auto-calculated.
+
+ Profit & loss summary and chart are auto-updated in profit-loss summary worksheet.
+
+ Note:
+
+-Additional instructions have been provided in column A in each worksheet. This text has been intentionally
+
+-hidden. To remove text, select column A, then select DELETE.
+
+-To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and then select
+
+-ALTERNATIVE TEXT
++Additional instructions have been provided in column A in each worksheet. This text has been
+
++intentionally hidden. To remove text, select column A, then select DELETE.
+
++To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and
+
++then select ALTERNATIVE TEXT
+```
+</details>
+
+### Expense report basic1
+
+- **Case Metadata:** format: xlsx | case: Expense report basic1 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Expense report basic1.xlsx
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.4231
+- **Overall Score:** 0.7692
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=157570 bytes, Reference=47896 bytes
+
+Text content: ✅ Identical
+
+### Grocery list1
+
+- **Case Metadata:** format: xlsx | case: Grocery list1 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Grocery list1.xlsx
+- **Text Similarity:** 0.9915
+- **Visual Average:** 0.9307
+- **Overall Score:** 0.9689
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=168827 bytes, Reference=71396 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Grocery list1.pdf
++++ reference/Grocery list1.pdf
+@@ -1,6 +1,7 @@
+ ORCHARD GROCERY HOME DELIVERY LOCAL MARKET OTHER GRAND TOTAL
+
+ GROCERY LIST
+
+-Customize this list. Replace the entries above with your own to track your $11.95 $6.12 $31.85 $216.60 $3.99 $270.51
+
++Customize this list. Replace the entries above with your own to track your
+
++$11.95 $6.12 $31.85 $216.60 $3.99 $270.51
+
+ most frequently used categories.
+
+ DONE? ITEM STORE CATEGORY QTY UNIT UNIT PRICE TOTAL NOTE
+
+ Yes Peaches Azure River Farm ORCHARD 2 lbs $2.99 $5.98
+
+@@ -19,9 +20,7 @@
+ Yes Eggs Local Farmer HOME DELIVERY 2 doz $3.50 $7.00
+
+ Yes Cottage cheese Local Farmer HOME DELIVERY 1 16 oz $3.89 $3.89
+
+ Yes Sour cream Local Farmer HOME DELIVERY 1 8 oz $2.99 $2.99
+
+-Greek with
+
+-Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99
+
+-honey
+
++Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99 Greek with honey
+
+ Bacon wrapped
+
+ Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90
+
+ filets
+
+```
+</details>
+
+### payroll-calculator_f
+
+- **Case Metadata:** format: xlsx | case: payroll-calculator_f | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/payroll-calculator_f.xlsx
+- **Text Similarity:** 0.8857
+- **Visual Average:** 0.5917
+- **Overall Score:** 0.691
+- **Pages:** MiniPdf=26, Reference=29
+- **File Size:** MiniPdf=4722963 bytes, Reference=606513 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/payroll-calculator_f.pdf
++++ reference/payroll-calculator_f.pdf
+@@ -1,14 +1,15 @@
+ Employee Register
+
+-Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
+
+-Step 2 Step 3
+
++Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing St
+
++Step 2
+
+ Additional Amount to
+
+ Annual Regular Overtime Exempt
+
+-M/ Pay Federal Withhold
+
+-ID Employee's Name Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status Filing Status
+
+-F Frequency Allowance (With every paycheck) Dependents
+
++Pay Federal Withhold
+
++ID Employee's Name M/F Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status Filing Status
+
++Frequency Allowance (With every paycheck)
+
+ ($) Rate ($) Rate ($) Overtime Box in (c)
+
+-($) Under Age 17
+
+-1 Adam Jones M 41320 Senior Accountant 42000 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
+
+-2 Nichola Brown F 40814 CR Manager 54481 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
+
+-3 Benny Erwin M 40674 Applications PM 48785 23.45 35.18 No Monthly W-4 (before 2020) Married 4
+
+-When adding more rows, insert new rows above this one
++($)
+
++1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
+
++2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
+
++3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4
+
++When adding more rows, insert new rows above this one
+
++Page 1 of 29
+```
+</details>
+
+### PO_anonymized
+
+- **Case Metadata:** format: xlsx | case: PO_anonymized | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/PO_anonymized.xlsx
+- **Text Similarity:** 0.9751
+- **Visual Average:** 0.7494
+- **Overall Score:** 0.7898
+- **Pages:** MiniPdf=8, Reference=9
+- **File Size:** MiniPdf=844496 bytes, Reference=409049 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/PO_anonymized.pdf
++++ reference/PO_anonymized.pdf
+@@ -2,14 +2,14 @@
+ Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
+
+ XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
+
+ PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
+
+-Project#: XXBFNO6 Inspection date: 46046 Batch Quantity: 88907PCS
+
+-Date of Manufacture:    1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)
+
++Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
+
++Date of Manufacture: 1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)
+
+ Item#: XX-ABC-68878-C
+
+ Description: Standard Component Assembly with Seal Insert
+
+ Sign-off sample: Yes Approved drawings Yes (Drawing#: K1VRJNVG REV: C )
+
+ Ship mark Yes Approved ranges Yes Ship to TBA
+
+ Inspection Result: Accept
+
+-tion: No
+
++Re-inspection: No
+
+ ( Comment: )
+
+ Inspection Result Summary
+
+ Check points Sample size Comment Remark
+
+@@ -43,5 +43,7 @@
+ Inspection quantity No. of carton
+
+ Item# XXX PO No. Batch qty.
+
+ Packed Unpacked Packed Unpacked
+
+-XX-ABC-57052-C 71662963 61859 41466 8462 61 16
+
+-Total: 41466 8462 61 16
++XX-ABC-57052-C 71662963 61,859 41,466 8,462 61 16
+
++Total: 41,466 8,462 61 16
+
++Doc#: FIR-003.5
+
++Effective: 20171109 Page 1 of 9
+```
+</details>
+
+### Simple invoice1
+
+- **Case Metadata:** format: xlsx | case: Simple invoice1 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Simple invoice1.xlsx
+- **Text Similarity:** 0.9659
+- **Visual Average:** 0.9707
+- **Overall Score:** 0.9746
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=159372 bytes, Reference=94130 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Simple invoice1.pdf
++++ reference/Simple invoice1.pdf
+@@ -1,16 +1,11 @@
+-INVOICE
+
+-Elegant
+
++Elegant INVOICE
+
+ Invoice #: 10654
+
+-Embrace
+
+-date: 8/29/2026
+
++Embrace Invoice date: 8/29/2026
+
+ Job: Wedding florals
+
+-345 W Main Hailey Clark
+
+-Bill to:
+
+-Los Angeles, CA 14151
+
+-Address: 123 Avenue A,
+
++345 W Main Bill to: Hailey Clark
+
++Los Angeles, CA 14151 Address: 123 Avenue A,
+
+ P: 915-555-0195 Burbank, CA 56789
+
+-F: 915-555-0105
+
+-Phone: 805-555-0185
+
++F: 915-555-0105 Phone: 805-555-0185
+
+ elegantembrace@example.com Fax: NA
+
+ Item # Description Qty Unit price Discount Price
+
+ A875 Peonies 35 $1.05 $36.75
+
+```
+</details>
+
+### Small business cash flow forecast1
+
+- **Case Metadata:** format: xlsx | case: Small business cash flow forecast1 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Small business cash flow forecast1.xlsx
+- **Text Similarity:** 0.9646
+- **Visual Average:** 0.7151
+- **Overall Score:** 0.7719
+- **Pages:** MiniPdf=3, Reference=5
+- **File Size:** MiniPdf=449838 bytes, Reference=93247 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Small business cash flow forecast1.pdf
++++ reference/Small business cash flow forecast1.pdf
+@@ -1,7 +1,7 @@
+ ELBIDE REALTY
+
+ Cash flow forecast
+
+-Starting cash on hand $ 10,000.00 Starting date 46113 Cash minimum balance alert$ 2,000.00
+
+-46113 46143 46174 46204 46235 46266 46296 46327 46357 46388 46419 46447
+
++Starting cash on hand $ 10,000.00 Starting date Sep 2026 Cash minimum balance alert $ 2,000.00
+
++Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027 Apr 2027 May 2027 Jun 2027 Jul 2027 Aug 2027
+
+ Total
+
+ Cash on hand (beginning of month) $ 10,000.00 $ 8,050.00 $ 9,350.00 $ 890.00 $ 2,190.00 $ 13,590.00 $ 13,790.00 $ 15,290.00 $ 16,410.00 $ 14,360.00 $ 16,560.00 $ 18,780.00
+
+ Cash receipts
+
+```
+</details>
+
+### Wedding_timeline_planner1_copy
+
+- **Case Metadata:** format: xlsx | case: Wedding_timeline_planner1_copy | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Wedding_timeline_planner1_copy.xlsx
+- **Text Similarity:** 0.9916
+- **Visual Average:** 0.7815
+- **Overall Score:** 0.8092
+- **Pages:** MiniPdf=4, Reference=8
+- **File Size:** MiniPdf=521712 bytes, Reference=180076 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Wedding_timeline_planner1_copy.pdf
++++ reference/Wedding_timeline_planner1_copy.pdf
+@@ -1,23 +1,25 @@
+ Wedding timeline planner
+
+ DONE?
+
+ ☐ Arrange a gathering for you and your parents.
+
+-9 - 12 ☐ Determine budget and how expenses will be shared.
+
++9 - 12
+
++☐ Determine budget and how expenses will be shared.
+
+ MONTHS TO GO
+
+ ☐ Discuss the size, style, location, and scope of the wedding you want.
+
+-Choose a target wedding date and time. (The actual date will depend on
+
++Choose a target wedding date and time. (The actual date will depend
+
+ ☐
+
+-venue availability.)
+
++on venue availability.)
+
+ Create a binder to store and organize ideas, worksheets, receipts,
+
+ ☐
+
+ brochures, etc.
+
+ ☐ Visit and reserve wedding and reception sites.
+
+ ☐ Meet with your officiant.
+
+-Start compiling your guest list to estimate head count. Consider budget
+
++Start compiling your guest list to estimate head count. Consider
+
+ ☐
+
+-when thinking about “must-invites” versus “nice-to-invites.”
+
++budget when thinking about “must-invites” versus “nice-to-invites.”
+
+ ☐ Begin shopping for the wedding gown.
+
+ ☐ Choose the members of your wedding party.
+
+-6 - 9 ☐ Enroll in wedding/shower gift registries.
+
++6 - 9
+
++☐ Enroll in wedding/shower gift registries.
+
+ MONTHS TO GO
+
+ ☐ Hire a photographer and a videographer.
+
+ Book an engagement photo session, especially if you plan to include a
+
+@@ -26,8 +28,8 @@
+ ☐ Hire a caterer.
+
+ ☐ Hire a florist.
+
+ Make arrangements for music to be played at the ceremony and
+
+-☐ reception. (Tasks might include booking a band or solo musician, hiring
+
+-a DJ, choosing significant musical selections, and so on.).
+
++☐ reception. (Tasks might include booking a band or solo musician,
+
++hiring a DJ, choosing significant musical selections, and so on.).
+
+ Reserve a block of hotel rooms for out-of-town guests. (Ask about
+
+ ☐
+
+ group rates.)
+
+```
+</details>
+
+### Weekly schedule planner1
+
+- **Case Metadata:** format: xlsx | case: Weekly schedule planner1 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/Weekly schedule planner1.xlsx
+- **Text Similarity:** 0.9062
+- **Visual Average:** 0.7055
+- **Overall Score:** 0.7447
+- **Pages:** MiniPdf=2, Reference=1
+- **File Size:** MiniPdf=212570 bytes, Reference=148591 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Weekly schedule planner1.pdf
++++ reference/Weekly schedule planner1.pdf
+@@ -1,13 +1,12 @@
+ Weekly schedule planner
+
+-Week of: 3/23/2026
+
++Week of: 8/24/2026
+
+ Weekly objectives To do items Deadlines this week
+
+ Run 3 miles Take FiFi to vet Presentation on Thursday
+
+ Read 30 min/day Go grocery shopping
+
+ Stretch Pick up dry cleaning
+
+ Monday Tuesday Wednesday Thursday Friday Saturday Sunday
+
+-23
+
+-24 25 26 27 28 29
+
+-March March March March March March March
+
++24 25 26 27 28 29 30
+
++August August August August August August August
+
+ ✔ Run ✔ Run ✖ Run Run Run Run Run
+
+ ✖ Read ✔ Read ✔ Read Read Read Read Read
+
+ ✔ Stretch ✔ Stretch ✖ Stretch Stretch Stretch Stretch Stretch
+
+```
+</details>
+
+### XlsxIssue75
+
+- **Case Metadata:** format: xlsx | case: XlsxIssue75 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/XlsxIssue75.xlsx
+- **Text Similarity:** 0.9908
+- **Visual Average:** 0.9695
+- **Overall Score:** 0.8841
+- **Pages:** MiniPdf=140, Reference=144
+- **File Size:** MiniPdf=13715983 bytes, Reference=5896201 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue75.pdf
++++ reference/XlsxIssue75.pdf
+@@ -48,5 +48,4 @@
+ 30184 Fred Invoice
+
+ 30184 Fred Invoice
+
+ 30184 Fred Invoice
+
+-30184 Fred Invoice
+
+ 30184 Fred Invoice
+```
+</details>
+
+### XlsxIssue77_MergedCellAlignment
+
+- **Case Metadata:** format: xlsx | case: XlsxIssue77_MergedCellAlignment | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/XlsxIssue77_MergedCellAlignment.xlsx
+- **Text Similarity:** 0.9947
+- **Visual Average:** 0.8031
+- **Overall Score:** 0.9191
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=390095 bytes, Reference=172385 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue77_MergedCellAlignment.pdf
++++ reference/XlsxIssue77_MergedCellAlignment.pdf
+@@ -31,5 +31,4 @@
+ Tripple Wide Cell Tripple Wide Cell Tripple Wide Cell
+
+ Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple
+
+ Tripple Wide and High Cell Tripple Wide and High Cell Tripple Wide and High Cell
+
+-Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple
+
+-Times New Roman Font
++Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple
+```
+</details>
+
+### XlsxIssue77_Template1
+
+- **Case Metadata:** format: xlsx | case: XlsxIssue77_Template1 | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.8456
+- **Overall Score:** 0.9382
+- **Pages:** MiniPdf=6, Reference=6
+- **File Size:** MiniPdf=528706 bytes, Reference=64464 bytes
+
+Text content: ✅ Identical
+
+### XlsxIssue77_Template2_Workaround
+
+- **Case Metadata:** format: xlsx | case: XlsxIssue77_Template2_Workaround | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/XlsxIssue77_Template2_Workaround.xlsx
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.8395
+- **Overall Score:** 0.9358
+- **Pages:** MiniPdf=6, Reference=6
+- **File Size:** MiniPdf=531413 bytes, Reference=64466 bytes
+
+Text content: ✅ Identical
+
+### XlsxIssue81_LayoutOptions
+
+- **Case Metadata:** format: xlsx | case: XlsxIssue81_LayoutOptions | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/XlsxIssue81_LayoutOptions.xlsx
+- **Text Similarity:** 0.9807
+- **Visual Average:** 0.7905
+- **Overall Score:** 0.9085
+- **Pages:** MiniPdf=16, Reference=16
+- **File Size:** MiniPdf=3842287 bytes, Reference=242251 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue81_LayoutOptions.pdf
++++ reference/XlsxIssue81_LayoutOptions.pdf
+@@ -1,40 +1,39 @@
+ Invoice Customer Region Owner
+
+-INV-00001 Customer account with extended legal nam Europe Operations owner 2
+
+-INV-00002 Customer account with extended legal nam Asia Pacific Operations owner 3
+
+-INV-00003 Customer account with extended legal nam Latin America Operations owner 4
+
+-INV-00004 Customer account with extended legal nam North America Operations owner 5
+
+-INV-00005 Customer account with extended legal nam Europe Operations owner 6
+
+-INV-00006 Customer account with extended legal nam Asia Pacific Operations owner 7
+
+-INV-00007 Customer account with extended legal nam Latin America Operations owner 8
+
+-INV-00008 Customer account with extended legal nam North America Operations owner 9
+
+-INV-00009 Customer account with extended legal nam Europe Operations owner 1
+
+-INV-00010 Customer account with extended legal nam Asia Pacific Operations owner 2
+
+-INV-00011 Customer account with extended legal nam Latin America Operations owner 3
+
+-INV-00012 Customer account with extended legal nam North America Operations owner 4
+
+-INV-00013 Customer account with extended legal nam Europe Operations owner 5
+
+-INV-00014 Customer account with extended legal nam Asia Pacific Operations owner 6
+
+-INV-00015 Customer account with extended legal nam Latin America Operations owner 7
+
+-INV-00016 Customer account with extended legal nam North America Operations owner 8
+
+-INV-00017 Customer account with extended legal nam Europe Operations owner 9
+
+-INV-00018 Customer account with extended legal nam Asia Pacific Operations owner 1
+
+-INV-00019 Customer account with extended legal nam Latin America Operations owner 2
+
+-INV-00020 Customer account with extended legal nam North America Operations owner 3
+
+-INV-00021 Customer account with extended legal nam Europe Operations owner 4
+
+-INV-00022 Customer account with extended legal nam Asia Pacific Operations owner 5
+
+-INV-00023 Customer account with extended legal nam Latin America Operations owner 6
+
+-INV-00024 Customer account with extended legal nam North America Operations owner 7
+
+-INV-00025 Customer account with extended legal nam Europe Operations owner 8
+
+-INV-00026 Customer account with extended legal nam Asia Pacific Operations owner 9
+
+-INV-00027 Customer account with extended legal nam Latin America Operations owner 1
+
+-INV-00028 Customer account with extended legal nam North America Operations owner 2
+
+-INV-00029 Customer account with extended legal nam Europe Operations owner 3
+
+-INV-00030 Customer account with extended legal nam Asia Pacific Operations owner 4
+
+-INV-00031 Customer account with extended legal nam Latin America Operations owner 5
+
+-INV-00032 Customer account with extended legal nam North America Operations owner 6
+
+-INV-00033 Customer account with extended legal nam Europe Operations owner 7
+
+-INV-00034 Customer account with extended legal nam Asia Pacific Operations owner 8
+
+-INV-00035 C
+... (3557 more characters)
+
+```
+</details>
+
+### XlsxIssue82_5mb
+
+- **Case Metadata:** format: xlsx | case: XlsxIssue82_5mb | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/XlsxIssue82_5mb.xlsx
+- **Text Similarity:** 0.8672
+- **Visual Average:** 0.835
+- **Overall Score:** 0.7809
+- **Pages:** MiniPdf=383, Reference=766
+- **File Size:** MiniPdf=1093160831 bytes, Reference=21494385 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue82_5mb.pdf
++++ reference/XlsxIssue82_5mb.pdf
+@@ -1,47 +1,47 @@
+-Name Email Phone Address Company Text DescriptioJob Title
+
+-Quentin H oschiller@573.920.9 22808 LueMraz and Labore et Non deleniEmergency Management Specialist
+
+-Lowell Ols eve.lind@ 720.754.6 67029 DecRosenbau Soluta nih Aut iste quFast Food Cook
+
+-Sydnee Cr gunnar.sch28126117 908 MatteStrosin, Ki VoluptatemSed aliquidInteraction Designer
+
+-Tomasa Di gerlach.ar +1 (276) 9 787 Rey H Balistreri-KProvident Et cupiditaMotorcycle Mechanic
+
+-Payton Ku herman.ba1-201-33353401 HahWolff-ErdmVero iste laCulpa id a Janitorial Supervisor
+
+-Constantincrist.elme (551) 609-32868 Kul RunolfssonOfficia vol Aut non d Pressing Machine Operator
+
+-Tad Hartmkathryn04 1-928-43477833 Kle Kunze, FraIpsum pra Facilis undTherapist
+
+-Tristian Linlittle.bobb+1.870.92 83843 ReeMitchell-Si DignissimoEum beataTechnical Writer
+
+-Miss Tierragpredovic@912-817-0310 Elliot Ward-WildAb at evenAut voluptCredit Checkers Clerk
+
+-Nicolette Sdomenic4 +1-352-61 13158 Sto Kerluke GrCulpa ea aQuos earuPostsecondary Education Administrators
+
+-Rosalind F kimberly.p86269653 700 Hyatt Bode-SwiftEst et qui qEveniet te Loan Counselor
+
+-Hector Braelarkin@s 1-458-225987 Isom SStrosin-Ku Labore ut Quidem p Cement Mason and Concrete Finisher
+
+-Marjory Kebrandyn.e 1-210-606671 Kaci VMann, Mc Molestias Fuga et ve Brokerage Clerk
+
+-Forrest Tu wilmer93@216.242.5 214 BahrinBlick, O'CoEnim earu Aut sequi Musician
+
+-Kennedy Wgutkowski +1.321.40 693 Mossi Abshire, R Dolor doloRerum aspIndustrial-Organizational Psychologist
+
+-Lysanne H gebert@y +1.272.47 4137 Berg Nitzsche L AsperioresAt dolores Interviewer
+
+-Randall Dagreenholt.24567844 90795 Bei Luettgen, Blanditiis nEt natus q Mixing and Blending Machine Operator
+
+-Chanelle Bsally46@g38889219 8856 AngeYundt-KirliVoluptas laDolores m Communication Equipment Repairer
+
+-Mr. Grego udietrich@1-469-314750 Ebert Goyette InUnde odit Qui aut doClinical Laboratory Technician
+
+-Rosalia Vo donna.sim53465388 9022 CletaAbbott, CaSoluta id t Aut sit et aMechanical Engineer
+
+-Sigmund Tteresa93@+1.937.53 2314 Crist Aufderhar Consectet QuibusdamProducer
+
+-Prof. Janic ahettinger312.745.3 50901 LudSawayn, WSint aut reAlias sed vLoading Machine Operator
+
+-Mr. Brad F lhickle@ya856-513-791499 Mo Keebler, LuAssumendAsperioresAircraft Mechanics OR Aircraft Service Technician
+
+-Christop Gdstrosin@ (563) 429-150 BertraKreiger LtdQuas occa Commodi Aircraft Body Repairer
+
+-Dr. Toni M erling43@+1-765-38 6102 Assu Jenkins IncLaborum aUt aut et uLog Grader and Scaler
+
+-Reece Fad ekirlin@lo463.613.7 9314 Sibyl Feeney Gr Voluptate Quo exerc Recordkeeping Clerk
+
+-Izaiah Skilehgoyette@240-241-28932 BartoDavis-Wel Qui fuga dEnim quia Biologist
+
+-Mathilde Siromaguera1-218-29880599 Pro Carter-PurAb voluptaSimilique sFence Erector
+
+-Mr. Jarred dimitri.hay279.899.6 6187 ConnKonopelskAutem sit Soluta dol Paralegal
+
+-Kameron Psimone.hy1-510-89134203 Kat StiedemanIpsa ut amPerspiciati Directory Assistance Operator
+
+
+... (6076 more characters)
+
+```
+</details>
+
+### XlsxIssue82_SampleTestData5mb
+
+- **Case Metadata:** format: xlsx | case: XlsxIssue82_SampleTestData5mb | scope: rust-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/XlsxIssue82_SampleTestData5mb.xlsx
+- **Text Similarity:** 0.6176
+- **Visual Average:** 0.887
+- **Overall Score:** 0.7018
+- **Pages:** MiniPdf=435, Reference=1668
+- **File Size:** MiniPdf=705787483 bytes, Reference=32924505 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue82_SampleTestData5mb.pdf
++++ reference/XlsxIssue82_SampleTestData5mb.pdf
+@@ -1,46 +1,48 @@
+-ID Name Email City Country Departme Notes Value1 Value2 RandomText
+
+-1 User 1 user1@ex Toronto UK IT pwJqdCFm 760613 72576615 aJ3NulIjekFszDr5uAOvjTW
+
+-2 User 2 user2@ex Delhi Germany IT S6gIttJQrY 456305 24213791 pf092rX59pMVKusbfiaJYv
+
+-3 User 3 user3@ex Sydney UK Finance mmp5R2o 802115 90762297 FICghVXe4Pd3hKRCupNh
+
+-4 User 4 user4@ex Berlin Australia HR BpiYtDuC1 929132 97747054 Dqy4YfhZVRKoU4MQPEw
+
+-5 User 5 user5@ex Berlin France HR DXnTIbeTy 178492 57171228 KXaj1XiogboogGppXhSvE
+
+-6 User 6 user6@ex Delhi Australia HR Iw9DkBED 518412 95574193 U601Kz3aUylPSRV6SVs0t
+
+-7 User 7 user7@ex Toronto Australia Finance tN5mvZpZ 72218 70818228 GuleIeBIYZczfrOqI0XBrqF
+
+-8 User 8 user8@ex Tokyo USA Ops xqmF3Xc2 238623 86525974 kEPOh7wmqkRjD7laS1MA
+
+-9 User 9 user9@ex London Australia Ops k099328N 369743 49049124 D5YOUBWJGzP43Qafmuu
+
+-10 User 10 user10@eDelhi Germany IT 3YvAHvcSG 24089 21668827 goDwaKqvlHPqqXocf2nUy
+
+-11 User 11 user11@eSydney France Sales r2O9ZtMJy 929463 27573623 F4rYXgsl2m3XP9ocAJxMN
+
+-12 User 12 user12@eTokyo Japan Sales y8JVUgTdff 777742 93571132 wNpAAEwHvkZhFUlh99tH
+
+-13 User 13 user13@eTokyo India Support v5XTbqBU 223784 91246594 FlobOTEN9qfliiewj5lxRLM
+
+-14 User 14 user14@eNew York Japan Ops pxwvBMP 187168 93853101 cJSx1oYMF9mqkznD1QT8
+
+-15 User 15 user15@eSydney Japan Ops NPs68SCLX 332785 50121304 82hWYSRrOSFlomH3Gvv1
+
+-16 User 16 user16@eDelhi Canada Ops JMgIo6JDv 966595 07984397 4BAbUAcF8HLYK9JHq3jj4
+
+-17 User 17 user17@eParis Australia Ops LWFef8uC 429423 22218843 UQEtbOYiFJw9CXErvuTiEr
+
+-18 User 18 user18@eTokyo Australia Ops 4y2atULBn 179954 52678655 AKEBEMk7LmS6Dgg9YcYn
+
+-19 User 19 user19@eBerlin France Finance MoiyHIdz6 416476 24642597 yKogEsvtgjzTqXNVWBylLq
+
+-20 User 20 user20@eLondon India Sales Gg4eeM2f 152083 09921012 4bCh4zWg5rIe3yJ1k2lGW
+
+-21 User 21 user21@eTokyo India Finance hk0tj7hQt 913510 07502412 uQ5Qw22c6qfmDqQ0pPJ
+
+-22 User 22 user22@eNew York UK IT FexqT7i2Z 959850 19319215 6WLsCwBvSzwhTYPQGlPO
+
+-23 User 23 user23@eSydney Japan Ops wZdZL0KlV 813108 06367596 ovnVvOjCS3spejVOAdM6
+
+-24 User 24 user24@eLondon Germany Support I6go0j9fZK 175461 39029965 euHzFEtXjD0gPbUSMXjUS
+
+-25 User 25 user25@eLondon Canada Ops eE9wvY61 582815 09838566 4E725SLTRuB0TDyewF1iU
+
+-26 User 26 user26@eTokyo Japan Support vTlTmSLZK 698910 16223284 63fo6sebUsgvmf5Tdgu2J
+
+-27 User 27 user27@eDelhi UK Ops 001jLkp56 463742 27812386 cPF7y1qrqrbXduLROmKIG
+
+-28 User 28 user28@eTokyo India Ops JYMn1HVG 185984 14627172 aFVmUW0iuXfHDfK7hWM
+
+-29 User 29 user29@eLondon India Sales kDD8aBkf 110478 74045311 e8DIRNwLNuloNl30L338n
+
+-30 User 30 user30@eBerlin UK Ops vt3rlC8s2T 165682 37984582 cuF6nwLUR8OzYfBCiBYK0
+
+-31 User 31 user31@eSydney Canada Ops Sy0TGdVh 300288 32443793 17YQUGbpPgEUpY1pIVyQ
+
+-32 User 32 user32@eLondon Japan IT nuLK3hv5 932811 76962846 RGlzsAMoPYS7aALJLOK1x
+
+-33 User 33 user33@eTokyo Australia Finance 8QxYNykp 732250
+... (4221 more characters)
+
+```
+</details>
+
+### XlsxIssue82_WideTable
+
+**Error:** Reference PDF not found
+
 ## Improvement Suggestions
 
-All test cases scored 0.8 or above. 🎉
+### ⚠ Low-Score Test Cases (below 0.8)
+
+1. **payroll-calculator_f** (score: 0.691)
+1. **XlsxIssue82_SampleTestData5mb** (score: 0.7018)
+1. **Weekly schedule planner1** (score: 0.7447)
+1. **Expense report basic1** (score: 0.7692)
+1. **Small business cash flow forecast1** (score: 0.7719)
+1. **XlsxIssue82_5mb** (score: 0.7809)
+1. **Business expenses budget2** (score: 0.7838)
+1. **PO_anonymized** (score: 0.7898)
+
+Review the text diffs and visual comparisons above to identify specific rendering issues.

@@ -1,5 +1,853 @@
 [
   {
+    "name": "Academic Achievement Summary Table",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Academic Achievement Summary Table",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Academic Achievement Summary Table.xlsx",
+    "suite": "issue",
+    "minipdf_size": 245827,
+    "reference_size": 151877,
+    "pdf_valid": true,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "compared_pages": 1,
+    "text_similarity": 0.9623,
+    "flat_text_similarity": 0.9623,
+    "word_text_similarity": 0.6316,
+    "text_diff": "--- minipdf/Academic Achievement Summary Table.pdf\n+++ reference/Academic Achievement Summary Table.pdf\n@@ -1,11 +1,11 @@\n-附件 3\n\n+附件3\n\n 学术业绩汇总表\n\n-报考岗位 ： 报考岗位代码 ： 考生姓名 ：\n\n-博士论文题目 ： 博士论文研究方向 ：\n\n+报考岗位： 报考岗位代码： 考生姓名：\n\n+博士论文题目： 博士论文研究方向：\n\n 公开发表的主要论文情况\n\n 角色 转载刊物、转载字数及 是否为代表作\n\n 序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n-（ 排名 ） 转载时间等 （ 指定 1 篇 ）\n\n+（排名） 转载时间等 （指定1篇）\n\n 1\n\n 2\n\n 3\n",
+    "visual_scores": [
+      0.9507
+    ],
+    "visual_avg": 0.9507,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Academic Achievement Summary Table_p1_minipdf.png",
+        "reference_img": "Academic Achievement Summary Table_p1_reference.png",
+        "auxiliary_img": "Academic Achievement Summary Table_p1_libreoffice.png",
+        "heatmap_img": "Academic Achievement Summary Table_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1754,
+            1241
+          ],
+          "difference_bbox_px": [
+            45,
+            38,
+            1725,
+            1143
+          ],
+          "changed_pixels": 190940,
+          "changed_fraction": 0.087719,
+          "mean_abs_rgb": 13.858,
+          "rmse_rgb": 52.4995,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Academic Achievement Summary Table_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9652
+  },
+  {
+    "name": "AcademicAchievement_temp",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "AcademicAchievement_temp",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/AcademicAchievement_temp.xlsx",
+    "suite": "issue",
+    "minipdf_size": 245827,
+    "reference_size": 151877,
+    "pdf_valid": true,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "compared_pages": 1,
+    "text_similarity": 0.9623,
+    "flat_text_similarity": 0.9623,
+    "word_text_similarity": 0.6316,
+    "text_diff": "--- minipdf/AcademicAchievement_temp.pdf\n+++ reference/AcademicAchievement_temp.pdf\n@@ -1,11 +1,11 @@\n-附件 3\n\n+附件3\n\n 学术业绩汇总表\n\n-报考岗位 ： 报考岗位代码 ： 考生姓名 ：\n\n-博士论文题目 ： 博士论文研究方向 ：\n\n+报考岗位： 报考岗位代码： 考生姓名：\n\n+博士论文题目： 博士论文研究方向：\n\n 公开发表的主要论文情况\n\n 角色 转载刊物、转载字数及 是否为代表作\n\n 序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n-（ 排名 ） 转载时间等 （ 指定 1 篇 ）\n\n+（排名） 转载时间等 （指定1篇）\n\n 1\n\n 2\n\n 3\n",
+    "visual_scores": [
+      0.9507
+    ],
+    "visual_avg": 0.9507,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "AcademicAchievement_temp_p1_minipdf.png",
+        "reference_img": "AcademicAchievement_temp_p1_reference.png",
+        "auxiliary_img": "AcademicAchievement_temp_p1_libreoffice.png",
+        "heatmap_img": "AcademicAchievement_temp_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1754,
+            1241
+          ],
+          "difference_bbox_px": [
+            45,
+            38,
+            1725,
+            1143
+          ],
+          "changed_pixels": 190940,
+          "changed_fraction": 0.087719,
+          "mean_abs_rgb": 13.858,
+          "rmse_rgb": 52.4995,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "AcademicAchievement_temp_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9652
+  },
+  {
+    "name": "Business expense budget1",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Business expense budget1",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Business expense budget1.xlsx",
+    "suite": "issue",
+    "minipdf_size": 283740,
+    "reference_size": 159864,
+    "pdf_valid": true,
+    "minipdf_pages": 4,
+    "reference_pages": 4,
+    "compared_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8931
+    ],
+    "visual_avg": 0.8931,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Business expense budget1_p1_minipdf.png",
+        "reference_img": "Business expense budget1_p1_reference.png",
+        "auxiliary_img": "Business expense budget1_p1_libreoffice.png",
+        "heatmap_img": "Business expense budget1_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            147,
+            176,
+            1018,
+            1597
+          ],
+          "changed_pixels": 467855,
+          "changed_fraction": 0.214936,
+          "mean_abs_rgb": 28.4333,
+          "rmse_rgb": 73.3179,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Business expense budget1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9572
+  },
+  {
+    "name": "Business expenses budget2",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Business expenses budget2",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Business expenses budget2.xlsx",
+    "suite": "issue",
+    "minipdf_size": 1042577,
+    "reference_size": 376973,
+    "pdf_valid": true,
+    "minipdf_pages": 8,
+    "reference_pages": 4,
+    "compared_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.7095
+    ],
+    "visual_avg": 0.7095,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Business expenses budget2_p1_minipdf.png",
+        "reference_img": "Business expenses budget2_p1_reference.png",
+        "auxiliary_img": "Business expenses budget2_p1_libreoffice.png",
+        "heatmap_img": "Business expenses budget2_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1650,
+            1241
+          ],
+          "difference_bbox_px": [
+            140,
+            73,
+            1509,
+            1140
+          ],
+          "changed_pixels": 664092,
+          "changed_fraction": 0.324319,
+          "mean_abs_rgb": 16.2401,
+          "rmse_rgb": 40.0437,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Business expenses budget2_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.7838
+  },
+  {
+    "name": "Business plan checklist with SWOT analysis1",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Business plan checklist with SWOT analysis1",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Business plan checklist with SWOT analysis1.xlsx",
+    "suite": "issue",
+    "minipdf_size": 209139,
+    "reference_size": 64252,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "compared_pages": 1,
+    "text_similarity": 0.9237,
+    "flat_text_similarity": 0.573,
+    "word_text_similarity": 0.9237,
+    "text_diff": "--- minipdf/Business plan checklist with SWOT analysis1.pdf\n+++ reference/Business plan checklist with SWOT analysis1.pdf\n@@ -1,7 +1,7 @@\n Northwind Traders\n\n Business planning checklist\n\n-Using the strength, weakness, opportunity, and threat (SWOT) analysis framework, develop a checklist of the key\n\n-activities that need to be performed when preparing a formal business plan in the table, below.\n\n+Using the strength, weakness, opportunity, and threat (SWOT) analysis framework, develop a checklist of the key activities\n\n+that need to be performed when preparing a formal business plan in the table, below.\n\n Activity Owner Completion date\n\n Strengths: Define the company's current mission\n\n Luca Richter 1/9/2023\n\n@@ -9,33 +9,29 @@\n Strengths: Identify market segments in which the\n\n company will participate by conducting primary and Dylan Williams 1/9/2023\n\n secondary market research.\n\n-Strengths: Identify the company's value proposition\n\n-and how it will differentiate itself within the Kristin Orav 1/16/2023\n\n-marketplace.\n\n-Weaknesses: Identify any barriers to market entry\n\n-(for example, capital requirements, technical\n\n+Strengths: Identify the company's value proposition and\n\n+Kristin Orav 1/16/2023\n\n+how it will differentiate itself within the marketplace.\n\n+Weaknesses: Identify any barriers to market entry (for\n\n+example, capital requirements, technical barriers, patents,\n\n Flora Berggren 1/6/2023\n\n-barriers, patents, and process barriers) that the\n\n-company needs to overcome.\n\n+and process barriers) that the company needs to\n\n+overcome.\n\n Weaknesses: Identify any risks inherent to the\n\n-organization that need to be mitigated so that the Flora Berggren 1/6/2023\n\n-company can realize the business plan.\n\n-Opportunities: Identify areas where the current\n\n-market is underserved that provide an opportunity Kristin Orav 1/6/2023\n\n-for the company.\n\n-Opportunities: Identify any key processes,\n\n-intellectual capital, or other resources that the\n\n-Ian Hansson 1/9/2023\n\n-company can use to its advantage in the\n\n-marketplace.\n\n-Threats: Identify primary competitors, and then\n\n-analyze competitor performance by using all\n\n-Gaurav Cheema 1/9/2023\n\n-available data and additional data that can be\n\n-verified.\n\n+organization that need to be mitigated so that the company Flora Berggren 1/6/2023\n\n+can realize the business plan.\n\n+Opportunities: Identify areas where the current market is\n\n+Kristin Orav 1/6/2023\n\n+underserved that provide an opportunity for the company.\n\n+Opportunities: Identify any key processes, intellectual\n\n+capital, or other resources that the company can use to its Ian Hansson 1/9/2023\n\n+advantage in the marketplace.\n\n+Threats: Identify primary competitors, and then analyze\n\n+competitor performance by using all available data and Gaurav Cheema 1/9/2023\n\n+additional data that can be verified.\n\n Threats: Identify secondary and potential future\n\n Chela Arapelli 1/16/2023\n\n competitors that might affect the business plan.\n\n-Threats: Develop strategies for mitigating primary\n\n+Threats: Develop strategies for mitigating primary and\n\n Gaurav Cheema 1/16/2023\n\n-and secondary competitive threats.\n+secondary competitive threats.",
+    "visual_scores": [
+      0.6033
+    ],
+    "visual_avg": 0.6033,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Business plan checklist with SWOT analysis1_p1_minipdf.png",
+        "reference_img": "Business plan checklist with SWOT analysis1_p1_reference.png",
+        "auxiliary_img": "Business plan checklist with SWOT analysis1_p1_libreoffice.png",
+        "heatmap_img": "Business plan checklist with SWOT analysis1_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            90,
+            62,
+            1179,
+            1547
+          ],
+          "changed_pixels": 759959,
+          "changed_fraction": 0.349131,
+          "mean_abs_rgb": 21.3479,
+          "rmse_rgb": 55.8591,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Business plan checklist with SWOT analysis1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.8108
+  },
+  {
+    "name": "Event budget1",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Event budget1",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Event budget1.xlsx",
+    "suite": "issue",
+    "minipdf_size": 318242,
+    "reference_size": 121223,
+    "pdf_valid": true,
+    "minipdf_pages": 6,
+    "reference_pages": 5,
+    "compared_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9741,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/Event budget1.pdf\n+++ reference/Event budget1.pdf\n@@ -1,10 +1,11 @@\n ABOUT THIS TEMPLATE\n\n-Use this event budget workbook to track expenses incurred on and income earned from an event.\n\n+Use this event budget workbook to track expenses incurred on and income earned from an\n\n+event.\n\n Enter details in tables in expenses worksheet and income worksheet.\n\n Total expenses and total income are auto-calculated.\n\n Profit & loss summary and chart are auto-updated in profit-loss summary worksheet.\n\n Note:\n\n-Additional instructions have been provided in column A in each worksheet. This text has been intentionally\n\n-hidden. To remove text, select column A, then select DELETE.\n\n-To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and then select\n\n-ALTERNATIVE TEXT\n+Additional instructions have been provided in column A in each worksheet. This text has been\n\n+intentionally hidden. To remove text, select column A, then select DELETE.\n\n+To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and\n\n+then select ALTERNATIVE TEXT",
+    "visual_scores": [
+      0.9592
+    ],
+    "visual_avg": 0.9592,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Event budget1_p1_minipdf.png",
+        "reference_img": "Event budget1_p1_reference.png",
+        "auxiliary_img": "Event budget1_p1_libreoffice.png",
+        "heatmap_img": "Event budget1_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            73,
+            153,
+            1165,
+            779
+          ],
+          "changed_pixels": 91980,
+          "changed_fraction": 0.042256,
+          "mean_abs_rgb": 5.9532,
+          "rmse_rgb": 34.5802,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Event budget1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.8837
+  },
+  {
+    "name": "Expense report basic1",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Expense report basic1",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Expense report basic1.xlsx",
+    "suite": "issue",
+    "minipdf_size": 157570,
+    "reference_size": 47896,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "compared_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.4231
+    ],
+    "visual_avg": 0.4231,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Expense report basic1_p1_minipdf.png",
+        "reference_img": "Expense report basic1_p1_reference.png",
+        "auxiliary_img": "Expense report basic1_p1_libreoffice.png",
+        "heatmap_img": "Expense report basic1_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1754,
+            1241
+          ],
+          "difference_bbox_px": [
+            63,
+            62,
+            1691,
+            983
+          ],
+          "changed_pixels": 667090,
+          "changed_fraction": 0.306467,
+          "mean_abs_rgb": 9.0455,
+          "rmse_rgb": 26.7801,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Expense report basic1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.7692
+  },
+  {
+    "name": "Grocery list1",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Grocery list1",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Grocery list1.xlsx",
+    "suite": "issue",
+    "minipdf_size": 168827,
+    "reference_size": 71396,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "compared_pages": 1,
+    "text_similarity": 0.9915,
+    "flat_text_similarity": 0.9575,
+    "word_text_similarity": 0.9915,
+    "text_diff": "--- minipdf/Grocery list1.pdf\n+++ reference/Grocery list1.pdf\n@@ -1,6 +1,7 @@\n ORCHARD GROCERY HOME DELIVERY LOCAL MARKET OTHER GRAND TOTAL\n\n GROCERY LIST\n\n-Customize this list. Replace the entries above with your own to track your $11.95 $6.12 $31.85 $216.60 $3.99 $270.51\n\n+Customize this list. Replace the entries above with your own to track your\n\n+$11.95 $6.12 $31.85 $216.60 $3.99 $270.51\n\n most frequently used categories.\n\n DONE? ITEM STORE CATEGORY QTY UNIT UNIT PRICE TOTAL NOTE\n\n Yes Peaches Azure River Farm ORCHARD 2 lbs $2.99 $5.98\n\n@@ -19,9 +20,7 @@\n Yes Eggs Local Farmer HOME DELIVERY 2 doz $3.50 $7.00\n\n Yes Cottage cheese Local Farmer HOME DELIVERY 1 16 oz $3.89 $3.89\n\n Yes Sour cream Local Farmer HOME DELIVERY 1 8 oz $2.99 $2.99\n\n-Greek with\n\n-Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99\n\n-honey\n\n+Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99 Greek with honey\n\n Bacon wrapped\n\n Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90\n\n filets\n",
+    "visual_scores": [
+      0.9307
+    ],
+    "visual_avg": 0.9307,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Grocery list1_p1_minipdf.png",
+        "reference_img": "Grocery list1_p1_reference.png",
+        "auxiliary_img": "Grocery list1_p1_libreoffice.png",
+        "heatmap_img": "Grocery list1_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            46,
+            77,
+            1194,
+            930
+          ],
+          "changed_pixels": 235521,
+          "changed_fraction": 0.1082,
+          "mean_abs_rgb": 6.5427,
+          "rmse_rgb": 27.8886,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Grocery list1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9689
+  },
+  {
+    "name": "payroll-calculator_f",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "payroll-calculator_f",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/payroll-calculator_f.xlsx",
+    "suite": "issue",
+    "minipdf_size": 4722963,
+    "reference_size": 606513,
+    "pdf_valid": true,
+    "minipdf_pages": 26,
+    "reference_pages": 29,
+    "compared_pages": 1,
+    "text_similarity": 0.8857,
+    "flat_text_similarity": 0.871,
+    "word_text_similarity": 0.8857,
+    "text_diff": "--- minipdf/payroll-calculator_f.pdf\n+++ reference/payroll-calculator_f.pdf\n@@ -1,14 +1,15 @@\n Employee Register\n\n-Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)\n\n-Step 2 Step 3\n\n+Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing St\n\n+Step 2\n\n Additional Amount to\n\n Annual Regular Overtime Exempt\n\n-M/ Pay Federal Withhold\n\n-ID Employee's Name Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status Filing Status\n\n-F Frequency Allowance (With every paycheck) Dependents\n\n+Pay Federal Withhold\n\n+ID Employee's Name M/F Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status Filing Status\n\n+Frequency Allowance (With every paycheck)\n\n ($) Rate ($) Rate ($) Overtime Box in (c)\n\n-($) Under Age 17\n\n-1 Adam Jones M 41320 Senior Accountant 42000 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked\n\n-2 Nichola Brown F 40814 CR Manager 54481 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked\n\n-3 Benny Erwin M 40674 Applications PM 48785 23.45 35.18 No Monthly W-4 (before 2020) Married 4\n\n-When adding more rows, insert new rows above this one\n+($)\n\n+1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked\n\n+2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked\n\n+3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4\n\n+When adding more rows, insert new rows above this one\n\n+Page 1 of 29",
+    "visual_scores": [
+      0.5917
+    ],
+    "visual_avg": 0.5917,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "payroll-calculator_f_p1_minipdf.png",
+        "reference_img": "payroll-calculator_f_p1_reference.png",
+        "auxiliary_img": "payroll-calculator_f_p1_libreoffice.png",
+        "heatmap_img": "payroll-calculator_f_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1650,
+            1241
+          ],
+          "difference_bbox_px": [
+            22,
+            28,
+            1599,
+            1160
+          ],
+          "changed_pixels": 513066,
+          "changed_fraction": 0.250563,
+          "mean_abs_rgb": 18.5176,
+          "rmse_rgb": 45.9602,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "payroll-calculator_f_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.691
+  },
+  {
+    "name": "PO_anonymized",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "PO_anonymized",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/PO_anonymized.xlsx",
+    "suite": "issue",
+    "minipdf_size": 844496,
+    "reference_size": 409049,
+    "pdf_valid": true,
+    "minipdf_pages": 8,
+    "reference_pages": 9,
+    "compared_pages": 1,
+    "text_similarity": 0.9751,
+    "flat_text_similarity": 0.9751,
+    "word_text_similarity": 0.9536,
+    "text_diff": "--- minipdf/PO_anonymized.pdf\n+++ reference/PO_anonymized.pdf\n@@ -2,14 +2,14 @@\n Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328\n\n XXX office: TX Inspector: Sam Davis XXX PO#: 21668732\n\n PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A\n\n-Project#: XXBFNO6 Inspection date: 46046 Batch Quantity: 88907PCS\n\n-Date of Manufacture:    1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)\n\n+Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS\n\n+Date of Manufacture: 1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)\n\n Item#: XX-ABC-68878-C\n\n Description: Standard Component Assembly with Seal Insert\n\n Sign-off sample: Yes Approved drawings Yes (Drawing#: K1VRJNVG REV: C )\n\n Ship mark Yes Approved ranges Yes Ship to TBA\n\n Inspection Result: Accept\n\n-tion: No\n\n+Re-inspection: No\n\n ( Comment: )\n\n Inspection Result Summary\n\n Check points Sample size Comment Remark\n\n@@ -43,5 +43,7 @@\n Inspection quantity No. of carton\n\n Item# XXX PO No. Batch qty.\n\n Packed Unpacked Packed Unpacked\n\n-XX-ABC-57052-C 71662963 61859 41466 8462 61 16\n\n-Total: 41466 8462 61 16\n+XX-ABC-57052-C 71662963 61,859 41,466 8,462 61 16\n\n+Total: 41,466 8,462 61 16\n\n+Doc#: FIR-003.5\n\n+Effective: 20171109 Page 1 of 9",
+    "visual_scores": [
+      0.7494
+    ],
+    "visual_avg": 0.7494,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "PO_anonymized_p1_minipdf.png",
+        "reference_img": "PO_anonymized_p1_reference.png",
+        "auxiliary_img": "PO_anonymized_p1_libreoffice.png",
+        "heatmap_img": "PO_anonymized_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            58,
+            71,
+            1181,
+            1713
+          ],
+          "changed_pixels": 718137,
+          "changed_fraction": 0.329918,
+          "mean_abs_rgb": 29.8132,
+          "rmse_rgb": 71.6858,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "PO_anonymized_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.7898
+  },
+  {
+    "name": "Simple invoice1",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Simple invoice1",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Simple invoice1.xlsx",
+    "suite": "issue",
+    "minipdf_size": 159372,
+    "reference_size": 94130,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "compared_pages": 1,
+    "text_similarity": 0.9659,
+    "flat_text_similarity": 0.943,
+    "word_text_similarity": 0.9659,
+    "text_diff": "--- minipdf/Simple invoice1.pdf\n+++ reference/Simple invoice1.pdf\n@@ -1,16 +1,11 @@\n-INVOICE\n\n-Elegant\n\n+Elegant INVOICE\n\n Invoice #: 10654\n\n-Embrace\n\n-date: 8/29/2026\n\n+Embrace Invoice date: 8/29/2026\n\n Job: Wedding florals\n\n-345 W Main Hailey Clark\n\n-Bill to:\n\n-Los Angeles, CA 14151\n\n-Address: 123 Avenue A,\n\n+345 W Main Bill to: Hailey Clark\n\n+Los Angeles, CA 14151 Address: 123 Avenue A,\n\n P: 915-555-0195 Burbank, CA 56789\n\n-F: 915-555-0105\n\n-Phone: 805-555-0185\n\n+F: 915-555-0105 Phone: 805-555-0185\n\n elegantembrace@example.com Fax: NA\n\n Item # Description Qty Unit price Discount Price\n\n A875 Peonies 35 $1.05 $36.75\n",
+    "visual_scores": [
+      0.9707
+    ],
+    "visual_avg": 0.9707,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Simple invoice1_p1_minipdf.png",
+        "reference_img": "Simple invoice1_p1_reference.png",
+        "auxiliary_img": "Simple invoice1_p1_libreoffice.png",
+        "heatmap_img": "Simple invoice1_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            39,
+            114,
+            1201,
+            1446
+          ],
+          "changed_pixels": 119065,
+          "changed_fraction": 0.054699,
+          "mean_abs_rgb": 6.6701,
+          "rmse_rgb": 34.0396,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Simple invoice1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9746
+  },
+  {
+    "name": "Small business cash flow forecast1",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Small business cash flow forecast1",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Small business cash flow forecast1.xlsx",
+    "suite": "issue",
+    "minipdf_size": 449838,
+    "reference_size": 93247,
+    "pdf_valid": true,
+    "minipdf_pages": 3,
+    "reference_pages": 5,
+    "compared_pages": 1,
+    "text_similarity": 0.9646,
+    "flat_text_similarity": 0.9646,
+    "word_text_similarity": 0.9585,
+    "text_diff": "--- minipdf/Small business cash flow forecast1.pdf\n+++ reference/Small business cash flow forecast1.pdf\n@@ -1,7 +1,7 @@\n ELBIDE REALTY\n\n Cash flow forecast\n\n-Starting cash on hand $ 10,000.00 Starting date 46113 Cash minimum balance alert$ 2,000.00\n\n-46113 46143 46174 46204 46235 46266 46296 46327 46357 46388 46419 46447\n\n+Starting cash on hand $ 10,000.00 Starting date Sep 2026 Cash minimum balance alert $ 2,000.00\n\n+Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027 Apr 2027 May 2027 Jun 2027 Jul 2027 Aug 2027\n\n Total\n\n Cash on hand (beginning of month) $ 10,000.00 $ 8,050.00 $ 9,350.00 $ 890.00 $ 2,190.00 $ 13,590.00 $ 13,790.00 $ 15,290.00 $ 16,410.00 $ 14,360.00 $ 16,560.00 $ 18,780.00\n\n Cash receipts\n",
+    "visual_scores": [
+      0.7151
+    ],
+    "visual_avg": 0.7151,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Small business cash flow forecast1_p1_minipdf.png",
+        "reference_img": "Small business cash flow forecast1_p1_reference.png",
+        "auxiliary_img": "Small business cash flow forecast1_p1_libreoffice.png",
+        "heatmap_img": "Small business cash flow forecast1_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            66,
+            73,
+            1173,
+            1682
+          ],
+          "changed_pixels": 849423,
+          "changed_fraction": 0.390232,
+          "mean_abs_rgb": 17.4385,
+          "rmse_rgb": 42.354,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Small business cash flow forecast1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.7719
+  },
+  {
+    "name": "Wedding_timeline_planner1_copy",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Wedding_timeline_planner1_copy",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Wedding_timeline_planner1_copy.xlsx",
+    "suite": "issue",
+    "minipdf_size": 521712,
+    "reference_size": 180076,
+    "pdf_valid": true,
+    "minipdf_pages": 4,
+    "reference_pages": 8,
+    "compared_pages": 1,
+    "text_similarity": 0.9916,
+    "flat_text_similarity": 0.986,
+    "word_text_similarity": 0.9916,
+    "text_diff": "--- minipdf/Wedding_timeline_planner1_copy.pdf\n+++ reference/Wedding_timeline_planner1_copy.pdf\n@@ -1,23 +1,25 @@\n Wedding timeline planner\n\n DONE?\n\n ☐ Arrange a gathering for you and your parents.\n\n-9 - 12 ☐ Determine budget and how expenses will be shared.\n\n+9 - 12\n\n+☐ Determine budget and how expenses will be shared.\n\n MONTHS TO GO\n\n ☐ Discuss the size, style, location, and scope of the wedding you want.\n\n-Choose a target wedding date and time. (The actual date will depend on\n\n+Choose a target wedding date and time. (The actual date will depend\n\n ☐\n\n-venue availability.)\n\n+on venue availability.)\n\n Create a binder to store and organize ideas, worksheets, receipts,\n\n ☐\n\n brochures, etc.\n\n ☐ Visit and reserve wedding and reception sites.\n\n ☐ Meet with your officiant.\n\n-Start compiling your guest list to estimate head count. Consider budget\n\n+Start compiling your guest list to estimate head count. Consider\n\n ☐\n\n-when thinking about “must-invites” versus “nice-to-invites.”\n\n+budget when thinking about “must-invites” versus “nice-to-invites.”\n\n ☐ Begin shopping for the wedding gown.\n\n ☐ Choose the members of your wedding party.\n\n-6 - 9 ☐ Enroll in wedding/shower gift registries.\n\n+6 - 9\n\n+☐ Enroll in wedding/shower gift registries.\n\n MONTHS TO GO\n\n ☐ Hire a photographer and a videographer.\n\n Book an engagement photo session, especially if you plan to include a\n\n@@ -26,8 +28,8 @@\n ☐ Hire a caterer.\n\n ☐ Hire a florist.\n\n Make arrangements for music to be played at the ceremony and\n\n-☐ reception. (Tasks might include booking a band or solo musician, hiring\n\n-a DJ, choosing significant musical selections, and so on.).\n\n+☐ reception. (Tasks might include booking a band or solo musician,\n\n+hiring a DJ, choosing significant musical selections, and so on.).\n\n Reserve a block of hotel rooms for out-of-town guests. (Ask about\n\n ☐\n\n group rates.)\n",
+    "visual_scores": [
+      0.7815
+    ],
+    "visual_avg": 0.7815,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Wedding_timeline_planner1_copy_p1_minipdf.png",
+        "reference_img": "Wedding_timeline_planner1_copy_p1_reference.png",
+        "auxiliary_img": "Wedding_timeline_planner1_copy_p1_libreoffice.png",
+        "heatmap_img": "Wedding_timeline_planner1_copy_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1650
+          ],
+          "difference_bbox_px": [
+            102,
+            110,
+            1155,
+            1526
+          ],
+          "changed_pixels": 331974,
+          "changed_fraction": 0.162124,
+          "mean_abs_rgb": 16.3678,
+          "rmse_rgb": 48.6299,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Wedding_timeline_planner1_copy_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.8092
+  },
+  {
+    "name": "Weekly schedule planner1",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "Weekly schedule planner1",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Weekly schedule planner1.xlsx",
+    "suite": "issue",
+    "minipdf_size": 212570,
+    "reference_size": 148591,
+    "pdf_valid": true,
+    "minipdf_pages": 2,
+    "reference_pages": 1,
+    "compared_pages": 1,
+    "text_similarity": 0.9062,
+    "flat_text_similarity": 0.8739,
+    "word_text_similarity": 0.9062,
+    "text_diff": "--- minipdf/Weekly schedule planner1.pdf\n+++ reference/Weekly schedule planner1.pdf\n@@ -1,13 +1,12 @@\n Weekly schedule planner\n\n-Week of: 3/23/2026\n\n+Week of: 8/24/2026\n\n Weekly objectives To do items Deadlines this week\n\n Run 3 miles Take FiFi to vet Presentation on Thursday\n\n Read 30 min/day Go grocery shopping\n\n Stretch Pick up dry cleaning\n\n Monday Tuesday Wednesday Thursday Friday Saturday Sunday\n\n-23\n\n-24 25 26 27 28 29\n\n-March March March March March March March\n\n+24 25 26 27 28 29 30\n\n+August August August August August August August\n\n ✔ Run ✔ Run ✖ Run Run Run Run Run\n\n ✖ Read ✔ Read ✔ Read Read Read Read Read\n\n ✔ Stretch ✔ Stretch ✖ Stretch Stretch Stretch Stretch Stretch\n",
+    "visual_scores": [
+      0.7055
+    ],
+    "visual_avg": 0.7055,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Weekly schedule planner1_p1_minipdf.png",
+        "reference_img": "Weekly schedule planner1_p1_reference.png",
+        "auxiliary_img": "Weekly schedule planner1_p1_libreoffice.png",
+        "heatmap_img": "Weekly schedule planner1_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1668,
+            1241
+          ],
+          "difference_bbox_px": [
+            62,
+            96,
+            1604,
+            1144
+          ],
+          "changed_pixels": 671826,
+          "changed_fraction": 0.324556,
+          "mean_abs_rgb": 22.6714,
+          "rmse_rgb": 55.2962,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Weekly schedule planner1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.7447
+  },
+  {
+    "name": "XlsxIssue75",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "XlsxIssue75",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/XlsxIssue75.xlsx",
+    "suite": "issue",
+    "minipdf_size": 13715983,
+    "reference_size": 5896201,
+    "pdf_valid": true,
+    "minipdf_pages": 140,
+    "reference_pages": 144,
+    "compared_pages": 1,
+    "text_similarity": 0.9908,
+    "flat_text_similarity": 0.9908,
+    "word_text_similarity": 0.9904,
+    "text_diff": "--- minipdf/XlsxIssue75.pdf\n+++ reference/XlsxIssue75.pdf\n@@ -48,5 +48,4 @@\n 30184 Fred Invoice\n\n 30184 Fred Invoice\n\n 30184 Fred Invoice\n\n-30184 Fred Invoice\n\n 30184 Fred Invoice",
+    "visual_scores": [
+      0.9695
+    ],
+    "visual_avg": 0.9695,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "XlsxIssue75_p1_minipdf.png",
+        "reference_img": "XlsxIssue75_p1_reference.png",
+        "auxiliary_img": "XlsxIssue75_p1_libreoffice.png",
+        "heatmap_img": "XlsxIssue75_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            112,
+            112,
+            1116,
+            1669
+          ],
+          "changed_pixels": 109169,
+          "changed_fraction": 0.050153,
+          "mean_abs_rgb": 7.5808,
+          "rmse_rgb": 38.5703,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "XlsxIssue75_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.8841
+  },
+  {
+    "name": "XlsxIssue77_MergedCellAlignment",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "XlsxIssue77_MergedCellAlignment",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_MergedCellAlignment.xlsx",
+    "suite": "issue",
+    "minipdf_size": 390095,
+    "reference_size": 172385,
+    "pdf_valid": true,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "compared_pages": 1,
+    "text_similarity": 0.9947,
+    "flat_text_similarity": 0.9947,
+    "word_text_similarity": 0.9941,
+    "text_diff": "--- minipdf/XlsxIssue77_MergedCellAlignment.pdf\n+++ reference/XlsxIssue77_MergedCellAlignment.pdf\n@@ -31,5 +31,4 @@\n Tripple Wide Cell Tripple Wide Cell Tripple Wide Cell\n\n Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple\n\n Tripple Wide and High Cell Tripple Wide and High Cell Tripple Wide and High Cell\n\n-Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple\n\n-Times New Roman Font\n+Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple",
+    "visual_scores": [
+      0.8031
+    ],
+    "visual_avg": 0.8031,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "XlsxIssue77_MergedCellAlignment_p1_minipdf.png",
+        "reference_img": "XlsxIssue77_MergedCellAlignment_p1_reference.png",
+        "auxiliary_img": "XlsxIssue77_MergedCellAlignment_p1_libreoffice.png",
+        "heatmap_img": "XlsxIssue77_MergedCellAlignment_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1650
+          ],
+          "difference_bbox_px": [
+            35,
+            45,
+            1163,
+            1607
+          ],
+          "changed_pixels": 576709,
+          "changed_fraction": 0.281644,
+          "mean_abs_rgb": 37.2991,
+          "rmse_rgb": 85.7278,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "XlsxIssue77_MergedCellAlignment_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9191
+  },
+  {
     "name": "XlsxIssue77_Template1",
     "minipdf_exists": true,
     "reference_exists": true,
@@ -8,24 +856,20 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx",
     "suite": "issue",
-    "minipdf_size": 613804,
+    "minipdf_size": 528706,
     "reference_size": 64464,
     "pdf_valid": true,
     "minipdf_pages": 6,
     "reference_pages": 6,
-    "text_similarity": 0.9969,
-    "flat_text_similarity": 0.9968,
-    "word_text_similarity": 0.1307,
-    "text_diff": "--- minipdf/XlsxIssue77_Template1.pdf\n+++ reference/XlsxIssue77_Template1.pdf\n@@ -6,8 +6,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext\n\n-ra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized\n\n@@ -20,8 +20,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext\n\n-ra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized\n\n@@ -34,8 +34,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext\n\n-ra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized\n\n@@ -48,8 +48,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext\n\n-ra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized\n\n@@ -62,8 +62,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext\n\n-ra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized\n\n@@ -76,8 +76,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR code, original factory packaging, with no ext\n\n-ra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized",
+    "compared_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.9343,
-      0.9343,
-      0.9343,
-      0.9343,
-      0.9343,
-      0.9618
+      0.8456
     ],
-    "visual_avg": 0.9389,
+    "visual_avg": 0.8456,
     "diff_images": [
       {
         "page": 1,
@@ -36,154 +880,248 @@
         "heatmap_metrics": {
           "size_px": [
             1241,
-            1754
+            1650
           ],
           "difference_bbox_px": [
             82,
-            171,
+            95,
             1157,
-            1569
+            1547
           ],
-          "changed_pixels": 279334,
-          "changed_fraction": 0.128328,
-          "mean_abs_rgb": 20.3669,
-          "rmse_rgb": 64.0095,
+          "changed_pixels": 440580,
+          "changed_fraction": 0.215164,
+          "mean_abs_rgb": 25.5886,
+          "rmse_rgb": 69.9147,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "XlsxIssue77_Template1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
-      },
-      {
-        "page": 2,
-        "minipdf_img": "XlsxIssue77_Template1_p2_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p2_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p2_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p2_heatmap.png",
-        "heatmap_metrics": {
-          "size_px": [
-            1241,
-            1754
-          ],
-          "difference_bbox_px": [
-            82,
-            171,
-            1157,
-            1569
-          ],
-          "changed_pixels": 279328,
-          "changed_fraction": 0.128326,
-          "mean_abs_rgb": 20.3367,
-          "rmse_rgb": 63.8803,
-          "threshold": 12,
-          "gain": 5.0
-        },
-        "composite_img": "XlsxIssue77_Template1_p2_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
-      },
-      {
-        "page": 3,
-        "minipdf_img": "XlsxIssue77_Template1_p3_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p3_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p3_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p3_heatmap.png",
-        "heatmap_metrics": {
-          "size_px": [
-            1241,
-            1754
-          ],
-          "difference_bbox_px": [
-            82,
-            171,
-            1157,
-            1569
-          ],
-          "changed_pixels": 279321,
-          "changed_fraction": 0.128322,
-          "mean_abs_rgb": 20.2564,
-          "rmse_rgb": 63.7043,
-          "threshold": 12,
-          "gain": 5.0
-        },
-        "composite_img": "XlsxIssue77_Template1_p3_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
-      },
-      {
-        "page": 4,
-        "minipdf_img": "XlsxIssue77_Template1_p4_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p4_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p4_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p4_heatmap.png",
-        "heatmap_metrics": {
-          "size_px": [
-            1241,
-            1754
-          ],
-          "difference_bbox_px": [
-            82,
-            171,
-            1157,
-            1569
-          ],
-          "changed_pixels": 279322,
-          "changed_fraction": 0.128323,
-          "mean_abs_rgb": 20.2684,
-          "rmse_rgb": 63.727,
-          "threshold": 12,
-          "gain": 5.0
-        },
-        "composite_img": "XlsxIssue77_Template1_p4_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
-      },
-      {
-        "page": 5,
-        "minipdf_img": "XlsxIssue77_Template1_p5_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p5_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p5_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p5_heatmap.png",
-        "heatmap_metrics": {
-          "size_px": [
-            1241,
-            1754
-          ],
-          "difference_bbox_px": [
-            82,
-            171,
-            1157,
-            1569
-          ],
-          "changed_pixels": 279321,
-          "changed_fraction": 0.128322,
-          "mean_abs_rgb": 20.2508,
-          "rmse_rgb": 63.6956,
-          "threshold": 12,
-          "gain": 5.0
-        },
-        "composite_img": "XlsxIssue77_Template1_p5_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
-      },
-      {
-        "page": 6,
-        "minipdf_img": "XlsxIssue77_Template1_p6_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p6_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p6_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p6_heatmap.png",
-        "heatmap_metrics": {
-          "size_px": [
-            1241,
-            1754
-          ],
-          "difference_bbox_px": [
-            82,
-            171,
-            1157,
-            919
-          ],
-          "changed_pixels": 154476,
-          "changed_fraction": 0.070968,
-          "mean_abs_rgb": 11.3203,
-          "rmse_rgb": 47.5455,
-          "threshold": 12,
-          "gain": 5.0
-        },
-        "composite_img": "XlsxIssue77_Template1_p6_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9743
+    "overall_score": 0.9382
+  },
+  {
+    "name": "XlsxIssue77_Template2_Workaround",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "XlsxIssue77_Template2_Workaround",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_Template2_Workaround.xlsx",
+    "suite": "issue",
+    "minipdf_size": 531413,
+    "reference_size": 64466,
+    "pdf_valid": true,
+    "minipdf_pages": 6,
+    "reference_pages": 6,
+    "compared_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
+    "visual_scores": [
+      0.8395
+    ],
+    "visual_avg": 0.8395,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "XlsxIssue77_Template2_Workaround_p1_minipdf.png",
+        "reference_img": "XlsxIssue77_Template2_Workaround_p1_reference.png",
+        "auxiliary_img": "XlsxIssue77_Template2_Workaround_p1_libreoffice.png",
+        "heatmap_img": "XlsxIssue77_Template2_Workaround_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1650
+          ],
+          "difference_bbox_px": [
+            78,
+            95,
+            1153,
+            1553
+          ],
+          "changed_pixels": 444766,
+          "changed_fraction": 0.217208,
+          "mean_abs_rgb": 25.2068,
+          "rmse_rgb": 69.4605,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "XlsxIssue77_Template2_Workaround_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9358
+  },
+  {
+    "name": "XlsxIssue81_LayoutOptions",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "XlsxIssue81_LayoutOptions",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/XlsxIssue81_LayoutOptions.xlsx",
+    "suite": "issue",
+    "minipdf_size": 3842287,
+    "reference_size": 242251,
+    "pdf_valid": true,
+    "minipdf_pages": 16,
+    "reference_pages": 16,
+    "compared_pages": 1,
+    "text_similarity": 0.9807,
+    "flat_text_similarity": 0.9807,
+    "word_text_similarity": 0.8558,
+    "text_diff": "--- minipdf/XlsxIssue81_LayoutOptions.pdf\n+++ reference/XlsxIssue81_LayoutOptions.pdf\n@@ -1,40 +1,39 @@\n Invoice Customer Region Owner\n\n-INV-00001 Customer account with extended legal nam Europe Operations owner 2\n\n-INV-00002 Customer account with extended legal nam Asia Pacific Operations owner 3\n\n-INV-00003 Customer account with extended legal nam Latin America Operations owner 4\n\n-INV-00004 Customer account with extended legal nam North America Operations owner 5\n\n-INV-00005 Customer account with extended legal nam Europe Operations owner 6\n\n-INV-00006 Customer account with extended legal nam Asia Pacific Operations owner 7\n\n-INV-00007 Customer account with extended legal nam Latin America Operations owner 8\n\n-INV-00008 Customer account with extended legal nam North America Operations owner 9\n\n-INV-00009 Customer account with extended legal nam Europe Operations owner 1\n\n-INV-00010 Customer account with extended legal nam Asia Pacific Operations owner 2\n\n-INV-00011 Customer account with extended legal nam Latin America Operations owner 3\n\n-INV-00012 Customer account with extended legal nam North America Operations owner 4\n\n-INV-00013 Customer account with extended legal nam Europe Operations owner 5\n\n-INV-00014 Customer account with extended legal nam Asia Pacific Operations owner 6\n\n-INV-00015 Customer account with extended legal nam Latin America Operations owner 7\n\n-INV-00016 Customer account with extended legal nam North America Operations owner 8\n\n-INV-00017 Customer account with extended legal nam Europe Operations owner 9\n\n-INV-00018 Customer account with extended legal nam Asia Pacific Operations owner 1\n\n-INV-00019 Customer account with extended legal nam Latin America Operations owner 2\n\n-INV-00020 Customer account with extended legal nam North America Operations owner 3\n\n-INV-00021 Customer account with extended legal nam Europe Operations owner 4\n\n-INV-00022 Customer account with extended legal nam Asia Pacific Operations owner 5\n\n-INV-00023 Customer account with extended legal nam Latin America Operations owner 6\n\n-INV-00024 Customer account with extended legal nam North America Operations owner 7\n\n-INV-00025 Customer account with extended legal nam Europe Operations owner 8\n\n-INV-00026 Customer account with extended legal nam Asia Pacific Operations owner 9\n\n-INV-00027 Customer account with extended legal nam Latin America Operations owner 1\n\n-INV-00028 Customer account with extended legal nam North America Operations owner 2\n\n-INV-00029 Customer account with extended legal nam Europe Operations owner 3\n\n-INV-00030 Customer account with extended legal nam Asia Pacific Operations owner 4\n\n-INV-00031 Customer account with extended legal nam Latin America Operations owner 5\n\n-INV-00032 Customer account with extended legal nam North America Operations owner 6\n\n-INV-00033 Customer account with extended legal nam Europe Operations owner 7\n\n-INV-00034 Customer account with extended legal nam Asia Pacific Operations owner 8\n\n-INV-00035 Customer account with extended legal nam Latin America Operations owner 9\n\n-INV-00036 Customer account with extended legal nam North America Operations owner 1\n\n-INV-00037 Customer account with extended legal nam Europe Operations owner 2\n\n-INV-00038 Customer account with extended legal nam Asia Pacific Operations owner 3\n\n-INV-00039 Customer account with extended legal nam Latin America Operations owner 4\n+INV-00001 Customer account with extended legal namEurope Operations owner 2\n\n+INV-00002 Customer account with extended legal namAsia Pacific Operations owner 3\n\n+INV-00003 Customer account with extended legal namLatin America Operations owner 4\n\n+INV-00004 Customer account with extended legal namNorth America Operations owner 5\n\n+INV-00005 Customer account with extended legal namEurope Operations owner 6\n\n+INV-00006 Customer account with extended legal namAsia Pacific Operations owner 7\n\n+INV-00007 Customer account with extended legal namLatin America Operations owner 8\n\n+INV-00008 Customer account with extended legal namNorth America Operations owner 9\n\n+INV-00009 Customer account with extended legal namEurope Operations owner 1\n\n+INV-00010 Customer account with extended legal namAsia Pacific Operations owner 2\n\n+INV-00011 Customer account with extended legal namLatin America Operations owner 3\n\n+INV-00012 Customer account with extended legal namNorth America Operations owner 4\n\n+INV-00013 Customer account with extended legal namEurope Operations owner 5\n\n+INV-00014 Customer account with extended legal namAsia Pacific Operations owner 6\n\n+INV-00015 Customer account with extended legal namLatin America Operations owner 7\n\n+INV-00016 Customer account with extended legal namNorth America Operations owner 8\n\n+INV-00017 Customer account with extended legal namEurope Operations owner 9\n\n+INV-00018 Customer account with extended legal namAsia Pacific Operations owner 1\n\n+INV-00019 Customer account with extended legal namLatin America Operations owner 2\n\n+INV-00020 Customer account with extended legal namNorth America Operations owner 3\n\n+INV-00021 Customer account with extended legal namEurope Operations owner 4\n\n+INV-00022 Customer account with extended legal namAsia Pacific Operations owner 5\n\n+INV-00023 Customer account with extended legal namLatin America Operations owner 6\n\n+INV-00024 Customer account with extended legal namNorth America Operations owner 7\n\n+INV-00025 Customer account with extended legal namEurope Operations owner 8\n\n+INV-00026 Customer account with extended legal namAsia Pacific Operations owner 9\n\n+INV-00027 Customer account with extended legal namLatin America Operations owner 1\n\n+INV-00028 Customer account with extended legal namNorth America Operations owner 2\n\n+INV-00029 Customer account with extended legal namEurope Operations owner 3\n\n+INV-00030 Customer account with extended legal namAsia Pacific Operations owner 4\n\n+INV-00031 Customer account with extended legal namLatin America Operations owner 5\n\n+INV-00032 Customer account with extended legal namNorth America Operations owner 6\n\n+INV-00033 Customer account with extended legal namEurope Operations owner 7\n\n+INV-00034 Customer account with extended legal namAsia Pacific Operations owner 8\n\n+INV-00035 Customer account with extended legal namLatin America Operations owner 9\n\n+INV-00036 Customer account with extended legal namNorth America Operations owner 1\n\n+INV-00037 Customer account with extended legal namEurope Operations owner 2\n\n+INV-00038 Customer account with extended legal namAsia Pacific Operations owner 3",
+    "visual_scores": [
+      0.7905
+    ],
+    "visual_avg": 0.7905,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "XlsxIssue81_LayoutOptions_p1_minipdf.png",
+        "reference_img": "XlsxIssue81_LayoutOptions_p1_reference.png",
+        "auxiliary_img": "XlsxIssue81_LayoutOptions_p1_libreoffice.png",
+        "heatmap_img": "XlsxIssue81_LayoutOptions_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1650
+          ],
+          "difference_bbox_px": [
+            35,
+            73,
+            1066,
+            1545
+          ],
+          "changed_pixels": 569573,
+          "changed_fraction": 0.278159,
+          "mean_abs_rgb": 32.1578,
+          "rmse_rgb": 76.3458,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "XlsxIssue81_LayoutOptions_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9085
+  },
+  {
+    "name": "XlsxIssue82_5mb",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "XlsxIssue82_5mb",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/XlsxIssue82_5mb.xlsx",
+    "suite": "issue",
+    "minipdf_size": 1093160831,
+    "reference_size": 21494385,
+    "pdf_valid": true,
+    "minipdf_pages": 383,
+    "reference_pages": 766,
+    "compared_pages": 1,
+    "text_similarity": 0.8672,
+    "flat_text_similarity": 0.8672,
+    "word_text_similarity": 0.4102,
+    "text_diff": "--- minipdf/XlsxIssue82_5mb.pdf\n+++ reference/XlsxIssue82_5mb.pdf\n@@ -1,47 +1,47 @@\n-Name Email Phone Address Company Text DescriptioJob Title\n\n-Quentin H oschiller@573.920.9 22808 LueMraz and Labore et Non deleniEmergency Management Specialist\n\n-Lowell Ols eve.lind@ 720.754.6 67029 DecRosenbau Soluta nih Aut iste quFast Food Cook\n\n-Sydnee Cr gunnar.sch28126117 908 MatteStrosin, Ki VoluptatemSed aliquidInteraction Designer\n\n-Tomasa Di gerlach.ar +1 (276) 9 787 Rey H Balistreri-KProvident Et cupiditaMotorcycle Mechanic\n\n-Payton Ku herman.ba1-201-33353401 HahWolff-ErdmVero iste laCulpa id a Janitorial Supervisor\n\n-Constantincrist.elme (551) 609-32868 Kul RunolfssonOfficia vol Aut non d Pressing Machine Operator\n\n-Tad Hartmkathryn04 1-928-43477833 Kle Kunze, FraIpsum pra Facilis undTherapist\n\n-Tristian Linlittle.bobb+1.870.92 83843 ReeMitchell-Si DignissimoEum beataTechnical Writer\n\n-Miss Tierragpredovic@912-817-0310 Elliot Ward-WildAb at evenAut voluptCredit Checkers Clerk\n\n-Nicolette Sdomenic4 +1-352-61 13158 Sto Kerluke GrCulpa ea aQuos earuPostsecondary Education Administrators\n\n-Rosalind F kimberly.p86269653 700 Hyatt Bode-SwiftEst et qui qEveniet te Loan Counselor\n\n-Hector Braelarkin@s 1-458-225987 Isom SStrosin-Ku Labore ut Quidem p Cement Mason and Concrete Finisher\n\n-Marjory Kebrandyn.e 1-210-606671 Kaci VMann, Mc Molestias Fuga et ve Brokerage Clerk\n\n-Forrest Tu wilmer93@216.242.5 214 BahrinBlick, O'CoEnim earu Aut sequi Musician\n\n-Kennedy Wgutkowski +1.321.40 693 Mossi Abshire, R Dolor doloRerum aspIndustrial-Organizational Psychologist\n\n-Lysanne H gebert@y +1.272.47 4137 Berg Nitzsche L AsperioresAt dolores Interviewer\n\n-Randall Dagreenholt.24567844 90795 Bei Luettgen, Blanditiis nEt natus q Mixing and Blending Machine Operator\n\n-Chanelle Bsally46@g38889219 8856 AngeYundt-KirliVoluptas laDolores m Communication Equipment Repairer\n\n-Mr. Grego udietrich@1-469-314750 Ebert Goyette InUnde odit Qui aut doClinical Laboratory Technician\n\n-Rosalia Vo donna.sim53465388 9022 CletaAbbott, CaSoluta id t Aut sit et aMechanical Engineer\n\n-Sigmund Tteresa93@+1.937.53 2314 Crist Aufderhar Consectet QuibusdamProducer\n\n-Prof. Janic ahettinger312.745.3 50901 LudSawayn, WSint aut reAlias sed vLoading Machine Operator\n\n-Mr. Brad F lhickle@ya856-513-791499 Mo Keebler, LuAssumendAsperioresAircraft Mechanics OR Aircraft Service Technician\n\n-Christop Gdstrosin@ (563) 429-150 BertraKreiger LtdQuas occa Commodi Aircraft Body Repairer\n\n-Dr. Toni M erling43@+1-765-38 6102 Assu Jenkins IncLaborum aUt aut et uLog Grader and Scaler\n\n-Reece Fad ekirlin@lo463.613.7 9314 Sibyl Feeney Gr Voluptate Quo exerc Recordkeeping Clerk\n\n-Izaiah Skilehgoyette@240-241-28932 BartoDavis-Wel Qui fuga dEnim quia Biologist\n\n-Mathilde Siromaguera1-218-29880599 Pro Carter-PurAb voluptaSimilique sFence Erector\n\n-Mr. Jarred dimitri.hay279.899.6 6187 ConnKonopelskAutem sit Soluta dol Paralegal\n\n-Kameron Psimone.hy1-510-89134203 Kat StiedemanIpsa ut amPerspiciati Directory Assistance Operator\n\n-Miss Libbyathena68@+1.937.89 1155 Max D'Amore-WEst dolor eEum volupGrinder OR Polisher\n\n-Nayeli Ber nadia28@ 1-781-79758562 BotLittle, VolkHarum sunExercitatioLife Science Technician\n\n-Chaz Bogadevan58@+1.870.44 657 ClotildStracke IncEst animi eIllum cum Health Technologist\n\n-Frieda Mo emuller@ 1-458-70091308 Bar Jerde PLC RecusandaEst eos et Rotary Drill Operator\n\n-Jarod Grimqblanda@283-286-9315 O'Har Upton GroAperiam aQuasi repeCrane and Tower Operator\n\n-Mr. Mortimraleigh27@+1.989.30 67860 Lar SatterfieldArchitectoCorporis ipDrilling and Boring Machine Tool Setter\n\n-Jamel Waeborer.baby(603) 715-9430 PrudDach-KovaAliquid qu Molestiae Environmental Scientist\n\n-Reggie Simrosemary. +1.406.75 82982 HagSteuber-JeAt quia maEt volupta Production Inspector\n\n-Jermey M shanahan.361.565.1 3769 NathKlocko, OlsUt quae u Id qui qua Computer Hardware Engineer\n\n-Ms. Bettie lschiller@ 813.448.1 3590 Kayli Herman-S Omnis sit Libero qui Telephone Station Installer and Repairer\n\n-Jairo Stros eunice85@+1 (540) 9 9011 Jaku Champlin, Reiciendis Doloremq Visual Designer\n\n-Delbert M dskiles@w410.520.5 8242 TraceRaynor PL Modi evenConsequatStaff Psychologist\n\n-Mr. Hunte marlon.witi (754) 982-556 Isabel Streich, Tr In esse no Aut quam Product Specialist\n\n-Dr. Nedra porter.sch (281) 622-58710 RoxRosenbau Ea eaque tPorro et etEngineer\n\n-Katrine Sat reyes95@ 951.258.8 86792 Effi Lakin-HarrItaque vel Animi voluReceptionist and Information Clerk\n\n-Dr. Jarrod ignacio.fei +1-318-42 150 ClemmBogisich-S Hic at et s Facere ratiPR Manager\n+Name Email Phone Address Company Text DescriptionJob Title\n\n+Quentin Hyoschiller@ 573.920.9822808 LueiMraz and SLabore et mNon deleniEmergency Management Specialis\n\n+Lowell Olsoeve.lind@b720.754.6467029 Dec RosenbaumSoluta nihi Aut iste qu Fast Food Cook\n\n+Sydnee Crisgunnar.sch 1.31E+10 908 MatteoStrosin, Kil VoluptatemSed aliquidInteraction Designer\n\n+Tomasa Diegerlach.arn+1 (276) 97787 Rey HaBalistreri-KProvident hEt cupidita Motorcycle Mechanic\n\n+Payton Kutherman.ba1-201-333-53401 Hah Wolff-ErdmVero iste laCulpa id amJanitorial Supervisor\n\n+Constantin crist.elmer@(551) 609-532868 KulaRunolfssonOfficia voluAut non doPressing Machine Operator\n\n+Tad Hartm kathryn04@1-928-434-77833 KleinKunze, FramIpsum praeFacilis undeTherapist\n\n+Tristian Linlittle.bobbi+1.870.92383843 ReedMitchell-StDignissimoEum beata Technical Writer\n\n+Miss Tierragpredovic@912-817-07310 Elliot FWard-WildAb at even Aut voluptaCredit Checkers Clerk\n\n+Nicolette S domenic43+1-352-61413158 StoltKerluke GroCulpa ea amQuos earumPostsecondary Education Adminis\n\n+Rosalind Frkimberly.p 1.68E+10 700 Hyatt CBode-SwiftEst et qui qEveniet temLoan Counselor\n\n+Hector Bra elarkin@sc1-458-225-987 Isom S Strosin-KuhLabore ut cQuidem poCement Mason and Concrete Fini\n\n+Marjory Kebrandyn.er1-210-606-671 Kaci Vi Mann, McLMolestias aFuga et verBrokerage Clerk\n\n+Forrest Turwilmer93@216.242.51214 Bahrin Blick, O'Co Enim earumAut sequi qMusician\n\n+Kennedy Wgutkowski. +1.321.400693 MossieAbshire, Ri Dolor dolo Rerum asp Industrial-Organizational Psycholo\n\n+Lysanne Hugebert@ya+1.272.4734137 BergeNitzsche LLAsperiores At dolores Interviewer\n\n+Randall Da greenholt.s 1.7E+10 90795 BeieLuettgen, HBlanditiis nEt natus quMixing and Blending Machine Ope\n\n+Chanelle Basally46@gm1.44E+10 8856 Ange Yundt-KirlinVoluptas laDolores moCommunication Equipment Repai\n\n+Mr. Gregorudietrich@1-469-314-750 Ebert SGoyette IncUnde odit dQui aut do Clinical Laboratory Technician\n\n+Rosalia Vondonna.simo 1.39E+10 9022 Cleta Abbott, Ca Soluta id teAut sit et a Mechanical Engineer\n\n+Sigmund Thteresa93@+1.937.5302314 Crist Aufderhar, ConsectetuQuibusdamProducer\n\n+Prof. Janiceahettinger@312.745.3550901 LudwSawayn, WSint aut reiAlias sed voLoading Machine Operator\n\n+Mr. Brad Felhickle@ya856-513-7891499 MosKeebler, LuAssumendaAsperiores Aircraft Mechanics OR Aircraft Se\n\n+Christop Grdstrosin@c(563) 429-4150 BertranKreiger Ltd Quas occaeCommodi aAircraft Body Repairer\n\n+Dr. Toni Moerling43@w+1-765-3826102 AssunJenkins Inc Laborum a Ut aut et u Log Grader and Scaler\n\n+Reece Fadeekirlin@low463.613.729314 Sibyl Feeney GroVoluptate eQuo exerci Recordkeeping Clerk\n\n+Izaiah Skilehgoyette@240-241-268932 BartoDavis-WelcQui fuga doEnim quia aBiologist\n\n+Mathilde S romaguera1-218-298-80599 ProhCarter-PurdAb volupta Similique s Fence Erector\n\n+Mr. Jarred dimitri.hay279.899.676187 Conn KonopelskiAutem sit pSoluta doloParalegal\n\n+Kameron Psimone.hya1-510-891-34203 KathStiedeman Ipsa ut amePerspiciatisDirectory Assistance Operator\n\n+Miss Libby athena68@+1.937.8951155 MaximD'Amore-WEst dolor e Eum voluptGrinder OR Polisher\n\n+Nayeli Bergnadia28@y1-781-797-58562 BotsLittle, Volk Harum sunExercitatio Life Science Technician\n\n+Chaz Bogandevan58@ +1.870.440657 Clotild Stracke IncEst animi eIllum cum qHealth Technologist\n\n+Frieda Mosemuller@e1-458-700-91308 BarbJerde PLC Recusanda Est eos et eRotary Drill Operator\n\n+Jarod Grimqblanda@b283-286-97315 O'HaraUpton Gro Aperiam acQuasi repe Crane and Tower Operator\n\n+Mr. Mortimraleigh27@+1.989.30667860 Larr Satterfield Architecto Corporis ip Drilling and Boring Machine Tool S\n\n+Jamel Waeborer.baby(603) 715-99430 PrudeDach-Kova Aliquid quoMolestiae qEnvironmental Scientist\n\n+Reggie Simrosemary.k+1.406.75482982 Hag Steuber-Je At quia maEt voluptasProduction Inspector\n\n+Jermey Mushanahan.s361.565.143769 NathaKlocko, OlsUt quae ullId qui quasComputer Hardware Engineer\n\n+Ms. Bettie lschiller@h813.448.173590 Kayli Herman-ScOmnis sit cLibero qui Telephone Station Installer and Re\n\n+Jairo Strosieunice85@+1 (540) 939011 JakubChamplin, Reiciendis DoloremquVisual Designer\n\n+Delbert Mudskiles@w 410.520.528242 Trace Raynor PLCModi even Consequat Staff Psychologist\n\n+Mr. Huntermarlon.wit(754) 982-6556 Isabell Streich, TroIn esse nonAut quam qProduct Specialist\n\n+Dr. Nedra Uporter.scho(281) 622-958710 RoxaRosenbaumEa eaque tePorro et et Engineer\n\n+Katrine Satreyes95@h951.258.8086792 EffieLakin-HarriItaque vel lAnimi volu Receptionist and Information Cler\n\n+Dr. Jarrod Fignacio.feil +1-318-420150 ClemmBogisich-StHic at et sinFacere rati PR Manager",
+    "visual_scores": [
+      0.835
+    ],
+    "visual_avg": 0.835,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "XlsxIssue82_5mb_p1_minipdf.png",
+        "reference_img": "XlsxIssue82_5mb_p1_reference.png",
+        "auxiliary_img": "XlsxIssue82_5mb_p1_libreoffice.png",
+        "heatmap_img": "XlsxIssue82_5mb_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1650
+          ],
+          "difference_bbox_px": [
+            108,
+            122,
+            1222,
+            1523
+          ],
+          "changed_pixels": 467730,
+          "changed_fraction": 0.228423,
+          "mean_abs_rgb": 34.2896,
+          "rmse_rgb": 81.5064,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "XlsxIssue82_5mb_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.7809
+  },
+  {
+    "name": "XlsxIssue82_SampleTestData5mb",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "XlsxIssue82_SampleTestData5mb",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/XlsxIssue82_SampleTestData5mb.xlsx",
+    "suite": "issue",
+    "minipdf_size": 705787483,
+    "reference_size": 32924505,
+    "pdf_valid": true,
+    "minipdf_pages": 435,
+    "reference_pages": 1668,
+    "compared_pages": 1,
+    "text_similarity": 0.6176,
+    "flat_text_similarity": 0.3984,
+    "word_text_similarity": 0.6176,
+    "text_diff": "--- minipdf/XlsxIssue82_SampleTestData5mb.pdf\n+++ reference/XlsxIssue82_SampleTestData5mb.pdf\n@@ -1,46 +1,48 @@\n-ID Name Email City Country Departme Notes Value1 Value2 RandomText\n\n-1 User 1 user1@ex Toronto UK IT pwJqdCFm 760613 72576615 aJ3NulIjekFszDr5uAOvjTW\n\n-2 User 2 user2@ex Delhi Germany IT S6gIttJQrY 456305 24213791 pf092rX59pMVKusbfiaJYv\n\n-3 User 3 user3@ex Sydney UK Finance mmp5R2o 802115 90762297 FICghVXe4Pd3hKRCupNh\n\n-4 User 4 user4@ex Berlin Australia HR BpiYtDuC1 929132 97747054 Dqy4YfhZVRKoU4MQPEw\n\n-5 User 5 user5@ex Berlin France HR DXnTIbeTy 178492 57171228 KXaj1XiogboogGppXhSvE\n\n-6 User 6 user6@ex Delhi Australia HR Iw9DkBED 518412 95574193 U601Kz3aUylPSRV6SVs0t\n\n-7 User 7 user7@ex Toronto Australia Finance tN5mvZpZ 72218 70818228 GuleIeBIYZczfrOqI0XBrqF\n\n-8 User 8 user8@ex Tokyo USA Ops xqmF3Xc2 238623 86525974 kEPOh7wmqkRjD7laS1MA\n\n-9 User 9 user9@ex London Australia Ops k099328N 369743 49049124 D5YOUBWJGzP43Qafmuu\n\n-10 User 10 user10@eDelhi Germany IT 3YvAHvcSG 24089 21668827 goDwaKqvlHPqqXocf2nUy\n\n-11 User 11 user11@eSydney France Sales r2O9ZtMJy 929463 27573623 F4rYXgsl2m3XP9ocAJxMN\n\n-12 User 12 user12@eTokyo Japan Sales y8JVUgTdff 777742 93571132 wNpAAEwHvkZhFUlh99tH\n\n-13 User 13 user13@eTokyo India Support v5XTbqBU 223784 91246594 FlobOTEN9qfliiewj5lxRLM\n\n-14 User 14 user14@eNew York Japan Ops pxwvBMP 187168 93853101 cJSx1oYMF9mqkznD1QT8\n\n-15 User 15 user15@eSydney Japan Ops NPs68SCLX 332785 50121304 82hWYSRrOSFlomH3Gvv1\n\n-16 User 16 user16@eDelhi Canada Ops JMgIo6JDv 966595 07984397 4BAbUAcF8HLYK9JHq3jj4\n\n-17 User 17 user17@eParis Australia Ops LWFef8uC 429423 22218843 UQEtbOYiFJw9CXErvuTiEr\n\n-18 User 18 user18@eTokyo Australia Ops 4y2atULBn 179954 52678655 AKEBEMk7LmS6Dgg9YcYn\n\n-19 User 19 user19@eBerlin France Finance MoiyHIdz6 416476 24642597 yKogEsvtgjzTqXNVWBylLq\n\n-20 User 20 user20@eLondon India Sales Gg4eeM2f 152083 09921012 4bCh4zWg5rIe3yJ1k2lGW\n\n-21 User 21 user21@eTokyo India Finance hk0tj7hQt 913510 07502412 uQ5Qw22c6qfmDqQ0pPJ\n\n-22 User 22 user22@eNew York UK IT FexqT7i2Z 959850 19319215 6WLsCwBvSzwhTYPQGlPO\n\n-23 User 23 user23@eSydney Japan Ops wZdZL0KlV 813108 06367596 ovnVvOjCS3spejVOAdM6\n\n-24 User 24 user24@eLondon Germany Support I6go0j9fZK 175461 39029965 euHzFEtXjD0gPbUSMXjUS\n\n-25 User 25 user25@eLondon Canada Ops eE9wvY61 582815 09838566 4E725SLTRuB0TDyewF1iU\n\n-26 User 26 user26@eTokyo Japan Support vTlTmSLZK 698910 16223284 63fo6sebUsgvmf5Tdgu2J\n\n-27 User 27 user27@eDelhi UK Ops 001jLkp56 463742 27812386 cPF7y1qrqrbXduLROmKIG\n\n-28 User 28 user28@eTokyo India Ops JYMn1HVG 185984 14627172 aFVmUW0iuXfHDfK7hWM\n\n-29 User 29 user29@eLondon India Sales kDD8aBkf 110478 74045311 e8DIRNwLNuloNl30L338n\n\n-30 User 30 user30@eBerlin UK Ops vt3rlC8s2T 165682 37984582 cuF6nwLUR8OzYfBCiBYK0\n\n-31 User 31 user31@eSydney Canada Ops Sy0TGdVh 300288 32443793 17YQUGbpPgEUpY1pIVyQ\n\n-32 User 32 user32@eLondon Japan IT nuLK3hv5 932811 76962846 RGlzsAMoPYS7aALJLOK1x\n\n-33 User 33 user33@eTokyo Australia Finance 8QxYNykp 732250 69148157 14ZKlRNVj4ejM9uIyvr3o2\n\n-34 User 34 user34@eNew York Germany IT WpY292G 120021 52264025 zWJnnfwskM5aRvU08J9C\n\n-35 User 35 user35@eParis India IT Jc9UIcHT9 631634 26909091 aLR8YGHPOL2mEhDMkG\n\n-36 User 36 user36@eSydney Canada Ops JuxIUrhxzG 858909 51338162 8LPabTH0ojYHuwFQWrfu\n\n-37 User 37 user37@eBerlin Germany Ops f3VPwwbQ 335553 32625091 xevCKmwRJ7bgT2WuYNA\n\n-38 User 38 user38@eNew York India Support RK2dsJAxo 77274 93376878 dG5rwOUqtvEn1NGfuElL\n\n-39 User 39 user39@eLondon UK Ops h7clcYpBd 127744 56652329 0zQYEUv9aIziCLxZyQ5Do3\n\n-40 User 40 user40@eParis Canada IT 5fFW0pL9 766118 41095237 8uBRN1W1BSg2aMSshjpv\n\n-41 User 41 user41@eTokyo Australia HR b0aptneoq 18584 46087567 90pCYpBY8aUL6OStNtU3\n\n-42 User 42 user42@eSydney Canada HR zc3bKQDT 377914 37730974 ug1YisiJ5B6A50oeMvfUvk\n\n-43 User 43 user43@eSydney India IT kOXLmqe2 692339 86886867 oziAXf1ScKJX7zgkYDGHOy\n\n-44 User 44 user44@eNew York Canada Sales IfbMmzIxe 211604 73478064 6cuChdxefyQlFOjVS2tzAq\n\n-45 User 45 user45@eSydney Australia Ops pSgTVUUS 678354 00635176 YqmZM6QTH6TQCZgevxC\n+ID Name Email City Country DepartmenNotes Value1 Value2\n\n+1 User 1 user1@exaToronto UK IT pwJqdCFm 760613 0.677075\n\n+2 User 2 user2@exaDelhi Germany IT S6gIttJQrYi 456305 0.850162\n\n+3 User 3 user3@exaSydney UK Finance mmp5R2oK 802115 0.441672\n\n+4 User 4 user4@exaBerlin Australia HR BpiYtDuC1 929132 0.982312\n\n+5 User 5 user5@exaBerlin France HR DXnTIbeTy 178492 0.932555\n\n+6 User 6 user6@exaDelhi Australia HR Iw9DkBEDh 518412 0.126132\n\n+7 User 7 user7@exaToronto Australia Finance tN5mvZpZF 72218 0.514387\n\n+8 User 8 user8@exaTokyo USA Ops xqmF3Xc2n 238623 0.877195\n\n+9 User 9 user9@exaLondon Australia Ops k099328Ns 369743 0.61536\n\n+10 User 10 user10@exDelhi Germany IT 3YvAHvcSG 24089 0.940573\n\n+11 User 11 user11@exSydney France Sales r2O9ZtMJy 929463 0.425577\n\n+12 User 12 user12@exTokyo Japan Sales y8JVUgTdff 777742 0.638975\n\n+13 User 13 user13@exTokyo India Support v5XTbqBUb 223784 0.231851\n\n+14 User 14 user14@exNew York Japan Ops pxwvBMPV 187168 0.756212\n\n+15 User 15 user15@exSydney Japan Ops NPs68SCLX 332785 0.347663\n\n+16 User 16 user16@exDelhi Canada Ops JMgIo6JDv 966595 0.109497\n\n+17 User 17 user17@exParis Australia Ops LWFef8uCc 429423 0.17287\n\n+18 User 18 user18@exTokyo Australia Ops 4y2atULBn 179954 0.914514\n\n+19 User 19 user19@exBerlin France Finance MoiyHIdz6 416476 0.417835\n\n+20 User 20 user20@exLondon India Sales Gg4eeM2f 152083 0.279652\n\n+21 User 21 user21@exTokyo India Finance hk0tj7hQtj 913510 0.521474\n\n+22 User 22 user22@exNew York UK IT FexqT7i2Zp 959850 0.200401\n\n+23 User 23 user23@exSydney Japan Ops wZdZL0KlV 813108 0.075899\n\n+24 User 24 user24@exLondon Germany Support I6go0j9fZK 175461 0.270266\n\n+25 User 25 user25@exLondon Canada Ops eE9wvY61e 582815 0.832595\n\n+26 User 26 user26@exTokyo Japan Support vTlTmSLZK 698910 0.057233\n\n+27 User 27 user27@exDelhi UK Ops 001jLkp56y 463742 0.63661\n\n+28 User 28 user28@exTokyo India Ops JYMn1HVG 185984 0.751651\n\n+29 User 29 user29@exLondon India Sales kDD8aBkfu 110478 0.838007\n\n+30 User 30 user30@exBerlin UK Ops vt3rlC8s2T 165682 0.478451\n\n+31 User 31 user31@exSydney Canada Ops Sy0TGdVhk 300288 0.545536\n\n+32 User 32 user32@exLondon Japan IT nuLK3hv5k 932811 0.932735\n\n+33 User 33 user33@exTokyo Australia Finance 8QxYNykpz 732250 0.084105\n\n+34 User 34 user34@exNew York Germany IT WpY292GK 120021 0.21291\n\n+35 User 35 user35@exParis India IT Jc9UIcHT95 631634 0.349515\n\n+36 User 36 user36@exSydney Canada Ops JuxIUrhxzG 858909 0.846671\n\n+37 User 37 user37@exBerlin Germany Ops f3VPwwbQ 335553 0.828366\n\n+38 User 38 user38@exNew York India Support RK2dsJAxo 77274 0.092323\n\n+39 User 39 user39@exLondon UK Ops h7clcYpBdQ 127744 0.423544\n\n+40 User 40 user40@exParis Canada IT 5fFW0pL9J 766118 0.096212\n\n+41 User 41 user41@exTokyo Australia HR b0aptneoq 18584 0.306941\n\n+42 User 42 user42@exSydney Canada HR zc3bKQDT0 377914 0.114315\n\n+43 User 43 user43@exSydney India IT kOXLmqe2 692339 0.917215\n\n+44 User 44 user44@exNew York Canada Sales IfbMmzIxeT 211604 0.760957\n\n+45 User 45 user45@exSydney Australia Ops pSgTVUUSc 678354 0.735938\n\n+46 User 46 user46@exToronto Australia Sales RfaAbjGWL 538685 0.10975\n\n+47 User 47 user47@exDelhi France IT qIEmsQfW 731498 0.602969",
+    "visual_scores": [
+      0.887
+    ],
+    "visual_avg": 0.887,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "XlsxIssue82_SampleTestData5mb_p1_minipdf.png",
+        "reference_img": "XlsxIssue82_SampleTestData5mb_p1_reference.png",
+        "auxiliary_img": "XlsxIssue82_SampleTestData5mb_p1_libreoffice.png",
+        "heatmap_img": "XlsxIssue82_SampleTestData5mb_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            119,
+            157,
+            1241,
+            1599
+          ],
+          "changed_pixels": 432033,
+          "changed_fraction": 0.198479,
+          "mean_abs_rgb": 32.518,
+          "rmse_rgb": 81.6347,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "XlsxIssue82_SampleTestData5mb_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.7018
+  },
+  {
+    "name": "XlsxIssue82_WideTable",
+    "minipdf_exists": true,
+    "reference_exists": false,
+    "report_scope": "rust-issue-xlsx",
+    "case_id": "XlsxIssue82_WideTable",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/XlsxIssue82_WideTable.xlsx",
+    "suite": "issue",
+    "error": "Reference PDF not found",
+    "score": 0.0
   }
 ]
