@@ -624,6 +624,8 @@ fn font_preference(
             ("corbel", true, true) => "corbelz",
             ("corbel", true, false) => "corbelb",
             ("corbel", false, true) => "corbeli",
+            ("gara", true, false) => "garabd",
+            ("gara", false, true) => "garait",
             ("bookos", true, true) => "bookosbi",
             ("bookos", true, false) => "bookosb",
             ("bookos", false, true) => "bookosi",
@@ -633,6 +635,9 @@ fn font_preference(
             ("grandview", true, true) => "grandviewz",
             ("grandview", true, false) => "grandviewb",
             ("grandview", false, true) => "grandviewi",
+            ("tcm_____", true, true) => "tcbi____",
+            ("tcm_____", true, false) => "tcb_____",
+            ("tcm_____", false, true) => "tcmi____",
             _ => preferred.as_str(),
         };
         if name == preferred_variant {
@@ -1031,6 +1036,20 @@ mod tests {
         assert_eq!(
             font_preference("calibrib", 'A', true, false, Some("bookos")),
             2
+        );
+    }
+
+    #[test]
+    fn prefers_matching_invoice_font_variants() {
+        assert_eq!(font_preference("gara", 'A', false, false, Some("gara")), 0);
+        assert_eq!(font_preference("garabd", 'A', true, false, Some("gara")), 0);
+        assert_eq!(
+            font_preference("tcm_____", 'A', false, false, Some("tcm_____")),
+            0
+        );
+        assert_eq!(
+            font_preference("tcb_____", 'A', true, false, Some("tcm_____")),
+            0
         );
     }
 

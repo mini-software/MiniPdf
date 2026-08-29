@@ -14,6 +14,7 @@ categories = ["encoding", "parser-implementations"]
 exclude = ["target/"]
 
 [dependencies]
+chrono.workspace = true
 flate2.workspace = true
 image.workspace = true
 roxmltree.workspace = true

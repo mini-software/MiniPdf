@@ -15,6 +15,7 @@ documentation = "https://docs.rs/minipdf"
 rust-version = "1.82"
 
 [workspace.dependencies]
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
 clap = { version = "4.5", features = ["derive"] }
 flate2 = "1"
 image = { version = "0.25", default-features = false, features = ["png"] }
