@@ -103,6 +103,8 @@ MiniPdf 專注於實用文件轉換，不追求完整複製 Microsoft Office 版
 | [Rust 文件](../minipdf-rs/README.md) | 實驗版 crate 與 CLI 用法 |
 | [.NET XLSX 基準](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | 試算表視覺比較結果 |
 | [.NET DOCX 基準](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | 文件視覺比較結果 |
+| [Rust XLSX 基準](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust 試算表視覺比較結果 |
+| [Rust DOCX 基準](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust 文件視覺比較結果 |
 | [Rust 基準流程](../scripts/Run-Rust-Benchmark.ps1) | 產生測試涵蓋率與比較報告 |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | 套件與獨立二進位檔 |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | 錯誤、相容性報告與功能建議 |

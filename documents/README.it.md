@@ -103,6 +103,8 @@ Entrambi i percorsi richiedono Git, Python 3.10+ e LibreOffice. .NET richiede .N
 | [Documentazione Rust](../minipdf-rs/README.md) | Uso del crate sperimentale e della CLI |
 | [Benchmark XLSX .NET](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | Risultati visivi per i fogli di calcolo |
 | [Benchmark DOCX .NET](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | Risultati visivi per i documenti |
+| [Benchmark XLSX Rust](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Risultati del confronto visivo Rust per i fogli di calcolo |
+| [Benchmark DOCX Rust](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Risultati del confronto visivo Rust per i documenti |
 | [Flusso benchmark Rust](../scripts/Run-Rust-Benchmark.ps1) | Genera copertura dei test e report comparativi |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | Pacchetti e binari autonomi |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | Bug, problemi di compatibilità e richieste di funzionalità |

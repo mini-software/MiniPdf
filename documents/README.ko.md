@@ -103,6 +103,8 @@ GitHub Copilot Agent를 사용하는 VS Code에서 깨끗한 fork 또는 clone�
 | [Rust 문서](../minipdf-rs/README.md) | 실험 버전 crate 및 CLI 사용법 |
 | [.NET XLSX 벤치마크](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | 스프레드시트 시각 비교 결과 |
 | [.NET DOCX 벤치마크](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | 문서 시각 비교 결과 |
+| [Rust XLSX 벤치마크](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust 스프레드시트 시각 비교 결과 |
+| [Rust DOCX 벤치마크](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust 문서 시각 비교 결과 |
 | [Rust 벤치마크 절차](../scripts/Run-Rust-Benchmark.ps1) | 픽스처 범위 및 비교 보고서 생성 |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | 패키지 및 독립 실행형 바이너리 |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | 버그, 호환성 보고 및 기능 요청 |

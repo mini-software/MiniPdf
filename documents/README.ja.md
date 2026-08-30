@@ -103,6 +103,8 @@ MiniPdf は実用的な文書変換を目的としており、Microsoft Office �
 | [Rust ドキュメント](../minipdf-rs/README.md) | 実験版 crate と CLI の使用方法 |
 | [.NET XLSX ベンチマーク](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | スプレッドシートの視覚比較結果 |
 | [.NET DOCX ベンチマーク](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | 文書の視覚比較結果 |
+| [Rust XLSX ベンチマーク](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust スプレッドシートの視覚比較結果 |
+| [Rust DOCX ベンチマーク](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust ドキュメントの視覚比較結果 |
 | [Rust ベンチマーク手順](../scripts/Run-Rust-Benchmark.ps1) | フィクスチャ範囲と比較レポートを生成 |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | パッケージと単体バイナリ |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | バグ、互換性レポート、機能リクエスト |

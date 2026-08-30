@@ -123,6 +123,8 @@ approval.
 | [Rust documentation](minipdf-rs/README.md) | Experimental crate and CLI usage |
 | [.NET XLSX benchmark](tests/MiniPdf.Benchmark/reports/comparison_report.md) | Visual comparison results for spreadsheets |
 | [.NET DOCX benchmark](tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | Visual comparison results for documents |
+| [Rust XLSX benchmark](artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust spreadsheet visual comparison results |
+| [Rust DOCX benchmark](artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust document visual comparison results |
 | [Rust benchmark workflow](scripts/Run-Rust-Benchmark.ps1) | Generate fixture coverage and comparison reports |
 | [GitHub releases](https://github.com/mini-software/MiniPdf/releases) | Packages and standalone binaries |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | Bugs, compatibility reports, and feature requests |

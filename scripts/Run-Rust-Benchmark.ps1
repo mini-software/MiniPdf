@@ -135,6 +135,9 @@ if ($SourceFiles.Count -eq 0) {
     throw "No .$Format files matched '$Filter' in $SourceDir"
 }
 
+if (Test-Path -LiteralPath $ReportDir) {
+    Remove-Item -LiteralPath $ReportDir -Recurse -Force
+}
 New-Item -ItemType Directory -Force -Path $CandidateDir, $ReferenceDir, $AuxiliaryReferenceDir, $ReportDir | Out-Null
 
 $Cases = @($SourceFiles | ForEach-Object {
@@ -157,9 +160,9 @@ $Cases = @($SourceFiles | ForEach-Object {
 Write-Host "Rust benchmark matrix: suite=$Suite format=$Format primary=o365 auxiliary=libreoffice selected=$($Cases.Count)"
 Write-Host "Shared fixtures only; C# xUnit assertions are not executed by this command."
 
-$Cli = Join-Path $RepoRoot "minipdf-rs/target/debug/minipdf.exe"
+$Cli = Join-Path $RepoRoot "minipdf-rs/target/release/minipdf.exe"
 if (-not $SkipCandidate) {
-    & $Cargo build --manifest-path $CargoManifest -p minipdf-cli
+    & $Cargo build --release --manifest-path $CargoManifest -p minipdf-cli
     if ($LASTEXITCODE -ne 0) { throw "Rust CLI build failed." }
 
     for ($Index = 0; $Index -lt $SourceFiles.Count; $Index++) {
