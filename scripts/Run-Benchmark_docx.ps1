@@ -17,6 +17,7 @@ param(
     [switch]$SkipGenerate,
     [switch]$SkipMiniPdf,
     [switch]$SkipReference,
+    [switch]$ForceReference,
     [switch]$SkipInstall,
     [switch]$WithOffice,
     [switch]$SkipOffice,
@@ -36,7 +37,9 @@ param(
     [double]$HeatmapGain = 5.0,
     [string]$CandidateLabel = "MiniPdf",
     [string]$ReferenceLabel,
-    [string]$OfficeLabel = "Office"
+    [string]$OfficeLabel = "Office",
+    [string]$PythonPath,
+    [switch]$NoOpen
 )
 
 $ErrorActionPreference = "Continue"
@@ -49,6 +52,18 @@ function Resolve-BenchmarkPath([string]$PathValue) {
     return Join-Path $ScriptRoot $PathValue
 }
 
+if (-not $PythonPath) {
+    $PythonPath = @(
+        (Join-Path $ScriptRoot ".venv\Scripts\python.exe"),
+        (Join-Path $ScriptRoot ".venv/bin/python")
+    ) | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
+}
+if (-not $PythonPath) {
+    $pythonCommand = Get-Command python, python3 -ErrorAction SilentlyContinue | Select-Object -First 1
+    $PythonPath = if ($pythonCommand) { $pythonCommand.Source } else { $null }
+}
+if (-not $PythonPath) { throw "Python 3.10+ was not found." }
+
 Write-Host "`n============================================================" -ForegroundColor Cyan
 Write-Host "  MiniPdf DOCX Benchmark Pipeline" -ForegroundColor Cyan
 Write-Host "============================================================`n" -ForegroundColor Cyan
@@ -56,7 +71,7 @@ Write-Host "============================================================`n" -For
 # Step 0: Install Python dependencies
 if (-not $SkipInstall) {
     Write-Host "[Step 0] Installing Python dependencies..." -ForegroundColor Yellow
-    pip install python-docx pymupdf Pillow pywin32 --quiet 2>$null
+    & $PythonPath -m pip install python-docx pymupdf Pillow pywin32 --quiet 2>$null
     if ($LASTEXITCODE -ne 0) {
         Write-Host "  WARNING: pip install had issues. Continuing anyway..." -ForegroundColor DarkYellow
     } else {
@@ -70,6 +85,7 @@ if ($CompareOnly) { $pyArgs += "--compare-only" }
 if ($SkipGenerate) { $pyArgs += "--skip-generate" }
 if ($SkipMiniPdf) { $pyArgs += "--skip-minipdf" }
 if ($SkipReference) { $pyArgs += "--skip-reference" }
+if ($ForceReference) { $pyArgs += "--force-reference" }
 if ($WithOffice) { $pyArgs += "--with-office" }
 if ($SkipOffice) { $pyArgs += "--skip-office" }
 if ($Engine -ne "o365") { $pyArgs += "--engine"; $pyArgs += $Engine }
@@ -92,10 +108,10 @@ if ($ReferenceLabel) { $pyArgs += "--reference-label"; $pyArgs += $ReferenceLabe
 if ($OfficeLabel -ne "Office") { $pyArgs += "--office-label"; $pyArgs += $OfficeLabel }
 
 # Run the benchmark pipeline
-Write-Host "`n[Running] python run_benchmark_docx.py $($pyArgs -join ' ')`n" -ForegroundColor Yellow
+Write-Host "`n[Running] $PythonPath run_benchmark_docx.py $($pyArgs -join ' ')`n" -ForegroundColor Yellow
 Push-Location $BenchmarkDir
 try {
-    python run_benchmark_docx.py @pyArgs
+    & $PythonPath run_benchmark_docx.py @pyArgs
 } finally {
     Pop-Location
 }
@@ -105,12 +121,14 @@ $reportDirPath = if ($ReportDir) { Resolve-BenchmarkPath $ReportDir } else { Joi
 $reportPath = Join-Path $reportDirPath "comparison_report.md"
 if (Test-Path $reportPath) {
     Write-Host "`n[Done] Report: $reportPath" -ForegroundColor Green
-    Write-Host "Opening report..." -ForegroundColor Cyan
-    $code = Get-Command code -ErrorAction SilentlyContinue
-    if ($code) {
-        code $reportPath
-    } else {
-        Start-Process notepad.exe -ArgumentList $reportPath
+    if (-not $NoOpen) {
+        Write-Host "Opening report..." -ForegroundColor Cyan
+        $code = Get-Command code -ErrorAction SilentlyContinue
+        if ($code) {
+            code $reportPath
+        } else {
+            Start-Process notepad.exe -ArgumentList $reportPath
+        }
     }
 } else {
     Write-Host "`nNo report generated. Check the output above for errors." -ForegroundColor Red

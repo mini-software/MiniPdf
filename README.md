@@ -90,6 +90,30 @@ MiniPdf targets practical document conversion, not complete Microsoft Office
 layout compatibility. Complex templates may render differently; use the online
 demo or benchmark reports to evaluate representative files.
 
+## Contribute compute time
+
+Open a clean fork or clone in VS Code with GitHub Copilot Agent, then run:
+
+```text
+/skill-minipdf-contribution .NET
+/skill-minipdf-contribution Rust
+```
+
+The contribution loop checks the toolchain, installs benchmark Python packages,
+creates a local branch, and selects the chosen renderer's two lowest-scoring
+visual differences. The agent gets up to three attempts per case; an attempt
+that does not improve the score is automatically rolled back before moving on.
+Accepted changes must pass that implementation's full test suite and XLSX/DOCX
+visual benchmarks without a meaningful regression before a pull request is allowed.
+
+Both paths require Git, Python 3.10+, and LibreOffice. Choose .NET with the .NET
+9 SDK, or Rust with Cargo plus desktop Excel and Word for its current primary
+visual references. The workflow checks whether authenticated GitHub CLI is
+available; if it is not, it generates the PR title, body, push command, and browser URL instead. See the
+[contribution loop](.github/skills/skill-minipdf-contribution/SKILL.md) for the
+commands and safety rules. It never commits, pushes, or opens a PR without your
+approval.
+
 ## Project resources
 
 | Resource | Description |

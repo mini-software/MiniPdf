@@ -192,7 +192,7 @@ if (-not $SkipReference) {
             $ReferenceArgs = @($Provider.Script, $Config.SourceArgument, $SourceDir, "--pdf-dir", $Provider.Directory)
             if ($ReferenceFilter) { $ReferenceArgs += @("--filter", $ReferenceFilter) }
             if ($ForceReference) { $ReferenceArgs += "--force" }
-            & $Python @ReferenceArgs
+            & $Python -X utf8 @ReferenceArgs
             if ($LASTEXITCODE -ne 0) { throw "$($Provider.Label) generation failed." }
         }
     }
@@ -244,7 +244,7 @@ $CompareArgs = @(
     "--auxiliary-label", $AuxiliaryReferenceLabel
 )
 if ($MaxComparePages -gt 0) { $CompareArgs += @("--max-pages", $MaxComparePages) }
-& $Python @CompareArgs
+& $Python -X utf8 @CompareArgs
 if ($LASTEXITCODE -ne 0) { throw "PDF comparison failed." }
 
 $Results = @(Get-Content (Join-Path $ReportDir "comparison_report.json") -Raw | ConvertFrom-Json)

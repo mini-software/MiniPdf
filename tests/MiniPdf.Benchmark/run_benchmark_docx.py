@@ -60,7 +60,7 @@ def run(cmd: list[str], cwd: str = None, check: bool = True) -> int:
     print(f"  > {' '.join(cmd)}")
     result = subprocess.run(cmd, cwd=cwd)
     if check and result.returncode != 0:
-        print(f"  WARNING: Command exited with code {result.returncode}")
+        raise subprocess.CalledProcessError(result.returncode, cmd)
     return result.returncode
 
 
@@ -78,14 +78,15 @@ def step_generate_minipdf_pdfs(filter_pattern: str = None):
     """Step 2: Convert DOCX files to PDF using MiniPdf."""
     banner("Step 2: Convert DOCX -> PDF (MiniPdf)")
     scripts_dir = SCRIPT_DIR / ".." / "MiniPdf.Scripts"
-    cmd = ["dotnet", "run", "convert_docx_to_pdf.cs", "--",
+    cmd = ["dotnet", "run", "--configuration", "Release", "--no-cache", "convert_docx_to_pdf.cs", "--",
            str(DOCX_DIR.resolve()), str(MINIPDF_PDF_DIR.resolve())]
     if filter_pattern:
         cmd += [filter_pattern]
     return run(cmd, cwd=str(scripts_dir))
 
 
-def step_generate_reference_pdfs(filter_pattern: str = None, engine: str = "o365"):
+def step_generate_reference_pdfs(filter_pattern: str = None, engine: str = "o365",
+                                  force: bool = False):
     """Step 3: Convert DOCX files to PDF using the chosen reference engine."""
     if engine in {"o365", "office"}:
         banner("Step 3: Convert DOCX -> PDF (Office / Word COM Reference)")
@@ -99,6 +100,8 @@ def step_generate_reference_pdfs(filter_pattern: str = None, engine: str = "o365
                "--pdf-dir", str(REFERENCE_PDF_DIR.resolve())]
     if filter_pattern:
         cmd += ["--filter", filter_pattern]
+    if force and engine == "libre":
+        cmd += ["--force"]
     return run(cmd, cwd=str(SCRIPT_DIR), check=False)
 
 
@@ -197,6 +200,8 @@ def main():
     parser.add_argument("--skip-generate", action="store_true", help="Skip DOCX generation")
     parser.add_argument("--skip-minipdf", action="store_true", help="Skip MiniPdf PDF conversion")
     parser.add_argument("--skip-reference", action="store_true", help="Skip reference conversion")
+    parser.add_argument("--force-reference", action="store_true",
+                        help="Overwrite existing LibreOffice reference PDFs")
     parser.add_argument("--engine", choices=["libre", "office", "o365"], default="o365",
                         help="Reference engine: o365 (Microsoft 365 COM, default) or libre (LibreOffice); office is an alias for o365")
     parser.add_argument("--with-office", action="store_true",
@@ -278,7 +283,11 @@ def main():
         step_generate_minipdf_pdfs(filter_pattern=filt)
 
     if not args.skip_reference:
-        step_generate_reference_pdfs(filter_pattern=filt, engine=args.engine)
+        step_generate_reference_pdfs(
+            filter_pattern=filt,
+            engine=args.engine,
+            force=args.force_reference,
+        )
 
     if args.with_office and not args.skip_office:
         step_generate_office_pdfs(filter_pattern=filt)
