@@ -83,16 +83,16 @@ MiniPdf punta alla conversione pratica dei documenti, non alla compatibilità co
 
 ## Contribuire con potenza di calcolo
 
-Apri un fork o clone pulito in VS Code con GitHub Copilot Agent, quindi esegui:
+Apri un fork o clone pulito in GitHub Copilot, Claude Code, Cursor, Codex o qualsiasi agente di programmazione capace di modificare file ed eseguire PowerShell. Il punto di ingresso comune è:
 
-```text
-/skill-minipdf-contribution .NET
-/skill-minipdf-contribution Rust
+```powershell
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
 ```
 
 Il ciclo controlla gli strumenti, installa i pacchetti Python per i benchmark, crea un branch locale e seleziona le due differenze visive con il punteggio più basso per il renderer scelto. L'Agent effettua fino a tre tentativi per caso; se il punteggio non migliora, ripristina automaticamente le modifiche e passa al caso successivo. La PR è consentita solo dopo il superamento di tutti i test dell'implementazione scelta e dei benchmark visivi XLSX/DOCX senza regressioni significative.
 
-Entrambi i percorsi richiedono Git, Python 3.10+ e LibreOffice. .NET richiede .NET 9 SDK; Rust richiede Cargo e le versioni desktop di Excel e Word per generare gli attuali riferimenti visivi principali. Se GitHub CLI non è installata e autenticata, il flusso genera titolo, corpo, comando push e URL per creare la PR dal browser. Consulta il [ciclo di contribuzione](../.github/skills/skill-minipdf-contribution/SKILL.md) per comandi e regole di sicurezza. Non esegue commit, push o apertura della PR senza approvazione.
+Entrambi i percorsi richiedono Git, Python 3.10+ e LibreOffice. .NET richiede .NET 9 SDK; Rust richiede Cargo e le versioni desktop di Excel e Word per generare gli attuali riferimenti visivi principali. Se GitHub CLI non è installata e autenticata, il flusso genera titolo, corpo, comando push e URL per creare la PR dal browser. Consulta la [guida ai contributi](../CONTRIBUTING.md) per le scorciatoie di Copilot, Claude Code, Cursor, Codex e terminale e per le regole di sicurezza. Non esegue commit, push o apertura della PR senza approvazione.
 
 ## Risorse del progetto
 

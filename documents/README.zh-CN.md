@@ -83,16 +83,16 @@ MiniPdf 专注于实用文档转换，不追求完全复制 Microsoft Office 版
 
 ## 贡献你的算力
 
-在 VS Code 中用 GitHub Copilot Agent 打开干净的 fork 或 clone，然后运行：
+在 GitHub Copilot、Claude Code、Cursor、Codex，或任何可编辑文件并运行 PowerShell 的编码 Agent 中打开干净的 fork 或 clone。通用入口为：
 
-```text
-/skill-minipdf-contribution .NET
-/skill-minipdf-contribution Rust
+```powershell
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
 ```
 
 贡献循环会检查工具链、安装基准测试所需的 Python 包、创建本地分支，并自动挑选所选渲染器中视觉分数最低的两个差异。Agent 对每个案例最多尝试三次；分数没有改善时会自动还原，再继续下一个案例。只有所选实现的完整测试以及 XLSX/DOCX 视觉基准都通过，且没有明显回归时，才允许创建 PR。
 
-两条路径都需要 Git、Python 3.10+ 和 LibreOffice。.NET 需要 .NET 9 SDK；Rust 需要 Cargo，并使用桌面版 Excel 与 Word 生成目前的主要视觉参考。流程会检查是否有已认证的 GitHub CLI；若没有，则生成 PR 标题、正文、推送命令和浏览器链接。命令与安全规则请参阅[贡献循环](../.github/skills/skill-minipdf-contribution/SKILL.md)。未经你的确认，它不会提交、推送或创建 PR。
+两条路径都需要 Git、Python 3.10+ 和 LibreOffice。.NET 需要 .NET 9 SDK；Rust 需要 Cargo，并使用桌面版 Excel 与 Word 生成目前的主要视觉参考。流程会检查是否有已认证的 GitHub CLI；若没有，则生成 PR 标题、正文、推送命令和浏览器链接。Copilot、Claude Code、Cursor、Codex 与终端的快捷方式及安全规则请参阅[贡献指南](../CONTRIBUTING.md)。未经你的确认，它不会提交、推送或创建 PR。
 
 ## 项目资源
 

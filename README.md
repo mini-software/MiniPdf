@@ -92,11 +92,12 @@ demo or benchmark reports to evaluate representative files.
 
 ## Contribute compute time
 
-Open a clean fork or clone in VS Code with GitHub Copilot Agent, then run:
+Open a clean fork or clone in GitHub Copilot, Claude Code, Cursor, Codex, or any
+coding agent that can edit files and run PowerShell. The universal entry point is:
 
-```text
-/skill-minipdf-contribution .NET
-/skill-minipdf-contribution Rust
+```powershell
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
 ```
 
 The contribution loop checks the toolchain, installs benchmark Python packages,
@@ -110,9 +111,9 @@ Both paths require Git, Python 3.10+, and LibreOffice. Choose .NET with the .NET
 9 SDK, or Rust with Cargo plus desktop Excel and Word for its current primary
 visual references. The workflow checks whether authenticated GitHub CLI is
 available; if it is not, it generates the PR title, body, push command, and browser URL instead. See the
-[contribution loop](.github/skills/skill-minipdf-contribution/SKILL.md) for the
-commands and safety rules. It never commits, pushes, or opens a PR without your
-approval.
+[contribution guide](CONTRIBUTING.md) for Copilot, Claude Code, Cursor, Codex,
+terminal shortcuts, and safety rules. The workflow never commits, pushes, or
+opens a PR without your approval.
 
 ## Project resources
 
