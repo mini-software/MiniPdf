@@ -1290,11 +1290,11 @@ def generate_report(results: list[dict], report_dir: str, labels: dict | None = 
             if diff and diff != "(identical)":
                 f.write("<details><summary>Text Diff</summary>\n\n```diff\n")
                 # Truncate very long diffs
+                rendered_diff = diff[:3000] if len(diff) > 3000 else diff
+                rendered_diff = "\n".join(line.rstrip() for line in rendered_diff.splitlines())
+                f.write(rendered_diff)
                 if len(diff) > 3000:
-                    f.write(diff[:3000])
                     f.write(f"\n... ({len(diff) - 3000} more characters)\n")
-                else:
-                    f.write(diff)
                 f.write("\n```\n</details>\n\n")
             else:
                 f.write("Text content: ✅ Identical\n\n")

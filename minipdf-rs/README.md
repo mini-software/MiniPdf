@@ -165,6 +165,9 @@ pipeline without executing the C# xUnit tests. Each run writes coverage data,
 Markdown and JSON reports, side-by-side images, and heatmaps under
 `artifacts/rust-benchmark/<suite>/<format>`.
 
+- [Classic XLSX visual comparison](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)
+- [Classic DOCX visual comparison](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md)
+
 Microsoft 365 is the primary reference used for text, visual, page-count, and
 overall scores. LibreOffice is generated on every run as an auxiliary reference
 and is included in the visual report without affecting those scores.

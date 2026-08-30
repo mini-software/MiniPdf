@@ -103,6 +103,8 @@ MiniPdf 专注于实用文档转换，不追求完全复制 Microsoft Office 版
 | [Rust 文档](../minipdf-rs/README.md) | 实验版 crate 与 CLI 用法 |
 | [.NET XLSX 基准](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | 电子表格视觉比较结果 |
 | [.NET DOCX 基准](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | 文档视觉比较结果 |
+| [Rust XLSX 基准](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust 电子表格视觉比较结果 |
+| [Rust DOCX 基准](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust 文档视觉比较结果 |
 | [Rust 基准流程](../scripts/Run-Rust-Benchmark.ps1) | 生成测试覆盖与比较报告 |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | 软件包与独立二进制文件 |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | 缺陷、兼容性报告和功能建议 |
