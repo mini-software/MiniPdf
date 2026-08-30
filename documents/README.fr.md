@@ -78,9 +78,21 @@ Le [guide Rust](../minipdf-rs/README.md) décrit l'API du crate, la CLI, les fon
 - **Déploiement réduit** : peu de dépendances et aucun processus externe.
 - **Adapté aux serveurs et à la CI** : fonctionne dans les conteneurs, services cloud et pipelines.
 - **Options natives en ligne de commande** : versions .NET Native AOT et CLI Rust.
-- **Développement ouvert** : licence Apache 2.0 et benchmarks visuels reproductibles.
 
 MiniPdf vise une conversion pratique des documents, et non une compatibilité totale avec la mise en page de Microsoft Office. Les modèles complexes peuvent être rendus différemment ; utilisez la démo en ligne ou les rapports de benchmark pour évaluer des fichiers représentatifs.
+
+## Contribuer avec de la puissance de calcul
+
+Ouvrez un fork ou clone propre dans VS Code avec GitHub Copilot Agent, puis lancez :
+
+```text
+/skill-minipdf-contribution .NET
+/skill-minipdf-contribution Rust
+```
+
+La boucle vérifie les outils, installe les paquets Python du benchmark, crée une branche locale et sélectionne les deux écarts visuels ayant les scores les plus faibles pour le moteur choisi. L'Agent effectue jusqu'à trois tentatives par cas ; sans amélioration du score, les modifications sont automatiquement annulées avant de passer au cas suivant. Une PR n'est autorisée qu'après la réussite de tous les tests de l'implémentation choisie et des benchmarks visuels XLSX/DOCX, sans régression significative.
+
+Les deux parcours nécessitent Git, Python 3.10+ et LibreOffice. .NET nécessite le SDK .NET 9 ; Rust nécessite Cargo ainsi que les versions bureau d'Excel et Word pour produire les références visuelles principales actuelles. Si GitHub CLI n'est pas installée et authentifiée, le workflow génère le titre, le corps, la commande push et l'URL de création de la PR dans le navigateur. Consultez la [boucle de contribution](../.github/skills/skill-minipdf-contribution/SKILL.md) pour les commandes et règles de sécurité. Aucun commit, push ou ouverture de PR n'est effectué sans approbation.
 
 ## Ressources du projet
 

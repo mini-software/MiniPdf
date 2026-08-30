@@ -60,7 +60,7 @@ def run(cmd: list[str], cwd: str = None, check: bool = True) -> int:
     print(f"  > {' '.join(cmd)}")
     result = subprocess.run(cmd, cwd=cwd)
     if check and result.returncode != 0:
-        print(f"  ⚠ Command exited with code {result.returncode}")
+        raise subprocess.CalledProcessError(result.returncode, cmd)
     return result.returncode
 
 
@@ -79,7 +79,7 @@ def step_generate_minipdf_pdfs(filter_pattern: str = None):
     banner("Step 2: Convert Excel -> PDF (MiniPdf)")
     scripts_dir = SCRIPT_DIR / ".." / "MiniPdf.Scripts"
 
-    cmd = ["dotnet", "run", "--no-cache", "convert_xlsx_to_pdf.cs", "--",
+    cmd = ["dotnet", "run", "--configuration", "Release", "--no-cache", "convert_xlsx_to_pdf.cs", "--",
            str(XLSX_DIR.resolve()), str(MINIPDF_PDF_DIR.resolve())]
     if filter_pattern:
         cmd += [filter_pattern]

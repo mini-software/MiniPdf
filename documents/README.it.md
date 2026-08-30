@@ -78,9 +78,21 @@ La [guida Rust](../minipdf-rs/README.md) descrive API del crate, CLI, funzionali
 - **Distribuzione essenziale**: poche dipendenze e nessun processo esterno.
 - **Adatto a server e CI**: funziona in container, servizi cloud e pipeline.
 - **Opzioni native da riga di comando**: release .NET Native AOT e CLI Rust.
-- **Sviluppo aperto**: licenza Apache 2.0 e benchmark visivi riproducibili.
 
 MiniPdf punta alla conversione pratica dei documenti, non alla compatibilità completa con il layout di Microsoft Office. I modelli complessi possono essere visualizzati diversamente; usa la demo online o i report di benchmark per valutare file rappresentativi.
+
+## Contribuire con potenza di calcolo
+
+Apri un fork o clone pulito in VS Code con GitHub Copilot Agent, quindi esegui:
+
+```text
+/skill-minipdf-contribution .NET
+/skill-minipdf-contribution Rust
+```
+
+Il ciclo controlla gli strumenti, installa i pacchetti Python per i benchmark, crea un branch locale e seleziona le due differenze visive con il punteggio più basso per il renderer scelto. L'Agent effettua fino a tre tentativi per caso; se il punteggio non migliora, ripristina automaticamente le modifiche e passa al caso successivo. La PR è consentita solo dopo il superamento di tutti i test dell'implementazione scelta e dei benchmark visivi XLSX/DOCX senza regressioni significative.
+
+Entrambi i percorsi richiedono Git, Python 3.10+ e LibreOffice. .NET richiede .NET 9 SDK; Rust richiede Cargo e le versioni desktop di Excel e Word per generare gli attuali riferimenti visivi principali. Se GitHub CLI non è installata e autenticata, il flusso genera titolo, corpo, comando push e URL per creare la PR dal browser. Consulta il [ciclo di contribuzione](../.github/skills/skill-minipdf-contribution/SKILL.md) per comandi e regole di sicurezza. Non esegue commit, push o apertura della PR senza approvazione.
 
 ## Risorse del progetto
 
