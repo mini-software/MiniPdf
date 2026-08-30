@@ -83,16 +83,16 @@ MiniPdf는 실용적인 문서 변환을 목표로 하며 Microsoft Office 레�
 
 ## 컴퓨팅 자원으로 기여하기
 
-GitHub Copilot Agent를 사용하는 VS Code에서 깨끗한 fork 또는 clone을 열고 다음을 실행하세요.
+GitHub Copilot, Claude Code, Cursor, Codex 또는 파일 편집과 PowerShell 실행이 가능한 모든 코딩 Agent에서 깨끗한 fork 또는 clone을 여세요. 공통 진입점은 다음과 같습니다.
 
-```text
-/skill-minipdf-contribution .NET
-/skill-minipdf-contribution Rust
+```powershell
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
 ```
 
 기여 루프는 도구 체인을 확인하고, 벤치마크 Python 패키지를 설치하고, 로컬 브랜치를 만든 뒤 선택한 렌더러에서 시각 점수가 가장 낮은 차이 두 건을 선택합니다. Agent는 사례별로 최대 세 번 수정하며 점수가 개선되지 않으면 자동으로 되돌리고 다음 사례로 이동합니다. 선택한 구현의 전체 테스트와 XLSX/DOCX 시각 벤치마크를 통과하고 의미 있는 회귀가 없을 때만 PR 생성을 허용합니다.
 
-두 경로 모두 Git, Python 3.10 이상, LibreOffice가 필요합니다. .NET에는 .NET 9 SDK가 필요하고, Rust에는 Cargo와 현재 기본 시각 참조를 생성할 데스크톱 Excel/Word가 필요합니다. 인증된 GitHub CLI가 없으면 PR 제목, 본문, push 명령 및 브라우저 URL을 생성합니다. 명령과 안전 규칙은 [기여 루프](../.github/skills/skill-minipdf-contribution/SKILL.md)를 참조하세요. 승인 없이 commit, push 또는 PR을 만들지 않습니다.
+두 경로 모두 Git, Python 3.10 이상, LibreOffice가 필요합니다. .NET에는 .NET 9 SDK가 필요하고, Rust에는 Cargo와 현재 기본 시각 참조를 생성할 데스크톱 Excel/Word가 필요합니다. 인증된 GitHub CLI가 없으면 PR 제목, 본문, push 명령 및 브라우저 URL을 생성합니다. Copilot, Claude Code, Cursor, Codex 및 터미널 바로 가기와 안전 규칙은 [기여 가이드](../CONTRIBUTING.md)를 참조하세요. 승인 없이 commit, push 또는 PR을 만들지 않습니다.
 
 ## 프로젝트 리소스
 

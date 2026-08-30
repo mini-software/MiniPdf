@@ -8,14 +8,14 @@ disable-model-invocation: false
 
 # MiniPdf Contribution Loop
 
-Turn local compute time into a focused, reproducible MiniPdf rendering improvement for either implementation. In VS Code Chat, run `/skill-minipdf-contribution .NET` or `/skill-minipdf-contribution Rust`. The agent owns the loop; the PowerShell controller owns implementation-specific candidate ranking, score decisions, rollback, and the final regression gate.
+Turn local compute time into a focused, reproducible MiniPdf rendering improvement for either implementation. This Copilot skill is one adapter for the vendor-neutral workflow in `CONTRIBUTING.md`; Claude Code, Cursor, Codex, and terminal agents use the same controller. In VS Code Chat, run `/skill-minipdf-contribution .NET` or `/skill-minipdf-contribution Rust`.
 
 ## Automatic Path
 
 Run this once from the repository root:
 
 ```powershell
-$loop = ".\.github\skills\skill-minipdf-contribution\scripts\contribution-loop.ps1"
+$loop = ".\scripts\Invoke-MiniPdfContributionLoop.ps1"
 & $loop -Action Start -Implementation dotnet
 # or
 & $loop -Action Start -Implementation rust

@@ -83,16 +83,16 @@ MiniPdf は実用的な文書変換を目的としており、Microsoft Office �
 
 ## 計算リソースで貢献する
 
-クリーンな fork または clone を GitHub Copilot Agent 対応の VS Code で開き、次を実行します。
+クリーンな fork または clone を GitHub Copilot、Claude Code、Cursor、Codex、またはファイル編集と PowerShell 実行が可能な任意のコーディング Agent で開きます。共通の入口は次のとおりです。
 
-```text
-/skill-minipdf-contribution .NET
-/skill-minipdf-contribution Rust
+```powershell
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
 ```
 
 この貢献ループはツールチェーンを確認し、ベンチマーク用 Python パッケージをインストールしてローカルブランチを作成し、選択したレンダラーで視覚スコアが最も低い差分を 2 件選びます。Agent は各ケースを最大 3 回修正し、スコアが改善しなければ自動的に元へ戻して次へ進みます。選択した実装の全テストと XLSX/DOCX 視覚ベンチマークを通過し、重大な回帰がない場合にのみ PR を作成できます。
 
-どちらも Git、Python 3.10 以降、LibreOffice が必要です。.NET には .NET 9 SDK、Rust には Cargo と現在の主要な視覚参照を生成するデスクトップ版 Excel/Word が必要です。認証済み GitHub CLI がなければ、PR のタイトル、本文、push コマンド、ブラウザー URL を生成します。コマンドと安全規則は[貢献ループ](../.github/skills/skill-minipdf-contribution/SKILL.md)を参照してください。承認なしに commit、push、PR 作成を行うことはありません。
+どちらも Git、Python 3.10 以降、LibreOffice が必要です。.NET には .NET 9 SDK、Rust には Cargo と現在の主要な視覚参照を生成するデスクトップ版 Excel/Word が必要です。認証済み GitHub CLI がなければ、PR のタイトル、本文、push コマンド、ブラウザー URL を生成します。Copilot、Claude Code、Cursor、Codex、ターミナルのショートカットと安全規則は[貢献ガイド](../CONTRIBUTING.md)を参照してください。承認なしに commit、push、PR 作成を行うことはありません。
 
 ## プロジェクトリソース
 

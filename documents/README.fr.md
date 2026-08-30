@@ -83,16 +83,16 @@ MiniPdf vise une conversion pratique des documents, et non une compatibilité to
 
 ## Contribuer avec de la puissance de calcul
 
-Ouvrez un fork ou clone propre dans VS Code avec GitHub Copilot Agent, puis lancez :
+Ouvrez un fork ou clone propre dans GitHub Copilot, Claude Code, Cursor, Codex ou tout agent de programmation capable de modifier des fichiers et d'exécuter PowerShell. Le point d'entrée commun est :
 
-```text
-/skill-minipdf-contribution .NET
-/skill-minipdf-contribution Rust
+```powershell
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
 ```
 
 La boucle vérifie les outils, installe les paquets Python du benchmark, crée une branche locale et sélectionne les deux écarts visuels ayant les scores les plus faibles pour le moteur choisi. L'Agent effectue jusqu'à trois tentatives par cas ; sans amélioration du score, les modifications sont automatiquement annulées avant de passer au cas suivant. Une PR n'est autorisée qu'après la réussite de tous les tests de l'implémentation choisie et des benchmarks visuels XLSX/DOCX, sans régression significative.
 
-Les deux parcours nécessitent Git, Python 3.10+ et LibreOffice. .NET nécessite le SDK .NET 9 ; Rust nécessite Cargo ainsi que les versions bureau d'Excel et Word pour produire les références visuelles principales actuelles. Si GitHub CLI n'est pas installée et authentifiée, le workflow génère le titre, le corps, la commande push et l'URL de création de la PR dans le navigateur. Consultez la [boucle de contribution](../.github/skills/skill-minipdf-contribution/SKILL.md) pour les commandes et règles de sécurité. Aucun commit, push ou ouverture de PR n'est effectué sans approbation.
+Les deux parcours nécessitent Git, Python 3.10+ et LibreOffice. .NET nécessite le SDK .NET 9 ; Rust nécessite Cargo ainsi que les versions bureau d'Excel et Word pour produire les références visuelles principales actuelles. Si GitHub CLI n'est pas installée et authentifiée, le workflow génère le titre, le corps, la commande push et l'URL de création de la PR dans le navigateur. Consultez le [guide de contribution](../CONTRIBUTING.md) pour les raccourcis Copilot, Claude Code, Cursor, Codex et terminal, ainsi que les règles de sécurité. Aucun commit, push ou ouverture de PR n'est effectué sans approbation.
 
 ## Ressources du projet
 

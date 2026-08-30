@@ -34,4 +34,17 @@ scripts/Run-Benchmark_issues.ps1 -All                 # full issue benchmark
 
 When updating all XLSX classic examples, canonical benchmark reports, or stale GitHub README benchmark images, use the `refresh-classic-benchmarks` skill (`/refresh-classic-benchmarks`).
 
+## Automated Contribution Loop
+
+All coding agents, including Copilot, Claude Code, Cursor, and Codex, must use
+the vendor-neutral workflow in `CONTRIBUTING.md`. The executable entry point is:
+
+```powershell
+scripts/Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
+scripts/Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
+```
+
+Preserve unrelated changes. Do not commit, push, fork, or open a pull request
+without explicit user approval.
+
 
