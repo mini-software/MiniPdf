@@ -81,6 +81,9 @@ internal static class ExcelToPdfConverter
 
         /// <summary>Target minimum number of worksheet rows per PDF page.</summary>
         internal int? RowsPerPage { get; set; }
+
+        /// <summary>Optional culture used to format numeric and date values. Null uses invariant culture.</summary>
+        internal System.Globalization.CultureInfo? Culture { get; set; }
     }
 
     /// <summary>
@@ -104,7 +107,7 @@ internal static class ExcelToPdfConverter
     internal static PdfDocument Convert(Stream excelStream, ConversionOptions? options = null)
     {
         options ??= new ConversionOptions();
-        var sheets = ExcelReader.ReadSheets(excelStream);
+        var sheets = ExcelReader.ReadSheets(excelStream, options.Culture);
         sheets = FilterSheets(sheets, options.Sheets, options.SheetIndexes);
         sheets = ApplyRenderLimits(sheets, options.MaxRows, options.MaxColumns);
         sheets = ApplyLayoutOptions(sheets, options);

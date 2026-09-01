@@ -616,6 +616,190 @@ public class ExcelToPdfConverterTests
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
     }
 
+    [Fact]
+    public void Convert_BuiltInNumFmtId4_WithEsArCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 4, values: new[] { 30596.37 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("es-AR"),
+        });
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "30.596,37");
+    }
+
+    [Fact]
+    public void Convert_BuiltInNumFmtId4_WithEnUsCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 4, values: new[] { 30596.37 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("en-US"),
+        });
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "30,596.37");
+    }
+
+    [Fact]
+    public void Convert_BuiltInNumFmtId4_LargeValueWithEsArCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 4, values: new[] { 1234567.89 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("es-AR"),
+        });
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "1.234.567,89");
+    }
+
+    [Fact]
+    public void Convert_BuiltInNumFmtId4_NullCulturePreservesInvariantBehavior()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 4, values: new[] { 30596.37 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "30,596.37");
+    }
+
+    [Fact]
+    public void Convert_BuiltInNumFmtId4_MultipleValuesWithEsArCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(
+            numFmtId: 4,
+            values: new[] { 0, 1, 100, 1234.5, 30596.37, 1234567.89, -30596.37 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("es-AR"),
+        });
+
+        var expected = new[]
+        {
+            "0,00",
+            "1,00",
+            "100,00",
+            "1.234,50",
+            "30.596,37",
+            "1.234.567,89",
+            "-30.596,37",
+        };
+
+        foreach (var text in expected)
+        {
+            Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == text);
+        }
+    }
+
+    [Fact]
+    public void ConvertToPdf_PublicApi_BuiltInNumFmtId4_HonorsCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 4, values: new[] { 30596.37 });
+
+        var bytes = MiniPdf.ConvertToPdf(excelStream, new MiniPdfConversionOptions
+        {
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("es-AR"),
+        });
+        var content = Encoding.ASCII.GetString(bytes);
+
+        Assert.Contains("30.596,37", content);
+    }
+
+    /// <summary>
+    /// Creates a minimal .xlsx with a built-in number format (numFmtId only, no custom
+    /// &lt;numFmts&gt; entry) and a single column of numeric cells using that format. This
+    /// reproduces the real-world XLSX where cells carry only a built-in numFmtId.
+    /// </summary>
+    private static MemoryStream CreateExcelWithBuiltInNumberFormat(int numFmtId, params double[] values)
+    {
+        var ms = new MemoryStream();
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+                  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+                  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "xl/_rels/workbook.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+                  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "xl/workbook.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+                          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                  <sheets>
+                    <sheet name="Sheet1" sheetId="1" r:id="rId1"/>
+                  </sheets>
+                </workbook>
+                """);
+
+            // styles.xml with a built-in numFmtId and no custom <numFmts> section:
+            // the cell style references the built-in format directly.
+            AddEntry(archive, "xl/styles.xml",
+                $$"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <fonts count="1">
+                    <font><sz val="11"/><name val="Calibri"/></font>
+                  </fonts>
+                  <fills count="1">
+                    <fill><patternFill patternType="none"/></fill>
+                  </fills>
+                  <borders count="1">
+                    <border><left/><right/><top/><bottom/><diagonal/></border>
+                  </borders>
+                  <cellXfs count="1">
+                    <xf numFmtId="{{numFmtId}}" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>
+                  </cellXfs>
+                </styleSheet>
+                """);
+
+            var sheetSb = new StringBuilder();
+            sheetSb.AppendLine("""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>""");
+            sheetSb.AppendLine("""<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">""");
+            sheetSb.AppendLine("<sheetData>");
+            for (var i = 0; i < values.Length; i++)
+            {
+                sheetSb.AppendLine($"  <row r=\"{i + 1}\">");
+                sheetSb.AppendLine($"    <c r=\"A{i + 1}\" s=\"0\"><v>{values[i].ToString(System.Globalization.CultureInfo.InvariantCulture)}</v></c>");
+                sheetSb.AppendLine("  </row>");
+            }
+            sheetSb.AppendLine("</sheetData>");
+            sheetSb.AppendLine("</worksheet>");
+
+            AddEntry(archive, "xl/worksheets/sheet1.xml", sheetSb.ToString());
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
     /// <summary>
     /// Creates a minimal valid .xlsx file in memory with the given data.
     /// </summary>
