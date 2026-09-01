@@ -695,6 +695,78 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_BuiltInGeneralFormat_WithEsArCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 0, values: new[] { 30596.37 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("es-AR"),
+        });
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "30596,37");
+    }
+
+    [Fact]
+    public void Convert_BuiltInGeneralFormat_WithEnUsCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 0, values: new[] { 30596.37 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("en-US"),
+        });
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "30596.37");
+    }
+
+    [Fact]
+    public void Convert_BuiltInGeneralFormat_NullCulturePreservesInvariantBehavior()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 0, values: new[] { 30596.37 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "30596.37");
+    }
+
+    [Fact]
+    public void Convert_BuiltInDateFormat_WithEsArCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 15, values: new[] { 44927.0 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("es-AR"),
+        });
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "1-ene-23");
+    }
+
+    [Fact]
+    public void Convert_BuiltInDateFormat_WithEnUsCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 15, values: new[] { 44927.0 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("en-US"),
+        });
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "1-Jan-23");
+    }
+
+    [Fact]
+    public void Convert_BuiltInDateFormat_NullCulturePreservesInvariantBehavior()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 15, values: new[] { 44927.0 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "1-Jan-23");
+    }
+
+    [Fact]
     public void ConvertToPdf_PublicApi_BuiltInNumFmtId4_HonorsCulture()
     {
         using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 4, values: new[] { 30596.37 });
