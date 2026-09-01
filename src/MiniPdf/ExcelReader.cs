@@ -34,7 +34,7 @@ internal static class ExcelReader
     /// Reads all sheets from an Excel file and returns their data as a list of sheets,
     /// where each sheet is a list of rows, and each row is a list of cell values.
     /// </summary>
-    internal static List<ExcelSheet> ReadSheets(Stream stream)
+    internal static List<ExcelSheet> ReadSheets(Stream stream, System.Globalization.CultureInfo? culture = null)
     {
         var sheets = new List<ExcelSheet>();
 
@@ -79,7 +79,7 @@ internal static class ExcelReader
             if (entry == null) continue;
 
             var hyperlinks = ReadWorksheetHyperlinks(archive, entry.FullName);
-            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks);
+            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture);
             var images = ReadSheetImages(archive, entry.FullName);
             var drawingShapes = ReadSheetShapes(archive, entry.FullName, themeColors);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
@@ -108,7 +108,7 @@ internal static class ExcelReader
             if (entry != null)
             {
                 var hyperlinks = ReadWorksheetHyperlinks(archive, entry.FullName);
-                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks);
+                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture);
                 var images = ReadSheetImages(archive, entry.FullName);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
@@ -1812,7 +1812,7 @@ internal static class ExcelReader
     private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings, Dictionary<int, int> boldPrefixLengths,
         List<FontStyleInfo> fontStyles, List<PdfColor?> fillColors, List<CellBorderInfo?> borders, Dictionary<int, string> numberFormats,
         List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts, List<int> cellXfIndents,
-        Dictionary<string, string>? hyperlinks = null)
+        Dictionary<string, string>? hyperlinks = null, System.Globalization.CultureInfo? culture = null)
     {
         var rows = new List<List<ExcelCell>>();
 
@@ -2021,7 +2021,7 @@ internal static class ExcelReader
                             double.TryParse(text, System.Globalization.NumberStyles.Any,
                                 System.Globalization.CultureInfo.InvariantCulture, out var numVal))
                         {
-                            text = FormatNumber(numVal, numFmtId, numberFormats, out var fmtColor, out acctPrefix);
+                            text = FormatNumber(numVal, numFmtId, numberFormats, culture, out var fmtColor, out acctPrefix);
                             // Number format color overrides font color (e.g., [Red] for negatives)
                             if (fmtColor != null)
                                 color = fmtColor;
@@ -2507,11 +2507,11 @@ internal static class ExcelReader
     /// Formats a numeric value according to its Excel number format.
     /// Handles built-in formats and common custom patterns.
     /// </summary>
-    private static string FormatNumber(double value, int numFmtId, Dictionary<int, string> customFormats, out PdfColor? formatColor, out string? accountingPrefix)
+    private static string FormatNumber(double value, int numFmtId, Dictionary<int, string> customFormats, System.Globalization.CultureInfo? culture, out PdfColor? formatColor, out string? accountingPrefix)
     {
         formatColor = null;
         accountingPrefix = null;
-        var ci = System.Globalization.CultureInfo.InvariantCulture;
+        var ci = culture ?? System.Globalization.CultureInfo.InvariantCulture;
 
         // Check custom format first
         if (numFmtId > 0 && customFormats.TryGetValue(numFmtId, out var formatCode))
