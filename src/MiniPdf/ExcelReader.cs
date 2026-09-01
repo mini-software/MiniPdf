@@ -2522,7 +2522,7 @@ internal static class ExcelReader
         // Built-in number formats
         return numFmtId switch
         {
-            0 => FormatGeneral(value),          // General
+            0 => FormatGeneral(value, ci),          // General
             1 => value.ToString("F0", ci),      // 0
             2 => value.ToString("F2", ci),      // 0.00
             3 => value.ToString("#,##0", ci),   // #,##0
@@ -2531,21 +2531,21 @@ internal static class ExcelReader
             10 => (value * 100).ToString("F2", ci) + "%", // 0.00%
             11 => value.ToString("0.00E+00", ci),         // 0.00E+00
             // Date formats (14-22): Excel stores dates as serial numbers
-            14 => FormatExcelDate(value, "M/d/yyyy"),
-            15 => FormatExcelDate(value, "d-MMM-yy"),
-            16 => FormatExcelDate(value, "d-MMM"),
-            17 => FormatExcelDate(value, "MMM-yy"),
-            18 => FormatExcelDate(value, "h:mm tt"),
-            19 => FormatExcelDate(value, "h:mm:ss tt"),
-            20 => FormatExcelDate(value, "H:mm"),
-            21 => FormatExcelDate(value, "H:mm:ss"),
-            22 => FormatExcelDate(value, "M/d/yyyy H:mm"),
+            14 => FormatExcelDate(value, "M/d/yyyy", ci),
+            15 => FormatExcelDate(value, "d-MMM-yy", ci),
+            16 => FormatExcelDate(value, "d-MMM", ci),
+            17 => FormatExcelDate(value, "MMM-yy", ci),
+            18 => FormatExcelDate(value, "h:mm tt", ci),
+            19 => FormatExcelDate(value, "h:mm:ss tt", ci),
+            20 => FormatExcelDate(value, "H:mm", ci),
+            21 => FormatExcelDate(value, "H:mm:ss", ci),
+            22 => FormatExcelDate(value, "M/d/yyyy H:mm", ci),
             // More number formats
             37 => value.ToString("#,##0", ci),
             38 => value.ToString("#,##0", ci),
             39 => value.ToString("#,##0.00", ci),
             40 => value.ToString("#,##0.00", ci),
-            _ => FormatGeneral(value)
+            _ => FormatGeneral(value, ci)
         };
     }
 
@@ -2805,9 +2805,9 @@ internal static class ExcelReader
     /// LibreOffice's General format adapts precision to fit approximately 10 characters,
     /// switching to scientific notation for very large/small values.
     /// </summary>
-    private static string FormatGeneral(double value)
+    private static string FormatGeneral(double value, IFormatProvider? provider = null)
     {
-        var ci = System.Globalization.CultureInfo.InvariantCulture;
+        var ci = provider ?? System.Globalization.CultureInfo.InvariantCulture;
         if (value == 0) return "0";
         var abs = Math.Abs(value);
 
@@ -2848,7 +2848,7 @@ internal static class ExcelReader
     /// Converts an Excel serial date number to a date string using the given format code.
     /// Excel epoch: Jan 1, 1900 = serial number 1.
     /// </summary>
-    private static string FormatExcelDate(double serialDate, string formatCode = "yyyy-MM-dd")
+    private static string FormatExcelDate(double serialDate, string formatCode = "yyyy-MM-dd", IFormatProvider? provider = null)
     {
         try
         {
@@ -2866,11 +2866,11 @@ internal static class ExcelReader
             // Convert Excel format code to .NET format
             var dotNetFormat = ConvertExcelDateFormat(formatCode);
 
-            return dateTime.ToString(dotNetFormat, System.Globalization.CultureInfo.InvariantCulture);
+            return dateTime.ToString(dotNetFormat, provider ?? System.Globalization.CultureInfo.InvariantCulture);
         }
         catch
         {
-            return serialDate.ToString("G10", System.Globalization.CultureInfo.InvariantCulture);
+            return serialDate.ToString("G10", provider ?? System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 
