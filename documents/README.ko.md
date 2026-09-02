@@ -27,7 +27,6 @@ MiniPdf는 런타임에 Microsoft Office, LibreOffice, Adobe Acrobat 또는 COM 
 | 상태 | 안정적이며 기능이 완전함 | 실험적이며 개발 중 |
 | 입력 | XLSX, DOCX, PPTX, PDF 병합 | XLSX, DOCX |
 | 인터페이스 | .NET 라이브러리, CLI, 독립 실행형 Native AOT 바이너리 | Rust crate, CLI |
-| 콘텐츠 추출 | Markdown, JSON, 의미 기반 .NET 모델 | 아직 지원하지 않음 |
 | 문서 | **[.NET 가이드 열기](README.nuget.md)** | **[Rust 가이드 열기](../minipdf-rs/README.md)** |
 
 프로덕션 환경과 가장 폭넓은 문서 지원에는 **.NET**을 권장합니다. 네이티브 Rust 의존성이 필요하고 현재 변환 범위로 충분하다면 **Rust**를 선택하세요.
@@ -53,7 +52,7 @@ dotnet tool install --global MiniPdf.Cli
 minipdf report.docx -o report.pdf
 ```
 
-[.NET 가이드](README.nuget.md)에서는 변환, 콘텐츠 추출, PDF 병합, 사용자 지정 글꼴, CLI 옵션 및 배포를 설명합니다.
+[.NET 가이드](README.nuget.md)에서는 변환, PDF 병합, 사용자 지정 글꼴, CLI 옵션 및 배포를 설명합니다.
 
 ### Rust
 

@@ -15,8 +15,8 @@ named `minipdf`.
 
 > The Rust implementation is under active development and is not yet
 > feature-equivalent with MiniPdf for .NET. It currently converts XLSX and DOCX
-> files. Use the .NET implementation for PPTX, content extraction, PDF merge,
-> or broader production compatibility.
+> files. Use the .NET implementation for PPTX, PDF merge, or broader production
+> compatibility.
 
 ## Requirements
 
@@ -118,7 +118,6 @@ Custom width and height must be provided together.
 | DOCX to PDF | Supported; rendering coverage is expanding |
 | PPTX to PDF | Not supported |
 | PDF merge | Not supported |
-| Markdown / JSON extraction | Not supported |
 | PDF output | PDF 1.4 |
 | Fonts | Built-in Helvetica and registered/system fallback fonts |
 | Page size | XLSX/DOCX page setup, A4/Letter presets, or custom point dimensions |

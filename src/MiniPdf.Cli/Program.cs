@@ -20,113 +20,8 @@ internal sealed class CliApp
         if (_args[0] is "convert")
             return RunConvert(_args.AsSpan(1));
 
-        if (_args[0] is "extract")
-            return RunExtract(_args.AsSpan(1));
-
         // Default: treat first arg as input file (shorthand)
         return RunConvert(_args.AsSpan(0));
-    }
-
-    private static int RunExtract(ReadOnlySpan<string> args)
-    {
-        string? inputPath = null;
-        string? outputPath = null;
-        string format = "markdown";
-        string[]? sheets = null;
-        int[]? sheetIndexes = null;
-        int? maxRows = null;
-        int? maxColumns = null;
-
-        for (int i = 0; i < args.Length; i++)
-        {
-            switch (args[i])
-            {
-                case "-o" or "--output" when i + 1 < args.Length:
-                    outputPath = args[++i];
-                    break;
-                case "--format" when i + 1 < args.Length:
-                    format = args[++i].ToLowerInvariant();
-                    break;
-                case "--sheets" when i + 1 < args.Length:
-                    (sheets, sheetIndexes) = ParseSheets(args[++i]);
-                    break;
-                case "--max-rows":
-                    if (i + 1 >= args.Length || !TryParsePositiveInt(args[++i], out var parsedMaxRows))
-                    {
-                        Console.Error.WriteLine("Error: --max-rows requires a positive integer value.");
-                        return 1;
-                    }
-                    maxRows = parsedMaxRows;
-                    break;
-                case "--max-columns":
-                    if (i + 1 >= args.Length || !TryParsePositiveInt(args[++i], out var parsedMaxColumns))
-                    {
-                        Console.Error.WriteLine("Error: --max-columns requires a positive integer value.");
-                        return 1;
-                    }
-                    maxColumns = parsedMaxColumns;
-                    break;
-                case "-h" or "--help":
-                    ShowExtractHelp();
-                    return 0;
-                default:
-                    if (inputPath == null && !args[i].StartsWith("-"))
-                        inputPath = args[i];
-                    else
-                    {
-                        Console.Error.WriteLine($"Unknown option: {args[i]}");
-                        return 1;
-                    }
-                    break;
-            }
-        }
-
-        if (inputPath == null)
-        {
-            Console.Error.WriteLine("Error: input file is required.");
-            ShowExtractHelp();
-            return 1;
-        }
-        if (!File.Exists(inputPath))
-        {
-            Console.Error.WriteLine($"Error: file not found: {inputPath}");
-            return 1;
-        }
-        var extension = Path.GetExtension(inputPath).ToLowerInvariant();
-        if (extension is not (".xlsx" or ".docx" or ".pptx"))
-        {
-            Console.Error.WriteLine($"Error: unsupported file type '{extension}'. Supported: .xlsx, .docx, .pptx");
-            return 1;
-        }
-        if (format is not ("markdown" or "json"))
-        {
-            Console.Error.WriteLine("Error: --format must be 'markdown' or 'json'.");
-            return 1;
-        }
-
-        outputPath ??= Path.ChangeExtension(inputPath, format == "json" ? ".json" : ".md");
-        var options = new MiniPdfContentOptions
-        {
-            Sheets = sheets,
-            SheetIndexes = sheetIndexes,
-            MaxRows = maxRows,
-            MaxColumns = maxColumns,
-        };
-
-        try
-        {
-            if (format == "json")
-                MiniPdf.ConvertToJson(inputPath, outputPath, options);
-            else
-                MiniPdf.ConvertToMarkdown(inputPath, outputPath, options);
-            Console.WriteLine(outputPath);
-            return 0;
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"Error: {ex.Message}");
-            return 1;
-        }
     }
 
     private static int RunConvert(ReadOnlySpan<string> args)
@@ -341,15 +236,12 @@ internal sealed class CliApp
               minipdf <input>              Convert file to PDF (output beside input)
               minipdf convert <input>      Same as above
               minipdf convert <input> -o <output>
-              minipdf extract <input>      Extract LLM-friendly Markdown
-              minipdf extract <input> --format json
 
             Options:
               -h, --help       Show help
               -v, --version    Show version
 
             Use 'minipdf convert --help' for convert options.
-            Use 'minipdf extract --help' for extraction options.
             """);
         return 0;
     }
@@ -377,23 +269,6 @@ internal sealed class CliApp
                         "  --scale <n>           Set Excel print scale percentage (10-400)",
                         "  --rows-per-page <n>   Target at least n Excel rows per PDF page",
                         "  -h, --help            Show this help"));
-    }
-
-    private static void ShowExtractHelp()
-    {
-        Console.WriteLine(string.Join(Environment.NewLine,
-            "Usage: minipdf extract <input> [options]",
-            "",
-            "Arguments:",
-            "  <input>               Path to .xlsx, .docx, or .pptx file",
-            "",
-            "Options:",
-            "  -o, --output <path>   Output path (default: <input>.md or <input>.json)",
-            "  --format <format>     Output format: markdown or json (default: markdown)",
-            "  --sheets <items>      Comma-separated Excel sheet names or 1-based indexes",
-            "  --max-rows <n>        Extract only the first n rows from each worksheet",
-            "  --max-columns <n>     Extract only the first n columns from each worksheet",
-            "  -h, --help            Show this help"));
     }
 
     private static int ShowVersion()

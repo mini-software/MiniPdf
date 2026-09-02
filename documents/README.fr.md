@@ -27,7 +27,6 @@ MiniPdf convertit directement les documents Office en PDF sans nécessiter Micro
 | État | Stable et complète | Expérimentale, en développement actif |
 | Entrées | XLSX, DOCX, PPTX, fusion PDF | XLSX, DOCX |
 | Interfaces | Bibliothèque .NET, CLI, binaires Native AOT autonomes | Crate Rust, CLI |
-| Extraction de contenu | Markdown, JSON, modèle sémantique .NET | Pas encore disponible |
 | Documentation | **[Ouvrir le guide .NET](README.nuget.md)** | **[Ouvrir le guide Rust](../minipdf-rs/README.md)** |
 
 Pour la production et la prise en charge documentaire la plus large, commencez par **.NET**. Choisissez **Rust** si vous souhaitez une dépendance Rust native et que le périmètre de conversion actuel vous convient.
@@ -53,7 +52,7 @@ dotnet tool install --global MiniPdf.Cli
 minipdf report.docx -o report.pdf
 ```
 
-Le [guide .NET](README.nuget.md) présente la conversion, l'extraction de contenu, la fusion PDF, les polices personnalisées, les options CLI et le déploiement.
+Le [guide .NET](README.nuget.md) présente la conversion, la fusion PDF, les polices personnalisées, les options CLI et le déploiement.
 
 ### Rust
 

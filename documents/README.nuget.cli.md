@@ -3,7 +3,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github)](https://github.com/shps951023/MiniPdf)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/shps951023/MiniPdf/blob/main/LICENSE)
 
-A command-line tool to convert Excel (`.xlsx`), Word (`.docx`), and PowerPoint (`.pptx`) files to PDF or extract LLM-friendly Markdown and JSON.
+A command-line tool to convert Excel (`.xlsx`), Word (`.docx`), and PowerPoint (`.pptx`) files to PDF.
 Powered by [MiniPdf](https://www.nuget.org/packages/MiniPdf) — zero-dependency, pure .NET.
 
 ## Install
@@ -36,11 +36,6 @@ minipdf data.xlsx --compress
 # Render a bounded Excel preview
 minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
 
-# Extract Markdown (output: report.md)
-minipdf extract report.docx
-
-# Extract deterministic JSON schema version 1
-minipdf extract data.xlsx --format json --sheets Summary --max-rows 200
 ```
 
 ## Commands
@@ -51,8 +46,6 @@ minipdf extract data.xlsx --format json --sheets Summary --max-rows 200
 | `minipdf convert <file> -o <out>` | Convert with explicit output path |
 | `minipdf convert <file> --compress` | Compress PDF content streams |
 | `minipdf data.xlsx --max-rows <n> --max-columns <n>` | Render a bounded Excel preview |
-| `minipdf extract <file>` | Extract LLM-friendly Markdown |
-| `minipdf extract <file> --format json` | Extract semantic JSON schema version 1 |
 | `minipdf --version` | Show version |
 | `minipdf --help` | Show help |
 
@@ -62,7 +55,6 @@ minipdf extract data.xlsx --format json --sheets Summary --max-rows 200
 - Single command, zero config
 - Custom font registration for headless / container environments
 - Optional PDF stream compression and Excel preview limits for large workbooks
-- Source-ordered Markdown/JSON extraction with hyperlinks and media metadata; no OCR or image sidecar files
 - Apache 2.0 licensed — free for commercial use
 
 ## Links

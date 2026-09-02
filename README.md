@@ -29,7 +29,6 @@ implementation that matches your project.
 | Status | Stable, full implementation | Experimental, under active development |
 | Inputs | XLSX, DOCX, PPTX, PDF merge | XLSX, DOCX |
 | Interfaces | .NET library, CLI, standalone Native AOT binaries | Rust crate, CLI |
-| Content extraction | Markdown, JSON, semantic .NET model | Not yet available |
 | Documentation | **[Open the .NET guide](documents/README.nuget.md)** | **[Open the Rust guide](minipdf-rs/README.md)** |
 
 For production use and the broadest document support, start with **.NET**.
@@ -57,8 +56,8 @@ dotnet tool install --global MiniPdf.Cli
 minipdf report.docx -o report.pdf
 ```
 
-The [.NET guide](documents/README.nuget.md) covers conversion, content
-extraction, PDF merge, custom fonts, CLI options, and deployment.
+The [.NET guide](documents/README.nuget.md) covers conversion, PDF merge,
+custom fonts, CLI options, and deployment.
 
 ### Rust
 
