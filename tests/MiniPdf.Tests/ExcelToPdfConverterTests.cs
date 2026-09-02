@@ -746,13 +746,51 @@ public class ExcelToPdfConverterTests
     public void Convert_BuiltInDateFormat_WithEsArCulture()
     {
         using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 15, values: new[] { 44927.0 });
+        var culture = System.Globalization.CultureInfo.GetCultureInfo("es-AR");
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Culture = culture,
+        });
+
+        var expected = new DateTime(2023, 1, 1).ToString("d-MMM-yy", culture);
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == expected);
+    }
+
+    [Fact]
+    public void Convert_BuiltInShortDateFormat_WithEsArCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 14, values: new[] { 45092.0 });
 
         var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
         {
             Culture = System.Globalization.CultureInfo.GetCultureInfo("es-AR"),
         });
 
-        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "1-ene-23");
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "15/6/2023");
+    }
+
+    [Fact]
+    public void Convert_BuiltInShortDateTimeFormat_WithEsArCulture()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 22, values: new[] { 45092.5 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream, new ExcelToPdfConverter.ConversionOptions
+        {
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("es-AR"),
+        });
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "15/6/2023 12:00");
+    }
+
+    [Fact]
+    public void Convert_BuiltInShortDateFormat_NullCulturePreservesInvariantBehavior()
+    {
+        using var excelStream = CreateExcelWithBuiltInNumberFormat(numFmtId: 14, values: new[] { 45092.0 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+
+        Assert.Contains(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "6/15/2023");
     }
 
     [Fact]
