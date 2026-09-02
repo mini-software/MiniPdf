@@ -273,13 +273,13 @@ public class PptxToPdfConverterTests
     }
 
     [Fact]
-    public void ConvertPptxToPdf_WorksWithNonSeekableStream()
+    public void ConvertToPdf_WorksWithNonSeekableStream()
     {
         using var pptxStream = CreatePptx(
             new PptxSlideSpec(new[] { PptxShapeSpec.TextBox("Explicit PPTX API", 914400, 914400, 3000000, 700000) }));
         using var nonSeekable = new NonSeekableStream(pptxStream);
 
-        var bytes = MiniPdf.ConvertPptxToPdf(nonSeekable);
+        var bytes = MiniPdf.ConvertToPdf(nonSeekable);
         var content = Encoding.ASCII.GetString(bytes);
 
         Assert.StartsWith("%PDF-1.4", content);
@@ -320,7 +320,8 @@ public class PptxToPdfConverterTests
         using var pptxStream = CreatePptx(
             new PptxSlideSpec(new[] { PptxShapeSpec.TextBox("No Sheets", 914400, 914400, 3000000, 700000) }));
 
-        var ex = Assert.Throws<NotSupportedException>(() => MiniPdf.ConvertToPdf(pptxStream, new[] { "Slide1" }));
+        var ex = Assert.Throws<NotSupportedException>(() => MiniPdf.ConvertToPdf(pptxStream,
+            new MiniPdfConversionOptions { Sheets = new[] { "Slide1" } }));
 
         Assert.Contains("Sheet selection is only supported for .xlsx files.", ex.Message);
     }

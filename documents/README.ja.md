@@ -25,7 +25,7 @@ MiniPdf は、実行時に Microsoft Office、LibreOffice、Adobe Acrobat、COM 
 | | .NET | Rust |
 |---|---|---|
 | 状態 | 安定版、完全な実装 | 実験版、開発中 |
-| 入力 | XLSX、DOCX、PPTX、PDF 結合 | XLSX、DOCX |
+| 入力 | XLSX、DOCX、PPTX | XLSX、DOCX |
 | インターフェイス | .NET ライブラリ、CLI、Native AOT 単体バイナリ | Rust crate、CLI |
 | ドキュメント | **[.NET ガイドを開く](README.nuget.md)** | **[Rust ガイドを開く](../minipdf-rs/README.md)** |
 
@@ -52,7 +52,7 @@ dotnet tool install --global MiniPdf.Cli
 minipdf report.docx -o report.pdf
 ```
 
-[.NET ガイド](README.nuget.md)では、変換、PDF 結合、カスタムフォント、CLI オプション、デプロイを説明しています。
+[.NET ガイド](README.nuget.md)では、変換、カスタムフォント、CLI オプション、デプロイを説明しています。
 
 ### Rust
 

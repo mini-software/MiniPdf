@@ -387,7 +387,10 @@ public class ExcelToPdfConverterTests
             ("Archive", new[] { new[] { "ArchiveOnly" } }),
         });
 
-        var bytes = MiniPdf.ConvertToPdf(excelStream, new[] { "Details" });
+        var bytes = MiniPdf.ConvertToPdf(excelStream, new MiniPdfConversionOptions
+        {
+            Sheets = new[] { "Details" },
+        });
         var content = Encoding.ASCII.GetString(bytes);
 
         Assert.Contains("DetailsOnly", content);
@@ -405,7 +408,10 @@ public class ExcelToPdfConverterTests
             ("Archive", new[] { new[] { "ArchiveOnly" } }),
         });
 
-        var bytes = MiniPdf.ConvertToPdf(excelStream, new[] { 2 });
+        var bytes = MiniPdf.ConvertToPdf(excelStream, new MiniPdfConversionOptions
+        {
+            SheetIndexes = new[] { 2 },
+        });
         var content = Encoding.ASCII.GetString(bytes);
 
         Assert.Contains("DetailsOnly", content);
@@ -437,7 +443,11 @@ public class ExcelToPdfConverterTests
             ("Archive", new[] { new[] { "ArchiveOnly" } }),
         });
 
-        var bytes = MiniPdf.ConvertToPdf(excelStream, new[] { "Archive" }, sheetIndexes: new[] { 1 });
+        var bytes = MiniPdf.ConvertToPdf(excelStream, new MiniPdfConversionOptions
+        {
+            Sheets = new[] { "Archive" },
+            SheetIndexes = new[] { 1 },
+        });
         var content = Encoding.ASCII.GetString(bytes);
 
         Assert.Contains("SummaryOnly", content);
@@ -454,7 +464,7 @@ public class ExcelToPdfConverterTests
             ("Details", new[] { new[] { "DetailsOnly" } }),
         });
 
-        var bytes = MiniPdf.ConvertToPdf(excelStream, sheets: null);
+        var bytes = MiniPdf.ConvertToPdf(excelStream, new MiniPdfConversionOptions { Sheets = null });
         var content = Encoding.ASCII.GetString(bytes);
 
         Assert.Contains("SummaryOnly", content);
@@ -470,7 +480,8 @@ public class ExcelToPdfConverterTests
             ("Details", new[] { new[] { "DetailsOnly" } }),
         });
 
-        var ex = Assert.Throws<ArgumentException>(() => MiniPdf.ConvertToPdf(excelStream, new[] { "Missing" }));
+        var ex = Assert.Throws<ArgumentException>(() => MiniPdf.ConvertToPdf(excelStream,
+            new MiniPdfConversionOptions { Sheets = new[] { "Missing" } }));
 
         Assert.Contains("Sheet(s) not found: Missing", ex.Message);
         Assert.Contains("Available sheets: Summary, Details", ex.Message);
@@ -485,7 +496,8 @@ public class ExcelToPdfConverterTests
             ("Details", new[] { new[] { "DetailsOnly" } }),
         });
 
-        var ex = Assert.Throws<ArgumentException>(() => MiniPdf.ConvertToPdf(excelStream, new[] { 3 }));
+        var ex = Assert.Throws<ArgumentException>(() => MiniPdf.ConvertToPdf(excelStream,
+            new MiniPdfConversionOptions { SheetIndexes = new[] { 3 } }));
 
         Assert.Contains("Sheet index(es) out of range: 3", ex.Message);
         Assert.Contains("Available index range: 1-2", ex.Message);

@@ -5,8 +5,8 @@
 
 # MiniPdf for .NET
 
-The stable MiniPdf implementation for converting Office files to PDF and merging
-PDFs from .NET applications or the command line.
+The stable MiniPdf implementation for converting Office files to PDF from .NET
+applications or the command line.
 It runs without Microsoft Office, LibreOffice, Adobe Acrobat, or COM automation.
 
 [Project home](https://github.com/mini-software/MiniPdf) ·
@@ -18,7 +18,6 @@ It runs without Microsoft Office, LibreOffice, Adobe Acrobat, or COM automation.
 - Excel to PDF conversion (`.xlsx`)
 - Word to PDF conversion (`.docx`)
 - PowerPoint to PDF conversion (`.pptx`)
-- PDF merge with top-level bookmarks
 - Minimal dependencies — lightweight; relies almost entirely on built-in .NET APIs
 - Serverless-ready — no COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
 - .NET library, global tool, and standalone Native AOT binaries
@@ -48,20 +47,21 @@ MiniPdf.ConvertToPdf("slides.pptx", "output.pdf");
 // File to byte array
 byte[] pdfBytes = MiniPdf.ConvertToPdf("data.xlsx");
 
-// Render selected Excel sheets by name or 1-based index (null renders all sheets)
-MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheets: new[] { "Summary", "Details" });
-MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", sheetIndexes: new[] { 1, 3 });
+// Render selected Excel sheets by name or 1-based index
+MiniPdf.ConvertToPdf("data.xlsx", "selected.pdf", new MiniPdfConversionOptions
+{
+  Sheets = new[] { "Summary", "Details" },
+  SheetIndexes = new[] { 1, 3 },
+});
 
 // Stream to byte array
 using var stream = File.OpenRead("data.xlsx");
 byte[] pdfBytesFromStream = MiniPdf.ConvertToPdf(stream);
 
-// Merge PDFs and add bookmarks
-MiniPdf.MergePdf(new[] { "cover.pdf", "body.pdf" }, "merged.pdf", new PdfMergeOptions
-{
-  BookmarkTitles = new[] { "Cover", "Body" },
-  Bookmarks = new[] { new PdfBookmark("Body page 2", 2) },
-});
+// Stream directly to another stream without allocating the complete PDF byte array
+stream.Position = 0;
+using var output = File.Create("output.pdf");
+MiniPdf.ConvertToPdf(stream, output);
 ```
 
 ### Conversion Options
@@ -90,65 +90,6 @@ host has limited system fonts, such as a container or Blazor WebAssembly app.
 MiniPdf.RegisterFont("NotoSansSC", File.ReadAllBytes("Fonts/NotoSansSC-Regular.ttf"));
 MiniPdf.ConvertToPdf("report.docx", "report.pdf");
 ```
-
-## PDF Merge Usage
-
-### Merge Files
-
-```csharp
-using MiniSoftware;
-
-MiniPdf.MergePdf(
-  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
-  "book.pdf");
-```
-
-Input order is preserved, so pages from `cover.pdf` appear first, followed by `chapter-1.pdf`, then `chapter-2.pdf`.
-
-### Add One Bookmark Per Source PDF
-
-Use `BookmarkTitles` when each input PDF should become a top-level bookmark. The number of titles must match the number of input PDFs.
-
-```csharp
-MiniPdf.MergePdf(
-  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
-  "book-with-bookmarks.pdf",
-  new PdfMergeOptions
-  {
-    BookmarkTitles = new[] { "Cover", "Chapter 1", "Chapter 2" },
-  });
-```
-
-### Add Bookmarks To Specific Pages
-
-Use `PdfBookmark` for explicit page targets. `PageIndex` is zero-based and refers to the final merged PDF.
-
-```csharp
-MiniPdf.MergePdf(
-  new[] { "cover.pdf", "chapter-1.pdf", "chapter-2.pdf" },
-  "book-with-custom-bookmarks.pdf",
-  new PdfMergeOptions
-  {
-    Bookmarks = new[]
-    {
-      new PdfBookmark("Start", 0),
-      new PdfBookmark("Chapter 2 - page 3", 8),
-    },
-  });
-```
-
-### Return A Byte Array
-
-```csharp
-byte[] mergedPdf = MiniPdf.MergePdf(
-  new[] { "cover.pdf", "chapter-1.pdf" },
-  new PdfMergeOptions
-  {
-    BookmarkTitles = new[] { "Cover", "Chapter 1" },
-  });
-```
-
-Supported inputs are unencrypted PDFs that use classic xref tables. Encrypted PDFs and xref-stream-only PDFs throw `NotSupportedException`.
 
 ## Command Line
 
