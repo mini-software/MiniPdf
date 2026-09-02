@@ -4,8 +4,16 @@
 
 The automated rendering-improvement loop works with any coding agent that can
 edit repository files and run PowerShell, including GitHub Copilot, Claude Code,
-Cursor, and Codex. The agent integrations are convenience prompts; the workflow
-and safety gates live in one vendor-neutral command:
+Cursor, and Codex. The easiest way to start is to paste this prompt into the
+agent chat:
+
+```text
+Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start to finish. Diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+```
+
+Replace `dotnet` with `rust` to work on the Rust implementation. The agent
+integrations are convenience prompts; the workflow and safety gates live in
+one vendor-neutral command:
 
 ```powershell
 # Choose one implementation.

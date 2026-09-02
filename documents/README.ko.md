@@ -81,7 +81,13 @@ MiniPdf는 실용적인 문서 변환을 목표로 하며 Microsoft Office 레�
 
 ## 컴퓨팅 자원으로 기여하기
 
-GitHub Copilot, Claude Code, Cursor, Codex 또는 파일 편집과 PowerShell 실행이 가능한 모든 코딩 Agent에서 깨끗한 fork 또는 clone을 여세요. 공통 진입점은 다음과 같습니다.
+GitHub Copilot, Claude Code, Cursor, Codex 또는 파일 편집과 PowerShell 실행이 가능한 모든 코딩 Agent에서 깨끗한 fork 또는 clone을 여세요. 가장 간단한 방법은 다음 지시문을 Agent 채팅에 붙여 넣는 것입니다.
+
+```text
+Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start to finish. Diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+```
+
+Rust 구현에 기여하려면 `dotnet`을 `rust`로 바꾸세요. 공통 PowerShell 진입점은 다음과 같습니다.
 
 ```powershell
 .\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet

@@ -81,7 +81,13 @@ MiniPdf punta alla conversione pratica dei documenti, non alla compatibilità co
 
 ## Contribuire con potenza di calcolo
 
-Apri un fork o clone pulito in GitHub Copilot, Claude Code, Cursor, Codex o qualsiasi agente di programmazione capace di modificare file ed eseguire PowerShell. Il punto di ingresso comune è:
+Apri un fork o clone pulito in GitHub Copilot, Claude Code, Cursor, Codex o qualsiasi agente di programmazione capace di modificare file ed eseguire PowerShell. Il modo più semplice per contribuire è incollare questa istruzione nella chat dell'Agent:
+
+```text
+Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start to finish. Diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+```
+
+Sostituisci `dotnet` con `rust` per lavorare sull'implementazione Rust. I punti di ingresso PowerShell comuni sono:
 
 ```powershell
 .\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet

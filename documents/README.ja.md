@@ -81,7 +81,13 @@ MiniPdf は実用的な文書変換を目的としており、Microsoft Office �
 
 ## 計算リソースで貢献する
 
-クリーンな fork または clone を GitHub Copilot、Claude Code、Cursor、Codex、またはファイル編集と PowerShell 実行が可能な任意のコーディング Agent で開きます。共通の入口は次のとおりです。
+クリーンな fork または clone を GitHub Copilot、Claude Code、Cursor、Codex、またはファイル編集と PowerShell 実行が可能な任意のコーディング Agent で開きます。最も簡単な方法は、次の指示を Agent のチャットに貼り付けることです。
+
+```text
+Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start to finish. Diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+```
+
+Rust 実装に取り組む場合は `dotnet` を `rust` に置き換えてください。共通の PowerShell エントリーポイントは次のとおりです。
 
 ```powershell
 .\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
