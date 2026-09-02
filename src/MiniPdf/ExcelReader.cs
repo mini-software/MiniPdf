@@ -2531,7 +2531,7 @@ internal static class ExcelReader
             10 => (value * 100).ToString("F2", ci) + "%", // 0.00%
             11 => value.ToString("0.00E+00", ci),         // 0.00E+00
             // Date formats (14-22): Excel stores dates as serial numbers
-            14 => FormatExcelDate(value, "M/d/yyyy", ci),
+            14 => FormatExcelDate(value, culture?.DateTimeFormat.ShortDatePattern ?? "M/d/yyyy", ci),
             15 => FormatExcelDate(value, "d-MMM-yy", ci),
             16 => FormatExcelDate(value, "d-MMM", ci),
             17 => FormatExcelDate(value, "MMM-yy", ci),
@@ -2539,7 +2539,7 @@ internal static class ExcelReader
             19 => FormatExcelDate(value, "h:mm:ss tt", ci),
             20 => FormatExcelDate(value, "H:mm", ci),
             21 => FormatExcelDate(value, "H:mm:ss", ci),
-            22 => FormatExcelDate(value, "M/d/yyyy H:mm", ci),
+            22 => FormatExcelDate(value, $"{culture?.DateTimeFormat.ShortDatePattern ?? "M/d/yyyy"} H:mm", ci),
             // More number formats
             37 => value.ToString("#,##0", ci),
             38 => value.ToString("#,##0", ci),
