@@ -16,6 +16,8 @@
 
 **[線上展示](https://mini-software.github.io/MiniPdf/)** · **[版本發布](https://github.com/mini-software/MiniPdf/releases)** · **[回報問題](https://github.com/mini-software/MiniPdf/issues)**
 
+你的 Star 或捐款將幫助專案持續發展。
+
 </div>
 
 MiniPdf 不需要在執行階段安裝 Microsoft Office、LibreOffice、Adobe Acrobat 或使用 COM 自動化，即可直接將 Office 文件轉換為 PDF。請選擇適合專案的實作。
@@ -24,12 +26,9 @@ MiniPdf 不需要在執行階段安裝 Microsoft Office、LibreOffice、Adobe Ac
 
 | | .NET | Rust |
 |---|---|---|
-| 狀態 | 穩定、功能完整 | 實驗性、持續開發中 |
 | 輸入 | XLSX、DOCX、PPTX | XLSX、DOCX |
 | 介面 | .NET 程式庫、CLI、獨立 Native AOT 二進位檔 | Rust crate、CLI |
 | 文件 | **[開啟 .NET 指南](README.nuget.md)** | **[開啟 Rust 指南](../minipdf-rs/README.md)** |
-
-正式環境與最廣泛的文件支援建議使用 **.NET**。需要原生 Rust 相依套件，且目前轉換範圍足夠時，可選擇 **Rust**。
 
 ## 快速開始
 

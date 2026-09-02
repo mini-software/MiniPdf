@@ -16,6 +16,8 @@ English | <a href="documents/README.zh-CN.md">简体中文</a> | <a href="docume
 
 **[Online Demo](https://mini-software.github.io/MiniPdf/)** · **[Releases](https://github.com/mini-software/MiniPdf/releases)** · **[Report an issue](https://github.com/mini-software/MiniPdf/issues)**
 
+Your star or donation helps sustain the project.
+
 </div>
 
 MiniPdf converts Office documents directly to PDF without Microsoft Office,
@@ -26,14 +28,9 @@ implementation that matches your project.
 
 | | .NET | Rust |
 |---|---|---|
-| Status | Stable, full implementation | Experimental, under active development |
 | Inputs | XLSX, DOCX, PPTX | XLSX, DOCX |
 | Interfaces | .NET library, CLI, standalone Native AOT binaries | Rust crate, CLI |
 | Documentation | **[Open the .NET guide](documents/README.nuget.md)** | **[Open the Rust guide](minipdf-rs/README.md)** |
-
-For production use and the broadest document support, start with **.NET**.
-Choose **Rust** when you want a native Rust dependency and can work within its
-current conversion scope.
 
 ## Quick start
 

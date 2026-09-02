@@ -16,6 +16,8 @@
 
 **[オンラインデモ](https://mini-software.github.io/MiniPdf/)** · **[リリース](https://github.com/mini-software/MiniPdf/releases)** · **[問題を報告](https://github.com/mini-software/MiniPdf/issues)**
 
+スターや寄付がプロジェクトの継続的な発展を支えます。
+
 </div>
 
 MiniPdf は、実行時に Microsoft Office、LibreOffice、Adobe Acrobat、COM オートメーションを必要とせず、Office 文書を直接 PDF に変換します。プロジェクトに合う実装を選択してください。
@@ -24,12 +26,9 @@ MiniPdf は、実行時に Microsoft Office、LibreOffice、Adobe Acrobat、COM 
 
 | | .NET | Rust |
 |---|---|---|
-| 状態 | 安定版、完全な実装 | 実験版、開発中 |
 | 入力 | XLSX、DOCX、PPTX | XLSX、DOCX |
 | インターフェイス | .NET ライブラリ、CLI、Native AOT 単体バイナリ | Rust crate、CLI |
 | ドキュメント | **[.NET ガイドを開く](README.nuget.md)** | **[Rust ガイドを開く](../minipdf-rs/README.md)** |
-
-本番用途と最も広い文書対応には **.NET** を推奨します。ネイティブな Rust 依存関係が必要で、現在の変換範囲で十分な場合は **Rust** を選択してください。
 
 ## クイックスタート
 
