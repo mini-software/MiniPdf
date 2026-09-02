@@ -744,10 +744,10 @@ pub(crate) fn styled_text_width_with_font(
             .into_iter()
             .map(|run| {
                 let Some(font_index) = run.font_index else {
-                    return run.text.chars().count() as f32 * font_size * 0.5;
+                    return base14_text_width(&run.text, font_size, bold);
                 };
                 let Some(shaped) = shape_text(&run.text, &fonts[font_index].data) else {
-                    return run.text.chars().count() as f32 * font_size * 0.5;
+                    return base14_text_width(&run.text, font_size, bold);
                 };
                 let scale = font_size / shaped.units_per_em as f32;
                 shaped
@@ -758,6 +758,46 @@ pub(crate) fn styled_text_width_with_font(
             })
             .sum()
     })
+}
+
+fn base14_text_width(text: &str, font_size: f32, bold: bool) -> f32 {
+    text.chars()
+        .map(|ch| helvetica_glyph_width(ch, bold))
+        .sum::<u32>() as f32
+        * font_size
+        / 1000.0
+}
+
+fn helvetica_glyph_width(ch: char, bold: bool) -> u32 {
+    const REGULAR: [u16; 95] = [
+        278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
+        556, 556, 556, 556, 556, 556, 556, 556, 278, 278, 584, 584, 584, 556, 1015, 667, 667, 722,
+        722, 667, 611, 778, 722, 278, 500, 667, 556, 833, 722, 778, 667, 778, 722, 667, 611, 722,
+        667, 944, 667, 667, 611, 278, 278, 278, 469, 556, 333, 556, 556, 500, 556, 556, 278, 556,
+        556, 222, 222, 500, 222, 833, 556, 556, 556, 556, 333, 500, 278, 556, 500, 722, 500, 500,
+        500, 334, 260, 334, 584,
+    ];
+    const BOLD: [u16; 95] = [
+        278, 333, 474, 556, 556, 889, 722, 238, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
+        556, 556, 556, 556, 556, 556, 556, 556, 333, 333, 584, 584, 584, 611, 975, 722, 722, 722,
+        722, 667, 611, 778, 722, 278, 556, 722, 611, 833, 722, 778, 667, 778, 722, 667, 611, 722,
+        667, 944, 722, 667, 611, 333, 278, 333, 584, 556, 333, 556, 611, 556, 611, 556, 333, 611,
+        611, 278, 278, 556, 278, 889, 611, 611, 611, 611, 389, 556, 333, 611, 556, 778, 556, 556,
+        500, 389, 280, 389, 584,
+    ];
+    let codepoint = ch as usize;
+    if (32..=126).contains(&codepoint) {
+        return if bold {
+            BOLD[codepoint - 32]
+        } else {
+            REGULAR[codepoint - 32]
+        } as u32;
+    }
+    if ch.is_ascii() {
+        500
+    } else {
+        900
+    }
 }
 
 fn text_for_cluster(text: &str, glyphs: &[ShapedGlyph], index: usize) -> String {
