@@ -116,5 +116,3 @@ Rust 구현에 기여하려면 `dotnet`을 `rust`로 바꾸세요. 공통 PowerS
 ## 라이선스
 
 [Apache License 2.0](../LICENSE)에 따라 제공됩니다. 필수 고지와 저작자 표시를 유지하면 상업적으로 사용할 수 있습니다.
-
-[Star](https://github.com/mini-software/MiniPdf) 또는 [후원](https://mini-software.github.io/)은 프로젝트 유지에 도움이 됩니다.

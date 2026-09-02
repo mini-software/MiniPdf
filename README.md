@@ -138,5 +138,3 @@ opens a PR without your approval.
 
 [Apache License 2.0](LICENSE). Commercial use is welcome; retain the required
 notices and attribution.
-
-Your [star](https://github.com/mini-software/MiniPdf) or [donation](https://mini-software.github.io/) helps sustain the project.

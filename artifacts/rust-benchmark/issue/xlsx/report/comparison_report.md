@@ -1,6 +1,6 @@
 # Rust MiniPdf vs Microsoft 365 Excel Reference PDF Comparison Report
 
-Generated: 2026-09-02T11:08:08.514362
+Generated: 2026-09-02T17:09:51.328246
 
 ## Summary
 
@@ -15,7 +15,7 @@ Generated: 2026-09-02T11:08:08.514362
 | 7 | 🟢 Expense report basic1 | ✅ | 0.9889 | 0.8811 | 1/1 | **0.948** |
 | 8 | 🟡 Grocery list1 | ✅ | 0.9506 | 0.7304 | 1/1 | **0.8724** |
 | 9 | 🔴 payroll-calculator_f | ✅ | 0.8487 | 0.4264 | 28/29 | **0.61** |
-| 10 | 🟡 PO_anonymized | ✅ | 0.9751 | 0.82 | 8/9 | **0.818** |
+| 10 | 🟢 PO_anonymized | ✅ | 1.0000 | 0.9002 | 9/9 | **0.9601** |
 | 11 | 🟢 Simple invoice1 | ✅ | 0.9806 | 0.8664 | 1/1 | **0.9388** |
 | 12 | 🟡 Small business cash flow forecast1 | ✅ | 0.9686 | 0.7277 | 3/5 | **0.7785** |
 | 13 | 🟡 Wedding_timeline_planner1_copy | ✅ | 0.9916 | 0.7815 | 4/8 | **0.8092** |
@@ -25,11 +25,11 @@ Generated: 2026-09-02T11:08:08.514362
 | 17 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8456 | 6/6 | **0.9382** |
 | 18 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8395 | 6/6 | **0.9358** |
 | 19 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9807 | 0.7905 | 16/16 | **0.9085** |
-| 20 | 🟡 XlsxIssue82_5mb | ✅ | 0.8672 | 0.835 | 383/766 | **0.7809** |
-| 21 | 🟡 XlsxIssue82_SampleTestData5mb | ✅ | 0.6176 | 0.887 | 435/1668 | **0.7018** |
+| 20 | ⚪ XlsxIssue82_5mb | ✅ | N/A | N/A | ?/? | **N/A** |
+| 21 | ⚪ XlsxIssue82_SampleTestData5mb | ✅ | N/A | N/A | ?/? | **N/A** |
 | 22 | ⚪ XlsxIssue82_WideTable | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8147**
+**Average Overall Score: 0.7533**
 
 ## Labeled Side-by-Side Comparison
 
@@ -111,14 +111,6 @@ Generated: 2026-09-02T11:08:08.514362
   <td><b>XlsxIssue81_LayoutOptions<br><small>format: xlsx | case: XlsxIssue81_LayoutOptions | scope: rust-issue-xlsx</small></b><br>Page 1</td>
   <td><img src="side-by-side/XlsxIssue81_LayoutOptions_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue81_LayoutOptions page 1 comparison"></td>
 </tr>
-<tr>
-  <td><b>XlsxIssue82_5mb<br><small>format: xlsx | case: XlsxIssue82_5mb | scope: rust-issue-xlsx</small></b><br>Page 1</td>
-  <td><img src="side-by-side/XlsxIssue82_5mb_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue82_5mb page 1 comparison"></td>
-</tr>
-<tr>
-  <td><b>XlsxIssue82_SampleTestData5mb<br><small>format: xlsx | case: XlsxIssue82_SampleTestData5mb | scope: rust-issue-xlsx</small></b><br>Page 1</td>
-  <td><img src="side-by-side/XlsxIssue82_SampleTestData5mb_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 1 comparison"></td>
-</tr>
 </table>
 
 ## Difference Heatmaps
@@ -170,12 +162,12 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>payroll-calculator_f</b><br>Page 1</td>
   <td><img src="images/payroll-calculator_f_p1_heatmap.png" width="760" alt="payroll-calculator_f page 1 difference heatmap"></td>
-  <td>changed: 808249 px (37.13%)<br>bbox: [23, 31, 1692, 1160]<br>mean abs RGB: 31.41<br>RMSE RGB: 62.0982<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 809437 px (37.19%)<br>bbox: [23, 31, 1692, 1160]<br>mean abs RGB: 31.465<br>RMSE RGB: 62.1726<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>PO_anonymized</b><br>Page 1</td>
   <td><img src="images/PO_anonymized_p1_heatmap.png" width="760" alt="PO_anonymized page 1 difference heatmap"></td>
-  <td>changed: 717920 px (32.98%)<br>bbox: [58, 71, 1181, 1713]<br>mean abs RGB: 29.6317<br>RMSE RGB: 71.7606<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 406279 px (18.66%)<br>bbox: [58, 72, 1181, 1713]<br>mean abs RGB: 24.1798<br>RMSE RGB: 67.5756<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Simple invoice1</b><br>Page 1</td>
@@ -221,16 +213,6 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><b>XlsxIssue81_LayoutOptions</b><br>Page 1</td>
   <td><img src="images/XlsxIssue81_LayoutOptions_p1_heatmap.png" width="760" alt="XlsxIssue81_LayoutOptions page 1 difference heatmap"></td>
   <td>changed: 569573 px (27.82%)<br>bbox: [35, 73, 1066, 1545]<br>mean abs RGB: 32.1578<br>RMSE RGB: 76.3458<br>threshold: 12, gain: 5.0</td>
-</tr>
-<tr>
-  <td><b>XlsxIssue82_5mb</b><br>Page 1</td>
-  <td><img src="images/XlsxIssue82_5mb_p1_heatmap.png" width="760" alt="XlsxIssue82_5mb page 1 difference heatmap"></td>
-  <td>changed: 467730 px (22.84%)<br>bbox: [108, 122, 1222, 1523]<br>mean abs RGB: 34.2896<br>RMSE RGB: 81.5064<br>threshold: 12, gain: 5.0</td>
-</tr>
-<tr>
-  <td><b>XlsxIssue82_SampleTestData5mb</b><br>Page 1</td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_heatmap.png" width="760" alt="XlsxIssue82_SampleTestData5mb page 1 difference heatmap"></td>
-  <td>changed: 432033 px (19.85%)<br>bbox: [119, 157, 1241, 1599]<br>mean abs RGB: 32.518<br>RMSE RGB: 81.6347<br>threshold: 12, gain: 5.0</td>
 </tr>
 </table>
 
@@ -323,7 +305,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>PO_anonymized<br><small>format: xlsx | case: PO_anonymized | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">PO_anonymized <span style="color:#d29922">⬤</span> 81.8%</td>
+  <td colspan="2">PO_anonymized <span style="color:#3fb950">⬤</span> 96.0%</td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -413,21 +395,17 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>XlsxIssue82_5mb<br><small>format: xlsx | case: XlsxIssue82_5mb | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">XlsxIssue82_5mb <span style="color:#d29922">⬤</span> 78.1%</td>
+  <td colspan="2">XlsxIssue82_5mb N/A</td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue82_5mb_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_5mb_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/XlsxIssue82_5mb_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td colspan="3"><i>No images</i></td>
 </tr>
 <tr>
   <td><b>XlsxIssue82_SampleTestData5mb<br><small>format: xlsx | case: XlsxIssue82_SampleTestData5mb | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">XlsxIssue82_SampleTestData5mb <span style="color:#d29922">⬤</span> 70.2%</td>
+  <td colspan="2">XlsxIssue82_SampleTestData5mb N/A</td>
 </tr>
 <tr>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td colspan="3"><i>No images</i></td>
 </tr>
 <tr>
   <td><b>XlsxIssue82_WideTable<br><small>format: xlsx | case: XlsxIssue82_WideTable | scope: rust-issue-xlsx</small></b></td>
@@ -556,7 +534,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.7611
 - **Overall Score:** 0.8044
 - **Pages:** MiniPdf=8, Reference=4
-- **File Size:** MiniPdf=1042458 bytes, Reference=376973 bytes
+- **File Size:** MiniPdf=1042461 bytes, Reference=376973 bytes
 
 Text content: ✅ Identical
 
@@ -858,7 +836,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.4264
 - **Overall Score:** 0.61
 - **Pages:** MiniPdf=28, Reference=29
-- **File Size:** MiniPdf=4723494 bytes, Reference=606513 bytes
+- **File Size:** MiniPdf=4743633 bytes, Reference=606513 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -915,29 +893,25 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: PO_anonymized | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/PO_anonymized.xlsx
-- **Text Similarity:** 0.9751
-- **Visual Average:** 0.82
-- **Overall Score:** 0.818
-- **Pages:** MiniPdf=8, Reference=9
-- **File Size:** MiniPdf=844496 bytes, Reference=409049 bytes
+- **Text Similarity:** 1.0000
+- **Visual Average:** 0.9002
+- **Overall Score:** 0.9601
+- **Pages:** MiniPdf=9, Reference=9
+- **File Size:** MiniPdf=944128 bytes, Reference=409049 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/PO_anonymized.pdf
 +++ reference/PO_anonymized.pdf
-@@ -2,14 +2,14 @@
- Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328
-
+@@ -3,7 +3,7 @@
  XXX office: TX Inspector: Sam Davis XXX PO#: 21668732
 
  PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A
 
--Project#: XXBFNO6 Inspection date: 46046 Batch Quantity: 88907PCS
+ Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
 
 -Date of Manufacture:    1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)
-
-+Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS
 
 +Date of Manufacture: 1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)
 
@@ -947,37 +921,6 @@ Text content: ✅ Identical
 
  Sign-off sample: Yes Approved drawings Yes (Drawing#: K1VRJNVG REV: C )
 
- Ship mark Yes Approved ranges Yes Ship to TBA
-
- Inspection Result: Accept
-
--tion: No
-
-+Re-inspection: No
-
- ( Comment: )
-
- Inspection Result Summary
-
- Check points Sample size Comment Remark
-
-@@ -43,5 +43,7 @@
- Inspection quantity No. of carton
-
- Item# XXX PO No. Batch qty.
-
- Packed Unpacked Packed Unpacked
-
--XX-ABC-57052-C 71662963 61859 41466 8462 61 16
-
--Total: 41466 8462 61 16
-+XX-ABC-57052-C 71662963 61,859 41,466 8,462 61 16
-
-+Total: 41,466 8,462 61 16
-
-+Doc#: FIR-003.5
-
-+Effective: 20171109 Page 1 of 9
 ```
 </details>
 
@@ -1063,7 +1006,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.7815
 - **Overall Score:** 0.8092
 - **Pages:** MiniPdf=4, Reference=8
-- **File Size:** MiniPdf=521753 bytes, Reference=180076 bytes
+- **File Size:** MiniPdf=521756 bytes, Reference=180076 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1214,7 +1157,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.9695
 - **Overall Score:** 0.8841
 - **Pages:** MiniPdf=140, Reference=144
-- **File Size:** MiniPdf=13715983 bytes, Reference=5896201 bytes
+- **File Size:** MiniPdf=13721851 bytes, Reference=5896201 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1364,174 +1307,11 @@ Text content: ✅ Identical
 
 ### XlsxIssue82_5mb
 
-- **Case Metadata:** format: xlsx | case: XlsxIssue82_5mb | scope: rust-issue-xlsx
-- **Source:** tests/Issue_Files/xlsx/XlsxIssue82_5mb.xlsx
-- **Text Similarity:** 0.8672
-- **Visual Average:** 0.835
-- **Overall Score:** 0.7809
-- **Pages:** MiniPdf=383, Reference=766
-- **File Size:** MiniPdf=1093160831 bytes, Reference=21494385 bytes
-
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/XlsxIssue82_5mb.pdf
-+++ reference/XlsxIssue82_5mb.pdf
-@@ -1,47 +1,47 @@
--Name Email Phone Address Company Text DescriptioJob Title
-
--Quentin H oschiller@573.920.9 22808 LueMraz and Labore et Non deleniEmergency Management Specialist
-
--Lowell Ols eve.lind@ 720.754.6 67029 DecRosenbau Soluta nih Aut iste quFast Food Cook
-
--Sydnee Cr gunnar.sch28126117 908 MatteStrosin, Ki VoluptatemSed aliquidInteraction Designer
-
--Tomasa Di gerlach.ar +1 (276) 9 787 Rey H Balistreri-KProvident Et cupiditaMotorcycle Mechanic
-
--Payton Ku herman.ba1-201-33353401 HahWolff-ErdmVero iste laCulpa id a Janitorial Supervisor
-
--Constantincrist.elme (551) 609-32868 Kul RunolfssonOfficia vol Aut non d Pressing Machine Operator
-
--Tad Hartmkathryn04 1-928-43477833 Kle Kunze, FraIpsum pra Facilis undTherapist
-
--Tristian Linlittle.bobb+1.870.92 83843 ReeMitchell-Si DignissimoEum beataTechnical Writer
-
--Miss Tierragpredovic@912-817-0310 Elliot Ward-WildAb at evenAut voluptCredit Checkers Clerk
-
--Nicolette Sdomenic4 +1-352-61 13158 Sto Kerluke GrCulpa ea aQuos earuPostsecondary Education Administrators
-
--Rosalind F kimberly.p86269653 700 Hyatt Bode-SwiftEst et qui qEveniet te Loan Counselor
-
--Hector Braelarkin@s 1-458-225987 Isom SStrosin-Ku Labore ut Quidem p Cement Mason and Concrete Finisher
-
--Marjory Kebrandyn.e 1-210-606671 Kaci VMann, Mc Molestias Fuga et ve Brokerage Clerk
-
--Forrest Tu wilmer93@216.242.5 214 BahrinBlick, O'CoEnim earu Aut sequi Musician
-
--Kennedy Wgutkowski +1.321.40 693 Mossi Abshire, R Dolor doloRerum aspIndustrial-Organizational Psychologist
-
--Lysanne H gebert@y +1.272.47 4137 Berg Nitzsche L AsperioresAt dolores Interviewer
-
--Randall Dagreenholt.24567844 90795 Bei Luettgen, Blanditiis nEt natus q Mixing and Blending Machine Operator
-
--Chanelle Bsally46@g38889219 8856 AngeYundt-KirliVoluptas laDolores m Communication Equipment Repairer
-
--Mr. Grego udietrich@1-469-314750 Ebert Goyette InUnde odit Qui aut doClinical Laboratory Technician
-
--Rosalia Vo donna.sim53465388 9022 CletaAbbott, CaSoluta id t Aut sit et aMechanical Engineer
-
--Sigmund Tteresa93@+1.937.53 2314 Crist Aufderhar Consectet QuibusdamProducer
-
--Prof. Janic ahettinger312.745.3 50901 LudSawayn, WSint aut reAlias sed vLoading Machine Operator
-
--Mr. Brad F lhickle@ya856-513-791499 Mo Keebler, LuAssumendAsperioresAircraft Mechanics OR Aircraft Service Technician
-
--Christop Gdstrosin@ (563) 429-150 BertraKreiger LtdQuas occa Commodi Aircraft Body Repairer
-
--Dr. Toni M erling43@+1-765-38 6102 Assu Jenkins IncLaborum aUt aut et uLog Grader and Scaler
-
--Reece Fad ekirlin@lo463.613.7 9314 Sibyl Feeney Gr Voluptate Quo exerc Recordkeeping Clerk
-
--Izaiah Skilehgoyette@240-241-28932 BartoDavis-Wel Qui fuga dEnim quia Biologist
-
--Mathilde Siromaguera1-218-29880599 Pro Carter-PurAb voluptaSimilique sFence Erector
-
--Mr. Jarred dimitri.hay279.899.6 6187 ConnKonopelskAutem sit Soluta dol Paralegal
-
--Kameron Psimone.hy1-510-89134203 Kat StiedemanIpsa ut amPerspiciati Directory Assistance Operator
-
-... (6076 more characters)
-
-```
-</details>
+**Error:** MiniPdf PDF not found
 
 ### XlsxIssue82_SampleTestData5mb
 
-- **Case Metadata:** format: xlsx | case: XlsxIssue82_SampleTestData5mb | scope: rust-issue-xlsx
-- **Source:** tests/Issue_Files/xlsx/XlsxIssue82_SampleTestData5mb.xlsx
-- **Text Similarity:** 0.6176
-- **Visual Average:** 0.887
-- **Overall Score:** 0.7018
-- **Pages:** MiniPdf=435, Reference=1668
-- **File Size:** MiniPdf=705787483 bytes, Reference=32924505 bytes
-
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/XlsxIssue82_SampleTestData5mb.pdf
-+++ reference/XlsxIssue82_SampleTestData5mb.pdf
-@@ -1,46 +1,48 @@
--ID Name Email City Country Departme Notes Value1 Value2 RandomText
-
--1 User 1 user1@ex Toronto UK IT pwJqdCFm 760613 72576615 aJ3NulIjekFszDr5uAOvjTW
-
--2 User 2 user2@ex Delhi Germany IT S6gIttJQrY 456305 24213791 pf092rX59pMVKusbfiaJYv
-
--3 User 3 user3@ex Sydney UK Finance mmp5R2o 802115 90762297 FICghVXe4Pd3hKRCupNh
-
--4 User 4 user4@ex Berlin Australia HR BpiYtDuC1 929132 97747054 Dqy4YfhZVRKoU4MQPEw
-
--5 User 5 user5@ex Berlin France HR DXnTIbeTy 178492 57171228 KXaj1XiogboogGppXhSvE
-
--6 User 6 user6@ex Delhi Australia HR Iw9DkBED 518412 95574193 U601Kz3aUylPSRV6SVs0t
-
--7 User 7 user7@ex Toronto Australia Finance tN5mvZpZ 72218 70818228 GuleIeBIYZczfrOqI0XBrqF
-
--8 User 8 user8@ex Tokyo USA Ops xqmF3Xc2 238623 86525974 kEPOh7wmqkRjD7laS1MA
-
--9 User 9 user9@ex London Australia Ops k099328N 369743 49049124 D5YOUBWJGzP43Qafmuu
-
--10 User 10 user10@eDelhi Germany IT 3YvAHvcSG 24089 21668827 goDwaKqvlHPqqXocf2nUy
-
--11 User 11 user11@eSydney France Sales r2O9ZtMJy 929463 27573623 F4rYXgsl2m3XP9ocAJxMN
-
--12 User 12 user12@eTokyo Japan Sales y8JVUgTdff 777742 93571132 wNpAAEwHvkZhFUlh99tH
-
--13 User 13 user13@eTokyo India Support v5XTbqBU 223784 91246594 FlobOTEN9qfliiewj5lxRLM
-
--14 User 14 user14@eNew York Japan Ops pxwvBMP 187168 93853101 cJSx1oYMF9mqkznD1QT8
-
--15 User 15 user15@eSydney Japan Ops NPs68SCLX 332785 50121304 82hWYSRrOSFlomH3Gvv1
-
--16 User 16 user16@eDelhi Canada Ops JMgIo6JDv 966595 07984397 4BAbUAcF8HLYK9JHq3jj4
-
--17 User 17 user17@eParis Australia Ops LWFef8uC 429423 22218843 UQEtbOYiFJw9CXErvuTiEr
-
--18 User 18 user18@eTokyo Australia Ops 4y2atULBn 179954 52678655 AKEBEMk7LmS6Dgg9YcYn
-
--19 User 19 user19@eBerlin France Finance MoiyHIdz6 416476 24642597 yKogEsvtgjzTqXNVWBylLq
-
--20 User 20 user20@eLondon India Sales Gg4eeM2f 152083 09921012 4bCh4zWg5rIe3yJ1k2lGW
-
--21 User 21 user21@eTokyo India Finance hk0tj7hQt 913510 07502412 uQ5Qw22c6qfmDqQ0pPJ
-
--22 User 22 user22@eNew York UK IT FexqT7i2Z 959850 19319215 6WLsCwBvSzwhTYPQGlPO
-
--23 User 23 user23@eSydney Japan Ops wZdZL0KlV 813108 06367596 ovnVvOjCS3spejVOAdM6
-
--24 User 24 user24@eLondon Germany Support I6go0j9fZK 175461 39029965 euHzFEtXjD0gPbUSMXjUS
-
--25 User 25 user25@eLondon Canada Ops eE9wvY61 582815 09838566 4E725SLTRuB0TDyewF1iU
-
--26 User 26 user26@eTokyo Japan Support vTlTmSLZK 698910 16223284 63fo6sebUsgvmf5Tdgu2J
-
--27 User 27 user27@eDelhi UK Ops 001jLkp56 463742 27812386 cPF7y1qrqrbXduLROmKIG
-
--28 User 28 user28@eTokyo India Ops JYMn1HVG 185984 14627172 aFVmUW0iuXfHDfK7hWM
-
--29 User 29 user29@eLondon India Sales kDD8aBkf 110478 74045311 e8DIRNwLNuloNl30L338n
-
--30 User 30 user30@eBerlin UK Ops vt3rlC8s2T 165682 37984582 cuF6nwLUR8OzYfBCiBYK0
-
--31 User 31 user31@eSydney Canada Ops Sy0TGdVh 300288 32443793 17YQUGbpPgEUpY1pIVyQ
-
--32 User 32 user32@eLondon Japan IT nuLK3hv5 932811 76962846 RGlzsAMoPYS7aALJLOK1x
-
--33 User 33 user33@eTokyo Australia Finance 8QxYNykp 732250
-... (4221 more characters)
-
-```
-</details>
+**Error:** MiniPdf PDF not found
 
 ### XlsxIssue82_WideTable
 
@@ -1543,9 +1323,7 @@ Text content: ✅ Identical
 
 1. **payroll-calculator_f** (score: 0.61)
 1. **Business plan checklist with SWOT analysis1** (score: 0.699)
-1. **XlsxIssue82_SampleTestData5mb** (score: 0.7018)
 1. **Weekly schedule planner1** (score: 0.7569)
 1. **Small business cash flow forecast1** (score: 0.7785)
-1. **XlsxIssue82_5mb** (score: 0.7809)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.

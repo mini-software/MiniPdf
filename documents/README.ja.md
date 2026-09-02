@@ -116,5 +116,3 @@ Rust 実装に取り組む場合は `dotnet` を `rust` に置き換えてくだ
 ## ライセンス
 
 [Apache License 2.0](../LICENSE) で提供されています。必要な通知と帰属表示を保持すれば、商用利用も可能です。
-
-[Star](https://github.com/mini-software/MiniPdf) または[寄付](https://mini-software.github.io/)がプロジェクトの継続を支えます。

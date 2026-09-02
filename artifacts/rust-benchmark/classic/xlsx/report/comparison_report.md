@@ -1,6 +1,6 @@
 # Rust MiniPdf vs Microsoft 365 Excel Reference PDF Comparison Report
 
-Generated: 2026-08-30T18:10:48.380071
+Generated: 2026-09-02T17:18:45.222192
 
 ## Summary
 
@@ -20,7 +20,7 @@ Generated: 2026-08-30T18:10:48.380071
 | 12 | 🔴 classic12_sparse_columns | ✅ | 1.0 | 0.499 | 1/2 | **0.6996** |
 | 13 | 🟢 classic13_date_strings | ✅ | 0.9738 | 0.9965 | 1/1 | **0.9881** |
 | 14 | 🟢 classic14_decimal_numbers | ✅ | 1.0 | 0.9975 | 1/1 | **0.999** |
-| 15 | 🟢 classic15_negative_numbers | ✅ | 0.9375 | 0.9975 | 1/1 | **0.974** |
+| 15 | 🟢 classic15_negative_numbers | ✅ | 0.9693 | 0.9977 | 1/1 | **0.9868** |
 | 16 | 🟢 classic16_percentage_strings | ✅ | 0.9877 | 0.9971 | 1/1 | **0.9939** |
 | 17 | 🟢 classic17_currency_strings | ✅ | 1.0 | 0.9966 | 1/1 | **0.9986** |
 | 18 | 🔴 classic18_large_dataset | ✅ | 0.9001 | 0.4709 | 22/42 | **0.6484** |
@@ -45,7 +45,7 @@ Generated: 2026-08-30T18:10:48.380071
 | 37 | 🟢 classic37_freeze_panes | ✅ | 1.0 | 0.9892 | 1/1 | **0.9957** |
 | 38 | 🟢 classic38_hyperlink_cell | ✅ | 1.0 | 0.9983 | 1/1 | **0.9993** |
 | 39 | 🟢 classic39_financial_table | ✅ | 1.0 | 0.9942 | 1/1 | **0.9977** |
-| 40 | 🟡 classic40_scientific_notation | ✅ | 0.7281 | 0.9965 | 1/1 | **0.8898** |
+| 40 | 🟢 classic40_scientific_notation | ✅ | 0.7864 | 0.997 | 1/1 | **0.9134** |
 | 41 | 🟢 classic41_integer_vs_float | ✅ | 0.9453 | 0.9971 | 1/1 | **0.977** |
 | 42 | 🟢 classic42_boolean_values | ✅ | 0.8235 | 0.995 | 1/1 | **0.9274** |
 | 43 | 🟢 classic43_inventory_report | ✅ | 1.0 | 0.9887 | 1/1 | **0.9955** |
@@ -56,14 +56,14 @@ Generated: 2026-08-30T18:10:48.380071
 | 48 | 🟢 classic48_survey_results | ✅ | 0.9885 | 0.9943 | 1/1 | **0.9931** |
 | 49 | 🟢 classic49_contact_list | ✅ | 0.9145 | 0.9888 | 1/1 | **0.9613** |
 | 50 | 🟢 classic50_budget_vs_actuals | ✅ | 0.9956 | 0.9903 | 3/3 | **0.9944** |
-| 51 | 🟢 classic51_product_catalog | ✅ | 0.9181 | 0.9867 | 1/1 | **0.9619** |
+| 51 | 🟢 classic51_product_catalog | ✅ | 0.946 | 0.9868 | 1/1 | **0.9731** |
 | 52 | 🟢 classic52_pivot_summary | ✅ | 0.9956 | 0.9902 | 1/1 | **0.9943** |
 | 53 | 🟢 classic53_invoice | ✅ | 0.9968 | 0.9908 | 1/1 | **0.995** |
 | 54 | 🟢 classic54_multi_level_header | ✅ | 1.0 | 0.9918 | 1/1 | **0.9967** |
 | 55 | 🟢 classic55_error_values | ✅ | 1.0 | 0.9951 | 1/1 | **0.998** |
 | 56 | 🟢 classic56_alternating_row_colors | ✅ | 1.0 | 0.9886 | 1/1 | **0.9954** |
 | 57 | 🟢 classic57_cjk_only | ✅ | 0.9944 | 0.9932 | 1/1 | **0.995** |
-| 58 | 🟢 classic58_mixed_numeric_formats | ✅ | 0.904 | 0.9952 | 1/1 | **0.9597** |
+| 58 | 🟢 classic58_mixed_numeric_formats | ✅ | 0.8931 | 0.9953 | 1/1 | **0.9554** |
 | 59 | 🟢 classic59_multi_sheet_summary | ✅ | 1.0 | 0.9968 | 4/4 | **0.9987** |
 | 60 | 🔴 classic60_large_wide_table | ✅ | 0.852 | 0.6275 | 4/6 | **0.6918** |
 | 61 | 🟢 classic61_product_card_with_image | ✅ | 1.0 | 0.9984 | 1/1 | **0.9994** |
@@ -119,7 +119,7 @@ Generated: 2026-08-30T18:10:48.380071
 | 111 | 🔴 classic111_chart_with_axis_labels | ✅ | 0.6818 | 0.3156 | 1/2 | **0.499** |
 | 112 | 🔴 classic112_multiple_charts | ✅ | 0.8 | 0.3101 | 1/2 | **0.544** |
 | 113 | 🔴 classic113_chart_sheet | ✅ | 0.7692 | 0.2702 | 1/2 | **0.5158** |
-| 114 | 🟡 classic114_chart_large_dataset | ✅ | 0.9121 | 0.7392 | 3/4 | **0.7605** |
+| 114 | 🟡 classic114_chart_large_dataset | ✅ | 0.9121 | 0.7397 | 3/4 | **0.7607** |
 | 115 | 🔴 classic115_chart_negative_values | ✅ | 0.72 | 0.3157 | 1/2 | **0.5143** |
 | 116 | 🔴 classic116_percent_stacked_area | ✅ | 0.8974 | 0.1935 | 1/2 | **0.5364** |
 | 117 | 🔴 classic117_stock_ohlc_chart | ✅ | 0.9342 | 0.3769 | 1/2 | **0.6244** |
@@ -136,7 +136,7 @@ Generated: 2026-08-30T18:10:48.380071
 | 128 | 🟢 classic128_font_sizes | ✅ | 0.9521 | 0.993 | 1/1 | **0.978** |
 | 129 | 🟢 classic129_alignment_combos | ✅ | 1.0 | 0.9971 | 1/1 | **0.9988** |
 | 130 | 🟢 classic130_wrap_and_indent | ✅ | 1.0 | 0.9952 | 1/1 | **0.9981** |
-| 131 | 🟢 classic131_number_formats | ✅ | 0.7879 | 0.9909 | 1/1 | **0.9115** |
+| 131 | 🟢 classic131_number_formats | ✅ | 0.8182 | 0.991 | 1/1 | **0.9237** |
 | 132 | 🟢 classic132_striped_table | ✅ | 0.9984 | 0.9768 | 1/1 | **0.9901** |
 | 133 | 🟢 classic133_gradient_rows | ✅ | 1.0 | 0.9872 | 1/1 | **0.9949** |
 | 134 | 🟢 classic134_heatmap | ✅ | 1.0 | 0.9739 | 1/1 | **0.9896** |
@@ -154,7 +154,7 @@ Generated: 2026-08-30T18:10:48.380071
 | 146 | 🟢 classic146_double_border_table | ✅ | 1.0 | 0.9867 | 1/1 | **0.9947** |
 | 147 | 🟢 classic147_multi_sheet_styled | ✅ | 1.0 | 0.9904 | 3/3 | **0.9962** |
 | 148 | 🟢 classic148_frozen_styled_grid | ✅ | 0.9921 | 0.9158 | 1/1 | **0.9632** |
-| 149 | 🟢 classic149_merged_styled_sections | ✅ | 0.9324 | 0.9494 | 1/1 | **0.9527** |
+| 149 | 🟢 classic149_merged_styled_sections | ✅ | 1.0 | 0.9494 | 1/1 | **0.9798** |
 | 150 | 🟢 classic150_kitchen_sink_styles | ✅ | 0.9839 | 0.9386 | 1/1 | **0.969** |
 | 151 | 🟢 classic151_multilingual_greetings | ✅ | 0.9761 | 0.9902 | 1/1 | **0.9865** |
 | 152 | 🟢 classic152_emoji_sampler | ✅ | 0.9677 | 0.9926 | 1/1 | **0.9841** |
@@ -198,7 +198,7 @@ Generated: 2026-08-30T18:10:48.380071
 | 190 | 🟢 classic190_dashboard_kpi_images | ✅ | 1.0 | 0.9903 | 1/1 | **0.9961** |
 | 191 | 🟢 classic191_payroll_calculator | ✅ | 0.9944 | 0.9768 | 9/9 | **0.9885** |
 
-**Average Overall Score: 0.9020**
+**Average Overall Score: 0.9025**
 
 ## Labeled Side-by-Side Comparison
 
@@ -1493,7 +1493,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>classic15_negative_numbers</b><br>Page 1</td>
   <td><img src="images/classic15_negative_numbers_p1_heatmap.png" width="760" alt="classic15_negative_numbers page 1 difference heatmap"></td>
-  <td>changed: 8542 px (0.39%)<br>bbox: [105, 157, 318, 369]<br>mean abs RGB: 0.626<br>RMSE RGB: 11.2249<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 8098 px (0.37%)<br>bbox: [117, 157, 318, 369]<br>mean abs RGB: 0.5906<br>RMSE RGB: 10.8801<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>classic16_percentage_strings</b><br>Page 1</td>
@@ -1723,7 +1723,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>classic40_scientific_notation</b><br>Page 1</td>
   <td><img src="images/classic40_scientific_notation_p1_heatmap.png" width="760" alt="classic40_scientific_notation page 1 difference heatmap"></td>
-  <td>changed: 12219 px (0.56%)<br>bbox: [71, 157, 318, 338]<br>mean abs RGB: 0.8958<br>RMSE RGB: 13.4324<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 11248 px (0.52%)<br>bbox: [118, 157, 318, 338]<br>mean abs RGB: 0.8147<br>RMSE RGB: 12.7618<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>classic41_integer_vs_float</b><br>Page 1</td>
@@ -1803,7 +1803,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>classic51_product_catalog</b><br>Page 1</td>
   <td><img src="images/classic51_product_catalog_p1_heatmap.png" width="760" alt="classic51_product_catalog page 1 difference heatmap"></td>
-  <td>changed: 45516 px (2.09%)<br>bbox: [119, 157, 631, 494]<br>mean abs RGB: 3.3792<br>RMSE RGB: 26.2311<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 44953 px (2.07%)<br>bbox: [119, 157, 631, 494]<br>mean abs RGB: 3.3343<br>RMSE RGB: 26.048<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>classic52_pivot_summary</b><br>Page 1</td>
@@ -1838,7 +1838,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>classic58_mixed_numeric_formats</b><br>Page 1</td>
   <td><img src="images/classic58_mixed_numeric_formats_p1_heatmap.png" width="760" alt="classic58_mixed_numeric_formats page 1 difference heatmap"></td>
-  <td>changed: 16934 px (0.78%)<br>bbox: [117, 157, 318, 459]<br>mean abs RGB: 1.2479<br>RMSE RGB: 15.8746<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 16779 px (0.77%)<br>bbox: [117, 157, 318, 459]<br>mean abs RGB: 1.2326<br>RMSE RGB: 15.7623<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>classic59_multi_sheet_summary</b><br>Page 1</td>
@@ -2158,12 +2158,12 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>classic114_chart_large_dataset</b><br>Page 1</td>
   <td><img src="images/classic114_chart_large_dataset_p1_heatmap.png" width="760" alt="classic114_chart_large_dataset page 1 difference heatmap"></td>
-  <td>changed: 70254 px (3.23%)<br>bbox: [113, 157, 1055, 1595]<br>mean abs RGB: 5.0503<br>RMSE RGB: 31.7073<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 66074 px (3.04%)<br>bbox: [119, 157, 1055, 1595]<br>mean abs RGB: 4.7196<br>RMSE RGB: 30.5945<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>classic114_chart_large_dataset</b><br>Page 2</td>
   <td><img src="images/classic114_chart_large_dataset_p2_heatmap.png" width="760" alt="classic114_chart_large_dataset page 2 difference heatmap"></td>
-  <td>changed: 46074 px (2.12%)<br>bbox: [113, 158, 318, 1596]<br>mean abs RGB: 3.4909<br>RMSE RGB: 26.8383<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 43512 px (2.00%)<br>bbox: [182, 158, 318, 1596]<br>mean abs RGB: 3.2887<br>RMSE RGB: 26.0355<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>classic114_chart_large_dataset</b><br>Page 3</td>
@@ -2253,7 +2253,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>classic131_number_formats</b><br>Page 1</td>
   <td><img src="images/classic131_number_formats_p1_heatmap.png" width="760" alt="classic131_number_formats page 1 difference heatmap"></td>
-  <td>changed: 32044 px (1.47%)<br>bbox: [118, 157, 851, 490]<br>mean abs RGB: 2.3986<br>RMSE RGB: 22.1307<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 32162 px (1.48%)<br>bbox: [118, 157, 851, 490]<br>mean abs RGB: 2.4083<br>RMSE RGB: 22.1759<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>classic132_striped_table</b><br>Page 1</td>
@@ -2368,7 +2368,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>classic149_merged_styled_sections</b><br>Page 1</td>
   <td><img src="images/classic149_merged_styled_sections_p1_heatmap.png" width="760" alt="classic149_merged_styled_sections page 1 difference heatmap"></td>
-  <td>changed: 120116 px (5.52%)<br>bbox: [111, 150, 884, 565]<br>mean abs RGB: 6.5508<br>RMSE RGB: 33.4671<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 120206 px (5.52%)<br>bbox: [111, 150, 884, 565]<br>mean abs RGB: 6.5451<br>RMSE RGB: 33.4342<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>classic150_kitchen_sink_styles</b><br>Page 1</td>
@@ -2876,7 +2876,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>classic15_negative_numbers<br><small>format: xlsx | case: classic15_negative_numbers | scope: rust-classic-xlsx</small></b></td>
-  <td colspan="2">classic15_negative_numbers <span style="color:#3fb950">⬤</span> 97.4%</td>
+  <td colspan="2">classic15_negative_numbers <span style="color:#3fb950">⬤</span> 98.7%</td>
 </tr>
 <tr>
   <td><img src="images/classic15_negative_numbers_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -3311,7 +3311,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>classic40_scientific_notation<br><small>format: xlsx | case: classic40_scientific_notation | scope: rust-classic-xlsx</small></b></td>
-  <td colspan="2">classic40_scientific_notation <span style="color:#d29922">⬤</span> 89.0%</td>
+  <td colspan="2">classic40_scientific_notation <span style="color:#3fb950">⬤</span> 91.3%</td>
 </tr>
 <tr>
   <td><img src="images/classic40_scientific_notation_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -3435,7 +3435,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>classic51_product_catalog<br><small>format: xlsx | case: classic51_product_catalog | scope: rust-classic-xlsx</small></b></td>
-  <td colspan="2">classic51_product_catalog <span style="color:#3fb950">⬤</span> 96.2%</td>
+  <td colspan="2">classic51_product_catalog <span style="color:#3fb950">⬤</span> 97.3%</td>
 </tr>
 <tr>
   <td><img src="images/classic51_product_catalog_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -3498,7 +3498,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>classic58_mixed_numeric_formats<br><small>format: xlsx | case: classic58_mixed_numeric_formats | scope: rust-classic-xlsx</small></b></td>
-  <td colspan="2">classic58_mixed_numeric_formats <span style="color:#3fb950">⬤</span> 96.0%</td>
+  <td colspan="2">classic58_mixed_numeric_formats <span style="color:#3fb950">⬤</span> 95.5%</td>
 </tr>
 <tr>
   <td><img src="images/classic58_mixed_numeric_formats_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -4157,7 +4157,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>classic114_chart_large_dataset<br><small>format: xlsx | case: classic114_chart_large_dataset | scope: rust-classic-xlsx</small></b></td>
-  <td colspan="2">classic114_chart_large_dataset <span style="color:#d29922">⬤</span> 76.0%</td>
+  <td colspan="2">classic114_chart_large_dataset <span style="color:#d29922">⬤</span> 76.1%</td>
 </tr>
 <tr>
   <td><img src="images/classic114_chart_large_dataset_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -4355,7 +4355,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>classic131_number_formats<br><small>format: xlsx | case: classic131_number_formats | scope: rust-classic-xlsx</small></b></td>
-  <td colspan="2">classic131_number_formats <span style="color:#3fb950">⬤</span> 91.1%</td>
+  <td colspan="2">classic131_number_formats <span style="color:#3fb950">⬤</span> 92.4%</td>
 </tr>
 <tr>
   <td><img src="images/classic131_number_formats_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -4542,7 +4542,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>classic149_merged_styled_sections<br><small>format: xlsx | case: classic149_merged_styled_sections | scope: rust-classic-xlsx</small></b></td>
-  <td colspan="2">classic149_merged_styled_sections <span style="color:#3fb950">⬤</span> 95.3%</td>
+  <td colspan="2">classic149_merged_styled_sections <span style="color:#3fb950">⬤</span> 98.0%</td>
 </tr>
 <tr>
   <td><img src="images/classic149_merged_styled_sections_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -5251,7 +5251,6 @@ Text content: ✅ Identical
  Row193 Val193 This is the description for row number 193
 
  Row194 Val194 This is the description for row number 194
-
 ```
 </details>
 
@@ -5486,11 +5485,11 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: classic15_negative_numbers | scope: rust-classic-xlsx
 - **Source:** tests/MiniPdf.Scripts/output/classic15_negative_numbers.xlsx
-- **Text Similarity:** 0.9375
-- **Visual Average:** 0.9975
-- **Overall Score:** 0.974
+- **Text Similarity:** 0.9693
+- **Visual Average:** 0.9977
+- **Overall Score:** 0.9868
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=42203 bytes, Reference=42915 bytes
+- **File Size:** MiniPdf=42240 bytes, Reference=42915 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -5504,7 +5503,7 @@ Text content: ✅ Identical
 
  Gain 50
 
---99999.99000000001 Big Loss
+-Big Loss 00000001
 
 +Big Loss -100000
 
@@ -5539,7 +5538,6 @@ Text content: ✅ Identical
  Retention 88.7%
 
  Churn 3.2%
-
 ```
 </details>
 
@@ -5798,7 +5796,6 @@ Text content: ✅ Identical
  Green This is green text
 
  Blue This is blue text
-
 ```
 </details>
 
@@ -6022,11 +6019,11 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: classic40_scientific_notation | scope: rust-classic-xlsx
 - **Source:** tests/MiniPdf.Scripts/output/classic40_scientific_notation.xlsx
-- **Text Similarity:** 0.7281
-- **Visual Average:** 0.9965
-- **Overall Score:** 0.8898
+- **Text Similarity:** 0.7864
+- **Visual Average:** 0.997
+- **Overall Score:** 0.9134
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=51606 bytes, Reference=60659 bytes
+- **File Size:** MiniPdf=51717 bytes, Reference=60659 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6040,11 +6037,11 @@ Text content: ✅ Identical
 
 -Planck 6.626e-34
 
--Speed of L299800000
+-Speed of L99800000
 
--9.108999999999999e-31 Electron m
+-Electron m99999e-31
 
--Pi approx 3.14159265358979
+-Pi approx 65358979
 +Avogadro 6.02E+23
 
 +Planck 6.63E-34
@@ -6357,7 +6354,6 @@ Text content: ✅ Identical
  Marketing 2000 -2000 6000 2000 8000
 
  Sales -2000 5000 2000 -2000 3000
-
 ```
 </details>
 
@@ -6365,11 +6361,11 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: classic51_product_catalog | scope: rust-classic-xlsx
 - **Source:** tests/MiniPdf.Scripts/output/classic51_product_catalog.xlsx
-- **Text Similarity:** 0.9181
-- **Visual Average:** 0.9867
-- **Overall Score:** 0.9619
+- **Text Similarity:** 0.946
+- **Visual Average:** 0.9868
+- **Overall Score:** 0.9731
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=94325 bytes, Reference=72763 bytes
+- **File Size:** MiniPdf=94362 bytes, Reference=72763 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6387,7 +6383,7 @@ Text content: ✅ Identical
 
 -P-003 Mini GadgCompact g 90 19.99
 
--P-004 Max Gadg Full-size ga 89.98999999999999 450
+-P-004 Max Gadg Full-size ga 450 99999999
 
 -P-005 ConnectorType-A co 80 7.49
 
@@ -6443,7 +6439,6 @@ Text content: ✅ Identical
  South 38000 15000 11000 25000 89000
 
  East 52000 9000 14000 18000 93000
-
 ```
 </details>
 
@@ -6544,7 +6539,6 @@ Text content: ✅ Identical
  3 平板电脑 1999 150
 
  4 蓝牙耳机 299 500
-
 ```
 </details>
 
@@ -6552,11 +6546,11 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: classic58_mixed_numeric_formats | scope: rust-classic-xlsx
 - **Source:** tests/MiniPdf.Scripts/output/classic58_mixed_numeric_formats.xlsx
-- **Text Similarity:** 0.904
-- **Visual Average:** 0.9952
-- **Overall Score:** 0.9597
+- **Text Similarity:** 0.8931
+- **Visual Average:** 0.9953
+- **Overall Score:** 0.9554
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=52439 bytes, Reference=56245 bytes
+- **File Size:** MiniPdf=52513 bytes, Reference=56245 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -6578,13 +6572,13 @@ Text content: ✅ Identical
 
  Very small 0.0001
 
--Very large9999999.99
+-Very large999999.99
 
 +Very large 10000000
 
  Zero 0
 
--Scientific a 12300000000
+-Scientific a00000000
 +Scientific a 1.23E+10
 ```
 </details>
@@ -6856,7 +6850,6 @@ Text content: ✅ Identical
  Software L 1 299 299
 
  Support Pa 1 99 99
-
 ```
 </details>
 
@@ -7311,7 +7304,6 @@ Text content: ✅ Identical
  Sodium 142 mEq/L 136 – 145 Normal
 
  Potassium 5 mEq/L 3.5 – 5.0 Normal
-
 ```
 </details>
 
@@ -8707,10 +8699,10 @@ Text content: ✅ Identical
 - **Case Metadata:** format: xlsx | case: classic114_chart_large_dataset | scope: rust-classic-xlsx
 - **Source:** tests/MiniPdf.Scripts/output/classic114_chart_large_dataset.xlsx
 - **Text Similarity:** 0.9121
-- **Visual Average:** 0.7392
-- **Overall Score:** 0.7605
+- **Visual Average:** 0.7397
+- **Overall Score:** 0.7607
 - **Pages:** MiniPdf=3, Reference=4
-- **File Size:** MiniPdf=103963 bytes, Reference=97214 bytes
+- **File Size:** MiniPdf=104333 bytes, Reference=97214 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -8726,19 +8718,19 @@ Text content: ✅ Identical
 
  2 93.7
 
--96.09999999999999 3
+-3 99999999
 
 +3 96.1
 
  4 93.7
 
--95.59999999999999 5
+-5 99999999
 
 +5 95.6
 
  6 92.3
 
--98.09999999999999 7
+-7 99999999
 
 +7 98.1
 
@@ -8746,9 +8738,9 @@ Text content: ✅ Identical
 
  9 98.7
 
--94.40000000000001 10
+-10 00000001
 
--98.59999999999999 11
+-11 99999999
 
 +10 94.4
 
@@ -8758,7 +8750,7 @@ Text content: ✅ Identical
 
  13 102.2
 
--98.40000000000001 14
+-14 00000001
 
 +14 98.4
 
@@ -8796,11 +8788,11 @@ Text content: ✅ Identical
 
  62 103.9
 
--99.59999999999999 63
+-63 99999999
 
--99.90000000000001 64
+-64 00000001
 
--95.09999999999999 65
+-65 99999999
 
 +63 99.6
 
@@ -8821,7 +8813,7 @@ Text content: ✅ Identical
 
  74 98.7
 
--94.09999999999999 75
+-75 99999999
 
 +75 94.1
 
@@ -9379,7 +9371,6 @@ Text content: ✅ Identical
  Carol Lee Finance 88000 2021-01-10
 
  David Kim Engineerin 102000 2018-11-20
-
 ```
 </details>
 
@@ -9492,24 +9483,18 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: classic131_number_formats | scope: rust-classic-xlsx
 - **Source:** tests/MiniPdf.Scripts/output/classic131_number_formats.xlsx
-- **Text Similarity:** 0.7879
-- **Visual Average:** 0.9909
-- **Overall Score:** 0.9115
+- **Text Similarity:** 0.8182
+- **Visual Average:** 0.991
+- **Overall Score:** 0.9237
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=80288 bytes, Reference=77127 bytes
+- **File Size:** MiniPdf=80528 bytes, Reference=77127 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/classic131_number_formats.pdf
 +++ reference/classic131_number_formats.pdf
-@@ -1,11 +1,11 @@
- Format Value Display
-
--#,##0 1234567 1234567
-
-+#,##0 1,234,567 1234567
-
+@@ -3,9 +3,9 @@
  #,##0.00 1,234,567.89 1234567.891
 
  $#,##0.00 $9,876.50 9876.5
@@ -9520,7 +9505,7 @@ Text content: ✅ Identical
 
 -0000 42 42
 
--#,##0;(#,##0) -5000 -5000
+-#,##0;(#,##0) -5,000 -5000
 
 -yyyy-mm-dd 45658 45658
 
@@ -9863,7 +9848,6 @@ Text content: ✅ Identical
  3 Item-003 Gamma 86.63 Inactive 2025-09-22
 
  4 Item-004 Gamma 702.78 Inactive 2025-06-14
-
 ```
 </details>
 
@@ -9871,52 +9855,13 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: classic149_merged_styled_sections | scope: rust-classic-xlsx
 - **Source:** tests/MiniPdf.Scripts/output/classic149_merged_styled_sections.xlsx
-- **Text Similarity:** 0.9324
+- **Text Similarity:** 1.0
 - **Visual Average:** 0.9494
-- **Overall Score:** 0.9527
+- **Overall Score:** 0.9798
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=95818 bytes, Reference=93062 bytes
+- **File Size:** MiniPdf=97401 bytes, Reference=93062 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/classic149_merged_styled_sections.pdf
-+++ reference/classic149_merged_styled_sections.pdf
-@@ -1,11 +1,11 @@
- Quarterly Performance Report
-
- Revenue Breakdown
-
- Source Q1 Q2 Total
-
--Online 120000 140000 260000
-
--Retail 90000 85000 175000
-
--Wholesale 60000 70000 130000
-
-+Online 120,000 140,000 260,000
-
-+Retail 90,000 85,000 175,000
-
-+Wholesale 60,000 70,000 130,000
-
- Expense Summary
-
- Category Q1 Q2 Total
-
--Salaries 200000 210000 410000
-
--Marketing 30000 35000 65000
-
--Operations 50000 48000 98000
-+Salaries 200,000 210,000 410,000
-
-+Marketing 30,000 35,000 65,000
-
-+Operations 50,000 48,000 98,000
-```
-</details>
+Text content: ✅ Identical
 
 ### classic150_kitchen_sink_styles
 
@@ -9982,7 +9927,6 @@ Text content: ✅ Identical
  Russian Привет Спасибо
 
  Vietnamese Xin chào Cảm ơn
-
 ```
 </details>
 
@@ -10062,7 +10006,6 @@ Text content: ✅ Identical
  Turkish Lira ₺ ₺1.234,56
 
  Bitcoin ₿ ₿0.05
-
 ```
 </details>
 
@@ -10310,7 +10253,6 @@ Text content: ✅ Identical
  Thai ฯ ๆ ๏ ๚ ๛
 
  Misc brackets ⟨⟩ ⟪⟫ ⌈⌉ ⌊⌋ ‖
-
 ```
 </details>
 
@@ -11138,7 +11080,6 @@ Text content: ✅ Identical
  178.70 0.00
 
  203.88 0.00
-
 ```
 </details>
 
@@ -11180,7 +11121,7 @@ Text content: ✅ Identical
 1. **classic107_multi_series_line** (score: 0.6734)
 1. **classic60_large_wide_table** (score: 0.6918)
 1. **classic12_sparse_columns** (score: 0.6996)
-1. **classic114_chart_large_dataset** (score: 0.7605)
+1. **classic114_chart_large_dataset** (score: 0.7607)
 1. **classic100_stacked_bar_chart** (score: 0.7872)
 1. **classic101_percent_stacked_bar** (score: 0.789)
 

@@ -1055,19 +1055,19 @@
     "format": "xlsx",
     "source_path": "tests/MiniPdf.Scripts/output/classic15_negative_numbers.xlsx",
     "suite": "classic",
-    "minipdf_size": 42203,
+    "minipdf_size": 42240,
     "reference_size": 42915,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9375,
-    "flat_text_similarity": 0.8439,
+    "text_similarity": 0.9693,
+    "flat_text_similarity": 0.9693,
     "word_text_similarity": 0.9375,
-    "text_diff": "--- minipdf/classic15_negative_numbers.pdf\n+++ reference/classic15_negative_numbers.pdf\n@@ -3,5 +3,5 @@\n Small Loss -0.5\n\n Zero 0\n\n Gain 50\n\n--99999.99000000001 Big Loss\n\n+Big Loss -100000\n\n Tiny -0.001",
+    "text_diff": "--- minipdf/classic15_negative_numbers.pdf\n+++ reference/classic15_negative_numbers.pdf\n@@ -3,5 +3,5 @@\n Small Loss -0.5\n\n Zero 0\n\n Gain 50\n\n-Big Loss 00000001\n\n+Big Loss -100000\n\n Tiny -0.001",
     "visual_scores": [
-      0.9975
+      0.9977
     ],
-    "visual_avg": 0.9975,
+    "visual_avg": 0.9977,
     "diff_images": [
       {
         "page": 1,
@@ -1081,22 +1081,22 @@
             1754
           ],
           "difference_bbox_px": [
-            105,
+            117,
             157,
             318,
             369
           ],
-          "changed_pixels": 8542,
-          "changed_fraction": 0.003924,
-          "mean_abs_rgb": 0.626,
-          "rmse_rgb": 11.2249,
+          "changed_pixels": 8098,
+          "changed_fraction": 0.00372,
+          "mean_abs_rgb": 0.5906,
+          "rmse_rgb": 10.8801,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "classic15_negative_numbers_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.974
+    "overall_score": 0.9868
   },
   {
     "name": "classic16_percentage_strings",
@@ -3072,19 +3072,19 @@
     "format": "xlsx",
     "source_path": "tests/MiniPdf.Scripts/output/classic40_scientific_notation.xlsx",
     "suite": "classic",
-    "minipdf_size": 51606,
+    "minipdf_size": 51717,
     "reference_size": 60659,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.7281,
-    "flat_text_similarity": 0.7281,
-    "word_text_similarity": 0.6,
-    "text_diff": "--- minipdf/classic40_scientific_notation.pdf\n+++ reference/classic40_scientific_notation.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n-Avogadro6.022e+23\n\n-Planck 6.626e-34\n\n-Speed of L299800000\n\n-9.108999999999999e-31 Electron m\n\n-Pi approx 3.14159265358979\n+Avogadro 6.02E+23\n\n+Planck 6.63E-34\n\n+Speed of Li 3E+08\n\n+Electron m 9.11E-31\n\n+Pi approx 3.141593",
+    "text_similarity": 0.7864,
+    "flat_text_similarity": 0.7864,
+    "word_text_similarity": 0.5517,
+    "text_diff": "--- minipdf/classic40_scientific_notation.pdf\n+++ reference/classic40_scientific_notation.pdf\n@@ -1,6 +1,6 @@\n Label Value\n\n-Avogadro6.022e+23\n\n-Planck 6.626e-34\n\n-Speed of L99800000\n\n-Electron m99999e-31\n\n-Pi approx 65358979\n+Avogadro 6.02E+23\n\n+Planck 6.63E-34\n\n+Speed of Li 3E+08\n\n+Electron m 9.11E-31\n\n+Pi approx 3.141593",
     "visual_scores": [
-      0.9965
+      0.997
     ],
-    "visual_avg": 0.9965,
+    "visual_avg": 0.997,
     "diff_images": [
       {
         "page": 1,
@@ -3098,22 +3098,22 @@
             1754
           ],
           "difference_bbox_px": [
-            71,
+            118,
             157,
             318,
             338
           ],
-          "changed_pixels": 12219,
-          "changed_fraction": 0.005614,
-          "mean_abs_rgb": 0.8958,
-          "rmse_rgb": 13.4324,
+          "changed_pixels": 11248,
+          "changed_fraction": 0.005167,
+          "mean_abs_rgb": 0.8147,
+          "rmse_rgb": 12.7618,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "classic40_scientific_notation_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.8898
+    "overall_score": 0.9134
   },
   {
     "name": "classic41_integer_vs_float",
@@ -3779,19 +3779,19 @@
     "format": "xlsx",
     "source_path": "tests/MiniPdf.Scripts/output/classic51_product_catalog.xlsx",
     "suite": "classic",
-    "minipdf_size": 94325,
+    "minipdf_size": 94362,
     "reference_size": 72763,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9181,
-    "flat_text_similarity": 0.9181,
+    "text_similarity": 0.946,
+    "flat_text_similarity": 0.946,
     "word_text_similarity": 0.7727,
-    "text_diff": "--- minipdf/classic51_product_catalog.pdf\n+++ reference/classic51_product_catalog.pdf\n@@ -1,11 +1,11 @@\n-Part# Name Descriptio Weight(g) Price\n\n+Part# Name DescriptionWeight(g) Price\n\n P-001 Basic WidgStandard w 150 4.99\n\n-P-002 Pro WidgeEnhanced 180 12.99\n\n-P-003 Mini GadgCompact g 90 19.99\n\n-P-004 Max Gadg Full-size ga 89.98999999999999 450\n\n-P-005 ConnectorType-A co 80 7.49\n\n-P-006 ConnectorType-B con 110 9.99\n\n-P-007 Adapter X Universal 200 15.99\n\n+P-002 Pro WidgetEnhanced w 180 12.99\n\n+P-003 Mini GadgeCompact g 90 19.99\n\n+P-004 Max GadgeFull-size ga 450 89.99\n\n+P-005 Connector Type-A con 80 7.49\n\n+P-006 Connector Type-B con 110 9.99\n\n+P-007 Adapter X Universal p 200 15.99\n\n P-008 Adapter Y Travel pow 120 11.99\n\n-P-009 Mount BraWall moun 600 24.99\n\n-P-010 Carry CasePadded ca 350 34.99\n+P-009 Mount Bra Wall moun 600 24.99\n\n+P-010 Carry Case Padded car 350 34.99",
+    "text_diff": "--- minipdf/classic51_product_catalog.pdf\n+++ reference/classic51_product_catalog.pdf\n@@ -1,11 +1,11 @@\n-Part# Name Descriptio Weight(g) Price\n\n+Part# Name DescriptionWeight(g) Price\n\n P-001 Basic WidgStandard w 150 4.99\n\n-P-002 Pro WidgeEnhanced 180 12.99\n\n-P-003 Mini GadgCompact g 90 19.99\n\n-P-004 Max Gadg Full-size ga 450 99999999\n\n-P-005 ConnectorType-A co 80 7.49\n\n-P-006 ConnectorType-B con 110 9.99\n\n-P-007 Adapter X Universal 200 15.99\n\n+P-002 Pro WidgetEnhanced w 180 12.99\n\n+P-003 Mini GadgeCompact g 90 19.99\n\n+P-004 Max GadgeFull-size ga 450 89.99\n\n+P-005 Connector Type-A con 80 7.49\n\n+P-006 Connector Type-B con 110 9.99\n\n+P-007 Adapter X Universal p 200 15.99\n\n P-008 Adapter Y Travel pow 120 11.99\n\n-P-009 Mount BraWall moun 600 24.99\n\n-P-010 Carry CasePadded ca 350 34.99\n+P-009 Mount Bra Wall moun 600 24.99\n\n+P-010 Carry Case Padded car 350 34.99",
     "visual_scores": [
-      0.9867
+      0.9868
     ],
-    "visual_avg": 0.9867,
+    "visual_avg": 0.9868,
     "diff_images": [
       {
         "page": 1,
@@ -3810,17 +3810,17 @@
             631,
             494
           ],
-          "changed_pixels": 45516,
-          "changed_fraction": 0.02091,
-          "mean_abs_rgb": 3.3792,
-          "rmse_rgb": 26.2311,
+          "changed_pixels": 44953,
+          "changed_fraction": 0.020652,
+          "mean_abs_rgb": 3.3343,
+          "rmse_rgb": 26.048,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "classic51_product_catalog_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9619
+    "overall_score": 0.9731
   },
   {
     "name": "classic52_pivot_summary",
@@ -4143,19 +4143,19 @@
     "format": "xlsx",
     "source_path": "tests/MiniPdf.Scripts/output/classic58_mixed_numeric_formats.xlsx",
     "suite": "classic",
-    "minipdf_size": 52439,
+    "minipdf_size": 52513,
     "reference_size": 56245,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.904,
-    "flat_text_similarity": 0.904,
-    "word_text_similarity": 0.8679,
-    "text_diff": "--- minipdf/classic58_mixed_numeric_formats.pdf\n+++ reference/classic58_mixed_numeric_formats.pdf\n@@ -2,9 +2,9 @@\n Integer 1000000\n\n Float 2dp 3.14\n\n Float 5dp 3.14159\n\n-Negative i -42\n\n+Negative in -42\n\n Negative fl -3.14\n\n Very small 0.0001\n\n-Very large9999999.99\n\n+Very large 10000000\n\n Zero 0\n\n-Scientific a 12300000000\n+Scientific a 1.23E+10",
+    "text_similarity": 0.8931,
+    "flat_text_similarity": 0.8931,
+    "word_text_similarity": 0.8462,
+    "text_diff": "--- minipdf/classic58_mixed_numeric_formats.pdf\n+++ reference/classic58_mixed_numeric_formats.pdf\n@@ -2,9 +2,9 @@\n Integer 1000000\n\n Float 2dp 3.14\n\n Float 5dp 3.14159\n\n-Negative i -42\n\n+Negative in -42\n\n Negative fl -3.14\n\n Very small 0.0001\n\n-Very large999999.99\n\n+Very large 10000000\n\n Zero 0\n\n-Scientific a00000000\n+Scientific a 1.23E+10",
     "visual_scores": [
-      0.9952
+      0.9953
     ],
-    "visual_avg": 0.9952,
+    "visual_avg": 0.9953,
     "diff_images": [
       {
         "page": 1,
@@ -4174,17 +4174,17 @@
             318,
             459
           ],
-          "changed_pixels": 16934,
-          "changed_fraction": 0.00778,
-          "mean_abs_rgb": 1.2479,
-          "rmse_rgb": 15.8746,
+          "changed_pixels": 16779,
+          "changed_fraction": 0.007708,
+          "mean_abs_rgb": 1.2326,
+          "rmse_rgb": 15.7623,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "classic58_mixed_numeric_formats_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9597
+    "overall_score": 0.9554
   },
   {
     "name": "classic59_multi_sheet_summary",
@@ -7447,22 +7447,22 @@
     "format": "xlsx",
     "source_path": "tests/MiniPdf.Scripts/output/classic114_chart_large_dataset.xlsx",
     "suite": "classic",
-    "minipdf_size": 103963,
+    "minipdf_size": 104333,
     "reference_size": 97214,
     "pdf_valid": true,
     "minipdf_pages": 3,
     "reference_pages": 4,
     "text_similarity": 0.9121,
-    "flat_text_similarity": 0.018,
+    "flat_text_similarity": 0.0189,
     "word_text_similarity": 0.9121,
-    "text_diff": "--- minipdf/classic114_chart_large_dataset.pdf\n+++ reference/classic114_chart_large_dataset.pdf\n@@ -1,18 +1,19 @@\n Day Value\n\n 1 97.7\n\n+100-Day Value\n\n 2 93.7\n\n-96.09999999999999 3\n\n+3 96.1\n\n 4 93.7\n\n-95.59999999999999 5\n\n+5 95.6\n\n 6 92.3\n\n-98.09999999999999 7\n\n+7 98.1\n\n 8 100.5\n\n 9 98.7\n\n-94.40000000000001 10\n\n-98.59999999999999 11\n\n+10 94.4\n\n+11 98.6\n\n 12 103.5\n\n 13 102.2\n\n-98.40000000000001 14\n\n+14 98.4\n\n 15 104.2\n\n 16 109\n\n 17 109.1\n\n@@ -44,9 +45,9 @@\n 43 137.6\n\n 44 133.5\n\n 45 130\n\n----PAGE---\n\n 46 128.3\n\n 47 127\n\n+---PAGE---\n\n 48 124.3\n\n 49 120.2\n\n 50 118.9\n\n@@ -62,9 +63,9 @@\n 60 101.1\n\n 61 99\n\n 62 103.9\n\n-99.59999999999999 63\n\n-99.90000000000001 64\n\n-95.09999999999999 65\n\n+63 99.6\n\n+64 99.9\n\n+65 95.1\n\n 66 94\n\n 67 99.8\n\n 68 104\n\n@@ -74,7 +75,7 @@\n 72 101\n\n 73 100.8\n\n 74 98.7\n\n-94.09999999999999 75\n\n+75 94.1\n\n 76 97.7\n\n 77 103.7\n\n 78 109.2\n\n@@ -91,13 +92,29 @@\n 89 116.2\n\n 90 120.1\n\n 91 123.3\n\n----PAGE---\n\n 92 123.9\n\n 93 129.2\n\n 94 126.2\n\n 95 131.7\n\n+---PAGE---\n\n 96 133.1\n\n 97 129.3\n\n 98 133.6\n\n 99 138\n\n-100 142.1\n+100 142.1\n\n+---PAGE---\n\n+Trend\n\n+1\n\n+2\n\n+3\n\n+4\n\n+5\n\n+6\n\n+7\n\n+8\n\n+9\n\n+10\n\n+11\n\n+12\n\n+13\n\n+14",
+    "text_diff": "--- minipdf/classic114_chart_large_dataset.pdf\n+++ reference/classic114_chart_large_dataset.pdf\n@@ -1,18 +1,19 @@\n Day Value\n\n 1 97.7\n\n+100-Day Value\n\n 2 93.7\n\n-3 99999999\n\n+3 96.1\n\n 4 93.7\n\n-5 99999999\n\n+5 95.6\n\n 6 92.3\n\n-7 99999999\n\n+7 98.1\n\n 8 100.5\n\n 9 98.7\n\n-10 00000001\n\n-11 99999999\n\n+10 94.4\n\n+11 98.6\n\n 12 103.5\n\n 13 102.2\n\n-14 00000001\n\n+14 98.4\n\n 15 104.2\n\n 16 109\n\n 17 109.1\n\n@@ -44,9 +45,9 @@\n 43 137.6\n\n 44 133.5\n\n 45 130\n\n----PAGE---\n\n 46 128.3\n\n 47 127\n\n+---PAGE---\n\n 48 124.3\n\n 49 120.2\n\n 50 118.9\n\n@@ -62,9 +63,9 @@\n 60 101.1\n\n 61 99\n\n 62 103.9\n\n-63 99999999\n\n-64 00000001\n\n-65 99999999\n\n+63 99.6\n\n+64 99.9\n\n+65 95.1\n\n 66 94\n\n 67 99.8\n\n 68 104\n\n@@ -74,7 +75,7 @@\n 72 101\n\n 73 100.8\n\n 74 98.7\n\n-75 99999999\n\n+75 94.1\n\n 76 97.7\n\n 77 103.7\n\n 78 109.2\n\n@@ -91,13 +92,29 @@\n 89 116.2\n\n 90 120.1\n\n 91 123.3\n\n----PAGE---\n\n 92 123.9\n\n 93 129.2\n\n 94 126.2\n\n 95 131.7\n\n+---PAGE---\n\n 96 133.1\n\n 97 129.3\n\n 98 133.6\n\n 99 138\n\n-100 142.1\n+100 142.1\n\n+---PAGE---\n\n+Trend\n\n+1\n\n+2\n\n+3\n\n+4\n\n+5\n\n+6\n\n+7\n\n+8\n\n+9\n\n+10\n\n+11\n\n+12\n\n+13\n\n+14",
     "visual_scores": [
-      0.9719,
-      0.9872,
+      0.9728,
+      0.9883,
       0.9977,
       0.0
     ],
-    "visual_avg": 0.7392,
+    "visual_avg": 0.7397,
     "diff_images": [
       {
         "page": 1,
@@ -7476,15 +7476,15 @@
             1754
           ],
           "difference_bbox_px": [
-            113,
+            119,
             157,
             1055,
             1595
           ],
-          "changed_pixels": 70254,
-          "changed_fraction": 0.032275,
-          "mean_abs_rgb": 5.0503,
-          "rmse_rgb": 31.7073,
+          "changed_pixels": 66074,
+          "changed_fraction": 0.030355,
+          "mean_abs_rgb": 4.7196,
+          "rmse_rgb": 30.5945,
           "threshold": 12,
           "gain": 5.0
         },
@@ -7502,15 +7502,15 @@
             1754
           ],
           "difference_bbox_px": [
-            113,
+            182,
             158,
             318,
             1596
           ],
-          "changed_pixels": 46074,
-          "changed_fraction": 0.021167,
-          "mean_abs_rgb": 3.4909,
-          "rmse_rgb": 26.8383,
+          "changed_pixels": 43512,
+          "changed_fraction": 0.01999,
+          "mean_abs_rgb": 3.2887,
+          "rmse_rgb": 26.0355,
           "threshold": 12,
           "gain": 5.0
         },
@@ -7550,7 +7550,7 @@
         "composite_img": "classic114_chart_large_dataset_p4_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.7605
+    "overall_score": 0.7607
   },
   {
     "name": "classic115_chart_negative_values",
@@ -8440,19 +8440,19 @@
     "format": "xlsx",
     "source_path": "tests/MiniPdf.Scripts/output/classic131_number_formats.xlsx",
     "suite": "classic",
-    "minipdf_size": 80288,
+    "minipdf_size": 80528,
     "reference_size": 77127,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.7879,
-    "flat_text_similarity": 0.6338,
-    "word_text_similarity": 0.7879,
-    "text_diff": "--- minipdf/classic131_number_formats.pdf\n+++ reference/classic131_number_formats.pdf\n@@ -1,11 +1,11 @@\n Format Value Display\n\n-#,##0 1234567 1234567\n\n+#,##0 1,234,567 1234567\n\n #,##0.00 1,234,567.89 1234567.891\n\n $#,##0.00 $9,876.50 9876.5\n\n 0.00% 85.23% 0.8523\n\n-0.00E+00 123456789 123456789\n\n-0000 42 42\n\n-#,##0;(#,##0) -5000 -5000\n\n-yyyy-mm-dd 45658 45658\n\n-dd/mm/yyyy 45658 45658\n\n-hh:mm:ss 0.75 0.75\n+0.00E+00 1.23E+08 123456789\n\n+0000 0042 42\n\n+#,##0;(#,##0) (5,000) -5000\n\n+yyyy-mm-dd 2025-01-01 45658\n\n+dd/mm/yyyy 01/01/2025 45658\n\n+hh:mm:ss 18:00:00 0.75",
+    "text_similarity": 0.8182,
+    "flat_text_similarity": 0.6491,
+    "word_text_similarity": 0.8182,
+    "text_diff": "--- minipdf/classic131_number_formats.pdf\n+++ reference/classic131_number_formats.pdf\n@@ -3,9 +3,9 @@\n #,##0.00 1,234,567.89 1234567.891\n\n $#,##0.00 $9,876.50 9876.5\n\n 0.00% 85.23% 0.8523\n\n-0.00E+00 123456789 123456789\n\n-0000 42 42\n\n-#,##0;(#,##0) -5,000 -5000\n\n-yyyy-mm-dd 45658 45658\n\n-dd/mm/yyyy 45658 45658\n\n-hh:mm:ss 0.75 0.75\n+0.00E+00 1.23E+08 123456789\n\n+0000 0042 42\n\n+#,##0;(#,##0) (5,000) -5000\n\n+yyyy-mm-dd 2025-01-01 45658\n\n+dd/mm/yyyy 01/01/2025 45658\n\n+hh:mm:ss 18:00:00 0.75",
     "visual_scores": [
-      0.9909
+      0.991
     ],
-    "visual_avg": 0.9909,
+    "visual_avg": 0.991,
     "diff_images": [
       {
         "page": 1,
@@ -8471,17 +8471,17 @@
             851,
             490
           ],
-          "changed_pixels": 32044,
-          "changed_fraction": 0.014721,
-          "mean_abs_rgb": 2.3986,
-          "rmse_rgb": 22.1307,
+          "changed_pixels": 32162,
+          "changed_fraction": 0.014775,
+          "mean_abs_rgb": 2.4083,
+          "rmse_rgb": 22.1759,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "classic131_number_formats_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9115
+    "overall_score": 0.9237
   },
   {
     "name": "classic132_striped_table",
@@ -9511,15 +9511,15 @@
     "format": "xlsx",
     "source_path": "tests/MiniPdf.Scripts/output/classic149_merged_styled_sections.xlsx",
     "suite": "classic",
-    "minipdf_size": 95818,
+    "minipdf_size": 97401,
     "reference_size": 93062,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
-    "text_similarity": 0.9324,
-    "flat_text_similarity": 0.9324,
-    "word_text_similarity": 0.5385,
-    "text_diff": "--- minipdf/classic149_merged_styled_sections.pdf\n+++ reference/classic149_merged_styled_sections.pdf\n@@ -1,11 +1,11 @@\n Quarterly Performance Report\n\n Revenue Breakdown\n\n Source Q1 Q2 Total\n\n-Online 120000 140000 260000\n\n-Retail 90000 85000 175000\n\n-Wholesale 60000 70000 130000\n\n+Online 120,000 140,000 260,000\n\n+Retail 90,000 85,000 175,000\n\n+Wholesale 60,000 70,000 130,000\n\n Expense Summary\n\n Category Q1 Q2 Total\n\n-Salaries 200000 210000 410000\n\n-Marketing 30000 35000 65000\n\n-Operations 50000 48000 98000\n+Salaries 200,000 210,000 410,000\n\n+Marketing 30,000 35,000 65,000\n\n+Operations 50,000 48,000 98,000",
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
     "visual_scores": [
       0.9494
     ],
@@ -9542,17 +9542,17 @@
             884,
             565
           ],
-          "changed_pixels": 120116,
-          "changed_fraction": 0.055182,
-          "mean_abs_rgb": 6.5508,
-          "rmse_rgb": 33.4671,
+          "changed_pixels": 120206,
+          "changed_fraction": 0.055224,
+          "mean_abs_rgb": 6.5451,
+          "rmse_rgb": 33.4342,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "classic149_merged_styled_sections_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9527
+    "overall_score": 0.9798
   },
   {
     "name": "classic150_kitchen_sink_styles",

@@ -116,5 +116,3 @@ Les deux parcours nécessitent Git, Python 3.10+ et LibreOffice. .NET nécessite
 ## Licence
 
 [Apache License 2.0](../LICENSE). L'utilisation commerciale est autorisée en conservant les avis et attributions requis.
-
-Une [étoile](https://github.com/mini-software/MiniPdf) ou un [don](https://mini-software.github.io/) contribue à soutenir le projet.
