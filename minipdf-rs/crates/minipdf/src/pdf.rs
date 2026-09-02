@@ -621,6 +621,9 @@ fn font_preference(
     if let Some(preferred) = preferred_font {
         let preferred = preferred.to_ascii_lowercase();
         let preferred_variant = match (preferred.as_str(), bold, italic) {
+            ("arial", true, true) => "arialbi",
+            ("arial", true, false) => "arialbd",
+            ("arial", false, true) => "ariali",
             ("corbel", true, true) => "corbelz",
             ("corbel", true, false) => "corbelb",
             ("corbel", false, true) => "corbeli",
@@ -1061,6 +1064,27 @@ mod tests {
             font_preference("calibrib", 'A', true, false, Some("verdana")),
             2
         );
+    }
+
+    #[test]
+    fn prefers_matching_arial_style_variant() {
+        assert_eq!(
+            font_preference("arial", 'A', false, false, Some("arial")),
+            0
+        );
+        assert_eq!(
+            font_preference("arialbd", 'A', true, false, Some("arial")),
+            0
+        );
+        assert_eq!(
+            font_preference("ariali", 'A', false, true, Some("arial")),
+            0
+        );
+        assert_eq!(
+            font_preference("arialbi", 'A', true, true, Some("arial")),
+            0
+        );
+        assert_eq!(font_preference("arial", 'A', true, false, Some("arial")), 1);
     }
 
     #[test]

@@ -21,6 +21,12 @@ const FIT_TO_PAGE_VERTICAL_SCALE: f32 = 1.0104;
 const FIT_TO_WIDTH_ONLY_VERTICAL_SCALE: f32 = 0.972;
 const PRINT_TITLE_WIDTH_ONLY_VERTICAL_SCALE: f32 = 1.0233;
 const FIT_TO_PAGE_TOP_OFFSET: f32 = 0.96;
+const O365_PRINTER_FALLBACK_VERTICAL_SCALE: f32 = 0.946_666_7;
+const O365_PRINTER_FALLBACK_TOP_MARGIN: f32 = 57.0;
+const O365_PRINTER_FALLBACK_FONT_SCALE: f32 = 0.96;
+const O365_PRINTER_FALLBACK_HORIZONTAL_SCALE: f32 = 1.0046;
+const O365_PRINTER_FALLBACK_LEFT_OFFSET: f32 = 0.48;
+const O365_PRINTER_FALLBACK_BORDER_SCALE: f32 = 1.8;
 const SVG_FALLBACK_HORIZONTAL_SCALE: f32 = 0.972;
 const GROUP_DRAWING_TOP_OFFSET: f32 = 0.96;
 const ROW_HEIGHT: f32 = 15.0;
@@ -57,6 +63,7 @@ struct SheetPageSetup {
     fit_to_width: bool,
     fit_to_height: bool,
     horizontal_centered: bool,
+    o365_printer_fallback: bool,
 }
 
 impl Default for SheetPageSetup {
@@ -72,6 +79,7 @@ impl Default for SheetPageSetup {
             fit_to_width: false,
             fit_to_height: false,
             horizontal_centered: false,
+            o365_printer_fallback: false,
         }
     }
 }
@@ -343,10 +351,16 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
         }
         trim_trailing_empty_rows(&mut rows, &images);
         let mut page_setup = read_page_setup(&sheet_xml)?;
-        if should_use_printer_page_size(page_setup) {
-            if let Some(page_size) = read_printer_page_size(&mut archive, &path, &sheet_xml)? {
+        if let Some(page_size) = read_printer_page_size(&mut archive, &path, &sheet_xml)? {
+            if should_use_printer_page_size(page_setup, sheet_print_title_rows.is_some()) {
                 page_setup.page_size = page_size;
                 page_setup.page_size_from_printer = true;
+            } else if should_calibrate_ignored_printer_page_size(
+                page_setup,
+                page_size,
+                sheet_print_title_rows.is_some(),
+            ) {
+                page_setup.o365_printer_fallback = true;
             }
         }
         sheets.push(SheetData {
@@ -384,12 +398,14 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             )?;
             trim_trailing_empty_rows(&mut rows, &images);
             let mut page_setup = read_page_setup(&sheet_xml)?;
-            if should_use_printer_page_size(page_setup) {
-                if let Some(page_size) =
-                    read_printer_page_size(&mut archive, "xl/worksheets/sheet1.xml", &sheet_xml)?
-                {
+            if let Some(page_size) =
+                read_printer_page_size(&mut archive, "xl/worksheets/sheet1.xml", &sheet_xml)?
+            {
+                if should_use_printer_page_size(page_setup, false) {
                     page_setup.page_size = page_size;
                     page_setup.page_size_from_printer = true;
+                } else if should_calibrate_ignored_printer_page_size(page_setup, page_size, false) {
+                    page_setup.o365_printer_fallback = true;
                 }
             }
             sheets.push(SheetData {
@@ -638,6 +654,7 @@ fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
         fit_to_width: fit_to_page && fit_to_width > 0,
         fit_to_height: fit_to_page && fit_to_height > 0,
         horizontal_centered,
+        o365_printer_fallback: false,
     })
 }
 
@@ -670,8 +687,19 @@ fn read_printer_page_size<R: std::io::Read + std::io::Seek>(
     Ok(parse_windows_devmode_page_size(&data))
 }
 
-fn should_use_printer_page_size(page_setup: SheetPageSetup) -> bool {
-    !page_setup.fit_to_width || page_setup.fit_to_height
+fn should_use_printer_page_size(page_setup: SheetPageSetup, has_print_title_rows: bool) -> bool {
+    page_setup.fit_to_height || has_print_title_rows
+}
+
+fn should_calibrate_ignored_printer_page_size(
+    page_setup: SheetPageSetup,
+    printer_page_size: PageSize,
+    has_print_title_rows: bool,
+) -> bool {
+    !page_setup.fit_to_width
+        && !should_use_printer_page_size(page_setup, has_print_title_rows)
+        && ((page_setup.page_size.width - printer_page_size.width).abs() > 0.1
+            || (page_setup.page_size.height - printer_page_size.height).abs() > 0.1)
 }
 
 fn parse_windows_devmode_page_size(data: &[u8]) -> Option<PageSize> {
@@ -2370,6 +2398,7 @@ fn excel_pdf_font_size(font_name: Option<&str>, size: f32) -> f32 {
 
 fn xlsx_preferred_font(font_name: Option<&str>) -> Option<&'static str> {
     match font_name.unwrap_or_default().to_ascii_lowercase().as_str() {
+        "arial" => Some("arial"),
         "corbel" => Some("corbel"),
         "franklin gothic medium" => Some("framd"),
         "garamond" => Some("gara"),
@@ -3283,7 +3312,13 @@ fn render_sheet(
     } else {
         1.0
     };
-    let horizontal_geometry_scale = content_scale * horizontal_scale;
+    let horizontal_geometry_scale = content_scale
+        * horizontal_scale
+        * if sheet.page_setup.o365_printer_fallback {
+            O365_PRINTER_FALLBACK_HORIZONTAL_SCALE
+        } else {
+            1.0
+        };
     for width in &mut widths {
         *width *= horizontal_geometry_scale;
     }
@@ -3299,6 +3334,11 @@ fn render_sheet(
             }
     } else {
         sheet.page_setup.margin_left
+            + if sheet.page_setup.o365_printer_fallback {
+                O365_PRINTER_FALLBACK_LEFT_OFFSET
+            } else {
+                0.0
+            }
     };
     let vertical_scale = xlsx_vertical_scale(
         sheet,
@@ -3307,13 +3347,24 @@ fn render_sheet(
         } else {
             1.0
         },
-    );
-    let margin_top = sheet.page_setup.margin_top
-        + if sheet.page_setup.fit_to_width {
-            FIT_TO_PAGE_TOP_OFFSET
-        } else {
-            0.0
-        };
+    ) * if sheet.page_setup.o365_printer_fallback {
+        O365_PRINTER_FALLBACK_VERTICAL_SCALE
+    } else {
+        1.0
+    };
+    let margin_top = if sheet.page_setup.o365_printer_fallback {
+        sheet
+            .page_setup
+            .margin_top
+            .max(O365_PRINTER_FALLBACK_TOP_MARGIN)
+    } else {
+        sheet.page_setup.margin_top
+            + if sheet.page_setup.fit_to_width {
+                FIT_TO_PAGE_TOP_OFFSET
+            } else {
+                0.0
+            }
+    };
     let margin_bottom = sheet.page_setup.margin_bottom;
     let column_ranges = if sheet.page_setup.fit_to_width {
         vec![(0, widths.len())]
@@ -3448,18 +3499,13 @@ fn render_sheet_columns(
     let mut next_row_index = 0;
 
     for row in &sheet.rows {
-        for _ in next_row_index..row.index {
-            y -= sheet.default_row_height * row_scale;
-        }
-
-        if row.height <= 0.0 {
-            next_row_index = row.index + 1;
-            continue;
-        }
-
-        if (sheet.row_breaks.contains(&row.index) || automatic_breaks.contains(&row.index))
-            && y < page_size.height - margin_top
-        {
+        let crossed_break = row_break_in_range(
+            &sheet.row_breaks,
+            &automatic_breaks,
+            next_row_index,
+            row.index,
+        );
+        if let Some(break_index) = crossed_break.filter(|_| y < page_size.height - margin_top) {
             page_index = doc.pages().len();
             doc.add_page(page_size.width, page_size.height);
             y = page_size.height - margin_top;
@@ -3476,8 +3522,20 @@ fn render_sheet_columns(
                 row_scale,
                 page_index,
                 &mut y,
-                row.index,
+                break_index,
             );
+            for _ in break_index..row.index {
+                y -= sheet.default_row_height * row_scale;
+            }
+        } else {
+            for _ in next_row_index..row.index {
+                y -= sheet.default_row_height * row_scale;
+            }
+        }
+
+        if row.height <= 0.0 {
+            next_row_index = row.index + 1;
+            continue;
         }
 
         let row_height = row.height * row_scale;
@@ -3550,6 +3608,20 @@ fn render_sheet_columns(
             image.height * row_scale,
         );
     }
+}
+
+fn row_break_in_range(
+    manual_breaks: &[usize],
+    automatic_breaks: &[usize],
+    start_row: usize,
+    end_row: usize,
+) -> Option<usize> {
+    manual_breaks
+        .iter()
+        .chain(automatic_breaks)
+        .copied()
+        .filter(|row| *row >= start_row && *row <= end_row)
+        .min()
 }
 
 fn automatic_row_breaks(sheet: &SheetData, page_size: PageSize, row_scale: f32) -> Vec<usize> {
@@ -3676,6 +3748,8 @@ fn render_xlsx_row(
         font_size: f32,
         indent_width: f32,
         style: CellStyle,
+        has_border: bool,
+        is_multi_row_merge: bool,
         align_right: bool,
         accounting_value: Option<String>,
     }
@@ -3744,6 +3818,11 @@ fn render_xlsx_row(
         let cell_borders = merge
             .map(|merge_range| merged_cell_borders(&sheet.rows, merge_range))
             .unwrap_or(cell.style.borders);
+        let border_scale = if sheet.page_setup.o365_printer_fallback {
+            O365_PRINTER_FALLBACK_BORDER_SCALE
+        } else {
+            1.0
+        };
         if let Some(fill) = cell.style.fill_color {
             let previous_cell = column_index
                 .checked_sub(1)
@@ -3768,7 +3847,7 @@ fn render_xlsx_row(
             );
         }
         if let Some(border) = cell_borders.bottom {
-            let border_width = cell_borders.bottom_width.max(0.1);
+            let border_width = cell_borders.bottom_width.max(0.1) * border_scale;
             let position_offset = if border_width <= 0.5 { 0.6 } else { 0.0 };
             if cell_borders.bottom_dotted {
                 page.add_dashed_line(
@@ -3790,7 +3869,7 @@ fn render_xlsx_row(
             }
         }
         if let Some(border) = cell_borders.top {
-            let border_width = cell_borders.top_width.max(0.1);
+            let border_width = cell_borders.top_width.max(0.1) * border_scale;
             let position_offset = if border_width <= 0.5 { 0.6 } else { 0.0 };
             if cell_borders.top_dotted {
                 page.add_dashed_line(
@@ -3812,7 +3891,7 @@ fn render_xlsx_row(
             }
         }
         if let Some(border) = cell_borders.left {
-            let border_width = cell_borders.left_width.max(0.1);
+            let border_width = cell_borders.left_width.max(0.1) * border_scale;
             let position_offset = if border_width <= 0.5 { 0.4 } else { 0.0 };
             if cell_borders.left_dotted {
                 page.add_dashed_line(
@@ -3834,7 +3913,7 @@ fn render_xlsx_row(
             }
         }
         if let Some(border) = cell_borders.right {
-            let border_width = cell_borders.right_width.max(0.1);
+            let border_width = cell_borders.right_width.max(0.1) * border_scale;
             let position_offset = if border_width <= 0.5 { 0.4 } else { 0.0 };
             if cell_borders.right_dotted {
                 page.add_dashed_line(
@@ -3855,10 +3934,15 @@ fn render_xlsx_row(
                 );
             }
         }
-        let font_size = cell.style.font_size * content_scale;
+        let font_scale = if sheet.page_setup.o365_printer_fallback {
+            O365_PRINTER_FALLBACK_FONT_SCALE
+        } else {
+            1.0
+        };
+        let font_size = cell.style.font_size * content_scale * font_scale;
         let indent_width = styled_text_width_with_font(
             &"000".repeat(cell.style.indent as usize),
-            CELL_FONT_SIZE * content_scale,
+            CELL_FONT_SIZE * content_scale * font_scale,
             false,
             false,
             None,
@@ -3929,6 +4013,8 @@ fn render_xlsx_row(
             font_size,
             indent_width,
             style: cell.style,
+            has_border: cell_borders.any(),
+            is_multi_row_merge: cell_height > row_height + 0.1,
             align_right: cell.is_numeric || has_rtl_base_direction(&cell.text),
             accounting_value: matches!(cell.style.number_format, NumberFormat::DollarAccounting)
                 .then(|| cell.text.strip_prefix("$ ").map(str::to_owned))
@@ -3956,6 +4042,16 @@ fn render_xlsx_row(
             Some("framd") => 0.9,
             Some("grandview" | "grandviewdisplay") => 0.6,
             _ => 0.0,
+        } + if sheet.page_setup.o365_printer_fallback && text.has_border {
+            match (text.style.vertical_alignment, text.is_multi_row_merge) {
+                (VerticalAlignment::Top, _) => 0.15,
+                (VerticalAlignment::Center, false) => 0.45,
+                (VerticalAlignment::Center, true) => 0.9,
+                (VerticalAlignment::Bottom, false) => 1.7,
+                (VerticalAlignment::Bottom, true) => 0.85,
+            }
+        } else {
+            0.0
         };
         let line_count = text.lines.len();
         if let Some(value) = text.accounting_value {
@@ -4403,7 +4499,43 @@ mod tests {
         )
         .expect("worksheet XML is valid");
 
-        assert!(!super::should_use_printer_page_size(page_setup));
+        assert!(!super::should_use_printer_page_size(page_setup, false));
+    }
+
+    #[test]
+    fn ignores_printer_page_size_for_ordinary_sheet() {
+        let page_setup =
+            read_page_setup(r#"<worksheet><pageSetup orientation="portrait"/></worksheet>"#)
+                .expect("worksheet XML is valid");
+
+        assert!(!super::should_use_printer_page_size(page_setup, false));
+    }
+
+    #[test]
+    fn uses_printer_page_size_for_print_title_rows() {
+        let page_setup =
+            read_page_setup(r#"<worksheet><pageSetup orientation="portrait"/></worksheet>"#)
+                .expect("worksheet XML is valid");
+
+        assert!(super::should_use_printer_page_size(page_setup, true));
+    }
+
+    #[test]
+    fn calibrates_ordinary_sheet_when_printer_paper_differs() {
+        let page_setup =
+            read_page_setup(r#"<worksheet><pageSetup orientation="portrait"/></worksheet>"#)
+                .expect("worksheet XML is valid");
+
+        assert!(super::should_calibrate_ignored_printer_page_size(
+            page_setup,
+            PageSize::LETTER,
+            false,
+        ));
+        assert!(!super::should_calibrate_ignored_printer_page_size(
+            page_setup,
+            PageSize::A4,
+            false,
+        ));
     }
 
     #[test]
@@ -4672,6 +4804,11 @@ mod tests {
     }
 
     #[test]
+    fn maps_arial_to_installed_font() {
+        assert_eq!(super::xlsx_preferred_font(Some("Arial")), Some("arial"));
+    }
+
+    #[test]
     fn maps_invoice_fonts_to_installed_fonts() {
         assert_eq!(super::xlsx_preferred_font(Some("Garamond")), Some("gara"));
         assert_eq!(
@@ -4735,6 +4872,12 @@ mod tests {
         assert_eq!(rows[0].index, 3);
         assert_eq!(rows[0].height, 60.0);
         assert!(rows[0].cells.is_empty());
+    }
+
+    #[test]
+    fn finds_page_break_on_sparse_row_before_next_content() {
+        assert_eq!(super::row_break_in_range(&[40], &[], 40, 41), Some(40));
+        assert_eq!(super::row_break_in_range(&[40], &[], 41, 42), None);
     }
 
     #[test]

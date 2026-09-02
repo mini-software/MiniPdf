@@ -1,27 +1,27 @@
 # Rust MiniPdf vs Microsoft 365 Excel Reference PDF Comparison Report
 
-Generated: 2026-08-29T09:01:37.649097
+Generated: 2026-09-02T11:08:08.514362
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9623 | 0.9507 | 2/2 | **0.9652** |
-| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9623 | 0.9507 | 2/2 | **0.9652** |
+| 1 | 🟢 Academic Achievement Summary Table | ✅ | 0.9623 | 0.9371 | 2/2 | **0.9598** |
+| 2 | 🟢 AcademicAchievement_temp | ✅ | 0.9623 | 0.9371 | 2/2 | **0.9598** |
 | 3 | 🟢 Business expense budget1 | ✅ | 1.0 | 0.8931 | 4/4 | **0.9572** |
-| 4 | 🟡 Business expenses budget2 | ✅ | 1.0 | 0.7095 | 8/4 | **0.7838** |
-| 5 | 🟡 Business plan checklist with SWOT analysis1 | ✅ | 0.9237 | 0.6033 | 1/1 | **0.8108** |
-| 6 | 🟡 Event budget1 | ✅ | 1.0 | 0.9592 | 6/5 | **0.8837** |
-| 7 | 🟡 Expense report basic1 | ✅ | 1.0 | 0.4231 | 1/1 | **0.7692** |
-| 8 | 🟢 Grocery list1 | ✅ | 0.9915 | 0.9307 | 1/1 | **0.9689** |
-| 9 | 🔴 payroll-calculator_f | ✅ | 0.8857 | 0.5917 | 26/29 | **0.691** |
-| 10 | 🟡 PO_anonymized | ✅ | 0.9751 | 0.7494 | 8/9 | **0.7898** |
-| 11 | 🟢 Simple invoice1 | ✅ | 0.9659 | 0.9707 | 1/1 | **0.9746** |
-| 12 | 🟡 Small business cash flow forecast1 | ✅ | 0.9646 | 0.7151 | 3/5 | **0.7719** |
+| 4 | 🟡 Business expenses budget2 | ✅ | 1.0 | 0.7611 | 8/4 | **0.8044** |
+| 5 | 🔴 Business plan checklist with SWOT analysis1 | ✅ | 0.902 | 0.5955 | 2/1 | **0.699** |
+| 6 | 🟡 Event budget1 | ✅ | 1.0 | 0.9684 | 4/5 | **0.8874** |
+| 7 | 🟢 Expense report basic1 | ✅ | 0.9889 | 0.8811 | 1/1 | **0.948** |
+| 8 | 🟡 Grocery list1 | ✅ | 0.9506 | 0.7304 | 1/1 | **0.8724** |
+| 9 | 🔴 payroll-calculator_f | ✅ | 0.8487 | 0.4264 | 28/29 | **0.61** |
+| 10 | 🟡 PO_anonymized | ✅ | 0.9751 | 0.82 | 8/9 | **0.818** |
+| 11 | 🟢 Simple invoice1 | ✅ | 0.9806 | 0.8664 | 1/1 | **0.9388** |
+| 12 | 🟡 Small business cash flow forecast1 | ✅ | 0.9686 | 0.7277 | 3/5 | **0.7785** |
 | 13 | 🟡 Wedding_timeline_planner1_copy | ✅ | 0.9916 | 0.7815 | 4/8 | **0.8092** |
-| 14 | 🟡 Weekly schedule planner1 | ✅ | 0.9062 | 0.7055 | 2/1 | **0.7447** |
+| 14 | 🟡 Weekly schedule planner1 | ✅ | 0.9062 | 0.7361 | 2/1 | **0.7569** |
 | 15 | 🟡 XlsxIssue75 | ✅ | 0.9908 | 0.9695 | 140/144 | **0.8841** |
-| 16 | 🟢 XlsxIssue77_MergedCellAlignment | ✅ | 0.9947 | 0.8031 | 2/2 | **0.9191** |
+| 16 | 🟢 XlsxIssue77_MergedCellAlignment | ✅ | 1.0 | 0.9382 | 2/2 | **0.9753** |
 | 17 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.8456 | 6/6 | **0.9382** |
 | 18 | 🟢 XlsxIssue77_Template2_Workaround | ✅ | 1.0 | 0.8395 | 6/6 | **0.9358** |
 | 19 | 🟢 XlsxIssue81_LayoutOptions | ✅ | 0.9807 | 0.7905 | 16/16 | **0.9085** |
@@ -29,7 +29,7 @@ Generated: 2026-08-29T09:01:37.649097
 | 21 | 🟡 XlsxIssue82_SampleTestData5mb | ✅ | 0.6176 | 0.887 | 435/1668 | **0.7018** |
 | 22 | ⚪ XlsxIssue82_WideTable | ✅ | N/A | N/A | ?/? | **N/A** |
 
-**Average Overall Score: 0.8161**
+**Average Overall Score: 0.8147**
 
 ## Labeled Side-by-Side Comparison
 
@@ -130,12 +130,12 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>Academic Achievement Summary Table</b><br>Page 1</td>
   <td><img src="images/Academic Achievement Summary Table_p1_heatmap.png" width="760" alt="Academic Achievement Summary Table page 1 difference heatmap"></td>
-  <td>changed: 190940 px (8.77%)<br>bbox: [45, 38, 1725, 1143]<br>mean abs RGB: 13.858<br>RMSE RGB: 52.4995<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 188622 px (8.67%)<br>bbox: [45, 34, 1725, 1143]<br>mean abs RGB: 13.843<br>RMSE RGB: 52.5804<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>AcademicAchievement_temp</b><br>Page 1</td>
   <td><img src="images/AcademicAchievement_temp_p1_heatmap.png" width="760" alt="AcademicAchievement_temp page 1 difference heatmap"></td>
-  <td>changed: 190940 px (8.77%)<br>bbox: [45, 38, 1725, 1143]<br>mean abs RGB: 13.858<br>RMSE RGB: 52.4995<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 188622 px (8.67%)<br>bbox: [45, 34, 1725, 1143]<br>mean abs RGB: 13.843<br>RMSE RGB: 52.5804<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Business expense budget1</b><br>Page 1</td>
@@ -145,47 +145,47 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>Business expenses budget2</b><br>Page 1</td>
   <td><img src="images/Business expenses budget2_p1_heatmap.png" width="760" alt="Business expenses budget2 page 1 difference heatmap"></td>
-  <td>changed: 664092 px (32.43%)<br>bbox: [140, 73, 1509, 1140]<br>mean abs RGB: 16.2401<br>RMSE RGB: 40.0437<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 660460 px (32.25%)<br>bbox: [140, 73, 1509, 1140]<br>mean abs RGB: 16.0908<br>RMSE RGB: 40.1071<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Business plan checklist with SWOT analysis1</b><br>Page 1</td>
   <td><img src="images/Business plan checklist with SWOT analysis1_p1_heatmap.png" width="760" alt="Business plan checklist with SWOT analysis1 page 1 difference heatmap"></td>
-  <td>changed: 759959 px (34.91%)<br>bbox: [90, 62, 1179, 1547]<br>mean abs RGB: 21.3479<br>RMSE RGB: 55.8591<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 814131 px (39.76%)<br>bbox: [88, 58, 1182, 1477]<br>mean abs RGB: 27.06<br>RMSE RGB: 62.7658<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Event budget1</b><br>Page 1</td>
   <td><img src="images/Event budget1_p1_heatmap.png" width="760" alt="Event budget1 page 1 difference heatmap"></td>
-  <td>changed: 91980 px (4.23%)<br>bbox: [73, 153, 1165, 779]<br>mean abs RGB: 5.9532<br>RMSE RGB: 34.5802<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 91980 px (4.23%)<br>bbox: [73, 153, 1165, 779]<br>mean abs RGB: 5.927<br>RMSE RGB: 34.5855<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Expense report basic1</b><br>Page 1</td>
   <td><img src="images/Expense report basic1_p1_heatmap.png" width="760" alt="Expense report basic1 page 1 difference heatmap"></td>
-  <td>changed: 667090 px (30.65%)<br>bbox: [63, 62, 1691, 983]<br>mean abs RGB: 9.0455<br>RMSE RGB: 26.7801<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 283123 px (13.83%)<br>bbox: [60, 61, 1590, 853]<br>mean abs RGB: 6.1984<br>RMSE RGB: 24.737<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Grocery list1</b><br>Page 1</td>
   <td><img src="images/Grocery list1_p1_heatmap.png" width="760" alt="Grocery list1 page 1 difference heatmap"></td>
-  <td>changed: 235521 px (10.82%)<br>bbox: [46, 77, 1194, 930]<br>mean abs RGB: 6.5427<br>RMSE RGB: 27.8886<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 602000 px (29.40%)<br>bbox: [45, 72, 1197, 833]<br>mean abs RGB: 13.8314<br>RMSE RGB: 37.5938<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>payroll-calculator_f</b><br>Page 1</td>
   <td><img src="images/payroll-calculator_f_p1_heatmap.png" width="760" alt="payroll-calculator_f page 1 difference heatmap"></td>
-  <td>changed: 513066 px (25.06%)<br>bbox: [22, 28, 1599, 1160]<br>mean abs RGB: 18.5176<br>RMSE RGB: 45.9602<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 808249 px (37.13%)<br>bbox: [23, 31, 1692, 1160]<br>mean abs RGB: 31.41<br>RMSE RGB: 62.0982<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>PO_anonymized</b><br>Page 1</td>
   <td><img src="images/PO_anonymized_p1_heatmap.png" width="760" alt="PO_anonymized page 1 difference heatmap"></td>
-  <td>changed: 718137 px (32.99%)<br>bbox: [58, 71, 1181, 1713]<br>mean abs RGB: 29.8132<br>RMSE RGB: 71.6858<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 717920 px (32.98%)<br>bbox: [58, 71, 1181, 1713]<br>mean abs RGB: 29.6317<br>RMSE RGB: 71.7606<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Simple invoice1</b><br>Page 1</td>
   <td><img src="images/Simple invoice1_p1_heatmap.png" width="760" alt="Simple invoice1 page 1 difference heatmap"></td>
-  <td>changed: 119065 px (5.47%)<br>bbox: [39, 114, 1201, 1446]<br>mean abs RGB: 6.6701<br>RMSE RGB: 34.0396<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 355059 px (17.34%)<br>bbox: [38, 107, 1203, 1361]<br>mean abs RGB: 17.5937<br>RMSE RGB: 57.6067<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Small business cash flow forecast1</b><br>Page 1</td>
   <td><img src="images/Small business cash flow forecast1_p1_heatmap.png" width="760" alt="Small business cash flow forecast1 page 1 difference heatmap"></td>
-  <td>changed: 849423 px (39.02%)<br>bbox: [66, 73, 1173, 1682]<br>mean abs RGB: 17.4385<br>RMSE RGB: 42.354<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 851695 px (39.13%)<br>bbox: [66, 73, 1173, 1682]<br>mean abs RGB: 17.3431<br>RMSE RGB: 42.3066<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Wedding_timeline_planner1_copy</b><br>Page 1</td>
@@ -195,7 +195,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>Weekly schedule planner1</b><br>Page 1</td>
   <td><img src="images/Weekly schedule planner1_p1_heatmap.png" width="760" alt="Weekly schedule planner1 page 1 difference heatmap"></td>
-  <td>changed: 671826 px (32.46%)<br>bbox: [62, 96, 1604, 1144]<br>mean abs RGB: 22.6714<br>RMSE RGB: 55.2962<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 671773 px (32.45%)<br>bbox: [62, 96, 1604, 1144]<br>mean abs RGB: 22.5853<br>RMSE RGB: 55.3776<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>XlsxIssue75</b><br>Page 1</td>
@@ -205,17 +205,17 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>XlsxIssue77_MergedCellAlignment</b><br>Page 1</td>
   <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_heatmap.png" width="760" alt="XlsxIssue77_MergedCellAlignment page 1 difference heatmap"></td>
-  <td>changed: 576709 px (28.16%)<br>bbox: [35, 45, 1163, 1607]<br>mean abs RGB: 37.2991<br>RMSE RGB: 85.7278<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 259750 px (11.93%)<br>bbox: [36, 121, 1163, 1541]<br>mean abs RGB: 14.4315<br>RMSE RGB: 50.3807<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>XlsxIssue77_Template1</b><br>Page 1</td>
   <td><img src="images/XlsxIssue77_Template1_p1_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 1 difference heatmap"></td>
-  <td>changed: 440580 px (21.52%)<br>bbox: [82, 95, 1157, 1547]<br>mean abs RGB: 25.5886<br>RMSE RGB: 69.9147<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 440593 px (21.52%)<br>bbox: [82, 95, 1157, 1547]<br>mean abs RGB: 25.5866<br>RMSE RGB: 69.9105<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>XlsxIssue77_Template2_Workaround</b><br>Page 1</td>
   <td><img src="images/XlsxIssue77_Template2_Workaround_p1_heatmap.png" width="760" alt="XlsxIssue77_Template2_Workaround page 1 difference heatmap"></td>
-  <td>changed: 444766 px (21.72%)<br>bbox: [78, 95, 1153, 1553]<br>mean abs RGB: 25.2068<br>RMSE RGB: 69.4605<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 444756 px (21.72%)<br>bbox: [78, 95, 1153, 1553]<br>mean abs RGB: 25.2024<br>RMSE RGB: 69.4511<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>XlsxIssue81_LayoutOptions</b><br>Page 1</td>
@@ -242,7 +242,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 <tr><th>Rust MiniPdf</th><th>Microsoft 365 Excel Reference</th><th>LibreOffice</th></tr>
 <tr>
   <td><b>Academic Achievement Summary Table<br><small>format: xlsx | case: Academic Achievement Summary Table | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 96.5%</td>
+  <td colspan="2">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 96.0%</td>
 </tr>
 <tr>
   <td><img src="images/Academic Achievement Summary Table_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -251,7 +251,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>AcademicAchievement_temp<br><small>format: xlsx | case: AcademicAchievement_temp | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 96.5%</td>
+  <td colspan="2">AcademicAchievement_temp <span style="color:#3fb950">⬤</span> 96.0%</td>
 </tr>
 <tr>
   <td><img src="images/AcademicAchievement_temp_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -269,7 +269,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>Business expenses budget2<br><small>format: xlsx | case: Business expenses budget2 | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">Business expenses budget2 <span style="color:#d29922">⬤</span> 78.4%</td>
+  <td colspan="2">Business expenses budget2 <span style="color:#d29922">⬤</span> 80.4%</td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -278,7 +278,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>Business plan checklist with SWOT analysis1<br><small>format: xlsx | case: Business plan checklist with SWOT analysis1 | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">Business plan checklist with SWOT analysis1 <span style="color:#d29922">⬤</span> 81.1%</td>
+  <td colspan="2">Business plan checklist with SWOT analysis1 <span style="color:#f85149">⬤</span> 69.9%</td>
 </tr>
 <tr>
   <td><img src="images/Business plan checklist with SWOT analysis1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -287,7 +287,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>Event budget1<br><small>format: xlsx | case: Event budget1 | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">Event budget1 <span style="color:#d29922">⬤</span> 88.4%</td>
+  <td colspan="2">Event budget1 <span style="color:#d29922">⬤</span> 88.7%</td>
 </tr>
 <tr>
   <td><img src="images/Event budget1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -296,7 +296,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>Expense report basic1<br><small>format: xlsx | case: Expense report basic1 | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">Expense report basic1 <span style="color:#d29922">⬤</span> 76.9%</td>
+  <td colspan="2">Expense report basic1 <span style="color:#3fb950">⬤</span> 94.8%</td>
 </tr>
 <tr>
   <td><img src="images/Expense report basic1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -305,7 +305,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>Grocery list1<br><small>format: xlsx | case: Grocery list1 | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">Grocery list1 <span style="color:#3fb950">⬤</span> 96.9%</td>
+  <td colspan="2">Grocery list1 <span style="color:#d29922">⬤</span> 87.2%</td>
 </tr>
 <tr>
   <td><img src="images/Grocery list1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -314,7 +314,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>payroll-calculator_f<br><small>format: xlsx | case: payroll-calculator_f | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">payroll-calculator_f <span style="color:#f85149">⬤</span> 69.1%</td>
+  <td colspan="2">payroll-calculator_f <span style="color:#f85149">⬤</span> 61.0%</td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -323,7 +323,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>PO_anonymized<br><small>format: xlsx | case: PO_anonymized | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">PO_anonymized <span style="color:#d29922">⬤</span> 79.0%</td>
+  <td colspan="2">PO_anonymized <span style="color:#d29922">⬤</span> 81.8%</td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -332,7 +332,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>Simple invoice1<br><small>format: xlsx | case: Simple invoice1 | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">Simple invoice1 <span style="color:#3fb950">⬤</span> 97.5%</td>
+  <td colspan="2">Simple invoice1 <span style="color:#3fb950">⬤</span> 93.9%</td>
 </tr>
 <tr>
   <td><img src="images/Simple invoice1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -341,7 +341,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>Small business cash flow forecast1<br><small>format: xlsx | case: Small business cash flow forecast1 | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">Small business cash flow forecast1 <span style="color:#d29922">⬤</span> 77.2%</td>
+  <td colspan="2">Small business cash flow forecast1 <span style="color:#d29922">⬤</span> 77.8%</td>
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -359,7 +359,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>Weekly schedule planner1<br><small>format: xlsx | case: Weekly schedule planner1 | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">Weekly schedule planner1 <span style="color:#d29922">⬤</span> 74.5%</td>
+  <td colspan="2">Weekly schedule planner1 <span style="color:#d29922">⬤</span> 75.7%</td>
 </tr>
 <tr>
   <td><img src="images/Weekly schedule planner1_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -377,7 +377,7 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 </tr>
 <tr>
   <td><b>XlsxIssue77_MergedCellAlignment<br><small>format: xlsx | case: XlsxIssue77_MergedCellAlignment | scope: rust-issue-xlsx</small></b></td>
-  <td colspan="2">XlsxIssue77_MergedCellAlignment <span style="color:#3fb950">⬤</span> 91.9%</td>
+  <td colspan="2">XlsxIssue77_MergedCellAlignment <span style="color:#3fb950">⬤</span> 97.5%</td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_minipdf.png" width="260" alt="Rust MiniPdf"></td>
@@ -445,10 +445,10 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 - **Case Metadata:** format: xlsx | case: Academic Achievement Summary Table | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/Academic Achievement Summary Table.xlsx
 - **Text Similarity:** 0.9623
-- **Visual Average:** 0.9507
-- **Overall Score:** 0.9652
+- **Visual Average:** 0.9371
+- **Overall Score:** 0.9598
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=245827 bytes, Reference=151877 bytes
+- **File Size:** MiniPdf=246090 bytes, Reference=151877 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -485,7 +485,6 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
  2
 
  3
-
 ```
 </details>
 
@@ -494,10 +493,10 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 - **Case Metadata:** format: xlsx | case: AcademicAchievement_temp | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/AcademicAchievement_temp.xlsx
 - **Text Similarity:** 0.9623
-- **Visual Average:** 0.9507
-- **Overall Score:** 0.9652
+- **Visual Average:** 0.9371
+- **Overall Score:** 0.9598
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=245827 bytes, Reference=151877 bytes
+- **File Size:** MiniPdf=246090 bytes, Reference=151877 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -534,7 +533,6 @@ Scores compare Rust MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
  2
 
  3
-
 ```
 </details>
 
@@ -555,10 +553,10 @@ Text content: ✅ Identical
 - **Case Metadata:** format: xlsx | case: Business expenses budget2 | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/Business expenses budget2.xlsx
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.7095
-- **Overall Score:** 0.7838
+- **Visual Average:** 0.7611
+- **Overall Score:** 0.8044
 - **Pages:** MiniPdf=8, Reference=4
-- **File Size:** MiniPdf=1042577 bytes, Reference=376973 bytes
+- **File Size:** MiniPdf=1042458 bytes, Reference=376973 bytes
 
 Text content: ✅ Identical
 
@@ -566,11 +564,11 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: Business plan checklist with SWOT analysis1 | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/Business plan checklist with SWOT analysis1.xlsx
-- **Text Similarity:** 0.9237
-- **Visual Average:** 0.6033
-- **Overall Score:** 0.8108
-- **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=209139 bytes, Reference=64252 bytes
+- **Text Similarity:** 0.902
+- **Visual Average:** 0.5955
+- **Overall Score:** 0.699
+- **Pages:** MiniPdf=2, Reference=1
+- **File Size:** MiniPdf=212386 bytes, Reference=64252 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -596,7 +594,7 @@ Text content: ✅ Identical
 
  Luca Richter 1/9/2023
 
-@@ -9,33 +9,29 @@
+@@ -9,26 +9,29 @@
  Strengths: Identify market segments in which the
 
  company will participate by conducting primary and Dylan Williams 1/9/2023
@@ -647,23 +645,15 @@ Text content: ✅ Identical
 
 -Opportunities: Identify any key processes,
 
--intellectual capital, or other resources that the
+-intellectual capital, or other resources that the Ian Hansson 1/9/2023
 
--Ian Hansson 1/9/2023
-
--company can use to its advantage in the
-
--marketplace.
+-company can use to its advantage in the marketplace.
 
 -Threats: Identify primary competitors, and then
 
--analyze competitor performance by using all
+-analyze competitor performance by using all available Gaurav Cheema 1/9/2023
 
--Gaurav Cheema 1/9/2023
-
--available data and additional data that can be
-
--verified.
+-data and additional data that can be verified.
 
 +organization that need to be mitigated so that the company Flora Berggren 1/6/2023
 
@@ -691,10 +681,9 @@ Text content: ✅ Identical
 
  Chela Arapelli 1/16/2023
 
- competitors that might affect the business plan.
-
--Threats: Develop strate
-... (179 more characters)
+-competitors that might affect the business plan.
++competitors that might affect th
+... (132 more characters)
 
 ```
 </details>
@@ -704,10 +693,10 @@ Text content: ✅ Identical
 - **Case Metadata:** format: xlsx | case: Event budget1 | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/Event budget1.xlsx
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.9592
-- **Overall Score:** 0.8837
-- **Pages:** MiniPdf=6, Reference=5
-- **File Size:** MiniPdf=318242 bytes, Reference=121223 bytes
+- **Visual Average:** 0.9684
+- **Overall Score:** 0.8874
+- **Pages:** MiniPdf=4, Reference=5
+- **File Size:** MiniPdf=317665 bytes, Reference=121223 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -752,67 +741,112 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: Expense report basic1 | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/Expense report basic1.xlsx
-- **Text Similarity:** 1.0
-- **Visual Average:** 0.4231
-- **Overall Score:** 0.7692
+- **Text Similarity:** 0.9889
+- **Visual Average:** 0.8811
+- **Overall Score:** 0.948
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=157570 bytes, Reference=47896 bytes
+- **File Size:** MiniPdf=161159 bytes, Reference=47896 bytes
 
-Text content: ✅ Identical
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Expense report basic1.pdf
++++ reference/Expense report basic1.pdf
+@@ -17,6 +17,7 @@
+ $0.00
+
+ Total $111.00 $250.00 $60.00 $50.00 $0.00 $300.00 $25.00 $796.00
+
+ Subtotal $796.00
+
+-APPROVED Advances $0.00
+
++Advances $0.00
+
++APPROVED
+
+ NOTES
+
+ Total $796.00
+```
+</details>
 
 ### Grocery list1
 
 - **Case Metadata:** format: xlsx | case: Grocery list1 | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/Grocery list1.xlsx
-- **Text Similarity:** 0.9915
-- **Visual Average:** 0.9307
-- **Overall Score:** 0.9689
+- **Text Similarity:** 0.9506
+- **Visual Average:** 0.7304
+- **Overall Score:** 0.8724
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=168827 bytes, Reference=71396 bytes
+- **File Size:** MiniPdf=168369 bytes, Reference=71396 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Grocery list1.pdf
 +++ reference/Grocery list1.pdf
-@@ -1,6 +1,7 @@
- ORCHARD GROCERY HOME DELIVERY LOCAL MARKET OTHER GRAND TOTAL
+@@ -1,6 +1,8 @@
+-GROCERY LIST ORCHARD GROCERY HOME DELIVERY LOCAL MARKET OTHER GRAND TOTAL
 
- GROCERY LIST
++ORCHARD GROCERY HOME DELIVERY LOCAL MARKET OTHER GRAND TOTAL
 
--Customize this list. Replace the entries above with your own to track your $11.95 $6.12 $31.85 $216.60 $3.99 $270.51
++GROCERY LIST
 
-+Customize this list. Replace the entries above with your own to track your
+ Customize this list. Replace the entries above with your own to track your
+
+-most frequently used categories. $11.95 $6.12 $31.85 $216.60 $3.99 $270.51
 
 +$11.95 $6.12 $31.85 $216.60 $3.99 $270.51
 
- most frequently used categories.
++most frequently used categories.
 
  DONE? ITEM STORE CATEGORY QTY UNIT UNIT PRICE TOTAL NOTE
 
  Yes Peaches Azure River Farm ORCHARD 2 lbs $2.99 $5.98
 
-@@ -19,9 +20,7 @@
+ Yes Apples Azure River Farm ORCHARD 3 lbs $1.99 $5.97 Have coupon
+
+@@ -12,13 +14,15 @@
+ Cucumber Market LOCAL MARKET 1 lbs $2.29 $2.29
+
+ Mushrooms Wide World Importers GROCERY 0.5 lbs $2.25 $1.13
+
+ Yes Milk Local Farmer HOME DELIVERY 2 gal $3.99 $7.98
+
+-y
+
+-Yes Cheese Local Farmer HOME DELIVERY 1 lbs $9.99 $9.99 cheeses
+
++Variety of block
+
++Yes Cheese Local Farmer HOME DELIVERY 1 lbs $9.99 $9.99
+
++cheeses
+
  Yes Eggs Local Farmer HOME DELIVERY 2 doz $3.50 $7.00
 
  Yes Cottage cheese Local Farmer HOME DELIVERY 1 16 oz $3.89 $3.89
 
  Yes Sour cream Local Farmer HOME DELIVERY 1 8 oz $2.99 $2.99
 
--Greek with
+-Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99 honey
 
--Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99
+-pp
 
--honey
+-Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90 filets
 
 +Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99 Greek with honey
 
- Bacon wrapped
++Bacon wrapped
 
- Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90
++Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90
 
- filets
++filets
 
+ Wild Salmon Fish Market LOCAL MARKET 6 lbs $8.99 $53.94
+
+ Alaskan King Crab Legs Fish Market LOCAL MARKET 5 lbs $10.99 $54.95
 ```
 </details>
 
@@ -820,18 +854,18 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: payroll-calculator_f | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/payroll-calculator_f.xlsx
-- **Text Similarity:** 0.8857
-- **Visual Average:** 0.5917
-- **Overall Score:** 0.691
-- **Pages:** MiniPdf=26, Reference=29
-- **File Size:** MiniPdf=4722963 bytes, Reference=606513 bytes
+- **Text Similarity:** 0.8487
+- **Visual Average:** 0.4264
+- **Overall Score:** 0.61
+- **Pages:** MiniPdf=28, Reference=29
+- **File Size:** MiniPdf=4723494 bytes, Reference=606513 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/payroll-calculator_f.pdf
 +++ reference/payroll-calculator_f.pdf
-@@ -1,14 +1,15 @@
+@@ -1,13 +1,15 @@
  Employee Register
 
 -Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)
@@ -846,29 +880,23 @@ Text content: ✅ Identical
 
  Annual Regular Overtime Exempt
 
--M/ Pay Federal Withhold
+ Pay Federal Withhold
 
--ID Employee's Name Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status Filing Status
+ ID Employee's Name M/F Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status Filing Status
 
--F Frequency Allowance (With every paycheck) Dependents
-
-+Pay Federal Withhold
-
-+ID Employee's Name M/F Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status Filing Status
+-Frequency Allowance (With every paycheck) Dependents Other
 
 +Frequency Allowance (With every paycheck)
 
  ($) Rate ($) Rate ($) Overtime Box in (c)
 
--($) Under Age 17
+-($) Under Age 17 Dependents
 
 -1 Adam Jones M 41320 Senior Accountant 42000 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
 
 -2 Nichola Brown F 40814 CR Manager 54481 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked
 
 -3 Benny Erwin M 40674 Applications PM 48785 23.45 35.18 No Monthly W-4 (before 2020) Married 4
-
--When adding more rows, insert new rows above this one
 +($)
 
 +1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked
@@ -888,8 +916,8 @@ Text content: ✅ Identical
 - **Case Metadata:** format: xlsx | case: PO_anonymized | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/PO_anonymized.xlsx
 - **Text Similarity:** 0.9751
-- **Visual Average:** 0.7494
-- **Overall Score:** 0.7898
+- **Visual Average:** 0.82
+- **Overall Score:** 0.818
 - **Pages:** MiniPdf=8, Reference=9
 - **File Size:** MiniPdf=844496 bytes, Reference=409049 bytes
 
@@ -957,18 +985,18 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: Simple invoice1 | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/Simple invoice1.xlsx
-- **Text Similarity:** 0.9659
-- **Visual Average:** 0.9707
-- **Overall Score:** 0.9746
+- **Text Similarity:** 0.9806
+- **Visual Average:** 0.8664
+- **Overall Score:** 0.9388
 - **Pages:** MiniPdf=1, Reference=1
-- **File Size:** MiniPdf=159372 bytes, Reference=94130 bytes
+- **File Size:** MiniPdf=159218 bytes, Reference=94130 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
 --- minipdf/Simple invoice1.pdf
 +++ reference/Simple invoice1.pdf
-@@ -1,16 +1,11 @@
+@@ -1,8 +1,6 @@
 -INVOICE
 
 -Elegant
@@ -979,38 +1007,15 @@ Text content: ✅ Identical
 
 -Embrace
 
--date: 8/29/2026
+-Invoice date: 9/2/2026
 
 +Embrace Invoice date: 8/29/2026
 
  Job: Wedding florals
 
--345 W Main Hailey Clark
+ 345 W Main Bill to: Hailey Clark
 
--Bill to:
-
--Los Angeles, CA 14151
-
--Address: 123 Avenue A,
-
-+345 W Main Bill to: Hailey Clark
-
-+Los Angeles, CA 14151 Address: 123 Avenue A,
-
- P: 915-555-0195 Burbank, CA 56789
-
--F: 915-555-0105
-
--Phone: 805-555-0185
-
-+F: 915-555-0105 Phone: 805-555-0185
-
- elegantembrace@example.com Fax: NA
-
- Item # Description Qty Unit price Discount Price
-
- A875 Peonies 35 $1.05 $36.75
-
+ Los Angeles, CA 14151 Address: 123 Avenue A,
 ```
 </details>
 
@@ -1018,11 +1023,11 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: Small business cash flow forecast1 | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/Small business cash flow forecast1.xlsx
-- **Text Similarity:** 0.9646
-- **Visual Average:** 0.7151
-- **Overall Score:** 0.7719
+- **Text Similarity:** 0.9686
+- **Visual Average:** 0.7277
+- **Overall Score:** 0.7785
 - **Pages:** MiniPdf=3, Reference=5
-- **File Size:** MiniPdf=449838 bytes, Reference=93247 bytes
+- **File Size:** MiniPdf=449310 bytes, Reference=93247 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1034,7 +1039,7 @@ Text content: ✅ Identical
 
  Cash flow forecast
 
--Starting cash on hand $ 10,000.00 Starting date 46113 Cash minimum balance alert$ 2,000.00
+-Starting cash on hand $ 10,000.00 Starting date 46113 Cash minimum balance alert $ 2,000.00
 
 -46113 46143 46174 46204 46235 46266 46296 46327 46357 46388 46419 46447
 
@@ -1047,7 +1052,6 @@ Text content: ✅ Identical
  Cash on hand (beginning of month) $ 10,000.00 $ 8,050.00 $ 9,350.00 $ 890.00 $ 2,190.00 $ 13,590.00 $ 13,790.00 $ 15,290.00 $ 16,410.00 $ 14,360.00 $ 16,560.00 $ 18,780.00
 
  Cash receipts
-
 ```
 </details>
 
@@ -1059,7 +1063,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.7815
 - **Overall Score:** 0.8092
 - **Pages:** MiniPdf=4, Reference=8
-- **File Size:** MiniPdf=521712 bytes, Reference=180076 bytes
+- **File Size:** MiniPdf=521753 bytes, Reference=180076 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1149,7 +1153,6 @@ Text content: ✅ Identical
  ☐
 
  group rates.)
-
 ```
 </details>
 
@@ -1158,10 +1161,10 @@ Text content: ✅ Identical
 - **Case Metadata:** format: xlsx | case: Weekly schedule planner1 | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/Weekly schedule planner1.xlsx
 - **Text Similarity:** 0.9062
-- **Visual Average:** 0.7055
-- **Overall Score:** 0.7447
+- **Visual Average:** 0.7361
+- **Overall Score:** 0.7569
 - **Pages:** MiniPdf=2, Reference=1
-- **File Size:** MiniPdf=212570 bytes, Reference=148591 bytes
+- **File Size:** MiniPdf=212568 bytes, Reference=148591 bytes
 
 <details><summary>Text Diff</summary>
 
@@ -1200,7 +1203,6 @@ Text content: ✅ Identical
  ✖ Read ✔ Read ✔ Read Read Read Read Read
 
  ✔ Stretch ✔ Stretch ✖ Stretch Stretch Stretch Stretch Stretch
-
 ```
 </details>
 
@@ -1236,30 +1238,13 @@ Text content: ✅ Identical
 
 - **Case Metadata:** format: xlsx | case: XlsxIssue77_MergedCellAlignment | scope: rust-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/XlsxIssue77_MergedCellAlignment.xlsx
-- **Text Similarity:** 0.9947
-- **Visual Average:** 0.8031
-- **Overall Score:** 0.9191
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9382
+- **Overall Score:** 0.9753
 - **Pages:** MiniPdf=2, Reference=2
-- **File Size:** MiniPdf=390095 bytes, Reference=172385 bytes
+- **File Size:** MiniPdf=450282 bytes, Reference=172385 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/XlsxIssue77_MergedCellAlignment.pdf
-+++ reference/XlsxIssue77_MergedCellAlignment.pdf
-@@ -31,5 +31,4 @@
- Tripple Wide Cell Tripple Wide Cell Tripple Wide Cell
-
- Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple
-
- Tripple Wide and High Cell Tripple Wide and High Cell Tripple Wide and High Cell
-
--Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple
-
--Times New Roman Font
-+Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple
-```
-</details>
+Text content: ✅ Identical
 
 ### XlsxIssue77_Template1
 
@@ -1269,7 +1254,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8456
 - **Overall Score:** 0.9382
 - **Pages:** MiniPdf=6, Reference=6
-- **File Size:** MiniPdf=528706 bytes, Reference=64464 bytes
+- **File Size:** MiniPdf=528694 bytes, Reference=64464 bytes
 
 Text content: ✅ Identical
 
@@ -1281,7 +1266,7 @@ Text content: ✅ Identical
 - **Visual Average:** 0.8395
 - **Overall Score:** 0.9358
 - **Pages:** MiniPdf=6, Reference=6
-- **File Size:** MiniPdf=531413 bytes, Reference=64466 bytes
+- **File Size:** MiniPdf=531407 bytes, Reference=64466 bytes
 
 Text content: ✅ Identical
 
@@ -1455,7 +1440,6 @@ Text content: ✅ Identical
 
 -Kameron Psimone.hy1-510-89134203 Kat StiedemanIpsa ut amPerspiciati Directory Assistance Operator
 
-
 ... (6076 more characters)
 
 ```
@@ -1557,13 +1541,11 @@ Text content: ✅ Identical
 
 ### ⚠ Low-Score Test Cases (below 0.8)
 
-1. **payroll-calculator_f** (score: 0.691)
+1. **payroll-calculator_f** (score: 0.61)
+1. **Business plan checklist with SWOT analysis1** (score: 0.699)
 1. **XlsxIssue82_SampleTestData5mb** (score: 0.7018)
-1. **Weekly schedule planner1** (score: 0.7447)
-1. **Expense report basic1** (score: 0.7692)
-1. **Small business cash flow forecast1** (score: 0.7719)
+1. **Weekly schedule planner1** (score: 0.7569)
+1. **Small business cash flow forecast1** (score: 0.7785)
 1. **XlsxIssue82_5mb** (score: 0.7809)
-1. **Business expenses budget2** (score: 0.7838)
-1. **PO_anonymized** (score: 0.7898)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
