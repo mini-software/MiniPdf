@@ -5,8 +5,8 @@
 
 # MiniPdf for .NET
 
-The stable MiniPdf implementation for converting Office files to PDF, extracting
-structured content, and merging PDFs from .NET applications or the command line.
+The stable MiniPdf implementation for converting Office files to PDF and merging
+PDFs from .NET applications or the command line.
 It runs without Microsoft Office, LibreOffice, Adobe Acrobat, or COM automation.
 
 [Project home](https://github.com/mini-software/MiniPdf) ·
@@ -18,7 +18,6 @@ It runs without Microsoft Office, LibreOffice, Adobe Acrobat, or COM automation.
 - Excel to PDF conversion (`.xlsx`)
 - Word to PDF conversion (`.docx`)
 - PowerPoint to PDF conversion (`.pptx`)
-- LLM-friendly Markdown, JSON, and semantic model extraction from `.xlsx`, `.docx`, and `.pptx`
 - PDF merge with top-level bookmarks
 - Minimal dependencies — lightweight; relies almost entirely on built-in .NET APIs
 - Serverless-ready — no COM, no Office installation, no Adobe Acrobat — runs anywhere .NET runs
@@ -92,23 +91,6 @@ MiniPdf.RegisterFont("NotoSansSC", File.ReadAllBytes("Fonts/NotoSansSC-Regular.t
 MiniPdf.ConvertToPdf("report.docx", "report.pdf");
 ```
 
-## LLM-Friendly Content Extraction
-
-```csharp
-MiniPdfDocumentContent content = MiniPdf.ExtractContent("report.docx");
-string markdown = MiniPdf.ConvertToMarkdown("report.docx");
-string json = MiniPdf.ConvertToJson("report.docx");
-
-MiniPdf.ConvertToJson("data.xlsx", "data.json", new MiniPdfContentOptions
-{
-  Sheets = new[] { "Summary" },
-  MaxRows = 200,
-  MaxColumns = 20,
-});
-```
-
-The deterministic JSON schema starts at version `1`. Extraction preserves source order, headings, paragraphs, lists, tables, worksheet cell addresses, hyperlinks, DOCX footnotes, and image/chart metadata. It does not perform OCR or export image sidecar files. Comments, tracked changes, threaded comments, and PowerPoint speaker notes are not yet extracted.
-
 ## PDF Merge Usage
 
 ### Merge Files
@@ -175,7 +157,6 @@ Install the .NET global tool:
 ```bash
 dotnet tool install --global MiniPdf.Cli
 minipdf report.docx -o report.pdf
-minipdf extract report.docx
 ```
 
 Standalone Native AOT binaries for Windows, Linux, and macOS are available on
