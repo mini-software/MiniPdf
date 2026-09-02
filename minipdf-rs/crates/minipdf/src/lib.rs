@@ -158,13 +158,6 @@ fn read_zip_text<R: Read + Seek>(
     Ok(Some(text))
 }
 
-fn text_width(text: &str, font_size: f32) -> f32 {
-    text.chars()
-        .map(|ch| if ch.is_ascii() { 0.5 } else { 0.9 })
-        .sum::<f32>()
-        * font_size
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

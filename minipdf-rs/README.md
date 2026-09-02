@@ -62,7 +62,9 @@ minipdf::convert_to_pdf_with_options("report.docx", "report.pdf", &custom)?;
 
 Custom dimensions use PDF points, where 72 points equal one inch. XLSX
 conversion uses an explicit API override first, then the worksheet `pageSetup`
-paper size and orientation. A worksheet without a recognized page setup uses A4.
+paper size and orientation. DOCX conversion uses the section page size and
+margins unless the API overrides the page size. A document without recognized
+page geometry uses A4.
 
 For a host with limited system fonts, register font bytes before conversion:
 
@@ -119,13 +121,13 @@ Custom width and height must be provided together.
 | Markdown / JSON extraction | Not supported |
 | PDF output | PDF 1.4 |
 | Fonts | Built-in Helvetica and registered/system fallback fonts |
-| Page size | XLSX page setup, A4/Letter presets, or custom point dimensions |
+| Page size | XLSX/DOCX page setup, A4/Letter presets, or custom point dimensions |
 | Interfaces | Rust crate and native CLI |
 
 The converter preserves sparse worksheet row positions, paginates wide sheets
 horizontally, and supports basic spreadsheet styling, drawing images, document
-text, and Unicode fallback fonts. Complex Office layout can still differ from
-the source application.
+text, explicit DOCX page breaks, basic DOCX tables, and Unicode fallback fonts.
+Complex Office layout can still differ from the source application.
 
 ## Development
 
