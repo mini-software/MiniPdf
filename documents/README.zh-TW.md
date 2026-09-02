@@ -81,7 +81,13 @@ MiniPdf 專注於實用文件轉換，不追求完整複製 Microsoft Office 版
 
 ## 貢獻你的算力
 
-在 GitHub Copilot、Claude Code、Cursor、Codex，或任何可編輯檔案並執行 PowerShell 的程式設計 Agent 中開啟乾淨的 fork 或 clone。通用入口為：
+在 GitHub Copilot、Claude Code、Cursor、Codex，或任何可編輯檔案並執行 PowerShell 的程式設計 Agent 中開啟乾淨的 fork 或 clone。最簡單的貢獻方式是將以下指令貼到 Agent 聊天中：
+
+```text
+Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start to finish. Diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+```
+
+如要改善 Rust 實作，請將 `dotnet` 替換為 `rust`。通用 PowerShell 入口為：
 
 ```powershell
 .\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet

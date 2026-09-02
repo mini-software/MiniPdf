@@ -89,7 +89,15 @@ demo or benchmark reports to evaluate representative files.
 ## Contribute compute time
 
 Open a clean fork or clone in GitHub Copilot, Claude Code, Cursor, Codex, or any
-coding agent that can edit files and run PowerShell. The universal entry point is:
+coding agent that can edit files and run PowerShell. The easiest way to
+contribute is to paste this prompt into the agent chat:
+
+```text
+Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start to finish. Diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+```
+
+Replace `dotnet` with `rust` to work on the Rust implementation. The universal
+PowerShell entry points are:
 
 ```powershell
 .\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
