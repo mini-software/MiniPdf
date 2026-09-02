@@ -8,7 +8,7 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Academic Achievement Summary Table.xlsx",
     "suite": "issue",
-    "minipdf_size": 245827,
+    "minipdf_size": 246090,
     "reference_size": 151877,
     "pdf_valid": true,
     "minipdf_pages": 2,
@@ -19,9 +19,9 @@
     "word_text_similarity": 0.6316,
     "text_diff": "--- minipdf/Academic Achievement Summary Table.pdf\n+++ reference/Academic Achievement Summary Table.pdf\n@@ -1,11 +1,11 @@\n-附件 3\n\n+附件3\n\n 学术业绩汇总表\n\n-报考岗位 ： 报考岗位代码 ： 考生姓名 ：\n\n-博士论文题目 ： 博士论文研究方向 ：\n\n+报考岗位： 报考岗位代码： 考生姓名：\n\n+博士论文题目： 博士论文研究方向：\n\n 公开发表的主要论文情况\n\n 角色 转载刊物、转载字数及 是否为代表作\n\n 序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n-（ 排名 ） 转载时间等 （ 指定 1 篇 ）\n\n+（排名） 转载时间等 （指定1篇）\n\n 1\n\n 2\n\n 3\n",
     "visual_scores": [
-      0.9507
+      0.9371
     ],
-    "visual_avg": 0.9507,
+    "visual_avg": 0.9371,
     "diff_images": [
       {
         "page": 1,
@@ -36,21 +36,21 @@
           ],
           "difference_bbox_px": [
             45,
-            38,
+            34,
             1725,
             1143
           ],
-          "changed_pixels": 190940,
-          "changed_fraction": 0.087719,
-          "mean_abs_rgb": 13.858,
-          "rmse_rgb": 52.4995,
+          "changed_pixels": 188622,
+          "changed_fraction": 0.086654,
+          "mean_abs_rgb": 13.843,
+          "rmse_rgb": 52.5804,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "Academic Achievement Summary Table_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9652
+    "overall_score": 0.9598
   },
   {
     "name": "AcademicAchievement_temp",
@@ -61,7 +61,7 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/AcademicAchievement_temp.xlsx",
     "suite": "issue",
-    "minipdf_size": 245827,
+    "minipdf_size": 246090,
     "reference_size": 151877,
     "pdf_valid": true,
     "minipdf_pages": 2,
@@ -72,9 +72,9 @@
     "word_text_similarity": 0.6316,
     "text_diff": "--- minipdf/AcademicAchievement_temp.pdf\n+++ reference/AcademicAchievement_temp.pdf\n@@ -1,11 +1,11 @@\n-附件 3\n\n+附件3\n\n 学术业绩汇总表\n\n-报考岗位 ： 报考岗位代码 ： 考生姓名 ：\n\n-博士论文题目 ： 博士论文研究方向 ：\n\n+报考岗位： 报考岗位代码： 考生姓名：\n\n+博士论文题目： 博士论文研究方向：\n\n 公开发表的主要论文情况\n\n 角色 转载刊物、转载字数及 是否为代表作\n\n 序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n-（ 排名 ） 转载时间等 （ 指定 1 篇 ）\n\n+（排名） 转载时间等 （指定1篇）\n\n 1\n\n 2\n\n 3\n",
     "visual_scores": [
-      0.9507
+      0.9371
     ],
-    "visual_avg": 0.9507,
+    "visual_avg": 0.9371,
     "diff_images": [
       {
         "page": 1,
@@ -89,21 +89,21 @@
           ],
           "difference_bbox_px": [
             45,
-            38,
+            34,
             1725,
             1143
           ],
-          "changed_pixels": 190940,
-          "changed_fraction": 0.087719,
-          "mean_abs_rgb": 13.858,
-          "rmse_rgb": 52.4995,
+          "changed_pixels": 188622,
+          "changed_fraction": 0.086654,
+          "mean_abs_rgb": 13.843,
+          "rmse_rgb": 52.5804,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "AcademicAchievement_temp_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9652
+    "overall_score": 0.9598
   },
   {
     "name": "Business expense budget1",
@@ -167,7 +167,7 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Business expenses budget2.xlsx",
     "suite": "issue",
-    "minipdf_size": 1042577,
+    "minipdf_size": 1042458,
     "reference_size": 376973,
     "pdf_valid": true,
     "minipdf_pages": 8,
@@ -178,9 +178,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "(identical)",
     "visual_scores": [
-      0.7095
+      0.7611
     ],
-    "visual_avg": 0.7095,
+    "visual_avg": 0.7611,
     "diff_images": [
       {
         "page": 1,
@@ -199,17 +199,17 @@
             1509,
             1140
           ],
-          "changed_pixels": 664092,
-          "changed_fraction": 0.324319,
-          "mean_abs_rgb": 16.2401,
-          "rmse_rgb": 40.0437,
+          "changed_pixels": 660460,
+          "changed_fraction": 0.322545,
+          "mean_abs_rgb": 16.0908,
+          "rmse_rgb": 40.1071,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "Business expenses budget2_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.7838
+    "overall_score": 0.8044
   },
   {
     "name": "Business plan checklist with SWOT analysis1",
@@ -220,20 +220,20 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Business plan checklist with SWOT analysis1.xlsx",
     "suite": "issue",
-    "minipdf_size": 209139,
+    "minipdf_size": 212386,
     "reference_size": 64252,
     "pdf_valid": true,
-    "minipdf_pages": 1,
+    "minipdf_pages": 2,
     "reference_pages": 1,
     "compared_pages": 1,
-    "text_similarity": 0.9237,
-    "flat_text_similarity": 0.573,
-    "word_text_similarity": 0.9237,
-    "text_diff": "--- minipdf/Business plan checklist with SWOT analysis1.pdf\n+++ reference/Business plan checklist with SWOT analysis1.pdf\n@@ -1,7 +1,7 @@\n Northwind Traders\n\n Business planning checklist\n\n-Using the strength, weakness, opportunity, and threat (SWOT) analysis framework, develop a checklist of the key\n\n-activities that need to be performed when preparing a formal business plan in the table, below.\n\n+Using the strength, weakness, opportunity, and threat (SWOT) analysis framework, develop a checklist of the key activities\n\n+that need to be performed when preparing a formal business plan in the table, below.\n\n Activity Owner Completion date\n\n Strengths: Define the company's current mission\n\n Luca Richter 1/9/2023\n\n@@ -9,33 +9,29 @@\n Strengths: Identify market segments in which the\n\n company will participate by conducting primary and Dylan Williams 1/9/2023\n\n secondary market research.\n\n-Strengths: Identify the company's value proposition\n\n-and how it will differentiate itself within the Kristin Orav 1/16/2023\n\n-marketplace.\n\n-Weaknesses: Identify any barriers to market entry\n\n-(for example, capital requirements, technical\n\n+Strengths: Identify the company's value proposition and\n\n+Kristin Orav 1/16/2023\n\n+how it will differentiate itself within the marketplace.\n\n+Weaknesses: Identify any barriers to market entry (for\n\n+example, capital requirements, technical barriers, patents,\n\n Flora Berggren 1/6/2023\n\n-barriers, patents, and process barriers) that the\n\n-company needs to overcome.\n\n+and process barriers) that the company needs to\n\n+overcome.\n\n Weaknesses: Identify any risks inherent to the\n\n-organization that need to be mitigated so that the Flora Berggren 1/6/2023\n\n-company can realize the business plan.\n\n-Opportunities: Identify areas where the current\n\n-market is underserved that provide an opportunity Kristin Orav 1/6/2023\n\n-for the company.\n\n-Opportunities: Identify any key processes,\n\n-intellectual capital, or other resources that the\n\n-Ian Hansson 1/9/2023\n\n-company can use to its advantage in the\n\n-marketplace.\n\n-Threats: Identify primary competitors, and then\n\n-analyze competitor performance by using all\n\n-Gaurav Cheema 1/9/2023\n\n-available data and additional data that can be\n\n-verified.\n\n+organization that need to be mitigated so that the company Flora Berggren 1/6/2023\n\n+can realize the business plan.\n\n+Opportunities: Identify areas where the current market is\n\n+Kristin Orav 1/6/2023\n\n+underserved that provide an opportunity for the company.\n\n+Opportunities: Identify any key processes, intellectual\n\n+capital, or other resources that the company can use to its Ian Hansson 1/9/2023\n\n+advantage in the marketplace.\n\n+Threats: Identify primary competitors, and then analyze\n\n+competitor performance by using all available data and Gaurav Cheema 1/9/2023\n\n+additional data that can be verified.\n\n Threats: Identify secondary and potential future\n\n Chela Arapelli 1/16/2023\n\n competitors that might affect the business plan.\n\n-Threats: Develop strategies for mitigating primary\n\n+Threats: Develop strategies for mitigating primary and\n\n Gaurav Cheema 1/16/2023\n\n-and secondary competitive threats.\n+secondary competitive threats.",
+    "text_similarity": 0.902,
+    "flat_text_similarity": 0.5439,
+    "word_text_similarity": 0.902,
+    "text_diff": "--- minipdf/Business plan checklist with SWOT analysis1.pdf\n+++ reference/Business plan checklist with SWOT analysis1.pdf\n@@ -1,7 +1,7 @@\n Northwind Traders\n\n Business planning checklist\n\n-Using the strength, weakness, opportunity, and threat (SWOT) analysis framework, develop a checklist of the key\n\n-activities that need to be performed when preparing a formal business plan in the table, below.\n\n+Using the strength, weakness, opportunity, and threat (SWOT) analysis framework, develop a checklist of the key activities\n\n+that need to be performed when preparing a formal business plan in the table, below.\n\n Activity Owner Completion date\n\n Strengths: Define the company's current mission\n\n Luca Richter 1/9/2023\n\n@@ -9,26 +9,29 @@\n Strengths: Identify market segments in which the\n\n company will participate by conducting primary and Dylan Williams 1/9/2023\n\n secondary market research.\n\n-Strengths: Identify the company's value proposition\n\n-and how it will differentiate itself within the Kristin Orav 1/16/2023\n\n-marketplace.\n\n-Weaknesses: Identify any barriers to market entry\n\n-(for example, capital requirements, technical\n\n+Strengths: Identify the company's value proposition and\n\n+Kristin Orav 1/16/2023\n\n+how it will differentiate itself within the marketplace.\n\n+Weaknesses: Identify any barriers to market entry (for\n\n+example, capital requirements, technical barriers, patents,\n\n Flora Berggren 1/6/2023\n\n-barriers, patents, and process barriers) that the\n\n-company needs to overcome.\n\n+and process barriers) that the company needs to\n\n+overcome.\n\n Weaknesses: Identify any risks inherent to the\n\n-organization that need to be mitigated so that the Flora Berggren 1/6/2023\n\n-company can realize the business plan.\n\n-Opportunities: Identify areas where the current\n\n-market is underserved that provide an opportunity Kristin Orav 1/6/2023\n\n-for the company.\n\n-Opportunities: Identify any key processes,\n\n-intellectual capital, or other resources that the Ian Hansson 1/9/2023\n\n-company can use to its advantage in the marketplace.\n\n-Threats: Identify primary competitors, and then\n\n-analyze competitor performance by using all available Gaurav Cheema 1/9/2023\n\n-data and additional data that can be verified.\n\n+organization that need to be mitigated so that the company Flora Berggren 1/6/2023\n\n+can realize the business plan.\n\n+Opportunities: Identify areas where the current market is\n\n+Kristin Orav 1/6/2023\n\n+underserved that provide an opportunity for the company.\n\n+Opportunities: Identify any key processes, intellectual\n\n+capital, or other resources that the company can use to its Ian Hansson 1/9/2023\n\n+advantage in the marketplace.\n\n+Threats: Identify primary competitors, and then analyze\n\n+competitor performance by using all available data and Gaurav Cheema 1/9/2023\n\n+additional data that can be verified.\n\n Threats: Identify secondary and potential future\n\n Chela Arapelli 1/16/2023\n\n-competitors that might affect the business plan.\n+competitors that might affect the business plan.\n\n+Threats: Develop strategies for mitigating primary and\n\n+Gaurav Cheema 1/16/2023\n\n+secondary competitive threats.",
     "visual_scores": [
-      0.6033
+      0.5955
     ],
-    "visual_avg": 0.6033,
+    "visual_avg": 0.5955,
     "diff_images": [
       {
         "page": 1,
@@ -244,25 +244,25 @@
         "heatmap_metrics": {
           "size_px": [
             1241,
-            1754
+            1650
           ],
           "difference_bbox_px": [
-            90,
-            62,
-            1179,
-            1547
+            88,
+            58,
+            1182,
+            1477
           ],
-          "changed_pixels": 759959,
-          "changed_fraction": 0.349131,
-          "mean_abs_rgb": 21.3479,
-          "rmse_rgb": 55.8591,
+          "changed_pixels": 814131,
+          "changed_fraction": 0.397593,
+          "mean_abs_rgb": 27.06,
+          "rmse_rgb": 62.7658,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "Business plan checklist with SWOT analysis1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.8108
+    "overall_score": 0.699
   },
   {
     "name": "Event budget1",
@@ -273,10 +273,10 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Event budget1.xlsx",
     "suite": "issue",
-    "minipdf_size": 318242,
+    "minipdf_size": 317665,
     "reference_size": 121223,
     "pdf_valid": true,
-    "minipdf_pages": 6,
+    "minipdf_pages": 4,
     "reference_pages": 5,
     "compared_pages": 1,
     "text_similarity": 1.0,
@@ -284,9 +284,9 @@
     "word_text_similarity": 1.0,
     "text_diff": "--- minipdf/Event budget1.pdf\n+++ reference/Event budget1.pdf\n@@ -1,10 +1,11 @@\n ABOUT THIS TEMPLATE\n\n-Use this event budget workbook to track expenses incurred on and income earned from an event.\n\n+Use this event budget workbook to track expenses incurred on and income earned from an\n\n+event.\n\n Enter details in tables in expenses worksheet and income worksheet.\n\n Total expenses and total income are auto-calculated.\n\n Profit & loss summary and chart are auto-updated in profit-loss summary worksheet.\n\n Note:\n\n-Additional instructions have been provided in column A in each worksheet. This text has been intentionally\n\n-hidden. To remove text, select column A, then select DELETE.\n\n-To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and then select\n\n-ALTERNATIVE TEXT\n+Additional instructions have been provided in column A in each worksheet. This text has been\n\n+intentionally hidden. To remove text, select column A, then select DELETE.\n\n+To learn more about tables, press SHIFT and then F10 within a table, select the TABLE option, and\n\n+then select ALTERNATIVE TEXT",
     "visual_scores": [
-      0.9592
+      0.9684
     ],
-    "visual_avg": 0.9592,
+    "visual_avg": 0.9684,
     "diff_images": [
       {
         "page": 1,
@@ -307,15 +307,15 @@
           ],
           "changed_pixels": 91980,
           "changed_fraction": 0.042256,
-          "mean_abs_rgb": 5.9532,
-          "rmse_rgb": 34.5802,
+          "mean_abs_rgb": 5.927,
+          "rmse_rgb": 34.5855,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "Event budget1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.8837
+    "overall_score": 0.8874
   },
   {
     "name": "Expense report basic1",
@@ -326,20 +326,20 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Expense report basic1.xlsx",
     "suite": "issue",
-    "minipdf_size": 157570,
+    "minipdf_size": 161159,
     "reference_size": 47896,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
     "compared_pages": 1,
-    "text_similarity": 1.0,
-    "flat_text_similarity": 1.0,
-    "word_text_similarity": 1.0,
-    "text_diff": "(identical)",
+    "text_similarity": 0.9889,
+    "flat_text_similarity": 0.9863,
+    "word_text_similarity": 0.9889,
+    "text_diff": "--- minipdf/Expense report basic1.pdf\n+++ reference/Expense report basic1.pdf\n@@ -17,6 +17,7 @@\n $0.00\n\n Total $111.00 $250.00 $60.00 $50.00 $0.00 $300.00 $25.00 $796.00\n\n Subtotal $796.00\n\n-APPROVED Advances $0.00\n\n+Advances $0.00\n\n+APPROVED\n\n NOTES\n\n Total $796.00",
     "visual_scores": [
-      0.4231
+      0.8811
     ],
-    "visual_avg": 0.4231,
+    "visual_avg": 0.8811,
     "diff_images": [
       {
         "page": 1,
@@ -349,26 +349,26 @@
         "heatmap_img": "Expense report basic1_p1_heatmap.png",
         "heatmap_metrics": {
           "size_px": [
-            1754,
+            1650,
             1241
           ],
           "difference_bbox_px": [
-            63,
-            62,
-            1691,
-            983
+            60,
+            61,
+            1590,
+            853
           ],
-          "changed_pixels": 667090,
-          "changed_fraction": 0.306467,
-          "mean_abs_rgb": 9.0455,
-          "rmse_rgb": 26.7801,
+          "changed_pixels": 283123,
+          "changed_fraction": 0.138267,
+          "mean_abs_rgb": 6.1984,
+          "rmse_rgb": 24.737,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "Expense report basic1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.7692
+    "overall_score": 0.948
   },
   {
     "name": "Grocery list1",
@@ -379,20 +379,20 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Grocery list1.xlsx",
     "suite": "issue",
-    "minipdf_size": 168827,
+    "minipdf_size": 168369,
     "reference_size": 71396,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
     "compared_pages": 1,
-    "text_similarity": 0.9915,
-    "flat_text_similarity": 0.9575,
-    "word_text_similarity": 0.9915,
-    "text_diff": "--- minipdf/Grocery list1.pdf\n+++ reference/Grocery list1.pdf\n@@ -1,6 +1,7 @@\n ORCHARD GROCERY HOME DELIVERY LOCAL MARKET OTHER GRAND TOTAL\n\n GROCERY LIST\n\n-Customize this list. Replace the entries above with your own to track your $11.95 $6.12 $31.85 $216.60 $3.99 $270.51\n\n+Customize this list. Replace the entries above with your own to track your\n\n+$11.95 $6.12 $31.85 $216.60 $3.99 $270.51\n\n most frequently used categories.\n\n DONE? ITEM STORE CATEGORY QTY UNIT UNIT PRICE TOTAL NOTE\n\n Yes Peaches Azure River Farm ORCHARD 2 lbs $2.99 $5.98\n\n@@ -19,9 +20,7 @@\n Yes Eggs Local Farmer HOME DELIVERY 2 doz $3.50 $7.00\n\n Yes Cottage cheese Local Farmer HOME DELIVERY 1 16 oz $3.89 $3.89\n\n Yes Sour cream Local Farmer HOME DELIVERY 1 8 oz $2.99 $2.99\n\n-Greek with\n\n-Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99\n\n-honey\n\n+Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99 Greek with honey\n\n Bacon wrapped\n\n Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90\n\n filets\n",
+    "text_similarity": 0.9506,
+    "flat_text_similarity": 0.9506,
+    "word_text_similarity": 0.946,
+    "text_diff": "--- minipdf/Grocery list1.pdf\n+++ reference/Grocery list1.pdf\n@@ -1,6 +1,8 @@\n-GROCERY LIST ORCHARD GROCERY HOME DELIVERY LOCAL MARKET OTHER GRAND TOTAL\n\n+ORCHARD GROCERY HOME DELIVERY LOCAL MARKET OTHER GRAND TOTAL\n\n+GROCERY LIST\n\n Customize this list. Replace the entries above with your own to track your\n\n-most frequently used categories. $11.95 $6.12 $31.85 $216.60 $3.99 $270.51\n\n+$11.95 $6.12 $31.85 $216.60 $3.99 $270.51\n\n+most frequently used categories.\n\n DONE? ITEM STORE CATEGORY QTY UNIT UNIT PRICE TOTAL NOTE\n\n Yes Peaches Azure River Farm ORCHARD 2 lbs $2.99 $5.98\n\n Yes Apples Azure River Farm ORCHARD 3 lbs $1.99 $5.97 Have coupon\n\n@@ -12,13 +14,15 @@\n Cucumber Market LOCAL MARKET 1 lbs $2.29 $2.29\n\n Mushrooms Wide World Importers GROCERY 0.5 lbs $2.25 $1.13\n\n Yes Milk Local Farmer HOME DELIVERY 2 gal $3.99 $7.98\n\n-y\n\n-Yes Cheese Local Farmer HOME DELIVERY 1 lbs $9.99 $9.99 cheeses\n\n+Variety of block\n\n+Yes Cheese Local Farmer HOME DELIVERY 1 lbs $9.99 $9.99\n\n+cheeses\n\n Yes Eggs Local Farmer HOME DELIVERY 2 doz $3.50 $7.00\n\n Yes Cottage cheese Local Farmer HOME DELIVERY 1 16 oz $3.89 $3.89\n\n Yes Sour cream Local Farmer HOME DELIVERY 1 8 oz $2.99 $2.99\n\n-Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99 honey\n\n-pp\n\n-Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90 filets\n\n+Yogurt Wide World Importers GROCERY 1 16 oz $4.99 $4.99 Greek with honey\n\n+Bacon wrapped\n\n+Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90\n\n+filets\n\n Wild Salmon Fish Market LOCAL MARKET 6 lbs $8.99 $53.94\n\n Alaskan King Crab Legs Fish Market LOCAL MARKET 5 lbs $10.99 $54.95",
     "visual_scores": [
-      0.9307
+      0.7304
     ],
-    "visual_avg": 0.9307,
+    "visual_avg": 0.7304,
     "diff_images": [
       {
         "page": 1,
@@ -403,25 +403,25 @@
         "heatmap_metrics": {
           "size_px": [
             1241,
-            1754
+            1650
           ],
           "difference_bbox_px": [
-            46,
-            77,
-            1194,
-            930
+            45,
+            72,
+            1197,
+            833
           ],
-          "changed_pixels": 235521,
-          "changed_fraction": 0.1082,
-          "mean_abs_rgb": 6.5427,
-          "rmse_rgb": 27.8886,
+          "changed_pixels": 602000,
+          "changed_fraction": 0.293996,
+          "mean_abs_rgb": 13.8314,
+          "rmse_rgb": 37.5938,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "Grocery list1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9689
+    "overall_score": 0.8724
   },
   {
     "name": "payroll-calculator_f",
@@ -432,20 +432,20 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/payroll-calculator_f.xlsx",
     "suite": "issue",
-    "minipdf_size": 4722963,
+    "minipdf_size": 4723494,
     "reference_size": 606513,
     "pdf_valid": true,
-    "minipdf_pages": 26,
+    "minipdf_pages": 28,
     "reference_pages": 29,
     "compared_pages": 1,
-    "text_similarity": 0.8857,
-    "flat_text_similarity": 0.871,
-    "word_text_similarity": 0.8857,
-    "text_diff": "--- minipdf/payroll-calculator_f.pdf\n+++ reference/payroll-calculator_f.pdf\n@@ -1,14 +1,15 @@\n Employee Register\n\n-Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)\n\n-Step 2 Step 3\n\n+Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing St\n\n+Step 2\n\n Additional Amount to\n\n Annual Regular Overtime Exempt\n\n-M/ Pay Federal Withhold\n\n-ID Employee's Name Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status Filing Status\n\n-F Frequency Allowance (With every paycheck) Dependents\n\n+Pay Federal Withhold\n\n+ID Employee's Name M/F Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status Filing Status\n\n+Frequency Allowance (With every paycheck)\n\n ($) Rate ($) Rate ($) Overtime Box in (c)\n\n-($) Under Age 17\n\n-1 Adam Jones M 41320 Senior Accountant 42000 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked\n\n-2 Nichola Brown F 40814 CR Manager 54481 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked\n\n-3 Benny Erwin M 40674 Applications PM 48785 23.45 35.18 No Monthly W-4 (before 2020) Married 4\n\n-When adding more rows, insert new rows above this one\n+($)\n\n+1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked\n\n+2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked\n\n+3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4\n\n+When adding more rows, insert new rows above this one\n\n+Page 1 of 29",
+    "text_similarity": 0.8487,
+    "flat_text_similarity": 0.8301,
+    "word_text_similarity": 0.8487,
+    "text_diff": "--- minipdf/payroll-calculator_f.pdf\n+++ reference/payroll-calculator_f.pdf\n@@ -1,13 +1,15 @@\n Employee Register\n\n-Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing Status (W-4 from 2020 or later)\n\n-Step 2 Step 3\n\n+Information contained in this employee register is highly confidential Filing Status (W-4 before 2020) Filing St\n\n+Step 2\n\n Additional Amount to\n\n Annual Regular Overtime Exempt\n\n Pay Federal Withhold\n\n ID Employee's Name M/F Hire Date Occupation Salary Hourly Hourly from W-4 Form Filing Status Filing Status\n\n-Frequency Allowance (With every paycheck) Dependents Other\n\n+Frequency Allowance (With every paycheck)\n\n ($) Rate ($) Rate ($) Overtime Box in (c)\n\n-($) Under Age 17 Dependents\n\n-1 Adam Jones M 41320 Senior Accountant 42000 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked\n\n-2 Nichola Brown F 40814 CR Manager 54481 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked\n\n-3 Benny Erwin M 40674 Applications PM 48785 23.45 35.18 No Monthly W-4 (before 2020) Married 4\n+($)\n\n+1 Adam Jones M 15-Feb-13 Senior Accountant 42,000.00 20.19 30.29 Yes Monthly W-4 (2020 or later) Exempt 2 50 Single Not Checked\n\n+2 Nichola Brown F 28-Sep-11 CR Manager 54,481.00 26.19 39.29 Yes Monthly W-4 (2020 or later) Married 4 Single Not Checked\n\n+3 Benny Erwin M 11-May-11 Applications PM 48,785.00 23.45 35.18 No Monthly W-4 (before 2020) Married 4\n\n+When adding more rows, insert new rows above this one\n\n+Page 1 of 29",
     "visual_scores": [
-      0.5917
+      0.4264
     ],
-    "visual_avg": 0.5917,
+    "visual_avg": 0.4264,
     "diff_images": [
       {
         "page": 1,
@@ -455,26 +455,26 @@
         "heatmap_img": "payroll-calculator_f_p1_heatmap.png",
         "heatmap_metrics": {
           "size_px": [
-            1650,
+            1754,
             1241
           ],
           "difference_bbox_px": [
-            22,
-            28,
-            1599,
+            23,
+            31,
+            1692,
             1160
           ],
-          "changed_pixels": 513066,
-          "changed_fraction": 0.250563,
-          "mean_abs_rgb": 18.5176,
-          "rmse_rgb": 45.9602,
+          "changed_pixels": 808249,
+          "changed_fraction": 0.371316,
+          "mean_abs_rgb": 31.41,
+          "rmse_rgb": 62.0982,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "payroll-calculator_f_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.691
+    "overall_score": 0.61
   },
   {
     "name": "PO_anonymized",
@@ -496,9 +496,9 @@
     "word_text_similarity": 0.9536,
     "text_diff": "--- minipdf/PO_anonymized.pdf\n+++ reference/PO_anonymized.pdf\n@@ -2,14 +2,14 @@\n Client: Global Tech Supplier: Alpha Labs Client PO#: PO-XX328\n\n XXX office: TX Inspector: Sam Davis XXX PO#: 21668732\n\n PM: Avery Wilson Inspection Site: Greenfield county, Metro city PO Quantity: N/A\n\n-Project#: XXBFNO6 Inspection date: 46046 Batch Quantity: 88907PCS\n\n-Date of Manufacture:    1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)\n\n+Project#: XXBFNO6 Inspection date: 24-Jan-2026 Batch Quantity: 88907PCS\n\n+Date of Manufacture: 1/18/2026~1/21/2026 Lot ID: 9928-539898(1st lot)\n\n Item#: XX-ABC-68878-C\n\n Description: Standard Component Assembly with Seal Insert\n\n Sign-off sample: Yes Approved drawings Yes (Drawing#: K1VRJNVG REV: C )\n\n Ship mark Yes Approved ranges Yes Ship to TBA\n\n Inspection Result: Accept\n\n-tion: No\n\n+Re-inspection: No\n\n ( Comment: )\n\n Inspection Result Summary\n\n Check points Sample size Comment Remark\n\n@@ -43,5 +43,7 @@\n Inspection quantity No. of carton\n\n Item# XXX PO No. Batch qty.\n\n Packed Unpacked Packed Unpacked\n\n-XX-ABC-57052-C 71662963 61859 41466 8462 61 16\n\n-Total: 41466 8462 61 16\n+XX-ABC-57052-C 71662963 61,859 41,466 8,462 61 16\n\n+Total: 41,466 8,462 61 16\n\n+Doc#: FIR-003.5\n\n+Effective: 20171109 Page 1 of 9",
     "visual_scores": [
-      0.7494
+      0.82
     ],
-    "visual_avg": 0.7494,
+    "visual_avg": 0.82,
     "diff_images": [
       {
         "page": 1,
@@ -517,17 +517,17 @@
             1181,
             1713
           ],
-          "changed_pixels": 718137,
-          "changed_fraction": 0.329918,
-          "mean_abs_rgb": 29.8132,
-          "rmse_rgb": 71.6858,
+          "changed_pixels": 717920,
+          "changed_fraction": 0.329818,
+          "mean_abs_rgb": 29.6317,
+          "rmse_rgb": 71.7606,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "PO_anonymized_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.7898
+    "overall_score": 0.818
   },
   {
     "name": "Simple invoice1",
@@ -538,20 +538,20 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Simple invoice1.xlsx",
     "suite": "issue",
-    "minipdf_size": 159372,
+    "minipdf_size": 159218,
     "reference_size": 94130,
     "pdf_valid": true,
     "minipdf_pages": 1,
     "reference_pages": 1,
     "compared_pages": 1,
-    "text_similarity": 0.9659,
-    "flat_text_similarity": 0.943,
-    "word_text_similarity": 0.9659,
-    "text_diff": "--- minipdf/Simple invoice1.pdf\n+++ reference/Simple invoice1.pdf\n@@ -1,16 +1,11 @@\n-INVOICE\n\n-Elegant\n\n+Elegant INVOICE\n\n Invoice #: 10654\n\n-Embrace\n\n-date: 8/29/2026\n\n+Embrace Invoice date: 8/29/2026\n\n Job: Wedding florals\n\n-345 W Main Hailey Clark\n\n-Bill to:\n\n-Los Angeles, CA 14151\n\n-Address: 123 Avenue A,\n\n+345 W Main Bill to: Hailey Clark\n\n+Los Angeles, CA 14151 Address: 123 Avenue A,\n\n P: 915-555-0195 Burbank, CA 56789\n\n-F: 915-555-0105\n\n-Phone: 805-555-0185\n\n+F: 915-555-0105 Phone: 805-555-0185\n\n elegantembrace@example.com Fax: NA\n\n Item # Description Qty Unit price Discount Price\n\n A875 Peonies 35 $1.05 $36.75\n",
+    "text_similarity": 0.9806,
+    "flat_text_similarity": 0.9411,
+    "word_text_similarity": 0.9806,
+    "text_diff": "--- minipdf/Simple invoice1.pdf\n+++ reference/Simple invoice1.pdf\n@@ -1,8 +1,6 @@\n-INVOICE\n\n-Elegant\n\n+Elegant INVOICE\n\n Invoice #: 10654\n\n-Embrace\n\n-Invoice date: 9/2/2026\n\n+Embrace Invoice date: 8/29/2026\n\n Job: Wedding florals\n\n 345 W Main Bill to: Hailey Clark\n\n Los Angeles, CA 14151 Address: 123 Avenue A,\n",
     "visual_scores": [
-      0.9707
+      0.8664
     ],
-    "visual_avg": 0.9707,
+    "visual_avg": 0.8664,
     "diff_images": [
       {
         "page": 1,
@@ -562,25 +562,25 @@
         "heatmap_metrics": {
           "size_px": [
             1241,
-            1754
+            1650
           ],
           "difference_bbox_px": [
-            39,
-            114,
-            1201,
-            1446
+            38,
+            107,
+            1203,
+            1361
           ],
-          "changed_pixels": 119065,
-          "changed_fraction": 0.054699,
-          "mean_abs_rgb": 6.6701,
-          "rmse_rgb": 34.0396,
+          "changed_pixels": 355059,
+          "changed_fraction": 0.173398,
+          "mean_abs_rgb": 17.5937,
+          "rmse_rgb": 57.6067,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "Simple invoice1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9746
+    "overall_score": 0.9388
   },
   {
     "name": "Small business cash flow forecast1",
@@ -591,20 +591,20 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Small business cash flow forecast1.xlsx",
     "suite": "issue",
-    "minipdf_size": 449838,
+    "minipdf_size": 449310,
     "reference_size": 93247,
     "pdf_valid": true,
     "minipdf_pages": 3,
     "reference_pages": 5,
     "compared_pages": 1,
-    "text_similarity": 0.9646,
-    "flat_text_similarity": 0.9646,
-    "word_text_similarity": 0.9585,
-    "text_diff": "--- minipdf/Small business cash flow forecast1.pdf\n+++ reference/Small business cash flow forecast1.pdf\n@@ -1,7 +1,7 @@\n ELBIDE REALTY\n\n Cash flow forecast\n\n-Starting cash on hand $ 10,000.00 Starting date 46113 Cash minimum balance alert$ 2,000.00\n\n-46113 46143 46174 46204 46235 46266 46296 46327 46357 46388 46419 46447\n\n+Starting cash on hand $ 10,000.00 Starting date Sep 2026 Cash minimum balance alert $ 2,000.00\n\n+Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027 Apr 2027 May 2027 Jun 2027 Jul 2027 Aug 2027\n\n Total\n\n Cash on hand (beginning of month) $ 10,000.00 $ 8,050.00 $ 9,350.00 $ 890.00 $ 2,190.00 $ 13,590.00 $ 13,790.00 $ 15,290.00 $ 16,410.00 $ 14,360.00 $ 16,560.00 $ 18,780.00\n\n Cash receipts\n",
+    "text_similarity": 0.9686,
+    "flat_text_similarity": 0.9686,
+    "word_text_similarity": 0.9615,
+    "text_diff": "--- minipdf/Small business cash flow forecast1.pdf\n+++ reference/Small business cash flow forecast1.pdf\n@@ -1,7 +1,7 @@\n ELBIDE REALTY\n\n Cash flow forecast\n\n-Starting cash on hand $ 10,000.00 Starting date 46113 Cash minimum balance alert $ 2,000.00\n\n-46113 46143 46174 46204 46235 46266 46296 46327 46357 46388 46419 46447\n\n+Starting cash on hand $ 10,000.00 Starting date Sep 2026 Cash minimum balance alert $ 2,000.00\n\n+Sep 2026 Oct 2026 Nov 2026 Dec 2026 Jan 2027 Feb 2027 Mar 2027 Apr 2027 May 2027 Jun 2027 Jul 2027 Aug 2027\n\n Total\n\n Cash on hand (beginning of month) $ 10,000.00 $ 8,050.00 $ 9,350.00 $ 890.00 $ 2,190.00 $ 13,590.00 $ 13,790.00 $ 15,290.00 $ 16,410.00 $ 14,360.00 $ 16,560.00 $ 18,780.00\n\n Cash receipts\n",
     "visual_scores": [
-      0.7151
+      0.7277
     ],
-    "visual_avg": 0.7151,
+    "visual_avg": 0.7277,
     "diff_images": [
       {
         "page": 1,
@@ -623,17 +623,17 @@
             1173,
             1682
           ],
-          "changed_pixels": 849423,
-          "changed_fraction": 0.390232,
-          "mean_abs_rgb": 17.4385,
-          "rmse_rgb": 42.354,
+          "changed_pixels": 851695,
+          "changed_fraction": 0.391276,
+          "mean_abs_rgb": 17.3431,
+          "rmse_rgb": 42.3066,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "Small business cash flow forecast1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.7719
+    "overall_score": 0.7785
   },
   {
     "name": "Wedding_timeline_planner1_copy",
@@ -644,7 +644,7 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Wedding_timeline_planner1_copy.xlsx",
     "suite": "issue",
-    "minipdf_size": 521712,
+    "minipdf_size": 521753,
     "reference_size": 180076,
     "pdf_valid": true,
     "minipdf_pages": 4,
@@ -697,7 +697,7 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Weekly schedule planner1.xlsx",
     "suite": "issue",
-    "minipdf_size": 212570,
+    "minipdf_size": 212568,
     "reference_size": 148591,
     "pdf_valid": true,
     "minipdf_pages": 2,
@@ -708,9 +708,9 @@
     "word_text_similarity": 0.9062,
     "text_diff": "--- minipdf/Weekly schedule planner1.pdf\n+++ reference/Weekly schedule planner1.pdf\n@@ -1,13 +1,12 @@\n Weekly schedule planner\n\n-Week of: 3/23/2026\n\n+Week of: 8/24/2026\n\n Weekly objectives To do items Deadlines this week\n\n Run 3 miles Take FiFi to vet Presentation on Thursday\n\n Read 30 min/day Go grocery shopping\n\n Stretch Pick up dry cleaning\n\n Monday Tuesday Wednesday Thursday Friday Saturday Sunday\n\n-23\n\n-24 25 26 27 28 29\n\n-March March March March March March March\n\n+24 25 26 27 28 29 30\n\n+August August August August August August August\n\n ✔ Run ✔ Run ✖ Run Run Run Run Run\n\n ✖ Read ✔ Read ✔ Read Read Read Read Read\n\n ✔ Stretch ✔ Stretch ✖ Stretch Stretch Stretch Stretch Stretch\n",
     "visual_scores": [
-      0.7055
+      0.7361
     ],
-    "visual_avg": 0.7055,
+    "visual_avg": 0.7361,
     "diff_images": [
       {
         "page": 1,
@@ -729,17 +729,17 @@
             1604,
             1144
           ],
-          "changed_pixels": 671826,
-          "changed_fraction": 0.324556,
-          "mean_abs_rgb": 22.6714,
-          "rmse_rgb": 55.2962,
+          "changed_pixels": 671773,
+          "changed_fraction": 0.32453,
+          "mean_abs_rgb": 22.5853,
+          "rmse_rgb": 55.3776,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "Weekly schedule planner1_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.7447
+    "overall_score": 0.7569
   },
   {
     "name": "XlsxIssue75",
@@ -803,20 +803,20 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_MergedCellAlignment.xlsx",
     "suite": "issue",
-    "minipdf_size": 390095,
+    "minipdf_size": 450282,
     "reference_size": 172385,
     "pdf_valid": true,
     "minipdf_pages": 2,
     "reference_pages": 2,
     "compared_pages": 1,
-    "text_similarity": 0.9947,
-    "flat_text_similarity": 0.9947,
-    "word_text_similarity": 0.9941,
-    "text_diff": "--- minipdf/XlsxIssue77_MergedCellAlignment.pdf\n+++ reference/XlsxIssue77_MergedCellAlignment.pdf\n@@ -31,5 +31,4 @@\n Tripple Wide Cell Tripple Wide Cell Tripple Wide Cell\n\n Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple\n\n Tripple Wide and High Cell Tripple Wide and High Cell Tripple Wide and High Cell\n\n-Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple\n\n-Times New Roman Font\n+Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple Apple",
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.8031
+      0.9382
     ],
-    "visual_avg": 0.8031,
+    "visual_avg": 0.9382,
     "diff_images": [
       {
         "page": 1,
@@ -827,25 +827,25 @@
         "heatmap_metrics": {
           "size_px": [
             1241,
-            1650
+            1754
           ],
           "difference_bbox_px": [
-            35,
-            45,
+            36,
+            121,
             1163,
-            1607
+            1541
           ],
-          "changed_pixels": 576709,
-          "changed_fraction": 0.281644,
-          "mean_abs_rgb": 37.2991,
-          "rmse_rgb": 85.7278,
+          "changed_pixels": 259750,
+          "changed_fraction": 0.119331,
+          "mean_abs_rgb": 14.4315,
+          "rmse_rgb": 50.3807,
           "threshold": 12,
           "gain": 5.0
         },
         "composite_img": "XlsxIssue77_MergedCellAlignment_p1_rust_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9191
+    "overall_score": 0.9753
   },
   {
     "name": "XlsxIssue77_Template1",
@@ -856,7 +856,7 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx",
     "suite": "issue",
-    "minipdf_size": 528706,
+    "minipdf_size": 528694,
     "reference_size": 64464,
     "pdf_valid": true,
     "minipdf_pages": 6,
@@ -888,10 +888,10 @@
             1157,
             1547
           ],
-          "changed_pixels": 440580,
-          "changed_fraction": 0.215164,
-          "mean_abs_rgb": 25.5886,
-          "rmse_rgb": 69.9147,
+          "changed_pixels": 440593,
+          "changed_fraction": 0.21517,
+          "mean_abs_rgb": 25.5866,
+          "rmse_rgb": 69.9105,
           "threshold": 12,
           "gain": 5.0
         },
@@ -909,7 +909,7 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_Template2_Workaround.xlsx",
     "suite": "issue",
-    "minipdf_size": 531413,
+    "minipdf_size": 531407,
     "reference_size": 64466,
     "pdf_valid": true,
     "minipdf_pages": 6,
@@ -941,10 +941,10 @@
             1153,
             1553
           ],
-          "changed_pixels": 444766,
-          "changed_fraction": 0.217208,
-          "mean_abs_rgb": 25.2068,
-          "rmse_rgb": 69.4605,
+          "changed_pixels": 444756,
+          "changed_fraction": 0.217203,
+          "mean_abs_rgb": 25.2024,
+          "rmse_rgb": 69.4511,
           "threshold": 12,
           "gain": 5.0
         },

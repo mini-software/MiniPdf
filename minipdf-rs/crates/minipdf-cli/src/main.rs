@@ -278,6 +278,10 @@ fn system_fallback_font_paths() -> Vec<PathBuf> {
             .unwrap_or_else(|| PathBuf::from(r"C:\Windows"))
             .join("Fonts");
         return [
+            "arial.ttf",
+            "arialbd.ttf",
+            "ariali.ttf",
+            "arialbi.ttf",
             "calibri.ttf",
             "calibrib.ttf",
             "calibrii.ttf",
@@ -359,7 +363,7 @@ fn system_fallback_font_paths() -> Vec<PathBuf> {
 
 #[cfg(test)]
 mod tests {
-    use super::build_font_alias;
+    use super::{build_font_alias, system_fallback_font_paths};
 
     #[test]
     fn builds_stable_cloud_font_aliases() {
@@ -375,5 +379,18 @@ mod tests {
             build_font_alias("Grandview", "Display", false, false),
             "grandviewdisplay"
         );
+    }
+
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn registers_all_arial_style_variants() {
+        let names = system_fallback_font_paths()
+            .into_iter()
+            .filter_map(|path| path.file_name().map(|name| name.to_owned()))
+            .collect::<Vec<_>>();
+
+        for name in ["arial.ttf", "arialbd.ttf", "ariali.ttf", "arialbi.ttf"] {
+            assert!(names.iter().any(|candidate| candidate == name));
+        }
     }
 }
