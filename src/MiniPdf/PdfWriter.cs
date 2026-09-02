@@ -14,11 +14,13 @@ internal sealed class PdfWriter
     private readonly PdfSaveOptions _options;
     private readonly List<long> _objectOffsets = [];
     private int _objectCount;
+    private long _position;
 
     internal PdfWriter(Stream stream, PdfSaveOptions? options = null)
     {
         _stream = stream;
         _options = options ?? new PdfSaveOptions();
+        _position = stream.CanSeek ? stream.Position : 0;
     }
 
     /// <summary>
@@ -576,7 +578,7 @@ internal sealed class PdfWriter
             _objectOffsets[ef.ToUnicodeObj] = Position;
             var toUnicodeBytes = Encoding.ASCII.GetBytes(ef.ToUnicodeCMap);
             WriteRaw($"{ef.ToUnicodeObj} 0 obj\n<< /Length {toUnicodeBytes.Length} >>\nstream\n");
-            _stream.Write(toUnicodeBytes);
+            WriteBytes(toUnicodeBytes);
             WriteRaw("\nendstream\nendobj\n");
 
             // FontDescriptor
@@ -621,7 +623,7 @@ internal sealed class PdfWriter
             WriteRaw($"{ef.FontFileObj} 0 obj\n");
             WriteRaw($"<< /Length {ef.CompressedFontData.Length} /Length1 {ef.FontUncompressedLength} /Filter /FlateDecode >>\n");
             WriteRaw("stream\n");
-            _stream.Write(ef.CompressedFontData);
+            WriteBytes(ef.CompressedFontData);
             WriteRaw("\nendstream\nendobj\n");
 
             // CIDToGIDMap stream
@@ -629,7 +631,7 @@ internal sealed class PdfWriter
             WriteRaw($"{ef.CidToGidObj} 0 obj\n");
             WriteRaw($"<< /Length {ef.CidToGidMapData.Length} /Filter /FlateDecode >>\n");
             WriteRaw("stream\n");
-            _stream.Write(ef.CidToGidMapData);
+            WriteBytes(ef.CidToGidMapData);
             WriteRaw("\nendstream\nendobj\n");
         }
 
@@ -644,7 +646,7 @@ internal sealed class PdfWriter
             var filter = _options.CompressContentStreams ? " /Filter /FlateDecode" : "";
             _objectOffsets[contentObjNums[i]] = Position;
             WriteRaw($"{contentObjNums[i]} 0 obj\n<< /Length {encodedContent.Length}{filter} >>\nstream\n");
-            _stream.Write(encodedContent);
+            WriteBytes(encodedContent);
             WriteRaw("\nendstream\nendobj\n");
 
             // Image XObjects
@@ -768,7 +770,7 @@ internal sealed class PdfWriter
                 WriteRaw("/Filter /FlateDecode\n");
                 WriteRaw($"/Length {maskData.Length}\n");
                 WriteRaw(">>\nstream\n");
-                _stream.Write(maskData);
+                WriteBytes(maskData);
                 WriteRaw("\nendstream\nendobj\n");
             }
 
@@ -786,7 +788,7 @@ internal sealed class PdfWriter
         WriteRaw(dictExtras);
         WriteRaw($"/Length {pixelData.Length}\n");
         WriteRaw(">>\nstream\n");
-        _stream.Write(pixelData);
+        WriteBytes(pixelData);
         WriteRaw("\nendstream\nendobj\n");
     }
 
@@ -2215,12 +2217,18 @@ internal sealed class PdfWriter
     }
 #endif
 
-    private long Position => _stream.Position;
+    private long Position => _position;
 
     private void WriteRaw(string text)
     {
         var bytes = Compat.Latin1.GetBytes(text);
-        _stream.Write(bytes);
+        WriteBytes(bytes);
+    }
+
+    private void WriteBytes(byte[] bytes)
+    {
+        _stream.Write(bytes, 0, bytes.Length);
+        _position += bytes.Length;
     }
 
     private static int FindPreferredFontIndex(

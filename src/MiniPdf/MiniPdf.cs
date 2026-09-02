@@ -102,55 +102,6 @@ public sealed class MiniPdfMissingFont
 }
 
 /// <summary>
-/// Options for merging multiple PDF files into one PDF.
-/// </summary>
-public sealed class PdfMergeOptions
-{
-    /// <summary>
-    /// Optional bookmark titles to add at the first page of each input PDF. When provided,
-    /// the number of titles must match the number of input PDFs.
-    /// </summary>
-    public IList<string>? BookmarkTitles { get; set; }
-
-    /// <summary>
-    /// Optional page-specific bookmarks to add to the merged PDF. PageIndex is zero-based
-    /// in the final merged document.
-    /// </summary>
-    public IList<PdfBookmark>? Bookmarks { get; set; }
-}
-
-/// <summary>
-/// Represents a top-level PDF bookmark targeting a page in the merged document.
-/// </summary>
-public sealed class PdfBookmark
-{
-    /// <summary>
-    /// Creates a PDF bookmark.
-    /// </summary>
-    /// <param name="title">Bookmark title.</param>
-    /// <param name="pageIndex">Zero-based page index in the merged PDF.</param>
-    public PdfBookmark(string title, int pageIndex)
-    {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(title);
-#else
-        if (title is null) throw new ArgumentNullException(nameof(title));
-#endif
-        if (pageIndex < 0)
-            throw new ArgumentOutOfRangeException(nameof(pageIndex), "PageIndex must be zero or greater.");
-
-        Title = title;
-        PageIndex = pageIndex;
-    }
-
-    /// <summary>Bookmark title.</summary>
-    public string Title { get; }
-
-    /// <summary>Zero-based page index in the merged PDF.</summary>
-    public int PageIndex { get; }
-}
-
-/// <summary>
 /// Main entry point for MiniPdf operations.
 /// Provides simple methods for converting files to PDF format.
 /// </summary>
@@ -187,176 +138,17 @@ public static class MiniPdf
     }
 
     /// <summary>
-    /// Merges multiple PDF files into a single PDF file.
-    /// </summary>
-    /// <param name="inputPaths">Input PDF file paths in merge order.</param>
-    /// <param name="outputPath">Path for the merged PDF file.</param>
-    public static void MergePdf(IEnumerable<string> inputPaths, string outputPath)
-        => MergePdf(inputPaths, outputPath, (PdfMergeOptions?)null);
-
-    /// <summary>
-    /// Merges multiple PDF files into a single PDF file and optionally adds bookmarks.
-    /// </summary>
-    /// <param name="inputPaths">Input PDF file paths in merge order.</param>
-    /// <param name="outputPath">Path for the merged PDF file.</param>
-    /// <param name="options">Optional merge settings.</param>
-    public static void MergePdf(IEnumerable<string> inputPaths, string outputPath, PdfMergeOptions? options)
-    {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(inputPaths);
-        ArgumentNullException.ThrowIfNull(outputPath);
-#else
-        if (inputPaths is null) throw new ArgumentNullException(nameof(inputPaths));
-        if (outputPath is null) throw new ArgumentNullException(nameof(outputPath));
-#endif
-        var bytes = MergePdf(inputPaths, options);
-        File.WriteAllBytes(outputPath, bytes);
-    }
-
-    /// <summary>
-    /// Merges multiple PDF files into a single PDF byte array.
-    /// </summary>
-    /// <param name="inputPaths">Input PDF file paths in merge order.</param>
-    /// <returns>A byte array containing the merged PDF data.</returns>
-    public static byte[] MergePdf(IEnumerable<string> inputPaths)
-        => MergePdf(inputPaths, (PdfMergeOptions?)null);
-
-    /// <summary>
-    /// Merges multiple PDF files into a single PDF byte array and optionally adds bookmarks.
-    /// </summary>
-    /// <param name="inputPaths">Input PDF file paths in merge order.</param>
-    /// <param name="options">Optional merge settings.</param>
-    /// <returns>A byte array containing the merged PDF data.</returns>
-    public static byte[] MergePdf(IEnumerable<string> inputPaths, PdfMergeOptions? options)
-    {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(inputPaths);
-#else
-        if (inputPaths is null) throw new ArgumentNullException(nameof(inputPaths));
-#endif
-        var paths = inputPaths.ToList();
-        if (paths.Count == 0)
-            throw new ArgumentException("At least one input PDF is required.", nameof(inputPaths));
-
-        var pdfs = new List<byte[]>(paths.Count);
-        foreach (var path in paths)
-        {
-            if (string.IsNullOrWhiteSpace(path))
-                throw new ArgumentException("Input PDF paths cannot be null or whitespace.", nameof(inputPaths));
-            pdfs.Add(File.ReadAllBytes(path));
-        }
-
-        return PdfMerger.Merge(pdfs, options);
-    }
-
-    /// <summary>
-    /// Converts an Office (.xlsx, .docx, or .pptx) file to a PDF file.
-    /// </summary>
-    /// <param name="inputPath">Path to the source Office file.</param>
-    /// <param name="outputPath">Path for the output .pdf file.</param>
-    public static void ConvertToPdf(string inputPath, string outputPath)
-        => ConvertToPdf(inputPath, outputPath, (MiniPdfConversionOptions?)null);
-
-    /// <summary>
-    /// Converts an Office (.xlsx, .docx, or .pptx) file to a PDF file.
-    /// </summary>
-    /// <param name="inputPath">Path to the source Office file.</param>
-    /// <param name="outputPath">Path for the output .pdf file.</param>
-    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets.</param>
-    public static void ConvertToPdf(string inputPath, string outputPath, string[]? sheets)
-        => ConvertToPdf(inputPath, outputPath, new MiniPdfConversionOptions { Sheets = sheets });
-
-    /// <summary>
-    /// Converts an Office (.xlsx, .docx, or .pptx) file to a PDF file.
-    /// </summary>
-    /// <param name="inputPath">Path to the source Office file.</param>
-    /// <param name="outputPath">Path for the output .pdf file.</param>
-    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets.</param>
-    public static void ConvertToPdf(string inputPath, string outputPath, int[]? sheetIndexes)
-        => ConvertToPdf(inputPath, outputPath, new MiniPdfConversionOptions { SheetIndexes = sheetIndexes });
-
-    /// <summary>
-    /// Converts an Office (.xlsx, .docx, or .pptx) file to a PDF file.
-    /// </summary>
-    /// <param name="inputPath">Path to the source Office file.</param>
-    /// <param name="outputPath">Path for the output .pdf file.</param>
-    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets unless sheetIndexes is specified.</param>
-    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets unless sheets is specified.</param>
-    public static void ConvertToPdf(string inputPath, string outputPath, string[]? sheets, int[]? sheetIndexes)
-        => ConvertToPdf(inputPath, outputPath, new MiniPdfConversionOptions { Sheets = sheets, SheetIndexes = sheetIndexes });
-
-    /// <summary>
     /// Converts an Office (.xlsx, .docx, or .pptx) file to a PDF file.
     /// </summary>
     /// <param name="inputPath">Path to the source Office file.</param>
     /// <param name="outputPath">Path for the output .pdf file.</param>
     /// <param name="options">Optional conversion settings.</param>
-    public static void ConvertToPdf(string inputPath, string outputPath, MiniPdfConversionOptions? options)
+    public static void ConvertToPdf(string inputPath, string outputPath, MiniPdfConversionOptions? options = null)
     {
-        options ??= new MiniPdfConversionOptions();
-        ValidateConversionOptions(options);
-        options.Diagnostics?.Reset();
-
-        var ext = Path.GetExtension(inputPath);
-        var saveOptions = CreatePdfSaveOptions(options);
-        if (ext.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
-        {
-            var doc = ExcelToPdfConverter.Convert(inputPath, CreateExcelOptions(options));
-            doc.Save(outputPath, saveOptions);
-        }
-        else if (ext.Equals(".docx", StringComparison.OrdinalIgnoreCase))
-        {
-            ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
-            var doc = DocxToPdfConverter.Convert(inputPath);
-            doc.Save(outputPath, saveOptions);
-        }
-        else if (ext.Equals(".pptx", StringComparison.OrdinalIgnoreCase))
-        {
-            ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
-            var doc = PptxToPdfConverter.Convert(inputPath);
-            doc.Save(outputPath, saveOptions);
-        }
-        else
-        {
-            throw new NotSupportedException($"Unsupported file type '{ext}'. Supported formats: .xlsx, .docx, .pptx.");
-        }
+        options = PrepareConversionOptions(options);
+        var document = ConvertPathToDocument(inputPath, options);
+        document.Save(outputPath, CreatePdfSaveOptions(options));
     }
-
-    /// <summary>
-    /// Converts an Office (.xlsx, .docx, or .pptx) file to a PDF byte array.
-    /// </summary>
-    /// <param name="inputPath">Path to the source Office file.</param>
-    /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertToPdf(string inputPath)
-        => ConvertToPdf(inputPath, (MiniPdfConversionOptions?)null);
-
-    /// <summary>
-    /// Converts an Office (.xlsx, .docx, or .pptx) file to a PDF byte array.
-    /// </summary>
-    /// <param name="inputPath">Path to the source Office file.</param>
-    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets.</param>
-    /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertToPdf(string inputPath, string[]? sheets)
-        => ConvertToPdf(inputPath, new MiniPdfConversionOptions { Sheets = sheets });
-
-    /// <summary>
-    /// Converts an Office (.xlsx, .docx, or .pptx) file to a PDF byte array.
-    /// </summary>
-    /// <param name="inputPath">Path to the source Office file.</param>
-    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets.</param>
-    /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertToPdf(string inputPath, int[]? sheetIndexes)
-        => ConvertToPdf(inputPath, new MiniPdfConversionOptions { SheetIndexes = sheetIndexes });
-
-    /// <summary>
-    /// Converts an Office (.xlsx, .docx, or .pptx) file to a PDF byte array.
-    /// </summary>
-    /// <param name="inputPath">Path to the source Office file.</param>
-    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets unless sheetIndexes is specified.</param>
-    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets unless sheets is specified.</param>
-    /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertToPdf(string inputPath, string[]? sheets, int[]? sheetIndexes)
-        => ConvertToPdf(inputPath, new MiniPdfConversionOptions { Sheets = sheets, SheetIndexes = sheetIndexes });
 
     /// <summary>
     /// Converts an Office (.xlsx, .docx, or .pptx) file to a PDF byte array.
@@ -364,76 +156,12 @@ public static class MiniPdf
     /// <param name="inputPath">Path to the source Office file.</param>
     /// <param name="options">Optional conversion settings.</param>
     /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertToPdf(string inputPath, MiniPdfConversionOptions? options)
+    public static byte[] ConvertToPdf(string inputPath, MiniPdfConversionOptions? options = null)
     {
-        options ??= new MiniPdfConversionOptions();
-        ValidateConversionOptions(options);
-        options.Diagnostics?.Reset();
-
-        var ext = Path.GetExtension(inputPath);
-        var saveOptions = CreatePdfSaveOptions(options);
-        if (ext.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
-        {
-            var doc = ExcelToPdfConverter.Convert(inputPath, CreateExcelOptions(options));
-            return doc.ToArray(saveOptions);
-        }
-        else if (ext.Equals(".docx", StringComparison.OrdinalIgnoreCase))
-        {
-            ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
-            var doc = DocxToPdfConverter.Convert(inputPath);
-            return doc.ToArray(saveOptions);
-        }
-        else if (ext.Equals(".pptx", StringComparison.OrdinalIgnoreCase))
-        {
-            ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
-            var doc = PptxToPdfConverter.Convert(inputPath);
-            return doc.ToArray(saveOptions);
-        }
-        else
-        {
-            throw new NotSupportedException($"Unsupported file type '{ext}'. Supported formats: .xlsx, .docx, .pptx.");
-        }
+        options = PrepareConversionOptions(options);
+        var document = ConvertPathToDocument(inputPath, options);
+        return document.ToArray(CreatePdfSaveOptions(options));
     }
-
-    /// <summary>
-    /// Converts an Office document stream (.xlsx, .docx, or .pptx) to a PDF byte array.
-    /// The format is auto-detected by inspecting the underlying ZIP package contents.
-    /// </summary>
-    /// <param name="inputStream">Stream containing .xlsx, .docx, or .pptx data.</param>
-    /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertToPdf(Stream inputStream)
-        => ConvertToPdf(inputStream, (MiniPdfConversionOptions?)null);
-
-    /// <summary>
-    /// Converts an Office document stream (.xlsx, .docx, or .pptx) to a PDF byte array.
-    /// The format is auto-detected by inspecting the underlying ZIP package contents.
-    /// </summary>
-    /// <param name="inputStream">Stream containing .xlsx, .docx, or .pptx data.</param>
-    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets.</param>
-    /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertToPdf(Stream inputStream, string[]? sheets)
-        => ConvertToPdf(inputStream, new MiniPdfConversionOptions { Sheets = sheets });
-
-    /// <summary>
-    /// Converts an Office document stream (.xlsx, .docx, or .pptx) to a PDF byte array.
-    /// The format is auto-detected by inspecting the underlying ZIP package contents.
-    /// </summary>
-    /// <param name="inputStream">Stream containing .xlsx, .docx, or .pptx data.</param>
-    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets.</param>
-    /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertToPdf(Stream inputStream, int[]? sheetIndexes)
-        => ConvertToPdf(inputStream, new MiniPdfConversionOptions { SheetIndexes = sheetIndexes });
-
-    /// <summary>
-    /// Converts an Office document stream (.xlsx, .docx, or .pptx) to a PDF byte array.
-    /// The format is auto-detected by inspecting the underlying ZIP package contents.
-    /// </summary>
-    /// <param name="inputStream">Stream containing .xlsx, .docx, or .pptx data.</param>
-    /// <param name="sheets">Optional Excel sheet names to render. Null renders all visible sheets unless sheetIndexes is specified.</param>
-    /// <param name="sheetIndexes">Optional 1-based Excel sheet indexes to render. Null renders all visible sheets unless sheets is specified.</param>
-    /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertToPdf(Stream inputStream, string[]? sheets, int[]? sheetIndexes)
-        => ConvertToPdf(inputStream, new MiniPdfConversionOptions { Sheets = sheets, SheetIndexes = sheetIndexes });
 
     /// <summary>
     /// Converts an Office document stream (.xlsx, .docx, or .pptx) to a PDF byte array.
@@ -442,17 +170,66 @@ public static class MiniPdf
     /// <param name="inputStream">Stream containing .xlsx, .docx, or .pptx data.</param>
     /// <param name="options">Optional conversion settings.</param>
     /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertToPdf(Stream inputStream, MiniPdfConversionOptions? options)
+    public static byte[] ConvertToPdf(Stream inputStream, MiniPdfConversionOptions? options = null)
+    {
+        using var outputStream = new MemoryStream();
+        ConvertToPdf(inputStream, outputStream, options);
+        return outputStream.ToArray();
+    }
+
+    /// <summary>
+    /// Converts an Office document stream (.xlsx, .docx, or .pptx) directly to a PDF stream.
+    /// The format is auto-detected by inspecting the underlying ZIP package contents.
+    /// </summary>
+    /// <param name="inputStream">Stream containing .xlsx, .docx, or .pptx data.</param>
+    /// <param name="outputStream">Writable stream that receives the PDF data.</param>
+    /// <param name="options">Optional conversion settings.</param>
+    public static void ConvertToPdf(Stream inputStream, Stream outputStream, MiniPdfConversionOptions? options = null)
     {
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(inputStream);
+        ArgumentNullException.ThrowIfNull(outputStream);
 #else
         if (inputStream is null) throw new ArgumentNullException(nameof(inputStream));
+        if (outputStream is null) throw new ArgumentNullException(nameof(outputStream));
 #endif
+        if (!outputStream.CanWrite)
+            throw new ArgumentException("Output stream must be writable.", nameof(outputStream));
+
+        options = PrepareConversionOptions(options);
+        var document = ConvertStreamToDocument(inputStream, options);
+        document.Save(outputStream, CreatePdfSaveOptions(options));
+    }
+
+    private static MiniPdfConversionOptions PrepareConversionOptions(MiniPdfConversionOptions? options)
+    {
         options ??= new MiniPdfConversionOptions();
         ValidateConversionOptions(options);
         options.Diagnostics?.Reset();
+        return options;
+    }
 
+    private static PdfDocument ConvertPathToDocument(string inputPath, MiniPdfConversionOptions options)
+    {
+        var extension = Path.GetExtension(inputPath);
+        if (extension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            return ExcelToPdfConverter.Convert(inputPath, CreateExcelOptions(options));
+        if (extension.Equals(".docx", StringComparison.OrdinalIgnoreCase))
+        {
+            ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
+            return DocxToPdfConverter.Convert(inputPath);
+        }
+        if (extension.Equals(".pptx", StringComparison.OrdinalIgnoreCase))
+        {
+            ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
+            return PptxToPdfConverter.Convert(inputPath);
+        }
+
+        throw new NotSupportedException($"Unsupported file type '{extension}'. Supported formats: .xlsx, .docx, .pptx.");
+    }
+
+    private static PdfDocument ConvertStreamToDocument(Stream inputStream, MiniPdfConversionOptions options)
+    {
         // Ensure we have a seekable stream so ZipArchive can read the central directory
         // and the converter can subsequently re-read the package.
         Stream seekable;
@@ -475,27 +252,17 @@ public static class MiniPdf
             var startPosition = seekable.Position;
             var format = DetectOfficeFormat(seekable);
             seekable.Position = startPosition;
-            var saveOptions = CreatePdfSaveOptions(options);
 
             switch (format)
             {
                 case OfficeFormat.Docx:
-                    {
-                        ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
-                        var doc = DocxToPdfConverter.Convert(seekable);
-                        return doc.ToArray(saveOptions);
-                    }
+                    ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
+                    return DocxToPdfConverter.Convert(seekable);
                 case OfficeFormat.Pptx:
-                    {
-                        ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
-                        var doc = PptxToPdfConverter.Convert(seekable);
-                        return doc.ToArray(saveOptions);
-                    }
+                    ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
+                    return PptxToPdfConverter.Convert(seekable);
                 case OfficeFormat.Xlsx:
-                    {
-                        var doc = ExcelToPdfConverter.Convert(seekable, CreateExcelOptions(options));
-                        return doc.ToArray(saveOptions);
-                    }
+                    return ExcelToPdfConverter.Convert(seekable, CreateExcelOptions(options));
                 default:
                     throw new NotSupportedException(
                         "Unable to detect Office format from stream. Supported formats: .xlsx, .docx, .pptx.");
@@ -598,45 +365,4 @@ public static class MiniPdf
             }
             : null;
 
-    /// <summary>
-    /// Converts a Word (.docx) stream to a PDF byte array.
-    /// </summary>
-    /// <param name="docxStream">Stream containing .docx data.</param>
-    /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertDocxToPdf(Stream docxStream)
-    {
-        var doc = DocxToPdfConverter.Convert(docxStream);
-        return doc.ToArray();
-    }
-
-    /// <summary>
-    /// Converts a PowerPoint (.pptx) stream to a PDF byte array.
-    /// </summary>
-    /// <param name="pptxStream">Stream containing .pptx data.</param>
-    /// <returns>A byte array containing the PDF data.</returns>
-    public static byte[] ConvertPptxToPdf(Stream pptxStream)
-    {
-        return ConvertPptxToPdfCore(pptxStream);
-    }
-
-    private static byte[] ConvertPptxToPdfCore(Stream pptxStream)
-    {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(pptxStream);
-#else
-        if (pptxStream is null) throw new ArgumentNullException(nameof(pptxStream));
-#endif
-
-        if (pptxStream.CanSeek)
-        {
-            var doc = PptxToPdfConverter.Convert(pptxStream);
-            return doc.ToArray();
-        }
-
-        using var ms = new MemoryStream();
-        pptxStream.CopyTo(ms);
-        ms.Position = 0;
-        var seekableDoc = PptxToPdfConverter.Convert(ms);
-        return seekableDoc.ToArray();
-    }
 }

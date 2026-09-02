@@ -25,7 +25,7 @@ MiniPdf 不需要在執行階段安裝 Microsoft Office、LibreOffice、Adobe Ac
 | | .NET | Rust |
 |---|---|---|
 | 狀態 | 穩定、功能完整 | 實驗性、持續開發中 |
-| 輸入 | XLSX、DOCX、PPTX、PDF 合併 | XLSX、DOCX |
+| 輸入 | XLSX、DOCX、PPTX | XLSX、DOCX |
 | 介面 | .NET 程式庫、CLI、獨立 Native AOT 二進位檔 | Rust crate、CLI |
 | 文件 | **[開啟 .NET 指南](README.nuget.md)** | **[開啟 Rust 指南](../minipdf-rs/README.md)** |
 
@@ -52,7 +52,7 @@ dotnet tool install --global MiniPdf.Cli
 minipdf report.docx -o report.pdf
 ```
 
-[.NET 指南](README.nuget.md)涵蓋轉換、PDF 合併、自訂字型、CLI 選項與部署。
+[.NET 指南](README.nuget.md)涵蓋轉換、自訂字型、CLI 選項與部署。
 
 ### Rust
 

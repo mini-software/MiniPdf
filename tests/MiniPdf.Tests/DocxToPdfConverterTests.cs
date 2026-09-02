@@ -147,11 +147,11 @@ public class DocxToPdfConverterTests
     }
 
     [Fact]
-    public void ConvertDocxToPdf_StreamApi_Works()
+    public void ConvertToPdf_StreamApi_Works()
     {
         using var docxStream = CreateSimpleDocx("Stream API Test");
 
-        var bytes = MiniPdf.ConvertDocxToPdf(docxStream);
+      var bytes = MiniPdf.ConvertToPdf(docxStream);
         var content = Encoding.ASCII.GetString(bytes);
 
         Assert.StartsWith("%PDF-1.4", content);
@@ -170,6 +170,44 @@ public class DocxToPdfConverterTests
         Assert.Contains("AutoDetect Docx Stream", content);
         Assert.Contains("%%EOF", content);
     }
+
+      [Fact]
+      public void ConvertToPdf_StreamOutput_WritesPdfWithoutClosingOutput()
+      {
+        using var docxStream = CreateSimpleDocx("Direct Stream Output");
+        using var backingStream = new MemoryStream();
+        using var pdfStream = new NonSeekableWriteStream(backingStream);
+
+        MiniPdf.ConvertToPdf(docxStream, pdfStream);
+        pdfStream.WriteByte(0);
+        var content = Encoding.ASCII.GetString(backingStream.ToArray());
+
+        Assert.StartsWith("%PDF-1.4", content);
+        Assert.Contains("Direct Stream Output", content);
+      }
+
+      private sealed class NonSeekableWriteStream : Stream
+      {
+        private readonly Stream _inner;
+
+        internal NonSeekableWriteStream(Stream inner) => _inner = inner;
+
+        public override bool CanRead => false;
+        public override bool CanSeek => false;
+        public override bool CanWrite => true;
+        public override long Length => throw new NotSupportedException();
+        public override long Position
+        {
+          get => throw new NotSupportedException();
+          set => throw new NotSupportedException();
+        }
+
+        public override void Flush() => _inner.Flush();
+        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+        public override void SetLength(long value) => throw new NotSupportedException();
+        public override void Write(byte[] buffer, int offset, int count) => _inner.Write(buffer, offset, count);
+      }
 
       [Fact]
       public void Convert_FooterPageFieldWithSwitch_RendersPageNumber()
