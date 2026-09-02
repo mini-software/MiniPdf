@@ -363,7 +363,10 @@ fn system_fallback_font_paths() -> Vec<PathBuf> {
 
 #[cfg(test)]
 mod tests {
-    use super::{build_font_alias, system_fallback_font_paths};
+    use super::build_font_alias;
+
+    #[cfg(target_os = "windows")]
+    use super::system_fallback_font_paths;
 
     #[test]
     fn builds_stable_cloud_font_aliases() {
