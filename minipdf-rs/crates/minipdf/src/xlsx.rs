@@ -14,6 +14,8 @@ const CELL_FONT_SIZE: f32 = 11.0;
 const CELL_BORDER_WIDTH: f32 = 0.96;
 const PRINT_TITLE_HORIZONTAL_SCALE: f32 = 0.9957;
 const PRINT_TITLE_HORIZONTAL_OFFSET: f32 = 0.4;
+const EXPLICIT_PRINT_TITLE_HORIZONTAL_SCALE: f32 = 0.9797;
+const EXPLICIT_PRINT_TITLE_LEFT_OFFSET: f32 = 4.32;
 const FIT_TO_PAGE_HORIZONTAL_SCALE: f32 = 1.0048;
 const FIT_TO_PAGE_HORIZONTAL_OFFSET: f32 = 0.5;
 const PRINT_TITLE_VERTICAL_SCALE: f32 = 0.98;
@@ -49,6 +51,13 @@ struct SheetData {
     default_row_height: f32,
     print_title_rows: Option<(usize, usize)>,
     page_setup: SheetPageSetup,
+    footer: Option<SheetFooter>,
+}
+
+#[derive(Debug, Clone)]
+struct SheetFooter {
+    format: String,
+    margin: f32,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -142,8 +151,10 @@ enum NumberFormat {
     #[default]
     General,
     DateMonthDayYear,
+    DateDayShortMonthYear,
     PercentageZeroDecimals,
     PercentageTwoDecimals,
+    ThousandsZeroDecimals,
     ThousandsTwoDecimals,
     DollarTwoDecimals,
     DollarAccounting,
@@ -250,6 +261,7 @@ fn parse_number_format(
         Some("14") => NumberFormat::DateMonthDayYear,
         Some("9") => NumberFormat::PercentageZeroDecimals,
         Some("10") => NumberFormat::PercentageTwoDecimals,
+        Some("3") => NumberFormat::ThousandsZeroDecimals,
         Some("4") => NumberFormat::ThousandsTwoDecimals,
         Some("44") => NumberFormat::DollarAccounting,
         Some(id) => id
@@ -258,12 +270,17 @@ fn parse_number_format(
             .and_then(|id| custom_formats.get(&id))
             .map(|code| {
                 let normalized = code.to_ascii_lowercase();
+                let unescaped = normalized.replace('\\', "");
                 if normalized.contains('$') && normalized.contains("0.00") {
                     if normalized.contains('*') {
                         NumberFormat::DollarAccounting
                     } else {
                         NumberFormat::DollarTwoDecimals
                     }
+                } else if unescaped.contains("dd-mmm-yyyy") {
+                    NumberFormat::DateDayShortMonthYear
+                } else if unescaped.contains("#,##0") && !unescaped.contains('.') {
+                    NumberFormat::ThousandsZeroDecimals
                 } else {
                     NumberFormat::General
                 }
@@ -372,6 +389,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             default_row_height,
             print_title_rows: sheet_print_title_rows,
             page_setup,
+            footer: read_sheet_footer(&sheet_xml)?,
         });
     }
 
@@ -417,6 +435,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
                 default_row_height,
                 print_title_rows: None,
                 page_setup,
+                footer: read_sheet_footer(&sheet_xml)?,
             });
         }
     }
@@ -439,6 +458,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             default_row_height: ROW_HEIGHT,
             print_title_rows: None,
             page_setup: SheetPageSetup::default(),
+            footer: None,
         });
     }
 
@@ -656,6 +676,28 @@ fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
         horizontal_centered,
         o365_printer_fallback: false,
     })
+}
+
+fn read_sheet_footer(sheet_xml: &str) -> Result<Option<SheetFooter>> {
+    let document = roxmltree::Document::parse(sheet_xml)?;
+    let format = document
+        .descendants()
+        .find(|node| node.has_tag_name("oddFooter"))
+        .and_then(|node| node.text())
+        .filter(|value| !value.is_empty())
+        .map(str::to_owned);
+    let Some(format) = format else {
+        return Ok(None);
+    };
+    let margin = document
+        .descendants()
+        .find(|node| node.has_tag_name("pageMargins"))
+        .and_then(|node| node.attribute("footer"))
+        .and_then(|value| value.parse::<f32>().ok())
+        .filter(|value| *value >= 0.0)
+        .map(|inches| inches * 72.0)
+        .unwrap_or(18.0);
+    Ok(Some(SheetFooter { format, margin }))
 }
 
 fn read_printer_page_size<R: std::io::Read + std::io::Seek>(
@@ -1946,6 +1988,65 @@ fn apply_sheet_conditional_formats(
             }
         }
         for rule in formatting.children().filter(|node| {
+            node.has_tag_name("cfRule") && node.attribute("type") == Some("containsText")
+        }) {
+            let Some(expected) = rule.attribute("text") else {
+                continue;
+            };
+            let differential_index = rule
+                .attribute("dxfId")
+                .and_then(|value| value.parse::<usize>().ok());
+            let font = differential_index
+                .and_then(|index| styles.differential_fonts.get(index).copied())
+                .unwrap_or_default();
+            let fill = differential_index
+                .and_then(|index| styles.differential_fills.get(index).copied().flatten());
+            for range in ranges.split_whitespace() {
+                let (start, end) = range.split_once(':').unwrap_or((range, range));
+                let Some((start_col, start_row)) = cell_position(start) else {
+                    continue;
+                };
+                let Some((end_col, end_row)) = cell_position(end) else {
+                    continue;
+                };
+                for row in rows
+                    .iter_mut()
+                    .filter(|row| row.index >= start_row && row.index <= end_row)
+                {
+                    for cell in row
+                        .cells
+                        .iter_mut()
+                        .enumerate()
+                        .filter(|(column, _)| *column >= start_col && *column <= end_col)
+                        .map(|(_, cell)| cell)
+                    {
+                        if !cell
+                            .text
+                            .to_ascii_lowercase()
+                            .contains(&expected.to_ascii_lowercase())
+                        {
+                            continue;
+                        }
+                        if let Some(bold) = font.bold {
+                            cell.style.bold = bold;
+                        }
+                        if let Some(italic) = font.italic {
+                            cell.style.italic = italic;
+                        }
+                        if let Some(strike) = font.strike {
+                            cell.style.strike = strike;
+                        }
+                        if let Some(color) = font.color {
+                            cell.style.font_color = color;
+                        }
+                        if let Some(fill) = fill {
+                            cell.style.fill_color = Some(fill);
+                        }
+                    }
+                }
+            }
+        }
+        for rule in formatting.children().filter(|node| {
             node.has_tag_name("cfRule") && node.attribute("type") == Some("expression")
         }) {
             let Some(formula) = rule
@@ -3012,8 +3113,10 @@ fn read_cell_value(
 fn format_numeric_value(value: f64, source: &str, number_format: NumberFormat) -> String {
     match number_format {
         NumberFormat::DateMonthDayYear => format_excel_date(value),
+        NumberFormat::DateDayShortMonthYear => format_excel_date_day_short_month_year(value),
         NumberFormat::PercentageZeroDecimals => format!("{:.0}%", value * 100.0),
         NumberFormat::PercentageTwoDecimals => format!("{:.2}%", value * 100.0),
+        NumberFormat::ThousandsZeroDecimals => format_thousands_zero_decimals(value),
         NumberFormat::ThousandsTwoDecimals => format_thousands_two_decimals(value),
         NumberFormat::DollarTwoDecimals => {
             if value.is_sign_negative() {
@@ -3045,6 +3148,20 @@ fn format_numeric_value(value: f64, source: &str, number_format: NumberFormat) -
 }
 
 fn format_excel_date(value: f64) -> String {
+    let (year, month, day) = excel_date_parts(value);
+    format!("{month}/{day}/{year}")
+}
+
+fn format_excel_date_day_short_month_year(value: f64) -> String {
+    const MONTHS: [&str; 12] = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    ];
+    let (year, month, day) = excel_date_parts(value);
+    let month_name = MONTHS[(month - 1) as usize];
+    format!("{day:02}-{month_name}-{year:04}")
+}
+
+fn excel_date_parts(value: f64) -> (i64, i64, i64) {
     let mut days = value.floor() as i64 - 25_569;
     days += 719_468;
     let era = if days >= 0 { days } else { days - 146_096 } / 146_097;
@@ -3057,7 +3174,23 @@ fn format_excel_date(value: f64) -> String {
     let day = day_of_year - (153 * month_part + 2) / 5 + 1;
     let month = month_part + if month_part < 10 { 3 } else { -9 };
     year += i64::from(month <= 2);
-    format!("{month}/{day}/{year}")
+    (year, month, day)
+}
+
+fn format_thousands_zero_decimals(value: f64) -> String {
+    let rounded = value.round() as i64;
+    let digits = rounded.unsigned_abs().to_string();
+    let mut formatted = String::with_capacity(digits.len() + digits.len() / 3);
+    for (index, character) in digits.chars().enumerate() {
+        if index > 0 && (digits.len() - index) % 3 == 0 {
+            formatted.push(',');
+        }
+        formatted.push(character);
+    }
+    if rounded < 0 {
+        formatted.insert(0, '-');
+    }
+    formatted
 }
 
 fn evaluate_simple_formula(formula: &str, rows: &[RowData]) -> Option<f64> {
@@ -3208,7 +3341,9 @@ fn column_index_from_ref(cell_ref: &str) -> Option<usize> {
 }
 
 fn render_xlsx(doc: &mut PdfDocument, sheets: &[SheetData], page_size_override: Option<PageSize>) {
+    let mut footer_ranges = Vec::new();
     for sheet in sheets {
+        let first_page = doc.pages().len();
         let image_ids = sheet
             .images
             .iter()
@@ -3227,7 +3362,146 @@ fn render_xlsx(doc: &mut PdfDocument, sheets: &[SheetData], page_size_override: 
             &image_ids,
             page_size_override.unwrap_or(sheet.page_setup.page_size),
         );
+        if sheet.footer.is_some() && doc.pages().len() > first_page {
+            footer_ranges.push((first_page, doc.pages().len(), sheet));
+        }
     }
+    let total_pages = doc.pages().len();
+    for (first_page, end_page, sheet) in footer_ranges {
+        if let Some(footer) = &sheet.footer {
+            render_sheet_footer(
+                doc,
+                footer,
+                first_page,
+                end_page,
+                total_pages,
+                sheet.page_setup.margin_left,
+                sheet.page_setup.margin_right,
+            );
+        }
+    }
+}
+
+fn render_sheet_footer(
+    doc: &mut PdfDocument,
+    footer: &SheetFooter,
+    first_page: usize,
+    end_page: usize,
+    total_pages: usize,
+    margin_left: f32,
+    margin_right: f32,
+) {
+    let (left, center, right) = parse_header_footer_sections(&footer.format);
+    for page_index in first_page..end_page {
+        let page_number = page_index + 1;
+        let page = doc.page_mut(page_index).expect("page index is valid");
+        for (section, alignment) in [
+            (&left, HorizontalAlignment::Left),
+            (&center, HorizontalAlignment::Center),
+            (&right, HorizontalAlignment::Right),
+        ] {
+            let (content, font_size, preferred_font) =
+                expand_header_footer_fields(section, page_number, total_pages);
+            let lines = content.lines().collect::<Vec<_>>();
+            for (line_index, line) in lines.iter().rev().enumerate() {
+                let line = line.trim();
+                if line.is_empty() {
+                    continue;
+                }
+                let text_width =
+                    styled_text_width_with_font(line, font_size, false, false, preferred_font);
+                let x = match alignment {
+                    HorizontalAlignment::Left | HorizontalAlignment::General => margin_left,
+                    HorizontalAlignment::Center => (page.width - text_width) / 2.0,
+                    HorizontalAlignment::Right => page.width - margin_right - text_width,
+                };
+                let y = footer.margin + line_index as f32 * font_size * 1.3;
+                page.add_styled_text(
+                    line,
+                    x,
+                    y,
+                    font_size,
+                    PdfTextStyle {
+                        color: PdfColor::BLACK,
+                        bold: false,
+                        italic: false,
+                        preferred_font,
+                    },
+                );
+            }
+        }
+    }
+}
+
+fn parse_header_footer_sections(format: &str) -> (String, String, String) {
+    let mut sections = [String::new(), String::new(), String::new()];
+    let mut current = None;
+    let mut characters = format.chars().peekable();
+    while let Some(character) = characters.next() {
+        if character == '&' {
+            let section = match characters.peek().copied() {
+                Some('L') => Some(0),
+                Some('C') => Some(1),
+                Some('R') => Some(2),
+                _ => None,
+            };
+            if let Some(section) = section {
+                characters.next();
+                current = Some(section);
+                continue;
+            }
+        }
+        if let Some(section) = current {
+            sections[section].push(character);
+        }
+    }
+    let [left, center, right] = sections;
+    (left, center, right)
+}
+
+fn expand_header_footer_fields(
+    section: &str,
+    page_number: usize,
+    total_pages: usize,
+) -> (String, f32, Option<&'static str>) {
+    let mut text = String::new();
+    let mut font_size = 6.0;
+    let mut preferred_font = None;
+    let mut characters = section.chars().peekable();
+    while let Some(character) = characters.next() {
+        if character != '&' {
+            text.push(character);
+            continue;
+        }
+        let Some(field) = characters.next() else {
+            break;
+        };
+        match field {
+            'P' => text.push_str(&page_number.to_string()),
+            'N' => text.push_str(&total_pages.to_string()),
+            'A' | 'D' => {}
+            '&' => text.push('&'),
+            '"' => {
+                let font = characters
+                    .by_ref()
+                    .take_while(|character| *character != '"')
+                    .collect::<String>();
+                if font.to_ascii_lowercase().starts_with("arial,") {
+                    preferred_font = Some("arial");
+                }
+            }
+            digit if digit.is_ascii_digit() => {
+                let mut size = digit.to_digit(10).unwrap_or(6);
+                if let Some(next) = characters.peek().copied().filter(char::is_ascii_digit) {
+                    characters.next();
+                    size = size * 10 + next.to_digit(10).unwrap_or(0);
+                }
+                font_size = size as f32;
+            }
+            _ => {}
+        }
+    }
+    (text, font_size, preferred_font)
 }
 
 fn render_sheet(
@@ -3305,13 +3579,7 @@ fn render_sheet(
                 content_scale.min((usable_height / (unscaled_height * vertical_scale)).min(1.0));
         }
     }
-    let horizontal_scale = if sheet.print_title_rows.is_some() {
-        PRINT_TITLE_HORIZONTAL_SCALE
-    } else if sheet.page_setup.fit_to_width {
-        FIT_TO_PAGE_HORIZONTAL_SCALE
-    } else {
-        1.0
-    };
+    let horizontal_scale = xlsx_horizontal_scale(sheet);
     let horizontal_geometry_scale = content_scale
         * horizontal_scale
         * if sheet.page_setup.o365_printer_fallback {
@@ -3333,12 +3601,7 @@ fn render_sheet(
                 0.0
             }
     } else {
-        sheet.page_setup.margin_left
-            + if sheet.page_setup.o365_printer_fallback {
-                O365_PRINTER_FALLBACK_LEFT_OFFSET
-            } else {
-                0.0
-            }
+        sheet.page_setup.margin_left + xlsx_left_offset(sheet)
     };
     let vertical_scale = xlsx_vertical_scale(
         sheet,
@@ -3450,7 +3713,7 @@ fn xlsx_vertical_scale(sheet: &SheetData, fallback: f32) -> f32 {
         };
         calibration * print_scale
     } else if sheet.print_title_rows.is_some() {
-        if sheet.page_setup.page_size_from_printer {
+        if sheet.page_setup.page_size_from_printer || sheet.page_setup.print_scale < 1.0 {
             1.0
         } else {
             PRINT_TITLE_VERTICAL_SCALE
@@ -3459,6 +3722,34 @@ fn xlsx_vertical_scale(sheet: &SheetData, fallback: f32) -> f32 {
         1.0
     } else {
         fallback
+    }
+}
+
+fn xlsx_horizontal_scale(sheet: &SheetData) -> f32 {
+    if sheet.print_title_rows.is_some()
+        && sheet.page_setup.print_scale < 1.0
+        && !sheet.page_setup.fit_to_width
+    {
+        EXPLICIT_PRINT_TITLE_HORIZONTAL_SCALE
+    } else if sheet.print_title_rows.is_some() {
+        PRINT_TITLE_HORIZONTAL_SCALE
+    } else if sheet.page_setup.fit_to_width {
+        FIT_TO_PAGE_HORIZONTAL_SCALE
+    } else {
+        1.0
+    }
+}
+
+fn xlsx_left_offset(sheet: &SheetData) -> f32 {
+    if sheet.print_title_rows.is_some()
+        && sheet.page_setup.print_scale < 1.0
+        && !sheet.page_setup.fit_to_width
+    {
+        EXPLICIT_PRINT_TITLE_LEFT_OFFSET
+    } else if sheet.page_setup.o365_printer_fallback {
+        O365_PRINTER_FALLBACK_LEFT_OFFSET
+    } else {
+        0.0
     }
 }
 
@@ -3742,6 +4033,7 @@ fn render_xlsx_row(
         cell_y: f32,
         cell_width: f32,
         cell_height: f32,
+        clip_x: f32,
         clip_width: f32,
         should_clip: bool,
         lines: Vec<String>,
@@ -3952,26 +4244,22 @@ fn render_xlsx_row(
         } else {
             cell.text.replace(['\r', '\n'], " ")
         };
-        let mut clip_width = cell_width;
-        let mut overflow_is_blocked = false;
-        if merge.is_none() {
-            for (next_column, next_width) in column_widths
-                .iter()
-                .enumerate()
-                .take(column_end)
-                .skip(column_index + 1)
-            {
-                if row
-                    .cells
-                    .get(next_column)
-                    .is_some_and(|next_cell| !next_cell.text.is_empty())
-                {
-                    overflow_is_blocked = true;
-                    break;
-                }
-                clip_width += next_width;
-            }
-        }
+        let align_right = cell.is_numeric || has_rtl_base_direction(&cell.text);
+        let overflows_left = cell.style.horizontal_alignment == HorizontalAlignment::Right
+            || (cell.style.horizontal_alignment == HorizontalAlignment::General && align_right);
+        let (clip_offset, clip_width, overflow_is_blocked) = if merge.is_none() {
+            text_overflow_region(
+                sheet,
+                row,
+                column_widths,
+                column_start,
+                column_index,
+                column_end,
+                overflows_left,
+            )
+        } else {
+            (0.0, cell_width, false)
+        };
         let lines = if cell.style.wrap_text {
             wrap_cell_text_with_font(
                 &cell.text,
@@ -4003,6 +4291,11 @@ fn render_xlsx_row(
             cell_y,
             cell_width,
             cell_height,
+            clip_x: if cell.style.wrap_text {
+                cell_x
+            } else {
+                cell_x + clip_offset
+            },
             clip_width: if cell.style.wrap_text {
                 cell_width
             } else {
@@ -4015,7 +4308,7 @@ fn render_xlsx_row(
             style: cell.style,
             has_border: cell_borders.any(),
             is_multi_row_merge: cell_height > row_height + 0.1,
-            align_right: cell.is_numeric || has_rtl_base_direction(&cell.text),
+            align_right,
             accounting_value: matches!(cell.style.number_format, NumberFormat::DollarAccounting)
                 .then(|| cell.text.strip_prefix("$ ").map(str::to_owned))
                 .flatten(),
@@ -4025,7 +4318,7 @@ fn render_xlsx_row(
 
     for text in pending_text {
         if text.should_clip {
-            page.push_clip(text.cell_x, text.cell_y, text.clip_width, text.cell_height);
+            page.push_clip(text.clip_x, text.cell_y, text.clip_width, text.cell_height);
         }
         let line_height = text.font_size * 1.2;
         let block_height = line_height * text.lines.len() as f32;
@@ -4156,6 +4449,62 @@ fn render_xlsx_row(
     }
 }
 
+fn text_overflow_region(
+    sheet: &SheetData,
+    row: &RowData,
+    column_widths: &[f32],
+    column_start: usize,
+    column_index: usize,
+    column_end: usize,
+    overflows_left: bool,
+) -> (f32, f32, bool) {
+    let mut offset = 0.0;
+    let mut width = column_widths[column_index];
+    let columns: Box<dyn Iterator<Item = usize>> = if overflows_left {
+        Box::new((column_start..column_index).rev())
+    } else {
+        Box::new(column_index + 1..column_end)
+    };
+    for adjacent_column in columns {
+        if cell_blocks_text_overflow(sheet, row, adjacent_column) {
+            return (offset, width, true);
+        }
+        let adjacent_width = column_widths[adjacent_column];
+        width += adjacent_width;
+        if overflows_left {
+            offset -= adjacent_width;
+        }
+    }
+    (offset, width, false)
+}
+
+fn cell_blocks_text_overflow(sheet: &SheetData, row: &RowData, column: usize) -> bool {
+    if row
+        .cells
+        .get(column)
+        .is_some_and(|cell| !cell.text.is_empty())
+    {
+        return true;
+    }
+    sheet
+        .merges
+        .iter()
+        .find(|merge| {
+            merge.start_row <= row.index
+                && merge.end_row >= row.index
+                && merge.start_col <= column
+                && merge.end_col >= column
+        })
+        .and_then(|merge| {
+            sheet
+                .rows
+                .iter()
+                .find(|candidate| candidate.index == merge.start_row)
+                .and_then(|origin| origin.cells.get(merge.start_col))
+        })
+        .is_some_and(|cell| !cell.text.is_empty())
+}
+
 fn has_rtl_base_direction(text: &str) -> bool {
     text.chars()
         .find_map(|character| match bidi_class(character) {
@@ -4174,13 +4523,15 @@ mod tests {
         apply_color_tint, apply_print_area, apply_sheet_conditional_formats,
         apply_table_fill_layer, apply_table_font_layer, cell_position, column_group_has_content,
         column_groups, column_index_from_ref, composite_rgba_background, effective_content_scale,
-        font_name_is_emphasis, format_excel_date, format_thousands_two_decimals,
-        has_rtl_base_direction, indexed_color, jpeg_dimensions, merged_cell_borders,
-        parse_cell_borders, parse_conditional_text_search, parse_horizontal_alignment,
-        parse_number_format, parse_print_area, parse_rgb_color, parse_vertical_alignment,
+        expand_header_footer_fields, font_name_is_emphasis, format_excel_date,
+        format_thousands_two_decimals, has_rtl_base_direction, indexed_color, jpeg_dimensions,
+        merged_cell_borders, parse_cell_borders, parse_conditional_text_search,
+        parse_header_footer_sections, parse_horizontal_alignment, parse_number_format,
+        parse_print_area, parse_rgb_color, parse_vertical_alignment,
         parse_windows_devmode_page_size, read_column_widths, read_merge_ranges, read_page_setup,
-        read_row_breaks, read_sheet_rows, read_two_cell_shape, relationship_id,
-        rendered_column_count, spreadsheet_theme_colors, trim_trailing_empty_rows, wrap_cell_text,
+        read_row_breaks, read_sheet_footer, read_sheet_rows, read_two_cell_shape, relationship_id,
+        rendered_column_count, spreadsheet_theme_colors, text_overflow_region,
+        trim_trailing_empty_rows, wrap_cell_text, xlsx_horizontal_scale, xlsx_left_offset,
         xlsx_vertical_scale, CellData, CellStyle, DifferentialFontStyle, HorizontalAlignment,
         MergeRange, RowData, SheetData, SheetImage, SheetImageData, SheetPageSetup,
         VerticalAlignment, XlsxStyles,
@@ -4332,6 +4683,7 @@ mod tests {
             default_row_height: 15.0,
             print_title_rows: None,
             page_setup: SheetPageSetup::default(),
+            footer: None,
         };
 
         assert_eq!(rendered_column_count(&sheet), 1);
@@ -4348,10 +4700,56 @@ mod tests {
             default_row_height: 15.0,
             print_title_rows: Some((0, 3)),
             page_setup: SheetPageSetup::default(),
+            footer: None,
         };
         sheet.page_setup.page_size_from_printer = true;
 
         assert_eq!(xlsx_vertical_scale(&sheet, 0.75), 1.0);
+    }
+
+    #[test]
+    fn keeps_explicit_print_scale_at_full_vertical_scale_with_print_titles() {
+        let mut sheet = SheetData {
+            rows: Vec::new(),
+            images: Vec::new(),
+            column_widths: Vec::new(),
+            merges: Vec::new(),
+            row_breaks: Vec::new(),
+            default_row_height: 15.0,
+            print_title_rows: Some((0, 9)),
+            page_setup: SheetPageSetup::default(),
+            footer: None,
+        };
+        sheet.page_setup.print_scale = 0.95;
+
+        assert_eq!(xlsx_vertical_scale(&sheet, 0.75), 1.0);
+    }
+
+    #[test]
+    fn calibrates_horizontal_geometry_for_explicit_scale_with_print_titles() {
+        let mut sheet = SheetData {
+            rows: Vec::new(),
+            images: Vec::new(),
+            column_widths: Vec::new(),
+            merges: Vec::new(),
+            row_breaks: Vec::new(),
+            default_row_height: 15.0,
+            print_title_rows: Some((0, 9)),
+            page_setup: SheetPageSetup::default(),
+            footer: None,
+        };
+        sheet.page_setup.print_scale = 0.95;
+
+        assert_eq!(xlsx_horizontal_scale(&sheet), 0.9797);
+        assert_eq!(xlsx_left_offset(&sheet), 4.32);
+
+        sheet.page_setup.fit_to_width = true;
+
+        assert_eq!(
+            xlsx_horizontal_scale(&sheet),
+            super::PRINT_TITLE_HORIZONTAL_SCALE
+        );
+        assert_eq!(xlsx_left_offset(&sheet), 0.0);
     }
 
     #[test]
@@ -4365,6 +4763,7 @@ mod tests {
             default_row_height: 15.0,
             print_title_rows: Some((12, 12)),
             page_setup: SheetPageSetup::default(),
+            footer: None,
         };
         sheet.page_setup.fit_to_width = true;
 
@@ -4385,6 +4784,7 @@ mod tests {
             default_row_height: 15.0,
             print_title_rows: None,
             page_setup: SheetPageSetup::default(),
+            footer: None,
         };
         sheet.page_setup.fit_to_width = true;
         sheet.page_setup.print_scale = 0.85;
@@ -4482,6 +4882,26 @@ mod tests {
     }
 
     #[test]
+    fn reads_and_expands_xlsx_footer_fields() {
+        let xml = r#"<worksheet><pageMargins footer="0.25"/><headerFooter><oddFooter>&amp;L&amp;6 Doc#: FIR-003.5&#10;Effective: 20171109&amp;C&amp;"Arial,Regular"&amp;6 Page &amp;P of &amp;N</oddFooter></headerFooter></worksheet>"#;
+        let footer = read_sheet_footer(xml)
+            .expect("worksheet XML is valid")
+            .expect("footer exists");
+        let (left, center, right) = parse_header_footer_sections(&footer.format);
+        let (left_text, left_size, left_font) = expand_header_footer_fields(&left, 1, 9);
+        let (center_text, center_size, center_font) = expand_header_footer_fields(&center, 1, 9);
+
+        assert_eq!(footer.margin, 18.0);
+        assert_eq!(left_text, " Doc#: FIR-003.5\nEffective: 20171109");
+        assert_eq!(left_size, 6.0);
+        assert_eq!(left_font, None);
+        assert_eq!(center_text, " Page 1 of 9");
+        assert_eq!(center_size, 6.0);
+        assert_eq!(center_font, Some("arial"));
+        assert!(right.is_empty());
+    }
+
+    #[test]
     fn defaults_fit_to_page_to_one_page_tall() {
         let page_setup = read_page_setup(
             r#"<worksheet><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><pageSetup scale="70"/></worksheet>"#,
@@ -4544,6 +4964,43 @@ mod tests {
     }
 
     #[test]
+    fn formats_custom_excel_date_and_thousands() {
+        let formats = HashMap::from([
+            (164, r#"dd\-mmm\-yyyy"#.to_owned()),
+            (165, "#,##0".to_owned()),
+        ]);
+
+        assert!(matches!(
+            parse_number_format(Some("164"), &formats),
+            super::NumberFormat::DateDayShortMonthYear
+        ));
+        assert!(matches!(
+            parse_number_format(Some("165"), &formats),
+            super::NumberFormat::ThousandsZeroDecimals
+        ));
+        assert!(matches!(
+            parse_number_format(Some("3"), &formats),
+            super::NumberFormat::ThousandsZeroDecimals
+        ));
+        assert_eq!(
+            super::format_numeric_value(
+                46_046.0,
+                "46046",
+                super::NumberFormat::DateDayShortMonthYear
+            ),
+            "24-Jan-2026"
+        );
+        assert_eq!(
+            super::format_numeric_value(
+                61_859.0,
+                "61859",
+                super::NumberFormat::ThousandsZeroDecimals
+            ),
+            "61,859"
+        );
+    }
+
+    #[test]
     fn applies_equal_conditional_font_color() {
         let xml = r#"<worksheet><conditionalFormatting sqref="A1:B1"><cfRule type="cellIs" dxfId="0" operator="equal"><formula>"✔"</formula></cfRule></conditionalFormatting></worksheet>"#;
         let mut rows = vec![RowData {
@@ -4576,6 +5033,28 @@ mod tests {
             PdfColor::new(0.25, 0.46, 0.17)
         );
         assert_eq!(rows[0].cells[1].style.font_color, PdfColor::BLACK);
+    }
+
+    #[test]
+    fn applies_contains_text_conditional_fill() {
+        let xml = r#"<worksheet><conditionalFormatting sqref="H16"><cfRule type="containsText" dxfId="0" text="Accept"><formula>NOT(ISERROR(SEARCH("Accept",H16)))</formula></cfRule></conditionalFormatting></worksheet>"#;
+        let mut cells = vec![CellData::default(); 8];
+        cells[7].text = "Accept".to_owned();
+        let mut rows = vec![RowData {
+            index: 15,
+            height: 15.0,
+            cells,
+        }];
+        let fill = PdfColor::new(0.57, 0.82, 0.32);
+        let styles = XlsxStyles {
+            differential_fills: vec![Some(fill)],
+            ..XlsxStyles::default()
+        };
+
+        apply_sheet_conditional_formats(xml, &mut rows, &styles)
+            .expect("conditional formatting XML is valid");
+
+        assert_eq!(rows[0].cells[7].style.fill_color, Some(fill));
     }
 
     #[test]
@@ -5033,6 +5512,7 @@ mod tests {
             default_row_height: 15.0,
             print_title_rows: None,
             page_setup: SheetPageSetup::default(),
+            footer: None,
         };
 
         assert!(column_group_has_content(&sheet, 0, 1));
@@ -5061,6 +5541,7 @@ mod tests {
                 margin_bottom: 10.0,
                 ..SheetPageSetup::default()
             },
+            footer: None,
         };
 
         assert!(super::automatic_row_breaks(&sheet, sheet.page_setup.page_size, 1.0).is_empty());
@@ -5279,5 +5760,45 @@ mod tests {
         assert!(has_rtl_base_direction("₪120 ספר קוד"));
         assert!(!has_rtl_base_direction("Programming Book"));
         assert!(!has_rtl_base_direction("50 SAR"));
+    }
+
+    #[test]
+    fn expands_right_aligned_text_overflow_into_empty_left_cells() {
+        let sheet = SheetData {
+            rows: Vec::new(),
+            images: Vec::new(),
+            column_widths: vec![20.0, 20.0, 10.0, 10.0],
+            merges: Vec::new(),
+            row_breaks: Vec::new(),
+            default_row_height: 15.0,
+            print_title_rows: None,
+            page_setup: SheetPageSetup::default(),
+            footer: None,
+        };
+        let row = RowData {
+            index: 0,
+            height: 15.0,
+            cells: vec![
+                CellData::default(),
+                CellData::default(),
+                CellData {
+                    text: "Re-inspection:".to_owned(),
+                    ..CellData::default()
+                },
+                CellData {
+                    text: "No".to_owned(),
+                    ..CellData::default()
+                },
+            ],
+        };
+
+        assert_eq!(
+            text_overflow_region(&sheet, &row, &sheet.column_widths, 0, 2, 4, true),
+            (-40.0, 50.0, false)
+        );
+        assert_eq!(
+            text_overflow_region(&sheet, &row, &sheet.column_widths, 0, 2, 4, false),
+            (0.0, 10.0, true)
+        );
     }
 }

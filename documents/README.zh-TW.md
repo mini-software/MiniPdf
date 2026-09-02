@@ -116,5 +116,3 @@ Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start
 ## 授權
 
 採用 [Apache License 2.0](../LICENSE)。允許商業使用，但須保留必要聲明與署名。
-
-你的 [Star](https://github.com/mini-software/MiniPdf) 或[贊助](https://mini-software.github.io/)將協助專案持續發展。
