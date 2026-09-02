@@ -34,7 +34,7 @@ internal static class ExcelReader
     /// Reads all sheets from an Excel file and returns their data as a list of sheets,
     /// where each sheet is a list of rows, and each row is a list of cell values.
     /// </summary>
-    internal static List<ExcelSheet> ReadSheets(Stream stream)
+    internal static List<ExcelSheet> ReadSheets(Stream stream, System.Globalization.CultureInfo? culture = null)
     {
         var sheets = new List<ExcelSheet>();
 
@@ -79,7 +79,7 @@ internal static class ExcelReader
             if (entry == null) continue;
 
             var hyperlinks = ReadWorksheetHyperlinks(archive, entry.FullName);
-            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks);
+            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture);
             var images = ReadSheetImages(archive, entry.FullName);
             var drawingShapes = ReadSheetShapes(archive, entry.FullName, themeColors);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
@@ -108,7 +108,7 @@ internal static class ExcelReader
             if (entry != null)
             {
                 var hyperlinks = ReadWorksheetHyperlinks(archive, entry.FullName);
-                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks);
+                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture);
                 var images = ReadSheetImages(archive, entry.FullName);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
@@ -1812,7 +1812,7 @@ internal static class ExcelReader
     private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings, Dictionary<int, int> boldPrefixLengths,
         List<FontStyleInfo> fontStyles, List<PdfColor?> fillColors, List<CellBorderInfo?> borders, Dictionary<int, string> numberFormats,
         List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts, List<int> cellXfIndents,
-        Dictionary<string, string>? hyperlinks = null)
+        Dictionary<string, string>? hyperlinks = null, System.Globalization.CultureInfo? culture = null)
     {
         var rows = new List<List<ExcelCell>>();
 
@@ -2021,7 +2021,7 @@ internal static class ExcelReader
                             double.TryParse(text, System.Globalization.NumberStyles.Any,
                                 System.Globalization.CultureInfo.InvariantCulture, out var numVal))
                         {
-                            text = FormatNumber(numVal, numFmtId, numberFormats, out var fmtColor, out acctPrefix);
+                            text = FormatNumber(numVal, numFmtId, numberFormats, culture, out var fmtColor, out acctPrefix);
                             // Number format color overrides font color (e.g., [Red] for negatives)
                             if (fmtColor != null)
                                 color = fmtColor;
@@ -2507,11 +2507,11 @@ internal static class ExcelReader
     /// Formats a numeric value according to its Excel number format.
     /// Handles built-in formats and common custom patterns.
     /// </summary>
-    private static string FormatNumber(double value, int numFmtId, Dictionary<int, string> customFormats, out PdfColor? formatColor, out string? accountingPrefix)
+    private static string FormatNumber(double value, int numFmtId, Dictionary<int, string> customFormats, System.Globalization.CultureInfo? culture, out PdfColor? formatColor, out string? accountingPrefix)
     {
         formatColor = null;
         accountingPrefix = null;
-        var ci = System.Globalization.CultureInfo.InvariantCulture;
+        var ci = culture ?? System.Globalization.CultureInfo.InvariantCulture;
 
         // Check custom format first
         if (numFmtId > 0 && customFormats.TryGetValue(numFmtId, out var formatCode))
@@ -2522,7 +2522,7 @@ internal static class ExcelReader
         // Built-in number formats
         return numFmtId switch
         {
-            0 => FormatGeneral(value),          // General
+            0 => FormatGeneral(value, ci),          // General
             1 => value.ToString("F0", ci),      // 0
             2 => value.ToString("F2", ci),      // 0.00
             3 => value.ToString("#,##0", ci),   // #,##0
@@ -2531,21 +2531,21 @@ internal static class ExcelReader
             10 => (value * 100).ToString("F2", ci) + "%", // 0.00%
             11 => value.ToString("0.00E+00", ci),         // 0.00E+00
             // Date formats (14-22): Excel stores dates as serial numbers
-            14 => FormatExcelDate(value, "M/d/yyyy"),
-            15 => FormatExcelDate(value, "d-MMM-yy"),
-            16 => FormatExcelDate(value, "d-MMM"),
-            17 => FormatExcelDate(value, "MMM-yy"),
-            18 => FormatExcelDate(value, "h:mm tt"),
-            19 => FormatExcelDate(value, "h:mm:ss tt"),
-            20 => FormatExcelDate(value, "H:mm"),
-            21 => FormatExcelDate(value, "H:mm:ss"),
-            22 => FormatExcelDate(value, "M/d/yyyy H:mm"),
+            14 => FormatExcelDate(value, "M/d/yyyy", ci),
+            15 => FormatExcelDate(value, "d-MMM-yy", ci),
+            16 => FormatExcelDate(value, "d-MMM", ci),
+            17 => FormatExcelDate(value, "MMM-yy", ci),
+            18 => FormatExcelDate(value, "h:mm tt", ci),
+            19 => FormatExcelDate(value, "h:mm:ss tt", ci),
+            20 => FormatExcelDate(value, "H:mm", ci),
+            21 => FormatExcelDate(value, "H:mm:ss", ci),
+            22 => FormatExcelDate(value, "M/d/yyyy H:mm", ci),
             // More number formats
             37 => value.ToString("#,##0", ci),
             38 => value.ToString("#,##0", ci),
             39 => value.ToString("#,##0.00", ci),
             40 => value.ToString("#,##0.00", ci),
-            _ => FormatGeneral(value)
+            _ => FormatGeneral(value, ci)
         };
     }
 
@@ -2805,9 +2805,9 @@ internal static class ExcelReader
     /// LibreOffice's General format adapts precision to fit approximately 10 characters,
     /// switching to scientific notation for very large/small values.
     /// </summary>
-    private static string FormatGeneral(double value)
+    private static string FormatGeneral(double value, IFormatProvider? provider = null)
     {
-        var ci = System.Globalization.CultureInfo.InvariantCulture;
+        var ci = provider ?? System.Globalization.CultureInfo.InvariantCulture;
         if (value == 0) return "0";
         var abs = Math.Abs(value);
 
@@ -2848,7 +2848,7 @@ internal static class ExcelReader
     /// Converts an Excel serial date number to a date string using the given format code.
     /// Excel epoch: Jan 1, 1900 = serial number 1.
     /// </summary>
-    private static string FormatExcelDate(double serialDate, string formatCode = "yyyy-MM-dd")
+    private static string FormatExcelDate(double serialDate, string formatCode = "yyyy-MM-dd", IFormatProvider? provider = null)
     {
         try
         {
@@ -2866,11 +2866,11 @@ internal static class ExcelReader
             // Convert Excel format code to .NET format
             var dotNetFormat = ConvertExcelDateFormat(formatCode);
 
-            return dateTime.ToString(dotNetFormat, System.Globalization.CultureInfo.InvariantCulture);
+            return dateTime.ToString(dotNetFormat, provider ?? System.Globalization.CultureInfo.InvariantCulture);
         }
         catch
         {
-            return serialDate.ToString("G10", System.Globalization.CultureInfo.InvariantCulture);
+            return serialDate.ToString("G10", provider ?? System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 

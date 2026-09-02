@@ -42,6 +42,9 @@ public sealed class MiniPdfConversionOptions
 
     /// <summary>Target minimum number of worksheet rows per PDF page. Applies by fitting the sheet height to a derived page count.</summary>
     public int? RowsPerPage { get; set; }
+
+    /// <summary>Optional culture used to format numeric and date values from Excel cells. Null uses the invariant culture (current behavior).</summary>
+    public System.Globalization.CultureInfo? Culture { get; set; }
 }
 
 /// <summary>
@@ -684,7 +687,8 @@ public static class MiniPdf
         if (options.MaxRows.HasValue || options.MaxColumns.HasValue ||
             options.Landscape.HasValue || options.FitToPage.HasValue ||
             options.FitToWidth.HasValue || options.FitToHeight.HasValue ||
-            options.PrintScale.HasValue || options.RowsPerPage.HasValue)
+            options.PrintScale.HasValue || options.RowsPerPage.HasValue ||
+            options.Culture != null)
             throw new NotSupportedException("Excel-specific conversion options are only supported for .xlsx files.");
     }
 
@@ -717,6 +721,7 @@ public static class MiniPdf
             FitToHeight = options.FitToHeight,
             PrintScale = options.PrintScale,
             RowsPerPage = options.RowsPerPage,
+            Culture = options.Culture,
         };
 
     private static PdfSaveOptions? CreatePdfSaveOptions(MiniPdfConversionOptions options)
