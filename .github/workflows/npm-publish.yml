@@ -1,0 +1,229 @@
+name: NPM Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: npm package version to publish (for example, 0.1.0)
+        required: true
+        type: string
+      mode:
+        description: Use initial only for the first publication; later releases are staged
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - initial
+          - stage
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref_name, 'node-v')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-latest
+            target: x86_64-pc-windows-msvc
+            zig: false
+          - runner: windows-11-arm
+            target: aarch64-pc-windows-msvc
+            zig: false
+          - runner: macos-15-intel
+            target: x86_64-apple-darwin
+            zig: false
+          - runner: macos-latest
+            target: aarch64-apple-darwin
+            zig: false
+          - runner: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            zig: false
+          - runner: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+            zig: false
+          - runner: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            zig: true
+          - runner: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
+            zig: true
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        working-directory: minipdf-node
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: minipdf-node/package-lock.json
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Setup Zig
+        if: matrix.zig
+        uses: mlugg/setup-zig@v2
+
+      - name: Install cargo-zigbuild
+        if: matrix.zig
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-zigbuild
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        shell: bash
+        env:
+          BUILD_WITH_ZIG: ${{ matrix.zig }}
+        run: |
+          if [ "$BUILD_WITH_ZIG" = "true" ]; then
+            npm run build -- --target ${{ matrix.target }} --zig
+          else
+            npm run build -- --target ${{ matrix.target }}
+          fi
+
+      - name: Upload native addon
+        uses: actions/upload-artifact@v4
+        with:
+          name: binding-${{ matrix.target }}
+          path: minipdf-node/minipdf-node.*.node
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: minipdf-node
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      PUBLISH_MODE: ${{ github.event_name == 'release' && 'stage' || inputs.mode }}
+      RELEASE_VERSION: ${{ github.event_name == 'release' && github.ref_name || inputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
+
+      - name: Install current npm CLI
+        run: npm install --global npm@11.15.0
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Validate release version
+        shell: bash
+        run: |
+          TAG_VERSION="${RELEASE_VERSION#node-v}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          if [ -z "$TAG_VERSION" ] || [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "::error::Release version '$TAG_VERSION' does not match package version '$PACKAGE_VERSION'."
+            exit 1
+          fi
+
+      - name: Create platform packages
+        run: npm run create-npm-dir
+
+      - name: Download native addons
+        uses: actions/download-artifact@v4
+        with:
+          pattern: binding-*
+          path: minipdf-node/artifacts
+          merge-multiple: true
+
+      - name: Assemble platform packages
+        shell: bash
+        run: |
+          npm run artifacts
+          npm run prepare-release
+
+      - name: Verify package contents
+        shell: bash
+        run: |
+          expected="$(node -p "Object.keys(require('./package.json').optionalDependencies).length")"
+          actual="$(find npm -name '*.node' -type f | wc -l | tr -d ' ')"
+          if [ "$actual" != "$expected" ]; then
+            echo "::error::Expected $expected native addons but assembled $actual."
+            exit 1
+          fi
+          for package_dir in npm/*; do
+            npm pack "./$package_dir" --dry-run
+          done
+          npm pack . --dry-run --ignore-scripts
+
+      - name: Require token for initial publication
+        if: env.PUBLISH_MODE == 'initial'
+        shell: bash
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "::error::Add a short-lived granular npm token as the NPM_TOKEN repository secret."
+            exit 1
+          fi
+
+      - name: Publish initial packages
+        if: env.PUBLISH_MODE == 'initial'
+        shell: bash
+        run: |
+          publish_if_missing() {
+            package_dir="$1"
+            package_name="$(node -p "require('./$package_dir/package.json').name")"
+            package_version="$(node -p "require('./$package_dir/package.json').version")"
+            if npm view "$package_name@$package_version" version >/dev/null 2>&1; then
+              echo "$package_name@$package_version already exists; skipping."
+            else
+              (cd "$package_dir" && npm publish --access public --provenance)
+            fi
+          }
+          for package_dir in npm/*; do
+            publish_if_missing "$package_dir"
+          done
+          if npm view "minipdf@$(node -p "require('./package.json').version")" version >/dev/null 2>&1; then
+            echo "minipdf@$(node -p "require('./package.json').version") already exists; skipping."
+          else
+            npm publish . --access public --provenance --ignore-scripts
+          fi
+
+      - name: Stage packages for approval
+        if: env.PUBLISH_MODE == 'stage'
+        shell: bash
+        run: |
+          failures=0
+          for package_dir in npm/*; do
+            if ! (cd "$package_dir" && npm stage publish); then
+              echo "::warning::Could not stage $package_dir; continuing with remaining packages."
+              failures=$((failures + 1))
+            fi
+          done
+          if ! npm stage publish; then
+            echo "::warning::Could not stage the main package."
+            failures=$((failures + 1))
+          fi
+          if [ "$failures" -ne 0 ]; then
+            echo "::error::$failures package publication attempts failed."
+            exit 1
+          fi

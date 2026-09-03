@@ -1,0 +1,23 @@
+[package]
+name = "minipdf-node"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/mini-software/MiniPdf"
+description = "Node.js bindings for MiniPdf Office-to-PDF conversion."
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+minipdf = { path = "../minipdf-rs/crates/minipdf" }
+napi = { version = "2", default-features = false, features = ["napi6"] }
+napi-derive = "2"
+
+[build-dependencies]
+napi-build = "2"
+
+[profile.release]
+lto = true
+strip = "symbols"

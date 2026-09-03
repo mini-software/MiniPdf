@@ -1,0 +1,63 @@
+{
+  "name": "minipdf",
+  "version": "0.1.0",
+  "description": "Native Node.js Office-to-PDF conversion powered by MiniPdf for Rust",
+  "license": "Apache-2.0",
+  "author": "MiniPdf contributors",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mini-software/MiniPdf.git",
+    "directory": "minipdf-node"
+  },
+  "homepage": "https://github.com/mini-software/MiniPdf/tree/main/minipdf-node",
+  "bugs": "https://github.com/mini-software/MiniPdf/issues",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "LICENSE",
+    "lib/",
+    "index.js",
+    "index.d.ts",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.13.0"
+  },
+  "scripts": {
+    "artifacts": "napi artifacts",
+    "build": "napi build --platform --release && node scripts/postprocess-loader.js",
+    "build:debug": "napi build --platform && node scripts/postprocess-loader.js",
+    "create-npm-dir": "napi create-npm-dir -t .",
+    "prepare-release": "node scripts/prepare-release.js",
+    "test": "node --test test/index.test.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "napi": {
+    "name": "minipdf-node",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "aarch64-pc-windows-msvc",
+        "aarch64-apple-darwin",
+        "aarch64-unknown-linux-gnu",
+        "x86_64-unknown-linux-musl",
+        "aarch64-unknown-linux-musl"
+      ]
+    }
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.4",
+    "@types/node": "^20.17.0"
+  },
+  "keywords": [
+    "pdf",
+    "docx",
+    "xlsx",
+    "pptx",
+    "converter",
+    "office"
+  ]
+}
