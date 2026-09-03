@@ -1,0 +1,124 @@
+name: Go Release
+
+on:
+  push:
+    tags:
+      - 'minipdf-go/v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing Go module tag to release (for example, minipdf-go/v0.1.0)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: go-release-${{ github.ref_name }}-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: minipdf-go
+    env:
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.22.x'
+          cache: false
+
+      - name: Validate release tag
+        id: version
+        shell: bash
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^minipdf-go/v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag '$RELEASE_TAG' must match minipdf-go/v<semver>."
+            exit 1
+          fi
+          MODULE_PATH="$(go list -m -f '{{.Path}}')"
+          if [ "$MODULE_PATH" != "github.com/mini-software/MiniPdf/minipdf-go" ]; then
+            echo "::error::Unexpected Go module path '$MODULE_PATH'."
+            exit 1
+          fi
+          VERSION="${RELEASE_TAG#minipdf-go/}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Check formatting
+        shell: bash
+        run: test -z "$(gofmt -l .)"
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./...
+
+      - name: Build release archives
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          mkdir -p dist
+          targets=(
+            windows/amd64
+            windows/arm64
+            linux/amd64
+            linux/arm64
+            darwin/amd64
+            darwin/arm64
+          )
+          for target in "${targets[@]}"; do
+            IFS=/ read -r goos goarch <<< "$target"
+            archive="minipdf_${VERSION}_${goos}_${goarch}"
+            binary="minipdf"
+            if [ "$goos" = "windows" ]; then
+              binary="minipdf.exe"
+            fi
+            mkdir -p "dist/$archive"
+            CGO_ENABLED=0 GOOS="$goos" GOARCH="$goarch" go build \
+              -trimpath \
+              -ldflags="-s -w -X main.version=$VERSION" \
+              -o "dist/$archive/$binary" \
+              ./cmd/minipdf
+            if [ "$goos" = "windows" ]; then
+              (cd "dist/$archive" && zip -q "../$archive.zip" "$binary")
+            else
+              tar -C "dist/$archive" -czf "dist/$archive.tar.gz" "$binary"
+            fi
+            rm -rf "dist/$archive"
+          done
+          (cd dist && sha256sum minipdf_* > checksums.txt)
+
+      - name: Verify embedded version
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          actual="$(go run -ldflags="-X main.version=$VERSION" ./cmd/minipdf --version)"
+          if [ "$actual" != "minipdf $VERSION" ]; then
+            echo "::error::CLI reported '$actual'."
+            exit 1
+          fi
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: MiniPdf Go ${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          files: |
+            minipdf-go/dist/*.zip
+            minipdf-go/dist/*.tar.gz
+            minipdf-go/dist/checksums.txt
