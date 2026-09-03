@@ -110,6 +110,10 @@ Rust 구현에 기여하려면 `dotnet`을 `rust`로 바꾸세요. 공통 PowerS
 | [Rust XLSX 벤치마크](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust 스프레드시트 시각 비교 결과 |
 | [Rust DOCX 벤치마크](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust 문서 시각 비교 결과 |
 | [Rust 벤치마크 절차](../scripts/Run-Rust-Benchmark.ps1) | 픽스처 범위 및 비교 보고서 생성 |
+| [커뮤니티 거버넌스](../GOVERNANCE.md) | 의사 결정, 역할, 투표 및 메인테이너 선정 |
+| [로드맵](../ROADMAP.md) | 프로젝트 범위, 구현 상태 및 현재 우선순위 |
+| [보안](../SECURITY.md) | 비공개 취약점 신고 및 지원 버전 |
+| [기여 가이드](../CONTRIBUTING.md) | 개발 환경, 테스트, 리뷰 및 출처 요건 |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | 패키지 및 독립 실행형 바이너리 |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | 버그, 호환성 보고 및 기능 요청 |
 

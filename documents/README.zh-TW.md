@@ -110,6 +110,10 @@ Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start
 | [Rust XLSX 基準](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust 試算表視覺比較結果 |
 | [Rust DOCX 基準](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust 文件視覺比較結果 |
 | [Rust 基準流程](../scripts/Run-Rust-Benchmark.ps1) | 產生測試涵蓋率與比較報告 |
+| [社群治理](../GOVERNANCE.md) | 決策、角色、投票與維護者選任 |
+| [路線圖](../ROADMAP.md) | 專案範圍、實作狀態與目前優先事項 |
+| [安全政策](../SECURITY.md) | 私密漏洞回報與支援版本 |
+| [貢獻指南](../CONTRIBUTING.md) | 開發環境、測試、審查與來源要求 |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | 套件與獨立二進位檔 |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | 錯誤、相容性報告與功能建議 |
 
