@@ -10,7 +10,7 @@ currently supported.
 ## Install
 
 ```bash
-pip install minipdf-python
+pip install minipdf
 ```
 
 ## Python API
