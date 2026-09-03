@@ -2,11 +2,15 @@
 
 # MiniPdf
 
-**面向 .NET 与 Rust 的轻量级 Office 转 PDF 库和命令行工具。**
+**面向 .NET、Rust、Java、Python、Node.js 与 Go 的轻量级 Office 转 PDF 库和命令行工具。**
 
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
 <a href="https://crates.io/crates/minipdf"><img src="https://img.shields.io/crates/v/minipdf.svg" alt="crates.io"></a>
+<a href="https://central.sonatype.com/artifact/io.github.shps951023/minipdf"><img src="https://img.shields.io/maven-central/v/io.github.shps951023/minipdf.svg" alt="Maven Central"></a>
+<a href="https://pypi.org/project/minipdf/"><img src="https://img.shields.io/pypi/v/minipdf.svg" alt="PyPI"></a>
+<a href="https://www.npmjs.com/package/minipdf"><img src="https://img.shields.io/npm/v/minipdf.svg" alt="npm"></a>
+<a href="https://pkg.go.dev/github.com/mini-software/MiniPdf/minipdf-go"><img src="https://pkg.go.dev/badge/github.com/mini-software/MiniPdf/minipdf-go.svg" alt="Go Reference"></a>
 <a href="https://github.com/mini-software/MiniPdf"><img src="https://img.shields.io/github/stars/mini-software/MiniPdf?logo=github" alt="GitHub stars"></a>
 <a href="https://doi.org/10.5281/zenodo.22057294"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22057294.svg" alt="DOI"></a>
 <a href="../LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
@@ -24,11 +28,14 @@ MiniPdf 无需在运行时安装 Microsoft Office、LibreOffice、Adobe Acrobat 
 
 ## 选择实现
 
-| | .NET | Rust |
-|---|---|---|
-| 输入 | XLSX、DOCX、PPTX | XLSX、DOCX |
-| 接口 | .NET 库、CLI、独立 Native AOT 二进制文件 | Rust crate、CLI |
-| 文档 | **[打开 .NET 指南](README.nuget.md)** | **[打开 Rust 指南](../minipdf-rs/README.md)** |
+| 实现 | 输入 | 接口 | 成熟度 | 文档 |
+|---|---|---|---|---|
+| .NET | XLSX、DOCX、PPTX | 库、CLI、Native AOT 二进制文件 | 稳定 | **[.NET 指南](README.nuget.md)** |
+| Rust | XLSX、DOCX、PPTX | Crate、CLI | 实验性 | **[Rust 指南](../minipdf-rs/README.md)** |
+| Java | XLSX、DOCX | 库、CLI | 实验性 | **[Java 源代码](../minipdf-java/)** |
+| Python | DOCX | 包、CLI | 实验性 | **[Python 指南](../minipdf-python/README.md)** |
+| Node.js | XLSX、DOCX、PPTX | 原生包 | 实验性 | **[Node.js 指南](../minipdf-node/README.md)** |
+| Go | XLSX、DOCX、PPTX | 包、CLI | 实验性 | **[Go 指南](../minipdf-go/README.md)** |
 
 ## 快速开始
 
@@ -70,12 +77,74 @@ minipdf report.docx -o report.pdf
 
 [Rust 指南](../minipdf-rs/README.md)介绍 crate API、CLI、支持范围、已知限制和开发流程。
 
+### Java
+
+```xml
+<dependency>
+	<groupId>io.github.shps951023</groupId>
+	<artifactId>minipdf</artifactId>
+	<version>0.1.0</version>
+</dependency>
+```
+
+```java
+import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Path;
+
+MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+```
+
+### Python
+
+```bash
+pip install minipdf
+```
+
+```python
+import minipdf
+
+minipdf.convert_to_pdf("report.docx", "report.pdf")
+```
+
+[Python 指南](../minipdf-python/README.md)列出了当前 DOCX 功能范围和 CLI 选项。
+
+### Node.js
+
+```bash
+npm install minipdf
+```
+
+```javascript
+const minipdf = require('minipdf')
+
+minipdf.convertToPdf('report.docx', 'report.pdf')
+```
+
+[Node.js 指南](../minipdf-node/README.md)涵盖内存转换、页面尺寸、字体注册和支持的原生平台。
+
+### Go
+
+```bash
+go get github.com/mini-software/MiniPdf/minipdf-go@latest
+```
+
+```go
+import minipdf "github.com/mini-software/MiniPdf/minipdf-go"
+
+if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
+	panic(err)
+}
+```
+
+[Go 指南](../minipdf-go/README.md)介绍包、原生 CLI、当前渲染范围和发布标签。
+
 ## 为什么选择 MiniPdf
 
 - **无需 Office 套件**：转换直接在应用程序或 CLI 内运行。
 - **部署精简**：依赖少，无需外部进程。
 - **适合服务器与 CI**：可用于容器、云服务和流水线。
-- **原生命令行方案**：提供 .NET Native AOT 版本与 Rust CLI。
+- **多语言选择**：可从 .NET、Rust、Java、Python、Node.js 或 Go 使用 MiniPdf。
+- **原生命令行方案**：适用于 .NET、Rust、Java、Python 与 Go。
 
 MiniPdf 专注于实用文档转换，不追求完全复制 Microsoft Office 版式。复杂模板的渲染可能有所不同，请使用在线演示或基准报告评估代表性文件。
 
@@ -84,15 +153,16 @@ MiniPdf 专注于实用文档转换，不追求完全复制 Microsoft Office 版
 在 GitHub Copilot、Claude Code、Cursor、Codex，或任何可编辑文件并运行 PowerShell 的编码 Agent 中打开干净的 fork 或 clone。最简单的贡献方式是将以下指令粘贴到 Agent 聊天中：
 
 ```text
-Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start to finish. Diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
 
-如需改进 Rust 实现，请将 `dotnet` 替换为 `rust`。通用 PowerShell 入口为：
+通用 PowerShell 入口会侦测 `dotnet` 与 `cargo`，然后从已安装的实现中随机选择一个：
 
 ```powershell
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start
 ```
+
+如需覆盖随机选择，请传入 `-Implementation dotnet` 或 `-Implementation rust`。选定的实现会保存到本次循环的状态中，供后续所有操作使用。
 
 贡献循环会检查工具链、安装基准测试所需的 Python 包、创建本地分支，并自动挑选所选渲染器中视觉分数最低的两个差异。Agent 对每个案例最多尝试三次；分数没有改善时会自动还原，再继续下一个案例。只有所选实现的完整测试以及 XLSX/DOCX 视觉基准都通过，且没有明显回归时，才允许创建 PR。
 
@@ -105,6 +175,10 @@ Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start
 | [在线演示](https://mini-software.github.io/MiniPdf/) | 在浏览器中试用转换 |
 | [.NET 文档](README.nuget.md) | 稳定版库与 CLI 用法 |
 | [Rust 文档](../minipdf-rs/README.md) | 实验版 crate 与 CLI 用法 |
+| [Java 实现](../minipdf-java/) | 实验性 Maven 库与 CLI 源代码 |
+| [Python 文档](../minipdf-python/README.md) | 实验性包与 CLI 用法 |
+| [Node.js 文档](../minipdf-node/README.md) | 实验性原生包用法 |
+| [Go 文档](../minipdf-go/README.md) | 实验性包与 CLI 用法 |
 | [.NET XLSX 基准](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | 电子表格视觉比较结果 |
 | [.NET DOCX 基准](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | 文档视觉比较结果 |
 | [Rust XLSX 基准](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust 电子表格视觉比较结果 |

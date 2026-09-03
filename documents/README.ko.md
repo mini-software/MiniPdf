@@ -2,11 +2,15 @@
 
 # MiniPdf
 
-**.NET 및 Rust용 경량 Office-to-PDF 라이브러리와 명령줄 도구입니다.**
+**.NET, Rust, Java, Python, Node.js 및 Go용 경량 Office-to-PDF 라이브러리와 명령줄 도구입니다.**
 
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
 <a href="https://crates.io/crates/minipdf"><img src="https://img.shields.io/crates/v/minipdf.svg" alt="crates.io"></a>
+<a href="https://central.sonatype.com/artifact/io.github.shps951023/minipdf"><img src="https://img.shields.io/maven-central/v/io.github.shps951023/minipdf.svg" alt="Maven Central"></a>
+<a href="https://pypi.org/project/minipdf/"><img src="https://img.shields.io/pypi/v/minipdf.svg" alt="PyPI"></a>
+<a href="https://www.npmjs.com/package/minipdf"><img src="https://img.shields.io/npm/v/minipdf.svg" alt="npm"></a>
+<a href="https://pkg.go.dev/github.com/mini-software/MiniPdf/minipdf-go"><img src="https://pkg.go.dev/badge/github.com/mini-software/MiniPdf/minipdf-go.svg" alt="Go Reference"></a>
 <a href="https://github.com/mini-software/MiniPdf"><img src="https://img.shields.io/github/stars/mini-software/MiniPdf?logo=github" alt="GitHub stars"></a>
 <a href="https://doi.org/10.5281/zenodo.22057294"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22057294.svg" alt="DOI"></a>
 <a href="../LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
@@ -24,11 +28,14 @@ MiniPdf는 런타임에 Microsoft Office, LibreOffice, Adobe Acrobat 또는 COM 
 
 ## 구현 선택
 
-| | .NET | Rust |
-|---|---|---|
-| 입력 | XLSX, DOCX, PPTX | XLSX, DOCX |
-| 인터페이스 | .NET 라이브러리, CLI, 독립 실행형 Native AOT 바이너리 | Rust crate, CLI |
-| 문서 | **[.NET 가이드 열기](README.nuget.md)** | **[Rust 가이드 열기](../minipdf-rs/README.md)** |
+| 구현 | 입력 | 인터페이스 | 성숙도 | 문서 |
+|---|---|---|---|---|
+| .NET | XLSX, DOCX, PPTX | 라이브러리, CLI, Native AOT 바이너리 | 안정 | **[.NET 가이드](README.nuget.md)** |
+| Rust | XLSX, DOCX, PPTX | Crate, CLI | 실험적 | **[Rust 가이드](../minipdf-rs/README.md)** |
+| Java | XLSX, DOCX | 라이브러리, CLI | 실험적 | **[Java 소스](../minipdf-java/)** |
+| Python | DOCX | 패키지, CLI | 실험적 | **[Python 가이드](../minipdf-python/README.md)** |
+| Node.js | XLSX, DOCX, PPTX | 네이티브 패키지 | 실험적 | **[Node.js 가이드](../minipdf-node/README.md)** |
+| Go | XLSX, DOCX, PPTX | 패키지, CLI | 실험적 | **[Go 가이드](../minipdf-go/README.md)** |
 
 ## 빠른 시작
 
@@ -70,12 +77,74 @@ minipdf report.docx -o report.pdf
 
 [Rust 가이드](../minipdf-rs/README.md)에서는 crate API, CLI, 지원 범위, 알려진 제한 사항 및 개발 절차를 설명합니다.
 
+### Java
+
+```xml
+<dependency>
+	<groupId>io.github.shps951023</groupId>
+	<artifactId>minipdf</artifactId>
+	<version>0.1.0</version>
+</dependency>
+```
+
+```java
+import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Path;
+
+MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+```
+
+### Python
+
+```bash
+pip install minipdf
+```
+
+```python
+import minipdf
+
+minipdf.convert_to_pdf("report.docx", "report.pdf")
+```
+
+[Python 가이드](../minipdf-python/README.md)는 현재 DOCX 기능 범위와 CLI 옵션을 설명합니다.
+
+### Node.js
+
+```bash
+npm install minipdf
+```
+
+```javascript
+const minipdf = require('minipdf')
+
+minipdf.convertToPdf('report.docx', 'report.pdf')
+```
+
+[Node.js 가이드](../minipdf-node/README.md)는 메모리 내 변환, 페이지 크기, 글꼴 등록 및 지원 네이티브 플랫폼을 설명합니다.
+
+### Go
+
+```bash
+go get github.com/mini-software/MiniPdf/minipdf-go@latest
+```
+
+```go
+import minipdf "github.com/mini-software/MiniPdf/minipdf-go"
+
+if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
+	panic(err)
+}
+```
+
+[Go 가이드](../minipdf-go/README.md)는 패키지, 네이티브 CLI, 현재 렌더링 범위 및 릴리스 태그를 설명합니다.
+
 ## MiniPdf를 선택하는 이유
 
 - **Office 제품군 불필요**: 애플리케이션 또는 CLI 내부에서 변환합니다.
 - **간결한 배포**: 의존성이 적고 외부 프로세스가 필요하지 않습니다.
 - **서버 및 CI 친화적**: 컨테이너, 클라우드 서비스 및 파이프라인에서 실행됩니다.
-- **네이티브 명령줄 옵션**: .NET Native AOT 릴리스와 Rust CLI를 제공합니다.
+- **다양한 언어 선택**: .NET, Rust, Java, Python, Node.js 또는 Go에서 MiniPdf를 사용할 수 있습니다.
+- **네이티브 명령줄 옵션**: .NET, Rust, Java, Python 및 Go에서 사용할 수 있습니다.
 
 MiniPdf는 실용적인 문서 변환을 목표로 하며 Microsoft Office 레이아웃을 완전히 재현하지는 않습니다. 복잡한 템플릿은 다르게 렌더링될 수 있으므로 온라인 데모나 벤치마크 보고서로 대표 파일을 평가하세요.
 
@@ -84,15 +153,16 @@ MiniPdf는 실용적인 문서 변환을 목표로 하며 Microsoft Office 레�
 GitHub Copilot, Claude Code, Cursor, Codex 또는 파일 편집과 PowerShell 실행이 가능한 모든 코딩 Agent에서 깨끗한 fork 또는 clone을 여세요. 가장 간단한 방법은 다음 지시문을 Agent 채팅에 붙여 넣는 것입니다.
 
 ```text
-Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start to finish. Diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
 
-Rust 구현에 기여하려면 `dotnet`을 `rust`로 바꾸세요. 공통 PowerShell 진입점은 다음과 같습니다.
+공통 PowerShell 진입점은 `dotnet`과 `cargo`를 감지한 다음 설치된 구현 중 하나를 무작위로 선택합니다.
 
 ```powershell
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start
 ```
+
+무작위 선택을 재정의하려면 `-Implementation dotnet` 또는 `-Implementation rust`를 전달하세요. 선택된 구현은 이후 모든 작업에서 사용할 수 있도록 이번 루프 상태에 저장됩니다.
 
 기여 루프는 도구 체인을 확인하고, 벤치마크 Python 패키지를 설치하고, 로컬 브랜치를 만든 뒤 선택한 렌더러에서 시각 점수가 가장 낮은 차이 두 건을 선택합니다. Agent는 사례별로 최대 세 번 수정하며 점수가 개선되지 않으면 자동으로 되돌리고 다음 사례로 이동합니다. 선택한 구현의 전체 테스트와 XLSX/DOCX 시각 벤치마크를 통과하고 의미 있는 회귀가 없을 때만 PR 생성을 허용합니다.
 
@@ -105,6 +175,10 @@ Rust 구현에 기여하려면 `dotnet`을 `rust`로 바꾸세요. 공통 PowerS
 | [온라인 데모](https://mini-software.github.io/MiniPdf/) | 브라우저에서 변환 체험 |
 | [.NET 문서](README.nuget.md) | 안정 버전 라이브러리 및 CLI 사용법 |
 | [Rust 문서](../minipdf-rs/README.md) | 실험 버전 crate 및 CLI 사용법 |
+| [Java 구현](../minipdf-java/) | 실험적 Maven 라이브러리 및 CLI 소스 |
+| [Python 문서](../minipdf-python/README.md) | 실험적 패키지 및 CLI 사용법 |
+| [Node.js 문서](../minipdf-node/README.md) | 실험적 네이티브 패키지 사용법 |
+| [Go 문서](../minipdf-go/README.md) | 실험적 패키지 및 CLI 사용법 |
 | [.NET XLSX 벤치마크](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | 스프레드시트 시각 비교 결과 |
 | [.NET DOCX 벤치마크](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | 문서 시각 비교 결과 |
 | [Rust XLSX 벤치마크](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust 스프레드시트 시각 비교 결과 |

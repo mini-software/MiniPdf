@@ -3,6 +3,8 @@
 const fs = require('node:fs')
 const path = require('node:path')
 
+const oldWindowsX64Require = "require('minipdf-win32-x64-msvc')"
+const newWindowsX64Require = "require('@mini-software/minipdf-win32-x64-msvc')"
 const oldMuslFunction = /function isMusl\(\) \{[\s\S]*?\n\}\n\nswitch \(platform\)/
 const newMuslFunction = `function isMusl() {
   const { glibcVersionRuntime } = process.report.getReport().header
@@ -27,10 +29,11 @@ const newLoadFailure = `if (!nativeBinding) {
 }`
 
 function postprocessLoader(source) {
-  let output = source.replace(
+  let output = source.replaceAll('\r\n', '\n').replace(
     "const { existsSync, readFileSync } = require('fs')",
     "const { existsSync } = require('fs')"
   )
+  output = output.replaceAll(oldWindowsX64Require, newWindowsX64Require)
 
   if (!output.includes(newMuslFunction)) {
     output = output.replace(oldMuslFunction, newMuslFunction)
@@ -39,7 +42,11 @@ function postprocessLoader(source) {
     output = output.replace(oldLoadFailure, newLoadFailure)
   }
 
-  if (!output.includes(newMuslFunction) || !output.includes(newLoadFailure)) {
+  if (
+    !output.includes(newWindowsX64Require) ||
+    !output.includes(newMuslFunction) ||
+    !output.includes(newLoadFailure)
+  ) {
     throw new Error('Generated N-API loader did not match the expected structure')
   }
 
