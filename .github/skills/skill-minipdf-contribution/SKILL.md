@@ -1,14 +1,14 @@
 ---
 name: skill-minipdf-contribution
-description: "Run an automated .NET or Rust MiniPdf contribution loop that selects the two largest XLSX or DOCX visual differences, attempts each fix up to three times with rollback, runs full regression checks, and prepares or creates a PR. Use when: contributing compute time, fixing low-score Office-to-PDF images, running the self-evolution loop, or preparing a benchmark-backed MiniPdf PR."
-argument-hint: "Choose .NET or Rust; optionally specify XLSX or DOCX, a benchmark case, or a score threshold"
+description: "Run an automated .NET or Rust MiniPdf contribution loop that detects installed toolchains, randomly selects an available implementation, selects the two largest XLSX or DOCX visual differences, attempts each fix up to three times with rollback, runs full regression checks, and prepares or creates a PR. Use when: contributing compute time, fixing low-score Office-to-PDF images, running the self-evolution loop, or preparing a benchmark-backed MiniPdf PR."
+argument-hint: "Optionally choose .NET or Rust, a format, a benchmark case, or a score threshold"
 user-invocable: true
 disable-model-invocation: false
 ---
 
 # MiniPdf Contribution Loop
 
-Turn local compute time into a focused, reproducible MiniPdf rendering improvement for either implementation. This Copilot skill is one adapter for the vendor-neutral workflow in `CONTRIBUTING.md`; Claude Code, Cursor, Codex, and terminal agents use the same controller. In VS Code Chat, run `/skill-minipdf-contribution .NET` or `/skill-minipdf-contribution Rust`.
+Turn local compute time into a focused, reproducible MiniPdf rendering improvement for either implementation. This Copilot skill is one adapter for the vendor-neutral workflow in `CONTRIBUTING.md`; Claude Code, Cursor, Codex, and terminal agents use the same controller. In VS Code Chat, run `/skill-minipdf-contribution` for automatic selection, or append `.NET` or `Rust` to choose explicitly.
 
 ## Automatic Path
 
@@ -16,12 +16,10 @@ Run this once from the repository root:
 
 ```powershell
 $loop = ".\scripts\Invoke-MiniPdfContributionLoop.ps1"
-& $loop -Action Start -Implementation dotnet
-# or
-& $loop -Action Start -Implementation rust
+& $loop -Action Start
 ```
 
-`.NET` is the default when `-Implementation` is omitted. `Start` requires a clean working tree, runs implementation-specific preflight, installs benchmark Python packages, creates a local `improve/<implementation>-visual-parity-*` branch, builds fresh isolated XLSX/DOCX baselines for the current HEAD, selects the two documents with the lowest page-level visual scores for that renderer, and stores the choice in `.git/minipdf-contribution-loop/`.
+When `-Implementation` is omitted, `Start` detects `dotnet` and `cargo` and randomly chooses one installed implementation. Pass `-Implementation dotnet` or `-Implementation rust` to override the choice. `Start` requires a clean working tree, runs implementation-specific preflight, installs benchmark Python packages, creates a local `improve/<implementation>-visual-parity-*` branch, builds fresh isolated XLSX/DOCX baselines for the current HEAD, selects the two documents with the lowest page-level visual scores for that renderer, and stores the choice in `.git/minipdf-contribution-loop/`.
 
 For Rust, `Start` first builds fresh isolated XLSX and DOCX baseline reports from the shared classic corpus. The current Rust benchmark uses Microsoft 365 as the primary scored reference and LibreOffice as an auxiliary reference. It therefore requires Cargo, desktop Excel and Word, Python, and LibreOffice. The .NET path requires the .NET SDK, Python, and LibreOffice.
 

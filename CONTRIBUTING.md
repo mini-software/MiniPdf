@@ -128,18 +128,19 @@ Cursor, and Codex. The easiest way to start is to paste this prompt into the
 agent chat:
 
 ```text
-Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start to finish. Diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
 
-Replace `dotnet` with `rust` to work on the Rust implementation. The agent
-integrations are convenience prompts; the workflow and safety gates live in
-one vendor-neutral command:
+The agent integrations are convenience prompts; the workflow and safety gates
+live in one vendor-neutral command. By default it detects `dotnet` and `cargo`
+and randomly chooses one installed implementation:
 
 ```powershell
-# Choose one implementation.
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start
 ```
+
+Pass `-Implementation dotnet` or `-Implementation rust` to choose explicitly.
+The selected implementation is stored in the loop state for subsequent actions.
 
 `Start` requires a clean working tree. It checks prerequisites, creates an
 implementation-specific branch, builds fresh XLSX and DOCX baselines, and
@@ -173,10 +174,10 @@ request still require explicit user approval.
 
 | Agent | Shortcut |
 |---|---|
-| GitHub Copilot | `/skill-minipdf-contribution .NET` or `/skill-minipdf-contribution Rust` |
-| Claude Code | `/minipdf-contribution dotnet` or `/minipdf-contribution rust` |
-| Cursor | `/minipdf-contribution dotnet` or `/minipdf-contribution rust` |
-| Codex | Ask: `Run the MiniPdf contribution loop for dotnet` or `... for rust` |
+| GitHub Copilot | `/skill-minipdf-contribution` (auto) or append `.NET`/`Rust` |
+| Claude Code | `/minipdf-contribution` (auto) or append `dotnet`/`rust` |
+| Cursor | `/minipdf-contribution` (auto) or append `dotnet`/`rust` |
+| Codex | Ask: `Run the MiniPdf contribution loop` (auto) or specify an implementation |
 | Any terminal agent | Run the vendor-neutral PowerShell commands above |
 
 Agents must preserve unrelated changes and must not commit, push, fork, or open

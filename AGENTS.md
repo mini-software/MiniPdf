@@ -40,9 +40,12 @@ All coding agents, including Copilot, Claude Code, Cursor, and Codex, must use
 the vendor-neutral workflow in `CONTRIBUTING.md`. The executable entry point is:
 
 ```powershell
-scripts/Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
-scripts/Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
+scripts/Invoke-MiniPdfContributionLoop.ps1 -Action Start
 ```
+
+The default detects installed .NET and Rust toolchains and randomly chooses an
+available implementation. Pass `-Implementation dotnet` or
+`-Implementation rust` to override it.
 
 Preserve unrelated changes. Do not commit, push, fork, or open a pull request
 without explicit user approval.

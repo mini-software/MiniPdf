@@ -59,7 +59,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./minipdf-node.win32-x64-msvc.node')
           } else {
-            nativeBinding = require('minipdf-win32-x64-msvc')
+            nativeBinding = require('@mini-software/minipdf-win32-x64-msvc')
           }
         } catch (e) {
           loadError = e

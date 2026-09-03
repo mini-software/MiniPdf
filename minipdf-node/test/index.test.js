@@ -11,7 +11,7 @@ const packageJson = require('../package.json')
 const { postprocessLoader } = require('../scripts/postprocess-loader.js')
 const { prepareRelease } = require('../scripts/prepare-release.js')
 
-const expectedNativePackages = [
+const generatedNativePackages = [
   'minipdf-darwin-arm64',
   'minipdf-darwin-x64',
   'minipdf-linux-arm64-gnu',
@@ -21,6 +21,12 @@ const expectedNativePackages = [
   'minipdf-win32-arm64-msvc',
   'minipdf-win32-x64-msvc'
 ]
+
+const expectedNativePackages = generatedNativePackages.map((name) =>
+  name === 'minipdf-win32-x64-msvc'
+    ? '@mini-software/minipdf-win32-x64-msvc'
+    : name
+)
 
 const fixturePath = path.join(
   __dirname,
@@ -88,6 +94,8 @@ test('keeps native loader diagnostics compatible with Node 18', () => {
   const loader = fs.readFileSync(loaderPath, 'utf8')
 
   assert.doesNotMatch(loader, /which ldd|readFileSync/)
+  assert.doesNotMatch(loader, /require\('minipdf-win32-x64-msvc'\)/)
+  assert.match(loader, /require\('@mini-software\/minipdf-win32-x64-msvc'\)/)
   assert.match(loader, /Failed to load MiniPdf native binding for \$\{platform\}\/\$\{arch\}/)
   assert.equal(postprocessLoader(loader), loader)
 })
@@ -101,8 +109,9 @@ test('prepares aligned platform packages for release', (context) => {
     JSON.stringify({ name: 'minipdf', version: '0.1.0' })
   )
   fs.writeFileSync(path.join(packageRoot, 'LICENSE'), 'license text')
+  fs.copyFileSync(path.join(__dirname, '..', 'index.js'), path.join(packageRoot, 'index.js'))
 
-  for (const packageName of expectedNativePackages) {
+  for (const packageName of generatedNativePackages) {
     const platformDirectory = path.join(
       packageRoot,
       'npm',
@@ -125,6 +134,14 @@ test('prepares aligned platform packages for release', (context) => {
   )
   assert.deepEqual(dependencies, expectedDependencies)
   assert.deepEqual(preparedPackage.optionalDependencies, expectedDependencies)
+  const windowsX64Package = JSON.parse(
+    fs.readFileSync(path.join(packageRoot, 'npm', 'win32-x64-msvc', 'package.json'), 'utf8')
+  )
+  assert.equal(windowsX64Package.name, '@mini-software/minipdf-win32-x64-msvc')
+  assert.match(
+    fs.readFileSync(path.join(packageRoot, 'index.js'), 'utf8'),
+    /require\('@mini-software\/minipdf-win32-x64-msvc'\)/
+  )
   assert.equal(
     fs.readFileSync(path.join(packageRoot, 'npm', 'darwin-arm64', 'LICENSE'), 'utf8'),
     'license text'
