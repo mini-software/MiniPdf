@@ -9,6 +9,10 @@
 **/*.egg-info/
 **/build/
 **/dist/
+**/node_modules/
+**/*.node
+**/*.tgz
+minipdf-node/npm/
 
 ## IDE
 .vs/
