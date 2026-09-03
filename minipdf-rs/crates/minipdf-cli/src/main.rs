@@ -6,7 +6,7 @@ use clap::{Args, Parser, Subcommand, ValueEnum};
 #[derive(Debug, Parser)]
 #[command(name = "minipdf")]
 #[command(version)]
-#[command(about = "Convert Excel/Word files to PDF with the experimental Rust MiniPdf engine.")]
+#[command(about = "Convert Office files to PDF with the experimental Rust MiniPdf engine.")]
 struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,
@@ -101,9 +101,9 @@ fn run_convert(
         .and_then(|ext| ext.to_str())
         .map(|ext| ext.to_ascii_lowercase())
         .unwrap_or_default();
-    if ext != "xlsx" && ext != "docx" {
+    if ext != "xlsx" && ext != "docx" && ext != "pptx" {
         return Err(minipdf::MiniPdfError::InvalidInput(format!(
-            "unsupported file type '.{ext}'. Supported: .xlsx, .docx"
+            "unsupported file type '.{ext}'. Supported: .xlsx, .docx, .pptx"
         )));
     }
 

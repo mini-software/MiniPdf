@@ -1,6 +1,7 @@
 mod docx;
 mod office;
 mod pdf;
+mod pptx;
 mod xlsx;
 
 use std::fs;
@@ -122,6 +123,7 @@ pub fn convert_to_pdf_bytes_with_options(
     {
         Some(ext) if ext == "docx" => docx::convert_docx_bytes(&bytes, options),
         Some(ext) if ext == "xlsx" => xlsx::convert_xlsx_bytes(&bytes, options),
+        Some(ext) if ext == "pptx" => pptx::convert_pptx_bytes(&bytes, options),
         _ => convert_bytes_to_pdf_with_options(&bytes, options),
     }
 }
@@ -137,6 +139,7 @@ pub fn convert_bytes_to_pdf_with_options(
     match detect_office_format(input)? {
         OfficeFormat::Docx => docx::convert_docx_bytes(input, options),
         OfficeFormat::Xlsx => xlsx::convert_xlsx_bytes(input, options),
+        OfficeFormat::Pptx => pptx::convert_pptx_bytes(input, options),
         OfficeFormat::Unknown => Err(MiniPdfError::UnsupportedFormat),
     }
 }

@@ -14,6 +14,7 @@
     .\scripts\Run-Rust-Benchmark.ps1 -Suite classic -Format docx -Filter "classic01"
     .\scripts\Run-Rust-Benchmark.ps1 -Suite issue -Format xlsx
     .\scripts\Run-Rust-Benchmark.ps1 -Suite issue -Format docx -Filter "SA8000"
+    .\scripts\Run-Rust-Benchmark.ps1 -Suite issue -Format pptx -Filter "Asian Pacific"
 #>
 
 param(
@@ -40,9 +41,6 @@ param(
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 
-if ($Format -eq "pptx") {
-    throw "Rust MiniPdf does not support .pptx. Supported formats: xlsx, docx."
-}
 if ($MaxCases -lt 0) {
     throw "MaxCases must be zero (all cases) or a positive number."
 }
@@ -92,9 +90,21 @@ $Defaults = @{
         SourceArgument = "--docx-dir"
         OfficeLabel = "Microsoft 365 Word Reference"
     }
+    "issue:pptx" = @{
+        Source = "tests/Issue_Files/pptx"
+        LibreReference = "tests/Issue_Files/reference_pptx"
+        OfficeReference = "tests/Issue_Files/office_pptx"
+        LibreReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs_pptx.py"
+        OfficeReferenceScript = "tests/MiniPdf.Benchmark/generate_office_pdfs_pptx.py"
+        SourceArgument = "--pptx-dir"
+        OfficeLabel = "Microsoft 365 PowerPoint Reference"
+    }
 }
 
 $Config = $Defaults["$Suite`:$Format"]
+if (-not $Config) {
+    throw "No Rust benchmark fixtures are configured for suite=$Suite format=$Format."
+}
 $SourceDir = Resolve-RepoPath $(if ($SourceDir) { $SourceDir } else { $Config.Source })
 $ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $Config.OfficeReference })
 $AuxiliaryReferenceDir = Resolve-RepoPath $(if ($AuxiliaryReferenceDir) { $AuxiliaryReferenceDir } else { $Config.LibreReference })

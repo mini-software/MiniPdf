@@ -3,8 +3,8 @@
     Run and summarize every Rust-supported shared visual benchmark suite.
 
 .DESCRIPTION
-    Covers classic/issue XLSX and DOCX fixtures. This does not execute C# xUnit
-    tests. PPTX is excluded because the Rust converter does not support it.
+    Covers classic/issue XLSX and DOCX fixtures plus issue PPTX fixtures. This
+    does not execute C# xUnit tests.
 #>
 
 param(
@@ -27,7 +27,8 @@ $Targets = @(
     [pscustomobject]@{ Suite = "classic"; Format = "xlsx" },
     [pscustomobject]@{ Suite = "classic"; Format = "docx" },
     [pscustomobject]@{ Suite = "issue"; Format = "xlsx" },
-    [pscustomobject]@{ Suite = "issue"; Format = "docx" }
+    [pscustomobject]@{ Suite = "issue"; Format = "docx" },
+    [pscustomobject]@{ Suite = "issue"; Format = "pptx" }
 )
 
 if (-not $ReportOnly) {
@@ -56,7 +57,7 @@ $Rows = foreach ($Target in $Targets) {
         format = $Coverage.format
         reference_engine = $Coverage.reference_engine
         auxiliary_reference_engine = $Coverage.auxiliary_reference_engine
-        report = if ($Coverage.format -eq "xlsx") { "$($Coverage.suite)/$($Coverage.format)/report/comparison_report.md" } else { $null }
+        report = "$($Coverage.suite)/$($Coverage.format)/report/comparison_report.md"
         selected_cases = $Coverage.selected_cases
         passed_conversions = $Coverage.passed_conversions
         failed_conversions = $Coverage.failed_conversions
@@ -73,10 +74,10 @@ $Rows = foreach ($Target in $Targets) {
 $Summary = [pscustomobject]@{
     fixture_scope = "shared-on-disk-fixtures"
     executes_dotnet_xunit = $false
-    rust_supported_formats = @("xlsx", "docx")
+    rust_supported_formats = @("xlsx", "docx", "pptx")
     reference_engine = "o365"
     auxiliary_reference_engine = "libreoffice"
-    unsupported_formats = @("pptx")
+    unsupported_formats = @()
     selected_cases = ($Rows | Measure-Object selected_cases -Sum).Sum
     passed_conversions = ($Rows | Measure-Object passed_conversions -Sum).Sum
     failed_conversions = ($Rows | Measure-Object failed_conversions -Sum).Sum
@@ -107,7 +108,7 @@ $Markdown += @(
     "",
     "Total shared fixtures: **$($Summary.selected_cases)**",
     "",
-    "Rust-supported formats: XLSX, DOCX. PPTX is not supported and is not counted."
+    "Rust-supported formats: XLSX, DOCX, PPTX."
 )
 $Markdown | Set-Content $MatrixMarkdown -Encoding UTF8
 
