@@ -9,6 +9,7 @@ pub enum OfficeFormat {
     Unknown,
     Xlsx,
     Docx,
+    Pptx,
 }
 
 pub(crate) fn detect_office_format<R: Read + Seek>(reader: R) -> Result<OfficeFormat> {
@@ -21,6 +22,9 @@ pub(crate) fn detect_office_format<R: Read + Seek>(reader: R) -> Result<OfficeFo
         }
         if name.starts_with("xl/") {
             return Ok(OfficeFormat::Xlsx);
+        }
+        if name.starts_with("ppt/") {
+            return Ok(OfficeFormat::Pptx);
         }
     }
     Ok(OfficeFormat::Unknown)

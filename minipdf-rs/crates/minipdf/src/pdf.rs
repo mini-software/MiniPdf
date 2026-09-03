@@ -32,6 +32,14 @@ pub struct PdfTextStyle {
 }
 
 #[derive(Debug, Clone)]
+pub(crate) enum PdfPathCommand {
+    MoveTo(f32, f32),
+    LineTo(f32, f32),
+    CurveTo(f32, f32, f32, f32, f32, f32),
+    Close,
+}
+
+#[derive(Debug, Clone)]
 enum PdfOp {
     Text {
         text: String,
@@ -41,13 +49,24 @@ enum PdfOp {
         color: PdfColor,
         bold: bool,
         italic: bool,
-        preferred_font: Option<&'static str>,
+        preferred_font: Option<String>,
     },
     Rect {
         x: f32,
         y: f32,
         width: f32,
         height: f32,
+        color: PdfColor,
+    },
+    Ellipse {
+        x: f32,
+        y: f32,
+        width: f32,
+        height: f32,
+        color: PdfColor,
+    },
+    Path {
+        commands: Vec<PdfPathCommand>,
         color: PdfColor,
     },
     Line {
@@ -57,7 +76,7 @@ enum PdfOp {
         y2: f32,
         color: PdfColor,
         width: f32,
-        dashed: bool,
+        dash_pattern: Vec<f32>,
     },
     Image {
         image_id: usize,
@@ -135,15 +154,39 @@ impl PdfPage {
         font_size: f32,
         style: PdfTextStyle,
     ) {
+        self.add_styled_text_with_font(
+            text,
+            x,
+            y,
+            font_size,
+            style.color,
+            style.bold,
+            style.italic,
+            style.preferred_font,
+        );
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn add_styled_text_with_font(
+        &mut self,
+        text: impl Into<String>,
+        x: f32,
+        y: f32,
+        font_size: f32,
+        color: PdfColor,
+        bold: bool,
+        italic: bool,
+        preferred_font: Option<&str>,
+    ) {
         self.ops.push(PdfOp::Text {
             text: text.into(),
             x,
             y,
             font_size,
-            color: style.color,
-            bold: style.bold,
-            italic: style.italic,
-            preferred_font: style.preferred_font,
+            color,
+            bold,
+            italic,
+            preferred_font: preferred_font.map(str::to_owned),
         });
     }
 
@@ -157,6 +200,22 @@ impl PdfPage {
         });
     }
 
+    pub(crate) fn add_ellipse(&mut self, x: f32, y: f32, width: f32, height: f32, color: PdfColor) {
+        self.ops.push(PdfOp::Ellipse {
+            x,
+            y,
+            width,
+            height,
+            color,
+        });
+    }
+
+    pub(crate) fn add_path(&mut self, commands: Vec<PdfPathCommand>, color: PdfColor) {
+        if !commands.is_empty() {
+            self.ops.push(PdfOp::Path { commands, color });
+        }
+    }
+
     pub fn add_line(&mut self, x1: f32, y1: f32, x2: f32, y2: f32, color: PdfColor, width: f32) {
         self.ops.push(PdfOp::Line {
             x1,
@@ -165,7 +224,7 @@ impl PdfPage {
             y2,
             color,
             width,
-            dashed: false,
+            dash_pattern: Vec::new(),
         });
     }
 
@@ -185,7 +244,26 @@ impl PdfPage {
             y2,
             color,
             width,
-            dashed: true,
+            dash_pattern: vec![0.8, 1.2],
+        });
+    }
+
+    pub(crate) fn add_line_with_dash_pattern(
+        &mut self,
+        start: (f32, f32),
+        end: (f32, f32),
+        color: PdfColor,
+        width: f32,
+        dash_pattern: &[f32],
+    ) {
+        self.ops.push(PdfOp::Line {
+            x1: start.0,
+            y1: start.1,
+            x2: end.0,
+            y2: end.1,
+            color,
+            width,
+            dash_pattern: dash_pattern.to_vec(),
         });
     }
 
@@ -406,7 +484,7 @@ fn prepare_embedded_fonts(pages: &[PdfPage], fonts: &[RegisteredFont]) -> Vec<Em
             else {
                 continue;
             };
-            for run in split_font_runs(text, fonts, *bold, *italic, *preferred_font) {
+            for run in split_font_runs(text, fonts, *bold, *italic, preferred_font.as_deref()) {
                 let Some(font_index) = run.font_index else {
                     continue;
                 };
@@ -880,7 +958,7 @@ fn write_content_stream(
                 };
                 let mut cursor_x = *x;
                 let mut cursor_y = *y;
-                for run in split_font_runs(text, fonts, *bold, *italic, *preferred_font) {
+                for run in split_font_runs(text, fonts, *bold, *italic, preferred_font.as_deref()) {
                     let Some(font_index) = run.font_index else {
                         content.push_str(&format!(
                             "BT /{built_in_font} {:.2} Tf {:.3} {:.3} {:.3} rg {:.2} {:.2} Td ({}) Tj ET\n",
@@ -950,6 +1028,77 @@ fn write_content_stream(
                     height
                 ));
             }
+            PdfOp::Ellipse {
+                x,
+                y,
+                width,
+                height,
+                color,
+            } => {
+                let radius_x = width / 2.0;
+                let radius_y = height / 2.0;
+                let center_x = x + radius_x;
+                let center_y = y + radius_y;
+                let control_x = radius_x * 0.552_284_8;
+                let control_y = radius_y * 0.552_284_8;
+                content.push_str(&format!(
+                    "{:.3} {:.3} {:.3} rg {:.2} {:.2} m {:.2} {:.2} {:.2} {:.2} {:.2} {:.2} c {:.2} {:.2} {:.2} {:.2} {:.2} {:.2} c {:.2} {:.2} {:.2} {:.2} {:.2} {:.2} c {:.2} {:.2} {:.2} {:.2} {:.2} {:.2} c h f\n",
+                    clamp_color(color.r),
+                    clamp_color(color.g),
+                    clamp_color(color.b),
+                    center_x + radius_x,
+                    center_y,
+                    center_x + radius_x,
+                    center_y + control_y,
+                    center_x + control_x,
+                    center_y + radius_y,
+                    center_x,
+                    center_y + radius_y,
+                    center_x - control_x,
+                    center_y + radius_y,
+                    center_x - radius_x,
+                    center_y + control_y,
+                    center_x - radius_x,
+                    center_y,
+                    center_x - radius_x,
+                    center_y - control_y,
+                    center_x - control_x,
+                    center_y - radius_y,
+                    center_x,
+                    center_y - radius_y,
+                    center_x + control_x,
+                    center_y - radius_y,
+                    center_x + radius_x,
+                    center_y - control_y,
+                    center_x + radius_x,
+                    center_y
+                ));
+            }
+            PdfOp::Path { commands, color } => {
+                content.push_str(&format!(
+                    "{:.3} {:.3} {:.3} rg ",
+                    clamp_color(color.r),
+                    clamp_color(color.g),
+                    clamp_color(color.b)
+                ));
+                for command in commands {
+                    match command {
+                        PdfPathCommand::MoveTo(x, y) => {
+                            content.push_str(&format!("{x:.2} {y:.2} m "));
+                        }
+                        PdfPathCommand::LineTo(x, y) => {
+                            content.push_str(&format!("{x:.2} {y:.2} l "));
+                        }
+                        PdfPathCommand::CurveTo(x1, y1, x2, y2, x3, y3) => {
+                            content.push_str(&format!(
+                                "{x1:.2} {y1:.2} {x2:.2} {y2:.2} {x3:.2} {y3:.2} c "
+                            ));
+                        }
+                        PdfPathCommand::Close => content.push_str("h "),
+                    }
+                }
+                content.push_str("f\n");
+            }
             PdfOp::Line {
                 x1,
                 y1,
@@ -957,11 +1106,15 @@ fn write_content_stream(
                 y2,
                 color,
                 width,
-                dashed,
+                dash_pattern,
             } => {
+                let dash = dash_pattern
+                    .iter()
+                    .map(|value| format!("{value:.2}"))
+                    .collect::<Vec<_>>()
+                    .join(" ");
                 content.push_str(&format!(
-                    "{} {:.3} {:.3} {:.3} RG {:.2} w {:.2} {:.2} m {:.2} {:.2} l S\n",
-                    if *dashed { "[0.8 1.2] 0 d" } else { "[] 0 d" },
+                    "[{dash}] 0 d {:.3} {:.3} {:.3} RG {:.2} w {:.2} {:.2} m {:.2} {:.2} l S\n",
                     clamp_color(color.r),
                     clamp_color(color.g),
                     clamp_color(color.b),
@@ -1027,7 +1180,7 @@ fn escape_pdf_text(text: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{font_preference, PdfDocument};
+    use super::{font_preference, PdfColor, PdfDocument, PdfPathCommand};
 
     #[test]
     fn prefers_simhei_for_bold_cjk_text() {
@@ -1155,5 +1308,28 @@ mod tests {
         let pdf = String::from_utf8_lossy(&document.to_bytes()).into_owned();
         assert!(pdf.contains("q 10.00 20.00 30.00 40.00 re W n"));
         assert!(pdf.contains("Q\n"));
+    }
+
+    #[test]
+    fn writes_pptx_vector_primitives() {
+        let mut document = PdfDocument::new();
+        let page = document.add_page(100.0, 100.0);
+        page.add_ellipse(10.0, 20.0, 30.0, 40.0, PdfColor::BLACK);
+        page.add_path(
+            vec![
+                PdfPathCommand::MoveTo(1.0, 2.0),
+                PdfPathCommand::LineTo(3.0, 4.0),
+                PdfPathCommand::CurveTo(5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
+                PdfPathCommand::Close,
+            ],
+            PdfColor::WHITE,
+        );
+        page.add_line_with_dash_pattern((1.0, 2.0), (3.0, 4.0), PdfColor::BLACK, 1.0, &[3.0, 2.0]);
+
+        let pdf = String::from_utf8_lossy(&document.to_bytes()).into_owned();
+        assert!(pdf.contains("c h f"));
+        assert!(pdf.contains("1.00 2.00 m 3.00 4.00 l"));
+        assert!(pdf.contains("5.00 6.00 7.00 8.00 9.00 10.00 c h f"));
+        assert!(pdf.contains("[3.00 2.00] 0 d"));
     }
 }

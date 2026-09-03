@@ -14,8 +14,8 @@ named `minipdf`.
 [.NET implementation](../documents/README.nuget.md)
 
 > The Rust implementation is under active development and is not yet
-> feature-equivalent with MiniPdf for .NET. It currently converts XLSX and DOCX
-> files. Use the .NET implementation for PPTX or broader production compatibility.
+> feature-equivalent with MiniPdf for .NET. It currently converts XLSX, DOCX,
+> and PPTX files. Use the .NET implementation for broader production compatibility.
 
 ## Requirements
 
@@ -62,8 +62,9 @@ minipdf::convert_to_pdf_with_options("report.docx", "report.pdf", &custom)?;
 Custom dimensions use PDF points, where 72 points equal one inch. XLSX
 conversion uses an explicit API override first, then the worksheet `pageSetup`
 paper size and orientation. DOCX conversion uses the section page size and
-margins unless the API overrides the page size. A document without recognized
-page geometry uses A4.
+margins unless the API overrides the page size. PPTX conversion uses the
+presentation slide size unless the API overrides it. A document without
+recognized page geometry uses its format default.
 
 For a host with limited system fonts, register font bytes before conversion:
 
@@ -95,6 +96,7 @@ Specify an output path or font directory:
 ```bash
 minipdf data.xlsx -o data.pdf
 minipdf report.docx --fonts ./fonts
+minipdf slides.pptx -o slides.pdf
 minipdf convert report.docx -o report.pdf
 ```
 
@@ -115,16 +117,19 @@ Custom width and height must be provided together.
 |---|---|
 | XLSX to PDF | Supported; rendering coverage is expanding |
 | DOCX to PDF | Supported; rendering coverage is expanding |
-| PPTX to PDF | Not supported |
+| PPTX to PDF | Supported; rendering coverage is expanding |
 | PDF output | PDF 1.4 |
 | Fonts | Built-in Helvetica and registered/system fallback fonts |
-| Page size | XLSX/DOCX page setup, A4/Letter presets, or custom point dimensions |
+| Page size | Office page/slide geometry, A4/Letter presets, or custom point dimensions |
 | Interfaces | Rust crate and native CLI |
 
 The converter preserves sparse worksheet row positions, paginates wide sheets
 horizontally, and supports basic spreadsheet styling, drawing images, document
 text, explicit DOCX page breaks, basic DOCX tables, and Unicode fallback fonts.
-Complex Office layout can still differ from the source application.
+PPTX support includes themes and placeholders, basic shapes and connectors,
+text, raster and SVG images, tables, and SmartArt drawing fallbacks. Complex
+shape geometry, transforms, animations, and Office-specific layout can still
+differ from the source application.
 
 ## Development
 
