@@ -48,6 +48,20 @@ cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 ```
 
+### Python
+
+Install Python 3.10 or later, then run:
+
+```powershell
+python -m pip install -e ".\minipdf-python[dev]"
+python -m pytest minipdf-python/tests
+python -m ruff check minipdf-python
+python -m ruff format --check minipdf-python
+python -m mypy minipdf-python/src minipdf-python/tests
+python -m build minipdf-python
+python -m twine check minipdf-python/dist/*
+```
+
 ### Documentation
 
 Keep commands, APIs, benchmark results, and report links consistent. Changes to
