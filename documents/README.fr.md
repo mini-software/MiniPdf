@@ -110,6 +110,10 @@ Les deux parcours nécessitent Git, Python 3.10+ et LibreOffice. .NET nécessite
 | [Benchmark XLSX Rust](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Résultats de comparaison visuelle Rust des feuilles de calcul |
 | [Benchmark DOCX Rust](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Résultats de comparaison visuelle Rust des documents |
 | [Procédure de benchmark Rust](../scripts/Run-Rust-Benchmark.ps1) | Génère la couverture des tests et les rapports comparatifs |
+| [Gouvernance communautaire](../GOVERNANCE.md) | Décisions, rôles, votes et sélection des mainteneurs |
+| [Feuille de route](../ROADMAP.md) | Périmètre du projet, état des implémentations et priorités |
+| [Sécurité](../SECURITY.md) | Signalement privé des vulnérabilités et versions prises en charge |
+| [Contribuer](../CONTRIBUTING.md) | Environnement, tests, revues et exigences de provenance |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | Paquets et binaires autonomes |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | Bogues, rapports de compatibilité et demandes de fonctionnalités |
 
