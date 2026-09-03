@@ -1,3 +1,5 @@
+use std::panic::{catch_unwind, AssertUnwindSafe};
+
 use minipdf::{ConversionOptions as CoreConversionOptions, PageSize as CorePageSize};
 use napi::bindgen_prelude::{Buffer, Error, Result, Status};
 use napi_derive::napi;
@@ -62,19 +64,21 @@ pub fn detect_office_format(input: Buffer) -> Result<String> {
 }
 
 #[napi(js_name = "registerFont")]
-pub fn register_font(name: String, font_data: Buffer) {
-    minipdf::register_font(name, font_data.to_vec());
+pub fn register_font(name: String, font_data: Buffer) -> Result<()> {
+    catch_core_panic(|| minipdf::register_font(name, font_data.to_vec()))
 }
 
 #[napi(js_name = "registeredFonts")]
-pub fn registered_fonts() -> Vec<RegisteredFont> {
-    minipdf::registered_fonts()
-        .into_iter()
-        .map(|font| RegisteredFont {
-            name: font.name,
-            data: Buffer::from(font.data),
-        })
-        .collect()
+pub fn registered_fonts() -> Result<Vec<RegisteredFont>> {
+    catch_core_panic(minipdf::registered_fonts).map(|fonts| {
+        fonts
+            .into_iter()
+            .map(|font| RegisteredFont {
+                name: font.name,
+                data: Buffer::from(font.data),
+            })
+            .collect()
+    })
 }
 
 fn to_core_options(options: Option<ConversionOptions>) -> Result<CoreConversionOptions> {
@@ -88,5 +92,20 @@ fn to_core_options(options: Option<ConversionOptions>) -> Result<CoreConversionO
 }
 
 fn to_napi_error(error: minipdf::MiniPdfError) -> Error {
-    Error::new(Status::GenericFailure, error.to_string())
+    let status = match &error {
+        minipdf::MiniPdfError::InvalidInput(_) | minipdf::MiniPdfError::UnsupportedFormat => {
+            Status::InvalidArg
+        }
+        _ => Status::GenericFailure,
+    };
+    Error::new(status, error.to_string())
+}
+
+fn catch_core_panic<T>(operation: impl FnOnce() -> T) -> Result<T> {
+    catch_unwind(AssertUnwindSafe(operation)).map_err(|_| {
+        Error::new(
+            Status::GenericFailure,
+            "MiniPdf core operation panicked".to_owned(),
+        )
+    })
 }

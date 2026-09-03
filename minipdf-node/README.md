@@ -7,8 +7,7 @@ The package converts XLSX, DOCX, and PPTX files without requiring Microsoft
 Office, LibreOffice, Adobe Acrobat, or .NET at runtime.
 
 > The Node.js implementation is under active development and is not yet
-> feature-equivalent with MiniPdf for .NET. The initial package is built from
-> source and does not yet publish prebuilt platform binaries.
+> feature-equivalent with MiniPdf for .NET.
 
 ## Requirements
 
