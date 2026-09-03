@@ -11,6 +11,17 @@ const packageJson = require('../package.json')
 const { postprocessLoader } = require('../scripts/postprocess-loader.js')
 const { prepareRelease } = require('../scripts/prepare-release.js')
 
+const expectedNativePackages = [
+  'minipdf-darwin-arm64',
+  'minipdf-darwin-x64',
+  'minipdf-linux-arm64-gnu',
+  'minipdf-linux-arm64-musl',
+  'minipdf-linux-x64-gnu',
+  'minipdf-linux-x64-musl',
+  'minipdf-win32-arm64-msvc',
+  'minipdf-win32-x64-msvc'
+]
+
 const fixturePath = path.join(
   __dirname,
   '..',
@@ -91,12 +102,16 @@ test('prepares aligned platform packages for release', (context) => {
   )
   fs.writeFileSync(path.join(packageRoot, 'LICENSE'), 'license text')
 
-  for (let index = 0; index < 8; index += 1) {
-    const platformDirectory = path.join(packageRoot, 'npm', `platform-${index}`)
+  for (const packageName of expectedNativePackages) {
+    const platformDirectory = path.join(
+      packageRoot,
+      'npm',
+      packageName.replace('minipdf-', '')
+    )
     fs.mkdirSync(platformDirectory, { recursive: true })
     fs.writeFileSync(
       path.join(platformDirectory, 'package.json'),
-      JSON.stringify({ name: `minipdf-platform-${index}`, version: '0.1.0' })
+      JSON.stringify({ name: packageName, version: '0.1.0' })
     )
   }
 
@@ -105,10 +120,13 @@ test('prepares aligned platform packages for release', (context) => {
     fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8')
   )
 
-  assert.equal(Object.keys(dependencies).length, 8)
-  assert.deepEqual(preparedPackage.optionalDependencies, dependencies)
+  const expectedDependencies = Object.fromEntries(
+    expectedNativePackages.map((name) => [name, '0.1.0'])
+  )
+  assert.deepEqual(dependencies, expectedDependencies)
+  assert.deepEqual(preparedPackage.optionalDependencies, expectedDependencies)
   assert.equal(
-    fs.readFileSync(path.join(packageRoot, 'npm', 'platform-0', 'LICENSE'), 'utf8'),
+    fs.readFileSync(path.join(packageRoot, 'npm', 'darwin-arm64', 'LICENSE'), 'utf8'),
     'license text'
   )
 })

@@ -3,6 +3,17 @@
 const fs = require('node:fs')
 const path = require('node:path')
 
+const SUPPORTED_NATIVE_PACKAGES = [
+  'minipdf-darwin-arm64',
+  'minipdf-darwin-x64',
+  'minipdf-linux-arm64-gnu',
+  'minipdf-linux-arm64-musl',
+  'minipdf-linux-x64-gnu',
+  'minipdf-linux-x64-musl',
+  'minipdf-win32-arm64-msvc',
+  'minipdf-win32-x64-msvc'
+]
+
 function prepareRelease(packageRoot = process.cwd()) {
   const packagePath = path.join(packageRoot, 'package.json')
   const licensePath = path.join(packageRoot, 'LICENSE')
@@ -13,8 +24,10 @@ function prepareRelease(packageRoot = process.cwd()) {
     .map((entry) => entry.name)
     .sort()
 
-  if (platformDirectories.length !== 8) {
-    throw new Error(`Expected 8 platform packages, found ${platformDirectories.length}`)
+  if (platformDirectories.length !== SUPPORTED_NATIVE_PACKAGES.length) {
+    throw new Error(
+      `Expected ${SUPPORTED_NATIVE_PACKAGES.length} platform packages, found ${platformDirectories.length}`
+    )
   }
 
   const optionalDependencies = {}
@@ -32,6 +45,11 @@ function prepareRelease(packageRoot = process.cwd()) {
 
     optionalDependencies[platformPackage.name] = platformPackage.version
     fs.copyFileSync(licensePath, path.join(platformDirectory, 'LICENSE'))
+  }
+
+  const nativePackageNames = Object.keys(optionalDependencies).sort()
+  if (!SUPPORTED_NATIVE_PACKAGES.every((name, index) => name === nativePackageNames[index])) {
+    throw new Error(`Unexpected platform package set: ${nativePackageNames.join(', ')}`)
   }
 
   packageJson.optionalDependencies = optionalDependencies

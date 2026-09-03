@@ -21,7 +21,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=18.13.0"
   },
   "scripts": {
     "artifacts": "napi artifacts",
