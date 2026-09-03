@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
 
 @Command(
         name = "minipdf",
-        version = "minipdf-java 0.1.0-SNAPSHOT",
+    version = "minipdf-java 0.1.0",
         description = "Convert XLSX and DOCX files to PDF with the Java MiniPdf engine.",
         mixinStandardHelpOptions = true,
         subcommands = MiniPdfCommand.ConvertCommand.class)
