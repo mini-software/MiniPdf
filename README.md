@@ -131,6 +131,10 @@ opens a PR without your approval.
 | [Rust XLSX benchmark](artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust spreadsheet visual comparison results |
 | [Rust DOCX benchmark](artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust document visual comparison results |
 | [Rust benchmark workflow](scripts/Run-Rust-Benchmark.ps1) | Generate fixture coverage and comparison reports |
+| [Community governance](GOVERNANCE.md) | Decisions, roles, voting, and maintainer selection |
+| [Roadmap](ROADMAP.md) | Project scope, implementation status, and current priorities |
+| [Security](SECURITY.md) | Private vulnerability reporting and supported versions |
+| [Contributing](CONTRIBUTING.md) | Development setup, tests, reviews, and provenance requirements |
 | [GitHub releases](https://github.com/mini-software/MiniPdf/releases) | Packages and standalone binaries |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | Bugs, compatibility reports, and feature requests |
 
