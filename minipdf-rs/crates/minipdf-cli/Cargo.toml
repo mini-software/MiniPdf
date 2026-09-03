@@ -8,7 +8,7 @@ homepage.workspace = true
 rust-version.workspace = true
 description = "Experimental Rust CLI for MiniPdf Office-to-PDF conversion."
 readme = "../../README.md"
-keywords = ["pdf", "xlsx", "docx", "office", "cli"]
+keywords = ["pdf", "xlsx", "docx", "pptx", "cli"]
 categories = ["command-line-utilities"]
 exclude = ["target/"]
 
