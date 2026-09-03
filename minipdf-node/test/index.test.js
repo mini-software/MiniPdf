@@ -8,6 +8,7 @@ const test = require('node:test')
 
 const minipdf = require('../lib/index.js')
 const packageJson = require('../package.json')
+const { prepareRelease } = require('../scripts/prepare-release.js')
 
 const fixturePath = path.join(
   __dirname,
@@ -54,10 +55,40 @@ test('rejects invalid custom page dimensions', () => {
   )
 })
 
-test('keeps native package versions aligned with the main package', () => {
-  const nativeVersions = Object.values(packageJson.optionalDependencies)
-
+test('is configured for public publication', () => {
   assert.equal(packageJson.private, undefined)
-  assert.equal(nativeVersions.length, 8)
-  assert.deepEqual([...new Set(nativeVersions)], [packageJson.version])
+  assert.equal(packageJson.publishConfig.access, 'public')
+  assert.equal(packageJson.optionalDependencies, undefined)
+})
+
+test('prepares aligned platform packages for release', (context) => {
+  const packageRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'minipdf-release-'))
+  context.after(() => fs.rmSync(packageRoot, { recursive: true, force: true }))
+
+  fs.writeFileSync(
+    path.join(packageRoot, 'package.json'),
+    JSON.stringify({ name: 'minipdf', version: '0.1.0' })
+  )
+  fs.writeFileSync(path.join(packageRoot, 'LICENSE'), 'license text')
+
+  for (let index = 0; index < 8; index += 1) {
+    const platformDirectory = path.join(packageRoot, 'npm', `platform-${index}`)
+    fs.mkdirSync(platformDirectory, { recursive: true })
+    fs.writeFileSync(
+      path.join(platformDirectory, 'package.json'),
+      JSON.stringify({ name: `minipdf-platform-${index}`, version: '0.1.0' })
+    )
+  }
+
+  const dependencies = prepareRelease(packageRoot)
+  const preparedPackage = JSON.parse(
+    fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8')
+  )
+
+  assert.equal(Object.keys(dependencies).length, 8)
+  assert.deepEqual(preparedPackage.optionalDependencies, dependencies)
+  assert.equal(
+    fs.readFileSync(path.join(packageRoot, 'npm', 'platform-0', 'LICENSE'), 'utf8'),
+    'license text'
+  )
 })

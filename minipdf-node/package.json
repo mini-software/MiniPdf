@@ -28,6 +28,7 @@
     "build": "napi build --platform --release",
     "build:debug": "napi build --platform",
     "create-npm-dir": "napi create-npm-dir -t .",
+    "prepare-release": "node scripts/prepare-release.js",
     "test": "node --test test/index.test.js"
   },
   "publishConfig": {
@@ -50,16 +51,6 @@
   "devDependencies": {
     "@napi-rs/cli": "^2.18.4",
     "@types/node": "^20.17.0"
-  },
-  "optionalDependencies": {
-    "minipdf-darwin-arm64": "0.1.0",
-    "minipdf-darwin-x64": "0.1.0",
-    "minipdf-linux-arm64-gnu": "0.1.0",
-    "minipdf-linux-arm64-musl": "0.1.0",
-    "minipdf-linux-x64-gnu": "0.1.0",
-    "minipdf-linux-x64-musl": "0.1.0",
-    "minipdf-win32-arm64-msvc": "0.1.0",
-    "minipdf-win32-x64-msvc": "0.1.0"
   },
   "keywords": [
     "pdf",
