@@ -3,8 +3,8 @@ param(
     [Parameter(Mandatory)]
     [ValidateSet("Start", "Begin", "Evaluate", "Validate", "Pr", "Status")]
     [string]$Action,
-    [ValidateSet("dotnet", "rust")]
-    [string]$Implementation = "dotnet",
+    [ValidateSet("auto", "dotnet", "rust")]
+    [string]$Implementation = "auto",
     [ValidateSet("xlsx", "docx")]
     [string]$Format,
     [string]$CaseName,
@@ -341,6 +341,7 @@ switch ($Action) {
         if ($status.Count -gt 0) {
             throw "Start requires a clean working tree so failed attempts can be restored without losing user work."
         }
+        $Implementation = & (Join-Path $PSScriptRoot "resolve-implementation.ps1") -Implementation $Implementation
         $preflightJson = & (Join-Path $PSScriptRoot "preflight.ps1") -Implementation $Implementation -Json
         $preflight = ($preflightJson | Out-String) | ConvertFrom-Json
         if (-not $preflight.Ready) { throw "Preflight failed. Follow the reported setup guidance and run Start again." }

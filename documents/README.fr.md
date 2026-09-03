@@ -2,11 +2,15 @@
 
 # MiniPdf
 
-**Bibliothèques et outils en ligne de commande légers pour convertir des documents Office en PDF avec .NET et Rust.**
+**Bibliothèques et outils en ligne de commande légers pour convertir des documents Office en PDF avec .NET, Rust, Java, Python, Node.js et Go.**
 
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
 <a href="https://crates.io/crates/minipdf"><img src="https://img.shields.io/crates/v/minipdf.svg" alt="crates.io"></a>
+<a href="https://central.sonatype.com/artifact/io.github.shps951023/minipdf"><img src="https://img.shields.io/maven-central/v/io.github.shps951023/minipdf.svg" alt="Maven Central"></a>
+<a href="https://pypi.org/project/minipdf/"><img src="https://img.shields.io/pypi/v/minipdf.svg" alt="PyPI"></a>
+<a href="https://www.npmjs.com/package/minipdf"><img src="https://img.shields.io/npm/v/minipdf.svg" alt="npm"></a>
+<a href="https://pkg.go.dev/github.com/mini-software/MiniPdf/minipdf-go"><img src="https://pkg.go.dev/badge/github.com/mini-software/MiniPdf/minipdf-go.svg" alt="Go Reference"></a>
 <a href="https://github.com/mini-software/MiniPdf"><img src="https://img.shields.io/github/stars/mini-software/MiniPdf?logo=github" alt="GitHub stars"></a>
 <a href="https://doi.org/10.5281/zenodo.22057294"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22057294.svg" alt="DOI"></a>
 <a href="../LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
@@ -24,11 +28,14 @@ MiniPdf convertit directement les documents Office en PDF sans nécessiter Micro
 
 ## Choisir une implémentation
 
-| | .NET | Rust |
-|---|---|---|
-| Entrées | XLSX, DOCX, PPTX | XLSX, DOCX |
-| Interfaces | Bibliothèque .NET, CLI, binaires Native AOT autonomes | Crate Rust, CLI |
-| Documentation | **[Ouvrir le guide .NET](README.nuget.md)** | **[Ouvrir le guide Rust](../minipdf-rs/README.md)** |
+| Implémentation | Entrées | Interfaces | Maturité | Documentation |
+|---|---|---|---|---|
+| .NET | XLSX, DOCX, PPTX | Bibliothèque, CLI, binaires Native AOT | Stable | **[Guide .NET](README.nuget.md)** |
+| Rust | XLSX, DOCX, PPTX | Crate, CLI | Expérimental | **[Guide Rust](../minipdf-rs/README.md)** |
+| Java | XLSX, DOCX | Bibliothèque, CLI | Expérimental | **[Sources Java](../minipdf-java/)** |
+| Python | DOCX | Paquet, CLI | Expérimental | **[Guide Python](../minipdf-python/README.md)** |
+| Node.js | XLSX, DOCX, PPTX | Paquet natif | Expérimental | **[Guide Node.js](../minipdf-node/README.md)** |
+| Go | XLSX, DOCX, PPTX | Paquet, CLI | Expérimental | **[Guide Go](../minipdf-go/README.md)** |
 
 ## Démarrage rapide
 
@@ -70,12 +77,74 @@ minipdf report.docx -o report.pdf
 
 Le [guide Rust](../minipdf-rs/README.md) décrit l'API du crate, la CLI, les fonctions prises en charge, les limites connues et le flux de développement.
 
+### Java
+
+```xml
+<dependency>
+	<groupId>io.github.shps951023</groupId>
+	<artifactId>minipdf</artifactId>
+	<version>0.1.0</version>
+</dependency>
+```
+
+```java
+import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Path;
+
+MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+```
+
+### Python
+
+```bash
+pip install minipdf
+```
+
+```python
+import minipdf
+
+minipdf.convert_to_pdf("report.docx", "report.pdf")
+```
+
+Le [guide Python](../minipdf-python/README.md) décrit le périmètre DOCX actuel et les options CLI.
+
+### Node.js
+
+```bash
+npm install minipdf
+```
+
+```javascript
+const minipdf = require('minipdf')
+
+minipdf.convertToPdf('report.docx', 'report.pdf')
+```
+
+Le [guide Node.js](../minipdf-node/README.md) décrit la conversion en mémoire, les tailles de page, l'enregistrement des polices et les plateformes natives prises en charge.
+
+### Go
+
+```bash
+go get github.com/mini-software/MiniPdf/minipdf-go@latest
+```
+
+```go
+import minipdf "github.com/mini-software/MiniPdf/minipdf-go"
+
+if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
+	panic(err)
+}
+```
+
+Le [guide Go](../minipdf-go/README.md) décrit le paquet, la CLI native, le périmètre de rendu actuel et les tags de version.
+
 ## Pourquoi MiniPdf
 
 - **Aucune suite Office requise** : la conversion s'exécute dans l'application ou la CLI.
 - **Déploiement réduit** : peu de dépendances et aucun processus externe.
 - **Adapté aux serveurs et à la CI** : fonctionne dans les conteneurs, services cloud et pipelines.
-- **Options natives en ligne de commande** : versions .NET Native AOT et CLI Rust.
+- **Plusieurs langages disponibles** : utilisez MiniPdf depuis .NET, Rust, Java, Python, Node.js ou Go.
+- **Options natives en ligne de commande** : disponibles pour .NET, Rust, Java, Python et Go.
 
 MiniPdf vise une conversion pratique des documents, et non une compatibilité totale avec la mise en page de Microsoft Office. Les modèles complexes peuvent être rendus différemment ; utilisez la démo en ligne ou les rapports de benchmark pour évaluer des fichiers représentatifs.
 
@@ -84,15 +153,16 @@ MiniPdf vise une conversion pratique des documents, et non une compatibilité to
 Ouvrez un fork ou clone propre dans GitHub Copilot, Claude Code, Cursor, Codex ou tout agent de programmation capable de modifier des fichiers et d'exécuter PowerShell. Le moyen le plus simple de contribuer consiste à coller cette instruction dans le chat de l'Agent :
 
 ```text
-Read CONTRIBUTING.md and run the MiniPdf contribution loop for dotnet from start to finish. Diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
 
-Remplacez `dotnet` par `rust` pour travailler sur l'implémentation Rust. Les points d'entrée PowerShell communs sont :
+Le point d'entrée PowerShell détecte `dotnet` et `cargo`, puis choisit aléatoirement l'une des implémentations installées :
 
 ```powershell
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start
 ```
+
+Passez `-Implementation dotnet` ou `-Implementation rust` pour remplacer le choix aléatoire. L'implémentation sélectionnée est enregistrée dans l'état de la boucle pour toutes les opérations suivantes.
 
 La boucle vérifie les outils, installe les paquets Python du benchmark, crée une branche locale et sélectionne les deux écarts visuels ayant les scores les plus faibles pour le moteur choisi. L'Agent effectue jusqu'à trois tentatives par cas ; sans amélioration du score, les modifications sont automatiquement annulées avant de passer au cas suivant. Une PR n'est autorisée qu'après la réussite de tous les tests de l'implémentation choisie et des benchmarks visuels XLSX/DOCX, sans régression significative.
 
@@ -105,6 +175,10 @@ Les deux parcours nécessitent Git, Python 3.10+ et LibreOffice. .NET nécessite
 | [Démo en ligne](https://mini-software.github.io/MiniPdf/) | Tester la conversion dans le navigateur |
 | [Documentation .NET](README.nuget.md) | Utilisation de la bibliothèque stable et de la CLI |
 | [Documentation Rust](../minipdf-rs/README.md) | Utilisation du crate expérimental et de la CLI |
+| [Implémentation Java](../minipdf-java/) | Sources de la bibliothèque Maven et de la CLI expérimentales |
+| [Documentation Python](../minipdf-python/README.md) | Utilisation du paquet expérimental et de la CLI |
+| [Documentation Node.js](../minipdf-node/README.md) | Utilisation du paquet natif expérimental |
+| [Documentation Go](../minipdf-go/README.md) | Utilisation du paquet expérimental et de la CLI |
 | [Benchmark XLSX .NET](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | Résultats visuels pour les feuilles de calcul |
 | [Benchmark DOCX .NET](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | Résultats visuels pour les documents |
 | [Benchmark XLSX Rust](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Résultats de comparaison visuelle Rust des feuilles de calcul |
