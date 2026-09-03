@@ -25,8 +25,8 @@
   },
   "scripts": {
     "artifacts": "napi artifacts",
-    "build": "napi build --platform --release",
-    "build:debug": "napi build --platform",
+    "build": "napi build --platform --release && node scripts/postprocess-loader.js",
+    "build:debug": "napi build --platform && node scripts/postprocess-loader.js",
     "create-npm-dir": "napi create-npm-dir -t .",
     "prepare-release": "node scripts/prepare-release.js",
     "test": "node --test test/index.test.js"

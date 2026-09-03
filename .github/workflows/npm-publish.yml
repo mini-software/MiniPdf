@@ -212,7 +212,18 @@ jobs:
         if: env.PUBLISH_MODE == 'stage'
         shell: bash
         run: |
+          failures=0
           for package_dir in npm/*; do
-            (cd "$package_dir" && npm stage publish)
+            if ! (cd "$package_dir" && npm stage publish); then
+              echo "::warning::Could not stage $package_dir; continuing with remaining packages."
+              failures=$((failures + 1))
+            fi
           done
-          npm stage publish
+          if ! npm stage publish; then
+            echo "::warning::Could not stage the main package."
+            failures=$((failures + 1))
+          fi
+          if [ "$failures" -ne 0 ]; then
+            echo "::error::$failures package publication attempts failed."
+            exit 1
+          fi

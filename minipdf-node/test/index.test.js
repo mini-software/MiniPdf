@@ -8,6 +8,7 @@ const test = require('node:test')
 
 const minipdf = require('../lib/index.js')
 const packageJson = require('../package.json')
+const { postprocessLoader } = require('../scripts/postprocess-loader.js')
 const { prepareRelease } = require('../scripts/prepare-release.js')
 
 const fixturePath = path.join(
@@ -51,7 +52,11 @@ test('rejects invalid custom page dimensions', () => {
     () => minipdf.convertToPdfBytes(fixturePath, {
       pageSize: { width: 0, height: 841.89 }
     }),
-    /page width and height must be positive finite values/
+    (error) => {
+      assert.equal(error.code, 'InvalidArg')
+      assert.match(error.message, /page width and height must be positive finite values/)
+      return true
+    }
   )
 })
 
@@ -59,6 +64,21 @@ test('is configured for public publication', () => {
   assert.equal(packageJson.private, undefined)
   assert.equal(packageJson.publishConfig.access, 'public')
   assert.equal(packageJson.optionalDependencies, undefined)
+})
+
+test('registers fonts through the protected native boundary', () => {
+  minipdf.registerFont('TestFont', Buffer.from([0, 1, 2, 3]))
+
+  assert.ok(minipdf.registeredFonts().some((font) => font.name === 'TestFont'))
+})
+
+test('keeps native loader diagnostics compatible with Node 18', () => {
+  const loaderPath = path.join(__dirname, '..', 'index.js')
+  const loader = fs.readFileSync(loaderPath, 'utf8')
+
+  assert.doesNotMatch(loader, /which ldd|readFileSync/)
+  assert.match(loader, /Failed to load MiniPdf native binding for \$\{platform\}\/\$\{arch\}/)
+  assert.equal(postprocessLoader(loader), loader)
 })
 
 test('prepares aligned platform packages for release', (context) => {
