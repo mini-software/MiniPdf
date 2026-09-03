@@ -3,7 +3,7 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "minipdf-python"
+name = "minipdf"
 version = "0.1.0"
 description = "Pure Python Office-to-PDF conversion engine"
 readme = "README.md"
