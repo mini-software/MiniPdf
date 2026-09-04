@@ -1,0 +1,2 @@
+param()
+& (Join-Path $PSScriptRoot "Invoke-LanguageVisualBenchmark.ps1") -Language go @args

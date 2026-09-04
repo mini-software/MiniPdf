@@ -2,6 +2,7 @@ package io.github.minisoftware.minipdf;
 
 import io.github.minisoftware.minipdf.internal.OfficePackageDetector;
 import io.github.minisoftware.minipdf.internal.docx.DocxConverter;
+import io.github.minisoftware.minipdf.internal.pptx.PptxConverter;
 import io.github.minisoftware.minipdf.internal.xlsx.XlsxConverter;
 
 import java.io.IOException;
@@ -59,7 +60,8 @@ public final class MiniPdf {
         return switch (format) {
             case DOCX -> DocxConverter.convert(input, options);
             case XLSX -> XlsxConverter.convert(input, options);
-            case PPTX, UNKNOWN -> throw new MiniPdfException(
+            case PPTX -> PptxConverter.convert(input, options);
+            case UNKNOWN -> throw new MiniPdfException(
                 MiniPdfException.Kind.UNSUPPORTED_FORMAT,
                 "unsupported or unknown Office document format");
         };

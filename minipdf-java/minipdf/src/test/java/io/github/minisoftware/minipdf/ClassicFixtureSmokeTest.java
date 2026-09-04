@@ -36,6 +36,17 @@ class ClassicFixtureSmokeTest {
         assertTrue(pdf.endsWith("%%EOF\n"));
     }
 
+    @Test
+    void convertsIssuePptx() throws Exception {
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/pptx/Asian Pacific.pptx");
+
+        String pdf = pdfText(MiniPdf.convertToPdfBytes(fixture));
+
+        assertTrue(pdf.startsWith("%PDF-1.4"));
+        assertTrue(pdf.contains("/Type /Pages"));
+        assertTrue(pdf.endsWith("%%EOF\n"));
+    }
+
     private static String pdfText(byte[] pdf) {
         return new String(pdf, StandardCharsets.ISO_8859_1);
     }

@@ -180,6 +180,7 @@ def apply_case_metadata(result: dict, case_metadata: Optional[dict], report_scop
         "case_id",
         "format",
         "source_path",
+        "source_sha256",
         "content_language",
         "display_name",
         "tags",

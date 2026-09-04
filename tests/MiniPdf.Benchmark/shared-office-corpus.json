@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "description": "Git-tracked Office fixtures shared by every language visual benchmark.",
+  "sources": [
+    {
+      "format": "xlsx",
+      "root": "tests/Issue_Files/xlsx",
+      "pattern": "*.xlsx"
+    },
+    {
+      "format": "docx",
+      "root": "tests/Issue_Files/docx",
+      "pattern": "*.docx"
+    },
+    {
+      "format": "pptx",
+      "root": "tests/Issue_Files/pptx",
+      "pattern": "*.pptx"
+    }
+  ]
+}

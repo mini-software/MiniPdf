@@ -40,13 +40,13 @@ class OfficeFormatDetectionTest {
     }
 
     @Test
-    void unsupportedPptxReportsTheFormatBoundary() throws Exception {
+    void pptxWithoutSlidesReportsInvalidInput() throws Exception {
         MiniPdfException exception = assertThrows(
                 MiniPdfException.class,
                 () -> MiniPdf.convertBytesToPdf(packageWith("ppt/presentation.xml")));
 
-        assertSame(MiniPdfException.Kind.UNSUPPORTED_FORMAT, exception.kind());
-        assertEquals("unsupported or unknown Office document format", exception.getMessage());
+        assertSame(MiniPdfException.Kind.INVALID_INPUT, exception.kind());
+        assertEquals("PPTX package does not contain a slide", exception.getMessage());
     }
 
     private static byte[] packageWith(String entryName) throws IOException {
