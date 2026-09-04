@@ -11,7 +11,7 @@ The library is available from Maven Central:
 <dependency>
     <groupId>io.github.shps951023</groupId>
     <artifactId>minipdf</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
@@ -36,14 +36,14 @@ Download the executable JAR with Maven:
 
 ```powershell
 mvn dependency:copy `
-  -Dartifact=io.github.shps951023:minipdf-cli:0.1.0 `
+  -Dartifact=io.github.shps951023:minipdf-cli:0.1.1 `
   -DoutputDirectory=.
 ```
 
 Convert a document:
 
 ```powershell
-java -jar minipdf-cli-0.1.0.jar input.pptx -o output.pdf
+java -jar minipdf-cli-0.1.1.jar input.pptx -o output.pdf
 ```
 
 The CLI accepts `.docx`, `.xlsx`, and `.pptx` files. Run it with `--help` for

@@ -57,11 +57,7 @@ def _cell_text(cell: ET.Element, shared_strings: tuple[str, ...]) -> str:
 def convert_xlsx(data: bytes, options: ConversionOptions) -> bytes:
     package = OfficePackage(data)
     sheet_names = sorted(
-        (
-            name
-            for name in package.names
-            if re.fullmatch(r"xl/worksheets/sheet\d+\.xml", name)
-        ),
+        (name for name in package.names if re.fullmatch(r"xl/worksheets/sheet\d+\.xml", name)),
         key=_natural_key,
     )
     if not sheet_names:
@@ -80,9 +76,7 @@ def convert_xlsx(data: bytes, options: ConversionOptions) -> bytes:
         cursor_y = page_size.height - MARGIN
         for row in (node for node in root.iter() if _local_name(node.tag) == "row"):
             values = [
-                _cell_text(cell, shared_strings)
-                for cell in row
-                if _local_name(cell.tag) == "c"
+                _cell_text(cell, shared_strings) for cell in row if _local_name(cell.tag) == "c"
             ]
             if cursor_y - ROW_HEIGHT < MARGIN:
                 page = pdf.add_page(page_size.width, page_size.height)
