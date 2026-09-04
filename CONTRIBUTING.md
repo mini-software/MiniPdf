@@ -87,6 +87,27 @@ scripts/Run-Benchmark_issues.ps1 -Filter "sa8000"
 scripts/Run-Rust-Benchmark.ps1 -Filter "classic01" -MinimumScore 0.99
 ```
 
+### Adding User-Reported Office Files
+
+Place new issue reproduction files in the matching source directory:
+
+- XLSX: `tests/Issue_Files/xlsx/`
+- DOCX: `tests/Issue_Files/docx/`
+
+Include the issue number in the filename when possible, remove sensitive or
+personal data, and preserve the smallest document that still reproduces the
+problem. For example, test `Issue202609031340.xlsx` from the repository root
+with:
+
+```powershell
+Copy-Item "C:\Users\Wei\Downloads\Issue202609031340.xlsx" ".\tests\Issue_Files\xlsx\"
+.\scripts\Run-Benchmark_issues.ps1 -Filter "Issue202609031340"
+```
+
+The XLSX comparison report is written to
+`tests/Issue_Files/reports_xlsx/`. Pass `-Engine libre` to generate the
+reference PDF with LibreOffice instead of Microsoft 365.
+
 Generated PDFs, PNGs, heatmaps, and reports should only be committed when they
 are canonical project evidence requested by the relevant workflow. Otherwise,
 attach them to the pull request or retain them as CI artifacts.

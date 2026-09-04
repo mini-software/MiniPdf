@@ -30,14 +30,14 @@ MiniPdf は、実行時に Microsoft Office、LibreOffice、Adobe Acrobat、COM 
 
 ## 実装を選ぶ
 
-| 実装 | 入力 | インターフェイス | 成熟度 | ドキュメント |
-|---|---|---|---|---|
-| .NET | XLSX、DOCX、PPTX | ライブラリ、CLI、Native AOT バイナリ | 安定版 | **[.NET ガイド](README.nuget.md)** |
-| Rust | XLSX、DOCX、PPTX | Crate、CLI | 実験版 | **[Rust ガイド](../minipdf-rs/README.md)** |
-| Java | XLSX、DOCX | ライブラリ、CLI | 実験版 | **[Java ソース](../minipdf-java/)** |
-| Python | DOCX | パッケージ、CLI | 実験版 | **[Python ガイド](../minipdf-python/README.md)** |
-| Node.js | XLSX、DOCX、PPTX | ネイティブパッケージ | 実験版 | **[Node.js ガイド](../minipdf-node/README.md)** |
-| Go | XLSX、DOCX、PPTX | パッケージ、CLI | 実験版 | **[Go ガイド](../minipdf-go/README.md)** |
+| 実装 | 入力 | インターフェイス | 成熟度 | ドキュメント | 実測結果 |
+|---|---|---|---|---|---|
+| .NET | XLSX、DOCX、PPTX | ライブラリ、CLI、Native AOT バイナリ | 安定版 | **[.NET ガイド](README.nuget.md)** | **[表示レポート](../artifacts/benchmark/dotnet/report/comparison_report.md)** |
+| Rust | XLSX、DOCX、PPTX | Crate、CLI | 実験版 | **[Rust ガイド](../minipdf-rs/README.md)** | **[表示レポート](../artifacts/benchmark/rust/report/comparison_report.md)** |
+| Java | XLSX、DOCX | ライブラリ、CLI | 実験版 | **[Java ソース](../minipdf-java/)** | **[表示レポート](../artifacts/benchmark/java/report/comparison_report.md)** |
+| Python | DOCX | パッケージ、CLI | 実験版 | **[Python ガイド](../minipdf-python/README.md)** | **[表示レポート](../artifacts/benchmark/python/report/comparison_report.md)** |
+| Node.js | XLSX、DOCX、PPTX | ネイティブパッケージ | 実験版 | **[Node.js ガイド](../minipdf-node/README.md)** | **[表示レポート](../artifacts/benchmark/node/report/comparison_report.md)** |
+| Go | XLSX、DOCX、PPTX | パッケージ、CLI | 実験版 | **[Go ガイド](../minipdf-go/README.md)** | **[表示レポート](../artifacts/benchmark/go/report/comparison_report.md)** |
 
 ## クイックスタート
 

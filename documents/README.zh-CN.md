@@ -30,14 +30,14 @@ MiniPdf 无需在运行时安装 Microsoft Office、LibreOffice、Adobe Acrobat 
 
 ## 选择实现
 
-| 实现 | 输入 | 接口 | 成熟度 | 文档 |
-|---|---|---|---|---|
-| .NET | XLSX、DOCX、PPTX | 库、CLI、Native AOT 二进制文件 | 稳定 | **[.NET 指南](README.nuget.md)** |
-| Rust | XLSX、DOCX、PPTX | Crate、CLI | 实验性 | **[Rust 指南](../minipdf-rs/README.md)** |
-| Java | XLSX、DOCX | 库、CLI | 实验性 | **[Java 源代码](../minipdf-java/)** |
-| Python | DOCX | 包、CLI | 实验性 | **[Python 指南](../minipdf-python/README.md)** |
-| Node.js | XLSX、DOCX、PPTX | 原生包 | 实验性 | **[Node.js 指南](../minipdf-node/README.md)** |
-| Go | XLSX、DOCX、PPTX | 包、CLI | 实验性 | **[Go 指南](../minipdf-go/README.md)** |
+| 实现 | 输入 | 接口 | 成熟度 | 文档 | 实际测试 |
+|---|---|---|---|---|---|
+| .NET | XLSX、DOCX、PPTX | 库、CLI、Native AOT 二进制文件 | 稳定 | **[.NET 指南](README.nuget.md)** | **[视觉报告](../artifacts/benchmark/dotnet/report/comparison_report.md)** |
+| Rust | XLSX、DOCX、PPTX | Crate、CLI | 实验性 | **[Rust 指南](../minipdf-rs/README.md)** | **[视觉报告](../artifacts/benchmark/rust/report/comparison_report.md)** |
+| Java | XLSX、DOCX | 库、CLI | 实验性 | **[Java 源代码](../minipdf-java/)** | **[视觉报告](../artifacts/benchmark/java/report/comparison_report.md)** |
+| Python | DOCX | 包、CLI | 实验性 | **[Python 指南](../minipdf-python/README.md)** | **[视觉报告](../artifacts/benchmark/python/report/comparison_report.md)** |
+| Node.js | XLSX、DOCX、PPTX | 原生包 | 实验性 | **[Node.js 指南](../minipdf-node/README.md)** | **[视觉报告](../artifacts/benchmark/node/report/comparison_report.md)** |
+| Go | XLSX、DOCX、PPTX | 包、CLI | 实验性 | **[Go 指南](../minipdf-go/README.md)** | **[视觉报告](../artifacts/benchmark/go/report/comparison_report.md)** |
 
 ## 快速开始
 

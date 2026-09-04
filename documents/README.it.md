@@ -30,14 +30,14 @@ MiniPdf converte direttamente i documenti Office in PDF senza richiedere Microso
 
 ## Scegli un'implementazione
 
-| Implementazione | Input | Interfacce | Maturità | Documentazione |
-|---|---|---|---|---|
-| .NET | XLSX, DOCX, PPTX | Libreria, CLI, binari Native AOT | Stabile | **[Guida .NET](README.nuget.md)** |
-| Rust | XLSX, DOCX, PPTX | Crate, CLI | Sperimentale | **[Guida Rust](../minipdf-rs/README.md)** |
-| Java | XLSX, DOCX | Libreria, CLI | Sperimentale | **[Sorgenti Java](../minipdf-java/)** |
-| Python | DOCX | Pacchetto, CLI | Sperimentale | **[Guida Python](../minipdf-python/README.md)** |
-| Node.js | XLSX, DOCX, PPTX | Pacchetto nativo | Sperimentale | **[Guida Node.js](../minipdf-node/README.md)** |
-| Go | XLSX, DOCX, PPTX | Pacchetto, CLI | Sperimentale | **[Guida Go](../minipdf-go/README.md)** |
+| Implementazione | Input | Interfacce | Maturità | Documentazione | Test effettivo |
+|---|---|---|---|---|---|
+| .NET | XLSX, DOCX, PPTX | Libreria, CLI, binari Native AOT | Stabile | **[Guida .NET](README.nuget.md)** | **[Rapporto visivo](../artifacts/benchmark/dotnet/report/comparison_report.md)** |
+| Rust | XLSX, DOCX, PPTX | Crate, CLI | Sperimentale | **[Guida Rust](../minipdf-rs/README.md)** | **[Rapporto visivo](../artifacts/benchmark/rust/report/comparison_report.md)** |
+| Java | XLSX, DOCX | Libreria, CLI | Sperimentale | **[Sorgenti Java](../minipdf-java/)** | **[Rapporto visivo](../artifacts/benchmark/java/report/comparison_report.md)** |
+| Python | DOCX | Pacchetto, CLI | Sperimentale | **[Guida Python](../minipdf-python/README.md)** | **[Rapporto visivo](../artifacts/benchmark/python/report/comparison_report.md)** |
+| Node.js | XLSX, DOCX, PPTX | Pacchetto nativo | Sperimentale | **[Guida Node.js](../minipdf-node/README.md)** | **[Rapporto visivo](../artifacts/benchmark/node/report/comparison_report.md)** |
+| Go | XLSX, DOCX, PPTX | Pacchetto, CLI | Sperimentale | **[Guida Go](../minipdf-go/README.md)** | **[Rapporto visivo](../artifacts/benchmark/go/report/comparison_report.md)** |
 
 ## Avvio rapido
 
