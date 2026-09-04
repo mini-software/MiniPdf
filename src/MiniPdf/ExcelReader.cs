@@ -3748,7 +3748,7 @@ internal static class ExcelReader
     {
         foreach (var declaration in style.Split(';'))
         {
-            var parts = declaration.Split(':', 2);
+            var parts = declaration.Split(new[] { ':' }, 2);
             if (parts.Length != 2 || !string.Equals(parts[0].Trim(), property, StringComparison.OrdinalIgnoreCase))
                 continue;
             var value = parts[1].Trim();
