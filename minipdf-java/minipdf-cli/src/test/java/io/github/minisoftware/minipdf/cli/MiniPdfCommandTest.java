@@ -21,8 +21,7 @@ class MiniPdfCommandTest {
 
     @Test
     void convertsXlsxWithDirectSyntax() throws Exception {
-        Path source = REPOSITORY_ROOT.resolve(
-                "tests/MiniPdf.Scripts/output/classic01_basic_table_with_headers.xlsx");
+                Path source = REPOSITORY_ROOT.resolve("tests/Issue_Files/xlsx/Simple invoice1.xlsx");
         Path output = temporaryDirectory.resolve("direct.pdf");
 
         CommandResult result = execute(source.toString(), "-o", output.toString());
@@ -34,8 +33,7 @@ class MiniPdfCommandTest {
 
     @Test
     void convertsDocxWithSubcommandAndCustomSize() throws Exception {
-        Path source = REPOSITORY_ROOT.resolve(
-                "tests/MiniPdf.Scripts/output_docx/docx_classic01_single_paragraph.docx");
+                Path source = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/Invoice.docx");
         Path output = temporaryDirectory.resolve("subcommand.pdf");
 
         CommandResult result = execute(
@@ -61,8 +59,7 @@ class MiniPdfCommandTest {
 
     @Test
     void rejectsConflictingPageOptions() {
-        Path source = REPOSITORY_ROOT.resolve(
-                "tests/MiniPdf.Scripts/output/classic01_basic_table_with_headers.xlsx");
+                Path source = REPOSITORY_ROOT.resolve("tests/Issue_Files/xlsx/Simple invoice1.xlsx");
 
         CommandResult result = execute(
                 source.toString(), "--paper-size", "a4", "--page-width", "400", "--page-height", "500");

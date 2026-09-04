@@ -12,27 +12,24 @@ class ClassicFixtureSmokeTest {
     private static final Path REPOSITORY_ROOT = Path.of("..", "..").toAbsolutePath().normalize();
 
     @Test
-    void convertsClassic01Xlsx() throws Exception {
-        Path fixture = REPOSITORY_ROOT.resolve(
-                "tests/MiniPdf.Scripts/output/classic01_basic_table_with_headers.xlsx");
+    void convertsTrackedXlsxFixture() throws Exception {
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/xlsx/Simple invoice1.xlsx");
 
         String pdf = pdfText(MiniPdf.convertToPdfBytes(fixture));
 
-        assertTrue(pdf.contains("(Name    Age    City) Tj"));
-        assertTrue(pdf.contains("(Alice    30    New York) Tj"));
+        assertTrue(pdf.contains("INVOICE"));
+        assertTrue(pdf.contains("Wedding florals"));
         assertTrue(pdf.endsWith("%%EOF\n"));
     }
 
     @Test
-    void convertsClassic01Docx() throws Exception {
-        Path fixture = REPOSITORY_ROOT.resolve(
-                "tests/MiniPdf.Scripts/output_docx/docx_classic01_single_paragraph.docx");
+    void convertsTrackedDocxFixture() throws Exception {
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/Invoice.docx");
 
         String pdf = pdfText(MiniPdf.convertToPdfBytes(fixture));
 
-        assertTrue(pdf.contains("Hello, World!"));
-        assertTrue(pdf.contains("benchmarking"));
-        assertTrue(pdf.contains("MiniPdf DOCX-to-PDF conversion."));
+        assertTrue(pdf.contains("Invoice"));
+        assertTrue(pdf.contains("ABC12345"));
         assertTrue(pdf.endsWith("%%EOF\n"));
     }
 
