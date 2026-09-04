@@ -94,6 +94,9 @@ internal sealed class PdfPage
     private readonly List<PdfRectBlock> _overlayRects = [];
     private readonly List<PdfLineBlock> _overlayLines = [];
     private readonly List<PdfTextBlock> _overlayTexts = [];
+    private float? _worksheetContentTop;
+    private float? _worksheetContentBottom;
+    private bool _hasLegacyVmlImage;
 
     /// <summary>
     /// Page width in points.
@@ -269,6 +272,82 @@ internal sealed class PdfPage
         _overlayTexts.Add(new PdfTextBlock(text, x, y, fontSize, color, null, maxWidth, bold, italic, false, 0, 0, preferredFontName, null));
         return this;
     }
+
+    internal void CenterContentVertically(float printableBottom, float printableTop)
+    {
+        var bounds = new List<(float Bottom, float Top)>();
+        bounds.AddRange(_textBlocks.Where(block => !block.Hidden)
+            .Select(block => (block.Y - block.FontSize * 0.3f, block.Y + block.FontSize)));
+        bounds.AddRange(_imageBlocks.Select(block => (block.Y, block.Y + block.RenderHeight)));
+        bounds.AddRange(_rectBlocks.Select(block => (block.Y, block.Y + block.Height)));
+        bounds.AddRange(_ellipseBlocks.Select(block => (block.Y, block.Y + block.Height)));
+        bounds.AddRange(_polygonBlocks.Select(block =>
+            (block.Points.Min(point => point.Y), block.Points.Max(point => point.Y))));
+        bounds.AddRange(_lineBlocks.Select(block =>
+            (Math.Min(block.Y1, block.Y2), Math.Max(block.Y1, block.Y2))));
+        if (bounds.Count == 0)
+            return;
+
+        var contentBottom = bounds.Min(bound => bound.Bottom);
+        var contentTop = bounds.Max(bound => bound.Top);
+        var printableHeight = printableTop - printableBottom;
+        var contentHeight = contentTop - contentBottom;
+        if (contentHeight >= printableHeight && !_hasLegacyVmlImage
+            && _worksheetContentTop is { } worksheetTop
+            && _worksheetContentBottom is { } worksheetBottom)
+        {
+            contentTop = worksheetTop;
+            contentBottom = worksheetBottom;
+            contentHeight = contentTop - contentBottom;
+        }
+        if (contentHeight >= printableHeight)
+            return;
+
+        var offset = (printableBottom + printableTop - contentBottom - contentTop) / 2f;
+        if (Math.Abs(offset) < 0.01f)
+            return;
+
+        for (var i = 0; i < _textBlocks.Count; i++)
+            _textBlocks[i] = _textBlocks[i].TranslateY(offset);
+        for (var i = 0; i < _imageBlocks.Count; i++)
+            _imageBlocks[i] = _imageBlocks[i] with { Y = _imageBlocks[i].Y + offset };
+        for (var i = 0; i < _rectBlocks.Count; i++)
+            _rectBlocks[i] = _rectBlocks[i] with { Y = _rectBlocks[i].Y + offset };
+        for (var i = 0; i < _ellipseBlocks.Count; i++)
+            _ellipseBlocks[i] = _ellipseBlocks[i] with { Y = _ellipseBlocks[i].Y + offset };
+        for (var i = 0; i < _polygonBlocks.Count; i++)
+            _polygonBlocks[i] = _polygonBlocks[i] with
+            {
+                Points = _polygonBlocks[i].Points.Select(point => point with { Y = point.Y + offset }).ToList(),
+                Subpaths = _polygonBlocks[i].Subpaths?.Select(path =>
+                    path.Select(point => point with { Y = point.Y + offset }).ToList()).ToList()
+            };
+        for (var i = 0; i < _lineBlocks.Count; i++)
+            _lineBlocks[i] = _lineBlocks[i] with
+            {
+                Y1 = _lineBlocks[i].Y1 + offset,
+                Y2 = _lineBlocks[i].Y2 + offset
+            };
+    }
+
+    internal void IncludeWorksheetVerticalRange(float top, float bottom)
+    {
+        _worksheetContentTop = _worksheetContentTop is { } existingTop
+            ? Math.Max(existingTop, top)
+            : top;
+        _worksheetContentBottom = _worksheetContentBottom is { } existingBottom
+            ? Math.Min(existingBottom, bottom)
+            : bottom;
+    }
+
+    internal float GetWorksheetVerticalCenterOffset(float printableBottom, float printableTop)
+    {
+        if (_worksheetContentTop is not { } contentTop || _worksheetContentBottom is not { } contentBottom)
+            return 0f;
+        return Math.Max(0f, (printableTop - printableBottom - (contentTop - contentBottom)) / 2f);
+    }
+
+    internal void MarkLegacyVmlImage() => _hasLegacyVmlImage = true;
 
     /// <summary>
     /// Adds text that automatically wraps within the specified region.

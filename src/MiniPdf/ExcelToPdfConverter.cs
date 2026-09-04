@@ -493,6 +493,7 @@ internal static class ExcelToPdfConverter
     {
         // Skip only if there's truly nothing to render (no rows AND no images).
         if (sheet.Rows.Count == 0 && sheet.Images.Count == 0 && sheet.Charts.Count == 0) return;
+        var firstSheetPage = doc.Pages.Count;
 
         // Apply sheet page setup: paper size, orientation, margins, and print scale
         // Determine base page dimensions from paper size
@@ -577,6 +578,7 @@ internal static class ExcelToPdfConverter
                     fitToWidth: sheet.FitToWidth,
                     fitToHeight: sheet.FitToHeight,
                     horizontalCentered: sheet.HorizontalCentered,
+                    verticalCentered: sheet.VerticalCentered,
                     printArea: sheet.PrintArea,
                     printTitleRows: sheet.PrintTitleRows,
                     rowBreaks: sheet.RowBreaks,
@@ -627,7 +629,7 @@ internal static class ExcelToPdfConverter
                                 marginLeftPt: sheet.MarginLeftPt, marginRightPt: sheet.MarginRightPt,
                                 marginTopPt: sheet.MarginTopPt, marginBottomPt: sheet.MarginBottomPt,
                                 fitToPage: sheet.FitToPage, fitToWidth: sheet.FitToWidth, fitToHeight: sheet.FitToHeight,
-                                horizontalCentered: sheet.HorizontalCentered, printArea: sheet.PrintArea,
+                                horizontalCentered: sheet.HorizontalCentered, verticalCentered: sheet.VerticalCentered, printArea: sheet.PrintArea,
                                 printTitleRows: sheet.PrintTitleRows, rowBreaks: sheet.RowBreaks,
                                 oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt,
                                 maxDigitWidthPx: sheet.MaxDigitWidthPx);
@@ -833,6 +835,7 @@ internal static class ExcelToPdfConverter
                 fitToWidth: sheet.FitToWidth,
                 fitToHeight: sheet.FitToHeight,
                 horizontalCentered: sheet.HorizontalCentered,
+                verticalCentered: sheet.VerticalCentered,
                 rowBreaks: trimmedRowBreaks,
                 printTitleRows: trimmedPrintTitleRows,
                 oddFooter: sheet.OddFooter, footerMarginPt: sheet.FooterMarginPt,
@@ -988,6 +991,12 @@ internal static class ExcelToPdfConverter
 
             RenderSheetRows(doc, sheet, options, pageWidth, pageHeight, Enumerable.Range(0, maxCols).ToArray(), columnPadding, colWidths, avgCharWidth, fitToPageScale,
                 colWidths, 0f);
+        }
+
+        if (sheet.VerticalCentered)
+        {
+            for (var pageIndex = firstSheetPage; pageIndex < doc.Pages.Count; pageIndex++)
+                doc.Pages[pageIndex].CenterContentVertically(options.MarginBottom, pageHeight - options.MarginTop);
         }
 
         // Note: trailing empty page logic disabled — it was previously intended to
@@ -1304,6 +1313,109 @@ internal static class ExcelToPdfConverter
             return topY - height + descent - ascentCompensation + lineHeight * (lineCount - 1);
         }
 
+        void RenderVerticalMergeContinuations(int startRow)
+        {
+            if (currentPage == null) return;
+
+            foreach (var (mergeStartRow, startCol, endRow, endCol) in sheet.MergedCells)
+            {
+                if (mergeStartRow >= startRow || endRow < startRow)
+                    continue;
+
+                var columnIndex = Array.IndexOf(columns, startCol);
+                if (columnIndex < 0 || mergeStartRow >= sheet.Rows.Count || startCol >= sheet.Rows[mergeStartRow].Count)
+                    continue;
+
+                var originRow = sheet.Rows[mergeStartRow];
+                var cell = originRow[startCol];
+                var x = colXStarts[columnIndex];
+                var width = colWidths[columnIndex];
+                for (var i = columnIndex + 1; i < columns.Length && columns[i] <= endCol; i++)
+                    width += colWidths[i] + columnPadding;
+
+                var consumedHeight = 0f;
+                for (var rowIndex = mergeStartRow; rowIndex < startRow && rowIndex < sheet.Rows.Count; rowIndex++)
+                    consumedHeight += ScaledRowHeightAt(rowIndex);
+
+                var remainingHeight = 0f;
+                for (var rowIndex = startRow; rowIndex <= endRow && rowIndex < sheet.Rows.Count; rowIndex++)
+                    remainingHeight += ScaledRowHeightAt(rowIndex);
+                if (remainingHeight <= 0f) continue;
+
+                var virtualTop = currentY + consumedHeight;
+                var height = consumedHeight + remainingHeight;
+                var segmentBottom = currentY - remainingHeight;
+
+                if (cell.FillColor is { } fillColor)
+                    currentPage.AddRectangle(x, segmentBottom, width, remainingHeight, fillColor);
+
+                var border = EffectiveBorderForCell(originRow, mergeStartRow, startCol, cell.Border);
+                if (border != null)
+                {
+                    var borderColor = new PdfColor(0f, 0f, 0f);
+                    void AddBorder(BorderSide? side, float x1, float y1, float x2, float y2)
+                    {
+                        if (side is not { Style: not "none" and not "" }) return;
+                        var borderWidth = Math.Max(0.08f, BorderStyleWidth(side.Style) * borderScaleFactor);
+                        currentPage.AddLine(x1, y1, x2, y2, side.Color ?? borderColor,
+                            borderWidth, BorderDashPattern(side.Style, borderWidth));
+                    }
+
+                    AddBorder(border.Left, x, currentY, x, segmentBottom);
+                    AddBorder(border.Right, x + width, currentY, x + width, segmentBottom);
+                    AddBorder(border.Bottom, x, segmentBottom, x + width, segmentBottom);
+                }
+
+                if (string.IsNullOrEmpty(cell.Text)) continue;
+
+                var fontSize = cell.FontSize * printScaleFactor;
+                var availableWidth = Math.Max(1f, width - 2f * cellTextInset);
+                string[] lines;
+                if (cell.TextRotation == 255)
+                    lines = cell.Text.Select(character => character.ToString()).ToArray();
+                else if (cell.Text.Contains('\n'))
+                    lines = cell.Text.Split('\n');
+                else if (cell.WrapText)
+                    lines = WrapCellText(cell.Text, availableWidth, fontSize, cell.FontName, cell.BoldPrefixLength);
+                else
+                    lines = new[] { cell.Text };
+
+                var cellLineHeight = cell.TextRotation == 255 ? fontSize * 1.213f : lineHeight;
+                var textBlockHeight = fontSize + cellLineHeight * (lines.Length - 1);
+                var descent = options.FontSize * 0.31f;
+                var ascentCompensation = fontSize > options.FontSize
+                    ? (fontSize - options.FontSize) * 0.1f
+                    : 0f;
+                var textY = TextBaselineY(cell.VerticalAlignment, virtualTop, height, textBlockHeight,
+                    fontSize, descent, ascentCompensation, lines.Length, lineHeight);
+                var isBold = ShouldUsePdfBold(cell.Bold, fontSize, cell.FontName);
+                foreach (var line in lines)
+                {
+                    var intersectsSegment = textY + fontSize >= segmentBottom && textY - fontSize <= currentY;
+                    if (!string.IsNullOrEmpty(line) && intersectsSegment)
+                    {
+                        var textX = x + cellTextInset;
+                        if (cell.Alignment == "center")
+                        {
+                            var textWidth = (float)MeasureHelveticaWidth(line, fontSize, bold: isBold);
+                            textX = x + (width - textWidth) / 2f;
+                        }
+                        else if (cell.Alignment == "right")
+                        {
+                            var textWidth = (float)MeasureHelveticaWidth(line, fontSize, bold: isBold);
+                            textX = x + width - cellTextInset - textWidth;
+                        }
+
+                        AddExcelText(currentPage, line, textX, textY, fontSize, cell.Color,
+                            maxWidth: availableWidth, bold: isBold,
+                            underline: cell.Underline, strikethrough: cell.Strikethrough,
+                            preferredFontName: cell.FontName);
+                    }
+                    textY -= cellLineHeight;
+                }
+            }
+        }
+
         // Helper: render print title rows at the current page position.
         // Returns the total height consumed by the title rows.
         float RenderPrintTitleRows()
@@ -1336,7 +1448,14 @@ internal static class ExcelToPdfConverter
                         var cellFs = titleRow[col].FontSize * printScaleFactor;
                         if (fitToPageScale < 1f) cellFs *= fitToPageScale;
 
-                        if (cellText.Contains('\n'))
+                        if (titleRow[col].TextRotation == 255)
+                        {
+                            titleCellLines[i] = cellText.Select(character => character.ToString()).ToArray();
+                            titleClipWidths[i] = Math.Max(1f, colWidths[i] - 2f * cellTextInset);
+                            titleMaxLines = Math.Max(titleMaxLines, titleCellLines[i].Length);
+                            continue;
+                        }
+                        else if (cellText.Contains('\n'))
                         {
                             titleCellLines[i] = cellText.Split('\n');
                             titleClipWidths[i] = Math.Max(1f, colWidths[i] - 2f * cellTextInset);
@@ -1490,7 +1609,8 @@ internal static class ExcelToPdfConverter
 
                     // Text
                     var descent = options.FontSize * 0.31f;
-                    var textBlock = cellFs + lineHeight * (titleCellLines[i].Length - 1);
+                    var cellLineHeight = cell?.TextRotation == 255 ? cellFs * 1.213f : lineHeight;
+                    var textBlock = cellFs + cellLineHeight * (titleCellLines[i].Length - 1);
                     var cellY = TextBaselineY(vertAlign, currentY, titleCellHeight, textBlock,
                         cellFs, descent, 0f, titleCellLines[i].Length, lineHeight);
 
@@ -1539,7 +1659,7 @@ internal static class ExcelToPdfConverter
                                 strikethrough: cell?.Strikethrough ?? false,
                                 preferredFontName: cell?.FontName);
                         }
-                        cellY -= lineHeight;
+                        cellY -= cellLineHeight;
                     }
 
                     x += colWidths[i] + columnPadding;
@@ -1632,6 +1752,7 @@ internal static class ExcelToPdfConverter
                 // Render print title rows on the new page
                 if (printTitleStart >= 0 && (excelRowIndex < printTitleStart || excelRowIndex > printTitleEnd))
                     RenderPrintTitleRows();
+                RenderVerticalMergeContinuations(excelRowIndex);
             }
 
             // Determine this row's effective height
@@ -1662,6 +1783,7 @@ internal static class ExcelToPdfConverter
             {
                 var emptyH = hasExplicitHeight ? explicitRowHeight : lineHeight;
                 currentY -= emptyH;
+                currentPage!.IncludeWorksheetVerticalRange(rowTopY[excelRowIndex], currentY);
                 excelRowIndex++;
                 continue;
             }
@@ -1695,7 +1817,11 @@ internal static class ExcelToPdfConverter
 
                         // Handle explicit newlines in cell text (e.g., Alt+Enter in Excel).
                         // Otherwise write full text as a single line.
-                        if (cellText.Contains('\n'))
+                        if (row[col].TextRotation == 255)
+                        {
+                            cellLines[i] = cellText.Select(character => character.ToString()).ToArray();
+                        }
+                        else if (cellText.Contains('\n'))
                         {
                             cellLines[i] = cellText.Split('\n');
                         }
@@ -1881,6 +2007,7 @@ internal static class ExcelToPdfConverter
                 // Render print title rows on the new page (skip if current row is within the title range)
                 if (printTitleStart >= 0 && (excelRowIndex < printTitleStart || excelRowIndex > printTitleEnd))
                     RenderPrintTitleRows();
+                RenderVerticalMergeContinuations(excelRowIndex);
                 // Update the row's top position on the new page
                 rowTopY[excelRowIndex] = currentY;
                 rowPage[excelRowIndex] = currentPage;
@@ -1964,7 +2091,9 @@ internal static class ExcelToPdfConverter
                     }
 
                     linesRendered += linesToRender;
+                    var batchTopY = currentY;
                     currentY -= linesToRender * lineHeight;
+                    currentPage!.IncludeWorksheetVerticalRange(batchTopY, currentY);
 
                     if (linesRendered < maxLinesInRow)
                     {
@@ -2036,7 +2165,8 @@ internal static class ExcelToPdfConverter
                 // Only the merge origin cell renders the fill covering the full merged area.
                 var isInsideMerge = mergeInterior.Contains((excelRowIndex, col));
                 var cellHeight = isInsideMerge ? rowHeight : MergedHeightForCell(excelRowIndex, col, rowHeight);
-                var textBlock = cellFontSize + lineHeight * (lines.Length - 1);
+                var cellLineHeight = cell?.TextRotation == 255 ? cellFontSize * 1.213f : lineHeight;
+                var textBlock = cellFontSize + cellLineHeight * (lines.Length - 1);
                 cellY = TextBaselineY(verticalAlignment, currentY, cellHeight, textBlock,
                     cellFontSize, descent, ascentCompensation, lines.Length, lineHeight);
 
@@ -2111,10 +2241,25 @@ internal static class ExcelToPdfConverter
                         cellWidth += colWidths[mc] + columnPadding;
                 }
 
+                (float X, float Y, float Width, float Height)? mergedPageClip = null;
+                if (mergeEndRow.TryGetValue((excelRowIndex, col), out var textEndRow) && textEndRow > excelRowIndex)
+                {
+                    var visibleHeight = 0f;
+                    for (var mergedRow = excelRowIndex; mergedRow <= textEndRow && mergedRow < sheet.Rows.Count; mergedRow++)
+                    {
+                        var mergedRowHeight = ScaledRowHeightAt(mergedRow);
+                        if (visibleHeight > 0f && currentY - visibleHeight - mergedRowHeight < options.MarginBottom)
+                            break;
+                        visibleHeight += mergedRowHeight;
+                    }
+                    mergedPageClip = (x, currentY - visibleHeight, cellWidth, visibleHeight);
+                }
+
                 // Render accounting prefix (e.g., " $") left-aligned for accounting format cells.
                 if (cell?.AccountingPrefix != null && lines.Length > 0 && !string.IsNullOrEmpty(lines[0]))
                 {
                     currentPage!.AddText(cell.AccountingPrefix, x + cellTextInset, cellY, cellFontSize, color,
+                        clipRect: mergedPageClip,
                         maxWidth: cellClipWidth[i],
                         bold: ShouldUsePdfBold(cell.Bold, cellFontSize, cell.FontName),
                         underline: false,
@@ -2183,6 +2328,7 @@ internal static class ExcelToPdfConverter
                             var boldWidth = (float)MeasureFontWidth(boldPart, cellFontSize, bold: true, cell?.FontName);
 
                             AddExcelText(currentPage!, boldPart, textX, cellY, cellFontSize, color,
+                                clipRect: mergedPageClip,
                                 maxWidth: boldWidth,
                                 bold: true,
                                 underline: cell?.Underline ?? false,
@@ -2194,6 +2340,7 @@ internal static class ExcelToPdfConverter
                                 var normalX = textX + boldWidth + spaceGap;
                                 var normalMax = lineMaxWidth > 0 ? lineMaxWidth - boldWidth - spaceGap : 0f;
                                 AddExcelText(currentPage!, normalPart, normalX, cellY, cellFontSize, color,
+                                    clipRect: mergedPageClip,
                                     maxWidth: normalMax > 0 ? normalMax : 0f,
                                     bold: false,
                                     underline: cell?.Underline ?? false,
@@ -2205,6 +2352,7 @@ internal static class ExcelToPdfConverter
                         else
                         {
                             AddExcelText(currentPage!, lines[lineIdx], textX, cellY, cellFontSize, color,
+                                clipRect: mergedPageClip,
                                 maxWidth: lineMaxWidth,
                                 bold: isBold,
                                 underline: cell?.Underline ?? false,
@@ -2217,13 +2365,14 @@ internal static class ExcelToPdfConverter
                         // Empty line still consumes bold prefix chars (newline splits)
                         boldPrefixRemaining = Math.Max(0, boldPrefixRemaining - 1);
                     }
-                    cellY -= lineHeight;
+                    cellY -= cellLineHeight;
                 }
 
                 x += colWidths[i] + columnPadding;
             }
 
             currentY -= rowHeight;
+            currentPage!.IncludeWorksheetVerticalRange(rowTopY[excelRowIndex], currentY);
             }
 
             // Accumulate virtual overflow height but don't emit pages yet.
@@ -2369,6 +2518,9 @@ internal static class ExcelToPdfConverter
             {
                 imgPage = currentPage!;
             }
+            var isLegacyVmlImage = img.VmlFromRowOffset != null;
+            if (isLegacyVmlImage)
+                imgPage.MarkLegacyVmlImage();
 
             // Calculate X: find position of anchor column within group
             var colGroupIdx = Array.IndexOf(columns, img.AnchorCol);
@@ -2379,13 +2531,26 @@ internal static class ExcelToPdfConverter
             }
             var imgX = colXStarts[colGroupIdx];
 
+            if (img.AbsoluteLeftPt is { } absoluteLeftPt)
+                imgX = options.MarginLeft + absoluteLeftPt * drawingScale;
+
             // Apply sub-cell column offset (fromColOff) — shift image right within anchor column
-            var fromColOffPt = Math.Min(img.FromColOffEmu * drawingEmuToPt, colWidths[colGroupIdx]);
+            var fromColOffPt = img.VmlFromColOffset is { } vmlFromColOffset
+                ? colWidths[colGroupIdx] * vmlFromColOffset
+                : Math.Min(img.FromColOffEmu * drawingEmuToPt, colWidths[colGroupIdx]);
             imgX += fromColOffPt;
 
             // Apply sub-cell row offset (fromRowOff) — shift image down within anchor row
-            var fromRowOffPt = img.FromRowOffEmu * drawingEmuToPt;
+            var fromRowOffPt = img.VmlFromRowOffset is { } vmlFromRowOffset
+                ? ScaledRowHeightAt(img.AnchorRow) * vmlFromRowOffset
+                : img.FromRowOffEmu * drawingEmuToPt;
             imgTopY -= fromRowOffPt;
+
+            if (img.VmlFromRowOffset == null && img.AbsoluteTopPt is { } absoluteTopPt)
+                imgTopY = pageHeight - options.MarginTop - absoluteTopPt * drawingScale;
+            else if (isLegacyVmlImage && sheet.VerticalCentered)
+                imgTopY -= imgPage.GetWorksheetVerticalCenterOffset(options.MarginBottom,
+                    pageHeight - options.MarginTop);
 
             // Apply group-relative offset (for images inside grouped shapes)
             imgX += img.OffsetXEmu * drawingEmuToPt;
@@ -2415,6 +2580,10 @@ internal static class ExcelToPdfConverter
                     var toColOffPt = Math.Min(img.ToColOffEmu * drawingEmuToPt, colWidths[toColGroupIdx]);
                     imgRenderWidth += toColOffPt + columnPadding;
                 }
+                else if (toColGroupIdx < columns.Length && img.VmlToColOffset is { } vmlToColOffset)
+                {
+                    imgRenderWidth += colWidths[toColGroupIdx] * vmlToColOffset + columnPadding;
+                }
                 imgRenderWidth  = Math.Max(imgRenderWidth, 1f);
 
                 // Height: sum actual row heights for the spanned rows
@@ -2427,7 +2596,9 @@ internal static class ExcelToPdfConverter
                 }
                 // Adjust for sub-cell row offsets
                 imgRenderHeight -= fromRowOffPt;
-                imgRenderHeight += img.ToRowOffEmu * drawingEmuToPt;
+                imgRenderHeight += img.VmlToRowOffset is { } vmlToRowOffset
+                    ? ScaledRowHeightAt(img.AnchorRow + img.SpanRows) * vmlToRowOffset
+                    : img.ToRowOffEmu * drawingEmuToPt;
                 imgRenderHeight = Math.Max(imgRenderHeight, 1f);
             }
 
@@ -4256,7 +4427,7 @@ internal static class ExcelToPdfConverter
                 // columns using the default/fallback width.
                 // Do not cap explicit widths — LibreOffice honours the author's
                 // column widths as-is, so the column-grouping boundary matches.
-                var floor = hasExplicitWidth ? 0f : minColWidth;
+                var floor = hasExplicitWidth || sheet.DefaultColumnWidth > 0f ? 0f : minColWidth;
                 widths[i] = hasExplicitWidth
                     ? Math.Max(excelPts, 0f)
                     : Compat.Clamp(excelPts, floor, maxColWidth);

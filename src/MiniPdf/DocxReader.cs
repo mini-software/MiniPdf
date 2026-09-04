@@ -2414,8 +2414,8 @@ internal static class DocxReader
         return partPath.Substring(0, slashIndex) + "/_rels/" + partPath.Substring(slashIndex + 1) + ".rels";
     }
 
-    private static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu,
-        float cropL = 0, float cropT = 0, float cropR = 0, float cropB = 0)
+    internal static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu,
+        float cropL = 0, float cropT = 0, float cropR = 0, float cropB = 0, int rasterHeight = 512)
     {
         if (!Compat.IsWindows())
             return null;
@@ -2438,7 +2438,7 @@ internal static class DocxReader
                     ? (double)widthEmu / heightEmu
                     : (meta.Width > 0 && meta.Height > 0 ? (double)meta.Width / meta.Height : 1.0);
 
-            var targetHeight = 512;
+            var targetHeight = rasterHeight;
             var targetWidth = (int)Math.Round(targetHeight * aspect);
             targetWidth = Compat.Clamp(targetWidth, 32, 4096);
             targetHeight = Compat.Clamp(targetHeight, 32, 4096);

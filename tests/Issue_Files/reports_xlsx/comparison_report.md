@@ -1,6 +1,6 @@
-# MiniPdf vs Reference PDF Comparison Report
+# MiniPdf vs Microsoft 365 Reference PDF Comparison Report
 
-Generated: 2026-08-09T01:57:44.974922
+Generated: 2026-09-04T20:39:22.365558
 
 ## Summary
 
@@ -28,24 +28,53 @@ Generated: 2026-08-09T01:57:44.974922
 | 20 | 🔴 XlsxIssue82_5mb | ✅ | 0.1277 | 0.8157 | 722/766 | **0.4774** |
 | 21 | 🔴 XlsxIssue82_SampleTestData5mb | ✅ | 0.4255 | 0.9146 | 834/1668 | **0.636** |
 | 22 | 🟢 XlsxIssue82_WideTable | ✅ | 1.0 | 0.8648 | 13/13 | **0.9459** |
+| 23 | 🟢 Issue202609031340 | ✅ | 0.8828 | 0.9524 | 4/4 | **0.9341** |
 
-**Average Overall Score: 0.8359**
+**Average Overall Score: 0.8401**
+
+## Difference Heatmaps
+
+Blue areas are below the configured difference threshold; red areas have stronger pixel differences. The reference rendering is retained as faint context.
+
+<table>
+<tr><th>Case</th><th>Heatmap</th><th>Metrics</th></tr>
+<tr>
+  <td><b>Issue202609031340</b><br>Page 1</td>
+  <td><img src="images/Issue202609031340_p1_heatmap.png" width="760" alt="Issue202609031340 page 1 difference heatmap"></td>
+  <td>changed: 444245 px (20.41%)<br>bbox: [43, 29, 1195, 1754]<br>mean abs RGB: 27.6568<br>RMSE RGB: 71.4265<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Issue202609031340</b><br>Page 2</td>
+  <td><img src="images/Issue202609031340_p2_heatmap.png" width="760" alt="Issue202609031340 page 2 difference heatmap"></td>
+  <td>changed: 63529 px (2.92%)<br>bbox: [43, 725, 1217, 1014]<br>mean abs RGB: 4.3159<br>RMSE RGB: 28.1847<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Issue202609031340</b><br>Page 3</td>
+  <td><img src="images/Issue202609031340_p3_heatmap.png" width="760" alt="Issue202609031340 page 3 difference heatmap"></td>
+  <td>changed: 176239 px (8.10%)<br>bbox: [42, 40, 1196, 1754]<br>mean abs RGB: 10.4512<br>RMSE RGB: 43.9019<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Issue202609031340</b><br>Page 4</td>
+  <td><img src="images/Issue202609031340_p4_heatmap.png" width="760" alt="Issue202609031340 page 4 difference heatmap"></td>
+  <td>changed: 18149 px (0.83%)<br>bbox: [42, 743, 1196, 1009]<br>mean abs RGB: 1.166<br>RMSE RGB: 14.6026<br>threshold: 12, gain: 5.0</td>
+</tr>
+</table>
 
 ## Visual Comparison
 
 <table>
-<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
+<tr><th>MiniPdf</th><th>Microsoft 365 Reference</th></tr>
 <tr>
   <td><b>Academic Achievement Summary Table<br><small>format: xlsx | case: Academic Achievement Summary Table | scope: issue-xlsx</small></b></td>
   <td colspan="1">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
   <td><img src="images/Academic Achievement Summary Table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Academic Achievement Summary Table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Academic Achievement Summary Table_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Academic Achievement Summary Table_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Academic Achievement Summary Table_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Academic Achievement Summary Table_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>AcademicAchievement_temp<br><small>format: xlsx | case: AcademicAchievement_temp | scope: issue-xlsx</small></b></td>
@@ -53,11 +82,11 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/AcademicAchievement_temp_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/AcademicAchievement_temp_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/AcademicAchievement_temp_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/AcademicAchievement_temp_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/AcademicAchievement_temp_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/AcademicAchievement_temp_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>Business expense budget1<br><small>format: xlsx | case: Business expense budget1 | scope: issue-xlsx</small></b></td>
@@ -65,15 +94,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expense budget1_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Business expense budget1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expense budget1_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Business expense budget1_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expense budget1_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Business expense budget1_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>Business expenses budget2<br><small>format: xlsx | case: Business expenses budget2 | scope: issue-xlsx</small></b></td>
@@ -81,19 +110,19 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expenses budget2_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Business expenses budget2_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expenses budget2_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Business expenses budget2_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expenses budget2_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Business expenses budget2_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expenses budget2_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Business expenses budget2_p4_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>Business plan checklist with SWOT analysis1<br><small>format: xlsx | case: Business plan checklist with SWOT analysis1 | scope: issue-xlsx</small></b></td>
@@ -101,7 +130,7 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/Business plan checklist with SWOT analysis1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business plan checklist with SWOT analysis1_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Business plan checklist with SWOT analysis1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>Event budget1<br><small>format: xlsx | case: Event budget1 | scope: issue-xlsx</small></b></td>
@@ -109,15 +138,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/Event budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Event budget1_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Event budget1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Event budget1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Event budget1_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Event budget1_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Event budget1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Event budget1_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Event budget1_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>Expense report basic1<br><small>format: xlsx | case: Expense report basic1 | scope: issue-xlsx</small></b></td>
@@ -125,7 +154,7 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/Expense report basic1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Expense report basic1_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Expense report basic1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>Grocery list1<br><small>format: xlsx | case: Grocery list1 | scope: issue-xlsx</small></b></td>
@@ -133,7 +162,7 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/Grocery list1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Grocery list1_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Grocery list1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>payroll-calculator_f<br><small>format: xlsx | case: payroll-calculator_f | scope: issue-xlsx</small></b></td>
@@ -141,15 +170,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/payroll-calculator_f_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/payroll-calculator_f_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/payroll-calculator_f_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>PO_anonymized<br><small>format: xlsx | case: PO_anonymized | scope: issue-xlsx</small></b></td>
@@ -157,15 +186,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/PO_anonymized_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/PO_anonymized_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/PO_anonymized_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>Simple invoice1<br><small>format: xlsx | case: Simple invoice1 | scope: issue-xlsx</small></b></td>
@@ -173,7 +202,7 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/Simple invoice1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Simple invoice1_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Simple invoice1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>Small business cash flow forecast1<br><small>format: xlsx | case: Small business cash flow forecast1 | scope: issue-xlsx</small></b></td>
@@ -181,15 +210,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Small business cash flow forecast1_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Small business cash flow forecast1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Small business cash flow forecast1_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Small business cash flow forecast1_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><i>missing</i></td>
-  <td><img src="images/Small business cash flow forecast1_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Small business cash flow forecast1_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>Wedding_timeline_planner1_copy<br><small>format: xlsx | case: Wedding_timeline_planner1_copy | scope: issue-xlsx</small></b></td>
@@ -197,15 +226,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Wedding_timeline_planner1_copy_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Wedding_timeline_planner1_copy_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Wedding_timeline_planner1_copy_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>Weekly schedule planner1<br><small>format: xlsx | case: Weekly schedule planner1 | scope: issue-xlsx</small></b></td>
@@ -213,7 +242,7 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/Weekly schedule planner1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Weekly schedule planner1_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/Weekly schedule planner1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue75<br><small>format: xlsx | case: XlsxIssue75 | scope: issue-xlsx</small></b></td>
@@ -221,15 +250,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/XlsxIssue75_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue75_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue75_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue75_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue75_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue75_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue77_MergedCellAlignment<br><small>format: xlsx | case: XlsxIssue77_MergedCellAlignment | scope: issue-xlsx</small></b></td>
@@ -237,11 +266,11 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_MergedCellAlignment_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_MergedCellAlignment_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: issue-xlsx</small></b></td>
@@ -249,15 +278,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue77_Template2_Workaround<br><small>format: xlsx | case: XlsxIssue77_Template2_Workaround | scope: issue-xlsx</small></b></td>
@@ -265,15 +294,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template2_Workaround_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template2_Workaround_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template2_Workaround_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue81_LayoutOptions<br><small>format: xlsx | case: XlsxIssue81_LayoutOptions | scope: issue-xlsx</small></b></td>
@@ -281,15 +310,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/XlsxIssue81_LayoutOptions_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue81_LayoutOptions_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue81_LayoutOptions_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue82_5mb<br><small>format: xlsx | case: XlsxIssue82_5mb | scope: issue-xlsx</small></b></td>
@@ -297,15 +326,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_5mb_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_5mb_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_5mb_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_5mb_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_5mb_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_5mb_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_5mb_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_5mb_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_5mb_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue82_SampleTestData5mb<br><small>format: xlsx | case: XlsxIssue82_SampleTestData5mb | scope: issue-xlsx</small></b></td>
@@ -313,15 +342,15 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_SampleTestData5mb_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue82_WideTable<br><small>format: xlsx | case: XlsxIssue82_WideTable | scope: issue-xlsx</small></b></td>
@@ -329,15 +358,35 @@ Generated: 2026-08-09T01:57:44.974922
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_WideTable_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_WideTable_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_WideTable_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+</tr>
+<tr>
+  <td><b>Issue202609031340<br><small>format: xlsx | case: Issue202609031340 | scope: issue-xlsx</small></b></td>
+  <td colspan="1">Issue202609031340 <span style="color:#3fb950">⬤</span> 93.4%</td>
+</tr>
+<tr>
+  <td><img src="images/Issue202609031340_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Issue202609031340_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Issue202609031340_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Issue202609031340_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Issue202609031340_p3_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Issue202609031340_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+</tr>
+<tr>
+  <td><img src="images/Issue202609031340_p4_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/Issue202609031340_p4_reference.png" width="340" alt="Microsoft 365 Reference"></td>
 </tr>
 </table>
 
@@ -623,7 +672,6 @@ Generated: 2026-08-09T01:57:44.974922
  ---PAGE---
 
  Q2 ACTUAL VARIANCE
-
 ```
 </details>
 
@@ -682,7 +730,7 @@ Generated: 2026-08-09T01:57:44.974922
 
 -Web site updates $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 1,000.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 200.00  $ 1,000.00  $ 4,000.00
 
--Collateral preparation $ 5,000.00  $ -    $ -    $ 5,000.00  $ -    
+-Collateral preparation $ 5,000.00  $ -    $ -    $ 5,000.00  $ -
 ... (13476 more characters)
 
 ```
@@ -726,7 +774,6 @@ Generated: 2026-08-09T01:57:44.974922
  Kristin Orav 1/16/2023
 
  how it will differentiate itself within the marketplace.
-
 ```
 </details>
 
@@ -990,7 +1037,6 @@ Text content: ✅ Identical
  Bacon wrapped
 
  Beef Farmer's Market LOCAL MARKET 10 lbs $7.99 $79.90
-
 ```
 </details>
 
@@ -1335,7 +1381,6 @@ Text content: ✅ Identical
  A875 Peonies 35 $1.05 $36.75
 
  K245 Tulips 25 $2.00 $50.00
-
 ```
 </details>
 
@@ -1577,7 +1622,6 @@ Text content: ✅ Identical
 +Hire your wedding day transportation (carriage, limousine service,
 
 +☐
-
 ... (2605 more characters)
 
 ```
@@ -1615,7 +1659,6 @@ Text content: ✅ Identical
  ✖ Read ✔ Read ✔ Read Read Read Read Read
 
  ✔ Stretch ✔ Stretch ✖ Stretch Stretch Stretch Stretch Stretch
-
 ```
 </details>
 
@@ -2280,7 +2323,7 @@ Text content: ✅ Identical
 
 -44 User 44 user44@e New York Canada Sales IfbMmzIxe 2116040.7609570
 
--45 User 45 user45@eSydney 
+-45 User 45 user45@eSydney
 ... (16011 more characters)
 
 ```
@@ -2296,6 +2339,308 @@ Text content: ✅ Identical
 - **File Size:** MiniPdf=631576 bytes, Reference=506241 bytes
 
 Text content: ✅ Identical
+
+### Issue202609031340
+
+- **Case Metadata:** format: xlsx | case: Issue202609031340 | scope: issue-xlsx
+- **Text Similarity:** 0.8828
+- **Visual Average:** 0.9524
+- **Overall Score:** 0.9341
+- **Pages:** MiniPdf=4, Reference=4
+- **File Size:** MiniPdf=470835 bytes, Reference=346206 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/Issue202609031340.pdf
++++ reference/Issue202609031340.pdf
+@@ -1,37 +1,34 @@
+ 表单编号 XXX-XXX-051-01
+
+-文件编号 QA-SIPI-XXXX-01-1-1
+
+-XXXXXX有限公司
+
++XXXXXX有限公司 文件编号QA-SIPI-XXXX-01-1-1
+
+ 发行日期 2025-04-11
+
+ 文件版本 03 修订日期 2025-11-25
+
+ 产品穴号 详见注意事项 产品单重 20.45±1.05 g
+
++注塑制程检验标准书
+
+ ￠1.18*10MM(320度加强
+
+-注塑制程检验标准书
+
+ 附件编号 / 销钉规格
+
+ 型)
+
+ 产品型号 XXXX 部件名称 盖塑胶件 抽样计划 ANSI/ASQ Z1.4Ⅱ 巡检频率 2H/次
+
+-MO25XXXX0100/MO25
+
++MO25XXXX0100/MO
+
+ 模具编号 部件材质 PETG 允收水准 CR: 0    MA:1.0    MI: 2.0
+
+-XXXX0110
+
++25XXXX0110
+
+ 检验条件 检验光源角度:45°-90°,检验距离30cm,光照900~1200lux
+
+ 参考 图纸文件编号：XXXX系列  内部图纸 2025.4.10
+
+ 项目 检验工具 巡检内容
+
+ 图 部件图纸编号：HKXXXX-01-RB
+
+-目视、图纸 1、首件样品整模结构符合图纸设计、同PPS结构一致；
+
+-结
+
+-构
+
+-、PPS 2、制程巡检整模产品结构需同首件结构一致。
+
+-目视、限度 1、首件样品颜色需无限接近限度样中的标准样；
+
+-颜
+
+-色
+
+-样 2、制程巡检产品颜色需同首件颜色一致。
+
+-目视、限度 1、注塑成型外观缺陷大小不可超出限度样板；
+
+-外
+
+-观
+
+-样 2、其它外观缺陷无限度样的按常规通用标准判定。
+
++结 目视、图 1、首件样品整模结构符合图纸设计、同PPS结构一致；
+
++构 纸、PPS 2、制程巡检整模产品结构需同首件结构一致。
+
++颜 目视、限 1、首件样品颜色需无限接近限度样中的标准样；
+
++色 度样 2、制程巡检产品颜色需同首件颜色一致。
+
++外 目视、限 1、注塑成型外观缺陷大小不可超出限度样板；
+
++观 度样 2、其它外观缺陷无限度样的按常规通用标准判定。
+
+ 包装 目视 参照注塑作业指导书（SOP）
+
+ 仪器 项目 管控标准(mm) 测量位置 频率
+
+-卡尺 A 68.16 ＋0.05/－0.17 外形最长距离 1次/班
+
+-卡尺 B 62.03 ＋0.05/－0.20 外形最宽距离 1次/班
+
++1次/
+
++卡尺 A 68.16 ＋0.05/－0.17 外形最长距离
+
++班
+
++1次/
+
++卡尺 B 62.03 ＋0.05/－0.20 外形最宽距离
+
++班
+
+ 卡尺 C 27.9 ＋0.03/－0.05 顶部装饰片槽长度 首件
+
+ 卡尺 D 18.87 ＋0.00/－0.10 后钮侧面装饰片槽长度 首件
+
+ 卡尺 E 6.70＋0.00/－0.05 后钮侧面大卡槽宽度 首件
+
+@@ -40,22 +37,44 @@
+ 寸 针规 G 1.20±0.02 针孔内径 6H
+
+ 投影仪 H 58.69＋0.02/－0.12 针孔中心至外形最宽距离 6H
+
+ 卡尺 I 8.35＋0.10/－0.05 口部平面至顶部高度 首件
+
+-后钮针孔中分线中心点至前扣弧线中
+
++后钮针孔中分线中心点至前扣弧
+
+ 投影仪 J 53.93＋0.04/－0.03 6H
+
+-心点距离
+
+-卡尺 K 18.61±0.05 后钮针孔左右间距 1次/班
+
+-高度规 L*2 4.65＋0.00/－0.10 后钮针孔中心至口部平面间距 1次/班
+
++线中心点距离
+
++1次/
+
++卡尺 K 18.61±0.05 后钮针孔左右间距
+
++班
+
++1次/
+
++高度规 L*2 4.65＋0.00/－0.10 后钮针孔中心至口部平面间距
+
++班
+
++产品后钮装饰片槽缺
+
++口竖边同卡尺贴紧
+
++68.16 mm 62.03 mm
+
++产品口部平面同
+
++产品口部平面同
+
++卡尺上平面平行
+
++卡尺上平面平行
+
++产品后钮装饰片槽缺
+
++口竖边同卡尺贴紧
+
++0.00 ~ 300mm卡尺
+
+ 参考资料/项目 代码 取样数量 频率 代码 取样数量 频率 注意事项及品质履历
+
+-尺 1.MO25XXXX0100：1#~4#/MO25XXXX0110：5#~12#
+
++1.MO25XXXX0100：1#~4#/MO25XXXX0110：5#~12#
+
++尺
+
+ 寸
+
+ 组
+
+-组装制程检验标准书
+
+-1# 一模 1次/班 2# 一模 1次/班
+
++组装制程检验标
+
++1次/ 1次/
+
++准书 1# 一模 2# 一模
+
++班 班
+
+ 合
+
+-XXXX-00组装成品 功
+
+-3# 一模 1次/班 5# 一模 1次/班
+
++XXXX-
+
++功
+
++1次/ 1次/
+
++3# 一模 5# 一模
+
++00组装成品 班 班
+
+ 能
+
+-6# 一模 1次/班
+
++1次/
+
++6# 一模
+
++班
+
+ 日期 版本 工程担当 品质担当 修    订    内    容
+
+ 2025/4/11 00 AAAA AAA 初版发行
+
+ 修
+
+@@ -63,23 +82,20 @@
+ 修
+
+ A：68.16 ＋0.05/－0.13改为68.16 ＋0.05/－0.17；B：62.03 ＋0.05/－0.10改为62.03 ＋0.05/－0.20；D：18.87
+
+ 订
+
++＋0.00/－0.05改为18.87
+
+ 2025/5/12 01 BBBB BBB
+
+-记 ＋0.00/－0.05改为18.87 ＋0.00/－0.10；I：8.35＋0.00/－0.16改为8.35＋0.10/－0.05；J：53.93＋0.00/－0.10改为53.
+
+-录
+
+-93＋0.05/－0.10；L*2：4.65±0.05改成4.65＋0.00/－0.10；更新检验频率
+
++记
+
++＋0.00/－0.10；I：8.35＋0.00/－0.16改为8.35＋0.10/－0.05；J：53.93＋0.00/－0.10改为53.93＋0.05/－0.10；
+
++录 L*2：4.65±0.05改成4.65＋0.00/－0.10；更新检验频率
+
+ 2025/8/6 02 CCCC CCCC 新增模具编号：MO25XXXX0110
+
+ 2025/11/25 03 DDDD DDDD J：53.93＋0.05/－0.10改为53.93＋0.04/－0.03
+
++研 制
+
+ 制 品
+
+-研 制
+
++审 发 审 造 审 审 制
+
+ 造 保
+
+-发 造
+
+-部 部 制
+
+-工 工
+
+-作
+
++核 工 核 工 核 核 作
+
++部 部
+
+ 程 程
+
+-审 审
+
+-核 核
+
+-审 审
+
+ ---PAGE---
+
+ 文件编号 QA-SIPI-XXXX-01-1-1 表单编号 QA-FM-051-01
+
+ XXXXXX有限公司
+
+@@ -90,8 +106,8 @@
+ 产品品质履历（SIP附件）
+
+ 版本 日期 问题
+... (88 more characters)
+
+```
+</details>
 
 ## Improvement Suggestions
 

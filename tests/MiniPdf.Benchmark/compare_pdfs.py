@@ -133,7 +133,7 @@ def normalize_manifest_case(entry: dict) -> dict:
 
 def load_manifest_cases(manifest_path: str) -> list[dict]:
     """Load benchmark cases from a manifest JSON file."""
-    with open(manifest_path, encoding="utf-8") as f:
+    with open(manifest_path, encoding="utf-8-sig") as f:
         data = json.load(f)
 
     if isinstance(data, list):
@@ -1045,7 +1045,7 @@ def compare_single(
     return result
 
 
-def generate_report(results: list[dict], report_dir: str, labels: dict | None = None):
+def generate_report(results: list[dict], report_dir: str, labels: Optional[dict] = None):
     """Generate a markdown + JSON comparison report."""
     labels = labels or {}
     candidate_label = labels.get("candidate", "MiniPdf")

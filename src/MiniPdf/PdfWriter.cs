@@ -2321,6 +2321,10 @@ internal sealed class PdfWriter
         if (name.Contains("宋体", StringComparison.Ordinal)
             || name.Contains("simsun", StringComparison.OrdinalIgnoreCase))
             return "simsun";
+        if (name.Contains("华文楷体", StringComparison.Ordinal)
+            || name.Contains("華文楷體", StringComparison.Ordinal)
+            || name.Contains("stkaiti", StringComparison.OrdinalIgnoreCase))
+            return "stkaiti";
         if (name.Contains("楷体", StringComparison.Ordinal)
             || name.Contains("楷體", StringComparison.Ordinal)
             || name.Contains("kaiti", StringComparison.OrdinalIgnoreCase)
