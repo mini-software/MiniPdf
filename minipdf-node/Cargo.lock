@@ -368,7 +368,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 
 [[package]]
 name = "minipdf"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "chrono",
  "flate2",
@@ -379,6 +379,7 @@ dependencies = [
  "thiserror",
  "ttf-parser",
  "unicode-bidi",
+ "windows-sys",
  "zip",
 ]
 
@@ -857,6 +858,15 @@ name = "windows-strings"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7837d08f69c77cf6b07689544538e017c1bfcf57e34b4c0ff58e6c2cd3b37091"
+dependencies = [
+ "windows-link",
+]
+
+[[package]]
+name = "windows-sys"
+version = "0.61.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
 dependencies = [
  "windows-link",
 ]

@@ -29,6 +29,7 @@ const O365_PRINTER_FALLBACK_FONT_SCALE: f32 = 0.96;
 const O365_PRINTER_FALLBACK_HORIZONTAL_SCALE: f32 = 1.0046;
 const O365_PRINTER_FALLBACK_LEFT_OFFSET: f32 = 0.48;
 const O365_PRINTER_FALLBACK_BORDER_SCALE: f32 = 1.8;
+const CENTERED_VML_HORIZONTAL_SCALE: f32 = 0.9754;
 const SVG_FALLBACK_HORIZONTAL_SCALE: f32 = 0.972;
 const GROUP_DRAWING_TOP_OFFSET: f32 = 0.96;
 const ROW_HEIGHT: f32 = 15.0;
@@ -72,6 +73,8 @@ struct SheetPageSetup {
     fit_to_width: bool,
     fit_to_height: bool,
     horizontal_centered: bool,
+    vertical_centered: bool,
+    legacy_vml_drawing: bool,
     o365_printer_fallback: bool,
 }
 
@@ -88,6 +91,8 @@ impl Default for SheetPageSetup {
             fit_to_width: false,
             fit_to_height: false,
             horizontal_centered: false,
+            vertical_centered: false,
+            legacy_vml_drawing: false,
             o365_printer_fallback: false,
         }
     }
@@ -114,6 +119,7 @@ struct CellStyle {
     vertical_alignment: VerticalAlignment,
     indent: f32,
     wrap_text: bool,
+    stacked_text: bool,
     preferred_font: Option<&'static str>,
 }
 
@@ -152,6 +158,7 @@ enum NumberFormat {
     General,
     DateMonthDayYear,
     DateDayShortMonthYear,
+    DateYearMonthDay,
     PercentageZeroDecimals,
     PercentageTwoDecimals,
     ThousandsZeroDecimals,
@@ -192,6 +199,7 @@ impl Default for CellStyle {
             vertical_alignment: VerticalAlignment::Bottom,
             indent: 0.0,
             wrap_text: false,
+            stacked_text: false,
             preferred_font: None,
         }
     }
@@ -279,6 +287,8 @@ fn parse_number_format(
                     }
                 } else if unescaped.contains("dd-mmm-yyyy") {
                     NumberFormat::DateDayShortMonthYear
+                } else if unescaped.contains("yyyy-mm-dd") {
+                    NumberFormat::DateYearMonthDay
                 } else if unescaped.contains("#,##0") && !unescaped.contains('.') {
                     NumberFormat::ThousandsZeroDecimals
                 } else {
@@ -657,6 +667,14 @@ fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
         .find(|node| node.is_element() && node.tag_name().name() == "printOptions")
         .and_then(|node| node.attribute("horizontalCentered"))
         .is_some_and(|value| matches!(value, "1" | "true"));
+    let vertical_centered = document
+        .descendants()
+        .find(|node| node.is_element() && node.tag_name().name() == "printOptions")
+        .and_then(|node| node.attribute("verticalCentered"))
+        .is_some_and(|value| matches!(value, "1" | "true"));
+    let legacy_vml_drawing = document
+        .descendants()
+        .any(|node| node.has_tag_name("legacyDrawing"));
 
     let margin_top = margin("top", MARGIN_TOP);
     Ok(SheetPageSetup {
@@ -674,6 +692,8 @@ fn read_page_setup(sheet_xml: &str) -> Result<SheetPageSetup> {
         fit_to_width: fit_to_page && fit_to_width > 0,
         fit_to_height: fit_to_page && fit_to_height > 0,
         horizontal_centered,
+        vertical_centered,
+        legacy_vml_drawing,
         o365_printer_fallback: false,
     })
 }
@@ -892,25 +912,32 @@ fn read_sheet_images<R: std::io::Read + std::io::Seek>(
     default_row_height: f32,
 ) -> Result<Vec<SheetImage>> {
     let sheet = roxmltree::Document::parse(sheet_xml)?;
+    let mut images = read_legacy_drawing_images(
+        archive,
+        sheet_path,
+        &sheet,
+        column_widths,
+        rows,
+        default_row_height,
+    )?;
     let Some(drawing_id) = sheet
         .descendants()
         .find(|node| node.has_tag_name("drawing"))
         .and_then(relationship_id)
     else {
-        return Ok(Vec::new());
+        return Ok(images);
     };
     let sheet_rels = read_part_relationships(archive, sheet_path)?;
     let Some(drawing_target) = sheet_rels.get(&drawing_id) else {
-        return Ok(Vec::new());
+        return Ok(images);
     };
     let drawing_path = resolve_part_target(sheet_path, drawing_target);
     let Some(drawing_xml) = read_zip_text(archive, &drawing_path)? else {
-        return Ok(Vec::new());
+        return Ok(images);
     };
     let drawing_rels = read_part_relationships(archive, &drawing_path)?;
     let theme_colors = read_theme_colors(archive)?;
     let drawing = roxmltree::Document::parse(&drawing_xml)?;
-    let mut images = Vec::new();
 
     for anchor in drawing
         .descendants()
@@ -986,6 +1013,276 @@ fn read_sheet_images<R: std::io::Read + std::io::Seek>(
         }
     }
     Ok(images)
+}
+
+fn read_legacy_drawing_images<R: std::io::Read + std::io::Seek>(
+    archive: &mut ZipArchive<R>,
+    sheet_path: &str,
+    sheet: &roxmltree::Document<'_>,
+    column_widths: &[f32],
+    rows: &[RowData],
+    default_row_height: f32,
+) -> Result<Vec<SheetImage>> {
+    let Some(vml_id) = sheet
+        .descendants()
+        .find(|node| node.has_tag_name("legacyDrawing"))
+        .and_then(relationship_id)
+    else {
+        return Ok(Vec::new());
+    };
+    let sheet_rels = read_part_relationships(archive, sheet_path)?;
+    let Some(vml_target) = sheet_rels.get(&vml_id) else {
+        return Ok(Vec::new());
+    };
+    let vml_path = resolve_part_target(sheet_path, vml_target);
+    let Some(vml_xml) = read_zip_text(archive, &vml_path)? else {
+        return Ok(Vec::new());
+    };
+    let vml_rels = read_part_relationships(archive, &vml_path)?;
+    let vml = roxmltree::Document::parse(&vml_xml)?;
+    let mut images = Vec::new();
+
+    for shape in vml.descendants().filter(|node| node.has_tag_name("shape")) {
+        let Some(client_data) = shape
+            .children()
+            .find(|node| node.has_tag_name("ClientData"))
+            .filter(|node| node.attribute("ObjectType") == Some("Pict"))
+        else {
+            continue;
+        };
+        let Some(image_data) = shape.children().find(|node| node.has_tag_name("imagedata")) else {
+            continue;
+        };
+        let Some(image_id) = image_data
+            .attributes()
+            .find(|attribute| attribute.name() == "relid")
+            .map(|attribute| attribute.value())
+        else {
+            continue;
+        };
+        let Some(image_target) = vml_rels.get(image_id) else {
+            continue;
+        };
+        let Some(anchor) = client_data
+            .children()
+            .find(|node| node.has_tag_name("Anchor"))
+            .and_then(|node| node.text())
+            .and_then(parse_vml_anchor)
+        else {
+            continue;
+        };
+        let style = shape.attribute("style").unwrap_or_default();
+        let Some(width) = parse_vml_style_points(style, "width").filter(|value| *value > 0.0)
+        else {
+            continue;
+        };
+        let Some(height) = parse_vml_style_points(style, "height").filter(|value| *value > 0.0)
+        else {
+            continue;
+        };
+        let image_path = resolve_part_target(&vml_path, image_target);
+        let Some(bytes) = read_zip_bytes(archive, &image_path)? else {
+            continue;
+        };
+        let (data, pixel_width, pixel_height) = if image_path.to_ascii_lowercase().ends_with(".emf")
+        {
+            let crop = [
+                parse_vml_crop(image_data.attribute("cropleft")),
+                parse_vml_crop(image_data.attribute("croptop")),
+                parse_vml_crop(image_data.attribute("cropright")),
+                parse_vml_crop(image_data.attribute("cropbottom")),
+            ];
+            let Some(rgba) = rasterize_emf(&bytes, height, crop) else {
+                continue;
+            };
+            let pixel_width = rgba.width().min(u16::MAX.into()) as u16;
+            let pixel_height = rgba.height().min(u16::MAX.into()) as u16;
+            (
+                SheetImageData::Rgba(rgba.into_raw()),
+                pixel_width,
+                pixel_height,
+            )
+        } else if let Some((pixel_width, pixel_height)) = jpeg_dimensions(&bytes) {
+            (SheetImageData::Jpeg(bytes), pixel_width, pixel_height)
+        } else {
+            let Ok(decoded) = image::load_from_memory(&bytes) else {
+                continue;
+            };
+            let rgba = decoded.into_rgba8();
+            let pixel_width = rgba.width().min(u16::MAX.into()) as u16;
+            let pixel_height = rgba.height().min(u16::MAX.into()) as u16;
+            (
+                SheetImageData::Rgba(rgba.into_raw()),
+                pixel_width,
+                pixel_height,
+            )
+        };
+        let col = anchor[0];
+        let row = anchor[2];
+        let col_offset =
+            column_widths.get(col).copied().unwrap_or(COL_WIDTH) * anchor[1] as f32 / 1024.0;
+        let row_height = rows
+            .iter()
+            .find(|candidate| candidate.index == row)
+            .map(|candidate| candidate.height)
+            .unwrap_or(default_row_height);
+        let row_offset = row_height * anchor[3] as f32 / 256.0;
+        images.push(SheetImage {
+            data,
+            pixel_width,
+            pixel_height,
+            col,
+            row,
+            col_offset,
+            row_offset,
+            width,
+            height,
+            foreground: true,
+        });
+    }
+
+    Ok(images)
+}
+
+fn parse_vml_anchor(value: &str) -> Option<[usize; 8]> {
+    value
+        .split(',')
+        .map(|part| part.trim().parse::<usize>().ok())
+        .collect::<Option<Vec<_>>>()?
+        .try_into()
+        .ok()
+}
+
+fn parse_vml_style_points(style: &str, property: &str) -> Option<f32> {
+    style.split(';').find_map(|declaration| {
+        let (name, value) = declaration.split_once(':')?;
+        if !name.trim().eq_ignore_ascii_case(property) {
+            return None;
+        }
+        let value = value.trim();
+        let number = value.get(..value.len().checked_sub(2)?)?;
+        value
+            .get(value.len() - 2..)
+            .filter(|unit| unit.eq_ignore_ascii_case("pt"))?;
+        number.parse().ok()
+    })
+}
+
+fn parse_vml_crop(value: Option<&str>) -> f32 {
+    value
+        .and_then(|value| value.strip_suffix('f').or_else(|| value.strip_suffix('F')))
+        .and_then(|value| value.parse::<f32>().ok())
+        .map(|value| (value / 65_536.0).clamp(0.0, 1.0))
+        .unwrap_or(0.0)
+}
+
+#[cfg(not(windows))]
+fn rasterize_emf(_data: &[u8], _display_height: f32, _crop: [f32; 4]) -> Option<image::RgbaImage> {
+    None
+}
+
+#[cfg(windows)]
+fn rasterize_emf(data: &[u8], display_height: f32, crop: [f32; 4]) -> Option<image::RgbaImage> {
+    use std::ffi::c_void;
+    use std::mem::size_of;
+    use std::ptr::null_mut;
+
+    use windows_sys::Win32::Foundation::RECT;
+    use windows_sys::Win32::Graphics::Gdi::{
+        CreateCompatibleDC, CreateDIBSection, DeleteDC, DeleteEnhMetaFile, DeleteObject,
+        PlayEnhMetaFile, SelectObject, SetEnhMetaFileBits, BITMAPINFO, BITMAPINFOHEADER, BI_RGB,
+        DIB_RGB_COLORS,
+    };
+
+    if data.len() < 24 || data.len() > u32::MAX as usize || display_height <= 0.0 {
+        return None;
+    }
+    let read_i32 = |offset: usize| {
+        Some(i32::from_le_bytes(
+            data.get(offset..offset + 4)?.try_into().ok()?,
+        ))
+    };
+    let bounds_width = read_i32(16)?.checked_sub(read_i32(8)?)?.unsigned_abs();
+    let bounds_height = read_i32(20)?.checked_sub(read_i32(12)?)?.unsigned_abs();
+    if bounds_width == 0 || bounds_height == 0 {
+        return None;
+    }
+    let visible_height = (1.0 - crop[1] - crop[3]).max(0.01);
+    let raster_height = (display_height * 300.0 / 72.0 / visible_height)
+        .ceil()
+        .clamp(32.0, 4096.0) as u32;
+    let raster_width = (raster_height as f32 * bounds_width as f32 / bounds_height as f32)
+        .round()
+        .clamp(32.0, 4096.0) as u32;
+
+    unsafe {
+        let metafile = SetEnhMetaFileBits(data.len() as u32, data.as_ptr());
+        if metafile.is_null() {
+            return None;
+        }
+        let dc = CreateCompatibleDC(null_mut());
+        if dc.is_null() {
+            DeleteEnhMetaFile(metafile);
+            return None;
+        }
+        let mut bitmap_info: BITMAPINFO = std::mem::zeroed();
+        bitmap_info.bmiHeader = BITMAPINFOHEADER {
+            biSize: size_of::<BITMAPINFOHEADER>() as u32,
+            biWidth: raster_width as i32,
+            biHeight: -(raster_height as i32),
+            biPlanes: 1,
+            biBitCount: 32,
+            biCompression: BI_RGB,
+            ..std::mem::zeroed()
+        };
+        let mut bits: *mut c_void = null_mut();
+        let bitmap = CreateDIBSection(dc, &bitmap_info, DIB_RGB_COLORS, &mut bits, null_mut(), 0);
+        if bitmap.is_null() || bits.is_null() {
+            DeleteDC(dc);
+            DeleteEnhMetaFile(metafile);
+            return None;
+        }
+        let old_bitmap = SelectObject(dc, bitmap);
+        let byte_len = raster_width as usize * raster_height as usize * 4;
+        std::ptr::write_bytes(bits, 255, byte_len);
+        let destination = RECT {
+            left: 0,
+            top: 0,
+            right: raster_width as i32,
+            bottom: raster_height as i32,
+        };
+        let rendered = PlayEnhMetaFile(dc, metafile, &destination) != 0;
+        let bgra = std::slice::from_raw_parts(bits.cast::<u8>(), byte_len);
+        let mut rgba = Vec::with_capacity(byte_len);
+        for pixel in bgra.chunks_exact(4) {
+            rgba.extend_from_slice(&[pixel[2], pixel[1], pixel[0], 255]);
+        }
+        SelectObject(dc, old_bitmap);
+        DeleteObject(bitmap);
+        DeleteDC(dc);
+        DeleteEnhMetaFile(metafile);
+        if !rendered {
+            return None;
+        }
+
+        let source = image::RgbaImage::from_raw(raster_width, raster_height, rgba)?;
+        let crop_x = (raster_width as f32 * crop[0]).round() as u32;
+        let crop_y = (raster_height as f32 * crop[1]).round() as u32;
+        let crop_width = (raster_width as f32 * (1.0 - crop[0] - crop[2]))
+            .round()
+            .max(1.0) as u32;
+        let crop_height = (raster_height as f32 * visible_height).round().max(1.0) as u32;
+        Some(
+            image::imageops::crop_imm(
+                &source,
+                crop_x.min(raster_width - 1),
+                crop_y.min(raster_height - 1),
+                crop_width.min(raster_width.saturating_sub(crop_x).max(1)),
+                crop_height.min(raster_height.saturating_sub(crop_y).max(1)),
+            )
+            .to_image(),
+        )
+    }
 }
 
 fn read_two_cell_shape(
@@ -1721,6 +2018,8 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         .and_then(|border_id| borders.get(border_id).copied())
                         .unwrap_or_default();
                     let alignment = xf.children().find(|node| node.has_tag_name("alignment"));
+                    let stacked_text =
+                        is_stacked_text(alignment.and_then(|node| node.attribute("textRotation")));
                     CellStyle {
                         bold: font.bold,
                         italic: font.italic,
@@ -1747,6 +2046,7 @@ fn read_styles<R: std::io::Read + std::io::Seek>(
                         wrap_text: alignment
                             .and_then(|node| node.attribute("wrapText"))
                             .is_some_and(|value| matches!(value, "1" | "true")),
+                        stacked_text,
                         preferred_font: font.preferred_font,
                     }
                 })
@@ -2505,6 +2805,7 @@ fn xlsx_preferred_font(font_name: Option<&str>) -> Option<&'static str> {
         "garamond" => Some("gara"),
         "grandview" => Some("grandview"),
         "grandview display" => Some("grandviewdisplay"),
+        "kaiti" | "stkaiti" | "华文楷体" | "楷体" => Some("simkai"),
         "palatino linotype" => Some("bookos"),
         "tw cen mt" => Some("tcm_____"),
         "verdana" => Some("verdana"),
@@ -2792,6 +3093,11 @@ fn merged_cell_borders(rows: &[RowData], merge_range: &MergeRange) -> CellBorder
     }
 }
 
+fn merged_cell_render_row(merge_range: &MergeRange, page_start_row: usize) -> Option<usize> {
+    let render_row = merge_range.start_row.max(page_start_row);
+    (render_row <= merge_range.end_row).then_some(render_row)
+}
+
 fn parse_rgb_color(value: &str) -> Option<PdfColor> {
     let rgb = value.get(value.len().checked_sub(6)?..)?;
     let number = u32::from_str_radix(rgb, 16).ok()?;
@@ -2817,6 +3123,22 @@ fn parse_vertical_alignment(value: Option<&str>) -> VerticalAlignment {
         Some("center") => VerticalAlignment::Center,
         _ => VerticalAlignment::Bottom,
     }
+}
+
+fn is_stacked_text(text_rotation: Option<&str>) -> bool {
+    text_rotation == Some("255")
+}
+
+fn should_use_kaiti_fallback(text: &str, style: CellStyle) -> bool {
+    style.preferred_font == Some("simkai") && style.stacked_text && !text.is_empty()
+}
+
+fn is_kaiti_slash_date(text: &str, style: CellStyle) -> bool {
+    style.preferred_font == Some("simkai")
+        && text.matches('/').count() == 2
+        && text
+            .chars()
+            .all(|character| character.is_ascii_digit() || character == '/')
 }
 
 fn read_shared_strings<R: std::io::Read + std::io::Seek>(
@@ -3114,6 +3436,7 @@ fn format_numeric_value(value: f64, source: &str, number_format: NumberFormat) -
     match number_format {
         NumberFormat::DateMonthDayYear => format_excel_date(value),
         NumberFormat::DateDayShortMonthYear => format_excel_date_day_short_month_year(value),
+        NumberFormat::DateYearMonthDay => format_excel_date_year_month_day(value),
         NumberFormat::PercentageZeroDecimals => format!("{:.0}%", value * 100.0),
         NumberFormat::PercentageTwoDecimals => format!("{:.2}%", value * 100.0),
         NumberFormat::ThousandsZeroDecimals => format_thousands_zero_decimals(value),
@@ -3159,6 +3482,11 @@ fn format_excel_date_day_short_month_year(value: f64) -> String {
     let (year, month, day) = excel_date_parts(value);
     let month_name = MONTHS[(month - 1) as usize];
     format!("{day:02}-{month_name}-{year:04}")
+}
+
+fn format_excel_date_year_month_day(value: f64) -> String {
+    let (year, month, day) = excel_date_parts(value);
+    format!("{year:04}-{month:02}-{day:02}")
 }
 
 fn excel_date_parts(value: f64) -> (i64, i64, i64) {
@@ -3582,6 +3910,14 @@ fn render_sheet(
     let horizontal_scale = xlsx_horizontal_scale(sheet);
     let horizontal_geometry_scale = content_scale
         * horizontal_scale
+        * if sheet.page_setup.horizontal_centered
+            && sheet.page_setup.vertical_centered
+            && sheet.page_setup.legacy_vml_drawing
+        {
+            CENTERED_VML_HORIZONTAL_SCALE
+        } else {
+            1.0
+        }
         * if sheet.page_setup.o365_printer_fallback {
             O365_PRINTER_FALLBACK_HORIZONTAL_SCALE
         } else {
@@ -3788,6 +4124,9 @@ fn render_sheet_columns(
     doc.add_page(page_size.width, page_size.height);
     let mut y = page_size.height - margin_top;
     let mut next_row_index = 0;
+    let mut page_ranges = Vec::new();
+    let mut page_content_top = y;
+    let mut page_start_row = 0;
 
     for row in &sheet.rows {
         let crossed_break = row_break_in_range(
@@ -3797,9 +4136,12 @@ fn render_sheet_columns(
             row.index,
         );
         if let Some(break_index) = crossed_break.filter(|_| y < page_size.height - margin_top) {
+            page_ranges.push((page_index, page_content_top, y));
             page_index = doc.pages().len();
             doc.add_page(page_size.width, page_size.height);
             y = page_size.height - margin_top;
+            page_content_top = y;
+            page_start_row = break_index;
             repeat_print_title_rows(
                 doc,
                 sheet,
@@ -3832,9 +4174,12 @@ fn render_sheet_columns(
         let row_height = row.height * row_scale;
 
         if sheet.print_title_rows.is_none() && y - row_height < margin_bottom {
+            page_ranges.push((page_index, page_content_top, y));
             page_index = doc.pages().len();
             doc.add_page(page_size.width, page_size.height);
             y = page_size.height - margin_top;
+            page_content_top = y;
+            page_start_row = row.index;
             repeat_print_title_rows(
                 doc,
                 sheet,
@@ -3865,11 +4210,13 @@ fn render_sheet_columns(
             content_left,
             row_scale,
             page_index,
+            page_start_row,
             y,
             row,
         );
         next_row_index = row.index + 1;
     }
+    page_ranges.push((page_index, page_content_top, y));
 
     let page = doc.page_mut(first_page_index).expect("page index is valid");
     for (image, image_id) in sheet.images.iter().zip(image_ids).filter(|(image, _)| {
@@ -3898,6 +4245,23 @@ fn render_sheet_columns(
             image.width * horizontal_geometry_scale,
             image.height * row_scale,
         );
+    }
+
+    if sheet.page_setup.vertical_centered {
+        let printable_top = page_size.height - margin_top;
+        for (page_index, content_top, content_bottom) in page_ranges {
+            let content_height = content_top - content_bottom;
+            let printable_height = printable_top - margin_bottom;
+            if content_height >= printable_height {
+                continue;
+            }
+            let offset = (margin_bottom + printable_top - content_bottom - content_top) / 2.0;
+            if offset.abs() >= 0.01 {
+                doc.page_mut(page_index)
+                    .expect("page index is valid")
+                    .translate_y(offset);
+            }
+        }
     }
 }
 
@@ -4001,6 +4365,7 @@ fn repeat_print_title_rows(
                 content_left,
                 row_scale,
                 page_index,
+                title_start,
                 *y,
                 row,
             );
@@ -4021,6 +4386,7 @@ fn render_xlsx_row(
     content_left: f32,
     row_scale: f32,
     page_index: usize,
+    page_start_row: usize,
     y: f32,
     row: &RowData,
 ) {
@@ -4076,7 +4442,9 @@ fn render_xlsx_row(
                 && merge.start_col <= column_index
                 && merge.end_col >= column_index
         });
-        if merge.is_some_and(|merge| row.index > merge.start_row) {
+        if merge
+            .is_some_and(|merge| merged_cell_render_row(merge, page_start_row) != Some(row.index))
+        {
             cell_x += column_widths[column_index];
             continue;
         }
@@ -4086,14 +4454,28 @@ fn render_xlsx_row(
             continue;
         }
         let source_column = merge.map(|merge| merge.start_col).unwrap_or(column_index);
-        let cell = row.cells.get(source_column).unwrap_or(&empty_cell);
+        let is_merge_continuation = merge.is_some_and(|merge| merge.start_row < page_start_row);
+        let source_row = merge
+            .filter(|_| is_merge_continuation)
+            .and_then(|merge| {
+                sheet
+                    .rows
+                    .iter()
+                    .find(|candidate| candidate.index == merge.start_row)
+            })
+            .unwrap_or(row);
+        let cell = source_row.cells.get(source_column).unwrap_or(&empty_cell);
+        if is_merge_continuation && cell.text.is_empty() && cell.style.fill_color.is_none() {
+            cell_x += column_widths[column_index];
+            continue;
+        }
         let merge_end = merge
             .map(|merge| (merge.end_col + 1).min(column_end))
             .unwrap_or(column_index + 1);
         let cell_width = column_widths[column_index..merge_end].iter().sum::<f32>();
         let cell_height = merge
             .map(|merge| {
-                (merge.start_row..=merge.end_row)
+                (merge.start_row.max(page_start_row)..=merge.end_row)
                     .map(|row_index| {
                         sheet
                             .rows
@@ -4231,22 +4613,38 @@ fn render_xlsx_row(
         } else {
             1.0
         };
-        let font_size = cell.style.font_size * content_scale * font_scale;
+        let mut text_style = cell.style;
+        let wrap_padding = if is_kaiti_slash_date(&cell.text, text_style) {
+            0.0
+        } else {
+            6.0
+        };
+        if text_style.preferred_font == Some("simkai")
+            && !should_use_kaiti_fallback(&cell.text, text_style)
+        {
+            text_style.preferred_font = None;
+        }
+        let font_size = text_style.font_size * content_scale * font_scale;
         let indent_width = styled_text_width_with_font(
-            &"000".repeat(cell.style.indent as usize),
+            &"000".repeat(text_style.indent as usize),
             CELL_FONT_SIZE * content_scale * font_scale,
             false,
             false,
             None,
         );
+        let rendered_text = if is_merge_continuation {
+            ""
+        } else {
+            &cell.text
+        };
         let text = if merge.is_some_and(|merge| merge.start_col < column_start) {
             String::new()
         } else {
-            cell.text.replace(['\r', '\n'], " ")
+            rendered_text.replace(['\r', '\n'], " ")
         };
-        let align_right = cell.is_numeric || has_rtl_base_direction(&cell.text);
-        let overflows_left = cell.style.horizontal_alignment == HorizontalAlignment::Right
-            || (cell.style.horizontal_alignment == HorizontalAlignment::General && align_right);
+        let align_right = cell.is_numeric || has_rtl_base_direction(rendered_text);
+        let overflows_left = text_style.horizontal_alignment == HorizontalAlignment::Right
+            || (text_style.horizontal_alignment == HorizontalAlignment::General && align_right);
         let (clip_offset, clip_width, overflow_is_blocked) = if merge.is_none() {
             text_overflow_region(
                 sheet,
@@ -4260,43 +4658,54 @@ fn render_xlsx_row(
         } else {
             (0.0, cell_width, false)
         };
-        let lines = if cell.style.wrap_text {
+        let lines = if text_style.stacked_text {
+            rendered_text
+                .replace("\r\n", "\n")
+                .replace('\r', "\n")
+                .split('\n')
+                .map(str::to_owned)
+                .collect()
+        } else if text_style.wrap_text {
             wrap_cell_text_with_font(
-                &cell.text,
-                (cell_width - 6.0 - indent_width).max(1.0),
+                rendered_text,
+                (cell_width - wrap_padding - indent_width).max(1.0),
                 font_size,
-                cell.style.bold,
-                cell.style.italic,
-                cell.style.preferred_font,
+                text_style.bold,
+                text_style.italic,
+                text_style.preferred_font,
             )
         } else {
             vec![text]
         };
-        let max_text_width = lines
-            .iter()
-            .map(|line| {
-                styled_text_width_with_font(
-                    line,
-                    font_size,
-                    cell.style.bold,
-                    cell.style.italic,
-                    cell.style.preferred_font,
-                )
-            })
-            .fold(0.0, f32::max);
+        let max_text_width = if text_style.stacked_text {
+            font_size * 1.2 * lines.len() as f32
+        } else {
+            lines
+                .iter()
+                .map(|line| {
+                    styled_text_width_with_font(
+                        line,
+                        font_size,
+                        text_style.bold,
+                        text_style.italic,
+                        text_style.preferred_font,
+                    )
+                })
+                .fold(0.0, f32::max)
+        };
         let should_clip =
-            cell.style.wrap_text || (max_text_width > clip_width && overflow_is_blocked);
+            text_style.wrap_text || (max_text_width > clip_width && overflow_is_blocked);
         pending_text.push(PendingCellText {
             cell_x,
             cell_y,
             cell_width,
             cell_height,
-            clip_x: if cell.style.wrap_text {
+            clip_x: if text_style.wrap_text {
                 cell_x
             } else {
                 cell_x + clip_offset
             },
-            clip_width: if cell.style.wrap_text {
+            clip_width: if text_style.wrap_text {
                 cell_width
             } else {
                 clip_width
@@ -4305,12 +4714,12 @@ fn render_xlsx_row(
             lines,
             font_size,
             indent_width,
-            style: cell.style,
+            style: text_style,
             has_border: cell_borders.any(),
             is_multi_row_merge: cell_height > row_height + 0.1,
             align_right,
             accounting_value: matches!(cell.style.number_format, NumberFormat::DollarAccounting)
-                .then(|| cell.text.strip_prefix("$ ").map(str::to_owned))
+                .then(|| rendered_text.strip_prefix("$ ").map(str::to_owned))
                 .flatten(),
         });
         cell_x += column_widths[column_index];
@@ -4321,7 +4730,17 @@ fn render_xlsx_row(
             page.push_clip(text.clip_x, text.cell_y, text.clip_width, text.cell_height);
         }
         let line_height = text.font_size * 1.2;
-        let block_height = line_height * text.lines.len() as f32;
+        let line_count = text.lines.len();
+        let block_height = if text.style.stacked_text {
+            text.lines
+                .iter()
+                .map(|line| line.chars().count())
+                .max()
+                .unwrap_or(0) as f32
+                * line_height
+        } else {
+            line_height * line_count as f32
+        };
         let baseline_offset = text.font_size * 0.2;
         let lowest_baseline = match text.style.vertical_alignment {
             VerticalAlignment::Top => {
@@ -4346,7 +4765,6 @@ fn render_xlsx_row(
         } else {
             0.0
         };
-        let line_count = text.lines.len();
         if let Some(value) = text.accounting_value {
             let text_y = lowest_baseline;
             page.add_styled_text(
@@ -4380,6 +4798,60 @@ fn render_xlsx_row(
                     preferred_font: text.style.preferred_font,
                 },
             );
+            if text.should_clip {
+                page.pop_clip();
+            }
+            continue;
+        }
+        if text.style.stacked_text {
+            let column_count = text.lines.len();
+            let block_width = line_height * column_count as f32;
+            let block_x = match text.style.horizontal_alignment {
+                HorizontalAlignment::Center | HorizontalAlignment::General => {
+                    text.cell_x + (text.cell_width - block_width).max(0.0) / 2.0
+                }
+                HorizontalAlignment::Right => text.cell_x + text.cell_width - block_width - 3.0,
+                HorizontalAlignment::Left => text.cell_x + 3.0,
+            };
+            for (column_index, column) in text.lines.into_iter().enumerate() {
+                let characters = column.chars().collect::<Vec<_>>();
+                let column_height = line_height * characters.len() as f32;
+                let lowest_column_baseline = match text.style.vertical_alignment {
+                    VerticalAlignment::Top => {
+                        text.cell_y + (text.cell_height - column_height).max(0.0) + baseline_offset
+                    }
+                    VerticalAlignment::Center => {
+                        text.cell_y
+                            + (text.cell_height - column_height).max(0.0) / 2.0
+                            + baseline_offset
+                    }
+                    VerticalAlignment::Bottom => text.cell_y + baseline_offset.max(1.0),
+                };
+                let column_x = block_x + (column_count - column_index - 1) as f32 * line_height;
+                for (character_index, character) in characters.iter().enumerate() {
+                    let character = character.to_string();
+                    let character_width = styled_text_width_with_font(
+                        &character,
+                        text.font_size,
+                        text.style.bold,
+                        text.style.italic,
+                        text.style.preferred_font,
+                    );
+                    page.add_styled_text(
+                        character,
+                        column_x + (line_height - character_width).max(0.0) / 2.0,
+                        lowest_column_baseline
+                            + (characters.len() - character_index - 1) as f32 * line_height,
+                        text.font_size,
+                        PdfTextStyle {
+                            color: text.style.font_color,
+                            bold: text.style.bold,
+                            italic: text.style.italic,
+                            preferred_font: text.style.preferred_font,
+                        },
+                    );
+                }
+            }
             if text.should_clip {
                 page.pop_clip();
             }
@@ -4518,6 +4990,7 @@ fn has_rtl_base_direction(text: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
+    use std::io::{Cursor, Write};
 
     use super::{
         apply_color_tint, apply_print_area, apply_sheet_conditional_formats,
@@ -4527,8 +5000,9 @@ mod tests {
         format_thousands_two_decimals, has_rtl_base_direction, indexed_color, jpeg_dimensions,
         merged_cell_borders, parse_cell_borders, parse_conditional_text_search,
         parse_header_footer_sections, parse_horizontal_alignment, parse_number_format,
-        parse_print_area, parse_rgb_color, parse_vertical_alignment,
-        parse_windows_devmode_page_size, read_column_widths, read_merge_ranges, read_page_setup,
+        parse_print_area, parse_rgb_color, parse_vertical_alignment, parse_vml_anchor,
+        parse_vml_crop, parse_vml_style_points, parse_windows_devmode_page_size,
+        read_column_widths, read_legacy_drawing_images, read_merge_ranges, read_page_setup,
         read_row_breaks, read_sheet_footer, read_sheet_rows, read_two_cell_shape, relationship_id,
         rendered_column_count, spreadsheet_theme_colors, text_overflow_region,
         trim_trailing_empty_rows, wrap_cell_text, xlsx_horizontal_scale, xlsx_left_offset,
@@ -4537,6 +5011,8 @@ mod tests {
         VerticalAlignment, XlsxStyles,
     };
     use crate::{PageSize, PdfColor};
+    use zip::write::SimpleFileOptions;
+    use zip::ZipArchive;
 
     #[test]
     fn parses_excel_column_references() {
@@ -4550,6 +5026,79 @@ mod tests {
         assert_eq!(cell_position("$AA$10"), Some((26, 9)));
         assert_eq!(cell_position("GroceryList[QTY]"), None);
         assert_eq!(cell_position("SUM(A1:A2)"), None);
+    }
+
+    #[test]
+    fn reads_legacy_vml_picture_geometry() {
+        let sheet_xml = r#"<worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><legacyDrawing r:id="rId1"/></worksheet>"#;
+        let relationships_xml = r#"<Relationships><Relationship Id="rId1" Target="../drawings/vmlDrawing1.vml"/></Relationships>"#;
+        let vml_xml = r#"<xml xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><v:shape style="position:absolute;width:120pt;height:60pt"><v:imagedata o:relid="rId2"/><x:ClientData ObjectType="Pict"><x:Anchor>1, 512, 2, 128, 3, 0, 4, 0</x:Anchor></x:ClientData></v:shape></xml>"#;
+        let vml_relationships_xml = r#"<Relationships><Relationship Id="rId2" Target="../media/image1.png"/></Relationships>"#;
+        let image = image::RgbaImage::from_pixel(2, 1, image::Rgba([10, 20, 30, 255]));
+        let mut png = Cursor::new(Vec::new());
+        image::DynamicImage::ImageRgba8(image)
+            .write_to(&mut png, image::ImageFormat::Png)
+            .unwrap();
+        let mut output = Cursor::new(Vec::new());
+        {
+            let mut writer = zip::ZipWriter::new(&mut output);
+            for (path, data) in [
+                (
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    relationships_xml.as_bytes(),
+                ),
+                ("xl/drawings/vmlDrawing1.vml", vml_xml.as_bytes()),
+                (
+                    "xl/drawings/_rels/vmlDrawing1.vml.rels",
+                    vml_relationships_xml.as_bytes(),
+                ),
+                ("xl/media/image1.png", png.get_ref()),
+            ] {
+                writer
+                    .start_file(path, SimpleFileOptions::default())
+                    .unwrap();
+                writer.write_all(data).unwrap();
+            }
+            writer.finish().unwrap();
+        }
+        let mut archive = ZipArchive::new(Cursor::new(output.into_inner())).unwrap();
+        let sheet = roxmltree::Document::parse(sheet_xml).unwrap();
+
+        let images = read_legacy_drawing_images(
+            &mut archive,
+            "xl/worksheets/sheet1.xml",
+            &sheet,
+            &[10.0, 20.0],
+            &[RowData {
+                index: 2,
+                height: 30.0,
+                cells: Vec::new(),
+            }],
+            15.0,
+        )
+        .unwrap();
+
+        assert_eq!(images.len(), 1);
+        assert_eq!(images[0].col, 1);
+        assert_eq!(images[0].row, 2);
+        assert_eq!(images[0].col_offset, 10.0);
+        assert_eq!(images[0].row_offset, 15.0);
+        assert_eq!(images[0].width, 120.0);
+        assert_eq!(images[0].height, 60.0);
+        assert_eq!((images[0].pixel_width, images[0].pixel_height), (2, 1));
+    }
+
+    #[test]
+    fn parses_vml_anchor_and_point_sizes() {
+        assert_eq!(
+            parse_vml_anchor(" 0, 5, 29, 8, 24, 30, 38, 19 "),
+            Some([0, 5, 29, 8, 24, 30, 38, 19])
+        );
+        assert_eq!(
+            parse_vml_style_points("position:absolute; WIDTH:521.4PT; height:147pt", "width"),
+            Some(521.4)
+        );
+        assert!((parse_vml_crop(Some("32768f")) - 0.5).abs() < f32::EPSILON);
     }
 
     #[test]
@@ -4646,6 +5195,18 @@ mod tests {
 
         assert_eq!(page_setup.page_size.width, PageSize::LETTER.height);
         assert_eq!(page_setup.page_size.height, PageSize::LETTER.width);
+    }
+
+    #[test]
+    fn reads_centered_legacy_vml_page_setup() {
+        let page_setup = read_page_setup(
+            r#"<worksheet><printOptions horizontalCentered="1" verticalCentered="1"/><legacyDrawing id="rId1"/></worksheet>"#,
+        )
+        .expect("worksheet XML is valid");
+
+        assert!(page_setup.horizontal_centered);
+        assert!(page_setup.vertical_centered);
+        assert!(page_setup.legacy_vml_drawing);
     }
 
     #[test]
@@ -4968,6 +5529,7 @@ mod tests {
         let formats = HashMap::from([
             (164, r#"dd\-mmm\-yyyy"#.to_owned()),
             (165, "#,##0".to_owned()),
+            (166, r#"yyyy\-mm\-dd;@"#.to_owned()),
         ]);
 
         assert!(matches!(
@@ -4977,6 +5539,10 @@ mod tests {
         assert!(matches!(
             parse_number_format(Some("165"), &formats),
             super::NumberFormat::ThousandsZeroDecimals
+        ));
+        assert!(matches!(
+            parse_number_format(Some("166"), &formats),
+            super::NumberFormat::DateYearMonthDay
         ));
         assert!(matches!(
             parse_number_format(Some("3"), &formats),
@@ -4989,6 +5555,10 @@ mod tests {
                 super::NumberFormat::DateDayShortMonthYear
             ),
             "24-Jan-2026"
+        );
+        assert_eq!(
+            super::format_numeric_value(45_758.0, "45758", super::NumberFormat::DateYearMonthDay),
+            "2025-04-11"
         );
         assert_eq!(
             super::format_numeric_value(
@@ -5287,6 +5857,38 @@ mod tests {
         assert_eq!(super::xlsx_preferred_font(Some("Arial")), Some("arial"));
     }
 
+    #[test]
+    fn maps_kaiti_family_names_to_installed_font() {
+        for name in ["华文楷体", "STKaiti", "KaiTi", "楷体"] {
+            assert_eq!(super::xlsx_preferred_font(Some(name)), Some("simkai"));
+        }
+    }
+
+    #[test]
+    fn recognizes_stacked_text_rotation() {
+        assert!(super::is_stacked_text(Some("255")));
+        assert!(!super::is_stacked_text(Some("90")));
+        assert!(!super::is_stacked_text(None));
+    }
+
+    #[test]
+    fn limits_kaiti_fallback_to_stacked_text() {
+        let style = CellStyle {
+            preferred_font: Some("simkai"),
+            ..CellStyle::default()
+        };
+        assert!(!super::should_use_kaiti_fallback("2025/11/25", style));
+        assert!(super::is_kaiti_slash_date("2025/11/25", style));
+        assert!(!super::is_kaiti_slash_date("普通文字", style));
+        assert!(!super::should_use_kaiti_fallback("普通文字", style));
+        assert!(super::should_use_kaiti_fallback(
+            "研发工程\n审核",
+            CellStyle {
+                stacked_text: true,
+                ..style
+            }
+        ));
+    }
     #[test]
     fn maps_invoice_fonts_to_installed_fonts() {
         assert_eq!(super::xlsx_preferred_font(Some("Garamond")), Some("gara"));
@@ -5612,6 +6214,20 @@ mod tests {
         assert_eq!(borders.right, Some(PdfColor::BLACK));
         assert_eq!(borders.top, Some(PdfColor::BLACK));
         assert_eq!(borders.bottom, Some(PdfColor::BLACK));
+    }
+
+    #[test]
+    fn restarts_merged_cell_geometry_on_continuation_page() {
+        let merge = MergeRange {
+            start_col: 0,
+            end_col: 0,
+            start_row: 45,
+            end_row: 49,
+        };
+
+        assert_eq!(super::merged_cell_render_row(&merge, 0), Some(45));
+        assert_eq!(super::merged_cell_render_row(&merge, 47), Some(47));
+        assert_eq!(super::merged_cell_render_row(&merge, 50), None);
     }
 
     #[test]
