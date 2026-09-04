@@ -53,7 +53,7 @@ internal static class ExcelReader
         var borders = ReadBorders(archive, themeColors);
         var numberFormats = ReadNumberFormats(archive);
         var dxfStyles = ReadDxfStyles(archive, themeColors);
-        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents) = ReadCellXfStyles(archive);
+        var (cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfTextRotations, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents) = ReadCellXfStyles(archive);
 
         // Read workbook to get sheet names and order
         var (sheetInfos, printAreas, printTitleRows) = ReadWorkbook(archive);
@@ -79,7 +79,7 @@ internal static class ExcelReader
             if (entry == null) continue;
 
             var hyperlinks = ReadWorksheetHyperlinks(archive, entry.FullName);
-            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture);
+            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfTextRotations, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture);
             var images = ReadSheetImages(archive, entry.FullName);
             var drawingShapes = ReadSheetShapes(archive, entry.FullName, themeColors);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
@@ -96,7 +96,7 @@ internal static class ExcelReader
             var hasPrintArea = printAreas.TryGetValue(currentIndex, out var printArea);
             var hasPrintTitleRows = printTitleRows.TryGetValue(currentIndex, out var printTitleRow);
             ApplyTableStyleFormatting(archive, entry.FullName, rows, dxfStyles);
-            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, shapes: drawingShapes, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: ignoreInferredFitToPage && pageSetup.PaperSize == 1 ? 9 : pageSetup.PaperSize, printArea: hasPrintArea ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: ignoreInferredFitToPage ? false : pageSetup.FitToPage, fitToWidth: ignoreInferredFitToPage ? 0 : pageSetup.FitToWidth, fitToHeight: ignoreInferredFitToPage ? 0 : pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, printTitleRows: hasPrintTitleRows ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt, maxDigitWidthPx: maxDigitWidthPx));
+            sheets.Add(new ExcelSheet(info.Name, rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, shapes: drawingShapes, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: ignoreInferredFitToPage && pageSetup.PaperSize == 1 ? 9 : pageSetup.PaperSize, printArea: hasPrintArea ? printArea : null, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: ignoreInferredFitToPage ? false : pageSetup.FitToPage, fitToWidth: ignoreInferredFitToPage ? 0 : pageSetup.FitToWidth, fitToHeight: ignoreInferredFitToPage ? 0 : pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, verticalCentered: pageSetup.VerticalCentered, printTitleRows: hasPrintTitleRows ? printTitleRow : null, rowBreaks: rowBreaks, oddFooter: pageSetup.OddFooter, footerMarginPt: pageSetup.FooterMarginPt, maxDigitWidthPx: maxDigitWidthPx));
             sheetEntries.Add(entry);
             sheetEntryPaths.Add(entry.FullName);
         }
@@ -108,14 +108,14 @@ internal static class ExcelReader
             if (entry != null)
             {
                 var hyperlinks = ReadWorksheetHyperlinks(archive, entry.FullName);
-                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture);
+                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfTextRotations, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture);
                 var images = ReadSheetImages(archive, entry.FullName);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
                 var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
                 var pageSetup = ReadPageSetup(entry);
                 var ignoreInferredFitToPage = pageSetup.FitToPageInferred && rows.Count >= 1000 && colWidths.Count == 0 && defaultColWidth <= 0f;
-                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: ignoreInferredFitToPage && pageSetup.PaperSize == 1 ? 9 : pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: ignoreInferredFitToPage ? false : pageSetup.FitToPage, fitToWidth: ignoreInferredFitToPage ? 0 : pageSetup.FitToWidth, fitToHeight: ignoreInferredFitToPage ? 0 : pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, maxDigitWidthPx: maxDigitWidthPx));
+                sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: ignoreInferredFitToPage && pageSetup.PaperSize == 1 ? 9 : pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: ignoreInferredFitToPage ? false : pageSetup.FitToPage, fitToWidth: ignoreInferredFitToPage ? 0 : pageSetup.FitToWidth, fitToHeight: ignoreInferredFitToPage ? 0 : pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, verticalCentered: pageSetup.VerticalCentered, maxDigitWidthPx: maxDigitWidthPx));
                 sheetEntryPaths.Add(entry.FullName);
             }
         }
@@ -814,18 +814,19 @@ internal static class ExcelReader
     /// Reads cellXf style entries from styles.xml.
     /// Returns (fontIndices, fillIndices, numFmtIds) parallel lists.
     /// </summary>
-    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds, List<string> Alignments, List<string> VerticalAlignments, List<int> BorderIndices, List<bool> WrapTexts, List<int> Indents) ReadCellXfStyles(ZipArchive archive)
+    private static (List<int> FontIndices, List<int> FillIndices, List<int> NumFmtIds, List<string> Alignments, List<string> VerticalAlignments, List<int> TextRotations, List<int> BorderIndices, List<bool> WrapTexts, List<int> Indents) ReadCellXfStyles(ZipArchive archive)
     {
         var fontIndices = new List<int>();
         var fillIndices = new List<int>();
         var numFmtIds = new List<int>();
         var alignments = new List<string>();
         var verticalAlignments = new List<string>();
+        var textRotations = new List<int>();
         var borderIndices = new List<int>();
         var wrapTexts = new List<bool>();
         var indents = new List<int>();
         var entry = archive.GetEntry("xl/styles.xml");
-        if (entry == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts, indents);
+        if (entry == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, textRotations, borderIndices, wrapTexts, indents);
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
@@ -833,7 +834,7 @@ internal static class ExcelReader
 
         // Read <cellXfs> -> <xf> elements
         var cellXfs = doc.Descendants(ns + "cellXfs").FirstOrDefault();
-        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts, indents);
+        if (cellXfs == null) return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, textRotations, borderIndices, wrapTexts, indents);
 
         foreach (var xf in cellXfs.Elements(ns + "xf"))
         {
@@ -849,20 +850,24 @@ internal static class ExcelReader
             var alignment = xf.Element(ns + "alignment")?.Attribute("horizontal")?.Value ?? "general";
             alignments.Add(alignment);
 
-            var verticalAlignment = xf.Element(ns + "alignment")?.Attribute("vertical")?.Value ?? "bottom";
+            var alignmentElement = xf.Element(ns + "alignment");
+            var verticalAlignment = alignmentElement?.Attribute("vertical")?.Value ?? "bottom";
             verticalAlignments.Add(verticalAlignment);
+
+            var textRotationAttr = alignmentElement?.Attribute("textRotation")?.Value;
+            textRotations.Add(int.TryParse(textRotationAttr, out var textRotation) ? textRotation : 0);
 
             var borderId = xf.Attribute("borderId")?.Value;
             borderIndices.Add(int.TryParse(borderId, out var bid) ? bid : 0);
 
-            var wrapTextAttr = xf.Element(ns + "alignment")?.Attribute("wrapText")?.Value;
+            var wrapTextAttr = alignmentElement?.Attribute("wrapText")?.Value;
             wrapTexts.Add(wrapTextAttr == "1" || string.Equals(wrapTextAttr, "true", StringComparison.OrdinalIgnoreCase));
 
-            var indentAttr = xf.Element(ns + "alignment")?.Attribute("indent")?.Value;
+            var indentAttr = alignmentElement?.Attribute("indent")?.Value;
             indents.Add(int.TryParse(indentAttr, out var ind) ? ind : 0);
         }
 
-        return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, borderIndices, wrapTexts, indents);
+        return (fontIndices, fillIndices, numFmtIds, alignments, verticalAlignments, textRotations, borderIndices, wrapTexts, indents);
     }
 
     /// <summary>
@@ -1811,7 +1816,7 @@ internal static class ExcelReader
 
     private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings, Dictionary<int, int> boldPrefixLengths,
         List<FontStyleInfo> fontStyles, List<PdfColor?> fillColors, List<CellBorderInfo?> borders, Dictionary<int, string> numberFormats,
-        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts, List<int> cellXfIndents,
+        List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfTextRotations, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts, List<int> cellXfIndents,
         Dictionary<string, string>? hyperlinks = null, System.Globalization.CultureInfo? culture = null)
     {
         var rows = new List<List<ExcelCell>>();
@@ -1950,6 +1955,7 @@ internal static class ExcelReader
                 int numFmtId = 0;
                 var cellAlignment = "general";
                 var cellVerticalAlignment = "bottom";
+                var cellTextRotation = 0;
                 float fontSize = 11f;
                 bool bold = false;
                 bool italic = false;
@@ -1977,6 +1983,8 @@ internal static class ExcelReader
                         cellAlignment = cellXfAlignments[styleIndex];
                     if (styleIndex >= 0 && styleIndex < cellXfVerticalAlignments.Count)
                         cellVerticalAlignment = cellXfVerticalAlignments[styleIndex];
+                    if (styleIndex >= 0 && styleIndex < cellXfTextRotations.Count)
+                        cellTextRotation = cellXfTextRotations[styleIndex];
                     if (styleIndex >= 0 && styleIndex < cellXfWrapTexts.Count)
                         wrapText = cellXfWrapTexts[styleIndex];
                     if (styleIndex >= 0 && styleIndex < cellXfIndents.Count)
@@ -2061,7 +2069,7 @@ internal static class ExcelReader
                 text = NormalizeCellText(text);
                 string? link = null;
                 hyperlinks?.TryGetValue(normalizedRef, out link);
-                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, strikethrough, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent, cellBoldPrefixLen, link));
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, strikethrough, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent, cellBoldPrefixLen, link, cellTextRotation));
                 lastColIndex = colIndex + 1;
             }
 
@@ -3186,12 +3194,14 @@ internal static class ExcelReader
             fitToHeight = 0;
         }
 
-        // Read printOptions (horizontalCentered)
+        // Read printOptions centering flags.
         var horizontalCentered = false;
+        var verticalCentered = false;
         var printOptions = doc.Descendants(ns + "printOptions").FirstOrDefault();
         if (printOptions != null)
         {
             horizontalCentered = printOptions.Attribute("horizontalCentered")?.Value == "1";
+            verticalCentered = printOptions.Attribute("verticalCentered")?.Value == "1";
         }
 
         // Read headerFooter — oddFooter / oddHeader
@@ -3204,13 +3214,13 @@ internal static class ExcelReader
             oddHeader = headerFooter.Element(ns + "oddHeader")?.Value;
         }
 
-        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage, fitToWidth, fitToHeight, fitToPageInferred, horizontalCentered, oddFooter, oddHeader, footerMargin);
+        return new PageSetupInfo(isLandscape, scale, paperSize, marginLeft, marginRight, marginTop, marginBottom, fitToPage, fitToWidth, fitToHeight, fitToPageInferred, horizontalCentered, verticalCentered, oddFooter, oddHeader, footerMargin);
     }
 
     internal record PageSetupInfo(
         bool IsLandscape, int Scale, int PaperSize,
         float MarginLeftPt, float MarginRightPt, float MarginTopPt, float MarginBottomPt,
-        bool FitToPage, int FitToWidth, int FitToHeight, bool FitToPageInferred = false, bool HorizontalCentered = false,
+        bool FitToPage, int FitToWidth, int FitToHeight, bool FitToPageInferred = false, bool HorizontalCentered = false, bool VerticalCentered = false,
         string? OddFooter = null, string? OddHeader = null, float FooterMarginPt = -1);
 
     /// <summary>
@@ -3338,7 +3348,7 @@ internal static class ExcelReader
     /// </summary>
     private static List<ExcelEmbeddedImage> ReadSheetImages(ZipArchive archive, string worksheetPath)
     {
-        var images = new List<ExcelEmbeddedImage>();
+        var images = ReadLegacyDrawingImages(archive, worksheetPath);
 
         // Step 1: Find the sheet relationships file to locate the drawing
         var sheetRelsPath = GetRelationshipPartPath(worksheetPath);
@@ -3610,6 +3620,154 @@ internal static class ExcelReader
         }
 
         return images;
+    }
+
+    private static List<ExcelEmbeddedImage> ReadLegacyDrawingImages(ZipArchive archive, string worksheetPath)
+    {
+        var images = new List<ExcelEmbeddedImage>();
+        var sheetRelsEntry = archive.GetEntry(GetRelationshipPartPath(worksheetPath));
+        if (sheetRelsEntry == null) return images;
+
+        string? vmlPath = null;
+        using (var relsStream = sheetRelsEntry.Open())
+        {
+            var relsDoc = XDocument.Load(relsStream);
+            var relationship = relsDoc.Descendants().FirstOrDefault(element =>
+                element.Attribute("Type")?.Value.EndsWith("/vmlDrawing", StringComparison.OrdinalIgnoreCase) == true);
+            var target = relationship?.Attribute("Target")?.Value;
+            if (!string.IsNullOrEmpty(target))
+                vmlPath = ResolveRelationshipTarget(GetPartDirectory(worksheetPath), target);
+        }
+
+        if (vmlPath == null) return images;
+        var vmlEntry = archive.GetEntry(vmlPath);
+        var vmlRelsEntry = archive.GetEntry(GetRelationshipPartPath(vmlPath));
+        if (vmlEntry == null || vmlRelsEntry == null) return images;
+
+        var relationshipTargets = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        using (var relsStream = vmlRelsEntry.Open())
+        {
+            var relsDoc = XDocument.Load(relsStream);
+            foreach (var relationship in relsDoc.Descendants())
+            {
+                var id = relationship.Attribute("Id")?.Value;
+                var target = relationship.Attribute("Target")?.Value;
+                if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(target))
+                    relationshipTargets[id] = ResolveRelationshipTarget(GetPartDirectory(vmlPath), target);
+            }
+        }
+
+        using var vmlStream = vmlEntry.Open();
+        var vmlDoc = XDocument.Load(vmlStream);
+        var v = XNamespace.Get("urn:schemas-microsoft-com:vml");
+        var o = XNamespace.Get("urn:schemas-microsoft-com:office:office");
+        var x = XNamespace.Get("urn:schemas-microsoft-com:office:excel");
+
+        foreach (var shape in vmlDoc.Descendants(v + "shape"))
+        {
+            var clientData = shape.Element(x + "ClientData");
+            if (!string.Equals(clientData?.Attribute("ObjectType")?.Value, "Pict", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var imageData = shape.Element(v + "imagedata");
+            var relationshipId = imageData?.Attribute(o + "relid")?.Value;
+            var anchor = ParseVmlAnchor(clientData?.Element(x + "Anchor")?.Value);
+            if (string.IsNullOrEmpty(relationshipId) || anchor == null ||
+                !relationshipTargets.TryGetValue(relationshipId, out var mediaPath))
+                continue;
+
+            var mediaEntry = archive.GetEntry(mediaPath);
+            if (mediaEntry == null) continue;
+            byte[] data;
+            using (var output = new MemoryStream())
+            {
+                using var input = mediaEntry.Open();
+                input.CopyTo(output);
+                data = output.ToArray();
+            }
+
+            var style = shape.Attribute("style")?.Value ?? "";
+            var leftPt = ReadVmlStylePoints(style, "margin-left");
+            var topPt = ReadVmlStylePoints(style, "margin-top");
+            var widthPt = ReadVmlStylePoints(style, "width");
+            var heightPt = ReadVmlStylePoints(style, "height");
+            if (leftPt == null || topPt == null || widthPt is not > 0 || heightPt is not > 0)
+                continue;
+
+            var widthEmu = (long)Math.Round(widthPt.Value * 12700f);
+            var heightEmu = (long)Math.Round(heightPt.Value * 12700f);
+            var extension = Path.GetExtension(mediaPath).TrimStart('.').ToLowerInvariant();
+            if (extension is "emf" or "wmf")
+            {
+                var cropLeft = ReadVmlCrop(imageData?.Attribute("cropleft")?.Value);
+                var cropTop = ReadVmlCrop(imageData?.Attribute("croptop")?.Value);
+                var cropRight = ReadVmlCrop(imageData?.Attribute("cropright")?.Value);
+                var cropBottom = ReadVmlCrop(imageData?.Attribute("cropbottom")?.Value);
+                var visibleHeightFraction = Math.Max(0.01f, 1f - cropTop - cropBottom);
+                var rasterHeight = (int)Math.Ceiling(heightPt.Value * 300f / 72f / visibleHeightFraction);
+                var converted = DocxReader.TryConvertMetafileToPng(data, widthEmu, heightEmu,
+                    cropLeft, cropTop, cropRight, cropBottom, rasterHeight);
+                if (converted == null) continue;
+                data = converted;
+                extension = "png";
+            }
+
+            images.Add(new ExcelEmbeddedImage(
+                AnchorRow: anchor.Value.FromRow,
+                AnchorCol: anchor.Value.FromCol,
+                SpanRows: Math.Max(1, anchor.Value.ToRow - anchor.Value.FromRow),
+                SpanCols: Math.Max(1, anchor.Value.ToCol - anchor.Value.FromCol),
+                Data: data,
+                Extension: extension,
+                WidthEmu: widthEmu,
+                HeightEmu: heightEmu,
+                AbsoluteLeftPt: leftPt,
+                AbsoluteTopPt: topPt,
+                VmlFromColOffset: anchor.Value.FromColOffset / 1024f,
+                VmlFromRowOffset: anchor.Value.FromRowOffset / 256f,
+                VmlToColOffset: anchor.Value.ToColOffset / 1024f,
+                VmlToRowOffset: anchor.Value.ToRowOffset / 256f));
+        }
+
+        return images;
+    }
+
+    private static (int FromCol, int FromColOffset, int FromRow, int FromRowOffset,
+        int ToCol, int ToColOffset, int ToRow, int ToRowOffset)? ParseVmlAnchor(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        var values = value.Split(',')
+            .Select(part => int.TryParse(part.Trim(), out var parsed) ? (int?)parsed : null)
+            .ToArray();
+        if (values.Length != 8 || values.Any(item => item == null)) return null;
+        return (values[0]!.Value, values[1]!.Value, values[2]!.Value, values[3]!.Value,
+            values[4]!.Value, values[5]!.Value, values[6]!.Value, values[7]!.Value);
+    }
+
+    private static float? ReadVmlStylePoints(string style, string property)
+    {
+        foreach (var declaration in style.Split(';'))
+        {
+            var parts = declaration.Split(':', 2);
+            if (parts.Length != 2 || !string.Equals(parts[0].Trim(), property, StringComparison.OrdinalIgnoreCase))
+                continue;
+            var value = parts[1].Trim();
+            if (!value.EndsWith("pt", StringComparison.OrdinalIgnoreCase)) return null;
+            if (float.TryParse(value[..^2], System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out var points))
+                return points;
+        }
+        return null;
+    }
+
+    private static float ReadVmlCrop(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || !value.EndsWith("f", StringComparison.OrdinalIgnoreCase))
+            return 0f;
+        return float.TryParse(value[..^1], System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out var fixedPoint)
+            ? Compat.Clamp(fixedPoint / 65536f, 0f, 1f)
+            : 0f;
     }
 
     /// <summary>
@@ -4476,7 +4634,8 @@ internal sealed record ExcelCell(
     string? FontName = null,
     int Indent = 0,
     int BoldPrefixLength = 0,
-    string? Link = null
+    string? Link = null,
+    int TextRotation = 0
 );
 
 /// <summary>
@@ -4513,7 +4672,13 @@ internal sealed record ExcelEmbeddedImage(
     long ToColOffEmu = 0,    // sub-cell X offset within the "to" column (EMU)
     long ToRowOffEmu = 0,    // sub-cell Y offset within the "to" row (EMU)
     long OffsetXEmu = 0,     // additional X offset from anchor (for grouped images)
-    long OffsetYEmu = 0      // additional Y offset from anchor (for grouped images)
+    long OffsetYEmu = 0,     // additional Y offset from anchor (for grouped images)
+    float? AbsoluteLeftPt = null,
+    float? AbsoluteTopPt = null,
+    float? VmlFromColOffset = null,
+    float? VmlFromRowOffset = null,
+    float? VmlToColOffset = null,
+    float? VmlToRowOffset = null
 );
 
 /// <summary>
@@ -4606,6 +4771,8 @@ internal sealed class ExcelSheet
     public int FitToHeight { get; }
     /// <summary>Whether to center content horizontally on the page.</summary>
     public bool HorizontalCentered { get; }
+    /// <summary>Whether to center content vertically on each printed page.</summary>
+    public bool VerticalCentered { get; }
     /// <summary>Row range to repeat at the top of each printed page (startRow, endRow) 0-based, or null.</summary>
     public (int StartRow, int EndRow)? PrintTitleRows { get; }
     /// <summary>Set of 0-based row indices where a manual page break occurs (break BEFORE this row).</summary>
@@ -4660,6 +4827,7 @@ internal sealed class ExcelSheet
         bool fitToPage = false,
         int fitToWidth = 1, int fitToHeight = 1,
         bool horizontalCentered = false,
+        bool verticalCentered = false,
         (int StartRow, int EndRow)? printTitleRows = null,
         HashSet<int>? rowBreaks = null,
         string? oddFooter = null,
@@ -4689,6 +4857,7 @@ internal sealed class ExcelSheet
         FitToWidth = fitToWidth;
         FitToHeight = fitToHeight;
         HorizontalCentered = horizontalCentered;
+        VerticalCentered = verticalCentered;
         PrintTitleRows = printTitleRows;
         RowBreaks = rowBreaks ?? new HashSet<int>();
         OddFooter = oddFooter;

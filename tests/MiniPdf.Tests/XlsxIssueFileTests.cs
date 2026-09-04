@@ -6,6 +6,53 @@ namespace MiniSoftware.Tests;
 public class XlsxIssueFileTests
 {
     [Fact]
+    public void Issue202609031340_PreservesLayoutAndOlePreviews()
+    {
+        var issuePath = FindIssueXlsx("Issue202609031340.xlsx");
+
+        using var stream = File.OpenRead(issuePath);
+        var sheets = ExcelReader.ReadSheets(stream);
+        Assert.All(sheets, sheet => Assert.True(sheet.VerticalCentered));
+        Assert.Equal(255, sheets[0].Rows[45][0].TextRotation);
+        if (Compat.IsWindows())
+        {
+            Assert.Equal(2, sheets[0].Images.Count);
+            Assert.All(sheets[0].Images, image =>
+            {
+                Assert.Equal("png", image.Extension);
+                Assert.NotNull(image.AbsoluteLeftPt);
+                Assert.NotNull(image.AbsoluteTopPt);
+                Assert.NotNull(image.VmlFromColOffset);
+                Assert.NotNull(image.VmlFromRowOffset);
+                Assert.NotNull(image.VmlToColOffset);
+                Assert.NotNull(image.VmlToRowOffset);
+            });
+        }
+
+        var doc = ExcelToPdfConverter.Convert(issuePath);
+
+        Assert.Equal(4, doc.Pages.Count);
+        Assert.All(new[] { doc.Pages[1], doc.Pages[3] }, page =>
+        {
+            Assert.NotEmpty(page.LineBlocks);
+            Assert.True(page.LineBlocks.Max(line => Math.Max(line.Y1, line.Y2)) < page.Height * 0.7f);
+            Assert.True(page.LineBlocks.Min(line => Math.Min(line.Y1, line.Y2)) > page.Height * 0.3f);
+        });
+        Assert.All("修订记录", character =>
+            Assert.Contains(doc.Pages[1].TextBlocks, block => block.Text == character.ToString()));
+        if (Compat.IsWindows())
+        {
+            Assert.Equal(2, doc.Pages[0].ImageBlocks.Count);
+            var imageTops = doc.Pages[0].ImageBlocks
+                .Select(image => doc.Pages[0].Height - image.Y - image.RenderHeight)
+                .OrderBy(top => top)
+                .ToArray();
+            Assert.InRange(imageTops[0], 215f, 218f);
+            Assert.InRange(imageTops[1], 528f, 530f);
+        }
+    }
+
+    [Fact]
     public void AcademicAchievement_ManualPageBreak_UsesIntegerScaleForFixedRows()
     {
         var issuePath = FindIssueXlsx("Academic Achievement Summary Table.xlsx");
