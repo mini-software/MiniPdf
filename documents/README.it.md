@@ -22,6 +22,8 @@
 
 La tua stella o donazione aiuta a sostenere il progetto.
 
+🤝 **Cerchiamo co-sviluppatori:** [Contribuisci con l'AI](#contribute-with-ai)
+
 </div>
 
 MiniPdf converte direttamente i documenti Office in PDF senza richiedere Microsoft Office, LibreOffice, Adobe Acrobat o automazione COM durante l'esecuzione. Scegli l'implementazione adatta al tuo progetto.
@@ -148,25 +150,15 @@ La [guida Go](../minipdf-go/README.md) descrive il pacchetto, la CLI nativa, l'a
 
 MiniPdf punta alla conversione pratica dei documenti, non alla compatibilità completa con il layout di Microsoft Office. I modelli complessi possono essere visualizzati diversamente; usa la demo online o i report di benchmark per valutare file rappresentativi.
 
+<a id="contribute-with-ai"></a>
+
 ## Contribuire con potenza di calcolo
 
-Apri un fork o clone pulito in GitHub Copilot, Claude Code, Cursor, Codex o qualsiasi agente di programmazione capace di modificare file ed eseguire PowerShell. Il modo più semplice per contribuire è incollare questa istruzione nella chat dell'Agent:
+Apri un fork o clone pulito in qualsiasi agente di programmazione, quindi incolla questa istruzione nella chat dell'Agent:
 
 ```text
 Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
-
-Il punto di ingresso PowerShell rileva `dotnet` e `cargo`, quindi sceglie casualmente una delle implementazioni installate:
-
-```powershell
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start
-```
-
-Passa `-Implementation dotnet` o `-Implementation rust` per ignorare la scelta casuale. L'implementazione selezionata viene salvata nello stato del ciclo per tutte le operazioni successive.
-
-Il ciclo controlla gli strumenti, installa i pacchetti Python per i benchmark, crea un branch locale e seleziona le due differenze visive con il punteggio più basso per il renderer scelto. L'Agent effettua fino a tre tentativi per caso; se il punteggio non migliora, ripristina automaticamente le modifiche e passa al caso successivo. La PR è consentita solo dopo il superamento di tutti i test dell'implementazione scelta e dei benchmark visivi XLSX/DOCX senza regressioni significative.
-
-Entrambi i percorsi richiedono Git, Python 3.10+ e LibreOffice. .NET richiede .NET 9 SDK; Rust richiede Cargo e le versioni desktop di Excel e Word per generare gli attuali riferimenti visivi principali. Se GitHub CLI non è installata e autenticata, il flusso genera titolo, corpo, comando push e URL per creare la PR dal browser. Consulta la [guida ai contributi](../CONTRIBUTING.md) per le scorciatoie di Copilot, Claude Code, Cursor, Codex e terminale e per le regole di sicurezza. Non esegue commit, push o apertura della PR senza approvazione.
 
 ## Risorse del progetto
 
