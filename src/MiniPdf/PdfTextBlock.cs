@@ -115,4 +115,13 @@ internal sealed class PdfTextBlock
         UnderlineWidth = underlineWidth;
         Hidden = hidden;
     }
+
+    internal PdfTextBlock TranslateY(float offset)
+    {
+        var clipRect = ClipRect is { } clip
+            ? (clip.X, clip.Y + offset, clip.Width, clip.Height)
+            : ((float, float, float, float)?)null;
+        return new PdfTextBlock(Text, X, Y + offset, FontSize, Color, clipRect, MaxWidth, Bold, Italic,
+            Underline, CharSpacing, WordSpacing, PreferredFontName, UnderlineWidth, Strikethrough, Hidden);
+    }
 }
