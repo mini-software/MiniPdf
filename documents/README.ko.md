@@ -22,7 +22,7 @@
 
 스타 또는 후원은 프로젝트가 지속되는 데 도움이 됩니다.
 
-🤝 **공동 개발자를 찾고 있습니다:** [AI로 기여하기](#contribute-with-ai)
+🤝 **공동 개발자를 찾고 있습니다:** [빠르게 기여하기](#quick-contribution)
 
 </div>
 
@@ -150,9 +150,9 @@ if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
 
 MiniPdf는 실용적인 문서 변환을 목표로 하며 Microsoft Office 레이아웃을 완전히 재현하지는 않습니다. 복잡한 템플릿은 다르게 렌더링될 수 있으므로 온라인 데모나 벤치마크 보고서로 대표 파일을 평가하세요.
 
-<a id="contribute-with-ai"></a>
+<a id="quick-contribution"></a>
 
-## 컴퓨팅 자원으로 기여하기
+## 빠르게 기여하기
 
 원하는 코딩 Agent에서 깨끗한 fork 또는 clone을 연 다음 아래 지시문을 Agent 채팅에 붙여 넣으세요.
 
