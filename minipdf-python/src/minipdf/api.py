@@ -8,6 +8,8 @@ from .docx import convert_docx
 from .errors import UnsupportedFormatError
 from .office import OfficeFormat, detect_office_format
 from .options import ConversionOptions
+from .pptx import convert_pptx
+from .xlsx import convert_xlsx
 
 PathLike = str | os.PathLike[str]
 _font_lock = RLock()
@@ -33,9 +35,9 @@ def convert_bytes_to_pdf(
     if document_format is OfficeFormat.DOCX:
         return convert_docx(source, options or ConversionOptions())
     if document_format is OfficeFormat.XLSX:
-        raise UnsupportedFormatError("XLSX conversion is planned but not yet supported")
+        return convert_xlsx(source, options or ConversionOptions())
     if document_format is OfficeFormat.PPTX:
-        raise UnsupportedFormatError("PPTX conversion is not supported")
+        return convert_pptx(source, options or ConversionOptions())
     raise UnsupportedFormatError("unsupported or unknown Office document format")
 
 

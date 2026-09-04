@@ -47,6 +47,18 @@ class MiniPdfCommandTest {
                 .contains("/MediaBox [0 0 400 500]"));
     }
 
+        @Test
+        void convertsPptxWithDirectSyntax() throws Exception {
+                Path source = REPOSITORY_ROOT.resolve("tests/Issue_Files/pptx/Asian Pacific.pptx");
+                Path output = temporaryDirectory.resolve("slides.pdf");
+
+                CommandResult result = execute(source.toString(), "-o", output.toString());
+
+                assertEquals(0, result.exitCode());
+                assertTrue(Files.readString(output, StandardCharsets.ISO_8859_1).startsWith("%PDF-1.4"));
+                assertTrue(result.stdout().contains(output.toString()));
+        }
+
     @Test
     void rejectsConflictingPageOptions() {
         Path source = REPOSITORY_ROOT.resolve(
