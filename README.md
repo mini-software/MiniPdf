@@ -22,6 +22,8 @@ English | <a href="documents/README.zh-CN.md">简体中文</a> | <a href="docume
 
 Your star or donation helps sustain the project.
 
+🤝 **Looking for co-developers:** [Contribute with AI](#contribute-with-ai)
+
 </div>
 
 MiniPdf converts Office documents directly to PDF without Microsoft Office,
@@ -155,40 +157,16 @@ MiniPdf targets practical document conversion, not complete Microsoft Office
 layout compatibility. Complex templates may render differently; use the online
 demo or benchmark reports to evaluate representative files.
 
+<a id="contribute-with-ai"></a>
+
 ## Contribute compute time
 
-Open a clean fork or clone in GitHub Copilot, Claude Code, Cursor, Codex, or any
-coding agent that can edit files and run PowerShell. The easiest way to
-contribute is to paste this prompt into the agent chat:
+Open a clean fork or clone in any coding agent, then paste this prompt into the
+agent chat:
 
 ```text
 Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
-
-The universal PowerShell entry point detects `dotnet` and `cargo`, then randomly
-chooses one of the installed implementations:
-
-```powershell
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start
-```
-
-Pass `-Implementation dotnet` or `-Implementation rust` to override the random
-choice. The selected implementation is stored for every later action in the run.
-
-The contribution loop checks the toolchain, installs benchmark Python packages,
-creates a local branch, and selects the chosen renderer's two lowest-scoring
-visual differences. The agent gets up to three attempts per case; an attempt
-that does not improve the score is automatically rolled back before moving on.
-Accepted changes must pass that implementation's full test suite and XLSX/DOCX
-visual benchmarks without a meaningful regression before a pull request is allowed.
-
-Both paths require Git, Python 3.10+, and LibreOffice. Choose .NET with the .NET
-9 SDK, or Rust with Cargo plus desktop Excel and Word for its current primary
-visual references. The workflow checks whether authenticated GitHub CLI is
-available; if it is not, it generates the PR title, body, push command, and browser URL instead. See the
-[contribution guide](CONTRIBUTING.md) for Copilot, Claude Code, Cursor, Codex,
-terminal shortcuts, and safety rules. The workflow never commits, pushes, or
-opens a PR without your approval.
 
 ## Project resources
 
