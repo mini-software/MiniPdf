@@ -174,7 +174,9 @@ Markdown and JSON reports, side-by-side images, and heatmaps under
 
 Microsoft 365 is the primary reference used for text, visual, page-count, and
 overall scores. LibreOffice is generated on every run as an auxiliary reference
-and is included in the visual report without affecting those scores.
+and is included in the visual report without affecting those scores. Both
+references are required, the default minimum score is `0.95`, and
+`-SkipCandidate` reuses an existing Rust candidate PDF.
 
 The matrix is generated at `artifacts/rust-benchmark/benchmark_matrix.md` and
 links to the fixture coverage and comparison reports from each run.
