@@ -52,6 +52,10 @@ class OfficePackage:
             return OfficeFormat.PPTX
         return OfficeFormat.UNKNOWN
 
+    @property
+    def names(self) -> tuple[str, ...]:
+        return tuple(entry.filename.replace("\\", "/") for entry in self._archive.infolist())
+
     def read(self, name: str) -> bytes | None:
         try:
             return self._archive.read(name)

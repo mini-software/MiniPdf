@@ -18,20 +18,29 @@ public final class SimplePdfTextRenderer {
     }
 
     public static byte[] render(List<String> sourceLines, ConversionOptions options) {
-        PageSize size = options.pageSize().orElse(PageSize.A4);
+        return renderPages(List.of(sourceLines), options, PageSize.A4);
+    }
+
+    public static byte[] renderPages(
+            List<List<String>> sourcePages,
+            ConversionOptions options,
+            PageSize defaultPageSize) {
+        PageSize size = options.pageSize().orElse(defaultPageSize);
         PdfDocument document = new PdfDocument();
-        PdfPage page = document.addPage(size.width(), size.height());
-        float y = size.height() - MARGIN;
         int maxCharacters = Math.max(1, (int) ((size.width() - MARGIN * 2.0f) / (FONT_SIZE * 0.52f)));
 
-        for (String sourceLine : sourceLines) {
-            for (String line : wrap(sourceLine, maxCharacters)) {
-                if (y < MARGIN) {
-                    page = document.addPage(size.width(), size.height());
-                    y = size.height() - MARGIN;
+        for (List<String> sourcePage : sourcePages) {
+            PdfPage page = document.addPage(size.width(), size.height());
+            float y = size.height() - MARGIN;
+            for (String sourceLine : sourcePage) {
+                for (String line : wrap(sourceLine, maxCharacters)) {
+                    if (y < MARGIN) {
+                        page = document.addPage(size.width(), size.height());
+                        y = size.height() - MARGIN;
+                    }
+                    page.addText(line, MARGIN, y, FONT_SIZE, PdfColor.BLACK, false);
+                    y -= LINE_HEIGHT;
                 }
-                page.addText(line, MARGIN, y, FONT_SIZE, PdfColor.BLACK, false);
-                y -= LINE_HEIGHT;
             }
         }
         return document.toBytes();

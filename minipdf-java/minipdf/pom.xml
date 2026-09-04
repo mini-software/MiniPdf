@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.shps951023</groupId>
         <artifactId>minipdf-java-parent</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>minipdf</artifactId>

@@ -31,3 +31,32 @@ def create_docx(*, page_break: bool = False) -> bytes:
         archive.writestr("[Content_Types].xml", content_types)
         archive.writestr("word/document.xml", document)
     return output.getvalue()
+
+
+def create_xlsx() -> bytes:
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("xl/workbook.xml", "<workbook/>")
+        archive.writestr("xl/sharedStrings.xml", "<sst><si><t>Hello XLSX</t></si></sst>")
+        archive.writestr(
+            "xl/worksheets/sheet1.xml",
+            "<worksheet><sheetData><row><c t=\"s\"><v>0</v></c>"
+            "<c t=\"inlineStr\"><is><t>Cell B</t></is></c></row></sheetData></worksheet>",
+        )
+    return output.getvalue()
+
+
+def create_pptx() -> bytes:
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(
+            "ppt/presentation.xml",
+            '<p:presentation xmlns:p="urn:p"><p:sldSz cx="9144000" cy="6858000"/>'
+            "</p:presentation>",
+        )
+        archive.writestr(
+            "ppt/slides/slide1.xml",
+            '<p:sld xmlns:p="urn:p" xmlns:a="urn:a"><a:p><a:r><a:t>Hello PPTX</a:t>'
+            "</a:r></a:p></p:sld>",
+        )
+    return output.getvalue()

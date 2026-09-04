@@ -5,7 +5,7 @@ import zipfile
 from pathlib import Path
 
 import pytest
-from helpers import create_docx
+from helpers import create_docx, create_pptx, create_xlsx
 
 from minipdf import (
     OfficeFormat,
@@ -31,6 +31,22 @@ def test_path_and_bytes_apis_produce_identical_output(tmp_path: Path) -> None:
 
 def test_detects_docx_package() -> None:
     assert detect_office_format(create_docx()) is OfficeFormat.DOCX
+
+
+def test_converts_xlsx() -> None:
+    pdf = convert_bytes_to_pdf(create_xlsx())
+
+    assert pdf.startswith(b"%PDF-1.4")
+    assert b"Hello XLSX" in pdf
+    assert b"Cell B" in pdf
+
+
+def test_converts_pptx() -> None:
+    pdf = convert_bytes_to_pdf(create_pptx())
+
+    assert pdf.startswith(b"%PDF-1.4")
+    assert b"Hello PPTX" in pdf
+    assert b"/MediaBox [0 0 720 540]" in pdf
 
 
 def test_rejects_unknown_office_package() -> None:

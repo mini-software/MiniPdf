@@ -20,8 +20,8 @@ import java.util.concurrent.Callable;
 
 @Command(
         name = "minipdf",
-    version = "minipdf-java 0.1.0",
-        description = "Convert XLSX and DOCX files to PDF with the Java MiniPdf engine.",
+        version = "minipdf-java 0.1.1-SNAPSHOT",
+    description = "Convert XLSX, DOCX, and PPTX files to PDF with the Java MiniPdf engine.",
         mixinStandardHelpOptions = true,
         subcommands = MiniPdfCommand.ConvertCommand.class)
 public final class MiniPdfCommand implements Callable<Integer> {
@@ -131,10 +131,10 @@ public final class MiniPdfCommand implements Callable<Integer> {
         String fileName = input.getFileName().toString();
         int dot = fileName.lastIndexOf('.');
         String extension = dot < 0 ? "" : fileName.substring(dot + 1).toLowerCase(Locale.ROOT);
-        if (!extension.equals("xlsx") && !extension.equals("docx")) {
+        if (!extension.equals("xlsx") && !extension.equals("docx") && !extension.equals("pptx")) {
             throw new CommandLine.ParameterException(
                     commandLine,
-                    "unsupported file type '." + extension + "'. Supported: .xlsx, .docx");
+                "unsupported file type '." + extension + "'. Supported: .xlsx, .docx, .pptx");
         }
 
         if (arguments.fonts != null) {
