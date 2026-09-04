@@ -57,6 +57,13 @@ function Find-Command([string]$Name) {
     return (Get-Command $Name -ErrorAction Stop).Source
 }
 
+function Find-Python {
+    $RelativePath = if ($IsWindows) { ".venv/Scripts/python.exe" } else { ".venv/bin/python" }
+    $Candidate = Join-Path $RepoRoot $RelativePath
+    if (Test-Path -LiteralPath $Candidate) { return $Candidate }
+    return Find-Command "python"
+}
+
 function Find-Maven {
     $Command = Get-Command mvn -ErrorAction SilentlyContinue
     if ($Command) { return $Command.Source }
@@ -168,7 +175,7 @@ foreach ($Source in $Corpus.sources) {
         $Hash = (Get-FileHash -LiteralPath $File.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
         $SafeStem = ($File.BaseName -replace '[^A-Za-z0-9._-]', '_').Trim('_')
         if (-not $SafeStem) { $SafeStem = "fixture" }
-        $CaseId = "$($Source.format)--$SafeStem--$($Hash.Substring(0, 10))"
+        $CaseId = "$($Source.format)--$SafeStem--$($Hash.Substring(0, 24))"
         if ($CaseSources.ContainsKey($CaseId)) { throw "Duplicate benchmark case id: $CaseId" }
         $RelativePath = [System.IO.Path]::GetRelativePath($RepoRoot, $File.FullName).Replace("\", "/")
         $Case = [pscustomobject]@{
@@ -238,9 +245,7 @@ if (-not $SkipBuild) {
             Assert-CommandSucceeded "Go CLI build"
         }
         "python" {
-            $Tools.python = if (Test-Path (Join-Path $RepoRoot ".venv/Scripts/python.exe")) {
-                Join-Path $RepoRoot ".venv/Scripts/python.exe"
-            } else { Find-Command "python" }
+            $Tools.python = Find-Python
         }
         "node" {
             $Tools.npm = Find-Command "npm"
@@ -276,9 +281,7 @@ switch ($Language) {
     }
     "python" {
         if (-not $Tools.python) {
-            $Tools.python = if (Test-Path (Join-Path $RepoRoot ".venv/Scripts/python.exe")) {
-                Join-Path $RepoRoot ".venv/Scripts/python.exe"
-            } else { Find-Command "python" }
+            $Tools.python = Find-Python
         }
         $env:PYTHONPATH = Join-Path $RepoRoot "minipdf-python/src"
     }

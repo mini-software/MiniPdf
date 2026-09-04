@@ -36,26 +36,66 @@ def create_docx(*, page_break: bool = False) -> bytes:
 def create_xlsx() -> bytes:
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr("xl/workbook.xml", "<workbook/>")
-        archive.writestr("xl/sharedStrings.xml", "<sst><si><t>Hello XLSX</t></si></sst>")
+        archive.writestr(
+            "xl/workbook.xml",
+            '<workbook xmlns:r="urn:r"><sheets><sheet r:id="rId2"/><sheet r:id="rId1"/>'
+            "</sheets></workbook>",
+        )
+        archive.writestr(
+            "xl/_rels/workbook.xml.rels",
+            '<Relationships><Relationship Id="rId1" Type="urn/worksheet" '
+            'Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="urn/worksheet" '
+            'Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="urn/sharedStrings" '
+            'Target="strings/custom.xml"/></Relationships>',
+        )
+        archive.writestr("xl/strings/custom.xml", "<sst><si><t>Hello XLSX</t></si></sst>")
         archive.writestr(
             "xl/worksheets/sheet1.xml",
+            "<worksheet><sheetData><row><c><v>Second Sheet</v></c></row></sheetData></worksheet>",
+        )
+        archive.writestr(
+            "xl/worksheets/sheet2.xml",
             '<worksheet><sheetData><row><c t="s"><v>0</v></c>'
             '<c t="inlineStr"><is><t>Cell B</t></is></c></row></sheetData></worksheet>',
+        )
+        archive.writestr(
+            "xl/worksheets/sheet3.xml",
+            "<worksheet><sheetData><row><c><v>Orphan Sheet</v></c></row></sheetData></worksheet>",
         )
     return output.getvalue()
 
 
-def create_pptx() -> bytes:
+def create_pptx(*, extra_paragraphs: int = 0) -> bytes:
+    overflow_content = "".join(
+        f"<a:p><a:r><a:t>Extra {index}</a:t></a:r></a:p>" for index in range(extra_paragraphs)
+    )
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.writestr(
             "ppt/presentation.xml",
-            '<p:presentation xmlns:p="urn:p"><p:sldSz cx="9144000" cy="6858000"/></p:presentation>',
+            '<p:presentation xmlns:p="urn:p" xmlns:r="urn:r"><p:sldIdLst>'
+            '<p:sldId r:id="rId2"/><p:sldId r:id="rId1"/></p:sldIdLst>'
+            '<p:sldSz cx="9144000" cy="6858000"/></p:presentation>',
+        )
+        archive.writestr(
+            "ppt/_rels/presentation.xml.rels",
+            '<Relationships><Relationship Id="rId1" Type="urn/slide" '
+            'Target="slides/slide1.xml"/><Relationship Id="rId2" Type="urn/slide" '
+            'Target="slides/slide2.xml"/></Relationships>',
         )
         archive.writestr(
             "ppt/slides/slide1.xml",
+            '<p:sld xmlns:p="urn:p" xmlns:a="urn:a"><a:p><a:r><a:t>Second Slide</a:t>'
+            "</a:r></a:p></p:sld>",
+        )
+        archive.writestr(
+            "ppt/slides/slide2.xml",
             '<p:sld xmlns:p="urn:p" xmlns:a="urn:a"><a:p><a:r><a:t>Hello PPTX</a:t>'
+            f"</a:r></a:p>{overflow_content}</p:sld>",
+        )
+        archive.writestr(
+            "ppt/slides/slide3.xml",
+            '<p:sld xmlns:p="urn:p" xmlns:a="urn:a"><a:p><a:r><a:t>Orphan Slide</a:t>'
             "</a:r></a:p></p:sld>",
         )
     return output.getvalue()

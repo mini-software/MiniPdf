@@ -65,27 +65,32 @@ class BasicOfficeConversionTest {
 
     @Test
     void convertsPptxSlidesToSeparatePages() throws Exception {
-    Map<String, String> entries = new LinkedHashMap<>();
-    entries.put("ppt/presentation.xml",
-        "<p:presentation xmlns:p=\"urn:p\"><p:sldSz cx=\"9144000\" cy=\"6858000\"/>"
-            + "</p:presentation>");
-    entries.put("ppt/slides/slide2.xml",
-        "<p:sld xmlns:p=\"urn:p\" xmlns:a=\"urn:a\"><a:p><a:r><a:t>Slide Two</a:t>"
-            + "</a:r></a:p></p:sld>");
-    entries.put("ppt/slides/slide1.xml",
-        "<p:sld xmlns:p=\"urn:p\" xmlns:a=\"urn:a\"><a:p><a:r><a:t>Slide One</a:t>"
-            + "</a:r></a:p></p:sld>");
-    entries.put("ppt/slides/slide10.xml",
-        "<p:sld xmlns:p=\"urn:p\" xmlns:a=\"urn:a\"><a:p><a:r><a:t>Slide Ten</a:t>"
-            + "</a:r></a:p></p:sld>");
+        Map<String, String> entries = new LinkedHashMap<>();
+        entries.put("ppt/presentation.xml",
+            "<p:presentation xmlns:p=\"urn:p\" xmlns:r=\"urn:r\"><p:sldIdLst>"
+                + "<p:sldId r:id=\"rId2\"/><p:sldId r:id=\"rId1\"/></p:sldIdLst>"
+                + "<p:sldSz cx=\"9144000\" cy=\"6858000\"/></p:presentation>");
+        entries.put("ppt/_rels/presentation.xml.rels",
+            "<Relationships><Relationship Id=\"rId1\" Type=\"urn/slide\" "
+                + "Target=\"slides/slide1.xml\"/><Relationship Id=\"rId2\" "
+                + "Type=\"urn/slide\" Target=\"slides/slide2.xml\"/></Relationships>");
+        entries.put("ppt/slides/slide1.xml",
+            "<p:sld xmlns:p=\"urn:p\" xmlns:a=\"urn:a\"><a:p><a:r><a:t>Second</a:t>"
+                + "</a:r></a:p></p:sld>");
+        entries.put("ppt/slides/slide2.xml",
+            "<p:sld xmlns:p=\"urn:p\" xmlns:a=\"urn:a\"><a:p><a:r><a:t>First</a:t>"
+                + "</a:r></a:p></p:sld>");
+        entries.put("ppt/slides/slide10.xml",
+            "<p:sld xmlns:p=\"urn:p\" xmlns:a=\"urn:a\"><a:p><a:r><a:t>Orphan</a:t>"
+                + "</a:r></a:p></p:sld>");
 
-    String pdf = pdfText(MiniPdf.convertBytesToPdf(packageWith(entries)));
+        String pdf = pdfText(MiniPdf.convertBytesToPdf(packageWith(entries)));
 
-    assertTrue(pdf.startsWith("%PDF-1.4"));
-    assertTrue(pdf.contains("/MediaBox [0 0 720 540]"));
-    assertTrue(pdf.contains("/Count 3"));
-    assertTrue(pdf.indexOf("(Slide One) Tj") < pdf.indexOf("(Slide Two) Tj"));
-    assertTrue(pdf.indexOf("(Slide Two) Tj") < pdf.indexOf("(Slide Ten) Tj"));
+        assertTrue(pdf.startsWith("%PDF-1.4"));
+        assertTrue(pdf.contains("/MediaBox [0 0 720 540]"));
+        assertTrue(pdf.contains("/Count 2"));
+        assertTrue(pdf.indexOf("(First) Tj") < pdf.indexOf("(Second) Tj"));
+        assertTrue(!pdf.contains("(Orphan) Tj"));
     }
 
     @Test
@@ -104,7 +109,12 @@ class BasicOfficeConversionTest {
     @Test
     void classifiesMalformedPptxSlideAsXmlError() throws Exception {
         Map<String, String> entries = new LinkedHashMap<>();
-        entries.put("ppt/presentation.xml", "<p:presentation xmlns:p=\"urn:p\"/>");
+        entries.put("ppt/presentation.xml",
+            "<p:presentation xmlns:p=\"urn:p\" xmlns:r=\"urn:r\"><p:sldIdLst>"
+                + "<p:sldId r:id=\"rId1\"/></p:sldIdLst></p:presentation>");
+        entries.put("ppt/_rels/presentation.xml.rels",
+            "<Relationships><Relationship Id=\"rId1\" Type=\"urn/slide\" "
+                + "Target=\"slides/slide1.xml\"/></Relationships>");
         entries.put("ppt/slides/slide1.xml", "<p:sld xmlns:p=\"urn:p\"><p:broken></p:sld>");
 
         MiniPdfException exception = assertThrows(

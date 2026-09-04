@@ -16,6 +16,7 @@ from minipdf import (
     convert_to_pdf_bytes,
     detect_office_format,
 )
+from minipdf.office import OfficePackage
 
 
 def test_path_and_bytes_apis_produce_identical_output(tmp_path: Path) -> None:
@@ -39,6 +40,8 @@ def test_converts_xlsx() -> None:
     assert pdf.startswith(b"%PDF-1.4")
     assert b"Hello XLSX" in pdf
     assert b"Cell B" in pdf
+    assert pdf.index(b"Hello XLSX") < pdf.index(b"Second Sheet")
+    assert b"Orphan Sheet" not in pdf
 
 
 def test_converts_pptx() -> None:
@@ -46,7 +49,27 @@ def test_converts_pptx() -> None:
 
     assert pdf.startswith(b"%PDF-1.4")
     assert b"Hello PPTX" in pdf
+    assert pdf.index(b"Hello PPTX") < pdf.index(b"Second Slide")
+    assert b"Orphan Slide" not in pdf
     assert b"/MediaBox [0 0 720 540]" in pdf
+
+
+def test_pptx_text_stays_inside_slide_page() -> None:
+    pdf = convert_bytes_to_pdf(create_pptx(extra_paragraphs=30))
+
+    assert b" 36 -" not in pdf
+    assert b"/Count 2" in pdf
+
+
+def test_reads_normalized_package_entry_names() -> None:
+    package_bytes = io.BytesIO()
+    with zipfile.ZipFile(package_bytes, "w") as archive:
+        archive.writestr("word\\document.xml", "<document/>")
+
+    package = OfficePackage(package_bytes.getvalue())
+
+    assert package.names == ("word/document.xml",)
+    assert package.read("word/document.xml") == b"<document/>"
 
 
 def test_rejects_unknown_office_package() -> None:
