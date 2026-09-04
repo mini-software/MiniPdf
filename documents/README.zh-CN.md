@@ -22,7 +22,7 @@
 
 你的 Star 或捐赠将帮助项目持续发展。
 
-🤝 **寻找共同开发者：**[使用 AI 参与贡献](#contribute-with-ai)
+🤝 **寻找共同开发者：**[快速贡献](#quick-contribution)
 
 </div>
 
@@ -150,9 +150,9 @@ if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
 
 MiniPdf 专注于实用文档转换，不追求完全复制 Microsoft Office 版式。复杂模板的渲染可能有所不同，请使用在线演示或基准报告评估代表性文件。
 
-<a id="contribute-with-ai"></a>
+<a id="quick-contribution"></a>
 
-## 贡献你的算力
+## 快速贡献
 
 在任意编码 Agent 中打开干净的 fork 或 clone，然后将以下指令粘贴到 Agent 聊天中：
 

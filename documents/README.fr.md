@@ -22,7 +22,7 @@
 
 Votre étoile ou votre don contribue à soutenir le projet.
 
-🤝 **Nous recherchons des co-développeurs :** [Contribuer avec l'IA](#contribute-with-ai)
+🤝 **Nous recherchons des co-développeurs :** [Contribuer rapidement](#quick-contribution)
 
 </div>
 
@@ -150,9 +150,9 @@ Le [guide Go](../minipdf-go/README.md) décrit le paquet, la CLI native, le pér
 
 MiniPdf vise une conversion pratique des documents, et non une compatibilité totale avec la mise en page de Microsoft Office. Les modèles complexes peuvent être rendus différemment ; utilisez la démo en ligne ou les rapports de benchmark pour évaluer des fichiers représentatifs.
 
-<a id="contribute-with-ai"></a>
+<a id="quick-contribution"></a>
 
-## Contribuer avec de la puissance de calcul
+## Contribuer rapidement
 
 Ouvrez un fork ou clone propre dans n'importe quel agent de programmation, puis collez cette instruction dans le chat de l'Agent :
 

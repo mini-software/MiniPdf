@@ -22,7 +22,7 @@ English | <a href="documents/README.zh-CN.md">简体中文</a> | <a href="docume
 
 Your star or donation helps sustain the project.
 
-🤝 **Looking for co-developers:** [Contribute with AI](#contribute-with-ai)
+🤝 **Looking for co-developers:** [Quick contribution](#quick-contribution)
 
 </div>
 
@@ -157,9 +157,9 @@ MiniPdf targets practical document conversion, not complete Microsoft Office
 layout compatibility. Complex templates may render differently; use the online
 demo or benchmark reports to evaluate representative files.
 
-<a id="contribute-with-ai"></a>
+<a id="quick-contribution"></a>
 
-## Contribute compute time
+## Quick contribution
 
 Open a clean fork or clone in any coding agent, then paste this prompt into the
 agent chat:

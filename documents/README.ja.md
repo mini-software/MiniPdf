@@ -22,7 +22,7 @@
 
 スターや寄付がプロジェクトの継続的な発展を支えます。
 
-🤝 **共同開発者を募集中：**[AI で貢献する](#contribute-with-ai)
+🤝 **共同開発者を募集中：**[すぐに貢献する](#quick-contribution)
 
 </div>
 
@@ -150,9 +150,9 @@ if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
 
 MiniPdf は実用的な文書変換を目的としており、Microsoft Office のレイアウトを完全に再現するものではありません。複雑なテンプレートは表示が異なる場合があるため、オンラインデモやベンチマークレポートで代表的なファイルを評価してください。
 
-<a id="contribute-with-ai"></a>
+<a id="quick-contribution"></a>
 
-## 計算リソースで貢献する
+## すぐに貢献する
 
 任意のコーディング Agent でクリーンな fork または clone を開き、次の指示を Agent のチャットに貼り付けます。
 
