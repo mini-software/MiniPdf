@@ -24,3 +24,6 @@ ttf-parser.workspace = true
 thiserror.workspace = true
 unicode-bidi.workspace = true
 zip.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { workspace = true, features = ["Win32_Graphics_Gdi"] }

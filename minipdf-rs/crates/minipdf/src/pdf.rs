@@ -289,6 +289,38 @@ impl PdfPage {
     pub fn pop_clip(&mut self) {
         self.ops.push(PdfOp::PopClip);
     }
+
+    pub(crate) fn translate_y(&mut self, offset: f32) {
+        for operation in &mut self.ops {
+            match operation {
+                PdfOp::Text { y, .. }
+                | PdfOp::Rect { y, .. }
+                | PdfOp::Ellipse { y, .. }
+                | PdfOp::Image { y, .. }
+                | PdfOp::PushClip { y, .. } => *y += offset,
+                PdfOp::Line { y1, y2, .. } => {
+                    *y1 += offset;
+                    *y2 += offset;
+                }
+                PdfOp::Path { commands, .. } => {
+                    for command in commands {
+                        match command {
+                            PdfPathCommand::MoveTo(_, y) | PdfPathCommand::LineTo(_, y) => {
+                                *y += offset;
+                            }
+                            PdfPathCommand::CurveTo(_, y1, _, y2, _, y3) => {
+                                *y1 += offset;
+                                *y2 += offset;
+                                *y3 += offset;
+                            }
+                            PdfPathCommand::Close => {}
+                        }
+                    }
+                }
+                PdfOp::PopClip => {}
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
