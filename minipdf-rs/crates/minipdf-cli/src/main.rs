@@ -314,6 +314,7 @@ fn system_fallback_font_paths() -> Vec<PathBuf> {
             "ebrimabd.ttf",
             "YuGothR.ttc",
             "NotoSansSC-VF.ttf",
+            "simsun.ttc",
             "simhei.ttf",
             "malgunsl.ttf",
             "malgun.ttf",
@@ -395,5 +396,7 @@ mod tests {
         for name in ["arial.ttf", "arialbd.ttf", "ariali.ttf", "arialbi.ttf"] {
             assert!(names.iter().any(|candidate| candidate == name));
         }
+
+        assert!(names.iter().any(|candidate| candidate == "simsun.ttc"));
     }
 }

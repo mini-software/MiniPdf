@@ -697,7 +697,11 @@ fn font_preference(
 ) -> u8 {
     let name = name.to_ascii_lowercase();
     if let Some(preferred) = preferred_font {
-        let preferred = preferred.to_ascii_lowercase();
+        let preferred = match preferred.trim() {
+            "宋体" | "新宋体" => "simsun".to_owned(),
+            "黑体" => "simhei".to_owned(),
+            preferred => preferred.to_ascii_lowercase(),
+        };
         let preferred_variant = match (preferred.as_str(), bold, italic) {
             ("arial", true, true) => "arialbi",
             ("arial", true, false) => "arialbd",
@@ -1188,6 +1192,18 @@ mod tests {
         assert_eq!(
             font_preference("NotoSansSC-VF", '学', false, false, None),
             1
+        );
+    }
+
+    #[test]
+    fn prefers_simsun_for_localized_docx_font_name() {
+        assert_eq!(
+            font_preference("simsun", '学', false, false, Some("宋体")),
+            0
+        );
+        assert_eq!(
+            font_preference("simhei", '学', true, false, Some("黑体")),
+            0
         );
     }
 
