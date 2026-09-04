@@ -22,6 +22,8 @@
 
 你的 Star 或捐款將幫助專案持續發展。
 
+🤝 **尋找共同開發者：**[使用 AI 參與貢獻](#contribute-with-ai)
+
 </div>
 
 MiniPdf 不需要在執行階段安裝 Microsoft Office、LibreOffice、Adobe Acrobat 或使用 COM 自動化，即可直接將 Office 文件轉換為 PDF。請選擇適合專案的實作。
@@ -148,25 +150,15 @@ if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
 
 MiniPdf 專注於實用文件轉換，不追求完整複製 Microsoft Office 版面。複雜範本的呈現可能不同，請使用線上展示或基準報告評估代表性檔案。
 
+<a id="contribute-with-ai"></a>
+
 ## 貢獻你的算力
 
-在 GitHub Copilot、Claude Code、Cursor、Codex，或任何可編輯檔案並執行 PowerShell 的程式設計 Agent 中開啟乾淨的 fork 或 clone。最簡單的貢獻方式是將以下指令貼到 Agent 聊天中：
+在任意程式設計 Agent 中開啟乾淨的 fork 或 clone，然後將以下指令貼到 Agent 聊天中：
 
 ```text
 Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
-
-通用 PowerShell 入口會偵測 `dotnet` 與 `cargo`，再從已安裝的實作中隨機選擇一個：
-
-```powershell
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start
-```
-
-如需覆寫隨機選擇，請傳入 `-Implementation dotnet` 或 `-Implementation rust`。選定的實作會儲存在本次循環的狀態中，供後續所有操作使用。
-
-貢獻循環會檢查工具鏈、安裝基準測試所需的 Python 套件、建立本機分支，並自動挑選所選渲染器中視覺分數最低的兩個差異。Agent 對每個案例最多嘗試三次；分數沒有改善時會自動還原，再繼續下一個案例。只有所選實作的完整測試及 XLSX/DOCX 視覺基準都通過，且沒有明顯退步時，才允許建立 PR。
-
-兩條路徑都需要 Git、Python 3.10+ 與 LibreOffice。.NET 需要 .NET 9 SDK；Rust 需要 Cargo，並使用桌面版 Excel 與 Word 產生目前的主要視覺參考。流程會檢查是否有已驗證的 GitHub CLI；若沒有，則產生 PR 標題、內容、推送命令與瀏覽器連結。Copilot、Claude Code、Cursor、Codex 與終端的快捷方式及安全規則請參閱[貢獻指南](../CONTRIBUTING.md)。未經你的確認，它不會 commit、push 或建立 PR。
 
 ## 專案資源
 

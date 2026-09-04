@@ -22,6 +22,8 @@
 
 スターや寄付がプロジェクトの継続的な発展を支えます。
 
+🤝 **共同開発者を募集中：**[AI で貢献する](#contribute-with-ai)
+
 </div>
 
 MiniPdf は、実行時に Microsoft Office、LibreOffice、Adobe Acrobat、COM オートメーションを必要とせず、Office 文書を直接 PDF に変換します。プロジェクトに合う実装を選択してください。
@@ -148,25 +150,15 @@ if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
 
 MiniPdf は実用的な文書変換を目的としており、Microsoft Office のレイアウトを完全に再現するものではありません。複雑なテンプレートは表示が異なる場合があるため、オンラインデモやベンチマークレポートで代表的なファイルを評価してください。
 
+<a id="contribute-with-ai"></a>
+
 ## 計算リソースで貢献する
 
-クリーンな fork または clone を GitHub Copilot、Claude Code、Cursor、Codex、またはファイル編集と PowerShell 実行が可能な任意のコーディング Agent で開きます。最も簡単な方法は、次の指示を Agent のチャットに貼り付けることです。
+任意のコーディング Agent でクリーンな fork または clone を開き、次の指示を Agent のチャットに貼り付けます。
 
 ```text
 Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
-
-共通の PowerShell エントリーポイントは `dotnet` と `cargo` を検出し、インストール済みの実装から 1 つをランダムに選択します。
-
-```powershell
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start
-```
-
-ランダム選択を上書きするには、`-Implementation dotnet` または `-Implementation rust` を指定してください。選択した実装は、このループの後続操作で使用する状態に保存されます。
-
-この貢献ループはツールチェーンを確認し、ベンチマーク用 Python パッケージをインストールしてローカルブランチを作成し、選択したレンダラーで視覚スコアが最も低い差分を 2 件選びます。Agent は各ケースを最大 3 回修正し、スコアが改善しなければ自動的に元へ戻して次へ進みます。選択した実装の全テストと XLSX/DOCX 視覚ベンチマークを通過し、重大な回帰がない場合にのみ PR を作成できます。
-
-どちらも Git、Python 3.10 以降、LibreOffice が必要です。.NET には .NET 9 SDK、Rust には Cargo と現在の主要な視覚参照を生成するデスクトップ版 Excel/Word が必要です。認証済み GitHub CLI がなければ、PR のタイトル、本文、push コマンド、ブラウザー URL を生成します。Copilot、Claude Code、Cursor、Codex、ターミナルのショートカットと安全規則は[貢献ガイド](../CONTRIBUTING.md)を参照してください。承認なしに commit、push、PR 作成を行うことはありません。
 
 ## プロジェクトリソース
 
