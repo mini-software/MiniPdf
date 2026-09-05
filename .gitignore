@@ -80,3 +80,11 @@ MiniPdf.Web/MiniPdf.Web.Client/wwwroot/fonts/
 /artifacts/rust-benchmark/issue/xlsx/*
 !/artifacts/rust-benchmark/issue/xlsx/report/
 !/artifacts/rust-benchmark/issue/xlsx/report/**
+!/artifacts/java-benchmark/
+/artifacts/java-benchmark/*
+!/artifacts/java-benchmark/issue/
+/artifacts/java-benchmark/issue/*
+!/artifacts/java-benchmark/issue/xlsx/
+/artifacts/java-benchmark/issue/xlsx/*
+!/artifacts/java-benchmark/issue/xlsx/report/
+!/artifacts/java-benchmark/issue/xlsx/report/**
