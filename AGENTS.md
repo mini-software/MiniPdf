@@ -30,6 +30,21 @@ scripts/Run-Benchmark_issues.ps1 -Filter "sa8000"    # focused issue run
 scripts/Run-Benchmark_issues.ps1 -All                 # full issue benchmark
 ```
 
+### Cross-Language Visual Benchmarks
+
+Use the following form for .NET, Rust, Java, Go, Python, and Node:
+
+```powershell
+scripts/Run-<Language>-VisualBenchmark.ps1 -Suite <classic|issue> -Format <xlsx|docx|pptx> -MaxCases <n>
+```
+
+Rust may also use `scripts/Run-Rust-Benchmark.ps1`; it forwards to the same
+shared runner. Microsoft 365 is always the primary scored reference and
+LibreOffice is the required auxiliary reference. `-Engine` does not switch the
+primary reference. The default minimum score is `0.95`; use `-SkipCandidate`
+only when the corresponding candidate PDFs already exist under
+`artifacts/<language>-benchmark/<suite>/<format>/candidates`.
+
 ## Classic Benchmark Refresh Workflow
 
 When updating all XLSX classic examples, canonical benchmark reports, or stale GitHub README benchmark images, use the `refresh-classic-benchmarks` skill (`/refresh-classic-benchmarks`).

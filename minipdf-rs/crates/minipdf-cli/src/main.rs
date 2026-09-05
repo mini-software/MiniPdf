@@ -200,7 +200,7 @@ fn register_office_cloud_fonts() -> minipdf::Result<()> {
         .map(|entry| entry.path().join("CloudFonts"))
         .filter(|path| path.is_dir())
     {
-        for family in ["Grandview", "Grandview Display"] {
+        for family in ["Grandview", "Grandview Display", "STKaiti"] {
             let directory = cloud_root.join(family);
             let Ok(entries) = fs::read_dir(directory) else {
                 continue;

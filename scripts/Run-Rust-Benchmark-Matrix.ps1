@@ -9,7 +9,7 @@
 
 param(
     [int]$MaxComparePages = 1,
-    [double]$MinimumScore = 0,
+    [double]$MinimumScore = 0.95,
     [ValidateSet("o365", "office", "libre")]
     [string]$Engine = "o365",
     [switch]$SkipReference,
