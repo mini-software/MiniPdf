@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.shps951023</groupId>
+        <groupId>io.github.mini-software</groupId>
         <artifactId>minipdf-java-parent</artifactId>
-        <version>0.1.1</version>
+        <version>0.1.2</version>
     </parent>
 
     <artifactId>minipdf-cli</artifactId>
