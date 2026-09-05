@@ -7,7 +7,7 @@
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
 <a href="https://crates.io/crates/minipdf"><img src="https://img.shields.io/crates/v/minipdf.svg" alt="crates.io"></a>
-<a href="https://central.sonatype.com/artifact/io.github.shps951023/minipdf"><img src="https://img.shields.io/maven-central/v/io.github.shps951023/minipdf.svg" alt="Maven Central"></a>
+<a href="https://central.sonatype.com/artifact/io.github.mini-software/minipdf"><img src="https://img.shields.io/maven-central/v/io.github.mini-software/minipdf.svg" alt="Maven Central"></a>
 <a href="https://pypi.org/project/minipdf/"><img src="https://img.shields.io/pypi/v/minipdf.svg" alt="PyPI"></a>
 <a href="https://www.npmjs.com/package/minipdf"><img src="https://img.shields.io/npm/v/minipdf.svg" alt="npm"></a>
 <a href="https://pkg.go.dev/github.com/mini-software/MiniPdf/minipdf-go"><img src="https://pkg.go.dev/badge/github.com/mini-software/MiniPdf/minipdf-go.svg" alt="Go Reference"></a>
@@ -83,11 +83,15 @@ La [guida Rust](../minipdf-rs/README.md) descrive API del crate, CLI, funzionali
 
 ```xml
 <dependency>
-	<groupId>io.github.shps951023</groupId>
+	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.2</version>
 </dependency>
 ```
+
+I `groupId` Maven possono contenere trattini, mentre i nomi dei package Java no.
+Per questo la dipendenza usa `io.github.mini-software` e gli import usano
+`io.github.minisoftware.minipdf`.
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;

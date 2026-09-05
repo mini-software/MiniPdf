@@ -9,11 +9,15 @@ The library is available from Maven Central:
 
 ```xml
 <dependency>
-    <groupId>io.github.shps951023</groupId>
+    <groupId>io.github.mini-software</groupId>
     <artifactId>minipdf</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
 </dependency>
 ```
+
+  Maven group IDs may contain hyphens, but Java package names may not. Therefore,
+  the dependency uses `io.github.mini-software`, while imports use
+  `io.github.minisoftware.minipdf`.
 
 ## Library
 
@@ -36,14 +40,14 @@ Download the executable JAR with Maven:
 
 ```powershell
 mvn dependency:copy `
-  -Dartifact=io.github.shps951023:minipdf-cli:0.1.1 `
+  -Dartifact=io.github.mini-software:minipdf-cli:0.1.2 `
   -DoutputDirectory=.
 ```
 
 Convert a document:
 
 ```powershell
-java -jar minipdf-cli-0.1.1.jar input.pptx -o output.pdf
+java -jar minipdf-cli-0.1.2.jar input.pptx -o output.pdf
 ```
 
 The CLI accepts `.docx`, `.xlsx`, and `.pptx` files. Run it with `--help` for

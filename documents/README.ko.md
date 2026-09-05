@@ -7,7 +7,7 @@
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
 <a href="https://crates.io/crates/minipdf"><img src="https://img.shields.io/crates/v/minipdf.svg" alt="crates.io"></a>
-<a href="https://central.sonatype.com/artifact/io.github.shps951023/minipdf"><img src="https://img.shields.io/maven-central/v/io.github.shps951023/minipdf.svg" alt="Maven Central"></a>
+<a href="https://central.sonatype.com/artifact/io.github.mini-software/minipdf"><img src="https://img.shields.io/maven-central/v/io.github.mini-software/minipdf.svg" alt="Maven Central"></a>
 <a href="https://pypi.org/project/minipdf/"><img src="https://img.shields.io/pypi/v/minipdf.svg" alt="PyPI"></a>
 <a href="https://www.npmjs.com/package/minipdf"><img src="https://img.shields.io/npm/v/minipdf.svg" alt="npm"></a>
 <a href="https://pkg.go.dev/github.com/mini-software/MiniPdf/minipdf-go"><img src="https://pkg.go.dev/badge/github.com/mini-software/MiniPdf/minipdf-go.svg" alt="Go Reference"></a>
@@ -83,11 +83,15 @@ minipdf report.docx -o report.pdf
 
 ```xml
 <dependency>
-	<groupId>io.github.shps951023</groupId>
+	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.2</version>
 </dependency>
 ```
+
+Maven `groupId`에는 하이픈을 사용할 수 있지만 Java 패키지 이름에는 사용할 수 없습니다.
+따라서 의존성에는 `io.github.mini-software`를 사용하고 import에는
+`io.github.minisoftware.minipdf`를 사용합니다.
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
