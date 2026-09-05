@@ -30,14 +30,14 @@ MiniPdf convertit directement les documents Office en PDF sans nécessiter Micro
 
 ## Choisir une implémentation
 
-| Implémentation | Entrées | Interfaces | Maturité | Documentation |
-|---|---|---|---|---|
-| .NET | XLSX, DOCX, PPTX | Bibliothèque, CLI, binaires Native AOT | Stable | **[Guide .NET](README.nuget.md)** |
-| Rust | XLSX, DOCX, PPTX | Crate, CLI | Expérimental | **[Guide Rust](../minipdf-rs/README.md)** |
-| Java | XLSX, DOCX | Bibliothèque, CLI | Expérimental | **[Sources Java](../minipdf-java/)** |
-| Python | DOCX | Paquet, CLI | Expérimental | **[Guide Python](../minipdf-python/README.md)** |
-| Node.js | XLSX, DOCX, PPTX | Paquet natif | Expérimental | **[Guide Node.js](../minipdf-node/README.md)** |
-| Go | XLSX, DOCX, PPTX | Paquet, CLI | Expérimental | **[Guide Go](../minipdf-go/README.md)** |
+| Implémentation | Entrées | Interfaces | Maturité | Documentation | Résultats visuels |
+|---|---|---|---|---|---|
+| .NET | XLSX, DOCX, PPTX | Bibliothèque, CLI, binaires Native AOT | Stable | **[Guide .NET](README.nuget.md)** | **[Rapport visuel](../artifacts/benchmark/dotnet/report/comparison_report.md)** |
+| Rust | XLSX, DOCX, PPTX | Crate, CLI | Expérimental | **[Guide Rust](../minipdf-rs/README.md)** | **[Rapport visuel](../artifacts/benchmark/rust/report/comparison_report.md)** |
+| Java | XLSX, DOCX | Bibliothèque, CLI | Expérimental | **[Sources Java](../minipdf-java/)** | **[Rapport visuel](../artifacts/benchmark/java/report/comparison_report.md)** |
+| Python | DOCX | Paquet, CLI | Expérimental | **[Guide Python](../minipdf-python/README.md)** | **[Rapport visuel](../artifacts/benchmark/python/report/comparison_report.md)** |
+| Node.js | XLSX, DOCX, PPTX | Paquet natif | Expérimental | **[Guide Node.js](../minipdf-node/README.md)** | **[Rapport visuel](../artifacts/benchmark/node/report/comparison_report.md)** |
+| Go | XLSX, DOCX, PPTX | Paquet, CLI | Expérimental | **[Guide Go](../minipdf-go/README.md)** | **[Rapport visuel](../artifacts/benchmark/go/report/comparison_report.md)** |
 
 ## Démarrage rapide
 
