@@ -1,0 +1,135 @@
+[
+  {
+    "name": "Issue202609031340",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "node-issue-xlsx",
+    "case_id": "Issue202609031340",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Issue202609031340.xlsx",
+    "suite": "issue",
+    "minipdf_size": 533862,
+    "reference_size": 346206,
+    "pdf_valid": true,
+    "minipdf_pages": 4,
+    "reference_pages": 4,
+    "text_similarity": 0.9437,
+    "flat_text_similarity": 0.9432,
+    "word_text_similarity": 0.9315,
+    "text_diff": "--- minipdf/Issue202609031340.pdf\n+++ reference/Issue202609031340.pdf\n@@ -1,12 +1,10 @@\n 表单编号 XXX-XXX-051-01\n\n-QA-SIPI-XXXX-01-1-\n\n-文件编号\n\n-XXXXXX有限公司\n\n-1\n\n+XXXXXX有限公司 文件编号QA-SIPI-XXXX-01-1-1\n\n 发行日期 2025-04-11\n\n 文件版本 03 修订日期 2025-11-25\n\n 产品穴号 详见注意事项 产品单重 20.45±1.05 g\n\n-注塑制程检验标准书 ￠1.18*10MM(320度加强\n\n+注塑制程检验标准书\n\n+￠1.18*10MM(320度加强\n\n 附件编号 / 销钉规格\n\n 型)\n\n 产品型号 XXXX 部件名称 盖塑胶件 抽样计划 ANSI/ASQ Z1.4Ⅱ 巡检频率 2H/次\n\n@@ -48,7 +46,17 @@\n 1次/\n\n 高度规 L*2 4.65＋0.00/－0.10 后钮针孔中心至口部平面间距\n\n 班\n\n-参考资料/项目 代码 取样数量频率 代码 取样数量频率 注意事项及品质履历\n\n+产品后钮装饰片槽缺\n\n+口竖边同卡尺贴紧\n\n+68.16 mm 62.03 mm\n\n+产品口部平面同\n\n+产品口部平面同\n\n+卡尺上平面平行\n\n+卡尺上平面平行\n\n+产品后钮装饰片槽缺\n\n+口竖边同卡尺贴紧\n\n+0.00 ~ 300mm卡尺\n\n+参考资料/项目 代码 取样数量 频率 代码 取样数量 频率 注意事项及品质履历\n\n 1.MO25XXXX0100：1#~4#/MO25XXXX0110：5#~12#\n\n 尺\n\n 寸\n\n@@ -58,25 +66,27 @@\n 准书 1# 一模 2# 一模\n\n 班 班\n\n 合\n\n-XXXX-00组装成\n\n-功 1次/ 1次/\n\n+XXXX-\n\n+功\n\n+1次/ 1次/\n\n 3# 一模 5# 一模\n\n-品 班 班\n\n+00组装成品 班 班\n\n 能\n\n 1次/\n\n 6# 一模\n\n 班\n\n-日期 版本工程担当 品质担当 修    订    内    容\n\n+日期 版本 工程担当 品质担当 修    订    内    容\n\n 2025/4/11 00 AAAA AAA 初版发行\n\n 修\n\n+---PAGE---\n\n+修\n\n+A：68.16 ＋0.05/－0.13改为68.16 ＋0.05/－0.17；B：62.03 ＋0.05/－0.10改为62.03 ＋0.05/－0.20；D：18.87\n\n 订\n\n-记\n\n----PAGE---\n\n-A：68.16 ＋0.05/－0.13改为68.16 ＋0.05/－0.17；B：62.03 ＋0.05/－0.10改为62.03 ＋0.05/－0.20；D：18.87\n\n ＋0.00/－0.05改为18.87\n\n 2025/5/12 01 BBBB BBB\n\n+记\n\n ＋0.00/－0.10；I：8.35＋0.00/－0.16改为8.35＋0.10/－0.05；J：53.93＋0.00/－0.10改为53.93＋0.05/－0.10；\n\n-L*2：4.65±0.05改成4.65＋0.00/－0.10；更新检验频率\n\n+录 L*2：4.65±0.05改成4.65＋0.00/－0.10；更新检验频率\n\n 2025/8/6 02 CCCC CCCC 新增模具编号：MO25XXXX0110\n\n 2025/11/25 03 DDDD DDDD J：53.93＋0.05/－0.10改为53.93＋0.04/－0.03\n\n 研 制\n\n@@ -96,6 +106,7 @@\n 产品品质履历（SIP附件）\n\n 版本 日期 问题描述 图片\n\n 00 7/30/2025 口部有麻点印NG，图1\n\n+图 1\n\n ---PAGE---\n\n 审 制\n\n 刘伟鹏\n",
+    "visual_scores": [
+      0.9047,
+      0.9882,
+      0.9288,
+      0.9955
+    ],
+    "visual_avg": 0.9543,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Issue202609031340_p1_minipdf.png",
+        "reference_img": "Issue202609031340_p1_reference.png",
+        "auxiliary_img": "Issue202609031340_p1_libreoffice.png",
+        "heatmap_img": "Issue202609031340_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            30,
+            55,
+            1195,
+            1754
+          ],
+          "changed_pixels": 337055,
+          "changed_fraction": 0.154846,
+          "mean_abs_rgb": 15.6991,
+          "rmse_rgb": 48.7136,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Issue202609031340_p1_node_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "Issue202609031340_p2_minipdf.png",
+        "reference_img": "Issue202609031340_p2_reference.png",
+        "auxiliary_img": "Issue202609031340_p2_libreoffice.png",
+        "heatmap_img": "Issue202609031340_p2_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            43,
+            738,
+            1195,
+            1014
+          ],
+          "changed_pixels": 45503,
+          "changed_fraction": 0.020904,
+          "mean_abs_rgb": 2.3791,
+          "rmse_rgb": 18.9014,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Issue202609031340_p2_node_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "Issue202609031340_p3_minipdf.png",
+        "reference_img": "Issue202609031340_p3_reference.png",
+        "auxiliary_img": "Issue202609031340_p3_libreoffice.png",
+        "heatmap_img": "Issue202609031340_p3_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            28,
+            40,
+            1196,
+            1754
+          ],
+          "changed_pixels": 195838,
+          "changed_fraction": 0.08997,
+          "mean_abs_rgb": 12.2294,
+          "rmse_rgb": 48.2933,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Issue202609031340_p3_node_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "Issue202609031340_p4_minipdf.png",
+        "reference_img": "Issue202609031340_p4_reference.png",
+        "auxiliary_img": "Issue202609031340_p4_libreoffice.png",
+        "heatmap_img": "Issue202609031340_p4_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            28,
+            743,
+            1196,
+            1009
+          ],
+          "changed_pixels": 17387,
+          "changed_fraction": 0.007988,
+          "mean_abs_rgb": 0.9005,
+          "rmse_rgb": 12.1593,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Issue202609031340_p4_node_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9592
+  }
+]

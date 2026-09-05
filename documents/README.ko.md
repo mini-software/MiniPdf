@@ -32,12 +32,12 @@ MiniPdf는 런타임에 Microsoft Office, LibreOffice, Adobe Acrobat 또는 COM 
 
 | 구현 | 입력 | 인터페이스 | 성숙도 | 문서 | 시각적 결과 |
 |---|---|---|---|---|---|
-| .NET | XLSX, DOCX, PPTX | 라이브러리, CLI, Native AOT 바이너리 | 안정 | **[.NET 가이드](README.nuget.md)** | **[시각적 보고서](../artifacts/benchmark/dotnet/report/comparison_report.md)** |
-| Rust | XLSX, DOCX, PPTX | Crate, CLI | 실험적 | **[Rust 가이드](../minipdf-rs/README.md)** | **[시각적 보고서](../artifacts/benchmark/rust/report/comparison_report.md)** |
-| Java | XLSX, DOCX | 라이브러리, CLI | 실험적 | **[Java 소스](../minipdf-java/)** | **[시각적 보고서](../artifacts/benchmark/java/report/comparison_report.md)** |
-| Python | DOCX | 패키지, CLI | 실험적 | **[Python 가이드](../minipdf-python/README.md)** | **[시각적 보고서](../artifacts/benchmark/python/report/comparison_report.md)** |
-| Node.js | XLSX, DOCX, PPTX | 네이티브 패키지 | 실험적 | **[Node.js 가이드](../minipdf-node/README.md)** | **[시각적 보고서](../artifacts/benchmark/node/report/comparison_report.md)** |
-| Go | XLSX, DOCX, PPTX | 패키지, CLI | 실험적 | **[Go 가이드](../minipdf-go/README.md)** | **[시각적 보고서](../artifacts/benchmark/go/report/comparison_report.md)** |
+| .NET | XLSX, DOCX, PPTX | 라이브러리, CLI, Native AOT 바이너리 | 안정 | **[.NET 가이드](README.nuget.md)** | **[시각적 보고서](../artifacts/dotnet-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Rust | XLSX, DOCX, PPTX | Crate, CLI | 실험적 | **[Rust 가이드](../minipdf-rs/README.md)** | **[시각적 보고서](../artifacts/rust-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Java | XLSX, DOCX | 라이브러리, CLI | 실험적 | **[Java 소스](../minipdf-java/)** | **[시각적 보고서](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Python | DOCX | 패키지, CLI | 실험적 | **[Python 가이드](../minipdf-python/README.md)** | **[시각적 보고서](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Node.js | XLSX, DOCX, PPTX | 네이티브 패키지 | 실험적 | **[Node.js 가이드](../minipdf-node/README.md)** | **[시각적 보고서](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Go | XLSX, DOCX, PPTX | 패키지, CLI | 실험적 | **[Go 가이드](../minipdf-go/README.md)** | **[시각적 보고서](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
 
 ## 빠른 시작
 

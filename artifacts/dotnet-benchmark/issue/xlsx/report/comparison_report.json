@@ -1,0 +1,135 @@
+[
+  {
+    "name": "Issue202609031340",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "dotnet-issue-xlsx",
+    "case_id": "Issue202609031340",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Issue202609031340.xlsx",
+    "suite": "issue",
+    "minipdf_size": 470835,
+    "reference_size": 346206,
+    "pdf_valid": true,
+    "minipdf_pages": 4,
+    "reference_pages": 4,
+    "text_similarity": 0.8828,
+    "flat_text_similarity": 0.8808,
+    "word_text_similarity": 0.7896,
+    "text_diff": "--- minipdf/Issue202609031340.pdf\n+++ reference/Issue202609031340.pdf\n@@ -1,37 +1,34 @@\n 表单编号 XXX-XXX-051-01\n\n-文件编号 QA-SIPI-XXXX-01-1-1\n\n-XXXXXX有限公司\n\n+XXXXXX有限公司 文件编号QA-SIPI-XXXX-01-1-1\n\n 发行日期 2025-04-11\n\n 文件版本 03 修订日期 2025-11-25\n\n 产品穴号 详见注意事项 产品单重 20.45±1.05 g\n\n+注塑制程检验标准书\n\n ￠1.18*10MM(320度加强\n\n-注塑制程检验标准书\n\n 附件编号 / 销钉规格\n\n 型)\n\n 产品型号 XXXX 部件名称 盖塑胶件 抽样计划 ANSI/ASQ Z1.4Ⅱ 巡检频率 2H/次\n\n-MO25XXXX0100/MO25\n\n+MO25XXXX0100/MO\n\n 模具编号 部件材质 PETG 允收水准 CR: 0    MA:1.0    MI: 2.0\n\n-XXXX0110\n\n+25XXXX0110\n\n 检验条件 检验光源角度:45°-90°,检验距离30cm,光照900~1200lux\n\n 参考 图纸文件编号：XXXX系列  内部图纸 2025.4.10\n\n 项目 检验工具 巡检内容\n\n 图 部件图纸编号：HKXXXX-01-RB\n\n-目视、图纸 1、首件样品整模结构符合图纸设计、同PPS结构一致；\n\n-结\n\n-构\n\n-、PPS 2、制程巡检整模产品结构需同首件结构一致。\n\n-目视、限度 1、首件样品颜色需无限接近限度样中的标准样；\n\n-颜\n\n-色\n\n-样 2、制程巡检产品颜色需同首件颜色一致。\n\n-目视、限度 1、注塑成型外观缺陷大小不可超出限度样板；\n\n-外\n\n-观\n\n-样 2、其它外观缺陷无限度样的按常规通用标准判定。\n\n+结 目视、图 1、首件样品整模结构符合图纸设计、同PPS结构一致；\n\n+构 纸、PPS 2、制程巡检整模产品结构需同首件结构一致。\n\n+颜 目视、限 1、首件样品颜色需无限接近限度样中的标准样；\n\n+色 度样 2、制程巡检产品颜色需同首件颜色一致。\n\n+外 目视、限 1、注塑成型外观缺陷大小不可超出限度样板；\n\n+观 度样 2、其它外观缺陷无限度样的按常规通用标准判定。\n\n 包装 目视 参照注塑作业指导书（SOP）\n\n 仪器 项目 管控标准(mm) 测量位置 频率\n\n-卡尺 A 68.16 ＋0.05/－0.17 外形最长距离 1次/班\n\n-卡尺 B 62.03 ＋0.05/－0.20 外形最宽距离 1次/班\n\n+1次/\n\n+卡尺 A 68.16 ＋0.05/－0.17 外形最长距离\n\n+班\n\n+1次/\n\n+卡尺 B 62.03 ＋0.05/－0.20 外形最宽距离\n\n+班\n\n 卡尺 C 27.9 ＋0.03/－0.05 顶部装饰片槽长度 首件\n\n 卡尺 D 18.87 ＋0.00/－0.10 后钮侧面装饰片槽长度 首件\n\n 卡尺 E 6.70＋0.00/－0.05 后钮侧面大卡槽宽度 首件\n\n@@ -40,22 +37,44 @@\n 寸 针规 G 1.20±0.02 针孔内径 6H\n\n 投影仪 H 58.69＋0.02/－0.12 针孔中心至外形最宽距离 6H\n\n 卡尺 I 8.35＋0.10/－0.05 口部平面至顶部高度 首件\n\n-后钮针孔中分线中心点至前扣弧线中\n\n+后钮针孔中分线中心点至前扣弧\n\n 投影仪 J 53.93＋0.04/－0.03 6H\n\n-心点距离\n\n-卡尺 K 18.61±0.05 后钮针孔左右间距 1次/班\n\n-高度规 L*2 4.65＋0.00/－0.10 后钮针孔中心至口部平面间距 1次/班\n\n+线中心点距离\n\n+1次/\n\n+卡尺 K 18.61±0.05 后钮针孔左右间距\n\n+班\n\n+1次/\n\n+高度规 L*2 4.65＋0.00/－0.10 后钮针孔中心至口部平面间距\n\n+班\n\n+产品后钮装饰片槽缺\n\n+口竖边同卡尺贴紧\n\n+68.16 mm 62.03 mm\n\n+产品口部平面同\n\n+产品口部平面同\n\n+卡尺上平面平行\n\n+卡尺上平面平行\n\n+产品后钮装饰片槽缺\n\n+口竖边同卡尺贴紧\n\n+0.00 ~ 300mm卡尺\n\n 参考资料/项目 代码 取样数量 频率 代码 取样数量 频率 注意事项及品质履历\n\n-尺 1.MO25XXXX0100：1#~4#/MO25XXXX0110：5#~12#\n\n+1.MO25XXXX0100：1#~4#/MO25XXXX0110：5#~12#\n\n+尺\n\n 寸\n\n 组\n\n-组装制程检验标准书\n\n-1# 一模 1次/班 2# 一模 1次/班\n\n+组装制程检验标\n\n+1次/ 1次/\n\n+准书 1# 一模 2# 一模\n\n+班 班\n\n 合\n\n-XXXX-00组装成品 功\n\n-3# 一模 1次/班 5# 一模 1次/班\n\n+XXXX-\n\n+功\n\n+1次/ 1次/\n\n+3# 一模 5# 一模\n\n+00组装成品 班 班\n\n 能\n\n-6# 一模 1次/班\n\n+1次/\n\n+6# 一模\n\n+班\n\n 日期 版本 工程担当 品质担当 修    订    内    容\n\n 2025/4/11 00 AAAA AAA 初版发行\n\n 修\n\n@@ -63,23 +82,20 @@\n 修\n\n A：68.16 ＋0.05/－0.13改为68.16 ＋0.05/－0.17；B：62.03 ＋0.05/－0.10改为62.03 ＋0.05/－0.20；D：18.87\n\n 订\n\n+＋0.00/－0.05改为18.87\n\n 2025/5/12 01 BBBB BBB\n\n-记 ＋0.00/－0.05改为18.87 ＋0.00/－0.10；I：8.35＋0.00/－0.16改为8.35＋0.10/－0.05；J：53.93＋0.00/－0.10改为53.\n\n-录\n\n-93＋0.05/－0.10；L*2：4.65±0.05改成4.65＋0.00/－0.10；更新检验频率\n\n+记\n\n+＋0.00/－0.10；I：8.35＋0.00/－0.16改为8.35＋0.10/－0.05；J：53.93＋0.00/－0.10改为53.93＋0.05/－0.10；\n\n+录 L*2：4.65±0.05改成4.65＋0.00/－0.10；更新检验频率\n\n 2025/8/6 02 CCCC CCCC 新增模具编号：MO25XXXX0110\n\n 2025/11/25 03 DDDD DDDD J：53.93＋0.05/－0.10改为53.93＋0.04/－0.03\n\n+研 制\n\n 制 品\n\n-研 制\n\n+审 发 审 造 审 审 制\n\n 造 保\n\n-发 造\n\n-部 部 制\n\n-工 工\n\n-作\n\n+核 工 核 工 核 核 作\n\n+部 部\n\n 程 程\n\n-审 审\n\n-核 核\n\n-审 审\n\n ---PAGE---\n\n 文件编号 QA-SIPI-XXXX-01-1-1 表单编号 QA-FM-051-01\n\n XXXXXX有限公司\n\n@@ -90,8 +106,8 @@\n 产品品质履历（SIP附件）\n\n 版本 日期 问题描述 图片\n\n 00 7/30/2025 口部有麻点印NG，图1\n\n+图 1\n\n ---PAGE---\n\n-制\n\n-审 刘伟鹏\n\n-作\n\n-核\n+审 制\n\n+刘伟鹏\n\n+核 作",
+    "visual_scores": [
+      0.8944,
+      0.9845,
+      0.9351,
+      0.9954
+    ],
+    "visual_avg": 0.9524,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "Issue202609031340_p1_minipdf.png",
+        "reference_img": "Issue202609031340_p1_reference.png",
+        "auxiliary_img": "Issue202609031340_p1_libreoffice.png",
+        "heatmap_img": "Issue202609031340_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            43,
+            29,
+            1195,
+            1754
+          ],
+          "changed_pixels": 444245,
+          "changed_fraction": 0.20409,
+          "mean_abs_rgb": 27.6568,
+          "rmse_rgb": 71.4265,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Issue202609031340_p1_dotnet_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      },
+      {
+        "page": 2,
+        "minipdf_img": "Issue202609031340_p2_minipdf.png",
+        "reference_img": "Issue202609031340_p2_reference.png",
+        "auxiliary_img": "Issue202609031340_p2_libreoffice.png",
+        "heatmap_img": "Issue202609031340_p2_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            43,
+            725,
+            1217,
+            1014
+          ],
+          "changed_pixels": 63529,
+          "changed_fraction": 0.029186,
+          "mean_abs_rgb": 4.3159,
+          "rmse_rgb": 28.1847,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Issue202609031340_p2_dotnet_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      },
+      {
+        "page": 3,
+        "minipdf_img": "Issue202609031340_p3_minipdf.png",
+        "reference_img": "Issue202609031340_p3_reference.png",
+        "auxiliary_img": "Issue202609031340_p3_libreoffice.png",
+        "heatmap_img": "Issue202609031340_p3_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            42,
+            40,
+            1196,
+            1754
+          ],
+          "changed_pixels": 176239,
+          "changed_fraction": 0.080966,
+          "mean_abs_rgb": 10.4512,
+          "rmse_rgb": 43.9019,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Issue202609031340_p3_dotnet_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      },
+      {
+        "page": 4,
+        "minipdf_img": "Issue202609031340_p4_minipdf.png",
+        "reference_img": "Issue202609031340_p4_reference.png",
+        "auxiliary_img": "Issue202609031340_p4_libreoffice.png",
+        "heatmap_img": "Issue202609031340_p4_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            42,
+            743,
+            1196,
+            1009
+          ],
+          "changed_pixels": 18149,
+          "changed_fraction": 0.008338,
+          "mean_abs_rgb": 1.166,
+          "rmse_rgb": 14.6026,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "Issue202609031340_p4_dotnet_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9341
+  }
+]
