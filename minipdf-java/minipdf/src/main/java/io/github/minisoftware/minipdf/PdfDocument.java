@@ -116,7 +116,7 @@ public final class PdfDocument {
         ByteArrayOutputStream object = new ByteArrayOutputStream();
         write(object, "<< /Length " + stream.length + " >>\nstream\n");
         object.writeBytes(stream);
-        write(object, "endstream");
+        write(object, "\nendstream");
         return object.toByteArray();
     }
 

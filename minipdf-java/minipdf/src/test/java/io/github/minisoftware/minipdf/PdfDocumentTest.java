@@ -37,7 +37,7 @@ class PdfDocumentTest {
         int streams = 0;
         while (matcher.find()) {
             int streamStart = matcher.end();
-            int streamEnd = text.indexOf("endstream", streamStart);
+            int streamEnd = text.indexOf("\nendstream", streamStart);
             assertEquals(Integer.parseInt(matcher.group(1)), streamEnd - streamStart);
             streams++;
         }
