@@ -34,12 +34,12 @@ implementation that matches your project.
 
 | Implementation | Inputs | Interfaces | Maturity | Documentation | Visual results |
 |---|---|---|---|---|---|
-| .NET | XLSX, DOCX, PPTX | Library, CLI, Native AOT binaries | Stable | **[.NET guide](documents/README.nuget.md)** | **[Visual report](artifacts/dotnet-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Rust | XLSX, DOCX, PPTX | Crate, CLI | Experimental | **[Rust guide](minipdf-rs/README.md)** | **[Visual report](artifacts/rust-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Java | XLSX, DOCX | Library, CLI | Experimental | **[Java source](minipdf-java/)** | **[Visual report](artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Python | DOCX | Package, CLI | Experimental | **[Python guide](minipdf-python/README.md)** | **[Visual report](artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Node.js | XLSX, DOCX, PPTX | Native package | Experimental | **[Node.js guide](minipdf-node/README.md)** | **[Visual report](artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Go | XLSX, DOCX, PPTX | Package, CLI | Experimental | **[Go guide](minipdf-go/README.md)** | **[Visual report](artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
+| .NET | XLSX, DOCX, PPTX | Library, CLI, Native AOT binaries | Stable | **[.NET guide](documents/README.nuget.md)** | **[XLSX](tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](tests/Issue_Files/reports_pptx/comparison_report.md)** |
+| Rust | XLSX, DOCX, PPTX | Crate, CLI | Experimental | **[Rust guide](minipdf-rs/README.md)** | **[XLSX](artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
+| Java | XLSX, DOCX | Library, CLI | Experimental | **[Java source](minipdf-java/)** | **[XLSX](artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Python | DOCX | Package, CLI | Experimental | **[Python guide](minipdf-python/README.md)** | **[XLSX](artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Node.js | XLSX, DOCX, PPTX | Native package | Experimental | **[Node.js guide](minipdf-node/README.md)** | **[XLSX](artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Go | XLSX, DOCX, PPTX | Package, CLI | Experimental | **[Go guide](minipdf-go/README.md)** | **[XLSX](artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
 
 ## Quick start
 
