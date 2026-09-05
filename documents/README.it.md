@@ -32,12 +32,12 @@ MiniPdf converte direttamente i documenti Office in PDF senza richiedere Microso
 
 | Implementazione | Input | Interfacce | Maturità | Documentazione | Risultati visivi |
 |---|---|---|---|---|---|
-| .NET | XLSX, DOCX, PPTX | Libreria, CLI, binari Native AOT | Stabile | **[Guida .NET](README.nuget.md)** | **[Rapporto visivo](../artifacts/dotnet-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Rust | XLSX, DOCX, PPTX | Crate, CLI | Sperimentale | **[Guida Rust](../minipdf-rs/README.md)** | **[Rapporto visivo](../artifacts/rust-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Java | XLSX, DOCX | Libreria, CLI | Sperimentale | **[Sorgenti Java](../minipdf-java/)** | **[Rapporto visivo](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Python | DOCX | Pacchetto, CLI | Sperimentale | **[Guida Python](../minipdf-python/README.md)** | **[Rapporto visivo](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Node.js | XLSX, DOCX, PPTX | Pacchetto nativo | Sperimentale | **[Guida Node.js](../minipdf-node/README.md)** | **[Rapporto visivo](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Go | XLSX, DOCX, PPTX | Pacchetto, CLI | Sperimentale | **[Guida Go](../minipdf-go/README.md)** | **[Rapporto visivo](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
+| .NET | XLSX, DOCX, PPTX | Libreria, CLI, binari Native AOT | Stabile | **[Guida .NET](README.nuget.md)** | **[XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](../tests/Issue_Files/reports_pptx/comparison_report.md)** |
+| Rust | XLSX, DOCX, PPTX | Crate, CLI | Sperimentale | **[Guida Rust](../minipdf-rs/README.md)** | **[XLSX](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
+| Java | XLSX, DOCX | Libreria, CLI | Sperimentale | **[Sorgenti Java](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Python | DOCX | Pacchetto, CLI | Sperimentale | **[Guida Python](../minipdf-python/README.md)** | **[XLSX](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Node.js | XLSX, DOCX, PPTX | Pacchetto nativo | Sperimentale | **[Guida Node.js](../minipdf-node/README.md)** | **[XLSX](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Go | XLSX, DOCX, PPTX | Pacchetto, CLI | Sperimentale | **[Guida Go](../minipdf-go/README.md)** | **[XLSX](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
 
 ## Avvio rapido
 
