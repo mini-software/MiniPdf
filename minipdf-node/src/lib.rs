@@ -27,6 +27,7 @@ pub fn convert_to_pdf(
     output_path: String,
     options: Option<ConversionOptions>,
 ) -> Result<()> {
+    minipdf::register_system_fonts().map_err(to_napi_error)?;
     let options = to_core_options(options)?;
     minipdf::convert_to_pdf_with_options(input_path, output_path, &options).map_err(to_napi_error)
 }
@@ -36,6 +37,7 @@ pub fn convert_to_pdf_bytes(
     input_path: String,
     options: Option<ConversionOptions>,
 ) -> Result<Buffer> {
+    minipdf::register_system_fonts().map_err(to_napi_error)?;
     let options = to_core_options(options)?;
     minipdf::convert_to_pdf_bytes_with_options(input_path, &options)
         .map(Buffer::from)
@@ -44,6 +46,7 @@ pub fn convert_to_pdf_bytes(
 
 #[napi(js_name = "convertBytesToPdf")]
 pub fn convert_bytes_to_pdf(input: Buffer, options: Option<ConversionOptions>) -> Result<Buffer> {
+    minipdf::register_system_fonts().map_err(to_napi_error)?;
     let options = to_core_options(options)?;
     minipdf::convert_bytes_to_pdf_with_options(input.as_ref(), &options)
         .map(Buffer::from)
