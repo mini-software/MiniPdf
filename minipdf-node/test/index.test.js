@@ -52,6 +52,12 @@ test('converts path and Buffer inputs to PDF', () => {
 
   assert.equal(fromBuffer.subarray(0, 8).toString(), '%PDF-1.4')
   assert.equal(fromPath.subarray(0, 8).toString(), '%PDF-1.4')
+  if (process.platform === 'win32') {
+    assert.equal(
+      minipdf.registeredFonts().filter((font) => font.name === 'arial').length,
+      1
+    )
+  }
 })
 
 test('writes converted PDF to an output path', (context) => {

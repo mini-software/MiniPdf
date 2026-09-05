@@ -1,4 +1,5 @@
 mod docx;
+mod fonts;
 mod office;
 mod pdf;
 mod pptx;
@@ -9,6 +10,7 @@ use std::io::{Cursor, Read, Seek};
 use std::path::Path;
 use std::sync::{Mutex, OnceLock};
 
+pub use fonts::register_system_fonts;
 pub use office::OfficeFormat;
 pub use pdf::{PdfColor, PdfDocument};
 use zip::ZipArchive;
