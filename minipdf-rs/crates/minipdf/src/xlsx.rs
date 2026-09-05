@@ -30,6 +30,10 @@ const O365_PRINTER_FALLBACK_HORIZONTAL_SCALE: f32 = 1.0046;
 const O365_PRINTER_FALLBACK_LEFT_OFFSET: f32 = 0.48;
 const O365_PRINTER_FALLBACK_BORDER_SCALE: f32 = 1.8;
 const CENTERED_VML_HORIZONTAL_SCALE: f32 = 0.9754;
+const CENTERED_VML_VERTICAL_SCALE: f32 = 1.005;
+const CENTERED_VML_IMAGE_HORIZONTAL_SCALE: f32 = 1.04;
+const CENTERED_VML_IMAGE_VERTICAL_SCALE: f32 = 1.017;
+const CENTERED_VML_IMAGE_VERTICAL_OFFSET: f32 = 4.8;
 const SVG_FALLBACK_HORIZONTAL_SCALE: f32 = 0.972;
 const GROUP_DRAWING_TOP_OFFSET: f32 = 0.96;
 const ROW_HEIGHT: f32 = 15.0;
@@ -313,6 +317,7 @@ struct SheetImage {
     data: SheetImageData,
     pixel_width: u16,
     pixel_height: u16,
+    legacy_vml: bool,
     col: usize,
     row: usize,
     col_offset: f32,
@@ -975,6 +980,7 @@ fn read_sheet_images<R: std::io::Read + std::io::Seek>(
             data: SheetImageData::Jpeg(data),
             pixel_width,
             pixel_height,
+            legacy_vml: false,
             col: child_number(from, "col").unwrap_or(0),
             row: child_number(from, "row").unwrap_or(0),
             col_offset: child_number(from, "colOff").unwrap_or(0) as f32 / 12_700.0,
@@ -1131,6 +1137,7 @@ fn read_legacy_drawing_images<R: std::io::Read + std::io::Seek>(
             data,
             pixel_width,
             pixel_height,
+            legacy_vml: true,
             col,
             row,
             col_offset,
@@ -1382,6 +1389,7 @@ fn read_two_cell_shape(
         data: SheetImageData::Rgba(canvas.into_raw()),
         pixel_width,
         pixel_height,
+        legacy_vml: false,
         col: child_number(from, "col").unwrap_or(0),
         row: child_number(from, "row").unwrap_or(0),
         col_offset: child_number(from, "colOff").unwrap_or(0) as f32 / 12_700.0,
@@ -1510,6 +1518,7 @@ fn read_two_cell_picture<R: std::io::Read + std::io::Seek>(
         data: SheetImageData::Rgba(rgba.into_raw()),
         pixel_width,
         pixel_height,
+        legacy_vml: false,
         col: child_number(from, "col").unwrap_or(0),
         row: child_number(from, "row").unwrap_or(0),
         col_offset: child_number(from, "colOff").unwrap_or(0) as f32 / 12_700.0,
@@ -1692,6 +1701,7 @@ fn read_group_image<R: std::io::Read + std::io::Seek>(
         data: SheetImageData::Rgba(canvas.into_raw()),
         pixel_width,
         pixel_height,
+        legacy_vml: false,
         col: child_number(from, "col").unwrap_or(0),
         row: child_number(from, "row").unwrap_or(0),
         col_offset: child_number(from, "colOff").unwrap_or(0) as f32 / 12_700.0,
@@ -2798,16 +2808,23 @@ fn excel_pdf_font_size(font_name: Option<&str>, size: f32) -> f32 {
 }
 
 fn xlsx_preferred_font(font_name: Option<&str>) -> Option<&'static str> {
-    match font_name.unwrap_or_default().to_ascii_lowercase().as_str() {
+    let normalized_name = font_name
+        .unwrap_or_default()
+        .chars()
+        .filter(|character| !character.is_whitespace())
+        .flat_map(char::to_lowercase)
+        .collect::<String>();
+    match normalized_name.as_str() {
         "arial" => Some("arial"),
         "corbel" => Some("corbel"),
-        "franklin gothic medium" => Some("framd"),
+        "franklingothicmedium" => Some("framd"),
         "garamond" => Some("gara"),
         "grandview" => Some("grandview"),
-        "grandview display" => Some("grandviewdisplay"),
-        "kaiti" | "stkaiti" | "华文楷体" | "楷体" => Some("simkai"),
-        "palatino linotype" => Some("bookos"),
-        "tw cen mt" => Some("tcm_____"),
+        "grandviewdisplay" => Some("grandviewdisplay"),
+        "stkaiti" | "华文楷体" => Some("stkaiti"),
+        "kaiti" | "楷体" => Some("simkai"),
+        "palatinolinotype" => Some("bookos"),
+        "twcenmt" => Some("tcm_____"),
         "verdana" => Some("verdana"),
         _ => None,
     }
@@ -3946,7 +3963,14 @@ fn render_sheet(
         } else {
             1.0
         },
-    ) * if sheet.page_setup.o365_printer_fallback {
+    ) * if sheet.page_setup.horizontal_centered
+        && sheet.page_setup.vertical_centered
+        && sheet.page_setup.legacy_vml_drawing
+    {
+        CENTERED_VML_VERTICAL_SCALE
+    } else {
+        1.0
+    } * if sheet.page_setup.o365_printer_fallback {
         O365_PRINTER_FALLBACK_VERTICAL_SCALE
     } else {
         1.0
@@ -4222,9 +4246,26 @@ fn render_sheet_columns(
     for (image, image_id) in sheet.images.iter().zip(image_ids).filter(|(image, _)| {
         image.foreground && image.col >= column_start && image.col < column_end
     }) {
+        let centered_legacy_vml = image.legacy_vml
+            && sheet.page_setup.horizontal_centered
+            && sheet.page_setup.vertical_centered;
+        let image_anchor_horizontal_scale = if centered_legacy_vml {
+            horizontal_geometry_scale / CENTERED_VML_HORIZONTAL_SCALE
+        } else {
+            horizontal_geometry_scale
+        };
+        let image_horizontal_scale = if centered_legacy_vml {
+            CENTERED_VML_IMAGE_HORIZONTAL_SCALE
+        } else {
+            1.0
+        };
+        let image_width = image.width * image_anchor_horizontal_scale * image_horizontal_scale;
         let x = content_left
             + column_widths[column_start..image.col].iter().sum::<f32>()
-            + image.col_offset * horizontal_geometry_scale;
+                * image_anchor_horizontal_scale
+                / horizontal_geometry_scale
+            + image.col_offset * image_anchor_horizontal_scale
+            - image.width * image_anchor_horizontal_scale * (image_horizontal_scale - 1.0) / 2.0;
         let rows_above = (0..image.row)
             .map(|row_index| {
                 sheet
@@ -4238,12 +4279,24 @@ fn render_sheet_columns(
         let top =
             page_size.height - margin_top - rows_above * row_scale - image.row_offset * row_scale
                 + GROUP_DRAWING_TOP_OFFSET;
+        let image_vertical_scale = if centered_legacy_vml {
+            CENTERED_VML_IMAGE_VERTICAL_SCALE
+        } else {
+            1.0
+        };
+        let image_height = image.height * row_scale * image_vertical_scale;
+        let image_vertical_offset = if centered_legacy_vml {
+            CENTERED_VML_IMAGE_VERTICAL_OFFSET
+                + image.height * row_scale * (image_vertical_scale - 1.0) / 2.0
+        } else {
+            0.0
+        };
         page.add_image(
             *image_id,
             x,
-            top - image.height * row_scale,
-            image.width * horizontal_geometry_scale,
-            image.height * row_scale,
+            top - image.height * row_scale - image_vertical_offset,
+            image_width,
+            image_height,
         );
     }
 
@@ -4616,6 +4669,8 @@ fn render_xlsx_row(
         let mut text_style = cell.style;
         let wrap_padding = if is_kaiti_slash_date(&cell.text, text_style) {
             0.0
+        } else if text_style.preferred_font == Some("stkaiti") {
+            3.0
         } else {
             6.0
         };
@@ -5859,9 +5914,21 @@ mod tests {
 
     #[test]
     fn maps_kaiti_family_names_to_installed_font() {
-        for name in ["华文楷体", "STKaiti", "KaiTi", "楷体"] {
-            assert_eq!(super::xlsx_preferred_font(Some(name)), Some("simkai"));
-        }
+        assert_eq!(
+            super::xlsx_preferred_font(Some("华文楷体")),
+            Some("stkaiti")
+        );
+        assert_eq!(
+            super::xlsx_preferred_font(Some("华文 楷体")),
+            Some("stkaiti")
+        );
+        assert_eq!(
+            super::xlsx_preferred_font(Some("华 文楷体")),
+            Some("stkaiti")
+        );
+        assert_eq!(super::xlsx_preferred_font(Some("STKaiti")), Some("stkaiti"));
+        assert_eq!(super::xlsx_preferred_font(Some("KaiTi")), Some("simkai"));
+        assert_eq!(super::xlsx_preferred_font(Some("楷体")), Some("simkai"));
     }
 
     #[test]
@@ -6036,6 +6103,7 @@ mod tests {
             data: SheetImageData::Jpeg(Vec::new()),
             pixel_width: 1,
             pixel_height: 1,
+            legacy_vml: false,
             col: 0,
             row: 3,
             col_offset: 0.0,

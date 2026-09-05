@@ -688,6 +688,7 @@ fn split_font_runs(
         let font_index = if ch.is_whitespace() || ch.is_ascii_punctuation() || ch == '\u{fe0f}' {
             runs.last()
                 .and_then(|run| run.font_index)
+                .filter(|index| font_supports(&fonts[*index], ch))
                 .or_else(|| select_font(fonts, ch, bold, italic, preferred_font))
         } else {
             select_font(fonts, ch, bold, italic, preferred_font)
@@ -762,6 +763,9 @@ fn font_preference(
         }
         if name.starts_with(&preferred) {
             return 1;
+        }
+        if preferred == "stkaiti" && name.starts_with("simkai") {
+            return 2;
         }
     }
     let codepoint = ch as u32;

@@ -1,39 +1,47 @@
 <#
 .SYNOPSIS
-    Runs one MiniPdf implementation against the shared XLSX, DOCX, and PPTX corpus.
+    Runs one MiniPdf implementation against the repository's visual benchmark fixtures.
 
 .DESCRIPTION
-    Every language reads tests/MiniPdf.Benchmark/shared-office-corpus.json and writes
-    isolated candidates and reports below artifacts/benchmark/<language>. LibreOffice
-    reference PDFs are shared by content hash across all language runs.
+    Uses Microsoft 365 as the primary scored reference and LibreOffice as the
+    required auxiliary reference. Outputs are isolated below
+    artifacts/<language>-benchmark/<suite>/<format>.
 
 .EXAMPLE
-    .\scripts\Run-Java-VisualBenchmark.ps1 -Format all -MaxCasesPerFormat 1
-    .\scripts\Run-Python-VisualBenchmark.ps1 -Format pptx -Filter "Asian Pacific"
+    .\scripts\Run-Java-VisualBenchmark.ps1 -Suite classic -Format xlsx -MaxCases 1
+    .\scripts\Run-Python-VisualBenchmark.ps1 -Suite issue -Format pptx -Filter "Asian Pacific"
 #>
 
 param(
     [Parameter(Mandatory = $true)]
     [ValidateSet("dotnet", "rust", "java", "go", "python", "node")]
     [string]$Language,
-    [ValidateSet("all", "xlsx", "docx", "pptx")]
-    [string]$Format = "all",
+    [ValidateSet("classic", "issue")]
+    [string]$Suite = "classic",
+    [ValidateSet("xlsx", "docx", "pptx")]
+    [string]$Format = "xlsx",
+    [ValidateSet("o365", "office", "libre")]
+    [string]$Engine = "o365",
     [string]$Filter,
-    [int]$MaxCasesPerFormat = 0,
+    [int]$MaxCases = 0,
     [int]$MaxComparePages = 0,
-    [double]$MinimumScore = 0.0,
-    [string]$CorpusManifest = "tests/MiniPdf.Benchmark/shared-office-corpus.json",
+    [double]$MinimumScore = 0.95,
+    [string]$SourceDir,
+    [string]$CandidateDir,
+    [string]$ReferenceDir,
+    [string]$AuxiliaryReferenceDir,
+    [string]$ReportDir,
     [string]$ArtifactRoot,
+    [switch]$SkipCandidate,
     [switch]$SkipBuild,
     [switch]$SkipReference,
-    [switch]$SkipCompare,
     [switch]$ForceReference
 )
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 
-if ($MaxCasesPerFormat -lt 0) { throw "MaxCasesPerFormat cannot be negative." }
+if ($MaxCases -lt 0) { throw "MaxCases cannot be negative." }
 if ($MaxComparePages -lt 0) { throw "MaxComparePages cannot be negative." }
 if ($MinimumScore -lt 0.0 -or $MinimumScore -gt 1.0) {
     throw "MinimumScore must be between 0.0 and 1.0."
@@ -132,93 +140,108 @@ function Test-Pdf([string]$Path) {
     return $Bytes.Length -ge 5 -and [System.Text.Encoding]::ASCII.GetString($Bytes, 0, 5) -eq "%PDF-"
 }
 
-function Get-LibreOfficePath {
-    $Command = Get-Command soffice -ErrorAction SilentlyContinue
-    if ($Command) {
-        $ConsoleLauncher = [System.IO.Path]::ChangeExtension($Command.Source, ".com")
-        if ($IsWindows -and (Test-Path -LiteralPath $ConsoleLauncher)) { return $ConsoleLauncher }
-        return $Command.Source
+$Defaults = @{
+    "classic:xlsx" = @{
+        Source = "tests/MiniPdf.Scripts/output"
+        LibreReference = "tests/MiniPdf.Benchmark/reference_pdfs"
+        OfficeReference = "tests/MiniPdf.Benchmark/office_pdfs"
+        LibreReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs.py"
+        OfficeReferenceScript = "tests/MiniPdf.Benchmark/generate_office_pdfs.py"
+        SourceArgument = "--xlsx-dir"
+        OfficeLabel = "Microsoft 365 Excel Reference"
     }
-    $Candidates = @(
-        (Join-Path $env:ProgramFiles "LibreOffice/program/soffice.com"),
-        (Join-Path ${env:ProgramFiles(x86)} "LibreOffice/program/soffice.com"),
-        (Join-Path $env:ProgramFiles "LibreOffice/program/soffice.exe"),
-        (Join-Path ${env:ProgramFiles(x86)} "LibreOffice/program/soffice.exe")
-    )
-    foreach ($Candidate in $Candidates) {
-        if ($Candidate -and (Test-Path -LiteralPath $Candidate)) { return $Candidate }
+    "classic:docx" = @{
+        Source = "tests/MiniPdf.Scripts/output_docx"
+        LibreReference = "tests/MiniPdf.Benchmark/reference_pdfs_docx"
+        OfficeReference = "tests/MiniPdf.Benchmark/office_pdfs_docx"
+        LibreReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs_docx.py"
+        OfficeReferenceScript = "tests/MiniPdf.Benchmark/generate_office_pdfs_docx.py"
+        SourceArgument = "--docx-dir"
+        OfficeLabel = "Microsoft 365 Word Reference"
     }
-    throw "LibreOffice soffice was not found. Install LibreOffice or use -SkipReference."
+    "issue:xlsx" = @{
+        Source = "tests/Issue_Files/xlsx"
+        LibreReference = "tests/Issue_Files/reference_xlsx"
+        OfficeReference = "tests/Issue_Files/office_xlsx"
+        LibreReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs.py"
+        OfficeReferenceScript = "tests/MiniPdf.Benchmark/generate_office_pdfs.py"
+        SourceArgument = "--xlsx-dir"
+        OfficeLabel = "Microsoft 365 Excel Reference"
+    }
+    "issue:docx" = @{
+        Source = "tests/Issue_Files/docx"
+        LibreReference = "tests/Issue_Files/reference_docx"
+        OfficeReference = "tests/Issue_Files/office_docx"
+        LibreReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs_docx.py"
+        OfficeReferenceScript = "tests/MiniPdf.Benchmark/generate_office_pdfs_docx.py"
+        SourceArgument = "--docx-dir"
+        OfficeLabel = "Microsoft 365 Word Reference"
+    }
+    "issue:pptx" = @{
+        Source = "tests/Issue_Files/pptx"
+        LibreReference = "tests/Issue_Files/reference_pptx"
+        OfficeReference = "tests/Issue_Files/office_pptx"
+        LibreReferenceScript = "tests/MiniPdf.Benchmark/generate_reference_pdfs_pptx.py"
+        OfficeReferenceScript = "tests/MiniPdf.Benchmark/generate_office_pdfs_pptx.py"
+        SourceArgument = "--pptx-dir"
+        OfficeLabel = "Microsoft 365 PowerPoint Reference"
+    }
 }
 
-$CorpusManifest = Resolve-RepoPath $CorpusManifest
-if (-not (Test-Path -LiteralPath $CorpusManifest)) {
-    throw "Shared corpus manifest not found: $CorpusManifest"
+$Config = $Defaults["$Suite`:$Format"]
+if (-not $Config) {
+    throw "No $Language benchmark fixtures are configured for suite=$Suite format=$Format."
 }
-$Corpus = Get-Content -LiteralPath $CorpusManifest -Raw | ConvertFrom-Json
-$SelectedCases = [System.Collections.Generic.List[object]]::new()
+if ($Engine -eq "libre") {
+    Write-Warning "-Engine libre is retained for compatibility. Microsoft 365 remains the primary scored reference; LibreOffice is auxiliary."
+}
+
+$SourceDir = Resolve-RepoPath $(if ($SourceDir) { $SourceDir } else { $Config.Source })
+$ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $Config.OfficeReference })
+$AuxiliaryReferenceDir = Resolve-RepoPath $(if ($AuxiliaryReferenceDir) { $AuxiliaryReferenceDir } else { $Config.LibreReference })
+$ArtifactRoot = Resolve-RepoPath $(if ($ArtifactRoot) { $ArtifactRoot } else { "artifacts/$Language-benchmark/$Suite/$Format" })
+$CandidateDir = Resolve-RepoPath $(if ($CandidateDir) { $CandidateDir } else { Join-Path $ArtifactRoot "candidates" })
+$ReportDir = Resolve-RepoPath $(if ($ReportDir) { $ReportDir } else { Join-Path $ArtifactRoot "report" })
+$ComparisonManifest = Join-Path $ReportDir "comparison_manifest.json"
+$CoverageManifest = Join-Path $ReportDir "benchmark_coverage.json"
+
+$SourceFiles = @(Get-ChildItem -LiteralPath $SourceDir -File -Filter "*.$Format" | Where-Object {
+    -not $Filter -or $_.BaseName -like "*$Filter*"
+} | Sort-Object Name)
+if ($MaxCases -gt 0) {
+    $SourceFiles = @($SourceFiles | Select-Object -First $MaxCases)
+}
+if ($SourceFiles.Count -eq 0) {
+    throw "No .$Format files matched '$Filter' in $SourceDir"
+}
+
+if (Test-Path -LiteralPath $ReportDir) {
+    Remove-Item -LiteralPath $ReportDir -Recurse -Force
+}
+New-Item -ItemType Directory -Force -Path $CandidateDir, $ReferenceDir, $AuxiliaryReferenceDir, $ReportDir | Out-Null
+
+$SelectedCases = @($SourceFiles | ForEach-Object {
+    [pscustomobject]@{
+        name = $_.BaseName
+        case_id = $_.BaseName
+        suite = $Suite
+        format = $Format
+        source_path = [System.IO.Path]::GetRelativePath($RepoRoot, $_.FullName).Replace("\", "/")
+        conversion_status = "pending"
+        conversion_exit_code = $null
+        candidate_exists = $false
+        reference_exists = $false
+        auxiliary_reference_exists = $false
+    }
+})
 $CaseSources = @{}
-
-foreach ($Source in $Corpus.sources) {
-    if ($Format -ne "all" -and $Source.format -ne $Format) { continue }
-    $SourceRoot = Resolve-RepoPath $Source.root
-    if (-not (Test-Path -LiteralPath $SourceRoot -PathType Container)) {
-        throw "Corpus source directory not found: $SourceRoot"
-    }
-    $Files = @(Get-ChildItem -LiteralPath $SourceRoot -File -Filter $Source.pattern | Where-Object {
-        -not $Filter -or $_.Name -like "*$Filter*"
-    } | Sort-Object Name)
-    if ($MaxCasesPerFormat -gt 0) {
-        $Files = @($Files | Select-Object -First $MaxCasesPerFormat)
-    }
-    foreach ($File in $Files) {
-        $Hash = (Get-FileHash -LiteralPath $File.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-        $SafeStem = ($File.BaseName -replace '[^A-Za-z0-9._-]', '_').Trim('_')
-        if (-not $SafeStem) { $SafeStem = "fixture" }
-        $CaseId = "$($Source.format)--$SafeStem--$($Hash.Substring(0, 24))"
-        if ($CaseSources.ContainsKey($CaseId)) { throw "Duplicate benchmark case id: $CaseId" }
-        $RelativePath = [System.IO.Path]::GetRelativePath($RepoRoot, $File.FullName).Replace("\", "/")
-        $Case = [pscustomobject]@{
-            name = $CaseId
-            case_id = $CaseId
-            display_name = $File.BaseName
-            suite = "shared-office"
-            format = $Source.format
-            source_path = $RelativePath
-            source_sha256 = $Hash
-            conversion_status = "pending"
-            conversion_exit_code = $null
-            candidate_exists = $false
-            reference_exists = $false
-        }
-        $SelectedCases.Add($Case)
-        $CaseSources[$CaseId] = $File.FullName
-    }
+for ($Index = 0; $Index -lt $SelectedCases.Count; $Index++) {
+    $CaseSources[$SelectedCases[$Index].case_id] = $SourceFiles[$Index].FullName
 }
-
-if ($SelectedCases.Count -eq 0) {
-    throw "No shared corpus cases matched format=$Format filter='$Filter'."
-}
-
-$ArtifactRoot = Resolve-RepoPath $(if ($ArtifactRoot) { $ArtifactRoot } else { "artifacts/benchmark" })
-$SharedRoot = Join-Path $ArtifactRoot "shared"
-$LanguageRoot = Join-Path $ArtifactRoot $Language
-$CandidateDir = Join-Path $LanguageRoot "candidates"
-$ReportDir = Join-Path $LanguageRoot "report"
-$ReferenceDir = Join-Path $SharedRoot "libreoffice-reference"
-$ResolvedManifest = Join-Path $LanguageRoot "resolved-manifest.json"
-$CoverageManifest = Join-Path $LanguageRoot "benchmark-coverage.json"
-$ReferenceWorkDir = Join-Path $SharedRoot "reference-work"
-
-New-Item -ItemType Directory -Force -Path $CandidateDir, $ReportDir, $ReferenceDir, $ReferenceWorkDir | Out-Null
-Write-Json ([pscustomobject]@{
-    corpus = [System.IO.Path]::GetRelativePath($RepoRoot, $CorpusManifest).Replace("\", "/")
-    corpus_version = $Corpus.version
-    cases = $SelectedCases
-}) $ResolvedManifest
+Write-Json ([pscustomobject]@{ cases = $SelectedCases }) $ComparisonManifest
 
 $Tools = @{}
-if (-not $SkipBuild) {
+if (-not $SkipCandidate -and -not $SkipBuild) {
     switch ($Language) {
         "dotnet" {
             $Tools.dotnet = Find-Command "dotnet"
@@ -239,7 +262,7 @@ if (-not $SkipBuild) {
         }
         "go" {
             $Tools.go = Find-Go
-            $GoOutput = Join-Path $LanguageRoot $(if ($IsWindows) { "minipdf-go.exe" } else { "minipdf-go" })
+            $GoOutput = Join-Path $ArtifactRoot $(if ($IsWindows) { "minipdf-go.exe" } else { "minipdf-go" })
             Push-Location (Join-Path $RepoRoot "minipdf-go")
             try { & $Tools.go build -o $GoOutput ./cmd/minipdf } finally { Pop-Location }
             Assert-CommandSucceeded "Go CLI build"
@@ -260,148 +283,147 @@ if (-not $SkipBuild) {
     }
 }
 
-switch ($Language) {
-    "dotnet" {
-        if (-not $Tools.dotnet) { $Tools.dotnet = Find-Command "dotnet" }
-        $Tools.cli = Get-ChildItem (Join-Path $RepoRoot "src/MiniPdf.Cli/bin/Release") -Recurse -Filter "MiniPdf.Cli.dll" |
-            Where-Object FullName -Match 'net9\.0' | Select-Object -First 1 -ExpandProperty FullName
-    }
-    "rust" {
-        $RustName = if ($IsWindows) { "minipdf.exe" } else { "minipdf" }
-        $Tools.cli = Join-Path $RepoRoot "minipdf-rs/target/release/$RustName"
-    }
-    "java" {
-        if (-not $Tools.java) { $Tools.java = Find-JavaExecutable }
-        $Tools.cli = Get-ChildItem (Join-Path $RepoRoot "minipdf-java/minipdf-cli/target") -Filter "minipdf-cli-*.jar" |
-            Where-Object { $_.Name -notmatch '(sources|javadoc|original)' } |
-            Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
-    }
-    "go" {
-        $Tools.cli = Join-Path $LanguageRoot $(if ($IsWindows) { "minipdf-go.exe" } else { "minipdf-go" })
-    }
-    "python" {
-        if (-not $Tools.python) {
-            $Tools.python = Find-Python
-        }
-        $env:PYTHONPATH = Join-Path $RepoRoot "minipdf-python/src"
-    }
-    "node" { $Tools.node = Find-Command "node" }
-}
-
-if ($Language -notin @("python", "node") -and (-not $Tools.cli -or -not (Test-Path -LiteralPath $Tools.cli))) {
-    throw "$Language CLI artifact was not found. Run without -SkipBuild first."
-}
-
-foreach ($Case in $SelectedCases) {
-    $InputPath = $CaseSources[$Case.case_id]
-    $OutputPath = Join-Path $CandidateDir ($Case.name + ".pdf")
-    if (Test-Path -LiteralPath $OutputPath) { Remove-Item -LiteralPath $OutputPath -Force }
+if (-not $SkipCandidate) {
     switch ($Language) {
-        "dotnet" { & $Tools.dotnet $Tools.cli $InputPath -o $OutputPath }
-        "rust" { & $Tools.cli $InputPath -o $OutputPath }
-        "java" { & $Tools.java -jar $Tools.cli $InputPath -o $OutputPath }
-        "go" { & $Tools.cli $InputPath -o $OutputPath }
-        "python" { & $Tools.python -m minipdf $InputPath -o $OutputPath }
-        "node" {
-            & $Tools.node -e "require(process.argv[1]).convertToPdf(process.argv[2], process.argv[3])" `
-                (Join-Path $RepoRoot "minipdf-node") $InputPath $OutputPath
+        "dotnet" {
+            if (-not $Tools.dotnet) { $Tools.dotnet = Find-Command "dotnet" }
+            $Tools.cli = Get-ChildItem (Join-Path $RepoRoot "src/MiniPdf.Cli/bin/Release") -Recurse -Filter "MiniPdf.Cli.dll" |
+                Where-Object FullName -Match 'net9\.0' | Select-Object -First 1 -ExpandProperty FullName
         }
+        "rust" {
+            $RustName = if ($IsWindows) { "minipdf.exe" } else { "minipdf" }
+            $Tools.cli = Join-Path $RepoRoot "minipdf-rs/target/release/$RustName"
+        }
+        "java" {
+            if (-not $Tools.java) { $Tools.java = Find-JavaExecutable }
+            $Tools.cli = Get-ChildItem (Join-Path $RepoRoot "minipdf-java/minipdf-cli/target") -Filter "minipdf-cli-*.jar" |
+                Where-Object { $_.Name -notmatch '(sources|javadoc|original)' } |
+                Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
+        }
+        "go" {
+            $Tools.cli = Join-Path $ArtifactRoot $(if ($IsWindows) { "minipdf-go.exe" } else { "minipdf-go" })
+        }
+        "python" {
+            if (-not $Tools.python) { $Tools.python = Find-Python }
+            $env:PYTHONPATH = Join-Path $RepoRoot "minipdf-python/src"
+        }
+        "node" { $Tools.node = Find-Command "node" }
     }
-    $Case.conversion_exit_code = $LASTEXITCODE
-    $Case.candidate_exists = Test-Pdf $OutputPath
-    $Case.conversion_status = if ($LASTEXITCODE -eq 0 -and $Case.candidate_exists) { "passed" } else { "failed" }
+
+    if ($Language -notin @("python", "node") -and (-not $Tools.cli -or -not (Test-Path -LiteralPath $Tools.cli))) {
+        throw "$Language CLI artifact was not found. Run without -SkipBuild first."
+    }
+
+    foreach ($Case in $SelectedCases) {
+        $InputPath = $CaseSources[$Case.case_id]
+        $OutputPath = Join-Path $CandidateDir ($Case.name + ".pdf")
+        if (Test-Path -LiteralPath $OutputPath) { Remove-Item -LiteralPath $OutputPath -Force }
+        switch ($Language) {
+            "dotnet" { & $Tools.dotnet $Tools.cli $InputPath -o $OutputPath }
+            "rust" { & $Tools.cli $InputPath -o $OutputPath }
+            "java" { & $Tools.java -jar $Tools.cli $InputPath -o $OutputPath }
+            "go" { & $Tools.cli $InputPath -o $OutputPath }
+            "python" { & $Tools.python -m minipdf $InputPath -o $OutputPath }
+            "node" {
+                & $Tools.node -e "require(process.argv[1]).convertToPdf(process.argv[2], process.argv[3])" `
+                    (Join-Path $RepoRoot "minipdf-node") $InputPath $OutputPath
+            }
+        }
+        $Case.conversion_exit_code = $LASTEXITCODE
+        $Case.candidate_exists = Test-Pdf $OutputPath
+        $Case.conversion_status = if ($LASTEXITCODE -eq 0 -and $Case.candidate_exists) { "passed" } else { "failed" }
+    }
+} else {
+    foreach ($Case in $SelectedCases) {
+        $OutputPath = Join-Path $CandidateDir ($Case.name + ".pdf")
+        $Case.candidate_exists = Test-Pdf $OutputPath
+        $Case.conversion_status = if ($Case.candidate_exists) { "passed" } else { "failed" }
+    }
 }
 
 if (-not $SkipReference) {
-    $Soffice = Get-LibreOfficePath
-    foreach ($Case in $SelectedCases) {
-        $ReferencePath = Join-Path $ReferenceDir ($Case.name + ".pdf")
-        if ($ForceReference -or -not (Test-Pdf $ReferencePath)) {
-            Get-ChildItem -LiteralPath $ReferenceWorkDir -File -Filter "*.pdf" | Remove-Item -Force
-            $ProfileDir = Join-Path $ReferenceWorkDir ("profile-" + [System.Guid]::NewGuid().ToString("N"))
-            New-Item -ItemType Directory -Force -Path $ProfileDir | Out-Null
-            $ProfileUri = ([System.Uri]$ProfileDir).AbsoluteUri
-            try {
-                & $Soffice --headless --norestore "-env:UserInstallation=$ProfileUri" `
-                    --convert-to pdf --outdir $ReferenceWorkDir $CaseSources[$Case.case_id]
-                Assert-CommandSucceeded "LibreOffice conversion for $($Case.source_path)"
-            } finally {
-                Remove-Item -LiteralPath $ProfileDir -Recurse -Force -ErrorAction SilentlyContinue
-            }
-            $GeneratedPath = Join-Path $ReferenceWorkDir ([System.IO.Path]::GetFileNameWithoutExtension($CaseSources[$Case.case_id]) + ".pdf")
-            if (-not (Test-Pdf $GeneratedPath)) { throw "LibreOffice did not produce a valid PDF for $($Case.source_path)." }
-            Move-Item -LiteralPath $GeneratedPath -Destination $ReferencePath -Force
+    $Python = Find-Python
+    $OfficeReferenceScript = Resolve-RepoPath $Config.OfficeReferenceScript
+    $LibreReferenceScript = Resolve-RepoPath $Config.LibreReferenceScript
+    $ReferenceFilters = if ($MaxCases -gt 0) { @($SourceFiles.BaseName) } else { @($Filter) }
+    foreach ($ReferenceFilter in $ReferenceFilters) {
+        $Providers = @(
+            [pscustomobject]@{ Script = $OfficeReferenceScript; Directory = $ReferenceDir; Label = $Config.OfficeLabel },
+            [pscustomobject]@{ Script = $LibreReferenceScript; Directory = $AuxiliaryReferenceDir; Label = "LibreOffice" }
+        )
+        foreach ($Provider in $Providers) {
+            $ReferenceArgs = @($Provider.Script, $Config.SourceArgument, $SourceDir, "--pdf-dir", $Provider.Directory)
+            if ($ReferenceFilter) { $ReferenceArgs += @("--filter", $ReferenceFilter) }
+            if ($ForceReference) { $ReferenceArgs += "--force" }
+            & $Python -X utf8 @ReferenceArgs
+            Assert-CommandSucceeded "$($Provider.Label) generation"
         }
     }
 }
 
 foreach ($Case in $SelectedCases) {
     $Case.reference_exists = Test-Pdf (Join-Path $ReferenceDir ($Case.name + ".pdf"))
+    $Case.auxiliary_reference_exists = Test-Pdf (Join-Path $AuxiliaryReferenceDir ($Case.name + ".pdf"))
 }
 
 $PassedConversions = @($SelectedCases | Where-Object conversion_status -eq "passed").Count
 $MissingReferences = @($SelectedCases | Where-Object reference_exists -eq $false).Count
+$MissingAuxiliaryReferences = @($SelectedCases | Where-Object auxiliary_reference_exists -eq $false).Count
 $Coverage = [pscustomobject]@{
     language = $Language
-    corpus_manifest = [System.IO.Path]::GetRelativePath($RepoRoot, $CorpusManifest).Replace("\", "/")
-    resolved_manifest = [System.IO.Path]::GetRelativePath($RepoRoot, $ResolvedManifest).Replace("\", "/")
-    fixture_scope = "shared-git-tracked-office-corpus"
+    suite = $Suite
+    format = $Format
+    reference_engine = "o365"
+    reference_label = $Config.OfficeLabel
+    auxiliary_reference_engine = "libreoffice"
+    auxiliary_reference_label = "LibreOffice (auxiliary)"
+    fixture_scope = "shared-on-disk-fixtures"
+    executes_dotnet_xunit = $false
+    max_compare_pages = $MaxComparePages
     selected_cases = $SelectedCases.Count
     passed_conversions = $PassedConversions
     failed_conversions = $SelectedCases.Count - $PassedConversions
     missing_references = $MissingReferences
+    missing_auxiliary_references = $MissingAuxiliaryReferences
     comparison_completed = $false
     comparison_results = 0
     average_score = $null
     cases = $SelectedCases
 }
 Write-Json $Coverage $CoverageManifest
-Write-Json ([pscustomobject]@{
-    corpus = [System.IO.Path]::GetRelativePath($RepoRoot, $CorpusManifest).Replace("\", "/")
-    corpus_version = $Corpus.version
-    cases = $SelectedCases
-}) $ResolvedManifest
 
-if (-not $SkipCompare) {
-    if ($MissingReferences -gt 0) {
-        throw "$MissingReferences shared reference PDFs are missing. Run without -SkipReference."
-    }
-    $Python = if (Test-Path (Join-Path $RepoRoot ".venv/Scripts/python.exe")) {
-        Join-Path $RepoRoot ".venv/Scripts/python.exe"
-    } else { Find-Command "python" }
-    $CompareArgs = @(
-        (Join-Path $RepoRoot "tests/MiniPdf.Benchmark/compare_pdfs.py"),
-        "--minipdf-dir", $CandidateDir,
-        "--reference-dir", $ReferenceDir,
-        "--report-dir", $ReportDir,
-        "--manifest", $ResolvedManifest,
-        "--report-scope", "$Language-shared-office",
-        "--candidate-label", "$Language MiniPdf",
-        "--reference-label", "LibreOffice",
-        "--composite-images",
-        "--heatmaps"
-    )
-    if ($MaxComparePages -gt 0) { $CompareArgs += @("--max-pages", $MaxComparePages) }
-    & $Python -X utf8 @CompareArgs
-    Assert-CommandSucceeded "$Language visual comparison"
-    $Results = @(Get-Content (Join-Path $ReportDir "comparison_report.json") -Raw | ConvertFrom-Json)
-    $Scores = @($Results | Where-Object { $null -ne $_.overall_score })
-    $Coverage.comparison_completed = $true
-    $Coverage.comparison_results = ($Results | Measure-Object).Count
-    $Coverage.average_score = if ($Scores.Count -gt 0) {
-        ($Scores | Measure-Object -Property overall_score -Average).Average
-    } else { $null }
-    Write-Json $Coverage $CoverageManifest
-    $BelowThreshold = @($Results | Where-Object { $null -eq $_.overall_score -or $_.overall_score -lt $MinimumScore })
-    if ($BelowThreshold.Count -gt 0) {
-        throw "$($BelowThreshold.Count) cases scored below MinimumScore=$MinimumScore."
-    }
-}
+$Python = Find-Python
+$CompareArgs = @(
+    (Join-Path $RepoRoot "tests/MiniPdf.Benchmark/compare_pdfs.py"),
+    "--minipdf-dir", $CandidateDir,
+    "--reference-dir", $ReferenceDir,
+    "--auxiliary-dir", $AuxiliaryReferenceDir,
+    "--report-dir", $ReportDir,
+    "--manifest", $ComparisonManifest,
+    "--report-scope", "$Language-$Suite-$Format",
+    "--candidate-label", "$Language MiniPdf",
+    "--reference-label", $Config.OfficeLabel,
+    "--auxiliary-label", "LibreOffice",
+    "--composite-images",
+    "--heatmaps"
+)
+if ($MaxComparePages -gt 0) { $CompareArgs += @("--max-pages", $MaxComparePages) }
+& $Python -X utf8 @CompareArgs
+Assert-CommandSucceeded "$Language visual comparison"
+$Results = @(Get-Content (Join-Path $ReportDir "comparison_report.json") -Raw | ConvertFrom-Json)
+$Scores = @($Results | Where-Object { $null -ne $_.overall_score })
+$Coverage.comparison_completed = $true
+$Coverage.comparison_results = ($Results | Measure-Object).Count
+$Coverage.average_score = if ($Scores.Count -gt 0) {
+    ($Scores | Measure-Object -Property overall_score -Average).Average
+} else { $null }
+Write-Json $Coverage $CoverageManifest
+$BelowThreshold = @($Results | Where-Object { $null -eq $_.overall_score -or $_.overall_score -lt $MinimumScore })
 
-Write-Host "$Language benchmark: selected=$($SelectedCases.Count), converted=$PassedConversions, missing references=$MissingReferences"
+Write-Host "$Language benchmark: suite=$Suite format=$Format selected=$($SelectedCases.Count), converted=$PassedConversions, missing O365 references=$MissingReferences, missing LibreOffice references=$MissingAuxiliaryReferences"
 Write-Host "Coverage: $CoverageManifest"
-if (-not $SkipCompare) { Write-Host "Report: $(Join-Path $ReportDir 'comparison_report.md')" }
+Write-Host "Report: $(Join-Path $ReportDir 'comparison_report.md')"
 
-if ($PassedConversions -ne $SelectedCases.Count) {
-    throw "$Language candidate conversion failed for $($SelectedCases.Count - $PassedConversions) cases."
+if ($PassedConversions -ne $SelectedCases.Count -or $MissingReferences -gt 0 -or $MissingAuxiliaryReferences -gt 0 -or $BelowThreshold.Count -gt 0) {
+    throw "$Language benchmark failed: conversion failures=$($SelectedCases.Count - $PassedConversions), missing O365 references=$MissingReferences, missing LibreOffice references=$MissingAuxiliaryReferences, below MinimumScore=$($BelowThreshold.Count)."
 }
