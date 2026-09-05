@@ -8,8 +8,10 @@ import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -89,10 +91,17 @@ class ClassicFixtureSmokeTest {
 
     @Test
     void convertsMultilingualXlsxWhenTheSelectedFontLacksGlyphs() throws Exception {
-        Path fixture = REPOSITORY_ROOT.resolve(
-                "tests/MiniPdf.Scripts/output/classic151_multilingual_greetings.xlsx");
+        byte[] workbookBytes;
+        try (XSSFWorkbook workbook = new XSSFWorkbook();
+             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            var sheet = workbook.createSheet("Multilingual");
+            sheet.createRow(0).createCell(0).setCellValue("Hello");
+            sheet.createRow(1).createCell(0).setCellValue("안녕하세요 مرحبا 😀");
+            workbook.write(output);
+            workbookBytes = output.toByteArray();
+        }
 
-        try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
+        try (PDDocument document = Loader.loadPDF(MiniPdf.convertBytesToPdf(workbookBytes))) {
             String text = new PDFTextStripper().getText(document);
             assertTrue(text.contains("Hello"), text);
             assertTrue(document.getNumberOfPages() > 0);
