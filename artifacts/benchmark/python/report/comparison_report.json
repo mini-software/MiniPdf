@@ -1,0 +1,186 @@
+[
+  {
+    "name": "docx--13_IEEE_Style_Paper--ca9e946269",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "python-shared-office",
+    "case_id": "docx--13_IEEE_Style_Paper--ca9e946269",
+    "format": "docx",
+    "source_path": "tests/Issue_Files/docx/13_IEEE_Style_Paper.docx",
+    "source_sha256": "ca9e94626946656fd33db0371960ba8c034d6944665e58d3db8ddc489246a603",
+    "display_name": "13_IEEE_Style_Paper",
+    "suite": "shared-office",
+    "minipdf_size": 4814,
+    "reference_size": 117598,
+    "pdf_valid": false,
+    "pdf_errors": [
+      "Stream at 318: declared length 3450, actual 3449",
+      "Stream at 3975: declared length 122, actual 121"
+    ],
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "compared_pages": 1,
+    "text_similarity": 0.9298,
+    "flat_text_similarity": 0.8668,
+    "word_text_similarity": 0.9298,
+    "text_diff": "--- minipdf/docx--13_IEEE_Style_Paper--ca9e946269.pdf\n+++ reference/docx--13_IEEE_Style_Paper--ca9e946269.pdf\n@@ -1,35 +1,31 @@\n-A Novel Approach to Document Conversion\n\n+A Novel Approach to Document\n\n+Conversion\n\n Using Layout-Aware Parsing\n\n First Author, Second Author, Third Author\n\n Department of Computer Science, University of Technology\n\n email@university.edu\n\n Abstract\n\n-This paper presents a novel approach to converting document formats while\n\n-preserving layout fidelity. We propose a multi-pass parsing algorithm that\n\n-analyzes document structure, extracts semantic content, and reconstructs the\n\n-layout in the target format. Our method achieves 95% layout accuracy on a\n\n-benchmark of 500 documents across various formats including DOCX, XLSX, and\n\n-PDF.\n\n+This paper presents a novel approach to converting document formats while preserving layout fidelity.\n\n+We propose a multi-pass parsing algorithm that analyzes document structure, extracts semantic content, and\n\n+reconstructs the layout in the target format. Our method achieves 95% layout accuracy on a benchmark of\n\n+500 documents across various formats including DOCX, XLSX, and PDF.\n\n 1. Introduction\n\n-Document format conversion is a fundamental problem in information technology.\n\n-Organizations frequently need to convert documents between formats for\n\n-archival, sharing, and processing purposes. The challenge lies in preserving\n\n-the visual layout, formatting, and semantic structure of the original document\n\n+Document format conversion is a fundamental problem in information technology. Organizations\n\n+frequently need to convert documents between formats for archival, sharing, and processing purposes. The\n\n+challenge lies in preserving the visual layout, formatting, and semantic structure of the original document\n\n [1].\n\n-Traditional approaches rely on simple text extraction followed by re-\n\n-rendering, which often loses important formatting information such as margins,\n\n-indentation, font styles, and table layouts [2].\n\n+Traditional approaches rely on simple text extraction followed by re-rendering, which often loses important\n\n+formatting information such as margins, indentation, font styles, and table layouts [2].\n\n 2. Related Work\n\n-Several approaches have been proposed for document conversion. Smith et al.\n\n-[4] introduced a rule-based system that handles specific format pairs.\n\n+Several approaches have been proposed for document conversion. Smith et al. [4] introduced a rule-based\n\n+system that handles specific format pairs.\n\n 3. Experimental Results\n\n Table 1 shows the comparison of our method against baselines.\n\n+Method Accuracy (%) Speed (docs/s) Memory (MB)\n\n+Rule-based 78.2 120 256\n\n+ML-based 85.5 45 1024\n\n+Ours 95.1 89 512\n\n References\n\n-[1] A. Brown, Document Processing: Principles and Practice, IEEE Trans., vol.\n\n-45, 2023.\n\n-[2] C. Davis et al., Layout-aware text extraction from PDF documents, Proc.\n\n-ICDAR, 2022.\n\n-[3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci.,\n\n-2021.\n\n-[4] I. Smith et al., Rule-based multi-format document converter, Proc. DocEng,\n\n-2020.\n+[1] A. Brown, Document Processing: Principles and Practice, IEEE Trans., vol. 45, 2023.\n\n+[2] C. Davis et al., Layout-aware text extraction from PDF documents, Proc. ICDAR, 2022.\n\n+[3] E. Fisher and G. Harris, Cross-format document conversion, J. Info. Sci., 2021.",
+    "visual_scores": [
+      0.911
+    ],
+    "visual_avg": 0.911,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "docx--13_IEEE_Style_Paper--ca9e946269_p1_minipdf.png",
+        "reference_img": "docx--13_IEEE_Style_Paper--ca9e946269_p1_reference.png",
+        "heatmap_img": "docx--13_IEEE_Style_Paper--ca9e946269_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1275,
+            1650
+          ],
+          "difference_bbox_px": [
+            175,
+            163,
+            1087,
+            1496
+          ],
+          "changed_pixels": 211667,
+          "changed_fraction": 0.100614,
+          "mean_abs_rgb": 16.2368,
+          "rmse_rgb": 57.4243,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "docx--13_IEEE_Style_Paper--ca9e946269_p1_python_minipdf_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.9363
+  },
+  {
+    "name": "pptx--Asian_Pacific--acd15a1f08",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "python-shared-office",
+    "case_id": "pptx--Asian_Pacific--acd15a1f08",
+    "format": "pptx",
+    "source_path": "tests/Issue_Files/pptx/Asian Pacific.pptx",
+    "source_sha256": "acd15a1f081f84aadb780ed2cf5d68ff746399e1cfe1119c34a81b8d95d71588",
+    "display_name": "Asian Pacific",
+    "suite": "shared-office",
+    "minipdf_size": 8857,
+    "reference_size": 355585,
+    "pdf_valid": false,
+    "pdf_errors": [
+      "Stream at 388: declared length 78, actual 77",
+      "Stream at 676: declared length 579, actual 578",
+      "Stream at 1465: declared length 171, actual 170",
+      "Stream at 1848: declared length 189, actual 188",
+      "Stream at 2251: declared length 1252, actual 1251",
+      "Stream at 3716: declared length 752, actual 751",
+      "Stream at 4681: declared length 256, actual 255",
+      "Stream at 5150: declared length 453, actual 452",
+      "Stream at 5816: declared length 588, actual 587",
+      "Stream at 6617: declared length 215, actual 214",
+      "Stream at 7045: declared length 151, actual 150",
+      "Stream at 7409: declared length 328, actual 327"
+    ],
+    "minipdf_pages": 12,
+    "reference_pages": 12,
+    "compared_pages": 1,
+    "text_similarity": 1.0,
+    "flat_text_similarity": 0.9643,
+    "word_text_similarity": 1.0,
+    "text_diff": "--- minipdf/pptx--Asian_Pacific--acd15a1f08.pdf\n+++ reference/pptx--Asian_Pacific--acd15a1f08.pdf\n@@ -1 +1,2 @@\n-Asian Pacific Heritage Month\n+Asian Pacific\n\n+Heritage Month",
+    "visual_scores": [
+      0.4071
+    ],
+    "visual_avg": 0.4071,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "pptx--Asian_Pacific--acd15a1f08_p1_minipdf.png",
+        "reference_img": "pptx--Asian_Pacific--acd15a1f08_p1_reference.png",
+        "heatmap_img": "pptx--Asian_Pacific--acd15a1f08_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            2000,
+            1125
+          ],
+          "difference_bbox_px": [
+            0,
+            0,
+            1999,
+            1125
+          ],
+          "changed_pixels": 372610,
+          "changed_fraction": 0.165604,
+          "mean_abs_rgb": 14.8546,
+          "rmse_rgb": 44.5211,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "pptx--Asian_Pacific--acd15a1f08_p1_python_minipdf_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.7628
+  },
+  {
+    "name": "xlsx--Academic_Achievement_Summary_Table--71937e39c9",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "python-shared-office",
+    "case_id": "xlsx--Academic_Achievement_Summary_Table--71937e39c9",
+    "format": "xlsx",
+    "source_path": "tests/Issue_Files/xlsx/Academic Achievement Summary Table.xlsx",
+    "source_sha256": "71937e39c9c16c5f33a58f10a3d3f10da4b88539d80ef8d3a20ebedb478b208b",
+    "display_name": "Academic Achievement Summary Table",
+    "suite": "shared-office",
+    "minipdf_size": 9012,
+    "reference_size": 168612,
+    "pdf_valid": false,
+    "pdf_errors": [
+      "Stream at 324: declared length 6097, actual 6096",
+      "Stream at 6635: declared length 1660, actual 1659"
+    ],
+    "minipdf_pages": 2,
+    "reference_pages": 2,
+    "compared_pages": 1,
+    "text_similarity": 0.0283,
+    "flat_text_similarity": 0.0283,
+    "word_text_similarity": 0.0235,
+    "text_diff": "--- minipdf/xlsx--Academic_Achievement_Summary_Table--71937e39c9.pdf\n+++ reference/xlsx--Academic_Achievement_Summary_Table--71937e39c9.pdf\n@@ -1,38 +1,20 @@\n-??3 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-??????? |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-????? |  |  |  |  |  |  | ??????? |  |  |  |  |  |  | ????? |  |  |  |  |  |  |  |  |  |  |  |\n\n-??????? |  |  |  |  |  |  |  |  |  | ????????? |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-??????????? |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-?? | ?? |  |  |  |  | ???? |  |  |  | ?? ???? |  | ?????? |  | ?? |  |  | ???? |  | ??????????????? |  |  |  |  |  |  | ??????\n\n-???1??\n\n-1 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-2 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-3 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-4 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-5 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-6 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-7 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-8 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-9 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-10 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-11 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-12 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-????????????????? |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-?? | ?? |  |  |  |  | ????? |  |  |  | ?? ???? |  | ????? | ????? | ??? |  |  | ???? |  | ??????????????? |  |  |  |  |  |  | ??\n\n-1 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-2 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-??????????? |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-?? | ?? |  |  |  |  |  |  |  |  | ?????? |  |  |  | ???? |  |  |  |  | ?????? |  |  |  |  |  |  | ??\n\n-1 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-2 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-3 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-4 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-??????????? |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-?? | ???? |  |  |  |  | ???? |  |  |  | ???? |  |  | ?? ?? | ?????? |  |  | ???? |  | ???????? |  |  |  |  |  |  | ??\n\n-1 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-2 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-3 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-4 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-?????????????????????????????????? ???????\n\n-|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n\n-?????1.????????????????????????????????????????????A4?????? 2.?????????????“??????”?????“??????????\n+附件3\n\n+学 术业绩汇总 表\n\n+报考岗位： 报考岗位代码： 考生姓名：\n\n+博士论文题目： 博士论文研究方向：\n\n+公开 发 表的主要 论 文情况\n\n+角色 转载刊物、转载字数及 是否为代表作\n\n+序号 题目 刊物名称 核心期刊情况 刊号 发表时间\n\n+（排名） 转载时间等 （指定1篇）\n\n+1\n\n+2\n\n+3\n\n+4\n\n+5\n\n+6\n\n+7\n\n+8\n\n+9\n\n+10\n\n+11\n\n+12",
+    "visual_scores": [
+      0.9218
+    ],
+    "visual_avg": 0.9218,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "xlsx--Academic_Achievement_Summary_Table--71937e39c9_p1_minipdf.png",
+        "reference_img": "xlsx--Academic_Achievement_Summary_Table--71937e39c9_p1_reference.png",
+        "heatmap_img": "xlsx--Academic_Achievement_Summary_Table--71937e39c9_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1241
+          ],
+          "difference_bbox_px": [
+            32,
+            22,
+            1241,
+            1137
+          ],
+          "changed_pixels": 122385,
+          "changed_fraction": 0.079467,
+          "mean_abs_rgb": 11.2719,
+          "rmse_rgb": 44.7048,
+          "threshold": 12,
+          "gain": 5.0
+        },
+        "composite_img": "xlsx--Academic_Achievement_Summary_Table--71937e39c9_p1_python_minipdf_vs_libreoffice.png"
+      }
+    ],
+    "overall_score": 0.58
+  }
+]
