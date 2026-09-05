@@ -274,6 +274,44 @@ public class DocxToPdfConverterTests
         Assert.Contains(doc.Pages, page => page.ImageBlocks.Count > 0);
     }
 
+    [Fact]
+    public void Convert_InlineImageThatDoesNotFit_MovesToNextPageWithoutClipping()
+    {
+        // Small page so a few filler lines plus a moderate image cannot share one page.
+        var options = new DocxToPdfConverter.ConversionOptions
+        {
+            PageWidth = 400,
+            PageHeight = 400,
+            MarginTop = 40,
+            MarginBottom = 40,
+            MarginLeft = 40,
+            MarginRight = 40,
+        };
+        // ~260pt image: fits on a fresh page (usable height 320) but not once the
+        // filler lines have consumed most of page 1.
+        const long imageEmu = 260L * 12700L;
+        using var docxStream = CreateDocxWithFillerThenTallImage(
+            fillerParagraphs: 10, imageCxEmu: imageEmu, imageCyEmu: imageEmu);
+
+        var doc = DocxToPdfConverter.Convert(docxStream, options);
+
+        var placed = doc.Pages
+            .Select((page, index) => (page, index))
+            .SelectMany(entry => entry.page.ImageBlocks.Select(block => (entry.index, block)))
+            .ToList();
+        Assert.Single(placed);
+        var (pageIndex, image) = placed[0];
+
+        // The whole image must move to a later page rather than being clipped at the
+        // bottom of page 1 (the behavior this fix restores).
+        Assert.True(pageIndex >= 1, $"Expected the image on a page after the first; got page {pageIndex + 1}.");
+        // And it must sit fully inside the printable area, not off the bottom edge.
+        Assert.True(image.Y >= options.MarginBottom,
+            $"Image bottom {image.Y} is below the bottom margin {options.MarginBottom} (clipped).");
+        Assert.True(image.Y + image.RenderHeight <= options.PageHeight - options.MarginTop + 0.5f,
+            $"Image top {image.Y + image.RenderHeight} exceeds the printable area.");
+    }
+
     private static void AssertXrefOffsetsAreCorrect(byte[] pdfBytes)
     {
         var text = Encoding.GetEncoding("iso-8859-1").GetString(pdfBytes);
@@ -400,6 +438,103 @@ public class DocxToPdfConverterTests
 
             // Add the PNG image as binary entry
             var imgEntry = archive.CreateEntry(imageEntryPath);
+            using (var imgStream = imgEntry.Open())
+                imgStream.Write(pngBytes, 0, pngBytes.Length);
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
+    /// <summary>
+    /// Builds a DOCX with a run of filler paragraphs followed by a single inline
+    /// image of the given EMU size, used to exercise page-break handling when the
+    /// image cannot fit in the remaining space on the current page.
+    /// </summary>
+    private static MemoryStream CreateDocxWithFillerThenTallImage(
+        int fillerParagraphs, long imageCxEmu, long imageCyEmu)
+    {
+        var ms = new MemoryStream();
+        var pngBytes = CreateMinimalRgbaPng(4, 4);
+
+        var filler = string.Concat(Enumerable.Range(0, fillerParagraphs)
+            .Select(i => $"<w:p><w:r><w:t>Filler line {i}</w:t></w:r></w:p>"));
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Default Extension="png" ContentType="image/png"/>
+                  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/_rels/document.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId10" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image1.png"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/document.xml",
+                $$"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+                            xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+                            xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+                            xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                  <w:body>
+                    {{filler}}
+                    <w:p>
+                      <w:r>
+                        <w:drawing>
+                          <wp:inline distT="0" distB="0" distL="0" distR="0">
+                            <wp:extent cx="{{imageCxEmu}}" cy="{{imageCyEmu}}"/>
+                            <wp:docPr id="1" name="Picture 1"/>
+                            <a:graphic>
+                              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                                <pic:pic>
+                                  <pic:nvPicPr>
+                                    <pic:cNvPr id="1" name="image1.png"/>
+                                    <pic:cNvPicPr/>
+                                  </pic:nvPicPr>
+                                  <pic:blipFill>
+                                    <a:blip r:embed="rId10"/>
+                                    <a:stretch><a:fillRect/></a:stretch>
+                                  </pic:blipFill>
+                                  <pic:spPr>
+                                    <a:xfrm>
+                                      <a:off x="0" y="0"/>
+                                      <a:ext cx="{{imageCxEmu}}" cy="{{imageCyEmu}}"/>
+                                    </a:xfrm>
+                                    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+                                  </pic:spPr>
+                                </pic:pic>
+                              </a:graphicData>
+                            </a:graphic>
+                          </wp:inline>
+                        </w:drawing>
+                      </w:r>
+                    </w:p>
+                  </w:body>
+                </w:document>
+                """);
+
+            var imgEntry = archive.CreateEntry("word/media/image1.png");
             using (var imgStream = imgEntry.Open())
                 imgStream.Write(pngBytes, 0, pngBytes.Length);
         }

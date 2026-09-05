@@ -3362,9 +3362,20 @@ internal static class DocxToPdfConverter
             height *= scale;
         }
 
-        // Check if image fits on current page
-        if (state.CurrentY - height < state.Options.MarginBottom)
-            state.EnsurePage();
+        // Move the whole image to the next column/page when it does not fit in
+        // the remaining space. Word keeps an inline image intact rather than
+        // clipping it at the bottom. EnsurePage only adds a page once the cursor
+        // is already past the bottom margin, which leaves a partial image
+        // clipped, so handle the break here. In a multi-column section flow to
+        // the next column first (as EnsurePage does); only force a new page when
+        // no column remains. Skip entirely when already at the top of a fresh
+        // column/page, otherwise an image taller than the usable area would push
+        // out a blank column/page ahead of it (Word overflows there).
+        if (state.CurrentY - height < state.Options.MarginBottom && !state.IsTopOfPage)
+        {
+            if (!(state.ColumnCount > 1 && state.AdvanceToNextColumn()))
+                state.ForceNewPage();
+        }
 
         var x = state.Options.MarginLeft;
         if (image.IsWrapTopBottom)
