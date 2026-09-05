@@ -1,0 +1,34 @@
+{
+  "language": "node",
+  "suite": "issue",
+  "format": "xlsx",
+  "reference_engine": "o365",
+  "reference_label": "Microsoft 365 Excel Reference",
+  "auxiliary_reference_engine": "libreoffice",
+  "auxiliary_reference_label": "LibreOffice (auxiliary)",
+  "fixture_scope": "shared-on-disk-fixtures",
+  "executes_dotnet_xunit": false,
+  "max_compare_pages": 0,
+  "selected_cases": 1,
+  "passed_conversions": 1,
+  "failed_conversions": 0,
+  "missing_references": 0,
+  "missing_auxiliary_references": 0,
+  "comparison_completed": true,
+  "comparison_results": 1,
+  "average_score": 0.9592,
+  "cases": [
+    {
+      "name": "Issue202609031340",
+      "case_id": "Issue202609031340",
+      "suite": "issue",
+      "format": "xlsx",
+      "source_path": "tests/Issue_Files/xlsx/Issue202609031340.xlsx",
+      "conversion_status": "passed",
+      "conversion_exit_code": 0,
+      "candidate_exists": true,
+      "reference_exists": true,
+      "auxiliary_reference_exists": true
+    }
+  ]
+}
