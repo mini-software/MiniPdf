@@ -19,6 +19,10 @@ public final class XlsxConverter {
 
     public static byte[] convert(byte[] input, ConversionOptions options) throws MiniPdfException {
         OoxmlPackage workbook = OoxmlPackage.open(input);
+        if (workbook.entry("[Content_Types].xml").isPresent()
+                && workbook.entry("xl/workbook.xml").isPresent()) {
+            return PoiXlsxRenderer.render(input, options);
+        }
         byte[] sharedStringsXml = workbook.entry("xl/sharedStrings.xml").orElse(null);
         List<String> sharedStrings = sharedStringsXml == null
             ? List.of()
