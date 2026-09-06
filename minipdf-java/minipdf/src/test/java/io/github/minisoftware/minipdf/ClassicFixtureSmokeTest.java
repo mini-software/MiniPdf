@@ -51,6 +51,46 @@ class ClassicFixtureSmokeTest {
     }
 
     @Test
+    void preservesMergedCellColumnWidths() throws Exception {
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/xlsx/XlsxIssue77_MergedCellAlignment.xlsx");
+
+        try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
+            String text = new PDFTextStripper().getText(document);
+            assertTrue(text.contains("Horizontal Left + Vertical Bottom"), text);
+            var page = new PDFRenderer(document).renderImageWithDPI(0, 150.0f);
+            int rightmostDarkPixel = 0;
+            int visibleOverflowPixels = 0;
+            for (int y = 0; y < page.getHeight(); y++) {
+                for (int x = 0; x < page.getWidth(); x++) {
+                    int rgb = page.getRGB(x, y);
+                    if (((rgb >> 16) & 0xff) < 80
+                            && ((rgb >> 8) & 0xff) < 80
+                            && (rgb & 0xff) < 80) {
+                        rightmostDarkPixel = Math.max(rightmostDarkPixel, x);
+                        if (x >= 160 && x < 370 && y >= 150 && y < 185) {
+                            visibleOverflowPixels++;
+                        }
+                    }
+                }
+            }
+            assertTrue(rightmostDarkPixel > 1150, "rightmostDarkPixel=" + rightmostDarkPixel);
+            assertTrue(visibleOverflowPixels > 100, "visibleOverflowPixels=" + visibleOverflowPixels);
+            long mergedRightBorderPixels = java.util.stream.IntStream.range(250, 280)
+                .mapToLong(x -> java.util.stream.IntStream.range(360, 445)
+                    .filter(y -> {
+                        int rgb = page.getRGB(x, y);
+                        return ((rgb >> 16) & 0xff) < 80
+                            && ((rgb >> 8) & 0xff) < 80
+                            && (rgb & 0xff) < 80;
+                    })
+                    .count())
+                .max()
+                .orElse(0);
+            assertTrue(mergedRightBorderPixels > 40, "mergedRightBorderPixels=" + mergedRightBorderPixels);
+        }
+    }
+
+    @Test
     void convertsIssueXlsxWithCjkText() throws Exception {
         Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/xlsx/Issue202609031340.xlsx");
         byte[] pdf = MiniPdf.convertToPdfBytes(fixture);

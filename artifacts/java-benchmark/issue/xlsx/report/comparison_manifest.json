@@ -1,11 +1,11 @@
 {
   "cases": [
     {
-      "name": "XlsxIssue77_Template1",
-      "case_id": "XlsxIssue77_Template1",
+      "name": "XlsxIssue77_MergedCellAlignment",
+      "case_id": "XlsxIssue77_MergedCellAlignment",
       "suite": "issue",
       "format": "xlsx",
-      "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx",
+      "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_MergedCellAlignment.xlsx",
       "conversion_status": "pending",
       "conversion_exit_code": null,
       "candidate_exists": false,
