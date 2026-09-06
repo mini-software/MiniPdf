@@ -85,7 +85,7 @@ minipdf report.docx -o report.pdf
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.3</version>
+	<version>0.1.4</version>
 </dependency>
 ```
 

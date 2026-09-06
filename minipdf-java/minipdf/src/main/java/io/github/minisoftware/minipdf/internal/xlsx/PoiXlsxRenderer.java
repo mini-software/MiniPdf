@@ -24,6 +24,7 @@ import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -194,10 +195,13 @@ final class PoiXlsxRenderer {
         PDPage page = new PDPage(new PDRectangle(geometry.mediaWidth(), geometry.mediaHeight()));
         document.addPage(page);
         float unscaledWidth = sum(columnWidths, 0, columnWidths.length);
-        float horizontalScale = scale;
         boolean centeredLegacy = !legacyPictures.isEmpty()
             && sheet.getHorizontallyCenter()
             && sheet.getVerticallyCenter();
+            float horizontalScale = centeredLegacy
+                ? scale
+                : scale / geometry.outputScale();
+            float verticalScale = scale * geometry.outputScale();
         if (centeredLegacy) {
             horizontalScale = Math.min(
                 scale * CENTERED_VML_HORIZONTAL_GEOMETRY_SCALE,
@@ -212,7 +216,7 @@ final class PoiXlsxRenderer {
             geometry.marginLeft() + horizontalOffset,
             horizontalScale);
         float usedHeight = (float) pageRows.stream()
-                .mapToDouble(rows -> rowsBefore(sheet, rows.firstRow(), rows.lastRow() + 1) * scale)
+            .mapToDouble(rows -> rowsBefore(sheet, rows.firstRow(), rows.lastRow() + 1) * verticalScale)
             .reduce(0.0, Double::sum);
         float centerOffset = sheet.getVerticallyCenter()
             ? Math.max(0.0f, (geometry.usableHeight() - usedHeight) / 2.0f)
@@ -230,7 +234,8 @@ final class PoiXlsxRenderer {
                 float cellTop = geometry.layoutHeight() - geometry.marginTop() - centerOffset - rangeOffset;
                 for (int rowIndex = rows.firstRow(); rowIndex <= rows.lastRow(); rowIndex++) {
                     Row row = sheet.getRow(rowIndex);
-                    float cellHeight = rowHeight(sheet, rowIndex) * scale;
+                    float cellHeight = rowHeight(sheet, rowIndex) * verticalScale;
+                    List<PendingText> pendingTexts = new ArrayList<>();
                     for (int column = area.getFirstColumn(); column <= area.getLastColumn(); column++) {
                         int localColumn = column - area.getFirstColumn();
                         float x = columnX[localColumn];
@@ -248,10 +253,21 @@ final class PoiXlsxRenderer {
                             : mergedWidth(columnWidths, area.getFirstColumn(), merge, horizontalScale);
                         float textHeight = merge == null
                             ? cellHeight
-                            : mergedHeight(sheet, merge, rows.firstRow(), rows.lastRow(), scale);
-                        if (merge == null || mergeOrigin) {
+                            : mergedHeight(sheet, merge, rows.firstRow(), rows.lastRow(), verticalScale);
+                        if (merge == null) {
                             drawCell(
                                 content,
+                                style,
+                                x,
+                                cellTop - textHeight,
+                                textWidth,
+                                textHeight,
+                                centeredLegacy ? CENTERED_VML_BORDER_SCALE : 1.0f);
+                        } else if (mergeOrigin) {
+                            drawMergedCell(
+                                content,
+                                sheet,
+                                merge,
                                 style,
                                 x,
                                 cellTop - textHeight,
@@ -263,10 +279,22 @@ final class PoiXlsxRenderer {
                             continue;
                         }
                         String value = formatter.formatCellValue(cell, evaluator);
-                        drawText(
-                            content,
-                            fonts,
-                            workbook,
+                        TextClip textClip = merge == null && style != null && !style.getWrapText() && isTextCell(cell)
+                            ? textOverflowClip(
+                                sheet,
+                                rowIndex,
+                                column,
+                                area,
+                                merged,
+                                columnWidths,
+                                x,
+                                textWidth,
+                                horizontalScale,
+                                style.getAlignment(),
+                                formatter,
+                                evaluator)
+                            : new TextClip(x, textWidth);
+                        pendingTexts.add(new PendingText(
                             cell,
                             style,
                             value,
@@ -274,8 +302,26 @@ final class PoiXlsxRenderer {
                             cellTop - textHeight,
                             textWidth,
                             textHeight,
-                            scale,
-                            centeredLegacy ? 0.75f : CELL_PADDING);
+                            textClip.x(),
+                            textClip.width(),
+                            centeredLegacy ? 0.75f : CELL_PADDING));
+                    }
+                    for (PendingText text : pendingTexts) {
+                        drawText(
+                            content,
+                            fonts,
+                            workbook,
+                            text.cell(),
+                            text.style(),
+                            text.value(),
+                            text.x(),
+                            text.y(),
+                            text.width(),
+                            text.height(),
+                            text.clipX(),
+                            text.clipWidth(),
+                            verticalScale,
+                            text.padding());
                     }
                     cellTop -= cellHeight;
                 }
@@ -287,13 +333,13 @@ final class PoiXlsxRenderer {
                     columnWidths,
                     rows.firstRow(),
                     rows.lastRow(),
-                    scale,
+                    verticalScale,
                     horizontalScale,
                     geometry,
                     horizontalOffset,
                     centerOffset + rangeOffset,
                     legacyPictures);
-                rangeOffset += rowsBefore(sheet, rows.firstRow(), rows.lastRow() + 1) * scale;
+                rangeOffset += rowsBefore(sheet, rows.firstRow(), rows.lastRow() + 1) * verticalScale;
             }
         }
     }
@@ -321,6 +367,80 @@ final class PoiXlsxRenderer {
         drawBorder(content, style.getBorderBottom(), style.getBottomBorderXSSFColor(), x, y, x + width, y, borderScale);
         drawBorder(content, style.getBorderLeft(), style.getLeftBorderXSSFColor(), x, y, x, y + height, borderScale);
         drawBorder(content, style.getBorderRight(), style.getRightBorderXSSFColor(), x + width, y, x + width, y + height, borderScale);
+    }
+
+    private static void drawMergedCell(
+            PDPageContentStream content,
+            XSSFSheet sheet,
+            CellRangeAddress merge,
+            XSSFCellStyle style,
+            float x,
+            float y,
+            float width,
+            float height,
+            float borderScale) throws IOException {
+        if (style != null && style.getFillPattern() == FillPatternType.SOLID_FOREGROUND) {
+            Color fill = color(style.getFillForegroundXSSFColor(), null);
+            if (fill != null) {
+                content.setNonStrokingColor(fill);
+                content.addRect(x, y, width, height);
+                content.fill();
+            }
+        }
+        BorderEdge top = mergedBorder(sheet, merge, BorderSide.TOP);
+        BorderEdge bottom = mergedBorder(sheet, merge, BorderSide.BOTTOM);
+        BorderEdge left = mergedBorder(sheet, merge, BorderSide.LEFT);
+        BorderEdge right = mergedBorder(sheet, merge, BorderSide.RIGHT);
+        drawBorder(content, top.style(), top.color(), x, y + height, x + width, y + height, borderScale);
+        drawBorder(content, bottom.style(), bottom.color(), x, y, x + width, y, borderScale);
+        drawBorder(content, left.style(), left.color(), x, y, x, y + height, borderScale);
+        drawBorder(content, right.style(), right.color(), x + width, y, x + width, y + height, borderScale);
+    }
+
+    private static BorderEdge mergedBorder(
+            XSSFSheet sheet,
+            CellRangeAddress merge,
+            BorderSide side) {
+        int start = side == BorderSide.TOP || side == BorderSide.BOTTOM
+            ? merge.getFirstColumn()
+            : merge.getFirstRow();
+        int end = side == BorderSide.TOP || side == BorderSide.BOTTOM
+            ? merge.getLastColumn()
+            : merge.getLastRow();
+        for (int index = start; index <= end; index++) {
+            int rowIndex = switch (side) {
+                case TOP -> merge.getFirstRow();
+                case BOTTOM -> merge.getLastRow();
+                case LEFT, RIGHT -> index;
+            };
+            int columnIndex = switch (side) {
+                case LEFT -> merge.getFirstColumn();
+                case RIGHT -> merge.getLastColumn();
+                case TOP, BOTTOM -> index;
+            };
+            Row row = sheet.getRow(rowIndex);
+            Cell cell = row == null ? null : row.getCell(columnIndex, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
+            if (cell == null) {
+                continue;
+            }
+            XSSFCellStyle cellStyle = (XSSFCellStyle) cell.getCellStyle();
+            BorderStyle borderStyle = switch (side) {
+                case TOP -> cellStyle.getBorderTop();
+                case BOTTOM -> cellStyle.getBorderBottom();
+                case LEFT -> cellStyle.getBorderLeft();
+                case RIGHT -> cellStyle.getBorderRight();
+            };
+            if (borderStyle != BorderStyle.NONE) {
+                XSSFColor borderColor = switch (side) {
+                    case TOP -> cellStyle.getTopBorderXSSFColor();
+                    case BOTTOM -> cellStyle.getBottomBorderXSSFColor();
+                    case LEFT -> cellStyle.getLeftBorderXSSFColor();
+                    case RIGHT -> cellStyle.getRightBorderXSSFColor();
+                };
+                return new BorderEdge(borderStyle, borderColor);
+            }
+        }
+        return new BorderEdge(BorderStyle.NONE, null);
     }
 
     private static void drawBorder(
@@ -353,6 +473,8 @@ final class PoiXlsxRenderer {
             float y,
             float width,
             float height,
+            float clipX,
+            float clipWidth,
             float scale,
             float padding) throws IOException {
         if (value == null || value.isEmpty() || width <= padding * 2.0f || height <= 1.0f) {
@@ -383,7 +505,7 @@ final class PoiXlsxRenderer {
         };
         Color textColor = color(cellFont.getXSSFColor(), Color.BLACK);
         content.saveGraphicsState();
-        content.addRect(x + 0.2f, y + 0.2f, Math.max(0.1f, width - 0.4f), Math.max(0.1f, height - 0.4f));
+        content.addRect(clipX + 0.2f, y + 0.2f, Math.max(0.1f, clipWidth - 0.4f), Math.max(0.1f, height - 0.4f));
         content.clip();
         content.setNonStrokingColor(textColor);
         if (cellFont.getBold()
@@ -623,11 +745,11 @@ final class PoiXlsxRenderer {
             PrintSetup setup = sheet.getPrintSetup();
             boolean explicitPaperSize = sheet.getCTWorksheet().isSetPageSetup()
                     && sheet.getCTWorksheet().getPageSetup().isSetPaperSize();
-            boolean letter = setup.getPaperSize() == PrintSetup.LETTER_PAPERSIZE;
+                boolean letter = setup.getPaperSize() == PrintSetup.LETTER_PAPERSIZE;
             layoutWidth = letter ? PageSize.LETTER.width() : PageSize.A4.width();
             layoutHeight = letter ? PageSize.LETTER.height() : PageSize.A4.height();
-            mediaWidth = explicitPaperSize ? layoutWidth : PageSize.A4.width();
-            mediaHeight = explicitPaperSize ? layoutHeight : PageSize.A4.height();
+                mediaWidth = explicitPaperSize ? layoutWidth : PageSize.A4.width();
+                mediaHeight = explicitPaperSize ? layoutHeight : PageSize.A4.height();
             if (setup.getLandscape()) {
                 float layoutSwap = layoutWidth;
                 layoutWidth = layoutHeight;
@@ -664,11 +786,29 @@ final class PoiXlsxRenderer {
         return widths;
     }
 
-            private static float columnWidth(XSSFSheet sheet, int column) {
-            return sheet.isColumnHidden(column)
-                ? 0.0f
-                : Math.max(1.0f, sheet.getColumnWidthInPixels(column) * POINTS_PER_PIXEL);
-            }
+    private static float columnWidth(XSSFSheet sheet, int column) {
+        if (sheet.isColumnHidden(column)) {
+            return 0.0f;
+        }
+        XSSFWorkbook workbook = sheet.getWorkbook();
+        XSSFFont normalFont = workbook.getFontAt(workbook.getCellStyleAt(0).getFontIndex());
+        float maxDigitWidth = maxDigitWidth(normalFont.getFontName(), normalFont.getFontHeightInPoints());
+        float characterUnits = sheet.getColumnWidth(column) / 256.0f;
+        float padding = (float) Math.floor(128.0f / maxDigitWidth);
+        float pixels = (float) Math.floor(
+            ((256.0f * characterUnits + padding) / 256.0f) * maxDigitWidth);
+        return Math.max(1.0f, pixels * POINTS_PER_PIXEL);
+    }
+
+    private static float maxDigitWidth(String fontName, float fontSize) {
+        float widthAtTenPoints = switch (fontName == null ? "" : fontName.trim().toLowerCase(Locale.ROOT)) {
+            case "arial" -> 7.06f;
+            case "palatino linotype" -> 6.42f;
+            case "verdana" -> 7.55f;
+            default -> 7.0f;
+        };
+        return widthAtTenPoints * (fontSize > 0.0f ? fontSize : 10.0f) / 10.0f;
+    }
 
     private static List<ColumnGroup> columnGroups(
             XSSFSheet sheet,
@@ -808,6 +948,63 @@ final class PoiXlsxRenderer {
         return height;
     }
 
+    private static boolean isTextCell(Cell cell) {
+        return cell.getCellType() == CellType.STRING
+            || (cell.getCellType() == CellType.FORMULA
+                && cell.getCachedFormulaResultType() == CellType.STRING);
+    }
+
+    private static TextClip textOverflowClip(
+            XSSFSheet sheet,
+            int rowIndex,
+            int column,
+            CellRangeAddress area,
+            List<CellRangeAddress> merged,
+            float[] columnWidths,
+            float x,
+            float width,
+            float scale,
+            HorizontalAlignment alignment,
+            DataFormatter formatter,
+            FormulaEvaluator evaluator) {
+        float clipX = x;
+        float clipWidth = width;
+        if (alignment == HorizontalAlignment.RIGHT || alignment == HorizontalAlignment.CENTER) {
+            for (int adjacent = column - 1; adjacent >= area.getFirstColumn(); adjacent--) {
+                if (cellBlocksTextOverflow(sheet, rowIndex, adjacent, merged, formatter, evaluator)) {
+                    break;
+                }
+                float adjacentWidth = columnWidths[adjacent - area.getFirstColumn()] * scale;
+                clipX -= adjacentWidth;
+                clipWidth += adjacentWidth;
+            }
+        }
+        if (alignment != HorizontalAlignment.RIGHT) {
+            for (int adjacent = column + 1; adjacent <= area.getLastColumn(); adjacent++) {
+                if (cellBlocksTextOverflow(sheet, rowIndex, adjacent, merged, formatter, evaluator)) {
+                    break;
+                }
+                clipWidth += columnWidths[adjacent - area.getFirstColumn()] * scale;
+            }
+        }
+        return new TextClip(clipX, clipWidth);
+    }
+
+    private static boolean cellBlocksTextOverflow(
+            XSSFSheet sheet,
+            int rowIndex,
+            int column,
+            List<CellRangeAddress> merged,
+            DataFormatter formatter,
+            FormulaEvaluator evaluator) {
+        CellRangeAddress merge = mergedAt(merged, rowIndex, column);
+        int sourceRow = merge == null ? rowIndex : merge.getFirstRow();
+        int sourceColumn = merge == null ? column : merge.getFirstColumn();
+        Row row = sheet.getRow(sourceRow);
+        Cell cell = row == null ? null : row.getCell(sourceColumn, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+        return cell != null && !formatter.formatCellValue(cell, evaluator).isBlank();
+    }
+
     private static float columnsBefore(float[] widths, int areaFirstColumn, int column) {
         return sum(widths, 0, Math.max(0, Math.min(widths.length, column - areaFirstColumn)));
     }
@@ -914,6 +1111,32 @@ final class PoiXlsxRenderer {
     }
 
     private record RowRange(int firstRow, int lastRow) {
+    }
+
+    private record TextClip(float x, float width) {
+    }
+
+    private record PendingText(
+            Cell cell,
+            XSSFCellStyle style,
+            String value,
+            float x,
+            float y,
+            float width,
+            float height,
+            float clipX,
+            float clipWidth,
+            float padding) {
+    }
+
+    private enum BorderSide {
+        TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT
+    }
+
+    private record BorderEdge(BorderStyle style, XSSFColor color) {
     }
 
     private static final class FontSet {
