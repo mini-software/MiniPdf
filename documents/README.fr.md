@@ -85,7 +85,7 @@ Le [guide Rust](../minipdf-rs/README.md) décrit l'API du crate, la CLI, les fon
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.2</version>
+	<version>0.1.3</version>
 </dependency>
 ```
 
