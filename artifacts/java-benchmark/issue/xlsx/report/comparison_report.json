@@ -1,189 +1,81 @@
 [
   {
-    "name": "XlsxIssue77_Template1",
+    "name": "XlsxIssue77_MergedCellAlignment",
     "minipdf_exists": true,
     "reference_exists": true,
     "report_scope": "java-issue-xlsx",
-    "case_id": "XlsxIssue77_Template1",
+    "case_id": "XlsxIssue77_MergedCellAlignment",
     "format": "xlsx",
-    "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx",
+    "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_MergedCellAlignment.xlsx",
     "suite": "issue",
-    "minipdf_size": 59636,
-    "reference_size": 64464,
+    "minipdf_size": 71248,
+    "reference_size": 172385,
     "pdf_valid": true,
-    "minipdf_pages": 6,
-    "reference_pages": 6,
+    "minipdf_pages": 2,
+    "reference_pages": 2,
     "text_similarity": 1.0,
-    "flat_text_similarity": 0.9957,
+    "flat_text_similarity": 1.0,
     "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/XlsxIssue77_Template1.pdf\n+++ reference/XlsxIssue77_Template1.pdf\n@@ -6,8 +6,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable\n\n-QR code, original factory packaging, with no extra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized\n\n@@ -20,8 +20,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable\n\n-QR code, original factory packaging, with no extra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized\n\n@@ -34,8 +34,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable\n\n-QR code, original factory packaging, with no extra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized\n\n@@ -48,8 +48,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable\n\n-QR code, original factory packaging, with no extra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized\n\n@@ -62,8 +62,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable\n\n-QR code, original factory packaging, with no extra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized\n\n@@ -76,8 +76,8 @@\n Attn Customer:   Please return parts to the return address below.\n\n Customer Name Sales Person Requestor\n\n Return Address: Reason for Return:\n\n-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable\n\n-QR code, original factory packaging, with no extra labels or markings on the product.\n\n+NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR\n\n+code, original factory packaging, with no extra labels or markings on the product.\n\n Original Qty\n\n Part No. Per Unit\n\n Invoice # Authorized",
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.9133,
-      0.9135,
-      0.9135,
-      0.9135,
-      0.9135,
-      0.9406
+      0.886,
+      0.896
     ],
-    "visual_avg": 0.918,
+    "visual_avg": 0.891,
     "diff_images": [
       {
         "page": 1,
-        "minipdf_img": "XlsxIssue77_Template1_p1_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p1_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p1_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p1_heatmap.png",
+        "minipdf_img": "XlsxIssue77_MergedCellAlignment_p1_minipdf.png",
+        "reference_img": "XlsxIssue77_MergedCellAlignment_p1_reference.png",
+        "auxiliary_img": "XlsxIssue77_MergedCellAlignment_p1_libreoffice.png",
+        "heatmap_img": "XlsxIssue77_MergedCellAlignment_p1_heatmap.png",
         "heatmap_metrics": {
           "size_px": [
             1241,
             1754
           ],
           "difference_bbox_px": [
-            82,
-            168,
-            1157,
-            1581
+            35,
+            119,
+            1163,
+            1541
           ],
-          "changed_pixels": 334581,
-          "changed_fraction": 0.153709,
-          "mean_abs_rgb": 20.9601,
-          "rmse_rgb": 63.4759,
+          "changed_pixels": 474317,
+          "changed_fraction": 0.217905,
+          "mean_abs_rgb": 33.3008,
+          "rmse_rgb": 82.9184,
           "threshold": 12,
           "gain": 5.0
         },
-        "composite_img": "XlsxIssue77_Template1_p1_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+        "composite_img": "XlsxIssue77_MergedCellAlignment_p1_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       },
       {
         "page": 2,
-        "minipdf_img": "XlsxIssue77_Template1_p2_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p2_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p2_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p2_heatmap.png",
+        "minipdf_img": "XlsxIssue77_MergedCellAlignment_p2_minipdf.png",
+        "reference_img": "XlsxIssue77_MergedCellAlignment_p2_reference.png",
+        "auxiliary_img": "XlsxIssue77_MergedCellAlignment_p2_libreoffice.png",
+        "heatmap_img": "XlsxIssue77_MergedCellAlignment_p2_heatmap.png",
         "heatmap_metrics": {
           "size_px": [
             1241,
             1754
           ],
           "difference_bbox_px": [
-            82,
-            168,
-            1157,
-            1581
+            35,
+            156,
+            1163,
+            1612
           ],
-          "changed_pixels": 333843,
-          "changed_fraction": 0.15337,
-          "mean_abs_rgb": 20.8471,
-          "rmse_rgb": 63.2311,
+          "changed_pixels": 443109,
+          "changed_fraction": 0.203568,
+          "mean_abs_rgb": 30.2766,
+          "rmse_rgb": 78.5097,
           "threshold": 12,
           "gain": 5.0
         },
-        "composite_img": "XlsxIssue77_Template1_p2_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
-      },
-      {
-        "page": 3,
-        "minipdf_img": "XlsxIssue77_Template1_p3_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p3_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p3_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p3_heatmap.png",
-        "heatmap_metrics": {
-          "size_px": [
-            1241,
-            1754
-          ],
-          "difference_bbox_px": [
-            82,
-            168,
-            1157,
-            1581
-          ],
-          "changed_pixels": 333852,
-          "changed_fraction": 0.153374,
-          "mean_abs_rgb": 20.8014,
-          "rmse_rgb": 63.1465,
-          "threshold": 12,
-          "gain": 5.0
-        },
-        "composite_img": "XlsxIssue77_Template1_p3_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
-      },
-      {
-        "page": 4,
-        "minipdf_img": "XlsxIssue77_Template1_p4_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p4_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p4_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p4_heatmap.png",
-        "heatmap_metrics": {
-          "size_px": [
-            1241,
-            1754
-          ],
-          "difference_bbox_px": [
-            82,
-            168,
-            1157,
-            1581
-          ],
-          "changed_pixels": 333854,
-          "changed_fraction": 0.153375,
-          "mean_abs_rgb": 20.8086,
-          "rmse_rgb": 63.1615,
-          "threshold": 12,
-          "gain": 5.0
-        },
-        "composite_img": "XlsxIssue77_Template1_p4_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
-      },
-      {
-        "page": 5,
-        "minipdf_img": "XlsxIssue77_Template1_p5_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p5_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p5_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p5_heatmap.png",
-        "heatmap_metrics": {
-          "size_px": [
-            1241,
-            1754
-          ],
-          "difference_bbox_px": [
-            82,
-            168,
-            1157,
-            1581
-          ],
-          "changed_pixels": 333852,
-          "changed_fraction": 0.153374,
-          "mean_abs_rgb": 20.8093,
-          "rmse_rgb": 63.1483,
-          "threshold": 12,
-          "gain": 5.0
-        },
-        "composite_img": "XlsxIssue77_Template1_p5_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
-      },
-      {
-        "page": 6,
-        "minipdf_img": "XlsxIssue77_Template1_p6_minipdf.png",
-        "reference_img": "XlsxIssue77_Template1_p6_reference.png",
-        "auxiliary_img": "XlsxIssue77_Template1_p6_libreoffice.png",
-        "heatmap_img": "XlsxIssue77_Template1_p6_heatmap.png",
-        "heatmap_metrics": {
-          "size_px": [
-            1241,
-            1754
-          ],
-          "difference_bbox_px": [
-            82,
-            168,
-            1157,
-            916
-          ],
-          "changed_pixels": 200884,
-          "changed_fraction": 0.092288,
-          "mean_abs_rgb": 11.6525,
-          "rmse_rgb": 47.1047,
-          "threshold": 12,
-          "gain": 5.0
-        },
-        "composite_img": "XlsxIssue77_Template1_p6_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
+        "composite_img": "XlsxIssue77_MergedCellAlignment_p2_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.9672
+    "overall_score": 0.9564
   }
 ]

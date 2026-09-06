@@ -16,14 +16,14 @@
   "missing_auxiliary_references": 0,
   "comparison_completed": true,
   "comparison_results": 1,
-  "average_score": 0.9672,
+  "average_score": 0.9564,
   "cases": [
     {
-      "name": "XlsxIssue77_Template1",
-      "case_id": "XlsxIssue77_Template1",
+      "name": "XlsxIssue77_MergedCellAlignment",
+      "case_id": "XlsxIssue77_MergedCellAlignment",
       "suite": "issue",
       "format": "xlsx",
-      "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx",
+      "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_MergedCellAlignment.xlsx",
       "conversion_status": "passed",
       "conversion_exit_code": 0,
       "candidate_exists": true,
