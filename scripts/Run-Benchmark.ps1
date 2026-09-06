@@ -1,19 +1,24 @@
 <#
 .SYNOPSIS
-    One-click benchmark: generate Excel -> convert to PDF (MiniPdf + Microsoft 365) -> compare -> report.
+    One-click XLSX benchmark for classic and issue fixtures with one visual report.
 
 .DESCRIPTION
     This script orchestrates the full MiniPdf self-evolution pipeline on Windows.
-    It installs Python dependencies, runs all steps, and opens the final report.
+    By default, classic and issue XLSX fixtures are converted and displayed in
+    the same visual comparison report. Use -Suite to select only one corpus.
 
 .EXAMPLE
     .\scripts\Run-Benchmark.ps1
+    .\scripts\Run-Benchmark.ps1 -Suite classic
+    .\scripts\Run-Benchmark.ps1 -Suite issue
     .\scripts\Run-Benchmark.ps1 -CompareOnly
     .\scripts\Run-Benchmark.ps1 -SkipReference
     .\scripts\Run-Benchmark.ps1 -Filter "classic" -Engine libre -ForceReference -Heatmaps
 #>
 
 param(
+    [ValidateSet("all", "classic", "issue")]
+    [string]$Suite = "all",
     [switch]$CompareOnly,
     [switch]$SkipGenerate,
     [switch]$SkipMiniPdf,
@@ -26,6 +31,7 @@ param(
     [string]$Engine = "o365",
     [string]$Filter,
     [string]$SourceDir,
+    [string]$IssueSourceDir,
     [string]$MiniPdfDir,
     [string]$ReferenceDir,
     [string]$OfficeDir,
@@ -36,6 +42,7 @@ param(
     [switch]$Heatmaps,
     [int]$HeatmapThreshold = 12,
     [double]$HeatmapGain = 5.0,
+    [int]$MaxComparePages = 15,
     [string]$CandidateLabel = "MiniPdf",
     [string]$ReferenceLabel,
     [string]$OfficeLabel = "Office",
@@ -46,6 +53,8 @@ param(
 $ErrorActionPreference = "Continue"
 $ScriptRoot = Split-Path -Parent $PSScriptRoot
 $BenchmarkDir = Join-Path (Join-Path $ScriptRoot "tests") "MiniPdf.Benchmark"
+
+if ($MaxComparePages -lt 0) { throw "MaxComparePages cannot be negative." }
 
 function Resolve-BenchmarkPath([string]$PathValue) {
     if (-not $PathValue) { return $null }
@@ -81,7 +90,7 @@ if (-not $SkipInstall) {
 }
 
 # Build args for Python pipeline
-$pyArgs = @()
+$pyArgs = @("--suite", $Suite)
 if ($CompareOnly) { $pyArgs += "--compare-only" }
 if ($SkipGenerate) { $pyArgs += "--skip-generate" }
 if ($SkipMiniPdf) { $pyArgs += "--skip-minipdf" }
@@ -92,6 +101,7 @@ if ($SkipOffice) { $pyArgs += "--skip-office" }
 if ($Engine -ne "o365") { $pyArgs += "--engine"; $pyArgs += $Engine }
 if ($Filter) { $pyArgs += "--filter"; $pyArgs += $Filter }
 if ($SourceDir) { $pyArgs += "--source-dir"; $pyArgs += (Resolve-BenchmarkPath $SourceDir) }
+if ($IssueSourceDir) { $pyArgs += "--issue-source-dir"; $pyArgs += (Resolve-BenchmarkPath $IssueSourceDir) }
 if ($MiniPdfDir) { $pyArgs += "--minipdf-dir"; $pyArgs += (Resolve-BenchmarkPath $MiniPdfDir) }
 if ($ReferenceDir) { $pyArgs += "--reference-dir"; $pyArgs += (Resolve-BenchmarkPath $ReferenceDir) }
 if ($OfficeDir) { $pyArgs += "--office-dir"; $pyArgs += (Resolve-BenchmarkPath $OfficeDir) }
@@ -99,6 +109,7 @@ if ($ReportDir) { $pyArgs += "--report-dir"; $pyArgs += (Resolve-BenchmarkPath $
 if ($Manifest) { $pyArgs += "--manifest"; $pyArgs += (Resolve-BenchmarkPath $Manifest) }
 if ($ReportScope -ne "shared") { $pyArgs += "--report-scope"; $pyArgs += $ReportScope }
 if ($CompositeImages) { $pyArgs += "--composite-images" }
+$pyArgs += "--max-pages"; $pyArgs += $MaxComparePages
 if ($Heatmaps) {
     $pyArgs += "--heatmaps"
     $pyArgs += "--heatmap-threshold"; $pyArgs += $HeatmapThreshold

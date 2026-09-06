@@ -326,14 +326,16 @@ def ai_compare_pages(img_minipdf: str, img_reference: str) -> dict:
         return {"error": str(e)}
 
 
-def extract_text_pymupdf(pdf_path: str) -> list[str]:
+def extract_text_pymupdf(pdf_path: str, max_pages: int = 0) -> list[str]:
     """Extract text from each page using PyMuPDF.
     Groups spans at the same Y position (same visual row) into a single
     space-joined line so that MiniPdf and LibreOffice outputs are comparable
     regardless of whether each cell is a separate span or part of a row span."""
     pages = []
     doc = fitz.open(pdf_path)
-    for page in doc:
+    page_count = min(len(doc), max_pages) if max_pages > 0 else len(doc)
+    for page_index in range(page_count):
+        page = doc[page_index]
         data = page.get_text("dict", sort=True)
         spans = []
         for block in data.get("blocks", []):
@@ -650,17 +652,10 @@ def save_visual_diff(
     auxiliary_label = labels.get("auxiliary", "Auxiliary Reference")
     auxiliary_slug = slugify_label(auxiliary_label)
 
-    # Remove stale images from previous runs with different page counts
+    # Remove stale images from previous runs with different page counts or limits.
     import glob
     for suffix in ("minipdf", "reference", "office", "libreoffice_auxiliary_reference", auxiliary_slug, "heatmap"):
-        if max_compare_pages > 0:
-            old_images = (
-                os.path.join(output_dir, f"{name}_p{page}_{suffix}.png")
-                for page in range(1, max_compare_pages + 1)
-            )
-        else:
-            old_images = glob.glob(os.path.join(output_dir, f"{glob.escape(name)}_p*_{suffix}.png"))
-        for old in old_images:
+        for old in glob.glob(os.path.join(output_dir, f"{glob.escape(name)}_p*_{suffix}.png")):
             if not os.path.isfile(old):
                 continue
             os.remove(old)
@@ -897,8 +892,8 @@ def compare_single(
     # Text extraction and comparison
     if HAS_FITZ:
         try:
-            text_m = extract_text_pymupdf(minipdf_path)
-            text_r = extract_text_pymupdf(reference_path)
+            text_m = extract_text_pymupdf(minipdf_path, max_compare_pages)
+            text_r = extract_text_pymupdf(reference_path, max_compare_pages)
         except Exception as e:
             text_m = extract_text_fallback(minipdf_path)
             text_r = extract_text_fallback(reference_path)
@@ -910,7 +905,10 @@ def compare_single(
     if max_compare_pages > 0:
         text_m = text_m[:max_compare_pages]
         text_r = text_r[:max_compare_pages]
-        result["compared_pages"] = max_compare_pages
+        result["compared_pages"] = min(
+            max(result["minipdf_pages"], result["reference_pages"]),
+            max_compare_pages,
+        )
 
     # Flatten text for comparison
     flat_m = "\n---PAGE---\n".join(text_m).strip()
@@ -1405,8 +1403,8 @@ def main():
                         help="Skip comparisons; regenerate report from existing comparison_report.json")
     parser.add_argument("--filter", default=None, metavar="PATTERN",
                         help="Only compare files whose name contains this substring")
-    parser.add_argument("--max-pages", type=int, default=0, metavar="N",
-                        help="Compare content and visuals for at most N pages per PDF; 0 compares all pages")
+    parser.add_argument("--max-pages", type=int, default=15, metavar="N",
+                        help="Compare content and visuals for at most N pages per PDF (default: 15); 0 compares all pages")
     parser.add_argument("--manifest", default=None, metavar="JSON",
                         help="Benchmark manifest JSON. When set, compare exactly the listed cases instead of scanning directories")
     parser.add_argument("--report-scope", default="shared", metavar="NAME",

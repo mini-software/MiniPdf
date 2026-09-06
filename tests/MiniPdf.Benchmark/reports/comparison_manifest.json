@@ -1,0 +1,2105 @@
+{
+  "cases": [
+    {
+      "name": "classic01_basic_table_with_headers",
+      "case_id": "classic01_basic_table_with_headers",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic01_basic_table_with_headers.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic02_multiple_worksheets",
+      "case_id": "classic02_multiple_worksheets",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic02_multiple_worksheets.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic03_empty_workbook",
+      "case_id": "classic03_empty_workbook",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic03_empty_workbook.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic04_single_cell",
+      "case_id": "classic04_single_cell",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic04_single_cell.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic05_wide_table",
+      "case_id": "classic05_wide_table",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic05_wide_table.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic06_tall_table",
+      "case_id": "classic06_tall_table",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic06_tall_table.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic07_numbers_only",
+      "case_id": "classic07_numbers_only",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic07_numbers_only.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic08_mixed_text_and_numbers",
+      "case_id": "classic08_mixed_text_and_numbers",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic08_mixed_text_and_numbers.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic09_long_text",
+      "case_id": "classic09_long_text",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic09_long_text.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic100_stacked_bar_chart",
+      "case_id": "classic100_stacked_bar_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic100_stacked_bar_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic101_percent_stacked_bar",
+      "case_id": "classic101_percent_stacked_bar",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic101_percent_stacked_bar.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic102_line_chart_with_markers",
+      "case_id": "classic102_line_chart_with_markers",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic102_line_chart_with_markers.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic103_pie_chart_with_labels",
+      "case_id": "classic103_pie_chart_with_labels",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic103_pie_chart_with_labels.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic104_combo_bar_line_chart",
+      "case_id": "classic104_combo_bar_line_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic104_combo_bar_line_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic105_3d_bar_chart",
+      "case_id": "classic105_3d_bar_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic105_3d_bar_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic106_3d_pie_chart",
+      "case_id": "classic106_3d_pie_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic106_3d_pie_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic107_multi_series_line",
+      "case_id": "classic107_multi_series_line",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic107_multi_series_line.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic108_stacked_area_chart",
+      "case_id": "classic108_stacked_area_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic108_stacked_area_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic109_scatter_with_trendline",
+      "case_id": "classic109_scatter_with_trendline",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic109_scatter_with_trendline.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic10_special_xml_characters",
+      "case_id": "classic10_special_xml_characters",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic10_special_xml_characters.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic110_chart_with_legend",
+      "case_id": "classic110_chart_with_legend",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic110_chart_with_legend.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic111_chart_with_axis_labels",
+      "case_id": "classic111_chart_with_axis_labels",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic111_chart_with_axis_labels.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic112_multiple_charts",
+      "case_id": "classic112_multiple_charts",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic112_multiple_charts.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic113_chart_sheet",
+      "case_id": "classic113_chart_sheet",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic113_chart_sheet.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic114_chart_large_dataset",
+      "case_id": "classic114_chart_large_dataset",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic114_chart_large_dataset.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic115_chart_negative_values",
+      "case_id": "classic115_chart_negative_values",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic115_chart_negative_values.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic116_percent_stacked_area",
+      "case_id": "classic116_percent_stacked_area",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic116_percent_stacked_area.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic117_stock_ohlc_chart",
+      "case_id": "classic117_stock_ohlc_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic117_stock_ohlc_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic118_bar_chart_custom_colors",
+      "case_id": "classic118_bar_chart_custom_colors",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic118_bar_chart_custom_colors.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic119_dashboard_multi_charts",
+      "case_id": "classic119_dashboard_multi_charts",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic119_dashboard_multi_charts.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic11_sparse_rows",
+      "case_id": "classic11_sparse_rows",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic11_sparse_rows.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic120_chart_with_date_axis",
+      "case_id": "classic120_chart_with_date_axis",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic120_chart_with_date_axis.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic121_thin_borders",
+      "case_id": "classic121_thin_borders",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic121_thin_borders.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic122_thick_outer_thin_inner",
+      "case_id": "classic122_thick_outer_thin_inner",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic122_thick_outer_thin_inner.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic123_dashed_borders",
+      "case_id": "classic123_dashed_borders",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic123_dashed_borders.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic124_colored_borders",
+      "case_id": "classic124_colored_borders",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic124_colored_borders.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic125_solid_fills",
+      "case_id": "classic125_solid_fills",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic125_solid_fills.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic126_dark_header",
+      "case_id": "classic126_dark_header",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic126_dark_header.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic127_font_styles",
+      "case_id": "classic127_font_styles",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic127_font_styles.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic128_font_sizes",
+      "case_id": "classic128_font_sizes",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic128_font_sizes.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic129_alignment_combos",
+      "case_id": "classic129_alignment_combos",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic129_alignment_combos.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic12_sparse_columns",
+      "case_id": "classic12_sparse_columns",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic12_sparse_columns.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic130_wrap_and_indent",
+      "case_id": "classic130_wrap_and_indent",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic130_wrap_and_indent.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic131_number_formats",
+      "case_id": "classic131_number_formats",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic131_number_formats.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic132_striped_table",
+      "case_id": "classic132_striped_table",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic132_striped_table.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic133_gradient_rows",
+      "case_id": "classic133_gradient_rows",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic133_gradient_rows.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic134_heatmap",
+      "case_id": "classic134_heatmap",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic134_heatmap.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic135_bottom_border_only",
+      "case_id": "classic135_bottom_border_only",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic135_bottom_border_only.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic136_financial_report_styled",
+      "case_id": "classic136_financial_report_styled",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic136_financial_report_styled.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic137_checkerboard",
+      "case_id": "classic137_checkerboard",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic137_checkerboard.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic138_color_grid",
+      "case_id": "classic138_color_grid",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic138_color_grid.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic139_pattern_fills",
+      "case_id": "classic139_pattern_fills",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic139_pattern_fills.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic13_date_strings",
+      "case_id": "classic13_date_strings",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic13_date_strings.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic140_rotated_text",
+      "case_id": "classic140_rotated_text",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic140_rotated_text.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic141_mixed_edge_borders",
+      "case_id": "classic141_mixed_edge_borders",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic141_mixed_edge_borders.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic142_styled_invoice",
+      "case_id": "classic142_styled_invoice",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic142_styled_invoice.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic143_colored_tabs",
+      "case_id": "classic143_colored_tabs",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic143_colored_tabs.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic144_note_style_cells",
+      "case_id": "classic144_note_style_cells",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic144_note_style_cells.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic145_status_badges",
+      "case_id": "classic145_status_badges",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic145_status_badges.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic146_double_border_table",
+      "case_id": "classic146_double_border_table",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic146_double_border_table.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic147_multi_sheet_styled",
+      "case_id": "classic147_multi_sheet_styled",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic147_multi_sheet_styled.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic148_frozen_styled_grid",
+      "case_id": "classic148_frozen_styled_grid",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic148_frozen_styled_grid.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic149_merged_styled_sections",
+      "case_id": "classic149_merged_styled_sections",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic149_merged_styled_sections.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic14_decimal_numbers",
+      "case_id": "classic14_decimal_numbers",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic14_decimal_numbers.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic150_kitchen_sink_styles",
+      "case_id": "classic150_kitchen_sink_styles",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic150_kitchen_sink_styles.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic151_multilingual_greetings",
+      "case_id": "classic151_multilingual_greetings",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic151_multilingual_greetings.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic152_emoji_sampler",
+      "case_id": "classic152_emoji_sampler",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic152_emoji_sampler.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic153_currency_symbols",
+      "case_id": "classic153_currency_symbols",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic153_currency_symbols.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic154_math_symbols",
+      "case_id": "classic154_math_symbols",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic154_math_symbols.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic155_diacritical_marks",
+      "case_id": "classic155_diacritical_marks",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic155_diacritical_marks.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic156_rtl_bidi_text",
+      "case_id": "classic156_rtl_bidi_text",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic156_rtl_bidi_text.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic157_cjk_extended",
+      "case_id": "classic157_cjk_extended",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic157_cjk_extended.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic158_emoji_skin_tones",
+      "case_id": "classic158_emoji_skin_tones",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic158_emoji_skin_tones.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic159_zwj_emoji",
+      "case_id": "classic159_zwj_emoji",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic159_zwj_emoji.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic15_negative_numbers",
+      "case_id": "classic15_negative_numbers",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic15_negative_numbers.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic160_punctuation_marks",
+      "case_id": "classic160_punctuation_marks",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic160_punctuation_marks.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic161_box_drawing",
+      "case_id": "classic161_box_drawing",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic161_box_drawing.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic162_cjk_emoji_styled",
+      "case_id": "classic162_cjk_emoji_styled",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic162_cjk_emoji_styled.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic163_cyrillic_alphabets",
+      "case_id": "classic163_cyrillic_alphabets",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic163_cyrillic_alphabets.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic164_indic_scripts",
+      "case_id": "classic164_indic_scripts",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic164_indic_scripts.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic165_southeast_asian",
+      "case_id": "classic165_southeast_asian",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic165_southeast_asian.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic166_emoji_progress",
+      "case_id": "classic166_emoji_progress",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic166_emoji_progress.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic167_musical_symbols",
+      "case_id": "classic167_musical_symbols",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic167_musical_symbols.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic168_mixed_ltr_rtl_styled",
+      "case_id": "classic168_mixed_ltr_rtl_styled",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic168_mixed_ltr_rtl_styled.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic169_korean_invoice",
+      "case_id": "classic169_korean_invoice",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic169_korean_invoice.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic16_percentage_strings",
+      "case_id": "classic16_percentage_strings",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic16_percentage_strings.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic170_emoji_dashboard",
+      "case_id": "classic170_emoji_dashboard",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic170_emoji_dashboard.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic171_ipa_phonetic",
+      "case_id": "classic171_ipa_phonetic",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic171_ipa_phonetic.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic172_emoji_timeline",
+      "case_id": "classic172_emoji_timeline",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic172_emoji_timeline.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic173_african_languages",
+      "case_id": "classic173_african_languages",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic173_african_languages.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic174_technical_symbols",
+      "case_id": "classic174_technical_symbols",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic174_technical_symbols.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic175_multiscript_catalog",
+      "case_id": "classic175_multiscript_catalog",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic175_multiscript_catalog.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic176_combining_characters",
+      "case_id": "classic176_combining_characters",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic176_combining_characters.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic177_emoji_calendar",
+      "case_id": "classic177_emoji_calendar",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic177_emoji_calendar.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic178_caucasus_ethiopic",
+      "case_id": "classic178_caucasus_ethiopic",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic178_caucasus_ethiopic.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic179_emoji_inventory",
+      "case_id": "classic179_emoji_inventory",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic179_emoji_inventory.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic17_currency_strings",
+      "case_id": "classic17_currency_strings",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic17_currency_strings.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic180_polyglot_paragraph",
+      "case_id": "classic180_polyglot_paragraph",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic180_polyglot_paragraph.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic181_feedback_tracker_with_images",
+      "case_id": "classic181_feedback_tracker_with_images",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic181_feedback_tracker_with_images.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic182_dense_long_text_columns",
+      "case_id": "classic182_dense_long_text_columns",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic182_dense_long_text_columns.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic183_mixed_content_grid",
+      "case_id": "classic183_mixed_content_grid",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic183_mixed_content_grid.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic184_wide_narrow_columns",
+      "case_id": "classic184_wide_narrow_columns",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic184_wide_narrow_columns.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic185_tall_rows_vertical_align",
+      "case_id": "classic185_tall_rows_vertical_align",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic185_tall_rows_vertical_align.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic186_multi_sheet_image_report",
+      "case_id": "classic186_multi_sheet_image_report",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic186_multi_sheet_image_report.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic187_bug_report_with_screenshots",
+      "case_id": "classic187_bug_report_with_screenshots",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic187_bug_report_with_screenshots.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic188_merged_header_with_images",
+      "case_id": "classic188_merged_header_with_images",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic188_merged_header_with_images.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic189_alternating_image_text_rows",
+      "case_id": "classic189_alternating_image_text_rows",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic189_alternating_image_text_rows.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic18_large_dataset",
+      "case_id": "classic18_large_dataset",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic18_large_dataset.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic190_dashboard_kpi_images",
+      "case_id": "classic190_dashboard_kpi_images",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic190_dashboard_kpi_images.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic191_payroll_calculator",
+      "case_id": "classic191_payroll_calculator",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic191_payroll_calculator.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic19_single_column_list",
+      "case_id": "classic19_single_column_list",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic19_single_column_list.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic20_all_empty_cells",
+      "case_id": "classic20_all_empty_cells",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic20_all_empty_cells.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic21_header_only",
+      "case_id": "classic21_header_only",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic21_header_only.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic22_long_sheet_name",
+      "case_id": "classic22_long_sheet_name",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic22_long_sheet_name.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic23_unicode_text",
+      "case_id": "classic23_unicode_text",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic23_unicode_text.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic24_red_text",
+      "case_id": "classic24_red_text",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic24_red_text.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic25_multiple_colors",
+      "case_id": "classic25_multiple_colors",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic25_multiple_colors.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic26_inline_strings",
+      "case_id": "classic26_inline_strings",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic26_inline_strings.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic27_single_row",
+      "case_id": "classic27_single_row",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic27_single_row.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic28_duplicate_values",
+      "case_id": "classic28_duplicate_values",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic28_duplicate_values.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic29_formula_results",
+      "case_id": "classic29_formula_results",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic29_formula_results.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic30_mixed_empty_and_filled_sheets",
+      "case_id": "classic30_mixed_empty_and_filled_sheets",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic30_mixed_empty_and_filled_sheets.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic31_bold_header_row",
+      "case_id": "classic31_bold_header_row",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic31_bold_header_row.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic32_right_aligned_numbers",
+      "case_id": "classic32_right_aligned_numbers",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic32_right_aligned_numbers.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic33_centered_text",
+      "case_id": "classic33_centered_text",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic33_centered_text.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic34_explicit_column_widths",
+      "case_id": "classic34_explicit_column_widths",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic34_explicit_column_widths.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic35_explicit_row_heights",
+      "case_id": "classic35_explicit_row_heights",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic35_explicit_row_heights.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic36_merged_cells",
+      "case_id": "classic36_merged_cells",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic36_merged_cells.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic37_freeze_panes",
+      "case_id": "classic37_freeze_panes",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic37_freeze_panes.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic38_hyperlink_cell",
+      "case_id": "classic38_hyperlink_cell",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic38_hyperlink_cell.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic39_financial_table",
+      "case_id": "classic39_financial_table",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic39_financial_table.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic40_scientific_notation",
+      "case_id": "classic40_scientific_notation",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic40_scientific_notation.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic41_integer_vs_float",
+      "case_id": "classic41_integer_vs_float",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic41_integer_vs_float.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic42_boolean_values",
+      "case_id": "classic42_boolean_values",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic42_boolean_values.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic43_inventory_report",
+      "case_id": "classic43_inventory_report",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic43_inventory_report.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic44_employee_roster",
+      "case_id": "classic44_employee_roster",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic44_employee_roster.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic45_sales_by_region",
+      "case_id": "classic45_sales_by_region",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic45_sales_by_region.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic46_grade_book",
+      "case_id": "classic46_grade_book",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic46_grade_book.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic47_time_series",
+      "case_id": "classic47_time_series",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic47_time_series.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic48_survey_results",
+      "case_id": "classic48_survey_results",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic48_survey_results.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic49_contact_list",
+      "case_id": "classic49_contact_list",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic49_contact_list.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic50_budget_vs_actuals",
+      "case_id": "classic50_budget_vs_actuals",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic50_budget_vs_actuals.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic51_product_catalog",
+      "case_id": "classic51_product_catalog",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic51_product_catalog.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic52_pivot_summary",
+      "case_id": "classic52_pivot_summary",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic52_pivot_summary.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic53_invoice",
+      "case_id": "classic53_invoice",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic53_invoice.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic54_multi_level_header",
+      "case_id": "classic54_multi_level_header",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic54_multi_level_header.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic55_error_values",
+      "case_id": "classic55_error_values",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic55_error_values.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic56_alternating_row_colors",
+      "case_id": "classic56_alternating_row_colors",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic56_alternating_row_colors.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic57_cjk_only",
+      "case_id": "classic57_cjk_only",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic57_cjk_only.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic58_mixed_numeric_formats",
+      "case_id": "classic58_mixed_numeric_formats",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic58_mixed_numeric_formats.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic59_multi_sheet_summary",
+      "case_id": "classic59_multi_sheet_summary",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic59_multi_sheet_summary.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic60_large_wide_table",
+      "case_id": "classic60_large_wide_table",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic60_large_wide_table.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic61_product_card_with_image",
+      "case_id": "classic61_product_card_with_image",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic61_product_card_with_image.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic62_company_logo_header",
+      "case_id": "classic62_company_logo_header",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic62_company_logo_header.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic63_two_products_side_by_side",
+      "case_id": "classic63_two_products_side_by_side",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic63_two_products_side_by_side.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic64_employee_directory_with_photo",
+      "case_id": "classic64_employee_directory_with_photo",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic64_employee_directory_with_photo.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic65_inventory_with_product_photos",
+      "case_id": "classic65_inventory_with_product_photos",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic65_inventory_with_product_photos.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic66_invoice_with_logo",
+      "case_id": "classic66_invoice_with_logo",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic66_invoice_with_logo.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic67_real_estate_listing",
+      "case_id": "classic67_real_estate_listing",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic67_real_estate_listing.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic68_restaurant_menu",
+      "case_id": "classic68_restaurant_menu",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic68_restaurant_menu.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic69_image_only_sheet",
+      "case_id": "classic69_image_only_sheet",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic69_image_only_sheet.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic70_product_catalog_with_images",
+      "case_id": "classic70_product_catalog_with_images",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic70_product_catalog_with_images.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic71_multi_sheet_with_images",
+      "case_id": "classic71_multi_sheet_with_images",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic71_multi_sheet_with_images.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic72_bar_chart_image_with_data",
+      "case_id": "classic72_bar_chart_image_with_data",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic72_bar_chart_image_with_data.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic73_event_flyer_with_banner",
+      "case_id": "classic73_event_flyer_with_banner",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic73_event_flyer_with_banner.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic74_dashboard_with_kpi_image",
+      "case_id": "classic74_dashboard_with_kpi_image",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic74_dashboard_with_kpi_image.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic75_certificate_with_seal",
+      "case_id": "classic75_certificate_with_seal",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic75_certificate_with_seal.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic76_product_image_grid",
+      "case_id": "classic76_product_image_grid",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic76_product_image_grid.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic77_news_article_with_hero_image",
+      "case_id": "classic77_news_article_with_hero_image",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic77_news_article_with_hero_image.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic78_small_icon_per_row",
+      "case_id": "classic78_small_icon_per_row",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic78_small_icon_per_row.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic79_wide_panoramic_banner",
+      "case_id": "classic79_wide_panoramic_banner",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic79_wide_panoramic_banner.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic80_portrait_tall_image",
+      "case_id": "classic80_portrait_tall_image",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic80_portrait_tall_image.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic81_step_by_step_with_images",
+      "case_id": "classic81_step_by_step_with_images",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic81_step_by_step_with_images.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic82_before_after_images",
+      "case_id": "classic82_before_after_images",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic82_before_after_images.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic83_color_swatch_palette",
+      "case_id": "classic83_color_swatch_palette",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic83_color_swatch_palette.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic84_travel_destination_cards",
+      "case_id": "classic84_travel_destination_cards",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic84_travel_destination_cards.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic85_lab_results_with_image",
+      "case_id": "classic85_lab_results_with_image",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic85_lab_results_with_image.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic86_software_screenshot_features",
+      "case_id": "classic86_software_screenshot_features",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic86_software_screenshot_features.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic87_sports_results_with_logos",
+      "case_id": "classic87_sports_results_with_logos",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic87_sports_results_with_logos.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic88_image_after_data",
+      "case_id": "classic88_image_after_data",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic88_image_after_data.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic89_nutrition_label_with_image",
+      "case_id": "classic89_nutrition_label_with_image",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic89_nutrition_label_with_image.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic90_project_status_with_milestones",
+      "case_id": "classic90_project_status_with_milestones",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic90_project_status_with_milestones.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic91_simple_bar_chart",
+      "case_id": "classic91_simple_bar_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic91_simple_bar_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic92_horizontal_bar_chart",
+      "case_id": "classic92_horizontal_bar_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic92_horizontal_bar_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic93_line_chart",
+      "case_id": "classic93_line_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic93_line_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic94_pie_chart",
+      "case_id": "classic94_pie_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic94_pie_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic95_area_chart",
+      "case_id": "classic95_area_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic95_area_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic96_scatter_chart",
+      "case_id": "classic96_scatter_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic96_scatter_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic97_doughnut_chart",
+      "case_id": "classic97_doughnut_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic97_doughnut_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic98_radar_chart",
+      "case_id": "classic98_radar_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic98_radar_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "classic99_bubble_chart",
+      "case_id": "classic99_bubble_chart",
+      "format": "xlsx",
+      "source_path": "tests/MiniPdf.Scripts/output/classic99_bubble_chart.xlsx",
+      "suite": "classic",
+      "tags": [
+        "classic",
+        "xlsx"
+      ]
+    }
+  ]
+}

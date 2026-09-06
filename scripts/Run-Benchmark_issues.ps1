@@ -31,7 +31,7 @@ param(
     [switch]$Heatmaps,
     [int]$HeatmapThreshold = 12,
     [double]$HeatmapGain = 5.0,
-    [int]$MaxComparePages = 0,
+    [int]$MaxComparePages = 15,
     [ValidateSet("libre", "office", "o365")]
     [string]$Engine = "o365"
 )
@@ -316,7 +316,7 @@ if ($xlsxFiles -and $xlsxFiles.Count -gt 0) {
         $compareArgs += @("--office-dir", $OfficeXlsx)
     }
     if ($Filter) { $compareArgs += @("--filter", $Filter) }
-    if ($MaxComparePages -gt 0) { $compareArgs += @("--max-pages", $MaxComparePages) }
+    $compareArgs += @("--max-pages", $MaxComparePages)
     if ($Heatmaps) {
         $compareArgs += @("--heatmaps", "--heatmap-threshold", $HeatmapThreshold, "--heatmap-gain", $HeatmapGain)
     }
@@ -400,6 +400,7 @@ if ($docxFiles -and $docxFiles.Count -gt 0) {
         $compareArgs += @("--office-dir", $OfficeDocx)
     }
     if ($Filter) { $compareArgs += @("--filter", $Filter) }
+    $compareArgs += @("--max-pages", $MaxComparePages)
     if ($Heatmaps) {
         $compareArgs += @("--heatmaps", "--heatmap-threshold", $HeatmapThreshold, "--heatmap-gain", $HeatmapGain)
     }

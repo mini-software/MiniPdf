@@ -16,15 +16,15 @@ param(
     [Parameter(Mandatory = $true)]
     [ValidateSet("dotnet", "rust", "java", "go", "python", "node")]
     [string]$Language,
-    [ValidateSet("classic", "issue")]
-    [string]$Suite = "classic",
+    [ValidateSet("all", "classic", "issue")]
+    [string]$Suite = "all",
     [ValidateSet("xlsx", "docx", "pptx")]
     [string]$Format = "xlsx",
     [ValidateSet("o365", "office", "libre")]
     [string]$Engine = "o365",
     [string]$Filter,
     [int]$MaxCases = 0,
-    [int]$MaxComparePages = 0,
+    [int]$MaxComparePages = 15,
     [double]$MinimumScore = 0.95,
     [string]$SourceDir,
     [string]$CandidateDir,
@@ -188,31 +188,56 @@ $Defaults = @{
     }
 }
 
-$Config = $Defaults["$Suite`:$Format"]
-if (-not $Config) {
+$SuiteNames = if ($Suite -eq "all") { @("classic", "issue") } else { @($Suite) }
+$SuiteConfigs = @($SuiteNames | ForEach-Object {
+    $SuiteName = $_
+    $SuiteConfig = $Defaults["$SuiteName`:$Format"]
+    if ($SuiteConfig) {
+        [pscustomobject]@{ Suite = $SuiteName; Config = $SuiteConfig }
+    }
+})
+if ($SuiteConfigs.Count -eq 0) {
     throw "No $Language benchmark fixtures are configured for suite=$Suite format=$Format."
 }
+$Config = $SuiteConfigs[0].Config
 if ($Engine -eq "libre") {
     Write-Warning "-Engine libre is retained for compatibility. Microsoft 365 remains the primary scored reference; LibreOffice is auxiliary."
 }
 
-$SourceDir = Resolve-RepoPath $(if ($SourceDir) { $SourceDir } else { $Config.Source })
-$ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $Config.OfficeReference })
-$AuxiliaryReferenceDir = Resolve-RepoPath $(if ($AuxiliaryReferenceDir) { $AuxiliaryReferenceDir } else { $Config.LibreReference })
 $ArtifactRoot = Resolve-RepoPath $(if ($ArtifactRoot) { $ArtifactRoot } else { "artifacts/$Language-benchmark/$Suite/$Format" })
+$SourceGroups = if ($SourceDir) {
+    @([pscustomobject]@{ Suite = $Suite; Config = $Config; Source = Resolve-RepoPath $SourceDir })
+} else {
+    @($SuiteConfigs | ForEach-Object {
+        [pscustomobject]@{ Suite = $_.Suite; Config = $_.Config; Source = Resolve-RepoPath $_.Config.Source }
+    })
+}
+$DefaultReferenceDir = if ($Suite -eq "all") { Join-Path $ArtifactRoot "references/o365" } else { Resolve-RepoPath $Config.OfficeReference }
+$DefaultAuxiliaryReferenceDir = if ($Suite -eq "all") { Join-Path $ArtifactRoot "references/libreoffice" } else { Resolve-RepoPath $Config.LibreReference }
+$ReferenceDir = Resolve-RepoPath $(if ($ReferenceDir) { $ReferenceDir } else { $DefaultReferenceDir })
+$AuxiliaryReferenceDir = Resolve-RepoPath $(if ($AuxiliaryReferenceDir) { $AuxiliaryReferenceDir } else { $DefaultAuxiliaryReferenceDir })
 $CandidateDir = Resolve-RepoPath $(if ($CandidateDir) { $CandidateDir } else { Join-Path $ArtifactRoot "candidates" })
 $ReportDir = Resolve-RepoPath $(if ($ReportDir) { $ReportDir } else { Join-Path $ArtifactRoot "report" })
 $ComparisonManifest = Join-Path $ReportDir "comparison_manifest.json"
 $CoverageManifest = Join-Path $ReportDir "benchmark_coverage.json"
 
-$SourceFiles = @(Get-ChildItem -LiteralPath $SourceDir -File -Filter "*.$Format" | Where-Object {
-    -not $Filter -or $_.BaseName -like "*$Filter*"
-} | Sort-Object Name)
+$SourceEntries = @($SourceGroups | ForEach-Object {
+    $SourceGroup = $_
+    Get-ChildItem -LiteralPath $SourceGroup.Source -File -Filter "*.$Format" | Where-Object {
+        -not $Filter -or $_.BaseName -like "*$Filter*"
+    } | ForEach-Object {
+        [pscustomobject]@{ Suite = $SourceGroup.Suite; Config = $SourceGroup.Config; Path = $_ }
+    }
+} | Sort-Object { $_.Path.Name })
 if ($MaxCases -gt 0) {
-    $SourceFiles = @($SourceFiles | Select-Object -First $MaxCases)
+    $SourceEntries = @($SourceEntries | Select-Object -First $MaxCases)
 }
-if ($SourceFiles.Count -eq 0) {
-    throw "No .$Format files matched '$Filter' in $SourceDir"
+if ($SourceEntries.Count -eq 0) {
+    throw "No .$Format files matched '$Filter' in the selected $Suite source directories."
+}
+$DuplicateNames = @($SourceEntries | Group-Object { $_.Path.BaseName } | Where-Object Count -gt 1)
+if ($DuplicateNames.Count -gt 0) {
+    throw "Duplicate fixture names cannot share one visual report: $($DuplicateNames.Name -join ', ')"
 }
 
 if (Test-Path -LiteralPath $ReportDir) {
@@ -220,13 +245,14 @@ if (Test-Path -LiteralPath $ReportDir) {
 }
 New-Item -ItemType Directory -Force -Path $CandidateDir, $ReferenceDir, $AuxiliaryReferenceDir, $ReportDir | Out-Null
 
-$SelectedCases = @($SourceFiles | ForEach-Object {
+$SelectedCases = @($SourceEntries | ForEach-Object {
+    $SourceEntry = $_
     [pscustomobject]@{
-        name = $_.BaseName
-        case_id = $_.BaseName
-        suite = $Suite
+        name = $SourceEntry.Path.BaseName
+        case_id = $SourceEntry.Path.BaseName
+        suite = $SourceEntry.Suite
         format = $Format
-        source_path = [System.IO.Path]::GetRelativePath($RepoRoot, $_.FullName).Replace("\", "/")
+        source_path = [System.IO.Path]::GetRelativePath($RepoRoot, $SourceEntry.Path.FullName).Replace("\", "/")
         conversion_status = "pending"
         conversion_exit_code = $null
         candidate_exists = $false
@@ -236,7 +262,7 @@ $SelectedCases = @($SourceFiles | ForEach-Object {
 })
 $CaseSources = @{}
 for ($Index = 0; $Index -lt $SelectedCases.Count; $Index++) {
-    $CaseSources[$SelectedCases[$Index].case_id] = $SourceFiles[$Index].FullName
+    $CaseSources[$SelectedCases[$Index].case_id] = $SourceEntries[$Index].Path.FullName
 }
 Write-Json ([pscustomobject]@{ cases = $SelectedCases }) $ComparisonManifest
 
@@ -343,20 +369,25 @@ if (-not $SkipCandidate) {
 
 if (-not $SkipReference) {
     $Python = Find-Python
-    $OfficeReferenceScript = Resolve-RepoPath $Config.OfficeReferenceScript
-    $LibreReferenceScript = Resolve-RepoPath $Config.LibreReferenceScript
-    $ReferenceFilters = if ($MaxCases -gt 0) { @($SourceFiles.BaseName) } else { @($Filter) }
-    foreach ($ReferenceFilter in $ReferenceFilters) {
-        $Providers = @(
-            [pscustomobject]@{ Script = $OfficeReferenceScript; Directory = $ReferenceDir; Label = $Config.OfficeLabel },
-            [pscustomobject]@{ Script = $LibreReferenceScript; Directory = $AuxiliaryReferenceDir; Label = "LibreOffice" }
-        )
-        foreach ($Provider in $Providers) {
-            $ReferenceArgs = @($Provider.Script, $Config.SourceArgument, $SourceDir, "--pdf-dir", $Provider.Directory)
-            if ($ReferenceFilter) { $ReferenceArgs += @("--filter", $ReferenceFilter) }
-            if ($ForceReference) { $ReferenceArgs += "--force" }
-            & $Python -X utf8 @ReferenceArgs
-            Assert-CommandSucceeded "$($Provider.Label) generation"
+    foreach ($SourceGroup in $SourceGroups) {
+        $GroupCases = @($SelectedCases | Where-Object suite -eq $SourceGroup.Suite)
+        if ($GroupCases.Count -eq 0) { continue }
+        $GroupConfig = $SourceGroup.Config
+        $OfficeReferenceScript = Resolve-RepoPath $GroupConfig.OfficeReferenceScript
+        $LibreReferenceScript = Resolve-RepoPath $GroupConfig.LibreReferenceScript
+        $ReferenceFilters = if ($MaxCases -gt 0) { @($GroupCases.name) } else { @($Filter) }
+        foreach ($ReferenceFilter in $ReferenceFilters) {
+            $Providers = @(
+                [pscustomobject]@{ Script = $OfficeReferenceScript; Directory = $ReferenceDir; Label = $GroupConfig.OfficeLabel },
+                [pscustomobject]@{ Script = $LibreReferenceScript; Directory = $AuxiliaryReferenceDir; Label = "LibreOffice" }
+            )
+            foreach ($Provider in $Providers) {
+                $ReferenceArgs = @($Provider.Script, $GroupConfig.SourceArgument, $SourceGroup.Source, "--pdf-dir", $Provider.Directory)
+                if ($ReferenceFilter) { $ReferenceArgs += @("--filter", $ReferenceFilter) }
+                if ($ForceReference) { $ReferenceArgs += "--force" }
+                & $Python -X utf8 @ReferenceArgs
+                Assert-CommandSucceeded "$($Provider.Label) generation"
+            }
         }
     }
 }
@@ -407,7 +438,7 @@ $CompareArgs = @(
     "--composite-images",
     "--heatmaps"
 )
-if ($MaxComparePages -gt 0) { $CompareArgs += @("--max-pages", $MaxComparePages) }
+$CompareArgs += @("--max-pages", $MaxComparePages)
 & $Python -X utf8 @CompareArgs
 Assert-CommandSucceeded "$Language visual comparison"
 $Results = @(Get-Content (Join-Path $ReportDir "comparison_report.json") -Raw | ConvertFrom-Json)

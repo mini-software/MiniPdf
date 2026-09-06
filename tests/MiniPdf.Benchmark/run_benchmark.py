@@ -1,5 +1,6 @@
 """
-Automated benchmark test: generates Excel files, converts them to PDF
+Automated benchmark test: generates classic Excel files, combines them with
+issue fixtures, converts them to PDF
 via MiniPdf and Microsoft 365 by default, compares the results, and produces a report.
 
 This is the single entry point for the full "self-evolution" pipeline.
@@ -10,7 +11,9 @@ Prerequisites:
     .NET 9 SDK (for MiniPdf)
 
 Usage:
-    python run_benchmark.py                   # full pipeline
+    python run_benchmark.py                   # all classic + issue XLSX fixtures
+    python run_benchmark.py --suite classic   # classic fixtures only
+    python run_benchmark.py --suite issue     # issue fixtures only
     python run_benchmark.py --skip-generate   # skip Excel generation
     python run_benchmark.py --skip-reference   # skip reference conversion
     python run_benchmark.py --skip-minipdf     # skip MiniPdf conversion
@@ -18,6 +21,7 @@ Usage:
 """
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -25,6 +29,7 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).parent.resolve()
 XLSX_DIR = SCRIPT_DIR / ".." / "MiniPdf.Scripts" / "output"
+ISSUE_XLSX_DIR = SCRIPT_DIR / ".." / "Issue_Files" / "xlsx"
 MINIPDF_PDF_DIR = SCRIPT_DIR / ".." / "MiniPdf.Scripts" / "pdf_output"
 REFERENCE_PDF_DIR = SCRIPT_DIR / "reference_pdfs"
 OFFICE_PDF_DIR = SCRIPT_DIR / "office_pdfs"
@@ -33,10 +38,12 @@ REPORT_DIR = SCRIPT_DIR / "reports"
 
 def configure_paths(args):
     """Override default benchmark paths without changing existing defaults."""
-    global XLSX_DIR, MINIPDF_PDF_DIR, REFERENCE_PDF_DIR, OFFICE_PDF_DIR, REPORT_DIR
+    global XLSX_DIR, ISSUE_XLSX_DIR, MINIPDF_PDF_DIR, REFERENCE_PDF_DIR, OFFICE_PDF_DIR, REPORT_DIR
 
     if args.source_dir:
         XLSX_DIR = Path(args.source_dir).resolve()
+    if args.issue_source_dir:
+        ISSUE_XLSX_DIR = Path(args.issue_source_dir).resolve()
     if args.minipdf_dir:
         MINIPDF_PDF_DIR = Path(args.minipdf_dir).resolve()
     if args.office_dir:
@@ -47,6 +54,54 @@ def configure_paths(args):
         REFERENCE_PDF_DIR = OFFICE_PDF_DIR
     if args.report_dir:
         REPORT_DIR = Path(args.report_dir).resolve()
+
+
+def selected_source_dirs(suite: str) -> list[tuple[str, Path]]:
+    """Return the source roots included in a benchmark suite."""
+    sources = []
+    if suite in {"all", "classic"}:
+        sources.append(("classic", XLSX_DIR))
+    if suite in {"all", "issue"}:
+        sources.append(("issue", ISSUE_XLSX_DIR))
+    return sources
+
+
+def write_comparison_manifest(suite: str) -> Path:
+    """Write one manifest for all selected classic and issue fixtures."""
+    repo_root = SCRIPT_DIR.parents[1]
+    cases = []
+    case_sources = {}
+
+    for case_suite, source_dir in selected_source_dirs(suite):
+        for source_path in sorted(source_dir.glob("*.xlsx"), key=lambda path: path.name.lower()):
+            name = source_path.stem
+            if name in case_sources:
+                raise ValueError(
+                    f"Duplicate XLSX fixture name '{name}' in {case_sources[name]} and {source_path}"
+                )
+            case_sources[name] = source_path
+            try:
+                relative_source = source_path.resolve().relative_to(repo_root).as_posix()
+            except ValueError:
+                relative_source = source_path.resolve().as_posix()
+            cases.append({
+                "name": name,
+                "case_id": name,
+                "format": "xlsx",
+                "source_path": relative_source,
+                "suite": case_suite,
+                "tags": [case_suite, "xlsx"],
+            })
+
+    if not cases:
+        raise ValueError(f"No XLSX fixtures found for suite '{suite}'")
+
+    REPORT_DIR.mkdir(parents=True, exist_ok=True)
+    manifest_path = REPORT_DIR / "comparison_manifest.json"
+    with open(manifest_path, "w", encoding="utf-8") as manifest_file:
+        json.dump({"cases": cases}, manifest_file, ensure_ascii=False, indent=2)
+        manifest_file.write("\n")
+    return manifest_path
 
 
 def banner(msg: str):
@@ -74,46 +129,56 @@ def step_generate_xlsx():
     )
 
 
-def step_generate_minipdf_pdfs(filter_pattern: str = None):
+def step_generate_minipdf_pdfs(suite: str, filter_pattern: str = None):
     """Step 2: Convert Excel files to PDF using MiniPdf."""
     banner("Step 2: Convert Excel -> PDF (MiniPdf)")
     scripts_dir = SCRIPT_DIR / ".." / "MiniPdf.Scripts"
 
-    cmd = ["dotnet", "run", "--configuration", "Release", "--no-cache", "convert_xlsx_to_pdf.cs", "--",
-           str(XLSX_DIR.resolve()), str(MINIPDF_PDF_DIR.resolve())]
-    if filter_pattern:
-        cmd += [filter_pattern]
-    return run(cmd, cwd=str(scripts_dir))
+    for case_suite, source_dir in selected_source_dirs(suite):
+        print(f"  [{case_suite}] {source_dir.resolve()}")
+        cmd = ["dotnet", "run", "--configuration", "Release", "--no-cache", "convert_xlsx_to_pdf.cs", "--",
+               str(source_dir.resolve()), str(MINIPDF_PDF_DIR.resolve())]
+        if filter_pattern:
+            cmd += [filter_pattern]
+        run(cmd, cwd=str(scripts_dir))
 
 
-def step_generate_reference_pdfs(filter_pattern: str = None, engine: str = "o365", force: bool = False):
+def step_generate_reference_pdfs(suite: str, filter_pattern: str = None, engine: str = "o365", force: bool = False):
     """Step 3: Convert Excel files to PDF using the chosen reference engine."""
     if engine in {"o365", "office"}:
         banner("Step 3: Convert Excel -> PDF (Office / Excel COM Reference)")
-        cmd = [sys.executable, "generate_office_pdfs.py",
-               "--xlsx-dir", str(XLSX_DIR.resolve()),
-               "--pdf-dir", str(REFERENCE_PDF_DIR.resolve())]
+        reference_script = "generate_office_pdfs.py"
     else:
         banner("Step 3: Convert Excel -> PDF (LibreOffice Reference)")
-        cmd = [sys.executable, "generate_reference_pdfs.py",
-               "--xlsx-dir", str(XLSX_DIR.resolve()),
+        reference_script = "generate_reference_pdfs.py"
+
+    result = 0
+    for case_suite, source_dir in selected_source_dirs(suite):
+        print(f"  [{case_suite}] {source_dir.resolve()}")
+        cmd = [sys.executable, reference_script,
+               "--xlsx-dir", str(source_dir.resolve()),
                "--pdf-dir", str(REFERENCE_PDF_DIR.resolve())]
-    if filter_pattern:
-        cmd += ["--filter", filter_pattern]
-    if force:
-        cmd += ["--force"]
-    return run(cmd, cwd=str(SCRIPT_DIR), check=False)
+        if filter_pattern:
+            cmd += ["--filter", filter_pattern]
+        if force:
+            cmd += ["--force"]
+        result = max(result, run(cmd, cwd=str(SCRIPT_DIR), check=False))
+    return result
 
 
-def step_generate_office_pdfs(filter_pattern: str = None):
+def step_generate_office_pdfs(suite: str, filter_pattern: str = None):
     """Step 3b: Convert Excel files to PDF using Office (Excel COM)."""
     banner("Step 3b: Convert Excel -> PDF (Office / Excel COM)")
-    cmd = [sys.executable, "generate_office_pdfs.py",
-           "--xlsx-dir", str(XLSX_DIR.resolve()),
-           "--pdf-dir", str(OFFICE_PDF_DIR.resolve())]
-    if filter_pattern:
-        cmd += ["--filter", filter_pattern]
-    return run(cmd, cwd=str(SCRIPT_DIR), check=False)
+    result = 0
+    for case_suite, source_dir in selected_source_dirs(suite):
+        print(f"  [{case_suite}] {source_dir.resolve()}")
+        cmd = [sys.executable, "generate_office_pdfs.py",
+               "--xlsx-dir", str(source_dir.resolve()),
+               "--pdf-dir", str(OFFICE_PDF_DIR.resolve())]
+        if filter_pattern:
+            cmd += ["--filter", filter_pattern]
+        result = max(result, run(cmd, cwd=str(SCRIPT_DIR), check=False))
+    return result
 
 
 def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: float = 0.90,
@@ -121,7 +186,8 @@ def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: 
                  report_scope: str = "shared", composite_images: bool = False,
                  candidate_label: str = "MiniPdf", reference_label: str = "Reference",
                  office_label: str = "Office", heatmaps: bool = False,
-                 heatmap_threshold: int = 12, heatmap_gain: float = 5.0):
+                 heatmap_threshold: int = 12, heatmap_gain: float = 5.0,
+                 max_compare_pages: int = 15):
     """Step 4: Compare MiniPdf PDFs against reference PDFs."""
     banner("Step 4: Compare MiniPdf vs Reference")
     cmd = [
@@ -129,6 +195,7 @@ def step_compare(ai_compare: bool = False, ai_max_pages: int = 1, ai_threshold: 
         "--minipdf-dir", str(MINIPDF_PDF_DIR.resolve()),
         "--reference-dir", str(REFERENCE_PDF_DIR.resolve()),
         "--report-dir", str(REPORT_DIR.resolve()),
+        "--max-pages", str(max_compare_pages),
     ]
     if use_office and OFFICE_PDF_DIR.is_dir():
         cmd += ["--office-dir", str(OFFICE_PDF_DIR.resolve())]
@@ -161,7 +228,6 @@ def step_analyze_report():
     md_path = REPORT_DIR / "comparison_report.md"
 
     if json_path.exists():
-        import json
         with open(json_path, "r", encoding="utf-8") as f:
             results = json.load(f)
 
@@ -195,6 +261,8 @@ def step_analyze_report():
 
 def main():
     parser = argparse.ArgumentParser(description="MiniPdf Benchmark Pipeline")
+    parser.add_argument("--suite", choices=["all", "classic", "issue"], default="all",
+                        help="Fixture suite to run (default: all classic and issue XLSX files)")
     parser.add_argument("--filter", default=None, metavar="PATTERN",
                         help="Only process files matching this substring (e.g. 'border' or 'chart_bar')")
     parser.add_argument("--skip-generate", action="store_true", help="Skip Excel generation")
@@ -216,7 +284,9 @@ def main():
     parser.add_argument("--ai-threshold", type=float, default=0.97, metavar="T",
                         help="Skip AI call when pixel score >= threshold (default: 0.97)")
     parser.add_argument("--source-dir", default=None, metavar="DIR",
-                        help="Shared XLSX source directory (default: tests/MiniPdf.Scripts/output)")
+                        help="Classic XLSX source directory (default: tests/MiniPdf.Scripts/output)")
+    parser.add_argument("--issue-source-dir", default=None, metavar="DIR",
+                        help="Issue XLSX source directory (default: tests/Issue_Files/xlsx)")
     parser.add_argument("--minipdf-dir", default=None, metavar="DIR",
                         help="MiniPdf PDF output directory override")
     parser.add_argument("--reference-dir", default=None, metavar="DIR",
@@ -237,6 +307,8 @@ def main():
                         help="Heatmap difference threshold (default: 12)")
     parser.add_argument("--heatmap-gain", type=float, default=5.0, metavar="G",
                         help="Heatmap difference amplification (default: 5.0)")
+    parser.add_argument("--max-pages", type=int, default=15, metavar="N",
+                        help="Compare at most N pages per PDF (default: 15); 0 compares all pages")
     parser.add_argument("--candidate-label", default="MiniPdf",
                         help="Candidate renderer label for composite images")
     parser.add_argument("--reference-label", default=None,
@@ -248,7 +320,9 @@ def main():
     configure_paths(args)
 
     banner("MiniPdf Self-Evolution Benchmark Pipeline")
-    print(f"  XLSX dir:      {XLSX_DIR.resolve()}")
+    print(f"  Suite:         {args.suite}")
+    for case_suite, source_dir in selected_source_dirs(args.suite):
+        print(f"  {case_suite.title()} XLSX: {source_dir.resolve()}")
     print(f"  MiniPdf PDFs:  {MINIPDF_PDF_DIR.resolve()}")
     print(f"  Reference PDFs:{REFERENCE_PDF_DIR.resolve()}")
     print(f"  Ref engine:    {args.engine}")
@@ -260,8 +334,8 @@ def main():
     ai_kwargs = dict(ai_compare=args.ai_compare, ai_max_pages=args.ai_max_pages, ai_threshold=args.ai_threshold)
     compare_kwargs = dict(**ai_kwargs, use_office=args.with_office)
     compare_kwargs.update(
-        manifest=args.manifest,
-        report_scope=args.report_scope,
+        manifest=args.manifest or str(write_comparison_manifest(args.suite)),
+        report_scope=args.report_scope if args.report_scope != "shared" else f"xlsx-{args.suite}",
         composite_images=args.composite_images,
         candidate_label=args.candidate_label,
         reference_label=reference_label,
@@ -269,6 +343,7 @@ def main():
         heatmaps=args.heatmaps,
         heatmap_threshold=args.heatmap_threshold,
         heatmap_gain=args.heatmap_gain,
+        max_compare_pages=args.max_pages,
     )
     filt = args.filter
 
@@ -277,17 +352,17 @@ def main():
         step_analyze_report()
         return
 
-    if not args.skip_generate and not filt:
+    if args.suite in {"all", "classic"} and not args.skip_generate and not filt:
         step_generate_xlsx()
 
     if not args.skip_minipdf:
-        step_generate_minipdf_pdfs(filter_pattern=filt)
+        step_generate_minipdf_pdfs(args.suite, filter_pattern=filt)
 
     if not args.skip_reference:
-        step_generate_reference_pdfs(filter_pattern=filt, engine=args.engine, force=args.force_reference)
+        step_generate_reference_pdfs(args.suite, filter_pattern=filt, engine=args.engine, force=args.force_reference)
 
     if args.with_office and not args.skip_office:
-        step_generate_office_pdfs(filter_pattern=filt)
+        step_generate_office_pdfs(args.suite, filter_pattern=filt)
 
     step_compare(**compare_kwargs, filter_pattern=filt)
     step_analyze_report()
