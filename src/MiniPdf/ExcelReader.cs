@@ -131,8 +131,7 @@ internal static class ExcelReader
             }
             if (sheet.PaperSize == 0)
             {
-                sheet.PaperSize = firstExplicitPaperSize ??
-                    (sheet.Rows.Count >= 1000 && sheet.ColumnWidths.Count == 0 && sheet.DefaultColumnWidth <= 0f ? 9 : 1);
+                sheet.PaperSize = firstExplicitPaperSize ?? 9;
             }
         }
 
@@ -3111,7 +3110,7 @@ internal static class ExcelReader
     {
         var isLandscape = false;
         var scale = 100;
-        var paperSize = 0; // 0 = not specified (will inherit from first sheet or default to US Letter)
+        var paperSize = 0; // 0 = not specified (will inherit from first sheet or default to A4)
         float marginLeft = -1, marginRight = -1, marginTop = -1, marginBottom = -1, footerMargin = -1;
         var fitToPage = false;
         var fitToPageInferred = false;

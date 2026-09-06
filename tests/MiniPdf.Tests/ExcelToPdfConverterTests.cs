@@ -27,6 +27,30 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_WithoutPaperSize_UsesA4Page()
+    {
+        using var excelStream = CreateSimpleExcel(new[] { new[] { "A4" } });
+
+        var page = Assert.Single(ExcelToPdfConverter.Convert(excelStream).Pages);
+
+        Assert.Equal(595.2756f, page.Width, 3);
+        Assert.Equal(841.8898f, page.Height, 3);
+    }
+
+    [Fact]
+    public void Convert_WithExplicitLetterPaperSize_UsesLetterPage()
+    {
+        using var excelStream = CreateSimpleExcel(
+            new[] { new[] { "Letter" } },
+            includeUnflaggedFitAttributes: true);
+
+        var page = Assert.Single(ExcelToPdfConverter.Convert(excelStream).Pages);
+
+        Assert.Equal(612f, page.Width, 3);
+        Assert.Equal(792f, page.Height, 3);
+    }
+
+    [Fact]
     public void Convert_WorksheetImage_RendersAboveCellText()
     {
         using var excelStream = CreateExcelWithImageOverCell();
