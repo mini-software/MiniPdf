@@ -1,11 +1,11 @@
 {
   "cases": [
     {
-      "name": "Issue202609031340",
-      "case_id": "Issue202609031340",
+      "name": "XlsxIssue77_Template1",
+      "case_id": "XlsxIssue77_Template1",
       "suite": "issue",
       "format": "xlsx",
-      "source_path": "tests/Issue_Files/xlsx/Issue202609031340.xlsx",
+      "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx",
       "conversion_status": "pending",
       "conversion_exit_code": null,
       "candidate_exists": false,

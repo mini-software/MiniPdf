@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClassicFixtureSmokeTest {
@@ -31,6 +32,22 @@ class ClassicFixtureSmokeTest {
 
         assertTrue(pdf.contains("INVOICE"));
         assertTrue(pdf.contains("Wedding florals"));
+    }
+
+    @Test
+    void defaultsUnspecifiedXlsxPaperSizeToA4() throws Exception {
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx");
+
+        try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
+            assertEquals(PageSize.A4.width(), document.getPage(0).getMediaBox().getWidth(), 0.1f);
+            assertEquals(PageSize.A4.height(), document.getPage(0).getMediaBox().getHeight(), 0.1f);
+            assertEquals(6, document.getNumberOfPages());
+            PDFTextStripper stripper = new PDFTextStripper();
+            stripper.setStartPage(2);
+            stripper.setEndPage(2);
+            String secondPage = stripper.getText(document);
+            assertTrue(secondPage.contains("RMA AUTHORIZATION"), secondPage);
+        }
     }
 
     @Test

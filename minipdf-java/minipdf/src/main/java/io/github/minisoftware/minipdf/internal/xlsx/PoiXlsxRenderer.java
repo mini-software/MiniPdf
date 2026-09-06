@@ -68,6 +68,7 @@ final class PoiXlsxRenderer {
     private static final float POINTS_PER_INCH = 72.0f;
     private static final float EMU_PER_POINT = 12_700.0f;
     private static final float CELL_PADDING = 2.0f;
+    private static final float VERDANA_ROW_HEIGHT_SCALE = 0.919f;
     private static final float CENTERED_VML_HORIZONTAL_GEOMETRY_SCALE = 1.0777f;
     private static final float CENTERED_VML_BORDER_SCALE = 1.8f;
 
@@ -121,6 +122,13 @@ final class PoiXlsxRenderer {
         PageGeometry geometry = pageGeometry(sheet, options);
         XSSFPrintSetup setup = sheet.getPrintSetup();
         List<CellRangeAddress> merged = sheet.getMergedRegions();
+        CellRangeAddress repeatingRows = sheet.getRepeatingRows();
+        int repeatingFirstRow = repeatingRows == null
+            ? -1
+            : Math.max(area.getFirstRow(), repeatingRows.getFirstRow());
+        int repeatingLastRow = repeatingRows == null
+            ? -1
+            : Math.min(area.getLastRow(), repeatingRows.getLastRow());
         boolean hasPrintArea = printAreaValue(workbook, sheet, sheetIndex) != null;
         float verticalScaleLimit = explicitScale(sheet) && sheet.getVerticallyCenter()
             ? Math.min(1.0f, geometry.usableHeight() / rowsBefore(
@@ -135,28 +143,36 @@ final class PoiXlsxRenderer {
                 group.lastColumn());
             int startRow = area.getFirstRow();
             while (startRow <= area.getLastRow()) {
-            int endRow = pageEndRow(
-                sheet,
-                startRow,
-                area.getLastRow(),
-                geometry.usableHeight(),
-                group.scale());
-            renderPage(
-                document,
-                fonts,
-                workbook,
-                sheet,
-                groupArea,
-                merged,
-                group.widths(),
-                startRow,
-                endRow,
-                group.scale(),
-                geometry,
-                formatter,
+                boolean repeatTitles = repeatingFirstRow >= 0 && startRow > repeatingLastRow;
+                float repeatingHeight = repeatTitles
+                    ? rowsBefore(sheet, repeatingFirstRow, repeatingLastRow + 1) * group.scale()
+                    : 0.0f;
+                int endRow = pageEndRow(
+                    sheet,
+                    startRow,
+                    area.getLastRow(),
+                    geometry.usableHeight() - repeatingHeight,
+                    group.scale());
+                List<RowRange> pageRows = repeatTitles
+                    ? List.of(
+                        new RowRange(repeatingFirstRow, repeatingLastRow),
+                        new RowRange(startRow, endRow))
+                    : List.of(new RowRange(startRow, endRow));
+                renderPage(
+                    document,
+                    fonts,
+                    workbook,
+                    sheet,
+                    groupArea,
+                    merged,
+                    group.widths(),
+                    pageRows,
+                    group.scale(),
+                    geometry,
+                    formatter,
                         evaluator,
                         legacyPictures);
-            startRow = endRow + 1;
+                startRow = endRow + 1;
             }
         }
     }
@@ -169,14 +185,13 @@ final class PoiXlsxRenderer {
             CellRangeAddress area,
             List<CellRangeAddress> merged,
             float[] columnWidths,
-            int startRow,
-            int endRow,
+            List<RowRange> pageRows,
             float scale,
             PageGeometry geometry,
             DataFormatter formatter,
             FormulaEvaluator evaluator,
             List<LegacyPicture> legacyPictures) throws IOException {
-        PDPage page = new PDPage(new PDRectangle(geometry.width(), geometry.height()));
+        PDPage page = new PDPage(new PDRectangle(geometry.mediaWidth(), geometry.mediaHeight()));
         document.addPage(page);
         float unscaledWidth = sum(columnWidths, 0, columnWidths.length);
         float horizontalScale = scale;
@@ -196,28 +211,35 @@ final class PoiXlsxRenderer {
             columnWidths,
             geometry.marginLeft() + horizontalOffset,
             horizontalScale);
-        float usedHeight = rowsBefore(sheet, startRow, endRow + 1) * scale;
+        float usedHeight = (float) pageRows.stream()
+                .mapToDouble(rows -> rowsBefore(sheet, rows.firstRow(), rows.lastRow() + 1) * scale)
+            .reduce(0.0, Double::sum);
         float centerOffset = sheet.getVerticallyCenter()
             ? Math.max(0.0f, (geometry.usableHeight() - usedHeight) / 2.0f)
             : 0.0f;
-        float[] rowTop = rowPositions(
-            sheet,
-            startRow,
-            endRow,
-            geometry.height() - geometry.marginTop() - centerOffset,
-            scale);
         try (PDPageContentStream content = new PDPageContentStream(document, page)) {
-            for (int rowIndex = startRow; rowIndex <= endRow; rowIndex++) {
-                Row row = sheet.getRow(rowIndex);
-                float cellTop = rowTop[rowIndex - startRow];
-                float cellHeight = rowHeight(sheet, rowIndex) * scale;
-                for (int column = area.getFirstColumn(); column <= area.getLastColumn(); column++) {
-                    int localColumn = column - area.getFirstColumn();
-                    float x = columnX[localColumn];
-                    float width = columnWidths[localColumn] * horizontalScale;
-                    Cell cell = row == null ? null : row.getCell(column, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
-                    XSSFCellStyle style = cell == null ? null : (XSSFCellStyle) cell.getCellStyle();
-                    CellRangeAddress merge = mergedAt(merged, rowIndex, column);
+            content.transform(new Matrix(
+                    geometry.outputScale(),
+                    0.0f,
+                    0.0f,
+                    geometry.outputScale(),
+                    geometry.outputOffsetX(),
+                    geometry.outputOffsetY()));
+            float rangeOffset = 0.0f;
+            for (RowRange rows : pageRows) {
+                float cellTop = geometry.layoutHeight() - geometry.marginTop() - centerOffset - rangeOffset;
+                for (int rowIndex = rows.firstRow(); rowIndex <= rows.lastRow(); rowIndex++) {
+                    Row row = sheet.getRow(rowIndex);
+                    float cellHeight = rowHeight(sheet, rowIndex) * scale;
+                    for (int column = area.getFirstColumn(); column <= area.getLastColumn(); column++) {
+                        int localColumn = column - area.getFirstColumn();
+                        float x = columnX[localColumn];
+                        float width = columnWidths[localColumn] * horizontalScale;
+                        Cell cell = row == null
+                                ? null
+                                : row.getCell(column, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
+                        XSSFCellStyle style = cell == null ? null : (XSSFCellStyle) cell.getCellStyle();
+                        CellRangeAddress merge = mergedAt(merged, rowIndex, column);
                         boolean mergeOrigin = merge != null
                             && rowIndex == merge.getFirstRow()
                             && column == merge.getFirstColumn();
@@ -226,9 +248,9 @@ final class PoiXlsxRenderer {
                             : mergedWidth(columnWidths, area.getFirstColumn(), merge, horizontalScale);
                         float textHeight = merge == null
                             ? cellHeight
-                            : mergedHeight(sheet, merge, startRow, endRow, scale);
+                            : mergedHeight(sheet, merge, rows.firstRow(), rows.lastRow(), scale);
                         if (merge == null || mergeOrigin) {
-                        drawCell(
+                            drawCell(
                                 content,
                                 style,
                                 x,
@@ -237,12 +259,11 @@ final class PoiXlsxRenderer {
                                 textHeight,
                                 centeredLegacy ? CENTERED_VML_BORDER_SCALE : 1.0f);
                         }
-                    if (cell == null || (merge != null
-                            && !mergeOrigin)) {
-                        continue;
-                    }
-                    String value = formatter.formatCellValue(cell, evaluator);
-                    drawText(
+                        if (cell == null || (merge != null && !mergeOrigin)) {
+                            continue;
+                        }
+                        String value = formatter.formatCellValue(cell, evaluator);
+                        drawText(
                             content,
                             fonts,
                             workbook,
@@ -255,22 +276,25 @@ final class PoiXlsxRenderer {
                             textHeight,
                             scale,
                             centeredLegacy ? 0.75f : CELL_PADDING);
+                    }
+                    cellTop -= cellHeight;
                 }
-            }
                 drawPictures(
                     document,
                     content,
                     sheet,
                     area,
                     columnWidths,
-                    startRow,
-                    endRow,
+                    rows.firstRow(),
+                    rows.lastRow(),
                     scale,
                     horizontalScale,
                     geometry,
                     horizontalOffset,
-                    centerOffset,
+                    centerOffset + rangeOffset,
                     legacyPictures);
+                rangeOffset += rowsBefore(sheet, rows.firstRow(), rows.lastRow() + 1) * scale;
+            }
         }
     }
 
@@ -336,7 +360,7 @@ final class PoiXlsxRenderer {
         }
         XSSFFont cellFont = workbook.getFontAt(style == null ? 0 : style.getFontIndex());
         float fontSize = Math.max(4.0f, cellFont.getFontHeightInPoints() * scale);
-        PDFont font = fonts.resolve(cellFont.getFontName(), value, cellFont.getBold());
+        PDFont font = fonts.resolve(cellFont.getFontName(), value, cellFont.getBold(), cellFont.getItalic());
         String safeValue = fonts.sanitize(font, value.replace('\t', ' ').replace('\r', '\n'));
         List<String> lines = style != null && style.getRotation() == 255
             ? safeValue.codePoints()
@@ -346,11 +370,11 @@ final class PoiXlsxRenderer {
                 : wrap(font, safeValue, fontSize, width - padding * 2.0f, style != null && style.getWrapText());
         float lineHeight = fontSize * 1.18f;
         float verticalPadding = padding;
-        int maxLines = Math.max(1, (int) ((height - verticalPadding * 2.0f) / lineHeight));
+        int maxLines = Math.max(1, 1 + (int) Math.floor((height - fontSize) / lineHeight));
         if (lines.size() > maxLines) {
             lines = lines.subList(0, maxLines);
         }
-        float blockHeight = lines.size() * lineHeight;
+        float blockHeight = fontSize + Math.max(0, lines.size() - 1) * lineHeight;
         VerticalAlignment vertical = style == null ? VerticalAlignment.BOTTOM : style.getVerticalAlignment();
         float baseline = switch (vertical) {
             case TOP -> y + height - verticalPadding - fontSize;
@@ -362,7 +386,8 @@ final class PoiXlsxRenderer {
         content.addRect(x + 0.2f, y + 0.2f, Math.max(0.1f, width - 0.4f), Math.max(0.1f, height - 0.4f));
         content.clip();
         content.setNonStrokingColor(textColor);
-        if (cellFont.getBold()) {
+        if (cellFont.getBold()
+            && fonts.requiresSyntheticBold(cellFont.getFontName(), value, cellFont.getItalic())) {
             content.setStrokingColor(textColor);
             content.setLineWidth(Math.max(0.15f, fontSize * 0.025f));
             content.setRenderingMode(RenderingMode.FILL_STROKE);
@@ -417,7 +442,7 @@ final class PoiXlsxRenderer {
                         float x = geometry.marginLeft() + horizontalOffset
                             + columnsBefore(columnWidths, area.getFirstColumn(), anchor.getCol1()) * horizontalScale
                             + anchor.getDx1() / EMU_PER_POINT * horizontalScale;
-                        float top = geometry.height() - geometry.marginTop() - centerOffset
+                        float top = geometry.layoutHeight() - geometry.marginTop() - centerOffset
                             - rowsBefore(sheet, startRow, anchor.getRow1()) * scale
                             - anchor.getDy1() / EMU_PER_POINT * scale;
                     float width = (columnsBefore(columnWidths, area.getFirstColumn(), anchor.getCol2())
@@ -476,7 +501,7 @@ final class PoiXlsxRenderer {
             float x = geometry.marginLeft() + horizontalOffset
                 + columnsBefore(columnWidths, area.getFirstColumn(), column1) * horizontalScale
                 + columnWidth(sheet, column1) * anchor[1] / 1024.0f * horizontalScale;
-            float top = geometry.height() - geometry.marginTop() - centerOffset
+            float top = geometry.layoutHeight() - geometry.marginTop() - centerOffset
                 - rowsBefore(sheet, startRow, row1) * scale
                 - rowHeight(sheet, row1) * anchor[3] / 256.0f * scale;
             float width = (columnsBefore(columnWidths, area.getFirstColumn(), column2)
@@ -585,27 +610,46 @@ final class PoiXlsxRenderer {
 
     private static PageGeometry pageGeometry(XSSFSheet sheet, ConversionOptions options) {
         PageSize configured = options.pageSize().orElse(null);
-        float width;
-        float height;
+        float layoutWidth;
+        float layoutHeight;
+        float mediaWidth;
+        float mediaHeight;
         if (configured != null) {
-            width = configured.width();
-            height = configured.height();
+            layoutWidth = configured.width();
+            layoutHeight = configured.height();
+            mediaWidth = layoutWidth;
+            mediaHeight = layoutHeight;
         } else {
             PrintSetup setup = sheet.getPrintSetup();
+            boolean explicitPaperSize = sheet.getCTWorksheet().isSetPageSetup()
+                    && sheet.getCTWorksheet().getPageSetup().isSetPaperSize();
             boolean letter = setup.getPaperSize() == PrintSetup.LETTER_PAPERSIZE;
-            width = letter ? PageSize.LETTER.width() : PageSize.A4.width();
-            height = letter ? PageSize.LETTER.height() : PageSize.A4.height();
+            layoutWidth = letter ? PageSize.LETTER.width() : PageSize.A4.width();
+            layoutHeight = letter ? PageSize.LETTER.height() : PageSize.A4.height();
+            mediaWidth = explicitPaperSize ? layoutWidth : PageSize.A4.width();
+            mediaHeight = explicitPaperSize ? layoutHeight : PageSize.A4.height();
             if (setup.getLandscape()) {
-                float swap = width;
-                width = height;
-                height = swap;
+                float layoutSwap = layoutWidth;
+                layoutWidth = layoutHeight;
+                layoutHeight = layoutSwap;
+                float mediaSwap = mediaWidth;
+                mediaWidth = mediaHeight;
+                mediaHeight = mediaSwap;
             }
         }
         float left = margin(sheet.getMargin(PageMargin.LEFT), 0.25f);
         float right = margin(sheet.getMargin(PageMargin.RIGHT), 0.25f);
         float top = margin(sheet.getMargin(PageMargin.TOP), 0.3f);
         float bottom = margin(sheet.getMargin(PageMargin.BOTTOM), 0.3f);
-        return new PageGeometry(width, height, left, right, top, bottom);
+        return new PageGeometry(
+            layoutWidth,
+            layoutHeight,
+            mediaWidth,
+            mediaHeight,
+            left,
+            right,
+            top,
+            bottom);
     }
 
     private static float margin(double inches, float fallback) {
@@ -718,7 +762,18 @@ final class PoiXlsxRenderer {
 
     private static float rowHeight(XSSFSheet sheet, int rowIndex) {
         Row row = sheet.getRow(rowIndex);
-        return row == null || row.getZeroHeight() ? sheet.getDefaultRowHeightInPoints() : row.getHeightInPoints();
+        float height = row == null || row.getZeroHeight()
+                ? sheet.getDefaultRowHeightInPoints()
+                : row.getHeightInPoints();
+        if (row != null) {
+            for (Cell cell : row) {
+                XSSFFont font = sheet.getWorkbook().getFontAt(cell.getCellStyle().getFontIndex());
+                if ("verdana".equalsIgnoreCase(font.getFontName())) {
+                    return height * VERDANA_ROW_HEIGHT_SCALE;
+                }
+            }
+        }
+        return height;
     }
 
     private static CellRangeAddress mergedAt(List<CellRangeAddress> merged, int row, int column) {
@@ -814,7 +869,7 @@ final class PoiXlsxRenderer {
         if (source == null) {
             return fallback;
         }
-        byte[] rgb = source.getRGB();
+        byte[] rgb = source.getRGBWithTint();
         if (rgb == null || rgb.length < 3) {
             byte[] argb = source.getARGB();
             if (argb == null || argb.length < 4) {
@@ -826,27 +881,48 @@ final class PoiXlsxRenderer {
     }
 
     private record PageGeometry(
-            float width,
-            float height,
+            float layoutWidth,
+            float layoutHeight,
+            float mediaWidth,
+            float mediaHeight,
             float marginLeft,
             float marginRight,
             float marginTop,
             float marginBottom) {
         float usableWidth() {
-            return width - marginLeft - marginRight;
+            return layoutWidth - marginLeft - marginRight;
         }
 
         float usableHeight() {
-            return height - marginTop - marginBottom;
+            return layoutHeight - marginTop - marginBottom;
+        }
+
+        float outputScale() {
+            return Math.min(mediaWidth / layoutWidth, mediaHeight / layoutHeight);
+        }
+
+        float outputOffsetX() {
+            return (mediaWidth - layoutWidth * outputScale()) / 2.0f;
+        }
+
+        float outputOffsetY() {
+            return (mediaHeight - layoutHeight * outputScale()) / 2.0f;
         }
     }
 
     private record ColumnGroup(int firstColumn, int lastColumn, float[] widths, float scale) {
     }
 
+    private record RowRange(int firstRow, int lastRow) {
+    }
+
     private static final class FontSet {
         private final PDFont latin;
         private final PDFont latinBold;
+        private final PDFont verdana;
+        private final PDFont verdanaBold;
+        private final PDFont verdanaItalic;
+        private final PDFont verdanaBoldItalic;
         private final PDFont calibri;
         private final PDFont calibriBold;
         private final PDFont times;
@@ -860,6 +936,10 @@ final class PoiXlsxRenderer {
         private FontSet(
                 PDFont latin,
                 PDFont latinBold,
+                PDFont verdana,
+                PDFont verdanaBold,
+                PDFont verdanaItalic,
+                PDFont verdanaBoldItalic,
                 PDFont calibri,
                 PDFont calibriBold,
                 PDFont times,
@@ -871,6 +951,10 @@ final class PoiXlsxRenderer {
                 PDFont kaiti) {
             this.latin = latin;
             this.latinBold = latinBold;
+            this.verdana = verdana;
+            this.verdanaBold = verdanaBold;
+            this.verdanaItalic = verdanaItalic;
+            this.verdanaBoldItalic = verdanaBoldItalic;
             this.calibri = calibri;
             this.calibriBold = calibriBold;
             this.times = times;
@@ -889,6 +973,14 @@ final class PoiXlsxRenderer {
             }
             PDFont latin = load(document, registered, List.of("arial"), systemFonts("arial.ttf"));
             PDFont latinBold = load(document, registered, List.of("arialbd"), systemFonts("arialbd.ttf"));
+                PDFont verdana = load(document, registered, List.of("verdana"), systemFonts("verdana.ttf"));
+                PDFont verdanaBold = load(document, registered, List.of("verdanab"), systemFonts("verdanab.ttf"));
+                PDFont verdanaItalic = load(document, registered, List.of("verdanai"), systemFonts("verdanai.ttf"));
+                PDFont verdanaBoldItalic = load(
+                    document,
+                    registered,
+                    List.of("verdanaz"),
+                    systemFonts("verdanaz.ttf"));
             PDFont calibri = load(document, registered, List.of("calibri"), systemFonts("calibri.ttf"));
             PDFont calibriBold = load(
                     document,
@@ -912,6 +1004,18 @@ final class PoiXlsxRenderer {
             }
             if (latinBold == null) {
                 latinBold = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
+            }
+            if (verdana == null) {
+                verdana = latin;
+            }
+            if (verdanaBold == null) {
+                verdanaBold = latinBold;
+            }
+            if (verdanaItalic == null) {
+                verdanaItalic = verdana;
+            }
+            if (verdanaBoldItalic == null) {
+                verdanaBoldItalic = verdanaBold;
             }
             if (calibri == null) {
                 calibri = latin;
@@ -941,6 +1045,10 @@ final class PoiXlsxRenderer {
             return new FontSet(
                     latin,
                     latinBold,
+                    verdana,
+                    verdanaBold,
+                    verdanaItalic,
+                    verdanaBoldItalic,
                     calibri,
                     calibriBold,
                     times,
@@ -952,7 +1060,7 @@ final class PoiXlsxRenderer {
                     kaiti);
         }
 
-        PDFont resolve(String requested, String text, boolean bold) {
+        PDFont resolve(String requested, String text, boolean bold, boolean italic) {
             String name = requested == null ? "" : requested.toLowerCase(Locale.ROOT);
             if (name.contains("kaiti") || name.contains("kai") || name.contains("楷")) {
                 return kaiti;
@@ -966,6 +1074,15 @@ final class PoiXlsxRenderer {
             if (text.codePoints().anyMatch(codePoint -> codePoint > 255)) {
                 return bold ? cjkBold : cjk;
             }
+            if (name.contains("verdana")) {
+                if (bold && italic) {
+                    return verdanaBoldItalic;
+                }
+                if (italic) {
+                    return verdanaItalic;
+                }
+                return bold ? verdanaBold : verdana;
+            }
             if (name.contains("calibri")) {
                 return bold ? calibriBold : calibri;
             }
@@ -973,6 +1090,10 @@ final class PoiXlsxRenderer {
                 return bold ? timesBold : times;
             }
             return bold ? latinBold : latin;
+        }
+
+        boolean requiresSyntheticBold(String requested, String text, boolean italic) {
+            return resolve(requested, text, true, italic) == resolve(requested, text, false, italic);
         }
 
         String sanitize(PDFont font, String value) throws IOException {

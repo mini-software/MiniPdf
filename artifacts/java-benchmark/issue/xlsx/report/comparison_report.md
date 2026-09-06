@@ -1,34 +1,42 @@
 # java MiniPdf vs Microsoft 365 Excel Reference PDF Comparison Report
 
-Generated: 2026-09-05T22:52:43.615504
+Generated: 2026-09-06T15:38:50.611350
 
 ## Summary
 
 | # | Test Case | Valid | Text Sim | Visual Avg | Pages (M/R) | Overall |
 |---|-----------|-------|----------|------------|-------------|--------|
-| 1 | 🟢 Issue202609031340 | ✅ | 0.8982 | 0.852 | 4/4 | **0.9001** |
+| 1 | 🟢 XlsxIssue77_Template1 | ✅ | 1.0 | 0.918 | 6/6 | **0.9672** |
 
-**Average Overall Score: 0.9001**
+**Average Overall Score: 0.9672**
 
 ## Labeled Side-by-Side Comparison
 
 <table>
 <tr><th>Case</th><th>Comparison</th></tr>
 <tr>
-  <td><b>Issue202609031340<br><small>format: xlsx | case: Issue202609031340 | scope: java-issue-xlsx</small></b><br>Page 1</td>
-  <td><img src="side-by-side/Issue202609031340_p1_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Issue202609031340 page 1 comparison"></td>
+  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: java-issue-xlsx</small></b><br>Page 1</td>
+  <td><img src="side-by-side/XlsxIssue77_Template1_p1_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 1 comparison"></td>
 </tr>
 <tr>
-  <td><b>Issue202609031340<br><small>format: xlsx | case: Issue202609031340 | scope: java-issue-xlsx</small></b><br>Page 2</td>
-  <td><img src="side-by-side/Issue202609031340_p2_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Issue202609031340 page 2 comparison"></td>
+  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: java-issue-xlsx</small></b><br>Page 2</td>
+  <td><img src="side-by-side/XlsxIssue77_Template1_p2_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 2 comparison"></td>
 </tr>
 <tr>
-  <td><b>Issue202609031340<br><small>format: xlsx | case: Issue202609031340 | scope: java-issue-xlsx</small></b><br>Page 3</td>
-  <td><img src="side-by-side/Issue202609031340_p3_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Issue202609031340 page 3 comparison"></td>
+  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: java-issue-xlsx</small></b><br>Page 3</td>
+  <td><img src="side-by-side/XlsxIssue77_Template1_p3_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 3 comparison"></td>
 </tr>
 <tr>
-  <td><b>Issue202609031340<br><small>format: xlsx | case: Issue202609031340 | scope: java-issue-xlsx</small></b><br>Page 4</td>
-  <td><img src="side-by-side/Issue202609031340_p4_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="Issue202609031340 page 4 comparison"></td>
+  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: java-issue-xlsx</small></b><br>Page 4</td>
+  <td><img src="side-by-side/XlsxIssue77_Template1_p4_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 4 comparison"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: java-issue-xlsx</small></b><br>Page 5</td>
+  <td><img src="side-by-side/XlsxIssue77_Template1_p5_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 5 comparison"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: java-issue-xlsx</small></b><br>Page 6</td>
+  <td><img src="side-by-side/XlsxIssue77_Template1_p6_java_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png" width="760" alt="XlsxIssue77_Template1 page 6 comparison"></td>
 </tr>
 </table>
 
@@ -39,24 +47,34 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <table>
 <tr><th>Case</th><th>Heatmap</th><th>Metrics</th></tr>
 <tr>
-  <td><b>Issue202609031340</b><br>Page 1</td>
-  <td><img src="images/Issue202609031340_p1_heatmap.png" width="760" alt="Issue202609031340 page 1 difference heatmap"></td>
-  <td>changed: 402314 px (18.48%)<br>bbox: [43, 55, 1197, 1697]<br>mean abs RGB: 23.5695<br>RMSE RGB: 65.468<br>threshold: 12, gain: 5.0</td>
+  <td><b>XlsxIssue77_Template1</b><br>Page 1</td>
+  <td><img src="images/XlsxIssue77_Template1_p1_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 1 difference heatmap"></td>
+  <td>changed: 334581 px (15.37%)<br>bbox: [82, 168, 1157, 1581]<br>mean abs RGB: 20.9601<br>RMSE RGB: 63.4759<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
-  <td><b>Issue202609031340</b><br>Page 2</td>
-  <td><img src="images/Issue202609031340_p2_heatmap.png" width="760" alt="Issue202609031340 page 2 difference heatmap"></td>
-  <td>changed: 55108 px (2.53%)<br>bbox: [43, 738, 1197, 1014]<br>mean abs RGB: 3.3916<br>RMSE RGB: 24.2256<br>threshold: 12, gain: 5.0</td>
+  <td><b>XlsxIssue77_Template1</b><br>Page 2</td>
+  <td><img src="images/XlsxIssue77_Template1_p2_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 2 difference heatmap"></td>
+  <td>changed: 333843 px (15.34%)<br>bbox: [82, 168, 1157, 1581]<br>mean abs RGB: 20.8471<br>RMSE RGB: 63.2311<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
-  <td><b>Issue202609031340</b><br>Page 3</td>
-  <td><img src="images/Issue202609031340_p3_heatmap.png" width="760" alt="Issue202609031340 page 3 difference heatmap"></td>
-  <td>changed: 262475 px (12.06%)<br>bbox: [34, 29, 1196, 1725]<br>mean abs RGB: 17.2968<br>RMSE RGB: 56.7183<br>threshold: 12, gain: 5.0</td>
+  <td><b>XlsxIssue77_Template1</b><br>Page 3</td>
+  <td><img src="images/XlsxIssue77_Template1_p3_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 3 difference heatmap"></td>
+  <td>changed: 333852 px (15.34%)<br>bbox: [82, 168, 1157, 1581]<br>mean abs RGB: 20.8014<br>RMSE RGB: 63.1465<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
-  <td><b>Issue202609031340</b><br>Page 4</td>
-  <td><img src="images/Issue202609031340_p4_heatmap.png" width="760" alt="Issue202609031340 page 4 difference heatmap"></td>
-  <td>changed: 16586 px (0.76%)<br>bbox: [42, 35, 1196, 1009]<br>mean abs RGB: 1.3227<br>RMSE RGB: 16.6519<br>threshold: 12, gain: 5.0</td>
+  <td><b>XlsxIssue77_Template1</b><br>Page 4</td>
+  <td><img src="images/XlsxIssue77_Template1_p4_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 4 difference heatmap"></td>
+  <td>changed: 333854 px (15.34%)<br>bbox: [82, 168, 1157, 1581]<br>mean abs RGB: 20.8086<br>RMSE RGB: 63.1615<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>XlsxIssue77_Template1</b><br>Page 5</td>
+  <td><img src="images/XlsxIssue77_Template1_p5_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 5 difference heatmap"></td>
+  <td>changed: 333852 px (15.34%)<br>bbox: [82, 168, 1157, 1581]<br>mean abs RGB: 20.8093<br>RMSE RGB: 63.1483<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>XlsxIssue77_Template1</b><br>Page 6</td>
+  <td><img src="images/XlsxIssue77_Template1_p6_heatmap.png" width="760" alt="XlsxIssue77_Template1 page 6 difference heatmap"></td>
+  <td>changed: 200884 px (9.23%)<br>bbox: [82, 168, 1157, 916]<br>mean abs RGB: 11.6525<br>RMSE RGB: 47.1047<br>threshold: 12, gain: 5.0</td>
 </tr>
 </table>
 
@@ -67,317 +85,155 @@ Scores compare java MiniPdf against Microsoft 365 Excel Reference. LibreOffice i
 <table>
 <tr><th>java MiniPdf</th><th>Microsoft 365 Excel Reference</th><th>LibreOffice</th></tr>
 <tr>
-  <td><b>Issue202609031340<br><small>format: xlsx | case: Issue202609031340 | scope: java-issue-xlsx</small></b></td>
-  <td colspan="2">Issue202609031340 <span style="color:#3fb950">⬤</span> 90.0%</td>
+  <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: java-issue-xlsx</small></b></td>
+  <td colspan="2">XlsxIssue77_Template1 <span style="color:#3fb950">⬤</span> 96.7%</td>
 </tr>
 <tr>
-  <td><img src="images/Issue202609031340_p1_minipdf.png" width="260" alt="java MiniPdf"></td>
-  <td><img src="images/Issue202609031340_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/Issue202609031340_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td><img src="images/XlsxIssue77_Template1_p1_minipdf.png" width="260" alt="java MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p1_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p1_libreoffice.png" width="260" alt="LibreOffice"></td>
 </tr>
 <tr>
-  <td><img src="images/Issue202609031340_p2_minipdf.png" width="260" alt="java MiniPdf"></td>
-  <td><img src="images/Issue202609031340_p2_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/Issue202609031340_p2_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td><img src="images/XlsxIssue77_Template1_p2_minipdf.png" width="260" alt="java MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p2_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p2_libreoffice.png" width="260" alt="LibreOffice"></td>
 </tr>
 <tr>
-  <td><img src="images/Issue202609031340_p3_minipdf.png" width="260" alt="java MiniPdf"></td>
-  <td><img src="images/Issue202609031340_p3_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/Issue202609031340_p3_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td><img src="images/XlsxIssue77_Template1_p3_minipdf.png" width="260" alt="java MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p3_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p3_libreoffice.png" width="260" alt="LibreOffice"></td>
 </tr>
 <tr>
-  <td><img src="images/Issue202609031340_p4_minipdf.png" width="260" alt="java MiniPdf"></td>
-  <td><img src="images/Issue202609031340_p4_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
-  <td><img src="images/Issue202609031340_p4_libreoffice.png" width="260" alt="LibreOffice"></td>
+  <td><img src="images/XlsxIssue77_Template1_p4_minipdf.png" width="260" alt="java MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p4_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p4_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template1_p5_minipdf.png" width="260" alt="java MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p5_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p5_libreoffice.png" width="260" alt="LibreOffice"></td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue77_Template1_p6_minipdf.png" width="260" alt="java MiniPdf"></td>
+  <td><img src="images/XlsxIssue77_Template1_p6_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p6_libreoffice.png" width="260" alt="LibreOffice"></td>
 </tr>
 </table>
 
 ## Detailed Results
 
-### Issue202609031340
+### XlsxIssue77_Template1
 
-- **Case Metadata:** format: xlsx | case: Issue202609031340 | scope: java-issue-xlsx
-- **Source:** tests/Issue_Files/xlsx/Issue202609031340.xlsx
-- **Text Similarity:** 0.8982
-- **Visual Average:** 0.852
-- **Overall Score:** 0.9001
-- **Pages:** MiniPdf=4, Reference=4
-- **File Size:** MiniPdf=446239 bytes, Reference=346206 bytes
+- **Case Metadata:** format: xlsx | case: XlsxIssue77_Template1 | scope: java-issue-xlsx
+- **Source:** tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.918
+- **Overall Score:** 0.9672
+- **Pages:** MiniPdf=6, Reference=6
+- **File Size:** MiniPdf=59636 bytes, Reference=64464 bytes
 
 <details><summary>Text Diff</summary>
 
 ```diff
---- minipdf/Issue202609031340.pdf
-+++ reference/Issue202609031340.pdf
-@@ -1,10 +1,10 @@
- 表单编号 XXX-XXX-051-01
+--- minipdf/XlsxIssue77_Template1.pdf
++++ reference/XlsxIssue77_Template1.pdf
+@@ -6,8 +6,8 @@
+ Attn Customer:   Please return parts to the return address below.
 
--文件编号QA-SIPI-XXXX-01-1-1
+ Customer Name Sales Person Requestor
 
--XXXXXX有限公司
+ Return Address: Reason for Return:
 
-+XXXXXX有限公司 文件编号QA-SIPI-XXXX-01-1-1
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable
 
- 发行日期 2025-04-11
+-QR code, original factory packaging, with no extra labels or markings on the product.
 
- 文件版本 03 修订日期 2025-11-25
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
 
- 产品穴号 详见注意事项 产品单重 20.45±1.05 g
++code, original factory packaging, with no extra labels or markings on the product.
 
--注塑制程检验标准书 ￠1.18*10MM(320度加强
+ Original Qty
 
-+注塑制程检验标准书
+ Part No. Per Unit
 
-+￠1.18*10MM(320度加强
+ Invoice # Authorized
 
- 附件编号 / 销钉规格
+@@ -20,8 +20,8 @@
+ Attn Customer:   Please return parts to the return address below.
 
- 型)
+ Customer Name Sales Person Requestor
 
- 产品型号 XXXX 部件名称 盖塑胶件 抽样计划 ANSI/ASQ Z1.4Ⅱ 巡检频率 2H/次
+ Return Address: Reason for Return:
 
-@@ -15,16 +15,20 @@
- 参考 图纸文件编号：XXXX系列  内部图纸 2025.4.10
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable
 
- 项目 检验工具 巡检内容
+-QR code, original factory packaging, with no extra labels or markings on the product.
 
- 图 部件图纸编号：HKXXXX-01-RB
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
 
--结 目视、图纸 1、首件样品整模结构符合图纸设计、同PPS结构一致；
++code, original factory packaging, with no extra labels or markings on the product.
 
--构 、PPS 2、制程巡检整模产品结构需同首件结构一致。
+ Original Qty
 
--颜 目视、限度 1、首件样品颜色需无限接近限度样中的标准样；
+ Part No. Per Unit
 
--色 样 2、制程巡检产品颜色需同首件颜色一致。
+ Invoice # Authorized
 
--外 目视、限度 1、注塑成型外观缺陷大小不可超出限度样板；
+@@ -34,8 +34,8 @@
+ Attn Customer:   Please return parts to the return address below.
 
--观 样 2、其它外观缺陷无限度样的按常规通用标准判定。
+ Customer Name Sales Person Requestor
 
-+结 目视、图 1、首件样品整模结构符合图纸设计、同PPS结构一致；
+ Return Address: Reason for Return:
 
-+构 纸、PPS 2、制程巡检整模产品结构需同首件结构一致。
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable
 
-+颜 目视、限 1、首件样品颜色需无限接近限度样中的标准样；
+-QR code, original factory packaging, with no extra labels or markings on the product.
 
-+色 度样 2、制程巡检产品颜色需同首件颜色一致。
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
 
-+外 目视、限 1、注塑成型外观缺陷大小不可超出限度样板；
++code, original factory packaging, with no extra labels or markings on the product.
 
-+观 度样 2、其它外观缺陷无限度样的按常规通用标准判定。
+ Original Qty
 
- 包装 目视 参照注塑作业指导书（SOP）
+ Part No. Per Unit
 
- 仪器 项目 管控标准(mm) 测量位置 频率
+ Invoice # Authorized
 
--卡尺 A 68.16 ＋0.05/－0.17 外形最长距离 1次/
+@@ -48,8 +48,8 @@
+ Attn Customer:   Please return parts to the return address below.
 
--卡尺 B 62.03 ＋0.05/－0.20 外形最宽距离 1次/
+ Customer Name Sales Person Requestor
 
-+1次/
+ Return Address: Reason for Return:
 
-+卡尺 A 68.16 ＋0.05/－0.17 外形最长距离
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable
 
-+班
+-QR code, original factory packaging, with no extra labels or markings on the product.
 
-+1次/
++NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable QR
 
-+卡尺 B 62.03 ＋0.05/－0.20 外形最宽距离
++code, original factory packaging, with no extra labels or markings on the product.
 
-+班
+ Original Qty
 
- 卡尺 C 27.9 ＋0.03/－0.05 顶部装饰片槽长度 首件
+ Part No. Per Unit
 
- 卡尺 D 18.87 ＋0.00/－0.10 后钮侧面装饰片槽长度 首件
+ Invoice # Authorized
 
- 卡尺 E 6.70＋0.00/－0.05 后钮侧面大卡槽宽度 首件
+@@ -62,8 +62,8 @@
+ Attn Customer:   Please return parts to the return address below.
 
-@@ -36,52 +40,74 @@
- 后钮针孔中分线中心点至前扣弧
+ Customer Name Sales Person Requestor
 
- 投影仪 J 53.93＋0.04/－0.03 6H
+ Return Address: Reason for Return:
 
- 线中心点距离
+-NOTE - All parts returned for credit must be in original factory condition, with clean factory label and scannable
 
--卡尺 K 18.61±0.05 后钮针孔左右间距 1次/
+-QR code, original factory packaging, with no extra labels or markings on the product.
 
--高度规 L*2 4.65＋0.00/－0.10 后钮针孔中心至口部平面间距 1次/
-
--参考资料/项目 代码 取样数量频率 代码 取样数量频率 注意事项及品质履历
-
-+1次/
-
-+卡尺 K 18.61±0.05 后钮针孔左右间距
-
-+班
-
-+1次/
-
-+高度规 L*2 4.65＋0.00/－0.10 后钮针孔中心至口部平面间距
-
-+班
-
-+产品后钮装饰片槽缺
-
-+口竖边同卡尺贴紧
-
-+68.16 mm 62.03 mm
-
-+产品口部平面同
-
-+产品口部平面同
-
-+卡尺上平面平行
-
-+卡尺上平面平行
-
-+产品后钮装饰片槽缺
-
-+口竖边同卡尺贴紧
-
-+0.00 ~ 300mm卡尺
-
-+参考资料/项目 代码 取样数量 频率 代码 取样数量 频率 注意事项及品质履历
-
- 1.MO25XXXX0100：1#~4#/MO25XXXX0110：5#~12#
-
- 尺
-
- 寸
-
- 组
-
- 组装制程检验标
-
--准书 1# 一模 1次/ 2# 一模 1次/
-
-+1次/ 1次/
-
-+准书 1# 一模 2# 一模
-
-+班 班
-
- 合
-
--XXXX-00组装成
-
-+XXXX-
-
- 功
-
--3# 一模 1次/ 5# 一模 1次/
-
--品
-
-+1次/ 1次/
-
-+3# 一模 5# 一模
-
-+00组装成品 班 班
-
- 能
-
--6# 一模 1次/
-
--日期 版本工程担当 品质担当 修    订    内    容
-
-+1次/
-
-+6# 一模
-
-+班
-
-+日期 版本 工程担当 品质担当 修    订    内    容
-
-+2025/4/11 00 AAAA AAA 初版发行
-
- 修
-
-+---PAGE---
-
-+修
-
-+A：68.16 ＋0.05/－0.13改为68.16 ＋0.05/－0.17；B：62.03 ＋0.05/－0.10改为62.03 ＋0.05/－0.20；D：18.87
-
- 订
-
--2025/4/11 00 AAAA AAA 初版发行
-
-----PAGE---
-
--A：68.16 ＋0.05/－0.13改为68.16 ＋0.05/－0.17；B：62.03 ＋0.05/－0.10改为62.03 ＋0.05/－0.20；D：18.87
-
--2025/5/12 01 BBBB BBB ＋0.00/－0.05改为18.87 ＋0.00/－0.10；I：8.35＋0.00/－0.16改为8.35＋0.10/－0.05；J：53.93＋0.00/－0.10改
-
--为53.93＋0.05/－0.10；L*2：4.65±0.05改成4.65＋0.00/－0.10；更新检验频率
-
-+＋0.00/－0.05改为18.87
-
-+2025/5/12 01 BBBB BBB
-
-+记
-
-+＋0.00/－0.10；I：8.35＋0.00/－0.16改为8.35＋0.10/－0.05；J：53.93＋0.00/－0.10改为53.93＋0.05/－0.10；
-
-+录 L*2：4.65±0.05改成4.65＋0.00/－0.10；更新检验频率
-
- 2025/8/6 02 CCCC CCCC 新增模具编号：MO25XXXX0110
-
- 2025/11/25 03 DDDD DDDD J：53.93＋0.05/－0.10改为53.93＋0.04/－0.03
-
--研 制 制 品
-
--发 造 造 保
-
--制
-
--工 工 部 部
-
--作
-
--程 程 审 审
-
--审 审 核 核
-
-+研 制
-
-+制 品
-
-+审 发 审 造 审 审 制
-
-+造 保
-
-+核 工 核 工 核 核 作
-
-+部 部
-
-+程 程
-
- ---PAGE---
-
--QA-SIPI-XXXX-01-1
-
--文件编号 表单编号 QA-FM-051-01
-
---1
-
-+文件编号 QA-SIPI-XXXX-01-1-1 表单编号 QA-FM-051-01
-
- XXXXXX有限公司
-
- 产品型号 XXXX 部件名称 /
-
- XXXXXX Co.,Ltd.
-
- 模具编号 / 产品穴号 /
-
- 部件材质 / 附件编号 /
-
- 产品品质履历（SIP附件）
-
--版 日期 问题
-... (128 more characters)
++NOTE - All parts returned for credit
+... (854 more characters)
 
 ```
 </details>
