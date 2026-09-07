@@ -25,6 +25,7 @@
             <line x1="9" y1="15" x2="15" y2="15"/>
         </svg>
         <h1>MiniPdf</h1>
+        <a class="package-version" href="https://www.nuget.org/packages/MiniPdf/@MiniPdfVersion" target="_blank" rel="noopener noreferrer">NuGet v@(MiniPdfVersion)</a>
     </div>
     <p class="subtitle">@L.T("Subtitle") &mdash; @L.T("PoweredBy") <a href="https://github.com/mini-software/MiniPdf" target="_blank">MiniPdf</a></p>
 
@@ -307,6 +308,13 @@
     private const string ApiStatusUrl = ApiBaseUrl + "/api/status";
     private const string ApiStatsUrl = ApiBaseUrl + "/api/stats";
     private const string DefaultFontCacheKey = "NotoSansSC-Regular.ttf";
+    private static readonly string MiniPdfVersion =
+        typeof(MiniSoftware.MiniPdf).Assembly
+            .GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
+            .OfType<System.Reflection.AssemblyInformationalVersionAttribute>()
+            .FirstOrDefault()?.InformationalVersion.Split('+')[0]
+        ?? typeof(MiniSoftware.MiniPdf).Assembly.GetName().Version?.ToString(3)
+        ?? "unknown";
 
     private IBrowserFile? selectedFile;
     private bool isConverting;

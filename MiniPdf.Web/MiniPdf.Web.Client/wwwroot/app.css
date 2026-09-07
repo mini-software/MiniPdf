@@ -101,6 +101,24 @@ h1:focus { outline: none; }
     letter-spacing: -.02em;
 }
 
+.package-version {
+    padding: .2rem .45rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: .68rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+
+.package-version:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
 .subtitle {
     color: var(--text-secondary);
     font-size: .9rem;
