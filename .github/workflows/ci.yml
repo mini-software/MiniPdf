@@ -116,10 +116,30 @@ jobs:
               temperature: 0.1
             }')
           
-          RESPONSE=$(curl -s "$URL" \
+          CURL_EXIT=0
+          RESPONSE=$(curl --silent --show-error \
+            --retry 4 \
+            --retry-all-errors \
+            --retry-delay 2 \
+            --connect-timeout 15 \
+            --max-time 120 \
+            "$URL" \
             -H "Content-Type: application/json" \
             -H "api-key: $AZURE_OPENAI_API_KEY" \
-            -d "$PAYLOAD")
+            -d "$PAYLOAD") || CURL_EXIT=$?
+
+          if [ "$CURL_EXIT" -ne 0 ]; then
+            case "$CURL_EXIT" in
+              5|6|7|28|35|52|56)
+                echo "::warning::AI Security Review unavailable after retries (curl exit $CURL_EXIT); skipping external review"
+                exit 0
+                ;;
+              *)
+                echo "::error::AI Security Review request failed (curl exit $CURL_EXIT)"
+                exit "$CURL_EXIT"
+                ;;
+            esac
+          fi
           
           # Extract content
           CONTENT=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // empty')
