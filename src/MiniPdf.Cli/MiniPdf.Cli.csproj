@@ -23,8 +23,8 @@
     <Description>A command-line tool to convert Office files to PDF. Powered by MiniPdf.</Description>
     <PackageTags>pdf;excel;xlsx;word;docx;powerpoint;pptx;converter;cli;tool;minipdf</PackageTags>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/shps951023/MiniPdf</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/shps951023/MiniPdf.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/mini-software/MiniPdf</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mini-software/MiniPdf.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.nuget.cli.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>

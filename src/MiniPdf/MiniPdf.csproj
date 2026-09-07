@@ -14,8 +14,8 @@
     <Description>A minimal, zero-dependency .NET library for generating PDF documents from text, Excel, Word, and PowerPoint files.</Description>
     <PackageTags>pdf;excel;xlsx;word;docx;powerpoint;pptx;converter;text;minipdf</PackageTags>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/shps951023/MiniPdf</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/shps951023/MiniPdf.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/mini-software/MiniPdf</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mini-software/MiniPdf.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.nuget.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
