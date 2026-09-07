@@ -38,8 +38,21 @@ jobs:
           curl -L -o MiniPdf.Web/MiniPdf.Web.Client/wwwroot/fonts/NotoSansSC-Regular.ttf \
             "https://github.com/google/fonts/raw/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf"
 
+      - name: Resolve MiniPdf NuGet version
+        id: minipdf-version
+        shell: pwsh
+        run: |
+          $index = Invoke-RestMethod 'https://api.nuget.org/v3-flatcontainer/minipdf/index.json'
+          $version = $index.versions |
+            Where-Object { $_ -notmatch '-' } |
+            Select-Object -Last 1
+          if (-not $version) {
+            throw 'Could not resolve the latest stable MiniPdf version from NuGet.'
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+
       - name: Publish Blazor WASM
-        run: dotnet publish MiniPdf.Web/MiniPdf.Web.Client/MiniPdf.Web.Client.csproj -c Release -o publish
+        run: dotnet publish MiniPdf.Web/MiniPdf.Web.Client/MiniPdf.Web.Client.csproj -c Release -o publish -p:Version=${{ steps.minipdf-version.outputs.version }}
 
       - name: Remove pre-compressed files (GitHub Pages does not support content negotiation)
         run: find publish/wwwroot -name '*.br' -o -name '*.gz' | xargs rm -f
