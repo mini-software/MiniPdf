@@ -16,8 +16,14 @@ $available = @(
     if (Get-Command cargo -ErrorAction SilentlyContinue) { "rust" }
 )
 
+if ($available -contains "dotnet") {
+    return "dotnet"
+}
+
+if ($available -contains "rust") {
+    return "rust"
+}
+
 if ($available.Count -eq 0) {
     throw "Automatic implementation selection requires the .NET SDK or Rust/Cargo."
 }
-
-return Get-Random -InputObject $available

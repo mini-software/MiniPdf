@@ -128,23 +128,26 @@ Cursor, and Codex. The easiest way to start is to paste this prompt into the
 agent chat:
 
 ```text
-Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Before running any command, ask me whether to use .NET or Rust and wait for my explicit choice. Then use the selected implementation to diagnose and improve one automatically selected benchmark case, validate all changes, and prepare the pull request. Keep generated images and full logs in artifacts and return only paths and compact summaries. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
 
 The agent integrations are convenience prompts; the workflow and safety gates
-live in one vendor-neutral command. By default it detects `dotnet` and `cargo`
-and randomly chooses one installed implementation:
+live in one vendor-neutral command. Agents must ask the user to choose .NET or
+Rust before running it, then pass the explicit implementation. The workflow
+selects one candidate:
 
 ```powershell
-.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start
+.\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation <dotnet-or-rust>
 ```
 
-Pass `-Implementation dotnet` or `-Implementation rust` to choose explicitly.
-The selected implementation is stored in the loop state for subsequent actions.
+Pass `-Implementation dotnet` or `-Implementation rust` according to the user's
+answer. Do not use `auto` from an agent workflow. Pass `-CandidateCount 2` only
+for an explicitly requested two-case run. The selected implementation is stored
+in the loop state for subsequent actions.
 
 `Start` requires a clean working tree. It checks prerequisites, creates an
 implementation-specific branch, builds fresh XLSX and DOCX baselines, and
-selects the two largest visual differences.
+selects the largest visual difference.
 
 For each selected candidate, run:
 
@@ -170,14 +173,21 @@ visual regression gate. `Pr` generates benchmark evidence and either a GitHub
 CLI command or browser instructions. Committing, pushing, and opening the pull
 request still require explicit user approval.
 
+Keep generated PDFs, screenshots, heatmaps, reports, and complete command output
+under `artifacts/`. Agent responses should contain paths, score summaries, and
+only the last relevant error lines. Never embed image data, base64 payloads, or
+complete logs in chat. Start a fresh chat before `Validate` when the current
+context approaches 150,000 tokens or already contains large image/tool output;
+the loop state in `.git/minipdf-contribution-loop/` supports resuming.
+
 ### Agent Shortcuts
 
 | Agent | Shortcut |
 |---|---|
-| GitHub Copilot | `/skill-minipdf-contribution` (auto) or append `.NET`/`Rust` |
-| Claude Code | `/minipdf-contribution` (auto) or append `dotnet`/`rust` |
-| Cursor | `/minipdf-contribution` (auto) or append `dotnet`/`rust` |
-| Codex | Ask: `Run the MiniPdf contribution loop` (auto) or specify an implementation |
+| GitHub Copilot | `/skill-minipdf-contribution`; asks for .NET or Rust when omitted |
+| Claude Code | `/minipdf-contribution`; asks for `dotnet` or `rust` when omitted |
+| Cursor | `/minipdf-contribution`; asks for `dotnet` or `rust` when omitted |
+| Codex | Ask: `Run the MiniPdf contribution loop`; it asks for .NET or Rust |
 | Any terminal agent | Run the vendor-neutral PowerShell commands above |
 
 Agents must preserve unrelated changes and must not commit, push, fork, or open

@@ -5,6 +5,8 @@ param(
     [string]$Action,
     [ValidateSet("auto", "dotnet", "rust")]
     [string]$Implementation = "auto",
+    [ValidateRange(1, 2)]
+    [int]$CandidateCount = 1,
     [ValidateSet("xlsx", "docx")]
     [string]$Format,
     [string]$CaseName,
@@ -337,6 +339,9 @@ $null = Resolve-Python
 
 switch ($Action) {
     "Start" {
+        if ($Implementation -eq "auto") {
+            throw "Start requires -Implementation dotnet or -Implementation rust."
+        }
         $status = @(& git -C $repositoryRoot status --short --untracked-files=all)
         if ($status.Count -gt 0) {
             throw "Start requires a clean working tree so failed attempts can be restored without losing user work."
@@ -364,7 +369,7 @@ switch ($Action) {
         } else {
             @((Ensure-DotNetBaselineReport "xlsx"), (Ensure-DotNetBaselineReport "docx"))
         }
-        $selectionJson = & (Join-Path $PSScriptRoot "select-candidates.ps1") -ReportPath $reportPaths -Json
+        $selectionJson = & (Join-Path $PSScriptRoot "select-candidates.ps1") -ReportPath $reportPaths -Count $CandidateCount -Json
         if ($LASTEXITCODE -ne 0) { throw "Candidate selection failed." }
         $selection = ($selectionJson | Out-String) | ConvertFrom-Json
         New-Item -ItemType Directory -Force -Path $stateDirectory | Out-Null
@@ -386,6 +391,7 @@ switch ($Action) {
             Implementation = $Implementation
             Branch = $branch
             Mode = $selection.Mode
+            CandidateCount = $CandidateCount
             MaximumAttempts = 3
             Candidates = $candidates
             ActiveAttempt = $null

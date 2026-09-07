@@ -161,7 +161,7 @@ MiniPdf punta alla conversione pratica dei documenti, non alla compatibilità co
 Apri un fork o clone pulito in qualsiasi agente di programmazione, quindi incolla questa istruzione nella chat dell'Agent:
 
 ```text
-Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Before running any command, ask me whether to use .NET or Rust and wait for my explicit choice. Then use the selected implementation to diagnose and improve one automatically selected benchmark case, validate all changes, and prepare the pull request. Keep generated images and full logs in artifacts and return only paths and compact summaries. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
 
 ## Risorse del progetto
