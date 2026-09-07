@@ -185,8 +185,10 @@ function Invoke-FocusedBenchmark(
     [string]$Renderer,
     [string]$DocumentFormat,
     [string]$DocumentName,
-    [bool]$FreshReference
+    [bool]$FreshReference,
+    [string]$LogPath
 ) {
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $LogPath) | Out-Null
     $formatRoot = Join-Path $artifactRoot "$Renderer\$DocumentFormat"
     $reportDirectory = Join-Path $formatRoot "report"
     if (Test-Path -LiteralPath $reportDirectory) {
@@ -210,7 +212,7 @@ function Invoke-FocusedBenchmark(
             ReportDir = $reportDirectory
         }
         if ($FreshReference) { $arguments.ForceReference = $true } else { $arguments.SkipReference = $true }
-        & (Join-Path $repositoryRoot "scripts\Run-Rust-Benchmark.ps1") @arguments
+        & (Join-Path $repositoryRoot "scripts\Run-Rust-Benchmark.ps1") @arguments *> $LogPath
     } else {
         if ($FreshReference) {
             $referencePdf = Join-Path (Join-Path $formatRoot "reference") "$DocumentName.pdf"
@@ -234,9 +236,12 @@ function Invoke-FocusedBenchmark(
             PythonPath = (Resolve-Python)
         }
         if ($FreshReference) { $arguments.ForceReference = $true } else { $arguments.SkipReference = $true }
-        & $runner @arguments
+        & $runner @arguments *> $LogPath
     }
-    if ($LASTEXITCODE -ne 0) { throw "The focused $Renderer $DocumentFormat benchmark failed." }
+    if ($LASTEXITCODE -ne 0) {
+        Get-Content -LiteralPath $LogPath -Tail 40 | Write-Host
+        throw "The focused $Renderer $DocumentFormat benchmark failed. Full log: $LogPath"
+    }
     return Get-CaseScore (Join-Path $reportDirectory "comparison_report.json") $DocumentName
 }
 
@@ -414,8 +419,10 @@ switch ($Action) {
         if ($candidate.Status -ne "pending") { throw "'$CaseName' is already $($candidate.Status) and cannot be reopened." }
         if ([int]$candidate.Attempts -ge [int]$state.MaximumAttempts) { throw "'$CaseName' already used all three attempts." }
         Ensure-SourceDocument $Format $candidate.SourceDocument
-        $baseline = Invoke-FocusedBenchmark $state.Implementation $Format $CaseName $true
-        $candidate.Attempts = [int]$candidate.Attempts + 1
+        $attemptNumber = [int]$candidate.Attempts + 1
+        $baselineLogPath = Join-Path $artifactRoot "$($state.Implementation)-$Format-$CaseName-attempt-$attemptNumber-baseline.log"
+        $baseline = Invoke-FocusedBenchmark $state.Implementation $Format $CaseName $true $baselineLogPath
+        $candidate.Attempts = $attemptNumber
         $candidate.Status = "attempting"
         $state.ActiveAttempt = [pscustomobject]@{
             Implementation = $state.Implementation
@@ -434,7 +441,8 @@ switch ($Action) {
         $attempt = $state.ActiveAttempt
         $candidate = @($state.Candidates | Where-Object { $_.Format -eq $attempt.Format -and $_.Name -eq $attempt.Name }) | Select-Object -First 1
         try {
-            $after = Invoke-FocusedBenchmark $state.Implementation $attempt.Format $attempt.Name $false
+            $evaluationLogPath = Join-Path $artifactRoot "$($state.Implementation)-$($attempt.Format)-$($attempt.Name)-attempt-$($attempt.Number)-evaluation.log"
+            $after = Invoke-FocusedBenchmark $state.Implementation $attempt.Format $attempt.Name $false $evaluationLogPath
         } catch {
             $failureMessage = $_.Exception.Message
             Restore-Checkpoint $attempt.CheckpointTree

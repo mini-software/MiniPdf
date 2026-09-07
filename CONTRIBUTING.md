@@ -128,7 +128,7 @@ Cursor, and Codex. The easiest way to start is to paste this prompt into the
 agent chat:
 
 ```text
-Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Before running any command, ask me whether to use .NET or Rust and wait for my explicit choice. Then use the selected implementation to diagnose and improve one automatically selected benchmark case, validate all changes, and prepare the pull request. Keep generated images and full logs in artifacts and return only paths and compact summaries. Do not commit, push, fork, or open a pull request without my explicit approval.
+Before reading CONTRIBUTING.md or taking any other action, ask me whether to use .NET or Rust and wait for my explicit choice. After I answer, read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Use the selected implementation to diagnose and improve one automatically selected benchmark case, validate all changes, and prepare the pull request. Keep generated images and full logs in artifacts and return only paths and compact summaries. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
 
 The agent integrations are convenience prompts; the workflow and safety gates

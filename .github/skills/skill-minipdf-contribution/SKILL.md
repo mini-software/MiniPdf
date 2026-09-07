@@ -86,7 +86,7 @@ Defaults:
 
 The selector chooses each document's lowest comparable visual-score page, then ranks distinct documents by page visual score, visual average, and overall score. Invalid PDFs and incomplete report rows are excluded. Use `-Json` for structured output or override inputs with `-ReportPath`, `-Count`, and `-HighScoreThreshold`.
 
-If the mode is `improve-existing`, attempt the returned cases in order. One case is the default work budget. Use `-CandidateCount 2` only for an explicitly requested two-case run, and do not force unrelated changes into one PR.
+If the mode is `improve-existing`, attempt the returned cases in order. One case is the default work budget. For a direct selector run, pass `-Count 2` only when two cases were explicitly requested. When using `contribution-loop.ps1`, pass `-CandidateCount 2` instead. Do not force unrelated changes into one PR.
 
 If the mode is `create-new`, follow section 5.
 
