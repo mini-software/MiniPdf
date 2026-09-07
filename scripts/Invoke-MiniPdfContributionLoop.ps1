@@ -3,10 +3,10 @@
     Run the MiniPdf contribution loop from any coding agent or terminal.
 
 .EXAMPLE
-    .\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start
+    .\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
 
 .EXAMPLE
-    .\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
+    .\scripts\Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust -CandidateCount 2
 #>
 
 [CmdletBinding()]
@@ -16,6 +16,8 @@ param(
     [string]$Action,
     [ValidateSet("auto", "dotnet", "rust")]
     [string]$Implementation = "auto",
+    [ValidateRange(1, 2)]
+    [int]$CandidateCount = 1,
     [ValidateSet("xlsx", "docx")]
     [string]$Format,
     [string]$CaseName,

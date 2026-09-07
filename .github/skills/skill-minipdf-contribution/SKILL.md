@@ -1,14 +1,14 @@
 ---
 name: skill-minipdf-contribution
-description: "Run an automated .NET or Rust MiniPdf contribution loop that detects installed toolchains, randomly selects an available implementation, selects the two largest XLSX or DOCX visual differences, attempts each fix up to three times with rollback, runs full regression checks, and prepares or creates a PR. Use when: contributing compute time, fixing low-score Office-to-PDF images, running the self-evolution loop, or preparing a benchmark-backed MiniPdf PR."
-argument-hint: "Optionally choose .NET or Rust, a format, a benchmark case, or a score threshold"
+description: "Explicitly run the MiniPdf benchmark contribution loop for one selected rendering case. Ask the user to choose .NET or Rust before running commands when the invocation does not specify an implementation."
+argument-hint: "Choose .NET or Rust; optionally request up to two candidates"
 user-invocable: true
-disable-model-invocation: false
+disable-model-invocation: true
 ---
 
 # MiniPdf Contribution Loop
 
-Turn local compute time into a focused, reproducible MiniPdf rendering improvement for either implementation. This Copilot skill is one adapter for the vendor-neutral workflow in `CONTRIBUTING.md`; Claude Code, Cursor, Codex, and terminal agents use the same controller. In VS Code Chat, run `/skill-minipdf-contribution` for automatic selection, or append `.NET` or `Rust` to choose explicitly.
+Turn local compute time into a focused, reproducible MiniPdf rendering improvement for either implementation. This Copilot skill is one adapter for the vendor-neutral workflow in `CONTRIBUTING.md`; Claude Code, Cursor, Codex, and terminal agents use the same controller. Invoke `/skill-minipdf-contribution` explicitly. If the invocation does not specify .NET or Rust, ask the user which implementation to use and wait for an explicit answer before running preflight or any other command. Then pass the choice explicitly and select one candidate unless the user requests two.
 
 ## Automatic Path
 
@@ -16,14 +16,14 @@ Run this once from the repository root:
 
 ```powershell
 $loop = ".\scripts\Invoke-MiniPdfContributionLoop.ps1"
-& $loop -Action Start
+& $loop -Action Start -Implementation <dotnet-or-rust>
 ```
 
-When `-Implementation` is omitted, `Start` detects `dotnet` and `cargo` and randomly chooses one installed implementation. Pass `-Implementation dotnet` or `-Implementation rust` to override the choice. `Start` requires a clean working tree, runs implementation-specific preflight, installs benchmark Python packages, creates a local `improve/<implementation>-visual-parity-*` branch, builds fresh isolated XLSX/DOCX baselines for the current HEAD, selects the two documents with the lowest page-level visual scores for that renderer, and stores the choice in `.git/minipdf-contribution-loop/`.
+Run `Start` only after the user chooses an implementation, and pass either `-Implementation dotnet` or `-Implementation rust`. The controller rejects `auto` and omitted implementations for `Start`. `Start` requires a clean working tree, runs implementation-specific preflight, installs benchmark Python packages, creates a local `improve/<implementation>-visual-parity-*` branch, builds fresh isolated XLSX/DOCX baselines for the current HEAD, selects one document with the lowest page-level visual score for that renderer, and stores the choice in `.git/minipdf-contribution-loop/`. Pass `-CandidateCount 2` only when the user explicitly requests a two-case run.
 
 For Rust, `Start` first builds fresh isolated XLSX and DOCX baseline reports from the shared classic corpus. The current Rust benchmark uses Microsoft 365 as the primary scored reference and LibreOffice as an auxiliary reference. It therefore requires Cargo, desktop Excel and Word, Python, and LibreOffice. The .NET path requires the .NET SDK, Python, and LibreOffice.
 
-For each returned candidate, in order:
+For the returned candidate:
 
 ```powershell
 & $loop -Action Begin -Format <xlsx-or-docx> -CaseName <case-name>
@@ -42,7 +42,7 @@ After one or more candidates are accepted, run:
 
 `Validate` runs `dotnet test` for .NET or `cargo test --workspace` for Rust, then regenerates every XLSX and DOCX candidate against the exact references captured at `Start`. It rejects missing/invalid cases, page-count changes, or any `visual_avg` drop greater than `0.002`. Text extraction can vary with installed fonts, so full-suite `overall_score` changes are reported but are not the image-regression gate. `Pr` includes the implementation in its evidence, reports whether authenticated GitHub CLI is available, and prints ready push/`gh pr create` commands or browser steps. After explicit approval, commit and push the branch, then use `-Action Pr -CreatePullRequest` to open the PR automatically.
 
-If both candidates are skipped, do not create a PR. Report the three measured attempts for each case and end the run. A later run can use refreshed benchmark reports to select the next lowest pair.
+If all candidates are skipped, do not create a PR. Report the measured attempts for each case and end the run. A later run can use refreshed benchmark reports to select the next lowest case.
 
 ## Safety and Scope
 
@@ -52,6 +52,9 @@ If both candidates are skipped, do not create a PR. Report the three measured at
 - Use LibreOffice as the .NET rendering reference. The Rust benchmark currently scores Microsoft 365 as primary and displays LibreOffice as auxiliary.
 - Never commit, push, create a fork, or open a PR without explicit user approval.
 - Do not treat a stale report as proof of an improvement. Re-run the focused benchmark with a fresh reference.
+- Keep generated PDFs, images, heatmaps, and full command output in `artifacts/`; report only paths, compact summaries, and the last relevant error lines in chat.
+- Never embed image data, base64 payloads, complete benchmark reports, or complete build logs in chat.
+- Start a fresh chat before `Validate` when the current prompt context approaches 150,000 tokens or contains large image/tool outputs. The persisted state under `.git/minipdf-contribution-loop/` supports resuming safely.
 
 ## 1. Run Preflight
 
@@ -78,12 +81,12 @@ Run:
 Defaults:
 
 - Reports: `tests/MiniPdf.Benchmark/reports/comparison_report.json` and `tests/MiniPdf.Benchmark/reports_docx/comparison_report.json`
-- Candidate count: 2
+- Candidate count: 1
 - High-score threshold: `0.95`
 
 The selector chooses each document's lowest comparable visual-score page, then ranks distinct documents by page visual score, visual average, and overall score. Invalid PDFs and incomplete report rows are excluded. Use `-Json` for structured output or override inputs with `-ReportPath`, `-Count`, and `-HighScoreThreshold`.
 
-If the mode is `improve-existing`, attempt the returned cases in order. Two cases are a work budget, not a requirement to force two unrelated changes into one PR.
+If the mode is `improve-existing`, attempt the returned cases in order. One case is the default work budget. For a direct selector run, pass `-Count 2` only when two cases were explicitly requested. When using `contribution-loop.ps1`, pass `-CandidateCount 2` instead. Do not force unrelated changes into one PR.
 
 If the mode is `create-new`, follow section 5.
 
@@ -117,8 +120,8 @@ Open the candidate, reference, and heatmap images for the lowest-scoring page. C
 
 ## 4. Diagnose and Fix
 
-1. Load the `libreoffice-reference` skill before designing an Office rendering heuristic.
-2. Search the local LibreOffice source for renderer behavior and POI source for OOXML interpretation.
+1. Search the local LibreOffice source for renderer behavior and POI source for OOXML interpretation.
+2. Keep source searches narrow and save reusable findings outside the chat context.
 3. Locate the nearest selected implementation code that directly computes the mismatched output (`src/MiniPdf` or `minipdf-rs`).
 4. State one falsifiable local hypothesis and identify a focused check.
 5. Add or update a focused unit test, then make the smallest root-cause fix.
