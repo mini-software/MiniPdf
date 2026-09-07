@@ -65,6 +65,28 @@ public class ExcelToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_BarChartWithClusteredNonZeroData_KeepsBarsAndAxisWithinPlot()
+    {
+        // Values clustered far above zero (like stock prices) should auto-scale
+        // the axis close to the data instead of forcing a zero baseline; bars
+        // must still be drawn as bounded rectangles within the chart area.
+        using var excelStream = CreateExcelWithBarChart(
+            categories: new[] { "Day 1", "Day 2", "Day 3", "Day 4", "Day 5" },
+            values: new[] { 140.0, 145.0, 150.0, 155.0, 150.0 });
+
+        var doc = ExcelToPdfConverter.Convert(excelStream);
+
+        var rects = doc.Pages.SelectMany(page => page.RectBlocks).ToArray();
+        Assert.NotEmpty(rects);
+        Assert.All(rects, rect => Assert.True(rect.Height <= doc.Pages[0].Height,
+            $"Rectangle height {rect.Height} should not exceed one page; a non-zero-based axis " +
+            "baseline must be clamped into the visible plot range instead of the off-screen true zero."));
+
+        var axisLabels = doc.Pages.SelectMany(page => page.TextBlocks).Select(block => block.Text);
+        Assert.DoesNotContain("0", axisLabels);
+    }
+
+    [Fact]
     public void Convert_WithOptions_UsesCustomSettings()
     {
         using var excelStream = CreateSimpleExcel(new[]
@@ -1165,6 +1187,141 @@ public class ExcelToPdfConverterTests
                 stream.Position = 0;
                 return stream;
         }
+
+    /// <summary>
+    /// Creates a minimal .xlsx containing a single clustered-column bar chart
+    /// with the given category labels and values embedded as chart cache data
+    /// (no dependency on resolving worksheet cell references).
+    /// </summary>
+    private static MemoryStream CreateExcelWithBarChart(string[] categories, double[] values)
+    {
+        var stream = new MemoryStream();
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                    <Default Extension="xml" ContentType="application/xml"/>
+                    <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                    <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+                    <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+                    <Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>
+                    <Override PartName="/xl/charts/chart1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>
+                </Types>
+                """);
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+                </Relationships>
+                """);
+            AddEntry(archive, "xl/_rels/workbook.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+                </Relationships>
+                """);
+            AddEntry(archive, "xl/workbook.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+                                    xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                    <sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets>
+                </workbook>
+                """);
+            AddEntry(archive, "xl/worksheets/sheet1.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+                                     xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                      <sheetData/>
+                    <drawing r:id="rId1"/>
+                </worksheet>
+                """);
+            AddEntry(archive, "xl/worksheets/_rels/sheet1.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/>
+                </Relationships>
+                """);
+            AddEntry(archive, "xl/drawings/drawing1.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
+                                    xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
+                                    xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                    <xdr:twoCellAnchor>
+                        <xdr:from><xdr:col>0</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>0</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from>
+                        <xdr:to><xdr:col>10</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>20</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to>
+                        <xdr:graphicFrame>
+                            <xdr:nvGraphicFramePr>
+                                <xdr:cNvPr id="2" name="Chart 1"/>
+                                <xdr:cNvGraphicFramePr/>
+                            </xdr:nvGraphicFramePr>
+                            <xdr:xfrm><a:off x="0" y="0" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"/><a:ext cx="5486400" cy="2971800" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"/></xdr:xfrm>
+                            <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                                <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+                                    <c:chart r:id="rId1"/>
+                                </a:graphicData>
+                            </a:graphic>
+                        </xdr:graphicFrame>
+                        <xdr:clientData/>
+                    </xdr:twoCellAnchor>
+                </xdr:wsDr>
+                """);
+            AddEntry(archive, "xl/drawings/_rels/drawing1.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart1.xml"/>
+                </Relationships>
+                """);
+
+            var catPts = string.Join("", categories.Select((cat, i) =>
+                $"""<c:pt idx="{i}"><c:v>{EscapeXml(cat)}</c:v></c:pt>"""));
+            var valPts = string.Join("", values.Select((val, i) =>
+                $"""<c:pt idx="{i}"><c:v>{val.ToString(System.Globalization.CultureInfo.InvariantCulture)}</c:v></c:pt>"""));
+
+            AddEntry(archive, "xl/charts/chart1.xml",
+                $$"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
+                                            xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                    <c:chart>
+                        <c:plotArea>
+                            <c:barChart>
+                                <c:barDir val="col"/>
+                                <c:grouping val="clustered"/>
+                                <c:ser>
+                                    <c:idx val="0"/>
+                                    <c:order val="0"/>
+                                    <c:cat>
+                                        <c:strRef>
+                                            <c:f>Sheet1!$A$2:$A${{categories.Length + 1}}</c:f>
+                                            <c:strCache>{{catPts}}</c:strCache>
+                                        </c:strRef>
+                                    </c:cat>
+                                    <c:val>
+                                        <c:numRef>
+                                            <c:f>Sheet1!$B$2:$B${{values.Length + 1}}</c:f>
+                                            <c:numCache>{{valPts}}</c:numCache>
+                                        </c:numRef>
+                                    </c:val>
+                                </c:ser>
+                            </c:barChart>
+                        </c:plotArea>
+                    </c:chart>
+                </c:chartSpace>
+                """);
+        }
+
+        stream.Position = 0;
+        return stream;
+    }
 
     private static MemoryStream CreateMultiSheetExcel((string Name, string[][] Rows)[] sheets)
     {

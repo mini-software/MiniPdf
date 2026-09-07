@@ -62,7 +62,12 @@ function Resolve-Python {
         $env:PATH = "$(Split-Path -Parent $repositoryPython);$env:PATH"
         return $repositoryPython
     }
-    $command = Get-Command python, python3 -ErrorAction SilentlyContinue | Select-Object -First 1
+    # Skip LibreOffice's bundled interpreter: it resolves as "python" when
+    # LibreOffice's program directory is on PATH, but its restricted embedded
+    # runtime cannot spawn subprocesses (needed by the benchmark scripts).
+    $command = Get-Command python, python3 -All -ErrorAction SilentlyContinue |
+        Where-Object { $_.Source -notmatch "LibreOffice" } |
+        Select-Object -First 1
     if (-not $command) { throw "Python 3.10+ is required." }
     return $command.Source
 }
@@ -208,7 +213,9 @@ function Invoke-FocusedBenchmark(
             ReportDir = $reportDirectory
         }
         if ($FreshReference) { $arguments.ForceReference = $true } else { $arguments.SkipReference = $true }
-        & (Join-Path $repositoryRoot "scripts\Run-Rust-Benchmark.ps1") @arguments
+        # Pipe to Out-Host so console progress still displays without leaking
+        # pipeline output into this function's return value.
+        & (Join-Path $repositoryRoot "scripts\Run-Rust-Benchmark.ps1") @arguments | Out-Host
     } else {
         if ($FreshReference) {
             $referencePdf = Join-Path (Join-Path $formatRoot "reference") "$DocumentName.pdf"
@@ -232,7 +239,9 @@ function Invoke-FocusedBenchmark(
             PythonPath = (Resolve-Python)
         }
         if ($FreshReference) { $arguments.ForceReference = $true } else { $arguments.SkipReference = $true }
-        & $runner @arguments
+        # Pipe to Out-Host so console progress still displays without leaking
+        # pipeline output into this function's return value.
+        & $runner @arguments | Out-Host
     }
     if ($LASTEXITCODE -ne 0) { throw "The focused $Renderer $DocumentFormat benchmark failed." }
     return Get-CaseScore (Join-Path $reportDirectory "comparison_report.json") $DocumentName
