@@ -3,8 +3,8 @@ message: "If you use MiniPdf in your work, please cite it using the metadata fro
 title: MiniPdf
 type: software
 doi: 10.5281/zenodo.22057294
-version: 0.38.6
-date-released: "2026-08-22"
+version: 0.42.0
+date-released: "2026-09-07"
 authors:
   - family-names: Lin
     given-names: WEI-HAN
