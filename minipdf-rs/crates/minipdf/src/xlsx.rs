@@ -325,12 +325,29 @@ struct SheetImage {
     width: f32,
     height: f32,
     foreground: bool,
+    text_overlays: Vec<SheetTextOverlay>,
 }
 
 #[derive(Debug, Clone)]
 enum SheetImageData {
     Jpeg(Vec<u8>),
     Rgba(Vec<u8>),
+}
+
+#[derive(Debug, Clone)]
+struct SheetTextOverlay {
+    text: String,
+    x: f32,
+    y: f32,
+    font_size: f32,
+    bold: bool,
+}
+
+#[derive(Debug)]
+struct AreaChartSeries {
+    name: String,
+    values: Vec<f32>,
+    color: PdfColor,
 }
 
 pub(crate) fn convert_xlsx_bytes(input: &[u8], options: &ConversionOptions) -> Result<Vec<u8>> {
@@ -361,6 +378,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
         let default_row_height = read_default_row_height(&sheet_xml)?;
         let mut images = read_sheet_images(
             &mut archive,
+            &name,
             &path,
             &sheet_xml,
             &column_widths,
@@ -423,6 +441,7 @@ fn read_xlsx_sheets(input: &[u8]) -> Result<Vec<SheetData>> {
             let default_row_height = read_default_row_height(&sheet_xml)?;
             let images = read_sheet_images(
                 &mut archive,
+                "",
                 "xl/worksheets/sheet1.xml",
                 &sheet_xml,
                 &column_widths,
@@ -910,6 +929,7 @@ fn effective_content_scale(
 
 fn read_sheet_images<R: std::io::Read + std::io::Seek>(
     archive: &mut ZipArchive<R>,
+    sheet_name: &str,
     sheet_path: &str,
     sheet_xml: &str,
     column_widths: &[f32],
@@ -948,6 +968,18 @@ fn read_sheet_images<R: std::io::Read + std::io::Seek>(
         .descendants()
         .filter(|node| node.has_tag_name("oneCellAnchor"))
     {
+        if let Some(chart) = read_one_cell_area_chart(
+            archive,
+            &drawing_path,
+            &drawing_rels,
+            anchor,
+            sheet_name,
+            rows,
+            &theme_colors,
+        )? {
+            images.push(chart);
+            continue;
+        }
         let Some(from) = anchor.children().find(|node| node.has_tag_name("from")) else {
             continue;
         };
@@ -996,6 +1028,7 @@ fn read_sheet_images<R: std::io::Read + std::io::Seek>(
                 .unwrap_or(0.0)
                 / 12_700.0,
             foreground: false,
+            text_overlays: Vec::new(),
         });
     }
     for anchor in drawing
@@ -1019,6 +1052,334 @@ fn read_sheet_images<R: std::io::Read + std::io::Seek>(
         }
     }
     Ok(images)
+}
+
+fn read_one_cell_area_chart<R: std::io::Read + std::io::Seek>(
+    archive: &mut ZipArchive<R>,
+    drawing_path: &str,
+    drawing_rels: &HashMap<String, String>,
+    anchor: roxmltree::Node<'_, '_>,
+    sheet_name: &str,
+    rows: &[RowData],
+    theme_colors: &[PdfColor],
+) -> Result<Option<SheetImage>> {
+    let Some(from) = anchor.children().find(|node| node.has_tag_name("from")) else {
+        return Ok(None);
+    };
+    let Some(extent) = anchor.children().find(|node| node.has_tag_name("ext")) else {
+        return Ok(None);
+    };
+    let Some(chart_id) = anchor
+        .descendants()
+        .find(|node| node.has_tag_name("chart"))
+        .and_then(relationship_id)
+    else {
+        return Ok(None);
+    };
+    let Some(chart_target) = drawing_rels.get(&chart_id) else {
+        return Ok(None);
+    };
+    let chart_path = resolve_part_target(drawing_path, chart_target);
+    let Some(chart_xml) = read_zip_text(archive, &chart_path)? else {
+        return Ok(None);
+    };
+    let chart_document = roxmltree::Document::parse(&chart_xml)?;
+    let Some(area_chart) = chart_document
+        .descendants()
+        .find(|node| node.has_tag_name("areaChart"))
+    else {
+        return Ok(None);
+    };
+    let grouping = area_chart
+        .children()
+        .find(|node| node.has_tag_name("grouping"))
+        .and_then(|node| node.attribute("val"));
+    let percent_stacked = match grouping {
+        Some("stacked") => false,
+        Some("percentStacked") => true,
+        _ => return Ok(None),
+    };
+    let fallback_colors = [
+        PdfColor::new(0.31, 0.51, 0.75),
+        PdfColor::new(0.75, 0.31, 0.30),
+        PdfColor::new(0.61, 0.73, 0.35),
+        PdfColor::new(0.50, 0.39, 0.64),
+    ];
+    let series = area_chart
+        .children()
+        .filter(|node| node.has_tag_name("ser"))
+        .enumerate()
+        .filter_map(|(index, series)| {
+            let title_formula = series
+                .children()
+                .find(|node| node.has_tag_name("tx"))?
+                .descendants()
+                .find(|node| node.has_tag_name("f"))?
+                .text()?;
+            let values_formula = series
+                .children()
+                .find(|node| node.has_tag_name("val"))?
+                .descendants()
+                .find(|node| node.has_tag_name("f"))?
+                .text()?;
+            let name = chart_cell_text(title_formula, sheet_name, rows)?.to_owned();
+            let values = chart_range_values(values_formula, sheet_name, rows)?;
+            (!values.is_empty()).then(|| AreaChartSeries {
+                name,
+                values,
+                color: theme_colors
+                    .get(4 + index)
+                    .copied()
+                    .unwrap_or(fallback_colors[index % fallback_colors.len()]),
+            })
+        })
+        .collect::<Vec<_>>();
+    if series.is_empty() {
+        return Ok(None);
+    }
+    let width = emu_attribute(extent, "cx").unwrap_or(0.0) / 12_700.0;
+    let height = emu_attribute(extent, "cy").unwrap_or(0.0) / 12_700.0;
+    if width <= 0.0 || height <= 0.0 {
+        return Ok(None);
+    }
+    let title = chart_document
+        .descendants()
+        .find(|node| node.has_tag_name("title"))
+        .and_then(|title| title.descendants().find(|node| node.has_tag_name("t")))
+        .and_then(|node| node.text())
+        .unwrap_or_default();
+    let show_legend = chart_document
+        .descendants()
+        .find(|node| node.has_tag_name("chart"))
+        .and_then(|chart| chart.children().find(|node| node.has_tag_name("legend")))
+        .is_some_and(|legend| {
+            !legend
+                .children()
+                .any(|node| node.has_tag_name("delete") && node.attribute("val") == Some("1"))
+        });
+    let (data, pixel_width, pixel_height, text_overlays) =
+        render_area_chart(width, height, title, &series, percent_stacked, show_legend);
+    Ok(Some(SheetImage {
+        data: SheetImageData::Rgba(data),
+        pixel_width,
+        pixel_height,
+        legacy_vml: false,
+        col: child_number(from, "col").unwrap_or(0),
+        row: child_number(from, "row").unwrap_or(0),
+        col_offset: child_number(from, "colOff").unwrap_or(0) as f32 / 12_700.0,
+        row_offset: child_number(from, "rowOff").unwrap_or(0) as f32 / 12_700.0,
+        width,
+        height,
+        foreground: true,
+        text_overlays,
+    }))
+}
+
+fn chart_formula_reference<'a>(formula: &'a str, sheet_name: &str) -> Option<&'a str> {
+    let Some((formula_sheet, reference)) = formula.rsplit_once('!') else {
+        return Some(formula);
+    };
+    let formula_sheet = formula_sheet.trim_matches('\'').replace("''", "'");
+    (formula_sheet == sheet_name).then_some(reference)
+}
+
+fn chart_cell_text<'a>(formula: &str, sheet_name: &str, rows: &'a [RowData]) -> Option<&'a str> {
+    let reference = chart_formula_reference(formula, sheet_name)?;
+    let (column, row) = cell_position(reference)?;
+    rows.iter()
+        .find(|candidate| candidate.index == row)?
+        .cells
+        .get(column)
+        .map(|cell| cell.text.as_str())
+}
+
+fn chart_range_values(formula: &str, sheet_name: &str, rows: &[RowData]) -> Option<Vec<f32>> {
+    let reference = chart_formula_reference(formula, sheet_name)?;
+    let (start, end) = reference.split_once(':')?;
+    let (start_col, start_row) = cell_position(start)?;
+    let (end_col, end_row) = cell_position(end)?;
+    if start_col != end_col || start_row > end_row {
+        return None;
+    }
+    (start_row..=end_row)
+        .map(|row| {
+            let text = &rows
+                .iter()
+                .find(|candidate| candidate.index == row)?
+                .cells
+                .get(start_col)?
+                .text;
+            let is_percent = text.ends_with('%');
+            let normalized = text
+                .trim_end_matches('%')
+                .trim_start_matches(['$', '£', '€', '¥'])
+                .replace(',', "");
+            let value = normalized.parse::<f32>().ok()?;
+            Some(if is_percent { value / 100.0 } else { value })
+        })
+        .collect()
+}
+
+fn render_area_chart(
+    width: f32,
+    height: f32,
+    title: &str,
+    series: &[AreaChartSeries],
+    percent_stacked: bool,
+    show_legend: bool,
+) -> (Vec<u8>, u16, u16, Vec<SheetTextOverlay>) {
+    let pixel_width = (width * 2.0).round().clamp(1.0, u16::MAX as f32) as u16;
+    let pixel_height = (height * 2.0).round().clamp(1.0, u16::MAX as f32) as u16;
+    let mut canvas = image::RgbaImage::from_pixel(
+        pixel_width.into(),
+        pixel_height.into(),
+        image::Rgba([255, 255, 255, 255]),
+    );
+    let plot_left = 12.0;
+    let plot_right = (f32::from(pixel_width) - 12.0).max(plot_left + 1.0);
+    let plot_top = 14.0;
+    let plot_bottom = (f32::from(pixel_height) - 14.0).max(plot_top + 1.0);
+    let point_count = series
+        .iter()
+        .map(|item| item.values.len())
+        .min()
+        .unwrap_or(0);
+    if point_count > 1 {
+        let totals = (0..point_count)
+            .map(|index| series.iter().map(|item| item.values[index]).sum::<f32>())
+            .collect::<Vec<_>>();
+        let maximum = if percent_stacked {
+            1.0
+        } else {
+            totals.iter().copied().fold(0.0, f32::max).max(1.0)
+        };
+        for step in 0..=4 {
+            let y = plot_top + (plot_bottom - plot_top) * step as f32 / 4.0;
+            draw_horizontal_line(
+                &mut canvas,
+                plot_left as u32,
+                plot_right as u32,
+                y.round() as u32,
+                image::Rgba([120, 120, 120, 255]),
+            );
+        }
+        let mut lower = vec![0.0; point_count];
+        for item in series {
+            let upper = lower
+                .iter()
+                .enumerate()
+                .map(|(index, value)| value + item.values[index])
+                .collect::<Vec<_>>();
+            let point = |index: usize, value: f32| {
+                let normalized = if percent_stacked {
+                    value / totals[index].max(f32::EPSILON)
+                } else {
+                    value / maximum
+                };
+                (
+                    plot_left + (plot_right - plot_left) * index as f32 / (point_count - 1) as f32,
+                    plot_bottom - normalized * (plot_bottom - plot_top),
+                )
+            };
+            let mut points = (0..point_count)
+                .map(|index| point(index, upper[index]))
+                .collect::<Vec<_>>();
+            points.extend(
+                (0..point_count)
+                    .rev()
+                    .map(|index| point(index, lower[index])),
+            );
+            draw_filled_polygon(&mut canvas, &points, rgba_color(item.color));
+            lower = upper;
+        }
+    }
+    draw_chart_border(&mut canvas, image::Rgba([140, 140, 140, 255]));
+
+    let mut overlays = Vec::new();
+    if !title.is_empty() {
+        let font_size = 10.0;
+        let title_width = styled_text_width_with_font(title, font_size, true, false, None);
+        overlays.push(SheetTextOverlay {
+            text: title.to_owned(),
+            x: ((width - title_width) / 2.0).max(4.0),
+            y: 17.0,
+            font_size,
+            bold: true,
+        });
+    }
+    if show_legend {
+        let legend_x = (width - 36.0).max(4.0);
+        let legend_start = (height - series.len() as f32 * 18.0) / 2.0;
+        for (legend_index, item) in series.iter().rev().enumerate() {
+            let baseline = legend_start + legend_index as f32 * 18.0;
+            fill_rectangle(
+                &mut canvas,
+                ((legend_x - 9.0) * 2.0).round().max(0.0) as u32,
+                ((baseline - 7.0) * 2.0).round().max(0.0) as u32,
+                6,
+                6,
+                rgba_color(item.color),
+            );
+            overlays.push(SheetTextOverlay {
+                text: item.name.clone(),
+                x: legend_x,
+                y: baseline,
+                font_size: 9.0,
+                bold: false,
+            });
+        }
+    }
+    (canvas.into_raw(), pixel_width, pixel_height, overlays)
+}
+
+fn rgba_color(color: PdfColor) -> image::Rgba<u8> {
+    image::Rgba([
+        (color.r * 255.0).round() as u8,
+        (color.g * 255.0).round() as u8,
+        (color.b * 255.0).round() as u8,
+        255,
+    ])
+}
+
+fn draw_horizontal_line(
+    canvas: &mut image::RgbaImage,
+    start: u32,
+    end: u32,
+    y: u32,
+    color: image::Rgba<u8>,
+) {
+    if y >= canvas.height() {
+        return;
+    }
+    for x in start..=end.min(canvas.width().saturating_sub(1)) {
+        canvas.put_pixel(x, y, color);
+    }
+}
+
+fn draw_chart_border(canvas: &mut image::RgbaImage, color: image::Rgba<u8>) {
+    let right = canvas.width().saturating_sub(1);
+    let bottom = canvas.height().saturating_sub(1);
+    draw_horizontal_line(canvas, 0, right, 0, color);
+    draw_horizontal_line(canvas, 0, right, bottom, color);
+    for y in 0..=bottom {
+        canvas.put_pixel(0, y, color);
+        canvas.put_pixel(right, y, color);
+    }
+}
+
+fn fill_rectangle(
+    canvas: &mut image::RgbaImage,
+    left: u32,
+    top: u32,
+    width: u32,
+    height: u32,
+    color: image::Rgba<u8>,
+) {
+    for y in top..(top + height).min(canvas.height()) {
+        for x in left..(left + width).min(canvas.width()) {
+            canvas.put_pixel(x, y, color);
+        }
+    }
 }
 
 fn read_legacy_drawing_images<R: std::io::Read + std::io::Seek>(
@@ -1145,6 +1506,7 @@ fn read_legacy_drawing_images<R: std::io::Read + std::io::Seek>(
             width,
             height,
             foreground: true,
+            text_overlays: Vec::new(),
         });
     }
 
@@ -1397,6 +1759,7 @@ fn read_two_cell_shape(
         width,
         height,
         foreground: true,
+        text_overlays: Vec::new(),
     })
 }
 
@@ -1526,6 +1889,7 @@ fn read_two_cell_picture<R: std::io::Read + std::io::Seek>(
         width,
         height,
         foreground: true,
+        text_overlays: Vec::new(),
     }))
 }
 
@@ -1709,6 +2073,7 @@ fn read_group_image<R: std::io::Read + std::io::Seek>(
         width,
         height,
         foreground: true,
+        text_overlays: Vec::new(),
     }))
 }
 
@@ -4298,6 +4663,16 @@ fn render_sheet_columns(
             image_width,
             image_height,
         );
+        for overlay in &image.text_overlays {
+            page.add_text(
+                &overlay.text,
+                x + overlay.x * image_anchor_horizontal_scale,
+                top - overlay.y * row_scale - image_vertical_offset,
+                overlay.font_size * row_scale,
+                PdfColor::BLACK,
+                overlay.bold,
+            );
+        }
     }
 
     if sheet.page_setup.vertical_centered {
@@ -5057,13 +5432,13 @@ mod tests {
         parse_header_footer_sections, parse_horizontal_alignment, parse_number_format,
         parse_print_area, parse_rgb_color, parse_vertical_alignment, parse_vml_anchor,
         parse_vml_crop, parse_vml_style_points, parse_windows_devmode_page_size,
-        read_column_widths, read_legacy_drawing_images, read_merge_ranges, read_page_setup,
-        read_row_breaks, read_sheet_footer, read_sheet_rows, read_two_cell_shape, relationship_id,
-        rendered_column_count, spreadsheet_theme_colors, text_overflow_region,
-        trim_trailing_empty_rows, wrap_cell_text, xlsx_horizontal_scale, xlsx_left_offset,
-        xlsx_vertical_scale, CellData, CellStyle, DifferentialFontStyle, HorizontalAlignment,
-        MergeRange, RowData, SheetData, SheetImage, SheetImageData, SheetPageSetup,
-        VerticalAlignment, XlsxStyles,
+        read_column_widths, read_legacy_drawing_images, read_merge_ranges,
+        read_one_cell_area_chart, read_page_setup, read_row_breaks, read_sheet_footer,
+        read_sheet_rows, read_two_cell_shape, relationship_id, rendered_column_count,
+        spreadsheet_theme_colors, text_overflow_region, trim_trailing_empty_rows, wrap_cell_text,
+        xlsx_horizontal_scale, xlsx_left_offset, xlsx_vertical_scale, CellData, CellStyle,
+        DifferentialFontStyle, HorizontalAlignment, MergeRange, RowData, SheetData, SheetImage,
+        SheetImageData, SheetPageSetup, VerticalAlignment, XlsxStyles,
     };
     use crate::{PageSize, PdfColor};
     use zip::write::SimpleFileOptions;
@@ -5436,6 +5811,90 @@ mod tests {
         assert_eq!(shape.width, 30.0);
         assert_eq!(shape.height, 40.0);
         assert!(matches!(shape.data, SheetImageData::Rgba(_)));
+    }
+
+    #[test]
+    fn renders_percent_stacked_area_chart_from_cell_ranges() {
+        let anchor_xml = r#"<oneCellAnchor xmlns:r="relationships"><from><col>0</col><colOff>0</colOff><row>9</row><rowOff>0</rowOff></from><ext cx="1270000" cy="635000"/><graphicFrame><graphic><graphicData><chart r:id="rId1"/></graphicData></graphic></graphicFrame></oneCellAnchor>"#;
+        let chart_xml = r#"<chartSpace><chart><title><tx><rich><p><r><t>Energy Mix</t></r></p></rich></tx></title><plotArea><areaChart><grouping val="percentStacked"/><ser><tx><strRef><f>'Energy'!B1</f></strRef></tx><val><numRef><f>'Energy'!$B$2:$B$3</f></numRef></val></ser><ser><tx><strRef><f>'Energy'!C1</f></strRef></tx><val><numRef><f>'Energy'!$C$2:$C$3</f></numRef></val></ser></areaChart></plotArea><legend/></chart></chartSpace>"#;
+        let mut output = Cursor::new(Vec::new());
+        {
+            let mut writer = zip::ZipWriter::new(&mut output);
+            writer
+                .start_file("xl/charts/chart1.xml", SimpleFileOptions::default())
+                .unwrap();
+            writer.write_all(chart_xml.as_bytes()).unwrap();
+            writer.finish().unwrap();
+        }
+        let mut archive = ZipArchive::new(Cursor::new(output.into_inner())).unwrap();
+        let anchor = roxmltree::Document::parse(anchor_xml).unwrap();
+        let relationships =
+            HashMap::from([("rId1".to_owned(), "/xl/charts/chart1.xml".to_owned())]);
+        let rows = vec![
+            RowData {
+                index: 0,
+                height: 15.0,
+                cells: vec![
+                    CellData::default(),
+                    CellData {
+                        text: "Coal".to_owned(),
+                        ..CellData::default()
+                    },
+                    CellData {
+                        text: "Gas".to_owned(),
+                        ..CellData::default()
+                    },
+                ],
+            },
+            RowData {
+                index: 1,
+                height: 15.0,
+                cells: vec![
+                    CellData::default(),
+                    CellData {
+                        text: "40".to_owned(),
+                        ..CellData::default()
+                    },
+                    CellData {
+                        text: "25".to_owned(),
+                        ..CellData::default()
+                    },
+                ],
+            },
+            RowData {
+                index: 2,
+                height: 15.0,
+                cells: vec![
+                    CellData::default(),
+                    CellData {
+                        text: "35".to_owned(),
+                        ..CellData::default()
+                    },
+                    CellData {
+                        text: "27".to_owned(),
+                        ..CellData::default()
+                    },
+                ],
+            },
+        ];
+
+        let chart = read_one_cell_area_chart(
+            &mut archive,
+            "xl/drawings/drawing1.xml",
+            &relationships,
+            anchor.root_element(),
+            "Energy",
+            &rows,
+            &[],
+        )
+        .unwrap()
+        .expect("area chart should render");
+
+        assert_eq!((chart.pixel_width, chart.pixel_height), (200, 100));
+        assert_eq!(chart.text_overlays.len(), 3);
+        assert!(
+            matches!(chart.data, SheetImageData::Rgba(data) if data.iter().any(|value| *value != 255))
+        );
     }
 
     #[test]
@@ -6111,6 +6570,7 @@ mod tests {
             width: 1.0,
             height: 1.0,
             foreground: false,
+            text_overlays: Vec::new(),
         }];
 
         trim_trailing_empty_rows(&mut rows, &images);

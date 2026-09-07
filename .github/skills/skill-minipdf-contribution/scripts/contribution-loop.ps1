@@ -208,7 +208,7 @@ function Invoke-FocusedBenchmark(
             ReportDir = $reportDirectory
         }
         if ($FreshReference) { $arguments.ForceReference = $true } else { $arguments.SkipReference = $true }
-        & (Join-Path $repositoryRoot "scripts\Run-Rust-Benchmark.ps1") @arguments
+        & (Join-Path $repositoryRoot "scripts\Invoke-LanguageVisualBenchmark.ps1") -Language rust @arguments | Out-Host
     } else {
         if ($FreshReference) {
             $referencePdf = Join-Path (Join-Path $formatRoot "reference") "$DocumentName.pdf"
@@ -450,8 +450,13 @@ switch ($Action) {
             Save-State $state
             throw "Focused attempt failed and was rolled back: $failureMessage"
         }
-        $overallDelta = $after.OverallScore - [double]$attempt.Baseline.OverallScore
-        $visualDelta = $after.VisualAverage - [double]$attempt.Baseline.VisualAverage
+        $baseline = @($attempt.Baseline | Where-Object {
+            $_.PSObject.Properties.Name -contains "OverallScore" -and
+            $_.PSObject.Properties.Name -contains "VisualAverage"
+        }) | Select-Object -Last 1
+        if (-not $baseline) { throw "The focused baseline did not contain a score object." }
+        $overallDelta = $after.OverallScore - [double]$baseline.OverallScore
+        $visualDelta = $after.VisualAverage - [double]$baseline.VisualAverage
         $accepted = $overallDelta -ge $MinimumImprovement -and $visualDelta -ge 0
         $result = [pscustomobject]@{
             Implementation = $state.Implementation
@@ -461,7 +466,7 @@ switch ($Action) {
             Accepted = $accepted
             OverallDelta = $overallDelta
             VisualDelta = $visualDelta
-            Before = $attempt.Baseline
+            Before = $baseline
             After = $after
         }
         if ($accepted) {
