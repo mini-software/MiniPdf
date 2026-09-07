@@ -160,7 +160,7 @@ MiniPdf 專注於實用文件轉換，不追求完整複製 Microsoft Office 版
 在任意程式設計 Agent 中開啟乾淨的 fork 或 clone，然後將以下指令貼到 Agent 聊天中：
 
 ```text
-Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Detect the installed supported language toolchains, randomly choose one available implementation, diagnose and improve the automatically selected benchmark cases, validate all changes, and prepare the pull request. Do not commit, push, fork, or open a pull request without my explicit approval.
+Read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Before running any command, ask me whether to use .NET or Rust and wait for my explicit choice. Then use the selected implementation to diagnose and improve one automatically selected benchmark case, validate all changes, and prepare the pull request. Keep generated images and full logs in artifacts and return only paths and compact summaries. Do not commit, push, fork, or open a pull request without my explicit approval.
 ```
 
 ## 專案資源

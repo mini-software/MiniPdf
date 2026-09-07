@@ -2,7 +2,7 @@
 param(
     [string[]]$ReportPath,
     [ValidateRange(1, 20)]
-    [int]$Count = 2,
+    [int]$Count = 1,
     [ValidateRange(0.0, 1.0)]
     [double]$HighScoreThreshold = 0.95,
     [switch]$Json
