@@ -91,6 +91,57 @@ class ClassicFixtureSmokeTest {
     }
 
     @Test
+    void rendersScaledTablesAndGroupedArtwork() throws Exception {
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/xlsx/Business expenses budget2.xlsx");
+
+        try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
+            assertEquals(4, document.getNumberOfPages());
+            PDFTextStripper stripper = new PDFTextStripper();
+            stripper.setStartPage(1);
+            stripper.setEndPage(1);
+            String firstPage = stripper.getText(document);
+            assertEquals(1, firstPage.split("EMPLOYEE COSTS", -1).length - 1, firstPage);
+
+            long imageCount = 0;
+            for (var name : document.getPage(0).getResources().getXObjectNames()) {
+                if (document.getPage(0).getResources().getXObject(name) instanceof PDImageXObject) {
+                    imageCount++;
+                }
+            }
+            assertTrue(imageCount >= 2, "imageCount=" + imageCount);
+
+            var page = new PDFRenderer(document).renderImageWithDPI(0, 150.0f);
+            long stripedPixels = 0;
+            long translucentShapePixels = 0;
+            for (int y = 0; y < page.getHeight(); y++) {
+                for (int x = 0; x < page.getWidth(); x++) {
+                    int rgb = page.getRGB(x, y);
+                    int red = (rgb >> 16) & 0xff;
+                    int green = (rgb >> 8) & 0xff;
+                    int blue = rgb & 0xff;
+                    if (red >= 210 && red <= 220 && green >= 210 && green <= 220 && blue >= 210 && blue <= 220) {
+                        stripedPixels++;
+                    }
+                    if (red >= 110 && red <= 125 && green >= 78 && green <= 92 && blue >= 70 && blue <= 84) {
+                        translucentShapePixels++;
+                    }
+                }
+            }
+            assertTrue(stripedPixels > 100_000, "stripedPixels=" + stripedPixels);
+            assertTrue(translucentShapePixels > 5_000, "translucentShapePixels=" + translucentShapePixels);
+        }
+    }
+
+    @Test
+    void fitsWidthWhenFitHeightIsUnlimited() throws Exception {
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/xlsx/Expense report basic1.xlsx");
+
+        try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
+            assertEquals(1, document.getNumberOfPages());
+        }
+    }
+
+    @Test
     void convertsIssueXlsxWithCjkText() throws Exception {
         Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/xlsx/Issue202609031340.xlsx");
         byte[] pdf = MiniPdf.convertToPdfBytes(fixture);
