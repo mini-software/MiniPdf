@@ -16,6 +16,7 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.util.Matrix;
 import org.apache.poi.hemf.usermodel.HemfPicture;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
@@ -26,16 +27,21 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DifferentialStyleProvider;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.PageMargin;
+import org.apache.poi.ss.usermodel.PatternFormatting;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.TableStyleInfo;
+import org.apache.poi.ss.usermodel.TableStyleType;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressBase;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
@@ -45,8 +51,23 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
 import org.apache.poi.xssf.usermodel.XSSFShape;
+import org.apache.poi.xssf.usermodel.XSSFShapeGroup;
+import org.apache.poi.xssf.usermodel.XSSFSimpleShape;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTAdjPoint2D;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTGroupTransform2D;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTPath2D;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTPath2DClose;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTPath2DCubicBezierTo;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTPath2DLineTo;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTPath2DMoveTo;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTPath2DQuadBezierTo;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTShapeProperties;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTSRgbColor;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTTransform2D;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDefinedName;
 
 import java.awt.Color;
@@ -258,6 +279,7 @@ final class PoiXlsxRenderer {
                             drawCell(
                                 content,
                                 style,
+                                tableFill(sheet, rowIndex, column),
                                 x,
                                 cellTop - textHeight,
                                 textWidth,
@@ -269,6 +291,7 @@ final class PoiXlsxRenderer {
                                 sheet,
                                 merge,
                                 style,
+                                tableFill(sheet, rowIndex, column),
                                 x,
                                 cellTop - textHeight,
                                 textWidth,
@@ -347,18 +370,20 @@ final class PoiXlsxRenderer {
     private static void drawCell(
             PDPageContentStream content,
             XSSFCellStyle style,
+            Color tableFill,
             float x,
             float y,
             float width,
             float height,
             float borderScale) throws IOException {
+        Color fill = tableFill;
         if (style != null && style.getFillPattern() == FillPatternType.SOLID_FOREGROUND) {
-            Color fill = color(style.getFillForegroundXSSFColor(), null);
-            if (fill != null) {
-                content.setNonStrokingColor(fill);
-                content.addRect(x, y, width, height);
-                content.fill();
-            }
+            fill = color(style.getFillForegroundXSSFColor(), fill);
+        }
+        if (fill != null) {
+            content.setNonStrokingColor(fill);
+            content.addRect(x, y, width, height);
+            content.fill();
         }
         if (style == null) {
             return;
@@ -374,18 +399,20 @@ final class PoiXlsxRenderer {
             XSSFSheet sheet,
             CellRangeAddress merge,
             XSSFCellStyle style,
+            Color tableFill,
             float x,
             float y,
             float width,
             float height,
             float borderScale) throws IOException {
+        Color fill = tableFill;
         if (style != null && style.getFillPattern() == FillPatternType.SOLID_FOREGROUND) {
-            Color fill = color(style.getFillForegroundXSSFColor(), null);
-            if (fill != null) {
-                content.setNonStrokingColor(fill);
-                content.addRect(x, y, width, height);
-                content.fill();
-            }
+            fill = color(style.getFillForegroundXSSFColor(), fill);
+        }
+        if (fill != null) {
+            content.setNonStrokingColor(fill);
+            content.addRect(x, y, width, height);
+            content.fill();
         }
         BorderEdge top = mergedBorder(sheet, merge, BorderSide.TOP);
         BorderEdge bottom = mergedBorder(sheet, merge, BorderSide.BOTTOM);
@@ -395,6 +422,47 @@ final class PoiXlsxRenderer {
         drawBorder(content, bottom.style(), bottom.color(), x, y, x + width, y, borderScale);
         drawBorder(content, left.style(), left.color(), x, y, x, y + height, borderScale);
         drawBorder(content, right.style(), right.color(), x + width, y, x + width, y + height, borderScale);
+    }
+
+    private static Color tableFill(XSSFSheet sheet, int rowIndex, int columnIndex) {
+        CellReference cell = new CellReference(sheet.getSheetName(), rowIndex, columnIndex, true, true);
+        Color fill = null;
+        for (var table : sheet.getTables()) {
+            if (!table.contains(cell)) {
+                continue;
+            }
+            TableStyleInfo styleInfo = table.getStyle();
+            if (styleInfo == null || styleInfo.getStyle() == null) {
+                continue;
+            }
+            for (TableStyleType type : TableStyleType.values()) {
+                DifferentialStyleProvider style = styleInfo.getStyle().getStyle(type);
+                CellRangeAddressBase range = type.getRange(table, cell);
+                if (style == null || range == null || !range.isInRange(rowIndex, columnIndex)) {
+                    continue;
+                }
+                PatternFormatting pattern = style.getPatternFormatting();
+                if (pattern == null) {
+                    continue;
+                }
+                org.apache.poi.ss.usermodel.Color background = pattern.getFillBackgroundColorColor();
+                org.apache.poi.ss.usermodel.Color foreground = pattern.getFillForegroundColorColor();
+                if (background instanceof XSSFColor xssfColor) {
+                    resolveThemeColor(sheet.getWorkbook(), xssfColor);
+                    fill = color(xssfColor, fill);
+                } else if (foreground instanceof XSSFColor xssfColor) {
+                    resolveThemeColor(sheet.getWorkbook(), xssfColor);
+                    fill = color(xssfColor, fill);
+                }
+            }
+        }
+        return fill;
+    }
+
+    private static void resolveThemeColor(XSSFWorkbook workbook, XSSFColor color) {
+        if (workbook.getStylesSource().getTheme() != null) {
+            workbook.getStylesSource().getTheme().inheritFromThemeAsRequired(color);
+        }
     }
 
     private static BorderEdge mergedBorder(
@@ -549,33 +617,38 @@ final class PoiXlsxRenderer {
         XSSFDrawing drawing = sheet.getDrawingPatriarch();
         if (drawing != null) {
             for (XSSFShape shape : drawing.getShapes()) {
-                if (!(shape instanceof XSSFPicture picture)) {
-                    continue;
-                }
-                XSSFClientAnchor anchor = picture.getClientAnchor();
-                if (anchor == null || anchor.getRow1() < startRow || anchor.getRow1() > endRow) {
-                    continue;
-                }
-                try {
-                    PDImageXObject image = PDImageXObject.createFromByteArray(
-                            document,
-                            picture.getPictureData().getData(),
-                            picture.getShapeName());
-                        float x = geometry.marginLeft() + horizontalOffset
-                            + columnsBefore(columnWidths, area.getFirstColumn(), anchor.getCol1()) * horizontalScale
-                            + anchor.getDx1() / EMU_PER_POINT * horizontalScale;
-                        float top = geometry.layoutHeight() - geometry.marginTop() - centerOffset
-                            - rowsBefore(sheet, startRow, anchor.getRow1()) * scale
-                            - anchor.getDy1() / EMU_PER_POINT * scale;
-                    float width = (columnsBefore(columnWidths, area.getFirstColumn(), anchor.getCol2())
-                            - columnsBefore(columnWidths, area.getFirstColumn(), anchor.getCol1())) * horizontalScale
-                            + (anchor.getDx2() - anchor.getDx1()) / EMU_PER_POINT * horizontalScale;
-                    float height = rowsBefore(sheet, anchor.getRow1(), anchor.getRow2()) * scale
-                            + (anchor.getDy2() - anchor.getDy1()) / EMU_PER_POINT * scale;
-                    if (width > 0.0f && height > 0.0f) {
-                        content.drawImage(image, x, top - height, width, height);
+                if (shape instanceof XSSFPicture picture) {
+                    XSSFClientAnchor anchor = picture.getClientAnchor();
+                    if (anchor == null || anchor.getRow1() < startRow || anchor.getRow1() > endRow) {
+                        continue;
                     }
-                } catch (IllegalArgumentException ignored) {
+                    drawPicture(document, content, picture, pictureBounds(
+                        sheet,
+                        area,
+                        columnWidths,
+                        startRow,
+                        scale,
+                        horizontalScale,
+                        geometry,
+                        horizontalOffset,
+                        centerOffset,
+                        anchor));
+                } else if (shape instanceof XSSFShapeGroup group) {
+                    drawShapeGroup(
+                        document,
+                        content,
+                        drawing,
+                        group,
+                        sheet,
+                        area,
+                        columnWidths,
+                        startRow,
+                        endRow,
+                        scale,
+                        horizontalScale,
+                        geometry,
+                        horizontalOffset,
+                        centerOffset);
                 }
             }
         }
@@ -640,6 +713,224 @@ final class PoiXlsxRenderer {
                 PDImageXObject image = PDImageXObject.createFromByteArray(document, picture.png(), picture.path());
                 content.drawImage(image, x, top - height, width, height);
             }
+    }
+
+    private static void drawShapeGroup(
+            PDDocument document,
+            PDPageContentStream content,
+            XSSFDrawing drawing,
+            XSSFShapeGroup group,
+            XSSFSheet sheet,
+            CellRangeAddress area,
+            float[] columnWidths,
+            int startRow,
+            int endRow,
+            float scale,
+            float horizontalScale,
+            PageGeometry geometry,
+            float horizontalOffset,
+            float centerOffset) throws IOException {
+        if (!(group.getAnchor() instanceof XSSFClientAnchor anchor)
+                || anchor.getRow1() < startRow
+                || anchor.getRow1() > endRow) {
+            return;
+        }
+        ShapeBounds groupBounds = pictureBounds(
+            sheet,
+            area,
+            columnWidths,
+            startRow,
+            scale,
+            horizontalScale,
+            geometry,
+            horizontalOffset,
+            centerOffset,
+            anchor);
+        CTGroupTransform2D groupTransform = group.getCTGroupShape().getGrpSpPr().getXfrm();
+        if (groupTransform == null
+                || groupTransform.getChExt().getCx() == 0
+                || groupTransform.getChExt().getCy() == 0) {
+            return;
+        }
+        for (XSSFShape child : drawing.getShapes(group)) {
+            CTTransform2D childTransform;
+            if (child instanceof XSSFPicture picture && picture.getCTPicture().getSpPr().isSetXfrm()) {
+                childTransform = picture.getCTPicture().getSpPr().getXfrm();
+            } else if (child instanceof XSSFSimpleShape simpleShape
+                    && simpleShape.getCTShape().getSpPr().isSetXfrm()) {
+                childTransform = simpleShape.getCTShape().getSpPr().getXfrm();
+            } else {
+                continue;
+            }
+            float relativeX = (coordinate(childTransform.getOff().getX())
+                - coordinate(groupTransform.getChOff().getX()))
+                / groupTransform.getChExt().getCx();
+            float relativeY = (coordinate(childTransform.getOff().getY())
+                - coordinate(groupTransform.getChOff().getY()))
+                / groupTransform.getChExt().getCy();
+            ShapeBounds childBounds = new ShapeBounds(
+                groupBounds.x() + relativeX * groupBounds.width(),
+                groupBounds.top() - relativeY * groupBounds.height(),
+                (float) childTransform.getExt().getCx() / groupTransform.getChExt().getCx() * groupBounds.width(),
+                (float) childTransform.getExt().getCy() / groupTransform.getChExt().getCy() * groupBounds.height());
+            if (child instanceof XSSFPicture picture) {
+                drawPicture(document, content, picture, childBounds);
+            } else if (child instanceof XSSFSimpleShape simpleShape) {
+                drawCustomShape(content, simpleShape, childBounds);
+            }
+        }
+    }
+
+    private static float coordinate(Object value) {
+        return value instanceof Number number
+            ? number.floatValue()
+            : Float.parseFloat(value.toString());
+    }
+
+    private static void drawCustomShape(
+            PDPageContentStream content,
+            XSSFSimpleShape shape,
+            ShapeBounds bounds) throws IOException {
+        CTShapeProperties properties = shape.getCTShape().getSpPr();
+        if (!properties.isSetCustGeom() || !properties.isSetSolidFill()
+                || !properties.getSolidFill().isSetSrgbClr()) {
+            return;
+        }
+        CTSRgbColor rgb = properties.getSolidFill().getSrgbClr();
+        byte[] value = rgb.getVal();
+        if (value == null || value.length < 3) {
+            return;
+        }
+        float alpha = rgb.sizeOfAlphaArray() == 0
+            ? 1.0f
+            : coordinate(rgb.getAlphaArray(0).getVal()) / 100_000.0f;
+        content.saveGraphicsState();
+        try {
+            content.setNonStrokingColor(new Color(
+                Byte.toUnsignedInt(value[0]),
+                Byte.toUnsignedInt(value[1]),
+                Byte.toUnsignedInt(value[2])));
+            PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+            graphicsState.setNonStrokingAlphaConstant(alpha);
+            content.setGraphicsStateParameters(graphicsState);
+            for (CTPath2D path : properties.getCustGeom().getPathLst().getPathArray()) {
+                float pathWidth = path.getW() > 0 ? path.getW() : 1.0f;
+                float pathHeight = path.getH() > 0 ? path.getH() : 1.0f;
+                boolean hasSegments = false;
+                try (XmlCursor cursor = path.newCursor()) {
+                    if (cursor.toFirstChild()) {
+                        do {
+                            XmlObject segment = cursor.getObject();
+                            if (segment instanceof CTPath2DMoveTo move) {
+                                moveTo(content, move.getPt(), bounds, pathWidth, pathHeight);
+                                hasSegments = true;
+                            } else if (segment instanceof CTPath2DLineTo line) {
+                                lineTo(content, line.getPt(), bounds, pathWidth, pathHeight);
+                            } else if (segment instanceof CTPath2DQuadBezierTo quadratic) {
+                                CTAdjPoint2D control = quadratic.getPtArray(0);
+                                CTAdjPoint2D end = quadratic.getPtArray(1);
+                                float currentX = shapeX(bounds, coordinate(control.getX()), pathWidth);
+                                float currentY = shapeY(bounds, coordinate(control.getY()), pathHeight);
+                                float endX = shapeX(bounds, coordinate(end.getX()), pathWidth);
+                                float endY = shapeY(bounds, coordinate(end.getY()), pathHeight);
+                                content.curveTo1(currentX, currentY, endX, endY);
+                            } else if (segment instanceof CTPath2DCubicBezierTo cubic) {
+                                CTAdjPoint2D first = cubic.getPtArray(0);
+                                CTAdjPoint2D second = cubic.getPtArray(1);
+                                CTAdjPoint2D end = cubic.getPtArray(2);
+                                content.curveTo(
+                                    shapeX(bounds, coordinate(first.getX()), pathWidth),
+                                    shapeY(bounds, coordinate(first.getY()), pathHeight),
+                                    shapeX(bounds, coordinate(second.getX()), pathWidth),
+                                    shapeY(bounds, coordinate(second.getY()), pathHeight),
+                                    shapeX(bounds, coordinate(end.getX()), pathWidth),
+                                    shapeY(bounds, coordinate(end.getY()), pathHeight));
+                            } else if (segment instanceof CTPath2DClose) {
+                                content.closePath();
+                            }
+                        } while (cursor.toNextSibling());
+                    }
+                }
+                if (hasSegments) {
+                    content.fill();
+                }
+            }
+        } finally {
+            content.restoreGraphicsState();
+        }
+    }
+
+    private static void moveTo(
+            PDPageContentStream content,
+            CTAdjPoint2D point,
+            ShapeBounds bounds,
+            float pathWidth,
+            float pathHeight) throws IOException {
+        content.moveTo(
+            shapeX(bounds, coordinate(point.getX()), pathWidth),
+            shapeY(bounds, coordinate(point.getY()), pathHeight));
+    }
+
+    private static void lineTo(
+            PDPageContentStream content,
+            CTAdjPoint2D point,
+            ShapeBounds bounds,
+            float pathWidth,
+            float pathHeight) throws IOException {
+        content.lineTo(
+            shapeX(bounds, coordinate(point.getX()), pathWidth),
+            shapeY(bounds, coordinate(point.getY()), pathHeight));
+    }
+
+    private static float shapeX(ShapeBounds bounds, float value, float pathWidth) {
+        return bounds.x() + value / pathWidth * bounds.width();
+    }
+
+    private static float shapeY(ShapeBounds bounds, float value, float pathHeight) {
+        return bounds.top() - value / pathHeight * bounds.height();
+    }
+
+    private static ShapeBounds pictureBounds(
+            XSSFSheet sheet,
+            CellRangeAddress area,
+            float[] columnWidths,
+            int startRow,
+            float scale,
+            float horizontalScale,
+            PageGeometry geometry,
+            float horizontalOffset,
+            float centerOffset,
+            XSSFClientAnchor anchor) {
+        float x = geometry.marginLeft() + horizontalOffset
+            + columnsBefore(columnWidths, area.getFirstColumn(), anchor.getCol1()) * horizontalScale
+            + anchor.getDx1() / EMU_PER_POINT * horizontalScale;
+        float top = geometry.layoutHeight() - geometry.marginTop() - centerOffset
+            - rowsBefore(sheet, startRow, anchor.getRow1()) * scale
+            - anchor.getDy1() / EMU_PER_POINT * scale;
+        float width = (columnsBefore(columnWidths, area.getFirstColumn(), anchor.getCol2())
+                - columnsBefore(columnWidths, area.getFirstColumn(), anchor.getCol1())) * horizontalScale
+                + (anchor.getDx2() - anchor.getDx1()) / EMU_PER_POINT * horizontalScale;
+        float height = rowsBefore(sheet, anchor.getRow1(), anchor.getRow2()) * scale
+            + (anchor.getDy2() - anchor.getDy1()) / EMU_PER_POINT * scale;
+        return new ShapeBounds(x, top, width, height);
+    }
+
+    private static void drawPicture(
+            PDDocument document,
+            PDPageContentStream content,
+            XSSFPicture picture,
+            ShapeBounds bounds) throws IOException {
+        if (bounds.width() <= 0.0f || bounds.height() <= 0.0f || picture.getPictureData() == null) {
+            return;
+        }
+        try {
+            PDImageXObject image = PDImageXObject.createFromByteArray(
+                document,
+                picture.getPictureData().getData(),
+                picture.getShapeName());
+            content.drawImage(image, bounds.x(), bounds.top() - bounds.height(), bounds.width(), bounds.height());
+        } catch (IllegalArgumentException ignored) {
+        }
     }
 
     private static boolean drawVectorEmf(
@@ -745,11 +1036,14 @@ final class PoiXlsxRenderer {
             PrintSetup setup = sheet.getPrintSetup();
             boolean explicitPaperSize = sheet.getCTWorksheet().isSetPageSetup()
                     && sheet.getCTWorksheet().getPageSetup().isSetPaperSize();
-                boolean letter = setup.getPaperSize() == PrintSetup.LETTER_PAPERSIZE;
+            boolean scaledDefaultPaper = !explicitPaperSize
+                && explicitScale(sheet)
+                && !sheet.getCTWorksheet().getPageSetup().isSetFitToHeight();
+            boolean letter = !scaledDefaultPaper && setup.getPaperSize() == PrintSetup.LETTER_PAPERSIZE;
             layoutWidth = letter ? PageSize.LETTER.width() : PageSize.A4.width();
             layoutHeight = letter ? PageSize.LETTER.height() : PageSize.A4.height();
-                mediaWidth = explicitPaperSize ? layoutWidth : PageSize.A4.width();
-                mediaHeight = explicitPaperSize ? layoutHeight : PageSize.A4.height();
+            mediaWidth = explicitPaperSize ? layoutWidth : PageSize.A4.width();
+            mediaHeight = explicitPaperSize ? layoutHeight : PageSize.A4.height();
             if (setup.getLandscape()) {
                 float layoutSwap = layoutWidth;
                 layoutWidth = layoutHeight;
@@ -819,16 +1113,26 @@ final class PoiXlsxRenderer {
             float verticalScaleLimit) {
         float[] allWidths = columnWidths(sheet, area);
         float naturalWidth = sum(allWidths, 0, allWidths.length);
-        boolean fitOnePageWide = hasPrintArea || (sheet.getFitToPage() && setup.getFitWidth() == 1);
-        if (fitOnePageWide || naturalWidth <= geometry.usableWidth()) {
-            float scale = naturalWidth > 0.0f
+        boolean explicitFitWidth = sheet.getCTWorksheet().isSetPageSetup()
+            && sheet.getCTWorksheet().getPageSetup().isSetFitToWidth();
+        boolean unlimitedFitHeight = sheet.getCTWorksheet().isSetPageSetup()
+            && sheet.getCTWorksheet().getPageSetup().isSetFitToHeight()
+            && setup.getFitHeight() == 0;
+        boolean fitOnePageWide = hasPrintArea
+            || (sheet.getFitToPage()
+                && (explicitFitWidth || !explicitScale(sheet) || unlimitedFitHeight)
+                && setup.getFitWidth() == 1);
+        float scale = setup.getScale() > 0 ? setup.getScale() / 100.0f : 1.0f;
+        if (fitOnePageWide || naturalWidth * scale <= geometry.usableWidth()) {
+            if (fitOnePageWide) {
+                scale = naturalWidth > 0.0f
                     ? Math.min(1.0f, geometry.usableWidth() / naturalWidth)
                     : 1.0f;
+            }
             scale = Math.min(scale, verticalScaleLimit);
             return List.of(new ColumnGroup(area.getFirstColumn(), area.getLastColumn(), allWidths, scale));
         }
 
-        float scale = setup.getScale() > 0 ? setup.getScale() / 100.0f : 1.0f;
         scale = Math.min(scale, verticalScaleLimit);
         List<ColumnGroup> groups = new ArrayList<>();
         int groupStart = 0;
@@ -902,7 +1206,10 @@ final class PoiXlsxRenderer {
 
     private static float rowHeight(XSSFSheet sheet, int rowIndex) {
         Row row = sheet.getRow(rowIndex);
-        float height = row == null || row.getZeroHeight()
+        if (row != null && row.getZeroHeight()) {
+            return 0.0f;
+        }
+        float height = row == null
                 ? sheet.getDefaultRowHeightInPoints()
                 : row.getHeightInPoints();
         if (row != null) {
@@ -1129,6 +1436,9 @@ final class PoiXlsxRenderer {
             float padding) {
     }
 
+    private record ShapeBounds(float x, float top, float width, float height) {
+    }
+
     private enum BorderSide {
         TOP,
         BOTTOM,
@@ -1148,6 +1458,10 @@ final class PoiXlsxRenderer {
         private final PDFont verdanaBoldItalic;
         private final PDFont calibri;
         private final PDFont calibriBold;
+        private final PDFont palatino;
+        private final PDFont palatinoBold;
+        private final PDFont corbel;
+        private final PDFont corbelBold;
         private final PDFont times;
         private final PDFont timesBold;
         private final PDFont cjk;
@@ -1165,6 +1479,10 @@ final class PoiXlsxRenderer {
                 PDFont verdanaBoldItalic,
                 PDFont calibri,
                 PDFont calibriBold,
+                PDFont palatino,
+                PDFont palatinoBold,
+                PDFont corbel,
+                PDFont corbelBold,
                 PDFont times,
                 PDFont timesBold,
                 PDFont cjk,
@@ -1180,6 +1498,10 @@ final class PoiXlsxRenderer {
             this.verdanaBoldItalic = verdanaBoldItalic;
             this.calibri = calibri;
             this.calibriBold = calibriBold;
+            this.palatino = palatino;
+            this.palatinoBold = palatinoBold;
+            this.corbel = corbel;
+            this.corbelBold = corbelBold;
             this.times = times;
             this.timesBold = timesBold;
             this.cjk = cjk;
@@ -1210,6 +1532,14 @@ final class PoiXlsxRenderer {
                     registered,
                     List.of("calibrib"),
                     systemFonts("calibrib.ttf"));
+                PDFont palatino = load(document, registered, List.of("palatino linotype", "pala"), systemFonts("pala.ttf"));
+                PDFont palatinoBold = load(
+                    document,
+                    registered,
+                    List.of("palatino linotype bold", "palab"),
+                    systemFonts("palab.ttf"));
+                PDFont corbel = load(document, registered, List.of("corbel"), systemFonts("corbel.ttf"));
+                PDFont corbelBold = load(document, registered, List.of("corbel bold", "corbelb"), systemFonts("corbelb.ttf"));
             PDFont times = load(document, registered, List.of("times"), systemFonts("times.ttf"));
             PDFont timesBold = load(document, registered, List.of("timesbd"), systemFonts("timesbd.ttf"));
             PDFont cjk = load(
@@ -1252,6 +1582,18 @@ final class PoiXlsxRenderer {
             if (timesBold == null) {
                 timesBold = latinBold;
             }
+            if (palatino == null) {
+                palatino = times;
+            }
+            if (palatinoBold == null) {
+                palatinoBold = timesBold;
+            }
+            if (corbel == null) {
+                corbel = latin;
+            }
+            if (corbelBold == null) {
+                corbelBold = latinBold;
+            }
             if (cjk == null) {
                 cjk = latin;
             }
@@ -1274,6 +1616,10 @@ final class PoiXlsxRenderer {
                     verdanaBoldItalic,
                     calibri,
                     calibriBold,
+                    palatino,
+                    palatinoBold,
+                    corbel,
+                    corbelBold,
                     times,
                     timesBold,
                     cjk,
@@ -1308,6 +1654,12 @@ final class PoiXlsxRenderer {
             }
             if (name.contains("calibri")) {
                 return bold ? calibriBold : calibri;
+            }
+            if (name.contains("palatino")) {
+                return bold ? palatinoBold : palatino;
+            }
+            if (name.contains("corbel")) {
+                return bold ? corbelBold : corbel;
             }
             if (name.contains("times")) {
                 return bold ? timesBold : times;
