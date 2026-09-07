@@ -1,8 +1,8 @@
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Geometry;
 using System;
 using System.IO;
 
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     // -------------------------------------------------------------------------
     // Set operation codes (mirrors CombineMode for internal use)

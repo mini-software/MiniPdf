@@ -1,8 +1,8 @@
 using System;
-using MiniPdf.Drawing.Font.Glyphs;
-using MiniPdf.Drawing.Font.Ttf.Glyphs;
+using MiniSoftware.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Ttf.Glyphs;
 
-namespace MiniPdf.Drawing.Font.Ttf
+namespace MiniSoftware.Drawing.Font.Ttf
 {
     /// <summary>
     /// Implements <see cref="IGlyphAccessor"/> for TrueType/OTF fonts.

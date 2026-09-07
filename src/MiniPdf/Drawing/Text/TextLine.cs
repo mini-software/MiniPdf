@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// One visual line of text made up of one or more <see cref="TextRun"/> objects.

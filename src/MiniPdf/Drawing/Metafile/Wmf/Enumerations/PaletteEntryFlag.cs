@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Wmf.Enumerations
 {
     /// <summary>
     ///     Specifies how the palette entry should be used.

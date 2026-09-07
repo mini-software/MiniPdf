@@ -1,9 +1,9 @@
 using System;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Drawing2D;
 
-namespace MiniPdf.Drawing.Pens
+namespace MiniSoftware.Drawing.Pens
 {
     /// <summary>
     /// Defines a pen used to draw lines, curves, and shapes.

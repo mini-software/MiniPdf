@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Fully-resolved SVG presentation attributes for the current element.

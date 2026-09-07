@@ -1,27 +1,27 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Imaging;
-using MiniPdf.Drawing.Metafile.Emf.Enumerations;
-using MiniPdf.Drawing.Metafile.Emf.Objects;
-using MiniPdf.Drawing.Metafile.Emf.Records;
-using MiniPdf.Drawing.Metafile.Emf.Records.DrawingRecordTypes;
-using MiniPdf.Drawing.Metafile.Emf.Records.ObjectRecordTypes;
-using MiniPdf.Drawing.Metafile.Emf.Records.StateRecordTypes;
-using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
-using MiniPdf.Drawing.Metafile.Wmf.Objects;
-using MiniPdf.Drawing.Pens;
-using Pen = MiniPdf.Drawing.Pens.Pen;
-using Brush = MiniPdf.Drawing.Brushes.Brush;
-using Color = MiniPdf.Drawing.Colors.Color;
-using DashStyle = MiniPdf.Drawing.Drawing2D.DashStyle;
-using EmfRecord = MiniPdf.Drawing.Metafile.Emf.Records.Record;
-using WmfHatchStyle = MiniPdf.Drawing.Metafile.Wmf.Enumerations.HatchStyle;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Imaging;
+using MiniSoftware.Drawing.Metafile.Emf.Enumerations;
+using MiniSoftware.Drawing.Metafile.Emf.Objects;
+using MiniSoftware.Drawing.Metafile.Emf.Records;
+using MiniSoftware.Drawing.Metafile.Emf.Records.DrawingRecordTypes;
+using MiniSoftware.Drawing.Metafile.Emf.Records.ObjectRecordTypes;
+using MiniSoftware.Drawing.Metafile.Emf.Records.StateRecordTypes;
+using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
+using MiniSoftware.Drawing.Metafile.Wmf.Objects;
+using MiniSoftware.Drawing.Pens;
+using Pen = MiniSoftware.Drawing.Pens.Pen;
+using Brush = MiniSoftware.Drawing.Brushes.Brush;
+using Color = MiniSoftware.Drawing.Colors.Color;
+using DashStyle = MiniSoftware.Drawing.Drawing2D.DashStyle;
+using EmfRecord = MiniSoftware.Drawing.Metafile.Emf.Records.Record;
+using WmfHatchStyle = MiniSoftware.Drawing.Metafile.Wmf.Enumerations.HatchStyle;
 
-namespace MiniPdf.Drawing.Vector.Emf
+namespace MiniSoftware.Drawing.Vector.Emf
 {
     /// <summary>
     /// Maps <see cref="DrawingCommand"/> state to EMF records. Manages the EMF

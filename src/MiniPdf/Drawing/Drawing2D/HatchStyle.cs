@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Specifies the hatch style for <see cref="HatchBrush"/> fill patterns.

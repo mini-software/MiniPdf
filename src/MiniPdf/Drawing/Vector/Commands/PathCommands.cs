@@ -1,8 +1,8 @@
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Pens;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Pens;
 
-namespace MiniPdf.Drawing.Vector.Commands
+namespace MiniSoftware.Drawing.Vector.Commands
 {
     /// <summary>
     /// Draws (strokes) a graphics path with the specified pen.

@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Enums
+namespace MiniSoftware.Drawing.Enums
 {
     /// <summary>
     /// Specifies the format of the color data for each pixel in an image.

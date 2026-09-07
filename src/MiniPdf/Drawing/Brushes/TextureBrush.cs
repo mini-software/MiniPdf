@@ -1,9 +1,9 @@
 using System;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Brushes
+namespace MiniSoftware.Drawing.Brushes
 {
     /// <summary>
     /// Fills the interior of a shape with an image, optionally tiling/wrapping it.

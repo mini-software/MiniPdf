@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Ttf.Glyphs
+namespace MiniSoftware.Drawing.Font.Ttf.Glyphs
 {
     /// <summary>
     /// A single point in a TrueType glyph outline contour.

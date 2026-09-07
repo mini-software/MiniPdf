@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Text.Bidi
+namespace MiniSoftware.Drawing.Text.Bidi
 {
     /// <summary>
     /// Paragraph embedding direction for the Unicode Bidirectional Algorithm.

@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Wmf
+namespace MiniSoftware.Drawing.Metafile.Wmf
 {
     using System.IO;
-    using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
-    using MiniPdf.Drawing.Metafile.Wmf.Records;
-    using MiniPdf.Drawing.Metafile.Wmf.Records.EscapeRecordTypes;
-    using MiniPdf.Drawing.Metafile.Wmf.Records.ObjectRecordTypes;
-    using MiniPdf.Drawing.Metafile.Wmf.Records.StateRecordTypes;
+    using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Wmf.Records;
+    using MiniSoftware.Drawing.Metafile.Wmf.Records.EscapeRecordTypes;
+    using MiniSoftware.Drawing.Metafile.Wmf.Records.ObjectRecordTypes;
+    using MiniSoftware.Drawing.Metafile.Wmf.Records.StateRecordTypes;
 
     internal class WmfReader
     {

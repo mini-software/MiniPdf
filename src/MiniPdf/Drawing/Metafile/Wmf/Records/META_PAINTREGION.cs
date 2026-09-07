@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     /// <summary>
     ///     The META_PAINTREGION record paints the specified region by using the brush that is defined in the playback device context.

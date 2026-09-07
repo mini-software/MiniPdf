@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Enums;
+using MiniSoftware.Drawing.Enums;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// An ordered list of font families queried to find a glyph for a code

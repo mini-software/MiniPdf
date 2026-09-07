@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Emf.Enumerations
 {
     /// <summary>
     ///     The GraphicsMode enumeration is used to specify how to interpret shape data such as rectangle coordinates.

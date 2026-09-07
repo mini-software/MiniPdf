@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Drawing2D;
 
-namespace MiniPdf.Drawing.Pens
+namespace MiniSoftware.Drawing.Pens
 {
     /// <summary>
     /// Represents an adjustable arrow-shaped line cap that can be added to any <see cref="Pen"/>.

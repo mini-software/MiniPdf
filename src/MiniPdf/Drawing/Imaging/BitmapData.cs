@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Enums;
+using MiniSoftware.Drawing.Enums;
 using System;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Specifies the attributes of a bitmap used for lock bits operations.

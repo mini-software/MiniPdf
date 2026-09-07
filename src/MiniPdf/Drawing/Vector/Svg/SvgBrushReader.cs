@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Represents a parsed SVG gradient definition (linear or radial) stored in
-    /// the defs table, used to construct a MiniPdf.Drawing brush on demand.
+    /// the defs table, used to construct a MiniSoftware.Drawing brush on demand.
     /// </summary>
     internal sealed class SvgGradientDef
     {
@@ -29,7 +29,7 @@ namespace MiniPdf.Drawing.Vector.Svg
 
     /// <summary>
     /// Parses SVG fill/stroke values (colors, <c>url(#id)</c> references) and
-    /// gradient/pattern def elements into MiniPdf.Drawing brushes.
+    /// gradient/pattern def elements into MiniSoftware.Drawing brushes.
     /// </summary>
     internal static class SvgBrushReader
     {
@@ -155,7 +155,7 @@ namespace MiniPdf.Drawing.Vector.Svg
         }
 
         /// <summary>
-        /// Constructs a MiniPdf.Drawing brush from a parsed gradient def.
+        /// Constructs a MiniSoftware.Drawing brush from a parsed gradient def.
         /// </summary>
         private static Brush? BrushFromDef(object def)
         {

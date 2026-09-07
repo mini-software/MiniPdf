@@ -1,8 +1,8 @@
-using MiniPdf.Drawing.Metafile.Emf;
+using MiniSoftware.Drawing.Metafile.Emf;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Records.DrawingRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Emf.Records.DrawingRecordTypes
 {
-    using MiniPdf.Drawing.Metafile.Emf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Emf.Enumerations;
     using System;
     using System.IO;
 

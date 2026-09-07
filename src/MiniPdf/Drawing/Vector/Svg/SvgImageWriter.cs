@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Writes SVG <c>&lt;image&gt;</c> elements with embedded base64 PNG data.

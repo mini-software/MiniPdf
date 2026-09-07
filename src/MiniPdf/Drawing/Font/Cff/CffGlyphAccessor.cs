@@ -1,8 +1,8 @@
 using System;
-using MiniPdf.Drawing.Font.Glyphs;
-using MiniPdf.Drawing.Font.Rendering;
+using MiniSoftware.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Rendering;
 
-namespace MiniPdf.Drawing.Font.Cff
+namespace MiniSoftware.Drawing.Font.Cff
 {
     /// <summary>
     /// Provides glyph metrics and names for a CFF font by executing

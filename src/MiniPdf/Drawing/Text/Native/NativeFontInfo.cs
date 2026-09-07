@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Text.Native
+namespace MiniSoftware.Drawing.Text.Native
 {
     /// <summary>
     /// Describes a single font face discovered via a native operating-system API.

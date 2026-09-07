@@ -1,9 +1,9 @@
 using System;
 using System.Globalization;
 using System.Text;
-using MiniPdf.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Drawing2D;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Converts a <see cref="GraphicsPath"/> (points + PathPointType flags) into

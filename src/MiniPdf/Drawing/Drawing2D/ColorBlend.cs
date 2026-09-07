@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Colors;
+using MiniSoftware.Drawing.Colors;
 
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Stores color and position information for gradient interpolation.

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Wmf.Enumerations
 {
     /// <summary>
     ///     Defines how logical units are mapped to physical units; that is, assuming that the origins in both the logical and physical coordinate systems are at the same point on the drawing surface, what is the physical coordinate (x',y') that corresponds to logical coordinate (x,y).

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace MiniPdf.Drawing.Font.Sources
+namespace MiniSoftware.Drawing.Font.Sources
 {
     /// <summary>
     /// Reads a font from a byte array already held in memory.

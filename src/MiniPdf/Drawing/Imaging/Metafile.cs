@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Metafile.Emf.Records.DrawingRecordTypes;
-using MiniPdf.Drawing.Metafile.Emf.Records.StateRecordTypes;
-using MiniPdf.Drawing.Rendering;
-using EmfRecords = MiniPdf.Drawing.Metafile.Emf.Records;
-using WmfRecords = MiniPdf.Drawing.Metafile.Wmf.Records;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Metafile.Emf.Records.DrawingRecordTypes;
+using MiniSoftware.Drawing.Metafile.Emf.Records.StateRecordTypes;
+using MiniSoftware.Drawing.Rendering;
+using EmfRecords = MiniSoftware.Drawing.Metafile.Emf.Records;
+using WmfRecords = MiniSoftware.Drawing.Metafile.Wmf.Records;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Represents a Windows metafile (.wmf or .emf), which is a vector image format

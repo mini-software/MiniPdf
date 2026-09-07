@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Wmf.Enumerations
 {
     /// <summary>
     ///     Specifies the different possible brush types that can be used in graphics operations.

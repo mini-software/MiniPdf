@@ -1,8 +1,8 @@
 using System;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Codecs.Png
+namespace MiniSoftware.Drawing.Codecs.Png
 {
     internal readonly struct ApngFrameControl
     {

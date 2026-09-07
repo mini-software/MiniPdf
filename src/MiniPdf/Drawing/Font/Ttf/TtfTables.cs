@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Font.Ttf.Tables;
+using MiniSoftware.Drawing.Font.Ttf.Tables;
 
-namespace MiniPdf.Drawing.Font.Ttf
+namespace MiniSoftware.Drawing.Font.Ttf
 {
     /// <summary>
     /// Property bag that holds every parsed OpenType table for a TrueType/OTF font.

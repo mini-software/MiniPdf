@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Specifies the attributes of an image.

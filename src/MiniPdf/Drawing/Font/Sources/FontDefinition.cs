@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.Core;
 using System;
 
-namespace MiniPdf.Drawing.Font.Sources
+namespace MiniSoftware.Drawing.Font.Sources
 {
     /// <summary>
     /// Fully describes how to locate and load a font: its declared <see cref="FontType"/>

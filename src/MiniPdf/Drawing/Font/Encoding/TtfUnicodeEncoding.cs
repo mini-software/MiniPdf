@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Font.Glyphs;
-using MiniPdf.Drawing.Font.Ttf.Tables;
+using MiniSoftware.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Ttf.Tables;
 
-namespace MiniPdf.Drawing.Font.Encoding
+namespace MiniSoftware.Drawing.Font.Encoding
 {
     /// <summary>
     /// Implements <see cref="IFontEncoding"/> by delegating to a CMap format subtable

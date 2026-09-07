@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Wmf.Enumerations
 {
     /// <summary>
     ///     Defines the possible sets of character glyphs that are defined in fonts for graphics output.

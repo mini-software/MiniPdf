@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Enums
+namespace MiniSoftware.Drawing.Enums
 {
     /// <summary>
     /// Specifies the mode for locking image bits.

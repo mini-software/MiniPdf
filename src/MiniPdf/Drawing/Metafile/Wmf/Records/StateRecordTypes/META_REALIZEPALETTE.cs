@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Records.StateRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records.StateRecordTypes
 {
     /// <summary>
     ///     The META_REALIZEPALETTE record maps entries from the logical palette that is defined in the playback device context to the system palette.

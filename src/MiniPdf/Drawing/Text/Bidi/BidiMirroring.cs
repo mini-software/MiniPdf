@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MiniPdf.Drawing.Text.Bidi
+namespace MiniSoftware.Drawing.Text.Bidi
 {
     /// <summary>
     /// Bidi mirroring table (UAX #9 §3.1.4 / L4, from BidiMirroring.txt).

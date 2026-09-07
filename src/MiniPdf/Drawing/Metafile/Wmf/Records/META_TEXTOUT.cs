@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MiniPdf.Drawing.Metafile.Wmf;
-using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
+using MiniSoftware.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     using System.IO;
 

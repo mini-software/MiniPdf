@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     /// <summary>
     /// Per-component selector inside a JPEG SOS (Start-of-Scan) header.

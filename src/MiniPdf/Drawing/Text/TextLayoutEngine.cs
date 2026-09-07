@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Lays out text into a sequence of <see cref="TextLine"/> objects within a

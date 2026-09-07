@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Vector.Commands
+namespace MiniSoftware.Drawing.Vector.Commands
 {
     /// <summary>
     /// Sets the clipping region to the specified region. The region captures

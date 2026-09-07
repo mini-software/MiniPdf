@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Objects
+namespace MiniSoftware.Drawing.Metafile.Emf.Objects
 {
     using System.IO;
 

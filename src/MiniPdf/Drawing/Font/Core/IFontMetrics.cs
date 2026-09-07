@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Glyphs;
 
-namespace MiniPdf.Drawing.Font.Core
+namespace MiniSoftware.Drawing.Font.Core
 {
     /// <summary>
     /// Provides access to horizontal and typographic font metrics in design units.

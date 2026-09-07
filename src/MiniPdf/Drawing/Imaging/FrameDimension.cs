@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Provides properties that represent dimensions of an image, such as page number or time.

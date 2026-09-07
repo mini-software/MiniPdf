@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Enums;
+using MiniSoftware.Drawing.Enums;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Rich-text layout options for <see cref="Graphics.DrawRichText"/> and

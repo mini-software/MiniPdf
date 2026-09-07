@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Glyphs;
 
-namespace MiniPdf.Drawing.Font.Ttf.Glyphs
+namespace MiniSoftware.Drawing.Font.Ttf.Glyphs
 {
     /// <summary>
     /// Parsed outline data for one glyph, as extracted from the "glyf" table.

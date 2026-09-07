@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Font.Core;
-using FontStyle = MiniPdf.Drawing.Enums.FontStyle;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Font.Core;
+using FontStyle = MiniSoftware.Drawing.Enums.FontStyle;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Caches per-(FontFamily, FontStyle) IFont lookups and per-code-point

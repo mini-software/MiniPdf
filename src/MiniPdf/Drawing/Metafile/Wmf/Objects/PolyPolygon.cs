@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Objects
+namespace MiniSoftware.Drawing.Metafile.Wmf.Objects
 {
     /// <summary>
     ///     The PolyPolygon Object defines a series of closed polygons.

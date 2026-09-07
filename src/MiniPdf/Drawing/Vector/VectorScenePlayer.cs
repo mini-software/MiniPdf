@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Vector
+namespace MiniSoftware.Drawing.Vector
 {
     /// <summary>
     /// Replays a <see cref="VectorScene"/> onto any <see cref="IDrawingContext"/>.

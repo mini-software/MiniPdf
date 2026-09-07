@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     internal sealed class AnimationFrame
     {

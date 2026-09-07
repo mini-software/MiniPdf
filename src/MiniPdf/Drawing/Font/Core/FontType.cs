@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Core
+namespace MiniSoftware.Drawing.Font.Core
 {
     /// <summary>
     /// Identifies the format of a font file.

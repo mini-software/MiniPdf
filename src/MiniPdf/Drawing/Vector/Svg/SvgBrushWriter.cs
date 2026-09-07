@@ -1,12 +1,12 @@
 using System;
 using System.Globalization;
 using System.Text;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Writes SVG brush representations: inline color for solid brushes, and

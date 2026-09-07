@@ -1,8 +1,8 @@
-namespace MiniPdf.Drawing.Metafile.Emf.Records.DrawingRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Emf.Records.DrawingRecordTypes
 {
     using System.IO;
 
-    using MiniPdf.Drawing.Metafile.Wmf.Objects;
+    using MiniSoftware.Drawing.Metafile.Wmf.Objects;
 
     /// <summary>
     ///     The EMR_ARCTO record specifies an elliptical arc. It resets the current position to the end point of the arc

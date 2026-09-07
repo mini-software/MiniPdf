@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Glyphs;
 
-namespace MiniPdf.Drawing.Font.Encoding
+namespace MiniSoftware.Drawing.Font.Encoding
 {
     /// <summary>
     /// A no-op encoding that always returns <see cref="GlyphUInt32Id.NotDefId"/>.

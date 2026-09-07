@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Font.IO;
-using MiniPdf.Drawing.Font.Ttf;
-using MiniPdf.Drawing.Font.Ttf.Tables;
+using MiniSoftware.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.Ttf;
+using MiniSoftware.Drawing.Font.Ttf.Tables;
 
-namespace MiniPdf.Drawing.Font.Cff
+namespace MiniSoftware.Drawing.Font.Cff
 {
     /// <summary>
     /// Reads a CFF font from a stream and returns a <see cref="CffFont"/>.

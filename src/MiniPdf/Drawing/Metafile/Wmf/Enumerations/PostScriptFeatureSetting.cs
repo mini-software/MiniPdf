@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Wmf.Enumerations
 {
     /// <summary>
     ///     Defines values that are used to retrieve information about specific features in a PostScript printer driver.

@@ -1,9 +1,9 @@
 using System;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Rendering
+namespace MiniSoftware.Drawing.Rendering
 {
     internal static class PixelCompositor
     {

@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Wmf.Enumerations
 {
     /// <summary>
     ///     Defines options for controlling the direction in which text and graphics are drawn.

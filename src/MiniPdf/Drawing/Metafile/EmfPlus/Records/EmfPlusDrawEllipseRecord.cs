@@ -1,7 +1,7 @@
-namespace MiniPdf.Drawing.Metafile.EmfPlus.Records
+namespace MiniSoftware.Drawing.Metafile.EmfPlus.Records
 {
     using System.IO;
-    using MiniPdf.Drawing.Metafile.EmfPlus.Objects;
+    using MiniSoftware.Drawing.Metafile.EmfPlus.Objects;
 
     internal class EmfPlusDrawEllipseRecord : Record
     {

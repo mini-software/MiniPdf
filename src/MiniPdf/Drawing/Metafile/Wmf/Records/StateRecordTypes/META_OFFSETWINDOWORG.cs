@@ -1,6 +1,6 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Records.StateRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records.StateRecordTypes
 {
-    using MiniPdf.Drawing.Metafile.Wmf.Records;
+    using MiniSoftware.Drawing.Metafile.Wmf.Records;
     using System.IO;
 
     /// <summary>

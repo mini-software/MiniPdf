@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Metafile.Wmf;
-using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
+using MiniSoftware.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Objects
+namespace MiniSoftware.Drawing.Metafile.Wmf.Objects
 {
     /// <summary>
     ///     The Brush Object defines the style, color, and pattern of a brush. Brush Objects are created by the META_CREATEBRUSHINDIRECT, META_CREATEPATTERNBRUSH and META_DIBCREATEPATTERNBRUSH records.

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     /// <summary>JPEG Start-of-Frame type.</summary>
     internal enum SofType

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     /// <summary>
     /// Holds one JPEG quantization table (64 coefficients in natural 8×8 row-major order).

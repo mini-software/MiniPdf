@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     /// <summary>JPEG marker codes (second byte of the 0xFF XX pair).</summary>
     internal enum JpegMarker : byte

@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Rendering
+namespace MiniSoftware.Drawing.Font.Rendering
 {
     /// <summary>
     /// Receives decomposed glyph outline drawing commands from an outline renderer.

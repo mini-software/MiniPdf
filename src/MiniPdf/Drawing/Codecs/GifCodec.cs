@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Codecs
+namespace MiniSoftware.Drawing.Codecs
 {
     /// <summary>
     /// GIF87a / GIF89a codec — reads first frame; writes indexed colour with LZW.

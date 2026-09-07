@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace MiniPdf.Drawing.Font.IO
+namespace MiniSoftware.Drawing.Font.IO
 {
     /// <summary>
     /// WOFF2 container decompression stub.

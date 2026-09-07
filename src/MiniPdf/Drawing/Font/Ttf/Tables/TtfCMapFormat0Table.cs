@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.IO;
 using System.IO;
 
-namespace MiniPdf.Drawing.Font.Ttf.Tables
+namespace MiniSoftware.Drawing.Font.Ttf.Tables
 {
     /// <summary>
     /// CMap format 0: simple byte-array mapping of code points 0–255.

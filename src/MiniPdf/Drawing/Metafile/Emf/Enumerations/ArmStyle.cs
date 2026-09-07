@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Emf.Enumerations
 {
     /// <summary>
     ///     The ArmStyle enumeration defines values for one of the characteristics in the PANOSE system for classifying typefaces.

@@ -1,13 +1,13 @@
-using MiniPdf.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     using System;
     using System.IO;
     using System.Text;
-    using MiniPdf.Drawing.Metafile.Emf.Enumerations;
-    using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
-    using MiniPdf.Drawing.Metafile.Wmf.Objects;
+    using MiniSoftware.Drawing.Metafile.Emf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Wmf.Objects;
 
     /// <summary>
     ///     The META_EXTTEXTOUT record outputs text by using the font, background color, and text color that are defined in the playback device context. Optionally, dimensions can be provided for clipping, opaquing, or both.

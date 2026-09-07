@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MiniPdf.Drawing.Text.Native
+namespace MiniSoftware.Drawing.Text.Native
 {
     /// <summary>
     /// Dispatches font discovery to the platform-specific native implementation. When

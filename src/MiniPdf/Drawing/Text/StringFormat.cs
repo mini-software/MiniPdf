@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Encapsulates text layout information such as alignment, format flags, and tab stops.

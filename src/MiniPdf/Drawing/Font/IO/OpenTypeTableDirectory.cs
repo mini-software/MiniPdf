@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MiniPdf.Drawing.Font.IO
+namespace MiniSoftware.Drawing.Font.IO
 {
     /// <summary>
     /// Parses the OpenType table directory and provides helpers for reading raw table bytes.

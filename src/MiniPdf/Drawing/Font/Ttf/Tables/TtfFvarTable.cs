@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.IO;
 
-namespace MiniPdf.Drawing.Font.Ttf.Tables
+namespace MiniSoftware.Drawing.Font.Ttf.Tables
 {
     /// <summary>
     /// Parsed OpenType "fvar" (font variations) table.

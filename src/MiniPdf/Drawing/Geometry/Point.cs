@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Geometry
+namespace MiniSoftware.Drawing.Geometry
 {
     /// <summary>Represents an ordered pair of integer x- and y-coordinates.</summary>
     /// <remarks>

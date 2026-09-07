@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     internal sealed class JpegDecoder
     {

@@ -1,9 +1,9 @@
-using MiniPdf.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records.ObjectRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records.ObjectRecordTypes
 {
-    using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
-    using MiniPdf.Drawing.Metafile.Wmf.Objects;
+    using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Wmf.Objects;
 
     /// <summary>
     ///     The META_CREATEPALETTE record creates a Palette Object (section 2.2.1.3).

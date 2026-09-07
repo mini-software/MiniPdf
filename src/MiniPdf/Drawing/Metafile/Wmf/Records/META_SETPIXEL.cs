@@ -1,10 +1,10 @@
-using MiniPdf.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     using System.IO;
-    using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
-    using MiniPdf.Drawing.Metafile.Wmf.Objects;
+    using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Wmf.Objects;
 
     /// <summary>
     ///     The META_SETPIXEL record sets the pixel at the specified coordinates to the specified color.

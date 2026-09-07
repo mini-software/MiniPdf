@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     internal sealed class CoefficientBuffer
     {

@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Ttf.Tables
+namespace MiniSoftware.Drawing.Font.Ttf.Tables
 {
     /// <summary>
     /// Abstract base for a parsed OpenType CMap format subtable.

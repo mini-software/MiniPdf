@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Font.Cff
+namespace MiniSoftware.Drawing.Font.Cff
 {
     /// <summary>
     /// Internal data holder produced by <see cref="CffParser"/>.

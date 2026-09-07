@@ -1,9 +1,9 @@
 using System.Globalization;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Pens;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Pens;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Writes SVG stroke attributes for a <see cref="Pen"/>.

@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile
+namespace MiniSoftware.Drawing.Metafile
 {
     /// <summary>
     /// Specifies the format of a metafile.

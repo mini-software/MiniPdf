@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Drawing2D;
 
-namespace MiniPdf.Drawing.Geometry
+namespace MiniSoftware.Drawing.Geometry
 {
     /// <summary>
     /// Internal helpers for applying a <see cref="Matrix"/> to point(s).

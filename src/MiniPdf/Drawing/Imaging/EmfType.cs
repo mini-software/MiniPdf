@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Specifies the type of Enhanced Metafile (EMF) to create.

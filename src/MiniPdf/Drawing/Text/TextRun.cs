@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Brushes;
+using MiniSoftware.Drawing.Brushes;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// A positioned span of text within a <see cref="TextLine"/>.

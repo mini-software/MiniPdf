@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Identifies an image encoder parameter category.

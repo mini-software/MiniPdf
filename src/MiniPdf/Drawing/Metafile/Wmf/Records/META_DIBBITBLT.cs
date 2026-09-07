@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     /// <summary>
     ///     Specifies the transfer of a block of pixels in device-independent format according to a raster operation.

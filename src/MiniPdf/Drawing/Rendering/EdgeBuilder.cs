@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Rendering
+namespace MiniSoftware.Drawing.Rendering
 {
     internal readonly struct EdgeSeed
     {

@@ -2505,7 +2505,7 @@ internal static class DocxReader
             var targetHeight = Math.Max(32, (int)Math.Round(requestedHeight * scale));
             var normalizedBytes = EmfCompatibilityNormalizer.NormalizeForMiniPdfDrawing(sourceBytes, targetWidth, targetHeight);
             using var sourceStream = new MemoryStream(normalizedBytes, writable: false);
-            using var metafile = new global::MiniPdf.Drawing.Imaging.Metafile(sourceStream);
+            using var metafile = new global::MiniSoftware.Drawing.Imaging.Metafile(sourceStream);
             using var bitmap = metafile.ToBitmap();
             using var outputStream = new MemoryStream();
             if (hasCrop)
@@ -2515,12 +2515,12 @@ internal static class DocxReader
                 var cropWidth = Compat.Clamp((int)Math.Round(bitmap.Width * (1 - cropL - cropR)), 1, bitmap.Width - cropX);
                 var cropHeight = Compat.Clamp((int)Math.Round(bitmap.Height * (1 - cropT - cropB)), 1, bitmap.Height - cropY);
                 using var cropped = bitmap.Clone(
-                    new global::MiniPdf.Drawing.Geometry.Rectangle(cropX, cropY, cropWidth, cropHeight), bitmap.PixelFormat);
-                cropped.Save(outputStream, global::MiniPdf.Drawing.Imaging.ImageFormat.Png);
+                    new global::MiniSoftware.Drawing.Geometry.Rectangle(cropX, cropY, cropWidth, cropHeight), bitmap.PixelFormat);
+                cropped.Save(outputStream, global::MiniSoftware.Drawing.Imaging.ImageFormat.Png);
             }
             else
             {
-                bitmap.Save(outputStream, global::MiniPdf.Drawing.Imaging.ImageFormat.Png);
+                bitmap.Save(outputStream, global::MiniSoftware.Drawing.Imaging.ImageFormat.Png);
             }
             return outputStream.ToArray();
         }

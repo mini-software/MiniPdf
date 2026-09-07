@@ -1,12 +1,12 @@
-using MiniPdf.Drawing.Metafile.Emf;
+using MiniSoftware.Drawing.Metafile.Emf;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Records.DrawingRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Emf.Records.DrawingRecordTypes
 {
     using System;
     using System.IO;
-    using MiniPdf.Drawing.Metafile.Emf.Enumerations;
-    using MiniPdf.Drawing.Metafile.Emf.Objects;
-    using MiniPdf.Drawing.Metafile.Wmf.Objects;
+    using MiniSoftware.Drawing.Metafile.Emf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Emf.Objects;
+    using MiniSoftware.Drawing.Metafile.Wmf.Objects;
 
     internal class EMR_PLGBLT : Record
     {

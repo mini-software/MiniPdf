@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SysEncoding = System.Text.Encoding;
 
-namespace MiniPdf.Drawing.Font.Cff
+namespace MiniSoftware.Drawing.Font.Cff
 {
     /// <summary>
     /// Parses the binary CFF (Compact Font Format) table and produces a <see cref="CffData"/>

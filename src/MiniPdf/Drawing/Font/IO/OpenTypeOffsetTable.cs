@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.IO
+namespace MiniSoftware.Drawing.Font.IO
 {
     /// <summary>
     /// The OpenType offset table (the first 12 bytes of every sfnt-based font file).

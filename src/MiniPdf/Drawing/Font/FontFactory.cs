@@ -1,13 +1,13 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Font.Cff;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Font.IO;
-using MiniPdf.Drawing.Font.Sources;
-using MiniPdf.Drawing.Font.Ttf;
-using MiniPdf.Drawing.Font.Type1;
+using MiniSoftware.Drawing.Font.Cff;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.Sources;
+using MiniSoftware.Drawing.Font.Ttf;
+using MiniSoftware.Drawing.Font.Type1;
 
-namespace MiniPdf.Drawing.Font
+namespace MiniSoftware.Drawing.Font
 {
     /// <summary>
     /// Entry point for loading fonts. Dispatches to the appropriate reader

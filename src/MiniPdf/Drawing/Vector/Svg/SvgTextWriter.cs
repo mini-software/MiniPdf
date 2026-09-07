@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Imaging;
-using MiniPdf.Drawing.Pens;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Imaging;
+using MiniSoftware.Drawing.Pens;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Writes SVG text in two modes:
@@ -36,8 +36,8 @@ namespace MiniPdf.Drawing.Vector.Svg
         /// Writes text for a DrawString command. Dispatches to path or text
         /// mode based on <see cref="SvgEncoderParameters.TextMode"/>.
         /// </summary>
-        public void WriteText(string text, MiniPdf.Drawing.Text.Font font, Brush brush,
-                              RectangleF layoutRect, MiniPdf.Drawing.Text.StringFormat? format)
+        public void WriteText(string text, MiniSoftware.Drawing.Text.Font font, Brush brush,
+                              RectangleF layoutRect, MiniSoftware.Drawing.Text.StringFormat? format)
         {
             if (string.IsNullOrEmpty(text)) return;
 
@@ -54,8 +54,8 @@ namespace MiniPdf.Drawing.Vector.Svg
         /// FillPath calls (which the rasterizer uses for each glyph outline),
         /// then emits each captured path as an SVG <c>&lt;path&gt;</c>.
         /// </summary>
-        private void WritePathMode(string text, MiniPdf.Drawing.Text.Font font, Brush brush,
-                                   RectangleF layoutRect, MiniPdf.Drawing.Text.StringFormat? format)
+        private void WritePathMode(string text, MiniSoftware.Drawing.Text.Font font, Brush brush,
+                                   RectangleF layoutRect, MiniSoftware.Drawing.Text.StringFormat? format)
         {
             var capturedPaths = new List<GraphicsPath>();
             using var capture = new GlyphCaptureGraphics(capturedPaths);
@@ -90,10 +90,10 @@ namespace MiniPdf.Drawing.Vector.Svg
 
         // ── Text mode: <text>/<tspan> ─────────────────────────────────────────
 
-        private void WriteTextMode(string text, MiniPdf.Drawing.Text.Font font, Brush brush,
-                                   RectangleF layoutRect, MiniPdf.Drawing.Text.StringFormat? format)
+        private void WriteTextMode(string text, MiniSoftware.Drawing.Text.Font font, Brush brush,
+                                   RectangleF layoutRect, MiniSoftware.Drawing.Text.StringFormat? format)
         {
-            var lines = MiniPdf.Drawing.Text.TextLayoutEngine.Layout(text, font, layoutRect, format, 96f, 96f);
+            var lines = MiniSoftware.Drawing.Text.TextLayoutEngine.Layout(text, font, layoutRect, format, 96f, 96f);
             if (lines.Count == 0) return;
 
             string fill = SvgBrushWriter.WriteFillRef(brush, _defs);
@@ -110,21 +110,21 @@ namespace MiniPdf.Drawing.Vector.Svg
             if (opacity != null)
                 _w.WriteAttribute("fill-opacity", opacity);
 
-            var sf = format ?? MiniPdf.Drawing.Text.StringFormat.GenericDefault;
+            var sf = format ?? MiniSoftware.Drawing.Text.StringFormat.GenericDefault;
             string anchor = sf.Alignment switch
             {
-                MiniPdf.Drawing.Text.StringAlignment.Near   => "start",
-                MiniPdf.Drawing.Text.StringAlignment.Center => "middle",
-                MiniPdf.Drawing.Text.StringAlignment.Far    => "end",
+                MiniSoftware.Drawing.Text.StringAlignment.Near   => "start",
+                MiniSoftware.Drawing.Text.StringAlignment.Center => "middle",
+                MiniSoftware.Drawing.Text.StringAlignment.Far    => "end",
                 _ => "start",
             };
             _w.WriteAttributeOptional("text-anchor", anchor, "start");
 
             string baseline = sf.LineAlignment switch
             {
-                MiniPdf.Drawing.Text.StringAlignment.Near   => "text-before-edge",
-                MiniPdf.Drawing.Text.StringAlignment.Center => "central",
-                MiniPdf.Drawing.Text.StringAlignment.Far    => "text-after-edge",
+                MiniSoftware.Drawing.Text.StringAlignment.Near   => "text-before-edge",
+                MiniSoftware.Drawing.Text.StringAlignment.Center => "central",
+                MiniSoftware.Drawing.Text.StringAlignment.Far    => "text-after-edge",
                 _ => "text-before-edge",
             };
             _w.WriteAttributeOptional("dominant-baseline", baseline, "text-before-edge");
@@ -158,9 +158,9 @@ namespace MiniPdf.Drawing.Vector.Svg
                 _captured = captured;
             }
 
-            private static MiniPdf.Drawing.Imaging.Bitmap CreateBlankBitmap()
+            private static MiniSoftware.Drawing.Imaging.Bitmap CreateBlankBitmap()
             {
-                return new MiniPdf.Drawing.Imaging.Bitmap(1, 1, PixelFormat.Format32bppArgb);
+                return new MiniSoftware.Drawing.Imaging.Bitmap(1, 1, PixelFormat.Format32bppArgb);
             }
 
             protected override void FillPathCore(Brush brush, GraphicsPath path, FillMode fillMode)

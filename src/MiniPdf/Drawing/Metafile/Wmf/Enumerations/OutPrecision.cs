@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Wmf.Enumerations
 {
     /// <summary>
     ///     Defines values for output precision, which is the requirement for the font mapper to match specific font parameters, including height, width, character orientation, escapement, pitch, and font type.

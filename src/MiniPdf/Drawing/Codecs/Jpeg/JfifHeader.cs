@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     /// <summary>
     /// Parsed JFIF APP0 header (present in most "plain" JPEG files).

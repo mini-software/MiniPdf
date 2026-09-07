@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Represents a metadata property item for an image.

@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Drawing2D;
 
-namespace MiniPdf.Drawing.Vector.Commands
+namespace MiniSoftware.Drawing.Vector.Commands
 {
     /// <summary>
     /// Sets the world transform to the specified matrix.

@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Imaging;
-using MiniPdf.Drawing.Metafile.Emf.Enumerations;
-using MiniPdf.Drawing.Metafile.Emf.Records.DrawingRecordTypes;
-using MiniPdf.Drawing.Metafile.Emf.Records.ObjectRecordTypes;
-using MiniPdf.Drawing.Metafile.Emf.Records.StateRecordTypes;
-using MiniPdf.Drawing.Pens;
-using MiniPdfFont = MiniPdf.Drawing.Text.Font;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Imaging;
+using MiniSoftware.Drawing.Metafile.Emf.Enumerations;
+using MiniSoftware.Drawing.Metafile.Emf.Records.DrawingRecordTypes;
+using MiniSoftware.Drawing.Metafile.Emf.Records.ObjectRecordTypes;
+using MiniSoftware.Drawing.Metafile.Emf.Records.StateRecordTypes;
+using MiniSoftware.Drawing.Pens;
+using MiniPdfFont = MiniSoftware.Drawing.Text.Font;
 
-namespace MiniPdf.Drawing.Rendering
+namespace MiniSoftware.Drawing.Rendering
 {
     /// <summary>
     /// Replays EMF/EMF+ records onto any <see cref="IDrawingContext"/> (raster

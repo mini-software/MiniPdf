@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Specifies the type of a path point. Upper bits carry flags; lower 3 bits are the point type.

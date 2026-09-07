@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Emf.Records
+namespace MiniSoftware.Drawing.Metafile.Emf.Records
 {
     using System;
     using System.IO;

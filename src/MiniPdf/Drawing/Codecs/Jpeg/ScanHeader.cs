@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     /// <summary>
     /// Parsed payload of a JPEG SOS (Start-of-Scan) marker.

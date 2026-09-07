@@ -1,5 +1,5 @@
 #pragma warning disable CS1591
-namespace MiniPdf.Drawing.Colors
+namespace MiniSoftware.Drawing.Colors
 {
     /// <summary>
     /// Specifies known system and web colors, matching GDI+ KnownColor values exactly.

@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Enums;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Enums;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Describes a contiguous range of characters within a rich-text string that

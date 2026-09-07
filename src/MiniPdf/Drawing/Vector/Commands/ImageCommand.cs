@@ -1,9 +1,9 @@
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Vector.Commands
+namespace MiniSoftware.Drawing.Vector.Commands
 {
     /// <summary>
     /// Draws an image scaled to fit a destination rectangle.

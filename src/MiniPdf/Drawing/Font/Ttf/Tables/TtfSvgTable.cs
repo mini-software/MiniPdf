@@ -1,11 +1,11 @@
-using MiniPdf.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using SysEncoding = System.Text.Encoding;
 
-namespace MiniPdf.Drawing.Font.Ttf.Tables
+namespace MiniSoftware.Drawing.Font.Ttf.Tables
 {
     /// <summary>
     /// Parsed OpenType "SVG " (Scalable Vector Graphics) table.

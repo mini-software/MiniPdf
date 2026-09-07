@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Contains the data needed to create or modify a <see cref="GraphicsPath"/>.

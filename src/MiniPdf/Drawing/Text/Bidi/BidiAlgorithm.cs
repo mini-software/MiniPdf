@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MiniPdf.Drawing.Text.Bidi
+namespace MiniSoftware.Drawing.Text.Bidi
 {
     /// <summary>
     /// Implements the Unicode Bidirectional Algorithm (UAX #9).

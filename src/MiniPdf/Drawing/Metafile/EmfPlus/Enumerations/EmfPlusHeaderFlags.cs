@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.EmfPlus.Enumerations
+namespace MiniSoftware.Drawing.Metafile.EmfPlus.Enumerations
 {
     using System;
 

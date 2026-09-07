@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MiniPdf.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.IO;
 
-namespace MiniPdf.Drawing.Font.Ttf
+namespace MiniSoftware.Drawing.Font.Ttf
 {
     /// <summary>
     /// Serialises a <see cref="TtfFont"/> back to a binary sfnt stream.

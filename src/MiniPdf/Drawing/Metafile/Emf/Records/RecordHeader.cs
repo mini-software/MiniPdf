@@ -1,8 +1,8 @@
-using MiniPdf.Drawing.Metafile.Emf;
+using MiniSoftware.Drawing.Metafile.Emf;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Records
+namespace MiniSoftware.Drawing.Metafile.Emf.Records
 {
-    using MiniPdf.Drawing.Metafile.Emf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Emf.Enumerations;
     using System.IO;
 
     internal struct RecordHeader

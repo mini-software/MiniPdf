@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Emf
+namespace MiniSoftware.Drawing.Metafile.Emf
 {
     using System.IO;
-    using MiniPdf.Drawing.Metafile.Emf.Enumerations;
-    using MiniPdf.Drawing.Metafile.Emf.Records;
-    using MiniPdf.Drawing.Metafile.Emf.Records.DrawingRecordTypes;
-    using MiniPdf.Drawing.Metafile.Emf.Records.ObjectRecordTypes;
-    using MiniPdf.Drawing.Metafile.Emf.Records.StateRecordTypes;
-    using MiniPdf.Drawing.Metafile.EmfPlus;
+    using MiniSoftware.Drawing.Metafile.Emf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Emf.Records;
+    using MiniSoftware.Drawing.Metafile.Emf.Records.DrawingRecordTypes;
+    using MiniSoftware.Drawing.Metafile.Emf.Records.ObjectRecordTypes;
+    using MiniSoftware.Drawing.Metafile.Emf.Records.StateRecordTypes;
+    using MiniSoftware.Drawing.Metafile.EmfPlus;
 
     internal class EmfReader
     {

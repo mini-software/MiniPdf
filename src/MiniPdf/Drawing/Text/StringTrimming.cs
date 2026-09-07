@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Specifies how to trim characters from a string that does not fit into a layout shape.

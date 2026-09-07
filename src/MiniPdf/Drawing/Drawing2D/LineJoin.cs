@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Specifies the join style for the connection of line segments drawn with a <see cref="Pen"/>.

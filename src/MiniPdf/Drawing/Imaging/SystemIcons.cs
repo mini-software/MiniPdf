@@ -1,8 +1,8 @@
 using System.Threading;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Enums;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Enums;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Provides a set of pre-defined system icons as stub implementations.

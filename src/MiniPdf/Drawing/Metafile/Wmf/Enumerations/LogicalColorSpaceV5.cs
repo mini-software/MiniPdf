@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Wmf.Enumerations
 {
     /// <summary>
     ///     Used to specify where to find color profile information for a DeviceIndependentBitmap (DIB) Object (section 2.2.2.9) that has a header of type BitmapV5Header Object (section 2.2.2.5).

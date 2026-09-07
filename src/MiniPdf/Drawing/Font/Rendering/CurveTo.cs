@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Rendering
+namespace MiniSoftware.Drawing.Font.Rendering
 {
     /// <summary>
     /// A "curve to" drawing command representing a cubic Bézier segment.

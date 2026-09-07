@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Codecs
+namespace MiniSoftware.Drawing.Codecs
 {
-    /// <summary>EMF/WMF decoder backed by the MiniPdf.Drawing metafile parser and playback engine.</summary>
+    /// <summary>EMF/WMF decoder backed by the MiniSoftware.Drawing metafile parser and playback engine.</summary>
     internal sealed class EmfCodec : IImageCodec
     {
         public bool CanDecode(byte[] header)
@@ -12,7 +12,7 @@ namespace MiniPdf.Drawing.Codecs
 
         public Bitmap Decode(Stream stream)
         {
-            using var metafile = new MiniPdf.Drawing.Imaging.Metafile(stream);
+            using var metafile = new MiniSoftware.Drawing.Imaging.Metafile(stream);
             return metafile.RenderToBitmap();
         }
 

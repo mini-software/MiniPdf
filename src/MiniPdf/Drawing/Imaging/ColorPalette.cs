@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Colors;
+using MiniSoftware.Drawing.Colors;
 using System;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Defines an array of colors that make up a color palette.

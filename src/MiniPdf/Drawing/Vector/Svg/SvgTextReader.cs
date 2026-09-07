@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Text;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Text;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Parses SVG <c>&lt;text&gt;</c> and <c>&lt;tspan&gt;</c> elements into
@@ -29,7 +29,7 @@ namespace MiniPdf.Drawing.Vector.Svg
         /// The reader must be positioned on the text start element; reads
         /// through the end element.
         /// </summary>
-        public (string Text, MiniPdf.Drawing.Text.Font Font, Brush? Brush, RectangleF LayoutRect, StringFormat? Format)?
+        public (string Text, MiniSoftware.Drawing.Text.Font Font, Brush? Brush, RectangleF LayoutRect, StringFormat? Format)?
             ReadText(XmlReader reader, SvgStyle style)
         {
             var attrs = SvgStyleParser.ApplyAttributes(reader, style);
@@ -42,7 +42,7 @@ namespace MiniPdf.Drawing.Vector.Svg
             // Font
             float fontSize = SvgStyleParser.ParseLength(style.FontSize, 16f);
             FontStyle fontStyle = ParseFontStyle(style.FontStyleVal, style.FontWeight);
-            var font = new MiniPdf.Drawing.Text.Font(style.FontFamily, fontSize, fontStyle, GraphicsUnit.Pixel);
+            var font = new MiniSoftware.Drawing.Text.Font(style.FontFamily, fontSize, fontStyle, GraphicsUnit.Pixel);
 
             // Brush
             float fillOpacity = SvgStyleParser.ParseFloat(style.FillOpacity, 1f) *

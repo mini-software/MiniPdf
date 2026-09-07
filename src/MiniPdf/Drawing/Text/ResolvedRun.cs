@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Brushes;
+using MiniSoftware.Drawing.Brushes;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// A text run after rich-run, bidi, and fallback resolution. Each

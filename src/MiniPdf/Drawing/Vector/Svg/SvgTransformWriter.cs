@@ -1,7 +1,7 @@
 using System.Globalization;
-using MiniPdf.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Drawing2D;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Converts a <see cref="Matrix"/> to an SVG <c>transform</c> attribute

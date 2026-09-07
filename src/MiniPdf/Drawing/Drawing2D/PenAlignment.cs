@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Specifies the alignment of a <see cref="Pen"/> relative to the stroke outline.

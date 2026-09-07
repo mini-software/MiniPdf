@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Font.Sources;
-using MiniPdf.Drawing.Text.Native;
+using MiniSoftware.Drawing.Font.Sources;
+using MiniSoftware.Drawing.Text.Native;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Represents the collection of fonts installed on the system. The collection is

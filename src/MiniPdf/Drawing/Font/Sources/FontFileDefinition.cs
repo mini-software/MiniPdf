@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Font.Sources
+namespace MiniSoftware.Drawing.Font.Sources
 {
     /// <summary>
     /// Pairs a file-extension hint (e.g. "ttf", "otf", "cff", "pfb") with the

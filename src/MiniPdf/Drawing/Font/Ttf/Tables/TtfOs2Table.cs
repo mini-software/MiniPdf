@@ -1,8 +1,8 @@
 using System.IO;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.IO;
 
-namespace MiniPdf.Drawing.Font.Ttf.Tables
+namespace MiniSoftware.Drawing.Font.Ttf.Tables
 {
     /// <summary>
     /// Parsed OpenType "OS/2" table (OS/2 and Windows metrics).

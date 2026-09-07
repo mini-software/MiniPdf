@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Specifies the substitution method for digit shapes in text.

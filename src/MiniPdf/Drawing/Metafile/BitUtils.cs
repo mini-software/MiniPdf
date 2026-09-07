@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile
+namespace MiniSoftware.Drawing.Metafile
 {
     /// <summary>
     /// Provides helper methods for extracting bit fields from integer values.

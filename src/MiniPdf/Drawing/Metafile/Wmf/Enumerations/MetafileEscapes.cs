@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Wmf.Enumerations
 {
     /// <summary>
     ///     Specifies printer driver functionality that might not be directly accessible through WMF records defined in the RecordType Enumeration (section 2.1.1.1).

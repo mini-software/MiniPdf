@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Brushes
+namespace MiniSoftware.Drawing.Brushes
 {
     /// <summary>
     /// Defines objects used to fill the interior of shapes, such as rectangles, ellipses, and paths.

@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Specifies a range of character positions within a string.

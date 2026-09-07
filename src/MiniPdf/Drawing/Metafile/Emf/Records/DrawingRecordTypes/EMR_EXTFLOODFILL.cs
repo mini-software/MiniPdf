@@ -1,10 +1,10 @@
-namespace MiniPdf.Drawing.Metafile.Emf.Records.DrawingRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Emf.Records.DrawingRecordTypes
 {
     using System.IO;
 
-    using MiniPdf.Drawing.Metafile.Wmf;
-    using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
-    using MiniPdf.Drawing.Metafile.Wmf.Objects;
+    using MiniSoftware.Drawing.Metafile.Wmf;
+    using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Wmf.Objects;
 
     /// <summary>
     ///     The EMR_EXTFLOODFILL record fills an area of the display surface with the current brush.

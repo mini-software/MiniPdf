@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 
-namespace MiniPdf.Drawing.Codecs
+namespace MiniSoftware.Drawing.Codecs
 {
     // ─────────────────────────────────────────────────────────────────────────
     // CRC-32 (ISO 3309 / PNG use)

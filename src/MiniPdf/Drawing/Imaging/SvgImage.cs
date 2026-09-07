@@ -1,11 +1,11 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Vector;
-using MiniPdf.Drawing.Vector.Svg;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Vector;
+using MiniSoftware.Drawing.Vector.Svg;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// A vector image backed by a <see cref="VectorScene"/>, loadable from and

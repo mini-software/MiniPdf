@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace MiniPdf.Drawing.Codecs.Png
+namespace MiniSoftware.Drawing.Codecs.Png
 {
     internal static class PngHelpers
     {

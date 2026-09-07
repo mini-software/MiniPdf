@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Font.Encoding;
-using MiniPdf.Drawing.Font.Glyphs;
-using MiniPdf.Drawing.Font.Rendering;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.Encoding;
+using MiniSoftware.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Rendering;
 
-namespace MiniPdf.Drawing.Font.Type1
+namespace MiniSoftware.Drawing.Font.Type1
 {
     /// <summary>
     /// Represents a loaded Type 1 font face (PFB or PFA).

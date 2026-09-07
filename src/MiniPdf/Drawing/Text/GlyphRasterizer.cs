@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Font.Rendering;
-using MiniPdf.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Font.Rendering;
+using MiniSoftware.Drawing.Font.Glyphs;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Implements <see cref="IGlyphOutlinePainter"/> to convert a glyph's vector outline

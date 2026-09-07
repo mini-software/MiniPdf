@@ -1,10 +1,10 @@
-using MiniPdf.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records.EscapeRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records.EscapeRecordTypes
 {
     using System;
     using System.IO;
-    using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
 
     /// <summary>
     ///     The META_ESCAPE record specifies extensions to WMF functionality that are not directly available through other records defined in the RecordType enumeration (section 2.1.1.1). 

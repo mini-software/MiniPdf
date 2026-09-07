@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Cff
+namespace MiniSoftware.Drawing.Font.Cff
 {
     /// <summary>
     /// Parsed contents of a CFF Private DICT.

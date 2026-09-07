@@ -1,8 +1,8 @@
 using System;
-using MiniPdf.Drawing.Font.Ttf.Glyphs;
-using MiniPdf.Drawing.Font.Ttf.Tables;
+using MiniSoftware.Drawing.Font.Ttf.Glyphs;
+using MiniSoftware.Drawing.Font.Ttf.Tables;
 
-namespace MiniPdf.Drawing.Font.Rendering
+namespace MiniSoftware.Drawing.Font.Rendering
 {
     /// <summary>
     /// Decomposes a TrueType glyph outline (<see cref="GlyphOutlineData"/>) into

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MiniPdf.Drawing.Font.Core
+namespace MiniSoftware.Drawing.Font.Core
 {
     /// <summary>
     /// An ordered collection of font faces loaded from a font collection file (e.g. TTC).

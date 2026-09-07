@@ -1,8 +1,8 @@
-using MiniPdf.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records.ObjectRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records.ObjectRecordTypes
 {
-    using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
     using System.IO;
 
     /// <summary>

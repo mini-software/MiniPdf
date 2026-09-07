@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Specifies the alignment of a text string relative to a layout rectangle.

@@ -1,9 +1,9 @@
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Text;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Text;
 
-namespace MiniPdf.Drawing.Rendering
+namespace MiniSoftware.Drawing.Rendering
 {
     /// <summary>
     /// Represents the state of a <see cref="Graphics"/> object including transform, clipping, and rendering settings.

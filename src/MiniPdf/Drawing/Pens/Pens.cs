@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Colors;
+using MiniSoftware.Drawing.Colors;
 
-namespace MiniPdf.Drawing.Pens
+namespace MiniSoftware.Drawing.Pens
 {
     /// <summary>
     /// Provides a set of predefined <see cref="Pen"/> objects representing all <see cref="KnownColor"/> colors.

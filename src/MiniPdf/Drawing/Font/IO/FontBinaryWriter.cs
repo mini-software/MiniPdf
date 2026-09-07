@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using SysEncoding = System.Text.Encoding;
 
-namespace MiniPdf.Drawing.Font.IO
+namespace MiniSoftware.Drawing.Font.IO
 {
     /// <summary>
     /// A big-endian binary writer for OpenType/TrueType font data.

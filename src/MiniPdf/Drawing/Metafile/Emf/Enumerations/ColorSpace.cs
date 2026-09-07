@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Emf.Enumerations
 {
     /// <summary>
     ///     The ColorSpace enumeration is used to specify when to turn color proofing on and off, and when to delete transforms.

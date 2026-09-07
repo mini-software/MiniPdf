@@ -1,25 +1,25 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Imaging;
-using MiniPdf.Drawing.Metafile;
-using MiniPdf.Drawing.Metafile.Emf.Records;
-using MiniPdf.Drawing.Metafile.Emf.Records.DrawingRecordTypes;
-using MiniPdf.Drawing.Metafile.Emf.Records.StateRecordTypes;
-using MiniPdf.Drawing.Pens;
-using MiniPdf.Drawing.Rendering;
-using MiniPdf.Drawing.Text;
-using MiniPdfFont = MiniPdf.Drawing.Text.Font;
-using DRegion = MiniPdf.Drawing.Drawing2D.Region;
-using DMatrix = MiniPdf.Drawing.Drawing2D.Matrix;
-using DGraphicsPath = MiniPdf.Drawing.Drawing2D.GraphicsPath;
-using EmfRecord = MiniPdf.Drawing.Metafile.Emf.Records.Record;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Imaging;
+using MiniSoftware.Drawing.Metafile;
+using MiniSoftware.Drawing.Metafile.Emf.Records;
+using MiniSoftware.Drawing.Metafile.Emf.Records.DrawingRecordTypes;
+using MiniSoftware.Drawing.Metafile.Emf.Records.StateRecordTypes;
+using MiniSoftware.Drawing.Pens;
+using MiniSoftware.Drawing.Rendering;
+using MiniSoftware.Drawing.Text;
+using MiniPdfFont = MiniSoftware.Drawing.Text.Font;
+using DRegion = MiniSoftware.Drawing.Drawing2D.Region;
+using DMatrix = MiniSoftware.Drawing.Drawing2D.Matrix;
+using DGraphicsPath = MiniSoftware.Drawing.Drawing2D.GraphicsPath;
+using EmfRecord = MiniSoftware.Drawing.Metafile.Emf.Records.Record;
 
-namespace MiniPdf.Drawing.Vector.Emf
+namespace MiniSoftware.Drawing.Vector.Emf
 {
     /// <summary>
     /// An <see cref="IDrawingContext"/> implementation that accumulates EMF
