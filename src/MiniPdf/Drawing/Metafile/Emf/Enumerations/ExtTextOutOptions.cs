@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Emf.Enumerations
 {
     /// <summary>
     ///     The ExtTextOutOptions enumeration specifies parameters that control various aspects of the output of text by EMR_SMALLTEXTOUT (section 2.3.5.37) records and in EmrText objects.

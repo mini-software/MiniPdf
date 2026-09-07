@@ -1,11 +1,11 @@
 using System;
-using MiniPdf.Drawing.Font.Cff;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Font.Glyphs;
-using MiniPdf.Drawing.Font.Ttf;
-using MiniPdf.Drawing.Font.Type1;
+using MiniSoftware.Drawing.Font.Cff;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Ttf;
+using MiniSoftware.Drawing.Font.Type1;
 
-namespace MiniPdf.Drawing.Font.Rendering
+namespace MiniSoftware.Drawing.Font.Rendering
 {
     /// <summary>
     /// High-level entry point for glyph outline rendering.

@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     /// <summary>
     /// Reads the Orientation tag from an Exif APP1 payload.

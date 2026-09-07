@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Geometry
+namespace MiniSoftware.Drawing.Geometry
 {
     /// <summary>
     /// Represents the location and size of a rectangular region, using float coordinates.

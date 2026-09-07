@@ -1,8 +1,8 @@
 using System;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Specifies colour-adjustment information applied to pixels during image rendering.

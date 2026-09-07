@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Objects
+namespace MiniSoftware.Drawing.Metafile.Wmf.Objects
 {
     /// <summary>
     ///     The BitmapV4Header Object contains information about the dimensions and color format of a device-independent bitmap (DIB). 

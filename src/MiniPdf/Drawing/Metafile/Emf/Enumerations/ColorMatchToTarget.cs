@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Emf.Enumerations
 {
     /// <summary>
     ///     The ColorMatchToTarget enumeration is used to determine whether a color profile has been embedded in the metafile.

@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Font.Ttf.Tables
+namespace MiniSoftware.Drawing.Font.Ttf.Tables
 {
     /// <summary>
     /// Parsed OpenType "CBDT" (Color Bitmap Data) table.

@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using MiniPdf.Drawing.Font.Sources;
+using MiniSoftware.Drawing.Font.Sources;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Represents a collection of font families provided by the application.

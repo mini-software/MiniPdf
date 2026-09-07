@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MiniPdf.Drawing.Font.IO;
-using MiniPdf.Drawing.Font.Ttf;
+using MiniSoftware.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.Ttf;
 
-namespace MiniPdf.Drawing.Font.Cff
+namespace MiniSoftware.Drawing.Font.Cff
 {
     /// <summary>
     /// Serialises a <see cref="CffFont"/> back to a binary sfnt/CFF stream.

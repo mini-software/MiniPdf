@@ -1,7 +1,7 @@
 using System;
-using MiniPdf.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Glyphs;
 
-namespace MiniPdf.Drawing.Font.Core
+namespace MiniSoftware.Drawing.Font.Core
 {
     /// <summary>
     /// Concrete, mutable implementation of <see cref="IFontMetrics"/>.

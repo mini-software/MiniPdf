@@ -1,10 +1,10 @@
-using MiniPdf.Drawing.Metafile.Emf;
-using MiniPdf.Drawing.Metafile.Emf.Records;
+using MiniSoftware.Drawing.Metafile.Emf;
+using MiniSoftware.Drawing.Metafile.Emf.Records;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Records.ObjectRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Emf.Records.ObjectRecordTypes
 {
     using System.IO;
-    using MiniPdf.Drawing.Metafile.Emf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Emf.Enumerations;
 
     internal class EMR_EXTCREATEPEN : Record
     {

@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Specifies the text rendering hint for text quality.

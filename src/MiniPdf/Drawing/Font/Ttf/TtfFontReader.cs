@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MiniPdf.Drawing.Font.IO;
-using MiniPdf.Drawing.Font.Ttf.Tables;
+using MiniSoftware.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.Ttf.Tables;
 
-namespace MiniPdf.Drawing.Font.Ttf
+namespace MiniSoftware.Drawing.Font.Ttf
 {
     /// <summary>
     /// Reads a TrueType or OpenType/TT font from a stream and returns a fully

@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Colors;
+using MiniSoftware.Drawing.Colors;
 
-namespace MiniPdf.Drawing.Brushes
+namespace MiniSoftware.Drawing.Brushes
 {
     /// <summary>
     /// Defines a brush of a single color.

@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Flags
+namespace MiniSoftware.Drawing.Metafile.Wmf.Flags
 {
     /// <summary>
     ///     Specify various characteristics of the output of text. These flags can be combined to specify multiple options.

@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Imaging;
-using MiniPdf.Drawing.Pens;
-using MiniPdf.Drawing.Rendering;
-using MiniPdf.Drawing.Text;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Imaging;
+using MiniSoftware.Drawing.Pens;
+using MiniSoftware.Drawing.Rendering;
+using MiniSoftware.Drawing.Text;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// An <see cref="IDrawingContext"/> implementation that emits SVG XML from
@@ -281,7 +281,7 @@ namespace MiniPdf.Drawing.Vector.Svg
             EndGroup();
         }
 
-        public void DrawString(string s, MiniPdf.Drawing.Text.Font font, Brush brush,
+        public void DrawString(string s, MiniSoftware.Drawing.Text.Font font, Brush brush,
                                 RectangleF layoutRect, StringFormat? format)
         {
             if (string.IsNullOrEmpty(s) || font == null || brush == null) return;

@@ -1,8 +1,8 @@
-namespace MiniPdf.Drawing.Metafile.Emf.Records.DrawingRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Emf.Records.DrawingRecordTypes
 {
     using System.IO;
 
-    using MiniPdf.Drawing.Metafile.Wmf.Objects;
+    using MiniSoftware.Drawing.Metafile.Wmf.Objects;
 
     /// <summary>
     ///     The EMR_ELLIPSE record specifies an ellipse. The center of the ellipse is the center of the specified bounding rectangle. 

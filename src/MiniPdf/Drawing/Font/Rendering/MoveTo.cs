@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Rendering
+namespace MiniSoftware.Drawing.Font.Rendering
 {
     /// <summary>
     /// A "move to" drawing command: lifts the pen and sets the current point

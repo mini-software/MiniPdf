@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Imaging;
-using MiniPdf.Drawing.Metafile.Wmf.Records;
-using MiniPdf.Drawing.Metafile.Wmf.Records.ObjectRecordTypes;
-using MiniPdf.Drawing.Pens;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Imaging;
+using MiniSoftware.Drawing.Metafile.Wmf.Records;
+using MiniSoftware.Drawing.Metafile.Wmf.Records.ObjectRecordTypes;
+using MiniSoftware.Drawing.Pens;
 
-namespace MiniPdf.Drawing.Rendering
+namespace MiniSoftware.Drawing.Rendering
 {
     /// <summary>
     /// Replays WMF records onto any <see cref="IDrawingContext"/> (raster
@@ -166,7 +166,7 @@ namespace MiniPdf.Drawing.Rendering
                         DrawEllipse(ctx, currentPen, rect);
                         break;
                     }
-                    case MiniPdf.Drawing.Metafile.Wmf.Records.ObjectRecordTypes.META_CREATEPENINDIRECT createPen:
+                    case MiniSoftware.Drawing.Metafile.Wmf.Records.ObjectRecordTypes.META_CREATEPENINDIRECT createPen:
                         AllocateObject(objects, CreatePenState(createPen.Pen));
                         break;
 

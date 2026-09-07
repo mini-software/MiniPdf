@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Enums;
+using MiniSoftware.Drawing.Enums;
 using System;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Defines a text font used for drawing text with <see cref="Graphics"/>.

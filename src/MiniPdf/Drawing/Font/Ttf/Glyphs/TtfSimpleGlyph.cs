@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Font.Ttf.Glyphs
+namespace MiniSoftware.Drawing.Font.Ttf.Glyphs
 {
     /// <summary>
     /// Represents a TrueType simple-glyph outline: contour data parsed from

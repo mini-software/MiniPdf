@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Xml;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Top-level SVG writer: serializes a <see cref="VectorScene"/> to an SVG

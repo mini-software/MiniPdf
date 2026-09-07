@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Font.Sources;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.Sources;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Represents a collection of <see cref="FontFamily"/> objects.
@@ -73,7 +73,7 @@ namespace MiniPdf.Drawing.Text
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            var collection = MiniPdf.Drawing.Font.FontFactory.OpenCollection(source);
+            var collection = MiniSoftware.Drawing.Font.FontFactory.OpenCollection(source);
             AddFaces(collection);
         }
 
@@ -82,7 +82,7 @@ namespace MiniPdf.Drawing.Text
         /// <see cref="FontCollection"/> as <see cref="FontFamily"/> entries.
         /// </summary>
         /// <param name="collection">The loaded font faces.</param>
-        protected void AddFaces(MiniPdf.Drawing.Font.Core.FontFaceCollection collection)
+        protected void AddFaces(MiniSoftware.Drawing.Font.Core.FontFaceCollection collection)
         {
             if (collection == null)
                 throw new ArgumentNullException(nameof(collection));
@@ -98,18 +98,18 @@ namespace MiniPdf.Drawing.Text
         }
 
         /// <summary>
-        /// Maps the integrated font engine <see cref="MiniPdf.Drawing.Font.Core.FontFaceStyle"/>
+        /// Maps the integrated font engine <see cref="MiniSoftware.Drawing.Font.Core.FontFaceStyle"/>
         /// to the GDI+-compatible <see cref="Enums.FontStyle"/> flags.
         /// </summary>
-        private static Enums.FontStyle MapStyle(MiniPdf.Drawing.Font.Core.FontFaceStyle style)
+        private static Enums.FontStyle MapStyle(MiniSoftware.Drawing.Font.Core.FontFaceStyle style)
         {
             switch (style)
             {
-                case MiniPdf.Drawing.Font.Core.FontFaceStyle.Bold:
+                case MiniSoftware.Drawing.Font.Core.FontFaceStyle.Bold:
                     return Enums.FontStyle.Bold;
-                case MiniPdf.Drawing.Font.Core.FontFaceStyle.Italic:
+                case MiniSoftware.Drawing.Font.Core.FontFaceStyle.Italic:
                     return Enums.FontStyle.Italic;
-                case MiniPdf.Drawing.Font.Core.FontFaceStyle.BoldItalic:
+                case MiniSoftware.Drawing.Font.Core.FontFaceStyle.BoldItalic:
                     return Enums.FontStyle.Bold | Enums.FontStyle.Italic;
                 default:
                     return Enums.FontStyle.Regular;

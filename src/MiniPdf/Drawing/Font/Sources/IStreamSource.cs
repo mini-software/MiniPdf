@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace MiniPdf.Drawing.Font.Sources
+namespace MiniSoftware.Drawing.Font.Sources
 {
     /// <summary>
     /// Provides a readable <see cref="Stream"/> containing raw font bytes.

@@ -1,10 +1,10 @@
-using MiniPdf.Drawing.Metafile.Emf;
+using MiniSoftware.Drawing.Metafile.Emf;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Records.StateRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Emf.Records.StateRecordTypes
 {
     using System.IO;
-    using MiniPdf.Drawing.Metafile.Emf.Enumerations;
-    using MiniPdf.Drawing.Metafile.Emf.Objects;
+    using MiniSoftware.Drawing.Metafile.Emf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Emf.Objects;
     
 
     internal class EMR_SETCOLORADJUSTMENT : Record

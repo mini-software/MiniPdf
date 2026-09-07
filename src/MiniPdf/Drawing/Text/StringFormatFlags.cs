@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Specifies the display and layout information for text strings.

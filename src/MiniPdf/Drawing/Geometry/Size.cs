@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Geometry
+namespace MiniSoftware.Drawing.Geometry
 {
     /// <summary>Represents the size of a rectangular region with an ordered pair of integers.</summary>
     /// <remarks>

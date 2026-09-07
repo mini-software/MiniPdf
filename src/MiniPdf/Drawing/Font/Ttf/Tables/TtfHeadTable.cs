@@ -1,8 +1,8 @@
 using System.IO;
-using MiniPdf.Drawing.Font.Glyphs;
-using MiniPdf.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.IO;
 
-namespace MiniPdf.Drawing.Font.Ttf.Tables
+namespace MiniSoftware.Drawing.Font.Ttf.Tables
 {
     /// <summary>
     /// Parsed OpenType "head" table (font header).

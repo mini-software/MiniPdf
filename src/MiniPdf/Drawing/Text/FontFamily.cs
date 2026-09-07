@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Font.Core;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Font.Core;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Represents a font family used for drawing text.

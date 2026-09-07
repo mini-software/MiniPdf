@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Represents a single parameter for an image encoder.

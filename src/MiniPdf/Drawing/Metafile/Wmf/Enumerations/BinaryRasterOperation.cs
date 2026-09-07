@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Wmf.Enumerations
 {
     /// <summary>
     ///     Lists the binary raster-operation codes. Raster-operation codes define how metafile processing combines the bits from the selected pen with the bits in the destination bitmap.

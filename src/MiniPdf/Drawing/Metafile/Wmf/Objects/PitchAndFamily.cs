@@ -1,8 +1,8 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Objects
+namespace MiniSoftware.Drawing.Metafile.Wmf.Objects
 {
     using System.IO;
-    using MiniPdf.Drawing.Metafile;
-    using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
+    using MiniSoftware.Drawing.Metafile;
+    using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
 
     /// <summary>
     ///     The PitchAndFamily object specifies the pitch and family properties of a Font object (section 2.2.1.2). 

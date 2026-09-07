@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Specifies how texture and gradient brushes are tiled when they extend beyond the shape.

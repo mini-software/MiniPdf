@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     internal enum FrameDisposeMethod
     {

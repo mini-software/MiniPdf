@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Core
+namespace MiniSoftware.Drawing.Font.Core
 {
     /// <summary>
     /// Describes the typographic style of a font face.

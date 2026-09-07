@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Codecs;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Codecs;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Represents a Windows icon (.ico) as a managed <see cref="Bitmap"/>.

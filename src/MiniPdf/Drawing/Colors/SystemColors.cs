@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Colors
+namespace MiniSoftware.Drawing.Colors
 {
     /// <summary>
     /// Provides system-defined colors, mirroring System.Drawing.SystemColors.

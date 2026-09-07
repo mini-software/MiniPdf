@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Rendering
+namespace MiniSoftware.Drawing.Rendering
 {
     /// <summary>
     /// Represents a graphics container that stores state information for a <see cref="Graphics"/> object.

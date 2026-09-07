@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using MiniPdf.Drawing.Font.Rendering;
+using MiniSoftware.Drawing.Font.Rendering;
 
-namespace MiniPdf.Drawing.Font.Type1
+namespace MiniSoftware.Drawing.Font.Type1
 {
     /// <summary>
     /// Executes a decrypted Type 1 charstring, emitting drawing commands to an

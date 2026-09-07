@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Colors
+namespace MiniSoftware.Drawing.Colors
 {
     /// <summary>
     /// Represents an ARGB color, mirroring the System.Drawing.Color API.

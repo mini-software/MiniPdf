@@ -1,10 +1,10 @@
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Options controlling text placement along a baseline path for
-    /// <see cref="Graphics.DrawStringOnPath(string, Text.Font, MiniPdf.Drawing.Brushes.Brush, MiniPdf.Drawing.Drawing2D.GraphicsPath, StringFormat, TextOnPathOptions)"/>
+    /// <see cref="Graphics.DrawStringOnPath(string, Text.Font, MiniSoftware.Drawing.Brushes.Brush, MiniSoftware.Drawing.Drawing2D.GraphicsPath, StringFormat, TextOnPathOptions)"/>
     /// and
-    /// <see cref="MiniPdf.Drawing.Drawing2D.GraphicsPath.AddStringOnPath(string, Text.FontFamily, int, float, MiniPdf.Drawing.Drawing2D.GraphicsPath, StringFormat, TextOnPathOptions)"/>.
+    /// <see cref="MiniSoftware.Drawing.Drawing2D.GraphicsPath.AddStringOnPath(string, Text.FontFamily, int, float, MiniSoftware.Drawing.Drawing2D.GraphicsPath, StringFormat, TextOnPathOptions)"/>.
     /// </summary>
     public sealed class TextOnPathOptions
     {

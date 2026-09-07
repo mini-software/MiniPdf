@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     /// <summary>
     ///     The META_INVERTREGION record draws a region in which the colors are inverted.

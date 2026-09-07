@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.IO;
 
-namespace MiniPdf.Drawing.Font.Ttf.Tables
+namespace MiniSoftware.Drawing.Font.Ttf.Tables
 {
     /// <summary>
     /// Abstract base for all parsed OpenType/TrueType table objects.

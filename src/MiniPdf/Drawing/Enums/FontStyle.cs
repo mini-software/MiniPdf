@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Enums
+namespace MiniSoftware.Drawing.Enums
 {
     /// <summary>
     /// Specifies style information applied to text.

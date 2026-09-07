@@ -1,8 +1,8 @@
-using MiniPdf.Drawing.Metafile.Emf;
+using MiniSoftware.Drawing.Metafile.Emf;
 
-namespace MiniPdf.Drawing.Metafile.Emf.Records.StateRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Emf.Records.StateRecordTypes
 {
-    using MiniPdf.Drawing.Metafile.Emf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Emf.Enumerations;
     using System.IO;
 
     internal class EMR_COLORCORRECTPALETTE : Record

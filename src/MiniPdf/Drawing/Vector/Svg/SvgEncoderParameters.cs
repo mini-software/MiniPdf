@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Specifies how text is emitted in SVG output.

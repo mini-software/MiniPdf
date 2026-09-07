@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Font.Ttf;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.Ttf;
 
-namespace MiniPdf.Drawing.Font.IO
+namespace MiniSoftware.Drawing.Font.IO
 {
     /// <summary>
     /// Parses a TrueType Collection (TTC) file and returns all contained font faces.

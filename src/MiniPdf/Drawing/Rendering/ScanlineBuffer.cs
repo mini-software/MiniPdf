@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MiniPdf.Drawing.Rendering
+namespace MiniSoftware.Drawing.Rendering
 {
     internal sealed class ScanlineBuffer
     {

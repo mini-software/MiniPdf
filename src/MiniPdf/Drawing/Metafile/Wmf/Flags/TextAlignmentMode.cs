@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Flags
+namespace MiniSoftware.Drawing.Metafile.Wmf.Flags
 {
     using System;
 

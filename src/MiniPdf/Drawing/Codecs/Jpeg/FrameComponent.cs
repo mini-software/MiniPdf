@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     /// <summary>
     /// Describes one image component in a JPEG SOF segment

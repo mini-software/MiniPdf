@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Vector
+namespace MiniSoftware.Drawing.Vector
 {
     /// <summary>
     /// Base class for one recorded drawing operation. Each subclass carries

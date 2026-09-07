@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Emf.Enumerations
+namespace MiniSoftware.Drawing.Metafile.Emf.Enumerations
 {
     internal enum RecordType : uint
     {

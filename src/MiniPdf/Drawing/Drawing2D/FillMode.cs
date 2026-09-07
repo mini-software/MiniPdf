@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Specifies how the interior of a shape defined by a <see cref="GraphicsPath"/> is filled.

@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Core
+namespace MiniSoftware.Drawing.Font.Core
 {
     /// <summary>
     /// Describes a single design-variation axis in a variable font (OpenType "fvar" table).

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Text.Bidi;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Text.Bidi;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Orchestrates rich-run → bidi → fallback splitting to produce

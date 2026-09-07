@@ -1,8 +1,8 @@
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Text;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Text;
 
-namespace MiniPdf.Drawing.Vector.Commands
+namespace MiniSoftware.Drawing.Vector.Commands
 {
     /// <summary>
     /// Draws a string with the specified font, brush, layout rectangle, and format.

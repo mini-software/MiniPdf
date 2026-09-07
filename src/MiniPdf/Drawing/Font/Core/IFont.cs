@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Font.Encoding;
-using MiniPdf.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Encoding;
+using MiniSoftware.Drawing.Font.Glyphs;
 
-namespace MiniPdf.Drawing.Font.Core
+namespace MiniSoftware.Drawing.Font.Core
 {
     /// <summary>
     /// Represents a loaded font face and provides access to its metadata, metrics,

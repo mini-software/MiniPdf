@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Enums
+namespace MiniSoftware.Drawing.Enums
 {
     /// <summary>
     /// Specifies the type of rotation and/or flipping to apply to an image.

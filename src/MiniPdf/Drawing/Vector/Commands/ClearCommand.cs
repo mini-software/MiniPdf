@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Colors;
+using MiniSoftware.Drawing.Colors;
 
-namespace MiniPdf.Drawing.Vector.Commands
+namespace MiniSoftware.Drawing.Vector.Commands
 {
     /// <summary>
     /// Clears the entire drawing surface with the specified color.

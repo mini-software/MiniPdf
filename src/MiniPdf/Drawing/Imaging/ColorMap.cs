@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Colors;
+using MiniSoftware.Drawing.Colors;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Maps one color to another during image rendering.

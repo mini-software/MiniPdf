@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.IO;
 using System.IO;
 
-namespace MiniPdf.Drawing.Font.Ttf.Tables
+namespace MiniSoftware.Drawing.Font.Ttf.Tables
 {
     /// <summary>
     /// CMap format 12: segmented coverage mapping for the full Unicode range (U+0000–U+10FFFF).

@@ -1,8 +1,8 @@
 using System.IO;
-using MiniPdf.Drawing.Metafile.Wmf;
-using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
+using MiniSoftware.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     internal class META_ELLIPSE : Record
     {

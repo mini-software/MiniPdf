@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MiniPdf.Drawing.Font.Type1
+namespace MiniSoftware.Drawing.Font.Type1
 {
     /// <summary>
     /// Internal representation of a parsed Type 1 font file.

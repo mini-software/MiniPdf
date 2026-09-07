@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Metafile.Wmf.Records;
+using MiniSoftware.Drawing.Metafile.Wmf.Records;
 using System.Collections.Generic;
 
-namespace MiniPdf.Drawing.Metafile
+namespace MiniSoftware.Drawing.Metafile
 {
     /// <summary>
     /// Represents a metafile document containing WMF, EMF, and EMF+ records.

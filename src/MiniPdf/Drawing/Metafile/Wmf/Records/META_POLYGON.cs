@@ -1,11 +1,11 @@
 using System.IO;
 using System.Collections.Generic;
 
-using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
-using MiniPdf.Drawing.Metafile.Wmf;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
+using MiniSoftware.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     internal class META_POLYGON : Record
     {

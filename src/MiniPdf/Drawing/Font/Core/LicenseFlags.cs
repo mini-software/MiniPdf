@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Core
+namespace MiniSoftware.Drawing.Font.Core
 {
     /// <summary>
     /// Represents the embedding and licensing restrictions declared in the

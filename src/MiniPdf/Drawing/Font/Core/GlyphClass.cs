@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Core
+namespace MiniSoftware.Drawing.Font.Core
 {
     /// <summary>
     /// OpenType glyph classification as defined in the GDEF table (§6.3.1).

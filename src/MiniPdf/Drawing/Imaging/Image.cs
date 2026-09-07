@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>Callback used by GetThumbnailImage.</summary>
     public delegate bool GetThumbnailImageAbort();

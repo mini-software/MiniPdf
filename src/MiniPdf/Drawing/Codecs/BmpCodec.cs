@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Codecs
+namespace MiniSoftware.Drawing.Codecs
 {
     /// <summary>BMP / DIB codec (native, no third-party library).</summary>
     internal sealed class BmpCodec : IImageCodec

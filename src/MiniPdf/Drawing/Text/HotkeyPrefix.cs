@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Specifies the type of display for hotkey prefixes in text.

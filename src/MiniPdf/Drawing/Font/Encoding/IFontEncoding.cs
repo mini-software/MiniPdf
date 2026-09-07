@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Glyphs;
 
-namespace MiniPdf.Drawing.Font.Encoding
+namespace MiniSoftware.Drawing.Font.Encoding
 {
     /// <summary>
     /// Maps Unicode code points (and characters) to glyph identifiers within a font.

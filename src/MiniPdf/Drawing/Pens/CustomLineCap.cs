@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Drawing2D;
 using System;
 
-namespace MiniPdf.Drawing.Pens
+namespace MiniSoftware.Drawing.Pens
 {
     /// <summary>
     /// Represents a custom line cap used to draw the ends of lines.

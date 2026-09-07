@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.EmfPlus.Records
+namespace MiniSoftware.Drawing.Metafile.EmfPlus.Records
 {
     using System.IO;
 
-    using MiniPdf.Drawing.Metafile.EmfPlus.Enumerations;
+    using MiniSoftware.Drawing.Metafile.EmfPlus.Enumerations;
 
     internal struct RecordHeader
     {

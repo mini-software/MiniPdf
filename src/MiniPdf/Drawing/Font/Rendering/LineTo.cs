@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Rendering
+namespace MiniSoftware.Drawing.Font.Rendering
 {
     /// <summary>
     /// A "line to" drawing command: draws a straight line from the current point

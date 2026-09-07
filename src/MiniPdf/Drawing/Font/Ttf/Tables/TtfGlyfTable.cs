@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MiniPdf.Drawing.Font.Glyphs;
-using MiniPdf.Drawing.Font.IO;
-using MiniPdf.Drawing.Font.Ttf.Glyphs;
+using MiniSoftware.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.IO;
+using MiniSoftware.Drawing.Font.Ttf.Glyphs;
 
-namespace MiniPdf.Drawing.Font.Ttf.Tables
+namespace MiniSoftware.Drawing.Font.Ttf.Tables
 {
     /// <summary>
     /// Parsed OpenType "glyf" table.

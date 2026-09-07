@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Codecs.Jpeg
+namespace MiniSoftware.Drawing.Codecs.Jpeg
 {
     internal sealed class JpegEncoder
     {

@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Colors
+namespace MiniSoftware.Drawing.Colors
 {
     /// <summary>
     /// Provides ARGB values for all <see cref="KnownColor"/> entries.

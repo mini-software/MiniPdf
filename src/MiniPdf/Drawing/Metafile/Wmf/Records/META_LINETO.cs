@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     /// <summary>
     ///     The META_LINETO record draws a line from the drawing position that is defined in the playback device context up to, but not including, the specified point.

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MiniPdf.Drawing.Vector
+namespace MiniSoftware.Drawing.Vector
 {
     /// <summary>
     /// Format-agnostic recording of a sequence of drawing operations.

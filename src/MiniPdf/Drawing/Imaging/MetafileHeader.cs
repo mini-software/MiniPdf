@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Contains attributes and dimensions of a metafile.

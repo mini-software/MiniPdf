@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Font.Glyphs
+namespace MiniSoftware.Drawing.Font.Glyphs
 {
     /// <summary>
     /// Represents a single glyph with its metrics and bounding box.

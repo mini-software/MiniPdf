@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace MiniPdf.Drawing.Text.Native
+namespace MiniSoftware.Drawing.Text.Native
 {
     /// <summary>
     /// Discovers installed fonts on Linux using fontconfig. Fontconfig is the

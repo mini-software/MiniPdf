@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Text.Bidi
+namespace MiniSoftware.Drawing.Text.Bidi
 {
     /// <summary>
     /// Unicode bidirectional character types (UAX #9 §4.2).

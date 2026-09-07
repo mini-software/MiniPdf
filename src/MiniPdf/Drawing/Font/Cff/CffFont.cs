@@ -1,12 +1,12 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Font.Encoding;
-using MiniPdf.Drawing.Font.Glyphs;
-using MiniPdf.Drawing.Font.Rendering;
-using MiniPdf.Drawing.Font.Ttf;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.Encoding;
+using MiniSoftware.Drawing.Font.Glyphs;
+using MiniSoftware.Drawing.Font.Rendering;
+using MiniSoftware.Drawing.Font.Ttf;
 
-namespace MiniPdf.Drawing.Font.Cff
+namespace MiniSoftware.Drawing.Font.Cff
 {
     /// <summary>
     /// Represents a loaded CFF (Compact Font Format) or OTF/CFF font face.

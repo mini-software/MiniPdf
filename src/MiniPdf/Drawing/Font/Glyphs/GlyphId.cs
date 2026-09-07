@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Glyphs
+namespace MiniSoftware.Drawing.Font.Glyphs
 {
     /// <summary>
     /// Abstract base class for all glyph identifiers.

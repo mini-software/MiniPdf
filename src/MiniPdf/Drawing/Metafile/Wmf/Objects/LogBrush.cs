@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Metafile.Wmf;
-using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
+using MiniSoftware.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Objects
+namespace MiniSoftware.Drawing.Metafile.Wmf.Objects
 {
     /// <summary>
     ///     The LogBrush Object defines the style, color, and pattern of a brush. This object is used only in the META_CREATEBRUSHINDIRECT Record (section 2.3.4.1) to create a Brush Object (section 2.2.1.1).

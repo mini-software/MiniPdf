@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 using SysEncoding = System.Text.Encoding;
 
-namespace MiniPdf.Drawing.Font.Type1
+namespace MiniSoftware.Drawing.Font.Type1
 {
     /// <summary>
     /// Reads PFB (binary) or PFA (ASCII-hex) Type 1 font files and returns

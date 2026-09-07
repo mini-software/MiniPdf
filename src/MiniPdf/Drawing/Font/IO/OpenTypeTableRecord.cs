@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.IO
+namespace MiniSoftware.Drawing.Font.IO
 {
     /// <summary>
     /// One entry in the OpenType table directory: identifies a table by its four-character

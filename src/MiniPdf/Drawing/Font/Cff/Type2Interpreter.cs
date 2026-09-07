@@ -1,7 +1,7 @@
 using System;
-using MiniPdf.Drawing.Font.Rendering;
+using MiniSoftware.Drawing.Font.Rendering;
 
-namespace MiniPdf.Drawing.Font.Cff
+namespace MiniSoftware.Drawing.Font.Cff
 {
     /// <summary>
     /// Directly executes a Type 2 charstring, emitting drawing commands to an

@@ -1,12 +1,12 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Codecs
+namespace MiniSoftware.Drawing.Codecs
 {
     /// <summary>
     /// JPEG codec.
-    /// Encode and decode use the managed MiniPdf.Drawing JPEG pipeline.
+    /// Encode and decode use the managed MiniSoftware.Drawing JPEG pipeline.
     /// </summary>
     internal sealed class JpegCodec : IImageCodec
     {

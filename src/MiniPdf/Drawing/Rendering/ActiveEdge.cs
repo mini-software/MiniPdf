@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Rendering
+namespace MiniSoftware.Drawing.Rendering
 {
     internal struct ActiveEdge
     {

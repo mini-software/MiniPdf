@@ -1,8 +1,8 @@
-namespace MiniPdf.Drawing.Metafile.Emf.Objects
+namespace MiniSoftware.Drawing.Metafile.Emf.Objects
 {
     using System.IO;
 
-    using MiniPdf.Drawing.Metafile.Wmf.Objects;
+    using MiniSoftware.Drawing.Metafile.Wmf.Objects;
 
     /// <summary>
     ///     The Header object defines the EMF metafile header. 

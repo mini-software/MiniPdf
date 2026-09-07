@@ -1,4 +1,4 @@
-# MiniPdf.Drawing attribution
+# MiniSoftware.Drawing attribution
 
 MiniPdf.Drawing is based on DRIT.Drawing:
 https://github.com/dritsoftware/DRIT.Drawing

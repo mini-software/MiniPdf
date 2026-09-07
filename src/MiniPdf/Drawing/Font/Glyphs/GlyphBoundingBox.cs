@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Font.Glyphs
+namespace MiniSoftware.Drawing.Font.Glyphs
 {
     /// <summary>
     /// Axis-aligned bounding box of a glyph outline, in design units.

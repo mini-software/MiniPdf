@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Records.ObjectRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records.ObjectRecordTypes
 {
     using System.IO;
 

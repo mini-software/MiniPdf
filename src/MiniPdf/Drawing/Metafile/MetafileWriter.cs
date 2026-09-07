@@ -1,9 +1,9 @@
-using MiniPdf.Drawing.Metafile.Wmf;
-using MiniPdf.Drawing.Metafile.Wmf.Records;
+using MiniSoftware.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf.Records;
 
-namespace MiniPdf.Drawing.Metafile
+namespace MiniSoftware.Drawing.Metafile
 {
-    using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
     using System;
     using System.Collections.Generic;
     using System.IO;

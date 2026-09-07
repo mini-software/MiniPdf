@@ -1,7 +1,7 @@
-using MiniPdf.Drawing.Brushes;
-using MiniPdf.Drawing.Colors;
+using MiniSoftware.Drawing.Brushes;
+using MiniSoftware.Drawing.Colors;
 
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Defines a rectangular, horizontal, vertical, or crosshatch brush.

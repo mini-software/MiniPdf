@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.Core;
 
-namespace MiniPdf.Drawing.Font.IO
+namespace MiniSoftware.Drawing.Font.IO
 {
     /// <summary>
     /// Reads the magic bytes of a font data buffer to identify its format,

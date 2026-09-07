@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Codecs;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Codecs;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Represents a mouse cursor, optionally loaded from a .cur or .ico file.

@@ -1,10 +1,10 @@
 using System;
-using MiniPdf.Drawing.Drawing2D;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Font.Rendering;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.Rendering;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Text
+namespace MiniSoftware.Drawing.Text
 {
     /// <summary>
     /// Core text-on-path layout engine. Renders a string along a baseline

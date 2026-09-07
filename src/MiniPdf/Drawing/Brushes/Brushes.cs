@@ -1,6 +1,6 @@
-using MiniPdf.Drawing.Colors;
+using MiniSoftware.Drawing.Colors;
 
-namespace MiniPdf.Drawing.Brushes
+namespace MiniSoftware.Drawing.Brushes
 {
     /// <summary>
     /// Provides a set of predefined <see cref="SolidBrush"/> objects representing all <see cref="KnownColor"/> colors.

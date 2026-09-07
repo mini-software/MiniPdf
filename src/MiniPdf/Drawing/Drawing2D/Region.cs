@@ -1,9 +1,9 @@
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Geometry;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Describes the interior of a graphics shape composed of rectangles, paths,

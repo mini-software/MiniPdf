@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Codecs
+namespace MiniSoftware.Drawing.Codecs
 {
     /// <summary>
     /// Central registry that routes encode/decode operations to the appropriate codec.

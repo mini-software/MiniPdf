@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     /// <summary>
     ///     The META_PIE record draws a pie-shaped wedge bounded by the intersection of an ellipse and two radials. 

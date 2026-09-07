@@ -65,7 +65,7 @@ public class XlsxIssueFileTests
     private static void AssertHasDrawingContent(byte[] png)
     {
         using var stream = new MemoryStream(png, writable: false);
-        using var bitmap = new global::MiniPdf.Drawing.Imaging.Bitmap(stream);
+        using var bitmap = new global::MiniSoftware.Drawing.Imaging.Bitmap(stream);
         var visiblePixels = 0;
         var hasRed = false;
         var hasBlue = false;

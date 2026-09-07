@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Font.Core;
-using MiniPdf.Drawing.Font.Rendering;
-using MiniPdf.Drawing.Geometry;
-using MiniPdf.Drawing.Pens;
-using MiniPdf.Drawing.Text;
-using MiniPdf.Drawing.Text.Bidi;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Font.Core;
+using MiniSoftware.Drawing.Font.Rendering;
+using MiniSoftware.Drawing.Geometry;
+using MiniSoftware.Drawing.Pens;
+using MiniSoftware.Drawing.Text;
+using MiniSoftware.Drawing.Text.Bidi;
 
-namespace MiniPdf.Drawing.Drawing2D
+namespace MiniSoftware.Drawing.Drawing2D
 {
     /// <summary>
     /// Represents a series of connected lines and curves that form a closed or open shape.

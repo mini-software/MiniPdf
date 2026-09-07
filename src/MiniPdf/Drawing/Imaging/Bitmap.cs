@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using MiniPdf.Drawing.Colors;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Geometry;
+using MiniSoftware.Drawing.Colors;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Geometry;
 
-namespace MiniPdf.Drawing.Imaging
+namespace MiniSoftware.Drawing.Imaging
 {
     /// <summary>
     /// Raster image stored as a managed byte array (top-down, BGRA / BGR layout).

@@ -1,11 +1,11 @@
-using MiniPdf.Drawing.Metafile.Wmf;
+using MiniSoftware.Drawing.Metafile.Wmf;
 
-namespace MiniPdf.Drawing.Metafile.Wmf.Records.StateRecordTypes
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records.StateRecordTypes
 {
     using System;
     using System.IO;
-    using MiniPdf.Drawing.Metafile.Wmf.Enumerations;
-    using MiniPdf.Drawing.Metafile.Wmf.Objects;
+    using MiniSoftware.Drawing.Metafile.Wmf.Enumerations;
+    using MiniSoftware.Drawing.Metafile.Wmf.Objects;
 
     internal class META_SETPALENTRIES : Record
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniPdf.Drawing.Metafile.EmfPlus.Objects
+namespace MiniSoftware.Drawing.Metafile.EmfPlus.Objects
 {
-    using MiniPdf.Drawing.Metafile.EmfPlus.Enumerations;
+    using MiniSoftware.Drawing.Metafile.EmfPlus.Enumerations;
 
     internal class EmfPlusRegionNodeObject
     {

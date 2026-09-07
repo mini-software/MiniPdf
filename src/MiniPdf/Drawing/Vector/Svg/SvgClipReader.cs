@@ -1,7 +1,7 @@
 using System.Xml;
-using MiniPdf.Drawing.Drawing2D;
+using MiniSoftware.Drawing.Drawing2D;
 
-namespace MiniPdf.Drawing.Vector.Svg
+namespace MiniSoftware.Drawing.Vector.Svg
 {
     /// <summary>
     /// Parses SVG <c>&lt;clipPath&gt;</c> def elements into

@@ -1,7 +1,7 @@
-namespace MiniPdf.Drawing.Metafile.Wmf.Records
+namespace MiniSoftware.Drawing.Metafile.Wmf.Records
 {
     using System.IO;
-    using MiniPdf.Drawing.Metafile.Wmf.Objects;
+    using MiniSoftware.Drawing.Metafile.Wmf.Objects;
 
     /// <summary>
     /// The META_PLACEABLE record is the first record in a placeable WMF metafile, which is an extension to the WMF metafile format. The information in this extension allows the specification of the placement and size of the target image, which makes it adaptable to different output devices.

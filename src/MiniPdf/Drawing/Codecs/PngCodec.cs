@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MiniPdf.Drawing.Codecs.Png;
-using MiniPdf.Drawing.Enums;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Codecs.Png;
+using MiniSoftware.Drawing.Enums;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Codecs
+namespace MiniSoftware.Drawing.Codecs
 {
     internal sealed class PngCodec : IImageCodec
     {

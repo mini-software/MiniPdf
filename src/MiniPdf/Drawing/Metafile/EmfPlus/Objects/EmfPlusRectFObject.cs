@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.EmfPlus.Objects
+namespace MiniSoftware.Drawing.Metafile.EmfPlus.Objects
 {
     using System.IO;
 

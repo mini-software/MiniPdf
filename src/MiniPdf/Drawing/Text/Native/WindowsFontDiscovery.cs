@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace MiniPdf.Drawing.Text.Native
+namespace MiniSoftware.Drawing.Text.Native
 {
     /// <summary>
     /// Discovers installed fonts on Windows by reading the font registry keys via

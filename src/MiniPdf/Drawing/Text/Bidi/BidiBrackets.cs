@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Text.Bidi
+namespace MiniSoftware.Drawing.Text.Bidi
 {
     /// <summary>
     /// Bracket type for UAX #9 N0 (bracket pair resolution).

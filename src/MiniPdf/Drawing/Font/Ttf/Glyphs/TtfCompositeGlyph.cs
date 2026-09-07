@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniPdf.Drawing.Font.Ttf.Glyphs
+namespace MiniSoftware.Drawing.Font.Ttf.Glyphs
 {
     /// <summary>
     /// One component entry within a TrueType composite glyph.

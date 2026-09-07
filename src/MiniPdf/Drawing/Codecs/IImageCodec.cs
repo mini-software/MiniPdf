@@ -1,7 +1,7 @@
 using System.IO;
-using MiniPdf.Drawing.Imaging;
+using MiniSoftware.Drawing.Imaging;
 
-namespace MiniPdf.Drawing.Codecs
+namespace MiniSoftware.Drawing.Codecs
 {
     /// <summary>
     /// Contract for a single image format encoder/decoder.

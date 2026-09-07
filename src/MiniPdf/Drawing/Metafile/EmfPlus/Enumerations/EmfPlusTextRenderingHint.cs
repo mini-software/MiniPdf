@@ -1,4 +1,4 @@
-namespace MiniPdf.Drawing.Metafile.EmfPlus.Enumerations
+namespace MiniSoftware.Drawing.Metafile.EmfPlus.Enumerations
 {
     /// <summary>
     /// Specifies the text rendering hint for EMF+ text rendering.
