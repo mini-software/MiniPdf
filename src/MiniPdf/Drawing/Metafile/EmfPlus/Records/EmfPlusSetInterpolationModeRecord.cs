@@ -1,0 +1,23 @@
+namespace MiniSoftware.Drawing.Metafile.EmfPlus.Records
+{
+    using System.IO;
+    using MiniSoftware.Drawing.Metafile.EmfPlus.Enumerations;
+
+    internal class EmfPlusSetInterpolationModeRecord : Record
+    {
+        public EmfPlusInterpolationMode InterpolationMode => (EmfPlusInterpolationMode)(Header.Flags & 0x00FF);
+
+        public override void Read(BinaryReader reader)
+        {
+            if (Header.DataSize > 0)
+            {
+                Data = reader.ReadBytes((int)Header.DataSize);
+            }
+        }
+
+        public override void Write(BinaryWriter writer)
+        {
+            writer.Write(Data);
+        }
+    }
+}
