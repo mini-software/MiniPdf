@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace MiniPdf.Drawing.Text
 {
@@ -77,7 +76,7 @@ namespace MiniPdf.Drawing.Text
         /// </summary>
         private static IEnumerable<string> GetCandidateDirectories()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (global::MiniSoftware.Compat.IsWindows())
             {
                 string systemRoot = Environment.GetEnvironmentVariable("SYSTEMROOT");
                 if (string.IsNullOrWhiteSpace(systemRoot))
@@ -93,7 +92,7 @@ namespace MiniPdf.Drawing.Text
                 if (!string.IsNullOrEmpty(localAppData))
                     yield return Path.Combine(localAppData, "Microsoft", "Windows", "Fonts");
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            else if (global::MiniSoftware.Compat.IsLinux())
             {
                 string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 if (!string.IsNullOrEmpty(home))
@@ -105,7 +104,7 @@ namespace MiniPdf.Drawing.Text
                 yield return "/usr/local/share/fonts";
                 yield return "/usr/share/fonts";
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            else if (global::MiniSoftware.Compat.IsMacOS())
             {
                 string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 if (!string.IsNullOrEmpty(home))
