@@ -2417,6 +2417,11 @@ internal static class DocxReader
     internal static byte[]? TryConvertMetafileToPng(byte[] sourceBytes, long widthEmu, long heightEmu,
         float cropL = 0, float cropT = 0, float cropR = 0, float cropB = 0, int rasterHeight = 512)
     {
+        var portable = TryConvertMetafileToPngPortable(
+            sourceBytes, widthEmu, heightEmu, cropL, cropT, cropR, cropB, rasterHeight);
+        if (portable != null)
+            return portable;
+
         if (!Compat.IsWindows())
             return null;
 
@@ -2477,6 +2482,47 @@ internal static class DocxReader
             using var outStream2 = new MemoryStream();
             bmp.Save(outStream2, ImageFormat.Png);
             return outStream2.ToArray();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    internal static byte[]? TryConvertMetafileToPngPortable(byte[] sourceBytes, long widthEmu, long heightEmu,
+        float cropL = 0, float cropT = 0, float cropR = 0, float cropB = 0, int rasterHeight = 512)
+    {
+        try
+        {
+            var hasCrop = cropL > 0 || cropT > 0 || cropR > 0 || cropB > 0;
+            var requestedHeight = Math.Max(32d, rasterHeight);
+            var aspect = EmfCompatibilityNormalizer.GetCanvasAspectRatio(sourceBytes, widthEmu, heightEmu);
+            var requestedWidth = requestedHeight * aspect;
+            if (double.IsNaN(requestedWidth) || double.IsInfinity(requestedWidth) || requestedWidth <= 0)
+                requestedWidth = requestedHeight;
+            var scale = Math.Min(1d, Math.Min(4096d / requestedWidth, 4096d / requestedHeight));
+            var targetWidth = Math.Max(32, (int)Math.Round(requestedWidth * scale));
+            var targetHeight = Math.Max(32, (int)Math.Round(requestedHeight * scale));
+            var normalizedBytes = EmfCompatibilityNormalizer.NormalizeForMiniPdfDrawing(sourceBytes, targetWidth, targetHeight);
+            using var sourceStream = new MemoryStream(normalizedBytes, writable: false);
+            using var metafile = new global::MiniSoftware.Drawing.Imaging.Metafile(sourceStream);
+            using var bitmap = metafile.ToBitmap();
+            using var outputStream = new MemoryStream();
+            if (hasCrop)
+            {
+                var cropX = Compat.Clamp((int)Math.Round(bitmap.Width * cropL), 0, bitmap.Width - 1);
+                var cropY = Compat.Clamp((int)Math.Round(bitmap.Height * cropT), 0, bitmap.Height - 1);
+                var cropWidth = Compat.Clamp((int)Math.Round(bitmap.Width * (1 - cropL - cropR)), 1, bitmap.Width - cropX);
+                var cropHeight = Compat.Clamp((int)Math.Round(bitmap.Height * (1 - cropT - cropB)), 1, bitmap.Height - cropY);
+                using var cropped = bitmap.Clone(
+                    new global::MiniSoftware.Drawing.Geometry.Rectangle(cropX, cropY, cropWidth, cropHeight), bitmap.PixelFormat);
+                cropped.Save(outputStream, global::MiniSoftware.Drawing.Imaging.ImageFormat.Png);
+            }
+            else
+            {
+                bitmap.Save(outputStream, global::MiniSoftware.Drawing.Imaging.ImageFormat.Png);
+            }
+            return outputStream.ToArray();
         }
         catch
         {
