@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace MiniPdf.Drawing.Text.Native
 {
@@ -24,13 +23,13 @@ namespace MiniPdf.Drawing.Text.Native
         /// </returns>
         public static bool TryDiscoverFonts(out IReadOnlyList<NativeFontInfo> fonts)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (global::MiniSoftware.Compat.IsWindows())
                 return WindowsFontDiscovery.TryDiscoverFonts(out fonts);
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (global::MiniSoftware.Compat.IsMacOS())
                 return MacFontDiscovery.TryDiscoverFonts(out fonts);
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (global::MiniSoftware.Compat.IsLinux())
                 return LinuxFontDiscovery.TryDiscoverFonts(out fonts);
 
             fonts = System.Array.Empty<NativeFontInfo>();
@@ -48,13 +47,13 @@ namespace MiniPdf.Drawing.Text.Native
         /// </returns>
         public static bool TryGetDefaultFamilyName(out string? familyName)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (global::MiniSoftware.Compat.IsWindows())
                 return WindowsFontDiscovery.TryGetDefaultFamilyName(out familyName);
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (global::MiniSoftware.Compat.IsMacOS())
                 return MacFontDiscovery.TryGetDefaultFamilyName(out familyName);
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (global::MiniSoftware.Compat.IsLinux())
                 return LinuxFontDiscovery.TryGetDefaultFamilyName(out familyName);
 
             familyName = null;
