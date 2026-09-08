@@ -172,7 +172,7 @@ MiniPdf는 실용적인 문서 변환을 목표로 하며 Microsoft Office 레�
 원하는 코딩 Agent에서 깨끗한 fork 또는 clone을 연 다음 아래 지시문을 Agent 채팅에 붙여 넣으세요.
 
 ```text
-Before reading CONTRIBUTING.md or taking any other action, ask me whether to use .NET or Rust and wait for my explicit choice. After I answer, read CONTRIBUTING.md and run the MiniPdf contribution loop from start to finish. Use the selected implementation to diagnose and improve one automatically selected benchmark case, validate all changes, and prepare the pull request. Keep generated images and full logs in artifacts and return only paths and compact summaries. Do not commit, push, fork, or open a pull request without my explicit approval.
+Run the minipdf-contribution skill.
 ```
 
 ## 프로젝트 리소스
