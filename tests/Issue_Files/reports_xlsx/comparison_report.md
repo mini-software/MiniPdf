@@ -1,6 +1,6 @@
-# MiniPdf vs Microsoft 365 Reference PDF Comparison Report
+# MiniPdf vs LibreOffice Reference PDF Comparison Report
 
-Generated: 2026-09-04T20:39:22.365558
+Generated: 2026-09-08T10:15:48.738138
 
 ## Summary
 
@@ -29,8 +29,9 @@ Generated: 2026-09-04T20:39:22.365558
 | 21 | 🔴 XlsxIssue82_SampleTestData5mb | ✅ | 0.4255 | 0.9146 | 834/1668 | **0.636** |
 | 22 | 🟢 XlsxIssue82_WideTable | ✅ | 1.0 | 0.8648 | 13/13 | **0.9459** |
 | 23 | 🟢 Issue202609031340 | ✅ | 0.8828 | 0.9524 | 4/4 | **0.9341** |
+| 24 | 🟢 XlsxIssue152_ClusteredNonZeroBarChart | ✅ | 0.9771 | 0.9652 | 1/1 | **0.9769** |
 
-**Average Overall Score: 0.8401**
+**Average Overall Score: 0.8458**
 
 ## Difference Heatmaps
 
@@ -58,23 +59,28 @@ Blue areas are below the configured difference threshold; red areas have stronge
   <td><img src="images/Issue202609031340_p4_heatmap.png" width="760" alt="Issue202609031340 page 4 difference heatmap"></td>
   <td>changed: 18149 px (0.83%)<br>bbox: [42, 743, 1196, 1009]<br>mean abs RGB: 1.166<br>RMSE RGB: 14.6026<br>threshold: 12, gain: 5.0</td>
 </tr>
+<tr>
+  <td><b>XlsxIssue152_ClusteredNonZeroBarChart</b><br>Page 1</td>
+  <td><img src="images/XlsxIssue152_ClusteredNonZeroBarChart_p1_heatmap.png" width="760" alt="XlsxIssue152_ClusteredNonZeroBarChart page 1 difference heatmap"></td>
+  <td>changed: 82552 px (4.03%)<br>bbox: [109, 141, 881, 782]<br>mean abs RGB: 4.6913<br>RMSE RGB: 27.7385<br>threshold: 12, gain: 5.0</td>
+</tr>
 </table>
 
 ## Visual Comparison
 
 <table>
-<tr><th>MiniPdf</th><th>Microsoft 365 Reference</th></tr>
+<tr><th>MiniPdf</th><th>LibreOffice Reference</th></tr>
 <tr>
   <td><b>Academic Achievement Summary Table<br><small>format: xlsx | case: Academic Achievement Summary Table | scope: issue-xlsx</small></b></td>
   <td colspan="1">Academic Achievement Summary Table <span style="color:#3fb950">⬤</span> 97.4%</td>
 </tr>
 <tr>
   <td><img src="images/Academic Achievement Summary Table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Academic Achievement Summary Table_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Academic Achievement Summary Table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Academic Achievement Summary Table_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Academic Achievement Summary Table_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Academic Achievement Summary Table_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>AcademicAchievement_temp<br><small>format: xlsx | case: AcademicAchievement_temp | scope: issue-xlsx</small></b></td>
@@ -82,11 +88,11 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/AcademicAchievement_temp_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/AcademicAchievement_temp_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/AcademicAchievement_temp_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/AcademicAchievement_temp_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/AcademicAchievement_temp_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/AcademicAchievement_temp_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Business expense budget1<br><small>format: xlsx | case: Business expense budget1 | scope: issue-xlsx</small></b></td>
@@ -94,15 +100,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expense budget1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Business expense budget1_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expense budget1_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Business expense budget1_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expense budget1_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Business expense budget1_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Business expenses budget2<br><small>format: xlsx | case: Business expenses budget2 | scope: issue-xlsx</small></b></td>
@@ -110,19 +116,19 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expenses budget2_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Business expenses budget2_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expenses budget2_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Business expenses budget2_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expenses budget2_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Business expenses budget2_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Business expenses budget2_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business expenses budget2_p4_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Business expenses budget2_p4_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Business plan checklist with SWOT analysis1<br><small>format: xlsx | case: Business plan checklist with SWOT analysis1 | scope: issue-xlsx</small></b></td>
@@ -130,7 +136,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Business plan checklist with SWOT analysis1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Business plan checklist with SWOT analysis1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Business plan checklist with SWOT analysis1_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Event budget1<br><small>format: xlsx | case: Event budget1 | scope: issue-xlsx</small></b></td>
@@ -138,15 +144,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Event budget1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Event budget1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Event budget1_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Event budget1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Event budget1_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Event budget1_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Event budget1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Event budget1_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Event budget1_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Expense report basic1<br><small>format: xlsx | case: Expense report basic1 | scope: issue-xlsx</small></b></td>
@@ -154,7 +160,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Expense report basic1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Expense report basic1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Expense report basic1_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Grocery list1<br><small>format: xlsx | case: Grocery list1 | scope: issue-xlsx</small></b></td>
@@ -162,7 +168,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Grocery list1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Grocery list1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Grocery list1_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>payroll-calculator_f<br><small>format: xlsx | case: payroll-calculator_f | scope: issue-xlsx</small></b></td>
@@ -170,15 +176,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/payroll-calculator_f_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/payroll-calculator_f_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/payroll-calculator_f_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/payroll-calculator_f_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/payroll-calculator_f_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>PO_anonymized<br><small>format: xlsx | case: PO_anonymized | scope: issue-xlsx</small></b></td>
@@ -186,15 +192,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/PO_anonymized_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/PO_anonymized_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/PO_anonymized_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/PO_anonymized_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/PO_anonymized_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Simple invoice1<br><small>format: xlsx | case: Simple invoice1 | scope: issue-xlsx</small></b></td>
@@ -202,7 +208,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Simple invoice1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Simple invoice1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Simple invoice1_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Small business cash flow forecast1<br><small>format: xlsx | case: Small business cash flow forecast1 | scope: issue-xlsx</small></b></td>
@@ -210,15 +216,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Small business cash flow forecast1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Small business cash flow forecast1_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Small business cash flow forecast1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Small business cash flow forecast1_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Small business cash flow forecast1_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><i>missing</i></td>
-  <td><img src="images/Small business cash flow forecast1_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Small business cash flow forecast1_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Wedding_timeline_planner1_copy<br><small>format: xlsx | case: Wedding_timeline_planner1_copy | scope: issue-xlsx</small></b></td>
@@ -226,15 +232,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Wedding_timeline_planner1_copy_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Wedding_timeline_planner1_copy_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Wedding_timeline_planner1_copy_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Wedding_timeline_planner1_copy_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Wedding_timeline_planner1_copy_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Weekly schedule planner1<br><small>format: xlsx | case: Weekly schedule planner1 | scope: issue-xlsx</small></b></td>
@@ -242,7 +248,7 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Weekly schedule planner1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Weekly schedule planner1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Weekly schedule planner1_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue75<br><small>format: xlsx | case: XlsxIssue75 | scope: issue-xlsx</small></b></td>
@@ -250,15 +256,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/XlsxIssue75_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue75_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue75_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue75_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue75_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue75_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue75_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue77_MergedCellAlignment<br><small>format: xlsx | case: XlsxIssue77_MergedCellAlignment | scope: issue-xlsx</small></b></td>
@@ -266,11 +272,11 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_MergedCellAlignment_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_MergedCellAlignment_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue77_MergedCellAlignment_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue77_Template1<br><small>format: xlsx | case: XlsxIssue77_Template1 | scope: issue-xlsx</small></b></td>
@@ -278,15 +284,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template1_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template1_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template1_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template1_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue77_Template1_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue77_Template2_Workaround<br><small>format: xlsx | case: XlsxIssue77_Template2_Workaround | scope: issue-xlsx</small></b></td>
@@ -294,15 +300,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template2_Workaround_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template2_Workaround_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue77_Template2_Workaround_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue77_Template2_Workaround_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue77_Template2_Workaround_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue81_LayoutOptions<br><small>format: xlsx | case: XlsxIssue81_LayoutOptions | scope: issue-xlsx</small></b></td>
@@ -310,15 +316,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/XlsxIssue81_LayoutOptions_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue81_LayoutOptions_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue81_LayoutOptions_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue81_LayoutOptions_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue81_LayoutOptions_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue82_5mb<br><small>format: xlsx | case: XlsxIssue82_5mb | scope: issue-xlsx</small></b></td>
@@ -326,15 +332,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_5mb_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_5mb_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue82_5mb_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_5mb_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_5mb_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue82_5mb_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_5mb_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_5mb_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue82_5mb_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue82_SampleTestData5mb<br><small>format: xlsx | case: XlsxIssue82_SampleTestData5mb | scope: issue-xlsx</small></b></td>
@@ -342,15 +348,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_SampleTestData5mb_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue82_SampleTestData5mb_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>XlsxIssue82_WideTable<br><small>format: xlsx | case: XlsxIssue82_WideTable | scope: issue-xlsx</small></b></td>
@@ -358,15 +364,15 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_WideTable_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_WideTable_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/XlsxIssue82_WideTable_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/XlsxIssue82_WideTable_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>Issue202609031340<br><small>format: xlsx | case: Issue202609031340 | scope: issue-xlsx</small></b></td>
@@ -374,19 +380,27 @@ Blue areas are below the configured difference threshold; red areas have stronge
 </tr>
 <tr>
   <td><img src="images/Issue202609031340_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Issue202609031340_p1_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Issue202609031340_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Issue202609031340_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Issue202609031340_p2_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Issue202609031340_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Issue202609031340_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Issue202609031340_p3_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Issue202609031340_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/Issue202609031340_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/Issue202609031340_p4_reference.png" width="340" alt="Microsoft 365 Reference"></td>
+  <td><img src="images/Issue202609031340_p4_reference.png" width="340" alt="LibreOffice Reference"></td>
+</tr>
+<tr>
+  <td><b>XlsxIssue152_ClusteredNonZeroBarChart<br><small>format: xlsx | case: XlsxIssue152_ClusteredNonZeroBarChart | scope: issue-xlsx</small></b></td>
+  <td colspan="1">XlsxIssue152_ClusteredNonZeroBarChart <span style="color:#3fb950">⬤</span> 97.7%</td>
+</tr>
+<tr>
+  <td><img src="images/XlsxIssue152_ClusteredNonZeroBarChart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/XlsxIssue152_ClusteredNonZeroBarChart_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 </table>
 
@@ -2639,6 +2653,41 @@ Text content: ✅ Identical
  版本 日期 问题
 ... (88 more characters)
 
+```
+</details>
+
+### XlsxIssue152_ClusteredNonZeroBarChart
+
+- **Case Metadata:** format: xlsx | case: XlsxIssue152_ClusteredNonZeroBarChart | scope: issue-xlsx
+- **Text Similarity:** 0.9771
+- **Visual Average:** 0.9652
+- **Overall Score:** 0.9769
+- **Pages:** MiniPdf=1, Reference=1
+- **File Size:** MiniPdf=4416 bytes, Reference=51953 bytes
+
+<details><summary>Text Diff</summary>
+
+```diff
+--- minipdf/XlsxIssue152_ClusteredNonZeroBarChart.pdf
++++ reference/XlsxIssue152_ClusteredNonZeroBarChart.pdf
+@@ -8,8 +8,7 @@
+ 160
+
+ 155
+
+ 150
+
+-Price
+
+-145
+
++145 Price
+
+ Price
+
+ 140
+
+ 135
 ```
 </details>
 

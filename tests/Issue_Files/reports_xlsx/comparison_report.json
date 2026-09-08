@@ -972,5 +972,53 @@
       }
     ],
     "overall_score": 0.9341
+  },
+  {
+    "name": "XlsxIssue152_ClusteredNonZeroBarChart",
+    "minipdf_exists": true,
+    "reference_exists": true,
+    "report_scope": "issue-xlsx",
+    "case_id": "XlsxIssue152_ClusteredNonZeroBarChart",
+    "format": "xlsx",
+    "minipdf_size": 4416,
+    "reference_size": 51953,
+    "pdf_valid": true,
+    "minipdf_pages": 1,
+    "reference_pages": 1,
+    "text_similarity": 0.9771,
+    "flat_text_similarity": 0.9771,
+    "word_text_similarity": 0.9762,
+    "text_diff": "--- minipdf/XlsxIssue152_ClusteredNonZeroBarChart.pdf\n+++ reference/XlsxIssue152_ClusteredNonZeroBarChart.pdf\n@@ -8,8 +8,7 @@\n 160\n\n 155\n\n 150\n\n-Price\n\n-145\n\n+145 Price\n\n Price\n\n 140\n\n 135\n",
+    "visual_scores": [
+      0.9652
+    ],
+    "visual_avg": 0.9652,
+    "diff_images": [
+      {
+        "page": 1,
+        "minipdf_img": "XlsxIssue152_ClusteredNonZeroBarChart_p1_minipdf.png",
+        "reference_img": "XlsxIssue152_ClusteredNonZeroBarChart_p1_reference.png",
+        "heatmap_img": "XlsxIssue152_ClusteredNonZeroBarChart_p1_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1650
+          ],
+          "difference_bbox_px": [
+            109,
+            141,
+            881,
+            782
+          ],
+          "changed_pixels": 82552,
+          "changed_fraction": 0.040315,
+          "mean_abs_rgb": 4.6913,
+          "rmse_rgb": 27.7385,
+          "threshold": 12,
+          "gain": 5.0
+        }
+      }
+    ],
+    "overall_score": 0.9769
   }
 ]
