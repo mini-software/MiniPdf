@@ -39,6 +39,7 @@ that are not available in the standard PDF fonts:
 
 ```java
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 MiniPdf.registerFont(
   "Noto Sans",
