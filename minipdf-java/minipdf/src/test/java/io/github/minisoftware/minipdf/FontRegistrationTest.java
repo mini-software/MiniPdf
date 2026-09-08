@@ -1,5 +1,6 @@
 package io.github.minisoftware.minipdf;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -8,6 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FontRegistrationTest {
+    @AfterEach
+    void clearRegisteredFonts() {
+        MiniPdf.clearRegisteredFonts();
+    }
+
     @Test
     void registrationDefensivelyCopiesFontData() {
         byte[] data = {1, 2, 3};

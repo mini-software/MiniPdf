@@ -34,7 +34,7 @@ MiniPdf converte direttamente i documenti Office in PDF senza richiedere Microso
 |---|---|---|---|---|---|
 | .NET | XLSX, DOCX, PPTX | Libreria, CLI, binari Native AOT | Stabile | **[Guida .NET](README.nuget.md)** | **[XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](../tests/Issue_Files/reports_pptx/comparison_report.md)** |
 | Rust | XLSX, DOCX, PPTX | Crate, CLI | Sperimentale | **[Guida Rust](../minipdf-rs/README.md)** | **[XLSX](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
-| Java | XLSX, DOCX | Libreria, CLI | Sperimentale | **[Sorgenti Java](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Java | XLSX, DOCX, PPTX | Libreria, CLI | Sperimentale | **[Sorgenti Java](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Python | DOCX | Pacchetto, CLI | Sperimentale | **[Guida Python](../minipdf-python/README.md)** | **[XLSX](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Node.js | XLSX, DOCX, PPTX | Pacchetto nativo | Sperimentale | **[Guida Node.js](../minipdf-node/README.md)** | **[XLSX](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Go | XLSX, DOCX, PPTX | Pacchetto, CLI | Sperimentale | **[Guida Go](../minipdf-go/README.md)** | **[XLSX](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
@@ -85,7 +85,7 @@ La [guida Rust](../minipdf-rs/README.md) descrive API del crate, CLI, funzionali
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.5</version>
+	<version>0.1.6</version>
 </dependency>
 ```
 
@@ -95,10 +95,22 @@ Per questo la dipendenza usa `io.github.mini-software` e gli import usano
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
-MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+try {
+	MiniPdf.registerFont(
+			"Noto Sans",
+			Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
+	MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+} finally {
+	MiniPdf.clearRegisteredFonts();
+}
 ```
+
+I font registrati vengono usati nella conversione di DOCX, XLSX e PPTX. Le
+registrazioni valgono per l'intero processo; cancellale prima di configurare un
+set di font diverso.
 
 ### Python
 

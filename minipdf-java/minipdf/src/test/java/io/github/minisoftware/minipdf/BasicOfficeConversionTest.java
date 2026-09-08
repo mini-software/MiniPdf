@@ -1,9 +1,17 @@
 package io.github.minisoftware.minipdf;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +20,8 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,6 +29,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class BasicOfficeConversionTest {
     @TempDir
     Path temporaryDirectory;
+
+    @AfterEach
+    void clearRegisteredFonts() {
+        MiniPdf.clearRegisteredFonts();
+    }
 
     @Test
     void convertsBasicDocxText() throws Exception {
@@ -31,6 +46,18 @@ class BasicOfficeConversionTest {
 
         assertTrue(pdf.startsWith("%PDF-1.4"));
         assertTrue(pdf.contains("(Hello DOCX) Tj"));
+    }
+
+    @Test
+    void usesRegisteredFontForDocxUnicodeText() throws Exception {
+        String text = "\u041f\u0440\u0438\u0432\u0435\u0442 DOCX";
+        registerTestFont();
+        byte[] docx = packageWith(Map.of(
+                "word/document.xml",
+                "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>" + text
+                        + "</w:t></w:r></w:p></w:body></w:document>"));
+
+        assertUnicodeTextUsesEmbeddedFont(MiniPdf.convertBytesToPdf(docx), text);
     }
 
     @Test
@@ -91,6 +118,47 @@ class BasicOfficeConversionTest {
         assertTrue(pdf.contains("/Count 2"));
         assertTrue(pdf.indexOf("(First) Tj") < pdf.indexOf("(Second) Tj"));
         assertTrue(!pdf.contains("(Orphan) Tj"));
+    }
+
+    @Test
+    void usesRegisteredFontForPptxUnicodeText() throws Exception {
+        String text = "\u041f\u0440\u0438\u0432\u0435\u0442 PPTX";
+        registerTestFont();
+        Map<String, String> entries = new LinkedHashMap<>();
+        entries.put("ppt/presentation.xml",
+                "<p:presentation xmlns:p=\"urn:p\" xmlns:r=\"urn:r\"><p:sldIdLst>"
+                        + "<p:sldId r:id=\"rId1\"/></p:sldIdLst></p:presentation>");
+        entries.put("ppt/_rels/presentation.xml.rels",
+                "<Relationships><Relationship Id=\"rId1\" Type=\"urn/slide\" "
+                        + "Target=\"slides/slide1.xml\"/></Relationships>");
+        entries.put("ppt/slides/slide1.xml",
+                "<p:sld xmlns:p=\"urn:p\" xmlns:a=\"urn:a\"><a:p><a:r><a:t>" + text
+                        + "</a:t></a:r></a:p></p:sld>");
+
+        assertUnicodeTextUsesEmbeddedFont(MiniPdf.convertBytesToPdf(packageWith(entries)), text);
+    }
+
+    private static void registerTestFont() throws Exception {
+        try (InputStream input = PDFont.class.getResourceAsStream(
+                "/org/apache/pdfbox/resources/ttf/LiberationSans-Regular.ttf")) {
+            assertNotNull(input);
+            MiniPdf.registerFont("Liberation Sans", input.readAllBytes());
+        }
+    }
+
+    private static void assertUnicodeTextUsesEmbeddedFont(byte[] pdf, String expected) throws Exception {
+        try (PDDocument document = Loader.loadPDF(pdf)) {
+            assertEquals(expected, new PDFTextStripper().getText(document).trim());
+            boolean hasEmbeddedFont = false;
+            for (PDPage page : document.getPages()) {
+                for (COSName fontName : page.getResources().getFontNames()) {
+                    if (page.getResources().getFont(fontName).isEmbedded()) {
+                        hasEmbeddedFont = true;
+                    }
+                }
+            }
+            assertTrue(hasEmbeddedFont);
+        }
     }
 
     @Test

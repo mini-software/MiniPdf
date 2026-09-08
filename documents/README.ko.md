@@ -34,7 +34,7 @@ MiniPdf는 런타임에 Microsoft Office, LibreOffice, Adobe Acrobat 또는 COM 
 |---|---|---|---|---|---|
 | .NET | XLSX, DOCX, PPTX | 라이브러리, CLI, Native AOT 바이너리 | 안정 | **[.NET 가이드](README.nuget.md)** | **[XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](../tests/Issue_Files/reports_pptx/comparison_report.md)** |
 | Rust | XLSX, DOCX, PPTX | Crate, CLI | 실험적 | **[Rust 가이드](../minipdf-rs/README.md)** | **[XLSX](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
-| Java | XLSX, DOCX | 라이브러리, CLI | 실험적 | **[Java 소스](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Java | XLSX, DOCX, PPTX | 라이브러리, CLI | 실험적 | **[Java 소스](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Python | DOCX | 패키지, CLI | 실험적 | **[Python 가이드](../minipdf-python/README.md)** | **[XLSX](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Node.js | XLSX, DOCX, PPTX | 네이티브 패키지 | 실험적 | **[Node.js 가이드](../minipdf-node/README.md)** | **[XLSX](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Go | XLSX, DOCX, PPTX | 패키지, CLI | 실험적 | **[Go 가이드](../minipdf-go/README.md)** | **[XLSX](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
@@ -85,7 +85,7 @@ minipdf report.docx -o report.pdf
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.5</version>
+	<version>0.1.6</version>
 </dependency>
 ```
 
@@ -95,10 +95,21 @@ Maven `groupId`에는 하이픈을 사용할 수 있지만 Java 패키지 이름
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
-MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+try {
+	MiniPdf.registerFont(
+			"Noto Sans",
+			Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
+	MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+} finally {
+	MiniPdf.clearRegisteredFonts();
+}
 ```
+
+등록한 글꼴은 DOCX, XLSX 및 PPTX 변환에 사용됩니다. 등록 내용은 프로세스
+전체에서 공유되므로 다른 글꼴 세트를 구성하기 전에 지우십시오.
 
 ### Python
 
