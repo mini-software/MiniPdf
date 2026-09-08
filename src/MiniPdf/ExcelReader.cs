@@ -4214,12 +4214,19 @@ internal static class ExcelReader
             XElement? overlayChartTypeEl = null;
             var overlayChartType = "";
             var overlaySeries = new List<ExcelChartSeries>();
+            var legendPosition = "";
+            var chartStyle = 0;
+            int? gapWidthPercent = null;
 
             if (chartEntry != null)
             {
                 using var cStream = chartEntry.Open();
                 var cDoc = XDocument.Load(cStream);
                 var cns = XNamespace.Get("http://schemas.openxmlformats.org/drawingml/2006/chart");
+
+                int.TryParse(cDoc.Root?.Element(cns + "style")?.Attribute("val")?.Value, out chartStyle);
+                var legend = cDoc.Descendants(cns + "legend").FirstOrDefault();
+                legendPosition = legend?.Element(cns + "legendPos")?.Attribute("val")?.Value ?? "";
 
                 // Extract chart title from <c:chart><c:title><c:tx><c:rich><a:r><a:t>
                 var titleEl = cDoc.Descendants(cns + "title").FirstOrDefault();
@@ -4261,6 +4268,10 @@ internal static class ExcelReader
                             chartType = groupingVal.Contains("percent", StringComparison.OrdinalIgnoreCase)
                                 ? "percentStacked_" + chartType
                                 : "stacked_" + chartType;
+
+                        if (int.TryParse(chartTypeEl.Element(cns + "gapWidth")?.Attribute("val")?.Value,
+                            out var parsedGapWidth))
+                            gapWidthPercent = Math.Max(0, parsedGapWidth);
                     }
 
                     // Extract axis titles
@@ -4456,7 +4467,10 @@ internal static class ExcelReader
                 showDataLabelVal, dataLabelFmtCode, valAxisFmtCode, isTwoCellAnchor)
             {
                 OverlaySeries = overlaySeries,
-                OverlayChartType = overlayChartType
+                OverlayChartType = overlayChartType,
+                LegendPosition = legendPosition,
+                ChartStyle = chartStyle,
+                GapWidthPercent = gapWidthPercent
             };
             charts.Add(chartInfo);
         }
@@ -4716,6 +4730,12 @@ internal sealed record ExcelChartInfo(
     public List<ExcelChartSeries> OverlaySeries { get; init; } = new();
     /// <summary>Chart type for overlay series (e.g., "lineChart" when primary is "barChart").</summary>
     public string OverlayChartType { get; init; } = "";
+    /// <summary>Legend position from chart XML (r, l, t, b, tr); empty when hidden.</summary>
+    public string LegendPosition { get; init; } = "";
+    /// <summary>Built-in chart style identifier; zero when unspecified.</summary>
+    public int ChartStyle { get; init; }
+    /// <summary>Gap between bar clusters as a percentage of one bar width.</summary>
+    public int? GapWidthPercent { get; init; }
 };
 
 /// <summary>

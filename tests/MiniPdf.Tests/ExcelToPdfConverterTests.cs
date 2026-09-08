@@ -81,7 +81,9 @@ public class ExcelToPdfConverterTests
             Math.Abs(line.X1 - line.X2) < 0.01f && line.Color == PdfColor.Black);
         var plotBottom = Math.Min(yAxis.Y1, yAxis.Y2);
         var plotTop = Math.Max(yAxis.Y1, yAxis.Y2);
-        var bars = page.RectBlocks.ToArray();
+        var bars = page.RectBlocks.Where(rectangle => rectangle.Height > 7f)
+            .OrderBy(rectangle => rectangle.X)
+            .ToArray();
 
         Assert.Equal(5, bars.Length);
         Assert.All(bars, bar =>
@@ -89,9 +91,15 @@ public class ExcelToPdfConverterTests
             Assert.Equal(plotBottom, bar.Y, 3);
             Assert.InRange(bar.Y + bar.Height, plotBottom, plotTop + 0.01f);
         });
+        var firstGap = bars[1].X - bars[0].X - bars[0].Width;
+        Assert.True(firstGap > bars[0].Width, "A 150% gapWidth should leave more gap than bar width.");
 
         var axisLabels = page.TextBlocks.Select(block => block.Text);
         Assert.DoesNotContain("0", axisLabels);
+        Assert.Contains("130", axisLabels);
+        Assert.Contains("160", axisLabels);
+        Assert.Contains("Price", axisLabels);
+        Assert.Contains(page.TextBlocks, block => block.Text == "Clustered Non-Zero Prices" && block.Bold);
     }
 
     [Fact]
@@ -1299,7 +1307,9 @@ public class ExcelToPdfConverterTests
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
                                             xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                                    <c:style val="10"/>
                     <c:chart>
+                                        <c:title><c:tx><c:rich><a:bodyPr/><a:p><a:r><a:t>Clustered Non-Zero Prices</a:t></a:r></a:p></c:rich></c:tx></c:title>
                         <c:plotArea>
                             <c:barChart>
                                 <c:barDir val="col"/>
@@ -1307,6 +1317,7 @@ public class ExcelToPdfConverterTests
                                 <c:ser>
                                     <c:idx val="0"/>
                                     <c:order val="0"/>
+                                                        <c:tx><c:v>Price</c:v></c:tx>
                                     <c:cat>
                                         <c:strRef>
                                             <c:f>Sheet1!$A$2:$A${{categories.Length + 1}}</c:f>
@@ -1320,8 +1331,10 @@ public class ExcelToPdfConverterTests
                                         </c:numRef>
                                     </c:val>
                                 </c:ser>
+                                                    <c:gapWidth val="150"/>
                             </c:barChart>
                         </c:plotArea>
+                                        <c:legend><c:legendPos val="r"/></c:legend>
                     </c:chart>
                 </c:chartSpace>
                 """);
