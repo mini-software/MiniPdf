@@ -85,8 +85,22 @@ jobs:
             echo "skip=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Check AI Security Review configuration
+        id: ai-config
+        env:
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_DEPLOYMENT }}
+        run: |
+          if [ -z "$AZURE_OPENAI_API_KEY" ] || [ -z "$AZURE_OPENAI_ENDPOINT" ] || [ -z "$AZURE_OPENAI_DEPLOYMENT" ]; then
+            echo "::warning::AI Security Review secrets are unavailable; skipping external review"
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: AI Security Review
-        if: steps.diff.outputs.skip != 'true'
+        if: steps.diff.outputs.skip != 'true' && steps.ai-config.outputs.available == 'true'
         env:
           AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
           AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
@@ -168,12 +182,12 @@ jobs:
             exit 1
           elif [ "$PASSED" = "true" ]; then
             echo ""
-            echo "✅ AI Security Review PASSED - no security issues found"
+            echo "AI Security Review PASSED - no security issues found"
           else
             echo "::warning::Could not parse AI review result, treating as FAIL for safety"
             exit 1
           fi
 
       - name: Skip notice
-        if: steps.diff.outputs.skip == 'true'
-        run: echo "✅ No code changes to review"
+        if: steps.diff.outputs.skip == 'true' || steps.ai-config.outputs.available != 'true'
+        run: echo "AI Security Review skipped"
