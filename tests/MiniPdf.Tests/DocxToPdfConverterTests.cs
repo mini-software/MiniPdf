@@ -89,6 +89,41 @@ public class DocxToPdfConverterTests
     }
 
     [Fact]
+    public void Convert_FirstParagraphSpacingBefore_PreservesFullOffset()
+    {
+        using var unspacedStream = CreateDocxWithFirstParagraphSpacingBefore(0);
+        using var spacedStream = CreateDocxWithFirstParagraphSpacingBefore(480);
+
+        var unspaced = DocxToPdfConverter.Convert(unspacedStream);
+        var spaced = DocxToPdfConverter.Convert(spacedStream);
+        var unspacedY = Assert.Single(unspaced.Pages[0].TextBlocks).Y;
+        var spacedY = Assert.Single(spaced.Pages[0].TextBlocks).Y;
+
+        Assert.InRange(unspacedY - spacedY, 23.9f, 24.1f);
+    }
+
+    [Fact]
+    public void Convert_EmptyBorderedParagraph_PreservesItsSpacingBefore()
+    {
+        using var unspacedStream = CreateDocxWithEmptyBorderedParagraph(0);
+        using var spacedStream = CreateDocxWithEmptyBorderedParagraph(120);
+
+        var unspaced = DocxToPdfConverter.Convert(unspacedStream);
+        var spaced = DocxToPdfConverter.Convert(spacedStream);
+        var unspacedAfterY = unspaced.Pages[0].TextBlocks.Single(block => block.Text == "After").Y;
+        var spacedAfterY = spaced.Pages[0].TextBlocks.Single(block => block.Text == "After").Y;
+
+        Assert.InRange(unspacedAfterY - spacedAfterY, 5.9f, 6.1f);
+        var spacedLine = Assert.Single(spaced.Pages[0].LineBlocks);
+
+        using var zeroBorderSpaceStream = CreateDocxWithEmptyBorderedParagraph(120, borderSpacePt: 0);
+        var zeroBorderSpace = DocxToPdfConverter.Convert(zeroBorderSpaceStream);
+        var zeroBorderSpaceLine = Assert.Single(zeroBorderSpace.Pages[0].LineBlocks);
+        Assert.InRange(spacedLine.Y1 - zeroBorderSpaceLine.Y1, -0.1f, 0.1f);
+        Assert.InRange(zeroBorderSpaceLine.X1 - spacedLine.X1, 0.9f, 1.1f);
+    }
+
+    [Fact]
     public void Convert_WithTable_RendersCellText()
     {
         using var docxStream = CreateDocxWithTable(
@@ -263,6 +298,20 @@ public class DocxToPdfConverterTests
         // Validate every xref entry points to the correct object
         AssertXrefOffsetsAreCorrect(bytes);
     }
+
+      [Fact]
+      public void Convert_ImageOnlyParagraph_AlignsImageToParagraphBaseline()
+      {
+        using var docxStream = CreateDocxWithPngImage();
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+        var page = Assert.Single(doc.Pages);
+        var beforeImage = page.TextBlocks.Single(block => block.Text == "Before image");
+        var image = Assert.Single(page.ImageBlocks);
+        var imageTop = image.Y + image.RenderHeight;
+
+        Assert.InRange(beforeImage.Y - imageTop, 2.9f, 3.1f);
+      }
 
     [Fact]
     public void Convert_DocxWithRootRelativeImageRelationship_RendersImage()
@@ -674,6 +723,104 @@ public class DocxToPdfConverterTests
                     {bodyXml}
                   </w:body>
                 </w:document>
+                """);
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
+    private static MemoryStream CreateDocxWithFirstParagraphSpacingBefore(int beforeTwips)
+    {
+        var ms = new MemoryStream();
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/document.xml",
+                $$"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:body>
+                    <w:p>
+                      <w:pPr><w:spacing w:before="{{beforeTwips}}"/></w:pPr>
+                      <w:r><w:t>First paragraph</w:t></w:r>
+                    </w:p>
+                  </w:body>
+                </w:document>
+                """);
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
+    private static MemoryStream CreateDocxWithEmptyBorderedParagraph(int beforeTwips, int lineTwips = 276, int borderSpacePt = 1)
+    {
+        var ms = new MemoryStream();
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/document.xml",
+                $$"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:body>
+                    <w:p><w:pPr><w:spacing w:after="200"/></w:pPr><w:r><w:t>Before</w:t></w:r></w:p>
+                    <w:p>
+                      <w:pPr>
+                        <w:spacing w:before="{{beforeTwips}}" w:after="120"/>
+                        <w:pBdr><w:bottom w:val="single" w:sz="6" w:space="{{borderSpacePt}}" w:color="auto"/></w:pBdr>
+                      </w:pPr>
+                    </w:p>
+                    <w:p><w:pPr><w:spacing w:before="200"/></w:pPr><w:r><w:t>After</w:t></w:r></w:p>
+                  </w:body>
+                </w:document>
+                """);
+
+            AddEntry(archive, "word/styles.xml",
+                $$"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:docDefaults>
+                    <w:pPrDefault><w:pPr><w:spacing w:line="{{lineTwips}}" w:lineRule="auto"/></w:pPr></w:pPrDefault>
+                  </w:docDefaults>
+                </w:styles>
                 """);
         }
 

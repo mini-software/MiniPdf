@@ -1767,7 +1767,10 @@ internal static class DocxReader
         var color = !string.IsNullOrEmpty(colorHex) && colorHex != "auto"
             ? PdfColor.FromHex(colorHex)
             : new PdfColor(0, 0, 0);
-        return new DocxBorderEdge(Math.Max(0.5f, width), color);
+        var space = float.TryParse(el.Attribute(W + "space")?.Value, out var parsedSpace)
+            ? parsedSpace
+            : 0f;
+        return new DocxBorderEdge(Math.Max(0.5f, width), color, space);
     }
 
     /// <summary>Like <see cref="ReadBorderEdge"/> but returns
@@ -5083,7 +5086,8 @@ internal sealed record DocxParagraph(
 /// explicit OOXML "nil"/"none" border that suppresses inheritance.</summary>
 internal sealed record DocxBorderEdge(
     float Width,        // in points; 0 means explicit "nil" (suppress inherited border)
-    PdfColor Color
+    PdfColor Color,
+    float Space = 0
 )
 {
     public static readonly DocxBorderEdge Nil = new(0f, new PdfColor(0, 0, 0));

@@ -1074,11 +1074,15 @@ internal static class DocxToPdfConverter
             || (isVeryFirstParagraph && paragraph.SpacingBeforeExplicit)))
         {
             var extraBefore = options.CollapseParagraphSpacing
+                && !(paragraph.Runs.Count == 0 && paragraph.Images.Count == 0 && paragraph.Borders != null)
                 ? spacingBefore - state.LastSpacingAfter
                 : spacingBefore;
             if (extraBefore > 0)
             {
-                state.AdvanceY(extraBefore);
+                if (isVeryFirstParagraph)
+                    state.CurrentY -= extraBefore;
+                else
+                    state.AdvanceY(extraBefore);
             }
         }
 
@@ -1135,7 +1139,8 @@ internal static class DocxToPdfConverter
             if (baselineToTopOffset < 0) baselineToTopOffset = 0;
             state.LastParagraphStartY = state.CurrentY + baselineToTopOffset;
 
-            var totalEmptyAdvance = lineHeight;
+            var emptyBorderWidth = paragraph.Borders?.Bottom?.Width ?? 0f;
+            var totalEmptyAdvance = Math.Max(0f, lineHeight - emptyBorderWidth);
             var spacingAfterEmpty = paragraph.SpacingAfter >= 0 ? paragraph.SpacingAfter : 0f;
             totalEmptyAdvance += spacingAfterEmpty;
 
@@ -1153,6 +1158,7 @@ internal static class DocxToPdfConverter
                         : fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options));
                     state.AdvanceY(emptyAscentOffset);
                 }
+                RenderParagraphBorders(state, paragraph, state.CurrentY, state.CurrentY, isEmptyParagraph: true);
                 state.AdvanceY(totalEmptyAdvance);
                 // If the empty paragraph pushed past the bottom margin, accumulate
                 // the overflow as pending vertical space for the next page so that
@@ -1538,7 +1544,10 @@ internal static class DocxToPdfConverter
                 deferredImagesTotalHeight += imgH + 1f;
                 continue;
             }
-            RenderImage(state, image, paragraph.Alignment);
+            var inlineImageOffset = paragraph.Runs.Count == 0 && !image.IsAnchor
+                ? fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options))
+                : 0f;
+            RenderImage(state, image, paragraph.Alignment, inlineImageOffset);
         }
 
         // Proactive page break: if text + deferred wrapTopAndBottom images
@@ -1901,17 +1910,19 @@ internal static class DocxToPdfConverter
                 if (paragraph.Alignment == "both" && renderMaxWidth == null)
                     renderMaxWidth = lineW;
 
+                var renderY = state.CurrentY + GetHeadingBaselineOffset(paragraph, runFontName, runBold);
+
                 if (runShading != null)
                 {
                     var shadingWidth = textWidth + wordSpacing * line.Count(c => c == ' ');
                     if (renderMaxWidth.HasValue)
                         shadingWidth = Math.Min(shadingWidth, renderMaxWidth.Value);
                     var padX = Math.Max(0.7f, runFontSize * 0.08f);
-                    state.CurrentPage!.AddRectangle(renderX - padX, state.CurrentY - runFontSize * 0.24f,
+                    state.CurrentPage!.AddRectangle(renderX - padX, renderY - runFontSize * 0.24f,
                         shadingWidth + padX * 2, runFontSize * 1.18f, runShading);
                 }
 
-                state.CurrentPage!.AddText(line, renderX, state.CurrentY, runFontSize, runColor, maxWidth: renderMaxWidth, bold: runBold, italic: runItalic, underline: runUnderline, charSpacing: runCharSpacing, wordSpacing: wordSpacing, preferredFontName: runFontName);
+                state.CurrentPage!.AddText(line, renderX, renderY, runFontSize, runColor, maxWidth: renderMaxWidth, bold: runBold, italic: runItalic, underline: runUnderline, charSpacing: runCharSpacing, wordSpacing: wordSpacing, preferredFontName: runFontName);
                 state.AdvanceY(lineHeight);
             }
             s_overrideWidths = null;
@@ -1924,24 +1935,7 @@ internal static class DocxToPdfConverter
         // wrapping is now governed by the right-edge check during run rendering,
         // and the overflow-tolerance heuristic prevents spurious multi-line wraps
         // for short equation/overlay paragraphs.)
-        // Render paragraph borders
-        if (paragraph.Borders != null && state.CurrentPage != null)
-        {
-            var bdr = paragraph.Borders;
-            var paraLeft = options.MarginLeft + paragraph.IndentLeft;
-            var paraRight = options.MarginLeft + state.UsableWidth - paragraph.IndentRight;
-            var paraTop = paragraphStartY;
-            var paraBottom = state.CurrentY;
-
-            if (bdr.Top != null)
-                state.CurrentPage.AddLine(paraLeft, paraTop, paraRight, paraTop, bdr.Top.Color, bdr.Top.Width);
-            if (bdr.Bottom != null)
-                state.CurrentPage.AddLine(paraLeft, paraBottom, paraRight, paraBottom, bdr.Bottom.Color, bdr.Bottom.Width);
-            if (bdr.Left != null)
-                state.CurrentPage.AddLine(paraLeft, paraTop, paraLeft, paraBottom, bdr.Left.Color, bdr.Left.Width);
-            if (bdr.Right != null)
-                state.CurrentPage.AddLine(paraRight, paraTop, paraRight, paraBottom, bdr.Right.Color, bdr.Right.Width);
-        }
+        RenderParagraphBorders(state, paragraph, paragraphStartY, state.CurrentY);
 
         // Render text box border (outline rectangle around text box content)
         if (paragraph.TextBoxBorder is { } tb && state.CurrentPage != null)
@@ -2001,6 +1995,32 @@ internal static class DocxToPdfConverter
         }
 
 
+    }
+
+    private static void RenderParagraphBorders(RenderState state, DocxParagraph paragraph, float paragraphTop, float paragraphBottom,
+        bool isEmptyParagraph = false)
+    {
+        if (paragraph.Borders == null || state.CurrentPage == null)
+            return;
+
+        var borders = paragraph.Borders;
+        var paragraphLeft = state.Options.MarginLeft + paragraph.IndentLeft;
+        var paragraphRight = state.Options.MarginLeft + state.UsableWidth - paragraph.IndentRight;
+        var topSpace = isEmptyParagraph ? 0f : borders.Top?.Space ?? 0f;
+        var bottomSpace = isEmptyParagraph ? 0f : borders.Bottom?.Space ?? 0f;
+
+        if (borders.Top != null)
+            state.CurrentPage.AddLine(paragraphLeft - borders.Top.Space, paragraphTop + topSpace,
+                paragraphRight + borders.Top.Space, paragraphTop + topSpace, borders.Top.Color, borders.Top.Width);
+        if (borders.Bottom != null)
+            state.CurrentPage.AddLine(paragraphLeft - borders.Bottom.Space, paragraphBottom - bottomSpace,
+                paragraphRight + borders.Bottom.Space, paragraphBottom - bottomSpace, borders.Bottom.Color, borders.Bottom.Width);
+        if (borders.Left != null)
+            state.CurrentPage.AddLine(paragraphLeft - borders.Left.Space, paragraphTop + borders.Left.Space,
+                paragraphLeft - borders.Left.Space, paragraphBottom - borders.Left.Space, borders.Left.Color, borders.Left.Width);
+        if (borders.Right != null)
+            state.CurrentPage.AddLine(paragraphRight + borders.Right.Space, paragraphTop + borders.Right.Space,
+                paragraphRight + borders.Right.Space, paragraphBottom - borders.Right.Space, borders.Right.Color, borders.Right.Width);
     }
 
     /// <summary>
@@ -3304,7 +3324,7 @@ internal static class DocxToPdfConverter
 
     // ── Image rendering ─────────────────────────────────────────────────
 
-    private static void RenderImage(RenderState state, DocxImage image, string alignment = "left")
+    private static void RenderImage(RenderState state, DocxImage image, string alignment = "left", float inlineVerticalOffset = 0)
     {
         const float emuPerPoint = 914400f / 72f;
 
@@ -3392,7 +3412,10 @@ internal static class DocxToPdfConverter
             x = state.Options.MarginLeft + (state.UsableWidth - width) / 2;
         else if (alignment == "right")
             x = state.Options.MarginLeft + state.UsableWidth - width;
-        var y = state.CurrentY - height;
+        var y = state.CurrentY - height + inlineVerticalOffset;
+        var maximumY = state.Options.PageHeight - state.Options.MarginTop - height;
+        if (y > maximumY)
+            y = maximumY;
 
         state.CurrentPage!.AddImage(image.Data, format, x, y, width, height);
         state.AdvanceY(height + 1f); // 1pt gap after image
@@ -4773,6 +4796,15 @@ internal static class DocxToPdfConverter
                 return true;
         }
         return false;
+    }
+
+    private static float GetHeadingBaselineOffset(DocxParagraph paragraph, string? fontName, bool bold)
+    {
+        if (!bold || string.IsNullOrEmpty(fontName)
+            || !fontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase))
+            return 0f;
+
+        return paragraph.StyleId is "Heading1" or "Heading2" ? 1.6f : 0f;
     }
 
     private static bool ContainsCjk(string text)
