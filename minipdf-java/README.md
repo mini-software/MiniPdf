@@ -11,7 +11,7 @@ The library is available from Maven Central:
 <dependency>
     <groupId>io.github.mini-software</groupId>
     <artifactId>minipdf</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6</version>
 </dependency>
 ```
 
@@ -34,20 +34,38 @@ MiniPdf.convertToPdf(
 Use `MiniPdf.convertBytesToPdf` when the Office document is already in memory.
 `ConversionOptions.withPageSize` overrides the output page size.
 
+Register fonts before converting when DOCX, XLSX, or PPTX content needs glyphs
+that are not available in the standard PDF fonts:
+
+```java
+import java.nio.file.Files;
+
+MiniPdf.registerFont(
+  "Noto Sans",
+  Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
+MiniPdf.convertToPdf(
+  Path.of("document.docx"),
+  Path.of("document.pdf"));
+MiniPdf.clearRegisteredFonts();
+```
+
+Registered fonts are process-wide. `clearRegisteredFonts` removes them when the
+same process needs a different font set for a later conversion.
+
 ## CLI
 
 Download the executable JAR with Maven:
 
 ```powershell
 mvn dependency:copy `
-  -Dartifact=io.github.mini-software:minipdf-cli:0.1.5 `
+  -Dartifact=io.github.mini-software:minipdf-cli:0.1.6 `
   -DoutputDirectory=.
 ```
 
 Convert a document:
 
 ```powershell
-java -jar minipdf-cli-0.1.5.jar input.pptx -o output.pdf
+java -jar minipdf-cli-0.1.6.jar input.pptx -o output.pdf
 ```
 
 The CLI accepts `.docx`, `.xlsx`, and `.pptx` files. Run it with `--help` for

@@ -85,7 +85,7 @@ minipdf report.docx -o report.pdf
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.5</version>
+	<version>0.1.6</version>
 </dependency>
 ```
 
@@ -95,10 +95,18 @@ Maven `groupId`에는 하이픈을 사용할 수 있지만 Java 패키지 이름
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+MiniPdf.registerFont(
+		"Noto Sans",
+		Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
 MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+MiniPdf.clearRegisteredFonts();
 ```
+
+등록한 글꼴은 DOCX, XLSX 및 PPTX 변환에 사용됩니다. 등록 내용은 프로세스
+전체에서 공유되므로 다른 글꼴 세트를 구성하기 전에 지우십시오.
 
 ### Python
 

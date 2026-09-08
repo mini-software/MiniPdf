@@ -85,7 +85,7 @@ Le [guide Rust](../minipdf-rs/README.md) décrit l'API du crate, la CLI, les fon
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.5</version>
+	<version>0.1.6</version>
 </dependency>
 ```
 
@@ -95,10 +95,19 @@ que les imports utilisent `io.github.minisoftware.minipdf`.
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+MiniPdf.registerFont(
+		"Noto Sans",
+		Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
 MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+MiniPdf.clearRegisteredFonts();
 ```
+
+Les polices enregistrées sont utilisées lors de la conversion des fichiers DOCX,
+XLSX et PPTX. Les enregistrements s'appliquent à l'ensemble du processus ;
+effacez-les avant de configurer un autre jeu de polices.
 
 ### Python
 

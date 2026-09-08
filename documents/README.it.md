@@ -85,7 +85,7 @@ La [guida Rust](../minipdf-rs/README.md) descrive API del crate, CLI, funzionali
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.5</version>
+	<version>0.1.6</version>
 </dependency>
 ```
 
@@ -95,10 +95,19 @@ Per questo la dipendenza usa `io.github.mini-software` e gli import usano
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+MiniPdf.registerFont(
+		"Noto Sans",
+		Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
 MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+MiniPdf.clearRegisteredFonts();
 ```
+
+I font registrati vengono usati nella conversione di DOCX, XLSX e PPTX. Le
+registrazioni valgono per l'intero processo; cancellale prima di configurare un
+set di font diverso.
 
 ### Python
 
