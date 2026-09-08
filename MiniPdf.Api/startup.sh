@@ -50,6 +50,13 @@ else
     echo "[startup] Fonts already present, skipping download."
 fi
 
+# DRIT.Drawing discovers Linux fonts from the standard per-user font directory.
+DRIT_FONT_DIR="/home/.local/share/fonts"
+mkdir -p "$DRIT_FONT_DIR"
+find "$FONT_DIR" -maxdepth 1 \( -name '*.ttf' -o -name '*.ttc' -o -name '*.otf' \) \
+    -exec ln -sf {} "$DRIT_FONT_DIR/" \;
+fc-cache -f "$DRIT_FONT_DIR" >/dev/null 2>&1 || true
+
 # Start the application
 cd /home/site/wwwroot
 exec dotnet MiniPdf.Api.dll

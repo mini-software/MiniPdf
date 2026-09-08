@@ -43,6 +43,18 @@ internal static class Compat
 #endif
     }
 
+    public static bool IsLinux()
+    {
+#if NETFRAMEWORK
+        return false;
+#elif NETSTANDARD2_0
+        return System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
+            System.Runtime.InteropServices.OSPlatform.Linux);
+#else
+        return OperatingSystem.IsLinux();
+#endif
+    }
+
     // ── Array.Fill (introduced in .NET Core 2.0) ──
     public static void ArrayFill<T>(T[] array, T value)
     {

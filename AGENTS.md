@@ -45,22 +45,26 @@ primary reference. The default minimum score is `0.95`; use `-SkipCandidate`
 only when the corresponding candidate PDFs already exist under
 `artifacts/<language>-benchmark/<suite>/<format>/candidates`.
 
-## Classic Benchmark Refresh Workflow
-
-When updating all XLSX classic examples, canonical benchmark reports, or stale GitHub README benchmark images, use the `refresh-classic-benchmarks` skill (`/refresh-classic-benchmarks`).
-
 ## Automated Contribution Loop
 
-All coding agents, including Copilot, Claude Code, Cursor, and Codex, must use
-the vendor-neutral workflow in `CONTRIBUTING.md`. The executable entry point is:
+Use the vendor-neutral workflow in `CONTRIBUTING.md` only when the user
+explicitly requests the automated contribution loop. Ordinary fixes should use
+the narrowest relevant tests and benchmarks. The executable entry point is:
 
 ```powershell
-scripts/Invoke-MiniPdfContributionLoop.ps1 -Action Start
+scripts/Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation dotnet
+# or: scripts/Invoke-MiniPdfContributionLoop.ps1 -Action Start -Implementation rust
 ```
 
-The default detects installed .NET and Rust toolchains and randomly chooses an
-available implementation. Pass `-Implementation dotnet` or
-`-Implementation rust` to override it.
+The workflow selects one candidate. Pass `-CandidateCount 2` only for an
+explicitly requested two-case run.
+Keep generated images and full logs in `artifacts/`; return only paths and
+compact summaries in chat.
+
+Before running any contribution-loop command, ask the user to choose .NET or
+Rust and wait for an explicit answer. Then pass that choice with
+`-Implementation dotnet` or `-Implementation rust`; agents must not infer or
+silently default the implementation.
 
 Preserve unrelated changes. Do not commit, push, fork, or open a pull request
 without explicit user approval.
