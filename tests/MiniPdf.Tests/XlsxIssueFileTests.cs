@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using System.IO.Compression;
 
 namespace MiniSoftware.Tests;
 
@@ -10,24 +11,36 @@ public class XlsxIssueFileTests
     {
         var issuePath = FindIssueXlsx("Issue202609031340.xlsx");
 
+        using (var archive = ZipFile.OpenRead(issuePath))
+        {
+            foreach (var entryName in new[] { "xl/media/image1.emf", "xl/media/image2.emf" })
+            {
+                var entry = Assert.IsType<ZipArchiveEntry>(archive.GetEntry(entryName));
+                using var input = entry.Open();
+                using var source = new MemoryStream();
+                input.CopyTo(source);
+                var png = DocxReader.TryConvertMetafileToPngPortable(source.ToArray(), 1, 1);
+                Assert.NotNull(png);
+                AssertHasDrawingContent(png);
+            }
+        }
+
         using var stream = File.OpenRead(issuePath);
         var sheets = ExcelReader.ReadSheets(stream);
         Assert.All(sheets, sheet => Assert.True(sheet.VerticalCentered));
         Assert.Equal(255, sheets[0].Rows[45][0].TextRotation);
-        if (Compat.IsWindows())
+        Assert.Equal(2, sheets[0].Images.Count);
+        Assert.All(sheets[0].Images, image =>
         {
-            Assert.Equal(2, sheets[0].Images.Count);
-            Assert.All(sheets[0].Images, image =>
-            {
-                Assert.Equal("png", image.Extension);
-                Assert.NotNull(image.AbsoluteLeftPt);
-                Assert.NotNull(image.AbsoluteTopPt);
-                Assert.NotNull(image.VmlFromColOffset);
-                Assert.NotNull(image.VmlFromRowOffset);
-                Assert.NotNull(image.VmlToColOffset);
-                Assert.NotNull(image.VmlToRowOffset);
-            });
-        }
+            Assert.Equal("png", image.Extension);
+            AssertHasDrawingContent(image.Data);
+            Assert.NotNull(image.AbsoluteLeftPt);
+            Assert.NotNull(image.AbsoluteTopPt);
+            Assert.NotNull(image.VmlFromColOffset);
+            Assert.NotNull(image.VmlFromRowOffset);
+            Assert.NotNull(image.VmlToColOffset);
+            Assert.NotNull(image.VmlToRowOffset);
+        });
 
         var doc = ExcelToPdfConverter.Convert(issuePath);
 
@@ -40,16 +53,38 @@ public class XlsxIssueFileTests
         });
         Assert.All("修订记录", character =>
             Assert.Contains(doc.Pages[1].TextBlocks, block => block.Text == character.ToString()));
-        if (Compat.IsWindows())
+        Assert.Equal(2, doc.Pages[0].ImageBlocks.Count);
+        var imageTops = doc.Pages[0].ImageBlocks
+            .Select(image => doc.Pages[0].Height - image.Y - image.RenderHeight)
+            .OrderBy(top => top)
+            .ToArray();
+        Assert.InRange(imageTops[0], 215f, 218f);
+        Assert.InRange(imageTops[1], 528f, 530f);
+    }
+
+    private static void AssertHasDrawingContent(byte[] png)
+    {
+        using var stream = new MemoryStream(png, writable: false);
+        using var bitmap = new global::MiniSoftware.Drawing.Imaging.Bitmap(stream);
+        var visiblePixels = 0;
+        var hasRed = false;
+        var hasBlue = false;
+        for (var row = 0; row < bitmap.Height; row += 2)
         {
-            Assert.Equal(2, doc.Pages[0].ImageBlocks.Count);
-            var imageTops = doc.Pages[0].ImageBlocks
-                .Select(image => doc.Pages[0].Height - image.Y - image.RenderHeight)
-                .OrderBy(top => top)
-                .ToArray();
-            Assert.InRange(imageTops[0], 215f, 218f);
-            Assert.InRange(imageTops[1], 528f, 530f);
+            for (var column = 0; column < bitmap.Width; column += 2)
+            {
+                var color = bitmap.GetPixel(column, row);
+                if (color.A > 0 && (color.R < 250 || color.G < 250 || color.B < 250))
+                    visiblePixels++;
+                if (color.A > 0 && color.R > color.G * 1.5 && color.R > color.B * 1.5)
+                    hasRed = true;
+                if (color.A > 0 && color.B > color.R * 1.5 && color.B > color.G * 1.5)
+                    hasBlue = true;
+            }
         }
+        Assert.True(visiblePixels > 100, $"Expected substantial rendered content, got {visiblePixels} sampled pixels.");
+        Assert.True(hasRed, "Expected red drawing content.");
+        Assert.True(hasBlue, "Expected blue drawing content.");
     }
 
     [Fact]
