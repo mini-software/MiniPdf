@@ -2915,7 +2915,14 @@ internal static class ExcelToPdfConverter
                 .ToArray();
             if (allValues.Length == 0) return;
             dataMax = allValues.Max();
-            dataMin = Math.Min(0, allValues.Min());
+            var rawMin = allValues.Min();
+            // Zero-base the axis for typical positive data, but when values are
+            // tightly clustered far above zero (e.g. stock prices around 150),
+            // LibreOffice's auto-scale keeps the range close to the data instead
+            // of compressing it against a distant zero baseline.
+            dataMin = rawMin > 0 && (dataMax - rawMin) < rawMin * 0.5
+                ? rawMin
+                : Math.Min(0, rawMin);
         }
 
         // Use nice axis scaling for round number labels
@@ -2930,8 +2937,12 @@ internal static class ExcelToPdfConverter
         var barWidth = isStacked ? groupWidth * 0.7f : groupWidth * 0.7f / numSeries;
         var groupPadding = groupWidth * 0.15f;
 
-        // Y-axis baseline (where value=0 sits)
-        var baselineY = plotBottom + (float)((0 - niceMin) / range) * plotHeight;
+        // Y-axis baseline: where value=0 sits, clamped into the visible axis
+        // range. When the axis is auto-scaled away from zero (data clustered
+        // far above zero), Excel/LibreOffice draw bars up from the bottom of
+        // the plot rather than from the off-screen true-zero position.
+        var clampedZero = Math.Max(niceMin, Math.Min(0, niceMax));
+        var baselineY = plotBottom + (float)((clampedZero - niceMin) / range) * plotHeight;
 
         // Draw Y-axis gridlines and labels at nice round numbers
         for (var tickVal = niceMin; tickVal <= niceMax + niceStep * 0.01; tickVal += niceStep)
