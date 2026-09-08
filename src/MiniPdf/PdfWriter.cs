@@ -96,8 +96,7 @@ internal sealed class PdfWriter
                 // Exclude common Latin fonts (Calibri, Arial, etc.) that are adequately
                 // substituted by the built-in Helvetica — keeping those in the WinAnsi
                 // (direct ASCII) encoding path so text content remains inspectable.
-                if (!blockNeedsUnicode && !string.IsNullOrWhiteSpace(block.PreferredFontName)
-                    && !_latinFontSubstitutes.Contains(block.PreferredFontName!)
+                if (!blockNeedsUnicode && ShouldEmbedPreferredFont(block)
                     && FindSystemFontByPreferredName(block.PreferredFontName!) != null)
                     blockNeedsUnicode = true;
                 if (blockNeedsUnicode)
@@ -132,7 +131,7 @@ internal sealed class PdfWriter
             foreach (var block in page.TextBlocks)
             {
                 if (string.IsNullOrWhiteSpace(block.PreferredFontName)) continue;
-                if (_latinFontSubstitutes.Contains(block.PreferredFontName!)
+                if (!ShouldEmbedPreferredFont(block)
                     && !cpsByPreferredFont.ContainsKey(block.PreferredFontName!)) continue;
                 bool allWinAnsi = true;
                 foreach (var ch in block.Text)
@@ -2478,6 +2477,15 @@ internal sealed class PdfWriter
         "Segoe UI", "Segoe UI Light", "Segoe UI Semibold",
     };
 
+    private static bool ShouldEmbedPreferredFont(PdfTextBlock block)
+    {
+        if (string.IsNullOrWhiteSpace(block.PreferredFontName))
+            return false;
+
+        return !_latinFontSubstitutes.Contains(block.PreferredFontName)
+            || (block.Bold && string.Equals(block.PreferredFontName, "Calibri", StringComparison.OrdinalIgnoreCase));
+    }
+
     /// <summary>
     /// Lazily-built cache: normalized font name → system font file path.
     /// Built on first access by scanning the system fonts directory and reading
@@ -2981,6 +2989,7 @@ internal sealed class PdfWriter
     {
         ["Times New Roman"] = ["times.ttf"],
         ["Calibri"] = ["calibri.ttf"],
+        ["Calibri Bold"] = ["calibrib.ttf"],
         ["Cambria"] = ["cambria.ttc"],
         ["Courier New"] = ["cour.ttf"],
         ["Verdana"] = ["verdana.ttf"],

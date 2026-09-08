@@ -987,20 +987,20 @@
     "name": "docx_classic34_employee_directory_with_photo",
     "minipdf_exists": true,
     "reference_exists": true,
-    "minipdf_size": 422597,
+    "minipdf_size": 975599,
     "reference_size": 99625,
     "pdf_valid": true,
-    "minipdf_pages": 1,
+    "minipdf_pages": 2,
     "reference_pages": 2,
     "text_similarity": 1.0,
     "flat_text_similarity": 1.0,
     "word_text_similarity": 1.0,
-    "text_diff": "--- minipdf/docx_classic34_employee_directory_with_photo.pdf\n+++ reference/docx_classic34_employee_directory_with_photo.pdf\n@@ -10,4 +10,5 @@\n Carol Williams\n\n UX Designer\n\n Email: carol@company.com\n\n+---PAGE---\n\n Department: Design",
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.9758,
-      0.0
+      0.995,
+      0.9987
     ],
-    "visual_avg": 0.4879,
+    "visual_avg": 0.9969,
     "diff_images": [
       {
         "page": 1,
@@ -1009,11 +1009,11 @@
       },
       {
         "page": 2,
-        "minipdf_img": null,
+        "minipdf_img": "docx_classic34_employee_directory_with_photo_p2_minipdf.png",
         "reference_img": "docx_classic34_employee_directory_with_photo_p2_reference.png"
       }
     ],
-    "overall_score": 0.6952
+    "overall_score": 0.9988
   },
   {
     "name": "docx_classic34_paragraph_borders",
