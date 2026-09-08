@@ -2765,6 +2765,8 @@ internal static class ExcelToPdfConverter
     private static void RenderChart(PdfPage page, ExcelChartInfo chart,
         float x, float top, float width, float height, float baseFontSize)
     {
+        var chartFitsPage = x >= 0 && x + width <= page.Width;
+        var useStyle10Layout = chart.ChartStyle == 10 && chartFitsPage;
         var titleFontSize = baseFontSize + 2;
         var labelFontSize = baseFontSize - 1;
         var axisFontSize = baseFontSize - 2;
@@ -2772,8 +2774,17 @@ internal static class ExcelToPdfConverter
         var chartColor = chart.ChartTextColor;
         var chartFont = chart.ChartFontName;
 
+        if (useStyle10Layout)
+        {
+            var borderColor = new PdfColor(0.82f, 0.82f, 0.82f);
+            page.AddLine(x, top, x + width, top, borderColor, 0.5f);
+            page.AddLine(x + width, top, x + width, top - height, borderColor, 0.5f);
+            page.AddLine(x + width, top - height, x, top - height, borderColor, 0.5f);
+            page.AddLine(x, top - height, x, top, borderColor, 0.5f);
+        }
+
         // Draw chart title (clipped to chart width)
-        var titleY = top;
+        var titleY = top - (useStyle10Layout ? 12f : 0f);
         if (!string.IsNullOrEmpty(chart.Title))
         {
             var titleAvailWidth = width - padding * 2;  // use nearly full chart width
@@ -2782,15 +2793,19 @@ internal static class ExcelToPdfConverter
             // Center the title horizontally
             var titleTextWidth = (float)MeasureHelveticaWidth(clippedTitle, titleFontSize);
             var titleX = x + (width - titleTextWidth) / 2f;
-            page.AddText(clippedTitle, titleX, titleY - titleFontSize, titleFontSize, chartColor, preferredFontName: chartFont);
+            page.AddText(clippedTitle, titleX, titleY - titleFontSize, titleFontSize, chartColor, bold: useStyle10Layout, preferredFontName: chartFont);
             titleY -= titleFontSize * 2.2f;
         }
 
         // Plot area bounds
-        var plotLeft = x + padding + 40f;  // leave room for Y-axis labels
-        var plotRight = x + width - padding - 10f;
+        var showRightLegend = chart.LegendPosition is "r" or "tr"
+            && chart.Series.Any(series => !string.IsNullOrEmpty(series.Name))
+            && chartFitsPage;
+        var legendWidth = showRightLegend ? Math.Min(32f, width * 0.1f) : 0f;
+        var plotLeft = x + padding + (useStyle10Layout ? 47f : 40f);
+        var plotRight = x + width - padding - 10f - legendWidth;
         var plotTop = titleY - padding;
-        var plotBottom = top - height + padding + 30f; // leave room for X-axis labels
+        var plotBottom = top - height + padding + (useStyle10Layout ? 37f : 30f);
         var plotWidth = plotRight - plotLeft;
         var plotHeight = plotTop - plotBottom;
 
@@ -2866,6 +2881,20 @@ internal static class ExcelToPdfConverter
         {
             page.AddText(chart.CategoryAxisTitle, plotLeft + plotWidth * 0.35f, plotBottom - 22f, axisFontSize, chartColor, preferredFontName: chartFont);
         }
+
+        if (showRightLegend)
+        {
+            var legendX = plotRight + 10f;
+            var legendY = plotBottom + plotHeight * 0.5f;
+            for (var index = 0; index < chart.Series.Count; index++)
+            {
+                var seriesName = chart.Series[index].Name;
+                if (string.IsNullOrEmpty(seriesName)) continue;
+                var entryY = legendY - index * (labelFontSize + 6f);
+                page.AddRectangle(legendX, entryY, 7f, 7f, ChartColors[index % ChartColors.Length]);
+                page.AddText(seriesName, legendX + 11f, entryY - 1f, labelFontSize, chartColor, preferredFontName: chartFont);
+            }
+        }
     }
 
     /// <summary>Renders a bar/column chart.</summary>
@@ -2917,11 +2946,11 @@ internal static class ExcelToPdfConverter
             dataMax = allValues.Max();
             var rawMin = allValues.Min();
             // Zero-base the axis for typical positive data, but when values are
-            // tightly clustered far above zero (e.g. stock prices around 150),
-            // LibreOffice's auto-scale keeps the range close to the data instead
-            // of compressing it against a distant zero baseline.
-            dataMin = rawMin > 0 && (dataMax - rawMin) < rawMin * 0.5
-                ? rawMin
+            // tightly clustered far above zero, LibreOffice expands the lower
+            // bound by half the data range before rounding to a nice interval.
+            var dataRange = dataMax - rawMin;
+            dataMin = rawMin > 0 && rawMin / dataMax > 5.0 / 6.0
+                ? rawMin - dataRange / 2.0
                 : Math.Min(0, rawMin);
         }
 
@@ -2934,8 +2963,11 @@ internal static class ExcelToPdfConverter
 
         var numSeries = series.Count;
         var groupWidth = plotWidth / numCats;
-        var barWidth = isStacked ? groupWidth * 0.7f : groupWidth * 0.7f / numSeries;
-        var groupPadding = groupWidth * 0.15f;
+        var barsPerGroup = isStacked ? 1 : numSeries;
+        var barWidth = chart.GapWidthPercent.HasValue
+            ? groupWidth / (barsPerGroup + chart.GapWidthPercent.Value / 100f)
+            : groupWidth * 0.7f / barsPerGroup;
+        var groupPadding = (groupWidth - barWidth * barsPerGroup) / 2f;
 
         // Y-axis baseline: where value=0 sits, clamped into the visible axis
         // range. When the axis is auto-scaled away from zero (data clustered
@@ -3120,8 +3152,11 @@ internal static class ExcelToPdfConverter
         if (range <= 0) range = 1;
 
         var groupHeight = plotHeight / numCats;
-        var barHeight = isStacked ? groupHeight * 0.7f : groupHeight * 0.7f / numSeries;
-        var groupPadding = groupHeight * 0.15f;
+        var barsPerGroup = isStacked ? 1 : numSeries;
+        var barHeight = chart.GapWidthPercent.HasValue
+            ? groupHeight / (barsPerGroup + chart.GapWidthPercent.Value / 100f)
+            : groupHeight * 0.7f / barsPerGroup;
+        var groupPadding = (groupHeight - barHeight * barsPerGroup) / 2f;
 
         var baselineX = plotLeft + (float)((0 - niceMin) / range) * plotWidth;
 
