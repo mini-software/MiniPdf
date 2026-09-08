@@ -76,13 +76,21 @@ public class ExcelToPdfConverterTests
 
         var doc = ExcelToPdfConverter.Convert(excelStream);
 
-        var rects = doc.Pages.SelectMany(page => page.RectBlocks).ToArray();
-        Assert.NotEmpty(rects);
-        Assert.All(rects, rect => Assert.True(rect.Height <= doc.Pages[0].Height,
-            $"Rectangle height {rect.Height} should not exceed one page; a non-zero-based axis " +
-            "baseline must be clamped into the visible plot range instead of the off-screen true zero."));
+        var page = Assert.Single(doc.Pages);
+        var yAxis = Assert.Single(page.LineBlocks, line =>
+            Math.Abs(line.X1 - line.X2) < 0.01f && line.Color == PdfColor.Black);
+        var plotBottom = Math.Min(yAxis.Y1, yAxis.Y2);
+        var plotTop = Math.Max(yAxis.Y1, yAxis.Y2);
+        var bars = page.RectBlocks.ToArray();
 
-        var axisLabels = doc.Pages.SelectMany(page => page.TextBlocks).Select(block => block.Text);
+        Assert.Equal(5, bars.Length);
+        Assert.All(bars, bar =>
+        {
+            Assert.Equal(plotBottom, bar.Y, 3);
+            Assert.InRange(bar.Y + bar.Height, plotBottom, plotTop + 0.01f);
+        });
+
+        var axisLabels = page.TextBlocks.Select(block => block.Text);
         Assert.DoesNotContain("0", axisLabels);
     }
 
