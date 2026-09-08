@@ -34,7 +34,7 @@ MiniPdf は、実行時に Microsoft Office、LibreOffice、Adobe Acrobat、COM 
 |---|---|---|---|---|---|
 | .NET | XLSX、DOCX、PPTX | ライブラリ、CLI、Native AOT バイナリ | 安定版 | **[.NET ガイド](README.nuget.md)** | **[XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](../tests/Issue_Files/reports_pptx/comparison_report.md)** |
 | Rust | XLSX、DOCX、PPTX | Crate、CLI | 実験版 | **[Rust ガイド](../minipdf-rs/README.md)** | **[XLSX](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
-| Java | XLSX、DOCX | ライブラリ、CLI | 実験版 | **[Java ソース](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Java | XLSX、DOCX、PPTX | ライブラリ、CLI | 実験版 | **[Java ソース](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Python | DOCX | パッケージ、CLI | 実験版 | **[Python ガイド](../minipdf-python/README.md)** | **[XLSX](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Node.js | XLSX、DOCX、PPTX | ネイティブパッケージ | 実験版 | **[Node.js ガイド](../minipdf-node/README.md)** | **[XLSX](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Go | XLSX、DOCX、PPTX | パッケージ、CLI | 実験版 | **[Go ガイド](../minipdf-go/README.md)** | **[XLSX](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
@@ -98,11 +98,14 @@ import io.github.minisoftware.minipdf.MiniPdf;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-MiniPdf.registerFont(
-		"Noto Sans",
-		Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
-MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
-MiniPdf.clearRegisteredFonts();
+try {
+	MiniPdf.registerFont(
+			"Noto Sans",
+			Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
+	MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+} finally {
+	MiniPdf.clearRegisteredFonts();
+}
 ```
 
 登録したフォントは DOCX、XLSX、PPTX の変換で使用されます。登録内容は

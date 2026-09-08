@@ -41,13 +41,16 @@ that are not available in the standard PDF fonts:
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-MiniPdf.registerFont(
-  "Noto Sans",
-  Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
-MiniPdf.convertToPdf(
-  Path.of("document.docx"),
-  Path.of("document.pdf"));
-MiniPdf.clearRegisteredFonts();
+try {
+    MiniPdf.registerFont(
+            "Noto Sans",
+            Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
+    MiniPdf.convertToPdf(
+            Path.of("document.docx"),
+            Path.of("document.pdf"));
+} finally {
+    MiniPdf.clearRegisteredFonts();
+}
 ```
 
 Registered fonts are process-wide. `clearRegisteredFonts` removes them when the
