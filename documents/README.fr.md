@@ -34,7 +34,7 @@ MiniPdf convertit directement les documents Office en PDF sans nécessiter Micro
 |---|---|---|---|---|---|
 | .NET | XLSX, DOCX, PPTX | Bibliothèque, CLI, binaires Native AOT | Stable | **[Guide .NET](README.nuget.md)** | **[XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](../tests/Issue_Files/reports_pptx/comparison_report.md)** |
 | Rust | XLSX, DOCX, PPTX | Crate, CLI | Expérimental | **[Guide Rust](../minipdf-rs/README.md)** | **[XLSX](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
-| Java | XLSX, DOCX | Bibliothèque, CLI | Expérimental | **[Sources Java](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Java | XLSX, DOCX, PPTX | Bibliothèque, CLI | Expérimental | **[Sources Java](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Python | DOCX | Paquet, CLI | Expérimental | **[Guide Python](../minipdf-python/README.md)** | **[XLSX](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Node.js | XLSX, DOCX, PPTX | Paquet natif | Expérimental | **[Guide Node.js](../minipdf-node/README.md)** | **[XLSX](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Go | XLSX, DOCX, PPTX | Paquet, CLI | Expérimental | **[Guide Go](../minipdf-go/README.md)** | **[XLSX](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
@@ -98,11 +98,14 @@ import io.github.minisoftware.minipdf.MiniPdf;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-MiniPdf.registerFont(
-		"Noto Sans",
-		Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
-MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
-MiniPdf.clearRegisteredFonts();
+try {
+	MiniPdf.registerFont(
+			"Noto Sans",
+			Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
+	MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+} finally {
+	MiniPdf.clearRegisteredFonts();
+}
 ```
 
 Les polices enregistrées sont utilisées lors de la conversion des fichiers DOCX,

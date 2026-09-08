@@ -36,7 +36,7 @@ implementation that matches your project.
 |---|---|---|---|---|---|
 | .NET | XLSX, DOCX, PPTX | Library, CLI, Native AOT binaries | Stable | **[.NET guide](documents/README.nuget.md)** | **[XLSX](tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](tests/Issue_Files/reports_pptx/comparison_report.md)** |
 | Rust | XLSX, DOCX, PPTX | Crate, CLI | Experimental | **[Rust guide](minipdf-rs/README.md)** | **[XLSX](artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
-| Java | XLSX, DOCX | Library, CLI | Experimental | **[Java source](minipdf-java/)** | **[XLSX](artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
+| Java | XLSX, DOCX, PPTX | Library, CLI | Experimental | **[Java source](minipdf-java/)** | **[XLSX](artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Python | DOCX | Package, CLI | Experimental | **[Python guide](minipdf-python/README.md)** | **[XLSX](artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Node.js | XLSX, DOCX, PPTX | Native package | Experimental | **[Node.js guide](minipdf-node/README.md)** | **[XLSX](artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
 | Go | XLSX, DOCX, PPTX | Package, CLI | Experimental | **[Go guide](minipdf-go/README.md)** | **[XLSX](artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
@@ -102,11 +102,14 @@ import io.github.minisoftware.minipdf.MiniPdf;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-MiniPdf.registerFont(
-		"Noto Sans",
-		Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
-MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
-MiniPdf.clearRegisteredFonts();
+try {
+	MiniPdf.registerFont(
+			"Noto Sans",
+			Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
+	MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+} finally {
+	MiniPdf.clearRegisteredFonts();
+}
 ```
 
 Registered fonts are used by DOCX, XLSX, and PPTX conversion. Registrations are
