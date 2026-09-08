@@ -79,24 +79,31 @@ public final class SimplePdfTextRenderer {
             for (List<String> sourcePage : sourcePages) {
                 PDPage page = addPage(document, size);
                 PDPageContentStream content = new PDPageContentStream(document, page);
-                float y = size.height() - MARGIN;
-                for (String sourceLine : sourcePage) {
-                    for (String line : wrap(sourceLine, maxCharacters)) {
-                        if (y < MARGIN) {
-                            content.close();
-                            page = addPage(document, size);
-                            content = new PDPageContentStream(document, page);
-                            y = size.height() - MARGIN;
+                try {
+                    float y = size.height() - MARGIN;
+                    for (String sourceLine : sourcePage) {
+                        for (String line : wrap(sourceLine, maxCharacters)) {
+                            if (y < MARGIN) {
+                                PDPageContentStream completedContent = content;
+                                content = null;
+                                completedContent.close();
+                                page = addPage(document, size);
+                                content = new PDPageContentStream(document, page);
+                                y = size.height() - MARGIN;
+                            }
+                            content.beginText();
+                            content.setFont(font, FONT_SIZE);
+                            content.newLineAtOffset(MARGIN, y);
+                            content.showText(line);
+                            content.endText();
+                            y -= LINE_HEIGHT;
                         }
-                        content.beginText();
-                        content.setFont(font, FONT_SIZE);
-                        content.newLineAtOffset(MARGIN, y);
-                        content.showText(line);
-                        content.endText();
-                        y -= LINE_HEIGHT;
+                    }
+                } finally {
+                    if (content != null) {
+                        content.close();
                     }
                 }
-                content.close();
             }
 
             ByteArrayOutputStream output = new ByteArrayOutputStream();
