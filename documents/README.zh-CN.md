@@ -85,7 +85,7 @@ minipdf report.docx -o report.pdf
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.5</version>
+	<version>0.1.6</version>
 </dependency>
 ```
 
@@ -94,10 +94,18 @@ Maven `groupId` 可以包含连字符，但 Java 包名不能。因此依赖坐�
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+MiniPdf.registerFont(
+		"Noto Sans",
+		Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
 MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+MiniPdf.clearRegisteredFonts();
 ```
+
+注册字体会用于 DOCX、XLSX 和 PPTX 转换。注册信息在整个进程中共享；配置
+另一组字体前请先清除现有注册信息。
 
 ### Python
 

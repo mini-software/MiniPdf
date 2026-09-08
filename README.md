@@ -89,7 +89,7 @@ features, known gaps, and development workflow.
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.5</version>
+	<version>0.1.6</version>
 </dependency>
 ```
 
@@ -99,10 +99,18 @@ the dependency uses `io.github.mini-software`, while imports use
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+MiniPdf.registerFont(
+		"Noto Sans",
+		Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
 MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+MiniPdf.clearRegisteredFonts();
 ```
+
+Registered fonts are used by DOCX, XLSX, and PPTX conversion. Registrations are
+process-wide; clear them before configuring a different font set.
 
 ### Python
 

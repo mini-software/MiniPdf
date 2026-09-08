@@ -6,7 +6,7 @@
 
     <groupId>io.github.mini-software</groupId>
     <artifactId>minipdf-java-parent</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6</version>
     <packaging>pom</packaging>
 
     <name>MiniPdf for Java</name>

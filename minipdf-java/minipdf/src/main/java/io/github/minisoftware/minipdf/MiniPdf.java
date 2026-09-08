@@ -29,6 +29,10 @@ public final class MiniPdf {
         return List.copyOf(REGISTERED_FONTS);
     }
 
+    public static void clearRegisteredFonts() {
+        REGISTERED_FONTS.clear();
+    }
+
     public static OfficeFormat detectOfficeFormat(byte[] input) throws MiniPdfException {
         return OfficePackageDetector.detect(Objects.requireNonNull(input, "input"));
     }

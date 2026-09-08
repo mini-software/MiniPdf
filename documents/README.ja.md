@@ -85,7 +85,7 @@ minipdf report.docx -o report.pdf
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.5</version>
+	<version>0.1.6</version>
 </dependency>
 ```
 
@@ -95,10 +95,18 @@ Maven の `groupId` ではハイフンを使用できますが、Java のパッ�
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+MiniPdf.registerFont(
+		"Noto Sans",
+		Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
 MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
+MiniPdf.clearRegisteredFonts();
 ```
+
+登録したフォントは DOCX、XLSX、PPTX の変換で使用されます。登録内容は
+プロセス全体で共有されるため、別のフォントセットを設定する前にクリアしてください。
 
 ### Python
 
