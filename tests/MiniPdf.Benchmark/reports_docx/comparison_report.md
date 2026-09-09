@@ -1,6 +1,7 @@
-# MiniPdf vs Reference PDF Comparison Report
 
-Generated: 2026-07-19T19:57:52.759774
+# MiniPdf vs LibreOffice Reference PDF Comparison Report
+
+Generated: 2026-09-08T23:08:12.931339
 
 ## Summary
 
@@ -42,7 +43,7 @@ Generated: 2026-07-19T19:57:52.759774
 | 34 | 🟢 docx_classic32_superscript_subscript | ✅ | 0.9762 | 0.9937 | 1/1 | **0.988** |
 | 35 | 🟢 docx_classic33_highlighted_text | ✅ | 1.0 | 0.9682 | 1/1 | **0.9873** |
 | 36 | 🟢 docx_classic33_two_products_side_by_side | ✅ | 1.0 | 0.9768 | 1/1 | **0.9907** |
-| 37 | 🔴 docx_classic34_employee_directory_with_photo | ✅ | 1.0 | 0.4879 | 1/2 | **0.6952** |
+| 37 | 🟢 docx_classic34_employee_directory_with_photo | ✅ | 1.0 | 0.9969 | 2/2 | **0.9988** |
 | 38 | 🟢 docx_classic34_paragraph_borders | ✅ | 1.0 | 0.9793 | 1/1 | **0.9917** |
 | 39 | 🟢 docx_classic35_inventory_with_product_photos | ✅ | 1.0 | 0.9801 | 2/2 | **0.992** |
 | 40 | 🟡 docx_classic35_tab_stops | ✅ | 0.64 | 0.989 | 1/1 | **0.8516** |
@@ -187,19 +188,19 @@ Generated: 2026-07-19T19:57:52.759774
 | 179 | 🟢 docx_classic149_merged_section_report | ✅ | 1.0 | 0.9311 | 1/1 | **0.9724** |
 | 180 | 🟢 docx_classic150_kitchen_sink_styles | ✅ | 1.0 | 0.962 | 2/2 | **0.9848** |
 
-**Average Overall Score: 0.9762**
+**Average Overall Score: 0.9779**
 
 ## Visual Comparison
 
 <table>
-<tr><th>MiniPdf</th><th>LibreOffice (Reference)</th></tr>
+<tr><th>MiniPdf</th><th>LibreOffice Reference</th></tr>
 <tr>
   <td><b>docx_classic01_single_paragraph</b></td>
   <td colspan="1">docx_classic01_single_paragraph <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic01_single_paragraph_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic01_single_paragraph_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic01_single_paragraph_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic02_multiple_paragraphs</b></td>
@@ -207,7 +208,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic02_multiple_paragraphs_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic02_multiple_paragraphs_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic02_multiple_paragraphs_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic03_headings</b></td>
@@ -215,7 +216,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic03_headings_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic03_headings_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic03_headings_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic04_bold_italic</b></td>
@@ -223,7 +224,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic04_bold_italic_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic04_bold_italic_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic04_bold_italic_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic05_font_sizes</b></td>
@@ -231,7 +232,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic05_font_sizes_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic05_font_sizes_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic05_font_sizes_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic06_font_colors</b></td>
@@ -239,7 +240,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic06_font_colors_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic06_font_colors_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic06_font_colors_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic07_alignment</b></td>
@@ -247,7 +248,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic07_alignment_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic07_alignment_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic07_alignment_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic08_bullet_list</b></td>
@@ -255,7 +256,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic08_bullet_list_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic08_bullet_list_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic08_bullet_list_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic09_numbered_list</b></td>
@@ -263,7 +264,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic09_numbered_list_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic09_numbered_list_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic09_numbered_list_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic10_simple_table</b></td>
@@ -271,7 +272,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic10_simple_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic10_simple_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic10_simple_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic11_table_with_shading</b></td>
@@ -279,7 +280,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic11_table_with_shading_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic11_table_with_shading_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic11_table_with_shading_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic12_merged_cells_table</b></td>
@@ -287,7 +288,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic12_merged_cells_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic12_merged_cells_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic12_merged_cells_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic13_long_document</b></td>
@@ -295,19 +296,19 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic13_long_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic13_long_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic13_long_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic13_long_document_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic13_long_document_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic13_long_document_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic13_long_document_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic13_long_document_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic13_long_document_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic13_long_document_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic13_long_document_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic13_long_document_p4_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic14_mixed_content</b></td>
@@ -315,7 +316,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic14_mixed_content_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic14_mixed_content_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic14_mixed_content_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic15_indentation</b></td>
@@ -323,7 +324,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic15_indentation_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic15_indentation_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic15_indentation_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic16_line_spacing</b></td>
@@ -331,7 +332,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic16_line_spacing_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic16_line_spacing_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic16_line_spacing_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic17_page_break</b></td>
@@ -339,15 +340,15 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic17_page_break_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic17_page_break_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic17_page_break_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic17_page_break_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic17_page_break_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic17_page_break_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic17_page_break_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic17_page_break_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic17_page_break_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic18_embedded_image</b></td>
@@ -355,7 +356,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic18_embedded_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic18_embedded_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic18_embedded_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic19_multiple_images</b></td>
@@ -363,7 +364,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic19_multiple_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic19_multiple_images_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic19_multiple_images_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic20_table_with_many_rows</b></td>
@@ -371,7 +372,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic20_table_with_many_rows_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic20_table_with_many_rows_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic20_table_with_many_rows_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic21_nested_lists</b></td>
@@ -379,7 +380,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic21_nested_lists_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic21_nested_lists_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic21_nested_lists_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic22_horizontal_rule</b></td>
@@ -387,7 +388,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic22_horizontal_rule_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic22_horizontal_rule_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic22_horizontal_rule_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic23_mixed_formatting_runs</b></td>
@@ -395,7 +396,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic23_mixed_formatting_runs_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic23_mixed_formatting_runs_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic23_mixed_formatting_runs_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic24_two_column_table_layout</b></td>
@@ -403,7 +404,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic24_two_column_table_layout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic24_two_column_table_layout_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic24_two_column_table_layout_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic25_title_and_subtitle</b></td>
@@ -411,11 +412,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic25_title_and_subtitle_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic25_title_and_subtitle_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic25_title_and_subtitle_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic25_title_and_subtitle_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic25_title_and_subtitle_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic25_title_and_subtitle_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic26_table_alignment</b></td>
@@ -423,7 +424,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic26_table_alignment_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic26_table_alignment_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic26_table_alignment_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic27_long_paragraph_wrapping</b></td>
@@ -431,7 +432,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic27_long_paragraph_wrapping_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic27_long_paragraph_wrapping_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic27_long_paragraph_wrapping_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic28_special_characters</b></td>
@@ -439,7 +440,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic28_special_characters_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic28_special_characters_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic28_special_characters_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic29_table_with_image</b></td>
@@ -447,7 +448,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic29_table_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic29_table_with_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic29_table_with_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic30_comprehensive_report</b></td>
@@ -455,15 +456,15 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic30_comprehensive_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic30_comprehensive_report_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic30_comprehensive_report_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic30_comprehensive_report_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic30_comprehensive_report_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic30_comprehensive_report_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic30_comprehensive_report_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic30_comprehensive_report_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic30_comprehensive_report_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic31_product_card_with_image</b></td>
@@ -471,7 +472,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic31_product_card_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic31_product_card_with_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic31_product_card_with_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic31_strikethrough_text</b></td>
@@ -479,7 +480,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic31_strikethrough_text_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic31_strikethrough_text_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic31_strikethrough_text_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic32_company_logo_header</b></td>
@@ -487,7 +488,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic32_company_logo_header_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic32_company_logo_header_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic32_company_logo_header_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic32_superscript_subscript</b></td>
@@ -495,7 +496,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic32_superscript_subscript_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic32_superscript_subscript_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic32_superscript_subscript_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic33_highlighted_text</b></td>
@@ -503,7 +504,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic33_highlighted_text_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic33_highlighted_text_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic33_highlighted_text_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic33_two_products_side_by_side</b></td>
@@ -511,19 +512,19 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic33_two_products_side_by_side_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic33_two_products_side_by_side_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic33_two_products_side_by_side_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic34_employee_directory_with_photo</b></td>
-  <td colspan="1">docx_classic34_employee_directory_with_photo <span style="color:#f85149">⬤</span> 69.5%</td>
+  <td colspan="1">docx_classic34_employee_directory_with_photo <span style="color:#3fb950">⬤</span> 99.9%</td>
 </tr>
 <tr>
   <td><img src="images/docx_classic34_employee_directory_with_photo_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic34_employee_directory_with_photo_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic34_employee_directory_with_photo_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
-  <td><img src="images/docx_classic34_employee_directory_with_photo_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic34_employee_directory_with_photo_p2_minipdf.png" width="340" alt="MiniPdf"></td>
+  <td><img src="images/docx_classic34_employee_directory_with_photo_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic34_paragraph_borders</b></td>
@@ -531,7 +532,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic34_paragraph_borders_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic34_paragraph_borders_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic34_paragraph_borders_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic35_inventory_with_product_photos</b></td>
@@ -539,11 +540,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic35_inventory_with_product_photos_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic35_inventory_with_product_photos_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic35_inventory_with_product_photos_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic35_inventory_with_product_photos_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic35_inventory_with_product_photos_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic35_inventory_with_product_photos_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic35_tab_stops</b></td>
@@ -551,7 +552,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic35_tab_stops_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic35_tab_stops_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic35_tab_stops_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic36_invoice_with_logo</b></td>
@@ -559,7 +560,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic36_invoice_with_logo_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic36_invoice_with_logo_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic36_invoice_with_logo_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic36_wide_table</b></td>
@@ -567,7 +568,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic36_wide_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic36_wide_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic36_wide_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic37_nested_table</b></td>
@@ -575,7 +576,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic37_nested_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic37_nested_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic37_nested_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic37_real_estate_listing</b></td>
@@ -583,7 +584,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic37_real_estate_listing_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic37_real_estate_listing_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic37_real_estate_listing_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic38_restaurant_menu_with_photos</b></td>
@@ -591,11 +592,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic38_restaurant_menu_with_photos_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic38_restaurant_menu_with_photos_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic38_restaurant_menu_with_photos_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic38_restaurant_menu_with_photos_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic38_restaurant_menu_with_photos_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic38_restaurant_menu_with_photos_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic38_table_column_widths</b></td>
@@ -603,7 +604,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic38_table_column_widths_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic38_table_column_widths_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic38_table_column_widths_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic39_cover_page_with_image</b></td>
@@ -611,11 +612,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic39_cover_page_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic39_cover_page_with_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic39_cover_page_with_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic39_cover_page_with_image_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic39_cover_page_with_image_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic39_cover_page_with_image_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic39_financial_report</b></td>
@@ -623,7 +624,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic39_financial_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic39_financial_report_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic39_financial_report_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic40_product_catalog_with_images</b></td>
@@ -631,7 +632,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic40_product_catalog_with_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic40_product_catalog_with_images_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic40_product_catalog_with_images_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic40_resume</b></td>
@@ -639,7 +640,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic40_resume_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic40_resume_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic40_resume_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic41_business_letter</b></td>
@@ -647,7 +648,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic41_business_letter_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic41_business_letter_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic41_business_letter_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic41_newsletter_with_hero_image</b></td>
@@ -655,7 +656,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic41_newsletter_with_hero_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic41_newsletter_with_hero_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic41_newsletter_with_hero_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic42_chart_image_with_data</b></td>
@@ -663,7 +664,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic42_chart_image_with_data_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic42_chart_image_with_data_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic42_chart_image_with_data_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic42_meeting_minutes</b></td>
@@ -671,7 +672,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic42_meeting_minutes_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic42_meeting_minutes_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic42_meeting_minutes_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic43_event_flyer_with_banner</b></td>
@@ -679,7 +680,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic43_event_flyer_with_banner_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic43_event_flyer_with_banner_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic43_event_flyer_with_banner_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic43_invoice_document</b></td>
@@ -687,7 +688,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic43_invoice_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic43_invoice_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic43_invoice_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic44_dashboard_with_kpi_image</b></td>
@@ -695,7 +696,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic44_dashboard_with_kpi_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic44_dashboard_with_kpi_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic44_dashboard_with_kpi_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic44_memo</b></td>
@@ -703,7 +704,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic44_memo_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic44_memo_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic44_memo_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic45_certificate_with_seal</b></td>
@@ -711,7 +712,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic45_certificate_with_seal_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic45_certificate_with_seal_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic45_certificate_with_seal_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic45_project_plan</b></td>
@@ -719,7 +720,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic45_project_plan_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic45_project_plan_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic45_project_plan_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic46_comparison_table</b></td>
@@ -727,7 +728,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic46_comparison_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic46_comparison_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic46_comparison_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic46_product_image_grid</b></td>
@@ -735,7 +736,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic46_product_image_grid_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic46_product_image_grid_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic46_product_image_grid_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic47_data_dictionary</b></td>
@@ -743,7 +744,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic47_data_dictionary_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic47_data_dictionary_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic47_data_dictionary_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic47_news_article_with_hero_image</b></td>
@@ -751,7 +752,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic47_news_article_with_hero_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic47_news_article_with_hero_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic47_news_article_with_hero_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic48_multi_level_headings</b></td>
@@ -759,15 +760,15 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic48_multi_level_headings_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic48_multi_level_headings_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic48_multi_level_headings_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic48_multi_level_headings_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic48_multi_level_headings_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic48_multi_level_headings_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic48_multi_level_headings_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic48_multi_level_headings_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic48_multi_level_headings_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic48_task_list_with_status_icons</b></td>
@@ -775,7 +776,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic48_task_list_with_status_icons_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic48_task_list_with_status_icons_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic48_task_list_with_status_icons_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic49_cjk_document</b></td>
@@ -783,7 +784,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic49_cjk_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic49_cjk_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic49_cjk_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic49_wide_panoramic_banner</b></td>
@@ -791,7 +792,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic49_wide_panoramic_banner_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic49_wide_panoramic_banner_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic49_wide_panoramic_banner_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic50_long_table_with_formatting</b></td>
@@ -799,11 +800,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic50_long_table_with_formatting_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic50_long_table_with_formatting_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic50_long_table_with_formatting_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><i>missing</i></td>
-  <td><img src="images/docx_classic50_long_table_with_formatting_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic50_long_table_with_formatting_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic50_portrait_tall_image</b></td>
@@ -811,7 +812,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic50_portrait_tall_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic50_portrait_tall_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic50_portrait_tall_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic51_step_by_step_with_images</b></td>
@@ -819,7 +820,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic51_step_by_step_with_images_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic51_step_by_step_with_images_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic51_step_by_step_with_images_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic51_underline_styles</b></td>
@@ -827,7 +828,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic51_underline_styles_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic51_underline_styles_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic51_underline_styles_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic52_before_after_comparison</b></td>
@@ -835,7 +836,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic52_before_after_comparison_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic52_before_after_comparison_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic52_before_after_comparison_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic52_spacing_before_after</b></td>
@@ -843,7 +844,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic52_spacing_before_after_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic52_spacing_before_after_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic52_spacing_before_after_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic53_color_swatch_palette</b></td>
@@ -851,7 +852,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic53_color_swatch_palette_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic53_color_swatch_palette_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic53_color_swatch_palette_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic53_table_merged_complex</b></td>
@@ -859,7 +860,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic53_table_merged_complex_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic53_table_merged_complex_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic53_table_merged_complex_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic54_multi_font_family</b></td>
@@ -867,7 +868,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic54_multi_font_family_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic54_multi_font_family_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic54_multi_font_family_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic54_travel_destination_cards</b></td>
@@ -875,7 +876,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic54_travel_destination_cards_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic54_travel_destination_cards_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic54_travel_destination_cards_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic55_background_shading_paragraph</b></td>
@@ -883,7 +884,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic55_background_shading_paragraph_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic55_background_shading_paragraph_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic55_background_shading_paragraph_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic55_lab_results_with_image</b></td>
@@ -891,7 +892,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic55_lab_results_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic55_lab_results_with_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic55_lab_results_with_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic56_images_and_tables_mixed</b></td>
@@ -899,7 +900,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic56_images_and_tables_mixed_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic56_images_and_tables_mixed_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic56_images_and_tables_mixed_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic56_software_screenshot_features</b></td>
@@ -907,7 +908,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic56_software_screenshot_features_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic56_software_screenshot_features_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic56_software_screenshot_features_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic57_right_to_left_text</b></td>
@@ -915,7 +916,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic57_right_to_left_text_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic57_right_to_left_text_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic57_right_to_left_text_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic57_sports_results_with_logos</b></td>
@@ -923,7 +924,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic57_sports_results_with_logos_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic57_sports_results_with_logos_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic57_sports_results_with_logos_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic58_dense_paragraph_document</b></td>
@@ -931,31 +932,31 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic58_dense_paragraph_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic58_dense_paragraph_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic58_dense_paragraph_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic58_dense_paragraph_document_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic58_dense_paragraph_document_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic58_dense_paragraph_document_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic58_dense_paragraph_document_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic58_dense_paragraph_document_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic58_dense_paragraph_document_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic58_dense_paragraph_document_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic58_dense_paragraph_document_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic58_dense_paragraph_document_p4_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic58_dense_paragraph_document_p5_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic58_dense_paragraph_document_p5_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic58_dense_paragraph_document_p5_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic58_dense_paragraph_document_p6_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic58_dense_paragraph_document_p6_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic58_dense_paragraph_document_p6_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic58_dense_paragraph_document_p7_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic58_dense_paragraph_document_p7_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic58_dense_paragraph_document_p7_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic58_report_with_footer_image</b></td>
@@ -963,7 +964,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic58_report_with_footer_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic58_report_with_footer_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic58_report_with_footer_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic59_numbered_and_bullet_mixed</b></td>
@@ -971,7 +972,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic59_numbered_and_bullet_mixed_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic59_numbered_and_bullet_mixed_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic59_numbered_and_bullet_mixed_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic59_nutrition_label_with_image</b></td>
@@ -979,7 +980,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic59_nutrition_label_with_image_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic59_nutrition_label_with_image_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic59_nutrition_label_with_image_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic60_comprehensive_styled_report</b></td>
@@ -987,15 +988,15 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic60_comprehensive_styled_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic60_comprehensive_styled_report_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic60_comprehensive_styled_report_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic60_comprehensive_styled_report_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic60_comprehensive_styled_report_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic60_comprehensive_styled_report_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic60_comprehensive_styled_report_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic60_comprehensive_styled_report_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic60_comprehensive_styled_report_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic60_project_status_with_milestones</b></td>
@@ -1003,11 +1004,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic60_project_status_with_milestones_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic60_project_status_with_milestones_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic60_project_status_with_milestones_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><i>missing</i></td>
-  <td><img src="images/docx_classic60_project_status_with_milestones_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic60_project_status_with_milestones_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic61_header_and_footer</b></td>
@@ -1015,7 +1016,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic61_header_and_footer_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic61_header_and_footer_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic61_header_and_footer_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic62_footnote_references</b></td>
@@ -1023,7 +1024,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic62_footnote_references_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic62_footnote_references_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic62_footnote_references_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic63_toc_style_headings</b></td>
@@ -1031,7 +1032,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic63_toc_style_headings_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic63_toc_style_headings_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic63_toc_style_headings_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic64_multi_column_layout</b></td>
@@ -1039,7 +1040,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic64_multi_column_layout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic64_multi_column_layout_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic64_multi_column_layout_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic65_code_block_styling</b></td>
@@ -1047,7 +1048,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic65_code_block_styling_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic65_code_block_styling_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic65_code_block_styling_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic66_colored_title_page</b></td>
@@ -1055,7 +1056,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic66_colored_title_page_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic66_colored_title_page_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic66_colored_title_page_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic67_alternating_row_table</b></td>
@@ -1063,7 +1064,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic67_alternating_row_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic67_alternating_row_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic67_alternating_row_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic68_sidebar_layout</b></td>
@@ -1071,7 +1072,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic68_sidebar_layout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic68_sidebar_layout_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic68_sidebar_layout_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic69_blockquote_styling</b></td>
@@ -1079,7 +1080,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic69_blockquote_styling_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic69_blockquote_styling_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic69_blockquote_styling_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic70_academic_paper</b></td>
@@ -1087,7 +1088,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic70_academic_paper_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic70_academic_paper_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic70_academic_paper_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic71_legal_document</b></td>
@@ -1095,7 +1096,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic71_legal_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic71_legal_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic71_legal_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic72_technical_specification</b></td>
@@ -1103,7 +1104,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic72_technical_specification_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic72_technical_specification_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic72_technical_specification_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic73_calendar_layout</b></td>
@@ -1111,7 +1112,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic73_calendar_layout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic73_calendar_layout_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic73_calendar_layout_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic74_org_chart</b></td>
@@ -1119,7 +1120,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic74_org_chart_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic74_org_chart_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic74_org_chart_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic75_newsletter_layout</b></td>
@@ -1127,7 +1128,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic75_newsletter_layout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic75_newsletter_layout_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic75_newsletter_layout_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic76_recipe_card</b></td>
@@ -1135,7 +1136,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic76_recipe_card_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic76_recipe_card_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic76_recipe_card_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic77_timeline_layout</b></td>
@@ -1143,7 +1144,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic77_timeline_layout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic77_timeline_layout_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic77_timeline_layout_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic78_faq_document</b></td>
@@ -1151,11 +1152,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic78_faq_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic78_faq_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic78_faq_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic78_faq_document_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic78_faq_document_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic78_faq_document_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic79_glossary</b></td>
@@ -1163,7 +1164,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic79_glossary_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic79_glossary_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic79_glossary_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic80_matrix_grid</b></td>
@@ -1171,7 +1172,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic80_matrix_grid_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic80_matrix_grid_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic80_matrix_grid_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic81_budget_table</b></td>
@@ -1179,7 +1180,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic81_budget_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic81_budget_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic81_budget_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic82_survey_questionnaire</b></td>
@@ -1187,11 +1188,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic82_survey_questionnaire_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic82_survey_questionnaire_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic82_survey_questionnaire_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic82_survey_questionnaire_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic82_survey_questionnaire_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic82_survey_questionnaire_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic83_medical_form</b></td>
@@ -1199,7 +1200,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic83_medical_form_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic83_medical_form_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic83_medical_form_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic84_shipping_label</b></td>
@@ -1207,7 +1208,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic84_shipping_label_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic84_shipping_label_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic84_shipping_label_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic85_report_card</b></td>
@@ -1215,7 +1216,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic85_report_card_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic85_report_card_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic85_report_card_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic86_checklist_document</b></td>
@@ -1223,7 +1224,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic86_checklist_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic86_checklist_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic86_checklist_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic87_bibliography</b></td>
@@ -1231,7 +1232,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic87_bibliography_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic87_bibliography_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic87_bibliography_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic88_presentation_handout</b></td>
@@ -1239,11 +1240,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic88_presentation_handout_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic88_presentation_handout_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic88_presentation_handout_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic88_presentation_handout_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic88_presentation_handout_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic88_presentation_handout_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic89_multi_image_gallery</b></td>
@@ -1251,7 +1252,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic89_multi_image_gallery_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic89_multi_image_gallery_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic89_multi_image_gallery_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic90_comprehensive_annual_report</b></td>
@@ -1259,19 +1260,19 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic90_comprehensive_annual_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic90_comprehensive_annual_report_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic90_comprehensive_annual_report_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic90_comprehensive_annual_report_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic90_comprehensive_annual_report_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic90_comprehensive_annual_report_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic90_comprehensive_annual_report_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic90_comprehensive_annual_report_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic90_comprehensive_annual_report_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic90_comprehensive_annual_report_p4_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic90_comprehensive_annual_report_p4_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic90_comprehensive_annual_report_p4_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic91_landscape_page</b></td>
@@ -1279,7 +1280,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic91_landscape_page_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic91_landscape_page_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic91_landscape_page_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic92_first_line_indent</b></td>
@@ -1287,7 +1288,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic92_first_line_indent_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic92_first_line_indent_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic92_first_line_indent_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic93_hanging_indent</b></td>
@@ -1295,7 +1296,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic93_hanging_indent_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic93_hanging_indent_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic93_hanging_indent_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic94_custom_bullet_characters</b></td>
@@ -1303,7 +1304,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic94_custom_bullet_characters_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic94_custom_bullet_characters_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic94_custom_bullet_characters_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic95_contract_template</b></td>
@@ -1311,7 +1312,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic95_contract_template_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic95_contract_template_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic95_contract_template_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic96_dense_data_table</b></td>
@@ -1319,7 +1320,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic96_dense_data_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic96_dense_data_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic96_dense_data_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic97_product_catalog</b></td>
@@ -1327,7 +1328,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic97_product_catalog_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic97_product_catalog_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic97_product_catalog_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic98_training_manual</b></td>
@@ -1335,7 +1336,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic98_training_manual_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic98_training_manual_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic98_training_manual_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic99_policy_document</b></td>
@@ -1343,7 +1344,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic99_policy_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic99_policy_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic99_policy_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic100_multi_page_table</b></td>
@@ -1351,11 +1352,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic100_multi_page_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic100_multi_page_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic100_multi_page_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic100_multi_page_table_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic100_multi_page_table_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic100_multi_page_table_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic101_warranty_document</b></td>
@@ -1363,7 +1364,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic101_warranty_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic101_warranty_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic101_warranty_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic102_curriculum_syllabus</b></td>
@@ -1371,7 +1372,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic102_curriculum_syllabus_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic102_curriculum_syllabus_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic102_curriculum_syllabus_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic103_event_program</b></td>
@@ -1379,11 +1380,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic103_event_program_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic103_event_program_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic103_event_program_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic103_event_program_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic103_event_program_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic103_event_program_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic104_sop_document</b></td>
@@ -1391,11 +1392,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic104_sop_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic104_sop_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic104_sop_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic104_sop_document_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic104_sop_document_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic104_sop_document_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic105_certificate</b></td>
@@ -1403,7 +1404,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic105_certificate_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic105_certificate_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic105_certificate_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic106_multi_section_orientation</b></td>
@@ -1411,15 +1412,15 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic106_multi_section_orientation_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic106_multi_section_orientation_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic106_multi_section_orientation_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic106_multi_section_orientation_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic106_multi_section_orientation_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic106_multi_section_orientation_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic106_multi_section_orientation_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic106_multi_section_orientation_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic106_multi_section_orientation_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic107_order_form</b></td>
@@ -1427,7 +1428,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic107_order_form_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic107_order_form_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic107_order_form_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic108_comparison_matrix</b></td>
@@ -1435,7 +1436,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic108_comparison_matrix_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic108_comparison_matrix_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic108_comparison_matrix_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic109_release_notes</b></td>
@@ -1443,7 +1444,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic109_release_notes_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic109_release_notes_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic109_release_notes_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic110_troubleshooting_guide</b></td>
@@ -1451,7 +1452,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic110_troubleshooting_guide_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic110_troubleshooting_guide_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic110_troubleshooting_guide_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic111_meeting_agenda</b></td>
@@ -1459,7 +1460,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic111_meeting_agenda_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic111_meeting_agenda_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic111_meeting_agenda_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic112_project_status_report</b></td>
@@ -1467,7 +1468,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic112_project_status_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic112_project_status_report_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic112_project_status_report_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic113_address_labels</b></td>
@@ -1475,7 +1476,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic113_address_labels_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic113_address_labels_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic113_address_labels_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic114_test_report</b></td>
@@ -1483,7 +1484,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic114_test_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic114_test_report_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic114_test_report_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic115_price_list</b></td>
@@ -1491,7 +1492,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic115_price_list_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic115_price_list_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic115_price_list_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic116_risk_assessment</b></td>
@@ -1499,7 +1500,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic116_risk_assessment_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic116_risk_assessment_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic116_risk_assessment_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic117_employee_handbook_excerpt</b></td>
@@ -1507,7 +1508,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic117_employee_handbook_excerpt_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic117_employee_handbook_excerpt_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic117_employee_handbook_excerpt_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic118_data_report_with_summary</b></td>
@@ -1515,7 +1516,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic118_data_report_with_summary_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic118_data_report_with_summary_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic118_data_report_with_summary_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic119_multi_language_document</b></td>
@@ -1523,7 +1524,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic119_multi_language_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic119_multi_language_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic119_multi_language_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic120_comprehensive_business_proposal</b></td>
@@ -1531,15 +1532,15 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic120_comprehensive_business_proposal_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic120_comprehensive_business_proposal_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic120_comprehensive_business_proposal_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic120_comprehensive_business_proposal_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic120_comprehensive_business_proposal_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic120_comprehensive_business_proposal_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic120_comprehensive_business_proposal_p3_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic120_comprehensive_business_proposal_p3_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic120_comprehensive_business_proposal_p3_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic121_thin_border_table</b></td>
@@ -1547,7 +1548,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic121_thin_border_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic121_thin_border_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic121_thin_border_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic122_thick_outer_border_table</b></td>
@@ -1555,7 +1556,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic122_thick_outer_border_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic122_thick_outer_border_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic122_thick_outer_border_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic123_dashed_border_table</b></td>
@@ -1563,7 +1564,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic123_dashed_border_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic123_dashed_border_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic123_dashed_border_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic124_colored_border_table</b></td>
@@ -1571,7 +1572,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic124_colored_border_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic124_colored_border_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic124_colored_border_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic125_solid_cell_fills</b></td>
@@ -1579,7 +1580,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic125_solid_cell_fills_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic125_solid_cell_fills_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic125_solid_cell_fills_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic126_dark_header_table</b></td>
@@ -1587,7 +1588,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic126_dark_header_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic126_dark_header_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic126_dark_header_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic127_font_styles_showcase</b></td>
@@ -1595,7 +1596,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic127_font_styles_showcase_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic127_font_styles_showcase_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic127_font_styles_showcase_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic128_font_sizes_showcase</b></td>
@@ -1603,7 +1604,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic128_font_sizes_showcase_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic128_font_sizes_showcase_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic128_font_sizes_showcase_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic129_alignment_combinations</b></td>
@@ -1611,7 +1612,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic129_alignment_combinations_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic129_alignment_combinations_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic129_alignment_combinations_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic130_wrap_and_indent</b></td>
@@ -1619,7 +1620,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic130_wrap_and_indent_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic130_wrap_and_indent_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic130_wrap_and_indent_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic131_number_format_table</b></td>
@@ -1627,7 +1628,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic131_number_format_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic131_number_format_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic131_number_format_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic132_striped_table</b></td>
@@ -1635,7 +1636,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic132_striped_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic132_striped_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic132_striped_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic133_gradient_rows_table</b></td>
@@ -1643,7 +1644,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic133_gradient_rows_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic133_gradient_rows_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic133_gradient_rows_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic134_heatmap_table</b></td>
@@ -1651,7 +1652,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic134_heatmap_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic134_heatmap_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic134_heatmap_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic135_bottom_border_paragraphs</b></td>
@@ -1659,7 +1660,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic135_bottom_border_paragraphs_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic135_bottom_border_paragraphs_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic135_bottom_border_paragraphs_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic136_financial_statement</b></td>
@@ -1667,7 +1668,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic136_financial_statement_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic136_financial_statement_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic136_financial_statement_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic137_checkerboard_table</b></td>
@@ -1675,7 +1676,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic137_checkerboard_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic137_checkerboard_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic137_checkerboard_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic138_color_grid_table</b></td>
@@ -1683,7 +1684,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic138_color_grid_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic138_color_grid_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic138_color_grid_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic139_paragraph_shading_patterns</b></td>
@@ -1691,7 +1692,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic139_paragraph_shading_patterns_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic139_paragraph_shading_patterns_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic139_paragraph_shading_patterns_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic140_rotated_text_table</b></td>
@@ -1699,7 +1700,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic140_rotated_text_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic140_rotated_text_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic140_rotated_text_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic141_mixed_border_styles</b></td>
@@ -1707,7 +1708,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic141_mixed_border_styles_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic141_mixed_border_styles_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic141_mixed_border_styles_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic142_styled_invoice_document</b></td>
@@ -1715,7 +1716,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic142_styled_invoice_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic142_styled_invoice_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic142_styled_invoice_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic143_multi_section_document</b></td>
@@ -1723,7 +1724,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic143_multi_section_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic143_multi_section_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic143_multi_section_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic144_note_style_paragraphs</b></td>
@@ -1731,7 +1732,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic144_note_style_paragraphs_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic144_note_style_paragraphs_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic144_note_style_paragraphs_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic145_status_badge_table</b></td>
@@ -1739,7 +1740,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic145_status_badge_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic145_status_badge_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic145_status_badge_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic146_double_border_table</b></td>
@@ -1747,7 +1748,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic146_double_border_table_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic146_double_border_table_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic146_double_border_table_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic147_multi_section_styled_report</b></td>
@@ -1755,7 +1756,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic147_multi_section_styled_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic147_multi_section_styled_report_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic147_multi_section_styled_report_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic148_data_grid_document</b></td>
@@ -1763,7 +1764,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic148_data_grid_document_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic148_data_grid_document_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic148_data_grid_document_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic149_merged_section_report</b></td>
@@ -1771,7 +1772,7 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic149_merged_section_report_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic149_merged_section_report_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic149_merged_section_report_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><b>docx_classic150_kitchen_sink_styles</b></td>
@@ -1779,11 +1780,11 @@ Generated: 2026-07-19T19:57:52.759774
 </tr>
 <tr>
   <td><img src="images/docx_classic150_kitchen_sink_styles_p1_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic150_kitchen_sink_styles_p1_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic150_kitchen_sink_styles_p1_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 <tr>
   <td><img src="images/docx_classic150_kitchen_sink_styles_p2_minipdf.png" width="340" alt="MiniPdf"></td>
-  <td><img src="images/docx_classic150_kitchen_sink_styles_p2_reference.png" width="340" alt="Reference"></td>
+  <td><img src="images/docx_classic150_kitchen_sink_styles_p2_reference.png" width="340" alt="LibreOffice Reference"></td>
 </tr>
 </table>
 
@@ -1963,7 +1964,6 @@ Text content: ✅ Identical
  This is section 10 of the report. It contains detailed analysis of the topic at hand. The quick
 
  brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly
-
 ```
 </details>
 
@@ -2321,7 +2321,6 @@ Text content: ✅ Identical
  Footnote reference
 
  n n n
-
 ```
 </details>
 
@@ -2348,28 +2347,12 @@ Text content: ✅ Identical
 ### docx_classic34_employee_directory_with_photo
 
 - **Text Similarity:** 1.0
-- **Visual Average:** 0.4879
-- **Overall Score:** 0.6952
-- **Pages:** MiniPdf=1, Reference=2
-- **File Size:** MiniPdf=422597 bytes, Reference=99625 bytes
+- **Visual Average:** 0.9969
+- **Overall Score:** 0.9988
+- **Pages:** MiniPdf=2, Reference=2
+- **File Size:** MiniPdf=975599 bytes, Reference=99625 bytes
 
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/docx_classic34_employee_directory_with_photo.pdf
-+++ reference/docx_classic34_employee_directory_with_photo.pdf
-@@ -10,4 +10,5 @@
- Carol Williams
-
- UX Designer
-
- Email: carol@company.com
-
-+---PAGE---
-
- Department: Design
-```
-</details>
+Text content: ✅ Identical
 
 ### docx_classic34_paragraph_borders
 
@@ -2806,7 +2789,6 @@ Text content: ✅ Identical
  Table: orders
 
  Column Type Constraints Description
-
 ```
 </details>
 
@@ -2853,7 +2835,6 @@ Text content: ✅ Identical
  Component 3.2 handles specific operations within Module 3.
 
  3.2.1 Sub-component
-
 ```
 </details>
 
@@ -3385,7 +3366,6 @@ Text content: ✅ Identical
 @@ -239,11 +239,11 @@
  The rapid evolution of cloud computing and containerization has transformed how teams
 
-
 ... (671 more characters)
 
 ```
@@ -3618,7 +3598,6 @@ Text content: ✅ Identical
  Chapter 5: Discussion 30
 
  Chapter 6: Conclusion 35
-
 ```
 </details>
 
@@ -3675,7 +3654,6 @@ Text content: ✅ Identical
  Open source software has become the foundation of modern software development.
 
  Projects like Linux, Kubernetes, and .NET have demonstrated how community-driven
-
 ```
 </details>
 
@@ -3740,7 +3718,6 @@ Text content: ✅ Identical
  E008 Henry Wilson Engineering DevOps $110,000
 
  Engineer
-
 ```
 </details>
 
@@ -3949,7 +3926,6 @@ Text content: ✅ Identical
  benchmark pipeline with 60
 
  test cases.
-
 ```
 </details>
 
@@ -3984,7 +3960,6 @@ Text content: ✅ Identical
  alternating row colors in both DOCX and XLSX formats.
 
  Q8: How do I report a bug?
-
 ```
 </details>
 
@@ -4037,7 +4012,6 @@ Text content: ✅ Identical
  Documentation A R C C
 
  Release R I C A
-
 ```
 </details>
 
@@ -4170,7 +4144,6 @@ Text content: ✅ Identical
  arrangements
 
  are available.
-
 ```
 </details>
 
@@ -4259,7 +4232,6 @@ Text content: ✅ Identical
  Proceedings of ICSE 2024, pp. 445-460.
 
  [7] Taylor, P. (2025). CJK Font Embedding in Portable Documents. International Journal of
-
 ```
 </details>
 
@@ -4300,7 +4272,6 @@ Text content: ✅ Identical
  Benchmark pipeline and self-evolution cycle.
 
  Notes:
-
 ```
 </details>
 
@@ -4351,7 +4322,6 @@ Text content: ✅ Identical
  Revenue Users Test Cases Quality Score
 
  $2.4M 12,500 180 97.2%
-
 ```
 </details>
 
@@ -4406,7 +4376,6 @@ Text content: ✅ Identical
  Document Rendering Without Native Dependencies." Software: Practice and
 
  Experience, 54(7), 1120-1145.
-
 ```
 </details>
 
@@ -4504,7 +4473,6 @@ Text content: ✅ Identical
  CJK Support: Enable Chinese, Japanese, and Korean font embedding for international
 
  documents.
-
 ```
 </details>
 
@@ -4555,7 +4523,6 @@ Text content: ✅ Identical
  EMP-044 Grace Miller Operations Director New York
 
  EMP-045 David Williams HR Coordinator Berlin
-
 ```
 </details>
 
@@ -4610,7 +4577,6 @@ Text content: ✅ Identical
  12:30 - 14:00 Lunch Break Restaurant
 
  14:00 - 14:45 Benchmark-Driven Room A
-
 ```
 </details>
 
@@ -4641,7 +4607,6 @@ Text content: ✅ Identical
  Quality Assurance Testing Procedure
 
  1. Purpose
-
 ```
 </details>
 
@@ -4686,7 +4651,6 @@ Text content: ✅ Identical
  ---PAGE---
 
  Section 3: Conclusions (Portrait)
-
 ```
 </details>
 
@@ -4737,7 +4701,6 @@ Text content: ✅ Identical
  Workshop (Per
 
  Seat)
-
 ```
 </details>
 
@@ -4894,7 +4857,6 @@ Text content: ✅ Identical
  Planning
 
  11:20 Open Discussion & All 10 min
-
 ```
 </details>
 
@@ -4949,7 +4911,6 @@ Text content: ✅ Identical
  Release
 
  Risks & Issues
-
 ```
 </details>
 
@@ -5106,7 +5067,6 @@ Text content: ✅ Identical
  Currency: £ € ¥ ₩ ₹ ₽
 
  Math: ± × ÷ ≈ ≠ ≤ ≥ ∞ √ π
-
 ```
 </details>
 
@@ -5143,7 +5103,6 @@ Text content: ✅ Identical
  2. Problem Statement
 
  • Heavy dependency on Microsoft Office installations for PDF generation
-
 ```
 </details>
 
@@ -5497,7 +5456,6 @@ Text content: ✅ Identical
  work
 
  Double border below this paragraph
-
 ```
 </details>
 
@@ -5507,6 +5465,5 @@ Text content: ✅ Identical
 
 1. **docx_classic50_long_table_with_formatting** (score: 0.5607)
 1. **docx_classic60_project_status_with_milestones** (score: 0.6927)
-1. **docx_classic34_employee_directory_with_photo** (score: 0.6952)
 
 Review the text diffs and visual comparisons above to identify specific rendering issues.
