@@ -822,6 +822,10 @@ internal static class DocxReader
             compatibilityMode);
     }
 
+    /// <summary>
+    /// Splits a VML style attribute (semicolon-separated name:value pairs) into a
+    /// case-insensitive dictionary.
+    /// </summary>
     private static Dictionary<string, string> ParseVmlStyle(string? style)
     {
         var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -838,6 +842,9 @@ internal static class DocxReader
         return values;
     }
 
+    /// <summary>
+    /// Returns the named VML style value in points when it carries a pt suffix, otherwise 0.
+    /// </summary>
     private static float ParseVmlPointLength(Dictionary<string, string> style, string name)
     {
         if (!style.TryGetValue(name, out var value) || !value.EndsWith("pt", StringComparison.OrdinalIgnoreCase))
