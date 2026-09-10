@@ -154,6 +154,10 @@ public class DocxIssueFileTests
         Assert.Contains("Bên B cam kết trả tiền", secondPageText, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// TestIssue93.docx: the VML logo in a floating text box must stay on the right, and the
+    /// legacy table grid must keep its row spacing, yellow highlights and heading positions.
+    /// </summary>
     [Fact]
     public void Issue93_VmlImageAndLegacyTableGrid_PreserveLayout()
     {
@@ -208,6 +212,10 @@ public class DocxIssueFileTests
         Assert.InRange(projectTableRowBoundaries[1] - projectTableRowBoundaries[2], 12f, 14f);
     }
 
+    /// <summary>
+    /// Fabrikam.docx: a behindDoc wpg group whose first rectangle carries an empty text box must
+    /// still render its page background, white rectangles and card outlines.
+    /// </summary>
     [Fact]
     public void Fabrikam_BehindDocGroupWithTextBox_RendersGroupFills()
     {
@@ -234,6 +242,9 @@ public class DocxIssueFileTests
         Assert.Equal(40, page.LineBlocks.Count);
     }
 
+    /// <summary>
+    /// Locates a DOCX fixture under tests/Issue_Files/docx by walking up from the test output directory.
+    /// </summary>
     private static string FindIssueDocx(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

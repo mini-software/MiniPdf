@@ -846,6 +846,11 @@ internal static class DocxReader
             System.Globalization.CultureInfo.InvariantCulture, out var points) ? points : 0;
     }
 
+    /// <summary>
+    /// Reads a single w:p element into a DocxParagraph: resolved paragraph and run properties,
+    /// numbering, inline and anchored images, behindDoc anchor shapes (including wpg groups)
+    /// and floating text boxes.
+    /// </summary>
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
         Dictionary<string, DocxNumberingDef> numbering, Dictionary<string, string> relationships, ZipArchive archive,
         Dictionary<string, string>? themeColors = null, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
