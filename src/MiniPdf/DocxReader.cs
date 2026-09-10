@@ -1370,9 +1370,10 @@ internal static class DocxReader
                 }
 
                 // Check for inline images in the run
+                var runDrawing = child.Descendants(W + "drawing").FirstOrDefault();
                 var drawing = child.Descendants(W + "txbxContent").Any()
                     ? null
-                    : child.Descendants(W + "drawing").FirstOrDefault();
+                    : runDrawing;
                 if (drawing != null)
                 {
                     var image = ReadImage(drawing, relationships, archive);
@@ -1381,6 +1382,14 @@ internal static class DocxReader
 
                     // Check for anchor shapes (filled rectangles without image blip)
                     shapes.AddRange(ReadAnchorShapes(drawing, themeColors));
+                }
+                else if (runDrawing?.Element(WP + "anchor")?.Element(A + "graphic")
+                             ?.Element(A + "graphicData")?.Element(WPG + "wgp") != null)
+                {
+                    // A wpg group keeps its child fills even when one child carries a
+                    // text box: the floating text box path skips fill extraction for
+                    // groups (anchorHasGroupShape), so the group shapes are read here.
+                    shapes.AddRange(ReadAnchorShapes(runDrawing, themeColors));
                 }
             }
             else if (child.Name == W + "hyperlink")
