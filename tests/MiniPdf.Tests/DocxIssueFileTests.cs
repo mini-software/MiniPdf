@@ -208,6 +208,32 @@ public class DocxIssueFileTests
         Assert.InRange(projectTableRowBoundaries[1] - projectTableRowBoundaries[2], 12f, 14f);
     }
 
+    [Fact]
+    public void Fabrikam_BehindDocGroupWithTextBox_RendersGroupFills()
+    {
+        var issuePath = FindIssueDocx("Fabrikam.docx");
+
+        using var stream = File.OpenRead(issuePath);
+        var document = DocxToPdfConverter.Convert(stream);
+        var page = Assert.Single(document.Pages);
+
+        // The business-card sheet is one behindDoc wpg group: an accent1 (C0E3EC)
+        // page background, twenty bg1 (white) rectangles and ten stroke-only card
+        // outlines. Its first rectangle carries an empty text box, which must not
+        // suppress the group fills.
+        var background = Assert.Single(page.RectBlocks, rect =>
+            rect.Width >= page.Width - 0.5f && rect.Height >= page.Height - 0.5f);
+        Assert.InRange(background.X, -0.5f, 0.5f);
+        Assert.InRange(background.Y, -0.5f, 0.5f);
+        Assert.InRange(background.FillColor.R, 0.75f, 0.76f);
+        Assert.InRange(background.FillColor.G, 0.89f, 0.90f);
+        Assert.InRange(background.FillColor.B, 0.92f, 0.93f);
+
+        Assert.Equal(20, page.RectBlocks.Count(rect =>
+            rect.FillColor.R > 0.99f && rect.FillColor.G > 0.99f && rect.FillColor.B > 0.99f));
+        Assert.Equal(40, page.LineBlocks.Count);
+    }
+
     private static string FindIssueDocx(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
