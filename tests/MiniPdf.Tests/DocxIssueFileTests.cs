@@ -4,6 +4,40 @@ namespace MiniSoftware.Tests;
 
 public class DocxIssueFileTests
 {
+    /// <summary>
+    /// Fabrikam.docx: a behindDoc wpg group whose first rectangle carries an empty text box must
+    /// still render its page background, white rectangles and card outlines.
+    /// </summary>
+    [Fact]
+    public void Fabrikam_BehindDocGroupWithTextBox_RendersGroupFills()
+    {
+        var issuePath = FindIssueDocx("Fabrikam.docx");
+
+        using var stream = File.OpenRead(issuePath);
+        var document = DocxToPdfConverter.Convert(stream);
+        var page = Assert.Single(document.Pages);
+
+        // The business-card sheet is one behindDoc wpg group: an accent1 (C0E3EC)
+        // page background, twenty bg1 (white) rectangles and ten stroke-only card
+        // outlines. Its first rectangle carries an empty text box, which must not
+        // suppress the group fills.
+        var background = Assert.Single(page.RectBlocks, rect =>
+            rect.Width >= page.Width - 0.5f && rect.Height >= page.Height - 0.5f);
+        Assert.InRange(background.X, -0.5f, 0.5f);
+        Assert.InRange(background.Y, -0.5f, 0.5f);
+        Assert.InRange(background.FillColor.R, 0.75f, 0.76f);
+        Assert.InRange(background.FillColor.G, 0.89f, 0.90f);
+        Assert.InRange(background.FillColor.B, 0.92f, 0.93f);
+
+        Assert.Equal(20, page.RectBlocks.Count(rect =>
+            rect.FillColor.R > 0.99f && rect.FillColor.G > 0.99f && rect.FillColor.B > 0.99f));
+        Assert.Equal(40, page.LineBlocks.Count);
+    }
+
+    /// <summary>
+    /// TestIssue78.docx: the header-table labels must share one right edge when measured with
+    /// their preferred font widths, and the date value must stay centered in its cell.
+    /// </summary>
     [Fact]
     public void Issue78_HeaderTable_UsesPreferredFontWidthsForAlignment()
     {
