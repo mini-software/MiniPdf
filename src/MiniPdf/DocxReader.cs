@@ -822,6 +822,10 @@ internal static class DocxReader
             compatibilityMode);
     }
 
+    /// <summary>
+    /// Splits a VML style attribute (semicolon-separated name:value pairs) into a
+    /// case-insensitive dictionary.
+    /// </summary>
     private static Dictionary<string, string> ParseVmlStyle(string? style)
     {
         var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -838,6 +842,9 @@ internal static class DocxReader
         return values;
     }
 
+    /// <summary>
+    /// Returns the named VML style value in points when it carries a pt suffix, otherwise 0.
+    /// </summary>
     private static float ParseVmlPointLength(Dictionary<string, string> style, string name)
     {
         if (!style.TryGetValue(name, out var value) || !value.EndsWith("pt", StringComparison.OrdinalIgnoreCase))
@@ -846,6 +853,11 @@ internal static class DocxReader
             System.Globalization.CultureInfo.InvariantCulture, out var points) ? points : 0;
     }
 
+    /// <summary>
+    /// Reads a single w:p element into a DocxParagraph: resolved paragraph and run properties,
+    /// numbering, inline and anchored images, behindDoc anchor shapes (including wpg groups)
+    /// and floating text boxes.
+    /// </summary>
     private static DocxParagraph? ReadParagraph(XElement pElement, Dictionary<string, DocxStyleInfo> styles,
         Dictionary<string, DocxNumberingDef> numbering, Dictionary<string, string> relationships, ZipArchive archive,
         Dictionary<string, string>? themeColors = null, string? defaultLatinFontName = null, string? defaultEastAsiaFontName = null)
@@ -1369,18 +1381,29 @@ internal static class DocxReader
                         runs.Add(run);
                 }
 
-                // Check for inline images in the run
-                var drawing = child.Descendants(W + "txbxContent").Any()
-                    ? null
-                    : child.Descendants(W + "drawing").FirstOrDefault();
-                if (drawing != null)
+                // Process each drawing owned by this run independently. Drawings owned by
+                // nested text box runs are parsed with their containing paragraphs.
+                foreach (var runDrawing in child.Descendants(W + "drawing")
+                             .Where(candidate => ReferenceEquals(
+                                 candidate.Ancestors(W + "r").FirstOrDefault(), child)))
                 {
-                    var image = ReadImage(drawing, relationships, archive);
-                    if (image != null)
-                        images.Add(image);
+                    if (!runDrawing.Descendants(W + "txbxContent").Any())
+                    {
+                        var image = ReadImage(runDrawing, relationships, archive);
+                        if (image != null)
+                            images.Add(image);
 
-                    // Check for anchor shapes (filled rectangles without image blip)
-                    shapes.AddRange(ReadAnchorShapes(drawing, themeColors));
+                        // Check for anchor shapes (filled rectangles without image blip)
+                        shapes.AddRange(ReadAnchorShapes(runDrawing, themeColors));
+                    }
+                    else if (runDrawing.Element(WP + "anchor")?.Element(A + "graphic")
+                                 ?.Element(A + "graphicData")?.Element(WPG + "wgp") != null)
+                    {
+                        // A wpg group keeps its child fills even when one child carries a
+                        // text box: the floating text box path skips fill extraction for
+                        // groups (anchorHasGroupShape), so the group shapes are read here.
+                        shapes.AddRange(ReadAnchorShapes(runDrawing, themeColors));
+                    }
                 }
             }
             else if (child.Name == W + "hyperlink")
