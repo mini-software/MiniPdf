@@ -13,8 +13,14 @@ public class RegisteredFontCollection
 [Collection(RegisteredFontCollection.Name)]
 public class RegisteredFontTests : IDisposable
 {
+    /// <summary>
+    /// Starts each test with no registered fonts.
+    /// </summary>
     public RegisteredFontTests() => MiniPdf.ClearRegisteredFonts();
 
+    /// <summary>
+    /// Clears the fonts a test registered so the next test starts from an empty list.
+    /// </summary>
     public void Dispose() => MiniPdf.ClearRegisteredFonts();
 
     /// <summary>
