@@ -91,6 +91,9 @@ MiniPdf.RegisterFont("NotoSansSC", File.ReadAllBytes("Fonts/NotoSansSC-Regular.t
 MiniPdf.ConvertToPdf("report.docx", "report.pdf");
 ```
 
+Registrations are process-wide. `MiniPdf.ClearRegisteredFonts()` removes them when
+the same process needs a different font set for a later conversion.
+
 ## Command Line
 
 Install the .NET global tool:

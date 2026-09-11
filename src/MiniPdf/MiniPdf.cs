@@ -129,6 +129,16 @@ public static class MiniPdf
     }
 
     /// <summary>
+    /// Removes all fonts registered with <see cref="RegisterFont"/>.
+    /// Registrations are process-wide; clear them before registering a different font set.
+    /// </summary>
+    public static void ClearRegisteredFonts()
+    {
+        lock (_registeredFonts)
+            _registeredFonts.Clear();
+    }
+
+    /// <summary>
     /// Returns a snapshot of all registered fonts.
     /// </summary>
     internal static List<(string Name, byte[] Data)> GetRegisteredFonts()
