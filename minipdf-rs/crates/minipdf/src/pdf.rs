@@ -814,15 +814,22 @@ fn font_preference(
 }
 
 fn font_supports(font: &RegisteredFont, ch: char) -> bool {
-    is_embeddable_truetype(&font.data)
-        && ttf_parser::Face::parse(&font.data, 0)
-            .ok()
-            .and_then(|face| face.glyph_index(ch))
-            .is_some()
+    if !is_embeddable_truetype(&font.data) {
+        return false;
+    }
+    let Ok(face) = ttf_parser::Face::parse(&font.data, 0) else {
+        return false;
+    };
+    font_has_subsettable_outlines(face.raw_face()) && face.glyph_index(ch).is_some()
 }
 
 fn is_embeddable_truetype(data: &[u8]) -> bool {
     data.starts_with(b"\0\x01\0\0") || data.starts_with(b"true") || data.starts_with(b"ttcf")
+}
+
+fn font_has_subsettable_outlines(face: &ttf_parser::RawFace<'_>) -> bool {
+    face.table(ttf_parser::Tag::from_bytes(b"glyf")).is_some()
+        || face.table(ttf_parser::Tag::from_bytes(b"CFF ")).is_some()
 }
 
 fn shape_text(text: &str, font_data: &[u8]) -> Option<ShapedText> {
@@ -1220,7 +1227,32 @@ fn escape_pdf_text(text: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{font_preference, PdfColor, PdfDocument, PdfPathCommand};
+    use super::{
+        font_has_subsettable_outlines, font_preference, PdfColor, PdfDocument, PdfPathCommand,
+    };
+
+    fn sfnt_with_table(tag: &[u8; 4]) -> Vec<u8> {
+        let mut data = vec![0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+        data.extend_from_slice(tag);
+        data.extend_from_slice(&[0; 4]);
+        data.extend_from_slice(&28_u32.to_be_bytes());
+        data.extend_from_slice(&1_u32.to_be_bytes());
+        data.push(0);
+        data
+    }
+
+    #[test]
+    fn accepts_only_font_outlines_supported_by_subsetter() {
+        for tag in [b"glyf", b"CFF "] {
+            let data = sfnt_with_table(tag);
+            let face = ttf_parser::RawFace::parse(&data, 0).expect("sfnt directory is valid");
+            assert!(font_has_subsettable_outlines(&face));
+        }
+
+        let data = sfnt_with_table(b"CBDT");
+        let face = ttf_parser::RawFace::parse(&data, 0).expect("sfnt directory is valid");
+        assert!(!font_has_subsettable_outlines(&face));
+    }
 
     #[test]
     fn prefers_simhei_for_bold_cjk_text() {
