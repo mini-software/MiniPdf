@@ -175,7 +175,7 @@ func (document *PDFDocument) Bytes() []byte {
 		for _, operation := range page.operations {
 			operation.appendPDF(&content, embedded)
 		}
-		contentObject := []byte(fmt.Sprintf("<< /Length %d >>\nstream\n%sendstream", content.Len(), content.String()))
+		contentObject := []byte(fmt.Sprintf("<< /Length %d >>\nstream\n%s\nendstream", content.Len(), content.String()))
 		objects = append(objects, pageObject, contentObject)
 	}
 

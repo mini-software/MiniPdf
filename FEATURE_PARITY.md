@@ -248,6 +248,16 @@ All six implementations have language-specific visual benchmark runners under
 A feature should not move from `P` to `I` based only on a parser or API being
 present. Require a focused unit test plus a reproducible visual benchmark case.
 
+### Go Validation Progress
+
+- 2026-09-14: a five-case classic XLSX baseline scored `0.8093` and reported a
+  one-byte page content-stream length error in every candidate PDF. After the
+  writer fix, the same five cases retained `0.8093` with no PDF structure
+  errors. See the local
+  [`before`](artifacts/go-parity-baseline/report/comparison_report.md) and
+  [`after`](artifacts/go-parity-stream-fixed/report/comparison_report.md)
+  reports.
+
 ## Alignment Backlog
 
 ### P0: Correctness and Security

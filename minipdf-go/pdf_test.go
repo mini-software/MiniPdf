@@ -61,7 +61,7 @@ func TestPDFStreamLengthsAreExact(t *testing.T) {
 			t.Fatal(err)
 		}
 		streamStart := match[1]
-		streamEndOffset := bytes.Index(pdf[streamStart:], []byte("endstream"))
+		streamEndOffset := bytes.Index(pdf[streamStart:], []byte("\nendstream"))
 		if streamEndOffset < 0 {
 			t.Fatal("stream terminator is missing")
 		}
