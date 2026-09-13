@@ -36,7 +36,7 @@ shared security or conformance gap can exist in every implementation.
 | XLSX conversion controls | I | M | M | M | M | M |
 | PDF compression option | I | M | M | M | M | M |
 | Missing-font diagnostics | I | M | M | M | M | M |
-| Effective custom font embedding | I | I | I | M | M | B |
+| Effective custom font embedding | I | I | I | I | M | B |
 | Native CLI | I | I | I | I | I | M |
 | Tracked visual benchmark evidence | I | P | P | M | M | M |
 | Bounded OOXML package loading | M | M | I | I | I | B/M |
@@ -70,7 +70,7 @@ print scale, rows-per-page, and culture-aware value formatting in
 | Culture-aware XLSX formatting | M | M | M | M | M |
 | Font clear API | M | I | I | M | M |
 | Registered-font list API | I | I | I | I | I |
-| CLI font directory | I | I | M | M | M |
+| CLI font directory | I | I | I | M | M |
 | CLI advanced XLSX options | M | M | M | M | M |
 | Native CLI distribution | I | I | I | I | M |
 | Non-blocking/async conversion API | M | M | M | M | M |
@@ -189,9 +189,9 @@ Primary implementation evidence:
 
 | Area | .NET | Rust | Java | Go | Python | Node.js |
 |---|---:|---:|---:|---:|---:|---:|
-| Registered and system font fallback | I | I | P | M | M | B |
-| Font embedding and subsetting | I | P | P | M | M | B |
-| ToUnicode/CID output | I | P | P | M | M | B |
+| Registered and system font fallback | I | I | P | P | M | B |
+| Font embedding and subsetting | I | P | P | P | M | B |
+| ToUnicode/CID output | I | P | P | I | M | B |
 | JPEG/PNG with transparency | I | P | P for XLSX | M | M | B |
 | SVG rendering | P | P for PPTX | M | M | M | B |
 | EMF/WMF handling | P | P | P for XLSX | M | M | B |
@@ -274,7 +274,9 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   columns, notes, and floating objects.
 - [ ] Rust: add XLSX chart rendering or explicitly declare charts out of scope.
 - [ ] Java: add DOCX tables/styles/images, then PPTX styles/shapes/images.
-- [ ] Go: add effective font embedding before expanding complex layout.
+- [x] Go: add effective registered TTF embedding with Type0/CID and ToUnicode.
+- [ ] Go: add TTF subsetting, TTC support, system fallback, and complex-script
+  shaping.
 - [ ] Go: add XLSX styles/merges/images, DOCX tables/images, and PPTX
   shapes/images.
 - [ ] Python: add effective font embedding and Unicode shaping before complex

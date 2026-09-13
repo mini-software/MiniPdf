@@ -18,11 +18,12 @@ var (
 )
 
 type cliOptions struct {
-	input      string
-	output     string
-	paperSize  string
-	pageWidth  float64
-	pageHeight float64
+	input         string
+	output        string
+	fontDirectory string
+	paperSize     string
+	pageWidth     float64
+	pageHeight    float64
 }
 
 func main() {
@@ -58,6 +59,9 @@ func run(options cliOptions) error {
 	if err != nil {
 		return err
 	}
+	if err := registerFontsFromDirectory(options.fontDirectory); err != nil {
+		return err
+	}
 	output := options.output
 	if output == "" {
 		output = strings.TrimSuffix(options.input, filepath.Ext(options.input)) + ".pdf"
@@ -66,6 +70,29 @@ func run(options cliOptions) error {
 		return err
 	}
 	fmt.Println(output)
+	return nil
+}
+
+func registerFontsFromDirectory(directory string) error {
+	if directory == "" {
+		return nil
+	}
+	entries, err := os.ReadDir(directory)
+	if err != nil {
+		return fmt.Errorf("read font directory %q: %w", directory, err)
+	}
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.EqualFold(filepath.Ext(entry.Name()), ".ttf") {
+			continue
+		}
+		fontPath := filepath.Join(directory, entry.Name())
+		fontData, err := os.ReadFile(fontPath)
+		if err != nil {
+			return fmt.Errorf("read font %q: %w", fontPath, err)
+		}
+		name := strings.TrimSuffix(entry.Name(), filepath.Ext(entry.Name()))
+		minipdf.RegisterFont(name, fontData)
+	}
 	return nil
 }
 
@@ -114,7 +141,7 @@ func parseArguments(arguments []string) (cliOptions, error) {
 		}
 		name, inlineValue, hasInlineValue := strings.Cut(argument, "=")
 		switch name {
-		case "-o", "--output", "--paper-size", "--page-width", "--page-height":
+		case "-o", "--output", "--fonts", "--paper-size", "--page-width", "--page-height":
 			value := inlineValue
 			if !hasInlineValue {
 				index++
@@ -126,6 +153,8 @@ func parseArguments(arguments []string) (cliOptions, error) {
 			switch name {
 			case "-o", "--output":
 				options.output = value
+			case "--fonts":
+				options.fontDirectory = value
 			case "--paper-size":
 				options.paperSize = value
 			case "--page-width":
@@ -166,6 +195,7 @@ Usage:
 
 Options:
   -o, --output PATH          Output PDF path
+			--fonts DIR            Register .ttf fonts from a directory
       --paper-size SIZE      a4 or letter
       --page-width POINTS    Custom page width
       --page-height POINTS   Custom page height

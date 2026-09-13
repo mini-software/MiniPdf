@@ -41,6 +41,22 @@ Convert between streams:
 err := minipdf.ConvertReaderToWriter(input, output, minipdf.ConversionOptions{})
 ```
 
+Register a TrueType font before conversion when built-in PDF fonts do not cover
+the document text:
+
+```go
+fontData, err := os.ReadFile("fonts/NotoSans-Regular.ttf")
+if err != nil {
+	panic(err)
+}
+minipdf.RegisterFont("Noto Sans", fontData)
+defer minipdf.ClearRegisteredFonts()
+```
+
+Registered `.ttf` fonts are embedded as Type0/CID fonts with ToUnicode maps.
+Font subsetting, TrueType Collections, automatic system-font discovery, and
+complex-script shaping are not yet implemented.
+
 Override the output page size:
 
 ```go
@@ -61,6 +77,7 @@ minipdf report.docx
 minipdf data.xlsx -o data.pdf
 minipdf slides.pptx --paper-size a4
 minipdf convert report.docx --page-width 400 --page-height 500
+minipdf report.docx --fonts ./fonts
 ```
 
 ## Current Scope
@@ -72,7 +89,7 @@ minipdf convert report.docx --page-width 400 --page-height 500
 | PPTX to PDF | Basic slide text |
 | PDF output | Dependency-free PDF 1.4 writer |
 | Page size | Office geometry, A4/Letter presets, or custom points |
-| Fonts | Registration API reserved; embedding is not implemented yet |
+| Fonts | Embedded registered TTF fonts with ToUnicode; no subsetting or shaping yet |
 | Input safety | Bounded ZIP entry count, size, expansion ratio, encryption, and path validation |
 | Interfaces | Go package with file, byte, and stream APIs; native CLI |
 

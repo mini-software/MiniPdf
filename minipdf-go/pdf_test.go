@@ -5,7 +5,31 @@ import (
 	"regexp"
 	"strconv"
 	"testing"
+
+	"golang.org/x/image/font/gofont/goregular"
 )
+
+func TestPDFDocumentEmbedsRegisteredTrueTypeFont(t *testing.T) {
+	ClearRegisteredFonts()
+	t.Cleanup(ClearRegisteredFonts)
+	RegisterFont("Go Regular", goregular.TTF)
+	document := NewPDFDocument()
+	document.AddPage(300, 400).AddText("Hello, Ω", 20, 350, 12, PDFColorBlack, false)
+
+	pdf := document.Bytes()
+
+	for _, marker := range [][]byte{
+		[]byte("/Subtype /Type0"),
+		[]byte("/Subtype /CIDFontType2"),
+		[]byte("/FontFile2"),
+		[]byte("/ToUnicode"),
+		[]byte("<03A9>"),
+	} {
+		if !bytes.Contains(pdf, marker) {
+			t.Errorf("PDF does not contain %q", marker)
+		}
+	}
+}
 
 func TestPDFDocumentWritesValidEnvelope(t *testing.T) {
 	document := NewPDFDocument()
