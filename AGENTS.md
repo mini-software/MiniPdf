@@ -1,7 +1,7 @@
 # Agent Instructions
 
 For MiniPdf rendering or visual benchmark contributions, read and follow `.claude/skills/minipdf-contribution/SKILL.md`.
-# Agent Guidelines
+## Agent Guidelines
 
 - Use English.
 - Do not use emojis.
