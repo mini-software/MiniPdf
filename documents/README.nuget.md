@@ -76,10 +76,17 @@ MiniPdf.ConvertToPdf("data.xlsx", "compact.pdf", new MiniPdfConversionOptions
   PrintScale = 70,
   RowsPerPage = 80,
 });
+
+MiniPdf.ConvertToPdf("report.docx", "custom-layout.pdf", new MiniPdfConversionOptions
+{
+  PageSize = MiniPdfPageSize.A4,
+  Margins = new MiniPdfMargins(left: 36, top: 48, right: 36, bottom: 48),
+});
 ```
 
-Sheet selection and layout options apply to XLSX input. `Compress` controls PDF
-content-stream compression for every supported format.
+Sheet selection and Excel layout options apply to XLSX input. `PageSize` and
+`Margins` apply to DOCX input and use PDF points (72 points = 1 inch). `Compress`
+controls PDF content-stream compression for every supported format.
 
 ### Custom Fonts
 

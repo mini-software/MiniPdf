@@ -19,6 +19,12 @@ public sealed class MiniPdfConversionOptions
     /// <summary>Compress PDF page content streams using FlateDecode.</summary>
     public bool Compress { get; set; }
 
+    /// <summary>Optional DOCX page size override in PDF points.</summary>
+    public MiniPdfPageSize? PageSize { get; set; }
+
+    /// <summary>Optional DOCX page margin overrides in PDF points.</summary>
+    public MiniPdfMargins? Margins { get; set; }
+
     /// <summary>Maximum number of worksheet rows to render from each Excel sheet or print area.</summary>
     public int? MaxRows { get; set; }
 
@@ -45,6 +51,59 @@ public sealed class MiniPdfConversionOptions
 
     /// <summary>Optional culture used to format numeric and date values from Excel cells. Null uses the invariant culture (current behavior).</summary>
     public System.Globalization.CultureInfo? Culture { get; set; }
+}
+
+/// <summary>Defines a PDF page size in points.</summary>
+public sealed class MiniPdfPageSize
+{
+    /// <summary>Creates a page size with the specified width and height in points.</summary>
+    public MiniPdfPageSize(float width, float height)
+    {
+        Width = width;
+        Height = height;
+    }
+
+    /// <summary>A4 page size.</summary>
+    public static MiniPdfPageSize A4 { get; } = new(595.28f, 841.89f);
+
+    /// <summary>US Letter page size.</summary>
+    public static MiniPdfPageSize Letter { get; } = new(612f, 792f);
+
+    /// <summary>Page width in points.</summary>
+    public float Width { get; }
+
+    /// <summary>Page height in points.</summary>
+    public float Height { get; }
+}
+
+/// <summary>Defines page margins in points.</summary>
+public sealed class MiniPdfMargins
+{
+    /// <summary>Creates equal margins on all four sides.</summary>
+    public MiniPdfMargins(float all) : this(all, all, all, all)
+    {
+    }
+
+    /// <summary>Creates individual left, top, right, and bottom margins.</summary>
+    public MiniPdfMargins(float left, float top, float right, float bottom)
+    {
+        Left = left;
+        Top = top;
+        Right = right;
+        Bottom = bottom;
+    }
+
+    /// <summary>Left margin in points.</summary>
+    public float Left { get; }
+
+    /// <summary>Top margin in points.</summary>
+    public float Top { get; }
+
+    /// <summary>Right margin in points.</summary>
+    public float Right { get; }
+
+    /// <summary>Bottom margin in points.</summary>
+    public float Bottom { get; }
 }
 
 /// <summary>
@@ -213,15 +272,19 @@ public static class MiniPdf
     {
         var extension = Path.GetExtension(inputPath);
         if (extension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+        {
+            ThrowIfDocxOnlyOptionsSpecifiedForNonDocx(options);
             return ExcelToPdfConverter.Convert(inputPath, CreateExcelOptions(options));
+        }
         if (extension.Equals(".docx", StringComparison.OrdinalIgnoreCase))
         {
             ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
-            return DocxToPdfConverter.Convert(inputPath);
+            return DocxToPdfConverter.Convert(inputPath, CreateDocxOptions(options));
         }
         if (extension.Equals(".pptx", StringComparison.OrdinalIgnoreCase))
         {
             ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
+            ThrowIfDocxOnlyOptionsSpecifiedForNonDocx(options);
             return PptxToPdfConverter.Convert(inputPath);
         }
 
@@ -257,11 +320,13 @@ public static class MiniPdf
             {
                 case OfficeFormat.Docx:
                     ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
-                    return DocxToPdfConverter.Convert(seekable);
+                    return DocxToPdfConverter.Convert(seekable, CreateDocxOptions(options));
                 case OfficeFormat.Pptx:
                     ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(options);
+                    ThrowIfDocxOnlyOptionsSpecifiedForNonDocx(options);
                     return PptxToPdfConverter.Convert(seekable);
                 case OfficeFormat.Xlsx:
+                    ThrowIfDocxOnlyOptionsSpecifiedForNonDocx(options);
                     return ExcelToPdfConverter.Convert(seekable, CreateExcelOptions(options));
                 default:
                     throw new NotSupportedException(
@@ -324,6 +389,12 @@ public static class MiniPdf
             throw new NotSupportedException("Excel-specific conversion options are only supported for .xlsx files.");
     }
 
+    private static void ThrowIfDocxOnlyOptionsSpecifiedForNonDocx(MiniPdfConversionOptions options)
+    {
+        if (options.PageSize != null || options.Margins != null)
+            throw new NotSupportedException("PageSize and Margins conversion options are only supported for .docx files.");
+    }
+
     private static void ValidateConversionOptions(MiniPdfConversionOptions options)
     {
         if (options.MaxRows.HasValue && options.MaxRows.Value <= 0)
@@ -338,7 +409,33 @@ public static class MiniPdf
             throw new ArgumentOutOfRangeException(nameof(options.PrintScale), "PrintScale must be between 10 and 400.");
         if (options.RowsPerPage.HasValue && options.RowsPerPage.Value <= 0)
             throw new ArgumentOutOfRangeException(nameof(options.RowsPerPage), "RowsPerPage must be greater than zero.");
+        if (options.PageSize is { } pageSize &&
+            (!IsPositiveFinite(pageSize.Width) || !IsPositiveFinite(pageSize.Height)))
+            throw new ArgumentOutOfRangeException(nameof(options.PageSize),
+                "PageSize width and height must be positive finite values.");
+        if (options.Margins is { } margins &&
+            (!IsNonNegativeFinite(margins.Left) || !IsNonNegativeFinite(margins.Top) ||
+             !IsNonNegativeFinite(margins.Right) || !IsNonNegativeFinite(margins.Bottom)))
+            throw new ArgumentOutOfRangeException(nameof(options.Margins),
+                "Margins must be non-negative finite values.");
     }
+
+    private static bool IsPositiveFinite(float value)
+        => value > 0 && !float.IsNaN(value) && !float.IsInfinity(value);
+
+    private static bool IsNonNegativeFinite(float value)
+        => value >= 0 && !float.IsNaN(value) && !float.IsInfinity(value);
+
+    private static DocxToPdfConverter.ConversionOptions CreateDocxOptions(MiniPdfConversionOptions options)
+        => new()
+        {
+            PageWidthOverride = options.PageSize?.Width,
+            PageHeightOverride = options.PageSize?.Height,
+            MarginLeftOverride = options.Margins?.Left,
+            MarginTopOverride = options.Margins?.Top,
+            MarginRightOverride = options.Margins?.Right,
+            MarginBottomOverride = options.Margins?.Bottom,
+        };
 
     private static ExcelToPdfConverter.ConversionOptions CreateExcelOptions(MiniPdfConversionOptions options)
         => new()
