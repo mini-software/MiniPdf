@@ -255,6 +255,11 @@ internal static class DocxReader
         }
     }
 
+    /// <summary>
+    /// Reads the opened DOCX package (relationships, styles, numbering, theme
+    /// colours, footnotes, settings and the body elements) into a
+    /// <see cref="DocxDocument"/>.
+    /// </summary>
     private static DocxDocument ReadCore(ZipArchive archive)
     {
         // Read relationships to resolve image references
@@ -478,7 +483,22 @@ internal static class DocxReader
                             leftInsetPt = lIns / 914400f * 72f;
                     }
 
-                    if (isWrapNone)
+                    // A wrapTopAndBottom text box whose vertical anchor is relative to the
+                    // page or margin sits at an absolute page position (LibreOffice maps
+                    // relativeFrom="page" to RelOrientation::PAGE_FRAME in
+                    // writerfilter/dmapper/GraphicHelpers.cxx and wrapTopAndBottom to
+                    // WrapTextMode_NONE in writerfilter/dmapper/GraphicImport.cxx).  Its
+                    // posOffset is a page coordinate, not a gap before the box, so emitting
+                    // the content as flow paragraphs would insert that offset as bogus
+                    // spacing.  Render it as a floating box instead; the converter resumes
+                    // the text flow below the box (see RenderFloatingTextBoxes).
+                    // Every ST_RelFromV value other than paragraph and line (page, margin,
+                    // topMargin, bottomMargin, insideMargin, outsideMargin) is a page-based
+                    // reference; the floating renderer already positions those.
+                    bool isAbsoluteWrapTopBottom = isWrapTopBottom
+                        && vRelativeFrom != "paragraph" && vRelativeFrom != "line";
+
+                    if (isWrapNone || isAbsoluteWrapTopBottom)
                     {
                         // wrapNone text boxes are positioned absolutely and do not
                         // consume space in the main flow per the OOXML spec.
@@ -522,7 +542,7 @@ internal static class DocxReader
                         if (floatingParas.Count > 0)
                         {
                             floatingTextBoxes ??= new List<DocxFloatingTextBox>();
-                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom, textBoxFillColor, topInsetPt, leftInsetPt, hAlign, vAlign));
+                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom, textBoxFillColor, topInsetPt, leftInsetPt, hAlign, vAlign, IsWrapTopBottom: isWrapTopBottom));
                         }
                     }
                     else
@@ -5191,7 +5211,10 @@ internal sealed record DocxConnectorLine(
     string VRelativeFrom = "paragraph"
 );
 
-/// <summary>Represents a floating text box (wrapNone) with absolute position.</summary>
+/// <summary>
+/// Represents a floating text box with an absolute position: a wrapNone box, or a
+/// wrapTopAndBottom box whose vertical anchor is relative to the page or margin.
+/// </summary>
 internal sealed record DocxFloatingTextBox(
     float XPt,
     float YPt,
@@ -5206,7 +5229,10 @@ internal sealed record DocxFloatingTextBox(
     float LeftInsetPt = 7.2f,
     string? HAlign = null,
     string? VAlign = null,
-    bool AnchorAtParagraphTop = false
+    bool AnchorAtParagraphTop = false,
+    // True for a wrapTopAndBottom anchor rendered as a floating box: text may not
+    // flow beside it, so the converter resumes the flow below the box bottom.
+    bool IsWrapTopBottom = false
 );
 
 /// <summary>Represents a text box outline border (rectangle drawn around text box content).</summary>

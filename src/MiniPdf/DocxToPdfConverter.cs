@@ -639,7 +639,60 @@ internal static class DocxToPdfConverter
         /// extra page breaks in long multi-section documents like CCU_article).
         /// </summary>
         public bool HasRenderedAnyContent { get; set; }
-        public float LastParagraphStartY { get; set; }
+        private float _lastParagraphStartY;
+        /// <summary>
+        /// Start position of the most recent paragraph.  Setting it also records
+        /// <see cref="LastParagraphPage"/>, the page that paragraph started on, so
+        /// floating boxes anchored to a paragraph that ends with a page break are
+        /// still placed on the page containing the anchor.
+        /// </summary>
+        public float LastParagraphStartY
+        {
+            get => _lastParagraphStartY;
+            set { _lastParagraphStartY = value; LastParagraphPage = CurrentPage; }
+        }
+        public PdfPage? LastParagraphPage { get; private set; }
+        /// <summary>
+        /// Vertical bands (PDF coordinates, top above bottom) that text may not enter
+        /// on a page: wrapTopAndBottom boxes.  Text resumes below them.
+        /// </summary>
+        public List<(PdfPage Page, float TopY, float BottomY)>? WrapObstacles { get; set; }
+
+        /// <summary>
+        /// Moves <see cref="CurrentY"/> (the next baseline) below every obstacle band on
+        /// the current page that a line with the given ascent and descent would intersect.
+        /// </summary>
+        public bool AvoidWrapObstacles(float ascent, float descent)
+        {
+            if (WrapObstacles == null || CurrentPage == null) return false;
+
+            var originalPage = CurrentPage;
+            var originalColumn = CurrentColumn;
+            while (true)
+            {
+                var moved = false;
+                foreach (var (page, topY, bottomY) in WrapObstacles)
+                {
+                    if (page != CurrentPage) continue;
+                    if (CurrentY + ascent > bottomY && CurrentY - descent < topY)
+                    {
+                        CurrentY = bottomY - ascent;
+                        IsTopOfPage = false;
+                        moved = true;
+                    }
+                }
+
+                if (!moved) break;
+                if (CurrentY - descent >= Options.MarginBottom) continue;
+
+                if (ColumnCount <= 1 || !AdvanceToNextColumn())
+                    ForceNewPage();
+                EnsurePage();
+                AdvanceY(ascent);
+            }
+
+            return CurrentPage != originalPage || CurrentColumn != originalColumn;
+        }
         /// <summary>
         /// Captures the paragraph's line-box TOP (before ascent advance) at the
         /// start of each paragraph.  Used as the anchor base for floating images
@@ -1160,6 +1213,10 @@ internal static class DocxToPdfConverter
                         : fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options));
                     state.AdvanceY(emptyAscentOffset);
                 }
+                var emptyLineAscent = options.GridLinePitch > 0 && paragraph.SnapToGrid
+                    ? GetGridAscentOffset(lineHeight, fontSize, paraFontName)
+                    : fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options));
+                state.AvoidWrapObstacles(emptyLineAscent, Math.Max(0f, totalEmptyAdvance - emptyLineAscent));
                 RenderParagraphBorders(state, paragraph, state.CurrentY, state.CurrentY, isEmptyParagraph: true);
                 state.AdvanceY(totalEmptyAdvance);
                 // If the empty paragraph pushed past the bottom margin, accumulate
@@ -1361,6 +1418,19 @@ internal static class DocxToPdfConverter
         {
             state.AdvanceY((lineHeight - state.LastLineHeight) * 0.541f);
         }
+
+        // Keep the first line out of any wrapTopAndBottom band on this page.  Move the
+        // captured paragraph top by the same amount so paragraph-relative anchors
+        // stay attached to the line that actually starts the paragraph.
+        var firstLineAscent = currentGridAscent > 0
+            ? currentGridAscent
+            : fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options));
+        var yBeforeObstacles = state.CurrentY;
+        var changedFlowContext = state.AvoidWrapObstacles(
+            firstLineAscent, Math.Max(0f, lineHeight - firstLineAscent));
+        state.CurrentParagraphTopY = changedFlowContext
+            ? state.CurrentY + firstLineAscent
+            : state.CurrentParagraphTopY - (yBeforeObstacles - state.CurrentY);
 
         // Track paragraph start position for borders and floating textboxes
         var paragraphStartY = state.CurrentY;
@@ -1602,10 +1672,13 @@ internal static class DocxToPdfConverter
             // Paragraphs whose only visual content is wrapNone floating textboxes and/or
             // connector lines (anchored shapes that are absolutely positioned overlays)
             // should not consume a line height in the main flow, matching Word's behaviour.
+            // A wrapTopAndBottom box is not an overlay: its empty host paragraph still
+            // occupies its own line above the box.
             var isFloatingAnchorOnlyParagraph =
                 paragraph.Runs.Count == 0
                 && paragraph.Images.Count == 0
                 && (paragraph.Shapes is null || paragraph.Shapes.Count == 0)
+                && paragraph.FloatingTextBoxes?.Any(box => box.IsWrapTopBottom) != true
                 && ((paragraph.FloatingTextBoxes is { Count: > 0 })
                     || (paragraph.ConnectorLines is { Count: > 0 }));
             // Paragraphs whose only visual content is wrapNone anchor images
@@ -1829,13 +1902,13 @@ internal static class DocxToPdfConverter
                     state.ForceNewPage();
                 }
                 state.EnsurePage();
+                var lineAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
+                    ? GetGridAscentOffset(lineHeight, runFontSize, runFontName)
+                    : runFontSize * GetTopOfPageAscentRatio(runFontName, ResolveLineSpacingMul(paragraph, options));
                 if (state.IsTopOfPage)
-                {
-                    var lineAscentOffset = options.GridLinePitch > 0 && paragraph.SnapToGrid
-                        ? GetGridAscentOffset(lineHeight, runFontSize, runFontName)
-                        : runFontSize * GetTopOfPageAscentRatio(runFontName, ResolveLineSpacingMul(paragraph, options));
                     state.AdvanceY(lineAscentOffset);
-                }
+                // Wrapped lines must also stay out of wrapTopAndBottom bands.
+                state.AvoidWrapObstacles(lineAscentOffset, Math.Max(0f, lineHeight - lineAscentOffset));
 
                 var line = lines[i];
                 var lineX = i == 0 ? firstLineX : x;
@@ -1999,6 +2072,11 @@ internal static class DocxToPdfConverter
 
     }
 
+    /// <summary>
+    /// Draws the paragraph's <c>w:pBdr</c> borders around the box that spans
+    /// <paramref name="paragraphTop"/> to <paramref name="paragraphBottom"/> on the
+    /// current page.  Empty paragraphs drop the top and bottom border spacing.
+    /// </summary>
     private static void RenderParagraphBorders(RenderState state, DocxParagraph paragraph, float paragraphTop, float paragraphBottom,
         bool isEmptyParagraph = false)
     {
@@ -2026,13 +2104,17 @@ internal static class DocxToPdfConverter
     }
 
     /// <summary>
-    /// Renders floating text boxes (wrapNone) at their absolute page positions.
-    /// These text boxes do not affect the normal document flow.
+    /// Renders floating text boxes at their absolute positions on the page the host
+    /// paragraph started on.  wrapNone boxes do not affect the normal document flow;
+    /// page- or margin-anchored wrapTopAndBottom boxes register their band as a
+    /// <see cref="RenderState.WrapObstacles"/> entry so the flow resumes below the box.
     /// </summary>
     private static void RenderFloatingTextBoxes(RenderState state, List<DocxFloatingTextBox> boxes,
         DocxParagraph hostParagraph, float paragraphY)
     {
-        var page = state.CurrentPage;
+        // A host paragraph that ends with a page break has already moved the flow to
+        // the next page; anchor the boxes to the page the paragraph started on.
+        var page = state.LastParagraphPage ?? state.CurrentPage;
         if (page == null) return;
         var options = state.Options;
         var hostPageIdx = -1;
@@ -2116,6 +2198,24 @@ internal static class DocxToPdfConverter
             else // margin
             {
                 boxTop = options.PageHeight - options.MarginTop - box.YPt;
+            }
+
+            // wrapTopAndBottom: text may not flow beside the box (LibreOffice's
+            // WrapTextMode_NONE claims both margins in sw/source/core/text/txtfly.cxx).
+            // Record the band as an obstacle so every following paragraph start on
+            // that page checks its own first line against it, and move the flow
+            // below the band right away using the host paragraph's metrics.
+            if (box.IsWrapTopBottom)
+            {
+                state.WrapObstacles ??= new List<(PdfPage Page, float TopY, float BottomY)>();
+                state.WrapObstacles.Add((targetPage, boxTop, boxTop - box.HeightPt));
+                var nextLineHeight = state.LastLineHeight > 0
+                    ? state.LastLineHeight
+                    : hostFontSize * GetFontMetricsFactor(hostFontName);
+                var nextAscent = options.GridLinePitch > 0 && hostParagraph.SnapToGrid
+                    ? GetGridAscentOffset(nextLineHeight, hostFontSize, hostFontName)
+                    : hostFontSize * GetTopOfPageAscentRatio(hostFontName, ResolveLineSpacingMul(hostParagraph, options));
+                state.AvoidWrapObstacles(nextAscent, Math.Max(0f, nextLineHeight - nextAscent));
             }
 
             // Render fill background if present
@@ -2237,7 +2337,7 @@ internal static class DocxToPdfConverter
                         var textWidth = EstimateWrapTextWidth(line, fontSize, bold, 0, useCalibriWidths: false);
                         x = boxLeft + leftInset + maxWidth - textWidth;
                     }
-                    targetPage.AddText(line, x, currentY, fontSize, color, bold: bold, italic: italic);
+                    targetPage.AddText(line, x, currentY, fontSize, color, bold: bold, italic: italic, preferredFontName: paraRunFont);
                     currentY -= lineHeight;
                 }
             }
@@ -2508,6 +2608,22 @@ internal static class DocxToPdfConverter
         var isFirstLine = true;
         var rightEdge = state.Options.MarginLeft + state.UsableWidth - paragraph.IndentRight;
 
+        void AdvanceToContinuationLine(float fontSize, string? fontName)
+        {
+            var descent = fontSize * (GetFontMetricsFactor(fontName) - 1f);
+            if (!state.IsTopOfPage && state.CurrentY - descent < state.Options.MarginBottom)
+                state.ForceNewPage();
+            else
+                state.AdvanceY(lineHeight);
+            state.EnsurePage();
+            var ascent = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
+                ? (lineHeight + fontSize) / 2f
+                : fontSize * GetTopOfPageAscentRatio(fontName, ResolveLineSpacingMul(paragraph, state.Options));
+            if (state.IsTopOfPage)
+                state.AdvanceY(ascent);
+            state.AvoidWrapObstacles(ascent, Math.Max(0f, lineHeight - ascent));
+        }
+
         // For center/right alignment, pre-calculate total line width of all runs
         // and offset the starting X position.
         // Use Helvetica widths (useCalibri=false) because the multi-format path
@@ -2773,18 +2889,7 @@ internal static class DocxToPdfConverter
                     // The line ending at this <w:br/> is the last visual line
                     // of the preceding segment, so it must not be justified.
                     FlushLineEntries(isLastLine: true);
-                    if (!state.IsTopOfPage && state.CurrentY - runFs * (GetFontMetricsFactor(run.FontName) - 1f) < state.Options.MarginBottom)
-                        state.ForceNewPage();
-                    else
-                        state.AdvanceY(lineHeight);
-                    state.EnsurePage();
-                    if (state.IsTopOfPage)
-                    {
-                        var hardBrAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
-                            ? (lineHeight + runFs) / 2f
-                            : runFs * GetTopOfPageAscentRatio(run.FontName, ResolveLineSpacingMul(paragraph, state.Options));
-                        state.AdvanceY(hardBrAscentOffset);
-                    }
+                    AdvanceToContinuationLine(runFs, run.FontName);
                     currentX = baseX;
                     isFirstLine = false;
                 }
@@ -3039,18 +3144,7 @@ internal static class DocxToPdfConverter
                             }
                             FlushLineEntries();
                             // Wrap to next line
-                            if (!state.IsTopOfPage && state.CurrentY - runFs * (GetFontMetricsFactor(run.FontName) - 1f) < state.Options.MarginBottom)
-                                state.ForceNewPage();
-                            else
-                                state.AdvanceY(lineHeight);
-                            state.EnsurePage();
-                            if (state.IsTopOfPage)
-                            {
-                                var wrapAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
-                                    ? (lineHeight + runFs) / 2f
-                                    : runFs * GetTopOfPageAscentRatio(run.FontName, ResolveLineSpacingMul(paragraph, state.Options));
-                                state.AdvanceY(wrapAscentOffset);
-                            }
+                            AdvanceToContinuationLine(runFs, run.FontName);
                             currentX = baseX;
                             pendingX = currentX;
                             isFirstLine = false;
@@ -3111,18 +3205,7 @@ internal static class DocxToPdfConverter
                         BufferOrEmit(pendingText[..breakAt], pendingX, state.CurrentY + run.VerticalPosition, runFs, runColor, run.Bold, run.Italic, run.Underline, run.CharSpacing, run.FontName, cjkBrkMaxW > 0 ? cjkBrkMaxW : (float?)null, null, run.Shading);
                         FlushLineEntries();
                         pendingText = pendingText[breakAt..];
-                        if (!state.IsTopOfPage && state.CurrentY - runFs * (GetFontMetricsFactor(run.FontName) - 1f) < state.Options.MarginBottom)
-                            state.ForceNewPage();
-                        else
-                            state.AdvanceY(lineHeight);
-                        state.EnsurePage();
-                        if (state.IsTopOfPage)
-                        {
-                            var cjkBrkAscentOffset = state.Options.GridLinePitch > 0 && paragraph.SnapToGrid
-                                ? (lineHeight + runFs) / 2f
-                                : runFs * GetTopOfPageAscentRatio(run.FontName, ResolveLineSpacingMul(paragraph, state.Options));
-                            state.AdvanceY(cjkBrkAscentOffset);
-                        }
+                        AdvanceToContinuationLine(runFs, run.FontName);
                         currentX = baseX + EstimateWrapTextWidth(pendingText, runFs, run.Bold, run.CharSpacing, useCalibri) * nonCalibriWidthFactor;
                         pendingX = baseX;
                         isFirstLine = false;
