@@ -130,6 +130,22 @@ func TestConvertXLSXToPDF(t *testing.T) {
 	}
 }
 
+func TestSplitWorksheetColumnGroups(t *testing.T) {
+	lines := []string{
+		"A\tB\tC\tD\tE\tF\tG\tH\tI\tJ",
+		"A1\tB1\tC1\tD1\tE1\tF1\tG1\tH1\tI1\tJ1",
+	}
+
+	groups := splitWorksheetColumnGroups(lines, 9)
+
+	if len(groups) != 2 {
+		t.Fatalf("group count = %d, want 2", len(groups))
+	}
+	if groups[0][0] != "A\tB\tC\tD\tE\tF\tG\tH\tI" || groups[1][0] != "J" {
+		t.Fatalf("groups = %#v", groups)
+	}
+}
+
 func TestConvertPPTXToPDF(t *testing.T) {
 	input := officePackageBytes(t, map[string]string{
 		"ppt/presentation.xml":  `<?xml version="1.0"?><p:presentation xmlns:p="urn:p"><p:sldSz cx="9144000" cy="6858000"/></p:presentation>`,

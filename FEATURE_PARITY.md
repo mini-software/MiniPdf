@@ -262,6 +262,12 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   The empty-workbook case improved from `0.5995` to `1.0`, and no case
   regressed. See the local
   [`report`](artifacts/go-parity-sheet-spacing/report/comparison_report.md).
+- 2026-09-14: nine-column horizontal pagination raised the wide-table case from
+  `0.6867` with `1/3` pages to `0.9953` with `3/3` pages. The five-case average
+  reached `0.9975`; an apparent `classic02` text-score fluctuation was confirmed
+  unrelated because its before/after candidate SHA-256 hashes were identical.
+  See the local
+  [`report`](artifacts/go-parity-xlsx-pagination-final/report/comparison_report.md).
 
 ## Alignment Backlog
 

@@ -31,10 +31,38 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 		if parseErr != nil {
 			return nil, fmt.Errorf("parse %s: %w", name, parseErr)
 		}
-		lines = append([]string{""}, lines...)
-		pages = append(pages, textPage{lines: lines, size: pageSize})
+		for _, group := range splitWorksheetColumnGroups(lines, 9) {
+			group = append([]string{""}, group...)
+			pages = append(pages, textPage{lines: group, size: pageSize})
+		}
 	}
 	return renderTextPages(pages, options), nil
+}
+
+func splitWorksheetColumnGroups(lines []string, columnsPerPage int) [][]string {
+	maximumColumns := 0
+	for _, line := range lines {
+		maximumColumns = max(maximumColumns, len(strings.Split(line, "\t")))
+	}
+	if maximumColumns <= columnsPerPage || columnsPerPage <= 0 {
+		return [][]string{lines}
+	}
+
+	groups := make([][]string, 0, (maximumColumns+columnsPerPage-1)/columnsPerPage)
+	for start := 0; start < maximumColumns; start += columnsPerPage {
+		end := min(start+columnsPerPage, maximumColumns)
+		group := make([]string, len(lines))
+		for rowIndex, line := range lines {
+			cells := strings.Split(line, "\t")
+			if start >= len(cells) {
+				continue
+			}
+			rowEnd := min(end, len(cells))
+			group[rowIndex] = strings.Join(cells[start:rowEnd], "\t")
+		}
+		groups = append(groups, group)
+	}
+	return groups
 }
 
 func errorsNewMissingWorksheets() error {
