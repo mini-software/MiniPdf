@@ -889,7 +889,7 @@ fn base14_text_width(text: &str, font_size: f32, bold: bool) -> f32 {
         / 1000.0
 }
 
-fn helvetica_glyph_width(ch: char, bold: bool) -> u32 {
+pub(crate) fn helvetica_glyph_width(ch: char, bold: bool) -> u32 {
     const REGULAR: [u16; 95] = [
         278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556,
         556, 556, 556, 556, 556, 556, 556, 556, 278, 278, 584, 584, 584, 556, 1015, 667, 667, 722,

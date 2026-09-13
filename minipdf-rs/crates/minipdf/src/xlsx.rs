@@ -4,7 +4,9 @@ use std::io::{Cursor, Read};
 use unicode_bidi::{bidi_class, BidiClass};
 use zip::ZipArchive;
 
-use crate::pdf::{styled_text_width_with_font, PdfColor, PdfDocument, PdfTextStyle};
+use crate::pdf::{
+    helvetica_glyph_width, styled_text_width_with_font, PdfColor, PdfDocument, PdfTextStyle,
+};
 use crate::{read_zip_text, ConversionOptions, PageSize, Result};
 
 const MARGIN_X: f32 = 54.0;
@@ -36,6 +38,7 @@ const CENTERED_VML_IMAGE_VERTICAL_SCALE: f32 = 1.017;
 const CENTERED_VML_IMAGE_VERTICAL_OFFSET: f32 = 4.8;
 const SVG_FALLBACK_HORIZONTAL_SCALE: f32 = 0.972;
 const GROUP_DRAWING_TOP_OFFSET: f32 = 0.96;
+const CALIBRI_FITTING_SCALE: f32 = 0.85;
 const ROW_HEIGHT: f32 = 15.0;
 const COL_WIDTH: f32 = 47.4;
 
@@ -4008,16 +4011,129 @@ fn render_sheet(
     };
 
     for (column_start, column_end) in column_ranges {
-        render_sheet_columns(
-            doc,
+        let horizontal_pages = single_column_text_pages(
             sheet,
-            image_ids,
-            &widths,
-            column_start,
-            column_end,
-            &layout,
+            page_size.width - sheet.page_setup.margin_left,
+            content_scale,
         );
+        if horizontal_pages.is_empty() {
+            render_sheet_columns(
+                doc,
+                sheet,
+                image_ids,
+                &widths,
+                column_start,
+                column_end,
+                &layout,
+            );
+        } else {
+            for horizontal_page in &horizontal_pages {
+                render_sheet_columns(
+                    doc,
+                    horizontal_page,
+                    image_ids,
+                    &widths,
+                    column_start,
+                    column_end,
+                    &layout,
+                );
+            }
+        }
     }
+}
+
+fn single_column_text_pages(
+    sheet: &SheetData,
+    page_clip_width: f32,
+    content_scale: f32,
+) -> Vec<SheetData> {
+    if sheet.page_setup.fit_to_width
+        || rendered_column_count(sheet) != 1
+        || !sheet.images.is_empty()
+        || !sheet.merges.is_empty()
+        || sheet.rows.iter().any(|row| {
+            row.cells.first().is_some_and(|cell| {
+                cell.is_numeric
+                    || cell.style.wrap_text
+                    || cell.style.stacked_text
+                    || cell.style.horizontal_alignment == HorizontalAlignment::Right
+                    || has_rtl_base_direction(&cell.text)
+            })
+        })
+    {
+        return Vec::new();
+    }
+
+    let chunks = sheet
+        .rows
+        .iter()
+        .map(|row| {
+            row.cells.first().map_or_else(
+                || vec![String::new()],
+                |cell| {
+                    split_text_for_horizontal_pages(
+                        &cell.text.replace(['\r', '\n'], " "),
+                        page_clip_width,
+                        cell.style.font_size * content_scale,
+                        cell.style,
+                    )
+                },
+            )
+        })
+        .collect::<Vec<_>>();
+    let page_count = chunks.iter().map(Vec::len).max().unwrap_or(1);
+    if page_count <= 1 {
+        return Vec::new();
+    }
+
+    (0..page_count)
+        .map(|page_index| {
+            let mut page = sheet.clone();
+            for (row, row_chunks) in page.rows.iter_mut().zip(&chunks) {
+                if let Some(cell) = row.cells.first_mut() {
+                    cell.text = row_chunks.get(page_index).cloned().unwrap_or_default();
+                }
+            }
+            page
+        })
+        .collect()
+}
+
+fn split_text_for_horizontal_pages(
+    text: &str,
+    max_width: f32,
+    font_size: f32,
+    style: CellStyle,
+) -> Vec<String> {
+    if text.is_empty() {
+        return vec![String::new()];
+    }
+
+    let mut chunks = Vec::new();
+    let mut chunk = String::new();
+    for character in text.chars() {
+        chunk.push(character);
+        if chunk.chars().count() > 1
+            && excel_fitting_text_width(&chunk, font_size, style.bold) > max_width
+        {
+            chunk.pop();
+            chunks.push(std::mem::take(&mut chunk));
+            chunk.push(character);
+        }
+    }
+    if !chunk.is_empty() {
+        chunks.push(chunk);
+    }
+    chunks
+}
+
+fn excel_fitting_text_width(text: &str, font_size: f32, bold: bool) -> f32 {
+    text.chars()
+        .map(|character| helvetica_glyph_width(character, bold))
+        .sum::<u32>() as f32
+        * font_size
+        / 1000.0
+        * CALIBRI_FITTING_SCALE
 }
 
 fn rendered_column_count(sheet: &SheetData) -> usize {
@@ -5059,13 +5175,13 @@ mod tests {
         parse_vml_crop, parse_vml_style_points, parse_windows_devmode_page_size,
         read_column_widths, read_legacy_drawing_images, read_merge_ranges, read_page_setup,
         read_row_breaks, read_sheet_footer, read_sheet_rows, read_two_cell_shape, relationship_id,
-        rendered_column_count, spreadsheet_theme_colors, text_overflow_region,
+        render_sheet, rendered_column_count, spreadsheet_theme_colors, text_overflow_region,
         trim_trailing_empty_rows, wrap_cell_text, xlsx_horizontal_scale, xlsx_left_offset,
         xlsx_vertical_scale, CellData, CellStyle, DifferentialFontStyle, HorizontalAlignment,
         MergeRange, RowData, SheetData, SheetImage, SheetImageData, SheetPageSetup,
-        VerticalAlignment, XlsxStyles,
+        VerticalAlignment, XlsxStyles, COL_WIDTH,
     };
-    use crate::{PageSize, PdfColor};
+    use crate::{PageSize, PdfColor, PdfDocument};
     use zip::write::SimpleFileOptions;
     use zip::ZipArchive;
 
@@ -5975,6 +6091,44 @@ mod tests {
         assert!(constrained.len() > 1);
         assert_eq!(constrained.concat(), "ABCD");
         assert_eq!(words, vec!["alpha", "beta"]);
+    }
+
+    #[test]
+    fn paginates_single_column_text_overflow_horizontally() {
+        let rows = [
+            "Long Text Column".to_owned(),
+            "X".repeat(500),
+            format!("{} {}", "A".repeat(300), "B".repeat(200)),
+            "Short".to_owned(),
+            "Y".repeat(1000),
+        ]
+        .into_iter()
+        .enumerate()
+        .map(|(index, text)| RowData {
+            index,
+            height: 15.0,
+            cells: vec![CellData {
+                text,
+                ..CellData::default()
+            }],
+        })
+        .collect();
+        let sheet = SheetData {
+            rows,
+            images: Vec::new(),
+            column_widths: vec![COL_WIDTH],
+            merges: Vec::new(),
+            row_breaks: Vec::new(),
+            default_row_height: 15.0,
+            print_title_rows: None,
+            page_setup: SheetPageSetup::default(),
+            footer: None,
+        };
+        let mut document = PdfDocument::new();
+
+        render_sheet(&mut document, &sheet, &[], PageSize::A4);
+
+        assert_eq!(document.pages().len(), 12);
     }
 
     #[test]
