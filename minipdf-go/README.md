@@ -67,6 +67,7 @@ minipdf convert report.docx --page-width 400 --page-height 500
 | PDF output | Dependency-free PDF 1.4 writer |
 | Page size | Office geometry, A4/Letter presets, or custom points |
 | Fonts | Registration API reserved; embedding is not implemented yet |
+| Input safety | Bounded ZIP entry count, size, expansion ratio, encryption, and path validation |
 | Interfaces | Go package and native CLI |
 
 The initial renderer deliberately does not claim support for Office styles,

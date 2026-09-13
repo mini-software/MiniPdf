@@ -1,7 +1,6 @@
 package minipdf
 
 import (
-	"archive/zip"
 	"bytes"
 	"errors"
 	"fmt"
@@ -14,6 +13,7 @@ import (
 
 var (
 	ErrUnsupportedFormat = errors.New("unsupported or unknown Office document format")
+	ErrInvalidPackage    = errors.New("invalid Office package")
 	PageSizeA4           = PageSize{Width: 595.28, Height: 841.89}
 	PageSizeLetter       = PageSize{Width: 612, Height: 792}
 )
@@ -70,12 +70,11 @@ func RegisteredFonts() []RegisteredFont {
 }
 
 func DetectOfficeFormat(input []byte) (OfficeFormat, error) {
-	reader, err := zip.NewReader(bytes.NewReader(input), int64(len(input)))
+	files, err := openOfficePackage(input)
 	if err != nil {
-		return OfficeFormatUnknown, fmt.Errorf("open Office package: %w", err)
+		return OfficeFormatUnknown, err
 	}
-	for _, file := range reader.File {
-		name := strings.ReplaceAll(file.Name, `\`, "/")
+	for name := range files {
 		switch {
 		case strings.HasPrefix(name, "word/"):
 			return OfficeFormatDOCX, nil

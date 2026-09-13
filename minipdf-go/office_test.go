@@ -3,8 +3,108 @@ package minipdf
 import (
 	"archive/zip"
 	"bytes"
+	"errors"
+	"strings"
 	"testing"
 )
+
+func TestOpenOfficePackageRejectsUnsafePaths(t *testing.T) {
+	input := officePackageEntries(t, []packageEntry{
+		{name: "word/document.xml", content: "<document/>"},
+		{name: "../escape.xml", content: "<escape/>"},
+	})
+
+	_, err := openOfficePackage(input)
+	assertPackageErrorContains(t, err, "unsafe entry path")
+	if !errors.Is(err, ErrInvalidPackage) {
+		t.Fatalf("error = %v, want ErrInvalidPackage", err)
+	}
+}
+
+func TestOpenOfficePackageRejectsDuplicateNormalizedPaths(t *testing.T) {
+	input := officePackageEntries(t, []packageEntry{
+		{name: "word/document.xml", content: "<document/>"},
+		{name: `word\document.xml`, content: "<duplicate/>"},
+	})
+
+	_, err := openOfficePackage(input)
+	assertPackageErrorContains(t, err, "duplicate entry")
+}
+
+func TestValidateOfficePackageLimits(t *testing.T) {
+	baseLimits := officePackageLimits{
+		maxEntries:       10,
+		maxEntrySize:     100,
+		maxTotalSize:     200,
+		maxExpansionRate: 10,
+	}
+	tests := []struct {
+		name      string
+		entries   []*zip.File
+		inputSize uint64
+		limits    officePackageLimits
+		message   string
+	}{
+		{
+			name: "entry count",
+			entries: []*zip.File{
+				zipFile("word/document.xml", 1, 1, 0),
+				zipFile("word/styles.xml", 1, 1, 0),
+			},
+			inputSize: 2,
+			limits:    officePackageLimits{maxEntries: 1, maxEntrySize: 100, maxTotalSize: 200, maxExpansionRate: 10},
+			message:   "too many entries",
+		},
+		{
+			name:      "entry size",
+			entries:   []*zip.File{zipFile("word/document.xml", 10, 101, 0)},
+			inputSize: 10,
+			limits:    baseLimits,
+			message:   "entry \"word/document.xml\" expands beyond",
+		},
+		{
+			name: "total size",
+			entries: []*zip.File{
+				zipFile("word/document.xml", 60, 60, 0),
+				zipFile("word/styles.xml", 60, 60, 0),
+			},
+			inputSize: 120,
+			limits:    officePackageLimits{maxEntries: 10, maxEntrySize: 100, maxTotalSize: 100, maxExpansionRate: 10},
+			message:   "package expands beyond",
+		},
+		{
+			name:      "entry expansion ratio",
+			entries:   []*zip.File{zipFile("word/document.xml", 10, 101, 0)},
+			inputSize: 101,
+			limits:    officePackageLimits{maxEntries: 10, maxEntrySize: 200, maxTotalSize: 200, maxExpansionRate: 10},
+			message:   "entry \"word/document.xml\" exceeds",
+		},
+		{
+			name:      "package expansion ratio",
+			entries:   []*zip.File{zipFile("word/document.xml", 30, 30, 0)},
+			inputSize: 2,
+			limits:    baseLimits,
+			message:   "package exceeds",
+		},
+		{
+			name:      "encrypted entry",
+			entries:   []*zip.File{zipFile("word/document.xml", 1, 1, 0x1)},
+			inputSize: 1,
+			limits:    baseLimits,
+			message:   "encrypted entry",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			_, err := validateOfficePackage(test.entries, test.inputSize, test.limits)
+			assertPackageErrorContains(t, err, test.message)
+			if !errors.Is(err, ErrInvalidPackage) {
+				t.Fatalf("error = %v, want ErrInvalidPackage", err)
+			}
+		})
+	}
+}
 
 func TestConvertDOCXToPDF(t *testing.T) {
 	input := officePackageBytes(t, map[string]string{
@@ -58,14 +158,37 @@ func assertPDFContains(t *testing.T, pdf []byte, err error, values ...string) {
 
 func officePackageBytes(t *testing.T, entries map[string]string) []byte {
 	t.Helper()
+	packageEntries := make([]packageEntry, 0, len(entries))
+	for name, content := range entries {
+		packageEntries = append(packageEntries, packageEntry{name: name, content: content})
+	}
+	return officePackageEntries(t, packageEntries)
+}
+
+type packageEntry struct {
+	name    string
+	content string
+}
+
+func zipFile(name string, compressedSize, uncompressedSize uint64, flags uint16) *zip.File {
+	return &zip.File{FileHeader: zip.FileHeader{
+		Name:               name,
+		Flags:              flags,
+		CompressedSize64:   compressedSize,
+		UncompressedSize64: uncompressedSize,
+	}}
+}
+
+func officePackageEntries(t *testing.T, entries []packageEntry) []byte {
+	t.Helper()
 	var buffer bytes.Buffer
 	writer := zip.NewWriter(&buffer)
-	for name, content := range entries {
-		file, err := writer.Create(name)
+	for _, entry := range entries {
+		file, err := writer.Create(entry.name)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _, err := file.Write([]byte(content)); err != nil {
+		if _, err := file.Write([]byte(entry.content)); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -73,4 +196,14 @@ func officePackageBytes(t *testing.T, entries map[string]string) []byte {
 		t.Fatal(err)
 	}
 	return buffer.Bytes()
+}
+
+func assertPackageErrorContains(t *testing.T, err error, message string) {
+	t.Helper()
+	if err == nil {
+		t.Fatalf("expected package error containing %q", message)
+	}
+	if !strings.Contains(err.Error(), message) {
+		t.Fatalf("error = %q, want message containing %q", err, message)
+	}
 }

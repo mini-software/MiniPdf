@@ -15,6 +15,20 @@ import (
 
 type officePackage map[string]*zip.File
 
+type officePackageLimits struct {
+	maxEntries       int
+	maxEntrySize     uint64
+	maxTotalSize     uint64
+	maxExpansionRate uint64
+}
+
+var defaultOfficePackageLimits = officePackageLimits{
+	maxEntries:       10_000,
+	maxEntrySize:     128 * 1024 * 1024,
+	maxTotalSize:     512 * 1024 * 1024,
+	maxExpansionRate: 200,
+}
+
 type textPage struct {
 	lines []string
 	size  PageSize
@@ -23,13 +37,71 @@ type textPage struct {
 func openOfficePackage(input []byte) (officePackage, error) {
 	reader, err := zip.NewReader(bytes.NewReader(input), int64(len(input)))
 	if err != nil {
-		return nil, fmt.Errorf("open Office package: %w", err)
+		return nil, fmt.Errorf("%w: open ZIP package: %v", ErrInvalidPackage, err)
 	}
-	files := make(officePackage, len(reader.File))
-	for _, file := range reader.File {
-		files[strings.ReplaceAll(file.Name, `\`, "/")] = file
+	return validateOfficePackage(reader.File, uint64(len(input)), defaultOfficePackageLimits)
+}
+
+func validateOfficePackage(entries []*zip.File, inputSize uint64, limits officePackageLimits) (officePackage, error) {
+	if len(entries) > limits.maxEntries {
+		return nil, fmt.Errorf("%w: ZIP package contains too many entries", ErrInvalidPackage)
+	}
+	files := make(officePackage, len(entries))
+	seen := make(map[string]struct{}, len(entries))
+	var totalSize uint64
+	for _, file := range entries {
+		name, err := normalizePackagePath(file.Name)
+		if err != nil {
+			return nil, err
+		}
+		if _, exists := seen[name]; exists {
+			return nil, fmt.Errorf("%w: ZIP package contains duplicate entry %q", ErrInvalidPackage, name)
+		}
+		seen[name] = struct{}{}
+		if file.Flags&0x1 != 0 {
+			return nil, fmt.Errorf("%w: encrypted entry %q is not supported", ErrInvalidPackage, name)
+		}
+		if file.UncompressedSize64 > limits.maxEntrySize {
+			return nil, fmt.Errorf("%w: ZIP entry %q expands beyond the configured limit", ErrInvalidPackage, name)
+		}
+		if exceedsExpansionRatio(file.UncompressedSize64, file.CompressedSize64, limits.maxExpansionRate) {
+			return nil, fmt.Errorf("%w: ZIP entry %q exceeds the configured expansion ratio", ErrInvalidPackage, name)
+		}
+		if totalSize > limits.maxTotalSize || file.UncompressedSize64 > limits.maxTotalSize-totalSize {
+			return nil, fmt.Errorf("%w: ZIP package expands beyond the configured limit", ErrInvalidPackage)
+		}
+		totalSize += file.UncompressedSize64
+		if exceedsExpansionRatio(totalSize, inputSize, limits.maxExpansionRate) {
+			return nil, fmt.Errorf("%w: ZIP package exceeds the configured expansion ratio", ErrInvalidPackage)
+		}
+		if !file.FileInfo().IsDir() {
+			files[name] = file
+		}
 	}
 	return files, nil
+}
+
+func exceedsExpansionRatio(uncompressedSize, compressedSize, maximum uint64) bool {
+	if uncompressedSize == 0 {
+		return false
+	}
+	if compressedSize == 0 || maximum == 0 {
+		return true
+	}
+	return (uncompressedSize+maximum-1)/maximum > compressedSize
+}
+
+func normalizePackagePath(name string) (string, error) {
+	normalized := strings.ReplaceAll(name, `\`, "/")
+	if strings.HasPrefix(normalized, "/") || strings.Contains(normalized, ":") || strings.ContainsRune(normalized, '\x00') {
+		return "", fmt.Errorf("%w: ZIP package contains unsafe entry path %q", ErrInvalidPackage, name)
+	}
+	for _, segment := range strings.Split(normalized, "/") {
+		if segment == ".." {
+			return "", fmt.Errorf("%w: ZIP package contains unsafe entry path %q", ErrInvalidPackage, name)
+		}
+	}
+	return normalized, nil
 }
 
 func (files officePackage) read(name string) ([]byte, error) {
@@ -42,9 +114,12 @@ func (files officePackage) read(name string) ([]byte, error) {
 		return nil, fmt.Errorf("open Office package part %q: %w", name, err)
 	}
 	defer reader.Close()
-	data, err := io.ReadAll(reader)
+	data, err := io.ReadAll(io.LimitReader(reader, int64(defaultOfficePackageLimits.maxEntrySize)+1))
 	if err != nil {
 		return nil, fmt.Errorf("read Office package part %q: %w", name, err)
+	}
+	if uint64(len(data)) > defaultOfficePackageLimits.maxEntrySize {
+		return nil, fmt.Errorf("read Office package part %q: entry expands beyond the configured limit", name)
 	}
 	return data, nil
 }
