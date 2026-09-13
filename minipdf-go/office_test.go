@@ -125,6 +125,9 @@ func TestConvertXLSXToPDF(t *testing.T) {
 
 	pdf, err := ConvertBytesToPDF(input)
 	assertPDFContains(t, pdf, err, "Hello XLSX", "Cell B", "/MediaBox [0 0 792 612]")
+	if bytes.Contains(pdf, []byte("Sheet 1")) {
+		t.Fatal("PDF contains a synthetic worksheet title")
+	}
 }
 
 func TestConvertPPTXToPDF(t *testing.T) {

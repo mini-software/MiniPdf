@@ -257,6 +257,11 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   [`before`](artifacts/go-parity-baseline/report/comparison_report.md) and
   [`after`](artifacts/go-parity-stream-fixed/report/comparison_report.md)
   reports.
+- 2026-09-14: removing synthetic `Sheet N` text while preserving worksheet
+  vertical spacing raised the same five-case average from `0.8093` to `0.9365`.
+  The empty-workbook case improved from `0.5995` to `1.0`, and no case
+  regressed. See the local
+  [`report`](artifacts/go-parity-sheet-spacing/report/comparison_report.md).
 
 ## Alignment Backlog
 

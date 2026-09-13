@@ -22,7 +22,7 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 		return nil, errorsNewMissingWorksheets()
 	}
 	pages := make([]textPage, 0, len(worksheets))
-	for index, name := range worksheets {
+	for _, name := range worksheets {
 		worksheetXML, readErr := files.read(name)
 		if readErr != nil {
 			return nil, readErr
@@ -31,7 +31,7 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 		if parseErr != nil {
 			return nil, fmt.Errorf("parse %s: %w", name, parseErr)
 		}
-		lines = append([]string{fmt.Sprintf("Sheet %d", index+1)}, lines...)
+		lines = append([]string{""}, lines...)
 		pages = append(pages, textPage{lines: lines, size: pageSize})
 	}
 	return renderTextPages(pages, options), nil
