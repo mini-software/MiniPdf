@@ -29,7 +29,7 @@ shared security or conformance gap can exist in every implementation.
 | PPTX to PDF | P | P | P | P | P | B |
 | Path input and file output | I | I | I | I | I | B |
 | In-memory input and PDF bytes | I | I | I | I | I | B |
-| Stream input and output | I | M | M | M | M | M |
+| Stream input and output | I | M | M | I | M | M |
 | Format detection API | Internal | I | I | I | I | B |
 | Page-size override | DOCX only | I | I | I | I | B |
 | Margin override | I | M | M | M | M | M |
@@ -60,7 +60,7 @@ print scale, rows-per-page, and culture-aware value formatting in
 
 | Gap relative to .NET | Rust | Java | Go | Python | Node.js |
 |---|---:|---:|---:|---:|---:|
-| Input/output stream API | M | M | M | M | M |
+| Input/output stream API | M | M | I | M | M |
 | Conversion diagnostics | M | M | M | M | M |
 | PDF stream compression option | M | M | M | M | M |
 | DOCX margin override | M | M | M | M | M |
@@ -68,7 +68,7 @@ print scale, rows-per-page, and culture-aware value formatting in
 | XLSX row/column limits | M | M | M | M | M |
 | XLSX orientation/fit/scale controls | M | M | M | M | M |
 | Culture-aware XLSX formatting | M | M | M | M | M |
-| Font clear API | M | I | M | M | M |
+| Font clear API | M | I | I | M | M |
 | Registered-font list API | I | I | I | I | I |
 | CLI font directory | I | I | M | M | M |
 | CLI advanced XLSX options | M | M | M | M | M |
@@ -88,6 +88,10 @@ Evidence:
 - Node.js exposes synchronous Rust conversion bindings in
   [`lib.rs`](minipdf-node/src/lib.rs); callers must use a worker thread to avoid
   blocking the Node.js event loop.
+
+Go also provides bounded `io.Reader` input, `io.Writer` output, and complete
+register/list/clear font lifecycle APIs. Conversion still builds the PDF bytes
+in memory before writing them.
 
 Before adding every .NET option to every language, define a versioned common
 options contract. Format-specific options should be capability-gated and

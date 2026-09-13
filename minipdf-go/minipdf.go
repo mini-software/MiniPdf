@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"math"
 	"os"
 	"path/filepath"
@@ -67,6 +68,42 @@ func RegisteredFonts() []RegisteredFont {
 		fonts[index] = RegisteredFont{Name: font.Name, Data: bytes.Clone(font.Data)}
 	}
 	return fonts
+}
+
+// ClearRegisteredFonts removes all process-wide font registrations.
+func ClearRegisteredFonts() {
+	fontRegistry.Lock()
+	defer fontRegistry.Unlock()
+	fontRegistry.fonts = nil
+}
+
+// ConvertReaderToPDF reads an Office package and returns the converted PDF.
+func ConvertReaderToPDF(input io.Reader) ([]byte, error) {
+	return ConvertReaderToPDFWithOptions(input, ConversionOptions{})
+}
+
+// ConvertReaderToPDFWithOptions reads an Office package and returns the converted PDF.
+func ConvertReaderToPDFWithOptions(input io.Reader, options ConversionOptions) ([]byte, error) {
+	data, err := io.ReadAll(io.LimitReader(input, int64(defaultOfficePackageLimits.maxTotalSize)+1))
+	if err != nil {
+		return nil, fmt.Errorf("read input: %w", err)
+	}
+	if uint64(len(data)) > defaultOfficePackageLimits.maxTotalSize {
+		return nil, fmt.Errorf("%w: input exceeds the configured size limit", ErrInvalidPackage)
+	}
+	return ConvertBytesToPDFWithOptions(data, options)
+}
+
+// ConvertReaderToWriter converts an Office package and writes the PDF to output.
+func ConvertReaderToWriter(input io.Reader, output io.Writer, options ConversionOptions) error {
+	pdf, err := ConvertReaderToPDFWithOptions(input, options)
+	if err != nil {
+		return err
+	}
+	if _, err := io.Copy(output, bytes.NewReader(pdf)); err != nil {
+		return fmt.Errorf("write PDF: %w", err)
+	}
+	return nil
 }
 
 func DetectOfficeFormat(input []byte) (OfficeFormat, error) {

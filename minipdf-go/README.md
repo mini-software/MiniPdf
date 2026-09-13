@@ -35,6 +35,12 @@ Convert in-memory Office package bytes:
 pdf, err := minipdf.ConvertBytesToPDF(input)
 ```
 
+Convert between streams:
+
+```go
+err := minipdf.ConvertReaderToWriter(input, output, minipdf.ConversionOptions{})
+```
+
 Override the output page size:
 
 ```go
@@ -68,7 +74,7 @@ minipdf convert report.docx --page-width 400 --page-height 500
 | Page size | Office geometry, A4/Letter presets, or custom points |
 | Fonts | Registration API reserved; embedding is not implemented yet |
 | Input safety | Bounded ZIP entry count, size, expansion ratio, encryption, and path validation |
-| Interfaces | Go package and native CLI |
+| Interfaces | Go package with file, byte, and stream APIs; native CLI |
 
 The initial renderer deliberately does not claim support for Office styles,
 images, tables, charts, themes, formulas, merged cells, or font embedding.
