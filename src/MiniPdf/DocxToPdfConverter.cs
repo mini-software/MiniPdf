@@ -114,6 +114,13 @@ internal static class DocxToPdfConverter
         /// <summary>Page height in points (default: 792 = US Letter).</summary>
         public float PageHeight { get; set; } = 792;
 
+        internal float? PageWidthOverride { get; set; }
+        internal float? PageHeightOverride { get; set; }
+        internal float? MarginLeftOverride { get; set; }
+        internal float? MarginTopOverride { get; set; }
+        internal float? MarginRightOverride { get; set; }
+        internal float? MarginBottomOverride { get; set; }
+
         /// <summary>Document grid line pitch in points (0 = no grid).</summary>
         public float GridLinePitch { get; set; }
 
@@ -142,27 +149,41 @@ internal static class DocxToPdfConverter
         return Convert(stream, options);
     }
 
+    private static void ApplyPageLayoutOverrides(ConversionOptions options)
+    {
+        if (options.PageWidthOverride.HasValue) options.PageWidth = options.PageWidthOverride.Value;
+        if (options.PageHeightOverride.HasValue) options.PageHeight = options.PageHeightOverride.Value;
+        if (options.MarginLeftOverride.HasValue) options.MarginLeft = options.MarginLeftOverride.Value;
+        if (options.MarginTopOverride.HasValue) options.MarginTop = options.MarginTopOverride.Value;
+        if (options.MarginRightOverride.HasValue) options.MarginRight = options.MarginRightOverride.Value;
+        if (options.MarginBottomOverride.HasValue) options.MarginBottom = options.MarginBottomOverride.Value;
+    }
+
+    private static void ApplyPageLayout(ConversionOptions options, DocxPageLayout layout)
+    {
+        options.PageWidth = options.PageWidthOverride ?? layout.PageWidth;
+        options.PageHeight = options.PageHeightOverride ?? layout.PageHeight;
+        options.MarginLeft = options.MarginLeftOverride ?? layout.MarginLeft;
+        options.MarginTop = options.MarginTopOverride ?? layout.MarginTop;
+        options.MarginRight = options.MarginRightOverride ?? layout.MarginRight;
+        options.MarginBottom = options.MarginBottomOverride ?? layout.MarginBottom;
+        options.GridLinePitch = layout.GridLinePitch;
+        options.HeaderMargin = layout.HeaderMargin;
+        options.FooterMargin = layout.FooterMargin;
+    }
+
     /// <summary>
     /// Converts a DOCX stream to a PDF document.
     /// </summary>
     internal static PdfDocument Convert(Stream docxStream, ConversionOptions? options = null)
     {
         options ??= new ConversionOptions();
+        ApplyPageLayoutOverrides(options);
         var docxDoc = DocxReader.Read(docxStream);
 
         // Apply page layout from DOCX if available
         if (docxDoc.PageLayout is { } layout)
-        {
-            options.PageWidth = layout.PageWidth;
-            options.PageHeight = layout.PageHeight;
-            options.MarginTop = layout.MarginTop;
-            options.MarginBottom = layout.MarginBottom;
-            options.MarginLeft = layout.MarginLeft;
-            options.MarginRight = layout.MarginRight;
-            options.GridLinePitch = layout.GridLinePitch;
-            options.HeaderMargin = layout.HeaderMargin;
-            options.FooterMargin = layout.FooterMargin;
-        }
+            ApplyPageLayout(options, layout);
 
         // Apply document default line spacing from styles.xml docDefaults
         if (docxDoc.DefaultLineSpacing > 0 && !docxDoc.DefaultLineSpacingAbsolute)
@@ -208,18 +229,7 @@ internal static class DocxToPdfConverter
 
         // Apply first section's layout (or body layout as fallback)
         if (sectionLayouts.Count > 0)
-        {
-            var firstLayout = sectionLayouts[0];
-            options.PageWidth = firstLayout.PageWidth;
-            options.PageHeight = firstLayout.PageHeight;
-            options.MarginTop = firstLayout.MarginTop;
-            options.MarginBottom = firstLayout.MarginBottom;
-            options.MarginLeft = firstLayout.MarginLeft;
-            options.MarginRight = firstLayout.MarginRight;
-            options.GridLinePitch = firstLayout.GridLinePitch;
-            options.HeaderMargin = firstLayout.HeaderMargin;
-            options.FooterMargin = firstLayout.FooterMargin;
-        }
+            ApplyPageLayout(options, sectionLayouts[0]);
 
         // Pre-process: apply contextualSpacing rules — suppress spacing between
         // same-style consecutive paragraphs when either has contextualSpacing set.
@@ -243,7 +253,7 @@ internal static class DocxToPdfConverter
         var state = new RenderState(pdfDoc, options);
 
         // Adjust top margin when header content is taller than the default header area
-        if (docxDoc.HeaderElements is { Count: > 0 })
+        if (!options.MarginTopOverride.HasValue && docxDoc.HeaderElements is { Count: > 0 })
         {
             var headerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.HeaderElements), options);
             var headerAreaHeight = options.MarginTop - options.HeaderMargin;
@@ -258,7 +268,7 @@ internal static class DocxToPdfConverter
             }
         }
         // Adjust bottom margin when footer content is taller than the default footer area
-        if (docxDoc.FooterElements is { Count: > 0 })
+        if (!options.MarginBottomOverride.HasValue && docxDoc.FooterElements is { Count: > 0 })
         {
             var footerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.FooterElements), options);
             var footerTopFromBottom = options.FooterMargin + footerContentHeight;
@@ -321,15 +331,7 @@ internal static class DocxToPdfConverter
                             if (state.ColumnCount > 1)
                                 state.ExitMultiColumnSection();
 
-                            state.Options.PageWidth = nextLayout.PageWidth;
-                            state.Options.PageHeight = nextLayout.PageHeight;
-                            state.Options.MarginTop = nextLayout.MarginTop;
-                            state.Options.MarginBottom = nextLayout.MarginBottom;
-                            state.Options.MarginLeft = nextLayout.MarginLeft;
-                            state.Options.MarginRight = nextLayout.MarginRight;
-                            state.Options.GridLinePitch = nextLayout.GridLinePitch;
-                            state.Options.HeaderMargin = nextLayout.HeaderMargin;
-                            state.Options.FooterMargin = nextLayout.FooterMargin;
+                            ApplyPageLayout(state.Options, nextLayout);
 
                             // Continuous sections don't force a new page
                             if (nextLayout.SectionType == "continuous")

@@ -242,6 +242,133 @@ public class DocxIssueFileTests
         Assert.InRange(projectTableRowBoundaries[1] - projectTableRowBoundaries[2], 12f, 14f);
     }
 
+    [Fact]
+    public void Issue159_FixtureDeclaresExpectedPageLayout()
+    {
+        var issuePath = FindIssueDocx("Issue159_PageLayoutOptions.docx");
+        using var stream = File.OpenRead(issuePath);
+
+        var document = DocxReader.Read(stream);
+        var layout = Assert.IsType<DocxPageLayout>(document.PageLayout);
+        var paragraphs = document.Elements.OfType<DocxParagraph>().ToArray();
+
+        Assert.Equal(612, layout.PageWidth);
+        Assert.Equal(792, layout.PageHeight);
+        Assert.Equal(72, layout.MarginTop);
+        Assert.Equal(72, layout.MarginRight);
+        Assert.Equal(72, layout.MarginBottom);
+        Assert.Equal(72, layout.MarginLeft);
+        Assert.Equal(25, paragraphs.Length);
+        Assert.Equal("right", paragraphs[^1].Alignment);
+        Assert.Equal("Right aligned", Assert.Single(paragraphs[^1].Runs).Text);
+    }
+
+    [Fact]
+    public void Issue159_ConversionOptionsOverrideDocumentPageSizeAndMargins()
+    {
+        var issuePath = FindIssueDocx("Issue159_PageLayoutOptions.docx");
+        using var stream = File.OpenRead(issuePath);
+        using var largerTopMarginStream = File.OpenRead(issuePath);
+        var options = new DocxToPdfConverter.ConversionOptions
+        {
+            PageWidthOverride = 400,
+            PageHeightOverride = 500,
+            MarginLeftOverride = 30,
+            MarginTopOverride = 40,
+            MarginRightOverride = 50,
+            MarginBottomOverride = 160,
+        };
+        var largerTopMarginOptions = new DocxToPdfConverter.ConversionOptions
+        {
+            PageWidthOverride = 400,
+            PageHeightOverride = 500,
+            MarginLeftOverride = 30,
+            MarginTopOverride = 80,
+            MarginRightOverride = 50,
+            MarginBottomOverride = 160,
+        };
+
+        var document = DocxToPdfConverter.Convert(stream, options);
+        var largerTopMarginDocument = DocxToPdfConverter.Convert(largerTopMarginStream, largerTopMarginOptions);
+
+        Assert.All(document.Pages, page =>
+        {
+            Assert.Equal(400, page.Width);
+            Assert.Equal(500, page.Height);
+        });
+        Assert.Equal(2, document.Pages.Count);
+        var firstText = document.Pages[0].TextBlocks.Single(block => block.Text == "Paragraph 0");
+        var lowerFirstText = largerTopMarginDocument.Pages[0].TextBlocks.Single(block => block.Text == "Paragraph 0");
+        Assert.Equal(30, firstText.X);
+        Assert.InRange(firstText.Y - lowerFirstText.Y, 39.9f, 40.1f);
+    }
+
+    [Fact]
+    public void Issue159_ConversionOptionsOverrideDocumentRightMargin()
+    {
+        var issuePath = FindIssueDocx("Issue159_PageLayoutOptions.docx");
+        using var narrowMarginStream = File.OpenRead(issuePath);
+        using var wideMarginStream = File.OpenRead(issuePath);
+        var narrowMarginOptions = new DocxToPdfConverter.ConversionOptions { MarginRightOverride = 40 };
+        var wideMarginOptions = new DocxToPdfConverter.ConversionOptions { MarginRightOverride = 100 };
+
+        var narrowMarginDocument = DocxToPdfConverter.Convert(narrowMarginStream, narrowMarginOptions);
+        var wideMarginDocument = DocxToPdfConverter.Convert(wideMarginStream, wideMarginOptions);
+        var narrowMarginText = Assert.Single(narrowMarginDocument.Pages
+            .SelectMany(page => page.TextBlocks), block => block.Text == "Right aligned");
+        var wideMarginText = Assert.Single(wideMarginDocument.Pages
+            .SelectMany(page => page.TextBlocks), block => block.Text == "Right aligned");
+
+        Assert.InRange(narrowMarginText.X - wideMarginText.X, 59.9f, 60.1f);
+    }
+
+    [Fact]
+    public void Issue159_PublicPathAndStreamApisApplyPageLayoutOptions()
+    {
+        var issuePath = FindIssueDocx("Issue159_PageLayoutOptions.docx");
+        var options = new MiniPdfConversionOptions
+        {
+            PageSize = new MiniPdfPageSize(400, 500),
+            Margins = new MiniPdfMargins(left: 30, top: 40, right: 50, bottom: 160),
+        };
+
+        var pathPdf = MiniPdf.ConvertToPdf(issuePath, options);
+        using var stream = File.OpenRead(issuePath);
+        var streamPdf = MiniPdf.ConvertToPdf(stream, options);
+
+        Assert.Equal(2, CountOccurrences(pathPdf, "/MediaBox [0 0 400 500]"));
+        Assert.Equal(2, CountOccurrences(streamPdf, "/MediaBox [0 0 400 500]"));
+    }
+
+    [Fact]
+    public void Issue159_InvalidPageLayoutOptionsThrowHelpfulErrors()
+    {
+        var issuePath = FindIssueDocx("Issue159_PageLayoutOptions.docx");
+
+        var pageSizeError = Assert.Throws<ArgumentOutOfRangeException>(() => MiniPdf.ConvertToPdf(issuePath,
+            new MiniPdfConversionOptions { PageSize = new MiniPdfPageSize(0, 500) }));
+        var marginsError = Assert.Throws<ArgumentOutOfRangeException>(() => MiniPdf.ConvertToPdf(issuePath,
+            new MiniPdfConversionOptions { Margins = new MiniPdfMargins(-1) }));
+
+        Assert.Equal("PageSize", pageSizeError.ParamName);
+        Assert.Equal("Margins", marginsError.ParamName);
+    }
+
+    [Fact]
+    public void Issue159_DocxPageLayoutOptionsRejectNonDocxInput()
+    {
+        var error = Assert.Throws<NotSupportedException>(() => MiniPdf.ConvertToPdf("missing.xlsx",
+            new MiniPdfConversionOptions { PageSize = MiniPdfPageSize.A4 }));
+
+        Assert.Contains("only supported for .docx files", error.Message, StringComparison.Ordinal);
+    }
+
+    private static int CountOccurrences(byte[] pdf, string value)
+    {
+        var content = Encoding.ASCII.GetString(pdf);
+        return content.Split(new[] { value }, StringSplitOptions.None).Length - 1;
+    }
+
     private static string FindIssueDocx(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
