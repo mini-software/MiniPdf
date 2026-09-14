@@ -188,6 +188,53 @@ func TestConvertXLSXToPDF(t *testing.T) {
 	}
 }
 
+func TestConvertXLSXSkipsEmptyWorksheets(t *testing.T) {
+	mixed := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml":          `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+		"xl/worksheets/sheet2.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1">` +
+			`<c r="A1" t="inlineStr"><is><t>First sheet</t></is></c></row></sheetData></worksheet>`,
+		"xl/worksheets/sheet3.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+		"xl/worksheets/sheet4.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1">` +
+			`<c r="A1" t="inlineStr"><is><t>Second sheet</t></is></c></row></sheetData></worksheet>`,
+	})
+
+	pdf, err := ConvertBytesToPDF(mixed)
+	assertPDFContains(t, pdf, err, "First sheet", "Second sheet")
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 2 {
+		t.Fatalf("mixed workbook page count = %d, want 2", pages)
+	}
+
+	allEmpty := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml":          `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+		"xl/worksheets/sheet2.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+	})
+	pdf, err = ConvertBytesToPDF(allEmpty)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 1 {
+		t.Fatalf("empty workbook page count = %d, want 1", pages)
+	}
+
+	layoutOnly := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1">` +
+			`<c r="A1" t="inlineStr"><is><t>Data</t></is></c></row></sheetData></worksheet>`,
+		"xl/worksheets/sheet2.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1" ht="25"/></sheetData>` +
+			`<drawing r:id="rId1" xmlns:r="urn:relationships"/></worksheet>`,
+		"xl/worksheets/sheet3.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+	})
+	pdf, err = ConvertBytesToPDF(layoutOnly)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 2 {
+		t.Fatalf("layout-only workbook page count = %d, want 2", pages)
+	}
+}
+
 func TestSplitWorksheetColumnGroups(t *testing.T) {
 	lines := []string{
 		"A\tB\tC\tD\tE\tF\tG\tH\tI\tJ",

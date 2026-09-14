@@ -22,6 +22,7 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 		return nil, errorsNewMissingWorksheets()
 	}
 	pages := make([]textPage, 0, len(worksheets))
+	fallbackPageSize := PageSizeA4
 	for _, name := range worksheets {
 		worksheetXML, readErr := files.read(name)
 		if readErr != nil {
@@ -37,6 +38,10 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 			if *options.Landscape != isLandscape {
 				pageSize.Width, pageSize.Height = pageSize.Height, pageSize.Width
 			}
+		}
+		fallbackPageSize = pageSize
+		if len(lines) == 0 {
+			continue
 		}
 		effectivePageSize := pageSize
 		if options.PageSize != nil {
@@ -54,6 +59,9 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 				pages = append(pages, textPage{lines: overflowPage, size: pageSize, noWrap: noWrap})
 			}
 		}
+	}
+	if len(pages) == 0 {
+		pages = append(pages, textPage{size: fallbackPageSize})
 	}
 	return renderTextPages(pages, options), nil
 }

@@ -283,6 +283,12 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   `classic12_sparse_columns` from `0.6993` to `0.9995`, with both candidates
   reaching `2/2` reference pages. The complete 191-case average increased from
   `0.8473` to `0.8503`, with no case regression.
+- 2026-09-14: skipping worksheets with no physical rows while retaining a
+  fallback page for an entirely empty workbook raised
+  `classic30_mixed_empty_and_filled_sheets` from `0.6834` with `4/2` pages to
+  `0.9993` with `2/2` pages. The complete average reached `0.8519`; SHA-256
+  comparison against the preceding stage showed this was the only changed
+  candidate among all 191 cases.
 
 ## Alignment Backlog
 
