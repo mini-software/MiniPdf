@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 from helpers import create_docx, create_pptx, create_xlsx
 
+import minipdf
 from minipdf import (
     OfficeFormat,
     PackageError,
@@ -17,6 +18,10 @@ from minipdf import (
     detect_office_format,
 )
 from minipdf.office import OfficePackage
+
+
+def test_runtime_version_matches_release() -> None:
+    assert minipdf.__version__ == "0.2.0"
 
 
 def test_path_and_bytes_apis_produce_identical_output(tmp_path: Path) -> None:
