@@ -77,6 +77,7 @@ pub fn register_font(name: impl Into<String>, font_data: impl Into<Vec<u8>>) {
         name: name.into(),
         data: font_data.into(),
     });
+    pdf::clear_font_support_cache();
 }
 
 pub fn registered_fonts() -> Vec<RegisteredFont> {

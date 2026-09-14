@@ -1,9 +1,98 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 use std::io::Write;
+use std::sync::{Mutex, OnceLock};
 
 use flate2::{write::ZlibEncoder, Compression};
 
 use crate::RegisteredFont;
+
+#[derive(Debug, Default)]
+struct FontSupportCache {
+    support_by_character: HashMap<char, Vec<Option<bool>>>,
+    selections: HashMap<FontSelectionKey, Option<usize>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+struct FontSelectionKey {
+    font_count: usize,
+    ch: char,
+    bold: bool,
+    italic: bool,
+    preferred_font: Option<String>,
+}
+
+impl FontSelectionKey {
+    fn new(
+        font_count: usize,
+        ch: char,
+        bold: bool,
+        italic: bool,
+        preferred_font: Option<&str>,
+    ) -> Self {
+        Self {
+            font_count,
+            ch,
+            bold,
+            italic,
+            preferred_font: preferred_font.map(|name| name.trim().to_ascii_lowercase()),
+        }
+    }
+}
+
+impl FontSupportCache {
+    fn get_or_probe(&mut self, font_index: usize, ch: char, probe: impl FnOnce() -> bool) -> bool {
+        let support = self.support_by_character.entry(ch).or_default();
+        if support.len() <= font_index {
+            support.resize(font_index + 1, None);
+        }
+        if let Some(supported) = support[font_index] {
+            return supported;
+        }
+        let supported = probe();
+        support[font_index] = Some(supported);
+        supported
+    }
+
+    fn select_font(
+        &mut self,
+        fonts: &[RegisteredFont],
+        ch: char,
+        bold: bool,
+        italic: bool,
+        preferred_font: Option<&str>,
+    ) -> Option<usize> {
+        let key = FontSelectionKey::new(fonts.len(), ch, bold, italic, preferred_font);
+        if let Some(selection) = self.selections.get(&key) {
+            return *selection;
+        }
+        let mut selected = None;
+        for (index, font) in fonts.iter().enumerate() {
+            if !self.get_or_probe(index, ch, || probe_font_support(font, ch)) {
+                continue;
+            }
+            let preference = font_preference(&font.name, ch, bold, italic, preferred_font);
+            if selected.is_none_or(|(best, _)| preference < best) {
+                selected = Some((preference, index));
+            }
+        }
+        let selection = selected.map(|(_, index)| index);
+        self.selections.insert(key, selection);
+        selection
+    }
+
+    fn clear(&mut self) {
+        *self = Self::default();
+    }
+}
+
+static FONT_SUPPORT_CACHE: OnceLock<Mutex<FontSupportCache>> = OnceLock::new();
+
+pub(crate) fn clear_font_support_cache() {
+    if let Some(cache) = FONT_SUPPORT_CACHE.get() {
+        let mut cache = cache.lock().expect("font support cache lock poisoned");
+        cache.clear();
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct PdfColor {
@@ -688,7 +777,7 @@ fn split_font_runs(
         let font_index = if ch.is_whitespace() || ch.is_ascii_punctuation() || ch == '\u{fe0f}' {
             runs.last()
                 .and_then(|run| run.font_index)
-                .filter(|index| font_supports(&fonts[*index], ch))
+                .filter(|index| font_supports(*index, &fonts[*index], ch))
                 .or_else(|| select_font(fonts, ch, bold, italic, preferred_font))
         } else {
             select_font(fonts, ch, bold, italic, preferred_font)
@@ -713,12 +802,11 @@ fn select_font(
     italic: bool,
     preferred_font: Option<&str>,
 ) -> Option<usize> {
-    fonts
-        .iter()
-        .enumerate()
-        .filter(|(_, font)| font_supports(font, ch))
-        .min_by_key(|(_, font)| font_preference(&font.name, ch, bold, italic, preferred_font))
-        .map(|(index, _)| index)
+    let cache = FONT_SUPPORT_CACHE.get_or_init(|| Mutex::new(FontSupportCache::default()));
+    cache
+        .lock()
+        .expect("font support cache lock poisoned")
+        .select_font(fonts, ch, bold, italic, preferred_font)
 }
 
 fn font_preference(
@@ -813,7 +901,15 @@ fn font_preference(
     fallback_score + if preferred_font.is_some() { 2 } else { 0 }
 }
 
-fn font_supports(font: &RegisteredFont, ch: char) -> bool {
+fn font_supports(font_index: usize, font: &RegisteredFont, ch: char) -> bool {
+    let cache = FONT_SUPPORT_CACHE.get_or_init(|| Mutex::new(FontSupportCache::default()));
+    cache
+        .lock()
+        .expect("font support cache lock poisoned")
+        .get_or_probe(font_index, ch, || probe_font_support(font, ch))
+}
+
+fn probe_font_support(font: &RegisteredFont, ch: char) -> bool {
     if !is_embeddable_truetype(&font.data) {
         return false;
     }
@@ -1228,8 +1324,10 @@ fn escape_pdf_text(text: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::{
-        font_has_subsettable_outlines, font_preference, PdfColor, PdfDocument, PdfPathCommand,
+        font_has_subsettable_outlines, font_preference, FontSupportCache, PdfColor, PdfDocument,
+        PdfPathCommand,
     };
+    use crate::RegisteredFont;
 
     fn sfnt_with_table(tag: &[u8; 4]) -> Vec<u8> {
         let mut data = vec![0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
@@ -1252,6 +1350,47 @@ mod tests {
         let data = sfnt_with_table(b"CBDT");
         let face = ttf_parser::RawFace::parse(&data, 0).expect("sfnt directory is valid");
         assert!(!font_has_subsettable_outlines(&face));
+    }
+
+    #[test]
+    fn caches_font_support_by_font_and_character() {
+        let mut cache = FontSupportCache::default();
+        let mut probes = 0;
+
+        for _ in 0..100 {
+            assert!(cache.get_or_probe(7, 'A', || {
+                probes += 1;
+                true
+            }));
+        }
+
+        assert_eq!(probes, 1);
+    }
+
+    #[test]
+    fn caches_font_selection_by_character_and_style() {
+        let mut cache = FontSupportCache::default();
+        let fonts = (0..300)
+            .map(|index| RegisteredFont {
+                name: format!("font-{index}"),
+                data: Vec::new(),
+            })
+            .collect::<Vec<_>>();
+
+        for _ in 0..100 {
+            assert_eq!(
+                cache.select_font(&fonts, 'A', false, false, Some("Arial")),
+                None
+            );
+        }
+
+        assert_eq!(cache.support_by_character[&'A'].len(), 300);
+        assert_eq!(cache.selections.len(), 1);
+
+        cache.clear();
+
+        assert!(cache.support_by_character.is_empty());
+        assert!(cache.selections.is_empty());
     }
 
     #[test]
