@@ -60,6 +60,14 @@ MiniPdf.Web/MiniPdf.Web.Client/wwwroot/fonts/
 /tests/Issue_Files/minipdf_xlsx
 /tests/Issue_Files/minipdf_pptx
 /artifacts/*
+!/artifacts/go-benchmark/
+/artifacts/go-benchmark/*
+!/artifacts/go-benchmark/issue/
+/artifacts/go-benchmark/issue/*
+!/artifacts/go-benchmark/issue/xlsx/
+/artifacts/go-benchmark/issue/xlsx/*
+!/artifacts/go-benchmark/issue/xlsx/report/
+!/artifacts/go-benchmark/issue/xlsx/report/**
 !/artifacts/rust-benchmark/
 /artifacts/rust-benchmark/*
 !/artifacts/rust-benchmark/benchmark_matrix.json

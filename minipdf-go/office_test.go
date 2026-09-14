@@ -188,6 +188,53 @@ func TestConvertXLSXToPDF(t *testing.T) {
 	}
 }
 
+func TestConvertXLSXSkipsEmptyWorksheets(t *testing.T) {
+	mixed := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml":          `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+		"xl/worksheets/sheet2.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1">` +
+			`<c r="A1" t="inlineStr"><is><t>First sheet</t></is></c></row></sheetData></worksheet>`,
+		"xl/worksheets/sheet3.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+		"xl/worksheets/sheet4.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1">` +
+			`<c r="A1" t="inlineStr"><is><t>Second sheet</t></is></c></row></sheetData></worksheet>`,
+	})
+
+	pdf, err := ConvertBytesToPDF(mixed)
+	assertPDFContains(t, pdf, err, "First sheet", "Second sheet")
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 2 {
+		t.Fatalf("mixed workbook page count = %d, want 2", pages)
+	}
+
+	allEmpty := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml":          `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+		"xl/worksheets/sheet2.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+	})
+	pdf, err = ConvertBytesToPDF(allEmpty)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 1 {
+		t.Fatalf("empty workbook page count = %d, want 1", pages)
+	}
+
+	layoutOnly := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1">` +
+			`<c r="A1" t="inlineStr"><is><t>Data</t></is></c></row></sheetData></worksheet>`,
+		"xl/worksheets/sheet2.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1" ht="25"/></sheetData>` +
+			`<drawing r:id="rId1" xmlns:r="urn:relationships"/></worksheet>`,
+		"xl/worksheets/sheet3.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+	})
+	pdf, err = ConvertBytesToPDF(layoutOnly)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 2 {
+		t.Fatalf("layout-only workbook page count = %d, want 2", pages)
+	}
+}
+
 func TestSplitWorksheetColumnGroups(t *testing.T) {
 	lines := []string{
 		"A\tB\tC\tD\tE\tF\tG\tH\tI\tJ",
@@ -201,6 +248,90 @@ func TestSplitWorksheetColumnGroups(t *testing.T) {
 	}
 	if groups[0][0] != "A\tB\tC\tD\tE\tF\tG\tH\tI" || groups[1][0] != "J" {
 		t.Fatalf("groups = %#v", groups)
+	}
+}
+
+func TestSplitWorksheetTextOverflow(t *testing.T) {
+	pages := splitWorksheetTextOverflow([]string{"Header", "ABCDEFGHIJK", "Short"}, 5)
+
+	if len(pages) != 3 {
+		t.Fatalf("page count = %d, want 3", len(pages))
+	}
+	want := [][]string{
+		{"Heade", "ABCDE", "Short"},
+		{"r", "FGHIJ", ""},
+		{"", "K", ""},
+	}
+	for index := range want {
+		if strings.Join(pages[index], "|") != strings.Join(want[index], "|") {
+			t.Errorf("page %d = %#v, want %#v", index, pages[index], want[index])
+		}
+	}
+}
+
+func TestConvertXLSXPaginatesSingleColumnTextOverflow(t *testing.T) {
+	input := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>` +
+			strings.Repeat("X", 1000) + `</t></is></c></row></sheetData></worksheet>`,
+	})
+
+	pdf, err := ConvertBytesToPDF(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 12 {
+		t.Fatalf("PDF page count = %d, want 12", pages)
+	}
+}
+
+func TestExtractWorksheetPreservesSparseRows(t *testing.T) {
+	worksheet := []byte(`<?xml version="1.0"?><worksheet><sheetData>` +
+		`<row r="1"><c r="A1" t="inlineStr"><is><t>First</t></is></c></row>` +
+		`<row r="5"><c r="A5" t="inlineStr"><is><t>Fifth</t></is></c></row>` +
+		`<row r="10"><c r="A10" t="inlineStr"><is><t>Tenth</t></is></c></row>` +
+		`</sheetData></worksheet>`)
+
+	lines, _, err := extractWorksheet(worksheet, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(lines) != 10 {
+		t.Fatalf("line count = %d, want 10", len(lines))
+	}
+	if lines[0] != "First" || lines[4] != "Fifth" || lines[9] != "Tenth" {
+		t.Fatalf("sparse row values = %#v", lines)
+	}
+}
+
+func TestExtractWorksheetPreservesSparseColumns(t *testing.T) {
+	worksheet := []byte(`<?xml version="1.0"?><worksheet><sheetData>` +
+		`<row r="1"><c r="A1" t="inlineStr"><is><t>Left</t></is></c>` +
+		`<c r="D1" t="inlineStr"><is><t>Right</t></is></c></row>` +
+		`<row r="2"><c r="A2" t="inlineStr"><is><t>Data</t></is></c>` +
+		`<c r="J2" t="inlineStr"><is><t>Far</t></is></c></row>` +
+		`</sheetData></worksheet>`)
+
+	lines, _, err := extractWorksheet(worksheet, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if lines[0] != "Left\t\t\tRight" || lines[1] != "Data\t\t\t\t\t\t\t\t\tFar" {
+		t.Fatalf("sparse columns = %#v", lines)
+	}
+}
+
+func TestExtractWorksheetFormatsBooleanCells(t *testing.T) {
+	worksheet := []byte(`<?xml version="1.0"?><worksheet><sheetData><row r="1">` +
+		`<c r="A1" t="b"><v>1</v></c><c r="B1" t="b"><v>0</v></c>` +
+		`<c r="C1" t="n"><v>1</v></c></row></sheetData></worksheet>`)
+
+	lines, _, err := extractWorksheet(worksheet, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(lines) != 1 || lines[0] != "TRUE\tFALSE\t1" {
+		t.Fatalf("boolean row = %#v, want TRUE, FALSE, and numeric 1", lines)
 	}
 }
 

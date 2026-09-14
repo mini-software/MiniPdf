@@ -241,7 +241,7 @@ All six implementations have language-specific visual benchmark runners under
 | Malformed/security fixtures | P | P | I | P | I | B/P |
 | Classic XLSX report | I | I | M | M | M | M |
 | Classic DOCX report | I | I | M | M | M | M |
-| Issue XLSX report | I | I | I | M | M | M |
+| Issue XLSX report | I | I | I | I | M | M |
 | Issue DOCX report | I | M | M | M | M | M |
 | Issue PPTX report | I | M | M | M | M | M |
 | Classic PPTX corpus/report | M | M | M | M | M | M |
@@ -273,6 +273,33 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   overrides raised the five-case classic DOCX average from `0.9872` to `0.9889`;
   all cases improved or held. See the local
   [`report`](artifacts/go-parity-docx-margins/report/comparison_report.md).
+- 2026-09-14: horizontally paginating overflowing single-column XLSX text
+  raised `classic09_long_text` from `0.1840` with `1/12` pages to `0.8942`
+  with `12/12` pages. The complete 191-case classic XLSX average increased
+  from `0.8436` to `0.8473`, with all unrelated case scores unchanged. See the
+  local [`report`](artifacts/go-benchmark/classic/xlsx/report/comparison_report.md).
+- 2026-09-14: preserving explicit XLSX row and cell references raised
+  `classic11_sparse_rows` from `0.6990` to `0.9996` and
+  `classic12_sparse_columns` from `0.6993` to `0.9995`, with both candidates
+  reaching `2/2` reference pages. The complete 191-case average increased from
+  `0.8473` to `0.8503`, with no case regression.
+- 2026-09-14: skipping worksheets with no physical rows while retaining a
+  fallback page for an entirely empty workbook raised
+  `classic30_mixed_empty_and_filled_sheets` from `0.6834` with `4/2` pages to
+  `0.9993` with `2/2` pages. The complete average reached `0.8519`; SHA-256
+  comparison against the preceding stage showed this was the only changed
+  candidate among all 191 cases.
+- 2026-09-14: mapping OOXML boolean cells from `1` and `0` to Excel-compatible
+  `TRUE` and `FALSE` raised `classic42_boolean_values` from `0.9264` to
+  `0.9869`. The complete average reached `0.8522`; SHA-256 comparison against
+  the preceding stage showed this was the only changed candidate among all 191
+  cases.
+- 2026-09-14: the complete Go issue XLSX benchmark covers all 24 tracked issue
+  fixtures with 24 successful conversions and no missing Microsoft 365 or
+  LibreOffice references. The report averages `0.4929` and compares up to three
+  pages per case because two stress fixtures produce 3,781 and 2,860 candidate
+  pages. See the tracked
+  [`report`](artifacts/go-benchmark/issue/xlsx/report/comparison_report.md).
 
 ## Alignment Backlog
 
