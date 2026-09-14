@@ -38,9 +38,21 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 				pageSize.Width, pageSize.Height = pageSize.Height, pageSize.Width
 			}
 		}
+		effectivePageSize := pageSize
+		if options.PageSize != nil {
+			effectivePageSize = *options.PageSize
+		}
 		for _, group := range splitWorksheetColumnGroups(lines, 9) {
-			group = append([]string{""}, group...)
-			pages = append(pages, textPage{lines: group, size: pageSize})
+			overflowPages := [][]string{group}
+			noWrap := false
+			if worksheetColumnCount(group) == 1 {
+				overflowPages = splitWorksheetTextOverflow(group, textCharactersPerLine(effectivePageSize, Margins{}))
+				noWrap = len(overflowPages) > 1
+			}
+			for _, overflowPage := range overflowPages {
+				overflowPage = append([]string{""}, overflowPage...)
+				pages = append(pages, textPage{lines: overflowPage, size: pageSize, noWrap: noWrap})
+			}
 		}
 	}
 	return renderTextPages(pages, options), nil
@@ -65,10 +77,7 @@ func limitWorksheet(lines []string, maxRows, maxColumns int) []string {
 }
 
 func splitWorksheetColumnGroups(lines []string, columnsPerPage int) [][]string {
-	maximumColumns := 0
-	for _, line := range lines {
-		maximumColumns = max(maximumColumns, len(strings.Split(line, "\t")))
-	}
+	maximumColumns := worksheetColumnCount(lines)
 	if maximumColumns <= columnsPerPage || columnsPerPage <= 0 {
 		return [][]string{lines}
 	}
@@ -88,6 +97,40 @@ func splitWorksheetColumnGroups(lines []string, columnsPerPage int) [][]string {
 		groups = append(groups, group)
 	}
 	return groups
+}
+
+func worksheetColumnCount(lines []string) int {
+	maximum := 0
+	for _, line := range lines {
+		maximum = max(maximum, len(strings.Split(line, "\t")))
+	}
+	return maximum
+}
+
+func splitWorksheetTextOverflow(lines []string, charactersPerPage int) [][]string {
+	if charactersPerPage <= 0 {
+		return [][]string{lines}
+	}
+	maximumCharacters := 0
+	rows := make([][]rune, len(lines))
+	for index, line := range lines {
+		rows[index] = []rune(line)
+		maximumCharacters = max(maximumCharacters, len(rows[index]))
+	}
+	pageCount := max(1, (maximumCharacters+charactersPerPage-1)/charactersPerPage)
+	pages := make([][]string, pageCount)
+	for pageIndex := range pages {
+		start := pageIndex * charactersPerPage
+		end := start + charactersPerPage
+		pages[pageIndex] = make([]string, len(rows))
+		for rowIndex, row := range rows {
+			if start >= len(row) {
+				continue
+			}
+			pages[pageIndex][rowIndex] = string(row[start:min(end, len(row))])
+		}
+	}
+	return pages
 }
 
 func errorsNewMissingWorksheets() error {

@@ -273,6 +273,11 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   overrides raised the five-case classic DOCX average from `0.9872` to `0.9889`;
   all cases improved or held. See the local
   [`report`](artifacts/go-parity-docx-margins/report/comparison_report.md).
+- 2026-09-14: horizontally paginating overflowing single-column XLSX text
+  raised `classic09_long_text` from `0.1840` with `1/12` pages to `0.8942`
+  with `12/12` pages. The complete 191-case classic XLSX average increased
+  from `0.8436` to `0.8473`, with all unrelated case scores unchanged. See the
+  local [`report`](artifacts/go-benchmark/classic/xlsx/report/comparison_report.md).
 
 ## Alignment Backlog
 

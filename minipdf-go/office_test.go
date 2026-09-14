@@ -204,6 +204,40 @@ func TestSplitWorksheetColumnGroups(t *testing.T) {
 	}
 }
 
+func TestSplitWorksheetTextOverflow(t *testing.T) {
+	pages := splitWorksheetTextOverflow([]string{"Header", "ABCDEFGHIJK", "Short"}, 5)
+
+	if len(pages) != 3 {
+		t.Fatalf("page count = %d, want 3", len(pages))
+	}
+	want := [][]string{
+		{"Heade", "ABCDE", "Short"},
+		{"r", "FGHIJ", ""},
+		{"", "K", ""},
+	}
+	for index := range want {
+		if strings.Join(pages[index], "|") != strings.Join(want[index], "|") {
+			t.Errorf("page %d = %#v, want %#v", index, pages[index], want[index])
+		}
+	}
+}
+
+func TestConvertXLSXPaginatesSingleColumnTextOverflow(t *testing.T) {
+	input := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>` +
+			strings.Repeat("X", 1000) + `</t></is></c></row></sheetData></worksheet>`,
+	})
+
+	pdf, err := ConvertBytesToPDF(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 12 {
+		t.Fatalf("PDF page count = %d, want 12", pages)
+	}
+}
+
 func TestXLSXRowColumnLimitsAndOrientation(t *testing.T) {
 	input := officePackageBytes(t, map[string]string{
 		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,

@@ -33,6 +33,7 @@ type textPage struct {
 	lines   []string
 	size    PageSize
 	margins Margins
+	noWrap  bool
 }
 
 func openOfficePackage(input []byte) (officePackage, error) {
@@ -136,12 +137,12 @@ func renderTextPages(pages []textPage, options ConversionOptions) []byte {
 		if options.Margins != nil {
 			margins = *options.Margins
 		}
-		addTextPages(document, sourcePage.lines, pageSize, margins)
+		addTextPages(document, sourcePage.lines, pageSize, margins, sourcePage.noWrap)
 	}
 	return document.BytesWithOptions(PDFSaveOptions{Compress: options.Compress})
 }
 
-func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, margins Margins) {
+func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, margins Margins, noWrap bool) {
 	const (
 		fontSize = 11.0
 		leading  = 15.0
@@ -149,13 +150,13 @@ func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, marg
 	if margins == (Margins{}) {
 		margins = Margins{Left: 54, Top: 54, Right: 54, Bottom: 54}
 	}
-	maxCharacters := int((pageSize.Width - margins.Left - margins.Right) / (fontSize * 0.52))
-	if maxCharacters < 10 {
-		maxCharacters = 10
-	}
 	wrapped := make([]string, 0, len(lines))
 	for _, line := range lines {
-		wrapped = append(wrapped, wrapText(line, maxCharacters)...)
+		if noWrap {
+			wrapped = append(wrapped, line)
+		} else {
+			wrapped = append(wrapped, wrapText(line, textCharactersPerLine(pageSize, margins))...)
+		}
 	}
 	if len(wrapped) == 0 {
 		wrapped = append(wrapped, "")
@@ -171,6 +172,18 @@ func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, marg
 		page.AddText(line, margins.Left, y, fontSize, PDFColorBlack, false)
 		y -= leading
 	}
+}
+
+func textCharactersPerLine(pageSize PageSize, margins Margins) int {
+	const fontSize = 11.0
+	if margins == (Margins{}) {
+		margins = Margins{Left: 54, Top: 54, Right: 54, Bottom: 54}
+	}
+	maximum := int((pageSize.Width - margins.Left - margins.Right) / (fontSize * 0.52))
+	if maximum < 10 {
+		return 10
+	}
+	return maximum
 }
 
 func wrapText(text string, limit int) []string {
