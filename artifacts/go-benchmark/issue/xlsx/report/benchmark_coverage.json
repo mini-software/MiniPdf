@@ -16,7 +16,7 @@
   "missing_auxiliary_references": 0,
   "comparison_completed": true,
   "comparison_results": 24,
-  "average_score": 0.49293750000000003,
+  "average_score": 0.5162083333333333,
   "cases": [
     {
       "name": "Academic Achievement Summary Table",
@@ -25,7 +25,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Academic Achievement Summary Table.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -37,7 +37,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/AcademicAchievement_temp.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -49,7 +49,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Business expense budget1.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -61,7 +61,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Business expenses budget2.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -73,7 +73,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Business plan checklist with SWOT analysis1.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -85,7 +85,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Event budget1.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -97,7 +97,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Expense report basic1.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -109,7 +109,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Grocery list1.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -121,7 +121,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Issue202609031340.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -133,7 +133,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/payroll-calculator_f.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -145,7 +145,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/PO_anonymized.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -157,7 +157,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Simple invoice1.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -169,7 +169,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Small business cash flow forecast1.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -181,7 +181,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Wedding_timeline_planner1_copy.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -193,7 +193,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/Weekly schedule planner1.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -205,7 +205,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/XlsxIssue152_ClusteredNonZeroBarChart.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -217,7 +217,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/XlsxIssue75.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -229,7 +229,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_MergedCellAlignment.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -241,7 +241,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_Template1.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -253,7 +253,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/XlsxIssue77_Template2_Workaround.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -265,7 +265,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/XlsxIssue81_LayoutOptions.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -277,7 +277,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/XlsxIssue82_5mb.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -289,7 +289,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/XlsxIssue82_SampleTestData5mb.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
@@ -301,7 +301,7 @@
       "format": "xlsx",
       "source_path": "tests/Issue_Files/xlsx/XlsxIssue82_WideTable.xlsx",
       "conversion_status": "passed",
-      "conversion_exit_code": null,
+      "conversion_exit_code": 0,
       "candidate_exists": true,
       "reference_exists": true,
       "auxiliary_reference_exists": true
