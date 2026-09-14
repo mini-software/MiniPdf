@@ -53,7 +53,13 @@ func (document *PDFDocument) AddPage(width, height float64) *PDFPage {
 
 func (page *PDFPage) AddText(text string, x, y, fontSize float64, color PDFColor, bold bool) {
 	page.operations = append(page.operations, textOperation{
-		text: text, x: x, y: y, fontSize: fontSize, color: color, bold: bold,
+		text: text, x: x, y: y, fontSize: fontSize, horizontalScale: 100, color: color, bold: bold,
+	})
+}
+
+func (page *PDFPage) addScaledText(text string, x, y, fontSize, horizontalScale float64, color PDFColor, bold bool) {
+	page.operations = append(page.operations, textOperation{
+		text: text, x: x, y: y, fontSize: fontSize, horizontalScale: horizontalScale, color: color, bold: bold,
 	})
 }
 
@@ -70,17 +76,23 @@ func (page *PDFPage) AddLine(x1, y1, x2, y2 float64, color PDFColor, width float
 }
 
 type textOperation struct {
-	text           string
-	x, y, fontSize float64
-	color          PDFColor
-	bold           bool
+	text            string
+	x, y, fontSize  float64
+	horizontalScale float64
+	color           PDFColor
+	bold            bool
 }
 
 func (operation textOperation) appendPDF(buffer *bytes.Buffer, embedded *embeddedFont) {
+	horizontalScale := ""
+	if operation.horizontalScale != 0 && operation.horizontalScale != 100 {
+		horizontalScale = pdfNumber(operation.horizontalScale) + " Tz "
+	}
 	if embedded != nil {
 		if encoded, ok := embedded.encode(operation.text); ok {
-			fmt.Fprintf(buffer, "BT /FU1 %s Tf %s %s %s rg %s %s Td <%s> Tj ET\n",
+			fmt.Fprintf(buffer, "BT /FU1 %s Tf %s%s %s %s rg %s %s Td <%s> Tj ET\n",
 				pdfNumber(operation.fontSize),
+				horizontalScale,
 				pdfNumber(operation.color.Red),
 				pdfNumber(operation.color.Green),
 				pdfNumber(operation.color.Blue),
@@ -95,9 +107,10 @@ func (operation textOperation) appendPDF(buffer *bytes.Buffer, embedded *embedde
 	if operation.bold {
 		font = "F2"
 	}
-	fmt.Fprintf(buffer, "BT /%s %s Tf %s %s %s rg %s %s Td (%s) Tj ET\n",
+	fmt.Fprintf(buffer, "BT /%s %s Tf %s%s %s %s rg %s %s Td (%s) Tj ET\n",
 		font,
 		pdfNumber(operation.fontSize),
+		horizontalScale,
 		pdfNumber(operation.color.Red),
 		pdfNumber(operation.color.Green),
 		pdfNumber(operation.color.Blue),

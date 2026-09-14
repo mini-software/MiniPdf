@@ -182,22 +182,22 @@
     "format": "xlsx",
     "source_path": "tests/Issue_Files/xlsx/Business expense budget1.xlsx",
     "suite": "issue",
-    "minipdf_size": 4633,
+    "minipdf_size": 85664,
     "reference_size": 159864,
     "pdf_valid": true,
-    "minipdf_pages": 2,
+    "minipdf_pages": 4,
     "reference_pages": 4,
     "compared_pages": 3,
-    "text_similarity": 0.4638,
-    "flat_text_similarity": 0.0771,
-    "word_text_similarity": 0.4638,
-    "text_diff": "--- minipdf/Business expense budget1.pdf\n+++ reference/Business expense budget1.pdf\n@@ -1,42 +1,73 @@\n BUSINESS EXPENSE BUDGET\n\n Fiscal Year 2026 - Quarterly Report\n\n-CATEGORY Q1 BUDGET Q1 ACTUAL Q2 BUDGET Q2 ACTUAL VARIANCE\n\n+CATEGORY Q1 BUDGET Q1 ACTUAL Q2 BUDGET\n\n PERSONNEL\n\n-Salaries & Wages 45000 44200 46000 45800 1000\n\n-Benefits & Insurance 12000 11850 12500 12400 250\n\n-Training & Development 3000 2800 3200 3500 -100\n\n-Recruitment 2000 1500 2500 2200 800\n\n-Personnel Subtotal\n\n+Salaries & Wages 45,000.00 44,200.00 46,000.00\n\n+Benefits & Insurance 12,000.00 11,850.00 12,500.00\n\n+Training & Development 3,000.00 2,800.00 3,200.00\n\n+Recruitment 2,000.00 1,500.00 2,500.00\n\n+Personnel Subtotal 62,000.00 60,350.00 64,200.00\n\n OPERATIONS\n\n-Rent & Utilities 8000 8000 8200 8150 50\n\n-Office Supplies 1500 1650 1500 1400 -50\n\n-Equipment & Maintenance 3000 2700 3500 3800 0\n\n-IT & Software 4000 4200 4500 4300 0\n\n-Telecommunications 2000 1900 2100 2050 150\n\n-Operations Subtotal\n\n+Rent & Utilities 8,000.00 8,000.00 8,200.00\n\n+Office Supplies 1,500.00 1,650.00 1,500.00\n\n+Equipment & Maintenance 3,000.00 2,700.00 3,500.00\n\n+IT & Software 4,000.00 4,200.00 4,500.00\n\n+Telecommunications 2,000.00 1,900.00 2,100.00\n\n+Operations Subtotal 18,500.00 18,450.00 19,800.00\n\n MARKETING\n\n-Advertising 5000 4800 6000 5500 700\n\n-Digital Marketing 3000 3200 3500 3600 -300\n\n-Events & Sponsorships 2000 1800 2500 2800 -100\n\n-Printing & Design 1000 950 1200 1100 150\n\n-Marketing Subtotal\n\n+Advertising 5,000.00 4,800.00 6,000.00\n\n+Digital Marketing 3,000.00 3,200.00 3,500.00\n\n+Events & Sponsorships 2,000.00 1,800.00 2,500.00\n\n+Printing & Design 1,000.00 950.00 1,200.00\n\n+Marketing Subtotal 11,000.00 10,750.00 13,200.00\n\n TRAVEL & ENTERTAINMENT\n\n-Domestic Travel 3000 2500 3500 3200 800\n\n-International Travel 5000 4000 6000 5500 1500\n\n-Meals & Entertainment 2000 1800 2200 2100 300\n\n-Vehicle Expenses 1500 1400 1500 1600 0\n\n-Travel & Entertainment Subtotal\n\n+Domestic Travel 3,000.00 2,500.00 3,500.00\n\n+International Travel 5,000.00 4,000.00 6,000.00\n\n+Meals & Entertainment 2,000.00 1,800.00 2,200.00\n\n+Vehicle Expenses 1,500.00 1,400.00 1,500.00\n\n+Travel & Entertainment Subtotal 11,500.00 9,700.00 13,200.00\n\n PROFESSIONAL SERVICES\n\n-Legal Fees 3000 2800 3500 3200 500\n\n-Accounting & Audit 2500 2500 2500 2500 0\n\n-Consulting 4000 3500 5000 4800 700\n\n-Insurance 2000 2000 2100 2100 0\n\n-Professional Services Subtotal\n\n-GRAND TOTAL\n\n+Legal Fees 3,000.00 2,800.00 3,500.00\n\n+Accounting & Audit 2,500.00 2,500.00 2,500.00\n\n+Consulting 4,000.00 3,500.00 5,000.00\n\n+Insurance 2,000.00 2,000.00 2,100.00\n\n+Professional Services Subtotal 11,500.00 10,800.00 13,100.00\n\n+---PAGE---\n\n+GRAND TOTAL 114,500.00 110,050.00 123,500.00\n\n Category Total Budget Total Actual\n\n Personnel 126200 124250\n\n Operations 38300 38150\n\n Marketing 24200 23750\n\n Travel & Entertainment 24700 22100\n\n+Professional Services 24600 23400\n\n+Budget vs Actual by Category\n\n+Amount (\\$)\n\n+Category\n\n ---PAGE---\n\n-Professional Services 24600 23400\n+Q2 ACTUAL VARIANCE\n\n+45,800.00 1,000.00\n\n+12,400.00 250.00\n\n+3,500.00 -100.00\n\n+2,200.00 800.00\n\n+63,900.00 1,950.00\n\n+8,150.00 50.00\n\n+1,400.00 -50.00\n\n+3,800.00 0.00\n\n+4,300.00 0.00\n\n+2,050.00 150.00\n\n+19,700.00 150.00\n\n+5,500.00 700.00\n\n+3,600.00 -300.00\n\n+2,800.00 -100.00\n\n+1,100.00 150.00\n\n+13,000.00 450.00\n\n+3,200.00 800.00\n\n+5,500.00 1,500.00\n\n+2,100.00 300.00\n\n+1,600.00 0.00\n\n+12,400.00 2,600.00\n\n+3,200.00 500.00\n\n+2,500.00 0.00\n\n+4,800.00 700.00\n\n+2,100.00 0.00\n\n+12,600.00 1,200.00",
+    "text_similarity": 1.0,
+    "flat_text_similarity": 1.0,
+    "word_text_similarity": 1.0,
+    "text_diff": "(identical)",
     "visual_scores": [
-      0.5166,
-      0.4059,
-      0.0
+      0.8898,
+      0.9049,
+      0.9575
     ],
-    "visual_avg": 0.3075,
+    "visual_avg": 0.9174,
     "diff_images": [
       {
         "page": 1,
@@ -211,15 +211,15 @@
             1754
           ],
           "difference_bbox_px": [
-            113,
-            127,
+            146,
+            176,
             996,
-            1614
+            1579
           ],
-          "changed_pixels": 713208,
-          "changed_fraction": 0.327654,
-          "mean_abs_rgb": 40.6046,
-          "rmse_rgb": 86.4236,
+          "changed_pixels": 305806,
+          "changed_fraction": 0.14049,
+          "mean_abs_rgb": 21.3092,
+          "rmse_rgb": 63.9244,
           "threshold": 12,
           "gain": 5.0
         },
@@ -237,15 +237,15 @@
             1754
           ],
           "difference_bbox_px": [
-            114,
-            96,
+            112,
+            178,
             996,
-            1225
+            1226
           ],
-          "changed_pixels": 212045,
-          "changed_fraction": 0.097415,
-          "mean_abs_rgb": 14.3262,
-          "rmse_rgb": 50.0036,
+          "changed_pixels": 207301,
+          "changed_fraction": 0.095236,
+          "mean_abs_rgb": 11.1807,
+          "rmse_rgb": 40.9815,
           "threshold": 12,
           "gain": 5.0
         },
@@ -253,13 +253,32 @@
       },
       {
         "page": 3,
-        "minipdf_img": null,
+        "minipdf_img": "Business expense budget1_p3_minipdf.png",
         "reference_img": "Business expense budget1_p3_reference.png",
         "auxiliary_img": "Business expense budget1_p3_libreoffice.png",
+        "heatmap_img": "Business expense budget1_p3_heatmap.png",
+        "heatmap_metrics": {
+          "size_px": [
+            1241,
+            1754
+          ],
+          "difference_bbox_px": [
+            111,
+            296,
+            444,
+            1579
+          ],
+          "changed_pixels": 109374,
+          "changed_fraction": 0.050247,
+          "mean_abs_rgb": 7.5647,
+          "rmse_rgb": 37.8974,
+          "threshold": 12,
+          "gain": 5.0
+        },
         "composite_img": "Business expense budget1_p3_go_minipdf_vs_microsoft_365_excel_reference_vs_libreoffice.png"
       }
     ],
-    "overall_score": 0.4085
+    "overall_score": 0.967
   },
   {
     "name": "Business expenses budget2",

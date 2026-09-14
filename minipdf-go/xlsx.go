@@ -21,6 +21,26 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 	if len(worksheets) == 0 {
 		return nil, errorsNewMissingWorksheets()
 	}
+	styles, err := readXLSXStyles(files)
+	if err != nil {
+		return nil, err
+	}
+	if len(styles) > 0 {
+		needsGridRendering := false
+		for _, name := range worksheets {
+			worksheetXML, readErr := files.read(name)
+			if readErr != nil {
+				return nil, readErr
+			}
+			if needsCalculatedXLSXGrid(worksheetXML) {
+				needsGridRendering = true
+				break
+			}
+		}
+		if needsGridRendering {
+			return renderXLSXWorksheets(files, worksheets, sharedStrings, styles, options)
+		}
+	}
 	pages := make([]textPage, 0, len(worksheets))
 	fallbackPageSize := PageSizeA4
 	for _, name := range worksheets {
@@ -255,24 +275,34 @@ func worksheetColumnIndex(reference string) int {
 }
 
 func decodeWorksheetCell(decoder *xml.Decoder, start xml.StartElement, sharedStrings []string) (string, error) {
+	value, _, err := decodeWorksheetCellContent(decoder, start, sharedStrings)
+	return value, err
+}
+
+func decodeWorksheetCellContent(decoder *xml.Decoder, start xml.StartElement, sharedStrings []string) (string, string, error) {
 	cellType := attrValue(start, "t")
 	var value strings.Builder
+	var formula string
 	depth := 1
 	for depth > 0 {
 		token, err := decoder.Token()
 		if err != nil {
-			return "", err
+			return "", "", err
 		}
 		switch element := token.(type) {
 		case xml.StartElement:
 			depth++
-			if element.Name.Local == "v" || element.Name.Local == "t" {
+			if element.Name.Local == "v" || element.Name.Local == "t" || element.Name.Local == "f" {
 				var text string
 				if err := decoder.DecodeElement(&text, &element); err != nil {
-					return "", err
+					return "", "", err
 				}
 				depth--
-				value.WriteString(text)
+				if element.Name.Local == "f" {
+					formula = text
+				} else {
+					value.WriteString(text)
+				}
 			}
 		case xml.EndElement:
 			depth--
@@ -282,16 +312,16 @@ func decodeWorksheetCell(decoder *xml.Decoder, start xml.StartElement, sharedStr
 	if cellType == "s" {
 		index, err := strconv.Atoi(strings.TrimSpace(rawValue))
 		if err == nil && index >= 0 && index < len(sharedStrings) {
-			return sharedStrings[index], nil
+			return sharedStrings[index], formula, nil
 		}
 	}
 	if cellType == "b" {
 		switch strings.TrimSpace(rawValue) {
 		case "1":
-			return "TRUE", nil
+			return "TRUE", formula, nil
 		case "0":
-			return "FALSE", nil
+			return "FALSE", formula, nil
 		}
 	}
-	return rawValue, nil
+	return rawValue, formula, nil
 }

@@ -1,6 +1,6 @@
 # go MiniPdf vs Microsoft 365 Excel Reference PDF Comparison Report
 
-Generated: 2026-09-14T20:24:21.049172
+Generated: 2026-09-14T22:49:48.552791
 
 ## Summary
 
@@ -8,7 +8,7 @@ Generated: 2026-09-14T20:24:21.049172
 |---|-----------|-------|----------|------------|-------------|--------|
 | 1 | 🔴 Academic Achievement Summary Table | ✅ | 0.3235 | 0.4218 | 9/2 | **0.3981** |
 | 2 | 🔴 AcademicAchievement_temp | ✅ | 0.3235 | 0.4218 | 9/2 | **0.3981** |
-| 3 | 🔴 Business expense budget1 | ✅ | 0.4638 | 0.3075 | 2/4 | **0.4085** |
+| 3 | 🟢 Business expense budget1 | ✅ | 1.0 | 0.9174 | 4/4 | **0.967** |
 | 4 | 🔴 Business expenses budget2 | ✅ | 0.119 | 0.0808 | 14/4 | **0.1799** |
 | 5 | 🔴 Business plan checklist with SWOT analysis1 | ✅ | 0.8729 | 0.2639 | 1/1 | **0.6547** |
 | 6 | 🔴 Event budget1 | ✅ | 0.712 | 0.5681 | 4/5 | **0.612** |
@@ -31,7 +31,7 @@ Generated: 2026-09-14T20:24:21.049172
 | 23 | 🔴 XlsxIssue82_WideTable | ✅ | 0.8139 | 0.5165 | 15/13 | **0.6322** |
 | 24 | 🟡 XlsxIssue152_ClusteredNonZeroBarChart | ✅ | 0.6923 | 0.5806 | 1/1 | **0.7092** |
 
-**Average Overall Score: 0.4929**
+**Average Overall Score: 0.5162**
 
 ## Labeled Side-by-Side Comparison
 
@@ -296,12 +296,17 @@ Blue areas are below the configured difference threshold; red areas have stronge
 <tr>
   <td><b>Business expense budget1</b><br>Page 1</td>
   <td><img src="images/Business expense budget1_p1_heatmap.png" width="760" alt="Business expense budget1 page 1 difference heatmap"></td>
-  <td>changed: 713208 px (32.77%)<br>bbox: [113, 127, 996, 1614]<br>mean abs RGB: 40.6046<br>RMSE RGB: 86.4236<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 305806 px (14.05%)<br>bbox: [146, 176, 996, 1579]<br>mean abs RGB: 21.3092<br>RMSE RGB: 63.9244<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Business expense budget1</b><br>Page 2</td>
   <td><img src="images/Business expense budget1_p2_heatmap.png" width="760" alt="Business expense budget1 page 2 difference heatmap"></td>
-  <td>changed: 212045 px (9.74%)<br>bbox: [114, 96, 996, 1225]<br>mean abs RGB: 14.3262<br>RMSE RGB: 50.0036<br>threshold: 12, gain: 5.0</td>
+  <td>changed: 207301 px (9.52%)<br>bbox: [112, 178, 996, 1226]<br>mean abs RGB: 11.1807<br>RMSE RGB: 40.9815<br>threshold: 12, gain: 5.0</td>
+</tr>
+<tr>
+  <td><b>Business expense budget1</b><br>Page 3</td>
+  <td><img src="images/Business expense budget1_p3_heatmap.png" width="760" alt="Business expense budget1 page 3 difference heatmap"></td>
+  <td>changed: 109374 px (5.02%)<br>bbox: [111, 296, 444, 1579]<br>mean abs RGB: 7.5647<br>RMSE RGB: 37.8974<br>threshold: 12, gain: 5.0</td>
 </tr>
 <tr>
   <td><b>Business expenses budget2</b><br>Page 1</td>
@@ -601,7 +606,7 @@ Scores compare go MiniPdf against Microsoft 365 Excel Reference. LibreOffice is 
 </tr>
 <tr>
   <td><b>Business expense budget1<br><small>format: xlsx | case: Business expense budget1 | scope: go-issue-xlsx</small></b></td>
-  <td colspan="2">Business expense budget1 <span style="color:#f85149">⬤</span> 40.8%</td>
+  <td colspan="2">Business expense budget1 <span style="color:#3fb950">⬤</span> 96.7%</td>
 </tr>
 <tr>
   <td><img src="images/Business expense budget1_p1_minipdf.png" width="260" alt="go MiniPdf"></td>
@@ -614,7 +619,7 @@ Scores compare go MiniPdf against Microsoft 365 Excel Reference. LibreOffice is 
   <td><img src="images/Business expense budget1_p2_libreoffice.png" width="260" alt="LibreOffice"></td>
 </tr>
 <tr>
-  <td><i>missing</i></td>
+  <td><img src="images/Business expense budget1_p3_minipdf.png" width="260" alt="go MiniPdf"></td>
   <td><img src="images/Business expense budget1_p3_reference.png" width="260" alt="Microsoft 365 Excel Reference"></td>
   <td><img src="images/Business expense budget1_p3_libreoffice.png" width="260" alt="LibreOffice"></td>
 </tr>
@@ -1265,171 +1270,13 @@ Scores compare go MiniPdf against Microsoft 365 Excel Reference. LibreOffice is 
 
 - **Case Metadata:** format: xlsx | case: Business expense budget1 | scope: go-issue-xlsx
 - **Source:** tests/Issue_Files/xlsx/Business expense budget1.xlsx
-- **Text Similarity:** 0.4638
-- **Visual Average:** 0.3075
-- **Overall Score:** 0.4085
-- **Pages:** MiniPdf=2, Reference=4
-- **File Size:** MiniPdf=4633 bytes, Reference=159864 bytes
-
-<details><summary>Text Diff</summary>
-
-```diff
---- minipdf/Business expense budget1.pdf
-+++ reference/Business expense budget1.pdf
-@@ -1,42 +1,73 @@
- BUSINESS EXPENSE BUDGET
-
- Fiscal Year 2026 - Quarterly Report
-
--CATEGORY Q1 BUDGET Q1 ACTUAL Q2 BUDGET Q2 ACTUAL VARIANCE
-
-+CATEGORY Q1 BUDGET Q1 ACTUAL Q2 BUDGET
-
- PERSONNEL
-
--Salaries & Wages 45000 44200 46000 45800 1000
-
--Benefits & Insurance 12000 11850 12500 12400 250
-
--Training & Development 3000 2800 3200 3500 -100
-
--Recruitment 2000 1500 2500 2200 800
-
--Personnel Subtotal
-
-+Salaries & Wages 45,000.00 44,200.00 46,000.00
-
-+Benefits & Insurance 12,000.00 11,850.00 12,500.00
-
-+Training & Development 3,000.00 2,800.00 3,200.00
-
-+Recruitment 2,000.00 1,500.00 2,500.00
-
-+Personnel Subtotal 62,000.00 60,350.00 64,200.00
-
- OPERATIONS
-
--Rent & Utilities 8000 8000 8200 8150 50
-
--Office Supplies 1500 1650 1500 1400 -50
-
--Equipment & Maintenance 3000 2700 3500 3800 0
-
--IT & Software 4000 4200 4500 4300 0
-
--Telecommunications 2000 1900 2100 2050 150
-
--Operations Subtotal
-
-+Rent & Utilities 8,000.00 8,000.00 8,200.00
-
-+Office Supplies 1,500.00 1,650.00 1,500.00
-
-+Equipment & Maintenance 3,000.00 2,700.00 3,500.00
-
-+IT & Software 4,000.00 4,200.00 4,500.00
-
-+Telecommunications 2,000.00 1,900.00 2,100.00
-
-+Operations Subtotal 18,500.00 18,450.00 19,800.00
-
- MARKETING
-
--Advertising 5000 4800 6000 5500 700
-
--Digital Marketing 3000 3200 3500 3600 -300
-
--Events & Sponsorships 2000 1800 2500 2800 -100
-
--Printing & Design 1000 950 1200 1100 150
-
--Marketing Subtotal
-
-+Advertising 5,000.00 4,800.00 6,000.00
-
-+Digital Marketing 3,000.00 3,200.00 3,500.00
-
-+Events & Sponsorships 2,000.00 1,800.00 2,500.00
-
-+Printing & Design 1,000.00 950.00 1,200.00
-
-+Marketing Subtotal 11,000.00 10,750.00 13,200.00
-
- TRAVEL & ENTERTAINMENT
-
--Domestic Travel 3000 2500 3500 3200 800
-
--International Travel 5000 4000 6000 5500 1500
-
--Meals & Entertainment 2000 1800 2200 2100 300
-
--Vehicle Expenses 1500 1400 1500 1600 0
-
--Travel & Entertainment Subtotal
-
-+Domestic Travel 3,000.00 2,500.00 3,500.00
-
-+International Travel 5,000.00 4,000.00 6,000.00
-
-+Meals & Entertainment 2,000.00 1,800.00 2,200.00
-
-+Vehicle Expenses 1,500.00 1,400.00 1,500.00
-
-+Travel & Entertainment Subtotal 11,500.00 9,700.00 13,200.00
-
- PROFESSIONAL SERVICES
-
--Legal Fees 3000 2800 3500 3200 500
-
--Accounting & Audit 2500 2500 2500 2500 0
-
--Consulting 4000 3500 5000 4800 700
-
--Insurance 2000 2000 2100 2100 0
-
--Professional Services Subtotal
-
--GRAND TOTAL
-
-+Legal Fees 3,000.00 2,800.00 3,500.00
-
-+Accounting & Audit 2,500.00 2,500.00 2,500.00
-
-+Consulting 4,000.00 3,500.00 5,000.00
-
-+Insurance 2,000.00 2,000.00 2,100.00
-
-+Professional Services Subtotal 11,500.00 10,800.00 13,100.00
-
-+---PAGE---
-
-+GRAND TOTAL 114,500.00 110,050.00 123,500.00
-
- Category Total Budget Total Actual
-
- Personnel 126200 124250
-
- Operations 38300 38150
-
- Marketing 24200 23750
-
- Travel & Entertainment 24700 22100
-
-+Professional Services 24600 23400
-
-+Budget vs Actual by Category
-
-+Amount (\$)
-
-+Category
-
- ---PAGE---
-
--Professional Services 24600
-... (503 more characters)
-
-```
-</details>
+- **Text Similarity:** 1.0
+- **Visual Average:** 0.9174
+- **Overall Score:** 0.967
+- **Pages:** MiniPdf=4, Reference=4
+- **File Size:** MiniPdf=85664 bytes, Reference=159864 bytes
+
+Text content: ✅ Identical
 
 ### Business expenses budget2
 
@@ -4096,7 +3943,6 @@ Scores compare go MiniPdf against Microsoft 365 Excel Reference. LibreOffice is 
 1. **PO_anonymized** (score: 0.3912)
 1. **Academic Achievement Summary Table** (score: 0.3981)
 1. **AcademicAchievement_temp** (score: 0.3981)
-1. **Business expense budget1** (score: 0.4085)
 1. **Grocery list1** (score: 0.4451)
 1. **XlsxIssue82_5mb** (score: 0.4474)
 1. **Issue202609031340** (score: 0.4541)
