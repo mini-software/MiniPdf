@@ -4,10 +4,10 @@ import io
 import zipfile
 from pathlib import Path
 
-import minipdf
 import pytest
 from helpers import create_docx, create_pptx, create_xlsx
 
+import minipdf
 from minipdf import (
     OfficeFormat,
     PackageError,
