@@ -30,8 +30,9 @@ var defaultOfficePackageLimits = officePackageLimits{
 }
 
 type textPage struct {
-	lines []string
-	size  PageSize
+	lines   []string
+	size    PageSize
+	margins Margins
 }
 
 func openOfficePackage(input []byte) (officePackage, error) {
@@ -131,18 +132,24 @@ func renderTextPages(pages []textPage, options ConversionOptions) []byte {
 		if options.PageSize != nil {
 			pageSize = *options.PageSize
 		}
-		addTextPages(document, sourcePage.lines, pageSize)
+		margins := sourcePage.margins
+		if options.Margins != nil {
+			margins = *options.Margins
+		}
+		addTextPages(document, sourcePage.lines, pageSize, margins)
 	}
 	return document.BytesWithOptions(PDFSaveOptions{Compress: options.Compress})
 }
 
-func addTextPages(document *PDFDocument, lines []string, pageSize PageSize) {
+func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, margins Margins) {
 	const (
-		margin   = 54.0
 		fontSize = 11.0
 		leading  = 15.0
 	)
-	maxCharacters := int((pageSize.Width - margin*2) / (fontSize * 0.52))
+	if margins == (Margins{}) {
+		margins = Margins{Left: 54, Top: 54, Right: 54, Bottom: 54}
+	}
+	maxCharacters := int((pageSize.Width - margins.Left - margins.Right) / (fontSize * 0.52))
 	if maxCharacters < 10 {
 		maxCharacters = 10
 	}
@@ -155,13 +162,13 @@ func addTextPages(document *PDFDocument, lines []string, pageSize PageSize) {
 	}
 
 	page := document.AddPage(pageSize.Width, pageSize.Height)
-	y := pageSize.Height - margin
+	y := pageSize.Height - margins.Top
 	for _, line := range wrapped {
-		if y < margin {
+		if y < margins.Bottom {
 			page = document.AddPage(pageSize.Width, pageSize.Height)
-			y = pageSize.Height - margin
+			y = pageSize.Height - margins.Top
 		}
-		page.AddText(line, margin, y, fontSize, PDFColorBlack, false)
+		page.AddText(line, margins.Left, y, fontSize, PDFColorBlack, false)
 		y -= leading
 	}
 }

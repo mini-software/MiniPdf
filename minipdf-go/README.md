@@ -43,6 +43,20 @@ pdf, err := minipdf.ConvertBytesToPDFWithOptions(input, minipdf.ConversionOption
 })
 ```
 
+Override DOCX page margins in PDF points:
+
+```go
+margins, err := minipdf.NewMargins(36, 48, 36, 48)
+if err != nil {
+	panic(err)
+}
+pdf, err := minipdf.ConvertBytesToPDFWithOptions(input, minipdf.ConversionOptions{
+	Margins: &margins,
+})
+```
+
+Margin overrides are rejected for XLSX and PPTX input.
+
 Convert between streams:
 
 ```go

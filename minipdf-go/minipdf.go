@@ -15,6 +15,7 @@ import (
 var (
 	ErrUnsupportedFormat = errors.New("unsupported or unknown Office document format")
 	ErrInvalidPackage    = errors.New("invalid Office package")
+	ErrInvalidInput      = errors.New("invalid input")
 	PageSizeA4           = PageSize{Width: 595.28, Height: 841.89}
 	PageSizeLetter       = PageSize{Width: 612, Height: 792}
 )
@@ -35,13 +36,33 @@ type PageSize struct {
 
 func NewPageSize(width, height float64) (PageSize, error) {
 	if math.IsNaN(width) || math.IsNaN(height) || math.IsInf(width, 0) || math.IsInf(height, 0) || width <= 0 || height <= 0 {
-		return PageSize{}, errors.New("page width and height must be positive finite values")
+		return PageSize{}, fmt.Errorf("%w: page width and height must be positive finite values", ErrInvalidInput)
 	}
 	return PageSize{Width: width, Height: height}, nil
 }
 
+type Margins struct {
+	Left   float64
+	Top    float64
+	Right  float64
+	Bottom float64
+}
+
+// NewMargins creates validated page margins measured in PDF points.
+func NewMargins(left, top, right, bottom float64) (Margins, error) {
+	values := []float64{left, top, right, bottom}
+	for _, value := range values {
+		if math.IsNaN(value) || math.IsInf(value, 0) || value < 0 {
+			return Margins{}, fmt.Errorf("%w: margins must be non-negative finite values", ErrInvalidInput)
+		}
+	}
+	return Margins{Left: left, Top: top, Right: right, Bottom: bottom}, nil
+}
+
 type ConversionOptions struct {
 	PageSize *PageSize
+	// Margins overrides DOCX page margins in PDF points.
+	Margins *Margins
 	// Compress applies Flate compression to PDF page content streams.
 	Compress bool
 }
@@ -182,6 +203,9 @@ func convertBytesAs(input []byte, format OfficeFormat, options ConversionOptions
 			return nil, err
 		}
 		format = detected
+	}
+	if options.Margins != nil && format != OfficeFormatDOCX {
+		return nil, fmt.Errorf("%w: margin overrides apply only to DOCX input", ErrInvalidInput)
 	}
 	switch format {
 	case OfficeFormatDOCX:

@@ -124,6 +124,55 @@ func TestConversionCompressionOption(t *testing.T) {
 	assertPDFContains(t, pdf, err, "/Filter /FlateDecode")
 }
 
+func TestDOCXSectionMarginsAndOverride(t *testing.T) {
+	input := officePackageBytes(t, map[string]string{
+		"word/document.xml": `<?xml version="1.0"?><w:document xmlns:w="urn:word"><w:body><w:p><w:r><w:t>Margin text</w:t></w:r></w:p><w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="720" w:right="1440" w:bottom="720" w:left="1440"/></w:sectPr></w:body></w:document>`,
+	})
+
+	pdf, err := ConvertBytesToPDF(input)
+	assertPDFContains(t, pdf, err, "72 756 Td")
+
+	margins, err := NewMargins(20, 30, 40, 50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pdf, err = ConvertBytesToPDFWithOptions(input, ConversionOptions{Margins: &margins})
+	assertPDFContains(t, pdf, err, "20 762 Td")
+}
+
+func TestDOCXMarginOverrideIsFormatSpecific(t *testing.T) {
+	input := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml":          `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+	})
+	margins, err := NewMargins(20, 30, 40, 50)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = ConvertBytesToPDFWithOptions(input, ConversionOptions{Margins: &margins})
+	if !errors.Is(err, ErrInvalidInput) {
+		t.Fatalf("error = %v, want ErrInvalidInput", err)
+	}
+}
+
+func TestDOCXMarginOverrideRejectsInvalidLayout(t *testing.T) {
+	input := officePackageBytes(t, map[string]string{
+		"word/document.xml": `<?xml version="1.0"?><w:document xmlns:w="urn:word"><w:body><w:p><w:r><w:t>Margin text</w:t></w:r></w:p><w:sectPr><w:pgSz w:w="12240" w:h="15840"/></w:sectPr></w:body></w:document>`,
+	})
+	invalidMargins := []Margins{
+		{Left: -1},
+		{Left: 400, Right: 300},
+		{Top: 500, Bottom: 400},
+	}
+	for _, margins := range invalidMargins {
+		_, err := ConvertBytesToPDFWithOptions(input, ConversionOptions{Margins: &margins})
+		if !errors.Is(err, ErrInvalidInput) {
+			t.Fatalf("margins = %#v, error = %v, want ErrInvalidInput", margins, err)
+		}
+	}
+}
+
 func TestConvertXLSXToPDF(t *testing.T) {
 	input := officePackageBytes(t, map[string]string{
 		"xl/workbook.xml":      `<?xml version="1.0"?><workbook/>`,

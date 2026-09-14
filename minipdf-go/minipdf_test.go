@@ -100,6 +100,14 @@ func TestNewPageSizeRejectsInvalidDimensions(t *testing.T) {
 	}
 }
 
+func TestNewMarginsRejectsInvalidDimensions(t *testing.T) {
+	for _, margins := range [][4]float64{{-1, 0, 0, 0}, {0, math.Inf(1), 0, 0}} {
+		if _, err := NewMargins(margins[0], margins[1], margins[2], margins[3]); !errors.Is(err, ErrInvalidInput) {
+			t.Fatalf("NewMargins%v error = %v, want ErrInvalidInput", margins, err)
+		}
+	}
+}
+
 func TestUnknownPackageIsUnsupported(t *testing.T) {
 	_, err := ConvertBytesToPDF(zipPackage(t, "custom/data.xml", "<root/>"))
 	if !errors.Is(err, ErrUnsupportedFormat) {

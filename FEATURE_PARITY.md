@@ -32,7 +32,7 @@ shared security or conformance gap can exist in every implementation.
 | Stream input and output | I | M | M | I | M | M |
 | Format detection API | Internal | I | I | I | I | B |
 | Page-size override | DOCX only | I | I | I | I | B |
-| Margin override | I | M | M | M | M | M |
+| Margin override | I | M | M | I | M | M |
 | XLSX conversion controls | I | M | M | M | M | M |
 | PDF compression option | I | M | M | I | M | M |
 | Missing-font diagnostics | I | M | M | M | M | M |
@@ -63,7 +63,7 @@ print scale, rows-per-page, and culture-aware value formatting in
 | Input/output stream API | M | M | I | M | M |
 | Conversion diagnostics | M | M | M | M | M |
 | PDF stream compression option | M | M | I | M | M |
-| DOCX margin override | M | M | M | M | M |
+| DOCX margin override | M | M | I | M | M |
 | XLSX sheet selection | M | M | M | M | M |
 | XLSX row/column limits | M | M | M | M | M |
 | XLSX orientation/fit/scale controls | M | M | M | M | M |
@@ -81,7 +81,7 @@ Evidence:
   [`ConversionOptions`](minipdf-rs/crates/minipdf/src/lib.rs).
 - Java currently exposes only `pageSize` in
   [`ConversionOptions`](minipdf-java/minipdf/src/main/java/io/github/minisoftware/minipdf/ConversionOptions.java).
-- Go currently exposes only `PageSize` in
+- Go currently exposes page size, DOCX margins, and PDF compression in
   [`ConversionOptions`](minipdf-go/minipdf.go).
 - Python currently exposes only `page_size` in
   [`ConversionOptions`](minipdf-python/src/minipdf/options.py).
@@ -105,7 +105,7 @@ should fail clearly when used with the wrong input format.
 | Bold, italic, size, color, underline | I | P | M | M | P | B |
 | Paragraph spacing and alignment | I | P | M | M | P | B |
 | Explicit page breaks | I | I | P | I | I | B |
-| Section page size and margins | I | I | P | P | I | B |
+| Section page size and margins | I | I | P | I | I | B |
 | Tables and cell borders | I | P | M | M | M | B |
 | Merged table cells | I | P | M | M | M | B |
 | Lists and numbering | I | P | M | M | M | B |
@@ -268,6 +268,10 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   unrelated because its before/after candidate SHA-256 hashes were identical.
   See the local
   [`report`](artifacts/go-parity-xlsx-pagination-final/report/comparison_report.md).
+- 2026-09-14: parsing native DOCX `w:pgMar` values and adding validated margin
+  overrides raised the five-case classic DOCX average from `0.9872` to `0.9889`;
+  all cases improved or held. See the local
+  [`report`](artifacts/go-parity-docx-margins/report/comparison_report.md).
 
 ## Alignment Backlog
 
