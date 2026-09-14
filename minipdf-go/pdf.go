@@ -2,6 +2,7 @@ package minipdf
 
 import (
 	"bytes"
+	"compress/zlib"
 	"fmt"
 	"strconv"
 	"strings"
@@ -27,6 +28,11 @@ type pdfOperation interface {
 
 type PDFDocument struct {
 	pages []*PDFPage
+}
+
+// PDFSaveOptions controls PDF serialization.
+type PDFSaveOptions struct {
+	Compress bool
 }
 
 type PDFPage struct {
@@ -138,6 +144,11 @@ func (operation lineOperation) appendPDF(buffer *bytes.Buffer, _ *embeddedFont) 
 }
 
 func (document *PDFDocument) Bytes() []byte {
+	return document.BytesWithOptions(PDFSaveOptions{})
+}
+
+// BytesWithOptions serializes the document with the requested save behavior.
+func (document *PDFDocument) BytesWithOptions(options PDFSaveOptions) []byte {
 	pages := document.pages
 	if len(pages) == 0 {
 		pages = []*PDFPage{{Width: PageSizeA4.Width, Height: PageSizeA4.Height}}
@@ -175,7 +186,19 @@ func (document *PDFDocument) Bytes() []byte {
 		for _, operation := range page.operations {
 			operation.appendPDF(&content, embedded)
 		}
-		contentObject := []byte(fmt.Sprintf("<< /Length %d >>\nstream\n%s\nendstream", content.Len(), content.String()))
+		contentData := content.Bytes()
+		filter := ""
+		if options.Compress {
+			var compressed bytes.Buffer
+			writer := zlib.NewWriter(&compressed)
+			_, _ = writer.Write(contentData)
+			_ = writer.Close()
+			contentData = compressed.Bytes()
+			filter = " /Filter /FlateDecode"
+		}
+		contentObject := fmt.Appendf(nil, "<< /Length %d%s >>\nstream\n", len(contentData), filter)
+		contentObject = append(contentObject, contentData...)
+		contentObject = append(contentObject, []byte("\nendstream")...)
 		objects = append(objects, pageObject, contentObject)
 	}
 

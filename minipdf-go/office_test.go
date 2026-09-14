@@ -115,6 +115,15 @@ func TestConvertDOCXToPDF(t *testing.T) {
 	assertPDFContains(t, pdf, err, "Hello DOCX", "/MediaBox [0 0 612 792]")
 }
 
+func TestConversionCompressionOption(t *testing.T) {
+	input := officePackageBytes(t, map[string]string{
+		"word/document.xml": `<?xml version="1.0"?><w:document xmlns:w="urn:word"><w:body><w:p><w:r><w:t>Hello compressed DOCX</w:t></w:r></w:p></w:body></w:document>`,
+	})
+
+	pdf, err := ConvertBytesToPDFWithOptions(input, ConversionOptions{Compress: true})
+	assertPDFContains(t, pdf, err, "/Filter /FlateDecode")
+}
+
 func TestConvertXLSXToPDF(t *testing.T) {
 	input := officePackageBytes(t, map[string]string{
 		"xl/workbook.xml":      `<?xml version="1.0"?><workbook/>`,

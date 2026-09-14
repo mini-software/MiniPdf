@@ -42,6 +42,8 @@ func NewPageSize(width, height float64) (PageSize, error) {
 
 type ConversionOptions struct {
 	PageSize *PageSize
+	// Compress applies Flate compression to PDF page content streams.
+	Compress bool
 }
 
 type RegisteredFont struct {

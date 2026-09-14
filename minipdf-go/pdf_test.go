@@ -2,12 +2,54 @@ package minipdf
 
 import (
 	"bytes"
+	"compress/zlib"
+	"io"
 	"regexp"
 	"strconv"
 	"testing"
 
 	"golang.org/x/image/font/gofont/goregular"
 )
+
+func TestPDFDocumentCompressesContentStreams(t *testing.T) {
+	document := NewPDFDocument()
+	page := document.AddPage(300, 400)
+	for index := 0; index < 100; index++ {
+		page.AddText("Repeated content for compression", 20, float64(350-index), 12, PDFColorBlack, false)
+	}
+
+	uncompressed := document.Bytes()
+	compressed := document.BytesWithOptions(PDFSaveOptions{Compress: true})
+
+	if !bytes.Contains(compressed, []byte("/Filter /FlateDecode")) {
+		t.Fatal("compressed PDF does not declare FlateDecode")
+	}
+	assertPDFStreamLengths(t, compressed)
+	if len(compressed) >= len(uncompressed) {
+		t.Fatalf("compressed PDF size = %d, want less than %d", len(compressed), len(uncompressed))
+	}
+	streamStart := bytes.Index(compressed, []byte("stream\n"))
+	streamEnd := bytes.Index(compressed[streamStart+len("stream\n"):], []byte("\nendstream"))
+	if streamStart < 0 || streamEnd < 0 {
+		t.Fatal("compressed content stream is missing")
+	}
+	streamStart += len("stream\n")
+	streamEnd += streamStart
+	reader, err := zlib.NewReader(bytes.NewReader(compressed[streamStart:streamEnd]))
+	if err != nil {
+		t.Fatal(err)
+	}
+	content, err := io.ReadAll(reader)
+	if closeErr := reader.Close(); err == nil {
+		err = closeErr
+	}
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Contains(content, []byte("Repeated content for compression")) {
+		t.Fatal("decompressed stream does not contain page content")
+	}
+}
 
 func TestPDFDocumentEmbedsRegisteredTrueTypeFont(t *testing.T) {
 	ClearRegisteredFonts()
@@ -49,8 +91,12 @@ func TestPDFStreamLengthsAreExact(t *testing.T) {
 	document := NewPDFDocument()
 	document.AddPage(300, 400).AddText("Hello", 20, 350, 12, PDFColorBlack, false)
 	pdf := document.Bytes()
+	assertPDFStreamLengths(t, pdf)
+}
 
-	pattern := regexp.MustCompile(`/Length ([0-9]+) >>\nstream\n`)
+func assertPDFStreamLengths(t *testing.T, pdf []byte) {
+	t.Helper()
+	pattern := regexp.MustCompile(`/Length ([0-9]+)(?: /Filter /FlateDecode)? >>\nstream\n`)
 	matches := pattern.FindAllSubmatchIndex(pdf, -1)
 	if len(matches) == 0 {
 		t.Fatal("no PDF streams found")

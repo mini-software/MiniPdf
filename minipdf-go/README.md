@@ -35,6 +35,14 @@ Convert in-memory Office package bytes:
 pdf, err := minipdf.ConvertBytesToPDF(input)
 ```
 
+Compress PDF page content streams:
+
+```go
+pdf, err := minipdf.ConvertBytesToPDFWithOptions(input, minipdf.ConversionOptions{
+	Compress: true,
+})
+```
+
 Convert between streams:
 
 ```go
@@ -78,6 +86,7 @@ minipdf data.xlsx -o data.pdf
 minipdf slides.pptx --paper-size a4
 minipdf convert report.docx --page-width 400 --page-height 500
 minipdf report.docx --fonts ./fonts
+minipdf report.docx --compress
 ```
 
 ## Current Scope

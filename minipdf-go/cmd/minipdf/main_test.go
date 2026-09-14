@@ -34,6 +34,23 @@ func TestParseArgumentsAcceptsFontDirectory(t *testing.T) {
 	}
 }
 
+func TestParseArgumentsAcceptsCompression(t *testing.T) {
+	options, err := parseArguments([]string{"report.docx", "--compress"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !options.compress {
+		t.Fatal("compress = false, want true")
+	}
+	conversion, err := conversionOptions(options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !conversion.Compress {
+		t.Fatal("ConversionOptions.Compress = false, want true")
+	}
+}
+
 func TestRegisterFontsFromDirectory(t *testing.T) {
 	minipdf.ClearRegisteredFonts()
 	t.Cleanup(minipdf.ClearRegisteredFonts)

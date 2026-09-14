@@ -133,7 +133,7 @@ func renderTextPages(pages []textPage, options ConversionOptions) []byte {
 		}
 		addTextPages(document, sourcePage.lines, pageSize)
 	}
-	return document.Bytes()
+	return document.BytesWithOptions(PDFSaveOptions{Compress: options.Compress})
 }
 
 func addTextPages(document *PDFDocument, lines []string, pageSize PageSize) {

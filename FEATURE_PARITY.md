@@ -34,7 +34,7 @@ shared security or conformance gap can exist in every implementation.
 | Page-size override | DOCX only | I | I | I | I | B |
 | Margin override | I | M | M | M | M | M |
 | XLSX conversion controls | I | M | M | M | M | M |
-| PDF compression option | I | M | M | M | M | M |
+| PDF compression option | I | M | M | I | M | M |
 | Missing-font diagnostics | I | M | M | M | M | M |
 | Effective custom font embedding | I | I | I | I | M | B |
 | Native CLI | I | I | I | I | I | M |
@@ -62,7 +62,7 @@ print scale, rows-per-page, and culture-aware value formatting in
 |---|---:|---:|---:|---:|---:|
 | Input/output stream API | M | M | I | M | M |
 | Conversion diagnostics | M | M | M | M | M |
-| PDF stream compression option | M | M | M | M | M |
+| PDF stream compression option | M | M | I | M | M |
 | DOCX margin override | M | M | M | M | M |
 | XLSX sheet selection | M | M | M | M | M |
 | XLSX row/column limits | M | M | M | M | M |

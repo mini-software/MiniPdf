@@ -21,6 +21,7 @@ type cliOptions struct {
 	input         string
 	output        string
 	fontDirectory string
+	compress      bool
 	paperSize     string
 	pageWidth     float64
 	pageHeight    float64
@@ -123,7 +124,7 @@ func conversionOptions(options cliOptions) (minipdf.ConversionOptions, error) {
 		}
 		pageSize = &size
 	}
-	return minipdf.ConversionOptions{PageSize: pageSize}, nil
+	return minipdf.ConversionOptions{PageSize: pageSize, Compress: options.compress}, nil
 }
 
 func parseArguments(arguments []string) (cliOptions, error) {
@@ -138,6 +139,10 @@ func parseArguments(arguments []string) (cliOptions, error) {
 		}
 		if argument == "--version" {
 			return cliOptions{}, errVersion
+		}
+		if argument == "--compress" {
+			options.compress = true
+			continue
 		}
 		name, inlineValue, hasInlineValue := strings.Cut(argument, "=")
 		switch name {
@@ -196,6 +201,7 @@ Usage:
 Options:
   -o, --output PATH          Output PDF path
 			--fonts DIR            Register .ttf fonts from a directory
+			--compress             Compress PDF page content streams
       --paper-size SIZE      a4 or letter
       --page-width POINTS    Custom page width
       --page-height POINTS   Custom page height
