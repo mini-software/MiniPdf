@@ -278,11 +278,20 @@ func decodeWorksheetCell(decoder *xml.Decoder, start xml.StartElement, sharedStr
 			depth--
 		}
 	}
+	rawValue := value.String()
 	if cellType == "s" {
-		index, err := strconv.Atoi(strings.TrimSpace(value.String()))
+		index, err := strconv.Atoi(strings.TrimSpace(rawValue))
 		if err == nil && index >= 0 && index < len(sharedStrings) {
 			return sharedStrings[index], nil
 		}
 	}
-	return value.String(), nil
+	if cellType == "b" {
+		switch strings.TrimSpace(rawValue) {
+		case "1":
+			return "TRUE", nil
+		case "0":
+			return "FALSE", nil
+		}
+	}
+	return rawValue, nil
 }

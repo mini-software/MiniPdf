@@ -321,6 +321,20 @@ func TestExtractWorksheetPreservesSparseColumns(t *testing.T) {
 	}
 }
 
+func TestExtractWorksheetFormatsBooleanCells(t *testing.T) {
+	worksheet := []byte(`<?xml version="1.0"?><worksheet><sheetData><row r="1">` +
+		`<c r="A1" t="b"><v>1</v></c><c r="B1" t="b"><v>0</v></c>` +
+		`<c r="C1" t="n"><v>1</v></c></row></sheetData></worksheet>`)
+
+	lines, _, err := extractWorksheet(worksheet, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(lines) != 1 || lines[0] != "TRUE\tFALSE\t1" {
+		t.Fatalf("boolean row = %#v, want TRUE, FALSE, and numeric 1", lines)
+	}
+}
+
 func TestXLSXRowColumnLimitsAndOrientation(t *testing.T) {
 	input := officePackageBytes(t, map[string]string{
 		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,

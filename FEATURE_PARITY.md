@@ -289,6 +289,11 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   `0.9993` with `2/2` pages. The complete average reached `0.8519`; SHA-256
   comparison against the preceding stage showed this was the only changed
   candidate among all 191 cases.
+- 2026-09-14: mapping OOXML boolean cells from `1` and `0` to Excel-compatible
+  `TRUE` and `FALSE` raised `classic42_boolean_values` from `0.9264` to
+  `0.9869`. The complete average reached `0.8522`; SHA-256 comparison against
+  the preceding stage showed this was the only changed candidate among all 191
+  cases.
 
 ## Alignment Backlog
 
