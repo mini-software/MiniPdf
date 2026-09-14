@@ -51,6 +51,29 @@ func TestParseArgumentsAcceptsCompression(t *testing.T) {
 	}
 }
 
+func TestParseArgumentsAcceptsXLSXControls(t *testing.T) {
+	options, err := parseArguments([]string{
+		"report.xlsx", "--max-rows", "10", "--max-columns", "4", "--landscape",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	conversion, err := conversionOptions(options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if conversion.MaxRows != 10 || conversion.MaxColumns != 4 || conversion.Landscape == nil || !*conversion.Landscape {
+		t.Fatalf("conversion options = %#v", conversion)
+	}
+}
+
+func TestParseArgumentsRejectsConflictingOrientation(t *testing.T) {
+	_, err := parseArguments([]string{"report.xlsx", "--landscape", "--portrait"})
+	if err == nil {
+		t.Fatal("parseArguments() accepted conflicting orientation flags")
+	}
+}
+
 func TestRegisterFontsFromDirectory(t *testing.T) {
 	minipdf.ClearRegisteredFonts()
 	t.Cleanup(minipdf.ClearRegisteredFonts)

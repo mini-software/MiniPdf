@@ -204,6 +204,44 @@ func TestSplitWorksheetColumnGroups(t *testing.T) {
 	}
 }
 
+func TestXLSXRowColumnLimitsAndOrientation(t *testing.T) {
+	input := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData>` +
+			`<row r="1"><c r="A1" t="inlineStr"><is><t>A1</t></is></c><c r="B1" t="inlineStr"><is><t>B1</t></is></c><c r="C1" t="inlineStr"><is><t>C1</t></is></c></row>` +
+			`<row r="2"><c r="A2" t="inlineStr"><is><t>A2</t></is></c></row>` +
+			`</sheetData><pageSetup paperSize="1" orientation="portrait"/></worksheet>`,
+	})
+	landscape := true
+
+	pdf, err := ConvertBytesToPDFWithOptions(input, ConversionOptions{
+		MaxRows: 1, MaxColumns: 2, Landscape: &landscape,
+	})
+	assertPDFContains(t, pdf, err, "A1", "B1", "/MediaBox [0 0 792 612]")
+	for _, excluded := range []string{"C1", "A2"} {
+		if bytes.Contains(pdf, []byte(excluded)) {
+			t.Errorf("PDF contains excluded value %q", excluded)
+		}
+	}
+}
+
+func TestXLSXOptionsRejectInvalidValuesAndFormats(t *testing.T) {
+	xlsx := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml":          `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+	})
+	if _, err := ConvertBytesToPDFWithOptions(xlsx, ConversionOptions{MaxRows: -1}); !errors.Is(err, ErrInvalidInput) {
+		t.Fatalf("MaxRows error = %v, want ErrInvalidInput", err)
+	}
+
+	docx := officePackageBytes(t, map[string]string{
+		"word/document.xml": `<?xml version="1.0"?><w:document xmlns:w="urn:word"><w:body/></w:document>`,
+	})
+	if _, err := ConvertBytesToPDFWithOptions(docx, ConversionOptions{MaxColumns: 1}); !errors.Is(err, ErrInvalidInput) {
+		t.Fatalf("DOCX MaxColumns error = %v, want ErrInvalidInput", err)
+	}
+}
+
 func TestConvertPPTXToPDF(t *testing.T) {
 	input := officePackageBytes(t, map[string]string{
 		"ppt/presentation.xml":  `<?xml version="1.0"?><p:presentation xmlns:p="urn:p"><p:sldSz cx="9144000" cy="6858000"/></p:presentation>`,

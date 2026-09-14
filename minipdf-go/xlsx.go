@@ -31,12 +31,37 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 		if parseErr != nil {
 			return nil, fmt.Errorf("parse %s: %w", name, parseErr)
 		}
+		lines = limitWorksheet(lines, options.MaxRows, options.MaxColumns)
+		if options.Landscape != nil {
+			isLandscape := pageSize.Width > pageSize.Height
+			if *options.Landscape != isLandscape {
+				pageSize.Width, pageSize.Height = pageSize.Height, pageSize.Width
+			}
+		}
 		for _, group := range splitWorksheetColumnGroups(lines, 9) {
 			group = append([]string{""}, group...)
 			pages = append(pages, textPage{lines: group, size: pageSize})
 		}
 	}
 	return renderTextPages(pages, options), nil
+}
+
+func limitWorksheet(lines []string, maxRows, maxColumns int) []string {
+	if maxRows > 0 && len(lines) > maxRows {
+		lines = lines[:maxRows]
+	}
+	if maxColumns <= 0 {
+		return lines
+	}
+	limited := make([]string, len(lines))
+	for index, line := range lines {
+		cells := strings.Split(line, "\t")
+		if len(cells) > maxColumns {
+			cells = cells[:maxColumns]
+		}
+		limited[index] = strings.Join(cells, "\t")
+	}
+	return limited
 }
 
 func splitWorksheetColumnGroups(lines []string, columnsPerPage int) [][]string {

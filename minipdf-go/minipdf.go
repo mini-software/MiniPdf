@@ -65,6 +65,12 @@ type ConversionOptions struct {
 	Margins *Margins
 	// Compress applies Flate compression to PDF page content streams.
 	Compress bool
+	// MaxRows limits rendered worksheet rows. Zero leaves rows unlimited.
+	MaxRows int
+	// MaxColumns limits rendered worksheet columns. Zero leaves columns unlimited.
+	MaxColumns int
+	// Landscape overrides XLSX worksheet orientation when non-nil.
+	Landscape *bool
 }
 
 type RegisteredFont struct {
@@ -206,6 +212,12 @@ func convertBytesAs(input []byte, format OfficeFormat, options ConversionOptions
 	}
 	if options.Margins != nil && format != OfficeFormatDOCX {
 		return nil, fmt.Errorf("%w: margin overrides apply only to DOCX input", ErrInvalidInput)
+	}
+	if options.MaxRows < 0 || options.MaxColumns < 0 {
+		return nil, fmt.Errorf("%w: XLSX row and column limits cannot be negative", ErrInvalidInput)
+	}
+	if format != OfficeFormatXLSX && (options.MaxRows != 0 || options.MaxColumns != 0 || options.Landscape != nil) {
+		return nil, fmt.Errorf("%w: worksheet limits and orientation apply only to XLSX input", ErrInvalidInput)
 	}
 	switch format {
 	case OfficeFormatDOCX:

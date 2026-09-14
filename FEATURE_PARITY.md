@@ -33,7 +33,7 @@ shared security or conformance gap can exist in every implementation.
 | Format detection API | Internal | I | I | I | I | B |
 | Page-size override | DOCX only | I | I | I | I | B |
 | Margin override | I | M | M | I | M | M |
-| XLSX conversion controls | I | M | M | M | M | M |
+| XLSX conversion controls | I | M | M | P | M | M |
 | PDF compression option | I | M | M | I | M | M |
 | Missing-font diagnostics | I | M | M | M | M | M |
 | Effective custom font embedding | I | I | I | I | M | B |
@@ -65,13 +65,13 @@ print scale, rows-per-page, and culture-aware value formatting in
 | PDF stream compression option | M | M | I | M | M |
 | DOCX margin override | M | M | I | M | M |
 | XLSX sheet selection | M | M | M | M | M |
-| XLSX row/column limits | M | M | M | M | M |
-| XLSX orientation/fit/scale controls | M | M | M | M | M |
+| XLSX row/column limits | M | M | I | M | M |
+| XLSX orientation/fit/scale controls | M | M | P | M | M |
 | Culture-aware XLSX formatting | M | M | M | M | M |
 | Font clear API | M | I | I | M | M |
 | Registered-font list API | I | I | I | I | I |
 | CLI font directory | I | I | I | M | M |
-| CLI advanced XLSX options | M | M | M | M | M |
+| CLI advanced XLSX options | M | M | P | M | M |
 | Native CLI distribution | I | I | I | I | M |
 | Non-blocking/async conversion API | M | M | M | M | M |
 
@@ -81,7 +81,8 @@ Evidence:
   [`ConversionOptions`](minipdf-rs/crates/minipdf/src/lib.rs).
 - Java currently exposes only `pageSize` in
   [`ConversionOptions`](minipdf-java/minipdf/src/main/java/io/github/minisoftware/minipdf/ConversionOptions.java).
-- Go currently exposes page size, DOCX margins, and PDF compression in
+- Go currently exposes page size, DOCX margins, PDF compression, XLSX row and
+  column limits, and XLSX orientation in
   [`ConversionOptions`](minipdf-go/minipdf.go).
 - Python currently exposes only `page_size` in
   [`ConversionOptions`](minipdf-python/src/minipdf/options.py).

@@ -57,6 +57,17 @@ pdf, err := minipdf.ConvertBytesToPDFWithOptions(input, minipdf.ConversionOption
 
 Margin overrides are rejected for XLSX and PPTX input.
 
+Limit XLSX output or override worksheet orientation:
+
+```go
+landscape := true
+pdf, err := minipdf.ConvertBytesToPDFWithOptions(input, minipdf.ConversionOptions{
+	MaxRows: 100,
+	MaxColumns: 12,
+	Landscape: &landscape,
+})
+```
+
 Convert between streams:
 
 ```go
@@ -101,6 +112,7 @@ minipdf slides.pptx --paper-size a4
 minipdf convert report.docx --page-width 400 --page-height 500
 minipdf report.docx --fonts ./fonts
 minipdf report.docx --compress
+minipdf data.xlsx --max-rows 100 --max-columns 12 --landscape
 ```
 
 ## Current Scope
