@@ -18,11 +18,16 @@ var (
 )
 
 type cliOptions struct {
-	input      string
-	output     string
-	paperSize  string
-	pageWidth  float64
-	pageHeight float64
+	input         string
+	output        string
+	fontDirectory string
+	compress      bool
+	maxRows       int
+	maxColumns    int
+	landscape     *bool
+	paperSize     string
+	pageWidth     float64
+	pageHeight    float64
 }
 
 func main() {
@@ -58,6 +63,9 @@ func run(options cliOptions) error {
 	if err != nil {
 		return err
 	}
+	if err := registerFontsFromDirectory(options.fontDirectory); err != nil {
+		return err
+	}
 	output := options.output
 	if output == "" {
 		output = strings.TrimSuffix(options.input, filepath.Ext(options.input)) + ".pdf"
@@ -66,6 +74,29 @@ func run(options cliOptions) error {
 		return err
 	}
 	fmt.Println(output)
+	return nil
+}
+
+func registerFontsFromDirectory(directory string) error {
+	if directory == "" {
+		return nil
+	}
+	entries, err := os.ReadDir(directory)
+	if err != nil {
+		return fmt.Errorf("read font directory %q: %w", directory, err)
+	}
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.EqualFold(filepath.Ext(entry.Name()), ".ttf") {
+			continue
+		}
+		fontPath := filepath.Join(directory, entry.Name())
+		fontData, err := os.ReadFile(fontPath)
+		if err != nil {
+			return fmt.Errorf("read font %q: %w", fontPath, err)
+		}
+		name := strings.TrimSuffix(entry.Name(), filepath.Ext(entry.Name()))
+		minipdf.RegisterFont(name, fontData)
+	}
 	return nil
 }
 
@@ -96,7 +127,10 @@ func conversionOptions(options cliOptions) (minipdf.ConversionOptions, error) {
 		}
 		pageSize = &size
 	}
-	return minipdf.ConversionOptions{PageSize: pageSize}, nil
+	return minipdf.ConversionOptions{
+		PageSize: pageSize, Compress: options.compress,
+		MaxRows: options.maxRows, MaxColumns: options.maxColumns, Landscape: options.landscape,
+	}, nil
 }
 
 func parseArguments(arguments []string) (cliOptions, error) {
@@ -112,9 +146,21 @@ func parseArguments(arguments []string) (cliOptions, error) {
 		if argument == "--version" {
 			return cliOptions{}, errVersion
 		}
+		if argument == "--compress" {
+			options.compress = true
+			continue
+		}
+		if argument == "--landscape" || argument == "--portrait" {
+			landscape := argument == "--landscape"
+			if options.landscape != nil && *options.landscape != landscape {
+				return cliOptions{}, errors.New("use either --landscape or --portrait, not both")
+			}
+			options.landscape = &landscape
+			continue
+		}
 		name, inlineValue, hasInlineValue := strings.Cut(argument, "=")
 		switch name {
-		case "-o", "--output", "--paper-size", "--page-width", "--page-height":
+		case "-o", "--output", "--fonts", "--paper-size", "--page-width", "--page-height", "--max-rows", "--max-columns":
 			value := inlineValue
 			if !hasInlineValue {
 				index++
@@ -126,6 +172,8 @@ func parseArguments(arguments []string) (cliOptions, error) {
 			switch name {
 			case "-o", "--output":
 				options.output = value
+			case "--fonts":
+				options.fontDirectory = value
 			case "--paper-size":
 				options.paperSize = value
 			case "--page-width":
@@ -140,6 +188,18 @@ func parseArguments(arguments []string) (cliOptions, error) {
 					return cliOptions{}, fmt.Errorf("invalid page height %q", value)
 				}
 				options.pageHeight = height
+			case "--max-rows":
+				maximum, err := strconv.Atoi(value)
+				if err != nil || maximum <= 0 {
+					return cliOptions{}, fmt.Errorf("invalid maximum row count %q", value)
+				}
+				options.maxRows = maximum
+			case "--max-columns":
+				maximum, err := strconv.Atoi(value)
+				if err != nil || maximum <= 0 {
+					return cliOptions{}, fmt.Errorf("invalid maximum column count %q", value)
+				}
+				options.maxColumns = maximum
 			}
 		default:
 			if strings.HasPrefix(argument, "-") {
@@ -166,6 +226,12 @@ Usage:
 
 Options:
   -o, --output PATH          Output PDF path
+			--fonts DIR            Register .ttf fonts from a directory
+			--compress             Compress PDF page content streams
+			--max-rows COUNT       Maximum XLSX rows to render
+			--max-columns COUNT    Maximum XLSX columns to render
+			--landscape            Render XLSX pages in landscape
+			--portrait             Render XLSX pages in portrait
       --paper-size SIZE      a4 or letter
       --page-width POINTS    Custom page width
       --page-height POINTS   Custom page height

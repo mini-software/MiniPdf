@@ -1,10 +1,10 @@
 package minipdf
 
 import (
-	"archive/zip"
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"math"
 	"os"
 	"path/filepath"
@@ -14,6 +14,8 @@ import (
 
 var (
 	ErrUnsupportedFormat = errors.New("unsupported or unknown Office document format")
+	ErrInvalidPackage    = errors.New("invalid Office package")
+	ErrInvalidInput      = errors.New("invalid input")
 	PageSizeA4           = PageSize{Width: 595.28, Height: 841.89}
 	PageSizeLetter       = PageSize{Width: 612, Height: 792}
 )
@@ -34,13 +36,41 @@ type PageSize struct {
 
 func NewPageSize(width, height float64) (PageSize, error) {
 	if math.IsNaN(width) || math.IsNaN(height) || math.IsInf(width, 0) || math.IsInf(height, 0) || width <= 0 || height <= 0 {
-		return PageSize{}, errors.New("page width and height must be positive finite values")
+		return PageSize{}, fmt.Errorf("%w: page width and height must be positive finite values", ErrInvalidInput)
 	}
 	return PageSize{Width: width, Height: height}, nil
 }
 
+type Margins struct {
+	Left   float64
+	Top    float64
+	Right  float64
+	Bottom float64
+}
+
+// NewMargins creates validated page margins measured in PDF points.
+func NewMargins(left, top, right, bottom float64) (Margins, error) {
+	values := []float64{left, top, right, bottom}
+	for _, value := range values {
+		if math.IsNaN(value) || math.IsInf(value, 0) || value < 0 {
+			return Margins{}, fmt.Errorf("%w: margins must be non-negative finite values", ErrInvalidInput)
+		}
+	}
+	return Margins{Left: left, Top: top, Right: right, Bottom: bottom}, nil
+}
+
 type ConversionOptions struct {
 	PageSize *PageSize
+	// Margins overrides DOCX page margins in PDF points.
+	Margins *Margins
+	// Compress applies Flate compression to PDF page content streams.
+	Compress bool
+	// MaxRows limits rendered worksheet rows. Zero leaves rows unlimited.
+	MaxRows int
+	// MaxColumns limits rendered worksheet columns. Zero leaves columns unlimited.
+	MaxColumns int
+	// Landscape overrides XLSX worksheet orientation when non-nil.
+	Landscape *bool
 }
 
 type RegisteredFont struct {
@@ -69,13 +99,48 @@ func RegisteredFonts() []RegisteredFont {
 	return fonts
 }
 
-func DetectOfficeFormat(input []byte) (OfficeFormat, error) {
-	reader, err := zip.NewReader(bytes.NewReader(input), int64(len(input)))
+// ClearRegisteredFonts removes all process-wide font registrations.
+func ClearRegisteredFonts() {
+	fontRegistry.Lock()
+	defer fontRegistry.Unlock()
+	fontRegistry.fonts = nil
+}
+
+// ConvertReaderToPDF reads an Office package and returns the converted PDF.
+func ConvertReaderToPDF(input io.Reader) ([]byte, error) {
+	return ConvertReaderToPDFWithOptions(input, ConversionOptions{})
+}
+
+// ConvertReaderToPDFWithOptions reads an Office package and returns the converted PDF.
+func ConvertReaderToPDFWithOptions(input io.Reader, options ConversionOptions) ([]byte, error) {
+	data, err := io.ReadAll(io.LimitReader(input, int64(defaultOfficePackageLimits.maxTotalSize)+1))
 	if err != nil {
-		return OfficeFormatUnknown, fmt.Errorf("open Office package: %w", err)
+		return nil, fmt.Errorf("read input: %w", err)
 	}
-	for _, file := range reader.File {
-		name := strings.ReplaceAll(file.Name, `\`, "/")
+	if uint64(len(data)) > defaultOfficePackageLimits.maxTotalSize {
+		return nil, fmt.Errorf("%w: input exceeds the configured size limit", ErrInvalidPackage)
+	}
+	return ConvertBytesToPDFWithOptions(data, options)
+}
+
+// ConvertReaderToWriter converts an Office package and writes the PDF to output.
+func ConvertReaderToWriter(input io.Reader, output io.Writer, options ConversionOptions) error {
+	pdf, err := ConvertReaderToPDFWithOptions(input, options)
+	if err != nil {
+		return err
+	}
+	if _, err := io.Copy(output, bytes.NewReader(pdf)); err != nil {
+		return fmt.Errorf("write PDF: %w", err)
+	}
+	return nil
+}
+
+func DetectOfficeFormat(input []byte) (OfficeFormat, error) {
+	files, err := openOfficePackage(input)
+	if err != nil {
+		return OfficeFormatUnknown, err
+	}
+	for name := range files {
 		switch {
 		case strings.HasPrefix(name, "word/"):
 			return OfficeFormatDOCX, nil
@@ -144,6 +209,15 @@ func convertBytesAs(input []byte, format OfficeFormat, options ConversionOptions
 			return nil, err
 		}
 		format = detected
+	}
+	if options.Margins != nil && format != OfficeFormatDOCX {
+		return nil, fmt.Errorf("%w: margin overrides apply only to DOCX input", ErrInvalidInput)
+	}
+	if options.MaxRows < 0 || options.MaxColumns < 0 {
+		return nil, fmt.Errorf("%w: XLSX row and column limits cannot be negative", ErrInvalidInput)
+	}
+	if format != OfficeFormatXLSX && (options.MaxRows != 0 || options.MaxColumns != 0 || options.Landscape != nil) {
+		return nil, fmt.Errorf("%w: worksheet limits and orientation apply only to XLSX input", ErrInvalidInput)
 	}
 	switch format {
 	case OfficeFormatDOCX:

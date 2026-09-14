@@ -2,6 +2,7 @@ package minipdf
 
 import (
 	"bytes"
+	"compress/zlib"
 	"fmt"
 	"strconv"
 	"strings"
@@ -22,11 +23,16 @@ var (
 )
 
 type pdfOperation interface {
-	appendPDF(*bytes.Buffer)
+	appendPDF(*bytes.Buffer, *embeddedFont)
 }
 
 type PDFDocument struct {
 	pages []*PDFPage
+}
+
+// PDFSaveOptions controls PDF serialization.
+type PDFSaveOptions struct {
+	Compress bool
 }
 
 type PDFPage struct {
@@ -70,7 +76,21 @@ type textOperation struct {
 	bold           bool
 }
 
-func (operation textOperation) appendPDF(buffer *bytes.Buffer) {
+func (operation textOperation) appendPDF(buffer *bytes.Buffer, embedded *embeddedFont) {
+	if embedded != nil {
+		if encoded, ok := embedded.encode(operation.text); ok {
+			fmt.Fprintf(buffer, "BT /FU1 %s Tf %s %s %s rg %s %s Td <%s> Tj ET\n",
+				pdfNumber(operation.fontSize),
+				pdfNumber(operation.color.Red),
+				pdfNumber(operation.color.Green),
+				pdfNumber(operation.color.Blue),
+				pdfNumber(operation.x),
+				pdfNumber(operation.y),
+				encoded,
+			)
+			return
+		}
+	}
 	font := "F1"
 	if operation.bold {
 		font = "F2"
@@ -92,7 +112,7 @@ type rectOperation struct {
 	color               PDFColor
 }
 
-func (operation rectOperation) appendPDF(buffer *bytes.Buffer) {
+func (operation rectOperation) appendPDF(buffer *bytes.Buffer, _ *embeddedFont) {
 	fmt.Fprintf(buffer, "%s %s %s rg %s %s %s %s re f\n",
 		pdfNumber(operation.color.Red),
 		pdfNumber(operation.color.Green),
@@ -110,7 +130,7 @@ type lineOperation struct {
 	width          float64
 }
 
-func (operation lineOperation) appendPDF(buffer *bytes.Buffer) {
+func (operation lineOperation) appendPDF(buffer *bytes.Buffer, _ *embeddedFont) {
 	fmt.Fprintf(buffer, "%s %s %s RG %s w %s %s m %s %s l S\n",
 		pdfNumber(operation.color.Red),
 		pdfNumber(operation.color.Green),
@@ -124,35 +144,62 @@ func (operation lineOperation) appendPDF(buffer *bytes.Buffer) {
 }
 
 func (document *PDFDocument) Bytes() []byte {
+	return document.BytesWithOptions(PDFSaveOptions{})
+}
+
+// BytesWithOptions serializes the document with the requested save behavior.
+func (document *PDFDocument) BytesWithOptions(options PDFSaveOptions) []byte {
 	pages := document.pages
 	if len(pages) == 0 {
 		pages = []*PDFPage{{Width: PageSizeA4.Width, Height: PageSizeA4.Height}}
 	}
 
 	pageCount := len(pages)
-	objects := make([][]byte, 4+pageCount*2)
+	objects := make([][]byte, 4)
 	objects[0] = []byte("<< /Type /Catalog /Pages 2 0 R >>")
-
-	pageReferences := make([]string, pageCount)
-	for index := range pages {
-		pageReferences[index] = fmt.Sprintf("%d 0 R", 5+index*2)
-	}
-	objects[1] = []byte(fmt.Sprintf("<< /Type /Pages /Count %d /Kids [%s] >>", pageCount, strings.Join(pageReferences, " ")))
 	objects[2] = []byte("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>")
 	objects[3] = []byte("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>")
+	embedded := prepareEmbeddedFont(pages)
+	if embedded != nil {
+		embedded.objectID = appendEmbeddedFontObjects(&objects, embedded)
+	}
+
+	pageObjectStart := len(objects) + 1
+	pageReferences := make([]string, pageCount)
+	for index := range pages {
+		pageReferences[index] = fmt.Sprintf("%d 0 R", pageObjectStart+index*2)
+	}
+	objects[1] = []byte(fmt.Sprintf("<< /Type /Pages /Count %d /Kids [%s] >>", pageCount, strings.Join(pageReferences, " ")))
 
 	for index, page := range pages {
-		pageObjectNumber := 5 + index*2
+		pageObjectNumber := pageObjectStart + index*2
 		contentObjectNumber := pageObjectNumber + 1
-		objects[pageObjectNumber-1] = []byte(fmt.Sprintf(
-			"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 %s %s] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents %d 0 R >>",
-			pdfNumber(page.Width), pdfNumber(page.Height), contentObjectNumber,
+		fontResources := "/F1 3 0 R /F2 4 0 R"
+		if embedded != nil {
+			fontResources += fmt.Sprintf(" /FU1 %d 0 R", embedded.objectID)
+		}
+		pageObject := []byte(fmt.Sprintf(
+			"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 %s %s] /Resources << /Font << %s >> >> /Contents %d 0 R >>",
+			pdfNumber(page.Width), pdfNumber(page.Height), fontResources, contentObjectNumber,
 		))
 		var content bytes.Buffer
 		for _, operation := range page.operations {
-			operation.appendPDF(&content)
+			operation.appendPDF(&content, embedded)
 		}
-		objects[contentObjectNumber-1] = []byte(fmt.Sprintf("<< /Length %d >>\nstream\n%sendstream", content.Len(), content.String()))
+		contentData := content.Bytes()
+		filter := ""
+		if options.Compress {
+			var compressed bytes.Buffer
+			writer := zlib.NewWriter(&compressed)
+			_, _ = writer.Write(contentData)
+			_ = writer.Close()
+			contentData = compressed.Bytes()
+			filter = " /Filter /FlateDecode"
+		}
+		contentObject := fmt.Appendf(nil, "<< /Length %d%s >>\nstream\n", len(contentData), filter)
+		contentObject = append(contentObject, contentData...)
+		contentObject = append(contentObject, []byte("\nendstream")...)
+		objects = append(objects, pageObject, contentObject)
 	}
 
 	var output bytes.Buffer

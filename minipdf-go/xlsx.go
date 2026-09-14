@@ -22,7 +22,7 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 		return nil, errorsNewMissingWorksheets()
 	}
 	pages := make([]textPage, 0, len(worksheets))
-	for index, name := range worksheets {
+	for _, name := range worksheets {
 		worksheetXML, readErr := files.read(name)
 		if readErr != nil {
 			return nil, readErr
@@ -31,10 +31,63 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 		if parseErr != nil {
 			return nil, fmt.Errorf("parse %s: %w", name, parseErr)
 		}
-		lines = append([]string{fmt.Sprintf("Sheet %d", index+1)}, lines...)
-		pages = append(pages, textPage{lines: lines, size: pageSize})
+		lines = limitWorksheet(lines, options.MaxRows, options.MaxColumns)
+		if options.Landscape != nil {
+			isLandscape := pageSize.Width > pageSize.Height
+			if *options.Landscape != isLandscape {
+				pageSize.Width, pageSize.Height = pageSize.Height, pageSize.Width
+			}
+		}
+		for _, group := range splitWorksheetColumnGroups(lines, 9) {
+			group = append([]string{""}, group...)
+			pages = append(pages, textPage{lines: group, size: pageSize})
+		}
 	}
 	return renderTextPages(pages, options), nil
+}
+
+func limitWorksheet(lines []string, maxRows, maxColumns int) []string {
+	if maxRows > 0 && len(lines) > maxRows {
+		lines = lines[:maxRows]
+	}
+	if maxColumns <= 0 {
+		return lines
+	}
+	limited := make([]string, len(lines))
+	for index, line := range lines {
+		cells := strings.Split(line, "\t")
+		if len(cells) > maxColumns {
+			cells = cells[:maxColumns]
+		}
+		limited[index] = strings.Join(cells, "\t")
+	}
+	return limited
+}
+
+func splitWorksheetColumnGroups(lines []string, columnsPerPage int) [][]string {
+	maximumColumns := 0
+	for _, line := range lines {
+		maximumColumns = max(maximumColumns, len(strings.Split(line, "\t")))
+	}
+	if maximumColumns <= columnsPerPage || columnsPerPage <= 0 {
+		return [][]string{lines}
+	}
+
+	groups := make([][]string, 0, (maximumColumns+columnsPerPage-1)/columnsPerPage)
+	for start := 0; start < maximumColumns; start += columnsPerPage {
+		end := min(start+columnsPerPage, maximumColumns)
+		group := make([]string, len(lines))
+		for rowIndex, line := range lines {
+			cells := strings.Split(line, "\t")
+			if start >= len(cells) {
+				continue
+			}
+			rowEnd := min(end, len(cells))
+			group[rowIndex] = strings.Join(cells[start:rowEnd], "\t")
+		}
+		groups = append(groups, group)
+	}
+	return groups
 }
 
 func errorsNewMissingWorksheets() error {
