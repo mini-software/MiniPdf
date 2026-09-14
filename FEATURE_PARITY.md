@@ -278,6 +278,11 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   with `12/12` pages. The complete 191-case classic XLSX average increased
   from `0.8436` to `0.8473`, with all unrelated case scores unchanged. See the
   local [`report`](artifacts/go-benchmark/classic/xlsx/report/comparison_report.md).
+- 2026-09-14: preserving explicit XLSX row and cell references raised
+  `classic11_sparse_rows` from `0.6990` to `0.9996` and
+  `classic12_sparse_columns` from `0.6993` to `0.9995`, with both candidates
+  reaching `2/2` reference pages. The complete 191-case average increased from
+  `0.8473` to `0.8503`, with no case regression.
 
 ## Alignment Backlog
 

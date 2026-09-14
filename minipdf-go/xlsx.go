@@ -184,6 +184,7 @@ func extractWorksheet(data []byte, sharedStrings []string) ([]string, PageSize, 
 	pageSize := PageSizeA4
 	var lines []string
 	var row []string
+	rowNumber := 0
 	for {
 		token, err := decoder.Token()
 		if err != nil {
@@ -197,7 +198,15 @@ func extractWorksheet(data []byte, sharedStrings []string) ([]string, PageSize, 
 			switch element.Name.Local {
 			case "row":
 				row = nil
+				rowNumber = len(lines) + 1
+				if parsed, parseErr := strconv.Atoi(attrValue(element, "r")); parseErr == nil && parsed > 0 {
+					rowNumber = parsed
+				}
 			case "c":
+				columnNumber := worksheetColumnIndex(attrValue(element, "r"))
+				for len(row)+1 < columnNumber {
+					row = append(row, "")
+				}
 				value, cellErr := decodeWorksheetCell(decoder, element, sharedStrings)
 				if cellErr != nil {
 					return nil, PageSize{}, cellErr
@@ -213,11 +222,28 @@ func extractWorksheet(data []byte, sharedStrings []string) ([]string, PageSize, 
 			}
 		case xml.EndElement:
 			if element.Name.Local == "row" {
+				for len(lines)+1 < rowNumber {
+					lines = append(lines, "")
+				}
 				lines = append(lines, strings.Join(row, "\t"))
 			}
 		}
 	}
 	return lines, pageSize, nil
+}
+
+func worksheetColumnIndex(reference string) int {
+	column := 0
+	for _, character := range reference {
+		if character >= 'a' && character <= 'z' {
+			character -= 'a' - 'A'
+		}
+		if character < 'A' || character > 'Z' {
+			break
+		}
+		column = column*26 + int(character-'A'+1)
+	}
+	return column
 }
 
 func decodeWorksheetCell(decoder *xml.Decoder, start xml.StartElement, sharedStrings []string) (string, error) {

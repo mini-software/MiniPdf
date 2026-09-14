@@ -238,6 +238,42 @@ func TestConvertXLSXPaginatesSingleColumnTextOverflow(t *testing.T) {
 	}
 }
 
+func TestExtractWorksheetPreservesSparseRows(t *testing.T) {
+	worksheet := []byte(`<?xml version="1.0"?><worksheet><sheetData>` +
+		`<row r="1"><c r="A1" t="inlineStr"><is><t>First</t></is></c></row>` +
+		`<row r="5"><c r="A5" t="inlineStr"><is><t>Fifth</t></is></c></row>` +
+		`<row r="10"><c r="A10" t="inlineStr"><is><t>Tenth</t></is></c></row>` +
+		`</sheetData></worksheet>`)
+
+	lines, _, err := extractWorksheet(worksheet, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(lines) != 10 {
+		t.Fatalf("line count = %d, want 10", len(lines))
+	}
+	if lines[0] != "First" || lines[4] != "Fifth" || lines[9] != "Tenth" {
+		t.Fatalf("sparse row values = %#v", lines)
+	}
+}
+
+func TestExtractWorksheetPreservesSparseColumns(t *testing.T) {
+	worksheet := []byte(`<?xml version="1.0"?><worksheet><sheetData>` +
+		`<row r="1"><c r="A1" t="inlineStr"><is><t>Left</t></is></c>` +
+		`<c r="D1" t="inlineStr"><is><t>Right</t></is></c></row>` +
+		`<row r="2"><c r="A2" t="inlineStr"><is><t>Data</t></is></c>` +
+		`<c r="J2" t="inlineStr"><is><t>Far</t></is></c></row>` +
+		`</sheetData></worksheet>`)
+
+	lines, _, err := extractWorksheet(worksheet, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if lines[0] != "Left\t\t\tRight" || lines[1] != "Data\t\t\t\t\t\t\t\t\tFar" {
+		t.Fatalf("sparse columns = %#v", lines)
+	}
+}
+
 func TestXLSXRowColumnLimitsAndOrientation(t *testing.T) {
 	input := officePackageBytes(t, map[string]string{
 		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
