@@ -241,7 +241,7 @@ All six implementations have language-specific visual benchmark runners under
 | Malformed/security fixtures | P | P | I | P | I | B/P |
 | Classic XLSX report | I | I | M | M | M | M |
 | Classic DOCX report | I | I | M | M | M | M |
-| Issue XLSX report | I | I | I | M | M | M |
+| Issue XLSX report | I | I | I | I | M | M |
 | Issue DOCX report | I | M | M | M | M | M |
 | Issue PPTX report | I | M | M | M | M | M |
 | Classic PPTX corpus/report | M | M | M | M | M | M |
@@ -294,6 +294,12 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   `0.9869`. The complete average reached `0.8522`; SHA-256 comparison against
   the preceding stage showed this was the only changed candidate among all 191
   cases.
+- 2026-09-14: the complete Go issue XLSX benchmark covers all 24 tracked issue
+  fixtures with 24 successful conversions and no missing Microsoft 365 or
+  LibreOffice references. The report averages `0.4929` and compares up to three
+  pages per case because two stress fixtures produce 3,781 and 2,860 candidate
+  pages. See the tracked
+  [`report`](artifacts/go-benchmark/issue/xlsx/report/comparison_report.md).
 
 ## Alignment Backlog
 
