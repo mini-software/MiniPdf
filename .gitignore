@@ -96,3 +96,7 @@ MiniPdf.Web/MiniPdf.Web.Client/wwwroot/fonts/
 /artifacts/java-benchmark/issue/xlsx/*
 !/artifacts/java-benchmark/issue/xlsx/report/
 !/artifacts/java-benchmark/issue/xlsx/report/**
+!/artifacts/java-benchmark/issue/docx/
+/artifacts/java-benchmark/issue/docx/*
+!/artifacts/java-benchmark/issue/docx/report/
+!/artifacts/java-benchmark/issue/docx/report/**

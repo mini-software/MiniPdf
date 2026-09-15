@@ -220,22 +220,40 @@ class ClassicFixtureSmokeTest {
     void convertsTrackedDocxFixture() throws Exception {
         Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/Invoice.docx");
 
-        String pdf = pdfText(MiniPdf.convertToPdfBytes(fixture));
+        byte[] pdf = MiniPdf.convertToPdfBytes(fixture);
+        String text = extractedText(pdf);
 
-        assertTrue(pdf.contains("Invoice"));
-        assertTrue(pdf.contains("ABC12345"));
-        assertTrue(pdf.endsWith("%%EOF\n"));
+        assertTrue(text.contains("Invoice"), text);
+        assertTrue(text.contains("ABC12345"), text);
+        assertTrue(pdfText(pdf).endsWith("%%EOF\n"));
+    }
+
+    @Test
+    void rendersIssue93AsSinglePageForm() throws Exception {
+        String windows = System.getenv("WINDIR");
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+                windows != null && Files.isRegularFile(Path.of(windows, "Fonts", "msyh.ttc")),
+                "requires Microsoft YaHei");
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/TestIssue93.docx");
+
+        try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
+            String text = new PDFTextStripper().getText(document);
+            assertEquals(1, document.getNumberOfPages());
+            assertTrue(text.contains("\u57fa\u672c\u4fe1\u606f"), text);
+            assertTrue(text.contains("A-1_1"), text);
+        }
     }
 
     @Test
     void convertsIssuePptx() throws Exception {
         Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/pptx/Asian Pacific.pptx");
 
-        String pdf = pdfText(MiniPdf.convertToPdfBytes(fixture));
+        byte[] pdf = MiniPdf.convertToPdfBytes(fixture);
 
-        assertTrue(pdf.startsWith("%PDF-1.4"));
-        assertTrue(pdf.contains("/Type /Pages"));
-        assertTrue(pdf.endsWith("%%EOF\n"));
+        try (PDDocument document = Loader.loadPDF(pdf)) {
+            assertTrue(document.getNumberOfPages() > 0);
+        }
+        assertTrue(pdfText(pdf).endsWith("%%EOF\n"));
     }
 
     private static String pdfText(byte[] pdf) {

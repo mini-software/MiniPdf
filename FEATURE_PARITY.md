@@ -242,12 +242,23 @@ All six implementations have language-specific visual benchmark runners under
 | Classic XLSX report | I | I | M | M | M | M |
 | Classic DOCX report | I | I | M | M | M | M |
 | Issue XLSX report | I | I | I | I | M | M |
-| Issue DOCX report | I | M | M | M | M | M |
+| Issue DOCX report | I | M | I | M | M | M |
 | Issue PPTX report | I | M | M | M | M | M |
 | Classic PPTX corpus/report | M | M | M | M | M | M |
 
 A feature should not move from `P` to `I` based only on a parser or API being
 present. Require a focused unit test plus a reproducible visual benchmark case.
+
+### Java Validation Progress
+
+- 2026-09-15: the complete Java issue DOCX benchmark covers all 28 tracked
+  fixtures with successful conversions and both Microsoft 365 and LibreOffice
+  references. Explicit page breaks, hard line breaks, printable tab spacing,
+  next-page section breaks, and landscape page sizing raised the average from
+  `0.5683` to `0.6398`. `TestIssue61` reached `8/8` pages, `issues66` reached
+  `3/3` pages, `CCU_article` reached `21/21` pages, and
+  `Template for MSc Thesis` reached `17/17` pages. See the tracked
+  [`report`](artifacts/java-benchmark/issue/docx/report/comparison_report.md).
 
 ### Go Validation Progress
 

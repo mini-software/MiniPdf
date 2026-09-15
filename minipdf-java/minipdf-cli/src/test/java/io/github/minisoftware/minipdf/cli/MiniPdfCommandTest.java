@@ -1,5 +1,7 @@
 package io.github.minisoftware.minipdf.cli;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
@@ -41,8 +43,10 @@ class MiniPdfCommandTest {
                 "--page-width", "400", "--page-height", "500");
 
         assertEquals(0, result.exitCode());
-        assertTrue(Files.readString(output, StandardCharsets.ISO_8859_1)
-                .contains("/MediaBox [0 0 400 500]"));
+        try (PDDocument document = Loader.loadPDF(output.toFile())) {
+            assertEquals(400.0f, document.getPage(0).getMediaBox().getWidth(), 0.1f);
+            assertEquals(500.0f, document.getPage(0).getMediaBox().getHeight(), 0.1f);
+        }
     }
 
         @Test
@@ -53,7 +57,9 @@ class MiniPdfCommandTest {
                 CommandResult result = execute(source.toString(), "-o", output.toString());
 
                 assertEquals(0, result.exitCode());
-                assertTrue(Files.readString(output, StandardCharsets.ISO_8859_1).startsWith("%PDF-1.4"));
+                try (PDDocument document = Loader.loadPDF(output.toFile())) {
+                        assertTrue(document.getNumberOfPages() > 0);
+                }
                 assertTrue(result.stdout().contains(output.toString()));
         }
 
