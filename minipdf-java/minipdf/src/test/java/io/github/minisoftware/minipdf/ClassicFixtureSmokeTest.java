@@ -228,6 +228,22 @@ class ClassicFixtureSmokeTest {
     }
 
     @Test
+    void rendersIssue93AsSinglePageForm() throws Exception {
+        String windows = System.getenv("WINDIR");
+        if (windows == null || !Files.isRegularFile(Path.of(windows, "Fonts", "msyh.ttc"))) {
+            return;
+        }
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/TestIssue93.docx");
+
+        try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
+            String text = new PDFTextStripper().getText(document);
+            assertEquals(1, document.getNumberOfPages());
+            assertTrue(text.contains("\u57fa\u672c\u4fe1\u606f"), text);
+            assertTrue(text.contains("A-1_1"), text);
+        }
+    }
+
+    @Test
     void convertsIssuePptx() throws Exception {
         Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/pptx/Asian Pacific.pptx");
 

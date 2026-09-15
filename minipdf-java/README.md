@@ -79,7 +79,7 @@ page-size and font-directory options.
 
 The Java implementation currently provides text-first Office conversion:
 
-- DOCX paragraphs, tabs, and line breaks
+- DOCX paragraphs, tabs, line breaks, explicit and section page breaks, and landscape page size
 - XLSX shared strings, inline strings, numbers, and booleans
 - PPTX slide text, native slide dimensions, and one PDF page per slide
 - bounded OOXML ZIP loading and XML external-entity protection

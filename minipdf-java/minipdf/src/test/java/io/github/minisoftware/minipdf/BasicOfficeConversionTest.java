@@ -49,6 +49,76 @@ class BasicOfficeConversionTest {
     }
 
     @Test
+    void convertsDocxPageBreakToSeparatePdfPage() throws Exception {
+        byte[] docx = packageWith(Map.of(
+                "word/document.xml",
+                "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>First</w:t>"
+                        + "<w:br w:type=\"page\"/><w:t>Second</w:t></w:r></w:p>"
+                        + "</w:body></w:document>"));
+
+        String pdf = pdfText(MiniPdf.convertBytesToPdf(docx));
+
+        assertTrue(pdf.contains("/Count 2"));
+        assertTrue(pdf.indexOf("(First) Tj") < pdf.indexOf("(Second) Tj"));
+    }
+
+    @Test
+    void convertsDocxHardLineBreakToSeparateTextLine() throws Exception {
+        byte[] docx = packageWith(Map.of(
+                "word/document.xml",
+                "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>First</w:t>"
+                        + "<w:br/><w:t>Second</w:t></w:r></w:p></w:body></w:document>"));
+
+        String pdf = pdfText(MiniPdf.convertBytesToPdf(docx));
+
+        assertTrue(pdf.contains("(First) Tj"));
+        assertTrue(pdf.contains("(Second) Tj"));
+    }
+
+    @Test
+    void convertsDocxTabToPrintableSpacing() throws Exception {
+        byte[] docx = packageWith(Map.of(
+                "word/document.xml",
+                "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>Left</w:t>"
+                        + "<w:tab/><w:t>Right</w:t></w:r></w:p></w:body></w:document>"));
+
+        String pdf = pdfText(MiniPdf.convertBytesToPdf(docx));
+
+        assertTrue(pdf.contains("(Left    Right) Tj"));
+    }
+
+    @Test
+    void convertsDocxNextPageSectionBreakToSeparatePdfPage() throws Exception {
+        byte[] docx = packageWith(Map.of(
+                "word/document.xml",
+                "<w:document xmlns:w=\"urn:w\"><w:body>"
+                        + "<w:p><w:pPr><w:sectPr><w:type w:val=\"nextPage\"/></w:sectPr></w:pPr>"
+                        + "<w:r><w:t>First</w:t></w:r></w:p>"
+                        + "<w:p><w:r><w:t>Second</w:t></w:r></w:p>"
+                        + "</w:body></w:document>"));
+
+        String pdf = pdfText(MiniPdf.convertBytesToPdf(docx));
+
+        assertTrue(pdf.contains("/Count 2"));
+        assertTrue(pdf.indexOf("(First) Tj") < pdf.indexOf("(Second) Tj"));
+    }
+
+    @Test
+    void keepsContinuousDocxSectionOnTheSamePdfPage() throws Exception {
+        byte[] docx = packageWith(Map.of(
+                "word/document.xml",
+                "<w:document xmlns:w=\"urn:w\"><w:body>"
+                        + "<w:p><w:pPr><w:sectPr><w:type w:val=\"continuous\"/></w:sectPr></w:pPr>"
+                        + "<w:r><w:t>First</w:t></w:r></w:p>"
+                        + "<w:p><w:r><w:t>Second</w:t></w:r></w:p>"
+                        + "</w:body></w:document>"));
+
+        String pdf = pdfText(MiniPdf.convertBytesToPdf(docx));
+
+        assertTrue(pdf.contains("/Count 1"));
+    }
+
+    @Test
     void usesRegisteredFontForDocxUnicodeText() throws Exception {
         String text = "\u041f\u0440\u0438\u0432\u0435\u0442 DOCX";
         registerTestFont();
@@ -58,6 +128,20 @@ class BasicOfficeConversionTest {
                         + "</w:t></w:r></w:p></w:body></w:document>"));
 
         assertUnicodeTextUsesEmbeddedFont(MiniPdf.convertBytesToPdf(docx), text);
+    }
+
+    @Test
+    void usesNativeDocxLandscapePageSize() throws Exception {
+        byte[] docx = packageWith(Map.of(
+                "word/document.xml",
+                "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>Landscape</w:t></w:r></w:p>"
+                        + "<w:sectPr><w:pgSz w:w=\"16838\" w:h=\"11906\" w:orient=\"landscape\"/>"
+                        + "</w:sectPr>"
+                        + "</w:body></w:document>"));
+
+        String pdf = pdfText(MiniPdf.convertBytesToPdf(docx));
+
+        assertTrue(pdf.contains("/MediaBox [0 0 841.9 595.3]"));
     }
 
     @Test
@@ -81,7 +165,9 @@ class BasicOfficeConversionTest {
         byte[] docx = packageWith(Map.of(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>Size</w:t></w:r>"
-                        + "</w:p></w:body></w:document>"));
+                    + "</w:p><w:sectPr><w:pgSz w:w=\"16838\" w:h=\"11906\" "
+                    + "w:orient=\"landscape\"/></w:sectPr>"
+                + "</w:body></w:document>"));
 
         byte[] pdf = MiniPdf.convertBytesToPdf(
                 docx,

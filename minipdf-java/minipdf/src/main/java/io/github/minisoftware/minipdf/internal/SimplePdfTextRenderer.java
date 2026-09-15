@@ -8,6 +8,7 @@ import io.github.minisoftware.minipdf.PdfColor;
 import io.github.minisoftware.minipdf.PdfDocument;
 import io.github.minisoftware.minipdf.PdfPage;
 import io.github.minisoftware.minipdf.RegisteredFont;
+import org.apache.fontbox.ttf.TrueTypeCollection;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -18,6 +19,8 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +41,9 @@ public final class SimplePdfTextRenderer {
             ConversionOptions options,
             PageSize defaultPageSize) throws MiniPdfException {
         PageSize size = options.pageSize().orElse(defaultPageSize);
-        byte[] registeredFontPdf = renderWithRegisteredFont(sourcePages, size);
-        if (registeredFontPdf != null) {
-            return registeredFontPdf;
+        byte[] unicodeFontPdf = renderWithUnicodeFont(sourcePages, size);
+        if (unicodeFontPdf != null) {
+            return unicodeFontPdf;
         }
 
         PdfDocument document = new PdfDocument();
@@ -63,12 +66,11 @@ public final class SimplePdfTextRenderer {
         return document.toBytes();
     }
 
-    private static byte[] renderWithRegisteredFont(List<List<String>> sourcePages, PageSize size)
+    private static byte[] renderWithUnicodeFont(List<List<String>> sourcePages, PageSize size)
             throws MiniPdfException {
         if (MiniPdf.registeredFonts().isEmpty()) {
             return null;
         }
-
         try (PDDocument document = new PDDocument()) {
             PDFont font = loadFont(document, sourcePages);
             if (font == null) {
@@ -117,7 +119,7 @@ public final class SimplePdfTextRenderer {
         }
     }
 
-    private static PDFont loadFont(PDDocument document, List<List<String>> sourcePages) {
+    public static PDFont loadFont(PDDocument document, List<List<String>> sourcePages) {
         for (RegisteredFont registeredFont : MiniPdf.registeredFonts()) {
             try {
                 PDFont font = PDType0Font.load(
@@ -131,7 +133,71 @@ public final class SimplePdfTextRenderer {
                 // Try the next registered font.
             }
         }
+        return loadSystemFont(
+                document,
+                sourcePages,
+                "simsun.ttc",
+                "msyh.ttc",
+                "mingliu.ttc",
+                "arialuni.ttf");
+    }
+
+    public static PDFont loadSystemFont(
+            PDDocument document,
+            List<List<String>> sourcePages,
+            String... fileNames) {
+        for (Path path : systemFontPaths(fileNames)) {
+            if (!Files.isRegularFile(path)) {
+                continue;
+            }
+            try {
+                PDFont font = path.getFileName().toString().toLowerCase().endsWith(".ttc")
+                        ? loadCollectionFont(document, path, sourcePages)
+                        : PDType0Font.load(document, Files.newInputStream(path), true);
+                if (font != null && supports(font, sourcePages)) {
+                    return font;
+                }
+            } catch (IOException | IllegalArgumentException ignored) {
+                // Try the next system font.
+            }
+        }
         return null;
+    }
+
+    private static PDFont loadCollectionFont(
+            PDDocument document,
+            Path path,
+            List<List<String>> sourcePages) throws IOException {
+        PDFont[] supported = new PDFont[1];
+        try (TrueTypeCollection collection = new TrueTypeCollection(path.toFile())) {
+            collection.processAllFonts(font -> {
+                if (supported[0] == null) {
+                    PDFont candidate = PDType0Font.load(document, font, true);
+                    if (supports(candidate, sourcePages)) {
+                        supported[0] = candidate;
+                    }
+                }
+            });
+        }
+        return supported[0];
+    }
+
+    private static List<Path> systemFontPaths(String... names) {
+        List<Path> paths = new ArrayList<>();
+        String windows = System.getenv("WINDIR");
+        if (windows != null) {
+            Path fonts = Path.of(windows, "Fonts");
+            for (String name : names) {
+                paths.add(fonts.resolve(name));
+            }
+        }
+        for (String name : names) {
+            paths.add(Path.of("/usr/share/fonts/truetype/noto", name));
+            paths.add(Path.of("/usr/share/fonts/opentype/noto", name));
+            paths.add(Path.of("/System/Library/Fonts", name));
+            paths.add(Path.of("/System/Library/Fonts/Supplemental", name));
+        }
+        return paths;
     }
 
     private static boolean supports(PDFont font, List<List<String>> sourcePages) {
