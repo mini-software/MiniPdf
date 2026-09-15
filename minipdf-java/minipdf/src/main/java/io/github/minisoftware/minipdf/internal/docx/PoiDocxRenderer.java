@@ -46,6 +46,11 @@ final class PoiDocxRenderer {
         PageSize pageSize = options.pageSize().orElse(documentPageSize);
         try (XWPFDocument source = new XWPFDocument(new ByteArrayInputStream(input));
                 PDDocument output = new PDDocument()) {
+            if (source.getBodyElements().stream()
+                    .anyMatch(element -> !(element instanceof XWPFParagraph)
+                            && !(element instanceof XWPFTable))) {
+                return null;
+            }
             List<List<String>> text = List.of(source.getBodyElements().stream()
                     .map(element -> element instanceof XWPFTable table
                         ? table.getText()
@@ -380,6 +385,10 @@ final class PoiDocxRenderer {
         List<Float> widths = new ArrayList<>();
         if (table.getCTTbl().getTblGrid() != null) {
             for (var column : table.getCTTbl().getTblGrid().getGridColList()) {
+                if (!column.isSetW()) {
+                    widths.clear();
+                    break;
+                }
                 try {
                     widths.add(Float.parseFloat(column.getW().toString()) / 20.0f);
                 } catch (NumberFormatException ignored) {

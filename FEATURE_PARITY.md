@@ -255,7 +255,7 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
   fixtures with successful conversions and both Microsoft 365 and LibreOffice
   references. Explicit page breaks, hard line breaks, printable tab spacing,
   next-page section breaks, and landscape page sizing raised the average from
-  `0.5683` to `0.6181`. `TestIssue61` reached `8/8` pages, `issues66` reached
+  `0.5683` to `0.6398`. `TestIssue61` reached `8/8` pages, `issues66` reached
   `3/3` pages, `CCU_article` reached `21/21` pages, and
   `Template for MSc Thesis` reached `17/17` pages. See the tracked
   [`report`](artifacts/java-benchmark/issue/docx/report/comparison_report.md).

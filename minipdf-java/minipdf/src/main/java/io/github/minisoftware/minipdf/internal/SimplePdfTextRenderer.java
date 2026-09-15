@@ -68,7 +68,11 @@ public final class SimplePdfTextRenderer {
 
     private static byte[] renderWithUnicodeFont(List<List<String>> sourcePages, PageSize size)
             throws MiniPdfException {
-        if (MiniPdf.registeredFonts().isEmpty()) {
+        boolean requiresSystemFont = sourcePages.stream()
+                .flatMap(List::stream)
+                .flatMapToInt(String::codePoints)
+                .anyMatch(codePoint -> codePoint > 255);
+        if (MiniPdf.registeredFonts().isEmpty() && !requiresSystemFont) {
             return null;
         }
         try (PDDocument document = new PDDocument()) {

@@ -53,12 +53,8 @@ public final class DocxConverter {
                     if (inParagraphSectionProperties && landscape) {
                         paragraphSectionChangesOrientation = true;
                     }
-                    pageWidth = 0.0f;
-                    pageHeight = 0.0f;
-                    if (landscape) {
-                        pageWidth = floatAttribute(reader, "w") / 20.0f;
-                        pageHeight = floatAttribute(reader, "h") / 20.0f;
-                    }
+                    pageWidth = floatAttribute(reader, "w") / 20.0f;
+                    pageHeight = floatAttribute(reader, "h") / 20.0f;
                 } else if (event == XMLStreamConstants.START_ELEMENT && reader.getLocalName().equals("p")) {
                     paragraph = new StringBuilder();
                     sectionBreakAfterParagraph = false;
