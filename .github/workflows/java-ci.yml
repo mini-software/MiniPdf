@@ -43,8 +43,12 @@ jobs:
         exclude:
           - java-version: '9'
             runner: ubuntu-latest
+          - java-version: '10'
+            runner: ubuntu-latest
         include:
           - java-version: '9'
+            runner: ubuntu-22.04
+          - java-version: '10'
             runner: ubuntu-22.04
     runs-on: ${{ matrix.runner }}
     defaults:
