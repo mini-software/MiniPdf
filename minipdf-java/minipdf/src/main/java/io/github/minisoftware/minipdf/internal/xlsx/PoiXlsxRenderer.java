@@ -1723,7 +1723,12 @@ final class PoiXlsxRenderer {
                     document,
                     registered,
                     Arrays.asList("notosanssc", "simhei", "simsun"),
-                    systemFonts("NotoSansSC-VF.ttf", "NotoSansCJK-Regular.ttc", "simhei.ttf", "simsun.ttc"));
+                        systemFonts(
+                            "NotoSansSC-VF.ttf",
+                            "wqy-microhei.ttc",
+                            "NotoSansCJK-Regular.ttc",
+                            "simhei.ttf",
+                            "simsun.ttc"));
             PDFont simsun = load(document, registered, Collections.singletonList("simsun"), systemFonts("simsun.ttc"));
             PDFont mingliu = load(document, registered, Collections.singletonList("mingliu"), systemFonts("mingliu.ttc"));
             List<Path> kaitiPaths = officeCloudFonts("STKaiti");
@@ -1892,10 +1897,13 @@ final class PoiXlsxRenderer {
                 if (Files.isRegularFile(path)) {
                     try {
                         String fileName = path.getFileName().toString().toLowerCase(Locale.ROOT);
-                        return fileName.endsWith(".ttc") || fileName.endsWith(".otc")
+                        PDFont loaded = fileName.endsWith(".ttc") || fileName.endsWith(".otc")
                                 ? loadCollectionFont(document, path)
                                 : PDType0Font.load(document, Files.newInputStream(path), true);
-                    } catch (IOException ignored) {
+                        if (loaded != null) {
+                            return loaded;
+                        }
+                    } catch (IOException | RuntimeException ignored) {
                     }
                 }
             }
@@ -1907,7 +1915,10 @@ final class PoiXlsxRenderer {
             try (TrueTypeCollection collection = new TrueTypeCollection(path.toFile())) {
                 collection.processAllFonts(font -> {
                     if (loaded[0] == null) {
-                        loaded[0] = PDType0Font.load(document, font, true);
+                        try {
+                            loaded[0] = PDType0Font.load(document, font, true);
+                        } catch (IOException | RuntimeException ignored) {
+                        }
                     }
                 });
             }
@@ -1924,6 +1935,7 @@ final class PoiXlsxRenderer {
             }
             for (String name : names) {
                 paths.add(Paths.get("/usr/share/fonts/truetype/noto", name));
+                paths.add(Paths.get("/usr/share/fonts/truetype/wqy", name));
                 paths.add(Paths.get("/usr/share/fonts/opentype/noto", name));
                 paths.add(Paths.get("/System/Library/Fonts", name));
                 paths.add(Paths.get("/System/Library/Fonts/Supplemental", name));
