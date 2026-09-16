@@ -2,6 +2,7 @@ package io.github.minisoftware.minipdf.internal.xlsx;
 
 import de.rototor.pdfbox.graphics2d.PdfBoxGraphics2D;
 import io.github.minisoftware.minipdf.ConversionOptions;
+import io.github.minisoftware.minipdf.internal.FontEmbeddingPolicy;
 import io.github.minisoftware.minipdf.MiniPdf;
 import io.github.minisoftware.minipdf.MiniPdfException;
 import io.github.minisoftware.minipdf.PageSize;
@@ -1890,7 +1891,10 @@ final class PoiXlsxRenderer {
                 List<Path> paths) throws IOException {
             for (Map.Entry<String, byte[]> font : registered.entrySet()) {
                 if (names.stream().anyMatch(font.getKey()::contains)) {
-                    return PDType0Font.load(document, new ByteArrayInputStream(font.getValue()), true);
+                    return PDType0Font.load(
+                            document,
+                            new ByteArrayInputStream(font.getValue()),
+                            FontEmbeddingPolicy.shouldSubset());
                 }
             }
             for (Path path : paths) {
@@ -1899,7 +1903,10 @@ final class PoiXlsxRenderer {
                         String fileName = path.getFileName().toString().toLowerCase(Locale.ROOT);
                         PDFont loaded = fileName.endsWith(".ttc") || fileName.endsWith(".otc")
                                 ? loadCollectionFont(document, path)
-                                : PDType0Font.load(document, Files.newInputStream(path), true);
+                            : PDType0Font.load(
+                                document,
+                                Files.newInputStream(path),
+                                FontEmbeddingPolicy.shouldSubset());
                         if (loaded != null) {
                             return loaded;
                         }
@@ -1916,7 +1923,10 @@ final class PoiXlsxRenderer {
                 collection.processAllFonts(font -> {
                     if (loaded[0] == null) {
                         try {
-                            loaded[0] = PDType0Font.load(document, font, true);
+                            loaded[0] = PDType0Font.load(
+                                    document,
+                                    font,
+                                    FontEmbeddingPolicy.shouldSubset());
                         } catch (IOException | RuntimeException ignored) {
                         }
                     }

@@ -131,7 +131,7 @@ public final class SimplePdfTextRenderer {
                 PDFont font = PDType0Font.load(
                         document,
                         new ByteArrayInputStream(registeredFont.data()),
-                        true);
+                    FontEmbeddingPolicy.shouldSubset());
                 if (supports(font, sourcePages)) {
                     return font;
                 }
@@ -159,7 +159,10 @@ public final class SimplePdfTextRenderer {
             try {
                 PDFont font = path.getFileName().toString().toLowerCase().endsWith(".ttc")
                         ? loadCollectionFont(document, path, sourcePages)
-                        : PDType0Font.load(document, Files.newInputStream(path), true);
+                    : PDType0Font.load(
+                        document,
+                        Files.newInputStream(path),
+                        FontEmbeddingPolicy.shouldSubset());
                 if (font != null && supports(font, sourcePages)) {
                     return font;
                 }
@@ -178,7 +181,10 @@ public final class SimplePdfTextRenderer {
         try (TrueTypeCollection collection = new TrueTypeCollection(path.toFile())) {
             collection.processAllFonts(font -> {
                 if (supported[0] == null) {
-                    PDFont candidate = PDType0Font.load(document, font, true);
+                    PDFont candidate = PDType0Font.load(
+                            document,
+                            font,
+                            FontEmbeddingPolicy.shouldSubset());
                     if (supports(candidate, sourcePages)) {
                         supported[0] = candidate;
                     }
