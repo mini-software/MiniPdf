@@ -1933,7 +1933,7 @@ final class PoiXlsxRenderer {
         private static List<Path> cjkSystemFonts() {
             if (!FontEmbeddingPolicy.shouldSubset()) {
                 return systemFonts(
-                        "DroidSansFallbackFull.ttf",
+                        "unifont.ttf",
                         "NotoSansSC-VF.ttf",
                         "wqy-microhei.ttc",
                         "NotoSansCJK-Regular.ttc",
@@ -1957,7 +1957,7 @@ final class PoiXlsxRenderer {
                 }
             }
             for (String name : names) {
-                paths.add(Paths.get("/usr/share/fonts/truetype/droid", name));
+                paths.add(Paths.get("/usr/share/fonts/truetype/unifont", name));
                 paths.add(Paths.get("/usr/share/fonts/truetype/noto", name));
                 paths.add(Paths.get("/usr/share/fonts/truetype/wqy", name));
                 paths.add(Paths.get("/usr/share/fonts/opentype/noto", name));

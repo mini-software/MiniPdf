@@ -82,7 +82,7 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Install CJK fonts
-        run: sudo apt-get update && sudo apt-get install --yes fonts-droid-fallback fonts-noto-cjk fonts-wqy-microhei
+        run: sudo apt-get update && sudo apt-get install --yes fonts-noto-cjk fonts-wqy-microhei
 
       - name: Test release candidate
         run: ./mvnw -B -ntp clean verify
