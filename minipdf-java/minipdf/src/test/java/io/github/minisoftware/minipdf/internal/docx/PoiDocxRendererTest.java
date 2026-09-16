@@ -48,6 +48,25 @@ class PoiDocxRendererTest {
     }
 
     @Test
+    void wrapsEastAsianParagraphsWithDocumentEastAsianFont() {
+        var fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        var simSun = new PDType1Font(Standard14Fonts.FontName.COURIER);
+        var fonts = new PoiDocxRenderer.ParagraphFonts(
+                fallback,
+                simSun,
+                fallback,
+                fallback,
+                fallback,
+                fallback,
+                fallback,
+                "Times New Roman",
+                "SimSun");
+
+        assertSame(simSun, PoiDocxRenderer.wrappingFont(fonts, "使用PECVD设备"));
+        assertSame(fallback, PoiDocxRenderer.wrappingFont(fonts, "ASCII only"));
+    }
+
+    @Test
     void splitsInheritedMixedScriptRunByDocumentFontSlots() throws Exception {
         var fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
         var simSun = new PDType1Font(Standard14Fonts.FontName.COURIER);
@@ -78,6 +97,36 @@ class PoiDocxRendererTest {
             assertEquals(0.0f, segments.get(0).leadingSpacing());
             assertEquals(2.5f, segments.get(1).leadingSpacing());
             assertEquals(2.5f, segments.get(2).leadingSpacing());
+        }
+    }
+
+    @Test
+    void suppressesMixedScriptSpacingWhenParagraphDisablesIt() throws Exception {
+        var fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        var simSun = new PDType1Font(Standard14Fonts.FontName.COURIER);
+        var fonts = new PoiDocxRenderer.ParagraphFonts(
+                fallback,
+                simSun,
+                fallback,
+                fallback,
+                fallback,
+                fallback,
+                fallback,
+                "Times New Roman",
+                "SimSun");
+        try (var document = new XWPFDocument()) {
+            var paragraph = document.createParagraph();
+            var properties = paragraph.getCTP().addNewPPr();
+            properties.addNewAutoSpaceDE().setVal(false);
+            properties.addNewAutoSpaceDN().setVal(false);
+            paragraph.createRun().setText("A中1");
+
+            List<PoiDocxRenderer.RunSegment> segments =
+                    PoiDocxRenderer.paragraphSegments(paragraph, fonts, 10.0f);
+
+            assertEquals(List.of(0.0f, 0.0f, 0.0f), segments.stream()
+                    .map(PoiDocxRenderer.RunSegment::leadingSpacing)
+                    .toList());
         }
     }
 }

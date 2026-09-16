@@ -263,6 +263,38 @@ class ClassicFixtureSmokeTest {
             firstPageStripper.setEndPage(1);
             String firstPage = firstPageStripper.getText(document);
             assertFalse(firstPage.contains("\u4f7f\u7528\u6d89\u53ca\u771f\u7a7a\u7684\u8bbe\u5907"), firstPage);
+            assertTrue(firstPage.lines().anyMatch(line -> line.trim().equals("1")), firstPage);
+            PDFTextStripper secondPageStripper = new PDFTextStripper();
+            secondPageStripper.setStartPage(2);
+            secondPageStripper.setEndPage(2);
+            assertTrue(secondPageStripper.getText(document).lines()
+                    .anyMatch(line -> line.trim().equals("2")));
+            PDFTextStripper thirdPageStripper = new PDFTextStripper();
+            thirdPageStripper.setStartPage(3);
+            thirdPageStripper.setEndPage(3);
+            assertTrue(thirdPageStripper.getText(document).lines()
+                    .anyMatch(line -> line.trim().equals("3")));
+        }
+    }
+
+    @Test
+    void preservesLiteralTextAroundPageNumberField() throws Exception {
+        String windows = System.getenv("WINDIR");
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+                windows != null && Files.isRegularFile(Path.of(windows, "Fonts", "msyh.ttc")),
+                "requires Microsoft YaHei");
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/issue202605.docx");
+
+        try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
+            assertEquals(3, document.getNumberOfPages());
+            for (int page = 1; page <= document.getNumberOfPages(); page++) {
+                PDFTextStripper stripper = new PDFTextStripper();
+                stripper.setStartPage(page);
+                stripper.setEndPage(page);
+                String expected = page + " \u9801";
+                assertTrue(stripper.getText(document).lines()
+                        .anyMatch(line -> line.trim().equals(expected)), "missing " + expected);
+            }
         }
     }
 
