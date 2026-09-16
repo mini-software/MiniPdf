@@ -6,6 +6,7 @@ import io.github.minisoftware.minipdf.MiniPdf;
 import io.github.minisoftware.minipdf.MiniPdfException;
 import io.github.minisoftware.minipdf.PageSize;
 import io.github.minisoftware.minipdf.RegisteredFont;
+import org.apache.fontbox.ttf.TrueTypeCollection;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -1722,7 +1723,7 @@ final class PoiXlsxRenderer {
                     document,
                     registered,
                     Arrays.asList("notosanssc", "simhei", "simsun"),
-                    systemFonts("NotoSansSC-VF.ttf", "simhei.ttf", "simsun.ttc"));
+                    systemFonts("NotoSansSC-VF.ttf", "NotoSansCJK-Regular.ttc", "simhei.ttf", "simsun.ttc"));
             PDFont simsun = load(document, registered, Collections.singletonList("simsun"), systemFonts("simsun.ttc"));
             PDFont mingliu = load(document, registered, Collections.singletonList("mingliu"), systemFonts("mingliu.ttc"));
             List<Path> kaitiPaths = officeCloudFonts("STKaiti");
@@ -1890,12 +1891,27 @@ final class PoiXlsxRenderer {
             for (Path path : paths) {
                 if (Files.isRegularFile(path)) {
                     try {
-                        return PDType0Font.load(document, Files.newInputStream(path), true);
+                        String fileName = path.getFileName().toString().toLowerCase(Locale.ROOT);
+                        return fileName.endsWith(".ttc") || fileName.endsWith(".otc")
+                                ? loadCollectionFont(document, path)
+                                : PDType0Font.load(document, Files.newInputStream(path), true);
                     } catch (IOException ignored) {
                     }
                 }
             }
             return null;
+        }
+
+        private static PDFont loadCollectionFont(PDDocument document, Path path) throws IOException {
+            PDFont[] loaded = new PDFont[1];
+            try (TrueTypeCollection collection = new TrueTypeCollection(path.toFile())) {
+                collection.processAllFonts(font -> {
+                    if (loaded[0] == null) {
+                        loaded[0] = PDType0Font.load(document, font, true);
+                    }
+                });
+            }
+            return loaded[0];
         }
 
         private static List<Path> systemFonts(String... names) {
