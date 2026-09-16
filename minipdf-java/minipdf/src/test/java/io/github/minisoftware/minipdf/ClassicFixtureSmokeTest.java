@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClassicFixtureSmokeTest {
@@ -241,6 +242,27 @@ class ClassicFixtureSmokeTest {
             assertEquals(1, document.getNumberOfPages());
             assertTrue(text.contains("\u57fa\u672c\u4fe1\u606f"), text);
             assertTrue(text.contains("A-1_1"), text);
+        }
+    }
+
+    @Test
+    void rendersIssue66AsThreePageForm() throws Exception {
+        String windows = System.getenv("WINDIR");
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+                windows != null && Files.isRegularFile(Path.of(windows, "Fonts", "msyh.ttc")),
+                "requires Microsoft YaHei");
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/issues66.docx");
+
+        try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
+            String text = new PDFTextStripper().getText(document);
+            assertEquals(3, document.getNumberOfPages());
+            assertTrue(text.contains("\u5fae\u7eb3\u52a0\u5de5\u5e73\u53f0\u5de5\u827a\u7533\u8bf7\u8868"), text);
+            assertTrue(text.contains("985 \u9ad8\u6821"), text);
+            PDFTextStripper firstPageStripper = new PDFTextStripper();
+            firstPageStripper.setStartPage(1);
+            firstPageStripper.setEndPage(1);
+            String firstPage = firstPageStripper.getText(document);
+            assertFalse(firstPage.contains("\u4f7f\u7528\u6d89\u53ca\u771f\u7a7a\u7684\u8bbe\u5907"), firstPage);
         }
     }
 
