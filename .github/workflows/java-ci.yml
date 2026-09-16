@@ -39,7 +39,14 @@ jobs:
           - '23'
           - '24'
           - '25'
-    runs-on: ubuntu-latest
+        runner: [ubuntu-latest]
+        exclude:
+          - java-version: '9'
+            runner: ubuntu-latest
+        include:
+          - java-version: '9'
+            runner: ubuntu-22.04
+    runs-on: ${{ matrix.runner }}
     defaults:
       run:
         working-directory: minipdf-java
