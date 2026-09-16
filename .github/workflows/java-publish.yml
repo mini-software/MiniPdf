@@ -74,7 +74,7 @@ jobs:
             echo "::error::Version '$VERSION' must use stable semantic version format."
             exit 1
           fi
-          POM_VERSION="$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)"
+          POM_VERSION="$(./mvnw -q -DforceStdout help:evaluate -Dexpression=project.version)"
           if [ "$VERSION" != "$POM_VERSION" ]; then
             echo "::error::Release version '$VERSION' does not match POM version '$POM_VERSION'."
             exit 1
@@ -82,15 +82,15 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Install CJK fonts
-        run: sudo apt-get update && sudo apt-get install --yes fonts-noto-cjk
+        run: sudo apt-get update && sudo apt-get install --yes fonts-noto-cjk fonts-wqy-microhei
 
       - name: Test release candidate
-        run: mvn -B -ntp clean verify
+        run: ./mvnw -B -ntp clean verify
 
       - name: Verify Maven Central artifacts
         shell: bash
         run: |
-          mvn -B -ntp -P release -DskipTests -Dgpg.skip=true package
+          ./mvnw -B -ntp -P release -DskipTests -Dgpg.skip=true package
           VERSION="${{ steps.version.outputs.version }}"
           for artifact in \
             "minipdf/target/minipdf-$VERSION.jar" \
@@ -111,7 +111,7 @@ jobs:
           fi
 
       - name: Publish to Maven Central
-        run: mvn -B -ntp -P release -DskipTests deploy
+        run: ./mvnw -B -ntp -P release -DskipTests deploy
 
       - name: Summarize publication
         shell: bash
