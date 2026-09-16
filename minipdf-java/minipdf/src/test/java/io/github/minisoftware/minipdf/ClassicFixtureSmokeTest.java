@@ -1,20 +1,27 @@
 package io.github.minisoftware.minipdf;
 
 import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.awt.image.BufferedImage;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.stream.Stream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClassicFixtureSmokeTest {
-    private static final Path REPOSITORY_ROOT = Path.of("..", "..").toAbsolutePath().normalize();
+    private static final Path REPOSITORY_ROOT = Paths.get("..", "..").toAbsolutePath().normalize();
 
     @Test
     void convertsTrackedXlsxFixture() throws Exception {
@@ -58,7 +65,7 @@ class ClassicFixtureSmokeTest {
         try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
             String text = new PDFTextStripper().getText(document);
             assertTrue(text.contains("Horizontal Left + Vertical Bottom"), text);
-            var page = new PDFRenderer(document).renderImageWithDPI(0, 150.0f);
+            BufferedImage page = new PDFRenderer(document).renderImageWithDPI(0, 150.0f);
             int rightmostDarkPixel = 0;
             int visibleOverflowPixels = 0;
             for (int y = 0; y < page.getHeight(); y++) {
@@ -104,14 +111,14 @@ class ClassicFixtureSmokeTest {
             assertEquals(1, firstPage.split("EMPLOYEE COSTS", -1).length - 1, firstPage);
 
             long imageCount = 0;
-            for (var name : document.getPage(0).getResources().getXObjectNames()) {
+            for (COSName name : document.getPage(0).getResources().getXObjectNames()) {
                 if (document.getPage(0).getResources().getXObject(name) instanceof PDImageXObject) {
                     imageCount++;
                 }
             }
             assertTrue(imageCount >= 2, "imageCount=" + imageCount);
 
-            var page = new PDFRenderer(document).renderImageWithDPI(0, 150.0f);
+            BufferedImage page = new PDFRenderer(document).renderImageWithDPI(0, 150.0f);
             long stripedPixels = 0;
             long translucentShapePixels = 0;
             for (int y = 0; y < page.getHeight(); y++) {
@@ -159,9 +166,10 @@ class ClassicFixtureSmokeTest {
             boolean hasImage = false;
             boolean hasVectorForm = false;
             int widestImage = 0;
-            for (var name : document.getPage(0).getResources().getXObjectNames()) {
-                var object = document.getPage(0).getResources().getXObject(name);
-                if (object instanceof PDImageXObject image) {
+            for (COSName name : document.getPage(0).getResources().getXObjectNames()) {
+                PDXObject object = document.getPage(0).getResources().getXObject(name);
+                if (object instanceof PDImageXObject) {
+                    PDImageXObject image = (PDImageXObject) object;
                     hasImage = true;
                     widestImage = Math.max(widestImage, image.getWidth());
                 } else if (object instanceof PDFormXObject) {
@@ -170,7 +178,7 @@ class ClassicFixtureSmokeTest {
             }
             assertTrue(hasImage || hasVectorForm);
             assertTrue(hasVectorForm || widestImage >= 2000, "widestImage=" + widestImage);
-            var pageOne = new PDFRenderer(document).renderImageWithDPI(0, 150.0f);
+            BufferedImage pageOne = new PDFRenderer(document).renderImageWithDPI(0, 150.0f);
             int longestDarkRow = 0;
             for (int y = 0; y < pageOne.getHeight(); y++) {
                 int darkPixels = 0;
@@ -203,7 +211,7 @@ class ClassicFixtureSmokeTest {
         byte[] workbookBytes;
         try (XSSFWorkbook workbook = new XSSFWorkbook();
              ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            var sheet = workbook.createSheet("Multilingual");
+            XSSFSheet sheet = workbook.createSheet("Multilingual");
             sheet.createRow(0).createCell(0).setCellValue("Hello");
             sheet.createRow(1).createCell(0).setCellValue("안녕하세요 مرحبا 😀");
             workbook.write(output);
@@ -233,7 +241,7 @@ class ClassicFixtureSmokeTest {
     void rendersIssue93AsSinglePageForm() throws Exception {
         String windows = System.getenv("WINDIR");
         org.junit.jupiter.api.Assumptions.assumeTrue(
-                windows != null && Files.isRegularFile(Path.of(windows, "Fonts", "msyh.ttc")),
+                windows != null && Files.isRegularFile(Paths.get(windows, "Fonts", "msyh.ttc")),
                 "requires Microsoft YaHei");
         Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/TestIssue93.docx");
 
@@ -249,7 +257,7 @@ class ClassicFixtureSmokeTest {
     void rendersIssue66AsThreePageForm() throws Exception {
         String windows = System.getenv("WINDIR");
         org.junit.jupiter.api.Assumptions.assumeTrue(
-                windows != null && Files.isRegularFile(Path.of(windows, "Fonts", "msyh.ttc")),
+                windows != null && Files.isRegularFile(Paths.get(windows, "Fonts", "msyh.ttc")),
                 "requires Microsoft YaHei");
         Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/issues66.docx");
 
@@ -263,16 +271,16 @@ class ClassicFixtureSmokeTest {
             firstPageStripper.setEndPage(1);
             String firstPage = firstPageStripper.getText(document);
             assertFalse(firstPage.contains("\u4f7f\u7528\u6d89\u53ca\u771f\u7a7a\u7684\u8bbe\u5907"), firstPage);
-            assertTrue(firstPage.lines().anyMatch(line -> line.trim().equals("1")), firstPage);
+            assertTrue(lines(firstPage).anyMatch(line -> line.trim().equals("1")), firstPage);
             PDFTextStripper secondPageStripper = new PDFTextStripper();
             secondPageStripper.setStartPage(2);
             secondPageStripper.setEndPage(2);
-            assertTrue(secondPageStripper.getText(document).lines()
+            assertTrue(lines(secondPageStripper.getText(document))
                     .anyMatch(line -> line.trim().equals("2")));
             PDFTextStripper thirdPageStripper = new PDFTextStripper();
             thirdPageStripper.setStartPage(3);
             thirdPageStripper.setEndPage(3);
-            assertTrue(thirdPageStripper.getText(document).lines()
+            assertTrue(lines(thirdPageStripper.getText(document))
                     .anyMatch(line -> line.trim().equals("3")));
         }
     }
@@ -290,7 +298,7 @@ class ClassicFixtureSmokeTest {
     void preservesLiteralTextAroundPageNumberField() throws Exception {
         String windows = System.getenv("WINDIR");
         org.junit.jupiter.api.Assumptions.assumeTrue(
-                windows != null && Files.isRegularFile(Path.of(windows, "Fonts", "msyh.ttc")),
+                windows != null && Files.isRegularFile(Paths.get(windows, "Fonts", "msyh.ttc")),
                 "requires Microsoft YaHei");
         Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/issue202605.docx");
 
@@ -301,7 +309,7 @@ class ClassicFixtureSmokeTest {
                 stripper.setStartPage(page);
                 stripper.setEndPage(page);
                 String expected = page + " \u9801";
-                assertTrue(stripper.getText(document).lines()
+                assertTrue(lines(stripper.getText(document))
                         .anyMatch(line -> line.trim().equals(expected)), "missing " + expected);
             }
         }
@@ -327,5 +335,9 @@ class ClassicFixtureSmokeTest {
         try (PDDocument document = Loader.loadPDF(pdf)) {
             return new PDFTextStripper().getText(document);
         }
+    }
+
+    private static Stream<String> lines(String value) {
+        return Arrays.stream(value.split("\\R"));
     }
 }

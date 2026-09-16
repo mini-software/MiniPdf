@@ -155,6 +155,33 @@ public final class DocxConverter {
         return type == null || type.equals("textWrapping");
     }
 
-    private record DocxContent(List<List<String>> pages, PageSize pageSize, int tableCount, int drawingCount) {
+    private static final class DocxContent {
+        private final List<List<String>> pages;
+        private final PageSize pageSize;
+        private final int tableCount;
+        private final int drawingCount;
+
+        private DocxContent(List<List<String>> pages, PageSize pageSize, int tableCount, int drawingCount) {
+            this.pages = pages;
+            this.pageSize = pageSize;
+            this.tableCount = tableCount;
+            this.drawingCount = drawingCount;
+        }
+
+        private List<List<String>> pages() {
+            return pages;
+        }
+
+        private PageSize pageSize() {
+            return pageSize;
+        }
+
+        private int tableCount() {
+            return tableCount;
+        }
+
+        private int drawingCount() {
+            return drawingCount;
+        }
     }
 }

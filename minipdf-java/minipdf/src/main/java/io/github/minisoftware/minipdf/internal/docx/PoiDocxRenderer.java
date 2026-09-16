@@ -12,24 +12,38 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.poi.xwpf.usermodel.IBodyElement;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFonts;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyles;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblBorders;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblGridCol;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 final class PoiDocxRenderer {
     private static final float DEFAULT_MARGIN = 54.0f;
@@ -55,12 +69,12 @@ final class PoiDocxRenderer {
                             && !(element instanceof XWPFTable))) {
                 return null;
             }
-            List<List<String>> text = List.of(source.getBodyElements().stream()
-                    .map(element -> element instanceof XWPFTable table
-                        ? table.getText()
+            List<List<String>> text = Collections.singletonList(source.getBodyElements().stream()
+                    .map(element -> element instanceof XWPFTable
+                        ? ((XWPFTable) element).getText()
                         : ((XWPFParagraph) element).getText())
                     .map(value -> value.replace('\n', ' ').replace('\t', ' '))
-                    .toList());
+                    .collect(Collectors.toList()));
             PDFont font = SimplePdfTextRenderer.loadFont(output, text);
             if (font == null && text.stream().flatMap(List::stream)
                     .flatMapToInt(String::codePoints).allMatch(codePoint -> codePoint <= 255)) {
@@ -78,9 +92,9 @@ final class PoiDocxRenderer {
             if (boldFont == null) {
                 boldFont = font;
             }
-            List<List<String>> paragraphText = List.of(source.getParagraphs().stream()
+                List<List<String>> paragraphText = Collections.singletonList(source.getParagraphs().stream()
                     .map(XWPFParagraph::getText)
-                    .toList());
+                    .collect(Collectors.toList()));
             PDFont paragraphFont = SimplePdfTextRenderer.loadSystemFont(
                     output,
                     paragraphText,
@@ -90,9 +104,9 @@ final class PoiDocxRenderer {
             if (paragraphFont == null) {
                 paragraphFont = font;
             }
-            List<List<String>> latinText = List.of(paragraphText.get(0).stream()
+                List<List<String>> latinText = Collections.singletonList(paragraphText.get(0).stream()
                     .map(PoiDocxRenderer::latinText)
-                    .toList());
+                    .collect(Collectors.toList()));
             PDFont timesFont = SimplePdfTextRenderer.loadSystemFont(
                     output,
                     latinText,
@@ -141,10 +155,12 @@ final class PoiDocxRenderer {
                     pageNumberFooter == null ? null : timesFont,
                     pageNumberFooter,
                     pageFooterDistance(source, margins.bottom()));
-                    for (var element : source.getBodyElements()) {
-                if (element instanceof XWPFParagraph paragraph) {
+                    for (IBodyElement element : source.getBodyElements()) {
+                if (element instanceof XWPFParagraph) {
+                        XWPFParagraph paragraph = (XWPFParagraph) element;
                         renderParagraph(context, paragraph, paragraphFonts);
-                } else if (element instanceof XWPFTable table) {
+                } else if (element instanceof XWPFTable) {
+                    XWPFTable table = (XWPFTable) element;
                     renderTable(context, table, paragraphFonts, boldFont);
                 }
             }
@@ -251,7 +267,7 @@ final class PoiDocxRenderer {
         if (!paragraph.getCTP().isSetPPr() || !paragraph.getCTP().getPPr().isSetSectPr()) {
             return false;
         }
-        var section = paragraph.getCTP().getPPr().getSectPr();
+        CTSectPr section = paragraph.getCTP().getPPr().getSectPr();
         return !section.isSetType()
                 || section.getType().getVal() == null
                 || !"continuous".equals(section.getType().getVal().toString());
@@ -433,8 +449,8 @@ final class PoiDocxRenderer {
             context.content.stroke();
             return;
         }
-        var borders = cell.getCTTc().getTcPr().getTcBorders();
-        var tableBorders = table.getCTTbl().getTblPr().isSetTblBorders()
+        CTTcBorders borders = cell.getCTTc().getTcPr().getTcBorders();
+        CTTblBorders tableBorders = table.getCTTbl().getTblPr().isSetTblBorders()
                 ? table.getCTTbl().getTblPr().getTblBorders()
                 : null;
         String topStyle = borders.isSetTop()
@@ -541,7 +557,7 @@ final class PoiDocxRenderer {
     private static List<Float> columnWidths(XWPFTable table, float tableWidth) {
         List<Float> widths = new ArrayList<>();
         if (table.getCTTbl().getTblGrid() != null) {
-            for (var column : table.getCTTbl().getTblGrid().getGridColList()) {
+            for (CTTblGridCol column : table.getCTTbl().getTblGrid().getGridColList()) {
                 if (!column.isSetW()) {
                     widths.clear();
                     break;
@@ -559,15 +575,17 @@ final class PoiDocxRenderer {
                 if (row.getTableCells().size() <= widths.size()) {
                     continue;
                 }
-                widths = row.getTableCells().stream().map(cell -> twipsToPoints(cell.getWidth())).toList();
+                widths = row.getTableCells().stream()
+                    .map(cell -> twipsToPoints(cell.getWidth()))
+                    .collect(Collectors.toList());
             }
         }
         float total = sum(widths, widths.size());
         if (total <= 0.0f) {
-            return List.of(tableWidth);
+            return Collections.singletonList(tableWidth);
         }
         float scale = tableWidth / total;
-        return widths.stream().map(width -> width * scale).toList();
+        return widths.stream().map(width -> width * scale).collect(Collectors.toList());
     }
 
     private static float rowHeight(
@@ -641,7 +659,7 @@ final class PoiDocxRenderer {
                 lines.addAll(wrap(font, text, fontSize, cellContentWidth(width, padding)));
             }
         }
-        return lines.isEmpty() ? List.of("") : lines;
+        return lines.isEmpty() ? Collections.singletonList("") : lines;
     }
 
     static float cellContentWidth(float width, float padding) {
@@ -690,7 +708,7 @@ final class PoiDocxRenderer {
             float width,
             AutoSpacing autoSpacing) throws IOException {
         if (text.isEmpty()) {
-            return List.of("");
+            return Collections.singletonList("");
         }
         List<String> lines = new ArrayList<>();
         StringBuilder line = new StringBuilder();
@@ -704,8 +722,8 @@ final class PoiDocxRenderer {
                 if (breakOffset <= 0) {
                     breakOffset = line.offsetByCodePoints(line.length(), -1);
                 }
-                String completed = line.substring(0, breakOffset).stripTrailing();
-                String remainder = line.substring(breakOffset).stripLeading();
+                String completed = stripTrailing(line.substring(0, breakOffset));
+                String remainder = stripLeading(line.substring(breakOffset));
                 if (!completed.isEmpty()) {
                     lines.add(completed);
                 }
@@ -735,6 +753,22 @@ final class PoiDocxRenderer {
         return -1;
     }
 
+    private static String stripLeading(String value) {
+        int index = 0;
+        while (index < value.length() && Character.isWhitespace(value.charAt(index))) {
+            index++;
+        }
+        return value.substring(index);
+    }
+
+    private static String stripTrailing(String value) {
+        int index = value.length();
+        while (index > 0 && Character.isWhitespace(value.charAt(index - 1))) {
+            index--;
+        }
+        return value.substring(0, index);
+    }
+
     private static boolean isWrapBoundary(int left, int right) {
         if (Character.isWhitespace(left) || Character.isWhitespace(right) || left == '-') {
             return true;
@@ -757,38 +791,184 @@ final class PoiDocxRenderer {
                 || codePoint == '\u3011' || codePoint == '\uff09';
     }
 
-    private record MergeLine(XWPFTableCell cell, int index) {
+    private static final class MergeLine {
+        private final XWPFTableCell cell;
+        private final int index;
+
+        private MergeLine(XWPFTableCell cell, int index) {
+            this.cell = cell;
+            this.index = index;
+        }
+
+        private XWPFTableCell cell() {
+            return cell;
+        }
+
+        private int index() {
+            return index;
+        }
     }
 
-    private record AutoSpacing(boolean latin, boolean digit) {
+    private static final class AutoSpacing {
+        private final boolean latin;
+        private final boolean digit;
+
+        private AutoSpacing(boolean latin, boolean digit) {
+            this.latin = latin;
+            this.digit = digit;
+        }
+
+        private boolean latin() {
+            return latin;
+        }
+
+        private boolean digit() {
+            return digit;
+        }
     }
 
-    private record PageNumberFooter(String prefix, String suffix) {
+    private static final class PageNumberFooter {
+        private final String prefix;
+        private final String suffix;
+
+        private PageNumberFooter(String prefix, String suffix) {
+            this.prefix = prefix;
+            this.suffix = suffix;
+        }
+
+        private String prefix() {
+            return prefix;
+        }
+
+        private String suffix() {
+            return suffix;
+        }
+
+        @Override
+        public boolean equals(Object value) {
+            if (this == value) {
+                return true;
+            }
+            if (!(value instanceof PageNumberFooter)) {
+                return false;
+            }
+            PageNumberFooter other = (PageNumberFooter) value;
+            return prefix.equals(other.prefix) && suffix.equals(other.suffix);
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * prefix.hashCode() + suffix.hashCode();
+        }
     }
 
-    private record PageMargins(float left, float top, float bottom, float firstPageTopOffset) {
+    private static final class PageMargins {
+        private final float left;
+        private final float top;
+        private final float bottom;
+        private final float firstPageTopOffset;
+
+        private PageMargins(float left, float top, float bottom, float firstPageTopOffset) {
+            this.left = left;
+            this.top = top;
+            this.bottom = bottom;
+            this.firstPageTopOffset = firstPageTopOffset;
+        }
+
+        private float left() {
+            return left;
+        }
+
+        private float top() {
+            return top;
+        }
+
+        private float bottom() {
+            return bottom;
+        }
+
+        private float firstPageTopOffset() {
+            return firstPageTopOffset;
+        }
     }
 
-    record RunSegment(String text, PDFont font, float fontSize, float leadingSpacing) {
+    static final class RunSegment {
+        private final String text;
+        private final PDFont font;
+        private final float fontSize;
+        private final float leadingSpacing;
+
+        RunSegment(String text, PDFont font, float fontSize, float leadingSpacing) {
+            this.text = text;
+            this.font = font;
+            this.fontSize = fontSize;
+            this.leadingSpacing = leadingSpacing;
+        }
+
+        String text() {
+            return text;
+        }
+
+        PDFont font() {
+            return font;
+        }
+
+        float fontSize() {
+            return fontSize;
+        }
+
+        float leadingSpacing() {
+            return leadingSpacing;
+        }
     }
 
-    record ParagraphFonts(
-            PDFont fallback,
-            PDFont simSun,
-            PDFont simHei,
-            PDFont kai,
-            PDFont fangSong,
-            PDFont times,
-            PDFont arial,
-            String defaultAsciiFamily,
-            String defaultEastAsiaFamily) {
+    static final class ParagraphFonts {
+        private final PDFont fallback;
+        private final PDFont simSun;
+        private final PDFont simHei;
+        private final PDFont kai;
+        private final PDFont fangSong;
+        private final PDFont times;
+        private final PDFont arial;
+        private final String defaultAsciiFamily;
+        private final String defaultEastAsiaFamily;
+
+        ParagraphFonts(
+                PDFont fallback,
+                PDFont simSun,
+                PDFont simHei,
+                PDFont kai,
+                PDFont fangSong,
+                PDFont times,
+                PDFont arial,
+                String defaultAsciiFamily,
+                String defaultEastAsiaFamily) {
+            this.fallback = fallback;
+            this.simSun = simSun;
+            this.simHei = simHei;
+            this.kai = kai;
+            this.fangSong = fangSong;
+            this.times = times;
+            this.arial = arial;
+            this.defaultAsciiFamily = defaultAsciiFamily;
+            this.defaultEastAsiaFamily = defaultEastAsiaFamily;
+        }
+
+        PDFont fallback() {
+            return fallback;
+        }
+
+        PDFont simSun() {
+            return simSun;
+        }
+
         private PDFont resolve(XWPFRun run, int codePoint) {
             boolean eastAsian = usesEastAsianFontSlot(codePoint);
             XWPFRun.FontCharRange range = eastAsian
                     ? XWPFRun.FontCharRange.eastAsia
                     : XWPFRun.FontCharRange.ascii;
             String family = run.getFontFamily(range);
-            if (family == null || family.isBlank()) {
+            if (family == null || family.trim().isEmpty()) {
                 family = eastAsian ? defaultEastAsiaFamily : defaultAsciiFamily;
             }
             String normalized = family == null ? "" : family.toLowerCase();
@@ -865,7 +1045,7 @@ final class PoiDocxRenderer {
                 }
                 previous = codePoint;
             }
-            if (!segmentText.isEmpty()) {
+            if (segmentText.length() > 0) {
                 segments.add(new RunSegment(
                         segmentText.toString(), segmentFont, fontSize, segmentLeadingSpacing));
             }
@@ -898,7 +1078,7 @@ final class PoiDocxRenderer {
         if (!paragraph.getCTP().isSetPPr()) {
             return DEFAULT_AUTO_SPACING;
         }
-        var properties = paragraph.getCTP().getPPr();
+        CTPPr properties = paragraph.getCTP().getPPr();
         boolean latin = !properties.isSetAutoSpaceDE()
                 || onOffValue(properties.getAutoSpaceDE().getVal());
         boolean digit = !properties.isSetAutoSpaceDN()
@@ -923,22 +1103,25 @@ final class PoiDocxRenderer {
         if (document.getStyles() == null || document.getStyles().getCtStyles() == null) {
             return null;
         }
-        var styles = document.getStyles().getCtStyles();
+        CTStyles styles = document.getStyles().getCtStyles();
         if (!styles.isSetDocDefaults()
                 || !styles.getDocDefaults().isSetRPrDefault()
                 || !styles.getDocDefaults().getRPrDefault().isSetRPr()) {
             return null;
         }
-        var properties = styles.getDocDefaults().getRPrDefault().getRPr();
+        CTRPr properties = styles.getDocDefaults().getRPrDefault().getRPr();
         if (properties.sizeOfRFontsArray() == 0) {
             return null;
         }
-        var fonts = properties.getRFontsArray(0);
-        return switch (range) {
-            case ascii -> fonts.isSetAscii() ? fonts.getAscii() : fonts.getHAnsi();
-            case eastAsia -> fonts.isSetEastAsia() ? fonts.getEastAsia() : null;
-            default -> null;
-        };
+        CTFonts fonts = properties.getRFontsArray(0);
+        switch (range) {
+            case ascii:
+                return fonts.isSetAscii() ? fonts.getAscii() : fonts.getHAnsi();
+            case eastAsia:
+                return fonts.isSetEastAsia() ? fonts.getEastAsia() : null;
+            default:
+                return null;
+        }
     }
 
     private static float paragraphFontSize(XWPFParagraph paragraph, float fallback) {
@@ -972,11 +1155,11 @@ final class PoiDocxRenderer {
     }
 
     private static PageMargins pageMargins(XWPFDocument document, float fallback, boolean landscape) {
-        var body = document.getDocument().getBody();
+        CTBody body = document.getDocument().getBody();
         if (!body.isSetSectPr() || !body.getSectPr().isSetPgMar()) {
             return new PageMargins(fallback, fallback, fallback, 10.0f);
         }
-        var margins = body.getSectPr().getPgMar();
+        CTPageMar margins = body.getSectPr().getPgMar();
         float left = twipsValue(margins.getLeft(), fallback);
         if (!landscape) {
             return new PageMargins(left, left, left, 10.0f);
@@ -998,7 +1181,7 @@ final class PoiDocxRenderer {
     }
 
     private static float documentLinePitch(XWPFDocument document) {
-        var body = document.getDocument().getBody();
+        CTBody body = document.getDocument().getBody();
         if (!body.isSetSectPr() || !body.getSectPr().isSetDocGrid()
                 || body.getSectPr().getDocGrid().getLinePitch() == null) {
             return 0.0f;
@@ -1015,7 +1198,7 @@ final class PoiDocxRenderer {
             return null;
         }
         PageNumberFooter result = null;
-        for (var footer : document.getFooterList()) {
+        for (XWPFFooter footer : document.getFooterList()) {
             boolean hasPageField = footer.getParagraphs().stream()
                     .flatMap(paragraph -> paragraph.getRuns().stream())
                     .flatMap(run -> run.getCTR().getInstrTextList().stream())
@@ -1024,7 +1207,7 @@ final class PoiDocxRenderer {
             if (!hasPageField) {
                 return null;
             }
-            Matcher cachedPage = CACHED_PAGE_NUMBER.matcher(footer.getText().strip());
+            Matcher cachedPage = CACHED_PAGE_NUMBER.matcher(footer.getText().trim());
             if (!cachedPage.matches()) {
                 continue;
             }
@@ -1038,7 +1221,7 @@ final class PoiDocxRenderer {
     }
 
     private static float pageFooterDistance(XWPFDocument document, float fallback) {
-        var body = document.getDocument().getBody();
+        CTBody body = document.getDocument().getBody();
         if (!body.isSetSectPr() || !body.getSectPr().isSetPgMar()
                 || body.getSectPr().getPgMar().getFooter() == null) {
             return fallback;

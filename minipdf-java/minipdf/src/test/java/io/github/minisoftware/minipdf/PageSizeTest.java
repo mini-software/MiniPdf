@@ -28,8 +28,9 @@ class PageSizeTest {
 
     @Test
     void optionsExposeAnOptionalOverride() throws MiniPdfException {
-        assertTrue(ConversionOptions.defaults().pageSize().isEmpty());
+        assertTrue(!ConversionOptions.defaults().pageSize().isPresent());
         PageSize custom = PageSize.of(400.0f, 500.0f);
-        assertEquals(custom, ConversionOptions.withPageSize(custom).pageSize().orElseThrow());
+        assertEquals(custom, ConversionOptions.withPageSize(custom).pageSize()
+            .orElseThrow(() -> new AssertionError("page size override not found")));
     }
 }

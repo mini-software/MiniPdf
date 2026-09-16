@@ -8,6 +8,8 @@ import io.github.minisoftware.minipdf.internal.xlsx.XlsxConverter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -19,14 +21,14 @@ public final class MiniPdf {
     }
 
     public static void registerFont(String name, byte[] fontData) {
-        if (name == null || name.isBlank()) {
+        if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("font name must not be blank");
         }
         REGISTERED_FONTS.add(new RegisteredFont(name, fontData));
     }
 
     public static List<RegisteredFont> registeredFonts() {
-        return List.copyOf(REGISTERED_FONTS);
+        return Collections.unmodifiableList(new ArrayList<>(REGISTERED_FONTS));
     }
 
     public static void clearRegisteredFonts() {
@@ -61,14 +63,19 @@ public final class MiniPdf {
     public static byte[] convertBytesToPdf(byte[] input, ConversionOptions options) throws MiniPdfException {
         Objects.requireNonNull(options, "options");
         OfficeFormat format = detectOfficeFormat(input);
-        return switch (format) {
-            case DOCX -> DocxConverter.convert(input, options);
-            case XLSX -> XlsxConverter.convert(input, options);
-            case PPTX -> PptxConverter.convert(input, options);
-            case UNKNOWN -> throw new MiniPdfException(
-                MiniPdfException.Kind.UNSUPPORTED_FORMAT,
-                "unsupported or unknown Office document format");
-        };
+        switch (format) {
+            case DOCX:
+                return DocxConverter.convert(input, options);
+            case XLSX:
+                return XlsxConverter.convert(input, options);
+            case PPTX:
+                return PptxConverter.convert(input, options);
+            case UNKNOWN:
+            default:
+                throw new MiniPdfException(
+                        MiniPdfException.Kind.UNSUPPORTED_FORMAT,
+                        "unsupported or unknown Office document format");
+        }
     }
 
     public static void convertToPdf(Path inputPath, Path outputPath) throws MiniPdfException {

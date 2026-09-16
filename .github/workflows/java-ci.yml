@@ -1,0 +1,65 @@
+name: Java CI
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'minipdf-java/**'
+      - '.github/workflows/java-ci.yml'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'minipdf-java/**'
+      - '.github/workflows/java-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version:
+          - '8'
+          - '9'
+          - '10'
+          - '11'
+          - '12'
+          - '13'
+          - '14'
+          - '15'
+          - '16'
+          - '17'
+          - '18'
+          - '19'
+          - '20'
+          - '21'
+          - '22'
+          - '23'
+          - '24'
+          - '25'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: minipdf-java
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Java ${{ matrix.java-version }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: ${{ matrix.java-version }}
+          cache: maven
+          cache-dependency-path: minipdf-java/pom.xml
+
+      - name: Install CJK fonts
+        run: sudo apt-get update && sudo apt-get install --yes fonts-noto-cjk
+
+      - name: Test
+        run: mvn -B -ntp verify

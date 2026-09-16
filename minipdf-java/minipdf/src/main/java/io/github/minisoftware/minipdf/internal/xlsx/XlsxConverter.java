@@ -10,8 +10,10 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class XlsxConverter {
     private XlsxConverter() {
@@ -25,12 +27,12 @@ public final class XlsxConverter {
         }
         byte[] sharedStringsXml = workbook.entry("xl/sharedStrings.xml").orElse(null);
         List<String> sharedStrings = sharedStringsXml == null
-            ? List.of()
+            ? Collections.<String>emptyList()
             : readSharedStrings(sharedStringsXml);
         List<String> worksheetNames = workbook.entryNames().stream()
                 .filter(name -> name.startsWith("xl/worksheets/") && name.endsWith(".xml"))
                 .sorted(Comparator.naturalOrder())
-                .toList();
+                .collect(Collectors.toList());
         if (worksheetNames.isEmpty()) {
             throw new MiniPdfException(
                     MiniPdfException.Kind.INVALID_INPUT,
@@ -39,7 +41,9 @@ public final class XlsxConverter {
 
         List<String> lines = new ArrayList<>();
         for (String worksheetName : worksheetNames) {
-            byte[] worksheet = workbook.entry(worksheetName).orElseThrow();
+                byte[] worksheet = workbook.entry(worksheetName).orElseThrow(() -> new MiniPdfException(
+                    MiniPdfException.Kind.INVALID_INPUT,
+                    "XLSX worksheet part is missing: " + worksheetName));
             lines.addAll(readWorksheet(worksheet, sharedStrings));
         }
         return SimplePdfTextRenderer.render(lines, options);

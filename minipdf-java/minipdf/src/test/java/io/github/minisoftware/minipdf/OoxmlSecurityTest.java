@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class OoxmlSecurityTest {
     @Test
     void rejectsTraversalEntryNames() throws Exception {
-        byte[] archive = packageWith(Map.of("../word/document.xml", "<document/>"));
+        byte[] archive = packageWith(Collections.singletonMap("../word/document.xml", "<document/>"));
 
         MiniPdfException exception = assertThrows(
                 MiniPdfException.class,
@@ -28,7 +29,7 @@ class OoxmlSecurityTest {
         String document = "<!DOCTYPE document [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>"
                 + "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>&xxe;</w:t></w:r>"
                 + "</w:p></w:body></w:document>";
-        byte[] docx = packageWith(Map.of("word/document.xml", document));
+        byte[] docx = packageWith(Collections.singletonMap("word/document.xml", document));
 
         MiniPdfException exception = assertThrows(
                 MiniPdfException.class,

@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 @Command(
         name = "minipdf",
@@ -150,8 +151,8 @@ public final class MiniPdfCommand implements Callable<Integer> {
         if (!Files.isDirectory(directory)) {
             throw new CommandLine.ParameterException(commandLine, "font directory not found: " + directory);
         }
-        try (var paths = Files.list(directory)) {
-            for (Path path : paths.filter(Files::isRegularFile).toList()) {
+        try (Stream<Path> paths = Files.list(directory)) {
+            for (Path path : (Iterable<Path>) paths.filter(Files::isRegularFile)::iterator) {
                 String name = path.getFileName().toString();
                 int dot = name.lastIndexOf('.');
                 String extension = dot < 0 ? "" : name.substring(dot + 1).toLowerCase(Locale.ROOT);

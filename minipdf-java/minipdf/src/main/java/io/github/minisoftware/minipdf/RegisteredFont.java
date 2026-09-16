@@ -25,9 +25,10 @@ public final class RegisteredFont {
         if (this == value) {
             return true;
         }
-        if (!(value instanceof RegisteredFont other)) {
+        if (!(value instanceof RegisteredFont)) {
             return false;
         }
+        RegisteredFont other = (RegisteredFont) value;
         return name.equals(other.name) && Arrays.equals(data, other.data);
     }
 

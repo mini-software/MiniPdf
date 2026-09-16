@@ -11,12 +11,13 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MiniPdfCommandTest {
-    private static final Path REPOSITORY_ROOT = Path.of("..", "..").toAbsolutePath().normalize();
+    private static final Path REPOSITORY_ROOT = Paths.get("..", "..").toAbsolutePath().normalize();
 
     @TempDir
     Path temporaryDirectory;
@@ -29,7 +30,8 @@ class MiniPdfCommandTest {
         CommandResult result = execute(source.toString(), "-o", output.toString());
 
         assertEquals(0, result.exitCode());
-        assertTrue(Files.readString(output, StandardCharsets.ISO_8859_1).startsWith("%PDF-1.4"));
+        assertTrue(new String(Files.readAllBytes(output), StandardCharsets.ISO_8859_1)
+            .startsWith("%PDF-1.4"));
         assertTrue(result.stdout().contains(output.toString()));
     }
 
@@ -84,6 +86,27 @@ class MiniPdfCommandTest {
         return new CommandResult(exitCode, stdout.toString(), stderr.toString());
     }
 
-    private record CommandResult(int exitCode, String stdout, String stderr) {
+    private static final class CommandResult {
+        private final int exitCode;
+        private final String stdout;
+        private final String stderr;
+
+        private CommandResult(int exitCode, String stdout, String stderr) {
+            this.exitCode = exitCode;
+            this.stdout = stdout;
+            this.stderr = stderr;
+        }
+
+        private int exitCode() {
+            return exitCode;
+        }
+
+        private String stdout() {
+            return stdout;
+        }
+
+        private String stderr() {
+            return stderr;
+        }
     }
 }

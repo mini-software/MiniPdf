@@ -36,9 +36,10 @@ public final class PageSize {
         if (this == value) {
             return true;
         }
-        if (!(value instanceof PageSize other)) {
+        if (!(value instanceof PageSize)) {
             return false;
         }
+        PageSize other = (PageSize) value;
         return Float.compare(width, other.width) == 0 && Float.compare(height, other.height) == 0;
     }
 

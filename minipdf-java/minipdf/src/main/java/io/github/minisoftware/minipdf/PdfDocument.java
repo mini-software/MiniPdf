@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,7 +23,7 @@ public final class PdfDocument {
     }
 
     public List<PdfPage> pages() {
-        return List.copyOf(pages);
+        return Collections.unmodifiableList(new ArrayList<>(pages));
     }
 
     public byte[] toBytes() {
@@ -42,13 +43,13 @@ public final class PdfDocument {
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         write(output, "%PDF-1.4\n");
-        output.writeBytes(new byte[]{'%', (byte) 0xE2, (byte) 0xE3, (byte) 0xCF, (byte) 0xD3, '\n'});
+        write(output, new byte[]{'%', (byte) 0xE2, (byte) 0xE3, (byte) 0xCF, (byte) 0xD3, '\n'});
 
         List<Integer> offsets = new ArrayList<>(objectCount);
         for (int index = 0; index < objects.size(); index++) {
             offsets.add(output.size());
             write(output, (index + 1) + " 0 obj\n");
-            output.writeBytes(objects.get(index));
+            write(output, objects.get(index));
             write(output, "\nendobj\n");
         }
 
@@ -87,7 +88,7 @@ public final class PdfDocument {
                     + number(operation.color().green()) + ' '
                     + number(operation.color().blue()) + " rg\n");
             write(content, "1 0 0 1 " + number(operation.x()) + ' ' + number(operation.y()) + " Tm\n(");
-            content.writeBytes(escapeText(operation.text()));
+            write(content, escapeText(operation.text()));
             write(content, ") Tj\nET\n");
         }
         return content.toByteArray();
@@ -102,9 +103,9 @@ public final class PdfDocument {
                 escaped.write('\\');
                 escaped.write(unsigned);
             } else if (unsigned == '\r') {
-                escaped.writeBytes(ascii("\\r"));
+                write(escaped, ascii("\\r"));
             } else if (unsigned == '\n') {
-                escaped.writeBytes(ascii("\\n"));
+                write(escaped, ascii("\\n"));
             } else {
                 escaped.write(unsigned);
             }
@@ -115,7 +116,7 @@ public final class PdfDocument {
     private static byte[] streamObject(byte[] stream) {
         ByteArrayOutputStream object = new ByteArrayOutputStream();
         write(object, "<< /Length " + stream.length + " >>\nstream\n");
-        object.writeBytes(stream);
+        write(object, stream);
         write(object, "\nendstream");
         return object.toByteArray();
     }
@@ -133,6 +134,10 @@ public final class PdfDocument {
     }
 
     private static void write(ByteArrayOutputStream output, String value) {
-        output.writeBytes(ascii(value));
+        write(output, ascii(value));
+    }
+
+    private static void write(ByteArrayOutputStream output, byte[] value) {
+        output.write(value, 0, value.length);
     }
 }

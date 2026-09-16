@@ -54,6 +54,7 @@ import org.apache.poi.xssf.usermodel.XSSFShape;
 import org.apache.poi.xssf.usermodel.XSSFShapeGroup;
 import org.apache.poi.xssf.usermodel.XSSFSimpleShape;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
@@ -77,11 +78,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.github.minisoftware.minipdf.internal.xlsx.LegacyVmlPictureReader.LegacyPicture;
 
@@ -117,7 +123,7 @@ final class PoiXlsxRenderer {
                     formatter,
                     evaluator,
                     options,
-                    legacyPictures.getOrDefault(sheetPath, List.of()));
+                    legacyPictures.getOrDefault(sheetPath, Collections.<LegacyPicture>emptyList()));
             }
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             document.save(output, CompressParameters.NO_COMPRESSION);
@@ -176,10 +182,10 @@ final class PoiXlsxRenderer {
                     geometry.usableHeight() - repeatingHeight,
                     group.scale());
                 List<RowRange> pageRows = repeatTitles
-                    ? List.of(
+                    ? Arrays.asList(
                         new RowRange(repeatingFirstRow, repeatingLastRow),
                         new RowRange(startRow, endRow))
-                    : List.of(new RowRange(startRow, endRow));
+                    : Collections.singletonList(new RowRange(startRow, endRow));
                 renderPage(
                     document,
                     fonts,
@@ -427,7 +433,7 @@ final class PoiXlsxRenderer {
     private static Color tableFill(XSSFSheet sheet, int rowIndex, int columnIndex) {
         CellReference cell = new CellReference(sheet.getSheetName(), rowIndex, columnIndex, true, true);
         Color fill = null;
-        for (var table : sheet.getTables()) {
+        for (XSSFTable table : sheet.getTables()) {
             if (!table.contains(cell)) {
                 continue;
             }
@@ -447,10 +453,12 @@ final class PoiXlsxRenderer {
                 }
                 org.apache.poi.ss.usermodel.Color background = pattern.getFillBackgroundColorColor();
                 org.apache.poi.ss.usermodel.Color foreground = pattern.getFillForegroundColorColor();
-                if (background instanceof XSSFColor xssfColor) {
+                if (background instanceof XSSFColor) {
+                    XSSFColor xssfColor = (XSSFColor) background;
                     resolveThemeColor(sheet.getWorkbook(), xssfColor);
                     fill = color(xssfColor, fill);
-                } else if (foreground instanceof XSSFColor xssfColor) {
+                } else if (foreground instanceof XSSFColor) {
+                    XSSFColor xssfColor = (XSSFColor) foreground;
                     resolveThemeColor(sheet.getWorkbook(), xssfColor);
                     fill = color(xssfColor, fill);
                 }
@@ -476,35 +484,55 @@ final class PoiXlsxRenderer {
             ? merge.getLastColumn()
             : merge.getLastRow();
         for (int index = start; index <= end; index++) {
-            int rowIndex = switch (side) {
-                case TOP -> merge.getFirstRow();
-                case BOTTOM -> merge.getLastRow();
-                case LEFT, RIGHT -> index;
-            };
-            int columnIndex = switch (side) {
-                case LEFT -> merge.getFirstColumn();
-                case RIGHT -> merge.getLastColumn();
-                case TOP, BOTTOM -> index;
-            };
+            int rowIndex;
+            int columnIndex;
+            switch (side) {
+                case TOP:
+                    rowIndex = merge.getFirstRow();
+                    columnIndex = index;
+                    break;
+                case BOTTOM:
+                    rowIndex = merge.getLastRow();
+                    columnIndex = index;
+                    break;
+                case LEFT:
+                    rowIndex = index;
+                    columnIndex = merge.getFirstColumn();
+                    break;
+                case RIGHT:
+                default:
+                    rowIndex = index;
+                    columnIndex = merge.getLastColumn();
+                    break;
+            }
             Row row = sheet.getRow(rowIndex);
             Cell cell = row == null ? null : row.getCell(columnIndex, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
             if (cell == null) {
                 continue;
             }
             XSSFCellStyle cellStyle = (XSSFCellStyle) cell.getCellStyle();
-            BorderStyle borderStyle = switch (side) {
-                case TOP -> cellStyle.getBorderTop();
-                case BOTTOM -> cellStyle.getBorderBottom();
-                case LEFT -> cellStyle.getBorderLeft();
-                case RIGHT -> cellStyle.getBorderRight();
-            };
+            BorderStyle borderStyle;
+            XSSFColor borderColor;
+            switch (side) {
+                case TOP:
+                    borderStyle = cellStyle.getBorderTop();
+                    borderColor = cellStyle.getTopBorderXSSFColor();
+                    break;
+                case BOTTOM:
+                    borderStyle = cellStyle.getBorderBottom();
+                    borderColor = cellStyle.getBottomBorderXSSFColor();
+                    break;
+                case LEFT:
+                    borderStyle = cellStyle.getBorderLeft();
+                    borderColor = cellStyle.getLeftBorderXSSFColor();
+                    break;
+                case RIGHT:
+                default:
+                    borderStyle = cellStyle.getBorderRight();
+                    borderColor = cellStyle.getRightBorderXSSFColor();
+                    break;
+            }
             if (borderStyle != BorderStyle.NONE) {
-                XSSFColor borderColor = switch (side) {
-                    case TOP -> cellStyle.getTopBorderXSSFColor();
-                    case BOTTOM -> cellStyle.getBottomBorderXSSFColor();
-                    case LEFT -> cellStyle.getLeftBorderXSSFColor();
-                    case RIGHT -> cellStyle.getRightBorderXSSFColor();
-                };
                 return new BorderEdge(borderStyle, borderColor);
             }
         }
@@ -555,8 +583,8 @@ final class PoiXlsxRenderer {
         List<String> lines = style != null && style.getRotation() == 255
             ? safeValue.codePoints()
                 .filter(codePoint -> codePoint != '\n')
-                .mapToObj(Character::toString)
-                .toList()
+                .mapToObj(codePoint -> new String(Character.toChars(codePoint)))
+                .collect(Collectors.toList())
                 : wrap(font, safeValue, fontSize, width - padding * 2.0f, style != null && style.getWrapText());
         float lineHeight = fontSize * 1.18f;
         float verticalPadding = padding;
@@ -566,11 +594,18 @@ final class PoiXlsxRenderer {
         }
         float blockHeight = fontSize + Math.max(0, lines.size() - 1) * lineHeight;
         VerticalAlignment vertical = style == null ? VerticalAlignment.BOTTOM : style.getVerticalAlignment();
-        float baseline = switch (vertical) {
-            case TOP -> y + height - verticalPadding - fontSize;
-            case CENTER -> y + (height + blockHeight) / 2.0f - fontSize;
-            default -> y + verticalPadding + blockHeight - fontSize;
-        };
+        float baseline;
+        switch (vertical) {
+            case TOP:
+                baseline = y + height - verticalPadding - fontSize;
+                break;
+            case CENTER:
+                baseline = y + (height + blockHeight) / 2.0f - fontSize;
+                break;
+            default:
+                baseline = y + verticalPadding + blockHeight - fontSize;
+                break;
+        }
         Color textColor = color(cellFont.getXSSFColor(), Color.BLACK);
         content.saveGraphicsState();
         content.addRect(clipX + 0.2f, y + 0.2f, Math.max(0.1f, clipWidth - 0.4f), Math.max(0.1f, height - 0.4f));
@@ -585,11 +620,19 @@ final class PoiXlsxRenderer {
         for (String line : lines) {
             float lineWidth = textWidth(font, line, fontSize);
             HorizontalAlignment alignment = style == null ? HorizontalAlignment.GENERAL : style.getAlignment();
-            float textX = switch (alignment) {
-                case CENTER, CENTER_SELECTION -> x + Math.max(padding, (width - lineWidth) / 2.0f);
-                case RIGHT -> x + Math.max(padding, width - padding - lineWidth);
-                default -> x + padding;
-            };
+            float textX;
+            switch (alignment) {
+                case CENTER:
+                case CENTER_SELECTION:
+                    textX = x + Math.max(padding, (width - lineWidth) / 2.0f);
+                    break;
+                case RIGHT:
+                    textX = x + Math.max(padding, width - padding - lineWidth);
+                    break;
+                default:
+                    textX = x + padding;
+                    break;
+            }
             content.beginText();
             content.setFont(font, fontSize);
             content.newLineAtOffset(textX, baseline);
@@ -617,7 +660,8 @@ final class PoiXlsxRenderer {
         XSSFDrawing drawing = sheet.getDrawingPatriarch();
         if (drawing != null) {
             for (XSSFShape shape : drawing.getShapes()) {
-                if (shape instanceof XSSFPicture picture) {
+                if (shape instanceof XSSFPicture) {
+                    XSSFPicture picture = (XSSFPicture) shape;
                     XSSFClientAnchor anchor = picture.getClientAnchor();
                     if (anchor == null || anchor.getRow1() < startRow || anchor.getRow1() > endRow) {
                         continue;
@@ -633,7 +677,8 @@ final class PoiXlsxRenderer {
                         horizontalOffset,
                         centerOffset,
                         anchor));
-                } else if (shape instanceof XSSFShapeGroup group) {
+                } else if (shape instanceof XSSFShapeGroup) {
+                    XSSFShapeGroup group = (XSSFShapeGroup) shape;
                     drawShapeGroup(
                         document,
                         content,
@@ -730,8 +775,11 @@ final class PoiXlsxRenderer {
             PageGeometry geometry,
             float horizontalOffset,
             float centerOffset) throws IOException {
-        if (!(group.getAnchor() instanceof XSSFClientAnchor anchor)
-                || anchor.getRow1() < startRow
+        if (!(group.getAnchor() instanceof XSSFClientAnchor)) {
+            return;
+        }
+        XSSFClientAnchor anchor = (XSSFClientAnchor) group.getAnchor();
+        if (anchor.getRow1() < startRow
                 || anchor.getRow1() > endRow) {
             return;
         }
@@ -754,10 +802,13 @@ final class PoiXlsxRenderer {
         }
         for (XSSFShape child : drawing.getShapes(group)) {
             CTTransform2D childTransform;
-            if (child instanceof XSSFPicture picture && picture.getCTPicture().getSpPr().isSetXfrm()) {
+            if (child instanceof XSSFPicture
+                    && ((XSSFPicture) child).getCTPicture().getSpPr().isSetXfrm()) {
+                XSSFPicture picture = (XSSFPicture) child;
                 childTransform = picture.getCTPicture().getSpPr().getXfrm();
-            } else if (child instanceof XSSFSimpleShape simpleShape
-                    && simpleShape.getCTShape().getSpPr().isSetXfrm()) {
+            } else if (child instanceof XSSFSimpleShape
+                    && ((XSSFSimpleShape) child).getCTShape().getSpPr().isSetXfrm()) {
+                XSSFSimpleShape simpleShape = (XSSFSimpleShape) child;
                 childTransform = simpleShape.getCTShape().getSpPr().getXfrm();
             } else {
                 continue;
@@ -773,17 +824,17 @@ final class PoiXlsxRenderer {
                 groupBounds.top() - relativeY * groupBounds.height(),
                 (float) childTransform.getExt().getCx() / groupTransform.getChExt().getCx() * groupBounds.width(),
                 (float) childTransform.getExt().getCy() / groupTransform.getChExt().getCy() * groupBounds.height());
-            if (child instanceof XSSFPicture picture) {
-                drawPicture(document, content, picture, childBounds);
-            } else if (child instanceof XSSFSimpleShape simpleShape) {
-                drawCustomShape(content, simpleShape, childBounds);
+            if (child instanceof XSSFPicture) {
+                drawPicture(document, content, (XSSFPicture) child, childBounds);
+            } else if (child instanceof XSSFSimpleShape) {
+                drawCustomShape(content, (XSSFSimpleShape) child, childBounds);
             }
         }
     }
 
     private static float coordinate(Object value) {
-        return value instanceof Number number
-            ? number.floatValue()
+        return value instanceof Number
+            ? ((Number) value).floatValue()
             : Float.parseFloat(value.toString());
     }
 
@@ -821,12 +872,15 @@ final class PoiXlsxRenderer {
                     if (cursor.toFirstChild()) {
                         do {
                             XmlObject segment = cursor.getObject();
-                            if (segment instanceof CTPath2DMoveTo move) {
+                            if (segment instanceof CTPath2DMoveTo) {
+                                CTPath2DMoveTo move = (CTPath2DMoveTo) segment;
                                 moveTo(content, move.getPt(), bounds, pathWidth, pathHeight);
                                 hasSegments = true;
-                            } else if (segment instanceof CTPath2DLineTo line) {
+                            } else if (segment instanceof CTPath2DLineTo) {
+                                CTPath2DLineTo line = (CTPath2DLineTo) segment;
                                 lineTo(content, line.getPt(), bounds, pathWidth, pathHeight);
-                            } else if (segment instanceof CTPath2DQuadBezierTo quadratic) {
+                            } else if (segment instanceof CTPath2DQuadBezierTo) {
+                                CTPath2DQuadBezierTo quadratic = (CTPath2DQuadBezierTo) segment;
                                 CTAdjPoint2D control = quadratic.getPtArray(0);
                                 CTAdjPoint2D end = quadratic.getPtArray(1);
                                 float currentX = shapeX(bounds, coordinate(control.getX()), pathWidth);
@@ -834,7 +888,8 @@ final class PoiXlsxRenderer {
                                 float endX = shapeX(bounds, coordinate(end.getX()), pathWidth);
                                 float endY = shapeY(bounds, coordinate(end.getY()), pathHeight);
                                 content.curveTo1(currentX, currentY, endX, endY);
-                            } else if (segment instanceof CTPath2DCubicBezierTo cubic) {
+                            } else if (segment instanceof CTPath2DCubicBezierTo) {
+                                CTPath2DCubicBezierTo cubic = (CTPath2DCubicBezierTo) segment;
                                 CTAdjPoint2D first = cubic.getPtArray(0);
                                 CTAdjPoint2D second = cubic.getPtArray(1);
                                 CTAdjPoint2D end = cubic.getPtArray(2);
@@ -966,7 +1021,7 @@ final class PoiXlsxRenderer {
 
     private static CellRangeAddress printArea(XSSFWorkbook workbook, XSSFSheet sheet, int sheetIndex) {
         String value = printAreaValue(workbook, sheet, sheetIndex);
-        if (value != null && !value.isBlank()) {
+        if (value != null && !value.trim().isEmpty()) {
             AreaReference reference = new AreaReference(value, SpreadsheetVersion.EXCEL2007);
             CellReference first = reference.getFirstCell();
             CellReference last = reference.getLastCell();
@@ -1007,7 +1062,7 @@ final class PoiXlsxRenderer {
     }
 
     private static boolean referencesSheet(String formula, String sheetName) {
-        if (formula == null || formula.isBlank()) {
+        if (formula == null || formula.trim().isEmpty()) {
             return false;
         }
         int separator = formula.indexOf('!');
@@ -1095,12 +1150,17 @@ final class PoiXlsxRenderer {
     }
 
     private static float maxDigitWidth(String fontName, float fontSize) {
-        float widthAtTenPoints = switch (fontName == null ? "" : fontName.trim().toLowerCase(Locale.ROOT)) {
-            case "arial" -> 7.06f;
-            case "palatino linotype" -> 6.42f;
-            case "verdana" -> 7.55f;
-            default -> 7.0f;
-        };
+        String normalized = fontName == null ? "" : fontName.trim().toLowerCase(Locale.ROOT);
+        float widthAtTenPoints;
+        if ("arial".equals(normalized)) {
+            widthAtTenPoints = 7.06f;
+        } else if ("palatino linotype".equals(normalized)) {
+            widthAtTenPoints = 6.42f;
+        } else if ("verdana".equals(normalized)) {
+            widthAtTenPoints = 7.55f;
+        } else {
+            widthAtTenPoints = 7.0f;
+        }
         return widthAtTenPoints * (fontSize > 0.0f ? fontSize : 10.0f) / 10.0f;
     }
 
@@ -1130,7 +1190,8 @@ final class PoiXlsxRenderer {
                     : 1.0f;
             }
             scale = Math.min(scale, verticalScaleLimit);
-            return List.of(new ColumnGroup(area.getFirstColumn(), area.getLastColumn(), allWidths, scale));
+                return Collections.singletonList(
+                    new ColumnGroup(area.getFirstColumn(), area.getLastColumn(), allWidths, scale));
         }
 
         scale = Math.min(scale, verticalScaleLimit);
@@ -1309,7 +1370,7 @@ final class PoiXlsxRenderer {
         int sourceColumn = merge == null ? column : merge.getFirstColumn();
         Row row = sheet.getRow(sourceRow);
         Cell cell = row == null ? null : row.getCell(sourceColumn, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-        return cell != null && !formatter.formatCellValue(cell, evaluator).isBlank();
+        return cell != null && !formatter.formatCellValue(cell, evaluator).trim().isEmpty();
     }
 
     private static float columnsBefore(float[] widths, int areaFirstColumn, int column) {
@@ -1343,8 +1404,8 @@ final class PoiXlsxRenderer {
             StringBuilder line = new StringBuilder();
             for (int offset = 0; offset < paragraph.length();) {
                 int codePoint = paragraph.codePointAt(offset);
-                String character = Character.toString(codePoint);
-                if (!line.isEmpty() && textWidth(font, line + character, size) > width) {
+                String character = new String(Character.toChars(codePoint));
+                if (line.length() > 0 && textWidth(font, line + character, size) > width) {
                     lines.add(line.toString());
                     line.setLength(0);
                 }
@@ -1361,12 +1422,20 @@ final class PoiXlsxRenderer {
     }
 
     private static float borderWidth(BorderStyle style) {
-        return switch (style) {
-            case HAIR -> 0.1f;
-            case MEDIUM, MEDIUM_DASHED, MEDIUM_DASH_DOT, MEDIUM_DASH_DOT_DOT -> 1.0f;
-            case THICK, DOUBLE -> 1.5f;
-            default -> 0.35f;
-        };
+        switch (style) {
+            case HAIR:
+                return 0.1f;
+            case MEDIUM:
+            case MEDIUM_DASHED:
+            case MEDIUM_DASH_DOT:
+            case MEDIUM_DASH_DOT_DOT:
+                return 1.0f;
+            case THICK:
+            case DOUBLE:
+                return 1.5f;
+            default:
+                return 0.35f;
+        }
     }
 
     private static Color color(XSSFColor source, Color fallback) {
@@ -1384,15 +1453,35 @@ final class PoiXlsxRenderer {
         return new Color(Byte.toUnsignedInt(rgb[0]), Byte.toUnsignedInt(rgb[1]), Byte.toUnsignedInt(rgb[2]));
     }
 
-    private record PageGeometry(
-            float layoutWidth,
-            float layoutHeight,
-            float mediaWidth,
-            float mediaHeight,
-            float marginLeft,
-            float marginRight,
-            float marginTop,
-            float marginBottom) {
+    private static final class PageGeometry {
+        private final float layoutWidth;
+        private final float layoutHeight;
+        private final float mediaWidth;
+        private final float mediaHeight;
+        private final float marginLeft;
+        private final float marginRight;
+        private final float marginTop;
+        private final float marginBottom;
+
+        private PageGeometry(float layoutWidth, float layoutHeight, float mediaWidth, float mediaHeight,
+                float marginLeft, float marginRight, float marginTop, float marginBottom) {
+            this.layoutWidth = layoutWidth;
+            this.layoutHeight = layoutHeight;
+            this.mediaWidth = mediaWidth;
+            this.mediaHeight = mediaHeight;
+            this.marginLeft = marginLeft;
+            this.marginRight = marginRight;
+            this.marginTop = marginTop;
+            this.marginBottom = marginBottom;
+        }
+
+        float layoutWidth() { return layoutWidth; }
+        float layoutHeight() { return layoutHeight; }
+        float mediaWidth() { return mediaWidth; }
+        float mediaHeight() { return mediaHeight; }
+        float marginLeft() { return marginLeft; }
+        float marginTop() { return marginTop; }
+
         float usableWidth() {
             return layoutWidth - marginLeft - marginRight;
         }
@@ -1414,29 +1503,106 @@ final class PoiXlsxRenderer {
         }
     }
 
-    private record ColumnGroup(int firstColumn, int lastColumn, float[] widths, float scale) {
+    private static final class ColumnGroup {
+        private final int firstColumn;
+        private final int lastColumn;
+        private final float[] widths;
+        private final float scale;
+
+        private ColumnGroup(int firstColumn, int lastColumn, float[] widths, float scale) {
+            this.firstColumn = firstColumn;
+            this.lastColumn = lastColumn;
+            this.widths = widths;
+            this.scale = scale;
+        }
+
+        int firstColumn() { return firstColumn; }
+        int lastColumn() { return lastColumn; }
+        float[] widths() { return widths; }
+        float scale() { return scale; }
     }
 
-    private record RowRange(int firstRow, int lastRow) {
+    private static final class RowRange {
+        private final int firstRow;
+        private final int lastRow;
+
+        private RowRange(int firstRow, int lastRow) {
+            this.firstRow = firstRow;
+            this.lastRow = lastRow;
+        }
+
+        int firstRow() { return firstRow; }
+        int lastRow() { return lastRow; }
     }
 
-    private record TextClip(float x, float width) {
+    private static final class TextClip {
+        private final float x;
+        private final float width;
+
+        private TextClip(float x, float width) {
+            this.x = x;
+            this.width = width;
+        }
+
+        float x() { return x; }
+        float width() { return width; }
     }
 
-    private record PendingText(
-            Cell cell,
-            XSSFCellStyle style,
-            String value,
-            float x,
-            float y,
-            float width,
-            float height,
-            float clipX,
-            float clipWidth,
-            float padding) {
+    private static final class PendingText {
+        private final Cell cell;
+        private final XSSFCellStyle style;
+        private final String value;
+        private final float x;
+        private final float y;
+        private final float width;
+        private final float height;
+        private final float clipX;
+        private final float clipWidth;
+        private final float padding;
+
+        private PendingText(Cell cell, XSSFCellStyle style, String value, float x, float y,
+                float width, float height, float clipX, float clipWidth, float padding) {
+            this.cell = cell;
+            this.style = style;
+            this.value = value;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.clipX = clipX;
+            this.clipWidth = clipWidth;
+            this.padding = padding;
+        }
+
+        Cell cell() { return cell; }
+        XSSFCellStyle style() { return style; }
+        String value() { return value; }
+        float x() { return x; }
+        float y() { return y; }
+        float width() { return width; }
+        float height() { return height; }
+        float clipX() { return clipX; }
+        float clipWidth() { return clipWidth; }
+        float padding() { return padding; }
     }
 
-    private record ShapeBounds(float x, float top, float width, float height) {
+    private static final class ShapeBounds {
+        private final float x;
+        private final float top;
+        private final float width;
+        private final float height;
+
+        private ShapeBounds(float x, float top, float width, float height) {
+            this.x = x;
+            this.top = top;
+            this.width = width;
+            this.height = height;
+        }
+
+        float x() { return x; }
+        float top() { return top; }
+        float width() { return width; }
+        float height() { return height; }
     }
 
     private enum BorderSide {
@@ -1446,7 +1612,17 @@ final class PoiXlsxRenderer {
         RIGHT
     }
 
-    private record BorderEdge(BorderStyle style, XSSFColor color) {
+    private static final class BorderEdge {
+        private final BorderStyle style;
+        private final XSSFColor color;
+
+        private BorderEdge(BorderStyle style, XSSFColor color) {
+            this.style = style;
+            this.color = color;
+        }
+
+        BorderStyle style() { return style; }
+        XSSFColor color() { return color; }
     }
 
     private static final class FontSet {
@@ -1516,42 +1692,42 @@ final class PoiXlsxRenderer {
             for (RegisteredFont font : MiniPdf.registeredFonts()) {
                 registered.put(font.name().toLowerCase(Locale.ROOT), font.data());
             }
-            PDFont latin = load(document, registered, List.of("arial"), systemFonts("arial.ttf"));
-            PDFont latinBold = load(document, registered, List.of("arialbd"), systemFonts("arialbd.ttf"));
-                PDFont verdana = load(document, registered, List.of("verdana"), systemFonts("verdana.ttf"));
-                PDFont verdanaBold = load(document, registered, List.of("verdanab"), systemFonts("verdanab.ttf"));
-                PDFont verdanaItalic = load(document, registered, List.of("verdanai"), systemFonts("verdanai.ttf"));
+            PDFont latin = load(document, registered, Collections.singletonList("arial"), systemFonts("arial.ttf"));
+            PDFont latinBold = load(document, registered, Collections.singletonList("arialbd"), systemFonts("arialbd.ttf"));
+                PDFont verdana = load(document, registered, Collections.singletonList("verdana"), systemFonts("verdana.ttf"));
+                PDFont verdanaBold = load(document, registered, Collections.singletonList("verdanab"), systemFonts("verdanab.ttf"));
+                PDFont verdanaItalic = load(document, registered, Collections.singletonList("verdanai"), systemFonts("verdanai.ttf"));
                 PDFont verdanaBoldItalic = load(
                     document,
                     registered,
-                    List.of("verdanaz"),
+                    Collections.singletonList("verdanaz"),
                     systemFonts("verdanaz.ttf"));
-            PDFont calibri = load(document, registered, List.of("calibri"), systemFonts("calibri.ttf"));
+            PDFont calibri = load(document, registered, Collections.singletonList("calibri"), systemFonts("calibri.ttf"));
             PDFont calibriBold = load(
                     document,
                     registered,
-                    List.of("calibrib"),
+                    Collections.singletonList("calibrib"),
                     systemFonts("calibrib.ttf"));
-                PDFont palatino = load(document, registered, List.of("palatino linotype", "pala"), systemFonts("pala.ttf"));
+                PDFont palatino = load(document, registered, Arrays.asList("palatino linotype", "pala"), systemFonts("pala.ttf"));
                 PDFont palatinoBold = load(
                     document,
                     registered,
-                    List.of("palatino linotype bold", "palab"),
+                    Arrays.asList("palatino linotype bold", "palab"),
                     systemFonts("palab.ttf"));
-                PDFont corbel = load(document, registered, List.of("corbel"), systemFonts("corbel.ttf"));
-                PDFont corbelBold = load(document, registered, List.of("corbel bold", "corbelb"), systemFonts("corbelb.ttf"));
-            PDFont times = load(document, registered, List.of("times"), systemFonts("times.ttf"));
-            PDFont timesBold = load(document, registered, List.of("timesbd"), systemFonts("timesbd.ttf"));
+                PDFont corbel = load(document, registered, Collections.singletonList("corbel"), systemFonts("corbel.ttf"));
+                PDFont corbelBold = load(document, registered, Arrays.asList("corbel bold", "corbelb"), systemFonts("corbelb.ttf"));
+            PDFont times = load(document, registered, Collections.singletonList("times"), systemFonts("times.ttf"));
+            PDFont timesBold = load(document, registered, Collections.singletonList("timesbd"), systemFonts("timesbd.ttf"));
             PDFont cjk = load(
                     document,
                     registered,
-                    List.of("notosanssc", "simhei", "simsun"),
+                    Arrays.asList("notosanssc", "simhei", "simsun"),
                     systemFonts("NotoSansSC-VF.ttf", "simhei.ttf", "simsun.ttc"));
-            PDFont simsun = load(document, registered, List.of("simsun"), systemFonts("simsun.ttc"));
-            PDFont mingliu = load(document, registered, List.of("mingliu"), systemFonts("mingliu.ttc"));
+            PDFont simsun = load(document, registered, Collections.singletonList("simsun"), systemFonts("simsun.ttc"));
+            PDFont mingliu = load(document, registered, Collections.singletonList("mingliu"), systemFonts("mingliu.ttc"));
             List<Path> kaitiPaths = officeCloudFonts("STKaiti");
             kaitiPaths.addAll(systemFonts("simkai.ttf"));
-            PDFont kaiti = load(document, registered, List.of("stkaiti", "simkai"), kaitiPaths);
+            PDFont kaiti = load(document, registered, Arrays.asList("stkaiti", "simkai"), kaitiPaths);
             if (latin == null) {
                 latin = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
             }
@@ -1690,7 +1866,7 @@ final class PoiXlsxRenderer {
                     safe.append(' ');
                     continue;
                 }
-                String character = Character.toString(codePoint);
+                String character = new String(Character.toChars(codePoint));
                 try {
                     font.getStringWidth(character);
                     safe.append(character);
@@ -1727,14 +1903,14 @@ final class PoiXlsxRenderer {
             String windows = System.getenv("WINDIR");
             if (windows != null) {
                 for (String name : names) {
-                    paths.add(Path.of(windows, "Fonts", name));
+                    paths.add(Paths.get(windows, "Fonts", name));
                 }
             }
             for (String name : names) {
-                paths.add(Path.of("/usr/share/fonts/truetype/noto", name));
-                paths.add(Path.of("/usr/share/fonts/opentype/noto", name));
-                paths.add(Path.of("/System/Library/Fonts", name));
-                paths.add(Path.of("/System/Library/Fonts/Supplemental", name));
+                paths.add(Paths.get("/usr/share/fonts/truetype/noto", name));
+                paths.add(Paths.get("/usr/share/fonts/opentype/noto", name));
+                paths.add(Paths.get("/System/Library/Fonts", name));
+                paths.add(Paths.get("/System/Library/Fonts/Supplemental", name));
             }
             return paths;
         }
@@ -1745,11 +1921,11 @@ final class PoiXlsxRenderer {
             if (localAppData == null) {
                 return paths;
             }
-            Path cacheRoot = Path.of(localAppData, "Microsoft", "FontCache");
+            Path cacheRoot = Paths.get(localAppData, "Microsoft", "FontCache");
             if (!Files.isDirectory(cacheRoot)) {
                 return paths;
             }
-            try (var candidates = Files.walk(cacheRoot, 4)) {
+            try (Stream<Path> candidates = Files.walk(cacheRoot, 4)) {
                 candidates
                         .filter(Files::isRegularFile)
                         .filter(path -> path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".ttf"))

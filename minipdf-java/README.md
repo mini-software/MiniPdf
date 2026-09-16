@@ -1,6 +1,6 @@
 # MiniPdf for Java
 
-MiniPdf for Java is a Java 17 library and command-line tool for converting
+MiniPdf for Java supports JDK 8 through JDK 25 as a library and command-line tool for converting
 DOCX, XLSX, and PPTX files to PDF without Microsoft Office or LibreOffice.
 
 ## Install
@@ -24,11 +24,11 @@ The library is available from Maven Central:
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
 
-import java.nio.file.Path;
+import java.nio.file.Paths;
 
 MiniPdf.convertToPdf(
-        Path.of("document.docx"),
-        Path.of("document.pdf"));
+  Paths.get("document.docx"),
+  Paths.get("document.pdf"));
 ```
 
 Use `MiniPdf.convertBytesToPdf` when the Office document is already in memory.
@@ -39,15 +39,15 @@ that are not available in the standard PDF fonts:
 
 ```java
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 
 try {
     MiniPdf.registerFont(
             "Noto Sans",
-            Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
+          Files.readAllBytes(Paths.get("fonts/NotoSans-Regular.ttf")));
     MiniPdf.convertToPdf(
-            Path.of("document.docx"),
-            Path.of("document.pdf"));
+          Paths.get("document.docx"),
+          Paths.get("document.pdf"));
 } finally {
     MiniPdf.clearRegisteredFonts();
 }

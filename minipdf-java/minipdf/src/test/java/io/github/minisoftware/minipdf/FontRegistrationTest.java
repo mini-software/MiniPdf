@@ -25,7 +25,7 @@ class FontRegistrationTest {
         RegisteredFont registered = MiniPdf.registeredFonts().stream()
                 .filter(font -> font.name().equals(name))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new AssertionError("registered font not found"));
         byte[] returned = registered.data();
         returned[1] = 9;
 

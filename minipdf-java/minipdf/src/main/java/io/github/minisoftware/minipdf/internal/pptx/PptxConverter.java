@@ -12,6 +12,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +104,7 @@ public final class PptxConverter {
             throws MiniPdfException {
         List<String> relationshipIds = readSlideRelationshipIds(presentationXml);
         if (relationshipIds.isEmpty()) {
-            return List.of();
+            return Collections.emptyList();
         }
         byte[] relationshipsXml = presentation.entry("ppt/_rels/presentation.xml.rels")
                 .orElseThrow(() -> new MiniPdfException(

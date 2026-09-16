@@ -37,7 +37,7 @@ class BasicOfficeConversionTest {
 
     @Test
     void convertsBasicDocxText() throws Exception {
-        byte[] docx = packageWith(Map.of(
+        byte[] docx = packageWith(mapOf(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>Hello DOCX</w:t></w:r>"
                         + "</w:p></w:body></w:document>"));
@@ -50,7 +50,7 @@ class BasicOfficeConversionTest {
 
     @Test
     void convertsDocxPageBreakToSeparatePdfPage() throws Exception {
-        byte[] docx = packageWith(Map.of(
+        byte[] docx = packageWith(mapOf(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>First</w:t>"
                         + "<w:br w:type=\"page\"/><w:t>Second</w:t></w:r></w:p>"
@@ -64,7 +64,7 @@ class BasicOfficeConversionTest {
 
     @Test
     void convertsDocxHardLineBreakToSeparateTextLine() throws Exception {
-        byte[] docx = packageWith(Map.of(
+        byte[] docx = packageWith(mapOf(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>First</w:t>"
                         + "<w:br/><w:t>Second</w:t></w:r></w:p></w:body></w:document>"));
@@ -77,7 +77,7 @@ class BasicOfficeConversionTest {
 
     @Test
     void convertsDocxTabToPrintableSpacing() throws Exception {
-        byte[] docx = packageWith(Map.of(
+        byte[] docx = packageWith(mapOf(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>Left</w:t>"
                         + "<w:tab/><w:t>Right</w:t></w:r></w:p></w:body></w:document>"));
@@ -89,7 +89,7 @@ class BasicOfficeConversionTest {
 
     @Test
     void convertsDocxNextPageSectionBreakToSeparatePdfPage() throws Exception {
-        byte[] docx = packageWith(Map.of(
+        byte[] docx = packageWith(mapOf(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body>"
                         + "<w:p><w:pPr><w:sectPr><w:type w:val=\"nextPage\"/></w:sectPr></w:pPr>"
@@ -105,7 +105,7 @@ class BasicOfficeConversionTest {
 
     @Test
     void keepsContinuousDocxSectionOnTheSamePdfPage() throws Exception {
-        byte[] docx = packageWith(Map.of(
+        byte[] docx = packageWith(mapOf(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body>"
                         + "<w:p><w:pPr><w:sectPr><w:type w:val=\"continuous\"/></w:sectPr></w:pPr>"
@@ -122,7 +122,7 @@ class BasicOfficeConversionTest {
     void usesRegisteredFontForDocxUnicodeText() throws Exception {
         String text = "\u041f\u0440\u0438\u0432\u0435\u0442 DOCX";
         registerTestFont();
-        byte[] docx = packageWith(Map.of(
+        byte[] docx = packageWith(mapOf(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>" + text
                         + "</w:t></w:r></w:p></w:body></w:document>"));
@@ -132,7 +132,7 @@ class BasicOfficeConversionTest {
 
     @Test
     void usesNativeDocxLandscapePageSize() throws Exception {
-        byte[] docx = packageWith(Map.of(
+        byte[] docx = packageWith(mapOf(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>Landscape</w:t></w:r></w:p>"
                         + "<w:sectPr><w:pgSz w:w=\"16838\" w:h=\"11906\" w:orient=\"landscape\"/>"
@@ -162,7 +162,7 @@ class BasicOfficeConversionTest {
 
     @Test
     void honorsPageSizeOverride() throws Exception {
-        byte[] docx = packageWith(Map.of(
+        byte[] docx = packageWith(mapOf(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>Size</w:t></w:r>"
                     + "</w:p><w:sectPr><w:pgSz w:w=\"16838\" w:h=\"11906\" "
@@ -228,7 +228,7 @@ class BasicOfficeConversionTest {
         try (InputStream input = PDFont.class.getResourceAsStream(
                 "/org/apache/pdfbox/resources/ttf/LiberationSans-Regular.ttf")) {
             assertNotNull(input);
-            MiniPdf.registerFont("Liberation Sans", input.readAllBytes());
+            MiniPdf.registerFont("Liberation Sans", readAllBytes(input));
         }
     }
 
@@ -249,7 +249,7 @@ class BasicOfficeConversionTest {
 
     @Test
     void rejectsPptxWithoutSlides() throws Exception {
-    byte[] pptx = packageWith(Map.of(
+    byte[] pptx = packageWith(mapOf(
         "ppt/presentation.xml",
         "<p:presentation xmlns:p=\"urn:p\"/>"));
 
@@ -295,7 +295,7 @@ class BasicOfficeConversionTest {
     void convertsPathToRequestedOutput() throws Exception {
         Path input = temporaryDirectory.resolve("input.docx");
         Path output = temporaryDirectory.resolve("output.pdf");
-        Files.write(input, packageWith(Map.of(
+        Files.write(input, packageWith(mapOf(
                 "word/document.xml",
                 "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>Path API</w:t></w:r>"
                         + "</w:p></w:body></w:document>")));
@@ -303,7 +303,8 @@ class BasicOfficeConversionTest {
         MiniPdf.convertToPdf(input, output);
 
         assertTrue(Files.isRegularFile(output));
-        assertTrue(Files.readString(output, StandardCharsets.ISO_8859_1).contains("(Path API) Tj"));
+        assertTrue(new String(Files.readAllBytes(output), StandardCharsets.ISO_8859_1)
+            .contains("(Path API) Tj"));
     }
 
     @Test
@@ -327,6 +328,24 @@ class BasicOfficeConversionTest {
             }
         }
         return bytes.toByteArray();
+    }
+
+    private static Map<String, String> mapOf(String... entries) {
+        Map<String, String> values = new LinkedHashMap<>();
+        for (int index = 0; index < entries.length; index += 2) {
+            values.put(entries[index], entries[index + 1]);
+        }
+        return values;
+    }
+
+    private static byte[] readAllBytes(InputStream input) throws Exception {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        int read;
+        while ((read = input.read(buffer)) != -1) {
+            output.write(buffer, 0, read);
+        }
+        return output.toByteArray();
     }
 
     private static String pdfText(byte[] pdf) {

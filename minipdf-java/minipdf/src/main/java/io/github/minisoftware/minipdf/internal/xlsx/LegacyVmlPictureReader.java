@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +79,7 @@ final class LegacyVmlPictureReader {
             ZipEntry entry;
             while ((entry = archive.getNextEntry()) != null) {
                 if (!entry.isDirectory()) {
-                    entries.put(entry.getName(), archive.readAllBytes());
+                    entries.put(entry.getName(), readAllBytes(archive));
                 }
             }
             return entries;
@@ -88,6 +89,16 @@ final class LegacyVmlPictureReader {
                     "unable to read XLSX package: " + exception.getMessage(),
                     exception);
         }
+    }
+
+    private static byte[] readAllBytes(ZipInputStream input) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        int read;
+        while ((read = input.read(buffer)) != -1) {
+            output.write(buffer, 0, read);
+        }
+        return output.toByteArray();
     }
 
     private static List<Relationship> relationships(byte[] xml) throws MiniPdfException {
@@ -184,7 +195,7 @@ final class LegacyVmlPictureReader {
     }
 
     private static float crop(String value) {
-        if (value == null || value.isBlank()) {
+        if (value == null || value.trim().isEmpty()) {
             return 0.0f;
         }
         String normalized = value.toLowerCase(Locale.ROOT).endsWith("f")
@@ -198,7 +209,7 @@ final class LegacyVmlPictureReader {
     }
 
     private static String resolve(String source, String target) {
-        Path parent = Path.of(source).getParent();
+        Path parent = Paths.get(source).getParent();
         return parent.resolve(target.replace('/', java.io.File.separatorChar))
                 .normalize()
                 .toString()
@@ -206,20 +217,66 @@ final class LegacyVmlPictureReader {
     }
 
     private static String relationshipPath(String partPath) {
-        Path path = Path.of(partPath);
+        Path path = Paths.get(partPath);
         return path.getParent().resolve("_rels").resolve(path.getFileName() + ".rels")
                 .toString()
                 .replace('\\', '/');
     }
 
-    record LegacyPicture(
-            byte[] data,
-            String path,
-            int[] anchor,
-            float cropTop,
-            float cropBottom,
-            float cropLeft,
-            float cropRight) {
+    static final class LegacyPicture {
+        private final byte[] data;
+        private final String path;
+        private final int[] anchor;
+        private final float cropTop;
+        private final float cropBottom;
+        private final float cropLeft;
+        private final float cropRight;
+
+        LegacyPicture(
+                byte[] data,
+                String path,
+                int[] anchor,
+                float cropTop,
+                float cropBottom,
+                float cropLeft,
+                float cropRight) {
+            this.data = data;
+            this.path = path;
+            this.anchor = anchor;
+            this.cropTop = cropTop;
+            this.cropBottom = cropBottom;
+            this.cropLeft = cropLeft;
+            this.cropRight = cropRight;
+        }
+
+        byte[] data() {
+            return data;
+        }
+
+        String path() {
+            return path;
+        }
+
+        int[] anchor() {
+            return anchor;
+        }
+
+        float cropTop() {
+            return cropTop;
+        }
+
+        float cropBottom() {
+            return cropBottom;
+        }
+
+        float cropLeft() {
+            return cropLeft;
+        }
+
+        float cropRight() {
+            return cropRight;
+        }
+
         byte[] png() throws IOException {
             if (!path.toLowerCase(Locale.ROOT).endsWith(".emf")) {
                 return data;
@@ -244,6 +301,27 @@ final class LegacyVmlPictureReader {
         }
     }
 
-    private record Relationship(String id, String type, String target) {
+    private static final class Relationship {
+        private final String id;
+        private final String type;
+        private final String target;
+
+        private Relationship(String id, String type, String target) {
+            this.id = id;
+            this.type = type;
+            this.target = target;
+        }
+
+        private String id() {
+            return id;
+        }
+
+        private String type() {
+            return type;
+        }
+
+        private String target() {
+            return target;
+        }
     }
 }

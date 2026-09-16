@@ -1,6 +1,7 @@
 package io.github.minisoftware.minipdf;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,9 +36,48 @@ public final class PdfPage {
     }
 
     List<TextOperation> operations() {
-        return List.copyOf(operations);
+        return Collections.unmodifiableList(new ArrayList<>(operations));
     }
 
-    record TextOperation(String text, float x, float y, float size, PdfColor color, boolean bold) {
+    static final class TextOperation {
+        private final String text;
+        private final float x;
+        private final float y;
+        private final float size;
+        private final PdfColor color;
+        private final boolean bold;
+
+        TextOperation(String text, float x, float y, float size, PdfColor color, boolean bold) {
+            this.text = text;
+            this.x = x;
+            this.y = y;
+            this.size = size;
+            this.color = color;
+            this.bold = bold;
+        }
+
+        String text() {
+            return text;
+        }
+
+        float x() {
+            return x;
+        }
+
+        float y() {
+            return y;
+        }
+
+        float size() {
+            return size;
+        }
+
+        PdfColor color() {
+            return color;
+        }
+
+        boolean bold() {
+            return bold;
+        }
     }
 }

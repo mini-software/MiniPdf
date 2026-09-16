@@ -1,11 +1,18 @@
 package io.github.minisoftware.minipdf.internal.docx;
 
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -30,12 +37,12 @@ class PoiDocxRendererTest {
 
     @Test
     void wrapsLatinTextAtHyphensAndSpacesBeforeSplittingCharacters() throws Exception {
-        var font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
         float fontSize = 10.5f;
         float width = font.getStringWidth("88888888<br />") / 1000.0f * fontSize + 0.1f;
 
         assertEquals(
-                List.of("020-", "88888888<br />", "13888888888"),
+                Arrays.asList("020-", "88888888<br />", "13888888888"),
                 PoiDocxRenderer.wrap(font, "020-88888888<br /> 13888888888", fontSize, width));
     }
 
@@ -49,9 +56,9 @@ class PoiDocxRendererTest {
 
     @Test
     void wrapsEastAsianParagraphsWithDocumentEastAsianFont() {
-        var fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-        var simSun = new PDType1Font(Standard14Fonts.FontName.COURIER);
-        var fonts = new PoiDocxRenderer.ParagraphFonts(
+        PDFont fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        PDFont simSun = new PDType1Font(Standard14Fonts.FontName.COURIER);
+        PoiDocxRenderer.ParagraphFonts fonts = new PoiDocxRenderer.ParagraphFonts(
                 fallback,
                 simSun,
                 fallback,
@@ -68,10 +75,10 @@ class PoiDocxRendererTest {
 
         @Test
             void resolvesFontAndBoldFromHomogeneousCellRuns() throws Exception {
-            var fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-            var simHei = new PDType1Font(Standard14Fonts.FontName.COURIER);
-        var times = new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN);
-            var fonts = new PoiDocxRenderer.ParagraphFonts(
+            PDFont fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+            PDFont simHei = new PDType1Font(Standard14Fonts.FontName.COURIER);
+        PDFont times = new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN);
+            PoiDocxRenderer.ParagraphFonts fonts = new PoiDocxRenderer.ParagraphFonts(
                 fallback,
                 fallback,
                 simHei,
@@ -81,9 +88,9 @@ class PoiDocxRendererTest {
                 fallback,
                 "Times New Roman",
                 "SimSun");
-            try (var document = new XWPFDocument()) {
-                var cell = document.createTable(1, 1).getRow(0).getCell(0);
-                var run = cell.getParagraphs().get(0).createRun();
+            try (XWPFDocument document = new XWPFDocument()) {
+                XWPFTableCell cell = document.createTable(1, 1).getRow(0).getCell(0);
+                XWPFRun run = cell.getParagraphs().get(0).createRun();
                 run.setFontFamily("SimHei", org.apache.poi.xwpf.usermodel.XWPFRun.FontCharRange.eastAsia);
                 run.setText("中");
 
@@ -96,10 +103,10 @@ class PoiDocxRendererTest {
 
     @Test
     void splitsInheritedMixedScriptRunByDocumentFontSlots() throws Exception {
-        var fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-        var simSun = new PDType1Font(Standard14Fonts.FontName.COURIER);
-        var times = new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN);
-        var fonts = new PoiDocxRenderer.ParagraphFonts(
+        PDFont fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        PDFont simSun = new PDType1Font(Standard14Fonts.FontName.COURIER);
+        PDFont times = new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN);
+        PoiDocxRenderer.ParagraphFonts fonts = new PoiDocxRenderer.ParagraphFonts(
                 fallback,
                 simSun,
                 fallback,
@@ -109,16 +116,16 @@ class PoiDocxRendererTest {
                 fallback,
                 "Times New Roman",
                 "SimSun");
-        try (var document = new XWPFDocument()) {
-            var paragraph = document.createParagraph();
+        try (XWPFDocument document = new XWPFDocument()) {
+            XWPFParagraph paragraph = document.createParagraph();
             paragraph.createRun().setText("A中B");
 
             List<PoiDocxRenderer.RunSegment> segments =
                     PoiDocxRenderer.paragraphSegments(paragraph, fonts, 10.0f);
 
-            assertEquals(List.of("A", "中", "B"), segments.stream()
+                assertEquals(Arrays.asList("A", "中", "B"), segments.stream()
                     .map(PoiDocxRenderer.RunSegment::text)
-                    .toList());
+                    .collect(Collectors.toList()));
             assertSame(times, segments.get(0).font());
             assertSame(simSun, segments.get(1).font());
             assertSame(times, segments.get(2).font());
@@ -130,9 +137,9 @@ class PoiDocxRendererTest {
 
     @Test
     void suppressesMixedScriptSpacingWhenParagraphDisablesIt() throws Exception {
-        var fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-        var simSun = new PDType1Font(Standard14Fonts.FontName.COURIER);
-        var fonts = new PoiDocxRenderer.ParagraphFonts(
+        PDFont fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        PDFont simSun = new PDType1Font(Standard14Fonts.FontName.COURIER);
+        PoiDocxRenderer.ParagraphFonts fonts = new PoiDocxRenderer.ParagraphFonts(
                 fallback,
                 simSun,
                 fallback,
@@ -142,9 +149,9 @@ class PoiDocxRendererTest {
                 fallback,
                 "Times New Roman",
                 "SimSun");
-        try (var document = new XWPFDocument()) {
-            var paragraph = document.createParagraph();
-            var properties = paragraph.getCTP().addNewPPr();
+        try (XWPFDocument document = new XWPFDocument()) {
+            XWPFParagraph paragraph = document.createParagraph();
+            CTPPr properties = paragraph.getCTP().addNewPPr();
             properties.addNewAutoSpaceDE().setVal(false);
             properties.addNewAutoSpaceDN().setVal(false);
             paragraph.createRun().setText("A中1");
@@ -152,9 +159,9 @@ class PoiDocxRendererTest {
             List<PoiDocxRenderer.RunSegment> segments =
                     PoiDocxRenderer.paragraphSegments(paragraph, fonts, 10.0f);
 
-            assertEquals(List.of(0.0f, 0.0f, 0.0f), segments.stream()
+                assertEquals(Arrays.asList(0.0f, 0.0f, 0.0f), segments.stream()
                     .map(PoiDocxRenderer.RunSegment::leadingSpacing)
-                    .toList());
+                    .collect(Collectors.toList()));
         }
     }
 }

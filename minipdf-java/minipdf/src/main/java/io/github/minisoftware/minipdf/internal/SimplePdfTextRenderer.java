@@ -21,7 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class SimplePdfTextRenderer {
@@ -33,7 +35,7 @@ public final class SimplePdfTextRenderer {
     }
 
     public static byte[] render(List<String> sourceLines, ConversionOptions options) throws MiniPdfException {
-        return renderPages(List.of(sourceLines), options, PageSize.A4);
+        return renderPages(Collections.singletonList(sourceLines), options, PageSize.A4);
     }
 
     public static byte[] renderPages(
@@ -190,16 +192,16 @@ public final class SimplePdfTextRenderer {
         List<Path> paths = new ArrayList<>();
         String windows = System.getenv("WINDIR");
         if (windows != null) {
-            Path fonts = Path.of(windows, "Fonts");
+            Path fonts = Paths.get(windows, "Fonts");
             for (String name : names) {
                 paths.add(fonts.resolve(name));
             }
         }
         for (String name : names) {
-            paths.add(Path.of("/usr/share/fonts/truetype/noto", name));
-            paths.add(Path.of("/usr/share/fonts/opentype/noto", name));
-            paths.add(Path.of("/System/Library/Fonts", name));
-            paths.add(Path.of("/System/Library/Fonts/Supplemental", name));
+            paths.add(Paths.get("/usr/share/fonts/truetype/noto", name));
+            paths.add(Paths.get("/usr/share/fonts/opentype/noto", name));
+            paths.add(Paths.get("/System/Library/Fonts", name));
+            paths.add(Paths.get("/System/Library/Fonts/Supplemental", name));
         }
         return paths;
     }
@@ -225,7 +227,7 @@ public final class SimplePdfTextRenderer {
 
     private static List<String> wrap(String value, int maxCharacters) {
         if (value.isEmpty()) {
-            return List.of("");
+            return Collections.singletonList("");
         }
         List<String> lines = new ArrayList<>();
         String remaining = value;
@@ -235,9 +237,17 @@ public final class SimplePdfTextRenderer {
                 split = maxCharacters;
             }
             lines.add(remaining.substring(0, split));
-            remaining = remaining.substring(split).stripLeading();
+            remaining = stripLeading(remaining.substring(split));
         }
         lines.add(remaining);
         return lines;
+    }
+
+    private static String stripLeading(String value) {
+        int index = 0;
+        while (index < value.length() && Character.isWhitespace(value.charAt(index))) {
+            index++;
+        }
+        return value.substring(index);
     }
 }
