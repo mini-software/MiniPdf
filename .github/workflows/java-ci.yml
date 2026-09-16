@@ -77,7 +77,7 @@ jobs:
           java-version: '17'
 
       - name: Install CJK fonts
-        run: sudo apt-get update && sudo apt-get install --yes fonts-noto-cjk fonts-wqy-microhei
+        run: sudo apt-get update && sudo apt-get install --yes fonts-droid-fallback fonts-noto-cjk fonts-wqy-microhei
 
       - name: Test
         if: matrix.java-version != '10'

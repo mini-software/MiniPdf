@@ -1724,12 +1724,7 @@ final class PoiXlsxRenderer {
                     document,
                     registered,
                     Arrays.asList("notosanssc", "simhei", "simsun"),
-                        systemFonts(
-                            "NotoSansSC-VF.ttf",
-                            "wqy-microhei.ttc",
-                            "NotoSansCJK-Regular.ttc",
-                            "simhei.ttf",
-                            "simsun.ttc"));
+                    cjkSystemFonts());
             PDFont simsun = load(document, registered, Collections.singletonList("simsun"), systemFonts("simsun.ttc"));
             PDFont mingliu = load(document, registered, Collections.singletonList("mingliu"), systemFonts("mingliu.ttc"));
             List<Path> kaitiPaths = officeCloudFonts("STKaiti");
@@ -1935,6 +1930,24 @@ final class PoiXlsxRenderer {
             return loaded[0];
         }
 
+        private static List<Path> cjkSystemFonts() {
+            if (!FontEmbeddingPolicy.shouldSubset()) {
+                return systemFonts(
+                        "DroidSansFallbackFull.ttf",
+                        "NotoSansSC-VF.ttf",
+                        "wqy-microhei.ttc",
+                        "NotoSansCJK-Regular.ttc",
+                        "simhei.ttf",
+                        "simsun.ttc");
+            }
+            return systemFonts(
+                    "NotoSansSC-VF.ttf",
+                    "wqy-microhei.ttc",
+                    "NotoSansCJK-Regular.ttc",
+                    "simhei.ttf",
+                    "simsun.ttc");
+        }
+
         private static List<Path> systemFonts(String... names) {
             List<Path> paths = new ArrayList<>();
             String windows = System.getenv("WINDIR");
@@ -1944,6 +1957,7 @@ final class PoiXlsxRenderer {
                 }
             }
             for (String name : names) {
+                paths.add(Paths.get("/usr/share/fonts/truetype/droid", name));
                 paths.add(Paths.get("/usr/share/fonts/truetype/noto", name));
                 paths.add(Paths.get("/usr/share/fonts/truetype/wqy", name));
                 paths.add(Paths.get("/usr/share/fonts/opentype/noto", name));
