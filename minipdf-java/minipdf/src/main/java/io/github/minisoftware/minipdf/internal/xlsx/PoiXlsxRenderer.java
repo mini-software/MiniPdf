@@ -2,6 +2,7 @@ package io.github.minisoftware.minipdf.internal.xlsx;
 
 import de.rototor.pdfbox.graphics2d.PdfBoxGraphics2D;
 import io.github.minisoftware.minipdf.ConversionOptions;
+import io.github.minisoftware.minipdf.internal.FontEmbeddingPolicy;
 import io.github.minisoftware.minipdf.MiniPdf;
 import io.github.minisoftware.minipdf.MiniPdfException;
 import io.github.minisoftware.minipdf.PageSize;
@@ -1723,12 +1724,7 @@ final class PoiXlsxRenderer {
                     document,
                     registered,
                     Arrays.asList("notosanssc", "simhei", "simsun"),
-                        systemFonts(
-                            "NotoSansSC-VF.ttf",
-                            "wqy-microhei.ttc",
-                            "NotoSansCJK-Regular.ttc",
-                            "simhei.ttf",
-                            "simsun.ttc"));
+                    cjkSystemFonts());
             PDFont simsun = load(document, registered, Collections.singletonList("simsun"), systemFonts("simsun.ttc"));
             PDFont mingliu = load(document, registered, Collections.singletonList("mingliu"), systemFonts("mingliu.ttc"));
             List<Path> kaitiPaths = officeCloudFonts("STKaiti");
@@ -1890,7 +1886,10 @@ final class PoiXlsxRenderer {
                 List<Path> paths) throws IOException {
             for (Map.Entry<String, byte[]> font : registered.entrySet()) {
                 if (names.stream().anyMatch(font.getKey()::contains)) {
-                    return PDType0Font.load(document, new ByteArrayInputStream(font.getValue()), true);
+                    return PDType0Font.load(
+                            document,
+                            new ByteArrayInputStream(font.getValue()),
+                            FontEmbeddingPolicy.shouldSubset());
                 }
             }
             for (Path path : paths) {
@@ -1899,7 +1898,10 @@ final class PoiXlsxRenderer {
                         String fileName = path.getFileName().toString().toLowerCase(Locale.ROOT);
                         PDFont loaded = fileName.endsWith(".ttc") || fileName.endsWith(".otc")
                                 ? loadCollectionFont(document, path)
-                                : PDType0Font.load(document, Files.newInputStream(path), true);
+                            : PDType0Font.load(
+                                document,
+                                Files.newInputStream(path),
+                                FontEmbeddingPolicy.shouldSubset());
                         if (loaded != null) {
                             return loaded;
                         }
@@ -1916,13 +1918,34 @@ final class PoiXlsxRenderer {
                 collection.processAllFonts(font -> {
                     if (loaded[0] == null) {
                         try {
-                            loaded[0] = PDType0Font.load(document, font, true);
+                            loaded[0] = PDType0Font.load(
+                                    document,
+                                    font,
+                                    FontEmbeddingPolicy.shouldSubset());
                         } catch (IOException | RuntimeException ignored) {
                         }
                     }
                 });
             }
             return loaded[0];
+        }
+
+        private static List<Path> cjkSystemFonts() {
+            if (!FontEmbeddingPolicy.shouldSubset()) {
+                return systemFonts(
+                        "unifont.ttf",
+                        "NotoSansSC-VF.ttf",
+                        "wqy-microhei.ttc",
+                        "NotoSansCJK-Regular.ttc",
+                        "simhei.ttf",
+                        "simsun.ttc");
+            }
+            return systemFonts(
+                    "NotoSansSC-VF.ttf",
+                    "wqy-microhei.ttc",
+                    "NotoSansCJK-Regular.ttc",
+                    "simhei.ttf",
+                    "simsun.ttc");
         }
 
         private static List<Path> systemFonts(String... names) {
@@ -1934,6 +1957,7 @@ final class PoiXlsxRenderer {
                 }
             }
             for (String name : names) {
+                paths.add(Paths.get("/usr/share/fonts/truetype/unifont", name));
                 paths.add(Paths.get("/usr/share/fonts/truetype/noto", name));
                 paths.add(Paths.get("/usr/share/fonts/truetype/wqy", name));
                 paths.add(Paths.get("/usr/share/fonts/opentype/noto", name));
