@@ -278,6 +278,15 @@ class ClassicFixtureSmokeTest {
     }
 
     @Test
+    void skipsUnsupportedDocxPictures() throws Exception {
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/OSCAR WARD.docx");
+
+        try (PDDocument document = Loader.loadPDF(MiniPdf.convertToPdfBytes(fixture))) {
+            assertTrue(document.getNumberOfPages() > 0);
+        }
+    }
+
+    @Test
     void preservesLiteralTextAroundPageNumberField() throws Exception {
         String windows = System.getenv("WINDIR");
         org.junit.jupiter.api.Assumptions.assumeTrue(

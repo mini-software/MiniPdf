@@ -145,7 +145,7 @@ final class PoiDocxRenderer {
                 if (element instanceof XWPFParagraph paragraph) {
                         renderParagraph(context, paragraph, paragraphFonts);
                 } else if (element instanceof XWPFTable table) {
-                    renderTable(context, table, font, boldFont);
+                    renderTable(context, table, paragraphFonts, boldFont);
                 }
             }
             context.close();
@@ -276,7 +276,7 @@ final class PoiDocxRenderer {
                             context.document,
                             picture.getPictureData().getData(),
                             picture.getDescription());
-                } catch (IOException exception) {
+                } catch (IOException | IllegalArgumentException exception) {
                     continue;
                 }
                 float marginLeft = stylePoints(run.getCTR().xmlText(), "margin-left");
@@ -291,8 +291,9 @@ final class PoiDocxRenderer {
         private static void renderTable(
             PageContext context,
             XWPFTable table,
-            PDFont font,
+            ParagraphFonts fonts,
             PDFont boldFont) throws IOException {
+        PDFont font = fonts.simSun();
         float tableWidth = twipsToPoints(table.getWidth());
         if (tableWidth <= 0.0f) {
             tableWidth = context.pageSize.width() - context.margin * 2.0f;
@@ -306,7 +307,8 @@ final class PoiDocxRenderer {
             : 1.5f;
         List<Float> rowHeights = new ArrayList<>();
         for (XWPFTableRow row : table.getRows()) {
-            rowHeights.add(rowHeight(row, font, columnWidths, compact, rowHeightPadding, context.linePitch));
+            rowHeights.add(rowHeight(
+                    row, fonts, boldFont, columnWidths, compact, rowHeightPadding, context.linePitch));
         }
         float tableHeight = sum(rowHeights, rowHeights.size());
         float spacingBefore = compact ? 4.0f : table.getRows().size() == 1
@@ -375,7 +377,7 @@ final class PoiDocxRenderer {
                     drawCellText(
                             context,
                             cell,
-                            font,
+                            fonts,
                             boldFont,
                             cellX,
                             rowTop,
@@ -492,14 +494,14 @@ final class PoiDocxRenderer {
     private static void drawCellText(
             PageContext context,
             XWPFTableCell cell,
-            PDFont font,
+            ParagraphFonts fonts,
             PDFont boldFont,
             float x,
             float top,
             float width,
             float height,
             boolean compact) throws IOException {
-        PDFont cellFont = isCellBold(cell) ? boldFont : font;
+        PDFont cellFont = resolvedCellFont(cell, fonts, boldFont);
         float fontSize = cellFontSize(cell, DEFAULT_TABLE_FONT_SIZE);
         float horizontalPadding = compact ? 0.0f : CELL_HORIZONTAL_PADDING;
         float verticalPadding = compact ? 0.0f : CELL_VERTICAL_PADDING;
@@ -531,7 +533,7 @@ final class PoiDocxRenderer {
                 context.content.fill();
                 context.content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
             }
-            showText(context.content, cellFont, fontSize, line, lineX, baseline);
+                showText(context.content, cellFont, fontSize, line, lineX, baseline);
             baseline -= lineHeight;
         }
     }
@@ -570,7 +572,8 @@ final class PoiDocxRenderer {
 
     private static float rowHeight(
             XWPFTableRow row,
-            PDFont font,
+            ParagraphFonts fonts,
+            PDFont boldFont,
             List<Float> widths,
             boolean compact,
             float rowHeightPadding,
@@ -588,7 +591,8 @@ final class PoiDocxRenderer {
             }
             float fontSize = cellFontSize(cell, DEFAULT_TABLE_FONT_SIZE);
             float horizontalPadding = compact ? 0.0f : CELL_HORIZONTAL_PADDING;
-            int lines = cellLines(cell, font, fontSize, width, horizontalPadding).size();
+                PDFont cellFont = compact ? fonts.simSun() : resolvedCellFont(cell, fonts, boldFont);
+                int lines = cellLines(cell, cellFont, fontSize, width, horizontalPadding).size();
             float lineHeight = gridLineHeight(fontSize * 1.35f, linePitch);
                 height = Math.max(
                     height,
@@ -867,6 +871,27 @@ final class PoiDocxRenderer {
             }
         }
         return segments;
+    }
+
+    static PDFont resolvedCellFont(XWPFTableCell cell, ParagraphFonts fonts, PDFont boldFont) {
+        PDFont resolved = null;
+        for (XWPFParagraph paragraph : cell.getParagraphs()) {
+            for (XWPFRun run : paragraph.getRuns()) {
+                String text = renderableText(run.text());
+                for (int offset = 0; offset < text.length();) {
+                    int codePoint = text.codePointAt(offset);
+                    offset += Character.charCount(codePoint);
+                    PDFont candidate = run.isBold() ? boldFont : fonts.resolve(run, codePoint);
+                    if (resolved != null && resolved != candidate) {
+                        return isCellBold(cell) ? boldFont : fonts.simSun();
+                    }
+                    resolved = candidate;
+                }
+            }
+        }
+        return resolved == null
+                ? isCellBold(cell) ? boldFont : fonts.simSun()
+                : resolved;
     }
 
     private static AutoSpacing paragraphAutoSpacing(XWPFParagraph paragraph) {

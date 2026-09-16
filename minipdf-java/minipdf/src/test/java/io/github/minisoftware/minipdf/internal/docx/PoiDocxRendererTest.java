@@ -66,6 +66,34 @@ class PoiDocxRendererTest {
         assertSame(fallback, PoiDocxRenderer.wrappingFont(fonts, "ASCII only"));
     }
 
+        @Test
+            void resolvesFontAndBoldFromHomogeneousCellRuns() throws Exception {
+            var fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+            var simHei = new PDType1Font(Standard14Fonts.FontName.COURIER);
+        var times = new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN);
+            var fonts = new PoiDocxRenderer.ParagraphFonts(
+                fallback,
+                fallback,
+                simHei,
+                fallback,
+                fallback,
+                times,
+                fallback,
+                "Times New Roman",
+                "SimSun");
+            try (var document = new XWPFDocument()) {
+                var cell = document.createTable(1, 1).getRow(0).getCell(0);
+                var run = cell.getParagraphs().get(0).createRun();
+                run.setFontFamily("SimHei", org.apache.poi.xwpf.usermodel.XWPFRun.FontCharRange.eastAsia);
+                run.setText("中");
+
+                assertSame(simHei, PoiDocxRenderer.resolvedCellFont(cell, fonts, fallback));
+
+                run.setBold(true);
+                assertSame(fallback, PoiDocxRenderer.resolvedCellFont(cell, fonts, fallback));
+            }
+        }
+
     @Test
     void splitsInheritedMixedScriptRunByDocumentFontSlots() throws Exception {
         var fallback = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
