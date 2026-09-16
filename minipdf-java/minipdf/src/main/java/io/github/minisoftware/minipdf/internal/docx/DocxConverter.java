@@ -24,7 +24,7 @@ public final class DocxConverter {
                         MiniPdfException.Kind.INVALID_INPUT,
                         "DOCX package does not contain word/document.xml"));
         DocxContent content = readDocument(documentXml);
-        if (content.tableCount() == 3 && content.drawingCount() == 1 && content.pages().size() == 1) {
+        if (content.tableCount() > 0) {
             byte[] structured = PoiDocxRenderer.render(input, options, content.pageSize());
             if (structured != null) {
                 return structured;
