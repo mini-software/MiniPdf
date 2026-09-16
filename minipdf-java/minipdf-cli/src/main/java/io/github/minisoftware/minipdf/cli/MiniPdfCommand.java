@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 @Command(
         name = "minipdf",
-    version = "minipdf-java 0.1.6",
+    version = "minipdf-java 0.2.0",
     description = "Convert XLSX, DOCX, and PPTX files to PDF with the Java MiniPdf engine.",
         mixinStandardHelpOptions = true,
         subcommands = MiniPdfCommand.ConvertCommand.class)

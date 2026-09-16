@@ -89,7 +89,7 @@ features, known gaps, and development workflow.
 <dependency>
 	<groupId>io.github.mini-software</groupId>
 	<artifactId>minipdf</artifactId>
-	<version>0.1.6</version>
+	<version>0.2.0</version>
 </dependency>
 ```
 
