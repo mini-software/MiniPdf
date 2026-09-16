@@ -69,4 +69,4 @@ jobs:
         run: sudo apt-get update && sudo apt-get install --yes fonts-noto-cjk fonts-wqy-microhei
 
       - name: Test
-        run: mvn -B -ntp verify
+        run: ./mvnw -B -ntp verify
