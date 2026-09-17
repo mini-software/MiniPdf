@@ -3,6 +3,7 @@ package io.github.minisoftware.minipdf.internal.docx;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -133,6 +134,69 @@ class PoiDocxRendererTest {
             assertEquals(2.5f, segments.get(1).leadingSpacing());
             assertEquals(2.5f, segments.get(2).leadingSpacing());
         }
+    }
+
+    @Test
+    void preservesBoldFontInParagraphSegments() throws Exception {
+        PDFont regular = new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN);
+        PDFont bold = new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD);
+        PoiDocxRenderer.ParagraphFonts fonts = new PoiDocxRenderer.ParagraphFonts(
+                regular,
+                regular,
+                regular,
+                regular,
+                regular,
+                regular,
+                regular,
+                "Times New Roman",
+                "Times New Roman");
+        try (XWPFDocument document = new XWPFDocument()) {
+            XWPFParagraph paragraph = document.createParagraph();
+            XWPFRun run = paragraph.createRun();
+            run.setBold(true);
+            run.setText("Heading");
+
+            List<PoiDocxRenderer.RunSegment> segments =
+                    PoiDocxRenderer.paragraphSegments(paragraph, fonts, 12.0f, bold);
+
+            assertSame(bold, segments.get(0).font());
+        }
+    }
+
+    @Test
+    void distributesJustifiedLineWidthAcrossSpaces() {
+        assertEquals(10.0f, PoiDocxRenderer.justifiedWordSpacing("one two three", 80.0f, 100.0f));
+        assertEquals(0.0f, PoiDocxRenderer.justifiedWordSpacing("word", 80.0f, 100.0f));
+        assertEquals(0.0f, PoiDocxRenderer.justifiedWordSpacing("one two", 110.0f, 100.0f));
+    }
+
+    @Test
+    void honorsExplicitAutoLineSpacingForLatinParagraphs() throws Exception {
+        try (XWPFDocument document = new XWPFDocument()) {
+            XWPFParagraph paragraph = document.createParagraph();
+            paragraph.setSpacingBetween(1.15, LineSpacingRule.AUTO);
+
+            assertEquals(
+                    15.8838f,
+                    PoiDocxRenderer.paragraphLineHeight(paragraph, 12.0f, 14.4f, 18.0f, true),
+                    0.001f);
+            assertEquals(
+                    18.0f,
+                    PoiDocxRenderer.paragraphLineHeight(paragraph, 12.0f, 14.4f, 18.0f, false),
+                    0.001f);
+        }
+    }
+
+    @Test
+    void normalizesVietnameseCombiningMarksBeforeLayout() {
+        assertEquals(
+                "M\u1ee5c \u0111\u00edch",
+                PoiDocxRenderer.renderableText("Mu\u0323c \u0111i\u0301ch"));
+    }
+
+    @Test
+    void positionsPageNumberAboveFooterBoundaryUsingFontMetrics() {
+        assertEquals(53.7719f, PoiDocxRenderer.pageNumberBaseline(36.0f, 13.0f, -216.0f), 0.001f);
     }
 
     @Test

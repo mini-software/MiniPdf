@@ -238,6 +238,35 @@ class ClassicFixtureSmokeTest {
     }
 
     @Test
+    void preservesVietnameseTextAndPaginationInIssue91() throws Exception {
+        String windows = System.getenv("WINDIR");
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+                windows != null && Files.isRegularFile(Paths.get(windows, "Fonts", "times.ttf")),
+                "requires Times New Roman");
+        Path fixture = REPOSITORY_ROOT.resolve("tests/Issue_Files/docx/TestIssue91.docx");
+        byte[] pdf = MiniPdf.convertToPdfBytes(fixture);
+
+        try (PDDocument document = Loader.loadPDF(pdf)) {
+            String text = new PDFTextStripper().getText(document);
+            assertEquals(3, document.getNumberOfPages());
+            assertTrue(text.contains("PH\u1ee4 L\u1ee4C - KHO\u1ea2N VAY V\u1ed0N \u0110\u1ea6U T\u01af"), text);
+            assertTrue(text.contains("Bên B chấp nhận chịu, chỉ được gia hạn"), text);
+        }
+        try (PDDocument document = Loader.loadPDF(pdf)) {
+            PDFTextStripper secondPageStripper = new PDFTextStripper();
+            secondPageStripper.setStartPage(2);
+            secondPageStripper.setEndPage(2);
+            String secondPage = secondPageStripper.getText(document).trim();
+            assertTrue(secondPage.startsWith("Trong Phụ lục này"), secondPage);
+            assertTrue(
+                    secondPage.replace("\r\n", "\n").contains(
+                            "[INTEREST_RATE] %/năm.\nTrong trường hợp"),
+                    secondPage);
+            assertTrue(lines(secondPage).anyMatch(line -> line.trim().equals("2")), secondPage);
+        }
+    }
+
+    @Test
     void rendersIssue93AsSinglePageForm() throws Exception {
         String windows = System.getenv("WINDIR");
         org.junit.jupiter.api.Assumptions.assumeTrue(

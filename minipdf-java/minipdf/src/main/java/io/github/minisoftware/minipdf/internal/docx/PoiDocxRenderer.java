@@ -13,15 +13,18 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.poi.xwpf.usermodel.IBodyElement;
+import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFStyle;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.xmlbeans.XmlCursor;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFonts;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
@@ -36,6 +39,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,7 +79,13 @@ final class PoiDocxRenderer {
                         : ((XWPFParagraph) element).getText())
                     .map(value -> value.replace('\n', ' ').replace('\t', ' '))
                     .collect(Collectors.toList()));
+            String defaultAsciiFamily = defaultFontFamily(source, XWPFRun.FontCharRange.ascii);
             PDFont font = SimplePdfTextRenderer.loadFont(output, text);
+            boolean usesDocumentLatinFont = false;
+            if (font == null) {
+                font = loadDocumentLatinFont(output, text, defaultAsciiFamily);
+                usesDocumentLatinFont = font != null;
+            }
             if (font == null && text.stream().flatMap(List::stream)
                     .flatMapToInt(String::codePoints).allMatch(codePoint -> codePoint <= 255)) {
                 font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
@@ -88,7 +98,9 @@ final class PoiDocxRenderer {
                     text,
                     "simsunb.ttf",
                     "msyhbd.ttc",
-                    "NotoSansCJK-Bold.ttc");
+                    "NotoSansCJK-Bold.ttc",
+                    "timesbd.ttf",
+                    "arialbd.ttf");
             if (boldFont == null) {
                 boldFont = font;
             }
@@ -137,11 +149,12 @@ final class PoiDocxRenderer {
                     fangSongFont == null ? paragraphFont : fangSongFont,
                     timesFont,
                     arialFont,
-                    defaultFontFamily(source, XWPFRun.FontCharRange.ascii),
+                    defaultAsciiFamily,
                     defaultFontFamily(source, XWPFRun.FontCharRange.eastAsia));
 
                 boolean landscape = pageSize.width() > pageSize.height();
-                PageMargins margins = pageMargins(source, DEFAULT_MARGIN, landscape);
+                PageMargins margins = pageMargins(
+                    source, DEFAULT_MARGIN, landscape, usesDocumentLatinFont);
             float linePitch = documentLinePitch(source);
             PageNumberFooter pageNumberFooter = pageNumberFooter(source);
             PageContext context = new PageContext(
@@ -155,10 +168,15 @@ final class PoiDocxRenderer {
                     pageNumberFooter == null ? null : timesFont,
                     pageNumberFooter,
                     pageFooterDistance(source, margins.bottom()));
-                    for (IBodyElement element : source.getBodyElements()) {
+            for (IBodyElement element : source.getBodyElements()) {
                 if (element instanceof XWPFParagraph) {
-                        XWPFParagraph paragraph = (XWPFParagraph) element;
-                        renderParagraph(context, paragraph, paragraphFonts);
+                    XWPFParagraph paragraph = (XWPFParagraph) element;
+                    renderParagraph(
+                            context,
+                            paragraph,
+                            paragraphFonts,
+                            usesDocumentLatinFont ? boldFont : null,
+                            usesDocumentLatinFont);
                 } else if (element instanceof XWPFTable) {
                     XWPFTable table = (XWPFTable) element;
                     renderTable(context, table, paragraphFonts, boldFont);
@@ -179,16 +197,27 @@ final class PoiDocxRenderer {
     private static void renderParagraph(
             PageContext context,
             XWPFParagraph paragraph,
-            ParagraphFonts fonts)
+            ParagraphFonts fonts,
+            PDFont boldFont,
+            boolean useWordParagraphLayout)
             throws IOException {
         float fontSize = paragraphFontSize(paragraph, DEFAULT_FONT_SIZE);
-        context.moveDown(twipsToPoints(paragraph.getSpacingBefore()));
+        if (useWordParagraphLayout) {
+            context.moveToParagraph(twipsToPoints(paragraph.getSpacingBefore()));
+        } else {
+            context.moveDown(twipsToPoints(paragraph.getSpacingBefore()));
+        }
         String text = renderableText(paragraph.getText());
         float leftIndent = indentationToPoints(paragraph.getIndentationLeft());
         float rightIndent = indentationToPoints(paragraph.getIndentationRight());
+        float firstLineIndent = useWordParagraphLayout
+            ? indentationToPoints(paragraph.getIndentationFirstLine())
+                - indentationToPoints(paragraph.getIndentationHanging())
+            : 0.0f;
         float availableWidth = context.pageSize.width() - context.margin * 2.0f - leftIndent - rightIndent;
+        float firstLineWidth = availableWidth - firstLineIndent;
         AutoSpacing autoSpacing = paragraphAutoSpacing(paragraph);
-        List<RunSegment> segments = paragraphSegments(paragraph, fonts, fontSize);
+        List<RunSegment> segments = paragraphSegments(paragraph, fonts, fontSize, boldFont);
         float segmentWidth = 0.0f;
         for (RunSegment segment : segments) {
             segmentWidth += segment.leadingSpacing()
@@ -199,20 +228,21 @@ final class PoiDocxRenderer {
         if (!segments.isEmpty()
                 && !hasPictures
                 && segments.stream().map(RunSegment::text).reduce("", String::concat).equals(text)
-                && segmentWidth <= availableWidth) {
+                && segmentWidth <= firstLineWidth) {
             float maxFontSize = segments.stream()
                     .map(RunSegment::fontSize)
                     .max(Float::compare)
                     .orElse(fontSize);
-                float naturalLineHeight = maxFontSize * 1.2f;
-                float lineHeight = gridLineHeight(naturalLineHeight, context.linePitch);
+            float naturalLineHeight = maxFontSize * 1.2f;
+                float lineHeight = paragraphLineHeight(
+                    paragraph, maxFontSize, naturalLineHeight, context.linePitch, useWordParagraphLayout);
             context.ensureSpace(lineHeight);
-                float leading = Math.max(0.0f, lineHeight - naturalLineHeight) / 2.0f;
-                float baseline = context.y - leading - maxFontSize;
-            float x = context.margin + leftIndent;
+            float leading = Math.max(0.0f, lineHeight - naturalLineHeight) / 2.0f;
+            float baseline = context.y - leading - maxFontSize;
+            float x = context.margin + leftIndent + firstLineIndent;
             if (paragraph.getAlignment() == ParagraphAlignment.CENTER) {
-                    x = centeredTextX(
-                            context.pageSize.width(), leftIndent, rightIndent, segmentWidth);
+                x = centeredTextX(
+                        context.pageSize.width(), leftIndent + firstLineIndent, rightIndent, segmentWidth);
             } else if (paragraph.getAlignment() == ParagraphAlignment.RIGHT) {
                 x = context.pageSize.width() - context.margin - rightIndent - segmentWidth;
             }
@@ -229,15 +259,26 @@ final class PoiDocxRenderer {
                 x += textWidth(segment.font(), segment.text(), segment.fontSize(), autoSpacing);
             }
             context.y -= lineHeight;
-            context.moveDown(twipsToPoints(paragraph.getSpacingAfter()));
+            finishParagraph(context, paragraph, useWordParagraphLayout);
             if (startsNewSection(paragraph)) {
                 context.newPage();
             }
             return;
         }
         PDFont font = wrappingFont(fonts, text);
-        List<String> lines = wrap(font, text, fontSize, availableWidth, autoSpacing);
-        float lineHeight = gridLineHeight(fontSize * 1.2f, context.linePitch);
+        float wrapTolerance = useWordParagraphLayout ? fontSize : 0.0f;
+        List<String> lines = wrap(
+            font,
+            text,
+            fontSize,
+            firstLineWidth + wrapTolerance,
+            availableWidth + wrapTolerance,
+            autoSpacing);
+        float lineHeight = paragraphLineHeight(
+            paragraph, fontSize, fontSize * 1.2f, context.linePitch, useWordParagraphLayout);
+        if (useWordParagraphLayout) {
+            context.avoidWidowOrphanSplit(lineHeight, lines.size());
+        }
         float firstBaseline = 0.0f;
         for (int index = 0; index < lines.size(); index++) {
             context.ensureSpace(lineHeight);
@@ -247,19 +288,38 @@ final class PoiDocxRenderer {
             }
             String line = lines.get(index);
             float width = textWidth(font, line, fontSize, autoSpacing);
-            float x = context.margin + leftIndent;
+            float lineLeftIndent = index == 0 ? leftIndent + firstLineIndent : leftIndent;
+            float lineWidth = index == 0 ? firstLineWidth : availableWidth;
+            float x = context.margin + lineLeftIndent;
             if (paragraph.getAlignment() == ParagraphAlignment.CENTER) {
-                x = centeredTextX(context.pageSize.width(), leftIndent, rightIndent, width);
+                x = centeredTextX(context.pageSize.width(), lineLeftIndent, rightIndent, width);
             } else if (paragraph.getAlignment() == ParagraphAlignment.RIGHT) {
                 x = context.pageSize.width() - context.margin - rightIndent - width;
             }
-            showText(context.content, font, fontSize, line, x, baseline, autoSpacing);
+            float wordSpacing = paragraph.getAlignment() == ParagraphAlignment.BOTH
+                    && useWordParagraphLayout
+                    && index < lines.size() - 1
+                    ? justifiedWordSpacing(line, width, lineWidth)
+                    : 0.0f;
+            showText(context.content, font, fontSize, line, x, baseline, autoSpacing, wordSpacing);
             context.y -= lineHeight;
         }
         renderPictures(context, paragraph, firstBaseline);
-        context.moveDown(twipsToPoints(paragraph.getSpacingAfter()));
+        finishParagraph(context, paragraph, useWordParagraphLayout);
         if (startsNewSection(paragraph)) {
             context.newPage();
+        }
+    }
+
+    private static void finishParagraph(
+            PageContext context,
+            XWPFParagraph paragraph,
+            boolean useWordParagraphLayout) throws IOException {
+        float spacingAfter = twipsToPoints(paragraph.getSpacingAfter());
+        if (useWordParagraphLayout) {
+            context.finishParagraph(spacingAfter);
+        } else {
+            context.moveDown(spacingAfter);
         }
     }
 
@@ -707,6 +767,16 @@ final class PoiDocxRenderer {
             float fontSize,
             float width,
             AutoSpacing autoSpacing) throws IOException {
+        return wrap(font, text, fontSize, width, width, autoSpacing);
+    }
+
+    private static List<String> wrap(
+            PDFont font,
+            String text,
+            float fontSize,
+            float firstLineWidth,
+            float width,
+            AutoSpacing autoSpacing) throws IOException {
         if (text.isEmpty()) {
             return Collections.singletonList("");
         }
@@ -717,7 +787,8 @@ final class PoiDocxRenderer {
             offset += Character.charCount(codePoint);
             line.appendCodePoint(codePoint);
             while (line.codePointCount(0, line.length()) > 1
-                    && textWidth(font, line.toString(), fontSize, autoSpacing) > width) {
+                    && textWidth(font, line.toString(), fontSize, autoSpacing)
+                        > (lines.isEmpty() ? firstLineWidth : width)) {
                 int breakOffset = lastWrapBoundary(line);
                 if (breakOffset <= 0) {
                     breakOffset = line.offsetByCodePoints(line.length(), -1);
@@ -830,10 +901,12 @@ final class PoiDocxRenderer {
     private static final class PageNumberFooter {
         private final String prefix;
         private final String suffix;
+        private final float fontSize;
 
-        private PageNumberFooter(String prefix, String suffix) {
+        private PageNumberFooter(String prefix, String suffix, float fontSize) {
             this.prefix = prefix;
             this.suffix = suffix;
+            this.fontSize = fontSize;
         }
 
         private String prefix() {
@@ -842,6 +915,10 @@ final class PoiDocxRenderer {
 
         private String suffix() {
             return suffix;
+        }
+
+        private float fontSize() {
+            return fontSize;
         }
 
         @Override
@@ -853,12 +930,14 @@ final class PoiDocxRenderer {
                 return false;
             }
             PageNumberFooter other = (PageNumberFooter) value;
-            return prefix.equals(other.prefix) && suffix.equals(other.suffix);
+                return prefix.equals(other.prefix)
+                    && suffix.equals(other.suffix)
+                    && Float.compare(fontSize, other.fontSize) == 0;
         }
 
         @Override
         public int hashCode() {
-            return 31 * prefix.hashCode() + suffix.hashCode();
+            return 31 * (31 * prefix.hashCode() + suffix.hashCode()) + Float.floatToIntBits(fontSize);
         }
     }
 
@@ -1011,6 +1090,14 @@ final class PoiDocxRenderer {
             XWPFParagraph paragraph,
             ParagraphFonts fonts,
             float fallbackFontSize) {
+        return paragraphSegments(paragraph, fonts, fallbackFontSize, null);
+    }
+
+    static List<RunSegment> paragraphSegments(
+            XWPFParagraph paragraph,
+            ParagraphFonts fonts,
+            float fallbackFontSize,
+            PDFont boldFont) {
         List<RunSegment> segments = new ArrayList<>();
         AutoSpacing autoSpacing = paragraphAutoSpacing(paragraph);
         for (XWPFRun run : paragraph.getRuns()) {
@@ -1028,7 +1115,9 @@ final class PoiDocxRenderer {
             for (int offset = 0; offset < text.length();) {
                 int codePoint = text.codePointAt(offset);
                 offset += Character.charCount(codePoint);
-                PDFont codePointFont = fonts.resolve(run, codePoint);
+                PDFont codePointFont = run.isBold() && boldFont != null
+                        ? boldFont
+                        : fonts.resolve(run, codePoint);
                 if (segmentFont != null && codePointFont != segmentFont) {
                     float spacing = isEastAsianLatinBoundary(previous, codePoint, autoSpacing)
                             ? fontSize * 0.25f
@@ -1099,9 +1188,32 @@ final class PoiDocxRenderer {
                 .toString();
     }
 
+    private static PDFont loadDocumentLatinFont(
+            PDDocument document,
+            List<List<String>> text,
+            String family) {
+        String normalized = family == null ? "" : family.toLowerCase();
+        if (normalized.contains("times")) {
+            return SimplePdfTextRenderer.loadSystemFont(
+                    document, text, "times.ttf", "NotoSerif-Regular.ttf");
+        }
+        if (normalized.contains("arial")) {
+            return SimplePdfTextRenderer.loadSystemFont(
+                    document, text, "arial.ttf", "NotoSans-Regular.ttf");
+        }
+        return null;
+    }
+
     private static String defaultFontFamily(XWPFDocument document, XWPFRun.FontCharRange range) {
         if (document.getStyles() == null || document.getStyles().getCtStyles() == null) {
             return null;
+        }
+        XWPFStyle normalStyle = document.getStyles().getStyle("Normal");
+        if (normalStyle != null && normalStyle.getCTStyle().isSetRPr()) {
+            String family = fontFamily(normalStyle.getCTStyle().getRPr(), range);
+            if (family != null) {
+                return family;
+            }
         }
         CTStyles styles = document.getStyles().getCtStyles();
         if (!styles.isSetDocDefaults()
@@ -1109,7 +1221,10 @@ final class PoiDocxRenderer {
                 || !styles.getDocDefaults().getRPrDefault().isSetRPr()) {
             return null;
         }
-        CTRPr properties = styles.getDocDefaults().getRPrDefault().getRPr();
+        return fontFamily(styles.getDocDefaults().getRPrDefault().getRPr(), range);
+    }
+
+    private static String fontFamily(CTRPr properties, XWPFRun.FontCharRange range) {
         if (properties.sizeOfRFontsArray() == 0) {
             return null;
         }
@@ -1154,14 +1269,19 @@ final class PoiDocxRenderer {
                 .orElse(fallback);
     }
 
-    private static PageMargins pageMargins(XWPFDocument document, float fallback, boolean landscape) {
+    private static PageMargins pageMargins(
+            XWPFDocument document,
+            float fallback,
+            boolean landscape,
+            boolean useWordParagraphLayout) {
         CTBody body = document.getDocument().getBody();
         if (!body.isSetSectPr() || !body.getSectPr().isSetPgMar()) {
-            return new PageMargins(fallback, fallback, fallback, 10.0f);
+            return new PageMargins(
+                    fallback, fallback, fallback, useWordParagraphLayout ? 0.0f : 10.0f);
         }
         CTPageMar margins = body.getSectPr().getPgMar();
         float left = twipsValue(margins.getLeft(), fallback);
-        if (!landscape) {
+        if (!landscape && !useWordParagraphLayout) {
             return new PageMargins(left, left, left, 10.0f);
         }
         float top = twipsValue(margins.getTop(), left);
@@ -1198,26 +1318,64 @@ final class PoiDocxRenderer {
             return null;
         }
         PageNumberFooter result = null;
+        float fontSize = footerFontSize(document);
         for (XWPFFooter footer : document.getFooterList()) {
-            boolean hasPageField = footer.getParagraphs().stream()
-                    .flatMap(paragraph -> paragraph.getRuns().stream())
-                    .flatMap(run -> run.getCTR().getInstrTextList().stream())
-                    .map(instruction -> instruction.getStringValue().trim())
+            boolean hasPageField = descendantElementText(footer, "instrText").stream()
+                    .map(String::trim)
                     .anyMatch(instruction -> PAGE_FIELD.matcher(instruction).find());
             if (!hasPageField) {
                 return null;
             }
-            Matcher cachedPage = CACHED_PAGE_NUMBER.matcher(footer.getText().trim());
+            String cachedText = footer.getText().trim();
+            if (cachedText.isEmpty()) {
+                cachedText = String.join("", descendantElementText(footer, "t")).trim();
+            }
+            Matcher cachedPage = CACHED_PAGE_NUMBER.matcher(cachedText);
             if (!cachedPage.matches()) {
                 continue;
             }
-            PageNumberFooter candidate = new PageNumberFooter(cachedPage.group(1), cachedPage.group(3));
+                PageNumberFooter candidate = new PageNumberFooter(
+                    cachedPage.group(1), cachedPage.group(3), fontSize);
             if (result != null && !result.equals(candidate)) {
                 return null;
             }
             result = candidate;
         }
-        return result == null ? new PageNumberFooter("", "") : result;
+        return result == null ? new PageNumberFooter("", "", fontSize) : result;
+    }
+
+    private static float footerFontSize(XWPFDocument document) {
+        if (document.getStyles() != null) {
+            for (String styleId : new String[] {"FooterChar", "Footer", "Normal"}) {
+                XWPFStyle style = document.getStyles().getStyle(styleId);
+                if (style == null || !style.getCTStyle().isSetRPr()) {
+                    continue;
+                }
+                CTRPr properties = style.getCTStyle().getRPr();
+                if (properties.sizeOfSzArray() > 0) {
+                    try {
+                        return Float.parseFloat(properties.getSzArray(0).getVal().toString()) / 2.0f;
+                    } catch (NumberFormatException ignored) {
+                        // Try the next inherited style.
+                    }
+                }
+            }
+        }
+        return 9.0f;
+    }
+
+    private static List<String> descendantElementText(XWPFFooter footer, String localName) {
+        List<String> values = new ArrayList<>();
+        try (XmlCursor cursor = footer._getHdrFtr().newCursor()) {
+            while (cursor.toNextToken() != XmlCursor.TokenType.NONE) {
+                if (cursor.isStart()
+                        && cursor.getName() != null
+                        && localName.equals(cursor.getName().getLocalPart())) {
+                    values.add(cursor.getTextValue());
+                }
+            }
+        }
+        return values;
     }
 
     private static float pageFooterDistance(XWPFDocument document, float fallback) {
@@ -1286,8 +1444,10 @@ final class PoiDocxRenderer {
                 || script == Character.UnicodeScript.HANGUL;
     }
 
-    private static String renderableText(String text) {
-        return text.replace('\r', ' ').replace('\n', ' ').replace('\t', ' ');
+    static String renderableText(String text) {
+        return Normalizer.normalize(
+                text.replace('\r', ' ').replace('\n', ' ').replace('\t', ' '),
+                Normalizer.Form.NFC);
     }
 
     private static float gridLineHeight(float naturalHeight, float linePitch) {
@@ -1295,6 +1455,26 @@ final class PoiDocxRenderer {
             return naturalHeight;
         }
         return (float) Math.ceil(naturalHeight / linePitch) * linePitch;
+    }
+
+    static float paragraphLineHeight(
+            XWPFParagraph paragraph,
+            float fontSize,
+            float naturalHeight,
+            float linePitch,
+            boolean useWordParagraphLayout) {
+        double spacing = paragraph.getSpacingBetween();
+        if (useWordParagraphLayout && spacing >= 0.0) {
+            LineSpacingRule rule = paragraph.getSpacingLineRule();
+            if (rule == LineSpacingRule.EXACT) {
+                return (float) spacing;
+            }
+            if (rule == LineSpacingRule.AT_LEAST) {
+                return Math.max(naturalHeight, (float) spacing);
+            }
+            return fontSize * 1.151f * (float) spacing;
+        }
+        return gridLineHeight(naturalHeight, linePitch);
     }
 
     static float centeredTextX(float pageWidth, float leftIndent, float rightIndent, float textWidth) {
@@ -1324,11 +1504,26 @@ final class PoiDocxRenderer {
             float x,
             float y,
             AutoSpacing autoSpacing) throws IOException {
+        showText(content, font, fontSize, text, x, y, autoSpacing, 0.0f);
+    }
+
+    private static void showText(
+            PDPageContentStream content,
+            PDFont font,
+            float fontSize,
+            String text,
+            float x,
+            float y,
+            AutoSpacing autoSpacing,
+            float wordSpacing) throws IOException {
         if (text.isEmpty()) {
             return;
         }
         content.beginText();
         content.setFont(font, fontSize);
+        if (wordSpacing > 0.0f) {
+            content.setWordSpacing(wordSpacing);
+        }
         content.newLineAtOffset(x, y);
         if (eastAsianBoundaryCount(text, autoSpacing) == 0) {
             content.showText(text);
@@ -1350,6 +1545,11 @@ final class PoiDocxRenderer {
             content.showTextWithPositioning(positioned.toArray());
         }
         content.endText();
+    }
+
+    static float justifiedWordSpacing(String text, float textWidth, float availableWidth) {
+        long spaces = text.codePoints().filter(codePoint -> codePoint == ' ').count();
+        return spaces == 0 ? 0.0f : Math.max(0.0f, availableWidth - textWidth) / spaces;
     }
 
     private static float sum(List<Float> values, int count) {
@@ -1381,6 +1581,7 @@ final class PoiDocxRenderer {
         private PDPageContentStream content;
         private float y;
         private int pageCount;
+        private float previousParagraphSpacingAfter;
 
         private PageContext(
                 PDDocument document,
@@ -1417,6 +1618,28 @@ final class PoiDocxRenderer {
             y -= amount;
         }
 
+        private void avoidWidowOrphanSplit(float lineHeight, int lineCount) throws IOException {
+            if (lineCount < 2 || lineHeight <= 0.0f) {
+                return;
+            }
+            int linesThatFit = (int) Math.floor((y - bottomMargin) / lineHeight);
+            if (linesThatFit > 0
+                    && linesThatFit < lineCount
+                    && (linesThatFit < 2 || lineCount - linesThatFit < 2)) {
+                newPage();
+            }
+        }
+
+        private void moveToParagraph(float spacingBefore) throws IOException {
+            moveDown(Math.max(0.0f, spacingBefore - previousParagraphSpacingAfter));
+            previousParagraphSpacingAfter = 0.0f;
+        }
+
+        private void finishParagraph(float spacingAfter) throws IOException {
+            moveDown(spacingAfter);
+            previousParagraphSpacingAfter = spacingAfter;
+        }
+
         private void newPage() throws IOException {
             newPage(0.0f);
         }
@@ -1426,6 +1649,7 @@ final class PoiDocxRenderer {
                 renderPageNumber();
                 content.close();
             }
+            previousParagraphSpacingAfter = 0.0f;
             PDPage page = new PDPage(new PDRectangle(pageSize.width(), pageSize.height()));
             document.addPage(page);
             pageCount++;
@@ -1438,9 +1662,13 @@ final class PoiDocxRenderer {
                 return;
             }
             String pageNumber = pageNumberFooter.prefix() + pageCount + pageNumberFooter.suffix();
-            float fontSize = 9.0f;
+                float fontSize = pageNumberFooter.fontSize();
             float x = (pageSize.width() - textWidth(pageNumberFont, pageNumber, fontSize)) / 2.0f;
-            showText(content, pageNumberFont, fontSize, pageNumber, x, pageFooterDistance);
+                float descent = pageNumberFont.getFontDescriptor() == null
+                    ? 0.0f
+                    : pageNumberFont.getFontDescriptor().getDescent();
+                float baseline = pageNumberBaseline(pageFooterDistance, fontSize, descent);
+                showText(content, pageNumberFont, fontSize, pageNumber, x, baseline);
         }
 
         @Override
@@ -1451,5 +1679,9 @@ final class PoiDocxRenderer {
                 content = null;
             }
         }
+    }
+
+    static float pageNumberBaseline(float footerDistance, float fontSize, float fontDescent) {
+        return footerDistance + fontSize * 1.151f + Math.abs(fontDescent) / 1000.0f * fontSize;
     }
 }
