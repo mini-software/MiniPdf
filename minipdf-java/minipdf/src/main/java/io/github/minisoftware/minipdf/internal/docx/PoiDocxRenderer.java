@@ -17,6 +17,7 @@ import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFFooter;
+import org.apache.poi.xwpf.usermodel.XWPFFootnote;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -26,23 +27,30 @@ import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.xmlbeans.XmlCursor;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFonts;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyles;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSym;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblGridCol;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -76,7 +84,7 @@ final class PoiDocxRenderer {
             List<List<String>> text = Collections.singletonList(source.getBodyElements().stream()
                     .map(element -> element instanceof XWPFTable
                         ? ((XWPFTable) element).getText()
-                        : ((XWPFParagraph) element).getText())
+                        : paragraphText((XWPFParagraph) element))
                     .map(value -> value.replace('\n', ' ').replace('\t', ' '))
                     .collect(Collectors.toList()));
             String defaultAsciiFamily = defaultFontFamily(source, XWPFRun.FontCharRange.ascii);
@@ -167,7 +175,8 @@ final class PoiDocxRenderer {
                     margins.firstPageTopOffset(),
                     pageNumberFooter == null ? null : timesFont,
                     pageNumberFooter,
-                    pageFooterDistance(source, margins.bottom()));
+                    pageFooterDistance(source, margins.bottom()),
+                    footnotes(source, timesFont));
             for (IBodyElement element : source.getBodyElements()) {
                 if (element instanceof XWPFParagraph) {
                     XWPFParagraph paragraph = (XWPFParagraph) element;
@@ -201,13 +210,18 @@ final class PoiDocxRenderer {
             PDFont boldFont,
             boolean useWordParagraphLayout)
             throws IOException {
+        context.registerFootnotes(paragraph);
+        boolean alignCheckboxLabels = context.consumeCheckboxLabelAlignment();
         float fontSize = paragraphFontSize(paragraph, DEFAULT_FONT_SIZE);
         if (useWordParagraphLayout) {
             context.moveToParagraph(twipsToPoints(paragraph.getSpacingBefore()));
         } else {
             context.moveDown(twipsToPoints(paragraph.getSpacingBefore()));
         }
-        String text = renderableText(paragraph.getText());
+        float paragraphTop = context.y;
+        String text = alignCheckboxLabels
+            ? paragraphText(paragraph)
+            : renderableText(paragraphText(paragraph));
         float leftIndent = indentationToPoints(paragraph.getIndentationLeft());
         float rightIndent = indentationToPoints(paragraph.getIndentationRight());
         float firstLineIndent = useWordParagraphLayout
@@ -217,9 +231,14 @@ final class PoiDocxRenderer {
         float availableWidth = context.pageSize.width() - context.margin * 2.0f - leftIndent - rightIndent;
         float firstLineWidth = availableWidth - firstLineIndent;
         AutoSpacing autoSpacing = paragraphAutoSpacing(paragraph);
-        List<RunSegment> segments = paragraphSegments(paragraph, fonts, fontSize, boldFont);
+        List<RunSegment> segments = paragraphSegments(
+            paragraph, fonts, fontSize, boldFont, alignCheckboxLabels);
         float segmentWidth = 0.0f;
         for (RunSegment segment : segments) {
+            if (segment.tab()) {
+                segmentWidth = nextDefaultTabStop(segmentWidth);
+                continue;
+            }
             segmentWidth += segment.leadingSpacing()
                 + textWidth(segment.font(), segment.text(), segment.fontSize(), autoSpacing);
         }
@@ -247,7 +266,19 @@ final class PoiDocxRenderer {
                 x = context.pageSize.width() - context.margin - rightIndent - segmentWidth;
             }
             for (RunSegment segment : segments) {
+                if (segment.tab()) {
+                    x = context.margin + leftIndent + firstLineIndent
+                            + nextDefaultTabStop(x - context.margin - leftIndent - firstLineIndent);
+                    continue;
+                }
                 x += segment.leadingSpacing();
+                drawRunHighlight(
+                    context.content,
+                    segment.highlight(),
+                    x,
+                    baseline,
+                    textWidth(segment.font(), segment.text(), segment.fontSize(), autoSpacing),
+                    segment.fontSize());
                 showText(
                         context.content,
                         segment.font(),
@@ -258,6 +289,7 @@ final class PoiDocxRenderer {
                         autoSpacing);
                 x += textWidth(segment.font(), segment.text(), segment.fontSize(), autoSpacing);
             }
+            renderFloatingCheckboxes(context, paragraph, paragraphTop);
             context.y -= lineHeight;
             finishParagraph(context, paragraph, useWordParagraphLayout);
             if (startsNewSection(paragraph)) {
@@ -269,7 +301,7 @@ final class PoiDocxRenderer {
         float wrapTolerance = useWordParagraphLayout ? fontSize : 0.0f;
         List<String> lines = wrap(
             font,
-            text,
+            text.replace('\t', ' '),
             fontSize,
             firstLineWidth + wrapTolerance,
             availableWidth + wrapTolerance,
@@ -305,6 +337,7 @@ final class PoiDocxRenderer {
             context.y -= lineHeight;
         }
         renderPictures(context, paragraph, firstBaseline);
+        renderFloatingCheckboxes(context, paragraph, paragraphTop);
         finishParagraph(context, paragraph, useWordParagraphLayout);
         if (startsNewSection(paragraph)) {
             context.newPage();
@@ -364,6 +397,169 @@ final class PoiDocxRenderer {
         }
     }
 
+    private static void renderFloatingCheckboxes(
+            PageContext context,
+            XWPFParagraph paragraph,
+            float paragraphTop) throws IOException {
+        List<FloatingCheckbox> checkboxes = floatingCheckboxes(paragraph);
+        for (FloatingCheckbox checkbox : checkboxes) {
+            float x = "column".equals(checkbox.horizontalRelative)
+                    ? context.margin + checkbox.offsetX
+                    : checkbox.offsetX;
+                float top = paragraphTop - checkbox.offsetY;
+                float bottom = top - checkbox.height;
+            float right = x + checkbox.width;
+            context.content.setStrokingColor(0, 0, 0);
+            context.content.setLineWidth(checkbox.lineWidth);
+            context.content.addRect(x, bottom, checkbox.width, checkbox.height);
+            context.content.stroke();
+            if (checkbox.checked) {
+                context.content.setLineWidth(Math.max(0.8f, checkbox.lineWidth * 1.6f));
+                context.content.moveTo(x + checkbox.width * 0.20f, bottom + checkbox.height * 0.52f);
+                context.content.lineTo(x + checkbox.width * 0.40f, bottom + checkbox.height * 0.25f);
+                context.content.lineTo(right - checkbox.width * 0.16f, top - checkbox.height * 0.18f);
+                context.content.stroke();
+            }
+        }
+        if (!checkboxes.isEmpty()) {
+            context.expectCheckboxLabelAlignment();
+        }
+    }
+
+    static List<FloatingCheckbox> floatingCheckboxes(XWPFParagraph paragraph) {
+        List<FloatingCheckbox> checkboxes = new ArrayList<>();
+        collectFloatingCheckboxes(paragraph.getCTP().getDomNode(), checkboxes);
+        return checkboxes;
+    }
+
+    private static void collectFloatingCheckboxes(Node node, List<FloatingCheckbox> checkboxes) {
+        if ("anchor".equals(node.getLocalName()) && firstDescendant(node, "txbxContent") != null) {
+            Node positionH = directChild(node, "positionH");
+            Node positionV = directChild(node, "positionV");
+            Node extent = directChild(node, "extent");
+            if (positionH != null && extent != null) {
+                Node offset = directChild(positionH, "posOffset");
+                float offsetX = emuToPoints(nodeText(offset));
+                Node verticalOffset = directChild(positionV, "posOffset");
+                float offsetY = emuToPoints(nodeText(verticalOffset));
+                float width = emuToPoints(attribute(extent, "cx"));
+                float height = emuToPoints(attribute(extent, "cy"));
+                Node line = firstDescendant(node, "ln");
+                float lineWidth = Math.max(0.5f, emuToPoints(attribute(line, "w")));
+                if (width > 0.0f && height > 0.0f) {
+                    checkboxes.add(new FloatingCheckbox(
+                            offsetX,
+                            offsetY,
+                            width,
+                            height,
+                            lineWidth,
+                            attribute(positionH, "relativeFrom"),
+                            containsWingdingsCheck(firstDescendant(node, "txbxContent"))));
+                }
+            }
+            return;
+        }
+        NodeList children = node.getChildNodes();
+        for (int index = 0; index < children.getLength(); index++) {
+            collectFloatingCheckboxes(children.item(index), checkboxes);
+        }
+    }
+
+    private static boolean containsWingdingsCheck(Node node) {
+        if (node == null) {
+            return false;
+        }
+        if ("sym".equals(node.getLocalName())
+                && "Wingdings".equalsIgnoreCase(attribute(node, "font"))
+                && "F0FC".equalsIgnoreCase(attribute(node, "char"))) {
+            return true;
+        }
+        NodeList children = node.getChildNodes();
+        for (int index = 0; index < children.getLength(); index++) {
+            if (containsWingdingsCheck(children.item(index))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Node directChild(Node node, String localName) {
+        if (node == null) {
+            return null;
+        }
+        NodeList children = node.getChildNodes();
+        for (int index = 0; index < children.getLength(); index++) {
+            Node child = children.item(index);
+            if (localName.equals(child.getLocalName())) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    private static Node firstDescendant(Node node, String localName) {
+        if (node == null) {
+            return null;
+        }
+        NodeList children = node.getChildNodes();
+        for (int index = 0; index < children.getLength(); index++) {
+            Node child = children.item(index);
+            if (localName.equals(child.getLocalName())) {
+                return child;
+            }
+            Node descendant = firstDescendant(child, localName);
+            if (descendant != null) {
+                return descendant;
+            }
+        }
+        return null;
+    }
+
+    private static String nodeText(Node node) {
+        if (node == null) {
+            return null;
+        }
+        StringBuilder text = new StringBuilder();
+        NodeList children = node.getChildNodes();
+        for (int index = 0; index < children.getLength(); index++) {
+            Node child = children.item(index);
+            if (child.getNodeType() == Node.TEXT_NODE || child.getNodeType() == Node.CDATA_SECTION_NODE) {
+                text.append(child.getNodeValue());
+            } else {
+                String childText = nodeText(child);
+                if (childText != null) {
+                    text.append(childText);
+                }
+            }
+        }
+        return text.toString();
+    }
+
+    private static String attribute(Node node, String localName) {
+        if (node == null || node.getAttributes() == null) {
+            return null;
+        }
+        NamedNodeMap attributes = node.getAttributes();
+        for (int index = 0; index < attributes.getLength(); index++) {
+            Node attribute = attributes.item(index);
+            if (localName.equals(attribute.getLocalName()) || localName.equals(attribute.getNodeName())) {
+                return attribute.getNodeValue();
+            }
+        }
+        return null;
+    }
+
+    private static float emuToPoints(String value) {
+        if (value == null || value.isEmpty()) {
+            return 0.0f;
+        }
+        try {
+            return Long.parseLong(value) / EMUS_PER_POINT;
+        } catch (NumberFormatException ignored) {
+            return 0.0f;
+        }
+    }
+
         private static void renderTable(
             PageContext context,
             XWPFTable table,
@@ -404,7 +600,14 @@ final class PoiDocxRenderer {
                 if (width <= 0.0f) {
                     width = column < columnWidths.size() ? columnWidths.get(column) : tableWidth;
                 }
-                drawCellBorder(context, table, cell, cellX, rowTop, width, rowHeight);
+                drawCellBorder(
+                    context,
+                    table,
+                    cell,
+                    cellX,
+                    rowTop,
+                    width,
+                        rowHeight);
                 cellX += width;
                 while (column < columnWidths.size() && cellX > x + sum(columnWidths, column + 1) - 0.5f) {
                     column++;
@@ -504,35 +707,33 @@ final class PoiDocxRenderer {
             float height) throws IOException {
         context.content.setStrokingColor(0, 0, 0);
         context.content.setLineWidth(0.5f);
-        if (!cell.getCTTc().isSetTcPr() || !cell.getCTTc().getTcPr().isSetTcBorders()) {
+        CTTcBorders borders = cell.getCTTc().isSetTcPr()
+            && cell.getCTTc().getTcPr().isSetTcBorders()
+            ? cell.getCTTc().getTcPr().getTcBorders()
+            : null;
+        CTTblBorders tableBorders = table.getCTTbl().getTblPr().isSetTblBorders()
+                ? table.getCTTbl().getTblPr().getTblBorders()
+                : null;
+        if (borders == null) {
+            if (isBorderlessLayoutTable(table, tableBorders)) {
+            return;
+            }
             context.content.addRect(x, top - height, width, height);
             context.content.stroke();
             return;
         }
-        CTTcBorders borders = cell.getCTTc().getTcPr().getTcBorders();
-        CTTblBorders tableBorders = table.getCTTbl().getTblPr().isSetTblBorders()
-                ? table.getCTTbl().getTblPr().getTblBorders()
-                : null;
-        String topStyle = borders.isSetTop()
-                ? borders.getTop().getVal().toString()
-                : tableBorders != null && tableBorders.isSetInsideH()
-                        ? tableBorders.getInsideH().getVal().toString()
-                        : null;
-        String leftStyle = borders.isSetLeft()
-                ? borders.getLeft().getVal().toString()
-                : tableBorders != null && tableBorders.isSetInsideV()
-                        ? tableBorders.getInsideV().getVal().toString()
-                        : null;
-        String bottomStyle = borders.isSetBottom()
-                ? borders.getBottom().getVal().toString()
-                : tableBorders != null && tableBorders.isSetInsideH()
-                        ? tableBorders.getInsideH().getVal().toString()
-                        : null;
-        String rightStyle = borders.isSetRight()
-                ? borders.getRight().getVal().toString()
-                : tableBorders != null && tableBorders.isSetInsideV()
-                        ? tableBorders.getInsideV().getVal().toString()
-                        : null;
+        String topStyle = resolveBorderStyle(
+            borders.isSetTop() ? borders.getTop() : null,
+            tableBorders == null ? null : tableBorders.getInsideH());
+        String leftStyle = resolveBorderStyle(
+            borders.isSetLeft() ? borders.getLeft() : null,
+            tableBorders == null ? null : tableBorders.getInsideV());
+        String bottomStyle = resolveBorderStyle(
+            borders.isSetBottom() ? borders.getBottom() : null,
+            tableBorders == null ? null : tableBorders.getInsideH());
+        String rightStyle = resolveBorderStyle(
+            borders.isSetRight() ? borders.getRight() : null,
+            tableBorders == null ? null : tableBorders.getInsideV());
         if (isVisibleBorder(topStyle)) {
             drawBorder(context, x, top, x + width, top, topStyle);
         }
@@ -545,6 +746,27 @@ final class PoiDocxRenderer {
         if (isVisibleBorder(rightStyle)) {
             drawBorder(context, x + width, top, x + width, top - height, rightStyle);
         }
+    }
+
+    static String resolveBorderStyle(CTBorder cellBorder, CTBorder tableBorder) {
+        CTBorder border = cellBorder == null ? tableBorder : cellBorder;
+        return border == null || border.getVal() == null ? null : border.getVal().toString();
+    }
+
+    private static boolean explicitlyBorderless(CTTblBorders borders) {
+        return borders != null
+                && !isVisibleBorder(resolveBorderStyle(borders.getTop(), null))
+                && !isVisibleBorder(resolveBorderStyle(borders.getLeft(), null))
+                && !isVisibleBorder(resolveBorderStyle(borders.getBottom(), null))
+                && !isVisibleBorder(resolveBorderStyle(borders.getRight(), null))
+                && !isVisibleBorder(resolveBorderStyle(borders.getInsideH(), null))
+                && !isVisibleBorder(resolveBorderStyle(borders.getInsideV(), null));
+    }
+
+    private static boolean isBorderlessLayoutTable(XWPFTable table, CTTblBorders borders) {
+        return table.getRows().size() == 1
+                && table.getRows().get(0).getTableCells().size() == 1
+                && explicitlyBorderless(borders);
     }
 
     private static void drawBorder(
@@ -712,7 +934,7 @@ final class PoiDocxRenderer {
             throws IOException {
         List<String> lines = new ArrayList<>();
         for (XWPFParagraph paragraph : cell.getParagraphs()) {
-            String text = renderableText(paragraph.getText()).trim();
+            String text = paragraphText(paragraph).trim();
             if (cell.getCTTc().isSetTcPr() && cell.getCTTc().getTcPr().isSetNoWrap()) {
                 lines.add(text);
             } else {
@@ -976,12 +1198,22 @@ final class PoiDocxRenderer {
         private final PDFont font;
         private final float fontSize;
         private final float leadingSpacing;
+        private final HighlightColor highlight;
+        private final boolean tab;
 
-        RunSegment(String text, PDFont font, float fontSize, float leadingSpacing) {
+        RunSegment(
+                String text,
+                PDFont font,
+                float fontSize,
+                float leadingSpacing,
+                HighlightColor highlight,
+                boolean tab) {
             this.text = text;
             this.font = font;
             this.fontSize = fontSize;
             this.leadingSpacing = leadingSpacing;
+            this.highlight = highlight;
+            this.tab = tab;
         }
 
         String text() {
@@ -998,6 +1230,87 @@ final class PoiDocxRenderer {
 
         float leadingSpacing() {
             return leadingSpacing;
+        }
+
+        HighlightColor highlight() {
+            return highlight;
+        }
+
+        boolean tab() {
+            return tab;
+        }
+    }
+
+    static final class HighlightColor {
+        private final float red;
+        private final float green;
+        private final float blue;
+
+        HighlightColor(float red, float green, float blue) {
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
+        }
+    }
+
+    private static final class FootnoteData {
+        private final String number;
+        private final String text;
+        private final PDFont font;
+        private final float fontSize;
+
+        private FootnoteData(String number, String text, PDFont font, float fontSize) {
+            this.number = number;
+            this.text = text;
+            this.font = font;
+            this.fontSize = fontSize;
+        }
+
+        private float lineHeight() {
+            return fontSize * 1.2f;
+        }
+
+        private String displayText() {
+            return number + " " + text;
+        }
+    }
+
+    static final class FloatingCheckbox {
+        private final float offsetX;
+        private final float offsetY;
+        private final float width;
+        private final float height;
+        private final float lineWidth;
+        private final String horizontalRelative;
+        private final boolean checked;
+
+        private FloatingCheckbox(
+                float offsetX,
+            float offsetY,
+                float width,
+                float height,
+                float lineWidth,
+                String horizontalRelative,
+                boolean checked) {
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+            this.width = width;
+            this.height = height;
+            this.lineWidth = lineWidth;
+            this.horizontalRelative = horizontalRelative;
+            this.checked = checked;
+        }
+
+        float offsetX() {
+            return offsetX;
+        }
+
+        float offsetY() {
+            return offsetY;
+        }
+
+        boolean checked() {
+            return checked;
         }
     }
 
@@ -1098,10 +1411,19 @@ final class PoiDocxRenderer {
             ParagraphFonts fonts,
             float fallbackFontSize,
             PDFont boldFont) {
+        return paragraphSegments(paragraph, fonts, fallbackFontSize, boldFont, false);
+        }
+
+        private static List<RunSegment> paragraphSegments(
+            XWPFParagraph paragraph,
+            ParagraphFonts fonts,
+            float fallbackFontSize,
+            PDFont boldFont,
+            boolean preserveTabs) {
         List<RunSegment> segments = new ArrayList<>();
         AutoSpacing autoSpacing = paragraphAutoSpacing(paragraph);
         for (XWPFRun run : paragraph.getRuns()) {
-            String text = renderableText(run.text());
+            String text = preserveTabs ? runText(run) : renderableText(runText(run));
             if (text.isEmpty()) {
                 continue;
             }
@@ -1115,6 +1437,19 @@ final class PoiDocxRenderer {
             for (int offset = 0; offset < text.length();) {
                 int codePoint = text.codePointAt(offset);
                 offset += Character.charCount(codePoint);
+                if (codePoint == '\t') {
+                    if (segmentText.length() > 0) {
+                        segments.add(new RunSegment(
+                                segmentText.toString(), segmentFont, fontSize, segmentLeadingSpacing,
+                                runHighlight(run), false));
+                        segmentText.setLength(0);
+                    }
+                    segments.add(new RunSegment("\t", null, fontSize, 0.0f, null, true));
+                    segmentFont = null;
+                    segmentLeadingSpacing = 0.0f;
+                    previous = -1;
+                    continue;
+                }
                 PDFont codePointFont = run.isBold() && boldFont != null
                         ? boldFont
                         : fonts.resolve(run, codePoint);
@@ -1123,7 +1458,8 @@ final class PoiDocxRenderer {
                             ? fontSize * 0.25f
                             : 0.0f;
                     segments.add(new RunSegment(
-                            segmentText.toString(), segmentFont, fontSize, segmentLeadingSpacing));
+                            segmentText.toString(), segmentFont, fontSize, segmentLeadingSpacing,
+                            runHighlight(run), false));
                     segmentText.setLength(0);
                     segmentFont = codePointFont;
                     segmentLeadingSpacing = spacing;
@@ -1136,10 +1472,115 @@ final class PoiDocxRenderer {
             }
             if (segmentText.length() > 0) {
                 segments.add(new RunSegment(
-                        segmentText.toString(), segmentFont, fontSize, segmentLeadingSpacing));
+                        segmentText.toString(), segmentFont, fontSize, segmentLeadingSpacing,
+                    runHighlight(run), false));
             }
         }
         return segments;
+    }
+
+    static String paragraphText(XWPFParagraph paragraph) {
+        boolean needsSemanticRuns = paragraph.getRuns().stream()
+                .anyMatch(run -> run.getCTR().sizeOfFootnoteReferenceArray() > 0
+                        || run.getCTR().sizeOfSymArray() > 0);
+        if (!needsSemanticRuns) {
+            return normalizeRunText(paragraph.getText());
+        }
+        return paragraph.getRuns().stream()
+                .map(PoiDocxRenderer::runText)
+                .collect(Collectors.joining());
+    }
+
+    static String runText(XWPFRun run) {
+        if (run.getCTR().sizeOfFootnoteReferenceArray() > 0) {
+            return run.getCTR().getFootnoteReferenceList().stream()
+                    .map(reference -> reference.getId().toString())
+                    .collect(Collectors.joining());
+        }
+        if (run.getCTR().sizeOfSymArray() > 0) {
+            return run.getCTR().getSymList().stream()
+                    .map(PoiDocxRenderer::symbolText)
+                    .collect(Collectors.joining());
+        }
+        return normalizeRunText(run.text());
+    }
+
+    private static String normalizeRunText(String text) {
+        return Normalizer.normalize(text.replace('\r', ' ').replace('\n', ' '), Normalizer.Form.NFC);
+    }
+
+    static float nextDefaultTabStop(float position) {
+        return ((float) Math.floor(position / 36.0f) + 1.0f) * 36.0f;
+    }
+
+    private static String symbolText(CTSym symbol) {
+        byte[] value = symbol.getChar();
+        if (value == null || value.length == 0) {
+            return "";
+        }
+        int code = 0;
+        for (byte part : value) {
+            code = code << 8 | part & 0xff;
+        }
+        if ("Wingdings".equalsIgnoreCase(symbol.getFont()) && code == 0xf0fc) {
+            return "\u2713";
+        }
+        return Character.toString((char) code);
+    }
+
+    private static Map<String, FootnoteData> footnotes(XWPFDocument source, PDFont font) {
+        Map<String, FootnoteData> footnotes = new LinkedHashMap<>();
+        for (XWPFFootnote footnote : source.getFootnotes()) {
+            BigInteger id = footnote.getId();
+            if (id == null || id.signum() < 0) {
+                continue;
+            }
+            String text = footnote.getParagraphs().stream()
+                    .flatMap(paragraph -> paragraph.getRuns().stream())
+                    .map(PoiDocxRenderer::footnoteRunText)
+                    .collect(Collectors.joining())
+                    .trim();
+            float fontSize = footnote.getParagraphs().isEmpty()
+                    ? 10.0f
+                    : paragraphFontSize(footnote.getParagraphs().get(0), 10.0f);
+            footnotes.put(id.toString(), new FootnoteData(id.toString(), text, font, fontSize));
+        }
+        return footnotes;
+    }
+
+    private static String footnoteRunText(XWPFRun run) {
+        if (run.getCTR().sizeOfFootnoteRefArray() == 0) {
+            return runText(run);
+        }
+        return java.util.Arrays.stream(run.getCTR().getTArray())
+                .map(text -> text.getStringValue())
+                .collect(Collectors.joining());
+    }
+
+    static HighlightColor runHighlight(XWPFRun run) {
+        if (run.getTextHighlightColor() == null) {
+            return null;
+        }
+        String color = run.getTextHighlightColor().toString().toLowerCase();
+        if ("yellow".equals(color)) {
+            return new HighlightColor(1.0f, 1.0f, 0.0f);
+        }
+        if ("green".equals(color)) {
+            return new HighlightColor(0.0f, 1.0f, 0.0f);
+        }
+        if ("cyan".equals(color)) {
+            return new HighlightColor(0.0f, 1.0f, 1.0f);
+        }
+        if ("magenta".equals(color)) {
+            return new HighlightColor(1.0f, 0.0f, 1.0f);
+        }
+        if ("red".equals(color)) {
+            return new HighlightColor(1.0f, 0.0f, 0.0f);
+        }
+        if ("blue".equals(color)) {
+            return new HighlightColor(0.0f, 0.0f, 1.0f);
+        }
+        return null;
     }
 
     static PDFont resolvedCellFont(XWPFTableCell cell, ParagraphFonts fonts, PDFont boldFont) {
@@ -1486,6 +1927,27 @@ final class PoiDocxRenderer {
         return matcher.find() ? Float.parseFloat(matcher.group(1)) : Float.NaN;
     }
 
+    private static void drawRunHighlight(
+            PDPageContentStream content,
+            HighlightColor highlight,
+            float x,
+            float baseline,
+            float width,
+            float fontSize) throws IOException {
+        if (highlight == null || width <= 0.0f) {
+            return;
+        }
+        float horizontalPadding = Math.max(0.7f, fontSize * 0.08f);
+        content.setNonStrokingColor(highlight.red, highlight.green, highlight.blue);
+        content.addRect(
+                x - horizontalPadding,
+                baseline - fontSize * 0.24f,
+                width + horizontalPadding * 2.0f,
+                fontSize * 1.18f);
+        content.fill();
+        content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
+    }
+
     private static void showText(
             PDPageContentStream content,
             PDFont font,
@@ -1578,10 +2040,14 @@ final class PoiDocxRenderer {
         private final PDFont pageNumberFont;
         private final PageNumberFooter pageNumberFooter;
         private final float pageFooterDistance;
+        private final Map<String, FootnoteData> footnotes;
+        private final List<String> currentPageFootnoteIds = new ArrayList<>();
         private PDPageContentStream content;
         private float y;
         private int pageCount;
         private float previousParagraphSpacingAfter;
+        private float footnoteReservedHeight;
+        private boolean alignNextParagraphToCheckboxes;
 
         private PageContext(
                 PDDocument document,
@@ -1593,7 +2059,8 @@ final class PoiDocxRenderer {
                 float topOffset,
                 PDFont pageNumberFont,
                 PageNumberFooter pageNumberFooter,
-                float pageFooterDistance)
+                float pageFooterDistance,
+                Map<String, FootnoteData> footnotes)
                 throws IOException {
             this.document = document;
             this.pageSize = pageSize;
@@ -1604,13 +2071,40 @@ final class PoiDocxRenderer {
             this.pageNumberFont = pageNumberFont;
             this.pageNumberFooter = pageNumberFooter;
             this.pageFooterDistance = pageFooterDistance;
+            this.footnotes = footnotes;
             newPage(topOffset);
         }
 
         private void ensureSpace(float height) throws IOException {
-            if (y - height < bottomMargin) {
+            if (y - height < bottomMargin + footnoteReservedHeight) {
                 newPage();
             }
+        }
+
+        private void registerFootnotes(XWPFParagraph paragraph) throws IOException {
+            for (XWPFRun run : paragraph.getRuns()) {
+                run.getCTR().getFootnoteReferenceList().forEach(reference -> {
+                    String id = reference.getId().toString();
+                    if (footnotes.containsKey(id) && !currentPageFootnoteIds.contains(id)) {
+                        currentPageFootnoteIds.add(id);
+                        FootnoteData footnote = footnotes.get(id);
+                        if (footnoteReservedHeight == 0.0f) {
+                            footnoteReservedHeight = 17.0f;
+                        }
+                        footnoteReservedHeight += footnote.lineHeight() + 8.0f;
+                    }
+                });
+            }
+        }
+
+        private void expectCheckboxLabelAlignment() {
+            alignNextParagraphToCheckboxes = true;
+        }
+
+        private boolean consumeCheckboxLabelAlignment() {
+            boolean align = alignNextParagraphToCheckboxes;
+            alignNextParagraphToCheckboxes = false;
+            return align;
         }
 
         private void moveDown(float amount) throws IOException {
@@ -1646,15 +2140,46 @@ final class PoiDocxRenderer {
 
         private void newPage(float topOffset) throws IOException {
             if (content != null) {
+                renderFootnotes();
                 renderPageNumber();
                 content.close();
             }
+            currentPageFootnoteIds.clear();
+            footnoteReservedHeight = 0.0f;
             previousParagraphSpacingAfter = 0.0f;
             PDPage page = new PDPage(new PDRectangle(pageSize.width(), pageSize.height()));
             document.addPage(page);
             pageCount++;
             content = new PDPageContentStream(document, page);
             y = pageSize.height() - topMargin - topOffset;
+        }
+
+        private void renderFootnotes() throws IOException {
+            if (currentPageFootnoteIds.isEmpty()) {
+                return;
+            }
+            float textHeight = currentPageFootnoteIds.stream()
+                    .map(footnotes::get)
+                    .map(FootnoteData::lineHeight)
+                    .reduce(0.0f, Float::sum);
+            float footnoteY = bottomMargin + textHeight + 5.0f;
+            content.setStrokingColor(0, 0, 0);
+            content.setLineWidth(0.5f);
+            content.moveTo(margin, footnoteY);
+            content.lineTo(margin + Math.min(144.0f, (pageSize.width() - margin * 2.0f) * 0.33f), footnoteY);
+            content.stroke();
+            footnoteY -= 2.0f;
+            for (String id : currentPageFootnoteIds) {
+                FootnoteData footnote = footnotes.get(id);
+                footnoteY -= footnote.lineHeight();
+                showText(
+                        content,
+                        footnote.font,
+                        footnote.fontSize,
+                        footnote.displayText(),
+                        margin,
+                        footnoteY);
+            }
         }
 
         private void renderPageNumber() throws IOException {
@@ -1674,6 +2199,7 @@ final class PoiDocxRenderer {
         @Override
         public void close() throws IOException {
             if (content != null) {
+                renderFootnotes();
                 renderPageNumber();
                 content.close();
                 content = null;
