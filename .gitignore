@@ -100,3 +100,4 @@ MiniPdf.Web/MiniPdf.Web.Client/wwwroot/fonts/
 /artifacts/java-benchmark/issue/docx/*
 !/artifacts/java-benchmark/issue/docx/report/
 !/artifacts/java-benchmark/issue/docx/report/**
+/tests/Issue_Files/office_docx
