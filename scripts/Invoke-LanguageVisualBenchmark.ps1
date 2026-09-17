@@ -52,6 +52,16 @@ function Resolve-RepoPath([string]$PathValue) {
     return Join-Path $RepoRoot $PathValue
 }
 
+function Get-RepoRelativePath([string]$PathValue) {
+    $FullRepoRoot = [System.IO.Path]::GetFullPath($RepoRoot).TrimEnd("\", "/")
+    $FullPath = [System.IO.Path]::GetFullPath($PathValue)
+    $RepoPrefix = $FullRepoRoot + [System.IO.Path]::DirectorySeparatorChar
+    if (-not $FullPath.StartsWith($RepoPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Path '$PathValue' is outside repository root '$RepoRoot'."
+    }
+    return $FullPath.Substring($RepoPrefix.Length).Replace("\", "/")
+}
+
 function Write-Json([object]$Value, [string]$Path) {
     $Json = $Value | ConvertTo-Json -Depth 8
     [System.IO.File]::WriteAllText($Path, $Json, [System.Text.UTF8Encoding]::new($false))
@@ -226,7 +236,7 @@ $SelectedCases = @($SourceFiles | ForEach-Object {
         case_id = $_.BaseName
         suite = $Suite
         format = $Format
-        source_path = [System.IO.Path]::GetRelativePath($RepoRoot, $_.FullName).Replace("\", "/")
+        source_path = Get-RepoRelativePath $_.FullName
         conversion_status = "pending"
         conversion_exit_code = $null
         candidate_exists = $false
@@ -410,7 +420,11 @@ $CompareArgs = @(
 if ($MaxComparePages -gt 0) { $CompareArgs += @("--max-pages", $MaxComparePages) }
 & $Python -X utf8 @CompareArgs
 Assert-CommandSucceeded "$Language visual comparison"
-$Results = @(Get-Content (Join-Path $ReportDir "comparison_report.json") -Raw | ConvertFrom-Json)
+$ParsedResults = Get-Content (Join-Path $ReportDir "comparison_report.json") -Raw | ConvertFrom-Json
+if ($ParsedResults.PSObject.Properties.Name -contains "results") {
+    $ParsedResults = $ParsedResults.results
+}
+$Results = @($ParsedResults | ForEach-Object { $_ })
 $Scores = @($Results | Where-Object { $null -ne $_.overall_score })
 $Coverage.comparison_completed = $true
 $Coverage.comparison_results = ($Results | Measure-Object).Count

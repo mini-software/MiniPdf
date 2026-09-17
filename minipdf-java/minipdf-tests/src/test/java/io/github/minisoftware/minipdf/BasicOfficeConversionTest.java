@@ -127,7 +127,9 @@ class BasicOfficeConversionTest {
                 "<w:document xmlns:w=\"urn:w\"><w:body><w:p><w:r><w:t>" + text
                         + "</w:t></w:r></w:p></w:body></w:document>"));
 
-        assertUnicodeTextUsesEmbeddedFont(MiniPdf.convertBytesToPdf(docx), text);
+        byte[] pdf = MiniPdf.convertBytesToPdf(docx);
+        assertUnicodeTextUsesEmbeddedFont(pdf, text);
+        assertNativeTrueTypeFont(pdf);
     }
 
     @Test
@@ -221,7 +223,9 @@ class BasicOfficeConversionTest {
                 "<p:sld xmlns:p=\"urn:p\" xmlns:a=\"urn:a\"><a:p><a:r><a:t>" + text
                         + "</a:t></a:r></a:p></p:sld>");
 
-        assertUnicodeTextUsesEmbeddedFont(MiniPdf.convertBytesToPdf(packageWith(entries)), text);
+        byte[] pdf = MiniPdf.convertBytesToPdf(packageWith(entries));
+        assertUnicodeTextUsesEmbeddedFont(pdf, text);
+        assertNativeTrueTypeFont(pdf);
     }
 
     private static void registerTestFont() throws Exception {
@@ -245,6 +249,10 @@ class BasicOfficeConversionTest {
             }
             assertTrue(hasEmbeddedFont);
         }
+    }
+
+    private static void assertNativeTrueTypeFont(byte[] pdf) {
+        assertTrue(pdfText(pdf).contains("/DescendantFonts [7 0 R] /ToUnicode 5 0 R"));
     }
 
     @Test

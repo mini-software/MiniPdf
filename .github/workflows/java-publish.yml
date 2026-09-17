@@ -58,7 +58,7 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: maven
-          cache-dependency-path: minipdf-java/pom.xml
+          cache-dependency-path: minipdf-java/**/pom.xml
           server-id: central
           server-username-env-var: MAVEN_USERNAME
           server-password-env-var: MAVEN_PASSWORD
@@ -90,7 +90,7 @@ jobs:
       - name: Verify Maven Central artifacts
         shell: bash
         run: |
-          ./mvnw -B -ntp -P release -DskipTests -Dgpg.skip=true package
+          ./mvnw -B -ntp -P release -DskipTests -Dgpg.skip=true -pl minipdf,minipdf-cli -am package
           VERSION="${{ steps.version.outputs.version }}"
           for artifact in \
             "minipdf/target/minipdf-$VERSION.jar" \
@@ -111,7 +111,7 @@ jobs:
           fi
 
       - name: Publish to Maven Central
-        run: ./mvnw -B -ntp -P release -DskipTests deploy
+        run: ./mvnw -B -ntp -P release -DskipTests -pl minipdf,minipdf-cli -am deploy
 
       - name: Summarize publication
         shell: bash
