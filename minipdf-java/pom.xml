@@ -41,15 +41,14 @@
     <modules>
         <module>minipdf</module>
         <module>minipdf-cli</module>
+        <module>minipdf-tests</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>8</maven.compiler.release>
-        <junit.version>5.13.4</junit.version>
         <pdfbox-graphics2d.version>3.0.3</pdfbox-graphics2d.version>
         <pdfbox.version>3.0.8</pdfbox.version>
-        <picocli.version>4.7.7</picocli.version>
         <poi.version>5.4.1</poi.version>
         <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
@@ -59,18 +58,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>info.picocli</groupId>
-                <artifactId>picocli</artifactId>
-                <version>${picocli.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox</artifactId>

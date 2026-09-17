@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public final class SimplePdfTextRenderer {
     private static final float MARGIN = 54.0f;
@@ -43,11 +45,18 @@ public final class SimplePdfTextRenderer {
             ConversionOptions options,
             PageSize defaultPageSize) throws MiniPdfException {
         PageSize size = options.pageSize().orElse(defaultPageSize);
+        byte[] nativePdf = renderNative(sourcePages, size);
+        if (usesNativeRegisteredFont(nativePdf, sourcePages, size)) {
+            return nativePdf;
+        }
         byte[] unicodeFontPdf = renderWithUnicodeFont(sourcePages, size);
         if (unicodeFontPdf != null) {
             return unicodeFontPdf;
         }
+        return nativePdf;
+    }
 
+    private static byte[] renderNative(List<List<String>> sourcePages, PageSize size) {
         PdfDocument document = new PdfDocument();
         int maxCharacters = Math.max(1, (int) ((size.width() - MARGIN * 2.0f) / (FONT_SIZE * 0.52f)));
 
@@ -66,6 +75,42 @@ public final class SimplePdfTextRenderer {
             }
         }
         return document.toBytes();
+    }
+
+    private static boolean usesNativeRegisteredFont(
+            byte[] pdf,
+            List<List<String>> sourcePages,
+            PageSize size) {
+        if (MiniPdf.registeredFonts().isEmpty()) {
+            return false;
+        }
+        String raw = new String(pdf, StandardCharsets.ISO_8859_1);
+        if (!raw.contains("/Subtype /Type0")) {
+            return false;
+        }
+        int maxCharacters = Math.max(1, (int) ((size.width() - MARGIN * 2.0f) / (FONT_SIZE * 0.52f)));
+        boolean hasUnicode = false;
+        for (List<String> sourcePage : sourcePages) {
+            for (String sourceLine : sourcePage) {
+                for (String line : wrap(sourceLine, maxCharacters)) {
+                    if (line.codePoints().anyMatch(codePoint -> codePoint > 255)) {
+                        hasUnicode = true;
+                        if (!raw.contains('<' + unicodeHex(line) + "> Tj")) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return hasUnicode;
+    }
+
+    private static String unicodeHex(String text) {
+        StringBuilder result = new StringBuilder(text.length() * 4);
+        for (int index = 0; index < text.length(); index++) {
+            result.append(String.format(Locale.ROOT, "%04X", (int) text.charAt(index)));
+        }
+        return result.toString();
     }
 
     private static byte[] renderWithUnicodeFont(List<List<String>> sourcePages, PageSize size)

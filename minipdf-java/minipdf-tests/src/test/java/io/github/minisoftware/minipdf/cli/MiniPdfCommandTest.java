@@ -4,7 +4,6 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import picocli.CommandLine;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -76,8 +75,25 @@ class MiniPdfCommandTest {
         assertTrue(result.stderr().contains("use either --paper-size"));
     }
 
+    @Test
+    void printsHelpWithoutRequiringInput() {
+        CommandResult result = execute("--help");
+
+        assertEquals(0, result.exitCode());
+        assertTrue(result.stdout().contains("Usage: minipdf"));
+        assertEquals("", result.stderr());
+    }
+
+    @Test
+    void rejectsUnknownOption() {
+        CommandResult result = execute("--unknown");
+
+        assertEquals(1, result.exitCode());
+        assertTrue(result.stderr().contains("unknown option: --unknown"));
+    }
+
     private static CommandResult execute(String... arguments) {
-        CommandLine commandLine = MiniPdfCommand.createCommandLine();
+        MiniPdfCommand commandLine = MiniPdfCommand.createCommandLine();
         StringWriter stdout = new StringWriter();
         StringWriter stderr = new StringWriter();
         commandLine.setOut(new PrintWriter(stdout, true));
