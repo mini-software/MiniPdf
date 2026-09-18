@@ -240,7 +240,7 @@ When using an AI assistant (e.g., GitHub Copilot), follow this workflow:
 
 2. **Feed the report to the AI**:
    ```
-   Review tests/MiniPdf.Benchmark/reports/comparison_report.md
+   Review https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx
    Identify the lowest-scoring test cases, analyze the differences,
    and automatically modify ExcelToPdfConverter.cs to improve them.
    ```

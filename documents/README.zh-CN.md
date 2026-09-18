@@ -32,12 +32,12 @@ MiniPdf 无需在运行时安装 Microsoft Office、LibreOffice、Adobe Acrobat 
 
 | 实现 | 输入 | 接口 | 成熟度 | 文档 | 视觉结果 |
 |---|---|---|---|---|---|
-| .NET | XLSX、DOCX、PPTX | 库、CLI、Native AOT 二进制文件 | 稳定 | **[.NET 指南](README.nuget.md)** | **[XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](../tests/Issue_Files/reports_pptx/comparison_report.md)** |
-| Rust | XLSX、DOCX、PPTX | Crate、CLI | 实验性 | **[Rust 指南](../minipdf-rs/README.md)** | **[XLSX](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
-| Java | XLSX、DOCX、PPTX | 库、CLI | 实验性 | **[Java 源代码](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Python | DOCX | 包、CLI | 实验性 | **[Python 指南](../minipdf-python/README.md)** | **[XLSX](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Node.js | XLSX、DOCX、PPTX | 原生包 | 实验性 | **[Node.js 指南](../minipdf-node/README.md)** | **[XLSX](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Go | XLSX、DOCX、PPTX | 包、CLI | 实验性 | **[Go 指南](../minipdf-go/README.md)** | **[XLSX](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
+| .NET | XLSX、DOCX、PPTX | 库、CLI、Native AOT 二进制文件 | 稳定 | **[.NET 指南](README.nuget.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx)**<br>**[PPTX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=issue&format=pptx)** |
+| Rust | XLSX、DOCX、PPTX | Crate、CLI | 实验性 | **[Rust 指南](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
+| Java | XLSX、DOCX、PPTX | 库、CLI | 实验性 | **[Java 源代码](../minipdf-java/)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=docx)** |
+| Python | DOCX | 包、CLI | 实验性 | **[Python 指南](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
+| Node.js | XLSX、DOCX、PPTX | 原生包 | 实验性 | **[Node.js 指南](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
+| Go | XLSX、DOCX、PPTX | 包、CLI | 实验性 | **[Go 指南](../minipdf-go/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=go&suite=issue&format=xlsx)** |
 
 ## 快速开始
 
@@ -185,10 +185,10 @@ Run the minipdf-contribution skill.
 | [Python 文档](../minipdf-python/README.md) | 实验性包与 CLI 用法 |
 | [Node.js 文档](../minipdf-node/README.md) | 实验性原生包用法 |
 | [Go 文档](../minipdf-go/README.md) | 实验性包与 CLI 用法 |
-| [.NET XLSX 基准](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | 电子表格视觉比较结果 |
-| [.NET DOCX 基准](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | 文档视觉比较结果 |
-| [Rust XLSX 基准](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust 电子表格视觉比较结果 |
-| [Rust DOCX 基准](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust 文档视觉比较结果 |
+| [.NET XLSX 基准](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx) | 电子表格视觉比较结果 |
+| [.NET DOCX 基准](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx) | 文档视觉比较结果 |
+| [Rust XLSX 基准](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx) | Rust 电子表格视觉比较结果 |
+| [Rust DOCX 基准](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx) | Rust 文档视觉比较结果 |
 | [Rust 基准流程](../scripts/Run-Rust-Benchmark.ps1) | 生成测试覆盖与比较报告 |
 | [社区治理](../GOVERNANCE.md) | 决策、角色、投票和维护者选任 |
 | [路线图](../ROADMAP.md) | 项目范围、实现状态和当前优先事项 |

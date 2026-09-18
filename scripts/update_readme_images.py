@@ -15,7 +15,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).parent.parent
 README_PATH = REPO_ROOT / "README.md"
 REPORT_JSON = REPO_ROOT / "tests/MiniPdf.Benchmark/reports/comparison_report.json"
-IMAGE_DIR_REL = "tests/MiniPdf.Benchmark/reports/images"
+IMAGE_DIR_REL = "https://mini-software.github.io/minipdf-web-page/assets/benchmarks/dotnet/classic/xlsx/images"
 IMG_WIDTH = 320
 
 # ── score → emoji ──────────────────────────────────────────────────────────────

@@ -32,12 +32,12 @@ MiniPdf 不需要在執行階段安裝 Microsoft Office、LibreOffice、Adobe Ac
 
 | 實作 | 輸入 | 介面 | 成熟度 | 文件 | 視覺結果 |
 |---|---|---|---|---|---|
-| .NET | XLSX、DOCX、PPTX | 程式庫、CLI、Native AOT 二進位檔 | 穩定 | **[.NET 指南](README.nuget.md)** | **[XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](../tests/Issue_Files/reports_pptx/comparison_report.md)** |
-| Rust | XLSX、DOCX、PPTX | Crate、CLI | 實驗性 | **[Rust 指南](../minipdf-rs/README.md)** | **[XLSX](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
-| Java | XLSX、DOCX、PPTX | 程式庫、CLI | 實驗性 | **[Java 原始碼](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Python | DOCX | 套件、CLI | 實驗性 | **[Python 指南](../minipdf-python/README.md)** | **[XLSX](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Node.js | XLSX、DOCX、PPTX | 原生套件 | 實驗性 | **[Node.js 指南](../minipdf-node/README.md)** | **[XLSX](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Go | XLSX、DOCX、PPTX | 套件、CLI | 實驗性 | **[Go 指南](../minipdf-go/README.md)** | **[XLSX](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
+| .NET | XLSX、DOCX、PPTX | 程式庫、CLI、Native AOT 二進位檔 | 穩定 | **[.NET 指南](README.nuget.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx)**<br>**[PPTX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=issue&format=pptx)** |
+| Rust | XLSX、DOCX、PPTX | Crate、CLI | 實驗性 | **[Rust 指南](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
+| Java | XLSX、DOCX、PPTX | 程式庫、CLI | 實驗性 | **[Java 原始碼](../minipdf-java/)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=docx)** |
+| Python | DOCX | 套件、CLI | 實驗性 | **[Python 指南](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
+| Node.js | XLSX、DOCX、PPTX | 原生套件 | 實驗性 | **[Node.js 指南](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
+| Go | XLSX、DOCX、PPTX | 套件、CLI | 實驗性 | **[Go 指南](../minipdf-go/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=go&suite=issue&format=xlsx)** |
 
 ## 快速開始
 
@@ -185,10 +185,10 @@ Run the minipdf-contribution skill.
 | [Python 文件](../minipdf-python/README.md) | 實驗性套件與 CLI 用法 |
 | [Node.js 文件](../minipdf-node/README.md) | 實驗性原生套件用法 |
 | [Go 文件](../minipdf-go/README.md) | 實驗性套件與 CLI 用法 |
-| [.NET XLSX 基準](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | 試算表視覺比較結果 |
-| [.NET DOCX 基準](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | 文件視覺比較結果 |
-| [Rust XLSX 基準](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust 試算表視覺比較結果 |
-| [Rust DOCX 基準](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust 文件視覺比較結果 |
+| [.NET XLSX 基準](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx) | 試算表視覺比較結果 |
+| [.NET DOCX 基準](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx) | 文件視覺比較結果 |
+| [Rust XLSX 基準](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx) | Rust 試算表視覺比較結果 |
+| [Rust DOCX 基準](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx) | Rust 文件視覺比較結果 |
 | [Rust 基準流程](../scripts/Run-Rust-Benchmark.ps1) | 產生測試涵蓋率與比較報告 |
 | [社群治理](../GOVERNANCE.md) | 決策、角色、投票與維護者選任 |
 | [路線圖](../ROADMAP.md) | 專案範圍、實作狀態與目前優先事項 |
