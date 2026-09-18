@@ -123,10 +123,10 @@ MiniPdf output is compared against LibreOffice as the reference renderer across 
 
 Detailed reports:
 
-- [XLSX Benchmark Report](https://github.com/mini-software/MiniPdf/blob/main/tests/MiniPdf.Benchmark/reports/comparison_report.md)
-- [DOCX Benchmark Report](https://github.com/mini-software/MiniPdf/blob/main/tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)
-- [Issue Files Xlsx Report](https://github.com/mini-software/MiniPdf/blob/main/tests/Issue_Files/reports_xlsx/comparison_report.md)
-- [Issue Files Docx Report](https://github.com/mini-software/MiniPdf/blob/main/tests/Issue_Files/reports_docx/comparison_report.md)
+- [XLSX Benchmark Report](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx)
+- [DOCX Benchmark Report](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx)
+- [Issue Files XLSX Report](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=issue&format=xlsx)
+- [Issue Files DOCX Report](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=issue&format=docx)
 
 ## Links
 

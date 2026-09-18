@@ -6,6 +6,7 @@ import re
 import os
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BENCHMARK_SITE = "https://mini-software.github.io/minipdf-web-page/"
 
 # --- Load all three report JSONs ---
 REPORT_PATHS = {
@@ -184,49 +185,49 @@ FILES = {
     "README.md": {
         "path": os.path.join(REPO_ROOT, "README.md"),
         "lang": "en",
-        "img_prefix": "tests/MiniPdf.Benchmark/reports/images/",
+        "img_prefix": f"{BENCHMARK_SITE}assets/benchmarks/dotnet/classic/xlsx/images/",
         "benchmark_section_pattern": r"## Benchmark",
         "visual_heading": r"### Visual Comparison",
     },
     "README.zh-CN.md": {
         "path": os.path.join(REPO_ROOT, "README.zh-CN.md"),
         "lang": "zh-CN",
-        "img_prefix": "tests/MiniPdf.Benchmark/reports/images/",
+        "img_prefix": f"{BENCHMARK_SITE}assets/benchmarks/dotnet/classic/xlsx/images/",
         "benchmark_section_pattern": r"## 基准测试",
         "visual_heading": r"### 视觉对比",
     },
     "README.zh-TW.md": {
         "path": os.path.join(REPO_ROOT, "documents", "README.zh-TW.md"),
         "lang": "zh-TW",
-        "img_prefix": "../tests/MiniPdf.Benchmark/reports/images/",
+        "img_prefix": f"{BENCHMARK_SITE}assets/benchmarks/dotnet/classic/xlsx/images/",
         "benchmark_section_pattern": r"## 基準測試",
         "visual_heading": r"### 視覺對比",
     },
     "README.ja.md": {
         "path": os.path.join(REPO_ROOT, "documents", "README.ja.md"),
         "lang": "ja",
-        "img_prefix": "../tests/MiniPdf.Benchmark/reports/images/",
+        "img_prefix": f"{BENCHMARK_SITE}assets/benchmarks/dotnet/classic/xlsx/images/",
         "benchmark_section_pattern": r"## ベンチマーク",
         "visual_heading": r"### ビジュアル比較",
     },
     "README.ko.md": {
         "path": os.path.join(REPO_ROOT, "documents", "README.ko.md"),
         "lang": "ko",
-        "img_prefix": "../tests/MiniPdf.Benchmark/reports/images/",
+        "img_prefix": f"{BENCHMARK_SITE}assets/benchmarks/dotnet/classic/xlsx/images/",
         "benchmark_section_pattern": r"## 벤치마크",
         "visual_heading": r"### 시각적 비교",
     },
     "README.it.md": {
         "path": os.path.join(REPO_ROOT, "documents", "README.it.md"),
         "lang": "it",
-        "img_prefix": "../tests/MiniPdf.Benchmark/reports/images/",
+        "img_prefix": f"{BENCHMARK_SITE}assets/benchmarks/dotnet/classic/xlsx/images/",
         "benchmark_section_pattern": r"## Benchmark",
         "visual_heading": r"### Confronto visivo",
     },
     "README.fr.md": {
         "path": os.path.join(REPO_ROOT, "documents", "README.fr.md"),
         "lang": "fr",
-        "img_prefix": "../tests/MiniPdf.Benchmark/reports/images/",
+        "img_prefix": f"{BENCHMARK_SITE}assets/benchmarks/dotnet/classic/xlsx/images/",
         "benchmark_section_pattern": r"## Benchmark",
         "visual_heading": r"### Comparaison visuelle",
     },
@@ -354,6 +355,14 @@ def replace_benchmark_section(content, lang, file_key):
     }
 
     links_section = report_links.get(lang, report_links["en"])
+    hosted_reports = {
+        f"{link_prefix}tests/MiniPdf.Benchmark/reports/comparison_report.md": f"{BENCHMARK_SITE}?language=dotnet&suite=classic&format=xlsx",
+        f"{link_prefix}tests/MiniPdf.Benchmark/reports_docx/comparison_report.md": f"{BENCHMARK_SITE}?language=dotnet&suite=classic&format=docx",
+        f"{link_prefix}tests/Issue_Files/reports_xlsx/comparison_report.md": f"{BENCHMARK_SITE}?language=dotnet&suite=issue&format=xlsx",
+        f"{link_prefix}tests/Issue_Files/reports_docx/comparison_report.md": f"{BENCHMARK_SITE}?language=dotnet&suite=issue&format=docx",
+    }
+    for local_report, hosted_report in hosted_reports.items():
+        links_section = links_section.replace(local_report, hosted_report)
 
     visual_heading = config.get("visual_heading", r"### Visual Comparison")
     pattern_str = config.get("benchmark_section_pattern")

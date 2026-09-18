@@ -32,12 +32,12 @@ MiniPdf は、実行時に Microsoft Office、LibreOffice、Adobe Acrobat、COM 
 
 | 実装 | 入力 | インターフェイス | 成熟度 | ドキュメント | 視覚結果 |
 |---|---|---|---|---|---|
-| .NET | XLSX、DOCX、PPTX | ライブラリ、CLI、Native AOT バイナリ | 安定版 | **[.NET ガイド](README.nuget.md)** | **[XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](../tests/Issue_Files/reports_pptx/comparison_report.md)** |
-| Rust | XLSX、DOCX、PPTX | Crate、CLI | 実験版 | **[Rust ガイド](../minipdf-rs/README.md)** | **[XLSX](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
-| Java | XLSX、DOCX、PPTX | ライブラリ、CLI | 実験版 | **[Java ソース](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Python | DOCX | パッケージ、CLI | 実験版 | **[Python ガイド](../minipdf-python/README.md)** | **[XLSX](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Node.js | XLSX、DOCX、PPTX | ネイティブパッケージ | 実験版 | **[Node.js ガイド](../minipdf-node/README.md)** | **[XLSX](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Go | XLSX、DOCX、PPTX | パッケージ、CLI | 実験版 | **[Go ガイド](../minipdf-go/README.md)** | **[XLSX](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
+| .NET | XLSX、DOCX、PPTX | ライブラリ、CLI、Native AOT バイナリ | 安定版 | **[.NET ガイド](README.nuget.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx)**<br>**[PPTX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=issue&format=pptx)** |
+| Rust | XLSX、DOCX、PPTX | Crate、CLI | 実験版 | **[Rust ガイド](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
+| Java | XLSX、DOCX、PPTX | ライブラリ、CLI | 実験版 | **[Java ソース](../minipdf-java/)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=docx)** |
+| Python | DOCX | パッケージ、CLI | 実験版 | **[Python ガイド](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
+| Node.js | XLSX、DOCX、PPTX | ネイティブパッケージ | 実験版 | **[Node.js ガイド](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
+| Go | XLSX、DOCX、PPTX | パッケージ、CLI | 実験版 | **[Go ガイド](../minipdf-go/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=go&suite=issue&format=xlsx)** |
 
 ## クイックスタート
 
@@ -186,10 +186,10 @@ Run the minipdf-contribution skill.
 | [Python ドキュメント](../minipdf-python/README.md) | 実験版パッケージと CLI の使用方法 |
 | [Node.js ドキュメント](../minipdf-node/README.md) | 実験版ネイティブパッケージの使用方法 |
 | [Go ドキュメント](../minipdf-go/README.md) | 実験版パッケージと CLI の使用方法 |
-| [.NET XLSX ベンチマーク](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | スプレッドシートの視覚比較結果 |
-| [.NET DOCX ベンチマーク](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | 文書の視覚比較結果 |
-| [Rust XLSX ベンチマーク](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Rust スプレッドシートの視覚比較結果 |
-| [Rust DOCX ベンチマーク](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Rust ドキュメントの視覚比較結果 |
+| [.NET XLSX ベンチマーク](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx) | スプレッドシートの視覚比較結果 |
+| [.NET DOCX ベンチマーク](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx) | 文書の視覚比較結果 |
+| [Rust XLSX ベンチマーク](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx) | Rust スプレッドシートの視覚比較結果 |
+| [Rust DOCX ベンチマーク](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx) | Rust ドキュメントの視覚比較結果 |
 | [Rust ベンチマーク手順](../scripts/Run-Rust-Benchmark.ps1) | フィクスチャ範囲と比較レポートを生成 |
 | [コミュニティガバナンス](../GOVERNANCE.md) | 意思決定、役割、投票、メンテナー選出 |
 | [ロードマップ](../ROADMAP.md) | プロジェクト範囲、実装状況、現在の優先事項 |
