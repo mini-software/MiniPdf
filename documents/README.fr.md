@@ -32,12 +32,12 @@ MiniPdf convertit directement les documents Office en PDF sans nécessiter Micro
 
 | Implémentation | Entrées | Interfaces | Maturité | Documentation | Résultats visuels |
 |---|---|---|---|---|---|
-| .NET | XLSX, DOCX, PPTX | Bibliothèque, CLI, binaires Native AOT | Stable | **[Guide .NET](README.nuget.md)** | **[XLSX](../tests/MiniPdf.Benchmark/reports/comparison_report.md)**<br>**[DOCX](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md)**<br>**[PPTX](../tests/Issue_Files/reports_pptx/comparison_report.md)** |
-| Rust | XLSX, DOCX, PPTX | Crate, CLI | Expérimental | **[Guide Rust](../minipdf-rs/README.md)** | **[XLSX](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md)**<br>**[DOCX](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md)** |
-| Java | XLSX, DOCX, PPTX | Bibliothèque, CLI | Expérimental | **[Sources Java](../minipdf-java/)** | **[XLSX](../artifacts/java-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Python | DOCX | Paquet, CLI | Expérimental | **[Guide Python](../minipdf-python/README.md)** | **[XLSX](../artifacts/python-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Node.js | XLSX, DOCX, PPTX | Paquet natif | Expérimental | **[Guide Node.js](../minipdf-node/README.md)** | **[XLSX](../artifacts/node-benchmark/issue/xlsx/report/comparison_report.md)** |
-| Go | XLSX, DOCX, PPTX | Paquet, CLI | Expérimental | **[Guide Go](../minipdf-go/README.md)** | **[XLSX](../artifacts/go-benchmark/issue/xlsx/report/comparison_report.md)** |
+| .NET | XLSX, DOCX, PPTX | Bibliothèque, CLI, binaires Native AOT | Stable | **[Guide .NET](README.nuget.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx)**<br>**[PPTX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=issue&format=pptx)** |
+| Rust | XLSX, DOCX, PPTX | Crate, CLI | Expérimental | **[Guide Rust](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
+| Java | XLSX, DOCX, PPTX | Bibliothèque, CLI | Expérimental | **[Sources Java](../minipdf-java/)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=docx)** |
+| Python | DOCX | Paquet, CLI | Expérimental | **[Guide Python](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
+| Node.js | XLSX, DOCX, PPTX | Paquet natif | Expérimental | **[Guide Node.js](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
+| Go | XLSX, DOCX, PPTX | Paquet, CLI | Expérimental | **[Guide Go](../minipdf-go/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=go&suite=issue&format=xlsx)** |
 
 ## Démarrage rapide
 
@@ -187,10 +187,10 @@ Run the minipdf-contribution skill.
 | [Documentation Python](../minipdf-python/README.md) | Utilisation du paquet expérimental et de la CLI |
 | [Documentation Node.js](../minipdf-node/README.md) | Utilisation du paquet natif expérimental |
 | [Documentation Go](../minipdf-go/README.md) | Utilisation du paquet expérimental et de la CLI |
-| [Benchmark XLSX .NET](../tests/MiniPdf.Benchmark/reports/comparison_report.md) | Résultats visuels pour les feuilles de calcul |
-| [Benchmark DOCX .NET](../tests/MiniPdf.Benchmark/reports_docx/comparison_report.md) | Résultats visuels pour les documents |
-| [Benchmark XLSX Rust](../artifacts/rust-benchmark/classic/xlsx/report/comparison_report.md) | Résultats de comparaison visuelle Rust des feuilles de calcul |
-| [Benchmark DOCX Rust](../artifacts/rust-benchmark/classic/docx/report/comparison_report.md) | Résultats de comparaison visuelle Rust des documents |
+| [Benchmark XLSX .NET](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx) | Résultats visuels pour les feuilles de calcul |
+| [Benchmark DOCX .NET](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx) | Résultats visuels pour les documents |
+| [Benchmark XLSX Rust](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx) | Résultats de comparaison visuelle Rust des feuilles de calcul |
+| [Benchmark DOCX Rust](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx) | Résultats de comparaison visuelle Rust des documents |
 | [Procédure de benchmark Rust](../scripts/Run-Rust-Benchmark.ps1) | Génère la couverture des tests et les rapports comparatifs |
 | [Gouvernance communautaire](../GOVERNANCE.md) | Décisions, rôles, votes et sélection des mainteneurs |
 | [Feuille de route](../ROADMAP.md) | Périmètre du projet, état des implémentations et priorités |
