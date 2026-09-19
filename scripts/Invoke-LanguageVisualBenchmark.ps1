@@ -279,6 +279,8 @@ if (-not $SkipCandidate -and -not $SkipBuild) {
         }
         "python" {
             $Tools.python = Find-Python
+            & (Join-Path $RepoRoot "scripts/Build-Python-Native.ps1")
+            Assert-CommandSucceeded "Python native module build"
         }
         "node" {
             $Tools.npm = Find-Command "npm"

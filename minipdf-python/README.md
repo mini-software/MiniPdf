@@ -1,10 +1,34 @@
 # MiniPdf for Python
 
-Experimental pure Python implementation of MiniPdf. It converts basic DOCX,
-XLSX, and PPTX content to PDF 1.4 without requiring Microsoft Office,
-LibreOffice, .NET, or Rust at runtime.
+MiniPdf converts basic DOCX, XLSX, and PPTX content to PDF 1.4 without
+requiring Microsoft Office or LibreOffice. Conversion runs through the Rust
+MiniPdf engine in `minipdf-rs` via the PyO3 extension `minipdf._native`, which
+the package build backend compiles from [`native/`](native/). A pure Python
+renderer with reduced feature coverage remains as a fallback for source-tree
+runs where the extension has not been built.
 
-The package requires Python 3.10 or later.
+The package requires Python 3.10 or later, and building it requires a Rust
+toolchain.
+
+## Native Rust Engine
+
+`minipdf._native` is a PyO3 extension that delegates conversion to the Rust
+engine in `minipdf-rs`. When the module is importable, the Python API uses it
+automatically and the pure Python renderers are only used as a fallback.
+
+Installing the package builds the extension:
+
+```bash
+pip install .
+```
+
+To rebuild only the extension into the package source tree, use PowerShell:
+
+```powershell
+scripts/Build-Python-Native.ps1
+```
+
+The visual benchmark runner builds the extension automatically.
 
 ## Install
 
