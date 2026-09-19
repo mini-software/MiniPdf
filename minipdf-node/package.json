@@ -1,6 +1,6 @@
 {
   "name": "minipdf",
-  "version": "0.2.0",
+  "version": "0.7.0",
   "description": "Native Node.js Office-to-PDF conversion powered by MiniPdf for Rust",
   "license": "Apache-2.0",
   "author": "MiniPdf contributors",
