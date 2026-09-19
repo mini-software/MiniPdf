@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 from helpers import create_docx, create_pptx, create_xlsx
+from pypdf import PdfReader
 
 import minipdf
 from minipdf import (
@@ -21,7 +22,7 @@ from minipdf.office import OfficePackage
 
 
 def test_runtime_version_matches_release() -> None:
-    assert minipdf.__version__ == "0.2.0"
+    assert minipdf.__version__ == "0.7.0"
 
 
 def test_path_and_bytes_apis_produce_identical_output(tmp_path: Path) -> None:
@@ -43,27 +44,34 @@ def test_converts_xlsx() -> None:
     pdf = convert_bytes_to_pdf(create_xlsx())
 
     assert pdf.startswith(b"%PDF-1.4")
-    assert b"Hello XLSX" in pdf
-    assert b"Cell B" in pdf
-    assert pdf.index(b"Hello XLSX") < pdf.index(b"Second Sheet")
-    assert b"Orphan Sheet" not in pdf
+    reader = PdfReader(io.BytesIO(pdf))
+    assert len(reader.pages) == 2
+    first_sheet = reader.pages[0].extract_text()
+    assert "Hello XLSX" in first_sheet
+    assert "Cell B" in first_sheet
+    assert "Second Sheet" in reader.pages[1].extract_text()
+    assert "Orphan Sheet" not in "".join(page.extract_text() for page in reader.pages)
 
 
 def test_converts_pptx() -> None:
     pdf = convert_bytes_to_pdf(create_pptx())
 
     assert pdf.startswith(b"%PDF-1.4")
-    assert b"Hello PPTX" in pdf
-    assert pdf.index(b"Hello PPTX") < pdf.index(b"Second Slide")
-    assert b"Orphan Slide" not in pdf
-    assert b"/MediaBox [0 0 720 540]" in pdf
+    reader = PdfReader(io.BytesIO(pdf))
+    assert len(reader.pages) == 2
+    assert "Hello PPTX" in reader.pages[0].extract_text()
+    assert "Second Slide" in reader.pages[1].extract_text()
+    assert "Orphan Slide" not in "".join(page.extract_text() for page in reader.pages)
+    assert float(reader.pages[0].mediabox.width) == 720.0
+    assert float(reader.pages[0].mediabox.height) == 540.0
 
 
 def test_pptx_text_stays_inside_slide_page() -> None:
-    pdf = convert_bytes_to_pdf(create_pptx(extra_paragraphs=30))
+    reader = PdfReader(io.BytesIO(convert_bytes_to_pdf(create_pptx(extra_paragraphs=30))))
 
-    assert b" 36 -" not in pdf
-    assert b"/Count 2" in pdf
+    assert len(reader.pages) == 2
+    assert float(reader.pages[0].mediabox.width) == 720.0
+    assert float(reader.pages[0].mediabox.height) == 540.0
 
 
 def test_reads_normalized_package_entry_names() -> None:
