@@ -1,0 +1,69 @@
+name: Rust Ecosystem Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version shared by Rust, Node.js, and Python (for example, 0.7.0)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  release:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref_name, 'rust-v')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine version
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME#rust-v}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Validate aligned versions
+        shell: bash
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          CARGO_VERSION="$(sed -n 's/^version = "\([^"]*\)"/\1/p' minipdf-rs/Cargo.toml | head -n 1)"
+          NODE_VERSION="$(node -p "require('./minipdf-node/package.json').version")"
+          PYTHON_VERSION="$(sed -n 's/^version = "\([^"]*\)"/\1/p' minipdf-python/pyproject.toml | head -n 1)"
+          if [ "$CARGO_VERSION" != "$VERSION" ]; then
+            echo "::error::Rust workspace version '$CARGO_VERSION' does not match release version '$VERSION'. Update minipdf-rs/Cargo.toml before releasing."
+            exit 1
+          fi
+          if [ "$NODE_VERSION" != "$VERSION" ]; then
+            echo "::error::npm package version '$NODE_VERSION' does not match release version '$VERSION'. Update minipdf-node/package.json and package-lock.json before releasing."
+            exit 1
+          fi
+          if [ "$PYTHON_VERSION" != "$VERSION" ]; then
+            echo "::error::Python package version '$PYTHON_VERSION' does not match release version '$VERSION'. Update minipdf-python/pyproject.toml and src/minipdf/__init__.py before releasing."
+            exit 1
+          fi
+
+      - name: Dispatch NPM publish
+        shell: bash
+        run: |
+          gh workflow run npm-publish.yml --ref "$GITHUB_SHA" \
+            -f version="${{ steps.version.outputs.version }}" \
+            -f mode=stage
+
+      - name: Dispatch PyPI publish
+        shell: bash
+        run: |
+          gh workflow run pypi-publish.yml --ref "$GITHUB_SHA" \
+            -f version="${{ steps.version.outputs.version }}"

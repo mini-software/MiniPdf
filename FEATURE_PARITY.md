@@ -51,6 +51,14 @@ Notes:
   the package backend, falling back to the pure Python renderers only when the
   extension is not importable. The capability matrix below describes the pure
   Python fallback.
+- Node.js and Python versions follow the Rust core version. A `rust-vX.Y.Z`
+  release dispatches the NPM and PyPI publish workflows with the same version
+  through
+  [`rust-ecosystem-release.yml`](.github/workflows/rust-ecosystem-release.yml).
+  When bumping the Rust version, update `minipdf-node/package.json` (and
+  `package-lock.json`), `minipdf-python/pyproject.toml`,
+  `minipdf-python/src/minipdf/__init__.py`, and
+  `minipdf-python/native/Cargo.toml` in the same change.
 - `P` does not mean the same depth in every language. The detailed matrices
   below identify the important differences.
 - The public .NET page-size and margin overrides currently apply to DOCX. The
