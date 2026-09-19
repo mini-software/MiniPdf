@@ -176,14 +176,45 @@ final class PoiDocxRenderer {
                     .flatMapToInt(String::codePoints)
                     .anyMatch(codePoint -> codePoint > 255);
             String defaultAsciiFamily = defaultFontFamily(source, XWPFRun.FontCharRange.ascii);
+            // When Normal does not pin a Latin font, Word falls back to the
+            // theme's minorFont (body) typeface, e.g. Franklin Gothic Book.
+            // CJK theme fonts (DengXian, SimSun...) must not replace it —
+            // those documents keep the CJK layout path.
+            if (defaultAsciiFamily == null) {
+                String minorFont = themeLatinFonts(source)[1];
+                if (minorFont != null && !cjkFamilyName(minorFont.toLowerCase())) {
+                    defaultAsciiFamily = minorFont;
+                }
+            }
             String defaultFamily = defaultAsciiFamily == null ? "" : defaultAsciiFamily.toLowerCase();
             CALIBRI_DEFAULT.set(defaultFamily.contains("calibri"));
             SERIF_DEFAULT.set(serifFamily(defaultFamily));
+            List<List<String>> paragraphText = Collections.singletonList(source.getParagraphs().stream()
+                    .map(XWPFParagraph::getText)
+                    .collect(Collectors.toList()));
+            List<List<String>> latinText = Collections.singletonList(paragraphText.get(0).stream()
+                    .map(PoiDocxRenderer::latinText)
+                    .collect(Collectors.toList()));
+            // Office ships Franklin Gothic Book (FRABK.TTF) and Demi
+            // (FRADM.TTF); use them when the theme asks for them so headings
+            // and body text render with the same faces as Word.
+            PDFont franklinBook = null;
+            PDFont franklinDemi = null;
+            if (defaultFamily.contains("franklin")) {
+                franklinDemi = SimplePdfTextRenderer.loadSystemFont(
+                        output, latinText, "fradm.ttf");
+                franklinBook = SimplePdfTextRenderer.loadSystemFont(
+                        output, latinText, "frabk.ttf", "framd.ttf");
+            }
             PDFont font = requiresCjkFont ? SimplePdfTextRenderer.loadFont(output, text) : null;
             boolean usesDocumentLatinFont = false;
             if (font == null) {
                 font = loadDocumentLatinFont(output, text, defaultAsciiFamily);
                 usesDocumentLatinFont = font != null;
+            }
+            if (font == null && franklinBook != null) {
+                font = franklinBook;
+                usesDocumentLatinFont = true;
             }
             if (font == null && text.stream().flatMap(List::stream)
                     .flatMapToInt(String::codePoints).allMatch(codePoint -> codePoint <= 255)) {
@@ -204,9 +235,9 @@ final class PoiDocxRenderer {
             if (boldFont == null) {
                 boldFont = font;
             }
-                List<List<String>> paragraphText = Collections.singletonList(source.getParagraphs().stream()
-                    .map(XWPFParagraph::getText)
-                    .collect(Collectors.toList()));
+            if (franklinDemi != null) {
+                boldFont = franklinDemi;
+            }
             PDFont paragraphFont = SimplePdfTextRenderer.loadSystemFont(
                     output,
                     paragraphText,
@@ -216,9 +247,6 @@ final class PoiDocxRenderer {
             if (paragraphFont == null) {
                 paragraphFont = font;
             }
-                List<List<String>> latinText = Collections.singletonList(paragraphText.get(0).stream()
-                    .map(PoiDocxRenderer::latinText)
-                    .collect(Collectors.toList()));
             PDFont timesFont = SimplePdfTextRenderer.loadSystemFont(
                     output,
                     latinText,
@@ -249,6 +277,8 @@ final class PoiDocxRenderer {
                     fangSongFont == null ? paragraphFont : fangSongFont,
                     timesFont,
                     arialFont,
+                    franklinBook,
+                    franklinDemi,
                     defaultAsciiFamily,
                     defaultFontFamily(source, XWPFRun.FontCharRange.eastAsia));
 
@@ -861,6 +891,44 @@ final class PoiDocxRenderer {
             // A missing or malformed theme part must not abort conversion.
         }
         return colors;
+    }
+
+    /**
+     * Reads the theme font scheme's Latin typefaces as {major, minor}.
+     * majorFont faces headings (e.g. Franklin Gothic Demi), minorFont faces
+     * body text (e.g. Franklin Gothic Book).
+     */
+    private static String[] themeLatinFonts(XWPFDocument source) {
+        String[] fonts = {null, null};
+        try {
+            for (PackagePart part : source.getPackage().getParts()) {
+                if (!part.getPartName().getName().contains("/theme/")) {
+                    continue;
+                }
+                try (InputStream stream = part.getInputStream()) {
+                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    factory.setNamespaceAware(true);
+                    Document theme = factory.newDocumentBuilder().parse(stream);
+                    Node scheme = firstDescendant(theme.getDocumentElement(), "fontScheme");
+                    if (scheme != null) {
+                        fonts[0] = themeTypeface(firstDescendant(scheme, "majorFont"));
+                        fonts[1] = themeTypeface(firstDescendant(scheme, "minorFont"));
+                    }
+                }
+                break;
+            }
+        } catch (Exception ignored) {
+            // A missing or malformed theme part must not abort conversion.
+        }
+        return fonts;
+    }
+
+    private static String themeTypeface(Node fontNode) {
+        if (fontNode == null) {
+            return null;
+        }
+        String face = attribute(directChild(fontNode, "latin"), "typeface");
+        return face == null || face.isEmpty() ? null : face;
     }
 
     /**
@@ -1688,15 +1756,21 @@ final class PoiDocxRenderer {
         // default to 108 twips), so no vertical padding is added.
         float verticalPadding = 0.0f;
         List<XWPFParagraph> paragraphs = cellParagraphs(cell);
-        List<CellItem> items = cellItems(cell, cellFont, width, horizontalPadding, context.linePitch);
+        List<CellItem> items = cellItems(cell, fonts, boldFont, width, horizontalPadding, context.linePitch);
         float contentHeight = 0.0f;
         for (CellItem item : items) {
             contentHeight += item.line() != null
                     ? item.line().advance(context.linePitch)
-                    : item.pictureHeight();
+                    : item.picture() != null
+                        ? item.pictureHeight()
+                        : item.spacing();
         }
         // Cursor tracks the top of the current content line (or image).
-        float cursor = top - verticalPadding - paragraphSpacingBefore(cell);
+        // Top-aligned content starts at the cell top: Word's glyph offset for
+        // the first line is already matched by the baseline placement, and the
+        // style spacing-before contributes to the ROW height (rowHeight) but
+        // must not push the first baseline down twice.
+        float cursor = top - verticalPadding;
         if (cell.getVerticalAlignment() == XWPFTableCell.XWPFVertAlign.CENTER) {
             cursor -= (height - contentHeight) / 2.0f;
         } else if (cell.getVerticalAlignment() == XWPFTableCell.XWPFVertAlign.BOTTOM) {
@@ -1710,6 +1784,10 @@ final class PoiDocxRenderer {
                 .anyMatch(run -> run.getTextHighlightColor() != null
                         && "yellow".equalsIgnoreCase(run.getTextHighlightColor().toString()));
         for (CellItem item : items) {
+            if (item.picture() == null && item.line() == null) {
+                cursor -= item.spacing();
+                continue;
+            }
             if (item.line() == null) {
                 XWPFPicture picture = item.picture();
                 // XWPFPicture#getWidth/getDepth already return points.
@@ -1734,7 +1812,8 @@ final class PoiDocxRenderer {
                 continue;
             }
             CellLine line = item.line();
-            float lineWidth = textWidth(cellFont, line.text, line.fontSize);
+            PDFont lineFont = line.font == null ? cellFont : line.font;
+            float lineWidth = textWidth(lineFont, line.text, line.fontSize);
             float lineX = x + horizontalPadding;
             if (alignment == ParagraphAlignment.CENTER) {
                 lineX = x + (width - lineWidth) / 2.0f;
@@ -1747,7 +1826,7 @@ final class PoiDocxRenderer {
                 context.content.fill();
             }
             applyTextColor(context.content, line.color);
-            showText(context.content, cellFont, line.fontSize, line.text, lineX, cursor - line.fontSize);
+            showText(context.content, lineFont, line.fontSize, line.text, lineX, cursor - line.fontSize);
             cursor -= line.advance(context.linePitch);
         }
         context.content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
@@ -1820,18 +1899,24 @@ final class PoiDocxRenderer {
     private static final class CellItem {
         private final XWPFPicture picture;
         private final CellLine line;
+        private final float spacing;
 
-        private CellItem(XWPFPicture picture, CellLine line) {
+        private CellItem(XWPFPicture picture, CellLine line, float spacing) {
             this.picture = picture;
             this.line = line;
+            this.spacing = spacing;
         }
 
         static CellItem image(XWPFPicture picture) {
-            return new CellItem(picture, null);
+            return new CellItem(picture, null, 0.0f);
         }
 
         static CellItem text(CellLine line) {
-            return new CellItem(null, line);
+            return new CellItem(null, line, 0.0f);
+        }
+
+        static CellItem spacing(float gap) {
+            return new CellItem(null, null, gap);
         }
 
         XWPFPicture picture() {
@@ -1842,6 +1927,10 @@ final class PoiDocxRenderer {
             return line;
         }
 
+        float spacing() {
+            return spacing;
+        }
+
         float pictureHeight() {
             // XWPFPicture#getDepth already returns points.
             return picture == null ? 0.0f : Math.max(1.0f, (float) picture.getDepth());
@@ -1850,13 +1939,26 @@ final class PoiDocxRenderer {
 
     private static List<CellItem> cellItems(
             XWPFTableCell cell,
-            PDFont font,
+            ParagraphFonts fonts,
+            PDFont boldFont,
             float width,
             float padding,
             float linePitch) throws IOException {
         List<CellItem> items = new ArrayList<>();
         boolean noWrap = cell.getCTTc().isSetTcPr() && cell.getCTTc().getTcPr().isSetNoWrap();
+        XWPFParagraph previous = null;
         for (XWPFParagraph paragraph : cellParagraphs(cell)) {
+            // Word collapses the spacing between consecutive cell paragraphs
+            // to max(after(previous), before(current)) from the style chain.
+            if (previous != null) {
+                float gap = Math.max(
+                        twipsToPoints(effectiveSpacing(previous).after()),
+                        twipsToPoints(effectiveSpacing(paragraph).before()));
+                if (gap > 0.0f) {
+                    items.add(CellItem.spacing(gap));
+                }
+            }
+            previous = paragraph;
             boolean hasPictures = false;
             for (XWPFRun run : paragraph.getRuns()) {
                 for (XWPFPicture picture : run.getEmbeddedPictures()) {
@@ -1884,15 +1986,23 @@ final class PoiDocxRenderer {
                     break;
                 }
             }
+            PDFont paragraphFont = paragraphCellFont(paragraph, fonts, boldFont);
+            // A Latin face cannot measure (or draw) East Asian code points;
+            // mixed-script paragraphs fall back to the CJK face like Word's
+            // eastAsia slot does.
+            if (text.codePoints().anyMatch(PoiDocxRenderer::usesEastAsianFontSlot)
+                    && fonts.isLatinFace(paragraphFont)) {
+                paragraphFont = fonts.simSun();
+            }
             // Each paragraph advances by its own effective line height (a
             // uniform per-cell height wrongly inflates mixed-size cells like
             // a 24pt heading followed by 11pt body text).
             float advance = paragraphCellLineHeight(paragraph, fontSize, linePitch);
             if (noWrap) {
-                items.add(CellItem.text(new CellLine(text, fontSize, advance, color)));
+                items.add(CellItem.text(new CellLine(text, fontSize, advance, color, paragraphFont)));
             } else {
-                for (String line : wrap(font, text, fontSize, cellContentWidth(width, padding))) {
-                    items.add(CellItem.text(new CellLine(line, fontSize, advance, color)));
+                for (String line : wrap(paragraphFont, text, fontSize, cellContentWidth(width, padding))) {
+                    items.add(CellItem.text(new CellLine(line, fontSize, advance, color, paragraphFont)));
                 }
             }
         }
@@ -1900,6 +2010,30 @@ final class PoiDocxRenderer {
             items.add(CellItem.text(new CellLine("", DEFAULT_TABLE_FONT_SIZE)));
         }
         return items;
+    }
+
+    /**
+     * The face a cell paragraph renders with: the theme major font (Demi) for
+     * majorHAnsi styles, the first run's resolved face, or the cell text's
+     * script default.
+     */
+    private static PDFont paragraphCellFont(
+            XWPFParagraph paragraph, ParagraphFonts fonts, PDFont boldFont) {
+        if (paragraphStyleMajorFont(paragraph) && fonts.franklinDemi() != null) {
+            return fonts.franklinDemi();
+        }
+        for (XWPFRun run : paragraph.getRuns()) {
+            String text = renderableText(run.text());
+            for (int offset = 0; offset < text.length();) {
+                int codePoint = text.codePointAt(offset);
+                offset += Character.charCount(codePoint);
+                return run.isBold() ? boldFont : fonts.resolve(run, codePoint);
+            }
+        }
+        String text = paragraphText(paragraph);
+        return text.codePoints().anyMatch(codePoint -> codePoint > 255)
+                ? fonts.simSun()
+                : fonts.latin();
     }
 
     /**
@@ -1992,15 +2126,17 @@ final class PoiDocxRenderer {
             float fontSize = cellFontSize(cell, DEFAULT_TABLE_FONT_SIZE);
             float horizontalPadding = compact ? 0.0f : CELL_HORIZONTAL_PADDING;
                 PDFont cellFont = compact ? fonts.simSun() : resolvedCellFont(cell, fonts, boldFont);
-            List<CellItem> items = cellItems(cell, cellFont, width, horizontalPadding, linePitch);
+            List<CellItem> items = cellItems(cell, fonts, boldFont, width, horizontalPadding, linePitch);
             float contentHeight = 0.0f;
             for (CellItem item : items) {
                 if (item.line() != null) {
                     contentHeight += item.line().advance(linePitch);
-                } else {
+                } else if (item.picture() != null) {
                     // Inline pictures advance the cell content flow like a
                     // line of text (Word grows the row to fit the image).
                     contentHeight += item.pictureHeight();
+                } else {
+                    contentHeight += item.spacing();
                 }
             }
                 height = Math.max(
@@ -2016,16 +2152,16 @@ final class PoiDocxRenderer {
 
             private static float paragraphSpacingBefore(XWPFTableCell cell) {
             return cellParagraphs(cell).stream()
-                .mapToInt(XWPFParagraph::getSpacingBefore)
-                .max()
-                .orElse(0) / 20.0f;
+                .map(paragraph -> twipsToPoints(effectiveSpacing(paragraph).before()))
+                .max(Float::compare)
+                .orElse(0.0f);
             }
 
             private static float paragraphSpacingAfter(XWPFTableCell cell) {
             return cellParagraphs(cell).stream()
-                .mapToInt(XWPFParagraph::getSpacingAfter)
-                .max()
-                .orElse(0) / 20.0f;
+                .map(paragraph -> twipsToPoints(effectiveSpacing(paragraph).after()))
+                .max(Float::compare)
+                .orElse(0.0f);
             }
 
             private static boolean isCellBold(XWPFTableCell cell) {
@@ -2039,16 +2175,18 @@ final class PoiDocxRenderer {
         private final float fontSize;
         private final float advance;
         private final String color;
+        private final PDFont font;
 
         private CellLine(String text, float fontSize) {
-            this(text, fontSize, 0.0f, null);
+            this(text, fontSize, 0.0f, null, null);
         }
 
-        private CellLine(String text, float fontSize, float advance, String color) {
+        private CellLine(String text, float fontSize, float advance, String color, PDFont font) {
             this.text = text;
             this.fontSize = fontSize;
             this.advance = advance;
             this.color = color;
+            this.font = font;
         }
 
         private float advance(float linePitch) {
@@ -2509,6 +2647,8 @@ final class PoiDocxRenderer {
         private final PDFont fangSong;
         private final PDFont times;
         private final PDFont arial;
+        private final PDFont franklinBook;
+        private final PDFont franklinDemi;
         private final String defaultAsciiFamily;
         private final String defaultEastAsiaFamily;
 
@@ -2522,6 +2662,22 @@ final class PoiDocxRenderer {
                 PDFont arial,
                 String defaultAsciiFamily,
                 String defaultEastAsiaFamily) {
+            this(fallback, simSun, simHei, kai, fangSong, times, arial, null, null,
+                    defaultAsciiFamily, defaultEastAsiaFamily);
+        }
+
+        ParagraphFonts(
+                PDFont fallback,
+                PDFont simSun,
+                PDFont simHei,
+                PDFont kai,
+                PDFont fangSong,
+                PDFont times,
+                PDFont arial,
+                PDFont franklinBook,
+                PDFont franklinDemi,
+                String defaultAsciiFamily,
+                String defaultEastAsiaFamily) {
             this.fallback = fallback;
             this.simSun = simSun;
             this.simHei = simHei;
@@ -2529,6 +2685,8 @@ final class PoiDocxRenderer {
             this.fangSong = fangSong;
             this.times = times;
             this.arial = arial;
+            this.franklinBook = franklinBook;
+            this.franklinDemi = franklinDemi;
             this.defaultAsciiFamily = defaultAsciiFamily;
             this.defaultEastAsiaFamily = defaultEastAsiaFamily;
         }
@@ -2539,6 +2697,9 @@ final class PoiDocxRenderer {
 
         PDFont latin() {
             String family = defaultAsciiFamily == null ? "" : defaultAsciiFamily.toLowerCase();
+            if (family.contains("franklin") && franklinBook != null) {
+                return franklinBook;
+            }
             if (family.contains("times") || family.contains("georgia")) {
                 return times;
             }
@@ -2547,6 +2708,18 @@ final class PoiDocxRenderer {
 
         PDFont simSun() {
             return simSun;
+        }
+
+        PDFont franklinBook() {
+            return franklinBook;
+        }
+
+        PDFont franklinDemi() {
+            return franklinDemi;
+        }
+
+        private boolean isLatinFace(PDFont font) {
+            return font == arial || font == times || font == franklinBook || font == franklinDemi;
         }
 
         private PDFont resolve(XWPFRun run, int codePoint) {
@@ -2559,17 +2732,30 @@ final class PoiDocxRenderer {
                 family = eastAsian ? defaultEastAsiaFamily : defaultAsciiFamily;
             }
             String normalized = family == null ? "" : family.toLowerCase();
-            if (normalized.contains("\u5b8b\u4f53") || normalized.contains("simsun")) {
+            // Word never applies a Latin family (Arial, Times, a theme minor
+            // font like Franklin Gothic...) to East Asian code points — those
+            // always render with the eastAsia face. Resolving them against
+            // the ascii slot leaks a Latin face into CJK text (No glyph).
+            if (eastAsian) {
+                if (normalized.contains("\u9ed1\u4f53") || normalized.contains("simhei")) {
+                    return simHei;
+                }
+                if (normalized.contains("\u6977\u4f53") || normalized.contains("simkai")) {
+                    return kai;
+                }
+                if (normalized.contains("\u4eff\u5b8b") || normalized.contains("simfang")) {
+                    return fangSong;
+                }
                 return simSun;
             }
-            if (normalized.contains("\u9ed1\u4f53") || normalized.contains("simhei")) {
-                return simHei;
-            }
-            if (normalized.contains("\u6977\u4f53") || normalized.contains("simkai")) {
-                return kai;
-            }
-            if (normalized.contains("\u4eff\u5b8b") || normalized.contains("simfang")) {
-                return fangSong;
+            if (normalized.contains("franklin")) {
+                boolean demi = normalized.contains("demi") || normalized.contains("heavy");
+                if (demi && franklinDemi != null) {
+                    return franklinDemi;
+                }
+                if (franklinBook != null) {
+                    return franklinBook;
+                }
             }
             if (normalized.contains("arial")) {
                 return arial;
@@ -2577,7 +2763,7 @@ final class PoiDocxRenderer {
             if (normalized.contains("times")) {
                 return times;
             }
-            return eastAsian ? simSun : fallback;
+            return fallback;
         }
     }
 
@@ -2623,6 +2809,7 @@ final class PoiDocxRenderer {
         List<RunSegment> segments = new ArrayList<>();
         AutoSpacing autoSpacing = paragraphAutoSpacing(paragraph);
         boolean styleBold = paragraphStyleBold(paragraph);
+        boolean styleMajorFont = paragraphStyleMajorFont(paragraph);
         String styleColor = paragraphStyleColor(paragraph);
         for (XWPFRun run : paragraph.getRuns()) {
             String text = preserveTabs ? runText(run) : renderableText(runText(run));
@@ -2659,7 +2846,11 @@ final class PoiDocxRenderer {
                 }
                 PDFont codePointFont = runBold
                         ? boldFont
-                        : fonts.resolve(run, codePoint);
+                        : styleMajorFont
+                                && fonts.franklinDemi() != null
+                                && !usesEastAsianFontSlot(codePoint)
+                            ? fonts.franklinDemi()
+                            : fonts.resolve(run, codePoint);
                 if (segmentFont != null && codePointFont != segmentFont) {
                     float spacing = isEastAsianLatinBoundary(previous, codePoint, autoSpacing)
                             ? fontSize * 0.25f
@@ -2793,22 +2984,48 @@ final class PoiDocxRenderer {
     static PDFont resolvedCellFont(XWPFTableCell cell, ParagraphFonts fonts, PDFont boldFont) {
         PDFont resolved = null;
         for (XWPFParagraph paragraph : cellParagraphs(cell)) {
+            boolean styleMajorFont = paragraphStyleMajorFont(paragraph);
             for (XWPFRun run : paragraph.getRuns()) {
                 String text = renderableText(run.text());
                 for (int offset = 0; offset < text.length();) {
                     int codePoint = text.codePointAt(offset);
                     offset += Character.charCount(codePoint);
-                    PDFont candidate = run.isBold() ? boldFont : fonts.resolve(run, codePoint);
+                    PDFont candidate = run.isBold()
+                            ? boldFont
+                            : styleMajorFont
+                                    && fonts.franklinDemi() != null
+                                    && !usesEastAsianFontSlot(codePoint)
+                                ? fonts.franklinDemi()
+                                : fonts.resolve(run, codePoint);
                     if (resolved != null && resolved != candidate) {
+                        // Mixed Latin faces (e.g. a Demi heading above Book
+                        // body text) must keep a Latin face; only genuinely
+                        // mixed CJK/Latin cells fall back to SimSun.
+                        if (fonts.isLatinFace(resolved) && fonts.isLatinFace(candidate)) {
+                            return fonts.latin();
+                        }
                         return isCellBold(cell) ? boldFont : fonts.simSun();
                     }
                     resolved = candidate;
                 }
             }
         }
-        return resolved == null
-                ? isCellBold(cell) ? boldFont : fonts.simSun()
-                : resolved;
+        if (resolved == null) {
+            // Paragraphs whose runs live inside run-level SDTs expose no runs
+            // to POI; derive the face from the style theme font instead.
+            for (XWPFParagraph paragraph : cellParagraphs(cell)) {
+                if (paragraphStyleMajorFont(paragraph) && fonts.franklinDemi() != null) {
+                    return fonts.franklinDemi();
+                }
+            }
+            if (isCellBold(cell)) {
+                return boldFont;
+            }
+            return cell.getText().codePoints().anyMatch(codePoint -> codePoint > 255)
+                    ? fonts.simSun()
+                    : fonts.latin();
+        }
+        return resolved;
     }
 
     private static AutoSpacing paragraphAutoSpacing(XWPFParagraph paragraph) {
@@ -2845,18 +3062,41 @@ final class PoiDocxRenderer {
             return SimplePdfTextRenderer.loadSystemFont(
                     document, text, "times.ttf", "NotoSerif-Regular.ttf");
         }
-        if (normalized.contains("arial")
-                || normalized.contains("calibri")
-                || normalized.contains("cambria")
-                || normalized.isEmpty()) {
-            // Theme defaults (minorHAnsi, e.g. Calibri) and unknown western
-            // families use Arial metrics — mirrors the .NET fallback so that
-            // Latin documents take the Word-paragraph layout path instead of
-            // the CJK grid/margin path.
-            return SimplePdfTextRenderer.loadSystemFont(
-                    document, text, "arial.ttf", "NotoSans-Regular.ttf");
+        // Explicit CJK families must not route into the Latin layout path.
+        if (cjkFamilyName(normalized)) {
+            return null;
         }
-        return null;
+        // Theme defaults (minorHAnsi, e.g. Calibri/Aptos/Franklin Gothic Book)
+        // and unknown western families use Arial metrics — mirrors the .NET
+        // fallback so that Latin documents take the Word-paragraph layout path
+        // instead of the CJK grid/margin path. Franklin Gothic documents later
+        // swap in the real FRABK face once it is loaded.
+        return SimplePdfTextRenderer.loadSystemFont(
+                document, text, "arial.ttf", "NotoSans-Regular.ttf");
+    }
+
+    private static boolean cjkFamilyName(String normalized) {
+        return normalized.contains("simsun")
+                || normalized.contains("simhei")
+                || normalized.contains("simkai")
+                || normalized.contains("simfang")
+                || normalized.contains("\u5b8b\u4f53")
+                || normalized.contains("\u9ed1\u4f53")
+                || normalized.contains("\u6977\u4f53")
+                || normalized.contains("\u4eff\u5b8b")
+                || normalized.contains("ming")
+                || normalized.contains("mincho")
+                || normalized.contains("batang")
+                || normalized.contains("gulim")
+                || normalized.contains("dotum")
+                || normalized.contains("malgun")
+                || normalized.contains("dengxian")
+                || normalized.contains("\u7b49\u7ebf")
+                || normalized.contains("\u65b0\u7d30\u660e\u9ad4")
+                || normalized.contains("\u5fae\u8edf\u6b63\u9ed1\u9ad4")
+                || normalized.contains("\u5fae\u8f6f\u96c5\u9ed1")
+                || normalized.contains("\u96c5\u9ed1")
+                || normalized.contains("gothic") && !normalized.contains("franklin");
     }
 
     private static String defaultFontFamily(XWPFDocument document, XWPFRun.FontCharRange range) {
@@ -3011,6 +3251,33 @@ final class PoiDocxRenderer {
     }
 
     /**
+     * Mirrors Word's theme font selection: a paragraph style whose rFonts
+     * references asciiTheme/hAnsiTheme = majorHAnsi renders with the theme's
+     * major font (headings, e.g. Franklin Gothic Demi) even without explicit
+     * bold or font names on the runs.
+     */
+    private static boolean paragraphStyleMajorFont(XWPFParagraph paragraph) {
+        if (paragraph.getDocument().getStyles() == null) {
+            return false;
+        }
+        String styleId = paragraph.getStyle();
+        if (styleId == null) {
+            return false;
+        }
+        XWPFStyle style = paragraph.getDocument().getStyles().getStyle(styleId);
+        if (style == null || style.getCTStyle() == null || !style.getCTStyle().isSetRPr()) {
+            return false;
+        }
+        CTRPr properties = style.getCTStyle().getRPr();
+        if (properties.sizeOfRFontsArray() == 0) {
+            return false;
+        }
+        CTFonts fonts = properties.getRFontsArray(0);
+        return fonts.isSetAsciiTheme() && "majorHAnsi".equals(fonts.getAsciiTheme().toString())
+                || fonts.isSetHAnsiTheme() && "majorHAnsi".equals(fonts.getHAnsiTheme().toString());
+    }
+
+    /**
      * Mirrors Word's contextualSpacing flag: set on the paragraph itself or on
      * its style (e.g. ListBullet). Between consecutive same-style paragraphs,
      * Word suppresses the spacing-after of the first one.
@@ -3085,7 +3352,8 @@ final class PoiDocxRenderer {
 
     /**
      * Mirrors Word's paragraph-level color: runs without an explicit color
-     * inherit the paragraph style's rPr/w:color (e.g. Heading2 = 4F81BD blue).
+     * inherit the paragraph style's rPr/w:color (e.g. Heading2 = 4F81BD blue),
+     * then the Normal style's color (e.g. this template's 171717 body ink).
      * Resolved via DOM so no theme mapping is needed when w:val is present.
      */
     private static String paragraphStyleColor(XWPFParagraph paragraph) {
@@ -3093,9 +3361,16 @@ final class PoiDocxRenderer {
             return null;
         }
         String styleId = paragraph.getStyle();
-        if (styleId == null) {
-            return null;
+        if (styleId != null) {
+            String styleColor = styleColor(paragraph, styleId);
+            if (styleColor != null) {
+                return styleColor;
+            }
         }
+        return styleColor(paragraph, "Normal");
+    }
+
+    private static String styleColor(XWPFParagraph paragraph, String styleId) {
         XWPFStyle style = paragraph.getDocument().getStyles().getStyle(styleId);
         if (style == null || style.getCTStyle() == null) {
             return null;
