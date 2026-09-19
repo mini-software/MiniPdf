@@ -9,6 +9,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
@@ -18,26 +19,38 @@ import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFFootnote;
+import org.apache.poi.xwpf.usermodel.XWPFNumbering;
+import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFStyle;
+import org.apache.poi.xwpf.usermodel.XWPFStyles;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.apache.xmlbeans.XmlCursor;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTOnOff;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTParaRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFonts;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyles;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSpacing;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSym;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLineSpacingRule;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STDocGrid;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblGridCol;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -49,10 +62,13 @@ import java.math.BigInteger;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -67,6 +83,64 @@ final class PoiDocxRenderer {
     private static final Pattern PAGE_FIELD = Pattern.compile("(?i)^PAGE(?:\\s|$)");
     private static final Pattern CACHED_PAGE_NUMBER = Pattern.compile("^(.*?)(\\d+)(.*)$");
     private static final AutoSpacing DEFAULT_AUTO_SPACING = new AutoSpacing(true, true);
+    // Per-render flags mirroring DocxToPdfConverter state: whether the
+    // document's default Latin font (Normal style) is Calibri-like, and
+    // whether it is a serif family.
+    private static final ThreadLocal<Boolean> CALIBRI_DEFAULT = new ThreadLocal<>();
+    private static final ThreadLocal<Boolean> SERIF_DEFAULT = new ThreadLocal<>();
+
+    // Times-Roman (Times New Roman Regular) character widths for ASCII 32..126,
+    // sourced from Adobe Type 1 Times-Roman AFM (matches Times New Roman TTF
+    // advances within ~1 unit). Mirrors DocxToPdfConverter.TimesRomanWidths.
+    private static final int[] TIMES_ROMAN_WIDTHS = {
+        250, 333, 408, 500, 500, 833, 778, 180, 333, 333, // ' ' to )
+        500, 564, 250, 333, 250, 278,                     // * to /
+        500, 500, 500, 500, 500, 500, 500, 500, 500, 500, // 0-9
+        278, 278, 564, 564, 564, 444, 921,                // : to @
+        722, 667, 667, 722, 611, 556, 722, 722, 333,      // A-I
+        389, 722, 611, 889, 722, 722, 556, 722, 667, 556, // J-S
+        611, 722, 722, 944, 722, 722, 611,                // T-Z
+        333, 278, 333, 469, 500, 333,                     // [ to `
+        444, 500, 444, 500, 444, 333, 500, 500, 278,      // a-i
+        278, 500, 278, 778, 500, 500, 500, 500, 333, 389, // j-s
+        278, 500, 500, 722, 500, 500, 444,                // t-z
+        480, 200, 480, 541,                               // { to ~
+    };
+
+    // Helvetica (Arial) character widths for ASCII 32..126 (per 1000 em).
+    // Mirrors DocxToPdfConverter.HelveticaWidths: the raw-width path for
+    // documents whose default font is not Calibri.
+    private static final int[] HELVETICA_WIDTHS = {
+        278, 278, 355, 556, 556, 889, 667, 191, 333, 333, // ' ' to )
+        389, 584, 278, 333, 278, 278,                     // * to /
+        556, 556, 556, 556, 556, 556, 556, 556, 556, 556, // 0-9
+        278, 278, 584, 584, 584, 556, 1015,               // : to @
+        667, 667, 722, 722, 667, 611, 778, 722, 278,      // A-I
+        500, 667, 556, 833, 722, 778, 667, 778, 722, 667, // J-S
+        611, 722, 667, 944, 667, 667, 611,                // T-Z
+        278, 278, 278, 469, 556, 333,                     // [ to `
+        556, 556, 500, 556, 556, 278, 556, 556, 222,      // a-i
+        222, 500, 222, 833, 556, 556, 556, 556, 333, 500, // j-s
+        278, 556, 500, 722, 500, 500, 500,                // t-z
+        334, 260, 334, 584,                               // { to ~
+    };
+
+    // Calibri Regular character widths for ASCII 32..126 (UPM=2048 scaled to
+    // 1000). Mirrors DocxToPdfConverter.CalibrWidths.
+    private static final int[] CALIBRI_WIDTHS = {
+        226, 326, 401, 498, 507, 715, 682, 221, 303, 303, // ' ' to )
+        498, 498, 250, 306, 252, 386,                     // * to /
+        507, 507, 507, 507, 507, 507, 507, 507, 507, 507, // 0-9
+        268, 268, 498, 498, 498, 463, 894,                // : to @
+        579, 544, 533, 615, 488, 459, 631, 623, 252,      // A-I
+        319, 520, 420, 855, 646, 662, 517, 673, 543, 459, // J-S
+        487, 642, 567, 890, 519, 487, 468,                // T-Z
+        307, 386, 307, 498, 498, 291,                     // [ to `
+        479, 525, 423, 525, 498, 305, 471, 525, 229,      // a-i
+        239, 455, 229, 799, 525, 527, 525, 525, 349, 391, // j-s
+        335, 525, 452, 715, 433, 453, 395,                // t-z
+        314, 460, 314, 498,                               // { to ~
+    };
 
     private PoiDocxRenderer() {
     }
@@ -87,8 +161,19 @@ final class PoiDocxRenderer {
                         : paragraphText((XWPFParagraph) element))
                     .map(value -> value.replace('\n', ' ').replace('\t', ' '))
                     .collect(Collectors.toList()));
+            // Mirror DocxReader.cs: choose the layout path from the document text,
+            // not from which font happens to load. CJK fonts (SimSun etc.) render
+            // Latin glyphs too, so a font-based check would misroute Latin documents
+            // into the CJK grid/margin path.
+            boolean requiresCjkFont = text.stream()
+                    .flatMap(List::stream)
+                    .flatMapToInt(String::codePoints)
+                    .anyMatch(codePoint -> codePoint > 255);
             String defaultAsciiFamily = defaultFontFamily(source, XWPFRun.FontCharRange.ascii);
-            PDFont font = SimplePdfTextRenderer.loadFont(output, text);
+            String defaultFamily = defaultAsciiFamily == null ? "" : defaultAsciiFamily.toLowerCase();
+            CALIBRI_DEFAULT.set(defaultFamily.contains("calibri"));
+            SERIF_DEFAULT.set(serifFamily(defaultFamily));
+            PDFont font = requiresCjkFont ? SimplePdfTextRenderer.loadFont(output, text) : null;
             boolean usesDocumentLatinFont = false;
             if (font == null) {
                 font = loadDocumentLatinFont(output, text, defaultAsciiFamily);
@@ -101,14 +186,15 @@ final class PoiDocxRenderer {
             if (font == null) {
                 return null;
             }
-            PDFont boldFont = SimplePdfTextRenderer.loadSystemFont(
-                    output,
-                    text,
-                    "simsunb.ttf",
-                    "msyhbd.ttc",
-                    "NotoSansCJK-Bold.ttc",
-                    "timesbd.ttf",
-                    "arialbd.ttf");
+            // Load a bold face matching the document script: CJK documents use
+            // SimSun/Microsoft YaHei Bold, Latin documents use Times/Arial Bold.
+            // Loading SimSun Bold first misroutes Latin bold runs (Times) into a
+            // CJK face, whose half-width Latin glyphs distort wrap widths.
+            PDFont boldFont = requiresCjkFont
+                    ? SimplePdfTextRenderer.loadSystemFont(
+                            output, text, "simsunb.ttf", "msyhbd.ttc", "NotoSansCJK-Bold.ttc")
+                    : SimplePdfTextRenderer.loadSystemFont(
+                            output, text, "timesbd.ttf", "arialbd.ttf", "simsunb.ttf", "msyhbd.ttc");
             if (boldFont == null) {
                 boldFont = font;
             }
@@ -177,18 +263,74 @@ final class PoiDocxRenderer {
                     pageNumberFooter,
                     pageFooterDistance(source, margins.bottom()),
                     footnotes(source, timesFont));
-            for (IBodyElement element : source.getBodyElements()) {
+            // Pre-process contextualSpacing the way Word does: between two
+            // consecutive paragraphs of the same style, when either has
+            // contextualSpacing, the first paragraph's spacing-after collapses.
+            Set<XWPFParagraph> suppressContextualAfter = new HashSet<>();
+            List<IBodyElement> bodyElements = source.getBodyElements();
+            for (int index = 0; index < bodyElements.size() - 1; index++) {
+                if (!(bodyElements.get(index) instanceof XWPFParagraph)
+                        || !(bodyElements.get(index + 1) instanceof XWPFParagraph)) {
+                    continue;
+                }
+                XWPFParagraph current = (XWPFParagraph) bodyElements.get(index);
+                XWPFParagraph next = (XWPFParagraph) bodyElements.get(index + 1);
+                String currentStyle = current.getStyle();
+                if (currentStyle != null
+                        && currentStyle.equals(next.getStyle())
+                        && (paragraphContextualSpacing(current) || paragraphContextualSpacing(next))
+                        && effectiveSpacing(current).after() > 0.0) {
+                    suppressContextualAfter.add(current);
+                }
+            }
+            for (int index = 0; index < bodyElements.size(); index++) {
+                IBodyElement element = bodyElements.get(index);
                 if (element instanceof XWPFParagraph) {
                     XWPFParagraph paragraph = (XWPFParagraph) element;
+                    IBodyElement next = index + 1 < bodyElements.size()
+                            ? bodyElements.get(index + 1)
+                            : null;
+                    if (next instanceof XWPFParagraph
+                            && usesDocumentLatinFont
+                            && paragraphKeepNext(paragraph)) {
+                        // keepNext: prevent an orphaned heading at the bottom
+                        // of a page. Word keeps the heading together with the
+                        // following paragraph's first lines (widow/orphan
+                        // control), so reserve the heading plus up to three
+                        // follow lines.
+                        XWPFParagraph follow = (XWPFParagraph) next;
+                        float headingFontSize = paragraphFontSize(paragraph, DEFAULT_FONT_SIZE);
+                        float headingLineHeight = paragraphLineHeight(
+                                paragraph, headingFontSize, headingFontSize * 1.2f, linePitch,
+                                usesDocumentLatinFont);
+                        float headingSpacingBefore = usesDocumentLatinFont
+                                ? twipsToPoints(effectiveSpacing(paragraph).before())
+                                : twipsToPoints(paragraph.getSpacingBefore());
+                        float followFontSize = paragraphFontSize(follow, DEFAULT_FONT_SIZE);
+                        float followLineHeight = paragraphLineHeight(
+                                follow, followFontSize, followFontSize * 1.2f, linePitch,
+                                usesDocumentLatinFont);
+                        String followText = paragraphText(follow);
+                        PDFont followFont = wrappingFont(paragraphFonts, followText);
+                        int followLines = wrap(
+                                followFont,
+                                followText.replace('\t', ' '),
+                                followFontSize,
+                                context.pageSize.width() - context.margin * 2.0f).size();
+                        float needed = headingSpacingBefore + headingLineHeight
+                                + Math.min(followLines, 3) * followLineHeight;
+                        context.keepNextBeforeParagraph(needed);
+                    }
                     renderParagraph(
                             context,
                             paragraph,
                             paragraphFonts,
                             usesDocumentLatinFont ? boldFont : null,
-                            usesDocumentLatinFont);
+                            usesDocumentLatinFont,
+                            suppressContextualAfter.contains(paragraph));
                 } else if (element instanceof XWPFTable) {
                     XWPFTable table = (XWPFTable) element;
-                    renderTable(context, table, paragraphFonts, boldFont);
+                    renderTable(context, table, paragraphFonts, boldFont, source);
                 }
             }
             context.close();
@@ -200,6 +342,9 @@ final class PoiDocxRenderer {
                     MiniPdfException.Kind.IO,
                     "failed to render structured DOCX: " + exception.getMessage(),
                     exception);
+        } finally {
+            CALIBRI_DEFAULT.remove();
+            SERIF_DEFAULT.remove();
         }
     }
 
@@ -208,20 +353,34 @@ final class PoiDocxRenderer {
             XWPFParagraph paragraph,
             ParagraphFonts fonts,
             PDFont boldFont,
-            boolean useWordParagraphLayout)
+            boolean useWordParagraphLayout,
+            boolean suppressContextualAfter)
             throws IOException {
         context.registerFootnotes(paragraph);
         boolean alignCheckboxLabels = context.consumeCheckboxLabelAlignment();
+        boolean topOfPage = context.consumeTopOfPage();
         float fontSize = paragraphFontSize(paragraph, DEFAULT_FONT_SIZE);
+        float spacingBefore = useWordParagraphLayout
+                ? twipsToPoints(effectiveSpacing(paragraph).before())
+                : twipsToPoints(paragraph.getSpacingBefore());
         if (useWordParagraphLayout) {
-            context.moveToParagraph(twipsToPoints(paragraph.getSpacingBefore()));
+            // Word suppresses spacing-before at the top of a page.
+            if (!topOfPage) {
+                context.moveToParagraph(spacingBefore);
+            }
         } else {
-            context.moveDown(twipsToPoints(paragraph.getSpacingBefore()));
+            if (!topOfPage) {
+                context.moveDown(spacingBefore);
+            }
         }
         float paragraphTop = context.y;
+        String bullet = paragraphBullet(paragraph);
         String text = alignCheckboxLabels
             ? paragraphText(paragraph)
             : renderableText(paragraphText(paragraph));
+        if (bullet != null) {
+            text = bullet + " " + text;
+        }
         float leftIndent = indentationToPoints(paragraph.getIndentationLeft());
         float rightIndent = indentationToPoints(paragraph.getIndentationRight());
         float firstLineIndent = useWordParagraphLayout
@@ -233,6 +392,15 @@ final class PoiDocxRenderer {
         AutoSpacing autoSpacing = paragraphAutoSpacing(paragraph);
         List<RunSegment> segments = paragraphSegments(
             paragraph, fonts, fontSize, boldFont, alignCheckboxLabels);
+        if (bullet != null && !segments.isEmpty()) {
+            for (int index = 0; index < segments.size(); index++) {
+                RunSegment first = segments.get(index);
+                if (!first.tab()) {
+                    segments.set(index, first.prepend(bullet + " "));
+                    break;
+                }
+            }
+        }
         float segmentWidth = 0.0f;
         for (RunSegment segment : segments) {
             if (segment.tab()) {
@@ -240,7 +408,18 @@ final class PoiDocxRenderer {
                 continue;
             }
             segmentWidth += segment.leadingSpacing()
-                + textWidth(segment.font(), segment.text(), segment.fontSize(), autoSpacing);
+                + textWidth(segment.font(), segment.text(), segment.fontSize(), autoSpacing, segment.bold());
+        }
+        // Mirror DocxToPdfConverter: center/right alignment positions text with
+        // the actual font advances (measured width), not the wrap estimate.
+        float actualSegmentWidth = 0.0f;
+        for (RunSegment segment : segments) {
+            if (segment.tab()) {
+                actualSegmentWidth = nextDefaultTabStop(actualSegmentWidth);
+                continue;
+            }
+            actualSegmentWidth += segment.leadingSpacing()
+                + segment.font().getStringWidth(segment.text()) / 1000.0f * segment.fontSize();
         }
         boolean hasPictures = paragraph.getRuns().stream()
                 .anyMatch(run -> !run.getEmbeddedPictures().isEmpty());
@@ -254,16 +433,26 @@ final class PoiDocxRenderer {
                     .orElse(fontSize);
             float naturalLineHeight = maxFontSize * 1.2f;
                 float lineHeight = paragraphLineHeight(
-                    paragraph, maxFontSize, naturalLineHeight, context.linePitch, useWordParagraphLayout);
+                    paragraph, maxFontSize, naturalLineHeight, context.linePitch,
+                    useWordParagraphLayout, bullet != null);
             context.ensureSpace(lineHeight);
             float leading = Math.max(0.0f, lineHeight - naturalLineHeight) / 2.0f;
-            float baseline = context.y - leading - maxFontSize;
+            float firstBaselineOffset = maxFontSize;
+            if (topOfPage) {
+                RunSegment tallest = segments.stream()
+                        .max(Comparator.comparing(RunSegment::fontSize))
+                        .orElse(null);
+                if (tallest != null) {
+                    firstBaselineOffset = maxFontSize * fontAscentRatio(tallest.font());
+                }
+            }
+            float baseline = context.y - leading - firstBaselineOffset;
             float x = context.margin + leftIndent + firstLineIndent;
             if (paragraph.getAlignment() == ParagraphAlignment.CENTER) {
                 x = centeredTextX(
-                        context.pageSize.width(), leftIndent + firstLineIndent, rightIndent, segmentWidth);
+                        context.pageSize.width(), leftIndent + firstLineIndent, rightIndent, actualSegmentWidth);
             } else if (paragraph.getAlignment() == ParagraphAlignment.RIGHT) {
-                x = context.pageSize.width() - context.margin - rightIndent - segmentWidth;
+                x = context.pageSize.width() - context.margin - rightIndent - actualSegmentWidth;
             }
             for (RunSegment segment : segments) {
                 if (segment.tab()) {
@@ -279,6 +468,7 @@ final class PoiDocxRenderer {
                     baseline,
                     textWidth(segment.font(), segment.text(), segment.fontSize(), autoSpacing),
                     segment.fontSize());
+                applyTextColor(context.content, segment.color());
                 showText(
                         context.content,
                         segment.font(),
@@ -289,37 +479,65 @@ final class PoiDocxRenderer {
                         autoSpacing);
                 x += textWidth(segment.font(), segment.text(), segment.fontSize(), autoSpacing);
             }
+            context.content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
             renderFloatingCheckboxes(context, paragraph, paragraphTop);
             context.y -= lineHeight;
-            finishParagraph(context, paragraph, useWordParagraphLayout);
+            finishParagraph(context, paragraph, useWordParagraphLayout, suppressContextualAfter);
             if (startsNewSection(paragraph)) {
                 context.newPage();
             }
             return;
         }
         PDFont font = wrappingFont(fonts, text);
-        float wrapTolerance = useWordParagraphLayout ? fontSize : 0.0f;
+        // Mirrors DocxReader: a wrapped paragraph renders with the first
+        // explicit run color, falling back to the paragraph style color
+        // (e.g. the Heading2 4F81BD blue).
+        String paragraphColor = paragraphStyleColor(paragraph);
+        if (paragraphColor == null) {
+            for (XWPFRun run : paragraph.getRuns()) {
+                paragraphColor = runColor(run);
+                if (paragraphColor != null) {
+                    break;
+                }
+            }
+        }
+        // Calibrated wrap widths already match Word/LibreOffice metrics, so no
+        // extra per-line tolerance is needed. The old fontSize tolerance let
+        // bold headings like "A Novel Approach to Document Conversion" fit on a
+        // single line and collapse pagination.
+        float wrapTolerance = 0.0f;
+        boolean paragraphBold = paragraph.getRuns().stream()
+                .anyMatch(run -> !run.text().isEmpty() && run.isBold());
         List<String> lines = wrap(
             font,
             text.replace('\t', ' '),
             fontSize,
             firstLineWidth + wrapTolerance,
             availableWidth + wrapTolerance,
-            autoSpacing);
+            autoSpacing,
+            paragraphBold);
         float lineHeight = paragraphLineHeight(
-            paragraph, fontSize, fontSize * 1.2f, context.linePitch, useWordParagraphLayout);
+            paragraph, fontSize, fontSize * 1.2f, context.linePitch, useWordParagraphLayout,
+            bullet != null);
         if (useWordParagraphLayout) {
             context.avoidWidowOrphanSplit(lineHeight, lines.size());
         }
         float firstBaseline = 0.0f;
+        applyTextColor(context.content, paragraphColor);
         for (int index = 0; index < lines.size(); index++) {
             context.ensureSpace(lineHeight);
-            float baseline = context.y - fontSize;
+            float baseline = context.y - (topOfPage && index == 0
+                    ? fontSize * fontAscentRatio(font)
+                    : fontSize);
             if (index == 0) {
                 firstBaseline = baseline;
             }
             String line = lines.get(index);
-            float width = textWidth(font, line, fontSize, autoSpacing);
+            float estimatedWidth = textWidth(font, line, fontSize, autoSpacing);
+            float width = paragraph.getAlignment() == ParagraphAlignment.CENTER
+                    || paragraph.getAlignment() == ParagraphAlignment.RIGHT
+                    ? font.getStringWidth(line) / 1000.0f * fontSize
+                    : estimatedWidth;
             float lineLeftIndent = index == 0 ? leftIndent + firstLineIndent : leftIndent;
             float lineWidth = index == 0 ? firstLineWidth : availableWidth;
             float x = context.margin + lineLeftIndent;
@@ -331,14 +549,15 @@ final class PoiDocxRenderer {
             float wordSpacing = paragraph.getAlignment() == ParagraphAlignment.BOTH
                     && useWordParagraphLayout
                     && index < lines.size() - 1
-                    ? justifiedWordSpacing(line, width, lineWidth)
+                    ? justifiedWordSpacing(line, estimatedWidth, lineWidth)
                     : 0.0f;
             showText(context.content, font, fontSize, line, x, baseline, autoSpacing, wordSpacing);
             context.y -= lineHeight;
         }
+        context.content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
         renderPictures(context, paragraph, firstBaseline);
         renderFloatingCheckboxes(context, paragraph, paragraphTop);
-        finishParagraph(context, paragraph, useWordParagraphLayout);
+        finishParagraph(context, paragraph, useWordParagraphLayout, suppressContextualAfter);
         if (startsNewSection(paragraph)) {
             context.newPage();
         }
@@ -347,8 +566,13 @@ final class PoiDocxRenderer {
     private static void finishParagraph(
             PageContext context,
             XWPFParagraph paragraph,
-            boolean useWordParagraphLayout) throws IOException {
-        float spacingAfter = twipsToPoints(paragraph.getSpacingAfter());
+            boolean useWordParagraphLayout,
+            boolean suppressContextualAfter) throws IOException {
+        float spacingAfter = suppressContextualAfter
+                ? 0.0f
+                : useWordParagraphLayout
+                    ? twipsToPoints(effectiveSpacing(paragraph).after())
+                    : twipsToPoints(paragraph.getSpacingAfter());
         if (useWordParagraphLayout) {
             context.finishParagraph(spacingAfter);
         } else {
@@ -564,13 +788,21 @@ final class PoiDocxRenderer {
             PageContext context,
             XWPFTable table,
             ParagraphFonts fonts,
-            PDFont boldFont) throws IOException {
+            PDFont boldFont,
+            XWPFDocument document) throws IOException {
         PDFont font = fonts.simSun();
         float tableWidth = twipsToPoints(table.getWidth());
-        if (tableWidth <= 0.0f) {
+        boolean autoWidth = tableWidth <= 0.0f;
+        if (autoWidth) {
             tableWidth = context.pageSize.width() - context.margin * 2.0f;
         }
-        float x = (context.pageSize.width() - tableWidth) / 2.0f;
+        // Word applies a default table indent of -108 twips (one cell margin)
+        // to auto-width tables so the left cell margin lands on the text
+        // margin. Verified against Word and LibreOffice: the thesis table
+        // borders start 5.4pt left of the 90pt margin.
+        float x = autoWidth
+                ? context.margin - CELL_HORIZONTAL_PADDING
+                : (context.pageSize.width() - tableWidth) / 2.0f;
         boolean compact = tableWidth < 200.0f;
         boolean landscape = context.pageSize.width() > context.pageSize.height();
         List<Float> columnWidths = columnWidths(table, tableWidth);
@@ -585,7 +817,7 @@ final class PoiDocxRenderer {
         float tableHeight = sum(rowHeights, rowHeights.size());
         float spacingBefore = compact ? 4.0f : table.getRows().size() == 1
             ? 6.0f
-            : landscape ? 0.0f : 3.0f;
+            : landscape ? 0.0f : 1.9f;
         context.moveDown(spacingBefore);
         context.ensureSpace(tableHeight);
 
@@ -593,9 +825,13 @@ final class PoiDocxRenderer {
         for (int rowIndex = 0; rowIndex < table.getRows().size(); rowIndex++) {
             XWPFTableRow row = table.getRows().get(rowIndex);
             float rowHeight = rowHeights.get(rowIndex);
+            boolean firstRow = rowIndex == 0;
+            boolean lastRow = rowIndex == table.getRows().size() - 1;
             float cellX = x;
             int column = 0;
-            for (XWPFTableCell cell : row.getTableCells()) {
+            int cellCount = row.getTableCells().size();
+            for (int cellIndex = 0; cellIndex < cellCount; cellIndex++) {
+                XWPFTableCell cell = row.getTableCells().get(cellIndex);
                 float width = twipsToPoints(cell.getWidth());
                 if (width <= 0.0f) {
                     width = column < columnWidths.size() ? columnWidths.get(column) : tableWidth;
@@ -607,7 +843,12 @@ final class PoiDocxRenderer {
                     cellX,
                     rowTop,
                     width,
-                        rowHeight);
+                    rowHeight,
+                    firstRow,
+                    lastRow,
+                    cellIndex == 0,
+                    cellIndex == cellCount - 1,
+                    document);
                 cellX += width;
                 while (column < columnWidths.size() && cellX > x + sum(columnWidths, column + 1) - 0.5f) {
                     column++;
@@ -677,6 +918,10 @@ final class PoiDocxRenderer {
         } else if (table.getRows().size() == 1) {
             context.moveDown(2.0f);
         }
+        // A table interrupts the paragraph chain: the next paragraph's
+        // spacing-before must not collapse with the spacing-after of the
+        // paragraph preceding the table (Word does not collapse across tables).
+        context.resetParagraphSpacingAfter();
     }
 
     private static void drawCompactMergeLine(
@@ -689,12 +934,12 @@ final class PoiDocxRenderer {
             float width) throws IOException {
         XWPFTableCell cell = mergeLine.cell();
             PDFont cellFont = isCellBold(cell) ? boldFont : font;
-        float fontSize = cellFontSize(cell, 8.0f);
-        List<String> lines = cellLines(cell, cellFont, fontSize, width, 0.0f);
+        List<CellLine> lines = cellLines(cell, cellFont, width, 0.0f);
         if (mergeLine.index() >= lines.size()) {
             return;
         }
-        showText(context.content, cellFont, fontSize, lines.get(mergeLine.index()), x, top - fontSize);
+        CellLine line = lines.get(mergeLine.index());
+        showText(context.content, cellFont, line.fontSize, line.text, x, top - line.fontSize);
     }
 
     private static void drawCellBorder(
@@ -704,36 +949,34 @@ final class PoiDocxRenderer {
             float x,
             float top,
             float width,
-            float height) throws IOException {
+            float height,
+            boolean firstRow,
+            boolean lastRow,
+            boolean firstColumn,
+            boolean lastColumn,
+            XWPFDocument document) throws IOException {
         context.content.setStrokingColor(0, 0, 0);
         context.content.setLineWidth(0.5f);
         CTTcBorders borders = cell.getCTTc().isSetTcPr()
             && cell.getCTTc().getTcPr().isSetTcBorders()
             ? cell.getCTTc().getTcPr().getTcBorders()
             : null;
-        CTTblBorders tableBorders = table.getCTTbl().getTblPr().isSetTblBorders()
-                ? table.getCTTbl().getTblPr().getTblBorders()
-                : null;
-        if (borders == null) {
-            if (isBorderlessLayoutTable(table, tableBorders)) {
-            return;
-            }
-            context.content.addRect(x, top - height, width, height);
-            context.content.stroke();
+        CTTblBorders tableBorders = resolvedTableBorders(table, document);
+        if (borders == null && isBorderlessLayoutTable(table, tableBorders)) {
             return;
         }
         String topStyle = resolveBorderStyle(
-            borders.isSetTop() ? borders.getTop() : null,
-            tableBorders == null ? null : tableBorders.getInsideH());
+            borders != null && borders.isSetTop() ? borders.getTop() : null,
+            tableBorders == null ? null : firstRow ? tableBorders.getTop() : tableBorders.getInsideH());
         String leftStyle = resolveBorderStyle(
-            borders.isSetLeft() ? borders.getLeft() : null,
-            tableBorders == null ? null : tableBorders.getInsideV());
+            borders != null && borders.isSetLeft() ? borders.getLeft() : null,
+            tableBorders == null ? null : firstColumn ? tableBorders.getLeft() : tableBorders.getInsideV());
         String bottomStyle = resolveBorderStyle(
-            borders.isSetBottom() ? borders.getBottom() : null,
-            tableBorders == null ? null : tableBorders.getInsideH());
+            borders != null && borders.isSetBottom() ? borders.getBottom() : null,
+            tableBorders == null ? null : lastRow ? tableBorders.getBottom() : tableBorders.getInsideH());
         String rightStyle = resolveBorderStyle(
-            borders.isSetRight() ? borders.getRight() : null,
-            tableBorders == null ? null : tableBorders.getInsideV());
+            borders != null && borders.isSetRight() ? borders.getRight() : null,
+            tableBorders == null ? null : lastColumn ? tableBorders.getRight() : tableBorders.getInsideV());
         if (isVisibleBorder(topStyle)) {
             drawBorder(context, x, top, x + width, top, topStyle);
         }
@@ -746,6 +989,117 @@ final class PoiDocxRenderer {
         if (isVisibleBorder(rightStyle)) {
             drawBorder(context, x + width, top, x + width, top - height, rightStyle);
         }
+    }
+
+    /**
+     * Resolves the table's effective borders the way Word does: explicit
+     * w:tblBorders wins, then the table style's tblBorders, then a built-in
+     * "Grid"-style heuristic for styles that are referenced but not embedded.
+     */
+    private static CTTblBorders resolvedTableBorders(XWPFTable table, XWPFDocument document) {
+        CTTblBorders direct = table.getCTTbl().getTblPr().isSetTblBorders()
+                ? table.getCTTbl().getTblPr().getTblBorders()
+                : null;
+        if (direct != null) {
+            return direct;
+        }
+        CTTblBorders style = tableStyleBorders(table, document);
+        if (style != null) {
+            return style;
+        }
+        String styleId = table.getStyleID();
+        if (styleId != null && styleId.toLowerCase().contains("grid")) {
+            return syntheticGridBorders();
+        }
+        return null;
+    }
+
+    private static CTTblBorders tableStyleBorders(XWPFTable table, XWPFDocument document) {
+        String styleId = table.getStyleID();
+        if (styleId == null || styleId.isEmpty()) {
+            return null;
+        }
+        CTStyles styles = document.getStyles().getCtStyles();
+        if (styles == null) {
+            return null;
+        }
+        for (CTStyle style : styles.getStyleList()) {
+            if (!styleId.equals(style.getStyleId())) {
+                continue;
+            }
+            // Read the style's w:tblPr/w:tblBorders through the DOM instead of
+            // CTStyle#getTblPr(), which materializes CTTblPrBase — a schema type
+            // only present in poi-ooxml-full, not poi-ooxml-lite.
+            Node tblPr = directChild(style.getDomNode(), "tblPr");
+            Node tblBorders = tblPr == null ? null : directChild(tblPr, "tblBorders");
+            if (tblBorders == null) {
+                return null;
+            }
+            CTTblBorders borders = CTTblBorders.Factory.newInstance();
+            copyStyleBorderSide(borders, tblBorders, "top");
+            copyStyleBorderSide(borders, tblBorders, "left");
+            copyStyleBorderSide(borders, tblBorders, "bottom");
+            copyStyleBorderSide(borders, tblBorders, "right");
+            copyStyleBorderSide(borders, tblBorders, "insideH");
+            copyStyleBorderSide(borders, tblBorders, "insideV");
+            return borders;
+        }
+        return null;
+    }
+
+    private static void copyStyleBorderSide(CTTblBorders borders, Node tblBorders, String side) {
+        Node sideNode = directChild(tblBorders, side);
+        if (sideNode == null) {
+            return;
+        }
+        String value = attribute(sideNode, "val");
+        if (value == null || value.isEmpty()) {
+            return;
+        }
+        STBorder.Enum borderValue;
+        try {
+            borderValue = STBorder.Enum.forString(value);
+        } catch (IllegalArgumentException ignored) {
+            return;
+        }
+        CTBorder border;
+        switch (side) {
+            case "top":
+                border = borders.addNewTop();
+                break;
+            case "left":
+                border = borders.addNewLeft();
+                break;
+            case "bottom":
+                border = borders.addNewBottom();
+                break;
+            case "right":
+                border = borders.addNewRight();
+                break;
+            case "insideH":
+                border = borders.addNewInsideH();
+                break;
+            case "insideV":
+                border = borders.addNewInsideV();
+                break;
+            default:
+                return;
+        }
+        border.setVal(borderValue);
+    }
+
+    private static CTTblBorders syntheticGridBorders() {
+        CTTblBorders borders = CTTblBorders.Factory.newInstance();
+        for (CTBorder side : new CTBorder[] {
+                borders.addNewTop(),
+                borders.addNewLeft(),
+                borders.addNewBottom(),
+                borders.addNewRight(),
+                borders.addNewInsideH(),
+                borders.addNewInsideV()}) {
+            side.setVal(STBorder.SINGLE);
+        }
+        return borders;
     }
 
     static String resolveBorderStyle(CTBorder cellBorder, CTBorder tableBorder) {
@@ -800,15 +1154,19 @@ final class PoiDocxRenderer {
             float height,
             boolean compact) throws IOException {
         PDFont cellFont = resolvedCellFont(cell, fonts, boldFont);
-        float fontSize = cellFontSize(cell, DEFAULT_TABLE_FONT_SIZE);
         float horizontalPadding = compact ? 0.0f : CELL_HORIZONTAL_PADDING;
-        float verticalPadding = compact ? 0.0f : CELL_VERTICAL_PADDING;
-        List<String> lines = cellLines(cell, cellFont, fontSize, width, horizontalPadding);
-        float lineHeight = gridLineHeight(fontSize * 1.35f, context.linePitch);
-        float baseline = top - verticalPadding - paragraphSpacingBefore(cell) - fontSize;
+        // Word's default table cell margin is 0 top/bottom (only left/right
+        // default to 108 twips), so no vertical padding is added.
+        float verticalPadding = 0.0f;
+        List<CellLine> lines = cellLines(cell, cellFont, width, horizontalPadding);
+        float firstFontSize = lines.get(0).fontSize;
+        float textHeight = 0.0f;
+        for (CellLine line : lines) {
+            textHeight += gridLineHeight(line.fontSize * 1.35f, context.linePitch);
+        }
+        float baseline = top - verticalPadding - paragraphSpacingBefore(cell) - firstFontSize;
         if (cell.getVerticalAlignment() == XWPFTableCell.XWPFVertAlign.CENTER) {
-            float textHeight = fontSize + Math.max(0, lines.size() - 1) * lineHeight;
-            baseline = top - (height - textHeight) / 2.0f - fontSize;
+            baseline = top - (height - textHeight) / 2.0f - firstFontSize;
         }
         ParagraphAlignment alignment = cell.getParagraphs().isEmpty()
                 ? ParagraphAlignment.LEFT
@@ -817,22 +1175,22 @@ final class PoiDocxRenderer {
                 .flatMap(paragraph -> paragraph.getRuns().stream())
                 .anyMatch(run -> run.getTextHighlightColor() != null
                         && "yellow".equalsIgnoreCase(run.getTextHighlightColor().toString()));
-        for (String line : lines) {
-            float lineWidth = textWidth(cellFont, line, fontSize);
+        for (CellLine line : lines) {
+            float lineWidth = textWidth(cellFont, line.text, line.fontSize);
             float lineX = x + horizontalPadding;
             if (alignment == ParagraphAlignment.CENTER) {
                 lineX = x + (width - lineWidth) / 2.0f;
             } else if (alignment == ParagraphAlignment.RIGHT) {
                 lineX = x + width - horizontalPadding - lineWidth;
             }
-            if (highlighted && !line.isEmpty()) {
+            if (highlighted && !line.text.isEmpty()) {
                 context.content.setNonStrokingColor(1.0f, 1.0f, 0.0f);
-                context.content.addRect(lineX, baseline - 1.0f, lineWidth, fontSize + 2.0f);
+                context.content.addRect(lineX, baseline - 1.0f, lineWidth, line.fontSize + 2.0f);
                 context.content.fill();
                 context.content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
             }
-                showText(context.content, cellFont, fontSize, line, lineX, baseline);
-            baseline -= lineHeight;
+                showText(context.content, cellFont, line.fontSize, line.text, lineX, baseline);
+            baseline -= gridLineHeight(line.fontSize * 1.35f, context.linePitch);
         }
     }
 
@@ -870,6 +1228,12 @@ final class PoiDocxRenderer {
         return widths.stream().map(width -> width * scale).collect(Collectors.toList());
     }
 
+    private static boolean rowHeightExact(XWPFTableRow row) {
+        Node trPr = directChild(row.getCtRow().getDomNode(), "trPr");
+        Node trHeight = trPr == null ? null : directChild(trPr, "trHeight");
+        return trHeight != null && "exact".equalsIgnoreCase(attribute(trHeight, "hRule"));
+    }
+
     private static float rowHeight(
             XWPFTableRow row,
             ParagraphFonts fonts,
@@ -878,6 +1242,13 @@ final class PoiDocxRenderer {
             boolean compact,
             float rowHeightPadding,
             float linePitch) throws IOException {
+        // Mirror DocxReader.cs: w:trHeight with hRule="exact" is a hard cap —
+        // Word clips cell content to that height instead of growing the row.
+        // Without this, a fixed-height business-card/label table expands every
+        // row to its wrapped content height and overflows the page.
+        if (rowHeightExact(row)) {
+            return twipsToPoints(row.getHeight());
+        }
         float height = twipsToPoints(row.getHeight());
         int column = 0;
         for (XWPFTableCell cell : row.getTableCells()) {
@@ -892,17 +1263,44 @@ final class PoiDocxRenderer {
             float fontSize = cellFontSize(cell, DEFAULT_TABLE_FONT_SIZE);
             float horizontalPadding = compact ? 0.0f : CELL_HORIZONTAL_PADDING;
                 PDFont cellFont = compact ? fonts.simSun() : resolvedCellFont(cell, fonts, boldFont);
-                int lines = cellLines(cell, cellFont, fontSize, width, horizontalPadding).size();
-            float lineHeight = gridLineHeight(fontSize * 1.35f, linePitch);
+                int lines = cellLines(cell, cellFont, width, horizontalPadding).size();
+            float lineHeight = cellLineHeight(cell, fontSize, linePitch);
                 height = Math.max(
                     height,
                     paragraphSpacingBefore(cell)
                         + lines * lineHeight
                         + paragraphSpacingAfter(cell)
-                        + rowHeightPadding);
+                        + (linePitch > 0.0f ? rowHeightPadding : 0.0f));
             column++;
         }
         return height;
+    }
+
+    /**
+     * Mirrors DocxToPdfConverter.CalculateCellContentHeight: honor each cell
+     * paragraph's line spacing rule (EXACT / AT_LEAST / multiple), otherwise
+     * fall back to the natural line height, snapped to the CJK grid only when a
+     * line grid is active.
+     */
+    private static float cellLineHeight(XWPFTableCell cell, float fontSize, float linePitch) {
+        float natural = fontSize * 1.2f;
+        float tallest = natural;
+        for (XWPFParagraph paragraph : cell.getParagraphs()) {
+            double spacing = paragraph.getSpacingBetween();
+            if (spacing < 0.0) {
+                tallest = Math.max(tallest, gridLineHeight(natural, linePitch));
+                continue;
+            }
+            LineSpacingRule rule = paragraph.getSpacingLineRule();
+            if (rule == LineSpacingRule.EXACT) {
+                tallest = Math.max(tallest, (float) spacing);
+            } else if (rule == LineSpacingRule.AT_LEAST) {
+                tallest = Math.max(tallest, Math.max(natural, (float) spacing));
+            } else {
+                tallest = Math.max(tallest, natural * (float) spacing);
+            }
+        }
+        return tallest;
     }
 
             private static float paragraphSpacingBefore(XWPFTableCell cell) {
@@ -925,23 +1323,35 @@ final class PoiDocxRenderer {
                         .anyMatch(XWPFRun::isBold);
             }
 
-    private static List<String> cellLines(
+    private static final class CellLine {
+        private final String text;
+        private final float fontSize;
+
+        private CellLine(String text, float fontSize) {
+            this.text = text;
+            this.fontSize = fontSize;
+        }
+    }
+
+    private static List<CellLine> cellLines(
             XWPFTableCell cell,
             PDFont font,
-            float fontSize,
             float width,
             float padding)
             throws IOException {
-        List<String> lines = new ArrayList<>();
+        List<CellLine> lines = new ArrayList<>();
         for (XWPFParagraph paragraph : cell.getParagraphs()) {
             String text = paragraphText(paragraph).trim();
+            float fontSize = paragraphFontSize(paragraph, DEFAULT_TABLE_FONT_SIZE);
             if (cell.getCTTc().isSetTcPr() && cell.getCTTc().getTcPr().isSetNoWrap()) {
-                lines.add(text);
+                lines.add(new CellLine(text, fontSize));
             } else {
-                lines.addAll(wrap(font, text, fontSize, cellContentWidth(width, padding)));
+                for (String line : wrap(font, text, fontSize, cellContentWidth(width, padding))) {
+                    lines.add(new CellLine(line, fontSize));
+                }
             }
         }
-        return lines.isEmpty() ? Collections.singletonList("") : lines;
+        return lines.isEmpty() ? Collections.singletonList(new CellLine("", DEFAULT_TABLE_FONT_SIZE)) : lines;
     }
 
     static float cellContentWidth(float width, float padding) {
@@ -999,6 +1409,17 @@ final class PoiDocxRenderer {
             float firstLineWidth,
             float width,
             AutoSpacing autoSpacing) throws IOException {
+        return wrap(font, text, fontSize, firstLineWidth, width, autoSpacing, false);
+    }
+
+    private static List<String> wrap(
+            PDFont font,
+            String text,
+            float fontSize,
+            float firstLineWidth,
+            float width,
+            AutoSpacing autoSpacing,
+            boolean bold) throws IOException {
         if (text.isEmpty()) {
             return Collections.singletonList("");
         }
@@ -1009,7 +1430,7 @@ final class PoiDocxRenderer {
             offset += Character.charCount(codePoint);
             line.appendCodePoint(codePoint);
             while (line.codePointCount(0, line.length()) > 1
-                    && textWidth(font, line.toString(), fontSize, autoSpacing)
+                    && textWidth(font, line.toString(), fontSize, autoSpacing, bold)
                         > (lines.isEmpty() ? firstLineWidth : width)) {
                 int breakOffset = lastWrapBoundary(line);
                 if (breakOffset <= 0) {
@@ -1200,6 +1621,8 @@ final class PoiDocxRenderer {
         private final float leadingSpacing;
         private final HighlightColor highlight;
         private final boolean tab;
+        private final boolean bold;
+        private final String color;
 
         RunSegment(
                 String text,
@@ -1208,16 +1631,46 @@ final class PoiDocxRenderer {
                 float leadingSpacing,
                 HighlightColor highlight,
                 boolean tab) {
+            this(text, font, fontSize, leadingSpacing, highlight, tab, false, null);
+        }
+
+        RunSegment(
+                String text,
+                PDFont font,
+                float fontSize,
+                float leadingSpacing,
+                HighlightColor highlight,
+                boolean tab,
+                boolean bold) {
+            this(text, font, fontSize, leadingSpacing, highlight, tab, bold, null);
+        }
+
+        RunSegment(
+                String text,
+                PDFont font,
+                float fontSize,
+                float leadingSpacing,
+                HighlightColor highlight,
+                boolean tab,
+                boolean bold,
+                String color) {
             this.text = text;
             this.font = font;
             this.fontSize = fontSize;
             this.leadingSpacing = leadingSpacing;
             this.highlight = highlight;
             this.tab = tab;
+            this.bold = bold;
+            this.color = color;
         }
 
         String text() {
             return text;
+        }
+
+        RunSegment prepend(String prefix) {
+            return new RunSegment(
+                    prefix + text, font, fontSize, leadingSpacing, highlight, tab, bold, color);
         }
 
         PDFont font() {
@@ -1238,6 +1691,14 @@ final class PoiDocxRenderer {
 
         boolean tab() {
             return tab;
+        }
+
+        boolean bold() {
+            return bold;
+        }
+
+        String color() {
+            return color;
         }
     }
 
@@ -1350,6 +1811,14 @@ final class PoiDocxRenderer {
             return fallback;
         }
 
+        PDFont latin() {
+            String family = defaultAsciiFamily == null ? "" : defaultAsciiFamily.toLowerCase();
+            if (family.contains("times") || family.contains("georgia")) {
+                return times;
+            }
+            return arial;
+        }
+
         PDFont simSun() {
             return simSun;
         }
@@ -1394,9 +1863,14 @@ final class PoiDocxRenderer {
     }
 
     static PDFont wrappingFont(ParagraphFonts fonts, String text) {
-        return text.codePoints().anyMatch(PoiDocxRenderer::usesEastAsianFontSlot)
-                ? fonts.simSun()
-                : fonts.fallback();
+        if (text.codePoints().anyMatch(PoiDocxRenderer::usesEastAsianFontSlot)) {
+            return fonts.simSun();
+        }
+        // Mirror DocxReader.cs: Latin text must wrap with the document's Latin
+        // font metrics (Times/Arial), not the CJK fallback (SimHei renders Latin
+        // glyphs at half-width 500/1000). Wrapping with half-width glyphs makes
+        // every line ~10% narrower than Word, collapsing pagination.
+        return fonts.latin();
     }
 
     static List<RunSegment> paragraphSegments(
@@ -1422,6 +1896,8 @@ final class PoiDocxRenderer {
             boolean preserveTabs) {
         List<RunSegment> segments = new ArrayList<>();
         AutoSpacing autoSpacing = paragraphAutoSpacing(paragraph);
+        boolean styleBold = paragraphStyleBold(paragraph);
+        String styleColor = paragraphStyleColor(paragraph);
         for (XWPFRun run : paragraph.getRuns()) {
             String text = preserveTabs ? runText(run) : renderableText(runText(run));
             if (text.isEmpty()) {
@@ -1433,6 +1909,11 @@ final class PoiDocxRenderer {
             StringBuilder segmentText = new StringBuilder();
             PDFont segmentFont = null;
             float segmentLeadingSpacing = 0.0f;
+            boolean runBold = (run.isBold() || styleBold) && boldFont != null;
+            String color = runColor(run);
+            if (color == null) {
+                color = styleColor;
+            }
             int previous = -1;
             for (int offset = 0; offset < text.length();) {
                 int codePoint = text.codePointAt(offset);
@@ -1441,7 +1922,7 @@ final class PoiDocxRenderer {
                     if (segmentText.length() > 0) {
                         segments.add(new RunSegment(
                                 segmentText.toString(), segmentFont, fontSize, segmentLeadingSpacing,
-                                runHighlight(run), false));
+                                runHighlight(run), false, runBold, color));
                         segmentText.setLength(0);
                     }
                     segments.add(new RunSegment("\t", null, fontSize, 0.0f, null, true));
@@ -1450,7 +1931,7 @@ final class PoiDocxRenderer {
                     previous = -1;
                     continue;
                 }
-                PDFont codePointFont = run.isBold() && boldFont != null
+                PDFont codePointFont = runBold
                         ? boldFont
                         : fonts.resolve(run, codePoint);
                 if (segmentFont != null && codePointFont != segmentFont) {
@@ -1459,7 +1940,7 @@ final class PoiDocxRenderer {
                             : 0.0f;
                     segments.add(new RunSegment(
                             segmentText.toString(), segmentFont, fontSize, segmentLeadingSpacing,
-                            runHighlight(run), false));
+                            runHighlight(run), false, runBold, color));
                     segmentText.setLength(0);
                     segmentFont = codePointFont;
                     segmentLeadingSpacing = spacing;
@@ -1473,7 +1954,7 @@ final class PoiDocxRenderer {
             if (segmentText.length() > 0) {
                 segments.add(new RunSegment(
                         segmentText.toString(), segmentFont, fontSize, segmentLeadingSpacing,
-                    runHighlight(run), false));
+                    runHighlight(run), false, runBold, color));
             }
         }
         return segments;
@@ -1634,11 +2115,18 @@ final class PoiDocxRenderer {
             List<List<String>> text,
             String family) {
         String normalized = family == null ? "" : family.toLowerCase();
-        if (normalized.contains("times")) {
+        if (normalized.contains("times") || normalized.contains("georgia")) {
             return SimplePdfTextRenderer.loadSystemFont(
                     document, text, "times.ttf", "NotoSerif-Regular.ttf");
         }
-        if (normalized.contains("arial")) {
+        if (normalized.contains("arial")
+                || normalized.contains("calibri")
+                || normalized.contains("cambria")
+                || normalized.isEmpty()) {
+            // Theme defaults (minorHAnsi, e.g. Calibri) and unknown western
+            // families use Arial metrics — mirrors the .NET fallback so that
+            // Latin documents take the Word-paragraph layout path instead of
+            // the CJK grid/margin path.
             return SimplePdfTextRenderer.loadSystemFont(
                     document, text, "arial.ttf", "NotoSans-Regular.ttf");
         }
@@ -1700,7 +2188,280 @@ final class PoiDocxRenderer {
                 return fallback;
             }
         }
+        // Mirror the .NET effective-size chain: direct run -> paragraph mark ->
+        // paragraph style -> Normal style -> docDefaults. Without this, a body
+        // paragraph that inherits its size from Normal (e.g. 12pt) falls back
+        // to the 11pt default, making every line ~0.5pt shorter and collapsing
+        // pagination.
+        XWPFStyles styles = paragraph.getDocument().getStyles();
+        if (styles != null) {
+            String styleId = paragraph.getStyle();
+            if (styleId != null) {
+                Float styleSize = styleFontSize(styles.getStyle(styleId));
+                if (styleSize != null) {
+                    return styleSize;
+                }
+            }
+            Float normalSize = styleFontSize(styles.getStyle("Normal"));
+            if (normalSize != null) {
+                return normalSize;
+            }
+            Float docDefaultSize = docDefaultsFontSize(styles.getCtStyles());
+            if (docDefaultSize != null) {
+                return docDefaultSize;
+            }
+        }
         return fallback;
+    }
+
+    private static Float styleFontSize(XWPFStyle style) {
+        if (style == null || style.getCTStyle() == null || !style.getCTStyle().isSetRPr()) {
+            return null;
+        }
+        CTRPr properties = style.getCTStyle().getRPr();
+        if (properties.sizeOfSzArray() == 0) {
+            return null;
+        }
+        try {
+            return Float.parseFloat(properties.getSzArray(0).getVal().toString()) / 2.0f;
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    private static Float docDefaultsFontSize(CTStyles styles) {
+        if (styles == null || !styles.isSetDocDefaults()
+                || !styles.getDocDefaults().isSetRPrDefault()
+                || !styles.getDocDefaults().getRPrDefault().isSetRPr()) {
+            return null;
+        }
+        CTRPr properties = styles.getDocDefaults().getRPrDefault().getRPr();
+        if (properties.sizeOfSzArray() == 0) {
+            return null;
+        }
+        try {
+            return Float.parseFloat(properties.getSzArray(0).getVal().toString()) / 2.0f;
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    /**
+     * Mirrors Word's effective bold: a run is bold if its own rPr says so, or
+     * if the paragraph mark or paragraph style (e.g. Heading2) turns bold on.
+     * POI's XWPFRun#isBold only reads the direct run rPr, so heading styles
+     * would otherwise render non-bold.
+     */
+    private static boolean paragraphStyleBold(XWPFParagraph paragraph) {
+        if (paragraph.getCTP().isSetPPr() && paragraph.getCTP().getPPr().isSetRPr()) {
+            CTParaRPr mark = paragraph.getCTP().getPPr().getRPr();
+            if (isBoldOn(mark.sizeOfBArray() == 0 ? null : mark.getBArray(0))) {
+                return true;
+            }
+        }
+        if (paragraph.getDocument().getStyles() == null) {
+            return false;
+        }
+        String styleId = paragraph.getStyle();
+        if (styleId != null) {
+            XWPFStyle style = paragraph.getDocument().getStyles().getStyle(styleId);
+            if (style != null && style.getCTStyle() != null && style.getCTStyle().isSetRPr()) {
+                CTRPr properties = style.getCTStyle().getRPr();
+                if (isBoldOn(properties.sizeOfBArray() == 0 ? null : properties.getBArray(0))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isBoldOn(CTOnOff bold) {
+        if (bold == null) {
+            return false;
+        }
+        Object value = bold.getVal();
+        return value == null
+                || !"0".equals(value.toString()) && !"false".equalsIgnoreCase(value.toString());
+    }
+
+    /**
+     * Mirrors Word's contextualSpacing flag: set on the paragraph itself or on
+     * its style (e.g. ListBullet). Between consecutive same-style paragraphs,
+     * Word suppresses the spacing-after of the first one.
+     */
+    private static boolean paragraphContextualSpacing(XWPFParagraph paragraph) {
+        Node pPr = directChild(paragraph.getCTP().getDomNode(), "pPr");
+        if (directChild(pPr, "contextualSpacing") != null) {
+            return true;
+        }
+        if (paragraph.getDocument().getStyles() == null) {
+            return false;
+        }
+        String styleId = paragraph.getStyle();
+        if (styleId == null) {
+            return false;
+        }
+        XWPFStyle style = paragraph.getDocument().getStyles().getStyle(styleId);
+        if (style == null || style.getCTStyle() == null) {
+            return false;
+        }
+        Node stylePPr = directChild(style.getCTStyle().getDomNode(), "pPr");
+        return directChild(stylePPr, "contextualSpacing") != null;
+    }
+
+    /**
+     * Mirrors Word's keepNext: set on the paragraph pPr or its style pPr
+     * (e.g. Heading2/Heading3). Prevents the paragraph from being orphaned at
+     * the bottom of a page.
+     */
+    private static boolean paragraphKeepNext(XWPFParagraph paragraph) {
+        Node pPr = directChild(paragraph.getCTP().getDomNode(), "pPr");
+        if (keepNextOn(directChild(pPr, "keepNext"))) {
+            return true;
+        }
+        if (paragraph.getDocument().getStyles() == null) {
+            return false;
+        }
+        String styleId = paragraph.getStyle();
+        if (styleId == null) {
+            return false;
+        }
+        XWPFStyle style = paragraph.getDocument().getStyles().getStyle(styleId);
+        if (style == null || style.getCTStyle() == null) {
+            return false;
+        }
+        Node stylePPr = directChild(style.getCTStyle().getDomNode(), "pPr");
+        return keepNextOn(directChild(stylePPr, "keepNext"));
+    }
+
+    private static boolean keepNextOn(Node node) {
+        if (node == null) {
+            return false;
+        }
+        String value = attribute(node, "val");
+        return value == null || (!"0".equals(value) && !"false".equalsIgnoreCase(value));
+    }
+
+    /**
+     * Returns the run's explicit w:color/w:val hex value, or null when the run
+     * has no color (or "auto", which resets to the paragraph default). Read via
+     * DOM to avoid materializing CTColor from the lite schema.
+     */
+    private static String runColor(XWPFRun run) {
+        Node rPr = directChild(run.getCTR().getDomNode(), "rPr");
+        Node color = directChild(rPr, "color");
+        String value = attribute(color, "val");
+        if (value == null || value.isEmpty() || value.equalsIgnoreCase("auto")) {
+            return null;
+        }
+        return value;
+    }
+
+    /**
+     * Mirrors Word's paragraph-level color: runs without an explicit color
+     * inherit the paragraph style's rPr/w:color (e.g. Heading2 = 4F81BD blue).
+     * Resolved via DOM so no theme mapping is needed when w:val is present.
+     */
+    private static String paragraphStyleColor(XWPFParagraph paragraph) {
+        if (paragraph.getDocument().getStyles() == null) {
+            return null;
+        }
+        String styleId = paragraph.getStyle();
+        if (styleId == null) {
+            return null;
+        }
+        XWPFStyle style = paragraph.getDocument().getStyles().getStyle(styleId);
+        if (style == null || style.getCTStyle() == null) {
+            return null;
+        }
+        Node rPr = directChild(style.getCTStyle().getDomNode(), "rPr");
+        Node color = directChild(rPr, "color");
+        String value = attribute(color, "val");
+        if (value == null || value.isEmpty() || value.equalsIgnoreCase("auto")) {
+            return null;
+        }
+        return value;
+    }
+
+    private static void applyTextColor(PDPageContentStream content, String hex) throws IOException {
+        if (hex == null || hex.isEmpty()) {
+            content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
+            return;
+        }
+        try {
+            int value = Integer.parseInt(hex, 16);
+            content.setNonStrokingColor(
+                    ((value >> 16) & 0xFF) / 255.0f,
+                    ((value >> 8) & 0xFF) / 255.0f,
+                    (value & 0xFF) / 255.0f);
+        } catch (NumberFormatException ignored) {
+            content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
+        }
+    }
+
+    /**
+     * Resolves a paragraph's list bullet marker, or null when the paragraph is
+     * not part of a bulleted list. Returns a renderable bullet (U+2022) that
+     * the Latin fonts embed, replacing Word's private-use Wingdings/Symbol
+     * bullet codepoints (e.g. \uF0B7) that standard text fonts cannot draw.
+     */
+    private static String paragraphBullet(XWPFParagraph paragraph) {
+        BigInteger numId = paragraphNumberingId(paragraph);
+        if (numId == null) {
+            return null;
+        }
+        XWPFNumbering numbering = paragraph.getDocument().getNumbering();
+        if (numbering == null) {
+            return null;
+        }
+        BigInteger abstractId = numbering.getAbstractNumID(numId);
+        if (abstractId == null) {
+            return null;
+        }
+        XWPFAbstractNum abstractNum = numbering.getAbstractNum(abstractId);
+        if (abstractNum == null || abstractNum.getCTAbstractNum() == null) {
+            return null;
+        }
+        CTAbstractNum definition = abstractNum.getCTAbstractNum();
+        if (definition.sizeOfLvlArray() == 0 || definition.getLvlArray(0).getNumFmt() == null
+                || definition.getLvlArray(0).getLvlText() == null) {
+            return null;
+        }
+        CTLvl level = definition.getLvlArray(0);
+        String format = level.getNumFmt().getVal() == null
+                ? null
+                : level.getNumFmt().getVal().toString();
+        if (!"bullet".equalsIgnoreCase(format)) {
+            return null;
+        }
+        String text = level.getLvlText().getVal();
+        if (text == null || text.isEmpty()) {
+            return null;
+        }
+        return text.chars().anyMatch(cp -> cp >= 0xF000 && cp <= 0xF8FF)
+                ? "\u2022"
+                : text;
+    }
+
+    private static BigInteger paragraphNumberingId(XWPFParagraph paragraph) {
+        if (paragraph.getCTP().isSetPPr() && paragraph.getCTP().getPPr().isSetNumPr()
+                && paragraph.getCTP().getPPr().getNumPr().isSetNumId()) {
+            return paragraph.getCTP().getPPr().getNumPr().getNumId().getVal();
+        }
+        if (paragraph.getDocument().getStyles() == null) {
+            return null;
+        }
+        String styleId = paragraph.getStyle();
+        if (styleId == null) {
+            return null;
+        }
+        XWPFStyle style = paragraph.getDocument().getStyles().getStyle(styleId);
+        if (style != null && style.getCTStyle() != null && style.getCTStyle().isSetPPr()
+                && style.getCTStyle().getPPr().isSetNumPr()
+                && style.getCTStyle().getPPr().getNumPr().isSetNumId()) {
+            return style.getCTStyle().getPPr().getNumPr().getNumId().getVal();
+        }
+        return null;
     }
 
     private static float cellFontSize(XWPFTableCell cell, float fallback) {
@@ -1745,6 +2506,15 @@ final class PoiDocxRenderer {
         CTBody body = document.getDocument().getBody();
         if (!body.isSetSectPr() || !body.getSectPr().isSetDocGrid()
                 || body.getSectPr().getDocGrid().getLinePitch() == null) {
+            return 0.0f;
+        }
+        // Mirror DocxReader.cs: only CJK line-grid types activate line snapping.
+        // A plain w:docGrid (type omitted/default) must not inflate line heights.
+        STDocGrid.Enum gridType = body.getSectPr().getDocGrid().getType();
+        if (gridType == null
+                || (!gridType.equals(STDocGrid.LINES)
+                    && !gridType.equals(STDocGrid.LINES_AND_CHARS)
+                    && !gridType.equals(STDocGrid.SNAP_TO_CHARS))) {
             return 0.0f;
         }
         try {
@@ -1841,8 +2611,148 @@ final class PoiDocxRenderer {
             String text,
             float fontSize,
             AutoSpacing autoSpacing) throws IOException {
-        return font.getStringWidth(text) / 1000.0f * fontSize
+        return textWidth(font, text, fontSize, autoSpacing, false);
+    }
+
+    private static float textWidth(
+            PDFont font,
+            String text,
+            float fontSize,
+            AutoSpacing autoSpacing,
+            boolean bold) throws IOException {
+        // Mirrors DocxToPdfConverter.EstimateWrapTextWidth: wrap decisions use
+        // calibrated per-character width tables, not the actual embedded font's
+        // advances. Actual TTF advances drift from Word's metrics by a few
+        // percent and collapse pagination over many lines.
+        //
+        // Path selection mirrors the .NET state flags:
+        // - Calibri-default document: Calibri table x0.977, except serif runs
+        //   which use the Times table with -8.8 units/letter kerning
+        //   (s_serifRunInCalibri).
+        // - Other defaults (e.g. Times New Roman): raw Helvetica table scaled
+        //   down per the .NET latin-fraction reduction (serif default 10%,
+        //   sans default 8%, bold 5%, CJK 27%).
+        boolean calibriDefault = Boolean.TRUE.equals(CALIBRI_DEFAULT.get());
+        if (calibriDefault) {
+            return calibratedTextWidth(font, text, fontSize, autoSpacing, bold);
+        }
+        return helveticaTextWidth(font, text, fontSize, autoSpacing, bold);
+    }
+
+    private static float calibratedTextWidth(
+            PDFont font,
+            String text,
+            float fontSize,
+            AutoSpacing autoSpacing,
+            boolean bold) throws IOException {
+        boolean useTimesWidths = serifFont(font);
+        int[] table = useTimesWidths ? TIMES_ROMAN_WIDTHS : CALIBRI_WIDTHS;
+        float totalUnits = 0.0f;
+        int kernable = 0;
+        for (int offset = 0; offset < text.length();) {
+            int codePoint = text.codePointAt(offset);
+            offset += Character.charCount(codePoint);
+            int width = calibratedCharWidth(codePoint, table);
+            totalUnits += width;
+            if (useTimesWidths && width != 1000 && isKernable(codePoint)) {
+                kernable++;
+            }
+        }
+        if (useTimesWidths) {
+            // Approximate kerning/hinting: ~8.8 units per kernable letter/digit.
+            totalUnits -= kernable * 8.8f;
+        } else {
+            totalUnits *= 0.977f;
+        }
+        if (bold) {
+            totalUnits *= useTimesWidths ? 1.06f : 1.03f;
+        }
+        return totalUnits / 1000.0f * fontSize
                 + eastAsianBoundaryCount(text, autoSpacing) * fontSize * 0.25f;
+    }
+
+    private static float helveticaTextWidth(
+            PDFont font,
+            String text,
+            float fontSize,
+            AutoSpacing autoSpacing,
+            boolean bold) throws IOException {
+        if (font instanceof PDType0Font) {
+            // Word lays out with the same TTF advances as the embedded font
+            // (Times New Roman etc.), so for real document fonts use the
+            // actual metrics. The Helvetica table stays as a fallback for
+            // Standard14 fonts (unit tests) where getStringWidth is still
+            // usable but historically mismatched Word's Times metrics.
+            float width = font.getStringWidth(text) / 1000.0f * fontSize;
+            if (bold) {
+                width *= serifFont(font) ? 1.06f : 1.03f;
+            }
+            return width + eastAsianBoundaryCount(text, autoSpacing) * fontSize * 0.25f;
+        }
+        boolean hasCjk = text.codePoints().anyMatch(PoiDocxRenderer::usesEastAsianFontSlot);
+        float latinUnits = 0.0f;
+        float totalUnits = 0.0f;
+        for (int offset = 0; offset < text.length();) {
+            int codePoint = text.codePointAt(offset);
+            offset += Character.charCount(codePoint);
+            int width = calibratedCharWidth(codePoint, HELVETICA_WIDTHS);
+            float actual = hasCjk && codePoint == ' ' ? 500.0f : width;
+            totalUnits += actual;
+            if (!(width == 1000 && usesEastAsianFontSlot(codePoint)) && codePoint != '\u2009') {
+                latinUnits += actual;
+            }
+        }
+        if (latinUnits > 0.0f && totalUnits > 0.0f) {
+            float latinFraction = latinUnits / totalUnits;
+            float reduction = hasCjk
+                    ? 0.27f
+                    : bold ? 0.05f : Boolean.TRUE.equals(SERIF_DEFAULT.get()) ? 0.10f : 0.08f;
+            totalUnits *= 1.0f - latinFraction * reduction;
+        }
+        return totalUnits / 1000.0f * fontSize
+                + eastAsianBoundaryCount(text, autoSpacing) * fontSize * 0.25f;
+    }
+
+    private static boolean serifFamily(String family) {
+        return family.contains("times")
+                || family.contains("georgia")
+                || family.contains("cambria")
+                || family.contains("palatino")
+                || family.contains("garamond");
+    }
+
+    private static int calibratedCharWidth(int codePoint, int[] table) {
+        if (codePoint >= ' ' && codePoint <= '~') {
+            return table[codePoint - ' '];
+        }
+        if (usesEastAsianFontSlot(codePoint)) {
+            return 1000;
+        }
+        return 500;
+    }
+
+    private static boolean isKernable(int codePoint) {
+        return codePoint >= 'A' && codePoint <= 'Z'
+                || codePoint >= 'a' && codePoint <= 'z'
+                || codePoint >= '0' && codePoint <= '9';
+    }
+
+    private static boolean serifFont(PDFont font) {
+        String name = font.getName() == null ? "" : font.getName().toLowerCase();
+        return name.contains("times") || name.contains("georgia") || name.contains("serif");
+    }
+
+    /**
+     * Font ascent as a fraction of the font size. Word's first line on a page
+     * sits on baseline = topMargin + fontSize * ascent (Times = 0.891), not
+     * topMargin + fontSize. Falls back to 0.8 for fonts without a descriptor
+     * (Standard14 unit-test fonts).
+     */
+    private static float fontAscentRatio(PDFont font) throws IOException {
+        if (font.getFontDescriptor() != null) {
+            return font.getFontDescriptor().getAscent() / 1000.0f;
+        }
+        return serifFont(font) ? 0.891f : 0.8f;
     }
 
     static int eastAsianBoundaryCount(String text) {
@@ -1904,18 +2814,160 @@ final class PoiDocxRenderer {
             float naturalHeight,
             float linePitch,
             boolean useWordParagraphLayout) {
-        double spacing = paragraph.getSpacingBetween();
+        return paragraphLineHeight(
+                paragraph, fontSize, naturalHeight, linePitch, useWordParagraphLayout, false);
+    }
+
+    static float paragraphLineHeight(
+            XWPFParagraph paragraph,
+            float fontSize,
+            float naturalHeight,
+            float linePitch,
+            boolean useWordParagraphLayout,
+            boolean symbolBullet) {
+        double spacing = useWordParagraphLayout
+                ? effectiveSpacing(paragraph).line()
+                : paragraph.getSpacingBetween();
+        LineSpacingRule rule = useWordParagraphLayout
+                ? effectiveSpacing(paragraph).rule()
+                : paragraph.getSpacingLineRule();
         if (useWordParagraphLayout && spacing >= 0.0) {
-            LineSpacingRule rule = paragraph.getSpacingLineRule();
             if (rule == LineSpacingRule.EXACT) {
                 return (float) spacing;
             }
             if (rule == LineSpacingRule.AT_LEAST) {
                 return Math.max(naturalHeight, (float) spacing);
             }
-            return fontSize * 1.151f * (float) spacing;
+            // Word computes line height from the tallest font in the line.
+            // Bullet list labels render in Symbol whose metrics are taller
+            // than Times (verified against Word and LibreOffice: 12pt bullets
+            // advance 16.7pt vs 15.9pt for plain body lines).
+            float metricsFactor = symbolBullet ? 1.21f : 1.151f;
+            return fontSize * metricsFactor * (float) spacing;
         }
         return gridLineHeight(naturalHeight, linePitch);
+    }
+
+    /**
+     * Resolves a paragraph's effective spacing properties the way Word does:
+     * direct pPr wins, then the paragraph style, then Normal, then docDefaults.
+     * Each property (line / lineRule / before / after) falls back independently.
+     */
+    private static ParagraphSpacing effectiveSpacing(XWPFParagraph paragraph) {
+        CTSpacing direct = paragraph.getCTP().isSetPPr()
+                && paragraph.getCTP().getPPr().isSetSpacing()
+                ? paragraph.getCTP().getPPr().getSpacing()
+                : null;
+        CTSpacing styleSpacing = null;
+        CTSpacing normalSpacing = null;
+        CTSpacing defaultSpacing = null;
+        XWPFStyles documentStyles = paragraph.getDocument().getStyles();
+        if (documentStyles != null) {
+            String styleId = paragraph.getStyle();
+            XWPFStyle style = styleId == null ? null : documentStyles.getStyle(styleId);
+            if (style != null && style.getCTStyle() != null
+                    && style.getCTStyle().isSetPPr()
+                    && style.getCTStyle().getPPr().isSetSpacing()) {
+                styleSpacing = style.getCTStyle().getPPr().getSpacing();
+            }
+            XWPFStyle normal = documentStyles.getStyle("Normal");
+            if (normal != null && normal.getCTStyle() != null
+                    && normal.getCTStyle().isSetPPr()
+                    && normal.getCTStyle().getPPr().isSetSpacing()) {
+                normalSpacing = normal.getCTStyle().getPPr().getSpacing();
+            }
+            CTStyles ctStyles = documentStyles.getCtStyles();
+            if (ctStyles != null && ctStyles.isSetDocDefaults()
+                    && ctStyles.getDocDefaults().isSetPPrDefault()
+                    && ctStyles.getDocDefaults().getPPrDefault().isSetPPr()
+                    && ctStyles.getDocDefaults().getPPrDefault().getPPr().isSetSpacing()) {
+                defaultSpacing = ctStyles.getDocDefaults().getPPrDefault().getPPr().getSpacing();
+            }
+        }
+        CTSpacing[] chain = {direct, styleSpacing, normalSpacing, defaultSpacing};
+        return new ParagraphSpacing(
+                resolveLine(chain),
+                resolveLineRule(chain),
+                resolveBefore(chain),
+                resolveAfter(chain));
+    }
+
+    private static double resolveLine(CTSpacing[] chain) {
+        for (CTSpacing spacing : chain) {
+            if (spacing == null || !spacing.isSetLine()) {
+                continue;
+            }
+            double value = Double.parseDouble(String.valueOf(spacing.getLine()));
+            if (spacing.isSetLineRule() && spacing.getLineRule() == STLineSpacingRule.AUTO) {
+                return value / 240.0;
+            }
+            return value / 20.0;
+        }
+        return -1.0;
+    }
+
+    private static LineSpacingRule resolveLineRule(CTSpacing[] chain) {
+        for (CTSpacing spacing : chain) {
+            if (spacing == null || !spacing.isSetLineRule()) {
+                continue;
+            }
+            if (spacing.getLineRule() == STLineSpacingRule.EXACT) {
+                return LineSpacingRule.EXACT;
+            }
+            if (spacing.getLineRule() == STLineSpacingRule.AT_LEAST) {
+                return LineSpacingRule.AT_LEAST;
+            }
+            return LineSpacingRule.AUTO;
+        }
+        return null;
+    }
+
+    private static int resolveBefore(CTSpacing[] chain) {
+        for (CTSpacing spacing : chain) {
+            if (spacing != null && spacing.isSetBefore()) {
+                return Integer.parseInt(String.valueOf(spacing.getBefore()));
+            }
+        }
+        return -1;
+    }
+
+    private static int resolveAfter(CTSpacing[] chain) {
+        for (CTSpacing spacing : chain) {
+            if (spacing != null && spacing.isSetAfter()) {
+                return Integer.parseInt(String.valueOf(spacing.getAfter()));
+            }
+        }
+        return -1;
+    }
+
+    private static final class ParagraphSpacing {
+        private final double line;
+        private final LineSpacingRule rule;
+        private final int before;
+        private final int after;
+
+        private ParagraphSpacing(double line, LineSpacingRule rule, int before, int after) {
+            this.line = line;
+            this.rule = rule;
+            this.before = before;
+            this.after = after;
+        }
+
+        private double line() {
+            return line;
+        }
+
+        private LineSpacingRule rule() {
+            return rule;
+        }
+
+        private int before() {
+            return before;
+        }
+
+        private int after() {
+            return after;
+        }
     }
 
     static float centeredTextX(float pageWidth, float leftIndent, float rightIndent, float textWidth) {
@@ -2048,6 +3100,7 @@ final class PoiDocxRenderer {
         private float previousParagraphSpacingAfter;
         private float footnoteReservedHeight;
         private boolean alignNextParagraphToCheckboxes;
+        private boolean topOfPage;
 
         private PageContext(
                 PDDocument document,
@@ -2110,6 +3163,13 @@ final class PoiDocxRenderer {
         private void moveDown(float amount) throws IOException {
             ensureSpace(amount);
             y -= amount;
+            topOfPage = false;
+        }
+
+        private boolean consumeTopOfPage() {
+            boolean value = topOfPage;
+            topOfPage = false;
+            return value;
         }
 
         private void avoidWidowOrphanSplit(float lineHeight, int lineCount) throws IOException {
@@ -2134,6 +3194,16 @@ final class PoiDocxRenderer {
             previousParagraphSpacingAfter = spacingAfter;
         }
 
+        private void resetParagraphSpacingAfter() {
+            previousParagraphSpacingAfter = 0.0f;
+        }
+
+        private void keepNextBeforeParagraph(float needed) throws IOException {
+            if (y < pageSize.height() - topMargin && y - needed < bottomMargin) {
+                newPage();
+            }
+        }
+
         private void newPage() throws IOException {
             newPage(0.0f);
         }
@@ -2152,6 +3222,7 @@ final class PoiDocxRenderer {
             pageCount++;
             content = new PDPageContentStream(document, page);
             y = pageSize.height() - topMargin - topOffset;
+            topOfPage = true;
         }
 
         private void renderFootnotes() throws IOException {
