@@ -46,6 +46,11 @@ Notes:
 - Node.js is a native binding over the Rust engine. Rendering fixes normally
   belong in `minipdf-rs`; Node-specific work should focus on API exposure,
   asynchronous execution, packaging, and binding tests.
+- Python renders through the Rust engine via the
+  [`minipdf._native`](minipdf-python/native/src/lib.rs) PyO3 extension built by
+  the package backend, falling back to the pure Python renderers only when the
+  extension is not importable. The capability matrix below describes the pure
+  Python fallback.
 - `P` does not mean the same depth in every language. The detailed matrices
   below identify the important differences.
 - The public .NET page-size and margin overrides currently apply to DOCX. The
