@@ -29,7 +29,9 @@ import org.apache.poi.xwpf.usermodel.XWPFStyles;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTOnOff;
@@ -42,6 +44,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyles;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSpacing;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSym;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLineSpacingRule;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STDocGrid;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle;
@@ -51,13 +54,16 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblGridCol;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
+import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -262,7 +268,8 @@ final class PoiDocxRenderer {
                     pageNumberFooter == null ? null : timesFont,
                     pageNumberFooter,
                     pageFooterDistance(source, margins.bottom()),
-                    footnotes(source, timesFont));
+                    footnotes(source, timesFont),
+                    themeColors(source));
             // Pre-process contextualSpacing the way Word does: between two
             // consecutive paragraphs of the same style, when either has
             // contextualSpacing, the first paragraph's spacing-after collapses.
@@ -359,6 +366,23 @@ final class PoiDocxRenderer {
         context.registerFootnotes(paragraph);
         boolean alignCheckboxLabels = context.consumeCheckboxLabelAlignment();
         boolean topOfPage = context.consumeTopOfPage();
+        // Paragraphs that only host behindDoc anchored shapes are positioned
+        // absolutely and consume no flow space (mirrors the .NET
+        // isShapeOnlyParagraph behavior — Word keeps such paragraph marks
+        // from pushing following content down).
+        if (isShapeOnlyParagraph(paragraph)) {
+            renderAnchoredBehindDocShapes(context, paragraph);
+            return;
+        }
+        // An empty paragraph that ends a section only carries an invisible
+        // paragraph mark: Word places the break after it without pushing
+        // content onto a fresh page first, so don't consume a line.
+        if (startsNewSection(paragraph)
+                && paragraph.getRuns().stream().allMatch(run -> run.text().isEmpty())
+                && floatingCheckboxes(paragraph).isEmpty()) {
+            context.newPage();
+            return;
+        }
         float fontSize = paragraphFontSize(paragraph, DEFAULT_FONT_SIZE);
         float spacingBefore = useWordParagraphLayout
                 ? twipsToPoints(effectiveSpacing(paragraph).before())
@@ -526,6 +550,12 @@ final class PoiDocxRenderer {
         applyTextColor(context.content, paragraphColor);
         for (int index = 0; index < lines.size(); index++) {
             context.ensureSpace(lineHeight);
+            if (index == 0) {
+                // behindDoc anchored drawing shapes (e.g. a full-page sidebar or
+                // decorative freeforms) render at absolute page positions on the
+                // anchor paragraph's page, before the following content.
+                renderAnchoredBehindDocShapes(context, paragraph);
+            }
             float baseline = context.y - (topOfPage && index == 0
                     ? fontSize * fontAscentRatio(font)
                     : fontSize);
@@ -597,8 +627,9 @@ final class PoiDocxRenderer {
                 if (picture.getPictureData() == null) {
                     continue;
                 }
-                float width = (float) (picture.getWidth() / EMUS_PER_POINT);
-                float height = (float) (picture.getDepth() / EMUS_PER_POINT);
+                // XWPFPicture#getWidth/getDepth already return points.
+                float width = (float) picture.getWidth();
+                float height = (float) picture.getDepth();
                 if (width < 1.0f || height < 1.0f) {
                     width = 52.0f;
                     height = 32.0f;
@@ -781,6 +812,504 @@ final class PoiDocxRenderer {
             return Long.parseLong(value) / EMUS_PER_POINT;
         } catch (NumberFormatException ignored) {
             return 0.0f;
+        }
+    }
+
+    /**
+     * Reads the theme color scheme (dk1/lt1/dk2/lt2/accent1..6) from the
+     * document's theme part, mirroring DocxReader's themeColors map.
+     */
+    private static Map<String, String> themeColors(XWPFDocument source) {
+        Map<String, String> colors = new LinkedHashMap<>();
+        try {
+            for (PackagePart part : source.getPackage().getParts()) {
+                if (!part.getPartName().getName().contains("/theme/")) {
+                    continue;
+                }
+                try (InputStream stream = part.getInputStream()) {
+                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    // localName-based lookups below require namespace processing.
+                    factory.setNamespaceAware(true);
+                    Document theme = factory.newDocumentBuilder().parse(stream);
+                    Node scheme = firstDescendant(theme.getDocumentElement(), "clrScheme");
+                    if (scheme == null) {
+                        continue;
+                    }
+                    NodeList entries = scheme.getChildNodes();
+                    for (int index = 0; index < entries.getLength(); index++) {
+                        Node entry = entries.item(index);
+                        if (entry.getNodeType() != Node.ELEMENT_NODE) {
+                            continue;
+                        }
+                        Node srgb = firstDescendant(entry, "srgbClr");
+                        Node sys = firstDescendant(entry, "sysClr");
+                        String value = attribute(srgb, "val");
+                        if (value == null && sys != null) {
+                            value = attribute(sys, "lastClr");
+                            if (value == null) {
+                                value = attribute(sys, "val");
+                            }
+                        }
+                        if (value != null && !value.isEmpty()) {
+                            colors.put(entry.getLocalName(), value);
+                        }
+                    }
+                }
+                break;
+            }
+        } catch (Exception ignored) {
+            // A missing or malformed theme part must not abort conversion.
+        }
+        return colors;
+    }
+
+    /**
+     * True when a paragraph's only visual content is behindDoc anchored
+     * drawing shapes (no runs, no pictures).
+     */
+    private static boolean isShapeOnlyParagraph(XWPFParagraph paragraph) {
+        // Runs that only host w:drawing content carry no text and must not
+        // make the paragraph consume flow space.
+        for (XWPFRun run : paragraph.getRuns()) {
+            if (!run.text().isEmpty() || !run.getEmbeddedPictures().isEmpty()) {
+                return false;
+            }
+        }
+        List<Node> drawings = new ArrayList<>();
+        collectDescendants(paragraph.getCTP().getDomNode(), "drawing", drawings);
+        for (Node drawing : drawings) {
+            Node anchor = directChild(drawing, "anchor");
+            if (anchor != null && "1".equals(attribute(anchor, "behindDoc"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Renders behindDoc anchored DrawingML group shapes (sidebars, decorative
+     * freeforms) at absolute page positions. Mirrors DocxReader.ReadAnchorShapes
+     * and DocxToPdfConverter.RenderShape.
+     */
+    private static void renderAnchoredBehindDocShapes(PageContext context, XWPFParagraph paragraph)
+            throws IOException {
+        List<Node> drawings = new ArrayList<>();
+        collectDescendants(paragraph.getCTP().getDomNode(), "drawing", drawings);
+        for (Node drawing : drawings) {
+            Node anchor = directChild(drawing, "anchor");
+            if (anchor == null || !"1".equals(attribute(anchor, "behindDoc"))) {
+                continue;
+            }
+            Node group = firstDescendant(anchor, "wgp");
+            if (group != null) {
+                long offsetX = emuValue(directChild(directChild(anchor, "positionH"), "posOffset"));
+                long offsetY = emuValue(directChild(directChild(anchor, "positionV"), "posOffset"));
+                Node grpSpPr = directChild(group, "grpSpPr");
+                Node xfrm = grpSpPr == null ? null : directChild(grpSpPr, "xfrm");
+                Node extNode = directChild(xfrm, "ext");
+                long extCx = attributeEmu(extNode, "cx");
+                long extCy = attributeEmu(extNode, "cy");
+                long chOffX = attributeEmu(directChild(xfrm, "chOff"), "x");
+                long chOffY = attributeEmu(directChild(xfrm, "chOff"), "y");
+                long chExtCx = attributeEmu(directChild(xfrm, "chExt"), "cx");
+                long chExtCy = attributeEmu(directChild(xfrm, "chExt"), "cy");
+                if (extCx <= 0) {
+                    extCx = 1;
+                }
+                if (extCy <= 0) {
+                    extCy = 1;
+                }
+                if (chExtCx <= 0) {
+                    chExtCx = 1;
+                }
+                if (chExtCy <= 0) {
+                    chExtCy = 1;
+                }
+                float[] groupFill = fillOf(grpSpPr, context.themeColors, null);
+                renderGroupChildren(
+                        context,
+                        group,
+                        groupFill,
+                        offsetX,
+                        offsetY,
+                        chOffX,
+                        chOffY,
+                        extCx,
+                        extCy,
+                        chExtCx,
+                        chExtCy);
+            }
+        }
+    }
+
+    private static void renderGroupChildren(
+            PageContext context,
+            Node groupElement,
+            float[] groupFill,
+            long anchorOffsetX,
+            long anchorOffsetY,
+            long chOffX,
+            long chOffY,
+            long groupExtCx,
+            long groupExtCy,
+            long chExtCx,
+            long chExtCy) throws IOException {
+        NodeList children = groupElement.getChildNodes();
+        for (int index = 0; index < children.getLength(); index++) {
+            Node child = children.item(index);
+            if (child.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            if ("wsp".equals(child.getLocalName())) {
+                renderWspShape(
+                        context,
+                        child,
+                        groupFill,
+                        anchorOffsetX,
+                        anchorOffsetY,
+                        chOffX,
+                        chOffY,
+                        groupExtCx,
+                        groupExtCy,
+                        chExtCx,
+                        chExtCy);
+            } else if ("grpSp".equals(child.getLocalName())) {
+                Node subSpPr = directChild(child, "grpSpPr");
+                Node subXfrm = subSpPr == null ? null : directChild(subSpPr, "xfrm");
+                long subOffX = attributeEmu(directChild(subXfrm, "off"), "x");
+                long subOffY = attributeEmu(directChild(subXfrm, "off"), "y");
+                long subCx = attributeEmu(directChild(subXfrm, "ext"), "cx");
+                long subCy = attributeEmu(directChild(subXfrm, "ext"), "cy");
+                long subChOffX = attributeEmu(directChild(subXfrm, "chOff"), "x");
+                long subChOffY = attributeEmu(directChild(subXfrm, "chOff"), "y");
+                long subChCx = attributeEmu(directChild(subXfrm, "chExt"), "cx");
+                long subChCy = attributeEmu(directChild(subXfrm, "chExt"), "cy");
+                if (subCx <= 0) {
+                    subCx = 1;
+                }
+                if (subCy <= 0) {
+                    subCy = 1;
+                }
+                if (subChCx <= 0) {
+                    subChCx = 1;
+                }
+                if (subChCy <= 0) {
+                    subChCy = 1;
+                }
+                float[] subFill = fillOf(subSpPr, context.themeColors, groupFill);
+                long mappedAnchorX = anchorOffsetX + (subOffX - chOffX) * groupExtCx / chExtCx;
+                long mappedAnchorY = anchorOffsetY + (subOffY - chOffY) * groupExtCy / chExtCy;
+                long mappedExtCx = subCx * groupExtCx / chExtCx;
+                long mappedExtCy = subCy * groupExtCy / chExtCy;
+                renderGroupChildren(
+                        context,
+                        child,
+                        subFill,
+                        mappedAnchorX,
+                        mappedAnchorY,
+                        subChOffX,
+                        subChOffY,
+                        mappedExtCx,
+                        mappedExtCy,
+                        subChCx,
+                        subChCy);
+            }
+        }
+    }
+
+    private static void renderWspShape(
+            PageContext context,
+            Node wsp,
+            float[] groupFill,
+            long anchorOffsetX,
+            long anchorOffsetY,
+            long chOffX,
+            long chOffY,
+            long groupExtCx,
+            long groupExtCy,
+            long chExtCx,
+            long chExtCy) throws IOException {
+        Node spPr = directChild(wsp, "spPr");
+        if (spPr == null) {
+            return;
+        }
+        float[] fill = fillOf(spPr, context.themeColors, groupFill);
+        if (fill == null) {
+            return;
+        }
+        Node xfrm = directChild(spPr, "xfrm");
+        if (xfrm == null) {
+            return;
+        }
+        long childOffX = attributeEmu(directChild(xfrm, "off"), "x");
+        long childOffY = attributeEmu(directChild(xfrm, "off"), "y");
+        long childCx = attributeEmu(directChild(xfrm, "ext"), "cx");
+        long childCy = attributeEmu(directChild(xfrm, "ext"), "cy");
+        long pageX = anchorOffsetX + (childOffX - chOffX) * groupExtCx / chExtCx;
+        long pageY = anchorOffsetY + (childOffY - chOffY) * groupExtCy / chExtCy;
+        long pageW = childCx * groupExtCx / chExtCx;
+        long pageH = childCy * groupExtCy / chExtCy;
+        if (pageW <= 0 || pageH <= 0) {
+            return;
+        }
+        float x = context.margin + pageX / EMUS_PER_POINT;
+        float y = context.pageSize.height() - context.topMargin - pageY / EMUS_PER_POINT
+                - pageH / EMUS_PER_POINT;
+        float width = pageW / EMUS_PER_POINT;
+        float height = pageH / EMUS_PER_POINT;
+        // Alpha-blend the fill over white, mirroring DocxToPdfConverter.RenderShape.
+        float alpha = fill.length > 3 ? fill[3] : 1.0f;
+        context.content.setNonStrokingColor(
+                1.0f + (fill[0] - 1.0f) * alpha,
+                1.0f + (fill[1] - 1.0f) * alpha,
+                1.0f + (fill[2] - 1.0f) * alpha);
+        List<List<float[]>> subpaths = customGeometryPaths(spPr, childCx, childCy);
+        if (subpaths != null && !subpaths.isEmpty()) {
+            for (List<float[]> subpath : subpaths) {
+                if (subpath.size() < 3) {
+                    continue;
+                }
+                float[] first = subpath.get(0);
+                context.content.moveTo(
+                        x + first[0] * width, y + height - first[1] * height);
+                for (int index = 1; index < subpath.size(); index++) {
+                    float[] point = subpath.get(index);
+                    context.content.lineTo(
+                            x + point[0] * width, y + height - point[1] * height);
+                }
+                context.content.closePath();
+            }
+            // Mirror DocxToPdfConverter: custom geometry paths use even-odd fill.
+            context.content.fillEvenOdd();
+        } else {
+            context.content.addRect(x, y, width, height);
+            context.content.fill();
+        }
+        context.content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
+    }
+
+    /**
+     * Resolves a shape's solidFill to RGB floats + alpha, honoring grpFill
+     * inheritance. Returns null when the shape has no fill.
+     */
+    private static float[] fillOf(Node spPr, Map<String, String> themeColors, float[] groupFill) {
+        if (spPr == null || directChild(spPr, "noFill") != null) {
+            return null;
+        }
+        Node solidFill = directChild(spPr, "solidFill");
+        if (solidFill != null) {
+            return resolveSolidFill(solidFill, themeColors);
+        }
+        if (directChild(spPr, "grpFill") != null) {
+            return groupFill;
+        }
+        return null;
+    }
+
+    private static float[] resolveSolidFill(Node solidFill, Map<String, String> themeColors) {
+        Node srgb = directChild(solidFill, "srgbClr");
+        String hex = attribute(srgb, "val");
+        if (hex == null) {
+            Node scheme = directChild(solidFill, "schemeClr");
+            hex = themeColors == null ? null : themeColors.get(attribute(scheme, "val"));
+        }
+        if (hex == null || hex.length() < 6) {
+            return null;
+        }
+        try {
+            int rgb = Integer.parseInt(hex.substring(0, 6), 16);
+            float[] fill = new float[] {
+                    ((rgb >> 16) & 0xff) / 255.0f,
+                    ((rgb >> 8) & 0xff) / 255.0f,
+                    (rgb & 0xff) / 255.0f,
+                    1.0f,
+            };
+            if (srgb != null) {
+                Node alpha = directChild(srgb, "alpha");
+                long alphaValue = attributeEmu(alpha, "val");
+                if (alphaValue > 0) {
+                    fill[3] = Math.min(1.0f, alphaValue / 100000.0f);
+                }
+            }
+            return fill;
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    /**
+     * Parses custGeom freeform paths into normalized point subpaths, mirroring
+     * DocxReader.ParseCustomGeometryPaths.
+     */
+    private static List<List<float[]>> customGeometryPaths(Node spPr, long widthEmu, long heightEmu) {
+        Node custGeom = firstDescendant(spPr, "custGeom");
+        if (custGeom == null) {
+            return null;
+        }
+        Node pathLst = directChild(custGeom, "pathLst");
+        if (pathLst == null) {
+            return null;
+        }
+        List<List<float[]>> subpaths = new ArrayList<>();
+        NodeList paths = pathLst.getChildNodes();
+        for (int pathIndex = 0; pathIndex < paths.getLength(); pathIndex++) {
+            Node path = paths.item(pathIndex);
+            if (path.getNodeType() != Node.ELEMENT_NODE || !"path".equals(path.getLocalName())) {
+                continue;
+            }
+            long pathW = widthEmu > 0 ? widthEmu : 1;
+            long pathH = heightEmu > 0 ? heightEmu : 1;
+            long parsedW = attributeEmu(path, "w");
+            long parsedH = attributeEmu(path, "h");
+            if (parsedW > 0) {
+                pathW = parsedW;
+            }
+            if (parsedH > 0) {
+                pathH = parsedH;
+            }
+            Map<String, Double> vars = new HashMap<>();
+            vars.put("w", (double) pathW);
+            vars.put("h", (double) pathH);
+            Node gdLst = directChild(custGeom, "gdLst");
+            if (gdLst != null) {
+                NodeList guides = gdLst.getChildNodes();
+                for (int guideIndex = 0; guideIndex < guides.getLength(); guideIndex++) {
+                    Node guide = guides.item(guideIndex);
+                    if (guide.getNodeType() != Node.ELEMENT_NODE || !"gd".equals(guide.getLocalName())) {
+                        continue;
+                    }
+                    String name = attribute(guide, "name");
+                    String formula = attribute(guide, "fmla");
+                    if (name != null && formula != null) {
+                        vars.put(name, evaluateGuideFormula(formula, vars));
+                    }
+                }
+            }
+            List<float[]> current = new ArrayList<>();
+            NodeList commands = path.getChildNodes();
+            for (int commandIndex = 0; commandIndex < commands.getLength(); commandIndex++) {
+                Node command = commands.item(commandIndex);
+                if (command.getNodeType() != Node.ELEMENT_NODE) {
+                    continue;
+                }
+                String commandName = command.getLocalName();
+                if ("moveTo".equals(commandName)) {
+                    if (current.size() >= 3) {
+                        subpaths.add(current);
+                    }
+                    current = new ArrayList<>();
+                    float[] point = pathPoint(directChild(command, "pt"), vars, pathW, pathH);
+                    if (point != null) {
+                        current.add(point);
+                    }
+                } else if ("lnTo".equals(commandName)) {
+                    float[] point = pathPoint(directChild(command, "pt"), vars, pathW, pathH);
+                    if (point != null) {
+                        current.add(point);
+                    }
+                } else if ("close".equals(commandName)) {
+                    if (current.size() >= 3) {
+                        subpaths.add(current);
+                        current = new ArrayList<>();
+                    }
+                }
+            }
+            if (current.size() >= 3) {
+                subpaths.add(current);
+            }
+        }
+        return subpaths.isEmpty() ? null : subpaths;
+    }
+
+    private static float[] pathPoint(Node point, Map<String, Double> vars, long pathW, long pathH) {
+        if (point == null) {
+            return null;
+        }
+        String xToken = attribute(point, "x");
+        String yToken = attribute(point, "y");
+        if (xToken == null || yToken == null) {
+            return null;
+        }
+        double x = resolveGuideToken(xToken, vars);
+        double y = resolveGuideToken(yToken, vars);
+        if (pathW <= 0 || pathH <= 0) {
+            return null;
+        }
+        return new float[] {
+                (float) Math.max(-0.25, Math.min(1.25, x / pathW)),
+                (float) Math.max(-0.25, Math.min(1.25, y / pathH)),
+        };
+    }
+
+    private static double evaluateGuideFormula(String formula, Map<String, Double> vars) {
+        String[] tokens = formula.trim().split("\\s+");
+        if (tokens.length == 0) {
+            return 0.0;
+        }
+        if ("val".equals(tokens[0]) && tokens.length >= 2) {
+            return resolveGuideToken(tokens[1], vars);
+        }
+        if ("*/".equals(tokens[0]) && tokens.length >= 4) {
+            double a = resolveGuideToken(tokens[1], vars);
+            double b = resolveGuideToken(tokens[2], vars);
+            double c = resolveGuideToken(tokens[3], vars);
+            return Math.abs(c) < 0.0001 ? 0.0 : a * b / c;
+        }
+        if ("+-".equals(tokens[0]) && tokens.length >= 4) {
+            return resolveGuideToken(tokens[1], vars)
+                    + resolveGuideToken(tokens[2], vars)
+                    - resolveGuideToken(tokens[3], vars);
+        }
+        return tokens.length == 1 ? resolveGuideToken(tokens[0], vars) : 0.0;
+    }
+
+    private static double resolveGuideToken(String token, Map<String, Double> vars) {
+        try {
+            return Double.parseDouble(token);
+        } catch (NumberFormatException ignored) {
+            Double value = vars.get(token);
+            return value == null ? 0.0 : value;
+        }
+    }
+
+    private static void collectDescendants(Node node, String localName, List<Node> result) {
+        if (node == null) {
+            return;
+        }
+        NodeList children = node.getChildNodes();
+        for (int index = 0; index < children.getLength(); index++) {
+            Node child = children.item(index);
+            if (localName.equals(child.getLocalName())) {
+                result.add(child);
+            }
+            collectDescendants(child, localName, result);
+        }
+    }
+
+    private static long emuValue(Node node) {
+        if (node == null) {
+            return 0L;
+        }
+        String text = nodeText(node);
+        if (text == null) {
+            return 0L;
+        }
+        try {
+            return Long.parseLong(text.trim());
+        } catch (NumberFormatException ignored) {
+            return 0L;
+        }
+    }
+
+    private static long attributeEmu(Node node, String localName) {
+        String value = attribute(node, localName);
+        if (value == null || value.isEmpty()) {
+            return 0L;
+        }
+        try {
+            return Long.parseLong(value.trim());
+        } catch (NumberFormatException ignored) {
+            return 0L;
         }
     }
 
@@ -1158,24 +1687,53 @@ final class PoiDocxRenderer {
         // Word's default table cell margin is 0 top/bottom (only left/right
         // default to 108 twips), so no vertical padding is added.
         float verticalPadding = 0.0f;
-        List<CellLine> lines = cellLines(cell, cellFont, width, horizontalPadding);
-        float firstFontSize = lines.get(0).fontSize;
-        float textHeight = 0.0f;
-        for (CellLine line : lines) {
-            textHeight += gridLineHeight(line.fontSize * 1.35f, context.linePitch);
+        List<XWPFParagraph> paragraphs = cellParagraphs(cell);
+        List<CellItem> items = cellItems(cell, cellFont, width, horizontalPadding, context.linePitch);
+        float contentHeight = 0.0f;
+        for (CellItem item : items) {
+            contentHeight += item.line() != null
+                    ? item.line().advance(context.linePitch)
+                    : item.pictureHeight();
         }
-        float baseline = top - verticalPadding - paragraphSpacingBefore(cell) - firstFontSize;
+        // Cursor tracks the top of the current content line (or image).
+        float cursor = top - verticalPadding - paragraphSpacingBefore(cell);
         if (cell.getVerticalAlignment() == XWPFTableCell.XWPFVertAlign.CENTER) {
-            baseline = top - (height - textHeight) / 2.0f - firstFontSize;
+            cursor -= (height - contentHeight) / 2.0f;
+        } else if (cell.getVerticalAlignment() == XWPFTableCell.XWPFVertAlign.BOTTOM) {
+            cursor -= height - contentHeight;
         }
-        ParagraphAlignment alignment = cell.getParagraphs().isEmpty()
+        ParagraphAlignment alignment = paragraphs.isEmpty()
                 ? ParagraphAlignment.LEFT
-                : cell.getParagraphs().get(0).getAlignment();
-        boolean highlighted = cell.getParagraphs().stream()
+                : paragraphs.get(0).getAlignment();
+        boolean highlighted = paragraphs.stream()
                 .flatMap(paragraph -> paragraph.getRuns().stream())
                 .anyMatch(run -> run.getTextHighlightColor() != null
                         && "yellow".equalsIgnoreCase(run.getTextHighlightColor().toString()));
-        for (CellLine line : lines) {
+        for (CellItem item : items) {
+            if (item.line() == null) {
+                XWPFPicture picture = item.picture();
+                // XWPFPicture#getWidth/getDepth already return points.
+                float imageWidth = (float) picture.getWidth();
+                float imageHeight = (float) picture.getDepth();
+                float imageX = x + horizontalPadding;
+                if (alignment == ParagraphAlignment.CENTER) {
+                    imageX = x + (width - imageWidth) / 2.0f;
+                } else if (alignment == ParagraphAlignment.RIGHT) {
+                    imageX = x + width - horizontalPadding - imageWidth;
+                }
+                try {
+                    PDImageXObject image = PDImageXObject.createFromByteArray(
+                            context.document,
+                            picture.getPictureData().getData(),
+                            picture.getDescription());
+                    context.content.drawImage(image, imageX, cursor - imageHeight, imageWidth, imageHeight);
+                } catch (IOException | IllegalArgumentException ignored) {
+                    // Unsupported image data must not abort cell rendering.
+                }
+                cursor -= imageHeight;
+                continue;
+            }
+            CellLine line = item.line();
             float lineWidth = textWidth(cellFont, line.text, line.fontSize);
             float lineX = x + horizontalPadding;
             if (alignment == ParagraphAlignment.CENTER) {
@@ -1185,13 +1743,184 @@ final class PoiDocxRenderer {
             }
             if (highlighted && !line.text.isEmpty()) {
                 context.content.setNonStrokingColor(1.0f, 1.0f, 0.0f);
-                context.content.addRect(lineX, baseline - 1.0f, lineWidth, line.fontSize + 2.0f);
+                context.content.addRect(lineX, cursor - line.fontSize - 1.0f, lineWidth, line.fontSize + 2.0f);
                 context.content.fill();
-                context.content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
             }
-                showText(context.content, cellFont, line.fontSize, line.text, lineX, baseline);
-            baseline -= gridLineHeight(line.fontSize * 1.35f, context.linePitch);
+            applyTextColor(context.content, line.color);
+            showText(context.content, cellFont, line.fontSize, line.text, lineX, cursor - line.fontSize);
+            cursor -= line.advance(context.linePitch);
         }
+        context.content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
+    }
+
+    /**
+     * Returns the paragraphs that make up a cell's content: direct w:p
+     * children plus paragraphs inside block-level w:sdt content controls, in
+     * document order. POI's XWPFTableCell#getParagraphs() only surfaces direct
+     * w:p children, so SDT-wrapped body text (e.g. Word newsletter templates)
+     * would otherwise disappear.
+     */
+    static List<XWPFParagraph> cellParagraphs(XWPFTableCell cell) {
+        List<XWPFParagraph> paragraphs = new ArrayList<>();
+        XmlCursor cursor = cell.getCTTc().newCursor();
+        try {
+            if (cursor.toFirstChild()) {
+                do {
+                    if (cursor.isStart()) {
+                        collectCellParagraphs(cursor.getObject(), cell, paragraphs);
+                    }
+                } while (cursor.toNextSibling());
+            }
+        } finally {
+            cursor.dispose();
+        }
+        if (paragraphs.isEmpty()) {
+            paragraphs.addAll(cell.getParagraphs());
+        }
+        return paragraphs;
+    }
+
+    private static void collectCellParagraphs(XmlObject object, XWPFTableCell cell, List<XWPFParagraph> paragraphs) {
+        if (object instanceof CTP) {
+            // Copy so the wrapped paragraph is independent of the document's
+            // live typed tree (copy preserves the child element types).
+            paragraphs.add(new XWPFParagraph((CTP) object.copy(), cell));
+            return;
+        }
+        // Block-level SDTs wrap their paragraphs in w:sdtContent.
+        XmlCursor cursor = object.newCursor();
+        try {
+            if (cursor.toFirstChild()) {
+                do {
+                    if (!cursor.isStart()) {
+                        continue;
+                    }
+                    String name = cursor.getName() == null ? null : cursor.getName().getLocalPart();
+                    if ("sdtContent".equals(name)) {
+                        XmlCursor inner = cursor.getObject().newCursor();
+                        try {
+                            if (inner.toFirstChild()) {
+                                do {
+                                    if (inner.isStart()) {
+                                        collectCellParagraphs(inner.getObject(), cell, paragraphs);
+                                    }
+                                } while (inner.toNextSibling());
+                            }
+                        } finally {
+                            inner.dispose();
+                        }
+                    }
+                } while (cursor.toNextSibling());
+            }
+        } finally {
+            cursor.dispose();
+        }
+    }
+
+    private static final class CellItem {
+        private final XWPFPicture picture;
+        private final CellLine line;
+
+        private CellItem(XWPFPicture picture, CellLine line) {
+            this.picture = picture;
+            this.line = line;
+        }
+
+        static CellItem image(XWPFPicture picture) {
+            return new CellItem(picture, null);
+        }
+
+        static CellItem text(CellLine line) {
+            return new CellItem(null, line);
+        }
+
+        XWPFPicture picture() {
+            return picture;
+        }
+
+        CellLine line() {
+            return line;
+        }
+
+        float pictureHeight() {
+            // XWPFPicture#getDepth already returns points.
+            return picture == null ? 0.0f : Math.max(1.0f, (float) picture.getDepth());
+        }
+    }
+
+    private static List<CellItem> cellItems(
+            XWPFTableCell cell,
+            PDFont font,
+            float width,
+            float padding,
+            float linePitch) throws IOException {
+        List<CellItem> items = new ArrayList<>();
+        boolean noWrap = cell.getCTTc().isSetTcPr() && cell.getCTTc().getTcPr().isSetNoWrap();
+        for (XWPFParagraph paragraph : cellParagraphs(cell)) {
+            boolean hasPictures = false;
+            for (XWPFRun run : paragraph.getRuns()) {
+                for (XWPFPicture picture : run.getEmbeddedPictures()) {
+                    if (picture.getPictureData() == null) {
+                        continue;
+                    }
+                    items.add(CellItem.image(picture));
+                    hasPictures = true;
+                }
+            }
+            String text = paragraphText(paragraph).trim();
+            float fontSize = paragraphFontSize(paragraph, DEFAULT_TABLE_FONT_SIZE);
+            // A picture-only paragraph's image replaces its paragraph-mark line.
+            if (text.isEmpty() && hasPictures) {
+                continue;
+            }
+            // Mirrors the body paragraph color chain: an explicit run color
+            // wins, otherwise the paragraph style's color applies (e.g. the
+            // green MastheadGREEN title).
+            String color = paragraphStyleColor(paragraph);
+            for (XWPFRun run : paragraph.getRuns()) {
+                String runColor = runColor(run);
+                if (runColor != null) {
+                    color = runColor;
+                    break;
+                }
+            }
+            // Each paragraph advances by its own effective line height (a
+            // uniform per-cell height wrongly inflates mixed-size cells like
+            // a 24pt heading followed by 11pt body text).
+            float advance = paragraphCellLineHeight(paragraph, fontSize, linePitch);
+            if (noWrap) {
+                items.add(CellItem.text(new CellLine(text, fontSize, advance, color)));
+            } else {
+                for (String line : wrap(font, text, fontSize, cellContentWidth(width, padding))) {
+                    items.add(CellItem.text(new CellLine(line, fontSize, advance, color)));
+                }
+            }
+        }
+        if (items.isEmpty()) {
+            items.add(CellItem.text(new CellLine("", DEFAULT_TABLE_FONT_SIZE)));
+        }
+        return items;
+    }
+
+    /**
+     * Effective line height for a cell paragraph: explicit line rule when
+     * present, otherwise the natural height. Honors each paragraph's own
+     * spacing rule instead of taking the tallest paragraph of the cell.
+     */
+    private static float paragraphCellLineHeight(XWPFParagraph paragraph, float fontSize, float linePitch) {
+        float natural = fontSize * 1.2f;
+        double spacing = paragraph.getSpacingBetween();
+        if (spacing < 0.0) {
+            return gridLineHeight(natural, linePitch);
+        }
+        LineSpacingRule rule = paragraph.getSpacingLineRule();
+        if (rule == LineSpacingRule.EXACT) {
+            return Math.max(1.0f, (float) spacing);
+        }
+        if (rule == LineSpacingRule.AT_LEAST) {
+            return Math.max(natural, (float) spacing);
+        }
+        return natural * (float) spacing;
     }
 
     private static List<Float> columnWidths(XWPFTable table, float tableWidth) {
@@ -1263,12 +1992,21 @@ final class PoiDocxRenderer {
             float fontSize = cellFontSize(cell, DEFAULT_TABLE_FONT_SIZE);
             float horizontalPadding = compact ? 0.0f : CELL_HORIZONTAL_PADDING;
                 PDFont cellFont = compact ? fonts.simSun() : resolvedCellFont(cell, fonts, boldFont);
-                int lines = cellLines(cell, cellFont, width, horizontalPadding).size();
-            float lineHeight = cellLineHeight(cell, fontSize, linePitch);
+            List<CellItem> items = cellItems(cell, cellFont, width, horizontalPadding, linePitch);
+            float contentHeight = 0.0f;
+            for (CellItem item : items) {
+                if (item.line() != null) {
+                    contentHeight += item.line().advance(linePitch);
+                } else {
+                    // Inline pictures advance the cell content flow like a
+                    // line of text (Word grows the row to fit the image).
+                    contentHeight += item.pictureHeight();
+                }
+            }
                 height = Math.max(
                     height,
                     paragraphSpacingBefore(cell)
-                        + lines * lineHeight
+                        + contentHeight
                         + paragraphSpacingAfter(cell)
                         + (linePitch > 0.0f ? rowHeightPadding : 0.0f));
             column++;
@@ -1276,49 +2014,22 @@ final class PoiDocxRenderer {
         return height;
     }
 
-    /**
-     * Mirrors DocxToPdfConverter.CalculateCellContentHeight: honor each cell
-     * paragraph's line spacing rule (EXACT / AT_LEAST / multiple), otherwise
-     * fall back to the natural line height, snapped to the CJK grid only when a
-     * line grid is active.
-     */
-    private static float cellLineHeight(XWPFTableCell cell, float fontSize, float linePitch) {
-        float natural = fontSize * 1.2f;
-        float tallest = natural;
-        for (XWPFParagraph paragraph : cell.getParagraphs()) {
-            double spacing = paragraph.getSpacingBetween();
-            if (spacing < 0.0) {
-                tallest = Math.max(tallest, gridLineHeight(natural, linePitch));
-                continue;
-            }
-            LineSpacingRule rule = paragraph.getSpacingLineRule();
-            if (rule == LineSpacingRule.EXACT) {
-                tallest = Math.max(tallest, (float) spacing);
-            } else if (rule == LineSpacingRule.AT_LEAST) {
-                tallest = Math.max(tallest, Math.max(natural, (float) spacing));
-            } else {
-                tallest = Math.max(tallest, natural * (float) spacing);
-            }
-        }
-        return tallest;
-    }
-
             private static float paragraphSpacingBefore(XWPFTableCell cell) {
-            return cell.getParagraphs().stream()
+            return cellParagraphs(cell).stream()
                 .mapToInt(XWPFParagraph::getSpacingBefore)
                 .max()
                 .orElse(0) / 20.0f;
             }
 
             private static float paragraphSpacingAfter(XWPFTableCell cell) {
-            return cell.getParagraphs().stream()
+            return cellParagraphs(cell).stream()
                 .mapToInt(XWPFParagraph::getSpacingAfter)
                 .max()
                 .orElse(0) / 20.0f;
             }
 
             private static boolean isCellBold(XWPFTableCell cell) {
-                return cell.getParagraphs().stream()
+                return cellParagraphs(cell).stream()
                         .flatMap(paragraph -> paragraph.getRuns().stream())
                         .anyMatch(XWPFRun::isBold);
             }
@@ -1326,10 +2037,22 @@ final class PoiDocxRenderer {
     private static final class CellLine {
         private final String text;
         private final float fontSize;
+        private final float advance;
+        private final String color;
 
         private CellLine(String text, float fontSize) {
+            this(text, fontSize, 0.0f, null);
+        }
+
+        private CellLine(String text, float fontSize, float advance, String color) {
             this.text = text;
             this.fontSize = fontSize;
+            this.advance = advance;
+            this.color = color;
+        }
+
+        private float advance(float linePitch) {
+            return advance > 0.0f ? advance : gridLineHeight(fontSize * 1.35f, linePitch);
         }
     }
 
@@ -1340,7 +2063,7 @@ final class PoiDocxRenderer {
             float padding)
             throws IOException {
         List<CellLine> lines = new ArrayList<>();
-        for (XWPFParagraph paragraph : cell.getParagraphs()) {
+        for (XWPFParagraph paragraph : cellParagraphs(cell)) {
             String text = paragraphText(paragraph).trim();
             float fontSize = paragraphFontSize(paragraph, DEFAULT_TABLE_FONT_SIZE);
             if (cell.getCTTc().isSetTcPr() && cell.getCTTc().getTcPr().isSetNoWrap()) {
@@ -1434,7 +2157,10 @@ final class PoiDocxRenderer {
                         > (lines.isEmpty() ? firstLineWidth : width)) {
                 int breakOffset = lastWrapBoundary(line);
                 if (breakOffset <= 0) {
-                    breakOffset = line.offsetByCodePoints(line.length(), -1);
+                    // An unbreakable token wider than the line (e.g. an email
+                    // address): Word/LibreOffice let it overflow instead of
+                    // splitting it mid-word.
+                    break;
                 }
                 String completed = stripTrailing(line.substring(0, breakOffset));
                 String remainder = stripLeading(line.substring(breakOffset));
@@ -2066,7 +2792,7 @@ final class PoiDocxRenderer {
 
     static PDFont resolvedCellFont(XWPFTableCell cell, ParagraphFonts fonts, PDFont boldFont) {
         PDFont resolved = null;
-        for (XWPFParagraph paragraph : cell.getParagraphs()) {
+        for (XWPFParagraph paragraph : cellParagraphs(cell)) {
             for (XWPFRun run : paragraph.getRuns()) {
                 String text = renderableText(run.text());
                 for (int offset = 0; offset < text.length();) {
@@ -2465,7 +3191,7 @@ final class PoiDocxRenderer {
     }
 
     private static float cellFontSize(XWPFTableCell cell, float fallback) {
-        return cell.getParagraphs().stream()
+        return cellParagraphs(cell).stream()
                 .map(paragraph -> paragraphFontSize(paragraph, fallback))
                 .max(Float::compare)
                 .orElse(fallback);
@@ -3093,6 +3819,7 @@ final class PoiDocxRenderer {
         private final PageNumberFooter pageNumberFooter;
         private final float pageFooterDistance;
         private final Map<String, FootnoteData> footnotes;
+        private final Map<String, String> themeColors;
         private final List<String> currentPageFootnoteIds = new ArrayList<>();
         private PDPageContentStream content;
         private float y;
@@ -3113,7 +3840,8 @@ final class PoiDocxRenderer {
                 PDFont pageNumberFont,
                 PageNumberFooter pageNumberFooter,
                 float pageFooterDistance,
-                Map<String, FootnoteData> footnotes)
+                Map<String, FootnoteData> footnotes,
+                Map<String, String> themeColors)
                 throws IOException {
             this.document = document;
             this.pageSize = pageSize;
@@ -3125,6 +3853,7 @@ final class PoiDocxRenderer {
             this.pageNumberFooter = pageNumberFooter;
             this.pageFooterDistance = pageFooterDistance;
             this.footnotes = footnotes;
+            this.themeColors = themeColors;
             newPage(topOffset);
         }
 
