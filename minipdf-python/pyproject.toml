@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools>=77"]
-build-backend = "setuptools.build_meta"
+requires = ["maturin>=1.8,<2.0"]
+build-backend = "maturin"
 
 [project]
 name = "minipdf"
-version = "0.2.0"
-description = "Pure Python Office-to-PDF conversion engine"
+version = "0.7.0"
+description = "Office-to-PDF conversion engine backed by the Rust MiniPdf core"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
@@ -19,6 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Rust",
 ]
 
 [project.optional-dependencies]
@@ -38,8 +39,11 @@ minipdf = "minipdf.cli:main"
 Homepage = "https://github.com/mini-software/MiniPdf"
 Repository = "https://github.com/mini-software/MiniPdf"
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.maturin]
+manifest-path = "native/Cargo.toml"
+module-name = "minipdf._native"
+python-source = "src"
+features = ["pyo3/extension-module"]
 
 [tool.pytest.ini_options]
 addopts = "-ra"

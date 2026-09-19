@@ -13,6 +13,8 @@
 **/*.node
 **/*.tgz
 minipdf-node/npm/
+minipdf-python/src/minipdf/_native.pyd
+minipdf-python/src/minipdf/_native.abi3.so
 
 ## IDE
 .vs/

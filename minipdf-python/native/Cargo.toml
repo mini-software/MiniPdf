@@ -1,0 +1,20 @@
+[package]
+name = "minipdf-python-native"
+version = "0.7.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/mini-software/MiniPdf"
+description = "Native Rust engine bindings for the MiniPdf Python package."
+publish = false
+
+[lib]
+name = "_native"
+crate-type = ["cdylib"]
+
+[dependencies]
+minipdf = { path = "../../minipdf-rs/crates/minipdf" }
+pyo3 = { version = "0.25", features = ["abi3-py310"] }
+
+[profile.release]
+lto = true
+strip = "symbols"
