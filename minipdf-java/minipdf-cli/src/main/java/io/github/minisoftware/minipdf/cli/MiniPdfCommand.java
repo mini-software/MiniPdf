@@ -14,7 +14,7 @@ import java.util.Locale;
 import java.util.stream.Stream;
 
 public final class MiniPdfCommand {
-    private static final String VERSION = "minipdf-java 0.3.0";
+    private static final String VERSION = "minipdf-java 0.4.0";
 
     private PrintWriter out = new PrintWriter(System.out, true);
     private PrintWriter err = new PrintWriter(System.err, true);
