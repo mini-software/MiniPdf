@@ -15,10 +15,6 @@ The library is available from Maven Central:
 </dependency>
 ```
 
-  Maven group IDs may contain hyphens, but Java package names may not. Therefore,
-  the dependency uses `io.github.mini-software`, while imports use
-  `io.github.minisoftware.minipdf`.
-
 ## Library
 
 ```java
