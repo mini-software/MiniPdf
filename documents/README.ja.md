@@ -81,17 +81,7 @@ minipdf report.docx -o report.pdf
 
 ### Java
 
-```xml
-<dependency>
-	<groupId>io.github.mini-software</groupId>
-	<artifactId>minipdf</artifactId>
-	<version>0.2.0</version>
-</dependency>
-```
-
-Maven の `groupId` ではハイフンを使用できますが、Java のパッケージ名では使用できません。
-そのため、依存関係には `io.github.mini-software`、import には
-`io.github.minisoftware.minipdf` を使用します。
+[Maven Central artifact](https://central.sonatype.com/artifact/io.github.mini-software/minipdf)
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;

@@ -81,17 +81,7 @@ minipdf report.docx -o report.pdf
 
 ### Java
 
-```xml
-<dependency>
-	<groupId>io.github.mini-software</groupId>
-	<artifactId>minipdf</artifactId>
-	<version>0.2.0</version>
-</dependency>
-```
-
-Maven `groupId`에는 하이픈을 사용할 수 있지만 Java 패키지 이름에는 사용할 수 없습니다.
-따라서 의존성에는 `io.github.mini-software`를 사용하고 import에는
-`io.github.minisoftware.minipdf`를 사용합니다.
+[Maven Central artifact](https://central.sonatype.com/artifact/io.github.mini-software/minipdf)
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;

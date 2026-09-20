@@ -81,17 +81,7 @@ Le [guide Rust](../minipdf-rs/README.md) décrit l'API du crate, la CLI, les fon
 
 ### Java
 
-```xml
-<dependency>
-	<groupId>io.github.mini-software</groupId>
-	<artifactId>minipdf</artifactId>
-	<version>0.2.0</version>
-</dependency>
-```
-
-Les `groupId` Maven peuvent contenir des traits d’union, contrairement aux noms
-de packages Java. La dépendance utilise donc `io.github.mini-software`, tandis
-que les imports utilisent `io.github.minisoftware.minipdf`.
+[Maven Central artifact](https://central.sonatype.com/artifact/io.github.mini-software/minipdf)
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
