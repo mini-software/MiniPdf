@@ -151,8 +151,8 @@ After the release change has been merged to `main`, create and push a semantic
 version tag from the release commit:
 
 ```powershell
-git tag minipdf-go/v0.1.0
-git push origin minipdf-go/v0.1.0
+git tag minipdf-go/v<version>
+git push origin minipdf-go/v<version>
 ```
 
 The [Go Release workflow](../.github/workflows/go-release.yml) validates the
@@ -164,8 +164,8 @@ same tag.
 Verify the published module:
 
 ```powershell
-go list -m github.com/mini-software/MiniPdf/minipdf-go@v0.1.0
-go install github.com/mini-software/MiniPdf/minipdf-go/cmd/minipdf@v0.1.0
+go list -m github.com/mini-software/MiniPdf/minipdf-go@v<version>
+go install github.com/mini-software/MiniPdf/minipdf-go/cmd/minipdf@v<version>
 minipdf --version
 ```
 
