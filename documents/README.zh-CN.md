@@ -81,16 +81,7 @@ minipdf report.docx -o report.pdf
 
 ### Java
 
-```xml
-<dependency>
-	<groupId>io.github.mini-software</groupId>
-	<artifactId>minipdf</artifactId>
-	<version>0.2.0</version>
-</dependency>
-```
-
-Maven `groupId` 可以包含连字符，但 Java 包名不能。因此依赖坐标使用
-`io.github.mini-software`，import 使用 `io.github.minisoftware.minipdf`。
+[Maven Central artifact](https://central.sonatype.com/artifact/io.github.mini-software/minipdf)
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
