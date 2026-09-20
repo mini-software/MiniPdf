@@ -85,17 +85,7 @@ features, known gaps, and development workflow.
 
 ### Java
 
-```xml
-<dependency>
-	<groupId>io.github.mini-software</groupId>
-	<artifactId>minipdf</artifactId>
-	<version>0.2.0</version>
-</dependency>
-```
-
-Maven group IDs may contain hyphens, but Java package names may not. Therefore,
-the dependency uses `io.github.mini-software`, while imports use
-`io.github.minisoftware.minipdf`.
+[Maven Central artifact](https://central.sonatype.com/artifact/io.github.mini-software/minipdf)
 
 ```java
 import io.github.minisoftware.minipdf.MiniPdf;
