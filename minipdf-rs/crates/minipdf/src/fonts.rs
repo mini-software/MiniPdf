@@ -74,6 +74,7 @@ fn register_office_cloud_fonts() -> Result<()> {
     Ok(())
 }
 
+#[cfg(target_os = "windows")]
 fn font_alias_from_data(data: &[u8]) -> Option<String> {
     let face = ttf_parser::Face::parse(data, 0).ok()?;
     let name = |id| {
@@ -95,6 +96,7 @@ fn font_alias_from_data(data: &[u8]) -> Option<String> {
     ))
 }
 
+#[cfg(target_os = "windows")]
 fn build_font_alias(family: &str, subfamily: &str, bold: bool, italic: bool) -> String {
     let mut alias = normalize_font_alias(family);
     if subfamily.to_ascii_lowercase().contains("display") && !alias.contains("display") {
@@ -110,6 +112,7 @@ fn build_font_alias(family: &str, subfamily: &str, bold: bool, italic: bool) -> 
     alias
 }
 
+#[cfg(target_os = "windows")]
 fn normalize_font_alias(name: &str) -> String {
     name.chars()
         .filter(|character| character.is_ascii_alphanumeric())
@@ -212,11 +215,13 @@ fn system_fallback_font_paths() -> Vec<PathBuf> {
 
 #[cfg(test)]
 mod tests {
+    #[cfg(target_os = "windows")]
     use super::build_font_alias;
 
     #[cfg(target_os = "windows")]
     use super::system_fallback_font_paths;
 
+    #[cfg(target_os = "windows")]
     #[test]
     fn builds_stable_cloud_font_aliases() {
         assert_eq!(
