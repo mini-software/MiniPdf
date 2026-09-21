@@ -1,8 +1,6 @@
 <div align="center">
 
-# MiniPdf
-
-**.NET、Rust、Java、Python、Node.js、Go 向けの軽量な Office-to-PDF ライブラリおよびコマンドラインツール。**
+**Rust、.NET、Java、Python、JS、Go 向けの軽量・高速・ネイティブな Office-to-PDF ライブラリおよびコマンドラインツール。**
 
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
@@ -20,23 +18,23 @@
 
 **[オンラインデモ](https://mini-software.github.io/MiniPdf/)** · **[リリース](https://github.com/mini-software/MiniPdf/releases)** · **[問題を報告](https://github.com/mini-software/MiniPdf/issues)**
 
-スターや寄付がプロジェクトの継続的な発展を支えます。
+スターや寄付が MiniPdf をより良くします。
 
 🤝 **共同開発者を募集中：**[すぐに貢献する](#quick-contribution)
 
 </div>
 
-MiniPdf は、実行時に Microsoft Office、LibreOffice、Adobe Acrobat、COM オートメーションを必要とせず、Office 文書を直接 PDF に変換します。プロジェクトに合う実装を選択してください。
+MiniPdf は、実行時に Microsoft Office、LibreOffice、Adobe Acrobat、COM オートメーションを必要とせず、Office 文書を直接 PDF に変換します。
 
 ## 実装を選ぶ
 
 | 実装 | 入力 | インターフェイス | 成熟度 | ドキュメント | 視覚結果 |
 |---|---|---|---|---|---|
 | .NET | XLSX、DOCX、PPTX | ライブラリ、CLI、Native AOT バイナリ | 安定版 | **[.NET ガイド](README.nuget.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx)**<br>**[PPTX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=issue&format=pptx)** |
-| Rust | XLSX、DOCX、PPTX | Crate、CLI | 実験版 | **[Rust ガイド](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
+| Rust | XLSX、DOCX、PPTX | Crate、CLI | 安定版 | **[Rust ガイド](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
 | Java | XLSX、DOCX、PPTX | ライブラリ、CLI | 実験版 | **[Java ソース](../minipdf-java/)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=docx)** |
-| Python | DOCX | パッケージ、CLI | 実験版 | **[Python ガイド](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
-| Node.js | XLSX、DOCX、PPTX | ネイティブパッケージ | 実験版 | **[Node.js ガイド](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
+| Python | DOCX | パッケージ、CLI | 安定版 | **[Python ガイド](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
+| Node.js | XLSX、DOCX、PPTX | ネイティブパッケージ | 安定版 | **[Node.js ガイド](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
 | Go | XLSX、DOCX、PPTX | パッケージ、CLI | 実験版 | **[Go ガイド](../minipdf-go/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=go&suite=issue&format=xlsx)** |
 
 ## クイックスタート
@@ -60,7 +58,7 @@ dotnet tool install --global MiniPdf.Cli
 minipdf report.docx -o report.pdf
 ```
 
-[.NET ガイド](README.nuget.md)では、変換、カスタムフォント、CLI オプション、デプロイを説明しています。
+使用方法については [.NET ガイド](README.nuget.md) をご覧ください。
 
 ### Rust
 
@@ -77,7 +75,7 @@ minipdf::convert_to_pdf("report.docx", "report.pdf")?;
 minipdf report.docx -o report.pdf
 ```
 
-[Rust ガイド](../minipdf-rs/README.md)では、crate API、CLI、対応範囲、既知の制限、開発手順を説明しています。
+使用方法については [Rust ガイド](../minipdf-rs/README.md) をご覧ください。
 
 ### Java
 
@@ -98,8 +96,7 @@ try {
 }
 ```
 
-登録したフォントは DOCX、XLSX、PPTX の変換で使用されます。登録内容は
-プロセス全体で共有されるため、別のフォントセットを設定する前にクリアしてください。
+使用方法については [Java ガイド](../minipdf-java/README.md) をご覧ください。
 
 ### Python
 
@@ -113,7 +110,7 @@ import minipdf
 minipdf.convert_to_pdf("report.docx", "report.pdf")
 ```
 
-[Python ガイド](../minipdf-python/README.md)では、現在の DOCX 対応範囲と CLI オプションを説明しています。
+使用方法については [Python ガイド](../minipdf-python/README.md) をご覧ください。
 
 ### Node.js
 
@@ -127,7 +124,7 @@ const minipdf = require('minipdf')
 minipdf.convertToPdf('report.docx', 'report.pdf')
 ```
 
-[Node.js ガイド](../minipdf-node/README.md)では、メモリ内変換、ページサイズ、フォント登録、対応ネイティブプラットフォームを説明しています。
+使用方法については [Node.js ガイド](../minipdf-node/README.md) をご覧ください。
 
 ### Go
 
@@ -143,7 +140,7 @@ if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
 }
 ```
 
-[Go ガイド](../minipdf-go/README.md)では、パッケージ、ネイティブ CLI、現在の描画範囲、リリースタグを説明しています。
+使用方法については [Go ガイド](../minipdf-go/README.md) をご覧ください。
 
 ## MiniPdf を選ぶ理由
 
@@ -190,4 +187,4 @@ Run the minipdf-contribution skill.
 
 ## ライセンス
 
-[Apache License 2.0](../LICENSE) で提供されています。必要な通知と帰属表示を保持すれば、商用利用も可能です。
+[Apache License 2.0](../LICENSE) で提供されています。商用利用を歓迎します。

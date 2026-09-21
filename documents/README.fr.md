@@ -1,8 +1,6 @@
 <div align="center">
 
-# MiniPdf
-
-**Bibliothèques et outils en ligne de commande légers pour convertir des documents Office en PDF avec .NET, Rust, Java, Python, Node.js et Go.**
+**Bibliothèques et outils en ligne de commande Office-vers-PDF légers, rapides et natifs pour Rust, .NET, Java, Python, JS et Go.**
 
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
@@ -20,23 +18,23 @@
 
 **[Démo en ligne](https://mini-software.github.io/MiniPdf/)** · **[Versions](https://github.com/mini-software/MiniPdf/releases)** · **[Signaler un problème](https://github.com/mini-software/MiniPdf/issues)**
 
-Votre étoile ou votre don contribue à soutenir le projet.
+Votre étoile ou votre don peut améliorer MiniPdf.
 
 🤝 **Nous recherchons des co-développeurs :** [Contribuer rapidement](#quick-contribution)
 
 </div>
 
-MiniPdf convertit directement les documents Office en PDF sans nécessiter Microsoft Office, LibreOffice, Adobe Acrobat ni automatisation COM à l'exécution. Choisissez l'implémentation adaptée à votre projet.
+MiniPdf convertit directement les documents Office en PDF sans nécessiter Microsoft Office, LibreOffice, Adobe Acrobat ni automatisation COM à l'exécution.
 
 ## Choisir une implémentation
 
 | Implémentation | Entrées | Interfaces | Maturité | Documentation | Résultats visuels |
 |---|---|---|---|---|---|
 | .NET | XLSX, DOCX, PPTX | Bibliothèque, CLI, binaires Native AOT | Stable | **[Guide .NET](README.nuget.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx)**<br>**[PPTX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=issue&format=pptx)** |
-| Rust | XLSX, DOCX, PPTX | Crate, CLI | Expérimental | **[Guide Rust](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
+| Rust | XLSX, DOCX, PPTX | Crate, CLI | Stable | **[Guide Rust](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
 | Java | XLSX, DOCX, PPTX | Bibliothèque, CLI | Expérimental | **[Sources Java](../minipdf-java/)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=docx)** |
-| Python | DOCX | Paquet, CLI | Expérimental | **[Guide Python](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
-| Node.js | XLSX, DOCX, PPTX | Paquet natif | Expérimental | **[Guide Node.js](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
+| Python | DOCX | Paquet, CLI | Stable | **[Guide Python](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
+| Node.js | XLSX, DOCX, PPTX | Paquet natif | Stable | **[Guide Node.js](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
 | Go | XLSX, DOCX, PPTX | Paquet, CLI | Expérimental | **[Guide Go](../minipdf-go/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=go&suite=issue&format=xlsx)** |
 
 ## Démarrage rapide
@@ -60,7 +58,7 @@ dotnet tool install --global MiniPdf.Cli
 minipdf report.docx -o report.pdf
 ```
 
-Le [guide .NET](README.nuget.md) présente la conversion, les polices personnalisées, les options CLI et le déploiement.
+Pour l'utilisation, consultez le [guide .NET](README.nuget.md).
 
 ### Rust
 
@@ -77,7 +75,7 @@ minipdf::convert_to_pdf("report.docx", "report.pdf")?;
 minipdf report.docx -o report.pdf
 ```
 
-Le [guide Rust](../minipdf-rs/README.md) décrit l'API du crate, la CLI, les fonctions prises en charge, les limites connues et le flux de développement.
+Pour l'utilisation, consultez le [guide Rust](../minipdf-rs/README.md).
 
 ### Java
 
@@ -98,9 +96,7 @@ try {
 }
 ```
 
-Les polices enregistrées sont utilisées lors de la conversion des fichiers DOCX,
-XLSX et PPTX. Les enregistrements s'appliquent à l'ensemble du processus ;
-effacez-les avant de configurer un autre jeu de polices.
+Pour l'utilisation, consultez le [guide Java](../minipdf-java/README.md).
 
 ### Python
 
@@ -114,7 +110,7 @@ import minipdf
 minipdf.convert_to_pdf("report.docx", "report.pdf")
 ```
 
-Le [guide Python](../minipdf-python/README.md) décrit le périmètre DOCX actuel et les options CLI.
+Pour l'utilisation, consultez le [guide Python](../minipdf-python/README.md).
 
 ### Node.js
 
@@ -128,7 +124,7 @@ const minipdf = require('minipdf')
 minipdf.convertToPdf('report.docx', 'report.pdf')
 ```
 
-Le [guide Node.js](../minipdf-node/README.md) décrit la conversion en mémoire, les tailles de page, l'enregistrement des polices et les plateformes natives prises en charge.
+Pour l'utilisation, consultez le [guide Node.js](../minipdf-node/README.md).
 
 ### Go
 
@@ -144,7 +140,7 @@ if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
 }
 ```
 
-Le [guide Go](../minipdf-go/README.md) décrit le paquet, la CLI native, le périmètre de rendu actuel et les tags de version.
+Pour l'utilisation, consultez le [guide Go](../minipdf-go/README.md).
 
 ## Pourquoi MiniPdf
 
@@ -191,4 +187,4 @@ Run the minipdf-contribution skill.
 
 ## Licence
 
-[Apache License 2.0](../LICENSE). L'utilisation commerciale est autorisée en conservant les avis et attributions requis.
+[Apache License 2.0](../LICENSE). L'utilisation commerciale est la bienvenue.
