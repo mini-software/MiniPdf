@@ -8,7 +8,9 @@ import io.github.minisoftware.minipdf.PdfColor;
 import io.github.minisoftware.minipdf.PdfDocument;
 import io.github.minisoftware.minipdf.PdfPage;
 import io.github.minisoftware.minipdf.RegisteredFont;
+import org.apache.fontbox.ttf.TTFParser;
 import org.apache.fontbox.ttf.TrueTypeCollection;
+import org.apache.fontbox.ttf.TrueTypeFont;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -19,14 +21,18 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public final class SimplePdfTextRenderer {
     private static final float MARGIN = 54.0f;
@@ -216,6 +222,150 @@ public final class SimplePdfTextRenderer {
             }
         }
         return null;
+    }
+
+    /**
+     * Loads a font by family name instead of file name, mirroring MiniPdf for
+     * .NET's FindOfficeCloudFontByPreferredName: searches the Microsoft 365
+     * cloud font cache (%LOCALAPPDATA%\Microsoft\FontCache\<version>\CloudFonts
+     * \<Family>\*.ttf) and a small Windows\Fonts file-name map. The requested
+     * name may carry a weight suffix ("Source Sans Pro Bold") to prefer the
+     * matching sub-family face.
+     */
+    public static PDFont loadSystemFontByFamily(
+            PDDocument document,
+            List<List<String>> sourcePages,
+            String... familyNames) {
+        for (String family : familyNames) {
+            for (Path path : familyFontPaths(family)) {
+                if (!Files.isRegularFile(path)) {
+                    continue;
+                }
+                try {
+                    PDFont font = PDType0Font.load(
+                            document,
+                            Files.newInputStream(path),
+                            FontEmbeddingPolicy.shouldSubset());
+                    if (font != null && supports(font, sourcePages)) {
+                        return font;
+                    }
+                } catch (IOException | IllegalArgumentException ignored) {
+                    // Try the next candidate.
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Well-known Windows font families and their file names. Cloud font
+     * families resolve through {@link #familyFontPaths} instead.
+     */
+    private static final Map<String, String> WINDOWS_FONT_FILES = new HashMap<>();
+
+    static {
+        WINDOWS_FONT_FILES.put("impact", "impact.ttf");
+    }
+
+    /**
+     * Resolves a family name (optionally suffixed with " Regular" / " Bold") to
+     * candidate font file paths. Exact sub-family matches win over a plain
+     * family match, mirroring Word's font selection.
+     */
+    private static List<Path> familyFontPaths(String family) {
+        List<Path> paths = new ArrayList<>();
+        if (family == null || family.trim().isEmpty()) {
+            return paths;
+        }
+        String requested = family.trim();
+        String base = requested;
+        String wantedSubFamily = "";
+        for (String suffix : new String[] {" Bold Italic", " Bold", " Italic", " Regular"}) {
+            if (requested.toLowerCase(Locale.ROOT).endsWith(suffix.toLowerCase(Locale.ROOT))) {
+                wantedSubFamily = suffix.trim();
+                base = requested.substring(0, requested.length() - suffix.length()).trim();
+                break;
+            }
+        }
+        // Windows\Fonts: exact known file names.
+        String windows = System.getenv("WINDIR");
+        if (windows != null) {
+            String mapped = WINDOWS_FONT_FILES.get(base.toLowerCase(Locale.ROOT));
+            if (mapped != null) {
+                paths.add(Paths.get(windows, "Fonts", mapped));
+            }
+        }
+        // Microsoft 365 cloud font cache.
+        String localAppData = System.getenv("LOCALAPPDATA");
+        if (localAppData == null) {
+            return paths;
+        }
+        Path cacheRoot = Paths.get(localAppData, "Microsoft", "FontCache");
+        if (!Files.isDirectory(cacheRoot)) {
+            return paths;
+        }
+        Path exact = null;
+        Path familyFallback = null;
+        try (DirectoryStream<Path> versions = Files.newDirectoryStream(cacheRoot)) {
+            for (Path version : versions) {
+                Path familyDir = version.resolve("CloudFonts").resolve(base);
+                if (!Files.isDirectory(familyDir)) {
+                    continue;
+                }
+                try (DirectoryStream<Path> files = Files.newDirectoryStream(familyDir)) {
+                    for (Path file : files) {
+                        if (!isFontFile(file)) {
+                            continue;
+                        }
+                        String[] names = fontNames(file);
+                        String subFamily = names[0];
+                        String postScript = names[1];
+                        if (wantedSubFamily.isEmpty()) {
+                            if (subFamily != null && subFamily.equalsIgnoreCase("regular")
+                                    || postScript != null
+                                        && postScript.toLowerCase(Locale.ROOT).contains("regular")) {
+                                exact = file;
+                            } else if (familyFallback == null) {
+                                familyFallback = file;
+                            }
+                        } else if (subFamily != null && subFamily.equalsIgnoreCase(wantedSubFamily)) {
+                            exact = file;
+                        }
+                    }
+                }
+                if (exact != null) {
+                    break;
+                }
+            }
+        } catch (IOException ignored) {
+            // Cloud cache unavailable; keep whatever was found.
+        }
+        if (exact != null) {
+            paths.add(exact);
+        } else if (familyFallback != null) {
+            paths.add(familyFallback);
+        }
+        return paths;
+    }
+
+    private static boolean isFontFile(Path path) {
+        String name = path.getFileName().toString().toLowerCase(Locale.ROOT);
+        return name.endsWith(".ttf") || name.endsWith(".otf");
+    }
+
+    /**
+     * Reads {sub-family, postscript} names from a TrueType/OpenType file.
+     */
+    private static String[] fontNames(Path path) {
+        try (InputStream stream = Files.newInputStream(path)) {
+            TrueTypeFont font = new TTFParser().parseEmbedded(stream);
+            return new String[] {
+                font.getNaming().getFontSubFamily(),
+                font.getNaming().getPostScriptName()
+            };
+        } catch (IOException ignored) {
+            return new String[] {null, null};
+        }
     }
 
     private static PDFont loadCollectionFont(

@@ -13,12 +13,19 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
+import org.apache.poi.common.usermodel.fonts.FontInfo;
+import org.apache.poi.hemf.usermodel.HemfPicture;
+import org.apache.poi.sl.draw.DrawFontManager;
+import org.apache.poi.sl.draw.DrawFontManagerDefault;
+import org.apache.poi.sl.draw.Drawable;
 import org.apache.poi.xwpf.usermodel.IBodyElement;
 import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFFootnote;
+import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFNumbering;
 import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -60,6 +67,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -73,6 +85,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -170,18 +183,23 @@ final class PoiDocxRenderer {
             // Mirror DocxReader.cs: choose the layout path from the document text,
             // not from which font happens to load. CJK fonts (SimSun etc.) render
             // Latin glyphs too, so a font-based check would misroute Latin documents
-            // into the CJK grid/margin path.
+            // into the CJK grid/margin path. Only actual East Asian characters
+            // (Han/Kana/Hangul slots) route into the CJK path — Latin documents
+            // with curly quotes, ligatures, or symbols (★) keep the Word
+            // paragraph layout (e.g. the OSCAR WARD letterhead).
             boolean requiresCjkFont = text.stream()
                     .flatMap(List::stream)
                     .flatMapToInt(String::codePoints)
-                    .anyMatch(codePoint -> codePoint > 255);
+                    .anyMatch(PoiDocxRenderer::usesEastAsianFontSlot);
+            String[] themeLatin = themeLatinFonts(source);
+            String themeMajor = themeLatin[0] == null ? "" : themeLatin[0].toLowerCase();
             String defaultAsciiFamily = defaultFontFamily(source, XWPFRun.FontCharRange.ascii);
             // When Normal does not pin a Latin font, Word falls back to the
             // theme's minorFont (body) typeface, e.g. Franklin Gothic Book.
             // CJK theme fonts (DengXian, SimSun...) must not replace it —
             // those documents keep the CJK layout path.
             if (defaultAsciiFamily == null) {
-                String minorFont = themeLatinFonts(source)[1];
+                String minorFont = themeLatin[1];
                 if (minorFont != null && !cjkFamilyName(minorFont.toLowerCase())) {
                     defaultAsciiFamily = minorFont;
                 }
@@ -206,11 +224,34 @@ final class PoiDocxRenderer {
                 franklinBook = SimplePdfTextRenderer.loadSystemFont(
                         output, latinText, "frabk.ttf", "framd.ttf");
             }
+            // Microsoft 365 letterhead themes request Impact (major) and
+            // Source Sans Pro (minor) — cloud fonts cached under
+            // %LOCALAPPDATA%\Microsoft\FontCache, not in C:\Windows\Fonts.
+            // Load them by family so headings and body text use the same
+            // faces as Word (mirrors PdfWriter.FindOfficeCloudFontByPreferredName).
+            PDFont impact = themeMajor.contains("impact")
+                    ? SimplePdfTextRenderer.loadSystemFontByFamily(output, text, "Impact")
+                    : null;
+            PDFont sourceSans = defaultFamily.contains("source sans pro")
+                    ? SimplePdfTextRenderer.loadSystemFontByFamily(output, text, "Source Sans Pro")
+                    : null;
+            PDFont sourceSansBold = defaultFamily.contains("source sans pro")
+                    ? SimplePdfTextRenderer.loadSystemFontByFamily(output, text, "Source Sans Pro Bold")
+                    : null;
             PDFont font = requiresCjkFont ? SimplePdfTextRenderer.loadFont(output, text) : null;
             boolean usesDocumentLatinFont = false;
             if (font == null) {
                 font = loadDocumentLatinFont(output, text, defaultAsciiFamily);
                 usesDocumentLatinFont = font != null;
+            }
+            if (font == null) {
+                // Latin documents whose text contains symbols that the Latin
+                // fallback faces cannot encode (★, ☺, …) would otherwise drop
+                // to the plain-text renderer and lose all formatting. Fall
+                // back to the registered/CJK font chain so the document still
+                // renders through the CJK layout path, exactly like the
+                // pre-cloud-font behavior.
+                font = SimplePdfTextRenderer.loadFont(output, text);
             }
             if (font == null && franklinBook != null) {
                 font = franklinBook;
@@ -227,7 +268,7 @@ final class PoiDocxRenderer {
             // SimSun/Microsoft YaHei Bold, Latin documents use Times/Arial Bold.
             // Loading SimSun Bold first misroutes Latin bold runs (Times) into a
             // CJK face, whose half-width Latin glyphs distort wrap widths.
-            PDFont boldFont = requiresCjkFont
+            PDFont boldFont = requiresCjkFont || !usesDocumentLatinFont
                     ? SimplePdfTextRenderer.loadSystemFont(
                             output, text, "simsunb.ttf", "msyhbd.ttc", "NotoSansCJK-Bold.ttc")
                     : SimplePdfTextRenderer.loadSystemFont(
@@ -237,6 +278,9 @@ final class PoiDocxRenderer {
             }
             if (franklinDemi != null) {
                 boldFont = franklinDemi;
+            }
+            if (sourceSansBold != null) {
+                boldFont = sourceSansBold;
             }
             PDFont paragraphFont = SimplePdfTextRenderer.loadSystemFont(
                     output,
@@ -279,6 +323,8 @@ final class PoiDocxRenderer {
                     arialFont,
                     franklinBook,
                     franklinDemi,
+                    impact,
+                    sourceSans,
                     defaultAsciiFamily,
                     defaultFontFamily(source, XWPFRun.FontCharRange.eastAsia));
 
@@ -287,6 +333,12 @@ final class PoiDocxRenderer {
                     source, DEFAULT_MARGIN, landscape, usesDocumentLatinFont);
             float linePitch = documentLinePitch(source);
             PageNumberFooter pageNumberFooter = pageNumberFooter(source);
+            // Header parts render their behindDoc anchored shapes (e.g.
+            // full-page border frames) on every page, behind the body text.
+            List<XWPFParagraph> headerParagraphs = new ArrayList<>();
+            for (XWPFHeader header : source.getHeaderList()) {
+                headerParagraphs.addAll(header.getParagraphs());
+            }
             PageContext context = new PageContext(
                     output,
                     pageSize,
@@ -299,7 +351,8 @@ final class PoiDocxRenderer {
                     pageNumberFooter,
                     pageFooterDistance(source, margins.bottom()),
                     footnotes(source, timesFont),
-                    themeColors(source));
+                    themeColors(source),
+                    headerParagraphs);
             // Pre-process contextualSpacing the way Word does: between two
             // consecutive paragraphs of the same style, when either has
             // contextualSpacing, the first paragraph's spacing-after collapses.
@@ -339,16 +392,17 @@ final class PoiDocxRenderer {
                         float headingFontSize = paragraphFontSize(paragraph, DEFAULT_FONT_SIZE);
                         float headingLineHeight = paragraphLineHeight(
                                 paragraph, headingFontSize, headingFontSize * 1.2f, linePitch,
-                                usesDocumentLatinFont);
+                                usesDocumentLatinFont, false,
+                                wrappingFont(paragraphFonts, paragraphText(paragraph)));
                         float headingSpacingBefore = usesDocumentLatinFont
                                 ? twipsToPoints(effectiveSpacing(paragraph).before())
                                 : twipsToPoints(paragraph.getSpacingBefore());
                         float followFontSize = paragraphFontSize(follow, DEFAULT_FONT_SIZE);
-                        float followLineHeight = paragraphLineHeight(
-                                follow, followFontSize, followFontSize * 1.2f, linePitch,
-                                usesDocumentLatinFont);
                         String followText = paragraphText(follow);
                         PDFont followFont = wrappingFont(paragraphFonts, followText);
+                        float followLineHeight = paragraphLineHeight(
+                                follow, followFontSize, followFontSize * 1.2f, linePitch,
+                                usesDocumentLatinFont, false, followFont);
                         int followLines = wrap(
                                 followFont,
                                 followText.replace('\t', ' '),
@@ -477,6 +531,19 @@ final class PoiDocxRenderer {
         }
         boolean hasPictures = paragraph.getRuns().stream()
                 .anyMatch(run -> !run.getEmbeddedPictures().isEmpty());
+        // Picture-only paragraphs (e.g. an inline EMF signature under
+        // "Warm regards,"): the image itself advances the flow, mirroring
+        // DocxToPdfConverter — the empty paragraph mark must not add an
+        // extra text line on top of the image height.
+        if (segments.isEmpty() && hasPictures) {
+            renderPictureOnlyParagraph(context, paragraph, fontSize, leftIndent, topOfPage);
+            renderFloatingCheckboxes(context, paragraph, paragraphTop);
+            finishParagraph(context, paragraph, useWordParagraphLayout, suppressContextualAfter);
+            if (startsNewSection(paragraph)) {
+                context.newPage();
+            }
+            return;
+        }
         if (!segments.isEmpty()
                 && !hasPictures
                 && segments.stream().map(RunSegment::text).reduce("", String::concat).equals(text)
@@ -485,17 +552,18 @@ final class PoiDocxRenderer {
                     .map(RunSegment::fontSize)
                     .max(Float::compare)
                     .orElse(fontSize);
+            RunSegment tallest = segments.stream()
+                    .max(Comparator.comparing(RunSegment::fontSize))
+                    .orElse(null);
             float naturalLineHeight = maxFontSize * 1.2f;
                 float lineHeight = paragraphLineHeight(
                     paragraph, maxFontSize, naturalLineHeight, context.linePitch,
-                    useWordParagraphLayout, bullet != null);
+                    useWordParagraphLayout, bullet != null,
+                    tallest == null ? null : tallest.font());
             context.ensureSpace(lineHeight);
             float leading = Math.max(0.0f, lineHeight - naturalLineHeight) / 2.0f;
             float firstBaselineOffset = maxFontSize;
             if (topOfPage) {
-                RunSegment tallest = segments.stream()
-                        .max(Comparator.comparing(RunSegment::fontSize))
-                        .orElse(null);
                 if (tallest != null) {
                     firstBaselineOffset = maxFontSize * fontAscentRatio(tallest.font());
                 }
@@ -572,7 +640,7 @@ final class PoiDocxRenderer {
             paragraphBold);
         float lineHeight = paragraphLineHeight(
             paragraph, fontSize, fontSize * 1.2f, context.linePitch, useWordParagraphLayout,
-            bullet != null);
+            bullet != null, font);
         if (useWordParagraphLayout) {
             context.avoidWidowOrphanSplit(lineHeight, lines.size());
         }
@@ -650,6 +718,56 @@ final class PoiDocxRenderer {
                 || !"continuous".equals(section.getType().getVal().toString());
     }
 
+    private static void renderPictureOnlyParagraph(
+            PageContext context,
+            XWPFParagraph paragraph,
+            float fontSize,
+            float leftIndent,
+            boolean topOfPage) throws IOException {
+        // behindDoc anchored shapes on the anchor paragraph's page render
+        // before the paragraph's images, mirroring the wrap-path flow.
+        renderAnchoredBehindDocShapes(context, paragraph);
+        ParagraphAlignment alignment = paragraph.getAlignment();
+        for (XWPFRun run : paragraph.getRuns()) {
+            for (XWPFPicture picture : run.getEmbeddedPictures()) {
+                if (picture.getPictureData() == null || pictureAnchored(picture)) {
+                    continue;
+                }
+                // XWPFPicture#getWidth/getDepth already return points.
+                float width = (float) picture.getWidth();
+                float height = (float) picture.getDepth();
+                if (width < 1.0f || height < 1.0f) {
+                    width = 52.0f;
+                    height = 32.0f;
+                }
+                // Word keeps an inline image intact rather than clipping it
+                // at the bottom of the page (mirrors RenderImage in
+                // DocxToPdfConverter).
+                if (!topOfPage) {
+                    context.ensureSpace(height + 1.0f);
+                }
+                float x = context.margin + leftIndent;
+                if (alignment == ParagraphAlignment.CENTER) {
+                    x = context.margin + leftIndent
+                            + (context.pageSize.width() - context.margin * 2.0f - width) / 2.0f;
+                } else if (alignment == ParagraphAlignment.RIGHT) {
+                    x = context.pageSize.width() - context.margin - width;
+                }
+                // Word aligns the inline image top with the paragraph's line
+                // top: the flow cursor IS the image top, so the image bottom
+                // sits one image height below it. The old extra fontSize*0.8
+                // offset pushed signatures like OSCAR WARD ~19pt below Word.
+                float bottom = context.y - height;
+                float[] crop = pictureCrop(picture);
+                PDImageXObject image = decodePicture(context, picture, crop);
+                if (image != null) {
+                    context.content.drawImage(image, x, bottom, width, height);
+                }
+                context.y -= height + 1.0f;
+            }
+        }
+    }
+
     private static void renderPictures(PageContext context, XWPFParagraph paragraph, float baseline)
             throws IOException {
         for (XWPFRun run : paragraph.getRuns()) {
@@ -664,13 +782,8 @@ final class PoiDocxRenderer {
                     width = 52.0f;
                     height = 32.0f;
                 }
-                PDImageXObject image;
-                try {
-                    image = PDImageXObject.createFromByteArray(
-                            context.document,
-                            picture.getPictureData().getData(),
-                            picture.getDescription());
-                } catch (IOException | IllegalArgumentException exception) {
+                PDImageXObject image = decodePicture(context, picture, pictureCrop(picture));
+                if (image == null) {
                     continue;
                 }
                 float marginLeft = stylePoints(run.getCTR().xmlText(), "margin-left");
@@ -680,6 +793,278 @@ final class PoiDocxRenderer {
                 context.content.drawImage(image, x, baseline - height * 0.15f - 7.0f, width, height);
             }
         }
+    }
+
+    /**
+     * Decodes picture data into a PDF image, rasterizing vector EMF/WMF
+     * signatures the way DocxToPdfConverter.TryConvertMetafileToPng does:
+     * the metafile canvas is rendered at the cropped aspect ratio, then the
+     * srcRect crop is applied in canvas space.
+     */
+    private static PDImageXObject decodePicture(PageContext context, XWPFPicture picture, float[] crop)
+            throws IOException {
+        byte[] data = picture.getPictureData().getData();
+        if (isEmfPicture(picture)) {
+            BufferedImage raster = rasterizeEmf(data, crop);
+            if (raster != null) {
+                return LosslessFactory.createFromImage(context.document, raster);
+            }
+        }
+        try {
+            return PDImageXObject.createFromByteArray(context.document, data, picture.getDescription());
+        } catch (IOException | IllegalArgumentException exception) {
+            return null;
+        }
+    }
+
+    private static boolean isEmfPicture(XWPFPicture picture) {
+        String name = null;
+        try {
+            name = picture.getPictureData().getFileName();
+            if (name == null || name.isEmpty()) {
+                name = picture.getPictureData().getPackagePart().getPartName().getName();
+            }
+        } catch (RuntimeException ignored) {
+            // The part may be unavailable; fall through to the byte signature.
+        }
+        if (name != null) {
+            String lower = name.toLowerCase(Locale.ROOT);
+            if (lower.endsWith(".emf") || lower.endsWith(".wmf")) {
+                return true;
+            }
+        }
+        byte[] data = picture.getPictureData().getData();
+        return data != null && data.length >= 4
+                && (data[0] == 1 && data[1] == 0 && data[2] == 0 && data[3] == 0
+                || (data[0] & 0xff) == 0xd7 && (data[1] & 0xff) == 0xcd);
+    }
+
+    private static BufferedImage rasterizeEmf(byte[] data, float[] crop) {
+        try {
+            HemfPicture emf = new HemfPicture(new ByteArrayInputStream(data));
+            Rectangle2D bounds = emf.getBounds();
+            double canvasW = bounds.getWidth();
+            double canvasH = bounds.getHeight();
+            if (canvasW <= 0.0 || canvasH <= 0.0) {
+                return null;
+            }
+            double keptW = canvasW * (1.0 - crop[0] - crop[2]);
+            double keptH = canvasH * (1.0 - crop[1] - crop[3]);
+            if (keptW <= 0.0 || keptH <= 0.0) {
+                return null;
+            }
+            boolean hasCrop = crop[0] > 0.0f || crop[1] > 0.0f || crop[2] > 0.0f || crop[3] > 0.0f;
+            if (!hasCrop) {
+                // No srcRect: the whole canvas stretches into the picture
+                // extent, exactly like Word.
+                int fullWidth = Math.max(1, (int) Math.round(512.0 * canvasW / canvasH));
+                int fullHeight = 512;
+                if (fullWidth > 4096) {
+                    fullWidth = 4096;
+                    fullHeight = Math.max(1, (int) Math.round(4096.0 * canvasH / canvasW));
+                }
+                return renderEmfCanvas(emf, fullWidth, fullHeight);
+            }
+            int rasterWidth = Math.max(1, (int) Math.round(512.0 * keptW / keptH));
+            int rasterHeight = 512;
+            if (rasterWidth > 4096) {
+                rasterWidth = 4096;
+                rasterHeight = Math.max(1, (int) Math.round(4096.0 * keptH / keptW));
+            }
+            BufferedImage canvas = renderEmfCanvas(emf, rasterWidth, rasterHeight);
+            // The spec crop is authored for the EMF's own font metrics. A
+            // substituted script face (Segoe Script for Cochocib Script) can
+            // be wider, so expand the kept box to the rendered ink bounds to
+            // avoid clipping the signature tail. Content fully inside the
+            // spec crop is unaffected.
+            int[] ink = inkBounds(canvas);
+            if (ink == null) {
+                return canvas;
+            }
+            int specX0 = (int) Math.round(rasterWidth * crop[0]);
+            int specY0 = (int) Math.round(rasterHeight * crop[1]);
+            int specX1 = rasterWidth - (int) Math.round(rasterWidth * crop[2]);
+            int specY1 = rasterHeight - (int) Math.round(rasterHeight * crop[3]);
+            int cropX0 = Math.min(specX0, ink[0]);
+            int cropY0 = Math.min(specY0, ink[1]);
+            int cropX1 = Math.max(specX1, ink[2]);
+            int cropY1 = Math.max(specY1, ink[3]);
+            cropX0 = Math.max(0, Math.min(cropX0, rasterWidth - 1));
+            cropY0 = Math.max(0, Math.min(cropY0, rasterHeight - 1));
+            cropX1 = Math.max(cropX0 + 1, Math.min(cropX1, rasterWidth));
+            cropY1 = Math.max(cropY0 + 1, Math.min(cropY1, rasterHeight));
+            if (cropX0 == specX0 && cropY0 == specY0 && cropX1 == specX1 && cropY1 == specY1) {
+                return canvas.getSubimage(cropX0, cropY0, cropX1 - cropX0, cropY1 - cropY0);
+            }
+            // Re-render at the expanded box aspect so the cropped raster keeps
+            // the glyph proportions when stretched into the picture extent.
+            int expandedWidth = Math.max(1, (int) Math.round(512.0 * (cropX1 - cropX0) / (cropY1 - cropY0)));
+            int expandedHeight = 512;
+            if (expandedWidth > 4096) {
+                expandedWidth = 4096;
+                expandedHeight = Math.max(1, (int) Math.round(4096.0 * (cropY1 - cropY0) / (cropX1 - cropX0)));
+            }
+            BufferedImage reraster = renderEmfCanvas(emf, expandedWidth, expandedHeight);
+            int rerasterX0 = (int) Math.round(expandedWidth * cropX0 / (double) rasterWidth);
+            int rerasterY0 = (int) Math.round(expandedHeight * cropY0 / (double) rasterHeight);
+            int rerasterX1 = (int) Math.round(expandedWidth * cropX1 / (double) rasterWidth);
+            int rerasterY1 = (int) Math.round(expandedHeight * cropY1 / (double) rasterHeight);
+            rerasterX1 = Math.max(rerasterX0 + 1, Math.min(rerasterX1, expandedWidth));
+            rerasterY1 = Math.max(rerasterY0 + 1, Math.min(rerasterY1, expandedHeight));
+            return reraster.getSubimage(rerasterX0, rerasterY0, rerasterX1 - rerasterX0, rerasterY1 - rerasterY0);
+        } catch (RuntimeException exception) {
+            return null;
+        }
+    }
+
+    private static BufferedImage renderEmfCanvas(HemfPicture emf, int width, int height) {
+        BufferedImage canvas = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = canvas.createGraphics();
+        try {
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(0, 0, width, height);
+            // Script/signature faces (e.g. "Cochocib Script Latin Pro")
+            // rarely exist on the system; map them to Segoe Script the
+            // way LibreOffice substitutes SegoeScript for such EMFs.
+            graphics.setRenderingHint(Drawable.FONT_HANDLER, SCRIPT_FONT_MAPPER);
+            emf.draw(graphics, new Rectangle2D.Double(0.0, 0.0, width, height));
+        } finally {
+            graphics.dispose();
+        }
+        return canvas;
+    }
+
+    /**
+     * Returns the bounding box {x0, y0, x1, y1} of non-white pixels, or null
+     * when the canvas is empty.
+     */
+    private static int[] inkBounds(BufferedImage canvas) {
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxX = -1;
+        int maxY = -1;
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int rgb = canvas.getRGB(x, y);
+                int alpha = (rgb >>> 24) & 0xff;
+                int red = (rgb >>> 16) & 0xff;
+                int green = (rgb >>> 8) & 0xff;
+                int blue = rgb & 0xff;
+                if (alpha > 0 && (red < 245 || green < 245 || blue < 245)) {
+                    if (x < minX) {
+                        minX = x;
+                    }
+                    if (y < minY) {
+                        minY = y;
+                    }
+                    if (x > maxX) {
+                        maxX = x;
+                    }
+                    if (y > maxY) {
+                        maxY = y;
+                    }
+                }
+            }
+        }
+        return maxX < 0 ? null : new int[] {minX, minY, maxX + 1, maxY + 1};
+    }
+
+    /**
+     * Parses a:srcRect crop percentages (1/1000th of a percent per the
+     * OOXML spec) into l/t/r/b fractions, mirroring LibreOffice's
+     * CropQuotientsFromSrcRect.
+     */
+    private static float[] pictureCrop(XWPFPicture picture) {
+        float[] crop = new float[4];
+        Node dom = picture.getCTPicture().getDomNode();
+        Node blipFill = firstDescendant(dom, "blipFill");
+        Node srcRect = blipFill == null ? null : directChild(blipFill, "srcRect");
+        if (srcRect == null) {
+            return crop;
+        }
+        crop[0] = attributeFraction(srcRect, "l");
+        crop[1] = attributeFraction(srcRect, "t");
+        crop[2] = attributeFraction(srcRect, "r");
+        crop[3] = attributeFraction(srcRect, "b");
+        return crop;
+    }
+
+    private static float attributeFraction(Node node, String localName) {
+        String value = attribute(node, localName);
+        if (value == null || value.isEmpty()) {
+            return 0.0f;
+        }
+        try {
+            return Float.parseFloat(value) / 100_000.0f;
+        } catch (NumberFormatException ignored) {
+            return 0.0f;
+        }
+    }
+
+    private static boolean pictureAnchored(XWPFPicture picture) {
+        Node node = picture.getCTPicture().getDomNode();
+        while (node != null) {
+            if ("anchor".equals(node.getLocalName())) {
+                return true;
+            }
+            if ("inline".equals(node.getLocalName())) {
+                return false;
+            }
+            node = node.getParentNode();
+        }
+        return false;
+    }
+
+    /**
+     * Maps EMF script faces to the installed Segoe Script family so vector
+     * signatures render as handwriting instead of a generic sans font. All
+     * other fonts delegate to POI's default mapping.
+     */
+    private static final DrawFontManager SCRIPT_FONT_MAPPER = new DrawFontManager() {
+        private final DrawFontManager delegate = new DrawFontManagerDefault();
+
+        @Override
+        public FontInfo getMappedFont(Graphics2D graphics, FontInfo fontInfo) {
+            String typeface = fontInfo.getTypeface();
+            if (typeface != null) {
+                String lower = typeface.toLowerCase(Locale.ROOT);
+                if (lower.contains("script") || lower.contains("cochocib")) {
+                    return fontInfo("Segoe Script");
+                }
+            }
+            return delegate.getMappedFont(graphics, fontInfo);
+        }
+
+        @Override
+        public FontInfo getFallbackFont(Graphics2D graphics, FontInfo fontInfo) {
+            return delegate.getFallbackFont(graphics, fontInfo);
+        }
+
+        @Override
+        public String mapFontCharset(Graphics2D graphics, FontInfo fontInfo, String text) {
+            return delegate.mapFontCharset(graphics, fontInfo, text);
+        }
+
+        @Override
+        public Font createAWTFont(
+                Graphics2D graphics,
+                FontInfo fontInfo,
+                double size,
+                boolean bold,
+                boolean italic) {
+            return delegate.createAWTFont(graphics, fontInfo, size, bold, italic);
+        }
+    };
+
+    private static FontInfo fontInfo(String typeface) {
+        return new FontInfo() {
+            @Override
+            public String getTypeface() {
+                return typeface;
+            }
+        };
     }
 
     private static void renderFloatingCheckboxes(
@@ -884,6 +1269,25 @@ final class PoiDocxRenderer {
                             colors.put(entry.getLocalName(), value);
                         }
                     }
+                    // schemeClr values like "tx2" resolve through the theme's
+                    // color map (clrMap). When the map is absent the OOXML
+                    // defaults apply: tx1/bg1 -> dk1/lt1, tx2/bg2 -> dk2/lt2
+                    // (Word's letterhead sidebars use tx2 fills).
+                    Node clrMap = firstDescendant(theme.getDocumentElement(), "clrMap");
+                    for (String alias : new String[] {"tx1", "bg1", "tx2", "bg2"}) {
+                        String target = clrMap == null
+                                ? null
+                                : attribute(clrMap, alias);
+                        if (target == null) {
+                            target = "tx1".equals(alias) ? "dk1"
+                                    : "bg1".equals(alias) ? "lt1"
+                                    : "tx2".equals(alias) ? "dk2"
+                                    : "lt2";
+                        }
+                        if (colors.containsKey(target)) {
+                            colors.put(alias, colors.get(target));
+                        }
+                    }
                 }
                 break;
             }
@@ -956,11 +1360,22 @@ final class PoiDocxRenderer {
 
     /**
      * Renders behindDoc anchored DrawingML group shapes (sidebars, decorative
-     * freeforms) at absolute page positions. Mirrors DocxReader.ReadAnchorShapes
-     * and DocxToPdfConverter.RenderShape.
+     * freeforms) and standalone shapes (full-page frames) at absolute page
+     * positions. Mirrors DocxReader.ReadAnchorShapes and
+     * DocxToPdfConverter.RenderShape.
      */
     private static void renderAnchoredBehindDocShapes(PageContext context, XWPFParagraph paragraph)
             throws IOException {
+        // Mirrors DocxToPdfConverter.RenderShape: body shapes anchor from
+        // (pageHeight - topMargin), header shapes from the page top.
+        renderAnchoredBehindDocShapes(
+                context, paragraph, context.pageSize.height() - context.topMargin);
+    }
+
+    private static void renderAnchoredBehindDocShapes(
+            PageContext context,
+            XWPFParagraph paragraph,
+            float paragraphTopY) throws IOException {
         List<Node> drawings = new ArrayList<>();
         collectDescendants(paragraph.getCTP().getDomNode(), "drawing", drawings);
         for (Node drawing : drawings) {
@@ -969,6 +1384,15 @@ final class PoiDocxRenderer {
                 continue;
             }
             Node group = firstDescendant(anchor, "wgp");
+            if (group == null) {
+                // A standalone shape (not nested in a group), e.g. the
+                // full-page rounded "frame" border of a letterhead header.
+                Node wsp = firstDescendant(anchor, "wsp");
+                if (wsp != null) {
+                    renderStandaloneWsp(context, wsp, anchor, paragraphTopY);
+                }
+                continue;
+            }
             if (group != null) {
                 long offsetX = emuValue(directChild(directChild(anchor, "positionH"), "posOffset"));
                 long offsetY = emuValue(directChild(directChild(anchor, "positionV"), "posOffset"));
@@ -1008,6 +1432,118 @@ final class PoiDocxRenderer {
                         chExtCy);
             }
         }
+    }
+
+    /**
+     * Renders a standalone (non-grouped) behindDoc anchored shape, such as
+     * the full-page rounded "frame" of a letterhead header. Word exports
+     * that frame as an even-odd filled band inset by min(w,h)*adj1/100000
+     * (the LibreOffice preset-geometry formula).
+     */
+    private static void renderStandaloneWsp(
+            PageContext context,
+            Node wsp,
+            Node anchor,
+            float paragraphTopY) throws IOException {
+        Node spPr = directChild(wsp, "spPr");
+        if (spPr == null) {
+            return;
+        }
+        float[] fill = fillOf(spPr, context.themeColors, null);
+        if (fill == null) {
+            return;
+        }
+        Node xfrm = directChild(spPr, "xfrm");
+        long extCx = attributeEmu(directChild(xfrm, "ext"), "cx");
+        long extCy = attributeEmu(directChild(xfrm, "ext"), "cy");
+        if (extCx <= 0) {
+            extCx = 1;
+        }
+        if (extCy <= 0) {
+            extCy = 1;
+        }
+        long offsetX = emuValue(directChild(directChild(anchor, "positionH"), "posOffset"));
+        long offsetY = emuValue(directChild(directChild(anchor, "positionV"), "posOffset"));
+        float width = extCx / EMUS_PER_POINT;
+        float height = extCy / EMUS_PER_POINT;
+        String horizontalRelative = attribute(directChild(anchor, "positionH"), "relativeFrom");
+        String verticalRelative = attribute(directChild(anchor, "positionV"), "relativeFrom");
+        float x = "column".equals(horizontalRelative)
+                ? context.margin + offsetX / EMUS_PER_POINT
+                : offsetX / EMUS_PER_POINT;
+        float top = "paragraph".equals(verticalRelative)
+                ? paragraphTopY - offsetY / EMUS_PER_POINT
+                : context.pageSize.height() - offsetY / EMUS_PER_POINT;
+        float bottom = top - height;
+        // Alpha-blend the fill over white, mirroring
+        // DocxToPdfConverter.RenderShape.
+        float alpha = fill.length > 3 ? fill[3] : 1.0f;
+        context.content.setNonStrokingColor(
+                1.0f + (fill[0] - 1.0f) * alpha,
+                1.0f + (fill[1] - 1.0f) * alpha,
+                1.0f + (fill[2] - 1.0f) * alpha);
+        Node prstGeom = firstDescendant(spPr, "prstGeom");
+        if (prstGeom != null && "frame".equals(attribute(prstGeom, "prst"))) {
+            float radius = frameCornerRadius(prstGeom, width, height);
+            context.content.addRect(x, bottom, width, height);
+            context.content.addRect(
+                    x + radius, bottom + radius, width - 2.0f * radius, height - 2.0f * radius);
+            context.content.fillEvenOdd();
+        } else {
+            List<List<float[]>> subpaths = customGeometryPaths(spPr, extCx, extCy);
+            if (subpaths != null && !subpaths.isEmpty()) {
+                for (List<float[]> subpath : subpaths) {
+                    if (subpath.size() < 3) {
+                        continue;
+                    }
+                    float[] first = subpath.get(0);
+                    context.content.moveTo(
+                            x + first[0] * width,
+                            bottom + height - first[1] * height);
+                    for (int index = 1; index < subpath.size(); index++) {
+                        float[] point = subpath.get(index);
+                        context.content.lineTo(
+                                x + point[0] * width,
+                                bottom + height - point[1] * height);
+                    }
+                    context.content.closePath();
+                }
+                context.content.fillEvenOdd();
+            } else {
+                context.content.addRect(x, bottom, width, height);
+                context.content.fill();
+            }
+        }
+        context.content.setNonStrokingColor(0.0f, 0.0f, 0.0f);
+    }
+
+    /**
+     * prstGeom "frame": the corner radius is adj1/100000 of the shorter side
+     * (LibreOffice preset geometry: x1 = min(w,h) * adj1 / 100000, default
+     * adj1 = 12500).
+     */
+    private static float frameCornerRadius(Node prstGeom, float width, float height) {
+        long adjustment = 12_500L;
+        Node avLst = directChild(prstGeom, "avLst");
+        if (avLst != null) {
+            NodeList guides = avLst.getChildNodes();
+            for (int index = 0; index < guides.getLength(); index++) {
+                Node guide = guides.item(index);
+                if (guide.getNodeType() == Node.ELEMENT_NODE
+                        && "adj1".equals(attribute(guide, "name"))) {
+                    String formula = attribute(guide, "fmla");
+                    if (formula != null && formula.startsWith("val ")) {
+                        try {
+                            adjustment = Long.parseLong(formula.substring(4).trim());
+                        } catch (NumberFormatException ignored) {
+                            // Keep the preset default.
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return Math.min(width, height) * adjustment / 100_000.0f;
     }
 
     private static void renderGroupChildren(
@@ -1176,9 +1712,9 @@ final class PoiDocxRenderer {
 
     private static float[] resolveSolidFill(Node solidFill, Map<String, String> themeColors) {
         Node srgb = directChild(solidFill, "srgbClr");
+        Node scheme = srgb == null ? directChild(solidFill, "schemeClr") : null;
         String hex = attribute(srgb, "val");
         if (hex == null) {
-            Node scheme = directChild(solidFill, "schemeClr");
             hex = themeColors == null ? null : themeColors.get(attribute(scheme, "val"));
         }
         if (hex == null || hex.length() < 6) {
@@ -1192,11 +1728,25 @@ final class PoiDocxRenderer {
                     (rgb & 0xff) / 255.0f,
                     1.0f,
             };
-            if (srgb != null) {
-                Node alpha = directChild(srgb, "alpha");
+            // a:alpha is a positive fixed percentage (val/100000); honor it
+            // for both srgbClr and schemeClr fills (Word's letterhead frames
+            // use schemeClr accent1 with a low alpha).
+            Node colorNode = srgb != null ? srgb : scheme;
+            if (colorNode != null) {
+                Node alpha = directChild(colorNode, "alpha");
                 long alphaValue = attributeEmu(alpha, "val");
                 if (alphaValue > 0) {
                     fill[3] = Math.min(1.0f, alphaValue / 100000.0f);
+                }
+                // a:lumMod scales the color luminance (tx2 sidebar fills use
+                // 75% of dk2).
+                Node lumMod = directChild(colorNode, "lumMod");
+                long lumValue = attributeEmu(lumMod, "val");
+                if (lumValue > 0 && lumValue < 100000) {
+                    float factor = lumValue / 100000.0f;
+                    fill[0] *= factor;
+                    fill[1] *= factor;
+                    fill[2] *= factor;
                 }
             }
             return fill;
@@ -1412,10 +1962,10 @@ final class PoiDocxRenderer {
                     row, fonts, boldFont, columnWidths, compact, rowHeightPadding, context.linePitch));
         }
         float tableHeight = sum(rowHeights, rowHeights.size());
-        float spacingBefore = compact ? 4.0f : table.getRows().size() == 1
-            ? 6.0f
-            : landscape ? 0.0f : 1.9f;
-        context.moveDown(spacingBefore);
+        // Word applies no spacing-before to tables: the visible gap comes from
+        // the surrounding paragraph spacing and line advances. A fixed offset
+        // pushed header tables (e.g. the OSCAR WARD letterhead) below Word's
+        // position.
         context.ensureSpace(tableHeight);
 
         float rowTop = context.y;
@@ -1510,11 +2060,6 @@ final class PoiDocxRenderer {
             rowTop -= rowHeights.get(rowIndex);
         }
         context.y -= tableHeight;
-        if (compact) {
-            context.moveDown(4.0f);
-        } else if (table.getRows().size() == 1) {
-            context.moveDown(2.0f);
-        }
         // A table interrupts the paragraph chain: the next paragraph's
         // spacing-before must not collapse with the spacing-after of the
         // paragraph preceding the table (Word does not collapse across tables).
@@ -1800,11 +2345,10 @@ final class PoiDocxRenderer {
                     imageX = x + width - horizontalPadding - imageWidth;
                 }
                 try {
-                    PDImageXObject image = PDImageXObject.createFromByteArray(
-                            context.document,
-                            picture.getPictureData().getData(),
-                            picture.getDescription());
-                    context.content.drawImage(image, imageX, cursor - imageHeight, imageWidth, imageHeight);
+                    PDImageXObject image = decodePicture(context, picture, pictureCrop(picture));
+                    if (image != null) {
+                        context.content.drawImage(image, imageX, cursor - imageHeight, imageWidth, imageHeight);
+                    }
                 } catch (IOException | IllegalArgumentException ignored) {
                     // Unsupported image data must not abort cell rendering.
                 }
@@ -2019,8 +2563,9 @@ final class PoiDocxRenderer {
      */
     private static PDFont paragraphCellFont(
             XWPFParagraph paragraph, ParagraphFonts fonts, PDFont boldFont) {
-        if (paragraphStyleMajorFont(paragraph) && fonts.franklinDemi() != null) {
-            return fonts.franklinDemi();
+        PDFont majorFace = fonts.majorFace();
+        if (paragraphStyleMajorFont(paragraph) && majorFace != null) {
+            return majorFace;
         }
         for (XWPFRun run : paragraph.getRuns()) {
             String text = renderableText(run.text());
@@ -2649,6 +3194,8 @@ final class PoiDocxRenderer {
         private final PDFont arial;
         private final PDFont franklinBook;
         private final PDFont franklinDemi;
+        private final PDFont impact;
+        private final PDFont sourceSans;
         private final String defaultAsciiFamily;
         private final String defaultEastAsiaFamily;
 
@@ -2678,6 +3225,24 @@ final class PoiDocxRenderer {
                 PDFont franklinDemi,
                 String defaultAsciiFamily,
                 String defaultEastAsiaFamily) {
+            this(fallback, simSun, simHei, kai, fangSong, times, arial, franklinBook, franklinDemi,
+                    null, null, defaultAsciiFamily, defaultEastAsiaFamily);
+        }
+
+        ParagraphFonts(
+                PDFont fallback,
+                PDFont simSun,
+                PDFont simHei,
+                PDFont kai,
+                PDFont fangSong,
+                PDFont times,
+                PDFont arial,
+                PDFont franklinBook,
+                PDFont franklinDemi,
+                PDFont impact,
+                PDFont sourceSans,
+                String defaultAsciiFamily,
+                String defaultEastAsiaFamily) {
             this.fallback = fallback;
             this.simSun = simSun;
             this.simHei = simHei;
@@ -2687,6 +3252,8 @@ final class PoiDocxRenderer {
             this.arial = arial;
             this.franklinBook = franklinBook;
             this.franklinDemi = franklinDemi;
+            this.impact = impact;
+            this.sourceSans = sourceSans;
             this.defaultAsciiFamily = defaultAsciiFamily;
             this.defaultEastAsiaFamily = defaultEastAsiaFamily;
         }
@@ -2699,6 +3266,9 @@ final class PoiDocxRenderer {
             String family = defaultAsciiFamily == null ? "" : defaultAsciiFamily.toLowerCase();
             if (family.contains("franklin") && franklinBook != null) {
                 return franklinBook;
+            }
+            if (family.contains("source sans pro") && sourceSans != null) {
+                return sourceSans;
             }
             if (family.contains("times") || family.contains("georgia")) {
                 return times;
@@ -2718,8 +3288,21 @@ final class PoiDocxRenderer {
             return franklinDemi;
         }
 
+        /**
+         * The theme major face: Franklin Gothic Demi when the document asks
+         * for it, otherwise Impact (letterhead templates). Null when neither
+         * is loaded.
+         */
+        PDFont majorFace() {
+            if (franklinDemi != null) {
+                return franklinDemi;
+            }
+            return impact;
+        }
+
         private boolean isLatinFace(PDFont font) {
-            return font == arial || font == times || font == franklinBook || font == franklinDemi;
+            return font == arial || font == times || font == franklinBook || font == franklinDemi
+                    || font == impact || font == sourceSans;
         }
 
         private PDFont resolve(XWPFRun run, int codePoint) {
@@ -2747,6 +3330,12 @@ final class PoiDocxRenderer {
                     return fangSong;
                 }
                 return simSun;
+            }
+            if (normalized.contains("impact") && impact != null) {
+                return impact;
+            }
+            if (normalized.contains("source sans pro") && sourceSans != null) {
+                return sourceSans;
             }
             if (normalized.contains("franklin")) {
                 boolean demi = normalized.contains("demi") || normalized.contains("heavy");
@@ -2844,12 +3433,13 @@ final class PoiDocxRenderer {
                     previous = -1;
                     continue;
                 }
+                PDFont majorFace = fonts.majorFace();
                 PDFont codePointFont = runBold
                         ? boldFont
                         : styleMajorFont
-                                && fonts.franklinDemi() != null
+                                && majorFace != null
                                 && !usesEastAsianFontSlot(codePoint)
-                            ? fonts.franklinDemi()
+                            ? majorFace
                             : fonts.resolve(run, codePoint);
                 if (segmentFont != null && codePointFont != segmentFont) {
                     float spacing = isEastAsianLatinBoundary(previous, codePoint, autoSpacing)
@@ -2983,6 +3573,7 @@ final class PoiDocxRenderer {
 
     static PDFont resolvedCellFont(XWPFTableCell cell, ParagraphFonts fonts, PDFont boldFont) {
         PDFont resolved = null;
+        PDFont majorFace = fonts.majorFace();
         for (XWPFParagraph paragraph : cellParagraphs(cell)) {
             boolean styleMajorFont = paragraphStyleMajorFont(paragraph);
             for (XWPFRun run : paragraph.getRuns()) {
@@ -2993,9 +3584,9 @@ final class PoiDocxRenderer {
                     PDFont candidate = run.isBold()
                             ? boldFont
                             : styleMajorFont
-                                    && fonts.franklinDemi() != null
+                                    && majorFace != null
                                     && !usesEastAsianFontSlot(codePoint)
-                                ? fonts.franklinDemi()
+                                ? majorFace
                                 : fonts.resolve(run, codePoint);
                     if (resolved != null && resolved != candidate) {
                         // Mixed Latin faces (e.g. a Demi heading above Book
@@ -3014,8 +3605,8 @@ final class PoiDocxRenderer {
             // Paragraphs whose runs live inside run-level SDTs expose no runs
             // to POI; derive the face from the style theme font instead.
             for (XWPFParagraph paragraph : cellParagraphs(cell)) {
-                if (paragraphStyleMajorFont(paragraph) && fonts.franklinDemi() != null) {
-                    return fonts.franklinDemi();
+                if (paragraphStyleMajorFont(paragraph) && majorFace != null) {
+                    return majorFace;
                 }
             }
             if (isCellBold(cell)) {
@@ -3065,6 +3656,17 @@ final class PoiDocxRenderer {
         // Explicit CJK families must not route into the Latin layout path.
         if (cjkFamilyName(normalized)) {
             return null;
+        }
+        // Office cloud fonts (Source Sans Pro, Aptos, ...) live in the
+        // Microsoft 365 cloud font cache even when absent from
+        // C:\Windows\Fonts. Prefer the real face so glyphs and wrap widths
+        // match Word; Calibri documents keep the calibrated width tables.
+        if (!normalized.isEmpty() && !normalized.contains("calibri")) {
+            PDFont familyFont = SimplePdfTextRenderer.loadSystemFontByFamily(
+                    document, text, family);
+            if (familyFont != null) {
+                return familyFont;
+            }
         }
         // Theme defaults (minorHAnsi, e.g. Calibri/Aptos/Franklin Gothic Book)
         // and unknown western families use Arial metrics — mirrors the .NET
@@ -3826,32 +4428,71 @@ final class PoiDocxRenderer {
             float linePitch,
             boolean useWordParagraphLayout,
             boolean symbolBullet) {
+        return paragraphLineHeight(
+                paragraph, fontSize, naturalHeight, linePitch, useWordParagraphLayout,
+                symbolBullet, null);
+    }
+
+    static float paragraphLineHeight(
+            XWPFParagraph paragraph,
+            float fontSize,
+            float naturalHeight,
+            float linePitch,
+            boolean useWordParagraphLayout,
+            boolean symbolBullet,
+            PDFont lineFont) {
         double spacing = useWordParagraphLayout
                 ? effectiveSpacing(paragraph).line()
                 : paragraph.getSpacingBetween();
         LineSpacingRule rule = useWordParagraphLayout
                 ? effectiveSpacing(paragraph).rule()
                 : paragraph.getSpacingLineRule();
-        if (useWordParagraphLayout && spacing >= 0.0) {
-            if (rule == LineSpacingRule.EXACT) {
-                return (float) spacing;
+        if (useWordParagraphLayout) {
+            // A style chain without any w:spacing (e.g. NoSpacing) resolves
+            // to Word's single spacing: fontSize x the font's natural line
+            // height factor (12pt Source Sans Pro advances 15.1pt), not the
+            // grid path's 1.2 x fontSize.
+            double effectiveSpacing = spacing >= 0.0 ? spacing : 1.0;
+            LineSpacingRule effectiveRule = spacing >= 0.0 ? rule : LineSpacingRule.AUTO;
+            if (effectiveRule == LineSpacingRule.EXACT) {
+                return (float) effectiveSpacing;
             }
-            if (rule == LineSpacingRule.AT_LEAST) {
-                return Math.max(naturalHeight, (float) spacing);
+            if (effectiveRule == LineSpacingRule.AT_LEAST) {
+                return Math.max(naturalHeight, (float) effectiveSpacing);
             }
-            // Word computes line height from the tallest font in the line.
-            // Bullet list labels render in Symbol whose metrics are taller
-            // than Times (verified against Word and LibreOffice: 12pt bullets
-            // advance 16.7pt vs 15.9pt for plain body lines).
-            float metricsFactor = symbolBullet ? 1.21f : 1.151f;
-            return fontSize * metricsFactor * (float) spacing;
+            // Word computes line height from the line's font metrics
+            // (hhea ascent − descent + lineGap): single-spaced 12pt Source
+            // Sans Pro advances 15.1pt and 1.2x advances 18.1pt, while Times
+            // New Roman advances ~15.9pt. The old fixed 1.151 factor drifted
+            // every wrapped line of cloud-font documents (OSCAR WARD). Bullet
+            // list labels render in Symbol whose metrics are taller (12pt
+            // bullets advance 16.7pt vs 15.9pt for plain body lines).
+            float metricsFactor = symbolBullet ? 1.21f : fontMetricsFactor(lineFont);
+            return fontSize * metricsFactor * (float) effectiveSpacing;
         }
         return gridLineHeight(naturalHeight, linePitch);
     }
 
     /**
+     * The font's natural single-line height as a fraction of the font size:
+     * (ascent − descent + lineGap) / 1000 from the embedded font descriptor,
+     * falling back to the Times New Roman factor for fonts without metrics
+     * (Standard14 test fonts).
+     */
+    private static float fontMetricsFactor(PDFont lineFont) {
+        if (lineFont != null && lineFont.getFontDescriptor() != null) {
+            float ascent = lineFont.getFontDescriptor().getAscent();
+            float descent = lineFont.getFontDescriptor().getDescent();
+            float leading = Math.max(0.0f, lineFont.getFontDescriptor().getLeading());
+            return (ascent - descent + leading) / 1000.0f;
+        }
+        return 1.151f;
+    }
+
+    /**
      * Resolves a paragraph's effective spacing properties the way Word does:
-     * direct pPr wins, then the paragraph style, then Normal, then docDefaults.
+     * direct pPr wins, then the paragraph style, then its basedOn ancestors,
+     * then docDefaults. When the paragraph has no style, Word applies Normal.
      * Each property (line / lineRule / before / after) falls back independently.
      */
     private static ParagraphSpacing effectiveSpacing(XWPFParagraph paragraph) {
@@ -3859,38 +4500,54 @@ final class PoiDocxRenderer {
                 && paragraph.getCTP().getPPr().isSetSpacing()
                 ? paragraph.getCTP().getPPr().getSpacing()
                 : null;
-        CTSpacing styleSpacing = null;
-        CTSpacing normalSpacing = null;
-        CTSpacing defaultSpacing = null;
+        List<CTSpacing> chain = new ArrayList<>();
+        chain.add(direct);
         XWPFStyles documentStyles = paragraph.getDocument().getStyles();
         if (documentStyles != null) {
             String styleId = paragraph.getStyle();
-            XWPFStyle style = styleId == null ? null : documentStyles.getStyle(styleId);
-            if (style != null && style.getCTStyle() != null
-                    && style.getCTStyle().isSetPPr()
-                    && style.getCTStyle().getPPr().isSetSpacing()) {
-                styleSpacing = style.getCTStyle().getPPr().getSpacing();
+            Set<String> visited = new HashSet<>();
+            while (styleId != null && visited.add(styleId)) {
+                XWPFStyle style = documentStyles.getStyle(styleId);
+                if (style == null) {
+                    break;
+                }
+                if (style.getCTStyle() != null
+                        && style.getCTStyle().isSetPPr()
+                        && style.getCTStyle().getPPr().isSetSpacing()) {
+                    chain.add(style.getCTStyle().getPPr().getSpacing());
+                }
+                styleId = basedOnStyleId(style);
             }
-            XWPFStyle normal = documentStyles.getStyle("Normal");
-            if (normal != null && normal.getCTStyle() != null
-                    && normal.getCTStyle().isSetPPr()
-                    && normal.getCTStyle().getPPr().isSetSpacing()) {
-                normalSpacing = normal.getCTStyle().getPPr().getSpacing();
+            if (paragraph.getStyle() == null) {
+                // Word renders style-less paragraphs with the Normal style.
+                XWPFStyle normal = documentStyles.getStyle("Normal");
+                if (normal != null && normal.getCTStyle() != null
+                        && normal.getCTStyle().isSetPPr()
+                        && normal.getCTStyle().getPPr().isSetSpacing()) {
+                    chain.add(normal.getCTStyle().getPPr().getSpacing());
+                }
             }
             CTStyles ctStyles = documentStyles.getCtStyles();
             if (ctStyles != null && ctStyles.isSetDocDefaults()
                     && ctStyles.getDocDefaults().isSetPPrDefault()
                     && ctStyles.getDocDefaults().getPPrDefault().isSetPPr()
                     && ctStyles.getDocDefaults().getPPrDefault().getPPr().isSetSpacing()) {
-                defaultSpacing = ctStyles.getDocDefaults().getPPrDefault().getPPr().getSpacing();
+                chain.add(ctStyles.getDocDefaults().getPPrDefault().getPPr().getSpacing());
             }
         }
-        CTSpacing[] chain = {direct, styleSpacing, normalSpacing, defaultSpacing};
+        CTSpacing[] spacings = chain.toArray(new CTSpacing[0]);
         return new ParagraphSpacing(
-                resolveLine(chain),
-                resolveLineRule(chain),
-                resolveBefore(chain),
-                resolveAfter(chain));
+                resolveLine(spacings),
+                resolveLineRule(spacings),
+                resolveBefore(spacings),
+                resolveAfter(spacings));
+    }
+
+    private static String basedOnStyleId(XWPFStyle style) {
+        Node styleNode = style.getCTStyle().getDomNode();
+        Node basedOn = styleNode == null ? null : directChild(styleNode, "basedOn");
+        String value = basedOn == null ? null : attribute(basedOn, "val");
+        return value == null || value.isEmpty() ? null : value;
     }
 
     private static double resolveLine(CTSpacing[] chain) {
@@ -4095,6 +4752,7 @@ final class PoiDocxRenderer {
         private final float pageFooterDistance;
         private final Map<String, FootnoteData> footnotes;
         private final Map<String, String> themeColors;
+        private final List<XWPFParagraph> headerParagraphs;
         private final List<String> currentPageFootnoteIds = new ArrayList<>();
         private PDPageContentStream content;
         private float y;
@@ -4116,7 +4774,8 @@ final class PoiDocxRenderer {
                 PageNumberFooter pageNumberFooter,
                 float pageFooterDistance,
                 Map<String, FootnoteData> footnotes,
-                Map<String, String> themeColors)
+                Map<String, String> themeColors,
+                List<XWPFParagraph> headerParagraphs)
                 throws IOException {
             this.document = document;
             this.pageSize = pageSize;
@@ -4129,6 +4788,7 @@ final class PoiDocxRenderer {
             this.pageFooterDistance = pageFooterDistance;
             this.footnotes = footnotes;
             this.themeColors = themeColors;
+            this.headerParagraphs = headerParagraphs;
             newPage(topOffset);
         }
 
@@ -4225,8 +4885,24 @@ final class PoiDocxRenderer {
             document.addPage(page);
             pageCount++;
             content = new PDPageContentStream(document, page);
+            renderHeaderBehindDocShapes();
             y = pageSize.height() - topMargin - topOffset;
             topOfPage = true;
+        }
+
+        /**
+         * Header parts only contribute behindDoc anchored shapes here (e.g.
+         * the full-page letterhead frame); they render behind the body text
+         * of every page, matching Word's default header behavior.
+         */
+        private void renderHeaderBehindDocShapes() throws IOException {
+            if (headerParagraphs == null || headerParagraphs.isEmpty()) {
+                return;
+            }
+            float headerTop = pageSize.height();
+            for (XWPFParagraph headerParagraph : headerParagraphs) {
+                renderAnchoredBehindDocShapes(this, headerParagraph, headerTop);
+            }
         }
 
         private void renderFootnotes() throws IOException {
