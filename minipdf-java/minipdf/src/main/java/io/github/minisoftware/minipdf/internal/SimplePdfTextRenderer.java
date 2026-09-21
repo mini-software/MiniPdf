@@ -227,10 +227,10 @@ public final class SimplePdfTextRenderer {
     /**
      * Loads a font by family name instead of file name, mirroring MiniPdf for
      * .NET's FindOfficeCloudFontByPreferredName: searches the Microsoft 365
-     * cloud font cache (%LOCALAPPDATA%\Microsoft\FontCache\<version>\CloudFonts
-     * \<Family>\*.ttf) and a small Windows\Fonts file-name map. The requested
-     * name may carry a weight suffix ("Source Sans Pro Bold") to prefer the
-     * matching sub-family face.
+     * cloud font cache (under %LOCALAPPDATA%/Microsoft/FontCache, in the
+     * per-version CloudFonts family subfolder) and a small Windows/Fonts
+     * file-name map. The requested name may carry a weight suffix ("Source
+     * Sans Pro Bold") to prefer the matching sub-family face.
      */
     public static PDFont loadSystemFontByFamily(
             PDDocument document,
