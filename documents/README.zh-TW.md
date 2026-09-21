@@ -1,8 +1,6 @@
 <div align="center">
 
-# MiniPdf
-
-**專為 .NET、Rust、Java、Python、Node.js 與 Go 打造的輕量級 Office 轉 PDF 程式庫與命令列工具。**
+**輕量、快速且原生的 Office 轉 PDF 程式庫與命令列工具，支援 Rust、.NET、Java、Python、JS 與 Go。**
 
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
@@ -20,23 +18,23 @@
 
 **[線上展示](https://mini-software.github.io/MiniPdf/)** · **[版本發布](https://github.com/mini-software/MiniPdf/releases)** · **[回報問題](https://github.com/mini-software/MiniPdf/issues)**
 
-你的 Star 或捐款將幫助專案持續發展。
+你的 Star 或捐款能讓 MiniPdf 更好。
 
 🤝 **尋找共同開發者：**[快速貢獻](#quick-contribution)
 
 </div>
 
-MiniPdf 不需要在執行階段安裝 Microsoft Office、LibreOffice、Adobe Acrobat 或使用 COM 自動化，即可直接將 Office 文件轉換為 PDF。請選擇適合專案的實作。
+MiniPdf 不需要在執行階段安裝 Microsoft Office、LibreOffice、Adobe Acrobat 或使用 COM 自動化，即可直接將 Office 文件轉換為 PDF。
 
 ## 選擇實作
 
 | 實作 | 輸入 | 介面 | 成熟度 | 文件 | 視覺結果 |
 |---|---|---|---|---|---|
 | .NET | XLSX、DOCX、PPTX | 程式庫、CLI、Native AOT 二進位檔 | 穩定 | **[.NET 指南](README.nuget.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx)**<br>**[PPTX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=issue&format=pptx)** |
-| Rust | XLSX、DOCX、PPTX | Crate、CLI | 實驗性 | **[Rust 指南](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
+| Rust | XLSX、DOCX、PPTX | Crate、CLI | 穩定 | **[Rust 指南](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
 | Java | XLSX、DOCX、PPTX | 程式庫、CLI | 實驗性 | **[Java 原始碼](../minipdf-java/)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=docx)** |
-| Python | DOCX | 套件、CLI | 實驗性 | **[Python 指南](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
-| Node.js | XLSX、DOCX、PPTX | 原生套件 | 實驗性 | **[Node.js 指南](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
+| Python | DOCX | 套件、CLI | 穩定 | **[Python 指南](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
+| Node.js | XLSX、DOCX、PPTX | 原生套件 | 穩定 | **[Node.js 指南](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
 | Go | XLSX、DOCX、PPTX | 套件、CLI | 實驗性 | **[Go 指南](../minipdf-go/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=go&suite=issue&format=xlsx)** |
 
 ## 快速開始
@@ -60,7 +58,7 @@ dotnet tool install --global MiniPdf.Cli
 minipdf report.docx -o report.pdf
 ```
 
-[.NET 指南](README.nuget.md)涵蓋轉換、自訂字型、CLI 選項與部署。
+使用方式請參閱 [.NET 指南](README.nuget.md)。
 
 ### Rust
 
@@ -77,7 +75,7 @@ minipdf::convert_to_pdf("report.docx", "report.pdf")?;
 minipdf report.docx -o report.pdf
 ```
 
-[Rust 指南](../minipdf-rs/README.md)說明 crate API、CLI、支援範圍、已知限制與開發流程。
+使用方式請參閱 [Rust 指南](../minipdf-rs/README.md)。
 
 ### Java
 
@@ -98,8 +96,7 @@ try {
 }
 ```
 
-註冊字型會用於 DOCX、XLSX 和 PPTX 轉換。註冊資訊在整個處理程序中共用；
-設定另一組字型前請先清除現有註冊資訊。
+使用方式請參閱 [Java 指南](../minipdf-java/README.md)。
 
 ### Python
 
@@ -113,7 +110,7 @@ import minipdf
 minipdf.convert_to_pdf("report.docx", "report.pdf")
 ```
 
-[Python 指南](../minipdf-python/README.md)列出目前的 DOCX 功能範圍與 CLI 選項。
+使用方式請參閱 [Python 指南](../minipdf-python/README.md)。
 
 ### Node.js
 
@@ -127,7 +124,7 @@ const minipdf = require('minipdf')
 minipdf.convertToPdf('report.docx', 'report.pdf')
 ```
 
-[Node.js 指南](../minipdf-node/README.md)涵蓋記憶體內轉換、頁面尺寸、字型註冊與支援的原生平台。
+使用方式請參閱 [Node.js 指南](../minipdf-node/README.md)。
 
 ### Go
 
@@ -143,7 +140,7 @@ if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
 }
 ```
 
-[Go 指南](../minipdf-go/README.md)說明套件、原生 CLI、目前的呈現範圍與發布標籤。
+使用方式請參閱 [Go 指南](../minipdf-go/README.md)。
 
 ## 為什麼選擇 MiniPdf
 
@@ -190,4 +187,4 @@ Run the minipdf-contribution skill.
 
 ## 授權
 
-採用 [Apache License 2.0](../LICENSE)。允許商業使用，但須保留必要聲明與署名。
+採用 [Apache License 2.0](../LICENSE)。歡迎商業使用。
