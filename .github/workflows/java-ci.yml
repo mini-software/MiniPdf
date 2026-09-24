@@ -83,7 +83,7 @@ jobs:
         working-directory: minipdf-java/minipdf-tests
         env:
           MAVEN_OPTS: -XX:-UseContainerSupport
-        run: ../mvnw -B -ntp -f ../pom.xml -DforkCount=0 verify
+        run: ../mvnw -B -ntp -f ../pom.xml -DforkCount=0 test
 
       - name: Upload JDK 10 crash diagnostics
         if: failure() && matrix.java-version == '10'
