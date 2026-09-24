@@ -85,8 +85,18 @@ jobs:
 
       - name: Test on JDK 10
         if: matrix.java-version == '10'
-        # JDK 10 predates cgroup v2 support and can exit during startup on
-        # current hosted runners while reading their container configuration.
-        run: |
-          "$JAVA_HOME_10_X64/bin/java" -XX:-UseContainerSupport -version
-          ./mvnw -B -ntp -Djvm="$JAVA_HOME_10_X64/bin/java" -DargLine=-XX:-UseContainerSupport verify
+        # HotSpot 10 intermittently exits in compiled mode on hosted runner
+        # CPUs. Keep Maven on JDK 17 and run only compatibility tests in the
+        # JDK 10 interpreter.
+        run: ./mvnw -B -ntp -Djvm="$JAVA_HOME_10_X64/bin/java" -DargLine="-Xint -XX:-UseContainerSupport" verify
+
+      - name: Upload JDK 10 crash diagnostics
+        if: failure() && matrix.java-version == '10'
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-10-crash-diagnostics
+          path: |
+            minipdf-java/**/target/surefire-reports/**
+            minipdf-java/**/hs_err_pid*.log
+          if-no-files-found: warn
+          retention-days: 3
