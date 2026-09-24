@@ -99,7 +99,8 @@ try {
 
 
 See the [Java guide](minipdf-java/README.md) for usage.
-```
+
+### Python
 
 ```python
 import minipdf
