@@ -64,7 +64,7 @@ jobs:
       - name: Setup Java ${{ matrix.java-version }}
         uses: actions/setup-java@v6
         with:
-          distribution: ${{ matrix.java-version == '10' && 'liberica' || 'zulu' }}
+          distribution: zulu
           java-version: ${{ matrix.java-version }}
           cache: maven
           cache-dependency-path: minipdf-java/pom.xml
@@ -85,4 +85,8 @@ jobs:
 
       - name: Test on JDK 10
         if: matrix.java-version == '10'
-        run: ./mvnw -B -ntp -Djvm="$JAVA_HOME_10_X64/bin/java" verify
+        # JDK 10 predates cgroup v2 support and can exit during startup on
+        # current hosted runners while reading their container configuration.
+        run: |
+          "$JAVA_HOME_10_X64/bin/java" -XX:-UseContainerSupport -version
+          ./mvnw -B -ntp -Djvm="$JAVA_HOME_10_X64/bin/java" -DargLine=-XX:-UseContainerSupport verify
