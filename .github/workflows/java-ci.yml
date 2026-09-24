@@ -90,3 +90,14 @@ jobs:
         run: |
           "$JAVA_HOME_10_X64/bin/java" -XX:-UseContainerSupport -version
           ./mvnw -B -ntp -Djvm="$JAVA_HOME_10_X64/bin/java" -DargLine=-XX:-UseContainerSupport verify
+
+      - name: Upload JDK 10 crash diagnostics
+        if: failure() && matrix.java-version == '10'
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-10-crash-diagnostics
+          path: |
+            minipdf-java/**/target/surefire-reports/**
+            minipdf-java/**/hs_err_pid*.log
+          if-no-files-found: warn
+          retention-days: 3
