@@ -80,9 +80,10 @@ jobs:
         if: matrix.java-version == '10'
         # Keep Maven and Surefire in one JDK 10 process. The separate Surefire
         # JVM intermittently exits before loading tests on current runners.
+        working-directory: minipdf-java/minipdf-tests
         env:
           MAVEN_OPTS: -XX:-UseContainerSupport
-        run: ./mvnw -B -ntp -DforkCount=0 verify
+        run: ../mvnw -B -ntp -f ../pom.xml -DforkCount=0 verify
 
       - name: Upload JDK 10 crash diagnostics
         if: failure() && matrix.java-version == '10'
