@@ -68,9 +68,13 @@ import org.openxmlformats.schemas.drawingml.x2006.main.CTPath2DCubicBezierTo;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTPath2DLineTo;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTPath2DMoveTo;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTPath2DQuadBezierTo;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTSchemeColor;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTShapeProperties;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTSolidColorFillProperties;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTSRgbColor;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTTransform2D;
+import org.openxmlformats.schemas.drawingml.x2006.main.STSchemeColorVal;
+import org.openxmlformats.schemas.drawingml.x2006.main.STShapeType;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDefinedName;
 
 import java.awt.Color;
@@ -554,10 +558,13 @@ final class PoiXlsxRenderer {
             return;
         }
         content.setStrokingColor(color(borderColor, Color.BLACK));
-        content.setLineWidth(borderWidth(border) * borderScale);
+        float lineWidth = borderWidth(border) * borderScale;
+        content.setLineWidth(lineWidth);
+        content.setLineDashPattern(borderDashPattern(border, lineWidth), 0.0f);
         content.moveTo(x1, y1);
         content.lineTo(x2, y2);
         content.stroke();
+        content.setLineDashPattern(new float[0], 0.0f);
     }
 
     private static void drawText(
@@ -587,7 +594,7 @@ final class PoiXlsxRenderer {
                 .filter(codePoint -> codePoint != '\n')
                 .mapToObj(codePoint -> new String(Character.toChars(codePoint)))
                 .collect(Collectors.toList())
-                : wrap(font, safeValue, fontSize, width - padding * 2.0f, style != null && style.getWrapText());
+                : fonts.wrap(font, safeValue, fontSize, width - padding * 2.0f, style != null && style.getWrapText());
         float lineHeight = fontSize * 1.18f;
         float verticalPadding = padding;
         int maxLines = Math.max(1, 1 + (int) Math.floor((height - fontSize) / lineHeight));
@@ -620,7 +627,7 @@ final class PoiXlsxRenderer {
             content.setRenderingMode(RenderingMode.FILL_STROKE);
         }
         for (String line : lines) {
-            float lineWidth = textWidth(font, line, fontSize);
+            float lineWidth = fonts.textWidth(font, line, fontSize);
             HorizontalAlignment alignment = style == null ? HorizontalAlignment.GENERAL : style.getAlignment();
             float textX;
             switch (alignment) {
@@ -636,9 +643,15 @@ final class PoiXlsxRenderer {
                     break;
             }
             content.beginText();
-            content.setFont(font, fontSize);
-            content.newLineAtOffset(textX, baseline);
-            content.showText(line);
+            boolean firstRun = true;
+            for (FontSet.TextRun run : fonts.runs(font, line)) {
+                content.setFont(run.font(), fontSize);
+                if (firstRun) {
+                    content.newLineAtOffset(textX, baseline);
+                    firstRun = false;
+                }
+                content.showText(run.text());
+            }
             content.endText();
             baseline -= lineHeight;
         }
@@ -668,7 +681,7 @@ final class PoiXlsxRenderer {
                     if (anchor == null || anchor.getRow1() < startRow || anchor.getRow1() > endRow) {
                         continue;
                     }
-                    drawPicture(document, content, picture, pictureBounds(
+                    drawPicture(document, content, sheet.getWorkbook(), picture, pictureBounds(
                         sheet,
                         area,
                         columnWidths,
@@ -696,6 +709,32 @@ final class PoiXlsxRenderer {
                         geometry,
                         horizontalOffset,
                         centerOffset);
+                } else if (shape instanceof XSSFSimpleShape) {
+                    XSSFSimpleShape simpleShape = (XSSFSimpleShape) shape;
+                    if (!(simpleShape.getAnchor() instanceof XSSFClientAnchor)) {
+                        continue;
+                    }
+                    XSSFClientAnchor anchor = (XSSFClientAnchor) simpleShape.getAnchor();
+                    if (anchor.getRow1() < startRow || anchor.getRow1() > endRow
+                            || anchor.getCol1() > area.getLastColumn()
+                            || anchor.getCol2() < area.getFirstColumn()) {
+                        continue;
+                    }
+                    drawRectangleShape(
+                        content,
+                        sheet.getWorkbook(),
+                        simpleShape,
+                        pictureBounds(
+                            sheet,
+                            area,
+                            columnWidths,
+                            startRow,
+                            scale,
+                            horizontalScale,
+                            geometry,
+                            horizontalOffset,
+                            centerOffset,
+                            anchor));
                 }
             }
         }
@@ -760,6 +799,118 @@ final class PoiXlsxRenderer {
                 PDImageXObject image = PDImageXObject.createFromByteArray(document, picture.png(), picture.path());
                 content.drawImage(image, x, top - height, width, height);
             }
+    }
+
+    /**
+     * Renders a standalone DrawingML rectangle shape (xdr:sp with a rect
+     * preset geometry), mirroring the .NET engine's ExcelDrawingShape support.
+     */
+    private static void drawRectangleShape(
+            PDPageContentStream content,
+            XSSFWorkbook workbook,
+            XSSFSimpleShape shape,
+            ShapeBounds bounds) throws IOException {
+        CTShapeProperties properties = shape.getCTShape().getSpPr();
+        if (!properties.isSetPrstGeom()
+                || properties.getPrstGeom().getPrst() != STShapeType.RECT
+                || !properties.isSetSolidFill()) {
+            return;
+        }
+        Color fill = shapeFill(workbook, properties.getSolidFill());
+        if (fill == null) {
+            return;
+        }
+        content.setNonStrokingColor(fill);
+        content.addRect(
+            bounds.x(),
+            bounds.top() - bounds.height(),
+            bounds.width(),
+            bounds.height());
+        content.fill();
+    }
+
+    private static Color shapeFill(XSSFWorkbook workbook, CTSolidColorFillProperties solidFill) {
+        if (solidFill.isSetSrgbClr()) {
+            CTSRgbColor rgb = solidFill.getSrgbClr();
+            byte[] value = rgb.getVal();
+            if (value == null || value.length < 3) {
+                return null;
+            }
+            return new Color(
+                Byte.toUnsignedInt(value[0]),
+                Byte.toUnsignedInt(value[1]),
+                Byte.toUnsignedInt(value[2]));
+        }
+        if (!solidFill.isSetSchemeClr()) {
+            return null;
+        }
+        CTSchemeColor scheme = solidFill.getSchemeClr();
+        int themeIndex = schemeColorThemeIndex(scheme.getVal());
+        if (themeIndex < 0 || workbook.getStylesSource().getTheme() == null) {
+            return null;
+        }
+        XSSFColor themeColor = workbook.getStylesSource().getTheme().getThemeColor(themeIndex);
+        byte[] rgb = themeColor == null ? null : themeColor.getRGB();
+        if (rgb == null || rgb.length < 3) {
+            return null;
+        }
+        double red = Byte.toUnsignedInt(rgb[0]);
+        double green = Byte.toUnsignedInt(rgb[1]);
+        double blue = Byte.toUnsignedInt(rgb[2]);
+        if (scheme.sizeOfLumModArray() > 0) {
+            double modifier = Integer.parseInt(scheme.getLumModArray(0).xgetVal().toString()) / 100_000.0;
+            red *= modifier;
+            green *= modifier;
+            blue *= modifier;
+        }
+        if (scheme.sizeOfLumOffArray() > 0) {
+            double offset = Integer.parseInt(scheme.getLumOffArray(0).xgetVal().toString()) / 100_000.0;
+            red += offset * 255.0;
+            green += offset * 255.0;
+            blue += offset * 255.0;
+        }
+        return new Color(
+            (int) Math.round(Math.min(255.0, red)),
+            (int) Math.round(Math.min(255.0, green)),
+            (int) Math.round(Math.min(255.0, blue)));
+    }
+
+    private static int schemeColorThemeIndex(STSchemeColorVal.Enum value) {
+        if (value == null) {
+            return -1;
+        }
+        switch (value.toString()) {
+            case "lt1":
+            case "bg1":
+                return 0;
+            case "dk1":
+            case "tx1":
+                return 1;
+            case "lt2":
+            case "bg2":
+                return 2;
+            case "dk2":
+            case "tx2":
+                return 3;
+            case "accent1":
+                return 4;
+            case "accent2":
+                return 5;
+            case "accent3":
+                return 6;
+            case "accent4":
+                return 7;
+            case "accent5":
+                return 8;
+            case "accent6":
+                return 9;
+            case "hlink":
+                return 10;
+            case "folHlink":
+                return 11;
+            default:
+                return -1;
+        }
     }
 
     private static void drawShapeGroup(
@@ -827,7 +978,7 @@ final class PoiXlsxRenderer {
                 (float) childTransform.getExt().getCx() / groupTransform.getChExt().getCx() * groupBounds.width(),
                 (float) childTransform.getExt().getCy() / groupTransform.getChExt().getCy() * groupBounds.height());
             if (child instanceof XSSFPicture) {
-                drawPicture(document, content, (XSSFPicture) child, childBounds);
+                drawPicture(document, content, sheet.getWorkbook(), (XSSFPicture) child, childBounds);
             } else if (child instanceof XSSFSimpleShape) {
                 drawCustomShape(content, (XSSFSimpleShape) child, childBounds);
             }
@@ -975,10 +1126,27 @@ final class PoiXlsxRenderer {
     private static void drawPicture(
             PDDocument document,
             PDPageContentStream content,
+            XSSFWorkbook workbook,
             XSSFPicture picture,
             ShapeBounds bounds) throws IOException {
         if (bounds.width() <= 0.0f || bounds.height() <= 0.0f || picture.getPictureData() == null) {
             return;
+        }
+        CTShapeProperties properties = picture.getCTPicture().getSpPr();
+        if (properties != null && properties.isSetSolidFill()) {
+            // Excel and LibreOffice draw the picture's background fill (e.g. bg1
+            // white) behind the image so the sheet content does not show through
+            // transparent pixels.
+            Color fill = shapeFill(workbook, properties.getSolidFill());
+            if (fill != null) {
+                content.setNonStrokingColor(fill);
+                content.addRect(
+                    bounds.x(),
+                    bounds.top() - bounds.height(),
+                    bounds.width(),
+                    bounds.height());
+                content.fill();
+            }
         }
         try {
             PDImageXObject image = PDImageXObject.createFromByteArray(
@@ -1395,34 +1563,6 @@ final class PoiXlsxRenderer {
         return total;
     }
 
-    private static List<String> wrap(PDFont font, String value, float size, float width, boolean enabled)
-            throws IOException {
-        List<String> lines = new ArrayList<>();
-        for (String paragraph : value.split("\\R", -1)) {
-            if (!enabled || textWidth(font, paragraph, size) <= width) {
-                lines.add(paragraph);
-                continue;
-            }
-            StringBuilder line = new StringBuilder();
-            for (int offset = 0; offset < paragraph.length();) {
-                int codePoint = paragraph.codePointAt(offset);
-                String character = new String(Character.toChars(codePoint));
-                if (line.length() > 0 && textWidth(font, line + character, size) > width) {
-                    lines.add(line.toString());
-                    line.setLength(0);
-                }
-                line.append(character);
-                offset += Character.charCount(codePoint);
-            }
-            lines.add(line.toString());
-        }
-        return lines;
-    }
-
-    private static float textWidth(PDFont font, String value, float size) throws IOException {
-        return font.getStringWidth(value) / 1000.0f * size;
-    }
-
     private static float borderWidth(BorderStyle style) {
         switch (style) {
             case HAIR:
@@ -1440,11 +1580,38 @@ final class PoiXlsxRenderer {
         }
     }
 
+    private static float[] borderDashPattern(BorderStyle style, float lineWidth) {
+        switch (style) {
+            case DOTTED:
+                return new float[]{0.2f, 0.8f};
+            case DASHED:
+            case MEDIUM_DASHED:
+                return new float[]{4.0f, 2.0f};
+            case DASH_DOT:
+            case MEDIUM_DASH_DOT:
+            case SLANTED_DASH_DOT:
+                return new float[]{4.0f, 1.5f, Math.max(0.5f, lineWidth), 1.5f};
+            case DASH_DOT_DOT:
+            case MEDIUM_DASH_DOT_DOT:
+                return new float[]{
+                    4.0f,
+                    1.0f,
+                    Math.max(0.5f, lineWidth),
+                    1.0f,
+                    Math.max(0.5f, lineWidth),
+                    1.0f};
+            case HAIR:
+                return new float[]{0.5f, 0.5f};
+            default:
+                return new float[0];
+        }
+    }
+
     private static Color color(XSSFColor source, Color fallback) {
         if (source == null) {
             return fallback;
         }
-        byte[] rgb = source.getRGBWithTint();
+        byte[] rgb = source.getRGB();
         if (rgb == null || rgb.length < 3) {
             byte[] argb = source.getARGB();
             if (argb == null || argb.length < 4) {
@@ -1452,7 +1619,71 @@ final class PoiXlsxRenderer {
             }
             rgb = new byte[]{argb[1], argb[2], argb[3]};
         }
-        return new Color(Byte.toUnsignedInt(rgb[0]), Byte.toUnsignedInt(rgb[1]), Byte.toUnsignedInt(rgb[2]));
+        float red = Byte.toUnsignedInt(rgb[0]) / 255.0f;
+        float green = Byte.toUnsignedInt(rgb[1]) / 255.0f;
+        float blue = Byte.toUnsignedInt(rgb[2]) / 255.0f;
+        double tint = source.getTint();
+        if (tint != 0.0) {
+            // ECMA-376 §18.8.19: apply tint via HSL luminance adjustment.
+            float max = Math.max(red, Math.max(green, blue));
+            float min = Math.min(red, Math.min(green, blue));
+            float hue = 0.0f;
+            float saturation = 0.0f;
+            float luminance = (max + min) / 2.0f;
+            if (max != min) {
+                float delta = max - min;
+                saturation = luminance > 0.5f
+                    ? delta / (2.0f - max - min)
+                    : delta / (max + min);
+                if (max == red) {
+                    hue = (green - blue) / delta + (green < blue ? 6.0f : 0.0f);
+                } else if (max == green) {
+                    hue = (blue - red) / delta + 2.0f;
+                } else {
+                    hue = (red - green) / delta + 4.0f;
+                }
+                hue /= 6.0f;
+            }
+            if (tint < 0) {
+                luminance = (float) (luminance * (1.0 + tint));
+            } else {
+                luminance = (float) (luminance * (1.0 - tint) + tint);
+            }
+            if (saturation == 0.0f) {
+                red = green = blue = luminance;
+            } else {
+                float q = luminance < 0.5f
+                    ? luminance * (1.0f + saturation)
+                    : luminance + saturation - luminance * saturation;
+                float p = 2.0f * luminance - q;
+                red = hueToRgb(p, q, hue + 1.0f / 3.0f);
+                green = hueToRgb(p, q, hue);
+                blue = hueToRgb(p, q, hue - 1.0f / 3.0f);
+            }
+        }
+        return new Color(
+            (int) Math.round(Math.max(0.0f, Math.min(1.0f, red)) * 255.0f),
+            (int) Math.round(Math.max(0.0f, Math.min(1.0f, green)) * 255.0f),
+            (int) Math.round(Math.max(0.0f, Math.min(1.0f, blue)) * 255.0f));
+    }
+
+    private static float hueToRgb(float p, float q, float hue) {
+        if (hue < 0.0f) {
+            hue += 1.0f;
+        }
+        if (hue > 1.0f) {
+            hue -= 1.0f;
+        }
+        if (hue < 1.0f / 6.0f) {
+            return p + (q - p) * 6.0f * hue;
+        }
+        if (hue < 1.0f / 2.0f) {
+            return q;
+        }
+        if (hue < 2.0f / 3.0f) {
+            return p + (q - p) * (2.0f / 3.0f - hue) * 6.0f;
+        }
+        return p;
     }
 
     private static final class PageGeometry {
@@ -1647,6 +1878,7 @@ final class PoiXlsxRenderer {
         private final PDFont simsun;
         private final PDFont mingliu;
         private final PDFont kaiti;
+        private final PDFont symbol;
 
         private FontSet(
                 PDFont latin,
@@ -1667,7 +1899,8 @@ final class PoiXlsxRenderer {
                 PDFont cjkBold,
                 PDFont simsun,
                 PDFont mingliu,
-                PDFont kaiti) {
+                PDFont kaiti,
+                PDFont symbol) {
             this.latin = latin;
             this.latinBold = latinBold;
             this.verdana = verdana;
@@ -1687,6 +1920,7 @@ final class PoiXlsxRenderer {
             this.simsun = simsun;
             this.mingliu = mingliu;
             this.kaiti = kaiti;
+            this.symbol = symbol;
         }
 
         static FontSet load(PDDocument document) throws IOException {
@@ -1730,6 +1964,11 @@ final class PoiXlsxRenderer {
             List<Path> kaitiPaths = officeCloudFonts("STKaiti");
             kaitiPaths.addAll(systemFonts("simkai.ttf"));
             PDFont kaiti = load(document, registered, Arrays.asList("stkaiti", "simkai"), kaitiPaths);
+            PDFont symbol = load(
+                    document,
+                    registered,
+                    Arrays.asList("seguisym", "segoe ui symbol"),
+                    systemFonts("seguisym.ttf", "unifont.ttf"));
             if (latin == null) {
                 latin = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
             }
@@ -1804,7 +2043,8 @@ final class PoiXlsxRenderer {
                     cjkBold,
                     simsun,
                     mingliu,
-                    kaiti);
+                    kaiti,
+                    symbol);
         }
 
         PDFont resolve(String requested, String text, boolean bold, boolean italic) {
@@ -1850,12 +2090,6 @@ final class PoiXlsxRenderer {
         }
 
         String sanitize(PDFont font, String value) throws IOException {
-            if (!(font instanceof PDType0Font)) {
-                return value.chars()
-                        .map(character -> character <= 255 ? character : '?')
-                        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                        .toString();
-            }
             StringBuilder safe = new StringBuilder();
             for (int offset = 0; offset < value.length();) {
                 int codePoint = value.codePointAt(offset);
@@ -1868,15 +2102,129 @@ final class PoiXlsxRenderer {
                     safe.append(' ');
                     continue;
                 }
-                String character = new String(Character.toChars(codePoint));
-                try {
-                    font.getStringWidth(character);
-                    safe.append(character);
-                } catch (IllegalArgumentException exception) {
+                PDFont target = glyphFont(font, codePoint);
+                if (covers(target, codePoint)) {
+                    safe.appendCodePoint(codePoint);
+                } else {
                     safe.append('?');
                 }
             }
             return safe.toString();
+        }
+
+        /**
+         * Returns the font that provides a glyph for the code point: the
+         * primary font when possible, then a symbol-capable font, then CJK.
+         * Mirrors the .NET engine's per-code-point font fallback.
+         */
+        PDFont glyphFont(PDFont primary, int codePoint) throws IOException {
+            if (covers(primary, codePoint)) {
+                return primary;
+            }
+            if (symbol != null && covers(symbol, codePoint)) {
+                return symbol;
+            }
+            if (covers(cjk, codePoint)) {
+                return cjk;
+            }
+            return primary;
+        }
+
+        private boolean covers(PDFont font, int codePoint) throws IOException {
+            try {
+                font.encode(new String(Character.toChars(codePoint)));
+                return true;
+            } catch (IllegalArgumentException exception) {
+                return false;
+            }
+        }
+
+        /**
+         * Splits a line into runs that each use a single font, selecting the
+         * first font in the fallback chain that covers every code point.
+         */
+        List<TextRun> runs(PDFont font, String line) throws IOException {
+            List<TextRun> runs = new ArrayList<>();
+            PDFont current = null;
+            StringBuilder currentText = new StringBuilder();
+            for (int offset = 0; offset < line.length();) {
+                int codePoint = line.codePointAt(offset);
+                offset += Character.charCount(codePoint);
+                PDFont target = glyphFont(font, codePoint);
+                if (current != null && current != target) {
+                    runs.add(new TextRun(current, currentText.toString()));
+                    currentText.setLength(0);
+                }
+                current = target;
+                currentText.appendCodePoint(codePoint);
+            }
+            if (current != null) {
+                runs.add(new TextRun(current, currentText.toString()));
+            }
+            return runs;
+        }
+
+        float textWidth(PDFont font, String value, float size) throws IOException {
+            float total = 0.0f;
+            for (TextRun run : runs(font, value)) {
+                total += run.font().getStringWidth(run.text());
+            }
+            return total / 1000.0f * size;
+        }
+
+        List<String> wrap(PDFont font, String value, float size, float width, boolean enabled)
+                throws IOException {
+            List<String> lines = new ArrayList<>();
+            for (String paragraph : value.split("\\R", -1)) {
+                if (!enabled || textWidth(font, paragraph, size) <= width) {
+                    lines.add(paragraph);
+                    continue;
+                }
+                String remaining = paragraph;
+                while (!remaining.isEmpty()) {
+                    int fit = 0;
+                    for (int offset = 0; offset < remaining.length();) {
+                        int next = offset + Character.charCount(remaining.codePointAt(offset));
+                        if (offset > 0 && textWidth(font, remaining.substring(0, next), size) > width) {
+                            break;
+                        }
+                        fit = next;
+                        offset = next;
+                    }
+                    if (fit >= remaining.length()) {
+                        lines.add(remaining);
+                        break;
+                    }
+                    if (remaining.charAt(fit) == ' ') {
+                        lines.add(remaining.substring(0, fit));
+                        remaining = remaining.substring(fit + 1);
+                        continue;
+                    }
+                    int breakAt = fit;
+                    for (int index = fit - 1; index >= fit / 2; index--) {
+                        if (remaining.charAt(index) == ' ') {
+                            breakAt = index;
+                            break;
+                        }
+                    }
+                    lines.add(remaining.substring(0, breakAt));
+                    remaining = remaining.substring(breakAt + (breakAt == fit ? 0 : 1));
+                }
+            }
+            return lines;
+        }
+
+        private static final class TextRun {
+            private final PDFont font;
+            private final String text;
+
+            private TextRun(PDFont font, String text) {
+                this.font = font;
+                this.text = text;
+            }
+
+            PDFont font() { return font; }
+            String text() { return text; }
         }
 
         private static PDFont load(
