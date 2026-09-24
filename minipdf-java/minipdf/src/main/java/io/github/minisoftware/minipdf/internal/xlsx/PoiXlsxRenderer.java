@@ -2281,9 +2281,9 @@ final class PoiXlsxRenderer {
         private static List<Path> cjkSystemFonts() {
             if (!FontEmbeddingPolicy.shouldSubset()) {
                 return systemFonts(
+                        "wqy-microhei.ttc",
                         "unifont.ttf",
                         "NotoSansSC-VF.ttf",
-                        "wqy-microhei.ttc",
                         "NotoSansCJK-Regular.ttc",
                         "simhei.ttf",
                         "simsun.ttc");
