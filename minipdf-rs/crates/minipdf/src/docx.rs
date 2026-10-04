@@ -679,9 +679,9 @@ fn read_paragraph(
     relationships: &HashMap<String, String>,
     archive: &mut ZipArchive<Cursor<&[u8]>>,
 ) -> Result<()> {
-    if paragraph
-        .descendants()
-        .any(|node| node.has_tag_name("pageBreakBefore"))
+    if child(paragraph, "pPr")
+        .and_then(|properties| child(properties, "pageBreakBefore"))
+        .is_some_and(property_enabled)
     {
         blocks.push(DocxBlock::PageBreak);
     }
@@ -2397,6 +2397,33 @@ mod tests {
                 .filter(|chunk| *chunk == b"/Type /Page /Parent")
                 .count(),
             3
+        );
+    }
+
+    #[test]
+    fn ignores_disabled_page_break_before() {
+        let input = create_docx(
+            r#"<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>First</w:t></w:r></w:p><w:p><w:pPr><w:pageBreakBefore w:val="0"/></w:pPr><w:r><w:t>Second</w:t></w:r></w:p><w:p><w:pPr><w:pageBreakBefore w:val="false"/></w:pPr><w:r><w:t>Third</w:t></w:r></w:p><w:p><w:pPr><w:pageBreakBefore w:val="1"/></w:pPr><w:r><w:t>Fourth</w:t></w:r></w:p></w:body></w:document>"#,
+        );
+
+        let document = read_docx_document(&input).unwrap();
+
+        assert_eq!(
+            document.blocks,
+            vec![
+                DocxBlock::Paragraph(plain_paragraph("First".to_owned())),
+                DocxBlock::Paragraph(plain_paragraph("Second".to_owned())),
+                DocxBlock::Paragraph(plain_paragraph("Third".to_owned())),
+                DocxBlock::PageBreak,
+                DocxBlock::Paragraph(plain_paragraph("Fourth".to_owned())),
+            ]
+        );
+        let pdf = convert_docx_bytes(&input, &ConversionOptions::default()).unwrap();
+        assert_eq!(
+            pdf.windows(b"/Type /Page /Parent".len())
+                .filter(|chunk| *chunk == b"/Type /Page /Parent")
+                .count(),
+            2
         );
     }
 
