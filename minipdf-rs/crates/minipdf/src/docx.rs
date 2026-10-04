@@ -2428,6 +2428,23 @@ mod tests {
     }
 
     #[test]
+    fn ignores_page_break_before_in_change_history() {
+        let input = create_docx(
+            r#"<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>First</w:t></w:r></w:p><w:p><w:pPr><w:pPrChange><w:pPr><w:pageBreakBefore w:val="1"/></w:pPr></w:pPrChange></w:pPr><w:r><w:t>Second</w:t></w:r></w:p></w:body></w:document>"#,
+        );
+
+        let document = read_docx_document(&input).unwrap();
+
+        assert_eq!(
+            document.blocks,
+            vec![
+                DocxBlock::Paragraph(plain_paragraph("First".to_owned())),
+                DocxBlock::Paragraph(plain_paragraph("Second".to_owned())),
+            ]
+        );
+    }
+
+    #[test]
     fn reads_and_renders_basic_table() {
         let input = create_docx(
             r#"<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:tbl><w:tblGrid><w:gridCol w:w="2000"/><w:gridCol w:w="3000"/></w:tblGrid><w:tr><w:tc><w:tcPr><w:tcW w:w="2000" w:type="dxa"/><w:shd w:fill="336699"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="16"/><w:color w:val="FFFFFF"/></w:rPr><w:t>Header</w:t></w:r></w:p></w:tc><w:tc><w:tcPr><w:tcW w:w="3000" w:type="dxa"/></w:tcPr><w:p><w:r><w:t>Value</w:t></w:r></w:p></w:tc></w:tr></w:tbl><w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800"/></w:sectPr></w:body></w:document>"#,
