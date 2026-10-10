@@ -679,6 +679,210 @@ public class DocxToPdfConverterTests
         return crc ^ 0xFFFFFFFF;
     }
 
+    [Fact]
+    public void Convert_HeaderTextBox_WrapsTextWithinBox()
+    {
+        var longText = string.Concat(Enumerable.Repeat("個資蒐集處理及使用聲明", 20));
+        using var docxStream = CreateDocxWithHeaderTextBox(longText, offsetEmu: -457200, widthEmu: 5080000);
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+        var lines = doc.Pages[0].TextBlocks.Where(b => b.Text != "Body").ToList();
+
+        // 400pt box minus 7.2pt insets, 72pt margin, -36pt column offset
+        Assert.True(lines.Count > 1, "header text box paragraph should wrap");
+        Assert.Equal(longText, string.Concat(lines.Select(l => l.Text)));
+        Assert.All(lines, l => Assert.Equal(72f - 36f + 7.2f, l.X, 0.01f));
+        Assert.All(lines, l => Assert.True(l.Text.Length * l.FontSize <= 400f - 14.4f + 0.01f));
+    }
+
+    [Fact]
+    public void Convert_HeaderTextBox_SplitsOversizedUnbreakableWord()
+    {
+        var longText = new string('W', 180);
+        using var docxStream = CreateDocxWithHeaderTextBox(longText, offsetEmu: -457200, widthEmu: 5080000);
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+        var lines = doc.Pages[0].TextBlocks.Where(b => b.Text != "Body").ToList();
+
+        Assert.True(lines.Count > 1, "oversized word should wrap");
+        Assert.Equal(longText, string.Concat(lines.Select(l => l.Text)));
+        Assert.All(lines, l => Assert.True(l.Text.Length * l.FontSize * 0.9f <= 385.6f));
+        Assert.All(lines, l => Assert.True(l.MaxWidth.HasValue && Math.Abs(l.MaxWidth.Value - 385.6f) < 0.01f));
+    }
+
+    [Fact]
+    public void Convert_WrappedFooterParagraph_StaysAboveFooterMargin()
+    {
+        var longText = string.Join(" ", Enumerable.Repeat("Footer notice text", 30));
+        using var docxStream = CreateDocxWithFooter(longText, footerTwips: 360);
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+        var lines = doc.Pages[0].TextBlocks.Where(b => b.Text != "Body").ToList();
+
+        // Every wrapped line must fit in the reserved footer area, above the 18pt footer margin.
+        Assert.True(lines.Count > 1, "footer paragraph should wrap");
+        Assert.All(lines, l => Assert.True(l.Y >= 18f, $"footer line at y={l.Y} is below the footer margin"));
+    }
+
+    [Fact]
+    public void Convert_WrappedFooterWithRunFontSize_StaysAboveFooterMargin()
+    {
+        var longText = string.Join(" ", Enumerable.Repeat("Footer notice text", 30));
+        using var docxStream = CreateDocxWithFooter(longText, footerTwips: 360, runHalfPoints: 36);
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+        var lines = doc.Pages[0].TextBlocks.Where(b => b.Text != "Body").ToList();
+
+        Assert.True(lines.Count > 1, "footer paragraph should wrap");
+        Assert.All(lines, l => Assert.True(l.Y >= 18f, $"footer line at y={l.Y} is below the footer margin"));
+    }
+
+    private static MemoryStream CreateDocxWithFooter(string text, int footerTwips, int? runHalfPoints = null)
+    {
+        var ms = new MemoryStream();
+        var runProperties = runHalfPoints.HasValue ? $"<w:rPr><w:sz w:val=\"{runHalfPoints.Value}\"/></w:rPr>" : "";
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+                  <Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/_rels/document.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/document.xml",
+                $"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                  <w:body>
+                    <w:p><w:r><w:t>Body</w:t></w:r></w:p>
+                    <w:sectPr>
+                      <w:footerReference w:type="default" r:id="rId1"/>
+                      <w:pgSz w:w="11906" w:h="16838"/>
+                      <w:pgMar w:top="1440" w:right="1440" w:bottom="720" w:left="1440" w:header="720" w:footer="{footerTwips}"/>
+                    </w:sectPr>
+                  </w:body>
+                </w:document>
+                """);
+
+            AddEntry(archive, "word/footer1.xml",
+                $"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:p><w:r>{runProperties}<w:t>{EscapeXml(text)}</w:t></w:r></w:p>
+                </w:ftr>
+                """);
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
+    private static MemoryStream CreateDocxWithHeaderTextBox(string text, long offsetEmu, long widthEmu)
+    {
+        var ms = new MemoryStream();
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+                  <Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/_rels/document.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/document.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                  <w:body>
+                    <w:p><w:r><w:t>Body</w:t></w:r></w:p>
+                    <w:sectPr>
+                      <w:headerReference w:type="default" r:id="rId1"/>
+                      <w:pgSz w:w="11906" w:h="16838"/>
+                      <w:pgMar w:top="3119" w:right="1440" w:bottom="1440" w:left="1440" w:header="0" w:footer="720"/>
+                    </w:sectPr>
+                  </w:body>
+                </w:document>
+                """);
+
+            AddEntry(archive, "word/header1.xml",
+                $"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:hdr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                       xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+                       xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+                       xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
+                  <w:p><w:r><w:drawing>
+                    <wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="1" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="1">
+                      <wp:simplePos x="0" y="0"/>
+                      <wp:positionH relativeFrom="column"><wp:posOffset>{offsetEmu}</wp:posOffset></wp:positionH>
+                      <wp:positionV relativeFrom="paragraph"><wp:posOffset>0</wp:posOffset></wp:positionV>
+                      <wp:extent cx="{widthEmu}" cy="1270000"/>
+                      <wp:wrapNone/>
+                      <wp:docPr id="1" name="Text Box 1"/>
+                      <a:graphic><a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
+                        <wps:wsp>
+                          <wps:spPr><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></wps:spPr>
+                          <wps:txbx><w:txbxContent>
+                            <w:p><w:r><w:rPr><w:sz w:val="14"/></w:rPr><w:t>{EscapeXml(text)}</w:t></w:r></w:p>
+                          </w:txbxContent></wps:txbx>
+                          <wps:bodyPr lIns="91440" rIns="91440"/>
+                        </wps:wsp>
+                      </a:graphicData></a:graphic>
+                    </wp:anchor>
+                  </w:drawing></w:r></w:p>
+                </w:hdr>
+                """);
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
     private static MemoryStream CreateSimpleDocx(params string[] paragraphs)
     {
         var ms = new MemoryStream();

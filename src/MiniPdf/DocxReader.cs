@@ -4030,12 +4030,32 @@ internal static class DocxReader
                 }
             }
 
+            // Text area of the box: extent minus bodyPr insets (OOXML default 0.1in left/right).
+            const float emuPerPt = 12700f;
+            var bodyPr = anchor.Descendants(WPS + "bodyPr").FirstOrDefault();
+            var lIns = (long.TryParse(bodyPr?.Attribute("lIns")?.Value, out var li) ? li : 91440) / emuPerPt;
+            var rIns = (long.TryParse(bodyPr?.Attribute("rIns")?.Value, out var ri) ? ri : 91440) / emuPerPt;
+            var boxWidth = long.TryParse(anchor.Element(WP + "extent")?.Attribute("cx")?.Value, out var cx) ? cx / emuPerPt : 0f;
+            // Only column/margin-relative offsets map onto the margin-based header layout;
+            // page-relative and aligned boxes keep the inferred-alignment path above.
+            long offEmu = 0;
+            var hasMarginOffset = alignment == null
+                && posH?.Attribute("relativeFrom")?.Value is "column" or "margin"
+                && long.TryParse(posH.Element(WP + "posOffset")?.Value, out offEmu);
+            var boxOffset = offEmu / emuPerPt;
+
             foreach (var txbxP in txbxContent.Elements(W + "p"))
             {
                 var txbxPara = ReadParagraph(txbxP, styles, numbering, hfRels, archive, null, defaultFontName, defaultEastAsiaFontName);
                 if (txbxPara == null) continue;
                 if (alignment != null)
                     txbxPara = txbxPara with { Alignment = alignment };
+                if (hasMarginOffset && boxWidth > lIns + rIns)
+                    txbxPara = txbxPara with
+                    {
+                        IndentLeft = boxOffset + lIns + txbxPara.IndentLeft,
+                        TextBoxWidth = boxWidth - lIns - rIns - txbxPara.IndentLeft - txbxPara.IndentRight,
+                    };
                 elements.Add(txbxPara);
             }
         }

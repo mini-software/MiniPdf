@@ -255,7 +255,7 @@ internal static class DocxToPdfConverter
         // Adjust top margin when header content is taller than the default header area
         if (!options.MarginTopOverride.HasValue && docxDoc.HeaderElements is { Count: > 0 })
         {
-            var headerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.HeaderElements), options);
+            var headerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.HeaderElements), options, headerFooter: true);
             var headerAreaHeight = options.MarginTop - options.HeaderMargin;
             if (headerAreaHeight < 0) headerAreaHeight = 0; // header starts below marginTop
             if (headerContentHeight > headerAreaHeight)
@@ -270,7 +270,7 @@ internal static class DocxToPdfConverter
         // Adjust bottom margin when footer content is taller than the default footer area
         if (!options.MarginBottomOverride.HasValue && docxDoc.FooterElements is { Count: > 0 })
         {
-            var footerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.FooterElements), options);
+            var footerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.FooterElements), options, headerFooter: true);
             var footerTopFromBottom = options.FooterMargin + footerContentHeight;
             if (footerTopFromBottom > options.MarginBottom)
                 options.MarginBottom = footerTopFromBottom;
@@ -535,7 +535,7 @@ internal static class DocxToPdfConverter
                         || (e is DocxParagraph pp && (pp.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text)) || pp.Images.Count > 0))))
                 {
                     var trimmedFooter = TrimTrailingEmptyParagraphs(pageFooterElements);
-                    var footerContentHeight = EstimateElementsHeight(trimmedFooter, options);
+                    var footerContentHeight = EstimateElementsHeight(trimmedFooter, options, headerFooter: true);
                     var footerStartY = options.FooterMargin + footerContentHeight;
                     RenderHeaderFooterElementsOnPage(page, options, trimmedFooter, footerStartY, pi, totalPages, sectionPageNum);
                 }
@@ -3530,7 +3530,7 @@ internal static class DocxToPdfConverter
     /// Estimates the total height of a list of elements (paragraphs + tables)
     /// for header/footer sizing calculations.
     /// </summary>
-    private static float EstimateElementsHeight(List<DocxElement> elements, ConversionOptions options)
+    private static float EstimateElementsHeight(List<DocxElement> elements, ConversionOptions options, bool headerFooter = false)
     {
         const float emuPerPt = 914400f / 72f;
         float totalHeight = 0;
@@ -3550,8 +3550,11 @@ internal static class DocxToPdfConverter
                         totalHeight += gap;
                     }
 
-                    var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
-                    var estFont = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
+                    var firstRun = headerFooter ? para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text)) : null;
+                    var fontSize = firstRun?.FontSize > 0 ? firstRun.FontSize
+                        : para.FontSize > 0 ? para.FontSize : options.FontSize;
+                    var estFont = headerFooter ? firstRun?.FontName
+                        : para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.FontName))?.FontName;
                     var lineHeight = ApplyLineSpacingRule(
                         para,
                         fontSize * GetFontMetricsFactor(estFont) * GetLineSpacingMultiple(para, options.LineSpacing));
@@ -3566,7 +3569,16 @@ internal static class DocxToPdfConverter
                     }
                     var text = string.Concat(para.Runs.Select(r => r.Text));
                     if (!string.IsNullOrEmpty(text))
-                        totalHeight += lineHeight;
+                    {
+                        // Header/footer paragraphs wrap at render time; reserve every line.
+                        // Floating text-box paragraphs (TextBoxWidth > 0) overlay the page and
+                        // must not grow the reserved area, so they keep the one-line estimate.
+                        // Page numbers are unknown here, so placeholders resolve as page 1 of 1.
+                        var lineCount = headerFooter && para.TextBoxWidth <= 0
+                            ? WrapHeaderFooterText(para, ResolvePagePlaceholders(text, 1, 1), options, usableW).Count
+                            : 1;
+                        totalHeight += lineHeight * lineCount;
+                    }
                     else if (para.Images.Count == 0)
                         totalHeight += lineHeight;
 
@@ -3603,6 +3615,52 @@ internal static class DocxToPdfConverter
             }
         }
         return totalHeight;
+    }
+
+    /// <summary>
+    /// Splits a header/footer paragraph into the lines drawn by
+    /// <see cref="RenderHeaderFooterElementsOnPage"/>. Text that fits is kept verbatim
+    /// because WordWrap normalizes spacing.
+    /// </summary>
+    private static List<string> WrapHeaderFooterText(DocxParagraph para, string text, ConversionOptions options, float areaWidth)
+    {
+        var firstRun = para.Runs.FirstOrDefault(r => !string.IsNullOrEmpty(r.Text));
+        var runFontSize = firstRun?.FontSize > 0 ? firstRun.FontSize : (para.FontSize > 0 ? para.FontSize : options.FontSize);
+        var bold = firstRun?.Bold ?? false;
+        var useCalibri = options.UseCalibriWidths
+            && (string.IsNullOrEmpty(firstRun?.FontName) || firstRun.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase));
+        s_overrideWidths = GetFontOverrideWidths(firstRun?.FontName);
+        var lines = EstimateWrapTextWidth(text, runFontSize, bold, 0, useCalibri) <= areaWidth
+            ? [text]
+            : WordWrap(text, areaWidth, areaWidth, runFontSize, para.TabStops, bold, useCalibriWidths: useCalibri);
+        var result = new List<string>();
+        foreach (var line in lines)
+        {
+            if (EstimateWrapTextWidth(line, runFontSize, bold, 0, useCalibri) <= areaWidth)
+            {
+                result.Add(line);
+                continue;
+            }
+
+            var segment = "";
+            var elements = System.Globalization.StringInfo.GetTextElementEnumerator(line);
+            while (elements.MoveNext())
+            {
+                var next = elements.GetTextElement();
+                if (segment.Length > 0 && Math.Max(
+                        EstimateWrapTextWidth(segment + next, runFontSize, bold, 0, useCalibri),
+                        EstimateTextWidth(segment + next, runFontSize)) > areaWidth)
+                {
+                    result.Add(segment);
+                    segment = "";
+                }
+                segment += next;
+            }
+            if (segment.Length > 0)
+                result.Add(segment);
+        }
+        s_overrideWidths = null;
+        return result;
     }
 
     /// <summary>
@@ -3692,17 +3750,25 @@ internal static class DocxToPdfConverter
                             para,
                             runFontSize * GetFontMetricsFactor(firstRun?.FontName)
                                 * GetLineSpacingMultiple(para, options.LineSpacing));
-                        var textWidth = EstimateTextWidth(text, runFontSize);
-                        var textX = para.Alignment switch
+                        // Text-box paragraphs carry their own text area; others use the margins.
+                        var areaLeft = options.MarginLeft + (para.TextBoxWidth > 0 ? para.IndentLeft : 0);
+                        var areaWidth = para.TextBoxWidth > 0 ? para.TextBoxWidth : usableW;
+                        var bold = firstRun?.Bold ?? false;
+                        foreach (var line in WrapHeaderFooterText(para, text, options, areaWidth))
                         {
-                            "center" => options.MarginLeft + (usableW - textWidth) / 2,
-                            "right" => options.MarginLeft + usableW - textWidth,
-                            _ => options.MarginLeft
-                        };
-                        y -= runFontSize;
-                        page.AddText(text, textX, y, runFontSize, firstRun?.Color ?? para.Color,
-                            bold: firstRun?.Bold ?? false, italic: firstRun?.Italic ?? false, preferredFontName: firstRun?.FontName);
-                        y -= lineHeight - runFontSize;
+                            var textWidth = EstimateTextWidth(line, runFontSize);
+                            var textX = para.Alignment switch
+                            {
+                                "center" => areaLeft + (areaWidth - textWidth) / 2,
+                                "right" => areaLeft + areaWidth - textWidth,
+                                _ => areaLeft
+                            };
+                            y -= runFontSize;
+                            page.AddText(line, textX, y, runFontSize, firstRun?.Color ?? para.Color,
+                                maxWidth: para.TextBoxWidth > 0 ? areaWidth : null,
+                                bold: bold, italic: firstRun?.Italic ?? false, preferredFontName: firstRun?.FontName);
+                            y -= lineHeight - runFontSize;
+                        }
                     }
                     lastSpacingAfter = para.SpacingAfter >= 0 ? para.SpacingAfter : 0f;
                     isFirst = false;
