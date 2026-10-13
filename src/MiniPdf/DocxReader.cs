@@ -28,6 +28,7 @@ internal static class DocxReader
     private static readonly XNamespace REL = "http://schemas.openxmlformats.org/package/2006/relationships";
     private static readonly XNamespace WPS = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape";
     private static readonly XNamespace WPG = "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup";
+    private static readonly XNamespace WP14 = "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing";
     private static readonly XNamespace V = "urn:schemas-microsoft-com:vml";
     private static readonly XNamespace MC = "http://schemas.openxmlformats.org/markup-compatibility/2006";
     private static readonly XNamespace M = "http://schemas.openxmlformats.org/officeDocument/2006/math";
@@ -396,33 +397,14 @@ internal static class DocxReader
                             continue; // skip duplicate text box at same position
                     }
 
-                    // Read anchor position
-                    float anchorOffsetPt = 0;
-                    string vRelativeFrom = "paragraph";
-                    string? vAlign = null;
-                    var posV = anchor.Element(WP + "positionV");
-                    if (posV != null)
-                    {
-                        vRelativeFrom = posV.Attribute("relativeFrom")?.Value ?? "paragraph";
-                        var off = posV.Element(WP + "posOffset");
-                        if (off != null && long.TryParse(off.Value, out var emu))
-                            anchorOffsetPt = emu / 914400f * 72f;
-                        var alignEl = posV.Element(WP + "align");
-                        if (alignEl != null) vAlign = alignEl.Value;
-                    }
-                    float anchorXPt = 0;
-                    string hRelativeFrom = "column";
-                    string? hAlign = null;
-                    var posH = anchor.Element(WP + "positionH");
-                    if (posH != null)
-                    {
-                        hRelativeFrom = posH.Attribute("relativeFrom")?.Value ?? "column";
-                        var off = posH.Element(WP + "posOffset");
-                        if (off != null && long.TryParse(off.Value, out var hEmu))
-                            anchorXPt = hEmu / 914400f * 72f;
-                        var alignEl = posH.Element(WP + "align");
-                        if (alignEl != null) hAlign = alignEl.Value;
-                    }
+                    // Read anchor position (positionH/V can be wrapped in mc:AlternateContent)
+                    var tbPlacement = ReadAnchorPlacement(anchor, "column", "paragraph");
+                    float anchorOffsetPt = tbPlacement.OffY / 914400f * 72f;
+                    string vRelativeFrom = tbPlacement.VRel;
+                    string? vAlign = tbPlacement.VAlign;
+                    float anchorXPt = tbPlacement.OffX / 914400f * 72f;
+                    string hRelativeFrom = tbPlacement.HRel;
+                    string? hAlign = tbPlacement.HAlign;
                     float extentHeightPt = 0;
                     float extentWidthPt = 0;
                     var extent = anchor.Element(WP + "extent");
@@ -434,6 +416,20 @@ internal static class DocxReader
                             extentWidthPt = cx / 914400f * 72f;
                     }
 
+                    // A text box inside a wpg group is placed by its own rectangle inside the group frame,
+                    // not by the whole group frame.
+                    var txbxWsp = txbx.Ancestors(WPS + "wsp").FirstOrDefault();
+                    float groupFrameWidthPt = 0, groupFrameHeightPt = 0, childOffsetXPt = 0, childOffsetYPt = 0;
+                    if (txbxWsp != null && TryGetGroupChildRect(txbxWsp, out var gcX, out var gcY, out var gcW, out var gcH))
+                    {
+                        groupFrameWidthPt = extentWidthPt;
+                        groupFrameHeightPt = extentHeightPt;
+                        childOffsetXPt = gcX / 914400f * 72f;
+                        childOffsetYPt = gcY / 914400f * 72f;
+                        extentWidthPt = gcW / 914400f * 72f;
+                        extentHeightPt = gcH / 914400f * 72f;
+                    }
+
                     // Read text box outline (border) and fill from shape properties
                     DocxTextBoxBorder? textBoxBorder = null;
                     PdfColor? textBoxFillColor = null;
@@ -442,7 +438,7 @@ internal static class DocxReader
                     // ProcessGroupChildren.  Extracting fill from the wsp here would
                     // duplicate the background rectangle and paint over child shapes.
                     bool anchorHasGroupShape = anchor.Descendants(WPG + "wgp").Any();
-                    var wsp = anchor.Descendants(WPS + "wsp").FirstOrDefault();
+                    var wsp = txbxWsp ?? anchor.Descendants(WPS + "wsp").FirstOrDefault();
                     if (wsp != null)
                     {
                         var spPr = wsp.Element(WPS + "spPr") ?? wsp.Element(A + "spPr");
@@ -474,6 +470,7 @@ internal static class DocxReader
                     // Parse bodyPr text insets (defaults: lIns=91440, tIns=45720 EMU)
                     float topInsetPt = 3.6f;  // 45720 EMU default
                     float leftInsetPt = 7.2f; // 91440 EMU default
+                    float? rightInsetPt = null;
                     var bodyPr = wsp?.Element(WPS + "bodyPr");
                     if (bodyPr != null)
                     {
@@ -481,7 +478,12 @@ internal static class DocxReader
                             topInsetPt = tIns / 914400f * 72f;
                         if (long.TryParse(bodyPr.Attribute("lIns")?.Value, out var lIns))
                             leftInsetPt = lIns / 914400f * 72f;
+                        if (long.TryParse(bodyPr.Attribute("rIns")?.Value, out var rIns))
+                            rightInsetPt = rIns / 914400f * 72f;
                     }
+                    float textRectTrimPt = wsp?.Element(WPS + "spPr")?.Element(A + "prstGeom")?.Attribute("prst")?.Value == "homePlate"
+                        ? Math.Min(extentWidthPt, extentHeightPt) * 0.25f
+                        : 0f;
 
                     // A wrapTopAndBottom text box whose vertical anchor is relative to the
                     // page or margin sits at an absolute page position (LibreOffice maps
@@ -536,13 +538,30 @@ internal static class DocxReader
                                     firstContent = false;
 
                                 // Also collect for floating overlay
-                                floatingParas.Add(tbPara with { IsTextBoxFlow = false });
+                                var overlayPara = tbPara with { IsTextBoxFlow = false };
+                                // Uncoloured runs take the shape style's fontRef colour.
+                                var fontRef = wsp?.Element(WPS + "style")?.Element(A + "fontRef");
+                                var fontRefColor = fontRef?.Element(A + "schemeClr") ?? fontRef?.Element(A + "srgbClr");
+                                if (fontRefColor != null)
+                                {
+                                    var (styleTextColor, _) = ResolveSolidFill(new XElement(A + "solidFill", fontRefColor), themeColors);
+                                    if (styleTextColor != null)
+                                        overlayPara = overlayPara with
+                                        {
+                                            Runs = overlayPara.Runs.Select(r => r.Color == null ? r with { Color = styleTextColor } : r).ToList()
+                                        };
+                                }
+                                floatingParas.Add(overlayPara);
                             }
                         }
                         if (floatingParas.Count > 0)
                         {
                             floatingTextBoxes ??= new List<DocxFloatingTextBox>();
-                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom, textBoxFillColor, topInsetPt, leftInsetPt, hAlign, vAlign, IsWrapTopBottom: isWrapTopBottom));
+                            floatingTextBoxes.Add(new DocxFloatingTextBox(anchorXPt, anchorOffsetPt, extentWidthPt, extentHeightPt, floatingParas, textBoxBorder, hRelativeFrom, vRelativeFrom, textBoxFillColor, topInsetPt, leftInsetPt, hAlign, vAlign, IsWrapTopBottom: isWrapTopBottom,
+                                HPct: tbPlacement.HPct, VPct: tbPlacement.VPct,
+                                AnchorWidthPt: groupFrameWidthPt, AnchorHeightPt: groupFrameHeightPt,
+                                ChildOffsetXPt: childOffsetXPt, ChildOffsetYPt: childOffsetYPt,
+                                RightInsetPt: rightInsetPt, TextRectTrimPt: textRectTrimPt));
                         }
                     }
                     else
@@ -2607,6 +2626,45 @@ internal static class DocxReader
         }
     }
 
+    /// <summary>Resolved anchor position: reference frame, alignment, absolute offset and wp14 percentage offset.</summary>
+    private sealed record AnchorPlacement(
+        string HRel, string VRel, string? HAlign, string? VAlign,
+        long OffX, long OffY, double? HPct, double? VPct);
+
+    /// <summary>
+    /// Reads positionH/positionV. They may be wrapped in mc:AlternateContent (the wp14 percentage form puts
+    /// pctPos*Offset in the Choice branch and a posOffset fallback beside it), so search descendants.
+    /// </summary>
+    private static AnchorPlacement ReadAnchorPlacement(XElement anchor, string defaultHRel, string defaultVRel)
+    {
+        var posH = anchor.Descendants(WP + "positionH").FirstOrDefault();
+        var posV = anchor.Descendants(WP + "positionV").FirstOrDefault();
+        long offX = 0, offY = 0;
+        double? hPct = null, vPct = null;
+        string? hAlign = null, vAlign = null;
+        var hRel = defaultHRel;
+        var vRel = defaultVRel;
+        if (posH != null)
+        {
+            hRel = posH.Attribute("relativeFrom")?.Value ?? defaultHRel;
+            if (long.TryParse(posH.Element(WP + "posOffset")?.Value, out var hv)) offX = hv;
+            if (double.TryParse(posH.Element(WP14 + "pctPosHOffset")?.Value, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out var hp))
+                hPct = hp / 100000d;
+            hAlign = posH.Element(WP + "align")?.Value;
+        }
+        if (posV != null)
+        {
+            vRel = posV.Attribute("relativeFrom")?.Value ?? defaultVRel;
+            if (long.TryParse(posV.Element(WP + "posOffset")?.Value, out var vv)) offY = vv;
+            if (double.TryParse(posV.Element(WP14 + "pctPosVOffset")?.Value, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out var vp))
+                vPct = vp / 100000d;
+            vAlign = posV.Element(WP + "align")?.Value;
+        }
+        return new AnchorPlacement(hRel, vRel, hAlign, vAlign, offX, offY, hPct, vPct);
+    }
+
     /// <summary>
     /// Reads anchor shapes (filled rectangles) from drawing elements.
     /// Handles both simple shapes and group shapes (wpg:wgp).
@@ -2623,20 +2681,29 @@ internal static class DocxReader
         // Skip if it has a blip (it's an image, not a shape)
         if (anchor.Descendants(A + "blip").Any()) return result;
 
-        // Get anchor position
-        long anchorOffsetX = 0, anchorOffsetY = 0;
-        var posH = anchor.Element(WP + "positionH");
-        var posV = anchor.Element(WP + "positionV");
-        if (posH != null)
+        // Get anchor position. When the anchor uses a percentage or alignment instead of posOffset the
+        // absolute offset stays 0 and the renderer resolves the origin from the page/margin frame.
+        var placement = ReadAnchorPlacement(anchor, "column", "paragraph");
+        long anchorOffsetX = placement.OffX, anchorOffsetY = placement.OffY;
+        long anchorExtCx = 0, anchorExtCy = 0;
+        var anchorExtent = anchor.Element(WP + "extent");
+        if (anchorExtent != null)
         {
-            var off = posH.Element(WP + "posOffset");
-            if (off != null) long.TryParse(off.Value, out anchorOffsetX);
+            long.TryParse(anchorExtent.Attribute("cx")?.Value, out anchorExtCx);
+            long.TryParse(anchorExtent.Attribute("cy")?.Value, out anchorExtCy);
         }
-        if (posV != null)
+
+        List<DocxShape> Stamp(List<DocxShape> shapes) => shapes.Select(s => s with
         {
-            var off = posV.Element(WP + "posOffset");
-            if (off != null) long.TryParse(off.Value, out anchorOffsetY);
-        }
+            HRelativeFrom = placement.HRel,
+            VRelativeFrom = placement.VRel,
+            HAlign = placement.HAlign,
+            VAlign = placement.VAlign,
+            HPct = placement.HPct,
+            VPct = placement.VPct,
+            AnchorWidthEmu = anchorExtCx,
+            AnchorHeightEmu = anchorExtCy,
+        }).ToList();
 
         // Check for group shape (wpg:wgp)
         var grpSp = anchor.Descendants(WPG + "wgp").FirstOrDefault();
@@ -2682,7 +2749,7 @@ internal static class DocxReader
             // Process child shapes (both direct wsp and nested grpSp sub-groups)
             ProcessGroupChildren(grpSp, result, themeColors, grpFillColor, grpFillAlpha,
                 anchorOffsetX, anchorOffsetY, chOffX, chOffY, grpExtCx, grpExtCy, chExtCx, chExtCy);
-            return result;
+            return Stamp(result);
         }
 
         // Fall back to single-shape handling (non-group)
@@ -2734,7 +2801,7 @@ internal static class DocxReader
             StrokeColor: singleStrokeColor, StrokeWidthEmu: singleStrokeWidth,
             FillOnly: singleColor != null && singleStrokeColor == null,
             HasFill: singleColor != null));
-        return result;
+        return Stamp(result);
     }
 
     private static void ProcessGroupChildren(
@@ -2858,6 +2925,14 @@ internal static class DocxReader
                 fillColor = grpFillColor;
                 alpha = grpFillAlpha;
             }
+            else if (childSpPr.Element(A + "grpFill") == null)
+            {
+                // No explicit fill: shape style fillRef supplies the colour (idx 0 means no fill).
+                var fillRef = childWsp.Element(WPS + "style")?.Element(A + "fillRef");
+                var fillRefColor = fillRef?.Element(A + "schemeClr") ?? fillRef?.Element(A + "srgbClr");
+                if (fillRefColor != null && fillRef!.Attribute("idx")?.Value != "0")
+                    (fillColor, alpha) = ResolveSolidFill(new XElement(A + "solidFill", fillRefColor), themeColors);
+            }
         }
 
         // Skip if neither fill nor stroke
@@ -2895,6 +2970,75 @@ internal static class DocxReader
             StrokeColor: strokeColor, StrokeWidthEmu: strokeWidthEmu,
             FillOnly: fillColor != null && strokeColor == null,
             HasFill: fillColor != null));
+    }
+
+    /// <summary>
+    /// For a wps:wsp that sits inside a wpg group, returns its rectangle in EMU relative to the
+    /// outermost group frame (top-left of the frame = 0,0), applying each group's child-to-frame scale.
+    /// Returns false when the shape is not inside a group or has no xfrm.
+    /// </summary>
+    private static bool TryGetGroupChildRect(XElement wsp, out long x, out long y, out long w, out long h)
+    {
+        x = y = w = h = 0;
+        var xfrm = wsp.Element(WPS + "spPr")?.Element(A + "xfrm");
+        var off = xfrm?.Element(A + "off");
+        var ext = xfrm?.Element(A + "ext");
+        if (off == null || ext == null) return false;
+        long.TryParse(off.Attribute("x")?.Value, out var curX);
+        long.TryParse(off.Attribute("y")?.Value, out var curY);
+        long.TryParse(ext.Attribute("cx")?.Value, out var curW);
+        long.TryParse(ext.Attribute("cy")?.Value, out var curH);
+
+        bool insideGroup = false;
+        // Walk up through each enclosing group (wgp or nested grpSp), mapping child space to its parent space.
+        foreach (var grp in wsp.Ancestors().Where(e => e.Name == WPG + "wgp" || e.Name == WPG + "grpSp"))
+        {
+            var gx = grp.Element(WPG + "grpSpPr")?.Element(A + "xfrm");
+            if (gx == null) { insideGroup = true; continue; }
+            long gOffX = 0, gOffY = 0, gExtCx = 1, gExtCy = 1, cOffX = 0, cOffY = 0, cExtCx = 1, cExtCy = 1;
+            var gOff = gx.Element(A + "off");
+            if (gOff != null)
+            {
+                long.TryParse(gOff.Attribute("x")?.Value, out gOffX);
+                long.TryParse(gOff.Attribute("y")?.Value, out gOffY);
+            }
+            var gExt = gx.Element(A + "ext");
+            if (gExt != null)
+            {
+                long.TryParse(gExt.Attribute("cx")?.Value, out gExtCx);
+                long.TryParse(gExt.Attribute("cy")?.Value, out gExtCy);
+            }
+            var cOff = gx.Element(A + "chOff");
+            if (cOff != null)
+            {
+                long.TryParse(cOff.Attribute("x")?.Value, out cOffX);
+                long.TryParse(cOff.Attribute("y")?.Value, out cOffY);
+            }
+            var cExt = gx.Element(A + "chExt");
+            if (cExt != null)
+            {
+                long.TryParse(cExt.Attribute("cx")?.Value, out cExtCx);
+                long.TryParse(cExt.Attribute("cy")?.Value, out cExtCy);
+            }
+            if (cExtCx == 0) cExtCx = 1;
+            if (cExtCy == 0) cExtCy = 1;
+
+            curX = (curX - cOffX) * gExtCx / cExtCx;
+            curY = (curY - cOffY) * gExtCy / cExtCy;
+            curW = curW * gExtCx / cExtCx;
+            curH = curH * gExtCy / cExtCy;
+            // A nested grpSp's off is in its parent's child space; the outermost wgp's off is the
+            // anchor position itself, so it is not added.
+            if (grp.Name == WPG + "grpSp")
+            {
+                curX += gOffX;
+                curY += gOffY;
+            }
+            insideGroup = true;
+        }
+        if (!insideGroup) return false;
+        x = curX; y = curY; w = curW; h = curH;
+        return true;
     }
 
     private static (string? PresetGeometry, float FrameThicknessRatio, List<DocxCustomPath>? CustomPaths)
@@ -5252,7 +5396,17 @@ internal sealed record DocxFloatingTextBox(
     bool AnchorAtParagraphTop = false,
     // True for a wrapTopAndBottom anchor rendered as a floating box: text may not
     // flow beside it, so the converter resumes the flow below the box bottom.
-    bool IsWrapTopBottom = false
+    bool IsWrapTopBottom = false,
+    double? HPct = null,
+    double? VPct = null,
+    // Text box inside a wpg group: size of the whole group frame and this box's offset inside it.
+    float AnchorWidthPt = 0,
+    float AnchorHeightPt = 0,
+    float ChildOffsetXPt = 0,
+    float ChildOffsetYPt = 0,
+    float? RightInsetPt = null,
+    // Width removed from the right of the text area by the preset geometry (homePlate tip).
+    float TextRectTrimPt = 0
 );
 
 /// <summary>Represents a text box outline border (rectangle drawn around text box content).</summary>
@@ -5291,7 +5445,18 @@ internal sealed record DocxShape(
     PdfColor? StrokeColor = null,
     float StrokeWidthEmu = 0f,
     bool FillOnly = true,
-    bool HasFill = true
+    bool HasFill = true,
+    // Anchor reference for page-relative positioning (defaults keep the legacy margin-relative behaviour).
+    string HRelativeFrom = "margin",
+    string VRelativeFrom = "margin",
+    string? HAlign = null,
+    string? VAlign = null,
+    // posOffset-less percentage position (wp14:pctPos*Offset, 1000ths of a percent) of the anchor frame.
+    double? HPct = null,
+    double? VPct = null,
+    // Size of the whole anchor frame, needed to centre/align a group relative to the page or margin.
+    long AnchorWidthEmu = 0,
+    long AnchorHeightEmu = 0
 );
 
 /// <summary>Represents a table.</summary>

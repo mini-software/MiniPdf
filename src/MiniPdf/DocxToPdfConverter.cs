@@ -2137,6 +2137,11 @@ internal static class DocxToPdfConverter
             // Convert DOCX coordinates (origin top-left) to PDF (origin bottom-left)
             var usableW = options.PageWidth - options.MarginLeft - options.MarginRight;
 
+            // A text box inside a wpg group is aligned by the whole group frame; its own
+            // rectangle is then offset inside that frame.
+            var frameWidth = box.AnchorWidthPt > 0 ? box.AnchorWidthPt : box.WidthPt;
+            var frameHeight = box.AnchorHeightPt > 0 ? box.AnchorHeightPt : box.HeightPt;
+
             // Horizontal positioning with alignment support
             float boxLeft;
             if (box.HAlign != null)
@@ -2145,10 +2150,17 @@ internal static class DocxToPdfConverter
                 var refLeft = box.HRelativeFrom == "page" ? 0f : options.MarginLeft;
                 boxLeft = box.HAlign switch
                 {
-                    "center" => refLeft + (refWidth - box.WidthPt) / 2,
-                    "right" => refLeft + refWidth - box.WidthPt,
+                    "center" => refLeft + (refWidth - frameWidth) / 2,
+                    "right" => refLeft + refWidth - frameWidth,
                     _ => refLeft // left
                 };
+            }
+            else if (box.HPct != null)
+            {
+                var onPage = box.HRelativeFrom == "page";
+                var refLeft = onPage ? 0f : options.MarginLeft;
+                var refWidth = onPage ? options.PageWidth : usableW;
+                boxLeft = refLeft + (float)box.HPct.Value * refWidth;
             }
             else
             {
@@ -2168,8 +2180,8 @@ internal static class DocxToPdfConverter
                     : options.PageHeight - options.MarginTop;
                 boxTop = box.VAlign switch
                 {
-                    "center" => refTop - (refHeight - box.HeightPt) / 2,
-                    "bottom" => refTop - refHeight + box.HeightPt,
+                    "center" => refTop - (refHeight - frameHeight) / 2,
+                    "bottom" => refTop - refHeight + frameHeight,
                     _ => refTop // top
                 };
             }
@@ -2199,6 +2211,10 @@ internal static class DocxToPdfConverter
             {
                 boxTop = options.PageHeight - options.MarginTop - box.YPt;
             }
+
+            // Move from the group frame's top-left to this text box's own rectangle.
+            boxLeft += box.ChildOffsetXPt;
+            boxTop -= box.ChildOffsetYPt;
 
             // wrapTopAndBottom: text may not flow beside the box (LibreOffice's
             // WrapTextMode_NONE claims both margins in sw/source/core/text/txtfly.cxx).
@@ -2311,7 +2327,8 @@ internal static class DocxToPdfConverter
 
                 // Wrap text within the box width (minus left/right insets)
                 var leftInset = box.LeftInsetPt;
-                var maxWidth = (box.WidthPt > 0 ? box.WidthPt : state.UsableWidth) - leftInset * 2;
+                var textAreaWidth = (box.WidthPt > 0 ? box.WidthPt : state.UsableWidth) - box.TextRectTrimPt;
+                var maxWidth = textAreaWidth - leftInset - (box.RightInsetPt ?? leftInset);
                 if (maxWidth < 10) maxWidth = box.WidthPt > 0 ? box.WidthPt : state.UsableWidth;
                 // Use Calibri widths only when the text box paragraph actually uses Calibri;
                 // other fonts (e.g. Century Gothic) have different glyph widths.
@@ -3280,6 +3297,9 @@ internal static class DocxToPdfConverter
         var x = state.Options.MarginLeft + shape.OffsetXEmu / emuPerPoint;
         var y = (state.Options.PageHeight - state.Options.MarginTop) - shape.OffsetYEmu / emuPerPoint - height;
 
+        if (shape.HAlign != null || shape.HPct != null || shape.VAlign != null || shape.VPct != null)
+            (x, y) = ResolveAnchoredShapeOrigin(state.Options, shape, x, y, height);
+
         // Alpha-blend fill color over white background
         var fc = shape.FillColor;
         var a = shape.Alpha;
@@ -3290,8 +3310,8 @@ internal static class DocxToPdfConverter
 
         RenderShapeGeometry(state.CurrentPage!, x, y, width, height, blended, shape);
 
-        // Render stroke/outline if present
-        if (shape.StrokeColor != null)
+        // Render stroke/outline if present (the box outline is only right for rectangles)
+        if (shape.StrokeColor != null && shape.PresetGeometry is null or "rect")
         {
             var strokeWidth = shape.StrokeWidthEmu > 0 ? shape.StrokeWidthEmu / emuPerPoint : 0.75f;
             var sc = shape.StrokeColor.Value;
@@ -3300,6 +3320,50 @@ internal static class DocxToPdfConverter
             state.CurrentPage!.AddLine(x, y, x, y + height, sc, strokeWidth);                // left
             state.CurrentPage!.AddLine(x + width, y, x + width, y + height, sc, strokeWidth); // right
         }
+    }
+
+    // Places a shape whose anchor uses alignment or a percentage offset instead of an absolute posOffset;
+    // shape.Offset*Emu is then the shape's offset inside the anchor frame.
+    private static (float X, float Y) ResolveAnchoredShapeOrigin(
+        ConversionOptions options, DocxShape shape, float legacyX, float legacyY, float height)
+    {
+        const float emuPerPoint = 914400f / 72f;
+        var frameW = shape.AnchorWidthEmu / emuPerPoint;
+        var frameH = shape.AnchorHeightEmu / emuPerPoint;
+        var x = legacyX;
+        var y = legacyY;
+
+        if (shape.HAlign != null || shape.HPct != null)
+        {
+            var onPage = shape.HRelativeFrom == "page";
+            var refLeft = onPage ? 0f : options.MarginLeft;
+            var refW = onPage ? options.PageWidth : options.PageWidth - options.MarginLeft - options.MarginRight;
+            var frameLeft = shape.HAlign switch
+            {
+                "center" => refLeft + (refW - frameW) / 2,
+                "right" => refLeft + refW - frameW,
+                "left" => refLeft,
+                _ => refLeft + (float)(shape.HPct ?? 0) * refW,
+            };
+            x = frameLeft + shape.OffsetXEmu / emuPerPoint;
+        }
+
+        if (shape.VAlign != null || shape.VPct != null)
+        {
+            var onPage = shape.VRelativeFrom == "page";
+            var refTop = onPage ? options.PageHeight : options.PageHeight - options.MarginTop;
+            var refH = onPage ? options.PageHeight : options.PageHeight - options.MarginTop - options.MarginBottom;
+            var frameTop = shape.VAlign switch
+            {
+                "center" => refTop - (refH - frameH) / 2,
+                "bottom" => refTop - refH + frameH,
+                "top" => refTop,
+                _ => refTop - (float)(shape.VPct ?? 0) * refH,
+            };
+            y = frameTop - shape.OffsetYEmu / emuPerPoint - height;
+        }
+
+        return (x, y);
     }
 
     private static void RenderHeaderFooterShape(PdfPage page, ConversionOptions options, DocxShape shape)
@@ -3400,6 +3464,22 @@ internal static class DocxToPdfConverter
                 // (path.UseEvenOddFill) is honoured for single-subpath shapes too.
                 page.AddCompoundPolygon(mappedSubpaths, color, path.UseEvenOddFill);
             }
+        }
+        else if (shape.PresetGeometry == "homePlate")
+        {
+            // Preset default adj=50000 of the short side gives the tip depth.
+            var tip = Math.Min(width, height) * 0.5f;
+            page.AddCompoundPolygon(new List<List<PdfPoint>>
+            {
+                new()
+                {
+                    new PdfPoint(x, y + height),
+                    new PdfPoint(x + width - tip, y + height),
+                    new PdfPoint(x + width, y + height / 2),
+                    new PdfPoint(x + width - tip, y),
+                    new PdfPoint(x, y),
+                },
+            }, color, false);
         }
         else
         {
