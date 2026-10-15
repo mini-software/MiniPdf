@@ -159,6 +159,18 @@ public class DocxGroupShapeTests
         Assert.Equal(4, page.LineBlocks.Count);
     }
 
+    [Theory]
+    [InlineData("homePlate", 0)]
+    [InlineData("rect", 8)]
+    public void Convert_HeaderAndFooterOutlinedShapes_OnlyRectanglesDrawBoundingBox(string geometry, int expectedLines)
+    {
+        using var stream = CreateDocx("", CreateOutlinedShape($"<a:prstGeom prst=\"{geometry}\"/>"));
+
+        var page = Assert.Single(DocxToPdfConverter.Convert(stream).Pages);
+
+        Assert.Equal(expectedLines, page.LineBlocks.Count);
+    }
+
     private static string CreateOutlinedShape(string geometry) => $"""
         <wp:anchor behindDoc="1">
           <wp:positionH relativeFrom="margin"><wp:posOffset>0</wp:posOffset></wp:positionH>
@@ -182,18 +194,22 @@ public class DocxGroupShapeTests
         </wp:anchor>
         """;
 
-    private static MemoryStream CreateDocx(string anchorXml)
+    private static MemoryStream CreateDocx(string anchorXml, string? headerFooterAnchorXml = null)
     {
         var stream = new MemoryStream();
         using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
         {
             AddEntry(archive, "[Content_Types].xml",
-                """
+                $"""
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
                   <Default Extension="xml" ContentType="application/xml"/>
                   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
                   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+                  {(headerFooterAnchorXml == null ? "" : """
+                  <Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/>
+                  <Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>
+                  """)}
                 </Types>
                 """);
             AddEntry(archive, "_rels/.rels",
@@ -203,10 +219,36 @@ public class DocxGroupShapeTests
                   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
                 </Relationships>
                 """);
+            if (headerFooterAnchorXml != null)
+            {
+                AddEntry(archive, "word/_rels/document.xml.rels",
+                    """
+                    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                    <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                      <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>
+                      <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>
+                    </Relationships>
+                    """);
+                foreach (var (part, tag) in new[] { ("header", "hdr"), ("footer", "ftr") })
+                {
+                    AddEntry(archive, $"word/{part}1.xml",
+                        $"""
+                        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                        <w:{tag} xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                                  xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+                                  xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+                                  xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"
+                                  xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
+                          <w:p><w:r><w:drawing>{headerFooterAnchorXml}</w:drawing></w:r></w:p>
+                        </w:{tag}>
+                        """);
+                }
+            }
             AddEntry(archive, "word/document.xml",
                 $"""
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
                             xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
                             xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
                             xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
@@ -215,6 +257,12 @@ public class DocxGroupShapeTests
                             xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
                   <w:body>
                     <w:p><w:r><w:drawing>{anchorXml}</w:drawing></w:r></w:p>
+                    {(headerFooterAnchorXml == null ? "" : """
+                    <w:sectPr>
+                      <w:headerReference w:type="default" r:id="rId1"/>
+                      <w:footerReference w:type="default" r:id="rId2"/>
+                    </w:sectPr>
+                    """)}
                   </w:body>
                 </w:document>
                 """);

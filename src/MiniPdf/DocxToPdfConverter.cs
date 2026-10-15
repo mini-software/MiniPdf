@@ -3385,7 +3385,7 @@ internal static class DocxToPdfConverter
 
         RenderShapeGeometry(page, x, y, width, height, blended, shape);
 
-        if (shape.StrokeColor != null)
+        if (shape.StrokeColor != null && shape.PresetGeometry is null or "rect")
         {
             var strokeWidth = shape.StrokeWidthEmu > 0 ? shape.StrokeWidthEmu / emuPerPoint : 0.75f;
             var sc = shape.StrokeColor.Value;
