@@ -11,7 +11,7 @@ The library is available from Maven Central:
 <dependency>
     <groupId>io.github.mini-software</groupId>
     <artifactId>minipdf</artifactId>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
 </dependency>
 ```
 
@@ -58,14 +58,14 @@ Download the executable JAR with Maven:
 
 ```powershell
 mvn dependency:copy `
-  -Dartifact=io.github.mini-software:minipdf-cli:0.4.0 `
+  -Dartifact=io.github.mini-software:minipdf-cli:0.4.1 `
   -DoutputDirectory=.
 ```
 
 Convert a document:
 
 ```powershell
-java -jar minipdf-cli-0.4.0.jar input.pptx -o output.pdf
+java -jar minipdf-cli-0.4.1.jar input.pptx -o output.pdf
 ```
 
 The CLI accepts `.docx`, `.xlsx`, and `.pptx` files. Run it with `--help` for
@@ -103,5 +103,5 @@ secrets before running it:
 - `GPG_PASSPHRASE`
 
 Publish a GitHub Release whose tag matches `java-v<version>`, such as
-`java-v0.4.0`, or manually dispatch the workflow with `version` set to `0.4.0`.
+`java-v0.4.1`, or manually dispatch the workflow with `version` set to `0.4.1`.
 The requested version must match the Maven project version.
