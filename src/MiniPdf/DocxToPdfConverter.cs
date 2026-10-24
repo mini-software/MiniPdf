@@ -318,7 +318,9 @@ internal static class DocxToPdfConverter
                         }
                     }
 
-                    RenderParagraph(state, paragraph, followedByTable: elemIdx + 1 < processedElements.Count && processedElements[elemIdx + 1] is DocxTable);
+                    RenderParagraph(state, paragraph,
+                        followedByTable: elemIdx + 1 < processedElements.Count && processedElements[elemIdx + 1] is DocxTable,
+                        nextParagraph: elemIdx + 1 < processedElements.Count ? processedElements[elemIdx + 1] as DocxParagraph : null);
                     if (paragraph.FloatingTextBoxes is { Count: > 0 })
                         RenderFloatingTextBoxes(state, paragraph.FloatingTextBoxes, paragraph, state.LastParagraphStartY);
                     if (paragraph.ConnectorLines is { Count: > 0 })
@@ -993,7 +995,8 @@ internal static class DocxToPdfConverter
 
     // ── Paragraph rendering ─────────────────────────────────────────────
 
-    private static void RenderParagraph(RenderState state, DocxParagraph paragraph, bool followedByTable = false)
+    private static void RenderParagraph(RenderState state, DocxParagraph paragraph, bool followedByTable = false,
+        DocxParagraph? nextParagraph = null)
     {
         // Handle page break before
         if (paragraph.HasPageBreakBefore)
@@ -1660,7 +1663,20 @@ internal static class DocxToPdfConverter
                 }
             }
             var shadingTop = paragraphStartY + firstLineAscent;
-            state.CurrentPage!.AddRectangle(x, shadingTop - shadingHeight, availableWidth, shadingHeight, paragraph.Shading);
+            if (nextParagraph?.Shading != null && paragraph.Borders == null && nextParagraph.Borders == null
+                && paragraph.IndentLeft == nextParagraph.IndentLeft && paragraph.IndentRight == nextParagraph.IndentRight
+                && !paragraph.HasPageBreakAfter && paragraph.SectionBreak == null && !nextParagraph.HasPageBreakBefore)
+            {
+                var after = Math.Max(0f, paragraph.SpacingAfter);
+                var before = Math.Max(0f, nextParagraph.SpacingBefore);
+                var gap = options.CollapseParagraphSpacing ? Math.Max(after, before) : after + before;
+                if (paragraphStartY - shadingHeight - gap >= options.MarginBottom + lineHeight)
+                    shadingHeight += gap;
+            }
+            // Word's borderless paragraph shading extends 1.5pt past the text area.
+            var shadingPadding = paragraph.Borders == null ? 1.5f : 0f;
+            state.CurrentPage!.AddRectangle(x - shadingPadding, shadingTop - shadingHeight,
+                availableWidth + shadingPadding * 2, shadingHeight, paragraph.Shading);
         }
 
         // If paragraph has no text runs, still account for spacing

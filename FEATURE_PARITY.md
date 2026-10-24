@@ -141,7 +141,10 @@ Primary implementation evidence:
 - Python: [`docx.py`](minipdf-python/src/minipdf/docx.py)
 
 .NET paragraph shading uses the paragraph line box rather than the text
-baseline, and horizontal paragraph borders preserve double rules. Tables in
+baseline, extends through spacing between consecutive borderless shaded
+paragraphs with matching indents, and includes Word's 1.5pt horizontal padding.
+Shading stops at unshaded paragraphs and explicit page or section breaks.
+Horizontal paragraph borders preserve double rules. Tables in
 Word compatibility modes up to 14 align implicit left indents with first-cell
 content; modern implicit indents continue to align the table border.
 Inline images in table cells honor the paragraph's left, center, or right
