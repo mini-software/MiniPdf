@@ -138,6 +138,8 @@ internal static class DocxToPdfConverter
 
         /// <summary>Whether adjacent paragraph before/after spacing collapses to the larger value.</summary>
         public bool CollapseParagraphSpacing { get; set; } = true;
+
+        internal bool LegacyTableIndent { get; set; }
     }
 
     /// <summary>
@@ -207,6 +209,7 @@ internal static class DocxToPdfConverter
         s_defaultTabStopPt = docxDoc.DefaultTabStopPt > 0 ? docxDoc.DefaultTabStopPt : 36f;
         options.SnapToGridInTableCells = docxDoc.CompatibilityMode > 12;
         options.CollapseParagraphSpacing = docxDoc.CompatibilityMode > 12;
+        options.LegacyTableIndent = docxDoc.CompatibilityMode <= 14;
 
         var pdfDoc = new PdfDocument();
 
@@ -711,6 +714,7 @@ internal static class DocxToPdfConverter
         /// </summary>
         public float LastFontSize { get; set; }
         public bool LastParagraphWasEmpty { get; set; }
+
         /// <summary>
         /// Accumulated vertical space from empty paragraphs that overflowed past
         /// the bottom margin.  Applied at the top of the next page so that spacing
@@ -1425,6 +1429,8 @@ internal static class DocxToPdfConverter
         var firstLineAscent = currentGridAscent > 0
             ? currentGridAscent
             : fontSize * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options));
+        if (paragraph.Borders?.Top is { } topBorder)
+            state.AdvanceY(topBorder.Space + topBorder.Width * (topBorder.Style == "double" ? 3f : 1f));
         var yBeforeObstacles = state.CurrentY;
         var changedFlowContext = state.AvoidWrapObstacles(
             firstLineAscent, Math.Max(0f, lineHeight - firstLineAscent));
@@ -1649,11 +1655,12 @@ internal static class DocxToPdfConverter
                 var fullText = string.Concat(paragraph.Runs.Select(r => r.Text));
                 if (!string.IsNullOrEmpty(fullText))
                 {
-                    var shadingLines = WordWrap(fullText, wrapFirstLineWidth, wrapAvailableWidth, fontSize, paragraph.TabStops, useCalibriWidths: options.UseCalibriWidths);
+                    var shadingLines = WordWrap(fullText, wrapFirstLineWidth, wrapAvailableWidth, effectiveFs, paragraph.TabStops, useCalibriWidths: options.UseCalibriWidths);
                     shadingHeight = shadingLines.Count * lineHeight;
                 }
             }
-            state.CurrentPage!.AddRectangle(options.MarginLeft, state.CurrentY - shadingHeight, state.UsableWidth, shadingHeight, paragraph.Shading);
+            var shadingTop = paragraphStartY + firstLineAscent;
+            state.CurrentPage!.AddRectangle(x, shadingTop - shadingHeight, availableWidth, shadingHeight, paragraph.Shading);
         }
 
         // If paragraph has no text runs, still account for spacing
@@ -1814,6 +1821,9 @@ internal static class DocxToPdfConverter
             });
         }
 
+        var paragraphBaselineOffset = wasTopOfPage && currentGridAscent == 0 && effectiveFs > fontSize
+            ? (effectiveFs - fontSize) * GetTopOfPageAscentRatio(paraFontName, ResolveLineSpacingMul(paragraph, options))
+            : 0f;
         if (hasVaryingFormat)
         {
             // Render each run individually on the same line
@@ -1824,7 +1834,7 @@ internal static class DocxToPdfConverter
                 paragraph.ListTextBold, paragraph.StyleId, paragraph.Bold, paragraph.Italic, paragraph.FontSize, paragraph.Color,
                 paragraph.HasPageBreakBefore, paragraph.HasPageBreakAfter, paragraph.Shading, paragraph.TabStops,
                 paragraph.SectionBreak, paragraph.Borders) { ListFontName = paragraph.ListFontName },
-                x, firstLineX, wrapAvailableWidth, wrapFirstLineWidth, fontSize, lineHeight);
+                x, firstLineX, wrapAvailableWidth, wrapFirstLineWidth, fontSize, lineHeight, paragraphBaselineOffset);
 
         }
         else
@@ -1986,6 +1996,7 @@ internal static class DocxToPdfConverter
                     renderMaxWidth = lineW;
 
                 var renderY = state.CurrentY + GetHeadingBaselineOffset(paragraph, runFontName, runBold);
+                renderY -= paragraphBaselineOffset;
 
                 if (runShading != null)
                 {
@@ -2010,7 +2021,9 @@ internal static class DocxToPdfConverter
         // wrapping is now governed by the right-edge check during run rendering,
         // and the overflow-tolerance heuristic prevents spurious multi-line wraps
         // for short equation/overlay paragraphs.)
-        RenderParagraphBorders(state, paragraph, paragraphStartY, state.CurrentY);
+        RenderParagraphBorders(state, paragraph, paragraphStartY + firstLineAscent, state.CurrentY + firstLineAscent);
+        if (paragraph.Borders?.Bottom is { } bottomBorder)
+            state.AdvanceY(bottomBorder.Space + bottomBorder.Width * (bottomBorder.Style == "double" ? 3f : 1f));
 
         // Render text box border (outline rectangle around text box content)
         if (paragraph.TextBoxBorder is { } tb && state.CurrentPage != null)
@@ -2090,17 +2103,24 @@ internal static class DocxToPdfConverter
         var bottomSpace = isEmptyParagraph ? 0f : borders.Bottom?.Space ?? 0f;
 
         if (borders.Top != null)
-            state.CurrentPage.AddLine(paragraphLeft - borders.Top.Space, paragraphTop + topSpace,
-                paragraphRight + borders.Top.Space, paragraphTop + topSpace, borders.Top.Color, borders.Top.Width);
+            DrawHorizontalBorder(borders.Top, paragraphTop + topSpace, 1f);
         if (borders.Bottom != null)
-            state.CurrentPage.AddLine(paragraphLeft - borders.Bottom.Space, paragraphBottom - bottomSpace,
-                paragraphRight + borders.Bottom.Space, paragraphBottom - bottomSpace, borders.Bottom.Color, borders.Bottom.Width);
+            DrawHorizontalBorder(borders.Bottom, paragraphBottom - bottomSpace, -1f);
         if (borders.Left != null)
             state.CurrentPage.AddLine(paragraphLeft - borders.Left.Space, paragraphTop + borders.Left.Space,
                 paragraphLeft - borders.Left.Space, paragraphBottom - borders.Left.Space, borders.Left.Color, borders.Left.Width);
         if (borders.Right != null)
             state.CurrentPage.AddLine(paragraphRight + borders.Right.Space, paragraphTop + borders.Right.Space,
                 paragraphRight + borders.Right.Space, paragraphBottom - borders.Right.Space, borders.Right.Color, borders.Right.Width);
+
+        void DrawHorizontalBorder(DocxBorderEdge border, float y, float outward)
+        {
+            state.CurrentPage.AddLine(paragraphLeft - border.Space, y, paragraphRight + border.Space, y,
+                border.Color, border.Width);
+            if (border.Style == "double")
+                state.CurrentPage.AddLine(paragraphLeft - border.Space, y + outward * border.Width * 2,
+                    paragraphRight + border.Space, y + outward * border.Width * 2, border.Color, border.Width);
+        }
     }
 
     /// <summary>
@@ -2601,7 +2621,7 @@ internal static class DocxToPdfConverter
     /// </summary>
     private static void RenderMultiFormatRuns(RenderState state, DocxParagraph paragraph,
         float baseX, float firstLineX, float availableWidth, float firstLineWidth,
-        float defaultFontSize, float lineHeight)
+        float defaultFontSize, float lineHeight, float paragraphBaselineOffset = 0f)
     {
         // Proactive page break: use text descent to check margin fit
         var mfPageBreakDescent = defaultFontSize * (GetFontMetricsFactor(
@@ -2715,6 +2735,7 @@ internal static class DocxToPdfConverter
         void BufferOrEmit(string text, float bx, float by, float bfs, PdfColor? bcolor,
             bool bbold, bool bitalic, bool bunderline, float bcs, string? bfontName, float? bmaxW, float? bulW, PdfColor? bshading)
         {
+            by -= paragraphBaselineOffset;
             if (lineEntries != null)
                 lineEntries.Add((text, bx, by, bfs, bcolor, bbold, bitalic, bunderline, bcs, bfontName, bmaxW, bulW, bshading));
             else
@@ -3880,16 +3901,10 @@ internal static class DocxToPdfConverter
         var colWidths = CalculateTableColumnWidths(table, effectiveTableWidth);
         var colCount = colWidths.Length;
 
-        // Calculate table total width and center offset.
-        // When the document explicitly specifies w:tblInd (Word convention),
-        // the indent measures from the page text margin to the FIRST CELL'S
-        // CONTENT, not to the table border.  The border therefore sits one
-        // cellMar to the left of (MarginLeft + tblInd) so cell content visually
-        // aligns with surrounding body paragraphs.  When tblInd is absent
-        // (most older / LibreOffice-authored docs) the legacy behaviour of
-        // placing the border AT the margin matches the existing references.
+        // Before Word 2013, even an omitted tblInd aligns the first cell's
+        // content with the text margin. Modern implicit indents align the border.
         var tableWidth = colWidths.Sum();
-        var tableBorderShift = (table.IndentLeftExplicit && table.CellMarginLeft > 0)
+        var tableBorderShift = ((table.IndentLeftExplicit || options.LegacyTableIndent) && table.CellMarginLeft > 0)
             ? table.CellMarginLeft : 0f;
         var tableOffsetX = table.Alignment switch
         {
@@ -3967,7 +3982,13 @@ internal static class DocxToPdfConverter
                         var fmt = image.Extension;
                         if (fmt == "jpg" || fmt == "png")
                         {
-                            page.AddImage(image.Data, fmt, cellX + effPaddingLeft, textY - imgH, imgW, imgH);
+                            var imageX = cellX + effPaddingLeft + (para.Alignment switch
+                            {
+                                "center" => (maxW - imgW) / 2f,
+                                "right" => maxW - imgW,
+                                _ => 0f
+                            });
+                            page.AddImage(image.Data, fmt, imageX, textY - imgH, imgW, imgH);
                             textY -= imgH + 1f;
                         }
                     }
@@ -4076,7 +4097,7 @@ internal static class DocxToPdfConverter
 
         // Calculate table alignment offset (see RenderTable for tblInd semantics).
         var tableWidth = colWidths.Sum();
-        var tableBorderShift = (table.IndentLeftExplicit && table.CellMarginLeft > 0)
+        var tableBorderShift = ((table.IndentLeftExplicit || options.LegacyTableIndent) && table.CellMarginLeft > 0)
             ? table.CellMarginLeft : 0f;
         var tableOffsetX = table.Alignment switch
         {
@@ -4281,7 +4302,13 @@ internal static class DocxToPdfConverter
                         var fmt = image.Extension;
                         if (fmt == "jpg" || fmt == "png")
                         {
-                            state.CurrentPage!.AddImage(image.Data, fmt, cellX2 + effCellLeft, textY2 - imgH, imgW, imgH);
+                            var imageX = cellX2 + effCellLeft + (para.Alignment switch
+                            {
+                                "center" => (maxImgW - imgW) / 2f,
+                                "right" => maxImgW - imgW,
+                                _ => 0f
+                            });
+                            state.CurrentPage!.AddImage(image.Data, fmt, imageX, textY2 - imgH, imgW, imgH);
                             textY2 -= imgH + 1f;
                         }
                     }
