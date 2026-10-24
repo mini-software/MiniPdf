@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Text;
+using System.Xml.Linq;
 
 namespace MiniSoftware.Tests;
 
@@ -121,6 +122,156 @@ public class DocxToPdfConverterTests
         var zeroBorderSpaceLine = Assert.Single(zeroBorderSpace.Pages[0].LineBlocks);
         Assert.InRange(spacedLine.Y1 - zeroBorderSpaceLine.Y1, -0.1f, 0.1f);
         Assert.InRange(zeroBorderSpaceLine.X1 - spacedLine.X1, 0.9f, 1.1f);
+    }
+
+    [Theory]
+    [InlineData(true, 0, false, 25f)]
+    [InlineData(true, 400, false, 35f)]
+    [InlineData(false, 0, false, 15f)]
+    [InlineData(true, 0, true, 15f)]
+    public void Convert_ParagraphShading_CoversSpacingOnlyBetweenShadedParagraphs(
+        bool shadeNext, int beforeTwips, bool pageBreak, float expectedHeight)
+    {
+        using var stream = CreateDocxFromBodyXml(
+            $"""
+            <w:p>
+              <w:pPr>
+                <w:spacing w:after="200" w:line="300" w:lineRule="exact"/>
+                <w:shd w:val="clear" w:fill="4472C4"/>
+              </w:pPr>
+              <w:r><w:t>First</w:t></w:r>
+            </w:p>
+            <w:p>
+              <w:pPr>
+                <w:spacing w:before="{beforeTwips}" w:after="200" w:line="300" w:lineRule="exact"/>
+                {(shadeNext ? """<w:shd w:val="clear" w:fill="808080"/>""" : "")}
+                {(pageBreak ? "<w:pageBreakBefore/>" : "")}
+              </w:pPr>
+              <w:r><w:t>Second</w:t></w:r>
+            </w:p>
+            <w:sectPr>
+              <w:pgSz w:w="12240" w:h="15840"/>
+              <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/>
+            </w:sectPr>
+            """);
+        var document = DocxToPdfConverter.Convert(stream);
+        var first = Assert.Single(document.Pages[0].RectBlocks,
+            rect => rect.FillColor == PdfColor.FromHex("4472C4"));
+
+        Assert.InRange(first.Height, expectedHeight - 0.01f, expectedHeight + 0.01f);
+        Assert.InRange(first.X, 70.49f, 70.51f);
+        Assert.InRange(first.Width, 470.99f, 471.01f);
+        if (shadeNext)
+        {
+            var second = Assert.Single(document.Pages.SelectMany(page => page.RectBlocks),
+                rect => rect.FillColor == PdfColor.FromHex("808080"));
+            Assert.InRange(second.Height, 14.99f, 15.01f);
+            if (!pageBreak)
+                Assert.InRange(first.Y - second.Y - second.Height, -0.01f, 0.01f);
+        }
+        Assert.Equal(pageBreak ? 2 : 1, document.Pages.Count);
+    }
+
+    [Theory]
+    [InlineData("""<w:ind w:left="360"/>""", "")]
+    [InlineData("""<w:pBdr><w:top w:val="single" w:sz="8"/></w:pBdr>""", "")]
+    [InlineData("", """<w:sectPr><w:type w:val="continuous"/></w:sectPr>""")]
+    public void Convert_ParagraphShading_DoesNotJoinDifferentParagraphAreas(
+        string nextProperties, string firstProperties)
+    {
+        using var stream = CreateDocxFromBodyXml(
+            $"""
+            <w:p>
+              <w:pPr>
+                <w:spacing w:after="200" w:line="300" w:lineRule="exact"/>
+                <w:shd w:val="clear" w:fill="4472C4"/>
+                {firstProperties}
+              </w:pPr>
+              <w:r><w:t>First</w:t></w:r>
+            </w:p>
+            <w:p>
+              <w:pPr>
+                <w:spacing w:after="200" w:line="300" w:lineRule="exact"/>
+                <w:shd w:val="clear" w:fill="808080"/>
+                {nextProperties}
+              </w:pPr>
+              <w:r><w:t>Second</w:t></w:r>
+            </w:p>
+            """);
+        var document = DocxToPdfConverter.Convert(stream);
+        var first = Assert.Single(document.Pages.SelectMany(page => page.RectBlocks),
+            rect => rect.FillColor == PdfColor.FromHex("4472C4"));
+
+        Assert.InRange(first.Height, 14.99f, 15.01f);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Convert_StyledInvoice_TitleStaysInsideParagraphShading(bool mixedFormatting)
+    {
+        using var stream = CreateStyledInvoice(mixedTitleFormatting: mixedFormatting);
+        var page = Assert.Single(DocxToPdfConverter.Convert(stream).Pages);
+        var title = page.TextBlocks.Where(block => block.FontSize == 24f).ToArray();
+        var shading = Assert.Single(page.RectBlocks, rect => rect.FillColor == PdfColor.FromHex("D6E4F0"));
+
+        Assert.Equal("INVOICE", string.Concat(title.Select(block => block.Text)));
+        Assert.InRange(page.Height - shading.Y - shading.Height, 71.9f, 72.1f);
+        Assert.InRange(shading.Height, 32f, 33f);
+        Assert.All(title, block =>
+        {
+            Assert.True(block.Y > shading.Y);
+            Assert.True(block.Y + block.FontSize * 0.8f < shading.Y + shading.Height);
+            Assert.InRange(page.Height - block.Y, 91f, 99f);
+        });
+    }
+
+    [Fact]
+    public void Convert_StyledInvoice_LegacyTableAlignsCellContentWithBody()
+    {
+        using var stream = CreateStyledInvoice();
+        var page = Assert.Single(DocxToPdfConverter.Convert(stream).Pages);
+        var item = Assert.Single(page.TextBlocks, block => block.Text == "SVC-001");
+        var invoice = page.TextBlocks.First(block => block.Text.StartsWith("Invoice #", StringComparison.Ordinal));
+        Assert.InRange(item.X - invoice.X, -0.1f, 0.1f);
+    }
+
+    [Fact]
+    public void Convert_StyledInvoice_TotalHasDoubleBorderAboveText()
+    {
+        using var stream = CreateStyledInvoice();
+        var page = Assert.Single(DocxToPdfConverter.Convert(stream).Pages);
+        var total = Assert.Single(page.TextBlocks, block => block.Text == "Total: $11,825.00");
+        var borders = page.LineBlocks.Where(line => line.Color == PdfColor.FromHex("1F4E79")).ToArray();
+
+        Assert.Equal(2, borders.Length);
+        Assert.All(borders, border => Assert.InRange(border.Y1 - total.Y, 12f, 20f));
+        Assert.InRange(Math.Abs(borders[0].Y1 - borders[1].Y1), 1.4f, 1.6f);
+    }
+
+    [Fact]
+    public void Convert_ModernInvoice_TableBorderAlignsWithBody()
+    {
+        using var stream = CreateStyledInvoice(compatibilityMode: 15);
+        var page = Assert.Single(DocxToPdfConverter.Convert(stream).Pages);
+        var header = page.RectBlocks.First(rect => rect.FillColor == PdfColor.FromHex("1F4E79"));
+        var invoice = page.TextBlocks.First(block => block.Text.StartsWith("Invoice #", StringComparison.Ordinal));
+
+        Assert.InRange(header.X - invoice.X, -0.1f, 0.1f);
+    }
+
+    [Fact]
+    public void Convert_StyledInvoice_MultilineTitlePreservesBaselineDistance()
+    {
+        using var stream = CreateStyledInvoice(multilineTitle: true);
+        var page = Assert.Single(DocxToPdfConverter.Convert(stream).Pages);
+        var titleLines = page.TextBlocks.Where(block => block.Text == "INVOICE").ToArray();
+        var shading = Assert.Single(page.RectBlocks, rect => rect.FillColor == PdfColor.FromHex("D6E4F0"));
+
+        Assert.Equal(2, titleLines.Length);
+        Assert.InRange(titleLines[0].Y - titleLines[1].Y, 32f, 33f);
+        Assert.InRange(shading.Height, 64f, 66f);
+        Assert.True(titleLines[1].Y > shading.Y);
     }
 
     [Fact]
@@ -297,6 +448,39 @@ public class DocxToPdfConverterTests
 
         // Validate every xref entry points to the correct object
         AssertXrefOffsetsAreCorrect(bytes);
+    }
+
+    [Theory]
+    [InlineData("left", 77.4f)]
+    [InlineData("center", 144f)]
+    [InlineData("right", 210.6f)]
+    public void Convert_InlineImageInTable_UsesParagraphAlignment(string alignment, float expectedX)
+    {
+        using var stream = CreateDocxWithPngImage();
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            var entry = archive.GetEntry("word/document.xml")!;
+            XDocument document;
+            using (var source = entry.Open())
+                document = XDocument.Load(source);
+            XNamespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+            var imageParagraph = document.Descendants(w + "p").Single(p => p.Descendants(w + "drawing").Any());
+            var imageCellParagraph = new XElement(imageParagraph);
+            imageCellParagraph.AddFirst(new XElement(w + "pPr",
+                new XElement(w + "jc", new XAttribute(w + "val", alignment))));
+            imageParagraph.ReplaceWith(new XElement(w + "tbl",
+                new XElement(w + "tblPr", new XElement(w + "tblW",
+                    new XAttribute(w + "type", "dxa"), new XAttribute(w + "w", 4320))),
+                new XElement(w + "tblGrid", new XElement(w + "gridCol", new XAttribute(w + "w", 4320))),
+                new XElement(w + "tr", new XElement(w + "tc", imageCellParagraph))));
+            entry.Delete();
+            AddEntry(archive, "word/document.xml", document.ToString());
+        }
+        stream.Position = 0;
+        var page = Assert.Single(DocxToPdfConverter.Convert(stream).Pages);
+        var image = Assert.Single(page.ImageBlocks);
+
+        Assert.InRange(image.X, expectedX - 0.1f, expectedX + 0.1f);
     }
 
       [Fact]
@@ -932,6 +1116,86 @@ public class DocxToPdfConverterTests
 
         ms.Position = 0;
         return ms;
+    }
+
+    private static MemoryStream CreateStyledInvoice(int compatibilityMode = 14, bool mixedTitleFormatting = false,
+        bool multilineTitle = false)
+    {
+        var titleRuns = mixedTitleFormatting
+            ? """
+              <w:r><w:rPr><w:b/><w:sz w:val="48"/></w:rPr><w:t>IN</w:t></w:r>
+              <w:r><w:rPr><w:b/><w:sz w:val="48"/><w:color w:val="1F4E79"/></w:rPr><w:t>VOICE</w:t></w:r>
+              """
+            : """<w:r><w:rPr><w:b/><w:sz w:val="48"/></w:rPr><w:t>INVOICE</w:t></w:r>""";
+        if (multilineTitle)
+            titleRuns += """<w:r><w:rPr><w:b/><w:sz w:val="48"/></w:rPr><w:br/><w:t>INVOICE</w:t></w:r>""";
+        var stream = CreateSimpleDocx();
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            archive.GetEntry("word/document.xml")!.Delete();
+            AddEntry(archive, "word/document.xml",
+                $$"""
+                <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:body>
+                    <w:p>
+                      <w:pPr><w:jc w:val="center"/><w:shd w:fill="D6E4F0"/></w:pPr>
+                      {{titleRuns}}
+                    </w:p>
+                    <w:p/>
+                    <w:p><w:r><w:t>Invoice #: INV-2025-0099</w:t></w:r></w:p>
+                    <w:p><w:r><w:t>Date: 2025-06-15</w:t></w:r></w:p>
+                    <w:p/>
+                    <w:tbl>
+                      <w:tblPr>
+                        <w:tblW w:type="auto" w:w="0"/>
+                        <w:tblBorders>
+                          <w:top w:val="single" w:sz="4"/><w:bottom w:val="single" w:sz="4"/>
+                          <w:left w:val="single" w:sz="4"/><w:right w:val="single" w:sz="4"/>
+                          <w:insideH w:val="single" w:sz="4"/><w:insideV w:val="single" w:sz="4"/>
+                        </w:tblBorders>
+                      </w:tblPr>
+                      <w:tblGrid><w:gridCol w:w="4320"/><w:gridCol w:w="4320"/></w:tblGrid>
+                      <w:tr>
+                        <w:tc><w:tcPr><w:shd w:fill="1F4E79"/></w:tcPr><w:p><w:r><w:t>Item</w:t></w:r></w:p></w:tc>
+                        <w:tc><w:tcPr><w:shd w:fill="1F4E79"/></w:tcPr><w:p><w:r><w:t>Description</w:t></w:r></w:p></w:tc>
+                      </w:tr>
+                      <w:tr>
+                        <w:tc><w:p><w:r><w:t>SVC-001</w:t></w:r></w:p></w:tc>
+                        <w:tc><w:p><w:r><w:t>Web Development</w:t></w:r></w:p></w:tc>
+                      </w:tr>
+                    </w:tbl>
+                    <w:p/>
+                    <w:p><w:r><w:t>Subtotal: $10,750.00</w:t></w:r></w:p>
+                    <w:p><w:r><w:t>Tax (10%): $1,075.00</w:t></w:r></w:p>
+                    <w:p>
+                      <w:pPr><w:jc w:val="right"/><w:pBdr><w:top w:val="double" w:sz="6" w:space="1" w:color="1F4E79"/></w:pBdr></w:pPr>
+                      <w:r><w:rPr><w:b/><w:sz w:val="28"/></w:rPr><w:t>Total: $11,825.00</w:t></w:r>
+                    </w:p>
+                    <w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:left="1800" w:right="1800" w:bottom="1440"/></w:sectPr>
+                  </w:body>
+                </w:document>
+                """);
+            AddEntry(archive, "word/styles.xml",
+                """
+                <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:docDefaults>
+                    <w:rPrDefault><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:sz w:val="22"/></w:rPr></w:rPrDefault>
+                    <w:pPrDefault><w:pPr><w:spacing w:after="200" w:line="276" w:lineRule="auto"/></w:pPr></w:pPrDefault>
+                  </w:docDefaults>
+                  <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
+                    <w:pPr><w:spacing w:after="200" w:line="276" w:lineRule="auto"/></w:pPr>
+                  </w:style>
+                </w:styles>
+                """);
+            AddEntry(archive, "word/settings.xml",
+                $$"""
+                <w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:compat><w:compatSetting w:name="compatibilityMode" w:val="{{compatibilityMode}}"/></w:compat>
+                </w:settings>
+                """);
+        }
+        stream.Position = 0;
+        return stream;
     }
 
     private static MemoryStream CreateDocxWithFirstParagraphSpacingBefore(int beforeTwips)

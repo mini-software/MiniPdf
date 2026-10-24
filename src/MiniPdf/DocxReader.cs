@@ -1832,7 +1832,7 @@ internal static class DocxReader
         var space = float.TryParse(el.Attribute(W + "space")?.Value, out var parsedSpace)
             ? parsedSpace
             : 0f;
-        return new DocxBorderEdge(Math.Max(0.5f, width), color, space);
+        return new DocxBorderEdge(Math.Max(0.5f, width), color, space, val);
     }
 
     /// <summary>Like <see cref="ReadBorderEdge"/> but returns
@@ -5294,7 +5294,8 @@ internal sealed record DocxParagraph(
 internal sealed record DocxBorderEdge(
     float Width,        // in points; 0 means explicit "nil" (suppress inherited border)
     PdfColor Color,
-    float Space = 0
+    float Space = 0,
+    string Style = "single"
 )
 {
     public static readonly DocxBorderEdge Nil = new(0f, new PdfColor(0, 0, 0));
