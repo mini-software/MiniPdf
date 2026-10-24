@@ -125,6 +125,87 @@ public class DocxToPdfConverterTests
     }
 
     [Theory]
+    [InlineData(true, 0, false, 25f)]
+    [InlineData(true, 400, false, 35f)]
+    [InlineData(false, 0, false, 15f)]
+    [InlineData(true, 0, true, 15f)]
+    public void Convert_ParagraphShading_CoversSpacingOnlyBetweenShadedParagraphs(
+        bool shadeNext, int beforeTwips, bool pageBreak, float expectedHeight)
+    {
+        using var stream = CreateDocxFromBodyXml(
+            $"""
+            <w:p>
+              <w:pPr>
+                <w:spacing w:after="200" w:line="300" w:lineRule="exact"/>
+                <w:shd w:val="clear" w:fill="4472C4"/>
+              </w:pPr>
+              <w:r><w:t>First</w:t></w:r>
+            </w:p>
+            <w:p>
+              <w:pPr>
+                <w:spacing w:before="{beforeTwips}" w:after="200" w:line="300" w:lineRule="exact"/>
+                {(shadeNext ? """<w:shd w:val="clear" w:fill="808080"/>""" : "")}
+                {(pageBreak ? "<w:pageBreakBefore/>" : "")}
+              </w:pPr>
+              <w:r><w:t>Second</w:t></w:r>
+            </w:p>
+            <w:sectPr>
+              <w:pgSz w:w="12240" w:h="15840"/>
+              <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/>
+            </w:sectPr>
+            """);
+        var document = DocxToPdfConverter.Convert(stream);
+        var first = Assert.Single(document.Pages[0].RectBlocks,
+            rect => rect.FillColor == PdfColor.FromHex("4472C4"));
+
+        Assert.InRange(first.Height, expectedHeight - 0.01f, expectedHeight + 0.01f);
+        Assert.InRange(first.X, 70.49f, 70.51f);
+        Assert.InRange(first.Width, 470.99f, 471.01f);
+        if (shadeNext)
+        {
+            var second = Assert.Single(document.Pages.SelectMany(page => page.RectBlocks),
+                rect => rect.FillColor == PdfColor.FromHex("808080"));
+            Assert.InRange(second.Height, 14.99f, 15.01f);
+            if (!pageBreak)
+                Assert.InRange(first.Y - second.Y - second.Height, -0.01f, 0.01f);
+        }
+        Assert.Equal(pageBreak ? 2 : 1, document.Pages.Count);
+    }
+
+    [Theory]
+    [InlineData("""<w:ind w:left="360"/>""", "")]
+    [InlineData("""<w:pBdr><w:top w:val="single" w:sz="8"/></w:pBdr>""", "")]
+    [InlineData("", """<w:sectPr><w:type w:val="continuous"/></w:sectPr>""")]
+    public void Convert_ParagraphShading_DoesNotJoinDifferentParagraphAreas(
+        string nextProperties, string firstProperties)
+    {
+        using var stream = CreateDocxFromBodyXml(
+            $"""
+            <w:p>
+              <w:pPr>
+                <w:spacing w:after="200" w:line="300" w:lineRule="exact"/>
+                <w:shd w:val="clear" w:fill="4472C4"/>
+                {firstProperties}
+              </w:pPr>
+              <w:r><w:t>First</w:t></w:r>
+            </w:p>
+            <w:p>
+              <w:pPr>
+                <w:spacing w:after="200" w:line="300" w:lineRule="exact"/>
+                <w:shd w:val="clear" w:fill="808080"/>
+                {nextProperties}
+              </w:pPr>
+              <w:r><w:t>Second</w:t></w:r>
+            </w:p>
+            """);
+        var document = DocxToPdfConverter.Convert(stream);
+        var first = Assert.Single(document.Pages.SelectMany(page => page.RectBlocks),
+            rect => rect.FillColor == PdfColor.FromHex("4472C4"));
+
+        Assert.InRange(first.Height, 14.99f, 15.01f);
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public void Convert_StyledInvoice_TitleStaysInsideParagraphShading(bool mixedFormatting)
