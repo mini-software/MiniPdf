@@ -6,7 +6,7 @@ namespace MiniSoftware.Tests;
 
 public class DocxToPdfConverterTests
 {
-    [Theory]
+    [SystemFontTheory("Cambria", "Cambria Bold", "Cambria Bold Italic")]
     [InlineData("left", false, 0f)]
     [InlineData("center", false, 0f)]
     [InlineData("right", false, 0f)]
@@ -381,7 +381,7 @@ public class DocxToPdfConverterTests
         Assert.Contains("Bob", content);
     }
 
-    [Theory]
+    [SystemFontTheory("Cambria")]
     [InlineData("MiniPdf Professional", "body")]
     [InlineData("Integration Consulting", "body")]
     [InlineData("Custom Development", "body")]
@@ -536,7 +536,7 @@ public class DocxToPdfConverterTests
         Assert.InRange(title.Y - cell.Y, expectedDistance - 0.01f, expectedDistance + 0.01f);
     }
 
-    [Theory]
+    [SystemFontTheory("Cambria", "Segoe UI Symbol", "Segoe UI Emoji")]
     [InlineData("body", false)]
     [InlineData("hdr", false)]
     [InlineData("ftr", false)]
