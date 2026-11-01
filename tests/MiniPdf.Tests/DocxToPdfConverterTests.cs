@@ -6,6 +6,95 @@ namespace MiniSoftware.Tests;
 
 public class DocxToPdfConverterTests
 {
+    [Theory]
+    [InlineData("left", false, 0f)]
+    [InlineData("center", false, 0f)]
+    [InlineData("right", false, 0f)]
+    [InlineData("both", false, 0f)]
+    [InlineData("left", true, 0f)]
+    [InlineData("center", true, 0f)]
+    [InlineData("right", true, 0f)]
+    [InlineData("both", true, 0f)]
+    [InlineData("left", false, 0.05f)]
+    [InlineData("left", false, -0.05f)]
+    [InlineData("center", false, 0.05f)]
+    [InlineData("center", false, -0.05f)]
+    public void Convert_CambriaMixedRuns_UsesPreferredWidthsForWrappingAndRunPositions(
+        string alignment, bool italicPrefix, float charSpacing)
+    {
+        const string prefixText = "Note: ";
+        const string firstLineTail = "Volume discounts are applied automatically. Contact sales for enterprise agreements";
+        const string continuation = "over 100 seats.";
+        const float lineWidth = 432f;
+        Assert.True(PdfWriter.TryMeasurePreferredFontWidth("Cambria", prefixText, 11f,
+            true, italicPrefix, 0f, out var prefixWidth));
+        Assert.True(PdfWriter.TryMeasurePreferredFontWidth("Cambria", firstLineTail, 11f,
+            false, false, charSpacing, out var tailWidth));
+        Assert.True(PdfWriter.TryMeasurePreferredFontWidth("Cambria", firstLineTail + " over", 11f,
+            false, false, charSpacing, out var overflowingTailWidth));
+        Assert.True(prefixWidth + tailWidth <= lineWidth);
+        Assert.True(prefixWidth + overflowingTailWidth > lineWidth);
+
+        using var stream = CreateDocxFromBodyXml(
+            $"""
+            <w:p>
+              <w:pPr><w:jc w:val="{alignment}"/><w:spacing w:line="276" w:lineRule="auto" w:after="0"/></w:pPr>
+              <w:r>
+                <w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:sz w:val="22"/><w:b/>{(italicPrefix ? "<w:i/>" : "")}</w:rPr>
+                <w:t xml:space="preserve">{prefixText}</w:t>
+              </w:r>
+              <w:r>
+                <w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:sz w:val="22"/><w:spacing w:val="{charSpacing * 20}"/><w:shd w:val="clear" w:fill="FFF2CC"/></w:rPr>
+                <w:t>{firstLineTail} {continuation}</w:t>
+              </w:r>
+            </w:p>
+            """);
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+            AddEntry(archive, "word/styles.xml",
+                """
+                <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:docDefaults>
+                    <w:rPrDefault><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:sz w:val="22"/></w:rPr></w:rPrDefault>
+                  </w:docDefaults>
+                  <w:style w:type="paragraph" w:default="1" w:styleId="Normal"/>
+                </w:styles>
+                """);
+        stream.Position = 0;
+        var page = Assert.Single(DocxToPdfConverter.Convert(stream,
+            new DocxToPdfConverter.ConversionOptions
+            {
+                MarginLeft = 90f,
+                MarginRight = 90f,
+                UseCalibriWidths = false,
+            }).Pages);
+        var lines = page.TextBlocks.GroupBy(block => block.Y).OrderByDescending(line => line.Key).ToList();
+        Assert.Equal(2, lines.Count);
+        Assert.Equal(prefixText + firstLineTail,
+            string.Concat(lines[0].OrderBy(block => block.X).Select(block => block.Text)));
+        Assert.Equal(continuation, Assert.Single(lines[1]).Text);
+
+        var prefix = lines[0].Single(block => block.Text == prefixText);
+        var tail = lines[0].Single(block => block.Text == firstLineTail);
+        var remainingWidth = lineWidth - prefixWidth - tailWidth;
+        var expectedX = 90f + (alignment switch
+        {
+            "center" => remainingWidth / 2f,
+            "right" => remainingWidth,
+            _ => 0f,
+        });
+        Assert.InRange(prefix.X, expectedX - 0.05f, expectedX + 0.05f);
+        var expectedAdvance = alignment == "both"
+            ? prefixWidth + prefix.WordSpacing
+            : prefixWidth;
+        Assert.InRange(tail.X - prefix.X, expectedAdvance - 0.05f, expectedAdvance + 0.05f);
+        Assert.InRange(lines[0].Key - lines[1].Key, 14.78f, 14.88f);
+        var shading = page.RectBlocks.Single(rect =>
+            Math.Abs(rect.X - (tail.X - 0.88f)) < 0.05f
+            && Math.Abs(rect.Y - (tail.Y - 2.64f)) < 0.05f);
+        var expectedShadingWidth = (tail.MaxWidth ?? tailWidth) + 1.76f;
+        Assert.InRange(shading.Width, expectedShadingWidth - 0.05f, expectedShadingWidth + 0.05f);
+    }
+
     [Fact]
     public void Convert_SimpleDocx_ProducesValidPdf()
     {
@@ -292,6 +381,337 @@ public class DocxToPdfConverterTests
         Assert.Contains("Bob", content);
     }
 
+    [Theory]
+    [InlineData("MiniPdf Professional", "body")]
+    [InlineData("Integration Consulting", "body")]
+    [InlineData("Custom Development", "body")]
+    [InlineData("MiniPdf Professional", "hdr")]
+    [InlineData("MiniPdf Professional", "ftr")]
+    public void Convert_CambriaTable_UsesPreferredWidthsForWrappingAndRowHeight(string text, string location)
+    {
+        Assert.True(PdfWriter.TryMeasurePreferredFontWidth("Cambria", text, 11,
+            bold: false, italic: false, charSpacing: 0, out var width));
+        Assert.True(width > 97.2f, $"Expected text to exceed the cell's content width, got {width}pt.");
+        using var stream = CreateDocxWithCambriaTable(text, location);
+        using var shortStream = CreateDocxWithCambriaTable("Short", location);
+        var options = new DocxToPdfConverter.ConversionOptions { UseCalibriWidths = false };
+        var document = DocxToPdfConverter.Convert(stream, options);
+        var shortDocument = DocxToPdfConverter.Convert(shortStream,
+            new DocxToPdfConverter.ConversionOptions { UseCalibriWidths = false });
+        var page = Assert.Single(document.Pages);
+        var words = text.Split(' ');
+        var first = Assert.Single(page.TextBlocks, block => block.Text == words[0]);
+        var second = Assert.Single(page.TextBlocks, block => block.Text == words[1]);
+        var marker = Assert.Single(page.TextBlocks, block => block.Text == "Marker");
+        var shortMarker = Assert.Single(shortDocument.Pages[0].TextBlocks, block => block.Text == "Marker");
+
+        Assert.InRange(first.Y - second.Y, 12.885f, 12.906f);
+        Assert.True(marker.Y < second.Y);
+        if (location == "ftr")
+        {
+            Assert.InRange(shortMarker.Y - marker.Y, -0.01f, 0.01f);
+            var shortFirst = Assert.Single(shortDocument.Pages[0].TextBlocks, block => block.Text == "Short");
+            Assert.InRange(first.Y - shortFirst.Y, 12.885f, 12.906f);
+        }
+        else
+        {
+            Assert.InRange(shortMarker.Y - marker.Y, 12.885f, 12.906f);
+        }
+        Assert.StartsWith("%PDF-1.4", Encoding.ASCII.GetString(document.ToArray()));
+    }
+
+    [Theory]
+    [InlineData(false, 12.045f)]
+    [InlineData(true, 13.75f)]
+    public void Convert_ParagraphBeforeTable_OnlyAutoSpacingDropsNextLineAscent(bool exact, float expectedDistance)
+    {
+        using var stream = CreateDocxFromBodyXml(
+            $"""
+            <w:p>
+              <w:pPr><w:spacing w:after="0" w:line="{(exact ? 300 : 240)}" w:lineRule="{(exact ? "exact" : "auto")}"/></w:pPr>
+              <w:r><w:t>Heading</w:t></w:r>
+            </w:p>
+            <w:tbl>
+              <w:tblPr><w:tblW w:type="dxa" w:w="2160"/><w:tblCellMar><w:top w:w="0"/><w:bottom w:w="0"/></w:tblCellMar></w:tblPr>
+              <w:tblGrid><w:gridCol w:w="2160"/></w:tblGrid>
+              <w:tr><w:tc><w:p><w:r><w:t>Cell</w:t></w:r></w:p></w:tc></w:tr>
+            </w:tbl>
+            """);
+        var document = DocxToPdfConverter.Convert(stream);
+        var heading = Assert.Single(document.Pages[0].TextBlocks, block => block.Text == "Heading");
+        var cell = Assert.Single(document.Pages[0].TextBlocks, block => block.Text == "Cell");
+
+        Assert.InRange(heading.Y - cell.Y, expectedDistance - 0.01f, expectedDistance + 0.01f);
+    }
+
+    [Theory]
+    [InlineData(false, 12.4517f)]
+    [InlineData(true, 14.7964f)]
+    public void Convert_TableLineHeight_OnlyExplicitParagraphMarkEnlargesSmallRun(bool explicitMark, float expectedDistance)
+    {
+        using var stream = CreateDocxWithCambriaTable("Small", "body");
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            var entry = archive.GetEntry("word/document.xml")!;
+            XDocument xml;
+            using (var reader = new StreamReader(entry.Open()))
+                xml = XDocument.Load(reader);
+            XNamespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+            var paragraph = xml.Descendants(w + "tc").First().Element(w + "p")!;
+            paragraph.Element(w + "r")!.Element(w + "rPr")!.Element(w + "sz")!.SetAttributeValue(w + "val", "18");
+            if (explicitMark)
+                paragraph.AddFirst(new XElement(w + "pPr", new XElement(w + "rPr",
+                    new XElement(w + "sz", new XAttribute(w + "val", "22")))));
+            entry.Delete();
+            AddEntry(archive, "word/document.xml", xml.ToString());
+        }
+        stream.Position = 0;
+        var document = DocxToPdfConverter.Convert(stream);
+        var small = Assert.Single(document.Pages[0].TextBlocks, block => block.Text == "Small");
+        var marker = Assert.Single(document.Pages[0].TextBlocks, block => block.Text == "Marker");
+
+        Assert.InRange(small.Y - marker.Y, expectedDistance - 0.01f, expectedDistance + 0.01f);
+    }
+
+    [Theory]
+    [InlineData("body")]
+    [InlineData("hdr")]
+    [InlineData("ftr")]
+    public void Convert_TableBorders_ReserveStrokeHeightInEveryTableSurface(string location)
+    {
+        using var stream = CreateDocxWithCambriaTable("Short", location);
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            var part = location == "body" ? "word/document.xml"
+                : location == "hdr" ? "word/header1.xml" : "word/footer1.xml";
+            var entry = archive.GetEntry(part)!;
+            XDocument xml;
+            using (var reader = new StreamReader(entry.Open()))
+                xml = XDocument.Load(reader);
+            XNamespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+            xml.Descendants(w + "tblPr").Single().Add(new XElement(w + "tblBorders",
+                new[] { "top", "bottom", "insideH" }.Select(edge =>
+                    new XElement(w + edge, new XAttribute(w + "val", "single"), new XAttribute(w + "sz", "8")))));
+            entry.Delete();
+            AddEntry(archive, part, xml.ToString());
+        }
+        stream.Position = 0;
+        var document = DocxToPdfConverter.Convert(stream);
+        var first = Assert.Single(document.Pages[0].TextBlocks, block => block.Text == "Short");
+        var marker = Assert.Single(document.Pages[0].TextBlocks, block => block.Text == "Marker");
+
+        Assert.InRange(first.Y - marker.Y, 13.885f, 13.906f);
+    }
+
+    [Theory]
+    [InlineData(false, 14.8955f)]
+    [InlineData(true, 27.7915f)]
+    public void Convert_LargeTitleBeforeTable_EmptyMarkUsesItsOwnAscent(bool insertEmpty, float expectedDistance)
+    {
+        using var stream = CreateDocxWithCambriaTable("Short", "body");
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            var entry = archive.GetEntry("word/document.xml")!;
+            XDocument xml;
+            using (var reader = new StreamReader(entry.Open()))
+                xml = XDocument.Load(reader);
+            XNamespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+            var body = xml.Root!.Element(w + "body")!;
+            if (insertEmpty)
+                body.AddFirst(new XElement(w + "p"));
+            body.AddFirst(XElement.Parse(
+                """
+                <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:r><w:rPr><w:rFonts w:ascii="Cambria"/><w:sz w:val="40"/></w:rPr><w:t>Title</w:t></w:r>
+                </w:p>
+                """));
+            entry.Delete();
+            AddEntry(archive, "word/document.xml", xml.ToString());
+        }
+        stream.Position = 0;
+        var document = DocxToPdfConverter.Convert(stream);
+        var title = Assert.Single(document.Pages[0].TextBlocks, block => block.Text == "Title");
+        var cell = Assert.Single(document.Pages[0].TextBlocks, block => block.Text == "Short");
+
+        Assert.InRange(title.Y - cell.Y, expectedDistance - 0.01f, expectedDistance + 0.01f);
+    }
+
+    [Theory]
+    [InlineData("body", false)]
+    [InlineData("hdr", false)]
+    [InlineData("ftr", false)]
+    [InlineData("body", true)]
+    [InlineData("hdr", true)]
+    [InlineData("ftr", true)]
+    public void Convert_SymbolTable_UsesSymbolAscentAndLineHeight(string location, bool useFallbackFont)
+    {
+        using var stream = CreateDocxWithCambriaTable("\u2713", location);
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            var part = location == "body" ? "word/document.xml"
+                : location == "hdr" ? "word/header1.xml" : "word/footer1.xml";
+            var entry = archive.GetEntry(part)!;
+            XDocument xml;
+            using (var source = entry.Open())
+                xml = XDocument.Load(source);
+            XNamespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+            var run = xml.Descendants(w + "r").First();
+            run.Element(w + "rPr")!.Element(w + "rFonts")!.SetAttributeValue(w + "ascii", "Segoe UI Symbol");
+            run.Element(w + "rPr")!.Element(w + "rFonts")!.SetAttributeValue(w + "hAnsi", "Segoe UI Symbol");
+            if (useFallbackFont)
+                run.Element(w + "rPr")!.Element(w + "rFonts")!.Remove();
+            entry.Delete();
+            AddEntry(archive, part, xml.ToString());
+        }
+        stream.Position = 0;
+        var page = DocxToPdfConverter.Convert(stream).Pages[0];
+        var symbol = page.TextBlocks.Single(block => block.Text == "\u2713");
+        var marker = page.TextBlocks.Single(block => block.Text == "Marker");
+        var expectedDistance = 11f * ((2210f + 514f + 1946f - 2210f) / 2048f);
+
+        Assert.InRange(symbol.Y - marker.Y, expectedDistance - 0.01f, expectedDistance + 0.01f);
+    }
+
+    [Fact]
+    public void Convert_BorderOnlyEmptyParagraph_DoesNotCarryTextAscentIntoFollowingHeading()
+    {
+        float HeadingY(int fontSize)
+        {
+            using var stream = CreateDocxWithCambriaTable("Short", "body");
+            using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+            {
+                var entry = archive.GetEntry("word/document.xml")!;
+                XDocument xml;
+                using (var source = entry.Open())
+                    xml = XDocument.Load(source);
+                XNamespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+                xml.Root!.Element(w + "body")!.AddFirst(XElement.Parse(
+                    $"""
+                    <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                      <w:r><w:t>Before</w:t></w:r>
+                    </w:p>
+                    """),
+                    XElement.Parse(
+                    """
+                    <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                      <w:pPr><w:pBdr><w:bottom w:val="single" w:sz="6"/></w:pBdr></w:pPr>
+                    </w:p>
+                    """),
+                    XElement.Parse(
+                    $"""
+                    <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                      <w:pPr><w:pStyle w:val="Heading2"/></w:pPr>
+                      <w:r><w:rPr><w:rFonts w:ascii="Calibri"/><w:b/><w:sz w:val="{fontSize * 2}"/></w:rPr><w:t>Heading</w:t></w:r>
+                    </w:p>
+                    """));
+                entry.Delete();
+                AddEntry(archive, "word/document.xml", xml.ToString());
+            }
+            stream.Position = 0;
+            return DocxToPdfConverter.Convert(stream).Pages[0].TextBlocks.Single(block => block.Text == "Heading").Y;
+        }
+
+        Assert.InRange(HeadingY(13) - HeadingY(11), -0.01f, 0.01f);
+    }
+
+    [Fact]
+    public void Convert_CourierParagraph_UsesItsOwnAscentAndLineHeight()
+    {
+        using var stream = CreateDocxFromBodyXml(
+            """
+            <w:p><w:r><w:rPr><w:rFonts w:ascii="Cambria"/><w:sz w:val="22"/></w:rPr><w:t>Before</w:t></w:r></w:p>
+            <w:p>
+              <w:pPr><w:rPr><w:sz w:val="18"/></w:rPr></w:pPr>
+              <w:r><w:rPr><w:rFonts w:ascii="Courier New"/><w:sz w:val="18"/></w:rPr><w:t>First</w:t><w:br/><w:t>Second</w:t></w:r>
+            </w:p>
+            """);
+        var page = Assert.Single(DocxToPdfConverter.Convert(stream).Pages);
+        var before = page.TextBlocks.Single(block => block.Text == "Before");
+        var first = page.TextBlocks.Single(block => block.Text == "First");
+        var second = page.TextBlocks.Single(block => block.Text == "Second");
+        var expectedGap = 11f * ((1946f + 455f) / 2048f) * 1.15f
+            + 9f * (1705f / 2048f) - 11f * (1946f / 2048f);
+        var expectedLineHeight = 9f * ((1705f + 615f) / 2048f) * 1.15f;
+
+        Assert.InRange(before.Y - first.Y, expectedGap - 0.01f, expectedGap + 0.01f);
+        Assert.InRange(first.Y - second.Y, expectedLineHeight - 0.01f, expectedLineHeight + 0.01f);
+    }
+
+    [Theory]
+    [InlineData("body", "top", -2f)]
+    [InlineData("body", "center", 1f)]
+    [InlineData("body", "bottom", 4f)]
+    [InlineData("hdr", "top", -2f)]
+    [InlineData("hdr", "center", 1f)]
+    [InlineData("hdr", "bottom", 4f)]
+    [InlineData("ftr", "top", -2f)]
+    [InlineData("ftr", "center", 1f)]
+    [InlineData("ftr", "bottom", 4f)]
+    public void Convert_TableVerticalAlignment_ExcludesBorderInsets(string location, string alignment, float expectedOffset)
+    {
+        float ConvertCell(bool addBorders)
+        {
+            using var stream = CreateDocxWithCambriaTable("Short", location);
+            using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+            {
+                var part = location == "body" ? "word/document.xml"
+                    : location == "hdr" ? "word/header1.xml" : "word/footer1.xml";
+                var entry = archive.GetEntry(part)!;
+                XDocument xml;
+                using (var source = entry.Open())
+                    xml = XDocument.Load(source);
+                XNamespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+                var table = xml.Descendants(w + "tbl").Single();
+                var row = table.Elements(w + "tr").First();
+                foreach (var tableRow in table.Elements(w + "tr"))
+                    tableRow.AddFirst(new XElement(w + "trPr", new XElement(w + "trHeight",
+                        new XAttribute(w + "val", 800), new XAttribute(w + "hRule", "exact"))));
+                var cell = row.Element(w + "tc")!;
+                cell.AddFirst(new XElement(w + "tcPr", new XElement(w + "vAlign",
+                    new XAttribute(w + "val", alignment))));
+                if (addBorders)
+                    table.Element(w + "tblPr")!.Add(new XElement(w + "tblBorders",
+                        new XElement(w + "top", new XAttribute(w + "val", "single"), new XAttribute(w + "sz", 32)),
+                        new XElement(w + "insideH", new XAttribute(w + "val", "single"), new XAttribute(w + "sz", 64))));
+                entry.Delete();
+                AddEntry(archive, part, xml.ToString());
+            }
+            stream.Position = 0;
+            return DocxToPdfConverter.Convert(stream).Pages[0].TextBlocks.Single(block => block.Text == "Short").Y;
+        }
+        var originalY = ConvertCell(false);
+        var borderedY = ConvertCell(true);
+
+        Assert.InRange(borderedY - originalY, expectedOffset - 0.01f, expectedOffset + 0.01f);
+    }
+
+    [Fact]
+    public void Convert_LargeCambriaFirstRun_AdvancesFollowingParagraphFromRenderedBaseline()
+    {
+        PdfDocument ConvertTitle(string markProperties)
+        {
+            using var stream = CreateDocxFromBodyXml(
+                $"""
+                <w:p>
+                  {markProperties}
+                  <w:r><w:rPr><w:rFonts w:ascii="Cambria"/><w:sz w:val="40"/></w:rPr><w:t>Title</w:t></w:r>
+                </w:p>
+                <w:p><w:r><w:rPr><w:rFonts w:ascii="Cambria"/><w:sz w:val="22"/></w:rPr><w:t>After</w:t></w:r></w:p>
+                """);
+            return DocxToPdfConverter.Convert(stream);
+        }
+        var inheritedMark = ConvertTitle("");
+        var explicitMark = ConvertTitle("""<w:pPr><w:rPr><w:sz w:val="40"/></w:rPr></w:pPr>""");
+        var title = Assert.Single(inheritedMark.Pages[0].TextBlocks, block => block.Text == "Title");
+        var explicitTitle = Assert.Single(explicitMark.Pages[0].TextBlocks, block => block.Text == "Title");
+        var after = Assert.Single(inheritedMark.Pages[0].TextBlocks, block => block.Text == "After");
+        var explicitAfter = Assert.Single(explicitMark.Pages[0].TextBlocks, block => block.Text == "After");
+
+        Assert.InRange(title.Y, 700.99f, 701.01f);
+        Assert.InRange(title.Y - explicitTitle.Y, -0.01f, 0.01f);
+        Assert.InRange(after.Y - explicitAfter.Y, -0.01f, 0.01f);
+    }
+
     [Fact]
     public void Convert_WithBoldText_ProducesPdf()
     {
@@ -505,6 +925,92 @@ public class DocxToPdfConverterTests
         var doc = DocxToPdfConverter.Convert(docxStream);
 
         Assert.Contains(doc.Pages, page => page.ImageBlocks.Count > 0);
+    }
+
+    [Theory]
+    [InlineData(11f, 1f, false)]
+    [InlineData(20f, 1f, false)]
+    [InlineData(11f, 1.15f, false)]
+    [InlineData(20f, 1.15f, false)]
+    [InlineData(11f, 1.5f, false)]
+    [InlineData(20f, 1.5f, false)]
+    [InlineData(11f, 1.15f, true)]
+    [InlineData(20f, 1.5f, true)]
+    public void Convert_ImageOnlyParagraph_UsesItsOwnAscentForFollowingText(
+        float precedingFontSize, float lineSpacing, bool followedByTable)
+    {
+        using var stream = CreateDocxWithPngImage();
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            var entry = archive.GetEntry("word/document.xml")!;
+            XDocument document;
+            using (var source = entry.Open())
+                document = XDocument.Load(source);
+            XNamespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+            var paragraphs = document.Descendants(w + "p").ToList();
+            foreach (var paragraph in paragraphs)
+            {
+                paragraph.AddFirst(new XElement(w + "pPr",
+                    new XElement(w + "rPr",
+                        new XElement(w + "rFonts", new XAttribute(w + "ascii", "Cambria")),
+                        new XElement(w + "sz", new XAttribute(w + "val", 22))),
+                    new XElement(w + "spacing", new XAttribute(w + "line", lineSpacing * 240),
+                        new XAttribute(w + "lineRule", "auto"), new XAttribute(w + "after", 200))));
+            }
+            paragraphs[0].Element(w + "r")!.AddFirst(new XElement(w + "rPr",
+                new XElement(w + "rFonts", new XAttribute(w + "ascii", "Cambria")),
+                new XElement(w + "sz", new XAttribute(w + "val", precedingFontSize * 2))));
+            if (followedByTable)
+                paragraphs[2].ReplaceWith(XElement.Parse(
+                    """
+                    <w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                      <w:tblPr><w:tblW w:type="dxa" w:w="2160"/><w:tblCellMar><w:top w:w="0"/><w:bottom w:w="0"/></w:tblCellMar></w:tblPr>
+                      <w:tblGrid><w:gridCol w:w="2160"/></w:tblGrid>
+                      <w:tr><w:tc><w:p><w:r><w:rPr><w:rFonts w:ascii="Cambria"/><w:sz w:val="22"/></w:rPr><w:t>After image</w:t></w:r></w:p></w:tc></w:tr>
+                    </w:tbl>
+                    """));
+            entry.Delete();
+            AddEntry(archive, "word/document.xml", document.ToString());
+        }
+        stream.Position = 0;
+        var page = Assert.Single(DocxToPdfConverter.Convert(stream).Pages);
+        var image = Assert.Single(page.ImageBlocks);
+        var followingText = page.TextBlocks.Single(block => block.Text == "After image");
+
+        var leading = 11f * ((1946f + 455f) / 2048f) * (lineSpacing - 1f);
+        var expectedGap = 11f * (1946f / 2048f) + leading + 10f;
+        Assert.InRange(image.Y - followingText.Y, expectedGap - 0.1f, expectedGap + 0.1f);
+    }
+
+    [Theory]
+    [InlineData(0f, 24f)]
+    [InlineData(10f, 14f)]
+    [InlineData(30f, 0f)]
+    public void Convert_HardSectionBreak_CollapsesSpacingBeforeAcrossSections(float spacingAfter, float expectedBefore)
+    {
+        using var stream = CreateDocxFromBodyXml(
+            $"""
+            <w:p>
+              <w:pPr>
+                <w:spacing w:after="{spacingAfter * 20}"/>
+                <w:sectPr>
+                  <w:pgSz w:w="12240" w:h="15840"/>
+                  <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/>
+                </w:sectPr>
+              </w:pPr>
+              <w:r><w:t>First section</w:t></w:r>
+            </w:p>
+            <w:p>
+              <w:pPr><w:spacing w:before="480" w:after="0"/></w:pPr>
+              <w:r><w:rPr><w:rFonts w:ascii="Cambria"/><w:sz w:val="22"/></w:rPr><w:t>Next section</w:t></w:r>
+            </w:p>
+            """);
+        var document = DocxToPdfConverter.Convert(stream);
+        Assert.Equal(2, document.Pages.Count);
+        var followingText = Assert.Single(document.Pages[1].TextBlocks);
+        var expectedY = 792f - 72f - expectedBefore - 11f * (1946f / 2048f);
+
+        Assert.InRange(followingText.Y, expectedY - 0.1f, expectedY + 0.1f);
     }
 
     [Fact]
@@ -1354,6 +1860,64 @@ public class DocxToPdfConverterTests
 
         ms.Position = 0;
         return ms;
+    }
+
+    private static MemoryStream CreateDocxWithCambriaTable(string text, string location)
+    {
+        var table = $"""
+            <w:tbl>
+              <w:tblPr>
+                <w:tblW w:type="dxa" w:w="2160"/>
+                <w:tblCellMar>
+                  <w:top w:w="0"/><w:bottom w:w="0"/>
+                  <w:left w:w="108"/><w:right w:w="108"/>
+                </w:tblCellMar>
+              </w:tblPr>
+              <w:tblGrid><w:gridCol w:w="2160"/></w:tblGrid>
+              <w:tr><w:tc><w:p><w:r>
+                <w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:sz w:val="22"/></w:rPr>
+                <w:t>{EscapeXml(text)}</w:t>
+              </w:r></w:p></w:tc></w:tr>
+              <w:tr><w:tc><w:p><w:r>
+                <w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:sz w:val="22"/></w:rPr>
+                <w:t>Marker</w:t>
+              </w:r></w:p></w:tc></w:tr>
+            </w:tbl>
+            """;
+        var part = location == "hdr" ? "header" : "footer";
+        var stream = CreateDocxFromBodyXml(
+            location == "body" ? table : $"""
+            <w:p><w:r><w:t>Body</w:t></w:r></w:p>
+            <w:sectPr xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+              <w:{part}Reference w:type="default" r:id="rId1"/>
+              <w:pgMar w:top="2880" w:bottom="2880" w:header="720" w:footer="720"/>
+            </w:sectPr>
+            """);
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "word/styles.xml",
+                """
+                <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:docDefaults>
+                    <w:rPrDefault><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:sz w:val="22"/></w:rPr></w:rPrDefault>
+                  </w:docDefaults>
+                  <w:style w:type="paragraph" w:default="1" w:styleId="Normal"/>
+                </w:styles>
+                """);
+            if (location != "body")
+            {
+                AddEntry(archive, "word/_rels/document.xml.rels",
+                $"""
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/{part}" Target="{part}1.xml"/>
+                </Relationships>
+                """);
+                AddEntry(archive, $"word/{part}1.xml",
+                    $"""<w:{location} xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">{table}</w:{location}>""");
+            }
+        }
+        stream.Position = 0;
+        return stream;
     }
 
     private static MemoryStream CreateDocxWithBold(string boldText)

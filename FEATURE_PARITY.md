@@ -149,6 +149,24 @@ Word compatibility modes up to 14 align implicit left indents with first-cell
 content; modern implicit indents continue to align the table border.
 Inline images in table cells honor the paragraph's left, center, or right
 alignment in both body and header/footer tables.
+Cambria table cells use the same preferred-font advances for wrapping and
+row-height calculation, including header/footer tables. Auto-spaced body
+paragraphs do not carry the next text-line ascent into a following table.
+Large first-paragraph runs advance subsequent content from their rendered
+baseline rather than the smaller inherited paragraph-mark baseline.
+Cell line height distinguishes explicit paragraph-mark sizing from inherited
+defaults. Collapsed table borders contribute half their stroke widths to natural
+row heights and text insets; center/bottom alignment uses the remaining content
+area. Cambria/Calibri paragraph flow tracks font ascents across text, empty marks,
+and inline-image hosts. Auto-spaced image-only paragraphs add proportional font
+leading without scaling image height. Hard section starts collapse paragraph
+space-before against the closing section's space-after.
+Image-only paragraphs reclaim the next text ascent before body tables, while
+border-only empty marks reset text-ascent tracking. Courier transitions use
+Courier font metrics. Symbol cells account for the Segoe fallback's ascent and
+line height when the PDF writer selects that font.
+Mixed-format Cambria paragraphs measure each run's bold/italic font advances and
+spaces consistently for wrapping, run positioning, alignment, and run shading.
 
 ## XLSX Rendering Gaps
 
