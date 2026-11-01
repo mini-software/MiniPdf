@@ -37,6 +37,12 @@ dotnet build --configuration Release
 dotnet test tests/MiniPdf.Tests --configuration Release
 ```
 
+DOCX tests that measure installed Cambria or Segoe fonts report an explicit skip
+when their required fonts are unavailable. CI runs the portable suite on Ubuntu
+and a separate DOCX suite on Windows, where it verifies the required fonts
+before testing. Install these fonts through a licensed system/Office installation
+to run the font-dependent checks locally; do not add font binaries to the repository.
+
 ### Rust
 
 Install the stable Rust toolchain, then run:
