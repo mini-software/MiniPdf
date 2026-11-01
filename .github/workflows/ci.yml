@@ -61,6 +61,38 @@ jobs:
           name: test-results
           path: '**/test-results.trx'
 
+  docx-font-tests:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Verify required DOCX fonts
+        shell: pwsh
+        run: |
+          $fontDirectory = Join-Path $env:WINDIR 'Fonts'
+          foreach ($font in @('cambria.ttc', 'cambriab.ttf', 'cambriaz.ttf', 'seguisym.ttf', 'seguiemj.ttf')) {
+            if (-not (Test-Path -LiteralPath (Join-Path $fontDirectory $font))) {
+              throw "Required DOCX test font is unavailable: $font"
+            }
+          }
+
+      - name: Test DOCX rendering with system fonts
+        run: dotnet test tests/MiniPdf.Tests/MiniPdf.Tests.csproj --configuration Release --filter "FullyQualifiedName~Docx|FullyQualifiedName~SystemFontTheoryAttributeTests" --verbosity normal --logger "trx;LogFileName=docx-font-results.trx"
+
+      - name: Upload DOCX test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docx-font-test-results
+          path: '**/docx-font-results.trx'
+
   ai-security-scan:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest

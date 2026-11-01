@@ -912,6 +912,7 @@ internal static class DocxReader
         float spacingAfter = -1;
         bool spacingAfterExplicit = false;
         bool spacingBeforeExplicit = false;
+        float paragraphMarkFontSize = 0;
         float lineSpacing = 0;
         bool lineSpacingAbsolute = false;
         bool lineSpacingExact = false;
@@ -1183,7 +1184,10 @@ internal static class DocxReader
             {
                 var sz = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value;
                 if (float.TryParse(sz, out var s))
+                {
                     fontSize = s / 2f; // half-points to points
+                    paragraphMarkFontSize = fontSize;
+                }
                 // Paragraph-level character spacing
                 var spacingEl2 = rPr.Element(W + "spacing");
                 if (spacingEl2 != null && int.TryParse(spacingEl2.Attribute(W + "val")?.Value, out var pcs))
@@ -1509,7 +1513,8 @@ internal static class DocxReader
             ListSuff: listSuff,
             ListTabStop: listTabStop,
             OutlineLevel: ReadOutlineLevel(pPr),
-            StyleIndentFirstLine: styleIndentFirstLineForListLabel);
+            StyleIndentFirstLine: styleIndentFirstLineForListLabel,
+            ParagraphMarkFontSize: paragraphMarkFontSize);
     }
 
     private static void EmitPageFieldPlaceholder(string instruction, List<DocxRun> runs, bool bold, bool italic, float fontSize, PdfColor? color)
@@ -5286,7 +5291,8 @@ internal sealed record DocxParagraph(
     // not position the automatic-numbering suffix.
     float? ListTabStop = null,
     int OutlineLevel = -1,
-    float StyleIndentFirstLine = 0
+    float StyleIndentFirstLine = 0,
+    float ParagraphMarkFontSize = 0
 ) : DocxElement;
 
 /// <summary>Represents a single border edge.  Width=0 is a sentinel for an

@@ -1628,7 +1628,7 @@ internal sealed class PdfWriter
     /// Returns true if a code point is in a common emoji range, used to prefer
     /// the dedicated emoji font over CJK fonts that have placeholder glyphs.
     /// </summary>
-    private static bool IsEmojiRange(int cp)
+    internal static bool IsEmojiRange(int cp)
     {
         return cp >= 0x1F000                          // Supplemental Symbols, Emoticons, etc.
             || (cp >= 0x2600 && cp <= 0x26FF)         // Miscellaneous Symbols (☀ ★ ☎)
@@ -3082,7 +3082,7 @@ internal sealed class PdfWriter
     /// <summary>
     /// Enumerates Unicode code points from a .NET string, properly handling surrogate pairs.
     /// </summary>
-    private static IEnumerable<int> EnumerateCodePoints(string text)
+    internal static IEnumerable<int> EnumerateCodePoints(string text)
     {
         for (var i = 0; i < text.Length; i++)
         {
