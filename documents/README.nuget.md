@@ -88,6 +88,55 @@ Sheet selection and Excel layout options apply to XLSX input. `PageSize` and
 `Margins` apply to DOCX input and use PDF points (72 points = 1 inch). `Compress`
 controls PDF content-stream compression for every supported format.
 
+### Low-memory XLSX conversion (opt-in)
+
+```csharp
+using var input = File.OpenRead("large-table.xlsx");
+using var output = File.Create("large-table.pdf");
+MiniPdf.ConvertToPdf(input, output, new MiniPdfConversionOptions
+{
+  LowMemory = true,
+  Compress = true,
+});
+```
+
+`LowMemory` defaults to `false`; the existing conversion path is unchanged.
+The opt-in mode streams worksheet XML to temporary storage, keeps rows and
+completed pages on disk, and writes PDF content one page at a time. It reuses
+the existing layout and font embedding logic, including Unicode text, cell
+styles, number formats, column widths, wrapping and horizontal pagination.
+Both file and stream overloads support it. Non-seekable inputs are spooled to
+disk instead of memory. Temporary files are deleted when conversion finishes
+or fails.
+
+This first version supports simple tables. It throws `NotSupportedException`
+rather than silently falling back for formulas, merged cells, conditional
+formatting, drawings/charts/images, Excel tables, hyperlinks, headers/footers,
+worksheet extensions, custom/hidden row heights, vertical centering, print
+areas/titles, and fit-to-height pagination. Worksheet feature restrictions
+apply to the entire workbook, including unselected sheets. `MaxRows`,
+`MaxColumns` and `RowsPerPage` are not supported in this mode.
+
+Use a file or output stream to avoid retaining the final PDF. Overloads that
+return `byte[]` still allocate the complete output. Writable OS temporary
+storage is required; disk use increases, and extra I/O can slow conversion. This is disk-backed
+low-memory conversion, not a single-pass/no-disk pipeline. Offset indexes,
+workbook/style metadata and font resources still consume memory proportional
+to their size, and a single unusually large row or page can increase the peak.
+This mode is not suitable for hosts without writable temporary storage.
+
+To measure the .NET implementation locally (PowerShell 7 and Python required):
+
+```powershell
+.\scripts\Measure-DotNet-XlsxMemory.ps1 -RowCounts 20000,60000
+```
+
+The script runs each mode in a separate process, verifies identical PDF hashes,
+records peak working sets and elapsed times under `artifacts/xlsx-low-memory`,
+and requires at least a 30% peak working-set reduction on the largest generated
+eight-column case. This is a regression benchmark, not a guarantee for every
+workbook.
+
 ### Custom Fonts
 
 Register TrueType `.ttf` or `.ttc` fonts once at application startup when the

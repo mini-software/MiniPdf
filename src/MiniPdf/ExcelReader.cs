@@ -34,14 +34,17 @@ internal static class ExcelReader
     /// Reads all sheets from an Excel file and returns their data as a list of sheets,
     /// where each sheet is a list of rows, and each row is a list of cell values.
     /// </summary>
-    internal static List<ExcelSheet> ReadSheets(Stream stream, System.Globalization.CultureInfo? culture = null)
+    internal static List<ExcelSheet> ReadSheets(Stream stream, System.Globalization.CultureInfo? culture = null,
+        LowMemoryWorkbook? lowMemory = null)
     {
         var sheets = new List<ExcelSheet>();
 
         using var archive = new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen: true);
 
         // Read shared strings table
-        var (sharedStrings, boldPrefixLengths) = ReadSharedStrings(archive);
+        var (sharedStrings, boldPrefixLengths) = lowMemory == null
+            ? ReadSharedStrings(archive)
+            : ((IList<string>)lowMemory.SharedStrings, lowMemory.BoldPrefixLengths);
 
         // Read theme colors and styles
         var themeColors = ReadThemeColors(archive);
@@ -79,7 +82,7 @@ internal static class ExcelReader
             if (entry == null) continue;
 
             var hyperlinks = ReadWorksheetHyperlinks(archive, entry.FullName);
-            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfTextRotations, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture);
+            var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfTextRotations, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture, lowMemory);
             var images = ReadSheetImages(archive, entry.FullName);
             var drawingShapes = ReadSheetShapes(archive, entry.FullName, themeColors);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
@@ -108,7 +111,7 @@ internal static class ExcelReader
             if (entry != null)
             {
                 var hyperlinks = ReadWorksheetHyperlinks(archive, entry.FullName);
-                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfTextRotations, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture);
+                var rows = ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders, numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments, cellXfVerticalAlignments, cellXfTextRotations, cellXfBorderIndices, cellXfWrapTexts, cellXfIndents, hyperlinks, culture, lowMemory);
                 var images = ReadSheetImages(archive, entry.FullName);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
@@ -159,7 +162,7 @@ internal static class ExcelReader
         return sheets;
     }
 
-    private static (List<string> Strings, Dictionary<int, int> BoldPrefixLengths) ReadSharedStrings(ZipArchive archive)
+    private static (IList<string> Strings, Dictionary<int, int> BoldPrefixLengths) ReadSharedStrings(ZipArchive archive)
     {
         var strings = new List<string>();
         var boldPrefixLengths = new Dictionary<int, int>();
@@ -172,24 +175,22 @@ internal static class ExcelReader
 
         foreach (var si in doc.Descendants(ns + "si"))
         {
-            var runs = si.Elements(ns + "r").ToList();
-            if (runs.Count >= 2)
-            {
-                // Rich text: check if the first run is bold and subsequent runs are not.
-                var firstRpr = runs[0].Element(ns + "rPr");
-                var firstBold = firstRpr?.Element(ns + "b") != null;
-                if (firstBold)
-                {
-                    var firstText = string.Concat(runs[0].Descendants(ns + "t").Select(t => t.Value));
-                    if (firstText.Length > 0)
-                        boldPrefixLengths[strings.Count] = firstText.Length;
-                }
-            }
-            var text = string.Concat(si.Descendants(ns + "t").Select(t => t.Value));
+            var (text, boldPrefix) = ReadSharedString(si);
+            if (boldPrefix > 0) boldPrefixLengths[strings.Count] = boldPrefix;
             strings.Add(text);
         }
 
         return (strings, boldPrefixLengths);
+    }
+
+    internal static (string Text, int BoldPrefix) ReadSharedString(XElement item)
+    {
+        var ns = item.Name.Namespace;
+        var runs = item.Elements(ns + "r").ToList();
+        var prefix = runs.Count >= 2 && runs[0].Element(ns + "rPr")?.Element(ns + "b") != null
+            ? string.Concat(runs[0].Descendants(ns + "t").Select(text => text.Value)).Length
+            : 0;
+        return (string.Concat(item.Descendants(ns + "t").Select(text => text.Value)), prefix);
     }
 
     private static (List<SheetInfo> Sheets, Dictionary<int, (int StartCol, int StartRow, int EndCol, int EndRow)> PrintAreas, Dictionary<int, (int StartRow, int EndRow)> PrintTitleRows) ReadWorkbook(ZipArchive archive)
@@ -489,7 +490,7 @@ internal static class ExcelReader
     /// to cells within each table range that don't already have explicit borders.
     /// </summary>
     private static void ApplyTableBorders(ZipArchive archive, string worksheetPath,
-        List<List<ExcelCell>> rows, Dictionary<string, CellBorderInfo> tableStyleBorders)
+        IList<List<ExcelCell>> rows, Dictionary<string, CellBorderInfo> tableStyleBorders)
     {
         if (tableStyleBorders.Count == 0) return;
 
@@ -562,7 +563,7 @@ internal static class ExcelReader
     /// then override them, matching Office/LibreOffice precedence for custom tables.
     /// </summary>
     private static void ApplyTableStyleFormatting(ZipArchive archive, string worksheetPath,
-        List<List<ExcelCell>> rows, IReadOnlyList<DxfStyleInfo> dxfInfos)
+        IList<List<ExcelCell>> rows, IReadOnlyList<DxfStyleInfo> dxfInfos)
     {
         var relsPath = GetRelationshipPartPath(worksheetPath);
         var relsEntry = archive.GetEntry(relsPath);
@@ -1396,7 +1397,7 @@ internal static class ExcelReader
     /// Applies conditional formatting rules to cell data, overriding cell appearance where rules match.
     /// </summary>
     private static void ApplyConditionalFormatting(
-        List<List<ExcelCell>> rows,
+        IList<List<ExcelCell>> rows,
         List<(string Sqref, string Type, string Operator, string Formula, int DxfId)> cfRules,
         List<DxfStyleInfo> dxfStyles,
         Dictionary<string, double> definedNames)
@@ -1458,7 +1459,7 @@ internal static class ExcelReader
         }
     }
 
-    private static bool EvaluateCondition(List<List<ExcelCell>> rows, ExcelCell cell, string type, string op, string formula,
+    private static bool EvaluateCondition(IList<List<ExcelCell>> rows, ExcelCell cell, string type, string op, string formula,
         int targetRow, int targetCol, int anchorRow, int anchorCol,
         Dictionary<string, double> definedNames)
     {
@@ -1527,7 +1528,7 @@ internal static class ExcelReader
         return false;
     }
 
-    private static bool? EvaluateConditionalExpression(List<List<ExcelCell>> rows, string formula,
+    private static bool? EvaluateConditionalExpression(IList<List<ExcelCell>> rows, string formula,
         int targetRow, int targetCol, int anchorRow, int anchorCol, Dictionary<string, double> definedNames)
     {
         var trimmed = formula.Trim();
@@ -1588,7 +1589,7 @@ internal static class ExcelReader
         return row >= 0 && col >= 0;
     }
 
-    private static bool TryResolveRhsValue(List<List<ExcelCell>> rows, string rhs,
+    private static bool TryResolveRhsValue(IList<List<ExcelCell>> rows, string rhs,
         int targetRow, int targetCol, int anchorRow, int anchorCol, Dictionary<string, double> definedNames,
         out string? text, out double? number)
     {
@@ -1631,7 +1632,7 @@ internal static class ExcelReader
         return true;
     }
 
-    private static string GetCellText(List<List<ExcelCell>> rows, int row, int col)
+    private static string GetCellText(IList<List<ExcelCell>> rows, int row, int col)
         => row >= 0 && row < rows.Count && col >= 0 && col < rows[row].Count
             ? rows[row][col].Text
             : string.Empty;
@@ -1813,15 +1814,41 @@ internal static class ExcelReader
         return fillColors[fillIndex];
     }
 
-    private static List<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, List<string> sharedStrings, Dictionary<int, int> boldPrefixLengths,
+    private static IList<List<ExcelCell>> ReadSheet(ZipArchiveEntry entry, IList<string> sharedStrings, Dictionary<int, int> boldPrefixLengths,
         List<FontStyleInfo> fontStyles, List<PdfColor?> fillColors, List<CellBorderInfo?> borders, Dictionary<int, string> numberFormats,
         List<int> cellXfFontIndices, List<int> cellXfFillIndices, List<int> cellXfNumFmtIds, List<string> cellXfAlignments, List<string> cellXfVerticalAlignments, List<int> cellXfTextRotations, List<int> cellXfBorderIndices, List<bool> cellXfWrapTexts, List<int> cellXfIndents,
-        Dictionary<string, string>? hyperlinks = null, System.Globalization.CultureInfo? culture = null)
+        Dictionary<string, string>? hyperlinks = null, System.Globalization.CultureInfo? culture = null,
+        LowMemoryWorkbook? lowMemory = null, XDocument? worksheet = null)
     {
+        if (lowMemory != null)
+        {
+            var storedRows = lowMemory.CreateRows();
+            using var metadataStream = entry.Open();
+            var metadata = XDocument.Load(metadataStream);
+            var sheetNamespace = metadata.Root?.GetDefaultNamespace() ?? XNamespace.None;
+            var columns = metadata.Descendants(sheetNamespace + "cols").FirstOrDefault();
+            foreach (var xml in lowMemory.GetRows(entry.FullName))
+            {
+                if (xml.Length == 0) { storedRows.Add([]); continue; }
+                var rowDocument = new XDocument(new XElement(sheetNamespace + "worksheet",
+                    new XAttribute("xmlns", sheetNamespace.NamespaceName),
+                    columns == null ? null : new XElement(columns),
+                    new XElement(sheetNamespace + "sheetData", XElement.Parse(xml))));
+                storedRows.Add(ReadSheet(entry, sharedStrings, boldPrefixLengths, fontStyles, fillColors, borders,
+                    numberFormats, cellXfFontIndices, cellXfFillIndices, cellXfNumFmtIds, cellXfAlignments,
+                    cellXfVerticalAlignments, cellXfTextRotations, cellXfBorderIndices, cellXfWrapTexts,
+                    cellXfIndents, hyperlinks, culture, worksheet: rowDocument)[0]);
+            }
+            return storedRows;
+        }
         var rows = new List<List<ExcelCell>>();
 
-        using var stream = entry.Open();
-        var doc = XDocument.Load(stream);
+        var doc = worksheet;
+        if (doc == null)
+        {
+            using var stream = entry.Open();
+            doc = XDocument.Load(stream);
+        }
         var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
 
         // Hyperlink cells often rely on workbook defaults for visual style.
@@ -1903,6 +1930,8 @@ internal static class ExcelReader
                 // Parse column reference to handle gaps (e.g., A1, C1 means B is empty)
                 var reference = cell.Attribute("r")?.Value ?? "";
                 var colIndex = ParseColumnIndex(reference);
+                if (worksheet != null && (colIndex < 0 || colIndex >= 16384))
+                    throw new InvalidDataException("Cell column references must be within the XLSX column limit.");
 
                 // Fill empty cells for gaps, applying row/column default fills if applicable.
                 while (lastColIndex < colIndex)
@@ -4744,7 +4773,7 @@ internal sealed record ExcelChartInfo(
 internal sealed class ExcelSheet
 {
     public string Name { get; }
-    public List<List<ExcelCell>> Rows { get; }
+    public IList<List<ExcelCell>> Rows { get; }
     public List<ExcelEmbeddedImage> Images { get; }
     public List<ExcelDrawingShape> Shapes { get; }
     public List<ExcelChartInfo> Charts { get; }
@@ -4827,7 +4856,7 @@ internal sealed class ExcelSheet
         return charUnits * 5.62f * ratio;
     }
 
-    internal ExcelSheet(string name, List<List<ExcelCell>> rows,
+    internal ExcelSheet(string name, IList<List<ExcelCell>> rows,
         List<ExcelEmbeddedImage>? images = null,
         Dictionary<int, float>? columnWidths = null,
         float defaultColumnWidth = 8.43f,
