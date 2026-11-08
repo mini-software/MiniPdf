@@ -19,6 +19,12 @@ public sealed class MiniPdfConversionOptions
     /// <summary>Compress PDF page content streams using FlateDecode.</summary>
     public bool Compress { get; set; }
 
+    /// <summary>
+    /// Use disk-backed XLSX rows and pages to reduce memory usage. Defaults to false.
+    /// Unsupported worksheet features throw NotSupportedException. Requires writable temporary storage.
+    /// </summary>
+    public bool LowMemory { get; set; }
+
     /// <summary>Optional DOCX page size override in PDF points.</summary>
     public MiniPdfPageSize? PageSize { get; set; }
 
@@ -215,7 +221,7 @@ public static class MiniPdf
     public static void ConvertToPdf(string inputPath, string outputPath, MiniPdfConversionOptions? options = null)
     {
         options = PrepareConversionOptions(options);
-        var document = ConvertPathToDocument(inputPath, options);
+        using var document = ConvertPathToDocument(inputPath, options);
         document.Save(outputPath, CreatePdfSaveOptions(options));
     }
 
@@ -228,7 +234,7 @@ public static class MiniPdf
     public static byte[] ConvertToPdf(string inputPath, MiniPdfConversionOptions? options = null)
     {
         options = PrepareConversionOptions(options);
-        var document = ConvertPathToDocument(inputPath, options);
+        using var document = ConvertPathToDocument(inputPath, options);
         return document.ToArray(CreatePdfSaveOptions(options));
     }
 
@@ -266,7 +272,7 @@ public static class MiniPdf
             throw new ArgumentException("Output stream must be writable.", nameof(outputStream));
 
         options = PrepareConversionOptions(options);
-        var document = ConvertStreamToDocument(inputStream, options);
+        using var document = ConvertStreamToDocument(inputStream, options);
         document.Save(outputStream, CreatePdfSaveOptions(options));
     }
 
@@ -313,15 +319,19 @@ public static class MiniPdf
         }
         else
         {
-            var ms = new MemoryStream();
-            inputStream.CopyTo(ms);
-            ms.Position = 0;
-            seekable = ms;
+            seekable = options.LowMemory
+                ? FileBackedList<string>.CreateTemporaryStream()
+                : new MemoryStream();
             ownsSeekable = true;
         }
 
         try
         {
+            if (ownsSeekable)
+            {
+                inputStream.CopyTo(seekable);
+                seekable.Position = 0;
+            }
             var startPosition = seekable.Position;
             var format = DetectOfficeFormat(seekable);
             seekable.Position = startPosition;
@@ -391,7 +401,7 @@ public static class MiniPdf
     private static void ThrowIfXlsxOnlyOptionsSpecifiedForNonXlsx(MiniPdfConversionOptions options)
     {
         ThrowIfSheetsSpecifiedForNonXlsx(options.Sheets, options.SheetIndexes);
-        if (options.MaxRows.HasValue || options.MaxColumns.HasValue ||
+        if (options.LowMemory || options.MaxRows.HasValue || options.MaxColumns.HasValue ||
             options.Landscape.HasValue || options.FitToPage.HasValue ||
             options.FitToWidth.HasValue || options.FitToHeight.HasValue ||
             options.PrintScale.HasValue || options.RowsPerPage.HasValue ||
@@ -461,6 +471,7 @@ public static class MiniPdf
             PrintScale = options.PrintScale,
             RowsPerPage = options.RowsPerPage,
             Culture = options.Culture,
+            LowMemory = options.LowMemory,
         };
 
     private static PdfSaveOptions? CreatePdfSaveOptions(MiniPdfConversionOptions options)
