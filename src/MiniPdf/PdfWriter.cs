@@ -491,9 +491,10 @@ internal sealed class PdfWriter
         }
 
         // Pre-build content streams
-        var contentStreams = new List<byte[]>(pageCount);
-        for (var i = 0; i < pageCount; i++)
-            contentStreams.Add(Compat.Latin1.GetBytes(BuildContentStream(pages[i], embeddedFonts.Count > 0, cpToFontSlot, embeddedFonts, fontNameToSlot)));
+        var contentStreams = new List<byte[]>(document.LowMemory ? 0 : pageCount);
+        if (!document.LowMemory)
+            for (var i = 0; i < pageCount; i++)
+                contentStreams.Add(Compat.Latin1.GetBytes(BuildContentStream(pages[i], embeddedFonts.Count > 0, cpToFontSlot, embeddedFonts, fontNameToSlot)));
 
         // Allocate object numbers.
         //   1 = Catalog, 2 = Pages, 3 = Font F1 (Helvetica/WinAnsi), 4 = Font F1B (Helvetica-Bold/WinAnsi)
@@ -640,7 +641,9 @@ internal sealed class PdfWriter
             var page = pages[i];
 
             // Content stream
-            var content = contentStreams[i];
+            var content = document.LowMemory
+                ? Compat.Latin1.GetBytes(BuildContentStream(page, embeddedFonts.Count > 0, cpToFontSlot, embeddedFonts, fontNameToSlot))
+                : contentStreams[i];
             var encodedContent = _options.CompressContentStreams ? CompressToZlib(content) : content;
             var filter = _options.CompressContentStreams ? " /Filter /FlateDecode" : "";
             _objectOffsets[contentObjNums[i]] = Position;

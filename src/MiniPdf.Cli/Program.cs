@@ -32,6 +32,7 @@ internal sealed class CliApp
         string[]? sheets = null;
         int[]? sheetIndexes = null;
         bool compress = false;
+        bool lowMemory = false;
         int? maxRows = null;
         int? maxColumns = null;
         bool? landscape = null;
@@ -56,6 +57,9 @@ internal sealed class CliApp
                     break;
                 case "--compress":
                     compress = true;
+                    break;
+                case "--low-memory":
+                    lowMemory = true;
                     break;
                 case "--max-rows":
                     if (i + 1 >= args.Length || !TryParsePositiveInt(args[++i], out var parsedMaxRows))
@@ -169,6 +173,7 @@ internal sealed class CliApp
                 Sheets = sheets,
                 SheetIndexes = sheetIndexes,
                 Compress = compress,
+                LowMemory = lowMemory,
                 MaxRows = maxRows,
                 MaxColumns = maxColumns,
                 Landscape = landscape,
@@ -259,6 +264,7 @@ internal sealed class CliApp
                         "  --fonts <dir>         Directory of .ttf/.ttc fonts to register",
                         "  --sheets <items>      Comma-separated Excel sheet names or 1-based indexes to render",
                         "  --compress            Compress PDF content streams with FlateDecode",
+                        "  --low-memory          Use disk-backed XLSX rows and pages (simple tables only)",
                         "  --max-rows <n>        Render only the first n rows from each Excel sheet or print area",
                         "  --max-columns <n>     Render only the first n columns from each Excel sheet or print area",
                         "  --landscape           Render Excel sheets in landscape orientation",

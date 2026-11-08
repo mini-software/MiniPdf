@@ -84,6 +84,8 @@ internal static class ExcelToPdfConverter
 
         /// <summary>Optional culture used to format numeric and date values. Null uses invariant culture.</summary>
         internal System.Globalization.CultureInfo? Culture { get; set; }
+
+        internal bool LowMemory { get; set; }
     }
 
     /// <summary>
@@ -107,41 +109,63 @@ internal static class ExcelToPdfConverter
     internal static PdfDocument Convert(Stream excelStream, ConversionOptions? options = null)
     {
         options ??= new ConversionOptions();
-        var sheets = ExcelReader.ReadSheets(excelStream, options.Culture);
+        using var lowMemory = options.LowMemory ? new LowMemoryWorkbook() : null;
+        if (lowMemory != null)
+        {
+            if (options.MaxRows.HasValue || options.MaxColumns.HasValue)
+                LowMemoryWorkbook.Unsupported("MaxRows or MaxColumns");
+            if (options.FitToHeight is > 0 || options.RowsPerPage.HasValue)
+                LowMemoryWorkbook.Unsupported("FitToHeight or RowsPerPage");
+            lowMemory.Prepare(excelStream);
+        }
+        var sheets = ExcelReader.ReadSheets(lowMemory?.Package ?? excelStream, options.Culture, lowMemory);
         sheets = FilterSheets(sheets, options.Sheets, options.SheetIndexes);
         sheets = ApplyRenderLimits(sheets, options.MaxRows, options.MaxColumns);
         sheets = ApplyLayoutOptions(sheets, options);
-        var doc = new PdfDocument();
+        if (options.LowMemory)
+            foreach (var sheet in sheets)
+                if (sheet.FitToPage && sheet.FitToHeight > 0)
+                    LowMemoryWorkbook.Unsupported("fit-to-height pagination");
+        var doc = new PdfDocument(options.LowMemory);
 
-        // Track page ranges per sheet for footer rendering
-        var sheetPageRanges = new List<(ExcelSheet sheet, int startPage, int endPage)>();
-        foreach (var sheet in sheets)
+        var completed = false;
+        try
         {
-            var startPage = doc.Pages.Count;
-            RenderSheet(doc, sheet, options, sheets.Count > 1);
-            var endPage = doc.Pages.Count - 1;
-            if (startPage <= endPage)
-                sheetPageRanges.Add((sheet, startPage, endPage));
-        }
+            // Track page ranges per sheet for footer rendering
+            var sheetPageRanges = new List<(ExcelSheet sheet, int startPage, int endPage)>();
+            foreach (var sheet in sheets)
+            {
+                var startPage = doc.Pages.Count;
+                RenderSheet(doc, sheet, options, sheets.Count > 1);
+                var endPage = doc.Pages.Count - 1;
+                if (startPage <= endPage)
+                    sheetPageRanges.Add((sheet, startPage, endPage));
+            }
 
-        // If no sheets found, create at least one empty page
-        if (doc.Pages.Count == 0)
+            // If no sheets found, create at least one empty page
+            if (doc.Pages.Count == 0)
+            {
+                doc.AddPage(options.PageWidth, options.PageHeight);
+            }
+
+            // Render print footers on each page
+            var totalPages = doc.Pages.Count;
+            foreach (var (sheet, startPage, endPage) in sheetPageRanges)
+            {
+                if (string.IsNullOrEmpty(sheet.OddFooter)) continue;
+                var footerY = sheet.FooterMarginPt > 0 ? sheet.FooterMarginPt : 18f;
+                var marginL = sheet.MarginLeftPt > 0 ? sheet.MarginLeftPt : options.MarginLeft;
+                var marginR = sheet.MarginRightPt > 0 ? sheet.MarginRightPt : options.MarginRight;
+                RenderPageFooter(doc.Pages, sheet.OddFooter, startPage, endPage, totalPages, footerY, marginL, marginR);
+            }
+
+            completed = true;
+            return doc;
+        }
+        finally
         {
-            doc.AddPage(options.PageWidth, options.PageHeight);
+            if (!completed) doc.Dispose();
         }
-
-        // Render print footers on each page
-        var totalPages = doc.Pages.Count;
-        foreach (var (sheet, startPage, endPage) in sheetPageRanges)
-        {
-            if (string.IsNullOrEmpty(sheet.OddFooter)) continue;
-            var footerY = sheet.FooterMarginPt > 0 ? sheet.FooterMarginPt : 18f;
-            var marginL = sheet.MarginLeftPt > 0 ? sheet.MarginLeftPt : options.MarginLeft;
-            var marginR = sheet.MarginRightPt > 0 ? sheet.MarginRightPt : options.MarginRight;
-            RenderPageFooter(doc.Pages, sheet.OddFooter, startPage, endPage, totalPages, footerY, marginL, marginR);
-        }
-
-        return doc;
     }
 
     private static List<ExcelSheet> FilterSheets(List<ExcelSheet> sheets, string[]? selectedSheets, int[]? selectedSheetIndexes)
@@ -349,7 +373,7 @@ internal static class ExcelToPdfConverter
     /// <param name="options">Optional conversion settings.</param>
     internal static void ConvertToFile(string excelPath, string pdfPath, ConversionOptions? options = null)
     {
-        var doc = Convert(excelPath, options);
+        using var doc = Convert(excelPath, options);
         doc.Save(pdfPath);
     }
 
@@ -712,6 +736,7 @@ internal static class ExcelToPdfConverter
             PageHeight = baseH,
             IncludeSheetName = options.IncludeSheetName,
             ScaleCellFonts = scaleCellFonts,
+            LowMemory = options.LowMemory,
         };
 
         // Apply print area: limit rows and columns to the defined range
@@ -1742,6 +1767,12 @@ internal static class ExcelToPdfConverter
         // Render rows
         foreach (var row in sheet.Rows)
         {
+            if (options.LowMemory)
+            {
+                // Drawing anchors are unsupported, so do not retain references to completed pages.
+                rowTopY.Clear();
+                rowPage.Clear();
+            }
             EnsurePage();
 
             // Manual row break: force a new page before this row
