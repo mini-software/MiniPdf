@@ -33,6 +33,9 @@ minipdf report.docx --fonts ./Fonts
 # Compress PDF content streams for large outputs
 minipdf data.xlsx --compress
 
+# Reduce memory for large simple XLSX tables using temporary disk storage
+minipdf data.xlsx --low-memory --compress
+
 # Render a bounded Excel preview
 minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
 
@@ -45,11 +48,18 @@ minipdf data.xlsx --max-rows 200 --max-columns 20 --compress
 | `minipdf <file>` | Convert `.xlsx` / `.docx` / `.pptx` to PDF |
 | `minipdf convert <file> -o <out>` | Convert with explicit output path |
 | `minipdf convert <file> --compress` | Compress PDF content streams |
+| `minipdf data.xlsx --low-memory` | Use opt-in disk-backed XLSX conversion |
 | `minipdf data.xlsx --max-rows <n> --max-columns <n>` | Render a bounded Excel preview |
 | `minipdf --version` | Show version |
 | `minipdf --help` | Show help |
 
 ## Features
+
+`--low-memory` preserves the default conversion path when omitted. It requires
+writable OS temporary storage and supports simple XLSX tables only. Unsupported
+worksheet features and options produce an explicit error; there is no automatic
+high-memory fallback. See the [library guide](README.nuget.md#low-memory-xlsx-conversion-opt-in)
+for supported features and limitations.
 
 - No COM, no Office installation, no LibreOffice — runs anywhere .NET runs
 - Single command, zero config

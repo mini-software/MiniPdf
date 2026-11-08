@@ -3,14 +3,24 @@ namespace MiniSoftware;
 /// <summary>
 /// Represents a PDF document that can contain pages with text content.
 /// </summary>
-internal sealed class PdfDocument
+internal sealed class PdfDocument : IDisposable
 {
     private readonly List<PdfPage> _pages = [];
+    private readonly FileBackedList<PdfPage>? _storedPages;
+
+    internal PdfDocument(bool lowMemory = false)
+    {
+        if (lowMemory)
+            _storedPages = new FileBackedList<PdfPage>(LowMemorySerialization.ReadPage,
+                LowMemorySerialization.WritePage, writeBack: true);
+    }
+
+    internal bool LowMemory => _storedPages != null;
 
     /// <summary>
     /// Gets the pages in this document.
     /// </summary>
-    public IReadOnlyList<PdfPage> Pages => _pages;
+    public IReadOnlyList<PdfPage> Pages => _storedPages != null ? _storedPages : _pages;
 
     /// <summary>
     /// Preferred CJK (Chinese/Japanese/Korean) font name from the source document.
@@ -27,7 +37,8 @@ internal sealed class PdfDocument
     public PdfPage AddPage(float width = 612, float height = 792)
     {
         var page = new PdfPage(width, height);
-        _pages.Add(page);
+        if (_storedPages != null) _storedPages.Add(page);
+        else _pages.Add(page);
         return page;
     }
 
@@ -36,6 +47,8 @@ internal sealed class PdfDocument
     /// </summary>
     internal void RemoveEmptyPages()
     {
+        if (_storedPages != null)
+            throw new NotSupportedException("Removing arbitrary pages is not supported in LowMemory mode.");
         _pages.RemoveAll(p => p.TextBlocks.Count == 0 && p.ImageBlocks.Count == 0 && p.RectBlocks.Count == 0 && p.LineBlocks.Count == 0);
     }
 
@@ -44,6 +57,11 @@ internal sealed class PdfDocument
     /// </summary>
     internal void RemoveLastPage()
     {
+        if (_storedPages != null)
+        {
+            if (_storedPages.Count > 0) _storedPages.RemoveAt(_storedPages.Count - 1);
+            return;
+        }
         if (_pages.Count > 0)
             _pages.RemoveAt(_pages.Count - 1);
     }
@@ -96,6 +114,8 @@ internal sealed class PdfDocument
         Save(ms, options);
         return ms.ToArray();
     }
+
+    public void Dispose() => _storedPages?.Dispose();
 }
 
 internal sealed class PdfSaveOptions
