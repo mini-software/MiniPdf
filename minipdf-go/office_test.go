@@ -235,6 +235,124 @@ func TestConvertXLSXSkipsEmptyWorksheets(t *testing.T) {
 	}
 }
 
+func TestConvertXLSXSkipsHiddenWorksheets(t *testing.T) {
+	sheet := func(text string) string {
+		return `<?xml version="1.0"?><worksheet><sheetData><row r="1">` +
+			`<c r="A1" t="inlineStr"><is><t>` + text + `</t></is></c></row></sheetData></worksheet>`
+	}
+	input := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml": `<?xml version="1.0"?><workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>` +
+			`<sheet name="Report" sheetId="1" r:id="rId1"/>` +
+			`<sheet name="Lookup" sheetId="2" state="hidden" r:id="rId2"/>` +
+			`<sheet name="Internal" sheetId="3" state="veryHidden" r:id="rId3"/>` +
+			`<sheet name="Summary" sheetId="4" state="visible" r:id="rId4"/>` +
+			`</sheets></workbook>`,
+		"xl/_rels/workbook.xml.rels": `<?xml version="1.0"?><Relationships>` +
+			`<Relationship Id="rId1" Type="worksheet" Target="worksheets/sheet1.xml"/>` +
+			`<Relationship Id="rId2" Type="worksheet" Target="worksheets/data.xml"/>` +
+			`<Relationship Id="rId3" Type="worksheet" Target="/xl/worksheets/sheet3.xml"/>` +
+			`<Relationship Id="rId4" Type="worksheet" Target="worksheets/sheet2.xml"/>` +
+			`</Relationships>`,
+		"xl/worksheets/sheet1.xml": sheet("Visible report"),
+		"xl/worksheets/data.xml":   sheet("Hidden lookup"),
+		"xl/worksheets/sheet3.xml": sheet("Very hidden internal"),
+		"xl/worksheets/sheet2.xml": sheet("Visible summary"),
+	})
+
+	pdf, err := ConvertBytesToPDF(input)
+	assertPDFContains(t, pdf, err, "Visible report", "Visible summary")
+	for _, text := range []string{"Hidden lookup", "Very hidden internal"} {
+		if bytes.Contains(pdf, []byte(text)) {
+			t.Fatalf("PDF contains hidden worksheet text %q", text)
+		}
+	}
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 2 {
+		t.Fatalf("page count = %d, want 2", pages)
+	}
+}
+
+func TestConvertXLSXResolvesHiddenWorksheetParts(t *testing.T) {
+	const (
+		visibleA = `<sheet name="A" sheetId="1" r:id="rId1"/>`
+		hiddenA  = `<sheet name="A" sheetId="1" state="hidden" r:id="rId1"/>`
+		hiddenB  = `<sheet name="B" sheetId="2" state="hidden" r:id="rId2"/>`
+		first    = `<Relationship Id="rId1" Type="worksheet" Target="worksheets/sheet1.xml"/>`
+		second   = `<Relationship Id="rId2" Type="worksheet" Target="worksheets/sheet2.xml"/>`
+	)
+	tests := []struct {
+		name          string
+		sheets        string
+		relationships []string
+		present       []string
+		absent        []string
+		pages         int
+	}{
+		{
+			name:    "missing relationships map sheets to parts by position",
+			sheets:  visibleA + hiddenB,
+			present: []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
+		{
+			name:          "hidden sheet with a dangling relationship id is not rendered",
+			sheets:        visibleA + `<sheet name="B" sheetId="2" state="hidden" r:id="rId9"/>`,
+			relationships: []string{`<Relationship Id="rId1" Type="worksheet" Target="worksheets/sheet2.xml"/>`},
+			present:       []string{"Second part"}, absent: []string{"First part"}, pages: 1,
+		},
+		{
+			name:          "visible sheet with a dangling relationship id is kept",
+			sheets:        `<sheet name="A" sheetId="1" r:id="rId9"/>` + hiddenB,
+			relationships: []string{second},
+			present:       []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
+		{
+			name:          "visible sheet whose target matches no part is kept",
+			sheets:        visibleA + hiddenB,
+			relationships: []string{`<Relationship Id="rId1" Type="worksheet" Target="worksheets/missing.xml"/>`, second},
+			present:       []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
+		{
+			name:          "relationship targets match part names case-insensitively",
+			sheets:        visibleA + hiddenB,
+			relationships: []string{first, `<Relationship Id="rId2" Type="worksheet" Target="worksheets/Sheet2.xml"/>`},
+			present:       []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
+		{
+			name:          "all sheets hidden produce one blank page",
+			sheets:        hiddenA + hiddenB,
+			relationships: []string{first, second},
+			absent:        []string{"First part", "Second part"}, pages: 1,
+		},
+		{
+			name:   "all sheets hidden without relationships produce one blank page",
+			sheets: hiddenA + hiddenB,
+			absent: []string{"First part", "Second part"}, pages: 1,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			entries := map[string]string{
+				"xl/workbook.xml": `<?xml version="1.0"?><workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>` +
+					test.sheets + `</sheets></workbook>`,
+				"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>First part</t></is></c></row></sheetData></worksheet>`,
+				"xl/worksheets/sheet2.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>Second part</t></is></c></row></sheetData></worksheet>`,
+			}
+			if test.relationships != nil {
+				entries["xl/_rels/workbook.xml.rels"] = `<?xml version="1.0"?><Relationships>` + strings.Join(test.relationships, "") + `</Relationships>`
+			}
+			pdf, err := ConvertBytesToPDF(officePackageBytes(t, entries))
+			assertPDFContains(t, pdf, err, test.present...)
+			for _, text := range test.absent {
+				if bytes.Contains(pdf, []byte(text)) {
+					t.Fatalf("PDF contains hidden worksheet text %q", text)
+				}
+			}
+			if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != test.pages {
+				t.Fatalf("page count = %d, want %d", pages, test.pages)
+			}
+		})
+	}
+}
+
 func TestSplitWorksheetColumnGroups(t *testing.T) {
 	lines := []string{
 		"A\tB\tC\tD\tE\tF\tG\tH\tI\tJ",

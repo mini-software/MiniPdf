@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
+	"io"
 	"strconv"
 	"strings"
 )
@@ -20,6 +21,10 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 	worksheets := sortedPackageParts(files, "xl/worksheets/", ".xml")
 	if len(worksheets) == 0 {
 		return nil, errorsNewMissingWorksheets()
+	}
+	worksheets, err = visibleXLSXWorksheets(files, worksheets)
+	if err != nil {
+		return nil, err
 	}
 	styles, err := readXLSXStyles(files)
 	if err != nil {
@@ -84,6 +89,93 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 		pages = append(pages, textPage{size: fallbackPageSize})
 	}
 	return renderTextPages(pages, options), nil
+}
+
+// visibleXLSXWorksheets returns the worksheet parts that Excel and LibreOffice
+// would print: those that belong to a sheet xl/workbook.xml does not mark
+// hidden or veryHidden.
+func visibleXLSXWorksheets(files officePackage, worksheets []string) ([]string, error) {
+	const workbookName = "xl/workbook.xml"
+	if _, ok := files[workbookName]; !ok {
+		return worksheets, nil
+	}
+	data, err := files.read(workbookName)
+	if err != nil {
+		return nil, err
+	}
+	// Part names are case-insensitive, so targets are compared in lower case.
+	targets := make(map[string]string)
+	relationshipsName := xlsxRelationshipPartName(workbookName)
+	_, hasRelationships := files[relationshipsName]
+	if hasRelationships {
+		relationshipsData, readErr := files.read(relationshipsName)
+		if readErr != nil {
+			return nil, readErr
+		}
+		var relationships xlsxRelationshipsDocument
+		if err := xml.Unmarshal(relationshipsData, &relationships); err != nil {
+			return nil, fmt.Errorf("parse %s: %w", relationshipsName, err)
+		}
+		for _, relationship := range relationships.Items {
+			targets[relationship.ID] = strings.ToLower(xlsxResolveRelationshipTarget(workbookName, relationship.Target))
+		}
+	}
+	packageParts := make(map[string]bool, len(files))
+	for name := range files {
+		packageParts[strings.ToLower(name)] = true
+	}
+	visibleParts := make(map[string]bool)
+	hiddenParts := make(map[string]bool)
+	sheetCount := 0
+	unresolvedVisibleSheet := false
+	decoder := xml.NewDecoder(bytes.NewReader(data))
+	for {
+		token, tokenErr := decoder.Token()
+		if tokenErr == io.EOF {
+			break
+		}
+		if tokenErr != nil {
+			return nil, fmt.Errorf("parse %s: %w", workbookName, tokenErr)
+		}
+		start, ok := token.(xml.StartElement)
+		if !ok || start.Name.Local != "sheet" {
+			continue
+		}
+		sheetCount++
+		state := attrValue(start, "state")
+		isHidden := state == "hidden" || state == "veryHidden"
+		var part string
+		if hasRelationships {
+			part = targets[attrValue(start, "id")]
+		} else {
+			// Without workbook relationships, sheets map to parts by position.
+			part = fmt.Sprintf("xl/worksheets/sheet%d.xml", sheetCount)
+		}
+		switch {
+		case isHidden:
+			hiddenParts[part] = true
+		case !packageParts[part]:
+			unresolvedVisibleSheet = true
+		default:
+			visibleParts[part] = true
+		}
+	}
+	// When every visible sheet resolves to a package part, render exactly those parts so
+	// that a hidden sheet with a broken relationship is never printed. Otherwise
+	// only drop the parts known to be hidden, so no visible sheet is lost.
+	keepVisibleOnly := hasRelationships && sheetCount > 0 && !unresolvedVisibleSheet
+	visible := make([]string, 0, len(worksheets))
+	for _, name := range worksheets {
+		key := strings.ToLower(name)
+		keep := !hiddenParts[key]
+		if keepVisibleOnly {
+			keep = visibleParts[key]
+		}
+		if keep {
+			visible = append(visible, name)
+		}
+	}
+	return visible, nil
 }
 
 func limitWorksheet(lines []string, maxRows, maxColumns int) []string {

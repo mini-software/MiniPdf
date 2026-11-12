@@ -178,7 +178,7 @@ spaces consistently for wrapping, run positioning, alignment, and run shading.
 | Fonts, fills, borders, alignment | I | P | P | M | M | B |
 | Row heights and column widths | I | I | P | P | M | B |
 | Merged cells | I | I | I | M | M | B |
-| Hidden rows, columns, and sheets | I | P | P | M | M | B |
+| Hidden rows, columns, and sheets | I | P | P | P | M | B |
 | Print area and print titles | I | P | P | M | M | B |
 | Paper size, margins, orientation | I | P | P | P | M | B |
 | Fit-to-page and print scale | I | P | P | M | M | B |
