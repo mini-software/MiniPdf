@@ -120,9 +120,9 @@ func visibleXLSXWorksheets(files officePackage, worksheets []string) ([]string, 
 			targets[relationship.ID] = strings.ToLower(xlsxResolveRelationshipTarget(workbookName, relationship.Target))
 		}
 	}
-	packageParts := make(map[string]bool, len(files))
-	for name := range files {
-		packageParts[strings.ToLower(name)] = true
+	worksheetParts := make(map[string]bool, len(worksheets))
+	for _, name := range worksheets {
+		worksheetParts[strings.ToLower(name)] = true
 	}
 	visibleParts := make(map[string]bool)
 	hiddenParts := make(map[string]bool)
@@ -147,22 +147,25 @@ func visibleXLSXWorksheets(files officePackage, worksheets []string) ([]string, 
 		var part string
 		if hasRelationships {
 			part = targets[attrValue(start, "id")]
-		} else {
-			// Without workbook relationships, sheets map to parts by position.
-			part = fmt.Sprintf("xl/worksheets/sheet%d.xml", sheetCount)
+		} else if sheetCount <= len(worksheets) {
+			// Without workbook relationships, sheets map to the ordered
+			// worksheet parts by position.
+			part = strings.ToLower(worksheets[sheetCount-1])
 		}
 		switch {
 		case isHidden:
 			hiddenParts[part] = true
-		case !packageParts[part]:
+		case !worksheetParts[part]:
 			unresolvedVisibleSheet = true
 		default:
 			visibleParts[part] = true
 		}
 	}
-	// When every visible sheet resolves to a package part, render exactly those parts so
-	// that a hidden sheet with a broken relationship is never printed. Otherwise
-	// only drop the parts known to be hidden, so no visible sheet is lost.
+	// When every visible sheet resolves to a worksheet part, render exactly those
+	// parts so that a hidden sheet with a broken relationship is never printed.
+	// Otherwise only drop the parts known to be hidden, so no visible sheet is
+	// lost. A visible chartsheet resolves to no worksheet part and therefore
+	// selects the second mode.
 	keepVisibleOnly := hasRelationships && sheetCount > 0 && !unresolvedVisibleSheet
 	visible := make([]string, 0, len(worksheets))
 	for _, name := range worksheets {

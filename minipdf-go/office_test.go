@@ -276,6 +276,7 @@ func TestConvertXLSXResolvesHiddenWorksheetParts(t *testing.T) {
 		visibleA = `<sheet name="A" sheetId="1" r:id="rId1"/>`
 		hiddenA  = `<sheet name="A" sheetId="1" state="hidden" r:id="rId1"/>`
 		hiddenB  = `<sheet name="B" sheetId="2" state="hidden" r:id="rId2"/>`
+		visibleB = `<sheet name="B" sheetId="2" r:id="rId2"/>`
 		first    = `<Relationship Id="rId1" Type="worksheet" Target="worksheets/sheet1.xml"/>`
 		second   = `<Relationship Id="rId2" Type="worksheet" Target="worksheets/sheet2.xml"/>`
 	)
@@ -283,10 +284,29 @@ func TestConvertXLSXResolvesHiddenWorksheetParts(t *testing.T) {
 		name          string
 		sheets        string
 		relationships []string
+		parts         [2]string
 		present       []string
 		absent        []string
 		pages         int
 	}{
+		{
+			name:    "missing relationships map sheets to non-contiguous parts by position",
+			sheets:  hiddenA + visibleB,
+			parts:   [2]string{"sheet2.xml", "sheet3.xml"},
+			present: []string{"Second part"}, absent: []string{"First part"}, pages: 1,
+		},
+		{
+			name:    "missing relationships map sheets to custom part names by position",
+			sheets:  hiddenA + visibleB,
+			parts:   [2]string{"data.xml", "summary.xml"},
+			present: []string{"Second part"}, absent: []string{"First part"}, pages: 1,
+		},
+		{
+			name:          "visible sheet whose target is not a worksheet part is kept",
+			sheets:        visibleA + hiddenB,
+			relationships: []string{`<Relationship Id="rId1" Type="worksheet" Target="workbook.xml"/>`, second},
+			present:       []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
 		{
 			name:    "missing relationships map sheets to parts by position",
 			sheets:  visibleA + hiddenB,
@@ -330,11 +350,15 @@ func TestConvertXLSXResolvesHiddenWorksheetParts(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
+			parts := test.parts
+			if parts == [2]string{} {
+				parts = [2]string{"sheet1.xml", "sheet2.xml"}
+			}
 			entries := map[string]string{
 				"xl/workbook.xml": `<?xml version="1.0"?><workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>` +
 					test.sheets + `</sheets></workbook>`,
-				"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>First part</t></is></c></row></sheetData></worksheet>`,
-				"xl/worksheets/sheet2.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>Second part</t></is></c></row></sheetData></worksheet>`,
+				"xl/worksheets/" + parts[0]: `<?xml version="1.0"?><worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>First part</t></is></c></row></sheetData></worksheet>`,
+				"xl/worksheets/" + parts[1]: `<?xml version="1.0"?><worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>Second part</t></is></c></row></sheetData></worksheet>`,
 			}
 			if test.relationships != nil {
 				entries["xl/_rels/workbook.xml.rels"] = `<?xml version="1.0"?><Relationships>` + strings.Join(test.relationships, "") + `</Relationships>`
