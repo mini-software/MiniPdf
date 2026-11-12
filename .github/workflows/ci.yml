@@ -25,6 +25,22 @@ permissions:
   pull-requests: read
 
 jobs:
+  review-workflow-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Test reviewer automation and approval policy
+        run: node --test .github/tests/auto-reviewers.test.cjs .github/tests/review-approval-policy.test.cjs
+
   build:
     runs-on: ubuntu-latest   
 
