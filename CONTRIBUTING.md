@@ -149,7 +149,8 @@ review requests fail the workflow explicitly.
 
 ### Approval Requirements
 
-The tiered review policy for PRs targeting `main`, once activated below, is:
+Every PR targeting `main` must retain the native **three-approval** requirement.
+The automation reports these **advisory** thresholds:
 
 - Ordinary changes: at least **one approval** from someone other than the author.
 - Important changes with the `major-change` label: at least **three approvals**.
@@ -166,34 +167,33 @@ modifications. Do not remove the label merely to bypass the three-approval
 requirement. This is a project policy, not an ASF-wide requirement for every
 GitHub PR.
 
-The [approval workflow](.github/workflows/review-approval-policy.yml) publishes
-the commit status **Review approval policy**. It refreshes all open, non-draft
-PRs on PR/label changes and after the
-[read-only review notification workflow](.github/workflows/review-changed.yml)
-completes. This two-workflow design supports fork reviews without granting the
-notification workflow secrets or write permissions, or running PR code in the
-privileged workflow. Neither approval workflow requires `CORE_REVIEWERS_TOKEN`.
+The [approval workflow](.github/workflows/review-approval-policy.yml) updates a
+**Review approval policy** check run for each head commit instead of repeatedly
+appending commit statuses. It refreshes open, non-draft PRs on PR/label changes,
+manual dispatch, and a default-branch-controlled schedule every 15 minutes.
+Scheduled runs can be delayed by GitHub; review changes are not guaranteed to
+refresh immediately. The workflow never checks out or executes PR code and does
+not require `CORE_REVIEWERS_TOKEN`.
 
-Changes are processed asynchronously. Wait for the approval workflow to finish
-after changing labels or reviews, then check the status before merging.
-Maintainers can manually run **Review approval policy** to refresh existing PRs.
-PRs sharing a head commit also share its status, so all such open, non-draft PRs
-must meet their individual approval requirements.
+Maintainers can manually run **Review approval policy** after review changes.
+PRs sharing a head commit also share its check, so all such open, non-draft PRs
+must meet their individual advisory thresholds for the check to succeed.
+Failures are reported per head commit, set its check to failure when the API
+allows, and fail the workflow without preventing other commits from refreshing.
 
-To activate enforcement without a gap:
+Do not use this advisory check to lower the native approval minimum to one.
+GitHub's `pull_request_review` workflow runs from the PR merge ref, which a PR
+can modify to disable dismissal notifications. It can also require maintainer
+approval for first-time fork workflows. The former notifier is therefore removed;
+scheduled reconciliation avoids relying on it but cannot eliminate stale results.
+Enforcing ordinary-one/major-three would require a separately deployed, trusted
+review-event service and its own validation before changing branch rules.
 
-1. Merge these workflows into `main` while retaining the current native
-   **three-approval** requirement for every PR.
-2. Run **Review approval policy** and verify its live commit status on open PRs.
-3. In the **Copilot review for default branch** ruleset, require the
-   **Review approval policy** status check from **GitHub Actions**, then lower the
-   native required approvals to **one** in the same ruleset update. Preserve the
-   empty bypass list, Copilot review, deletion protection, and force-push protection.
-
-Until this activation is complete, the native three-approval requirement
-continues to apply to every PR. Do not lower it before the required status check
-is configured. Team-based automatic invitations additionally require the secret
-described above, but tiered approval enforcement does not.
+Retain the native three-approval requirement and the **Copilot review for default
+branch** ruleset's empty bypass list, Copilot review, deletion protection, and
+force-push protection. The advisory check does not replace GitHub's merge gate.
+Automatic team invitations can be enabled independently after the reviewer
+workflow is merged into `main` and its dedicated secret is configured.
 
 The automation and its tests are adapted from
 [mini-software/MiniExcel#1040](https://github.com/mini-software/MiniExcel/pull/1040)
