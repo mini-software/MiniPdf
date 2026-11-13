@@ -109,14 +109,100 @@ Pull requests should be small enough to review and should include:
 - the source and license of new third-party material; and
 - documentation updates for user-visible behavior.
 
-At least one maintainer approval is currently required before merge. The
-project aims to provide an initial review within seven days, but complex visual
+The project aims to provide an initial review within seven days, but complex visual
 rendering and security changes may take longer. Authors should respond to review
 questions and avoid force-pushing after review begins unless rebasing is needed.
 
 Maintainers may request that a large change be split, discussed publicly, or
 reworked to preserve compatibility and project scope. Reviews assess the change,
 not the contributor.
+
+### Automatic Review Requests
+
+PRs targeting `main` automatically request active human members of the
+[`core-reviewers` team](https://github.com/orgs/mini-software/teams/core-reviewers)
+when opened, reopened, marked ready for review, or updated. The PR author,
+already requested reviewers, and anyone who has already submitted a review are
+excluded. Draft PRs do not request reviews. Merge approval requirements are
+configured separately from review invitations.
+
+Maintainers can update the reviewer list by adding or removing team members;
+pending organization invitations must be accepted before members are included.
+The team must have Write or higher repository access. Removing a member does
+not revoke existing review requests or their separately granted permissions.
+
+Before enabling the [reviewer workflow](.github/workflows/auto-reviewers.yml),
+configure a fine-grained personal access token with `mini-software` as the resource
+owner and only the organization **Members: read** permission. Store it as the
+repository Actions secret `CORE_REVIEWERS_TOKEN` and ensure any required
+organization approval is complete. Rotate the token before it expires. Do not
+reuse a local GitHub CLI login token. The dedicated token only reads team
+membership; review requests use the workflow's `GITHUB_TOKEN` with
+**Pull requests: write** permission.
+
+After the workflow is merged into `main`, use its **Run workflow** action with
+a PR number to refresh reviewers on an existing PR. Team changes are otherwise
+picked up on the next supported PR event, not immediately when membership changes.
+The workflow uses `pull_request_target` to support fork PRs without checking out
+or executing PR code. Missing credentials, team access errors, and unconfirmed
+review requests fail the workflow explicitly.
+
+### Approval Requirements
+
+Every PR targeting `main` must retain the native **three-approval** requirement.
+The automation reports these **advisory** thresholds:
+
+- Ordinary changes: at least **one approval** from someone other than the author.
+- Important changes with the `major-change` label: at least **three approvals**.
+
+Approvals must come from users with Write or higher repository permissions.
+Invitations, comments, author approvals, bot reviews, and dismissed approvals do
+not count. A later approval or change request supersedes that user's earlier
+decision; a comment does not cancel an approval. Existing native protections
+still apply, including blocking unresolved change requests.
+
+Maintainers should add `major-change` before review for public API changes,
+architecture changes, breaking changes, governance changes, or other high-impact
+modifications. Do not remove the label merely to bypass the three-approval
+requirement. This is a project policy, not an ASF-wide requirement for every
+GitHub PR.
+
+The [approval workflow](.github/workflows/review-approval-policy.yml) updates a
+**Review approval policy** check run for each head commit instead of repeatedly
+appending commit statuses. It refreshes open, non-draft PRs on PR/label changes,
+manual dispatch, and a default-branch-controlled schedule every 15 minutes.
+Scheduled runs can be delayed by GitHub; review changes are not guaranteed to
+refresh immediately. The workflow never checks out or executes PR code and does
+not require `CORE_REVIEWERS_TOKEN`.
+
+Maintainers can manually run **Review approval policy** after review changes.
+PRs sharing a head commit also share its check, so all such open, non-draft PRs
+must meet their individual advisory thresholds for the check to succeed.
+Failures are reported per head commit, set its check to failure when the API
+allows, and fail the workflow without preventing other commits from refreshing.
+
+Do not use this advisory check to lower the native approval minimum to one.
+GitHub's `pull_request_review` workflow runs from the PR merge ref, which a PR
+can modify to disable dismissal notifications. It can also require maintainer
+approval for first-time fork workflows. The former notifier is therefore removed;
+scheduled reconciliation avoids relying on it but cannot eliminate stale results.
+Enforcing ordinary-one/major-three would require a separately deployed, trusted
+review-event service and its own validation before changing branch rules.
+
+Retain the native three-approval requirement and the **Copilot review for default
+branch** ruleset's empty bypass list, Copilot review, deletion protection, and
+force-push protection. The advisory check does not replace GitHub's merge gate.
+Automatic team invitations can be enabled independently after the reviewer
+workflow is merged into `main` and its dedicated secret is configured.
+
+The automation and its tests are adapted from
+[mini-software/MiniExcel#1040](https://github.com/mini-software/MiniExcel/pull/1040)
+under Apache License 2.0. CI runs both test files; run them locally with Node.js
+20 or later:
+
+```powershell
+node --test .github\tests\auto-reviewers.test.cjs .github\tests\review-approval-policy.test.cjs
+```
 
 ## Earning More Responsibility
 
