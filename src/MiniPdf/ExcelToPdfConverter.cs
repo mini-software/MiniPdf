@@ -86,6 +86,8 @@ internal static class ExcelToPdfConverter
         internal System.Globalization.CultureInfo? Culture { get; set; }
 
         internal bool LowMemory { get; set; }
+
+        internal bool UseCalibriFontMetrics { get; set; }
     }
 
     /// <summary>
@@ -122,6 +124,8 @@ internal static class ExcelToPdfConverter
         sheets = FilterSheets(sheets, options.Sheets, options.SheetIndexes);
         sheets = ApplyRenderLimits(sheets, options.MaxRows, options.MaxColumns);
         sheets = ApplyLayoutOptions(sheets, options);
+        options.UseCalibriFontMetrics = sheets.Any(sheet => sheet.Rows.Any(row =>
+            row.Any(cell => cell.Bold && string.Equals(cell.FontName, "Calibri", StringComparison.OrdinalIgnoreCase))));
         if (options.LowMemory)
             foreach (var sheet in sheets)
                 if (sheet.FitToPage && sheet.FitToHeight > 0)
@@ -737,6 +741,7 @@ internal static class ExcelToPdfConverter
             IncludeSheetName = options.IncludeSheetName,
             ScaleCellFonts = scaleCellFonts,
             LowMemory = options.LowMemory,
+            UseCalibriFontMetrics = options.UseCalibriFontMetrics,
         };
 
         // Apply print area: limit rows and columns to the defined range
@@ -951,8 +956,12 @@ internal static class ExcelToPdfConverter
         var hasExplicitColWidths = sheet.ColumnWidths.Count > 0 || sheet.DefaultColumnWidth > 0f;
         var isLargeGeneratedTable = sheet.Rows.Count >= 1000 &&
             sheet.ColumnWidths.Count == 0 && sheet.DefaultColumnWidth <= 0f;
+        var useDefaultWidthsForChartHeading = sheet.Charts.Any(chart => chart.AnchorCol >= maxColsFromRows) &&
+            sheet.Rows.Any(row => row.Count(cell => !string.IsNullOrEmpty(cell.Text)) == 1 &&
+                row.Any(cell => cell.FontSize > options.FontSize &&
+                    MeasureStringWidth(cell.Text, options.FontSize) > sheet.CharUnitsToPointsDefaultScaled(8.43f)));
         var columnPadding = options.ColumnPadding;
-        if (hasExplicitColWidths || sheet.Images.Count > 0 || (sheet.FitToPage && sheet.FitToWidth >= 1))
+        if (hasExplicitColWidths || sheet.Images.Count > 0 || useDefaultWidthsForChartHeading || (sheet.FitToPage && sheet.FitToWidth >= 1))
         {
             // When the spreadsheet defines explicit column widths, or fitToPage is
             // active, use zero inter-column padding to match Excel/LibreOffice layout
@@ -966,7 +975,7 @@ internal static class ExcelToPdfConverter
 
         // Calculate natural (unscaled) column widths to decide on grouping
         var naturalWidths = CalculateNaturalColumnWidths(sheet, maxCols, usableWidth, options,
-            (workbookHasMultipleSheets || sheet.Images.Count > 0) && !hasExplicitColWidths);
+            (workbookHasMultipleSheets || sheet.Images.Count > 0 || useDefaultWidthsForChartHeading) && !hasExplicitColWidths);
 
         // Apply print scale to column widths so more columns fit per page.
         // Font size is already scaled in options, but Excel explicit column widths
@@ -1139,6 +1148,23 @@ internal static class ExcelToPdfConverter
         var borderScaleFactor = printScaleFactor * (fitToPageScale < 1f ? fitToPageScale : 1f);
         var cellTextInset = Math.Min(2.5f, Math.Max(1f, options.FontSize * 0.18f));
 
+        float MeasureCellTextWidth(string text, float fontSize, bool bold, string? fontName)
+        {
+            if (options.UseCalibriFontMetrics &&
+                string.Equals(fontName, "Calibri", StringComparison.OrdinalIgnoreCase))
+            {
+                if (PdfWriter.TryMeasurePreferredFontWidth(fontName, text, fontSize, bold, false, 0, out var width))
+                    return width;
+                var total = 0f;
+                foreach (var character in text)
+                    total += PdfWriter.TryMeasurePreferredFontWidth(fontName, character.ToString(), fontSize, bold, false, 0, out width)
+                        ? width
+                        : (float)MeasureHelveticaWidth(character.ToString(), fontSize, bold);
+                return total;
+            }
+            return (float)MeasureHelveticaWidth(text, fontSize, bold);
+        }
+
         // Use the sheet's default row height if available, otherwise fall back to font-based calculation
         var defaultLineHeight = sheet.DefaultRowHeight > 0 ? sheet.DefaultRowHeight : options.FontSize * options.LineSpacing;
         // Apply print scale to row heights (like column widths, these define content size)
@@ -1148,6 +1174,7 @@ internal static class ExcelToPdfConverter
         if (fitToPageScale < 1f)
             defaultLineHeight *= fitToPageScale;
         var lineHeight = defaultLineHeight;
+        var cellBorders = new List<(BorderSide Side, float X1, float Y1, float X2, float Y2)>();
         PdfPage? currentPage = null;
         var currentY = 0f;
         var accumulatedOverflowHeight = 0f;
@@ -1173,6 +1200,7 @@ internal static class ExcelToPdfConverter
         {
             if (currentPage == null || currentY < options.MarginBottom)
             {
+                FlushCellBorders();
                 currentPage = doc.AddPage(pageWidth, pageHeight);
                 currentY = pageHeight - options.MarginTop;
             }
@@ -1263,32 +1291,64 @@ internal static class ExcelToPdfConverter
                 for (var mc = i + 1; mc < columns.Length && columns[mc] <= borderEndCol; mc++)
                     bxRight += columnPadding + colWidths[mc];
             }
-            var borderColor = new PdfColor(0f, 0f, 0f);
+            QueueCellBorder(border.Left, bx, byTop, bx, byBottom);
+            QueueCellBorder(border.Right, bxRight, byTop, bxRight, byBottom);
+            QueueCellBorder(border.Top, bx, byTop, bxRight, byTop);
+            QueueCellBorder(border.Bottom, bx, byBottom, bxRight, byBottom);
+        }
 
-            if (border.Left is { Style: not "none" and not "" })
+        void QueueCellBorder(BorderSide? side, float x1, float y1, float x2, float y2)
+        {
+            if (side is { Style: not "none" and not "" })
+                cellBorders.Add((side, x1, y1, x2, y2));
+        }
+
+        void FlushCellBorders()
+        {
+            if (cellBorders.Count == 0) return;
+
+            var page = currentPage!;
+            var doubleEdges = cellBorders.Where(border => border.Side.Style == "double")
+                .ToLookup(border => (Vertical: border.X1 == border.X2,
+                    Position: border.X1 == border.X2 ? border.X1 : border.Y1));
+            foreach (var (side, x1, y1, x2, y2) in cellBorders)
             {
-                var bc = border.Left.Color ?? borderColor;
-                var bw = Math.Max(0.08f, BorderStyleWidth(border.Left.Style) * borderScaleFactor);
-                currentPage!.AddLine(bx, byTop, bx, byBottom, bc, bw, BorderDashPattern(border.Left.Style, bw));
+                var vertical = x1 == x2;
+                var key = (vertical, vertical ? x1 : y1);
+                if (side.Style == "double" || !doubleEdges.Contains(key))
+                {
+                    AddCellBorder(page, side, x1, y1, x2, y2, borderScaleFactor);
+                    continue;
+                }
+
+                // Resolve shared edges before releasing the page, including
+                // partial merged edges, without painting the double gap.
+                var start = vertical ? Math.Min(y1, y2) : x1;
+                var end = vertical ? Math.Max(y1, y2) : x2;
+                void AddSegment(float from, float to)
+                {
+                    if (vertical)
+                        AddCellBorder(page, side, x1, to, x2, from, borderScaleFactor);
+                    else
+                        AddCellBorder(page, side, from, y1, to, y2, borderScaleFactor);
+                }
+                var intervals = doubleEdges[key].Select(edge => (
+                    Start: vertical ? Math.Min(edge.Y1, edge.Y2) : edge.X1,
+                    End: vertical ? Math.Max(edge.Y1, edge.Y2) : edge.X2)).OrderBy(edge => edge.Start);
+                foreach (var interval in intervals)
+                {
+                    if (interval.End <= start || interval.Start >= end)
+                        continue;
+                    if (interval.Start > start)
+                        AddSegment(start, interval.Start);
+                    start = Math.Max(start, interval.End);
+                    if (start >= end)
+                        break;
+                }
+                if (start < end)
+                    AddSegment(start, end);
             }
-            if (border.Right is { Style: not "none" and not "" })
-            {
-                var bc = border.Right.Color ?? borderColor;
-                var bw = Math.Max(0.08f, BorderStyleWidth(border.Right.Style) * borderScaleFactor);
-                currentPage!.AddLine(bxRight, byTop, bxRight, byBottom, bc, bw, BorderDashPattern(border.Right.Style, bw));
-            }
-            if (border.Top is { Style: not "none" and not "" })
-            {
-                var bc = border.Top.Color ?? borderColor;
-                var bw = Math.Max(0.08f, BorderStyleWidth(border.Top.Style) * borderScaleFactor);
-                currentPage!.AddLine(bx, byTop, bxRight, byTop, bc, bw, BorderDashPattern(border.Top.Style, bw));
-            }
-            if (border.Bottom is { Style: not "none" and not "" })
-            {
-                var bc = border.Bottom.Color ?? borderColor;
-                var bw = Math.Max(0.08f, BorderStyleWidth(border.Bottom.Style) * borderScaleFactor);
-                currentPage!.AddLine(bx, byBottom, bxRight, byBottom, bc, bw, BorderDashPattern(border.Bottom.Style, bw));
-            }
+            cellBorders.Clear();
         }
 
         float ScaledRowHeightAt(int rowIndex)
@@ -1377,18 +1437,9 @@ internal static class ExcelToPdfConverter
                 var border = EffectiveBorderForCell(originRow, mergeStartRow, startCol, cell.Border);
                 if (border != null)
                 {
-                    var borderColor = new PdfColor(0f, 0f, 0f);
-                    void AddBorder(BorderSide? side, float x1, float y1, float x2, float y2)
-                    {
-                        if (side is not { Style: not "none" and not "" }) return;
-                        var borderWidth = Math.Max(0.08f, BorderStyleWidth(side.Style) * borderScaleFactor);
-                        currentPage.AddLine(x1, y1, x2, y2, side.Color ?? borderColor,
-                            borderWidth, BorderDashPattern(side.Style, borderWidth));
-                    }
-
-                    AddBorder(border.Left, x, currentY, x, segmentBottom);
-                    AddBorder(border.Right, x + width, currentY, x + width, segmentBottom);
-                    AddBorder(border.Bottom, x, segmentBottom, x + width, segmentBottom);
+                    QueueCellBorder(border.Left, x, currentY, x, segmentBottom);
+                    QueueCellBorder(border.Right, x + width, currentY, x + width, segmentBottom);
+                    QueueCellBorder(border.Bottom, x, segmentBottom, x + width, segmentBottom);
                 }
 
                 if (string.IsNullOrEmpty(cell.Text)) continue;
@@ -1422,12 +1473,12 @@ internal static class ExcelToPdfConverter
                         var textX = x + cellTextInset;
                         if (cell.Alignment == "center")
                         {
-                            var textWidth = (float)MeasureHelveticaWidth(line, fontSize, bold: isBold);
+                            var textWidth = MeasureCellTextWidth(line, fontSize, isBold, cell.FontName);
                             textX = x + (width - textWidth) / 2f;
                         }
                         else if (cell.Alignment == "right")
                         {
-                            var textWidth = (float)MeasureHelveticaWidth(line, fontSize, bold: isBold);
+                            var textWidth = MeasureCellTextWidth(line, fontSize, isBold, cell.FontName);
                             textX = x + width - cellTextInset - textWidth;
                         }
 
@@ -1652,7 +1703,7 @@ internal static class ExcelToPdfConverter
                     var titleIsBold = ShouldUsePdfBold(cell?.Bold ?? false, cellFs, cell?.FontName);
                     var titleIndentOff = (cell?.Indent ?? 0) * avgCharWidth;
                     var titleAcctPrefixW = cell?.AccountingPrefix != null
-                        ? (float)MeasureHelveticaWidth(cell.AccountingPrefix, cellFs, bold: titleIsBold)
+                        ? MeasureCellTextWidth(cell.AccountingPrefix, cellFs, titleIsBold, cell.FontName)
                         : 0f;
                     var titleContentX = x + cellTextInset;
                     var titleContentWidth = Math.Max(1f, cellWidth - 2f * cellTextInset);
@@ -1664,7 +1715,7 @@ internal static class ExcelToPdfConverter
                             var lineMaxWidth = titleClipWidths[i];
                             if (alignment == "right" || titleAcctPrefixW > 0)
                             {
-                                var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs, bold: titleIsBold);
+                                var tw = MeasureCellTextWidth(titleCellLines[i][lineIdx], cellFs, titleIsBold, cell?.FontName);
                                 textX = titleContentX + titleContentWidth - tw - titleIndentOff;
                                 if (titleAcctPrefixW > 0 && textX < titleContentX + titleAcctPrefixW)
                                 {
@@ -1674,7 +1725,7 @@ internal static class ExcelToPdfConverter
                             }
                             else if (alignment == "center")
                             {
-                                var tw = (float)MeasureHelveticaWidth(titleCellLines[i][lineIdx], cellFs, bold: titleIsBold);
+                                var tw = MeasureCellTextWidth(titleCellLines[i][lineIdx], cellFs, titleIsBold, cell?.FontName);
                                 textX = titleContentX + (titleContentWidth - tw) / 2f;
                             }
                             AddExcelText(currentPage!, titleCellLines[i][lineIdx], textX, cellY, cellFs, cell?.Color,
@@ -1778,6 +1829,7 @@ internal static class ExcelToPdfConverter
             // Manual row break: force a new page before this row
             if (sheet.RowBreaks.Contains(excelRowIndex) && currentPage != null && currentY < pageHeight - options.MarginTop)
             {
+                FlushCellBorders();
                 currentPage = doc.AddPage(pageWidth, pageHeight);
                 currentY = pageHeight - options.MarginTop;
                 // Render print title rows on the new page
@@ -2033,6 +2085,7 @@ internal static class ExcelToPdfConverter
 
             if (currentY - rowHeight < options.MarginBottom && currentPage != null)
             {
+                FlushCellBorders();
                 currentPage = doc.AddPage(pageWidth, pageHeight);
                 currentY = pageHeight - options.MarginTop;
                 // Render print title rows on the new page (skip if current row is within the title range)
@@ -2084,7 +2137,7 @@ internal static class ExcelToPdfConverter
                         var mpIsBold = ShouldUsePdfBold(cell?.Bold ?? false, options.FontSize, cell?.FontName);
                         var mpIndentOff = (cell?.Indent ?? 0) * avgCharWidth;
                         var mpAcctPrefixW = cell?.AccountingPrefix != null
-                            ? (float)MeasureHelveticaWidth(cell.AccountingPrefix, options.FontSize, bold: mpIsBold)
+                            ? MeasureCellTextWidth(cell.AccountingPrefix, options.FontSize, mpIsBold, cell.FontName)
                             : 0f;
                         var mpContentX = x + cellTextInset;
                         var mpContentWidth = Math.Max(1f, mpCellWidth - 2f * cellTextInset);
@@ -2096,7 +2149,7 @@ internal static class ExcelToPdfConverter
                                 float mpLineMaxWidth = 0;
                                 if (mpAlignment == "right" || mpAcctPrefixW > 0)
                                 {
-                                    var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize, bold: mpIsBold);
+                                    var tw = MeasureCellTextWidth(lines[lineIdx], options.FontSize, mpIsBold, cell?.FontName);
                                     textX = mpContentX + mpContentWidth - tw - mpIndentOff;
                                     if (mpAcctPrefixW > 0 && textX < mpContentX + mpAcctPrefixW)
                                     {
@@ -2106,7 +2159,7 @@ internal static class ExcelToPdfConverter
                                 }
                                 else if (mpAlignment == "center")
                                 {
-                                    var tw = (float)MeasureHelveticaWidth(lines[lineIdx], options.FontSize, bold: mpIsBold);
+                                    var tw = MeasureCellTextWidth(lines[lineIdx], options.FontSize, mpIsBold, cell?.FontName);
                                     textX = mpContentX + (mpContentWidth - tw) / 2f;
                                 }
                                 AddExcelText(currentPage!, lines[lineIdx], textX, cellY, options.FontSize, color,
@@ -2128,6 +2181,7 @@ internal static class ExcelToPdfConverter
 
                     if (linesRendered < maxLinesInRow)
                     {
+                        FlushCellBorders();
                         currentPage = doc.AddPage(pageWidth, pageHeight);
                         currentY = pageHeight - options.MarginTop;
                     }
@@ -2303,7 +2357,7 @@ internal static class ExcelToPdfConverter
                 // For accounting format, reserve space for the left-aligned prefix
                 // so the right-aligned number doesn't overlap it.
                 var acctPrefixWidth = cell?.AccountingPrefix != null
-                    ? (float)MeasureHelveticaWidth(cell.AccountingPrefix, cellFontSize, bold: isBold)
+                    ? MeasureCellTextWidth(cell.AccountingPrefix, cellFontSize, isBold, cell.FontName)
                     : 0f;
                 var contentX = x + cellTextInset;
                 var contentWidth = Math.Max(1f, cellWidth - 2f * cellTextInset);
@@ -2319,7 +2373,7 @@ internal static class ExcelToPdfConverter
                         // left-aligned prefix and the right-aligned number.
                         if (alignment == "right" || acctPrefixWidth > 0)
                         {
-                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize, bold: isBold);
+                            var textWidth = MeasureCellTextWidth(lines[lineIdx], cellFontSize, isBold, cell?.FontName);
                             textX = contentX + contentWidth - textWidth - indentOff;
                             // Clamp: don't start before the accounting prefix
                             if (acctPrefixWidth > 0 && textX < contentX + acctPrefixWidth)
@@ -2330,7 +2384,7 @@ internal static class ExcelToPdfConverter
                         }
                         else if (alignment == "center")
                         {
-                            var textWidth = (float)MeasureHelveticaWidth(lines[lineIdx], cellFontSize, bold: isBold);
+                            var textWidth = MeasureCellTextWidth(lines[lineIdx], cellFontSize, isBold, cell?.FontName);
                             textX = contentX + (contentWidth - textWidth) / 2f;
                         }
 
@@ -2415,6 +2469,8 @@ internal static class ExcelToPdfConverter
             }
             excelRowIndex++;
         }
+
+        FlushCellBorders();
 
         // Emit accumulated virtual overflow pages at the end (matching LibreOffice layout).
         if (accumulatedOverflowHeight > 0)
@@ -3952,6 +4008,13 @@ internal static class ExcelToPdfConverter
 
     private static void AddExcelText(PdfPage page, string text, float x, float y, float fontSize, PdfColor? color = null, (float, float, float, float)? clipRect = null, float? maxWidth = null, bool bold = false, bool italic = false, bool underline = false, float charSpacing = 0, float wordSpacing = 0, string? preferredFontName = null, float? underlineWidth = null, bool strikethrough = false)
     {
+        if (string.Equals(preferredFontName, "Calibri", StringComparison.OrdinalIgnoreCase) &&
+            text.Any(character => character > '\u00FF' && char.IsLetter(character)) &&
+            !PdfWriter.TryMeasurePreferredFontWidth(preferredFontName, text, fontSize, bold, italic, charSpacing, out _))
+        {
+            preferredFontName = null;
+        }
+
         if (!ContainsIndicText(text) || !TryRenderComplexScriptText(text, fontSize, color ?? PdfColor.Black, bold, italic, preferredFontName, maxWidth, out var png, out var widthPt, out var heightPt, out var baselineFromBottomPt))
         {
             page.AddText(text, x, y, fontSize, color, clipRect, maxWidth, bold, italic, underline, charSpacing, wordSpacing, preferredFontName, underlineWidth, strikethrough);
@@ -4306,11 +4369,30 @@ internal static class ExcelToPdfConverter
     /// </summary>
     private static float BorderStyleWidth(string style) => style switch
     {
-        "thick" => 1.5f,
-        "medium" or "mediumDashed" or "mediumDashDot" or "mediumDashDotDot" => 1f,
+        "thick" => 3f,
+        "medium" or "mediumDashed" or "mediumDashDot" or "mediumDashDotDot" => 2f,
+        "thin" => 1f,
         "dotted" or "hair" => 0.1f,
-        _ => 0.3f // thin, dashed, dashDot, dashDotDot, double, slantDashDot
+        _ => 0.3f // dashed, dashDot, dashDotDot, slantDashDot
     };
+
+    private static void AddCellBorder(PdfPage page, BorderSide side,
+        float x1, float y1, float x2, float y2, float scale)
+    {
+        var color = side.Color ?? new PdfColor(0f, 0f, 0f);
+        if (side.Style == "double")
+        {
+            var strokeWidth = Math.Max(0.08f, scale);
+            var offsetX = x1 == x2 ? strokeWidth : 0f;
+            var offsetY = y1 == y2 ? strokeWidth : 0f;
+            page.AddLine(x1 - offsetX, y1 - offsetY, x2 - offsetX, y2 - offsetY, color, strokeWidth);
+            page.AddLine(x1 + offsetX, y1 + offsetY, x2 + offsetX, y2 + offsetY, color, strokeWidth);
+            return;
+        }
+
+        var width = Math.Max(0.08f, BorderStyleWidth(side.Style) * scale);
+        page.AddLine(x1, y1, x2, y2, color, width, BorderDashPattern(side.Style, width));
+    }
 
     /// <summary>
     /// Maps OOXML border style names to PDF dash patterns.
@@ -4460,10 +4542,16 @@ internal static class ExcelToPdfConverter
         // This accounts for CJK characters being ~2× wider than Latin chars.
         var colMaxWidthPts = new float[maxCols];
 
-        foreach (var row in sheet.Rows)
+        var mergedOrigins = new HashSet<(int, int)>(sheet.MergedCells
+            .Where(merge => merge.EndCol > merge.StartCol)
+            .Select(merge => (merge.StartRow, merge.StartCol)));
+        for (var rowIndex = 0; rowIndex < sheet.Rows.Count; rowIndex++)
         {
+            var row = sheet.Rows[rowIndex];
             for (var col = 0; col < row.Count && col < maxCols; col++)
             {
+                if (mergedOrigins.Contains((rowIndex, col)))
+                    continue;
                 var w = MeasureStringWidth(row[col].Text, options.FontSize);
                 if (w > colMaxWidthPts[col]) colMaxWidthPts[col] = w;
             }

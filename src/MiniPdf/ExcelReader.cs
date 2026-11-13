@@ -51,7 +51,7 @@ internal static class ExcelReader
         var normalFontFamily = ReadNormalFontFamily(archive);
         var normalFontSize = ReadNormalFontSize(archive);
         var maxDigitWidthPx = ExcelSheet.LookupMaxDigitWidthPx(normalFontFamily, normalFontSize);
-        var fontStyles = ReadFontStyles(archive, themeColors);
+        var fontStyles = ReadFontStyles(archive, themeColors, normalFontFamily);
         var fillColors = ReadFillColors(archive, themeColors);
         var borders = ReadBorders(archive, themeColors);
         var numberFormats = ReadNumberFormats(archive);
@@ -87,7 +87,7 @@ internal static class ExcelReader
             var drawingShapes = ReadSheetShapes(archive, entry.FullName, themeColors);
             var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
             var mergedCells = ReadMergedCells(entry);
-            var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
+            var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry, normalFontFamily, normalFontSize);
             if (rows.Count >= 1000 && colWidths.Count == 0 && defaultColWidth <= 0f &&
                 Math.Abs(defaultRowHeight - 15f) < 0.001f)
             {
@@ -115,7 +115,7 @@ internal static class ExcelReader
                 var images = ReadSheetImages(archive, entry.FullName);
                 var (colWidths, defaultColWidth) = ReadColumnWidths(entry);
                 var mergedCells = ReadMergedCells(entry);
-                var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry);
+                var (rowHeights, defaultRowHeight, customHeightRows) = ReadRowHeights(entry, normalFontFamily, normalFontSize);
                 var pageSetup = ReadPageSetup(entry);
                 var ignoreInferredFitToPage = pageSetup.FitToPageInferred && rows.Count >= 1000 && colWidths.Count == 0 && defaultColWidth <= 0f;
                 sheets.Add(new ExcelSheet("Sheet1", rows, images, colWidths, defaultColWidth, mergedCells: mergedCells, rowHeights: rowHeights, defaultRowHeight: defaultRowHeight, customHeightRows: customHeightRows, isLandscape: pageSetup.IsLandscape, printScale: pageSetup.Scale, paperSize: ignoreInferredFitToPage && pageSetup.PaperSize == 1 ? 9 : pageSetup.PaperSize, marginLeftPt: pageSetup.MarginLeftPt, marginRightPt: pageSetup.MarginRightPt, marginTopPt: pageSetup.MarginTopPt, marginBottomPt: pageSetup.MarginBottomPt, fitToPage: ignoreInferredFitToPage ? false : pageSetup.FitToPage, fitToWidth: ignoreInferredFitToPage ? 0 : pageSetup.FitToWidth, fitToHeight: ignoreInferredFitToPage ? 0 : pageSetup.FitToHeight, horizontalCentered: pageSetup.HorizontalCentered, verticalCentered: pageSetup.VerticalCentered, maxDigitWidthPx: maxDigitWidthPx));
@@ -333,7 +333,7 @@ internal static class ExcelReader
             : $"{directory}/_rels/{fileName}.rels";
     }
 
-    private static List<FontStyleInfo> ReadFontStyles(ZipArchive archive, List<PdfColor> themeColors)
+    private static List<FontStyleInfo> ReadFontStyles(ZipArchive archive, List<PdfColor> themeColors, string? normalFontFamily)
     {
         var styles = new List<FontStyleInfo>();
         var entry = archive.GetEntry("xl/styles.xml");
@@ -364,7 +364,7 @@ internal static class ExcelReader
             }
 
             // Read font name
-            string? fontName = null;
+            var fontName = normalFontFamily;
             var nameEl = font.Element(ns + "name");
             if (nameEl != null)
                 fontName = nameEl.Attribute("val")?.Value;
@@ -2020,6 +2020,14 @@ internal static class ExcelReader
                 }
                 else
                 {
+                    var fontStyle = ResolveFontStyle(0, fontStyles, cellXfFontIndices);
+                    color = fontStyle.Color;
+                    fontSize = fontStyle.Size;
+                    bold = fontStyle.Bold;
+                    italic = fontStyle.Italic;
+                    underline = fontStyle.Underline;
+                    strikethrough = fontStyle.Strikethrough;
+                    fontName = fontStyle.FontName;
                     // Apply fill from row-level or column-level default style when cell has no explicit style.
                     // Priority: row default > column default.
                     if (rowDefaultFill != null)
@@ -3255,7 +3263,8 @@ internal static class ExcelReader
     /// Reads row heights from the sheet XML.
     /// Returns a dictionary of 0-based row index → height in points, plus the default row height.
     /// </summary>
-    private static (Dictionary<int, float> heights, float defaultHeight, HashSet<int> customHeightRows) ReadRowHeights(ZipArchiveEntry entry)
+    private static (Dictionary<int, float> heights, float defaultHeight, HashSet<int> customHeightRows) ReadRowHeights(
+        ZipArchiveEntry entry, string? normalFontFamily, float normalFontSize)
     {
         var heights = new Dictionary<int, float>();
         var customHeightRows = new HashSet<int>();
@@ -3277,6 +3286,15 @@ internal static class ExcelReader
             {
                 defaultHeight = parsed;
             }
+        }
+
+        // Automatic Calibri 11 rows use the Microsoft Excel print line height;
+        // custom sheet defaults and explicit row heights retain their authored size.
+        if (string.Equals(normalFontFamily, "Calibri", StringComparison.OrdinalIgnoreCase) &&
+            Math.Abs(normalFontSize - 11f) < 0.001f && Math.Abs(defaultHeight - 15f) < 0.001f &&
+            fmtPr?.Attribute("customHeight")?.Value is not "1" and not "true")
+        {
+            defaultHeight = 14.52f;
         }
 
         // Read explicit row heights (hidden rows get height 0)
@@ -4932,6 +4950,7 @@ internal sealed class ExcelSheet
         {
             baseMdw = fontName.Trim().ToLowerInvariant() switch
             {
+                "calibri" => 7.52f,
                 "century gothic" => 8.13f,
                 "franklin gothic medium" => 8.5f,
                 "franklin gothic book" => 8.2f,
@@ -4943,7 +4962,7 @@ internal sealed class ExcelSheet
                 "corbel" => 7.6f,
                 "times new roman" => 6.8f,
                 "consolas" or "courier new" => 7.3f,
-                _ => 7.378f, // Calibri / Arial / Aptos and other common fonts
+                _ => 7.378f, // Arial / Aptos and other common fonts
             };
         }
 
