@@ -196,6 +196,23 @@ Primary implementation evidence:
 - Go: [`xlsx.go`](minipdf-go/xlsx.go)
 - Python: [`xlsx.py`](minipdf-python/src/minipdf/xlsx.py)
 
+.NET resolves unnamed XLSX font families from the workbook's minor theme font,
+falling back to the first style font when no theme font is available. Explicit
+font families and each style's size and weight are preserved.
+.NET XLSX double cell borders render as two solid strokes with a clear gap,
+including print scaling and merged-cell continuations across pages. Adjacent
+single borders do not fill the gap on a shared double edge.
+Border conflict resolution is buffered per page to preserve low-memory
+conversion behavior.
+Automatic Calibri 11 row defaults use Excel's print line height; custom sheet
+defaults and explicitly sized rows preserve their authored heights.
+Calibri column widths use font-specific maximum-digit print metrics rather
+than the generic font calibration.
+Unsupported scripts retain Unicode font fallback instead of being forced into
+the Normal style's Calibri font. For charts anchored outside data columns,
+overflowing larger-font headings use spreadsheet default widths when widths
+are not explicit. Other chart sheets retain their existing content sizing.
+
 Java XLSX support is substantially broader than Java DOCX/PPTX support because
 it uses Apache POI and PDFBox. It should not be described as uniformly
 "text-only" across every Office format.
