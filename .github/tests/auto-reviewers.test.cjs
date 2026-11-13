@@ -23,7 +23,7 @@ function harness(options = {}) {
     notice: message => logs.push(message)
   };
   const requested = (options.requested ?? []).map(login => ({ login }));
-  const reviews = (options.reviewed ?? []).map(login => ({ user: { login } }));
+  const reviews = options.reviews ?? (options.reviewed ?? []).map(login => ({ user: { login } }));
   const batches = [];
   const pull = {
     state: 'open',
@@ -33,6 +33,8 @@ function harness(options = {}) {
     ...options.pull
   };
   const listReviews = async () => {};
+  const listRequestedReviewers = async () => ({ data: { users: requested.slice(0, 30) } });
+  const requestedPages = [];
   const github = {
     rest: {
       pulls: {
@@ -40,7 +42,7 @@ function harness(options = {}) {
           assert.ok(Number.isSafeInteger(params.pull_number));
           return { data: pull };
         },
-        listRequestedReviewers: async () => ({ data: { users: requested } }),
+        listRequestedReviewers,
         listReviews,
         requestReviewers: async ({ reviewers }) => {
           if (options.error) {
@@ -58,9 +60,19 @@ function harness(options = {}) {
         }
       }
     },
-    paginate: async (method, params) => {
-      assert.equal(method, listReviews);
+    paginate: async (method, params, map) => {
       assert.equal(params.per_page, 100);
+      if (method === listRequestedReviewers) {
+        assert.equal(typeof map, 'function');
+        const result = [];
+        for (let offset = 0; offset < requested.length || offset === 0; offset += params.per_page) {
+          const page = requested.slice(offset, offset + params.per_page);
+          requestedPages.push(page.length);
+          result.push(...map({ data: { users: page, teams: [] } }));
+        }
+        return result;
+      }
+      assert.equal(method, listReviews);
       return [...reviews];
     }
   };
@@ -68,7 +80,7 @@ function harness(options = {}) {
     github, customContext, core,
     { env: { TEAM_REVIEWERS: JSON.stringify(members), INPUT_PR_NUMBER: input } }
   );
-  return { run, logs, batches };
+  return { run, logs, batches, requestedPages };
 }
 
 test('team reader requires an explicit organization credential', async () => {
@@ -109,6 +121,21 @@ test('requests all twenty eligible members in batches of at most fifteen', async
   await h.run(members);
   assert.deepEqual(h.batches.map(batch => batch.length), [15, 5]);
   assert.deepEqual(h.batches.flat(), members);
+});
+
+test('initial and confirmation reads include every requested-reviewer page', async () => {
+  const requested = Array.from({ length: 130 }, (_, index) => `requested-${index}`);
+  const h = harness({ requested });
+  await h.run([...requested, 'new-member']);
+  assert.deepEqual(h.batches, [['new-member']]);
+  assert.deepEqual(h.requestedPages, [100, 30, 100, 31]);
+});
+
+test('deleted review users do not break exclusion or confirmation', async () => {
+  const h = harness({ reviews: [{ user: null }, { user: { login: 'reviewed' } }] });
+  await h.run(['reviewed', 'new-member']);
+  assert.deepEqual(h.batches, [['new-member']]);
+  assert.match(h.logs[0], /Requested 1/);
 });
 
 test('repeated events do not send duplicate review requests', async () => {

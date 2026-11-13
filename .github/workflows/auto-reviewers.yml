@@ -69,15 +69,19 @@ jobs:
               return;
             }
 
-            const { data: requested } = await github.rest.pulls.listRequestedReviewers(params);
+            const requested = await github.paginate(
+              github.rest.pulls.listRequestedReviewers,
+              { ...params, per_page: 100 },
+              response => response.data.users
+            );
             const reviews = await github.paginate(github.rest.pulls.listReviews, {
               ...params,
               per_page: 100
             });
             const excluded = new Set([
               pull.user.login,
-              ...requested.users.map(user => user.login),
-              ...reviews.map(review => review.user.login)
+              ...requested.map(user => user.login),
+              ...reviews.filter(review => review.user).map(review => review.user.login)
             ].map(login => login.toLowerCase()));
             const reviewers = JSON.parse(process.env.TEAM_REVIEWERS);
             const missing = [];
@@ -101,14 +105,18 @@ jobs:
               });
             }
 
-            const { data: updated } = await github.rest.pulls.listRequestedReviewers(params);
+            const updated = await github.paginate(
+              github.rest.pulls.listRequestedReviewers,
+              { ...params, per_page: 100 },
+              response => response.data.users
+            );
             const updatedReviews = await github.paginate(github.rest.pulls.listReviews, {
               ...params,
               per_page: 100
             });
             const confirmed = new Set([
-              ...updated.users.map(user => user.login),
-              ...updatedReviews.map(review => review.user.login)
+              ...updated.map(user => user.login),
+              ...updatedReviews.filter(review => review.user).map(review => review.user.login)
             ].map(login => login.toLowerCase()));
             const unconfirmed = missing.filter(login => !confirmed.has(login.toLowerCase()));
             if (unconfirmed.length > 0) {
