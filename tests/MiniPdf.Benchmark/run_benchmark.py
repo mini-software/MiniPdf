@@ -5,7 +5,8 @@ via MiniPdf and Microsoft 365 by default, compares the results, and produces a r
 This is the single entry point for the full "self-evolution" pipeline.
 
 Prerequisites:
-    pip install openpyxl pymupdf pywin32
+    pip install openpyxl Pillow pywin32
+    Java 11+ and the built PDFBox benchmark helper (see README.md)
     Microsoft 365 Excel installed (default reference engine)
     .NET 9 SDK (for MiniPdf)
 

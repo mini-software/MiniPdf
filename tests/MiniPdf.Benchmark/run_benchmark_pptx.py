@@ -3,7 +3,8 @@ Automated benchmark test for PPTX-to-PDF conversion: converts existing PPTX
 files to PDF via MiniPdf and LibreOffice, compares the results.
 
 Prerequisites:
-    pip install pymupdf Pillow
+    pip install Pillow
+    Java 11+ and the built PDFBox benchmark helper (see README.md)
     LibreOffice installed (for reference PDF generation)
     .NET 9 SDK (for MiniPdf)
 

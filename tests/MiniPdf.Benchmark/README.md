@@ -72,7 +72,7 @@ report, images, and heatmaps.
 
 ```bash
 # 1. Python 3.10+ & dependencies (pywin32 is required for Microsoft 365 references)
-pip install openpyxl pymupdf pywin32
+pip install openpyxl python-docx Pillow pywin32
 
 # 2. Desktop Microsoft Excel/Word/PowerPoint (primary references)
 
@@ -81,7 +81,50 @@ pip install openpyxl pymupdf pywin32
 #    or: winget install LibreOffice
 
 # 4. The toolchain required by the selected MiniPdf implementation
+
+# 5. Java 11+ on PATH, and Maven to build the shared PDFBox evaluator once
+mvn -f tests/MiniPdf.Benchmark/pdfbox/pom.xml package
 ```
+
+### PDFBox Evaluator and Score Migration
+
+The shared comparator uses Apache PDFBox 3.0.8 (Apache-2.0) for page counts,
+positioned text extraction, and RGB rasterization. PyMuPDF/MuPDF is no longer
+required by this pipeline. All six language benchmark entry points use this
+same evaluator. The helper is independent of the Java MiniPdf implementation.
+Rebuild it with the command above after changing its Java source or dependencies.
+The shaded helper preserves dependency LICENSE and NOTICE resources, including
+PDFBox's separately licensed resources; the complete artifact is not exclusively
+Apache-2.0. Keep those notices with any binary redistribution.
+Missing Java, an unbuilt helper, or PDF parsing/rendering failures stop the
+comparison explicitly; they do not produce text-only or raw-string fallback scores.
+
+The scoring formula is unchanged: 40% text, 40% visual, and 20% page-count match
+(the existing optional AI visual override is also unchanged). PDFBox and MuPDF
+can differ in antialiasing, font substitution, image dimensions, and extracted
+text boundaries. Consequently, scores can change even when candidate and reference
+PDFs are byte-for-byte unchanged. These changes do not demonstrate a MiniPdf
+rendering regression or improvement.
+
+Keep old reports separately and regenerate a complete baseline with PDFBox before
+using score deltas or the existing `MinimumScore` threshold as a regression gate.
+Do not lower thresholds automatically to compensate for an evaluator change.
+Each new JSON result contains `evaluator` metadata and Markdown reports display
+it. Filtered runs refuse to merge results from a different or unversioned
+evaluator. Report-only regeneration preserves the stored evaluator identity.
+Use the same Java version, operating system, and installed fonts for reproducible
+comparisons. The PDFBox version and normalization/scoring revision are recorded;
+the host font environment is not bundled.
+
+Backend and comparator integration tests (no PyMuPDF required):
+
+```powershell
+python -m unittest discover -s tests\MiniPdf.Benchmark -p test_pdfbox_backend.py -v
+```
+
+This migration covers the shared benchmark, not the standalone historical
+diagnostic scripts under `scripts/` that still import PyMuPDF. External reference
+tools, fonts, and their redistribution terms remain separate licensing concerns.
 
 ### One-Click Execution
 

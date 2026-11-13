@@ -5,7 +5,8 @@ converts them to PDF via MiniPdf and LibreOffice, compares the results.
 This mirrors the XLSX benchmark pipeline but for Word documents.
 
 Prerequisites:
-    pip install python-docx pymupdf Pillow pywin32
+    pip install python-docx Pillow pywin32
+    Java 11+ and the built PDFBox benchmark helper (see README.md)
     LibreOffice installed (for reference PDF generation)
     .NET 9 SDK (for MiniPdf)
 
