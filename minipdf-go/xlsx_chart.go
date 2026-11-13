@@ -29,9 +29,10 @@ type xlsxChart struct {
 
 type xlsxRelationshipsDocument struct {
 	Items []struct {
-		ID     string `xml:"Id,attr"`
-		Type   string `xml:"Type,attr"`
-		Target string `xml:"Target,attr"`
+		ID         string `xml:"Id,attr"`
+		Type       string `xml:"Type,attr"`
+		Target     string `xml:"Target,attr"`
+		TargetMode string `xml:"TargetMode,attr"`
 	} `xml:"Relationship"`
 }
 
@@ -54,6 +55,22 @@ type xlsxChartAnchor struct {
 			ID string `xml:"id,attr"`
 		} `xml:"graphic>graphicData>chart"`
 	} `xml:"graphicFrame"`
+	Picture *struct {
+		Fill struct {
+			Blip struct {
+				ID string `xml:"embed,attr"`
+			} `xml:"blip"`
+			Crop struct {
+				Left   int `xml:"l,attr"`
+				Right  int `xml:"r,attr"`
+				Top    int `xml:"t,attr"`
+				Bottom int `xml:"b,attr"`
+			} `xml:"srcRect"`
+		} `xml:"blipFill"`
+	} `xml:"pic"`
+	Client struct {
+		Print *bool `xml:"fPrintsWithSheet,attr"`
+	} `xml:"clientData"`
 }
 
 type xlsxDrawingDocument struct {
@@ -98,19 +115,19 @@ type xlsxChartDocument struct {
 	} `xml:"chart"`
 }
 
-func readXLSXCharts(files officePackage, worksheetName string, grid *xlsxGrid) ([]xlsxChart, error) {
+func readXLSXDrawing(files officePackage, worksheetName string) (string, xlsxDrawingDocument, error) {
 	relationshipsName := xlsxRelationshipPartName(worksheetName)
 	_, ok := files[relationshipsName]
 	if !ok {
-		return nil, nil
+		return "", xlsxDrawingDocument{}, nil
 	}
 	relationshipsData, err := files.read(relationshipsName)
 	if err != nil {
-		return nil, err
+		return "", xlsxDrawingDocument{}, err
 	}
 	var relationships xlsxRelationshipsDocument
 	if err := xml.Unmarshal(relationshipsData, &relationships); err != nil {
-		return nil, fmt.Errorf("parse %s: %w", relationshipsName, err)
+		return "", xlsxDrawingDocument{}, fmt.Errorf("parse %s: %w", relationshipsName, err)
 	}
 	drawingName := ""
 	for _, relationship := range relationships.Items {
@@ -120,12 +137,35 @@ func readXLSXCharts(files officePackage, worksheetName string, grid *xlsxGrid) (
 		}
 	}
 	if drawingName == "" {
-		return nil, nil
+		return "", xlsxDrawingDocument{}, nil
 	}
 
 	drawingData, err := files.read(drawingName)
 	if err != nil {
+		return "", xlsxDrawingDocument{}, err
+	}
+	var drawing xlsxDrawingDocument
+	if err := xml.Unmarshal(drawingData, &drawing); err != nil {
+		return "", xlsxDrawingDocument{}, fmt.Errorf("parse %s: %w", drawingName, err)
+	}
+	return drawingName, drawing, nil
+}
+
+func readXLSXCharts(files officePackage, worksheetName string, grid *xlsxGrid) ([]xlsxChart, error) {
+	drawingName, drawing, err := readXLSXDrawing(files, worksheetName)
+	if err != nil {
 		return nil, err
+	}
+	anchors := append(drawing.OneCell, drawing.TwoCell...)
+	hasChart := false
+	for _, anchor := range anchors {
+		if anchor.Frame.Reference.ID != "" {
+			hasChart = true
+			break
+		}
+	}
+	if !hasChart {
+		return nil, nil
 	}
 	drawingRelationshipsName := xlsxRelationshipPartName(drawingName)
 	drawingRelationshipsData, err := files.read(drawingRelationshipsName)
@@ -143,11 +183,6 @@ func readXLSXCharts(files officePackage, worksheetName string, grid *xlsxGrid) (
 		}
 	}
 
-	var drawing xlsxDrawingDocument
-	if err := xml.Unmarshal(drawingData, &drawing); err != nil {
-		return nil, fmt.Errorf("parse %s: %w", drawingName, err)
-	}
-	anchors := append(drawing.OneCell, drawing.TwoCell...)
 	charts := make([]xlsxChart, 0, len(anchors))
 	for _, anchor := range anchors {
 		chartName := chartParts[anchor.Frame.Reference.ID]
@@ -343,6 +378,11 @@ func renderXLSXCharts(page *PDFPage, grid xlsxGrid, rows, columns xlsxRange) {
 		bottom: grid.pageSize.Height - grid.margins.Top - bandHeight,
 	}
 	for _, chart := range grid.charts {
+		scale := grid.layoutScale()
+		chart.columnOffset *= scale
+		chart.rowOffset *= scale
+		chart.width *= scale
+		chart.height *= scale
 		chartLeft := grid.columnOffset(chart.anchorColumn) + chart.columnOffset
 		chartTop := grid.rowOffset(chart.anchorRow) + chart.rowOffset
 		if chartLeft >= bandLeft+bandWidth || chartLeft+chart.width <= bandLeft ||
