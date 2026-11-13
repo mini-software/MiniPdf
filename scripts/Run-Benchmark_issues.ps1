@@ -234,7 +234,7 @@ function Write-ComparisonManifest {
 # Step 0: Install Python dependencies
 if (-not $SkipInstall) {
     Write-Host "[Step 0] Installing Python dependencies..." -ForegroundColor Yellow
-    pip install openpyxl pymupdf python-docx Pillow pywin32 --quiet 2>$null
+    pip install openpyxl python-docx Pillow pywin32 --quiet 2>$null
     if ($LASTEXITCODE -ne 0) {
         Write-Host "  WARNING: pip install had issues. Continuing anyway..." -ForegroundColor DarkYellow
     } else {
