@@ -3,6 +3,7 @@ package minipdf
 import (
 	"archive/zip"
 	"bytes"
+	"encoding/xml"
 	"errors"
 	"strings"
 	"testing"
@@ -232,6 +233,261 @@ func TestConvertXLSXSkipsEmptyWorksheets(t *testing.T) {
 	}
 	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 2 {
 		t.Fatalf("layout-only workbook page count = %d, want 2", pages)
+	}
+}
+
+func TestConvertXLSXSkipsHiddenWorksheets(t *testing.T) {
+	sheet := func(text string) string {
+		return `<?xml version="1.0"?><worksheet><sheetData><row r="1">` +
+			`<c r="A1" t="inlineStr"><is><t>` + text + `</t></is></c></row></sheetData></worksheet>`
+	}
+	entries := map[string]string{
+		"xl/workbook.xml": `<?xml version="1.0"?><workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>` +
+			`<sheet name="Report" sheetId="1" r:id="rId1"/>` +
+			`<sheet name="Lookup" sheetId="2" state="hidden" r:id="rId2"/>` +
+			`<sheet name="Internal" sheetId="3" state="veryHidden" r:id="rId3"/>` +
+			`<sheet name="Summary" sheetId="4" state="visible" r:id="rId4"/>` +
+			`</sheets></workbook>`,
+		"xl/_rels/workbook.xml.rels": `<?xml version="1.0"?><Relationships>` +
+			`<Relationship Id="rId1" Type="worksheet" Target="worksheets/sheet1.xml"/>` +
+			`<Relationship Id="rId2" Type="worksheet" Target="worksheets/data.xml"/>` +
+			`<Relationship Id="rId3" Type="worksheet" Target="/xl/worksheets/sheet3.xml"/>` +
+			`<Relationship Id="rId4" Type="worksheet" Target="worksheets/sheet2.xml"/>` +
+			`</Relationships>`,
+		"xl/worksheets/sheet1.xml": sheet("Visible report"),
+		"xl/worksheets/data.xml":   sheet("Hidden lookup"),
+		"xl/worksheets/sheet3.xml": sheet("Very hidden internal"),
+		"xl/worksheets/sheet2.xml": sheet("Visible summary"),
+		"xl/worksheets/sheet5.xml": sheet("Orphan worksheet"),
+	}
+
+	for _, renderer := range []string{"text", "grid"} {
+		t.Run(renderer, func(t *testing.T) {
+			if renderer == "grid" {
+				entries["xl/styles.xml"] = `<styleSheet><cellXfs count="1"><xf/></cellXfs></styleSheet>`
+				entries["xl/worksheets/sheet1.xml"] = strings.Replace(
+					entries["xl/worksheets/sheet1.xml"], `</row>`,
+					`<c r="B1"><f>1+1</f></c></row>`, 1)
+				if !needsCalculatedXLSXGrid([]byte(entries["xl/worksheets/sheet1.xml"])) {
+					t.Fatal("fixture does not select the grid renderer")
+				}
+			}
+			pdf, err := ConvertBytesToPDF(officePackageBytes(t, entries))
+			assertPDFContains(t, pdf, err, "Visible report", "Visible summary")
+			for _, text := range []string{"Hidden lookup", "Very hidden internal", "Orphan worksheet"} {
+				if bytes.Contains(pdf, []byte(text)) {
+					t.Fatalf("PDF contains excluded worksheet text %q", text)
+				}
+			}
+			if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 2 {
+				t.Fatalf("page count = %d, want 2", pages)
+			}
+		})
+	}
+}
+
+func TestConvertXLSXSkipsEmptyTextPages(t *testing.T) {
+	tests := []struct {
+		name string
+		cell string
+	}{
+		{name: "empty rows", cell: "A"},
+		{name: "empty horizontal groups", cell: "J"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			input := officePackageBytes(t, map[string]string{
+				"xl/workbook.xml": `<workbook/>`,
+				"xl/worksheets/sheet1.xml": `<worksheet><sheetData>` +
+					`<row r="1"><c r="` + test.cell + `1" t="inlineStr"><is><t>First</t></is></c></row>` +
+					`<row r="101"><c r="` + test.cell + `101" t="inlineStr"><is><t>Middle</t></is></c></row>` +
+					`<row r="153"><c r="` + test.cell + `153" t="inlineStr"><is><t>Last</t></is></c></row>` +
+					`<row r="510"><c r="ZZ510" s="0"/></row>` +
+					`</sheetData></worksheet>`,
+			})
+			pdf, err := ConvertBytesToPDF(input)
+			assertPDFContains(t, pdf, err, "First", "Middle", "Last")
+			if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 3 {
+				t.Fatalf("page count = %d, want 3 nonempty pages", pages)
+			}
+		})
+	}
+}
+
+func TestTextPaginationPreservesSpacingWhenSkippingEmptyPages(t *testing.T) {
+	lines := make([]string, 510)
+	lines[0], lines[100], lines[152] = "First", "Middle", "Last"
+	for _, skipEmpty := range []bool{false, true} {
+		document := NewPDFDocument()
+		addTextPages(document, lines, PageSizeA4, Margins{}, true, skipEmpty)
+		pdf := document.Bytes()
+		wantPages := 11
+		if skipEmpty {
+			wantPages = 3
+		}
+		if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != wantPages {
+			t.Fatalf("skipEmpty=%v: pages = %d, want %d", skipEmpty, pages, wantPages)
+		}
+		assertPDFContains(t, pdf, nil, "54 787.89 Td", "54 757.89 Td", "54 712.89 Td")
+	}
+}
+
+func TestConvertXLSXRejectsMalformedWorkbookMetadata(t *testing.T) {
+	tests := []struct {
+		name string
+		part string
+		xml  string
+	}{
+		{
+			name: "workbook",
+			part: "xl/workbook.xml",
+			xml:  `<workbook><sheets></workbook>`,
+		},
+		{
+			name: "truncated workbook after visible sheet",
+			part: "xl/workbook.xml",
+			xml:  `<workbook><sheets><sheet name="Report" sheetId="1"/>`,
+		},
+		{
+			name: "relationships",
+			part: "xl/_rels/workbook.xml.rels",
+			xml:  `<Relationships><Relationship Id="rId1"></Relationships>`,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			entries := map[string]string{
+				"xl/workbook.xml":          `<workbook/>`,
+				"xl/worksheets/sheet1.xml": `<worksheet><sheetData/></worksheet>`,
+			}
+			entries[test.part] = test.xml
+			pdf, err := ConvertBytesToPDF(officePackageBytes(t, entries))
+			assertPackageErrorContains(t, err, "parse "+test.part+":")
+			var syntaxError *xml.SyntaxError
+			if !errors.As(err, &syntaxError) {
+				t.Fatalf("error = %v, want wrapped XML syntax error", err)
+			}
+			if len(pdf) != 0 {
+				t.Fatal("failed conversion returned PDF data")
+			}
+		})
+	}
+}
+
+func TestConvertXLSXResolvesHiddenWorksheetParts(t *testing.T) {
+	const (
+		visibleA = `<sheet name="A" sheetId="1" r:id="rId1"/>`
+		hiddenA  = `<sheet name="A" sheetId="1" state="hidden" r:id="rId1"/>`
+		hiddenB  = `<sheet name="B" sheetId="2" state="hidden" r:id="rId2"/>`
+		visibleB = `<sheet name="B" sheetId="2" r:id="rId2"/>`
+		first    = `<Relationship Id="rId1" Type="worksheet" Target="worksheets/sheet1.xml"/>`
+		second   = `<Relationship Id="rId2" Type="worksheet" Target="worksheets/sheet2.xml"/>`
+	)
+	tests := []struct {
+		name          string
+		sheets        string
+		relationships []string
+		parts         [2]string
+		present       []string
+		absent        []string
+		pages         int
+	}{
+		{
+			name:    "missing relationships map sheets to non-contiguous parts by position",
+			sheets:  hiddenA + visibleB,
+			parts:   [2]string{"sheet2.xml", "sheet3.xml"},
+			present: []string{"Second part"}, absent: []string{"First part"}, pages: 1,
+		},
+		{
+			name:    "missing relationships map sheets to custom part names by position",
+			sheets:  hiddenA + visibleB,
+			parts:   [2]string{"data.xml", "summary.xml"},
+			present: []string{"Second part"}, absent: []string{"First part"}, pages: 1,
+		},
+		{
+			name:    "missing relationships with more sheets than parts",
+			sheets:  visibleA + hiddenB + `<sheet name="C" sheetId="3"/>`,
+			present: []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
+		{
+			name:          "visible sheet whose target is not a worksheet part is kept",
+			sheets:        visibleA + hiddenB,
+			relationships: []string{`<Relationship Id="rId1" Type="worksheet" Target="workbook.xml"/>`, second},
+			present:       []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
+		{
+			name:    "missing relationships map sheets to parts by position",
+			sheets:  visibleA + hiddenB,
+			present: []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
+		{
+			name:          "hidden sheet with a dangling relationship id is not rendered",
+			sheets:        visibleA + `<sheet name="B" sheetId="2" state="hidden" r:id="rId9"/>`,
+			relationships: []string{`<Relationship Id="rId1" Type="worksheet" Target="worksheets/sheet2.xml"/>`},
+			present:       []string{"Second part"}, absent: []string{"First part"}, pages: 1,
+		},
+		{
+			name:          "visible sheet with a dangling relationship id is kept",
+			sheets:        `<sheet name="A" sheetId="1" r:id="rId9"/>` + hiddenB,
+			relationships: []string{second},
+			present:       []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
+		{
+			name:          "visible sheet whose target matches no part is kept",
+			sheets:        visibleA + hiddenB,
+			relationships: []string{`<Relationship Id="rId1" Type="worksheet" Target="worksheets/missing.xml"/>`, second},
+			present:       []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
+		{
+			name:          "relationship targets match part names case-insensitively",
+			sheets:        visibleA + hiddenB,
+			relationships: []string{first, `<Relationship Id="rId2" Type="worksheet" Target="worksheets/Sheet2.xml"/>`},
+			present:       []string{"First part"}, absent: []string{"Second part"}, pages: 1,
+		},
+		{
+			name:          "all sheets hidden produce one blank page",
+			sheets:        hiddenA + hiddenB,
+			relationships: []string{first, second},
+			absent:        []string{"First part", "Second part"}, pages: 1,
+		},
+		{
+			name:   "all sheets hidden without relationships produce one blank page",
+			sheets: hiddenA + hiddenB,
+			absent: []string{"First part", "Second part"}, pages: 1,
+		},
+		{
+			name:   "all sheets hidden with non-contiguous parts produce one blank page",
+			sheets: hiddenA + hiddenB,
+			parts:  [2]string{"sheet2.xml", "sheet3.xml"},
+			absent: []string{"First part", "Second part"}, pages: 1,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			parts := test.parts
+			if parts == [2]string{} {
+				parts = [2]string{"sheet1.xml", "sheet2.xml"}
+			}
+			entries := map[string]string{
+				"xl/workbook.xml": `<?xml version="1.0"?><workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>` +
+					test.sheets + `</sheets></workbook>`,
+				"xl/worksheets/" + parts[0]: `<?xml version="1.0"?><worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>First part</t></is></c></row></sheetData></worksheet>`,
+				"xl/worksheets/" + parts[1]: `<?xml version="1.0"?><worksheet><sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>Second part</t></is></c></row></sheetData></worksheet>`,
+			}
+			if test.relationships != nil {
+				entries["xl/_rels/workbook.xml.rels"] = `<?xml version="1.0"?><Relationships>` + strings.Join(test.relationships, "") + `</Relationships>`
+			}
+			pdf, err := ConvertBytesToPDF(officePackageBytes(t, entries))
+			assertPDFContains(t, pdf, err, test.present...)
+			for _, text := range test.absent {
+				if bytes.Contains(pdf, []byte(text)) {
+					t.Fatalf("PDF contains hidden worksheet text %q", text)
+				}
+			}
+			if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != test.pages {
+				t.Fatalf("page count = %d, want %d", pages, test.pages)
+			}
+		})
 	}
 }
 

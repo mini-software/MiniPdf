@@ -30,10 +30,11 @@ var defaultOfficePackageLimits = officePackageLimits{
 }
 
 type textPage struct {
-	lines   []string
-	size    PageSize
-	margins Margins
-	noWrap  bool
+	lines     []string
+	size      PageSize
+	margins   Margins
+	noWrap    bool
+	skipEmpty bool
 }
 
 func openOfficePackage(input []byte) (officePackage, error) {
@@ -137,12 +138,12 @@ func renderTextPages(pages []textPage, options ConversionOptions) []byte {
 		if options.Margins != nil {
 			margins = *options.Margins
 		}
-		addTextPages(document, sourcePage.lines, pageSize, margins, sourcePage.noWrap)
+		addTextPages(document, sourcePage.lines, pageSize, margins, sourcePage.noWrap, sourcePage.skipEmpty)
 	}
 	return document.BytesWithOptions(PDFSaveOptions{Compress: options.Compress})
 }
 
-func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, margins Margins, noWrap bool) {
+func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, margins Margins, noWrap, skipEmpty bool) {
 	const (
 		fontSize = 11.0
 		leading  = 15.0
@@ -162,14 +163,22 @@ func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, marg
 		wrapped = append(wrapped, "")
 	}
 
-	page := document.AddPage(pageSize.Width, pageSize.Height)
+	var page *PDFPage
+	if !skipEmpty {
+		page = document.AddPage(pageSize.Width, pageSize.Height)
+	}
 	y := pageSize.Height - margins.Top
 	for _, line := range wrapped {
 		if y < margins.Bottom {
-			page = document.AddPage(pageSize.Width, pageSize.Height)
+			page = nil
 			y = pageSize.Height - margins.Top
 		}
-		page.AddText(line, margins.Left, y, fontSize, PDFColorBlack, false)
+		if !skipEmpty || strings.TrimSpace(line) != "" {
+			if page == nil {
+				page = document.AddPage(pageSize.Width, pageSize.Height)
+			}
+			page.AddText(line, margins.Left, y, fontSize, PDFColorBlack, false)
+		}
 		y -= leading
 	}
 }

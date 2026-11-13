@@ -13,12 +13,15 @@ import (
 )
 
 type embeddedFont struct {
-	name        string
-	data        []byte
-	font        *sfnt.Font
-	runeToGlyph map[rune]sfnt.GlyphIndex
-	glyphToRune map[sfnt.GlyphIndex]rune
-	objectID    int
+	name            string
+	data            []byte
+	font            *sfnt.Font
+	runeToGlyph     map[rune]sfnt.GlyphIndex
+	glyphToRune     map[sfnt.GlyphIndex]rune
+	objectID        int
+	resource        string
+	advances        []float64
+	ascent, descent float64
 }
 
 func prepareEmbeddedFont(pages []*PDFPage) *embeddedFont {
@@ -38,7 +41,7 @@ func prepareEmbeddedFont(pages []*PDFPage) *embeddedFont {
 		for _, page := range pages {
 			for _, operation := range page.operations {
 				text, ok := operation.(textOperation)
-				if !ok || !candidate.canEncode(text.text) {
+				if !ok || text.embedded != nil || !candidate.canEncode(text.text) {
 					continue
 				}
 				candidate.collect(text.text)

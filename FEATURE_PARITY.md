@@ -173,17 +173,17 @@ spaces consistently for wrapping, run positioning, alignment, and run shading.
 | Feature | .NET | Rust | Java | Go | Python | Node.js |
 |---|---:|---:|---:|---:|---:|---:|
 | Shared/inline strings and scalar values | I | I | I | I | I | B |
-| Number/date format rendering | I | P | P | M | M | B |
+| Number/date format rendering | I | P | P | P | M | B |
 | Formula cached values | I | P | P | M | M | B |
-| Fonts, fills, borders, alignment | I | P | P | M | M | B |
+| Fonts, fills, borders, alignment | I | P | P | P | M | B |
 | Row heights and column widths | I | I | P | P | M | B |
 | Merged cells | I | I | I | M | M | B |
-| Hidden rows, columns, and sheets | I | P | P | M | M | B |
-| Print area and print titles | I | P | P | M | M | B |
+| Hidden rows, columns, and sheets | I | P | P | P | M | B |
+| Print area and print titles | I | P | P | P | M | B |
 | Paper size, margins, orientation | I | P | P | P | M | B |
-| Fit-to-page and print scale | I | P | P | M | M | B |
-| Conditional and table styles | P | P | P | M | M | B |
-| Raster images | I | P | P | M | M | B |
+| Fit-to-page and print scale | I | P | P | P | M | B |
+| Conditional and table styles | P | P | P | P | M | B |
+| Raster images | I | P | P | P | M | B |
 | VML/vector drawings | I | P | P | M | M | B |
 | Charts | P | M | M | M | M | B/M |
 
@@ -194,6 +194,8 @@ Primary implementation evidence:
 - Rust: [`xlsx.rs`](minipdf-rs/crates/minipdf/src/xlsx.rs)
 - Java: [`PoiXlsxRenderer.java`](minipdf-java/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/xlsx/PoiXlsxRenderer.java)
 - Go: [`xlsx.go`](minipdf-go/xlsx.go)
+  and [`xlsx_print.go`](minipdf-go/xlsx_print.go); explicit print areas select
+  grid rendering with repeated titles, hidden cells, scaling, and page breaks.
 - Python: [`xlsx.py`](minipdf-python/src/minipdf/xlsx.py)
 
 Java XLSX support is substantially broader than Java DOCX/PPTX support because
