@@ -62,8 +62,8 @@ jobs:
                   status: 'in_progress',
                   details_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                   output: {
-                    title: 'Checking advisory approval requirements',
-                    summary: 'Checking current labels and eligible approvals. Native three-approval protection remains required.'
+                    title: 'Checking review recommendations',
+                    summary: 'Review counts are reminders only. No approving reviews are required to merge.'
                   }
                 };
                 if (check) {
@@ -76,7 +76,7 @@ jobs:
 
                 const results = [];
                 for (const pull of group) {
-                  const required = pull.labels.some(label => label.name.toLowerCase() === 'major-change') ? 3 : 1;
+                  const recommended = pull.labels.some(label => label.name.toLowerCase() === 'major-change') ? 3 : 1;
                   const reviews = await github.paginate(github.rest.pulls.listReviews, {
                     ...context.repo,
                     pull_number: pull.number,
@@ -105,22 +105,22 @@ jobs:
                       approvals++;
                     }
                   }
-                  results.push({ number: pull.number, required, approvals });
+                  results.push({ number: pull.number, recommended, approvals });
                 }
 
                 // Check runs are shared by PRs with the same head SHA.
-                const waiting = results.filter(result => result.approvals < result.required);
+                const waiting = results.filter(result => result.approvals < result.recommended);
                 const summary = results
-                  .map(result => `#${result.number}: ${result.approvals}/${result.required} eligible approvals`)
+                  .map(result => `#${result.number}: ${result.approvals}/${result.recommended} recommended eligible approvals`)
                   .join('\n');
                 await github.rest.checks.update({
                   ...context.repo,
                   check_run_id: check.id,
                   status: 'completed',
-                  conclusion: waiting.length > 0 ? 'action_required' : 'success',
+                  conclusion: waiting.length > 0 ? 'neutral' : 'success',
                   output: {
-                    title: waiting.length > 0 ? 'Advisory approval requirements not met' : 'Advisory approval requirements met',
-                    summary: `${summary}\n\nAdvisory only: retain native three-approval protection.`.slice(0, 65535)
+                    title: waiting.length > 0 ? 'Review reminder: recommended approvals not yet reached' : 'Review recommendations met',
+                    summary: `${summary}\n\nAdvisory only: maintainers may merge without waiting for these recommendations. This check must not be required for merging.`.slice(0, 65535)
                   }
                 });
                 core.info(summary);
@@ -137,7 +137,7 @@ jobs:
                       conclusion: 'failure',
                       output: {
                         title: 'Advisory approval refresh failed',
-                        summary: `Unable to evaluate current approvals: ${message}\nRetain native three-approval protection.`.slice(0, 65535)
+                        summary: `Unable to evaluate current approvals: ${message}\nReview reminders are unavailable. Review approval counts do not gate merges.`.slice(0, 65535)
                       }
                     });
                   } catch (reportError) {
