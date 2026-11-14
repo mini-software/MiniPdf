@@ -71,7 +71,7 @@ Write-Host "============================================================`n" -For
 # Step 0: Install Python dependencies
 if (-not $SkipInstall) {
     Write-Host "[Step 0] Installing Python dependencies..." -ForegroundColor Yellow
-    & $PythonPath -m pip install python-docx pymupdf Pillow pywin32 --quiet 2>$null
+    & $PythonPath -m pip install python-docx Pillow pywin32 --quiet 2>$null
     if ($LASTEXITCODE -ne 0) {
         Write-Host "  WARNING: pip install had issues. Continuing anyway..." -ForegroundColor DarkYellow
     } else {

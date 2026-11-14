@@ -1,10 +1,504 @@
 using System.IO.Compression;
 using System.Text;
+using System.Xml.Linq;
 
 namespace MiniSoftware.Tests;
 
 public class ExcelToPdfConverterTests
 {
+    [Theory]
+    [InlineData("Calibri", false)]
+    [InlineData("Arial", false)]
+    [InlineData("Calibri", true)]
+    public void Convert_FontWithoutFamily_UsesWorkbookNormalFont(string normalFont, bool includeTheme)
+    {
+        using var excelStream = CreateSimpleExcel(new[] { new[] { "Company", "Explicit", "Normal" } },
+            columnWidths: new[] { 20f, 20f, 20f });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", $$"""
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <fonts count="3">
+                    <font><name val="{{normalFont}}"/><sz val="11"/></font>
+                    <font><b/><sz val="10"/></font>
+                    <font><name val="Verdana"/><sz val="12"/></font>
+                  </fonts>
+                  <cellXfs count="3">
+                    <xf fontId="0"/><xf fontId="1"><alignment horizontal="right"/></xf><xf fontId="2"/>
+                  </cellXfs>
+                </styleSheet>
+                """);
+            if (includeTheme)
+                AddEntry(archive, "xl/theme/theme1.xml", $$"""
+                    <a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                      <a:themeElements><a:fontScheme name="Test">
+                        <a:minorFont><a:latin typeface="{{normalFont}}"/></a:minorFont>
+                      </a:fontScheme></a:themeElements>
+                    </a:theme>
+                    """);
+            archive.GetEntry("xl/worksheets/sheet1.xml")!.Delete();
+            AddEntry(archive, "xl/worksheets/sheet1.xml", """
+                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <cols><col min="1" max="3" width="20" customWidth="1"/></cols>
+                  <sheetData><row r="1">
+                    <c r="A1" s="1" t="inlineStr"><is><t>Company</t></is></c>
+                    <c r="B1" s="2" t="inlineStr"><is><t>Explicit</t></is></c>
+                    <c r="C1" t="inlineStr"><is><t>Normal</t></is></c>
+                  </row></sheetData>
+                </worksheet>
+                """);
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        var blocks = Assert.Single(doc.Pages).TextBlocks;
+        var company = Assert.Single(blocks, block => block.Text == "Company");
+        Assert.Equal(normalFont, company.PreferredFontName);
+        Assert.Equal(10f, company.FontSize);
+        Assert.True(company.Bold);
+        var explicitFont = Assert.Single(blocks, block => block.Text == "Explicit");
+        Assert.Equal("Verdana", explicitFont.PreferredFontName);
+        var normal = Assert.Single(blocks, block => block.Text == "Normal");
+        Assert.Equal(normalFont, normal.PreferredFontName);
+        Assert.False(normal.Bold);
+        Assert.Equal(11f, normal.FontSize);
+        if (normalFont == "Calibri" &&
+            PdfWriter.TryMeasurePreferredFontWidth(normalFont, company.Text, company.FontSize, true, false, 0, out var width))
+            Assert.Equal(explicitFont.X - 3.96f, company.X + width, 2);
+    }
+
+    [Theory]
+    [InlineData("thin", 1f)]
+    [InlineData("medium", 2f)]
+    [InlineData("thick", 3f)]
+    public void Convert_SolidBorder_PreservesLineWeight(string style, float width)
+    {
+        using var excelStream = CreateSimpleExcel(new[] { new[] { "Border" } });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", $$"""
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <borders count="1"><border><bottom style="{{style}}"/></border></borders>
+                  <cellXfs count="1"><xf borderId="0"/></cellXfs>
+                </styleSheet>
+                """);
+            archive.GetEntry("xl/worksheets/sheet1.xml")!.Delete();
+            AddEntry(archive, "xl/worksheets/sheet1.xml", """
+                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <sheetData><row r="1">
+                    <c r="A1" s="0" t="inlineStr"><is><t>Border</t></is></c>
+                  </row></sheetData>
+                </worksheet>
+                """);
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        Assert.Equal(width, Assert.Single(Assert.Single(doc.Pages).LineBlocks).LineWidth);
+    }
+
+    [Fact]
+    public void Convert_MergedHeading_DoesNotInflateIndividualColumnWidths()
+    {
+        using var excelStream = CreateSimpleExcel(new[]
+        {
+            new[] { "A long heading spanning both columns", "" },
+            new[] { "Left", "Right" },
+        });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            var entry = archive.GetEntry("xl/worksheets/sheet1.xml")!;
+            XDocument worksheet;
+            using (var input = entry.Open())
+                worksheet = XDocument.Load(input);
+            var ns = worksheet.Root!.Name.Namespace;
+            worksheet.Root.Add(new XElement(ns + "mergeCells",
+                new XElement(ns + "mergeCell", new XAttribute("ref", "A1:B1"))));
+            entry.Delete();
+            AddEntry(archive, "xl/worksheets/sheet1.xml", worksheet.ToString());
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        var right = Assert.Single(Assert.Single(doc.Pages).TextBlocks, block => block.Text == "Right");
+        Assert.InRange(right.X, 100f, 115f);
+    }
+
+    [Theory]
+    [InlineData("top", 100)]
+    [InlineData("bottom", 100)]
+    [InlineData("left", 100)]
+    [InlineData("right", 100)]
+    [InlineData("top", 50)]
+    [InlineData("left", 50)]
+    public void Convert_DoubleBorder_RendersTwoScaledSolidStrokes(string side, int printScale)
+    {
+        using var excelStream = CreateSimpleExcel(new[] { new[] { "Total" } });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", $$"""
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <borders count="1"><border><{{side}} style="double"><color rgb="FFFF0000"/></{{side}}></border></borders>
+                  <cellXfs count="1"><xf borderId="0"/></cellXfs>
+                </styleSheet>
+                """);
+            archive.GetEntry("xl/worksheets/sheet1.xml")!.Delete();
+            AddEntry(archive, "xl/worksheets/sheet1.xml", $$"""
+                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <sheetData><row r="1"><c r="A1" s="0" t="inlineStr"><is><t>Total</t></is></c></row></sheetData>
+                  <pageSetup scale="{{printScale}}" paperSize="9"/>
+                </worksheet>
+                """);
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        var lines = Assert.Single(doc.Pages).LineBlocks;
+        Assert.Equal(2, lines.Count);
+        var scale = printScale / 100f;
+        Assert.All(lines, line =>
+        {
+            Assert.Equal(scale, line.LineWidth, 3);
+            Assert.Equal(new PdfColor(1f, 0f, 0f), line.Color);
+            Assert.Null(line.DashPattern);
+        });
+        if (side is "top" or "bottom")
+        {
+            Assert.All(lines, line => Assert.Equal(line.Y1, line.Y2));
+            Assert.Equal(lines[0].X1, lines[1].X1);
+            Assert.Equal(lines[0].X2, lines[1].X2);
+            Assert.Equal(2f * scale, Math.Abs(lines[0].Y1 - lines[1].Y1), 3);
+        }
+        else
+        {
+            Assert.All(lines, line => Assert.Equal(line.X1, line.X2));
+            Assert.Equal(lines[0].Y1, lines[1].Y1);
+            Assert.Equal(lines[0].Y2, lines[1].Y2);
+            Assert.Equal(2f * scale, Math.Abs(lines[0].X1 - lines[1].X1), 3);
+        }
+    }
+
+    [Theory]
+    [InlineData("top", "bottom")]
+    [InlineData("bottom", "top")]
+    [InlineData("left", "right")]
+    [InlineData("right", "left")]
+    public void Convert_DoubleBorder_TakesPrecedenceOverAdjacentThinBorder(string side, string opposite)
+    {
+        using var excelStream = CreateSimpleExcel(new[] { new[] { "Total", "Other" } }, columnWidths: new[] { 20f, 20f });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", $$"""
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <borders count="2">
+                    <border><{{opposite}} style="thin"/></border>
+                    <border><{{side}} style="double"/></border>
+                  </borders>
+                  <cellXfs count="2"><xf borderId="0"/><xf borderId="1"/></cellXfs>
+                </styleSheet>
+                """);
+            var firstStyle = side is "bottom" or "right" ? 1 : 0;
+            var secondStyle = 1 - firstStyle;
+            var cells = side is "top" or "bottom"
+                ? $"""<row r="1"><c r="A1" s="{firstStyle}" t="inlineStr"><is><t>First</t></is></c></row><row r="2"><c r="A2" s="{secondStyle}" t="inlineStr"><is><t>Second</t></is></c></row>"""
+                : $"""<row r="1"><c r="A1" s="{firstStyle}" t="inlineStr"><is><t>First</t></is></c><c r="B1" s="{secondStyle}" t="inlineStr"><is><t>Second</t></is></c></row>""";
+            archive.GetEntry("xl/worksheets/sheet1.xml")!.Delete();
+            AddEntry(archive, "xl/worksheets/sheet1.xml", $$"""
+                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <cols><col min="1" max="2" width="20" customWidth="1"/></cols>
+                  <sheetData>{{cells}}</sheetData>
+                </worksheet>
+                """);
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        var lines = Assert.Single(doc.Pages).LineBlocks;
+        Assert.Equal(2, lines.Count);
+        Assert.All(lines, line => Assert.Equal(1f, line.LineWidth));
+        var separation = side is "top" or "bottom"
+            ? Math.Abs(lines[0].Y1 - lines[1].Y1)
+            : Math.Abs(lines[0].X1 - lines[1].X1);
+        Assert.Equal(2f, separation, 3);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public void Convert_DoubleBordersAcrossPages_PreserveSharedEdges(bool lowMemory, bool manualBreaks)
+    {
+        using var excelStream = CreateSimpleExcel(
+            Enumerable.Range(1, 120).Select(row => new[] { $"Detail {row}" }).ToArray(),
+            columnWidths: new[] { 20f });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", """
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <borders count="1"><border><top style="double"/><bottom style="thin"/></border></borders>
+                  <cellXfs count="1"><xf borderId="0"/></cellXfs>
+                </styleSheet>
+                """);
+            var entry = archive.GetEntry("xl/worksheets/sheet1.xml")!;
+            XDocument worksheet;
+            using (var input = entry.Open())
+                worksheet = XDocument.Load(input);
+            var ns = worksheet.Root!.Name.Namespace;
+            foreach (var cell in worksheet.Descendants(ns + "c"))
+                cell.SetAttributeValue("s", 0);
+            if (manualBreaks)
+                worksheet.Root.Add(new XElement(ns + "rowBreaks",
+                    new XAttribute("count", 2), new XAttribute("manualBreakCount", 2),
+                    new XElement(ns + "brk", new XAttribute("id", 25), new XAttribute("man", 1)),
+                    new XElement(ns + "brk", new XAttribute("id", 75), new XAttribute("man", 1))));
+            entry.Delete();
+            AddEntry(archive, "xl/worksheets/sheet1.xml", worksheet.ToString());
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream,
+            new ExcelToPdfConverter.ConversionOptions { LowMemory = lowMemory });
+        Assert.True(doc.Pages.Count > 1);
+        Assert.Equal(120, doc.Pages.Sum(page => page.TextBlocks.Count));
+        Assert.All(doc.Pages, page =>
+        {
+            Assert.NotEmpty(page.TextBlocks);
+            Assert.Equal(2 * page.TextBlocks.Count + 1, page.LineBlocks.Count);
+            Assert.All(page.LineBlocks, line =>
+            {
+                Assert.Equal(line.Y1, line.Y2);
+                Assert.Equal(1f, line.LineWidth);
+                Assert.Null(line.DashPattern);
+            });
+        });
+        using var actual = new MemoryStream();
+        doc.Save(actual);
+        excelStream.Position = 0;
+        using var expected = ExcelToPdfConverter.Convert(excelStream);
+        using var expectedPdf = new MemoryStream();
+        expected.Save(expectedPdf);
+        Assert.Equal(expectedPdf.ToArray(), actual.ToArray());
+    }
+
+    [Theory]
+    [InlineData("Calibri", false, 15f, 14.52f)]
+    [InlineData("Calibri", true, 15f, 15f)]
+    [InlineData("Calibri", false, 20f, 20f)]
+    [InlineData("Arial", false, 15f, 15f)]
+    public void Convert_DefaultRowHeight_PreservesCustomDefaults(
+        string fontName, bool customHeight, float defaultHeight, float expectedHeight)
+    {
+        using var excelStream = CreateSimpleExcel(new[] { new[] { "First" }, new[] { "Second" } });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", $$"""
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <fonts count="1"><font><name val="{{fontName}}"/><sz val="11"/></font></fonts>
+                  <cellXfs count="1"><xf fontId="0"/></cellXfs>
+                </styleSheet>
+                """);
+            archive.GetEntry("xl/worksheets/sheet1.xml")!.Delete();
+            var height = defaultHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            AddEntry(archive, "xl/worksheets/sheet1.xml", $$"""
+                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <sheetFormatPr defaultRowHeight="{{height}}" customHeight="{{(customHeight ? 1 : 0)}}"/>
+                  <sheetData>
+                    <row r="1"><c r="A1" t="inlineStr"><is><t>First</t></is></c></row>
+                    <row r="2"><c r="A2" t="inlineStr"><is><t>Second</t></is></c></row>
+                  </sheetData>
+                </worksheet>
+                """);
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        var blocks = Assert.Single(doc.Pages).TextBlocks;
+        var first = Assert.Single(blocks, block => block.Text == "First");
+        var second = Assert.Single(blocks, block => block.Text == "Second");
+        Assert.Equal(expectedHeight, first.Y - second.Y, 3);
+    }
+
+    [Theory]
+    [InlineData(true, 2)]
+    [InlineData(false, 3)]
+    public void Convert_DoubleBorder_ResolvesOverlappingMergedEdges(bool mergeDouble, int expectedLines)
+    {
+        using var excelStream = CreateSimpleExcel(new[] { new[] { "First", "Second" } });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", """
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <borders count="2">
+                    <border><bottom style="thin"/></border>
+                    <border><top style="double"/></border>
+                  </borders>
+                  <cellXfs count="2"><xf borderId="0"/><xf borderId="1"/></cellXfs>
+                </styleSheet>
+                """);
+            var mergeRef = mergeDouble ? "A2:B2" : "A1:B1";
+            archive.GetEntry("xl/worksheets/sheet1.xml")!.Delete();
+            AddEntry(archive, "xl/worksheets/sheet1.xml", $$"""
+                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <cols><col min="1" max="2" width="20" customWidth="1"/></cols>
+                  <sheetData>
+                    <row r="1"><c r="A1" s="0" t="inlineStr"><is><t>First</t></is></c><c r="B1" s="0"/></row>
+                    <row r="2"><c r="A2" s="1" t="inlineStr"><is><t>Total</t></is></c><c r="B2" t="inlineStr"/></row>
+                  </sheetData>
+                  <mergeCells count="1"><mergeCell ref="{{mergeRef}}"/></mergeCells>
+                </worksheet>
+                """);
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        var lines = Assert.Single(doc.Pages).LineBlocks;
+        Assert.Equal(expectedLines, lines.Count);
+        var doubleLines = lines.OrderBy(line => line.Y1).ToArray();
+        Assert.Equal(2f, doubleLines[^1].Y1 - doubleLines[0].Y1, 3);
+        if (!mergeDouble)
+        {
+            var middle = doubleLines[1];
+            Assert.Equal(doubleLines[0].X2, middle.X1, 3);
+            Assert.True(middle.X2 > middle.X1);
+        }
+    }
+
+    [Fact]
+    public void Convert_CalibriColumnWidths_MatchExcelPrintMetrics()
+    {
+        using var excelStream = CreateSimpleExcel(new[] { new[] { "A", "B", "C" } },
+            columnWidths: new[] { 25f, 15f, 15f });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", """
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <fonts count="1"><font><name val="Calibri"/><sz val="11"/></font></fonts>
+                  <cellXfs count="1"><xf fontId="0"/></cellXfs>
+                </styleSheet>
+                """);
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        var blocks = Assert.Single(doc.Pages).TextBlocks;
+        var a = Assert.Single(blocks, block => block.Text == "A");
+        var b = Assert.Single(blocks, block => block.Text == "B");
+        var c = Assert.Single(blocks, block => block.Text == "C");
+        Assert.InRange(b.X - a.X, 140.65f, 141.45f);
+        Assert.InRange(c.X - b.X, 84.22f, 85.02f);
+    }
+
+    [Fact]
+    public void Convert_DoubleBorder_VerticalMergeContinuesAcrossPages()
+    {
+        using var excelStream = CreateSimpleExcel(new[] { new[] { "Total", "Detail" } });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", """
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <borders count="2"><border/><border><left style="double"/><right style="double"/></border></borders>
+                  <cellXfs count="2"><xf borderId="0"/><xf borderId="1"/></cellXfs>
+                </styleSheet>
+                """);
+            var rows = new StringBuilder();
+            for (var row = 1; row <= 80; row++)
+            {
+                rows.Append($"""<row r="{row}">""");
+                if (row == 1)
+                    rows.Append("""<c r="A1" s="1" t="inlineStr"><is><t>Total</t></is></c>""");
+                rows.Append($"""<c r="B{row}" t="inlineStr"><is><t>Detail {row}</t></is></c></row>""");
+            }
+            archive.GetEntry("xl/worksheets/sheet1.xml")!.Delete();
+            AddEntry(archive, "xl/worksheets/sheet1.xml", $$"""
+                <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <cols><col min="1" max="2" width="20" customWidth="1"/></cols>
+                  <sheetData>{{rows}}</sheetData>
+                  <mergeCells count="1"><mergeCell ref="A1:A80"/></mergeCells>
+                </worksheet>
+                """);
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        Assert.Equal(2, doc.Pages.Count);
+        Assert.All(doc.Pages, page =>
+        {
+            var lines = page.LineBlocks.OrderBy(line => line.X1).ToArray();
+            Assert.Equal(4, lines.Length);
+            Assert.All(lines, line =>
+            {
+                Assert.Equal(line.X1, line.X2);
+                Assert.Equal(1f, line.LineWidth);
+                Assert.Null(line.DashPattern);
+            });
+            Assert.Equal(2f, lines[1].X1 - lines[0].X1, 3);
+            Assert.Equal(2f, lines[3].X1 - lines[2].X1, 3);
+        });
+    }
+
+    [Fact]
+    public void Convert_DefaultCalibriFont_PreservesUnsupportedScriptFallback()
+    {
+        const string sample = "\u0E20\u0E32\u0E29\u0E32\u0E44\u0E17\u0E22";
+        using var excelStream = CreateSimpleExcel(new[] { new[] { "Label", sample } },
+            columnWidths: new[] { 20f, 30f });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", """
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <fonts count="1"><font><name val="Calibri"/><sz val="11"/></font></fonts>
+                  <cellXfs count="1"><xf fontId="0"/></cellXfs>
+                </styleSheet>
+                """);
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        var page = Assert.Single(doc.Pages);
+        var label = Assert.Single(page.TextBlocks, block => block.Text == "Label");
+        var script = Assert.Single(page.TextBlocks, block => block.Text == sample);
+        Assert.Equal("Calibri", label.PreferredFontName);
+        var supported = PdfWriter.TryMeasurePreferredFontWidth("Calibri", sample, 11f, false, false, 0f, out _);
+        Assert.Equal(supported ? "Calibri" : null, script.PreferredFontName);
+    }
+
+    [Theory]
+    [InlineData(0, false)]
+    [InlineData(3, true)]
+    public void Convert_ChartAnchorsOutsideData_UseDefaultWidths(int anchorCol, bool useDefaultWidths)
+    {
+        using var excelStream = CreateExcelWithBarChart(new[] { "Category" }, new[] { 140.0 });
+        using (var archive = new ZipArchive(excelStream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            AddEntry(archive, "xl/styles.xml", """
+                <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+                  <fonts count="2"><font><sz val="11"/></font><font><sz val="14"/></font></fonts>
+                  <cellXfs count="2"><xf fontId="0"/><xf fontId="1"/></cellXfs>
+                </styleSheet>
+                """);
+            var entry = archive.GetEntry("xl/worksheets/sheet1.xml")!;
+            XDocument worksheet;
+            using (var input = entry.Open())
+                worksheet = XDocument.Load(input);
+            var ns = worksheet.Root!.Name.Namespace;
+            worksheet.Descendants(ns + "sheetData").Single().Add(
+                new XElement(ns + "row", new XAttribute("r", 1),
+                    new XElement(ns + "c", new XAttribute("r", "A1"), new XAttribute("s", 1), new XAttribute("t", "inlineStr"),
+                        new XElement(ns + "is", new XElement(ns + "t", "A long overflowing worksheet heading")))),
+                new XElement(ns + "row", new XAttribute("r", 2),
+                    new XElement(ns + "c", new XAttribute("r", "B2"), new XAttribute("t", "inlineStr"),
+                        new XElement(ns + "is", new XElement(ns + "t", "Cell B2")))));
+            entry.Delete();
+            AddEntry(archive, "xl/worksheets/sheet1.xml", worksheet.ToString());
+            var drawingEntry = archive.GetEntry("xl/drawings/drawing1.xml")!;
+            XDocument drawing;
+            using (var input = drawingEntry.Open())
+                drawing = XDocument.Load(input);
+            var drawingNs = drawing.Root!.Name.Namespace;
+            drawing.Descendants(drawingNs + "from").Single().Element(drawingNs + "col")!.Value =
+                anchorCol.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            drawingEntry.Delete();
+            AddEntry(archive, "xl/drawings/drawing1.xml", drawing.ToString());
+        }
+        excelStream.Position = 0;
+        using var doc = ExcelToPdfConverter.Convert(excelStream);
+        var cell = Assert.Single(doc.Pages.SelectMany(page => page.TextBlocks), block => block.Text == "Cell B2");
+        if (useDefaultWidths)
+            Assert.InRange(cell.X, 103f, 104f);
+        else
+            Assert.True(cell.X > 150f);
+    }
+
     [Fact]
     public void Convert_SimpleExcel_ProducesValidPdf()
     {
