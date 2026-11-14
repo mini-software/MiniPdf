@@ -104,8 +104,8 @@ function harness(pulls, reviews = {}, options = {}) {
   return { run, writes, creates, runs, logs, errors, failed, permissionCalls };
 }
 
-test('ordinary advisory threshold is exactly one eligible approval', async () => {
-  for (const [reviews, expected] of [[[], 'action_required'], [[review(1, 'reviewer')], 'success']]) {
+test('ordinary recommendation is neutral at zero approvals and succeeds at one', async () => {
+  for (const [reviews, expected] of [[[], 'neutral'], [[review(1, 'reviewer')], 'success']]) {
     const h = harness([pull()], { 1: reviews });
     await h.run();
     assert.equal(h.writes[0].status, 'in_progress');
@@ -113,18 +113,22 @@ test('ordinary advisory threshold is exactly one eligible approval', async () =>
     assert.equal(h.writes.at(-1).conclusion, expected);
     assert.equal(h.writes.at(-1).name, 'Review approval policy');
     assert.match(h.writes.at(-1).output.summary, /Advisory only/);
+    assert.match(h.writes.at(-1).output.summary, /maintainers may merge without waiting/);
+    assert.deepEqual(h.failed, []);
   }
 });
 
-test('major-change advisory check fails at two and passes at three approvals', async () => {
+test('major-change recommendation stays neutral below three approvals', async () => {
   for (const count of [0, 1, 2, 3]) {
     const h = harness([pull(1, ['MAJOR-CHANGE'])], {
       1: Array.from({ length: count }, (_, index) => review(index + 1, `reviewer-${index}`))
     });
     await h.run();
-    assert.equal(h.writes.at(-1).conclusion, count === 3 ? 'success' : 'action_required');
+    assert.equal(h.writes.at(-1).conclusion, count === 3 ? 'success' : 'neutral');
+    assert.deepEqual(h.failed, []);
     if (count < 3) {
       assert.match(h.writes.at(-1).output.summary, new RegExp(`${count}/3`));
+      assert.match(h.writes.at(-1).output.title, /Review reminder/);
     }
   }
 });
@@ -176,7 +180,7 @@ test('a new approval after a change request is counted', async () => {
   assert.equal(h.writes.at(-1).conclusion, 'success');
 });
 
-test('a label change raises the requirement without trusting old success', async () => {
+test('a label change raises the recommendation to a neutral reminder', async () => {
   const current = pull();
   const h = harness([current], { 1: [review(1, 'reviewer')] });
   await h.run();
@@ -184,12 +188,12 @@ test('a label change raises the requirement without trusting old success', async
   current.labels.push({ name: 'major-change' });
   await h.run();
   assert.equal(h.writes.at(-2).status, 'in_progress');
-  assert.equal(h.writes.at(-1).conclusion, 'action_required');
+  assert.equal(h.writes.at(-1).conclusion, 'neutral');
   assert.match(h.writes.at(-1).output.summary, /1\/3/);
   assert.equal(h.creates.length, 1);
 });
 
-test('PRs sharing a SHA cannot overwrite a stricter PR status with ordinary success', async () => {
+test('PRs sharing a SHA preserve the higher recommendation without blocking', async () => {
   const h = harness([pull(1, [], 'shared'), pull(2, ['major-change'], 'shared')], {
     1: [review(1, 'one')],
     2: [review(2, 'one'), review(3, 'two')]
@@ -197,11 +201,12 @@ test('PRs sharing a SHA cannot overwrite a stricter PR status with ordinary succ
   await h.run();
   assert.equal(h.writes.length, 2);
   assert.equal(h.writes.at(-1).head_sha, 'shared');
+  assert.equal(h.writes.at(-1).conclusion, 'neutral');
   assert.match(h.writes.at(-1).output.summary, /#2: 2\/3/);
   assert.deepEqual(h.permissionCalls, ['one', 'two']);
 });
 
-test('all PRs sharing a SHA must satisfy their own approval requirements', async () => {
+test('all PRs sharing a SHA meeting recommendations produce success', async () => {
   const h = harness([pull(1, [], 'shared'), pull(2, ['major-change'], 'shared')], {
     1: [review(1, 'one')],
     2: [review(2, 'one'), review(3, 'two'), review(4, 'three')]
@@ -324,6 +329,20 @@ test('advisory workflow has only base-controlled triggers and no PR notifier', (
   assert.doesNotMatch(workflow, /actions\/checkout|\$\{\{[^}]*head\.(?:sha|ref)|download-artifact|secrets\.|pull_request_review:|workflow_run:|statuses: write|createCommitStatus/);
   assert.equal(existsSync(resolve(__dirname, '..', 'workflows', 'review-changed.yml')), false);
   const contributing = readFileSync(resolve(__dirname, '..', '..', 'CONTRIBUTING.md'), 'utf8');
-  assert.match(contributing, /Every PR targeting `main` must retain the native \*\*three-approval\*\* requirement/);
-  assert.match(contributing, /Do not use this advisory check to lower the native approval minimum to one/);
+  assert.match(contributing, /approval counts are \*\*reminders only\*\*, not merge requirements/);
+  assert.match(contributing, /approval minimum for `main` is \*\*zero\*\*/);
+  assert.match(contributing, /native `minimum_approvals` set to \*\*zero\*\*/);
+  assert.match(contributing, /Without `major-change`: \*\*one approval recommended\*\*/);
+  assert.match(contributing, /With `major-change`: \*\*three approvals recommended\*\*/);
+  for (const pattern of [
+    '.github/**', 'AGENTS.md', 'CONTRIBUTING.md', 'GOVERNANCE.md',
+    'SECURITY.md', 'LICENSE', 'MAINTAINERS.md', 'CODE_OF_CONDUCT.md'
+  ]) {
+    assert.ok(contributing.split(/\r?\n/).includes(pattern), `Document important path: ${pattern}`);
+  }
+  assert.match(contributing, /The label changes only the recommendation, not merge eligibility/);
+  assert.match(contributing, /empty\s+bypass list/);
+  assert.match(workflow, /No approving reviews are required to merge/);
+  assert.match(workflow, /conclusion: waiting.length > 0 \? 'neutral' : 'success'/);
+  assert.doesNotMatch(workflow, /action_required|native three-approval protection|Native rules require one approval/);
 });
