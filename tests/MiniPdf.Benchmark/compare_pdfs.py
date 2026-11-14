@@ -5,11 +5,11 @@ Produces a detailed comparison report including:
   - Text content diff (extracted text comparison)
   - Page count comparison
   - File size comparison
-  - Visual pixel diff (if pdf2image / Poppler is available)
+  - Visual pixel diff using Apache PDFBox
 
 Prerequisites:
-    pip install pymupdf   # for text extraction + rendering
-    pip install Pillow    # for heatmaps and composite images
+    Java 11+ and the built pdfbox/target/benchmark-pdfbox.jar helper
+    pip install Pillow    # for images, heatmaps and composites
 
 Usage:
     python compare_pdfs.py [--minipdf-dir ./minipdf_pdfs] [--reference-dir ./reference_pdfs] [--report-dir ./reports]
@@ -23,18 +23,12 @@ import json
 import os
 import re
 import sys
+from contextlib import ExitStack
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-# Try to import fitz (PyMuPDF) for text extraction and visual comparison
-try:
-    import fitz  # PyMuPDF
-    HAS_FITZ = True
-except ImportError:
-    HAS_FITZ = False
-    print("WARNING: PyMuPDF not installed. Install with: pip install pymupdf")
-    print("         Text extraction and visual comparison will be disabled.\n")
+from pdfbox_backend import EVALUATOR, PdfDocument, check_backend, extract_text
 
 # Try to import openai for AI-based visual comparison
 try:
@@ -326,82 +320,13 @@ def ai_compare_pages(img_minipdf: str, img_reference: str) -> dict:
         return {"error": str(e)}
 
 
-def extract_text_pymupdf(pdf_path: str) -> list[str]:
-    """Extract text from each page using PyMuPDF.
-    Groups spans at the same Y position (same visual row) into a single
-    space-joined line so that MiniPdf and LibreOffice outputs are comparable
-    regardless of whether each cell is a separate span or part of a row span."""
-    pages = []
-    doc = fitz.open(pdf_path)
-    for page in doc:
-        data = page.get_text("dict", sort=True)
-        spans = []
-        for block in data.get("blocks", []):
-            if block.get("type", 0) != 0:
-                continue
-            for line in block.get("lines", []):
-                for span in line.get("spans", []):
-                    text = span.get("text", "").strip()
-                    if text:
-                        # Use the text origin (baseline) Y instead of bbox top Y.
-                        # Different fonts (e.g. CJK vs Latin) report different
-                        # ascent metrics, making bbox Y inconsistent even when
-                        # the actual baseline is identical.
-                        y_key = span.get("origin", (span["bbox"][0], span["bbox"][1]))[1]
-                        spans.append((round(y_key, 1), span["bbox"][0], text))
-        # Sort by Y then X position
-        spans.sort()
-        # Group spans that share the same Y row (within 1.0 pt tolerance) into
-        # a single whitespace-separated line — this handles the structural
-        # difference between PDF renderers that emit one span per cell vs
-        # one span per row.
-        # Within each group we sort by X so that left-to-right column order is
-        # preserved even when spans from different renderers land at slightly
-        # different sub-pixel Y positions (< 1 pt apart).
-        lines = []
-        current_y = None
-        current_tokens: list[tuple[float, str]] = []  # (x, text)
-        for y, x, text in spans:
-            if current_y is None or abs(y - current_y) > 1.0:
-                if current_tokens:
-                    current_tokens.sort()
-                    lines.append(" ".join(t for _, t in current_tokens))
-                current_y = y
-                current_tokens = [(x, text)]
-            else:
-                current_tokens.append((x, text))
-        if current_tokens:
-            current_tokens.sort()
-            lines.append(" ".join(t for _, t in current_tokens))
-        pages.append("\n".join(lines))
-    doc.close()
-    return pages
-
-
-def extract_text_fallback(pdf_path: str) -> list[str]:
-    """Fallback: extract raw ASCII strings from PDF binary."""
-    with open(pdf_path, "rb") as f:
-        data = f.read()
-    # Very rough extraction: find text between BT..ET operators
-    text = data.decode("latin-1", errors="replace")
-    # Extract parenthesized strings (PDF text objects)
-    import re
-    strings = re.findall(r"\(([^)]*)\)", text)
-    return ["\n".join(strings)]
-
-
 def render_page_to_pixels(pdf_path: str, page_num: int, dpi: int = 150):
-    """Render a PDF page to a pixel map using PyMuPDF. Returns (width, height, samples)."""
-    doc = fitz.open(pdf_path)
-    if page_num >= len(doc):
-        doc.close()
-        return None
-    page = doc[page_num]
-    mat = fitz.Matrix(dpi / 72, dpi / 72)
-    pix = page.get_pixmap(matrix=mat, alpha=False)
-    result = (pix.width, pix.height, pix.samples)
-    doc.close()
-    return result
+    """Render a page as RGB with PDFBox; return None only for a missing page."""
+    with PdfDocument(pdf_path) as document:
+        if page_num >= document.page_count:
+            return None
+        pix = document.render(page_num, dpi)
+        return pix.width, pix.height, pix.samples
 
 
 def _aligned_rgb_images(pix1, pix2):
@@ -641,9 +566,6 @@ def save_visual_diff(
     max_compare_pages: int = 0,
 ):
     """Save visual diff images for each page."""
-    if not HAS_FITZ:
-        return []
-
     labels = labels or {}
     candidate_label = labels.get("candidate", "MiniPdf")
     reference_label = labels.get("reference", "LibreOffice Reference")
@@ -670,86 +592,62 @@ def save_visual_diff(
             os.remove(old)
 
     diff_images = []
-    doc1 = fitz.open(pdf1_path)
-    doc2 = fitz.open(pdf2_path)
-    doc3 = fitz.open(auxiliary_pdf_path) if auxiliary_pdf_path and os.path.isfile(auxiliary_pdf_path) else None
-    max_pages = max(len(doc1), len(doc2), len(doc3) if doc3 else 0)
-    if max_compare_pages > 0:
-        max_pages = min(max_pages, max_compare_pages)
-
-    for i in range(max_pages):
-        mat = fitz.Matrix(dpi / 72, dpi / 72)
-
-        if i < len(doc1):
-            pix1 = doc1[i].get_pixmap(matrix=mat, alpha=False)
-        else:
-            pix1 = None
-
-        if i < len(doc2):
-            pix2 = doc2[i].get_pixmap(matrix=mat, alpha=False)
-        else:
-            pix2 = None
-
-        pix3 = None
-        if doc3 and i < len(doc3):
-            pix3 = doc3[i].get_pixmap(matrix=mat, alpha=False)
-
-        # Save individual renderings
-        path1 = None
-        path2 = None
-        path3 = None
-
-        if pix1:
-            path1 = os.path.join(output_dir, f"{name}_p{i+1}_minipdf.png")
-
-        if pix2:
-            path2 = os.path.join(output_dir, f"{name}_p{i+1}_reference.png")
-
-        if pix3:
-            path3 = os.path.join(output_dir, f"{name}_p{i+1}_{auxiliary_slug}.png")
-
-        _save_normalized_pixmaps(
-            (pix1, pix2, pix3),
-            (path1, path2, path3),
+    with ExitStack() as documents:
+        doc1 = documents.enter_context(PdfDocument(pdf1_path))
+        doc2 = documents.enter_context(PdfDocument(pdf2_path))
+        doc3 = (
+            documents.enter_context(PdfDocument(auxiliary_pdf_path))
+            if auxiliary_pdf_path and os.path.isfile(auxiliary_pdf_path) else None
         )
+        max_pages = max(doc1.page_count, doc2.page_count, doc3.page_count if doc3 else 0)
+        if max_compare_pages > 0:
+            max_pages = min(max_pages, max_compare_pages)
 
-        entry = {
-            "page": i + 1,
-            "minipdf_img": f"{name}_p{i+1}_minipdf.png" if pix1 else None,
-            "reference_img": f"{name}_p{i+1}_reference.png" if pix2 else None,
-        }
-        if doc3 is not None:
-            entry["auxiliary_img"] = f"{name}_p{i+1}_{auxiliary_slug}.png" if pix3 else None
-        if heatmaps and pix1 and pix2:
-            heatmap_name = f"{name}_p{i+1}_heatmap.png"
-            heatmap_path = os.path.join(output_dir, heatmap_name)
-            heatmap_metrics = save_difference_heatmap(
-                (pix1.width, pix1.height, pix1.samples),
-                (pix2.width, pix2.height, pix2.samples),
-                heatmap_path,
-                threshold=heatmap_threshold,
-                gain=heatmap_gain,
+        for i in range(max_pages):
+            pix1 = doc1.render(i, dpi) if i < doc1.page_count else None
+            pix2 = doc2.render(i, dpi) if i < doc2.page_count else None
+            pix3 = doc3.render(i, dpi) if doc3 and i < doc3.page_count else None
+
+            path1 = os.path.join(output_dir, f"{name}_p{i+1}_minipdf.png") if pix1 else None
+            path2 = os.path.join(output_dir, f"{name}_p{i+1}_reference.png") if pix2 else None
+            path3 = os.path.join(output_dir, f"{name}_p{i+1}_{auxiliary_slug}.png") if pix3 else None
+            _save_normalized_pixmaps(
+                (pix1, pix2, pix3),
+                (path1, path2, path3),
             )
-            if heatmap_metrics:
-                entry["heatmap_img"] = heatmap_name
-                entry["heatmap_metrics"] = heatmap_metrics
-        if composite_output_dir:
-            engine_slugs = [slugify_label(candidate_label), slugify_label(reference_label)]
-            components = [(candidate_label, path1), (reference_label, path2)]
+
+            entry = {
+                "page": i + 1,
+                "minipdf_img": f"{name}_p{i+1}_minipdf.png" if pix1 else None,
+                "reference_img": f"{name}_p{i+1}_reference.png" if pix2 else None,
+            }
             if doc3 is not None:
-                engine_slugs.append(auxiliary_slug)
-                components.append((auxiliary_label, path3))
+                entry["auxiliary_img"] = f"{name}_p{i+1}_{auxiliary_slug}.png" if pix3 else None
+            if heatmaps and pix1 and pix2:
+                heatmap_name = f"{name}_p{i+1}_heatmap.png"
+                heatmap_path = os.path.join(output_dir, heatmap_name)
+                heatmap_metrics = save_difference_heatmap(
+                    (pix1.width, pix1.height, pix1.samples),
+                    (pix2.width, pix2.height, pix2.samples),
+                    heatmap_path,
+                    threshold=heatmap_threshold,
+                    gain=heatmap_gain,
+                )
+                if heatmap_metrics:
+                    entry["heatmap_img"] = heatmap_name
+                    entry["heatmap_metrics"] = heatmap_metrics
+            if composite_output_dir:
+                engine_slugs = [slugify_label(candidate_label), slugify_label(reference_label)]
+                components = [(candidate_label, path1), (reference_label, path2)]
+                if doc3 is not None:
+                    engine_slugs.append(auxiliary_slug)
+                    components.append((auxiliary_label, path3))
 
-            composite_name = f"{name}_p{i+1}_{'_vs_'.join(engine_slugs)}.png"
-            composite_path = os.path.join(composite_output_dir, composite_name)
-            if save_composite_image(components, composite_path):
-                entry["composite_img"] = composite_name
-        diff_images.append(entry)
-
-    doc1.close()
-    doc2.close()
-    if doc3:
-        doc3.close()
+                composite_name = f"{name}_p{i+1}_{'_vs_'.join(engine_slugs)}.png"
+                composite_path = os.path.join(composite_output_dir, composite_name)
+                if save_composite_image(components, composite_path):
+                    entry["composite_img"] = composite_name
+            diff_images.append(entry)
     return diff_images
 
 
@@ -856,6 +754,7 @@ def compare_single(
     """Compare a single pair of PDFs and return a detailed result."""
     result = {
         "name": name,
+        "evaluator": dict(EVALUATOR),
         "minipdf_exists": os.path.isfile(minipdf_path),
         "reference_exists": os.path.isfile(reference_path),
     }
@@ -883,29 +782,13 @@ def compare_single(
         print(f"  ⚠ PDF structure errors in {name}: {validity['errors'][:3]}")
 
     # Page counts
-    if HAS_FITZ:
-        doc_m = fitz.open(minipdf_path)
-        doc_r = fitz.open(reference_path)
-        result["minipdf_pages"] = len(doc_m)
-        result["reference_pages"] = len(doc_r)
-        doc_m.close()
-        doc_r.close()
-    else:
-        result["minipdf_pages"] = "?"
-        result["reference_pages"] = "?"
+    with PdfDocument(minipdf_path) as doc_m, PdfDocument(reference_path) as doc_r:
+        result["minipdf_pages"] = doc_m.page_count
+        result["reference_pages"] = doc_r.page_count
 
     # Text extraction and comparison
-    if HAS_FITZ:
-        try:
-            text_m = extract_text_pymupdf(minipdf_path)
-            text_r = extract_text_pymupdf(reference_path)
-        except Exception as e:
-            text_m = extract_text_fallback(minipdf_path)
-            text_r = extract_text_fallback(reference_path)
-            result["text_extract_warning"] = str(e)
-    else:
-        text_m = extract_text_fallback(minipdf_path)
-        text_r = extract_text_fallback(reference_path)
+    text_m = extract_text(minipdf_path)
+    text_r = extract_text(reference_path)
 
     if max_compare_pages > 0:
         text_m = text_m[:max_compare_pages]
@@ -964,15 +847,20 @@ def compare_single(
 
     # Visual comparison
     visual_scores = []
-    if HAS_FITZ:
+    with ExitStack() as score_documents:
+        doc_m = score_documents.enter_context(PdfDocument(minipdf_path))
+        doc_r = score_documents.enter_context(PdfDocument(reference_path))
         max_pages = max(result["minipdf_pages"], result["reference_pages"])
         if max_compare_pages > 0:
             max_pages = min(max_pages, max_compare_pages)
         for p in range(max_pages):
-            pix_m = render_page_to_pixels(minipdf_path, p)
-            pix_r = render_page_to_pixels(reference_path, p)
+            image_m = doc_m.render(p) if p < doc_m.page_count else None
+            image_r = doc_r.render(p) if p < doc_r.page_count else None
+            pix_m = (image_m.width, image_m.height, image_m.samples) if image_m else None
+            pix_r = (image_r.width, image_r.height, image_r.samples) if image_r else None
             score = pixel_diff_score(pix_m, pix_r)
             visual_scores.append(round(score, 4))
+        score_documents.close()
 
         result["visual_scores"] = visual_scores
         result["visual_avg"] = round(sum(visual_scores) / len(visual_scores), 4) if visual_scores else 0.0
@@ -1061,6 +949,14 @@ def generate_report(results: list[dict], report_dir: str, labels: Optional[dict]
     with open(md_path, "w", encoding="utf-8") as f:
         f.write(f"# {candidate_label} vs {reference_label} PDF Comparison Report\n\n")
         f.write(f"Generated: {datetime.now().isoformat()}\n\n")
+        evaluators = {
+            json.dumps(r.get("evaluator"), sort_keys=True)
+            for r in results
+        }
+        f.write("Evaluator metadata (legacy reports without metadata are unversioned):\n\n")
+        for evaluator in sorted(evaluators):
+            f.write(f"- `{evaluator}`\n")
+        f.write("\nScores from different evaluators are not directly comparable.\n\n")
 
         # Summary table
         f.write("## Summary\n\n")
@@ -1520,6 +1416,7 @@ def main():
         print("  3. python generate_reference_pdfs.py      (generate reference PDFs)")
         sys.exit(1)
 
+    check_backend()
     filtered_mode = bool(args.filter)
     existing_results_by_name = {}
     if filtered_mode and os.path.isfile(json_path):
@@ -1533,6 +1430,11 @@ def main():
             print(f"Filtered comparison mode: loaded {len(existing_results_by_name)} existing results to preserve.")
         except Exception as e:
             print(f"WARNING: Failed to load existing report for merge: {e}")
+    if any(r.get("evaluator") != EVALUATOR for r in existing_results_by_name.values()):
+        parser.error(
+            "Cannot merge filtered results from different evaluators. "
+            "Use a new report directory or rerun the complete comparison without --filter."
+        )
 
     results = []
     for case in sorted(cases, key=lambda c: natural_sort_key(c["name"])):

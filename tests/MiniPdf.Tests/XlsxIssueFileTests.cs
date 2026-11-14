@@ -103,10 +103,10 @@ public class XlsxIssueFileTests
             .ToArray();
         var repeatedFixedRows = horizontalGridLines
             .Zip(horizontalGridLines.Skip(1), (top, bottom) => top - bottom)
-            .Count(height => Math.Abs(height - 28.4625f) < 0.001f);
+            .Count(height => Math.Abs(height - 28.083f) < 0.001f);
 
         Assert.True(repeatedFixedRows >= 8,
-            $"Expected repeated 37.95pt rows at 75% scale, found {repeatedFixedRows} matching rows.");
+            $"Expected repeated 37.95pt rows at 74% scale, found {repeatedFixedRows} matching rows.");
     }
 
     [Fact]

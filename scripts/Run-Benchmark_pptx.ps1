@@ -48,7 +48,7 @@ Write-Host "============================================================`n" -For
 
 if (-not $SkipInstall) {
     Write-Host "[Step 0] Installing Python dependencies..." -ForegroundColor Yellow
-    pip install pymupdf Pillow --quiet 2>$null
+    pip install Pillow --quiet 2>$null
     if ($LASTEXITCODE -ne 0) {
         Write-Host "  WARNING: pip install had issues. Continuing anyway..." -ForegroundColor DarkYellow
     } else {
