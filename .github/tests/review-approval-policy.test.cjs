@@ -113,6 +113,7 @@ test('ordinary advisory threshold is exactly one eligible approval', async () =>
     assert.equal(h.writes.at(-1).conclusion, expected);
     assert.equal(h.writes.at(-1).name, 'Review approval policy');
     assert.match(h.writes.at(-1).output.summary, /Advisory only/);
+    assert.match(h.writes.at(-1).output.summary, /native file-based rules independently require one approval/);
   }
 });
 
@@ -324,6 +325,16 @@ test('advisory workflow has only base-controlled triggers and no PR notifier', (
   assert.doesNotMatch(workflow, /actions\/checkout|\$\{\{[^}]*head\.(?:sha|ref)|download-artifact|secrets\.|pull_request_review:|workflow_run:|statuses: write|createCommitStatus/);
   assert.equal(existsSync(resolve(__dirname, '..', 'workflows', 'review-changed.yml')), false);
   const contributing = readFileSync(resolve(__dirname, '..', '..', 'CONTRIBUTING.md'), 'utf8');
-  assert.match(contributing, /Every PR targeting `main` must retain the native \*\*three-approval\*\* requirement/);
-  assert.match(contributing, /Do not use this advisory check to lower the native approval minimum to one/);
+  assert.match(contributing, /Ordinary changes: at least \*\*one approval\*\*/);
+  assert.match(contributing, /Important file changes: at least \*\*three approvals from `core-reviewers`\*\*/);
+  for (const pattern of [
+    '.github/**', 'AGENTS.md', 'CONTRIBUTING.md', 'GOVERNANCE.md',
+    'SECURITY.md', 'LICENSE', 'MAINTAINERS.md', 'CODE_OF_CONDUCT.md'
+  ]) {
+    assert.ok(contributing.split(/\r?\n/).includes(pattern), `Document important path: ${pattern}`);
+  }
+  assert.match(contributing, /The label does not change GitHub's native file-based requirements/);
+  assert.match(contributing, /empty\s+bypass list/);
+  assert.match(workflow, /Native rules require one approval, or three core-reviewer approvals for important paths/);
+  assert.doesNotMatch(workflow, /retain native three-approval protection|Native three-approval protection remains required/);
 });
