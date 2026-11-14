@@ -63,7 +63,7 @@ jobs:
                   details_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                   output: {
                     title: 'Checking advisory approval requirements',
-                    summary: 'Checking current labels and eligible approvals. Native three-approval protection remains required.'
+                    summary: 'Checking label-based advisory approvals. Native rules require one approval, or three core-reviewer approvals for important paths.'
                   }
                 };
                 if (check) {
@@ -120,7 +120,7 @@ jobs:
                   conclusion: waiting.length > 0 ? 'action_required' : 'success',
                   output: {
                     title: waiting.length > 0 ? 'Advisory approval requirements not met' : 'Advisory approval requirements met',
-                    summary: `${summary}\n\nAdvisory only: retain native three-approval protection.`.slice(0, 65535)
+                    summary: `${summary}\n\nAdvisory only: native file-based rules independently require one approval, or three core-reviewer approvals for important paths.`.slice(0, 65535)
                   }
                 });
                 core.info(summary);
@@ -137,7 +137,7 @@ jobs:
                       conclusion: 'failure',
                       output: {
                         title: 'Advisory approval refresh failed',
-                        summary: `Unable to evaluate current approvals: ${message}\nRetain native three-approval protection.`.slice(0, 65535)
+                        summary: `Unable to evaluate current approvals: ${message}\nNative file-based approval requirements remain enforced independently.`.slice(0, 65535)
                       }
                     });
                   } catch (reportError) {
