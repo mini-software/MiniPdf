@@ -149,23 +149,43 @@ review requests fail the workflow explicitly.
 
 ### Approval Requirements
 
-Every PR targeting `main` must retain the native **three-approval** requirement.
-The automation reports these **advisory** thresholds:
+Review approval counts are **reminders only**, not merge requirements.
+Maintainers may merge PRs without waiting for approving reviews. The live native
+approval minimum for `main` is **zero**, including the extra-approval setting for
+unattributed changes, which is disabled.
 
-- Ordinary changes: at least **one approval** from someone other than the author.
-- Important changes with the `major-change` label: at least **three approvals**.
+The `core-reviewers` team remains an optional reviewer for these important paths,
+with native `minimum_approvals` set to **zero**:
+
+```text
+.github/**
+AGENTS.md
+CONTRIBUTING.md
+GOVERNANCE.md
+SECURITY.md
+LICENSE
+MAINTAINERS.md
+CODE_OF_CONDUCT.md
+```
+
+Reviewer invitations and Copilot review remain enabled. The automation reports
+these **label-based recommendations**:
+
+- Without `major-change`: **one approval recommended**.
+- With `major-change`: **three approvals recommended**.
 
 Approvals must come from users with Write or higher repository permissions.
 Invitations, comments, author approvals, bot reviews, and dismissed approvals do
 not count. A later approval or change request supersedes that user's earlier
-decision; a comment does not cancel an approval. Existing native protections
-still apply, including blocking unresolved change requests.
+decision; a comment does not cancel an approval. These counts inform maintainers
+but do not authorize or prevent a merge.
 
 Maintainers should add `major-change` before review for public API changes,
-architecture changes, breaking changes, governance changes, or other high-impact
-modifications. Do not remove the label merely to bypass the three-approval
-requirement. This is a project policy, not an ASF-wide requirement for every
-GitHub PR.
+architecture changes, breaking changes, or other high-impact modifications.
+The label changes only the recommendation, not merge eligibility. Important-file
+review requests are also optional; neither the label nor a matching path requires
+three approvals.
+This is a project policy, not an ASF-wide requirement for every GitHub PR.
 
 The [approval workflow](.github/workflows/review-approval-policy.yml) updates a
 **Review approval policy** check run for each head commit instead of repeatedly
@@ -176,22 +196,22 @@ refresh immediately. The workflow never checks out or executes PR code and does
 not require `CORE_REVIEWERS_TOKEN`.
 
 Maintainers can manually run **Review approval policy** after review changes.
-PRs sharing a head commit also share its check, so all such open, non-draft PRs
-must meet their individual advisory thresholds for the check to succeed.
-Failures are reported per head commit, set its check to failure when the API
-allows, and fail the workflow without preventing other commits from refreshing.
+PRs sharing a head commit also share its check. If any such PR has fewer than
+the recommended approvals, the check finishes with a **neutral** reminder, not
+`action_required` or failure. Meeting all recommendations produces success.
+Neither outcome is a merge gate. API and permission failures remain explicit:
+they fail the check and workflow without preventing other commits from refreshing.
+They must not be disguised as successful review evaluations.
 
-Do not use this advisory check to lower the native approval minimum to one.
-GitHub's `pull_request_review` workflow runs from the PR merge ref, which a PR
-can modify to disable dismissal notifications. It can also require maintainer
-approval for first-time fork workflows. The former notifier is therefore removed;
-scheduled reconciliation avoids relying on it but cannot eliminate stale results.
-Enforcing ordinary-one/major-three would require a separately deployed, trusted
-review-event service and its own validation before changing branch rules.
+Keep the **Review approval policy** check and reviewer-invitation workflow
+**optional**, not required status checks. Missing organization credentials can
+still make reviewer invitations fail; this is a configuration problem, not an
+approval requirement. Merge conflicts and any separately configured required
+checks must still be resolved.
 
-Retain the native three-approval requirement and the **Copilot review for default
-branch** ruleset's empty bypass list, Copilot review, deletion protection, and
-force-push protection. The advisory check does not replace GitHub's merge gate.
+Retain the **Copilot review for default branch** ruleset's pull-request requirement,
+empty bypass list, Copilot review, deletion protection, and force-push protection.
+Do not restore approval-count gates without an explicit maintainer decision.
 Automatic team invitations can be enabled independently after the reviewer
 workflow is merged into `main` and its dedicated secret is configured.
 
