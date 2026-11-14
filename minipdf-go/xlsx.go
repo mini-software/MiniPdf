@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
+	"io"
 	"strconv"
 	"strings"
 )
@@ -21,7 +22,11 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 	if len(worksheets) == 0 {
 		return nil, errorsNewMissingWorksheets()
 	}
-	styles, err := readXLSXStyles(files)
+	worksheets, printSettings, err := visibleXLSXWorksheets(files, worksheets)
+	if err != nil {
+		return nil, err
+	}
+	styles, differentialFills, err := readXLSXStyles(files)
 	if err != nil {
 		return nil, err
 	}
@@ -38,12 +43,18 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 			}
 		}
 		if needsGridRendering {
-			return renderXLSXWorksheets(files, worksheets, sharedStrings, styles, options)
+			return renderXLSXWorksheets(files, worksheets, sharedStrings, styles, differentialFills, options, printSettings)
 		}
 	}
-	pages := make([]textPage, 0, len(worksheets))
+	document := NewPDFDocument()
 	fallbackPageSize := PageSizeA4
 	for _, name := range worksheets {
+		if settings := printSettings[strings.ToLower(name)]; len(settings.areas) > 0 {
+			if err := renderXLSXWorksheet(document, files, name, sharedStrings, styles, differentialFills, options, settings); err != nil {
+				return nil, err
+			}
+			continue
+		}
 		worksheetXML, readErr := files.read(name)
 		if readErr != nil {
 			return nil, readErr
@@ -67,6 +78,13 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 		if options.PageSize != nil {
 			effectivePageSize = *options.PageSize
 		}
+		hasText := false
+		for _, line := range lines {
+			if strings.TrimSpace(line) != "" {
+				hasText = true
+				break
+			}
+		}
 		for _, group := range splitWorksheetColumnGroups(lines, 9) {
 			overflowPages := [][]string{group}
 			noWrap := false
@@ -76,14 +94,172 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 			}
 			for _, overflowPage := range overflowPages {
 				overflowPage = append([]string{""}, overflowPage...)
-				pages = append(pages, textPage{lines: overflowPage, size: pageSize, noWrap: noWrap})
+				addTextPages(document, overflowPage, effectivePageSize, Margins{}, noWrap, hasText)
 			}
 		}
 	}
-	if len(pages) == 0 {
-		pages = append(pages, textPage{size: fallbackPageSize})
+	if len(document.pages) == 0 {
+		if options.PageSize != nil {
+			fallbackPageSize = *options.PageSize
+		}
+		document.AddPage(fallbackPageSize.Width, fallbackPageSize.Height)
 	}
-	return renderTextPages(pages, options), nil
+	return document.BytesWithOptions(PDFSaveOptions{Compress: options.Compress}), nil
+}
+
+// visibleXLSXWorksheets returns the worksheet parts that Excel and LibreOffice
+// would print: those that belong to a sheet xl/workbook.xml does not mark
+// hidden or veryHidden.
+func visibleXLSXWorksheets(files officePackage, worksheets []string) ([]string, map[string]xlsxPrintSettings, error) {
+	const workbookName = "xl/workbook.xml"
+	if _, ok := files[workbookName]; !ok {
+		return worksheets, nil, nil
+	}
+	data, err := files.read(workbookName)
+	if err != nil {
+		return nil, nil, err
+	}
+	// Part names are case-insensitive, so targets are compared in lower case.
+	targets := make(map[string]string)
+	relationshipsName := xlsxRelationshipPartName(workbookName)
+	_, hasRelationships := files[relationshipsName]
+	if hasRelationships {
+		relationshipsData, readErr := files.read(relationshipsName)
+		if readErr != nil {
+			return nil, nil, readErr
+		}
+		var relationships xlsxRelationshipsDocument
+		if err := xml.Unmarshal(relationshipsData, &relationships); err != nil {
+			return nil, nil, fmt.Errorf("parse %s: %w", relationshipsName, err)
+		}
+		for _, relationship := range relationships.Items {
+			targets[relationship.ID] = strings.ToLower(xlsxResolveRelationshipTarget(workbookName, relationship.Target))
+		}
+	}
+	worksheetParts := make(map[string]bool, len(worksheets))
+	for _, name := range worksheets {
+		worksheetParts[strings.ToLower(name)] = true
+	}
+	visibleParts := make(map[string]bool)
+	hiddenParts := make(map[string]bool)
+	sheetCount := 0
+	var sheetParts []string
+	settingsByIndex := make(map[int]xlsxPrintSettings)
+	var sheetNames []string
+	date1904 := false
+	unresolvedVisibleSheet := false
+	decoder := xml.NewDecoder(bytes.NewReader(data))
+	for {
+		token, tokenErr := decoder.Token()
+		if tokenErr == io.EOF {
+			break
+		}
+		if tokenErr != nil {
+			return nil, nil, fmt.Errorf("parse %s: %w", workbookName, tokenErr)
+		}
+		start, ok := token.(xml.StartElement)
+		if !ok {
+			continue
+		}
+		if start.Name.Local == "workbookPr" {
+			if value := attrValue(start, "date1904"); value != "" {
+				date1904, err = strconv.ParseBool(value)
+				if err != nil {
+					return nil, nil, fmt.Errorf("parse %s: invalid date1904 %q", workbookName, value)
+				}
+			}
+		}
+		if start.Name.Local == "definedName" {
+			name := attrValue(start, "name")
+			if name != "_xlnm.Print_Area" && name != "_xlnm.Print_Titles" {
+				continue
+			}
+			index, indexErr := strconv.Atoi(attrValue(start, "localSheetId"))
+			if indexErr != nil || index < 0 {
+				return nil, nil, fmt.Errorf("parse %s: invalid localSheetId for %s", workbookName, name)
+			}
+			var value string
+			if err := decoder.DecodeElement(&value, &start); err != nil {
+				return nil, nil, fmt.Errorf("parse %s: %w", workbookName, err)
+			}
+			ranges, rangeErr := parseXLSXPrintRanges(value)
+			if rangeErr != nil {
+				return nil, nil, fmt.Errorf("parse %s %s: %w", workbookName, name, rangeErr)
+			}
+			settings := settingsByIndex[index]
+			if name == "_xlnm.Print_Area" {
+				settings.areas = ranges
+			} else {
+				for _, area := range ranges {
+					switch {
+					case area.startColumn == 1 && area.endColumn == 16384:
+						settings.rows = xlsxRange{start: area.startRow, end: area.endRow}
+					case area.startRow == 1 && area.endRow == 1048576:
+						settings.columns = xlsxRange{start: area.startColumn, end: area.endColumn}
+					default:
+						return nil, nil, fmt.Errorf("parse %s: print titles must be whole rows or columns", workbookName)
+					}
+				}
+			}
+			settingsByIndex[index] = settings
+			continue
+		}
+		if start.Name.Local != "sheet" {
+			continue
+		}
+		sheetCount++
+		sheetNames = append(sheetNames, attrValue(start, "name"))
+		state := attrValue(start, "state")
+		isHidden := state == "hidden" || state == "veryHidden"
+		var part string
+		if hasRelationships {
+			part = targets[attrValue(start, "id")]
+		} else if sheetCount <= len(worksheets) {
+			// Without workbook relationships, sheets map to the ordered
+			// worksheet parts by position.
+			part = strings.ToLower(worksheets[sheetCount-1])
+		}
+		sheetParts = append(sheetParts, part)
+		switch {
+		case isHidden:
+			hiddenParts[part] = true
+		case !worksheetParts[part]:
+			unresolvedVisibleSheet = true
+		default:
+			visibleParts[part] = true
+		}
+	}
+	// When every visible sheet resolves to a worksheet part, render exactly those
+	// parts so that a hidden sheet with a broken relationship is never printed.
+	// Otherwise only drop the parts known to be hidden, so no visible sheet is
+	// lost. A visible chartsheet resolves to no worksheet part and therefore
+	// selects the second mode.
+	keepVisibleOnly := hasRelationships && sheetCount > 0 && !unresolvedVisibleSheet
+	visible := make([]string, 0, len(worksheets))
+	for _, name := range worksheets {
+		key := strings.ToLower(name)
+		keep := !hiddenParts[key]
+		if keepVisibleOnly {
+			keep = visibleParts[key]
+		}
+		if keep {
+			visible = append(visible, name)
+		}
+	}
+	printSettings := make(map[string]xlsxPrintSettings)
+	for index, settings := range settingsByIndex {
+		settings.date1904 = date1904
+		if index < len(sheetNames) {
+			settings.sheetName = sheetNames[index]
+		}
+		if index >= len(sheetParts) {
+			return nil, nil, fmt.Errorf("parse %s: print settings refer to missing sheet %d", workbookName, index)
+		}
+		if part := sheetParts[index]; worksheetParts[part] {
+			printSettings[part] = settings
+		}
+	}
+	return visible, printSettings, nil
 }
 
 func limitWorksheet(lines []string, maxRows, maxColumns int) []string {

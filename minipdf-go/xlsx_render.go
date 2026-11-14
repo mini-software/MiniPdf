@@ -18,23 +18,29 @@ const (
 )
 
 type xlsxStyle struct {
-	font      xlsxFont
-	fill      *PDFColor
-	border    xlsxBorder
-	numberFmt int
-	align     string
-	vertical  string
+	font       xlsxFont
+	fill       *PDFColor
+	border     xlsxBorder
+	numberFmt  int
+	numberCode string
+	align      string
+	vertical   string
+	shrink     bool
+	padding    float64
 }
 
 type xlsxFont struct {
-	name  string
-	size  float64
-	color PDFColor
-	bold  bool
+	name     string
+	size     float64
+	color    PDFColor
+	bold     bool
+	italic   bool
+	embedded *embeddedFont
 }
 
 type xlsxBorder struct {
-	left, right, top, bottom float64
+	left, right, top, bottom                         float64
+	leftDouble, rightDouble, topDouble, bottomDouble bool
 }
 
 type xlsxCell struct {
@@ -43,6 +49,7 @@ type xlsxCell struct {
 	formula     string
 	style       int
 	numeric     bool
+	formatted   string
 }
 
 type xlsxMerge struct {
@@ -51,43 +58,56 @@ type xlsxMerge struct {
 }
 
 type xlsxGrid struct {
-	cells             map[[2]int]xlsxCell
-	columnWidths      map[int]float64
-	rowHeights        map[int]float64
-	merges            []xlsxMerge
-	charts            []xlsxChart
-	maxRow, maxColumn int
-	dimensionRow      int
-	dimensionColumn   int
-	defaultRowHeight  float64
-	pageSize          PageSize
-	margins           Margins
+	cells                                map[[2]int]xlsxCell
+	columnWidths                         map[int]float64
+	rowHeights                           map[int]float64
+	merges                               []xlsxMerge
+	charts                               []xlsxChart
+	pictures                             []xlsxPicture
+	horizontalCentered, verticalCentered bool
+	footerMargin                         float64
+	headerFooter                         xlsxHeaderFooter
+	conditionalFills                     []xlsxConditionalFormat
+	maxRow, maxColumn                    int
+	dimensionRow                         int
+	dimensionColumn                      int
+	defaultRowHeight                     float64
+	pageSize                             PageSize
+	margins                              Margins
+	hiddenRows                           map[int]bool
+	hiddenColumns                        map[int]bool
+	rowBreaks                            map[int]bool
+	columnBreaks                         map[int]bool
+	printLayout                          bool
+	printScale                           float64
+	fitToPage                            bool
+	fitWidth                             int
+	fitHeight                            int
+	overThenDown                         bool
 }
 
 type xlsxStylesDocument struct {
 	Fonts struct {
 		Items []struct {
-			Bold *struct{} `xml:"b"`
-			Name struct {
+			Bold   *struct{} `xml:"b"`
+			Italic *struct{} `xml:"i"`
+			Name   struct {
 				Value string `xml:"val,attr"`
 			} `xml:"name"`
 			Size struct {
 				Value float64 `xml:"val,attr"`
 			} `xml:"sz"`
-			Color struct {
-				RGB string `xml:"rgb,attr"`
-			} `xml:"color"`
+			Color xlsxColorXML `xml:"color"`
 		} `xml:"font"`
 	} `xml:"fonts"`
-	Fills struct {
+	NumberFormats struct {
 		Items []struct {
-			Pattern struct {
-				Type  string `xml:"patternType,attr"`
-				Color struct {
-					RGB string `xml:"rgb,attr"`
-				} `xml:"fgColor"`
-			} `xml:"patternFill"`
-		} `xml:"fill"`
+			ID   int    `xml:"numFmtId,attr"`
+			Code string `xml:"formatCode,attr"`
+		} `xml:"numFmt"`
+	} `xml:"numFmts"`
+	Fills struct {
+		Items []xlsxFillXML `xml:"fill"`
 	} `xml:"fills"`
 	Borders struct {
 		Items []struct {
@@ -114,9 +134,15 @@ type xlsxStylesDocument struct {
 			Alignment struct {
 				Horizontal string `xml:"horizontal,attr"`
 				Vertical   string `xml:"vertical,attr"`
+				Shrink     bool   `xml:"shrinkToFit,attr"`
 			} `xml:"alignment"`
 		} `xml:"xf"`
 	} `xml:"cellXfs"`
+	DifferentialFormats struct {
+		Items []struct {
+			Fill *xlsxFillXML `xml:"fill"`
+		} `xml:"dxf"`
+	} `xml:"dxfs"`
 }
 
 func needsCalculatedXLSXGrid(data []byte) bool {
@@ -142,23 +168,45 @@ func needsCalculatedXLSXGrid(data []byte) bool {
 	return formulaCount > 0
 }
 
-func readXLSXStyles(files officePackage) ([]xlsxStyle, error) {
+func readXLSXStyles(files officePackage) ([]xlsxStyle, []*PDFColor, error) {
 	if _, ok := files["xl/styles.xml"]; !ok {
-		return nil, nil
+		return nil, nil, nil
 	}
 	data, err := files.read("xl/styles.xml")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	var document xlsxStylesDocument
 	if err := xml.Unmarshal(data, &document); err != nil {
-		return nil, fmt.Errorf("parse xl/styles.xml: %w", err)
+		return nil, nil, fmt.Errorf("parse xl/styles.xml: %w", err)
+	}
+	theme, err := readXLSXTheme(files)
+	if err != nil {
+		return nil, nil, err
 	}
 	styles := make([]xlsxStyle, len(document.CellFormats.Items))
+	fonts := make(map[int]*embeddedFont)
+	type fontKey struct {
+		name         string
+		bold, italic bool
+	}
+	variants := make(map[fontKey]*embeddedFont)
+	for index, font := range document.Fonts.Items {
+		key := fontKey{strings.ToLower(font.Name.Value), font.Bold != nil, font.Italic != nil}
+		embedded, exists := variants[key]
+		if !exists {
+			embedded, err = readXLSXFont(font.Name.Value, key.bold, key.italic)
+			if err != nil {
+				return nil, nil, err
+			}
+			variants[key] = embedded
+		}
+		fonts[index] = embedded
+	}
 	for index, format := range document.CellFormats.Items {
 		style := xlsxStyle{
 			font: xlsxFont{size: 11, color: PDFColorBlack}, numberFmt: format.NumberFmt,
-			align: format.Alignment.Horizontal, vertical: format.Alignment.Vertical,
+			align: format.Alignment.Horizontal, vertical: format.Alignment.Vertical, shrink: format.Alignment.Shrink,
 		}
 		if format.FontID >= 0 && format.FontID < len(document.Fonts.Items) {
 			font := document.Fonts.Items[format.FontID]
@@ -167,16 +215,24 @@ func readXLSXStyles(files officePackage) ([]xlsxStyle, error) {
 				style.font.size = font.Size.Value
 			}
 			style.font.bold = font.Bold != nil
-			if color, ok := parseXLSXColor(font.Color.RGB); ok {
-				style.font.color = color
+			style.font.italic = font.Italic != nil
+			style.font.embedded = fonts[format.FontID]
+			color, err := resolveXLSXColor(font.Color, theme)
+			if err != nil {
+				return nil, nil, fmt.Errorf("parse xl/styles.xml font %d: %w", format.FontID, err)
+			}
+			if color != nil {
+				style.font.color = *color
 			}
 		}
 		if format.FillID >= 0 && format.FillID < len(document.Fills.Items) {
 			fill := document.Fills.Items[format.FillID].Pattern
 			if fill.Type == "solid" {
-				if color, ok := parseXLSXColor(fill.Color.RGB); ok {
-					style.fill = &color
+				color, err := resolveXLSXColor(fill.Foreground, theme)
+				if err != nil {
+					return nil, nil, fmt.Errorf("parse xl/styles.xml fill %d: %w", format.FillID, err)
 				}
+				style.fill = color
 			}
 		}
 		if format.BorderID >= 0 && format.BorderID < len(document.Borders.Items) {
@@ -184,11 +240,37 @@ func readXLSXStyles(files officePackage) ([]xlsxStyle, error) {
 			style.border = xlsxBorder{
 				left: borderWidth(border.Left.Style), right: borderWidth(border.Right.Style),
 				top: borderWidth(border.Top.Style), bottom: borderWidth(border.Bottom.Style),
+				leftDouble: border.Left.Style == "double", rightDouble: border.Right.Style == "double",
+				topDouble: border.Top.Style == "double", bottomDouble: border.Bottom.Style == "double",
 			}
 		}
 		styles[index] = style
+		for _, number := range document.NumberFormats.Items {
+			if number.ID == format.NumberFmt {
+				styles[index].numberCode = number.Code
+				break
+			}
+		}
 	}
-	return styles, nil
+	differentialFills := make([]*PDFColor, len(document.DifferentialFormats.Items))
+	for index, format := range document.DifferentialFormats.Items {
+		if format.Fill == nil {
+			continue
+		}
+		pattern := format.Fill.Pattern
+		if pattern.Type != "" && pattern.Type != "solid" {
+			continue
+		}
+		color := pattern.Background
+		if color.RGB == "" && color.Theme == nil {
+			color = pattern.Foreground
+		}
+		differentialFills[index], err = resolveXLSXColor(color, theme)
+		if err != nil {
+			return nil, nil, fmt.Errorf("parse xl/styles.xml differential fill %d: %w", index, err)
+		}
+	}
+	return styles, differentialFills, nil
 }
 
 func parseXLSXColor(value string) (PDFColor, bool) {
@@ -217,32 +299,88 @@ func borderWidth(style string) float64 {
 	}
 }
 
-func renderXLSXWorksheets(files officePackage, worksheetNames []string, sharedStrings []string, styles []xlsxStyle, options ConversionOptions) ([]byte, error) {
+func renderXLSXWorksheets(files officePackage, worksheetNames []string, sharedStrings []string, styles []xlsxStyle, differentialFills []*PDFColor, options ConversionOptions, printSettings map[string]xlsxPrintSettings) ([]byte, error) {
 	document := NewPDFDocument()
 	for _, name := range worksheetNames {
-		data, err := files.read(name)
-		if err != nil {
+		if err := renderXLSXWorksheet(document, files, name, sharedStrings, styles, differentialFills, options, printSettings[strings.ToLower(name)]); err != nil {
 			return nil, err
 		}
-		grid, err := readXLSXGrid(data, sharedStrings)
-		if err != nil {
-			return nil, fmt.Errorf("parse %s: %w", name, err)
-		}
-		grid.charts, err = readXLSXCharts(files, name, &grid)
-		if err != nil {
-			return nil, err
-		}
-		grid.applyOptions(options)
-		renderXLSXGrid(document, grid, styles)
 	}
 	return document.BytesWithOptions(PDFSaveOptions{Compress: options.Compress}), nil
+}
+
+func renderXLSXWorksheet(document *PDFDocument, files officePackage, name string, sharedStrings []string, styles []xlsxStyle, differentialFills []*PDFColor, options ConversionOptions, settings xlsxPrintSettings) error {
+	data, err := files.read(name)
+	if err != nil {
+		return err
+	}
+	grid, err := readXLSXGrid(data, sharedStrings)
+	if err != nil {
+		return fmt.Errorf("parse %s: %w", name, err)
+	}
+	grid.charts, err = readXLSXCharts(files, name, &grid)
+	if err != nil {
+		return err
+	}
+	grid.applyOptions(options)
+	if len(settings.areas) > 0 {
+		grid.pictures, err = readXLSXPictures(files, name, grid)
+		if err != nil {
+			return err
+		}
+		for key, cell := range grid.cells {
+			if cell.value != "" && cell.numeric {
+				style := styleAt(styles, cell.style)
+				cell.formatted, err = formatPrintedXLSXValue(cell.value, style.numberFmt, style.numberCode, settings.date1904)
+				if err != nil {
+					return fmt.Errorf("format %s cell %d/%d: %w", name, cell.row, cell.column, err)
+				}
+				grid.cells[key] = cell
+			}
+		}
+		if err := grid.prepareFooters(styles, settings.sheetName); err != nil {
+			return fmt.Errorf("parse %s footer: %w", name, err)
+		}
+		var scopes []xlsxMerge
+		for _, area := range settings.areas {
+			area = limitXLSXPrintArea(grid, area, options)
+			if area.endRow < area.startRow || area.endColumn < area.startColumn {
+				continue
+			}
+			scopes = append(scopes, area)
+			if settings.rows.start > 0 {
+				scopes = append(scopes, xlsxMerge{startRow: settings.rows.start, endRow: settings.rows.end, startColumn: area.startColumn, endColumn: area.endColumn})
+			}
+			if settings.columns.start > 0 {
+				scopes = append(scopes, xlsxMerge{startRow: area.startRow, endRow: area.endRow, startColumn: settings.columns.start, endColumn: settings.columns.end})
+			}
+			if settings.rows.start > 0 && settings.columns.start > 0 {
+				scopes = append(scopes, xlsxMerge{startRow: settings.rows.start, endRow: settings.rows.end, startColumn: settings.columns.start, endColumn: settings.columns.end})
+			}
+		}
+		styles, err = grid.applyConditionalFills(styles, differentialFills, scopes)
+		if err != nil {
+			return fmt.Errorf("render %s conditional fills: %w", name, err)
+		}
+		if err := renderXLSXPrintGrid(document, grid, styles, settings, options); err != nil {
+			return fmt.Errorf("render %s print area: %w", name, err)
+		}
+	} else {
+		renderXLSXGrid(document, grid, styles)
+	}
+	return nil
 }
 
 func readXLSXGrid(data []byte, sharedStrings []string) (xlsxGrid, error) {
 	grid := xlsxGrid{
 		cells: make(map[[2]int]xlsxCell), columnWidths: make(map[int]float64), rowHeights: make(map[int]float64),
 		defaultRowHeight: 15, pageSize: PageSizeA4, margins: Margins{Left: 54, Right: 54, Top: 72, Bottom: 72},
+		hiddenRows: make(map[int]bool), hiddenColumns: make(map[int]bool),
+		rowBreaks: make(map[int]bool), columnBreaks: make(map[int]bool),
+		printScale: 1, fitWidth: 1, fitHeight: 1,
+		footerMargin: 36,
 	}
+	breakKind := ""
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	for {
 		token, err := decoder.Token()
@@ -254,9 +392,41 @@ func readXLSXGrid(data []byte, sharedStrings []string) (xlsxGrid, error) {
 		}
 		start, ok := token.(xml.StartElement)
 		if !ok {
+			if end, ok := token.(xml.EndElement); ok && (end.Name.Local == "rowBreaks" || end.Name.Local == "colBreaks") {
+				breakKind = ""
+			}
 			continue
 		}
 		switch start.Name.Local {
+		case "printOptions":
+			grid.horizontalCentered = attrValue(start, "horizontalCentered") == "1" || attrValue(start, "horizontalCentered") == "true"
+			grid.verticalCentered = attrValue(start, "verticalCentered") == "1" || attrValue(start, "verticalCentered") == "true"
+		case "headerFooter":
+			if err := decoder.DecodeElement(&grid.headerFooter, &start); err != nil {
+				return xlsxGrid{}, err
+			}
+		case "conditionalFormatting":
+			var format xlsxConditionalFormat
+			if err := decoder.DecodeElement(&format, &start); err != nil {
+				return xlsxGrid{}, err
+			}
+			for _, reference := range strings.Fields(format.References) {
+				reference = strings.ReplaceAll(reference, "$", "")
+				if !strings.Contains(reference, ":") {
+					reference += ":" + reference
+				}
+				area, ok := parseXLSXMerge(reference)
+				endpoints := strings.Split(reference, ":")
+				if !ok || len(endpoints) != 2 || !xlsxConditionalReference.MatchString(endpoints[0]) ||
+					!xlsxConditionalReference.MatchString(endpoints[1]) || area.endRow > 1048576 || area.endColumn > 16384 {
+					return xlsxGrid{}, fmt.Errorf("invalid XLSX conditional formatting range %q", reference)
+				}
+				format.areas = append(format.areas, area)
+			}
+			if len(format.areas) == 0 {
+				return xlsxGrid{}, fmt.Errorf("missing XLSX conditional formatting range")
+			}
+			grid.conditionalFills = append(grid.conditionalFills, format)
 		case "dimension":
 			reference := attrValue(start, "ref")
 			parts := strings.Split(reference, ":")
@@ -269,11 +439,10 @@ func readXLSXGrid(data []byte, sharedStrings []string) (xlsxGrid, error) {
 			minimum, _ := strconv.Atoi(attrValue(start, "min"))
 			maximum, _ := strconv.Atoi(attrValue(start, "max"))
 			width, _ := strconv.ParseFloat(attrValue(start, "width"), 64)
-			if grid.dimensionColumn > 0 {
-				maximum = min(maximum, grid.dimensionColumn)
-			}
+			maximum = min(maximum, 16384)
 			for column := minimum; column <= maximum && column > 0; column++ {
 				grid.columnWidths[column] = width * xlsxColumnWidthPoints
+				grid.hiddenColumns[column] = attrValue(start, "hidden") == "1" || attrValue(start, "hidden") == "true"
 			}
 		case "row":
 			row, _ := strconv.Atoi(attrValue(start, "r"))
@@ -281,6 +450,7 @@ func readXLSXGrid(data []byte, sharedStrings []string) (xlsxGrid, error) {
 				grid.rowHeights[row] = height
 			}
 			grid.maxRow = max(grid.maxRow, row)
+			grid.hiddenRows[row] = attrValue(start, "hidden") == "1" || attrValue(start, "hidden") == "true"
 		case "c":
 			reference := attrValue(start, "r")
 			row, column := xlsxCellPosition(reference)
@@ -298,16 +468,55 @@ func readXLSXGrid(data []byte, sharedStrings []string) (xlsxGrid, error) {
 				grid.merges = append(grid.merges, merge)
 			}
 		case "pageMargins":
+			grid.footerMargin = inchesToPoints(attrValue(start, "footer"), 36)
 			grid.margins = Margins{
 				Left: inchesToPoints(attrValue(start, "left"), 54), Right: inchesToPoints(attrValue(start, "right"), 54),
 				Top: inchesToPoints(attrValue(start, "top"), 72), Bottom: inchesToPoints(attrValue(start, "bottom"), 72),
 			}
 		case "pageSetup":
+			grid.overThenDown = attrValue(start, "pageOrder") == "overThenDown"
+			if value := attrValue(start, "scale"); value != "" {
+				scale, err := strconv.Atoi(value)
+				if err != nil || (scale != 0 && scale < 10) || scale > 400 {
+					return xlsxGrid{}, fmt.Errorf("invalid XLSX print scale %q", value)
+				}
+				if scale > 0 {
+					grid.printScale = float64(scale) / 100
+				}
+			}
+			for _, setting := range []struct {
+				name   string
+				target *int
+			}{{"fitToWidth", &grid.fitWidth}, {"fitToHeight", &grid.fitHeight}} {
+				if value := attrValue(start, setting.name); value != "" {
+					count, err := strconv.Atoi(value)
+					if err != nil || count < 0 {
+						return xlsxGrid{}, fmt.Errorf("invalid XLSX %s %q", setting.name, value)
+					}
+					*setting.target = count
+				}
+			}
 			if attrValue(start, "paperSize") == "1" {
 				grid.pageSize = PageSizeLetter
 			}
 			if attrValue(start, "orientation") == "landscape" {
 				grid.pageSize.Width, grid.pageSize.Height = grid.pageSize.Height, grid.pageSize.Width
+			}
+		case "pageSetUpPr":
+			grid.fitToPage = attrValue(start, "fitToPage") == "1" || attrValue(start, "fitToPage") == "true"
+		case "rowBreaks", "colBreaks":
+			breakKind = start.Name.Local
+		case "brk":
+			if attrValue(start, "man") == "1" || attrValue(start, "man") == "true" {
+				index, err := strconv.Atoi(attrValue(start, "id"))
+				if err != nil || index < 0 {
+					return xlsxGrid{}, fmt.Errorf("invalid XLSX manual page break")
+				}
+				if breakKind == "rowBreaks" {
+					grid.rowBreaks[index] = true
+				} else if breakKind == "colBreaks" {
+					grid.columnBreaks[index] = true
+				}
 			}
 		}
 	}
@@ -457,20 +666,51 @@ func xlsxBands(count int, available float64, size func(int) float64) []xlsxRange
 }
 
 func (grid xlsxGrid) columnWidth(column int) float64 {
-	if width := grid.columnWidths[column]; width > 0 {
-		return width
+	if grid.printLayout && grid.hiddenColumns[column] {
+		return 0
 	}
-	return 8.43 * xlsxColumnWidthPoints
+	scale := grid.layoutScale()
+	if width := grid.columnWidths[column]; width > 0 && (grid.printLayout || grid.dimensionColumn == 0 || column <= grid.dimensionColumn) {
+		return width * scale
+	}
+	return 8.43 * xlsxColumnWidthPoints * scale
 }
 
 func (grid xlsxGrid) rowHeight(row int) float64 {
-	if height := grid.rowHeights[row]; height > 0 {
-		return height
+	if grid.printLayout && grid.hiddenRows[row] {
+		return 0
 	}
-	return grid.defaultRowHeight * xlsxDefaultRowHeightScale
+	scale := grid.layoutScale()
+	if height := grid.rowHeights[row]; height > 0 {
+		return height * scale
+	}
+	return grid.defaultRowHeight * xlsxDefaultRowHeightScale * scale
+}
+
+func (grid xlsxGrid) layoutScale() float64 {
+	if grid.printLayout {
+		return grid.printScale
+	}
+	return 1
 }
 
 func renderXLSXBand(page *PDFPage, grid xlsxGrid, styles []xlsxStyle, rows, columns xlsxRange) {
+	type cellText struct {
+		cell                xlsxCell
+		x, y, width, height float64
+		style               xlsxStyle
+	}
+	var textCells []cellText
+	paintCell := func(cell xlsxCell, x, y, width, height float64, style xlsxStyle, drawText bool) {
+		if grid.printLayout {
+			renderXLSXCell(page, cell, x, y, width, height, style, false)
+			if drawText && width > 0 && height > 0 {
+				textCells = append(textCells, cellText{cell: cell, x: x, y: y, width: width, height: height, style: style})
+			}
+		} else {
+			renderXLSXCell(page, cell, x, y, width, height, style, drawText)
+		}
+	}
 	xPositions := map[int]float64{columns.start: grid.margins.Left}
 	for column := columns.start; column <= columns.end; column++ {
 		xPositions[column+1] = xPositions[column] + grid.columnWidth(column)
@@ -494,10 +734,13 @@ func renderXLSXBand(page *PDFPage, grid xlsxGrid, styles []xlsxStyle, rows, colu
 		endColumn := min(merge.endColumn, columns.end)
 		startRow := max(merge.startRow, rows.start)
 		endRow := min(merge.endRow, rows.end)
-		renderXLSXCell(page, cell, xPositions[startColumn], yPositions[endRow+1], xPositions[endColumn+1]-xPositions[startColumn], yPositions[startRow]-yPositions[endRow+1], styleAt(styles, cell.style), merge.startColumn >= columns.start && merge.startColumn <= columns.end)
+		paintCell(cell, xPositions[startColumn], yPositions[endRow+1], xPositions[endColumn+1]-xPositions[startColumn], yPositions[startRow]-yPositions[endRow+1], grid.scaledStyle(styles, cell.style), merge.startColumn >= columns.start && merge.startColumn <= columns.end)
 	}
 	for row := rows.start; row <= rows.end; row++ {
 		for column := columns.start; column <= columns.end; column++ {
+			if grid.rowHeight(row) == 0 || grid.columnWidth(column) == 0 {
+				continue
+			}
 			if merged[[2]int{row, column}] {
 				continue
 			}
@@ -505,10 +748,34 @@ func renderXLSXBand(page *PDFPage, grid xlsxGrid, styles []xlsxStyle, rows, colu
 			if !exists {
 				continue
 			}
-			renderXLSXCell(page, cell, xPositions[column], yPositions[row+1], grid.columnWidth(column), grid.rowHeight(row), styleAt(styles, cell.style), true)
+			paintCell(cell, xPositions[column], yPositions[row+1], grid.columnWidth(column), grid.rowHeight(row), grid.scaledStyle(styles, cell.style), true)
 		}
 	}
+	for _, text := range textCells {
+		renderXLSXCellText(page, text.cell, text.x, text.y, text.width, text.height, text.style)
+	}
 	renderXLSXCharts(page, grid, rows, columns)
+	if grid.printLayout {
+		renderXLSXPictures(page, grid, rows, columns)
+	}
+}
+
+func (grid xlsxGrid) scaledStyle(styles []xlsxStyle, index int) xlsxStyle {
+	style := styleAt(styles, index)
+	if !grid.printLayout {
+		style.font.embedded = nil
+		style.font.italic = false
+		style.shrink = false
+	} else {
+		style.padding = 1.5 * grid.layoutScale()
+	}
+	scale := grid.layoutScale()
+	style.font.size *= scale
+	style.border.left *= scale
+	style.border.right *= scale
+	style.border.top *= scale
+	style.border.bottom *= scale
+	return style
 }
 
 func styleAt(styles []xlsxStyle, index int) xlsxStyle {
@@ -519,28 +786,60 @@ func styleAt(styles []xlsxStyle, index int) xlsxStyle {
 }
 
 func renderXLSXCell(page *PDFPage, cell xlsxCell, x, y, width, height float64, style xlsxStyle, drawText bool) {
+	if width <= 0 || height <= 0 {
+		return
+	}
 	if style.fill != nil {
 		page.AddRect(x, y, width, height, *style.fill)
 	}
 	if style.border.left > 0 {
-		page.AddLine(x, y, x, y+height, PDFColorBlack, style.border.left)
+		drawXLSXBorder(page, x, y, x, y+height, style.border.left, style.border.leftDouble)
 	}
 	if style.border.right > 0 {
-		page.AddLine(x+width, y, x+width, y+height, PDFColorBlack, style.border.right)
+		drawXLSXBorder(page, x+width, y, x+width, y+height, style.border.right, style.border.rightDouble)
 	}
 	if style.border.top > 0 {
-		page.AddLine(x, y+height, x+width, y+height, PDFColorBlack, style.border.top)
+		drawXLSXBorder(page, x, y+height, x+width, y+height, style.border.top, style.border.topDouble)
 	}
 	if style.border.bottom > 0 {
-		page.AddLine(x, y, x+width, y, PDFColorBlack, style.border.bottom)
+		drawXLSXBorder(page, x, y, x+width, y, style.border.bottom, style.border.bottomDouble)
 	}
 	if !drawText || cell.value == "" {
 		return
 	}
+	renderXLSXCellText(page, cell, x, y, width, height, style)
+}
+
+func drawXLSXBorder(page *PDFPage, x1, y1, x2, y2, width float64, double bool) {
+	if !double {
+		page.AddLine(x1, y1, x2, y2, PDFColorBlack, width)
+		return
+	}
+	offset := width / 3
+	if x1 == x2 {
+		page.AddLine(x1-offset, y1, x2-offset, y2, PDFColorBlack, offset)
+		page.AddLine(x1+offset, y1, x2+offset, y2, PDFColorBlack, offset)
+	} else {
+		page.AddLine(x1, y1-offset, x2, y2-offset, PDFColorBlack, offset)
+		page.AddLine(x1, y1+offset, x2, y2+offset, PDFColorBlack, offset)
+	}
+}
+
+func renderXLSXCellText(page *PDFPage, cell xlsxCell, x, y, width, height float64, style xlsxStyle) {
+	if cell.value == "" {
+		return
+	}
 	text := formatXLSXValue(cell.value, cell.numeric, style.numberFmt)
+	if cell.formatted != "" {
+		text = cell.formatted
+	}
 	fontSize := style.font.size
 	horizontalScale := 100.0
-	if strings.EqualFold(style.font.name, "Calibri") {
+	embedded := style.font.embedded
+	if embedded != nil && !embedded.canEncode(text) {
+		embedded = nil
+	}
+	if embedded == nil && strings.EqualFold(style.font.name, "Calibri") {
 		fontSize *= calibriToHelveticaFontScale
 		horizontalScale = calibriRegularWidthScale
 		if style.font.bold {
@@ -548,24 +847,45 @@ func renderXLSXCell(page *PDFPage, cell xlsxCell, x, y, width, height float64, s
 		}
 	}
 	textWidth := measureHelveticaText(text, fontSize, horizontalScale, style.font.bold)
-	textX := x + 2
+	if embedded != nil {
+		textWidth = measureXLSXFont(text, fontSize, embedded)
+	}
+	padding := style.padding
+	if padding == 0 {
+		padding = 2
+	}
+	if style.shrink && textWidth > width-2*padding && width > 2*padding {
+		ratio := (width - 2*padding) / textWidth
+		fontSize *= ratio
+		textWidth *= ratio
+	}
+	textX := x + padding
 	switch style.align {
 	case "center":
 		textX = x + (width-textWidth)/2
 	case "right":
-		textX = x + width - textWidth - 2
+		textX = x + width - textWidth - padding
+	case "left":
+		textX = x + padding
 	default:
 		if cell.numeric {
-			textX = x + width - textWidth - 2
+			textX = x + width - textWidth - padding
 		}
 	}
 	textY := y + fontSize*helveticaBaselineRatio
+	if embedded != nil {
+		textY = y + fontSize*embedded.descent
+	}
 	if style.vertical == "center" {
 		textY = y + (height-fontSize)/2
 	} else if style.vertical == "top" {
 		textY = y + height - fontSize
+		if embedded != nil {
+			textY = y + height - fontSize*embedded.ascent
+		}
 	}
-	page.addScaledText(text, textX, textY, fontSize, horizontalScale, style.font.color, style.font.bold)
+	page.operations = append(page.operations, textOperation{text: text, x: textX, y: textY, fontSize: fontSize,
+		horizontalScale: horizontalScale, color: style.font.color, bold: style.font.bold, italic: style.font.italic, embedded: embedded})
 }
 
 func measureHelveticaText(text string, fontSize, horizontalScale float64, bold bool) float64 {
