@@ -124,12 +124,65 @@ minipdf data.xlsx --max-rows 100 --max-columns 12 --landscape
 | PPTX to PDF | Basic slide text |
 | PDF output | Dependency-free PDF 1.4 writer |
 | Page size | Office geometry, A4/Letter presets, or custom points |
-| Fonts | Embedded registered TTF fonts with ToUnicode; no subsetting or shaping yet |
+| Fonts | Embedded registered TTF fonts with ToUnicode; printed XLSX grids can use installed Windows Calibri/Arial variants |
 | Input safety | Bounded ZIP entry count, size, expansion ratio, encryption, and path validation |
 | Interfaces | Go package with file, byte, and stream APIs; native CLI |
 
-The initial renderer deliberately does not claim support for Office styles,
-images, tables, charts, themes, formulas, merged cells, or font embedding.
+XLSX text output skips entirely empty pages within worksheets containing text,
+including empty horizontal column groups and pages from trailing formatted rows.
+Blank rows within nonempty pages retain their spacing. Layout-only worksheets
+keep their existing blank-page behavior.
+
+Worksheets with an explicit `_xlnm.Print_Area` use the grid renderer instead of
+fixed-width text column groups. This path respects rectangular or whole-row/
+column print ranges, repeated print-title rows and columns, hidden rows and
+columns, percentage scaling, fit-to-page mode, manual page breaks, and horizontal/
+vertical print centering. It keeps
+formatted empty cells inside the print area, so printable template tables are
+not discarded merely because they have no text. Sheets without a print area
+retain their previous rendering path.
+
+Grid styles resolve RGB and workbook theme colors, including HSL luminance
+tints, for fonts and solid fills. Printed grids also apply conditional solid
+fills for text rules, `ISNUMBER(SEARCH(...))` expressions, and numeric `cellIs`
+comparisons. Text searches are case-insensitive and support Excel wildcards;
+sheet-local cell references respect relative/absolute addressing. Rule priority
+and `stopIfTrue` are honored.
+
+Printed grids use matching registered font families/variants, or installed
+Windows Calibri/Arial regular, bold, italic, and bold-italic TTF files when
+available. Actual glyph advance widths and font ascent/descent are used for
+alignment and shrink-to-fit. Missing/unrecognized font families keep the
+built-in PDF font fallback; non-print-area worksheets retain their previous
+font-rendering path. Register variant names such as `Calibri Bold Italic` for
+portable source-font matching. Fonts are embedded without subsetting; no font
+binaries are distributed with MiniPdf.
+
+Printed numeric cells support common fixed-decimal, grouped, percentage, General,
+and day/month/year date formats, including custom escaped/quoted date literals.
+The workbook's 1900/1904 date system is respected. Unsupported number-format
+patterns keep the stored value.
+
+One-/two-cell anchored PNG/JPEG/GIF pictures support source cropping, print
+scaling, and repetition inside print-title bands. Images are limited to
+25 million pixels and transparency is composited onto white. Negative crops,
+external image targets, and general vector drawings are not supported.
+
+Printed footers support left/center/right sections, font names/sizes,
+bold/italic toggles, escaped ampersands, sheet names, and final document page
+number/count fields. First/even/odd footer variants and `scaleWithDoc` are
+respected. Footer placement currently uses worksheet page margins; separate
+`alignWithMargins="0"` geometry and header content are not implemented.
+Double cell borders retain their two separate strokes.
+
+Invalid or unsupported print-range expressions and invalid numeric print
+settings return an explicit conversion error, as do invalid theme colors,
+tints, conditional range/format metadata, corrupt pictures/fonts, and unsupported
+footer control codes. Conditional rules outside the
+supported subset retain base styling. Dynamic print-area formulas, general
+conditional formulas, conditional font/border changes, table styles, indexed
+colors, patterned/gradient fills, general drawings, complex text shaping, and
+full Office font/layout fidelity are not supported.
 
 ## Development
 
