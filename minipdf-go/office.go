@@ -138,30 +138,61 @@ func renderTextPages(pages []textPage, options ConversionOptions) []byte {
 		if options.Margins != nil {
 			margins = *options.Margins
 		}
-		addTextPages(document, sourcePage.lines, pageSize, margins, sourcePage.noWrap, sourcePage.skipEmpty)
+		addTextPages(document, sourcePage.lines, pageSize, margins, sourcePage.noWrap, sourcePage.skipEmpty, 0)
 	}
 	return document.BytesWithOptions(PDFSaveOptions{Compress: options.Compress})
 }
 
-func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, margins Margins, noWrap, skipEmpty bool) {
+// minimumTextFitZoom is the lowest zoom percentage LibreOffice Calc applies
+// when it fits a sheet to a page count (ZOOM_MIN in ScPrintFunc::CalcZoom).
+const minimumTextFitZoom = 10
+
+// addTextPages lays lines out as pages of text. A positive fitHeight shrinks
+// the text until it fits that many pages.
+func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, margins Margins, noWrap, skipEmpty bool, fitHeight int) {
 	const (
-		fontSize = 11.0
-		leading  = 15.0
+		baseFontSize = 11.0
+		baseLeading  = 15.0
 	)
 	if margins == (Margins{}) {
 		margins = Margins{Left: 54, Top: 54, Right: 54, Bottom: 54}
 	}
-	wrapped := make([]string, 0, len(lines))
-	for _, line := range lines {
-		if noWrap {
-			wrapped = append(wrapped, line)
-		} else {
-			wrapped = append(wrapped, wrapText(line, textCharactersPerLine(pageSize, margins))...)
+	wrapAt := func(zoom int) []string {
+		wrapped := make([]string, 0, len(lines))
+		for _, line := range lines {
+			if noWrap {
+				wrapped = append(wrapped, line)
+			} else {
+				wrapped = append(wrapped, wrapText(line, textCharactersPerLine(pageSize, margins, baseFontSize*float64(zoom)/100))...)
+			}
+		}
+		if len(wrapped) == 0 {
+			wrapped = append(wrapped, "")
+		}
+		return wrapped
+	}
+	zoom := 100
+	if fitHeight > 0 {
+		// Like ScPrintFunc::CalcZoom, keep 100% when the content already fits
+		// and otherwise search for the largest zoom that does.
+		available := float64(fitHeight) * (pageSize.Height - margins.Top - margins.Bottom)
+		fits := func(zoom int) bool {
+			return float64(len(wrapAt(zoom)))*baseLeading*float64(zoom)/100 <= available
+		}
+		if !fits(zoom) {
+			zoom = minimumTextFitZoom
+			for tooLarge := 100; tooLarge-zoom > 1; {
+				if middle := (zoom + tooLarge) / 2; fits(middle) {
+					zoom = middle
+				} else {
+					tooLarge = middle
+				}
+			}
 		}
 	}
-	if len(wrapped) == 0 {
-		wrapped = append(wrapped, "")
-	}
+	wrapped := wrapAt(zoom)
+	fontSize := baseFontSize * float64(zoom) / 100
+	leading := baseLeading * float64(zoom) / 100
 
 	var page *PDFPage
 	if !skipEmpty {
@@ -183,8 +214,7 @@ func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, marg
 	}
 }
 
-func textCharactersPerLine(pageSize PageSize, margins Margins) int {
-	const fontSize = 11.0
+func textCharactersPerLine(pageSize PageSize, margins Margins, fontSize float64) int {
 	if margins == (Margins{}) {
 		margins = Margins{Left: 54, Top: 54, Right: 54, Bottom: 54}
 	}

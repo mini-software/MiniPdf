@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -319,7 +320,7 @@ func TestTextPaginationPreservesSpacingWhenSkippingEmptyPages(t *testing.T) {
 	lines[0], lines[100], lines[152] = "First", "Middle", "Last"
 	for _, skipEmpty := range []bool{false, true} {
 		document := NewPDFDocument()
-		addTextPages(document, lines, PageSizeA4, Margins{}, true, skipEmpty)
+		addTextPages(document, lines, PageSizeA4, Margins{}, true, skipEmpty, 0)
 		pdf := document.Bytes()
 		wantPages := 11
 		if skipEmpty {
@@ -541,6 +542,97 @@ func TestConvertXLSXPaginatesSingleColumnTextOverflow(t *testing.T) {
 	}
 }
 
+func fitToPageWorksheet(sheetProperties, pageSetup string, rows, columns int) string {
+	var worksheet strings.Builder
+	worksheet.WriteString(`<?xml version="1.0"?><worksheet>` + sheetProperties + `<sheetData>`)
+	for row := 1; row <= rows; row++ {
+		fmt.Fprintf(&worksheet, `<row r="%d">`, row)
+		for column := 0; column < columns; column++ {
+			fmt.Fprintf(&worksheet, `<c r="%c%d" t="inlineStr"><is><t>R%dC%d</t></is></c>`, 'A'+column, row, row, column+1)
+		}
+		worksheet.WriteString(`</row>`)
+	}
+	worksheet.WriteString(`</sheetData>` + pageSetup + `</worksheet>`)
+	return worksheet.String()
+}
+
+func TestConvertXLSXFitsWorksheetToPage(t *testing.T) {
+	const fitToPage = `<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>`
+	tests := []struct {
+		name            string
+		sheetProperties string
+		pageSetup       string
+		pages           int
+		firstPage       []string
+		unscaled        bool
+	}{
+		{
+			name:  "without fit to page columns and rows split",
+			pages: 4, firstPage: []string{"R1C9"}, unscaled: true,
+		},
+		{
+			name: "default fit is one page wide and one page tall", sheetProperties: fitToPage,
+			pageSetup: `<pageSetup orientation="landscape"/>`,
+			pages:     1, firstPage: []string{"R1C1", "R1C12", "R60C12"},
+		},
+		{
+			name: "automatic height keeps every column on each page", sheetProperties: fitToPage,
+			pageSetup: `<pageSetup fitToHeight="0"/>`,
+			pages:     2, firstPage: []string{"R1C1", "R1C12"}, unscaled: true,
+		},
+		{
+			name: "page counts apply in both directions", sheetProperties: fitToPage,
+			pageSetup: `<pageSetup fitToWidth="2" fitToHeight="1"/>`,
+			pages:     2, firstPage: []string{"R1C6", "R60C6"},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			input := officePackageBytes(t, map[string]string{
+				"xl/workbook.xml":          `<?xml version="1.0"?><workbook/>`,
+				"xl/worksheets/sheet1.xml": fitToPageWorksheet(test.sheetProperties, test.pageSetup, 60, 12),
+			})
+
+			pdf, err := ConvertBytesToPDF(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != test.pages {
+				t.Fatalf("PDF page count = %d, want %d", pages, test.pages)
+			}
+			firstPage := pdf[:bytes.Index(pdf, []byte("endstream"))]
+			for _, text := range test.firstPage {
+				if !bytes.Contains(firstPage, []byte(text)) {
+					t.Errorf("first page does not contain %q", text)
+				}
+			}
+			if unscaled := bytes.Contains(pdf, []byte("/F1 11 Tf")); unscaled != test.unscaled {
+				t.Errorf("uses unscaled font size = %t, want %t", unscaled, test.unscaled)
+			}
+		})
+	}
+}
+
+func TestConvertXLSXFitToPageWrapsLongText(t *testing.T) {
+	input := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>` +
+			`<sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>` + strings.Repeat("word ", 1200) +
+			`</t></is></c></row></sheetData></worksheet>`,
+	})
+
+	pdf, err := ConvertBytesToPDF(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if words := bytes.Count(pdf, []byte("word")); words != 1200 {
+		t.Fatalf("rendered word count = %d, want 1200", words)
+	}
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 1 {
+		t.Fatalf("PDF page count = %d, want 1", pages)
+	}
+}
+
 func TestExtractWorksheetPreservesSparseRows(t *testing.T) {
 	worksheet := []byte(`<?xml version="1.0"?><worksheet><sheetData>` +
 		`<row r="1"><c r="A1" t="inlineStr"><is><t>First</t></is></c></row>` +
@@ -548,7 +640,7 @@ func TestExtractWorksheetPreservesSparseRows(t *testing.T) {
 		`<row r="10"><c r="A10" t="inlineStr"><is><t>Tenth</t></is></c></row>` +
 		`</sheetData></worksheet>`)
 
-	lines, _, err := extractWorksheet(worksheet, nil)
+	lines, _, _, err := extractWorksheet(worksheet, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -568,7 +660,7 @@ func TestExtractWorksheetPreservesSparseColumns(t *testing.T) {
 		`<c r="J2" t="inlineStr"><is><t>Far</t></is></c></row>` +
 		`</sheetData></worksheet>`)
 
-	lines, _, err := extractWorksheet(worksheet, nil)
+	lines, _, _, err := extractWorksheet(worksheet, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -582,7 +674,7 @@ func TestExtractWorksheetFormatsBooleanCells(t *testing.T) {
 		`<c r="A1" t="b"><v>1</v></c><c r="B1" t="b"><v>0</v></c>` +
 		`<c r="C1" t="n"><v>1</v></c></row></sheetData></worksheet>`)
 
-	lines, _, err := extractWorksheet(worksheet, nil)
+	lines, _, _, err := extractWorksheet(worksheet, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
