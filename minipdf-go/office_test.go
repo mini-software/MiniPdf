@@ -613,6 +613,41 @@ func TestConvertXLSXFitsWorksheetToPage(t *testing.T) {
 	}
 }
 
+func TestConvertXLSXFitToPageZoomBounds(t *testing.T) {
+	tests := []struct {
+		name      string
+		pageSetup string
+		rows      int
+		pages     int
+		fontSize  string
+	}{
+		{name: "content that already fits keeps its size", rows: 48, pages: 1, fontSize: "/F1 11 Tf"},
+		{name: "one more line shrinks the text", rows: 49, pages: 1, fontSize: "/F1 10.89 Tf"},
+		{name: "several pages share the height", pageSetup: `<pageSetup fitToHeight="2"/>`, rows: 97, pages: 2, fontSize: "/F1 11 Tf"},
+		{name: "zoom stops at the minimum", rows: 5000, pages: 11, fontSize: "/F1 1.1 Tf"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			input := officePackageBytes(t, map[string]string{
+				"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
+				"xl/worksheets/sheet1.xml": fitToPageWorksheet(
+					`<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>`, test.pageSetup, test.rows, 3),
+			})
+
+			pdf, err := ConvertBytesToPDF(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != test.pages {
+				t.Errorf("PDF page count = %d, want %d", pages, test.pages)
+			}
+			if !bytes.Contains(pdf, []byte(test.fontSize)) {
+				t.Errorf("PDF does not use font size %q", test.fontSize)
+			}
+		})
+	}
+}
+
 func TestConvertXLSXFitToPageWrapsLongText(t *testing.T) {
 	input := officePackageBytes(t, map[string]string{
 		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
