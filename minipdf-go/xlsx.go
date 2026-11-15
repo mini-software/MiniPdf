@@ -107,7 +107,7 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 			overflowPages := [][]string{group}
 			noWrap := false
 			if !fitWidth && worksheetColumnCount(group) == 1 {
-				overflowPages = splitWorksheetTextOverflow(group, textCharactersPerLine(effectivePageSize, Margins{}, 11))
+				overflowPages = splitWorksheetTextOverflow(group, textCharactersPerLine(effectivePageSize, Margins{}, baseFontSize))
 				noWrap = len(overflowPages) > 1
 			}
 			for _, overflowPage := range overflowPages {

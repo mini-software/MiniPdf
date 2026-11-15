@@ -147,13 +147,15 @@ func renderTextPages(pages []textPage, options ConversionOptions) []byte {
 // when it fits a sheet to a page count (ZOOM_MIN in ScPrintFunc::CalcZoom).
 const minimumTextFitZoom = 10
 
+// Font size and line spacing of unscaled plain text pages, in points.
+const (
+	baseFontSize = 11.0
+	baseLeading  = 15.0
+)
+
 // addTextPages lays lines out as pages of text. A positive fitHeight shrinks
-// the text until it fits that many pages.
+// the text, down to minimumTextFitZoom, until it fits that many pages.
 func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, margins Margins, noWrap, skipEmpty bool, fitHeight int) {
-	const (
-		baseFontSize = 11.0
-		baseLeading  = 15.0
-	)
 	if margins == (Margins{}) {
 		margins = Margins{Left: 54, Top: 54, Right: 54, Bottom: 54}
 	}
@@ -175,9 +177,13 @@ func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, marg
 	if fitHeight > 0 {
 		// Like ScPrintFunc::CalcZoom, keep 100% when the content already fits
 		// and otherwise search for the largest zoom that does.
-		available := float64(fitHeight) * (pageSize.Height - margins.Top - margins.Bottom)
+		// The layout loop below starts a line wherever the baseline is still
+		// above the bottom margin, so a page holds one more line than its
+		// height divided by the leading.
+		height := pageSize.Height - margins.Top - margins.Bottom
 		fits := func(zoom int) bool {
-			return float64(len(wrapAt(zoom)))*baseLeading*float64(zoom)/100 <= available
+			linesPerPage := int(height/(baseLeading*float64(zoom)/100)) + 1
+			return len(wrapAt(zoom)) <= fitHeight*linesPerPage
 		}
 		if !fits(zoom) {
 			zoom = minimumTextFitZoom
