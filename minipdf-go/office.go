@@ -177,13 +177,20 @@ func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, marg
 	if fitHeight > 0 {
 		// Like ScPrintFunc::CalcZoom, keep 100% when the content already fits
 		// and otherwise search for the largest zoom that does.
-		// The layout loop below starts a line wherever the baseline is still
-		// above the bottom margin, so a page holds one more line than its
-		// height divided by the leading.
-		height := pageSize.Height - margins.Top - margins.Bottom
+		// Count pages with the same arithmetic as the layout loop below, so
+		// the check and the layout cannot disagree about a page break.
 		fits := func(zoom int) bool {
-			linesPerPage := int(height/(baseLeading*float64(zoom)/100)) + 1
-			return len(wrapAt(zoom)) <= fitHeight*linesPerPage
+			leading := baseLeading * float64(zoom) / 100
+			pages := 1
+			y := pageSize.Height - margins.Top
+			for range wrapAt(zoom) {
+				if y < margins.Bottom {
+					pages++
+					y = pageSize.Height - margins.Top
+				}
+				y -= leading
+			}
+			return pages <= fitHeight
 		}
 		if !fits(zoom) {
 			zoom = minimumTextFitZoom

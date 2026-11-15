@@ -624,6 +624,7 @@ func TestConvertXLSXFitToPageZoomBounds(t *testing.T) {
 		{name: "content that already fits keeps its size", rows: 48, pages: 1, fontSize: "/F1 11 Tf"},
 		{name: "one more line shrinks the text", rows: 49, pages: 1, fontSize: "/F1 10.89 Tf"},
 		{name: "several pages share the height", pageSetup: `<pageSetup fitToHeight="2"/>`, rows: 97, pages: 2, fontSize: "/F1 11 Tf"},
+		{name: "Letter height is a multiple of the leading", pageSetup: `<pageSetup paperSize="1" fitToHeight="1"/>`, rows: 95, pages: 1, fontSize: "/F1 5.17 Tf"},
 		{name: "zoom stops at the minimum", rows: 5000, pages: 11, fontSize: "/F1 1.1 Tf"},
 	}
 	for _, test := range tests {
