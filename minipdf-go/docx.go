@@ -32,6 +32,9 @@ func convertDOCX(input []byte, options ConversionOptions) ([]byte, error) {
 	if err := validateDOCXLayout(effectivePageSize, effectiveMargins); err != nil {
 		return nil, err
 	}
+	if rendered, supported, err := renderDOCXTables(files, documentXML, effectivePageSize, effectiveMargins, options); supported || err != nil {
+		return rendered, err
+	}
 	textPages := make([]textPage, len(pages))
 	for index, lines := range pages {
 		textPages[index] = textPage{lines: lines, size: pageSize, margins: margins}
