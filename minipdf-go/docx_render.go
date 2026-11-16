@@ -3,6 +3,7 @@ package minipdf
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"image"
 	_ "image/jpeg"
@@ -14,6 +15,9 @@ import (
 	"strings"
 	"unicode"
 )
+
+var errDOCXFontUnavailable = errors.New("DOCX font unavailable")
+var errDOCXTableLayoutUnsupported = errors.New("DOCX table layout unsupported")
 
 type docxNode struct {
 	name     string
@@ -355,7 +359,7 @@ func (s *docxStyles) font(style docxRunStyle, r rune) (*embeddedFont, error) {
 	return f, nil
 }
 func docxAsian(r rune) bool {
-	return unicode.Is(unicode.Han, r) || unicode.Is(unicode.Hiragana, r) || unicode.Is(unicode.Katakana, r) || r >= 0x3000 && r <= 0x303f || r >= 0xff00 && r <= 0xffef || r == 0x25a1
+	return unicode.Is(unicode.Han, r) || unicode.Is(unicode.Hangul, r) || unicode.Is(unicode.Hiragana, r) || unicode.Is(unicode.Katakana, r) || r >= 0x3000 && r <= 0x303f || r >= 0xff00 && r <= 0xffef || r == 0x25a1
 }
 
 type docxGlyph struct {
@@ -431,7 +435,7 @@ func (s *docxStyles) layoutParagraph(n *docxNode, width, grid float64) (docxPara
 					g.descent *= 1.27
 				}
 			} else if r > 127 {
-				return fmt.Errorf("DOCX character U+%04X requires an installed or registered font", r)
+				return fmt.Errorf("DOCX character U+%04X requires an installed or registered font: %w", r, errDOCXFontUnavailable)
 			}
 			glyphs = append(glyphs, g)
 		}
@@ -564,7 +568,7 @@ func drawDOCXParagraph(page *PDFPage, p docxParagraph, x, top, width float64) {
 			if g.style.highlight != nil {
 				page.AddRect(left, page.Height-top-line.height, g.width, line.height, *g.style.highlight)
 			}
-			page.operations = append(page.operations, textOperation{text: string(g.r), x: left, y: baseline, fontSize: g.style.size, horizontalScale: 100, color: g.style.color, bold: g.style.bold, italic: g.style.italic, embedded: g.font})
+			page.operations = append(page.operations, textOperation{text: string(g.r), x: left, y: baseline, fontSize: g.style.size, horizontalScale: 100, color: g.style.color, bold: g.style.bold, italic: g.style.italic, embedded: g.font, synthesize: true})
 			left += g.width
 		}
 		top += line.height
@@ -661,6 +665,12 @@ func (s *docxStyles) table(n *docxNode, available float64) (docxTable, error) {
 		t.columns[i] *= t.width / gridWidth
 	}
 	active := map[int]*docxCell{}
+	rowCount := 0
+	for _, row := range n.children {
+		if row.name == "tr" {
+			rowCount++
+		}
+	}
 	for _, row := range n.children {
 		if row.name != "tr" {
 			continue
@@ -679,7 +689,7 @@ func (s *docxStyles) table(n *docxNode, available float64) (docxTable, error) {
 				span = 1
 			}
 			if column+span > len(t.columns) {
-				return t, fmt.Errorf("DOCX cell span exceeds table grid")
+				return t, fmt.Errorf("DOCX cell span exceeds table grid: %w", errDOCXTableLayoutUnsupported)
 			}
 			cell := &docxCell{column: column, span: span, row: ri, rowSpan: 1, margins: docxCellMargins(cp.child("tcMar"), tm), align: cp.value("vAlign"), borders: map[string]docxBorder{}}
 			for i := column; i < column+span; i++ {
@@ -688,6 +698,9 @@ func (s *docxStyles) table(n *docxNode, available float64) (docxTable, error) {
 			for _, edge := range []string{"top", "left", "bottom", "right"} {
 				key := edge
 				if edge == "top" && ri > 0 {
+					key = "insideH"
+				}
+				if edge == "bottom" && ri < rowCount-1 {
 					key = "insideH"
 				}
 				if edge == "left" && column > 0 {
@@ -711,7 +724,7 @@ func (s *docxStyles) table(n *docxNode, available float64) (docxTable, error) {
 					cell.continuation = true
 					start.borders["bottom"] = cell.borders["bottom"]
 				} else {
-					return t, fmt.Errorf("DOCX vertical merge has no matching start")
+					return t, fmt.Errorf("DOCX vertical merge has no matching start: %w", errDOCXTableLayoutUnsupported)
 				}
 			} else {
 				delete(active, column)
@@ -732,7 +745,7 @@ func (s *docxStyles) table(n *docxNode, available float64) (docxTable, error) {
 			column += span
 		}
 		if column != len(t.columns) {
-			return t, fmt.Errorf("DOCX row does not cover table grid")
+			return t, fmt.Errorf("DOCX row does not cover table grid: %w", errDOCXTableLayoutUnsupported)
 		}
 	}
 	for _, c := range t.cells {
@@ -783,18 +796,11 @@ func drawDOCXBorder(page *PDFPage, b docxBorder, x1, y1, x2, y2 float64) {
 		return
 	}
 	if b.style == "dotted" || b.style == "dotDash" || b.style == "dashed" {
-		length := math.Hypot(x2-x1, y2-y1)
-		if length == 0 {
-			return
-		}
 		dash := w * 2
 		if b.style == "dashed" {
 			dash = w * 6
 		}
-		for at := 0.0; at < length; at += dash + w*2 {
-			end := math.Min(length, at+dash)
-			page.AddLine(x1+(x2-x1)*at/length, y1+(y2-y1)*at/length, x1+(x2-x1)*end/length, y1+(y2-y1)*end/length, b.color, w)
-		}
+		page.operations = append(page.operations, lineOperation{x1: x1, y1: y1, x2: x2, y2: y2, color: b.color, width: w, dash: []float64{dash, w * 2}})
 		return
 	}
 	page.AddLine(x1, y1, x2, y2, b.color, w)
@@ -870,7 +876,7 @@ func readDOCXImages(files officePackage, n *docxNode) ([]docxImage, error) {
 			if !ok {
 				return fmt.Errorf("DOCX drawing image relationship is missing")
 			}
-			name := path.Join("word", target)
+			name := xlsxResolveRelationshipTarget("word/document.xml", target)
 			data, err := files.read(name)
 			if err != nil {
 				return err
@@ -968,17 +974,29 @@ func docxUnsupportedMetafiles(files officePackage, body *docxNode) (bool, error)
 	}
 	unsupported := false
 	for _, blip := range blips {
+		if blip.attr("embed") == "" && blip.attr("link") != "" {
+			unsupported = true
+			continue
+		}
 		target, ok := targets[blip.attr("embed")]
 		if !ok {
 			return false, fmt.Errorf("DOCX drawing image relationship is missing")
 		}
-		name := path.Join("word", target)
+		name := xlsxResolveRelationshipTarget("word/document.xml", target)
 		if _, ok := files[name]; !ok {
 			return false, fmt.Errorf("Office package part %q is missing", name)
 		}
 		switch strings.ToLower(path.Ext(target)) {
 		case ".emf", ".wmf":
 			unsupported = true
+		case ".png", ".jpg", ".jpeg":
+			data, err := files.read(name)
+			if err != nil {
+				return false, err
+			}
+			if _, _, err := image.DecodeConfig(bytes.NewReader(data)); err != nil {
+				return false, fmt.Errorf("read DOCX image %s: %w", name, err)
+			}
 		}
 	}
 	return unsupported, nil
@@ -1020,6 +1038,16 @@ func renderDOCXTables(files officePackage, data []byte, size PageSize, margins M
 	}
 	if len(body.descendants("numPr")) > 0 || len(body.descendants("anchor")) > 0 || len(body.descendants("pageBreakBefore")) > 0 {
 		return nil, false, nil
+	}
+	if len(body.descendants("gridBefore")) > 0 || len(body.descendants("gridAfter")) > 0 {
+		return nil, false, nil
+	}
+	for _, box := range body.descendants("txbxContent") {
+		for _, text := range box.descendants("t") {
+			if text.text != "" {
+				return nil, false, nil
+			}
+		}
 	}
 	for _, br := range body.descendants("br") {
 		if br.attr("type") == "page" {
@@ -1070,11 +1098,17 @@ func renderDOCXTables(files officePackage, data []byte, size PageSize, margins M
 	if unsupportedImages {
 		return nil, false, nil
 	}
+	if docxUnsupportedInlineFlow(body) {
+		return nil, false, nil
+	}
 	s, err := readDOCXStyles(files)
 	if err != nil {
 		return nil, true, err
 	}
-	grid := docxNumber(body.child("sectPr").child("docGrid").attr("linePitch")) / 20
+	grid := 0.0
+	if g := body.child("sectPr").child("docGrid"); g.attr("type") == "lines" || g.attr("type") == "linesAndChars" {
+		grid = docxNumber(g.attr("linePitch")) / 20
+	}
 	doc := NewPDFDocument()
 	page := doc.AddPage(size.Width, size.Height)
 	top := margins.Top
@@ -1085,6 +1119,9 @@ func renderDOCXTables(files officePackage, data []byte, size PageSize, margins M
 		case "p":
 			p, err := s.layoutParagraph(n, available, grid)
 			if err != nil {
+				if errors.Is(err, errDOCXFontUnavailable) {
+					return nil, false, nil
+				}
 				return nil, true, err
 			}
 			p.style.before = math.Max(0, p.style.before-previousAfter)
@@ -1102,9 +1139,18 @@ func renderDOCXTables(files officePackage, data []byte, size PageSize, margins M
 				op.x = margins.Left + picture.left
 				op.y = size.Height - top - picture.top - op.height
 				if !picture.floating {
-					op.x = margins.Left
-					op.y = size.Height - top - op.height
-					p.height = math.Max(p.height, op.height)
+					contentWidth := available - p.style.left - p.style.right - p.style.first
+					if op.width > contentWidth {
+						return nil, false, nil
+					}
+					op.x = margins.Left + p.style.left + p.style.first
+					if p.style.align == "center" {
+						op.x += (contentWidth - op.width) / 2
+					} else if p.style.align == "right" {
+						op.x += contentWidth - op.width
+					}
+					op.y = size.Height - top - p.style.before - op.height
+					p.height = p.style.before + math.Max(p.height-p.style.before-p.style.after, op.height) + p.style.after
 				}
 				page.operations = append(page.operations, op)
 			}
@@ -1116,6 +1162,9 @@ func renderDOCXTables(files officePackage, data []byte, size PageSize, margins M
 		case "tbl":
 			t, err := s.table(n, available)
 			if err != nil {
+				if errors.Is(err, errDOCXFontUnavailable) || errors.Is(err, errDOCXTableLayoutUnsupported) {
+					return nil, false, nil
+				}
 				return nil, true, err
 			}
 			height := 0.0
@@ -1132,10 +1181,47 @@ func renderDOCXTables(files officePackage, data []byte, size PageSize, margins M
 			if t.align == "right" {
 				left = size.Width - margins.Right - t.width
 			}
+			if left < 0 || left+t.width > size.Width {
+				return nil, false, nil
+			}
 			drawDOCXTable(page, t, left, top)
 			top += height
 			previousAfter = 0
 		}
 	}
 	return doc.BytesWithOptions(PDFSaveOptions{Compress: options.Compress}), true, nil
+}
+
+func docxUnsupportedInlineFlow(body *docxNode) bool {
+	for _, p := range body.descendants("p") {
+		inlineCount := 0
+		var countInline func(*docxNode)
+		countInline = func(n *docxNode) {
+			// VML pictures have floating placement, not paragraph inline flow.
+			if n.name == "pict" {
+				return
+			}
+			if n.name == "drawing" && n.child("inline") != nil {
+				inlineCount++
+			}
+			for _, c := range n.children {
+				countInline(c)
+			}
+		}
+		countInline(p)
+		if inlineCount > 1 {
+			return true
+		}
+		if inlineCount == 1 {
+			if len(p.descendants("br")) > 0 || len(p.descendants("cr")) > 0 || len(p.descendants("tab")) > 0 {
+				return true
+			}
+			for _, text := range p.descendants("t") {
+				if text.text != "" {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
