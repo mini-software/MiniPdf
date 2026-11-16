@@ -84,6 +84,7 @@ type textOperation struct {
 	bold            bool
 	italic          bool
 	embedded        *embeddedFont
+	synthesize      bool
 }
 
 func (operation textOperation) appendPDF(buffer *bytes.Buffer, embedded *embeddedFont) {
@@ -96,17 +97,37 @@ func (operation textOperation) appendPDF(buffer *bytes.Buffer, embedded *embedde
 	}
 	if embedded != nil {
 		if encoded, ok := embedded.encode(operation.text); ok {
-			fmt.Fprintf(buffer, "BT /%s %s Tf %s%s %s %s rg %s %s Td <%s> Tj ET\n",
+			syntheticBold := operation.synthesize && operation.bold && !embedded.nativeBold
+			syntheticItalic := operation.synthesize && operation.italic && !embedded.nativeItalic
+			synthetic := syntheticBold || syntheticItalic
+			position := pdfNumber(operation.x) + " " + pdfNumber(operation.y) + " Td"
+			if synthetic {
+				buffer.WriteString("q ")
+				if syntheticBold {
+					fmt.Fprintf(buffer, "%s w %s %s %s RG ", pdfNumber(operation.fontSize/30), pdfNumber(operation.color.Red), pdfNumber(operation.color.Green), pdfNumber(operation.color.Blue))
+				}
+				if syntheticItalic {
+					position = "1 0 0.21256 1 " + pdfNumber(operation.x) + " " + pdfNumber(operation.y) + " Tm"
+				}
+			}
+			mode := ""
+			if syntheticBold {
+				mode = "2 Tr "
+			}
+			fmt.Fprintf(buffer, "BT /%s %s Tf %s%s%s %s %s rg %s <%s> Tj ET\n",
 				embedded.resource,
 				pdfNumber(operation.fontSize),
 				horizontalScale,
+				mode,
 				pdfNumber(operation.color.Red),
 				pdfNumber(operation.color.Green),
 				pdfNumber(operation.color.Blue),
-				pdfNumber(operation.x),
-				pdfNumber(operation.y),
+				position,
 				encoded,
 			)
+			if synthetic {
+				buffer.WriteString("Q\n")
+			}
 			return
 		}
 	}
@@ -154,9 +175,17 @@ type lineOperation struct {
 	x1, y1, x2, y2 float64
 	color          PDFColor
 	width          float64
+	dash           []float64
 }
 
 func (operation lineOperation) appendPDF(buffer *bytes.Buffer, _ *embeddedFont) {
+	if len(operation.dash) > 0 {
+		buffer.WriteString("q [")
+		for _, length := range operation.dash {
+			buffer.WriteString(pdfNumber(length) + " ")
+		}
+		buffer.WriteString("] 0 d ")
+	}
 	fmt.Fprintf(buffer, "%s %s %s RG %s w %s %s m %s %s l S\n",
 		pdfNumber(operation.color.Red),
 		pdfNumber(operation.color.Green),
@@ -167,6 +196,9 @@ func (operation lineOperation) appendPDF(buffer *bytes.Buffer, _ *embeddedFont) 
 		pdfNumber(operation.x2),
 		pdfNumber(operation.y2),
 	)
+	if len(operation.dash) > 0 {
+		buffer.WriteString("Q\n")
+	}
 }
 
 func (document *PDFDocument) Bytes() []byte {
@@ -241,6 +273,8 @@ func (document *PDFDocument) BytesWithOptions(options PDFSaveOptions) []byte {
 	for alias, canonical := range seenFonts {
 		alias.resource = canonical.resource
 		alias.objectID = canonical.objectID
+		alias.runeToGlyph = canonical.runeToGlyph
+		alias.glyphToRune = canonical.glyphToRune
 	}
 	italicResources := ""
 	if hasItalic {

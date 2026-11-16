@@ -3,12 +3,15 @@ package minipdf
 import (
 	"bytes"
 	"encoding/binary"
+	"errors"
+	"fmt"
 	"image"
 	"image/png"
 	"math"
 	"strings"
 	"testing"
 
+	"golang.org/x/image/font/gofont/gobolditalic"
 	"golang.org/x/image/font/gofont/goregular"
 	"golang.org/x/image/font/sfnt"
 )
@@ -166,6 +169,10 @@ func TestDOCXEquivalentFontInstancesUseCanonicalPDFResource(t *testing.T) {
 	pdf := d.Bytes()
 	if a.resource == "" || b.resource != a.resource || bytes.Count(pdf, []byte("/Subtype /Type0")) != 1 || bytes.Contains(pdf, []byte("BT / ")) {
 		t.Fatal("equivalent font instances have unresolved PDF resources")
+	}
+	encoded, ok := b.encode("Ω")
+	if !ok || !bytes.Contains(pdf, []byte("BT /"+a.resource+" 12 Tf 0 0 0 rg 30 100 Td <"+encoded+"> Tj")) || bytes.Contains(pdf, []byte("30 100 Td (?)")) {
+		t.Fatal("alias Unicode text did not use the canonical embedded glyph resource")
 	}
 }
 
@@ -363,5 +370,271 @@ func TestDOCXUnsupportedLayoutKeepsTextConverter(t *testing.T) {
 	_, supported, err := renderDOCXTables(nil, data, PageSizeA4, Margins{Left: 40, Right: 40, Top: 40, Bottom: 40}, ConversionOptions{})
 	if err != nil || supported {
 		t.Fatalf("unsupported explicit pagination was not retained on legacy path: %t, %v", supported, err)
+	}
+}
+
+func TestDOCXDashRenderingHasBoundedOperations(t *testing.T) {
+	for _, style := range []string{"dotted", "dotDash", "dashed"} {
+		page := NewPDFDocument().AddPage(612, 792)
+		drawDOCXBorder(page, docxBorder{style: style, width: .25}, 10, 10, float64(2147483647)/20, 10)
+		if len(page.operations) != 1 {
+			t.Fatalf("%s retained %d operations for off-page geometry", style, len(page.operations))
+		}
+		var stream bytes.Buffer
+		page.operations[0].appendPDF(&stream, nil)
+		if !strings.Contains(stream.String(), "] 0 d ") || bytes.Count(stream.Bytes(), []byte(" l S")) != 1 || !strings.HasSuffix(stream.String(), "Q\n") {
+			t.Fatalf("dash stroke is not a single isolated native PDF operation: %s", &stream)
+		}
+	}
+	s := docxTestStyles(t, docxReviewStyles)
+	data := []byte(`<document><body><tbl><tblPr><tblBorders><top val="dashed" sz="2"/></tblBorders></tblPr><tblGrid><gridCol w="2147483647"/></tblGrid><tr><tc><p/></tc></tr></tbl></body></document>`)
+	files, err := openOfficePackage(officePackageBytes(t, map[string]string{"word/styles.xml": docxReviewStyles}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	root, err := parseDOCXNode(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	table, err := s.table(root.child("body").child("tbl"), 500)
+	if err != nil {
+		t.Fatal(err)
+	}
+	page := NewPDFDocument().AddPage(612, 792)
+	drawDOCXTable(page, table, 40, 40)
+	if len(page.operations) != 1 {
+		t.Fatalf("full extreme-grid table retained %d operations", len(page.operations))
+	}
+	_, supported, err := renderDOCXTables(files, data, PageSizeA4, Margins{Left: 40, Right: 40, Top: 40, Bottom: 40}, ConversionOptions{})
+	if supported || err != nil {
+		t.Fatalf("table outside physical page did not decline native layout: %t %v", supported, err)
+	}
+}
+
+func TestDOCXSynthesizesOnlyMissingFontEmphasis(t *testing.T) {
+	ClearRegisteredFonts()
+	t.Cleanup(ClearRegisteredFonts)
+	RegisterFont("Portable Test", goregular.TTF)
+	for _, native := range []bool{false, true} {
+		if native {
+			RegisterFont("Portable Test Bold Italic", gobolditalic.TTF)
+		}
+		f, err := loadDOCXFont("Portable Test", true, true)
+		if err != nil || f == nil {
+			t.Fatalf("styled registered font unavailable: %v", err)
+		}
+		if f.nativeBold != native || f.nativeItalic != native {
+			t.Fatalf("native emphasis incorrectly identified: %+v", f)
+		}
+		f.collect("Ω")
+		f.resource = "FU1"
+		var stream bytes.Buffer
+		op := textOperation{text: "Ω", x: 10, y: 20, fontSize: 12, bold: true, italic: true, color: PDFColor{Red: 1}, embedded: f, synthesize: true}
+		op.appendPDF(&stream, nil)
+		if !strings.Contains(stream.String(), "/FU1 12 Tf") || strings.Contains(stream.String(), "(?)") {
+			t.Fatal("emphasis lost Unicode embedding")
+		}
+		if native {
+			if strings.Contains(stream.String(), "2 Tr") || strings.Contains(stream.String(), " Tm") {
+				t.Fatal("native bold italic face was double-synthesized")
+			}
+		} else if !strings.Contains(stream.String(), "2 Tr") || !strings.Contains(stream.String(), "0.21256 1 10 20 Tm") || !strings.Contains(stream.String(), "1 0 0 RG") || !strings.HasSuffix(stream.String(), "Q\n") {
+			t.Fatalf("missing face was not synthesized with isolated stroke/slant: %s", &stream)
+		}
+	}
+}
+
+func TestDOCXHangulUsesEastAsianAndKoreanThemeFonts(t *testing.T) {
+	data := bytes.Clone(goregular.TTF)
+	original, err := sfnt.Parse(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	glyph, err := original.GlyphIndex(nil, 'Ω')
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Supply a synthetic cmap for the portable font; no host Korean font is required.
+	cmap := make([]byte, 40)
+	binary.BigEndian.PutUint16(cmap[2:4], 1)
+	binary.BigEndian.PutUint16(cmap[4:6], 3)
+	binary.BigEndian.PutUint16(cmap[6:8], 10)
+	binary.BigEndian.PutUint32(cmap[8:12], 12)
+	binary.BigEndian.PutUint16(cmap[12:14], 12)
+	binary.BigEndian.PutUint32(cmap[16:20], 28)
+	binary.BigEndian.PutUint32(cmap[24:28], 1)
+	binary.BigEndian.PutUint32(cmap[28:32], 0xac00)
+	binary.BigEndian.PutUint32(cmap[32:36], 0xac00)
+	binary.BigEndian.PutUint32(cmap[36:40], uint32(glyph))
+	for i, n := 0, int(binary.BigEndian.Uint16(data[4:6])); i < n; i++ {
+		r := data[12+i*16 : 28+i*16]
+		if string(r[:4]) == "cmap" {
+			binary.BigEndian.PutUint32(r[8:12], uint32(len(data)))
+			binary.BigEndian.PutUint32(r[12:16], uint32(len(cmap)))
+		}
+	}
+	data = append(data, cmap...)
+	ClearRegisteredFonts()
+	t.Cleanup(ClearRegisteredFonts)
+	RegisterFont("Korean Test", data)
+	s := &docxStyles{fonts: map[string]*embeddedFont{}, theme: map[string]string{"minor:Hang": "Korean Test"}}
+	for _, fonts := range []map[string]string{{"eastAsia": "Korean Test", "hAnsi": "Wrong font"}, {"eastAsiaTheme": "minorEastAsia", "hAnsi": "Wrong font"}} {
+		f, err := s.font(docxRunStyle{fonts: fonts, lang: "ko-KR"}, '가')
+		if err != nil || f == nil || !bytes.Equal(f.data, data) || !f.canEncode("가") {
+			t.Fatalf("Hangul did not select the East Asian Korean font: %v", err)
+		}
+	}
+}
+
+func TestDOCXInteriorBottomBordersAndMergeFinalEdge(t *testing.T) {
+	s := docxTestStyles(t, `<styles><docDefaults><rPrDefault><rPr><rFonts ascii="Portable Test"/></rPr></rPrDefault></docDefaults></styles>`)
+	for _, inside := range []string{"none", "dashed"} {
+		xml := `<tbl><tblPr><tblBorders><bottom val="single" sz="16"/><insideH val="` + inside + `" sz="4"/></tblBorders></tblPr><tblGrid><gridCol w="1200"/><gridCol w="1200"/></tblGrid><tr><tc><tcPr><vMerge val="restart"/></tcPr><p/></tc><tc><p/></tc></tr><tr><tc><tcPr><vMerge/></tcPr><p/></tc><tc><tcPr><tcBorders><top val="dotted" sz="6"/></tcBorders></tcPr><p/></tc></tr></tbl>`
+		n, err := parseDOCXNode([]byte(xml))
+		if err != nil {
+			t.Fatal(err)
+		}
+		table, err := s.table(n, 300)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if table.cells[1].borders["bottom"].style != inside || table.cells[0].borders["bottom"].style != "single" || table.cells[3].borders["bottom"].width != 2 || table.cells[3].borders["top"].style != "dotted" {
+			t.Fatalf("interior/outer/override/merge edges lost for %s", inside)
+		}
+	}
+}
+
+const docxReviewTable = `<tbl><tblPr/><tblGrid><gridCol w="1200"/></tblGrid><tr><tc><p><r><t>Cell</t></r></p></tc></tr></tbl>`
+const docxReviewStyles = `<styles><docDefaults><rPrDefault><rPr><rFonts ascii="Portable Test" hAnsi="Portable Test"/></rPr></rPrDefault></docDefaults></styles>`
+
+func docxReviewPackage(t *testing.T, body string, parts map[string]string) (officePackage, []byte, []byte) {
+	t.Helper()
+	if parts == nil {
+		parts = map[string]string{}
+	}
+	data := []byte(`<document><body>` + body + `</body></document>`)
+	parts["word/document.xml"] = string(data)
+	parts["word/styles.xml"] = docxReviewStyles
+	input := officePackageBytes(t, parts)
+	files, err := openOfficePackage(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return files, data, input
+}
+
+func TestDOCXUnsupportedReviewLayoutsRetainLegacy(t *testing.T) {
+	ClearRegisteredFonts()
+	t.Cleanup(ClearRegisteredFonts)
+	RegisterFont("Portable Test", goregular.TTF)
+	var encoded bytes.Buffer
+	if err := png.Encode(&encoded, image.NewRGBA(image.Rect(0, 0, 2, 3))); err != nil {
+		t.Fatal(err)
+	}
+	picture := `<drawing><inline><extent cx="254000" cy="381000"/><graphic><blip embed="picture"/></graphic></inline></drawing>`
+	for _, test := range []struct{ name, body string }{
+		{"gridBefore", strings.Replace(docxReviewTable, "<tr>", `<tr><trPr><gridBefore val="1"/></trPr>`, 1)},
+		{"gridAfter", strings.Replace(docxReviewTable, "<tr>", `<tr><trPr><gridAfter val="1"/></trPr>`, 1)},
+		{"span", strings.Replace(docxReviewTable, "<tc>", `<tc><tcPr><gridSpan val="2"/></tcPr>`, 1)},
+		{"merge", strings.Replace(docxReviewTable, "<tc>", `<tc><tcPr><vMerge/></tcPr>`, 1)},
+		{"text box", `<p><r><pict><shape><textbox><txbxContent><p><r><t>Box text</t></r></p></txbxContent></textbox></shape></pict></r></p>` + docxReviewTable},
+		{"mixed inline text", `<p><r><t>Before</t>` + picture + `</r></p>` + docxReviewTable},
+		{"multiple inline images", `<p><r>` + picture + picture + `</r></p>` + docxReviewTable},
+		{"inline break", `<p><r><br/>` + picture + `</r></p>` + docxReviewTable},
+		{"linked image", `<p><r>` + strings.Replace(picture, `embed="picture"`, `link="external"`, 1) + `</r></p>` + docxReviewTable},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			files, data, input := docxReviewPackage(t, test.body, map[string]string{"word/_rels/document.xml.rels": `<Relationships><Relationship Id="picture" Target="/word/media/image.png"/></Relationships>`, "word/media/image.png": encoded.String()})
+			_, supported, err := renderDOCXTables(files, data, PageSizeA4, Margins{Left: 40, Top: 40, Right: 40, Bottom: 40}, ConversionOptions{})
+			if supported || err != nil {
+				t.Fatalf("layout did not fall back: supported=%t err=%v", supported, err)
+			}
+			pdf, err := ConvertBytesToPDF(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pages, size, margins, err := extractDOCX(data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var legacy []textPage
+			var text []string
+			for _, lines := range pages {
+				legacy = append(legacy, textPage{lines: lines, size: size, margins: margins})
+				text = append(text, lines...)
+			}
+			if !bytes.Equal(pdf, renderTextPages(legacy, ConversionOptions{})) || !strings.Contains(strings.Join(text, "\n"), "Cell") {
+				t.Fatal("fallback changed legacy text conversion")
+			}
+			if test.name == "text box" && !strings.Contains(strings.Join(text, "\n"), "Box text") {
+				t.Fatal("fallback lost text-box text")
+			}
+		})
+	}
+}
+
+func TestDOCXImageOnlyAlignmentAndAbsoluteTargets(t *testing.T) {
+	ClearRegisteredFonts()
+	t.Cleanup(ClearRegisteredFonts)
+	RegisterFont("Portable Test", goregular.TTF)
+	var encoded bytes.Buffer
+	if err := png.Encode(&encoded, image.NewRGBA(image.Rect(0, 0, 2, 3))); err != nil {
+		t.Fatal(err)
+	}
+	for _, test := range []struct {
+		align string
+		x     float64
+	}{{"left", 40}, {"center", 90}, {"right", 140}} {
+		body := `<p><pPr><jc val="` + test.align + `"/><spacing before="100" after="100"/></pPr><r><drawing><inline><extent cx="254000" cy="381000"/><graphic><blip embed="picture"/></graphic></inline></drawing></r></p>` + docxReviewTable
+		files, data, _ := docxReviewPackage(t, body, map[string]string{"word/_rels/document.xml.rels": `<Relationships><Relationship Id="picture" Target="/word/media/image.png"/></Relationships>`, "word/media/image.png": encoded.String()})
+		pdf, supported, err := renderDOCXTables(files, data, PageSize{Width: 200, Height: 300}, Margins{Left: 40, Top: 40, Right: 40, Bottom: 40}, ConversionOptions{})
+		if err != nil || !supported || !bytes.Contains(pdf, []byte(fmt.Sprintf("20 0 0 30 %s 225 cm", pdfNumber(test.x)))) {
+			t.Fatalf("%s image lost absolute target/spacing/alignment: supported=%t err=%v", test.align, supported, err)
+		}
+	}
+}
+
+func TestDOCXGridTypeControlsLineSnapping(t *testing.T) {
+	ClearRegisteredFonts()
+	t.Cleanup(ClearRegisteredFonts)
+	RegisterFont("Portable Test", goregular.TTF)
+	var plain []byte
+	for _, typ := range []string{"", "default", "snapToChars", "lines", "linesAndChars"} {
+		files, data, _ := docxReviewPackage(t, `<p><r><t>Text</t></r></p>`+docxReviewTable+`<sectPr><docGrid type="`+typ+`" linePitch="720"/></sectPr>`, nil)
+		pdf, supported, err := renderDOCXTables(files, data, PageSizeA4, Margins{Left: 40, Top: 40, Right: 40, Bottom: 40}, ConversionOptions{})
+		if err != nil || !supported {
+			t.Fatalf("grid %s failed: %v", typ, err)
+		}
+		if typ == "" {
+			plain = pdf
+		}
+		if (typ == "default" || typ == "snapToChars") && !bytes.Equal(pdf, plain) {
+			t.Fatalf("inactive grid %s altered paragraph layout", typ)
+		}
+		if (typ == "lines" || typ == "linesAndChars") && bytes.Equal(pdf, plain) {
+			t.Fatalf("active grid %s did not snap lines", typ)
+		}
+	}
+}
+
+func TestDOCXUnavailableFontsFallbackButMissingGlyphsFail(t *testing.T) {
+	ClearRegisteredFonts()
+	t.Cleanup(ClearRegisteredFonts)
+	t.Setenv("WINDIR", "")
+	for _, body := range []string{`<p><r><t>é</t></r></p>` + docxReviewTable, strings.Replace(docxReviewTable, "Cell", "é", 1)} {
+		files, data, input := docxReviewPackage(t, body, nil)
+		_, supported, err := renderDOCXTables(files, data, PageSizeA4, Margins{Left: 40, Top: 40, Right: 40, Bottom: 40}, ConversionOptions{})
+		if err != nil || supported {
+			t.Fatalf("missing environment font did not fall back: %t %v", supported, err)
+		}
+		if _, err := ConvertBytesToPDF(input); err != nil {
+			t.Fatalf("legacy font fallback failed: %v", err)
+		}
+	}
+	RegisterFont("Portable Test", goregular.TTF)
+	files, data, _ := docxReviewPackage(t, strings.Replace(docxReviewTable, "Cell", "\U0001f600", 1), nil)
+	_, supported, err := renderDOCXTables(files, data, PageSizeA4, Margins{Left: 40, Top: 40, Right: 40, Bottom: 40}, ConversionOptions{})
+	if !supported || err == nil || errors.Is(err, errDOCXFontUnavailable) || !strings.Contains(err.Error(), "has no glyph") {
+		t.Fatalf("present font's missing glyph was silently downgraded: %t %v", supported, err)
 	}
 }

@@ -82,6 +82,14 @@ func loadDOCXFont(name string, bold, italic bool) (*embeddedFont, error) {
 			break
 		}
 	}
+	if data == nil && (bold || italic) {
+		for _, registered := range RegisteredFonts() {
+			if strings.EqualFold(registered.Name, name) {
+				data = registered.Data
+				break
+			}
+		}
+	}
 	if data == nil && runtime.GOOS == "windows" {
 		var file string
 		switch strings.ToLower(name) {
@@ -105,7 +113,14 @@ func loadDOCXFont(name string, bold, italic bool) (*embeddedFont, error) {
 				}
 			}
 		default:
-			return readXLSXFont(name, bold, italic)
+			f, err := readXLSXFont(name, bold, italic)
+			if err == nil && f == nil && (bold || italic) {
+				f, err = readXLSXFont(name, false, false)
+			}
+			if f != nil {
+				f.nativeBold, f.nativeItalic = docxFontEmphasis(f.data)
+			}
+			return f, err
 		}
 		if root := os.Getenv("WINDIR"); root != "" {
 			var err error
@@ -138,6 +153,7 @@ func loadDOCXFont(name string, bold, italic bool) (*embeddedFont, error) {
 		return nil, err
 	}
 	result := &embeddedFont{name: sanitizePDFFontName(variant), data: data, font: parsed, runeToGlyph: make(map[rune]sfnt.GlyphIndex), glyphToRune: make(map[sfnt.GlyphIndex]rune), advances: make([]float64, parsed.NumGlyphs()), ascent: float64(metrics.Ascent) / float64(ppem), descent: float64(metrics.Descent) / float64(ppem)}
+	result.nativeBold, result.nativeItalic = docxFontEmphasis(data)
 	for i := range result.advances {
 		a, err := parsed.GlyphAdvance(nil, sfnt.GlyphIndex(i), ppem, font.HintingNone)
 		if err != nil {
@@ -146,6 +162,32 @@ func loadDOCXFont(name string, bold, italic bool) (*embeddedFont, error) {
 		result.advances[i] = float64(a) / float64(ppem)
 	}
 	return result, nil
+}
+
+func docxFontEmphasis(data []byte) (bold, italic bool) {
+	if len(data) < 12 {
+		return
+	}
+	n := int(binary.BigEndian.Uint16(data[4:6]))
+	if n > (len(data)-12)/16 {
+		return
+	}
+	for i := 0; i < n; i++ {
+		r := data[12+i*16 : 28+i*16]
+		o, length := int(binary.BigEndian.Uint32(r[8:12])), int(binary.BigEndian.Uint32(r[12:16]))
+		if o < 0 || length < 0 || o > len(data)-length {
+			continue
+		}
+		if string(r[:4]) == "OS/2" && length >= 64 {
+			flags := binary.BigEndian.Uint16(data[o+62 : o+64])
+			return flags&(1<<5) != 0, flags&1 != 0
+		}
+		if string(r[:4]) == "head" && length >= 46 {
+			flags := binary.BigEndian.Uint16(data[o+44 : o+46])
+			bold, italic = flags&1 != 0, flags&2 != 0
+		}
+	}
+	return
 }
 
 func docxFontCJK(data []byte) bool {

@@ -141,17 +141,26 @@ offsets and text-box insets. Image decoding is limited to 25 million pixels.
 Missing or invalid embedded images produce errors rather than disappearing.
 
 Documents requiring unsupported section changes, numbering, anchored drawings,
+text-bearing VML text boxes, omitted row grid columns (`gridBefore`/`gridAfter`),
 exact-height rows, multi-page structured layout, or referenced EMF/WMF images
 retain the existing text converter. If measured paragraph, inline-image, or
 table flow would cross the first page's content boundary, the entire document
 uses the text converter; structured pagination, keep rules, and row splitting
-are not implemented. Metafile formats are checked before
+are not implemented. Tables extending beyond the physical page width also retain
+text conversion. Metafile formats are checked before
 structured rendering; malformed PNG/JPEG images still produce decoding errors.
+Linked-only images and inline paragraphs mixing images with text, multiple images,
+or explicit line breaks also retain text conversion. Single image-only paragraphs
+honor alignment, indentation, and paragraph spacing. Line-grid snapping requires
+`docGrid` type `lines` or `linesAndChars`; an omitted/default type does not snap.
+Dashed borders use a single native PDF stroke, without retained segment expansion.
 Images inside table cells, complex drawing geometry, conditional
 table styles, headers/footers, and complex-script shaping remain unsupported.
 Structured text uses matching registered fonts or selected licensed Windows
-fonts, with Arial/SimSun glyph fallback when available. Missing Unicode glyphs
-produce an explicit error on the structured path. Fonts are embedded without
+fonts, with Arial/SimSun glyph fallback when available. Requested bold/italic is
+synthesized only when the loaded face lacks that emphasis. An unavailable host
+font required for Unicode text retains legacy conversion; a present font with
+missing glyphs still produces an explicit error on the structured path. Fonts are embedded without
 subsetting, so large CJK fonts can substantially increase PDF size.
 
 XLSX text output skips entirely empty pages within worksheets containing text,
