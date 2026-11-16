@@ -181,24 +181,44 @@ func addTextPages(document *PDFDocument, lines []string, pageSize PageSize, marg
 		// the check and the layout cannot disagree about a page break.
 		fits := func(zoom int) bool {
 			leading := baseLeading * float64(zoom) / 100
-			pages := 1
+			pages := 0
+			pageHasText := false
+			if !skipEmpty {
+				pages = 1
+				pageHasText = true
+			}
 			y := pageSize.Height - margins.Top
-			for range wrapAt(zoom) {
+			for _, line := range wrapAt(zoom) {
 				if y < margins.Bottom {
-					pages++
+					pageHasText = false
 					y = pageSize.Height - margins.Top
+				}
+				if (!skipEmpty || strings.TrimSpace(line) != "") && !pageHasText {
+					pages++
+					pageHasText = true
+					if pages > fitHeight {
+						return false
+					}
 				}
 				y -= leading
 			}
 			return pages <= fitHeight
 		}
 		if !fits(zoom) {
-			zoom = minimumTextFitZoom
-			for tooLarge := 100; tooLarge-zoom > 1; {
-				if middle := (zoom + tooLarge) / 2; fits(middle) {
-					zoom = middle
-				} else {
-					tooLarge = middle
+			if skipEmpty {
+				// Visible page counts are not monotonic: moving a page break
+				// can merge or separate sparse text around skipped empty pages.
+				// Check percentages in descending order to find the largest fit.
+				for zoom--; zoom > minimumTextFitZoom && !fits(zoom); zoom-- {
+				}
+			} else {
+				zoom = minimumTextFitZoom
+				for tooLarge := 100; tooLarge-zoom > 1; {
+					if middle := (zoom + tooLarge) / 2; fits(middle) {
+						zoom = middle
+					} else {
+						tooLarge = middle
+					}
 				}
 			}
 		}
@@ -254,7 +274,10 @@ func wrapText(text string, limit int) []string {
 				}
 			}
 			lines = append(lines, strings.TrimSpace(string(runes[:breakAt])))
-			runes = []rune(strings.TrimLeftFunc(string(runes[breakAt:]), unicode.IsSpace))
+			runes = runes[breakAt:]
+			for len(runes) > 0 && unicode.IsSpace(runes[0]) {
+				runes = runes[1:]
+			}
 		}
 		lines = append(lines, string(runes))
 	}
