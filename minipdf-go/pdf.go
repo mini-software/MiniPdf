@@ -235,12 +235,12 @@ func (document *PDFDocument) BytesWithOptions(options PDFSaveOptions) []byte {
 		if font == embedded {
 			continue
 		}
-		for alias, canonical := range seenFonts {
-			alias.resource = canonical.resource
-			alias.objectID = canonical.objectID
-		}
 		font.resource = fmt.Sprintf("FU%d", index+1)
 		font.objectID = appendEmbeddedFontObjects(&objects, font)
+	}
+	for alias, canonical := range seenFonts {
+		alias.resource = canonical.resource
+		alias.objectID = canonical.objectID
 	}
 	italicResources := ""
 	if hasItalic {
